@@ -34,6 +34,8 @@ import Papa from 'papaparse';
 import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { ImportRowError } from '../error/import-row.error';
+import { inferCsvDecimalSeparator } from '../utils/infer-csv-decimal-separator.util';
+import { parseCsvAmount } from '../utils/parse-csv-amount.util';
 
 import type { CreateEntriesParamsInterface } from '../interface/create-entries-params.interface';
 import type { CsvImportResultInterface } from '../interface/csv-import-result.interface';
@@ -220,16 +222,17 @@ export class ImporterService extends Context.Service<ImporterService>()('@budgie
 
         const parseRow = (
             normalizedRow: NormalizedRowType,
-            lookup: ImporterLookupInterface
+            lookup: ImporterLookupInterface,
+            decimalSeparators: readonly ('.' | ',' | null)[]
         ): Result.Result<ImporterRowInterface, string> => {
             const toAccount = lookup.accountsMap[getToAccountKey(normalizedRow)];
-            const toAmount = Number.parseFloat(normalizedRow.toAmount);
+            const toAmount = parseCsvAmount(normalizedRow.toAmount, decimalSeparators[0]);
             const toInstrument = lookup.instrumentsMap[normalizedRow.toCurrency];
             const explicitCategory = lookup.categoriesMap[normalizedRow.category];
             const operatedAt = parseDate(normalizedRow.operatedAt);
             const fromAccount = lookup.accountsMap[getFromAccountKey(normalizedRow)];
             const fromInstrument = isDefined(fromAccount) ? lookup.instrumentsMap[normalizedRow.fromCurrency] : null;
-            const fromAmount = isDefined(fromAccount) ? Number.parseFloat(normalizedRow.fromAmount) : null;
+            const fromAmount = isDefined(fromAccount) ? parseCsvAmount(normalizedRow.fromAmount, decimalSeparators[1]) : null;
 
             if (!isDefined(toAccount)) {
                 return Result.fail(`To Account ${normalizedRow.toAccount} not found`);
@@ -237,13 +240,13 @@ export class ImporterService extends Context.Service<ImporterService>()('@budgie
             if (!isDefined(operatedAt) || Number.isNaN(operatedAt.getTime())) {
                 return Result.fail(`Date "${normalizedRow.operatedAt}" is invalid`);
             }
-            if (!isDefined(toAmount) || Number.isNaN(toAmount)) {
+            if (Result.isFailure(toAmount)) {
                 return Result.fail(`To Amount "${normalizedRow.toAmount}" is invalid`);
             }
             if (!isDefined(toInstrument)) {
                 return Result.fail(`Currency ${normalizedRow.toCurrency} not found`);
             }
-            if (isDefined(fromInstrument) && (!isDefined(fromAmount) || Number.isNaN(fromAmount))) {
+            if (isDefined(fromAmount) && Result.isFailure(fromAmount)) {
                 return Result.fail(`From Amount "${normalizedRow.fromAmount}" is invalid`);
             }
 
@@ -260,10 +263,10 @@ export class ImporterService extends Context.Service<ImporterService>()('@budgie
                 categorySource,
                 mccCategoryId,
                 operatedAt,
-                toAmount,
+                toAmount: toAmount.success,
                 fromInstrument,
                 toInstrument,
-                fromAmount
+                fromAmount: isDefined(fromAmount) ? fromAmount.success : null
             });
         };
 
@@ -355,11 +358,16 @@ export class ImporterService extends Context.Service<ImporterService>()('@budgie
                     accountsMap: yield* accountService.bulkCreate([...accountInputs.values()]),
                     categoriesMap: yield* categoryService.bulkCreate([...categoryInputs.values()])
                 };
+                const decimalSeparators = [columnMap.toAmount, columnMap.fromAmount].map(column =>
+                    inferCsvDecimalSeparator(rows.map(row => row[column] ?? ''))
+                );
                 const results = rows.map(row => {
                     const normalizedRow = normalizeRow(row, columnMap);
 
                     return Result.mapError(
-                        Result.map(parseRow(normalizedRow, lookup), parsedRow => buildTransaction(normalizedRow, parsedRow)),
+                        Result.map(parseRow(normalizedRow, lookup, decimalSeparators), parsedRow =>
+                            buildTransaction(normalizedRow, parsedRow)
+                        ),
                         reason => toRowError(reason, row)
                     );
                 });

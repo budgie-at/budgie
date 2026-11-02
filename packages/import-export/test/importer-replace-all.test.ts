@@ -95,3 +95,45 @@ describe('importer replaceAll', () => {
         )
     );
 });
+
+describe('importer strict amounts', () => {
+    it.effect('uses whole-column context for destination and source amounts independently', () =>
+        Effect.gen(function* () {
+            const importerService = yield* ImporterService;
+            const result = yield* importerService.replaceAll(
+                IMPORT_PRESETS[ImportPresetEnum.Budgie],
+                [
+                    header,
+                    'n-1,Cash,"1.234",USD,Wallet,"1,234",EUR,Food,01/15/2026 12:30:00,,',
+                    'n-2,Cash,"12,50",USD,Wallet,12.50,EUR,Food,01/15/2026 12:30:00,,',
+                    'n-3,Cash,"1 234,56",USD,,,,Food,01/15/2026 12:30:00,,',
+                    'n-4,Cash,5oops,USD,,,,Food,01/15/2026 12:30:00,,',
+                    'n-5,Cash,5,USD,Wallet,5oops,EUR,Food,01/15/2026 12:30:00,,'
+                ].join('\n')
+            );
+            expect(result.rowErrors).toHaveLength(2);
+            expect(result.rowErrors.every(error => error instanceof ImportRowError)).toBe(true);
+            expect(result.transactions.map(transaction => transaction.amount)).toEqual([1234, 12.5, 1234.56]);
+            expect(result.transactions[0].entries.map(entry => entry.amount)).toEqual([1234, 1234]);
+            const transactionRepository = yield* TransactionRepository;
+            const stored = yield* transactionRepository.getAllAfter(null, 100);
+            expect(
+                stored.flatMap(transaction => transaction.entries.map(entry => entry.amount)).sort((left, right) => left - right)
+            ).toEqual([12500000, 12500000, 1234000000, 1234000000, 1234560000]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('reports ambiguous amounts without importing them', () =>
+        Effect.gen(function* () {
+            const importerService = yield* ImporterService;
+            const result = yield* importerService.replaceAll(
+                IMPORT_PRESETS[ImportPresetEnum.Budgie],
+                [header, 'n-1,Cash,"1.234",USD,,,,Food,01/15/2026 12:30:00,,', 'n-2,Cash,"1,234",USD,,,,Food,01/15/2026 12:30:00,,'].join(
+                    '\n'
+                )
+            );
+            expect(result.rowErrors).toHaveLength(2);
+            expect(result.transactionIds).toEqual([]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+});

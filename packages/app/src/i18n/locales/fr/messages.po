@@ -479,6 +479,10 @@ msgstr "{groupCount} groupes, {paymentCount} paiements"
 msgid "{hiddenCount, plural, one {Show # more} other {Show # more}}"
 msgstr "{hiddenCount, plural, one {Afficher # de plus} other {Afficher # de plus}}"
 
+#: src/app/(tabs)/settings/import.tsx
+msgid "{importedCount} imported, {failedCount} failed"
+msgstr "{importedCount} importées, {failedCount} échouées"
+
 #: src/categorize-inbox/components/categorize-inbox-group-choose-payments-option/categorize-inbox-group-choose-payments-option.tsx
 msgid "{included} of {total}"
 msgstr "{included} sur {total}"
@@ -2948,6 +2952,10 @@ msgstr "CSV exporté"
 #: src/app/(tabs)/settings/data.tsx
 msgid "CSV files"
 msgstr "Fichiers CSV"
+
+#: src/app/(tabs)/settings/import.tsx
+msgid "CSV import"
+msgstr "Import CSV"
 
 #: src/account/component/update-liability-account/update-liability-account.tsx
 msgid "Currency"

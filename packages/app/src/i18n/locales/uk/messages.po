@@ -479,6 +479,10 @@ msgstr "Груп: {groupCount}, платежів: {paymentCount}"
 msgid "{hiddenCount, plural, one {Show # more} other {Show # more}}"
 msgstr "{hiddenCount, plural, one {Показати ще #} few {Показати ще #} many {Показати ще #} other {Показати ще #}}"
 
+#: src/app/(tabs)/settings/import.tsx
+msgid "{importedCount} imported, {failedCount} failed"
+msgstr "Імпортовано: {importedCount}, помилок: {failedCount}"
+
 #: src/categorize-inbox/components/categorize-inbox-group-choose-payments-option/categorize-inbox-group-choose-payments-option.tsx
 msgid "{included} of {total}"
 msgstr "{included} з {total}"
@@ -2948,6 +2952,10 @@ msgstr "CSV експортовано"
 #: src/app/(tabs)/settings/data.tsx
 msgid "CSV files"
 msgstr "Файли CSV"
+
+#: src/app/(tabs)/settings/import.tsx
+msgid "CSV import"
+msgstr "Імпорт CSV"
 
 #: src/account/component/update-liability-account/update-liability-account.tsx
 msgid "Currency"
