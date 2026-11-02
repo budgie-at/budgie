@@ -116,7 +116,7 @@ export default function AccountDetails() {
                 <ScreenChromeThemeProvider config={ACCOUNT_DETAILS_SCREEN_CHROME_CONFIG}>
                     <ScreenChromeFrame>
                         <View className="flex-1">
-                            <CollapsibleChromeTransactionList accountId={id}>{accountSummary}</CollapsibleChromeTransactionList>
+                            <CollapsibleChromeTransactionList accountIds={Array.of(id)}>{accountSummary}</CollapsibleChromeTransactionList>
                         </View>
 
                         <AccountDetailsHeaderBackdrop />
