@@ -14,7 +14,7 @@ permissions:
 jobs:
   assert-ai:
     name: Assert AI is enabled
-    runs-on: [self-hosted, trf-linux-amd64-4x8]
+    runs-on: [self-hosted, linux-portable-4x8]
     timeout-minutes: 10
     permissions:
       contents: read
@@ -53,7 +53,7 @@ jobs:
       contents: read
     uses: rnw-community/mobile-ci/.github/workflows/native-publish.yml@f90309c791283d6e2dd1e35eb2ae6c5aee2151cd # v4.7.0
     with:
-      control-runner-labels: '["self-hosted","trf-linux-amd64-2x4"]'
+      control-runner-labels: '["self-hosted","linux-portable-2x4"]'
       lint-runner-labels: '["self-hosted","trf-linux-amd64-4x8"]'
       enable-ios: true
       enable-android: false

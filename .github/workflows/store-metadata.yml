@@ -23,7 +23,7 @@ concurrency:
 jobs:
     ios-metadata:
         name: iOS metadata
-        runs-on: [self-hosted, trf-linux-amd64-2x4]
+        runs-on: [self-hosted, linux-portable-2x4]
         timeout-minutes: 20
         env:
             LANG: C.UTF-8
