@@ -6,6 +6,23 @@ PROJECT_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/../../.." && pwd)
 CONTACT_FIXTURE_PATH="$SCRIPT_DIR/../fixtures/maestro-e2e-contact.vcf"
 INSTALL_DB_FIXTURE_SCRIPT="$PROJECT_ROOT/scripts/install-ios-db-fixture.sh"
 PREPARE_DYNAMIC_FIXTURES_SCRIPT="$SCRIPT_DIR/prepare-date-sensitive-fixtures.js"
+
+# Hosts without the sqlite3 CLI (the portable Linux runners) run the same statements
+# through Node's built-in driver.
+if ! command -v sqlite3 >/dev/null 2>&1; then
+    # Stands in for `sqlite3 [-bail] <database> <sql>`: this script only writes, never reads.
+    sqlite3() {
+        node -e '
+const { DatabaseSync } = require("node:sqlite");
+const [databasePath, sql] = process.argv.slice(1).filter(argument => !argument.startsWith("-"));
+const database = new DatabaseSync(databasePath);
+try {
+    database.exec(sql);
+} finally {
+    database.close();
+}' -- "$@"
+    }
+fi
 STATEMENT_FIXTURE_PATHS="
 erste/erste-statement-008.pdf
 erste/erste-statement-009.pdf
