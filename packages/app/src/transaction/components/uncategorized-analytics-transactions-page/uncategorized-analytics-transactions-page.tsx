@@ -1,7 +1,6 @@
 import { TransactionFilterPageHeaderModeEnum } from '../../enum/transaction-filter-page-header-mode.enum';
 import { useGetUncategorizedTransactionsQuery } from '../../query/use-get-uncategorized-transactions.query';
 import { buildUncategorizedFilters } from '../../utils/build-uncategorized-filters.util';
-import { getSingleAccountId } from '../../utils/get-single-account-id.util';
 import { AnalyticsTransactionsPageContent } from '../analytics-transactions-page-content/analytics-transactions-page-content';
 import { TransactionListEmptyState } from '../transaction-list-empty-state/transaction-list-empty-state';
 
@@ -25,7 +24,7 @@ export const UncategorizedAnalyticsTransactionsPage = (params: AnalyticsTransact
             sections={sections}
             emptyState={<TransactionListEmptyState isLoading={isLoading} hasFiltersSelected />}
             onLoadMore={loadMore}
-            accountId={getSingleAccountId(filters.accountIds)}
+            accountIds={filters.accountIds}
         />
     );
 };

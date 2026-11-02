@@ -7,6 +7,6 @@ export const ACCOUNT_SYNC_STATE_LABEL: Record<AccountSyncStateEnum, MessageDescr
     [AccountSyncStateEnum.SYNCED]: msg`Up to date`,
     [AccountSyncStateEnum.SYNCING]: msg`Syncing`,
     [AccountSyncStateEnum.WAITING]: msg`Waiting`,
-    [AccountSyncStateEnum.FAILED]: msg`Sync Failed`,
+    [AccountSyncStateEnum.FAILED]: msg`Sync failed`,
     [AccountSyncStateEnum.DISABLED]: msg`Sync paused`
 };

@@ -1,7 +1,7 @@
 import { convertFromMicroUnits } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
 
 import type { AggregatedTransactionEntryInterface } from '../../interface/aggregated-transaction-entry.interface';
 
@@ -13,15 +13,23 @@ interface Props {
 }
 
 export const TransactionTransferAmount = ({ fromEntry, toEntry, accountId, testID }: Props) => {
-    const formatDigits = useDisplayFormatDigits();
+    const formatDigits = useFormatInstrumentAmount();
 
     const isIncoming = accountId === toEntry.account.id;
     const primaryEntry = isIncoming ? toEntry : fromEntry;
     const secondaryEntry = isIncoming ? fromEntry : toEntry;
 
     const sign = isIncoming ? '+' : '';
-    const primaryAmount = formatDigits(convertFromMicroUnits(primaryEntry.amount), primaryEntry.account.instrument.symbol);
-    const secondaryAmount = formatDigits(convertFromMicroUnits(secondaryEntry.amount), secondaryEntry.account.instrument.symbol);
+    const primaryAmount = formatDigits(
+        convertFromMicroUnits(primaryEntry.amount),
+        primaryEntry.account.instrument.symbol,
+        primaryEntry.account.instrument.type
+    );
+    const secondaryAmount = formatDigits(
+        convertFromMicroUnits(secondaryEntry.amount),
+        secondaryEntry.account.instrument.symbol,
+        secondaryEntry.account.instrument.type
+    );
     const isCrossCurrency = primaryEntry.account.instrument.id !== secondaryEntry.account.instrument.id;
 
     return (

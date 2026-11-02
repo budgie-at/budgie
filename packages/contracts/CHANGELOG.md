@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.148.0](https://github.com/budgie-at/budgie/compare/v6.147.1...v6.148.0) (2026-11-02)
+
+### Features
+
+* **app:** polish the institution page status, crypto amounts and labels ([b2f07f9](https://github.com/budgie-at/budgie/commit/b2f07f996ce6d9d3beee95fdd198ed30cdb1d62e))
+
+
 ## [6.147.1](https://github.com/budgie-at/budgie/compare/v6.147.0...v6.147.1) (2026-11-02)
 
 ### Bug Fixes

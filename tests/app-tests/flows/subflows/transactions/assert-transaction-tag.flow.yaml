@@ -11,7 +11,9 @@ appId: ${APP_ID}
           id: 'TransactionInfo.Row.Tags'
       direction: DOWN
 - extendedWaitUntil:
-      visible: '${TAG_NAME}'
+      visible:
+          id: 'TransactionInfo.Row.Tags'
+          text: 'Tags, ${TAG_NAME}'
       timeout: 5000
 - tapOn:
       id: 'PageHeader.BackButton'
