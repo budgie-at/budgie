@@ -4381,8 +4381,8 @@ msgid "last payment {formattedLast}"
 msgstr "last payment {formattedLast}"
 
 #: src/account/component/institution-connection-row/institution-connection-row.tsx
-msgid "Last synced {lastSyncedTime}"
-msgstr "Last synced {lastSyncedTime}"
+msgid "Last successful sync · {lastSyncedTime}"
+msgstr "Last successful sync · {lastSyncedTime}"
 
 #: src/@generic/constant/date-period.constant.ts
 msgid "Last Week"
@@ -7622,7 +7622,6 @@ msgid "Transaction type"
 msgstr "Transaction type"
 
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx
-#: src/account/component/institution-details-summary/institution-details-summary.tsx
 #: src/transaction/hook/use-transaction-filter-page-title.hook.ts
 msgid "Transactions"
 msgstr "Transactions"

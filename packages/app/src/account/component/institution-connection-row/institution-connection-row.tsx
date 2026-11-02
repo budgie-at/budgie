@@ -38,7 +38,7 @@ export const InstitutionConnectionRow = ({ syncs }: Props) => {
     const lastSyncedTime = isDefined(lastSyncedAt) ? formatSyncTime(lastSyncedAt) : null;
     const subtitle = isDefined(lastSyncedTime) ? (
         <Text className="text-secondary-foreground text-[15px]">
-            <Trans>Last synced {lastSyncedTime}</Trans>
+            <Trans>Last successful sync · {lastSyncedTime}</Trans>
         </Text>
     ) : null;
 
