@@ -3,7 +3,7 @@ appId: ${APP_ID}
 - runFlow:
       file: ../subflows/navigation/open-deep-link.flow.yaml
       env:
-          DEEP_LINK: 'budgie://settings/pin?mode=CREATE'
+          DEEP_LINK: 'budgie://pin-setup?mode=CREATE'
 
 - extendedWaitUntil:
       visible:

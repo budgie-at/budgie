@@ -15,8 +15,8 @@ import { useSetting } from '../../hook/use-setting.hook';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
 import { SettingsRow } from '../settings-row/settings-row';
 
-const handleChangePin = () => void router.push({ pathname: '/settings/pin', params: { mode: PinSetupModeEnum.CHANGE } });
-const handleDisablePin = () => void router.push({ pathname: '/settings/pin', params: { mode: PinSetupModeEnum.DISABLE } });
+const handleChangePin = () => void router.push({ pathname: '/pin-setup', params: { mode: PinSetupModeEnum.CHANGE } });
+const handleDisablePin = () => void router.push({ pathname: '/pin-setup', params: { mode: PinSetupModeEnum.DISABLE } });
 
 export const PinManagementRows = () => {
     const { t } = useLingui();

@@ -3,12 +3,12 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { Button } from '../../../@generic/component/button/button';
 import { Card } from '../../../@generic/component/card/card';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { DB_NAME } from '../../../@generic/drizzle/constant/db-name.constant';
-import { useDatabaseFileSize } from '../../../@generic/drizzle/hook/use-database-file-size.hook';
-import { useFormatFileSize } from '../../../@generic/hook/use-format-file-size.hook';
+import { useBiometricLabel } from '../../../settings/hook/use-biometric-label.hook';
 import { PinSetupModeEnum } from '../../enum/pin-setup-mode.enum';
 import { PinSheetLayout } from '../pin-sheet-layout/pin-sheet-layout';
 
@@ -16,25 +16,20 @@ import { AddPinSheetSelector } from './add-pin-sheet.selector';
 
 export const AddPinSheet = () => {
     const { t } = useLingui();
-    const databaseFileSize = useDatabaseFileSize();
-    const formatFileSize = useFormatFileSize();
 
-    const handleChoosePinPress = () => void router.replace({ pathname: '/settings/pin', params: { mode: PinSetupModeEnum.CREATE } });
+    const handleChoosePinPress = () => void router.replace({ pathname: '/pin-setup', params: { mode: PinSetupModeEnum.CREATE } });
     const handleNotNowPress = () => void router.back();
 
-    const fileSize = formatFileSize(databaseFileSize);
-    const steps = [
-        t`Choose and confirm a PIN`,
-        t`Budgie re-encrypts ${DB_NAME} (${fileSize}) on this phone. It takes a few seconds.`,
-        t`Sealed. Face ID or fingerprint is optional.`
-    ];
+    const biometricLabel = useBiometricLabel();
+    const biometricStep = isDefined(biometricLabel) ? t`Optionally turn on ${biometricLabel}` : t`Sealed. Only your PIN opens it.`;
+    const steps = [t`Choose and confirm a PIN`, t`Budgie encrypts your data on this phone. It takes a few seconds.`, biometricStep];
 
     return (
         <PinSheetLayout
             testID={AddPinSheetSelector.Root}
             className="bg-sheet-surface"
             iconVariant="warning"
-            title={t`Lock Budgie with your own PIN`}
+            title={t`Lock Budgie with a PIN`}
             description={t`Right now anyone who can unlock your phone can open Budgie. With a PIN, the file itself is encrypted and only opens with it.`}
         >
             <Card variant="secondary" size="md" className="gap-y-md">

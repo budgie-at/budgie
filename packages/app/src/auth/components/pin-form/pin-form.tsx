@@ -1,97 +1,124 @@
-import { UserIconNameEnum } from '@budgie/contracts';
-import { ReactNode } from 'react';
-import { Text, View } from 'react-native';
+import { NotificationFeedbackType } from 'expo-haptics';
+import { ReactNode, useEffect, useEffectEvent, useRef } from 'react';
+import { AccessibilityInfo, ActivityIndicator, View } from 'react-native';
+import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { EmptyFn, isNotEmptyString } from '@rnw-community/shared';
 
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/component/icon/icon';
 import { Shake } from '../../../@generic/component/shake/shake';
+import { useVibration } from '../../../@generic/hook/use-vibration.hook';
+import { cn } from '../../../@generic/utils/cn.util';
+import { PIN_LENGTH } from '../../constant/pin-length.constant';
+import { PIN_ERROR_FADE_DURATION_MS } from '../../constant/pin-motion.constant';
+import { PinFormStatusEnum } from '../../enum/pin-form-status.enum';
+import { useIsCompactPinLayout } from '../../hook/use-is-compact-pin-layout.hook';
 import { PinFormBiometricButton } from '../pin-form-biometric-button/pin-form-biometric-button';
 import { PinFormButton } from '../pin-form-button/pin-form-button';
+import { PinFormDeleteButton } from '../pin-form-delete-button/pin-form-delete-button';
 import { PinFormDots } from '../pin-form-dots/pin-form-dots';
 
 import { PinFormSelector } from './pin-form.selector';
 
 interface Props {
-    readonly title: string;
-    readonly description: string;
+    readonly header: ReactNode;
     readonly currentInput: string;
     readonly error: string | null;
-    readonly isLoading: boolean;
+    readonly status: PinFormStatusEnum;
     readonly onDigitPress: (digit: string) => void;
     readonly onDeletePress: EmptyFn;
     readonly children?: ReactNode;
+    readonly footer?: ReactNode;
 }
 
-export const PinForm = (props: Props) => {
-    const {
-        title,
-        currentInput,
-        description,
-        error,
-        isLoading,
-        onDigitPress,
-        onDeletePress,
-        children = <PinFormBiometricButton />
-    } = props;
-    const canDelete = isNotEmptyString(currentInput) && !isLoading;
+const DIGIT_ROWS = [
+    ['1', '2', '3'],
+    ['4', '5', '6'],
+    ['7', '8', '9']
+] as const;
+
+export const PinForm = ({
+    header,
+    currentInput,
+    error,
+    status,
+    onDigitPress,
+    onDeletePress,
+    children = <PinFormBiometricButton />,
+    footer
+}: Props) => {
+    const [hapticNotification] = useVibration();
+    const isCompact = useIsCompactPinLayout();
+    const hadErrorRef = useRef(false);
+
+    const isAccepted = status === PinFormStatusEnum.ACCEPTED;
+    const isBusy = status === PinFormStatusEnum.BUSY;
+    const isDisabled = status !== PinFormStatusEnum.READY;
+    const hasError = isNotEmptyString(error);
+    const canDelete = isNotEmptyString(currentInput) && !isDisabled;
+    const isErrorVisible = hasError && !isBusy;
+    const filledDotsCount = hasError || isAccepted ? PIN_LENGTH : currentInput.length;
+    const keypadRowGapClassName = isCompact ? 'gap-y-xl' : 'gap-y-3xl';
+    const footerClassName = isCompact ? 'h-[48px] mb-md' : 'h-[56px] mb-3xl';
+
+    const signalRejection = useEffectEvent(() => {
+        hapticNotification(NotificationFeedbackType.Error);
+        AccessibilityInfo.announceForAccessibility(error ?? '');
+    });
+
+    useEffect(() => {
+        if (hasError && !hadErrorRef.current) {
+            signalRejection();
+        }
+
+        hadErrorRef.current = hasError;
+    }, [hasError]);
 
     return (
-        <View className="flex-1 justify-center" testID={PinFormSelector.Container}>
-            <View className="border border-secondary-corner bg-secondary-background rounded-7xl p-5xl mx-auto mb-7xl">
-                <Icon icon={UserIconNameEnum.Lock} className="text-primary" size={40} />
+        <View className="flex-1" testID={PinFormSelector.Container}>
+            <View className="flex-1 items-center justify-end">
+                {header}
+
+                <View className="mt-xl">
+                    <Shake isEnabled={hasError}>
+                        <PinFormDots filled={filledDotsCount} isError={hasError} isAccepted={isAccepted} />
+                    </Shake>
+                </View>
+
+                <View className="min-h-[40px] mt-lg">
+                    {isBusy ? <ActivityIndicator size="small" colorClassName="accent-secondary-foreground" /> : null}
+
+                    {isErrorVisible ? (
+                        <Animated.Text
+                            entering={FadeIn.duration(PIN_ERROR_FADE_DURATION_MS)}
+                            className="text-sm font-medium text-destructive-foreground text-center"
+                            testID={PinFormSelector.Error}
+                            accessibilityLiveRegion="assertive"
+                        >
+                            {error}
+                        </Animated.Text>
+                    ) : null}
+                </View>
             </View>
 
-            <Text className="text-3xl font-semibold text-primary text-center mb-md" testID={PinFormSelector.Title}>
-                {title}
-            </Text>
-            <Text className="text-md text-secondary-foreground text-center mb-7xl">{description}</Text>
+            <View className={cn('items-center', keypadRowGapClassName)}>
+                {DIGIT_ROWS.map(row => (
+                    <View key={row.join('')} className="flex-row gap-x-7xl">
+                        {row.map(digit => (
+                            <PinFormButton key={digit} digit={digit} onPress={onDigitPress} disabled={isDisabled} />
+                        ))}
+                    </View>
+                ))}
 
-            <Shake isEnabled={isNotEmptyString(error)}>
-                <PinFormDots filled={currentInput.length} />
-            </Shake>
-
-            {isNotEmptyString(error) ? (
-                <Text className="text-sm text-destructive-foreground text-center mt-5xl" testID={PinFormSelector.Error}>
-                    {error}
-                </Text>
-            ) : null}
-
-            <View className="mt-8xl gap-y-lg items-center">
-                <View className="flex-row gap-x-lg">
-                    {['1', '2', '3'].map(digit => (
-                        <PinFormButton key={digit} digit={digit} onPress={onDigitPress} disabled={isLoading} />
-                    ))}
-                </View>
-
-                <View className="flex-row gap-x-lg">
-                    {['4', '5', '6'].map(digit => (
-                        <PinFormButton key={digit} digit={digit} onPress={onDigitPress} disabled={isLoading} />
-                    ))}
-                </View>
-
-                <View className="flex-row gap-x-lg">
-                    {['7', '8', '9'].map(digit => (
-                        <PinFormButton key={digit} digit={digit} onPress={onDigitPress} disabled={isLoading} />
-                    ))}
-                </View>
-
-                <View className="flex-row gap-x-lg items-center">
+                <View className="flex-row gap-x-7xl">
                     {children}
 
-                    <PinFormButton digit="0" onPress={onDigitPress} disabled={isLoading} />
+                    <PinFormButton digit="0" onPress={onDigitPress} disabled={isDisabled} />
 
-                    <HapticPressable
-                        disabled={!canDelete}
-                        onPress={onDeletePress}
-                        testID={PinFormSelector.DeleteButton}
-                        className="flex-1 aspect-square border border-secondary-corner bg-secondary-background rounded-3xl justify-center items-center max-w-23"
-                    >
-                        <Icon icon={UserIconNameEnum.Delete} className="text-primary" size={16} />
-                    </HapticPressable>
+                    <PinFormDeleteButton isVisible={canDelete} onPress={onDeletePress} />
                 </View>
             </View>
+
+            <View className={cn('justify-center', footerClassName)}>{footer}</View>
         </View>
     );
 };
