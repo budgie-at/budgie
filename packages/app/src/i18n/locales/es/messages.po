@@ -2377,6 +2377,10 @@ msgstr "Conectar Monobank"
 msgid "Connection"
 msgstr "Conexión"
 
+#: src/sync/component/bank-integration-import-status/bank-integration-import-status.tsx
+msgid "Connects using statement files"
+msgstr "Se conecta mediante archivos de extractos"
+
 #: ../ledger/src/transaction/service/transaction-transfer.service.ts
 msgid "Consolidated transactions cannot start a deposit"
 msgstr "No se puede abrir un depósito desde transacciones consolidadas"
@@ -4170,6 +4174,10 @@ msgstr "En la autonomía, a precios de hoy"
 msgid "In Shortcuts, add a personal automation with the Transaction trigger, select your cards and choose Run Immediately."
 msgstr "En Atajos, añade una automatización personal con el activador Transacción, selecciona tus tarjetas y elige Ejecutar inmediatamente."
 
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Include {title} in imports"
+msgstr "Incluir {title} en las importaciones"
+
 #: src/runway/component/runway-settings-rows/runway-settings-rows.tsx
 msgid "Include crypto"
 msgstr "Incluir criptomonedas"
@@ -4183,7 +4191,6 @@ msgid "Include crypto in runway"
 msgstr "Incluir cripto en la autonomía"
 
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
-#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Include in file imports"
 msgstr "Incluir en las importaciones de archivos"
 
@@ -4376,6 +4383,10 @@ msgstr "Últimos 7 días"
 #: src/sync/component/resync-window-option-row/resync-window-option-row.tsx
 msgid "Last 90 days"
 msgstr "Últimos 90 días"
+
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Last attempt failed"
+msgstr "El último intento falló"
 
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Last created {lastBackupDate}"
@@ -4654,6 +4665,10 @@ msgstr "Fecha de vencimiento (Opcional)"
 #: src/app/transaction-amount-filter.tsx
 msgid "Maximum amount"
 msgstr "Importe máximo"
+
+#: src/sync/component/resync-window-option-row/resync-window-option-row.tsx
+msgid "May take a few minutes"
+msgstr "Puede tardar unos minutos"
 
 #: src/app/(tabs)/settings/import.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
@@ -5486,6 +5501,10 @@ msgstr "Abrir configuración"
 msgid "Open Shortcuts"
 msgstr "Abrir Shortcuts"
 
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Opens account actions"
+msgstr "Abre las acciones de la cuenta"
+
 #: src/@generic/component/icon-title-field-trigger/icon-title-field-trigger.tsx
 msgid "Opens the icon picker"
 msgstr "Abre el selector de iconos"
@@ -5727,10 +5746,6 @@ msgstr "Pausar"
 #: src/ai/constant/ai-download-card-visuals.constant.ts
 msgid "Paused"
 msgstr "En pausa"
-
-#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
-msgid "Paused until the key is updated"
-msgstr "En pausa hasta que se actualice la clave"
 
 #: src/ai/constant/ai-download-card-visuals.constant.ts
 msgid "Paused: no Wi-Fi"
@@ -7040,10 +7055,13 @@ msgid "Switched-off assets stop syncing. Their history stays."
 msgstr "Los activos desactivados dejan de sincronizarse. Su historial se conserva."
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
-#: src/sync/component/bank-integration-new-account-row/bank-integration-new-account-row.tsx
-#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync"
 msgstr "Sincronización"
+
+#: src/sync/component/bank-integration-new-account-row/bank-integration-new-account-row.tsx
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Sync {title}"
+msgstr "Sincronizar {title}"
 
 #: src/settings/hooks/use-sync-repairs-action.hook.ts
 msgid "Sync data repaired"
@@ -7062,13 +7080,13 @@ msgstr "Sincronización fallida"
 msgid "Sync Failed"
 msgstr "Sincronización fallida"
 
-#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
-msgid "Sync failed · {lastError}"
-msgstr "Error de sincronización · {lastError}"
-
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Sync is off for all accounts"
 msgstr "Sincronización desactivada en todas las cuentas"
+
+#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
+msgid "Sync is off for all assets"
+msgstr "La sincronización está desactivada para todos los activos"
 
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync off"
@@ -7974,10 +7992,6 @@ msgstr "Próximo en este periodo"
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 msgid "Update rule?"
 msgstr "¿Actualizar regla?"
-
-#: src/sync/component/bank-integration-key-card/bank-integration-key-card.tsx
-msgid "Update your API key to resume automatic sync."
-msgstr "Actualiza tu clave API para reanudar la sincronización automática."
 
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "Updated {applied} of {total} transactions."

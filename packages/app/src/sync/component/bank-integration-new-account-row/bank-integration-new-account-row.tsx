@@ -28,6 +28,7 @@ export const BankIntegrationNewAccountRow = ({ preview }: Props) => {
     const { isLoading: isStarting, run } = useSingleFlight();
 
     const rowTestID = BankIntegrationSelector.NewAccountRow(preview.externalId);
+    const { title } = preview;
     const description = getAccountIdentityLabel(preview.currencyCode, preview.iban);
     const icon = preview.type === SyncAccountTypeEnum.JAR ? UserIconNameEnum.PiggyBank : UserIconNameEnum.Wallet;
     const handleToggle = () =>
@@ -58,7 +59,7 @@ export const BankIntegrationNewAccountRow = ({ preview }: Props) => {
                     value={isStarting}
                     disabled={isStarting}
                     onValueChange={handleToggle}
-                    accessibilityLabel={t`Sync`}
+                    accessibilityLabel={t`Sync ${title}`}
                     {...testID(rowTestID, TestIDPartEnum.TOGGLE)}
                 />
             }

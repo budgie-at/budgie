@@ -1,4 +1,4 @@
-import { SyncEntityInterface, SyncStatusEnum, UserIconNameEnum } from '@budgie/contracts';
+import { ExternalSourceEnum, SyncEntityInterface, SyncStatusEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
@@ -50,7 +50,8 @@ export const BankIntegrationStatusPill = ({ syncs }: Props) => {
             message: plural(failedCount, { one: 'Sync failed for # account', other: 'Sync failed for # accounts' })
         }),
         [BankIntegrationSyncStatusEnum.SYNCING]: t`Syncing…`,
-        [BankIntegrationSyncStatusEnum.PAUSED]: t`Sync is off for all accounts`,
+        [BankIntegrationSyncStatusEnum.PAUSED]:
+            integration.provider === ExternalSourceEnum.BINANCE ? t`Sync is off for all assets` : t`Sync is off for all accounts`,
         [BankIntegrationSyncStatusEnum.STALE]: t`Last synced ${relative}`,
         [BankIntegrationSyncStatusEnum.UP_TO_DATE]: isDefined(lastSyncedAt) ? t`Synced ${relative}` : t`Not synced yet`
     };

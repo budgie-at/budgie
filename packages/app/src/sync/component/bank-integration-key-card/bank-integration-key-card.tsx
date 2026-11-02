@@ -15,9 +15,7 @@ export const BankIntegrationKeyCard = () => {
     const { integration } = useBankIntegration();
     const [openKeyModal] = useBankIntegrationKeyModal();
     const { isKeyRejected } = useBankIntegrationAccountPreviewsQuery(integration.id);
-    const footer = isKeyRejected
-        ? t`Update your API key to resume automatic sync.`
-        : t`Budgie syncs automatically and lists new Monobank accounts here as soon as they appear.`;
+    const footer = isKeyRejected ? null : t`Budgie syncs automatically and lists new Monobank accounts here as soon as they appear.`;
     const handlePress = () => void openKeyModal(integration.id);
     const keyLabel = isKeyRejected ? t`Rejected · tap to update` : maskToken(integration.token);
     const keyLabelClassName = isKeyRejected ? 'text-[13px] text-destructive-strong' : 'text-[13px] font-mono text-secondary-foreground';

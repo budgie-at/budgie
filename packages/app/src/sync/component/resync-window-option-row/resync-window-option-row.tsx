@@ -1,7 +1,7 @@
 import { MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
-import { useLingui } from '@lingui/react/macro';
-import { View } from 'react-native';
+import { Trans, useLingui } from '@lingui/react/macro';
+import { Text, View } from 'react-native';
 
 import { ResyncWindowPickerSelector } from '../../../app/resync-window-picker.selector';
 import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
@@ -22,12 +22,19 @@ const WINDOW_LABELS: Record<string, MessageDescriptor> = {
 
 export const ResyncWindowOptionRow = ({ option, onSelect }: Props) => {
     const { t } = useLingui();
+    const subtitle =
+        option.sinceDays === null ? (
+            <Text className="text-[13px] text-secondary-foreground">
+                <Trans>May take a few minutes</Trans>
+            </Text>
+        ) : null;
     const handlePress = () => void onSelect(option.sinceDays);
 
     return (
         <View className="bg-grouped-surface-row">
             <SettingsRow
                 title={t(WINDOW_LABELS[String(option.sinceDays)])}
+                subtitle={subtitle}
                 icon={option.icon}
                 variant="primary"
                 onPress={handlePress}

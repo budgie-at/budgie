@@ -40,7 +40,8 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
     const { balance } = useAccountBalanceQuery(account.id);
     const formatDigits = useDisplayFormatDigits();
     const formatAmount = useFormatInstrumentAmount();
-    const { sync, syncState, switchLabel, description, identityLabel, isToggleVisible } = useBankIntegrationAccountRowState(account);
+    const { sync, isFailed, isFailureDescription, hiddenLabel, switchLabel, description, identityLabel, isToggleVisible } =
+        useBankIntegrationAccountRowState(account);
 
     const rowTestID = BankIntegrationSelector.AccountRow(account.id);
     const handleToggle = (enabled: boolean) =>
@@ -51,11 +52,12 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
                 )
             )
         );
-    const isFailed = syncState === AccountSyncStateEnum.FAILED;
     const subtitleClassName = isFailed ? 'text-destructive-strong' : 'text-secondary-foreground';
-    const subtitlePrefix = isNotEmptyString(identityLabel) ? `${identityLabel} · ` : '';
-    const stateDescription = isNotEmptyString(description) ? (
-        <Text className={cn('text-[13px] leading-[18px]', subtitleClassName)} numberOfLines={1}>
+    const subtitlePrefix = isFailureDescription ? identityLabel : description || identityLabel;
+    const balancePrefix = isNotEmptyString(subtitlePrefix) ? `${subtitlePrefix} · ` : '';
+    const hiddenSuffix = isNotEmptyString(hiddenLabel) ? ` · ${hiddenLabel}` : '';
+    const stateDescription = isFailureDescription ? (
+        <Text className={cn('text-[13px] leading-[18px]', subtitleClassName)} numberOfLines={2}>
             {description}
         </Text>
     ) : null;
@@ -92,16 +94,17 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
                         </Text>
                         {stateDescription}
                         <Text className="text-[13px] leading-[18px] text-secondary-foreground" numberOfLines={1}>
-                            {subtitlePrefix}
+                            {balancePrefix}
                             <ProtectedText
                                 className="text-[13px] text-secondary-foreground"
                                 testID={AccountCardBaseSelector.Balance(account.title, formatDigits(balance))}
                             >
                                 {toTrueMinus(formatAmount(balance, account.instrument.symbol, account.instrument.type))}
                             </ProtectedText>
+                            {hiddenSuffix}
                         </Text>
                     </View>
-                    <Icon icon={UserIconNameEnum.Info} size={22} className="text-secondary-foreground" />
+                    <Icon icon={UserIconNameEnum.Ellipsis} size={18} className="text-secondary-foreground" />
                 </BankIntegrationAccountMenu>
             </View>
             {toggle}
