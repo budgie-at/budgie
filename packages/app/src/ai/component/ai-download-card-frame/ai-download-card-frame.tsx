@@ -1,5 +1,5 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -29,7 +29,9 @@ export const AiDownloadCardFrame = ({ status, testID, subtitle, children }: Prop
             <View className="flex-row items-center gap-x-xl px-3xl py-[16px]">
                 <GroupedListIcon icon={icon} />
                 <View className="min-w-0 flex-1 gap-y-xxs">
-                    <Text className="text-[17px] text-primary">{t`On-device AI`}</Text>
+                    <Text className="text-[17px] text-primary">
+                        <Trans>On-device AI</Trans>
+                    </Text>
                     <Text className="text-[13px] leading-[18px] text-secondary-foreground">{subtitle}</Text>
                 </View>
                 <Text className="text-[17px] font-normal text-secondary-foreground">{stateValue}</Text>

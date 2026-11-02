@@ -3942,10 +3942,14 @@ msgstr "Von {source} an {destination}"
 msgid "From account"
 msgstr "Von Konto"
 
-#: src/app/(main)/import-csv.tsx
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
 msgid "From amount"
 msgstr "Ab Betrag"
+
+#: src/app/(main)/import-csv.tsx
+msgctxt "CSV import source amount column"
+msgid "From amount"
+msgstr "Quellbetrag"
 
 #: src/app/(main)/import-csv.tsx
 msgid "From currency"

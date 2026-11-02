@@ -1,4 +1,4 @@
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
@@ -18,7 +18,11 @@ export const SyncRepairsErrorCard = ({ errorMessage, isLoading, onRefresh }: Pro
     return (
         <GroupedListSection>
             <GroupedListRow
-                title={<Text className="text-destructive-foreground text-[17px]">{t`Could not check sync data`}</Text>}
+                title={
+                    <Text className="text-destructive-foreground text-[17px]">
+                        <Trans>Could not check sync data</Trans>
+                    </Text>
+                }
                 subtitle={
                     <Text testID={SyncRepairsPageSelector.ErrorText} className="text-destructive-foreground text-[13px]" selectable>
                         {errorMessage}

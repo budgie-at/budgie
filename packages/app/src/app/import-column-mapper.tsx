@@ -6,7 +6,6 @@ import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { FormsheetHeader } from '../@generic/component/formsheet-header/formsheet-header';
 import { GroupedListCheckRow } from '../@generic/component/grouped-list-check-row/grouped-list-check-row';
-import { GroupedListRow } from '../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../@generic/component/grouped-list-section/grouped-list-section';
 import { GroupedSurface } from '../@generic/component/grouped-surface/grouped-surface';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
@@ -48,11 +47,11 @@ export default function ImportColumnMapperModal() {
             <ScrollView contentContainerClassName="px-5xl pb-5xl" showsVerticalScrollIndicator={false}>
                 <GroupedListSection>
                     {canClear ? (
-                        <GroupedListRow
+                        <GroupedListCheckRow
                             title={t`None`}
                             onPress={handleClear}
                             testID={ImportColumnMapperModalSelector.ClearSelected}
-                            right={<View />}
+                            isSelected={!isNotEmptyString(currentValue)}
                         />
                     ) : null}
                     {availableHeaders.map(header => (

@@ -1,4 +1,4 @@
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
@@ -30,8 +30,12 @@ export default function SyncRepairsPage() {
     const sources = preview?.sources ?? [];
     const shouldShowEmptyState = !isLoading && !hasError && !hasDuplicates;
     const shouldShowFound = !hasError && (isLoading || hasDuplicates);
-    const footer = t`Budgie removes repeated bank imports and fixes transfers that landed on inactive accounts. Manual transactions are never changed.`;
     const isActionLoading = isRepairing || isLoading;
+    const checkingLabel = (
+        <Text className="text-secondary-foreground text-[17px]">
+            <Trans>Checking</Trans>
+        </Text>
+    );
 
     return (
         <GroupedSurface>
@@ -50,10 +54,7 @@ export default function SyncRepairsPage() {
                                 {isNotEmptyArray(sources) ? (
                                     sources.map(source => <SyncRepairSourceRow key={source.externalSource} {...source} />)
                                 ) : (
-                                    <GroupedListRow
-                                        title={t`Synced data`}
-                                        right={<Text className="text-secondary-foreground text-[17px]">{t`Checking`}</Text>}
-                                    />
+                                    <GroupedListRow title={t`Synced data`} right={checkingLabel} />
                                 )}
                             </LoadingContent>
                             <GroupedListRow
@@ -71,7 +72,12 @@ export default function SyncRepairsPage() {
                             />
                         </GroupedListSection>
                     ) : null}
-                    <Text className="text-secondary-foreground px-3xl text-[13px] leading-[18px]">{footer}</Text>
+                    <Text className="text-secondary-foreground px-3xl text-[13px] leading-[18px]">
+                        <Trans>
+                            Budgie removes repeated bank imports and fixes transfers that landed on inactive accounts. Manual transactions
+                            are never changed.
+                        </Trans>
+                    </Text>
                     <MenuSpacer />
                 </View>
             </CollapsibleChromePage>

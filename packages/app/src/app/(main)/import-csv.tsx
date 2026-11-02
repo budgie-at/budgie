@@ -20,7 +20,7 @@ import { useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { BottomChromeInsetProvider, ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
-import { getErrorMessage, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { GroupedListSection } from '../../@generic/component/grouped-list-section/grouped-list-section';
 import { GroupedSurface } from '../../@generic/component/grouped-surface/grouped-surface';
@@ -50,7 +50,7 @@ const IMPORT_COLUMN_FIELDS = [
     { name: 'externalId', label: msg`External ID`, isRequired: false },
     { name: 'fromAccount', label: msg`From account`, isRequired: false },
     { name: 'fromCurrency', label: msg`From currency`, isRequired: false },
-    { name: 'fromAmount', label: msg`From amount`, isRequired: false },
+    { name: 'fromAmount', label: msg({ message: 'From amount', context: 'CSV import source amount column' }), isRequired: false },
     { name: 'comment', label: msg`Comment`, isRequired: false },
     { name: 'mcc', label: msg`MCC`, isRequired: false }
 ] as const;
@@ -107,6 +107,10 @@ export default function ImportScreen() {
     const selectedHeaders = Object.values(formValues).filter(isNotEmptyString);
 
     const handlePresetSelect = (preset: ImportPresetEnum | undefined) => {
+        if (!isDefined(preset) && !isDefined(selectedPreset)) {
+            return;
+        }
+
         setSelectedPreset(preset);
         reset(isNotEmptyString(preset) ? IMPORT_PRESETS[preset] : matchImportColumns(headers, samples));
     };

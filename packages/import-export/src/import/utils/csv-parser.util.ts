@@ -31,7 +31,6 @@ export const parseCsvSample = (csvText: string) =>
     Effect.callback<Record<string, readonly string[]>, Error>(resume => {
         Papa.parse<Record<string, string>>(csvText, {
             header: true,
-            preview: 20,
             skipEmptyLines: true,
             complete: ({ data, meta }: ParseResult<Record<string, string>>) => {
                 const samples: Record<string, readonly string[]> = {};

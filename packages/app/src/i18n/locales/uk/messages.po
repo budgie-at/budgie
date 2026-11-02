@@ -3942,10 +3942,14 @@ msgstr "З {source} на {destination}"
 msgid "From account"
 msgstr "З рахунку"
 
-#: src/app/(main)/import-csv.tsx
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
 msgid "From amount"
 msgstr "Від суми"
+
+#: src/app/(main)/import-csv.tsx
+msgctxt "CSV import source amount column"
+msgid "From amount"
+msgstr "Сума відправника"
 
 #: src/app/(main)/import-csv.tsx
 msgid "From currency"

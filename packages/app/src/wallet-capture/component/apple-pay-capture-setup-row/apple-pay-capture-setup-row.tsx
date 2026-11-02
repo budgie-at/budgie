@@ -16,7 +16,7 @@ export const ApplePayCaptureSetupRow = ({ title, description, index }: Props) =>
     return (
         <GroupedListRow
             title={title}
-            subtitle={description}
+            subtitle={<Text className="text-[13px] leading-[18px] text-secondary-foreground">{description}</Text>}
             left={
                 <View
                     accessible

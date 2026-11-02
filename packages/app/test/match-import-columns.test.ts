@@ -1,5 +1,7 @@
 import { describe, expect, it } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
+import { parseCsvSample } from '../../import-export/src/import/utils/csv-parser.util';
 import { isImportColumnNameInformative } from '../src/import/utils/is-import-column-name-informative.util';
 import { matchImportColumns } from '../src/import/utils/match-import-columns.util';
 
@@ -82,6 +84,26 @@ describe('matchImportColumns', () => {
 });
 
 describe('matchImportColumns sample inference', () => {
+    it.effect('rejects an amount column with an unsafe value after row 20', () =>
+        Effect.gen(function* () {
+            const samples = yield* parseCsvSample(['Amount', ...Array.from({ length: 24 }, () => ' 12.50 '), '"1,234.56"'].join('\n'));
+
+            expect(matchImportColumns(['Amount'], samples).toAmount).toBe('');
+            expect(samples['Amount']).toHaveLength(25);
+            expect(samples['Amount'][0]).toBe('12.50');
+        })
+    );
+
+    it.effect('rejects a date column with an unsupported value after row 20', () =>
+        Effect.gen(function* () {
+            const samples = yield* parseCsvSample(['Date', ...Array.from({ length: 24 }, () => '2026-11-02'), '25.11.2026'].join('\n'));
+
+            expect(matchImportColumns(['Date'], samples).operatedAt).toBe('');
+            expect(samples['Date']).toHaveLength(25);
+            expect(samples['Date'][0]).toBe('2026-11-02');
+        })
+    );
+
     it.each(['Betrag', 'Amount', 'fromAmount', 'Quellbetrag'])('rejects unsafe name-matched amount values for %s', header => {
         expect(matchImportColumns([header], { [header]: ['1.234,56', '12,50'] })).toMatchObject({ toAmount: '', fromAmount: '' });
     });
