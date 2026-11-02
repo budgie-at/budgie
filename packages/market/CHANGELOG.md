@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.147.0](https://github.com/budgie-at/budgie/compare/v6.146.1...v6.147.0) (2026-11-02)
+
+### Bug Fixes
+
+* **app:** harden crypto ranges, daily change and return against stale and partial data ([28c6d69](https://github.com/budgie-at/budgie/commit/28c6d695b6faa3605e35fd1ac526b9be9e413545))
+* **market:** value crypto rows with the net-worth exchange rate ([c74b1d0](https://github.com/budgie-at/budgie/commit/c74b1d02dc2f1e46d83bbe9458a470678ef17438))
+* **market:** value each crypto by its own price and cost only known lots ([4c92a18](https://github.com/budgie-at/budgie/commit/4c92a186315c04463f662e17ad76ddc8262ea2cd))
+
+
 # [6.145.0](https://github.com/budgie-at/budgie/compare/v6.144.1...v6.145.0) (2026-11-02)
 
 **Note:** Version bump only for package @budgie/market
