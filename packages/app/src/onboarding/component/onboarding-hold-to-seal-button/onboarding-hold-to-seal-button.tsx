@@ -35,6 +35,7 @@ export const OnboardingHoldToSealButton = ({ label, confirmMessage, isDisabled, 
     const progress = useSharedValue(0);
 
     const reducedMotion = useReducedMotion();
+    const visibleLabel = reducedMotion ? t`Seal with this PIN` : label;
     const [, hapticImpact] = useVibration();
 
     const handleTick = () => void hapticImpact(ImpactFeedbackStyle.Soft);
@@ -43,7 +44,7 @@ export const OnboardingHoldToSealButton = ({ label, confirmMessage, isDisabled, 
         appRuntime.runFork(
             Effect.gen(function* () {
                 const isConfirmed = yield* confirmAlert({
-                    title: label,
+                    title: visibleLabel,
                     message: confirmMessage,
                     confirmText: t`Seal`,
                     cancelText: t`Cancel`
@@ -96,7 +97,6 @@ export const OnboardingHoldToSealButton = ({ label, confirmMessage, isDisabled, 
     const accessibilityState = { disabled: isDisabled, busy: isDisabled };
     const gesture = reducedMotion ? tapGesture : holdGesture;
     const accessibilityHint = reducedMotion ? t`Double-tap to seal` : t`Press and hold to seal`;
-    const visibleLabel = reducedMotion ? t`Seal with this PIN` : label;
 
     return (
         <GestureDetector gesture={gesture}>
