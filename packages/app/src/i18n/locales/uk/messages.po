@@ -636,7 +636,7 @@ msgstr "{projectedAmount} · {gapAmount} менше"
 
 #: src/market-data/component/currency-market-account-row/currency-market-account-row.tsx
 msgid "{providerName} · No cost basis"
-msgstr "{providerName} · Без вартості придбання"
+msgstr "{providerName} · Вартість придбання невідома"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "{providerName} sync"
@@ -1515,6 +1515,10 @@ msgstr "Структура активів"
 msgid "At {rateLabel} per {instrumentCode}"
 msgstr "По {rateLabel} за {instrumentCode}"
 
+#: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
+msgid "At ≈ {rateLabel} per {instrumentCode}"
+msgstr "За ≈ {rateLabel} за {instrumentCode}"
+
 #: src/market-data/component/currency-market-position/currency-market-position.tsx
 msgid "At last known price"
 msgstr "За останньою відомою ціною"
@@ -1526,6 +1530,10 @@ msgstr "За останньою відомою ціною · на {coveredAmount
 #: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
 msgid "At last known price, {rateLabel} per {instrumentCode}"
 msgstr "За останньою відомою ціною, {rateLabel} за {instrumentCode}"
+
+#: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
+msgid "At last known price, ≈ {rateLabel} per {instrumentCode}"
+msgstr "За останньою відомою ціною, ≈ {rateLabel} за {instrumentCode}"
 
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
@@ -3217,8 +3225,8 @@ msgid "down {changeShare} on {staleDate}"
 msgstr "знизилась на {changeShare} {staleDate}"
 
 #: src/account/component/account-details-market-link/account-details-market-link.tsx
-msgid "down {changeShare} today"
-msgstr "знизилась на {changeShare} сьогодні"
+msgid "down {changeShare} over the last 24 hours"
+msgstr "знизилась на {changeShare} за останні 24 години"
 
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "Download {remaining} GB"
@@ -7829,8 +7837,8 @@ msgid "up {changeShare} on {staleDate}"
 msgstr "зросла на {changeShare} {staleDate}"
 
 #: src/account/component/account-details-market-link/account-details-market-link.tsx
-msgid "up {changeShare} today"
-msgstr "зросла на {changeShare} сьогодні"
+msgid "up {changeShare} over the last 24 hours"
+msgstr "зросла на {changeShare} за останні 24 години"
 
 #: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
@@ -7959,7 +7967,7 @@ msgstr "Очікує на ключ"
 
 #: src/market-data/component/currency-market-price-hero/currency-market-price-hero.tsx
 msgid "Waiting for the first market quote"
-msgstr "Очікуємо першу ринкову котирувку"
+msgstr "Очікуємо перше ринкове котирування"
 
 #: src/app/(main)/create-account/index.tsx
 msgid "Wallets and exchange balances"

@@ -1516,6 +1516,10 @@ msgstr "Asset mix"
 msgid "At {rateLabel} per {instrumentCode}"
 msgstr "At {rateLabel} per {instrumentCode}"
 
+#: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
+msgid "At ≈ {rateLabel} per {instrumentCode}"
+msgstr "At ≈ {rateLabel} per {instrumentCode}"
+
 #: src/market-data/component/currency-market-position/currency-market-position.tsx
 msgid "At last known price"
 msgstr "At last known price"
@@ -1527,6 +1531,10 @@ msgstr "At last known price · on the {coveredAmountWithCode} with known cost"
 #: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
 msgid "At last known price, {rateLabel} per {instrumentCode}"
 msgstr "At last known price, {rateLabel} per {instrumentCode}"
+
+#: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
+msgid "At last known price, ≈ {rateLabel} per {instrumentCode}"
+msgstr "At last known price, ≈ {rateLabel} per {instrumentCode}"
 
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
@@ -3218,8 +3226,8 @@ msgid "down {changeShare} on {staleDate}"
 msgstr "down {changeShare} on {staleDate}"
 
 #: src/account/component/account-details-market-link/account-details-market-link.tsx
-msgid "down {changeShare} today"
-msgstr "down {changeShare} today"
+msgid "down {changeShare} over the last 24 hours"
+msgstr "down {changeShare} over the last 24 hours"
 
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "Download {remaining} GB"
@@ -7830,8 +7838,8 @@ msgid "up {changeShare} on {staleDate}"
 msgstr "up {changeShare} on {staleDate}"
 
 #: src/account/component/account-details-market-link/account-details-market-link.tsx
-msgid "up {changeShare} today"
-msgstr "up {changeShare} today"
+msgid "up {changeShare} over the last 24 hours"
+msgstr "up {changeShare} over the last 24 hours"
 
 #: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx

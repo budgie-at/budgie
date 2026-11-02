@@ -1,18 +1,21 @@
-const MAX_FRACTION_DIGITS = 10;
-const CENTS = 100;
+import { roundHalfExpand } from './round-half-expand.util';
 
-const toCents = (value: number): number => Math.round(value * CENTS);
+const MAX_FRACTION_DIGITS = 18;
+const MONEY_FRACTION_DIGITS = 2;
 
-const roundToDigits = (value: number, digits: number): number => Number(value.toFixed(digits));
+export const getReconcilingPriceFractionDigits = (rate: number, quantities: readonly number[], minDigits: number): number | null => {
+    for (let digits = minDigits; digits <= MAX_FRACTION_DIGITS; digits += 1) {
+        const shownRate = roundHalfExpand(rate, digits);
 
-export const getReconcilingPriceFractionDigits = (rate: number, quantities: readonly number[], minDigits: number): number => {
-    for (let digits = minDigits; digits < MAX_FRACTION_DIGITS; digits += 1) {
-        const shownRate = roundToDigits(rate, digits);
-
-        if (quantities.every(quantity => toCents(quantity * shownRate) === toCents(quantity * rate))) {
+        if (
+            quantities.every(
+                quantity =>
+                    roundHalfExpand(quantity * shownRate, MONEY_FRACTION_DIGITS) === roundHalfExpand(quantity * rate, MONEY_FRACTION_DIGITS)
+            )
+        ) {
             return digits;
         }
     }
 
-    return MAX_FRACTION_DIGITS;
+    return null;
 };

@@ -67,8 +67,8 @@ export const CurrencyMarketChart = ({ prices, selectedIndex, rangeLabel, startLa
     const { width: windowWidth } = useWindowDimensions();
     const values = prices.map(price => price.price);
     const [width, setWidth] = useState(windowWidth - SCREEN_PADDING_X);
-    const accessibilityProps = useMarketChartAccessibility(prices, rangeLabel, selectedIndex, onScrub);
-    const { activeIndex, panGesture } = useMarketChartScrub(width, values.length, onScrub);
+    const { activeIndex, panGesture, handleSelect } = useMarketChartScrub(width, values.length, onScrub);
+    const accessibilityProps = useMarketChartAccessibility(prices, rangeLabel, selectedIndex, handleSelect);
     const geometry = buildMarketChartGeometry(values, width);
     const tone = TONE_STYLES[geometry.isFlat ? MarketChartToneEnum.NEUTRAL : getMarketChartTone(values)];
     const lineColor = useCSSVariable(tone.colorVariable);

@@ -1,6 +1,6 @@
 import { Gesture } from 'react-native-gesture-handler';
-import { useAnimatedReaction, useSharedValue } from 'react-native-reanimated';
-import { scheduleOnRN } from 'react-native-worklets';
+import { useSharedValue } from 'react-native-reanimated';
+import { scheduleOnRN, scheduleOnUI } from 'react-native-worklets';
 
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { MARKET_CHART_PADDING_X } from '../constant/market-chart-padding-x.constant';
@@ -30,28 +30,30 @@ export const useMarketChartScrub = (width: number, count: number, onScrub: (inde
     const [, , hapticSelection] = useVibration();
     const activeIndex = useSharedValue(NO_INDEX);
 
-    useAnimatedReaction(
-        () => activeIndex.get(),
-        (current, previous) => {
-            if (current !== previous) {
-                scheduleOnRN(onScrub, current === NO_INDEX ? null : current);
-            }
+    const selectIndex = (index: number) => {
+        'worklet';
+
+        if (activeIndex.get() !== index) {
+            activeIndex.set(index);
+            scheduleOnRN(onScrub, index === NO_INDEX ? null : index);
         }
-    );
+    };
+
+    const handleSelect = (index: number) => void scheduleOnUI(selectIndex, index);
 
     const panGesture = Gesture.Pan()
         .activeOffsetX(ACTIVE_OFFSET_X)
         .failOffsetY(FAIL_OFFSET_Y)
         .onStart(event => {
             scheduleOnRN(hapticSelection);
-            activeIndex.set(getMarketChartIndex(event.x, width, count));
+            selectIndex(getMarketChartIndex(event.x, width, count));
         })
         .onUpdate(event => {
-            activeIndex.set(getMarketChartIndex(event.x, width, count));
+            selectIndex(getMarketChartIndex(event.x, width, count));
         })
         .onFinalize(() => {
-            activeIndex.set(NO_INDEX);
+            selectIndex(NO_INDEX);
         });
 
-    return { activeIndex, panGesture };
+    return { activeIndex, panGesture, handleSelect };
 };

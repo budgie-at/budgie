@@ -1,9 +1,12 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { getMarketPriceFractionDigits } from '../../utils/get-market-price-fraction-digits.util';
 import { getReconcilingPriceFractionDigits } from '../../utils/get-reconciling-price-fraction-digits.util';
 import { CurrencyMarketPageSelector } from '../currency-market-page/currency-market-page.selector';
 import { CurrencyMarketPositionRow } from '../currency-market-position-row/currency-market-position-row';
@@ -22,13 +25,15 @@ export const CurrencyMarketValueRow = ({ balance, positionAmount, valuationRate,
     const { t } = useLingui();
     const { symbol } = useAtomValue(defaultInstrumentAtom);
     const formatMoney = useDisplayFormatDigits();
-    const formatRate = useFormatDigits(
-        MIN_FRACTION_DIGITS,
-        getReconcilingPriceFractionDigits(valuationRate, [balance, positionAmount], MIN_FRACTION_DIGITS)
-    );
+    const reconcilingDigits = getReconcilingPriceFractionDigits(valuationRate, [balance, positionAmount], MIN_FRACTION_DIGITS);
+    const formatRate = useFormatDigits(MIN_FRACTION_DIGITS, reconcilingDigits ?? getMarketPriceFractionDigits(valuationRate));
 
     const rateLabel = formatRate(valuationRate, symbol);
-    const subtitle = isStale ? t`At last known price, ${rateLabel} per ${instrumentCode}` : t`At ${rateLabel} per ${instrumentCode}`;
+    const exactSubtitle = isStale ? t`At last known price, ${rateLabel} per ${instrumentCode}` : t`At ${rateLabel} per ${instrumentCode}`;
+    const approximateSubtitle = isStale
+        ? t`At last known price, ≈ ${rateLabel} per ${instrumentCode}`
+        : t`At ≈ ${rateLabel} per ${instrumentCode}`;
+    const subtitle = isDefined(reconcilingDigits) ? exactSubtitle : approximateSubtitle;
 
     return (
         <CurrencyMarketPositionRow

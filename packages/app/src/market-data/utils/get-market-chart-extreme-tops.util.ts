@@ -1,7 +1,8 @@
-import { MARKET_CHART_LABEL_HEIGHT } from '../constant/market-chart-label-height.constant';
 import { MARKET_CHART_PLOT_HEIGHT } from '../constant/market-chart-plot-height.constant';
 
 import type { MarketChartExtremeTopsInterface } from '../interface/market-chart-extreme-tops.interface';
+
+const MARKET_CHART_LABEL_HEIGHT = 16;
 
 const LABEL_GAP = 6;
 

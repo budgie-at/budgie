@@ -35,7 +35,9 @@ export const CurrencyMarketReturnRow = ({ position, valuationRate, balance, inst
 
     const cryptoReturn = calculateCryptoReturn(position, valuationRate, balance);
     const sign = getMarketChangeSign(cryptoReturn?.profit ?? 0);
-    const percentLabel = isDefined(cryptoReturn?.percent) ? ` (${sign}${formatPercent(Math.abs(cryptoReturn.percent))}%)` : '';
+    const percentLabel = isDefined(cryptoReturn?.percent)
+        ? ` (${getMarketChangeSign(cryptoReturn.percent)}${formatPercent(Math.abs(cryptoReturn.percent))}%)`
+        : '';
     const returnLabel = isDefined(cryptoReturn)
         ? `${sign}${formatMoney(Math.abs(cryptoReturn.profit), symbol)}${percentLabel}`
         : t`Unavailable`;

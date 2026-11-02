@@ -1,6 +1,7 @@
 import { InstrumentMarketDataJobStatusEnum } from '@budgie/contracts';
 
-export const isMarketHistoryLoading = (progress: {
-    readonly status: InstrumentMarketDataJobStatusEnum | null;
-    readonly isComplete: boolean;
-}): boolean => progress.status !== InstrumentMarketDataJobStatusEnum.FAILED && !progress.isComplete;
+import type { useInstrumentMarketDataProgressQuery } from '../query/use-instrument-market-data-progress.query';
+
+export const isMarketHistoryLoading = (
+    progress: Pick<ReturnType<typeof useInstrumentMarketDataProgressQuery>, 'status' | 'isComplete'>
+): boolean => progress.status !== InstrumentMarketDataJobStatusEnum.FAILED && !progress.isComplete;

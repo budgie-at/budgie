@@ -1515,6 +1515,10 @@ msgstr "Composición de activos"
 msgid "At {rateLabel} per {instrumentCode}"
 msgstr "A {rateLabel} por {instrumentCode}"
 
+#: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
+msgid "At ≈ {rateLabel} per {instrumentCode}"
+msgstr "A ≈ {rateLabel} por {instrumentCode}"
+
 #: src/market-data/component/currency-market-position/currency-market-position.tsx
 msgid "At last known price"
 msgstr "Al último precio conocido"
@@ -1526,6 +1530,10 @@ msgstr "Al último precio conocido · sobre los {coveredAmountWithCode} con cost
 #: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
 msgid "At last known price, {rateLabel} per {instrumentCode}"
 msgstr "Al último precio conocido, {rateLabel} por {instrumentCode}"
+
+#: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
+msgid "At last known price, ≈ {rateLabel} per {instrumentCode}"
+msgstr "Al último precio conocido, ≈ {rateLabel} por {instrumentCode}"
 
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
@@ -3217,8 +3225,8 @@ msgid "down {changeShare} on {staleDate}"
 msgstr "baja {changeShare} el {staleDate}"
 
 #: src/account/component/account-details-market-link/account-details-market-link.tsx
-msgid "down {changeShare} today"
-msgstr "baja {changeShare} hoy"
+msgid "down {changeShare} over the last 24 hours"
+msgstr "bajó {changeShare} en las últimas 24 horas"
 
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "Download {remaining} GB"
@@ -7829,8 +7837,8 @@ msgid "up {changeShare} on {staleDate}"
 msgstr "sube {changeShare} el {staleDate}"
 
 #: src/account/component/account-details-market-link/account-details-market-link.tsx
-msgid "up {changeShare} today"
-msgstr "sube {changeShare} hoy"
+msgid "up {changeShare} over the last 24 hours"
+msgstr "subió {changeShare} en las últimas 24 horas"
 
 #: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx

@@ -636,7 +636,7 @@ msgstr "{projectedAmount} · {gapAmount} darunter"
 
 #: src/market-data/component/currency-market-account-row/currency-market-account-row.tsx
 msgid "{providerName} · No cost basis"
-msgstr "{providerName} · Keine Anschaffungskosten"
+msgstr "{providerName} · Anschaffungskosten unbekannt"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "{providerName} sync"
@@ -1515,6 +1515,10 @@ msgstr "Vermögensaufteilung"
 msgid "At {rateLabel} per {instrumentCode}"
 msgstr "Zu {rateLabel} pro {instrumentCode}"
 
+#: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
+msgid "At ≈ {rateLabel} per {instrumentCode}"
+msgstr "Zu ≈ {rateLabel} pro {instrumentCode}"
+
 #: src/market-data/component/currency-market-position/currency-market-position.tsx
 msgid "At last known price"
 msgstr "Zum letzten bekannten Kurs"
@@ -1526,6 +1530,10 @@ msgstr "Zum letzten bekannten Kurs · auf die {coveredAmountWithCode} mit bekann
 #: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
 msgid "At last known price, {rateLabel} per {instrumentCode}"
 msgstr "Zum letzten bekannten Kurs, {rateLabel} pro {instrumentCode}"
+
+#: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
+msgid "At last known price, ≈ {rateLabel} per {instrumentCode}"
+msgstr "Zum letzten bekannten Kurs, ≈ {rateLabel} pro {instrumentCode}"
 
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
@@ -3217,8 +3225,8 @@ msgid "down {changeShare} on {staleDate}"
 msgstr "am {staleDate} {changeShare} gefallen"
 
 #: src/account/component/account-details-market-link/account-details-market-link.tsx
-msgid "down {changeShare} today"
-msgstr "heute {changeShare} gefallen"
+msgid "down {changeShare} over the last 24 hours"
+msgstr "in den letzten 24 Stunden um {changeShare} gefallen"
 
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "Download {remaining} GB"
@@ -7829,8 +7837,8 @@ msgid "up {changeShare} on {staleDate}"
 msgstr "am {staleDate} {changeShare} gestiegen"
 
 #: src/account/component/account-details-market-link/account-details-market-link.tsx
-msgid "up {changeShare} today"
-msgstr "heute {changeShare} gestiegen"
+msgid "up {changeShare} over the last 24 hours"
+msgstr "in den letzten 24 Stunden um {changeShare} gestiegen"
 
 #: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx

@@ -1,14 +1,16 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
+import { cva } from 'class-variance-authority';
 import { parseISO } from 'date-fns/parseISO';
 import { router } from 'expo-router';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { CryptoCurrencyIcon } from '../../../@generic/component/crypto-currency-icon/crypto-currency-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { AccountDetailsSelector } from '../../../app/(main)/account/[id]/account-details.selector';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
@@ -24,18 +26,23 @@ interface Props {
 }
 
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
+const contentVariants = cva('min-w-0 shrink gap-x-md gap-y-xs py-md', {
+    variants: { stacked: { true: 'items-start', false: 'flex-row items-center' } }
+});
 
 export const AccountDetailsMarketLink = ({ instrument }: Props) => {
     const { t } = useLingui();
     const { priceLabel, change, changeShare, priceDate } = useAccountDetailsMarketSummary(instrument.id);
     const { formatMonthAndDay } = useFormatDate();
 
+    const isStacked = useIsAccessibilityTextSize();
+
     const isUp = isDefined(change) && change >= 0;
     const marketName = instrument.name;
     const staleDate = isDefined(priceDate) && isMarketPriceStale(priceDate) ? formatMonthAndDay(parseISO(priceDate)) : null;
-    const todayDirection = isUp ? t`up ${changeShare} today` : t`down ${changeShare} today`;
+    const dailyDirection = isUp ? t`up ${changeShare} over the last 24 hours` : t`down ${changeShare} over the last 24 hours`;
     const staleDirection = isUp ? t`up ${changeShare} on ${staleDate}` : t`down ${changeShare} on ${staleDate}`;
-    const direction = isDefined(staleDate) ? staleDirection : todayDirection;
+    const direction = isDefined(staleDate) ? staleDirection : dailyDirection;
     const accessibilityLabel = isDefined(changeShare)
         ? t`${marketName} market, ${priceLabel}, ${direction}`
         : t`${marketName} market, ${priceLabel}`;
@@ -49,24 +56,29 @@ export const AccountDetailsMarketLink = ({ instrument }: Props) => {
             accessible
             accessibilityRole="button"
             accessibilityLabel={accessibilityLabel}
-            className="min-h-[44px] flex-row items-center gap-x-md self-center rounded-full bg-surface-row px-xl active:opacity-70"
+            className="min-h-[44px] max-w-full flex-row items-center gap-x-md self-center rounded-full bg-surface-row px-xl active:opacity-70"
             style={CONTINUOUS_CORNERS}
             testID={AccountDetailsSelector.MarketLink}
             onPress={handlePress}
         >
             <CryptoCurrencyIcon code={instrument.code} size={20} />
-            <Text className="text-[15px] font-medium text-primary" numberOfLines={1}>
-                {instrument.name}
-            </Text>
-            <Text className="text-[15px] text-secondary-foreground tabular-nums" numberOfLines={1}>
-                {priceLabel}
-            </Text>
-            {isDefined(changeShare) ? (
-                <Text numberOfLines={1}>
-                    <Text className={cn('text-[15px] font-semibold tabular-nums', changeToneClassName)}>{changeLabel}</Text>
-                    <Text className="text-[13px] text-secondary-foreground"> {isDefined(staleDate) ? staleDate : <Trans>24h</Trans>}</Text>
+            <View className={contentVariants({ stacked: isStacked })}>
+                <Text className="shrink text-[15px] font-medium text-primary" numberOfLines={1}>
+                    {instrument.name}
                 </Text>
-            ) : null}
+                <Text className="text-[15px] text-secondary-foreground tabular-nums" numberOfLines={1}>
+                    {priceLabel}
+                </Text>
+                {isDefined(changeShare) ? (
+                    <Text numberOfLines={1}>
+                        <Text className={cn('text-[15px] font-semibold tabular-nums', changeToneClassName)}>{changeLabel}</Text>
+                        <Text className="text-[13px] text-secondary-foreground">
+                            {' '}
+                            {isDefined(staleDate) ? staleDate : <Trans>24h</Trans>}
+                        </Text>
+                    </Text>
+                ) : null}
+            </View>
             <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
         </HapticPressable>
     );
