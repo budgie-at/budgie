@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.147.0](https://github.com/budgie-at/budgie/compare/v6.146.1...v6.147.0) (2026-11-02)
+
+### Bug Fixes
+
+* **market:** value crypto rows with the net-worth exchange rate ([c74b1d0](https://github.com/budgie-at/budgie/commit/c74b1d02dc2f1e46d83bbe9458a470678ef17438))
+
+
 # [6.145.0](https://github.com/budgie-at/budgie/compare/v6.144.1...v6.145.0) (2026-11-02)
 
 ### Features

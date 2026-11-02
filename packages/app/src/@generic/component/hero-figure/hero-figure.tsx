@@ -8,6 +8,7 @@ import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
 import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
 import { MAX_FONT_SIZE_MULTIPLIER } from '../../constant/max-font-size-multiplier.constant';
+import { PROTECTED_HERO_PLACEHOLDER } from '../../constant/protected-hero-placeholder.constant';
 import { useIsAmountProtected } from '../../hook/use-is-amount-protected.hook';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { cn } from '../../utils/cn.util';
@@ -24,7 +25,6 @@ interface Props {
 }
 
 const LTR_STYLE = { direction: 'ltr' } as const;
-const PROTECTED_HERO_PLACEHOLDER = '••••••';
 
 export const HeroFigure = ({ amount, currencySymbol, variant, unit = '', prefix = '', decimalPlaces, testID }: Props) => {
     const isAmountProtected = useIsAmountProtected();

@@ -1,3 +1,4 @@
+import { AccountTypeEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
@@ -48,6 +49,7 @@ export const InstitutionDetailsPage = ({ integration, institution, balancesByAcc
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const displayTotal = Number(institution.total.toFixed(decimalPlaces)) === 0 ? 0 : institution.total;
+    const totalAccount = { type: AccountTypeEnum.BANK, instrument: defaultInstrument };
     const isStaticHeader = useIsStaticAccountDetailsHeader();
     const titleDescriptor = BANK_PROVIDER_TITLE[institution.provider];
     const title = getBankIntegrationTitle(
@@ -57,7 +59,7 @@ export const InstitutionDetailsPage = ({ integration, institution, balancesByAcc
     );
     const contextValue = { integration, capabilities: getBankIntegrationCapabilities(integration) };
     const headerTitle = isStaticHeader ? (
-        <AccountDetailsStaticTitle title={title} balance={displayTotal} instrumentSymbol={defaultInstrument.symbol} />
+        <AccountDetailsStaticTitle title={title} balance={displayTotal} account={totalAccount} />
     ) : (
         <AccountDetailsTitle title={title} />
     );
@@ -85,7 +87,7 @@ export const InstitutionDetailsPage = ({ integration, institution, balancesByAcc
                                 collapsedTitle={null}
                             />
                             {headerTitle}
-                            <AccountDetailsHeroBalance balance={displayTotal} instrumentSymbol={defaultInstrument.symbol} />
+                            <AccountDetailsHeroBalance balance={displayTotal} account={totalAccount} />
                         </ScreenChromeFrame>
                     </ScreenChromeThemeProvider>
                 </BankIntegrationContext.Provider>
