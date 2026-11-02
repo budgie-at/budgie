@@ -42,13 +42,12 @@ export const CategorizeInboxPaymentsScreen = ({ clusterKey }: Props) => {
             <CategorizeInboxScreenChrome title={<CategorizeInboxNavTitle>{t`Choose payments`}</CategorizeInboxNavTitle>}>
                 <CategorizeInboxScreenScroll>
                     <CategorizeInboxPaymentsSummary cluster={cluster} />
+                    <Text className="text-secondary-foreground px-3xl pb-xl text-[13px] leading-[17px]">
+                        <Trans>Unselected payments stay in your inbox.</Trans>
+                    </Text>
 
                     <CategorizeInboxPaymentsSelectAll cluster={cluster} />
                     <CategorizeInboxOptionCard>{paymentRows}</CategorizeInboxOptionCard>
-
-                    <Text className="text-secondary-foreground px-3xl pt-md text-[13px]">
-                        <Trans>Unchecked payments stay in your inbox.</Trans>
-                    </Text>
                 </CategorizeInboxScreenScroll>
 
                 <CategorizeInboxPaymentsBar cluster={cluster} />

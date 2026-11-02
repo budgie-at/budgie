@@ -1,10 +1,11 @@
 import { CategorizeInboxSectionEnum } from '@budgie/categorization';
 import { useLingui } from '@lingui/react/macro';
 import { Link } from 'expo-router';
-import { View } from 'react-native';
+import { useWindowDimensions, View } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { testID } from '../../../@generic/utils/test-id.util';
+import { CATEGORIZE_INBOX_STACKED_FONT_SCALE } from '../../constant/categorize-inbox-stacked-font-scale.constant';
 import { CategorizeInboxCardRow } from '../categorize-inbox-card-row/categorize-inbox-card-row';
 import { CategorizeInboxGroupRowActionPill } from '../categorize-inbox-group-row-action-pill/categorize-inbox-group-row-action-pill';
 import { CategorizeInboxGroupRowBody } from '../categorize-inbox-group-row-body/categorize-inbox-group-row-body';
@@ -26,10 +27,16 @@ interface Props {
 
 export const CategorizeInboxGroupRow = ({ cluster, position }: Props) => {
     const { t } = useLingui();
+    const { fontScale } = useWindowDimensions();
 
     const { key, section } = cluster;
     const isCash = section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS;
     const hasAction = isCash || section === CategorizeInboxSectionEnum.CONFIDENT;
+
+    const rowClassName =
+        hasAction && fontScale < CATEGORIZE_INBOX_STACKED_FONT_SCALE
+            ? 'min-h-[64px] flex-row items-center gap-x-lg px-3xl py-md active:opacity-70'
+            : 'min-h-[64px] flex-row items-center gap-x-lg px-3xl py-xl active:opacity-70';
 
     const href = { pathname: '/categorize/group/[key]', params: { key } } as const;
     const actionTitle = isCash ? t`To cash` : t({ message: 'File', context: 'Categorize action' });
@@ -52,7 +59,7 @@ export const CategorizeInboxGroupRow = ({ cluster, position }: Props) => {
             <View>
                 <Link href={href} asChild>
                     <HapticPressable
-                        className="min-h-[64px] flex-row items-center gap-x-lg px-3xl py-xl active:opacity-70"
+                        className={rowClassName}
                         accessibilityRole="link"
                         {...testID(CategorizeInboxGroupRowSelector.Row, key)}
                     >

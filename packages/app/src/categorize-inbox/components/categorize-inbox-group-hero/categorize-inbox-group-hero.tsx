@@ -2,6 +2,9 @@ import { TransactionTypeEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Plural } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
+
+import { useScrollFadeStyle } from '@rnw-community/react-native-screen-chrome';
 
 import { cn } from '../../../@generic/utils/cn.util';
 import { testID } from '../../../@generic/utils/test-id.util';
@@ -21,7 +24,11 @@ interface Props {
     readonly cluster: CategorizeInboxClusterInterface;
 }
 
+const HERO_TITLE_SCROLL_RANGE = [0, 14] as const;
+const FADE_OUT_OPACITY = [1, 0] as const;
+
 export const CategorizeInboxGroupHero = ({ cluster }: Props) => {
+    const titleFadeStyle = useScrollFadeStyle(HERO_TITLE_SCROLL_RANGE, FADE_OUT_OPACITY);
     const protectAmount = useCategorizeInboxAmountLabel();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
 
@@ -33,13 +40,15 @@ export const CategorizeInboxGroupHero = ({ cluster }: Props) => {
     return (
         <View className="items-center gap-y-sm px-3xl pb-xs pt-md">
             <View className="items-center gap-y-md self-stretch">
-                <Text
-                    className="text-primary text-center text-[20px] leading-[26px] font-semibold"
-                    accessibilityRole="header"
-                    {...testID(CategorizeInboxGroupScreenSelector.Title)}
-                >
-                    {formatCategorizeInboxMerchantTitle(cluster.displayTitle)}
-                </Text>
+                <Animated.View className="self-stretch" style={titleFadeStyle}>
+                    <Text
+                        className="text-primary text-center text-[20px] leading-[26px] font-semibold"
+                        accessibilityRole="header"
+                        {...testID(CategorizeInboxGroupScreenSelector.Title)}
+                    >
+                        {formatCategorizeInboxMerchantTitle(cluster.displayTitle)}
+                    </Text>
+                </Animated.View>
                 <Text
                     className={cn('text-[40px] leading-[48px] font-semibold tracking-[-1px] tabular-nums', amountColorClassName)}
                     numberOfLines={1}

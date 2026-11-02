@@ -18,11 +18,16 @@ export const CategorizeInboxGroupRowColumnsOverlay = ({ cluster, children }: Pro
     const className =
         fontScale >= CATEGORIZE_INBOX_STACKED_FONT_SCALE
             ? 'absolute inset-0 items-end justify-end px-3xl py-xl'
-            : 'absolute inset-0 items-end justify-center px-3xl py-xl';
+            : 'absolute inset-0 items-end justify-center px-3xl py-md';
+
+    const columnsClassName =
+        fontScale >= CATEGORIZE_INBOX_STACKED_FONT_SCALE
+            ? '-mx-[8px] -mb-[8px] items-end gap-y-[6px] px-[8px] pb-[8px]'
+            : '-mx-[8px] -mb-[8px] items-end gap-y-xs px-[8px] pb-[8px]';
 
     return (
         <View className={className} pointerEvents="box-none">
-            <View className="-mx-[8px] -mb-[8px] items-end gap-y-[6px] px-[8px] pb-[8px]" pointerEvents="box-none">
+            <View className={columnsClassName} pointerEvents="box-none">
                 <CategorizeInboxGroupRowGhost>
                     <CategorizeInboxGroupRowAmount cluster={cluster} />
                 </CategorizeInboxGroupRowGhost>

@@ -7603,10 +7603,6 @@ msgstr "Nicht zugewiesen {remainingLabel}"
 msgid "Uncategorized"
 msgstr "Nicht kategorisiert"
 
-#: src/categorize-inbox/components/categorize-inbox-payments-screen/categorize-inbox-payments-screen.tsx
-msgid "Unchecked payments stay in your inbox."
-msgstr "Nicht markierte Zahlungen bleiben in deinem Eingang."
-
 #: src/budget/components/budget-history-legend/budget-history-legend.tsx
 msgid "Under limit"
 msgstr "Unter dem Limit"
@@ -7641,6 +7637,10 @@ msgstr "Mit {biometricLabel} entsperren"
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Unrealized P&L"
 msgstr "Unrealisierte GuV"
+
+#: src/categorize-inbox/components/categorize-inbox-payments-screen/categorize-inbox-payments-screen.tsx
+msgid "Unselected payments stay in your inbox."
+msgstr "Nicht ausgewählte Zahlungen bleiben in deinem Posteingang."
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 #: src/tag/components/stats-by-tags/stats-by-tags.tsx

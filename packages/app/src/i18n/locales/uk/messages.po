@@ -7603,10 +7603,6 @@ msgstr "Не розподілено {remainingLabel}"
 msgid "Uncategorized"
 msgstr "Без категорії"
 
-#: src/categorize-inbox/components/categorize-inbox-payments-screen/categorize-inbox-payments-screen.tsx
-msgid "Unchecked payments stay in your inbox."
-msgstr "Невідмічені платежі залишаться у вхідних."
-
 #: src/budget/components/budget-history-legend/budget-history-legend.tsx
 msgid "Under limit"
 msgstr "У межах ліміту"
@@ -7641,6 +7637,10 @@ msgstr "Розблоковувати через {biometricLabel}"
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Unrealized P&L"
 msgstr "Нереаліз. приб./збиток"
+
+#: src/categorize-inbox/components/categorize-inbox-payments-screen/categorize-inbox-payments-screen.tsx
+msgid "Unselected payments stay in your inbox."
+msgstr "Невибрані платежі залишаються у вхідних."
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 #: src/tag/components/stats-by-tags/stats-by-tags.tsx

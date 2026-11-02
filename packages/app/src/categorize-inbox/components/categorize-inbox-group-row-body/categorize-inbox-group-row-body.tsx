@@ -1,5 +1,9 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Text, useWindowDimensions, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
+import { Icon } from '../../../@generic/component/icon/icon';
 import { CATEGORIZE_INBOX_STACKED_FONT_SCALE } from '../../constant/categorize-inbox-stacked-font-scale.constant';
 import { formatCategorizeInboxMerchantTitle } from '../../utils/format-categorize-inbox-merchant-title.util';
 import { CategorizeInboxGroupRowAmount } from '../categorize-inbox-group-row-amount/categorize-inbox-group-row-amount';
@@ -20,6 +24,11 @@ export const CategorizeInboxGroupRowBody = ({ cluster, children }: Props) => {
     const containerClassName = isStacked ? 'min-w-0 flex-1 gap-y-xxs' : 'min-w-0 flex-1 flex-row items-center gap-x-md';
     const textClassName = isStacked ? 'gap-y-xxs' : 'min-w-0 flex-1 gap-y-xxs';
 
+    const amountClassName = isStacked ? 'shrink-0 items-end gap-y-[6px]' : 'shrink-0 items-end gap-y-xs';
+    const chevron = isDefined(children) ? null : (
+        <Icon icon={UserIconNameEnum.ChevronRight} size={12} className="text-secondary-foreground" />
+    );
+
     return (
         <View className={containerClassName}>
             <View className={textClassName}>
@@ -28,9 +37,12 @@ export const CategorizeInboxGroupRowBody = ({ cluster, children }: Props) => {
                 </Text>
                 <CategorizeInboxGroupRowSubtitle cluster={cluster} />
             </View>
-            <View className="shrink-0 items-end gap-y-[6px]">
-                <CategorizeInboxGroupRowAmount cluster={cluster} />
-                {children}
+            <View className="shrink-0 flex-row items-center justify-end gap-x-md">
+                <View className={amountClassName}>
+                    <CategorizeInboxGroupRowAmount cluster={cluster} />
+                    {children}
+                </View>
+                {chevron}
             </View>
         </View>
     );

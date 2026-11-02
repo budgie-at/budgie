@@ -7604,10 +7604,6 @@ msgstr "Unassigned {remainingLabel}"
 msgid "Uncategorized"
 msgstr "Uncategorized"
 
-#: src/categorize-inbox/components/categorize-inbox-payments-screen/categorize-inbox-payments-screen.tsx
-msgid "Unchecked payments stay in your inbox."
-msgstr "Unchecked payments stay in your inbox."
-
 #: src/budget/components/budget-history-legend/budget-history-legend.tsx
 msgid "Under limit"
 msgstr "Under limit"
@@ -7642,6 +7638,10 @@ msgstr "Unlock with {biometricLabel}"
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Unrealized P&L"
 msgstr "Unrealized P&L"
+
+#: src/categorize-inbox/components/categorize-inbox-payments-screen/categorize-inbox-payments-screen.tsx
+msgid "Unselected payments stay in your inbox."
+msgstr "Unselected payments stay in your inbox."
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 #: src/tag/components/stats-by-tags/stats-by-tags.tsx

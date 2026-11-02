@@ -1,7 +1,7 @@
 import { CategorizeInboxSectionEnum } from '@budgie/categorization';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { Text } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -27,19 +27,11 @@ export const CategorizeInboxGroupRowSubtitle = ({ cluster }: Props) => {
     const labelText = section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS ? t`Cash withdrawal` : transferOrSuggestionText;
     const hasLabel = isNotEmptyString(labelText);
     const countText = t({ message: plural(rows.length, { one: '# payment', other: '# payments' }) });
-    const countLabel = hasLabel ? ` · ${countText}` : countText;
-    const label = hasLabel ? (
-        <Text className="shrink text-[13px] leading-[17px] text-secondary-foreground" numberOfLines={1}>
-            {labelText}
-        </Text>
-    ) : null;
+    const subtitle = hasLabel ? `${labelText} · ${countText}` : countText;
 
     return (
-        <View className="min-w-0 flex-row self-stretch">
-            {label}
-            <Text className="shrink-0 text-[13px] leading-[17px] text-secondary-foreground tabular-nums" numberOfLines={1}>
-                {countLabel}
-            </Text>
-        </View>
+        <Text className="text-[13px] leading-[17px] text-secondary-foreground tabular-nums" numberOfLines={1}>
+            {subtitle}
+        </Text>
     );
 };
