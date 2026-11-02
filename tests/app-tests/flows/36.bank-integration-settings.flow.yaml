@@ -86,7 +86,7 @@ appId: ${APP_ID}
       id: 'AccountSyncCard.Switch'
       checked: true
 
-# 9. Tapping an account row opens its editor; back returns to the integration page
+# 9. Tapping an account row menu and Edit opens its editor; back returns to the integration page
 - runFlow:
       file: subflows/navigation/open-deep-link.flow.yaml
       env:
@@ -98,7 +98,13 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'BankIntegration.AccountRow.1'
 - tapOn:
-      id: 'BankIntegration.AccountRow.1'
+      id: 'BankIntegration.AccountRow.1.Menu'
+- extendedWaitUntil:
+      visible:
+          id: 'BankIntegration.AccountRow.1.Menu.Edit'
+      timeout: 5000
+- tapOn:
+      id: 'BankIntegration.AccountRow.1.Menu.Edit'
 - extendedWaitUntil:
       visible:
           id: 'AccountForm.ScrollView'

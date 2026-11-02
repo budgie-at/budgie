@@ -3,13 +3,14 @@ import { Text, View } from 'react-native';
 
 import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/component/button/button';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
 import { useBankIntegration } from '../../context/bank-integration.context';
 import { useBankIntegrationAccountPreviewsQuery } from '../../query/use-bank-integration-account-previews.query';
 import { BankIntegrationAccountRowSkeleton } from '../bank-integration-account-row-skeleton/bank-integration-account-row-skeleton';
 import { BankIntegrationNewAccountRow } from '../bank-integration-new-account-row/bank-integration-new-account-row';
-import { BankIntegrationStatusBanner } from '../bank-integration-status-banner/bank-integration-status-banner';
 
 interface Props {
     readonly linkedExternalIds: ReadonlySet<string>;
@@ -26,10 +27,12 @@ export const BankIntegrationNewAccounts = ({ linkedExternalIds }: Props) => {
 
     if (isLoading) {
         return (
-            <View className="gap-y-lg" testID={BankIntegrationSelector.NewAccountsStatus}>
-                <BankIntegrationAccountRowSkeleton />
-                <BankIntegrationAccountRowSkeleton />
-            </View>
+            <GroupedListSection title={t`New in Monobank`} footer={t`Switch on to start syncing.`}>
+                <View testID={BankIntegrationSelector.NewAccountsStatus}>
+                    <BankIntegrationAccountRowSkeleton />
+                    <BankIntegrationAccountRowSkeleton />
+                </View>
+            </GroupedListSection>
         );
     }
 
@@ -39,19 +42,24 @@ export const BankIntegrationNewAccounts = ({ linkedExternalIds }: Props) => {
 
     if (hasError) {
         return (
-            <BankIntegrationStatusBanner
-                variant="warning"
-                text={t`Couldn’t check Monobank for new accounts`}
-                testID={BankIntegrationSelector.NewAccountsStatus}
-            >
-                <Button
-                    variant="default"
-                    size="sm"
-                    onPress={refresh}
-                    content={t`Retry`}
-                    testID={BankIntegrationSelector.RetryNewAccountsButton}
+            <GroupedListSection title={t`New in Monobank`}>
+                <GroupedListRow
+                    title={t`Couldn’t check Monobank for new accounts`}
+                    testID={BankIntegrationSelector.NewAccountsStatus}
+                    right={
+                        <HapticPressable
+                            onPress={refresh}
+                            accessibilityRole="button"
+                            className="min-h-[44px] justify-center px-md"
+                            testID={BankIntegrationSelector.RetryNewAccountsButton}
+                        >
+                            <Text className="text-[15px] text-primary-accent">
+                                <Trans>Retry</Trans>
+                            </Text>
+                        </HapticPressable>
+                    }
                 />
-            </BankIntegrationStatusBanner>
+            </GroupedListSection>
         );
     }
 
@@ -60,18 +68,10 @@ export const BankIntegrationNewAccounts = ({ linkedExternalIds }: Props) => {
     }
 
     return (
-        <View className="gap-y-lg">
-            <View className="gap-y-xs">
-                <Text className="text-xs uppercase text-secondary-foreground">
-                    <Trans>New in Monobank</Trans>
-                </Text>
-                <Text className="text-xs text-secondary-foreground">
-                    <Trans>Switch on to start syncing</Trans>
-                </Text>
-            </View>
+        <GroupedListSection title={t`New in Monobank`} footer={t`Switch on to start syncing.`}>
             {newAccountPreviews.map(preview => (
                 <BankIntegrationNewAccountRow key={preview.externalId} preview={preview} />
             ))}
-        </View>
+        </GroupedListSection>
     );
 };

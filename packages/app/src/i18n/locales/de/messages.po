@@ -137,6 +137,10 @@ msgstr "{accountCount, plural, one {# Konto} other {# Konten}}"
 msgid "{accountsCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountsCount, plural, one {# Konto} other {# Konten}}"
 
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "{accountTitle}, account actions"
+msgstr "{accountTitle}, Kontoaktionen"
+
 #: src/market-data/component/currency-market-stale-price/currency-market-stale-price.tsx
 msgid "{ageDays, plural, one {# day old} other {# days old}}"
 msgstr "{ageDays, plural, one {# Tag alt} other {# Tage alt}}"
@@ -326,6 +330,10 @@ msgstr "{entryStatusLabel}. {formattedAmount} {caption}. {formattedSpentLabel}, 
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "{entryStatusLabel}. {formattedAmount} {caption}. {reservedPrefix}{formattedPerDay}, {formattedDaysLeft}."
 msgstr "{entryStatusLabel}. {formattedAmount} {caption}. {reservedPrefix}{formattedPerDay}, {formattedDaysLeft}."
+
+#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
+msgid "{failedCount, plural, one {Sync failed for # account} other {Sync failed for # accounts}}"
+msgstr "{failedCount, plural, one {Synchronisierung für # Konto fehlgeschlagen} other {Synchronisierung für # Konten fehlgeschlagen}}"
 
 #: src/rule/hooks/use-rule-text-value-meta.hook.ts
 msgid "{fieldLabel} {operatorLabel}, value"
@@ -1025,7 +1033,6 @@ msgid "Account {accountId} not found"
 msgstr "Konto {accountId} nicht gefunden"
 
 #: src/account/component/account-actions-menu/account-actions-menu.tsx
-#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Account actions"
 msgstr "Kontoaktionen"
 
@@ -1066,8 +1073,8 @@ msgid "Accounts ({selectedAccountsCount})"
 msgstr "Konten ({selectedAccountsCount})"
 
 #: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
-msgid "Accounts you sync or import appear here."
-msgstr "Hier erscheinen Konten, die du synchronisierst oder importierst."
+msgid "Accounts you sync appear here."
+msgstr "Synchronisierte Konten erscheinen hier."
 
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Action: {label}"
@@ -1147,7 +1154,7 @@ msgstr "Kategorielimits hinzufügen"
 msgid "Add condition"
 msgstr "Bedingung hinzufügen"
 
-#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
+#: src/sync/component/bank-integration-add-deposit/bank-integration-add-deposit.tsx
 msgid "Add deposit"
 msgstr "Einlage hinzufügen"
 
@@ -1512,6 +1519,10 @@ msgstr "Sind Sie sicher?"
 msgid "Asset mix"
 msgstr "Vermögensaufteilung"
 
+#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
+msgid "Assets · {accountCount}"
+msgstr "Vermögenswerte · {accountCount}"
+
 #: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
 msgid "At {rateLabel} per {instrumentCode}"
 msgstr "Zu {rateLabel} pro {instrumentCode}"
@@ -1818,6 +1829,10 @@ msgstr "Budgie konnte deine Daten nicht öffnen"
 msgid "Budgie deleted the damaged part. It starts again only when you ask."
 msgstr "Budgie hat den beschädigten Teil gelöscht. Der Download startet erst wieder, wenn du es möchtest."
 
+#: src/app/resync-window-picker.tsx
+msgid "Budgie downloads them again and merges duplicates automatically."
+msgstr "Budgie lädt sie erneut herunter und führt Duplikate automatisch zusammen."
+
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Budgie encrypts your data on this phone. It takes a few seconds."
 msgstr "Budgie verschlüsselt deine Daten auf diesem Telefon. Das dauert ein paar Sekunden."
@@ -1853,6 +1868,10 @@ msgstr "Budgie erfasst Apple Pay-Zahlungen in dem Moment, in dem du bezahlst –
 #: src/budget/hooks/use-budget-fund-form.hook.ts
 msgid "Budgie stops setting money aside for it. Your transactions are not affected."
 msgstr "Budgie legt dafür kein Geld mehr zurück. Deine Transaktionen bleiben unverändert."
+
+#: src/sync/component/bank-integration-key-card/bank-integration-key-card.tsx
+msgid "Budgie syncs automatically in the background."
+msgstr "Budgie synchronisiert automatisch im Hintergrund."
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
@@ -1914,7 +1933,6 @@ msgstr "Kann später nicht geändert werden"
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 #: src/app/(tabs)/settings/import.tsx
 #: src/app/convert-to-transfer.tsx
-#: src/app/resync-window-picker.tsx
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 #: src/budget/hooks/use-budget-event-form.hook.ts
 #: src/budget/hooks/use-budget-form.hook.ts
@@ -2357,6 +2375,10 @@ msgstr "Binance verbinden"
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Connect Monobank"
 msgstr "Monobank verbinden"
+
+#: src/sync/component/bank-integration-key-card/bank-integration-key-card.tsx
+msgid "Connection"
+msgstr "Verbindung"
 
 #: ../ledger/src/transaction/service/transaction-transfer.service.ts
 msgid "Consolidated transactions cannot start a deposit"
@@ -3517,10 +3539,6 @@ msgstr "Alle Beträge eingeben"
 msgid "Enter current PIN"
 msgstr "Aktuelle PIN eingeben"
 
-#: src/app/bank-integration-key.tsx
-msgid "Enter new token"
-msgstr "Neues Token eingeben"
-
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
 msgid "Enter the backup's PIN"
 msgstr "Gib die PIN des Backups ein"
@@ -3549,6 +3567,10 @@ msgstr "Geben Sie Ihre PIN ein"
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enter your PIN to turn it off. Anyone who can unlock this phone will be able to open Budgie."
 msgstr "Gib deine PIN ein, um sie auszuschalten. Dann kann jeder, der dieses Telefon entsperren kann, Budgie öffnen."
+
+#: src/sync/component/resync-window-option-row/resync-window-option-row.tsx
+msgid "Entire available history"
+msgstr "Gesamter verfügbarer Verlauf"
 
 #: src/app/resync-window-picker.tsx
 msgid "Entire history will be re-synced on next sync."
@@ -3645,8 +3667,8 @@ msgid "Exchange rate: {rateLabel}. Tap to edit receiving amount"
 msgstr "Wechselkurs: {rateLabel}. Tippen, um den Empfangsbetrag zu bearbeiten"
 
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
-msgid "Excluded from file imports"
-msgstr "Von Dateiimporten ausgeschlossen"
+msgid "Excluded from imports"
+msgstr "Von Importen ausgeschlossen"
 
 #: src/budget/components/budget-limit-source-field/budget-limit-source-field.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
@@ -4057,9 +4079,17 @@ msgstr "Wenn du sie vergisst, kann niemand diese Datei öffnen, auch du und wir 
 msgid "Ignores the minus sign."
 msgstr "Das Minuszeichen wird ignoriert."
 
+#: src/sync/component/bank-integration-statements/bank-integration-statements.tsx
+msgid "Import a {bank} statement to add your accounts"
+msgstr "Importiere einen Kontoauszug von {bank}, um deine Konten hinzuzufügen"
+
 #: src/app/(main)/create-account/index.tsx
 msgid "Import a PDF statement"
 msgstr "PDF-Kontoauszug importieren"
+
+#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
+msgid "Import a statement to add accounts."
+msgstr "Importiere einen Kontoauszug, um Konten hinzuzufügen."
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Import accounts and transactions from Erste Bank PDF statement"
@@ -4088,7 +4118,6 @@ msgstr "Import fehlgeschlagen"
 
 #: src/account/component/account-card-base/account-card-base.tsx
 #: src/account/component/account-card-menu/account-card-menu.tsx
-#: src/sync/component/bank-integration-page/bank-integration-page.tsx
 msgid "Import file"
 msgstr "Datei importieren"
 
@@ -4103,6 +4132,10 @@ msgstr "Privatbank importieren"
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "Import started"
 msgstr "Import gestartet"
+
+#: src/sync/component/bank-integration-statements/bank-integration-statements.tsx
+msgid "Import statement"
+msgstr "Kontoauszug importieren"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Import, export, repair and reset"
@@ -4304,8 +4337,8 @@ msgid "Key has too many permissions"
 msgstr "Schlüssel hat zu viele Berechtigungen"
 
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
-msgid "Key rejected"
-msgstr "Schlüssel abgelehnt"
+msgid "Key rejected — sync is paused"
+msgstr "Schlüssel abgelehnt — Synchronisierung pausiert"
 
 #: src/app/bank-integration-key.tsx
 msgid "Key updated"
@@ -4331,7 +4364,7 @@ msgstr "Letzter 1 Monat"
 msgid "Last 3 months"
 msgstr "Letzte 3 Monate"
 
-#: src/app/resync-window-picker.tsx
+#: src/sync/component/resync-window-option-row/resync-window-option-row.tsx
 msgid "Last 30 days"
 msgstr "Letzte 30 Tage"
 
@@ -4339,11 +4372,11 @@ msgstr "Letzte 30 Tage"
 msgid "Last 6 months"
 msgstr "Letzte 6 Monate"
 
-#: src/app/resync-window-picker.tsx
+#: src/sync/component/resync-window-option-row/resync-window-option-row.tsx
 msgid "Last 7 days"
 msgstr "Letzte 7 Tage"
 
-#: src/app/resync-window-picker.tsx
+#: src/sync/component/resync-window-option-row/resync-window-option-row.tsx
 msgid "Last 90 days"
 msgstr "Letzte 90 Tage"
 
@@ -4362,6 +4395,10 @@ msgstr "Letzter Monat"
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
 msgid "last payment {formattedLast}"
 msgstr "letzte Zahlung {formattedLast}"
+
+#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
+msgid "Last synced {relative}"
+msgstr "Zuletzt synchronisiert: {relative}"
 
 #: src/@generic/constant/date-period.constant.ts
 msgid "Last Week"
@@ -4862,10 +4899,6 @@ msgstr "Die Namen sind aktuell. Tippe, um es erneut zu versuchen."
 msgid "Navigate to Account → Statements"
 msgstr "Zu Konto → Kontoauszüge navigieren"
 
-#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
-msgid "Needs attention"
-msgstr "Erfordert Aufmerksamkeit"
-
 #: src/app/(tabs)/settings/apple-pay-capture.tsx
 msgid "Needs review"
 msgstr "Zu prüfen"
@@ -4964,12 +4997,9 @@ msgstr "Kein Konto. Es gibt nichts, wofür du dich registrieren musst."
 msgid "No accounts found"
 msgstr "Keine Konten gefunden"
 
-#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
-msgid "No accounts in this integration yet"
-msgstr "Noch keine Konten in dieser Integration"
-
 #: src/account/component/account-select-content/account-select-content.tsx
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
+#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
 msgid "No accounts yet"
 msgstr "Noch keine Konten"
 
@@ -5222,6 +5252,10 @@ msgstr "nicht gesetzt"
 #: src/settings/components/budget-management-card/budget-management-card.tsx
 msgid "Not set"
 msgstr "Nicht festgelegt"
+
+#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
+msgid "Not synced yet"
+msgstr "Noch nicht synchronisiert"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Not synced: Auto-Invest, Binance Pay, Binance Card, gift cards, sub-account transfers, margin and futures."
@@ -5657,8 +5691,12 @@ msgid "Past years"
 msgstr "Vergangene Jahre"
 
 #: src/app/bank-integration-key.tsx
-msgid "Paste the key from api.monobank.ua"
-msgstr "Füge den Schlüssel von api.monobank.ua ein"
+msgid "Paste API key"
+msgstr "API-Schlüssel einfügen"
+
+#: src/app/bank-integration-key.tsx
+msgid "Paste the key from api.monobank.ua. Budgie checks it right away."
+msgstr "Füge den Schlüssel von api.monobank.ua ein. Budgie prüft ihn sofort."
 
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Paste your API token below:"
@@ -5679,9 +5717,12 @@ msgid "Pause"
 msgstr "Pausieren"
 
 #: src/ai/constant/ai-download-card-visuals.constant.ts
-#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Paused"
 msgstr "Pausiert"
+
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Paused · key rejected"
+msgstr "Pausiert · Schlüssel abgelehnt"
 
 #: src/ai/constant/ai-download-card-visuals.constant.ts
 msgid "Paused: no Wi-Fi"
@@ -5724,6 +5765,10 @@ msgstr "Zahlungen pro Monat"
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 msgid "Payments this rule already changed stay as they are."
 msgstr "Von dieser Regel bereits geänderte Zahlungen bleiben unverändert."
+
+#: src/sync/component/bank-integration-statements/bank-integration-statements.tsx
+msgid "PDF or spreadsheet from {bank}"
+msgstr "PDF oder Tabelle von {bank}"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "PDF statement"
@@ -5769,10 +5814,6 @@ msgstr "Wähle eine Kategorie für ein Limit"
 #: src/tag/components/tag-destination-sheet/tag-destination-sheet.tsx
 msgid "Pick a tag to continue"
 msgstr "Wähle einen Tag, um fortzufahren"
-
-#: src/app/resync-window-picker.tsx
-msgid "Pick a window. Existing data is preserved."
-msgstr "Zeitraum wählen. Bestehende Daten bleiben erhalten."
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Pick one you'll remember but others won't guess."
@@ -5957,6 +5998,10 @@ msgstr "Erhöht am {dateLabel} · {count} Zeiträume in Folge über dem Limit"
 msgid "Rank"
 msgstr "Rang"
 
+#: src/app/resync-window-picker.tsx
+msgid "Re-downloads every transaction. Your categories, tags and notes stay."
+msgstr "Lädt jede Transaktion erneut herunter. Deine Kategorien, Tags und Notizen bleiben erhalten."
+
 #: src/auth/components/pin-setup/pin-setup.tsx
 msgid "Re-encrypting your data. Keep Budgie open, it restarts when finished."
 msgstr "Deine Daten werden neu verschlüsselt. Lass Budgie geöffnet, die App startet danach neu."
@@ -5964,18 +6009,6 @@ msgstr "Deine Daten werden neu verschlüsselt. Lass Budgie geöffnet, die App st
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 msgid "Re-record"
 msgstr "Erneut aufnehmen"
-
-#: src/app/resync-window-picker.tsx
-msgid "Re-sync Bank Account?"
-msgstr "Bankkonto erneut synchronisieren?"
-
-#: src/app/resync-window-picker.tsx
-msgid "Re-sync entire history"
-msgstr "Gesamten Verlauf neu synchronisieren"
-
-#: src/app/resync-window-picker.tsx
-msgid "Re-sync History"
-msgstr "Verlauf erneut synchronisieren"
 
 #: src/app/resync-window-picker.tsx
 msgid "Re-sync of last 30 days will start on next sync."
@@ -6238,10 +6271,6 @@ msgstr "{upcomingAmount} reserviert für {billsLabel}"
 #: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
 msgid "Reset total"
 msgstr "Summe zurücksetzen"
-
-#: src/app/resync-window-picker.tsx
-msgid "Resets all sync state"
-msgstr "Setzt den gesamten Sync-Status zurück"
 
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 msgid "Restart App"
@@ -6946,6 +6975,10 @@ msgstr "Beginnt am"
 msgid "Statement imported"
 msgstr "Kontoauszug importiert"
 
+#: src/sync/component/bank-integration-statements/bank-integration-statements.tsx
+msgid "Statements"
+msgstr "Kontoauszüge"
+
 #: src/wallet-capture/component/apple-pay-capture-setup-row/apple-pay-capture-setup-row.tsx
 msgid "Step {stepNumber}"
 msgstr "Schritt {stepNumber}"
@@ -6987,8 +7020,16 @@ msgid "Swipe to remove this per-category cap from your budget."
 msgstr "Wische, um dieses Kategorielimit aus deinem Budget zu entfernen."
 
 #: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
-msgid "Switch on to start syncing"
-msgstr "Einschalten, um mit der Synchronisierung zu beginnen"
+msgid "Switch on to start syncing."
+msgstr "Aktivieren, um die Synchronisierung zu starten."
+
+#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
+msgid "Switched-off accounts are skipped when you import a statement."
+msgstr "Deaktivierte Konten werden beim Import eines Kontoauszugs übersprungen."
+
+#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
+msgid "Switched-off accounts stop syncing. Their history stays."
+msgstr "Deaktivierte Konten werden nicht mehr synchronisiert. Ihr Verlauf bleibt erhalten."
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 #: src/sync/component/bank-integration-new-account-row/bank-integration-new-account-row.tsx
@@ -7005,13 +7046,25 @@ msgid "Sync data repairs"
 msgstr "Synchronisationsdaten-Reparaturen"
 
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync failed"
 msgstr "Synchronisation fehlgeschlagen"
 
 #: src/account/constant/account-sync-state-label.constant.ts
-#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync Failed"
 msgstr "Synchronisation fehlgeschlagen"
+
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Sync failed · {lastError}"
+msgstr "Synchronisierung fehlgeschlagen · {lastError}"
+
+#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
+msgid "Sync is off for all accounts"
+msgstr "Synchronisierung für alle Konten deaktiviert"
+
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Sync off"
+msgstr "Synchronisierung aus"
 
 #: src/app/(main)/create-account/index.tsx
 msgid "Sync or import"
@@ -7022,7 +7075,6 @@ msgid "Sync past transactions"
 msgstr "Frühere Transaktionen synchronisieren"
 
 #: src/account/constant/account-sync-state-label.constant.ts
-#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync paused"
 msgstr "Synchronisation pausiert"
 
@@ -7041,6 +7093,10 @@ msgstr "Synchronisation mit schreibgeschütztem API-Schlüssel"
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Sync your Binance balances and transactions"
 msgstr "Synchronisieren Sie Ihre Binance-Salden und -Transaktionen"
+
+#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
+msgid "Synced {relative}"
+msgstr "Synchronisiert: {relative}"
 
 #: src/account/constant/account-sync-state-label.constant.ts
 msgid "Syncing"
@@ -7396,10 +7452,6 @@ msgstr "Dadurch wird die Gebührenbuchung aus dieser Transaktion entfernt."
 #: src/budget/hooks/use-budget-form.hook.ts
 msgid "This will remove your budget. You can create a new one anytime."
 msgstr "Dadurch wird dein Budget entfernt. Du kannst jederzeit ein neues erstellen."
-
-#: src/app/resync-window-picker.tsx
-msgid "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
-msgstr "Dadurch wird der Synchronisationsverlauf zurückgesetzt und alle Transaktionen dieses Bankkontos erneut synchronisiert. Ihre bestehenden Transaktionen, Tags und Kategorien bleiben erhalten und werden mit neuen Daten aktualisiert."
 
 #: src/budget/constant/budget-period-this-label.constant.ts
 msgid "this year"
@@ -7898,13 +7950,8 @@ msgid "up {changeShare} over the last 24 hours"
 msgstr "in den letzten 24 Stunden um {changeShare} gestiegen"
 
 #: src/account/constant/account-sync-state-label.constant.ts
-#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Up to date"
 msgstr "Auf dem neuesten Stand"
-
-#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
-msgid "Up to date · {lastSyncedLabel}"
-msgstr "Aktuell · {lastSyncedLabel}"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "Upcoming"
@@ -7926,6 +7973,14 @@ msgstr "{applied} von {total} Transaktionen aktualisiert."
 #: src/market-data/component/currency-market-stats-footer/currency-market-stats-footer.tsx
 msgid "Updated {updatedDate}"
 msgstr "Aktualisiert am {updatedDate}"
+
+#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
+msgid "Updated from statement files"
+msgstr "Aus Kontoauszugsdateien aktualisiert"
+
+#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
+msgid "Updated from statement files · last import {importDate}"
+msgstr "Aus Kontoauszugsdateien aktualisiert · letzter Import {importDate}"
 
 #: src/market-data/component/currency-market-stats-footer/currency-market-stats-footer.tsx
 msgid "Updated today"

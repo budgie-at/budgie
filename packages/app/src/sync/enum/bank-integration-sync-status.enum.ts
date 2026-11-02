@@ -3,5 +3,6 @@ export enum BankIntegrationSyncStatusEnum {
     KEY_REJECTED = 'KEY_REJECTED',
     SYNCING = 'SYNCING',
     PAUSED = 'PAUSED',
+    STALE = 'STALE',
     UP_TO_DATE = 'UP_TO_DATE'
 }

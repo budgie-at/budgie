@@ -4,8 +4,9 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
+import { TONAL_DISC_BACKGROUND } from '../../../@generic/constant/tonal-disc-background.constant';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { testID } from '../../../@generic/utils/test-id.util';
@@ -37,12 +38,21 @@ export const BankIntegrationNewAccountRow = ({ preview }: Props) => {
         );
 
     return (
-        <SimpleHorizontalCell
+        <GroupedListRow
             testID={rowTestID}
-            singleLine
-            left={<CircleIcon icon={icon} variant="ghost" size={46} iconSize={20} border={false} />}
+            left={
+                <CircleIcon
+                    icon={icon}
+                    variant="primary"
+                    size={36}
+                    iconSize={18}
+                    radius={18}
+                    border={false}
+                    className={TONAL_DISC_BACKGROUND.primary}
+                />
+            }
             title={preview.title}
-            description={description}
+            subtitle={description}
             right={
                 <ThemedSwitch
                     value={isStarting}

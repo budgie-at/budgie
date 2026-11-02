@@ -1,6 +1,6 @@
 import { MONOBANK_AUTH_URL, SyncProviderRegistryService } from '@budgie/sync';
 import { useAtomRefresh } from '@effect/atom-react/Hooks';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 import { Linking, Text, View } from 'react-native';
@@ -63,7 +63,11 @@ export default function BankIntegrationKeyModal() {
 
     return (
         <View className="bg-sheet-surface">
-            <FormsheetHeader size="md" title={t`Monobank API key`} description={t`Paste the key from api.monobank.ua`} />
+            <FormsheetHeader
+                size="md"
+                title={t`Monobank API key`}
+                description={t`Paste the key from api.monobank.ua. Budgie checks it right away.`}
+            />
             <View className="px-3xl gap-y-md">
                 <FormItem error={errorMessage}>
                     <View className="flex-row items-center gap-x-sm">
@@ -71,7 +75,7 @@ export default function BankIntegrationKeyModal() {
                             className="flex-1"
                             value={key}
                             onChangeText={handleKeyChange}
-                            placeholder={t`Enter new token`}
+                            placeholder={t`Paste API key`}
                             autoCapitalize="none"
                             autoCorrect={false}
                             autoFocus
@@ -82,12 +86,12 @@ export default function BankIntegrationKeyModal() {
                     </View>
                 </FormItem>
                 <Text
-                    className="text-sm text-primary underline"
+                    className="text-[15px] text-primary-accent min-h-[44px] py-lg"
                     onPress={handleOpenKeyPage}
                     accessibilityRole="link"
                     testID={BankIntegrationKeyModalSelector.GetNewKeyLink}
                 >
-                    {t`Get a new key`}
+                    <Trans>Get a new key</Trans>
                 </Text>
             </View>
             <ModalFormFooter
