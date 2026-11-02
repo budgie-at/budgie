@@ -1,6 +1,8 @@
 export const AccountDetailsSelector = {
     Page: 'AccountDetails.Page',
     Balance: 'AccountDetails.Balance',
+    ConvertedValue: 'AccountDetails.ConvertedValue',
+    MarketLink: 'AccountDetails.MarketLink',
     ActionsButton: 'AccountDetails.ActionsButton',
     EditButton: 'AccountDetails.EditButton',
     ArchiveMenuButton: 'AccountDetails.ArchiveMenuButton',

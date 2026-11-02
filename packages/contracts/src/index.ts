@@ -385,8 +385,6 @@ export { RecurringSeriesEntityTable } from './recurring-series/table/recurring-s
 export type { RecurringSeriesEntityInterface } from './recurring-series/entity/recurring-series-entity.interface';
 export type { RecurringSeriesCreateEntityInterface } from './recurring-series/entity/recurring-series-create-entity.interface';
 
-export { RUNWAY_IRREGULAR_CV_THRESHOLD } from './runway/constant/runway.constant';
-export { RUNWAY_IRREGULAR_CONCENTRATION_THRESHOLD } from './runway/constant/runway.constant';
 export { RUNWAY_MAX_MONTHS } from './runway/constant/runway.constant';
 export { RUNWAY_DRIVER_MIN_BURN_SHARE } from './runway/constant/runway.constant';
 export { RUNWAY_WINDOW_MONTHS } from './runway/constant/runway.constant';
@@ -397,4 +395,5 @@ export type { RunwaySeriesRowInterface } from './runway/interface/runway-series-
 export type { RunwayDriverSeriesRowInterface } from './runway/interface/runway-driver-series-row.interface';
 
 export { LIQUID_ACCOUNT_TYPES } from './account/constant/liquid-account-types.constant';
+export { getExchangeRateWithHistoricalFallbackSql } from './@generic/utils/get-exchange-rate-sql.util';
 export { CRYPTO_ACCOUNT_TYPES } from './account/constant/crypto-account-types.constant';

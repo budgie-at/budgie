@@ -29,6 +29,7 @@ type Props = TitleProps & {
     readonly footer?: ReactNode;
     readonly scrollViewProps?: Pick<ComponentProps<typeof ChromeKeyboardScrollView>, 'ref' | 'onLayout' | 'bottomOffset'>;
     readonly contentClassName?: string;
+    readonly scrimClassName?: string;
     readonly testID?: string;
     readonly chromeConfig?: ScreenChromeConfigOverridesInterface;
 };
@@ -46,6 +47,7 @@ export const CollapsibleChromePage = ({
     footer,
     scrollViewProps,
     contentClassName,
+    scrimClassName,
     testID,
     chromeConfig
 }: Props): ReactNode => {
@@ -101,7 +103,7 @@ export const CollapsibleChromePage = ({
 
                 <CollapsibleHeaderBackdrop />
 
-                <CollapsibleChromeHeaderScrim />
+                <CollapsibleChromeHeaderScrim className={scrimClassName} />
 
                 <CollapsibleChromeHeader
                     {...testIDProps(testID, TestIDPartEnum.HEADER)}

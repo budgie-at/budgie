@@ -34,7 +34,7 @@ export const RunwayPill = () => {
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const isAmountProtected = useIsAmountProtected();
     const liquid = useLiquidBalanceQuery();
-    const { computation } = useRunwayQuery({ dimension: RunwayDriverDimensionEnum.CATEGORY, liquid, isAllIn: false });
+    const { computation } = useRunwayQuery({ dimension: RunwayDriverDimensionEnum.CATEGORY, liquid, isAllIn: true });
     const formatDigits = useFormatDigits(0);
 
     if (computation.monthsUsed < RUNWAY_MINIMUM_MONTHS) {

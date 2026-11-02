@@ -4,20 +4,22 @@ import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-na
 import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
 import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 
-import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { ACCOUNT_DETAILS_NAV_BALANCE_FADE_START } from '../../constant/account-details-nav-balance-fade-start.constant';
+import { useAccountDetailsBalanceLabel } from '../../hook/use-account-details-balance-label.hook';
+
+import type { AccountAssociationEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
 
 interface Props {
     readonly title: string;
     readonly balance: number;
-    readonly instrumentSymbol: string;
+    readonly account: Pick<AccountWithInstrumentEntityInterface, 'type' | AccountAssociationEnum.INSTRUMENT>;
 }
 
 const FADE_DISTANCE = 16;
 const Z_INDEX_STYLE = { zIndex: 4 };
 
-export const AccountDetailsStaticTitle = ({ title, balance, instrumentSymbol }: Props) => {
-    const protectAmount = useProtectedAmountLabel();
+export const AccountDetailsStaticTitle = ({ title, balance, account }: Props) => {
+    const getBalanceLabel = useAccountDetailsBalanceLabel();
     const { config } = useScreenChrome();
     const { scrollY } = useCollapsibleHeaderScroll();
 
@@ -43,7 +45,7 @@ export const AccountDetailsStaticTitle = ({ title, balance, instrumentSymbol }: 
                     numberOfLines={1}
                     style={balanceAnimatedStyle}
                 >
-                    {protectAmount(balance, instrumentSymbol)}
+                    {getBalanceLabel(balance, account)}
                 </Animated.Text>
             </View>
         </View>

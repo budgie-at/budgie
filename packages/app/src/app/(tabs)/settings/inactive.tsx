@@ -1,41 +1,37 @@
-import { AccountWithInstrumentEntityInterface } from '@budgie/contracts';
+import { AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useDeferredValue, useState } from 'react';
 
-import { SearchablePageList } from '../../../@generic/component/searchable-page-list/searchable-page-list';
-import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
+import { SearchablePageEmptyState } from '../../../@generic/component/searchable-page-empty-state/searchable-page-empty-state';
 import { InactiveAccountCard } from '../../../account/component/inactive-account-card/inactive-account-card';
-import { InactiveAccountsEmptyState } from '../../../account/component/inactive-accounts-empty-state/inactive-accounts-empty-state';
-import { useInactiveAccountsQuery } from '../../../account/query/use-inactive-accounts.query';
-import { filterAccountsBySearchQuery } from '../../../account/utils/filter-accounts-by-search-query.util';
-import { goBackToSettings } from '../../../settings/utils/go-back-to-settings.util';
+import { ShelvedAccountsPage } from '../../../account/component/shelved-accounts-page/shelved-accounts-page';
+import { inactiveAccountsAtom } from '../../../account/query/use-inactive-accounts.query';
 
 import { InactiveAccountsPageSelector } from './inactive-accounts-page.selector';
 
 export default function Inactive() {
     const { t } = useLingui();
-    const [search, setSearch] = useState('');
-    const deferredSearch = useDeferredValue(search);
 
-    const filteredAccounts = filterAccountsBySearchQuery(useInactiveAccountsQuery(), deferredSearch);
-
-    const renderCard = (account: AccountWithInstrumentEntityInterface) => <InactiveAccountCard account={account} />;
+    const getNoMatchesTitle = (search: string) => t`No hidden accounts match “${search}”`;
+    const renderCard = (account: AccountWithInstrumentEntityInterface, isFirst: boolean, isLast: boolean) => (
+        <InactiveAccountCard account={account} isFirst={isFirst} isLast={isLast} />
+    );
 
     return (
-        <SearchablePage
-            testID={InactiveAccountsPageSelector.Container}
-            title={t`Inactive Accounts`}
-            onGoBack={goBackToSettings}
-            search={search}
-            searchPlaceholder={t`Search inactive accounts...`}
-            onSearchChange={setSearch}
-            searchInputTestID={InactiveAccountsPageSelector.SearchInput}
-        >
-            <SearchablePageList
-                data={filteredAccounts}
-                emptyState={<InactiveAccountsEmptyState search={search} />}
-                renderCard={renderCard}
-            />
-        </SearchablePage>
+        <ShelvedAccountsPage
+            accountsAtom={inactiveAccountsAtom}
+            title={t`Hidden accounts`}
+            description={t`Hidden accounts stay off Home. Their totals and net worth settings don’t change.`}
+            searchPlaceholder={t`Search hidden accounts…`}
+            emptyState={
+                <SearchablePageEmptyState
+                    icon={UserIconNameEnum.EyeOff}
+                    title={t`No hidden accounts`}
+                    description={t`Turn off Show on Home in an account’s edit screen to tuck it away here.`}
+                />
+            }
+            getNoMatchesTitle={getNoMatchesTitle}
+            renderCard={renderCard}
+            selector={InactiveAccountsPageSelector}
+        />
     );
 }
