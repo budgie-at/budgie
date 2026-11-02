@@ -3,7 +3,7 @@ import { MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { Text, View } from 'react-native';
+import { ScrollView, Text, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 
@@ -34,9 +34,10 @@ export default function ResyncWindowPickerModal() {
 
     const accountId = useResyncWindowPickerModalParams()?.accountId ?? 0;
     const { account } = useGetAccountByIdQuery(accountId);
-    const { bottom } = useSafeAreaInsets();
+    const { bottom, top } = useSafeAreaInsets();
+    const { height } = useWindowDimensions();
     const options = isPositiveNumber(accountId) && isDefined(account) ? RESYNC_WINDOW_OPTIONS : [];
-    const contentStyle = { paddingBottom: bottom };
+    const styles = { scroll: { flexGrow: 0, maxHeight: height - top }, content: { paddingBottom: bottom } };
     const accountTitle = account?.title;
     const accountHeading =
         isPositiveNumber(accountId) && isNotEmptyString(accountTitle) ? (
@@ -72,29 +73,31 @@ export default function ResyncWindowPickerModal() {
 
     return (
         <View className="bg-grouped-surface" collapsable={false}>
-            <FormsheetHeader size="md" title={t`Sync past transactions`} className="pb-[4px]" />
-            <View className="gap-y-[4px] px-3xl">
-                {accountHeading}
-                <Text className="text-center text-[13px] text-secondary-foreground">
-                    <Trans>Sync starts when you choose a period.</Trans>
-                </Text>
-            </View>
-            <View className="px-3xl pt-[24px] gap-y-[24px]" style={contentStyle}>
-                <GroupedListSection>
-                    {options
-                        .filter(option => isDefined(option.sinceDays))
-                        .map(option => (
-                            <ResyncWindowOptionRow key={String(option.sinceDays)} option={option} onSelect={handleOptionPress} />
-                        ))}
-                </GroupedListSection>
-                <GroupedListSection footer={t`Duplicates are merged automatically. Your categories, tags and notes stay.`}>
-                    {options
-                        .filter(option => !isDefined(option.sinceDays))
-                        .map(option => (
-                            <ResyncWindowOptionRow key={String(option.sinceDays)} option={option} onSelect={handleOptionPress} />
-                        ))}
-                </GroupedListSection>
-            </View>
+            <ScrollView style={styles.scroll} bounces={false} showsVerticalScrollIndicator={false}>
+                <FormsheetHeader size="md" title={t`Sync past transactions`} className="pb-[4px]" />
+                <View className="gap-y-[4px] px-3xl">
+                    {accountHeading}
+                    <Text className="text-center text-[13px] text-secondary-foreground">
+                        <Trans>Sync starts when you choose a period.</Trans>
+                    </Text>
+                </View>
+                <View className="px-3xl pt-[24px] gap-y-[24px]" style={styles.content}>
+                    <GroupedListSection>
+                        {options
+                            .filter(option => isDefined(option.sinceDays))
+                            .map(option => (
+                                <ResyncWindowOptionRow key={String(option.sinceDays)} option={option} onSelect={handleOptionPress} />
+                            ))}
+                    </GroupedListSection>
+                    <GroupedListSection footer={t`Duplicates are merged automatically. Your categories, tags and notes stay.`}>
+                        {options
+                            .filter(option => !isDefined(option.sinceDays))
+                            .map(option => (
+                                <ResyncWindowOptionRow key={String(option.sinceDays)} option={option} onSelect={handleOptionPress} />
+                            ))}
+                    </GroupedListSection>
+                </View>
+            </ScrollView>
         </View>
     );
 }
