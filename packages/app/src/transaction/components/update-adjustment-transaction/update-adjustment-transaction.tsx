@@ -23,6 +23,7 @@ import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
 import { useKeypadInput } from '../../hook/use-keypad-input.hook';
 import { AdjustmentAccountSummary } from '../adjustment-account-summary/adjustment-account-summary';
+import { QuickFormCaptionSlot } from '../quick-form-caption-slot/quick-form-caption-slot';
 import { QuickFormLayout } from '../quick-form-layout/quick-form-layout';
 import { QuickFormSecondaryLine } from '../quick-form-secondary-line/quick-form-secondary-line';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
@@ -148,6 +149,7 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
                     <QuickFormSecondaryLine>
                         <AmountSignPill isIncrease={isIncrease} onToggle={toggleIsIncrease} />
                     </QuickFormSecondaryLine>
+                    <QuickFormCaptionSlot />
                 </TransactionAmountDisplay>
             }
             footer={

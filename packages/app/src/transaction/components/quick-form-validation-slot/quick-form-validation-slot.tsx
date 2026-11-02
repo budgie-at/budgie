@@ -1,21 +1,17 @@
 import { TransactionCreateInputInterface } from '@budgie/contracts';
-import { ReactNode, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useFormContext, useFormState, useWatch } from 'react-hook-form';
-import { Text, useWindowDimensions, View } from 'react-native';
+import { Text } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import type { QuickFormValidationField } from '../../interface/quick-form-validation-field.type';
+import { QuickFormCaptionSlot } from '../quick-form-caption-slot/quick-form-caption-slot';
 
-interface Props {
-    readonly children?: ReactNode;
-}
+import type { QuickFormValidationField } from '../../interface/quick-form-validation-field.type';
 
 const VALIDATION_FIELDS: readonly QuickFormValidationField[] = ['amount', 'fromAccountId', 'toAccountId', 'entries'];
 
-export const QuickFormValidationSlot = ({ children }: Props) => {
-    const { fontScale } = useWindowDimensions();
-    const captionStyle = { minHeight: 40 * fontScale };
+export const QuickFormValidationSlot = () => {
     const { control, clearErrors } = useFormContext<TransactionCreateInputInterface>();
     const { errors } = useFormState({ control });
     const fieldValues = useWatch({ control, name: VALIDATION_FIELDS });
@@ -33,18 +29,16 @@ export const QuickFormValidationSlot = ({ children }: Props) => {
     });
 
     return (
-        <View className="items-center gap-xxs self-stretch">
-            <View className="min-h-[44px] items-center justify-center">{children}</View>
-            <View className="items-center justify-center self-stretch px-xl" style={captionStyle} accessibilityLiveRegion="polite">
-                {isNotEmptyString(message) ? (
-                    <Text
-                        accessibilityRole="alert"
-                        className="text-center text-[14px] leading-[20px] font-semibold text-destructive-strong"
-                    >
-                        {message}
-                    </Text>
-                ) : null}
-            </View>
-        </View>
+        <QuickFormCaptionSlot>
+            {isNotEmptyString(message) ? (
+                <Text
+                    numberOfLines={2}
+                    accessibilityRole="alert"
+                    className="text-center text-[14px] leading-[20px] font-semibold text-destructive-strong"
+                >
+                    {message}
+                </Text>
+            ) : null}
+        </QuickFormCaptionSlot>
     );
 };

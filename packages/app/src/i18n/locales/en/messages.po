@@ -3777,6 +3777,10 @@ msgstr "Fee {formattedAmount}"
 msgid "Fee {formattedPercent}, {formattedFee}"
 msgstr "Fee {formattedPercent}, {formattedFee}"
 
+#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
+msgid "Fee {PROTECTED_AMOUNT_PLACEHOLDER}"
+msgstr "Fee {PROTECTED_AMOUNT_PLACEHOLDER}"
+
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 msgid "Fee, no fee"
 msgstr "Fee, no fee"

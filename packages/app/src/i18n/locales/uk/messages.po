@@ -3776,6 +3776,10 @@ msgstr "Комісія {formattedAmount}"
 msgid "Fee {formattedPercent}, {formattedFee}"
 msgstr "Комісія {formattedPercent}, {formattedFee}"
 
+#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
+msgid "Fee {PROTECTED_AMOUNT_PLACEHOLDER}"
+msgstr "Комісія {PROTECTED_AMOUNT_PLACEHOLDER}"
+
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 msgid "Fee, no fee"
 msgstr "Комісія, без комісії"

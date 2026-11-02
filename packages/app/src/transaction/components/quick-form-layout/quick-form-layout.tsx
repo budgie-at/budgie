@@ -37,7 +37,7 @@ export const QuickFormLayout = ({ hero, children, footer }: Props) => {
                     contentInsetAdjustmentBehavior="never"
                     automaticallyAdjustContentInsets={false}
                 >
-                    <View className="grow justify-center">
+                    <View className="grow justify-end pt-[16px] pb-[28px]">
                         <View onLayout={handleHeroLayout}>{hero}</View>
                     </View>
                     <View onLayout={handleFieldsLayout}>{children}</View>

@@ -22,7 +22,7 @@ export const AmountSignSegment = ({ label, selected, onPress }: Props) => {
             onPress={onPress}
             className="min-h-[44px] flex-1 justify-center"
         >
-            <View className={cn('min-h-[32px] items-center justify-center rounded-[7px] px-[4px]', backgroundClassName)}>
+            <View className={cn('min-h-[44px] items-center justify-center rounded-[7px] px-[4px]', backgroundClassName)}>
                 <Text className={cn('text-[13px] leading-[18px] font-semibold', textClassName)}>{label}</Text>
             </View>
         </HapticPressable>

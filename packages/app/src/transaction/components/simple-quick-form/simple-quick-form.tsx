@@ -58,13 +58,15 @@ export const SimpleQuickForm = (props: Props) => {
                             amount={displayValue}
                             currencySymbol={currencySymbol}
                             variant={amountVariant}
-                            topContent={children}
+                            topContent={
+                                <>
+                                    {children}
+                                    <MccInfoRow transactionTitle={formState.title} mccCategoryId={formState.mccCategoryId} />
+                                </>
+                            }
                             testID={SimpleQuickFormSelector.AmountInput}
                         >
                             <QuickFormSecondaryLine>
-                                <MccInfoRow transactionTitle={formState.title} mccCategoryId={formState.mccCategoryId} />
-                            </QuickFormSecondaryLine>
-                            <QuickFormValidationSlot>
                                 <TransactionFeePill
                                     amount={feeAmount}
                                     currencySymbol={currencySymbol}
@@ -72,7 +74,8 @@ export const SimpleQuickForm = (props: Props) => {
                                     showEmptyState={isNewTransaction}
                                     onPress={handleFeePress}
                                 />
-                            </QuickFormValidationSlot>
+                            </QuickFormSecondaryLine>
+                            <QuickFormValidationSlot />
                         </TransactionAmountDisplay>
                     }
                     footer={

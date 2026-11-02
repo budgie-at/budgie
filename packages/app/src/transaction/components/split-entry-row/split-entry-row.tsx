@@ -2,7 +2,7 @@ import { TransactionEntryCreateInputInterface, UserIconNameEnum } from '@budgie/
 import { useLingui } from '@lingui/react/macro';
 import { ReactNode, useState } from 'react';
 import { Text, View, useWindowDimensions } from 'react-native';
-import Animated, { FadeIn, FadeOutDown, LinearTransition } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeOutDown, LinearTransition, ReduceMotion } from 'react-native-reanimated';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -28,6 +28,10 @@ interface Props {
 const ACCESSIBILITY_FONT_SCALE = 1.35;
 const CIRCLE_ICON_SIZE = 44;
 const CIRCLE_ICON_INNER_SIZE = 22;
+const ACCEPTED_DECIMAL_SEPARATORS = ['.', ','];
+const ENTERING = FadeIn.reduceMotion(ReduceMotion.System);
+const EXITING = FadeOutDown.reduceMotion(ReduceMotion.System);
+const LAYOUT = LinearTransition.reduceMotion(ReduceMotion.System);
 const amountInputStyle = { textAlign: 'right' as const, fontSize: 17, fontWeight: '600' as const, fontVariant: ['tabular-nums' as const] };
 
 export const SplitEntryRow = (props: Props) => {
@@ -50,7 +54,7 @@ export const SplitEntryRow = (props: Props) => {
     const iconVariant = hasCategorySelected ? 'ghost' : 'warning';
 
     return (
-        <Animated.View entering={FadeIn} exiting={FadeOutDown} layout={LinearTransition}>
+        <Animated.View entering={ENTERING} exiting={EXITING} layout={LAYOUT}>
             <View className="flex-row flex-wrap items-center gap-x-md gap-y-md px-xl py-xl">
                 <HapticPressable
                     onPress={onCategoryPress}
@@ -72,11 +76,13 @@ export const SplitEntryRow = (props: Props) => {
 
                 <View
                     data-focused={isAmountFocused}
-                    className="ml-auto min-h-[44px] min-w-[104px] max-w-full shrink flex-row items-center justify-end gap-x-[4px] rounded-full px-[8px] data-[focused=true]:bg-surface-fill"
+                    className="ml-auto min-h-[44px] min-w-[104px] max-w-full shrink flex-row items-center justify-end rounded-full px-[8px] data-[focused=true]:bg-surface-fill"
                 >
                     <Text className="text-primary text-[17px] font-semibold tabular-nums">{currencySymbol}</Text>
                     <AmountInput
                         value={entry.amount}
+                        keyboardType="decimal-pad"
+                        acceptedDecimalSeparators={ACCEPTED_DECIMAL_SEPARATORS}
                         onChangeValue={onAmountChange}
                         inputClassName="text-primary border-0 h-auto min-h-[44px] shrink px-0"
                         placeholderTextColorClassName="accent-secondary-foreground"

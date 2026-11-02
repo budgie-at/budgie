@@ -1,13 +1,15 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
-import Animated, { FadeInUp } from 'react-native-reanimated';
+import Animated, { FadeInUp, ReduceMotion } from 'react-native-reanimated';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-size-multiplier.constant';
+import { PROTECTED_AMOUNT_PLACEHOLDER } from '../../../@generic/constant/protected-amount-placeholder.constant';
+import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { formatExchangeRate } from '../../../@generic/utils/format-exchange-rate.util';
 import { TransferQuickFormSelector } from '../transfer-quick-form/transfer-quick-form.selector';
 
@@ -24,18 +26,20 @@ interface Props {
 
 const ANIMATION_DELAY = 100;
 const ANIMATION_DURATION = 200;
-const ENTERING_ANIMATION = FadeInUp.delay(ANIMATION_DELAY).duration(ANIMATION_DURATION);
+const ENTERING_ANIMATION = FadeInUp.delay(ANIMATION_DELAY).duration(ANIMATION_DURATION).reduceMotion(ReduceMotion.System);
 
 export const ConversionRow = (props: Props) => {
     const { label, destinationAmount, destinationSymbol, sourceCode, destinationCode, exchangeRate, isManualRate, onPress } = props;
     const { t } = useLingui();
+    const isAmountProtected = useIsAmountProtected();
 
     const prefix = isManualRate ? '=' : '\u2248';
     const formattedAmount = isPositiveNumber(destinationAmount) ? destinationAmount.toFixed(2) : '0.00';
     const formattedRate = isPositiveNumber(exchangeRate) ? formatExchangeRate(exchangeRate) : '—';
     const rateLabel = t`1 ${sourceCode} = ${formattedRate} ${destinationCode}`;
     const exchangeRateLabel = t`Exchange rate: ${rateLabel}`;
-    const accessibilityLabel = `${label}: ${prefix} ${destinationSymbol}${formattedAmount}. ${exchangeRateLabel}`;
+    const displayAmount = isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : `${prefix} ${destinationSymbol}${formattedAmount}`;
+    const accessibilityLabel = `${label}: ${displayAmount}. ${exchangeRateLabel}`;
 
     return (
         <Animated.View entering={ENTERING_ANIMATION}>
@@ -60,8 +64,7 @@ export const ConversionRow = (props: Props) => {
                         maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
                         numberOfLines={1}
                     >
-                        {prefix} {destinationSymbol}
-                        {formattedAmount}
+                        {displayAmount}
                     </Text>
                 </View>
                 <Text

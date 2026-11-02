@@ -7,6 +7,8 @@ import Animated, { ReduceMotion, FadeIn, useAnimatedStyle, useSharedValue, withS
 import { isDefined } from '@rnw-community/shared';
 
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
+import { PROTECTED_AMOUNT_PLACEHOLDER } from '../../../@generic/constant/protected-amount-placeholder.constant';
+import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
@@ -39,6 +41,7 @@ const BOUNCE_SPRING = { damping: 12, mass: 0.8, stiffness: 200, reduceMotion: Re
 const RETURN_SPRING = { damping: 15, mass: 1, stiffness: 150, reduceMotion: ReduceMotion.System };
 
 export const TransactionAmountDisplay = ({ ref, amount, currencySymbol, variant, topContent, onPress, testID, children }: Props) => {
+    const isAmountProtected = useIsAmountProtected();
     const amountContainerStyle = { minHeight: AMOUNT_MIN_HEIGHT * useWindowDimensions().fontScale };
     const { decimalSeparator, digitGroupingSeparator } = useLocaleInfo();
     const { shake, animatedStyle: shakeStyle } = useShakeAnimation();
@@ -64,7 +67,9 @@ export const TransactionAmountDisplay = ({ ref, amount, currencySymbol, variant,
         transform: [{ scale: scale.value }]
     }));
 
-    const fullDisplay = `${currencySymbol}${formatKeypadAmount(amount, decimalSeparator, digitGroupingSeparator)}`;
+    const fullDisplay = isAmountProtected
+        ? PROTECTED_AMOUNT_PLACEHOLDER
+        : `${currencySymbol}${formatKeypadAmount(amount, decimalSeparator, digitGroupingSeparator)}`;
 
     return (
         <Animated.View entering={FadeIn.duration(200).reduceMotion(ReduceMotion.System)} className="items-center self-stretch">
