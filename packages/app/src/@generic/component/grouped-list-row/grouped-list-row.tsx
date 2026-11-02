@@ -8,6 +8,7 @@ import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 
 import type { ComponentProps, ReactElement, ReactNode } from 'react';
+import type { GestureResponderEvent } from 'react-native';
 
 interface Props {
     readonly title: string | ReactElement;
@@ -16,10 +17,16 @@ interface Props {
     readonly right?: ReactNode;
     readonly titleTestID?: string;
     readonly testID?: string;
-    readonly onPress?: () => void;
+    readonly onPress?: (event: GestureResponderEvent) => void;
     readonly pressableProps?: Pick<
         ComponentProps<typeof HapticPressable>,
-        'onLongPress' | 'disabled' | 'accessibilityState' | 'accessibilityActions' | 'onAccessibilityAction'
+        | 'onLongPress'
+        | 'disabled'
+        | 'accessibilityLabel'
+        | 'accessibilityHint'
+        | 'accessibilityState'
+        | 'accessibilityActions'
+        | 'onAccessibilityAction'
     >;
 }
 
