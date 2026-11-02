@@ -21,7 +21,7 @@ interface Props<Item> {
 
 const NUM_COLUMNS = 3;
 const ROW_GAP = 8;
-const COLUMN_GAP = 10;
+const COLUMN_GAP = 8;
 const COLUMN_WRAPPER_STYLE = { rowGap: ROW_GAP, columnGap: COLUMN_GAP };
 
 export const SelectorGridContent = <Item,>(props: Props<Item>) => {

@@ -4,12 +4,15 @@ import { Text, View } from 'react-native';
 
 import { Icon } from '../icon/icon';
 
+import type { ReactNode } from 'react';
+
 interface Props {
     readonly query: string;
     readonly hint: string;
+    readonly children?: ReactNode;
 }
 
-export const SelectorSearchEmptyState = ({ query, hint }: Props) => {
+export const SelectorSearchEmptyState = ({ query, hint, children }: Props) => {
     const { t } = useLingui();
 
     return (
@@ -19,6 +22,7 @@ export const SelectorSearchEmptyState = ({ query, hint }: Props) => {
                 {t`No results for “${query}”`}
             </Text>
             <Text className="text-secondary-foreground text-center text-[13px] leading-[18px]">{hint}</Text>
+            {children}
         </View>
     );
 };

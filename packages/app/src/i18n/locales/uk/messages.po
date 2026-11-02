@@ -758,6 +758,10 @@ msgstr "{title} витрачається надто швидко"
 msgid "{title}, {protectedAmount} per month"
 msgstr "{title}, {protectedAmount} на місяць"
 
+#: src/tag/components/tags-selector-card/tags-selector-card.tsx
+msgid "{title}, primary"
+msgstr "{title}, основний"
+
 #: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
 msgid "{title}, rollover {currentLabel}. Double tap to change."
 msgstr "{title}, перенесення {currentLabel}. Двічі торкніться, щоб змінити."
@@ -950,6 +954,7 @@ msgstr "Більше за цю суму"
 msgid "account"
 msgstr "рахунок"
 
+#: src/app/account-selector.tsx
 #: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
 #: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
@@ -1953,6 +1958,7 @@ msgstr "Категоризувати як {categoryTitle}"
 
 #: src/app/(tabs)/settings/categories.tsx
 #: src/app/(tabs)/settings/import.tsx
+#: src/app/category-selector.tsx
 #: src/budget/components/budget-fund-category-field/budget-fund-category-field.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
 #: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx
@@ -2005,10 +2011,12 @@ msgstr "Перевірте форму, щоб продовжити"
 msgid "Check the key and secret, then try again."
 msgstr "Перевірте ключ і секрет та спробуйте ще раз."
 
+#: src/app/category-selector.tsx
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "Check the spelling or create it as a new category."
 msgstr "Перевірте написання або створіть її як нову категорію."
 
+#: src/app/tags-selector.tsx
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
 msgid "Check the spelling or create it as a new tag."
 msgstr "Перевірте написання або створіть його як новий тег."
@@ -2020,6 +2028,10 @@ msgstr "Перевірте написання або спробуйте код, 
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Check the spelling or try a ticker like BTC."
 msgstr "Перевірте написання або спробуйте тікер, як-от BTC."
+
+#: src/account/component/account-select-content/account-select-content.tsx
+msgid "Check the spelling or try another account name."
+msgstr "Перевірте написання або спробуйте іншу назву рахунку."
 
 #: src/account/constant/account-kind-title.constant.ts
 #: src/app/(tabs)/settings/sync-repairs.tsx
@@ -2720,6 +2732,7 @@ msgid "Covered by your liquid balance."
 msgstr "Покривається вашим ліквідним балансом."
 
 #: src/@generic/component/searchable-page-empty-state-actions/searchable-page-empty-state-actions.tsx
+#: src/@generic/component/selector-no-results-state/selector-no-results-state.tsx
 msgid "Create “{query}”"
 msgstr "Створити «{query}»"
 
@@ -3965,6 +3978,10 @@ msgstr "Імпорт історії призупинено"
 msgid "History loading paused"
 msgstr "Завантаження історії призупинено"
 
+#: src/app/tags-selector.tsx
+msgid "Hold a tag to make it primary"
+msgstr "Утримуйте тег, щоб зробити його основним"
+
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Hold to seal with this PIN"
 msgstr "Утримуйте, щоб запечатати цим PIN-кодом"
@@ -4477,6 +4494,10 @@ msgstr "Обслуговування"
 msgid "Make a PIN after all"
 msgstr "Усе ж створити PIN-код"
 
+#: src/tag/components/tags-selector-card/tags-selector-card.tsx
+msgid "Make primary"
+msgstr "Зробити основним"
+
 #: src/budget/components/budget-details-edit-button/budget-details-edit-button.tsx
 msgid "Manage budget"
 msgstr "Керувати бюджетом"
@@ -4935,7 +4956,6 @@ msgstr "Без акаунта · Близько хвилини"
 msgid "No account. There's nothing to sign up for."
 msgstr "Жодного акаунта. Не треба ніде реєструватися."
 
-#: src/account/component/account-select-content/account-select-content.tsx
 #: src/app/transaction-account-filter.tsx
 msgid "No accounts found"
 msgstr "Рахунків не знайдено"
@@ -6990,6 +7010,7 @@ msgstr "Витрати з тегом також враховуються в ос
 #: src/@generic/component/analytics-segmented-control/analytics-segmented-control.tsx
 #: src/app/(tabs)/analytics.tsx
 #: src/app/(tabs)/settings/tags.tsx
+#: src/app/tags-selector.tsx
 #: src/settings/components/organize-settings-rows/organize-settings-rows.tsx
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
@@ -7599,7 +7620,6 @@ msgid "Try a different merchant, amount, or date."
 msgstr "Спробуйте іншого продавця, суму або дату."
 
 #: src/@generic/component/icon-selector-empty-state/icon-selector-empty-state.tsx
-#: src/account/component/account-select-content/account-select-content.tsx
 #: src/app/contact-selector.tsx
 #: src/app/rule-mcc-selector.tsx
 #: src/category/components/category-select-content/category-select-content.tsx

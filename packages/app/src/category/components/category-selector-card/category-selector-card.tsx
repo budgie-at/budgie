@@ -8,7 +8,6 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { BACKGROUND_COLOR_PALETTE } from '../../../@generic/constant/background-color-palette.constant';
-import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { TONAL_DISC_BACKGROUND } from '../../../@generic/constant/tonal-disc-background.constant';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
@@ -23,7 +22,7 @@ interface Props extends Pick<CategoryEntityInterface, 'id' | 'icon' | 'title'> {
     readonly testID?: string;
 }
 
-const cardVariants = cva(`flex-1 rounded-2xl px-sm py-xs gap-y-0.5 border-2 items-center min-h-[82px]`, {
+const cardVariants = cva(`flex-1 rounded-2xl px-sm pt-md border-2 items-center h-[92px]`, {
     variants: {
         isSelected: {
             true: '',
@@ -32,11 +31,11 @@ const cardVariants = cva(`flex-1 rounded-2xl px-sm py-xs gap-y-0.5 border-2 item
     }
 });
 
-const textVariants = cva('font-medium text-(length:--text-xs) text-center', {
+const textVariants = cva('font-medium text-[13px] leading-[16px] text-center', {
     variants: {
         isSelected: {
-            true: '',
-            false: 'text-secondary-foreground'
+            true: 'text-primary font-semibold',
+            false: 'text-primary'
         }
     }
 });
@@ -67,20 +66,16 @@ export const CategorySelectorCard = (props: Props) => {
             ) : null}
 
             {isSelected ? (
-                <View className="absolute top-[6px] right-[6px] rounded-full bg-primary p-[2px]" pointerEvents="none">
+                <View className="absolute top-[8px] right-[8px] rounded-full bg-primary p-[2px]" pointerEvents="none">
                     <Icon icon={UserIconNameEnum.Check} size={10} className="text-primary-reverse" />
                 </View>
             ) : null}
 
-            <CircleIcon size={32} iconSize={17} className={iconClassName} icon={icon} variant={variant} border={false} />
+            <CircleIcon size={36} iconSize={19} className={iconClassName} icon={icon} variant={variant} border={false} />
 
-            <View className="self-stretch flex-1 justify-center">
+            <View className="self-stretch pt-[6px]">
                 <Text
-                    className={cn(
-                        textVariants({ isSelected }),
-                        isSelected && FOREGROUND_COLOR_PALETTE[variant],
-                        'self-stretch flex-shrink'
-                    )}
+                    className={cn(textVariants({ isSelected }), 'self-stretch flex-shrink')}
                     numberOfLines={2}
                     ellipsizeMode="tail"
                     {...testIDProps(testID, TestIDPartEnum.LABEL)}

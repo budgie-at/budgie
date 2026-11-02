@@ -1,7 +1,8 @@
 import { ReiconIconNameEnum, TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
-import { Text, View } from 'react-native';
-import Animated, { LinearTransition, useAnimatedStyle, withSpring } from 'react-native-reanimated';
+import { Text } from 'react-native';
+import Animated, { LinearTransition } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -23,20 +24,16 @@ interface Props extends Pick<TagEntityInterface, 'id' | 'title'> {
     readonly testID?: string;
 }
 
-const STAR_SIZE = 13;
-const TAG_CARD_HEIGHT = 56;
-const PRIMARY_SCALE = 1.04;
-const NORMAL_SCALE = 1;
-const SCALE_SPRING = { damping: 14, stiffness: 220 };
+const STAR_SIZE = 14;
+const CHIP_HIT_SLOP = { top: 4, bottom: 4 };
 const filledStarIconWeight: IconWeight = 'Filled';
-const outlineStarIconWeight: IconWeight = 'Outline';
 
 const cardVariants = cva('relative border-2 rounded-3xl px-xl py-sm items-center justify-center gap-x-md', {
     variants: {
         isSelected: { true: '', false: '' },
         isPrimary: { true: '', false: '' },
         variant: {
-            static: 'flex-1',
+            static: 'h-[36px] flex-row gap-x-xs rounded-full px-[14px] py-0',
             removable: 'flex-none flex-row bg-primary border-primary py-md'
         }
     },
@@ -54,7 +51,7 @@ const cardVariants = cva('relative border-2 rounded-3xl px-xl py-sm items-center
     ]
 });
 
-const textVariants = cva('text-sm', {
+const textVariants = cva('text-[15px]', {
     variants: {
         isSelected: { true: '', false: '' },
         isPrimary: { true: '', false: '' },
@@ -73,23 +70,8 @@ const textVariants = cva('text-sm', {
             isSelected: false,
             variant: 'static',
             className: 'text-primary'
-        },
-        {
-            isPrimary: true,
-            isSelected: true,
-            variant: 'static',
-            className: 'font-bold'
         }
     ]
-});
-
-const starVariants = cva('', {
-    variants: {
-        isPrimary: {
-            true: 'text-dark-warning-foreground',
-            false: 'text-primary-reverse opacity-40'
-        }
-    }
 });
 
 export const TagsSelectorCard = ({
@@ -103,50 +85,44 @@ export const TagsSelectorCard = ({
     id,
     testID
 }: Props) => {
+    const { t } = useLingui();
     const handleSelect = () => void onSelect(id);
     const handlePrimarySelect = () => void onPrimarySelect?.(id);
 
-    const numberOfLines = variant === 'static' ? 2 : 1;
     const longPressHandler = isDefined(onPrimarySelect) ? handlePrimarySelect : void 0;
-    const showStarBadge = variant === 'static' && isSelected;
-    const starWeight = isPrimary ? filledStarIconWeight : outlineStarIconWeight;
+    const showLeadingMark = variant === 'static' && isSelected;
 
-    const scaleStyle = useAnimatedStyle(() => ({
-        transform: [{ scale: withSpring(isPrimary ? PRIMARY_SCALE : NORMAL_SCALE, SCALE_SPRING) }]
-    }));
-
-    const wrapperStyle = variant === 'static' ? [{ minHeight: TAG_CARD_HEIGHT }, scaleStyle] : scaleStyle;
     const accessibilityState = { selected: isSelected };
+    const accessibilityLabel = isPrimary ? t`${title}, primary` : title;
+    const accessibilityActions = isDefined(onPrimarySelect) && !isPrimary ? [{ name: 'makePrimary', label: t`Make primary` }] : [];
 
     return (
-        <Animated.View className="flex-1" style={wrapperStyle} layout={LinearTransition.springify()}>
+        <Animated.View layout={LinearTransition.springify()}>
             <HapticPressable
                 testID={testID}
                 className={cn(cardVariants({ isSelected, isPrimary, variant }), className)}
                 onPress={handleSelect}
                 onLongPress={longPressHandler}
+                hitSlop={CHIP_HIT_SLOP}
                 accessibilityRole="button"
-                accessibilityLabel={title}
+                accessibilityLabel={accessibilityLabel}
+                accessibilityActions={accessibilityActions}
+                onAccessibilityAction={handlePrimarySelect}
                 accessibilityState={accessibilityState}
             >
-                <Text
-                    className={cn(textVariants({ isSelected, isPrimary, variant }), 'self-stretch flex-shrink text-center')}
-                    numberOfLines={numberOfLines}
-                    ellipsizeMode="tail"
-                >
+                {showLeadingMark && isPrimary ? (
+                    <ReiconIcon
+                        icon={ReiconIconNameEnum.STAR}
+                        size={STAR_SIZE}
+                        weight={filledStarIconWeight}
+                        className="text-primary-reverse"
+                    />
+                ) : null}
+                {showLeadingMark && !isPrimary ? <Icon icon={UserIconNameEnum.Check} size={14} className="text-primary-reverse" /> : null}
+
+                <Text className={textVariants({ isSelected, isPrimary, variant })} numberOfLines={1} ellipsizeMode="tail">
                     {title}
                 </Text>
-
-                {showStarBadge ? (
-                    <View className="absolute top-1.5 right-1.5">
-                        <ReiconIcon
-                            icon={ReiconIconNameEnum.STAR}
-                            size={STAR_SIZE}
-                            weight={starWeight}
-                            className={starVariants({ isPrimary })}
-                        />
-                    </View>
-                ) : null}
 
                 {variant === 'removable' ? <Icon icon={UserIconNameEnum.X} className="text-primary-reverse" size={14} /> : null}
             </HapticPressable>

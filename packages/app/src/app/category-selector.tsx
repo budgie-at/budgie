@@ -26,10 +26,12 @@ export default function CategorySelectorModal() {
 
     const { variant = 'primary', initialCategoryId = null, title, description, excludeCategoryIds = [] } = currentParams ?? {};
     const selectedCategoryIds = isDefined(initialCategoryId) ? [initialCategoryId] : [];
-    const data = prepareSelectorGridData(categories, excludeCategoryIds, selectedCategoryIds);
+    const data = prepareSelectorGridData(categories, excludeCategoryIds);
+    const query = search.trim();
+    const resultCount = isLoading ? null : data.filter(item => !item.isEmpty).length;
 
     const handleCreatePress = () => {
-        openCategoryForm({ defaultTitle: search }, result => {
+        openCategoryForm({ defaultTitle: query }, result => {
             if (isDefined(result)) {
                 resolveCategorySelector(result.category.id);
             }
@@ -41,6 +43,7 @@ export default function CategorySelectorModal() {
             <SelectorModalSearchHeader
                 search={search}
                 onSearchChange={setSearch}
+                title={t`Category`}
                 placeholder={t`Search categories…`}
                 createLabel={t`Create category`}
                 onCreate={handleCreatePress}
@@ -48,7 +51,14 @@ export default function CategorySelectorModal() {
                 testID={CategorySelectorModalSelector.Input}
             />
 
-            <SelectorModalDescription title={title} description={description}>
+            <SelectorModalDescription
+                title={title}
+                description={description}
+                query={query}
+                resultCount={resultCount}
+                noResultsHint={t`Check the spelling or create it as a new category.`}
+                onCreate={handleCreatePress}
+            >
                 {topOffset => (
                     <CategorySelectContent
                         topOffset={topOffset}

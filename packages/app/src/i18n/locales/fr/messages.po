@@ -758,6 +758,10 @@ msgstr "{title} file trop vite"
 msgid "{title}, {protectedAmount} per month"
 msgstr "{title}, {protectedAmount} par mois"
 
+#: src/tag/components/tags-selector-card/tags-selector-card.tsx
+msgid "{title}, primary"
+msgstr "{title}, principal"
+
 #: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
 msgid "{title}, rollover {currentLabel}. Double tap to change."
 msgstr "{title}, report {currentLabel}. Touchez deux fois pour modifier."
@@ -950,6 +954,7 @@ msgstr "Au-dessus de ce montant"
 msgid "account"
 msgstr "compte"
 
+#: src/app/account-selector.tsx
 #: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
 #: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
@@ -1953,6 +1958,7 @@ msgstr "Catégoriser comme {categoryTitle}"
 
 #: src/app/(tabs)/settings/categories.tsx
 #: src/app/(tabs)/settings/import.tsx
+#: src/app/category-selector.tsx
 #: src/budget/components/budget-fund-category-field/budget-fund-category-field.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
 #: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx
@@ -2005,10 +2011,12 @@ msgstr "Vérifiez le formulaire pour continuer"
 msgid "Check the key and secret, then try again."
 msgstr "Vérifiez la clé et le secret, puis réessayez."
 
+#: src/app/category-selector.tsx
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "Check the spelling or create it as a new category."
 msgstr "Vérifiez l’orthographe ou créez-la comme nouvelle catégorie."
 
+#: src/app/tags-selector.tsx
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
 msgid "Check the spelling or create it as a new tag."
 msgstr "Vérifiez l’orthographe ou créez-la comme nouvelle étiquette."
@@ -2020,6 +2028,10 @@ msgstr "Vérifiez l’orthographe ou essayez un code comme EUR."
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Check the spelling or try a ticker like BTC."
 msgstr "Vérifiez l’orthographe ou essayez un symbole comme BTC."
+
+#: src/account/component/account-select-content/account-select-content.tsx
+msgid "Check the spelling or try another account name."
+msgstr "Vérifiez l’orthographe ou essayez un autre nom de compte."
 
 #: src/account/constant/account-kind-title.constant.ts
 #: src/app/(tabs)/settings/sync-repairs.tsx
@@ -2720,6 +2732,7 @@ msgid "Covered by your liquid balance."
 msgstr "Couvert par votre solde disponible."
 
 #: src/@generic/component/searchable-page-empty-state-actions/searchable-page-empty-state-actions.tsx
+#: src/@generic/component/selector-no-results-state/selector-no-results-state.tsx
 msgid "Create “{query}”"
 msgstr "Créer « {query} »"
 
@@ -3965,6 +3978,10 @@ msgstr "Importation de l’historique en pause"
 msgid "History loading paused"
 msgstr "Chargement de l'historique en pause"
 
+#: src/app/tags-selector.tsx
+msgid "Hold a tag to make it primary"
+msgstr "Maintenez une étiquette pour la rendre principale"
+
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Hold to seal with this PIN"
 msgstr "Maintiens pour sceller avec ce code PIN"
@@ -4477,6 +4494,10 @@ msgstr "Maintenance"
 msgid "Make a PIN after all"
 msgstr "Créer un code PIN finalement"
 
+#: src/tag/components/tags-selector-card/tags-selector-card.tsx
+msgid "Make primary"
+msgstr "Définir comme principale"
+
 #: src/budget/components/budget-details-edit-button/budget-details-edit-button.tsx
 msgid "Manage budget"
 msgstr "Gérer le budget"
@@ -4935,7 +4956,6 @@ msgstr "Aucun compte requis · Environ une minute"
 msgid "No account. There's nothing to sign up for."
 msgstr "Aucun compte. Il n'y a rien à quoi s'inscrire."
 
-#: src/account/component/account-select-content/account-select-content.tsx
 #: src/app/transaction-account-filter.tsx
 msgid "No accounts found"
 msgstr "Aucun compte trouvé"
@@ -6990,6 +7010,7 @@ msgstr "Les dépenses taguées comptent aussi dans votre budget principal."
 #: src/@generic/component/analytics-segmented-control/analytics-segmented-control.tsx
 #: src/app/(tabs)/analytics.tsx
 #: src/app/(tabs)/settings/tags.tsx
+#: src/app/tags-selector.tsx
 #: src/settings/components/organize-settings-rows/organize-settings-rows.tsx
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
@@ -7599,7 +7620,6 @@ msgid "Try a different merchant, amount, or date."
 msgstr "Essayez un autre commerçant, montant ou date."
 
 #: src/@generic/component/icon-selector-empty-state/icon-selector-empty-state.tsx
-#: src/account/component/account-select-content/account-select-content.tsx
 #: src/app/contact-selector.tsx
 #: src/app/rule-mcc-selector.tsx
 #: src/category/components/category-select-content/category-select-content.tsx

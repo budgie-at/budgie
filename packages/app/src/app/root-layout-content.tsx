@@ -71,6 +71,7 @@ const PIN_OPTIONS: NativeStackNavigationOptions = { ...MODAL_OPTIONS, gestureEna
 const LOCK_SCREEN_OPTIONS: NativeStackNavigationOptions = { presentation: 'fullScreenModal', animation: 'none' };
 
 const SELECTOR_OPTIONS = formSheetOptions([DETENT_40, DETENT_70], 0);
+const ACCOUNT_SELECTOR_OPTIONS = formSheetOptions([DETENT_55, DETENT_90], 0);
 
 const DESTINATION_OPTIONS = formSheetOptions([DETENT_90]);
 
@@ -178,7 +179,10 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="(main)/analytics/transactions" />
                                                                     <Stack.Screen name="(main)/categorize" />
                                                                     <Stack.Screen name="category-selector" options={SELECTOR_OPTIONS} />
-                                                                    <Stack.Screen name="account-selector" options={SELECTOR_OPTIONS} />
+                                                                    <Stack.Screen
+                                                                        name="account-selector"
+                                                                        options={ACCOUNT_SELECTOR_OPTIONS}
+                                                                    />
                                                                     <Stack.Screen
                                                                         name="currency-selector"
                                                                         options={formSheetOptions([DETENT_62, DETENT_90], 0)}

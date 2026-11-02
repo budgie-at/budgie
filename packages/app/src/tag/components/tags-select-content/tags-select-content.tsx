@@ -1,9 +1,12 @@
 import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
+
+import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
-import { SelectorGridContent } from '../../../@generic/component/selector-grid-content/selector-grid-content';
+import { SelectorGridSkeleton } from '../../../@generic/component/selector-grid-skeleton/selector-grid-skeleton';
+import { useFormsheetListContentStyle } from '../../../@generic/hook/use-formsheet-list-content-style/use-formsheet-list-content-style.hook';
 import { FlatListDataItem } from '../../../@generic/utils/map-to-flatlist-data.util';
 import { TagsSelectorModalSelector } from '../../../app/tags-selector-modal.selector';
 import { TagsSelectorCard } from '../tags-selector-card/tags-selector-card';
@@ -19,10 +22,10 @@ interface Props {
     readonly onPrimarySelect?: (tagId: number) => void;
 }
 
-const TAG_CARD_HEIGHT = 56;
-const FLOATING_DONE_BUTTON_BOTTOM_SPACE = 96;
-
-const keyExtractor = (item: FlatListDataItem<TagEntityInterface>, index: number) => (item.isEmpty ? `empty-${index}` : item.id.toString());
+const TAG_CHIP_HEIGHT = 36;
+const CHIP_GAP = 8;
+const CHIP_FLOW_STYLE = { flexDirection: 'row', flexWrap: 'wrap', alignContent: 'flex-start', gap: CHIP_GAP } as const;
+const FLOATING_DONE_BUTTON_BOTTOM_SPACE = 120;
 
 export const TagsSelectContent = (props: Props) => {
     const {
@@ -36,43 +39,46 @@ export const TagsSelectContent = (props: Props) => {
         onPrimarySelect
     } = props;
     const { t } = useLingui();
+    const listContentStyle = useFormsheetListContentStyle(additionalBottomPadding, topOffset);
 
-    const renderItem = ({ item }: { item: FlatListDataItem<TagEntityInterface> }) =>
-        item.isEmpty ? (
-            <View className="flex-1" />
-        ) : (
-            <TagsSelectorCard
-                isSelected={selectedTagIds.includes(item.id)}
-                isPrimary={primaryTagId === item.id}
-                onSelect={onSelect}
-                onPrimarySelect={onPrimarySelect}
-                variant="static"
-                title={item.title}
-                id={item.id}
-                testID={TagsSelectorModalSelector.Card(item.title)}
-            />
+    const tags = data.flatMap(item => (item.isEmpty ? [] : [item]));
+    const contentContainerStyle = { ...listContentStyle, ...CHIP_FLOW_STYLE };
+
+    if (isLoading) {
+        return (
+            <SelectorGridSkeleton itemHeight={TAG_CHIP_HEIGHT} additionalBottomPadding={additionalBottomPadding} topOffset={topOffset} />
         );
+    }
 
-    const listEmptyComponent = (
-        <View className="flex-1 justify-center">
-            <EmptyState
-                icon={UserIconNameEnum.Tag}
-                title={t`No tags found`}
-                description={t`Try a different search term or create a new tag`}
-            />
-        </View>
-    );
+    if (!isNotEmptyArray(tags)) {
+        return (
+            <View className="absolute inset-0" style={listContentStyle}>
+                <View className="pt-7xl">
+                    <EmptyState
+                        icon={UserIconNameEnum.Tag}
+                        title={t`No tags found`}
+                        description={t`Try a different search term or create a new tag`}
+                    />
+                </View>
+            </View>
+        );
+    }
 
     return (
-        <SelectorGridContent
-            data={data}
-            keyExtractor={keyExtractor}
-            renderItem={renderItem}
-            itemHeight={TAG_CARD_HEIGHT}
-            listEmptyComponent={listEmptyComponent}
-            isLoading={isLoading}
-            additionalBottomPadding={additionalBottomPadding}
-            topOffset={topOffset}
-        />
+        <ScrollView className="absolute inset-0" contentContainerStyle={contentContainerStyle} keyboardShouldPersistTaps="handled">
+            {tags.map(tag => (
+                <TagsSelectorCard
+                    key={tag.id}
+                    isSelected={selectedTagIds.includes(tag.id)}
+                    isPrimary={primaryTagId === tag.id}
+                    onSelect={onSelect}
+                    onPrimarySelect={onPrimarySelect}
+                    variant="static"
+                    title={tag.title}
+                    id={tag.id}
+                    testID={TagsSelectorModalSelector.Card(tag.title)}
+                />
+            ))}
+        </ScrollView>
     );
 };

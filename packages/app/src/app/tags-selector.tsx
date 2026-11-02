@@ -56,7 +56,10 @@ export default function TagsSelectorModal() {
 
     const hasResolvedRef = useRef(false);
 
-    const data = prepareSelectorGridData(tags, excludeTagIds, selected);
+    const data = prepareSelectorGridData(tags, excludeTagIds);
+    const query = search.trim();
+    const primaryHint = enablePrimarySelection && selected.length > 1 ? t`Hold a tag to make it primary` : null;
+    const resultCount = isLoading ? null : data.filter(item => !item.isEmpty).length;
     const dirty = isSelectionDirty(selected, initialTagIds) || primaryTagId !== initialPrimaryTagId;
 
     const resolveSelection = (tagIds: number[]) => {
@@ -75,7 +78,7 @@ export default function TagsSelectorModal() {
     const handlePrimarySelect = (tagId: number) => void dispatch({ type: TagsSelectorActionTypeEnum.PRIMARY_SELECTED, tagId });
 
     const handleCreatePress = () => {
-        openTagForm({ defaultTitle: search }, result => {
+        openTagForm({ defaultTitle: query }, result => {
             if (isDefined(result) && singleSelect) {
                 resolveSelection([result.tag.id]);
             } else if (isDefined(result)) {
@@ -100,6 +103,7 @@ export default function TagsSelectorModal() {
             <SelectorModalSearchHeader
                 search={search}
                 onSearchChange={setSearch}
+                title={t`Tags`}
                 placeholder={t`Search tags…`}
                 createLabel={t`Create tag`}
                 onCreate={handleCreatePress}
@@ -107,7 +111,14 @@ export default function TagsSelectorModal() {
                 testID={TagsSelectorModalSelector.Input}
             />
 
-            <SelectorModalDescription title={title} description={description}>
+            <SelectorModalDescription
+                title={title}
+                description={description}
+                query={query}
+                resultCount={resultCount}
+                noResultsHint={t`Check the spelling or create it as a new tag.`}
+                onCreate={handleCreatePress}
+            >
                 {topOffset => (
                     <TagsSelectContent
                         topOffset={topOffset}
@@ -122,7 +133,12 @@ export default function TagsSelectorModal() {
             </SelectorModalDescription>
 
             {dirty && !singleSelect ? (
-                <TagsSelectorDoneButton count={selected.length} onPress={handleDone} testID={TagsSelectorModalSelector.DoneButton} />
+                <TagsSelectorDoneButton
+                    count={selected.length}
+                    onPress={handleDone}
+                    hint={primaryHint}
+                    testID={TagsSelectorModalSelector.DoneButton}
+                />
             ) : null}
         </SheetSurface>
     );

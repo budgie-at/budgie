@@ -69,6 +69,7 @@ export default function AccountSelectorModal() {
             <SelectorModalSearchHeader
                 search={search}
                 onSearchChange={setSearch}
+                title={t`Account`}
                 placeholder={t`Search accounts…`}
                 testID={AccountSelectorModalSelector.Input}
             />
