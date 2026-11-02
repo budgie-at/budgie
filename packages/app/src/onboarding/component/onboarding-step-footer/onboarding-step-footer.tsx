@@ -2,32 +2,34 @@ import { ReactNode } from 'react';
 import { View } from 'react-native';
 import { useKeyboardState, useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ScreenChromeFooter } from '@rnw-community/react-native-screen-chrome';
 
+import { cn } from '../../../@generic/utils/cn.util';
+import { OnboardingKeyboardControls } from '../onboarding-keyboard-controls/onboarding-keyboard-controls';
+
 interface Props {
     readonly children: ReactNode;
-    readonly keyboardToolbarHeight?: number;
+    readonly hasKeyboardNavigation?: boolean;
 }
 
 const HIDDEN_EDGE_FADE_PROPS = { style: { display: 'none' } } as const;
 const IN_FLOW_STYLE = { position: 'relative' } as const;
 
-export const OnboardingStepFooter = ({ children, keyboardToolbarHeight = 0 }: Props) => {
+export const OnboardingStepFooter = ({ children, hasKeyboardNavigation = false }: Props) => {
     const isKeyboardVisible = useKeyboardState(state => state.isVisible);
-    const toolbarStyle = { height: isKeyboardVisible ? keyboardToolbarHeight : 0 };
-    const { height, progress } = useReanimatedKeyboardAnimation();
-    const { bottom } = useSafeAreaInsets();
-    const keyboardStyle = useAnimatedStyle(() => ({ transform: [{ translateY: height.value + bottom * progress.value }] }));
+    const { height } = useReanimatedKeyboardAnimation();
+    const keyboardStyle = useAnimatedStyle(() => ({ transform: [{ translateY: height.value }] }));
+
+    const paddingClassName = isKeyboardVisible ? 'pt-sm pb-sm' : 'pt-lg pb-safe-offset-[8px]';
 
     return (
         <Animated.View className="absolute inset-x-0 bottom-0" style={keyboardStyle} pointerEvents="box-none">
             <ScreenChromeFooter includeBottomSafeArea={false} edgeFadeProps={HIDDEN_EDGE_FADE_PROPS} style={IN_FLOW_STYLE}>
-                <View className="gap-y-xs border-t-hairline border-surface-separator bg-surface px-5xl pt-lg pb-safe-offset-[8px]">
+                <View className={cn('gap-y-xs border-t-hairline border-surface-separator bg-surface px-5xl', paddingClassName)}>
+                    {hasKeyboardNavigation ? <OnboardingKeyboardControls /> : null}
                     {children}
                 </View>
-                <View style={toolbarStyle} />
             </ScreenChromeFooter>
         </Animated.View>
     );

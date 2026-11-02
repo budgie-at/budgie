@@ -96,7 +96,7 @@ export const OnboardingBalances = () => {
                   other: '# accounts. Balances come straight from the bank.'
               })
           })
-        : t`Token stays in Budgie’s file. Sent only to Monobank.`;
+        : t`Token stays on this phone, sent only to Monobank.`;
 
     const statementAccountCount = accounts.filter(
         account => account.externalSource === ExternalSourceEnum.PRIVATBANK || account.externalSource === ExternalSourceEnum.ERSTE

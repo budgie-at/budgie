@@ -3255,7 +3255,7 @@ msgstr "Does not contain"
 #: src/@generic/component/keyboard-done-accessory/keyboard-done-accessory.tsx
 #: src/app/import-column-mapper.tsx
 #: src/categorize-inbox/components/categorize-inbox-empty-state/categorize-inbox-empty-state.tsx
-#: src/onboarding/component/onboarding-balance-keyboard-toolbar/onboarding-balance-keyboard-toolbar.tsx
+#: src/onboarding/component/onboarding-keyboard-controls/onboarding-keyboard-controls.tsx
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 msgid "Done"
@@ -4954,6 +4954,10 @@ msgstr "New Transfer"
 msgid "Next {formattedNextAmount} · {nextDate}"
 msgstr "Next {formattedNextAmount} · {nextDate}"
 
+#: src/onboarding/component/onboarding-keyboard-controls/onboarding-keyboard-controls.tsx
+msgid "Next field"
+msgstr "Next field"
+
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
 msgid "next month"
 msgstr "next month"
@@ -5899,6 +5903,10 @@ msgstr "Preset applied. Adjust columns below if needed."
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 msgid "Press and hold to seal"
 msgstr "Press and hold to seal"
+
+#: src/onboarding/component/onboarding-keyboard-controls/onboarding-keyboard-controls.tsx
+msgid "Previous field"
+msgstr "Previous field"
 
 #: src/transaction/components/statistics-change-label/statistics-change-label.tsx
 msgid "previous period"
@@ -7527,8 +7535,8 @@ msgid "Token required"
 msgstr "Token required"
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
-msgid "Token stays in Budgie’s file. Sent only to Monobank."
-msgstr "Token stays in Budgie’s file. Sent only to Monobank."
+msgid "Token stays on this phone, sent only to Monobank."
+msgstr "Token stays on this phone, sent only to Monobank."
 
 #: src/app/(main)/create-account/index.tsx
 msgid "Tokens and statements stay on this device."

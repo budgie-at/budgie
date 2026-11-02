@@ -15,13 +15,13 @@ const AnimatedKeyboardAwareScrollView = Animated.createAnimatedComponent(Keyboar
 
 export const OnboardingStepScroll = ({ children }: Props) => {
     const { height } = useWindowDimensions();
-    const { chromeHeight } = useBottomChromeInset();
+    const { chromeHeight, inset } = useBottomChromeInset();
     const scrollProps = useScreenChromeScrollProps({
         includeTopSafeArea: false,
         contentInsetBottom: Math.max(chromeHeight + 16, 20)
     });
 
-    const bottomOffset = chromeHeight + 16;
+    const bottomOffset = inset + 16;
     const contentStyle = { rowGap: height <= COMPACT_HEIGHT ? 16 : 28 };
 
     return (

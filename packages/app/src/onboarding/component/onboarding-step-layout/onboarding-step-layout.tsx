@@ -15,7 +15,6 @@ import { ONBOARDING_STEP_ORDER } from '../../constant/onboarding-step-order.cons
 import { OnboardingFileLockEnum } from '../../enum/onboarding-file-lock.enum';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
 import { useOnboardingNavigation } from '../../hook/use-onboarding-navigation.hook';
-import { OnboardingBalanceKeyboardToolbar } from '../onboarding-balance-keyboard-toolbar/onboarding-balance-keyboard-toolbar';
 import { OnboardingStepFooter } from '../onboarding-step-footer/onboarding-step-footer';
 import { OnboardingStepHeader } from '../onboarding-step-header/onboarding-step-header';
 import { OnboardingStepScroll } from '../onboarding-step-scroll/onboarding-step-scroll';
@@ -45,8 +44,7 @@ export const OnboardingStepLayout = (props: Props) => {
         }
     });
 
-    const hasBalanceKeyboardToolbar = step === OnboardingStepEnum.BALANCES;
-    const keyboardToolbarHeight = hasBalanceKeyboardToolbar ? 42 : 0;
+    const hasKeyboardNavigation = step === OnboardingStepEnum.BALANCES;
     const headerRowStyle = { paddingHorizontal: 0 };
 
     return (
@@ -63,9 +61,8 @@ export const OnboardingStepLayout = (props: Props) => {
                         </RevealGate>
 
                         {isDefined(footer) ? (
-                            <OnboardingStepFooter keyboardToolbarHeight={keyboardToolbarHeight}>{footer}</OnboardingStepFooter>
+                            <OnboardingStepFooter hasKeyboardNavigation={hasKeyboardNavigation}>{footer}</OnboardingStepFooter>
                         ) : null}
-                        {hasBalanceKeyboardToolbar ? <OnboardingBalanceKeyboardToolbar /> : null}
                     </ScreenChromeFrame>
                 </BottomChromeInsetProvider>
             </ScreenChromeThemeProvider>
