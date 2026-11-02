@@ -1,5 +1,5 @@
-import { Redirect, Stack } from 'expo-router';
-import { useState } from 'react';
+import { Redirect, Stack, useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
 
 import { ScreenLayout } from '../../@generic/component/screen-layout/screen-layout';
 import { DEFAULT_STACK_OPTIONS } from '../../@generic/constant/default-stack-options.constant';
@@ -12,8 +12,15 @@ export default function OnboardingLayout() {
     const isOnboardingCompleted = useSetting('isOnboardingCompleted');
     const [isCompletedOnMount] = useState(isOnboardingCompleted);
     const [pin, setPin] = useState<string | null>(null);
+    const router = useRouter();
 
     const pinContextValue = { pin, setPin };
+
+    useEffect(() => {
+        if (isOnboardingCompleted && !isCompletedOnMount) {
+            router.replace('/');
+        }
+    }, [isOnboardingCompleted, isCompletedOnMount, router]);
 
     if (isCompletedOnMount) {
         return <Redirect href="/" />;

@@ -23,9 +23,7 @@ export const useOnboardingNavigation = () => {
         goBackOrReplace(ONBOARDING_STEP_ROUTE[OnboardingStepEnum.KEY]);
     };
 
-    const completion = Effect.flatMap(OnboardingService, onboardingService => onboardingService.complete()).pipe(
-        Effect.andThen(Effect.sync(() => void router.replace('/')))
-    );
+    const completion = Effect.flatMap(OnboardingService, onboardingService => onboardingService.complete());
 
     const completeOnboarding = (): void => {
         appRuntime.runFork(logAndContinue(completion));
