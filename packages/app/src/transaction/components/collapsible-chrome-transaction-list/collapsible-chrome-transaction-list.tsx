@@ -23,17 +23,8 @@ interface Props {
 const FAB_FOOTER_SPACER_MULTIPLIER = 3;
 
 export const CollapsibleChromeTransactionList = ({ accountIds, children }: Props) => {
-    const {
-        rowAccountId,
-        activeFilters,
-        setInternalFilters,
-        clearFilters,
-        hasFiltersSelected,
-        isClearAllVisible,
-        sections,
-        loadMore,
-        isLoading
-    } = useTransactionList(accountIds);
+    const { activeFilters, setInternalFilters, clearFilters, hasFiltersSelected, isClearAllVisible, sections, loadMore, isLoading } =
+        useTransactionList(accountIds);
     const [filtersY, setFiltersY] = useState(0);
     const [pinnedFiltersHeight, setPinnedFiltersHeight] = useState(0);
     const headerOffsets = useSharedValue<number[]>([]);
@@ -63,7 +54,7 @@ export const CollapsibleChromeTransactionList = ({ accountIds, children }: Props
                             onClearFilters={clearFilters}
                         />
                     }
-                    accountId={rowAccountId}
+                    accountIds={activeFilters.accountIds}
                     footerSpacerMultiplier={FAB_FOOTER_SPACER_MULTIPLIER}
                     listHeader={listHeader}
                     listComponent={CollapsibleChromeLegendList}

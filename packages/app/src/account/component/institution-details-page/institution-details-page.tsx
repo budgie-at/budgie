@@ -12,7 +12,7 @@ import { RevealGate } from '../../../@generic/component/reveal-gate/reveal-gate'
 import { SCREEN_CHROME_CONFIG } from '../../../@generic/constant/screen-chrome-config.constant';
 import { ScreenChromeThemeProvider } from '../../../@generic/provider/screen-chrome-theme.provider';
 import { InstitutionSelector } from '../../../app/(main)/institution/institution.selector';
-import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { decimalPlacesAtom, defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { BankIntegrationContext } from '../../../sync/context/bank-integration.context';
 import { getBankIntegrationCapabilities } from '../../../sync/utils/get-bank-integration-capabilities.util';
 import { CollapsibleChromeTransactionList } from '../../../transaction/components/collapsible-chrome-transaction-list/collapsible-chrome-transaction-list';
@@ -46,6 +46,8 @@ const INSTITUTION_SCREEN_CHROME_CONFIG = {
 export const InstitutionDetailsPage = ({ integration, institution, balancesByAccountId }: Props) => {
     const { t } = useLingui();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
+    const displayTotal = Number(institution.total.toFixed(decimalPlaces)) === 0 ? 0 : institution.total;
     const isStaticHeader = useIsStaticAccountDetailsHeader();
     const titleDescriptor = BANK_PROVIDER_TITLE[institution.provider];
     const title = getBankIntegrationTitle(
@@ -55,7 +57,7 @@ export const InstitutionDetailsPage = ({ integration, institution, balancesByAcc
     );
     const contextValue = { integration, capabilities: getBankIntegrationCapabilities(integration) };
     const headerTitle = isStaticHeader ? (
-        <AccountDetailsStaticTitle title={title} balance={institution.total} instrumentSymbol={defaultInstrument.symbol} />
+        <AccountDetailsStaticTitle title={title} balance={displayTotal} instrumentSymbol={defaultInstrument.symbol} />
     ) : (
         <AccountDetailsTitle title={title} />
     );
@@ -83,7 +85,7 @@ export const InstitutionDetailsPage = ({ integration, institution, balancesByAcc
                                 collapsedTitle={null}
                             />
                             {headerTitle}
-                            <AccountDetailsHeroBalance balance={institution.total} instrumentSymbol={defaultInstrument.symbol} />
+                            <AccountDetailsHeroBalance balance={displayTotal} instrumentSymbol={defaultInstrument.symbol} />
                         </ScreenChromeFrame>
                     </ScreenChromeThemeProvider>
                 </BankIntegrationContext.Provider>

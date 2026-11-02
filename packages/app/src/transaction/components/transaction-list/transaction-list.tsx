@@ -8,17 +8,8 @@ import { TransactionListUncategorizedPill } from '../transaction-list-uncategori
 import { TransactionSectionsList } from '../transaction-sections-list/transaction-sections-list';
 
 export const TransactionList = () => {
-    const {
-        activeFilters,
-        rowAccountId,
-        setInternalFilters,
-        clearFilters,
-        hasFiltersSelected,
-        isClearAllVisible,
-        sections,
-        loadMore,
-        isLoading
-    } = useTransactionList(null);
+    const { activeFilters, setInternalFilters, clearFilters, hasFiltersSelected, isClearAllVisible, sections, loadMore, isLoading } =
+        useTransactionList(null);
 
     return (
         <View className="flex-1">
@@ -36,7 +27,7 @@ export const TransactionList = () => {
                 <TransactionSectionsList
                     sections={sections}
                     onEndReached={loadMore}
-                    accountId={rowAccountId}
+                    accountIds={activeFilters.accountIds}
                     listEmptyState={
                         <TransactionListEmptyState
                             isLoading={isLoading}
