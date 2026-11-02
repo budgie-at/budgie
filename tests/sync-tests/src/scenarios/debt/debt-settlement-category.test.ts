@@ -142,6 +142,12 @@ const createSettlementTransaction = (
         return transaction;
     });
 
+const setPrimaryCategory = (transactionId: number, categoryId: number | null, categorySource: CategorySourceEnum) =>
+    testDb
+        .update(TransactionEntryEntityTable)
+        .set({ categoryId, categorySource })
+        .where(eq(TransactionEntryEntityTable.transactionId, transactionId));
+
 const fetchNonDebtCategory = Effect.fnUntraced(function* () {
     const category = (yield* testDb.select().from(CategoryEntityTable)).find(
         row => row.id !== LENDING_CATEGORY_ID && row.id !== BORROWING_CATEGORY_ID
@@ -170,6 +176,16 @@ const attachAndReadEntry = Effect.fnUntraced(function* (transactionId: number, d
     yield* transactionDebtSettlementService.attach({ transactionId, debtAccountId });
 
     return yield* fetchPrimaryEntry(transactionId);
+});
+
+const createAttachedExpense = Effect.fnUntraced(function* (debtType: AccountDebtTypeEnum) {
+    const cashAccount = yield* createCashAccount();
+    const debtAccount = yield* createDebtAccount(debtType);
+    const transaction = yield* createSettlementTransaction(TransactionTypeEnum.EXPENSE, cashAccount.id, null);
+
+    yield* attachAndReadEntry(transaction.id, debtAccount.id);
+
+    return { debtAccount, transaction };
 });
 
 const expectUserCategoryPreserved = (entry: TransactionEntryEntityInterface, userCategoryId: number): void => {
@@ -399,21 +415,98 @@ describe('debt settlement categorization', () => {
     it.effect('restores the borrowing category on resync after it was cleared', () =>
         Effect.gen(function* () {
             const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
-            const cashAccount = yield* createCashAccount();
-            const debtAccount = yield* createDebtAccount(AccountDebtTypeEnum.BORROW);
-            const transaction = yield* createSettlementTransaction(TransactionTypeEnum.EXPENSE, cashAccount.id, null);
+            const { transaction } = yield* createAttachedExpense(AccountDebtTypeEnum.BORROW);
 
-            yield* attachAndReadEntry(transaction.id, debtAccount.id);
-            yield* testDb
-                .update(TransactionEntryEntityTable)
-                .set({ categoryId: null, categorySource: CategorySourceEnum.USER })
-                .where(eq(TransactionEntryEntityTable.transactionId, transaction.id));
+            yield* setPrimaryCategory(transaction.id, null, CategorySourceEnum.USER);
             yield* transactionDebtSettlementService.resyncInTransaction(transaction.id);
 
             const entry = yield* fetchPrimaryEntry(transaction.id);
 
             expect(entry.categoryId).toBe(BORROWING_CATEGORY_ID);
             expect(entry.categorySource).toBe(CategorySourceEnum.DEBT_SETTLEMENT);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect.each([
+        { debtType: AccountDebtTypeEnum.BORROW, categorySource: CategorySourceEnum.USER, categoryId: BORROWING_CATEGORY_ID },
+        { debtType: AccountDebtTypeEnum.BORROW, categorySource: CategorySourceEnum.AI, categoryId: BORROWING_CATEGORY_ID },
+        { debtType: AccountDebtTypeEnum.LENT, categorySource: CategorySourceEnum.USER, categoryId: LENDING_CATEGORY_ID }
+    ])('repairs a $debtType payment that lost its debt category to a $categorySource source', ({ debtType, categorySource, categoryId }) =>
+        Effect.gen(function* () {
+            const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
+            const guessedCategory = yield* fetchNonDebtCategory();
+            const { transaction } = yield* createAttachedExpense(debtType);
+
+            yield* setPrimaryCategory(
+                transaction.id,
+                categorySource === CategorySourceEnum.USER ? null : guessedCategory.id,
+                categorySource
+            );
+            yield* transactionDebtSettlementService.repairDebtPaymentCategories();
+
+            const entry = yield* fetchPrimaryEntry(transaction.id);
+
+            expect(entry.categoryId).toBe(categoryId);
+            expect(entry.categorySource).toBe(CategorySourceEnum.DEBT_SETTLEMENT);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('repair keeps a user-chosen category on a debt payment', () =>
+        Effect.gen(function* () {
+            const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
+            const { debtAccount, transaction, userCategory } = yield* createUserCategorizedIncomeFixture();
+
+            yield* attachAndReadEntry(transaction.id, debtAccount.id);
+            yield* transactionDebtSettlementService.repairDebtPaymentCategories();
+
+            expectUserCategoryPreserved(yield* fetchPrimaryEntry(transaction.id), userCategory.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('repair leaves an uncategorized installment part untouched', () =>
+        Effect.gen(function* () {
+            const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
+            const { transaction } = yield* createAttachedExpense(AccountDebtTypeEnum.INSTALLMENT);
+
+            yield* transactionDebtSettlementService.repairDebtPaymentCategories();
+
+            expect((yield* fetchPrimaryEntry(transaction.id)).categoryId).toBeNull();
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('repair relinks a debt payment whose entry was rebuilt', () =>
+        Effect.gen(function* () {
+            const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
+            const { debtAccount, transaction } = yield* createAttachedExpense(AccountDebtTypeEnum.BORROW);
+
+            yield* testDb
+                .update(DebtEventEntityTable)
+                .set({ transactionEntryId: null })
+                .where(eq(DebtEventEntityTable.transactionId, transaction.id));
+            yield* setPrimaryCategory(transaction.id, null, CategorySourceEnum.USER);
+            yield* transactionDebtSettlementService.repairDebtPaymentCategories();
+
+            const entry = yield* fetchPrimaryEntry(transaction.id);
+            const debtEvent = (yield* fetchDebtEvents(debtAccount.id)).find(event => event.transactionId === transaction.id);
+
+            expect(debtEvent?.transactionEntryId).toBe(entry.id);
+            expect(entry.categoryId).toBe(BORROWING_CATEGORY_ID);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('batch resync skips a linked payment that no longer fits a debt settlement', () =>
+        Effect.gen(function* () {
+            const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
+            const { debtAccount, transaction } = yield* createAttachedExpense(AccountDebtTypeEnum.BORROW);
+            const debtEventsBefore = yield* fetchDebtEvents(debtAccount.id);
+
+            yield* testDb
+                .update(TransactionEntityTable)
+                .set({ type: TransactionTypeEnum.TRANSFER })
+                .where(eq(TransactionEntityTable.id, transaction.id));
+            yield* transactionDebtSettlementService.resyncTransactions([transaction.id]);
+
+            expect(yield* fetchDebtEvents(debtAccount.id)).toStrictEqual(debtEventsBefore);
         }).pipe(Effect.provide(TestLayer))
     );
 

@@ -137,6 +137,10 @@ msgstr "{accountCount, plural, one {# compte} other {# comptes}}"
 msgid "{accountsCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountsCount, plural, one {# compte} other {# comptes}}"
 
+#: src/account/component/institution-row/institution-row.tsx
+msgid "{accountsCount, plural, one {# asset} other {# assets}}"
+msgstr "{accountsCount, plural, one {# actif} other {# actifs}}"
+
 #: src/market-data/component/currency-market-stale-price/currency-market-stale-price.tsx
 msgid "{ageDays, plural, one {# day old} other {# days old}}"
 msgstr "{ageDays, plural, one {il y a # jour} other {il y a # jours}}"
@@ -1061,6 +1065,10 @@ msgstr "Comptes"
 msgid "Accounts · {accountCount}"
 msgstr "Comptes · {accountCount}"
 
+#: src/account/component/institution-accounts/institution-accounts.tsx
+msgid "Accounts · {accountsCount}"
+msgstr "Comptes · {accountsCount}"
+
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Accounts ({selectedAccountsCount})"
 msgstr "Comptes ({selectedAccountsCount})"
@@ -1511,6 +1519,10 @@ msgstr "Êtes-vous sûr ?"
 #: src/account/component/net-worth-composition/net-worth-composition.tsx
 msgid "Asset mix"
 msgstr "Répartition des actifs"
+
+#: src/account/component/institution-accounts/institution-accounts.tsx
+msgid "Assets · {accountsCount}"
+msgstr "Actifs · {accountsCount}"
 
 #: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
 msgid "At {rateLabel} per {instrumentCode}"
@@ -2357,6 +2369,10 @@ msgstr "Connecter Binance"
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Connect Monobank"
 msgstr "Connecter Monobank"
+
+#: src/account/component/institution-settings-button/institution-settings-button.tsx
+msgid "Connection settings"
+msgstr "Paramètres de connexion"
 
 #: ../ledger/src/transaction/service/transaction-transfer.service.ts
 msgid "Consolidated transactions cannot start a deposit"
@@ -4363,6 +4379,10 @@ msgstr "Mois dernier"
 msgid "last payment {formattedLast}"
 msgstr "dernier paiement {formattedLast}"
 
+#: src/account/component/institution-connection-row/institution-connection-row.tsx
+msgid "Last successful sync · {lastSyncedTime}"
+msgstr "Dernière synchronisation réussie · {lastSyncedTime}"
+
 #: src/@generic/constant/date-period.constant.ts
 msgid "Last Week"
 msgstr "Semaine dernière"
@@ -6305,6 +6325,10 @@ msgstr "Revenez à Budgie et sélectionnez ci-dessous le fichier XLSX enregistr�
 msgid "Returned"
 msgstr "Reçu"
 
+#: src/account/component/institution-connection-row/institution-connection-row.tsx
+msgid "Review connection"
+msgstr "Vérifier la connexion"
+
 #: src/sync/component/analytics-sync-account-progress/analytics-sync-account-progress.tsx
 msgid "Review sync settings"
 msgstr "Vérifier les paramètres de synchronisation"
@@ -6720,6 +6744,10 @@ msgstr "Raccourcis"
 msgid "Shortcuts is not available on this device."
 msgstr "Shortcuts n’est pas disponible sur cet appareil."
 
+#: src/account/component/institution-accounts/institution-accounts.tsx
+msgid "Show all {accountsCount} accounts"
+msgstr "Afficher les {accountsCount} comptes"
+
 #: src/app/transaction-amount-filter.tsx
 msgid "Show all amounts"
 msgstr "Afficher tous les montants"
@@ -7004,11 +7032,11 @@ msgstr "Données de synchronisation réparées"
 msgid "Sync data repairs"
 msgstr "Réparations des données de synchronisation"
 
+#: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Sync failed"
 msgstr "Échec de la synchronisation"
 
-#: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync Failed"
 msgstr "Échec de la synchronisation"
@@ -7498,6 +7526,10 @@ msgstr "À mettre de côté sur cette période"
 msgid "Today"
 msgstr "Aujourd'hui"
 
+#: src/sync/hook/use-format-sync-time.hook.ts
+msgid "Today {time}"
+msgstr "Aujourd’hui {time}"
+
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Token already connected"
 msgstr "Jeton déjà connecté"
@@ -7914,6 +7946,10 @@ msgstr "À venir"
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Upcoming this period"
 msgstr "À venir sur cette période"
+
+#: src/account/component/institution-connection-row/institution-connection-row.tsx
+msgid "Update access key"
+msgstr "Mettre à jour la clé d’accès"
 
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 msgid "Update rule?"

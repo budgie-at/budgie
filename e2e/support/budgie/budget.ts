@@ -1,7 +1,19 @@
 import { expect } from 'e2e';
 
 import { scrollToCentre } from './accounts.ts';
-import { byId, byText, expectId, fillId, openLink, scrollTo, selectCategoryBySearch, sleep, tapId, type Ctx } from './core.ts';
+import {
+    byId,
+    byText,
+    expectId,
+    fillId,
+    openLink,
+    scrollTo,
+    selectCategoryBySearch,
+    settledBounds,
+    sleep,
+    tapId,
+    type Ctx
+} from './core.ts';
 import { retry } from './transactions.ts';
 
 /** `openLink: budgie://budget` + the empty budget widget the flows tap to start a budget. */
@@ -22,7 +34,9 @@ export async function chooseEmptyCanvas(ctx: Ctx): Promise<void> {
 export async function fillAmount(ctx: Ctx, testId: string, value: string): Promise<void> {
     // A fill right after the form opens can tap the field mid-transition and find nothing focused: retried once it settles.
     await retry(1, async attempt => {
-        if (attempt > 1) await sleep(800);
+        if (attempt > 1) {
+            await sleep(800);
+        }
         await fillId(ctx, testId, value);
     });
     await expect(byId(ctx.screen, testId)).toHaveValue(value, { timeout: 3_000 });
@@ -44,11 +58,17 @@ export async function setOverallLimit(ctx: Ctx, value: string): Promise<void> {
 async function endAmountEditing(ctx: Ctx): Promise<void> {
     const { screen } = ctx;
     const pad = byId(screen, 'inputView');
-    if (!(await pad.isVisible())) return;
+    if (!(await pad.isVisible())) {
+        return;
+    }
     const label = byText(screen, 'Limit from');
-    if (await label.isVisible()) await label.tap();
+    if (await label.isVisible()) {
+        await label.tap();
+    }
     await sleep(400);
-    if (!(await pad.isVisible())) return;
+    if (!(await pad.isVisible())) {
+        return;
+    }
     const box = await label.boundingBox();
     if (box !== null) {
         const from = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
@@ -95,7 +115,9 @@ export async function expectWidgetSpent(
 ): Promise<void> {
     await tapId(ctx, 'TabBar.Home');
     await expect(byId(ctx.screen, 'BudgetWidget.SpentLabel')).toHaveText(spent, { timeout });
-    if (category !== undefined) await expect(byId(ctx.screen, `BudgetWidget.CategorySpentLabel.${category.id}`)).toHaveText(category.share);
+    if (category !== undefined) {
+        await expect(byId(ctx.screen, `BudgetWidget.CategorySpentLabel.${category.id}`)).toHaveText(category.share);
+    }
 }
 
 /** Swipes a deletable row left from its centre until its delete action shows, then taps it (the swipe retried while the list settles). */
@@ -103,9 +125,7 @@ export async function swipeToDelete(ctx: Ctx, rowId: string): Promise<void> {
     const { screen } = ctx;
     const action = byId(screen, 'DeletableRow.DeleteButton');
     await retry(2, async () => {
-        await sleep(600);
-        const box = await byId(screen, rowId).boundingBox();
-        if (box === null) throw new Error(`${rowId} has no bounds`);
+        const box = await settledBounds(ctx, rowId);
         // The row's testID sits on its short label: drag from well right of it to near the screen's left edge, as Maestro's LEFT swipe does.
         const y = box.y + box.height / 2;
         await screen.swipe({ from: { x: box.x + 260, y }, to: { x: 20, y }, duration: 300 });
@@ -135,7 +155,9 @@ export async function scrollAboveFooter(ctx: Ctx, testId: string): Promise<void>
     for (let attempt = 0; attempt < 3; attempt++) {
         const target = await byId(screen, testId).boundingBox();
         const footer = await byId(screen, 'BudgetSetup.SaveButton').boundingBox();
-        if (target === null || footer === null || target.y + target.height < footer.y - 8) return;
+        if (target === null || footer === null || target.y + target.height < footer.y - 8) {
+            return;
+        }
         // Drag from well above the footer: a drag that starts on it moves nothing.
         const x = target.x + target.width / 2;
         const y = footer.y - 150;

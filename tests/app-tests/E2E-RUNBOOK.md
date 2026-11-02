@@ -17,7 +17,7 @@ E2E_APP_PATH=/tmp/app/Base.app SIMLOCK_URL=<gateway> SIMLOCK_TOKEN=<agent token>
   npx e2e run --target ios tests/14.transaction-filters.e2e.ts
 ```
 
-`SIMLOCK_URL` is `http://10.10.1.28:4700` on the LAN (the CI runners); a token comes
+`SIMLOCK_URL` is `https://simlock.vitaliiyehorov.dev` (the farm's public gateway, which CI uses; `http://10.10.1.28:4700` on the Mac Studio's LAN only); a token comes
 from the farm's handoff, never from the CI secret. `E2E_WORKERS=<n>` leases n
 simulators and spreads the tests over them. The run report, junit and per-test
 traces land in `e2e/.e2e/`; a failed test's `trace.md` has every step and the whole

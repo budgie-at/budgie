@@ -72,7 +72,7 @@ jobs:
         name: Code quality checks
         # The monorepo typecheck + type-aware oxlint + build need more than the
         # 4 GiB 2x4 shape.
-        runs-on: [self-hosted, trf-linux-amd64-4x8]
+        runs-on: [self-hosted, linux-portable-4x8]
         timeout-minutes: 60
         permissions:
             contents: read
@@ -142,7 +142,7 @@ jobs:
 
     unit-tests:
         name: Effect diagnostics and unit tests
-        runs-on: [self-hosted, trf-linux-amd64-4x8]
+        runs-on: [self-hosted, linux-portable-4x8]
         timeout-minutes: 45
         permissions:
             contents: read
@@ -221,7 +221,7 @@ jobs:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact]
         name: Assert AI is enabled (OTA preview)
-        runs-on: [self-hosted, trf-linux-amd64-2x4]
+        runs-on: [self-hosted, linux-portable-2x4]
         timeout-minutes: 10
         permissions:
             contents: read
@@ -303,7 +303,7 @@ jobs:
             actions: read
         uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@5ecd3974800ea70a3ee93eab363daa1994c56b09 # feat/ios-e2e-simlock
         with:
-            control-runner-labels: '["self-hosted","trf-linux-amd64-2x4"]'
+            control-runner-labels: '["self-hosted","linux-portable-2x4"]'
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
             # Gate on the turbo graph as well as detect-mobile-impact's path
             # list: iOS Maestro runs only when the app, its workspace
@@ -344,11 +344,13 @@ jobs:
             # farm. It replaces the Maestro shards: no macOS test runner is used.
             test-framework: e2e
             e2e-dir: e2e
-            e2e-runner-labels: '["self-hosted","trf-linux-amd64-4x8"]'
+            e2e-runner-labels: '["self-hosted","linux-portable-4x8"]'
             e2e-workers: '10'
             e2e-retries: '1'
             e2e-timeout-minutes: 45
-            simlock-url: http://10.10.1.28:4700
+            # The public gateway, not the LAN address: only one Linux host shares the farm's LAN,
+            # and the tunnel costs nothing measurable (10 flows: 4m12s public, 4m03s-4m25s LAN).
+            simlock-url: https://simlock.vitaliiyehorov.dev
         secrets:
             simlock-token: ${{ secrets.SIMLOCK_TOKEN }}
 
@@ -471,7 +473,7 @@ jobs:
         name: Lint workflows
         # Catches workflow files GitHub would reject at startup (e.g. a key
         # duplicated by two merged PRs) before they reach main.
-        runs-on: [self-hosted, trf-linux-amd64-2x4]
+        runs-on: [self-hosted, linux-portable-2x4]
         timeout-minutes: 5
         permissions:
             contents: read
@@ -485,13 +487,20 @@ jobs:
               shell: bash
               env:
                   ACTIONLINT_VERSION: 1.7.12
-                  ACTIONLINT_SHA256: 8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8
+                  # linux-portable is served by amd64 hosts and arm64 VMs, so pin both.
+                  ACTIONLINT_SHA256_AMD64: 8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8
+                  ACTIONLINT_SHA256_ARM64: 325e971b6ba9bfa504672e29be93c24981eeb1c07576d730e9f7c8805afff0c6
               run: |
                   set -euo pipefail
+                  case "$(uname -m)" in
+                    x86_64) arch=amd64; sha256="$ACTIONLINT_SHA256_AMD64" ;;
+                    aarch64 | arm64) arch=arm64; sha256="$ACTIONLINT_SHA256_ARM64" ;;
+                    *) echo "::error::No pinned actionlint build for architecture '$(uname -m)'."; exit 1 ;;
+                  esac
                   dir="$(mktemp -d)"
-                  archive="actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
+                  archive="actionlint_${ACTIONLINT_VERSION}_linux_${arch}.tar.gz"
                   curl -fsSL --retry 3 -o "$dir/$archive" "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/${archive}"
-                  echo "${ACTIONLINT_SHA256}  $dir/$archive" | sha256sum -c -
+                  echo "${sha256}  $dir/$archive" | sha256sum -c -
                   tar -xzf "$dir/$archive" -C "$dir" actionlint
                   "$dir/actionlint" -color
 
@@ -514,7 +523,7 @@ jobs:
             - fingerprint-guard
             - ios-maestro
             - store-screenshots-gallery
-        runs-on: [self-hosted, trf-linux-amd64-2x4]
+        runs-on: [self-hosted, linux-portable-2x4]
         timeout-minutes: 5
         permissions: {}
         steps:

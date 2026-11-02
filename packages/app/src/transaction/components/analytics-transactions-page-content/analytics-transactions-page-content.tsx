@@ -22,10 +22,10 @@ interface Props {
     readonly emptyState: ReactElement;
     readonly sections: TransactionsByDaySectionInterface[];
     readonly onLoadMore: () => void;
-    readonly accountId: number | null;
+    readonly accountIds: number[] | null;
 }
 
-export const AnalyticsTransactionsPageContent = ({ headerProps, summary, emptyState, sections, onLoadMore, accountId }: Props) => {
+export const AnalyticsTransactionsPageContent = ({ headerProps, summary, emptyState, sections, onLoadMore, accountIds }: Props) => {
     const { title, subtitle, compactTitle } = useTransactionFilterPageTitle(headerProps);
 
     const expandedTitle = (
@@ -60,7 +60,7 @@ export const AnalyticsTransactionsPageContent = ({ headerProps, summary, emptySt
                             sections={sections}
                             onEndReached={onLoadMore}
                             listEmptyState={emptyState}
-                            accountId={accountId}
+                            accountIds={accountIds}
                             footerSpacerMultiplier={0}
                             listHeader={<View className="pb-xl">{summary}</View>}
                             listComponent={CollapsibleChromeLegendList}

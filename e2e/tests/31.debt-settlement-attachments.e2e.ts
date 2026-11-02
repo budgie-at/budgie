@@ -30,7 +30,9 @@ test('31 debt settlement attachments', { tags: ['debt'] }, async ({ budgie }) =>
     };
     const balances = async (account: string, ids: string[]) => {
         await openAccountDetails(ctx, account);
-        for (const balance of ids) await b.expectId(ctx, `DebtAccountBalance.${balance}`);
+        for (const balance of ids) {
+            await b.expectId(ctx, `DebtAccountBalance.${balance}`);
+        }
     };
     /** Long-press a card, "Attach debt settlement", pick `account`. */
     const attachFromList = async (label: string, account: string, scroll = true) => {
@@ -189,8 +191,9 @@ test('31 debt settlement attachments', { tags: ['debt'] }, async ({ budgie }) =>
         await b.openLink(ctx, 'budgie://account/7/details');
         await b.expectId(ctx, 'AccountDetails.Page', 10_000);
         await b.expectId(ctx, 'DebtAccountBalance.PaidAmount.258_9', 10_000);
-        for (const balance of ['OutstandingAmount.41_1', 'TotalAmount.300', 'Percentage.86_3'])
+        for (const balance of ['OutstandingAmount.41_1', 'TotalAmount.300', 'Percentage.86_3']) {
             await b.expectId(ctx, `DebtAccountBalance.${balance}`);
+        }
         await exitAccountDetailsToHome(ctx);
     });
 

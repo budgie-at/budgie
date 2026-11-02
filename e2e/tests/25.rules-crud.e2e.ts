@@ -184,7 +184,9 @@ test('25 rules CRUD', { tags: ['rules'] }, async ({ budgie }) => {
         await r.submitRuleSkipExisting(ctx);
         await r.expectRuleCard(ctx, 2, false);
 
-        for (let i = 0; i < 3; i++) await r.deleteFirstRule(ctx);
+        for (let i = 0; i < 3; i++) {
+            await r.deleteFirstRule(ctx);
+        }
         await r.expectNoRules(ctx);
     });
 

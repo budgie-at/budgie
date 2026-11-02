@@ -12,7 +12,9 @@ test('29 crypto account and market', { tags: ['crypto'] }, async ({ budgie }) =>
     const { screen } = ctx;
     const id = (testId: string) => b.byId(screen, testId);
     const ids = async (...testIds: string[]) => {
-        for (const testId of testIds) await b.expectId(ctx, testId);
+        for (const testId of testIds) {
+            await b.expectId(ctx, testId);
+        }
     };
     const backHome = async () => {
         await b.tapId(ctx, 'PageHeader.BackButton');
@@ -109,7 +111,9 @@ test('29 crypto account and market', { tags: ['crypto'] }, async ({ budgie }) =>
     });
 
     await b.phase('crypto income from account details', async () => {
-        if (!(await id('AccountCard.E2E Crypto Vault').isVisible())) await b.tapId(ctx, 'CryptoGroup.Toggle.BTC');
+        if (!(await id('AccountCard.E2E Crypto Vault').isVisible())) {
+            await b.tapId(ctx, 'CryptoGroup.Toggle.BTC');
+        }
         await a.scrollToCentre(ctx, 'AccountCard.Balance.E2E_Crypto_Vault.2_BTC');
         await b.tapId(ctx, 'AccountCard.Balance.E2E_Crypto_Vault.2_BTC');
         await b.expectId(ctx, 'AccountDetails.ActionsButton', 10_000);

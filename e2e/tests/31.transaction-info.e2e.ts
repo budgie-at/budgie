@@ -47,7 +47,9 @@ test('31 transaction info', { tags: ['transactions'] }, async ({ budgie }) => {
         await text('Average');
         await text('$10');
         await b.scrollTo(ctx, 'TransactionInfo.SimilarBar.5');
-        for (let bar = 0; bar <= 5; bar++) await b.expectId(ctx, `TransactionInfo.SimilarBar.${bar}`);
+        for (let bar = 0; bar <= 5; bar++) {
+            await b.expectId(ctx, `TransactionInfo.SimilarBar.${bar}`);
+        }
         await b.expectNoId(ctx, 'TransactionInfo.Row.Source');
     });
 

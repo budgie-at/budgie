@@ -14,7 +14,9 @@ test('30 crypto decimal monero account', { tags: ['accounts'] }, async ({ budgie
 
     await b.phase('crypto group', async () => {
         await b.expectId(ctx, 'CryptoGroup.Market.XMR', 10_000);
-        for (const part of ['Card', 'Container', 'Balance', 'Value', 'Rate']) await b.expectId(ctx, `CryptoGroup.${part}.XMR`);
+        for (const part of ['Card', 'Container', 'Balance', 'Value', 'Rate']) {
+            await b.expectId(ctx, `CryptoGroup.${part}.XMR`);
+        }
         await b.tapId(ctx, 'CryptoGroup.AccountCount.XMR');
         await b.expectId(ctx, 'AccountCard.E2E Monero Ledger', 10_000);
         await b.expectId(ctx, 'AccountCard.Balance.E2E_Monero_Ledger.22_123456_XMR');

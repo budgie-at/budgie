@@ -13,7 +13,9 @@ export async function selectTagBySearch(ctx: Ctx, name: string): Promise<void> {
     try {
         await expectNoId(ctx, 'TagPickerBottomSheet.Input', 5_000);
     } catch {
-        if (await card.isVisible()) await card.tap();
+        if (await card.isVisible()) {
+            await card.tap();
+        }
         await expectNoId(ctx, 'TagPickerBottomSheet.Input');
     }
 }

@@ -14,7 +14,9 @@ test('15 transaction long press actions', { tags: ['transactions'] }, async ({ b
         await b.tapId(ctx, 'TabBar.Home');
         await b.expectId(ctx, 'HomePage.TotalBalance');
         await b.expectId(ctx, `HomePage.NetWorthValue.${netWorth}`);
-        if (balances === undefined) return;
+        if (balances === undefined) {
+            return;
+        }
         await b.expectId(ctx, `AccountCard.Balance.E2E_Expense_Source.${balances[0]}`);
         await b.expectId(ctx, `AccountCard.Balance.E2E_Expense_Target.${balances[1]}`);
     };

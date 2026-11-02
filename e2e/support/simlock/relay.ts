@@ -41,7 +41,9 @@ function endToEnd(headers: Headers): Headers {
         .map(name => name.trim().toLowerCase())
         .filter(Boolean);
     const result: Headers = { ...headers };
-    for (const name of [...HOP_BY_HOP, ...named]) delete result[name];
+    for (const name of [...HOP_BY_HOP, ...named]) {
+        delete result[name];
+    }
     return result;
 }
 
@@ -80,7 +82,9 @@ export async function startBootRelay(upstreamBaseUrl: string): Promise<BootRelay
             (resolve, reject) => {
                 const path = upstreamPath(requestTarget);
                 const headers: Headers = { ...endToEnd(incoming.headers), host: destination.host };
-                if (body !== undefined) headers['content-length'] = String(body.length);
+                if (body !== undefined) {
+                    headers['content-length'] = String(body.length);
+                }
                 const options = {
                     protocol: destination.protocol,
                     hostname: destination.hostname,
@@ -90,8 +94,9 @@ export async function startBootRelay(upstreamBaseUrl: string): Promise<BootRelay
                     headers
                 };
                 const out = send(options, response => {
-                    if (body === undefined)
+                    if (body === undefined) {
                         return resolve({ status: response.statusCode ?? 502, headers: response.headers, stream: response });
+                    }
                     const chunks: Buffer[] = [];
                     response.on('data', (chunk: Buffer) => chunks.push(chunk));
                     response.on('end', () =>
@@ -100,8 +105,11 @@ export async function startBootRelay(upstreamBaseUrl: string): Promise<BootRelay
                     response.on('error', reject);
                 });
                 out.on('error', reject);
-                if (body !== undefined) out.end(body);
-                else incoming.pipe(out);
+                if (body !== undefined) {
+                    out.end(body);
+                } else {
+                    incoming.pipe(out);
+                }
             }
         );
 
@@ -116,7 +124,9 @@ export async function startBootRelay(upstreamBaseUrl: string): Promise<BootRelay
                 return;
             }
             const chunks: Buffer[] = [];
-            for await (const chunk of incoming) chunks.push(chunk as Buffer);
+            for await (const chunk of incoming) {
+                chunks.push(chunk as Buffer);
+            }
             const raw = Buffer.concat(chunks);
             const rpc = JSON.parse(raw.toString('utf8')) as { params?: { command?: string } } & Record<string, unknown>;
             const command = rpc.params?.command;
@@ -126,7 +136,9 @@ export async function startBootRelay(upstreamBaseUrl: string): Promise<BootRelay
                 // engine closes a slot's session on a worker respawn or a recording reset mid-run.
                 // The lease's life is the provider's: it releases it at the end of the run. (A bare
                 // device.closeApp() is such a close too, so it leaves the app running here.)
-                if (DEBUG) console.error('[relay] close answered locally; the provider releases the lease');
+                if (DEBUG) {
+                    console.error('[relay] close answered locally; the provider releases the lease');
+                }
                 const session = (rpc.params as { session?: unknown } | undefined)?.session;
                 const data = { session: typeof session === 'string' ? session : '', identifiers: { session } };
                 const body = Buffer.from(JSON.stringify({ jsonrpc: '2.0', id: rpc.id, result: { ok: true, data } }));
@@ -136,7 +148,9 @@ export async function startBootRelay(upstreamBaseUrl: string): Promise<BootRelay
             }
             if (command !== 'boot') {
                 const reply = await forward(incoming, path, raw);
-                if (DEBUG) console.error(`[relay] ${command} -> ${reply.status}`);
+                if (DEBUG) {
+                    console.error(`[relay] ${command} -> ${reply.status}`);
+                }
                 outgoing.writeHead(reply.status, endToEnd(reply.headers));
                 outgoing.end(reply.body);
                 return;
@@ -162,7 +176,9 @@ export async function startBootRelay(upstreamBaseUrl: string): Promise<BootRelay
                 return;
             }
             const data = { platform: 'ios', target: 'mobile', device: udid, id: udid, kind: 'simulator', booted: true };
-            if (DEBUG) console.error(`[relay] boot ${udid} answered locally`);
+            if (DEBUG) {
+                console.error(`[relay] boot ${udid} answered locally`);
+            }
             const body = Buffer.from(JSON.stringify({ jsonrpc: '2.0', id: rpc.id, result: { ok: true, data } }));
             outgoing.writeHead(200, { 'content-type': 'application/json', 'content-length': String(body.length) });
             outgoing.end(body);

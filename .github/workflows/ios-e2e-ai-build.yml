@@ -20,7 +20,7 @@ jobs:
             actions: read
         uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@5ecd3974800ea70a3ee93eab363daa1994c56b09 # feat/ios-e2e-simlock
         with:
-            control-runner-labels: '["self-hosted","trf-linux-amd64-2x4"]'
+            control-runner-labels: '["self-hosted","linux-portable-2x4"]'
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
             # The smoke for the AI build: voice-transaction-entry-1 (e2e/support/media/scenes.ts),
             # which waits up to ten minutes for the on-device model to make the AI action
@@ -29,11 +29,11 @@ jobs:
             test-framework: e2e
             e2e-dir: e2e
             e2e-command: SCREENSHOT_SCENES=voice-transaction-entry-1 npx e2e run --config media.config.ts --target ios
-            e2e-runner-labels: '["self-hosted","trf-linux-amd64-4x8"]'
+            e2e-runner-labels: '["self-hosted","linux-portable-4x8"]'
             e2e-workers: '1'
             e2e-retries: '1'
             e2e-timeout-minutes: 45
-            simlock-url: http://10.10.1.28:4700
+            simlock-url: https://simlock.vitaliiyehorov.dev
             build-timeout-minutes: 120
             install-command: pnpm install --frozen-lockfile
             package-manager: pnpm
