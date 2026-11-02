@@ -433,29 +433,25 @@ export async function exerciseLiabilityAccount(ctx: Ctx, l: LiabilityExercise): 
     await assertAdjustmentTransaction(ctx, l.increaseDelta);
     await expectId(ctx, `TransactionCard.AdjustmentAmount.${l.decreaseDelta}`);
 
+    // Once net worth reads `netWorth`, flip one switch in the account's settings and save.
+    const toggleSetting = async (netWorth: string, field: string): Promise<void> => {
+        await expectId(ctx, `HomePage.NetWorthValue.${netWorth}`, 10_000);
+        await ctx.screen.scrollUntilVisible(byId(screen, `AccountCard.${l.updatedName}`), { timeout: 8_000 });
+        await openAccountSettings(ctx, l.updatedName);
+        await toggleAndSave(ctx, field);
+    };
+
     await exitAccountDetailsToHome(ctx);
     await setMainCurrency(ctx, l.currency);
-    await expectId(ctx, `HomePage.NetWorthValue.${l.decreaseTo}`, 10_000);
-    await ctx.screen.scrollUntilVisible(byId(screen, `AccountCard.${l.updatedName}`), { timeout: 8_000 });
-
-    await openAccountSettings(ctx, l.updatedName);
-    await toggleAndSave(ctx, 'AccountForm.ActiveRow');
+    await toggleSetting(l.decreaseTo, 'AccountForm.ActiveRow');
     await expectId(ctx, `HomePage.NetWorthValue.${l.decreaseTo}`, 10_000);
     await sleep(400);
     await expectNoId(ctx, `AccountCard.${l.updatedName}`);
 
     await openInactiveAccounts(ctx);
     await activateInactiveAccount(ctx, l.updatedName);
-    await expectId(ctx, `HomePage.NetWorthValue.${l.decreaseTo}`, 10_000);
-    await ctx.screen.scrollUntilVisible(byId(screen, `AccountCard.${l.updatedName}`), { timeout: 8_000 });
-
-    await openAccountSettings(ctx, l.updatedName);
-    await toggleAndSave(ctx, 'AccountForm.IncludeInNetWorthTitle');
-    await expectId(ctx, 'HomePage.NetWorthValue.0', 10_000);
-    await ctx.screen.scrollUntilVisible(byId(screen, `AccountCard.${l.updatedName}`), { timeout: 8_000 });
-
-    await openAccountSettings(ctx, l.updatedName);
-    await toggleAndSave(ctx, 'AccountForm.IncludeInNetWorthTitle');
+    await toggleSetting(l.decreaseTo, 'AccountForm.IncludeInNetWorthTitle');
+    await toggleSetting('0', 'AccountForm.IncludeInNetWorthTitle');
     await expectId(ctx, `HomePage.NetWorthValue.${l.decreaseTo}`, 10_000);
 
     await openAccountSettings(ctx, l.updatedName);

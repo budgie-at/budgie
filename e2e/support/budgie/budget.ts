@@ -1,7 +1,19 @@
 import { expect } from 'e2e';
 
 import { scrollToCentre } from './accounts.ts';
-import { byId, byText, expectId, fillId, openLink, scrollTo, selectCategoryBySearch, sleep, tapId, type Ctx } from './core.ts';
+import {
+    byId,
+    byText,
+    expectId,
+    fillId,
+    openLink,
+    scrollTo,
+    selectCategoryBySearch,
+    settledBounds,
+    sleep,
+    tapId,
+    type Ctx
+} from './core.ts';
 import { retry } from './transactions.ts';
 
 /** `openLink: budgie://budget` + the empty budget widget the flows tap to start a budget. */
@@ -113,11 +125,7 @@ export async function swipeToDelete(ctx: Ctx, rowId: string): Promise<void> {
     const { screen } = ctx;
     const action = byId(screen, 'DeletableRow.DeleteButton');
     await retry(2, async () => {
-        await sleep(600);
-        const box = await byId(screen, rowId).boundingBox();
-        if (box === null) {
-            throw new Error(`${rowId} has no bounds`);
-        }
+        const box = await settledBounds(ctx, rowId);
         // The row's testID sits on its short label: drag from well right of it to near the screen's left edge, as Maestro's LEFT swipe does.
         const y = box.y + box.height / 2;
         await screen.swipe({ from: { x: box.x + 260, y }, to: { x: 20, y }, duration: 300 });

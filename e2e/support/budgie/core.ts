@@ -187,3 +187,13 @@ export class Budgie {
         });
     }
 }
+
+/** The bounds of `testId` once the list under it has settled, for a swipe that starts from it. */
+export async function settledBounds(ctx: Ctx, testId: string): Promise<{ x: number; y: number; width: number; height: number }> {
+    await sleep(600);
+    const box = await byId(ctx.screen, testId).boundingBox();
+    if (box === null) {
+        throw new Error(`${testId} has no bounds`);
+    }
+    return box;
+}

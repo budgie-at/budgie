@@ -1,7 +1,8 @@
 import { expect } from 'e2e';
 
 import { selectAccountBySearch } from './accounts.ts';
-import { byId, byText, done, expectId, expectNoId, openLink, scrollTo, selectCategoryBySearch, sleep, tapId, type Ctx } from './core.ts';
+import { pickCategoryCard } from './categories.ts';
+import { byId, byText, expectId, expectNoId, openLink, scrollTo, selectCategoryBySearch, sleep, tapId, type Ctx } from './core.ts';
 
 import type { Locator } from 'e2e';
 
@@ -210,19 +211,7 @@ export async function openInfoConversions(ctx: Ctx): Promise<void> {
 export async function selectSplitCategory(ctx: Ctx, entryIndex: number, category: string): Promise<void> {
     await tapId(ctx, `SplitEntryRow.Category.${entryIndex}`);
     await expectId(ctx, 'CategoryPickerBottomSheet.Input');
-    await byId(ctx.screen, 'CategoryPickerBottomSheet.Input').fill(category);
-    await done(ctx);
-    const card = byId(ctx.screen, `CategoryPickerBottomSheet.Card.${category}.Label`);
-    await expect(card).toBeVisible({ timeout: 15_000 });
-    await card.tap();
-    try {
-        await expectNoId(ctx, 'CategoryPickerBottomSheet.Input', 5_000);
-    } catch {
-        if (await card.isVisible()) {
-            await card.tap();
-        }
-        await expectNoId(ctx, 'CategoryPickerBottomSheet.Input');
-    }
+    await pickCategoryCard(ctx, category);
 }
 
 /** subflows/transactions/select-existing-tag */

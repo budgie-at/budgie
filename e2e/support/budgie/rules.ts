@@ -1,6 +1,7 @@
 import { expect } from 'e2e';
 
 import { scrollToCentre } from './accounts.ts';
+import { swipeRowToDelete } from './categories.ts';
 import {
     byId,
     byText,
@@ -53,27 +54,7 @@ export async function submitRuleApplyExisting(ctx: Ctx): Promise<void> {
 /** subflows/rules/delete-first-rule: swipe the first card left, tap its delete action, confirm. Retries a swipe that lands while the list settles. */
 export async function deleteFirstRule(ctx: Ctx): Promise<void> {
     const { screen } = ctx;
-    const card = byId(screen, 'RulesPage.RuleCard.0');
-    const action = byId(screen, 'DeletableRow.DeleteButton');
-    for (let attempt = 1; ; attempt++) {
-        await sleep(600);
-        const box = await card.boundingBox();
-        if (box === null) {
-            throw new Error('RulesPage.RuleCard.0 has no bounds');
-        }
-        const y = box.y + box.height / 2;
-        await screen.swipe({ from: { x: box.x + box.width / 2, y }, to: { x: box.x + 8, y }, duration: 300 });
-        try {
-            await expect(action).toBeVisible({ timeout: 3_000 });
-            break;
-        } catch (cause) {
-            if (attempt === 3) {
-                throw cause;
-            }
-            console.log(`[retry] swipe-to-delete attempt ${attempt} revealed no delete action`);
-        }
-    }
-    await action.tap();
+    await swipeRowToDelete(ctx, 'RulesPage.RuleCard.0');
     await expect(byText(screen, 'Delete this rule?')).toBeVisible();
     await screen.getByText('Delete').last().tap();
     await expect(byText(screen, 'Delete this rule?')).toBeHidden();

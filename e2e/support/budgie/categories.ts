@@ -1,6 +1,6 @@
 import { expect } from 'e2e';
 
-import { byId, done, expectId, expectNoId, sleep, tapId, tapUntil, type Ctx } from './core.ts';
+import { byId, done, expectId, expectNoId, settledBounds, sleep, tapId, tapUntil, type Ctx } from './core.ts';
 
 /**
  * subflows/shared/create-entity-from-transaction: open a picker from the
@@ -49,6 +49,11 @@ export async function createCategoryFromTransaction(ctx: Ctx, name: string): Pro
 /** subflows/categories/select-category */
 export async function selectCategory(ctx: Ctx, name: string): Promise<void> {
     await tapUntil(ctx, 'TransactionForm.CategorySelector.Title', () => expectId(ctx, 'CategoryPickerBottomSheet.Input', 5_000));
+    await pickCategoryCard(ctx, name);
+}
+
+/** The category picker is open: search `name` and tap its card until the picker closes. */
+export async function pickCategoryCard(ctx: Ctx, name: string): Promise<void> {
     await byId(ctx.screen, 'CategoryPickerBottomSheet.Input').fill(name);
     await done(ctx);
     const card = byId(ctx.screen, `CategoryPickerBottomSheet.Card.${name}.Label`);
@@ -79,14 +84,9 @@ export async function applyCategoryFilter(ctx: Ctx, name: string): Promise<void>
 /** `swipe: { from: { id }, direction: LEFT }` on a `DeletableRow` until its delete action shows, then tap it. Retries a swipe that lands while the list settles. */
 export async function swipeRowToDelete(ctx: Ctx, rowId: string): Promise<void> {
     const { screen } = ctx;
-    const row = byId(screen, rowId);
     const action = byId(screen, 'DeletableRow.DeleteButton');
     for (let attempt = 1; ; attempt++) {
-        await sleep(600);
-        const box = await row.boundingBox();
-        if (box === null) {
-            throw new Error(`${rowId} has no bounds`);
-        }
+        const box = await settledBounds(ctx, rowId);
         const y = box.y + box.height / 2;
         await screen.swipe({ from: { x: box.x + box.width / 2, y }, to: { x: box.x + 8, y }, duration: 300 });
         try {
