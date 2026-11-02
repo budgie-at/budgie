@@ -52,7 +52,7 @@ jobs:
       contents: write
     uses: rnw-community/mobile-ci/.github/workflows/native-dev-release.yml@f90309c791283d6e2dd1e35eb2ae6c5aee2151cd # v4.7.0
     with:
-      control-runner-labels: '["self-hosted","trf-linux-amd64-2x4"]'
+      control-runner-labels: '["self-hosted","linux-portable-2x4"]'
       enable-ios: true
       enable-android: false
       ios-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
