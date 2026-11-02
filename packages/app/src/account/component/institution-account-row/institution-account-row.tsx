@@ -1,9 +1,7 @@
 import { AccountTypeEnum } from '@budgie/contracts';
-import { use } from 'react';
 
 import { CryptoCurrencyIcon } from '../../../@generic/component/crypto-currency-icon/crypto-currency-icon';
 import { TransactionRowSurface } from '../../../transaction/components/transaction-row-surface/transaction-row-surface';
-import { TransactionAccountTitlePrefixContext } from '../../../transaction/context/transaction-account-title-prefix.context';
 import { stripTransactionAccountTitlePrefix } from '../../../transaction/utils/strip-transaction-account-title-prefix.util';
 import { AccountRowLeadingContext } from '../../context/account-row-leading.context';
 import { AccountListItem } from '../account-list-item/account-list-item';
@@ -21,10 +19,9 @@ interface Props {
 }
 
 export const InstitutionAccountRow = ({ account, provider, balancesByAccountId, position }: Props) => {
-    const providerTitle = use(TransactionAccountTitlePrefixContext);
     const displayAccount = {
         ...account,
-        title: stripTransactionAccountTitlePrefix(account.title, providerTitle) ?? account.title
+        title: stripTransactionAccountTitlePrefix(account.title, provider) ?? account.title
     };
     const leading =
         account.type === AccountTypeEnum.CRYPTO_SYNC ? (
