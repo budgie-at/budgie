@@ -46,7 +46,6 @@ export const CurrencyMarketOverview = ({ instrument, prices, priceBottom }: Prop
     const rangePrices = isDefined(latestPrice)
         ? prices.filter(price => differenceInCalendarDays(parseISO(latestPrice.priceDate), parseISO(price.priceDate)) <= RANGE_DAYS[range])
         : [];
-    const values = rangePrices.map(price => price.price);
     const scrubbedPrice = isDefined(scrubIndex) ? (rangePrices.at(scrubIndex) ?? null) : null;
     const rangeLabels: Record<MarketChartRangeEnum, string> = {
         [MarketChartRangeEnum.WEEK]: t`Past week`,
@@ -69,7 +68,7 @@ export const CurrencyMarketOverview = ({ instrument, prices, priceBottom }: Prop
                 instrumentCode={instrument.code}
                 latestPrice={latestPrice}
                 scrubbedPrice={scrubbedPrice}
-                basePrice={values.at(0) ?? null}
+                basePrice={rangePrices.at(0)?.price ?? null}
                 priceBottom={priceBottom}
                 isHistoryLoading={isMarketHistoryLoading(progress)}
                 rangeLabel={rangeLabels[range]}
@@ -77,7 +76,7 @@ export const CurrencyMarketOverview = ({ instrument, prices, priceBottom }: Prop
             />
 
             <View className="mt-3xl">
-                {values.length >= MIN_CHART_POINTS ? (
+                {rangePrices.length >= MIN_CHART_POINTS ? (
                     <CurrencyMarketChart
                         prices={rangePrices}
                         selectedIndex={scrubIndex}

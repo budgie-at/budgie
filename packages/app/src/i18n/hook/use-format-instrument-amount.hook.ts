@@ -11,12 +11,13 @@ export const useFormatInstrumentAmount = () => {
     const formatDigits = useDisplayFormatDigits();
     const formatCryptoDigits = useFormatDigits(0, MICRO_UNIT_DECIMAL_PLACES);
 
-    const formatCryptoAmount = (amount: number, symbol: string) => {
+    return (amount: number, symbol: string, instrumentType: InstrumentTypeEnum | null) => {
+        if (instrumentType !== InstrumentTypeEnum.CRYPTO) {
+            return formatDigits(amount, symbol);
+        }
+
         const formatted = formatCryptoDigits(amount);
 
         return isNotEmptyString(symbol) ? `${formatted} ${symbol}` : formatted;
     };
-
-    return (amount: number, symbol: string, instrumentType: InstrumentTypeEnum | null) =>
-        instrumentType === InstrumentTypeEnum.CRYPTO ? formatCryptoAmount(amount, symbol) : formatDigits(amount, symbol);
 };

@@ -1,6 +1,15 @@
+import { isPositiveNumber } from '@rnw-community/shared';
+
 import { NEUTRAL_CHANGE_SHARE } from '../constant/neutral-change-share.constant';
 
-import { getMarketChangeClassName } from './get-market-change-class-name.util';
+export const getMarketMoveClassName = (share: number): string => {
+    if (Math.abs(share) < NEUTRAL_CHANGE_SHARE) {
+        return 'text-secondary-foreground';
+    }
 
-export const getMarketMoveClassName = (share: number): string =>
-    Math.abs(share) < NEUTRAL_CHANGE_SHARE ? 'text-secondary-foreground' : getMarketChangeClassName(share);
+    if (isPositiveNumber(share)) {
+        return 'text-positive-strong';
+    }
+
+    return isPositiveNumber(-share) ? 'text-destructive-strong' : 'text-primary';
+};
