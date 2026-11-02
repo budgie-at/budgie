@@ -2926,9 +2926,9 @@ msgstr "Les comptes de dette ne peuvent pas participer aux virements"
 msgid "Debts and loans"
 msgstr "Dettes et prêts"
 
-#: src/transaction/components/update-adjustment-transaction/update-adjustment-transaction.tsx
-msgid "Decrease balance"
-msgstr "Diminuer le solde"
+#: src/@generic/component/amount-sign-pill/amount-sign-pill.tsx
+msgid "Decrease"
+msgstr "Diminuer"
 
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 msgid "Default account"
@@ -4134,6 +4134,10 @@ msgstr "Revenus reçus"
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
 msgid "Incorrect PIN"
 msgstr "Code PIN incorrect"
+
+#: src/@generic/component/amount-sign-pill/amount-sign-pill.tsx
+msgid "Increase"
+msgstr "Augmenter"
 
 #: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
 msgid "Installment"
@@ -5998,6 +6002,10 @@ msgstr "Restant"
 msgid "Remove"
 msgstr "Supprimer"
 
+#: src/transaction/components/split-entry-delete-button/split-entry-delete-button.tsx
+msgid "Remove {categoryTitle} entry"
+msgstr "Supprimer l’entrée {categoryTitle}"
+
 #: src/rule/components/rule-action-row/rule-action-row.tsx
 msgid "Remove action {position}"
 msgstr "Retirer l’action {position}"
@@ -6013,6 +6021,10 @@ msgstr "Retirer la condition {position}"
 #: src/settings/components/repair-sync-data/repair-sync-data.tsx
 msgid "Remove duplicate bank imports"
 msgstr "Supprimer les imports bancaires en double"
+
+#: src/transaction/components/split-entry-delete-button/split-entry-delete-button.tsx
+msgid "Remove entry"
+msgstr "Supprimer l’entrée"
 
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 msgid "Remove fee"
@@ -6263,7 +6275,7 @@ msgstr "Enregistrer les soldes"
 msgid "Save changes"
 msgstr "Enregistrer"
 
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-save-button/transaction-fee-save-button.tsx
 msgid "Save fee"
 msgstr "Enregistrer les frais"
 

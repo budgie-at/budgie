@@ -2,7 +2,7 @@ import { TransactionCreateInputInterface, UserIconNameEnum } from '@budgie/contr
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { useTagsSelectorModal } from '../../../tag/context/tags-selector-modal.context';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
@@ -25,7 +25,7 @@ export const TransactionTagsFieldIcon = () => {
         });
     };
 
-    const tagsValue = getTagsDisplayValue(tags);
+    const tagsValue = isNotEmptyString(getTagsDisplayValue(tags)) ? t`Tags` : void 0;
 
     return (
         <TransactionFieldIcon

@@ -2926,9 +2926,9 @@ msgstr "Schuldenkonten können nicht an Überweisungen teilnehmen"
 msgid "Debts and loans"
 msgstr "Schulden und Kredite"
 
-#: src/transaction/components/update-adjustment-transaction/update-adjustment-transaction.tsx
-msgid "Decrease balance"
-msgstr "Saldo verringern"
+#: src/@generic/component/amount-sign-pill/amount-sign-pill.tsx
+msgid "Decrease"
+msgstr "Verringern"
 
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 msgid "Default account"
@@ -4134,6 +4134,10 @@ msgstr "Erhaltenes Einkommen"
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
 msgid "Incorrect PIN"
 msgstr "Falsche PIN"
+
+#: src/@generic/component/amount-sign-pill/amount-sign-pill.tsx
+msgid "Increase"
+msgstr "Erhöhen"
 
 #: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
 msgid "Installment"
@@ -5998,6 +6002,10 @@ msgstr "Verbleibend"
 msgid "Remove"
 msgstr "Entfernen"
 
+#: src/transaction/components/split-entry-delete-button/split-entry-delete-button.tsx
+msgid "Remove {categoryTitle} entry"
+msgstr "Eintrag „{categoryTitle}“ entfernen"
+
 #: src/rule/components/rule-action-row/rule-action-row.tsx
 msgid "Remove action {position}"
 msgstr "Aktion {position} entfernen"
@@ -6013,6 +6021,10 @@ msgstr "Bedingung {position} entfernen"
 #: src/settings/components/repair-sync-data/repair-sync-data.tsx
 msgid "Remove duplicate bank imports"
 msgstr "Doppelte Bankimporte entfernen"
+
+#: src/transaction/components/split-entry-delete-button/split-entry-delete-button.tsx
+msgid "Remove entry"
+msgstr "Eintrag entfernen"
 
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 msgid "Remove fee"
@@ -6263,7 +6275,7 @@ msgstr "Salden speichern"
 msgid "Save changes"
 msgstr "Änderungen speichern"
 
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-save-button/transaction-fee-save-button.tsx
 msgid "Save fee"
 msgstr "Gebühr speichern"
 

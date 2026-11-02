@@ -2,6 +2,7 @@ import {
     CategorySourceEnum,
     TransactionEntryCreateInputInterface,
     TransactionEntryTypeEnum,
+    UserIconNameEnum,
     convertFromMicroUnits,
     convertToMicroUnits
 } from '@budgie/contracts';
@@ -10,13 +11,14 @@ import { t } from '@lingui/core/macro';
 import * as Effect from 'effect/Effect';
 import { NotificationFeedbackType } from 'expo-haptics';
 import { useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import { KeyboardStickyView } from 'react-native-keyboard-controller';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { SheetTitle } from '../../../@generic/component/sheet-title/sheet-title';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
@@ -43,6 +45,9 @@ import { SplitEntryRow } from '../split-entry-row/split-entry-row';
 
 import { SplitEntriesModalContentSelector } from './split-entries-modal-content.selector';
 
+const SHEET_MAX_HEIGHT_RATIO = 0.7;
+const SHEET_CHROME_HEIGHT = 160;
+const FOOTER_STYLE = { marginTop: 'auto' } as const;
 const keyboardOffset = { closed: 0, opened: 8 };
 const CONTENT_CONTAINER_STYLE = { paddingHorizontal: 16, paddingBottom: 12 };
 
@@ -59,6 +64,8 @@ interface Props {
 export const SplitEntriesModalContent = (props: Props) => {
     const { initialEntries, variant, entryType, currencySymbol, totalAmount, onConfirm } = props;
 
+    const { height, fontScale } = useWindowDimensions();
+    const scrollStyle = { maxHeight: Math.max(100, height * SHEET_MAX_HEIGHT_RATIO - SHEET_CHROME_HEIGHT * fontScale), flexGrow: 0 };
     const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const splitRemainderDecimalPlaces = Math.max(decimalPlaces, DEFAULT_DECIMAL_PLACES);
     const formatDigits = useFormatDigits(splitRemainderDecimalPlaces);
@@ -166,18 +173,17 @@ export const SplitEntriesModalContent = (props: Props) => {
 
         return (
             <View key={item.localId}>
-                {index > 0 ? <View className="h-hairline bg-surface-separator ml-3xl" /> : null}
                 <SplitEntryRow
                     index={index}
                     entry={item}
                     currencySymbol={currencySymbol}
-                    variant={variant}
                     autoFocus={index === autoFocusIndex}
                     onAmountChange={handleAmount}
                     onCategoryPress={handleCategory}
                 >
-                    {canDelete ? <SplitEntryDeleteButton index={index} onPress={handleDelete} /> : null}
+                    {canDelete ? <SplitEntryDeleteButton index={index} categoryId={item.categoryId} onPress={handleDelete} /> : null}
                 </SplitEntryRow>
+                <View className="h-hairline bg-surface-separator ml-[72px]" />
             </View>
         );
     };
@@ -185,31 +191,37 @@ export const SplitEntriesModalContent = (props: Props) => {
     const assignedLabel = isFullySplit ? t`Fully assigned` : t`${formattedRemaining} left to assign`;
     const pendingLabel = hasMissingCategories ? t`Select all categories` : assignedLabel;
     const remainderLabel = isOverBudget ? t`${formattedRemaining} over budget` : pendingLabel;
-    const fullySplitClassName = hasMissingCategories ? 'text-warning-strong' : 'text-positive-strong';
-    const pendingClassName = isFullySplit ? fullySplitClassName : 'text-secondary-foreground';
-    const remainderClassName = isOverBudget ? 'text-destructive-strong' : pendingClassName;
+    const remainderClassName = isOverBudget ? 'text-destructive-strong' : 'text-secondary-foreground';
 
     return (
-        <View className="flex-1">
+        <View className="min-h-[280px]">
             <SheetTitle title={t`Split`} />
 
-            <ScrollView contentContainerStyle={CONTENT_CONTAINER_STYLE} keyboardShouldPersistTaps="handled" className="flex-1">
+            <ScrollView contentContainerStyle={CONTENT_CONTAINER_STYLE} keyboardShouldPersistTaps="handled" style={scrollStyle}>
                 <GroupedListSection>{entries.map(renderEntry)}</GroupedListSection>
                 <SplitEntriesAddItemFooter canAddEntry={canAddEntry} onAddEntry={handleAddEntry} />
-                <Text className={cn('pt-lg text-center text-[15px] leading-[20px]', remainderClassName)}>{remainderLabel}</Text>
+                <View className="pt-lg flex-row items-center justify-center gap-x-sm">
+                    {canConfirm ? <Icon icon={UserIconNameEnum.Check} size={16} className="text-secondary-foreground" /> : null}
+                    <Text className={cn('text-center text-[15px] leading-[20px] shrink', remainderClassName)}>{remainderLabel}</Text>
+                </View>
                 {canRemoveSplit ? (
-                    <HapticPressable
-                        onPress={handleRemoveSplit}
-                        className="items-center py-xl"
-                        testID={SplitEntriesModalContentSelector.RemoveSplitButton}
-                    >
-                        <Text className="text-md font-semibold text-destructive-strong">{t`Remove split`}</Text>
-                    </HapticPressable>
+                    <View className="pt-xl">
+                        <GroupedListSection>
+                            <HapticPressable
+                                onPress={handleRemoveSplit}
+                                accessibilityRole="button"
+                                className="min-h-[44px] justify-center px-3xl py-md"
+                                testID={SplitEntriesModalContentSelector.RemoveSplitButton}
+                            >
+                                <Text className="text-md text-destructive-strong">{t`Remove split`}</Text>
+                            </HapticPressable>
+                        </GroupedListSection>
+                    </View>
                 ) : null}
             </ScrollView>
 
-            <KeyboardStickyView offset={keyboardOffset}>
-                <View className="px-xl pb-xl">
+            <KeyboardStickyView offset={keyboardOffset} style={FOOTER_STYLE}>
+                <View className="px-xl pt-3xl pb-safe-or-[16px]">
                     <PillButton
                         label={t`Done`}
                         isDisabled={!canConfirm}

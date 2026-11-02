@@ -12,7 +12,7 @@ import { TransactionService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useReducer, useRef } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -23,7 +23,8 @@ import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
 import { useKeypadInput } from '../../hook/use-keypad-input.hook';
 import { AdjustmentAccountSummary } from '../adjustment-account-summary/adjustment-account-summary';
-import { CurrencyModePill } from '../currency-mode-pill/currency-mode-pill';
+import { QuickFormBottom } from '../quick-form-bottom/quick-form-bottom';
+import { QuickFormLayout } from '../quick-form-layout/quick-form-layout';
 import { QuickFormSecondaryLine } from '../quick-form-secondary-line/quick-form-secondary-line';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
@@ -137,9 +138,7 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
     };
 
     return (
-        <View className="flex-1">
-            <View className="min-h-[16px] flex-1" />
-
+        <QuickFormLayout>
             <TransactionAmountDisplay
                 ref={amountDisplayRef}
                 amount={displayValue}
@@ -147,23 +146,25 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
                 variant={variant}
             >
                 <QuickFormSecondaryLine>
-                    <AmountSignPill
-                        isNegative={!isIncrease}
-                        variant={variant}
-                        accessibilityLabel={t`Decrease balance`}
-                        onToggle={toggleIsIncrease}
-                    />
-                    <CurrencyModePill label={details.instrumentCode} isFlipped={false} />
+                    <AmountSignPill isIncrease={isIncrease} onToggle={toggleIsIncrease} />
+                    <Text className="text-[13px] leading-[18px] text-secondary-foreground">{details.instrumentCode}</Text>
                 </QuickFormSecondaryLine>
+                <View className="min-h-[72px]" />
             </TransactionAmountDisplay>
 
-            <View className="flex-1" />
+            <QuickFormBottom>
+                <View className="min-h-[113px]" />
+                <View className="min-h-[128px] pb-md">
+                    <AdjustmentAccountSummary details={details} />
+                </View>
 
-            <View className="mb-md">
-                <AdjustmentAccountSummary details={details} />
-            </View>
-
-            <TransactionKeypad keypad={handlers} onConfirm={handleConfirm} onCancel={handleGoBack} isConfirmDisabled={confirmDisabled} />
-        </View>
+                <TransactionKeypad
+                    keypad={handlers}
+                    onConfirm={handleConfirm}
+                    onCancel={handleGoBack}
+                    isConfirmDisabled={confirmDisabled}
+                />
+            </QuickFormBottom>
+        </QuickFormLayout>
     );
 };

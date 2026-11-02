@@ -145,12 +145,13 @@ export default function VoiceReviewModal() {
                                         index={index}
                                         entry={row}
                                         currencySymbol={currencySymbol}
-                                        variant="destructive"
                                         autoFocus={false}
                                         onAmountChange={handleAmount}
                                         onCategoryPress={handleCategory}
                                     >
-                                        {canDelete ? <SplitEntryDeleteButton index={index} onPress={handleDelete} /> : null}
+                                        {canDelete ? (
+                                            <SplitEntryDeleteButton index={index} categoryId={row.categoryId} onPress={handleDelete} />
+                                        ) : null}
                                     </SplitEntryRow>
                                 </View>
                             );

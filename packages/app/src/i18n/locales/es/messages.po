@@ -2926,9 +2926,9 @@ msgstr "Las cuentas de deuda no pueden participar en transferencias"
 msgid "Debts and loans"
 msgstr "Deudas y préstamos"
 
-#: src/transaction/components/update-adjustment-transaction/update-adjustment-transaction.tsx
-msgid "Decrease balance"
-msgstr "Reducir saldo"
+#: src/@generic/component/amount-sign-pill/amount-sign-pill.tsx
+msgid "Decrease"
+msgstr "Disminuir"
 
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 msgid "Default account"
@@ -4134,6 +4134,10 @@ msgstr "Ingresos recibidos"
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
 msgid "Incorrect PIN"
 msgstr "PIN incorrecto"
+
+#: src/@generic/component/amount-sign-pill/amount-sign-pill.tsx
+msgid "Increase"
+msgstr "Aumentar"
 
 #: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
 msgid "Installment"
@@ -5998,6 +6002,10 @@ msgstr "Restante"
 msgid "Remove"
 msgstr "Eliminar"
 
+#: src/transaction/components/split-entry-delete-button/split-entry-delete-button.tsx
+msgid "Remove {categoryTitle} entry"
+msgstr "Eliminar entrada de {categoryTitle}"
+
 #: src/rule/components/rule-action-row/rule-action-row.tsx
 msgid "Remove action {position}"
 msgstr "Quitar acción {position}"
@@ -6013,6 +6021,10 @@ msgstr "Quitar condición {position}"
 #: src/settings/components/repair-sync-data/repair-sync-data.tsx
 msgid "Remove duplicate bank imports"
 msgstr "Elimina importaciones bancarias duplicadas"
+
+#: src/transaction/components/split-entry-delete-button/split-entry-delete-button.tsx
+msgid "Remove entry"
+msgstr "Eliminar entrada"
 
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 msgid "Remove fee"
@@ -6263,7 +6275,7 @@ msgstr "Guardar saldos"
 msgid "Save changes"
 msgstr "Guardar cambios"
 
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-save-button/transaction-fee-save-button.tsx
 msgid "Save fee"
 msgstr "Guardar comisión"
 

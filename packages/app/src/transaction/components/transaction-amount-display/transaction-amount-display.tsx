@@ -2,7 +2,7 @@ import { AmountField, AmountFieldText } from '@budgie/amount-input';
 import { cva } from 'class-variance-authority';
 import { ReactNode, RefObject, useEffect, useImperativeHandle, useRef } from 'react';
 import { Pressable, View } from 'react-native';
-import Animated, { FadeIn, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import Animated, { ReduceMotion, FadeIn, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -65,8 +65,8 @@ export const TransactionAmountDisplay = ({ ref, amount, currencySymbol, variant,
     const fullDisplay = `${currencySymbol}${formatKeypadAmount(amount, decimalSeparator, digitGroupingSeparator)}`;
 
     return (
-        <Animated.View entering={FadeIn.duration(200)} className="items-center self-stretch">
-            <View className="h-[22px] flex-row items-center justify-center gap-xs self-stretch overflow-hidden">{topContent}</View>
+        <Animated.View entering={FadeIn.duration(200).reduceMotion(ReduceMotion.System)} className="items-center self-stretch">
+            <View className="min-h-[22px] flex-row items-center justify-center gap-xs self-stretch">{topContent}</View>
             <View className="items-center self-stretch">
                 <Pressable className="self-stretch" onPress={onPress} disabled={!isDefined(onPress)}>
                     <Animated.View style={shakeStyle} className="w-full">

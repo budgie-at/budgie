@@ -2927,9 +2927,9 @@ msgstr "Debt accounts cannot take part in transfers"
 msgid "Debts and loans"
 msgstr "Debts and loans"
 
-#: src/transaction/components/update-adjustment-transaction/update-adjustment-transaction.tsx
-msgid "Decrease balance"
-msgstr "Decrease balance"
+#: src/@generic/component/amount-sign-pill/amount-sign-pill.tsx
+msgid "Decrease"
+msgstr "Decrease"
 
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 msgid "Default account"
@@ -4135,6 +4135,10 @@ msgstr "Income received"
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
 msgid "Incorrect PIN"
 msgstr "Incorrect PIN"
+
+#: src/@generic/component/amount-sign-pill/amount-sign-pill.tsx
+msgid "Increase"
+msgstr "Increase"
 
 #: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
 msgid "Installment"
@@ -5999,6 +6003,10 @@ msgstr "Remaining"
 msgid "Remove"
 msgstr "Remove"
 
+#: src/transaction/components/split-entry-delete-button/split-entry-delete-button.tsx
+msgid "Remove {categoryTitle} entry"
+msgstr "Remove {categoryTitle} entry"
+
 #: src/rule/components/rule-action-row/rule-action-row.tsx
 msgid "Remove action {position}"
 msgstr "Remove action {position}"
@@ -6014,6 +6022,10 @@ msgstr "Remove condition {position}"
 #: src/settings/components/repair-sync-data/repair-sync-data.tsx
 msgid "Remove duplicate bank imports"
 msgstr "Remove duplicate bank imports"
+
+#: src/transaction/components/split-entry-delete-button/split-entry-delete-button.tsx
+msgid "Remove entry"
+msgstr "Remove entry"
 
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 msgid "Remove fee"
@@ -6264,7 +6276,7 @@ msgstr "Save balances"
 msgid "Save changes"
 msgstr "Save changes"
 
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-save-button/transaction-fee-save-button.tsx
 msgid "Save fee"
 msgstr "Save fee"
 

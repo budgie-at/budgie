@@ -2,13 +2,12 @@ import { UserIconType } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { RefObject, useImperativeHandle } from 'react';
 import { Text, View } from 'react-native';
-import Animated, { FadeInUp, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import Animated, { ReduceMotion, FadeInUp, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-size-multiplier.constant';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { cn } from '../../../@generic/utils/cn.util';
@@ -54,14 +53,14 @@ export const TransactionFieldIcon = (props: Props) => {
 
     const hasValue = isNotEmptyString(value);
     const isDisabled = isNotEmptyString(disabledHint);
-    const tileClassName = hasValue ? 'bg-surface-disc' : 'bg-transaction-detail-row';
+    const tileClassName = hasValue ? 'border-[1.5px] border-primary' : 'border-hairline border-surface-separator';
     const glyphClassName = hasValue ? 'text-primary' : 'text-secondary-foreground';
-    const tileOpacityClassName = isDisabled ? 'opacity-40' : 'opacity-100';
+    const glyphOpacityClassName = isDisabled ? 'opacity-50' : 'opacity-100';
     const accessibilityLabel = `${label}: ${value ?? t`not set`}`;
     const accessibilityState = { disabled: isDisabled };
 
     return (
-        <Animated.View entering={FadeInUp.delay(animationDelay).duration(200)} className="flex-1">
+        <Animated.View entering={FadeInUp.delay(animationDelay).duration(200).reduceMotion(ReduceMotion.System)} className="w-1/5">
             <Animated.View style={shakeStyle}>
                 <Animated.View style={pressedStyle}>
                     <HapticPressable
@@ -81,36 +80,22 @@ export const TransactionFieldIcon = (props: Props) => {
                     >
                         <View
                             className={cn(
-                                'h-[44px] w-[44px] items-center justify-center rounded-[14px] border-hairline border-surface-separator dark:border-transparent',
-                                tileClassName,
-                                tileOpacityClassName
+                                'h-[44px] w-[44px] items-center justify-center rounded-[14px] bg-transaction-detail-row',
+                                tileClassName
                             )}
                             style={CONTINUOUS_CORNERS}
                         >
-                            <Icon className={glyphClassName} icon={icon} size={20} />
+                            <Icon className={cn(glyphClassName, glyphOpacityClassName)} icon={icon} size={20} />
+                            {hasValue ? <View className="absolute top-[4px] right-[4px] size-[6px] rounded-full bg-primary" /> : null}
                         </View>
-                        <View className="min-h-[36px] items-center self-stretch">
-                            {hasValue ? (
-                                <Text
-                                    className="self-stretch text-center text-[13px] leading-[18px] font-medium text-primary"
-                                    maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
-                                    numberOfLines={2}
-                                    ellipsizeMode="tail"
-                                    {...testIDProps(testID, TestIDPartEnum.TITLE)}
-                                >
-                                    {value}
-                                </Text>
-                            ) : (
-                                <Text
-                                    className="self-stretch text-center text-[13px] leading-[18px] text-secondary-foreground"
-                                    maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
-                                    numberOfLines={1}
-                                    {...testIDProps(testID, TestIDPartEnum.TITLE)}
-                                >
-                                    {label}
-                                </Text>
-                            )}
-                        </View>
+                        <Text
+                            className="min-h-[18px] self-stretch text-center text-[13px] leading-[18px] text-primary"
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                            {...testIDProps(testID, TestIDPartEnum.TITLE)}
+                        >
+                            {value ?? label}
+                        </Text>
                     </HapticPressable>
                 </Animated.View>
             </Animated.View>

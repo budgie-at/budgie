@@ -30,12 +30,12 @@ const OPACITY_DURATION_MS = 50;
 
 const buttonVariants = cva<{
     buttonVariant: Record<KeypadButtonVariant, ClassValue>;
-}>('items-center justify-center rounded-xl', {
+}>('min-h-[48px] items-center justify-center rounded-xl', {
     variants: {
         buttonVariant: {
             digit: 'flex-1 bg-transaction-detail-row',
             action: 'flex-1 bg-transparent',
-            cancel: 'flex-1 h-[56px] bg-transaction-detail-row'
+            cancel: 'flex-1 bg-transaction-detail-row'
         }
     },
     defaultVariants: { buttonVariant: 'digit' }

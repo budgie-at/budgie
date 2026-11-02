@@ -6,5 +6,5 @@ interface Props {
 }
 
 export const QuickFormSecondaryLine = ({ children }: Props) => (
-    <View className="min-h-[28px] flex-row items-center justify-center gap-xs self-stretch px-xl">{children}</View>
+    <View className="min-h-[44px] flex-row items-center justify-center gap-xs self-stretch px-xl">{children}</View>
 );

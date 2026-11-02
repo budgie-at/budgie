@@ -18,7 +18,7 @@ export const TransactionNoteFieldIcon = ({ onPress }: Props) => {
     const { control } = useFormContext<TransactionCreateInputInterface>();
     const comment = useWatch({ control, name: 'comment' });
 
-    const noteValue = isNotEmptyString(comment) ? comment : void 0;
+    const noteValue = isNotEmptyString(comment) ? t`Note` : void 0;
 
     return (
         <TransactionFieldIcon

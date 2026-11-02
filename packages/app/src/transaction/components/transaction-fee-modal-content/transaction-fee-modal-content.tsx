@@ -8,13 +8,13 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
-import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { SheetTitle } from '../../../@generic/component/sheet-title/sheet-title';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { SplitEntryRow } from '../split-entry-row/split-entry-row';
+import { TransactionFeeSaveButton } from '../transaction-fee-save-button/transaction-fee-save-button';
 
 import { TransactionFeeModalContentSelector } from './transaction-fee-modal-content.selector';
 
@@ -87,7 +87,7 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
         );
 
     return (
-        <View className="px-xl pb-xl gap-lg">
+        <View className="px-xl pb-safe-or-[16px] gap-lg bg-sheet-surface">
             <SheetTitle title={t`Fee`} />
 
             <GroupedListSection>
@@ -95,7 +95,6 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
                     index={ROW_INDEX}
                     entry={feeEntry}
                     currencySymbol={currencySymbol}
-                    variant={variant}
                     autoFocus={!isDefined(entry)}
                     onAmountChange={handleAmountChange}
                     onCategoryPress={handleCategoryPress}
@@ -115,12 +114,7 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
                 ) : null}
 
                 <View className="flex-1">
-                    <PillButton
-                        label={t`Save fee`}
-                        isDisabled={!canSave}
-                        onPress={handleConfirm}
-                        testID={TransactionFeeModalContentSelector.SaveButton}
-                    />
+                    <TransactionFeeSaveButton isDisabled={!canSave} onPress={handleConfirm} />
                 </View>
             </View>
         </View>

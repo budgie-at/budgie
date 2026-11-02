@@ -1,54 +1,32 @@
-import { AmountSignToggle } from '@budgie/amount-input';
-import { UserIconNameEnum } from '@budgie/contracts';
-import { cva } from 'class-variance-authority';
-import { ClassValue } from 'cn';
+import { useLingui } from '@lingui/react/macro';
+import { View } from 'react-native';
 
-import { BACKGROUND_COLOR_PALETTE } from '../../constant/background-color-palette.constant';
-import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
-import { useSignTogglePress } from '../../hook/use-sign-toggle-press.hook';
-import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
-import { Icon } from '../icon/icon';
+import { AmountSignSegment } from '../amount-sign-segment/amount-sign-segment';
 
 interface Props {
-    readonly isNegative: boolean;
-    readonly variant: ColorPaletteVariant;
-    readonly accessibilityLabel: string;
+    readonly isIncrease: boolean;
     readonly onToggle: () => void;
 }
 
-const SIGN_TOGGLE_HIT_SLOP = 8;
+export const AmountSignPill = ({ isIncrease, onToggle }: Props) => {
+    const { t } = useLingui();
 
-const pillVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>(
-    'items-center justify-center rounded-full border w-11 h-11 active:scale-xs',
-    {
-        variants: {
-            variant: BACKGROUND_COLOR_PALETTE
+    const handleDecrease = () => {
+        if (isIncrease) {
+            onToggle();
         }
-    }
-);
+    };
 
-const iconVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('', {
-    variants: {
-        variant: FOREGROUND_COLOR_PALETTE
-    }
-});
-
-export const AmountSignPill = ({ isNegative, variant, accessibilityLabel, onToggle }: Props) => {
-    const handlePress = useSignTogglePress(onToggle);
-
-    const iconClassName = iconVariants({ variant });
-    const positiveIcon = <Icon icon={UserIconNameEnum.Plus} size={20} className={iconClassName} />;
-    const negativeIcon = <Icon icon={UserIconNameEnum.Minus} size={20} className={iconClassName} />;
+    const handleIncrease = () => {
+        if (!isIncrease) {
+            onToggle();
+        }
+    };
 
     return (
-        <AmountSignToggle
-            isNegative={isNegative}
-            positiveIcon={positiveIcon}
-            negativeIcon={negativeIcon}
-            className={pillVariants({ variant })}
-            hitSlop={SIGN_TOGGLE_HIT_SLOP}
-            accessibilityLabel={accessibilityLabel}
-            onPress={handlePress}
-        />
+        <View accessibilityRole="radiogroup" className="min-h-[44px] max-w-[280px] flex-1 flex-row gap-xxs">
+            <AmountSignSegment label={t`Decrease`} selected={!isIncrease} onPress={handleDecrease} />
+            <AmountSignSegment label={t`Increase`} selected={isIncrease} onPress={handleIncrease} />
+        </View>
     );
 };
