@@ -3,8 +3,6 @@ import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { Text } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { InstitutionSelector } from '../../../app/(main)/institution/institution.selector';
 import { SettingsRowAccessory } from '../../../settings/components/settings-row-accessory/settings-row-accessory';
@@ -25,18 +23,23 @@ export const InstitutionConnectionRow = ({ syncs }: Props) => {
     const { integration } = useBankIntegration();
     const { isKeyRejected } = useBankIntegrationAccountPreviewsQuery(integration.id);
     const status = getBankIntegrationSyncStatus(syncs, isKeyRejected);
-    const statusLabel = status === BankIntegrationSyncStatusEnum.NEEDS_ATTENTION ? t`Needs attention` : null;
-    const errorLabel = status === BankIntegrationSyncStatusEnum.KEY_REJECTED ? t`Key rejected` : statusLabel;
-    const subtitle = isDefined(errorLabel) ? <Text className="text-destructive-foreground text-[15px]">{errorLabel}</Text> : null;
+    if (status !== BankIntegrationSyncStatusEnum.NEEDS_ATTENTION && status !== BankIntegrationSyncStatusEnum.KEY_REJECTED) {
+        return null;
+    }
+
+    const isKeyRejectedStatus = status === BankIntegrationSyncStatusEnum.KEY_REJECTED;
+    const title = isKeyRejectedStatus ? t`Update access key` : t`Review connection`;
+    const statusLabel = isKeyRejectedStatus ? t`Key rejected` : t`Needs attention`;
+    const subtitle = <Text className="text-destructive-foreground text-[15px]">{statusLabel}</Text>;
 
     const handleSettings = () => void router.push({ pathname: '/bank-integration/[id]', params: { id: String(integration.id) } });
 
     return (
         <GroupedListSection>
             <SettingsRow
-                title={t`Connection settings`}
+                title={title}
                 icon={UserIconNameEnum.Settings}
-                variant="ghost"
+                variant="destructive"
                 subtitle={subtitle}
                 right={<SettingsRowAccessory />}
                 testID={InstitutionSelector.SettingsRow}

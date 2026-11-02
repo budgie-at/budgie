@@ -2366,7 +2366,6 @@ msgstr "Connecter Binance"
 msgid "Connect Monobank"
 msgstr "Connecter Monobank"
 
-#: src/account/component/institution-connection-row/institution-connection-row.tsx
 #: src/account/component/institution-settings-button/institution-settings-button.tsx
 msgid "Connection settings"
 msgstr "Paramètres de connexion"
@@ -6320,6 +6319,10 @@ msgstr "Revenez à Budgie et sélectionnez ci-dessous le fichier XLSX enregistr�
 msgid "Returned"
 msgstr "Reçu"
 
+#: src/account/component/institution-connection-row/institution-connection-row.tsx
+msgid "Review connection"
+msgstr "Vérifier la connexion"
+
 #: src/sync/component/analytics-sync-account-progress/analytics-sync-account-progress.tsx
 msgid "Review sync settings"
 msgstr "Vérifier les paramètres de synchronisation"
@@ -7933,6 +7936,10 @@ msgstr "À venir"
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Upcoming this period"
 msgstr "À venir sur cette période"
+
+#: src/account/component/institution-connection-row/institution-connection-row.tsx
+msgid "Update access key"
+msgstr "Mettre à jour la clé d’accès"
 
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 msgid "Update rule?"

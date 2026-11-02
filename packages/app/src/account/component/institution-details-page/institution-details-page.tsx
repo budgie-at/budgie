@@ -17,6 +17,7 @@ import { decimalPlacesAtom, defaultInstrumentAtom } from '../../../settings/cons
 import { BankIntegrationContext } from '../../../sync/context/bank-integration.context';
 import { getBankIntegrationCapabilities } from '../../../sync/utils/get-bank-integration-capabilities.util';
 import { CollapsibleChromeTransactionList } from '../../../transaction/components/collapsible-chrome-transaction-list/collapsible-chrome-transaction-list';
+import { TransactionAccountTitlePrefixContext } from '../../../transaction/context/transaction-account-title-prefix.context';
 import { BANK_PROVIDER_TITLE } from '../../constant/bank-provider-title.constant';
 import { useIsStaticAccountDetailsHeader } from '../../hook/use-is-static-account-details-header.hook';
 import { getBankIntegrationTitle } from '../../utils/get-bank-integration-title.util';
@@ -52,11 +53,8 @@ export const InstitutionDetailsPage = ({ integration, institution, balancesByAcc
     const totalAccount = { type: AccountTypeEnum.BANK, instrument: defaultInstrument };
     const isStaticHeader = useIsStaticAccountDetailsHeader();
     const titleDescriptor = BANK_PROVIDER_TITLE[institution.provider];
-    const title = getBankIntegrationTitle(
-        isDefined(titleDescriptor) ? t(titleDescriptor) : institution.provider,
-        institution.label,
-        institution.groupNumber
-    );
+    const providerTitle = isDefined(titleDescriptor) ? t(titleDescriptor) : institution.provider;
+    const title = getBankIntegrationTitle(providerTitle, institution.label, institution.groupNumber);
     const contextValue = { integration, capabilities: getBankIntegrationCapabilities(integration) };
     const headerTitle = isStaticHeader ? (
         <AccountDetailsStaticTitle title={title} balance={displayTotal} account={totalAccount} />
@@ -66,9 +64,11 @@ export const InstitutionDetailsPage = ({ integration, institution, balancesByAcc
 
     const transactionList = (
         <View className="flex-1">
-            <CollapsibleChromeTransactionList accountIds={institution.accounts.map(account => account.id)}>
-                <InstitutionDetailsSummary institution={institution} balancesByAccountId={balancesByAccountId} />
-            </CollapsibleChromeTransactionList>
+            <TransactionAccountTitlePrefixContext.Provider value={providerTitle}>
+                <CollapsibleChromeTransactionList accountIds={institution.accounts.map(account => account.id)}>
+                    <InstitutionDetailsSummary institution={institution} balancesByAccountId={balancesByAccountId} />
+                </CollapsibleChromeTransactionList>
+            </TransactionAccountTitlePrefixContext.Provider>
         </View>
     );
 

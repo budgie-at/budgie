@@ -27,12 +27,6 @@ appId: ${APP_ID}
       timeout: 10000
 - assertVisible:
       id: 'Institution.Accounts'
-- scrollUntilVisible:
-      element:
-          id: 'Institution.SettingsRow'
-      direction: DOWN
-- assertVisible:
-      id: 'Institution.SettingsRow'
 - tapOn:
       id: 'Institution.SettingsButton'
 - extendedWaitUntil:

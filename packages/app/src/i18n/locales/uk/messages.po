@@ -2366,7 +2366,6 @@ msgstr "Підключити Binance"
 msgid "Connect Monobank"
 msgstr "Підключити Монобанк"
 
-#: src/account/component/institution-connection-row/institution-connection-row.tsx
 #: src/account/component/institution-settings-button/institution-settings-button.tsx
 msgid "Connection settings"
 msgstr "Налаштування підключення"
@@ -6320,6 +6319,10 @@ msgstr "Поверніться до Budgie і виберіть нижче збе
 msgid "Returned"
 msgstr "Повернено"
 
+#: src/account/component/institution-connection-row/institution-connection-row.tsx
+msgid "Review connection"
+msgstr "Перевірити підключення"
+
 #: src/sync/component/analytics-sync-account-progress/analytics-sync-account-progress.tsx
 msgid "Review sync settings"
 msgstr "Переглянути налаштування синхронізації"
@@ -7933,6 +7936,10 @@ msgstr "Незабаром"
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Upcoming this period"
 msgstr "Очікується в цьому періоді"
+
+#: src/account/component/institution-connection-row/institution-connection-row.tsx
+msgid "Update access key"
+msgstr "Оновити ключ доступу"
 
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 msgid "Update rule?"

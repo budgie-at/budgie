@@ -2367,7 +2367,6 @@ msgstr "Connect Binance"
 msgid "Connect Monobank"
 msgstr "Connect Monobank"
 
-#: src/account/component/institution-connection-row/institution-connection-row.tsx
 #: src/account/component/institution-settings-button/institution-settings-button.tsx
 msgid "Connection settings"
 msgstr "Connection settings"
@@ -6321,6 +6320,10 @@ msgstr "Return to Budgie and select the saved XLSX file below"
 msgid "Returned"
 msgstr "Returned"
 
+#: src/account/component/institution-connection-row/institution-connection-row.tsx
+msgid "Review connection"
+msgstr "Review connection"
+
 #: src/sync/component/analytics-sync-account-progress/analytics-sync-account-progress.tsx
 msgid "Review sync settings"
 msgstr "Review sync settings"
@@ -7934,6 +7937,10 @@ msgstr "Upcoming"
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Upcoming this period"
 msgstr "Upcoming this period"
+
+#: src/account/component/institution-connection-row/institution-connection-row.tsx
+msgid "Update access key"
+msgstr "Update access key"
 
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 msgid "Update rule?"
