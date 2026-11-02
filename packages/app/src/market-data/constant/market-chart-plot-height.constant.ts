@@ -1,0 +1,1 @@
+export const MARKET_CHART_PLOT_HEIGHT = 164;

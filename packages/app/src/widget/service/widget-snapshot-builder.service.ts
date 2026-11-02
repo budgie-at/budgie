@@ -7,7 +7,6 @@ import {
     InstrumentRepository,
     LanguageEnum,
     RUNWAY_WINDOW_MONTHS,
-    RunwayDriverDimensionEnum,
     SettingsRepository,
     StatisticsRepository,
     convertFromMicroUnits
@@ -35,7 +34,6 @@ import { formatSymbolAmount } from '../../i18n/utils/format-symbol-amount.util';
 import { i18nLoadLanguageMessages } from '../../i18n/utils/i18n.util';
 import { languageToLocale } from '../../i18n/utils/language-to-locale.util';
 import { RUNWAY_MINIMUM_MONTHS } from '../../runway/constant/runway-minimum-months.constant';
-import { aggregateRunwayDrivers } from '../../runway/utils/aggregate-runway-drivers.util';
 import { computeRunway } from '../../runway/utils/compute-runway.util';
 import { fillRunwaySeriesMonths } from '../../runway/utils/fill-runway-series-months.util';
 import { DEFAULT_INSTRUMENT } from '../../settings/constants/default-instrument.constant';
@@ -284,20 +282,12 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                 isCryptoIncluded: boolean,
                 context: WidgetSnapshotContextInterface
             ) {
-                const [seriesRows, driverRows, liquidRows] = yield* Effect.all(
+                const [seriesRows, liquidRows] = yield* Effect.all(
                     [
                         statisticsRepository.getRunwaySeriesQuery(
                             DEFAULT_TRANSACTION_FILTER,
                             instrument.id,
                             RUNWAY_WINDOW_MONTHS,
-                            isCryptoIncluded
-                        ),
-                        statisticsRepository.getRunwayDriverSeriesQuery(
-                            DEFAULT_TRANSACTION_FILTER,
-                            instrument.id,
-                            RunwayDriverDimensionEnum.CATEGORY,
-                            RUNWAY_WINDOW_MONTHS,
-                            context.language,
                             isCryptoIncluded
                         ),
                         accountBalanceRepository.getLiquidTotal(instrument.id, isCryptoIncluded)
@@ -309,7 +299,8 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                 const computation = computeRunway({
                     series,
                     liquid: liquidRows.at(0)?.total ?? 0,
-                    irregularMonthlyAmounts: aggregateRunwayDrivers(driverRows, series, false).irregularMonthlyAmounts,
+                    irregularMonthlyAmounts: [],
+                    isAllIn: true,
                     referenceDate
                 });
 

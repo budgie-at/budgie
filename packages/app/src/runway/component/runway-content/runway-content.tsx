@@ -22,7 +22,7 @@ export const RunwayContent = () => {
     const isCryptoIncluded = useSetting('isRunwayCryptoIncluded');
     const activeAccountTypes = isCryptoIncluded ? [...LIQUID_ACCOUNT_TYPES, ...CRYPTO_ACCOUNT_TYPES] : LIQUID_ACCOUNT_TYPES;
     const [dimension, setDimension] = useState<RunwayDriverDimensionEnum>(RunwayDriverDimensionEnum.CATEGORY);
-    const [isAllIn, setIsAllIn] = useState(false);
+    const [isAllIn, setIsAllIn] = useState(true);
 
     const liquid = useLiquidBalanceQuery();
     const { computation, drivers, series } = useRunwayQuery({ dimension, liquid, isAllIn });

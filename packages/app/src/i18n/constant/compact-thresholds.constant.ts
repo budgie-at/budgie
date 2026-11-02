@@ -2,3 +2,4 @@ export const THOUSAND = 1_000;
 export const HUNDRED_THOUSAND = 1e5;
 export const MILLION = 1e6;
 export const BILLION = 1e9;
+export const TRILLION = 1e12;

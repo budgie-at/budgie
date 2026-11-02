@@ -12,18 +12,30 @@ interface Props {
     readonly onPress?: () => void;
     readonly isLoading?: boolean;
     readonly testID?: string;
+    readonly accessibilityLabel?: string;
+    readonly size?: 'md' | 'sm';
 }
 
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 const HIT_SLOP = { top: 8, bottom: 8, left: 8, right: 8 };
 
-export const SettingsPillButton = ({ label, variant, onPress, isLoading = false, testID }: Props) => {
+export const SettingsPillButton = ({
+    label,
+    variant,
+    onPress,
+    isLoading = false,
+    testID,
+    accessibilityLabel = label,
+    size = 'md'
+}: Props) => {
     const backgroundClassName = variant === 'cta' ? 'bg-cta-background' : 'bg-surface-fill';
     const labelClassName = variant === 'cta' ? 'text-cta-foreground' : 'text-primary';
     const accessibilityState = { busy: isLoading };
+    const minWidthClassName = size === 'sm' ? 'min-w-[76px] min-h-[28px] px-lg' : 'min-w-[92px] min-h-[30px] px-xl';
+    const labelSizeClassName = size === 'sm' ? 'text-[14px]' : 'text-[15px]';
     const content = (
         <LoadingContent isLoading={isLoading}>
-            <Text className={cn('text-[15px] font-semibold', labelClassName)} numberOfLines={1}>
+            <Text className={cn('font-semibold', labelSizeClassName, labelClassName)} numberOfLines={1}>
                 {label}
             </Text>
         </LoadingContent>
@@ -32,7 +44,7 @@ export const SettingsPillButton = ({ label, variant, onPress, isLoading = false,
     if (!isDefined(onPress)) {
         return (
             <View
-                className={cn('min-h-[30px] min-w-[92px] items-center justify-center rounded-full px-xl py-xs', backgroundClassName)}
+                className={cn('items-center justify-center rounded-full py-xs', minWidthClassName, backgroundClassName)}
                 style={CONTINUOUS_CORNERS}
                 testID={testID}
                 importantForAccessibility="no-hide-descendants"
@@ -45,16 +57,13 @@ export const SettingsPillButton = ({ label, variant, onPress, isLoading = false,
 
     return (
         <HapticPressable
-            className={cn(
-                'min-h-[30px] min-w-[92px] items-center justify-center rounded-full px-xl py-xs active:opacity-70',
-                backgroundClassName
-            )}
+            className={cn('items-center justify-center rounded-full py-xs active:opacity-70', minWidthClassName, backgroundClassName)}
             style={CONTINUOUS_CORNERS}
             hitSlop={HIT_SLOP}
             onPress={onPress}
             disabled={isLoading}
             accessibilityRole="button"
-            accessibilityLabel={label}
+            accessibilityLabel={accessibilityLabel}
             accessibilityState={accessibilityState}
             testID={testID}
         >

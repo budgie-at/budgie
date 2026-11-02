@@ -40,7 +40,7 @@ export const RunwayForecastChart = ({ computation }: Props) => {
 
     const formatChartAmount = useRunwayAmountLabel(0);
 
-    const { bandPath, likelyPath, runOutX, startLabelY, endLabelY, endValue, tickXs, zeroY } = buildRunwayForecastPath({
+    const { bandPath, likelyPath, runOutX, startLabelY, isZeroLabelVisible, endLabelY, endValue, tickXs, zeroY } = buildRunwayForecastPath({
         computation,
         width: CHART_WIDTH,
         height: CHART_HEIGHT,
@@ -88,7 +88,7 @@ export const RunwayForecastChart = ({ computation }: Props) => {
                             strokeLinejoin="round"
                         />
 
-                        <RunwayForecastZeroLabel x={CHART_PADDING_LEFT} y={zeroY} />
+                        {isZeroLabelVisible ? <RunwayForecastZeroLabel x={CHART_PADDING_LEFT} y={zeroY} /> : null}
 
                         <RunwayForecastValueLabel x={CHART_PADDING_LEFT} y={startLabelY} label={startLabel} anchor="start" />
 
