@@ -234,6 +234,7 @@ appId: ${APP_ID}
       timeout: 10000
       visibilityPercentage: 100
       centerElement: true
+- waitForAnimationToEnd
 - tapOn:
       id: 'AccountCard.E2E Crypto Vault'
       text: 'E2E Crypto Vault, 2 BTC'
