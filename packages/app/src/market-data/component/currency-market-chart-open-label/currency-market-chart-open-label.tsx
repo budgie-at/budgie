@@ -29,7 +29,9 @@ export const CurrencyMarketChartOpenLabel = ({ values, xs, ys, baselineY, chartW
     const openPrice = formatPrice(values.at(0) ?? 0, symbol);
     const label = t`Open ${openPrice}`;
     const top = getMarketChartOpenLabelTop({ values, xs, ys, baselineY, chartWidth, labelLength: label.length });
-    const visibilityStyle = useAnimatedStyle(() => ({ top: top ?? 0, opacity: activeIndex.get() < 0 && isDefined(top) ? 1 : 0 }));
+    const hasPlacement = isDefined(top);
+    const resolvedTop = top ?? 0;
+    const visibilityStyle = useAnimatedStyle(() => ({ top: resolvedTop, opacity: activeIndex.get() < 0 && hasPlacement ? 1 : 0 }));
 
     return (
         <Animated.Text
