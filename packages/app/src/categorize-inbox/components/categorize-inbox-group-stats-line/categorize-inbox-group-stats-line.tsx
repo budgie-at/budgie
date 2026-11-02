@@ -20,7 +20,7 @@ export const CategorizeInboxGroupStatsLine = ({ cluster }: Props) => {
     const averageLabel = `${sign}${protectAmount(amount / Math.max(1, cluster.rows.length), symbol)}`;
 
     return (
-        <Text className="text-secondary-foreground text-[15px] tabular-nums" numberOfLines={1}>
+        <Text className="text-secondary-foreground text-center text-[15px] leading-[20px] tabular-nums">
             <Trans>Average payment</Trans>
             <Text className="text-primary font-medium">{` ${averageLabel}`}</Text>
         </Text>

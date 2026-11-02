@@ -49,7 +49,7 @@ export const CategorizeInboxGroupHero = ({ cluster }: Props) => {
                     {`${sign}${protectAmount(amount, symbol)}`}
                 </Text>
             </View>
-            <Text className="text-secondary-foreground text-center text-[15px] leading-[20px]" numberOfLines={1}>
+            <Text className="text-secondary-foreground text-center text-[15px] leading-[20px]">
                 <Plural value={cluster.rows.length} one="# payment" other="# payments" />
                 {' · '}
                 <CategorizeInboxGroupFinding cluster={cluster} />

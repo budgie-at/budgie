@@ -14,10 +14,11 @@ export const CategorizeInboxAmount = ({ amount, symbol, isIncome, className }: P
     const protectAmount = useCategorizeInboxAmountLabel();
 
     const colorClassName = isIncome ? 'text-positive-foreground' : 'text-primary';
+    const sign = isIncome ? '+' : '';
 
     return (
         <Text className={cn('text-sm font-semibold tabular-nums', colorClassName, className)} numberOfLines={1}>
-            {protectAmount(amount, symbol)}
+            {`${sign}${protectAmount(amount, symbol)}`}
         </Text>
     );
 };

@@ -58,7 +58,7 @@ msgstr "{0, plural, one {# pago más de {formattedPayment}} other {# pagos más 
 #. placeholder {0}: movedToCashTransactionIds.length
 #. placeholder {0}: oneOffs.reduce((total, cluster) => total + cluster.rows.length, 0)
 #: src/categorize-inbox/components/categorize-inbox-group-hero/categorize-inbox-group-hero.tsx
-#: src/categorize-inbox/components/categorize-inbox-group-row-count/categorize-inbox-group-row-count.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle.tsx
 #: src/categorize-inbox/components/categorize-inbox-moved-to-cash-undo/categorize-inbox-moved-to-cash-undo.tsx
 #: src/categorize-inbox/components/categorize-inbox-one-offs-link/categorize-inbox-one-offs-link.tsx
 msgid "{0, plural, one {# payment} other {# payments}}"
@@ -1289,14 +1289,6 @@ msgstr "Ya sincronizando"
 #: src/categorize-inbox/components/categorize-inbox-group-primary-bar/categorize-inbox-group-primary-bar.tsx
 msgid "Already tracked"
 msgstr "Ya registrado"
-
-#: src/categorize-inbox/components/categorize-inbox-transfer-rule-switch/categorize-inbox-transfer-rule-switch.tsx
-msgid "Also for new “{displayTitle}” payments"
-msgstr "También para nuevos pagos de “{displayTitle}”"
-
-#: src/categorize-inbox/components/categorize-inbox-transfer-rule-switch/categorize-inbox-transfer-rule-switch.tsx
-msgid "Also for new «{jarName}» payments"
-msgstr "También para nuevos pagos de «{jarName}»"
 
 #: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx
 msgid "Also found as “{englishTitle}”"
@@ -3100,6 +3092,10 @@ msgstr "Pantalla"
 msgid "Do not sync history"
 msgstr "No sincronizar el historial"
 
+#: src/categorize-inbox/components/categorize-inbox-transfer-rule-switch/categorize-inbox-transfer-rule-switch.tsx
+msgid "Do this automatically"
+msgstr "Hacerlo automáticamente"
+
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "does not contain"
 msgstr "no contiene"
@@ -3661,6 +3657,7 @@ msgid "File"
 msgstr "Archivo"
 
 #: src/categorize-inbox/components/categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-row/categorize-inbox-group-row.tsx
 msgctxt "Categorize action"
 msgid "File"
 msgstr "Archivar"
@@ -3814,6 +3811,14 @@ msgstr "Cuenta de origen"
 #: src/account/component/start-deposit-funding-summary/start-deposit-funding-summary.tsx
 msgid "Funding amount"
 msgstr "Importe de financiación"
+
+#: src/categorize-inbox/components/categorize-inbox-transfer-rule-switch/categorize-inbox-transfer-rule-switch.tsx
+msgid "Future “{displayTitle}” payments"
+msgstr "Futuros pagos «{displayTitle}»"
+
+#: src/categorize-inbox/components/categorize-inbox-transfer-rule-switch/categorize-inbox-transfer-rule-switch.tsx
+msgid "Future «{jarName}» payments"
+msgstr "Futuros pagos «{jarName}»"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "General"
@@ -6246,10 +6251,6 @@ msgstr "Guardar reserva"
 msgid "Save up for yearly bills a little each period so they never surprise you"
 msgstr "Ahorra un poco cada periodo para las facturas anuales y que nunca te sorprendan"
 
-#: src/categorize-inbox/components/categorize-inbox-transfer-rule-switch/categorize-inbox-transfer-rule-switch.tsx
-msgid "Saved as a rule"
-msgstr "Guardado como regla"
-
 #: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
@@ -7282,6 +7283,7 @@ msgid "To amount"
 msgstr "Hasta el importe"
 
 #: src/categorize-inbox/components/categorize-inbox-group-row-cash-button/categorize-inbox-group-row-cash-button.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-row/categorize-inbox-group-row.tsx
 msgid "To cash"
 msgstr "A efectivo"
 

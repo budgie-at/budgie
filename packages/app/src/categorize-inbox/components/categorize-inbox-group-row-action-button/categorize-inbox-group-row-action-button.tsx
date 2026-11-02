@@ -1,6 +1,5 @@
-import { Text } from 'react-native';
-
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { CategorizeInboxGroupRowActionPill } from '../categorize-inbox-group-row-action-pill/categorize-inbox-group-row-action-pill';
 
 interface Props {
     readonly title: string;
@@ -10,13 +9,11 @@ interface Props {
     readonly testID?: string;
 }
 
-const BUTTON_HIT_SLOP = { top: 6, bottom: 6, left: 6, right: 6 } as const;
-const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
+const BUTTON_HIT_SLOP = { top: 8, bottom: 8, left: 8, right: 8 } as const;
 
 export const CategorizeInboxGroupRowActionButton = ({ title, label, isDisabled, onPress, testID }: Props) => (
     <HapticPressable
-        className="min-h-[32px] min-w-[52px] items-center justify-center self-center rounded-full bg-surface-disc px-md py-[6px] active:opacity-70"
-        style={CONTINUOUS_CORNERS}
+        className="active:opacity-70"
         hitSlop={BUTTON_HIT_SLOP}
         disabled={isDisabled}
         onPress={onPress}
@@ -24,8 +21,6 @@ export const CategorizeInboxGroupRowActionButton = ({ title, label, isDisabled, 
         accessibilityLabel={label}
         testID={testID}
     >
-        <Text className="text-center text-[15px] leading-[20px] font-semibold text-primary" numberOfLines={2}>
-            {title}
-        </Text>
+        <CategorizeInboxGroupRowActionPill title={title} />
     </HapticPressable>
 );
