@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.146.0](https://github.com/budgie-at/budgie/compare/v6.145.0...v6.146.0) (2026-11-02)
+
+### Features
+
+* **app:** polish PIN and app lock flow ([#1854](https://github.com/budgie-at/budgie/issues/1854)) ([3023ce1](https://github.com/budgie-at/budgie/commit/3023ce1bd9289f615940b90dc78289a715361629))
+
+
 # [6.145.0](https://github.com/budgie-at/budgie/compare/v6.144.1...v6.145.0) (2026-11-02)
 
 ### Features
