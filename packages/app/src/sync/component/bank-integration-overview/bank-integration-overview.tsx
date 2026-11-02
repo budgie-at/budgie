@@ -6,7 +6,7 @@ import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
 import { useBankIntegration } from '../../context/bank-integration.context';
 import { useBankIntegrationSyncsQuery } from '../../query/use-bank-integration-syncs.query';
-import { BankIntegrationStatusPill } from '../bank-integration-status-pill/bank-integration-status-pill';
+import { BankIntegrationStatusLine } from '../bank-integration-status-line/bank-integration-status-line';
 
 export const BankIntegrationOverview = () => {
     const { integration } = useBankIntegration();
@@ -23,7 +23,7 @@ export const BankIntegrationOverview = () => {
     return (
         <Animated.View style={animatedStyle} className="items-center gap-y-[8px] py-xl" testID={BankIntegrationSelector.Overview}>
             <BankLogo bankProvider={integration.provider} size={56} />
-            <BankIntegrationStatusPill syncs={syncs} />
+            <BankIntegrationStatusLine syncs={syncs} />
         </Animated.View>
     );
 };

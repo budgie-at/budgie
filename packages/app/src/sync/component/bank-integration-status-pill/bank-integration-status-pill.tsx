@@ -1,87 +1,55 @@
-import { ExternalSourceEnum, SyncEntityInterface, SyncStatusEnum, UserIconNameEnum } from '@budgie/contracts';
-import { useAtomValue } from '@effect/atom-react/Hooks';
-import { plural } from '@lingui/core/macro';
+import { SyncEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import * as Clock from 'effect/Clock';
-import * as Duration from 'effect/Duration';
-import * as AsyncResult from 'effect/reactivity/AsyncResult';
-import * as Atom from 'effect/reactivity/Atom';
-import * as Schedule from 'effect/Schedule';
-import * as Stream from 'effect/Stream';
-import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { Icon } from '../../../@generic/component/icon/icon';
-import { cn } from '../../../@generic/utils/cn.util';
+import { MetaPill } from '../../../@generic/component/meta-pill/meta-pill';
+import { MetaPillVariant } from '../../../@generic/type/meta-pill-variant.type';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
-import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
+import { BANK_INTEGRATION_SYNC_STATUS_ICON } from '../../constant/bank-integration-sync-status-icon.constant';
 import { useBankIntegration } from '../../context/bank-integration.context';
 import { BankIntegrationSyncStatusEnum } from '../../enum/bank-integration-sync-status.enum';
+import { useFormatSyncTime } from '../../hook/use-format-sync-time.hook';
 import { useBankIntegrationAccountPreviewsQuery } from '../../query/use-bank-integration-account-previews.query';
 import { getBankIntegrationSyncStatus } from '../../utils/get-bank-integration-sync-status.util';
-import { BankIntegrationImportStatus } from '../bank-integration-import-status/bank-integration-import-status';
-
-const bankIntegrationStatusNowAtom = Atom.make(
-    Stream.fromEffect(Clock.currentTimeMillis).pipe(Stream.repeat(Schedule.spaced(Duration.minutes(1))))
-);
+import { getLatestForwardSyncedAt } from '../../utils/get-latest-forward-synced-at.util';
 
 interface Props {
     readonly syncs: Array<Pick<SyncEntityInterface, 'enabled' | 'status' | 'mode' | 'forwardSyncedAt'>>;
 }
 
-const STATUS_ICON: Record<BankIntegrationSyncStatusEnum, UserIconNameEnum> = {
-    [BankIntegrationSyncStatusEnum.NEEDS_ATTENTION]: UserIconNameEnum.CircleAlert,
-    [BankIntegrationSyncStatusEnum.KEY_REJECTED]: UserIconNameEnum.KeyRound,
-    [BankIntegrationSyncStatusEnum.SYNCING]: UserIconNameEnum.RefreshCw,
-    [BankIntegrationSyncStatusEnum.PAUSED]: UserIconNameEnum.CirclePause,
-    [BankIntegrationSyncStatusEnum.STALE]: UserIconNameEnum.Clock,
-    [BankIntegrationSyncStatusEnum.UP_TO_DATE]: UserIconNameEnum.CircleCheck
+const STATUS_VARIANT: Record<BankIntegrationSyncStatusEnum, MetaPillVariant> = {
+    [BankIntegrationSyncStatusEnum.NEEDS_ATTENTION]: 'destructive',
+    [BankIntegrationSyncStatusEnum.KEY_REJECTED]: 'destructive',
+    [BankIntegrationSyncStatusEnum.SYNCING]: 'warning',
+    [BankIntegrationSyncStatusEnum.PAUSED]: 'default',
+    [BankIntegrationSyncStatusEnum.UP_TO_DATE]: 'positive'
 };
 
 export const BankIntegrationStatusPill = ({ syncs }: Props) => {
     const { t } = useLingui();
-    const { integration, capabilities } = useBankIntegration();
+    const { integration } = useBankIntegration();
     const { isKeyRejected } = useBankIntegrationAccountPreviewsQuery(integration.id);
-    const { formatRelativeToNow } = useFormatDate();
-    const now = AsyncResult.getOrElse(useAtomValue(bankIntegrationStatusNowAtom), Date.now);
-    const status = getBankIntegrationSyncStatus(syncs, isKeyRejected, now);
-    const lastSyncedAt = syncs
-        .filter(sync => !capabilities.supportsLiveSync || sync.enabled)
-        .map(sync => sync.forwardSyncedAt)
-        .filter(isDefined)
-        .reduce<Date | null>((latest, date) => (isDefined(latest) && latest >= date ? latest : date), null);
-    const relative = isDefined(lastSyncedAt) ? formatRelativeToNow(lastSyncedAt, now) : '';
-    const failedCount = syncs.filter(sync => sync.status === SyncStatusEnum.FAILED).length;
-    const statusLabels: Record<BankIntegrationSyncStatusEnum, string> = {
-        [BankIntegrationSyncStatusEnum.KEY_REJECTED]: t`Key rejected — sync is paused`,
-        [BankIntegrationSyncStatusEnum.NEEDS_ATTENTION]: t({
-            message: plural(failedCount, { one: 'Sync failed for # account', other: 'Sync failed for # accounts' })
-        }),
-        [BankIntegrationSyncStatusEnum.SYNCING]: t`Syncing…`,
-        [BankIntegrationSyncStatusEnum.PAUSED]:
-            integration.provider === ExternalSourceEnum.BINANCE ? t`Sync is off for all assets` : t`Sync is off for all accounts`,
-        [BankIntegrationSyncStatusEnum.STALE]: t`Last synced ${relative}`,
-        [BankIntegrationSyncStatusEnum.UP_TO_DATE]: isDefined(lastSyncedAt) ? t`Synced ${relative}` : t`Not synced yet`
-    };
-    const label = statusLabels[status];
-    const appearance = {
-        className:
-            capabilities.supportsLiveSync &&
-            (status === BankIntegrationSyncStatusEnum.KEY_REJECTED || status === BankIntegrationSyncStatusEnum.NEEDS_ATTENTION)
-                ? 'text-destructive-strong'
-                : 'text-secondary-foreground',
-        icon: capabilities.supportsFileImport ? UserIconNameEnum.FileSpreadsheet : STATUS_ICON[status]
-    };
+    const formatSyncTime = useFormatSyncTime();
 
-    if (capabilities.supportsFileImport) {
-        return <BankIntegrationImportStatus lastSyncedAt={lastSyncedAt} />;
-    }
+    const status = getBankIntegrationSyncStatus(syncs, isKeyRejected);
+    const lastSyncedAt = getLatestForwardSyncedAt(syncs);
+    const lastSyncedLabel = isDefined(lastSyncedAt) ? formatSyncTime(lastSyncedAt) : null;
+    const upToDateLabel = isDefined(lastSyncedLabel) ? t`Up to date · ${lastSyncedLabel}` : t`Up to date`;
+    const statusLabels: Record<BankIntegrationSyncStatusEnum, string> = {
+        [BankIntegrationSyncStatusEnum.NEEDS_ATTENTION]: t`Needs attention`,
+        [BankIntegrationSyncStatusEnum.KEY_REJECTED]: t`Key rejected`,
+        [BankIntegrationSyncStatusEnum.SYNCING]: t`Syncing…`,
+        [BankIntegrationSyncStatusEnum.PAUSED]: t`Paused`,
+        [BankIntegrationSyncStatusEnum.UP_TO_DATE]: upToDateLabel
+    };
 
     return (
-        <View className="flex-row items-center justify-center gap-x-sm" testID={BankIntegrationSelector.StatusPill}>
-            <Icon icon={appearance.icon} size={15} className={appearance.className} />
-            <Text className={cn(appearance.className, 'text-[15px] text-center shrink')}>{label}</Text>
-        </View>
+        <MetaPill
+            label={statusLabels[status]}
+            icon={BANK_INTEGRATION_SYNC_STATUS_ICON[status]}
+            variant={STATUS_VARIANT[status]}
+            testID={BankIntegrationSelector.StatusPill}
+        />
     );
 };

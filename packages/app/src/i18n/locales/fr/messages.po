@@ -137,6 +137,10 @@ msgstr "{accountCount, plural, one {# compte} other {# comptes}}"
 msgid "{accountsCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountsCount, plural, one {# compte} other {# comptes}}"
 
+#: src/account/component/institution-row/institution-row.tsx
+msgid "{accountsCount, plural, one {# asset} other {# assets}}"
+msgstr "{accountsCount, plural, one {# actif} other {# actifs}}"
+
 #: src/market-data/component/currency-market-stale-price/currency-market-stale-price.tsx
 msgid "{ageDays, plural, one {# day old} other {# days old}}"
 msgstr "{ageDays, plural, one {il y a # jour} other {il y a # jours}}"
@@ -327,7 +331,7 @@ msgstr "{entryStatusLabel}. {formattedAmount} {caption}. {formattedSpentLabel}, 
 msgid "{entryStatusLabel}. {formattedAmount} {caption}. {reservedPrefix}{formattedPerDay}, {formattedDaysLeft}."
 msgstr "{entryStatusLabel}. {formattedAmount} {caption}. {reservedPrefix}{formattedPerDay}, {formattedDaysLeft}."
 
-#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
+#: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
 msgid "{failedCount, plural, one {Sync failed for # account} other {Sync failed for # accounts}}"
 msgstr "{failedCount, plural, one {Échec de synchronisation pour # compte} other {Échec de synchronisation pour # comptes}}"
 
@@ -1064,6 +1068,10 @@ msgstr "Comptes"
 msgid "Accounts · {accountCount}"
 msgstr "Comptes · {accountCount}"
 
+#: src/account/component/institution-accounts/institution-accounts.tsx
+msgid "Accounts · {accountsCount}"
+msgstr "Comptes · {accountsCount}"
+
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Accounts ({selectedAccountsCount})"
 msgstr "Comptes ({selectedAccountsCount})"
@@ -1519,6 +1527,10 @@ msgstr "Répartition des actifs"
 #: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
 msgid "Assets · {accountCount}"
 msgstr "Actifs · {accountCount}"
+
+#: src/account/component/institution-accounts/institution-accounts.tsx
+msgid "Assets · {accountsCount}"
+msgstr "Actifs · {accountsCount}"
 
 #: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
 msgid "At {rateLabel} per {instrumentCode}"
@@ -2372,6 +2384,10 @@ msgstr "Connecter Monobank"
 #: src/sync/component/bank-integration-key-card/bank-integration-key-card.tsx
 msgid "Connection"
 msgstr "Connexion"
+
+#: src/account/component/institution-settings-button/institution-settings-button.tsx
+msgid "Connection settings"
+msgstr "Paramètres de connexion"
 
 #: src/sync/component/bank-integration-import-status/bank-integration-import-status.tsx
 msgid "Connects using statement files"
@@ -4341,6 +4357,10 @@ msgid "Key has too many permissions"
 msgstr "La clé a trop d'autorisations"
 
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
+msgid "Key rejected"
+msgstr "Clé refusée"
+
+#: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
 msgid "Key rejected — sync is paused"
 msgstr "Clé refusée — synchronisation en pause"
 
@@ -4404,7 +4424,11 @@ msgstr "Mois dernier"
 msgid "last payment {formattedLast}"
 msgstr "dernier paiement {formattedLast}"
 
-#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
+#: src/account/component/institution-connection-row/institution-connection-row.tsx
+msgid "Last successful sync · {lastSyncedTime}"
+msgstr "Dernière synchronisation réussie · {lastSyncedTime}"
+
+#: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
 msgid "Last synced {relative}"
 msgstr "Dernière synchronisation : {relative}"
 
@@ -4911,6 +4935,10 @@ msgstr "Les noms sont à jour. Touchez pour réessayer."
 msgid "Navigate to Account → Statements"
 msgstr "Allez dans Compte → Relevés"
 
+#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
+msgid "Needs attention"
+msgstr "Action requise"
+
 #: src/app/(tabs)/settings/apple-pay-capture.tsx
 msgid "Needs review"
 msgstr "À vérifier"
@@ -5265,7 +5293,7 @@ msgstr "non défini"
 msgid "Not set"
 msgstr "Non défini"
 
-#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
+#: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
 msgid "Not synced yet"
 msgstr "Pas encore synchronisé"
 
@@ -5733,6 +5761,7 @@ msgid "Pause"
 msgstr "Pause"
 
 #: src/ai/constant/ai-download-card-visuals.constant.ts
+#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Paused"
 msgstr "En pause"
 
@@ -6338,6 +6367,10 @@ msgstr "Revenez à Budgie et sélectionnez ci-dessous le fichier XLSX enregistr�
 msgid "Returned"
 msgstr "Reçu"
 
+#: src/account/component/institution-connection-row/institution-connection-row.tsx
+msgid "Review connection"
+msgstr "Vérifier la connexion"
+
 #: src/sync/component/analytics-sync-account-progress/analytics-sync-account-progress.tsx
 msgid "Review sync settings"
 msgstr "Vérifier les paramètres de synchronisation"
@@ -6753,6 +6786,10 @@ msgstr "Raccourcis"
 msgid "Shortcuts is not available on this device."
 msgstr "Shortcuts n’est pas disponible sur cet appareil."
 
+#: src/account/component/institution-accounts/institution-accounts.tsx
+msgid "Show all {accountsCount} accounts"
+msgstr "Afficher les {accountsCount} comptes"
+
 #: src/app/transaction-amount-filter.tsx
 msgid "Show all amounts"
 msgstr "Afficher tous les montants"
@@ -7056,20 +7093,17 @@ msgstr "Données de synchronisation réparées"
 msgid "Sync data repairs"
 msgstr "Réparations des données de synchronisation"
 
+#: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync failed"
 msgstr "Échec de la synchronisation"
 
-#: src/account/constant/account-sync-state-label.constant.ts
-msgid "Sync Failed"
-msgstr "Échec de la synchronisation"
-
-#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
+#: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
 msgid "Sync is off for all accounts"
 msgstr "Synchronisation désactivée pour tous les comptes"
 
-#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
+#: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
 msgid "Sync is off for all assets"
 msgstr "La synchronisation est désactivée pour tous les actifs"
 
@@ -7110,7 +7144,7 @@ msgstr "Synchroniser avec une clé API en lecture seule"
 msgid "Sync your Binance balances and transactions"
 msgstr "Synchronisez vos soldes et transactions Binance"
 
-#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
+#: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
 msgid "Synced {relative}"
 msgstr "Synchronisé {relative}"
 
@@ -7130,6 +7164,7 @@ msgstr "Synchronisation de l'historique..."
 msgid "Syncing resumes for all accounts once you update the key."
 msgstr "La synchronisation reprend pour tous les comptes dès que vous mettez la clé à jour."
 
+#: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Syncing…"
@@ -7570,6 +7605,10 @@ msgstr "À mettre de côté sur cette période"
 msgid "Today"
 msgstr "Aujourd'hui"
 
+#: src/sync/hook/use-format-sync-time.hook.ts
+msgid "Today {time}"
+msgstr "Aujourd’hui {time}"
+
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Token already connected"
 msgstr "Jeton déjà connecté"
@@ -7970,8 +8009,13 @@ msgid "up {changeShare} over the last 24 hours"
 msgstr "en hausse de {changeShare} sur les dernières 24 heures"
 
 #: src/account/constant/account-sync-state-label.constant.ts
+#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Up to date"
 msgstr "À jour"
+
+#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
+msgid "Up to date · {lastSyncedLabel}"
+msgstr "À jour · {lastSyncedLabel}"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "Upcoming"
@@ -7981,6 +8025,10 @@ msgstr "À venir"
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Upcoming this period"
 msgstr "À venir sur cette période"
+
+#: src/account/component/institution-connection-row/institution-connection-row.tsx
+msgid "Update access key"
+msgstr "Mettre à jour la clé d’accès"
 
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 msgid "Update rule?"

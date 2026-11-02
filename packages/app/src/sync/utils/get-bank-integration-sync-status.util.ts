@@ -1,6 +1,6 @@
 import { SyncEntityInterface, SyncStatusEnum } from '@budgie/contracts';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { AccountSyncStateEnum } from '../../account/enum/account-sync-state.enum';
 import { getAccountSyncState } from '../../account/utils/get-account-sync-state.util';
@@ -8,8 +8,7 @@ import { BankIntegrationSyncStatusEnum } from '../enum/bank-integration-sync-sta
 
 export const getBankIntegrationSyncStatus = (
     syncs: Array<Pick<SyncEntityInterface, 'enabled' | 'status' | 'mode' | 'forwardSyncedAt'>>,
-    isKeyRejected: boolean,
-    now: number
+    isKeyRejected: boolean
 ): BankIntegrationSyncStatusEnum => {
     const states = syncs.map(getAccountSyncState);
 
@@ -27,17 +26,6 @@ export const getBankIntegrationSyncStatus = (
 
     if (isNotEmptyArray(states) && states.every(state => state === AccountSyncStateEnum.DISABLED)) {
         return BankIntegrationSyncStatusEnum.PAUSED;
-    }
-
-    const latestSync = Math.max(
-        ...syncs
-            .filter(sync => sync.enabled)
-            .map(sync => sync.forwardSyncedAt)
-            .filter(isDefined)
-            .map(date => date.getTime())
-    );
-    if (Number.isFinite(latestSync) && now - latestSync > 24 * 60 * 60 * 1000) {
-        return BankIntegrationSyncStatusEnum.STALE;
     }
 
     return BankIntegrationSyncStatusEnum.UP_TO_DATE;

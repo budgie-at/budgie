@@ -3,6 +3,7 @@ import { expect, it } from '@effect/vitest';
 
 import { BankIntegrationSyncStatusEnum } from '../src/sync/enum/bank-integration-sync-status.enum';
 import { getBankIntegrationSyncStatus } from '../src/sync/utils/get-bank-integration-sync-status.util';
+import { isBankIntegrationSyncStale } from '../src/sync/utils/is-bank-integration-sync-stale.util';
 
 const now = Date.UTC(2026, 10, 2, 12);
 const sync = (
@@ -25,16 +26,17 @@ it.each([
         false,
         BankIntegrationSyncStatusEnum.NEEDS_ATTENTION
     ],
-    ['all disabled', [sync(SyncStatusEnum.IDLE, false)], false, BankIntegrationSyncStatusEnum.PAUSED],
-    ['exactly 24 hours', [sync(SyncStatusEnum.IDLE, true, 86400000)], false, BankIntegrationSyncStatusEnum.UP_TO_DATE],
-    ['over 24 hours', [sync(SyncStatusEnum.IDLE, true, 86400001)], false, BankIntegrationSyncStatusEnum.STALE],
-    [
-        'disabled recent sync ignored',
-        [sync(SyncStatusEnum.IDLE, true, 86400001), sync(SyncStatusEnum.IDLE, false)],
-        false,
-        BankIntegrationSyncStatusEnum.STALE
-    ],
-    ['disabled stale sync ignored', [sync(), sync(SyncStatusEnum.IDLE, false, 86400001)], false, BankIntegrationSyncStatusEnum.UP_TO_DATE]
-])('%s', (_label, syncs, rejected, expected) => {
-    expect(getBankIntegrationSyncStatus(syncs, rejected, now)).toBe(expected);
+    ['all disabled', [sync(SyncStatusEnum.IDLE, false)], false, BankIntegrationSyncStatusEnum.PAUSED]
+])('status: %s', (_label, syncs, rejected, expected) => {
+    expect(getBankIntegrationSyncStatus(syncs, rejected)).toBe(expected);
+});
+
+it.each([
+    ['empty', [], false],
+    ['exactly 24 hours', [sync(SyncStatusEnum.IDLE, true, 86400000)], false],
+    ['over 24 hours', [sync(SyncStatusEnum.IDLE, true, 86400001)], true],
+    ['disabled recent sync ignored', [sync(SyncStatusEnum.IDLE, true, 86400001), sync(SyncStatusEnum.IDLE, false)], true],
+    ['disabled stale sync ignored', [sync(), sync(SyncStatusEnum.IDLE, false, 86400001)], false]
+])('stale: %s', (_label, syncs, expected) => {
+    expect(isBankIntegrationSyncStale(syncs, now)).toBe(expected);
 });

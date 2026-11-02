@@ -32,7 +32,7 @@ export const useBankIntegrationAccountRowState = (
     const syncIssueLabels: Partial<Record<AccountSyncStateEnum, string>> = {
         [AccountSyncStateEnum.SYNCING]: isRejected ? '' : t`Syncing…`,
         [AccountSyncStateEnum.DISABLED]:
-            isRejected || getBankIntegrationSyncStatus(syncs, isRejected, 0) === BankIntegrationSyncStatusEnum.PAUSED ? '' : t`Sync off`
+            isRejected || getBankIntegrationSyncStatus(syncs, isRejected) === BankIntegrationSyncStatusEnum.PAUSED ? '' : t`Sync off`
     };
     const liveSyncLabel = capabilities.supportsLiveSync && isDefined(syncState) ? (syncIssueLabels[syncState] ?? '') : '';
     const stateLabel = capabilities.supportsFileImport && sync?.enabled === false ? t`Imports off` : liveSyncLabel;
