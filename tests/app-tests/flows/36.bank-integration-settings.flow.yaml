@@ -203,14 +203,6 @@ appId: ${APP_ID}
 - tapOn:
       id: 'BankIntegration.AccountRow.9.Menu.Archive'
 - extendedWaitUntil:
-      visible: 'Archive Account?'
-      timeout: 10000
-- tapOn:
-      text: '^Archive$'
-- extendedWaitUntil:
-      notVisible: 'Archive Account?'
-      timeout: 10000
-- extendedWaitUntil:
       visible:
           id: 'BankIntegration.Page'
       timeout: 10000

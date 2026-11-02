@@ -22,6 +22,19 @@ msgstr "Compra P2P de {assetCode} en Binance"
 msgid "Binance P2P sell {assetCode}"
 msgstr "Venta P2P de {assetCode} en Binance"
 
+#: src/account/component/archived-account-card/archived-account-card.tsx
+msgid ", closed at the provider"
+msgstr ", cerrada en el proveedor"
+
+#: src/account/hooks/use-restore-archived-account.hook.ts
+msgid "“{accountTitle}” is back in Hidden accounts"
+msgstr "«{accountTitle}» vuelve a estar en Cuentas ocultas"
+
+#: src/account/hooks/use-restore-archived-account.hook.ts
+#: src/account/hooks/use-unhide-account.hook.ts
+msgid "“{accountTitle}” is back on Home"
+msgstr "«{accountTitle}» vuelve a estar en Inicio"
+
 #: src/category/hooks/use-move-and-delete-category.hook.ts
 msgid "“{sourceTitle}” deleted, transactions moved to “{targetTitle}”"
 msgstr "«{sourceTitle}» eliminada, transacciones movidas a «{targetTitle}»"
@@ -39,7 +52,9 @@ msgstr "«{title}» eliminado"
 msgid "(pick one)"
 msgstr "(elige uno)"
 
+#. placeholder {0}: filteredAccounts?.length ?? 0
 #. placeholder {0}: parts.length
+#: src/account/component/shelved-accounts-page/shelved-accounts-page.tsx
 #: src/rule/hooks/use-rule-condition-formatter.hook.ts
 msgid "{0, plural, one {# account} other {# accounts}}"
 msgstr "{0, plural, one {# cuenta} other {# cuentas}}"
@@ -121,18 +136,6 @@ msgstr "{accountCount, plural, one {# cuenta} other {# cuentas}}"
 #: src/account/component/institution-row/institution-row.tsx
 msgid "{accountsCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountsCount, plural, one {# cuenta} other {# cuentas}}"
-
-#: src/app/(tabs)/settings/archived.tsx
-msgid "{accountTitle} and its transactions will be permanently deleted. Transfers with other accounts stay there as “Transfer (account deleted)” and are left out of statistics. This cannot be undone."
-msgstr "{accountTitle} y todas sus transacciones se eliminarán permanentemente. Las transferencias con otras cuentas se conservarán allí como «Transferencia (cuenta eliminada)» y no se incluirán en las estadísticas. Esto no se puede deshacer."
-
-#: src/account/component/archived-account-card/archived-account-card.tsx
-msgid "{accountTitle} will be restored to your main view and included in totals."
-msgstr "{accountTitle} se restaurará en tu vista principal y se incluirá en los totales."
-
-#: src/account/component/inactive-account-card/inactive-account-card.tsx
-msgid "{accountTitle} will be restored to your main view."
-msgstr "{accountTitle} se restaurará en tu vista principal."
 
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "{applied, plural, one {# matching transaction updated} other {# matching transactions updated}}"
@@ -880,6 +883,7 @@ msgid "A deposit in the funding account currency must receive the full funding a
 msgstr "Un depósito en la moneda de la cuenta de origen debe recibir el importe completo"
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
+#: src/auth/components/pin-forgotten-warning/pin-forgotten-warning.tsx
 msgid "A forgotten PIN can't be reset."
 msgstr "Un PIN olvidado no se puede restablecer."
 
@@ -981,6 +985,10 @@ msgstr "Cuenta {accountId} no encontrada"
 msgid "Account actions"
 msgstr "Acciones de la cuenta"
 
+#: src/account/hooks/use-archive-account.hook.ts
+msgid "Account archived"
+msgstr "Cuenta archivada"
+
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
 msgid "account currency"
 msgstr "moneda de la cuenta"
@@ -1014,14 +1022,6 @@ msgstr "Cuentas · {accountCount}"
 msgid "Accounts ({selectedAccountsCount})"
 msgstr "Cuentas ({selectedAccountsCount})"
 
-#: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx
-msgid "Accounts you archive will appear here. They won't be included in your totals or main view."
-msgstr "Las cuentas que archives aparecerán aquí. No se incluirán en tus totales ni en la vista principal."
-
-#: src/account/component/inactive-accounts-empty-state/inactive-accounts-empty-state.tsx
-msgid "Accounts you mark as inactive will appear here. They won't be shown on the main page."
-msgstr "Las cuentas que marques como inactivas aparecerán aquí. No se mostrarán en la página principal."
-
 #: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
 msgid "Accounts you sync or import appear here."
 msgstr "Aquí aparecen las cuentas que sincronizas o importas."
@@ -1029,14 +1029,6 @@ msgstr "Aquí aparecen las cuentas que sincronizas o importas."
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Action: {label}"
 msgstr "Acción: {label}"
-
-#: src/account/component/inactive-account-card/inactive-account-card.tsx
-msgid "Activate"
-msgstr "Activar"
-
-#: src/account/component/inactive-account-card/inactive-account-card.tsx
-msgid "Activate Account?"
-msgstr "¿Activar cuenta?"
 
 #: src/settings/components/budget-management-card/budget-management-card.tsx
 msgid "Active budget"
@@ -1432,7 +1424,8 @@ msgstr "¿Aplicar a transacciones existentes?"
 
 #: src/account/component/account-actions-menu/account-actions-menu.tsx
 #: src/account/component/debt-account-paid-off/debt-account-paid-off.tsx
-#: src/account/hooks/use-archive-account.hook.ts
+#: src/account/component/hidden-account-archive-menu-item/hidden-account-archive-menu-item.tsx
+#: src/account/component/inactive-account-card/inactive-account-card.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Archive"
 msgstr "Archivar"
@@ -1441,17 +1434,30 @@ msgstr "Archivar"
 msgid "Archive account"
 msgstr "Archivar cuenta"
 
-#: src/account/hooks/use-archive-account.hook.ts
-msgid "Archive Account?"
-msgstr "¿Archivar cuenta?"
+#: src/app/(tabs)/settings/archived.tsx
+msgid "Archive accounts you no longer use from their edit screen. Their history is kept so you can restore them."
+msgstr "Archiva las cuentas que ya no usas desde su pantalla de edición. Su historial se conserva para que puedas restaurarlas."
 
+#: src/account/component/archived-account-card/archived-account-card.tsx
+msgid "Archived"
+msgstr "Archivada"
+
+#: src/account/hooks/use-archive-account.hook.ts
+msgid "Archived “{accountTitle}”"
+msgstr "«{accountTitle}» archivada"
+
+#: src/account/component/archived-account-card/archived-account-card.tsx
+msgid "Archived {archivedDate}"
+msgstr "Archivada el {archivedDate}"
+
+#: src/app/(tabs)/settings/archived.tsx
 #: src/settings/components/accounts-settings-rows/accounts-settings-rows.tsx
 msgid "Archived accounts"
 msgstr "Cuentas archivadas"
 
 #: src/app/(tabs)/settings/archived.tsx
-msgid "Archived Accounts"
-msgstr "Cuentas archivadas"
+msgid "Archived accounts are left out of Home, totals and budgets. Restore one to put it back with its history."
+msgstr "Las cuentas archivadas quedan fuera de Inicio, los totales y los presupuestos. Restaura una para recuperarla con su historial."
 
 #: src/settings/components/truncate-data/truncate-data.tsx
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
@@ -1665,8 +1671,8 @@ msgid "Binance P2P orders are unavailable: the API key is missing P2P read permi
 msgstr "Las órdenes P2P de Binance no están disponibles: la clave de API no tiene permiso de lectura P2P."
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
-msgid "Biometric Authentication"
-msgstr "Autenticación biométrica"
+msgid "Biometric data never leaves this phone"
+msgstr "Los datos biométricos nunca salen de este teléfono"
 
 #: src/settings/components/screenshot-protection-row/screenshot-protection-row.tsx
 msgid "Blank screenshots and recordings"
@@ -1741,6 +1747,10 @@ msgstr "Budgie no pudo abrir tus datos"
 msgid "Budgie deleted the damaged part. It starts again only when you ask."
 msgstr "Budgie eliminó la parte dañada. Solo volverá a empezar cuando tú lo pidas."
 
+#: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
+msgid "Budgie encrypts your data on this phone. It takes a few seconds."
+msgstr "Budgie cifra tus datos en este teléfono. Tarda unos segundos."
+
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Budgie has no exchange rate for this payment currency yet."
 msgstr "Budgie todavía no tiene un tipo de cambio para la moneda de este pago."
@@ -1760,10 +1770,6 @@ msgstr "Budgie elige la cuenta según el nombre de la tarjeta y, después, tu cu
 #: src/budget/components/budget-fund-preview/budget-fund-preview.tsx
 msgid "Budgie plans to set aside {amountLabel} {rate}"
 msgstr "Budgie prevé reservar {amountLabel} {rate}"
-
-#: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
-msgid "Budgie re-encrypts {DB_NAME} ({fileSize}) on this phone. It takes a few seconds."
-msgstr "Budgie vuelve a cifrar {DB_NAME} ({fileSize}) en este teléfono. Tarda unos segundos."
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Budgie reads these statements on this phone."
@@ -1831,9 +1837,8 @@ msgstr "No se puede cambiar después"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
-#: src/account/component/account-action-button/account-action-button.tsx
 #: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
-#: src/account/hooks/use-archive-account.hook.ts
+#: src/account/hooks/use-delete-archived-account.hook.ts
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 #: src/app/(tabs)/settings/import.tsx
@@ -2014,6 +2019,10 @@ msgstr "Revisa la ortografía o créala como nueva categoría."
 msgid "Check the spelling or create it as a new tag."
 msgstr "Revisa la ortografía o créala como nueva etiqueta."
 
+#: src/account/component/shelved-accounts-no-matches-state/shelved-accounts-no-matches-state.tsx
+msgid "Check the spelling or search by another name."
+msgstr "Revisa la ortografía o busca otro nombre."
+
 #: src/account/constant/account-kind-title.constant.ts
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Checking"
@@ -2045,6 +2054,7 @@ msgstr "Elige una categoría"
 msgid "Choose a category to continue"
 msgstr "Elige una categoría para continuar"
 
+#: src/auth/components/pin-restart-button/pin-restart-button.tsx
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Choose a different PIN"
 msgstr "Elegir otro PIN"
@@ -2053,11 +2063,16 @@ msgstr "Elegir otro PIN"
 msgid "Choose a merchant category"
 msgstr "Elige una categoría de comercio"
 
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Choose a new PIN"
+msgstr "Elige un PIN nuevo"
+
 #: src/transaction/components/statistics-period-control/statistics-period-control.tsx
 msgid "Choose a period"
 msgstr "Elegir un periodo"
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
+#: src/auth/utils/get-pin-setup-meta.util.ts
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Choose a PIN"
 msgstr "Elige un PIN"
@@ -2162,6 +2177,7 @@ msgid "Clear filters"
 msgstr "Borrar filtros"
 
 #: src/@generic/component/searchable-page-empty-state-actions/searchable-page-empty-state-actions.tsx
+#: src/account/component/shelved-accounts-no-matches-state/shelved-accounts-no-matches-state.tsx
 #: src/rule/components/rule-empty-state/rule-empty-state.tsx
 msgid "Clear search"
 msgstr "Borrar búsqueda"
@@ -2190,6 +2206,10 @@ msgstr "¿Cerrar depósito?"
 #: src/@generic/component/popover-menu/popover-menu.tsx
 msgid "Close menu"
 msgstr "Cerrar menú"
+
+#: src/account/component/archived-account-trailing/archived-account-trailing.tsx
+msgid "Closed"
+msgstr "Cerrada"
 
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "Closing balance · {title}"
@@ -2226,8 +2246,8 @@ msgid "Confirm"
 msgstr "Confirmar"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Confirm PIN"
-msgstr "Confirmar PIN"
+msgid "Confirm it's you before choosing a new one."
+msgstr "Confirma que eres tú antes de elegir uno nuevo."
 
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "Confirm Split"
@@ -2236,6 +2256,15 @@ msgstr "Confirmar división"
 #: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx
 msgid "Confirm tag selection"
 msgstr "Confirmar selección de etiquetas"
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Confirm your new PIN"
+msgstr "Confirma tu PIN nuevo"
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
+msgid "Confirm your PIN"
+msgstr "Confirma tu PIN"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Connect"
@@ -2277,7 +2306,6 @@ msgstr "contiene"
 msgid "Contains"
 msgstr "Contiene"
 
-#: src/auth/components/biometric-configuration/biometric-configuration.tsx
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 #: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
 #: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
@@ -2286,7 +2314,6 @@ msgid "Continue"
 msgstr "Continuar"
 
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
-#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Continue without a PIN"
 msgstr "Continuar sin PIN"
 
@@ -2345,17 +2372,13 @@ msgstr "Copia el token y pégalo abajo"
 msgid "Cost basis"
 msgstr "Base de coste"
 
-#: src/account/component/inactive-account-card/inactive-account-card.tsx
-msgid "Could not activate account."
-msgstr "No se pudo activar la cuenta."
-
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "Could not apply rule to existing transactions"
 msgstr "No se pudo aplicar la regla a las transacciones existentes"
 
 #: src/account/hooks/use-archive-account.hook.ts
-msgid "Could not archive account"
-msgstr "No se pudo archivar la cuenta"
+msgid "Could not archive account."
+msgstr "No se pudo archivar la cuenta."
 
 #: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
@@ -2428,7 +2451,7 @@ msgstr "No se pudo crear la transacción"
 msgid "Could not create transaction. Please try again later."
 msgstr "No se pudo crear la transacción. Por favor, inténtalo de nuevo más tarde."
 
-#: src/account/hooks/use-delete-account.hook.ts
+#: src/account/hooks/use-delete-archived-account.hook.ts
 msgid "Could not delete account."
 msgstr "No se pudo eliminar la cuenta."
 
@@ -2557,7 +2580,7 @@ msgstr "No se pudieron reparar los datos de sincronización"
 msgid "Could not reset bank sync"
 msgstr "No se pudo restablecer la sincronización bancaria"
 
-#: src/account/component/archived-account-card/archived-account-card.tsx
+#: src/account/hooks/use-restore-archived-account.hook.ts
 msgid "Could not restore account."
 msgstr "No se pudo restaurar la cuenta."
 
@@ -2615,6 +2638,14 @@ msgstr "No se pudieron etiquetar las transacciones"
 #: src/categorize-inbox/hook/use-categorize-inbox-move-to-cash.hook.ts
 msgid "Could not undo the move to cash"
 msgstr "No se pudo deshacer el movimiento a efectivo"
+
+#: src/account/hooks/use-shelved-account-action.hook.ts
+msgid "Could not undo."
+msgstr "No se pudo deshacer."
+
+#: src/account/hooks/use-unhide-account.hook.ts
+msgid "Could not unhide account."
+msgstr "No se pudo mostrar la cuenta."
 
 #: src/ai/component/ai-feature-toggle/ai-feature-toggle.tsx
 msgid "Could not update AI feature"
@@ -2701,6 +2732,18 @@ msgstr "No se pudo cargar la lista"
 msgid "Couldn’t load transaction counts"
 msgstr "No se pudieron cargar los recuentos de transacciones"
 
+#: src/auth/hook/use-pin-setup.hook.tsx
+msgid "Couldn't save your PIN. Enter it again to retry."
+msgstr "No se pudo guardar tu PIN. Introdúcelo de nuevo para reintentarlo."
+
+#: src/auth/hook/use-pin-setup.hook.tsx
+msgid "Couldn't save your PIN. Try again."
+msgstr "No se pudo guardar tu PIN. Inténtalo de nuevo."
+
+#: src/auth/hook/use-pin-setup.hook.tsx
+msgid "Couldn't turn off app lock. Try again."
+msgstr "No se pudo desactivar el bloqueo de la app. Inténtalo de nuevo."
+
 #: src/account/component/account-switch-field/account-switch-field.tsx
 msgid "Count it in your net worth"
 msgstr "Contarla en tu patrimonio neto"
@@ -2721,10 +2764,6 @@ msgstr "Crea primero una cuenta de deuda."
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create a new System-generated API key"
 msgstr "Crea una nueva clave API generada por el sistema"
-
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Create a PIN"
-msgstr "Crear un PIN"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create a read-only API key and secret"
@@ -2919,6 +2958,10 @@ msgstr "Las cuentas de deuda no pueden participar en transferencias"
 msgid "Debts and loans"
 msgstr "Deudas y préstamos"
 
+#: src/auth/components/pin-setup/pin-setup.tsx
+msgid "Decrypting your data. Keep Budgie open, it restarts when finished."
+msgstr "Descifrando tus datos. Mantén Budgie abierto; se reiniciará al terminar."
+
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 msgid "Default account"
 msgstr "Cuenta predeterminada"
@@ -2928,6 +2971,7 @@ msgid "Default currency"
 msgstr "Moneda predeterminada"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
+#: src/account/hooks/use-delete-archived-account.hook.ts
 #: src/ai/hook/use-ai-model-download-actions.hook.ts
 #: src/budget/hooks/use-budget-event-form.hook.ts
 #: src/budget/hooks/use-budget-form.hook.ts
@@ -2940,14 +2984,14 @@ msgstr "Moneda predeterminada"
 msgid "Delete"
 msgstr "Eliminar"
 
+#: src/account/hooks/use-delete-archived-account.hook.ts
+msgid "Delete “{accountTitle}” permanently?"
+msgstr "¿Eliminar «{accountTitle}» para siempre?"
+
 #: src/category/hooks/use-delete-category.hook.ts
 #: src/tag/hooks/use-delete-tag.hook.ts
 msgid "Delete “{title}”?"
 msgstr "¿Eliminar «{title}»?"
-
-#: src/app/(tabs)/settings/archived.tsx
-msgid "Delete Account Permanently?"
-msgstr "¿Eliminar cuenta permanentemente?"
 
 #: src/settings/components/truncate-data/truncate-data.tsx
 msgid "Delete all data"
@@ -2981,9 +3025,14 @@ msgstr "¿Eliminar evento?"
 msgid "Delete fund?"
 msgstr "¿Eliminar fondo?"
 
-#: src/app/(tabs)/settings/archived.tsx
-msgid "Delete Permanently"
-msgstr "Eliminar permanentemente"
+#: src/auth/components/pin-form-delete-button/pin-form-delete-button.tsx
+msgid "Delete last digit"
+msgstr "Borrar el último dígito"
+
+#: src/account/component/archived-account-card/archived-account-card.tsx
+#: src/account/component/archived-account-delete-menu-item/archived-account-delete-menu-item.tsx
+msgid "Delete permanently"
+msgstr "Eliminar para siempre"
 
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 msgid "Delete rule"
@@ -3019,6 +3068,10 @@ msgstr "Eliminar transacción"
 #: src/category/components/category-card/category-card.tsx
 msgid "Delete…"
 msgstr "Eliminar…"
+
+#: src/account/hooks/use-delete-archived-account.hook.ts
+msgid "Deleted “{accountTitle}”"
+msgstr "«{accountTitle}» eliminada"
 
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "Deletes {DB_NAME} from this phone"
@@ -3275,6 +3328,7 @@ msgstr "Editar"
 #: src/account/component/account-actions-menu/account-actions-menu.tsx
 #: src/account/component/account-card-base/account-card-base.tsx
 #: src/account/component/account-card-menu/account-card-menu.tsx
+#: src/account/component/hidden-account-edit-menu-item/hidden-account-edit-menu-item.tsx
 msgid "Edit account"
 msgstr "Editar cuenta"
 
@@ -3351,22 +3405,9 @@ msgstr "vacío"
 msgid "Empty canvas"
 msgstr "Lienzo en blanco"
 
-#: src/auth/components/biometric-configuration/biometric-configuration.tsx
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Enable biometric unlock?"
-msgstr "¿Activar desbloqueo biométrico?"
-
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Enable Face ID unlock?"
-msgstr "¿Activar desbloqueo con Face ID?"
-
 #: src/rule/components/rule-list-row/rule-list-row.tsx
 msgid "Enable rule: {primaryOutcome}"
 msgstr "Activar regla: {primaryOutcome}"
-
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Enable Touch ID unlock?"
-msgstr "¿Activar desbloqueo con Touch ID?"
 
 #: src/settings/components/app-lock-row/app-lock-row.tsx
 msgid "Encrypt with a PIN, unlock with {biometricLabel}"
@@ -3384,13 +3425,13 @@ msgstr "Cifrado · PIN"
 msgid "Encrypted · PIN and {biometricLabel}"
 msgstr "Cifrado · PIN y {biometricLabel}"
 
+#: src/auth/components/pin-setup/pin-setup.tsx
+msgid "Encrypting your data"
+msgstr "Cifrando tus datos"
+
 #: src/i18n/constant/languages.constant.ts
 msgid "English"
 msgstr "Inglés"
-
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Enter a {PIN_LENGTH}-digit PIN"
-msgstr "Ingresa un PIN de {PIN_LENGTH} dígitos"
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Enter a balance to save"
@@ -3405,33 +3446,18 @@ msgstr "Introduce todos los importes"
 msgid "Enter current PIN"
 msgstr "Ingresa el PIN actual"
 
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Enter current PIN to disable protection"
-msgstr "Ingresa el PIN actual para desactivar la protección"
-
-#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
-msgid "Enter it once more"
-msgstr "Introdúcelo una vez más"
-
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Enter new PIN"
-msgstr "Ingresa el nuevo PIN"
-
 #: src/app/bank-integration-key.tsx
 msgid "Enter new token"
 msgstr "Ingresar nuevo token"
 
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
-msgid "Enter the PIN this backup was sealed with"
-msgstr "Introduce el PIN con el que se selló esta copia"
+msgid "Enter the backup's PIN"
+msgstr "Introduce el PIN de la copia de seguridad"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Enter your {PIN_LENGTH}-digit PIN"
-msgstr "Ingresa tu PIN de {PIN_LENGTH} dígitos"
-
-#: src/auth/hook/use-pin-authentication.hook.ts
-msgid "Enter your {PIN_LENGTH}-digit PIN to unlock"
-msgstr "Ingresa tu PIN de {PIN_LENGTH} dígitos para desbloquear"
+#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
+msgid "Enter the same PIN again."
+msgstr "Introduce el mismo PIN otra vez."
 
 #: src/sync/component/binance-sync-token-inputs/binance-sync-token-inputs.tsx
 msgid "Enter your Binance API key"
@@ -3445,13 +3471,13 @@ msgstr "Introduce tu secreto API de Binance"
 msgid "Enter your Monobank API token"
 msgstr "Ingrese su token API de Monobank"
 
-#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
-msgid "Enter your new PIN again from the start. Take your time: this is the one you'll need to remember."
-msgstr "Vuelve a introducir tu nuevo PIN desde el principio. Tómate tu tiempo: es el que tendrás que recordar."
-
-#: src/auth/hook/use-pin-authentication.hook.ts
+#: src/auth/components/pin-unlock/pin-unlock.tsx
 msgid "Enter your PIN"
 msgstr "Ingresa tu PIN"
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Enter your PIN to turn it off. Anyone who can unlock this phone will be able to open Budgie."
+msgstr "Introduce tu PIN para desactivarlo. Cualquiera que pueda desbloquear este teléfono podrá abrir Budgie."
 
 #: src/app/resync-window-picker.tsx
 msgid "Entire history will be re-synced on next sync."
@@ -3608,9 +3634,9 @@ msgstr "ID externo"
 msgid "Face ID"
 msgstr "Face ID"
 
-#: src/auth/components/biometric-configuration/biometric-configuration.tsx
-msgid "Face ID / Touch ID"
-msgstr "Face ID / Touch ID"
+#: src/auth/hook/use-pin-setup.hook.tsx
+msgid "Face ID wasn't completed. Try again or continue without it."
+msgstr "Face ID no se completó. Inténtalo de nuevo o continúa sin él."
 
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Facial recognition"
@@ -3623,10 +3649,6 @@ msgstr "Las barras atenuadas se estiman a partir de tus transacciones pasadas co
 #: src/@generic/hook/use-contacts.hook.ts
 msgid "Failed to load contacts."
 msgstr "Error al cargar los contactos."
-
-#: src/auth/hook/use-pin-setup.hook.tsx
-msgid "Failed to save PIN. Please try again."
-msgstr "Error al guardar el PIN. Inténtalo de nuevo."
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
@@ -3873,17 +3895,20 @@ msgstr "En crecimiento"
 msgid "Help sorting your expenses?"
 msgstr "¿Ayuda para ordenar tus gastos?"
 
+#: src/app/(tabs)/settings/inactive.tsx
 #: src/settings/components/accounts-settings-rows/accounts-settings-rows.tsx
 msgid "Hidden accounts"
 msgstr "Cuentas ocultas"
 
+#: src/app/(tabs)/settings/inactive.tsx
+msgid "Hidden accounts stay off Home. Their totals and net worth settings don’t change."
+msgstr "Las cuentas ocultas no aparecen en Inicio. Sus ajustes de totales y patrimonio neto no cambian."
+
+#: src/account/component/account-details-hidden-pill/account-details-hidden-pill.tsx
+#: src/account/component/account-inactive-icon/account-inactive-icon.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Hidden from Home"
 msgstr "Oculta en Inicio"
-
-#: src/account/component/update-account-page/update-account-page.tsx
-msgid "Hidden from Home and totals. Restore it in Settings."
-msgstr "Oculta en Inicio y en los totales. Restáurala en Ajustes."
 
 #: src/transaction/components/statistics-share-bar/statistics-share-bar.tsx
 msgid "Hide breakdown"
@@ -3944,10 +3969,6 @@ msgstr "Si otra regla también asigna una categoría o transferencia, gana la m�
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
 msgstr "Si Privat24 te envía el archivo por correo en lugar de descargarlo, guarda el adjunto desde tu bandeja de entrada"
-
-#: src/import/component/import-backup-pin/import-backup-pin.tsx
-msgid "If you don't remember it, this backup can't be opened. You can start fresh instead."
-msgstr "Si no lo recuerdas, esta copia no se puede abrir. Puedes empezar de cero."
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "If you forget it, nobody can open this file, including you and us."
@@ -4039,14 +4060,6 @@ msgstr "En la autonomía, a precios de hoy"
 #: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
 msgid "In Shortcuts, add a personal automation with the Transaction trigger, select your cards and choose Run Immediately."
 msgstr "En Atajos, añade una automatización personal con el activador Transacción, selecciona tus tarjetas y elige Ejecutar inmediatamente."
-
-#: src/account/component/account-inactive-icon/account-inactive-icon.tsx
-msgid "Inactive"
-msgstr "Inactiva"
-
-#: src/app/(tabs)/settings/inactive.tsx
-msgid "Inactive Accounts"
-msgstr "Cuentas inactivas"
 
 #: src/runway/component/runway-settings-rows/runway-settings-rows.tsx
 msgid "Include crypto"
@@ -4162,9 +4175,10 @@ msgstr "no es"
 msgid "Is not"
 msgstr "No es"
 
+#: src/auth/utils/get-pin-setup-meta.util.ts
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
-msgid "It will encrypt everything you put in Budgie. Pick one you'll remember but others won't guess."
-msgstr "Cifrará todo lo que pongas en Budgie. Elige uno que recuerdes pero que otros no adivinen."
+msgid "It encrypts everything in Budgie. Pick one you'll remember but others won't guess."
+msgstr "Cifra todo lo que hay en Budgie. Elige uno que recuerdes y que otros no adivinen."
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "It will no longer appear in the calendar."
@@ -4174,6 +4188,10 @@ msgstr "Ya no aparecerá en el calendario."
 msgid "It's the only key to your file. There's no account and no copy on a server, so there's nothing to reset it from."
 msgstr "Es la única llave de tu archivo. No hay cuenta ni copia en un servidor, así que no hay desde dónde restablecerlo."
 
+#: src/account/hooks/use-delete-archived-account.hook.ts
+msgid "Its transactions go too. Transfers stay in the other account as “Transfer (account deleted)”. This can’t be undone."
+msgstr "Sus transacciones también se eliminan. Las transferencias quedan en la otra cuenta como «Transferencia (cuenta eliminada)». No se puede deshacer."
+
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Jars"
 msgstr "Huchas"
@@ -4181,6 +4199,10 @@ msgstr "Huchas"
 #: src/ai/hook/use-ai-model-download-actions.hook.ts
 msgid "Keep"
 msgstr "Conservar"
+
+#: src/auth/components/pin-setup/pin-setup.tsx
+msgid "Keep Budgie open. It restarts when finished."
+msgstr "Mantén Budgie abierto. Se reiniciará al terminar."
 
 #: src/budget/components/budget-pace-hint-line/budget-pace-hint-line.tsx
 msgid "Keep it under <0>{perDayAmount}/day</0>"
@@ -4294,6 +4316,10 @@ msgstr "Aprendizaje actualizado"
 msgid "Leave it empty for now"
 msgstr "Dejarlo vacío por ahora"
 
+#: src/account/component/update-account-page/update-account-page.tsx
+msgid "Leaves Home, totals and budgets. Restore it from Settings → Archived accounts."
+msgstr "Sale de Inicio, los totales y los presupuestos. Restáurala desde Ajustes → Cuentas archivadas."
+
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
 msgid "Leaves your income"
 msgstr "Sale de tus ingresos"
@@ -4381,8 +4407,8 @@ msgid "Loading market history"
 msgstr "Cargando historial del mercado"
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
-msgid "Lock Budgie with your own PIN"
-msgstr "Bloquea Budgie con tu propio PIN"
+msgid "Lock Budgie with a PIN"
+msgstr "Bloquea Budgie con un PIN"
 
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Looks right"
@@ -4884,13 +4910,13 @@ msgstr "Aún no hay cuentas"
 msgid "No action yet"
 msgstr "Aún sin acción"
 
-#: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx
-msgid "No Archived Accounts"
+#: src/app/(tabs)/settings/archived.tsx
+msgid "No archived accounts"
 msgstr "No hay cuentas archivadas"
 
-#: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx
-msgid "No archived accounts match your search"
-msgstr "Ninguna cuenta archivada coincide con tu búsqueda"
+#: src/app/(tabs)/settings/archived.tsx
+msgid "No archived accounts match “{search}”"
+msgstr "Ninguna cuenta archivada coincide con «{search}»"
 
 #: src/category/components/category-select-content/category-select-content.tsx
 msgid "No categories found"
@@ -4936,17 +4962,17 @@ msgstr "No se encontraron cuentas activadas en este archivo"
 msgid "No fee"
 msgstr "Sin comisión"
 
+#: src/app/(tabs)/settings/inactive.tsx
+msgid "No hidden accounts"
+msgstr "No hay cuentas ocultas"
+
+#: src/app/(tabs)/settings/inactive.tsx
+msgid "No hidden accounts match “{search}”"
+msgstr "Ninguna cuenta oculta coincide con «{search}»"
+
 #: src/app/icon-selector.tsx
 msgid "No icons found"
 msgstr "No se encontraron iconos"
-
-#: src/account/component/inactive-accounts-empty-state/inactive-accounts-empty-state.tsx
-msgid "No Inactive Accounts"
-msgstr "No hay cuentas inactivas"
-
-#: src/account/component/inactive-accounts-empty-state/inactive-accounts-empty-state.tsx
-msgid "No inactive accounts match your search"
-msgstr "Ninguna cuenta inactiva coincide con tu búsqueda"
 
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
 msgid "No income"
@@ -4996,11 +5022,6 @@ msgstr "No se encontró ningún recibo"
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
 msgid "No recurring payments detected"
 msgstr "No se detectaron pagos recurrentes"
-
-#: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx
-#: src/account/component/inactive-accounts-empty-state/inactive-accounts-empty-state.tsx
-msgid "No Results"
-msgstr "Sin resultados"
 
 #: src/rule/components/rule-empty-state/rule-empty-state.tsx
 msgid "No rules match “{search}”"
@@ -5075,6 +5096,10 @@ msgstr "Tu historial bancario aún no se ha importado por completo"
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
 msgid "Not counted as spending"
 msgstr "No cuenta como gasto"
+
+#: src/account/component/inactive-account-card/inactive-account-card.tsx
+msgid "Not counted in net worth"
+msgstr "No cuenta en el patrimonio neto"
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 #: src/settings/components/backup-row/backup-row.tsx
@@ -5285,6 +5310,18 @@ msgstr "Abre Budgie una vez después de actualizar, vuelve a Shortcuts y busca B
 msgid "Open Budgie to see your finances"
 msgstr "Abra Budgie para ver sus finanzas"
 
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Open Budgie with a glance. Your PIN stays the key to your data."
+msgstr "Abre Budgie con una mirada. Tu PIN sigue siendo la llave de tus datos."
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Open Budgie with a touch. Your PIN stays the key to your data."
+msgstr "Abre Budgie con un toque. Tu PIN sigue siendo la llave de tus datos."
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Open Budgie with Face ID or Touch ID. Your PIN stays the key to your data."
+msgstr "Abre Budgie con Face ID o Touch ID. Tu PIN sigue siendo la llave de tus datos."
+
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Open George (Erste Bank online banking)"
 msgstr "Abre George (banca online de Erste Bank)"
@@ -5345,6 +5382,10 @@ msgstr "Opcional. Déjalo vacío para seguir el evento con un único límite."
 msgid "Optional. The overall limit applies without them."
 msgstr "Opcional. Sin ellos se aplica el límite total."
 
+#: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
+msgid "Optionally turn on {biometricLabel}"
+msgstr "Si quieres, activa {biometricLabel}"
+
 #: src/account/component/create-account-options-section/create-account-options-section.tsx
 #: src/account/component/update-account-page/update-account-page.tsx
 msgid "Options"
@@ -5365,6 +5406,14 @@ msgstr "o +{extraCount}"
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Or import from"
 msgstr "O importa desde"
+
+#: src/auth/components/pin-unlock/pin-unlock.tsx
+msgid "Or unlock with Face ID."
+msgstr "O desbloquea con Face ID."
+
+#: src/auth/components/pin-unlock/pin-unlock.tsx
+msgid "Or unlock with Touch ID."
+msgstr "O desbloquea con Touch ID."
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Organize"
@@ -5615,9 +5664,18 @@ msgstr "Elige una etiqueta para continuar"
 msgid "Pick a window. Existing data is preserved."
 msgstr "Elige un periodo. Los datos existentes se conservan."
 
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Pick one you'll remember but others won't guess."
+msgstr "Elige uno que recuerdes y que otros no adivinen."
+
+#: src/auth/components/pin-form-dots/pin-form-dots.tsx
+msgid "PIN, {enteredCount} of {PIN_LENGTH} digits entered"
+msgstr "PIN, {enteredCount} de {PIN_LENGTH} dígitos introducidos"
+
 #: src/auth/hook/use-pin-setup.hook.tsx
-msgid "PINs do not match"
-msgstr "Los PIN no coinciden"
+#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
+msgid "PINs don't match. Try again."
+msgstr "Los PIN no coinciden. Inténtalo de nuevo."
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "PINs match"
@@ -5781,9 +5839,9 @@ msgstr "Aumenta el total o elige menos pagos"
 msgid "Raised {dateLabel} · over the limit {count} periods in a row"
 msgstr "Aumentado el {dateLabel} · por encima del límite {count} periodos seguidos"
 
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Re-enter your PIN to confirm"
-msgstr "Vuelve a ingresar tu PIN para confirmar"
+#: src/auth/components/pin-setup/pin-setup.tsx
+msgid "Re-encrypting your data. Keep Budgie open, it restarts when finished."
+msgstr "Volviendo a cifrar tus datos. Mantén Budgie abierto; se reiniciará al terminar."
 
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 msgid "Re-record"
@@ -6072,17 +6130,19 @@ msgid "Restart App"
 msgstr "Reiniciar app"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx
+#: src/account/component/archived-account-restore-menu-item/archived-account-restore-menu-item.tsx
+#: src/account/component/archived-account-trailing/archived-account-trailing.tsx
 #: src/import/hook/use-restore-backup.hook.ts
 msgid "Restore"
 msgstr "Restaurar"
 
+#: src/account/component/archived-account-trailing/archived-account-trailing.tsx
+msgid "Restore {accountTitle}"
+msgstr "Restaurar {accountTitle}"
+
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "Restore a backup"
 msgstr "Restaurar una copia"
-
-#: src/account/component/archived-account-card/archived-account-card.tsx
-msgid "Restore Account?"
-msgstr "¿Restaurar cuenta?"
 
 #: src/import/components/import-database/import-database.tsx
 msgid "Restore backup"
@@ -6304,8 +6364,8 @@ msgid "Sealed."
 msgstr "Sellado."
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
-msgid "Sealed. Face ID or fingerprint is optional."
-msgstr "Sellado. Face ID o la huella dactilar son opcionales."
+msgid "Sealed. Only your PIN opens it."
+msgstr "Sellado. Solo tu PIN lo abre."
 
 #: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
 msgid "Sealed. Only your PIN opens this file."
@@ -6318,8 +6378,8 @@ msgid "Search accounts..."
 msgstr "Buscar cuentas..."
 
 #: src/app/(tabs)/settings/archived.tsx
-msgid "Search archived accounts..."
-msgstr "Buscar cuentas archivadas..."
+msgid "Search archived accounts…"
+msgstr "Buscar cuentas archivadas…"
 
 #: src/app/rule-mcc-selector.tsx
 msgid "Search by code or description…"
@@ -6354,13 +6414,13 @@ msgstr "Buscar categorías personalizadas…"
 msgid "Search expenses refunded by this income"
 msgstr "Buscar gastos reembolsados por este ingreso"
 
+#: src/app/(tabs)/settings/inactive.tsx
+msgid "Search hidden accounts…"
+msgstr "Buscar cuentas ocultas…"
+
 #: src/app/icon-selector.tsx
 msgid "Search icons and emoji…"
 msgstr "Buscar iconos y emojis…"
-
-#: src/app/(tabs)/settings/inactive.tsx
-msgid "Search inactive accounts..."
-msgstr "Buscar cuentas inactivas..."
 
 #: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx
 msgid "Search keywords: {keywords}"
@@ -6647,8 +6707,7 @@ msgstr "algo"
 msgid "Something went wrong"
 msgstr "Algo salió mal"
 
-#: src/account/component/account-action-button/account-action-button.tsx
-#: src/account/hooks/use-delete-account.hook.ts
+#: src/account/hooks/use-shelved-account-action.hook.ts
 msgid "Something went wrong. Please try again later."
 msgstr "Algo salió mal. Por favor, inténtalo de nuevo más tarde."
 
@@ -6712,10 +6771,6 @@ msgstr "Divide tu total entre la compra y una comisión"
 msgid "Spreads irregular costs across the months."
 msgstr "Reparte los gastos irregulares entre los meses."
 
-#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
-msgid "Start again with your new PIN"
-msgstr "Empieza de nuevo con tu nuevo PIN"
-
 #: src/account/component/start-deposit-form/start-deposit-form.tsx
 #: src/transaction/components/transaction-list-start-deposit-menu-item/transaction-list-start-deposit-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
@@ -6775,6 +6830,10 @@ msgstr "Extracto importado"
 #: src/wallet-capture/component/apple-pay-capture-setup-row/apple-pay-capture-setup-row.tsx
 msgid "Step {stepNumber}"
 msgstr "Paso {stepNumber}"
+
+#: src/auth/components/pin-step-indicator/pin-step-indicator.tsx
+msgid "Step {stepNumber} of {total}"
+msgstr "Paso {stepNumber} de {total}"
 
 #: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
@@ -7050,13 +7109,13 @@ msgstr "No existe «olvidé el PIN»."
 msgid "these two weeks"
 msgstr "estas dos semanas"
 
+#: src/account/component/archived-account-closed-menu-note/archived-account-closed-menu-note.tsx
+msgid "This account was closed at the provider, so it can’t come back to Home."
+msgstr "Esta cuenta se cerró en el proveedor, así que no puede volver a Inicio."
+
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "This account will be archived and its transfers will become income and expenses on your other accounts. This cannot be undone."
 msgstr "Esta cuenta se archivará y sus transferencias se convertirán en ingresos y gastos en tus otras cuentas. Esto no se puede deshacer."
-
-#: src/account/hooks/use-archive-account.hook.ts
-msgid "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."
-msgstr "Esta cuenta se ocultará de tu vista principal y no se incluirá en los totales. Puedes restaurarla en cualquier momento desde Configuración → Cuentas archivadas."
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
@@ -7231,10 +7290,6 @@ msgstr "este año"
 msgid "This Year"
 msgstr "Este año"
 
-#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
-msgid "Those didn't match"
-msgstr "No coinciden"
-
 #: src/budget/components/budget-funds-section/budget-funds-section.tsx
 msgid "Tick marks where savings should be by today."
 msgstr "La marca indica dónde deberían estar los ahorros hoy."
@@ -7377,6 +7432,10 @@ msgstr "Total prestado"
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Touch ID"
 msgstr "Touch ID"
+
+#: src/auth/hook/use-pin-setup.hook.tsx
+msgid "Touch ID wasn't completed. Try again or continue without it."
+msgstr "Touch ID no se completó. Inténtalo de nuevo o continúa sin él."
 
 #: src/budget/components/budget-events-section/budget-events-section.tsx
 msgid "Track a trip or project with its own limit. Tagged expenses still count in this budget."
@@ -7547,9 +7606,14 @@ msgstr "Prueba a activar el modo avión. Budgie funciona exactamente igual."
 msgid "Tune limits automatically"
 msgstr "Ajustar límites automáticamente"
 
+#: src/auth/utils/get-pin-setup-meta.util.ts
 #: src/settings/components/pin-management-rows/pin-management-rows.tsx
 msgid "Turn off app lock"
 msgstr "Desactivar el bloqueo de la app"
+
+#: src/app/(tabs)/settings/inactive.tsx
+msgid "Turn off Show on Home in an account’s edit screen to tuck it away here."
+msgstr "Desactiva «Mostrar en Inicio» en la pantalla de edición de una cuenta para guardarla aquí."
 
 #: src/app/note-input.tsx
 msgid "Turn on On-device AI in Settings. Tap to see what it downloads."
@@ -7562,6 +7626,10 @@ msgstr "Activa la IA en el dispositivo para descargar los modelos."
 #: src/rule/constant/rule-action-type.constant.ts
 msgid "Turn payments into transfers"
 msgstr "Convierte pagos en transferencias"
+
+#: src/auth/components/pin-setup/pin-setup.tsx
+msgid "Turning off app lock"
+msgstr "Desactivando el bloqueo de la app"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Turns a voice note into an expense"
@@ -7587,10 +7655,6 @@ msgstr "Tipo"
 #: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx
 msgid "Type ({selectedTypesCount})"
 msgstr "Tipo ({selectedTypesCount})"
-
-#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
-msgid "Type the same PIN again to make sure it's the one you meant."
-msgstr "Escribe el mismo PIN otra vez para confirmar que es el que querías."
 
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
@@ -7626,6 +7690,7 @@ msgstr "Los pagos sin marcar se quedan en tu bandeja."
 msgid "Under limit"
 msgstr "Bajo el límite"
 
+#: src/account/hooks/use-shelved-account-action.hook.ts
 #: src/categorize-inbox/components/categorize-inbox-undo-layout/categorize-inbox-undo-layout.tsx
 msgid "Undo"
 msgstr "Deshacer"
@@ -7641,9 +7706,24 @@ msgstr "Deshacer reembolso"
 msgid "Undo refund?"
 msgstr "¿Deshacer reembolso?"
 
+#: src/account/component/account-details-hidden-pill/account-details-hidden-pill.tsx
+#: src/account/component/hidden-account-unhide-menu-item/hidden-account-unhide-menu-item.tsx
+#: src/account/component/inactive-account-card/inactive-account-card.tsx
+msgid "Unhide"
+msgstr "Mostrar"
+
+#: src/account/component/account-details-hidden-pill/account-details-hidden-pill.tsx
+#: src/account/component/inactive-account-card/inactive-account-card.tsx
+msgid "Unhide {accountTitle}"
+msgstr "Mostrar {accountTitle}"
+
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Unknown card"
 msgstr "Tarjeta desconocida"
+
+#: src/auth/components/biometric-configuration/biometric-configuration.tsx
+msgid "Unlock quickly without typing your PIN"
+msgstr "Desbloquea rápido sin escribir tu PIN"
 
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Unlock to view"
@@ -7652,6 +7732,26 @@ msgstr "Desbloquea para verlo"
 #: src/settings/components/pin-management-rows/pin-management-rows.tsx
 msgid "Unlock with {biometricLabel}"
 msgstr "Desbloquear con {biometricLabel}"
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Unlock with biometrics?"
+msgstr "¿Desbloquear con biometría?"
+
+#: src/auth/components/pin-form-biometric-button/pin-form-biometric-button.tsx
+msgid "Unlock with Face ID"
+msgstr "Desbloquear con Face ID"
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Unlock with Face ID?"
+msgstr "¿Desbloquear con Face ID?"
+
+#: src/auth/components/pin-form-biometric-button/pin-form-biometric-button.tsx
+msgid "Unlock with Touch ID"
+msgstr "Desbloquear con Touch ID"
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Unlock with Touch ID?"
+msgstr "¿Desbloquear con Touch ID?"
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Unrealized P&L"
@@ -7701,6 +7801,10 @@ msgstr "Se actualizaron {applied} de {total} transacciones."
 msgid "Updated {formattedDate}"
 msgstr "Actualizado {formattedDate}"
 
+#: src/auth/components/pin-setup/pin-setup.tsx
+msgid "Updating your PIN"
+msgstr "Actualizando tu PIN"
+
 #: src/budget/components/budget-fund-suggestion-banner/budget-fund-suggestion-banner.tsx
 msgid "Use"
 msgstr "Usar"
@@ -7721,18 +7825,10 @@ msgstr "Usa de 1 a {CATEGORY_TITLE_MAX_LENGTH} caracteres"
 msgid "Use 1 to {TAG_TITLE_MAX_LENGTH} characters"
 msgstr "Usa de 1 a {TAG_TITLE_MAX_LENGTH} caracteres"
 
+#: src/auth/components/pin-setup/pin-setup.tsx
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Use Face ID"
 msgstr "Usar Face ID"
-
-#: src/auth/components/biometric-configuration/biometric-configuration.tsx
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Use Face ID or Touch ID to unlock your app quickly and securely"
-msgstr "Usa Face ID o Touch ID para desbloquear tu aplicación de forma rápida y segura"
-
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Use Face ID to unlock your app quickly and securely"
-msgstr "Usa Face ID para desbloquear tu aplicación de forma rápida y segura"
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Use fingerprint"
@@ -7743,17 +7839,22 @@ msgstr "Usar huella dactilar"
 msgid "Use mobile data for {remaining} GB"
 msgstr "Usar datos móviles para {remaining} GB"
 
+#: src/auth/components/biometric-configuration/biometric-configuration.tsx
+msgid "Use PIN only"
+msgstr "Usar solo el PIN"
+
+#: src/import/component/import-backup-pin/import-backup-pin.tsx
+msgid "Use the PIN this backup was sealed with. Without it, the backup can't be opened."
+msgstr "Usa el PIN con el que se selló esta copia. Sin él, no se puede abrir."
+
 #: src/app/(tabs)/settings/data.tsx
 msgid "Use these only if conversions, imports or balances look wrong."
 msgstr "Úsalas solo si las conversiones, importaciones o saldos parecen incorrectos."
 
+#: src/auth/components/pin-setup/pin-setup.tsx
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Use Touch ID"
 msgstr "Usar Touch ID"
-
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Use Touch ID to unlock your app quickly and securely"
-msgstr "Usa Touch ID para desbloquear tu aplicación de forma rápida y segura"
 
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx
 msgid "Used for totals and reports"
@@ -8045,6 +8146,7 @@ msgstr "Tus datos"
 msgid "Your data is safe. Reading it failed this time."
 msgstr "Tus datos están a salvo. Solo falló la lectura esta vez."
 
+#: src/auth/components/pin-unlock/pin-unlock.tsx
 #: src/auth/components/security-lock-button/security-lock-button.tsx
 msgid "Your data is sealed. Only your PIN opens it."
 msgstr "Tus datos están sellados. Solo tu PIN los abre."
@@ -8096,6 +8198,10 @@ msgstr "Tu PIN · Face ID"
 #: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "Your PIN · Fingerprint"
 msgstr "Tu PIN · Huella dactilar"
+
+#: src/auth/components/biometric-configuration/biometric-configuration.tsx
+msgid "Your PIN still works any time"
+msgstr "Tu PIN sigue funcionando en cualquier momento"
 
 #: src/app/(tabs)/settings/tags.tsx
 #: src/tag/components/tag-destination-sheet/tag-destination-sheet.tsx

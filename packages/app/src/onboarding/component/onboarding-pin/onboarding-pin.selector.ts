@@ -1,4 +1,3 @@
 export const OnboardingPinSelector = {
-    Root: 'OnboardingPin.Root',
-    ContinueWithoutPinButton: 'OnboardingPin.ContinueWithoutPinButton'
+    Root: 'OnboardingPin.Root'
 } as const;

@@ -7,6 +7,7 @@ import { normalizeIconSearchText } from '../utils/normalize-icon-search-text.uti
 import { resolveReiconIcon } from '../utils/resolve-reicon-icon.util';
 
 import type { IconSearchEntryInterface } from '../interface/icon-search-entry.interface';
+import type { IconSearchTokenIndexInterface } from '../interface/icon-search-token-index.interface';
 import type { UserIconType } from '@budgie/contracts';
 
 class IconSearchService {
@@ -74,6 +75,8 @@ class IconSearchService {
         return icons.map(({ icon, keywords }) => this.createEntry(icon, keywords, translations, labels));
     });
 
+    private readonly tokenIndexes = new WeakMap<readonly IconSearchEntryInterface[], IconSearchTokenIndexInterface>();
+
     rank(entries: readonly IconSearchEntryInterface[], terms: readonly string[]): IconSearchEntryInterface[] {
         return this.score(entries, terms, true).map(({ entry }) => entry);
     }
@@ -129,7 +132,9 @@ class IconSearchService {
             .filter(isNotEmptyString)
             .map(term => this.toWeightedWords(term));
 
-        return entries
+        const variants = weightedTerms.flatMap(({ phrase, words }) => [...phrase, ...words.flatMap(({ variants }) => variants)]);
+
+        return this.findCandidates(entries, variants)
             .map(entry => ({
                 entry,
                 score: weightedTerms.reduce(
@@ -145,6 +150,69 @@ class IconSearchService {
             }))
             .filter(({ score }) => isPositiveNumber(score))
             .sort((first, second) => second.score - first.score);
+    }
+
+    private findCandidates(entries: readonly IconSearchEntryInterface[], variants: readonly string[]): IconSearchEntryInterface[] {
+        const { tokens, postings } = this.getTokenIndex(entries);
+        const isCandidate = new Uint8Array(entries.length);
+
+        variants.forEach(variant => {
+            const [prefix] = variant.split(/[| ]/u);
+            const start = this.countTokensBefore(tokens, token => token < prefix);
+            const end = this.countTokensBefore(tokens, token => token < prefix || token.startsWith(prefix));
+
+            tokens.slice(start, end).forEach(token =>
+                postings.get(token)?.forEach(entryIndex => {
+                    isCandidate[entryIndex] = 1;
+                })
+            );
+        });
+
+        return entries.filter((_entry, entryIndex) => isCandidate[entryIndex] === 1);
+    }
+
+    private getTokenIndex(entries: readonly IconSearchEntryInterface[]): IconSearchTokenIndexInterface {
+        const cachedIndex = this.tokenIndexes.get(entries);
+
+        if (isDefined(cachedIndex)) {
+            return cachedIndex;
+        }
+
+        const postings = new Map<string, number[]>();
+
+        entries.forEach(({ keywords }, entryIndex) => {
+            new Set(keywords.split(/[| ]/u)).forEach(token => {
+                const entryIndexes = postings.get(token);
+
+                if (isDefined(entryIndexes)) {
+                    entryIndexes.push(entryIndex);
+                } else {
+                    postings.set(token, [entryIndex]);
+                }
+            });
+        });
+
+        const index = { tokens: [...postings.keys()].sort(), postings };
+        this.tokenIndexes.set(entries, index);
+
+        return index;
+    }
+
+    private countTokensBefore(tokens: readonly string[], isBefore: (token: string) => boolean): number {
+        let low = 0;
+        let high = tokens.length;
+
+        while (low < high) {
+            const middle = Math.floor((low + high) / 2);
+
+            if (isBefore(tokens[middle])) {
+                low = middle + 1;
+            } else {
+                high = middle;
+            }
+        }
+
+        return low;
     }
 
     private toWeightedWords(term: string) {
