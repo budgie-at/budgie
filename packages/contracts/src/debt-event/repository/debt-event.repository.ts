@@ -135,7 +135,7 @@ export class DebtEventRepository extends Context.Service<DebtEventRepository>()(
 
             return yield* Db.query(db =>
                 db
-                    .select({ transactionId: DebtEventEntityTable.transactionId })
+                    .select({ transactionId: DebtEventEntityTable.transactionId, debtAccountId: DebtEventEntityTable.debtAccountId })
                     .from(DebtEventEntityTable)
                     .where(
                         and(

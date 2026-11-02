@@ -494,6 +494,22 @@ describe('debt settlement categorization', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('batch resync skips a linked payment that no longer fits a debt settlement', () =>
+        Effect.gen(function* () {
+            const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
+            const { debtAccount, transaction } = yield* createAttachedExpense(AccountDebtTypeEnum.BORROW);
+            const debtEventsBefore = yield* fetchDebtEvents(debtAccount.id);
+
+            yield* testDb
+                .update(TransactionEntityTable)
+                .set({ type: TransactionTypeEnum.TRANSFER })
+                .where(eq(TransactionEntityTable.id, transaction.id));
+            yield* transactionDebtSettlementService.resyncTransactions([transaction.id]);
+
+            expect(yield* fetchDebtEvents(debtAccount.id)).toStrictEqual(debtEventsBefore);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('keeps an uncategorized borrow payment out of the categorize inbox', () =>
         Effect.gen(function* () {
             const transactionDebtSettlementService = yield* TransactionDebtSettlementService;

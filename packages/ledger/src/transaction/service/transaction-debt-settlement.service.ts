@@ -31,7 +31,12 @@ import { AccountBalanceIncrementalService } from '../../account/service/account-
 import { getTransactionCategoryEntries } from '../utils/get-transaction-category-entries.util';
 
 import type { AttachDebtSettlementParamsInterface } from '../interface/attach-debt-settlement-params.interface';
-import type { AccountEntityInterface, TransactionEntryEntityInterface, TransactionWithEntriesEntityInterface } from '@budgie/contracts';
+import type {
+    AccountEntityInterface,
+    DebtEventEntityInterface,
+    TransactionEntryEntityInterface,
+    TransactionWithEntriesEntityInterface
+} from '@budgie/contracts';
 
 export class TransactionDebtSettlementService extends Context.Service<TransactionDebtSettlementService>()(
     '@budgie/ledger/TransactionDebtSettlementService',
@@ -285,6 +290,24 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
                 yield* accountBalanceIncrementalService.updateBalancesByAccountIds([primaryEntry.accountId, debtAccount.id]);
             });
 
+            const resyncConformingAttachment = Effect.fnUntraced(function* (
+                attachment: Pick<DebtEventEntityInterface, 'transactionId' | 'debtAccountId'>
+            ) {
+                const transaction = isDefined(attachment.transactionId)
+                    ? yield* transactionRepository.getByIdWithEntries(attachment.transactionId)
+                    : null;
+                const primaryEntries = isDefined(transaction) ? getPrimaryEntries(transaction) : [];
+                const isConforming =
+                    isDefined(transaction) &&
+                    (transaction.type === TransactionTypeEnum.EXPENSE || transaction.type === TransactionTypeEnum.INCOME) &&
+                    primaryEntries.length === 1 &&
+                    primaryEntries[0].accountId !== attachment.debtAccountId;
+
+                if (isConforming) {
+                    yield* resyncInTransaction(transaction.id);
+                }
+            });
+
             return {
                 attach: Effect.fn('TransactionDebtSettlementService.attach')(
                     function* (params: AttachDebtSettlementParamsInterface) {
@@ -340,11 +363,7 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
                 resyncTransactions: Effect.fn('TransactionDebtSettlementService.resyncTransactions')(function* (transactionIds: number[]) {
                     const attachments = yield* debtEventRepository.findAttachmentsByTransactionIds(transactionIds);
 
-                    yield* Effect.forEach(
-                        attachments.map(attachment => attachment.transactionId).filter(isDefined),
-                        transactionId => resyncInTransaction(transactionId),
-                        { discard: true }
-                    );
+                    yield* Effect.forEach(attachments, resyncConformingAttachment, { discard: true });
                 })
             };
         })
