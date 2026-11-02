@@ -3126,6 +3126,10 @@ msgstr "Terminé"
 msgid "Done ({count})"
 msgstr "Terminé ({count})"
 
+#: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
+msgid "Double-tap to seal"
+msgstr "Touche deux fois pour sceller"
+
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "Download {remaining} GB"
 msgstr "Télécharger {remaining} Go"
@@ -6286,6 +6290,10 @@ msgstr "Scanner avec l'appareil photo"
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 msgid "Seal"
 msgstr "Sceller"
+
+#: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
+msgid "Seal with this PIN"
+msgstr "Sceller avec ce code PIN"
 
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "Sealed · {contents}"

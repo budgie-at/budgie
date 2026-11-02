@@ -3126,6 +3126,10 @@ msgstr "Fertig"
 msgid "Done ({count})"
 msgstr "Fertig ({count})"
 
+#: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
+msgid "Double-tap to seal"
+msgstr "Zum Versiegeln doppeltippen"
+
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "Download {remaining} GB"
 msgstr "{remaining} GB herunterladen"
@@ -6286,6 +6290,10 @@ msgstr "Mit Kamera scannen"
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 msgid "Seal"
 msgstr "Versiegeln"
+
+#: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
+msgid "Seal with this PIN"
+msgstr "Mit dieser PIN versiegeln"
 
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "Sealed · {contents}"

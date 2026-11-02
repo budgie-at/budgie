@@ -1,10 +1,11 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { ActivityIndicator } from 'react-native';
 
 import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { Icon } from '../../../@generic/component/icon/icon';
+import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { useRestoreBackup } from '../../../import/hook/use-restore-backup.hook';
 import { OnboardingFileLockEnum } from '../../enum/onboarding-file-lock.enum';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
@@ -22,7 +23,11 @@ export const OnboardingKey = () => {
     const handlePinPress = () => void goToStep(OnboardingStepEnum.PIN);
     const handlePhoneLockPress = () => void goToStep(OnboardingStepEnum.PHONE_LOCK);
 
-    const restoreAccessory = isLoading ? <ActivityIndicator size="small" /> : null;
+    const restoreAccessory = (
+        <LoadingContent isLoading={isLoading}>
+            <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
+        </LoadingContent>
+    );
     const restorePressableProps = { disabled: isLoading, accessibilityState: { disabled: isLoading, busy: isLoading } };
 
     return (

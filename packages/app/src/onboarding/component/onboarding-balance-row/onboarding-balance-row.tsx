@@ -51,7 +51,7 @@ export const OnboardingBalanceRow = ({ account, value, onChangeValue }: Props) =
                         onChangeValue={handleChangeValue}
                         onFocus={handleFocus}
                         onBlur={handleBlur}
-                        inputClassName="min-h-[40px] px-0 py-0 text-primary text-[19px] text-right border-0 h-auto"
+                        inputClassName="min-h-[44px] px-0 py-0 text-primary text-[19px] text-right border-0 h-auto"
                         cursorColorClassName="accent-primary"
                         borderless
                         selectTextOnFocus

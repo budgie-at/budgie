@@ -95,6 +95,8 @@ export const OnboardingHoldToSealButton = ({ label, confirmMessage, isDisabled, 
 
     const accessibilityState = { disabled: isDisabled, busy: isDisabled };
     const gesture = reducedMotion ? tapGesture : holdGesture;
+    const accessibilityHint = reducedMotion ? t`Double-tap to seal` : t`Press and hold to seal`;
+    const visibleLabel = reducedMotion ? t`Seal with this PIN` : label;
 
     return (
         <GestureDetector gesture={gesture}>
@@ -102,16 +104,16 @@ export const OnboardingHoldToSealButton = ({ label, confirmMessage, isDisabled, 
                 testID={testID}
                 accessible
                 accessibilityRole="button"
-                accessibilityLabel={label}
-                accessibilityHint={t`Press and hold to seal`}
+                accessibilityLabel={visibleLabel}
+                accessibilityHint={accessibilityHint}
                 accessibilityState={accessibilityState}
                 accessibilityActions={ACCESSIBILITY_ACTIONS}
                 onAccessibilityAction={handleAccessibilityAction}
                 className="min-h-[52px] justify-center overflow-hidden rounded-full bg-cta-background px-5xl py-md"
                 style={CONTINUOUS_CORNERS}
             >
-                <OnboardingHoldToSealLabel label={label} isLoading={isDisabled} colorClassName="text-cta-foreground" />
-                <OnboardingHoldToSealFill label={label} isLoading={isDisabled} progress={progress} />
+                <OnboardingHoldToSealLabel label={visibleLabel} isLoading={isDisabled} colorClassName="text-cta-foreground" />
+                <OnboardingHoldToSealFill label={visibleLabel} isLoading={isDisabled} progress={progress} />
                 <View
                     pointerEvents="none"
                     accessibilityElementsHidden
