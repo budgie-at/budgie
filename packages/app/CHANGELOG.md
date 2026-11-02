@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.148.0](https://github.com/budgie-at/budgie/compare/v6.147.1...v6.148.0) (2026-11-02)
+
+### Bug Fixes
+
+* **app:** address institution page QA findings ([480914c](https://github.com/budgie-at/budgie/commit/480914cd94f7106b5434d91cd5ca7cbafc8ca9a4))
+* **app:** keep per-row transfer context in multi-account lists ([1a50fb5](https://github.com/budgie-at/budgie/commit/1a50fb5a123d9473e126681dc09b5cae8188d77f))
+
+### Features
+
+* **app:** name crypto assets, sync freshness and transfer accounts on bank pages ([e1cf651](https://github.com/budgie-at/budgie/commit/e1cf65140c21b13bac0d859d6fcc335f740479c8))
+* **app:** name the recovery action and shorten bank feed titles ([21c3f55](https://github.com/budgie-at/budgie/commit/21c3f55cdfaee09e0d752ad7b52e44014e228555))
+* **app:** open an institution page from Home bank cards ([9cba255](https://github.com/budgie-at/budgie/commit/9cba255744c29dbd8f4f89d90b3fe836e914ecb5))
+* **app:** polish the institution page status, crypto amounts and labels ([b2f07f9](https://github.com/budgie-at/budgie/commit/b2f07f996ce6d9d3beee95fdd198ed30cdb1d62e))
+* **app:** put the connection fix next to the bank status ([61bac1e](https://github.com/budgie-at/budgie/commit/61bac1e546cf1e8ba0de93eb50159eda0c6e2855))
+* **app:** shorten bank page account names and label its transactions ([5ded913](https://github.com/budgie-at/budgie/commit/5ded9134286e07dbdbb3634518b6f40a19cedba3))
+
+
+## [6.147.1](https://github.com/budgie-at/budgie/compare/v6.147.0...v6.147.1) (2026-11-02)
+
+### Bug Fixes
+
+* **ledger:** self-heal debt payment categories after sync and consolidation ([#1866](https://github.com/budgie-at/budgie/issues/1866)) ([ebc501b](https://github.com/budgie-at/budgie/commit/ebc501bdcd68f76f7dc6f25a808fe453b2b5cdee))
+
+
 # [6.147.0](https://github.com/budgie-at/budgie/compare/v6.146.1...v6.147.0) (2026-11-02)
 
 ### Bug Fixes

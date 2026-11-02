@@ -32,6 +32,7 @@ export class TransactionDayNetAmountRepository extends Context.Service<Transacti
                     day: sql<string>`date(${operatedAt}, 'unixepoch', 'localtime')`.as('day'),
                     instrumentId: AccountEntityTable.instrumentId,
                     instrumentSymbol: InstrumentEntityTable.symbol,
+                    instrumentType: InstrumentEntityTable.type,
                     amount: sql<number>`SUM(${signSql} * ${TransactionEntryEntityTable.amount})`.mapWith(Number).as('amount'),
                     baseAmount: sql<number>`COALESCE(SUM(${signSql} * ${TransactionEntryEntityTable.baseAmount}), 0)`
                         .mapWith(Number)
@@ -120,6 +121,7 @@ export class TransactionDayNetAmountRepository extends Context.Service<Transacti
                             amount: (day?.amount ?? 0) + row.amount,
                             baseAmount: (day?.baseAmount ?? 0) + row.baseAmount,
                             instrumentSymbol: day?.instrumentSymbol ?? row.instrumentSymbol,
+                            instrumentType: day?.instrumentType ?? row.instrumentType,
                             instrumentCount: instrumentIds.size,
                             unvaluedCount: (day?.unvaluedCount ?? 0) + row.unvaluedCount
                         });
