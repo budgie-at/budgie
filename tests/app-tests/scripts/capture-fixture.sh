@@ -1,36 +1,36 @@
 #!/bin/sh
+# Rebuilds one committed database fixture (29.db, 31-debt.db,
+# 31-transaction-info.db) through the real UI: e2e/media/fixtures.e2e.ts seeds
+# its staged starting fixture, creates the accounts or transactions, and
+# writes the app's database to tests/app-tests/fixtures/<name>, on a simulator
+# leased from the simlock farm. Reading the database back needs a farm worker
+# whose CoreSimulator still runs the Mac's own tools (macOS 15).
+#
+# Usage:
+#   E2E_APP_PATH=<path/to/.app> SIMLOCK_URL=<gateway> SIMLOCK_TOKEN=<agent token> \
+#     sh tests/app-tests/scripts/capture-fixture.sh 31-debt.db
+# Needs the e2e project's dependencies (`npm ci` in e2e/) and sqlite3.
 set -eu
 
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname "$0")" && pwd)
-WORKSPACE_DIR=$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)
+PROJECT_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/../../.." && pwd)
 
-if [ "$#" -lt 2 ]; then
-    echo "Usage: $0 <capture-flow-path> <output-fixture-name> [simulator-udid] [app-id]"
-    echo "Example: $0 flows/setup/capture-31-debt-fixture.flow.yaml 31-debt.db"
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <fixture-name>   (29.db, 31-debt.db or 31-transaction-info.db)" >&2
     exit 1
 fi
 
-CAPTURE_FLOW_PATH="$1"
-OUTPUT_FIXTURE_NAME="$2"
-SIMULATOR_UDID="${3:-booted}"
-APP_ID="${4:-com.vitalyiegorov.budgie.e2e}"
+case "$1" in
+    29.db | 31-debt.db | 31-transaction-info.db) ;;
+    *)
+        echo "No fixture builder for '$1'; see e2e/media/fixtures.e2e.ts" >&2
+        exit 1
+        ;;
+esac
 
-sh "$SCRIPT_DIR/run-maestro-suite.sh" "$APP_ID" "$CAPTURE_FLOW_PATH" --debug-output "$WORKSPACE_DIR/artifacts/capture"
+: "${E2E_APP_PATH:?E2E_APP_PATH is required: the simulator .app to build the fixture with}"
+: "${SIMLOCK_URL:?SIMLOCK_URL is required: the simlock gateway}"
+: "${SIMLOCK_TOKEN:?SIMLOCK_TOKEN is required: a simlock agent token}"
 
-xcrun simctl terminate "$SIMULATOR_UDID" "$APP_ID" >/dev/null 2>&1 || true
-sleep 2
-
-APP_DATA=$(xcrun simctl get_app_container "$SIMULATOR_UDID" "$APP_ID" data)
-SOURCE_DATABASE_PATH="$APP_DATA/Documents/SQLite/budgie.db"
-TARGET_FIXTURE_PATH="$WORKSPACE_DIR/fixtures/$OUTPUT_FIXTURE_NAME"
-
-if [ ! -f "$SOURCE_DATABASE_PATH" ]; then
-    echo "App database not found: $SOURCE_DATABASE_PATH" >&2
-    exit 1
-fi
-
-sqlite3 "$SOURCE_DATABASE_PATH" "PRAGMA wal_checkpoint(TRUNCATE);" >/dev/null
-sqlite3 "$SOURCE_DATABASE_PATH" ".backup $TARGET_FIXTURE_PATH"
-
-echo "Captured $TARGET_FIXTURE_PATH"
-sqlite3 "$TARGET_FIXTURE_PATH" "SELECT 'accounts', COUNT(*) FROM accounts; SELECT 'transactions', COUNT(*) FROM transactions;"
+cd "$PROJECT_ROOT/e2e"
+CAPTURE_FIXTURES=1 E2E_WORKERS=1 npx e2e run --config media.config.ts --target ios --grep "^fixture $(printf '%s' "$1" | sed 's/[.]/\\./g')\$"
