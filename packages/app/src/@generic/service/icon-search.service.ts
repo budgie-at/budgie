@@ -107,15 +107,15 @@ class IconSearchService {
     ];
 
     private static readonly FALLBACK_ICONS: readonly UserIconType[] = [
-        UserIconNameEnum.Wallet,
-        UserIconNameEnum.CreditCard,
-        UserIconNameEnum.Landmark,
-        UserIconNameEnum.PiggyBank,
-        UserIconNameEnum.Coins,
-        UserIconNameEnum.Banknote,
-        UserIconNameEnum.Receipt,
-        UserIconNameEnum.ShoppingCart,
-        UserIconNameEnum.Gift
+        UserIconNameEnum.Folder,
+        UserIconNameEnum.Briefcase,
+        UserIconNameEnum.Laptop,
+        UserIconNameEnum.Code,
+        UserIconNameEnum.Lightbulb,
+        UserIconNameEnum.Star,
+        UserIconNameEnum.Bookmark,
+        UserIconNameEnum.Tag,
+        UserIconNameEnum.Sparkles
     ].map(resolveReiconIcon);
 
     readonly load = Effect.fn('IconSearchService.load')(function* (this: IconSearchService) {
