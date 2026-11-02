@@ -2,6 +2,7 @@ import { RUNWAY_MAX_MONTHS } from '@budgie/contracts';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
+import { RUNWAY_CHART_LABEL_FONT_SIZE } from '../constant/runway-chart-label-font-size.constant';
 import { RUNWAY_HORIZON_MONTHS } from '../constant/runway-horizon-months.constant';
 
 import type { RunwayComputationInterface } from '../interface/runway-computation.interface';
@@ -17,6 +18,7 @@ interface RunwayForecastGeometryInterface {
     readonly zeroY: number;
     readonly runOutX: number | null;
     readonly startLabelY: number;
+    readonly isZeroLabelVisible: boolean;
     readonly endLabelY: number;
     readonly endValue: number;
     readonly tickXs: readonly number[];
@@ -36,6 +38,8 @@ const ZERO_VALUE = 0;
 const LABEL_ABOVE_GAP = 6;
 const LABEL_BELOW_GAP = 15;
 const LABEL_MIN_Y = 11;
+const ZERO_LABEL_GAP = 3;
+const QUARTILE_Z_SCORE = 0.6745;
 
 const buildForecastPath = (points: readonly RunwayForecastPointInterface[], close: boolean): string => {
     const path = points.map((point, index) => `${index === 0 ? 'M' : 'L'}${point.x},${point.y}`).join(' ');
@@ -45,13 +49,15 @@ const buildForecastPath = (points: readonly RunwayForecastPointInterface[], clos
 
 export const buildRunwayForecastPath = (params: BuildRunwayForecastPathParamsInterface): RunwayForecastGeometryInterface => {
     const { computation, width, height, paddingLeft, paddingRight, paddingTop, paddingBottom } = params;
-    const { liquid, net, p25Net, p75Net, runwayMonths } = computation;
+    const { liquid, net, netStandardDeviation, monthsUsed, runwayMonths } = computation;
 
     const drawableWidth = width - paddingLeft - paddingRight;
     const drawableHeight = height - paddingTop - paddingBottom;
     const likelyValues = RUNWAY_HORIZON_MONTHS.map(months => liquid + net * months);
-    const p25Values = RUNWAY_HORIZON_MONTHS.map(months => liquid + p25Net * months);
-    const p75Values = RUNWAY_HORIZON_MONTHS.map(months => liquid + p75Net * months);
+    const spreadAt = (months: number) =>
+        QUARTILE_Z_SCORE * netStandardDeviation * Math.sqrt(months + months ** 2 / Math.max(monthsUsed, 1));
+    const p25Values = RUNWAY_HORIZON_MONTHS.map((months, index) => likelyValues[index] - spreadAt(months));
+    const p75Values = RUNWAY_HORIZON_MONTHS.map((months, index) => likelyValues[index] + spreadAt(months));
     const minValue = Math.min(...likelyValues, ...p25Values, ...p75Values, ZERO_VALUE);
     const maxValue = Math.max(...likelyValues, ...p25Values, ...p75Values, ZERO_VALUE);
     const valueRange = maxValue - minValue;
@@ -68,14 +74,17 @@ export const buildRunwayForecastPath = (params: BuildRunwayForecastPathParamsInt
     const [startPoint] = likelyPoints;
     const endPoint = likelyPoints[likelyPoints.length - 1];
     const isGrowing = net >= 0;
+    const zeroY = yAt(ZERO_VALUE);
+    const startLabelY = Math.max(startPoint.y - LABEL_ABOVE_GAP, LABEL_MIN_Y);
 
     return {
         likelyPath: buildForecastPath(likelyPoints, false),
         bandPath: buildForecastPath([...p75Points, ...[...p25Points].reverse()], true),
-        zeroY: yAt(ZERO_VALUE),
+        zeroY,
         runOutX: isPositiveNumber(runwayMonths) && runwayMonths <= RUNWAY_MAX_MONTHS ? xAt(runwayMonths) : null,
         tickXs: xTicks,
-        startLabelY: isGrowing ? startPoint.y + LABEL_BELOW_GAP : Math.max(startPoint.y - LABEL_ABOVE_GAP, LABEL_MIN_Y),
+        startLabelY,
+        isZeroLabelVisible: Math.abs(zeroY - ZERO_LABEL_GAP - startLabelY) >= RUNWAY_CHART_LABEL_FONT_SIZE,
         endLabelY: isGrowing ? Math.max(endPoint.y - LABEL_ABOVE_GAP, LABEL_MIN_Y) : endPoint.y + LABEL_BELOW_GAP,
         endValue: likelyValues[likelyValues.length - 1]
     };

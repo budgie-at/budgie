@@ -32,7 +32,7 @@ export const AccountInactiveIcon = ({ isInactive, size, children }: Props) => {
             <View
                 className="absolute items-center justify-center rounded-full border-2 border-secondary-background bg-secondary-corner"
                 style={badgeStyle}
-                accessibilityLabel={t`Inactive`}
+                accessibilityLabel={t`Hidden from Home`}
             >
                 <Icon
                     icon={UserIconNameEnum.EyeOff}

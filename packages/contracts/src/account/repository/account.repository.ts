@@ -204,7 +204,8 @@ export class AccountRepository extends Context.Service<AccountRepository>()('@bu
                 Db.query(db =>
                     db.query.AccountEntityTable.findMany({
                         where: { parentId: { isNull: true }, deletedAt: { isNotNull: true } },
-                        with: { [AccountAssociationEnum.INSTRUMENT]: true }
+                        with: { [AccountAssociationEnum.INSTRUMENT]: true },
+                        orderBy: (table, { desc: descending }) => [descending(table.deletedAt)]
                     })
                 ),
             findById: (id: number) =>

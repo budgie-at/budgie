@@ -1,7 +1,7 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { ActivityIndicator } from 'react-native';
 
-import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
+import { GroupedListActionRow } from '../../../@generic/component/grouped-list-action-row/grouped-list-action-row';
 import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
 import { AccountDetailsSelector } from '../../../app/(main)/account/[id]/account-details.selector';
 import { useArchiveAccount } from '../../hooks/use-archive-account.hook';
@@ -15,11 +15,14 @@ export const ArchiveAccount = ({ accountId }: Props) => {
     const { handleArchive, isLoading } = useArchiveAccount(accountId, () => void dismissAllOrReplace('/'));
 
     return (
-        <GroupedListRow
-            title={t`Archive account`}
-            {...(isLoading && { right: <ActivityIndicator /> })}
-            testID={AccountDetailsSelector.ArchiveButton}
+        <GroupedListActionRow
+            label={t`Archive account`}
+            icon={UserIconNameEnum.Archive}
             onPress={handleArchive}
+            isDisabled={false}
+            isLoading={isLoading}
+            labelClassName="text-primary"
+            testID={AccountDetailsSelector.ArchiveButton}
         />
     );
 };

@@ -5,8 +5,7 @@ export interface RunwayComputationInterface {
     readonly liquid: number;
     readonly runwayMonths: number | null;
     readonly runsOutAt: Date | null;
-    readonly p25Net: number;
-    readonly p75Net: number;
+    readonly netStandardDeviation: number;
     readonly monthsUsed: number;
     readonly isPositive: boolean;
 }

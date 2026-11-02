@@ -38,14 +38,6 @@ appId: ${APP_ID}
 - tapOn:
       id: 'AccountDetails.ArchiveButton'
 - extendedWaitUntil:
-      visible: 'Archive Account?'
-      timeout: 10000
-- tapOn:
-      text: '^Archive$'
-- extendedWaitUntil:
-      notVisible: 'Archive Account?'
-      timeout: 10000
-- extendedWaitUntil:
       notVisible:
           id: 'AccountCard.E2E Expense Target'
       timeout: 10000
@@ -59,14 +51,6 @@ appId: ${APP_ID}
 
 - tapOn:
       id: 'ArchivedAccountCard.RestoreButton.E2E Expense Target'
-- extendedWaitUntil:
-      visible: 'Restore Account?'
-      timeout: 10000
-- tapOn:
-      text: '^Restore$'
-- extendedWaitUntil:
-      notVisible: 'Restore Account?'
-      timeout: 10000
 - extendedWaitUntil:
       notVisible:
           id: 'ArchivedAccountCard.RestoreButton.E2E Expense Target'
