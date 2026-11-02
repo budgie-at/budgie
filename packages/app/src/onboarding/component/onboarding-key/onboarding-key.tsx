@@ -1,16 +1,14 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { useLingui } from '@lingui/react/macro';
+import { ActivityIndicator } from 'react-native';
 
-import { Button } from '../../../@generic/component/button/button';
-import { Card } from '../../../@generic/component/card/card';
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { DB_NAME } from '../../../@generic/drizzle/constant/db-name.constant';
+import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useRestoreBackup } from '../../../import/hook/use-restore-backup.hook';
+import { OnboardingFileLockEnum } from '../../enum/onboarding-file-lock.enum';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
 import { useOnboardingNavigation } from '../../hook/use-onboarding-navigation.hook';
-import { OnboardingInfoRow } from '../onboarding-info-row/onboarding-info-row';
-import { OnboardingOptionRow } from '../onboarding-option-row/onboarding-option-row';
 import { OnboardingStepIntro } from '../onboarding-step-intro/onboarding-step-intro';
 import { OnboardingStepLayout } from '../onboarding-step-layout/onboarding-step-layout';
 
@@ -24,61 +22,43 @@ export const OnboardingKey = () => {
     const handlePinPress = () => void goToStep(OnboardingStepEnum.PIN);
     const handlePhoneLockPress = () => void goToStep(OnboardingStepEnum.PHONE_LOCK);
 
+    const restoreAccessory = isLoading ? <ActivityIndicator size="small" /> : null;
+    const restorePressableProps = { disabled: isLoading, accessibilityState: { disabled: isLoading, busy: isLoading } };
+
     return (
-        <OnboardingStepLayout
-            step={OnboardingStepEnum.KEY}
-            fileState={t`Will be created on this phone`}
-            footer={
-                <Button
-                    testID={OnboardingKeySelector.RestoreButton}
-                    variant="ghost"
-                    content={t`I have a Budgie backup`}
-                    onPress={selectAndRestore}
-                    isLoading={isLoading}
-                />
-            }
-        >
+        <OnboardingStepLayout step={OnboardingStepEnum.KEY} fileState={t`Not created yet`} fileLock={OnboardingFileLockEnum.OPEN}>
             <OnboardingStepIntro
                 title={t`Who holds the key?`}
                 description={t`Your money will live in one file on this phone. Choose who can open it.`}
             />
 
-            <Card variant="secondary" size="md" className="gap-y-lg">
-                <View className="flex-row items-center gap-x-lg">
-                    <CircleIcon icon={UserIconNameEnum.Database} variant="primary" size={36} iconSize={18} />
-                    <View className="flex-1">
-                        <Text className="text-primary text-sm font-semibold">{DB_NAME}</Text>
-                        <Text className="text-secondary-foreground text-xs">
-                            <Trans>Will be created on this phone</Trans>
-                        </Text>
-                    </View>
-                </View>
-
-                <View className="gap-y-md border-t border-secondary-corner pt-lg">
-                    <OnboardingInfoRow icon={UserIconNameEnum.UserX} text={t`No account. There's nothing to sign up for.`} />
-                    <OnboardingInfoRow icon={UserIconNameEnum.CloudOff} text={t`Never synced, never uploaded.`} />
-                    <OnboardingInfoRow icon={UserIconNameEnum.WifiOff} text={t`Works with no connection at all.`} />
-                </View>
-            </Card>
-
-            <View className="gap-y-md">
-                <OnboardingOptionRow
+            <GroupedListSection footer={t`No account to sign up for. Never synced or uploaded. Works with no connection at all.`}>
+                <GroupedListRow
                     testID={OnboardingKeySelector.PinOption}
-                    icon={UserIconNameEnum.KeyRound}
+                    left={<GroupedListIcon icon={UserIconNameEnum.KeyRound} />}
                     title={t`Only me, with a PIN`}
-                    description={t`The PIN becomes the encryption key`}
-                    isSelected={false}
+                    subtitle={t`The PIN becomes the encryption key`}
                     onPress={handlePinPress}
                 />
-                <OnboardingOptionRow
+                <GroupedListRow
                     testID={OnboardingKeySelector.PhoneLockOption}
-                    icon={UserIconNameEnum.Smartphone}
+                    left={<GroupedListIcon icon={UserIconNameEnum.Smartphone} />}
                     title={t`Anyone who can unlock this phone`}
-                    description={t`Add a PIN any time later`}
-                    isSelected={false}
+                    subtitle={t`Add a PIN any time later`}
                     onPress={handlePhoneLockPress}
                 />
-            </View>
+            </GroupedListSection>
+
+            <GroupedListSection title={t`Already use Budgie?`}>
+                <GroupedListRow
+                    testID={OnboardingKeySelector.RestoreButton}
+                    left={<GroupedListIcon icon={UserIconNameEnum.ArchiveRestore} />}
+                    title={t`I have a Budgie backup`}
+                    right={restoreAccessory}
+                    pressableProps={restorePressableProps}
+                    onPress={selectAndRestore}
+                />
+            </GroupedListSection>
         </OnboardingStepLayout>
     );
 };

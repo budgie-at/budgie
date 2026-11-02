@@ -10,11 +10,12 @@ const SEALED_SCREEN_OPTIONS = { gestureEnabled: false };
 
 export default function OnboardingLayout() {
     const isOnboardingCompleted = useSetting('isOnboardingCompleted');
+    const [isCompletedOnMount] = useState(isOnboardingCompleted);
     const [pin, setPin] = useState<string | null>(null);
 
     const pinContextValue = { pin, setPin };
 
-    if (isOnboardingCompleted) {
+    if (isCompletedOnMount) {
         return <Redirect href="/" />;
     }
 

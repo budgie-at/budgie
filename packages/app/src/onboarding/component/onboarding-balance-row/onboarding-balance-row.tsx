@@ -1,11 +1,12 @@
-import { ReactNode, useState } from 'react';
+import { useAtomValue } from '@effect/atom-react/Hooks';
+import { useState } from 'react';
 import { Text, View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { AmountInput } from '../../../@generic/component/amount-input/amount-input';
-import { Icon } from '../../../@generic/component/icon/icon';
+import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { cn } from '../../../@generic/utils/cn.util';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 
 import { OnboardingBalanceRowSelector } from './onboarding-balance-row.selector';
 
@@ -13,14 +14,14 @@ import type { AccountEntityInterface } from '@budgie/contracts';
 
 interface Props {
     readonly account: Pick<AccountEntityInterface, 'id' | 'title' | 'icon'>;
-    readonly currencySymbol: string;
     readonly value: number;
     readonly onChangeValue: (accountId: number, value: number) => void;
-    readonly children?: ReactNode;
 }
 
-export const OnboardingBalanceRow = ({ account, currencySymbol, value, onChangeValue, children }: Props) => {
+export const OnboardingBalanceRow = ({ account, value, onChangeValue }: Props) => {
     const [isFocused, setIsFocused] = useState(false);
+
+    const currencySymbol = useAtomValue(defaultInstrumentAtom).symbol;
 
     const handleChangeValue = (nextValue: number) => void onChangeValue(account.id, nextValue);
     const handleFocus = () => void setIsFocused(true);
@@ -29,32 +30,36 @@ export const OnboardingBalanceRow = ({ account, currencySymbol, value, onChangeV
     const focusClassName = isFocused ? 'border-primary' : 'border-transparent';
 
     return (
-        <View className={cn('gap-y-2xl rounded-[22px] border-2 bg-secondary-background p-2xl', focusClassName)}>
-            <View className="flex-row items-center gap-x-xl">
-                <View className="size-[44px] items-center justify-center rounded-[14px] bg-background">
-                    <Icon icon={account.icon} size={20} className="text-primary" />
-                </View>
-
-                <Text className="text-primary text-md font-medium flex-1" numberOfLines={1}>
+        <GroupedListRow
+            left={<GroupedListIcon icon={account.icon} />}
+            title={
+                <Text className="text-primary text-[17px]" numberOfLines={2}>
                     {account.title}
                 </Text>
-
-                <AmountInput
-                    testID={OnboardingBalanceRowSelector.Amount(account.id)}
-                    value={value}
-                    onChangeValue={handleChangeValue}
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
-                    inputClassName="flex-1 px-0 text-primary text-2xl text-right border-0 h-auto"
-                    cursorColorClassName="accent-violet-foreground"
-                    borderless
-                    selectTextOnFocus
-                    valuePrefix={currencySymbol}
-                    placeholder={`${currencySymbol}0`}
-                />
-            </View>
-
-            {isDefined(children) ? <View className="gap-y-2xl border-t border-secondary-corner pt-2xl">{children}</View> : null}
-        </View>
+            }
+            right={
+                <View
+                    className={cn(
+                        'min-h-[44px] min-w-[112px] justify-center rounded-[10px] border-[1.5px] bg-surface px-md dark:bg-surface-fill',
+                        focusClassName
+                    )}
+                >
+                    <AmountInput
+                        accessibilityLabel={account.title}
+                        testID={OnboardingBalanceRowSelector.Amount(account.id)}
+                        value={value}
+                        onChangeValue={handleChangeValue}
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
+                        inputClassName="min-h-[40px] px-0 py-0 text-primary text-[19px] text-right border-0 h-auto"
+                        cursorColorClassName="accent-primary"
+                        borderless
+                        selectTextOnFocus
+                        valuePrefix={currencySymbol}
+                        placeholder={`${currencySymbol}0`}
+                    />
+                </View>
+            }
+        />
     );
 };

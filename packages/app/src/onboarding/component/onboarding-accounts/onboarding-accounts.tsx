@@ -1,22 +1,26 @@
-import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { AccountTypeEnum } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useState } from 'react';
-import { View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/component/button/button';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { useSearchAccountsSortedQuery } from '../../../account/query/use-search-accounts-sorted.query';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { ONBOARDING_ACCOUNT_OPTIONS } from '../../constant/onboarding-account-options.constant';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
 import { useOnboardingFileState } from '../../hook/use-onboarding-file-state.hook';
 import { useOnboardingNavigation } from '../../hook/use-onboarding-navigation.hook';
 import { OnboardingService } from '../../service/onboarding.service';
-import { OnboardingAccountTile } from '../onboarding-account-tile/onboarding-account-tile';
+import { OnboardingAccountRow } from '../onboarding-account-row/onboarding-account-row';
 import { OnboardingCurrencyRow } from '../onboarding-currency-row/onboarding-currency-row';
+import { OnboardingFooterAction } from '../onboarding-footer-action/onboarding-footer-action';
 import { OnboardingStepIntro } from '../onboarding-step-intro/onboarding-step-intro';
 import { OnboardingStepLayout } from '../onboarding-step-layout/onboarding-step-layout';
 
@@ -32,18 +36,14 @@ export const OnboardingAccounts = () => {
     const [isSaving, setIsSaving] = useState(false);
 
     const { goToStep, completeOnboarding } = useOnboardingNavigation();
-    const { accounts } = useSearchAccountsSortedQuery();
-    const { state, isSealed } = useOnboardingFileState();
+    const { accounts, isLoading } = useSearchAccountsSortedQuery();
+    const { state, lock } = useOnboardingFileState();
+    const currencyCode = useAtomValue(defaultInstrumentAtom).code;
 
-    const accountOptions: readonly OnboardingAccountOptionInterface[] = [
-        { type: AccountTypeEnum.CASH, icon: UserIconNameEnum.Wallet, title: t`Cash` },
-        { type: AccountTypeEnum.BANK, icon: UserIconNameEnum.Landmark, title: t`Bank account` },
-        { type: AccountTypeEnum.SAVINGS, icon: UserIconNameEnum.PiggyBank, title: t`Savings` },
-        { type: AccountTypeEnum.DEPOSIT, icon: UserIconNameEnum.Vault, title: t`Deposits` },
-        { type: AccountTypeEnum.CRYPTO, icon: UserIconNameEnum.Bitcoin, title: t`Crypto` },
-        { type: AccountTypeEnum.STOCKS, icon: UserIconNameEnum.ChartLine, title: t`Stocks` },
-        { type: AccountTypeEnum.DEBT, icon: UserIconNameEnum.HandCoins, title: t`Debts and loans` }
-    ];
+    const accountOptions: readonly OnboardingAccountOptionInterface[] = ONBOARDING_ACCOUNT_OPTIONS.map(option => ({
+        ...option,
+        title: t(option.title)
+    }));
 
     const existingTypes = new Set(accounts.map(account => account.type));
     const isTypeSelected = (type: AccountTypeEnum) => selectedTypes.has(type) || existingTypes.has(type);
@@ -81,52 +81,51 @@ export const OnboardingAccounts = () => {
         );
     };
 
-    const addLabel = isPositiveNumber(newAccountCount)
-        ? t({ message: plural(newAccountCount, { one: 'Add # account', other: 'Add # accounts' }) })
-        : t`Continue`;
     const isAddDisabled = !isPositiveNumber(newAccountCount) && !hasExistingAccounts;
+    const enabledAddLabel = isPositiveNumber(newAccountCount)
+        ? t({ message: plural(newAccountCount, { one: `Add # account in ${currencyCode}`, other: `Add # accounts in ${currencyCode}` }) })
+        : t`Continue`;
+    const addLabel = isAddDisabled ? t`Choose at least one` : enabledAddLabel;
 
     return (
         <OnboardingStepLayout
             step={OnboardingStepEnum.ACCOUNTS}
             fileState={state}
-            isFileSealed={isSealed}
+            fileLock={lock}
+            isLoading={isLoading}
             footer={
                 <>
-                    <Button
+                    <PillButton
                         testID={OnboardingAccountsSelector.AddButton}
-                        variant="cta"
-                        content={addLabel}
-                        disabled={isAddDisabled}
+                        label={addLabel}
+                        isDisabled={isAddDisabled}
                         isLoading={isSaving}
                         onPress={handleAddPress}
                     />
-                    <Button
+                    <OnboardingFooterAction
                         testID={OnboardingAccountsSelector.LeaveEmptyButton}
-                        variant="ghost"
-                        content={t`Leave it empty for now`}
+                        label={t`Leave it empty for now`}
                         onPress={completeOnboarding}
                     />
                 </>
             }
         >
-            <OnboardingStepIntro title={t`What goes inside?`} description={t`Each one becomes an account. Rename or remove them later.`} />
+            <OnboardingStepIntro title={t`What goes inside?`} description={t`Each one becomes an account you can rename later.`} />
 
-            <View className="gap-y-xl">
-                <View className="flex-row flex-wrap gap-lg">
-                    {accountOptions.map(option => (
-                        <OnboardingAccountTile
-                            key={option.type}
-                            testID={OnboardingAccountsSelector.Option(option.type)}
-                            option={option}
-                            isSelected={isTypeSelected(option.type)}
-                            onToggle={handleToggleType}
-                        />
-                    ))}
-                </View>
+            <OnboardingCurrencyRow />
 
-                <OnboardingCurrencyRow />
-            </View>
+            <GroupedListSection>
+                {accountOptions.map(option => (
+                    <OnboardingAccountRow
+                        key={option.type}
+                        testID={OnboardingAccountsSelector.Option(option.type)}
+                        option={option}
+                        isSelected={isTypeSelected(option.type)}
+                        isLocked={existingTypes.has(option.type)}
+                        onToggle={handleToggleType}
+                    />
+                ))}
+            </GroupedListSection>
         </OnboardingStepLayout>
     );
 };

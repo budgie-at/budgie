@@ -69,6 +69,8 @@ const PIN_OPTIONS: NativeStackNavigationOptions = { ...MODAL_OPTIONS, gestureEna
 
 const LOCK_SCREEN_OPTIONS: NativeStackNavigationOptions = { presentation: 'fullScreenModal', animation: 'none' };
 
+const FADE_OPTIONS: NativeStackNavigationOptions = { animation: 'fade' };
+
 const SELECTOR_OPTIONS = formSheetOptions([DETENT_40, DETENT_70], 0);
 
 const DESTINATION_OPTIONS = formSheetOptions([DETENT_90]);
@@ -156,8 +158,8 @@ export const RootLayoutContent = () => {
                                                         <ModalProvider>
                                                             <VoiceInputProvider>
                                                                 <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
-                                                                    <Stack.Screen name="(tabs)" />
-                                                                    <Stack.Screen name="onboarding" />
+                                                                    <Stack.Screen name="(tabs)" options={FADE_OPTIONS} />
+                                                                    <Stack.Screen name="onboarding" options={FADE_OPTIONS} />
                                                                     <Stack.Screen name="(main)/pin" options={LOCK_SCREEN_OPTIONS} />
                                                                     <Stack.Screen name="(main)/create-account" />
                                                                     <Stack.Screen name="(main)/account/[id]/details" />
