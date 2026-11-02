@@ -46,13 +46,16 @@
         "e2e": {
             "entry": [
                 "e2e.config.ts",
-                "tests/**/*.e2e.ts"
+                "media.config.ts",
+                "tests/**/*.e2e.ts",
+                "media/**/*.e2e.ts"
             ],
             "project": [
                 "**/*.ts"
             ],
             "ignoreBinaries": [
-                "e2e"
+                "e2e",
+                "sqlite3"
             ]
         }
     }
