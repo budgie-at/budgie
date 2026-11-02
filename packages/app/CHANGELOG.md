@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.146.1](https://github.com/budgie-at/budgie/compare/v6.146.0...v6.146.1) (2026-11-02)
+
+### Performance Improvements
+
+* **app:** index icon search tokens so category icon matching stops freezing ([#1857](https://github.com/budgie-at/budgie/issues/1857)) ([fb82a34](https://github.com/budgie-at/budgie/commit/fb82a343eeafc7641dcc1e3af65ec669fc2d16b6))
+
+
 # [6.146.0](https://github.com/budgie-at/budgie/compare/v6.145.0...v6.146.0) (2026-11-02)
 
 ### Features
