@@ -59,7 +59,7 @@ export const BankIntegrationStatusPill = ({ syncs }: Props) => {
         className:
             capabilities.supportsLiveSync &&
             (status === BankIntegrationSyncStatusEnum.KEY_REJECTED || status === BankIntegrationSyncStatusEnum.NEEDS_ATTENTION)
-                ? 'text-destructive-foreground'
+                ? 'text-destructive-strong'
                 : 'text-secondary-foreground',
         icon: capabilities.supportsFileImport ? UserIconNameEnum.FileSpreadsheet : STATUS_ICON[status]
     };

@@ -53,7 +53,7 @@ export const BankIntegrationNewAccounts = ({ linkedExternalIds }: Props) => {
                             className="min-h-[44px] justify-center px-md"
                             testID={BankIntegrationSelector.RetryNewAccountsButton}
                         >
-                            <Text className="text-[15px] text-primary-accent">
+                            <Text className="text-[15px] light:text-cash-action dark:text-default-foreground">
                                 <Trans>Retry</Trans>
                             </Text>
                         </HapticPressable>

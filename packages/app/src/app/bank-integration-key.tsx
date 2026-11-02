@@ -9,17 +9,14 @@ import Toast from 'react-native-toast-message';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { FormItem } from '../@generic/component/form-item/form-item';
 import { FormsheetHeader } from '../@generic/component/formsheet-header/formsheet-header';
 import { HapticPressable } from '../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../@generic/component/icon/icon';
-import { Input } from '../@generic/component/input/input';
 import { ModalFormFooter } from '../@generic/component/modal-form-footer/modal-form-footer';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { useSingleFlight } from '../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../@generic/utils/toast-on-failure.util';
-import { PasteTokenButton } from '../sync/component/paste-token-button/paste-token-button';
-import { SyncTokenSectionSelector } from '../sync/component/sync-token-section/sync-token-section.selector';
+import { BankIntegrationKeyField } from '../sync/component/bank-integration-key-field/bank-integration-key-field';
 import { useBankIntegrationKeyModal, useBankIntegrationKeyModalParams } from '../sync/context/bank-integration-key-modal.context';
 import { bankIntegrationAccountPreviewsAtom } from '../sync/query/use-bank-integration-account-previews.query';
 
@@ -71,33 +68,18 @@ export default function BankIntegrationKeyModal() {
                 title={t`Monobank API key`}
                 description={t`Paste the key from api.monobank.ua. Budgie checks it right away.`}
             />
-            <View className="px-3xl gap-y-md">
-                <FormItem error={errorMessage}>
-                    <View className="flex-row items-center gap-x-sm">
-                        <Input
-                            className="flex-1"
-                            value={key}
-                            onChangeText={handleKeyChange}
-                            placeholder={t`Paste API key`}
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            autoFocus
-                            secureTextEntry
-                            testID={BankIntegrationKeyModalSelector.Input}
-                        />
-                        <PasteTokenButton onPaste={handleKeyChange} testID={SyncTokenSectionSelector.MonobankPasteButton} />
-                    </View>
-                </FormItem>
+            <View className="px-3xl gap-y-[8px]">
+                <BankIntegrationKeyField value={key} onChangeText={handleKeyChange} errorMessage={errorMessage} />
                 <HapticPressable
                     className="min-h-[44px] flex-row items-center gap-x-sm"
                     onPress={handleOpenKeyPage}
                     accessibilityRole="link"
                     testID={BankIntegrationKeyModalSelector.GetNewKeyLink}
                 >
-                    <Text className="text-[15px] text-default-foreground">
+                    <Text className="text-[15px] light:text-cash-action dark:text-default-foreground">
                         <Trans>Get a new key</Trans>
                     </Text>
-                    <Icon icon={UserIconNameEnum.ArrowUpRight} size={14} className="text-default-foreground" />
+                    <Icon icon={UserIconNameEnum.ArrowUpRight} size={14} className="light:text-cash-action dark:text-default-foreground" />
                 </HapticPressable>
             </View>
             <ModalFormFooter

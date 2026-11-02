@@ -8,14 +8,16 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
+import { cn } from '../../../@generic/utils/cn.util';
 import { isLikelyMonoToken } from '../../type-guard/is-likely-mono-token.type-guard';
 
 interface Props {
     readonly onPaste: (token: string) => void;
     readonly testID?: string;
+    readonly className?: string;
 }
 
-export const PasteTokenButton = ({ onPaste, testID }: Props) => {
+export const PasteTokenButton = ({ onPaste, testID, className }: Props) => {
     const { t } = useLingui();
 
     const { run } = useSingleFlight();
@@ -45,7 +47,7 @@ export const PasteTokenButton = ({ onPaste, testID }: Props) => {
 
     return (
         <Button
-            className="min-h-[44px] min-w-[44px]"
+            className={cn('min-h-[44px] min-w-[44px]', className)}
             leftIcon={UserIconNameEnum.ClipboardPaste}
             size="sm"
             variant="secondary"

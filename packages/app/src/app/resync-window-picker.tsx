@@ -35,9 +35,12 @@ export default function ResyncWindowPickerModal() {
     const accountId = useResyncWindowPickerModalParams()?.accountId ?? 0;
     const { account } = useGetAccountByIdQuery(accountId);
     const { bottom } = useSafeAreaInsets();
-    const contentContainerStyle = { paddingBottom: bottom + 16 };
-    const explanation = t`Budgie downloads them again and merges duplicates automatically.`;
-    const description = isPositiveNumber(accountId) && isDefined(account) ? `${account.title}\n${explanation}` : explanation;
+    const contentContainerStyle = { paddingBottom: bottom + 8 };
+    const accountTitle = account?.title;
+    const description =
+        isPositiveNumber(accountId) && isDefined(accountTitle)
+            ? t`${accountTitle} · duplicates are merged automatically`
+            : t`Duplicates are merged automatically.`;
 
     const resync = (sinceDays: number | null) => {
         void run(
@@ -64,7 +67,7 @@ export default function ResyncWindowPickerModal() {
 
     return (
         <View className="bg-grouped-surface" collapsable={false}>
-            <FormsheetHeader size="md" title={t`Re-sync transactions`} description={description} />
+            <FormsheetHeader size="md" title={t`Sync past transactions`} description={description} />
             <View className="px-3xl pt-[16px] gap-y-[24px]" style={contentContainerStyle}>
                 <GroupedListSection>
                     {RESYNC_WINDOW_OPTIONS.filter(option => isDefined(option.sinceDays)).map(option => (

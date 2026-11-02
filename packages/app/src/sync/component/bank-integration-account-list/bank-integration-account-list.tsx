@@ -19,16 +19,18 @@ export const BankIntegrationAccountList = () => {
     const { t } = useLingui();
     const { integration, capabilities } = useBankIntegration();
     const { accounts, error } = useGetAccountsByIntegrationIdQuery(integration.id);
-    const footer = capabilities.supportsFileImport
+    const accountsFooter = capabilities.supportsFileImport
         ? t`Switched-off accounts are skipped when you import a statement.`
         : t`Switched-off accounts stop syncing. Their history stays.`;
+    const footer =
+        integration.provider === ExternalSourceEnum.BINANCE ? t`Switched-off assets stop syncing. Their history stays.` : accountsFooter;
 
     if (isDefined(error)) {
         return (
             <GroupedListSection title={t`Accounts`} footer={footer}>
                 <GroupedListRow
                     title={
-                        <Text className="text-[17px] text-destructive-foreground">
+                        <Text className="text-[17px] text-destructive-strong">
                             <Trans>Could not load accounts</Trans>
                         </Text>
                     }
@@ -49,21 +51,18 @@ export const BankIntegrationAccountList = () => {
     const newAccounts = capabilities.supportsAccountDiscovery ? (
         <BankIntegrationNewAccounts linkedExternalIds={new Set(accounts.map(account => account.externalId).filter(isNotEmptyString))} />
     ) : null;
-    const linkedAccounts = isEmptyArray(accounts) ? (
-        <BankIntegrationEmptyAccounts />
-    ) : (
-        accounts.map(account => <BankIntegrationAccountRow key={account.id} account={account} />)
-    );
     const accountCount = accounts.length;
     const countTitle = integration.provider === ExternalSourceEnum.BINANCE ? t`Assets · ${accountCount}` : t`Accounts · ${accountCount}`;
     const title = isEmptyArray(accounts) ? t`Accounts` : countTitle;
-    const accountsFooter = isEmptyArray(accounts) ? null : footer;
+    const resolvedFooter = isEmptyArray(accounts) ? <BankIntegrationEmptyAccounts /> : footer;
 
     return (
         <>
             {newAccounts}
-            <GroupedListSection title={title} footer={accountsFooter}>
-                {linkedAccounts}
+            <GroupedListSection title={title} footer={resolvedFooter}>
+                {accounts.map(account => (
+                    <BankIntegrationAccountRow key={account.id} account={account} />
+                ))}
                 <BankIntegrationAddDeposit />
             </GroupedListSection>
         </>

@@ -1,4 +1,6 @@
-import { View } from 'react-native';
+import Animated, { Extrapolation, interpolate, useAnimatedStyle, useReducedMotion } from 'react-native-reanimated';
+
+import { useScreenChrome, useScreenChromeScrollY } from '@rnw-community/react-native-screen-chrome';
 
 import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
@@ -8,12 +10,20 @@ import { BankIntegrationStatusPill } from '../bank-integration-status-pill/bank-
 
 export const BankIntegrationOverview = () => {
     const { integration } = useBankIntegration();
+    const { config } = useScreenChrome();
+    const scrollY = useScreenChromeScrollY();
+    const reducedMotion = useReducedMotion();
+    const animatedStyle = useAnimatedStyle(() => ({
+        opacity: reducedMotion
+            ? Number(scrollY.get() < config.smallTitleStart)
+            : interpolate(scrollY.get(), [config.collapseStart, config.smallTitleStart], [1, 0], Extrapolation.CLAMP)
+    }));
     const syncs = useBankIntegrationSyncsQuery(integration.id);
 
     return (
-        <View className="items-center gap-y-[8px] py-xl" testID={BankIntegrationSelector.Overview}>
+        <Animated.View style={animatedStyle} className="items-center gap-y-[8px] py-xl" testID={BankIntegrationSelector.Overview}>
             <BankLogo bankProvider={integration.provider} size={56} />
             <BankIntegrationStatusPill syncs={syncs} />
-        </View>
+        </Animated.View>
     );
 };

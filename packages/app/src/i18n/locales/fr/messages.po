@@ -137,6 +137,10 @@ msgstr "{accountCount, plural, one {# compte} other {# comptes}}"
 msgid "{accountsCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountsCount, plural, one {# compte} other {# comptes}}"
 
+#: src/app/resync-window-picker.tsx
+msgid "{accountTitle} · duplicates are merged automatically"
+msgstr "{accountTitle} · les doublons sont fusionnés automatiquement"
+
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "{accountTitle}, account actions"
 msgstr "{accountTitle}, actions du compte"
@@ -1072,10 +1076,6 @@ msgstr "Comptes · {accountCount}"
 msgid "Accounts ({selectedAccountsCount})"
 msgstr "Comptes ({selectedAccountsCount})"
 
-#: src/sync/component/bank-integration-empty-accounts/bank-integration-empty-accounts.tsx
-msgid "Accounts you sync appear here."
-msgstr "Les comptes que vous synchronisez apparaissent ici."
-
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Action: {label}"
 msgstr "Action : {label}"
@@ -1426,6 +1426,7 @@ msgid "Anything except this value"
 msgstr "Tout sauf cette valeur"
 
 #: src/sync/component/bank-integration-key-card/bank-integration-key-card.tsx
+#: src/sync/component/bank-integration-key-field/bank-integration-key-field.tsx
 msgid "API key"
 msgstr "Clé API"
 
@@ -1829,10 +1830,6 @@ msgstr "Budgie n'a pas pu ouvrir vos données"
 msgid "Budgie deleted the damaged part. It starts again only when you ask."
 msgstr "Budgie a supprimé la partie endommagée. Le téléchargement ne reprend que si vous le demandez."
 
-#: src/app/resync-window-picker.tsx
-msgid "Budgie downloads them again and merges duplicates automatically."
-msgstr "Budgie les télécharge à nouveau et fusionne automatiquement les doublons."
-
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Budgie encrypts your data on this phone. It takes a few seconds."
 msgstr "Budgie chiffre tes données sur ce téléphone. Cela prend quelques secondes."
@@ -1870,8 +1867,8 @@ msgid "Budgie stops setting money aside for it. Your transactions are not affect
 msgstr "Budgie cesse de mettre de l'argent de côté pour cela. Vos transactions ne sont pas modifiées."
 
 #: src/sync/component/bank-integration-key-card/bank-integration-key-card.tsx
-msgid "Budgie syncs automatically in the background."
-msgstr "Budgie se synchronise automatiquement en arrière-plan."
+msgid "Budgie syncs automatically and lists new Monobank accounts here as soon as they appear."
+msgstr "Budgie synchronise automatiquement et affiche ici les nouveaux comptes Monobank dès leur apparition."
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
@@ -3348,6 +3345,10 @@ msgstr "Date d'échéance"
 msgid "Duplicate rule"
 msgstr "Dupliquer la règle"
 
+#: src/app/resync-window-picker.tsx
+msgid "Duplicates are merged automatically."
+msgstr "Les doublons sont fusionnés automatiquement."
+
 #: src/rule/hooks/use-rule-text-value-meta.hook.ts
 msgid "e.g. ^uber.*trip"
 msgstr "ex. ^uber.*trip"
@@ -4083,10 +4084,6 @@ msgstr "Le signe moins est ignoré."
 msgid "Import a PDF statement"
 msgstr "Importer un relevé PDF"
 
-#: src/sync/component/bank-integration-empty-accounts/bank-integration-empty-accounts.tsx
-msgid "Import a statement from {bank} to add your accounts."
-msgstr "Importez un relevé de {bank} pour ajouter vos comptes."
-
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Import accounts and transactions from Erste Bank PDF statement"
 msgstr "Importer les comptes et transactions depuis le relevé PDF Erste Bank"
@@ -4403,10 +4400,6 @@ msgstr "dernier paiement {formattedLast}"
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Last synced {relative}"
 msgstr "Dernière synchronisation : {relative}"
-
-#: src/sync/component/bank-integration-key-card/bank-integration-key-card.tsx
-msgid "Last synced {relative}. Budgie syncs automatically in the background."
-msgstr "Dernière synchronisation {relative}. Budgie synchronise automatiquement en arrière-plan."
 
 #: src/@generic/constant/date-period.constant.ts
 msgid "Last Week"
@@ -5007,13 +5000,20 @@ msgstr "Aucun compte trouvé"
 
 #: src/account/component/account-select-content/account-select-content.tsx
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
-#: src/sync/component/bank-integration-empty-accounts/bank-integration-empty-accounts.tsx
 msgid "No accounts yet"
 msgstr "Aucun compte pour le moment"
 
 #: src/app/transaction-account-filter.tsx
 msgid "No Accounts Yet"
 msgstr "Aucun compte pour le moment"
+
+#: src/sync/component/bank-integration-empty-accounts/bank-integration-empty-accounts.tsx
+msgid "No accounts yet. Accounts you sync appear here."
+msgstr "Aucun compte pour le moment. Les comptes synchronisés apparaîtront ici."
+
+#: src/sync/component/bank-integration-empty-accounts/bank-integration-empty-accounts.tsx
+msgid "No accounts yet. Import a statement from {bank} to add them."
+msgstr "Aucun compte pour le moment. Importez un relevé de {bank} pour les ajouter."
 
 #: src/rule/hooks/use-rule-row-summary.hook.ts
 msgid "No action yet"
@@ -5698,7 +5698,7 @@ msgstr "Dernière année"
 msgid "Past years"
 msgstr "Années passées"
 
-#: src/app/bank-integration-key.tsx
+#: src/sync/component/bank-integration-key-field/bank-integration-key-field.tsx
 msgid "Paste API key"
 msgstr "Coller la clé API"
 
@@ -5727,6 +5727,10 @@ msgstr "Pause"
 #: src/ai/constant/ai-download-card-visuals.constant.ts
 msgid "Paused"
 msgstr "En pause"
+
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Paused until the key is updated"
+msgstr "En pause jusqu’à la mise à jour de la clé"
 
 #: src/ai/constant/ai-download-card-visuals.constant.ts
 msgid "Paused: no Wi-Fi"
@@ -6025,10 +6029,6 @@ msgstr "La resynchronisation des 7 derniers jours commencera à la prochaine syn
 #: src/app/resync-window-picker.tsx
 msgid "Re-sync of last 90 days will start on next sync."
 msgstr "La resynchronisation des 90 derniers jours commencera à la prochaine synchronisation."
-
-#: src/app/resync-window-picker.tsx
-msgid "Re-sync transactions"
-msgstr "Resynchroniser les transactions"
 
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "Read on this phone"
@@ -7035,6 +7035,10 @@ msgstr "Les comptes désactivés sont ignorés lors de l’import d’un relevé
 msgid "Switched-off accounts stop syncing. Their history stays."
 msgstr "Les comptes désactivés ne se synchronisent plus. Leur historique est conservé."
 
+#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
+msgid "Switched-off assets stop syncing. Their history stays."
+msgstr "Les actifs désactivés ne sont plus synchronisés. Leur historique est conservé."
+
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 #: src/sync/component/bank-integration-new-account-row/bank-integration-new-account-row.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
@@ -7074,6 +7078,7 @@ msgstr "Synchronisation désactivée"
 msgid "Sync or import"
 msgstr "Synchroniser ou importer"
 
+#: src/app/resync-window-picker.tsx
 #: src/sync/component/resync-account/resync-account.tsx
 msgid "Sync past transactions"
 msgstr "Synchroniser les transactions passées"

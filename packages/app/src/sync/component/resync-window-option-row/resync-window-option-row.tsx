@@ -25,13 +25,15 @@ export const ResyncWindowOptionRow = ({ option, onSelect }: Props) => {
     const handlePress = () => void onSelect(option.sinceDays);
 
     return (
-        <SettingsRow
-            title={t(WINDOW_LABELS[String(option.sinceDays)])}
-            icon={option.icon}
-            variant="primary"
-            onPress={handlePress}
-            right={<View />}
-            testID={ResyncWindowPickerSelector.Option(option.sinceDays ?? 'all')}
-        />
+        <View className="bg-grouped-surface-row">
+            <SettingsRow
+                title={t(WINDOW_LABELS[String(option.sinceDays)])}
+                icon={option.icon}
+                variant="primary"
+                onPress={handlePress}
+                right={<View />}
+                testID={ResyncWindowPickerSelector.Option(option.sinceDays ?? 'all')}
+            />
+        </View>
     );
 };
