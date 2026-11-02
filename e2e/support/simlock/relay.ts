@@ -22,26 +22,35 @@ export async function startBootRelay(upstreamBaseUrl: string): Promise<BootRelay
   const upstream = new URL(upstreamBaseUrl.endsWith('/') ? upstreamBaseUrl : `${upstreamBaseUrl}/`);
   const send = upstream.protocol === 'https:' ? httpsRequest : httpRequest;
 
-  /**
-   * The upstream URL for a request's target: only its path and query are kept, resolved under the
-   * gateway's agent-device base. An absolute-form target (`GET http://elsewhere/`) or a path that
-   * climbs out of the base is refused, so the relay can only ever reach the simlock gateway.
-   */
-  const upstreamTarget = (requestTarget: string): URL => {
-    const { pathname, search } = new URL(requestTarget, 'http://relay.invalid');
-    const target = new URL(`${pathname.replace(/^\/+/, '')}${search}`, upstream);
-    if (target.origin !== upstream.origin || !target.pathname.startsWith(upstream.pathname)) {
-      throw new RefusedTarget(requestTarget);
-    }
-    return target;
+  // Where every request goes: fixed from the configured gateway, never from the request.
+  const destination = {
+    protocol: upstream.protocol,
+    hostname: upstream.hostname,
+    port: upstream.port === '' ? undefined : Number(upstream.port),
+    host: upstream.host,
+    base: upstream.pathname.replace(/\/+$/, ''),
   };
 
-  const forward = (incoming: IncomingMessage, path: string, body?: Buffer) =>
+  /**
+   * The upstream path for a request's target: its path and query only, under the gateway's
+   * agent-device base. Anything but an origin-form target made of plain path characters
+   * (an absolute-form `http://elsewhere/`, `//host`, a `..` segment) is refused, so the relay
+   * can only ever reach the simlock gateway.
+   */
+  const upstreamPath = (requestTarget: string): string => {
+    if (!/^\/(?!\/)[A-Za-z0-9._~!$&'()*+,;=:@%/?-]*$/.test(requestTarget) || /(^|\/)\.\.?(\/|\?|$)/.test(requestTarget)) {
+      throw new RefusedTarget(requestTarget);
+    }
+    return `${destination.base}${requestTarget}`;
+  };
+
+  const forward = (incoming: IncomingMessage, requestTarget: string, body?: Buffer) =>
     new Promise<{ status: number; headers: Record<string, string | string[] | undefined>; body?: Buffer; stream?: IncomingMessage }>((resolve, reject) => {
-      const target = upstreamTarget(path);
-      const headers = { ...incoming.headers, host: target.host };
+      const path = upstreamPath(requestTarget);
+      const headers = { ...incoming.headers, host: destination.host };
       if (body !== undefined) headers['content-length'] = String(body.length);
-      const out = send(target, { method: incoming.method, headers }, (response) => {
+      const options = { protocol: destination.protocol, hostname: destination.hostname, port: destination.port, path, method: incoming.method, headers };
+      const out = send(options, (response) => {
         if (body === undefined) return resolve({ status: response.statusCode ?? 502, headers: response.headers, stream: response });
         const chunks: Buffer[] = [];
         response.on('data', (chunk: Buffer) => chunks.push(chunk));
