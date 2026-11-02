@@ -84,21 +84,21 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
                 <Text className="text-[17px] text-primary" numberOfLines={2}>
                     {account.title}
                 </Text>
-                <View className="flex-row flex-wrap">
-                    <Text className="text-[13px] leading-[18px] text-secondary-foreground">
+                <View className="flex-row">
+                    <Text className="shrink text-[13px] leading-[18px] text-secondary-foreground" numberOfLines={1}>
                         <Text className={failureClassName}>{failureLabel}</Text>
                         {failureSeparator}
                         {balancePrefix}
                     </Text>
                     <ProtectedText
-                        className="text-[13px] leading-[18px] text-secondary-foreground"
+                        className="shrink-0 text-[13px] leading-[18px] text-secondary-foreground"
                         testID={AccountCardBaseSelector.Balance(account.title, formatDigits(balance))}
                     >
                         {toTrueMinus(formatAmount(balance, account.instrument.symbol, account.instrument.type))}
                     </ProtectedText>
                 </View>
             </View>
-            <View className="flex-row items-center gap-x-[12px]">
+            <View className="flex-row items-center gap-x-sm">
                 <BankIntegrationAccountMenu accountId={account.id} title={account.title} rowTestID={rowTestID}>
                     <Icon icon={UserIconNameEnum.Ellipsis} size={20} className="text-secondary-foreground" />
                 </BankIntegrationAccountMenu>
