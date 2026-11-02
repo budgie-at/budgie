@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { View } from 'react-native';
-import { useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller';
+import { useKeyboardState, useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -8,12 +8,15 @@ import { ScreenChromeFooter } from '@rnw-community/react-native-screen-chrome';
 
 interface Props {
     readonly children: ReactNode;
+    readonly keyboardToolbarHeight?: number;
 }
 
 const HIDDEN_EDGE_FADE_PROPS = { style: { display: 'none' } } as const;
 const IN_FLOW_STYLE = { position: 'relative' } as const;
 
-export const OnboardingStepFooter = ({ children }: Props) => {
+export const OnboardingStepFooter = ({ children, keyboardToolbarHeight = 0 }: Props) => {
+    const isKeyboardVisible = useKeyboardState(state => state.isVisible);
+    const toolbarStyle = { height: isKeyboardVisible ? keyboardToolbarHeight : 0 };
     const { height, progress } = useReanimatedKeyboardAnimation();
     const { bottom } = useSafeAreaInsets();
     const keyboardStyle = useAnimatedStyle(() => ({ transform: [{ translateY: height.value + bottom * progress.value }] }));
@@ -24,6 +27,7 @@ export const OnboardingStepFooter = ({ children }: Props) => {
                 <View className="gap-y-xs border-t-hairline border-surface-separator bg-surface px-5xl pt-lg pb-safe-offset-[8px]">
                     {children}
                 </View>
+                <View style={toolbarStyle} />
             </ScreenChromeFooter>
         </Animated.View>
     );

@@ -1,4 +1,5 @@
 import { Text } from 'react-native';
+import { useKeyboardState } from 'react-native-keyboard-controller';
 
 import { EmptyFn } from '@rnw-community/shared';
 
@@ -13,7 +14,12 @@ interface Props {
 }
 
 export const OnboardingFooterAction = ({ label, testID, onPress, isDisabled = false }: Props) => {
+    const isKeyboardVisible = useKeyboardState(state => state.isVisible);
     const accessibilityState = { disabled: isDisabled };
+
+    if (isKeyboardVisible) {
+        return null;
+    }
 
     return (
         <HapticPressable

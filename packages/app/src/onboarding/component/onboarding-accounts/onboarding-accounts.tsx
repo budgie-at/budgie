@@ -110,7 +110,7 @@ export const OnboardingAccounts = () => {
                 </>
             }
         >
-            <OnboardingStepIntro title={t`What goes inside?`} description={t`Each one becomes an account you can rename later.`} />
+            <OnboardingStepIntro title={t`What goes inside?`} description={t`Choose your accounts. Rename them later.`} />
 
             <OnboardingCurrencyRow />
 

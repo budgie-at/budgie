@@ -1,6 +1,7 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
+import { useResolveClassNames } from 'uniwind';
 
 import { AmountInput } from '../../../@generic/component/amount-input/amount-input';
 import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
@@ -21,6 +22,7 @@ interface Props {
 export const OnboardingBalanceRow = ({ account, value, onChangeValue }: Props) => {
     const [isFocused, setIsFocused] = useState(false);
 
+    const { color } = useResolveClassNames('text-primary');
     const currencySymbol = useAtomValue(defaultInstrumentAtom).symbol;
 
     const handleChangeValue = (nextValue: number) => void onChangeValue(account.id, nextValue);
@@ -52,7 +54,8 @@ export const OnboardingBalanceRow = ({ account, value, onChangeValue }: Props) =
                         onFocus={handleFocus}
                         onBlur={handleBlur}
                         inputClassName="min-h-[44px] px-0 py-0 text-primary text-[19px] text-right border-0 h-auto"
-                        cursorColorClassName="accent-primary"
+                        selectionColor={color}
+                        cursorColor={color}
                         borderless
                         selectTextOnFocus
                         valuePrefix={currencySymbol}

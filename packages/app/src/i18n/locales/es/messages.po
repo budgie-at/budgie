@@ -918,10 +918,6 @@ msgstr "3M"
 msgid "A balanced starter budget with common categories"
 msgstr "Un presupuesto inicial equilibrado con categorías comunes"
 
-#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
-msgid "A bank statement (PDF or XLSX)"
-msgstr "Un extracto bancario (PDF o XLSX)"
-
 #: src/rule/components/rule-action-phrase/rule-action-phrase.tsx
 msgid "a category"
 msgstr "una categoría"
@@ -1663,6 +1659,10 @@ msgstr "Cuenta bancaria"
 msgid "Bank integration settings"
 msgstr "Ajustes de la integración bancaria"
 
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Bank statement"
+msgstr "Extracto bancario"
+
 #: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
 msgid "Bank sync"
@@ -2242,6 +2242,10 @@ msgstr "Elegir qué va dentro"
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Choose what to track. Balances and history come straight from the bank."
 msgstr "Elige qué seguir. Los saldos y el historial vienen directamente del banco."
+
+#: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
+msgid "Choose your accounts. Rename them later."
+msgstr "Elige tus cuentas. Renómbralas después."
 
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "Clear"
@@ -3250,6 +3254,7 @@ msgstr "No contiene"
 #: src/@generic/component/keyboard-done-accessory/keyboard-done-accessory.tsx
 #: src/app/import-column-mapper.tsx
 #: src/categorize-inbox/components/categorize-inbox-empty-state/categorize-inbox-empty-state.tsx
+#: src/onboarding/component/onboarding-balance-keyboard-toolbar/onboarding-balance-keyboard-toolbar.tsx
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 msgid "Done"
@@ -3398,10 +3403,6 @@ msgstr "p. ej. Netflix"
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 msgid "Each bar compares one day's spending with your daily plan."
 msgstr "Cada barra compara el gasto de un día con tu plan diario."
-
-#: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
-msgid "Each one becomes an account you can rename later."
-msgstr "Cada una se convierte en una cuenta que puedes renombrar después."
 
 #: src/budget/hooks/use-budget-day-strip-labels.hook.ts
 msgid "Each week against your {allowanceLabel} weekly allowance"
@@ -3591,6 +3592,10 @@ msgstr "Borra todo en Budgie. No se puede deshacer."
 #: src/rule/constant/external-source.constant.ts
 msgid "Erste"
 msgstr "Erste"
+
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Erste (PDF) or Privatbank (XLSX), read on this phone."
+msgstr "Erste (PDF) o Privatbank (XLSX), se lee en este teléfono."
 
 #: src/app/(main)/create-account/index.tsx
 msgid "Erste Bank"
@@ -6010,10 +6015,6 @@ msgstr "Resincronizar transacciones"
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "Read on this phone"
 msgstr "Leído en este teléfono"
-
-#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
-msgid "Read on this phone. Delete it after."
-msgstr "Se lee en este teléfono. Bórralo después."
 
 #: src/receipt/components/receipt-scan-toast/receipt-scan-toast.tsx
 msgid "Reading receipt"

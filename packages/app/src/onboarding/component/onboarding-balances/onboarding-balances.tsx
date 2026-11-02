@@ -104,7 +104,7 @@ export const OnboardingBalances = () => {
     const isStatementImported = isPositiveNumber(statementAccountCount);
     const statementIcon = isStatementImported ? UserIconNameEnum.CircleCheck : UserIconNameEnum.FileText;
     const statementIconClassName = isStatementImported ? 'text-positive-foreground' : 'text-secondary-foreground';
-    const statementTitle = isStatementImported ? t`Statement imported` : t`A bank statement (PDF or XLSX)`;
+    const statementTitle = isStatementImported ? t`Statement imported` : t`Bank statement`;
     const statementDescription = isStatementImported
         ? t({
               message: plural(statementAccountCount, {
@@ -112,7 +112,7 @@ export const OnboardingBalances = () => {
                   other: '# accounts. Balances come from the statement.'
               })
           })
-        : t`Read on this phone. Delete it after.`;
+        : t`Erste (PDF) or Privatbank (XLSX), read on this phone.`;
     const isSaveDisabled = !isNotEmptyArray(enteredBalances) && !isMonobankConnected && !isStatementImported;
     const saveLabel = isSaveDisabled ? t`Enter a balance to save` : t`Save balances`;
 
