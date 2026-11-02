@@ -1,4 +1,5 @@
 import { expect } from 'e2e';
+import { scrollToCentre } from './accounts.ts';
 import { byId, byText, expectId, fillId, openLink, scrollTo, selectCategoryBySearch, sleep, tapId, type Ctx } from './core.ts';
 import { retry } from './transactions.ts';
 
@@ -28,7 +29,8 @@ export async function fillAmount(ctx: Ctx, testId: string, value: string): Promi
 
 /** The budget setup's overall limit: scroll to it, type it. */
 export async function setOverallLimit(ctx: Ctx, value: string): Promise<void> {
-  await scrollTo(ctx, 'BudgetSetup.OverallLimitInput');
+  // Centred first: at the bottom edge the field's tap lands on the Save footer and saves the budget early.
+  await scrollToCentre(ctx, 'BudgetSetup.OverallLimitInput');
   await fillAmount(ctx, 'BudgetSetup.OverallLimitInput', value);
   await endAmountEditing(ctx);
 }
