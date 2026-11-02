@@ -33,6 +33,7 @@ export const InstitutionConnectionRow = ({ syncs }: Props) => {
     }
 
     const isKeyRejectedStatus = status === BankIntegrationSyncStatusEnum.KEY_REJECTED;
+    const icon = isKeyRejectedStatus ? UserIconNameEnum.KeyRound : UserIconNameEnum.CircleAlert;
     const title = isKeyRejectedStatus ? t`Update access key` : t`Review connection`;
     const lastSyncedAt = getLatestForwardSyncedAt(syncs);
     const lastSyncedTime = isDefined(lastSyncedAt) ? formatSyncTime(lastSyncedAt) : null;
@@ -48,7 +49,7 @@ export const InstitutionConnectionRow = ({ syncs }: Props) => {
         <GroupedListSection>
             <SettingsRow
                 title={title}
-                icon={UserIconNameEnum.Settings}
+                icon={icon}
                 variant="destructive"
                 subtitle={subtitle}
                 right={<SettingsRowAccessory />}
