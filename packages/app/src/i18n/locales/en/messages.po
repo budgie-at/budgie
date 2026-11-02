@@ -372,12 +372,24 @@ msgid "{fieldLabel} matches {value}"
 msgstr "{fieldLabel} matches {value}"
 
 #: src/import/utils/get-import-match-description.util.ts
-msgid "{fields} matched from sample values"
-msgstr "{fields} matched from sample values"
+#~ msgid "{fields} matched from sample values"
+#~ msgstr "{fields} matched from sample values"
 
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "{fileSize} · Stored only on this device"
 msgstr "{fileSize} · Stored only on this device"
+
+#: src/import/utils/get-import-match-description.util.ts
+msgid "{first} and {second} matched from sample values"
+msgstr "{first} and {second} matched from sample values"
+
+#: src/import/utils/get-import-match-description.util.ts
+msgid "{first} matched from sample values"
+msgstr "{first} matched from sample values"
+
+#: src/import/utils/get-import-match-description.util.ts
+msgid "{first}, {second} and {third} matched from sample values"
+msgstr "{first}, {second} and {third} matched from sample values"
 
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "{firstMonth}–{lastMonth}"
@@ -2035,7 +2047,7 @@ msgstr "Categories ({selectedCategoriesCount})"
 msgid "Categories break your spending down automatically. Add a transaction, or choose another period."
 msgstr "Categories break your spending down automatically. Add a transaction, or choose another period."
 
-#: src/app/(tabs)/settings/ai-features.tsx
+#: src/ai/component/ai-unavailable-section/ai-unavailable-section.tsx
 msgid "Categories still use on-device rules."
 msgstr "Categories still use on-device rules."
 
@@ -5237,7 +5249,7 @@ msgid "Not all of your bank history is imported yet"
 msgstr "Not all of your bank history is imported yet"
 
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
-#: src/app/(tabs)/settings/ai-features.tsx
+#: src/ai/component/ai-unavailable-section/ai-unavailable-section.tsx
 msgid "Not available in this version"
 msgstr "Not available in this version"
 
@@ -7015,7 +7027,7 @@ msgid "Statement imported"
 msgstr "Statement imported"
 
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
-#: src/app/(tabs)/settings/ai-features.tsx
+#: src/ai/component/ai-unavailable-section/ai-unavailable-section.tsx
 msgid "Status"
 msgstr "Status"
 

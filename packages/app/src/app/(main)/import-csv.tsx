@@ -71,7 +71,7 @@ const IMPORT_COLUMN_SECTIONS = [
 export default function ImportScreen() {
     const { fileUri } = useLocalSearchParams<{ fileUri?: string }>();
 
-    const { t, i18n } = useLingui();
+    const { t } = useLingui();
     const { bottom } = useSafeAreaInsets();
 
     const csvAtom = importCsvAtom(isNotEmptyString(fileUri) ? fileUri : null);
@@ -179,7 +179,7 @@ export default function ImportScreen() {
     const missingFieldLabels = missingRequiredFields.map(({ label }) => t(label)).join(', ');
     const accessibilityHint = isPositiveNumber(unmappedRequiredCount) ? t`Choose columns for ${missingFieldLabels}` : '';
     const buttonClassName = isImportDisabled ? 'opacity-30' : '';
-    const matchDescription = getImportMatchDescription(matchImportColumns(headers), sampleMatchedColumns, t, i18n.locale);
+    const matchDescription = getImportMatchDescription(matchImportColumns(headers), sampleMatchedColumns, t);
     const footerStyle = { marginBottom: -bottom, paddingBottom: bottom + 12 };
     const buttonContent = isPositiveNumber(unmappedRequiredCount)
         ? t({ message: plural(unmappedRequiredCount, { one: 'Match # required field', other: 'Match # required fields' }) })

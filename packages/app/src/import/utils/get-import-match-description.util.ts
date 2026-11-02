@@ -8,8 +8,7 @@ import type { useLingui } from '@lingui/react/macro';
 export const getImportMatchDescription = (
     namedColumns: ImportColumnMapFormValues,
     sampleColumns: Partial<ImportColumnMapFormValues>,
-    t: ReturnType<typeof useLingui>['t'],
-    locale: string
+    t: ReturnType<typeof useLingui>['t']
 ): string => {
     const sampleFields = [
         { header: sampleColumns.operatedAt, label: msg`Date`, continuation: msg`date` },
@@ -26,9 +25,15 @@ export const getImportMatchDescription = (
         return t(msg`Matched by column name and sample values`);
     }
 
-    const fields = new Intl.ListFormat(locale, { style: 'long', type: 'conjunction' }).format(
-        sampleFields.map(({ label, continuation }, index) => t(index === 0 ? label : continuation))
-    );
+    const [first, second, third] = sampleFields.map(({ label, continuation }, index) => t(index === 0 ? label : continuation));
 
-    return t(msg`${fields} matched from sample values`);
+    if (isNotEmptyString(third)) {
+        return t(msg`${first}, ${second} and ${third} matched from sample values`);
+    }
+
+    if (isNotEmptyString(second)) {
+        return t(msg`${first} and ${second} matched from sample values`);
+    }
+
+    return t(msg`${first} matched from sample values`);
 };

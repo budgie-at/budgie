@@ -371,12 +371,24 @@ msgid "{fieldLabel} matches {value}"
 msgstr "{fieldLabel} відповідає {value}"
 
 #: src/import/utils/get-import-match-description.util.ts
-msgid "{fields} matched from sample values"
-msgstr ""
+#~ msgid "{fields} matched from sample values"
+#~ msgstr ""
 
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "{fileSize} · Stored only on this device"
 msgstr "{fileSize} · Зберігається лише на цьому пристрої"
+
+#: src/import/utils/get-import-match-description.util.ts
+msgid "{first} and {second} matched from sample values"
+msgstr ""
+
+#: src/import/utils/get-import-match-description.util.ts
+msgid "{first} matched from sample values"
+msgstr ""
+
+#: src/import/utils/get-import-match-description.util.ts
+msgid "{first}, {second} and {third} matched from sample values"
+msgstr ""
 
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "{firstMonth}–{lastMonth}"
@@ -2034,7 +2046,7 @@ msgstr "Категорії ({selectedCategoriesCount})"
 msgid "Categories break your spending down automatically. Add a transaction, or choose another period."
 msgstr "Категорії автоматично розподіляють ваші витрати. Додайте транзакцію або виберіть інший період."
 
-#: src/app/(tabs)/settings/ai-features.tsx
+#: src/ai/component/ai-unavailable-section/ai-unavailable-section.tsx
 msgid "Categories still use on-device rules."
 msgstr "Категорії й далі використовують правила на пристрої."
 
@@ -5236,7 +5248,7 @@ msgid "Not all of your bank history is imported yet"
 msgstr "Ще не вся історія з банку імпортована"
 
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
-#: src/app/(tabs)/settings/ai-features.tsx
+#: src/ai/component/ai-unavailable-section/ai-unavailable-section.tsx
 msgid "Not available in this version"
 msgstr "Недоступно в цій версії"
 
@@ -7014,7 +7026,7 @@ msgid "Statement imported"
 msgstr "Виписку імпортовано"
 
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
-#: src/app/(tabs)/settings/ai-features.tsx
+#: src/ai/component/ai-unavailable-section/ai-unavailable-section.tsx
 msgid "Status"
 msgstr "Статус"
 

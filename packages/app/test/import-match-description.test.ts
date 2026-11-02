@@ -16,14 +16,14 @@ describe('import match description', () => {
     it('leaves unmatched files without a match claim', () => {
         const translate = vi.fn<(descriptor: MacroMessageDescriptor | TemplateStringsArray) => string>();
 
-        expect(getImportMatchDescription(matchImportColumns(['Unknown']), {}, translate, 'en')).toBe('');
+        expect(getImportMatchDescription(matchImportColumns(['Unknown']), {}, translate)).toBe('');
         expect(translate).not.toHaveBeenCalled();
     });
 
     it('describes column-name matches without claiming sample inference', () => {
         const translate = vi.fn<(descriptor: MacroMessageDescriptor | TemplateStringsArray) => string>().mockReturnValue('translated');
 
-        getImportMatchDescription(matchImportColumns(['Account', 'Date', 'Amount']), {}, translate, 'en');
+        getImportMatchDescription(matchImportColumns(['Account', 'Date', 'Amount']), {}, translate);
 
         expect(translate).toHaveBeenLastCalledWith({ message: 'Matched by column name' });
     });
@@ -31,25 +31,21 @@ describe('import match description', () => {
     it('describes mixed name and sample matches', () => {
         const translate = vi.fn<(descriptor: MacroMessageDescriptor | TemplateStringsArray) => string>().mockReturnValue('translated');
 
-        getImportMatchDescription(matchImportColumns(['Account', 'When']), { operatedAt: 'When' }, translate, 'en');
+        getImportMatchDescription(matchImportColumns(['Account', 'When']), { operatedAt: 'When' }, translate);
 
         expect(translate).toHaveBeenLastCalledWith({ message: 'Matched by column name and sample values' });
     });
 
-    it.each([
-        ['en', 'Date and amount'],
-        ['de', 'Date und amount'],
-        ['es', 'Date y amount']
-    ])('lists sample-only fields using the active %s locale', (locale, fields) => {
+    it('lists sample-only fields with a translated conjunction', () => {
         const translate = vi
             .fn<(descriptor: MacroMessageDescriptor | TemplateStringsArray) => string>()
             .mockReturnValueOnce('Date')
             .mockReturnValueOnce('amount')
             .mockReturnValue('translated');
 
-        getImportMatchDescription(matchImportColumns(['When', 'Value']), { operatedAt: 'When', toAmount: 'Value' }, translate, locale);
+        getImportMatchDescription(matchImportColumns(['When', 'Value']), { operatedAt: 'When', toAmount: 'Value' }, translate);
 
-        expect(translate).toHaveBeenLastCalledWith({ message: `${fields} matched from sample values` });
+        expect(translate).toHaveBeenLastCalledWith({ message: 'Date and amount matched from sample values' });
     });
 
     it('uses a capitalized label for a single sample-only field', () => {
@@ -58,7 +54,7 @@ describe('import match description', () => {
             .mockReturnValueOnce('Currency')
             .mockReturnValue('translated');
 
-        getImportMatchDescription(matchImportColumns(['Unit']), { toCurrency: 'Unit' }, translate, 'en');
+        getImportMatchDescription(matchImportColumns(['Unit']), { toCurrency: 'Unit' }, translate);
 
         expect(translate).toHaveBeenLastCalledWith({ message: 'Currency matched from sample values' });
     });
