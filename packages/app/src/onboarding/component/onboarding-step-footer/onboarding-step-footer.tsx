@@ -11,6 +11,7 @@ interface Props {
 }
 
 const HIDDEN_EDGE_FADE_PROPS = { style: { display: 'none' } } as const;
+const IN_FLOW_STYLE = { position: 'relative' } as const;
 
 export const OnboardingStepFooter = ({ children }: Props) => {
     const { height, progress } = useReanimatedKeyboardAnimation();
@@ -19,7 +20,7 @@ export const OnboardingStepFooter = ({ children }: Props) => {
 
     return (
         <Animated.View className="absolute inset-x-0 bottom-0" style={keyboardStyle} pointerEvents="box-none">
-            <ScreenChromeFooter includeBottomSafeArea={false} edgeFadeProps={HIDDEN_EDGE_FADE_PROPS}>
+            <ScreenChromeFooter includeBottomSafeArea={false} edgeFadeProps={HIDDEN_EDGE_FADE_PROPS} style={IN_FLOW_STYLE}>
                 <View className="gap-y-xs border-t-hairline border-surface-separator bg-surface px-5xl pt-lg pb-safe-offset-[8px]">
                     {children}
                 </View>
