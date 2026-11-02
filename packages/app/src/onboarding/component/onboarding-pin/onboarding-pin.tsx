@@ -1,13 +1,16 @@
 import { useLingui } from '@lingui/react/macro';
-import { ImpactFeedbackStyle, NotificationFeedbackType } from 'expo-haptics';
 import { useReducer } from 'react';
 import { View } from 'react-native';
 
-import { Button } from '../../../@generic/component/button/button';
+import { isNotEmptyString } from '@rnw-community/shared';
+
 import { FullPage } from '../../../@generic/component/page/full-page';
-import { useVibration } from '../../../@generic/hook/use-vibration.hook';
+import { PinForgottenWarning } from '../../../auth/components/pin-forgotten-warning/pin-forgotten-warning';
+import { PinFormHeader } from '../../../auth/components/pin-form-header/pin-form-header';
 import { PinForm } from '../../../auth/components/pin-form/pin-form';
+import { PinRestartButton } from '../../../auth/components/pin-restart-button/pin-restart-button';
 import { PIN_LENGTH } from '../../../auth/constant/pin-length.constant';
+import { PinFormStatusEnum } from '../../../auth/enum/pin-form-status.enum';
 import { useOnboardingPinContext } from '../../context/onboarding-pin.context';
 import { OnboardingPinActionTypeEnum } from '../../enum/onboarding-pin-action-type.enum';
 import { OnboardingPinPhaseEnum } from '../../enum/onboarding-pin-phase.enum';
@@ -30,27 +33,24 @@ export const OnboardingPin = () => {
 
     const { setPin } = useOnboardingPinContext();
     const { goToStep, goBack } = useOnboardingNavigation();
-    const [hapticNotification, hapticImpact] = useVibration();
 
     const restartEntry = (nextPhase: OnboardingPinPhaseEnum, nextFirstPin: string) => {
         dispatch({ type: OnboardingPinActionTypeEnum.ENTRY_RESTARTED, phase: nextPhase, firstPin: nextFirstPin });
     };
 
     const submit = (pin: string) => {
-        if (phase !== OnboardingPinPhaseEnum.CONFIRM) {
+        if (phase === OnboardingPinPhaseEnum.CREATE) {
             restartEntry(OnboardingPinPhaseEnum.CONFIRM, pin);
 
             return;
         }
 
         if (pin !== firstPin) {
-            hapticNotification(NotificationFeedbackType.Error);
-            restartEntry(OnboardingPinPhaseEnum.MISMATCH, '');
+            restartEntry(OnboardingPinPhaseEnum.MISMATCH, firstPin);
 
             return;
         }
 
-        hapticNotification(NotificationFeedbackType.Success);
         setPin(pin);
         restartEntry(OnboardingPinPhaseEnum.CREATE, '');
         goToStep(OnboardingStepEnum.SEAL);
@@ -61,7 +61,6 @@ export const OnboardingPin = () => {
             return;
         }
 
-        hapticImpact(ImpactFeedbackStyle.Light);
         const nextInput = input + digit;
         dispatch({ type: OnboardingPinActionTypeEnum.DIGIT_ENTERED, digit });
 
@@ -71,48 +70,36 @@ export const OnboardingPin = () => {
     };
 
     const handleDeletePress = () => void dispatch({ type: OnboardingPinActionTypeEnum.DIGIT_DELETED });
-    const handleContinueWithoutPinPress = () => void goToStep(OnboardingStepEnum.PHONE_LOCK);
+    const handleChooseDifferentPinPress = () => void restartEntry(OnboardingPinPhaseEnum.CREATE, '');
 
     const isMismatch = phase === OnboardingPinPhaseEnum.MISMATCH;
-    const isConfirm = phase === OnboardingPinPhaseEnum.CONFIRM;
+    const isConfirming = phase !== OnboardingPinPhaseEnum.CREATE;
     const fileState = isMismatch ? t`Didn't match` : t`Waiting for a key`;
-    const confirmTitle = isConfirm ? t`Enter it once more` : t`Choose a PIN`;
-    const title = isMismatch ? t`Those didn't match` : confirmTitle;
-    const confirmDescription = isConfirm
-        ? t`Type the same PIN again to make sure it's the one you meant.`
-        : t`It will encrypt everything you put in Budgie. Pick one you'll remember but others won't guess.`;
-    const description = isMismatch
-        ? t`Enter your new PIN again from the start. Take your time: this is the one you'll need to remember.`
-        : confirmDescription;
-    const error = isMismatch ? t`Start again with your new PIN` : null;
+    const title = isConfirming ? t`Confirm your PIN` : t`Choose a PIN`;
+    const description = isConfirming
+        ? t`Enter the same PIN again.`
+        : t`It encrypts everything in Budgie. Pick one you'll remember but others won't guess.`;
+    const error = isMismatch && !isNotEmptyString(input) ? t`PINs don't match. Try again.` : null;
+    const handleBack = isConfirming ? handleChooseDifferentPinPress : goBack;
+    const pinFormFooter = isConfirming ? <PinRestartButton onPress={handleChooseDifferentPinPress} /> : <PinForgottenWarning />;
 
     return (
         <FullPage
             testID={OnboardingPinSelector.Root}
             className="bg-background"
-            header={<OnboardingStepHeader fileState={fileState} isFileSealed={false} isBackVisible onBack={goBack} />}
+            header={<OnboardingStepHeader fileState={fileState} isFileSealed={false} isBackVisible onBack={handleBack} />}
         >
             <View className="flex-1 px-xl">
                 <PinForm
-                    title={title}
-                    description={description}
+                    header={<PinFormHeader title={title} description={description} />}
                     currentInput={input}
                     error={error}
-                    isLoading={false}
+                    status={PinFormStatusEnum.READY}
                     onDigitPress={handleDigitPress}
                     onDeletePress={handleDeletePress}
+                    footer={pinFormFooter}
                 />
             </View>
-
-            {isMismatch ? (
-                <Button
-                    testID={OnboardingPinSelector.ContinueWithoutPinButton}
-                    variant="ghost"
-                    content={t`Continue without a PIN`}
-                    onPress={handleContinueWithoutPinPress}
-                    className="mb-5xl"
-                />
-            ) : null}
         </FullPage>
     );
 };

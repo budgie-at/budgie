@@ -225,6 +225,7 @@ export const RootLayoutContent = () => {
                                                                         options={formSheetOptions([0.75, DETENT_95])}
                                                                     />
                                                                     <Stack.Screen name="import-backup-pin" options={PIN_OPTIONS} />
+                                                                    <Stack.Screen name="pin-setup" />
                                                                     <Stack.Screen name="add-pin" options={sheetOptions} />
                                                                     <Stack.Screen
                                                                         name="transaction-type-filter"
