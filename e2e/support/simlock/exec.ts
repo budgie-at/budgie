@@ -23,7 +23,9 @@ export interface ExecResult {
 export function simlockApiFromEnv(env: NodeJS.ProcessEnv = process.env): SimlockApi {
     const url = env.SIMLOCK_URL;
     const token = env.SIMLOCK_TOKEN;
-    if (!url || !token) throw new Error('SIMLOCK_URL and SIMLOCK_TOKEN are required');
+    if (!url || !token) {
+        throw new Error('SIMLOCK_URL and SIMLOCK_TOKEN are required');
+    }
     return { url, token };
 }
 
@@ -34,9 +36,11 @@ async function call(api: SimlockApi, path: string, init: RequestInit = {}): Prom
     const response = await fetch(`${api.url.replace(/\/$/, '')}${path}`, {
         signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
         ...init,
-        headers: { authorization: `Bearer ${api.token}`, 'content-type': 'application/json', ...(init.headers ?? {}) }
+        headers: { authorization: `Bearer ${api.token}`, 'content-type': 'application/json', ...init.headers }
     });
-    if (!response.ok) throw new Error(`simlock ${init.method ?? 'GET'} ${path} answered ${response.status}: ${await response.text()}`);
+    if (!response.ok) {
+        throw new Error(`simlock ${init.method ?? 'GET'} ${path} answered ${response.status}: ${await response.text()}`);
+    }
     return response;
 }
 
@@ -44,9 +48,13 @@ async function call(api: SimlockApi, path: string, init: RequestInit = {}): Prom
 export async function leaseIdForUdid(api: SimlockApi, udid: string): Promise<string> {
     const body = (await (await call(api, '/v1/leases')).json()) as { leases: Record<string, unknown>[] };
     for (const lease of body.leases) {
-        if (JSON.stringify(lease).includes(udid)) return String(lease.id);
+        if (JSON.stringify(lease).includes(udid)) {
+            return String(lease.id);
+        }
         const detail = await (await call(api, `/v1/leases/${String(lease.id)}`)).text();
-        if (detail.includes(udid)) return String(lease.id);
+        if (detail.includes(udid)) {
+            return String(lease.id);
+        }
     }
     throw new Error(`no simlock lease of this token holds ${udid} (${body.leases.length} leases)`);
 }
@@ -61,7 +69,9 @@ export async function exec(api: SimlockApi, leaseId: string, args: readonly stri
             break;
         } catch (cause) {
             // A gateway's worker uplink can drop and reconnect within a second; every command the suite sends is idempotent.
-            if (attempt === 3 || !String(cause).includes('WORKER_UNREACHABLE')) throw cause;
+            if (attempt === 3 || !String(cause).includes('WORKER_UNREACHABLE')) {
+                throw cause;
+            }
             await new Promise(resolve => setTimeout(resolve, 2_000 * attempt));
         }
     }
@@ -72,8 +82,9 @@ export async function exec(api: SimlockApi, leaseId: string, args: readonly stri
     let sawExit = false;
     let event = '';
     for (const line of text.split('\n')) {
-        if (line.startsWith('event: ')) event = line.slice(7).trim();
-        else if (line.startsWith('data: ')) {
+        if (line.startsWith('event: ')) {
+            event = line.slice(7).trim();
+        } else if (line.startsWith('data: ')) {
             const data = JSON.parse(line.slice(6)) as {
                 stream?: string;
                 chunk?: string;
@@ -82,23 +93,31 @@ export async function exec(api: SimlockApi, leaseId: string, args: readonly stri
                 message?: string;
             };
             if (event === 'output') {
-                if (data.stream === 'stderr') stderr += data.chunk ?? '';
-                else stdout += data.chunk ?? '';
+                if (data.stream === 'stderr') {
+                    stderr += data.chunk ?? '';
+                } else {
+                    stdout += data.chunk ?? '';
+                }
             } else if (event === 'exit') {
                 exitCode = data.exitCode ?? -1;
                 sawExit = true;
-            } else if (event === 'error')
+            } else if (event === 'error') {
                 throw new Error(`simlock exec ${args.slice(0, 2).join(' ')} failed: ${data.code} ${data.message}`);
+            }
         }
     }
     // A stream cut off before its exit event says nothing about the command: never a result.
-    if (!sawExit) throw new Error(`simlock exec ${args.slice(0, 2).join(' ')} ended without an exit status (stream cut off)`);
+    if (!sawExit) {
+        throw new Error(`simlock exec ${args.slice(0, 2).join(' ')} ended without an exit status (stream cut off)`);
+    }
     return { exitCode, stdout, stderr };
 }
 
 export async function mustExec(api: SimlockApi, leaseId: string, args: readonly string[], stdin?: string): Promise<string> {
     const result = await exec(api, leaseId, args, stdin);
-    if (result.exitCode !== 0) throw new Error(`simctl ${args.slice(0, 3).join(' ')} exited ${result.exitCode}: ${result.stderr.trim()}`);
+    if (result.exitCode !== 0) {
+        throw new Error(`simctl ${args.slice(0, 3).join(' ')} exited ${result.exitCode}: ${result.stderr.trim()}`);
+    }
     return result.stdout;
 }
 
@@ -137,7 +156,9 @@ export async function drop(api: SimlockApi, leaseId: string, args: readonly stri
 
 export async function mustDrop(api: SimlockApi, leaseId: string, args: readonly string[], payload?: Buffer): Promise<string> {
     const result = await drop(api, leaseId, args, payload);
-    if (result.exitCode !== 0) throw new Error(`e2e-drop ${args[0]} exited ${result.exitCode}: ${result.stderr.trim()}`);
+    if (result.exitCode !== 0) {
+        throw new Error(`e2e-drop ${args[0]} exited ${result.exitCode}: ${result.stderr.trim()}`);
+    }
     return result.stdout;
 }
 

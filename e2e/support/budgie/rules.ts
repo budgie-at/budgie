@@ -32,8 +32,12 @@ export async function openCreateRuleForm(ctx: Ctx): Promise<void> {
 export async function submitRuleSkipExisting(ctx: Ctx): Promise<void> {
     await tapId(ctx, 'RuleForm.Footer.SubmitButton');
     const ask = byText(ctx.screen, 'Apply to existing transactions?');
-    if (!(await ask.isVisible())) await sleep(800);
-    if (await ask.isVisible()) await ctx.screen.getByText('Skip').last().tap();
+    if (!(await ask.isVisible())) {
+        await sleep(800);
+    }
+    if (await ask.isVisible()) {
+        await ctx.screen.getByText('Skip').last().tap();
+    }
     await expectId(ctx, 'RulesPage.Page', 10_000);
 }
 
@@ -54,14 +58,18 @@ export async function deleteFirstRule(ctx: Ctx): Promise<void> {
     for (let attempt = 1; ; attempt++) {
         await sleep(600);
         const box = await card.boundingBox();
-        if (box === null) throw new Error('RulesPage.RuleCard.0 has no bounds');
+        if (box === null) {
+            throw new Error('RulesPage.RuleCard.0 has no bounds');
+        }
         const y = box.y + box.height / 2;
         await screen.swipe({ from: { x: box.x + box.width / 2, y }, to: { x: box.x + 8, y }, duration: 300 });
         try {
             await expect(action).toBeVisible({ timeout: 3_000 });
             break;
         } catch (cause) {
-            if (attempt === 3) throw cause;
+            if (attempt === 3) {
+                throw cause;
+            }
             console.log(`[retry] swipe-to-delete attempt ${attempt} revealed no delete action`);
         }
     }
@@ -74,7 +82,9 @@ export async function deleteFirstRule(ctx: Ctx): Promise<void> {
 /** The `[ card, conditions, actions ]` assertions the rules flows repeat after each save. */
 export async function expectRuleCard(ctx: Ctx, index = 0, full = true): Promise<void> {
     await expectId(ctx, `RulesPage.RuleCard.${index}`);
-    if (!full) return;
+    if (!full) {
+        return;
+    }
     await expectId(ctx, `RulesPage.RuleCardConditions.${index}`);
     await expectId(ctx, `RulesPage.RuleCardActions.${index}`);
 }
@@ -96,8 +106,12 @@ export async function pick(ctx: Ctx, opener: string, option: string): Promise<vo
 export async function openActionCategorySelector(ctx: Ctx, index = 0): Promise<void> {
     const input = byId(ctx.screen, 'CategoryPickerBottomSheet.Input');
     await tapId(ctx, `RuleForm.Action.${index}.CategorySelector`);
-    if (!(await input.isVisible())) await sleep(800);
-    if (await input.isVisible()) return;
+    if (!(await input.isVisible())) {
+        await sleep(800);
+    }
+    if (await input.isVisible()) {
+        return;
+    }
     await tapId(ctx, `RuleForm.Action.${index}.CategorySelector.Value`);
     await expect(input).toBeVisible({ timeout: 5_000 });
 }
@@ -164,7 +178,9 @@ export async function createSuggestedRuleFromTransaction(
 /** A raw finger drag up from `testId`'s centre (300 pt): moves the rule form, which ignores synthesized scrolls. */
 async function dragUp(ctx: Ctx, testId: string, distance = 300): Promise<void> {
     const box = await byId(ctx.screen, testId).boundingBox();
-    if (box === null) throw new Error(`${testId} has no bounds`);
+    if (box === null) {
+        throw new Error(`${testId} has no bounds`);
+    }
     const from = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
     await ctx.screen.swipe({ from, to: { x: from.x, y: Math.max(from.y - distance, 80) }, duration: 400 });
     await sleep(400);

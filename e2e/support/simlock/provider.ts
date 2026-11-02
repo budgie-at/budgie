@@ -131,8 +131,9 @@ export function simlockDevices(options: SimlockOptions): DeviceProvider {
         );
         timer.unref();
         try {
-            if (udid === undefined)
+            if (udid === undefined) {
                 throw new Error(`simlock lease ${lease.leaseId} names no device (deviceKey ${String(lease.deviceKey)})`);
+            }
             request.signal.throwIfAborted();
             let installedApp: string | undefined;
             const scoped = createAgentDeviceClient({ daemonBaseUrl: baseUrl, daemonAuthToken: options.token, session, ...scope });
@@ -149,7 +150,9 @@ export function simlockDevices(options: SimlockOptions): DeviceProvider {
                 installedApp = request.app;
                 request.log(`simlock uploaded and installed ${installedApp} in ${Date.now() - installStarted} ms`);
             }
-            for (const extra of options.extraApps ?? []) await install(extra);
+            for (const extra of options.extraApps ?? []) {
+                await install(extra);
+            }
             const entry: Held = {
                 id: lease.leaseId,
                 daemon: { baseUrl: (await startRelay()).baseUrl, authToken: options.token },
@@ -174,13 +177,17 @@ export function simlockDevices(options: SimlockOptions): DeviceProvider {
     return {
         name: 'simlock',
         async acquire(request: DeviceRequest): Promise<DeviceLease> {
-            if (request.platform !== 'ios') throw new Error(`simlockDevices leases iOS simulators, not ${request.platform}`);
+            if (request.platform !== 'ios') {
+                throw new Error(`simlockDevices leases iOS simulators, not ${request.platform}`);
+            }
             try {
                 return await leaseOnce(request, 0);
             } catch (cause) {
                 // One bad simulator must not fail the whole run: its lease is already released,
                 // so lease another device, once. A second failure is the farm's, and is reported.
-                if (!(cause instanceof DeviceSetupFailed)) throw cause;
+                if (!(cause instanceof DeviceSetupFailed)) {
+                    throw cause;
+                }
                 request.signal.throwIfAborted();
                 request.log(`simlock: ${cause.message}; leasing another device`);
                 return leaseOnce(request, 1);
@@ -188,13 +195,20 @@ export function simlockDevices(options: SimlockOptions): DeviceProvider {
         },
         async release(lease: DeviceLease, context): Promise<void> {
             const entry = held.get(lease.id);
-            if (entry === undefined) return;
+            if (entry === undefined) {
+                return;
+            }
             entry.stop();
-            await client(`release-${lease.id.slice(0, 8)}`).leases.release({ ...entry.scope, signal: context.signal });
-            held.delete(lease.id);
-            if (held.size === 0 && relay !== undefined) {
-                await (await relay).close();
-                relay = undefined;
+            try {
+                await client(`release-${lease.id.slice(0, 8)}`).leases.release({ ...entry.scope, signal: context.signal });
+            } finally {
+                // A failed release still frees this process: the farm reclaims the lease after one TTL.
+                held.delete(lease.id);
+                if (held.size === 0 && relay !== undefined) {
+                    const closing = relay;
+                    relay = undefined;
+                    await (await closing).close();
+                }
             }
         }
     };

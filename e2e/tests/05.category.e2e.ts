@@ -11,7 +11,9 @@ test('05 category', { tags: ['categories'] }, async ({ budgie }) => {
     const nameAndSubmit = async (name: string, clear = false) => {
         const input = id('CategoryForm.Input');
         await input.tap();
-        if (clear) await input.clear();
+        if (clear) {
+            await input.clear();
+        }
         await input.fill(name);
         try {
             await input.press('Enter');

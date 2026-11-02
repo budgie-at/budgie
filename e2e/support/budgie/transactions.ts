@@ -12,7 +12,9 @@ export async function retry(retries: number, body: (attempt: number) => Promise<
             await body(attempt);
             return;
         } catch (cause) {
-            if (attempt > retries) throw cause;
+            if (attempt > retries) {
+                throw cause;
+            }
             console.log(`[retry] attempt ${attempt} failed: ${(cause as Error).message.split('\n')[0]}`);
         }
     }
@@ -29,8 +31,11 @@ async function tapUntilId(ctx: Ctx, testId: string, targetId: string, retries = 
 /** Taps keypad digits in order (`'42'` taps 4 then 2). */
 export async function typeDigits(ctx: Ctx, digits: string): Promise<void> {
     for (const digit of digits) {
-        if (digit === '.') await ctx.screen.getByRole('button', { name: '.' }).first().tap();
-        else await tapId(ctx, `TransactionKeypad.Digit.${digit}`);
+        if (digit === '.') {
+            await ctx.screen.getByRole('button', { name: '.' }).first().tap();
+        } else {
+            await tapId(ctx, `TransactionKeypad.Digit.${digit}`);
+        }
     }
 }
 
@@ -49,7 +54,9 @@ export async function navigateToTransactions(ctx: Ctx): Promise<void> {
 export async function openActionMenu(ctx: Ctx, actionItemId = 'ActionItem.Expense'): Promise<void> {
     const item = byId(ctx.screen, `${actionItemId}.Label`);
     await retry(1, async () => {
-        if (!(await item.isVisible())) await tapId(ctx, 'ActionButton');
+        if (!(await item.isVisible())) {
+            await tapId(ctx, 'ActionButton');
+        }
         await expect(item).toBeVisible({ timeout: 3_000 });
     });
 }
@@ -62,7 +69,9 @@ export async function openTransactionForm(ctx: Ctx, actionItemId: string, formTi
     try {
         await expect(title).toBeVisible({ timeout: 5_000 });
     } catch {
-        if (await byId(ctx.screen, `${actionItemId}.Label`).isVisible()) await tapId(ctx, `${actionItemId}.Label`);
+        if (await byId(ctx.screen, `${actionItemId}.Label`).isVisible()) {
+            await tapId(ctx, `${actionItemId}.Label`);
+        }
         await expect(title).toBeVisible();
     }
     await expectId(ctx, 'TransactionKeypad.Digit.1');
@@ -73,7 +82,9 @@ export async function selectAccount(ctx: Ctx, name: string): Promise<void> {
     const selected = ctx.screen.getByTestId(/^TransactionForm\.SelectedAccount\./).first();
     if (await selected.isVisible()) {
         const text = (await selected.textContent())?.trim();
-        if (text === name) return;
+        if (text === name) {
+            return;
+        }
     }
     await tapUntilId(ctx, 'TransactionForm.AccountSelector', 'AccountPickerBottomSheet.Input');
     await selectAccountBySearch(ctx, name);
@@ -105,7 +116,9 @@ export async function submitTransactionAndWait(ctx: Ctx): Promise<void> {
     try {
         await expect(list).toBeVisible({ timeout: 5_000 });
     } catch {
-        if (await byId(ctx.screen, 'TransactionForm.SubmitButton').isVisible()) await tapId(ctx, 'TransactionForm.SubmitButton');
+        if (await byId(ctx.screen, 'TransactionForm.SubmitButton').isVisible()) {
+            await tapId(ctx, 'TransactionForm.SubmitButton');
+        }
         await expect(list).toBeVisible({ timeout: 55_000 });
     }
 }
@@ -205,7 +218,9 @@ export async function selectSplitCategory(ctx: Ctx, entryIndex: number, category
     try {
         await expectNoId(ctx, 'CategoryPickerBottomSheet.Input', 5_000);
     } catch {
-        if (await card.isVisible()) await card.tap();
+        if (await card.isVisible()) {
+            await card.tap();
+        }
         await expectNoId(ctx, 'CategoryPickerBottomSheet.Input');
     }
 }
@@ -278,13 +293,17 @@ async function dismissSheetByDrag(ctx: Ctx, contentId: string): Promise<void> {
             await byId(screen, 'PopoverDismissRegion').tap({ position: { x: 200, y: 120 } });
         } else {
             const box = await grabber.boundingBox();
-            if (box === null) throw new Error('the sheet grabber has no bounds');
+            if (box === null) {
+                throw new Error('the sheet grabber has no bounds');
+            }
             const x = box.x + box.width / 2;
             const y = box.y + box.height / 2;
             try {
                 await screen.swipe({ from: { x, y }, to: { x, y: Math.min(y + 400, 860) }, duration: 250 });
             } catch (cause) {
-                if (attempt === 3) throw cause;
+                if (attempt === 3) {
+                    throw cause;
+                }
                 console.log(`[retry] sheet drag ${attempt} rejected: ${(cause as Error).message.split('\n')[0]}`);
                 keyboardUp = true;
                 continue;
@@ -294,7 +313,9 @@ async function dismissSheetByDrag(ctx: Ctx, contentId: string): Promise<void> {
             await expectNoId(ctx, contentId, 3_000);
             return;
         } catch (cause) {
-            if (attempt === 3) throw cause;
+            if (attempt === 3) {
+                throw cause;
+            }
             console.log(`[retry] sheet dismissal ${attempt} left ${contentId} on screen`);
         }
     }
@@ -325,7 +346,9 @@ export async function consolidateMatches(ctx: Ctx): Promise<void> {
 /** A point inside `locator` at fractions of its size, in the node's own coordinates (for `tap({ position })`, Maestro's `point: 'x%,y%'`). */
 async function relativePoint(locator: Locator, fx: number, fy: number): Promise<{ x: number; y: number }> {
     const box = await locator.boundingBox();
-    if (box === null) throw new Error('the node to tap has no bounds');
+    if (box === null) {
+        throw new Error('the node to tap has no bounds');
+    }
     return { x: Math.round(box.width * fx), y: Math.round(box.height * fy) };
 }
 

@@ -24,7 +24,9 @@ test('24 split transaction and analytics', { tags: ['transactions'] }, async ({ 
     const amount = async (index: number, value: string, clear = false) => {
         const field = id(`SplitEntryRow.Amount.${index}`);
         await field.tap();
-        if (clear) await field.clear();
+        if (clear) {
+            await field.clear();
+        }
         await field.fill(value);
     };
     const openSplitFromInfo = async () => {

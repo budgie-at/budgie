@@ -13,8 +13,9 @@ test('37 deposit lifecycle', { tags: ['accounts'] }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     const { screen } = ctx;
     const depositCard = async () => {
-        for (const row of ['Container', 'InterestRateRow', 'MaturityDateRow', 'DaysRemainingRow', 'ExpectedPayoutRow'])
+        for (const row of ['Container', 'InterestRateRow', 'MaturityDateRow', 'DaysRemainingRow', 'ExpectedPayoutRow']) {
             await b.expectId(ctx, `DepositDetailsCard.${row}`);
+        }
     };
     const home = async () => {
         await b.tapId(ctx, 'TabBar.Home');

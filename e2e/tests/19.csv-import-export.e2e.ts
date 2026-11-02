@@ -38,7 +38,9 @@ test('19 csv import export', { tags: ['import'] }, async ({ budgie }) => {
         await b.tapUntil(ctx, 'CsvPage.ExportCard', () => b.expectText(ctx, 'Save to Files', 15_000));
         await sec.dismissSaveToFilesSheet(ctx);
         await b.expectId(ctx, 'DataPage.Container', 5_000);
-        if (await b.byText(screen, 'Convert past amounts?').isVisible()) await screen.getByText('Cancel').last().tap();
+        if (await b.byText(screen, 'Convert past amounts?').isVisible()) {
+            await screen.getByText('Cancel').last().tap();
+        }
         await s.goHome(ctx);
     });
 

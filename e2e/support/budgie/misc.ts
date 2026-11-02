@@ -47,7 +47,9 @@ export async function shareFixtureWithApp(budgie: Budgie, fixture: string, mimeT
     const bytes = readFileSync(join(FIXTURES, fixture));
     const fileName = basename(fixture);
     const group = (await mustExec(api, lease, ['get_app_container', BUNDLE_ID, APP_GROUP])).trim();
-    if (!group.startsWith('/')) throw new Error(`unexpected app group container for ${APP_GROUP}: ${group}`);
+    if (!group.startsWith('/')) {
+        throw new Error(`unexpected app group container for ${APP_GROUP}: ${group}`);
+    }
     const target = `${group}/${randomUUID().toUpperCase()}.${fileName.split('.').pop()}`;
     const payload = Buffer.from(
         JSON.stringify([{ path: `file://${target}`, fileName, fileSize: bytes.length, mimeType, type: 2 }])

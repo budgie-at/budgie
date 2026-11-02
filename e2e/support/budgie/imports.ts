@@ -12,7 +12,9 @@ export async function importTestTransactions(ctx: Ctx, csvFixturesUri: string, n
     await expect(byId(ctx.screen, 'CsvPage.StartImportButton.Label')).toHaveText('Start Import');
     await tapUntil(ctx, 'CsvPage.StartImportButton.Label', () => expectNoId(ctx, 'ImportScreen.PresetChip.Budgie', 60_000));
     await navigateToTransactions(ctx);
-    if (expectedLabelId !== undefined) await expectId(ctx, expectedLabelId, 30_000);
+    if (expectedLabelId !== undefined) {
+        await expectId(ctx, expectedLabelId, 30_000);
+    }
 }
 
 /**
@@ -41,8 +43,12 @@ async function openE2EFixturesFullPath(ctx: Ctx, row: Locator): Promise<void> {
     const item = (name: string) => screen.getByTestId(folderId(name)).first();
     const inside = (title: string) => screen.getByTestId(new RegExp(`Title: ${quote(title)}$`)).first();
     for (let step = 0; step < 6; step++) {
-        if (await row.isVisible()) return;
-        if (await inside('E2EFixtures').isVisible()) return;
+        if (await row.isVisible()) {
+            return;
+        }
+        if (await inside('E2EFixtures').isVisible()) {
+            return;
+        }
         if (await byText(screen, /could not be displayed/).isVisible()) {
             await screen.getByRole('button', { name: 'Try Again' }).first().tap();
             await sleep(800);
@@ -67,7 +73,9 @@ async function openE2EFixturesFullPath(ctx: Ctx, row: Locator): Promise<void> {
             continue;
         }
         const back = byId(screen, 'BackButton');
-        if (!(await back.isVisible())) break;
+        if (!(await back.isVisible())) {
+            break;
+        }
         await back.tap();
         await sleep(800);
     }
@@ -83,10 +91,14 @@ async function openE2EFixturesFullPath(ctx: Ctx, row: Locator): Promise<void> {
  */
 async function centerPickerRow(ctx: Ctx, row: Locator, x: number, top: number, bottom: number): Promise<void> {
     const box = await row.boundingBox();
-    if (box === null) throw new Error('document picker: the row has no bounds');
+    if (box === null) {
+        throw new Error('document picker: the row has no bounds');
+    }
     const middle = (top + bottom) / 2;
     const shift = box.y + box.height / 2 - middle;
-    if (Math.abs(shift) < 120) return;
+    if (Math.abs(shift) < 120) {
+        return;
+    }
     const half = Math.min(Math.abs(shift), bottom - top - 40) / 2;
     const [from, to] = shift > 0 ? [middle + half, middle - half] : [middle - half, middle + half];
     await ctx.screen.swipe({ from: { x, y: from }, to: { x, y: to }, duration: 600 });
@@ -105,14 +117,20 @@ async function scrollPickerTo(ctx: Ctx, row: Locator): Promise<void> {
     const picker = byId(screen, 'DOC.browsingModeTabBar');
     const nav = await byId(screen, 'FullDocumentManagerViewControllerNavigationBar').boundingBox();
     const tabs = await picker.boundingBox();
-    if (nav === null || tabs === null) throw new Error('document picker: no navigation bar or tab bar bounds');
+    if (nav === null || tabs === null) {
+        throw new Error('document picker: no navigation bar or tab bar bounds');
+    }
     const x = nav.x + nav.width / 2;
     const top = nav.y + nav.height + 60;
     const bottom = tabs.y - 60;
     const page = async () => {
         for (let n = 0; n < 12; n++) {
-            if (await row.isVisible()) return true;
-            if (!(await picker.isVisible())) throw new Error('document picker: closed while paging');
+            if (await row.isVisible()) {
+                return true;
+            }
+            if (!(await picker.isVisible())) {
+                throw new Error('document picker: closed while paging');
+            }
             await screen.swipe({ from: { x, y: bottom }, to: { x, y: top }, duration: 400 });
             await sleep(400);
         }
@@ -140,7 +158,9 @@ export async function selectFileFromAppProvider(ctx: Ctx, name: string): Promise
     const { screen } = ctx;
     const cancel = screen.getByRole('button', { name: 'Cancel' }).first();
     await expect(cancel).toBeVisible({ timeout: 15_000 });
-    if (await byText(screen, 'Apple Account Verification').isVisible()) await screen.getByText('Not Now').last().tap();
+    if (await byText(screen, 'Apple Account Verification').isVisible()) {
+        await screen.getByText('Not Now').last().tap();
+    }
     const picker = byId(screen, 'DOC.browsingModeTabBar');
     // The picker reopens where it was left; tapping an already selected Browse tab would pop to its root.
     if (!(await byId(screen, 'Browse View (Picker)').isVisible())) {
@@ -159,8 +179,11 @@ export async function selectFileFromAppProvider(ctx: Ctx, name: string): Promise
         await expect(picker).toBeHidden({ timeout: 5_000 });
     } catch {
         const open = screen.getByRole('button', { name: /^(Open|Continue)$/ }).first();
-        if (await open.isVisible()) await open.tap();
-        else await row.tap();
+        if (await open.isVisible()) {
+            await open.tap();
+        } else {
+            await row.tap();
+        }
         await expect(picker).toBeHidden({ timeout: 5_000 });
     }
 }
@@ -187,12 +210,17 @@ export async function importStatementFromPicker(
     );
     await selectFileFromAppProvider(ctx, file);
     await expectId(ctx, accountRowId, 5_000);
-    if (between === undefined) await tapId(ctx, accountRowId);
-    else await between();
+    if (between === undefined) {
+        await tapId(ctx, accountRowId);
+    } else {
+        await between();
+    }
     await expectId(ctx, 'CreateFileBankAccount.StartSyncButton', 15_000);
     await tapUntil(ctx, 'CreateFileBankAccount.StartSyncButton', () => expectId(ctx, 'CreateFileBankAccount.ImportButton', 15_000));
     await tapId(ctx, 'CreateFileBankAccount.ImportButton');
     await sleep(800);
-    if (await byText(ctx.screen, 'Already syncing').isVisible()) await tapId(ctx, 'PageHeader.BackButton');
+    if (await byText(ctx.screen, 'Already syncing').isVisible()) {
+        await tapId(ctx, 'PageHeader.BackButton');
+    }
     await expectId(ctx, 'HomePage.TotalBalance', 60_000);
 }

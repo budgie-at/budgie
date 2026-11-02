@@ -10,7 +10,9 @@ export async function dismissSaveToFilesSheet(ctx: Ctx): Promise<void> {
     await expect(row).toBeVisible({ timeout: 15_000 });
     for (let attempt = 1; ; attempt++) {
         const box = await row.boundingBox();
-        if (box === null) throw new Error('"Save to Files" has no bounds');
+        if (box === null) {
+            throw new Error('"Save to Files" has no bounds');
+        }
         const x = box.x + box.width / 2;
         const y = box.y + box.height / 2;
         await screen.swipe({ from: { x, y }, to: { x, y: Math.min(y + 400, 860) }, duration: 300 });
@@ -18,7 +20,9 @@ export async function dismissSaveToFilesSheet(ctx: Ctx): Promise<void> {
             await expect(row).toBeHidden({ timeout: 3_000 });
             return;
         } catch (cause) {
-            if (attempt === 3) throw cause;
+            if (attempt === 3) {
+                throw cause;
+            }
             await sleep(300);
         }
     }
@@ -26,7 +30,9 @@ export async function dismissSaveToFilesSheet(ctx: Ctx): Promise<void> {
 
 /** Taps the PIN pad digits in order (`'1234'`). */
 export async function enterPin(ctx: Ctx, pin: string): Promise<void> {
-    for (const digit of pin) await tapId(ctx, `PinPage.Digit.${digit}`);
+    for (const digit of pin) {
+        await tapId(ctx, `PinPage.Digit.${digit}`);
+    }
 }
 
 /** Four wrong PINs (each answered "Incorrect PIN"), the fifth locks the pad; a tap while locked does nothing; the lockout clears within 45 s. */

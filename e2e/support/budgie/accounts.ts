@@ -9,7 +9,9 @@ const loc = (ctx: Ctx, id: string | RegExp): Locator => ctx.screen.getByTestId(i
 
 /** `scrollTo` that leaves an already visible node alone: a scroll past the form's top edge makes XCTest record a failure and drop the runner session. */
 async function scrollTo(ctx: Ctx, testId: string, direction: 'up' | 'down' = 'down'): Promise<void> {
-    if (await byId(ctx.screen, testId).isVisible()) return;
+    if (await byId(ctx.screen, testId).isVisible()) {
+        return;
+    }
     await coreScrollTo(ctx, testId, direction);
 }
 
@@ -19,7 +21,9 @@ async function tapRetry(locator: Locator, next: () => Promise<void>): Promise<vo
     try {
         await next();
     } catch (cause) {
-        if (!(await locator.isVisible())) throw cause;
+        if (!(await locator.isVisible())) {
+            throw cause;
+        }
         await locator.tap();
         await next();
     }
@@ -167,16 +171,21 @@ async function setMainCurrency(ctx: Ctx, currency: string): Promise<void> {
     await navigateToSettings(ctx);
     for (let attempt = 1; ; attempt++) {
         try {
-            if (!(await search.isVisible()))
+            if (!(await search.isVisible())) {
                 await openSettingsCard(ctx, /^SettingsPage\.MainCurrencyCard\..+$/, 'CurrencySelector.SearchInput');
+            }
             await expect(search).toBeVisible({ timeout: 3_000 });
             break;
         } catch (cause) {
-            if (attempt === 2) throw cause;
+            if (attempt === 2) {
+                throw cause;
+            }
         }
     }
     const option = byId(ctx.screen, `AccountForm.CurrencyOption.${currency}`);
-    if (!(await option.isVisible())) await search.fill(currency);
+    if (!(await option.isVisible())) {
+        await search.fill(currency);
+    }
     await expect(option).toBeVisible({ timeout: 3_000 });
     await option.tap();
     await expect(search).toBeHidden({ timeout: 3_000 });
@@ -194,7 +203,9 @@ async function pickAccountCurrency(ctx: Ctx, currency: string, expectSelected = 
     await expectId(ctx, `AccountForm.CurrencyOption.${currency}`, 3_000);
     await tapId(ctx, `AccountForm.CurrencyOption.${currency}`);
     await expect(search).toBeHidden({ timeout: 3_000 });
-    if (expectSelected) await expectId(ctx, `AccountForm.SelectedCurrency.${currency}`, 3_000);
+    if (expectSelected) {
+        await expectId(ctx, `AccountForm.SelectedCurrency.${currency}`, 3_000);
+    }
 }
 
 /** Taps an account type on the create-account list and waits for the form. */
@@ -463,7 +474,9 @@ export async function exerciseLiabilityAccount(ctx: Ctx, l: LiabilityExercise): 
  */
 export async function swipeDownFromCentre(ctx: Ctx, testId: string): Promise<void> {
     const box = await byId(ctx.screen, testId).boundingBox();
-    if (box === null) throw new Error(`${testId} has no bounds`);
+    if (box === null) {
+        throw new Error(`${testId} has no bounds`);
+    }
     const x = box.x + box.width / 2;
     const y = box.y + 80;
     try {
@@ -504,13 +517,19 @@ export async function submitAccountFormUntil(ctx: Ctx, waitId: string, timeout =
  */
 export async function scrollToCentre(ctx: Ctx, testId: string, direction: 'up' | 'down' = 'down'): Promise<void> {
     const node = byId(ctx.screen, testId);
-    if (!(await node.isVisible())) await scrollTo(ctx, testId, direction);
+    if (!(await node.isVisible())) {
+        await scrollTo(ctx, testId, direction);
+    }
     for (let i = 0; i < 3; i++) {
         const box = await node.boundingBox();
-        if (box === null) return;
+        if (box === null) {
+            return;
+        }
         const centre = box.y + box.height / 2;
         const delta = Math.round(centre - 437);
-        if (Math.abs(delta) < 150) return;
+        if (Math.abs(delta) < 150) {
+            return;
+        }
         const step = Math.max(-300, Math.min(300, delta));
         await ctx.screen.swipe({ from: { x: 201, y: 500 }, to: { x: 201, y: 500 - step }, duration: 400 });
         await sleep(400);
@@ -525,8 +544,12 @@ async function fillAmount(field: Locator, value: string): Promise<void> {
     try {
         await field.fill(value);
     } catch (cause) {
-        if (!/^0+$/.test(value)) throw cause;
+        if (!/^0+$/.test(value)) {
+            throw cause;
+        }
         const shown = (await field.inputValue()).trim();
-        if (shown !== '' && !/^0+([.,]0*)?$/.test(shown)) throw cause;
+        if (shown !== '' && !/^0+([.,]0*)?$/.test(shown)) {
+            throw cause;
+        }
     }
 }

@@ -82,7 +82,9 @@ test('23 privatbank xlsx import', { tags: ['import'] }, async ({ budgie }) => {
         try {
             await b.expectId(ctx, 'AccountDetails.Page', 3_000);
         } catch {
-            if (await b.byId(screen, 'TransactionInfo.Page').isVisible()) await b.tapId(ctx, 'PageHeader.BackButton');
+            if (await b.byId(screen, 'TransactionInfo.Page').isVisible()) {
+                await b.tapId(ctx, 'PageHeader.BackButton');
+            }
         }
     });
 

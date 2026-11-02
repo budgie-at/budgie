@@ -22,10 +22,14 @@ test('14 transaction filters', { tags: ['transactions'] }, async ({ budgie }) =>
     const { screen } = ctx;
     const id = (testId: string) => b.byId(screen, testId);
     const shown = async (...labels: string[]) => {
-        for (const label of labels) await b.expectId(ctx, `TransactionCard.Label.${label}`);
+        for (const label of labels) {
+            await b.expectId(ctx, `TransactionCard.Label.${label}`);
+        }
     };
     const hidden = async (...labels: string[]) => {
-        for (const label of labels) await b.expectNoId(ctx, `TransactionCard.Label.${label}`);
+        for (const label of labels) {
+            await b.expectNoId(ctx, `TransactionCard.Label.${label}`);
+        }
     };
     const counter = (text: string, timeout?: number) =>
         expect(id('TransactionsPage.TransactionCount')).toHaveText(text, timeout === undefined ? undefined : { timeout });

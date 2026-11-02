@@ -48,7 +48,9 @@ const prepared = new Set<string>();
 /** The app's data container on the leased simulator, with the staged fixtures in it. */
 export async function ensureFixtures(api: SimlockApi, leaseId: string): Promise<string> {
     const container = (await mustExec(api, leaseId, ['get_app_container', BUNDLE_ID, 'data'])).trim();
-    if (!container.startsWith('/')) throw new Error(`unexpected app data container for ${BUNDLE_ID}: ${container}`);
+    if (!container.startsWith('/')) {
+        throw new Error(`unexpected app data container for ${BUNDLE_ID}: ${container}`);
+    }
     const present = await drop(api, leaseId, ['test', `${container}/${MARKER}`]);
     if (present.exitCode !== 0) {
         const started = Date.now();
@@ -87,10 +89,15 @@ async function prepareSimulator(api: SimlockApi, leaseId: string, container: str
         // Best effort, as in setup-ios-e2e-fixtures.sh: no flow reads the contact any more, and a
         // slim simulator has no contacts daemon (simlock's slim mode turns PIM off).
         const added = await exec(api, leaseId, ['addmedia', contact]);
-        if (added.exitCode === 0) await writeFile(api, leaseId, contactAdded, Buffer.alloc(0));
-        else console.log(`[fixtures] contact not imported (exit ${added.exitCode}): ${added.stderr.trim().split('\n')[0] ?? ''}`);
+        if (added.exitCode === 0) {
+            await writeFile(api, leaseId, contactAdded, Buffer.alloc(0));
+        } else {
+            console.log(`[fixtures] contact not imported (exit ${added.exitCode}): ${added.stderr.trim().split('\n')[0] ?? ''}`);
+        }
     }
-    for (const service of ['contacts', 'microphone']) await mustExec(api, leaseId, ['privacy', 'grant', service, BUNDLE_ID]);
+    for (const service of ['contacts', 'microphone']) {
+        await mustExec(api, leaseId, ['privacy', 'grant', service, BUNDLE_ID]);
+    }
 }
 
 async function stopApp(api: SimlockApi, leaseId: string): Promise<void> {
@@ -108,7 +115,9 @@ export async function seedDatabase(api: SimlockApi, leaseId: string, container: 
     await stopApp(api, leaseId);
     const sqlite = `${container}/Documents/SQLite`;
     const source = `${container}/Documents/E2EFixtures/${name}`;
-    if ((await drop(api, leaseId, ['test', source])).exitCode !== 0) throw new Error(`no staged fixture ${name}`);
+    if ((await drop(api, leaseId, ['test', source])).exitCode !== 0) {
+        throw new Error(`no staged fixture ${name}`);
+    }
     await mustDrop(api, leaseId, ['rm', sqlite, 'budgie.db']);
     await mustDrop(api, leaseId, ['cp', source, `${sqlite}/budgie.db`]);
 }

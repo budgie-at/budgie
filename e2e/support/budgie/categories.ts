@@ -22,7 +22,9 @@ async function createEntityFromTransaction(
     try {
         await expect(form).toBeVisible({ timeout: 5_000 });
     } catch {
-        if (await byId(screen, ids.createButton).isVisible()) await tapId(ctx, ids.createButton);
+        if (await byId(screen, ids.createButton).isVisible()) {
+            await tapId(ctx, ids.createButton);
+        }
         await expect(form).toBeVisible();
     }
     await tapId(ctx, ids.submit);
@@ -55,7 +57,9 @@ export async function selectCategory(ctx: Ctx, name: string): Promise<void> {
     try {
         await expectNoId(ctx, 'CategoryPickerBottomSheet.Input', 5_000);
     } catch {
-        if (await card.isVisible()) await card.tap();
+        if (await card.isVisible()) {
+            await card.tap();
+        }
         await expectNoId(ctx, 'CategoryPickerBottomSheet.Input');
     }
 }
@@ -80,14 +84,18 @@ export async function swipeRowToDelete(ctx: Ctx, rowId: string): Promise<void> {
     for (let attempt = 1; ; attempt++) {
         await sleep(600);
         const box = await row.boundingBox();
-        if (box === null) throw new Error(`${rowId} has no bounds`);
+        if (box === null) {
+            throw new Error(`${rowId} has no bounds`);
+        }
         const y = box.y + box.height / 2;
         await screen.swipe({ from: { x: box.x + box.width / 2, y }, to: { x: box.x + 8, y }, duration: 300 });
         try {
             await expect(action).toBeVisible({ timeout: 3_000 });
             break;
         } catch (cause) {
-            if (attempt === 3) throw cause;
+            if (attempt === 3) {
+                throw cause;
+            }
             console.log(`[retry] swipe-to-delete on ${rowId} attempt ${attempt} revealed no delete action`);
         }
     }

@@ -9,7 +9,9 @@ import type { E2EConfig } from 'e2e';
 
 const env = (name: string): string => {
     const value = process.env[name];
-    if (value === undefined || value === '') throw new Error(`${name} is required`);
+    if (value === undefined || value === '') {
+        throw new Error(`${name} is required`);
+    }
     return value;
 };
 

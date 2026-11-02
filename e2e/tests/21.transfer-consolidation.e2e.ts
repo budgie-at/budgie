@@ -18,7 +18,9 @@ test('21 transfer consolidation', { tags: ['transactions'] }, async ({ budgie })
 
     await b.phase('sanity: sources visible', async () => {
         await t.navigateToTransactions(ctx);
-        for (const name of ['P1_Out', 'P1_In', 'P2_Out', 'P2_In', 'Untouched']) await b.expectId(ctx, card(name));
+        for (const name of ['P1_Out', 'P1_In', 'P2_Out', 'P2_In', 'Untouched']) {
+            await b.expectId(ctx, card(name));
+        }
         await b.scrollTo(ctx, card('ATM_Out'));
         await b.expectId(ctx, card('ATM_Out'));
         await b.scrollTo(ctx, card('SameBank_Out_5524'));

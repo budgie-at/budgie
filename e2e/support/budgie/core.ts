@@ -64,8 +64,11 @@ export async function scrollTo(ctx: Ctx, testId: string, direction: 'up' | 'down
 /** Maestro's `tapOn: Done`: the keyboard's Done key, else hide the keyboard. */
 export async function done({ screen, device }: Ctx): Promise<void> {
     const key = screen.getByRole('button', { name: 'Done' });
-    if (await key.first().isVisible()) await key.last().tap();
-    else await device.dismissKeyboard();
+    if (await key.first().isVisible()) {
+        await key.last().tap();
+    } else {
+        await device.dismissKeyboard();
+    }
 }
 
 /** Maestro's `retryTapIfNoChange`: tap again when the expected next state does not show. */
@@ -162,16 +165,23 @@ export class Budgie {
             primed.add(lease);
         }
         await phase('seed', async () => {
-            if (options.fixture === undefined) await clearDatabase(this.api, lease, container);
-            else await seedDatabase(this.api, lease, container, options.fixture);
+            if (options.fixture === undefined) {
+                await clearDatabase(this.api, lease, container);
+            } else {
+                await seedDatabase(this.api, lease, container, options.fixture);
+            }
         });
         await phase('launch', async () => {
             await app.open();
             const wait = options.wait ?? (options.fixture === undefined ? 'none' : 'balance');
-            if (wait === 'none') return;
+            if (wait === 'none') {
+                return;
+            }
             await expect(byId(screen, 'TabBar.Home')).toBeVisible({ timeout: 30_000 });
             if (wait === 'balance') {
-                if (!(await byId(screen, 'HomePage.TotalBalance').isVisible())) await tapId(this.ctx, 'TabBar.Home');
+                if (!(await byId(screen, 'HomePage.TotalBalance').isVisible())) {
+                    await tapId(this.ctx, 'TabBar.Home');
+                }
                 await expect(byId(screen, 'HomePage.TotalBalance')).toBeVisible({ timeout: 30_000 });
             }
         });

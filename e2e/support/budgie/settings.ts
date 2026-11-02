@@ -34,7 +34,9 @@ export async function runMoneyDataUpgrade(ctx: Ctx): Promise<void> {
 export async function scrollToCentered(ctx: Ctx, testId: string): Promise<void> {
     await scrollTo(ctx, testId);
     const box = await byId(ctx.screen, testId).boundingBox();
-    if (box === null || box.y + box.height / 2 < 560) return;
+    if (box === null || box.y + box.height / 2 < 560) {
+        return;
+    }
     const x = 200;
     await ctx.screen.swipe({ from: { x, y: 600 }, to: { x, y: 600 - (box.y + box.height / 2 - 437) }, duration: 600 });
     await sleep(600);
