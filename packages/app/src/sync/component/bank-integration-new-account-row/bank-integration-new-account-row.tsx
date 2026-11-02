@@ -3,15 +3,13 @@ import { MonobankSyncService, SyncAccountTypeEnum } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
-import { TONAL_DISC_BACKGROUND } from '../../../@generic/constant/tonal-disc-background.constant';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
+import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
 import { DEFAULT_SYNC_HISTORY_DEPTH } from '../../constant/sync-history-depth-options.constant';
 import { useBankIntegration } from '../../context/bank-integration.context';
 import { getAccountIdentityLabel } from '../../utils/get-account-identity-label.util';
@@ -39,19 +37,10 @@ export const BankIntegrationNewAccountRow = ({ preview }: Props) => {
         );
 
     return (
-        <GroupedListRow
+        <SettingsRow
             testID={rowTestID}
-            left={
-                <CircleIcon
-                    icon={icon}
-                    variant="primary"
-                    size={36}
-                    iconSize={18}
-                    radius={18}
-                    border={false}
-                    className={TONAL_DISC_BACKGROUND.primary}
-                />
-            }
+            icon={icon}
+            variant="primary"
             title={preview.title}
             subtitle={description}
             right={

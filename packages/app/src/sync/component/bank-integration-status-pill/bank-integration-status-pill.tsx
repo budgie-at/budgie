@@ -4,16 +4,15 @@ import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Clock from 'effect/Clock';
 import * as Duration from 'effect/Duration';
-import * as Effect from 'effect/Effect';
-import * as Fiber from 'effect/Fiber';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import * as Atom from 'effect/reactivity/Atom';
 import * as Schedule from 'effect/Schedule';
+import * as Stream from 'effect/Stream';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { cn } from '../../../@generic/utils/cn.util';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
@@ -23,17 +22,9 @@ import { useBankIntegrationAccountPreviewsQuery } from '../../query/use-bank-int
 import { getBankIntegrationSyncStatus } from '../../utils/get-bank-integration-sync-status.util';
 import { BankIntegrationImportStatus } from '../bank-integration-import-status/bank-integration-import-status';
 
-const bankIntegrationStatusNowAtom = Atom.make(context => {
-    const fiber = appRuntime.runFork(
-        Clock.currentTimeMillis.pipe(
-            Effect.tap(now => Effect.sync(() => void context.setSelf(now))),
-            Effect.repeat(Schedule.spaced(Duration.minutes(1)))
-        )
-    );
-    context.addFinalizer(() => void appRuntime.runFork(Fiber.interrupt(fiber)));
-
-    return Date.now();
-});
+const bankIntegrationStatusNowAtom = Atom.make(
+    Stream.fromEffect(Clock.currentTimeMillis).pipe(Stream.repeat(Schedule.spaced(Duration.minutes(1))))
+);
 
 interface Props {
     readonly syncs: Array<Pick<SyncEntityInterface, 'enabled' | 'status' | 'mode' | 'forwardSyncedAt'>>;
@@ -53,7 +44,7 @@ export const BankIntegrationStatusPill = ({ syncs }: Props) => {
     const { integration, capabilities } = useBankIntegration();
     const { isKeyRejected } = useBankIntegrationAccountPreviewsQuery(integration.id);
     const { formatRelativeToNow } = useFormatDate();
-    const now = useAtomValue(bankIntegrationStatusNowAtom);
+    const now = AsyncResult.getOrElse(useAtomValue(bankIntegrationStatusNowAtom), Date.now);
     const status = getBankIntegrationSyncStatus(syncs, isKeyRejected, now);
     const lastSyncedAt = syncs
         .filter(sync => !capabilities.supportsLiveSync || sync.enabled)
