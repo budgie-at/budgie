@@ -24,7 +24,7 @@ interface Props {
     readonly cluster: CategorizeInboxClusterInterface;
 }
 
-const HERO_TITLE_SCROLL_RANGE = [0, 14] as const;
+const HERO_TITLE_SCROLL_RANGE = [0, 18] as const;
 const FADE_OUT_OPACITY = [1, 0] as const;
 
 export const CategorizeInboxGroupHero = ({ cluster }: Props) => {
