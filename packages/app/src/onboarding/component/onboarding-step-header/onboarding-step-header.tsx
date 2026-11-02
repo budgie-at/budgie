@@ -9,29 +9,23 @@ import { OnboardingStepLayoutSelector } from '../onboarding-step-layout/onboardi
 
 interface Props {
     readonly fileState: string;
-    readonly fileLock?: OnboardingFileLockEnum;
-    readonly isFileSealed?: boolean;
+    readonly fileLock: OnboardingFileLockEnum;
     readonly isBackVisible: boolean;
     readonly onBack: EmptyFn;
 }
 
-export const OnboardingStepHeader = ({ fileState, fileLock, isFileSealed = false, isBackVisible, onBack }: Props) => {
-    const sealedLock = isFileSealed ? OnboardingFileLockEnum.SEALED : OnboardingFileLockEnum.OPEN;
-    const lock = fileLock ?? sealedLock;
+export const OnboardingStepHeader = ({ fileState, fileLock, isBackVisible, onBack }: Props) => (
+    <View className="w-full bg-surface px-5xl pt-lg pb-lg flex-row items-center gap-x-md">
+        {isBackVisible ? (
+            <GoBackButton
+                testID={OnboardingStepLayoutSelector.BackButton}
+                className="size-[44px] items-center justify-center p-0"
+                onPress={onBack}
+            />
+        ) : (
+            <View className="size-[44px]" />
+        )}
 
-    return (
-        <View className="bg-surface px-5xl pt-lg pb-lg flex-row items-center gap-x-md">
-            {isBackVisible ? (
-                <GoBackButton
-                    testID={OnboardingStepLayoutSelector.BackButton}
-                    className="size-[44px] items-center justify-center p-0"
-                    onPress={onBack}
-                />
-            ) : (
-                <View className="size-[44px]" />
-            )}
-
-            <OnboardingFileStrip state={fileState} lock={lock} />
-        </View>
-    );
-};
+        <OnboardingFileStrip state={fileState} lock={fileLock} />
+    </View>
+);

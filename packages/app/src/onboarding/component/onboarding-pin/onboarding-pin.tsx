@@ -12,6 +12,7 @@ import { PinRestartButton } from '../../../auth/components/pin-restart-button/pi
 import { PIN_LENGTH } from '../../../auth/constant/pin-length.constant';
 import { PinFormStatusEnum } from '../../../auth/enum/pin-form-status.enum';
 import { useOnboardingPinContext } from '../../context/onboarding-pin.context';
+import { OnboardingFileLockEnum } from '../../enum/onboarding-file-lock.enum';
 import { OnboardingPinActionTypeEnum } from '../../enum/onboarding-pin-action-type.enum';
 import { OnboardingPinPhaseEnum } from '../../enum/onboarding-pin-phase.enum';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
@@ -87,7 +88,7 @@ export const OnboardingPin = () => {
         <FullPage
             testID={OnboardingPinSelector.Root}
             className="bg-background"
-            header={<OnboardingStepHeader fileState={fileState} isFileSealed={false} isBackVisible onBack={handleBack} />}
+            header={<OnboardingStepHeader fileState={fileState} fileLock={OnboardingFileLockEnum.OPEN} isBackVisible onBack={handleBack} />}
         >
             <View className="flex-1 px-xl">
                 <PinForm
