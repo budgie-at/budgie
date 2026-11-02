@@ -4316,7 +4316,6 @@ msgstr "Kept inside Budgie's file on this phone. Sent only to Monobank, never to
 msgid "Key has too many permissions"
 msgstr "Key has too many permissions"
 
-#: src/account/component/institution-connection-row/institution-connection-row.tsx
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Key rejected"
 msgstr "Key rejected"
@@ -4376,6 +4375,10 @@ msgstr "Last Month"
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
 msgid "last payment {formattedLast}"
 msgstr "last payment {formattedLast}"
+
+#: src/account/component/institution-connection-row/institution-connection-row.tsx
+msgid "Last synced {lastSyncedTime}"
+msgstr "Last synced {lastSyncedTime}"
 
 #: src/@generic/constant/date-period.constant.ts
 msgid "Last Week"
@@ -4876,7 +4879,6 @@ msgstr "Names are up to date. Tap to try again."
 msgid "Navigate to Account → Statements"
 msgstr "Navigate to Account → Statements"
 
-#: src/account/component/institution-connection-row/institution-connection-row.tsx
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Needs attention"
 msgstr "Needs attention"
@@ -7027,11 +7029,11 @@ msgstr "Sync data repaired"
 msgid "Sync data repairs"
 msgstr "Sync data repairs"
 
+#: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Sync failed"
 msgstr "Sync failed"
 
-#: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync Failed"
 msgstr "Sync Failed"
@@ -7520,6 +7522,10 @@ msgstr "To set aside this period"
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Today"
 msgstr "Today"
+
+#: src/sync/hook/use-format-sync-time.hook.ts
+msgid "Today {time}"
+msgstr "Today {time}"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Token already connected"

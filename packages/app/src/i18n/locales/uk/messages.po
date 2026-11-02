@@ -4315,7 +4315,6 @@ msgstr "Зберігається у файлі Budgie на цьому телеф
 msgid "Key has too many permissions"
 msgstr "Ключ має забагато дозволів"
 
-#: src/account/component/institution-connection-row/institution-connection-row.tsx
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Key rejected"
 msgstr "Ключ відхилено"
@@ -4375,6 +4374,10 @@ msgstr "Минулий місяць"
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
 msgid "last payment {formattedLast}"
 msgstr "останній платіж {formattedLast}"
+
+#: src/account/component/institution-connection-row/institution-connection-row.tsx
+msgid "Last synced {lastSyncedTime}"
+msgstr "Остання синхронізація: {lastSyncedTime}"
 
 #: src/@generic/constant/date-period.constant.ts
 msgid "Last Week"
@@ -4875,7 +4878,6 @@ msgstr "Назви актуальні. Торкніться, щоб спробу
 msgid "Navigate to Account → Statements"
 msgstr "Перейдіть до Рахунок → Виписки"
 
-#: src/account/component/institution-connection-row/institution-connection-row.tsx
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Needs attention"
 msgstr "Потребує уваги"
@@ -7026,11 +7028,11 @@ msgstr "Дані синхронізації виправлено"
 msgid "Sync data repairs"
 msgstr "Виправлення даних синхронізації"
 
+#: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Sync failed"
 msgstr "Синхронізація не вдалась"
 
-#: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync Failed"
 msgstr "Синхронізація не вдалась"
@@ -7519,6 +7521,10 @@ msgstr "Відкласти в цьому періоді"
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Today"
 msgstr "Сьогодні"
+
+#: src/sync/hook/use-format-sync-time.hook.ts
+msgid "Today {time}"
+msgstr "Сьогодні {time}"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Token already connected"

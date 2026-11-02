@@ -4315,7 +4315,6 @@ msgstr "Conservé dans le fichier de Budgie sur ce téléphone. Envoyé uniqueme
 msgid "Key has too many permissions"
 msgstr "La clé a trop d'autorisations"
 
-#: src/account/component/institution-connection-row/institution-connection-row.tsx
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Key rejected"
 msgstr "Clé refusée"
@@ -4375,6 +4374,10 @@ msgstr "Mois dernier"
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
 msgid "last payment {formattedLast}"
 msgstr "dernier paiement {formattedLast}"
+
+#: src/account/component/institution-connection-row/institution-connection-row.tsx
+msgid "Last synced {lastSyncedTime}"
+msgstr "Dernière synchronisation : {lastSyncedTime}"
 
 #: src/@generic/constant/date-period.constant.ts
 msgid "Last Week"
@@ -4875,7 +4878,6 @@ msgstr "Les noms sont à jour. Touchez pour réessayer."
 msgid "Navigate to Account → Statements"
 msgstr "Allez dans Compte → Relevés"
 
-#: src/account/component/institution-connection-row/institution-connection-row.tsx
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Needs attention"
 msgstr "Action requise"
@@ -7026,11 +7028,11 @@ msgstr "Données de synchronisation réparées"
 msgid "Sync data repairs"
 msgstr "Réparations des données de synchronisation"
 
+#: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Sync failed"
 msgstr "Échec de la synchronisation"
 
-#: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync Failed"
 msgstr "Échec de la synchronisation"
@@ -7519,6 +7521,10 @@ msgstr "À mettre de côté sur cette période"
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Today"
 msgstr "Aujourd'hui"
+
+#: src/sync/hook/use-format-sync-time.hook.ts
+msgid "Today {time}"
+msgstr "Aujourd’hui {time}"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Token already connected"

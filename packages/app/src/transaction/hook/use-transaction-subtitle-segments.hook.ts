@@ -97,7 +97,7 @@ export const useTransactionSubtitleSegments = (
     const scopedCategoryIds = useContext(StatisticsCategoryIdsContext);
     const accountTitlePrefix = useContext(TransactionAccountTitlePrefixContext);
 
-    const counterparty = getTransactionCounterparty(transaction, accountId);
+    const counterparty = getTransactionCounterparty(transaction, isDefined(accountTitlePrefix) ? null : accountId);
     const displayTitle = getTransactionDisplayTitle(transaction);
     const source = stripTransactionAccountTitlePrefix(counterparty?.source, accountTitlePrefix);
     const destination = stripTransactionAccountTitlePrefix(counterparty?.destination, accountTitlePrefix);
