@@ -1,21 +1,15 @@
 import { CategorizeInboxSectionEnum } from '@budgie/categorization';
-import { View } from 'react-native';
-import Animated, { FadeIn, FadeInDown, FadeOut, FadeOutDown } from 'react-native-reanimated';
 
-import { ScreenChromeFooter } from '@rnw-community/react-native-screen-chrome';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { ENTRANCE_EASING } from '../../../@generic/constant/entrance-motion.constant';
-import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { isCategorizeInboxCluster } from '../../type-guard/is-categorize-inbox-cluster.type-guard';
 import { CategorizeInboxAcceptAllButton } from '../categorize-inbox-accept-all-button/categorize-inbox-accept-all-button';
 import { CategorizeInboxMoveAllToCashButton } from '../categorize-inbox-move-all-to-cash-button/categorize-inbox-move-all-to-cash-button';
 import { CategorizeInboxMovedToCashUndo } from '../categorize-inbox-moved-to-cash-undo/categorize-inbox-moved-to-cash-undo';
+import { CategorizeInboxPanelFooter } from '../categorize-inbox-panel-footer/categorize-inbox-panel-footer';
 import { CategorizeInboxTransferUndo } from '../categorize-inbox-transfer-undo/categorize-inbox-transfer-undo';
 import { CategorizeInboxUndoBar } from '../categorize-inbox-undo-bar/categorize-inbox-undo-bar';
-
-import { CategorizeInboxPanelSelector } from './categorize-inbox-panel.selector';
 
 import type { ReactElement } from 'react';
 
@@ -24,20 +18,7 @@ interface Props {
     readonly children?: ReactElement | null;
 }
 
-const HIDDEN_EDGE_FADE_PROPS = { style: { display: 'none' } } as const;
-const SLOT_DURATION = 220;
-const SLOT_REDUCED_DURATION = 150;
-const SLOT_DISTANCE = 8;
-const SLOT_MOTION = {
-    entering: FadeInDown.duration(SLOT_DURATION)
-        .easing(ENTRANCE_EASING)
-        .withInitialValues({ opacity: 0, transform: [{ translateY: SLOT_DISTANCE }] }),
-    exiting: FadeOutDown.duration(SLOT_DURATION).easing(ENTRANCE_EASING)
-};
-const SLOT_REDUCED_MOTION = { entering: FadeIn.duration(SLOT_REDUCED_DURATION), exiting: FadeOut.duration(SLOT_REDUCED_DURATION) };
-
 export const CategorizeInboxPanel = ({ activeSection, children }: Props) => {
-    const reducedMotion = useReducedMotion();
     const {
         items,
         includedRows,
@@ -68,25 +49,10 @@ export const CategorizeInboxPanel = ({ activeSection, children }: Props) => {
     const undo = transferUndo ?? labelUndo ?? movedToCashUndo;
     const slot = isDefined(children) ? children : (undo ?? primaryAction);
     const doneUndo = isDefined(children) ? undo : null;
-    const slotMotion = reducedMotion ? SLOT_REDUCED_MOTION : SLOT_MOTION;
 
     if (!isDefined(slot)) {
         return null;
     }
 
-    return (
-        <ScreenChromeFooter includeBottomSafeArea={false} edgeFadeProps={HIDDEN_EDGE_FADE_PROPS}>
-            <View
-                className="border-t-hairline border-surface-separator bg-surface px-5xl pb-safe pt-md"
-                testID={CategorizeInboxPanelSelector.Panel}
-            >
-                {doneUndo}
-                <View className="min-h-[52px] justify-center">
-                    <Animated.View key={slot.key} entering={slotMotion.entering} exiting={slotMotion.exiting} className="justify-center">
-                        {slot}
-                    </Animated.View>
-                </View>
-            </View>
-        </ScreenChromeFooter>
-    );
+    return <CategorizeInboxPanelFooter slot={slot} leading={doneUndo} />;
 };
