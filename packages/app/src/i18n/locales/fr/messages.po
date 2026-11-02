@@ -5501,10 +5501,6 @@ msgstr "Ouvrir les paramètres"
 msgid "Open Shortcuts"
 msgstr "Ouvrir Shortcuts"
 
-#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
-msgid "Opens account actions"
-msgstr "Ouvre les actions du compte"
-
 #: src/@generic/component/icon-title-field-trigger/icon-title-field-trigger.tsx
 msgid "Opens the icon picker"
 msgstr "Ouvre le sélecteur d’icônes"
