@@ -1,8 +1,7 @@
-import { LanguageEnum } from '@budgie/contracts';
+import { CurrencyEnum, LanguageEnum } from '@budgie/contracts';
+import { isValid, parse } from 'date-fns';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
-
-import { isImportSampleMatch } from './is-import-sample-match.util';
 
 import type { ImportColumnMapFormValues } from '@budgie/import-export';
 
@@ -72,6 +71,24 @@ const COLUMN_KEYWORDS: Record<LanguageEnum, Record<keyof ImportColumnMapFormValu
         comment: ['коментар', 'опис', 'примітка', 'призначення'],
         mcc: ['mcc']
     }
+};
+
+const isImportSampleMatch = (field: keyof ImportColumnMapFormValues, sample: string): boolean => {
+    const value = sample.trim();
+
+    if (field === 'toCurrency') {
+        return Object.values(CurrencyEnum).some((currency: string) => currency === value);
+    }
+
+    if (field === 'toAmount') {
+        return /^[+-]?\d+(\.\d+)?$/u.test(value);
+    }
+
+    if (field === 'operatedAt') {
+        return isValid(parse(value, 'yyyy-MM-dd', new Date())) || isValid(parse(value, String.raw`MM/dd/yyyy HH:mm:ss`, new Date()));
+    }
+
+    return false;
 };
 
 export const matchImportColumns = (

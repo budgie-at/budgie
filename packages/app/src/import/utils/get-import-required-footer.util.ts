@@ -12,6 +12,6 @@ export const getImportRequiredFooter = (missingCount: number, t: ReturnType<type
     }
 
     return t({
-        message: plural(missingCount, { one: '# required field still needs a column', other: '# required fields still need a column' })
+        message: plural(missingCount, { one: '# required field still needs a column.', other: '# required fields still need a column.' })
     });
 };

@@ -74,13 +74,24 @@ describe('matchImportColumns', () => {
 });
 
 describe('matchImportColumns sample inference', () => {
-    it.each(['2026-11-02', '02.11.2026', '02/11/2026', '11/25/2026'])('infers dates from %s', sample => {
+    it.each(['2026-11-02', '11/25/2026 14:30:00'])('infers dates from %s', sample => {
         expect(matchImportColumns(['When'], { When: sample }).operatedAt).toBe('When');
     });
 
-    it.each(['-12.50', '+12,50', '1 234,56', '1\u00a0234,56', '$1,234.56', '1.234,56 €'])('infers amounts from %s', sample => {
+    it.each(['-42.10', '3200', '5.4', '+12.50', '  -12.50  '])('infers amounts from %s', sample => {
         expect(matchImportColumns(['Value'], { Value: sample }).toAmount).toBe('Value');
     });
+
+    it.each(['+12,50', '1 234,56', '1\u00a0234,56', '1.234,56 €', '$1,234.56'])('does not infer unsafe amount %s', sample => {
+        expect(matchImportColumns(['Value'], { Value: sample }).toAmount).toBe('');
+    });
+
+    it.each(['02.11.2026', '02/11/2026', '11/25/2026', '2026-02-30', '11/25/2026 25:00:00'])(
+        'does not infer unsupported date %s',
+        sample => {
+            expect(matchImportColumns(['When'], { When: sample }).operatedAt).toBe('');
+        }
+    );
 
     it('infers ISO currencies and leaves account/category untouched', () => {
         expect(matchImportColumns(['Unit', 'When', 'Value'], { Unit: 'EUR', When: '2026-11-02', Value: '-42.50' })).toMatchObject({

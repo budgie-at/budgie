@@ -370,25 +370,21 @@ msgstr "{fieldLabel} no es {value}"
 msgid "{fieldLabel} matches {value}"
 msgstr "{fieldLabel} coincide con {value}"
 
-#: src/import/utils/get-import-match-description.util.ts
-#~ msgid "{fields} matched from sample values"
-#~ msgstr ""
-
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "{fileSize} · Stored only on this device"
 msgstr "{fileSize} · Guardado solo en este dispositivo"
 
 #: src/import/utils/get-import-match-description.util.ts
-msgid "{first} and {second} matched from sample values"
-msgstr ""
+msgid "{first} and {second} matched from sample values."
+msgstr "{first} y {second} coinciden según los valores de muestra."
 
 #: src/import/utils/get-import-match-description.util.ts
-msgid "{first} matched from sample values"
-msgstr ""
+msgid "{first} matched from sample values."
+msgstr "{first} coincide según los valores de muestra."
 
 #: src/import/utils/get-import-match-description.util.ts
-msgid "{first}, {second} and {third} matched from sample values"
-msgstr ""
+msgid "{first}, {second} and {third} matched from sample values."
+msgstr "{first}, {second} y {third} coinciden según los valores de muestra."
 
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "{firstMonth}–{lastMonth}"
@@ -545,8 +541,8 @@ msgid "{minutesLeft, plural, one {About # minute left} other {About # minutes le
 msgstr "{minutesLeft, plural, one {Queda aproximadamente # minuto} other {Quedan aproximadamente # minutos}}"
 
 #: src/import/utils/get-import-required-footer.util.ts
-msgid "{missingCount, plural, one {# required field still needs a column} other {# required fields still need a column}}"
-msgstr "{missingCount, plural, one {# campo obligatorio sin columna} other {# campos obligatorios sin columna}}"
+msgid "{missingCount, plural, one {# required field still needs a column.} other {# required fields still need a column.}}"
+msgstr "{missingCount, plural, one {# campo obligatorio aún necesita una columna.} other {# campos obligatorios aún necesitan una columna.}}"
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "{monobankAccountCount, plural, one {# account. Balances come straight from the bank.} other {# accounts. Balances come straight from the bank.}}"
@@ -845,10 +841,6 @@ msgstr "{transactionCount} transacciones sincronizadas desde {historyStart}"
 msgid "{transferCount} now transfers"
 msgstr "{transferCount} ahora son transferencias"
 
-#: src/app/(main)/import-csv.tsx
-msgid "{unmappedRequiredCount, plural, one {Match # required field} other {Match # required fields}}"
-msgstr "{unmappedRequiredCount, plural, one {Asignar # campo obligatorio} other {Asignar # campos obligatorios}}"
-
 #: src/settings/components/show-cents-row/show-cents-row.tsx
 msgid "{withCents} instead of {withoutCents}"
 msgstr "{withCents} en lugar de {withoutCents}"
@@ -984,7 +976,7 @@ msgstr "Ya existe una regla con las mismas condiciones."
 
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "A Shortcuts automation logs each tap for you."
-msgstr ""
+msgstr "Una automatización de Shortcuts registra cada toque por ti."
 
 #: src/budget/constant/budget-period-rate-label.constant.ts
 msgid "a week"
@@ -1286,10 +1278,6 @@ msgstr "Descarga de modelos de IA en pausa: sin Wi-Fi"
 #: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "AI off"
 msgstr "IA desactivada"
-
-#: src/app/(tabs)/settings/ai-features.tsx
-#~ msgid "AI unavailable in this version"
-#~ msgstr "IA no disponible en esta versión"
 
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "All"
@@ -2982,7 +2970,7 @@ msgstr "Archivos CSV"
 
 #: src/import/utils/get-import-match-description.util.ts
 msgid "currency"
-msgstr ""
+msgstr "moneda"
 
 #: src/account/component/update-liability-account/update-liability-account.tsx
 #: src/import/utils/get-import-match-description.util.ts
@@ -3015,7 +3003,7 @@ msgstr "Herramientas de datos"
 
 #: src/import/utils/get-import-match-description.util.ts
 msgid "date"
-msgstr ""
+msgstr "fecha"
 
 #: src/@generic/component/date-filter/date-filter.tsx
 #: src/app/(main)/import-csv.tsx
@@ -3244,7 +3232,7 @@ msgstr "Detalles"
 
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Detected automatically. Tap to pick another format."
-msgstr ""
+msgstr "Detectado automáticamente. Toca para elegir otro formato."
 
 #: src/import/components/import-preset-options/import-preset-options.tsx
 msgid "Detected from column names"
@@ -4607,16 +4595,12 @@ msgid "Match on"
 msgstr "Comparar por"
 
 #: src/import/utils/get-import-match-description.util.ts
-msgid "Matched by column name"
-msgstr "Asignado por nombre de columna"
+msgid "Matched by column name and sample values."
+msgstr "Coincide por el nombre de la columna y los valores de muestra."
 
 #: src/import/utils/get-import-match-description.util.ts
-msgid "Matched by column name and sample values"
-msgstr ""
-
-#: src/import/utils/get-import-match-description.util.ts
-#~ msgid "Matched by column names and sample values"
-#~ msgstr "Asignado por nombres de columna y valores de ejemplo"
+msgid "Matched by column name."
+msgstr "Coincide por el nombre de la columna."
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Matched expenses are converted into a transfer to this account."
@@ -5267,6 +5251,10 @@ msgstr "Aún no creada"
 #: src/ai/constant/ai-download-card-visuals.constant.ts
 msgid "Not downloaded"
 msgstr "No descargado"
+
+#: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
+msgid "Not enough free space for the download."
+msgstr "No hay suficiente espacio libre para la descarga."
 
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
@@ -6175,10 +6163,6 @@ msgstr "Pagos recientes"
 msgid "Record Apple Pay purchases"
 msgstr "Registrar compras con Apple Pay"
 
-#: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
-#~ msgid "Record Apple Pay taps with a Shortcuts automation."
-#~ msgstr "Registra los pagos con Apple Pay mediante una automatización de Atajos."
-
 #: src/wallet-capture/component/apple-pay-capture-settings-card/apple-pay-capture-settings-card.tsx
 msgid "Record card taps with Shortcuts"
 msgstr "Registra pagos con tarjeta con Atajos"
@@ -6750,6 +6734,10 @@ msgstr "Fija un límite y sigue tus gastos"
 msgid "Set a limit to continue"
 msgstr "Define un límite para continuar"
 
+#: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
+msgid "Set Amount and Merchant to Shortcut Input."
+msgstr "Asigna Importe y Comercio a la entrada del atajo."
+
 #: src/budget/utils/resolve-budget-fund-save-blocker.util.ts
 msgid "Set an amount to continue"
 msgstr "Introduce un importe para continuar"
@@ -6888,10 +6876,6 @@ msgstr "Sugerencias inteligentes"
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "SmartBudget"
 msgstr "SmartBudget"
-
-#: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
-msgid "Some issuers do not provide every Wallet trigger field. Edit the automation and check the variable bindings."
-msgstr "Algunos emisores no proporcionan todos los campos del activador de Wallet. Edita la automatización y comprueba las vinculaciones de variables."
 
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
 msgid "Some transactions may be hidden by the account or amount filter."

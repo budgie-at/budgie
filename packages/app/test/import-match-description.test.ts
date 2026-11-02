@@ -25,7 +25,7 @@ describe('import match description', () => {
 
         getImportMatchDescription(matchImportColumns(['Account', 'Date', 'Amount']), {}, translate);
 
-        expect(translate).toHaveBeenLastCalledWith({ message: 'Matched by column name' });
+        expect(translate).toHaveBeenLastCalledWith({ message: 'Matched by column name.' });
     });
 
     it('describes mixed name and sample matches', () => {
@@ -33,7 +33,7 @@ describe('import match description', () => {
 
         getImportMatchDescription(matchImportColumns(['Account', 'When']), { operatedAt: 'When' }, translate);
 
-        expect(translate).toHaveBeenLastCalledWith({ message: 'Matched by column name and sample values' });
+        expect(translate).toHaveBeenLastCalledWith({ message: 'Matched by column name and sample values.' });
     });
 
     it('lists sample-only fields with a translated conjunction', () => {
@@ -45,7 +45,7 @@ describe('import match description', () => {
 
         getImportMatchDescription(matchImportColumns(['When', 'Value']), { operatedAt: 'When', toAmount: 'Value' }, translate);
 
-        expect(translate).toHaveBeenLastCalledWith({ message: 'Date and amount matched from sample values' });
+        expect(translate).toHaveBeenLastCalledWith({ message: 'Date and amount matched from sample values.' });
     });
 
     it('uses a capitalized label for a single sample-only field', () => {
@@ -56,6 +56,6 @@ describe('import match description', () => {
 
         getImportMatchDescription(matchImportColumns(['Unit']), { toCurrency: 'Unit' }, translate);
 
-        expect(translate).toHaveBeenLastCalledWith({ message: 'Currency matched from sample values' });
+        expect(translate).toHaveBeenLastCalledWith({ message: 'Currency matched from sample values.' });
     });
 });

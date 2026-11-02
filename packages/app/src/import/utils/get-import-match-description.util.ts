@@ -18,22 +18,22 @@ export const getImportMatchDescription = (
     const hasNameMatches = Object.values(namedColumns).some(isNotEmptyString);
 
     if (isEmptyArray(sampleFields)) {
-        return hasNameMatches ? t(msg`Matched by column name`) : '';
+        return hasNameMatches ? t(msg`Matched by column name.`) : '';
     }
 
     if (hasNameMatches) {
-        return t(msg`Matched by column name and sample values`);
+        return t(msg`Matched by column name and sample values.`);
     }
 
     const [first, second, third] = sampleFields.map(({ label, continuation }, index) => t(index === 0 ? label : continuation));
 
     if (isNotEmptyString(third)) {
-        return t(msg`${first}, ${second} and ${third} matched from sample values`);
+        return t(msg`${first}, ${second} and ${third} matched from sample values.`);
     }
 
     if (isNotEmptyString(second)) {
-        return t(msg`${first} and ${second} matched from sample values`);
+        return t(msg`${first} and ${second} matched from sample values.`);
     }
 
-    return t(msg`${first} matched from sample values`);
+    return t(msg`${first} matched from sample values.`);
 };

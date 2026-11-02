@@ -16,8 +16,6 @@ export const ApplePayCaptureFlowNode = ({ icon, label, variant }: Props) => (
         <View className="h-[28px] items-center justify-center">
             <CircleIcon icon={icon} variant={variant} size={28} iconSize={16} radius={14} border={false} />
         </View>
-        <Text className="h-[18px] text-secondary-foreground text-[13px] leading-[18px] font-medium text-center" numberOfLines={1}>
-            {label}
-        </Text>
+        <Text className="min-h-[18px] text-secondary-foreground text-[13px] leading-[18px] font-medium text-center">{label}</Text>
     </View>
 );

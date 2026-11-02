@@ -61,7 +61,13 @@ export default function AiSettingsPage() {
                 <View className="gap-y-7xl pb-5xl">
                     <GroupedListSection>
                         <AiDownloadStatusCard />
-                        {canEnableAi ? <GroupedListRow title={t`AI features`} onPress={handleEnableAi} /> : null}
+                        {canEnableAi ? (
+                            <GroupedListRow
+                                title={t`AI features`}
+                                left={<GroupedListIcon icon={UserIconNameEnum.Sparkles} />}
+                                onPress={handleEnableAi}
+                            />
+                        ) : null}
                     </GroupedListSection>
                     {isAiBuildEnabled ? (
                         <GroupedListSection title={t`Download`} footer={footer}>

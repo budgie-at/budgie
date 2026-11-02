@@ -39,7 +39,7 @@ export const ApplePayCaptureOpenShortcutsButton = ({ testID }: Props) => {
             onPress={handlePressOpenShortcuts}
             content={t`Open Shortcuts`}
             variant="cta"
-            className="h-[48px] rounded-full py-0"
+            className="min-h-[48px] rounded-full py-lg"
         />
     );
 };

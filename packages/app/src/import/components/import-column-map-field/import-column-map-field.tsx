@@ -20,19 +20,9 @@ interface Props {
     readonly headers: string[];
     readonly selectedHeaders: string[];
     readonly isRequired?: boolean;
-    readonly inferredHeader?: string;
 }
 
-export const ImportColumnMapField = ({
-    control,
-    name,
-    label,
-    headers,
-    selectedHeaders,
-    samples,
-    isRequired = false,
-    inferredHeader
-}: Props) => {
+export const ImportColumnMapField = ({ control, name, label, headers, selectedHeaders, samples, isRequired = false }: Props) => {
     const { t } = useLingui();
     const {
         field: { value, onChange },
@@ -50,8 +40,15 @@ export const ImportColumnMapField = ({
 
     const emptyValue = isRequired ? t`Choose` : t`None`;
     const displayValue = isNotEmptyString(value) ? value : emptyValue;
-    const sampleSubtitle = isNotEmptyString(value) && value === inferredHeader ? samples[value] : null;
+    const sampleSubtitle = isNotEmptyString(value) ? samples[value] : null;
     const subtitle = isDefined(error) ? <Text className="text-destructive-foreground text-[13px]">{error.message}</Text> : sampleSubtitle;
+
+    const baseClassName = 'shrink text-secondary-foreground text-[17px]';
+    const valueClassName = cn(
+        baseClassName,
+        isRequired && !isNotEmptyString(value) && 'text-primary',
+        isDefined(error) && 'text-destructive-foreground'
+    );
 
     return (
         <GroupedListRow
@@ -61,15 +58,7 @@ export const ImportColumnMapField = ({
             testID={ImportColumnMapperSelector.Row(name)}
             right={
                 <View className="max-w-[55%] flex-row items-center gap-x-md">
-                    <Text
-                        className={cn(
-                            'shrink text-secondary-foreground text-[17px]',
-                            isRequired && !isNotEmptyString(value) && 'text-primary',
-                            isDefined(error) && 'text-destructive-foreground'
-                        )}
-                        numberOfLines={1}
-                        ellipsizeMode="tail"
-                    >
+                    <Text className={valueClassName} numberOfLines={1} ellipsizeMode="tail">
                         {displayValue}
                     </Text>
                     <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />

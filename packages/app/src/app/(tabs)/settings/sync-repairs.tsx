@@ -60,7 +60,7 @@ export default function SyncRepairsPage() {
                                 right={
                                     <SettingsPillButton
                                         label={t`Remove`}
-                                        className="light:bg-grouped-surface dark:bg-surface-fill min-h-[44px]"
+                                        className="light:bg-grouped-surface dark:bg-surface-fill min-h-[34px] self-center px-[16px]"
                                         variant="secondary"
                                         onPress={handleRepair}
                                         isLoading={isActionLoading}

@@ -19,7 +19,8 @@ export const AiDownloadIdleCard = () => {
 
     const remaining = formatGigabytes(preflight.remainingBytes);
     const total = formatGigabytes(preflight.totalBytes);
-    const handleDownload = preflight.hasEnoughSpace ? actions.resume : void 0;
+    const isDownloadDisabled = !preflight.hasEnoughSpace;
+    const downloadHint = isDownloadDisabled ? t`Not enough free space for the download.` : void 0;
 
     if (preflight.status === AiModelDownloadStatusEnum.NOT_STARTED) {
         return (
@@ -36,7 +37,9 @@ export const AiDownloadIdleCard = () => {
                     testID={AiDownloadSelector.DownloadButton}
                     variant="secondary"
                     label={t`Download ${remaining} GB`}
-                    onPress={handleDownload}
+                    onPress={actions.resume}
+                    isDisabled={isDownloadDisabled}
+                    accessibilityHint={downloadHint}
                 />
             </AiDownloadCardFrame>
         );

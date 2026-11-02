@@ -14,6 +14,7 @@ import { ImportPresetOptions } from '../import-preset-options/import-preset-opti
 import { ImportPresetPickerSelector } from './import-preset-picker.selector';
 
 interface Props {
+    readonly title?: string;
     readonly hasMappedColumns: boolean;
     readonly matchDescription: string;
     readonly detectedPreset?: ImportPresetEnum;
@@ -21,7 +22,14 @@ interface Props {
     readonly onPresetSelect: (preset: ImportPresetEnum | undefined) => void;
 }
 
-export const ImportPresetPicker = ({ selectedPreset, detectedPreset, onPresetSelect, hasMappedColumns, matchDescription }: Props) => {
+export const ImportPresetPicker = ({
+    selectedPreset,
+    detectedPreset,
+    onPresetSelect,
+    hasMappedColumns,
+    matchDescription,
+    title
+}: Props) => {
     const { t } = useLingui();
 
     const [isExpanded, setIsExpanded] = useState(false);
@@ -51,7 +59,7 @@ export const ImportPresetPicker = ({ selectedPreset, detectedPreset, onPresetSel
             : customFooter;
 
     return (
-        <GroupedListSection footer={footer}>
+        <GroupedListSection title={title} footer={footer}>
             <GroupedListRow
                 title={t`Format`}
                 onPress={handleToggle}

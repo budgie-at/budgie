@@ -17,7 +17,7 @@ export const ApplePayCaptureTroubleshootingCard = () => {
             <ApplePayCaptureTroubleshootingRow
                 icon={UserIconNameEnum.CircleAlert}
                 title={t`Amount or merchant is empty`}
-                description={t`Some issuers do not provide every Wallet trigger field. Edit the automation and check the variable bindings.`}
+                description={t`Set Amount and Merchant to Shortcut Input.`}
             />
             <ApplePayCaptureTroubleshootingRow
                 icon={UserIconNameEnum.Wallet}

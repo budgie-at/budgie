@@ -6,13 +6,15 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { cn } from '../../../@generic/utils/cn.util';
 
-interface Props {
+import type { AccessibilityProps } from 'react-native';
+
+interface Props extends Pick<AccessibilityProps, 'accessibilityLabel' | 'accessibilityHint'> {
     readonly label: string;
     readonly variant: 'cta' | 'secondary';
     readonly onPress?: () => void;
     readonly isLoading?: boolean;
     readonly testID?: string;
-    readonly accessibilityLabel?: string;
+    readonly isDisabled?: boolean;
     readonly size?: 'md' | 'sm';
     readonly className?: string;
 }
@@ -20,19 +22,23 @@ interface Props {
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 const HIT_SLOP = { top: 8, bottom: 8, left: 8, right: 8 };
 
-export const SettingsPillButton = ({
-    label,
-    variant,
-    onPress,
-    isLoading = false,
-    testID,
-    accessibilityLabel = label,
-    size = 'md',
-    className
-}: Props) => {
+export const SettingsPillButton = (props: Props) => {
+    const {
+        label,
+        variant,
+        onPress,
+        isLoading = false,
+        isDisabled = false,
+        testID,
+        accessibilityLabel = label,
+        accessibilityHint,
+        size = 'md',
+        className
+    } = props;
     const backgroundClassName = variant === 'cta' ? 'bg-cta-background' : 'bg-surface-fill';
     const labelClassName = variant === 'cta' ? 'text-cta-foreground' : 'text-primary';
-    const accessibilityState = { busy: isLoading };
+    const disabled = isDisabled || isLoading;
+    const accessibilityState = { busy: isLoading, disabled };
     const minWidthClassName = size === 'sm' ? 'min-w-[76px] min-h-[28px] px-lg' : 'min-w-[92px] min-h-[30px] px-xl';
     const labelSizeClassName = size === 'sm' ? 'text-[14px]' : 'text-[15px]';
     const content = (
@@ -43,7 +49,7 @@ export const SettingsPillButton = ({
         </LoadingContent>
     );
 
-    if (!isDefined(onPress)) {
+    if (!isDefined(onPress) && !isDisabled) {
         return (
             <View
                 className={cn('items-center justify-center rounded-full py-xs', minWidthClassName, backgroundClassName, className)}
@@ -63,14 +69,16 @@ export const SettingsPillButton = ({
                 'items-center justify-center rounded-full py-xs active:opacity-70',
                 minWidthClassName,
                 backgroundClassName,
-                className
+                className,
+                isDisabled && 'opacity-40'
             )}
             style={CONTINUOUS_CORNERS}
             hitSlop={HIT_SLOP}
             onPress={onPress}
-            disabled={isLoading}
+            disabled={disabled}
             accessibilityRole="button"
             accessibilityLabel={accessibilityLabel}
+            accessibilityHint={accessibilityHint}
             accessibilityState={accessibilityState}
             testID={testID}
         >
