@@ -191,10 +191,6 @@ msgstr "{changePercent} más que en {previousLabel}"
 msgid "{clampedCount, plural, one {Set to # month} other {Set to # months}}"
 msgstr "{clampedCount, plural, one {Ajustado a # mes} other {Ajustado a # meses}}"
 
-#: src/@generic/component/currency-selector-card/currency-selector-card.tsx
-msgid "{code} · {symbol}"
-msgstr "{code} · {symbol}"
-
 #: src/@generic/component/create-account-currency-field/create-account-currency-field.tsx
 msgid "{code} · 1 {code} ≈ {convertedAmount} {defaultCode}"
 msgstr "{code} · 1 {code} ≈ {convertedAmount} {defaultCode}"
@@ -1091,10 +1087,6 @@ msgstr "Acción: {label}"
 msgid "Active budget"
 msgstr "Presupuesto activo"
 
-#: src/app/icon-selector.tsx
-msgid "Activities"
-msgstr "Actividades"
-
 #: src/budget/components/budget-event-category-limits/budget-event-category-limits.tsx
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 #: src/budget/components/budget-list-section/budget-list-section.tsx
@@ -1415,10 +1407,6 @@ msgstr "y"
 #: src/rule/hooks/use-rule-row-summary.hook.ts
 msgid "and +{extraCount}"
 msgstr "y +{extraCount}"
-
-#: src/app/icon-selector.tsx
-msgid "Animals & nature"
-msgstr "Animales y naturaleza"
 
 #: src/rule/components/rule-condition-match-type-selector/rule-condition-match-type-selector.tsx
 msgid "Any condition"
@@ -2314,7 +2302,7 @@ msgstr "El portapapeles no contiene un token de Monobank válido"
 msgid "Clipboard is empty"
 msgstr "El portapapeles está vacío"
 
-#: src/@generic/component/sheet-close-button/sheet-close-button.tsx
+#: src/@generic/component/sheet-title-row/sheet-title-row.tsx
 #: src/sync/component/get-token-card/get-token-card.tsx
 msgid "Close"
 msgstr "Cerrar"
@@ -3268,11 +3256,6 @@ msgstr "La desvincula de «{debtTitle}»"
 msgid "Details"
 msgstr "Detalles"
 
-#: src/i18n/constant/languages.constant.ts
-msgctxt "endonym"
-msgid "Deutsch"
-msgstr "Deutsch"
-
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Didn't match"
 msgstr "No coincide"
@@ -3552,10 +3535,6 @@ msgid "Edits the total of the plan"
 msgstr "Edita el importe total del plan"
 
 #: src/app/icon-selector.tsx
-msgid "Education"
-msgstr "Educación"
-
-#: src/app/icon-selector.tsx
 msgid "Emoji"
 msgstr "Emoji"
 
@@ -3594,11 +3573,6 @@ msgstr "Cifrando tus datos"
 #: src/i18n/constant/languages.constant.ts
 msgid "English"
 msgstr "Inglés"
-
-#: src/i18n/constant/languages.constant.ts
-msgctxt "endonym"
-msgid "English"
-msgstr "English"
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Enter a balance to save"
@@ -3646,10 +3620,6 @@ msgstr "Ingresa tu PIN"
 msgid "Enter your PIN to turn it off. Anyone who can unlock this phone will be able to open Budgie."
 msgstr "Introduce tu PIN para desactivarlo. Cualquiera que pueda desbloquear este teléfono podrá abrir Budgie."
 
-#: src/app/icon-selector.tsx
-msgid "Entertainment"
-msgstr "Entretenimiento"
-
 #: src/app/resync-window-picker.tsx
 msgid "Entire history will be re-synced on next sync."
 msgstr "Todo el historial se volverá a sincronizar en la próxima sincronización."
@@ -3686,11 +3656,6 @@ msgstr "Erste Bank"
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Erste Bank (PDF)"
 msgstr "Erste Bank (PDF)"
-
-#: src/i18n/constant/languages.constant.ts
-msgctxt "endonym"
-msgid "Español"
-msgstr "Español"
 
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
 msgid "Estimated from your past transactions using your current limits."
@@ -3949,14 +3914,6 @@ msgstr "Importe fijo"
 msgid "Fixed-term savings with interest"
 msgstr "Ahorro a plazo fijo con intereses"
 
-#: src/app/icon-selector.tsx
-msgid "Flags"
-msgstr "Banderas"
-
-#: src/app/icon-selector.tsx
-msgid "Food & drink"
-msgstr "Comida y bebida"
-
 #: src/budget/components/budget-forecast-card/budget-forecast-card.tsx
 msgid "Forecast"
 msgstr "Previsión"
@@ -3964,11 +3921,6 @@ msgstr "Previsión"
 #: src/auth/components/pin-unlock/pin-unlock.tsx
 msgid "Forgot PIN?"
 msgstr "¿Olvidaste el PIN?"
-
-#: src/i18n/constant/languages.constant.ts
-msgctxt "endonym"
-msgid "Français"
-msgstr "Français"
 
 #: src/i18n/constant/languages.constant.ts
 msgid "French"
@@ -4076,10 +4028,6 @@ msgstr "Recibe sugerencias de categorías, etiquetas y notas a partir de tu hist
 msgid "Get started"
 msgstr "Empezar"
 
-#: src/app/icon-selector.tsx
-msgid "Gifts"
-msgstr "Regalos"
-
 #: src/@generic/component/go-back-button/go-back-button.tsx
 msgid "Go back"
 msgstr "Volver"
@@ -4095,10 +4043,6 @@ msgstr "Vuelve al total calculado a partir de los pagos y la comisión"
 #: src/runway/component/runway-verdict/runway-verdict.tsx
 msgid "Growing"
 msgstr "En crecimiento"
-
-#: src/app/icon-selector.tsx
-msgid "Health"
-msgstr "Salud"
 
 #: src/market-data/component/currency-market-accounts/currency-market-accounts.tsx
 msgid "Held in"
@@ -4142,10 +4086,6 @@ msgstr "Importación del historial en pausa"
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Hold to seal with this PIN"
 msgstr "Mantén pulsado para sellar con este PIN"
-
-#: src/app/icon-selector.tsx
-msgid "Home"
-msgstr "Hogar"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Home screen"
@@ -4859,10 +4799,6 @@ msgstr "Modelos y descargas"
 msgid "Models download once, best on Wi-Fi"
 msgstr "Los modelos se descargan una vez, mejor con wifi"
 
-#: src/app/icon-selector.tsx
-msgid "Money"
-msgstr "Dinero"
-
 #: src/app/(main)/create-account/index.tsx
 msgid "Money you lent or borrowed"
 msgstr "Dinero que prestaste o pediste prestado"
@@ -5160,6 +5096,7 @@ msgstr "No hay cuentas archivadas"
 msgid "No archived accounts match “{search}”"
 msgstr "Ninguna cuenta archivada coincide con «{search}»"
 
+#: src/app/category-selector.tsx
 #: src/category/components/category-select-content/category-select-content.tsx
 msgid "No categories found"
 msgstr "No se encontraron categorías"
@@ -5306,6 +5243,7 @@ msgstr "Aún no hay gastos ni ingresos"
 msgid "No sync repairs found."
 msgstr "No se encontraron reparaciones de sincronización."
 
+#: src/app/tags-selector.tsx
 #: src/tag/components/tags-select-content/tags-select-content.tsx
 msgid "No tags found"
 msgstr "No se encontraron etiquetas"
@@ -5411,10 +5349,6 @@ msgstr "Ahora"
 #: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
 msgid "Number of months"
 msgstr "Número de meses"
-
-#: src/app/icon-selector.tsx
-msgid "Objects"
-msgstr "Objetos"
 
 #: src/account/component/debt-account-card-summary/debt-account-card-summary.tsx
 msgid "of"
@@ -6895,10 +6829,6 @@ msgstr "Configuración"
 msgid "Shading shows how much your months usually vary."
 msgstr "El sombreado muestra cuánto suelen variar tus meses."
 
-#: src/app/icon-selector.tsx
-msgid "Shopping"
-msgstr "Compras"
-
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "Shortcuts"
 msgstr "Atajos"
@@ -6996,10 +6926,6 @@ msgstr "Grupos más pequeños"
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
 msgid "Smart suggestions"
 msgstr "Sugerencias inteligentes"
-
-#: src/app/icon-selector.tsx
-msgid "Smileys & people"
-msgstr "Caras y personas"
 
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Some issuers do not provide every Wallet trigger field. Edit the automation and check the variable bindings."
@@ -7163,7 +7089,6 @@ msgstr "Acciones"
 msgid "Subscriptions"
 msgstr "Suscripciones"
 
-#: src/app/icon-selector.tsx
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-learned-transfer-option/categorize-inbox-group-learned-transfer-option.tsx
 msgid "Suggested"
@@ -7188,10 +7113,6 @@ msgstr "Desliza para eliminar este tope por categoría de tu presupuesto."
 #: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
 msgid "Switch on to start syncing"
 msgstr "Actívala para empezar a sincronizar"
-
-#: src/app/icon-selector.tsx
-msgid "Symbols"
-msgstr "Símbolos"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 #: src/sync/component/bank-integration-new-account-row/bank-integration-new-account-row.tsx
@@ -7885,18 +7806,6 @@ msgstr "Traducción"
 msgid "Translations ready"
 msgstr "Traducciones listas"
 
-#: src/app/icon-selector.tsx
-msgid "Transport"
-msgstr "Transporte"
-
-#: src/app/icon-selector.tsx
-msgid "Travel"
-msgstr "Viajes"
-
-#: src/app/icon-selector.tsx
-msgid "Travel & places"
-msgstr "Viajes y lugares"
-
 #: src/app/(tabs)/settings/apple-pay-capture.tsx
 msgid "Troubleshooting"
 msgstr "Solución de problemas"
@@ -7905,9 +7814,12 @@ msgstr "Solución de problemas"
 msgid "Try a different merchant, amount, or date."
 msgstr "Prueba con otro comercio, importe o fecha."
 
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 #: src/@generic/component/icon-selector-empty-state/icon-selector-empty-state.tsx
+#: src/app/category-selector.tsx
 #: src/app/contact-selector.tsx
 #: src/app/rule-mcc-selector.tsx
+#: src/app/tags-selector.tsx
 #: src/category/components/category-select-content/category-select-content.tsx
 msgid "Try a different search term"
 msgstr "Prueba con un término de búsqueda diferente"
@@ -8389,10 +8301,6 @@ msgstr "Dentro del plan"
 msgid "Without a backup, lost data can't be recovered."
 msgstr "Sin una copia, los datos perdidos no se pueden recuperar."
 
-#: src/app/icon-selector.tsx
-msgid "Work"
-msgstr "Trabajo"
-
 #: src/ai/component/ai-download-eta/ai-download-eta.tsx
 msgid "Working out the time left…"
 msgstr "Calculando el tiempo restante…"
@@ -8589,8 +8497,3 @@ msgstr "Tu archivo de transacciones está listo para compartir."
 #: src/sync/service/background-sync-session.service.ts
 msgid "Your transactions keep importing in the background"
 msgstr "Tus transacciones se siguen importando en segundo plano"
-
-#: src/i18n/constant/languages.constant.ts
-msgctxt "endonym"
-msgid "Українська"
-msgstr "Українська"

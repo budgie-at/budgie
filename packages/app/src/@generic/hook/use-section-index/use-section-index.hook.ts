@@ -14,20 +14,12 @@ export const useSectionIndex = <T>(rows: readonly SelectorListRowInterface<T>[])
     const listRef = useRef<LegendListRef>(null);
     const [visibleLetter, setVisibleLetter] = useState<string | null>(null);
 
-    const titles = rows.flatMap(row => (isDefined(row.item) ? [] : [row.title ?? '']));
-    const letters = titles.filter(title => Array.from(title).length === 1);
-    const featuredMark = isDefined(titles[0]) && !letters.includes(titles[0]) ? [FEATURED_SECTION_MARK] : [];
-    const letterSet = new Set(letters);
-    const sectionLetterByRow = rows.reduce<string[]>((result, row) => {
-        const sectionTitle = isDefined(row.item) ? (result.at(-1) ?? '') : (row.title ?? '');
-
-        result.push(letterSet.has(sectionTitle) ? sectionTitle : FEATURED_SECTION_MARK);
-
-        return result;
-    }, []);
+    const letters = rows.flatMap(row => (!isDefined(row.item) && isDefined(row.indexLetter) ? [row.indexLetter] : []));
+    const featuredMark = isDefined(rows[0]) && !isDefined(rows[0].indexLetter) ? [FEATURED_SECTION_MARK] : [];
+    const sectionLetterByRow = rows.map(row => row.indexLetter ?? FEATURED_SECTION_MARK);
 
     const handleSectionLetter = (letter: string) => {
-        const index = letter === FEATURED_SECTION_MARK ? 0 : rows.findIndex(row => !isDefined(row.item) && row.title === letter);
+        const index = letter === FEATURED_SECTION_MARK ? 0 : rows.findIndex(row => !isDefined(row.item) && row.indexLetter === letter);
 
         setVisibleLetter(letter);
         void listRef.current?.scrollToIndex({ index, animated: false, viewOffset: SELECTOR_TITLED_HEADER_OFFSET });

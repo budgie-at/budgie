@@ -16,7 +16,7 @@ export const SelectorSearchEmptyState = ({ query, hint, children }: Props) => {
     const { t } = useLingui();
 
     return (
-        <View className="items-center gap-y-md px-5xl">
+        <View className="items-center gap-y-md px-5xl pt-7xl">
             <Icon icon={UserIconNameEnum.Search} size={40} className="text-secondary-foreground mb-xs" />
             <Text className="text-primary text-center text-[17px] font-semibold" numberOfLines={2}>
                 {t`No results for “${query}”`}

@@ -15,39 +15,26 @@ interface Props {
     readonly testID?: string;
 }
 
-const SCOPED_VARIABLES = [
-    '--color-surface',
-    '--color-surface-row',
-    '--color-surface-fill',
-    '--color-surface-disc',
-    '--color-surface-separator',
-    '--color-secondary-foreground'
-] as const;
-
-const PALETTE_SOURCES: Record<GroupedSurfacePaletteEnum, readonly string[]> = {
-    [GroupedSurfacePaletteEnum.PAGE]: [
-        '--color-grouped-surface',
-        '--color-grouped-surface-row',
-        '--color-grouped-surface-fill',
-        '--color-surface-disc',
-        '--color-surface-separator',
-        '--color-secondary-foreground'
-    ],
-    [GroupedSurfacePaletteEnum.SHEET]: [
-        '--color-sheet-grouped-surface',
-        '--color-sheet-grouped-row',
-        '--color-surface-fill',
-        '--color-sheet-grouped-disc',
-        '--color-sheet-grouped-separator',
-        '--color-sheet-grouped-secondary'
-    ]
+const PALETTE_SOURCES: Record<GroupedSurfacePaletteEnum, Record<string, string>> = {
+    [GroupedSurfacePaletteEnum.PAGE]: {
+        '--color-surface': '--color-grouped-surface',
+        '--color-surface-row': '--color-grouped-surface-row',
+        '--color-surface-fill': '--color-grouped-surface-fill'
+    },
+    [GroupedSurfacePaletteEnum.SHEET]: {
+        '--color-surface': '--color-sheet-grouped-surface',
+        '--color-surface-row': '--color-sheet-grouped-row',
+        '--color-surface-disc': '--color-sheet-grouped-disc',
+        '--color-surface-separator': '--color-sheet-grouped-separator',
+        '--color-secondary-foreground': '--color-sheet-grouped-secondary'
+    }
 };
 
 export const GroupedSurface = ({ children, palette = GroupedSurfacePaletteEnum.PAGE, className, testID }: Props) => {
-    const values = useCSSVariable([...PALETTE_SOURCES[palette]]);
+    const values = useCSSVariable(Object.values(PALETTE_SOURCES[palette]));
 
     const variables = Object.fromEntries(
-        SCOPED_VARIABLES.flatMap((name, index) => {
+        Object.keys(PALETTE_SOURCES[palette]).flatMap((name, index) => {
             const value = values[index];
 
             return isDefined(value) ? [[name, value]] : [];

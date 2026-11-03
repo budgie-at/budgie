@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const SelectorScrollEdge = ({ scrollOffset, top }: Props) => {
-    const animatedStyle = useAnimatedStyle(() => ({ top, opacity: withTiming(scrollOffset.value > 1 ? 1 : 0, { duration: 160 }) }));
+    const animatedStyle = useAnimatedStyle(() => ({ top, opacity: withTiming(scrollOffset.get() > 1 ? 1 : 0, { duration: 160 }) }));
 
     return (
         <Animated.View pointerEvents="none" className="absolute left-0 right-0 z-20" style={animatedStyle}>

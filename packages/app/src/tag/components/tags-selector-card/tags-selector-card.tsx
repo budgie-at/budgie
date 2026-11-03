@@ -33,7 +33,7 @@ const cardVariants = cva('relative border-2 rounded-3xl px-xl py-sm items-center
         isSelected: { true: '', false: '' },
         isPrimary: { true: '', false: '' },
         variant: {
-            static: 'h-[36px] flex-row gap-x-xs rounded-full px-[14px] py-0',
+            static: 'max-w-full h-[36px] flex-row gap-x-xs rounded-full px-[14px] py-0',
             removable: 'flex-none flex-row bg-primary border-primary py-md'
         }
     },
@@ -51,7 +51,7 @@ const cardVariants = cva('relative border-2 rounded-3xl px-xl py-sm items-center
     ]
 });
 
-const textVariants = cva('text-[15px]', {
+const textVariants = cva('shrink text-[15px]', {
     variants: {
         isSelected: { true: '', false: '' },
         isPrimary: { true: '', false: '' },
@@ -97,7 +97,7 @@ export const TagsSelectorCard = ({
     const accessibilityActions = isDefined(onPrimarySelect) && !isPrimary ? [{ name: 'makePrimary', label: t`Make primary` }] : [];
 
     return (
-        <Animated.View layout={LinearTransition.springify()}>
+        <Animated.View className="max-w-full self-start" layout={LinearTransition.springify()}>
             <HapticPressable
                 testID={testID}
                 className={cn(cardVariants({ isSelected, isPrimary, variant }), className)}

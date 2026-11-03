@@ -4,6 +4,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { LEGEND_LIST_STYLE } from '../../constant/legend-list.constant';
 import { SELECTOR_TITLED_HEADER_HEIGHT, SELECTOR_TITLED_HEADER_OFFSET } from '../../constant/selector-header-offset.constant';
+import { SelectorRowKindEnum } from '../../enum/selector-row-kind.enum';
 import { useFormsheetListContentStyle } from '../../hook/use-formsheet-list-content-style/use-formsheet-list-content-style.hook';
 import { useSectionIndex } from '../../hook/use-section-index/use-section-index.hook';
 import { useSheetScrollEdge } from '../../hook/use-sheet-scroll-edge/use-sheet-scroll-edge.hook';
@@ -31,11 +32,11 @@ interface Props<T> {
 
 const ESTIMATED_ROW_HEIGHT = 60;
 const RAIL_GUTTER = 30;
-const RAIL_POSITION_STYLE = { top: SELECTOR_TITLED_HEADER_HEIGHT, right: 4 };
+const RAIL_POSITION_STYLE = { top: SELECTOR_TITLED_HEADER_HEIGHT, right: 4, bottom: 24 };
 
 const rowKeyExtractor = <T,>(row: SelectorListRowInterface<T>) => row.key;
 
-const getRowType = <T,>(row: SelectorListRowInterface<T>) => (isDefined(row.item) ? 'item' : 'section');
+const getRowType = <T,>(row: SelectorListRowInterface<T>) => (isDefined(row.item) ? SelectorRowKindEnum.ITEM : SelectorRowKindEnum.TITLE);
 
 export const SearchableSelectorList = <T,>({ header, sections, keyExtractor, renderItem, emptyState }: Props<T>) => {
     const contentContainerStyle = useFormsheetListContentStyle(0, SELECTOR_TITLED_HEADER_OFFSET);
@@ -73,17 +74,18 @@ export const SearchableSelectorList = <T,>({ header, sections, keyExtractor, ren
                     getItemType={getRowType}
                     estimatedItemSize={ESTIMATED_ROW_HEIGHT}
                     renderItem={renderRow}
+                    keyboardDismissMode="on-drag"
                     keyboardShouldPersistTaps="handled"
                     onScroll={handleScroll}
                     scrollEventThrottle={16}
                     contentContainerStyle={listContentStyle}
                     onViewableItemsChanged={handleViewableItemsChanged}
-                    ListEmptyComponent={<View className="pt-7xl">{emptyState}</View>}
+                    ListEmptyComponent={emptyState}
                 />
             </View>
 
             {hasRail ? (
-                <View className="absolute z-30 pt-md" style={RAIL_POSITION_STYLE}>
+                <View className="absolute z-30 justify-center pt-md" style={RAIL_POSITION_STYLE}>
                     <SectionIndexRail letters={sectionLetters} activeLetter={visibleLetter} onSelect={handleSectionLetter} />
                 </View>
             ) : null}

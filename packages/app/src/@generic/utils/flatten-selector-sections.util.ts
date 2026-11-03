@@ -9,11 +9,21 @@ export const flattenSelectorSections = <T>(
 ): SelectorListRowInterface<T>[] =>
     sections.flatMap((section, sectionIndex) => {
         const header = isNotEmptyString(section.title)
-            ? [{ key: `section-${sectionIndex}`, title: section.title, item: null, isFirst: sectionIndex === 0, isLast: false }]
+            ? [
+                  {
+                      key: `section-${sectionIndex}`,
+                      title: section.title,
+                      indexLetter: section.indexLetter,
+                      item: null,
+                      isFirst: sectionIndex === 0,
+                      isLast: false
+                  }
+              ]
             : [];
         const rows = section.data.map((item, index) => ({
             key: `${sectionIndex}-${keyExtractor(item)}`,
             title: null,
+            indexLetter: section.indexLetter,
             item,
             isFirst: index === 0,
             isLast: index === section.data.length - 1

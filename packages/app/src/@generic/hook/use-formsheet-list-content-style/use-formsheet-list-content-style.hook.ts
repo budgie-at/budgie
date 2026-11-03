@@ -6,13 +6,13 @@ import { SELECTOR_HEADER_OFFSET } from '../../constant/selector-header-offset.co
 const HORIZONTAL_PADDING = 16;
 const BOTTOM_CLEARANCE = 16;
 
-export const useFormsheetListContentStyle = (additionalBottomPadding = 0, topOffset = SELECTOR_HEADER_OFFSET, columnGap = 0): ViewStyle => {
+export const useFormsheetListContentStyle = (additionalBottomPadding = 0, topOffset = SELECTOR_HEADER_OFFSET): ViewStyle => {
     const { bottom } = useSafeAreaInsets();
 
     return {
         paddingTop: topOffset,
         paddingBottom: bottom + BOTTOM_CLEARANCE + additionalBottomPadding,
-        paddingHorizontal: HORIZONTAL_PADDING + columnGap / 2,
+        paddingHorizontal: HORIZONTAL_PADDING,
         flexGrow: 1
     };
 };

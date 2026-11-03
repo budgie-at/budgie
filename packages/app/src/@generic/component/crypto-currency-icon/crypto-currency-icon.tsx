@@ -4,7 +4,8 @@ import { Text, View } from 'react-native';
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
 import { TONAL_DISC_BACKGROUND } from '../../constant/tonal-disc-background.constant';
 import { cn } from '../../utils/cn.util';
-import { getMonogramTint } from '../../utils/get-monogram-tint.util';
+
+import type { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 
 interface Props {
     readonly code: string;
@@ -13,6 +14,7 @@ interface Props {
 }
 
 const supportedCryptoIconCodes = new Set(getSupportedSymbols());
+const MONOGRAM_TINTS: readonly ColorPaletteVariant[] = ['default', 'positive', 'violet', 'cyan'];
 const MONOGRAM_SCALE = 0.36;
 const MONOGRAM_LENGTH = 2;
 
@@ -31,7 +33,9 @@ export const CryptoCurrencyIcon = ({ code, size = 32, className }: Props) => {
     }
 
     const monogramStyle = { fontSize: Math.round(size * MONOGRAM_SCALE) };
-    const tint = getMonogramTint(ticker);
+    const tint =
+        MONOGRAM_TINTS[Array.from(ticker).reduce((hash, character) => hash + character.charCodeAt(0), 0) % MONOGRAM_TINTS.length] ??
+        'default';
 
     return (
         <View

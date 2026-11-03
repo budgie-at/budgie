@@ -727,6 +727,7 @@
                             "use client"
                         ],
                         "ignoreNames": [
+                            "nativeName",
                             {
                                 "regex": {
                                     "pattern": "className",

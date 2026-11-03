@@ -1,10 +1,12 @@
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { EmptyState as CategoryEmptyState } from '../@generic/component/empty-state/empty-state';
 import { SelectorModalDescription } from '../@generic/component/selector-modal-description/selector-modal-description';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
+import { SelectorNoResultsState } from '../@generic/component/selector-no-results-state/selector-no-results-state';
 import { SheetSurface } from '../@generic/component/sheet-surface/sheet-surface';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { prepareSelectorGridData } from '../@generic/utils/prepare-selector-grid-data.util';
@@ -27,8 +29,8 @@ export default function CategorySelectorModal() {
     const { variant = 'primary', initialCategoryId = null, title, description, excludeCategoryIds = [] } = currentParams ?? {};
     const selectedCategoryIds = isDefined(initialCategoryId) ? [initialCategoryId] : [];
     const data = prepareSelectorGridData(categories, excludeCategoryIds);
+    const listData = isLoading ? null : data;
     const query = search.trim();
-    const resultCount = isLoading ? null : data.filter(item => !item.isEmpty).length;
 
     const handleCreatePress = () => {
         openCategoryForm({ defaultTitle: query }, result => {
@@ -37,6 +39,12 @@ export default function CategorySelectorModal() {
             }
         });
     };
+
+    const listEmptyComponent = isNotEmptyString(query) ? (
+        <SelectorNoResultsState query={query} hint={t`Check the spelling or create it as a new category.`} onCreate={handleCreatePress} />
+    ) : (
+        <CategoryEmptyState title={t`No categories found`} description={t`Try a different search term`} />
+    );
 
     return (
         <SheetSurface>
@@ -51,21 +59,14 @@ export default function CategorySelectorModal() {
                 testID={CategorySelectorModalSelector.Input}
             />
 
-            <SelectorModalDescription
-                title={title}
-                description={description}
-                query={query}
-                resultCount={resultCount}
-                noResultsHint={t`Check the spelling or create it as a new category.`}
-                onCreate={handleCreatePress}
-            >
+            <SelectorModalDescription title={title} description={description}>
                 {topOffset => (
                     <CategorySelectContent
+                        listEmptyComponent={listEmptyComponent}
                         topOffset={topOffset}
-                        data={data}
+                        data={listData}
                         variant={variant}
                         selectedCategoryIds={selectedCategoryIds}
-                        isLoading={isLoading}
                         onSelect={resolveCategorySelector}
                         cardTestID={CategorySelectorModalSelector.Card}
                     />

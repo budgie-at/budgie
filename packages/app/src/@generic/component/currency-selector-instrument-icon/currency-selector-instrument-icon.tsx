@@ -5,10 +5,12 @@ import { SvgXml } from 'react-native-svg';
 
 import { isDefined } from '@rnw-community/shared';
 
+import circleFlags from '../../../../assets/flags/circle-flags.json';
 import { GlyphSizeEnum } from '../../enum/glyph-size.enum';
-import { getCurrencyFlag } from '../../utils/get-currency-flag.util';
 import { getGlyphSize } from '../../utils/get-glyph-size.util';
 import { CryptoCurrencyIcon } from '../crypto-currency-icon/crypto-currency-icon';
+
+const CIRCLE_FLAGS: Readonly<Record<string, string>> = circleFlags;
 
 const symbolVariants = cva<{ glyphSize: Record<GlyphSizeEnum, string> }>('text-primary font-semibold', {
     variants: {
@@ -30,11 +32,11 @@ interface Props {
 
 export const CurrencySelectorInstrumentIcon = ({ code, symbol, type, size = 48, isLargeFiatSymbol = false }: Props) => {
     if (type === InstrumentTypeEnum.CRYPTO) {
-        return <CryptoCurrencyIcon code={code} size={size} className="bg-surface-disc border-hairline border-primary/25" />;
+        return <CryptoCurrencyIcon code={code} size={size} className="bg-surface-disc" />;
     }
 
     const style = { width: size, height: size } as const;
-    const flag = isLargeFiatSymbol ? null : getCurrencyFlag(code);
+    const flag = isLargeFiatSymbol ? null : (CIRCLE_FLAGS[code.slice(0, 2).toUpperCase()] ?? null);
 
     if (isDefined(flag)) {
         return (

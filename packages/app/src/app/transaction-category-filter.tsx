@@ -32,7 +32,7 @@ export default function TransactionCategoryFilterModal() {
     const { categories, isLoading } = useSearchCategoriesQuery(search, true);
 
     const selectedCategoryIds = localValue ?? [];
-    const data = prepareTransactionFilterGridData(categories, selectedCategoryIds);
+    const data = isLoading ? null : prepareTransactionFilterGridData(categories, selectedCategoryIds);
 
     const handleSelect = (selected: number) => void setLocalValue(previous => toggleFilterSelection(previous, [selected]));
     const handleSelectAll = () => void setLocalValue(() => (categories ?? []).map(category => category.id));
@@ -55,7 +55,6 @@ export default function TransactionCategoryFilterModal() {
                 data={data}
                 variant="cta"
                 selectedCategoryIds={selectedCategoryIds}
-                isLoading={isLoading}
                 additionalBottomPadding={FOOTER_BOTTOM_SPACE}
                 topOffset={LIST_TOP_SPACE}
                 onSelect={handleSelect}

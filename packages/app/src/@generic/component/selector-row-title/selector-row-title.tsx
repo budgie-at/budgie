@@ -4,6 +4,7 @@ import { cn } from '../../utils/cn.util';
 import { splitHighlight } from '../../utils/split-highlight.util';
 
 interface Props {
+    readonly className?: string;
     readonly text: string;
     readonly highlight?: string;
     readonly language?: string;
@@ -11,12 +12,12 @@ interface Props {
     readonly isSelected?: boolean;
 }
 
-export const SelectorRowTitle = ({ text, highlight = '', language, testID, isSelected = false }: Props) => {
+export const SelectorRowTitle = ({ className, text, highlight = '', language, testID, isSelected = false }: Props) => {
     const [beforeMatch, match, afterMatch] = splitHighlight(text, highlight);
 
     return (
         <Text
-            className={cn('text-primary text-[17px]', isSelected && 'font-semibold')}
+            className={cn('text-primary text-[17px]', isSelected && 'font-semibold', className)}
             numberOfLines={1}
             testID={testID}
             accessibilityLanguage={language}

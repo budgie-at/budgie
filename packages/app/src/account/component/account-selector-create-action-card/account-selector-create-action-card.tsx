@@ -2,6 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { View } from 'react-native';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { GroupedListItem } from '../../../@generic/component/grouped-list-item/grouped-list-item';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { AccountSelectorModalSelector } from '../../../app/account-selector-modal.selector';
 
@@ -13,11 +14,9 @@ interface Props {
     readonly onCreate: () => void;
 }
 
-const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
-
 export const AccountSelectorCreateActionCard = ({ title, subtitle, onCreate }: Props) => (
-    <View className="mb-5xl overflow-hidden rounded-3xl bg-surface-row" style={CONTINUOUS_CORNERS}>
-        <View className="-mt-px">
+    <View className="mb-5xl">
+        <GroupedListItem isFirst isLast>
             <GroupedListRow
                 onPress={onCreate}
                 testID={AccountSelectorModalSelector.CreateAction}
@@ -25,6 +24,6 @@ export const AccountSelectorCreateActionCard = ({ title, subtitle, onCreate }: P
                 title={title}
                 subtitle={subtitle}
             />
-        </View>
+        </GroupedListItem>
     </View>
 );

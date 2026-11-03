@@ -24,7 +24,6 @@ export const SectionIndexRail = ({ letters, activeLetter, onSelect }: Props) => 
     const { t } = useLingui();
     const [, , hapticSelection] = useVibration();
     const [activeIndex, setActiveIndex] = useState<number | null>(null);
-    const [isScrubbing, setIsScrubbing] = useState(false);
     const railHeight = useSharedValue(0);
     const lastIndex = useSharedValue(-1);
 
@@ -33,7 +32,6 @@ export const SectionIndexRail = ({ letters, activeLetter, onSelect }: Props) => 
     };
     const handleIndex = (index: number) => {
         hapticSelection();
-        setIsScrubbing(true);
         setActiveIndex(index);
         onSelect(letters[index] ?? '');
     };
@@ -64,15 +62,15 @@ export const SectionIndexRail = ({ letters, activeLetter, onSelect }: Props) => 
         })
         .onFinalize(() => {
             lastIndex.set(-1);
-            runOnJS(setIsScrubbing)(false);
+            runOnJS(setActiveIndex)(null);
         });
 
-    const scrubLetter = isScrubbing && isDefined(activeIndex) ? letters[activeIndex] : null;
+    const scrubLetter = isDefined(activeIndex) ? letters[activeIndex] : null;
     const highlightedLetter = scrubLetter ?? activeLetter;
     const accessibilityValue = { text: highlightedLetter ?? letters.at(0) ?? '' };
 
     return (
-        <View className="flex-row items-center">
+        <View className="max-h-full flex-row items-center">
             {isDefined(scrubLetter) ? (
                 <View className="mr-md h-[48px] w-[48px] items-center justify-center rounded-full bg-surface-fill" pointerEvents="none">
                     <Text className="text-primary text-[24px] font-semibold">{scrubLetter}</Text>
@@ -80,7 +78,7 @@ export const SectionIndexRail = ({ letters, activeLetter, onSelect }: Props) => 
             ) : null}
             <GestureDetector gesture={gesture}>
                 <View
-                    className="w-[16px] items-center justify-center py-xs"
+                    className="max-h-full w-[16px] shrink items-center justify-center py-xs"
                     onLayout={handleLayout}
                     accessible
                     accessibilityRole="adjustable"
@@ -90,12 +88,7 @@ export const SectionIndexRail = ({ letters, activeLetter, onSelect }: Props) => 
                     onAccessibilityAction={handleAccessibilityAction}
                 >
                     {letters.map(letter => (
-                        <SectionIndexLetter
-                            key={letter}
-                            letter={letter}
-                            isActive={letter === highlightedLetter}
-                            isScrubbing={isScrubbing}
-                        />
+                        <SectionIndexLetter key={letter} letter={letter} isActive={letter === highlightedLetter} />
                     ))}
                 </View>
             </GestureDetector>

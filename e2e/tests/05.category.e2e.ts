@@ -38,7 +38,7 @@ test('05 category', { tags: ['categories'] }, async ({ budgie }) => {
         await a.openSettingsCard(ctx, 'SettingsPage.ManageCategoriesCard', 'CategoryPage.SearchInput');
     });
 
-    await b.phase('create primary category with icon', () => newCategory('bike', 'reicon:Bicycle', 'E2E Category Primary'));
+    await b.phase('create primary category with icon', () => newCategory('cat', 'reicon:Category', 'E2E Category Primary'));
     await b.phase('create second category for search', () => newCategory('home', 'reicon:Home', 'E2E Category Search'));
 
     await b.phase('search and open result', async () => {

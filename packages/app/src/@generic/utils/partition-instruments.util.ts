@@ -5,12 +5,12 @@ import type { InstrumentEntityInterface } from '@budgie/contracts';
 const COMMON_CURRENCY_CODES = new Set(['USD', 'EUR', 'GBP', 'JPY', 'CHF', 'CAD', 'AUD', 'CNY']);
 const TOP_CRYPTO_COUNT = 8;
 
-type PartitionableInstrument = Pick<InstrumentEntityInterface, 'id' | 'code' | 'name' | 'marketCapRank'>;
+const byMarketCapRank = (
+    first: Pick<InstrumentEntityInterface, 'marketCapRank'>,
+    second: Pick<InstrumentEntityInterface, 'marketCapRank'>
+) => (first.marketCapRank ?? Number.MAX_SAFE_INTEGER) - (second.marketCapRank ?? Number.MAX_SAFE_INTEGER);
 
-const byMarketCapRank = (first: PartitionableInstrument, second: PartitionableInstrument) =>
-    (first.marketCapRank ?? Number.MAX_SAFE_INTEGER) - (second.marketCapRank ?? Number.MAX_SAFE_INTEGER);
-
-export const partitionInstruments = <T extends PartitionableInstrument>(
+export const partitionInstruments = <T extends Pick<InstrumentEntityInterface, 'id' | 'code' | 'name' | 'marketCapRank'>>(
     instruments: readonly T[],
     selectedId: number | undefined,
     type: InstrumentTypeEnum

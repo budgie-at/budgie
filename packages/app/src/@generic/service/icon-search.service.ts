@@ -3,11 +3,9 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { IconCategoryEnum } from '../enum/icon-category.enum';
 import { normalizeIconSearchText } from '../utils/normalize-icon-search-text.util';
 import { resolveReiconIcon } from '../utils/resolve-reicon-icon.util';
 
-import type { IconCategorySectionInterface } from '../interface/icon-category-section.interface';
 import type { IconSearchEntryInterface } from '../interface/icon-search-entry.interface';
 import type { IconSearchTokenIndexInterface } from '../interface/icon-search-token-index.interface';
 import type { UserIconType } from '@budgie/contracts';
@@ -54,59 +52,6 @@ class IconSearchService {
         'various'
     ]);
 
-    private static readonly CATEGORY_TERMS: readonly (readonly [IconCategoryEnum, readonly string[]])[] = [
-        [
-            IconCategoryEnum.MONEY,
-            [
-                'money',
-                'bank',
-                'cash',
-                'coin',
-                'payment',
-                'wallet',
-                'card',
-                'savings',
-                'currency',
-                'invest',
-                'dollar',
-                'euro',
-                'crypto',
-                'bitcoin',
-                'ethereum',
-                'receipt',
-                'percent',
-                'safe'
-            ]
-        ],
-        [IconCategoryEnum.SHOPPING, ['shopping', 'shop', 'store', 'cart', 'bag', 'clothes', 'tag', 'sale']],
-        [IconCategoryEnum.FOOD, ['food', 'drink', 'restaurant', 'coffee', 'fruit', 'meal', 'cooking']],
-        [IconCategoryEnum.HOME, ['home', 'house', 'furniture', 'utilities', 'electricity', 'water', 'tools', 'plug', 'bulb', 'fridge']],
-        [IconCategoryEnum.TRANSPORT, ['transport', 'car', 'bus', 'train', 'bike', 'fuel', 'parking']],
-        [IconCategoryEnum.TRAVEL, ['travel', 'airplane', 'hotel', 'vacation', 'luggage', 'map']],
-        [IconCategoryEnum.HEALTH, ['health', 'medical', 'pharmacy', 'fitness', 'sport', 'doctor']],
-        [IconCategoryEnum.ENTERTAINMENT, ['entertainment', 'music', 'movie', 'game', 'camera', 'party', 'headphones', 'tv', 'trophy']],
-        [IconCategoryEnum.EDUCATION, ['education', 'book', 'school', 'study']],
-        [IconCategoryEnum.GIFTS, ['gift', 'celebration', 'love', 'charity']],
-        [
-            IconCategoryEnum.WORK,
-            ['work', 'office', 'business', 'computer', 'phone', 'communication', 'mail', 'document', 'briefcase', 'printer', 'chart']
-        ]
-    ];
-
-    private static readonly VARIANT_LABEL =
-        /\b(?:add|minus|remove|check|cross|swap|send|receive|forbidden|slash|edit|search|plus|tick|time|lock|\d+)$/iu;
-
-    private static readonly EMOJI_GROUPS: readonly (readonly [IconCategoryEnum, string])[] = [
-        [IconCategoryEnum.EMOJI_SMILEYS, '😀'],
-        [IconCategoryEnum.EMOJI_ANIMALS, '🐵'],
-        [IconCategoryEnum.EMOJI_FOOD, '🍇'],
-        [IconCategoryEnum.EMOJI_TRAVEL, '🌍'],
-        [IconCategoryEnum.EMOJI_ACTIVITIES, '🎃'],
-        [IconCategoryEnum.EMOJI_OBJECTS, '👓'],
-        [IconCategoryEnum.EMOJI_SYMBOLS, '🏧'],
-        [IconCategoryEnum.EMOJI_FLAGS, '🏁']
-    ];
-
     private static readonly FALLBACK_ICONS: readonly UserIconType[] = [
         UserIconNameEnum.Folder,
         UserIconNameEnum.Briefcase,
@@ -130,49 +75,12 @@ class IconSearchService {
         return icons.map(({ icon, keywords }) => this.createEntry(icon, keywords, translations, labels));
     });
 
-    private readonly categoryCache = new WeakMap<readonly IconSearchEntryInterface[], readonly IconCategorySectionInterface[]>();
-
     private readonly tokenIndexes = new WeakMap<readonly IconSearchEntryInterface[], IconSearchTokenIndexInterface>();
 
     rank(entries: readonly IconSearchEntryInterface[], terms: readonly string[]): IconSearchEntryInterface[] {
-        const scored = this.score(entries, terms, true);
-        const confident = scored.filter(({ score }) => score > IconSearchService.CONFIDENT_SCORE);
-        const matches = (isNotEmptyArray(confident) ? confident : scored).map(({ entry }) => entry);
-        const leadKeywords = terms.map(term => `|${normalizeIconSearchText(term)}|`);
-        const isLeadMatch = ({ name, keywords }: IconSearchEntryInterface) =>
-            leadKeywords.some(keyword => keywords.startsWith(keyword, name.length - 1));
-        const emoji = matches.filter(({ icon }) => isEmojiIcon(icon));
-
-        return [
-            ...matches.filter(({ icon }) => !isEmojiIcon(icon)),
-            ...emoji.filter(isLeadMatch).sort((first, second) => first.label.split(' ').length - second.label.split(' ').length),
-            ...emoji.filter(entry => !isLeadMatch(entry))
-        ];
-    }
-
-    popular(
-        entries: readonly IconSearchEntryInterface[],
-        terms: readonly string[],
-        excludedIcons: readonly UserIconNameEnum[] | undefined,
-        selectedIcon: UserIconType | undefined
-    ): IconSearchEntryInterface[] {
-        const selectedEntry = entries.find(entry => entry.icon === selectedIcon);
-        const suggested = this.suggest(entries, terms, excludedIcons).filter(entry => entry.icon !== selectedIcon);
-
-        return [selectedEntry, ...suggested].filter(isDefined);
-    }
-
-    categorize(entries: readonly IconSearchEntryInterface[]): readonly IconCategorySectionInterface[] {
-        const cached = this.categoryCache.get(entries);
-
-        if (isDefined(cached)) {
-            return cached;
-        }
-
-        const sections = this.buildCategories(entries);
-        this.categoryCache.set(entries, sections);
-
-        return sections;
+        return this.score(entries, terms, true)
+            .map(({ entry }) => entry)
+            .sort((first, second) => Number(isEmojiIcon(first.icon)) - Number(isEmojiIcon(second.icon)));
     }
 
     suggest(
@@ -202,27 +110,6 @@ class IconSearchService {
         return top?.entry.icon ?? null;
     }
 
-    private buildCategories(entries: readonly IconSearchEntryInterface[]): IconCategorySectionInterface[] {
-        const glyphs = entries.filter(({ icon, label }) => !isEmojiIcon(icon) && !IconSearchService.VARIANT_LABEL.test(label));
-        const scoresByCategory = IconSearchService.CATEGORY_TERMS.map(([category, terms]) => ({
-            category,
-            scores: new Map(
-                this.score(glyphs, terms, false)
-                    .filter(({ score }) => score >= IconSearchService.WORD_SCORE)
-                    .map(({ entry, score }) => [entry, score] as const)
-            )
-        }));
-        const bestCategory = (entry: IconSearchEntryInterface) =>
-            scoresByCategory.reduce((best, current) => ((current.scores.get(entry) ?? 0) > (best.scores.get(entry) ?? 0) ? current : best))
-                .category;
-        const glyphSections = scoresByCategory.map(({ category, scores }) => ({
-            category,
-            entries: [...scores.keys()].filter(entry => bestCategory(entry) === category)
-        }));
-
-        return [...glyphSections, ...this.groupEmoji(entries)].filter(({ entries: sectionEntries }) => isNotEmptyArray(sectionEntries));
-    }
-
     private distinctFamilies(
         candidates: readonly IconSearchEntryInterface[],
         excludedIcons: readonly UserIconNameEnum[]
@@ -236,22 +123,6 @@ class IconSearchService {
 
             return isNewFamily;
         });
-    }
-
-    private groupEmoji(entries: readonly IconSearchEntryInterface[]): IconCategorySectionInterface[] {
-        const emoji = this.distinctFamilies(
-            entries.filter(({ icon }) => isEmojiIcon(icon)),
-            []
-        );
-        const groups = IconSearchService.EMOJI_GROUPS.map(([category, firstEmoji]) => ({
-            category,
-            start: emoji.findIndex(({ icon }) => this.getFamily(icon) === firstEmoji)
-        })).filter(({ start }) => start >= 0);
-
-        return groups.map(({ category, start }, index) => ({
-            category,
-            entries: emoji.slice(start, groups[index + 1]?.start ?? emoji.length)
-        }));
     }
 
     private getFamily(icon: UserIconType): string {

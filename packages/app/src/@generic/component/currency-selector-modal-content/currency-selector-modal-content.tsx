@@ -10,6 +10,8 @@ import { groupByInitial } from '../../utils/group-by-initial.util';
 import { partitionInstruments } from '../../utils/partition-instruments.util';
 import { rankInstrumentSearch } from '../../utils/rank-instrument-search.util';
 import { CurrencySelectorCard } from '../currency-selector-card/currency-selector-card';
+import { EmptyState } from '../empty-state/empty-state';
+import { LoadingContent } from '../loading-content/loading-content';
 import { SearchableSelectorList } from '../searchable-selector-list/searchable-selector-list';
 import { SelectorModalSearchHeader } from '../selector-modal-search-header/selector-modal-search-header';
 import { SelectorSearchEmptyState } from '../selector-search-empty-state/selector-search-empty-state';
@@ -25,7 +27,7 @@ interface Props {
 export const CurrencySelectorModalContent = ({ instrumentType, selectedInstrumentId, onSelect }: Props) => {
     const { t } = useLingui();
     const [search, setSearch] = useState('');
-    const { instruments } = useGetInstrumentsByTypeQuery(instrumentType);
+    const { instruments, isLoading } = useGetInstrumentsByTypeQuery(instrumentType);
 
     const isCrypto = instrumentType === InstrumentTypeEnum.CRYPTO;
     const title = isCrypto ? t`Crypto` : t`Currency`;
@@ -58,6 +60,12 @@ export const CurrencySelectorModalContent = ({ instrumentType, selectedInstrumen
         />
     );
 
+    const emptyState = isNotEmptyString(search.trim()) ? (
+        <SelectorSearchEmptyState query={search.trim()} hint={emptyHint} />
+    ) : (
+        <EmptyState title={title} description={t`Try a different search term`} />
+    );
+
     return (
         <SearchableSelectorList
             header={
@@ -72,7 +80,7 @@ export const CurrencySelectorModalContent = ({ instrumentType, selectedInstrumen
             sections={sections}
             keyExtractor={keyExtractor}
             renderItem={renderItem}
-            emptyState={<SelectorSearchEmptyState query={search.trim()} hint={emptyHint} />}
+            emptyState={<LoadingContent isLoading={isLoading}>{emptyState}</LoadingContent>}
         />
     );
 };

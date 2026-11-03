@@ -19,7 +19,7 @@ export const groupByInitial = <T extends { readonly name: string }>(items: reado
         }
     });
 
-    return Array.from(groups, ([title, data]) => ({ title, data })).sort(
+    return Array.from(groups, ([title, data]) => ({ title, indexLetter: title, data })).sort(
         (first, second) => Number(first.title === '#') - Number(second.title === '#')
     );
 };

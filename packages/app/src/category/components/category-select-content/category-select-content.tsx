@@ -2,17 +2,21 @@ import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { SelectorGridContent } from '../../../@generic/component/selector-grid-content/selector-grid-content';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { FlatListDataItem } from '../../../@generic/utils/map-to-flatlist-data.util';
 import { CategorySelectorCard } from '../category-selector-card/category-selector-card';
 
+import type { ReactElement } from 'react';
+
 interface Props {
-    readonly data: FlatListDataItem<CategoryEntityInterface>[];
+    readonly listEmptyComponent?: ReactElement;
+    readonly data: FlatListDataItem<CategoryEntityInterface>[] | null;
     readonly variant: ColorPaletteVariant;
     readonly selectedCategoryIds: number[];
-    readonly isLoading?: boolean;
     readonly additionalBottomPadding?: number;
     readonly topOffset?: number;
     readonly onSelect: (categoryId: number) => void;
@@ -25,7 +29,7 @@ const keyExtractor = (item: FlatListDataItem<CategoryEntityInterface>, index: nu
     item.isEmpty ? `empty-${index}` : item.id.toString();
 
 export const CategorySelectContent = (props: Props) => {
-    const { data, variant, selectedCategoryIds, isLoading = false, additionalBottomPadding = 0, topOffset, onSelect, cardTestID } = props;
+    const { data, variant, selectedCategoryIds, additionalBottomPadding = 0, topOffset, onSelect, cardTestID } = props;
     const { t } = useLingui();
 
     const renderItem = ({ item }: { item: FlatListDataItem<CategoryEntityInterface> }) =>
@@ -43,7 +47,7 @@ export const CategorySelectContent = (props: Props) => {
             />
         );
 
-    const listEmptyComponent = (
+    const listEmptyComponent = props.listEmptyComponent ?? (
         <View className="pt-7xl">
             <EmptyState icon={UserIconNameEnum.Search} title={t`No categories found`} description={t`Try a different search term`} />
         </View>
@@ -51,12 +55,12 @@ export const CategorySelectContent = (props: Props) => {
 
     return (
         <SelectorGridContent
-            data={data}
+            data={data ?? []}
             keyExtractor={keyExtractor}
             renderItem={renderItem}
             itemHeight={CARD_HEIGHT}
             listEmptyComponent={listEmptyComponent}
-            isLoading={isLoading}
+            isLoading={!isDefined(data)}
             additionalBottomPadding={additionalBottomPadding}
             topOffset={topOffset}
         />

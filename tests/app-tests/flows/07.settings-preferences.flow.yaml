@@ -22,6 +22,10 @@ appId: ${APP_ID}
       env:
           CARD_ID: '^SettingsPage[.]LanguageCard[.].+$'
           DESTINATION_ID: 'LanguageSelector.Option.de'
+- scrollUntilVisible:
+      element:
+          id: 'LanguageSelector.Option.de'
+      direction: DOWN
 - tapOn:
       id: 'LanguageSelector.Option.de'
 - extendedWaitUntil:
@@ -38,6 +42,10 @@ appId: ${APP_ID}
       env:
           CARD_ID: '^SettingsPage[.]LanguageCard[.].+$'
           DESTINATION_ID: 'LanguageSelector.Option.en'
+- scrollUntilVisible:
+      element:
+          id: 'LanguageSelector.Option.en'
+      direction: DOWN
 - tapOn:
       id: 'LanguageSelector.Option.en'
 - extendedWaitUntil:

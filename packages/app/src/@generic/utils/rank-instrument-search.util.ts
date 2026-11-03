@@ -1,8 +1,9 @@
 import type { InstrumentEntityInterface } from '@budgie/contracts';
 
-type SearchableInstrument = Pick<InstrumentEntityInterface, 'name' | 'code' | 'symbol'>;
-
-export const rankInstrumentSearch = <T extends SearchableInstrument>(instruments: readonly T[], search: string): T[] => {
+export const rankInstrumentSearch = <T extends Pick<InstrumentEntityInterface, 'name' | 'code' | 'symbol'>>(
+    instruments: readonly T[],
+    search: string
+): T[] => {
     const query = search.trim().toLowerCase();
     const matches = instruments.filter(({ name, code, symbol }) => [name, code, symbol].some(value => value.toLowerCase().includes(query)));
 

@@ -11,6 +11,7 @@ test('07 settings preferences', { tags: ['settings'] }, async ({ budgie }) => {
     const { screen } = ctx;
     const pickLanguage = async (code: string) => {
         await a.openSettingsCard(ctx, /^SettingsPage\.LanguageCard\..+$/, `LanguageSelector.Option.${code}`);
+        await b.scrollTo(ctx, `LanguageSelector.Option.${code}`);
         await b.tapId(ctx, `LanguageSelector.Option.${code}`);
         await b.expectNoId(ctx, `LanguageSelector.Option.${code}`, 3_000);
         await b.expectId(ctx, `SettingsPage.LanguageCard.${code}`, 10_000);

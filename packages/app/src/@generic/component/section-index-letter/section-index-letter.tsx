@@ -4,20 +4,16 @@ import { Text } from 'react-native';
 interface Props {
     readonly letter: string;
     readonly isActive: boolean;
-    readonly isScrubbing: boolean;
 }
 
-const letterVariants = cva('text-[12px] font-semibold leading-[13px]', {
+const letterVariants = cva('shrink text-[12px] font-semibold leading-[13px]', {
     variants: {
-        isActive: { true: 'font-bold text-positive-action', false: '' },
-        isScrubbing: { true: '', false: '' }
-    },
-    compoundVariants: [
-        { isActive: false, isScrubbing: false, className: 'text-secondary-foreground' },
-        { isActive: false, isScrubbing: true, className: 'text-secondary-foreground/60' }
-    ]
+        isActive: { true: 'font-bold text-positive-action', false: 'text-secondary-foreground' }
+    }
 });
 
-export const SectionIndexLetter = ({ letter, isActive, isScrubbing }: Props) => (
-    <Text className={letterVariants({ isActive, isScrubbing })}>{letter}</Text>
+export const SectionIndexLetter = ({ letter, isActive }: Props) => (
+    <Text className={letterVariants({ isActive })} adjustsFontSizeToFit numberOfLines={1}>
+        {letter}
+    </Text>
 );

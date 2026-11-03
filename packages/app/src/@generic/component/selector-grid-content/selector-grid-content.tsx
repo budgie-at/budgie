@@ -35,7 +35,7 @@ export const SelectorGridContent = <Item,>(props: Props<Item>) => {
         additionalBottomPadding = 0,
         topOffset
     } = props;
-    const contentContainerStyle = useFormsheetListContentStyle(additionalBottomPadding, topOffset, COLUMN_GAP);
+    const contentContainerStyle = useFormsheetListContentStyle(additionalBottomPadding, topOffset);
 
     const estimatedItemSize = itemHeight + ROW_GAP;
 
@@ -52,6 +52,7 @@ export const SelectorGridContent = <Item,>(props: Props<Item>) => {
                 renderItem={renderItem}
                 numColumns={NUM_COLUMNS}
                 estimatedItemSize={estimatedItemSize}
+                keyboardDismissMode="on-drag"
                 keyboardShouldPersistTaps="handled"
                 columnWrapperStyle={COLUMN_WRAPPER_STYLE}
                 contentContainerStyle={contentContainerStyle}

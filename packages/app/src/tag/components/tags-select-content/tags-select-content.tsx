@@ -1,31 +1,33 @@
 import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
-
+import { BudgieLegendList } from '../../../@generic/component/budgie-legend-list/budgie-legend-list';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
+import { ListItemSeparator } from '../../../@generic/component/list-item-separator/list-item-separator';
 import { SelectorGridSkeleton } from '../../../@generic/component/selector-grid-skeleton/selector-grid-skeleton';
+import { LEGEND_LIST_STYLE } from '../../../@generic/constant/legend-list.constant';
 import { useFormsheetListContentStyle } from '../../../@generic/hook/use-formsheet-list-content-style/use-formsheet-list-content-style.hook';
-import { FlatListDataItem } from '../../../@generic/utils/map-to-flatlist-data.util';
 import { TagsSelectorModalSelector } from '../../../app/tags-selector-modal.selector';
 import { TagsSelectorCard } from '../tags-selector-card/tags-selector-card';
 
+import type { ReactElement } from 'react';
+
 interface Props {
-    readonly data: FlatListDataItem<TagEntityInterface>[];
+    readonly data: TagEntityInterface[];
     readonly selectedTagIds: number[];
     readonly primaryTagId?: number | null;
     readonly isLoading?: boolean;
-    readonly additionalBottomPadding?: number;
+    readonly listEmptyComponent?: ReactElement;
     readonly topOffset?: number;
     readonly onSelect: (tagId: number) => void;
     readonly onPrimarySelect?: (tagId: number) => void;
 }
 
 const TAG_CHIP_HEIGHT = 36;
-const CHIP_GAP = 8;
-const CHIP_FLOW_STYLE = { flexDirection: 'row', flexWrap: 'wrap', alignContent: 'flex-start', gap: CHIP_GAP } as const;
-const FLOATING_DONE_BUTTON_BOTTOM_SPACE = 120;
+const FLOATING_DONE_BUTTON_BOTTOM_SPACE = 132;
+
+const keyExtractor = (tag: TagEntityInterface) => String(tag.id);
 
 export const TagsSelectContent = (props: Props) => {
     const {
@@ -33,52 +35,54 @@ export const TagsSelectContent = (props: Props) => {
         selectedTagIds,
         primaryTagId = null,
         isLoading = false,
-        additionalBottomPadding = FLOATING_DONE_BUTTON_BOTTOM_SPACE,
+        listEmptyComponent,
         topOffset,
         onSelect,
         onPrimarySelect
     } = props;
     const { t } = useLingui();
-    const listContentStyle = useFormsheetListContentStyle(additionalBottomPadding, topOffset);
-
-    const tags = data.flatMap(item => (item.isEmpty ? [] : [item]));
-    const contentContainerStyle = { ...listContentStyle, ...CHIP_FLOW_STYLE };
+    const listContentStyle = useFormsheetListContentStyle(FLOATING_DONE_BUTTON_BOTTOM_SPACE, topOffset);
 
     if (isLoading) {
         return (
-            <SelectorGridSkeleton itemHeight={TAG_CHIP_HEIGHT} additionalBottomPadding={additionalBottomPadding} topOffset={topOffset} />
+            <SelectorGridSkeleton
+                itemHeight={TAG_CHIP_HEIGHT}
+                additionalBottomPadding={FLOATING_DONE_BUTTON_BOTTOM_SPACE}
+                topOffset={topOffset}
+            />
         );
     }
 
-    if (!isNotEmptyArray(tags)) {
-        return (
-            <View className="absolute inset-0" style={listContentStyle}>
-                <View className="pt-7xl">
-                    <EmptyState
-                        icon={UserIconNameEnum.Tag}
-                        title={t`No tags found`}
-                        description={t`Try a different search term or create a new tag`}
-                    />
-                </View>
-            </View>
-        );
-    }
+    const emptyState = listEmptyComponent ?? (
+        <EmptyState icon={UserIconNameEnum.Tag} title={t`No tags found`} description={t`Try a different search term or create a new tag`} />
+    );
+    const renderItem = ({ item: tag }: { item: TagEntityInterface }) => (
+        <TagsSelectorCard
+            isSelected={selectedTagIds.includes(tag.id)}
+            isPrimary={primaryTagId === tag.id}
+            onSelect={onSelect}
+            onPrimarySelect={onPrimarySelect}
+            variant="static"
+            title={tag.title}
+            id={tag.id}
+            testID={TagsSelectorModalSelector.Card(tag.title)}
+        />
+    );
 
     return (
-        <ScrollView className="absolute inset-0" contentContainerStyle={contentContainerStyle} keyboardShouldPersistTaps="handled">
-            {tags.map(tag => (
-                <TagsSelectorCard
-                    key={tag.id}
-                    isSelected={selectedTagIds.includes(tag.id)}
-                    isPrimary={primaryTagId === tag.id}
-                    onSelect={onSelect}
-                    onPrimarySelect={onPrimarySelect}
-                    variant="static"
-                    title={tag.title}
-                    id={tag.id}
-                    testID={TagsSelectorModalSelector.Card(tag.title)}
-                />
-            ))}
-        </ScrollView>
+        <View className="absolute inset-0">
+            <BudgieLegendList
+                style={LEGEND_LIST_STYLE}
+                data={data}
+                keyExtractor={keyExtractor}
+                renderItem={renderItem}
+                estimatedItemSize={44}
+                ItemSeparatorComponent={ListItemSeparator}
+                contentContainerStyle={listContentStyle}
+                keyboardDismissMode="on-drag"
+                keyboardShouldPersistTaps="handled"
+                ListEmptyComponent={emptyState}
+            />
+        </View>
     );
 };

@@ -23,9 +23,9 @@ appId: ${APP_ID}
       id: 'CategoryForm.IconTrigger'
 - tapOn:
       id: 'IconSelector.SearchInput'
-- inputText: 'bike'
+- inputText: 'cat'
 - tapOn:
-      id: 'IconSelector.Icon.reicon:Bicycle'
+      id: 'IconSelector.Icon.reicon:Category'
 
 - tapOn:
       id: 'CategoryForm.Input'
@@ -38,7 +38,7 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'CategoryCard.E2E Category Primary'
 - assertVisible:
-      id: 'CategoryCard.Icon.E2E Category Primary.reicon:Bicycle'
+      id: 'CategoryCard.Icon.E2E Category Primary.reicon:Category'
 
 # --- Create Second Category For Search ---
 

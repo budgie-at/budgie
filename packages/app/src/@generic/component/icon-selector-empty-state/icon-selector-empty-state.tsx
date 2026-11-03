@@ -1,5 +1,4 @@
 import { useLingui } from '@lingui/react/macro';
-import { View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
@@ -22,17 +21,11 @@ export const IconSelectorEmptyState = ({ query, isFailure, isLoading, onRetry }:
         return <SearchablePageErrorState onRetry={onRetry} />;
     }
 
-    if (isNotEmptyString(query)) {
-        return (
-            <View className="pt-7xl">
-                <SelectorSearchEmptyState query={query} hint={t`Try a simpler word like “car” or “food”.`} />
-            </View>
-        );
-    }
-
-    return (
-        <LoadingContent isLoading={isLoading}>
-            <EmptyState title={t`No icons found`} description={t`Try a different search term`} />
-        </LoadingContent>
+    const emptyState = isNotEmptyString(query) ? (
+        <SelectorSearchEmptyState query={query} hint={t`Try a simpler word like “car” or “food”.`} />
+    ) : (
+        <EmptyState title={t`No icons found`} description={t`Try a different search term`} />
     );
+
+    return <LoadingContent isLoading={isLoading}>{emptyState}</LoadingContent>;
 };

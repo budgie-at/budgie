@@ -54,9 +54,7 @@ export const AccountSelectContent = (props: Props) => {
     );
 
     const listEmptyComponent = isNotEmptyString(search) ? (
-        <View className="pt-7xl">
-            <SelectorSearchEmptyState query={search.trim()} hint={t`Check the spelling or try another account name.`} />
-        </View>
+        <SelectorSearchEmptyState query={search.trim()} hint={t`Check the spelling or try another account name.`} />
     ) : (
         <View className="flex-1 justify-center">
             <EmptyState
@@ -78,6 +76,7 @@ export const AccountSelectContent = (props: Props) => {
                 data={data}
                 keyExtractor={keyExtractor}
                 renderItem={renderItem}
+                keyboardDismissMode="on-drag"
                 keyboardShouldPersistTaps="always"
                 contentContainerStyle={contentContainerStyle}
                 ListHeaderComponent={listHeaderComponent}

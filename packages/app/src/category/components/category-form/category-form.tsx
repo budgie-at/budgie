@@ -100,7 +100,7 @@ export const CategoryForm = (props: Props) => {
         }
 
         openIconSelector(
-            { selectedIcon: resolvedIcon, keywords: autoIcon.terms, excludedIcons: PLACEHOLDER_CATEGORY_ICONS, variant: 'primary' },
+            { selectedIcon: resolvedIcon, keywords: autoIcon.terms, excludedIcons: PLACEHOLDER_CATEGORY_ICONS },
             selectedIcon => {
                 if (isDefined(selectedIcon)) {
                     setHasPickedIcon(true);
