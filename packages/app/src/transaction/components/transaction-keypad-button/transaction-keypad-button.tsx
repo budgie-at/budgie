@@ -76,11 +76,12 @@ export const TransactionKeypadButton = (props: Props) => {
         opacity: withTiming(pressed.value ? PRESSED_OPACITY : 1, { duration: OPACITY_DURATION_MS })
     }));
 
+    const resolvedAccessibilityLabel = accessibilityLabel ?? value ?? icon;
     const contentClassName = textVariants({ buttonVariant: variant });
 
     return (
         <HapticPressable
-            accessibilityLabel={accessibilityLabel ?? value ?? icon}
+            accessibilityLabel={resolvedAccessibilityLabel}
             accessibilityRole="button"
             className={buttonVariants({ buttonVariant: variant })}
             onLongPress={onLongPress}

@@ -1382,7 +1382,7 @@ msgstr "Verliehener Betrag"
 
 #: src/transaction/hook/use-quick-form-submit.hook.ts
 msgid "Amount must be larger than the fee"
-msgstr "Der Betrag muss grÃ¶Ãer als die GebÃ¼hr sein"
+msgstr "Der Betrag muss größer als die Gebühr sein"
 
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Amount or merchant is empty"
@@ -2223,7 +2223,7 @@ msgstr "Anderes Symbol wählen…"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Choose both accounts"
-msgstr "Beide Konten auswÃ¤hlen"
+msgstr "Beide Konten auswählen"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Choose dates to sync again"
@@ -2342,7 +2342,7 @@ msgstr "Vergleich: {label}"
 
 #: src/transaction/hook/use-quick-form-submit.hook.ts
 msgid "Complete every split entry"
-msgstr "FÃ¼lle jeden Aufteilungseintrag aus"
+msgstr "Fülle jeden Aufteilungseintrag aus"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Confirm"
@@ -3792,10 +3792,6 @@ msgstr "Gebühr {formattedAmount}"
 msgid "Fee {formattedPercent}, {formattedFee}"
 msgstr "Gebühr {formattedPercent}, {formattedFee}"
 
-#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
-msgid "Fee {PROTECTED_AMOUNT_PLACEHOLDER}"
-msgstr "Gebühr {PROTECTED_AMOUNT_PLACEHOLDER}"
-
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 msgid "Fee, no fee"
 msgstr "Gebühr, keine Gebühr"
@@ -3969,7 +3965,7 @@ msgstr "Aus deinen wiederkehrenden Zahlungen: {name}, {amountLabel} pro Zyklus"
 
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "Fully assigned"
-msgstr "VollstÃ¤ndig zugewiesen"
+msgstr "Vollständig zugewiesen"
 
 #: src/budget/components/budget-fund-row-status/budget-fund-row-status.tsx
 msgid "Fully funded"

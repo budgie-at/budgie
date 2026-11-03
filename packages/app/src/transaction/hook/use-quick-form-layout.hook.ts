@@ -12,8 +12,8 @@ export const useQuickFormLayout = () => {
     const [height, setHeight] = useState(0);
     const [heroHeight, setHeroHeight] = useState(0);
     const [fieldsHeight, setFieldsHeight] = useState(0);
-    const { keypadStyle } = getTransactionKeypadLayout(fontScale);
     const bottomPadding = Math.max(insets.bottom, 8) + 8 - insets.bottom;
+    const { keypadStyle, requiresScrolling } = getTransactionKeypadLayout(fontScale, height - 12 - bottomPadding);
     const footerHeight = Math.min(
         keypadStyle.maxHeight,
         Math.max(keypadStyle.minHeight, height - heroHeight - fieldsHeight - HERO_VERTICAL_SPACING - 12 - bottomPadding)
@@ -25,6 +25,7 @@ export const useQuickFormLayout = () => {
     const handleFieldsLayout = (event: LayoutChangeEvent) => void setFieldsHeight(event.nativeEvent.layout.height);
 
     return {
+        requiresScrolling,
         handleLayout,
         handleHeroLayout,
         handleFieldsLayout,
@@ -33,6 +34,6 @@ export const useQuickFormLayout = () => {
         footerHeight,
         keypadContainerStyle: { height: footerHeight },
         footerStyle: { height: footerHeight + bottomPadding, flexShrink: 0 },
-        contentStyle: { minHeight: upperHeight }
+        contentStyle: { minHeight: requiresScrolling ? height : upperHeight }
     };
 };

@@ -1382,7 +1382,7 @@ msgstr "Montant prêté"
 
 #: src/transaction/hook/use-quick-form-submit.hook.ts
 msgid "Amount must be larger than the fee"
-msgstr "Le montant doit Ãªtre supÃ©rieur aux frais"
+msgstr "Le montant doit être supérieur aux frais"
 
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Amount or merchant is empty"
@@ -2342,7 +2342,7 @@ msgstr "Comparaison : {label}"
 
 #: src/transaction/hook/use-quick-form-submit.hook.ts
 msgid "Complete every split entry"
-msgstr "ComplÃ©tez chaque ligne de rÃ©partition"
+msgstr "Complétez chaque ligne de répartition"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Confirm"
@@ -3792,10 +3792,6 @@ msgstr "Frais {formattedAmount}"
 msgid "Fee {formattedPercent}, {formattedFee}"
 msgstr "Frais {formattedPercent}, {formattedFee}"
 
-#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
-msgid "Fee {PROTECTED_AMOUNT_PLACEHOLDER}"
-msgstr "Frais {PROTECTED_AMOUNT_PLACEHOLDER}"
-
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 msgid "Fee, no fee"
 msgstr "Frais, aucun frais"
@@ -3969,7 +3965,7 @@ msgstr "De vos paiements récurrents : {name}, {amountLabel} par cycle"
 
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "Fully assigned"
-msgstr "EntiÃ¨rement rÃ©parti"
+msgstr "Entièrement réparti"
 
 #: src/budget/components/budget-fund-row-status/budget-fund-row-status.tsx
 msgid "Fully funded"

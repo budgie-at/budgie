@@ -1382,7 +1382,7 @@ msgstr "Надана в борг сума"
 
 #: src/transaction/hook/use-quick-form-submit.hook.ts
 msgid "Amount must be larger than the fee"
-msgstr "Ð¡ÑÐ¼Ð° Ð¼Ð°Ñ Ð±ÑÑÐ¸ Ð±ÑÐ»ÑÑÐ¾Ñ Ð·Ð° ÐºÐ¾Ð¼ÑÑÑÑ"
+msgstr "Сума має бути більшою за комісію"
 
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Amount or merchant is empty"
@@ -2223,7 +2223,7 @@ msgstr "Вибрати іншу іконку…"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Choose both accounts"
-msgstr "ÐÐ¸Ð±ÐµÑÑÑÑ Ð¾Ð±Ð¸Ð´Ð²Ð° ÑÐ°ÑÑÐ½ÐºÐ¸"
+msgstr "Виберіть обидва рахунки"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Choose dates to sync again"
@@ -2342,7 +2342,7 @@ msgstr "Порівняння: {label}"
 
 #: src/transaction/hook/use-quick-form-submit.hook.ts
 msgid "Complete every split entry"
-msgstr "ÐÐ°Ð¿Ð¾Ð²Ð½ÑÑÑ ÐºÐ¾Ð¶ÐµÐ½ Ð·Ð°Ð¿Ð¸Ñ ÑÐ¾Ð·Ð¿Ð¾Ð´ÑÐ»Ñ"
+msgstr "Заповніть кожен запис розподілу"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Confirm"
@@ -3559,7 +3559,7 @@ msgstr "Введіть усі суми"
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 #: src/transaction/hook/use-quick-form-submit.hook.ts
 msgid "Enter an amount"
-msgstr "ÐÐ²ÐµÐ´ÑÑÑ ÑÑÐ¼Ñ"
+msgstr "Введіть суму"
 
 #: src/transaction/components/transaction-split-field-icon/transaction-split-field-icon.tsx
 msgid "Enter an amount to split it"
@@ -3792,10 +3792,6 @@ msgstr "Комісія {formattedAmount}"
 msgid "Fee {formattedPercent}, {formattedFee}"
 msgstr "Комісія {formattedPercent}, {formattedFee}"
 
-#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
-msgid "Fee {PROTECTED_AMOUNT_PLACEHOLDER}"
-msgstr "Комісія {PROTECTED_AMOUNT_PLACEHOLDER}"
-
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 msgid "Fee, no fee"
 msgstr "Комісія, без комісії"
@@ -3969,7 +3965,7 @@ msgstr "З ваших регулярних платежів: {name}, {amountLabe
 
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "Fully assigned"
-msgstr "ÐÐ¾Ð²Ð½ÑÑÑÑ ÑÐ¾Ð·Ð¿Ð¾Ð´ÑÐ»ÐµÐ½Ð¾"
+msgstr "Повністю розподілено"
 
 #: src/budget/components/budget-fund-row-status/budget-fund-row-status.tsx
 msgid "Fully funded"

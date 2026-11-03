@@ -73,7 +73,7 @@ export const TransactionAmountDisplay = ({ ref, amount, currencySymbol, variant,
 
     return (
         <Animated.View entering={FadeIn.duration(200).reduceMotion(ReduceMotion.System)} className="items-center self-stretch">
-            <View className="min-h-[22px] flex-row items-center justify-center gap-xs self-stretch">{topContent}</View>
+            <View className="min-h-[22px] flex-row flex-wrap items-center justify-center gap-xs self-stretch">{topContent}</View>
             <View className="items-center self-stretch">
                 <Pressable
                     className="justify-center self-stretch"

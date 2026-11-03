@@ -15,6 +15,7 @@ const HIDDEN_EDGE_FADE_PROPS = { style: { display: 'none' } } as const;
 
 export const QuickFormLayout = ({ hero, children, footer }: Props) => {
     const {
+        requiresScrolling,
         handleLayout,
         handleHeroLayout,
         handleFieldsLayout,
@@ -25,13 +26,25 @@ export const QuickFormLayout = ({ hero, children, footer }: Props) => {
         keypadContainerStyle
     } = useQuickFormLayout();
 
+    const footerContent = (
+        <View>
+            <View className="h-[12px] shrink-0" />
+            <View style={footerStyle}>
+                <ScreenChromeFooter includeBottomSafeArea={false} edgeFadeProps={HIDDEN_EDGE_FADE_PROPS} bottomOffset={bottomPadding}>
+                    <View style={keypadContainerStyle}>{footer}</View>
+                </ScreenChromeFooter>
+            </View>
+        </View>
+    );
+    const scrollEnabled = requiresScrolling || overflows;
+
     return (
         <BottomChromeInsetProvider>
             <View className="flex-1" onLayout={handleLayout}>
                 <ScrollView
                     className="flex-1"
                     contentContainerStyle={contentStyle}
-                    scrollEnabled={overflows}
+                    scrollEnabled={scrollEnabled}
                     bounces={false}
                     showsVerticalScrollIndicator={false}
                     contentInsetAdjustmentBehavior="never"
@@ -41,13 +54,9 @@ export const QuickFormLayout = ({ hero, children, footer }: Props) => {
                         <View onLayout={handleHeroLayout}>{hero}</View>
                     </View>
                     <View onLayout={handleFieldsLayout}>{children}</View>
+                    {requiresScrolling ? footerContent : null}
                 </ScrollView>
-                <View className="h-[12px] shrink-0" />
-                <View style={footerStyle}>
-                    <ScreenChromeFooter includeBottomSafeArea={false} edgeFadeProps={HIDDEN_EDGE_FADE_PROPS} bottomOffset={bottomPadding}>
-                        <View style={keypadContainerStyle}>{footer}</View>
-                    </ScreenChromeFooter>
-                </View>
+                {requiresScrolling ? null : footerContent}
             </View>
         </BottomChromeInsetProvider>
     );

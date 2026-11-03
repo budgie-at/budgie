@@ -8,6 +8,7 @@ import {
 } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { t } from '@lingui/core/macro';
+import { Trans } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { NotificationFeedbackType } from 'expo-haptics';
 import { useState } from 'react';
@@ -200,7 +201,9 @@ export const SplitEntriesModalContent = (props: Props) => {
                                 className="min-h-[44px] justify-center px-3xl py-md"
                                 testID={SplitEntriesModalContentSelector.RemoveSplitButton}
                             >
-                                <Text className="text-md text-destructive-strong">{t`Remove split`}</Text>
+                                <Text className="text-md text-destructive-strong">
+                                    <Trans>Remove split</Trans>
+                                </Text>
                             </HapticPressable>
                         </GroupedListSection>
                     </View>

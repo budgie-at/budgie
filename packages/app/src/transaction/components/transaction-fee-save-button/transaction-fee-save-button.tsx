@@ -1,4 +1,4 @@
-import { useLingui } from '@lingui/react/macro';
+import { Trans } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -13,7 +13,6 @@ interface Props {
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 export const TransactionFeeSaveButton = ({ isDisabled, onPress }: Props) => {
-    const { t } = useLingui();
     const accessibilityState = { disabled: isDisabled };
     const backgroundClassName = isDisabled ? 'bg-cta-disabled-background' : 'bg-cta-background active:opacity-80';
     const contentClassName = isDisabled ? 'text-cta-disabled-foreground' : 'text-cta-foreground';
@@ -28,7 +27,9 @@ export const TransactionFeeSaveButton = ({ isDisabled, onPress }: Props) => {
             style={CONTINUOUS_CORNERS}
             testID={TransactionFeeModalContentSelector.SaveButton}
         >
-            <Text className={cn('text-center text-[17px] font-semibold', contentClassName)}>{t`Save fee`}</Text>
+            <Text className={cn('text-center text-[17px] font-semibold', contentClassName)}>
+                <Trans>Save fee</Trans>
+            </Text>
         </HapticPressable>
     );
 };

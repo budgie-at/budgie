@@ -19,7 +19,6 @@ export const MccInfoRow = ({ transactionTitle, mccCategoryId }: Props) => {
                 <Text
                     className="shrink text-center text-[15px] leading-[20px] font-medium text-secondary-foreground"
                     maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
-                    numberOfLines={1}
                 >
                     {transactionTitle}
                 </Text>

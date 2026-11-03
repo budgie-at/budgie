@@ -32,16 +32,15 @@ export const TransactionFeePill = ({ amount, currencySymbol, instrumentType, sho
         return null;
     }
 
-    const formattedAmount = formatInstrumentAmount(amount, currencySymbol, instrumentType ?? null);
+    const formattedAmount = isAmountProtected
+        ? PROTECTED_AMOUNT_PLACEHOLDER
+        : formatInstrumentAmount(amount, currencySymbol, instrumentType ?? null);
     const label = hasFee ? t`Fee ${formattedAmount}` : t`Set fee`;
-    const protectedLabel = t`Fee ${PROTECTED_AMOUNT_PLACEHOLDER}`;
-    const accessibilityLabel = hasFee && isAmountProtected ? protectedLabel : label;
-    const labelStyle = { opacity: hasFee && isAmountProtected ? 0 : 1 };
     const labelClassName = hasFee ? 'text-primary' : 'text-secondary-foreground';
 
     return (
         <HapticPressable
-            accessibilityLabel={accessibilityLabel}
+            accessibilityLabel={label}
             accessibilityRole="button"
             className="min-h-[44px] max-w-full shrink justify-center active:opacity-70"
             hitSlop={HIT_SLOP}
@@ -53,25 +52,12 @@ export const TransactionFeePill = ({ amount, currencySymbol, instrumentType, sho
                     accessible={false}
                     accessibilityElementsHidden
                     importantForAccessibility="no-hide-descendants"
-                    style={labelStyle}
                     className={cn('shrink text-[13px] leading-[18px] font-medium tabular-nums', labelClassName)}
                     maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
                     numberOfLines={1}
                 >
                     {label}
                 </Text>
-                {hasFee && isAmountProtected ? (
-                    <View className="absolute inset-0 items-center justify-center px-xl" pointerEvents="none">
-                        <Text
-                            accessible={false}
-                            className="text-[13px] leading-[18px] font-medium tabular-nums text-primary"
-                            maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
-                            numberOfLines={1}
-                        >
-                            {protectedLabel}
-                        </Text>
-                    </View>
-                ) : null}
             </View>
         </HapticPressable>
     );

@@ -1382,7 +1382,7 @@ msgstr "Importe prestado"
 
 #: src/transaction/hook/use-quick-form-submit.hook.ts
 msgid "Amount must be larger than the fee"
-msgstr "El importe debe ser mayor que la comisiÃ³n"
+msgstr "El importe debe ser mayor que la comisión"
 
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Amount or merchant is empty"
@@ -2342,7 +2342,7 @@ msgstr "Comparación: {label}"
 
 #: src/transaction/hook/use-quick-form-submit.hook.ts
 msgid "Complete every split entry"
-msgstr "Completa cada entrada de divisiÃ³n"
+msgstr "Completa cada entrada de división"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Confirm"
@@ -3791,10 +3791,6 @@ msgstr "Comisión {formattedAmount}"
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 msgid "Fee {formattedPercent}, {formattedFee}"
 msgstr "Comisión {formattedPercent}, {formattedFee}"
-
-#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
-msgid "Fee {PROTECTED_AMOUNT_PLACEHOLDER}"
-msgstr "Comisión {PROTECTED_AMOUNT_PLACEHOLDER}"
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 msgid "Fee, no fee"
