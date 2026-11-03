@@ -33,92 +33,42 @@ Scenes: `01-home`, `03-analytics`, `04-budget`, `05-add-expense`,
 Appearances: `light` and `dark`; `deployed-variant.json` records which one the store carries.
 The deployed `dark` variant and the versioned `6.117.0-dark` recapture are committed.
 
-`00-prime` is the exception: a Maestro-backed scene that only grants the
-deep-link trust (below) and is never composed or uploaded.
+## Capture
 
-## Capture (macOS only)
-
-Build the E2E app first — see `tests/app-tests/E2E-RUNBOOK.md` — then:
+Build the E2E app first (or take a CI `ios-e2e-app-e2e` artifact) — see
+`tests/app-tests/E2E-RUNBOOK.md` — then, from any host, with the e2e project's
+dependencies installed (`npm ci` in `e2e/`):
 
 ```bash
-pnpm --filter @budgie-at/app-tests screenshots:capture --app <path/to/Budgie.app>
+SIMLOCK_URL=<gateway> SIMLOCK_TOKEN=<agent token> \
+  pnpm --filter @budgie-at/app-tests screenshots:capture --app <path/to/Base.app>
 ```
 
-The runner mirrors mobile-ci's `capture-screenshots-ios` action in direct mode
-exactly: it boots the manifest's simulator by name, slims it with `simslim`
-(install it first: `brew install mobai-app/tap/simslim` — see root `AGENTS.md`,
-"Simulator Dev Testing"), installs the `.app`, applies
-the 9:41 status bar override, primes the deep-link trust (below), and then for
-every locale x appearance x scene terminates the app, runs the seed hook, sets
-the appearance, launches with the locale arguments, opens the scene's deep link,
-settles, and captures. A scene declared with a `flow` instead of a `deepLink`
-runs through Maestro instead, from a scratch CWD with `-e APP_ID/LOCALE/
-APPEARANCE` and the workspace `--config`, exactly as the action does.
+The runner hands the e2e project's media capture (`e2e/media.config.ts`) the same
+plan mobile-ci's `store-screenshots.yml` hands it in CI (`test-framework: e2e`):
+one cell per locale x appearance x scene, captured on simulators of the manifest's
+model leased from the Mac Studio simlock farm. For every cell the capture builds
+the scene's showcase database (`seed-screenshot-scene.sh --dry-run`), installs it
+with the keychain reset, sets the appearance and the app's language, pins the
+9:41 status bar, launches the app, then opens the scene's `deepLink` (waiting for
+its `readySelector` and settling) or walks a `test` scene
+(`e2e/support/media/scenes.ts`), and writes the device's own pixels. iOS's
+one-per-install "Open in budgie (E2E)?" prompt is accepted once per leased
+simulator before the first cell, so no scene captures it.
 
-Failed cells are retried once, exactly like the action; a failed seed hook and a
-flow cell that emitted the wrong number of screenshots are terminal and are not
-retried. Each device's simulator is shut down when it finishes, so a matrix run
-does not leave a booted simulator — and its CoreSimulator worker processes —
-behind for the next one. Pass `--keep-booted` to keep a simulator you are also
-using for something else.
-
-Useful flags: `--device`, `--udid`, `--locales`, `--appearances`, `--scenes`,
-`--settle`, `--status-bar real|override`, `--output`, `--skip-install`,
-`--skip-prime`, `--keep-booted`, `--dry-run`.
+Useful flags: `--device`, `--locales`, `--appearances`, `--scenes`, `--settle`,
+`--status-bar real|override`, `--workers`, `--output`, `--dry-run`.
 
 The private Settings scene seeds a backup date and screenshot hiding, then creates
 and confirms PIN `1234` through the app UI, encrypting the database, and unlocks it
 before capture. Each seed resets the simulator keychain before replacing the
-database. The showcase fixture includes the current database migrations.
-
-For this scene, pass `--flow-screenshot-source simctl`: Maestro's screenshot API
-honors screenshot protection and returns a blank image; the simulator host can
-capture the visible screen. This option captures the screen after the flow ends,
-so keep the scene's `takeScreenshot` as its last step. For example:
-
-```bash
-bash tests/app-tests/scripts/capture-store-screenshots.sh \
-  --config .github/store-screenshots.config.json --app <path/to/Budgie.app> \
-  --scenes 07-settings --appearances dark --flow-screenshot-source simctl
-```
+database. The showcase fixture includes the current database migrations. The
+capture reads the simulator's framebuffer, which screenshot hiding does not blank.
 
 Like CI, a run clears `raw/ios/<device-slug>` before its first cell, so a
 partial re-capture (`--scenes 03-analytics`, or a single `--locales`) leaves the
 device directory holding only what that run captured. Re-run the whole device
 before composing.
-
-### Locale arguments
-
-mobile-ci launches with the bare app locale
-(`-AppleLanguages '("de")' -AppleLocale de`), so that is the default here too
-and local captures match CI byte for byte. `--os-locale regional` swaps in the
-regional identifiers from the table above; use it only to check region-specific
-number and date formatting, never for a set that will be compared against CI.
-
-### The deep-link confirmation alert
-
-On a fresh install iOS raises `Open in "budgie (E2E)"?` for the first
-custom-scheme open — **`simctl openurl` included**, verified on an erased iPad
-simulator — and the alert stays up through the settle, so it lands in that PNG
-and in every deep-link capture that follows. Only a UI driver can dismiss it.
-
-Both runners therefore grant the trust once per install with
-`tests/app-tests/flows/setup/prime-deep-links-scene.flow.yaml`, a thin wrapper
-that runs the E2E suite's `prime-deep-links.flow.yaml` and adds the single
-`takeScreenshot` mobile-ci requires of a flow-backed scene:
-
-- **CI** runs it as the first `capture-scenes` entry, `00-prime`. Its PNG is
-  deleted by the caller workflow's `post-capture-command` before the raw
-  artifact is uploaded.
-- **Locally** the runner runs the same flow once after install, seeded and themed
-  like a real cell, and discards its screenshot. It needs `maestro` on `PATH`
-  (`~/.maestro/bin`) and fails loudly without it. Pass `--skip-prime` on a
-  simulator that has already granted the trust; `xcrun simctl erase` revokes it.
-
-Every fresh simulator needs this, iPhone and iPad alike — the alert is not an
-iPad-only quirk. The iPad additionally queues the alert across relaunch, so an
-iPad already stranded on it stays stranded: `xcrun simctl erase` it, then let a
-normal `--app` run reinstall and re-prime.
 
 ## Compose
 

@@ -115,8 +115,8 @@ test('29 crypto account and market', { tags: ['crypto'] }, async ({ budgie }) =>
             await b.tapId(ctx, 'CryptoGroup.Toggle.BTC');
         }
         await a.scrollToCentre(ctx, 'AccountCard.Balance.E2E_Crypto_Vault.2_BTC');
-        await b.tapId(ctx, 'AccountCard.Balance.E2E_Crypto_Vault.2_BTC');
-        await b.expectId(ctx, 'AccountDetails.ActionsButton', 10_000);
+        // A tap while the centring swipe still glides only stops the list: tap again if details did not open.
+        await b.tapUntil(ctx, 'AccountCard.Balance.E2E_Crypto_Vault.2_BTC', () => b.expectId(ctx, 'AccountDetails.ActionsButton', 5_000));
         await ids('AccountDetails.ConvertedValue', 'AccountDetails.MarketLink');
         await b.tapId(ctx, 'AccountDetails.MarketLink');
         await b.expectId(ctx, 'CurrencyMarket.Header.BTC', 10_000);
