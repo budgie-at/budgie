@@ -3,20 +3,29 @@ import { View } from 'react-native';
 import { EmptyFn } from '@rnw-community/shared';
 
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
+import { OnboardingFileLockEnum } from '../../enum/onboarding-file-lock.enum';
 import { OnboardingFileStrip } from '../onboarding-file-strip/onboarding-file-strip';
 import { OnboardingStepLayoutSelector } from '../onboarding-step-layout/onboarding-step-layout.selector';
 
 interface Props {
     readonly fileState: string;
-    readonly isFileSealed: boolean;
+    readonly fileLock: OnboardingFileLockEnum;
     readonly isBackVisible: boolean;
     readonly onBack: EmptyFn;
 }
 
-export const OnboardingStepHeader = ({ fileState, isFileSealed, isBackVisible, onBack }: Props) => (
-    <View className="px-5xl pt-lg pb-3xl flex-row items-center gap-x-md">
-        {isBackVisible ? <GoBackButton testID={OnboardingStepLayoutSelector.BackButton} onPress={onBack} /> : null}
+export const OnboardingStepHeader = ({ fileState, fileLock, isBackVisible, onBack }: Props) => (
+    <View className="w-full bg-surface px-5xl pt-lg pb-lg flex-row items-center gap-x-md">
+        {isBackVisible ? (
+            <GoBackButton
+                testID={OnboardingStepLayoutSelector.BackButton}
+                className="size-[44px] items-center justify-center p-0"
+                onPress={onBack}
+            />
+        ) : (
+            <View className="size-[44px]" />
+        )}
 
-        <OnboardingFileStrip state={fileState} isSealed={isFileSealed} />
+        <OnboardingFileStrip state={fileState} lock={fileLock} />
     </View>
 );
