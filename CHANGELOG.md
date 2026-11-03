@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.150.3](https://github.com/budgie-at/budgie/compare/v6.150.2...v6.150.3) (2026-11-03)
+
+### Bug Fixes
+
+* **app:** refresh budget translation references ([b0c1ec2](https://github.com/budgie-at/budgie/commit/b0c1ec22064d7590eb15ff931c6cdb862f402537))
+
+
 ## [6.150.2](https://github.com/budgie-at/budgie/compare/v6.150.1...v6.150.2) (2026-11-03)
 
 **Note:** Version bump only for package @budgie-at/root
