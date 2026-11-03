@@ -6,6 +6,7 @@ import { isPositiveNumber } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { useSetting } from '../../settings/hook/use-setting.hook';
+import { OnboardingFileLockEnum } from '../enum/onboarding-file-lock.enum';
 
 import { accountCountAtom } from './use-is-onboarding-active.hook';
 
@@ -19,7 +20,7 @@ export const useOnboardingFileState = (): OnboardingFileStateInterface => {
     const contents = isPositiveNumber(accountCount)
         ? t({ message: plural(accountCount, { one: '# account', other: '# accounts' }) })
         : t`empty`;
-    const state = isPinEnabled ? t`Sealed · ${contents}` : t`Phone lock only · ${contents}`;
+    const state = isPinEnabled ? t`Sealed · ${contents}` : t`Phone lock · ${contents}`;
 
-    return { state, isSealed: isPinEnabled };
+    return { state, lock: isPinEnabled ? OnboardingFileLockEnum.SEALED : OnboardingFileLockEnum.PHONE };
 };

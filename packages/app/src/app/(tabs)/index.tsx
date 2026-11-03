@@ -13,15 +13,21 @@ import { NetWorthComposition } from '../../account/component/net-worth-compositi
 import { useHomePageDataQuery } from '../../account/query/use-home-page-data.query';
 import { AiDownloadHomeStatus } from '../../ai/component/ai-download-home-status/ai-download-home-status';
 import { BudgetWidget } from '../../budget/components/budget-widget/budget-widget';
+import { useIsOnboardingPending } from '../../onboarding/hook/use-is-onboarding-active.hook';
 import { useOnboardingRedirect } from '../../onboarding/hook/use-onboarding-redirect.hook';
 
 export default function HomePage() {
     const { activeAccountCount, balanceSummary, cashAccounts, cashTotal, isLoading, sections } = useHomePageDataQuery();
     const { bottom } = useSafeAreaInsets();
     const onboardingHref = useOnboardingRedirect();
+    const isOnboardingPending = useIsOnboardingPending();
 
     if (isDefined(onboardingHref)) {
         return <Redirect href={onboardingHref} />;
+    }
+
+    if (isOnboardingPending) {
+        return null;
     }
 
     const listHeaderComponent = (

@@ -4,7 +4,8 @@ import { Text, View, useWindowDimensions } from 'react-native';
 import Animated, { Easing, FadeIn, FadeInDown, useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
 
 import { BudgieLogo } from '../../../@generic/component/budgie-logo/budgie-logo';
-import { Button } from '../../../@generic/component/button/button';
+import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
+import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
 import { useOnboardingNavigation } from '../../hook/use-onboarding-navigation.hook';
@@ -69,7 +70,7 @@ export const OnboardingWelcome = () => {
                   .easing(EASE_OUT);
 
     return (
-        <View testID={OnboardingWelcomeSelector.Root} className="flex-1 bg-background">
+        <GroupedSurface testID={OnboardingWelcomeSelector.Root}>
             <View className="flex-1 px-5xl pt-safe pb-safe">
                 <View className="flex-1 items-center justify-center gap-y-3xl">
                     <View ref={restingLogoRef} style={RESTING_LOGO_STYLE} onLayout={handleRestingLogoLayout} />
@@ -94,14 +95,9 @@ export const OnboardingWelcome = () => {
                 </View>
 
                 <Animated.View entering={contentEntering(2)} className="mb-5xl gap-y-lg">
-                    <Button
-                        testID={OnboardingWelcomeSelector.StartButton}
-                        variant="cta"
-                        content={t`Get started`}
-                        onPress={handleStartPress}
-                    />
+                    <PillButton testID={OnboardingWelcomeSelector.StartButton} label={t`Get started`} onPress={handleStartPress} />
 
-                    <Text className="text-secondary-foreground text-xs text-center">
+                    <Text className="text-secondary-foreground text-[13px] text-center">
                         <Trans>No account needed · Takes about a minute</Trans>
                     </Text>
                 </Animated.View>
@@ -112,6 +108,6 @@ export const OnboardingWelcome = () => {
                     <BudgieLogo size={SPLASH_LOGO_SIZE} />
                 </Animated.View>
             </View>
-        </View>
+        </GroupedSurface>
     );
 };
