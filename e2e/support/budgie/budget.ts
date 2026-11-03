@@ -12,15 +12,16 @@ import {
     settledBounds,
     sleep,
     tapId,
+    tapUntil,
     type Ctx
 } from './core.ts';
 import { retry } from './transactions.ts';
 
-/** `openLink: budgie://budget` + the empty budget widget the flows tap to start a budget. */
+/** `openLink: budgie://budget` + the empty budget widget the flows tap to start a budget; a tap Home swallows while it settles is repeated. */
 export async function openEmptyBudget(ctx: Ctx): Promise<void> {
     await openLink(ctx, 'budgie://budget');
     await expectId(ctx, 'BudgetWidget.EmptyState', 3_000);
-    await tapId(ctx, 'BudgetWidget.EmptyState');
+    await tapUntil(ctx, 'BudgetWidget.EmptyState', () => expectId(ctx, 'BudgetCreate.Template.Empty', 5_000));
 }
 
 /** subflows/budget/choose-empty-canvas */
