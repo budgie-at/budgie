@@ -63,8 +63,12 @@ export async function scrollTo(ctx: Ctx, testId: string, direction: 'up' | 'down
 
 /** Maestro's `tapOn: Done`: the keyboard's Done key, else hide the keyboard. */
 export async function done({ screen, device }: Ctx): Promise<void> {
+    // The keyboard's own Done key reads as a `key` with id `Done`; an accessory bar's as a button.
+    const keyboardKey = screen.getByTestId('Done');
     const key = screen.getByRole('button', { name: 'Done' });
-    if (await key.first().isVisible()) {
+    if (await keyboardKey.first().isVisible()) {
+        await keyboardKey.last().tap();
+    } else if (await key.first().isVisible()) {
         await key.last().tap();
     } else {
         await device.dismissKeyboard();

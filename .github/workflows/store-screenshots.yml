@@ -29,7 +29,7 @@ jobs:
             contents: read
             packages: write
             actions: read
-        uses: rnw-community/mobile-ci/.github/workflows/store-screenshots.yml@27c24d5ed6be3a5cc314bcdfa23f266181c17fb2 # feat/store-screenshots-e2e
+        uses: rnw-community/mobile-ci/.github/workflows/store-screenshots.yml@3e22c383f15427da8e9b5e211701f133cc111535 # v4.8.0
         with:
             control-runner-labels: '["self-hosted","linux-portable-2x4"]'
             config-path: .github/store-screenshots.config.json

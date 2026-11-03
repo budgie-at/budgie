@@ -13,9 +13,46 @@ if (!outputDirectoryPath) {
 
 mkdirSync(outputDirectoryPath, { recursive: true });
 
-const runSqlite = (databasePath, sql) => {
-    execFileSync('sqlite3', [databasePath, sql], { stdio: 'inherit' });
+// The sqlite3 CLI when the host has it (macOS does, and the self-test wraps it); Node's
+// built-in driver on hosts without it, such as the portable Linux runners e2e runs on.
+const hasSqliteCli = (() => {
+    try {
+        execFileSync('sqlite3', ['-version'], { stdio: 'ignore' });
+        return true;
+    } catch {
+        return false;
+    }
+})();
+
+const withDatabase = (databasePath, use) => {
+    const { DatabaseSync } = require('node:sqlite');
+    const database = new DatabaseSync(databasePath);
+    try {
+        return use(database);
+    } finally {
+        database.close();
+    }
 };
+
+const runSqlite = (databasePath, sql) => {
+    if (hasSqliteCli) {
+        execFileSync('sqlite3', [databasePath, sql], { stdio: 'inherit' });
+        return;
+    }
+    withDatabase(databasePath, database => database.exec(sql));
+};
+
+const querySqlite = (databasePath, sql) =>
+    hasSqliteCli
+        ? execFileSync('sqlite3', [databasePath, sql], { encoding: 'utf8' }).trim()
+        : withDatabase(databasePath, database =>
+              database
+                  .prepare(sql)
+                  .all()
+                  .map(row => Object.values(row).map(String).join('|'))
+                  .join('\n')
+                  .trim()
+          );
 
 const generatedFixturePaths = [];
 
@@ -25,7 +62,7 @@ const copyFixture = (sourcePath, targetPath) => {
 };
 
 const findBalanceMismatches = databasePath => {
-    const query = sql => execFileSync('sqlite3', [databasePath, sql], { encoding: 'utf8' }).trim();
+    const query = sql => querySqlite(databasePath, sql);
     const hasConsolidation =
         query("SELECT COUNT(*) FROM pragma_table_info('transactions') WHERE name = 'consolidation_parent_transaction_id'") === '1';
     const consolidationCondition = hasConsolidation

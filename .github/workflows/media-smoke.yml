@@ -30,7 +30,7 @@ jobs:
             contents: read
             packages: write
             actions: read
-        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@5ecd3974800ea70a3ee93eab363daa1994c56b09 # feat/ios-e2e-simlock
+        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@3e22c383f15427da8e9b5e211701f133cc111535 # v4.8.0
         with:
             control-runner-labels: '["self-hosted","linux-portable-2x4"]'
             # A native build still runs on macOS when this commit's native key has no published base.

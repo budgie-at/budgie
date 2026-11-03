@@ -22,6 +22,30 @@ export interface SimlockOptions {
      * run killed before it releases (a cancelled CI job) frees its simulator within one TTL.
      */
     readonly ttlMs?: number;
+    /**
+     * Uploads in flight at once. Each one carries the whole app through the gateway, and a
+     * request through the public Cloudflare tunnel that runs past 100 s ends in a 524: ten
+     * at once on a busy farm did, so the run uploads a few at a time.
+     */
+    readonly installConcurrency?: number;
+}
+
+/** A counting semaphore: `run` waits until fewer than `limit` calls are in flight. */
+function limiter(limit: number): <T>(work: () => Promise<T>) => Promise<T> {
+    let active = 0;
+    const waiting: (() => void)[] = [];
+    return async work => {
+        while (active >= limit) {
+            await new Promise<void>(resolve => waiting.push(resolve));
+        }
+        active += 1;
+        try {
+            return await work();
+        } finally {
+            active -= 1;
+            waiting.shift()?.();
+        }
+    };
 }
 
 interface Held extends DeviceLease {
@@ -43,7 +67,8 @@ const TENANT = 'budgie-e2e';
 class DeviceSetupFailed extends Error {}
 
 /** Errors that mean the farm, not one simulator, failed (simlock's gateway and agent-device wording). */
-const FARM_DOWN = /not connected to the gateway|no worker connected|Remote daemon is unavailable|ECONNREFUSED|ETIMEDOUT|fetch failed/i;
+const FARM_DOWN =
+    /not connected to the gateway|no worker connected|Remote daemon is unavailable|ECONNREFUSED|ETIMEDOUT|fetch failed|error code: 52\d/i;
 
 /**
  * Leases one simulator per worker slot from a simlock worker through its
@@ -56,6 +81,7 @@ export function simlockDevices(options: SimlockOptions): DeviceProvider {
     const baseUrl = `${options.url.replace(/\/$/, '')}/v1/agent-device`;
     const ttlMs = options.ttlMs ?? 3 * 60_000;
     const held = new Map<string, Held>();
+    const uploads = limiter(Math.max(1, options.installConcurrency ?? 3));
     let relay: Promise<BootRelay> | undefined;
 
     const client = (session: string) => createAgentDeviceClient({ daemonBaseUrl: baseUrl, daemonAuthToken: options.token, session });
@@ -142,7 +168,7 @@ export function simlockDevices(options: SimlockOptions): DeviceProvider {
             const scoped = createAgentDeviceClient({ daemonBaseUrl: baseUrl, daemonAuthToken: options.token, session, ...scope });
             const install = async (appPath: string, app?: string): Promise<void> => {
                 try {
-                    await scoped.apps.install({ platform: 'ios', udid, appPath, ...(app === undefined ? {} : { app }) });
+                    await uploads(() => scoped.apps.install({ platform: 'ios', udid, appPath, ...(app === undefined ? {} : { app }) }));
                 } catch (cause) {
                     throw new DeviceSetupFailed(`${String(cause instanceof Error ? cause.message : cause)} (${udid})`, { cause });
                 }

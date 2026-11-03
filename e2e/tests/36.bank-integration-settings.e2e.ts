@@ -29,6 +29,9 @@ test('36 bank integration settings', { tags: ['sync'] }, async ({ budgie }) => {
         await b.scrollTo(ctx, 'InstitutionRow.1');
         await b.expectId(ctx, 'InstitutionRow.1');
         await b.tapId(ctx, 'InstitutionRow.1');
+        await b.expectId(ctx, 'Institution.Page', 10_000);
+        await b.expectId(ctx, 'Institution.Accounts');
+        await b.tapId(ctx, 'Institution.SettingsButton');
         await b.expectId(ctx, 'BankIntegration.Page', 10_000);
     });
 
