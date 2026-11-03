@@ -5,7 +5,7 @@ import { CategoryDestinationSheet } from '../category/components/category-destin
 import { useCategorySelectorModal, useCategorySelectorModalParams } from '../category/context/category-selector-modal.context';
 
 export default function CategoryDestinationModal() {
-    const [, resolveCategorySelector, dismissCategorySelector] = useCategorySelectorModal();
+    const [, , dismissCategorySelector] = useCategorySelectorModal();
     useModalDismiss(dismissCategorySelector);
     const currentParams = useCategorySelectorModalParams();
 
@@ -13,14 +13,5 @@ export default function CategoryDestinationModal() {
         return null;
     }
 
-    return (
-        <CategoryDestinationSheet
-            title={currentParams.title}
-            description={currentParams.description}
-            excludeCategoryIds={currentParams.excludeCategoryIds ?? []}
-            commitLabel={currentParams.commitLabel}
-            getCommitCopy={currentParams.getCommitCopy}
-            onSelect={resolveCategorySelector}
-        />
-    );
+    return <CategoryDestinationSheet />;
 }

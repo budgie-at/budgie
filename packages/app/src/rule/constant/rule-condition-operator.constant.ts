@@ -11,7 +11,6 @@ export const RULE_CONDITION_OPERATOR: Record<RuleConditionOperatorEnum, RuleOpti
         phrase: msg`is`,
         description: msg`Exact match, any letter case`,
         icon: UserIconNameEnum.Target,
-        variant: 'ghost',
         glyph: RuleGlyphEnum.EQUAL
     },
     [RuleConditionOperatorEnum.NOT_EQUALS]: {
@@ -19,7 +18,6 @@ export const RULE_CONDITION_OPERATOR: Record<RuleConditionOperatorEnum, RuleOpti
         phrase: msg`is not`,
         description: msg`Anything except this value`,
         icon: UserIconNameEnum.CircleSlash2,
-        variant: 'ghost',
         glyph: RuleGlyphEnum.NOT_EQUAL
     },
     [RuleConditionOperatorEnum.CONTAINS]: {
@@ -27,7 +25,6 @@ export const RULE_CONDITION_OPERATOR: Record<RuleConditionOperatorEnum, RuleOpti
         phrase: msg`contains`,
         description: msg`The text appears anywhere`,
         icon: UserIconNameEnum.Search,
-        variant: 'ghost',
         glyph: RuleGlyphEnum.CONTAINS
     },
     [RuleConditionOperatorEnum.NOT_CONTAINS]: {
@@ -35,42 +32,36 @@ export const RULE_CONDITION_OPERATOR: Record<RuleConditionOperatorEnum, RuleOpti
         phrase: msg`does not contain`,
         description: msg`The text appears nowhere`,
         icon: UserIconNameEnum.ZoomOut,
-        variant: 'ghost',
         glyph: RuleGlyphEnum.NOT_CONTAINS
     },
     [RuleConditionOperatorEnum.MATCHES_REGEX]: {
         label: msg`Matches pattern`,
         phrase: msg`matches`,
         description: msg`Advanced regular expression`,
-        icon: UserIconNameEnum.Regex,
-        variant: 'ghost'
+        icon: UserIconNameEnum.Regex
     },
     [RuleConditionOperatorEnum.GREATER_THAN]: {
         label: msg`More than`,
         phrase: msg`is more than`,
         description: msg`Above this amount`,
-        icon: UserIconNameEnum.ArrowUp,
-        variant: 'ghost'
+        icon: UserIconNameEnum.ArrowUp
     },
     [RuleConditionOperatorEnum.LESS_THAN]: {
         label: msg`Less than`,
         phrase: msg`is less than`,
         description: msg`Below this amount`,
-        icon: UserIconNameEnum.ArrowDown,
-        variant: 'ghost'
+        icon: UserIconNameEnum.ArrowDown
     },
     [RuleConditionOperatorEnum.BETWEEN]: {
         label: msg`Between`,
         phrase: msg`is between`,
         description: msg`From one amount to another`,
-        icon: UserIconNameEnum.ArrowUpDown,
-        variant: 'ghost'
+        icon: UserIconNameEnum.ArrowUpDown
     },
     [RuleConditionOperatorEnum.IN]: {
         label: msg`Is any of`,
         phrase: msg`is any of`,
         description: msg`Matches one of several values`,
-        icon: UserIconNameEnum.ListFilter,
-        variant: 'ghost'
+        icon: UserIconNameEnum.ListFilter
     }
 };

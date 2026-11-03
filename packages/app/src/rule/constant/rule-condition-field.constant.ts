@@ -8,50 +8,43 @@ export const RULE_CONDITION_FIELD: Record<RuleConditionFieldEnum, RuleOptionMeta
         label: msg`Title`,
         phrase: msg`title`,
         description: msg`Merchant or payment description`,
-        icon: UserIconNameEnum.Type,
-        variant: 'ghost'
+        icon: UserIconNameEnum.Type
     },
     [RuleConditionFieldEnum.COMMENT]: {
         label: msg`Comment`,
         phrase: msg`comment`,
         description: msg`The note on a payment`,
-        icon: UserIconNameEnum.MessageSquareText,
-        variant: 'ghost'
+        icon: UserIconNameEnum.MessageSquareText
     },
     [RuleConditionFieldEnum.AMOUNT]: {
         label: msg`Amount`,
         phrase: msg`amount`,
         description: msg`Payment size in its account currency`,
-        icon: UserIconNameEnum.Banknote,
-        variant: 'ghost'
+        icon: UserIconNameEnum.Banknote
     },
     [RuleConditionFieldEnum.ACCOUNT_ID]: {
         label: msg`Account`,
         phrase: msg`account`,
         description: msg`Where the payment happened`,
-        icon: UserIconNameEnum.Wallet,
-        variant: 'ghost'
+        icon: UserIconNameEnum.Wallet
     },
     [RuleConditionFieldEnum.MCC_CODE]: {
         label: msg`Merchant category`,
         shortLabel: msg`MCC`,
         phrase: msg`merchant category`,
         description: msg`Card network code (MCC)`,
-        icon: UserIconNameEnum.Store,
-        variant: 'ghost'
+        icon: UserIconNameEnum.Store
     },
     [RuleConditionFieldEnum.TRANSACTION_TYPE]: {
         label: msg`Type`,
         phrase: msg`type`,
         description: msg`Expense, income or transfer`,
-        icon: UserIconNameEnum.Shapes,
-        variant: 'ghost'
+        icon: UserIconNameEnum.Shapes
     },
     [RuleConditionFieldEnum.EXTERNAL_SOURCE]: {
         label: msg`Source`,
         phrase: msg`source`,
         description: msg`Bank, import or manual entry`,
-        icon: UserIconNameEnum.Import,
-        variant: 'ghost'
+        icon: UserIconNameEnum.Import
     }
 };

@@ -17,7 +17,6 @@ import { useGetAllMccCategoriesQuery } from '../../mcc-category/query/use-get-al
 import { TRANSACTION_TYPE } from '../../transaction/constant/transaction-type.constant';
 import { EXTERNAL_SOURCE } from '../constant/external-source.constant';
 import { RULE_CONDITION_FIELD } from '../constant/rule-condition-field.constant';
-import { RULE_CONDITION_OPERATOR } from '../constant/rule-condition-operator.constant';
 import { RULE_CONDITION_VALUE_MARKER } from '../constant/rule-condition-value-marker.constant';
 
 import type { RuleConditionLabelInterface } from '../interface/rule-condition-label.interface';
@@ -115,16 +114,12 @@ export const useRuleConditionFormatter = () => {
     ): RuleConditionLabelInterface => {
         const value = resolveValue(condition);
         const fieldLabel = t(RULE_CONDITION_FIELD[condition.field].label);
-        const operator = t(RULE_CONDITION_OPERATOR[condition.operator].phrase);
         const parts = splitListValue(condition.value);
         const firstValue = resolveValue({ ...condition, value: parts.at(0) ?? '' });
         const moreCount = parts.length - 1;
         const listOverflow = moreCount > 0 ? t({ message: plural(moreCount, { one: '+# more', other: '+# more' }) }) : null;
 
         return {
-            fieldLabel,
-            field: t(RULE_CONDITION_FIELD[condition.field].phrase),
-            operator,
             value,
             listValue: moreCount > 0 ? firstValue : value,
             listOverflow,

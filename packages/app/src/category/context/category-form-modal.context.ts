@@ -1,7 +1,7 @@
 import { CategoryEntityInterface } from '@budgie/contracts';
 
 import { createModalContext } from '../../@generic/utils/create-modal-context/create-modal-context.util';
-import { CategoryFormResult } from '../components/category-form/category-form';
+import { CategoryFormResult } from '../interface/category-form-result.interface';
 
 export interface CategoryFormModalParams {
     readonly category?: CategoryEntityInterface;

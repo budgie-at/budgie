@@ -13,8 +13,6 @@ import { CategorizeInboxGroupScreenSelector } from '../categorize-inbox-group-sc
 import { CategorizeInboxPrimaryBar } from '../categorize-inbox-primary-bar/categorize-inbox-primary-bar';
 
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
-import type { AccountEntityInterface } from '@budgie/contracts';
-import type { ReactNode } from 'react';
 
 interface Props {
     readonly cluster: CategorizeInboxClusterInterface;
@@ -28,31 +26,46 @@ export const CategorizeInboxGroupPrimaryBar = ({ cluster }: Props) => {
     const { learnedAccount, matchedAccount, cashTransactionIds } = useCategorizeInboxGroupOptions(cluster);
     const { count, totalLabel } = useCategorizeInboxIncludedTotal(cluster);
 
-    const renderBar = (label: string, commit: () => void): ReactNode => {
-        const handlePress = (): void => {
-            commit();
-            router.dismissTo('/categorize');
-        };
+    const account = choice === CategorizeInboxGroupChoiceEnum.LEARNED_TRANSFER ? learnedAccount : matchedAccount;
+    const labelId = choice === CategorizeInboxGroupChoiceEnum.ALREADY_TRACKED ? CASH_WITHDRAWAL_TRACKED_CATEGORY_ID : choice;
+    const isTransfer = choice === CategorizeInboxGroupChoiceEnum.TRANSFER || choice === CategorizeInboxGroupChoiceEnum.LEARNED_TRANSFER;
+    const getButtonLabel = (): string | null => {
+        const withTotal = (label: string): string => (isDefined(totalLabel) ? `${label} · ${totalLabel}` : label);
+        if (choice === CategorizeInboxGroupChoiceEnum.MOVE_TO_CASH) {
+            const cashCount = cashTransactionIds.length;
 
-        return <CategorizeInboxPrimaryBar label={label} testID={CategorizeInboxGroupScreenSelector.PrimaryButton} onPress={handlePress} />;
+            return t`Move ${cashCount} to cash`;
+        }
+        if (isTransfer) {
+            const title = account?.title;
+
+            return isDefined(title) ? withTotal(t`Move ${count} to ${title}`) : null;
+        }
+        const labelTitle =
+            choice === CategorizeInboxGroupChoiceEnum.ALREADY_TRACKED
+                ? t`Already tracked`
+                : strategy?.labelsById.get(isNumber(labelId) ? labelId : 0)?.title;
+
+        return isDefined(labelTitle) ? withTotal(t`File ${count} as ${labelTitle}`) : null;
     };
-    const withTotal = (label: string): string => (isDefined(totalLabel) ? `${label} · ${totalLabel}` : label);
-    const renderFileBar = (labelId: number, labelTitle: string | undefined): ReactNode =>
-        isDefined(labelTitle) ? renderBar(withTotal(t`File ${count} as ${labelTitle}`), () => void assignCluster(cluster, labelId)) : null;
-    const renderTransferBar = ({ id, title }: Pick<AccountEntityInterface, 'id' | 'title'>): ReactNode =>
-        renderBar(withTotal(t`Move ${count} to ${title}`), () => void transferCluster(cluster, id, title, true));
+    const buttonLabel = getButtonLabel();
 
-    const cashCount = cashTransactionIds.length;
-    const bars: Record<CategorizeInboxGroupChoiceEnum, ReactNode> = {
-        [CategorizeInboxGroupChoiceEnum.TRANSFER]: isDefined(matchedAccount) ? renderTransferBar(matchedAccount) : null,
-        [CategorizeInboxGroupChoiceEnum.LEARNED_TRANSFER]: isDefined(learnedAccount) ? renderTransferBar(learnedAccount) : null,
-        [CategorizeInboxGroupChoiceEnum.MOVE_TO_CASH]: renderBar(t`Move ${cashCount} to cash`, () => void moveToCash(cashTransactionIds)),
-        [CategorizeInboxGroupChoiceEnum.ALREADY_TRACKED]: renderFileBar(CASH_WITHDRAWAL_TRACKED_CATEGORY_ID, t`Already tracked`)
+    const handlePress = (): void => {
+        if (choice === CategorizeInboxGroupChoiceEnum.MOVE_TO_CASH) {
+            moveToCash(cashTransactionIds);
+        } else if (isTransfer && isDefined(account)) {
+            transferCluster(cluster, account.id, account.title, true);
+        } else if (isNumber(labelId)) {
+            assignCluster(cluster, labelId);
+        }
+        router.dismissTo('/categorize');
     };
 
-    if (isNumber(choice)) {
-        return renderFileBar(choice, strategy?.labelsById.get(choice)?.title);
+    if (!isDefined(choice) || !isDefined(buttonLabel)) {
+        return null;
     }
 
-    return isDefined(choice) ? bars[choice] : null;
+    return (
+        <CategorizeInboxPrimaryBar label={buttonLabel} testID={CategorizeInboxGroupScreenSelector.PrimaryButton} onPress={handlePress} />
+    );
 };
