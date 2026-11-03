@@ -6,6 +6,7 @@
         "**/*.json",
         "**/*.svg",
         "**/*.spec.ts",
+        "**/*.e2e.ts",
         "**/build/**",
         "**/dist/**",
         "**/index.html",
