@@ -1,12 +1,14 @@
+import { convertFromMicroUnits } from '@budgie/contracts';
+
+import { isPositiveNumber } from '@rnw-community/shared';
+
 import { useFormatDigits } from '../../i18n/hook/use-format-digits.hook';
-import { buildBudgetProgressBarMetrics } from '../utils/build-budget-progress-bar-metrics.util';
 
 export const useBudgetProgressLabels = (spent: number, limit: number, currencySymbol: string, decimalPlaces: number) => {
     const formatDigits = useFormatDigits(decimalPlaces);
-    const metrics = buildBudgetProgressBarMetrics(spent, limit);
 
     return {
-        amountLabel: `${formatDigits(metrics.displaySpent, currencySymbol)} / ${formatDigits(metrics.displayLimit, currencySymbol)}`,
-        percentLabel: metrics.percentLabel
+        amountLabel: `${formatDigits(convertFromMicroUnits(spent), currencySymbol)} / ${formatDigits(convertFromMicroUnits(limit), currencySymbol)}`,
+        percentLabel: `${Math.round((isPositiveNumber(limit) ? spent / limit : 0) * 100)}%`
     };
 };
