@@ -1,4 +1,4 @@
-import { Trans } from '@lingui/react/macro';
+import { Plural, Trans } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
@@ -23,8 +23,12 @@ export const CategorizeInboxGroupFinding = ({ cluster }: Props) => {
     const bodies: Record<CategorizeInboxFindingKindEnum, ReactNode> = {
         [CategorizeInboxFindingKindEnum.CASH]: <Trans>cash from an ATM</Trans>,
         [CategorizeInboxFindingKindEnum.ONCE_A_MONTH]: <Trans>once a month</Trans>,
-        [CategorizeInboxFindingKindEnum.PER_DAY]: <Trans>about {rate} a day</Trans>,
-        [CategorizeInboxFindingKindEnum.PER_WEEK]: <Trans>about {rate} a week</Trans>,
+        [CategorizeInboxFindingKindEnum.PER_DAY]: (
+            <Plural value={rate} _1="about once a day" _2="about twice a day" other="about # a day" />
+        ),
+        [CategorizeInboxFindingKindEnum.PER_WEEK]: (
+            <Plural value={rate} _1="about once a week" _2="about twice a week" other="about # a week" />
+        ),
         [CategorizeInboxFindingKindEnum.MONTH_RANGE]: (
             <Trans>
                 {firstMonth}–{lastMonth}
