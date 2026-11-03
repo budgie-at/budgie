@@ -23,6 +23,24 @@
             "outputs": [],
             "cache": false
         },
+        "@budgie/categorization#ts": {
+            "dependsOn": [
+                "^ts",
+                "^build",
+                "build"
+            ],
+            "outputs": [],
+            "cache": false
+        },
+        "@budgie/rules#ts": {
+            "dependsOn": [
+                "^ts",
+                "^build",
+                "build"
+            ],
+            "outputs": [],
+            "cache": false
+        },
         "clear": {
             "outputs": []
         },

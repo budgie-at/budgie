@@ -167,7 +167,7 @@ ORPHAN_SHARED_COUNT=0
 for SHARED_FILE in "$SHARED_DIR"/*.sql; do
     SHARED_NAME=$(basename "$SHARED_FILE")
 
-    if ! printf '%s\n' "$REFERENCED_SHARED_NAMES" | grep -qx "$SHARED_NAME"; then
+    if ! grep -qx "$SHARED_NAME" <<<"$REFERENCED_SHARED_NAMES"; then
         echo "test-seed-screenshot-scene: shared/$SHARED_NAME is not referenced by any scene" >&2
         ORPHAN_SHARED_COUNT=$((ORPHAN_SHARED_COUNT + 1))
     fi
