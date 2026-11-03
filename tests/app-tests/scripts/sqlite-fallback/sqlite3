@@ -1,0 +1,47 @@
+#!/usr/bin/env node
+// The sqlite3 CLI for hosts without one (the portable Linux runners), on Node's built-in
+// driver: `sqlite3 [-bail] <database> [sql]`, the SQL read from stdin when not given; any
+// other option (`-version` included, so a probe for the CLI finds none) fails. Runs
+// the statements in order, stops at the first error, prints returned rows as the CLI's list
+// mode does (`|`-separated, NULL empty), and follows `.read <file>`; any other dot-command
+// fails. Shell scripts put this directory on PATH when `command -v sqlite3` fails.
+'use strict';
+
+const { readFileSync } = require('node:fs');
+const { DatabaseSync } = require('node:sqlite');
+
+const options = process.argv.slice(2).filter(argument => argument.startsWith('-'));
+const [databasePath, sqlArgument, ...extra] = process.argv.slice(2).filter(argument => !argument.startsWith('-'));
+if (options.some(option => option !== '-bail') || databasePath === undefined || extra.length > 0) {
+    console.error('usage: sqlite3 [-bail] <database> [sql]');
+    process.exit(1);
+}
+
+const expandReads = sql =>
+    sql
+        .split('\n')
+        .map(line => {
+            const command = line.trim();
+            if (!command.startsWith('.')) return line;
+            const [name, path, ...rest] = command.split(/\s+/);
+            if (name !== '.read' || path === undefined || rest.length > 0) throw new Error(`unsupported dot-command: ${command}`);
+            return expandReads(readFileSync(path, 'utf8'));
+        })
+        .join('\n');
+
+const database = new DatabaseSync(databasePath);
+try {
+    let pending = expandReads(sqlArgument ?? readFileSync(0, 'utf8'));
+    while (pending.replace(/--[^\n]*|\s+/g, '') !== '') {
+        const statement = database.prepare(pending);
+        pending = pending.slice(statement.sourceSQL.length);
+        if (statement.columns().length === 0) {
+            statement.run();
+            continue;
+        }
+        statement.setReturnArrays(true);
+        for (const row of statement.all()) process.stdout.write(`${row.join('|')}\n`);
+    }
+} finally {
+    database.close();
+}

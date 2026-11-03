@@ -42,7 +42,7 @@ export const CategorizeInboxSectionHeader = ({ section, rowCount }: Props) => {
 
     return (
         <View
-            className="h-[32px] flex-row items-center justify-between gap-x-md px-3xl"
+            className="min-h-[32px] flex-row items-center justify-between gap-x-md px-3xl"
             accessibilityRole="header"
             {...testID(CategorizeInboxSectionHeaderSelector.Header, section)}
         >

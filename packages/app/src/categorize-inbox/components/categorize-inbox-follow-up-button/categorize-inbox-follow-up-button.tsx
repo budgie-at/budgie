@@ -38,7 +38,7 @@ export const CategorizeInboxFollowUpButton = ({ lastWrite }: Props) => {
             testID={CategorizeInboxUndoBarSelector.FollowUpButton}
         >
             {isApplied ? (
-                <Icon icon={UserIconNameEnum.Check} size={18} className="text-positive-foreground" />
+                <Icon icon={UserIconNameEnum.Check} size={18} className="text-primary" />
             ) : (
                 <Icon icon={UserIconNameEnum.Tag} size={18} className="text-secondary-foreground" />
             )}

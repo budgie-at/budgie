@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.150.0](https://github.com/budgie-at/budgie/compare/v6.149.0...v6.150.0) (2026-11-03)
+
+### Bug Fixes
+
+* **app:** expose the inbox progress bar and transfer rule switch to VoiceOver ([d3aa32a](https://github.com/budgie-at/budgie/commit/d3aa32a9086a7267276a742139d92461b28ca260))
+* **app:** hide mixed-currency inbox totals and keep Done beside the undo bar ([5ab6b74](https://github.com/budgie-at/budgie/commit/5ab6b741f5d79574877571ab5e9b5f1910499ad2))
+* **app:** keep the cash action on one line and delay the nav title fade ([13802fd](https://github.com/budgie-at/budgie/commit/13802fdbc91c7c1296ef7443b99a9fdc4fde6e92))
+* **app:** overlap the group title fades so a merchant name is always readable ([f9ec493](https://github.com/budgie-at/budgie/commit/f9ec493356f2b9b0359b2258cea76edbe745c200))
+* **app:** size the inbox row action slot to its pill ([b6a3b1f](https://github.com/budgie-at/budgie/commit/b6a3b1f9980527c9bac2ab8eca49ecc3c98726fa))
+
+### Features
+
+* **app:** align categorize inbox amounts on one edge ([726c8ff](https://github.com/budgie-at/budgie/commit/726c8ff068823129e4f3e866cbcbda0ac832f162))
+* **app:** give inbox rows content-sized trailing slots and a large-text layout ([587e648](https://github.com/budgie-at/budgie/commit/587e648eb892281d6b10ef73e3acd54a06d37b19))
+* **app:** labelled row actions, done footer and opaque inbox header ([5fc1cd7](https://github.com/budgie-at/budgie/commit/5fc1cd7883e38c747ab6e25138e442227ab23524))
+* **app:** neutral grouped categorize inbox with session progress ([4de1cf9](https://github.com/budgie-at/budgie/commit/4de1cf922045f56db189d06d866bdee960c914e4))
+* **app:** one trailing edge for inbox rows with the action under the amount ([9b5fbcd](https://github.com/budgie-at/budgie/commit/9b5fbcd81a1a2f0d2615bf4b256d342743396a56))
+* **app:** restore inbox row chevrons, denser action rows and exclusive title handoff ([a274f40](https://github.com/budgie-at/budgie/commit/a274f406201c8cb32c60e99e2e3e0a6b70237350))
+* **app:** return inbox rows to the round-4 layout with chevrons and pills beside amounts ([eb11471](https://github.com/budgie-at/budgie/commit/eb11471d2b301a783f0a06b0559c28dd205b63a1))
+
+
 # [6.149.0](https://github.com/budgie-at/budgie/compare/v6.148.0...v6.149.0) (2026-11-03)
 
 ### Bug Fixes

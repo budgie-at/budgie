@@ -48,7 +48,9 @@ jobs:
                           filename === '.editorconfig' ||
                           filename === '.github/CODEOWNERS' ||
                           filename === '.github/dependabot.yml' ||
-                          filename.startsWith('tests/app-tests/flows/media/') ||
+                          filename.startsWith('e2e/media/') ||
+                          filename.startsWith('e2e/support/media/') ||
+                          filename === 'e2e/media.config.ts' ||
                           filename.startsWith('tests/app-tests/fixtures/screenshots/') ||
                           filename.startsWith('packages/app/fastlane/') ||
                           filename === '.github/landing-media.config.json' ||
@@ -122,9 +124,6 @@ jobs:
 
             - name: Typescript checks
               run: pnpm ts
-
-            - name: Maestro selector checks
-              run: pnpm --filter @budgie-at/app-tests selectors:check
 
             - name: Lint checks
               run: pnpm lint
@@ -217,6 +216,9 @@ jobs:
                     echo "== $t"
                     bash "$t"
                   done
+
+            - name: Run e2e support unit tests
+              run: node --test 'e2e/support/**/*.test.ts'
 
     assert-ai-ota:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
