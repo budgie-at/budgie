@@ -3,6 +3,49 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.150.0](https://github.com/budgie-at/budgie/compare/v6.149.0...v6.150.0) (2026-11-03)
+
+### Bug Fixes
+
+* **app:** expose the inbox progress bar and transfer rule switch to VoiceOver ([d3aa32a](https://github.com/budgie-at/budgie/commit/d3aa32a9086a7267276a742139d92461b28ca260))
+* **app:** hide mixed-currency inbox totals and keep Done beside the undo bar ([5ab6b74](https://github.com/budgie-at/budgie/commit/5ab6b741f5d79574877571ab5e9b5f1910499ad2))
+* **app:** keep the cash action on one line and delay the nav title fade ([13802fd](https://github.com/budgie-at/budgie/commit/13802fdbc91c7c1296ef7443b99a9fdc4fde6e92))
+* **app:** overlap the group title fades so a merchant name is always readable ([f9ec493](https://github.com/budgie-at/budgie/commit/f9ec493356f2b9b0359b2258cea76edbe745c200))
+* **app:** size the inbox row action slot to its pill ([b6a3b1f](https://github.com/budgie-at/budgie/commit/b6a3b1f9980527c9bac2ab8eca49ecc3c98726fa))
+
+### Features
+
+* **app:** align categorize inbox amounts on one edge ([726c8ff](https://github.com/budgie-at/budgie/commit/726c8ff068823129e4f3e866cbcbda0ac832f162))
+* **app:** give inbox rows content-sized trailing slots and a large-text layout ([587e648](https://github.com/budgie-at/budgie/commit/587e648eb892281d6b10ef73e3acd54a06d37b19))
+* **app:** labelled row actions, done footer and opaque inbox header ([5fc1cd7](https://github.com/budgie-at/budgie/commit/5fc1cd7883e38c747ab6e25138e442227ab23524))
+* **app:** neutral grouped categorize inbox with session progress ([4de1cf9](https://github.com/budgie-at/budgie/commit/4de1cf922045f56db189d06d866bdee960c914e4))
+* **app:** one trailing edge for inbox rows with the action under the amount ([9b5fbcd](https://github.com/budgie-at/budgie/commit/9b5fbcd81a1a2f0d2615bf4b256d342743396a56))
+* **app:** restore inbox row chevrons, denser action rows and exclusive title handoff ([a274f40](https://github.com/budgie-at/budgie/commit/a274f406201c8cb32c60e99e2e3e0a6b70237350))
+* **app:** return inbox rows to the round-4 layout with chevrons and pills beside amounts ([eb11471](https://github.com/budgie-at/budgie/commit/eb11471d2b301a783f0a06b0559c28dd205b63a1))
+
+
+# [6.149.0](https://github.com/budgie-at/budgie/compare/v6.148.0...v6.149.0) (2026-11-03)
+
+### Bug Fixes
+
+* **app:** address onboarding QA findings ([a8d8d93](https://github.com/budgie-at/budgie/commit/a8d8d932315f544576299a7ae7ac438e2daeb70a))
+* **app:** keep PIN warning text readable on grouped surfaces ([8a761c1](https://github.com/budgie-at/budgie/commit/8a761c1f4caf333fad4759adadf021d27f757f82))
+* **app:** keep the onboarding footer in the accessibility tree ([6684420](https://github.com/budgie-at/budgie/commit/66844204f3445610907a473bb23997ebc7758230))
+* **app:** leave onboarding only once completion is observed ([fed2940](https://github.com/budgie-at/budgie/commit/fed294086e7e329af35feef78ad33496da772285))
+* **app:** match the Reduce Motion seal confirmation title to its button ([2d574a5](https://github.com/budgie-at/budgie/commit/2d574a5002591787f4dbb42340dfd7d5906b71e1))
+* **app:** polish onboarding contrast and empty states ([b1c347b](https://github.com/budgie-at/budgie/commit/b1c347b5cfe30f320f6526284db5286c6ebb429f))
+* **app:** show the onboarding footer hairline and quiet the keyboard Done ([7b2d70a](https://github.com/budgie-at/budgie/commit/7b2d70a5a7cbd73bf3888275695aa58060eb0f38))
+* **app:** stop the sealed onboarding screen crashing ([330ad60](https://github.com/budgie-at/budgie/commit/330ad600a1752165d547a9b6b2b6988ab2aae6b7))
+* **app:** unify PIN chrome and clarify empty account guidance ([3742a94](https://github.com/budgie-at/budgie/commit/3742a948e0c3fef14cc54e66a9d7d0726977d1bb))
+* queue e2e lease requests while the simlock farm is full ([#1877](https://github.com/budgie-at/budgie/issues/1877)) ([b404445](https://github.com/budgie-at/budgie/commit/b404445cf0ecf8d6170e34af58bb7bc236b1494e))
+
+### Features
+
+* **app:** improve onboarding balance keyboard ergonomics ([e2403fe](https://github.com/budgie-at/budgie/commit/e2403fea8aa8fca38fe54c8423bcd9d770a8d516))
+* **app:** polish onboarding as grouped lists ([0b88f62](https://github.com/budgie-at/budgie/commit/0b88f62c77c214befc6adda00d1f9eb088af2c9f))
+* **app:** unify onboarding keyboard controls in the footer ([1ab12d5](https://github.com/budgie-at/budgie/commit/1ab12d54b324ee13e1c470b841fa7b509346c48d))
+
+
 # [6.148.0](https://github.com/budgie-at/budgie/compare/v6.147.1...v6.148.0) (2026-11-02)
 
 ### Bug Fixes

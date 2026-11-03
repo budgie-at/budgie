@@ -1,26 +1,29 @@
-import { AccountTypeEnum, ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
-import { useAtomValue } from '@effect/atom-react/Hooks';
+import { ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Alert, Text, View } from 'react-native';
+import { Alert } from 'react-native';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/component/button/button';
+import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { MANUAL_BALANCE_ACCOUNT_TYPES } from '../../../account/constant/manual-balance-account-types.constant';
 import { useSearchAccountsSortedQuery } from '../../../account/query/use-search-accounts-sorted.query';
-import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { ONBOARDING_ACCOUNT_OPTIONS } from '../../constant/onboarding-account-options.constant';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
 import { useOnboardingFileState } from '../../hook/use-onboarding-file-state.hook';
 import { useOnboardingNavigation } from '../../hook/use-onboarding-navigation.hook';
 import { OnboardingService } from '../../service/onboarding.service';
 import { OnboardingBalanceRow } from '../onboarding-balance-row/onboarding-balance-row';
-import { OnboardingSourceRow } from '../onboarding-source-row/onboarding-source-row';
+import { OnboardingFooterAction } from '../onboarding-footer-action/onboarding-footer-action';
+import { OnboardingKeyboardControls } from '../onboarding-keyboard-controls/onboarding-keyboard-controls';
 import { OnboardingStepIntro } from '../onboarding-step-intro/onboarding-step-intro';
 import { OnboardingStepLayout } from '../onboarding-step-layout/onboarding-step-layout';
 
@@ -34,11 +37,13 @@ export const OnboardingBalances = () => {
     const [isSaving, setIsSaving] = useState(false);
 
     const { goToStep } = useOnboardingNavigation();
-    const { accounts } = useSearchAccountsSortedQuery();
-    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
-    const { state, isSealed } = useOnboardingFileState();
+    const { accounts, isLoading } = useSearchAccountsSortedQuery();
+    const { state, lock } = useOnboardingFileState();
 
-    const manualAccounts = accounts.filter(account => MANUAL_BALANCE_ACCOUNT_TYPES.has(account.type));
+    const accountTypeOrder = ONBOARDING_ACCOUNT_OPTIONS.map(option => option.type);
+    const manualAccounts = accounts
+        .filter(account => MANUAL_BALANCE_ACCOUNT_TYPES.has(account.type))
+        .sort((left, right) => accountTypeOrder.indexOf(left.type) - accountTypeOrder.indexOf(right.type));
     const enteredBalances = manualAccounts
         .filter(account => (balances[account.id] ?? 0) !== 0)
         .map(account => ({ accountId: account.id, balance: balances[account.id] ?? 0 }));
@@ -78,14 +83,13 @@ export const OnboardingBalances = () => {
         ]);
     };
 
+    const hasAccounts = isNotEmptyArray(accounts);
     const hasManualAccounts = isNotEmptyArray(manualAccounts);
-    const sourcesAccountId = manualAccounts.find(account => account.type === AccountTypeEnum.BANK)?.id;
-    const hasStandaloneSources = !isDefined(sourcesAccountId);
 
     const monobankAccountCount = accounts.filter(account => account.externalSource === ExternalSourceEnum.MONOBANK).length;
     const isMonobankConnected = isPositiveNumber(monobankAccountCount);
     const monobankIcon = isMonobankConnected ? UserIconNameEnum.CircleCheck : UserIconNameEnum.Link;
-    const monobankIconClassName = isMonobankConnected ? 'text-positive-foreground' : 'text-violet-foreground';
+    const monobankIconClassName = isMonobankConnected ? 'text-positive-foreground' : 'text-secondary-foreground';
     const monobankTitle = isMonobankConnected ? t`Monobank connected` : t`Monobank`;
     const monobankDescription = isMonobankConnected
         ? t({
@@ -94,15 +98,15 @@ export const OnboardingBalances = () => {
                   other: '# accounts. Balances come straight from the bank.'
               })
           })
-        : t`Your token is stored in Budgie's file and only ever sent to Monobank.`;
+        : t`Token stays on this phone, sent only to Monobank.`;
 
     const statementAccountCount = accounts.filter(
         account => account.externalSource === ExternalSourceEnum.PRIVATBANK || account.externalSource === ExternalSourceEnum.ERSTE
     ).length;
     const isStatementImported = isPositiveNumber(statementAccountCount);
     const statementIcon = isStatementImported ? UserIconNameEnum.CircleCheck : UserIconNameEnum.FileText;
-    const statementIconClassName = isStatementImported ? 'text-positive-foreground' : 'text-cyan-foreground';
-    const statementTitle = isStatementImported ? t`Statement imported` : t`A bank statement (PDF or XLSX)`;
+    const statementIconClassName = isStatementImported ? 'text-positive-foreground' : 'text-secondary-foreground';
+    const statementTitle = isStatementImported ? t`Statement imported` : t`Bank statement`;
     const statementDescription = isStatementImported
         ? t({
               message: plural(statementAccountCount, {
@@ -110,77 +114,72 @@ export const OnboardingBalances = () => {
                   other: '# accounts. Balances come from the statement.'
               })
           })
-        : t`Read on this phone, then you can delete it.`;
-    const isSaveDisabled = !isNotEmptyArray(enteredBalances) && !isMonobankConnected && !isStatementImported;
-
-    const sources = (
-        <View className="gap-y-md">
-            <Text className="text-secondary-foreground text-xs">
-                <Trans>Or fill it from</Trans>
-            </Text>
-
-            <OnboardingSourceRow
-                testID={OnboardingBalancesSelector.MonobankOption}
-                icon={monobankIcon}
-                iconClassName={monobankIconClassName}
-                title={monobankTitle}
-                description={monobankDescription}
-                onPress={handleMonobankPress}
-            />
-            <OnboardingSourceRow
-                testID={OnboardingBalancesSelector.StatementOption}
-                icon={statementIcon}
-                iconClassName={statementIconClassName}
-                title={statementTitle}
-                description={statementDescription}
-                onPress={handleStatementPress}
-            />
-        </View>
-    );
+        : t`Erste (PDF) or Privatbank (XLSX), read on this phone.`;
+    const isSaveDisabled = hasAccounts && !isNotEmptyArray(enteredBalances) && !isMonobankConnected && !isStatementImported;
+    const balancesLabel = isSaveDisabled ? t`Enter a balance to save` : t`Save balances`;
+    const saveLabel = hasAccounts ? balancesLabel : t`Continue`;
+    const handleContinuePress = hasAccounts ? handleSavePress : handleLaterPress;
+    const title = hasAccounts ? t`What’s in them today?` : t`No accounts yet`;
+    const description = hasAccounts ? t`A rough number is fine. Fix it any time.` : t`Import accounts now, or add them later in Budgie.`;
+    const importTitle = hasManualAccounts ? t`Or import from` : t`Import`;
 
     return (
         <OnboardingStepLayout
             step={OnboardingStepEnum.BALANCES}
             fileState={state}
-            isFileSealed={isSealed}
+            fileLock={lock}
+            isLoading={isLoading}
             footer={
                 <>
-                    <Button
+                    <OnboardingKeyboardControls />
+                    <PillButton
                         testID={OnboardingBalancesSelector.SaveButton}
-                        variant="cta"
-                        content={t`Save balances`}
-                        disabled={isSaveDisabled}
+                        label={saveLabel}
+                        isDisabled={isSaveDisabled}
                         isLoading={isSaving}
-                        onPress={handleSavePress}
+                        onPress={handleContinuePress}
                     />
-                    <Button
-                        testID={OnboardingBalancesSelector.LaterButton}
-                        variant="ghost"
-                        content={t`Add balances later`}
-                        onPress={handleLaterPress}
-                    />
+                    {hasAccounts ? (
+                        <OnboardingFooterAction
+                            testID={OnboardingBalancesSelector.LaterButton}
+                            label={t`Add balances later`}
+                            onPress={handleLaterPress}
+                        />
+                    ) : null}
                 </>
             }
         >
-            <OnboardingStepIntro title={t`What's in them today?`} description={t`A rough number is fine. You can correct it any time.`} />
+            <OnboardingStepIntro title={title} description={description} />
 
             {hasManualAccounts ? (
-                <View className="gap-y-lg">
+                <GroupedListSection title={t`Accounts`}>
                     {manualAccounts.map(account => (
                         <OnboardingBalanceRow
                             key={account.id}
                             account={account}
-                            currencySymbol={defaultInstrument.symbol}
                             value={balances[account.id] ?? 0}
                             onChangeValue={handleBalanceChange}
-                        >
-                            {account.id === sourcesAccountId ? sources : null}
-                        </OnboardingBalanceRow>
+                        />
                     ))}
-                </View>
+                </GroupedListSection>
             ) : null}
 
-            {hasStandaloneSources ? sources : null}
+            <GroupedListSection title={importTitle}>
+                <GroupedListRow
+                    testID={OnboardingBalancesSelector.MonobankOption}
+                    left={<GroupedListIcon icon={monobankIcon} iconClassName={monobankIconClassName} />}
+                    title={monobankTitle}
+                    subtitle={monobankDescription}
+                    onPress={handleMonobankPress}
+                />
+                <GroupedListRow
+                    testID={OnboardingBalancesSelector.StatementOption}
+                    left={<GroupedListIcon icon={statementIcon} iconClassName={statementIconClassName} />}
+                    title={statementTitle}
+                    subtitle={statementDescription}
+                    onPress={handleStatementPress}
+                />
+            </GroupedListSection>
         </OnboardingStepLayout>
     );
 };

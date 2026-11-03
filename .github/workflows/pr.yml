@@ -217,6 +217,9 @@ jobs:
                     bash "$t"
                   done
 
+            - name: Run e2e support unit tests
+              run: node --test 'e2e/support/**/*.test.ts'
+
     assert-ai-ota:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact]

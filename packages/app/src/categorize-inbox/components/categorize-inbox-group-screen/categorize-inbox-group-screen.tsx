@@ -3,6 +3,7 @@ import { isDefined } from '@rnw-community/shared';
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { useCategorizeInboxCluster } from '../../hook/use-categorize-inbox-cluster.hook';
 import { formatCategorizeInboxMerchantTitle } from '../../utils/format-categorize-inbox-merchant-title.util';
+import { CategorizeInboxCollapsingNavTitle } from '../categorize-inbox-collapsing-nav-title/categorize-inbox-collapsing-nav-title';
 import { CategorizeInboxGroupChoiceProvider } from '../categorize-inbox-group-choice-provider/categorize-inbox-group-choice-provider';
 import { CategorizeInboxGroupHero } from '../categorize-inbox-group-hero/categorize-inbox-group-hero';
 import { CategorizeInboxGroupOptions } from '../categorize-inbox-group-options/categorize-inbox-group-options';
@@ -12,8 +13,6 @@ import { CategorizeInboxGroupRecentPayments } from '../categorize-inbox-group-re
 import { CategorizeInboxGroupRefineOptions } from '../categorize-inbox-group-refine-options/categorize-inbox-group-refine-options';
 import { CategorizeInboxScreenChrome } from '../categorize-inbox-screen-chrome/categorize-inbox-screen-chrome';
 import { CategorizeInboxScreenScroll } from '../categorize-inbox-screen-scroll/categorize-inbox-screen-scroll';
-
-import { CategorizeInboxGroupScreenSelector } from './categorize-inbox-group-screen.selector';
 
 interface Props {
     readonly clusterKey: string;
@@ -30,8 +29,11 @@ export const CategorizeInboxGroupScreen = ({ clusterKey }: Props) => {
         <GroupedSurface>
             <CategorizeInboxGroupChoiceProvider cluster={cluster}>
                 <CategorizeInboxScreenChrome
-                    title={formatCategorizeInboxMerchantTitle(cluster.displayTitle)}
-                    titleTestID={CategorizeInboxGroupScreenSelector.Title}
+                    title={
+                        <CategorizeInboxCollapsingNavTitle>
+                            {formatCategorizeInboxMerchantTitle(cluster.displayTitle)}
+                        </CategorizeInboxCollapsingNavTitle>
+                    }
                 >
                     <CategorizeInboxScreenScroll>
                         <CategorizeInboxGroupHero cluster={cluster} />

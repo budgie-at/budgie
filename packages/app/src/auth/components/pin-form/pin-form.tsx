@@ -90,7 +90,7 @@ export const PinForm = ({
                     {isErrorVisible ? (
                         <Animated.Text
                             entering={FadeIn.duration(PIN_ERROR_FADE_DURATION_MS)}
-                            className="text-sm font-medium text-destructive-foreground text-center"
+                            className="text-sm font-medium text-destructive-strong text-center"
                             testID={PinFormSelector.Error}
                             accessibilityLiveRegion="assertive"
                         >

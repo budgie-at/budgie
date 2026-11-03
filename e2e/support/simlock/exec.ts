@@ -59,23 +59,26 @@ export async function leaseIdForUdid(api: SimlockApi, udid: string): Promise<str
     throw new Error(`no simlock lease of this token holds ${udid} (${body.leases.length} leases)`);
 }
 
+/** undici's wording for a connection lost before (`fetch failed`) or during (`terminated`) the answer, and simlock's for a lost worker. */
+const TRANSIENT = /WORKER_UNREACHABLE|fetch failed|terminated/;
+
 /** Runs one `simctl` command on the leased simulator. */
 export async function exec(api: SimlockApi, leaseId: string, args: readonly string[], stdin?: string): Promise<ExecResult> {
     const body = JSON.stringify({ tool: 'simctl', args, ...(stdin === undefined ? {} : { stdin }) });
-    let response: Response;
+    let text: string;
     for (let attempt = 1; ; attempt++) {
         try {
-            response = await call(api, `/v1/leases/${leaseId}/exec`, { method: 'POST', body });
+            text = await (await call(api, `/v1/leases/${leaseId}/exec`, { method: 'POST', body })).text();
             break;
         } catch (cause) {
-            // A gateway's worker uplink can drop and reconnect within a second; every command the suite sends is idempotent.
-            if (attempt === 3 || !String(cause).includes('WORKER_UNREACHABLE')) {
+            // A gateway's worker uplink can drop and reconnect within a second, and the tunnel can reset a
+            // connection before or during the answer; every command the suite sends is idempotent.
+            if (attempt === 3 || !TRANSIENT.test(String(cause))) {
                 throw cause;
             }
             await new Promise(resolve => setTimeout(resolve, 2_000 * attempt));
         }
     }
-    const text = await response.text();
     let stdout = '';
     let stderr = '';
     let exitCode = -1;

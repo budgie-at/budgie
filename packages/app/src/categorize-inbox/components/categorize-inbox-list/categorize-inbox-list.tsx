@@ -1,4 +1,5 @@
 import { CategorizeInboxSectionEnum } from '@budgie/categorization';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useBottomChromeInset } from '@rnw-community/react-native-screen-chrome';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -27,6 +28,7 @@ const INLINE_ONE_OFF_LIMIT = 5;
 
 export const CategorizeInboxList = ({ items, filterSection, onSectionPress }: Props) => {
     const { chromeHeight } = useBottomChromeInset();
+    const { bottom } = useSafeAreaInsets();
 
     const isInFilter = (section: CategorizeInboxSectionEnum): boolean => !isDefined(filterSection) || section === filterSection;
     const hiddenOneOffs = items
@@ -72,7 +74,7 @@ export const CategorizeInboxList = ({ items, filterSection, onSectionPress }: Pr
     const handleSectionPress = (section: CategorizeInboxSectionEnum): void =>
         void onSectionPress(section === filterSection ? null : section);
 
-    const contentContainerStyle = { paddingBottom: chromeHeight + LIST_BOTTOM_CLEARANCE };
+    const contentContainerStyle = { paddingBottom: Math.max(chromeHeight, bottom) + LIST_BOTTOM_CLEARANCE };
 
     return (
         <CollapsibleChromeLegendList
