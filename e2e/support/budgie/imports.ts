@@ -3,7 +3,7 @@ import { expect, type Locator } from 'e2e';
 import { byId, byText, expectId, expectNoId, openLink, scrollTo, sleep, tapId, tapUntil, type Ctx } from './core.ts';
 import { navigateToTransactions } from './transactions.ts';
 
-export async function importAutomaticallyMappedCsv(ctx: Ctx): Promise<void> {
+async function importAutomaticallyMappedCsv(ctx: Ctx): Promise<void> {
     await expectId(ctx, 'ImportPresetPickerSelector.Toggle', 15_000);
     await expect(byText(ctx.screen, 'Detected automatically. Tap to pick another format.')).toBeVisible();
     await expect(byId(ctx.screen, 'CsvPage.StartImportButton.Label')).toHaveText(/^Import \d+ transactions?$/);

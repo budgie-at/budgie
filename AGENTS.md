@@ -103,11 +103,12 @@ The `Native runtime fingerprint` check fails any PR that moves the app's Expo fi
 ### Pull requests do not compile native code
 
 From mobile-ci **v3.0.0** a pull request never runs `pod install` or `xcodebuild`
-when a base binary exists for its native key. `pr.yml`'s `ios-maestro` job, the
+when a base binary exists for its native key. `pr.yml`'s e2e job, the
 `media-smoke` lane and `store-screenshots.yml` all plan first on the Linux pool
 `trf-linux-amd64-4x8`: they compute the native key, fetch the base published at
 `ghcr.io/budgie-at/budgie/e2e-base`, repack this commit's JavaScript into it, and
-hand the result to Maestro. No Mac slot is claimed. A Mac build happens only for
+hand the result to the e2e suite, which drives simulators leased from the Mac
+Studio simlock farm from a Linux runner. No Mac runner slot is claimed. A Mac build happens only for
 a key nothing has published a base for.
 
 `.github/workflows/ios-native-cache.yml` is the warm-up that publishes the base.
@@ -194,7 +195,7 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 24. **Re-export from package index** - Don't create intermediate export files (like `erste.ts`), re-export directly from `index.ts`
 25. **Class method ordering** - Public methods come before private methods in class definitions
 26. **Always brace control-flow bodies** - Every `if`, `else`, `for`, `while`, and `do` body must be wrapped in `{ }`, even for single statements. Enforced by Oxlint `curly: ["error", "all"]` and `nonblock-statement-body-position: ['error', 'below']`.
-27. **No component tests; app hosts a small node test tier.** Domain packages (`recurring`, `categorization`, `import-export`, `rules`, `market`, `ledger`, `budget`, `consolidation`, `sync`, `contracts`, `ai`) MAY host colocated `test/` suites using `@effect/vitest` + `tests/test-kit`, excluded from the package build; `app` MAY host a colocated `packages/app/test/` suite (`@effect/vitest`, node environment, no React Native renderer, run by `pnpm test`) for atoms, services and pure logic only, never component rendering; `amount-input` MAY host colocated `src/**/*.spec.ts` Vitest suites (node environment, plain `it`, rnw-community layout) for its pure utilities only, never component rendering; `landing` hosts no Jest/Vitest/etc. Verification at the code level is done via `pnpm ts`, `pnpm lint`, `pnpm deadcode`, `pnpm cpd`, manual testing, and — for SQL — `EXPLAIN QUERY PLAN` plus the bench harness under `packages/app/scripts/`. E2E coverage lives in `tests/app-tests/` via Maestro. Cross-package scenario suites, real-backup checks and money-safety invariants live in `tests/sync-tests/`, `tests/budget-tests/`, and `tests/consolidation-tests/`; domain-package suites live in `packages/<name>/test/`. Shared integration harness code belongs in `tests/test-kit/`, not in a scenario suite. Do not add Vitest/Jest workspaces elsewhere without amending this rule.
+27. **No component tests; app hosts a small node test tier.** Domain packages (`recurring`, `categorization`, `import-export`, `rules`, `market`, `ledger`, `budget`, `consolidation`, `sync`, `contracts`, `ai`) MAY host colocated `test/` suites using `@effect/vitest` + `tests/test-kit`, excluded from the package build; `app` MAY host a colocated `packages/app/test/` suite (`@effect/vitest`, node environment, no React Native renderer, run by `pnpm test`) for atoms, services and pure logic only, never component rendering; `amount-input` MAY host colocated `src/**/*.spec.ts` Vitest suites (node environment, plain `it`, rnw-community layout) for its pure utilities only, never component rendering; `landing` hosts no Jest/Vitest/etc. Verification at the code level is done via `pnpm ts`, `pnpm lint`, `pnpm deadcode`, `pnpm cpd`, manual testing, and — for SQL — `EXPLAIN QUERY PLAN` plus the bench harness under `packages/app/scripts/`. E2E coverage lives in `e2e/` (tester-army e2e on the simlock farm; its fixtures and seed scripts in `tests/app-tests/`). Cross-package scenario suites, real-backup checks and money-safety invariants live in `tests/sync-tests/`, `tests/budget-tests/`, and `tests/consolidation-tests/`; domain-package suites live in `packages/<name>/test/`. Shared integration harness code belongs in `tests/test-kit/`, not in a scenario suite. Do not add Vitest/Jest workspaces elsewhere without amending this rule.
 28. **Enum members are `UPPER_CASE` with `UPPER_CASE` string values.** Mirror the `@budgie/contracts` convention. Example: `TRANSFER = 'TRANSFER'`. Exception: when a pre-existing serialized value (DB column, telemetry endpoint, storage key) uses a different casing, preserve the value string while moving the key to UPPER_CASE: `MODEL_ERROR = 'model-error'`. Document the exception inline.
 29. **Interface fields are `readonly` by default.** Interfaces are immutable contracts. If an interface is a mutable accumulator, convert it to a class with explicit mutation methods.
 30. **No re-export-only files.** Import from the canonical source. Thin indirections rot and fragment signatures. Exception: test-harness barrels under `tests/*/src/harness/index.ts` are permitted because per-scenario import-block similarity otherwise trips `pnpm cpd` (jscpd 0% threshold) and the project rule against `jscpd:ignore` and `.jscpd.json` edits prevents an in-source workaround.
@@ -232,7 +233,7 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 56. **Extract repeated JSX rows/items into named components, not render functions.** Composition is the default shape for UI. If a list row, card body, or repeated item has its own JSX structure, make it a real component in its own folder and keep `renderItem` / `.map()` callbacks limited to selecting that component and passing props. Inline render functions are acceptable only for trivial primitives or one-line pass-throughs with no branching.
 57. **Concurrency, time and resources use Effect primitives.** `Schedule` + `Effect.retry`/`repeat`, `Effect.timeout`, `Effect.sleep`, `Semaphore`, `Latch`, `FiberMap`, `Cache`, fiber interruption and `Effect.acquireRelease`. Never `setTimeout` loops, generation counters, promise-chain mutexes, `Promise.race`, or boolean cancel flags.
 58. **Repositories are services; reads are Effects.** A repository is a `make` service (rule 22) whose methods return Effects over `Db.query(db => ...)`; it holds no `db` and returns no Drizzle builders. Shared repository behaviour is a `make<X>Repository(table, columns)` factory spread into `make`, not a base class. Atomic work is `Db.transaction(effect)` from `@budgie/contracts`, never a transaction argument threaded through method signatures.
-59. **Never change app behavior only to satisfy E2E tests.** E2E must exercise real product behavior, not create test-only product paths. App code may gain stable selectors or accessibility metadata only when that preserves or improves real UI semantics; otherwise fix the Maestro flow, fixture, or test harness. Exception: the E2E app skips the live exchange-rate sync (`exchange-rate-background.service.ts`), because live rates overwrite the fixture rates that converted-amount assertions pin.
+59. **Never change app behavior only to satisfy E2E tests.** E2E must exercise real product behavior, not create test-only product paths. App code may gain stable selectors or accessibility metadata only when that preserves or improves real UI semantics; otherwise fix the e2e test, fixture, or test harness. Exception: the E2E app skips the live exchange-rate sync (`exchange-rate-background.service.ts`), because live rates overwrite the fixture rates that converted-amount assertions pin.
 60. **Live database reads are atoms; writes carry no keys.** React reads of app database state are `databaseQueryAtom([Tables...], effect)` atoms (`databaseQueryFamily([Tables...], Repo, (repo, key) => repo.x(key))` when parametrised) read with `useLiveAtomValue`, listing every table the SQL reads. Drizzle builder writes are tracked by the Drizzle adapter; every raw (non-builder) write (`db.run(sql...)`, `$client.unsafe`) is wrapped in `Db.mutation({ type, tables: [...tables] }, effect)`.
 61. **Component prop budget: more than 8 props is a lint error.** Enforced repo-wide by the local `budgie/max-component-props` rule loaded through Oxlint's JavaScript-plugin bridge (`lint-rules/rules/max-component-props.mjs`). It has no allow list: every component is under the budget. Prop-relay components, `isVisible` props, and boolean mode props (`isRefund`) are prohibited; use children composition, compound components sharing a context, and explicit variant components instead. Full guide with the reference implementation: [docs/component-composition.md](docs/component-composition.md).
 62. **No delegate-only hooks, no logic above components.** A hook whose body is one call to another hook plus constants (strings, an enum literal, a settings key) gets inlined into its consumers and deleted. Every layer of a hook chain must add real composition (state, refs, effects, 2+ composed sources with branching); single-consumer wrapper hooks are inlined into their component unless that forces a new lint disable. Component files contain imports, the inline `Props`, and the component — free functions with branching, hooks, and inline anonymous object types above a component belong in their proper module folders or in the child component that consumes them. See [docs/component-composition.md](docs/component-composition.md).
@@ -622,7 +623,7 @@ How to invoke it here:
 
 - Once per Mac: `brew install mobai-app/tap/simslim`.
 - By hand: `xcrun simctl boot <udid>`, then `. tests/app-tests/scripts/mobile-ci-slim-simulator.sh && slim_simulator <udid>`, then install and drive. That shim fetches mobile-ci's shared `scripts/slim-simulator.sh` at `MOBILE_CI_REF` (the single pin, currently `v4.7.0`), caches it, and fails fast when it cannot. Every repo script that boots a simulator sources it.
-- In CI nothing is passed: the `ios-maestro.yml` and `store-screenshots.yml` callers default `simulator-slim-profile` to `bundled`, and only `simulator-requires` stays per consumer.
+- In CI nothing is passed: every simulator comes from the simlock farm, whose workers boot them slim before a lease is granted.
 
 ### serve-sim
 
@@ -637,24 +638,23 @@ How to invoke it here:
 9. When several simulators are booted, target the requested device with `-d <udid|name>` for taps, buttons, rotation, permissions, and other subcommands.
 10. Run serve-sim with project Node `>=22`; taps can fail on older shell Node versions.
 11. Use `serve-sim tap` for taps. Use normalized coordinates only.
-12. Do not use Maestro for dev-client checks. Maestro is only acceptance evidence against a clean E2E build.
+12. Dev-client checks are not acceptance evidence. Only the e2e suite (`e2e/`) run against a clean E2E build counts.
 
 ## Remote Mac Fleet
 
-The dev box is Linux and cannot boot iOS simulators. It reaches two Macs over SSH for simulator, Maestro, and media-capture work:
+The dev box is Linux and cannot boot iOS simulators. It reaches two Macs over SSH for simulator work, and the Mac Studio's simlock farm (`http://10.10.1.28:4700` on the LAN) for e2e runs and media capture:
 
-- `macstudio` (`ssh macstudio`) — the capture machine: macOS + Xcode, reached through the Cloudflare tunnel `macstudio.vitaliiyehorov.dev` (`ProxyCommand cloudflared access ssh`). Homebrew tools (`magick`, `ffmpeg`) and `maestro` (`~/.maestro/bin`) are not on a non-interactive SSH `PATH`; export `PATH="/opt/homebrew/bin:$HOME/.maestro/bin:$PATH"` first. Treat it as off-limits while it is overloaded.
+- `macstudio` (`ssh macstudio`) — the capture machine: macOS + Xcode, reached through the Cloudflare tunnel `macstudio.vitaliiyehorov.dev` (`ProxyCommand cloudflared access ssh`). Homebrew tools (`magick`, `ffmpeg`) are not on a non-interactive SSH `PATH`; export `PATH="/opt/homebrew/bin:$PATH"` first. Treat it as off-limits while it is overloaded.
 - `macmini` (`ssh macmini`, `192.168.1.35`) — LAN machine, now on Xcode 26.6 + iOS 26.5 runtime with iPhone 17 simulators, so it is the preferred host for interactive simulator runs. Homebrew Node is present; install pnpm with `npm i -g pnpm@11.24.0`. `sudo` requires a password.
 
 Rules:
 
-1. Use the repo's own pipeline, not hand-driven sims, to produce committed assets: `capture-store-screenshots.sh` with `--config .github/landing-media.config.json` (the default config is the store one — always pass it), then compose and manifest. `serve-sim` (`.agents/skills/serve-sim/SKILL.md`) is for interactive tapping/preview, not for capture.
-2. The Mac's `/bin/bash` is 3.2 and has no `mapfile`, so `compose-web-media.sh` runs on this Linux box: copy the raw tree back (`landing-raw/raw/ios/<device-slug>/<locale>/<appearance>/`), then `bash packages/app/fastlane/screenshots/design/compose-web-media.sh --raw-dir <raw> --output packages/landing/public/media --scenes <a,b>` and `pnpm --filter @budgie-at/landing media:manifest`.
+1. Use the repo's own pipeline, not hand-driven sims, to produce committed assets: `capture-store-screenshots.sh --app <Base.app>` with `--config .github/landing-media.config.json` (the default config is the store one — always pass it), from this Linux box with `SIMLOCK_URL`/`SIMLOCK_TOKEN` set and `npm ci` done in `e2e/`, then compose and manifest. It captures through the e2e project's media capture (`e2e/media.config.ts`; scenes in `e2e/support/media/scenes.ts`) on leased simulators. `serve-sim` (`.agents/skills/serve-sim/SKILL.md`) is for interactive tapping/preview, not for capture.
+2. `compose-web-media.sh` runs on this Linux box (the Mac's `/bin/bash` 3.2 has no `mapfile`): from the raw tree (`landing-raw/raw/ios/<device-slug>/<locale>/<appearance>/`), `bash packages/app/fastlane/screenshots/design/compose-web-media.sh --raw-dir <raw> --output packages/landing/public/media --scenes <a,b>` and `pnpm --filter @budgie-at/landing media:manifest`.
     The canonical copies of `frame-device.sh`, `compose-web-media.sh` and `compose-web-clips.sh` now live in rnw-community/mobile-ci `scripts/media/` (lifted from these, pixel-parity tested against them), wrapped by the `rnw-community/mobile-ci/actions/compose-media@v4.7.0` action. No CI job composes media today, so the local scripts stay (`compose-screenshots.sh` sources `frame-device.sh`, and `test-compose-web-*.sh` cover them); a CI media job must use the action, not these scripts. To run the pinned upstream version locally (its flags differ: `--input-dir <raw>/ios/iphone-17-pro-max --output-dir <out> --output-template '{slug}/{dir}/{name}@2x'`): `for f in media-common.sh frame-device.sh compose-web-media.sh compose-web-clips.sh; do curl -fsSL "https://raw.githubusercontent.com/rnw-community/mobile-ci/v4.7.0/scripts/media/$f" -o "/tmp/mobile-ci-media/$f"; done` (after `mkdir -p /tmp/mobile-ci-media`).
-3. Reuse the installed E2E app with `--skip-install` when it is current (bundle id `com.vitalyiegorov.budgie.e2e`); otherwise pass a packaged `Base.app` with `--app`. Force a rebuild when app UI changed.
-4. Check the data volume before capturing: `df -h /System/Volumes/Data`. DerivedData and stale simulator devices fill it, and a full volume makes Maestro fail with `No space left on device`. Delete `~/Library/Developer/Xcode/DerivedData/*` and stale `*-derived` trees when low.
-5. A single-scene run replaces the whole device raw directory, so pass every scene you need to one invocation; copy assets and repo changes back with `scp` or `git pull`.
-6. **Interactive simulator runs (dev checks)** — use `serve-sim` (Evan Bacon): `npx --yes serve-sim`. Both Macs need `simslim` on `PATH` (`brew install mobai-app/tap/simslim`) because every simulator runs slim — see [Simulator Dev Testing](#every-simulator-runs-slim-canonical-rule). Verified path on macmini (Xcode 26.6 + iOS 26.5 runtime):
+3. Pass the packaged `Base.app` of the current branch with `--app` (a CI `ios-e2e-app-e2e` artifact, or the AI build's `ios-e2e-app-e2e-ai` for the AI scenes). Rebuild when app UI changed.
+4. A single-scene run replaces the whole device raw directory, so pass every scene you need to one invocation.
+5. **Interactive simulator runs (dev checks)** — use `serve-sim` (Evan Bacon): `npx --yes serve-sim`. Both Macs need `simslim` on `PATH` (`brew install mobai-app/tap/simslim`) because every simulator runs slim — see [Simulator Dev Testing](#every-simulator-runs-slim-canonical-rule). Verified path on macmini (Xcode 26.6 + iOS 26.5 runtime):
     1. Sync the worktree with a tar pipe — macmini's `rsync` is `openrsync` and rejects GNU flags: `tar czf - --exclude=.git --exclude=node_modules --exclude=dist … . | ssh macmini 'tar xzf - -C ~/budgie-runway'`.
     2. `pnpm install && pnpm build` with `LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8` (install pnpm first: `npm i -g pnpm@11.24.0`).
     3. `cd packages/app && APP_VARIANT=e2e npx expo prebuild -p ios --clean`.
@@ -670,14 +670,14 @@ Never print `~/.cloudflared` secrets or tunnel tokens; kill Metro/serve-sim/clou
 2. Use real user-visible import paths for database backups and bank PDFs.
 3. A deep link is acceptable only for navigation shortcuts, for example opening Settings at a specific anchor.
 4. Seed fixtures through simulator or emulator setup scripts, not through hidden app services.
-5. Run Maestro verification only against a clean E2E build installed fresh from the current branch. Dev-client or Metro runs are useful for debugging, but they are not acceptance evidence and must not be reported as passing E2E.
-6. Before any E2E verification claim, rebuild the E2E app with `APP_VARIANT=e2e`, reinstall `com.vitalyiegorov.budgie.e2e`, refresh fixtures, then run Maestro against that bundle id — against a slim simulator, per [Simulator Dev Testing](#every-simulator-runs-slim-canonical-rule). Local build/run procedure and cache/stale-binary traps: `tests/app-tests/E2E-RUNBOOK.md`.
-7. If Maestro needs a stable selector for an existing control, add a `testID` to that control instead of using fragile coordinates where possible.
+5. Run e2e verification only against a clean E2E build from the current branch. Dev-client or Metro runs are useful for debugging, but they are not acceptance evidence and must not be reported as passing E2E.
+6. Before any E2E verification claim, build the E2E app with `APP_VARIANT=e2e` (or take the branch's `ios-e2e-app-e2e` CI artifact), then run the e2e suite against it on the simlock farm (`npx e2e run --target ios` in `e2e/`, with `E2E_APP_PATH`, `SIMLOCK_URL` and `SIMLOCK_TOKEN` set). Local build/run procedure and cache/stale-binary traps: `tests/app-tests/E2E-RUNBOOK.md`.
+7. If an e2e test needs a stable selector for an existing control, add a `testID` to that control instead of using fragile coordinates where possible.
 8. Any new `testID` or other app-code change used by E2E requires rebuilding and reinstalling the E2E app before rerunning the test.
 9. When an app component derives a child or state-specific `testID` from a base id, use `testID` from `packages/app/src/@generic/utils/test-id.util.ts` and spread it in JSX, for example `<Text {...testID(parentTestID, 'Label')} />`. If the component already has a `testID` prop in scope, alias the import as `testIDProps`. Do not hand-build strings like `` `${testID}.Label` `` inside components. Selector factory files that intentionally create canonical ids are excluded.
-10. Do not add `launchApp`, `stopApp`, relaunch subflows, or app restarts to Maestro flows without explicit user approval for that exact case.
+10. Do not add app relaunches or restarts (`app.restart()`, `app.open()` mid-test) to e2e tests without explicit user approval for that exact case.
 
-### Maestro Robustness
+### E2E Robustness
 
 1. Wait for the destination identity once, not container plus child plus redundant assert.
 2. After `scrollUntilVisible` on a tappable card inside a scroll view, let the list settle before tapping.
@@ -686,11 +686,11 @@ Never print `~/.cloudflared` secrets or tunnel tokens; kill Metro/serve-sim/clou
 5. Keep flows state-driven: positive target checks beat blind waits and negative assertions.
 6. Date-sensitive fixtures must be refreshed before the suite so test time and app time stay aligned.
 7. Shared subflows must stay minimal and deterministic. Do not add recovery branches, retries, relaunches, or alternative navigation paths without explicit user approval.
-8. If a stable deeplink already exists for setup or navigation, prefer it over replaying UI navigation in Maestro.
+8. If a stable deeplink already exists for setup or navigation, prefer it over replaying UI navigation in a test.
 9. If a flow appears fundamentally broken, stop and ask the user before adding test-side workaround logic.
-10. System or simulator prompts outside the app, such as Apple account verification sheets, are environment noise and must not be treated as app or Maestro regressions.
+10. System or simulator prompts outside the app, such as Apple account verification sheets, are environment noise and must not be treated as app or test regressions.
 11. Settings flows must verify the user-visible outcome after a toggle, not only the switch interaction itself.
-12. When a correct selector matches the right element but the native control only responds to a specific hit target inside that element, use `tapOn` with the selector plus `point` to target the relative position inside the matched bounds. Prefer this over absolute screen coordinates.
+12. When a correct selector matches the right element but the native control only responds to a specific hit target inside that element, tap the locator with `{ position }` at a relative point inside its bounds. Prefer this over absolute screen coordinates.
 
 ## PR Review
 
