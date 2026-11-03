@@ -1,11 +1,12 @@
 import { ImpactFeedbackStyle } from 'expo-haptics';
-import { RefObject, useImperativeHandle, useRef, useState } from 'react';
+import { RefObject, useImperativeHandle, useState } from 'react';
 import { View } from 'react-native';
 
-import { EmptyFn, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { PopoverMenu } from '../../../@generic/component/popover-menu/popover-menu';
 import { ActionsMenuContext } from '../../../@generic/context/actions-menu.context';
+import { useDeferredMenuClose } from '../../../@generic/hook/use-deferred-menu-close.hook';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { TransactionListAttachDebtMenuItem } from '../transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item';
 import { TransactionListConvertToInstallmentMenuItem } from '../transaction-list-convert-to-installment-menu-item/transaction-list-convert-to-installment-menu-item';
@@ -28,21 +29,9 @@ export const TransactionListContextMenu = ({ ref }: Props) => {
     const [isOpen, setIsOpen] = useState(false);
     const [menuState, setMenuState] = useState<TransactionMenuStateInterface | null>(null);
 
-    const pendingActionRef = useRef<EmptyFn | null>(null);
-    const closeMenu = (afterClose?: EmptyFn) => {
-        if (!isOpen) {
-            return;
-        }
-
-        pendingActionRef.current = afterClose ?? null;
-        setIsOpen(false);
-    };
+    const { closeMenu, runPendingAction } = useDeferredMenuClose(isOpen, setIsOpen);
     const handleCloseComplete = () => {
-        if (isDefined(pendingActionRef.current)) {
-            pendingActionRef.current();
-            pendingActionRef.current = null;
-        }
-
+        runPendingAction();
         setMenuState(null);
     };
 

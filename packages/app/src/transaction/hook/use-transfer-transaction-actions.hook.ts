@@ -28,5 +28,5 @@ export const useTransferTransactionActions = (transaction: TransactionWithRelati
         }
     ];
 
-    return { transaction, isConsolidated, onRevert: handleRevert, items };
+    return { transaction, items, ...(isConsolidated && { onRevert: handleRevert }) };
 };

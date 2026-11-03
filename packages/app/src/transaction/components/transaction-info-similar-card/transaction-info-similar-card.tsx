@@ -44,7 +44,7 @@ export const TransactionInfoSimilarCard = ({ transaction }: Props) => {
 
     const opacityClassName = isLoading ? 'opacity-60' : 'opacity-100';
 
-    if (!(isDefined(stats) && stats.count > 1)) {
+    if (!isDefined(stats) || stats.count < 2) {
         return null;
     }
 

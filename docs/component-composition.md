@@ -89,4 +89,4 @@ Before creating a `useXxxActions`-style wrapper chain, count: every layer must a
 
 ## 6. Deferred-close menus (RN Modal safety)
 
-Menu items whose action opens another modal/sheet must defer the action until the popover close completes: `closeMenu(afterClose)` stores the action, `onCloseComplete` runs it (`@generic/hook/use-popover-menu-anchor.hook.ts` and `transaction-list-context-menu.tsx`). Running such actions synchronously before close completion recreates a Modal unmount/remount race that froze the UI (fixed 2026-07). Never "simplify" the pending-action ref away.
+Menu items whose action opens another modal/sheet must defer the action until the popover close completes: `closeMenu(afterClose)` stores the action, `onCloseComplete` runs it (`@generic/hook/use-deferred-menu-close.hook.ts`). Running such actions synchronously before close completion recreates a Modal unmount/remount race that froze the UI (fixed 2026-07). Never "simplify" the pending-action ref away.

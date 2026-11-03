@@ -1,8 +1,10 @@
 import { useRef, useState } from 'react';
 
-import { EmptyFn, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { PopoverMenuAnchor } from '../component/popover-menu/popover-menu';
+
+import { useDeferredMenuClose } from './use-deferred-menu-close.hook';
 
 import type { GestureResponderEvent, View } from 'react-native';
 
@@ -11,24 +13,8 @@ const TRIGGER_SIZE = 40;
 export const usePopoverMenuAnchor = (triggerSize = TRIGGER_SIZE) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [anchor, setAnchor] = useState<PopoverMenuAnchor>();
-    const pendingActionRef = useRef<EmptyFn | null>(null);
     const frameRef = useRef<View>(null);
-
-    const closeMenu = (afterClose?: EmptyFn) => {
-        if (!isMenuOpen) {
-            return;
-        }
-
-        pendingActionRef.current = afterClose ?? null;
-        setIsMenuOpen(false);
-    };
-
-    const handleCloseComplete = () => {
-        if (isDefined(pendingActionRef.current)) {
-            pendingActionRef.current();
-            pendingActionRef.current = null;
-        }
-    };
+    const { closeMenu, runPendingAction: handleCloseComplete } = useDeferredMenuClose(isMenuOpen, setIsMenuOpen);
 
     const handleToggleMenu = (event: GestureResponderEvent) => {
         if (isMenuOpen) {

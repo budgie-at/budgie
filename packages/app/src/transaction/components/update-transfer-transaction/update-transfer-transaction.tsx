@@ -10,10 +10,11 @@ import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
 import { useConsolidationSourceModal } from '../../context/consolidation-source-modal.context';
 import { useTransactionFeeFormActions } from '../../hook/use-transaction-fee-form-actions.hook';
+import { useTransferTransactionActions } from '../../hook/use-transfer-transaction-actions.hook';
 import { useUpdateTransactionForm } from '../../hook/use-update-transaction-form.hook';
 import { convertTransactionToInput } from '../../utils/convert-transaction-to-input.util';
 import { TransferQuickForm } from '../transfer-quick-form/transfer-quick-form';
-import { TransferTransactionActionsMenu } from '../transfer-transaction-actions-menu/transfer-transaction-actions-menu';
+import { UpdateTransactionActionsMenu } from '../update-transaction-actions-menu/update-transaction-actions-menu';
 
 import type { UpdateTransactionFormPropsInterface } from '../../interface/update-transaction-form-props.interface';
 
@@ -35,6 +36,7 @@ export const UpdateTransferTransaction = ({ transaction, openFeeOnMount }: Updat
         onAfterSubmit: () => void markForEmbedding(transaction.id)
     });
 
+    const actionsMenuProps = useTransferTransactionActions(transaction, handleFeePress);
     const handleGoBack = () => void goBackOrReplace('/');
 
     return (
@@ -44,9 +46,7 @@ export const UpdateTransferTransaction = ({ transaction, openFeeOnMount }: Updat
                     <PageHeader
                         title={t`Edit Transfer`}
                         onGoBack={handleGoBack}
-                        right={
-                            <TransferTransactionActionsMenu transaction={transaction} onDelete={handleDelete} onFeePress={handleFeePress} />
-                        }
+                        right={<UpdateTransactionActionsMenu {...actionsMenuProps} onDelete={handleDelete} />}
                     />
                 }
             >
