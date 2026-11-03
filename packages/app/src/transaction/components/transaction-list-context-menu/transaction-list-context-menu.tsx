@@ -62,7 +62,7 @@ export const TransactionListContextMenu = ({ ref }: Props) => {
 
     return (
         <PopoverMenu isOpen={isOpen} onClose={closeMenu} onCloseComplete={handleCloseComplete} anchor={menuState.anchor}>
-            <ActionsMenuContext.Provider value={closeMenu}>
+            <ActionsMenuContext value={closeMenu}>
                 <View className="py-sm">
                     <TransactionListEditMenuItem transaction={transaction} />
                     <TransactionListConvertToRefundMenuItem transaction={transaction} />
@@ -73,7 +73,7 @@ export const TransactionListContextMenu = ({ ref }: Props) => {
                     <TransactionListDeleteMenuItem transaction={transaction} />
                     <TransactionListRevertMenuItem transaction={transaction} />
                 </View>
-            </ActionsMenuContext.Provider>
+            </ActionsMenuContext>
         </PopoverMenu>
     );
 };

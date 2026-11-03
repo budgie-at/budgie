@@ -3,8 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
-import { useActionsMenuClose } from '../../../@generic/context/actions-menu.context';
+import { ActionsMenuItem } from '../../../@generic/component/actions-menu-item/actions-menu-item';
 import { useConvertToRefundModal } from '../../context/convert-to-refund-modal.context';
 import { TransactionListContextMenuSelector } from '../transaction-list-context-menu/transaction-list-context-menu.selector';
 
@@ -16,7 +15,6 @@ interface Props {
 
 export const TransactionListConvertToRefundMenuItem = ({ transaction }: Props) => {
     const { t } = useLingui();
-    const closeMenu = useActionsMenuClose();
     const [openConvertToRefund] = useConvertToRefundModal();
 
     const isConsolidated = isDefined(transaction.consolidationType);
@@ -28,13 +26,11 @@ export const TransactionListConvertToRefundMenuItem = ({ transaction }: Props) =
     }
 
     const handleConvert = () => {
-        closeMenu(() => {
-            openConvertToRefund({ refundIncomeTransactionId: transaction.id });
-        });
+        openConvertToRefund({ refundIncomeTransactionId: transaction.id });
     };
 
     return (
-        <PopoverMenuItem
+        <ActionsMenuItem
             icon={UserIconNameEnum.ReceiptText}
             label={t`Convert to Refund`}
             onPress={handleConvert}

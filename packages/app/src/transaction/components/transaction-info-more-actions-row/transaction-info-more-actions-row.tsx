@@ -37,7 +37,7 @@ export const TransactionInfoMoreActionsRow = ({ items }: Props) => {
             </HapticPressable>
 
             <PopoverMenu isOpen={isMenuOpen} onClose={closeMenu} onCloseComplete={handleCloseComplete} anchor={anchor} placement="top">
-                <ActionsMenuContext.Provider value={closeMenu}>
+                <ActionsMenuContext value={closeMenu}>
                     <View className="min-w-[280px] py-sm">
                         {items.map(item => (
                             <ActionsMenuItem
@@ -50,7 +50,7 @@ export const TransactionInfoMoreActionsRow = ({ items }: Props) => {
                             />
                         ))}
                     </View>
-                </ActionsMenuContext.Provider>
+                </ActionsMenuContext>
             </PopoverMenu>
         </View>
     );

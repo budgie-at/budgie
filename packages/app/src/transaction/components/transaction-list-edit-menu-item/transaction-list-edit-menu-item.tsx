@@ -4,8 +4,7 @@ import { useRouter } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
-import { useActionsMenuClose } from '../../../@generic/context/actions-menu.context';
+import { ActionsMenuItem } from '../../../@generic/component/actions-menu-item/actions-menu-item';
 import { getTransactionEditHref } from '../../utils/get-transaction-edit-href.util';
 import { TransactionListContextMenuSelector } from '../transaction-list-context-menu/transaction-list-context-menu.selector';
 
@@ -18,7 +17,6 @@ interface Props {
 export const TransactionListEditMenuItem = ({ transaction }: Props) => {
     const { t } = useLingui();
     const router = useRouter();
-    const closeMenu = useActionsMenuClose();
 
     const editHref = getTransactionEditHref(transaction);
 
@@ -27,11 +25,11 @@ export const TransactionListEditMenuItem = ({ transaction }: Props) => {
     }
 
     const handlePress = () => {
-        closeMenu(() => void router.push(editHref));
+        void router.push(editHref);
     };
 
     return (
-        <PopoverMenuItem
+        <ActionsMenuItem
             icon={UserIconNameEnum.Pencil}
             label={t`Edit Transaction`}
             onPress={handlePress}

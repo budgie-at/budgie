@@ -1,8 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 
-import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
-import { useActionsMenuClose } from '../../../@generic/context/actions-menu.context';
+import { ActionsMenuItem } from '../../../@generic/component/actions-menu-item/actions-menu-item';
 import { useCreateTransactionRule } from '../../hook/use-create-transaction-rule.hook';
 import { TransactionActionsMenuSelector } from '../transaction-actions-menu/transaction-actions-menu.selector';
 
@@ -13,15 +12,13 @@ interface Props {
 }
 
 export const CreateRuleMenuItem = ({ transaction }: Props) => {
-    const closeMenu = useActionsMenuClose();
     const createRule = useCreateTransactionRule(transaction);
-    const handleCreateRule = () => void closeMenu(createRule);
 
     return (
-        <PopoverMenuItem
+        <ActionsMenuItem
             icon={UserIconNameEnum.Workflow}
             label={t`Create rule`}
-            onPress={handleCreateRule}
+            onPress={createRule}
             testID={TransactionActionsMenuSelector.CreateRuleButton}
         />
     );

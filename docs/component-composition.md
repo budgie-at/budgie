@@ -21,26 +21,28 @@ Reaching for an allow list, an `eslint-disable`, or an `extends` chain to dodge 
 
 When a parent renders a set of items that all need the same ambient behaviour (a close function, a form), do not thread it through props item-by-item and do not build an `Items` middleman component. Provide a small context whose default is a real empty value and make each item self-contained.
 
-Reference implementation: `packages/app/src/transaction/components/transaction-list-context-menu/` with `transaction/context/transaction-actions-menu.context.ts`. The parent is a thin shell:
+Reference implementation: `packages/app/src/transaction/components/transaction-list-context-menu/` with `@generic/context/actions-menu.context.ts`. The parent is a thin shell:
 
 ```tsx
 <PopoverMenu isOpen={isOpen} onClose={closeMenu} onCloseComplete={handleCloseComplete} anchor={anchor}>
-    <TransactionActionsMenuContext.Provider value={closeMenu}>
+    <ActionsMenuContext value={closeMenu}>
         <View className="py-sm">
             <TransactionListEditMenuItem transaction={transaction} />
             <TransactionListConvertToRefundMenuItem transaction={transaction} />
             <TransactionListConvertToTransferMenuItem transaction={transaction} />
+            <TransactionListStartDepositMenuItem transaction={transaction} />
+            <TransactionListConvertToInstallmentMenuItem transaction={transaction} />
             <TransactionListAttachDebtMenuItem transaction={transaction} />
             <TransactionListDeleteMenuItem transaction={transaction} />
             <TransactionListRevertMenuItem transaction={transaction} />
         </View>
-    </TransactionActionsMenuContext.Provider>
+    </ActionsMenuContext>
 </PopoverMenu>
 ```
 
 Each item component:
 
-- takes the entity as its only prop and reads `closeMenu` from the context (`use()` accessor, default `emptyFn`),
+- takes the entity as its only prop and renders `ActionsMenuItem`, which reads `closeMenu` from the context (`use()` accessor, default `emptyFn`),
 - computes its own visibility from the entity and returns `null` when hidden,
 - owns its own action logic, hooks, and i18n strings,
 - carries its own `testID` from the selector file.
@@ -87,4 +89,4 @@ Before creating a `useXxxActions`-style wrapper chain, count: every layer must a
 
 ## 6. Deferred-close menus (RN Modal safety)
 
-Menu items whose action opens another modal/sheet must defer the action until the popover close completes: `closeMenu(afterClose)` stores the action, `onCloseComplete` runs it (`use-transaction-list-context-menu-close.hook.ts`). Running such actions synchronously before close completion recreates a Modal unmount/remount race that froze the UI (fixed 2026-07). Never "simplify" the pending-action ref away.
+Menu items whose action opens another modal/sheet must defer the action until the popover close completes: `closeMenu(afterClose)` stores the action, `onCloseComplete` runs it (`@generic/hook/use-popover-menu-anchor.hook.ts` and `transaction-list-context-menu.tsx`). Running such actions synchronously before close completion recreates a Modal unmount/remount race that froze the UI (fixed 2026-07). Never "simplify" the pending-action ref away.
