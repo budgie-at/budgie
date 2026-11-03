@@ -22,10 +22,11 @@ const skip = process.env.CAPTURE_FIXTURES === '1' ? false : 'builds a committed 
 
 /**
  * capture-fixture.sh's snapshot: the app stopped, its database and WAL read
- * off the device through the worker's shell, checkpointed and backed up here.
- * Needs a worker whose CoreSimulator still spawns the Mac's tools (macOS 15).
+ * off the device through the worker's shell, checkpointed, `finish` applied,
+ * and backed up here. Needs a worker whose CoreSimulator still spawns the
+ * Mac's tools (macOS 15).
  */
-async function snapshot(budgie: Budgie, name: string): Promise<void> {
+async function snapshot(budgie: Budgie, name: string, finish?: { sql: string; check: string }): Promise<void> {
     const lease = await budgie.lease();
     const sqlite = `${await budgie.container()}/Documents/SQLite`;
     await exec(budgie.api, lease, ['terminate', BUNDLE_ID]);
@@ -39,6 +40,11 @@ async function snapshot(budgie: Budgie, name: string): Promise<void> {
         }
         const source = join(dir, 'budgie.db');
         execFileSync('sqlite3', [source, 'PRAGMA wal_checkpoint(TRUNCATE);'], { stdio: 'ignore' });
+        if (finish !== undefined) {
+            execFileSync('sqlite3', [source, finish.sql]);
+            const matched = execFileSync('sqlite3', [source, finish.check]).toString().trim();
+            if (matched !== '1') throw new Error(`${name}: the finishing SQL matched ${matched} rows, not 1: ${finish.check}`);
+        }
         const target = join(FIXTURES, name);
         rmSync(target, { force: true });
         execFileSync('sqlite3', [source, `.backup ${target}`]);
@@ -52,6 +58,25 @@ async function snapshot(budgie: Budgie, name: string): Promise<void> {
     }
 }
 
+/**
+ * Turns the 'E2E Binance BTC' crypto account into a Binance-synced one
+ * (CRYPTO_SYNC on SPOT:BTC, its integration and a disabled forward sync).
+ * Connecting Binance in the UI fetches the accounts from api.binance.com
+ * with real credentials, so the builder creates the account in the UI and
+ * links it here, with placeholder credentials the app never sends.
+ */
+const BINANCE_SYNCED_ACCOUNT = {
+    sql: `BEGIN;
+INSERT INTO bank_integrations (provider, token) VALUES ('BINANCE', '{"apiKey":"e2e-binance-api-key","apiSecret":"e2e-binance-api-secret"}');
+UPDATE accounts SET type = 'CRYPTO_SYNC', external_id = 'SPOT:BTC', external_source = 'BINANCE',
+    integration_id = (SELECT id FROM bank_integrations WHERE provider = 'BINANCE')
+WHERE title = 'E2E Binance BTC' AND type = 'CRYPTO';
+INSERT INTO bank_syncs (account_id, provider, enabled, mode, status, forward_sync_from_at)
+SELECT id, 'BINANCE', 0, 'FORWARD', 'IDLE', unixepoch() FROM accounts WHERE title = 'E2E Binance BTC' AND type = 'CRYPTO_SYNC';
+COMMIT;`,
+    check: "SELECT COUNT(*) FROM accounts a JOIN bank_syncs s ON s.account_id = a.id WHERE a.title = 'E2E Binance BTC' AND a.type = 'CRYPTO_SYNC' AND s.provider = 'BINANCE';"
+};
+
 test('fixture 29.db', { skip }, async ({ media }) => {
     const budgie = new Budgie(media.ctx);
     const { ctx } = budgie;
@@ -60,7 +85,7 @@ test('fixture 29.db', { skip }, async ({ media }) => {
     await a.createCryptoAccount(ctx, { name: 'E2E Crypto Vault', currency: 'BTC', amount: '2' });
     await a.createCryptoAccount(ctx, { name: 'E2E Binance BTC', currency: 'BTC', amount: '2' });
     await a.createCryptoAccount(ctx, { name: 'E2E Ethereum Stack', currency: 'ETH', amount: '1' });
-    await snapshot(budgie, '29.db');
+    await snapshot(budgie, '29.db', BINANCE_SYNCED_ACCOUNT);
 });
 
 test('fixture 31-debt.db', { skip }, async ({ media }) => {
@@ -76,7 +101,8 @@ test('fixture 31-debt.db', { skip }, async ({ media }) => {
     const debts = [
         { name: 'E2E Lent Expense Debt', currentBalance: '0', debtType: 'LENT', targetBalance: '1000' },
         { name: 'E2E Lent Debt', currentBalance: '2000', debtType: 'LENT', targetBalance: '15000' },
-        { name: 'E2E Borrowed Debt', currentBalance: '15000', debtType: 'BORROW', targetBalance: '15000' },
+        // Part of it still owed: the app hides a settled debt from the home screen, and test 31 repays more of it there.
+        { name: 'E2E Borrowed Debt', currentBalance: '13000', debtType: 'BORROW', targetBalance: '15000' },
         { name: 'E2E Completed Debt', currentBalance: '0', debtType: 'LENT', targetBalance: '300' }
     ] as const;
     for (const debt of debts) await a.createDebtAccount(ctx, { ...debt, currency: 'EUR' });
