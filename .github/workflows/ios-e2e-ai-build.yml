@@ -22,23 +22,19 @@ jobs:
         with:
             control-runner-labels: '["self-hosted","linux-portable-2x4"]'
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
-            test-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
-            targets: >-
-                [{"name":"e2e-ai","appDir":"packages/app","workspace":"budgieE2E.xcworkspace","scheme":"budgieE2E",
-                "appId":"com.vitalyiegorov.budgie.e2e","prebuildCommand":"npx expo prebuild -p ios --clean --no-install"}]
-            build-env: |
-                APP_VARIANT=e2e
-                EXPO_PUBLIC_LOGGING_DISABLE=true
-            flows-dir: tests/app-tests/flows/setup
-            flows-name-pattern: prime-deep-links.flow.yaml
-            shard-count: 1
-            maestro-config: tests/app-tests/config.yaml
-            flow-retries: '1'
-            maestro-version: '2.8.0'
-            simulator-device: iPhone 17 Pro
-            simulator-requires: push,universal-links
+            # The smoke for the AI build: voice-transaction-entry-1 (e2e/support/media/scenes.ts),
+            # which waits up to ten minutes for the on-device model to make the AI action
+            # enabled, then opens voice entry: what this build adds over the e2e lanes. Run from
+            # Linux against the Mac Studio simlock farm, captured to e2e/.e2e/media in the report.
+            test-framework: e2e
+            e2e-dir: e2e
+            e2e-command: SCREENSHOT_SCENES=voice-transaction-entry-1 npx e2e run --config media.config.ts --target ios
+            e2e-runner-labels: '["self-hosted","linux-portable-4x8"]'
+            e2e-workers: '1'
+            e2e-retries: '1'
+            e2e-timeout-minutes: 45
+            simlock-url: https://simlock.vitaliiyehorov.dev
             build-timeout-minutes: 120
-            test-timeout-minutes: 20
             install-command: pnpm install --frozen-lockfile
             package-manager: pnpm
             build-command: pnpm exec turbo build --filter='@budgie/*'
@@ -62,3 +58,5 @@ jobs:
                 extra.appVariant=e2e
                 extra.aiEnabled=true
                 extra.loggingEnabled=false
+        secrets:
+            simlock-token: ${{ secrets.SIMLOCK_TOKEN }}

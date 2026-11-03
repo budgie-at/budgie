@@ -15,11 +15,6 @@ import type { ToastConfigParams } from 'react-native-toast-message';
 
 type Props = Pick<ToastConfigParams<ReceiptScanToastStatusEnum>, 'text1' | 'text2' | 'props' | 'onPress'>;
 
-const TOAST_ICON: Record<ReceiptScanToastStatusEnum, UserIconNameEnum> = {
-    [ReceiptScanToastStatusEnum.READING]: UserIconNameEnum.Receipt,
-    [ReceiptScanToastStatusEnum.DUPLICATE]: UserIconNameEnum.Receipt,
-    [ReceiptScanToastStatusEnum.NOT_FOUND]: UserIconNameEnum.Info
-};
 const PULSE_DURATION_MS = 750;
 const PULSE_MIN_OPACITY = 0.3;
 
@@ -28,6 +23,7 @@ export const ReceiptScanToast = ({ text1, text2, props: status, onPress }: Props
     const isReducedMotion = useReducedMotion();
     const pulse = useSharedValue(1);
 
+    const icon = status === ReceiptScanToastStatusEnum.NOT_FOUND ? UserIconNameEnum.Info : UserIconNameEnum.Receipt;
     const isReading = status === ReceiptScanToastStatusEnum.READING;
     const title = isReading ? t`Reading receipt` : text1;
     const isPulsing = isReading && !isReducedMotion;
@@ -48,7 +44,7 @@ export const ReceiptScanToast = ({ text1, text2, props: status, onPress }: Props
         >
             <AppToast text1={title} text2={text2} type="info">
                 <View>
-                    <CircleIcon icon={TOAST_ICON[status]} variant="secondary" border={false} size={36} iconSize={20} />
+                    <CircleIcon icon={icon} variant="secondary" border={false} size={36} iconSize={20} />
                     {isReading ? (
                         <Animated.View
                             className="absolute -inset-[3px] rounded-full border-2 border-default-foreground"

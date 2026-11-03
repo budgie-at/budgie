@@ -101,16 +101,17 @@ export const RunwayHistoryChart = ({ series, burn }: Props) => {
                             ))}
                             <RunwayHistoryMedianLine value={burn} maxValue={maxValue} />
                             {hasSpike ? <RunwayHistorySpikeLabel x={spikeBarX} expense={spikeExpense} /> : null}
-                            {months.map(month => (
-                                <RunwayHistoryMonthLabel
-                                    key={month.key}
-                                    x={month.centerX}
-                                    y={MONTH_LABEL_Y}
-                                    label={month.label}
-                                    isSpike={month.isSpike}
-                                    hasLabel={month.hasLabel}
-                                />
-                            ))}
+                            {months
+                                .filter(month => month.hasLabel)
+                                .map(month => (
+                                    <RunwayHistoryMonthLabel
+                                        key={month.key}
+                                        x={month.centerX}
+                                        y={MONTH_LABEL_Y}
+                                        label={month.label}
+                                        isSpike={month.isSpike}
+                                    />
+                                ))}
                         </Svg>
                     </View>
                     <View className="absolute inset-y-0 left-0 flex-row" style={PLOT_REGION_STYLE}>

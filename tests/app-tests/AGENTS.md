@@ -1,74 +1,59 @@
 # App Tests Package
 
-Maestro flows for Budgie.
+Fixtures and scripts for Budgie's end-to-end tests. The tests themselves live in
+[`e2e/`](../../e2e), a standalone [tester-army e2e](https://github.com/tester-army/e2e)
+project that drives iOS simulators leased from the Mac Studio simlock farm:
+
+- `e2e/tests/*.e2e.ts` (config `e2e/e2e.config.ts`): the PR suite, one test per
+  feature area, shared steps in `e2e/support/budgie/`.
+- `e2e/media/*.e2e.ts` (config `e2e/media.config.ts`): the media capture (store,
+  landing and social screenshots, the media smoke, the Apple Pay guide screens)
+  and the opt-in fixture builders. Capture scenes live in `e2e/support/media/scenes.ts`.
+
+This package keeps what both read: database and file fixtures (`fixtures/`), the
+showcase screenshot data (`fixtures/screenshots/`), and the scripts that stage
+them (`scripts/setup-ios-e2e-fixtures.sh`, `scripts/prepare-date-sensitive-fixtures.js`,
+`scripts/seed-screenshot-scene.sh`).
 
 ## Robustness Rules
 
-1. Wait for the next screen's strongest identity once. Do not stack extra `assertVisible` calls on top of the same wait.
-2. After `scrollUntilVisible` on a pressable settings/account card, use one settle wait, then tap once.
-3. Do not add retry wrappers around normal card taps. Fix scroll, animation, or selector state instead.
-4. Prefer positive-state flow control: `tap -> extendedWaitUntil destination visible`.
-5. Keep retries only for real native instability like app relaunch or submit confirmation.
-6. Refresh dynamic fixtures before running the suite, especially date-based database fixtures.
-7. Use exact `testID` selectors for stable controls. Use text only when no stable id exists, such as native alert buttons.
-8. If a guard proves load-bearing, keep the smallest specific guard instead of reintroducing blanket waits.
-9. Use `3000` as the default `extendedWaitUntil` timeout. Increase only for clearly slow native or import work.
-10. If a step is expected in the happy path, do not hide it behind `runFlow when:`. Wait for it explicitly and fail there if it does not appear.
-11. Keep flows pinned to English. If a preferences flow changes language, it must switch back to English before it ends.
-12. Before any `inputText`, focus the real input first with `tapOn`. For native selector sheets, prefer the visible search placeholder text over internal search-input ids.
-13. After selecting an option from a native search sheet, wait for that search field to disappear before tapping the underlying form again.
-14. Do not use coordinate taps in committed flows. A relative `point:` is allowed only inside a `tapOn` that also has an `id:` or `text:` selector, to hit a spot within the matched control. If a flow cannot target the real control by `testID`, add or fix the app selector first. If a formatted input needs stable replacement, focus it by `testID`, then use keyboard-aware commands such as `eraseText` against the focused input.
-15. Do not take screenshots or run `maestro hierarchy` during an active Maestro run. Inspect only after failure or outside the run.
-16. Do not use `hideKeyboard` in Maestro flows. It is unreliable here and can break later execution. Prefer flows that continue without explicit keyboard dismissal.
-17. Do not `scrollUntilVisible` to submit controls that live in sticky footers. If the form already exposes the submit button outside scrollable content, wait for it and tap it directly.
-18. For money assertions, prefer rendered rounded values over raw repository floats. If a balance selector is derived from what the user sees, assert that displayed value or the card accessibility text, not an unrounded internal decimal.
-19. Native relaunch is a valid narrow retry case. If `launchApp` occasionally returns to SpringBoard, recover inside one shared relaunch-and-wait subflow, including tapping the app icon when needed, instead of duplicating ad hoc launch retries through business flows.
+1. Wait for the next screen's strongest identity once (`expect(...).toBeVisible()`). Do not stack extra assertions on the same wait.
+2. After scrolling a pressable card into view, let the list settle once, then tap once.
+3. Do not add retry wrappers around normal taps. Fix scroll, animation, or selector state instead. Retry only real native instability (a dropped first tap on a freshly shown keypad, a submit that sometimes does not take), with the smallest guard that proves load-bearing.
+4. Prefer positive-state control flow: tap, then wait for the destination.
+5. Refresh dynamic fixtures before running the suite, especially date-based database fixtures (`prepare-date-sensitive-fixtures.js`, which `setup-ios-e2e-fixtures.sh` runs).
+6. Use exact `testID` selectors (`b.byId`) for stable controls. Use text only when no stable id exists, such as native alert buttons.
+7. Keep tests pinned to English. A preferences test that changes language switches back before it ends.
+8. Focus the real input before typing. After picking from a native search sheet, wait for its search field to disappear before tapping the form underneath.
+9. No coordinate taps in committed tests. A relative `{ position }` is allowed only on a locator, to hit a spot inside the matched control.
+10. Do not scroll to submit controls in sticky footers; wait for them and tap them directly.
+11. For money assertions, assert the rendered rounded value or the card's accessibility text, not an unrounded internal decimal.
 
 ## Speed Rules
 
-1. The iOS deep-link Open confirmation fires once per fresh simulator, and `run-maestro-suite.sh` handles it by running `flows/setup/prime-deep-links.flow.yaml` before the suite. Do not add `when: visible: 'Open'` probes to business flows — each probe costs ~7s. The only other legitimate Open handling is the native Files picker inside `select-file-from-app-provider.flow.yaml`. Enforced by `selectors:check`.
-2. Do not combine `optional: true` with `extendedWaitUntil` timeouts above 5000 — an absent element silently burns the whole timeout. Enforced by `selectors:check`.
-3. Navigation subflows deep-link first and wait for the destination identity once. Do not reintroduce tab-tap fallbacks with long optional waits.
-4. Prefer seeded database fixtures over creating setup entities through the UI. UI creation belongs only where creation itself is the coverage. To regenerate a captured fixture, run the matching `flows/setup/capture-*.flow.yaml` through `scripts/capture-fixture.sh <capture-flow> <fixture-name>` against a fresh E2E build, then commit the updated `fixtures/*.db`.
+1. iOS's deep-link Open confirmation fires once per fresh simulator; `Budgie.start()` and the media capture prime it once per lease. Do not probe for it in business steps. The only other legitimate Open handling is inside the native Files picker (`selectFileFromAppProvider`).
+2. Navigation helpers deep-link first and wait for the destination identity once.
+3. Prefer seeded database fixtures over creating setup entities through the UI. UI creation belongs only where creation itself is the coverage. To regenerate a built fixture (`29.db`, `31-debt.db`, `31-transaction-info.db`), run `scripts/capture-fixture.sh <name>` against a fresh E2E build (it runs `e2e/media/fixtures.e2e.ts`), then commit the updated `fixtures/*.db`.
 
-## Shards
+## Fixtures on the device
 
-CI runs the suite as 2 parallel shard jobs, driven by `rnw-community/mobile-ci`'s reusable `ios-maestro.yml` (`shard-count: 2`, `shard-manifest-dir: tests/app-tests/shards`). Shard files are zero-indexed to match mobile-ci's `shard-<index>.txt` contract: `shards/shard-0.txt` and `shards/shard-1.txt`. They list top-level flow file names; every `flows/*.flow.yaml` must appear in exactly one shard (enforced by `selectors:check` via `scripts/validate-shards.sh`, and fail-closed a second time by mobile-ci, which requires a manifest file for every shard index it runs). When adding a flow, add it to the lightest shard; rebalance using the per-flow timing table mobile-ci appends to the job step summary.
-
-Per-flow database seeding is a mobile-ci `pre-flow-command` running `scripts/seed-flow-fixture.sh`, which mirrors `run-maestro-suite.sh`'s `seed_ios_database_fixture_if_needed`: it resolves each flow's `FIXTURE_ROW_ID_MATCH: 'NN.db'` marker (up to three `runFlow` levels deep), copies that fixture over the live database, and contributes `DATABASE_FIXTURE_SEEDED=true` plus `E2E_CSV_FIXTURES_URI` to that one flow's `maestro test` invocation. The once-per-shard fixture install stays a `pre-test-command` running `scripts/setup-ios-e2e-fixtures.sh`.
-
-After a failed flow attempt mobile-ci runs `flows/setup/recover-after-failed-flow.flow.yaml` (app relaunch plus deep-link prime) on a best-effort basis. It must never clear the app data container: `pre-test-command` is the only thing that populates `Documents/E2EFixtures`, and mobile-ci never re-runs it.
-
-## Flow Design
-
-1. Navigation coverage belongs in dedicated navigation flows. Business flows should not repeatedly retest the same navigation path.
-2. Shared subflows should remove duplication, but not hide uncertain behavior behind generic retries.
-3. Coordinate taps are prohibited. Use `testID`, visible text, accessibility label, or another Maestro selector that resolves through the UI hierarchy.
-4. Shared subflows must have one clear responsibility. Delete thin wrappers that only rename parameters or forward to another flow.
-5. Use plain step sequences over nested `runFlow` blocks when the steps are linear and expected.
+`setup-ios-e2e-fixtures.sh` is the one source of truth for what lands in the app's
+`Documents/E2EFixtures`: the e2e suite runs it on the runner (its `APP_DATA_CONTAINER`
+override points it at a local directory) and unpacks the result into the leased
+simulator's container once per lease. Every test starts from `budgie.start({ fixture })`,
+which makes one staged `NN.db` the live database.
 
 ## File Picker Rules
 
-1. Treat file selection as one complete subflow: navigate provider, open folder, select file, then confirm native `Open`.
-2. In iOS Files, prefer native folder row ids over label text:
-    - `budgie \(E2E\), Container`
-    - `E2EFixtures, Folder`
-3. `On My iPhone` currently has no stable tappable row id in Maestro hierarchy, so tap it by text only when it is actually visible and assert the picker root state separately.
-4. When debugging picker failures, inspect live hierarchy before changing selectors. Labels and tappable container ids are often different nodes.
-5. Use the same rule for native selector sheets: hierarchy often exposes a stable visible placeholder or title text that is more reliable than an internal input id.
-
-## Import Rules
-
-1. `import-database-from-settings.flow.yaml` owns the full Settings import path. Callers pass `FIXTURE_ROW_ID_MATCH` directly and should not duplicate picker recovery logic.
-2. iOS Files handoff is a valid narrow retry case. If the picker drops out of app state, re-establish Home and Settings, reopen `SettingsPage.ImportDatabaseCard`, and retry the picker once instead of scattering ad hoc retries in callers.
-3. After database import, prefer the current app state if Home is already visible. If not, use the shared relaunch-and-wait subflow to recover to `TabBar.Home`.
+1. Treat file selection as one complete step: navigate the provider, open the folder, select the file, confirm the native `Open`.
+2. In iOS Files, prefer native folder row ids over label text (`budgie \(E2E\), Container`, `E2EFixtures, Folder`).
+3. When a picker step fails, read the accessibility tree in the failed test's `trace.md` before changing selectors: labels and tappable container ids are often different nodes.
 
 ## Build Rules
 
-1. Preserve the app URL scheme in E2E builds. Do not delete `CFBundleURLTypes`; deep-link-based flows depend on `budgie://...`.
+1. Preserve the app URL scheme in E2E builds. Do not delete `CFBundleURLTypes`; deep-link steps depend on `budgie://...`.
 2. Prefer `npx expo prebuild -p ios --clean` for deterministic E2E iOS rebuilds when the generated native tree may already exist.
 3. Do not duplicate native build hacks in multiple places. If a config plugin already injects a required Xcode build phase, do not repeat the same workaround in the workflow or local build commands.
-4. Run Maestro verification only against a freshly rebuilt and reinstalled `APP_VARIANT=e2e` app. Dev-client or Metro runs may reproduce/debug a symptom, but they are not valid E2E pass evidence.
-5. After changing app code, selectors, fixtures, native config, or Maestro flow assumptions, rebuild the E2E app, reinstall `com.vitalyiegorov.budgie.e2e`, refresh fixtures with `setup-ios-e2e-fixtures.sh`, then run the target flow or suite.
-6. `expo run:ios` can serve a STALE cached EAS binary (`buildCacheProvider: 'eas'` in `app.config.js`); `--no-build-cache` does not stop it. To verify code under test, force a local compile and confirm `MAESTRO_EXIT=0` from the actual run. Full procedure and other traps: see [E2E-RUNBOOK.md](./E2E-RUNBOOK.md).
-7. After merging `main` into a branch that changes E2E fixtures, re-run every flow touching that fixture — count/total assertions drift and `ts/lint/cpd` cannot catch it. See E2E-RUNBOOK.md.
+4. Run e2e verification only against a fresh `APP_VARIANT=e2e` build of the current branch (or its `ios-e2e-app-e2e` CI artifact). Dev-client or Metro runs may reproduce a symptom, but they are not valid E2E pass evidence.
+5. `expo run:ios` can serve a STALE cached EAS binary (`buildCacheProvider: 'eas'` in `app.config.js`); `--no-build-cache` does not stop it. Full procedure and other traps: see [E2E-RUNBOOK.md](./E2E-RUNBOOK.md).
+6. After merging `main` into a branch that changes E2E fixtures, re-run every test touching that fixture: count/total assertions drift and `ts/lint/cpd` cannot catch it. See E2E-RUNBOOK.md.
