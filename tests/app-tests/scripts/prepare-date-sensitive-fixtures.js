@@ -13,46 +13,20 @@ if (!outputDirectoryPath) {
 
 mkdirSync(outputDirectoryPath, { recursive: true });
 
-// The sqlite3 CLI when the host has it (macOS does, and the self-test wraps it); Node's
-// built-in driver on hosts without it, such as the portable Linux runners e2e runs on.
-const hasSqliteCli = (() => {
+// The sqlite3 CLI when the host has it (macOS does, and the self-test wraps it); the
+// node:sqlite stand-in in sqlite-fallback/ on hosts without it (the portable Linux runners).
+const sqlite3 = (() => {
     try {
         execFileSync('sqlite3', ['-version'], { stdio: 'ignore' });
-        return true;
+        return 'sqlite3';
     } catch {
-        return false;
+        return path.join(__dirname, 'sqlite-fallback/sqlite3');
     }
 })();
 
-const withDatabase = (databasePath, use) => {
-    const { DatabaseSync } = require('node:sqlite');
-    const database = new DatabaseSync(databasePath);
-    try {
-        return use(database);
-    } finally {
-        database.close();
-    }
-};
+const runSqlite = (databasePath, sql) => execFileSync(sqlite3, [databasePath, sql], { stdio: 'inherit' });
 
-const runSqlite = (databasePath, sql) => {
-    if (hasSqliteCli) {
-        execFileSync('sqlite3', [databasePath, sql], { stdio: 'inherit' });
-        return;
-    }
-    withDatabase(databasePath, database => database.exec(sql));
-};
-
-const querySqlite = (databasePath, sql) =>
-    hasSqliteCli
-        ? execFileSync('sqlite3', [databasePath, sql], { encoding: 'utf8' }).trim()
-        : withDatabase(databasePath, database =>
-              database
-                  .prepare(sql)
-                  .all()
-                  .map(row => Object.values(row).map(String).join('|'))
-                  .join('\n')
-                  .trim()
-          );
+const querySqlite = (databasePath, sql) => execFileSync(sqlite3, [databasePath, sql], { encoding: 'utf8' }).trim();
 
 const generatedFixturePaths = [];
 

@@ -1,45 +1,19 @@
 # Budgie App Tests
 
-End-to-end tests for the Budgie expense tracking app using [Maestro](https://maestro.mobile.dev/).
-
-## Running Tests Locally
-
-### Prerequisites
-
-- Install Maestro CLI 2.6.0: `export MAESTRO_VERSION=2.6.0; curl -fsSL "https://get.maestro.mobile.dev" | bash`
-- iOS Simulator or Android Emulator running
-- App installed on the simulator/emulator
-
-### Commands
-
-iOS:
-
-```bash
-sh ./scripts/run-maestro-suite.sh com.vitalyiegorov.budgie.e2e
-```
-
-Local bank statement import flows:
-
-```bash
-sh ./scripts/setup-ios-e2e-fixtures.sh
-maestro test ./flows/16.erste-pdf-import.flow.yaml \
-  -e APP_ID=com.vitalyiegorov.budgie.e2e
-maestro test ./flows/23.privatbank-xlsx-import.flow.yaml \
-  -e APP_ID=com.vitalyiegorov.budgie.e2e
-```
-
-Bank import flows use committed sanitized statement fixtures from `tests/app-tests/fixtures/erste/` and `tests/app-tests/fixtures/privatbank/`.
-
-Android:
-
-```bash
-sh ./scripts/run-maestro-suite.sh com.vitaliiyehorov.budgie.e2e
-```
+Fixtures and scripts for Budgie's end-to-end tests. The tests live in
+[`e2e/`](../../e2e): a [tester-army e2e](https://github.com/tester-army/e2e)
+project that drives iOS simulators leased from the Mac Studio simlock farm, from
+Linux. See [E2E-RUNBOOK.md](./E2E-RUNBOOK.md) to run it and [AGENTS.md](./AGENTS.md)
+for the conventions.
 
 ## CI/CD
 
-E2E tests run automatically on pull requests via the GitHub Actions workflow (`.github/workflows/pr.yml`).
-Tests execute on both iOS (macos-latest) and Android (ubuntu-latest) after code quality checks pass.
+`pr.yml` runs the e2e suite (`e2e/tests`) on every pull request that touches the
+app, through rnw-community/mobile-ci's `ios-maestro.yml` with `test-framework: e2e`:
+the repacked or built app goes to a Linux runner that leases simulators from the farm.
+
+Bank import tests use committed sanitized statement fixtures from
+`tests/app-tests/fixtures/erste/` and `tests/app-tests/fixtures/privatbank/`.
 
 ## Landing media pipeline
 
@@ -48,12 +22,14 @@ own stills, driven by `.github/landing-media.config.json` (the same
 mobile-ci schema as the store config, iPhone 17 Pro Max only).
 
 ```bash
-pnpm media:capture   # Mac, packages/app built with APP_VARIANT=e2e
+SIMLOCK_URL=... SIMLOCK_TOKEN=... pnpm media:capture --app <Base.app>   # any host; e2e/ needs `npm ci`
 pnpm media:compose
 pnpm media:manifest
 ```
 
-`media:capture` runs `capture-store-screenshots.sh` against that config, raw
+`media:capture` runs `capture-store-screenshots.sh` against that config, which
+captures through the e2e project's media capture (`e2e/media.config.ts`) on
+simulators leased from the farm, raw
 output under `packages/app/fastlane/screenshots/landing-raw/` (gitignored).
 `media:compose` frames stills into
 `packages/landing/public/media/<slug>/<locale>/<theme>/`: a still is
@@ -65,24 +41,28 @@ A scene may carry a state overlay on top of the showcase database:
 `fixtures/screenshots/scenes/<scene-id>.sql`, falling back to `<slug>.sql`,
 usually just `.read shared/<state>.sql`.
 
-To add a scene: one `capture-scenes` entry (`deepLink` for a still, `flow`
+To add a scene: one `capture-scenes` entry (`deepLink` for a still, `test`
 when the state needs interaction) plus an overlay `.sql` file only if the
-default data isn't enough. A flow takes exactly one `takeScreenshot`. Flows reach their state by
-`runFlow`ing the E2E subflows under `flows/subflows/`, never by re-implementing navigation.
+default data isn't enough. A `test` names an entry of `SCENES` in
+`e2e/support/media/scenes.ts`: the walk from a freshly launched, seeded app to
+the screen, built from the e2e suite's own steps (`e2e/support/budgie/`), never by
+re-implementing navigation. The capture writes exactly one PNG per cell (and a
+`<scene>.mp4` beside it for a scene that records).
 
-`.github/workflows/media-smoke.yml` runs every `flows/media/*.flow.yaml` once
-per PR touching them and nightly, on one shard, seeding each flow's scene
-(`en`/`dark`) through `seed-screenshot-scene.sh` as mobile-ci's
-`pre-flow-command`. `pr.yml`'s `detect-mobile-impact` keeps those same paths
-out of the full iOS suite.
+`.github/workflows/media-smoke.yml` runs every scene in `SCENES` the e2e build
+can drive once per PR touching them and nightly, seeding each scene (`en`/`dark`)
+through `seed-screenshot-scene.sh`; the captures ship in the run's e2e report
+artifact under `media/raw/ios/iphone-17-pro/en/dark/`. `pr.yml`'s
+`detect-mobile-impact` keeps those same paths out of the full iOS suite.
+`store-screenshots.yml` captures the store set the same way, through
+mobile-ci's `store-screenshots.yml` with `test-framework: e2e`.
 
-Screenshot protection blanks Maestro's `takeScreenshot`, not `simctl io
-screenshot`. A `deepLink` scene seeded with `is_screenshot_protection_enabled = 1`
-captures normally, so `screenshot-protection-1` shows the switch in its enabled
-state; a `flow` scene under the same flag returns an all-black frame. That is why
+The capture reads the device's own pixels (`simctl io screenshot`'s bytes), which
+screenshot protection does not blank, so a scene seeded with
+`is_screenshot_protection_enabled = 1` still captures normally.
 `pin-app-lock-1` carries its own `scenes/pin-app-lock-1.sql` overlay, which turns
-the PIN and biometric flags on and leaves screenshot protection off, instead of
-reusing `shared/security-locked.sql`.
+the PIN and biometric flags on and leaves screenshot protection off, so the lock
+screen it shows is the plain one.
 
 The consolidation-source modal lists `transaction_entries` whose
 `original_transaction_id` points at a source transaction, so a seed that only
@@ -103,13 +83,3 @@ unlocks a seeded lock screen. Every scene behind the lock — the Settings secur
 card with App Lock active, `biometric-authentication-1` — stays unreachable until
 the seed hook can produce a SQLCipher database with a known key; the simulator
 also has no enrolled Face ID, which the biometric rows are gated on.
-
-## Future Test Coverage
-
-- [ ] Multiple account types (Savings, Debt)
-- [ ] Income transactions
-- [ ] Transfer transactions
-- [ ] Transaction editing and deletion
-- [ ] Category and tag management
-- [ ] Analytics screen verification
-- [ ] Settings and preferences

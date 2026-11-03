@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 import { drop, exec, mustDrop, mustExec, untar, writeFile, type SimlockApi } from '../simlock/exec.ts';
 
-// The same override e2e.config.ts reads (not imported: loading the config sets E2E_SESSION).
+// E2E_APP_ID: the bundle id mobile-ci's e2e job installs; support/config.ts installs the app under it.
 export const BUNDLE_ID = process.env.E2E_APP_ID ?? 'com.vitalyiegorov.budgie.e2e';
 
 const APP_TESTS = fileURLToPath(new URL('../../../tests/app-tests/', import.meta.url));
@@ -85,7 +85,7 @@ async function prepareSimulator(api: SimlockApi, leaseId: string, container: str
     const contactAdded = `${container}/Documents/.simlock-contact-added`;
     if ((await drop(api, leaseId, ['test', contactAdded])).exitCode !== 0) {
         const contact = `/tmp/simlock-${leaseId}-contact.vcf`;
-        await writeFile(api, leaseId, contact, readFileSync(join(APP_TESTS, 'fixtures/maestro-e2e-contact.vcf')));
+        await writeFile(api, leaseId, contact, readFileSync(join(APP_TESTS, 'fixtures/e2e-contact.vcf')));
         // Best effort, as in setup-ios-e2e-fixtures.sh: no flow reads the contact any more, and a
         // slim simulator has no contacts daemon (simlock's slim mode turns PIM off).
         const added = await exec(api, leaseId, ['addmedia', contact]);

@@ -18,12 +18,8 @@
     ],
     "capture-scenes": [
         {
-            "name": "00-prime",
-            "flow": "flows/setup/prime-deep-links-scene.flow.yaml"
-        },
-        {
             "name": "app-store-preview",
-            "flow": "flows/store/app-store-preview.flow.yaml"
+            "test": "app-store-preview"
         },
         {
             "name": "home-hero-1",
@@ -35,11 +31,11 @@
         },
         {
             "name": "budget-planning-2",
-            "flow": "flows/media/budget-planning-2.flow.yaml"
+            "test": "budget-planning-2"
         },
         {
             "name": "ai-auto-categorization-1",
-            "flow": "flows/media/ai-auto-categorization-1.flow.yaml"
+            "test": "ai-auto-categorization-1"
         },
         {
             "name": "ai-auto-categorization-2",
@@ -47,19 +43,19 @@
         },
         {
             "name": "ai-transaction-suggestions-1",
-            "flow": "flows/media/ai-transaction-suggestions-1.flow.yaml"
+            "test": "ai-transaction-suggestions-1"
         },
         {
             "name": "ai-tag-suggestions-1",
-            "flow": "flows/media/ai-tag-suggestions-1.flow.yaml"
+            "test": "ai-tag-suggestions-1"
         },
         {
             "name": "voice-transaction-entry-1",
-            "flow": "flows/media/voice-transaction-entry-1.ai-build-1183.yaml"
+            "test": "voice-transaction-entry-1"
         },
         {
             "name": "ai-merchant-translation-1",
-            "flow": "flows/media/ai-merchant-translation-1.flow.yaml"
+            "test": "ai-merchant-translation-1"
         },
         {
             "name": "on-device-ai-budget-app-1",
@@ -68,7 +64,7 @@
         },
         {
             "name": "no-bank-login-budget-app-1",
-            "flow": "flows/media/no-bank-login-budget-app-1.flow.yaml"
+            "test": "no-bank-login-budget-app-1"
         },
         {
             "name": "monobank-sync-1",
@@ -92,7 +88,7 @@
         },
         {
             "name": "net-worth-tracker-2",
-            "flow": "flows/media/net-worth-tracker-2.flow.yaml"
+            "test": "net-worth-tracker-2"
         },
         {
             "name": "offline-first-expense-tracker-1",
@@ -128,11 +124,11 @@
         },
         {
             "name": "account-transfers-1",
-            "flow": "flows/media/account-transfers-1.flow.yaml"
+            "test": "account-transfers-1"
         },
         {
             "name": "account-transfers-2",
-            "flow": "flows/media/account-transfers-2.flow.yaml"
+            "test": "account-transfers-2"
         },
         {
             "name": "biometric-authentication-1",
@@ -144,19 +140,19 @@
         },
         {
             "name": "csv-import-2",
-            "flow": "flows/media/csv-import-2.flow.yaml"
+            "test": "csv-import-2"
         },
         {
             "name": "erste-bank-pdf-import-1",
-            "flow": "flows/media/erste-bank-pdf-import-1.picker-pending-1042.yaml"
+            "test": "erste-bank-pdf-import-1"
         },
         {
             "name": "privatbank-import-1",
-            "flow": "flows/media/privatbank-import-1.picker-pending-1042.yaml"
+            "test": "privatbank-import-1"
         },
         {
             "name": "privatbank-import-2",
-            "flow": "flows/media/privatbank-import-2.picker-pending-1042.yaml"
+            "test": "privatbank-import-2"
         },
         {
             "name": "custom-categories-1",
@@ -176,7 +172,7 @@
         },
         {
             "name": "pin-app-lock-1",
-            "flow": "flows/media/pin-app-lock-1.flow.yaml"
+            "test": "pin-app-lock-1"
         },
         {
             "name": "pin-app-lock-2",
@@ -196,7 +192,7 @@
         },
         {
             "name": "debt-tracking-1",
-            "flow": "flows/media/debt-tracking-1.flow.yaml"
+            "test": "debt-tracking-1"
         },
         {
             "name": "debt-tracking-2",
@@ -240,7 +236,7 @@
         },
         {
             "name": "runway-3",
-            "flow": "flows/media/runway-3.flow.yaml"
+            "test": "runway-3"
         },
         {
             "name": "runway-4",
@@ -256,55 +252,55 @@
         },
         {
             "name": "multi-language-app-1",
-            "flow": "flows/media/multi-language-app-1.flow.yaml"
+            "test": "multi-language-app-1"
         },
         {
             "name": "recurring-payments-calendar-1",
-            "flow": "flows/media/recurring-payments-calendar-1.flow.yaml"
+            "test": "recurring-payments-calendar-1"
         },
         {
             "name": "statistics-tags-tab-1",
-            "flow": "flows/media/statistics-tags-tab-1.flow.yaml"
+            "test": "statistics-tags-tab-1"
         },
         {
             "name": "transaction-tags-1",
-            "flow": "flows/media/transaction-tags-1.flow.yaml"
+            "test": "transaction-tags-1"
         },
         {
             "name": "date-filter-presets-1",
-            "flow": "flows/media/date-filter-presets-1.flow.yaml"
+            "test": "date-filter-presets-1"
         },
         {
             "name": "date-filter-presets-2",
-            "flow": "flows/media/date-filter-presets-2.flow.yaml"
+            "test": "date-filter-presets-2"
         },
         {
             "name": "account-management-3",
-            "flow": "flows/media/account-management-3.flow.yaml"
+            "test": "account-management-3"
         },
         {
             "name": "custom-categories-2",
-            "flow": "flows/media/custom-categories-2.flow.yaml"
+            "test": "custom-categories-2"
         },
         {
             "name": "custom-categories-3",
-            "flow": "flows/media/custom-categories-3.flow.yaml"
+            "test": "custom-categories-3"
         },
         {
             "name": "categorization-rules-2",
-            "flow": "flows/media/categorization-rules-2.flow.yaml"
+            "test": "categorization-rules-2"
         },
         {
             "name": "spending-analytics-2",
-            "flow": "flows/media/spending-analytics-2.flow.yaml"
+            "test": "spending-analytics-2"
         },
         {
             "name": "transaction-long-press-menu-1",
-            "flow": "flows/media/transaction-long-press-menu-1.flow.yaml"
+            "test": "transaction-long-press-menu-1"
         },
         {
             "name": "convert-to-transfer-1",
-            "flow": "flows/media/convert-to-transfer-1.flow.yaml"
+            "test": "convert-to-transfer-1"
         },
         {
             "name": "uncategorized-transactions-1",
@@ -312,76 +308,73 @@
         },
         {
             "name": "uncategorized-transactions-2",
-            "flow": "flows/media/uncategorized-transactions-2.flow.yaml"
+            "test": "uncategorized-transactions-2"
         },
         {
             "name": "bulk-categorize-transactions-1",
-            "flow": "flows/media/bulk-categorize-transactions-1.flow.yaml"
+            "test": "bulk-categorize-transactions-1"
         },
         {
             "name": "bulk-categorize-transactions-2",
-            "flow": "flows/media/bulk-categorize-transactions-2.flow.yaml"
+            "test": "bulk-categorize-transactions-2"
         },
         {
             "name": "convert-to-refund-1",
-            "flow": "flows/media/convert-to-refund-1.flow.yaml"
+            "test": "convert-to-refund-1"
         },
         {
             "name": "convert-to-refund-2",
-            "flow": "flows/media/convert-to-refund-2.flow.yaml"
+            "test": "convert-to-refund-2"
         },
         {
             "name": "transfer-pair-detection-2",
-            "flow": "flows/media/transfer-pair-detection-2.flow.yaml"
+            "test": "transfer-pair-detection-2"
         },
         {
             "name": "bank-fee-tracking-1",
-            "flow": "flows/media/bank-fee-tracking-1.flow.yaml"
+            "test": "bank-fee-tracking-1"
         },
         {
             "name": "bank-resync-window-1",
-            "flow": "flows/media/bank-resync-window-1.flow.yaml"
+            "test": "bank-resync-window-1"
         },
         {
             "name": "debt-tracking-3",
-            "flow": "flows/media/debt-tracking-3.flow.yaml"
+            "test": "debt-tracking-3"
         },
         {
             "name": "deposit-tracking-2",
-            "flow": "flows/media/deposit-tracking-2.flow.yaml"
+            "test": "deposit-tracking-2"
         },
         {
             "name": "mcc-auto-category-2",
-            "flow": "flows/media/mcc-auto-category-2.flow.yaml"
+            "test": "mcc-auto-category-2"
         },
         {
             "name": "recurring-payments-calendar-2",
-            "flow": "flows/media/recurring-payments-calendar-2.flow.yaml"
+            "test": "recurring-payments-calendar-2"
         },
         {
             "name": "installment-tracking-1",
-            "flow": "flows/media/installment-tracking-1.flow.yaml"
+            "test": "installment-tracking-1"
         },
         {
             "name": "installment-tracking-2",
-            "flow": "flows/media/installment-tracking-2.flow.yaml"
+            "test": "installment-tracking-2"
         },
         {
             "name": "installment-tracking-3",
-            "flow": "flows/media/installment-tracking-3.flow.yaml"
+            "test": "installment-tracking-3"
         },
         {
             "name": "split-transactions-1",
-            "flow": "flows/media/split-transactions-1.flow.yaml"
+            "test": "split-transactions-1"
         },
         {
             "name": "split-transactions-2",
-            "flow": "flows/media/split-transactions-2.flow.yaml"
+            "test": "split-transactions-2"
         }
     ],
-    "screenshots-dir": "tests/app-tests",
-    "maestro-config": "tests/app-tests/config.yaml",
-    "seed-command": "bash tests/app-tests/scripts/seed-screenshot-scene.sh",
     "settle-seconds": 6,
     "status-bar-override": true,
     "build-env": "APP_VARIANT=e2e\nEXPO_PUBLIC_AI_DISABLE=true\nEXPO_PUBLIC_LOGGING_DISABLE=true\n",
