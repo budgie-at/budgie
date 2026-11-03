@@ -35,7 +35,7 @@ msgstr "«{accountTitle}» знову серед прихованих рахун
 msgid "“{accountTitle}” is back on Home"
 msgstr "«{accountTitle}» знову на головній"
 
-#: src/category/hooks/use-delete-category.hook.ts
+#: src/category/hooks/use-move-and-delete-category.hook.ts
 msgid "“{sourceTitle}” deleted, transactions moved to “{targetTitle}”"
 msgstr "«{sourceTitle}» видалено, транзакції перенесено в «{targetTitle}»"
 
@@ -227,11 +227,11 @@ msgstr "{count, plural, one {# місяць} few {# місяці} many {# міс
 msgid "{count, plural, one {# sync repair} other {# sync repairs}}"
 msgstr "{count, plural, one {# виправлення синхронізації} few {# виправлення синхронізації} many {# виправлень синхронізації} other {# виправлення синхронізації}}"
 
-#: src/category/hooks/use-delete-category.hook.ts
+#: src/category/hooks/use-move-and-delete-category.hook.ts
 msgid "{count, plural, one {# transaction moves to “{targetTitle}”. “{sourceTitle}” will be deleted.} other {# transactions move to “{targetTitle}”. “{sourceTitle}” will be deleted.}}"
 msgstr "{count, plural, one {# транзакція переходить до «{targetTitle}». «{sourceTitle}» буде видалено.} few {# транзакції переходять до «{targetTitle}». «{sourceTitle}» буде видалено.} many {# транзакцій переходять до «{targetTitle}». «{sourceTitle}» буде видалено.} other {# транзакції переходять до «{targetTitle}». «{sourceTitle}» буде видалено.}}"
 
-#: src/category/hooks/use-delete-category.hook.ts
+#: src/category/hooks/use-move-and-delete-category.hook.ts
 msgid "{count, plural, one {# transaction} other {# transactions}}"
 msgstr "{count, plural, one {# транзакція} few {# транзакції} many {# транзакцій} other {# транзакції}}"
 
@@ -259,7 +259,7 @@ msgstr "{count, plural, one {Вона досі має типову іконку}
 msgid "{count, plural, one {It will be removed from # transaction. The transaction stays.} other {It will be removed from # transactions. The transactions stay.}}"
 msgstr "{count, plural, one {Його буде знято з # транзакції. Транзакція залишиться.} few {Його буде знято з # транзакцій. Транзакції залишаться.} many {Його буде знято з # транзакцій. Транзакції залишаться.} other {Його буде знято з # транзакції. Транзакції залишаться.}}"
 
-#: src/category/hooks/use-delete-category.hook.ts
+#: src/category/hooks/use-move-and-delete-category.hook.ts
 msgid "{count, plural, one {Move # transaction to “{targetTitle}” and delete “{sourceTitle}”} other {Move # transactions to “{targetTitle}” and delete “{sourceTitle}”}}"
 msgstr "{count, plural, one {Перемістити # транзакцію до «{targetTitle}» і видалити «{sourceTitle}»} few {Перемістити # транзакції до «{targetTitle}» і видалити «{sourceTitle}»} many {Перемістити # транзакцій до «{targetTitle}» і видалити «{sourceTitle}»} other {Перемістити # транзакції до «{targetTitle}» і видалити «{sourceTitle}»}}"
 
@@ -2553,6 +2553,7 @@ msgid "Could not delete budget"
 msgstr "Не вдалося видалити бюджет"
 
 #: src/category/hooks/use-delete-category.hook.ts
+#: src/category/hooks/use-move-and-delete-category.hook.ts
 msgid "Could not delete category"
 msgstr "Не вдалося видалити категорію"
 
@@ -4840,7 +4841,7 @@ msgstr "Інші теги"
 msgid "More than"
 msgstr "Більше ніж"
 
-#: src/category/hooks/use-delete-category.hook.ts
+#: src/category/hooks/use-move-and-delete-category.hook.ts
 msgid "Move “{sourceTitle}” transactions to…"
 msgstr "Перемістити транзакції з «{sourceTitle}» до…"
 
@@ -4864,7 +4865,7 @@ msgstr "Перенести {rowCount} у готівку"
 msgid "Move {rowCount} to cash · {total}"
 msgstr "Перенести {rowCount} у готівку · {total}"
 
-#: src/category/hooks/use-delete-category.hook.ts
+#: src/category/hooks/use-move-and-delete-category.hook.ts
 msgid "Move and delete"
 msgstr "Перемістити й видалити"
 
@@ -5908,6 +5909,7 @@ msgstr "Будь ласка, спробуйте ще раз"
 #: src/category/components/category-form/category-form.tsx
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 #: src/category/hooks/use-delete-category.hook.ts
+#: src/category/hooks/use-move-and-delete-category.hook.ts
 #: src/tag/components/tag-form/tag-form.tsx
 #: src/tag/hooks/use-delete-tag.hook.ts
 #: src/tag/hooks/use-merge-tag.hook.ts

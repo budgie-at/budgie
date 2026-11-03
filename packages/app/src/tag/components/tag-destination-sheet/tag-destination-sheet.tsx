@@ -1,37 +1,45 @@
 import { useLingui } from '@lingui/react/macro';
-import * as React from 'react';
+import { useState } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { DestinationList } from '../../../@generic/component/destination-list/destination-list';
+import { DestinationRow } from '../../../@generic/component/destination-row/destination-row';
 import { DestinationSheetFooter } from '../../../@generic/component/destination-sheet-footer/destination-sheet-footer';
 import { DestinationSheet } from '../../../@generic/component/destination-sheet/destination-sheet';
 import { SelectorCreateButton } from '../../../@generic/component/selector-create-button/selector-create-button';
 import { useDestinationSelection } from '../../../@generic/hook/use-destination-selection.hook';
+import { useFormatEntityUsage } from '../../../@generic/hook/use-format-entity-usage.hook';
 import { TagsSelectorModalSelector } from '../../../app/tags-selector-modal.selector';
 import { useTagFormModal } from '../../context/tag-form-modal.context';
-import { useTagsSelectorModal, useTagsSelectorModalParams } from '../../context/tags-selector-modal.context';
 import { useTagsWithUsageQuery } from '../../query/use-tags-with-usage.query';
-import { TagDestinationRow } from '../tag-destination-row/tag-destination-row';
 import { TagEmptyState } from '../tag-empty-state/tag-empty-state';
+import { TagMonogram } from '../tag-monogram/tag-monogram';
 
+import type { DestinationCommitCopyInterface } from '../../../@generic/interface/destination-commit-copy.interface';
 import type { TagEntityInterface } from '@budgie/contracts';
 
-export const TagDestinationSheet = () => {
-    const tagParams = useTagsSelectorModalParams();
-    const [, resolveTagsSelector] = useTagsSelectorModal();
+interface Props {
+    readonly title: string;
+    readonly description: string | undefined;
+    readonly excludeTagIds: readonly number[];
+    readonly commitLabel: string;
+    readonly getCommitCopy: (destinationTitle: string) => DestinationCommitCopyInterface;
+    readonly onSelect: (tagId: number) => void;
+}
+
+export const TagDestinationSheet = (props: Props) => {
+    const { title, description, excludeTagIds, commitLabel, getCommitCopy, onSelect } = props;
     const { t } = useLingui();
     const [openTagForm] = useTagFormModal();
-    const [search, setSearch] = React.useState('');
+    const [search, setSearch] = useState('');
+    const formatUsage = useFormatEntityUsage();
     const { tags, usage, isUsageFailure, retryUsage, isFailure, retry } = useTagsWithUsageQuery(search);
 
-    const destinations = tags?.filter(tag => !tagParams?.excludeTagIds?.includes(tag.id));
-    const { selected, setSelected, isPending, handleRowSelect, handleCommit } = useDestinationSelection(
-        destinations,
-        tagId => void resolveTagsSelector([tagId])
-    );
+    const destinations = tags?.filter(tag => !excludeTagIds.includes(tag.id));
+    const { selected, setSelected, isPending, handleRowSelect, handleCommit } = useDestinationSelection(destinations, onSelect);
     const sections = isDefined(destinations) ? [{ title: t`Your tags`, data: destinations }] : null;
-    const commitCopy = isDefined(selected) ? (tagParams?.getCommitCopy?.(selected.title) ?? null) : null;
+    const commitCopy = isDefined(selected) ? getCommitCopy(selected.title) : null;
 
     const handleCreatePress = (defaultTitle: string) => {
         openTagForm({ defaultTitle }, result => {
@@ -46,19 +54,22 @@ export const TagDestinationSheet = () => {
     const handleClearSearch = () => void setSearch('');
 
     const renderRow = (tag: TagEntityInterface) => (
-        <TagDestinationRow
-            tag={tag}
-            usage={usage?.find(entry => entry.id === tag.id)}
+        <DestinationRow
+            id={tag.id}
+            title={tag.title}
+            subtitle={formatUsage(usage?.find(entry => entry.id === tag.id))}
+            left={<TagMonogram title={tag.title} />}
             isSelected={selected?.id === tag.id}
             isDisabled={isPending}
             onSelect={handleRowSelect}
+            testID={TagsSelectorModalSelector.Card(tag.title)}
         />
     );
 
     return (
         <DestinationSheet
-            title={tagParams?.title ?? ''}
-            description={tagParams?.description}
+            title={title}
+            description={description}
             search={search}
             onSearchChange={setSearch}
             placeholder={t`Search tags…`}
@@ -82,7 +93,7 @@ export const TagDestinationSheet = () => {
             />
             <DestinationSheetFooter
                 commitCopy={commitCopy}
-                commitLabel={tagParams?.commitLabel ?? ''}
+                commitLabel={commitLabel}
                 pickLabel={t`Pick a tag to continue`}
                 onCommit={handleCommit}
                 testID={TagsSelectorModalSelector.CommitButton}

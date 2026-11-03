@@ -35,7 +35,7 @@ msgstr "«{accountTitle}» vuelve a estar en Cuentas ocultas"
 msgid "“{accountTitle}” is back on Home"
 msgstr "«{accountTitle}» vuelve a estar en Inicio"
 
-#: src/category/hooks/use-delete-category.hook.ts
+#: src/category/hooks/use-move-and-delete-category.hook.ts
 msgid "“{sourceTitle}” deleted, transactions moved to “{targetTitle}”"
 msgstr "«{sourceTitle}» eliminada, transacciones movidas a «{targetTitle}»"
 
@@ -227,11 +227,11 @@ msgstr "{count, plural, one {# mes} other {# meses}}"
 msgid "{count, plural, one {# sync repair} other {# sync repairs}}"
 msgstr "{count, plural, one {# reparación de sincronización} other {# reparaciones de sincronización}}"
 
-#: src/category/hooks/use-delete-category.hook.ts
+#: src/category/hooks/use-move-and-delete-category.hook.ts
 msgid "{count, plural, one {# transaction moves to “{targetTitle}”. “{sourceTitle}” will be deleted.} other {# transactions move to “{targetTitle}”. “{sourceTitle}” will be deleted.}}"
 msgstr "{count, plural, one {# transacción pasa a “{targetTitle}”. “{sourceTitle}” se eliminará.} other {# transacciones pasan a “{targetTitle}”. “{sourceTitle}” se eliminará.}}"
 
-#: src/category/hooks/use-delete-category.hook.ts
+#: src/category/hooks/use-move-and-delete-category.hook.ts
 msgid "{count, plural, one {# transaction} other {# transactions}}"
 msgstr "{count, plural, one {# transacción} other {# transacciones}}"
 
@@ -259,7 +259,7 @@ msgstr "{count, plural, one {Todavía usa el icono predeterminado} other {Todav�
 msgid "{count, plural, one {It will be removed from # transaction. The transaction stays.} other {It will be removed from # transactions. The transactions stay.}}"
 msgstr "{count, plural, one {Se quitará de # transacción. La transacción se conserva.} other {Se quitará de # transacciones. Las transacciones se conservan.}}"
 
-#: src/category/hooks/use-delete-category.hook.ts
+#: src/category/hooks/use-move-and-delete-category.hook.ts
 msgid "{count, plural, one {Move # transaction to “{targetTitle}” and delete “{sourceTitle}”} other {Move # transactions to “{targetTitle}” and delete “{sourceTitle}”}}"
 msgstr "{count, plural, one {Mover # transacción a “{targetTitle}” y eliminar “{sourceTitle}”} other {Mover # transacciones a “{targetTitle}” y eliminar “{sourceTitle}”}}"
 
@@ -2553,6 +2553,7 @@ msgid "Could not delete budget"
 msgstr "No se pudo eliminar el presupuesto"
 
 #: src/category/hooks/use-delete-category.hook.ts
+#: src/category/hooks/use-move-and-delete-category.hook.ts
 msgid "Could not delete category"
 msgstr "No se pudo eliminar la categoría"
 
@@ -4840,7 +4841,7 @@ msgstr "Más etiquetas"
 msgid "More than"
 msgstr "Mayor que"
 
-#: src/category/hooks/use-delete-category.hook.ts
+#: src/category/hooks/use-move-and-delete-category.hook.ts
 msgid "Move “{sourceTitle}” transactions to…"
 msgstr "Mover las transacciones de «{sourceTitle}» a…"
 
@@ -4864,7 +4865,7 @@ msgstr "Mover {rowCount} a efectivo"
 msgid "Move {rowCount} to cash · {total}"
 msgstr "Mover {rowCount} a efectivo · {total}"
 
-#: src/category/hooks/use-delete-category.hook.ts
+#: src/category/hooks/use-move-and-delete-category.hook.ts
 msgid "Move and delete"
 msgstr "Mover y eliminar"
 
@@ -5908,6 +5909,7 @@ msgstr "Por favor, inténtelo de nuevo"
 #: src/category/components/category-form/category-form.tsx
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 #: src/category/hooks/use-delete-category.hook.ts
+#: src/category/hooks/use-move-and-delete-category.hook.ts
 #: src/tag/components/tag-form/tag-form.tsx
 #: src/tag/hooks/use-delete-tag.hook.ts
 #: src/tag/hooks/use-merge-tag.hook.ts

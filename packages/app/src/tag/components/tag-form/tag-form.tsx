@@ -29,12 +29,12 @@ import { TagMonogram } from '../tag-monogram/tag-monogram';
 
 import { TagFormSelector } from './tag-form.selector';
 
-import type { TagFormResult } from '../../interface/tag-form-result.interface';
+import type { TagFormResultInterface } from '../../interface/tag-form-result.interface';
 
 interface Props {
     readonly tag?: TagEntityInterface;
     readonly defaultTitle?: string;
-    readonly onSuccess: (result: TagFormResult) => void;
+    readonly onSuccess: (result: TagFormResultInterface) => void;
     readonly onCancel: () => void;
 }
 

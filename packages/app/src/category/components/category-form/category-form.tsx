@@ -42,12 +42,12 @@ import { updateCategory } from '../../utils/update-category.util';
 
 import { CategoryFormSelector } from './category-form.selector';
 
-import type { CategoryFormResult } from '../../interface/category-form-result.interface';
+import type { CategoryFormResultInterface } from '../../interface/category-form-result.interface';
 
 interface Props {
     readonly category?: CategoryEntityInterface;
     readonly defaultTitle?: string;
-    readonly onSuccess: (result: CategoryFormResult) => void;
+    readonly onSuccess: (result: CategoryFormResultInterface) => void;
     readonly onCancel: () => void;
 }
 

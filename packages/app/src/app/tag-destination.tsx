@@ -5,13 +5,24 @@ import { TagDestinationSheet } from '../tag/components/tag-destination-sheet/tag
 import { useTagsSelectorModal, useTagsSelectorModalParams } from '../tag/context/tags-selector-modal.context';
 
 export default function TagDestinationModal() {
-    const [, , dismissTagsSelector] = useTagsSelectorModal();
+    const [, resolveTagsSelector, dismissTagsSelector] = useTagsSelectorModal();
     useModalDismiss(dismissTagsSelector);
     const currentParams = useTagsSelectorModalParams();
+
+    const handleSelect = (tagId: number) => void resolveTagsSelector([tagId]);
 
     if (!isDefined(currentParams?.title) || !isDefined(currentParams.commitLabel) || !isDefined(currentParams.getCommitCopy)) {
         return null;
     }
 
-    return <TagDestinationSheet />;
+    return (
+        <TagDestinationSheet
+            title={currentParams.title}
+            description={currentParams.description}
+            excludeTagIds={currentParams.excludeTagIds ?? []}
+            commitLabel={currentParams.commitLabel}
+            getCommitCopy={currentParams.getCommitCopy}
+            onSelect={handleSelect}
+        />
+    );
 }

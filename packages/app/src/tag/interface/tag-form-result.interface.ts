@@ -1,5 +1,5 @@
 import type { TagEntityInterface } from '@budgie/contracts';
 
-export interface TagFormResult {
+export interface TagFormResultInterface {
     readonly tag: TagEntityInterface;
 }

@@ -41,10 +41,12 @@ export const CategorizeInboxGroupPrimaryBar = ({ cluster }: Props) => {
 
             return isDefined(title) ? withTotal(t`Move ${count} to ${title}`) : null;
         }
-        const labelTitle =
-            choice === CategorizeInboxGroupChoiceEnum.ALREADY_TRACKED
-                ? t`Already tracked`
-                : strategy?.labelsById.get(isNumber(labelId) ? labelId : 0)?.title;
+        if (choice === CategorizeInboxGroupChoiceEnum.ALREADY_TRACKED) {
+            const labelTitle = t`Already tracked`;
+
+            return withTotal(t`File ${count} as ${labelTitle}`);
+        }
+        const labelTitle = isNumber(choice) ? strategy?.labelsById.get(choice)?.title : null;
 
         return isDefined(labelTitle) ? withTotal(t`File ${count} as ${labelTitle}`) : null;
     };

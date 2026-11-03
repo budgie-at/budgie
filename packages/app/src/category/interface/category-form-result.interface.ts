@@ -1,5 +1,5 @@
 import type { CategoryEntityInterface } from '@budgie/contracts';
 
-export interface CategoryFormResult {
+export interface CategoryFormResultInterface {
     readonly category: CategoryEntityInterface;
 }

@@ -8,7 +8,8 @@ import { useCategorizeInboxContext } from '../context/categorize-inbox.context';
 import { CategorizeInboxGroupChoiceEnum } from '../enum/categorize-inbox-group-choice.enum';
 import { getCategorizeInboxJarName } from '../utils/get-categorize-inbox-jar-name.util';
 import { getCategorizeInboxTransferKey } from '../utils/get-categorize-inbox-transfer-key.util';
-import { isCategorizeInboxAccountNameMatch } from '../utils/is-categorize-inbox-account-name-match.util';
+
+import { useCategorizeInboxMatchedAccount } from './use-categorize-inbox-matched-account.hook';
 
 import type { CategorizeInboxGroupChoiceType } from '../interface/categorize-inbox-group-choice.type';
 import type { CategorizeInboxGroupOptionsInterface } from '../interface/categorize-inbox-group-options.interface';
@@ -36,7 +37,7 @@ export const useCategorizeInboxGroupOptions = (cluster: CategorizeInboxClusterIn
     const { strategy, learnedTransferAccountIds, cashWithdrawalTransactionIds, includedRows } = useCategorizeInboxContext();
     const { accounts } = useSearchAccountsSortedQuery('', CATEGORIZE_INBOX_TRANSFER_ACCOUNT_FILTER);
 
-    const matchedAccount = accounts.find(account => isCategorizeInboxAccountNameMatch(account.title, cluster.displayTitle)) ?? null;
+    const matchedAccount = useCategorizeInboxMatchedAccount(cluster);
     const jarName = getCategorizeInboxJarName(cluster.displayTitle);
     const learnedAccountId = learnedTransferAccountIds.get(getCategorizeInboxTransferKey(cluster.displayTitle));
     const learnedAccount = accounts.find(account => account.id === learnedAccountId) ?? null;
