@@ -120,6 +120,13 @@ async function openInboxList(ctx: Ctx): Promise<void> {
     await b.tapId(ctx, 'CategorizeInboxPage.ShowListButton');
 }
 
+/** The transactions list, its first card long-pressed for the context menu. */
+async function longPressFirstCard(ctx: Ctx): Promise<void> {
+    await t.navigateToTransactions(ctx);
+    await expect(transactionCard(ctx).first()).toBeVisible({ timeout: 15_000 });
+    await transactionCard(ctx).first().longPress();
+}
+
 async function openFirstCategory(ctx: Ctx): Promise<void> {
     await open(ctx, 'budgie://settings/categories', categoryCard(ctx));
     await categoryCard(ctx).first().tap();
@@ -162,7 +169,7 @@ async function openVoiceEntry(ctx: Ctx, modelTimeout: number): Promise<void> {
 
 async function typeMerchant(ctx: Ctx, title: string): Promise<void> {
     await open(ctx, 'budgie://create-transaction/expense', 'TransactionForm.CommentInput');
-    await st.tapUntilId(ctx, 'TransactionForm.CommentInput', 'NoteInput.Input', 1, 5_000);
+    await t.tapUntilId(ctx, 'TransactionForm.CommentInput', 'NoteInput.Input', 1, 5_000);
     // Typed key by key: the merchant suggestions react to typing, not to a set value.
     await b.byId(ctx.screen, 'NoteInput.Input').pressSequentially(title);
 }
@@ -301,24 +308,6 @@ export const SCENES: Readonly<Record<string, Scene>> = {
             await b.expectId(ctx, 'ResyncWindowPicker.Option.all', 5_000);
         }
     },
-    'binance-connect-clip-1': {
-        // Pending #747: connects a real Binance sandbox account, so it needs BINANCE_SANDBOX_API_KEY/SECRET; no capture config uses it yet.
-        smoke: false,
-        run: async (ctx, { cell, media }) => {
-            const key = process.env.BINANCE_SANDBOX_API_KEY;
-            const secret = process.env.BINANCE_SANDBOX_API_SECRET;
-            if (!key || !secret) throw new Error('binance-connect-clip-1 needs BINANCE_SANDBOX_API_KEY and BINANCE_SANDBOX_API_SECRET');
-            await open(ctx, 'budgie://create-account/BINANCE', 'SyncTokenSection.BinanceApiKeyInput');
-            await media.record(cell, async () => {
-                await b.fillId(ctx, 'SyncTokenSection.BinanceApiKeyInput', key);
-                await b.fillId(ctx, 'SyncTokenSection.BinanceApiSecretInput', secret);
-                await b.tapText(ctx, 'Fetch Accounts');
-                await b.expectText(ctx, 'Start Sync', 30_000);
-                await b.tapText(ctx, 'Start Sync');
-                await b.expectId(ctx, 'HomePage.TotalBalance', 30_000);
-            });
-        }
-    },
     'budget-planning-2': {
         run: async ctx => {
             await open(ctx, 'budgie://budget', 'BudgetDetails.SpentLabel');
@@ -367,9 +356,7 @@ export const SCENES: Readonly<Record<string, Scene>> = {
     },
     'convert-to-transfer-1': {
         run: async ctx => {
-            await t.navigateToTransactions(ctx);
-            await expect(transactionCard(ctx).first()).toBeVisible({ timeout: 15_000 });
-            await transactionCard(ctx).first().longPress();
+            await longPressFirstCard(ctx);
             await b.expectId(ctx, 'TransactionContextMenu.ConvertToTransferButton');
             await b.expectId(ctx, 'TransactionContextMenu.StartDepositButton');
             await b.tapId(ctx, 'TransactionContextMenu.ConvertToTransferButton');
@@ -524,9 +511,7 @@ export const SCENES: Readonly<Record<string, Scene>> = {
     },
     'transaction-long-press-menu-1': {
         run: async ctx => {
-            await t.navigateToTransactions(ctx);
-            await expect(transactionCard(ctx).first()).toBeVisible({ timeout: 15_000 });
-            await transactionCard(ctx).first().longPress();
+            await longPressFirstCard(ctx);
             await b.expectId(ctx, 'TransactionContextMenu.EditButton', 10_000);
         }
     },

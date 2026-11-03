@@ -2,21 +2,12 @@ import { expect } from 'e2e';
 
 import { createEntityFromTransaction } from '../budgie/categories.ts';
 import { byId, expectId, openLink, scrollTo, sleep, tapId, type Ctx } from '../budgie/core.ts';
-import { retry } from '../budgie/transactions.ts';
 import { exec, type SimlockApi } from '../simlock/exec.ts';
 
 /**
  * Steps only the media scenes and fixture builders take, each the port of the
  * subflow named in its doc comment (the PR suite no longer walks them).
  */
-
-/** Taps `testId` until `targetId` shows (each wait `timeout`), up to `1 + retries` taps. */
-export async function tapUntilId(ctx: Ctx, testId: string, targetId: string, retries = 3, timeout = 3_000): Promise<void> {
-    await retry(retries, async () => {
-        await tapId(ctx, testId);
-        await expectId(ctx, targetId, timeout);
-    });
-}
 
 /** subflows/transactions/open-convert-to-refund-picker */
 export async function openConvertToRefundPicker(ctx: Ctx, transactionId: number, candidateRowId: string): Promise<void> {

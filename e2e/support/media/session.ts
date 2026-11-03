@@ -7,8 +7,8 @@ import { fileURLToPath } from 'node:url';
 import { expect } from 'e2e';
 
 import * as b from '../budgie/core.ts';
-import { BUNDLE_ID, ensureFixtures } from '../budgie/fixtures.ts';
-import { exec, leaseIdForUdid, mustDrop, mustExec, simlockApiFromEnv, writeFile, type SimlockApi } from '../simlock/exec.ts';
+import { BUNDLE_ID } from '../budgie/fixtures.ts';
+import { exec, mustDrop, mustExec, writeFile } from '../simlock/exec.ts';
 
 import { SCENES } from './scenes.ts';
 import { workerShell } from './steps.ts';
@@ -93,22 +93,7 @@ const timeZones = new Map<string, string | undefined>();
  * launched, then the scene's deep link or driven walk, and the screen
  * written pixel for pixel to the cell's path.
  */
-export class Media {
-    readonly api: SimlockApi = simlockApiFromEnv();
-    #lease?: string;
-
-    constructor(readonly ctx: b.Ctx) {}
-
-    async lease(): Promise<string> {
-        this.#lease ??= await leaseIdForUdid(this.api, this.ctx.device.unstable_raw.deviceId);
-        return this.#lease;
-    }
-
-    /** The app data container, with the e2e suite's staged fixtures (statements for the import scenes) in it. */
-    async container(): Promise<string> {
-        return ensureFixtures(this.api, await this.lease());
-    }
-
+export class Media extends b.Budgie {
     async capture(cell: Cell): Promise<void> {
         const lease = await this.lease();
         const container = await this.container();
