@@ -83,6 +83,7 @@ export const OnboardingBalances = () => {
         ]);
     };
 
+    const hasAccounts = isNotEmptyArray(accounts);
     const hasManualAccounts = isNotEmptyArray(manualAccounts);
 
     const monobankAccountCount = accounts.filter(account => account.externalSource === ExternalSourceEnum.MONOBANK).length;
@@ -114,8 +115,15 @@ export const OnboardingBalances = () => {
               })
           })
         : t`Erste (PDF) or Privatbank (XLSX), read on this phone.`;
-    const isSaveDisabled = !isNotEmptyArray(enteredBalances) && !isMonobankConnected && !isStatementImported;
-    const saveLabel = isSaveDisabled ? t`Enter a balance to save` : t`Save balances`;
+    const isSaveDisabled = hasAccounts && !isNotEmptyArray(enteredBalances) && !isMonobankConnected && !isStatementImported;
+    const balancesLabel = isSaveDisabled ? t`Enter a balance to save` : t`Save balances`;
+    const saveLabel = hasAccounts ? balancesLabel : t`Continue`;
+    const handleContinuePress = hasAccounts ? handleSavePress : handleLaterPress;
+    const title = hasAccounts ? t`What’s in them today?` : t`No accounts yet`;
+    const description = hasAccounts
+        ? t`A rough number is fine. Fix it any time.`
+        : t`Add your first account to start tracking your finances`;
+    const importTitle = hasManualAccounts ? t`Or import from` : t`Import`;
 
     return (
         <OnboardingStepLayout
@@ -131,17 +139,19 @@ export const OnboardingBalances = () => {
                         label={saveLabel}
                         isDisabled={isSaveDisabled}
                         isLoading={isSaving}
-                        onPress={handleSavePress}
+                        onPress={handleContinuePress}
                     />
-                    <OnboardingFooterAction
-                        testID={OnboardingBalancesSelector.LaterButton}
-                        label={t`Add balances later`}
-                        onPress={handleLaterPress}
-                    />
+                    {hasAccounts ? (
+                        <OnboardingFooterAction
+                            testID={OnboardingBalancesSelector.LaterButton}
+                            label={t`Add balances later`}
+                            onPress={handleLaterPress}
+                        />
+                    ) : null}
                 </>
             }
         >
-            <OnboardingStepIntro title={t`What’s in them today?`} description={t`A rough number is fine. Fix it any time.`} />
+            <OnboardingStepIntro title={title} description={description} />
 
             {hasManualAccounts ? (
                 <GroupedListSection title={t`Accounts`}>
@@ -156,7 +166,7 @@ export const OnboardingBalances = () => {
                 </GroupedListSection>
             ) : null}
 
-            <GroupedListSection title={t`Or import from`}>
+            <GroupedListSection title={importTitle}>
                 <GroupedListRow
                     testID={OnboardingBalancesSelector.MonobankOption}
                     left={<GroupedListIcon icon={monobankIcon} iconClassName={monobankIconClassName} />}

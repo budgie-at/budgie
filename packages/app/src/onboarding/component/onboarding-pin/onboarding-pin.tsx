@@ -87,7 +87,7 @@ export const OnboardingPin = () => {
     return (
         <FullPage
             testID={OnboardingPinSelector.Root}
-            className="bg-background"
+            className="bg-grouped-surface"
             header={<OnboardingStepHeader fileState={fileState} fileLock={OnboardingFileLockEnum.OPEN} isBackVisible onBack={handleBack} />}
         >
             <View className="flex-1 px-xl">

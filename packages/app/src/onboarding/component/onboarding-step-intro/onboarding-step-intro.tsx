@@ -6,8 +6,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { cn } from '../../../@generic/utils/cn.util';
-
-const COMPACT_HEIGHT = 700;
+import { COMPACT_HEIGHT } from '../../constant/compact-height.constant';
 
 interface Props {
     readonly title: string;

@@ -15,7 +15,7 @@ export const OnboardingHoldToSealLabel = ({ label, isLoading, colorClassName }: 
     <LoadingContent isLoading={isLoading}>
         <View className="flex-row items-center justify-center gap-x-md">
             <Icon icon={UserIconNameEnum.Lock} size={18} className={colorClassName} />
-            <Text className={cn('text-[17px] font-semibold', colorClassName)}>{label}</Text>
+            <Text className={cn('shrink text-center text-[17px] font-semibold', colorClassName)}>{label}</Text>
         </View>
     </LoadingContent>
 );

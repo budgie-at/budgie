@@ -1203,6 +1203,7 @@ msgid "Add transactions to see your runway"
 msgstr "Añade transacciones para ver tu autonomía"
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Add your first account to start tracking your finances"
 msgstr "Agrega tu primera cuenta para comenzar a rastrear tus finanzas"
 
@@ -2407,6 +2408,7 @@ msgid "Contains"
 msgstr "Contiene"
 
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 #: src/onboarding/component/onboarding-sealed-actions/onboarding-sealed-actions.tsx
 #: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
@@ -4087,6 +4089,10 @@ msgstr "Si lo olvidas, nadie podrá abrir este archivo, ni tú ni nosotros."
 msgid "Ignores the minus sign."
 msgstr "Se ignora el signo menos."
 
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Import"
+msgstr "Importar"
+
 #: src/app/(main)/create-account/index.tsx
 msgid "Import a PDF statement"
 msgstr "Importar un extracto PDF"
@@ -5012,6 +5018,7 @@ msgstr "Aún no hay cuentas en esta integración"
 
 #: src/account/component/account-select-content/account-select-content.tsx
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "No accounts yet"
 msgstr "Aún no hay cuentas"
 

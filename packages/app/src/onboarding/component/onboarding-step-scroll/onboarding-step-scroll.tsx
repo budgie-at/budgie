@@ -5,11 +5,11 @@ import Animated from 'react-native-reanimated';
 
 import { useBottomChromeInset, useScreenChromeScrollProps } from '@rnw-community/react-native-screen-chrome';
 
+import { COMPACT_HEIGHT } from '../../constant/compact-height.constant';
+
 interface Props {
     readonly children: ReactNode;
 }
-
-const COMPACT_HEIGHT = 700;
 
 const AnimatedKeyboardAwareScrollView = Animated.createAnimatedComponent(KeyboardAwareScrollView);
 

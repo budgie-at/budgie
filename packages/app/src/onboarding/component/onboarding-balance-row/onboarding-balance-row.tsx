@@ -42,7 +42,7 @@ export const OnboardingBalanceRow = ({ account, value, onChangeValue }: Props) =
             right={
                 <View
                     className={cn(
-                        'min-h-[44px] min-w-[112px] justify-center rounded-[10px] border-[1.5px] bg-surface px-md dark:bg-surface-fill',
+                        'min-h-[44px] min-w-[112px] max-w-[50%] shrink justify-center rounded-[10px] border-[1.5px] bg-surface px-md dark:bg-surface-fill',
                         focusClassName
                     )}
                 >
