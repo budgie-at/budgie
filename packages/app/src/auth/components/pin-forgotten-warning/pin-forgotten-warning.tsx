@@ -9,7 +9,7 @@ import { PIN_STEP_FADE_DURATION_MS } from '../../constant/pin-motion.constant';
 export const PinForgottenWarning = () => (
     <Animated.View entering={FadeIn.duration(PIN_STEP_FADE_DURATION_MS)} className="flex-row items-center justify-center gap-x-sm px-5xl">
         <Icon icon={UserIconNameEnum.TriangleAlert} size={16} className="text-warning-strong" />
-        <Text className="text-sm text-warning-strong text-center shrink">
+        <Text className="text-sm text-secondary-foreground text-center shrink">
             <Trans>A forgotten PIN can&apos;t be reset.</Trans>
         </Text>
     </Animated.View>
