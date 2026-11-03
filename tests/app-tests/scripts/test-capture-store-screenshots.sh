@@ -14,7 +14,7 @@ FAILURES=0
 
 assert_contains() {
     local haystack="$1" needle="$2" label="$3"
-    if printf '%s' "$haystack" | grep -qF -- "$needle"; then
+    if grep -qF -- "$needle" <<<"$haystack"; then
         echo "ok   $label"
     else
         echo "FAIL $label: expected to find '$needle'"
@@ -24,7 +24,7 @@ assert_contains() {
 
 assert_missing() {
     local haystack="$1" needle="$2" label="$3"
-    if printf '%s' "$haystack" | grep -qF -- "$needle"; then
+    if grep -qF -- "$needle" <<<"$haystack"; then
         echo "FAIL $label: did not expect '$needle'"
         FAILURES=$((FAILURES + 1))
     else
@@ -77,6 +77,13 @@ cat > "$CONFIG" <<'JSON'
 JSON
 
 PLAN=$(bash "$TARGET" --config "$CONFIG" --dry-run)
+
+# A needle near the start of an output larger than a pipe buffer: grep -q stops reading early,
+# and an assertion that pipes into it under pipefail misreads the writer's SIGPIPE as a miss.
+LARGE_OUTPUT="needle-at-the-start
+$(printf 'filler line %s\n' $(seq 1 20000))"
+assert_contains "$LARGE_OUTPUT" 'needle-at-the-start' 'a match in a large output is found'
+assert_contains "$(assert_missing "$LARGE_OUTPUT" 'needle-at-the-start' 'probe')" 'FAIL probe' 'a match in a large output is never reported missing'
 
 assert_contains "$PLAN" 'device: iPhone 17 Pro Max (slug iphone-17-pro-max)' 'iPhone device slug'
 assert_contains "$PLAN" 'device: iPad Pro 13-inch (M4) (slug ipad-pro-13-inch-m4)' 'iPad device slug drops the trailing paren'
