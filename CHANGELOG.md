@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.149.0](https://github.com/budgie-at/budgie/compare/v6.148.0...v6.149.0) (2026-11-03)
+
+### Bug Fixes
+
+* **app:** address onboarding QA findings ([a8d8d93](https://github.com/budgie-at/budgie/commit/a8d8d932315f544576299a7ae7ac438e2daeb70a))
+* **app:** keep PIN warning text readable on grouped surfaces ([8a761c1](https://github.com/budgie-at/budgie/commit/8a761c1f4caf333fad4759adadf021d27f757f82))
+* **app:** keep the onboarding footer in the accessibility tree ([6684420](https://github.com/budgie-at/budgie/commit/66844204f3445610907a473bb23997ebc7758230))
+* **app:** leave onboarding only once completion is observed ([fed2940](https://github.com/budgie-at/budgie/commit/fed294086e7e329af35feef78ad33496da772285))
+* **app:** match the Reduce Motion seal confirmation title to its button ([2d574a5](https://github.com/budgie-at/budgie/commit/2d574a5002591787f4dbb42340dfd7d5906b71e1))
+* **app:** polish onboarding contrast and empty states ([b1c347b](https://github.com/budgie-at/budgie/commit/b1c347b5cfe30f320f6526284db5286c6ebb429f))
+* **app:** show the onboarding footer hairline and quiet the keyboard Done ([7b2d70a](https://github.com/budgie-at/budgie/commit/7b2d70a5a7cbd73bf3888275695aa58060eb0f38))
+* **app:** stop the sealed onboarding screen crashing ([330ad60](https://github.com/budgie-at/budgie/commit/330ad600a1752165d547a9b6b2b6988ab2aae6b7))
+* **app:** unify PIN chrome and clarify empty account guidance ([3742a94](https://github.com/budgie-at/budgie/commit/3742a948e0c3fef14cc54e66a9d7d0726977d1bb))
+* queue e2e lease requests while the simlock farm is full ([#1877](https://github.com/budgie-at/budgie/issues/1877)) ([b404445](https://github.com/budgie-at/budgie/commit/b404445cf0ecf8d6170e34af58bb7bc236b1494e))
+
+### Features
+
+* **app:** improve onboarding balance keyboard ergonomics ([e2403fe](https://github.com/budgie-at/budgie/commit/e2403fea8aa8fca38fe54c8423bcd9d770a8d516))
+* **app:** polish onboarding as grouped lists ([0b88f62](https://github.com/budgie-at/budgie/commit/0b88f62c77c214befc6adda00d1f9eb088af2c9f))
+* **app:** unify onboarding keyboard controls in the footer ([1ab12d5](https://github.com/budgie-at/budgie/commit/1ab12d54b324ee13e1c470b841fa7b509346c48d))
+
+
 # [6.148.0](https://github.com/budgie-at/budgie/compare/v6.147.1...v6.148.0) (2026-11-02)
 
 ### Bug Fixes

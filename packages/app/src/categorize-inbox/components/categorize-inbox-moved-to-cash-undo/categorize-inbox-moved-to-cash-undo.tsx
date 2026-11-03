@@ -9,7 +9,7 @@ export const CategorizeInboxMovedToCashUndo = () => {
     const { movedToCashTransactionIds, undoMoveToCash } = useCategorizeInboxContext();
 
     const description = t({
-        message: plural(movedToCashTransactionIds.length, { one: '# transaction', other: '# transactions' })
+        message: plural(movedToCashTransactionIds.length, { one: '# payment', other: '# payments' })
     });
 
     const handleUndoPress = (): void => void undoMoveToCash(movedToCashTransactionIds);

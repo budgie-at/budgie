@@ -15,13 +15,19 @@ interface Props {
     readonly children?: ReactNode;
 }
 
+const UNDO_HIT_SLOP = { top: 4, bottom: 4, left: 4, right: 4 } as const;
+
 export const CategorizeInboxUndoLayout = ({ title, description, onUndo, children }: Props) => (
-    <View className="h-14 flex-row items-center gap-x-md" accessibilityLiveRegion="polite" testID={CategorizeInboxUndoBarSelector.Bar}>
+    <View
+        className="min-h-14 flex-row items-center gap-x-md py-xs"
+        accessibilityLiveRegion="polite"
+        testID={CategorizeInboxUndoBarSelector.Bar}
+    >
         <View className="flex-1" accessible>
-            <Text className="text-sm font-semibold text-primary" numberOfLines={1}>
+            <Text className="text-[15px] leading-[20px] font-semibold text-primary" numberOfLines={2}>
                 {title}
             </Text>
-            <Text className="mt-xxs text-xs text-secondary-foreground" numberOfLines={1}>
+            <Text className="mt-xxs text-[13px] leading-[17px] text-secondary-foreground" numberOfLines={2}>
                 {description}
             </Text>
         </View>
@@ -30,7 +36,8 @@ export const CategorizeInboxUndoLayout = ({ title, description, onUndo, children
 
         <HapticPressable
             onPress={onUndo}
-            className="h-9 flex-row items-center gap-x-xs rounded-full bg-primary px-xl"
+            className="min-h-[36px] flex-row items-center gap-x-xs rounded-full bg-primary px-xl"
+            hitSlop={UNDO_HIT_SLOP}
             accessibilityRole="button"
             testID={CategorizeInboxUndoBarSelector.UndoButton}
         >

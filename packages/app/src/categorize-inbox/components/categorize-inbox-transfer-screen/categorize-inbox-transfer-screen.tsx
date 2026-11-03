@@ -5,13 +5,14 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { SearchInput } from '../../../@generic/component/search-input/search-input';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { useCategorizeInboxCluster } from '../../hook/use-categorize-inbox-cluster.hook';
+import { CategorizeInboxNavTitle } from '../categorize-inbox-nav-title/categorize-inbox-nav-title';
 import { CategorizeInboxScreenChrome } from '../categorize-inbox-screen-chrome/categorize-inbox-screen-chrome';
 import { CategorizeInboxScreenScroll } from '../categorize-inbox-screen-scroll/categorize-inbox-screen-scroll';
-import { CategorizeInboxScreenTitle } from '../categorize-inbox-screen-title/categorize-inbox-screen-title';
 import { CategorizeInboxTransferAccounts } from '../categorize-inbox-transfer-accounts/categorize-inbox-transfer-accounts';
 import { CategorizeInboxTransferRuleSwitch } from '../categorize-inbox-transfer-rule-switch/categorize-inbox-transfer-rule-switch';
 
@@ -41,25 +42,25 @@ export const CategorizeInboxTransferScreen = ({ clusterKey }: Props) => {
     );
 
     return (
-        <CategorizeInboxScreenChrome>
-            <CategorizeInboxScreenScroll>
-                <CategorizeInboxScreenTitle title={t`Transfer to`}>
-                    <Text className="text-secondary-foreground text-sm">{summary}</Text>
-                </CategorizeInboxScreenTitle>
+        <GroupedSurface>
+            <CategorizeInboxScreenChrome title={<CategorizeInboxNavTitle>{t`Transfer to`}</CategorizeInboxNavTitle>}>
+                <CategorizeInboxScreenScroll>
+                    <Text className="text-secondary-foreground pb-3xl text-center text-[15px] leading-[20px]">{summary}</Text>
 
-                <CategorizeInboxTransferRuleSwitch cluster={cluster} value={isRuleEnabled} onValueChange={setIsRuleEnabled} />
+                    <CategorizeInboxTransferRuleSwitch cluster={cluster} value={isRuleEnabled} onValueChange={setIsRuleEnabled} />
 
-                <View className="pt-xl">
-                    <SearchInput
-                        value={search}
-                        onChangeText={setSearch}
-                        placeholder={t`Search accounts...`}
-                        {...testID(CategorizeInboxTransferScreenSelector.Search)}
-                    />
-                </View>
+                    <View className="pt-3xl">
+                        <SearchInput
+                            value={search}
+                            onChangeText={setSearch}
+                            placeholder={t`Search accounts...`}
+                            {...testID(CategorizeInboxTransferScreenSelector.Search)}
+                        />
+                    </View>
 
-                <CategorizeInboxTransferAccounts cluster={cluster} search={search} isRuleEnabled={isRuleEnabled} />
-            </CategorizeInboxScreenScroll>
-        </CategorizeInboxScreenChrome>
+                    <CategorizeInboxTransferAccounts cluster={cluster} search={search} isRuleEnabled={isRuleEnabled} />
+                </CategorizeInboxScreenScroll>
+            </CategorizeInboxScreenChrome>
+        </GroupedSurface>
     );
 };
