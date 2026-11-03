@@ -11,7 +11,6 @@ import type { ReactNode } from 'react';
 import type { AccessibilityState } from 'react-native';
 
 interface Props {
-    readonly variant: 'positive' | 'neutral';
     readonly title: string;
     readonly subtitle: string;
     readonly icon: UserIconType;
@@ -22,19 +21,11 @@ interface Props {
 
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
-const discVariants = cva('', {
-    variants: { variant: { positive: 'bg-positive-action/15', neutral: 'bg-surface-disc' } }
-});
-
 const titleVariants = cva('text-primary text-[17px]', {
     variants: { isSelected: { true: 'font-semibold', false: 'font-normal' } }
 });
 
-const iconVariants = cva('', {
-    variants: { variant: { positive: 'text-positive-action', neutral: 'text-secondary-foreground' } }
-});
-
-export const CategorizeInboxLeadRow = ({ variant, title, subtitle, icon, accessory, accessibilityState, onPress }: Props) => {
+export const CategorizeInboxLeadRow = ({ title, subtitle, icon, accessory, accessibilityState, onPress }: Props) => {
     const titleClassName = titleVariants({ isSelected: accessibilityState?.selected === true });
 
     return (
@@ -53,8 +44,8 @@ export const CategorizeInboxLeadRow = ({ variant, title, subtitle, icon, accesso
                     iconSize={20}
                     radius={20}
                     border={false}
-                    className={discVariants({ variant })}
-                    iconClassName={iconVariants({ variant })}
+                    className="bg-surface-disc"
+                    iconClassName="text-secondary-foreground"
                 />
                 <View className="min-w-0 flex-1 gap-y-xxs">
                     <Text className={titleClassName} numberOfLines={2}>

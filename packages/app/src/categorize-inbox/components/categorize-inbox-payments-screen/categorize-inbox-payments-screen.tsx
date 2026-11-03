@@ -7,6 +7,7 @@ import { GroupedSurface } from '../../../@generic/component/grouped-surface/grou
 import { useCategorizeInboxCluster } from '../../hook/use-categorize-inbox-cluster.hook';
 import { groupCategorizeInboxRowsByMonth } from '../../utils/group-categorize-inbox-rows-by-month.util';
 import { CategorizeInboxClusterRow } from '../categorize-inbox-cluster-row/categorize-inbox-cluster-row';
+import { CategorizeInboxNavTitle } from '../categorize-inbox-nav-title/categorize-inbox-nav-title';
 import { CategorizeInboxOptionCard } from '../categorize-inbox-option-card/categorize-inbox-option-card';
 import { CategorizeInboxPaymentsBar } from '../categorize-inbox-payments-bar/categorize-inbox-payments-bar';
 import { CategorizeInboxPaymentsMonth } from '../categorize-inbox-payments-month/categorize-inbox-payments-month';
@@ -38,16 +39,15 @@ export const CategorizeInboxPaymentsScreen = ({ clusterKey }: Props) => {
 
     return (
         <GroupedSurface>
-            <CategorizeInboxScreenChrome title={t`Choose payments`}>
+            <CategorizeInboxScreenChrome title={<CategorizeInboxNavTitle>{t`Choose payments`}</CategorizeInboxNavTitle>}>
                 <CategorizeInboxScreenScroll>
                     <CategorizeInboxPaymentsSummary cluster={cluster} />
+                    <Text className="text-secondary-foreground px-3xl pb-xl text-[13px] leading-[17px]">
+                        <Trans>Unselected payments stay in your inbox.</Trans>
+                    </Text>
 
                     <CategorizeInboxPaymentsSelectAll cluster={cluster} />
                     <CategorizeInboxOptionCard>{paymentRows}</CategorizeInboxOptionCard>
-
-                    <Text className="text-secondary-foreground px-3xl pt-md text-[13px]">
-                        <Trans>Unchecked payments stay in your inbox.</Trans>
-                    </Text>
                 </CategorizeInboxScreenScroll>
 
                 <CategorizeInboxPaymentsBar cluster={cluster} />

@@ -1,6 +1,7 @@
 import { CategorizeInboxSectionEnum } from '@budgie/categorization';
 import { AnimatedLegendList } from '@legendapp/list/reanimated';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { plural } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 import { useResolveClassNames } from 'uniwind';
 
@@ -10,7 +11,6 @@ import { useCategorizeInboxContext } from '../../context/categorize-inbox.contex
 import { isCategorizeInboxCluster } from '../../type-guard/is-categorize-inbox-cluster.type-guard';
 import { getCategorizeInboxRowPosition } from '../../utils/get-categorize-inbox-row-position.util';
 import { CategorizeInboxGroupRow } from '../categorize-inbox-group-row/categorize-inbox-group-row';
-import { CategorizeInboxScreenTitle } from '../categorize-inbox-screen-title/categorize-inbox-screen-title';
 
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 import type { LegendListRenderItemProps } from '@legendapp/list/react-native';
@@ -42,14 +42,11 @@ export const CategorizeInboxOneOffsList = () => {
         return <CategorizeInboxGroupRow cluster={item} position={position} />;
     };
 
+    const groupsText = t({ message: plural(groupCount, { one: '# group', other: '# groups' }) });
+    const paymentsText = t({ message: plural(paymentCount, { one: '# payment', other: '# payments' }) });
+    const subtitleText = groupCount === paymentCount ? paymentsText : `${groupsText} · ${paymentsText}`;
     const header = (
-        <CategorizeInboxScreenTitle title={t`Smaller groups`}>
-            <Text className="text-secondary-foreground text-sm">
-                <Trans>
-                    {groupCount} groups, {paymentCount} payments
-                </Trans>
-            </Text>
-        </CategorizeInboxScreenTitle>
+        <Text className="text-secondary-foreground pb-3xl text-center text-[15px] leading-[20px] tabular-nums">{subtitleText}</Text>
     );
 
     return (

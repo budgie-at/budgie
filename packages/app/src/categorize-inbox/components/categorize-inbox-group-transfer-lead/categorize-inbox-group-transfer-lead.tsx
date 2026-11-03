@@ -38,7 +38,6 @@ export const CategorizeInboxGroupTransferLead = ({ cluster }: Props) => {
                 icon={UserIconNameEnum.ArrowLeftRight}
                 title={title}
                 subtitle={subtitle}
-                variant="neutral"
             />
         );
     }
@@ -48,7 +47,6 @@ export const CategorizeInboxGroupTransferLead = ({ cluster }: Props) => {
             icon={UserIconNameEnum.ArrowLeftRight}
             title={title}
             subtitle={subtitle}
-            variant="neutral"
             accessory={<CategorizeInboxOptionChevron />}
             onPress={handlePress}
         />

@@ -1,5 +1,4 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
-import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -13,16 +12,24 @@ import { CategorizeInboxSelectionEnum } from '../../enum/categorize-inbox-select
 import { useCategorizeInboxAmountLabel } from '../../hook/use-categorize-inbox-amount-label.hook';
 import { getCategorizeInboxDefaultAmount } from '../../utils/get-categorize-inbox-default-amount.util';
 import { getCategorizeInboxSelection } from '../../utils/get-categorize-inbox-selection.util';
+import { CategorizeInboxPartialSelectionIndicator } from '../categorize-inbox-partial-selection-indicator/categorize-inbox-partial-selection-indicator';
+import { CategorizeInboxSelectionIndicator } from '../categorize-inbox-selection-indicator/categorize-inbox-selection-indicator';
 
 import { CategorizeInboxPaymentsMonthHeaderSelector } from './categorize-inbox-payments-month-header.selector';
 
 import type { CategorizeInboxMonthGroupInterface } from '../../interface/categorize-inbox-month-group.interface';
+import type { ReactElement } from 'react';
+import type { AccessibilityState } from 'react-native';
 
 interface Props {
     readonly group: CategorizeInboxMonthGroupInterface;
 }
 
-const HIT_SLOP = { top: 10, bottom: 10, left: 8, right: 8 };
+const CHECKED_STATES: Record<CategorizeInboxSelectionEnum, AccessibilityState['checked']> = {
+    [CategorizeInboxSelectionEnum.INCLUDED]: true,
+    [CategorizeInboxSelectionEnum.EXCLUDED]: false,
+    [CategorizeInboxSelectionEnum.PARTIAL]: 'mixed'
+};
 
 export const CategorizeInboxPaymentsMonthHeader = ({ group }: Props) => {
     const { formatFullMonthAndYear } = useFormatDate();
@@ -32,8 +39,15 @@ export const CategorizeInboxPaymentsMonthHeader = ({ group }: Props) => {
 
     const total = getCategorizeInboxDefaultAmount(group.rows, defaultInstrument);
     const totalLabel = isDefined(total) ? amountLabel(total, defaultInstrument.symbol) : '';
-    const isAllIncluded = getCategorizeInboxSelection(group.rows, excludedTransactionIds) === CategorizeInboxSelectionEnum.INCLUDED;
-    const toggleLabel = isAllIncluded ? <Trans>Deselect all</Trans> : <Trans>Select all</Trans>;
+    const monthLabel = formatFullMonthAndYear(group.month);
+    const selection = getCategorizeInboxSelection(group.rows, excludedTransactionIds);
+    const isAllIncluded = selection === CategorizeInboxSelectionEnum.INCLUDED;
+    const indicators: Record<CategorizeInboxSelectionEnum, ReactElement> = {
+        [CategorizeInboxSelectionEnum.INCLUDED]: <CategorizeInboxSelectionIndicator isSelected />,
+        [CategorizeInboxSelectionEnum.EXCLUDED]: <CategorizeInboxSelectionIndicator isSelected={false} />,
+        [CategorizeInboxSelectionEnum.PARTIAL]: <CategorizeInboxPartialSelectionIndicator />
+    };
+    const accessibilityState = { checked: CHECKED_STATES[selection] };
 
     const handleTogglePress = (): void =>
         void setExcluded(
@@ -41,28 +55,23 @@ export const CategorizeInboxPaymentsMonthHeader = ({ group }: Props) => {
             isAllIncluded
         );
 
-    const toggle =
-        group.rows.length > 1 ? (
-            <HapticPressable
-                onPress={handleTogglePress}
-                accessibilityRole="button"
-                hitSlop={HIT_SLOP}
-                {...testID(CategorizeInboxPaymentsMonthHeaderSelector.Toggle, group.month.getTime())}
-            >
-                <Text className="text-primary text-[15px]">{toggleLabel}</Text>
-            </HapticPressable>
-        ) : null;
-
     return (
-        <View className="min-h-[44px] flex-row items-center gap-x-xl px-3xl pb-xs pt-xl">
+        <HapticPressable
+            onPress={handleTogglePress}
+            className="min-h-[44px] flex-row items-center gap-x-xl px-3xl pb-xs pt-xl active:opacity-70"
+            accessibilityRole="checkbox"
+            accessibilityState={accessibilityState}
+            accessibilityLabel={monthLabel}
+            {...testID(CategorizeInboxPaymentsMonthHeaderSelector.Toggle, group.month.getTime())}
+        >
             <View className="absolute top-0 right-0 left-0 h-hairline bg-surface-separator" pointerEvents="none" />
-            <Text className="text-primary min-w-0 flex-1 text-[15px] font-semibold" numberOfLines={1} accessibilityRole="header">
-                {formatFullMonthAndYear(group.month)}
+            <View className="w-[36px] items-center">{indicators[selection]}</View>
+            <Text className="text-primary min-w-0 flex-1 text-[15px] font-semibold" numberOfLines={1}>
+                {monthLabel}
             </Text>
-            {toggle}
             <Text className="text-secondary-foreground shrink-0 text-[15px] tabular-nums" numberOfLines={1}>
                 {totalLabel}
             </Text>
-        </View>
+        </HapticPressable>
     );
 };

@@ -12,8 +12,7 @@ import { Trans } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { NotificationFeedbackType } from 'expo-haptics';
 import { useState } from 'react';
-import { Text, View, useWindowDimensions } from 'react-native';
-import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
+import { ScrollView, Text, View, useWindowDimensions } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -47,7 +46,6 @@ import { SplitEntriesModalContentSelector } from './split-entries-modal-content.
 
 const SHEET_MAX_HEIGHT_RATIO = 0.7;
 const SHEET_CHROME_HEIGHT = 160;
-const keyboardOffset = { closed: 0, opened: 8 };
 const CONTENT_CONTAINER_STYLE = { paddingHorizontal: 16, paddingBottom: 12 };
 
 interface Props {
@@ -171,11 +169,10 @@ export const SplitEntriesModalContent = (props: Props) => {
         <View className="bg-sheet-surface">
             <SheetTitle title={t`Split`} />
 
-            <KeyboardAwareScrollView
+            <ScrollView
                 contentContainerStyle={CONTENT_CONTAINER_STYLE}
                 keyboardShouldPersistTaps="handled"
-                bottomOffset={72}
-                mode="layout"
+                automaticallyAdjustKeyboardInsets
                 style={scrollStyle}
             >
                 <GroupedListSection>
@@ -214,18 +211,16 @@ export const SplitEntriesModalContent = (props: Props) => {
                         </GroupedListSection>
                     </View>
                 ) : null}
-            </KeyboardAwareScrollView>
+            </ScrollView>
 
-            <KeyboardStickyView offset={keyboardOffset}>
-                <View className="bg-sheet-surface px-xl pt-3xl pb-safe-or-[16px] ios:pb-0">
-                    <PillButton
-                        label={t`Done`}
-                        isDisabled={!canConfirm}
-                        onPress={handleConfirm}
-                        testID={SplitEntriesModalContentSelector.ConfirmButton}
-                    />
-                </View>
-            </KeyboardStickyView>
+            <View className="bg-sheet-surface px-xl pt-3xl pb-safe-or-[16px] ios:pb-0">
+                <PillButton
+                    label={t`Done`}
+                    isDisabled={!canConfirm}
+                    onPress={handleConfirm}
+                    testID={SplitEntriesModalContentSelector.ConfirmButton}
+                />
+            </View>
         </View>
     );
 };
