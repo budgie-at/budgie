@@ -3,7 +3,7 @@ import { Text, View, useWindowDimensions } from 'react-native';
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { cn } from '../../../@generic/utils/cn.util';
-import { TRANSACTION_INFO_ROW_MAX_FONT_SCALE } from '../../constant/transaction-info-row-max-font-scale.constant';
+import { TRANSACTION_INFO_MAX_FONT_SCALE } from '../../constant/transaction-info-max-font-scale.constant';
 
 interface Props {
     readonly accessibilityValue: string;
@@ -32,7 +32,7 @@ export const TransactionInfoSimilarBar = ({ accessibilityValue, height, label, v
         >
             {isNotEmptyString(value) ? (
                 <Text
-                    maxFontSizeMultiplier={TRANSACTION_INFO_ROW_MAX_FONT_SCALE}
+                    maxFontSizeMultiplier={TRANSACTION_INFO_MAX_FONT_SCALE}
                     className="text-[13px] leading-[18px] text-primary font-medium tabular-nums"
                     numberOfLines={1}
                 >
@@ -44,7 +44,7 @@ export const TransactionInfoSimilarBar = ({ accessibilityValue, height, label, v
                 <View className="h-px w-full bg-surface-separator" />
             </View>
             <Text
-                maxFontSizeMultiplier={TRANSACTION_INFO_ROW_MAX_FONT_SCALE}
+                maxFontSizeMultiplier={TRANSACTION_INFO_MAX_FONT_SCALE}
                 className="text-[12px] leading-[15px] font-medium text-transaction-detail-secondary text-center"
             >
                 {label}

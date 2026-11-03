@@ -6,7 +6,7 @@ import { router } from 'expo-router';
 import { isDefined } from '@rnw-community/shared';
 
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
-import { useTransactionActionsMenu } from '../../context/transaction-actions-menu.context';
+import { useActionsMenuClose } from '../../../@generic/context/actions-menu.context';
 import { TransactionListContextMenuSelector } from '../transaction-list-context-menu/transaction-list-context-menu.selector';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
@@ -17,7 +17,7 @@ interface Props {
 
 export const TransactionListStartDepositMenuItem = ({ transaction }: Props) => {
     const { t } = useLingui();
-    const closeMenu = useTransactionActionsMenu();
+    const closeMenu = useActionsMenuClose();
 
     const isVisible =
         !isDefined(transaction.consolidationType) &&

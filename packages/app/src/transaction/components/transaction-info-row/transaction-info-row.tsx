@@ -7,7 +7,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { cn } from '../../../@generic/utils/cn.util';
-import { TRANSACTION_INFO_ROW_MAX_FONT_SCALE } from '../../constant/transaction-info-row-max-font-scale.constant';
+import { TRANSACTION_INFO_MAX_FONT_SCALE } from '../../constant/transaction-info-max-font-scale.constant';
 import { TRANSACTION_INFO_STACKED_FONT_SCALE } from '../../constant/transaction-info-stacked-font-scale.constant';
 
 import type { UserIconType } from '@budgie/contracts';
@@ -71,7 +71,7 @@ export const TransactionInfoRow = (props: Props) => {
                 <View className={textContentClassName}>
                     {isNotEmptyString(label) ? (
                         <Text
-                            maxFontSizeMultiplier={TRANSACTION_INFO_ROW_MAX_FONT_SCALE}
+                            maxFontSizeMultiplier={TRANSACTION_INFO_MAX_FONT_SCALE}
                             className="text-[13px] leading-[18px] text-transaction-detail-secondary"
                         >
                             {label}
@@ -79,7 +79,7 @@ export const TransactionInfoRow = (props: Props) => {
                     ) : null}
                     {isNotEmptyString(value) ? (
                         <Text
-                            maxFontSizeMultiplier={TRANSACTION_INFO_ROW_MAX_FONT_SCALE}
+                            maxFontSizeMultiplier={TRANSACTION_INFO_MAX_FONT_SCALE}
                             className={cn('text-[17px] leading-[22px] text-primary font-medium', valueClassName)}
                             selectable
                         >
@@ -88,7 +88,7 @@ export const TransactionInfoRow = (props: Props) => {
                     ) : null}
                     {isNotEmptyString(description) ? (
                         <Text
-                            maxFontSizeMultiplier={TRANSACTION_INFO_ROW_MAX_FONT_SCALE}
+                            maxFontSizeMultiplier={TRANSACTION_INFO_MAX_FONT_SCALE}
                             className="text-[13px] leading-[18px] text-transaction-detail-secondary"
                             selectable
                         >
@@ -99,7 +99,7 @@ export const TransactionInfoRow = (props: Props) => {
 
                 {isNotEmptyString(trailing) ? (
                     <Text
-                        maxFontSizeMultiplier={TRANSACTION_INFO_ROW_MAX_FONT_SCALE}
+                        maxFontSizeMultiplier={TRANSACTION_INFO_MAX_FONT_SCALE}
                         className="shrink-0 text-[17px] leading-[22px] text-primary font-medium text-right tabular-nums"
                         selectable
                     >

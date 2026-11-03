@@ -3,7 +3,7 @@ import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-na
 
 import { useScreenChromeHeaderMetrics, useScreenChromeScrollY } from '@rnw-community/react-native-screen-chrome';
 
-import { TRANSACTION_INFO_AMOUNT_MAX_FONT_SCALE } from '../../constant/transaction-info-amount-max-font-scale.constant';
+import { TRANSACTION_INFO_MAX_FONT_SCALE } from '../../constant/transaction-info-max-font-scale.constant';
 
 const Z_INDEX_STYLE = { zIndex: 2 };
 const FADE_HEIGHT = 20;
@@ -14,7 +14,7 @@ export const TransactionInfoNavBand = () => {
     const { fontScale } = useWindowDimensions();
     const visibilityStyle = useAnimatedStyle(() => ({ opacity: interpolate(scrollY.get(), [0, 1], [0, 1], Extrapolation.CLAMP) }));
     const bandStyle = [Z_INDEX_STYLE, { height }, visibilityStyle];
-    const fadeStyle = { height: FADE_HEIGHT * Math.min(fontScale, TRANSACTION_INFO_AMOUNT_MAX_FONT_SCALE) };
+    const fadeStyle = { height: FADE_HEIGHT * Math.min(fontScale, TRANSACTION_INFO_MAX_FONT_SCALE) };
 
     return (
         <Animated.View

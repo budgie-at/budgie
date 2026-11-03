@@ -14,7 +14,7 @@ export const ExpenseTransactionInfoPage = ({ transaction }: UpdateTransactionFor
         <SimpleTransactionInfoPage
             transaction={transaction}
             transactionType={TransactionTypeEnum.EXPENSE}
-            onOpenRefundSources={handleOpenRefundSources}
+            onOpenSources={handleOpenRefundSources}
         />
     );
 };

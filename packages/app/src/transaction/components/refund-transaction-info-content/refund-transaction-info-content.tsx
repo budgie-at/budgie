@@ -18,7 +18,6 @@ import { RefundTransactionInfoHero } from '../refund-transaction-info-hero/refun
 import { TransactionInfoDeleteRow } from '../transaction-info-delete-row/transaction-info-delete-row';
 import { TransactionInfoGroup } from '../transaction-info-group/transaction-info-group';
 import { TransactionInfoHeader } from '../transaction-info-header/transaction-info-header';
-import { TransactionInfoNavBand } from '../transaction-info-nav-band/transaction-info-nav-band';
 import { TransactionInfoNoteGroup } from '../transaction-info-note-group/transaction-info-note-group';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionInfoRow } from '../transaction-info-row/transaction-info-row';
@@ -85,7 +84,6 @@ export const RefundTransactionInfoContent = ({ transaction, parentTransaction }:
                     </View>
                 </View>
             </TransactionInfoScrollView>
-            <TransactionInfoNavBand />
             <TransactionInfoHeader
                 transaction={transaction}
                 editHref={null}

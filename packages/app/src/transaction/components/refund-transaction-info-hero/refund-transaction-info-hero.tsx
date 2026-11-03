@@ -1,8 +1,7 @@
 import { AmountField, AmountFieldText } from '@budgie/amount-input';
 import { Text, View, useWindowDimensions } from 'react-native';
 
-import { TRANSACTION_INFO_AMOUNT_MAX_FONT_SCALE } from '../../constant/transaction-info-amount-max-font-scale.constant';
-import { TRANSACTION_INFO_HERO_MAX_FONT_SCALE } from '../../constant/transaction-info-hero-max-font-scale.constant';
+import { TRANSACTION_INFO_MAX_FONT_SCALE } from '../../constant/transaction-info-max-font-scale.constant';
 import { TRANSACTION_INFO_STACKED_FONT_SCALE } from '../../constant/transaction-info-stacked-font-scale.constant';
 import { TransactionInfoHeroDate } from '../transaction-info-hero-date/transaction-info-hero-date';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
@@ -29,7 +28,7 @@ export const RefundTransactionInfoHero = ({ amount, title, operatedAt, onAmountL
                 <AmountField fontSize={amountFontSize} className="self-stretch">
                     <AmountFieldText
                         adjustsFontSizeToFit
-                        maxFontSizeMultiplier={TRANSACTION_INFO_AMOUNT_MAX_FONT_SCALE}
+                        maxFontSizeMultiplier={TRANSACTION_INFO_MAX_FONT_SCALE}
                         minimumFontScale={0.6}
                         testID={TransactionInfoPageSelector.Amount}
                         className="leading-[48px] font-semibold tracking-[-1px] text-positive-strong text-center"
@@ -41,7 +40,7 @@ export const RefundTransactionInfoHero = ({ amount, title, operatedAt, onAmountL
             </View>
             <Text
                 onLayout={onTitleLayout}
-                maxFontSizeMultiplier={TRANSACTION_INFO_HERO_MAX_FONT_SCALE}
+                maxFontSizeMultiplier={TRANSACTION_INFO_MAX_FONT_SCALE}
                 className="mt-xs text-[20px] leading-[25px] text-primary font-semibold text-center"
                 selectable
             >

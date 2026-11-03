@@ -1,9 +1,26 @@
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 
-import { APP_TOAST_CONFIG } from '../../constant/app-toast-config.constant';
+import { ReceiptScanToast } from '../../../receipt/components/receipt-scan-toast/receipt-scan-toast';
+import { RECEIPT_SCAN_TOAST_TYPE } from '../../../receipt/constant/receipt-scan-toast-type.constant';
+import { ACTION_TOAST_TYPE } from '../../constant/action-toast-type.constant';
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../constant/floating-tab-bar.constant';
+import { AppToast } from '../app-toast/app-toast';
 import { SEARCH_LIST_BOTTOM_CLEARANCE } from '../searchable-page/searchable-page.constant';
+
+import type { ReceiptScanToastStatusEnum } from '../../../receipt/enum/receipt-scan-toast-status.enum';
+import type { ToastActionInterface } from '../../interface/toast-action.interface';
+import type { ToastConfig, ToastConfigParams } from 'react-native-toast-message';
+
+const renderAppToast = (params: ToastConfigParams<unknown>) => <AppToast {...params} />;
+
+const APP_TOAST_CONFIG: ToastConfig = {
+    success: renderAppToast,
+    error: renderAppToast,
+    info: renderAppToast,
+    [ACTION_TOAST_TYPE]: (params: ToastConfigParams<ToastActionInterface>) => <AppToast {...params} type="success" action={params.props} />,
+    [RECEIPT_SCAN_TOAST_TYPE]: (params: ToastConfigParams<ReceiptScanToastStatusEnum>) => <ReceiptScanToast {...params} />
+};
 
 const TOAST_TOP_GAP = 8;
 

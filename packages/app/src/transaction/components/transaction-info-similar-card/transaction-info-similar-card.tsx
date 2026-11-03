@@ -1,6 +1,6 @@
 import { convertFromMicroUnits } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { ScrollView, Text, View, useWindowDimensions } from 'react-native';
 
@@ -10,18 +10,17 @@ import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-am
 import { cn } from '../../../@generic/utils/cn.util';
 import { THOUSAND } from '../../../i18n/constant/compact-thresholds.constant';
 import { useFormatCompactDigits } from '../../../i18n/hook/use-format-compact-digits.hook';
-import { TRANSACTION_INFO_ROW_MAX_FONT_SCALE } from '../../constant/transaction-info-row-max-font-scale.constant';
+import { TRANSACTION_INFO_MAX_FONT_SCALE } from '../../constant/transaction-info-max-font-scale.constant';
 import { TRANSACTION_INFO_STACKED_FONT_SCALE } from '../../constant/transaction-info-stacked-font-scale.constant';
+import { useTransactionInfoSimilarStatsQuery } from '../../query/use-transaction-info-similar-stats.query';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionInfoSimilarMetric } from '../transaction-info-similar-metric/transaction-info-similar-metric';
 import { TransactionInfoSimilarMonthBar } from '../transaction-info-similar-month-bar/transaction-info-similar-month-bar';
 
-import type { SimilarTransactionStatsInterface } from '@budgie/contracts';
+import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
 interface Props {
-    readonly stats: SimilarTransactionStatsInterface | null;
-    readonly title: string;
-    readonly isLoading: boolean;
+    readonly transaction: TransactionWithRelationsEntityInterface;
 }
 
 const chartContainerStyle = { flexGrow: 1 };
@@ -36,16 +35,16 @@ const summaryVariants = cva('gap-x-5xl gap-y-xl', {
     }
 });
 
-export const TransactionInfoSimilarCard = ({ stats, title, isLoading }: Props) => {
+export const TransactionInfoSimilarCard = ({ transaction }: Props) => {
     const { t } = useLingui();
+    const { stats, isLoading } = useTransactionInfoSimilarStatsQuery(transaction);
     const { fontScale } = useWindowDimensions();
     const formatDigits = useProtectedAmountLabel();
     const formatCompactDigits = useFormatCompactDigits(THOUSAND);
 
-    const hasStats = isDefined(stats) && stats.count > 1;
     const opacityClassName = isLoading ? 'opacity-60' : 'opacity-100';
 
-    if (!hasStats) {
+    if (!(isDefined(stats) && stats.count > 1)) {
         return null;
     }
 
@@ -70,13 +69,13 @@ export const TransactionInfoSimilarCard = ({ stats, title, isLoading }: Props) =
         >
             <View className="gap-y-xxs">
                 <Text
-                    maxFontSizeMultiplier={TRANSACTION_INFO_ROW_MAX_FONT_SCALE}
+                    maxFontSizeMultiplier={TRANSACTION_INFO_MAX_FONT_SCALE}
                     className="text-[17px] leading-[22px] text-primary font-semibold"
                 >
-                    {title}
+                    <Trans>Similar transactions</Trans>
                 </Text>
                 <Text
-                    maxFontSizeMultiplier={TRANSACTION_INFO_ROW_MAX_FONT_SCALE}
+                    maxFontSizeMultiplier={TRANSACTION_INFO_MAX_FONT_SCALE}
                     className="text-[13px] leading-[18px] text-transaction-detail-secondary"
                 >
                     {description}

@@ -4,7 +4,7 @@ import { useLingui } from '@lingui/react/macro';
 import { isDefined } from '@rnw-community/shared';
 
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
-import { useTransactionActionsMenu } from '../../context/transaction-actions-menu.context';
+import { useActionsMenuClose } from '../../../@generic/context/actions-menu.context';
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
 import { TransactionListContextMenuSelector } from '../transaction-list-context-menu/transaction-list-context-menu.selector';
 
@@ -16,7 +16,7 @@ interface Props {
 
 export const TransactionListRevertMenuItem = ({ transaction }: Props) => {
     const { t } = useLingui();
-    const closeMenu = useTransactionActionsMenu();
+    const closeMenu = useActionsMenuClose();
     const isRefund = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
     const revertConsolidation = useRevertConsolidation(transaction.id, void 0, isRefund);
 

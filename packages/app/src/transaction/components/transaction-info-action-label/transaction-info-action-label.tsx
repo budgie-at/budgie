@@ -2,7 +2,7 @@ import { Text, View, useWindowDimensions } from 'react-native';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { cn } from '../../../@generic/utils/cn.util';
-import { TRANSACTION_INFO_ROW_MAX_FONT_SCALE } from '../../constant/transaction-info-row-max-font-scale.constant';
+import { TRANSACTION_INFO_MAX_FONT_SCALE } from '../../constant/transaction-info-max-font-scale.constant';
 import { TRANSACTION_INFO_STACKED_FONT_SCALE } from '../../constant/transaction-info-stacked-font-scale.constant';
 
 import type { UserIconType } from '@budgie/contracts';
@@ -30,7 +30,7 @@ export const TransactionInfoActionLabel = ({ icon, label, colorClassName = 'text
                 </View>
             )}
             <Text
-                maxFontSizeMultiplier={TRANSACTION_INFO_ROW_MAX_FONT_SCALE}
+                maxFontSizeMultiplier={TRANSACTION_INFO_MAX_FONT_SCALE}
                 className={cn('flex-1 text-[17px] leading-[22px]', colorClassName)}
             >
                 {label}

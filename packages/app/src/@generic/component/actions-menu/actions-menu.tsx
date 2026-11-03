@@ -16,6 +16,7 @@ interface Props {
     readonly triggerTestID?: string;
     readonly children: ReactNode;
     readonly hitSlop?: Insets | number;
+    readonly triggerSize?: number;
 }
 
 const DEFAULT_HIT_SLOP = 12;
@@ -27,9 +28,10 @@ export const ActionsMenu = ({
     triggerClassName,
     triggerTestID,
     children,
-    hitSlop = DEFAULT_HIT_SLOP
+    hitSlop = DEFAULT_HIT_SLOP,
+    triggerSize
 }: Props) => {
-    const { anchor, closeMenu, handleCloseComplete, handleToggleMenu, isMenuOpen } = usePopoverMenuAnchor();
+    const { anchor, closeMenu, handleCloseComplete, handleToggleMenu, isMenuOpen } = usePopoverMenuAnchor(triggerSize);
 
     return (
         <ActionsMenuContext value={closeMenu}>

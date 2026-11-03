@@ -1,7 +1,7 @@
 import { useWindowDimensions } from 'react-native';
 import { useDerivedValue, useSharedValue } from 'react-native-reanimated';
 
-import { TRANSACTION_INFO_HERO_MAX_FONT_SCALE } from '../constant/transaction-info-hero-max-font-scale.constant';
+import { TRANSACTION_INFO_MAX_FONT_SCALE } from '../constant/transaction-info-max-font-scale.constant';
 
 import type { TransactionInfoHandoffInterface } from '../interface/transaction-info-handoff.interface';
 import type { LayoutChangeEvent } from 'react-native';
@@ -14,7 +14,7 @@ export const useTransactionInfoHeroHandoff = (animated: boolean, maxScroll: numb
     const { fontScale } = useWindowDimensions();
     const amountLine = useSharedValue({ top: Number.MAX_SAFE_INTEGER, height: 0 });
     const titleBottom = useSharedValue(Number.MAX_SAFE_INTEGER);
-    const titleLineHeight = TITLE_LINE_HEIGHT * Math.min(fontScale, TRANSACTION_INFO_HERO_MAX_FONT_SCALE);
+    const titleLineHeight = TITLE_LINE_HEIGHT * Math.min(fontScale, TRANSACTION_INFO_MAX_FONT_SCALE);
     const getRevealRange = (lineTop: number, lineHeight: number): readonly [number, number] => {
         'worklet';
 

@@ -2,7 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
-import { useTransactionActionsMenu } from '../../context/transaction-actions-menu.context';
+import { useActionsMenuClose } from '../../../@generic/context/actions-menu.context';
 import { useCreateTransactionRule } from '../../hook/use-create-transaction-rule.hook';
 import { TransactionActionsMenuSelector } from '../transaction-actions-menu/transaction-actions-menu.selector';
 
@@ -13,7 +13,7 @@ interface Props {
 }
 
 export const CreateRuleMenuItem = ({ transaction }: Props) => {
-    const closeMenu = useTransactionActionsMenu();
+    const closeMenu = useActionsMenuClose();
     const createRule = useCreateTransactionRule(transaction);
     const handleCreateRule = () => void closeMenu(createRule);
 

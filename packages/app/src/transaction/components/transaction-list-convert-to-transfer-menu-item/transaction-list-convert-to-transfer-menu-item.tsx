@@ -5,8 +5,8 @@ import { useLingui } from '@lingui/react/macro';
 import { isDefined } from '@rnw-community/shared';
 
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
+import { useActionsMenuClose } from '../../../@generic/context/actions-menu.context';
 import { useConvertToTransferModal } from '../../context/convert-to-transfer-modal.context';
-import { useTransactionActionsMenu } from '../../context/transaction-actions-menu.context';
 import { TransactionListContextMenuSelector } from '../transaction-list-context-menu/transaction-list-context-menu.selector';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
@@ -17,7 +17,7 @@ interface Props {
 
 export const TransactionListConvertToTransferMenuItem = ({ transaction }: Props) => {
     const { t } = useLingui();
-    const closeMenu = useTransactionActionsMenu();
+    const closeMenu = useActionsMenuClose();
     const [openConvertToTransfer] = useConvertToTransferModal();
 
     const isConsolidated = isDefined(transaction.consolidationType);

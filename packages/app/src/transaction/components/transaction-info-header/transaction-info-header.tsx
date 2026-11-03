@@ -6,6 +6,7 @@ import { ScreenChromeHeader } from '@rnw-community/react-native-screen-chrome';
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
 import { TRANSACTION_INFO_BAR_BUTTON_MAX_FONT_SCALE } from '../../constant/transaction-info-bar-button-max-font-scale.constant';
 import { TransactionInfoEditButton } from '../transaction-info-edit-button/transaction-info-edit-button';
+import { TransactionInfoNavBand } from '../transaction-info-nav-band/transaction-info-nav-band';
 import { TransactionInfoNavTitle } from '../transaction-info-nav-title/transaction-info-nav-title';
 
 import type { TransactionInfoHandoffInterface } from '../../interface/transaction-info-handoff.interface';
@@ -36,6 +37,7 @@ export const TransactionInfoHeader = (props: Props) => {
 
     return (
         <>
+            <TransactionInfoNavBand />
             <TransactionInfoNavTitle
                 transaction={transaction}
                 handoff={handoff}

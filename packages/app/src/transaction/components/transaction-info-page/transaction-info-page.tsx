@@ -1,13 +1,10 @@
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { ScreenChromeThemeProvider } from '../../../@generic/provider/screen-chrome-theme.provider';
-import { TransactionInfoPageContent } from '../transaction-info-page-content/transaction-info-page-content';
 
-import type { TransactionInfoPagePropsInterface } from '../../interface/transaction-info-page-props.interface';
+import type { PropsWithChildren } from 'react';
 
-export const TransactionInfoPage = (props: TransactionInfoPagePropsInterface) => (
+export const TransactionInfoPage = ({ children }: PropsWithChildren) => (
     <GroupedSurface>
-        <ScreenChromeThemeProvider syncNativeScrollOffset>
-            <TransactionInfoPageContent {...props} />
-        </ScreenChromeThemeProvider>
+        <ScreenChromeThemeProvider syncNativeScrollOffset>{children}</ScreenChromeThemeProvider>
     </GroupedSurface>
 );

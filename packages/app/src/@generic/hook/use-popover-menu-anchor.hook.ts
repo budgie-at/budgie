@@ -8,7 +8,7 @@ import type { GestureResponderEvent, View } from 'react-native';
 
 const TRIGGER_SIZE = 40;
 
-export const usePopoverMenuAnchor = () => {
+export const usePopoverMenuAnchor = (triggerSize = TRIGGER_SIZE) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [anchor, setAnchor] = useState<PopoverMenuAnchor>();
     const pendingActionRef = useRef<EmptyFn | null>(null);
@@ -52,7 +52,7 @@ export const usePopoverMenuAnchor = () => {
         const hasValidAnchor = Number.isFinite(pageX) && Number.isFinite(pageY) && isPositiveNumber(pageX) && isPositiveNumber(pageY);
 
         if (hasValidAnchor) {
-            setAnchor({ x: pageX - TRIGGER_SIZE / 2, y: pageY - TRIGGER_SIZE / 2, width: TRIGGER_SIZE, height: TRIGGER_SIZE });
+            setAnchor({ x: pageX - triggerSize / 2, y: pageY - triggerSize / 2, width: triggerSize, height: triggerSize });
         } else {
             setAnchor(void 0);
         }

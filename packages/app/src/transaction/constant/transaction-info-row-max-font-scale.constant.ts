@@ -1,1 +1,0 @@
-export const TRANSACTION_INFO_ROW_MAX_FONT_SCALE = 2;

@@ -5,7 +5,7 @@ import { useRouter } from 'expo-router';
 import { isDefined } from '@rnw-community/shared';
 
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
-import { useTransactionActionsMenu } from '../../context/transaction-actions-menu.context';
+import { useActionsMenuClose } from '../../../@generic/context/actions-menu.context';
 import { getTransactionEditHref } from '../../utils/get-transaction-edit-href.util';
 import { TransactionListContextMenuSelector } from '../transaction-list-context-menu/transaction-list-context-menu.selector';
 
@@ -18,7 +18,7 @@ interface Props {
 export const TransactionListEditMenuItem = ({ transaction }: Props) => {
     const { t } = useLingui();
     const router = useRouter();
-    const closeMenu = useTransactionActionsMenu();
+    const closeMenu = useActionsMenuClose();
 
     const editHref = getTransactionEditHref(transaction);
 

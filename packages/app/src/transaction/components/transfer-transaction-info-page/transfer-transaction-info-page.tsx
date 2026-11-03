@@ -9,6 +9,7 @@ import { useDeleteTransaction } from '../../hook/use-delete-transaction.hook';
 import { useTransferTransactionActions } from '../../hook/use-transfer-transaction-actions.hook';
 import { getTransactionEditHref } from '../../utils/get-transaction-edit-href.util';
 import { getTransactionFeeEditHref } from '../../utils/get-transaction-fee-edit-href.util';
+import { TransactionInfoPageContent } from '../transaction-info-page-content/transaction-info-page-content';
 import { TransactionInfoPage } from '../transaction-info-page/transaction-info-page';
 
 import type { UpdateTransactionFormPropsInterface } from '../../interface/update-transaction-form-props.interface';
@@ -25,17 +26,18 @@ export const TransferTransactionInfoPage = ({ transaction }: UpdateTransactionFo
     const handleConsolidationPress = () => {
         openConsolidationSource({ transactionId });
     };
-    const consolidationProps = isConsolidated ? { onOpenConsolidationSources: handleConsolidationPress } : {};
     const actions = useTransferTransactionActions(transaction, handleOpenFee);
 
     return (
-        <TransactionInfoPage
-            transaction={transaction}
-            onDelete={handleDelete}
-            onFeePress={handleOpenFee}
-            editHref={getTransactionEditHref(transaction)}
-            actionItems={actions.items}
-            {...consolidationProps}
-        />
+        <TransactionInfoPage>
+            <TransactionInfoPageContent
+                transaction={transaction}
+                onDelete={handleDelete}
+                onFeePress={handleOpenFee}
+                editHref={getTransactionEditHref(transaction)}
+                actionItems={actions.items}
+                {...(isConsolidated && { onOpenSources: handleConsolidationPress })}
+            />
+        </TransactionInfoPage>
     );
 };

@@ -2,7 +2,7 @@ import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { TRANSACTION_INFO_ROW_MAX_FONT_SCALE } from '../../constant/transaction-info-row-max-font-scale.constant';
+import { TRANSACTION_INFO_MAX_FONT_SCALE } from '../../constant/transaction-info-max-font-scale.constant';
 
 import type { ReactNode } from 'react';
 
@@ -20,7 +20,7 @@ export const TransactionInfoGroup = ({ children, footnote }: Props) => (
         </View>
         {isNotEmptyString(footnote) ? (
             <Text
-                maxFontSizeMultiplier={TRANSACTION_INFO_ROW_MAX_FONT_SCALE}
+                maxFontSizeMultiplier={TRANSACTION_INFO_MAX_FONT_SCALE}
                 className="px-3xl text-[13px] leading-[18px] text-transaction-detail-secondary"
             >
                 {footnote}
