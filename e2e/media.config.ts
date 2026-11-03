@@ -1,4 +1,4 @@
-import { iosTarget, runOptions } from './e2e.config.ts';
+import { iosTarget, runOptions } from './support/config.ts';
 
 import type { E2EConfig } from 'e2e';
 
@@ -12,9 +12,8 @@ import type { E2EConfig } from 'e2e';
 process.env.SIMLOCK_DEVICE = process.env.SCREENSHOT_DEVICE ?? process.env.SIMLOCK_DEVICE ?? 'iPhone 17 Pro';
 
 export default {
-    projectId: 'budgie',
-    tests: 'media/**/*.e2e.ts',
-    targets: [iosTarget(process.env.SIMLOCK_DEVICE)],
     ...runOptions,
+    tests: 'media/**/*.e2e.ts',
+    targets: [iosTarget(process.env.SIMLOCK_DEVICE, 'e2e-media')],
     video: 'off'
 } satisfies E2EConfig;

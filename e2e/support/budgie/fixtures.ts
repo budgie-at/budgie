@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 import { drop, exec, mustDrop, mustExec, untar, writeFile, type SimlockApi } from '../simlock/exec.ts';
 
-// The same override e2e.config.ts reads (not imported: loading the config sets E2E_SESSION).
+// E2E_APP_ID: the bundle id mobile-ci's e2e job installs; support/config.ts installs the app under it.
 export const BUNDLE_ID = process.env.E2E_APP_ID ?? 'com.vitalyiegorov.budgie.e2e';
 
 const APP_TESTS = fileURLToPath(new URL('../../../tests/app-tests/', import.meta.url));
