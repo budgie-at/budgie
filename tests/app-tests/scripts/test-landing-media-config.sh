@@ -58,7 +58,7 @@ for flow_file in "$MEDIA_DIR"/*.flow.yaml; do
         continue
     fi
     ref_name=$(printf '%s' "$referencing" | jq -r '.[0]')
-    grep -qE -- '-[0-9]+$' <<<"$ref_name" && ! grep -qE -- '-clip-[0-9]+$' <<<"$ref_name" &&
+    printf '%s\n' "$ref_name" | grep -qE -- '-[0-9]+$' && ! printf '%s\n' "$ref_name" | grep -qE -- '-clip-[0-9]+$' &&
         ok "$ref_name follows the still <slug>-<n> naming convention" ||
         fail "$ref_name does not match the still <slug>-<n> naming convention"
 done

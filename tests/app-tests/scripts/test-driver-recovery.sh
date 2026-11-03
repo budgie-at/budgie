@@ -23,13 +23,13 @@ must_not_match=(
 )
 
 for sample in "${must_match[@]}"; do
-    if ! grep -Eiq "$MAESTRO_RECOVERABLE_FAILURE_PATTERN" <<<"$sample"; then
+    if ! printf '%s\n' "$sample" | grep -Eiq "$MAESTRO_RECOVERABLE_FAILURE_PATTERN"; then
         echo "FAIL: pattern should match: $sample" >&2
         exit 1
     fi
 done
 for sample in "${must_not_match[@]}"; do
-    if grep -Eiq "$MAESTRO_RECOVERABLE_FAILURE_PATTERN" <<<"$sample"; then
+    if printf '%s\n' "$sample" | grep -Eiq "$MAESTRO_RECOVERABLE_FAILURE_PATTERN"; then
         echo "FAIL: pattern must NOT match plain test failures: $sample" >&2
         exit 1
     fi
