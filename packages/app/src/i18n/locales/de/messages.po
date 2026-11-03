@@ -3156,9 +3156,9 @@ msgstr "Die {downloaded} GB löschen?"
 msgid "Delete this rule?"
 msgstr "Diese Regel löschen?"
 
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
 #: src/transaction/components/transaction-list-delete-menu-item/transaction-list-delete-menu-item.tsx
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Delete Transaction"
 msgstr "Transaktion löschen"
 
@@ -4821,7 +4821,7 @@ msgstr "Monate übrig"
 msgid "Months left beside your balance"
 msgstr "Verbleibende Monate neben deinem Saldo"
 
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "More actions"
 msgstr "Weitere Aktionen"
 
@@ -6708,9 +6708,9 @@ msgstr "Senden {fromCode}"
 msgid "Separate"
 msgstr "Trennen"
 
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
 #: src/transaction/components/transaction-list-revert-menu-item/transaction-list-revert-menu-item.tsx
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Separate Transactions"
 msgstr "Transaktionen trennen"
 
@@ -6852,7 +6852,7 @@ msgstr "Zeigt, wie das berechnet wird"
 msgid "Shows what is missing"
 msgstr "Zeigt, was fehlt"
 
-#: src/transaction/components/transaction-info-page-content/transaction-info-page-content.tsx
+#: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Similar transactions"
 msgstr "Ähnliche Transaktionen"
 

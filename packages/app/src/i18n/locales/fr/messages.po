@@ -3156,9 +3156,9 @@ msgstr "Supprimer les {downloaded} Go téléchargés ?"
 msgid "Delete this rule?"
 msgstr "Supprimer cette règle ?"
 
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
 #: src/transaction/components/transaction-list-delete-menu-item/transaction-list-delete-menu-item.tsx
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Delete Transaction"
 msgstr "Supprimer la transaction"
 
@@ -4821,7 +4821,7 @@ msgstr "mois restants"
 msgid "Months left beside your balance"
 msgstr "Mois restants à côté de votre solde"
 
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "More actions"
 msgstr "Plus d’actions"
 
@@ -6708,9 +6708,9 @@ msgstr "Envoi {fromCode}"
 msgid "Separate"
 msgstr "Séparer"
 
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
 #: src/transaction/components/transaction-list-revert-menu-item/transaction-list-revert-menu-item.tsx
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Separate Transactions"
 msgstr "Séparer les transactions"
 
@@ -6852,7 +6852,7 @@ msgstr "Montre comment c’est calculé"
 msgid "Shows what is missing"
 msgstr "Indique ce qui manque"
 
-#: src/transaction/components/transaction-info-page-content/transaction-info-page-content.tsx
+#: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Similar transactions"
 msgstr "Transactions similaires"
 
