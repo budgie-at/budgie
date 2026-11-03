@@ -9,8 +9,12 @@ export function captureShard(shard: number): void {
     plan().forEach((cell, index) => {
         if (index % SHARDS !== shard) return;
         // A deep link's settle, or the AI build's wait for its on-device model, can be minutes.
-        test(`${cell.scene} ${cell.locale} ${cell.appearance}`, { timeout: 20 * 60_000 + cell.settleSeconds * 1_000 }, async ({ media }) => {
-            await media.capture(cell);
-        });
+        test(
+            `${cell.scene} ${cell.locale} ${cell.appearance}`,
+            { timeout: 20 * 60_000 + cell.settleSeconds * 1_000 },
+            async ({ media }) => {
+                await media.capture(cell);
+            }
+        );
     });
 }
