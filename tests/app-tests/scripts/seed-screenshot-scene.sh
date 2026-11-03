@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# Store-screenshot seed hook for rnw-community/mobile-ci's store-screenshots
-# `seed-command` (direct capture mode).
-#
-# Runs once per `locale x appearance x scene` cell, from the repo root, with
-# the app installed and terminated. It builds the showcase database for that
+# Builds the showcase database of one capture cell. The e2e media capture
+# (e2e/support/media/session.ts) runs it with --dry-run for every
+# `locale x appearance x scene` cell and installs the result on the leased
+# simulator itself; run without --dry-run on a Mac it still installs into a
+# local simulator, as rnw-community/mobile-ci's store-screenshots
+# `seed-command` contract describes. It builds the showcase database for that
 # cell and installs it over the app's live database so the scene's deep link
 # opens straight onto rich, locale-appropriate data.
 #
@@ -16,13 +17,6 @@
 #   DEVICE_SLUG     slugified device name
 #   SIMULATOR_UDID  booted simulator UDID
 #   APP_PATH        packaged .app path
-#   MAESTRO_FLOW_ENV_FILE   when run as an ios-maestro pre-flow-command, the
-#                           file this hook appends `KEY=VALUE` pairs to so
-#                           mobile-ci passes them as `-e KEY=VALUE` to the
-#                           flow's `maestro test` invocation. Unset in direct
-#                           capture mode (capture-store-screenshots.sh already
-#                           passes APP_DATA_CONTAINER itself); guarded so this
-#                           hook stays a no-op there.
 #
 # The database is assembled from fixtures/screenshots:
 #   showcase.db         curated dataset, anchored on a fixed date
@@ -35,8 +29,8 @@
 # else none.
 #
 # Also installs the file fixtures under fixtures/e2e-*.{csv,pdf,xlsx} into the
-# app's Documents/E2EFixtures so a scene's flow can open one straight from a
-# fileUri deep link (see csv-import-2.flow.yaml), the same way
+# app's Documents/E2EFixtures so a scene can open one straight from a
+# fileUri deep link (the csv-import-2 scene), the same way
 # setup-ios-e2e-fixtures.sh seeds them for the numbered E2E suite.
 #
 # Offline mode, used by test-seed-screenshot-scene.sh and for local inspection:
@@ -117,11 +111,7 @@ case "$APPEARANCE" in
         ;;
 esac
 
-if ! command -v sqlite3 >/dev/null 2>&1; then
-    echo "seed-screenshot-scene: sqlite3 was not found in PATH" >&2
-
-    exit 1
-fi
+command -v sqlite3 >/dev/null 2>&1 || PATH="$SCRIPT_DIR/sqlite-fallback:$PATH"
 
 for REQUIRED_FIXTURE_PATH in "$SHOWCASE_DATABASE_PATH" "$SHIFT_DATES_SQL_PATH" "$SCREENSHOTS_DIR/$LOCALE.sql"; do
     if [ ! -f "$REQUIRED_FIXTURE_PATH" ]; then
@@ -328,9 +318,6 @@ install_database() {
 
     install_file_fixtures "$app_data_container"
 
-    if [ -n "${MAESTRO_FLOW_ENV_FILE:-}" ]; then
-        printf 'APP_DATA_CONTAINER=%s\n' "$app_data_container" >> "$MAESTRO_FLOW_ENV_FILE"
-    fi
 }
 
 prepare_database
