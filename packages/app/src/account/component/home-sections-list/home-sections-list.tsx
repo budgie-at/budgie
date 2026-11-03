@@ -7,6 +7,7 @@ import { useScreenChromeScrollProps } from '@rnw-community/react-native-screen-c
 
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@generic/constant/floating-tab-bar.constant';
 import { decimalPlacesAtom, defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
+import { TransactionRowSurface } from '../../../transaction/components/transaction-row-surface/transaction-row-surface';
 import { COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT } from '../../constant/collapsible-net-worth-header-scroll-spacer.constant';
 import { CryptoCurrencyGroupInterface } from '../../interface/crypto-currency-group.interface';
 import { HomeAccountBalanceSummaryInterface } from '../../interface/home-account-balance-summary.interface';
@@ -54,12 +55,9 @@ export const HomeSectionsList = ({ sections, activeAccountCount, isLoading, bott
     const renderSectionHeader = ({ section }: { section: HomeSectionInterface }) => <HomeSectionHeader section={section} />;
 
     const renderItem = ({ item, index, section }: { item: HomeSectionsListItem; index: number; section: HomeSectionInterface }) => (
-        <HomeSectionItem
-            item={item}
-            section={section}
-            balanceSummary={balanceSummary}
-            position={getHomeSectionItemPosition(section.data, index)}
-        />
+        <TransactionRowSurface position={getHomeSectionItemPosition(section.data, index)}>
+            <HomeSectionItem item={item} section={section} balancesByAccountId={balanceSummary.balancesByAccountId} />
+        </TransactionRowSurface>
     );
 
     const keyExtractor = (item: HomeSectionsListItem) => {

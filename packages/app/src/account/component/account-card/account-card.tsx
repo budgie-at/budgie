@@ -1,5 +1,6 @@
 import { AccountTypeEnum, AccountWithSyncEntityInterface } from '@budgie/contracts';
 
+import { isCryptoAccountType } from '../../utils/is-crypto-account-type.util';
 import { AccountCardBase } from '../account-card-base/account-card-base';
 import { CryptoAccountCard } from '../crypto-account-card/crypto-account-card';
 import { SyncAccountCard } from '../sync-account-card/sync-account-card';
@@ -8,15 +9,14 @@ interface Props {
     readonly account: AccountWithSyncEntityInterface;
     readonly balance: number;
     readonly convertedBalance: number | null;
-    readonly type: AccountTypeEnum;
 }
 
-export const AccountCard = ({ account, balance, convertedBalance, type }: Props) => {
-    if (type === AccountTypeEnum.BANK_SYNC) {
+export const AccountCard = ({ account, balance, convertedBalance }: Props) => {
+    if (account.type === AccountTypeEnum.BANK_SYNC) {
         return <SyncAccountCard account={account} balance={balance} convertedBalance={convertedBalance} />;
     }
 
-    if (type === AccountTypeEnum.CRYPTO || type === AccountTypeEnum.CRYPTO_SYNC) {
+    if (isCryptoAccountType(account.type)) {
         return <CryptoAccountCard account={account} balance={balance} convertedBalance={convertedBalance} />;
     }
 

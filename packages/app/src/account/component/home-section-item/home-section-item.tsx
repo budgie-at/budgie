@@ -1,10 +1,8 @@
 import { AccountWithSyncEntityInterface } from '@budgie/contracts';
 
-import { TransactionRowSurface } from '../../../transaction/components/transaction-row-surface/transaction-row-surface';
-import { TransactionListRowPositionEnum } from '../../../transaction/enum/transaction-list-row-position.enum';
 import { AccountRowLeadingContext } from '../../context/account-row-leading.context';
 import { CryptoCurrencyGroupInterface } from '../../interface/crypto-currency-group.interface';
-import { HomeAccountBalanceSummaryInterface } from '../../interface/home-account-balance-summary.interface';
+import { HomeAccountBalanceInterface } from '../../interface/home-account-balance.interface';
 import { HomeSectionInterface } from '../../interface/home-section.interface';
 import { InstitutionGroupInterface } from '../../interface/institution-group.interface';
 import { isDebtSection } from '../../type-guard/is-debt-section.type-guard';
@@ -18,58 +16,39 @@ import { InstitutionRow } from '../institution-row/institution-row';
 interface Props {
     readonly item: CryptoCurrencyGroupInterface | InstitutionGroupInterface | AccountWithSyncEntityInterface;
     readonly section: HomeSectionInterface;
-    readonly balanceSummary: HomeAccountBalanceSummaryInterface;
-    readonly position: TransactionListRowPositionEnum;
+    readonly balancesByAccountId: ReadonlyMap<number, HomeAccountBalanceInterface>;
 }
 
-export const HomeSectionItem = ({ item, section, balanceSummary, position }: Props) => {
-    const { balancesByAccountId } = balanceSummary;
-
+export const HomeSectionItem = ({ item, section, balancesByAccountId }: Props) => {
     if (isInstitutionGroup(item) && item.accounts.length === 1) {
         const [account] = item.accounts;
 
         return (
-            <TransactionRowSurface position={position}>
-                <AccountRowLeadingContext value={<InstitutionMark provider={item.provider} title={account.title} />}>
-                    <AccountListItem account={account} type={account.type} balancesByAccountId={balancesByAccountId} />
-                </AccountRowLeadingContext>
-            </TransactionRowSurface>
+            <AccountRowLeadingContext value={<InstitutionMark provider={item.provider} title={account.title} />}>
+                <AccountListItem account={account} balancesByAccountId={balancesByAccountId} />
+            </AccountRowLeadingContext>
         );
     }
 
     if (isInstitutionGroup(item)) {
-        return (
-            <TransactionRowSurface position={position}>
-                <InstitutionRow institution={item} />
-            </TransactionRowSurface>
-        );
+        return <InstitutionRow institution={item} />;
     }
 
     if ('accounts' in item) {
         const balance = item.accounts.reduce((total, account) => total + (balancesByAccountId.get(account.id)?.balance ?? 0), 0);
 
-        return (
-            <TransactionRowSurface position={position}>
-                <CryptoCurrencyGroupCard group={item} balance={balance} balancesByAccountId={balancesByAccountId} />
-            </TransactionRowSurface>
-        );
+        return <CryptoCurrencyGroupCard group={item} balance={balance} balancesByAccountId={balancesByAccountId} />;
     }
 
     if (isDebtSection(section)) {
         return (
-            <TransactionRowSurface position={position}>
-                <DebtAccountCard
-                    account={item}
-                    instrumentSymbol={item.instrument.symbol}
-                    debtProgressSummary={balancesByAccountId.get(item.id)?.debtProgressSummary ?? null}
-                />
-            </TransactionRowSurface>
+            <DebtAccountCard
+                account={item}
+                instrumentSymbol={item.instrument.symbol}
+                debtProgressSummary={balancesByAccountId.get(item.id)?.debtProgressSummary ?? null}
+            />
         );
     }
 
-    return (
-        <TransactionRowSurface position={position}>
-            <AccountListItem account={item} type={section.type} balancesByAccountId={balancesByAccountId} />
-        </TransactionRowSurface>
-    );
+    return <AccountListItem account={item} balancesByAccountId={balancesByAccountId} />;
 };

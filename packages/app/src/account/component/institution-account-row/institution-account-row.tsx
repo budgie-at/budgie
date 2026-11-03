@@ -33,7 +33,7 @@ export const InstitutionAccountRow = ({ account, provider, balancesByAccountId, 
     return (
         <TransactionRowSurface position={position}>
             <AccountRowLeadingContext value={leading}>
-                <AccountListItem account={displayAccount} type={account.type} balancesByAccountId={balancesByAccountId} />
+                <AccountListItem account={displayAccount} balancesByAccountId={balancesByAccountId} />
             </AccountRowLeadingContext>
         </TransactionRowSurface>
     );
