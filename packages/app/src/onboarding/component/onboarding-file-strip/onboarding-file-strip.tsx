@@ -8,25 +8,38 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { DB_NAME } from '../../../@generic/drizzle/constant/db-name.constant';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { cn } from '../../../@generic/utils/cn.util';
+import { OnboardingFileLockEnum } from '../../enum/onboarding-file-lock.enum';
 
 import { OnboardingFileStripSelector } from './onboarding-file-strip.selector';
 
 const STATE_FADE_DURATION = 180;
 
+const LOCK_ICON: Record<OnboardingFileLockEnum, UserIconNameEnum> = {
+    [OnboardingFileLockEnum.OPEN]: UserIconNameEnum.LockOpen,
+    [OnboardingFileLockEnum.PHONE]: UserIconNameEnum.Smartphone,
+    [OnboardingFileLockEnum.SEALED]: UserIconNameEnum.Lock
+};
+
+const LOCK_COLOR_CLASS_NAME: Record<OnboardingFileLockEnum, string> = {
+    [OnboardingFileLockEnum.OPEN]: 'text-secondary-foreground',
+    [OnboardingFileLockEnum.PHONE]: 'text-secondary-foreground',
+    [OnboardingFileLockEnum.SEALED]: 'text-primary'
+};
+
 interface Props {
     readonly state: string;
-    readonly isSealed: boolean;
+    readonly lock: OnboardingFileLockEnum;
 }
 
-export const OnboardingFileStrip = ({ state, isSealed }: Props) => {
+export const OnboardingFileStrip = ({ state, lock }: Props) => {
     const { t } = useLingui();
     const reducedMotion = useReducedMotion();
 
     const stateFadeDuration = reducedMotion ? 0 : STATE_FADE_DURATION;
     const stateEntering = FadeIn.duration(stateFadeDuration);
     const stateExiting = FadeOut.duration(stateFadeDuration);
-    const stateColorClassName = isSealed ? 'text-positive-foreground' : 'text-secondary-foreground';
-    const stateIcon = isSealed ? UserIconNameEnum.Lock : UserIconNameEnum.LockOpen;
+    const stateColorClassName = LOCK_COLOR_CLASS_NAME[lock];
+    const stateIcon = LOCK_ICON[lock];
 
     return (
         <FileChip
@@ -35,9 +48,18 @@ export const OnboardingFileStrip = ({ state, isSealed }: Props) => {
             name={DB_NAME}
             accessibilityLabel={t`Your data: ${state}`}
         >
-            <Animated.View key={state} entering={stateEntering} exiting={stateExiting} className="ml-auto flex-row items-center gap-x-xs">
-                <Icon icon={stateIcon} size={12} className={stateColorClassName} />
-                <Text testID={OnboardingFileStripSelector.State} numberOfLines={1} className={cn('text-xs', stateColorClassName)}>
+            <Animated.View
+                key={state}
+                entering={stateEntering}
+                exiting={stateExiting}
+                className="min-w-0 flex-1 flex-row items-center justify-end gap-x-xs"
+            >
+                <Icon icon={stateIcon} size={14} className={stateColorClassName} />
+                <Text
+                    testID={OnboardingFileStripSelector.State}
+                    numberOfLines={1}
+                    className={cn('shrink text-[13px]', stateColorClassName)}
+                >
                     {state}
                 </Text>
             </Animated.View>

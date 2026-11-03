@@ -26,3 +26,10 @@ export const useIsOnboardingActive = (): boolean => {
 
     return isPositiveNumber(onboardingStep) || !isPositiveNumber(accountCounts.at(0)?.count);
 };
+
+export const useIsOnboardingPending = (): boolean => {
+    const isOnboardingCompleted = useSetting('isOnboardingCompleted');
+    const result = useLiveAtomValue(accountCountAtom);
+
+    return !isOnboardingCompleted && AsyncResult.isInitial(result);
+};
