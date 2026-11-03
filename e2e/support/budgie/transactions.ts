@@ -242,7 +242,9 @@ export async function createExpense(
     await retry(3, async () => {
         await clearAmount(ctx);
         await typeDigits(ctx, options.amount);
-        await expect(byText(ctx.screen, new RegExp(` ${options.amount}$`))).toBeVisible({ timeout: 1_000 });
+        await expect(byId(ctx.screen, 'TransactionForm.AmountInput')).toHaveText(new RegExp(`^\\D*${options.amount}$`), {
+            timeout: 1_000
+        });
     });
     await submitTransactionAndWait(ctx);
 }

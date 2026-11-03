@@ -12,8 +12,8 @@ import { Trans } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { NotificationFeedbackType } from 'expo-haptics';
 import { useState } from 'react';
-import { ScrollView, Text, View, useWindowDimensions } from 'react-native';
-import { KeyboardStickyView } from 'react-native-keyboard-controller';
+import { Text, View, useWindowDimensions } from 'react-native';
+import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -171,7 +171,12 @@ export const SplitEntriesModalContent = (props: Props) => {
         <View className="bg-sheet-surface">
             <SheetTitle title={t`Split`} />
 
-            <ScrollView contentContainerStyle={CONTENT_CONTAINER_STYLE} keyboardShouldPersistTaps="handled" style={scrollStyle}>
+            <KeyboardAwareScrollView
+                contentContainerStyle={CONTENT_CONTAINER_STYLE}
+                keyboardShouldPersistTaps="handled"
+                bottomOffset={72}
+                style={scrollStyle}
+            >
                 <GroupedListSection>
                     {entries.map((entry, index) => (
                         <SplitEntriesItem
@@ -208,7 +213,7 @@ export const SplitEntriesModalContent = (props: Props) => {
                         </GroupedListSection>
                     </View>
                 ) : null}
-            </ScrollView>
+            </KeyboardAwareScrollView>
 
             <KeyboardStickyView offset={keyboardOffset}>
                 <View className="bg-sheet-surface px-xl pt-3xl pb-safe-or-[16px] ios:pb-0">
