@@ -1,17 +1,15 @@
 import { Text, View } from 'react-native';
 import Animated, { FadeIn, Keyframe } from 'react-native-reanimated';
 
-import { ENTRANCE_REDUCED_DURATION } from '../../../@generic/constant/entrance-motion.constant';
+import { ENTRANCE_EASING, ENTRANCE_REDUCED_DURATION } from '../../../@generic/constant/entrance-motion.constant';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
-import {
-    CATEGORIZE_INBOX_BAR_DURATION,
-    CATEGORIZE_INBOX_BAR_EASING,
-    CATEGORIZE_INBOX_BAR_EMPTY_HEIGHT,
-    CATEGORIZE_INBOX_BAR_MIN_HEIGHT,
-    CATEGORIZE_INBOX_BAR_STAGGER,
-    CATEGORIZE_INBOX_BAR_START_SCALE,
-    CATEGORIZE_INBOX_BAR_STRIP_HEIGHT
-} from '../../constant/categorize-inbox-bar-motion.constant';
+
+const BAR_DURATION = 520;
+const BAR_STAGGER = 22;
+const BAR_START_SCALE = 0.2;
+const BAR_STRIP_HEIGHT = 56;
+const BAR_MIN_HEIGHT = 4;
+const BAR_EMPTY_HEIGHT = 3;
 
 interface Props {
     readonly count: number;
@@ -24,18 +22,18 @@ export const CategorizeInboxMonthlyBar = ({ count, maxCount, index, monthLabel }
     const reducedMotion = useReducedMotion();
 
     const hasData = count > 0;
-    const dataHeight = Math.max(CATEGORIZE_INBOX_BAR_MIN_HEIGHT, (count / maxCount) * CATEGORIZE_INBOX_BAR_STRIP_HEIGHT);
-    const height = hasData ? dataHeight : CATEGORIZE_INBOX_BAR_EMPTY_HEIGHT;
+    const dataHeight = Math.max(BAR_MIN_HEIGHT, (count / maxCount) * BAR_STRIP_HEIGHT);
+    const height = hasData ? dataHeight : BAR_EMPTY_HEIGHT;
     const barClassName = hasData ? 'bg-secondary-foreground/60' : 'bg-secondary-foreground/20';
     const style = { height, width: '100%', maxWidth: 24, borderRadius: 3, transformOrigin: 'bottom' } as const;
-    const stripStyle = { height: CATEGORIZE_INBOX_BAR_STRIP_HEIGHT };
+    const stripStyle = { height: BAR_STRIP_HEIGHT };
     const countLabel = hasData ? `${count}` : '';
     const growEntering = new Keyframe({
-        from: { opacity: 0, transform: [{ scaleY: CATEGORIZE_INBOX_BAR_START_SCALE }] },
-        to: { opacity: 1, transform: [{ scaleY: 1 }], easing: CATEGORIZE_INBOX_BAR_EASING }
+        from: { opacity: 0, transform: [{ scaleY: BAR_START_SCALE }] },
+        to: { opacity: 1, transform: [{ scaleY: 1 }], easing: ENTRANCE_EASING }
     })
-        .duration(CATEGORIZE_INBOX_BAR_DURATION)
-        .delay(index * CATEGORIZE_INBOX_BAR_STAGGER);
+        .duration(BAR_DURATION)
+        .delay(index * BAR_STAGGER);
     const entering = reducedMotion ? FadeIn.duration(ENTRANCE_REDUCED_DURATION) : growEntering;
 
     return (
