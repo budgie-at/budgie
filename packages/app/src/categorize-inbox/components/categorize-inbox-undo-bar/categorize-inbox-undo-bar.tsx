@@ -16,12 +16,7 @@ import { CategorizeInboxUndoBarSelector } from './categorize-inbox-undo-bar.sele
 
 import type { CategorizeInboxLabelInterface } from '../../interface/categorize-inbox-label.interface';
 
-const resolveUndoBarTitle = (
-    labels: CategorizeInboxLabelInterface[],
-    rowCount: number,
-    assignedCount: (count: number) => string,
-    tagsLabel: string
-): string => {
+const resolveUndoBarTitle = (labels: CategorizeInboxLabelInterface[], filedLabel: string, tagsLabel: string): string => {
     if (labels.length === 1) {
         return labels[0].title;
     }
@@ -29,7 +24,7 @@ const resolveUndoBarTitle = (
         return tagsLabel;
     }
 
-    return assignedCount(rowCount);
+    return filedLabel;
 };
 
 export const CategorizeInboxUndoBar = () => {
@@ -46,13 +41,15 @@ export const CategorizeInboxUndoBar = () => {
     const groupCount = new Set(assignments.map(assignment => assignment.key)).size;
     const rowCount = new Set(assignments.flatMap(assignment => assignment.rows.map(row => row.transactionId))).size;
     const labels = groupCount === 1 ? assignments.map(assignment => strategy.labelsById.get(assignment.labelId)).filter(isDefined) : [];
-    const firstLabel = labels.at(0);
     const title = resolveUndoBarTitle(
         labels,
-        rowCount,
-        strategy.assignedCount,
+        t({ message: plural(rowCount, { one: 'Filed # payment', other: 'Filed # payments' }) }),
         t({ message: plural(labels.length, { one: '# tag', other: '# tags' }) })
     );
+    const description =
+        groupCount === 1
+            ? t({ message: plural(rowCount, { one: '# payment', other: '# payments' }) })
+            : t({ message: plural(groupCount, { one: '# group', other: '# groups' }) });
 
     const handleUndoPress = (): void => void undo(lastWrite);
     const handleRulePress = (): void => {
@@ -71,14 +68,10 @@ export const CategorizeInboxUndoBar = () => {
     };
 
     return (
-        <CategorizeInboxUndoLayout
-            title={title}
-            description={t({ message: plural(rowCount, { one: '# transaction', other: '# transactions' }) })}
-            onUndo={handleUndoPress}
-        >
+        <CategorizeInboxUndoLayout title={title} description={description} onUndo={handleUndoPress}>
             {groupCount === 1 ? <CategorizeInboxFollowUpButton lastWrite={lastWrite} /> : null}
 
-            {isDefined(firstLabel) && isNotEmptyString(ruleConditionValue) ? (
+            {isNotEmptyArray(labels) && isNotEmptyString(ruleConditionValue) ? (
                 <HapticPressable
                     onPress={handleRulePress}
                     className="h-11 w-11 items-center justify-center"

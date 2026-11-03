@@ -1,8 +1,12 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { useCategorizeInboxMatchedAccount } from '../../hook/use-categorize-inbox-matched-account.hook';
 import { getCategorizeInboxJarName } from '../../utils/get-categorize-inbox-jar-name.util';
@@ -23,20 +27,30 @@ export const CategorizeInboxTransferRuleSwitch = ({ cluster, value, onValueChang
 
     const { displayTitle } = cluster;
     const jarName = getCategorizeInboxJarName(displayTitle) ?? (isDefined(matchedAccount) ? displayTitle : null);
-    const label = isDefined(jarName) ? t`Also for new «${jarName}» payments` : t`Also for new “${displayTitle}” payments`;
+    const title = t`Do this automatically`;
+    const subtitle = isDefined(jarName) ? t`Future «${jarName}» payments` : t`Future “${displayTitle}” payments`;
+    const subtitleNode = (
+        <Text className="text-secondary-foreground text-[13px] leading-[17px]" numberOfLines={2}>
+            {subtitle}
+        </Text>
+    );
+    const switchNode = (
+        <ThemedSwitch
+            value={value}
+            onValueChange={onValueChange}
+            accessibilityLabel={`${title}, ${subtitle}`}
+            testID={CategorizeInboxTransferScreenSelector.RuleSwitch}
+        />
+    );
 
     return (
-        <View className="bg-secondary-background flex-row items-center gap-x-xl rounded-3xl p-xl">
-            <View className="flex-1 gap-y-xxs">
-                <Text className="text-primary text-md font-semibold">{label}</Text>
-                <Text className="text-secondary-foreground text-xs">{t`Saved as a rule`}</Text>
-            </View>
-            <ThemedSwitch
-                value={value}
-                onValueChange={onValueChange}
-                accessibilityLabel={label}
-                testID={CategorizeInboxTransferScreenSelector.RuleSwitch}
+        <GroupedListSection>
+            <GroupedListRow
+                left={<GroupedListIcon icon={UserIconNameEnum.Repeat} />}
+                title={title}
+                subtitle={subtitleNode}
+                right={switchNode}
             />
-        </View>
+        </GroupedListSection>
     );
 };
