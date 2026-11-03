@@ -1,6 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
-import React from 'react';
 import { View } from 'react-native';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 

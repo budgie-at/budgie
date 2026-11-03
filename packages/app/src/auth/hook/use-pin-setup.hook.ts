@@ -17,10 +17,6 @@ import { AuthService } from '../service/auth.service';
 
 import { usePinError } from './use-pin-error.hook';
 
-interface Params {
-    readonly mode: PinSetupModeEnum;
-}
-
 const ACCEPTED_PIN_BEAT_MS = 260;
 const ACCEPTED_PIN_BEAT = Duration.millis(ACCEPTED_PIN_BEAT_MS);
 
@@ -43,15 +39,12 @@ const reducer = (state: PinSetupStateInterface, action: PinSetupActionInterface)
     if (action.type === PinSetupActionTypeEnum.BIOMETRIC_REQUESTED) {
         return { ...state, step: PinSetupStepEnum.BIOMETRIC };
     }
-    if (action.type === PinSetupActionTypeEnum.PINS_MISMATCHED) {
-        return { ...state, input: '', error: action.error };
-    }
 
     return { ...state, input: '', error: action.error };
 };
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration hook with multiple state fields and handlers
-export const usePinSetup = ({ mode }: Params) => {
+export const usePinSetup = (mode: PinSetupModeEnum) => {
     const { t } = useLingui();
     const { isFaceIdAvailable, isSomeAvailable } = useAuthContext();
     const { clearError, error: pinError, isLockedOut, reportIncorrectPin } = usePinError();
@@ -63,11 +56,9 @@ export const usePinSetup = ({ mode }: Params) => {
         error: null,
         tempNewPin: ''
     });
-    const { isLoading: isSubmitting, run: runSubmit } = useSingleFlight();
-    const { isLoading: isSaving, run: runSave } = useSingleFlight();
-    const isLoading = isSubmitting || isSaving;
+    const { isLoading, run } = useSingleFlight();
     const [isSealing, setIsSealing] = useState(false);
-    const markSealing = (value: boolean) => Effect.sync(() => void setIsSealing(value));
+    const markSealing = Effect.sync(() => void setIsSealing(true));
     const [isAccepted, setIsAccepted] = useState(false);
     const showAcceptedBeat = Effect.sync(() => void setIsAccepted(true)).pipe(
         Effect.andThen(Effect.sleep(ACCEPTED_PIN_BEAT)),
@@ -79,18 +70,17 @@ export const usePinSetup = ({ mode }: Params) => {
         dispatch({ type: PinSetupActionTypeEnum.DIGIT_DELETED });
     };
 
-    const deletePin = markSealing(true).pipe(
+    const deletePin = markSealing.pipe(
         Effect.andThen(Effect.flatMap(AuthService, authService => authService.deletePin())),
         Effect.tapCause(() =>
             Effect.sync(() => {
                 setIsSealing(false);
-                dispatch({ type: PinSetupActionTypeEnum.OLD_PIN_REJECTED });
-                dispatch({ type: PinSetupActionTypeEnum.SAVE_FAILED, error: t`Couldn't turn off app lock. Try again.` });
+                dispatch({ type: PinSetupActionTypeEnum.ERROR_REPORTED, error: t`Couldn't turn off app lock. Try again.` });
             })
         )
     );
 
-    const verifyOldPin = (pin: string) =>
+    const handleVerifyOldStep = (pin: string) =>
         Effect.gen(function* () {
             const authService = yield* AuthService;
             const isCorrect = yield* authService.verifyPin(pin).pipe(
@@ -101,16 +91,7 @@ export const usePinSetup = ({ mode }: Params) => {
             if (!isCorrect) {
                 reportIncorrectPin();
                 dispatch({ type: PinSetupActionTypeEnum.OLD_PIN_REJECTED });
-            }
 
-            return isCorrect;
-        });
-
-    const handleVerifyOldStep = (pin: string) =>
-        Effect.gen(function* () {
-            const success = yield* verifyOldPin(pin);
-
-            if (!success) {
                 return;
             }
 
@@ -124,10 +105,6 @@ export const usePinSetup = ({ mode }: Params) => {
             dispatch({ type: PinSetupActionTypeEnum.NEW_PIN_REQUESTED });
         });
 
-    const handleCreateStep = (pin: string) => {
-        dispatch({ type: PinSetupActionTypeEnum.NEW_PIN_ENTERED, pin });
-    };
-
     const saveFailedMessage =
         step === PinSetupStepEnum.BIOMETRIC ? t`Couldn't save your PIN. Try again.` : t`Couldn't save your PIN. Enter it again to retry.`;
 
@@ -137,7 +114,7 @@ export const usePinSetup = ({ mode }: Params) => {
 
             if (isBiometricEnabled && isSomeAvailable && !(yield* authService.authenticateWithBiometrics())) {
                 dispatch({
-                    type: PinSetupActionTypeEnum.SAVE_FAILED,
+                    type: PinSetupActionTypeEnum.ERROR_REPORTED,
                     error: isFaceIdAvailable
                         ? t`Face ID wasn't completed. Try again or continue without it.`
                         : t`Touch ID wasn't completed. Try again or continue without it.`
@@ -146,7 +123,7 @@ export const usePinSetup = ({ mode }: Params) => {
                 return;
             }
 
-            yield* markSealing(true);
+            yield* markSealing;
 
             yield* mode === PinSetupModeEnum.CHANGE
                 ? authService.changePin(tempNewPin)
@@ -155,18 +132,16 @@ export const usePinSetup = ({ mode }: Params) => {
             Effect.catchCause(() =>
                 Effect.sync(() => {
                     setIsSealing(false);
-                    dispatch({ type: PinSetupActionTypeEnum.SAVE_FAILED, error: saveFailedMessage });
+                    dispatch({ type: PinSetupActionTypeEnum.ERROR_REPORTED, error: saveFailedMessage });
                 })
             )
         );
-
-    const savePinAndContinue = (isBiometricEnabled: boolean) => runSave(savePin(isBiometricEnabled));
 
     const handleConfirmStep = (pin: string) =>
         Effect.gen(function* () {
             if (pin !== tempNewPin) {
                 dispatch({
-                    type: PinSetupActionTypeEnum.PINS_MISMATCHED,
+                    type: PinSetupActionTypeEnum.ERROR_REPORTED,
                     error: t`PINs don't match. Try again.`
                 });
 
@@ -186,12 +161,12 @@ export const usePinSetup = ({ mode }: Params) => {
         });
 
     const submitPin = (pin: string) =>
-        runSubmit(
+        run(
             Effect.gen(function* () {
                 if (step === PinSetupStepEnum.VERIFY_OLD) {
                     yield* handleVerifyOldStep(pin);
                 } else if (step === PinSetupStepEnum.CREATE) {
-                    handleCreateStep(pin);
+                    dispatch({ type: PinSetupActionTypeEnum.NEW_PIN_ENTERED, pin });
                 } else if (step === PinSetupStepEnum.CONFIRM) {
                     yield* handleConfirmStep(pin);
                 }
@@ -219,9 +194,9 @@ export const usePinSetup = ({ mode }: Params) => {
 
     return {
         restartNewPin,
-        state: { mode, step, input, error: pinError ?? error, isLoading, isSealing, isAccepted, isInputDisabled: isLoading || isLockedOut },
+        state: { step, input, error: pinError ?? error, isLoading, isSealing, isAccepted, isInputDisabled: isLoading || isLockedOut },
         addDigit,
         deleteDigit,
-        saveAndContinue: mode === PinSetupModeEnum.DISABLE ? () => runSave(deletePin) : savePinAndContinue
+        saveAndContinue: (isBiometricEnabled: boolean) => run(savePin(isBiometricEnabled))
     };
 };
