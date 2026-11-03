@@ -49,12 +49,8 @@ export const CurrencySelectorModalContent = ({ instrumentType, selectedInstrumen
 
     const renderItem = (item: InstrumentEntityInterface) => (
         <CurrencySelectorCard
-            id={item.id}
+            instrument={item}
             isSelected={item.id === selectedInstrumentId}
-            code={item.code}
-            symbol={item.symbol}
-            name={item.name}
-            type={item.type}
             onSelect={onSelect}
             highlight={search.trim()}
         />
@@ -63,11 +59,12 @@ export const CurrencySelectorModalContent = ({ instrumentType, selectedInstrumen
     const emptyState = isNotEmptyString(search.trim()) ? (
         <SelectorSearchEmptyState query={search.trim()} hint={emptyHint} />
     ) : (
-        <EmptyState title={title} description={t`Try a different search term`} />
+        <EmptyState title={title} description="" />
     );
 
     return (
         <SearchableSelectorList
+            query={search.trim()}
             header={
                 <SelectorModalSearchHeader
                     title={title}

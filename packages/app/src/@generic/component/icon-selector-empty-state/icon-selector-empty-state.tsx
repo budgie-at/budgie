@@ -24,7 +24,7 @@ export const IconSelectorEmptyState = ({ query, isFailure, isLoading, onRetry }:
     const emptyState = isNotEmptyString(query) ? (
         <SelectorSearchEmptyState query={query} hint={t`Try a simpler word like “car” or “food”.`} />
     ) : (
-        <EmptyState title={t`No icons found`} description={t`Try a different search term`} />
+        <EmptyState title={t`No icons found`} description="" />
     );
 
     return <LoadingContent isLoading={isLoading}>{emptyState}</LoadingContent>;

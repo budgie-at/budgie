@@ -10,16 +10,16 @@ const byMarketCapRank = (
     second: Pick<InstrumentEntityInterface, 'marketCapRank'>
 ) => (first.marketCapRank ?? Number.MAX_SAFE_INTEGER) - (second.marketCapRank ?? Number.MAX_SAFE_INTEGER);
 
-export const partitionInstruments = <T extends Pick<InstrumentEntityInterface, 'id' | 'code' | 'name' | 'marketCapRank'>>(
-    instruments: readonly T[],
+export const partitionInstruments = (
+    instruments: readonly InstrumentEntityInterface[],
     selectedId: number | undefined,
     type: InstrumentTypeEnum
 ) => {
-    const topCrypto = new Set([...instruments].sort(byMarketCapRank).slice(0, TOP_CRYPTO_COUNT));
+    const topCrypto = new Set(type === InstrumentTypeEnum.CRYPTO ? [...instruments].sort(byMarketCapRank).slice(0, TOP_CRYPTO_COUNT) : []);
     const isFeatured =
         type === InstrumentTypeEnum.CRYPTO
-            ? (instrument: T) => topCrypto.has(instrument)
-            : (instrument: T) => COMMON_CURRENCY_CODES.has(instrument.code.toUpperCase());
+            ? (instrument: InstrumentEntityInterface) => topCrypto.has(instrument)
+            : (instrument: InstrumentEntityInterface) => COMMON_CURRENCY_CODES.has(instrument.code.toUpperCase());
     const featuredInstruments = instruments.filter(isFeatured);
     const featured = type === InstrumentTypeEnum.CRYPTO ? featuredInstruments.sort(byMarketCapRank) : featuredInstruments;
     const selected = instruments.filter(instrument => instrument.id === selectedId && !isFeatured(instrument));

@@ -166,7 +166,15 @@ describe('IconSearchService', () => {
 
             expect(matches.map(({ icon }) => icon)).toContain('reicon:Category');
             expect(matches.some(({ icon }) => isEmojiIcon(icon))).toBe(true);
-            expect(matches.slice(matches.findIndex(({ icon }) => isEmojiIcon(icon))).every(({ icon }) => isEmojiIcon(icon))).toBe(true);
+        })
+    );
+
+    it.effect('keepsBicycleInTheFirstVisibleIconRowForBike', () =>
+        Effect.gen(function* () {
+            const entries = yield* iconSearchService.load();
+            const glyphs = iconSearchService.rank(entries, ['bike']).filter(({ icon }) => !isEmojiIcon(icon));
+
+            expect(glyphs.slice(0, 3).map(({ icon }) => icon)).toContain('reicon:Bicycle');
         })
     );
 

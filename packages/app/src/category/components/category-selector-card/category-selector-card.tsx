@@ -22,7 +22,7 @@ interface Props extends Pick<CategoryEntityInterface, 'id' | 'icon' | 'title'> {
     readonly testID?: string;
 }
 
-const cardVariants = cva(`flex-1 rounded-2xl px-sm pt-md border-2 items-center h-[92px]`, {
+const cardVariants = cva(`flex-1 rounded-2xl px-sm pt-md border-2 items-center min-h-[92px]`, {
     variants: {
         isSelected: {
             true: '',

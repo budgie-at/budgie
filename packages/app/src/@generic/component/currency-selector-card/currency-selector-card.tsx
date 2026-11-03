@@ -7,13 +7,15 @@ import { CurrencySelectorInstrumentIcon } from '../currency-selector-instrument-
 import { SelectorRowTitle } from '../selector-row-title/selector-row-title';
 import { SelectorRow } from '../selector-row/selector-row';
 
-interface Props extends Pick<InstrumentEntityInterface, 'id' | 'code' | 'symbol' | 'name' | 'type'> {
+interface Props {
+    readonly instrument: Pick<InstrumentEntityInterface, 'id' | 'code' | 'symbol' | 'name' | 'type'>;
     readonly onSelect: (id: number) => void;
     readonly isSelected: boolean;
     readonly highlight: string;
 }
 
-export const CurrencySelectorCard = ({ isSelected, name, onSelect, code, symbol, id, type, highlight }: Props) => {
+export const CurrencySelectorCard = ({ instrument, isSelected, onSelect, highlight }: Props) => {
+    const { name, code, symbol, id, type } = instrument;
     const handleSelect = () => void onSelect(id);
     const isFiatWithSymbol = type === InstrumentTypeEnum.FIAT && symbol !== code;
     const codeLabel = name.toUpperCase() === code.toUpperCase() ? null : code;

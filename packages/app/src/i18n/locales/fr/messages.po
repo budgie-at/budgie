@@ -786,7 +786,7 @@ msgstr "{title} file trop vite"
 msgid "{title}, {protectedAmount} per month"
 msgstr "{title}, {protectedAmount} par mois"
 
-#: src/tag/components/tags-selector-card/tags-selector-card.tsx
+#: src/tag/components/tag-selector-row/tag-selector-row.tsx
 msgid "{title}, primary"
 msgstr "{title}, principal"
 
@@ -2883,6 +2883,10 @@ msgstr "Couvert par votre solde disponible."
 msgid "Create “{query}”"
 msgstr "Créer « {query} »"
 
+#: src/category/components/category-select-content/category-select-content.tsx
+msgid "Create a category to get started."
+msgstr "Créez une catégorie pour commencer."
+
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
 msgid "Create a debt account first."
@@ -2891,6 +2895,10 @@ msgstr "Créez d'abord un compte de dette."
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create a new System-generated API key"
 msgstr "Créez une nouvelle clé API générée par le système"
+
+#: src/tag/components/tags-select-content/tags-select-content.tsx
+msgid "Create a new tag to get started."
+msgstr "Créez une étiquette pour commencer."
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create a read-only API key and secret"
@@ -4608,7 +4616,7 @@ msgstr "Maintenance"
 msgid "Make a PIN after all"
 msgstr "Créer un code PIN finalement"
 
-#: src/tag/components/tags-selector-card/tags-selector-card.tsx
+#: src/tag/components/tag-selector-row/tag-selector-row.tsx
 msgid "Make primary"
 msgstr "Définir comme principale"
 
@@ -4728,6 +4736,10 @@ msgstr "MCC"
 #: src/app/rule-mcc-selector.tsx
 msgid "MCC categories are not loaded"
 msgstr "Les catégories MCC ne sont pas chargées"
+
+#: src/app/rule-mcc-selector.tsx
+msgid "MCC codes"
+msgstr "Codes MCC"
 
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "merchant category"
@@ -5096,7 +5108,6 @@ msgstr "Aucun compte archivé"
 msgid "No archived accounts match “{search}”"
 msgstr "Aucun compte archivé ne correspond à « {search} »"
 
-#: src/app/category-selector.tsx
 #: src/category/components/category-select-content/category-select-content.tsx
 msgid "No categories found"
 msgstr "Aucune catégorie trouvée"
@@ -5243,7 +5254,6 @@ msgstr "Aucune dépense ni aucun revenu pour l’instant"
 msgid "No sync repairs found."
 msgstr "Aucune réparation de synchronisation trouvée."
 
-#: src/app/tags-selector.tsx
 #: src/tag/components/tags-select-content/tags-select-content.tsx
 msgid "No tags found"
 msgstr "Aucune étiquette trouvée"
@@ -6009,6 +6019,10 @@ msgstr "Prix modifié"
 #: src/market-data/hook/use-market-chart-accessibility.hook.ts
 msgid "Price chart, {rangeLabel}, from {fromLabel} to {toLabel}, high {highLabel}, low {lowLabel}"
 msgstr "Graphique des prix, {rangeLabel}, de {fromLabel} à {toLabel}, plus haut {highLabel}, plus bas {lowLabel}"
+
+#: src/tag/components/tag-selector-row/tag-selector-row.tsx
+msgid "Primary"
+msgstr "Principal"
 
 #: src/settings/components/support-settings-rows/support-settings-rows.tsx
 msgid "Privacy policy"
@@ -7814,19 +7828,10 @@ msgstr "Dépannage"
 msgid "Try a different merchant, amount, or date."
 msgstr "Essayez un autre commerçant, montant ou date."
 
-#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
-#: src/@generic/component/icon-selector-empty-state/icon-selector-empty-state.tsx
-#: src/app/category-selector.tsx
 #: src/app/contact-selector.tsx
 #: src/app/rule-mcc-selector.tsx
-#: src/app/tags-selector.tsx
-#: src/category/components/category-select-content/category-select-content.tsx
 msgid "Try a different search term"
 msgstr "Essayez un autre terme de recherche"
-
-#: src/tag/components/tags-select-content/tags-select-content.tsx
-msgid "Try a different search term or create a new tag"
-msgstr "Essayez un autre terme de recherche ou créez une nouvelle étiquette"
 
 #: src/@generic/component/icon-selector-empty-state/icon-selector-empty-state.tsx
 msgid "Try a simpler word like “car” or “food”."

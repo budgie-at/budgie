@@ -4,14 +4,12 @@ import { ScopedVariables, useCSSVariable } from 'uniwind';
 import { isDefined } from '@rnw-community/shared';
 
 import { GroupedSurfacePaletteEnum } from '../../enum/grouped-surface-palette.enum';
-import { cn } from '../../utils/cn.util';
 
 import type { ReactNode } from 'react';
 
 interface Props {
     readonly children: ReactNode;
     readonly palette?: GroupedSurfacePaletteEnum;
-    readonly className?: string;
     readonly testID?: string;
 }
 
@@ -30,7 +28,7 @@ const PALETTE_SOURCES: Record<GroupedSurfacePaletteEnum, Record<string, string>>
     }
 };
 
-export const GroupedSurface = ({ children, palette = GroupedSurfacePaletteEnum.PAGE, className, testID }: Props) => {
+export const GroupedSurface = ({ children, palette = GroupedSurfacePaletteEnum.PAGE, testID }: Props) => {
     const values = useCSSVariable(Object.values(PALETTE_SOURCES[palette]));
 
     const variables = Object.fromEntries(
@@ -43,7 +41,7 @@ export const GroupedSurface = ({ children, palette = GroupedSurfacePaletteEnum.P
 
     return (
         <ScopedVariables variables={variables}>
-            <View className={cn('flex-1 bg-surface', className)} testID={testID} collapsable={false}>
+            <View className="flex-1 bg-surface" testID={testID} collapsable={false}>
                 {children}
             </View>
         </ScopedVariables>

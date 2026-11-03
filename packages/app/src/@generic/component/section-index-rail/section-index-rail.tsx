@@ -10,6 +10,7 @@ import { useVibration } from '../../hook/use-vibration.hook';
 import { SectionIndexLetter } from '../section-index-letter/section-index-letter';
 
 import type { AccessibilityActionEvent, LayoutChangeEvent } from 'react-native';
+import type { PanGestureHandlerEventPayload } from 'react-native-gesture-handler';
 
 interface Props {
     readonly letters: readonly string[];
@@ -43,23 +44,25 @@ export const SectionIndexRail = ({ letters, activeLetter, onSelect }: Props) => 
         onSelect(letters[index] ?? '');
     };
 
+    const handleScrub = ({ y }: PanGestureHandlerEventPayload) => {
+        'worklet';
+        if (railHeight.get() <= 0) {
+            return;
+        }
+
+        const index = Math.min(letters.length - 1, Math.max(0, Math.floor((y / railHeight.get()) * letters.length)));
+
+        if (index !== lastIndex.get()) {
+            lastIndex.set(index);
+            runOnJS(handleIndex)(index);
+        }
+    };
+
     const gesture = Gesture.Pan()
         .minDistance(0)
         .hitSlop(RAIL_HIT_SLOP)
-        .onBegin(({ y }) => {
-            const index = Math.min(letters.length - 1, Math.max(0, Math.floor((y / railHeight.get()) * letters.length)));
-
-            lastIndex.set(index);
-            runOnJS(handleIndex)(index);
-        })
-        .onUpdate(({ y }) => {
-            const index = Math.min(letters.length - 1, Math.max(0, Math.floor((y / railHeight.get()) * letters.length)));
-
-            if (index !== lastIndex.get()) {
-                lastIndex.set(index);
-                runOnJS(handleIndex)(index);
-            }
-        })
+        .onBegin(handleScrub)
+        .onUpdate(handleScrub)
         .onFinalize(() => {
             lastIndex.set(-1);
             runOnJS(setActiveIndex)(null);

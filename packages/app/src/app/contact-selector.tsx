@@ -54,6 +54,7 @@ export default function ContactSelectorModal() {
 
     return (
         <SearchableSelectorList
+            query={search.trim()}
             header={
                 <SelectorModalSearchHeader
                     title={t`Contacts`}

@@ -2,13 +2,13 @@ import { isDefined } from '@rnw-community/shared';
 
 import type { SelectorSectionInterface } from '../interface/selector-section.interface';
 
-const LETTER_PATTERN = /^[A-Z]$/u;
+const LETTER_PATTERN = /^\p{Lu}$/u;
 
 export const groupByInitial = <T extends { readonly name: string }>(items: readonly T[]): SelectorSectionInterface<T>[] => {
     const groups = new Map<string, T[]>();
 
     items.forEach(item => {
-        const letter = item.name.charAt(0).toUpperCase();
+        const letter = item.name.normalize('NFD').replaceAll(/\p{M}/gu, '').charAt(0).toUpperCase();
         const initial = LETTER_PATTERN.test(letter) ? letter : '#';
         const group = groups.get(initial);
 

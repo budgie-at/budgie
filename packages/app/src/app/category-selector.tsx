@@ -3,7 +3,6 @@ import { useState } from 'react';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { EmptyState as CategoryEmptyState } from '../@generic/component/empty-state/empty-state';
 import { SelectorModalDescription } from '../@generic/component/selector-modal-description/selector-modal-description';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { SelectorNoResultsState } from '../@generic/component/selector-no-results-state/selector-no-results-state';
@@ -29,7 +28,6 @@ export default function CategorySelectorModal() {
     const { variant = 'primary', initialCategoryId = null, title, description, excludeCategoryIds = [] } = currentParams ?? {};
     const selectedCategoryIds = isDefined(initialCategoryId) ? [initialCategoryId] : [];
     const data = prepareSelectorGridData(categories, excludeCategoryIds);
-    const listData = isLoading ? null : data;
     const query = search.trim();
 
     const handleCreatePress = () => {
@@ -43,7 +41,7 @@ export default function CategorySelectorModal() {
     const listEmptyComponent = isNotEmptyString(query) ? (
         <SelectorNoResultsState query={query} hint={t`Check the spelling or create it as a new category.`} onCreate={handleCreatePress} />
     ) : (
-        <CategoryEmptyState title={t`No categories found`} description={t`Try a different search term`} />
+        void 0
     );
 
     return (
@@ -60,17 +58,15 @@ export default function CategorySelectorModal() {
             />
 
             <SelectorModalDescription title={title} description={description}>
-                {topOffset => (
-                    <CategorySelectContent
-                        listEmptyComponent={listEmptyComponent}
-                        topOffset={topOffset}
-                        data={listData}
-                        variant={variant}
-                        selectedCategoryIds={selectedCategoryIds}
-                        onSelect={resolveCategorySelector}
-                        cardTestID={CategorySelectorModalSelector.Card}
-                    />
-                )}
+                <CategorySelectContent
+                    listEmptyComponent={listEmptyComponent}
+                    data={data}
+                    isLoading={isLoading}
+                    variant={variant}
+                    selectedCategoryIds={selectedCategoryIds}
+                    onSelect={resolveCategorySelector}
+                    cardTestID={CategorySelectorModalSelector.Card}
+                />
             </SelectorModalDescription>
         </SheetSurface>
     );

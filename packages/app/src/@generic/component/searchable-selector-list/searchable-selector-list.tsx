@@ -2,19 +2,15 @@ import { View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { LEGEND_LIST_STYLE } from '../../constant/legend-list.constant';
-import { SELECTOR_TITLED_HEADER_HEIGHT, SELECTOR_TITLED_HEADER_OFFSET } from '../../constant/selector-header-offset.constant';
 import { SelectorRowKindEnum } from '../../enum/selector-row-kind.enum';
 import { useFormsheetListContentStyle } from '../../hook/use-formsheet-list-content-style/use-formsheet-list-content-style.hook';
 import { useSectionIndex } from '../../hook/use-section-index/use-section-index.hook';
-import { useSheetScrollEdge } from '../../hook/use-sheet-scroll-edge/use-sheet-scroll-edge.hook';
 import { cn } from '../../utils/cn.util';
 import { flattenSelectorSections } from '../../utils/flatten-selector-sections.util';
-import { BudgieLegendList } from '../budgie-legend-list/budgie-legend-list';
 import { GroupedListItem } from '../grouped-list-item/grouped-list-item';
 import { GroupedListSectionTitle } from '../grouped-list-section-title/grouped-list-section-title';
 import { SectionIndexRail } from '../section-index-rail/section-index-rail';
-import { SelectorScrollEdge } from '../selector-scroll-edge/selector-scroll-edge';
+import { SelectorList } from '../selector-list/selector-list';
 import { SheetBottomFade } from '../sheet-bottom-fade/sheet-bottom-fade';
 import { SheetSurface } from '../sheet-surface/sheet-surface';
 
@@ -28,23 +24,23 @@ interface Props<T> {
     readonly keyExtractor: (item: T) => string;
     readonly renderItem: (item: T) => ReactElement;
     readonly emptyState: ReactElement;
+    readonly query: string;
 }
 
 const ESTIMATED_ROW_HEIGHT = 60;
 const RAIL_GUTTER = 30;
-const RAIL_POSITION_STYLE = { top: SELECTOR_TITLED_HEADER_HEIGHT, right: 4, bottom: 24 };
+const RAIL_POSITION_STYLE = { top: 0, right: 4, bottom: 24 };
 
 const rowKeyExtractor = <T,>(row: SelectorListRowInterface<T>) => row.key;
 
 const getRowType = <T,>(row: SelectorListRowInterface<T>) => (isDefined(row.item) ? SelectorRowKindEnum.ITEM : SelectorRowKindEnum.TITLE);
 
-export const SearchableSelectorList = <T,>({ header, sections, keyExtractor, renderItem, emptyState }: Props<T>) => {
-    const contentContainerStyle = useFormsheetListContentStyle(0, SELECTOR_TITLED_HEADER_OFFSET);
+export const SearchableSelectorList = <T,>({ header, sections, keyExtractor, renderItem, emptyState, query }: Props<T>) => {
+    const contentContainerStyle = useFormsheetListContentStyle();
     const rows = flattenSelectorSections(sections, keyExtractor);
     const { listRef, sectionLetters, visibleLetter, handleSectionLetter, handleViewableItemsChanged } = useSectionIndex(rows);
     const hasRail = isNotEmptyArray(sectionLetters);
     const listContentStyle = hasRail ? { ...contentContainerStyle, paddingRight: RAIL_GUTTER } : contentContainerStyle;
-    const { scrollOffset, handleScroll } = useSheetScrollEdge();
 
     const renderRow = ({ item: row }: { item: SelectorListRowInterface<T> }) =>
         isDefined(row.item) ? (
@@ -59,36 +55,34 @@ export const SearchableSelectorList = <T,>({ header, sections, keyExtractor, ren
             </View>
         );
 
+    const listOptions = {
+        getItemType: getRowType,
+        estimatedItemSize: ESTIMATED_ROW_HEIGHT,
+        contentContainerStyle: listContentStyle,
+        onViewableItemsChanged: handleViewableItemsChanged,
+        ListEmptyComponent: emptyState
+    };
+
     return (
         <SheetSurface>
             {header}
 
-            <SelectorScrollEdge scrollOffset={scrollOffset} top={SELECTOR_TITLED_HEADER_HEIGHT} />
-
-            <View className="absolute inset-0">
-                <BudgieLegendList
-                    ref={listRef}
-                    style={LEGEND_LIST_STYLE}
+            <View className="flex-1">
+                <SelectorList
+                    key={query}
+                    listRef={listRef}
                     data={rows}
                     keyExtractor={rowKeyExtractor}
-                    getItemType={getRowType}
-                    estimatedItemSize={ESTIMATED_ROW_HEIGHT}
                     renderItem={renderRow}
-                    keyboardDismissMode="on-drag"
-                    keyboardShouldPersistTaps="handled"
-                    onScroll={handleScroll}
-                    scrollEventThrottle={16}
-                    contentContainerStyle={listContentStyle}
-                    onViewableItemsChanged={handleViewableItemsChanged}
-                    ListEmptyComponent={emptyState}
-                />
+                    options={listOptions}
+                >
+                    {hasRail ? (
+                        <View className="absolute z-30 justify-center pt-md" style={RAIL_POSITION_STYLE}>
+                            <SectionIndexRail letters={sectionLetters} activeLetter={visibleLetter} onSelect={handleSectionLetter} />
+                        </View>
+                    ) : null}
+                </SelectorList>
             </View>
-
-            {hasRail ? (
-                <View className="absolute z-30 justify-center pt-md" style={RAIL_POSITION_STYLE}>
-                    <SectionIndexRail letters={sectionLetters} activeLetter={visibleLetter} onSelect={handleSectionLetter} />
-                </View>
-            ) : null}
 
             <SheetBottomFade />
         </SheetSurface>

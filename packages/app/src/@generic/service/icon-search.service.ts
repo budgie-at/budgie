@@ -78,9 +78,7 @@ class IconSearchService {
     private readonly tokenIndexes = new WeakMap<readonly IconSearchEntryInterface[], IconSearchTokenIndexInterface>();
 
     rank(entries: readonly IconSearchEntryInterface[], terms: readonly string[]): IconSearchEntryInterface[] {
-        return this.score(entries, terms, true)
-            .map(({ entry }) => entry)
-            .sort((first, second) => Number(isEmojiIcon(first.icon)) - Number(isEmojiIcon(second.icon)));
+        return this.score(entries, terms, true).map(({ entry }) => entry);
     }
 
     suggest(

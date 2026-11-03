@@ -3,7 +3,6 @@ import { useEffect, useEffectEvent, useReducer, useRef, useState } from 'react';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { EmptyState } from '../@generic/component/empty-state/empty-state';
 import { SelectorModalDescription } from '../@generic/component/selector-modal-description/selector-modal-description';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { SelectorNoResultsState } from '../@generic/component/selector-no-results-state/selector-no-results-state';
@@ -95,7 +94,7 @@ export default function TagsSelectorModal() {
     const listEmptyComponent = isNotEmptyString(query) ? (
         <SelectorNoResultsState query={query} hint={t`Check the spelling or create it as a new tag.`} onCreate={handleCreatePress} />
     ) : (
-        <EmptyState title={t`No tags found`} description={t`Try a different search term`} />
+        void 0
     );
 
     return (
@@ -112,18 +111,15 @@ export default function TagsSelectorModal() {
             />
 
             <SelectorModalDescription title={title} description={description}>
-                {topOffset => (
-                    <TagsSelectContent
-                        listEmptyComponent={listEmptyComponent}
-                        topOffset={topOffset}
-                        data={data}
-                        selectedTagIds={selected}
-                        primaryTagId={primaryTagId}
-                        isLoading={isLoading}
-                        onSelect={handleSelectTag}
-                        {...(enablePrimarySelection && { onPrimarySelect: handlePrimarySelect })}
-                    />
-                )}
+                <TagsSelectContent
+                    listEmptyComponent={listEmptyComponent}
+                    data={data}
+                    selectedTagIds={selected}
+                    primaryTagId={primaryTagId}
+                    isLoading={isLoading}
+                    onSelect={handleSelectTag}
+                    {...(enablePrimarySelection && { onPrimarySelect: handlePrimarySelect })}
+                />
             </SelectorModalDescription>
 
             {dirty && !singleSelect ? (

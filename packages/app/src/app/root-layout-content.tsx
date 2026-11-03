@@ -74,7 +74,7 @@ const FADE_OPTIONS: NativeStackNavigationOptions = { animation: 'fade' };
 
 const SELECTOR_OPTIONS = formSheetOptions([DETENT_40, DETENT_70], 0);
 const CURRENCY_SELECTOR_OPTIONS = formSheetOptions([DETENT_62, DETENT_90], 0);
-const ACCOUNT_SELECTOR_OPTIONS = formSheetOptions([DETENT_55, DETENT_90], 0);
+const COMPACT_SELECTOR_OPTIONS = formSheetOptions([DETENT_55, DETENT_90], 0);
 
 const DESTINATION_OPTIONS = formSheetOptions([DETENT_90]);
 
@@ -181,7 +181,7 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="category-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="account-selector"
-                                                                        options={ACCOUNT_SELECTOR_OPTIONS}
+                                                                        options={COMPACT_SELECTOR_OPTIONS}
                                                                     />
                                                                     <Stack.Screen
                                                                         name="currency-selector"
@@ -189,7 +189,7 @@ export const RootLayoutContent = () => {
                                                                     />
                                                                     <Stack.Screen
                                                                         name="language-selector"
-                                                                        options={ACCOUNT_SELECTOR_OPTIONS}
+                                                                        options={COMPACT_SELECTOR_OPTIONS}
                                                                     />
                                                                     <Stack.Screen name="resync-window-picker" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen name="contact-selector" options={SELECTOR_OPTIONS} />

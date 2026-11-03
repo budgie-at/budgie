@@ -786,7 +786,7 @@ msgstr "{title} витрачається надто швидко"
 msgid "{title}, {protectedAmount} per month"
 msgstr "{title}, {protectedAmount} на місяць"
 
-#: src/tag/components/tags-selector-card/tags-selector-card.tsx
+#: src/tag/components/tag-selector-row/tag-selector-row.tsx
 msgid "{title}, primary"
 msgstr "{title}, основний"
 
@@ -2883,6 +2883,10 @@ msgstr "Покривається вашим ліквідним балансом.
 msgid "Create “{query}”"
 msgstr "Створити «{query}»"
 
+#: src/category/components/category-select-content/category-select-content.tsx
+msgid "Create a category to get started."
+msgstr "Створіть категорію, щоб почати."
+
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
 msgid "Create a debt account first."
@@ -2891,6 +2895,10 @@ msgstr "Спочатку створіть борговий рахунок."
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create a new System-generated API key"
 msgstr "Створіть новий згенерований системою API-ключ"
+
+#: src/tag/components/tags-select-content/tags-select-content.tsx
+msgid "Create a new tag to get started."
+msgstr "Створіть новий тег, щоб почати."
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create a read-only API key and secret"
@@ -4608,7 +4616,7 @@ msgstr "Обслуговування"
 msgid "Make a PIN after all"
 msgstr "Усе ж створити PIN-код"
 
-#: src/tag/components/tags-selector-card/tags-selector-card.tsx
+#: src/tag/components/tag-selector-row/tag-selector-row.tsx
 msgid "Make primary"
 msgstr "Зробити основним"
 
@@ -4728,6 +4736,10 @@ msgstr "MCC"
 #: src/app/rule-mcc-selector.tsx
 msgid "MCC categories are not loaded"
 msgstr "Категорії MCC не завантажено"
+
+#: src/app/rule-mcc-selector.tsx
+msgid "MCC codes"
+msgstr "Коди MCC"
 
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "merchant category"
@@ -5096,7 +5108,6 @@ msgstr "Немає архівних рахунків"
 msgid "No archived accounts match “{search}”"
 msgstr "Немає архівних рахунків за запитом «{search}»"
 
-#: src/app/category-selector.tsx
 #: src/category/components/category-select-content/category-select-content.tsx
 msgid "No categories found"
 msgstr "Категорій не знайдено"
@@ -5243,7 +5254,6 @@ msgstr "Ще немає витрат чи доходів"
 msgid "No sync repairs found."
 msgstr "Виправлень синхронізації не знайдено."
 
-#: src/app/tags-selector.tsx
 #: src/tag/components/tags-select-content/tags-select-content.tsx
 msgid "No tags found"
 msgstr "Тегів не знайдено"
@@ -6009,6 +6019,10 @@ msgstr "Ціна змінилася"
 #: src/market-data/hook/use-market-chart-accessibility.hook.ts
 msgid "Price chart, {rangeLabel}, from {fromLabel} to {toLabel}, high {highLabel}, low {lowLabel}"
 msgstr "Графік цін, {rangeLabel}, від {fromLabel} до {toLabel}, максимум {highLabel}, мінімум {lowLabel}"
+
+#: src/tag/components/tag-selector-row/tag-selector-row.tsx
+msgid "Primary"
+msgstr "Основний"
 
 #: src/settings/components/support-settings-rows/support-settings-rows.tsx
 msgid "Privacy policy"
@@ -7814,19 +7828,10 @@ msgstr "Усунення проблем"
 msgid "Try a different merchant, amount, or date."
 msgstr "Спробуйте іншого продавця, суму або дату."
 
-#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
-#: src/@generic/component/icon-selector-empty-state/icon-selector-empty-state.tsx
-#: src/app/category-selector.tsx
 #: src/app/contact-selector.tsx
 #: src/app/rule-mcc-selector.tsx
-#: src/app/tags-selector.tsx
-#: src/category/components/category-select-content/category-select-content.tsx
 msgid "Try a different search term"
 msgstr "Спробуйте інший пошуковий запит"
-
-#: src/tag/components/tags-select-content/tags-select-content.tsx
-msgid "Try a different search term or create a new tag"
-msgstr "Спробуйте інший пошуковий запит або створіть новий тег"
 
 #: src/@generic/component/icon-selector-empty-state/icon-selector-empty-state.tsx
 msgid "Try a simpler word like “car” or “food”."

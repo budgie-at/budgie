@@ -2,29 +2,23 @@ import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { SELECTOR_TITLED_HEADER_OFFSET } from '../../constant/selector-header-offset.constant';
-
 import type { ReactNode } from 'react';
 
 interface Props {
     readonly title: string | undefined;
     readonly description: string | undefined;
-    readonly children: (topOffset: number) => ReactNode;
+    readonly children: ReactNode;
 }
-
-const HEADER_SPACER_STYLE = { height: SELECTOR_TITLED_HEADER_OFFSET };
-const LIST_TOP_OFFSET = 4;
 
 export const SelectorModalDescription = (props: Props) => {
     const { title, description, children } = props;
 
     if (!isNotEmptyString(title) && !isNotEmptyString(description)) {
-        return children(SELECTOR_TITLED_HEADER_OFFSET);
+        return children;
     }
 
     return (
         <View className="flex-1">
-            <View style={HEADER_SPACER_STYLE} />
             <View className="gap-y-xs px-3xl pb-lg">
                 {isNotEmptyString(title) ? (
                     <Text className="text-primary text-[17px] font-semibold leading-[22px]" accessibilityRole="header">
@@ -35,7 +29,7 @@ export const SelectorModalDescription = (props: Props) => {
                     <Text className="text-secondary-foreground text-[15px] leading-[20px]">{description}</Text>
                 ) : null}
             </View>
-            <View className="flex-1">{children(LIST_TOP_OFFSET)}</View>
+            <View className="flex-1">{children}</View>
         </View>
     );
 };

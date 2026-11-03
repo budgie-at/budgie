@@ -27,16 +27,15 @@ interface Props {
     readonly symbol: string;
     readonly type: InstrumentTypeEnum;
     readonly size?: number;
-    readonly isLargeFiatSymbol?: boolean;
 }
 
-export const CurrencySelectorInstrumentIcon = ({ code, symbol, type, size = 48, isLargeFiatSymbol = false }: Props) => {
+export const CurrencySelectorInstrumentIcon = ({ code, symbol, type, size = 48 }: Props) => {
     if (type === InstrumentTypeEnum.CRYPTO) {
         return <CryptoCurrencyIcon code={code} size={size} className="bg-surface-disc" />;
     }
 
     const style = { width: size, height: size } as const;
-    const flag = isLargeFiatSymbol ? null : (CIRCLE_FLAGS[code.slice(0, 2).toUpperCase()] ?? null);
+    const flag = CIRCLE_FLAGS[code.slice(0, 2).toUpperCase()] ?? null;
 
     if (isDefined(flag)) {
         return (
@@ -48,7 +47,7 @@ export const CurrencySelectorInstrumentIcon = ({ code, symbol, type, size = 48, 
 
     const glyphSize = getGlyphSize(symbol);
     const displaySymbol = glyphSize === GlyphSizeEnum.CODE ? code : symbol;
-    const textClassName = isLargeFiatSymbol ? 'text-primary text-4xl' : symbolVariants({ glyphSize });
+    const textClassName = symbolVariants({ glyphSize });
 
     return (
         <View className="items-center justify-center rounded-full border-hairline border-primary/20 bg-surface-disc" style={style}>

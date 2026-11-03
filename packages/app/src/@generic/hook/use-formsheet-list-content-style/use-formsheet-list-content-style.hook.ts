@@ -1,12 +1,10 @@
 import { ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { SELECTOR_HEADER_OFFSET } from '../../constant/selector-header-offset.constant';
-
 const HORIZONTAL_PADDING = 16;
 const BOTTOM_CLEARANCE = 16;
 
-export const useFormsheetListContentStyle = (additionalBottomPadding = 0, topOffset = SELECTOR_HEADER_OFFSET): ViewStyle => {
+export const useFormsheetListContentStyle = (additionalBottomPadding = 0, topOffset = 16): ViewStyle => {
     const { bottom } = useSafeAreaInsets();
 
     return {

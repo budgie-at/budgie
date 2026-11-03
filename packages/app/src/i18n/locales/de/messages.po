@@ -786,7 +786,7 @@ msgstr "{title} läuft zu schnell"
 msgid "{title}, {protectedAmount} per month"
 msgstr "{title}, {protectedAmount} pro Monat"
 
-#: src/tag/components/tags-selector-card/tags-selector-card.tsx
+#: src/tag/components/tag-selector-row/tag-selector-row.tsx
 msgid "{title}, primary"
 msgstr "{title}, primär"
 
@@ -2883,6 +2883,10 @@ msgstr "Durch dein liquides Guthaben gedeckt."
 msgid "Create “{query}”"
 msgstr "„{query}“ erstellen"
 
+#: src/category/components/category-select-content/category-select-content.tsx
+msgid "Create a category to get started."
+msgstr "Erstelle eine Kategorie, um loszulegen."
+
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
 msgid "Create a debt account first."
@@ -2891,6 +2895,10 @@ msgstr "Erstellen Sie zuerst ein Schuldenkonto."
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create a new System-generated API key"
 msgstr "Erstellen Sie einen neuen systemgenerierten API-Schlüssel"
+
+#: src/tag/components/tags-select-content/tags-select-content.tsx
+msgid "Create a new tag to get started."
+msgstr "Erstelle ein neues Tag, um loszulegen."
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create a read-only API key and secret"
@@ -4608,7 +4616,7 @@ msgstr "Wartung"
 msgid "Make a PIN after all"
 msgstr "Doch eine PIN erstellen"
 
-#: src/tag/components/tags-selector-card/tags-selector-card.tsx
+#: src/tag/components/tag-selector-row/tag-selector-row.tsx
 msgid "Make primary"
 msgstr "Als Haupttag festlegen"
 
@@ -4728,6 +4736,10 @@ msgstr "MCC"
 #: src/app/rule-mcc-selector.tsx
 msgid "MCC categories are not loaded"
 msgstr "MCC-Kategorien sind nicht geladen"
+
+#: src/app/rule-mcc-selector.tsx
+msgid "MCC codes"
+msgstr "MCC-Codes"
 
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "merchant category"
@@ -5096,7 +5108,6 @@ msgstr "Keine archivierten Konten"
 msgid "No archived accounts match “{search}”"
 msgstr "Keine archivierten Konten passen zu „{search}“"
 
-#: src/app/category-selector.tsx
 #: src/category/components/category-select-content/category-select-content.tsx
 msgid "No categories found"
 msgstr "Keine Kategorien gefunden"
@@ -5243,7 +5254,6 @@ msgstr "Noch keine Ausgaben oder Einnahmen"
 msgid "No sync repairs found."
 msgstr "Keine Synchronisations-Reparaturen gefunden."
 
-#: src/app/tags-selector.tsx
 #: src/tag/components/tags-select-content/tags-select-content.tsx
 msgid "No tags found"
 msgstr "Keine Tags gefunden"
@@ -6009,6 +6019,10 @@ msgstr "Preis geändert"
 #: src/market-data/hook/use-market-chart-accessibility.hook.ts
 msgid "Price chart, {rangeLabel}, from {fromLabel} to {toLabel}, high {highLabel}, low {lowLabel}"
 msgstr "Kurschart, {rangeLabel}, von {fromLabel} bis {toLabel}, Hoch {highLabel}, Tief {lowLabel}"
+
+#: src/tag/components/tag-selector-row/tag-selector-row.tsx
+msgid "Primary"
+msgstr "Primär"
 
 #: src/settings/components/support-settings-rows/support-settings-rows.tsx
 msgid "Privacy policy"
@@ -7814,19 +7828,10 @@ msgstr "Fehlerbehebung"
 msgid "Try a different merchant, amount, or date."
 msgstr "Versuche einen anderen Händler, Betrag oder ein anderes Datum."
 
-#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
-#: src/@generic/component/icon-selector-empty-state/icon-selector-empty-state.tsx
-#: src/app/category-selector.tsx
 #: src/app/contact-selector.tsx
 #: src/app/rule-mcc-selector.tsx
-#: src/app/tags-selector.tsx
-#: src/category/components/category-select-content/category-select-content.tsx
 msgid "Try a different search term"
 msgstr "Versuchen Sie einen anderen Suchbegriff"
-
-#: src/tag/components/tags-select-content/tags-select-content.tsx
-msgid "Try a different search term or create a new tag"
-msgstr "Versuchen Sie einen anderen Suchbegriff oder erstellen Sie ein neues Tag"
 
 #: src/@generic/component/icon-selector-empty-state/icon-selector-empty-state.tsx
 msgid "Try a simpler word like “car” or “food”."

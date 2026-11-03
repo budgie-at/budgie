@@ -44,7 +44,7 @@ export default function IconSelectorModal() {
     ]
         .filter(isDefined)
         .slice(0, ICON_SELECTOR_COLUMNS);
-    const matches = isSearching ? iconSearchService.rank(entries, [search]) : entries;
+    const matches = isSearching ? iconSearchService.rank(entries, [search]) : entries.filter(entry => !popularEntries.includes(entry));
     const rows = buildIconSelectorRows([
         { id: IconSelectorSectionEnum.POPULAR, title: t`Popular`, entries: isSearching ? [] : popularEntries },
         { id: IconSelectorSectionEnum.ICONS, title: t`Icons`, entries: matches.filter(({ icon }) => !isEmojiIcon(icon)) },

@@ -12,17 +12,19 @@ import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 import { AccountInactiveIcon } from '../account-inactive-icon/account-inactive-icon';
 import { AccountSelectorCardDebtTotalSubtitle } from '../account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle';
 
-interface Props extends Pick<
-    AccountWithInstrumentEntityInterface,
-    'id' | 'icon' | 'type' | 'title' | 'isActive' | 'debtType' | 'targetBalance' | AccountAssociationEnum.INSTRUMENT
-> {
+interface Props {
+    readonly account: Pick<
+        AccountWithInstrumentEntityInterface,
+        'id' | 'icon' | 'type' | 'title' | 'isActive' | 'debtType' | 'targetBalance' | AccountAssociationEnum.INSTRUMENT
+    >;
     readonly onSelect: (id: number) => void;
     readonly isSelected: boolean;
     readonly showDebtTotal: boolean;
 }
 
 export const AccountSelectorCard = (props: Props) => {
-    const { isSelected, title, onSelect, id, icon, type, instrument, isActive, debtType, targetBalance, showDebtTotal } = props;
+    const { account, isSelected, onSelect, showDebtTotal } = props;
+    const { title, id, icon, type, instrument, isActive, debtType, targetBalance } = account;
 
     const { t } = useLingui();
     const { balance } = useAccountBalanceQuery(id);

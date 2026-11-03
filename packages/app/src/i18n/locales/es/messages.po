@@ -786,7 +786,7 @@ msgstr "{title} va demasiado rápido"
 msgid "{title}, {protectedAmount} per month"
 msgstr "{title}, {protectedAmount} al mes"
 
-#: src/tag/components/tags-selector-card/tags-selector-card.tsx
+#: src/tag/components/tag-selector-row/tag-selector-row.tsx
 msgid "{title}, primary"
 msgstr "{title}, principal"
 
@@ -2883,6 +2883,10 @@ msgstr "Cubierto por tu saldo líquido."
 msgid "Create “{query}”"
 msgstr "Crear «{query}»"
 
+#: src/category/components/category-select-content/category-select-content.tsx
+msgid "Create a category to get started."
+msgstr "Crea una categoría para empezar."
+
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
 msgid "Create a debt account first."
@@ -2891,6 +2895,10 @@ msgstr "Crea primero una cuenta de deuda."
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create a new System-generated API key"
 msgstr "Crea una nueva clave API generada por el sistema"
+
+#: src/tag/components/tags-select-content/tags-select-content.tsx
+msgid "Create a new tag to get started."
+msgstr "Crea una nueva etiqueta para empezar."
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create a read-only API key and secret"
@@ -4608,7 +4616,7 @@ msgstr "Mantenimiento"
 msgid "Make a PIN after all"
 msgstr "Crear un PIN al final"
 
-#: src/tag/components/tags-selector-card/tags-selector-card.tsx
+#: src/tag/components/tag-selector-row/tag-selector-row.tsx
 msgid "Make primary"
 msgstr "Hacer principal"
 
@@ -4728,6 +4736,10 @@ msgstr "MCC"
 #: src/app/rule-mcc-selector.tsx
 msgid "MCC categories are not loaded"
 msgstr "Las categorías MCC no están cargadas"
+
+#: src/app/rule-mcc-selector.tsx
+msgid "MCC codes"
+msgstr "Códigos MCC"
 
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "merchant category"
@@ -5096,7 +5108,6 @@ msgstr "No hay cuentas archivadas"
 msgid "No archived accounts match “{search}”"
 msgstr "Ninguna cuenta archivada coincide con «{search}»"
 
-#: src/app/category-selector.tsx
 #: src/category/components/category-select-content/category-select-content.tsx
 msgid "No categories found"
 msgstr "No se encontraron categorías"
@@ -5243,7 +5254,6 @@ msgstr "Aún no hay gastos ni ingresos"
 msgid "No sync repairs found."
 msgstr "No se encontraron reparaciones de sincronización."
 
-#: src/app/tags-selector.tsx
 #: src/tag/components/tags-select-content/tags-select-content.tsx
 msgid "No tags found"
 msgstr "No se encontraron etiquetas"
@@ -6009,6 +6019,10 @@ msgstr "Precio cambiado"
 #: src/market-data/hook/use-market-chart-accessibility.hook.ts
 msgid "Price chart, {rangeLabel}, from {fromLabel} to {toLabel}, high {highLabel}, low {lowLabel}"
 msgstr "Gráfico de precios, {rangeLabel}, de {fromLabel} a {toLabel}, máximo {highLabel}, mínimo {lowLabel}"
+
+#: src/tag/components/tag-selector-row/tag-selector-row.tsx
+msgid "Primary"
+msgstr "Principal"
 
 #: src/settings/components/support-settings-rows/support-settings-rows.tsx
 msgid "Privacy policy"
@@ -7814,19 +7828,10 @@ msgstr "Solución de problemas"
 msgid "Try a different merchant, amount, or date."
 msgstr "Prueba con otro comercio, importe o fecha."
 
-#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
-#: src/@generic/component/icon-selector-empty-state/icon-selector-empty-state.tsx
-#: src/app/category-selector.tsx
 #: src/app/contact-selector.tsx
 #: src/app/rule-mcc-selector.tsx
-#: src/app/tags-selector.tsx
-#: src/category/components/category-select-content/category-select-content.tsx
 msgid "Try a different search term"
 msgstr "Prueba con un término de búsqueda diferente"
-
-#: src/tag/components/tags-select-content/tags-select-content.tsx
-msgid "Try a different search term or create a new tag"
-msgstr "Prueba un término de búsqueda diferente o crea una nueva etiqueta"
 
 #: src/@generic/component/icon-selector-empty-state/icon-selector-empty-state.tsx
 msgid "Try a simpler word like “car” or “food”."

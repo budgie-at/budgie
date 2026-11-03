@@ -2,8 +2,6 @@ import { useRef, useState } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { SELECTOR_TITLED_HEADER_HEIGHT, SELECTOR_TITLED_HEADER_OFFSET } from '../../constant/selector-header-offset.constant';
-
 import type { SelectorListRowInterface } from '../../interface/selector-list-row.interface';
 import type { LegendListRef, OnViewableItemsChangedInfo } from '@legendapp/list/react-native';
 
@@ -22,11 +20,11 @@ export const useSectionIndex = <T>(rows: readonly SelectorListRowInterface<T>[])
         const index = letter === FEATURED_SECTION_MARK ? 0 : rows.findIndex(row => !isDefined(row.item) && row.indexLetter === letter);
 
         setVisibleLetter(letter);
-        void listRef.current?.scrollToIndex({ index, animated: false, viewOffset: SELECTOR_TITLED_HEADER_OFFSET });
+        void listRef.current?.scrollToIndex({ index, animated: false, viewOffset: 0 });
     };
     const handleViewableItemsChanged = ({ viewableItems }: OnViewableItemsChangedInfo<SelectorListRowInterface<T>>) => {
         const state = listRef.current?.getState();
-        const visibleTop = (state?.scroll ?? 0) + SELECTOR_TITLED_HEADER_HEIGHT - SELECTOR_TITLED_HEADER_OFFSET;
+        const visibleTop = state?.scroll ?? 0;
         const unobscuredIndices = viewableItems
             .map(({ index }) => index)
             .filter(index => isDefined(state) && state.positionAtIndex(index) + state.sizeAtIndex(index) / 2 >= visibleTop);

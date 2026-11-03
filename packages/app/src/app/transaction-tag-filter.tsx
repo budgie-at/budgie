@@ -17,8 +17,6 @@ import {
 } from '../transaction/context/transaction-tag-filter-modal.context';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
-const LIST_TOP_SPACE = 88;
-
 export default function TransactionTagFilterModal() {
     const { t } = useLingui();
     const [, resolveTransactionTagFilter, dismissTransactionTagFilter] = useTransactionTagFilterModal();
@@ -50,13 +48,7 @@ export default function TransactionTagFilterModal() {
         <FilterSheet>
             <TransactionFilterSelectorHeader title={t`Filter tags`} onClose={handleClose} />
 
-            <TagsSelectContent
-                data={data}
-                selectedTagIds={selectedTagIds}
-                isLoading={isLoading}
-                topOffset={LIST_TOP_SPACE}
-                onSelect={handleSelect}
-            />
+            <TagsSelectContent data={data} selectedTagIds={selectedTagIds} isLoading={isLoading} onSelect={handleSelect} />
 
             <TransactionFilterSelectorFooter
                 searchValue={search}
