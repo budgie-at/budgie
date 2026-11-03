@@ -175,6 +175,7 @@ export const SplitEntriesModalContent = (props: Props) => {
                 contentContainerStyle={CONTENT_CONTAINER_STYLE}
                 keyboardShouldPersistTaps="handled"
                 bottomOffset={72}
+                mode="layout"
                 style={scrollStyle}
             >
                 <GroupedListSection>
