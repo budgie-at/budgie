@@ -36,6 +36,7 @@ test('10 transfer transaction', { tags: ['transactions'] }, async ({ budgie }) =
         for (let i = 0; i < 2; i++) {
             await b.tapId(ctx, 'TransactionForm.SubmitButton');
             await b.expectText(ctx, 'New Transfer');
+            await b.expectText(ctx, 'Enter an amount');
         }
         await t.typeDigits(ctx, '50');
         await pickAccount('TransferForm.FromAccount', 'E2E Txn Account');
