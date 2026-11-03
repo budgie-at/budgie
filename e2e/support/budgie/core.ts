@@ -1,11 +1,5 @@
 import { leaseIdForUdid, simlockApiFromEnv, type SimlockApi } from '@mobile-ci/e2e-simlock/exec';
-import {
-    byId,
-    done,
-    scrollTo as scrollToLocator,
-    scrollToCentered as centre,
-    tapUntil as tapLocatorUntil
-} from '@mobile-ci/e2e-simlock/steps';
+import { byId, done, scrollTo as scrollToLocator, tapUntil as tapLocatorUntil } from '@mobile-ci/e2e-simlock/steps';
 import { expect } from 'e2e';
 
 import { clearDatabase, ensureFixtures, seedDatabase } from './fixtures.ts';
@@ -71,12 +65,21 @@ export async function tapUntil(ctx: Ctx, testId: string, next: () => Promise<voi
     await tapLocatorUntil(byId(ctx.screen, testId), next);
 }
 
-/** The leased iPhone 17 Pro's viewport height, in `boundingBox()` points. */
-const VIEWPORT_HEIGHT = 874;
-
-/** Maestro's `centerElement`: scrolls `testId` in, then out of the bottom band where the floating action button would take the tap. */
+/**
+ * Maestro's `centerElement`: scroll `testId` in, then drag it out of the bottom band where the floating action button
+ * and tab bar cover it. The drag starts at a fixed point clear of both, and a list that cannot scroll further is left
+ * as it is. The package's `scrollToCentered` drags from the node itself and fails at the list's end
+ * (rnw-community/mobile-ci#314).
+ */
 export async function scrollToCentered(ctx: Ctx, testId: string): Promise<void> {
-    await centre(ctx, testId, { viewportHeight: VIEWPORT_HEIGHT, bottomBandPx: VIEWPORT_HEIGHT - 560 });
+    await scrollTo(ctx, testId);
+    const box = await byId(ctx.screen, testId).boundingBox();
+    if (box === null || box.y + box.height / 2 < 560) {
+        return;
+    }
+    const x = 200;
+    await ctx.screen.swipe({ from: { x, y: 600 }, to: { x, y: 600 - (box.y + box.height / 2 - 437) }, duration: 600 });
+    await sleep(600);
 }
 
 /** Clears iOS's "Open in “budgie”?" prompt that the first custom-scheme link on a fresh simulator shows. */

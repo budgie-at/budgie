@@ -258,7 +258,9 @@ jobs:
         permissions:
             contents: write
             pull-requests: write
-        uses: rnw-community/mobile-ci/.github/workflows/expo-ota-preview.yml@6898d7c629f03307f5d4d122de173cc232188209 # v4.9.0
+        # v4.8.0 until rnw-community/mobile-ci#315 ships: v4.9.0's github-release-publish
+        # is a bash 5.2 syntax error on these runners.
+        uses: rnw-community/mobile-ci/.github/workflows/expo-ota-preview.yml@3e22c383f15427da8e9b5e211701f133cc111535 # v4.8.0
         with:
             app-dir: packages/app
             scheme: budgie
