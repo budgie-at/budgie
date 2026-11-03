@@ -14,7 +14,7 @@ FAILURES=0
 
 assert_contains() {
     local haystack="$1" needle="$2" label="$3"
-    if printf '%s' "$haystack" | grep -qF -- "$needle"; then
+    if grep -qF -- "$needle" <<<"$haystack"; then
         echo "ok   $label"
     else
         echo "FAIL $label: expected to find '$needle'"
@@ -24,7 +24,7 @@ assert_contains() {
 
 assert_missing() {
     local haystack="$1" needle="$2" label="$3"
-    if printf '%s' "$haystack" | grep -qF -- "$needle"; then
+    if grep -qF -- "$needle" <<<"$haystack"; then
         echo "FAIL $label: did not expect '$needle'"
         FAILURES=$((FAILURES + 1))
     else
