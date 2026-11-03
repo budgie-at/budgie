@@ -7,7 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 import { ActionsMenuItem } from '../../../@generic/component/actions-menu-item/actions-menu-item';
 import { DeletableRow } from '../../../@generic/component/deletable-row/deletable-row';
 import { GroupedListItem } from '../../../@generic/component/grouped-list-item/grouped-list-item';
-import { useI18nContext } from '../../../i18n/context/i18n.context';
+import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useDeleteArchivedAccount } from '../../hooks/use-delete-archived-account.hook';
@@ -29,15 +29,12 @@ interface Props {
 export const ArchivedAccountCard = ({ account, isFirst, isLast }: Props) => {
     const { t } = useLingui();
     const formatInstrumentAmount = useFormatInstrumentAmount();
-    const { intl } = useI18nContext();
+    const { formatMonthAndDay, formatMonthAndYear } = useFormatDate();
     const { balance } = useArchivedAccountBalanceQuery(account.id);
     const { isLoading, restore } = useRestoreArchivedAccount(account);
     const { deleteAccount } = useDeleteArchivedAccount(account);
     const archivedDate = isDefined(account.deletedAt)
-        ? intl.formatDate(
-              account.deletedAt,
-              isThisYear(account.deletedAt) ? { month: 'short', day: 'numeric' } : { month: 'short', year: 'numeric' }
-          )
+        ? (isThisYear(account.deletedAt) ? formatMonthAndDay : formatMonthAndYear)(account.deletedAt)
         : null;
 
     const formattedBalance = formatInstrumentAmount(balance, account.instrument.symbol, account.instrument.type);
