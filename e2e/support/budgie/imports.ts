@@ -3,14 +3,13 @@ import { expect, type Locator } from 'e2e';
 import { byId, byText, expectId, expectNoId, openLink, scrollTo, sleep, tapId, tapUntil, type Ctx } from './core.ts';
 import { navigateToTransactions } from './transactions.ts';
 
-/** subflows/import/import-test-transactions: the CSV `name` (no extension) from `E2E_CSV_FIXTURES_URI`, imported with the Budgie preset. */
+/** subflows/import/import-test-transactions: the CSV `name` (no extension) from `E2E_CSV_FIXTURES_URI`, imported with the preset the screen detects. */
 export async function importTestTransactions(ctx: Ctx, csvFixturesUri: string, name: string, expectedLabelId?: string): Promise<void> {
-    await openLink(ctx, `budgie://settings/import?fileUri=${csvFixturesUri}/${name}.csv`);
-    await expectId(ctx, 'ImportScreen.PresetChip.Budgie', 10_000);
-    await byText(ctx.screen, 'Budgie').tap();
-    await expect(byText(ctx.screen, 'Preset applied. Adjust columns below if needed.')).toBeVisible();
-    await expect(byId(ctx.screen, 'CsvPage.StartImportButton.Label')).toHaveText('Start Import');
-    await tapUntil(ctx, 'CsvPage.StartImportButton.Label', () => expectNoId(ctx, 'ImportScreen.PresetChip.Budgie', 60_000));
+    await openLink(ctx, `budgie://import-csv?fileUri=${csvFixturesUri}/${name}.csv`);
+    await expectId(ctx, 'ImportPresetPickerSelector.Toggle', 10_000);
+    await expectId(ctx, 'CsvPage.StartImportButton.Label', 10_000);
+    await expect(byText(ctx.screen, /^Import [0-9]+ transactions?$/)).toBeVisible();
+    await tapUntil(ctx, 'CsvPage.StartImportButton.Label', () => expectNoId(ctx, 'ImportPresetPickerSelector.Toggle', 60_000));
     await navigateToTransactions(ctx);
     if (expectedLabelId !== undefined) {
         await expectId(ctx, expectedLabelId, 30_000);

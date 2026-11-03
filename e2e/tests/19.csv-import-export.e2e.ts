@@ -12,7 +12,8 @@ test('19 csv import export', { tags: ['import'] }, async ({ budgie }) => {
     const importCsv = async () => {
         await i.openCsvImportPicker(ctx);
         await i.selectFileFromAppProvider(ctx, 'e2e-budgie-import, csv');
-        await b.expectId(ctx, 'ImportScreen.PresetChip.Budgie', 15_000);
+        await b.expectId(ctx, 'ImportPresetPickerSelector.Toggle', 15_000);
+        await b.tapId(ctx, 'ImportPresetPickerSelector.Toggle');
         await b.tapId(ctx, 'ImportScreen.PresetChip.Budgie');
         await b.tapId(ctx, 'CsvPage.StartImportButton');
         await b.tapId(ctx, 'TabBar.Home');
