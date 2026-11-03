@@ -3,6 +3,7 @@ import { View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { useCategorizeInboxGroupOptions } from '../../hook/use-categorize-inbox-group-options.hook';
 import { CategorizeInboxGroupAlreadyTrackedOption } from '../categorize-inbox-group-already-tracked-option/categorize-inbox-group-already-tracked-option';
 import { CategorizeInboxGroupLabelOption } from '../categorize-inbox-group-label-option/categorize-inbox-group-label-option';
@@ -23,10 +24,13 @@ interface Props {
 export const CategorizeInboxGroupOptions = ({ cluster }: Props) => {
     const { learnedAccount, isLeadTransfer, isCash, leadLabelOptions, otherLabelOptions, cashTransactionIds } =
         useCategorizeInboxGroupOptions(cluster);
+    const { strategy } = useCategorizeInboxContext();
 
     const hasTransferLead = isDefined(learnedAccount) || isLeadTransfer;
     const hasLead = hasTransferLead || isNotEmptyArray(leadLabelOptions);
     const candidateOptions = hasTransferLead ? [] : otherLabelOptions;
+    const hasSuggestions = isNotEmptyArray(leadLabelOptions) || isNotEmptyArray(candidateOptions);
+    const moreLabelsTitle = hasSuggestions ? strategy?.moreLabels : strategy?.chooseLabel;
     const otherOptionsHeading = hasLead ? (
         <CategorizeInboxOptionSectionTitle>
             <Trans>Other options</Trans>
@@ -37,6 +41,9 @@ export const CategorizeInboxGroupOptions = ({ cluster }: Props) => {
     const leadTransfer = isLeadTransfer ? <CategorizeInboxGroupTransferLead cluster={cluster} /> : null;
     const trailingTransfer = isLeadTransfer ? null : <CategorizeInboxGroupTransferOption cluster={cluster} />;
     const moveToCash = isNotEmptyArray(cashTransactionIds) ? <CategorizeInboxGroupMoveToCashOption /> : null;
+    const moreLabels = isDefined(moreLabelsTitle) ? (
+        <CategorizeInboxGroupMoreLabelsOption cluster={cluster} title={moreLabelsTitle} />
+    ) : null;
     const alreadyTracked = isCash ? <CategorizeInboxGroupAlreadyTrackedOption /> : null;
 
     return (
@@ -59,7 +66,7 @@ export const CategorizeInboxGroupOptions = ({ cluster }: Props) => {
                 {candidateOptions.map(option => (
                     <CategorizeInboxGroupLabelOption key={option.label.id} {...option} />
                 ))}
-                <CategorizeInboxGroupMoreLabelsOption cluster={cluster} />
+                {moreLabels}
                 {trailingTransfer}
             </CategorizeInboxOptionCard>
         </View>

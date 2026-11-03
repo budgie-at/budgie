@@ -70,10 +70,9 @@ export const CategorizeInboxCategoryProvider = ({ params, children }: Props) => 
         pageTitle: t`Categorize`,
         emptyDescription: t`Every transaction has a category.`,
         moreLabels: t`More categories`,
+        chooseLabel: t`Choose category`,
         writeFailed: t`Could not categorize transactions`,
         assignAs: categoryTitle => t`Categorize as ${categoryTitle}`,
-        assignedCount: rowCount =>
-            t({ message: plural(rowCount, { one: 'Categorized # transaction', other: 'Categorized # transactions' }) }),
         doneThisSession: categorizedCount =>
             t({ message: plural(categorizedCount, { one: '# categorized this session', other: '# categorized this session' }) })
     };

@@ -12,6 +12,7 @@ import { useCategorizeInboxAmountLabel } from '../../hook/use-categorize-inbox-a
 import { isCategorizeInboxCluster } from '../../type-guard/is-categorize-inbox-cluster.type-guard';
 import { getCategorizeInboxDefaultAmount } from '../../utils/get-categorize-inbox-default-amount.util';
 import { CategorizeInboxSectionChip } from '../categorize-inbox-section-chip/categorize-inbox-section-chip';
+import { CategorizeInboxSessionProgress } from '../categorize-inbox-session-progress/categorize-inbox-session-progress';
 
 import { CategorizeInboxHeroSelector } from './categorize-inbox-hero.selector';
 
@@ -59,14 +60,10 @@ export const CategorizeInboxHero = ({ activeSection, onSectionPress }: Props) =>
                 <Text className="text-sm text-center text-secondary-foreground tabular-nums" numberOfLines={1}>
                     {subtitle}
                 </Text>
+                <CategorizeInboxSessionProgress />
             </View>
 
-            <ScrollView
-                horizontal
-                className="-mx-5xl"
-                contentContainerClassName="grow justify-center gap-x-sm px-5xl"
-                showsHorizontalScrollIndicator={false}
-            >
+            <ScrollView horizontal className="-mx-5xl" contentContainerClassName="gap-x-sm px-5xl" showsHorizontalScrollIndicator={false}>
                 {chips.map(({ section, count }) => (
                     <CategorizeInboxSectionChip
                         key={section}

@@ -7,6 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 import { cn } from '../../../@generic/utils/cn.util';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useCategorizeInboxAmountLabel } from '../../hook/use-categorize-inbox-amount-label.hook';
+import { getCategorizeInboxClusterTotal } from '../../utils/get-categorize-inbox-cluster-total.util';
 
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
@@ -19,20 +20,21 @@ export const CategorizeInboxGroupRowAmount = ({ cluster }: Props) => {
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
 
     const [firstRow] = cluster.rows;
+    const total = getCategorizeInboxClusterTotal(cluster, defaultInstrument.symbol);
     const isSingleRow = cluster.rows.length === 1;
-    const amount = isSingleRow ? firstRow.amount : cluster.totalBaseAmount;
-    const symbol = isSingleRow ? firstRow.instrumentSymbol : defaultInstrument.symbol;
-    const isIncome = firstRow.type === TransactionTypeEnum.INCOME;
+    const amount = isSingleRow ? firstRow.amount : total?.amount;
+    const symbol = isSingleRow ? firstRow.instrumentSymbol : total?.symbol;
 
-    if (!isDefined(amount)) {
+    if (!isDefined(amount) || !isDefined(symbol)) {
         return null;
     }
 
+    const isIncome = firstRow.type === TransactionTypeEnum.INCOME;
     const sign = isIncome ? '+' : '';
     const colorClassName = isIncome ? 'text-positive-foreground' : 'text-primary';
 
     return (
-        <Text className={cn('shrink-0 text-[15px] leading-[18px] font-semibold tabular-nums', colorClassName)} numberOfLines={1}>
+        <Text className={cn('shrink-0 text-[15px] leading-[20px] font-semibold tabular-nums', colorClassName)} numberOfLines={1}>
             {`${sign}${amountLabel(amount, symbol)}`}
         </Text>
     );
