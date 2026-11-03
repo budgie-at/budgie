@@ -1,13 +1,14 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useState } from 'react';
-import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/component/button/button';
-import { Card } from '../../../@generic/component/card/card';
+import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { NetworkTypeEnum } from '../../../@generic/enum/network-type.enum';
 import { useFormatGigabytes } from '../../../@generic/hook/use-format-gigabytes.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
@@ -17,15 +18,12 @@ import { AiModelDownloadService } from '../../../ai/service/ai-model-download.se
 import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
 import { useOnboardingFileState } from '../../hook/use-onboarding-file-state.hook';
-import { OnboardingService } from '../../service/onboarding.service';
-import { OnboardingInfoRow } from '../onboarding-info-row/onboarding-info-row';
-import { OnboardingNote } from '../onboarding-note/onboarding-note';
+import { useOnboardingNavigation } from '../../hook/use-onboarding-navigation.hook';
+import { OnboardingFooterAction } from '../onboarding-footer-action/onboarding-footer-action';
 import { OnboardingStepIntro } from '../onboarding-step-intro/onboarding-step-intro';
 import { OnboardingStepLayout } from '../onboarding-step-layout/onboarding-step-layout';
 
 import { OnboardingAiSelector } from './onboarding-ai.selector';
-
-import type { OnboardingNetworkRowInterface } from '../../interface/onboarding-network-row.interface';
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration component with multiple hooks and handlers
 export const OnboardingAi = () => {
@@ -33,9 +31,10 @@ export const OnboardingAi = () => {
 
     const [isSaving, setIsSaving] = useState(false);
 
-    const { state, isSealed } = useOnboardingFileState();
+    const { state, lock } = useOnboardingFileState();
     const { totalBytes, networkType, freeDiskBytes, missingBytes, hasEnoughSpace } = useAiDownloadPreflight();
     const formatGigabytes = useFormatGigabytes();
+    const { completion } = useOnboardingNavigation();
 
     const finishWith = (settings: Parameters<typeof updateSettingsMutation>[0], allowMobileData: boolean) => {
         setIsSaving(true);
@@ -47,7 +46,7 @@ export const OnboardingAi = () => {
                             ? Effect.flatMap(AiModelDownloadService, downloadService => downloadService.allowMobileData())
                             : Effect.void
                     ),
-                    Effect.andThen(Effect.flatMap(OnboardingService, onboardingService => onboardingService.complete())),
+                    Effect.andThen(completion),
                     Effect.ensuring(Effect.sync(() => void setIsSaving(false)))
                 )
             )
@@ -72,78 +71,71 @@ export const OnboardingAi = () => {
     const missingSize = formatGigabytes(missingBytes);
     const downloadLabel = isOnCellular ? t`Download ${totalSize} GB on mobile data` : t`Download ${totalSize} GB now`;
     const isDownloadDisabled = !hasEnoughSpace || networkType === NetworkTypeEnum.OFFLINE;
-    const networkRows: Partial<Record<NetworkTypeEnum, OnboardingNetworkRowInterface>> = {
-        [NetworkTypeEnum.WIFI]: { icon: UserIconNameEnum.Wifi, text: t`You're on Wi-Fi` },
-        [NetworkTypeEnum.CELLULAR]: { icon: UserIconNameEnum.Signal, text: t`You're on mobile data` },
-        [NetworkTypeEnum.OFFLINE]: { icon: UserIconNameEnum.WifiOff, text: t`You're offline right now` }
+    const networkNames: Partial<Record<NetworkTypeEnum, string>> = {
+        [NetworkTypeEnum.WIFI]: t`Wi-Fi`,
+        [NetworkTypeEnum.CELLULAR]: t`Mobile data`,
+        [NetworkTypeEnum.OFFLINE]: t`Offline`
     };
-    const networkRow = networkRows[networkType];
+    const networkName = networkNames[networkType];
+    const totalSizeText = t`${totalSize} GB`;
+    const freeSpaceText = t`${freeSize} GB free`;
+    const downloadSubtitle = [totalSizeText, networkName, freeSpaceText].filter(isDefined).join(' · ');
+    const downloadFooter = hasEnoughSpace
+        ? null
+        : t`This phone needs ${missingSize} GB more free space first. Your money data isn’t affected.`;
 
     return (
         <OnboardingStepLayout
             step={OnboardingStepEnum.AI}
             fileState={state}
-            isFileSealed={isSealed}
+            fileLock={lock}
             footer={
                 <>
-                    <Button
+                    <PillButton
                         testID={OnboardingAiSelector.DownloadButton}
-                        variant="cta"
-                        content={downloadLabel}
-                        disabled={isDownloadDisabled}
+                        label={downloadLabel}
+                        isDisabled={isDownloadDisabled}
                         isLoading={isSaving}
                         onPress={handleDownloadPress}
                     />
                     {isOnWifi ? null : (
-                        <Button
+                        <OnboardingFooterAction
                             testID={OnboardingAiSelector.LaterButton}
-                            variant="secondary"
-                            content={t`Later, next time I'm on Wi-Fi`}
-                            disabled={isSaving}
+                            label={t`Later, next time I’m on Wi-Fi`}
+                            isDisabled={isSaving}
                             onPress={handleLaterPress}
                         />
                     )}
-                    <Button
+                    <OnboardingFooterAction
                         testID={OnboardingAiSelector.NoThanksButton}
-                        variant="ghost"
-                        content={t`No thanks`}
-                        disabled={isSaving}
+                        label={t`No thanks`}
+                        isDisabled={isSaving}
                         onPress={handleNoThanksPress}
                     />
                 </>
             }
         >
-            <OnboardingStepIntro icon={UserIconNameEnum.Sparkles} iconVariant="pink" title={t`Help sorting, without leaving the phone?`} />
+            <OnboardingStepIntro
+                icon={UserIconNameEnum.Sparkles}
+                title={t`Help sorting your expenses?`}
+                description={t`Runs on this phone. Nothing it reads is sent anywhere.`}
+            />
 
-            <View className="gap-y-md">
-                <OnboardingInfoRow icon={UserIconNameEnum.Tags} text={t`Sorts transactions into categories and suggests tags`} />
-                <OnboardingInfoRow icon={UserIconNameEnum.Mic} text={t`Turns a voice note into an expense`} />
-                <OnboardingInfoRow icon={UserIconNameEnum.ShieldCheck} text={t`Runs on this phone. Nothing it reads is sent anywhere.`} />
-            </View>
-
-            <Card variant="secondary" size="md" className="gap-y-lg">
-                <View className="flex-row items-baseline gap-x-md">
-                    <Text className="text-primary text-(length:--text-5xl) font-semibold">
-                        <Trans>{totalSize} GB</Trans>
-                    </Text>
-                    <Text className="text-secondary-foreground text-sm">
-                        <Trans>one-time download</Trans>
-                    </Text>
-                </View>
-
-                <View className="gap-y-md border-t border-secondary-corner pt-lg">
-                    {isDefined(networkRow) ? <OnboardingInfoRow icon={networkRow.icon} text={networkRow.text} /> : null}
-                    <OnboardingInfoRow icon={UserIconNameEnum.HardDrive} text={t`${freeSize} GB free on this phone`} />
-                </View>
-            </Card>
-
-            {hasEnoughSpace ? null : (
-                <OnboardingNote
-                    icon={UserIconNameEnum.HardDrive}
-                    variant="warning"
-                    text={t`This phone needs ${missingSize} GB more free space first. Your money data isn't affected.`}
+            <GroupedListSection title={t`What it does`}>
+                <GroupedListRow
+                    left={<GroupedListIcon icon={UserIconNameEnum.Tags} />}
+                    title={t`Sorts transactions into categories and suggests tags`}
                 />
-            )}
+                <GroupedListRow left={<GroupedListIcon icon={UserIconNameEnum.Mic} />} title={t`Turns a voice note into an expense`} />
+            </GroupedListSection>
+
+            <GroupedListSection footer={downloadFooter}>
+                <GroupedListRow
+                    left={<GroupedListIcon icon={UserIconNameEnum.HardDrive} />}
+                    title={t`On-device model`}
+                    subtitle={downloadSubtitle}
+                />
+            </GroupedListSection>
         </OnboardingStepLayout>
     );
 };

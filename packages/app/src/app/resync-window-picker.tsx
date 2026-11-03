@@ -78,7 +78,7 @@ export default function ResyncWindowPickerModal() {
                 <View className="gap-y-[4px] px-3xl">
                     {accountHeading}
                     <Text className="text-center text-[13px] text-secondary-foreground">
-                        <Trans>Sync starts when you choose a period.</Trans>
+                        <Trans>Choose a period to re-sync past transactions.</Trans>
                     </Text>
                 </View>
                 <View className="px-3xl pt-[24px] gap-y-[24px]" style={styles.content}>
