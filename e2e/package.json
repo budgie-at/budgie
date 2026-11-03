@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "simlock:install": "command -v jq >/dev/null || { echo 'simlock:install needs jq' >&2; exit 1; } && curl -fsSLo node_modules/.fetch-e2e-simlock.sh https://raw.githubusercontent.com/rnw-community/mobile-ci/6898d7c629f03307f5d4d122de173cc232188209/scripts/fetch-e2e-simlock.sh && bash node_modules/.fetch-e2e-simlock.sh 6898d7c629f03307f5d4d122de173cc232188209 .",
     "test:ios": "e2e run --target ios"
   },
   "devDependencies": {

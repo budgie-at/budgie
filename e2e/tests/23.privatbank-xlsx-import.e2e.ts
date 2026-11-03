@@ -53,7 +53,7 @@ test('23 privatbank xlsx import', { tags: ['import'] }, async ({ budgie }) => {
 
     await b.phase('existing-account quick import', async () => {
         await s.openSettingsAnchor(ctx, 'general');
-        await s.scrollToCentered(ctx, 'SettingsPage.AutoAssignMccCategorySwitch');
+        await b.scrollToCentered(ctx, 'SettingsPage.AutoAssignMccCategorySwitch');
         await b.tapId(ctx, 'SettingsPage.AutoAssignMccCategorySwitch');
         await b.tapId(ctx, 'TabBar.Home');
         await b.expectId(ctx, CARD, 10_000);
