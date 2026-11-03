@@ -19,7 +19,7 @@
 # A scene that records a clip (app-store-preview) leaves <scene>.mp4 beside it.
 #
 # Needs SIMLOCK_URL and SIMLOCK_TOKEN (a simlock agent token; see the farm's
-# handoff), Node 24 and sqlite3, and the e2e project's dependencies
+# handoff), Node 24, and the e2e project's dependencies
 # (`npm ci` in e2e/). Runs on Linux or a Mac alike: no local simulator is used.
 #
 # Usage:

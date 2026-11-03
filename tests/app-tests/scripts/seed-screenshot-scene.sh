@@ -111,11 +111,7 @@ case "$APPEARANCE" in
         ;;
 esac
 
-if ! command -v sqlite3 >/dev/null 2>&1; then
-    echo "seed-screenshot-scene: sqlite3 was not found in PATH" >&2
-
-    exit 1
-fi
+command -v sqlite3 >/dev/null 2>&1 || PATH="$SCRIPT_DIR/sqlite-fallback:$PATH"
 
 for REQUIRED_FIXTURE_PATH in "$SHOWCASE_DATABASE_PATH" "$SHIFT_DATES_SQL_PATH" "$SCREENSHOTS_DIR/$LOCALE.sql"; do
     if [ ! -f "$REQUIRED_FIXTURE_PATH" ]; then

@@ -18,12 +18,14 @@ import { test } from '../support/media/test.ts';
 import { exec } from '../support/simlock/exec.ts';
 
 const FIXTURES = fileURLToPath(new URL('../../tests/app-tests/fixtures/', import.meta.url));
+/** The app-tests' node:sqlite stand-in for the sqlite3 CLI: the same on every host, Linux runners included. */
+const SQLITE3 = fileURLToPath(new URL('../../tests/app-tests/scripts/sqlite-fallback/sqlite3', import.meta.url));
 const skip = process.env.CAPTURE_FIXTURES === '1' ? false : 'builds a committed fixture; CAPTURE_FIXTURES=1 runs it';
 
 /**
  * capture-fixture.sh's snapshot: the app stopped, its database and WAL read
  * off the device through the worker's shell, checkpointed, `finish` applied,
- * and backed up here. Needs a worker whose CoreSimulator still spawns the
+ * and vacuumed into place. Needs a worker whose CoreSimulator still spawns the
  * Mac's tools (macOS 15).
  */
 async function snapshot(budgie: Budgie, name: string, finish?: { sql: string; check: string }): Promise<void> {
@@ -39,20 +41,19 @@ async function snapshot(budgie: Budgie, name: string, finish?: { sql: string; ch
             if (b64.trim() !== '') writeFileSync(join(dir, `budgie.db${suffix}`), Buffer.from(b64.replace(/\s+/g, ''), 'base64'));
         }
         const source = join(dir, 'budgie.db');
-        execFileSync('sqlite3', [source, 'PRAGMA wal_checkpoint(TRUNCATE);'], { stdio: 'ignore' });
+        const sql = (database: string, statements: string): string =>
+            execFileSync(SQLITE3, [database, statements], { encoding: 'utf8' }).trim();
+        sql(source, 'PRAGMA wal_checkpoint(TRUNCATE);');
         if (finish !== undefined) {
-            execFileSync('sqlite3', [source, finish.sql]);
-            const matched = execFileSync('sqlite3', [source, finish.check]).toString().trim();
+            sql(source, finish.sql);
+            const matched = sql(source, finish.check);
             if (matched !== '1') throw new Error(`${name}: the finishing SQL matched ${matched} rows, not 1: ${finish.check}`);
         }
         const target = join(FIXTURES, name);
         rmSync(target, { force: true });
-        execFileSync('sqlite3', [source, `.backup ${target}`]);
-        const counts = execFileSync('sqlite3', [
-            target,
-            "SELECT 'accounts', COUNT(*) FROM accounts; SELECT 'transactions', COUNT(*) FROM transactions;"
-        ]);
-        console.log(`[fixture] captured ${target}\n${counts.toString().trim()}`);
+        sql(source, `VACUUM INTO '${target.replaceAll("'", "''")}';`);
+        const counts = sql(target, "SELECT 'accounts', COUNT(*) FROM accounts; SELECT 'transactions', COUNT(*) FROM transactions;");
+        console.log(`[fixture] captured ${target}\n${counts}`);
     } finally {
         rmSync(dir, { recursive: true, force: true });
     }

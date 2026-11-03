@@ -9,7 +9,7 @@
 # Usage:
 #   E2E_APP_PATH=<path/to/.app> SIMLOCK_URL=<gateway> SIMLOCK_TOKEN=<agent token> \
 #     sh tests/app-tests/scripts/capture-fixture.sh 31-debt.db
-# Needs the e2e project's dependencies (`npm ci` in e2e/) and sqlite3.
+# Needs the e2e project's dependencies (`npm ci` in e2e/).
 set -eu
 
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname "$0")" && pwd)
