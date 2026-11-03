@@ -621,6 +621,8 @@ export const SCENES: Readonly<Record<string, Scene>> = {
         run: async ctx => {
             await applePaySettings(ctx);
             const card = b.byId(ctx.screen, 'ApplePayCaptureSettings.ReviewCard.11111111_1111_4111_8111_111111111111');
+            // The startup sync drains the pending capture only once the app is idle, so a scroll started at once can outrun it.
+            await expect(card).toBeAttached({ timeout: 60_000 });
             await scrollDown(ctx, card, true);
             await expect(card).toBeVisible();
         }
