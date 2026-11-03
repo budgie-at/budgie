@@ -46,7 +46,8 @@
         "e2e": {
             "entry": [
                 "e2e.config.ts",
-                "tests/**/*.e2e.ts"
+                "tests/**/*.e2e.ts",
+                "support/**/*.test.ts"
             ],
             "project": [
                 "**/*.ts"
