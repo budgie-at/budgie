@@ -17,8 +17,6 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { PinSetupModeEnum } from '../../enum/pin-setup-mode.enum';
 import { PinFormSelector } from '../pin-form/pin-form.selector';
 
-const PIN_SEALING_FADE_DURATION_MS = 260;
-
 const SEALING_COPY = {
     [PinSetupModeEnum.CREATE]: {
         title: msg`Encrypting your data`,
@@ -44,6 +42,7 @@ interface Props {
     readonly mode: PinSetupModeEnum;
 }
 
+const PIN_SEALING_FADE_DURATION_MS = 260;
 const BREATH_DURATION_MS = 1_100;
 const BREATH_MIN_OPACITY = 0.55;
 

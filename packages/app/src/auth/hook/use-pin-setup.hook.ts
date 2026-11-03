@@ -70,16 +70,6 @@ export const usePinSetup = (mode: PinSetupModeEnum) => {
         dispatch({ type: PinSetupActionTypeEnum.DIGIT_DELETED });
     };
 
-    const deletePin = markSealing.pipe(
-        Effect.andThen(Effect.flatMap(AuthService, authService => authService.deletePin())),
-        Effect.tapCause(() =>
-            Effect.sync(() => {
-                setIsSealing(false);
-                dispatch({ type: PinSetupActionTypeEnum.ERROR_REPORTED, error: t`Couldn't turn off app lock. Try again.` });
-            })
-        )
-    );
-
     const handleVerifyOldStep = (pin: string) =>
         Effect.gen(function* () {
             const authService = yield* AuthService;
@@ -96,7 +86,15 @@ export const usePinSetup = (mode: PinSetupModeEnum) => {
             }
 
             if (mode === PinSetupModeEnum.DISABLE) {
-                yield* deletePin;
+                yield* markSealing.pipe(
+                    Effect.andThen(Effect.flatMap(AuthService, authService => authService.deletePin())),
+                    Effect.tapCause(() =>
+                        Effect.sync(() => {
+                            setIsSealing(false);
+                            dispatch({ type: PinSetupActionTypeEnum.ERROR_REPORTED, error: t`Couldn't turn off app lock. Try again.` });
+                        })
+                    )
+                );
 
                 return;
             }

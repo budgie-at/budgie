@@ -43,6 +43,7 @@ export const OnboardingStepLayout = (props: Props) => {
         }
     });
 
+    const isBackVisible = step !== OnboardingStepEnum.SEALED;
     const headerRowStyle = { paddingHorizontal: 0 };
 
     return (
@@ -51,11 +52,7 @@ export const OnboardingStepLayout = (props: Props) => {
                 <BottomChromeInsetProvider>
                     <ScreenChromeFrame>
                         <ScreenChromeHeader inFlow rowStyle={headerRowStyle}>
-                            <OnboardingStepHeader
-                                fileState={fileState}
-                                fileLock={fileLock}
-                                {...(step !== OnboardingStepEnum.SEALED && { onBack: goBack })}
-                            />
+                            <OnboardingStepHeader fileState={fileState} fileLock={fileLock} {...(isBackVisible && { onBack: goBack })} />
                         </ScreenChromeHeader>
 
                         <RevealGate isLoading={isLoading}>

@@ -20,8 +20,8 @@ export const DefaultAccountSelector = () => {
     const [openAccountSelector] = useAccountSelectorModal();
 
     const icon = defaultAccount?.icon ?? UserIconNameEnum.Wallet;
-    const accountLabel = isDefined(defaultAccount) ? defaultAccount.title : t`None`;
-    const defaultAccountSelectorId = SettingsPageSelector.DefaultAccountCard(defaultAccount ?? null);
+    const accountLabel = defaultAccount?.title ?? t`None`;
+    const defaultAccountSelectorId = SettingsPageSelector.DefaultAccountCard(defaultAccount);
 
     const handleOpen = () => {
         openAccountSelector({ initialAccountId: defaultAccount?.id ?? null }, accountId => {

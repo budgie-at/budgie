@@ -1,6 +1,5 @@
 import { MoneyDataUpgradeService } from '@budgie/ledger';
 import { useAtomValue } from '@effect/atom-react/Hooks';
-import { t } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
@@ -53,33 +52,33 @@ const getState = (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface): MoneyData
         : MoneyDataUpgradeProgressStateEnum.COMPLETE;
 };
 
-const buildMoneyDataUpgradeStatusText = (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface): string => {
-    if (isDefined(snapshot.lastError)) {
-        return t`Couldn't finish. Try again.`;
-    }
-
-    if (snapshot.isUpdatingBalances) {
-        return t`Recalculating balances`;
-    }
-
-    if (!snapshot.isRunning) {
-        return t`Fill missing currency conversions`;
-    }
-
-    if (!isPositiveNumber(snapshot.totalEntryCount)) {
-        return t`Preparing conversions`;
-    }
-
-    const { processedEntryCount } = snapshot;
-    const { totalEntryCount } = snapshot;
-
-    return t`Converting ${processedEntryCount} of ${totalEntryCount} transactions`;
-};
-
 export const useMoneyDataUpgradeStatus = () => {
     const { t } = useLingui();
     const runtimeResult = useAtomValue(moneyDataUpgradeProgressAtom);
     const runtimeSnapshot = AsyncResult.getOrElse(runtimeResult, () => EMPTY_RUNTIME_SNAPSHOT);
+
+    const buildMoneyDataUpgradeStatusText = (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface): string => {
+        if (isDefined(snapshot.lastError)) {
+            return t`Couldn't finish. Try again.`;
+        }
+
+        if (snapshot.isUpdatingBalances) {
+            return t`Recalculating balances`;
+        }
+
+        if (!snapshot.isRunning) {
+            return t`Fill missing currency conversions`;
+        }
+
+        if (!isPositiveNumber(snapshot.totalEntryCount)) {
+            return t`Preparing conversions`;
+        }
+
+        const { processedEntryCount } = snapshot;
+        const { totalEntryCount } = snapshot;
+
+        return t`Converting ${processedEntryCount} of ${totalEntryCount} transactions`;
+    };
 
     useEffect(() => {
         const fiber = appRuntime.runFork(
