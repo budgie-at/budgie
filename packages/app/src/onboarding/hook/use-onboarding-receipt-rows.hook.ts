@@ -1,5 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
 
+import { DB_NAME } from '../../@generic/drizzle/constant/db-name.constant';
 import { useAuthContext } from '../../auth/context/auth.context';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 
@@ -13,7 +14,11 @@ export const useOnboardingReceiptRows = (): OnboardingReceiptRowInterface[] => {
 
     const biometricOpensWith = isFaceIdAvailable ? t`Your PIN · Face ID` : t`Your PIN · Fingerprint`;
     const pinOpensWith = isBiometricEnabled ? biometricOpensWith : t`Your PIN`;
-    const opensWith = isPinEnabled ? pinOpensWith : t`This phone's lock`;
+    const opensWith = isPinEnabled ? pinOpensWith : t`This phone’s lock`;
 
-    return [{ label: t`Opens with`, value: opensWith }];
+    return [
+        { label: t`File`, value: DB_NAME },
+        { label: t`Lives on`, value: t`This phone` },
+        { label: t`Opens with`, value: opensWith }
+    ];
 };

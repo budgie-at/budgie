@@ -1,12 +1,13 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
-import { Button } from '../../../@generic/component/button/button';
+import { PillButton } from '../../../@generic/component/pill-button/pill-button';
+import { OnboardingFileLockEnum } from '../../enum/onboarding-file-lock.enum';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
 import { useOnboardingNavigation } from '../../hook/use-onboarding-navigation.hook';
 import { useOnboardingReceiptRows } from '../../hook/use-onboarding-receipt-rows.hook';
-import { OnboardingNote } from '../onboarding-note/onboarding-note';
-import { OnboardingReceiptCard } from '../onboarding-receipt-card/onboarding-receipt-card';
+import { OnboardingFooterAction } from '../onboarding-footer-action/onboarding-footer-action';
+import { OnboardingReceiptSection } from '../onboarding-receipt-section/onboarding-receipt-section';
 import { OnboardingStepIntro } from '../onboarding-step-intro/onboarding-step-intro';
 import { OnboardingStepLayout } from '../onboarding-step-layout/onboarding-step-layout';
 
@@ -24,19 +25,18 @@ export const OnboardingPhoneLock = () => {
     return (
         <OnboardingStepLayout
             step={OnboardingStepEnum.PHONE_LOCK}
-            fileState={t`Phone lock only`}
+            fileState={t`Phone lock`}
+            fileLock={OnboardingFileLockEnum.PHONE}
             footer={
                 <>
-                    <Button
+                    <PillButton
                         testID={OnboardingPhoneLockSelector.ContinueButton}
-                        variant="cta"
-                        content={t`Continue without a PIN`}
+                        label={t`Continue without a PIN`}
                         onPress={handleContinuePress}
                     />
-                    <Button
+                    <OnboardingFooterAction
                         testID={OnboardingPhoneLockSelector.MakePinButton}
-                        variant="ghost"
-                        content={t`Make a PIN after all`}
+                        label={t`Make a PIN after all`}
                         onPress={handleMakePinPress}
                     />
                 </>
@@ -44,15 +44,13 @@ export const OnboardingPhoneLock = () => {
         >
             <OnboardingStepIntro
                 icon={UserIconNameEnum.Smartphone}
-                title={t`Your phone's lock will be the only lock.`}
+                title={t`Your phone’s lock will be the only lock.`}
                 description={t`Everything still stays on this device and nothing is uploaded. But anyone who can unlock your phone can open Budgie.`}
             />
 
-            <OnboardingReceiptCard rows={receiptRows} />
-
-            <OnboardingNote
-                icon={UserIconNameEnum.KeyRound}
-                text={t`You can add a PIN any time in Settings. Budgie re-encrypts the file with it then.`}
+            <OnboardingReceiptSection
+                rows={receiptRows}
+                footer={t`You can add a PIN any time in Settings. Budgie then encrypts the file with it.`}
             />
         </OnboardingStepLayout>
     );
