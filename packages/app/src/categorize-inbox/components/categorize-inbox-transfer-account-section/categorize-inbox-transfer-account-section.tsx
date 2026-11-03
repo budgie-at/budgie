@@ -1,5 +1,6 @@
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { CategorizeInboxTransferAccountRow } from '../categorize-inbox-transfer-account-row/categorize-inbox-transfer-account-row';
 
 import type { AccountWithInstrumentEntityInterface } from '@budgie/contracts';
@@ -11,10 +12,11 @@ interface Props {
 }
 
 export const CategorizeInboxTransferAccountSection = ({ title, accounts, onSelect }: Props) => (
-    <View className="pt-xl">
-        <Text className="text-secondary-foreground pb-md text-sm">{title}</Text>
-        {accounts.map(account => (
-            <CategorizeInboxTransferAccountRow key={account.id} account={account} onSelect={onSelect} />
-        ))}
+    <View className="pt-3xl">
+        <GroupedListSection title={title}>
+            {accounts.map(account => (
+                <CategorizeInboxTransferAccountRow key={account.id} account={account} onSelect={onSelect} />
+            ))}
+        </GroupedListSection>
     </View>
 );

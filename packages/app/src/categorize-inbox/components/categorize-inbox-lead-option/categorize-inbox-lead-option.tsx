@@ -7,22 +7,20 @@ import type { UserIconType } from '@budgie/contracts';
 
 interface Props {
     readonly choice: CategorizeInboxGroupChoiceType;
-    readonly variant: 'positive' | 'neutral';
     readonly title: string;
     readonly subtitle: string;
     readonly icon: UserIconType;
 }
 
-export const CategorizeInboxLeadOption = ({ choice, variant, title, subtitle, icon }: Props) => {
+export const CategorizeInboxLeadOption = ({ choice, title, subtitle, icon }: Props) => {
     const { isSelected, accessibilityState, onSelect } = useCategorizeInboxGroupChoiceSelection(choice);
 
     return (
         <CategorizeInboxLeadRow
-            variant={variant}
             title={title}
             subtitle={subtitle}
             icon={icon}
-            accessory={<CategorizeInboxSelectionIndicator variant={variant} isSelected={isSelected} />}
+            accessory={<CategorizeInboxSelectionIndicator isSelected={isSelected} />}
             accessibilityState={accessibilityState}
             onPress={onSelect}
         />

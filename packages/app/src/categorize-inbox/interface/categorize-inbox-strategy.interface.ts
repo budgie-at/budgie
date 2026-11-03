@@ -11,9 +11,9 @@ export interface CategorizeInboxStrategyInterface {
     readonly pageTitle: string;
     readonly emptyDescription: string;
     readonly moreLabels: string;
+    readonly chooseLabel: string;
     readonly writeFailed: string;
     readonly assignAs: (labelTitle: string) => string;
-    readonly assignedCount: (count: number) => string;
     readonly doneThisSession: (count: number) => string;
     readonly rowsAtom: typeof uncategorizedRowsAtom;
     readonly evidenceAtom: typeof categoryEvidenceAtom;
