@@ -62,7 +62,16 @@ export class TransferCreationService extends Context.Service<TransferCreationSer
             toIban: entry.toIban ?? null
         });
 
-        const valueTransferLeg = Effect.fnUntraced(function* (accountId: number, amount: number, input: TransactionCreateInputInterface) {
+        const valueTransferLeg = Effect.fnUntraced(function* (
+            accountId: number,
+            amount: number,
+            input: TransactionCreateInputInterface,
+            valuation?: EntryBaseValuationInterface
+        ) {
+            if (isDefined(valuation)) {
+                return valuation;
+            }
+
             return yield* entryBaseValuationService.valueMicroUnitEntry({
                 accountId,
                 amount,
@@ -100,13 +109,15 @@ export class TransferCreationService extends Context.Service<TransferCreationSer
             fromEntry: TransactionEntryCreateInputInterface,
             toEntry: TransactionEntryCreateInputInterface,
             fromAmountInMicroUnits: number,
-            toAmountInMicroUnits: number
+            toAmountInMicroUnits: number,
+            entryValuations?: Map<TransactionEntryCreateInputInterface, EntryBaseValuationInterface>
         ) {
-            const additionalEntryValuations = yield* entryBaseValuationService.valueEntries(input.entries, input.operatedAt);
+            const additionalEntryValuations =
+                entryValuations ?? (yield* entryBaseValuationService.valueEntries(input.entries, input.operatedAt));
             const [fromValuation, toValuation] = yield* Effect.all(
                 [
-                    valueTransferLeg(fromEntry.accountId, fromAmountInMicroUnits, input),
-                    valueTransferLeg(toEntry.accountId, toAmountInMicroUnits, input)
+                    valueTransferLeg(fromEntry.accountId, fromAmountInMicroUnits, input, entryValuations?.get(fromEntry)),
+                    valueTransferLeg(toEntry.accountId, toAmountInMicroUnits, input, entryValuations?.get(toEntry))
                 ],
                 { concurrency: 'unbounded' }
             );
@@ -146,7 +157,10 @@ export class TransferCreationService extends Context.Service<TransferCreationSer
             return { fromEntry, toEntry };
         });
 
-        const persistSyncedTransfer = Effect.fnUntraced(function* (input: TransactionCreateInputInterface) {
+        const persistSyncedTransfer = Effect.fnUntraced(function* (
+            input: TransactionCreateInputInterface,
+            entryValuations: Map<TransactionEntryCreateInputInterface, EntryBaseValuationInterface>
+        ) {
             const { fromEntry, toEntry } = yield* findPrimaryEntries(input.entries, input.fromAccountId, input.toAccountId);
             const transaction = yield* transactionRepository.create({ ...input, exchangeRate: 1 });
             yield* persistPrimaryTransfer(
@@ -155,7 +169,8 @@ export class TransferCreationService extends Context.Service<TransferCreationSer
                 fromEntry,
                 toEntry,
                 convertToMicroUnits(fromEntry.amount),
-                convertToMicroUnits(toEntry.amount)
+                convertToMicroUnits(toEntry.amount),
+                entryValuations
             );
 
             return transaction;
@@ -197,9 +212,10 @@ export class TransferCreationService extends Context.Service<TransferCreationSer
                         return yield* Effect.die(new Error('Synced transfer exchange rate must be equal to 1'));
                     }
 
+                    const entryValuations = yield* entryBaseValuationService.valueTransactionsEntries(inputs);
                     const transactions: TransactionEntityInterface[] = [];
-                    for (const input of inputs) {
-                        transactions.push(yield* persistSyncedTransfer(input));
+                    for (const [index, input] of inputs.entries()) {
+                        transactions.push(yield* persistSyncedTransfer(input, entryValuations[index]));
                     }
 
                     yield* accountBalanceIncrementalService.updateBalancesByAccountIds(getEntryAccountIds(inputs));
