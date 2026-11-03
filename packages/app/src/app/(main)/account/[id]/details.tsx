@@ -81,7 +81,7 @@ export default function AccountDetails() {
             </CollapsibleChromeScrollFade>
         ) : (
             <View className="gap-y-4xl">
-                <AccountDetailsHero account={account} />
+                <AccountDetailsHero account={account} balance={balance} />
 
                 {account.type === AccountTypeEnum.DEPOSIT ? (
                     <CollapsibleChromeScrollFade>
@@ -105,7 +105,7 @@ export default function AccountDetails() {
         </>
     );
     const headerTitle = isStaticHeader ? (
-        <AccountDetailsStaticTitle title={account.title} balance={balance} instrumentSymbol={instrumentSymbol} />
+        <AccountDetailsStaticTitle title={account.title} balance={balance} account={account} />
     ) : (
         animatedTitle
     );
@@ -116,7 +116,7 @@ export default function AccountDetails() {
                 <ScreenChromeThemeProvider config={ACCOUNT_DETAILS_SCREEN_CHROME_CONFIG}>
                     <ScreenChromeFrame>
                         <View className="flex-1">
-                            <CollapsibleChromeTransactionList accountId={id}>{accountSummary}</CollapsibleChromeTransactionList>
+                            <CollapsibleChromeTransactionList accountIds={Array.of(id)}>{accountSummary}</CollapsibleChromeTransactionList>
                         </View>
 
                         <AccountDetailsHeaderBackdrop />
@@ -130,7 +130,7 @@ export default function AccountDetails() {
 
                         {headerTitle}
 
-                        {isDebt ? null : <AccountDetailsHeroBalance balance={balance} instrumentSymbol={instrumentSymbol} />}
+                        {isDebt ? null : <AccountDetailsHeroBalance balance={balance} account={account} />}
                     </ScreenChromeFrame>
                 </ScreenChromeThemeProvider>
             </RevealGate>

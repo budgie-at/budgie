@@ -5,12 +5,13 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Apply to existing transactions?'
     timeout: 10000
-- tapOn: 'Apply'
-- waitForAnimationToEnd
+- tapOn:
+    text: 'Apply'
+    waitToSettleTimeoutMs: 500
+- extendedWaitUntil:
+    visible: 'Rule applied'
+    timeout: 15000
 - extendedWaitUntil:
     visible:
       id: 'RulesPage.Page'
     timeout: 10000
-- extendedWaitUntil:
-    visible: 'Rule applied'
-    timeout: 15000

@@ -51,25 +51,27 @@ appId: ${APP_ID}
 - waitForAnimationToEnd
 - scrollUntilVisible:
       element:
-          id: 'AccountCard.Balance.E2E_Crypto_Vault.2_BTC'
+          id: 'AccountCard.E2E Crypto Vault'
+          text: 'E2E Crypto Vault, 2 BTC'
       direction: DOWN
       timeout: 10000
       visibilityPercentage: 100
       centerElement: true
 - assertVisible:
-      id: 'AccountCard.Balance.E2E_Crypto_Vault.2_BTC'
+      id: 'AccountCard.E2E Crypto Vault'
+      text: 'E2E Crypto Vault, 2 BTC'
 
 # --- Binance sync accounts group under their integration, not the crypto instrument group ---
 - scrollUntilVisible:
       element:
           id: 'AccountCard.E2E Binance BTC'
-      direction: DOWN
+      direction: UP
       timeout: 10000
 - assertVisible:
       id: 'AccountCard.E2E Binance BTC'
-# Provider-grouped rows render as sync cards, so the balance id carries no asset code
 - assertVisible:
-      id: 'AccountCard.Balance.E2E_Binance_BTC.2_BTC'
+      id: 'AccountCard.E2E Binance BTC'
+      text: 'E2E Binance BTC, 2 BTC, Sync paused'
 
 # --- Binance account settings credentials editor ---
 
@@ -121,7 +123,11 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'CurrencyMarket.Price.BTC'
 - assertVisible:
-      id: 'CurrencyMarket.Rate.BTC'
+      id: 'CurrencyMarket.Change.BTC'
+- assertVisible:
+      id: 'CurrencyMarket.Sparkline.BTC'
+- tapOn:
+      id: 'CurrencyMarket.Range.YEAR'
 - assertVisible:
       id: 'CurrencyMarket.Sparkline.BTC'
 - assertVisible:
@@ -131,18 +137,24 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'CurrencyMarket.Holdings.Value.BTC'
 - assertVisible:
-      id: 'CurrencyMarket.Holdings.AverageCost.BTC'
-- assertVisible:
-      id: 'CurrencyMarket.Holdings.CostBasis.BTC'
-- assertVisible:
       id: 'CurrencyMarket.Holdings.UnrealizedProfit.BTC'
 - assertVisible: '4 BTC'
+
+- scrollUntilVisible:
+      element:
+          id: 'CurrencyMarket.Account.BTC.2'
+      direction: DOWN
+      timeout: 3000
+- assertVisible:
+      id: 'CurrencyMarket.Account.BTC.2'
 
 - scrollUntilVisible:
       element:
           id: 'CurrencyMarket.MarketCap.BTC'
       direction: DOWN
       timeout: 3000
+- assertVisible:
+      id: 'CurrencyMarket.DailyChange.BTC'
 - assertVisible:
       id: 'CurrencyMarket.Volume.BTC'
 - assertVisible:
@@ -177,8 +189,6 @@ appId: ${APP_ID}
       timeout: 10000
 - assertVisible:
       id: 'CurrencyMarket.Price.ETH'
-- assertVisible:
-      id: 'CurrencyMarket.Rate.ETH'
 - assertVisible:
       id: 'CurrencyMarket.Sparkline.ETH'
 - assertVisible:
@@ -218,13 +228,32 @@ appId: ${APP_ID}
           - waitForAnimationToEnd
 - scrollUntilVisible:
       element:
-          id: 'AccountCard.Balance.E2E_Crypto_Vault.2_BTC'
+          id: 'AccountCard.E2E Crypto Vault'
+          text: 'E2E Crypto Vault, 2 BTC'
       direction: DOWN
       timeout: 10000
       visibilityPercentage: 100
       centerElement: true
+- waitForAnimationToEnd
 - tapOn:
-      id: 'AccountCard.Balance.E2E_Crypto_Vault.2_BTC'
+      id: 'AccountCard.E2E Crypto Vault'
+      text: 'E2E Crypto Vault, 2 BTC'
+- extendedWaitUntil:
+      visible:
+          id: 'AccountDetails.ActionsButton'
+      timeout: 10000
+- assertVisible:
+      id: 'AccountDetails.ConvertedValue'
+- assertVisible:
+      id: 'AccountDetails.MarketLink'
+- tapOn:
+      id: 'AccountDetails.MarketLink'
+- extendedWaitUntil:
+      visible:
+          id: 'CurrencyMarket.Header.BTC'
+      timeout: 10000
+- tapOn:
+      id: 'PageHeader.BackButton'
 - extendedWaitUntil:
       visible:
           id: 'AccountDetails.ActionsButton'
@@ -285,10 +314,6 @@ appId: ${APP_ID}
           id: 'CurrencyMarket.Header.BTC'
       timeout: 10000
 - assertVisible: '5 BTC'
-- assertVisible:
-      id: 'CurrencyMarket.Holdings.AverageCost.BTC'
-- assertVisible:
-      id: 'CurrencyMarket.Holdings.CostBasis.BTC'
 - assertVisible:
       id: 'CurrencyMarket.Holdings.UnrealizedProfit.BTC'
 

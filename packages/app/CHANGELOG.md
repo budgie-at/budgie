@@ -3,6 +3,70 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.148.0](https://github.com/budgie-at/budgie/compare/v6.147.1...v6.148.0) (2026-11-02)
+
+### Bug Fixes
+
+* **app:** address institution page QA findings ([480914c](https://github.com/budgie-at/budgie/commit/480914cd94f7106b5434d91cd5ca7cbafc8ca9a4))
+* **app:** keep per-row transfer context in multi-account lists ([1a50fb5](https://github.com/budgie-at/budgie/commit/1a50fb5a123d9473e126681dc09b5cae8188d77f))
+
+### Features
+
+* **app:** name crypto assets, sync freshness and transfer accounts on bank pages ([e1cf651](https://github.com/budgie-at/budgie/commit/e1cf65140c21b13bac0d859d6fcc335f740479c8))
+* **app:** name the recovery action and shorten bank feed titles ([21c3f55](https://github.com/budgie-at/budgie/commit/21c3f55cdfaee09e0d752ad7b52e44014e228555))
+* **app:** open an institution page from Home bank cards ([9cba255](https://github.com/budgie-at/budgie/commit/9cba255744c29dbd8f4f89d90b3fe836e914ecb5))
+* **app:** polish the institution page status, crypto amounts and labels ([b2f07f9](https://github.com/budgie-at/budgie/commit/b2f07f996ce6d9d3beee95fdd198ed30cdb1d62e))
+* **app:** put the connection fix next to the bank status ([61bac1e](https://github.com/budgie-at/budgie/commit/61bac1e546cf1e8ba0de93eb50159eda0c6e2855))
+* **app:** shorten bank page account names and label its transactions ([5ded913](https://github.com/budgie-at/budgie/commit/5ded9134286e07dbdbb3634518b6f40a19cedba3))
+
+
+## [6.147.1](https://github.com/budgie-at/budgie/compare/v6.147.0...v6.147.1) (2026-11-02)
+
+### Bug Fixes
+
+* **ledger:** self-heal debt payment categories after sync and consolidation ([#1866](https://github.com/budgie-at/budgie/issues/1866)) ([ebc501b](https://github.com/budgie-at/budgie/commit/ebc501bdcd68f76f7dc6f25a808fe453b2b5cdee))
+
+
+# [6.147.0](https://github.com/budgie-at/budgie/compare/v6.146.1...v6.147.0) (2026-11-02)
+
+### Bug Fixes
+
+* **app:** harden crypto ranges, daily change and return against stale and partial data ([28c6d69](https://github.com/budgie-at/budgie/commit/28c6d695b6faa3605e35fd1ac526b9be9e413545))
+* **app:** keep crypto return signs, rounding and VoiceOver selection consistent ([a8919cb](https://github.com/budgie-at/budgie/commit/a8919cb6c7766ae1f5d489c493c4195596ac4a39))
+* **app:** keep shared guards out of the chart open-label worklet ([141bc2d](https://github.com/budgie-at/budgie/commit/141bc2dc2120ffbb97f46faecf360849b0c3911d))
+* **app:** keep the crypto loading baseline clear of its label ([c37bf37](https://github.com/budgie-at/budgie/commit/c37bf3750f314cf10bb35b0dcbc52cefc29e667d))
+* **app:** let crypto position rows scroll from any point ([c133fae](https://github.com/budgie-at/budgie/commit/c133fae15223f87c0379adecafca9f61c7276505))
+* **app:** move the crypto chart open label off the price line ([5df0931](https://github.com/budgie-at/budgie/commit/5df093192dd39fcb236bbcd4610fa70a44a278cb))
+* **market:** value crypto rows with the net-worth exchange rate ([c74b1d0](https://github.com/budgie-at/budgie/commit/c74b1d02dc2f1e46d83bbe9458a470678ef17438))
+
+### Features
+
+* **app:** centre crypto holding rows and show compact huge balances ([a8f7a6a](https://github.com/budgie-at/budgie/commit/a8f7a6a297755945d58cb9366d70aa43fdbdf290))
+* **app:** keep crypto rows readable and privacy masks stable ([664d86c](https://github.com/budgie-at/budgie/commit/664d86c798d9f2ab6da2466be09db68c228df8b0))
+* **app:** label crypto scrub dates and keep privacy captions readable ([c1b1086](https://github.com/budgie-at/budgie/commit/c1b10867b54567f5ba275701d39df6848b2eb4e2))
+* **app:** label the crypto chart open and keep tiny changes precise ([49d77d1](https://github.com/budgie-at/budgie/commit/49d77d1a6d19f48736e28ff4d14fa5287c0a5143))
+* **app:** mask crypto positions in privacy mode and reconcile value with price ([35b1c4a](https://github.com/budgie-at/budgie/commit/35b1c4af4c9ff2d69b3f1a55e537f5a6f5e6141c))
+* **app:** polish crypto chart scrub, cost wording and no-price layout ([823e952](https://github.com/budgie-at/budgie/commit/823e9525b235e561e10a54eb7e1ecbe5345cefb7))
+* **app:** reconcile crypto value captions to the cent and calm flat charts ([ee614cd](https://github.com/budgie-at/budgie/commit/ee614cd100b3d8d73291695b85693566e9dcbe48))
+* **app:** redesign crypto market and account screens ([c592805](https://github.com/budgie-at/budgie/commit/c592805d898f40c2a4a0463f22b7d744fbb1a254))
+* **app:** refine crypto market chrome, chart and states ([16c2384](https://github.com/budgie-at/budgie/commit/16c2384a7e79c357c02b99d9fd18510f458044a6))
+* **app:** translate crypto market strings ([e467e8d](https://github.com/budgie-at/budgie/commit/e467e8d85c1cba4de84007c449f469a28261a98b))
+
+
+## [6.146.1](https://github.com/budgie-at/budgie/compare/v6.146.0...v6.146.1) (2026-11-02)
+
+### Performance Improvements
+
+* **app:** index icon search tokens so category icon matching stops freezing ([#1857](https://github.com/budgie-at/budgie/issues/1857)) ([fb82a34](https://github.com/budgie-at/budgie/commit/fb82a343eeafc7641dcc1e3af65ec669fc2d16b6))
+
+
+# [6.146.0](https://github.com/budgie-at/budgie/compare/v6.145.0...v6.146.0) (2026-11-02)
+
+### Features
+
+* **app:** polish PIN and app lock flow ([#1854](https://github.com/budgie-at/budgie/issues/1854)) ([3023ce1](https://github.com/budgie-at/budgie/commit/3023ce1bd9289f615940b90dc78289a715361629))
+
+
 # [6.145.0](https://github.com/budgie-at/budgie/compare/v6.144.1...v6.145.0) (2026-11-02)
 
 ### Features

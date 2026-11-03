@@ -16,15 +16,15 @@ import type { ReactNode } from 'react';
 import type { LayoutChangeEvent } from 'react-native';
 
 interface Props {
-    readonly accountId: number;
+    readonly accountIds: number[];
     readonly children: ReactNode;
 }
 
 const FAB_FOOTER_SPACER_MULTIPLIER = 3;
 
-export const CollapsibleChromeTransactionList = ({ accountId, children }: Props) => {
+export const CollapsibleChromeTransactionList = ({ accountIds, children }: Props) => {
     const { activeFilters, setInternalFilters, clearFilters, hasFiltersSelected, isClearAllVisible, sections, loadMore, isLoading } =
-        useTransactionList(accountId);
+        useTransactionList(accountIds);
     const [filtersY, setFiltersY] = useState(0);
     const [pinnedFiltersHeight, setPinnedFiltersHeight] = useState(0);
     const headerOffsets = useSharedValue<number[]>([]);
@@ -54,7 +54,7 @@ export const CollapsibleChromeTransactionList = ({ accountId, children }: Props)
                             onClearFilters={clearFilters}
                         />
                     }
-                    accountId={accountId}
+                    accountIds={activeFilters.accountIds}
                     footerSpacerMultiplier={FAB_FOOTER_SPACER_MULTIPLIER}
                     listHeader={listHeader}
                     listComponent={CollapsibleChromeLegendList}
@@ -70,7 +70,7 @@ export const CollapsibleChromeTransactionList = ({ accountId, children }: Props)
                 <TransactionFilters
                     filters={activeFilters}
                     onChange={setInternalFilters}
-                    accountId={accountId}
+                    scopeAccountIds={accountIds}
                     isClearAllVisible={isClearAllVisible}
                     leading={<TransactionListUncategorizedPill filters={activeFilters} />}
                 />

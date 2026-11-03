@@ -24,7 +24,7 @@ appId: ${APP_ID}
       id: 'PinPage.Digit.4'
 
 - extendedWaitUntil:
-      visible: 'Confirm PIN'
+      visible: 'Confirm your PIN'
       timeout: 5000
 
 - tapOn:
@@ -38,7 +38,7 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
       visible:
-          id: 'PinPage.BiometricSetupSwitch'
+          id: 'PinPage.ContinueButton'
       timeout: 8000
 
 - tapOn:

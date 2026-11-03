@@ -137,6 +137,14 @@ msgstr "{accountCount, plural, one {# Konto} other {# Konten}}"
 msgid "{accountsCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountsCount, plural, one {# Konto} other {# Konten}}"
 
+#: src/account/component/institution-row/institution-row.tsx
+msgid "{accountsCount, plural, one {# asset} other {# assets}}"
+msgstr "{accountsCount, plural, one {# Vermögenswert} other {# Vermögenswerte}}"
+
+#: src/market-data/component/currency-market-stale-price/currency-market-stale-price.tsx
+msgid "{ageDays, plural, one {# day old} other {# days old}}"
+msgstr "{ageDays, plural, one {# Tag alt} other {# Tage alt}}"
+
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "{applied, plural, one {# matching transaction updated} other {# matching transactions updated}}"
 msgstr "{applied, plural, one {# passende Transaktion aktualisiert} other {# passende Transaktionen aktualisiert}}"
@@ -276,6 +284,10 @@ msgstr "{count} von {rowCount} ausgewählt"
 #: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
 msgid "{dateLabel}, {kindLabel}"
 msgstr "{dateLabel}, {kindLabel}"
+
+#: src/market-data/hook/use-market-chart-accessibility.hook.ts
+msgid "{dateLabel}, {priceLabel}"
+msgstr "{dateLabel}, {priceLabel}"
 
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 msgid "{days, plural, one {In # day} other {In # days}}"
@@ -491,9 +503,9 @@ msgstr "{installmentCount, plural, one {# Zahlung insgesamt} other {# Zahlungen 
 msgid "{installmentCount, plural, one {Split into # payment} other {Split into # payments}}"
 msgstr "{installmentCount, plural, one {In # Zahlung aufteilen} other {In # Zahlungen aufteilen}}"
 
-#: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
-msgid "{loadedDays}/{totalDays} days"
-msgstr "{loadedDays}/{totalDays} Tage"
+#: src/market-data/component/currency-market-chart-status/currency-market-chart-status.tsx
+msgid "{loadedDays} of {totalDays} days"
+msgstr "{loadedDays} von {totalDays} Tagen"
 
 #: src/app/transaction-type-filter.tsx
 msgid "{localSelectedCount, plural, =0 {Show all types} one {Show # type} other {Show # types}}"
@@ -502,6 +514,14 @@ msgstr "{localSelectedCount, plural, =0 {Alle Typen anzeigen} one {# Typ anzeige
 #: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
 msgid "{lowestCount}–{MAX_INSTALLMENT_COUNT} months · showing {selectedCount}"
 msgstr "{lowestCount}–{MAX_INSTALLMENT_COUNT} Monate · angezeigt: {selectedCount}"
+
+#: src/account/component/account-details-market-link/account-details-market-link.tsx
+msgid "{marketName} market, {priceLabel}"
+msgstr "Markt {marketName}, {priceLabel}"
+
+#: src/account/component/account-details-market-link/account-details-market-link.tsx
+msgid "{marketName} market, {priceLabel}, {direction}"
+msgstr "Markt {marketName}, {priceLabel}, {direction}"
 
 #: src/rule/components/matching-rules-pill/matching-rules-pill.tsx
 #: src/rule/components/rules-list-header/rules-list-header.tsx
@@ -621,6 +641,10 @@ msgstr "{projectedAmount} · {gapAmount} drüber"
 #: src/budget/hooks/use-budget-forecast-labels.hook.ts
 msgid "{projectedAmount} · {gapAmount} under"
 msgstr "{projectedAmount} · {gapAmount} darunter"
+
+#: src/market-data/component/currency-market-account-row/currency-market-account-row.tsx
+msgid "{providerName} · No cost basis"
+msgstr "{providerName} · Anschaffungskosten unbekannt"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "{providerName} sync"
@@ -870,9 +894,37 @@ msgstr "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 
+#: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
+msgid "1M"
+msgstr "1 M"
+
+#: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
+msgid "1W"
+msgstr "1 W"
+
+#: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
+msgid "1Y"
+msgstr "1 J"
+
 #: src/budget/components/budget-day-strip-key/budget-day-strip-key.tsx
 msgid "2× plan"
 msgstr "2× Plan"
+
+#: src/account/component/account-details-market-link/account-details-market-link.tsx
+msgid "24h"
+msgstr "24 Std."
+
+#: src/market-data/component/currency-market-daily-change-row/currency-market-daily-change-row.tsx
+msgid "24h change"
+msgstr "Änderung (24 Std.)"
+
+#: src/market-data/component/currency-market-daily-change-row/currency-market-daily-change-row.tsx
+msgid "24h change · {staleDate}"
+msgstr "Änderung (24 Std.) · {staleDate}"
+
+#: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
+msgid "3M"
+msgstr "3 M"
 
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "A balanced starter budget with common categories"
@@ -891,6 +943,7 @@ msgid "A deposit in the funding account currency must receive the full funding a
 msgstr "Eine Einlage in der Währung des Finanzierungskontos muss den vollen Finanzierungsbetrag erhalten"
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
+#: src/auth/components/pin-forgotten-warning/pin-forgotten-warning.tsx
 msgid "A forgotten PIN can't be reset."
 msgstr "Eine vergessene PIN lässt sich nicht zurücksetzen."
 
@@ -1024,6 +1077,10 @@ msgstr "Konten"
 #: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
 msgid "Accounts · {accountCount}"
 msgstr "Konten · {accountCount}"
+
+#: src/account/component/institution-accounts/institution-accounts.tsx
+msgid "Accounts · {accountsCount}"
+msgstr "Konten · {accountsCount}"
 
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Accounts ({selectedAccountsCount})"
@@ -1480,6 +1537,34 @@ msgstr "Sind Sie sicher?"
 msgid "Asset mix"
 msgstr "Vermögensaufteilung"
 
+#: src/account/component/institution-accounts/institution-accounts.tsx
+msgid "Assets · {accountsCount}"
+msgstr "Vermögenswerte · {accountsCount}"
+
+#: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
+msgid "At {rateLabel} per {instrumentCode}"
+msgstr "Zu {rateLabel} pro {instrumentCode}"
+
+#: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
+msgid "At ≈ {rateLabel} per {instrumentCode}"
+msgstr "Zu ≈ {rateLabel} pro {instrumentCode}"
+
+#: src/market-data/component/currency-market-position/currency-market-position.tsx
+msgid "At last known price"
+msgstr "Zum letzten bekannten Kurs"
+
+#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
+msgid "At last known price · on the {coveredAmountWithCode} with known cost"
+msgstr "Zum letzten bekannten Kurs · auf die {coveredAmountWithCode} mit bekanntem Kaufpreis"
+
+#: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
+msgid "At last known price, {rateLabel} per {instrumentCode}"
+msgstr "Zum letzten bekannten Kurs, {rateLabel} pro {instrumentCode}"
+
+#: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
+msgid "At last known price, ≈ {rateLabel} per {instrumentCode}"
+msgstr "Zum letzten bekannten Kurs, ≈ {rateLabel} pro {instrumentCode}"
+
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Attach debt"
@@ -1529,9 +1614,13 @@ msgstr "Durchschnitt pro Monat"
 msgid "Average spend"
 msgstr "Durchschnittliche Ausgaben"
 
-#: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
-msgid "Avg cost"
-msgstr "Ø-Kosten"
+#: src/market-data/component/currency-market-cost-basis-row/currency-market-cost-basis-row.tsx
+msgid "Avg {averageCost} per {instrumentCode}"
+msgstr "Ø {averageCost} pro {instrumentCode}"
+
+#: src/market-data/component/currency-market-cost-basis-row/currency-market-cost-basis-row.tsx
+msgid "Avg {averageCost} per {instrumentCode} · known for {coveredAmount} of {totalAmount}"
+msgstr "Ø {averageCost} pro {instrumentCode} · Kaufpreis bekannt für {coveredAmount} von {totalAmount}"
 
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Back up"
@@ -1548,6 +1637,10 @@ msgstr "Sicherungsdatei"
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Backup file ready"
 msgstr "Backup-Datei bereit"
+
+#: src/market-data/component/currency-market-position/currency-market-position.tsx
+msgid "Balance"
+msgstr "Guthaben"
 
 #: src/app/(main)/transactions/[id]/adjustment.tsx
 #: src/transaction/components/transaction-card-content/transaction-card-content.tsx
@@ -1678,8 +1771,8 @@ msgid "Binance P2P orders are unavailable: the API key is missing P2P read permi
 msgstr "Binance-P2P-Orders sind nicht verfügbar: dem API-Schlüssel fehlt die P2P-Leseberechtigung."
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
-msgid "Biometric Authentication"
-msgstr "Biometrische Authentifizierung"
+msgid "Biometric data never leaves this phone"
+msgstr "Biometrische Daten verlassen dieses Telefon nie"
 
 #: src/settings/components/screenshot-protection-row/screenshot-protection-row.tsx
 msgid "Blank screenshots and recordings"
@@ -1754,6 +1847,10 @@ msgstr "Budgie konnte deine Daten nicht öffnen"
 msgid "Budgie deleted the damaged part. It starts again only when you ask."
 msgstr "Budgie hat den beschädigten Teil gelöscht. Der Download startet erst wieder, wenn du es möchtest."
 
+#: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
+msgid "Budgie encrypts your data on this phone. It takes a few seconds."
+msgstr "Budgie verschlüsselt deine Daten auf diesem Telefon. Das dauert ein paar Sekunden."
+
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Budgie has no exchange rate for this payment currency yet."
 msgstr "Budgie hat noch keinen Wechselkurs für diese Zahlungswährung."
@@ -1773,10 +1870,6 @@ msgstr "Budgie wählt das Konto anhand des Kartennamens und dann über dein Stan
 #: src/budget/components/budget-fund-preview/budget-fund-preview.tsx
 msgid "Budgie plans to set aside {amountLabel} {rate}"
 msgstr "Budgie plant, {amountLabel} {rate} zurückzulegen"
-
-#: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
-msgid "Budgie re-encrypts {DB_NAME} ({fileSize}) on this phone. It takes a few seconds."
-msgstr "Budgie verschlüsselt {DB_NAME} ({fileSize}) auf diesem Telefon neu. Das dauert ein paar Sekunden."
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Budgie reads these statements on this phone."
@@ -2081,6 +2174,7 @@ msgstr "Kategorie wählen"
 msgid "Choose a category to continue"
 msgstr "Kategorie wählen, um fortzufahren"
 
+#: src/auth/components/pin-restart-button/pin-restart-button.tsx
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Choose a different PIN"
 msgstr "Eine andere PIN wählen"
@@ -2089,11 +2183,16 @@ msgstr "Eine andere PIN wählen"
 msgid "Choose a merchant category"
 msgstr "Händlerkategorie wählen"
 
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Choose a new PIN"
+msgstr "Wähle eine neue PIN"
+
 #: src/transaction/components/statistics-period-control/statistics-period-control.tsx
 msgid "Choose a period"
 msgstr "Zeitraum wählen"
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
+#: src/auth/utils/get-pin-setup-meta.util.ts
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Choose a PIN"
 msgstr "Wähle eine PIN"
@@ -2268,8 +2367,8 @@ msgid "Confirm"
 msgstr "Bestätigen"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Confirm PIN"
-msgstr "PIN bestätigen"
+msgid "Confirm it's you before choosing a new one."
+msgstr "Bestätige, dass du es bist, bevor du eine neue wählst."
 
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "Confirm Split"
@@ -2278,6 +2377,15 @@ msgstr "Aufteilung bestätigen"
 #: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx
 msgid "Confirm tag selection"
 msgstr "Tag-Auswahl bestätigen"
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Confirm your new PIN"
+msgstr "Bestätige deine neue PIN"
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
+msgid "Confirm your PIN"
+msgstr "Bestätige deine PIN"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Connect"
@@ -2298,6 +2406,10 @@ msgstr "Binance verbinden"
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Connect Monobank"
 msgstr "Monobank verbinden"
+
+#: src/account/component/institution-settings-button/institution-settings-button.tsx
+msgid "Connection settings"
+msgstr "Verbindungseinstellungen"
 
 #: ../ledger/src/transaction/service/transaction-transfer.service.ts
 msgid "Consolidated transactions cannot start a deposit"
@@ -2323,7 +2435,6 @@ msgstr "enthält"
 msgid "Contains"
 msgstr "Enthält"
 
-#: src/auth/components/biometric-configuration/biometric-configuration.tsx
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 #: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
@@ -2331,7 +2442,6 @@ msgid "Continue"
 msgstr "Weiter"
 
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
-#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Continue without a PIN"
 msgstr "Ohne PIN fortfahren"
 
@@ -2386,7 +2496,7 @@ msgstr "Kopieren Sie den API-Schlüssel und den geheimen Schlüssel in die Felde
 msgid "Copy the token and paste it below"
 msgstr "Kopiere den Token und füge ihn unten ein"
 
-#: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
+#: src/market-data/component/currency-market-cost-basis-row/currency-market-cost-basis-row.tsx
 msgid "Cost basis"
 msgstr "Kostenbasis"
 
@@ -2750,6 +2860,18 @@ msgstr "Liste konnte nicht geladen werden"
 msgid "Couldn’t load transaction counts"
 msgstr "Transaktionszahlen konnten nicht geladen werden"
 
+#: src/auth/hook/use-pin-setup.hook.tsx
+msgid "Couldn't save your PIN. Enter it again to retry."
+msgstr "Deine PIN konnte nicht gespeichert werden. Gib sie erneut ein, um es noch einmal zu versuchen."
+
+#: src/auth/hook/use-pin-setup.hook.tsx
+msgid "Couldn't save your PIN. Try again."
+msgstr "Deine PIN konnte nicht gespeichert werden. Versuche es erneut."
+
+#: src/auth/hook/use-pin-setup.hook.tsx
+msgid "Couldn't turn off app lock. Try again."
+msgstr "App-Sperre konnte nicht ausgeschaltet werden. Versuche es erneut."
+
 #: src/account/component/account-switch-field/account-switch-field.tsx
 msgid "Count it in your net worth"
 msgstr "Im Nettovermögen berücksichtigen"
@@ -2771,10 +2893,6 @@ msgstr "Erstellen Sie zuerst ein Schuldenkonto."
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create a new System-generated API key"
 msgstr "Erstellen Sie einen neuen systemgenerierten API-Schlüssel"
-
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Create a PIN"
-msgstr "PIN erstellen"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create a read-only API key and secret"
@@ -2971,6 +3089,10 @@ msgstr "Schuldenkonten können nicht an Überweisungen teilnehmen"
 msgid "Debts and loans"
 msgstr "Schulden und Kredite"
 
+#: src/auth/components/pin-setup/pin-setup.tsx
+msgid "Decrypting your data. Keep Budgie open, it restarts when finished."
+msgstr "Deine Daten werden entschlüsselt. Lass Budgie geöffnet, die App startet danach neu."
+
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 msgid "Default account"
 msgstr "Standardkonto"
@@ -3033,6 +3155,10 @@ msgstr "Ereignis löschen?"
 #: src/budget/hooks/use-budget-fund-form.hook.ts
 msgid "Delete fund?"
 msgstr "Fonds löschen?"
+
+#: src/auth/components/pin-form-delete-button/pin-form-delete-button.tsx
+msgid "Delete last digit"
+msgstr "Letzte Ziffer löschen"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx
 #: src/account/component/archived-account-delete-menu-item/archived-account-delete-menu-item.tsx
@@ -3188,6 +3314,14 @@ msgstr "Fertig"
 #: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx
 msgid "Done ({count})"
 msgstr "Fertig ({count})"
+
+#: src/account/component/account-details-market-link/account-details-market-link.tsx
+msgid "down {changeShare} on {staleDate}"
+msgstr "am {staleDate} {changeShare} gefallen"
+
+#: src/account/component/account-details-market-link/account-details-market-link.tsx
+msgid "down {changeShare} over the last 24 hours"
+msgstr "in den letzten 24 Stunden um {changeShare} gefallen"
 
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "Download {remaining} GB"
@@ -3419,22 +3553,9 @@ msgstr "leer"
 msgid "Empty canvas"
 msgstr "Leere Vorlage"
 
-#: src/auth/components/biometric-configuration/biometric-configuration.tsx
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Enable biometric unlock?"
-msgstr "Biometrisches Entsperren aktivieren?"
-
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Enable Face ID unlock?"
-msgstr "Face ID-Entsperrung aktivieren?"
-
 #: src/rule/components/rule-list-row/rule-list-row.tsx
 msgid "Enable rule: {primaryOutcome}"
 msgstr "Regel aktivieren: {primaryOutcome}"
-
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Enable Touch ID unlock?"
-msgstr "Touch ID-Entsperrung aktivieren?"
 
 #: src/settings/components/app-lock-row/app-lock-row.tsx
 msgid "Encrypt with a PIN, unlock with {biometricLabel}"
@@ -3452,6 +3573,10 @@ msgstr "Verschlüsselt · PIN"
 msgid "Encrypted · PIN and {biometricLabel}"
 msgstr "Verschlüsselt · PIN und {biometricLabel}"
 
+#: src/auth/components/pin-setup/pin-setup.tsx
+msgid "Encrypting your data"
+msgstr "Deine Daten werden verschlüsselt"
+
 #: src/i18n/constant/languages.constant.ts
 msgid "English"
 msgstr "Englisch"
@@ -3460,10 +3585,6 @@ msgstr "Englisch"
 msgctxt "endonym"
 msgid "English"
 msgstr "English"
-
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Enter a {PIN_LENGTH}-digit PIN"
-msgstr "Geben Sie eine {PIN_LENGTH}-stellige PIN ein"
 
 #: src/account/utils/get-debt-opening-messages.util.ts
 #: src/ai/component/voice-review-save-button/voice-review-save-button.tsx
@@ -3474,33 +3595,18 @@ msgstr "Alle Beträge eingeben"
 msgid "Enter current PIN"
 msgstr "Aktuelle PIN eingeben"
 
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Enter current PIN to disable protection"
-msgstr "Aktuelle PIN eingeben, um Schutz zu deaktivieren"
-
-#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
-msgid "Enter it once more"
-msgstr "Noch einmal eingeben"
-
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Enter new PIN"
-msgstr "Neue PIN eingeben"
-
 #: src/app/bank-integration-key.tsx
 msgid "Enter new token"
 msgstr "Neues Token eingeben"
 
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
-msgid "Enter the PIN this backup was sealed with"
-msgstr "Gib die PIN ein, mit der dieses Backup versiegelt wurde"
+msgid "Enter the backup's PIN"
+msgstr "Gib die PIN des Backups ein"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Enter your {PIN_LENGTH}-digit PIN"
-msgstr "Geben Sie Ihre {PIN_LENGTH}-stellige PIN ein"
-
-#: src/auth/hook/use-pin-authentication.hook.ts
-msgid "Enter your {PIN_LENGTH}-digit PIN to unlock"
-msgstr "Geben Sie Ihre {PIN_LENGTH}-stellige PIN zum Entsperren ein"
+#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
+msgid "Enter the same PIN again."
+msgstr "Gib dieselbe PIN noch einmal ein."
 
 #: src/sync/component/binance-sync-token-inputs/binance-sync-token-inputs.tsx
 msgid "Enter your Binance API key"
@@ -3514,13 +3620,13 @@ msgstr "Geben Sie Ihr Binance-API-Secret ein"
 msgid "Enter your Monobank API token"
 msgstr "Geben Sie Ihren Monobank API-Token ein"
 
-#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
-msgid "Enter your new PIN again from the start. Take your time: this is the one you'll need to remember."
-msgstr "Gib deine neue PIN noch einmal von vorn ein. Lass dir Zeit: Diese musst du dir merken."
-
-#: src/auth/hook/use-pin-authentication.hook.ts
+#: src/auth/components/pin-unlock/pin-unlock.tsx
 msgid "Enter your PIN"
 msgstr "Geben Sie Ihre PIN ein"
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Enter your PIN to turn it off. Anyone who can unlock this phone will be able to open Budgie."
+msgstr "Gib deine PIN ein, um sie auszuschalten. Dann kann jeder, der dieses Telefon entsperren kann, Budgie öffnen."
 
 #: src/app/icon-selector.tsx
 msgid "Entertainment"
@@ -3686,13 +3792,13 @@ msgstr "Externe ID"
 msgid "Face ID"
 msgstr "Face ID"
 
-#: src/auth/components/biometric-configuration/biometric-configuration.tsx
-msgid "Face ID / Touch ID"
-msgstr "Face ID / Touch ID"
-
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Face ID day to day"
 msgstr "Face ID im Alltag"
+
+#: src/auth/hook/use-pin-setup.hook.tsx
+msgid "Face ID wasn't completed. Try again or continue without it."
+msgstr "Face ID wurde nicht abgeschlossen. Versuche es erneut oder fahre ohne fort."
 
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Facial recognition"
@@ -3705,10 +3811,6 @@ msgstr "Blasse Balken sind aus deinen früheren Transaktionen mit deinen aktuell
 #: src/@generic/hook/use-contacts.hook.ts
 msgid "Failed to load contacts."
 msgstr "Kontakte konnten nicht geladen werden."
-
-#: src/auth/hook/use-pin-setup.hook.tsx
-msgid "Failed to save PIN. Please try again."
-msgstr "PIN konnte nicht gespeichert werden. Bitte versuchen Sie es erneut."
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
@@ -3976,6 +4078,10 @@ msgstr "Wachstum"
 msgid "Health"
 msgstr "Gesundheit"
 
+#: src/market-data/component/currency-market-accounts/currency-market-accounts.tsx
+msgid "Held in"
+msgstr "Gehalten in"
+
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Help sorting, without leaving the phone?"
 msgstr "Hilfe beim Sortieren, ohne dass etwas das Telefon verlässt?"
@@ -4010,10 +4116,6 @@ msgstr "Der Verlaufsimport benötigt deine Aufmerksamkeit"
 #: src/sync/utils/get-history-import-status-message.util.ts
 msgid "History import paused"
 msgstr "Verlaufsimport pausiert"
-
-#: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
-msgid "History loading paused"
-msgstr "Laden des Verlaufs pausiert"
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Hold to seal with this PIN"
@@ -4066,10 +4168,6 @@ msgstr "Setzt eine andere Regel ebenfalls eine Kategorie oder Überweisung, gewi
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
 msgstr "Falls Privat24 Ihnen die Datei per E-Mail statt zum Download sendet, speichern Sie den Anhang aus Ihrem Postfach"
-
-#: src/import/component/import-backup-pin/import-backup-pin.tsx
-msgid "If you don't remember it, this backup can't be opened. You can start fresh instead."
-msgstr "Wenn du sie nicht mehr weißt, lässt sich dieses Backup nicht öffnen. Du kannst stattdessen neu anfangen."
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "If you forget it, nobody can open this file, including you and us."
@@ -4276,9 +4374,10 @@ msgstr "ist nicht"
 msgid "Is not"
 msgstr "Ist nicht"
 
+#: src/auth/utils/get-pin-setup-meta.util.ts
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
-msgid "It will encrypt everything you put in Budgie. Pick one you'll remember but others won't guess."
-msgstr "Sie verschlüsselt alles, was du in Budgie speicherst. Wähle eine, die du dir merkst, die andere aber nicht erraten."
+msgid "It encrypts everything in Budgie. Pick one you'll remember but others won't guess."
+msgstr "Sie verschlüsselt alles in Budgie. Wähle eine, die du dir merkst, die andere aber nicht erraten."
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "It will no longer appear in the calendar."
@@ -4299,6 +4398,10 @@ msgstr "Sparziele"
 #: src/ai/hook/use-ai-model-download-actions.hook.ts
 msgid "Keep"
 msgstr "Behalten"
+
+#: src/auth/components/pin-setup/pin-setup.tsx
+msgid "Keep Budgie open. It restarts when finished."
+msgstr "Lass Budgie geöffnet. Die App startet danach neu."
 
 #: src/budget/components/budget-pace-hint-line/budget-pace-hint-line.tsx
 msgid "Keep it under <0>{perDayAmount}/day</0>"
@@ -4380,6 +4483,10 @@ msgstr "Letzter Monat"
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
 msgid "last payment {formattedLast}"
 msgstr "letzte Zahlung {formattedLast}"
+
+#: src/account/component/institution-connection-row/institution-connection-row.tsx
+msgid "Last successful sync · {lastSyncedTime}"
+msgstr "Letzte erfolgreiche Synchronisierung · {lastSyncedTime}"
 
 #: src/@generic/constant/date-period.constant.ts
 msgid "Last Week"
@@ -4495,13 +4602,13 @@ msgstr "KI-Modell wird geladen..."
 msgid "Loading debt progress"
 msgstr "Schuldenfortschritt wird geladen"
 
-#: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
-msgid "Loading market history"
-msgstr "Marktverlauf wird geladen"
+#: src/market-data/component/currency-market-chart-status/currency-market-chart-status.tsx
+msgid "Loading price history"
+msgstr "Kursverlauf wird geladen"
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
-msgid "Lock Budgie with your own PIN"
-msgstr "Sperre Budgie mit deiner eigenen PIN"
+msgid "Lock Budgie with a PIN"
+msgstr "Budgie mit einer PIN sperren"
 
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Looks right"
@@ -4559,17 +4666,13 @@ msgstr "Als extern markieren?"
 msgid "Mark External"
 msgstr "Als extern markieren"
 
-#: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
+#: src/market-data/component/currency-market-stats/currency-market-stats.tsx
+msgid "Market"
+msgstr "Markt"
+
+#: src/market-data/component/currency-market-stats/currency-market-stats.tsx
 msgid "Market cap"
 msgstr "Marktkapitalisierung"
-
-#: src/market-data/component/market-data-sparkline/market-data-sparkline.tsx
-msgid "Market history is loading quietly."
-msgstr "Der Marktverlauf wird im Hintergrund geladen."
-
-#: src/market-data/component/currency-market-price-card/currency-market-price-card.tsx
-msgid "Market price"
-msgstr "Marktpreis"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "Match each field to a column from your CSV file"
@@ -5078,6 +5181,10 @@ msgstr "Keine Einträge zum Speichern"
 msgid "No limit changes yet"
 msgstr "Noch keine Limitänderungen"
 
+#: src/market-data/component/currency-market-position-footer/currency-market-position-footer.tsx
+msgid "No market price yet, so value and return can’t be calculated."
+msgstr "Noch kein Marktkurs, daher lassen sich Wert und Rendite nicht berechnen."
+
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No matching accounts"
 msgstr "Keine passenden Konten"
@@ -5101,6 +5208,18 @@ msgstr "Keine MCC-Codes gefunden"
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No new transactions"
 msgstr "Keine neuen Transaktionen"
+
+#: src/market-data/component/currency-market-chart-status/currency-market-chart-status.tsx
+msgid "No price history yet"
+msgstr "Noch kein Kursverlauf"
+
+#: src/market-data/component/currency-market-price-hero/currency-market-price-hero.tsx
+msgid "No price yet"
+msgstr "Noch kein Kurs"
+
+#: src/market-data/component/currency-market-position-footer/currency-market-position-footer.tsx
+msgid "No purchase price is recorded for this balance, so the return can’t be calculated."
+msgstr "Für diesen Bestand ist kein Kaufpreis erfasst, daher lässt sich die Rendite nicht berechnen."
 
 #: src/receipt/hook/use-receipt-scan.hook.ts
 msgid "No receipt found"
@@ -5299,6 +5418,10 @@ msgstr "Am {nextDate} · Monatlich"
 msgid "On pace to run out by {runOutDate}. Keeping under {perDayAmount}/day keeps it on track."
 msgstr "Im aktuellen Tempo ist das Budget bis {runOutDate} aufgebraucht. Bleibst du unter {perDayAmount}/Tag, bleibst du im Plan."
 
+#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
+msgid "On the {coveredAmountWithCode} with known cost"
+msgstr "Auf die {coveredAmountWithCode} mit bekanntem Kaufpreis"
+
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "On this iPhone"
 msgstr "Auf diesem iPhone"
@@ -5393,6 +5516,10 @@ msgstr "Nur du hast den Schlüssel."
 msgid "Only your PIN opens this file."
 msgstr "Nur deine PIN öffnet diese Datei."
 
+#: src/market-data/component/currency-market-chart-open-label/currency-market-chart-open-label.tsx
+msgid "Open {openPrice}"
+msgstr "Eröffnung {openPrice}"
+
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Open Binance to get your API key"
 msgstr "Öffnen Sie Binance, um Ihren API-Schlüssel zu erhalten"
@@ -5404,6 +5531,18 @@ msgstr "Öffne Budgie nach der Aktualisierung einmal, kehre dann zu Shortcuts zu
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Open Budgie to see your finances"
 msgstr "Öffnen Sie Budgie, um Ihre Finanzen zu sehen"
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Open Budgie with a glance. Your PIN stays the key to your data."
+msgstr "Öffne Budgie mit einem Blick. Deine PIN bleibt der Schlüssel zu deinen Daten."
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Open Budgie with a touch. Your PIN stays the key to your data."
+msgstr "Öffne Budgie mit einer Berührung. Deine PIN bleibt der Schlüssel zu deinen Daten."
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Open Budgie with Face ID or Touch ID. Your PIN stays the key to your data."
+msgstr "Öffne Budgie mit Face ID oder Touch ID. Deine PIN bleibt der Schlüssel zu deinen Daten."
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Open George (Erste Bank online banking)"
@@ -5465,6 +5604,10 @@ msgstr "Optional. Leer lassen, um das Ereignis mit einem einzelnen Limit zu verf
 msgid "Optional. The overall limit applies without them."
 msgstr "Optional. Ohne sie gilt das Gesamtlimit."
 
+#: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
+msgid "Optionally turn on {biometricLabel}"
+msgstr "Optional {biometricLabel} einschalten"
+
 #: src/account/component/create-account-options-section/create-account-options-section.tsx
 #: src/account/component/update-account-page/update-account-page.tsx
 msgid "Options"
@@ -5485,6 +5628,14 @@ msgstr "oder +{extraCount}"
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Or fill it from"
 msgstr "Oder befüllen aus"
+
+#: src/auth/components/pin-unlock/pin-unlock.tsx
+msgid "Or unlock with Face ID."
+msgstr "Oder mit Face ID entsperren."
+
+#: src/auth/components/pin-unlock/pin-unlock.tsx
+msgid "Or unlock with Touch ID."
+msgstr "Oder mit Touch ID entsperren."
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Organize"
@@ -5605,6 +5756,14 @@ msgstr "Bisher bezahlt: {paid}"
 msgid "Pair transfers and refunds"
 msgstr "Überweisungen und Erstattungen zuordnen"
 
+#: src/market-data/component/currency-market-overview/currency-market-overview.tsx
+msgid "Past 3 months"
+msgstr "Letzte 3 Monate"
+
+#: src/market-data/component/currency-market-overview/currency-market-overview.tsx
+msgid "Past month"
+msgstr "Letzter Monat"
+
 #: src/budget/constant/budget-period-past-label.constant.ts
 msgid "Past months"
 msgstr "Vergangene Monate"
@@ -5613,9 +5772,17 @@ msgstr "Vergangene Monate"
 msgid "Past two-week periods"
 msgstr "Vergangene Zwei-Wochen-Zeiträume"
 
+#: src/market-data/component/currency-market-overview/currency-market-overview.tsx
+msgid "Past week"
+msgstr "Letzte Woche"
+
 #: src/budget/constant/budget-period-past-label.constant.ts
 msgid "Past weeks"
 msgstr "Vergangene Wochen"
+
+#: src/market-data/component/currency-market-overview/currency-market-overview.tsx
+msgid "Past year"
+msgstr "Letztes Jahr"
 
 #: src/budget/constant/budget-period-past-label.constant.ts
 msgid "Past years"
@@ -5739,9 +5906,18 @@ msgstr "Wähle einen Tag, um fortzufahren"
 msgid "Pick a window. Existing data is preserved."
 msgstr "Zeitraum wählen. Bestehende Daten bleiben erhalten."
 
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Pick one you'll remember but others won't guess."
+msgstr "Wähle eine, die du dir merkst, die andere aber nicht erraten."
+
+#: src/auth/components/pin-form-dots/pin-form-dots.tsx
+msgid "PIN, {enteredCount} of {PIN_LENGTH} digits entered"
+msgstr "PIN, {enteredCount} von {PIN_LENGTH} Ziffern eingegeben"
+
 #: src/auth/hook/use-pin-setup.hook.tsx
-msgid "PINs do not match"
-msgstr "PINs stimmen nicht überein"
+#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
+msgid "PINs don't match. Try again."
+msgstr "Die PINs stimmen nicht überein. Versuche es erneut."
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "PINs match"
@@ -5844,13 +6020,17 @@ msgstr "Vorperiode"
 msgid "Previous period"
 msgstr "Vorheriger Zeitraum"
 
+#: src/market-data/component/currency-market-stale-price/currency-market-stale-price.tsx
+msgid "Price {ageLabel} · {date}"
+msgstr "Kurs {ageLabel} · {date}"
+
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Price changed"
 msgstr "Preis geändert"
 
-#: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
-msgid "Prices fill in quietly while you use the app."
-msgstr "Preise werden im Hintergrund ergänzt, während du die App nutzt."
+#: src/market-data/hook/use-market-chart-accessibility.hook.ts
+msgid "Price chart, {rangeLabel}, from {fromLabel} to {toLabel}, high {highLabel}, low {lowLabel}"
+msgstr "Kurschart, {rangeLabel}, von {fromLabel} bis {toLabel}, Hoch {highLabel}, Tief {lowLabel}"
 
 #: src/settings/components/support-settings-rows/support-settings-rows.tsx
 msgid "Privacy policy"
@@ -5905,9 +6085,13 @@ msgstr "Erhöhe den Gesamtbetrag oder wähle weniger Zahlungen"
 msgid "Raised {dateLabel} · over the limit {count} periods in a row"
 msgstr "Erhöht am {dateLabel} · {count} Zeiträume in Folge über dem Limit"
 
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Re-enter your PIN to confirm"
-msgstr "Geben Sie Ihre PIN zur Bestätigung erneut ein"
+#: src/market-data/component/currency-market-stats/currency-market-stats.tsx
+msgid "Rank"
+msgstr "Rang"
+
+#: src/auth/components/pin-setup/pin-setup.tsx
+msgid "Re-encrypting your data. Keep Budgie open, it restarts when finished."
+msgstr "Deine Daten werden neu verschlüsselt. Lass Budgie geöffnet, die App startet danach neu."
 
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 msgid "Re-record"
@@ -6244,6 +6428,11 @@ msgstr "Fortsetzen"
 msgid "Retry"
 msgstr "Erneut versuchen"
 
+#: src/market-data/component/currency-market-return-row/currency-market-return-row.tsx
+#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
+msgid "Return"
+msgstr "Rendite"
+
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Return to Budgie and select the saved XLSX file below"
 msgstr "Kehren Sie zu Budgie zurück und wählen Sie unten die gespeicherte XLSX-Datei aus"
@@ -6251,6 +6440,10 @@ msgstr "Kehren Sie zu Budgie zurück und wählen Sie unten die gespeicherte XLSX
 #: src/account/constant/debt-settled-label.constant.ts
 msgid "Returned"
 msgstr "Erhalten"
+
+#: src/account/component/institution-connection-row/institution-connection-row.tsx
+msgid "Review connection"
+msgstr "Verbindung überprüfen"
 
 #: src/sync/component/analytics-sync-account-progress/analytics-sync-account-progress.tsx
 msgid "Review sync settings"
@@ -6430,8 +6623,8 @@ msgid "Sealed."
 msgstr "Versiegelt."
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
-msgid "Sealed. Face ID or fingerprint is optional."
-msgstr "Versiegelt. Face ID oder Fingerabdruck ist optional."
+msgid "Sealed. Only your PIN opens it."
+msgstr "Versiegelt. Nur deine PIN öffnet sie."
 
 #: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
 msgid "Sealed. Only your PIN opens this file."
@@ -6675,6 +6868,10 @@ msgstr "Kurzbefehle"
 msgid "Shortcuts is not available on this device."
 msgstr "Shortcuts ist auf diesem Gerät nicht verfügbar."
 
+#: src/account/component/institution-accounts/institution-accounts.tsx
+msgid "Show all {accountsCount} accounts"
+msgstr "Alle {accountsCount} Konten anzeigen"
+
 #: src/app/transaction-amount-filter.tsx
 msgid "Show all amounts"
 msgstr "Alle Beträge anzeigen"
@@ -6849,10 +7046,6 @@ msgstr "Teilt deine Summe in Kauf und Gebühr auf"
 msgid "Spreads irregular costs across the months."
 msgstr "Verteilt unregelmäßige Kosten auf die Monate."
 
-#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
-msgid "Start again with your new PIN"
-msgstr "Mit deiner neuen PIN neu beginnen"
-
 #: src/account/component/start-deposit-form/start-deposit-form.tsx
 #: src/transaction/components/transaction-list-start-deposit-menu-item/transaction-list-start-deposit-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
@@ -6913,6 +7106,10 @@ msgstr "Kontoauszug importiert"
 msgid "Step {stepNumber}"
 msgstr "Schritt {stepNumber}"
 
+#: src/auth/components/pin-step-indicator/pin-step-indicator.tsx
+msgid "Step {stepNumber} of {total}"
+msgstr "Schritt {stepNumber} von {total}"
+
 #: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
@@ -6967,11 +7164,11 @@ msgstr "Synchronisierungsdaten repariert"
 msgid "Sync data repairs"
 msgstr "Synchronisationsdaten-Reparaturen"
 
+#: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Sync failed"
 msgstr "Synchronisation fehlgeschlagen"
 
-#: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync Failed"
 msgstr "Synchronisation fehlgeschlagen"
@@ -7373,10 +7570,6 @@ msgstr "dieses Jahr"
 msgid "This Year"
 msgstr "Dieses Jahr"
 
-#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
-msgid "Those didn't match"
-msgstr "Die stimmten nicht überein"
-
 #: src/budget/components/budget-funds-section/budget-funds-section.tsx
 msgid "Tick marks where savings should be by today."
 msgstr "Der Strich zeigt, wo die Rücklage heute stehen sollte."
@@ -7459,11 +7652,16 @@ msgstr "In diesem Zeitraum zurückzulegen"
 #: src/@generic/constant/date-period.constant.ts
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 #: src/budget/components/budget-day-strip-key/budget-day-strip-key.tsx
+#: src/market-data/hook/use-market-chart-timeline.hook.ts
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
 #: src/transaction/query/use-get-transaction-sections.query.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Today"
 msgstr "Heute"
+
+#: src/sync/hook/use-format-sync-time.hook.ts
+msgid "Today {time}"
+msgstr "Heute {time}"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Token already connected"
@@ -7519,6 +7717,10 @@ msgstr "Gesamt verliehen"
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Touch ID"
 msgstr "Touch ID"
+
+#: src/auth/hook/use-pin-setup.hook.tsx
+msgid "Touch ID wasn't completed. Try again or continue without it."
+msgstr "Touch ID wurde nicht abgeschlossen. Versuche es erneut oder fahre ohne fort."
 
 #: src/budget/components/budget-events-section/budget-events-section.tsx
 msgid "Track a trip or project with its own limit. Tagged expenses still count in this budget."
@@ -7702,6 +7904,7 @@ msgstr "Schalte mal den Flugmodus ein. Budgie funktioniert genauso."
 msgid "Tune limits automatically"
 msgstr "Limits automatisch anpassen"
 
+#: src/auth/utils/get-pin-setup-meta.util.ts
 #: src/settings/components/pin-management-rows/pin-management-rows.tsx
 msgid "Turn off app lock"
 msgstr "App-Sperre ausschalten"
@@ -7721,6 +7924,10 @@ msgstr "Schalte die On-Device-KI ein, um die Modelle herunterzuladen."
 #: src/rule/constant/rule-action-type.constant.ts
 msgid "Turn payments into transfers"
 msgstr "Zahlungen in Überweisungen umwandeln"
+
+#: src/auth/components/pin-setup/pin-setup.tsx
+msgid "Turning off app lock"
+msgstr "App-Sperre wird ausgeschaltet"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Turns a voice note into an expense"
@@ -7747,10 +7954,6 @@ msgstr "Typ"
 msgid "Type ({selectedTypesCount})"
 msgstr "Typ ({selectedTypesCount})"
 
-#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
-msgid "Type the same PIN again to make sure it's the one you meant."
-msgstr "Gib dieselbe PIN noch einmal ein, um sicherzugehen, dass es die richtige ist."
-
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
 msgid "Typical month"
@@ -7767,6 +7970,12 @@ msgstr "Transaktionsverlauf konnte nicht geprüft werden"
 #: src/budget/components/budget-allocation-block/budget-allocation-block.tsx
 msgid "Unassigned {remainingLabel}"
 msgstr "Nicht zugewiesen {remainingLabel}"
+
+#: src/market-data/component/currency-market-cost-basis-row/currency-market-cost-basis-row.tsx
+#: src/market-data/component/currency-market-return-row/currency-market-return-row.tsx
+#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
+msgid "Unavailable"
+msgstr "Nicht verfügbar"
 
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
 #: src/category/components/stats-by-categories/stats-by-categories.tsx
@@ -7816,6 +8025,10 @@ msgstr "{accountTitle} einblenden"
 msgid "Unknown card"
 msgstr "Unbekannte Karte"
 
+#: src/auth/components/biometric-configuration/biometric-configuration.tsx
+msgid "Unlock quickly without typing your PIN"
+msgstr "Schnell entsperren, ohne die PIN einzugeben"
+
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Unlock to view"
 msgstr "Zum Anzeigen entsperren"
@@ -7824,9 +8037,25 @@ msgstr "Zum Anzeigen entsperren"
 msgid "Unlock with {biometricLabel}"
 msgstr "Mit {biometricLabel} entsperren"
 
-#: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
-msgid "Unrealized P&L"
-msgstr "Unrealisierte GuV"
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Unlock with biometrics?"
+msgstr "Biometrisch entsperren?"
+
+#: src/auth/components/pin-form-biometric-button/pin-form-biometric-button.tsx
+msgid "Unlock with Face ID"
+msgstr "Mit Face ID entsperren"
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Unlock with Face ID?"
+msgstr "Mit Face ID entsperren?"
+
+#: src/auth/components/pin-form-biometric-button/pin-form-biometric-button.tsx
+msgid "Unlock with Touch ID"
+msgstr "Mit Touch ID entsperren"
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Unlock with Touch ID?"
+msgstr "Mit Touch ID entsperren?"
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 #: src/tag/components/stats-by-tags/stats-by-tags.tsx
@@ -7841,6 +8070,14 @@ msgstr "Bis {periodEndLabel}"
 #: src/i18n/hook/use-format-date-range.hook.ts
 msgid "Until {toLabel}"
 msgstr "Bis {toLabel}"
+
+#: src/account/component/account-details-market-link/account-details-market-link.tsx
+msgid "up {changeShare} on {staleDate}"
+msgstr "am {staleDate} {changeShare} gestiegen"
+
+#: src/account/component/account-details-market-link/account-details-market-link.tsx
+msgid "up {changeShare} over the last 24 hours"
+msgstr "in den letzten 24 Stunden um {changeShare} gestiegen"
 
 #: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
@@ -7860,6 +8097,10 @@ msgstr "Bevorstehend"
 msgid "Upcoming this period"
 msgstr "Anstehend in diesem Zeitraum"
 
+#: src/account/component/institution-connection-row/institution-connection-row.tsx
+msgid "Update access key"
+msgstr "Zugriffsschlüssel aktualisieren"
+
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 msgid "Update rule?"
 msgstr "Regel aktualisieren?"
@@ -7868,9 +8109,21 @@ msgstr "Regel aktualisieren?"
 msgid "Updated {applied} of {total} transactions."
 msgstr "{applied} von {total} Transaktionen aktualisiert."
 
-#: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
-msgid "Updated {formattedDate}"
-msgstr "Aktualisiert {formattedDate}"
+#: src/market-data/component/currency-market-stats-footer/currency-market-stats-footer.tsx
+msgid "Updated {updatedDate}"
+msgstr "Aktualisiert am {updatedDate}"
+
+#: src/market-data/component/currency-market-stats-footer/currency-market-stats-footer.tsx
+msgid "Updated today"
+msgstr "Heute aktualisiert"
+
+#: src/market-data/component/currency-market-stats-footer/currency-market-stats-footer.tsx
+msgid "Updated yesterday"
+msgstr "Gestern aktualisiert"
+
+#: src/auth/components/pin-setup/pin-setup.tsx
+msgid "Updating your PIN"
+msgstr "Deine PIN wird aktualisiert"
 
 #: src/budget/components/budget-fund-suggestion-banner/budget-fund-suggestion-banner.tsx
 msgid "Use"
@@ -7892,27 +8145,30 @@ msgstr "Verwende 1 bis {CATEGORY_TITLE_MAX_LENGTH} Zeichen"
 msgid "Use 1 to {TAG_TITLE_MAX_LENGTH} characters"
 msgstr "Verwende 1 bis {TAG_TITLE_MAX_LENGTH} Zeichen"
 
-#: src/auth/components/biometric-configuration/biometric-configuration.tsx
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Use Face ID or Touch ID to unlock your app quickly and securely"
-msgstr "Verwenden Sie Face ID oder Touch ID, um Ihre App schnell und sicher zu entsperren"
-
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Use Face ID to unlock your app quickly and securely"
-msgstr "Verwenden Sie Face ID, um Ihre App schnell und sicher zu entsperren"
+#: src/auth/components/pin-setup/pin-setup.tsx
+msgid "Use Face ID"
+msgstr "Face ID verwenden"
 
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 #: src/ai/component/ai-download-wifi-banner/ai-download-wifi-banner.tsx
 msgid "Use mobile data for {remaining} GB"
 msgstr "Mobile Daten für {remaining} GB nutzen"
 
+#: src/auth/components/biometric-configuration/biometric-configuration.tsx
+msgid "Use PIN only"
+msgstr "Nur PIN verwenden"
+
+#: src/import/component/import-backup-pin/import-backup-pin.tsx
+msgid "Use the PIN this backup was sealed with. Without it, the backup can't be opened."
+msgstr "Verwende die PIN, mit der dieses Backup versiegelt wurde. Ohne sie lässt sich das Backup nicht öffnen."
+
 #: src/app/(tabs)/settings/data.tsx
 msgid "Use these only if conversions, imports or balances look wrong."
 msgstr "Nur nötig, wenn Umrechnungen, Importe oder Salden falsch aussehen."
 
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Use Touch ID to unlock your app quickly and securely"
-msgstr "Verwenden Sie Touch ID, um Ihre App schnell und sicher zu entsperren"
+#: src/auth/components/pin-setup/pin-setup.tsx
+msgid "Use Touch ID"
+msgstr "Touch ID verwenden"
 
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx
 msgid "Used for totals and reports"
@@ -7926,6 +8182,10 @@ msgstr "Nutzt einen regulären Ausdruck mit bis zu 200 Zeichen, Groß-/Kleinschr
 msgid "Valuation unavailable"
 msgstr "Bewertung nicht verfügbar"
 
+#: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
+msgid "Value"
+msgstr "Wert"
+
 #: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
 msgid "View source transactions"
 msgstr "Quelltransaktionen anzeigen"
@@ -7938,9 +8198,9 @@ msgstr "Schritt-für-Schritt-Anleitung ansehen"
 msgid "Voice notes"
 msgstr "Sprachnotizen"
 
-#: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
-msgid "Volume"
-msgstr "Volumen"
+#: src/market-data/component/currency-market-stats/currency-market-stats.tsx
+msgid "Volume (24h)"
+msgstr "Volumen (24 Std.)"
 
 #: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
@@ -7955,6 +8215,10 @@ msgstr "Warte auf Verbindung"
 msgid "Waiting for a key"
 msgstr "Wartet auf einen Schlüssel"
 
+#: src/market-data/component/currency-market-price-hero/currency-market-price-hero.tsx
+msgid "Waiting for the first market quote"
+msgstr "Warte auf den ersten Marktkurs"
+
 #: src/app/(main)/create-account/index.tsx
 msgid "Wallets and exchange balances"
 msgstr "Wallets und Börsenguthaben"
@@ -7966,10 +8230,6 @@ msgstr "Warnung"
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "We never see your PIN, and there's no account to reset it through. {noResetSentence}"
 msgstr "Wir sehen deine PIN nie, und es gibt kein Konto, über das sie sich zurücksetzen ließe. {noResetSentence}"
-
-#: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
-msgid "We will retry this quietly."
-msgstr "Wir versuchen es im Hintergrund erneut."
 
 #: src/runway/component/runway-content/runway-content.tsx
 msgid "We’re still importing transaction history for your Runway accounts. Your forecast will appear when their history is ready."
@@ -8220,6 +8480,7 @@ msgstr "Ihre Daten"
 msgid "Your data is safe. Reading it failed this time."
 msgstr "Deine Daten sind sicher. Nur das Lesen ist diesmal fehlgeschlagen."
 
+#: src/auth/components/pin-unlock/pin-unlock.tsx
 #: src/auth/components/security-lock-button/security-lock-button.tsx
 msgid "Your data is sealed. Only your PIN opens it."
 msgstr "Deine Daten sind versiegelt. Nur deine PIN öffnet sie."
@@ -8235,10 +8496,6 @@ msgstr "Deine Daten: {state}"
 #: src/sync/constant/sync-error-label.constant.ts
 msgid "Your device clock is out of sync. Enable automatic date and time, then try again."
 msgstr "Die Uhr deines Geräts geht falsch. Aktiviere Datum und Uhrzeit automatisch und versuche es erneut."
-
-#: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
-msgid "Your holdings"
-msgstr "Deine Bestände"
 
 #: src/budget/components/budget-limit-source-field/budget-limit-source-field.tsx
 msgid "Your limit grows as income arrives this period"
@@ -8267,6 +8524,14 @@ msgstr "Deine PIN · Face ID"
 #: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "Your PIN · Fingerprint"
 msgstr "Deine PIN · Fingerabdruck"
+
+#: src/auth/components/biometric-configuration/biometric-configuration.tsx
+msgid "Your PIN still works any time"
+msgstr "Deine PIN funktioniert weiterhin jederzeit"
+
+#: src/market-data/component/currency-market-position/currency-market-position.tsx
+msgid "Your position"
+msgstr "Deine Position"
 
 #: src/app/(tabs)/settings/tags.tsx
 #: src/tag/components/tag-destination-sheet/tag-destination-sheet.tsx

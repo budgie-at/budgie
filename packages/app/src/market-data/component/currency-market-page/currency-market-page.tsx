@@ -1,76 +1,73 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
+import { View } from 'react-native';
+import { useSharedValue } from 'react-native-reanimated';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
+import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
-import { useCryptoInstrumentBalanceQuery } from '../../../account/query/use-crypto-instrument-balance.query';
+import { RevealGate } from '../../../@generic/component/reveal-gate/reveal-gate';
+import { SCREEN_CHROME_CONFIG } from '../../../@generic/constant/screen-chrome-config.constant';
 import { defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
-import { useInstrumentMarketDataProgressQuery } from '../../query/use-instrument-market-data-progress.query';
 import { useInstrumentMarketDataQuery } from '../../query/use-instrument-market-data.query';
-import { CurrencyMarketHoldingsCard } from '../currency-market-holdings-card/currency-market-holdings-card';
+import { CurrencyMarketAccounts } from '../currency-market-accounts/currency-market-accounts';
 import { CurrencyMarketLargeTitle } from '../currency-market-large-title/currency-market-large-title';
-import { CurrencyMarketMetrics } from '../currency-market-metrics/currency-market-metrics';
-import { CurrencyMarketPriceCard } from '../currency-market-price-card/currency-market-price-card';
+import { CurrencyMarketOverview } from '../currency-market-overview/currency-market-overview';
+import { CurrencyMarketPosition } from '../currency-market-position/currency-market-position';
 import { CurrencyMarketSmallTitle } from '../currency-market-small-title/currency-market-small-title';
-import { MarketDataHistoryProgress } from '../market-data-history-progress/market-data-history-progress';
-import { MarketDataSparkline } from '../market-data-sparkline/market-data-sparkline';
+import { CurrencyMarketStats } from '../currency-market-stats/currency-market-stats';
 
 import { CurrencyMarketPageSelector } from './currency-market-page.selector';
 
-import type { InstrumentDailyMarketPriceEntityInterface, InstrumentEntityInterface } from '@budgie/contracts';
+import type { InstrumentEntityInterface } from '@budgie/contracts';
 
 interface Props {
     readonly instrument: InstrumentEntityInterface;
 }
 
-const isMarketMovePositive = (
-    latestPrice: InstrumentDailyMarketPriceEntityInterface | undefined,
-    previousPrice: InstrumentDailyMarketPriceEntityInterface | undefined
-): boolean => {
-    if (!isDefined(previousPrice) || !isPositiveNumber(previousPrice.price)) {
-        return true;
-    }
-
-    if (!isDefined(latestPrice)) {
-        return true;
-    }
-
-    return latestPrice.price >= previousPrice.price;
+const TITLE_HANDOFF_DISTANCE = 24;
+const HERO_PRICE_HEIGHT = 41;
+const CURRENCY_MARKET_CHROME_CONFIG = {
+    ...SCREEN_CHROME_CONFIG,
+    collapsedHeaderHeight: 44,
+    smallTitleStart: 0,
+    largeTitleEnd: TITLE_HANDOFF_DISTANCE,
+    collapseEnd: TITLE_HANDOFF_DISTANCE
 };
 
 export const CurrencyMarketPage = ({ instrument }: Props) => {
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
-    const { balance } = useCryptoInstrumentBalanceQuery(instrument.id);
     const { latestPrice, previousPrice, prices } = useInstrumentMarketDataQuery(instrument.id, defaultInstrumentId);
-    const progress = useInstrumentMarketDataProgressQuery(instrument.id, defaultInstrumentId);
-    const isPositiveChange = isMarketMovePositive(latestPrice, previousPrice);
-    const shouldShowProgress = prices.length < 2 && !progress.isComplete;
+
+    const priceBottom = useSharedValue(HERO_PRICE_HEIGHT);
+
+    const latestPriceDate = latestPrice?.priceDate ?? null;
 
     return (
-        <CollapsibleChromePage
-            leading={<HeaderBackButton />}
-            largeTitle={<CurrencyMarketLargeTitle instrument={instrument} />}
-            smallTitle={<CurrencyMarketSmallTitle instrument={instrument} />}
-            contentClassName="gap-y-4xl pb-8xl"
-        >
-            <CurrencyMarketPriceCard instrument={instrument} latestPrice={latestPrice} previousPrice={previousPrice} />
-            {shouldShowProgress ? (
-                <MarketDataHistoryProgress
-                    loadedDays={progress.loadedDays}
-                    percent={progress.percent}
-                    status={progress.status}
-                    totalDays={progress.totalDays}
-                />
-            ) : (
-                <MarketDataSparkline
-                    prices={prices}
-                    isPositive={isPositiveChange}
-                    testID={CurrencyMarketPageSelector.Sparkline(instrument.code)}
-                />
-            )}
-            <CurrencyMarketHoldingsCard instrument={instrument} balance={balance} latestPrice={latestPrice} />
-            <CurrencyMarketMetrics instrumentCode={instrument.code} latestPrice={latestPrice} />
-        </CollapsibleChromePage>
+        <GroupedSurface>
+            <RevealGate isLoading={false}>
+                <CollapsibleChromePage
+                    leading={<HeaderBackButton />}
+                    largeTitle={<CurrencyMarketLargeTitle instrument={instrument} hasPrice={isDefined(latestPrice)} />}
+                    smallTitle={
+                        <CurrencyMarketSmallTitle instrumentName={instrument.name} latestPrice={latestPrice} priceBottom={priceBottom} />
+                    }
+                    chromeConfig={CURRENCY_MARKET_CHROME_CONFIG}
+                    contentClassName="px-3xl gap-y-[28px] pb-8xl"
+                    scrimClassName="bg-surface"
+                >
+                    <CurrencyMarketOverview instrument={instrument} prices={prices} priceBottom={priceBottom} />
+
+                    <View testID={CurrencyMarketPageSelector.Holdings(instrument.code)}>
+                        <CurrencyMarketPosition instrument={instrument} latestPriceDate={latestPriceDate} />
+                    </View>
+
+                    <CurrencyMarketAccounts instrument={instrument} />
+
+                    <CurrencyMarketStats instrument={instrument} latestPrice={latestPrice} previousPrice={previousPrice} />
+                </CollapsibleChromePage>
+            </RevealGate>
+        </GroupedSurface>
     );
 };
