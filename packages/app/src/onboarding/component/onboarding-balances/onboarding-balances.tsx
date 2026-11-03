@@ -120,9 +120,7 @@ export const OnboardingBalances = () => {
     const saveLabel = hasAccounts ? balancesLabel : t`Continue`;
     const handleContinuePress = hasAccounts ? handleSavePress : handleLaterPress;
     const title = hasAccounts ? t`What’s in them today?` : t`No accounts yet`;
-    const description = hasAccounts
-        ? t`A rough number is fine. Fix it any time.`
-        : t`Add your first account to start tracking your finances`;
+    const description = hasAccounts ? t`A rough number is fine. Fix it any time.` : t`Import accounts now, or add them later in Budgie.`;
     const importTitle = hasManualAccounts ? t`Or import from` : t`Import`;
 
     return (

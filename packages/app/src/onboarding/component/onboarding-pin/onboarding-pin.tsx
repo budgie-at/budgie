@@ -4,6 +4,7 @@ import { View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { FullPage } from '../../../@generic/component/page/full-page';
 import { PinForgottenWarning } from '../../../auth/components/pin-forgotten-warning/pin-forgotten-warning';
 import { PinFormHeader } from '../../../auth/components/pin-form-header/pin-form-header';
@@ -85,22 +86,25 @@ export const OnboardingPin = () => {
     const pinFormFooter = isConfirming ? <PinRestartButton onPress={handleChooseDifferentPinPress} /> : <PinForgottenWarning />;
 
     return (
-        <FullPage
-            testID={OnboardingPinSelector.Root}
-            className="bg-grouped-surface"
-            header={<OnboardingStepHeader fileState={fileState} fileLock={OnboardingFileLockEnum.OPEN} isBackVisible onBack={handleBack} />}
-        >
-            <View className="flex-1 px-xl">
-                <PinForm
-                    header={<PinFormHeader title={title} description={description} />}
-                    currentInput={input}
-                    error={error}
-                    status={PinFormStatusEnum.READY}
-                    onDigitPress={handleDigitPress}
-                    onDeletePress={handleDeletePress}
-                    footer={pinFormFooter}
-                />
-            </View>
-        </FullPage>
+        <GroupedSurface testID={OnboardingPinSelector.Root}>
+            <FullPage
+                className="bg-surface"
+                header={
+                    <OnboardingStepHeader fileState={fileState} fileLock={OnboardingFileLockEnum.OPEN} isBackVisible onBack={handleBack} />
+                }
+            >
+                <View className="flex-1 px-xl">
+                    <PinForm
+                        header={<PinFormHeader title={title} description={description} />}
+                        currentInput={input}
+                        error={error}
+                        status={PinFormStatusEnum.READY}
+                        onDigitPress={handleDigitPress}
+                        onDeletePress={handleDeletePress}
+                        footer={pinFormFooter}
+                    />
+                </View>
+            </FullPage>
+        </GroupedSurface>
     );
 };

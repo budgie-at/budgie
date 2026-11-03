@@ -1203,7 +1203,6 @@ msgid "Add transactions to see your runway"
 msgstr "Añade transacciones para ver tu autonomía"
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
-#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Add your first account to start tracking your finances"
 msgstr "Agrega tu primera cuenta para comenzar a rastrear tus finanzas"
 
@@ -4100,6 +4099,10 @@ msgstr "Importar un extracto PDF"
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Import accounts and transactions from Erste Bank PDF statement"
 msgstr "Importar cuentas y transacciones desde extracto PDF de Erste Bank"
+
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Import accounts now, or add them later in Budgie."
+msgstr "Importa cuentas ahora o añádelas más tarde en Budgie."
 
 #: src/app/(main)/create-account/index.tsx
 msgid "Import an XLSX statement"
