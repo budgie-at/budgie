@@ -222,15 +222,7 @@ async function applePayGuide(media: Media): Promise<void> {
     const fixtures = fileURLToPath(new URL('../../../tests/app-tests/fixtures/', import.meta.url));
     await media.installDatabase(readFileSync(join(fixtures, 'apple-pay-shortcuts-guide.db')));
     const invocations = readFileSync(join(fixtures, 'apple-pay-shortcuts-guide-invocations.json')).toString('hex');
-    await mustExec(media.api, await media.lease(), [
-        'spawn',
-        'defaults',
-        'write',
-        BUNDLE_ID,
-        'dev.expo.appintents.invocations.pending',
-        '-data',
-        invocations
-    ]);
+    await media.writeAppDefaults('dev.expo.appintents.invocations.pending', '-data', invocations);
 }
 
 /** flows/setup/capture-apple-pay-shortcuts-settings: the Apple Pay capture card, centred on the settings page. */
@@ -621,8 +613,6 @@ export const SCENES: Readonly<Record<string, Scene>> = {
         run: async ctx => {
             await applePaySettings(ctx);
             const card = b.byId(ctx.screen, 'ApplePayCaptureSettings.ReviewCard.11111111_1111_4111_8111_111111111111');
-            // The startup sync drains the pending capture only once the app is idle, so a scroll started at once can outrun it.
-            await expect(card).toBeAttached({ timeout: 60_000 });
             await scrollDown(ctx, card, true);
             await expect(card).toBeVisible();
         }

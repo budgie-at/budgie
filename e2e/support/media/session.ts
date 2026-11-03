@@ -110,12 +110,8 @@ export class Media extends b.Budgie {
         await b.phase('seed', () => this.seed(lease, container, cell));
         await b.phase('device', async () => {
             await mustExec(this.api, lease, ['ui', 'appearance', cell.appearance]);
-            for (const [key, type] of [
-                ['AppleLanguages', '-array'],
-                ['AppleLocale', '-string']
-            ] as const) {
-                await mustExec(this.api, lease, ['spawn', 'defaults', 'write', BUNDLE_ID, key, type, cell.locale]);
-            }
+            await this.writeAppDefaults('AppleLanguages', '-array', cell.locale);
+            await this.writeAppDefaults('AppleLocale', '-string', cell.locale);
             // SCREENSHOT_STATUS_BAR: mobile-ci's status-bar-override, `override` unless the config turned it off.
             if (!statusBars.has(lease)) {
                 await exec(this.api, lease, ['status_bar', 'clear']);
@@ -195,6 +191,16 @@ export class Media extends b.Budgie {
         for (const name of fileFixtures()) {
             await writeFile(this.api, lease, `${container}/Documents/E2EFixtures/${name}`, readFileSync(join(APP_TESTS, 'fixtures', name)));
         }
+    }
+
+    /**
+     * Writes one of the app's own preferences into the plist in its data container, the file the app
+     * reads. A bare bundle id resolves either to that plist or to the simulator's user-level one,
+     * depending on the simulator's history, and a value written to the latter never reaches the app.
+     */
+    async writeAppDefaults(key: string, type: string, value: string): Promise<void> {
+        const plist = `${await this.container()}/Library/Preferences/${BUNDLE_ID}.plist`;
+        await mustExec(this.api, await this.lease(), ['spawn', 'defaults', 'write', plist, key, type, value]);
     }
 
     /** The app stopped, its keychain reset, and `database` its live database. */
