@@ -1,11 +1,13 @@
+import { useSharedValue } from 'react-native-reanimated';
+
 import { LEGEND_LIST_STYLE } from '../../constant/legend-list.constant';
-import { useSheetScrollEdge } from '../../hook/use-sheet-scroll-edge/use-sheet-scroll-edge.hook';
 import { BudgieLegendList } from '../budgie-legend-list/budgie-legend-list';
 import { LoadingContent } from '../loading-content/loading-content';
 import { SelectorScrollEdge } from '../selector-scroll-edge/selector-scroll-edge';
 
 import type { LegendListProps, LegendListRef } from '@legendapp/list/react-native';
 import type { ReactNode, Ref } from 'react';
+import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 
 interface Props<Item> {
     readonly data: LegendListProps<Item>['data'];
@@ -28,7 +30,11 @@ interface Props<Item> {
 }
 
 export const SelectorList = <Item,>({ data, renderItem, keyExtractor, options, listRef, children, isLoading = false }: Props<Item>) => {
-    const { scrollOffset, handleScroll } = useSheetScrollEdge();
+    const scrollOffset = useSharedValue(0);
+
+    const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+        scrollOffset.set(event.nativeEvent.contentOffset.y);
+    };
 
     return (
         <LoadingContent isLoading={isLoading} containerClassName="flex-1" className="flex-1">
@@ -44,7 +50,7 @@ export const SelectorList = <Item,>({ data, renderItem, keyExtractor, options, l
                 onScroll={handleScroll}
                 scrollEventThrottle={16}
             />
-            <SelectorScrollEdge scrollOffset={scrollOffset} top={0} />
+            <SelectorScrollEdge scrollOffset={scrollOffset} />
             {children}
         </LoadingContent>
     );

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -63,19 +64,16 @@ export const SearchableSelectorList = <T,>({ header, sections, keyExtractor, ren
         ListEmptyComponent: emptyState
     };
 
+    useEffect(() => {
+        void listRef.current?.scrollToOffset({ offset: 0, animated: false });
+    }, [query, listRef]);
+
     return (
         <SheetSurface>
             {header}
 
             <View className="flex-1">
-                <SelectorList
-                    key={query}
-                    listRef={listRef}
-                    data={rows}
-                    keyExtractor={rowKeyExtractor}
-                    renderItem={renderRow}
-                    options={listOptions}
-                >
+                <SelectorList listRef={listRef} data={rows} keyExtractor={rowKeyExtractor} renderItem={renderRow} options={listOptions}>
                     {hasRail ? (
                         <View className="absolute z-30 justify-center pt-md" style={RAIL_POSITION_STYLE}>
                             <SectionIndexRail letters={sectionLetters} activeLetter={visibleLetter} onSelect={handleSectionLetter} />

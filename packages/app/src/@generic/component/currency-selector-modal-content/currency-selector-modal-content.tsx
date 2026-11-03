@@ -29,6 +29,7 @@ export const CurrencySelectorModalContent = ({ instrumentType, selectedInstrumen
     const [search, setSearch] = useState('');
     const { instruments, isLoading } = useGetInstrumentsByTypeQuery(instrumentType);
 
+    const query = search.trim();
     const isCrypto = instrumentType === InstrumentTypeEnum.CRYPTO;
     const title = isCrypto ? t`Crypto` : t`Currency`;
     const emptyHint = isCrypto ? t`Check the spelling or try a ticker like BTC.` : t`Check the spelling or try a code like EUR.`;
@@ -44,27 +45,22 @@ export const CurrencySelectorModalContent = ({ instrumentType, selectedInstrumen
         ];
     };
     const sections = (
-        isNotEmptyString(search.trim()) ? [{ title: t`Results`, data: rankInstrumentSearch(instruments, search) }] : toBrowseSections()
+        isNotEmptyString(query) ? [{ title: t`Results`, data: rankInstrumentSearch(instruments, query) }] : toBrowseSections()
     ).filter(({ data }) => isNotEmptyArray(data));
 
     const renderItem = (item: InstrumentEntityInterface) => (
-        <CurrencySelectorCard
-            instrument={item}
-            isSelected={item.id === selectedInstrumentId}
-            onSelect={onSelect}
-            highlight={search.trim()}
-        />
+        <CurrencySelectorCard instrument={item} isSelected={item.id === selectedInstrumentId} onSelect={onSelect} highlight={query} />
     );
 
-    const emptyState = isNotEmptyString(search.trim()) ? (
-        <SelectorSearchEmptyState query={search.trim()} hint={emptyHint} />
+    const emptyState = isNotEmptyString(query) ? (
+        <SelectorSearchEmptyState query={query} hint={emptyHint} />
     ) : (
         <EmptyState title={title} description="" />
     );
 
     return (
         <SearchableSelectorList
-            query={search.trim()}
+            query={query}
             header={
                 <SelectorModalSearchHeader
                     title={title}

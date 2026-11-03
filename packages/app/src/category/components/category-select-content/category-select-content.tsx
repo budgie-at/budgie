@@ -3,7 +3,8 @@ import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
-import { SelectorGridContent } from '../../../@generic/component/selector-grid-content/selector-grid-content';
+import { SelectorList } from '../../../@generic/component/selector-list/selector-list';
+import { useFormsheetListContentStyle } from '../../../@generic/hook/use-formsheet-list-content-style/use-formsheet-list-content-style.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { FlatListDataItem } from '../../../@generic/utils/map-to-flatlist-data.util';
 import { CategorySelectorCard } from '../category-selector-card/category-selector-card';
@@ -21,7 +22,7 @@ interface Props {
     readonly cardTestID?: (title: string) => string;
 }
 
-const CARD_HEIGHT = 92;
+const COLUMN_WRAPPER_STYLE = { rowGap: 8, columnGap: 8 };
 
 const keyExtractor = (item: FlatListDataItem<CategoryEntityInterface>, index: number) =>
     item.isEmpty ? `empty-${index}` : item.id.toString();
@@ -29,6 +30,7 @@ const keyExtractor = (item: FlatListDataItem<CategoryEntityInterface>, index: nu
 export const CategorySelectContent = (props: Props) => {
     const { data, variant, selectedCategoryIds, additionalBottomPadding = 0, isLoading = false, onSelect, cardTestID } = props;
     const { t } = useLingui();
+    const contentContainerStyle = useFormsheetListContentStyle(additionalBottomPadding);
 
     const renderItem = ({ item }: { item: FlatListDataItem<CategoryEntityInterface> }) =>
         item.isEmpty ? (
@@ -51,15 +53,13 @@ export const CategorySelectContent = (props: Props) => {
         </View>
     );
 
-    return (
-        <SelectorGridContent
-            data={data}
-            keyExtractor={keyExtractor}
-            renderItem={renderItem}
-            itemHeight={CARD_HEIGHT}
-            listEmptyComponent={listEmptyComponent}
-            isLoading={isLoading}
-            additionalBottomPadding={additionalBottomPadding}
-        />
-    );
+    const listOptions = {
+        numColumns: 3,
+        estimatedItemSize: 100,
+        columnWrapperStyle: COLUMN_WRAPPER_STYLE,
+        contentContainerStyle,
+        ListEmptyComponent: listEmptyComponent
+    };
+
+    return <SelectorList isLoading={isLoading} data={data} keyExtractor={keyExtractor} renderItem={renderItem} options={listOptions} />;
 };
