@@ -46,14 +46,17 @@
         "e2e": {
             "entry": [
                 "e2e.config.ts",
-                "tests/**/*.e2e.ts",
-                "support/**/*.test.ts"
+                "tests/**/*.e2e.ts"
             ],
             "project": [
                 "**/*.ts"
             ],
             "ignoreBinaries": [
                 "e2e"
+            ],
+            "ignoreDependencies": [
+                "@mobile-ci/e2e-simlock",
+                "agent-device"
             ]
         }
     }

@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "simlock:install": "curl -fsSLo node_modules/.fetch-e2e-simlock.sh https://raw.githubusercontent.com/rnw-community/mobile-ci/v4.9.0/scripts/fetch-e2e-simlock.sh && bash node_modules/.fetch-e2e-simlock.sh v4.9.0 .",
     "test:ios": "e2e run --target ios"
   },
   "devDependencies": {

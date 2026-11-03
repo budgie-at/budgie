@@ -1,9 +1,8 @@
 import { randomBytes } from 'node:crypto';
 
 import { mobile } from '@e2e-dev/mobile';
-
-import { E2E_DROP_APP } from './support/simlock/exec.ts';
-import { simlockDevices } from './support/simlock/provider.ts';
+import { simlockDevices } from '@mobile-ci/e2e-simlock';
+import { E2E_DROP_APP } from '@mobile-ci/e2e-simlock/exec';
 
 import type { E2EConfig } from 'e2e';
 
@@ -35,6 +34,8 @@ export default {
                 device: simlockDevices({
                     url: env('SIMLOCK_URL'),
                     token: env('SIMLOCK_TOKEN'),
+                    platform: 'ios',
+                    tenant: 'budgie-e2e',
                     device: process.env.SIMLOCK_DEVICE ?? 'iPhone 17 Pro',
                     extraApps: [E2E_DROP_APP]
                 })
