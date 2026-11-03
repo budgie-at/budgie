@@ -2,6 +2,7 @@
 set -euo pipefail
 
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+command -v sqlite3 >/dev/null 2>&1 || PATH="$SCRIPT_DIR/sqlite-fallback:$PATH"
 PROJECT_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/../../.." && pwd)
 INSTALL_SCRIPT="$PROJECT_ROOT/scripts/install-ios-db-fixture.sh"
 SETUP_SCRIPT="$SCRIPT_DIR/setup-ios-e2e-fixtures.sh"

@@ -1,5 +1,6 @@
 #!/bin/bash
-# Self-test for the landing media capture config's scene and still-flow conventions.
+# Self-test for the landing media capture config's scene conventions: every scene a deep link
+# or an e2e scene (e2e/support/media/scenes.ts), stills named <slug>-<n>.
 set -euo pipefail
 
 command -v jq >/dev/null 2>&1 || { echo 'skip  jq not on PATH'; exit 0; }
@@ -20,7 +21,7 @@ jq empty "$CONFIG" 2>/dev/null && ok 'config is valid JSON' || fail 'config is n
 MODE=$(jq -r '."capture-mode"' "$CONFIG")
 [ "$MODE" = 'direct' ] && ok 'capture-mode is direct' || fail "capture-mode is '$MODE', expected direct"
 
-SCREENSHOTS_DIR="$REPO_ROOT/$(jq -r '."screenshots-dir"' "$CONFIG")"
+SCENES_TS="$REPO_ROOT/e2e/support/media/scenes.ts"
 NAMES=$(jq -r '."capture-scenes"[].name' "$CONFIG")
 
 DUPES=$(printf '%s\n' "$NAMES" | sort | uniq -d)
@@ -29,39 +30,25 @@ DUPES=$(printf '%s\n' "$NAMES" | sort | uniq -d)
 BAD_CASE=$(printf '%s\n' "$NAMES" | grep -Ev '^[a-z0-9]+(-[a-z0-9]+)*$' || true)
 [ -z "$BAD_CASE" ] && ok 'scene names are kebab-case' || fail "non-kebab-case scene names: $BAD_CASE"
 
-BAD_KEYS=$(jq -r '."capture-scenes"[] | select((([has("deepLink"), has("flow")] | map(select(.))) | length) != 1) | .name' "$CONFIG")
-[ -z "$BAD_KEYS" ] && ok 'every scene declares exactly one of deepLink/flow' || fail "scenes without exactly one of deepLink/flow: $BAD_KEYS"
+BAD_KEYS=$(jq -r '."capture-scenes"[] | select((([has("deepLink"), has("test")] | map(select(.))) | length) != 1 or has("flow")) | .name' "$CONFIG")
+[ -z "$BAD_KEYS" ] && ok 'every scene declares exactly one of deepLink/test' || fail "scenes without exactly one of deepLink/test: $BAD_KEYS"
 
-MISSING_FLOWS=0
-while IFS=$'\t' read -r name flow; do
+MISSING_TESTS=0
+while IFS=$'\t' read -r name test_name; do
     [ -n "$name" ] || continue
-    [ -f "$SCREENSHOTS_DIR/$flow" ] || { fail "scene '$name' flow '$flow' does not exist under screenshots-dir"; MISSING_FLOWS=$((MISSING_FLOWS + 1)); }
-done < <(jq -r '."capture-scenes"[] | select(has("flow")) | .name + "\t" + .flow' "$CONFIG")
-[ "$MISSING_FLOWS" -eq 0 ] && ok 'every flow scene resolves to a file under screenshots-dir'
+    grep -qE "^    '?${test_name}'?: " "$SCENES_TS" || { fail "scene '$name' test '$test_name' is not a SCENES entry in e2e/support/media/scenes.ts"; MISSING_TESTS=$((MISSING_TESTS + 1)); }
+done < <(jq -r '."capture-scenes"[] | select(has("test")) | .name + "\t" + .test' "$CONFIG")
+[ "$MISSING_TESTS" -eq 0 ] && ok 'every test scene names a SCENES entry'
 
-MEDIA_DIR="$SCREENSHOTS_DIR/flows/media"
-for flow_file in "$MEDIA_DIR"/*.flow.yaml; do
-    [ -e "$flow_file" ] || continue
-    base=$(basename "$flow_file")
-    rel="flows/media/$base"
-    shots=$(grep -n '^- takeScreenshot:' "$flow_file" || true)
-    shot_count=$(printf '%s\n' "$shots" | grep -c . || true)
-    if [ "$shot_count" -ne 1 ] || grep -qE '^- (startRecording|stopRecording)' "$flow_file"; then
-        fail "$base does not have exactly one takeScreenshot and no recording"
-        continue
-    fi
-
-    referencing=$(jq -r --arg f "$rel" '[."capture-scenes"[] | select(.flow == $f) | .name]' "$CONFIG")
-    ref_count=$(printf '%s' "$referencing" | jq 'length')
-    if [ "$ref_count" -ne 1 ]; then
-        fail "$rel is referenced by $ref_count scenes, expected exactly 1"
-        continue
-    fi
-    ref_name=$(printf '%s' "$referencing" | jq -r '.[0]')
-    printf '%s\n' "$ref_name" | grep -qE -- '-[0-9]+$' && ! printf '%s\n' "$ref_name" | grep -qE -- '-clip-[0-9]+$' &&
-        ok "$ref_name follows the still <slug>-<n> naming convention" ||
-        fail "$ref_name does not match the still <slug>-<n> naming convention"
-done
+while IFS= read -r name; do
+    [ -n "$name" ] || continue
+    case "$name" in
+        app-store-preview) ok "$name is the recorded preview clip" ;;
+        *-clip-[0-9]*) fail "$name is a clip, not a still" ;;
+        *-[0-9]*) ok "$name follows the still <slug>-<n> naming convention" ;;
+        *) fail "$name does not match the still <slug>-<n> naming convention" ;;
+    esac
+done < <(jq -r '."capture-scenes"[] | select(has("test")) | .name' "$CONFIG")
 
 if [ "$FAILURES" -gt 0 ]; then
     echo "$FAILURES assertion(s) failed"

@@ -88,7 +88,7 @@ numbers. These are fictional showcase fixtures: the English hero has a positive
 **$91,358.63** total balance, a green **62%** budget, and **$2,871 left**. German,
 Spanish and French show **63%**, and Ukrainian **59%**, all with positive balances
 and money remaining. A healthy capture already exists in every locale; no
-Maestro/seed change or macmini recapture is needed for these headers. Raw capture
+capture/seed change or recapture is needed for these headers. Raw capture
 directories are absent in this checkout, so the committed screenshot variants
 are the reproducible source rather than untracked raw images.
 
@@ -170,9 +170,9 @@ upload assets or dispatch workflows; live placement crops remain an owner check.
 
 ## Record and encode app previews
 
-The landing pipeline can collect real Maestro recordings: `capture_flow_cell`
-already moves a flow's single MP4 beside its single PNG. The new
-`app-store-preview` scene in `.github/landing-media.config.json` uses that path.
+The landing pipeline collects real recordings: a capture scene that records
+(`media.record` in `e2e/support/media/session.ts`) leaves its MP4 beside its PNG.
+The `app-store-preview` scene in `.github/landing-media.config.json` uses that path.
 It records home/account scrolling and analytics with four deliberate swipes, after
 waiting for the home UI. It does not restart the app or alter app behavior.
 
@@ -194,26 +194,22 @@ include `1080x1920` and `750x1334`; older iPad slots include `900x1200`.
 No phone preview is offered as a native iPad preview. Processing can take up to
 24 hours. See [Apple app preview specifications](https://developer.apple.com/help/app-store-connect/reference/app-information/app-preview-specifications/).
 
-On **macmini**, from the current branch synced to `~/budgie-runway`, with a current
-E2E app already installed on the capture simulator:
+From this repository, on any host that reaches the simlock farm, with a current
+E2E app (`tests/app-tests/E2E-RUNBOOK.md`) and `npm ci` done in `e2e/`:
 
 ```bash
-export PATH="/opt/homebrew/bin:$HOME/.maestro/bin:$PATH"
-cd ~/budgie-runway
-df -h /System/Volumes/Data
+SIMLOCK_URL=<gateway> SIMLOCK_TOKEN=<agent token> \
 bash tests/app-tests/scripts/capture-store-screenshots.sh \
-  --config .github/landing-media.config.json \
+  --config .github/landing-media.config.json --app <absolute-current-E2E-app-path> \
   --device 'iPhone 17 Pro Max' --locales en,fr,uk,de,es --appearances dark \
-  --scenes app-store-preview --skip-install \
+  --scenes app-store-preview \
   --output packages/app/fastlane/screenshots/landing-raw
 ```
 
-If the installed E2E binary is stale, build it using `tests/app-tests/E2E-RUNBOOK.md`
-and replace `--skip-install` with `--app <absolute-current-E2E-app-path>`. The capture
-runner owns boot → slim → install/drive → shutdown and seeds showcase fixtures for
-each locale. It requires `simslim`, Maestro, jq and sqlite3. Do not use macstudio.
+The capture leases simulators of that model from the farm, seeds showcase fixtures
+for each locale, and records each cell. It requires Node 24, jq and sqlite3.
 A partial capture replaces that device's raw tree; copy any wanted earlier captures
-elsewhere first. No Mac flow execution is claimed by this PR.
+elsewhere first.
 
 On Linux, from this repository:
 
