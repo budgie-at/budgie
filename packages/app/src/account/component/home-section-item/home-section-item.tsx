@@ -1,10 +1,6 @@
-import { AccountWithSyncEntityInterface } from '@budgie/contracts';
-
 import { AccountRowLeadingContext } from '../../context/account-row-leading.context';
-import { CryptoCurrencyGroupInterface } from '../../interface/crypto-currency-group.interface';
 import { HomeAccountBalanceInterface } from '../../interface/home-account-balance.interface';
 import { HomeSectionInterface } from '../../interface/home-section.interface';
-import { InstitutionGroupInterface } from '../../interface/institution-group.interface';
 import { isDebtSection } from '../../type-guard/is-debt-section.type-guard';
 import { isInstitutionGroup } from '../../type-guard/is-institution-group.type-guard';
 import { AccountListItem } from '../account-list-item/account-list-item';
@@ -14,7 +10,7 @@ import { InstitutionMark } from '../institution-mark/institution-mark';
 import { InstitutionRow } from '../institution-row/institution-row';
 
 interface Props {
-    readonly item: CryptoCurrencyGroupInterface | InstitutionGroupInterface | AccountWithSyncEntityInterface;
+    readonly item: HomeSectionInterface['data'][number];
     readonly section: HomeSectionInterface;
     readonly balancesByAccountId: ReadonlyMap<number, HomeAccountBalanceInterface>;
 }

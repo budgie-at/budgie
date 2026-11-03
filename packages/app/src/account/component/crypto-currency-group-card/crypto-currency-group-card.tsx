@@ -28,7 +28,6 @@ export const CryptoCurrencyGroupCard = ({ group, balance, balancesByAccountId }:
                 instrumentCode={group.instrument.code}
                 isOpen={isOpen}
                 onPress={toggleOpen}
-                testID={CryptoCurrencyGroupCardSelector.Toggle(group.instrument.code)}
             />
 
             {isOpen ? <CryptoCurrencyGroupAccounts group={group} balancesByAccountId={balancesByAccountId} /> : null}

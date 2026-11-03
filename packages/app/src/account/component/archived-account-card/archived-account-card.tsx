@@ -1,15 +1,16 @@
 import { AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { isThisYear } from 'date-fns/isThisYear';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { ActionsMenuItem } from '../../../@generic/component/actions-menu-item/actions-menu-item';
 import { DeletableRow } from '../../../@generic/component/deletable-row/deletable-row';
 import { GroupedListItem } from '../../../@generic/component/grouped-list-item/grouped-list-item';
+import { useI18nContext } from '../../../i18n/context/i18n.context';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useDeleteArchivedAccount } from '../../hooks/use-delete-archived-account.hook';
-import { useFormatArchivedDate } from '../../hooks/use-format-archived-date.hook';
 import { useRestoreArchivedAccount } from '../../hooks/use-restore-archived-account.hook';
 import { useArchivedAccountBalanceQuery } from '../../query/use-archived-account-balance.query';
 import { ArchivedAccountClosedMenuNote } from '../archived-account-closed-menu-note/archived-account-closed-menu-note';
@@ -28,10 +29,16 @@ interface Props {
 export const ArchivedAccountCard = ({ account, isFirst, isLast }: Props) => {
     const { t } = useLingui();
     const formatInstrumentAmount = useFormatInstrumentAmount();
+    const { intl } = useI18nContext();
     const { balance } = useArchivedAccountBalanceQuery(account.id);
     const { isLoading, restore } = useRestoreArchivedAccount(account);
     const { deleteAccount } = useDeleteArchivedAccount(account);
-    const archivedDate = useFormatArchivedDate(account.deletedAt);
+    const archivedDate = isDefined(account.deletedAt)
+        ? intl.formatDate(
+              account.deletedAt,
+              isThisYear(account.deletedAt) ? { month: 'short', day: 'numeric' } : { month: 'short', year: 'numeric' }
+          )
+        : null;
 
     const formattedBalance = formatInstrumentAmount(balance, account.instrument.symbol, account.instrument.type);
     const accountType = t(ACCOUNT_TYPE[account.type]);

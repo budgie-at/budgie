@@ -37,7 +37,7 @@ export const CryptoCurrencyGroupMarketLink = ({ instrument, balance }: Props) =>
     const formatDigits = useDisplayFormatDigits();
     const formatCryptoDigits = useFormatDigits(0, MICRO_UNIT_DECIMAL_PLACES);
     const valuationRate = useCryptoValuationRateQuery(instrument.id, defaultInstrument.id);
-    const isFractionalRate = isDefined(valuationRate) && isPositiveNumber(valuationRate) && valuationRate < 1;
+    const isFractionalRate = isPositiveNumber(valuationRate) && valuationRate < 1;
     const rateFractionDigits = isFractionalRate ? Math.min(Math.max(Math.ceil(-Math.log10(valuationRate)) + 2, 4), 8) : 2;
     const formatRate = useFormatDigits(2, rateFractionDigits);
 
