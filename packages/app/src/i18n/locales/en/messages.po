@@ -2405,7 +2405,7 @@ msgstr "Contains"
 
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
-#: src/onboarding/component/onboarding-sealed-actions/onboarding-sealed-actions.tsx
+#: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
 #: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Continue"
@@ -2454,7 +2454,7 @@ msgstr "Convert to Transfer"
 msgid "Convert to Transfer?"
 msgstr "Convert to Transfer?"
 
-#: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Converting {processedEntryCount} of {totalEntryCount} transactions"
 msgstr "Converting {processedEntryCount} of {totalEntryCount} transactions"
 
@@ -2818,7 +2818,7 @@ msgstr "Could not verify the API key permissions"
 msgid "Couldn’t check Monobank for new accounts"
 msgstr "Couldn’t check Monobank for new accounts"
 
-#: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Couldn't finish. Try again."
 msgstr "Couldn't finish. Try again."
 
@@ -2830,15 +2830,15 @@ msgstr "Couldn’t load this list"
 msgid "Couldn’t load transaction counts"
 msgstr "Couldn’t load transaction counts"
 
-#: src/auth/hook/use-pin-setup.hook.tsx
+#: src/auth/hook/use-pin-setup.hook.ts
 msgid "Couldn't save your PIN. Enter it again to retry."
 msgstr "Couldn't save your PIN. Enter it again to retry."
 
-#: src/auth/hook/use-pin-setup.hook.tsx
+#: src/auth/hook/use-pin-setup.hook.ts
 msgid "Couldn't save your PIN. Try again."
 msgstr "Couldn't save your PIN. Try again."
 
-#: src/auth/hook/use-pin-setup.hook.tsx
+#: src/auth/hook/use-pin-setup.hook.ts
 msgid "Couldn't turn off app lock. Try again."
 msgstr "Couldn't turn off app lock. Try again."
 
@@ -3056,7 +3056,7 @@ msgstr "Debt accounts cannot take part in transfers"
 msgid "Debts and loans"
 msgstr "Debts and loans"
 
-#: src/auth/components/pin-setup/pin-setup.tsx
+#: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Decrypting your data. Keep Budgie open, it restarts when finished."
 msgstr "Decrypting your data. Keep Budgie open, it restarts when finished."
 
@@ -3531,7 +3531,7 @@ msgstr "Encrypted · PIN"
 msgid "Encrypted · PIN and {biometricLabel}"
 msgstr "Encrypted · PIN and {biometricLabel}"
 
-#: src/auth/components/pin-setup/pin-setup.tsx
+#: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Encrypting your data"
 msgstr "Encrypting your data"
 
@@ -3744,7 +3744,7 @@ msgstr "External ID"
 msgid "Face ID"
 msgstr "Face ID"
 
-#: src/auth/hook/use-pin-setup.hook.tsx
+#: src/auth/hook/use-pin-setup.hook.ts
 msgid "Face ID wasn't completed. Try again or continue without it."
 msgstr "Face ID wasn't completed. Try again or continue without it."
 
@@ -3815,7 +3815,7 @@ msgstr "File {count} as {labelTitle}"
 msgid "File {merchantTitle} as {candidateTitle}"
 msgstr "File {merchantTitle} as {candidateTitle}"
 
-#: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Fill missing currency conversions"
 msgstr "Fill missing currency conversions"
 
@@ -4326,7 +4326,7 @@ msgstr "Jars"
 msgid "Keep"
 msgstr "Keep"
 
-#: src/auth/components/pin-setup/pin-setup.tsx
+#: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Keep Budgie open. It restarts when finished."
 msgstr "Keep Budgie open. It restarts when finished."
 
@@ -5843,7 +5843,7 @@ msgstr "Pick one you'll remember but others won't guess."
 msgid "PIN, {enteredCount} of {PIN_LENGTH} digits entered"
 msgstr "PIN, {enteredCount} of {PIN_LENGTH} digits entered"
 
-#: src/auth/hook/use-pin-setup.hook.tsx
+#: src/auth/hook/use-pin-setup.hook.ts
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "PINs don't match. Try again."
 msgstr "PINs don't match. Try again."
@@ -5929,7 +5929,7 @@ msgstr "Popular"
 msgid "Positive"
 msgstr "Positive"
 
-#: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Preparing conversions"
 msgstr "Preparing conversions"
 
@@ -6022,7 +6022,7 @@ msgstr "Raised {dateLabel} · over the limit {count} periods in a row"
 msgid "Rank"
 msgstr "Rank"
 
-#: src/auth/components/pin-setup/pin-setup.tsx
+#: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Re-encrypting your data. Keep Budgie open, it restarts when finished."
 msgstr "Re-encrypting your data. Keep Budgie open, it restarts when finished."
 
@@ -6120,7 +6120,7 @@ msgstr "Recalculate from transactions"
 msgid "Recalculates every day. Spend less today and tomorrow's amount grows."
 msgstr "Recalculates every day. Spend less today and tomorrow's amount grows."
 
-#: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Recalculating balances"
 msgstr "Recalculating balances"
 
@@ -7628,7 +7628,7 @@ msgstr "Total lent"
 msgid "Touch ID"
 msgstr "Touch ID"
 
-#: src/auth/hook/use-pin-setup.hook.tsx
+#: src/auth/hook/use-pin-setup.hook.ts
 msgid "Touch ID wasn't completed. Try again or continue without it."
 msgstr "Touch ID wasn't completed. Try again or continue without it."
 
@@ -7822,7 +7822,7 @@ msgstr "Turn on on-device AI to download the models."
 msgid "Turn payments into transfers"
 msgstr "Turn payments into transfers"
 
-#: src/auth/components/pin-setup/pin-setup.tsx
+#: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Turning off app lock"
 msgstr "Turning off app lock"
 
@@ -8018,7 +8018,7 @@ msgstr "Updated today"
 msgid "Updated yesterday"
 msgstr "Updated yesterday"
 
-#: src/auth/components/pin-setup/pin-setup.tsx
+#: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Updating your PIN"
 msgstr "Updating your PIN"
 
@@ -8042,7 +8042,7 @@ msgstr "Use 1 to {CATEGORY_TITLE_MAX_LENGTH} characters"
 msgid "Use 1 to {TAG_TITLE_MAX_LENGTH} characters"
 msgstr "Use 1 to {TAG_TITLE_MAX_LENGTH} characters"
 
-#: src/auth/components/pin-setup/pin-setup.tsx
+#: src/auth/components/biometric-configuration/biometric-configuration.tsx
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Use Face ID"
 msgstr "Use Face ID"
@@ -8068,7 +8068,7 @@ msgstr "Use the PIN this backup was sealed with. Without it, the backup can't be
 msgid "Use these only if conversions, imports or balances look wrong."
 msgstr "Use these only if conversions, imports or balances look wrong."
 
-#: src/auth/components/pin-setup/pin-setup.tsx
+#: src/auth/components/biometric-configuration/biometric-configuration.tsx
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Use Touch ID"
 msgstr "Use Touch ID"

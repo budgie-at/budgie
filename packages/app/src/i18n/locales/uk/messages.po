@@ -2404,7 +2404,7 @@ msgstr "Містить"
 
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
-#: src/onboarding/component/onboarding-sealed-actions/onboarding-sealed-actions.tsx
+#: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
 #: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Continue"
@@ -2453,7 +2453,7 @@ msgstr "Перетворити на переказ"
 msgid "Convert to Transfer?"
 msgstr "Конвертувати у переказ?"
 
-#: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Converting {processedEntryCount} of {totalEntryCount} transactions"
 msgstr "Конвертується {processedEntryCount} з {totalEntryCount} транзакцій"
 
@@ -2817,7 +2817,7 @@ msgstr "Не вдалося перевірити дозволи API-ключа"
 msgid "Couldn’t check Monobank for new accounts"
 msgstr "Не вдалося перевірити нові рахунки в Monobank"
 
-#: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Couldn't finish. Try again."
 msgstr "Не вдалося завершити. Спробуйте ще раз."
 
@@ -2829,15 +2829,15 @@ msgstr "Не вдалося завантажити список"
 msgid "Couldn’t load transaction counts"
 msgstr "Не вдалося завантажити кількість транзакцій"
 
-#: src/auth/hook/use-pin-setup.hook.tsx
+#: src/auth/hook/use-pin-setup.hook.ts
 msgid "Couldn't save your PIN. Enter it again to retry."
 msgstr "Не вдалося зберегти PIN-код. Введіть його ще раз, щоб повторити спробу."
 
-#: src/auth/hook/use-pin-setup.hook.tsx
+#: src/auth/hook/use-pin-setup.hook.ts
 msgid "Couldn't save your PIN. Try again."
 msgstr "Не вдалося зберегти PIN-код. Спробуйте ще раз."
 
-#: src/auth/hook/use-pin-setup.hook.tsx
+#: src/auth/hook/use-pin-setup.hook.ts
 msgid "Couldn't turn off app lock. Try again."
 msgstr "Не вдалося вимкнути блокування застосунку. Спробуйте ще раз."
 
@@ -3055,7 +3055,7 @@ msgstr "Боргові рахунки не можуть брати участь 
 msgid "Debts and loans"
 msgstr "Борги та позики"
 
-#: src/auth/components/pin-setup/pin-setup.tsx
+#: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Decrypting your data. Keep Budgie open, it restarts when finished."
 msgstr "Розшифровуємо ваші дані. Не закривайте Budgie, після завершення застосунок перезапуститься."
 
@@ -3530,7 +3530,7 @@ msgstr "Зашифровано · PIN"
 msgid "Encrypted · PIN and {biometricLabel}"
 msgstr "Зашифровано · PIN і {biometricLabel}"
 
-#: src/auth/components/pin-setup/pin-setup.tsx
+#: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Encrypting your data"
 msgstr "Шифруємо ваші дані"
 
@@ -3743,7 +3743,7 @@ msgstr "Зовнішній ID"
 msgid "Face ID"
 msgstr "Face ID"
 
-#: src/auth/hook/use-pin-setup.hook.tsx
+#: src/auth/hook/use-pin-setup.hook.ts
 msgid "Face ID wasn't completed. Try again or continue without it."
 msgstr "Face ID не завершено. Спробуйте ще раз або продовжте без нього."
 
@@ -3814,7 +3814,7 @@ msgstr "Віднести {count} до {labelTitle}"
 msgid "File {merchantTitle} as {candidateTitle}"
 msgstr "Віднести {merchantTitle} до {candidateTitle}"
 
-#: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Fill missing currency conversions"
 msgstr "Заповнити відсутні конвертації валют"
 
@@ -4325,7 +4325,7 @@ msgstr "Банки"
 msgid "Keep"
 msgstr "Залишити"
 
-#: src/auth/components/pin-setup/pin-setup.tsx
+#: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Keep Budgie open. It restarts when finished."
 msgstr "Не закривайте Budgie. Після завершення застосунок перезапуститься."
 
@@ -5842,7 +5842,7 @@ msgstr "Виберіть такий, який ви запам'ятаєте, а �
 msgid "PIN, {enteredCount} of {PIN_LENGTH} digits entered"
 msgstr "PIN-код, введено {enteredCount} з {PIN_LENGTH} цифр"
 
-#: src/auth/hook/use-pin-setup.hook.tsx
+#: src/auth/hook/use-pin-setup.hook.ts
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "PINs don't match. Try again."
 msgstr "PIN-коди не збігаються. Спробуйте ще раз."
@@ -5928,7 +5928,7 @@ msgstr "Популярні"
 msgid "Positive"
 msgstr "Додатний"
 
-#: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Preparing conversions"
 msgstr "Підготовка конвертацій"
 
@@ -6021,7 +6021,7 @@ msgstr "Підвищено {dateLabel} · понад ліміт {count} пері
 msgid "Rank"
 msgstr "Рейтинг"
 
-#: src/auth/components/pin-setup/pin-setup.tsx
+#: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Re-encrypting your data. Keep Budgie open, it restarts when finished."
 msgstr "Повторно шифруємо ваші дані. Не закривайте Budgie, після завершення застосунок перезапуститься."
 
@@ -6119,7 +6119,7 @@ msgstr "Перерахувати з транзакцій"
 msgid "Recalculates every day. Spend less today and tomorrow's amount grows."
 msgstr "Перераховується щодня. Витрать менше сьогодні — і сума на завтра зросте."
 
-#: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Recalculating balances"
 msgstr "Перерахунок балансів"
 
@@ -7627,7 +7627,7 @@ msgstr "Усього надано в борг"
 msgid "Touch ID"
 msgstr "Touch ID"
 
-#: src/auth/hook/use-pin-setup.hook.tsx
+#: src/auth/hook/use-pin-setup.hook.ts
 msgid "Touch ID wasn't completed. Try again or continue without it."
 msgstr "Touch ID не завершено. Спробуйте ще раз або продовжте без нього."
 
@@ -7821,7 +7821,7 @@ msgstr "Увімкніть ШІ на пристрої, щоб завантажи
 msgid "Turn payments into transfers"
 msgstr "Перетворювати платежі на перекази"
 
-#: src/auth/components/pin-setup/pin-setup.tsx
+#: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Turning off app lock"
 msgstr "Вимикаємо блокування застосунку"
 
@@ -8017,7 +8017,7 @@ msgstr "Оновлено сьогодні"
 msgid "Updated yesterday"
 msgstr "Оновлено вчора"
 
-#: src/auth/components/pin-setup/pin-setup.tsx
+#: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Updating your PIN"
 msgstr "Оновлюємо PIN-код"
 
@@ -8041,7 +8041,7 @@ msgstr "Використайте від 1 до {CATEGORY_TITLE_MAX_LENGTH} си�
 msgid "Use 1 to {TAG_TITLE_MAX_LENGTH} characters"
 msgstr "Використайте від 1 до {TAG_TITLE_MAX_LENGTH} символів"
 
-#: src/auth/components/pin-setup/pin-setup.tsx
+#: src/auth/components/biometric-configuration/biometric-configuration.tsx
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Use Face ID"
 msgstr "Використовувати Face ID"
@@ -8067,7 +8067,7 @@ msgstr "Використайте PIN-код, яким запечатано цю 
 msgid "Use these only if conversions, imports or balances look wrong."
 msgstr "Використовуйте, лише якщо конвертації, імпорт чи баланси виглядають неправильно."
 
-#: src/auth/components/pin-setup/pin-setup.tsx
+#: src/auth/components/biometric-configuration/biometric-configuration.tsx
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Use Touch ID"
 msgstr "Використовувати Touch ID"
