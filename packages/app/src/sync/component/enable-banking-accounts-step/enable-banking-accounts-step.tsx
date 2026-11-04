@@ -4,9 +4,10 @@ import { Text, View } from 'react-native';
 
 import { isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
-import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
-import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
+import { GroupedListSectionTitle } from '../../../@generic/component/grouped-list-section-title/grouped-list-section-title';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { SearchablePageEmptyState } from '../../../@generic/component/searchable-page-empty-state/searchable-page-empty-state';
 import { EnableBankingAccountRow } from '../enable-banking-account-row/enable-banking-account-row';
 import { EnableBankingParkedAccountRow } from '../enable-banking-parked-account-row/enable-banking-parked-account-row';
 
@@ -27,36 +28,40 @@ export const EnableBankingAccountsStep = ({
 }: Props) => {
     const { t } = useLingui();
     const missingAccount = t`Missing an account? Link it to your application in Enable Banking, then connect this bank again.`;
-    const areAllSelected = isNotEmptyArray(accountPreviews) && selectedAccounts.size === accountPreviews.length;
+    const accountsCount = accountPreviews.length;
+    const areAllSelected = isNotEmptyArray(accountPreviews) && selectedAccounts.size === accountsCount;
     const toggleAllLabel = areAllSelected ? t`Deselect all` : t`Select all`;
     const handleToggleAll = areAllSelected ? onDeselectAll : onSelectAll;
 
     return (
         <>
             {isEmptyArray(accountPreviews) ? (
-                <View className="gap-y-sm px-3xl py-xl">
-                    <Text className="text-primary text-center text-[17px] font-semibold">{t`No accounts to connect`}</Text>
-                    <Text className="text-secondary-foreground text-center text-[15px] leading-[20px]">{missingAccount}</Text>
-                </View>
+                <SearchablePageEmptyState icon={UserIconNameEnum.Landmark} title={t`No accounts to connect`} description={missingAccount} />
             ) : (
-                <GroupedListSection footer={t`Balances and history come from your bank through Enable Banking.`}>
-                    {accountPreviews.map(preview => (
-                        <EnableBankingAccountRow
-                            key={preview.externalId}
-                            preview={preview}
-                            isSelected={selectedAccounts.has(preview.externalId)}
-                            onToggle={onToggle}
-                        />
-                    ))}
-                    {accountPreviews.length > 1 ? (
-                        <GroupedListRow
-                            left={<GroupedListIcon icon={UserIconNameEnum.CheckCheck} />}
-                            title={toggleAllLabel}
-                            right={<></>}
-                            onPress={handleToggleAll}
-                        />
-                    ) : null}
-                </GroupedListSection>
+                <View>
+                    <View className="flex-row items-end justify-between">
+                        <GroupedListSectionTitle title={t`Accounts · ${accountsCount}`} />
+                        {accountsCount > 1 ? (
+                            <HapticPressable
+                                onPress={handleToggleAll}
+                                accessibilityRole="button"
+                                className="min-h-[44px] justify-end px-3xl pb-md active:opacity-70"
+                            >
+                                <Text className="text-primary text-[15px] font-semibold">{toggleAllLabel}</Text>
+                            </HapticPressable>
+                        ) : null}
+                    </View>
+                    <GroupedListSection footer={t`Balances and history come from your bank through Enable Banking.`}>
+                        {accountPreviews.map(preview => (
+                            <EnableBankingAccountRow
+                                key={preview.externalId}
+                                preview={preview}
+                                isSelected={selectedAccounts.has(preview.externalId)}
+                                onToggle={onToggle}
+                            />
+                        ))}
+                    </GroupedListSection>
+                </View>
             )}
 
             {isNotEmptyArray(parkedPreviews) ? (

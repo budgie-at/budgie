@@ -33,7 +33,7 @@ export const EnableBankingReauthorizeRow = ({ subtitle }: Props) => {
         <GroupedListRow
             left={<GroupedListIcon icon={UserIconNameEnum.RefreshCw} />}
             title={<Text className="text-primary text-[17px] font-semibold">{t`Authorize again`}</Text>}
-            subtitle={subtitle}
+            subtitle={<Text className="text-secondary-foreground text-[13px] leading-[18px]">{subtitle}</Text>}
             onPress={handlePress}
         />
     );

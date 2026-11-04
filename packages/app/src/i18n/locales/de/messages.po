@@ -1103,6 +1103,7 @@ msgid "Accounts · {accountCount}"
 msgstr "Konten · {accountCount}"
 
 #: src/account/component/institution-accounts/institution-accounts.tsx
+#: src/sync/component/enable-banking-accounts-step/enable-banking-accounts-step.tsx
 msgid "Accounts · {accountsCount}"
 msgstr "Konten · {accountsCount}"
 

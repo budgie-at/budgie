@@ -4,6 +4,7 @@ import * as Arr from 'effect/Array';
 import * as Order from 'effect/Order';
 import { getLocales } from 'expo-localization';
 import { useDeferredValue, useState } from 'react';
+import { View } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -60,7 +61,9 @@ export const EnableBankingBankStep = ({ banks, onSelectBank, onGoBack }: Props) 
                     <EnableBankingBankRow key={bank.id} bank={bank} onSelect={onSelectBank} />
                 ))}
             </GroupedListSection>
-            <GroupedListSectionTitle title={t`Other banks`} />
+            <View className="pt-3xl">
+                <GroupedListSectionTitle title={t`Other banks`} />
+            </View>
         </>
     ) : null;
 
