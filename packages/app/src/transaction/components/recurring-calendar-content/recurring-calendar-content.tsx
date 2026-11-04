@@ -25,7 +25,7 @@ import { RecurringCalendarSelector } from './recurring-calendar.selector';
 
 import type { RecurringCalendarEntryInterface } from '@budgie/recurring';
 
-const scrollContentStyle = { paddingBottom: 20, rowGap: 24 };
+const scrollContentStyle = { paddingBottom: 20, rowGap: 16 };
 
 const EMPTY_ENTRIES_BY_DAY: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]> = new Map();
 
@@ -89,7 +89,7 @@ export const RecurringCalendarContent = () => {
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="on-drag"
         >
-            <View className="gap-y-5xl pt-xl">
+            <View className="gap-y-xl pt-xl">
                 <View className="items-center gap-y-xs">
                     <LoadingContent isLoading={isLoading} containerClassName="self-stretch">
                         <ProtectedText

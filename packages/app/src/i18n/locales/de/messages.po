@@ -3819,7 +3819,7 @@ msgid "Exchange rate: {rateLabel}"
 msgstr "Wechselkurs: {rateLabel}"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 #: src/transaction/components/recurring-calendar-grid/recurring-calendar-grid.tsx
 msgid "Expected"
 msgstr "Erwartet"
@@ -5870,7 +5870,7 @@ msgstr "Gesamtbudget: {threshold}% ausgegeben"
 msgid "Overdrawn"
 msgstr "Überzogen"
 
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 msgid "Overdue"
 msgstr "Überfällig"
 
@@ -6183,7 +6183,7 @@ msgstr "Vorheriger Zeitraum"
 msgid "Price {ageLabel} · {date}"
 msgstr "Kurs {ageLabel} · {date}"
 
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 msgid "Price changed"
 msgstr "Preis geändert"
 
@@ -6384,7 +6384,7 @@ msgid "Record expense"
 msgstr "Ausgabe erfassen"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 #: src/transaction/components/recurring-calendar-grid/recurring-calendar-grid.tsx
 msgid "Recorded"
 msgstr "Erfasst"

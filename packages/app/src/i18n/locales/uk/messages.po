@@ -3819,7 +3819,7 @@ msgid "Exchange rate: {rateLabel}"
 msgstr "Курс обміну: {rateLabel}"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 #: src/transaction/components/recurring-calendar-grid/recurring-calendar-grid.tsx
 msgid "Expected"
 msgstr "Очікується"
@@ -5870,7 +5870,7 @@ msgstr "Загальний бюджет: {threshold}% витрачено"
 msgid "Overdrawn"
 msgstr "У мінусі"
 
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 msgid "Overdue"
 msgstr "Прострочено"
 
@@ -6183,7 +6183,7 @@ msgstr "Попередній період"
 msgid "Price {ageLabel} · {date}"
 msgstr "Ціна {ageLabel} · {date}"
 
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 msgid "Price changed"
 msgstr "Ціна змінилася"
 
@@ -6384,7 +6384,7 @@ msgid "Record expense"
 msgstr "Записати витрату"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 #: src/transaction/components/recurring-calendar-grid/recurring-calendar-grid.tsx
 msgid "Recorded"
 msgstr "Зафіксовано"
