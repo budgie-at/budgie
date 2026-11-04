@@ -108,6 +108,8 @@ export { InzhurStatementInvalidError } from './inzhur/error/inzhur-statement-inv
 export type { InzhurFundChangeInterface } from './inzhur/interface/inzhur-fund-change.interface';
 export type { InzhurImportSummaryInterface } from './inzhur/interface/inzhur-import-summary.interface';
 export type { InzhurSetupInterface } from './inzhur/interface/inzhur-setup.interface';
+export type { InzhurStatementReminderInterface } from './inzhur/interface/inzhur-statement-reminder.interface';
+export { INZHUR_CASH_EXTERNAL_ID } from './inzhur/constant/inzhur-cash-external-id.constant';
 
 export { PrivatbankSyncService } from './privatbank/service/privatbank-sync.service';
 export { PrivatbankCategoryMatcherService } from './privatbank/service/privatbank-category-matcher.service';

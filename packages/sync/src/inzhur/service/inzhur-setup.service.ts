@@ -1,16 +1,26 @@
 import {
+    AccountBalanceRepository,
     AccountRepository,
     AccountTypeEnum,
     BankIntegrationRepository,
+    CategorySourceEnum,
     CurrencyEnum,
     Db,
     ExternalSourceEnum,
     InstrumentRepository,
+    INVESTMENTS_CATEGORY_ID,
+    InvestmentReturnRepository,
     SyncModeEnum,
     SyncRepository,
-    UserIconNameEnum
+    TransactionEntryKindEnum,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum,
+    UserIconNameEnum,
+    convertFromMicroUnits,
+    convertToMicroUnits
 } from '@budgie/contracts';
-import { AccountService } from '@budgie/ledger';
+import { AccountService, TransactionService } from '@budgie/ledger';
+import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -18,17 +28,24 @@ import * as Layer from 'effect/Layer';
 import { isDefined } from '@rnw-community/shared';
 
 import { INZHUR_CASH_EXTERNAL_ID } from '../constant/inzhur-cash-external-id.constant';
+import { InzhurNotSetUpError } from '../error/inzhur-not-set-up.error';
 
 import type { InzhurSetupInterface } from '../interface/inzhur-setup.interface';
+import type { InzhurStatementReminderInterface } from '../interface/inzhur-statement-reminder.interface';
 
 export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@budgie/sync/InzhurSetupService', {
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
+        const accountBalanceRepository = yield* AccountBalanceRepository;
         const accountService = yield* AccountService;
         const bankIntegrationRepository = yield* BankIntegrationRepository;
         const instrumentRepository = yield* InstrumentRepository;
+        const investmentReturnRepository = yield* InvestmentReturnRepository;
         const syncRepository = yield* SyncRepository;
+        const transactionService = yield* TransactionService;
         const provider = ExternalSourceEnum.INZHUR;
+        const staleStatementDays = 30;
+        const estimatedDividendTitle = 'Inzhur dividends (estimated)';
 
         const findSetup = Effect.fn('InzhurSetupService.findSetup')(function* () {
             const integration = yield* bankIntegrationRepository.findFileImportIntegration(provider);
@@ -104,16 +121,96 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
             effect => Db.transaction(effect)
         );
 
-        return { findSetup, setup };
+        const setActualBalance = Effect.fn('InzhurSetupService.setActualBalance')(
+            function* (actualBalance: number) {
+                const setup = yield* findSetup();
+
+                if (!isDefined(setup)) {
+                    return yield* new InzhurNotSetUpError();
+                }
+
+                const { cashAccount } = setup;
+                const currentMicroUnits = (yield* accountBalanceRepository.getByAccountId(cashAccount.id)).at(0)?.balance ?? 0;
+                const differenceMicroUnits = convertToMicroUnits(actualBalance) - currentMicroUnits;
+
+                if (differenceMicroUnits < 0) {
+                    yield* accountService.updateById(cashAccount.id, { currentBalance: actualBalance });
+                }
+
+                if (differenceMicroUnits > 0) {
+                    const operatedAt = new Date();
+                    const externalId = `inzhur:actual-balance:${operatedAt.toISOString()}`;
+                    const amount = convertFromMicroUnits(differenceMicroUnits);
+
+                    yield* transactionService.bulkCreate([
+                        {
+                            amount,
+                            title: estimatedDividendTitle,
+                            comment: '',
+                            type: TransactionTypeEnum.INCOME,
+                            exchangeRate: 1,
+                            operatedAt,
+                            externalId,
+                            updatedBy: null,
+                            externalSource: provider,
+                            fromAccountId: null,
+                            toAccountId: cashAccount.id,
+                            tagIds: [],
+                            entries: [
+                                {
+                                    accountId: cashAccount.id,
+                                    type: TransactionEntryTypeEnum.DEBIT,
+                                    amount,
+                                    categoryId: INVESTMENTS_CATEGORY_ID,
+                                    categorySource: CategorySourceEnum.USER,
+                                    mccCategoryId: null,
+                                    kind: TransactionEntryKindEnum.PRIMARY,
+                                    externalId,
+                                    exchangeRate: 1,
+                                    toIban: null
+                                }
+                            ]
+                        }
+                    ]);
+                }
+
+                return convertFromMicroUnits(differenceMicroUnits);
+            },
+            effect => Db.transaction(effect)
+        );
+
+        const findStatementReminder = Effect.fn('InzhurSetupService.findStatementReminder')(function* (now: Date) {
+            const setup = yield* findSetup();
+            const { lastStatementDate, cashSync, cashAccount } = setup ?? {};
+
+            if (!isDefined(lastStatementDate) || !isDefined(cashSync?.forwardSyncedAt) || !isDefined(cashAccount)) {
+                return null;
+            }
+
+            const daysOld = differenceInCalendarDays(now, cashSync.forwardSyncedAt);
+
+            if (daysOld <= staleStatementDays) {
+                return null;
+            }
+
+            const activityCount = yield* investmentReturnRepository.countTransfersSince(cashAccount.id, cashSync.forwardSyncedAt);
+
+            return activityCount > 0 ? ({ daysOld } satisfies InzhurStatementReminderInterface) : null;
+        });
+
+        return { findSetup, setup, setActualBalance, findStatementReminder };
     })
 }) {
     static readonly layer = Layer.effect(InzhurSetupService, InzhurSetupService.make).pipe(
         Layer.provide([
+            AccountBalanceRepository.layer,
             AccountRepository.layer,
             AccountService.layer,
             BankIntegrationRepository.layer,
             InstrumentRepository.layer,
-            SyncRepository.layer
+            InvestmentReturnRepository.layer,
+            SyncRepository.layer,
+            TransactionService.layer
         ])
     );
 }
