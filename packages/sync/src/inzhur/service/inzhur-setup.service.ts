@@ -195,7 +195,7 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
 
             const activityCount = yield* investmentReturnRepository.countTransfersSince(cashAccount.id, cashSync.forwardSyncedAt);
 
-            return activityCount > 0 ? ({ daysOld } satisfies InzhurStatementReminderInterface) : null;
+            return activityCount > 0 ? ({ daysOld, lastStatementDate } satisfies InzhurStatementReminderInterface) : null;
         });
 
         return { findSetup, setup, setActualBalance, findStatementReminder };

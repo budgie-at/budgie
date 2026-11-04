@@ -123,7 +123,10 @@ describe('inzhur/statement-reminder', () => {
             yield* setUpInzhurWithBaseline(0, 1000, 2);
             yield* seedTopUp;
 
-            expect(yield* findStatementReminder(new Date('2026-12-15T09:00:00.000Z'))).toEqual({ daysOld: 76 });
+            expect(yield* findStatementReminder(new Date('2026-12-15T09:00:00.000Z'))).toEqual({
+                daysOld: 76,
+                lastStatementDate: '2026-09-30'
+            });
         }).pipe(Effect.provide(layer))
     );
 });
