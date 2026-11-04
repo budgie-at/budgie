@@ -128,11 +128,13 @@ export const SplitEntriesModalContent = (props: Props) => {
         appRuntime.runFork(
             logAndContinue(
                 Effect.promise(() => KeyboardController.dismiss()).pipe(
-                    Effect.map(() => {
-                        setEntries(previous => [...previous, newEntry]);
-                        setAutoFocusId(newEntry.localId);
-                        setIsAddingEntry(false);
-                    })
+                    Effect.andThen(
+                        Effect.sync(() => {
+                            setEntries(previous => [...previous, newEntry]);
+                            setAutoFocusId(newEntry.localId);
+                            setIsAddingEntry(false);
+                        })
+                    )
                 )
             )
         );
