@@ -3824,7 +3824,7 @@ msgstr "Tipo de cambio: {rateLabel}"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 #: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
-#: src/transaction/components/recurring-calendar-grid/recurring-calendar-grid.tsx
+#: src/transaction/components/recurring-calendar-legend/recurring-calendar-legend.tsx
 msgid "Expected"
 msgstr "Previsto"
 
@@ -5194,7 +5194,7 @@ msgstr "Campo siguiente"
 msgid "next month"
 msgstr "el próximo mes"
 
-#: src/transaction/components/recurring-calendar-grid/recurring-calendar-grid.tsx
+#: src/transaction/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
 msgid "Next month"
 msgstr "Mes siguiente"
 
@@ -6170,7 +6170,7 @@ msgstr "Mantén pulsado para sellar"
 msgid "Previous field"
 msgstr "Campo anterior"
 
-#: src/transaction/components/recurring-calendar-grid/recurring-calendar-grid.tsx
+#: src/transaction/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
 msgid "Previous month"
 msgstr "Mes anterior"
 
@@ -6388,7 +6388,7 @@ msgstr "Registrar gasto"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 #: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
-#: src/transaction/components/recurring-calendar-grid/recurring-calendar-grid.tsx
+#: src/transaction/components/recurring-calendar-legend/recurring-calendar-legend.tsx
 msgid "Recorded"
 msgstr "Registrado"
 
@@ -7850,7 +7850,7 @@ msgstr "Por reservar este periodo"
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 #: src/budget/components/budget-day-strip-key/budget-day-strip-key.tsx
 #: src/market-data/hook/use-market-chart-timeline.hook.ts
-#: src/transaction/components/recurring-calendar-grid/recurring-calendar-grid.tsx
+#: src/transaction/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
 #: src/transaction/query/use-get-transaction-sections.query.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
