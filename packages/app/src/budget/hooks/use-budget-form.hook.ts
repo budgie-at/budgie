@@ -4,6 +4,7 @@ import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
+import { router } from 'expo-router';
 import * as ReactHookForm from 'react-hook-form';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
@@ -201,7 +202,7 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
                 const budgetService = yield* BudgetService;
 
                 yield* budgetService.deleteBudget(budget.id);
-                goBackOrReplace('/');
+                router.dismissTo('/');
             }).pipe(toastOnFailure(t`Could not delete budget`))
         );
 
