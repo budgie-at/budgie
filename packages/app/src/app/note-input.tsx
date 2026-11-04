@@ -1,4 +1,4 @@
-import { TRANSACTION_COMMENT_MAX_LENGTH, UserIconNameEnum } from '@budgie/contracts';
+import { TRANSACTION_COMMENT_MAX_LENGTH } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { useRef } from 'react';
@@ -7,8 +7,8 @@ import Toast from 'react-native-toast-message';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { HapticPressable } from '../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../@generic/component/icon/icon';
+import { PillButton } from '../@generic/component/pill-button/pill-button';
+import { SheetTitle } from '../@generic/component/sheet-title/sheet-title';
 import { TextArea } from '../@generic/component/textarea/text-area';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { appRuntime } from '../@generic/runtime/app.runtime';
@@ -58,9 +58,11 @@ export default function NoteInputModal() {
     };
 
     return (
-        <View className="flex-1 bg-primary-reverse" collapsable={false}>
-            <View collapsable={false} className="flex-row items-end gap-md px-xl py-lg">
-                <View className="flex-1">
+        <View className="bg-sheet-surface pb-xl" collapsable={false}>
+            <SheetTitle title={t`Note`} />
+
+            <View className="px-xl gap-lg">
+                <View className="bg-surface-row rounded-3xl">
                     <TextArea
                         defaultValue={initialValue}
                         onChangeText={handleChangeText}
@@ -71,21 +73,19 @@ export default function NoteInputModal() {
                         spellCheck={false}
                         autoComplete="off"
                         maxLength={TRANSACTION_COMMENT_MAX_LENGTH}
-                        minLines={1}
-                        maxLines={2}
+                        minLines={2}
+                        maxLines={5}
+                        accessibilityLabel={t`Note`}
                         testID={NoteInputModalSelector.Input}
                     />
                 </View>
 
-                <HapticPressable
-                    onPress={handleSubmit}
+                <PillButton
+                    label={t`Done`}
                     accessibilityLabel={t`Apply`}
-                    accessibilityRole="button"
-                    className="h-[48px] w-[48px] items-center justify-center rounded-full bg-white"
+                    onPress={handleSubmit}
                     testID={NoteInputModalSelector.SubmitButton}
-                >
-                    <Icon icon={UserIconNameEnum.Check} size={22} className="text-black" />
-                </HapticPressable>
+                />
             </View>
         </View>
     );

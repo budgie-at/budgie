@@ -23,7 +23,9 @@ import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
 import { useKeypadInput } from '../../hook/use-keypad-input.hook';
 import { AdjustmentAccountSummary } from '../adjustment-account-summary/adjustment-account-summary';
-import { CurrencyModePill } from '../currency-mode-pill/currency-mode-pill';
+import { QuickFormCaptionSlot } from '../quick-form-caption-slot/quick-form-caption-slot';
+import { QuickFormLayout } from '../quick-form-layout/quick-form-layout';
+import { QuickFormSecondaryLine } from '../quick-form-secondary-line/quick-form-secondary-line';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
 
@@ -98,14 +100,16 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
     const details = getAdjustmentDetails(transaction);
     const { isLoading: isSubmitting, run } = useSingleFlight();
     const [isIncrease, toggleIsIncrease] = useReducer((current: boolean) => !current, details?.initialIsIncrease ?? true);
-    const { displayValue, numericValue, handlers } = useKeypadInput({ initialValue: details?.initialAmount ?? 0 });
+    const { displayValue, numericValue, handlers } = useKeypadInput({
+        initialValue: details?.initialAmount ?? 0
+    });
 
     if (!isDefined(details)) {
         return null;
     }
 
-    const variant: ColorPaletteVariant = isIncrease ? 'positive' : 'destructive';
-    const signedInstrumentSymbol = `${isIncrease ? '+' : '-'}${details.instrumentSymbol}`;
+    const variant: ColorPaletteVariant = isIncrease ? 'positive' : 'primary';
+    const signedInstrumentSymbol = `${isIncrease ? '+' : '\u2212'}${details.instrumentSymbol}`;
     const confirmDisabled = isSubmitting || !isPositiveNumber(numericValue);
 
     const handleGoBack = () => void goBackOrReplace('/');
@@ -132,30 +136,32 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
     };
 
     return (
-        <View className="flex-1 gap-xl">
-            <TransactionAmountDisplay
-                ref={amountDisplayRef}
-                amount={displayValue}
-                currencySymbol={signedInstrumentSymbol}
-                variant={variant}
-            >
-                <CurrencyModePill label={details.instrumentCode} isFlipped={false} />
-            </TransactionAmountDisplay>
-
-            <View className="gap-md">
-                <View className="items-center">
-                    <AmountSignPill isNegative={!isIncrease} variant={variant} onToggle={toggleIsIncrease} />
-                </View>
-                <AdjustmentAccountSummary details={details} variant={variant} />
+        <QuickFormLayout
+            hero={
+                <TransactionAmountDisplay
+                    ref={amountDisplayRef}
+                    amount={displayValue}
+                    currencySymbol={signedInstrumentSymbol}
+                    variant={variant}
+                >
+                    <QuickFormSecondaryLine>
+                        <AmountSignPill isIncrease={isIncrease} onToggle={toggleIsIncrease} />
+                    </QuickFormSecondaryLine>
+                    <QuickFormCaptionSlot />
+                </TransactionAmountDisplay>
+            }
+            footer={
+                <TransactionKeypad
+                    keypad={handlers}
+                    onConfirm={handleConfirm}
+                    onCancel={handleGoBack}
+                    isConfirmDisabled={confirmDisabled}
+                />
+            }
+        >
+            <View className="pt-[12px]">
+                <AdjustmentAccountSummary details={details} />
             </View>
-
-            <TransactionKeypad
-                variant={variant}
-                keypad={handlers}
-                onConfirm={handleConfirm}
-                onCancel={handleGoBack}
-                isConfirmDisabled={confirmDisabled}
-            />
-        </View>
+        </QuickFormLayout>
     );
 };

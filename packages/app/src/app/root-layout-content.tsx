@@ -45,8 +45,7 @@ import { AppDataSyncService } from '../sync/service/app-data-sync.service';
 import { ThemeProvider } from '../theme/provider/theme.provider';
 
 const DETENT_95 = 0.95;
-const DETENT_46 = 0.46;
-const DETENT_12 = 0.12;
+const DETENT_52 = 0.52;
 const DETENT_90 = 0.9;
 const DETENT_70 = 0.7;
 const DETENT_40 = 0.4;
@@ -200,12 +199,9 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="tag-form" options={ENTITY_FORM_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="date-picker"
-                                                                        options={formSheetOptions([DETENT_46])}
+                                                                        options={formSheetOptions([DETENT_52])}
                                                                     />
-                                                                    <Stack.Screen
-                                                                        name="note-input"
-                                                                        options={formSheetOptions([DETENT_12])}
-                                                                    />
+                                                                    <Stack.Screen name="note-input" options={sheetOptions} />
                                                                     <Stack.Screen name="bank-integration-key" options={sheetOptions} />
                                                                     <Stack.Screen name="convert-to-transfer" options={MODAL_OPTIONS} />
                                                                     <Stack.Screen name="convert-to-installment" options={sheetOptions} />
@@ -217,10 +213,7 @@ export const RootLayoutContent = () => {
                                                                         name="icon-selector"
                                                                         options={formSheetOptions([0.6, DETENT_90])}
                                                                     />
-                                                                    <Stack.Screen
-                                                                        name="split-entries"
-                                                                        options={formSheetOptions([0.3, DETENT_70])}
-                                                                    />
+                                                                    <Stack.Screen name="split-entries" options={sheetOptions} />
                                                                     <Stack.Screen name="transaction-fee" options={sheetOptions} />
                                                                     <Stack.Screen
                                                                         name="consolidation-source"

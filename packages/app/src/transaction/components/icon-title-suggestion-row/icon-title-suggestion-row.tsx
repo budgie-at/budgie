@@ -21,14 +21,14 @@ const ANIMATION_DURATION = 200;
 const STAGGER_DELAY = 60;
 
 export const IconTitleSuggestionRow = ({ items, status, enabled, testIDPrefix }: Props) => {
-    const { showLoading, showContent, isProcessing } = useSuggestionLoadingState({
+    const { showLoading, showContent } = useSuggestionLoadingState({
         status,
         hasResults: isNotEmptyArray(items),
         enabled
     });
 
     return (
-        <SuggestionRowLayout showContent={showContent} showLoading={showLoading} isProcessing={isProcessing}>
+        <SuggestionRowLayout showContent={showContent} showLoading={showLoading}>
             {[...items].reverse().map((item, index) => (
                 <SuggestionPill
                     key={item.key}

@@ -1,19 +1,19 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
-import { ReactNode, Ref, useImperativeHandle, useRef } from 'react';
-import { View } from 'react-native';
+import { ReactNode, Ref } from 'react';
 
-import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
-import { useQuickFormFee } from '../../hook/use-quick-form-fee.hook';
-import { useSimpleQuickFormState } from '../../hook/use-simple-quick-form-state.hook';
-import { QuickFormBottomOverlay } from '../quick-form-bottom-overlay/quick-form-bottom-overlay';
-import { SimpleQuickFormAmountBottomContent } from '../simple-quick-form-amount-bottom-content/simple-quick-form-amount-bottom-content';
-import { SimpleQuickFormAmountHeader } from '../simple-quick-form-amount-header/simple-quick-form-amount-header';
+import { useSimpleQuickForm } from '../../hook/use-simple-quick-form.hook';
+import { MccInfoRow } from '../mcc-info-row/mcc-info-row';
+import { QuickFormLayout } from '../quick-form-layout/quick-form-layout';
+import { QuickFormSecondaryLine } from '../quick-form-secondary-line/quick-form-secondary-line';
+import { QuickFormValidationSlot } from '../quick-form-validation-slot/quick-form-validation-slot';
 import { SimpleQuickFormControls } from '../simple-quick-form-controls/simple-quick-form-controls';
-import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
+import { SuggestionsContainer } from '../suggestions-container/suggestions-container';
+import { TransactionAmountDisplay } from '../transaction-amount-display/transaction-amount-display';
+import { TransactionFeePill } from '../transaction-fee-pill/transaction-fee-pill';
+import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
 
 import { SimpleQuickFormSelector } from './simple-quick-form.selector';
 
-import type { DebtSettlementAccountInterface } from '../../interface/debt-settlement-account.interface';
 import type { SimpleQuickFormRefInterface } from '../../interface/simple-quick-form-ref.interface';
 
 interface Props {
@@ -21,81 +21,93 @@ interface Props {
     readonly transactionType: TransactionTypeEnum;
     readonly aiContext?: string;
     readonly isNewTransaction?: boolean;
-    readonly debtSettlementAccount?: DebtSettlementAccountInterface | null;
     readonly children?: ReactNode;
     readonly onSubmit: () => void;
     readonly onCancel: () => void;
 }
 
-export const SimpleQuickForm = ({
-    ref,
-    transactionType,
-    aiContext = '',
-    isNewTransaction = false,
-    debtSettlementAccount = null,
-    children,
-    onSubmit,
-    onCancel
-}: Props) => {
-    const isExpense = transactionType === TransactionTypeEnum.EXPENSE;
-    const variant = isExpense ? 'destructive' : 'positive';
-    const accountFieldName = isExpense ? 'fromAccountId' : 'toAccountId';
-    const { displayValue, currencySymbol, instrumentType, keypadHandlers, setFromNumeric } = useQuickFormAmount({ accountFieldName });
-    const formState = useSimpleQuickFormState({ accountFieldName, setFromNumeric });
-    const { feeAmount, handleFeePress } = useQuickFormFee({
-        accountFieldName,
+export const SimpleQuickForm = (props: Props) => {
+    const { ref, transactionType, aiContext = '', isNewTransaction = false, children, onSubmit, onCancel } = props;
+    const {
+        displayValue,
         currencySymbol,
-        entries: formState.entries,
-        transactionType,
-        variant,
-        setFromNumeric
-    });
-    const amountDisplayRef = useRef<TransactionAmountDisplayRef>(null);
-
-    useImperativeHandle(ref, () => ({ openFee: handleFeePress }));
+        instrumentType,
+        keypadHandlers,
+        setFromNumeric,
+        formState,
+        feeAmount,
+        handleFeePress,
+        amountDisplayRef,
+        amountVariant
+    } = useSimpleQuickForm(transactionType, ref);
 
     return (
-        <View className="flex-1">
-            <View className="flex-1">
-                <View className="flex-1">
-                    <TransactionAmountDisplay
-                        ref={amountDisplayRef}
-                        amount={displayValue}
-                        currencySymbol={currencySymbol}
-                        variant={variant}
-                        topContent={<SimpleQuickFormAmountHeader>{children}</SimpleQuickFormAmountHeader>}
-                        testID={SimpleQuickFormSelector.AmountInput}
-                    >
-                        <View className="mt-lg items-center">
-                            <SimpleQuickFormAmountBottomContent
-                                debtSettlementAccount={debtSettlementAccount}
-                                feeAmount={feeAmount}
-                                feeCurrencySymbol={currencySymbol}
-                                feeInstrumentType={instrumentType}
-                                showInlineFeeAction={isNewTransaction}
-                                onFeePress={handleFeePress}
-                            />
-                        </View>
-                    </TransactionAmountDisplay>
-                </View>
-                <QuickFormBottomOverlay
-                    transactionType={transactionType}
-                    aiContext={aiContext}
-                    isNewTransaction={isNewTransaction}
-                    formState={formState}
-                />
-            </View>
-
-            <SimpleQuickFormControls
-                transactionType={transactionType}
-                currencySymbol={currencySymbol}
-                keypadHandlers={keypadHandlers}
-                setFromNumeric={setFromNumeric}
-                formState={formState}
-                amountDisplayRef={amountDisplayRef}
-                onSubmit={onSubmit}
-                onCancel={onCancel}
-            />
-        </View>
+        <SimpleQuickFormControls
+            transactionType={transactionType}
+            currencySymbol={currencySymbol}
+            setFromNumeric={setFromNumeric}
+            formState={formState}
+            amountDisplayRef={amountDisplayRef}
+            onSubmit={onSubmit}
+        >
+            {(fields, onConfirm) => (
+                <QuickFormLayout
+                    hero={
+                        <TransactionAmountDisplay
+                            ref={amountDisplayRef}
+                            amount={displayValue}
+                            currencySymbol={currencySymbol}
+                            variant={amountVariant}
+                            topContent={
+                                <>
+                                    {children}
+                                    <MccInfoRow transactionTitle={formState.title} mccCategoryId={formState.mccCategoryId} />
+                                </>
+                            }
+                            testID={SimpleQuickFormSelector.AmountInput}
+                        >
+                            <QuickFormSecondaryLine>
+                                <TransactionFeePill
+                                    amount={feeAmount}
+                                    currencySymbol={currencySymbol}
+                                    instrumentType={instrumentType}
+                                    showEmptyState={isNewTransaction}
+                                    onPress={handleFeePress}
+                                />
+                            </QuickFormSecondaryLine>
+                            <QuickFormValidationSlot />
+                        </TransactionAmountDisplay>
+                    }
+                    footer={
+                        <TransactionKeypad
+                            keypad={keypadHandlers}
+                            onConfirm={onConfirm}
+                            onCancel={onCancel}
+                            confirmTestID={SimpleQuickFormSelector.SubmitButton}
+                        />
+                    }
+                >
+                    <SuggestionsContainer
+                        isNewTransaction={isNewTransaction}
+                        isSplitActive={formState.isSplitActive}
+                        transactionType={transactionType}
+                        transactionTitle={formState.title}
+                        categoryId={formState.categoryId}
+                        isCategoryUserConfirmed={formState.isCategoryUserConfirmed}
+                        mccCategoryId={formState.mccCategoryId}
+                        comment={formState.comment}
+                        aiContext={aiContext}
+                        accountId={formState.accountId}
+                        amount={formState.amount}
+                        hasTagsSelected={formState.hasTagsSelected}
+                        onSelectCategory={formState.handleSelectCategory}
+                        onSelectTag={formState.handleSelectTag}
+                        onSelectComment={formState.handleSelectComment}
+                        onFillPatternAmount={formState.handleFillPatternAmount}
+                    />
+                    {fields}
+                </QuickFormLayout>
+            )}
+        </SimpleQuickFormControls>
     );
 };

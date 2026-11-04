@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router';
 import { View } from 'react-native';
+import { useResolveClassNames } from 'uniwind';
 
 import { useModalRouteState } from '../@generic/hook/use-modal-route-state/use-modal-route-state.hook';
 import { TransactionFeeModalContent } from '../transaction/components/transaction-fee-modal-content/transaction-fee-modal-content';
@@ -8,7 +9,9 @@ import { useTransactionFeeModal, useTransactionFeeModalParams } from '../transac
 export default function TransactionFeeModal() {
     const [, resolveTransactionFee, dismissTransactionFee] = useTransactionFeeModal();
     const currentParams = useTransactionFeeModalParams();
-    const screenOptions = useModalRouteState(currentParams, dismissTransactionFee);
+    const contentStyle = useResolveClassNames('bg-sheet-surface');
+    const modalRouteOptions = useModalRouteState(currentParams, dismissTransactionFee);
+    const screenOptions = { ...modalRouteOptions, contentStyle };
 
     if (!currentParams) {
         return null;

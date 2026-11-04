@@ -3,6 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { useConsolidationSourceModal } from '../../context/consolidation-source-modal.context';
 import { useUpdateSimpleTransaction } from '../../hook/use-update-simple-transaction.hook';
+import { DebtSettlementPill } from '../debt-settlement-pill/debt-settlement-pill';
 import { RefundedPill } from '../refunded-pill/refunded-pill';
 import { RulePillSlot } from '../rule-pill-slot/rule-pill-slot';
 import { SimpleQuickForm } from '../simple-quick-form/simple-quick-form';
@@ -32,10 +33,10 @@ export const UpdateExpenseTransaction = ({ transaction, openFeeOnMount }: Update
             <SimpleQuickForm
                 ref={formRef}
                 transactionType={TransactionTypeEnum.EXPENSE}
-                debtSettlementAccount={simpleTransaction.debtSettlementAccount}
                 onSubmit={simpleTransaction.handleSubmit}
                 onCancel={simpleTransaction.handleGoBack}
             >
+                <DebtSettlementPill account={simpleTransaction.debtSettlementAccount} />
                 <RulePillSlot ruleDetection={simpleTransaction.ruleDetection} />
                 <RefundedPill
                     key={`${transaction.id}-${transaction.consolidationType}`}

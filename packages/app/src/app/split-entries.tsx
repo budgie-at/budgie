@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router';
 import { View } from 'react-native';
+import { useResolveClassNames } from 'uniwind';
 
 import { useModalRouteState } from '../@generic/hook/use-modal-route-state/use-modal-route-state.hook';
 import { SplitEntriesModalContent } from '../transaction/components/split-entries-modal-content/split-entries-modal-content';
@@ -8,14 +9,16 @@ import { useSplitEntriesModal, useSplitEntriesModalParams } from '../transaction
 export default function SplitEntriesModal() {
     const [, resolveSplitEntries, dismissSplitEntries] = useSplitEntriesModal();
     const currentParams = useSplitEntriesModalParams();
-    const screenOptions = useModalRouteState(currentParams, dismissSplitEntries);
+    const contentStyle = useResolveClassNames('bg-sheet-surface');
+    const modalRouteOptions = useModalRouteState(currentParams, dismissSplitEntries);
+    const screenOptions = { ...modalRouteOptions, contentStyle };
 
     if (!currentParams) {
         return null;
     }
 
     return (
-        <View className="flex-1 bg-primary-reverse" collapsable={false}>
+        <View className="bg-sheet-surface" collapsable={false}>
             <Stack.Screen options={screenOptions} />
             <SplitEntriesModalContent
                 initialEntries={currentParams.entries}

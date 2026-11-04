@@ -133,8 +133,8 @@ export async function createSuggestedRuleFromTransaction(
     await expectId(ctx, options.cardId, 10_000);
     await tapUntil(ctx, options.cardId, () => expectId(ctx, 'TransactionInfo.Page', 10_000));
     await tapId(ctx, 'TransactionInfo.EditButton.Label');
-    await expectId(ctx, 'TransactionForm.CategorySelector.Title', 10_000);
-    await tapId(ctx, 'TransactionForm.CategorySelector.Title');
+    await expectId(ctx, 'TransactionForm.CategorySelector', 10_000);
+    await tapId(ctx, 'TransactionForm.CategorySelector');
     await selectCategoryBySearch(ctx, options.category);
     await expectId(ctx, 'SuggestRule.CreateRuleButton', 10_000);
     await tapId(ctx, 'SuggestRule.CreateRuleButton');

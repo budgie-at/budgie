@@ -25,6 +25,7 @@ test('08 expense transaction', { tags: ['transactions'] }, async ({ budgie }) =>
         for (let i = 0; i < 2; i++) {
             await b.tapId(ctx, 'TransactionForm.SubmitButton');
             await b.expectText(ctx, 'New Expense');
+            await b.expectText(ctx, 'Enter an amount');
         }
         await t.typeDigits(ctx, '42');
         await t.selectAccount(ctx, 'E2E Txn Account');

@@ -1399,6 +1399,10 @@ msgstr "Позичена сума"
 msgid "Amount lent"
 msgstr "Надана в борг сума"
 
+#: src/transaction/hook/use-quick-form-submit.hook.ts
+msgid "Amount must be larger than the fee"
+msgstr "Сума має бути більшою за комісію"
+
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Amount or merchant is empty"
 msgstr "Сума або продавець не вказані"
@@ -1970,6 +1974,7 @@ msgstr "Змінити пізніше не можна"
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-keypad/transaction-keypad.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
@@ -2049,6 +2054,10 @@ msgstr "Категорії"
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Categories ({selectedCategoriesCount})"
 msgstr "Категорії ({selectedCategoriesCount})"
+
+#: src/transaction/components/transaction-category-field-icon/transaction-category-field-icon.tsx
+msgid "Categories are set per split item"
+msgstr "Категорії задаються для кожної частини"
 
 #: src/category/components/categories-feature-intro/categories-feature-intro.tsx
 msgid "Categories break your spending down automatically. Add a transaction, or choose another period."
@@ -2156,6 +2165,7 @@ msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be impo
 msgstr "Оберіть «Excel» як формат експорту — файли PDF і CSV імпортувати не можна"
 
 #: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx
+#: src/transaction/hook/use-quick-form-submit.hook.ts
 msgid "Choose a category"
 msgstr "Виберіть категорію"
 
@@ -2213,6 +2223,7 @@ msgid "Choose accounts"
 msgstr "Вибрати рахунки"
 
 #: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
+#: src/transaction/hook/use-quick-form-submit.hook.ts
 msgid "Choose an account"
 msgstr "Виберіть рахунок"
 
@@ -2231,6 +2242,10 @@ msgstr "Виберіть і підтвердьте PIN-код"
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Choose at least one"
 msgstr "Оберіть принаймні один варіант"
+
+#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
+msgid "Choose both accounts"
+msgstr "Виберіть обидва рахунки"
 
 #: src/categorize-inbox/components/categorize-inbox-category-provider/categorize-inbox-category-provider.tsx
 msgid "Choose category"
@@ -2363,6 +2378,10 @@ msgstr "Регулярні витрати на місяць: {committedExpense}"
 msgid "Comparison: {label}"
 msgstr "Порівняння: {label}"
 
+#: src/transaction/hook/use-quick-form-submit.hook.ts
+msgid "Complete every split entry"
+msgstr "Заповніть кожен запис розподілу"
+
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Confirm"
 msgstr "Підтвердити"
@@ -2370,10 +2389,6 @@ msgstr "Підтвердити"
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Confirm it's you before choosing a new one."
 msgstr "Підтвердьте, що це ви, перш ніж вибрати новий."
-
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
-msgid "Confirm Split"
-msgstr "Підтвердити розділення"
 
 #: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx
 msgid "Confirm tag selection"
@@ -3056,6 +3071,7 @@ msgstr "дата"
 
 #: src/@generic/component/date-filter/date-filter.tsx
 #: src/app/(main)/import-csv.tsx
+#: src/app/date-picker.tsx
 #: src/import/utils/get-import-match-description.util.ts
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
 msgid "Date"
@@ -3108,6 +3124,10 @@ msgstr "Боргові рахунки не можуть брати участь 
 #: src/onboarding/constant/onboarding-account-options.constant.ts
 msgid "Debts and loans"
 msgstr "Борги та позики"
+
+#: src/@generic/component/amount-sign-pill/amount-sign-pill.tsx
+msgid "Decrease"
+msgstr "Зменшити"
 
 #: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Decrypting your data. Keep Budgie open, it restarts when finished."
@@ -3329,10 +3349,13 @@ msgid "Does not contain"
 msgstr "Не містить"
 
 #: src/@generic/component/keyboard-done-accessory/keyboard-done-accessory.tsx
+#: src/app/note-input.tsx
 #: src/categorize-inbox/components/categorize-inbox-done-button/categorize-inbox-done-button.tsx
 #: src/onboarding/component/onboarding-keyboard-controls/onboarding-keyboard-controls.tsx
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Done"
 msgstr "Готово"
 
@@ -3562,6 +3585,10 @@ msgstr "Редагувати відкладене"
 msgid "Edit Tag"
 msgstr "Редагувати тег"
 
+#: src/transaction/components/conversion-row/conversion-row.tsx
+msgid "Edit the amount"
+msgstr "Змінити суму"
+
 #: src/transaction/components/transaction-info-edit-button/transaction-info-edit-button.tsx
 msgid "Edit transaction"
 msgstr "Редагувати транзакцію"
@@ -3622,6 +3649,15 @@ msgstr "Введіть баланс, щоб зберегти"
 #: src/ai/component/voice-review-save-button/voice-review-save-button.tsx
 msgid "Enter all amounts"
 msgstr "Введіть усі суми"
+
+#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
+#: src/transaction/hook/use-quick-form-submit.hook.ts
+msgid "Enter an amount"
+msgstr "Введіть суму"
+
+#: src/transaction/components/transaction-split-field-icon/transaction-split-field-icon.tsx
+msgid "Enter an amount to split it"
+msgstr "Введіть суму, щоб розділити її"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enter current PIN"
@@ -3751,8 +3787,8 @@ msgid "Exchange rate not found"
 msgstr "Курс обміну не знайдено"
 
 #: src/transaction/components/conversion-row/conversion-row.tsx
-msgid "Exchange rate: {rateLabel}. Tap to edit receiving amount"
-msgstr "Курс обміну: {rateLabel}. Натисніть, щоб редагувати суму отримання"
+msgid "Exchange rate: {rateLabel}"
+msgstr "Курс обміну: {rateLabel}"
 
 #: src/budget/components/budget-limit-source-field/budget-limit-source-field.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
@@ -3832,6 +3868,7 @@ msgid "Features"
 msgstr "Функції"
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Fee"
 msgstr "Комісія"
@@ -4018,6 +4055,10 @@ msgstr "Від однієї суми до іншої"
 #: src/budget/components/budget-fund-suggestion-banner/budget-fund-suggestion-banner.tsx
 msgid "From your recurring charges: {name}, {amountLabel} per cycle"
 msgstr "З ваших регулярних платежів: {name}, {amountLabel} за цикл"
+
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+msgid "Fully assigned"
+msgstr "Повністю розподілено"
 
 #: src/budget/components/budget-fund-row-status/budget-fund-row-status.tsx
 msgid "Fully funded"
@@ -4337,6 +4378,10 @@ msgstr "Отриманий дохід"
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
 msgid "Incorrect PIN"
 msgstr "Неправильний PIN-код"
+
+#: src/@generic/component/amount-sign-pill/amount-sign-pill.tsx
+msgid "Increase"
+msgstr "Збільшити"
 
 #: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
 msgid "Installment"
@@ -5037,10 +5082,6 @@ msgstr "Потребує уваги"
 msgid "Needs review"
 msgstr "Потребують перевірки"
 
-#: src/@generic/component/amount-sign-pill/amount-sign-pill.tsx
-msgid "Negative amount"
-msgstr "Від’ємна сума"
-
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/transaction/components/statistics-cash-flow-row/statistics-cash-flow-row.tsx
 msgid "Net"
@@ -5408,6 +5449,7 @@ msgstr "Ще не синхронізовано"
 msgid "Not synced: Auto-Invest, Binance Pay, Binance Card, gift cards, sub-account transfers, margin and futures."
 msgstr "Не синхронізуються: Auto-Invest, Binance Pay, Binance Card, подарункові картки, перекази між субрахунками, маржа та ф'ючерси."
 
+#: src/app/note-input.tsx
 #: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
 #: src/transaction/components/transaction-note-field-icon/transaction-note-field-icon.tsx
 msgid "Note"
@@ -6256,6 +6298,10 @@ msgid "Received"
 msgstr "Отримано"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
+msgid "Receiving · {toCode}"
+msgstr "Отримання · {toCode}"
+
+#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Receiving {toCode}"
 msgstr "Отримання {toCode}"
 
@@ -6332,6 +6378,10 @@ msgstr "Залишок"
 msgid "Remove"
 msgstr "Видалити"
 
+#: src/transaction/components/split-entry-delete-button/split-entry-delete-button.tsx
+msgid "Remove {categoryTitle} entry"
+msgstr "Видалити запис «{categoryTitle}»"
+
 #: src/rule/components/rule-action-row/rule-action-row.tsx
 msgid "Remove action {position}"
 msgstr "Видалити дію {position}"
@@ -6351,6 +6401,10 @@ msgstr "Видалити умову {position}"
 #: src/settings/components/repair-sync-data/repair-sync-data.tsx
 msgid "Remove duplicate bank imports"
 msgstr "Прибрати дублікати банківського імпорту"
+
+#: src/transaction/components/split-entry-delete-button/split-entry-delete-button.tsx
+msgid "Remove entry"
+msgstr "Видалити запис"
 
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 msgid "Remove fee"
@@ -6578,6 +6632,8 @@ msgstr "Та сама умова, що й у правила вище"
 
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
+#: src/transaction/components/transaction-keypad/transaction-keypad.tsx
+#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Save"
 msgstr "Зберегти"
 
@@ -6598,7 +6654,7 @@ msgstr "Зберегти баланси"
 msgid "Save changes"
 msgstr "Зберегти зміни"
 
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-save-button/transaction-fee-save-button.tsx
 msgid "Save fee"
 msgstr "Зберегти комісію"
 
@@ -6779,6 +6835,7 @@ msgstr "Виберіть дійсний стовпець"
 
 #: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx
+#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "Select account"
 msgstr "Виберіть рахунок"
 
@@ -7064,6 +7121,7 @@ msgstr "Витрати <0>{formattedExpense}</0> · Дохід <1>{formattedInco
 msgid "Spent so far"
 msgstr "Витрачено досі"
 
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-split-field-icon/transaction-split-field-icon.tsx
 msgid "Split"
 msgstr "Розділити"

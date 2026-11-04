@@ -6,15 +6,13 @@ import { useI18nContext } from '../../../i18n/context/i18n.context';
 import { formatOperatedAt } from '../../utils/format-operated-at.util';
 import { TransactionFieldIcon } from '../transaction-field-icon/transaction-field-icon';
 
-import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import type { EmptyFn } from '@rnw-community/shared';
 
 interface Props {
-    readonly variant: ColorPaletteVariant;
     readonly onPress: EmptyFn;
 }
 
-export const TransactionDateFieldIcon = ({ variant, onPress }: Props) => {
+export const TransactionDateFieldIcon = ({ onPress }: Props) => {
     const { t } = useLingui();
     const { intl } = useI18nContext();
     const { control } = useFormContext<TransactionCreateInputInterface>();
@@ -27,14 +25,5 @@ export const TransactionDateFieldIcon = ({ variant, onPress }: Props) => {
         formatDate: intl.formatDate
     });
 
-    return (
-        <TransactionFieldIcon
-            icon={UserIconNameEnum.Calendar}
-            label={t`Date`}
-            value={formattedDate}
-            variant={variant}
-            onPress={onPress}
-            animationDelay={110}
-        />
-    );
+    return <TransactionFieldIcon icon={UserIconNameEnum.Calendar} label={t`Date`} value={formattedDate} onPress={onPress} />;
 };

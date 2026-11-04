@@ -14,7 +14,6 @@ interface UseSuggestionLoadingStateParams {
 interface UseSuggestionLoadingStateReturn {
     readonly showLoading: boolean;
     readonly showContent: boolean;
-    readonly isProcessing: boolean;
 }
 
 export const useSuggestionLoadingState = (params: UseSuggestionLoadingStateParams): UseSuggestionLoadingStateReturn => {
@@ -28,5 +27,5 @@ export const useSuggestionLoadingState = (params: UseSuggestionLoadingStateParam
     const showLoadingIndicator = showLoading && !isReady;
     const showContent = enabled && (showLoadingIndicator || isReady);
 
-    return { showLoading: showLoadingIndicator, showContent, isProcessing };
+    return { showLoading: showLoadingIndicator, showContent };
 };

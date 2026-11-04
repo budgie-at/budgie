@@ -8,21 +8,23 @@ import {
 } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { t } from '@lingui/core/macro';
+import { Trans } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { NotificationFeedbackType } from 'expo-haptics';
 import { useState } from 'react';
-import { View } from 'react-native';
-import { KeyboardStickyView } from 'react-native-keyboard-controller';
+import { ScrollView, Text, View, useWindowDimensions } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { BudgieLegendList } from '../../../@generic/component/budgie-legend-list/budgie-legend-list';
-import { Button } from '../../../@generic/component/button/button';
-import { ListItemSeparator } from '../../../@generic/component/list-item-separator/list-item-separator';
-import { LEGEND_LIST_STYLE } from '../../../@generic/constant/legend-list.constant';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
+import { PillButton } from '../../../@generic/component/pill-button/pill-button';
+import { SheetTitle } from '../../../@generic/component/sheet-title/sheet-title';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { cn } from '../../../@generic/utils/cn.util';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
@@ -33,19 +35,18 @@ import {
     EntryWithLocalIdInterface,
     addLocalId,
     createEmptyEntry,
-    entryKeyExtractor,
     stripLocalId,
     withEntryAmount
 } from '../../utils/entry-with-local-id.util';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { SplitEntriesAddItemFooter } from '../split-entries-add-item-footer/split-entries-add-item-footer';
-import { SplitEntryDeleteButton } from '../split-entry-delete-button/split-entry-delete-button';
-import { SplitEntryRow } from '../split-entry-row/split-entry-row';
+import { SplitEntriesItem } from '../split-entries-item/split-entries-item';
 
 import { SplitEntriesModalContentSelector } from './split-entries-modal-content.selector';
 
-const keyboardOffset = { closed: 0, opened: 8 };
-const CONTENT_CONTAINER_STYLE = { paddingHorizontal: 12, paddingTop: 16, paddingBottom: 12 };
+const SHEET_MAX_HEIGHT_RATIO = 0.7;
+const SHEET_CHROME_HEIGHT = 160;
+const CONTENT_CONTAINER_STYLE = { paddingHorizontal: 16, paddingBottom: 12 };
 
 interface Props {
     readonly initialEntries: TransactionEntryCreateInputInterface[];
@@ -60,6 +61,8 @@ interface Props {
 export const SplitEntriesModalContent = (props: Props) => {
     const { initialEntries, variant, entryType, currencySymbol, totalAmount, onConfirm } = props;
 
+    const { height, fontScale } = useWindowDimensions();
+    const scrollStyle = { maxHeight: Math.max(100, height * SHEET_MAX_HEIGHT_RATIO - SHEET_CHROME_HEIGHT * fontScale), flexGrow: 0 };
     const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const splitRemainderDecimalPlaces = Math.max(decimalPlaces, DEFAULT_DECIMAL_PLACES);
     const formatDigits = useFormatDigits(splitRemainderDecimalPlaces);
@@ -76,7 +79,6 @@ export const SplitEntriesModalContent = (props: Props) => {
     const isFullySplit = remainingAmountMicroUnits === 0 && entriesTotalMicroUnits > 0;
     const isOverBudget = remainingAmountMicroUnits < 0;
     const formattedRemaining = formatDigits(Math.abs(remainingAmount), currencySymbol);
-    const canDelete = entries.length > 1;
     const canRemoveSplit = initialEntries.length > 1 || entries.length > 1;
     const accountId = entries[0]?.accountId ?? 0;
     const allEntriesValid = entries.every(entry => isPositiveNumber(entry.categoryId) && isPositiveNumber(entry.amount));
@@ -158,74 +160,67 @@ export const SplitEntriesModalContent = (props: Props) => {
         );
     };
 
-    const renderItem = ({ item, index }: { item: EntryWithLocalIdInterface; index: number }) => {
-        const handleCategory = () => {
-            handleCategoryPress(index);
-        };
-        const handleDelete = () => void handleRemoveEntry(index);
-        const handleAmount = (amount: number) => void handleAmountChange(index, amount);
-
-        return (
-            <SplitEntryRow
-                index={index}
-                entry={item}
-                currencySymbol={currencySymbol}
-                variant={variant}
-                autoFocus={index === autoFocusIndex}
-                onAmountChange={handleAmount}
-                onCategoryPress={handleCategory}
-            >
-                {canDelete ? <SplitEntryDeleteButton index={index} onPress={handleDelete} /> : null}
-            </SplitEntryRow>
-        );
-    };
-
-    const listFooter = <SplitEntriesAddItemFooter canAddEntry={canAddEntry} onAddEntry={handleAddEntry} />;
-
-    const remainingButtonLabel = isOverBudget ? t`${formattedRemaining} over budget` : t`${formattedRemaining} left to assign`;
-    const remainingButtonVariant: ColorPaletteVariant = isOverBudget ? 'destructive' : 'secondary';
-    const splitButtonLabel = hasMissingCategories ? t`Select all categories` : t`Confirm Split`;
-    const splitButtonVariant = hasMissingCategories ? 'secondary' : variant;
-    const confirmButtonVariant = isFullySplit ? splitButtonVariant : remainingButtonVariant;
-    const confirmButtonLabel = isFullySplit ? splitButtonLabel : remainingButtonLabel;
+    const assignedLabel = isFullySplit ? t`Fully assigned` : t`${formattedRemaining} left to assign`;
+    const pendingLabel = hasMissingCategories ? t`Select all categories` : assignedLabel;
+    const remainderLabel = isOverBudget ? t`${formattedRemaining} over budget` : pendingLabel;
+    const remainderClassName = isOverBudget ? 'text-destructive-strong' : 'text-secondary-foreground';
 
     return (
-        <View className="flex-1">
-            <BudgieLegendList
-                style={LEGEND_LIST_STYLE}
-                data={entries}
-                keyExtractor={entryKeyExtractor}
-                renderItem={renderItem}
-                keyboardShouldPersistTaps="handled"
+        <View className="bg-sheet-surface">
+            <SheetTitle title={t`Split`} />
+
+            <ScrollView
                 contentContainerStyle={CONTENT_CONTAINER_STYLE}
-                ListFooterComponent={listFooter}
-                ItemSeparatorComponent={ListItemSeparator}
-            />
-
-            <KeyboardStickyView offset={keyboardOffset}>
-                <View className="flex-row gap-x-md px-xl pb-xl">
-                    {canRemoveSplit ? (
-                        <Button
-                            leftIcon={UserIconNameEnum.X}
-                            variant="destructive"
-                            size="md"
-                            className="aspect-square"
-                            onPress={handleRemoveSplit}
-                            testID={SplitEntriesModalContentSelector.RemoveSplitButton}
+                keyboardShouldPersistTaps="handled"
+                automaticallyAdjustKeyboardInsets
+                style={scrollStyle}
+            >
+                <GroupedListSection>
+                    {entries.map((entry, index) => (
+                        <SplitEntriesItem
+                            key={entry.localId}
+                            entry={entry}
+                            index={index}
+                            currencySymbol={currencySymbol}
+                            autoFocus={index === autoFocusIndex}
+                            entryCount={entries.length}
+                            onAmountChange={handleAmountChange}
+                            onCategoryPress={handleCategoryPress}
+                            onDelete={handleRemoveEntry}
                         />
-                    ) : null}
-
-                    <Button
-                        className="flex-1"
-                        content={confirmButtonLabel}
-                        variant={confirmButtonVariant}
-                        size="md"
-                        disabled={!canConfirm}
-                        onPress={handleConfirm}
-                        testID={SplitEntriesModalContentSelector.ConfirmButton}
-                    />
+                    ))}
+                </GroupedListSection>
+                <SplitEntriesAddItemFooter canAddEntry={canAddEntry} onAddEntry={handleAddEntry} />
+                <View className="pt-lg flex-row items-center justify-center gap-x-sm">
+                    {canConfirm ? <Icon icon={UserIconNameEnum.Check} size={16} className="text-secondary-foreground" /> : null}
+                    <Text className={cn('text-center text-[15px] leading-[20px] shrink', remainderClassName)}>{remainderLabel}</Text>
                 </View>
-            </KeyboardStickyView>
+                {canRemoveSplit ? (
+                    <View className="pt-xl">
+                        <GroupedListSection>
+                            <HapticPressable
+                                onPress={handleRemoveSplit}
+                                accessibilityRole="button"
+                                className="min-h-[44px] justify-center px-3xl py-md"
+                                testID={SplitEntriesModalContentSelector.RemoveSplitButton}
+                            >
+                                <Text className="text-md text-destructive-strong">
+                                    <Trans>Remove split</Trans>
+                                </Text>
+                            </HapticPressable>
+                        </GroupedListSection>
+                    </View>
+                ) : null}
+            </ScrollView>
+
+            <View className="bg-sheet-surface px-xl pt-3xl pb-safe-or-[16px] ios:pb-0">
+                <PillButton
+                    label={t`Done`}
+                    isDisabled={!canConfirm}
+                    onPress={handleConfirm}
+                    testID={SplitEntriesModalContentSelector.ConfirmButton}
+                />
+            </View>
         </View>
     );
 };
