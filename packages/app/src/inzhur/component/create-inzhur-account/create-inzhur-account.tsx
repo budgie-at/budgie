@@ -1,50 +1,86 @@
 import { InzhurSetupService } from '@budgie/sync';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { useState } from 'react';
+import { Text, View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { ScreenChromeFrame, ScreenChromeHeader } from '@rnw-community/react-native-screen-chrome';
 
-import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
-import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
-import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
-import { PillButtonFooter } from '../../../@generic/component/pill-button-footer/pill-button-footer';
+import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
+import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
+import { ScreenChromeThemeProvider } from '../../../@generic/provider/screen-chrome-theme.provider';
+import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
-import { AccountBalanceField } from '../../../account/component/account-balance-field/account-balance-field';
+import { QuickFormLayout } from '../../../transaction/components/quick-form-layout/quick-form-layout';
+import { TransactionAmountDisplay } from '../../../transaction/components/transaction-amount-display/transaction-amount-display';
+import { TransactionKeypad } from '../../../transaction/components/transaction-keypad/transaction-keypad';
+import { useKeypadInput } from '../../../transaction/hook/use-keypad-input.hook';
 import { useHryvniaInstrumentQuery } from '../../query/use-hryvnia-instrument.query';
 import { InzhurSelector } from '../../selector/inzhur.selector';
 
 export const CreateInzhurAccount = () => {
     const { t } = useLingui();
     const { isLoading, run } = useSingleFlight();
-    const [openingBalance, setOpeningBalance] = useState(0);
+    const { displayValue, numericValue, handlers } = useKeypadInput();
     const hryvnia = useHryvniaInstrumentQuery();
-    const instrumentSymbol = isDefined(hryvnia) ? hryvnia.symbol : '';
 
+    const handleGoBack = () => void goBackOrReplace('/');
     const handleAdd = () =>
         run(
-            Effect.flatMap(InzhurSetupService, inzhurSetupService => inzhurSetupService.setup(openingBalance)).pipe(
+            Effect.flatMap(InzhurSetupService, inzhurSetupService => inzhurSetupService.setup(numericValue)).pipe(
                 toastOnFailure(t`Could not add Inzhur`)
             )
         );
 
+    const hero = (
+        <TransactionAmountDisplay
+            amount={displayValue}
+            currencySymbol={hryvnia?.symbol ?? ''}
+            variant="primary"
+            topContent={
+                <Text className="text-[15px] font-medium text-secondary-foreground">
+                    <Trans>Cash in Inzhur</Trans>
+                </Text>
+            }
+            testID={InzhurSelector.CashAmount}
+        />
+    );
+    const keypad = (
+        <TransactionKeypad
+            keypad={handlers}
+            onConfirm={handleAdd}
+            onCancel={handleGoBack}
+            isConfirmDisabled={isLoading}
+            confirmLabel={t`Add Inzhur`}
+            confirmTestID={InzhurSelector.AddButton}
+        />
+    );
+
     return (
-        <CollapsibleChromePage
-            title={t`Add Inzhur`}
-            subtitle={t`Enter the cash balance shown in the Inzhur app. Budgie takes it from there.`}
-            leading={<HeaderBackButton />}
-            testID={InzhurSelector.CreatePage}
-            footer={<PillButtonFooter label={t`Add Inzhur`} isLoading={isLoading} testID={InzhurSelector.AddButton} onPress={handleAdd} />}
-        >
-            <FormLayoutGroup>
-                <AccountBalanceField
-                    label={t`Inzhur cash balance`}
-                    instrumentSymbol={instrumentSymbol}
-                    value={openingBalance}
-                    onChange={setOpeningBalance}
-                />
-            </FormLayoutGroup>
-        </CollapsibleChromePage>
+        <GroupedSurface testID={InzhurSelector.CreatePage}>
+            <ScreenChromeThemeProvider>
+                <ScreenChromeFrame>
+                    <ScreenChromeHeader inFlow>
+                        <View className="min-h-[52px] flex-row items-center px-xl">
+                            <GoBackButton className="size-[44px] items-center justify-center p-0" onPress={handleGoBack} />
+                            <Text className="flex-1 text-center text-[17px] font-semibold text-primary" accessibilityRole="header">
+                                <Trans>Add Inzhur</Trans>
+                            </Text>
+                            <View className="size-[44px]" />
+                        </View>
+                    </ScreenChromeHeader>
+
+                    <View className="flex-1 px-5xl pb-safe">
+                        <QuickFormLayout hero={hero} footer={keypad}>
+                            <Text className="px-5xl text-center text-[15px] leading-[20px] text-secondary-foreground">
+                                <Trans>
+                                    Enter the cash available in your Inzhur app. Import a statement next to add your certificates.
+                                </Trans>
+                            </Text>
+                        </QuickFormLayout>
+                    </View>
+                </ScreenChromeFrame>
+            </ScreenChromeThemeProvider>
+        </GroupedSurface>
     );
 };

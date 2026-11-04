@@ -1,4 +1,4 @@
-import { AccountAssociationEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
+import { AccountAssociationEnum, AccountWithInstrumentEntityInterface, InstrumentTypeEnum } from '@budgie/contracts';
 import { Text } from 'react-native';
 
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
@@ -23,10 +23,11 @@ export const AccountDetailsHeroBalanceValue = ({ balance, account }: Props) => {
     const isAmountProtected = useIsAmountProtected();
     const formatCompactDigits = useFormatCompactDigits(MILLION);
 
+    const isUnitAccount = isCryptoAccountType(account.type) || account.instrument.type === InstrumentTypeEnum.FUND;
     const balanceLabel =
         Math.abs(balance) >= MILLION ? `${formatCompactDigits(balance)} ${account.instrument.code}` : getBalanceLabel(balance, account);
 
-    if (isCryptoAccountType(account.type) && isAmountProtected) {
+    if (isUnitAccount && isAmountProtected) {
         return (
             <Text
                 numberOfLines={1}
@@ -39,7 +40,7 @@ export const AccountDetailsHeroBalanceValue = ({ balance, account }: Props) => {
         );
     }
 
-    if (isCryptoAccountType(account.type)) {
+    if (isUnitAccount) {
         return (
             <Ticker
                 hasAnimation

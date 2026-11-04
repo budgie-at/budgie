@@ -12,13 +12,13 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
-import { InzhurStatementReminder } from '../../../inzhur/component/inzhur-statement-reminder/inzhur-statement-reminder';
+import { InzhurInstitutionRowDetail } from '../../../inzhur/component/inzhur-institution-row-detail/inzhur-institution-row-detail';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { BANK_PROVIDER_TITLE } from '../../constant/bank-provider-title.constant';
 import { getBankIntegrationTitle } from '../../utils/get-bank-integration-title.util';
+import { AccountCardBalance } from '../account-card-balance/account-card-balance';
 import { InstitutionMark } from '../institution-mark/institution-mark';
 import { InstitutionRowDetail } from '../institution-row-detail/institution-row-detail';
-import { InstitutionRowTotal } from '../institution-row-total/institution-row-total';
 
 import { InstitutionRowSelector } from './institution-row.selector';
 
@@ -68,11 +68,19 @@ export const InstitutionRow = ({ institution }: Props) => {
                 >
                     {title}
                 </Text>
-                <InstitutionRowDetail accounts={accounts} accountsCountLabel={accountsCountLabel} />
-                {provider === ExternalSourceEnum.INZHUR ? <InzhurStatementReminder /> : null}
+                {provider === ExternalSourceEnum.INZHUR ? (
+                    <InzhurInstitutionRowDetail accounts={accounts} />
+                ) : (
+                    <InstitutionRowDetail accounts={accounts} accountsCountLabel={accountsCountLabel} />
+                )}
             </View>
 
-            <InstitutionRowTotal integrationId={integrationId} total={total} />
+            <AccountCardBalance
+                title={title}
+                balance={total}
+                instrumentSymbol={defaultInstrument.symbol}
+                testID={InstitutionRowSelector.Total(integrationId)}
+            />
         </HapticPressable>
     );
 };

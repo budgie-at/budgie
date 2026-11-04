@@ -1,4 +1,4 @@
-import { DebtEventAssociationEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { DebtEventAssociationEnum, InstrumentTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
@@ -10,6 +10,7 @@ import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrum
 import { defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
 import { ConvertedAmountLabel } from '../converted-amount-label/converted-amount-label';
 import { DebtSettlementConvertedAmountLabel } from '../debt-settlement-converted-amount-label/debt-settlement-converted-amount-label';
+import { TransactionFundEntryAmount } from '../transaction-fund-entry-amount/transaction-fund-entry-amount';
 
 import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import type { AggregatedTransactionEntryInterface } from '../../interface/aggregated-transaction-entry.interface';
@@ -30,6 +31,10 @@ const amountVariants = cva('text-[15px] font-semibold text-right tabular-nums', 
 export const TransactionEntryAmount = ({ debtEvent, entry, variant, sign, testID }: Props) => {
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
     const formatDigits = useFormatInstrumentAmount();
+
+    if (entry.account.instrument.type === InstrumentTypeEnum.FUND) {
+        return <TransactionFundEntryAmount entry={entry} variant={variant} sign={sign} testID={testID} />;
+    }
 
     const amount = convertFromMicroUnits(entry.amount);
     const formattedAmount = formatDigits(amount, entry.account.instrument.symbol, entry.account.instrument.type);

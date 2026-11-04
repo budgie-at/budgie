@@ -13,10 +13,7 @@ export const InzhurDividendPayoutField = ({ value, onChange }: Props) => {
     const { t } = useLingui();
 
     return (
-        <GroupedListSection
-            title={t`Dividends go to`}
-            footer={t`Dividends kept on the Inzhur balance are reinvested in more certificates of this fund.`}
-        >
+        <GroupedListSection title={t`Dividends`} footer={t`Match your setting in the Inzhur app. Budgie uses it to record dividends.`}>
             <InzhurDividendPayoutOption
                 payout={DividendPayoutEnum.BANK}
                 isSelected={value === DividendPayoutEnum.BANK}

@@ -15,19 +15,25 @@ interface Props {
     readonly title: string;
     readonly balance: number;
     readonly instrumentSymbol: string;
+    readonly testID?: string;
 }
 
-export const AccountCardBalance = ({ title, balance, instrumentSymbol }: Props) => {
+export const AccountCardBalance = ({ title, balance, instrumentSymbol, testID }: Props) => {
     const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const formatDigits = useFormatDigits(decimalPlaces);
 
-    const formattedBalance = toTrueMinus(formatDigits(balance, instrumentSymbol));
+    const isZero = formatDigits(Math.abs(balance)) === formatDigits(0);
+    const formattedBalance = isZero ? formatDigits(0, instrumentSymbol) : toTrueMinus(formatDigits(balance, instrumentSymbol));
     const fractionStart = isPositiveNumber(decimalPlaces) ? formattedBalance.length - decimalPlaces - 1 : formattedBalance.length;
-    const toneClassName = balance < 0 ? 'text-destructive-foreground' : 'text-primary';
+    const toneClassName = cn(
+        isZero && 'text-secondary-foreground',
+        !isZero && balance < 0 && 'text-destructive-foreground',
+        !isZero && balance > 0 && 'text-primary'
+    );
 
     return (
         <ProtectedText
-            testID={AccountCardBaseSelector.Balance(title, formatDigits(balance))}
+            testID={testID ?? AccountCardBaseSelector.Balance(title, formatDigits(balance))}
             numberOfLines={1}
             adjustsFontSizeToFit
             minimumFontScale={0.6}

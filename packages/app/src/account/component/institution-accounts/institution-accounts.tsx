@@ -27,7 +27,7 @@ export const InstitutionAccounts = ({ institution, balancesByAccountId }: Props)
     const [showAll, setShowAll] = useState(false);
     const reducedMotion = useReducedMotion();
     const accountsCount = institution.accounts.length;
-    const visibleAccounts = showAll ? institution.accounts : institution.accounts.slice(0, 3);
+    const visibleAccounts = showAll || accountsCount <= 4 ? institution.accounts : institution.accounts.slice(0, 3);
     const hasMore = visibleAccounts.length < accountsCount;
     const rowCount = visibleAccounts.length + Number(hasMore);
     const title = institution.accounts.every(account => account.type === AccountTypeEnum.CRYPTO_SYNC)

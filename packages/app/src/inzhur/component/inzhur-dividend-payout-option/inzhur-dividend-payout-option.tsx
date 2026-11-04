@@ -14,11 +14,15 @@ interface Props {
 }
 
 const OPTION = {
-    [DividendPayoutEnum.BANK]: { icon: UserIconNameEnum.Landmark, title: msg`Bank`, subtitle: msg`Paid to your bank card` },
+    [DividendPayoutEnum.BANK]: {
+        icon: UserIconNameEnum.Landmark,
+        title: msg`Paid to my bank`,
+        subtitle: msg`Inzhur sends dividends to your card`
+    },
     [DividendPayoutEnum.REINVEST]: {
         icon: UserIconNameEnum.TrendingUp,
-        title: msg`Inzhur balance`,
-        subtitle: msg`Kept on Inzhur and reinvested`
+        title: msg`Reinvested`,
+        subtitle: msg`Inzhur buys more certificates`
     }
 } as const;
 

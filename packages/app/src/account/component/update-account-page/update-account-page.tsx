@@ -2,7 +2,7 @@ import { AccountEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { ReactNode } from 'react';
 
-import { EmptyFn, isDefined } from '@rnw-community/shared';
+import { EmptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { AccountDetailsField } from '../../../@generic/component/account-details-field/account-details-field';
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
@@ -24,23 +24,27 @@ interface Props {
     readonly account: AccountEntityInterface;
     readonly fields: Pick<AccountFormBindingsInterface, 'title' | 'icon' | 'isActive' | 'includeInNetWorth'>;
     readonly hero: ReactNode;
+    readonly title?: string;
+    readonly detailsFooter?: string;
     readonly children?: ReactNode;
     readonly onSubmit: EmptyFn;
     readonly isSubmitting?: boolean;
 }
 
-export const UpdateAccountPage = ({ account, fields, hero, children, onSubmit, isSubmitting }: Props) => {
+export const UpdateAccountPage = ({ account, fields, hero, title, detailsFooter, children, onSubmit, isSubmitting }: Props) => {
     const { t } = useLingui();
     const { instrument } = useGetInstrumentByIdQuery(account.instrumentId);
 
     const providerTitle = isDefined(account.externalSource) ? BANK_PROVIDER_TITLE[account.externalSource] : null;
     const kindLabel = isDefined(providerTitle) ? t(providerTitle) : t(ACCOUNT_KIND_TITLE[account.type]);
     const currencyLabel = isDefined(instrument) ? instrument.name : null;
-    const detailsFooter = [kindLabel, currencyLabel].filter(isDefined).join(' · ');
+    const defaultDetailsFooter = [kindLabel, currencyLabel].filter(isDefined).join(' · ');
+    const resolvedDetailsFooter = detailsFooter ?? defaultDetailsFooter;
+    const detailsSectionFooter = isNotEmptyString(resolvedDetailsFooter) ? resolvedDetailsFooter : null;
 
     return (
         <CollapsibleChromePage
-            title={t`Edit Account`}
+            title={title ?? t`Edit Account`}
             leading={<HeaderBackButton />}
             testID={CreateAccountScreenSelector.ScrollView}
             footer={
@@ -55,7 +59,7 @@ export const UpdateAccountPage = ({ account, fields, hero, children, onSubmit, i
             {hero}
 
             <FormLayoutGroup>
-                <GroupedListSection title={t`Details`} footer={detailsFooter}>
+                <GroupedListSection title={t`Details`} footer={detailsSectionFooter}>
                     <AccountDetailsField
                         titleBinding={fields.title}
                         iconBinding={fields.icon}

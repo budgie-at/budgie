@@ -1,10 +1,10 @@
 import { useLingui } from '@lingui/react/macro';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { useFormatFundQuantity } from '../../../i18n/hook/use-format-fund-quantity.hook';
 import { InzhurSelector } from '../../selector/inzhur.selector';
 
 import type { InzhurFundChangeInterface } from '@budgie/sync';
@@ -14,33 +14,41 @@ interface Props {
     readonly symbol: string;
 }
 
-const QUANTITY_DECIMAL_PLACES = 6;
-
 export const InzhurImportSummaryFundRow = ({ fund, symbol }: Props) => {
     const { t } = useLingui();
-    const formatQuantity = useFormatDigits(0, QUANTITY_DECIMAL_PLACES);
     const formatAmount = useFormatDigits(2);
+    const formatFundQuantity = useFormatFundQuantity();
     const { isin, name, deltaQuantity, exchangedAmount, dividendAmount } = fund;
 
-    const quantityLabel = `${deltaQuantity > 0 ? '+' : ''}${formatQuantity(deltaQuantity)}`;
-    const exchangedLabel = formatAmount(exchangedAmount, symbol);
+    const sign = deltaQuantity > 0 ? '+' : '−';
+    const quantityLabel = `${sign}${formatFundQuantity(Math.abs(deltaQuantity))}`;
+    const boughtAmount = Math.max(exchangedAmount - dividendAmount, 0);
+    const boughtLabel = formatAmount(boughtAmount, symbol);
     const dividendLabel = formatAmount(dividendAmount, symbol);
+    const tradeLabel = deltaQuantity > 0 ? t`Bought ${boughtLabel}` : t`Sold ${boughtLabel}`;
     const details = [
-        isPositiveNumber(exchangedAmount) ? t`Exchanged for ${exchangedLabel}` : null,
-        isPositiveNumber(dividendAmount) ? t`Estimated dividends ${dividendLabel}` : null
+        isPositiveNumber(boughtAmount) ? tradeLabel : null,
+        isPositiveNumber(dividendAmount) ? t`Reinvested dividends ${dividendLabel}` : null
     ].filter(isDefined);
-    const subtitle = details.map(detail => (
-        <Text key={detail} className="text-secondary-foreground text-[13px] leading-[18px]">
-            {detail}
-        </Text>
-    ));
 
     return (
-        <GroupedListRow
+        <View
+            accessible
+            accessibilityLabel={[name, quantityLabel, ...details].join(', ')}
+            className="min-h-[56px] flex-row items-center gap-x-xl px-3xl py-lg"
             testID={InzhurSelector.SummaryFund(isin)}
-            title={name}
-            subtitle={subtitle}
-            right={<Text className="text-primary text-[17px] font-semibold tabular-nums">{quantityLabel}</Text>}
-        />
+        >
+            <Text className="flex-1 text-[17px] text-primary" numberOfLines={2}>
+                {name}
+            </Text>
+            <View className="items-end gap-y-xxs">
+                <Text className="text-[15px] font-semibold text-primary tabular-nums">{quantityLabel}</Text>
+                {details.map(detail => (
+                    <Text key={detail} className="text-[13px] text-secondary-foreground tabular-nums">
+                        {detail}
+                    </Text>
+                ))}
+            </View>
+        </View>
     );
 };

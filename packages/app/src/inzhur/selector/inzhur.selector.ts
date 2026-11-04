@@ -1,12 +1,18 @@
 export const InzhurSelector = {
     CreatePage: 'Inzhur.CreatePage',
     AddButton: 'Inzhur.AddButton',
+    CashAmount: 'Inzhur.CashAmount',
     ImportPage: 'Inzhur.ImportPage',
     SelectFileButton: 'Inzhur.SelectFileButton',
     DoneButton: 'Inzhur.DoneButton',
     Summary: 'Inzhur.Summary',
+    SummaryUncoveredCash: 'Inzhur.SummaryUncoveredCash',
     SummaryFund: (isin: string) => `Inzhur.SummaryFund.${isin}` as const,
     PayoutOption: (payout: string) => `Inzhur.PayoutOption.${payout}` as const,
     FundReturns: 'Inzhur.FundReturns',
-    StatementReminder: 'Inzhur.StatementReminder'
+    Holdings: 'Inzhur.Holdings',
+    StatementReminder: 'Inzhur.StatementReminder',
+    Freshness: 'Inzhur.Freshness',
+    ImportStatementButton: 'Inzhur.ImportStatementButton',
+    InstitutionDetail: 'Inzhur.InstitutionDetail'
 } as const;

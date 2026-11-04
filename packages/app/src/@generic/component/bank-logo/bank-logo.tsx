@@ -10,6 +10,7 @@ import { CircleIcon } from '../circle-icon/circle-icon';
 
 import { BinanceIcon } from './icons/binance-icon';
 import { ErsteIcon } from './icons/erste-icon';
+import { InzhurIcon } from './icons/inzhur-icon';
 import { MonobankIcon } from './icons/monobank-icon';
 import { PrivatbankIcon } from './icons/privatbank-icon';
 
@@ -35,6 +36,7 @@ const getBankIcon = (provider: ExternalSourceEnum, size: number): ReactElement |
         case ExternalSourceEnum.BINANCE:
             return <BinanceIcon size={size} />;
         case ExternalSourceEnum.INZHUR:
+            return <InzhurIcon size={size} />;
         case ExternalSourceEnum.MANUAL:
         case ExternalSourceEnum.REVOLUT:
         case ExternalSourceEnum.COINBASE:

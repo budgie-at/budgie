@@ -12,8 +12,7 @@ import { CreateAccountCurrencyField } from '../../../@generic/component/create-a
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
-import { InzhurActualBalanceNote } from '../../../inzhur/component/inzhur-actual-balance-note/inzhur-actual-balance-note';
-import { InzhurDividendPayoutField } from '../../../inzhur/component/inzhur-dividend-payout-field/inzhur-dividend-payout-field';
+import { UpdateInzhurAccountPage } from '../../../inzhur/component/update-inzhur-account-page/update-inzhur-account-page';
 import { isInzhurCashAccount } from '../../../inzhur/utils/is-inzhur-cash-account.util';
 import { isInzhurFundAccount } from '../../../inzhur/utils/is-inzhur-fund-account.util';
 import { AccountSyncCard } from '../../../sync/component/account-sync-card/account-sync-card';
@@ -90,11 +89,23 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         return <EmptyScreen />;
     }
 
+    if (isInzhurCash || isInzhurFund) {
+        return (
+            <UpdateInzhurAccountPage
+                account={account}
+                balance={balance}
+                fields={fields}
+                instrumentSymbol={stickyInstrument.symbol}
+                isSubmitting={isSubmitting}
+                onSubmit={handleSubmit}
+            />
+        );
+    }
+
     return (
         <UpdateAccountScreen
             account={account}
             allowNegativeBalance
-            {...(isInzhurCash && { balanceFieldLabel: t`Actual balance` })}
             fields={fields}
             instrumentSymbol={stickyInstrument.symbol}
             isSubmitting={isSubmitting}
@@ -102,10 +113,6 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         >
             {currencyField}
             {isSyncedAccount ? <AccountSyncCard accountId={account.id} /> : null}
-            {isInzhurFund ? (
-                <InzhurDividendPayoutField value={fields.dividendPayout.field.value} onChange={fields.dividendPayout.field.onChange} />
-            ) : null}
-            {isInzhurCash ? <InzhurActualBalanceNote /> : null}
         </UpdateAccountScreen>
     );
 };
