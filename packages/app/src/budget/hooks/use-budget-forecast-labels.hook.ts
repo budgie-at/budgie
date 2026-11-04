@@ -25,6 +25,9 @@ export const useBudgetForecastLabels = (
     return {
         limitLabel: domain.isLimitInRange ? t`Limit ${limitAmount}` : t`Limit ${limitAmount} · above chart`,
         scaleLabel: t`Chart max ${scaleAmount}`,
-        endLabel: isOver ? t`${projectedAmount} · ${gapAmount} over` : t`${projectedAmount} · ${gapAmount} under`
+        endLabel: isOver ? t`${projectedAmount} · ${gapAmount} over` : t`${projectedAmount} · ${gapAmount} under`,
+        summaryLabel: isOver
+            ? t`Forecast: about ${projectedAmount} by the end, ${gapAmount} over the ${limitAmount} limit`
+            : t`Forecast: about ${projectedAmount} by the end, ${gapAmount} under the ${limitAmount} limit`
     };
 };

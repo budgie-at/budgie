@@ -179,6 +179,18 @@ msgstr "{categoryName}: {threshold}% gastado"
 msgid "{categoryName}: limit reached"
 msgstr "{categoryName}: límite alcanzado"
 
+#: src/budget/hooks/use-budget-category-limit-amount-label.hook.ts
+msgid "{categoryTitle} limit"
+msgstr "Límite de {categoryTitle}"
+
+#: src/budget/components/budget-event-removed-limit-note/budget-event-removed-limit-note.tsx
+msgid "{categoryTitle} limit removed."
+msgstr "Límite de {categoryTitle} eliminado."
+
+#: src/budget/components/budget-event-removed-limit-note/budget-event-removed-limit-note.tsx
+msgid "{categoryTitle} limit removed. Undo available."
+msgstr "Límite de {categoryTitle} eliminado. Puedes deshacerlo."
+
 #: src/transaction/components/statistics-change-label/statistics-change-label.tsx
 msgid "{changePercent} less than {previousLabel}"
 msgstr "{changePercent} menos que en {previousLabel}"
@@ -283,10 +295,15 @@ msgstr "{dateLabel}, {kindLabel}"
 msgid "{dateLabel}, {priceLabel}"
 msgstr "{dateLabel}, {priceLabel}"
 
+#: src/@generic/component/date-range-summary/date-range-summary.tsx
+msgid "{dayCount, plural, one {# day} other {# days}}"
+msgstr "{dayCount, plural, one {# día} other {# días}}"
+
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 msgid "{days, plural, one {In # day} other {In # days}}"
 msgstr "{days, plural, one {En # día} other {En # días}}"
 
+#: src/budget/components/budget-event-row/budget-event-row.tsx
 #: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
 msgid "{daysLeft, plural, one {# day left} other {# days left}}"
 msgstr "{daysLeft, plural, one {Queda # día} other {Quedan # días}}"
@@ -893,6 +910,10 @@ msgstr "+{formattedNet} / mes"
 msgid "+{hiddenCategoryCount} more"
 msgstr "+{hiddenCategoryCount} más"
 
+#: src/budget/components/budget-event-allocation-note/budget-event-allocation-note.tsx
+msgid "<0>{amountLabel}</0> left for everything else."
+msgstr "Quedan <0>{amountLabel}</0> para todo lo demás."
+
 #: src/budget/components/budget-limit-row/budget-limit-row.tsx
 msgid "−{carriedLabel} carried"
 msgstr "−{carriedLabel} arrastrados"
@@ -994,6 +1015,10 @@ msgstr "Ya existe una regla con las mismas condiciones."
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "A Shortcuts automation logs each tap for you."
 msgstr "Una automatización de Shortcuts registra cada toque por ti."
+
+#: src/tag/components/tags-selector-automatic-row/tags-selector-automatic-row.tsx
+msgid "A tag named after the event, created if needed"
+msgstr "Una etiqueta con el nombre del evento, se crea si hace falta"
 
 #: src/budget/constant/budget-period-rate-label.constant.ts
 msgid "a week"
@@ -1316,6 +1341,10 @@ msgstr "Todas las columnas ya están asignadas"
 #: src/rule/components/rule-condition-match-type-selector/rule-condition-match-type-selector.tsx
 msgid "All conditions"
 msgstr "Todas las condiciones"
+
+#: src/budget/components/budget-event-expenses-row/budget-event-expenses-row.tsx
+msgid "All event expenses"
+msgstr "Todos los gastos del evento"
 
 #: src/money-data/component/money-data-upgrade-status-card/money-data-upgrade-status-card.tsx
 msgid "All past amounts are converted"
@@ -2087,7 +2116,9 @@ msgstr "Categorizar"
 #: src/app/(main)/import-csv.tsx
 #: src/app/(tabs)/settings/categories.tsx
 #: src/app/category-selector.tsx
+#: src/budget/components/budget-event-removed-limit-note/budget-event-removed-limit-note.tsx
 #: src/budget/components/budget-fund-category-field/budget-fund-category-field.tsx
+#: src/budget/hooks/use-budget-category-limit-amount-label.hook.ts
 #: src/budget/service/budget-alert-monitor.service.ts
 #: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx
 #: src/transaction/components/transaction-category-field-icon/transaction-category-field-icon.tsx
@@ -2105,6 +2136,10 @@ msgstr "Iconos de categoría"
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Category limits"
 msgstr "Límites por categoría"
+
+#: src/budget/components/budget-event-allocation-note/budget-event-allocation-note.tsx
+msgid "Category limits are {amountLabel} over the event limit."
+msgstr "Los límites por categoría superan el límite del evento en {amountLabel}."
 
 #: src/category/components/category-form/category-form.tsx
 msgid "Category name"
@@ -2173,7 +2208,6 @@ msgstr "Cuenta corriente"
 msgid "Checking transaction history"
 msgstr "Comprobando el historial de transacciones"
 
-#: src/budget/components/budget-event-tag-field/budget-event-tag-field.tsx
 #: src/budget/components/budget-fund-category-field/budget-fund-category-field.tsx
 #: src/import/components/import-column-map-field/import-column-map-field.tsx
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
@@ -2229,7 +2263,6 @@ msgstr "Elige un origen"
 msgid "Choose a tag"
 msgstr "Elige una etiqueta"
 
-#: src/budget/utils/resolve-budget-event-save-blocker.util.ts
 #: src/rule/utils/get-rule-form-issue.util.ts
 msgid "Choose a tag to continue"
 msgstr "Elige una etiqueta para continuar"
@@ -3329,7 +3362,6 @@ msgstr "La desvincula de «{debtTitle}»"
 
 #: src/account/component/create-account-details-section/create-account-details-section.tsx
 #: src/account/component/update-account-page/update-account-page.tsx
-#: src/budget/components/budget-event-form/budget-event-form.tsx
 #: src/budget/components/budget-setup-form/budget-setup-form.tsx
 #: src/category/components/category-form/category-form.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
@@ -3564,6 +3596,8 @@ msgid "Each week against your {allowanceLabel} weekly allowance"
 msgstr "Cada semana frente a tu asignación semanal de {allowanceLabel}"
 
 #: src/@generic/component/entity-list-row/entity-list-row.tsx
+#: src/budget/components/budget-details/budget-details.tsx
+#: src/budget/components/budget-event-details/budget-event-details.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 #: src/transaction/components/transaction-info-edit-button/transaction-info-edit-button.tsx
 msgid "Edit"
@@ -3781,9 +3815,9 @@ msgstr "Erste Bank (PDF)"
 msgid "Estimated from your past transactions using your current limits."
 msgstr "Estimado a partir de tus transacciones pasadas con tus límites actuales."
 
-#: src/budget/components/budget-event-form/budget-event-form.tsx
-msgid "Event limit"
-msgstr "Límite del evento"
+#: src/budget/components/budget-event-dates-field/budget-event-dates-field.tsx
+msgid "Event dates"
+msgstr "Fechas del evento"
 
 #: src/budget/components/budget-events-section/budget-events-section.tsx
 msgid "Events"
@@ -3870,6 +3904,10 @@ msgstr "Gasto, ingreso o transferencia"
 #: src/transaction/hook/use-transaction-filter-page-title.hook.ts
 msgid "Expenses"
 msgstr "Gastos"
+
+#: src/budget/components/budget-event-tag-note/budget-event-tag-note.tsx
+msgid "Expenses tagged “{title}” in these dates count here and in your main budget."
+msgstr "Los gastos con la etiqueta «{title}» en estas fechas cuentan aquí y en tu presupuesto principal."
 
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Export"
@@ -4036,6 +4074,14 @@ msgstr "Ahorro a plazo fijo con intereses"
 msgid "Forecast"
 msgstr "Previsión"
 
+#: src/budget/hooks/use-budget-forecast-labels.hook.ts
+msgid "Forecast: about {projectedAmount} by the end, {gapAmount} over the {limitAmount} limit"
+msgstr "Previsión: unos {projectedAmount} al final, {gapAmount} por encima del límite de {limitAmount}"
+
+#: src/budget/hooks/use-budget-forecast-labels.hook.ts
+msgid "Forecast: about {projectedAmount} by the end, {gapAmount} under the {limitAmount} limit"
+msgstr "Previsión: unos {projectedAmount} al final, {gapAmount} por debajo del límite de {limitAmount}"
+
 #: src/auth/components/pin-unlock/pin-unlock.tsx
 msgid "Forgot PIN?"
 msgstr "¿Olvidaste el PIN?"
@@ -4095,6 +4141,10 @@ msgstr "Moneda de origen"
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "From one amount to another"
 msgstr "De un importe a otro"
+
+#: src/budget/components/budget-event-tag-field/budget-event-tag-field.tsx
+msgid "From the name"
+msgstr "A partir del nombre"
 
 #: src/budget/components/budget-fund-suggestion-banner/budget-fund-suggestion-banner.tsx
 msgid "From your recurring charges: {name}, {amountLabel} per cycle"
@@ -4766,10 +4816,6 @@ msgstr "Crear un PIN al final"
 msgid "Make primary"
 msgstr "Hacer principal"
 
-#: src/budget/components/budget-details-edit-button/budget-details-edit-button.tsx
-msgid "Manage budget"
-msgstr "Gestionar presupuesto"
-
 #: src/transaction/components/refund-transaction-info-content/refund-transaction-info-content.tsx
 msgid "Manage this refund from the original purchase."
 msgstr "Gestiona este reembolso desde la compra original."
@@ -5127,6 +5173,10 @@ msgstr "Nombre"
 msgid "Name matches"
 msgstr "Coinciden los nombres"
 
+#: src/budget/components/budget-event-tag-note/budget-event-tag-note.tsx
+msgid "Name the event to set up its tag. Tagged expenses count here and in your main budget."
+msgstr "Ponle nombre al evento para crear su etiqueta. Los gastos etiquetados cuentan aquí y en tu presupuesto principal."
+
 #: src/@generic/component/usage-failure-row/usage-failure-row.tsx
 msgid "Names are up to date. Tap to try again."
 msgstr "Los nombres están al día. Toca para reintentar."
@@ -5151,6 +5201,10 @@ msgstr "Neto"
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Net worth"
 msgstr "Patrimonio neto"
+
+#: src/budget/components/budget-event-tag-field/budget-event-tag-field.tsx
+msgid "New · {title}"
+msgstr "Nueva · {title}"
 
 #: src/app/(main)/create-account/index.tsx
 msgid "New Account"
@@ -5747,8 +5801,8 @@ msgid "Optional — without it the amount stays manual"
 msgstr "Opcional: sin ella el importe sigue siendo manual"
 
 #: src/budget/components/budget-event-category-limits/budget-event-category-limits.tsx
-msgid "Optional. Leave empty to track the event as a single limit."
-msgstr "Opcional. Déjalo vacío para seguir el evento con un único límite."
+msgid "Optional. Cap a category inside the event limit."
+msgstr "Opcional. Limita una categoría dentro del límite del evento."
 
 #: src/budget/components/budget-details-category-list/budget-details-category-list.tsx
 msgid "Optional. The overall limit applies without them."
@@ -5804,6 +5858,7 @@ msgid "Original transaction"
 msgstr "Transacción original"
 
 #: src/budget/components/budget-details-other-category-row/budget-details-other-category-row.tsx
+#: src/budget/components/budget-event-other-spending-row/budget-event-other-spending-row.tsx
 #: src/budget/components/budget-inline-other-limit-row/budget-inline-other-limit-row.tsx
 #: src/budget/components/budget-limit-change-row/budget-limit-change-row.tsx
 #: src/budget/components/budget-limit-changes-row/budget-limit-changes-row.tsx
@@ -6064,6 +6119,10 @@ msgstr "Elige una categoría para definir un límite"
 msgid "Pick a column for each field."
 msgstr "Elige una columna para cada campo."
 
+#: src/@generic/component/date-range-summary/date-range-summary.tsx
+msgid "Pick a start and an end date"
+msgstr "Elige una fecha de inicio y una de fin"
+
 #: src/tag/components/tag-destination-sheet/tag-destination-sheet.tsx
 msgid "Pick a tag to continue"
 msgstr "Elige una etiqueta para continuar"
@@ -6094,16 +6153,16 @@ msgid "Plan {allowanceLabel}/day"
 msgstr "Plan {allowanceLabel}/día"
 
 #: src/budget/hooks/use-budget-day-strip-labels.hook.ts
+msgid "Plan {allowanceLabel}/day · {aheadLabel}/day to spare"
+msgstr "Plan {allowanceLabel}/día · {aheadLabel}/día de margen"
+
+#: src/budget/hooks/use-budget-day-strip-labels.hook.ts
 msgid "Plan {allowanceLabel}/day · {safeLabel}/day keeps you on track"
 msgstr "Plan {allowanceLabel}/día · con {safeLabel}/día vas bien"
 
 #: src/budget/hooks/use-budget-day-strip-labels.hook.ts
 msgid "Plan {allowanceLabel}/day · Stay under {safeLabel}/day"
 msgstr "Plan {allowanceLabel}/día · Mantente por debajo de {safeLabel}/día"
-
-#: src/budget/hooks/use-budget-day-strip-labels.hook.ts
-msgid "Plan {allowanceLabel}/day · You can spend up to {safeLabel}/day"
-msgstr "Plan {allowanceLabel}/día · Puedes gastar hasta {safeLabel}/día"
 
 #: src/installment-plan/hook/use-open-convert-to-installment.hook.ts
 msgid "Plan created"
@@ -6442,6 +6501,10 @@ msgstr "Eliminar"
 msgid "Remove {categoryTitle} entry"
 msgstr "Eliminar entrada de {categoryTitle}"
 
+#: src/budget/components/budget-category-limit-remove-button/budget-category-limit-remove-button.tsx
+msgid "Remove {title} limit"
+msgstr "Quitar el límite de {title}"
+
 #: src/rule/components/rule-action-row/rule-action-row.tsx
 msgid "Remove action {position}"
 msgstr "Quitar acción {position}"
@@ -6449,10 +6512,6 @@ msgstr "Quitar acción {position}"
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Remove all duplicates"
 msgstr "Eliminar todos los duplicados"
-
-#: src/budget/components/budget-category-limit-deletable-row/budget-category-limit-deletable-row.tsx
-msgid "Remove category limit?"
-msgstr "¿Eliminar el límite de categoría?"
 
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
 msgid "Remove condition {position}"
@@ -6745,6 +6804,10 @@ msgstr "Guarda la automatización. Budgie asigna los nombres de tarjeta a las cu
 #: src/budget/components/budget-funds-section/budget-funds-section.tsx
 msgid "Save up for yearly bills a little each period so they never surprise you"
 msgstr "Ahorra un poco cada periodo para las facturas anuales y que nunca te sorprendan"
+
+#: src/budget/components/budget-event-tag-note/budget-event-tag-note.tsx
+msgid "Saving creates the tag “{title}”. Tagged expenses in these dates count here and in your main budget."
+msgstr "Al guardar se crea la etiqueta «{title}». Los gastos etiquetados en estas fechas cuentan aquí y en tu presupuesto principal."
 
 #: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
@@ -7178,6 +7241,10 @@ msgstr "Gastos"
 msgid "Spending left below your balance"
 msgstr "Gasto restante bajo tu saldo"
 
+#: src/budget/components/budget-event-form/budget-event-form.tsx
+msgid "Spending limit"
+msgstr "Límite de gasto"
+
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
 #: src/transaction/components/statistics-drill-down-summary/statistics-drill-down-summary.tsx
 #: src/transaction/components/statistics-spending-hero/statistics-spending-hero.tsx
@@ -7309,10 +7376,6 @@ msgstr "Intercambiar cuentas"
 msgid "Swipe left to dismiss this recurring payment."
 msgstr "Desliza a la izquierda para descartar este pago recurrente."
 
-#: src/budget/components/budget-category-limit-deletable-row/budget-category-limit-deletable-row.tsx
-msgid "Swipe to remove this per-category cap from your budget."
-msgstr "Desliza para eliminar este tope por categoría de tu presupuesto."
-
 #: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
 msgid "Switch on to start syncing."
 msgstr "Activa para empezar a sincronizar."
@@ -7438,7 +7501,6 @@ msgid "Tag name"
 msgstr "Nombre de la etiqueta"
 
 #: src/budget/components/budget-details-category-list/budget-details-category-list.tsx
-#: src/budget/components/budget-event-form/budget-event-form.tsx
 msgid "Tagged expenses also count in your main budget."
 msgstr "Los gastos con etiqueta también cuentan en tu presupuesto principal."
 
@@ -7774,8 +7836,12 @@ msgid "Tick marks where savings should be by today."
 msgstr "La marca indica dónde deberían estar los ahorros hoy."
 
 #: src/budget/components/budget-details-category-list/budget-details-category-list.tsx
-msgid "Tick marks where spending should be by today."
-msgstr "La marca indica dónde debería estar el gasto hoy."
+msgid "Ticks show where spending should be by today."
+msgstr "Las marcas indican dónde debería estar el gasto hoy."
+
+#: src/budget/components/budget-event-category-list-footer/budget-event-category-list-footer.tsx
+msgid "Ticks show where spending should be by today. Tagged expenses also count in your main budget."
+msgstr "Las marcas indican dónde debería estar el gasto hoy. Los gastos etiquetados también cuentan en tu presupuesto principal."
 
 #: src/budget/utils/resolve-budget-display-status.util.ts
 msgid "Tight"
@@ -8172,6 +8238,7 @@ msgid "Under limit"
 msgstr "Bajo el límite"
 
 #: src/account/hooks/use-shelved-account-action.hook.ts
+#: src/budget/components/budget-event-removed-limit-note/budget-event-removed-limit-note.tsx
 #: src/categorize-inbox/components/categorize-inbox-undo-layout/categorize-inbox-undo-layout.tsx
 msgid "Undo"
 msgstr "Deshacer"
@@ -8186,6 +8253,10 @@ msgstr "Deshacer reembolso"
 #: src/transaction/hook/use-revert-consolidation.hook.ts
 msgid "Undo refund?"
 msgstr "¿Deshacer reembolso?"
+
+#: src/budget/components/budget-event-removed-limit-note/budget-event-removed-limit-note.tsx
+msgid "Undo removing the {categoryTitle} limit"
+msgstr "Deshacer la eliminación del límite de {categoryTitle}"
 
 #: src/account/component/account-details-hidden-pill/account-details-hidden-pill.tsx
 #: src/account/component/inactive-account-card/inactive-account-card.tsx
@@ -8313,6 +8384,10 @@ msgstr "Actualizando tu PIN"
 msgid "Use"
 msgstr "Usar"
 
+#: src/budget/components/budget-event-tag-field/budget-event-tag-field.tsx
+msgid "Use “{trimmedName}”"
+msgstr "Usar «{trimmedName}»"
+
 #: src/@generic/utils/get-icon-choice-label.util.ts
 msgid "Use {label} emoji"
 msgstr "Usar el emoji {label}"
@@ -8347,9 +8422,17 @@ msgstr "Usar datos móviles para {remaining} GB"
 msgid "Use PIN only"
 msgstr "Usar solo el PIN"
 
+#: src/budget/components/budget-event-tag-field/budget-event-tag-field.tsx
+msgid "Use the event name"
+msgstr "Usar el nombre del evento"
+
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
 msgid "Use the PIN this backup was sealed with. Without it, the backup can't be opened."
 msgstr "Usa el PIN con el que se selló esta copia. Sin él, no se puede abrir."
+
+#: src/budget/components/budget-event-dates-field/budget-event-dates-field.tsx
+msgid "Use these dates"
+msgstr "Usar estas fechas"
 
 #: src/app/(tabs)/settings/data.tsx
 msgid "Use these only if conversions, imports or balances look wrong."

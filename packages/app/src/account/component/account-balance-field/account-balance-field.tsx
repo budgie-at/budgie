@@ -21,7 +21,7 @@ export const AccountBalanceField = (props: Props) => {
 
     return (
         <View className="pb-5xl">
-            <Text className="text-secondary-foreground px-4 pt-md text-[13px] font-medium">{caption}</Text>
+            <Text className="text-secondary-foreground px-3xl pt-md text-[13px] font-medium">{caption}</Text>
             <FormAmountInput
                 testID={CreateAccountSelector.Amount}
                 value={value}

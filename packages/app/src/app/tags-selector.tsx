@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
 import { useEffect, useEffectEvent, useReducer, useRef, useState } from 'react';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { SelectorModalDescription } from '../@generic/component/selector-modal-description/selector-modal-description';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
@@ -9,6 +9,7 @@ import { SelectorNoResultsState } from '../@generic/component/selector-no-result
 import { SheetSurface } from '../@generic/component/sheet-surface/sheet-surface';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { TagsSelectContent } from '../tag/components/tags-select-content/tags-select-content';
+import { TagsSelectorAutomaticRow } from '../tag/components/tags-selector-automatic-row/tags-selector-automatic-row';
 import { TagsSelectorDoneButton } from '../tag/components/tags-selector-done-button/tags-selector-done-button';
 import { useTagFormModal } from '../tag/context/tag-form-modal.context';
 import { useTagsSelectorModal, useTagsSelectorModalParams } from '../tag/context/tags-selector-modal.context';
@@ -34,6 +35,7 @@ export default function TagsSelectorModal() {
         title,
         description,
         singleSelect = false,
+        automaticLabel,
         enablePrimarySelection = false
     } = currentParams ?? {};
     const initialPrimaryTagId = enablePrimarySelection ? (initialTagIds[0] ?? null) : null;
@@ -48,7 +50,10 @@ export default function TagsSelectorModal() {
 
     const hasResolvedRef = useRef(false);
 
-    const data = (tags ?? []).filter(tag => !excludeTagIds.includes(tag.id));
+    const visibleTags = (tags ?? []).filter(tag => !excludeTagIds.includes(tag.id));
+    const data = singleSelect
+        ? [...visibleTags.filter(tag => initialTagIds.includes(tag.id)), ...visibleTags.filter(tag => !initialTagIds.includes(tag.id))]
+        : visibleTags;
     const query = search.trim();
     const primaryHint = enablePrimarySelection && isNotEmptyArray(selected) ? t`★ Primary · hold another tag to change it` : null;
     const dirty =
@@ -80,6 +85,15 @@ export default function TagsSelectorModal() {
             }
         });
     };
+
+    const handleAutomaticPress = () => void resolveSelection([]);
+
+    const automaticRow =
+        singleSelect && isNotEmptyString(automaticLabel) && !isNotEmptyString(query) ? (
+            <TagsSelectorAutomaticRow label={automaticLabel} isSelected={isEmptyArray(selected)} onPress={handleAutomaticPress} />
+        ) : (
+            void 0
+        );
 
     const handleDone = () => void resolveSelection(reorderTagIdsByPrimary(selected, primaryTagId));
 
@@ -113,6 +127,7 @@ export default function TagsSelectorModal() {
             <SelectorModalDescription title={title} description={description}>
                 <TagsSelectContent
                     listEmptyComponent={listEmptyComponent}
+                    listHeaderComponent={automaticRow}
                     data={data}
                     selectedTagIds={selected}
                     primaryTagId={primaryTagId}

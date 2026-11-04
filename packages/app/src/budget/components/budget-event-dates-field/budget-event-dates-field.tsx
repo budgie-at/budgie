@@ -21,14 +21,22 @@ export const BudgetEventDatesField = () => {
     const datesLabel = `${startLabel} – ${endLabel}`;
 
     const handleOpen = () => {
-        openDateFilter({ value: { from: new Date(startsAtMs), to: new Date(endsAtMs) } }, result => {
-            const range = result?.value;
+        openDateFilter(
+            {
+                value: { from: new Date(startsAtMs), to: new Date(endsAtMs) },
+                title: t`Event dates`,
+                applyLabel: t`Use these dates`,
+                periods: []
+            },
+            result => {
+                const range = result?.value;
 
-            if (isDefined(range) && isDefined(range.from) && isDefined(range.to)) {
-                setValue('startsAtMs', range.from.getTime(), { shouldDirty: true, shouldValidate: true });
-                setValue('endsAtMs', range.to.getTime(), { shouldDirty: true, shouldValidate: true });
+                if (isDefined(range) && isDefined(range.from) && isDefined(range.to)) {
+                    setValue('startsAtMs', range.from.getTime(), { shouldDirty: true, shouldValidate: true });
+                    setValue('endsAtMs', range.to.getTime(), { shouldDirty: true, shouldValidate: true });
+                }
             }
-        });
+        );
     };
 
     return (

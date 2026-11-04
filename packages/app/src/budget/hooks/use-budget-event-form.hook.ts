@@ -1,5 +1,5 @@
 import { BudgetService } from '@budgie/budget';
-import { convertFromMicroUnits } from '@budgie/contracts';
+import { Db, convertFromMicroUnits } from '@budgie/contracts';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -13,6 +13,7 @@ import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
+import { TagService } from '../../tag/service/tag.service';
 import { BudgetEventFormSchema, BudgetEventFormValues } from '../constant/budget-event-form-schema.constant';
 import { useGetBudgetCategoryLimitsQuery } from '../query/use-get-budget-category-limits.query';
 import { useGetEventBudgetQuery } from '../query/use-get-event-budget.query';
@@ -44,7 +45,7 @@ const buildEventFormValues = (
 
 export const useBudgetEventForm = ({ defaultInstrumentId, editingId }: UseBudgetEventFormOptionsInterface) => {
     const { t } = useLingui();
-    const { run } = useSingleFlight();
+    const { run, isLoading: isSaving } = useSingleFlight();
     const isEditing = isPositiveNumber(editingId);
     const { budget: event, isLoading: isEventLoading } = useGetEventBudgetQuery(isEditing ? editingId : 0);
     const { categoryLimits, isLoading: isCategoryLimitsLoading } = useGetBudgetCategoryLimitsQuery(isEditing ? editingId : null);
@@ -62,17 +63,21 @@ export const useBudgetEventForm = ({ defaultInstrumentId, editingId }: UseBudget
         void form.handleSubmit(values =>
             run(
                 Effect.gen(function* () {
-                    const payload = buildBudgetEventPayload(values);
                     const budgetService = yield* BudgetService;
+                    const tagService = yield* TagService;
+                    const tagId = isPositiveNumber(values.tagId) ? values.tagId : (yield* tagService.findOrCreateByTitle(values.name)).id;
+                    const payload = buildBudgetEventPayload({ ...values, tagId });
 
                     if (isPositiveNumber(editingId)) {
                         yield* budgetService.updateBudget(editingId, payload);
                     } else {
                         yield* budgetService.createBudget(payload);
                     }
-
-                    goBackOrReplace(FALLBACK_ROUTE);
-                }).pipe(toastOnFailure(isEditing ? t`Could not save event` : t`Could not create event`))
+                }).pipe(
+                    effect => Db.transaction(effect),
+                    Effect.tap(() => Effect.sync(() => void goBackOrReplace(FALLBACK_ROUTE))),
+                    toastOnFailure(isEditing ? t`Could not save event` : t`Could not create event`)
+                )
             )
         )();
     };
@@ -109,6 +114,7 @@ export const useBudgetEventForm = ({ defaultInstrumentId, editingId }: UseBudget
         handleDelete,
         handleCancel,
         isEditing,
+        isSaving,
         isLoading: isEditing && (isEventLoading || isCategoryLimitsLoading || !isDefined(event))
     };
 };

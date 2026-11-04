@@ -1,6 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { useFormContext } from 'react-hook-form';
+import { View } from 'react-native';
 
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetCategoryLimitCompactRowLayout } from '../budget-category-limit-compact-row-layout/budget-category-limit-compact-row-layout';
@@ -18,6 +19,7 @@ export const BudgetInlineOtherLimitRow = ({ currencySymbol }: Props) => {
 
     return (
         <BudgetCategoryLimitCompactRowLayout
+            trailing={<View className="w-[24px]" />}
             leading={
                 <BudgetRolloverModeMenu
                     name="otherRolloverMode"
@@ -29,7 +31,7 @@ export const BudgetInlineOtherLimitRow = ({ currencySymbol }: Props) => {
             amountInput={
                 <BudgetEditableAmountInput
                     control={control}
-                    className="min-w-[104px] max-w-[136px] text-right"
+                    className="min-w-[76px] max-w-[120px] text-right"
                     currencySymbol={currencySymbol}
                     name="otherLimit"
                     testID={BudgetSelector.SetupOtherLimitAmountInput}

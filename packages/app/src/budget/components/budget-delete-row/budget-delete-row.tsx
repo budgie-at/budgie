@@ -1,7 +1,7 @@
 import { Text } from 'react-native';
 
-import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 
 interface Props {
     readonly title: string;
@@ -14,15 +14,16 @@ export const BudgetDeleteRow = ({ title, testID, onDelete }: Props) => {
 
     return (
         <GroupedListSection>
-            <GroupedListRow
-                title={
-                    <Text className="text-destructive-strong text-[17px]" numberOfLines={2}>
-                        {title}
-                    </Text>
-                }
+            <HapticPressable
+                accessibilityRole="button"
+                className="min-h-[50px] items-center justify-center px-3xl py-lg active:opacity-70"
                 testID={testID}
                 onPress={handlePress}
-            />
+            >
+                <Text className="text-destructive-strong text-[17px]" numberOfLines={2}>
+                    {title}
+                </Text>
+            </HapticPressable>
         </GroupedListSection>
     );
 };

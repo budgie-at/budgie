@@ -13,6 +13,7 @@ interface Props<TFieldValues extends FieldValues> {
     readonly currencySymbol: string;
     readonly testID?: string;
     readonly className: string;
+    readonly accessibilityLabel?: string;
 }
 
 export const BudgetEditableAmountInput = <TFieldValues extends FieldValues>({
@@ -20,22 +21,25 @@ export const BudgetEditableAmountInput = <TFieldValues extends FieldValues>({
     name,
     currencySymbol,
     testID,
-    className
+    className,
+    accessibilityLabel
 }: Props<TFieldValues>) => {
     const {
-        field: { value, onChange }
+        field: { value, onChange, ref }
     } = useController({ control, name });
     const amount = isNumber(value) ? value : 0;
     const { t } = useLingui();
     const [isFocused, setIsFocused] = useState(false);
-    const toneClassName = isFocused ? 'text-default-foreground' : 'text-primary';
+    const toneClassName = isFocused ? 'border-default-foreground text-default-foreground' : 'border-secondary-foreground/30 text-primary';
 
     const handleFocus = () => void setIsFocused(true);
     const handleBlur = () => void setIsFocused(false);
 
     return (
         <AmountInput
+            ref={ref}
             testID={testID}
+            accessibilityLabel={accessibilityLabel}
             value={amount}
             onChangeValue={onChange}
             onFocus={handleFocus}
@@ -44,8 +48,7 @@ export const BudgetEditableAmountInput = <TFieldValues extends FieldValues>({
             valuePrefix={currencySymbol}
             size="md"
             borderless
-            inputClassName={cn('px-0', className, toneClassName)}
-            commitOnBlur
+            inputClassName={cn('rounded-lg border bg-surface-fill px-md', className, toneClassName)}
             selectTextOnFocus
         />
     );

@@ -1,3 +1,4 @@
+import { BudgetPaceStatusEnum } from '@budgie/budget';
 import { BudgetLimitSourceEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
@@ -22,7 +23,7 @@ export const BudgetStatRow = ({ scope, displayStatus, limitSource, currencySymbo
     const { t } = useLingui();
     const formatDigits = useDisplayFormatDigits();
     const leftTone = scope.free < 0 ? 'destructive' : 'positive';
-    const isNeutralLeft = scope.free >= 0 && displayStatus.isTight;
+    const isNeutralLeft = scope.free >= 0 && (displayStatus.isTight || scope.status === BudgetPaceStatusEnum.AHEAD);
 
     const formatAmount = (amount: number) => formatDigits(convertFromMicroUnits(amount), currencySymbol).replace('-', '−');
 

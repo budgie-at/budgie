@@ -1,5 +1,4 @@
 import { budgetComputeAllocation } from '@budgie/budget';
-import { msg } from '@lingui/core/macro';
 import * as Schema from 'effect/Schema';
 
 import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
@@ -13,10 +12,6 @@ import type { MessageDescriptor } from '@lingui/core';
 export const resolveBudgetEventSaveBlocker = (values: BudgetEventFormValues): MessageDescriptor | null => {
     if (!isNotEmptyString(values.name.trim())) {
         return BUDGET_SAVE_BLOCKER_LABEL.name;
-    }
-
-    if (!isPositiveNumber(values.tagId)) {
-        return msg`Choose a tag to continue`;
     }
 
     if (!isPositiveNumber(values.overallLimit)) {

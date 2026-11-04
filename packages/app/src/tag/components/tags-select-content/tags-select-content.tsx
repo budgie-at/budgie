@@ -15,6 +15,7 @@ interface Props {
     readonly primaryTagId?: number | null;
     readonly isLoading?: boolean;
     readonly listEmptyComponent?: ReactElement;
+    readonly listHeaderComponent?: ReactElement;
     readonly onSelect: (tagId: number) => void;
     readonly onPrimarySelect?: (tagId: number) => void;
 }
@@ -24,7 +25,16 @@ const FLOATING_DONE_BUTTON_BOTTOM_SPACE = 132;
 const keyExtractor = (tag: TagEntityInterface) => String(tag.id);
 
 export const TagsSelectContent = (props: Props) => {
-    const { data, selectedTagIds, primaryTagId = null, isLoading = false, listEmptyComponent, onSelect, onPrimarySelect } = props;
+    const {
+        data,
+        selectedTagIds,
+        primaryTagId = null,
+        isLoading = false,
+        listEmptyComponent,
+        listHeaderComponent,
+        onSelect,
+        onPrimarySelect
+    } = props;
     const { t } = useLingui();
     const listContentStyle = useFormsheetListContentStyle(FLOATING_DONE_BUTTON_BOTTOM_SPACE);
 
@@ -43,7 +53,12 @@ export const TagsSelectContent = (props: Props) => {
         </GroupedListItem>
     );
 
-    const listOptions = { estimatedItemSize: 60, contentContainerStyle: listContentStyle, ListEmptyComponent: emptyState };
+    const listOptions = {
+        estimatedItemSize: 60,
+        contentContainerStyle: listContentStyle,
+        ListEmptyComponent: emptyState,
+        ListHeaderComponent: listHeaderComponent
+    };
 
     return <SelectorList isLoading={isLoading} data={data} keyExtractor={keyExtractor} renderItem={renderItem} options={listOptions} />;
 };

@@ -67,7 +67,7 @@ export const BudgetForecastChart = ({ projection, tone, currencySymbol }: Props)
     const paddingTop = hasTopRow ? CHART_RUN_OUT_PADDING_TOP : CHART_PADDING_TOP;
     const geometry = buildBudgetForecastGeometry({ projection, width, paddingTop, ...GEOMETRY_LAYOUT });
     const { actualPath, projectedPath, projectedEndPoint, limitY, todayX, todayPoint, runOutX, bills } = geometry;
-    const { limitLabel, scaleLabel, endLabel } = useBudgetForecastLabels(projection.overall, currencySymbol, domain);
+    const { limitLabel, scaleLabel, endLabel, summaryLabel } = useBudgetForecastLabels(projection.overall, currencySymbol, domain);
     const accentClassName = TONE_STROKE_CLASS_NAME[tone];
     const todayIndex = projection.elapsedDays - 1;
     const endLabelY = resolveBudgetForecastLabelLane({
@@ -81,7 +81,7 @@ export const BudgetForecastChart = ({ projection, tone, currencySymbol }: Props)
     });
 
     return (
-        <View className="h-[160px] w-full" onLayout={handleLayout}>
+        <View accessible accessibilityRole="image" accessibilityLabel={summaryLabel} className="h-[160px] w-full" onLayout={handleLayout}>
             {isPositiveNumber(width) ? (
                 <Svg width={width} height={CHART_HEIGHT}>
                     {domain.isLimitInRange ? (

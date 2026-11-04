@@ -11,9 +11,16 @@ interface Props<TFieldValues extends FieldValues> {
     readonly name: FieldPathByValue<TFieldValues, string>;
     readonly placeholder: string;
     readonly testID: string;
+    readonly autoFocus?: boolean;
 }
 
-export const BudgetNameField = <TFieldValues extends FieldValues>({ control, name, placeholder, testID }: Props<TFieldValues>) => {
+export const BudgetNameField = <TFieldValues extends FieldValues>({
+    control,
+    name,
+    placeholder,
+    testID,
+    autoFocus
+}: Props<TFieldValues>) => {
     const { t } = useLingui();
     const {
         field: { value, onChange, onBlur }
@@ -30,6 +37,7 @@ export const BudgetNameField = <TFieldValues extends FieldValues>({ control, nam
             onChangeText={onChange}
             onBlur={onBlur}
             placeholder={placeholder}
+            autoFocus={autoFocus}
         />
     );
 };

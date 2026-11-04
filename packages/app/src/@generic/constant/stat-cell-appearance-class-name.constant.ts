@@ -12,6 +12,6 @@ export const STAT_CELL_APPEARANCE_CLASS_NAME: Record<
     editorial: {
         container: ['flex-1', 'items-start', 'gap-y-xs', 'py-2xl'],
         label: ['shrink', 'text-xs', 'font-medium', 'text-secondary-foreground'],
-        value: ['text-2xl', 'font-semibold', 'tabular-nums']
+        value: ['text-xl', 'font-semibold', 'tabular-nums']
     }
 };

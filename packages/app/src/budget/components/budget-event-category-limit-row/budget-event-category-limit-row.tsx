@@ -2,6 +2,7 @@ import { useFormContext, useWatch } from 'react-hook-form';
 
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetEventFormValues } from '../../constant/budget-event-form-schema.constant';
+import { useBudgetCategoryLimitAmountLabel } from '../../hooks/use-budget-category-limit-amount-label.hook';
 import { BudgetCategoryLimitDeletableRow } from '../budget-category-limit-deletable-row/budget-category-limit-deletable-row';
 import { BudgetEditableAmountInput } from '../budget-editable-amount-input/budget-editable-amount-input';
 
@@ -14,6 +15,7 @@ interface Props {
 export const BudgetEventCategoryLimitRow = ({ currencySymbol, index, onRemove }: Props) => {
     const { control } = useFormContext<BudgetEventFormValues>();
     const categoryId = useWatch({ control, name: `categoryLimits.${index}.categoryId` });
+    const amountLabel = useBudgetCategoryLimitAmountLabel(categoryId);
 
     return (
         <BudgetCategoryLimitDeletableRow
@@ -26,7 +28,8 @@ export const BudgetEventCategoryLimitRow = ({ currencySymbol, index, onRemove }:
                     name={`categoryLimits.${index}.limitAmount`}
                     testID={BudgetSelector.EventCategoryLimitAmountInput(index)}
                     currencySymbol={currencySymbol}
-                    className="min-w-[104px] max-w-[136px] text-right"
+                    accessibilityLabel={amountLabel}
+                    className="min-w-[76px] max-w-[120px] text-right"
                 />
             }
             onRemove={onRemove}

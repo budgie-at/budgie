@@ -25,8 +25,7 @@ export const useBudgetDayStripLabels = (
     const overDays = dayCells.filter(
         ({ dayState }) => dayState === BudgetDayStateEnum.OVER || dayState === BudgetDayStateEnum.FAR_OVER
     ).length;
-    const currentWeek = Math.ceil(elapsedDays / DAYS_PER_WEEK);
-    const totalWeeks = dayCells.length;
+    const [currentWeek, totalWeeks] = [Math.ceil(elapsedDays / DAYS_PER_WEEK), dayCells.length];
     const allowanceLabel = formatWholeAmount(
         convertFromMicroUnits(isYearly ? dailyAllowance * DAYS_PER_WEEK : dailyAllowance),
         currencySymbol
@@ -34,12 +33,16 @@ export const useBudgetDayStripLabels = (
     const overLabel = isYearly
         ? t({ message: plural(overDays, { one: '# week over your weekly allowance', other: '# weeks over your weekly allowance' }) })
         : t({ message: plural(overDays, { one: '# day over your daily allowance', other: '# days over your daily allowance' }) });
-    const safeLabel = formatWholeAmount(convertFromMicroUnits(overall.safePerDay), currencySymbol);
+    const [safeAmount, allowanceAmount] = [overall.safePerDay, dailyAllowance].map(amount => Math.round(convertFromMicroUnits(amount)));
+    const [safeLabel, aheadLabel] = [safeAmount, safeAmount - allowanceAmount].map(amount => formatWholeAmount(amount, currencySymbol));
     const comfortableCaption =
         overall.safePerDay > dailyAllowance
-            ? t`Plan ${allowanceLabel}/day · You can spend up to ${safeLabel}/day`
+            ? t`Plan ${allowanceLabel}/day · ${aheadLabel}/day to spare`
             : t`Plan ${allowanceLabel}/day · ${safeLabel}/day keeps you on track`;
-    const safeCaption = isTight ? t`Plan ${allowanceLabel}/day · Stay under ${safeLabel}/day` : comfortableCaption;
+    const safeCaption =
+        isTight || overall.status === BudgetPaceStatusEnum.AHEAD
+            ? t`Plan ${allowanceLabel}/day · Stay under ${safeLabel}/day`
+            : comfortableCaption;
     const dailyCaption = overall.status === BudgetPaceStatusEnum.OVER ? t`Plan ${allowanceLabel}/day` : safeCaption;
 
     return {

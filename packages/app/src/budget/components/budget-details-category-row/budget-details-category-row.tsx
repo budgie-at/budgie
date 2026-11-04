@@ -2,7 +2,7 @@ import { BudgetAlertScopeEnum } from '@budgie/budget';
 import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { router } from 'expo-router';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { BudgetDetailsLimitRow } from '../budget-details-limit-row/budget-details-limit-row';
@@ -17,10 +17,11 @@ interface Props {
     readonly currencySymbol: string;
     readonly carriedAmount: number;
     readonly staggerIndex: number;
+    readonly tagId: number | null;
 }
 
 export const BudgetDetailsCategoryRow = (props: Props) => {
-    const { categoryId, scope, periodStart, periodEnd, currencySymbol, carriedAmount, staggerIndex } = props;
+    const { categoryId, scope, periodStart, periodEnd, currencySymbol, carriedAmount, staggerIndex, tagId } = props;
     const { category } = useGetCategoryByIdQuery(categoryId);
     const title = isDefined(category) ? category.title : '';
     const icon = isDefined(category) ? category.icon : UserIconNameEnum.Shapes;
@@ -32,6 +33,7 @@ export const BudgetDetailsCategoryRow = (props: Props) => {
             params: {
                 type: TransactionTypeEnum.EXPENSE,
                 categoryId: String(categoryId),
+                ...(isPositiveNumber(tagId) && { tagId: String(tagId) }),
                 startDate: periodStart.toISOString(),
                 endDate: periodEnd.toISOString()
             }

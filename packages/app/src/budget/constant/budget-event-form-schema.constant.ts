@@ -7,7 +7,7 @@ import type { Mutable } from 'effect/Types';
 
 export const BudgetEventFormSchema = Schema.Struct({
     name: Schema.Trim.check(Schema.isMinLength(1)),
-    tagId: Schema.Finite.check(Schema.isInt(), Schema.isGreaterThan(0)),
+    tagId: Schema.Finite.check(Schema.isInt(), Schema.isGreaterThanOrEqualTo(0)),
     startsAtMs: Schema.Finite.check(Schema.isGreaterThan(0)),
     endsAtMs: Schema.Finite.check(Schema.isGreaterThan(0)),
     overallLimit: Schema.Finite.check(Schema.isGreaterThan(0)),

@@ -3,7 +3,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import type { TagCreateEntityInterface } from '@budgie/contracts';
 
@@ -27,6 +27,16 @@ export class TagService extends Context.Service<TagService>()('@budgie/app/TagSe
                     yield* saveTranslation(tag.id, titleEn, titleTags);
 
                     return tag;
+                },
+                effect => Db.transaction(effect)
+            ),
+            findOrCreateByTitle: Effect.fn('TagService.findOrCreateByTitle')(
+                function* (title: string) {
+                    const trimmedTitle = title.trim();
+                    const matches = yield* tagRepository.findBySearchQuery(trimmedTitle);
+                    const existingTag = matches.find(tag => tag.titleSearch === trimmedTitle.toLowerCase());
+
+                    return isDefined(existingTag) ? existingTag : yield* tagRepository.create({ title: trimmedTitle });
                 },
                 effect => Db.transaction(effect)
             ),

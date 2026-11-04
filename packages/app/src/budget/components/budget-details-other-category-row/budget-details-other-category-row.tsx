@@ -3,6 +3,8 @@ import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 
+import { isPositiveNumber } from '@rnw-community/shared';
+
 import { AnalyticsTransactionsModeEnum } from '../../../transaction/enum/analytics-transactions-mode.enum';
 import { BudgetDetailsLimitRow } from '../budget-details-limit-row/budget-details-limit-row';
 
@@ -16,12 +18,13 @@ interface Props {
     readonly currencySymbol: string;
     readonly carriedAmount: number;
     readonly staggerIndex: number;
+    readonly tagId: number | null;
 }
 
 const HIGHLIGHT_TARGET = { scope: BudgetAlertScopeEnum.OTHER };
 
 export const BudgetDetailsOtherCategoryRow = (props: Props) => {
-    const { categoryIds, scope, periodStart, periodEnd, currencySymbol, carriedAmount, staggerIndex } = props;
+    const { categoryIds, scope, periodStart, periodEnd, currencySymbol, carriedAmount, staggerIndex, tagId } = props;
     const { t } = useLingui();
 
     const excludedCategoryIds = categoryIds.join(',');
@@ -33,6 +36,7 @@ export const BudgetDetailsOtherCategoryRow = (props: Props) => {
                 mode: AnalyticsTransactionsModeEnum.BUDGET_OTHER,
                 type: TransactionTypeEnum.EXPENSE,
                 excludedCategoryIds,
+                ...(isPositiveNumber(tagId) && { tagId: String(tagId) }),
                 startDate: periodStart.toISOString(),
                 endDate: periodEnd.toISOString()
             }

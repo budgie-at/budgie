@@ -9,6 +9,7 @@ export interface TagsSelectorModalParams {
     readonly title?: string;
     readonly description?: string;
     readonly singleSelect?: boolean;
+    readonly automaticLabel?: string;
     readonly enablePrimarySelection?: boolean;
     readonly commitLabel?: string;
     readonly getCommitCopy?: (destinationTitle: string) => DestinationCommitCopyInterface;

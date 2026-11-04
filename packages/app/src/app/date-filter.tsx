@@ -3,10 +3,12 @@ import { useLingui } from '@lingui/react/macro';
 import { useReducer } from 'react';
 import { ScrollView } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { Button } from '../@generic/component/button/button';
 import { DateFilterItem } from '../@generic/component/date-filter/date-filter-item';
 import { RangeDatePicker } from '../@generic/component/date-picker/range-date-picker';
+import { DateRangeSummary } from '../@generic/component/date-range-summary/date-range-summary';
 import { FilterSheetApply } from '../@generic/component/filter-sheet/filter-sheet-apply/filter-sheet-apply';
 import { FilterSheetDrawer } from '../@generic/component/filter-sheet/filter-sheet-drawer/filter-sheet-drawer';
 import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
@@ -38,7 +40,11 @@ export default function DateFilterModal() {
     const [{ value: localValue, visibleDate, calendarResetKey }, dispatch] = useReducer(
         dateFilterReducer,
         currentParams?.value ?? null,
-        initialValue => ({ value: initialValue, visibleDate: getCalendarVisibleDate(initialValue), calendarResetKey: 0 })
+        initialValue => ({
+            value: initialValue,
+            visibleDate: isNotEmptyString(currentParams?.title) ? (initialValue?.from ?? null) : getCalendarVisibleDate(initialValue),
+            calendarResetKey: 0
+        })
     );
 
     const selectedPeriod = getPeriodByDateRange(localValue);
@@ -57,6 +63,7 @@ export default function DateFilterModal() {
     };
 
     const applyLabel = hasSelected ? t`Show selected range` : t`Show all dates`;
+    const periods = currentParams?.periods ?? DATE_FILTER_PERIODS;
 
     return (
         <FilterSheet>
@@ -66,6 +73,7 @@ export default function DateFilterModal() {
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >
+                {isNotEmptyString(currentParams?.title) ? <DateRangeSummary title={currentParams.title} range={localValue} /> : null}
                 <RangeDatePicker
                     range={localValue}
                     calendarResetKey={calendarResetKey}
@@ -75,18 +83,30 @@ export default function DateFilterModal() {
             </ScrollView>
 
             <FilterSheetDrawer>
-                <ScrollView contentContainerClassName="gap-x-sm" showsHorizontalScrollIndicator={false} horizontal>
-                    {DATE_FILTER_PERIODS.map(period => (
-                        <DateFilterItem
-                            key={period}
-                            period={period}
-                            onSelect={handlePeriodSelect}
-                            isSelected={period === selectedPeriod}
-                            testID={TransactionFiltersSelector.DatePeriod(period)}
-                        />
-                    ))}
-                </ScrollView>
-                <FilterSheetApply onApply={handleApply} label={applyLabel} testID={TransactionFiltersSelector.DateApplyButton} />
+                {isNotEmptyArray(periods) ? (
+                    <ScrollView contentContainerClassName="gap-x-sm" showsHorizontalScrollIndicator={false} horizontal>
+                        {periods.map(period => (
+                            <DateFilterItem
+                                key={period}
+                                period={period}
+                                onSelect={handlePeriodSelect}
+                                isSelected={period === selectedPeriod}
+                                testID={TransactionFiltersSelector.DatePeriod(period)}
+                            />
+                        ))}
+                    </ScrollView>
+                ) : null}
+                {isDefined(currentParams?.applyLabel) ? (
+                    <Button
+                        className="grow"
+                        variant="cta"
+                        onPress={handleApply}
+                        content={currentParams.applyLabel}
+                        testID={TransactionFiltersSelector.DateApplyButton}
+                    />
+                ) : (
+                    <FilterSheetApply onApply={handleApply} label={applyLabel} testID={TransactionFiltersSelector.DateApplyButton} />
+                )}
             </FilterSheetDrawer>
         </FilterSheet>
     );

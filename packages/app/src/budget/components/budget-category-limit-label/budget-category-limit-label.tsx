@@ -18,7 +18,7 @@ export const BudgetCategoryLimitLabel = ({ icon, title, testID, menuValue }: Pro
     <View className="min-h-[44px] flex-row items-center gap-x-xl">
         <GroupedListIcon icon={icon} />
         <View className="flex-1">
-            <Text className="text-primary text-[17px]" numberOfLines={1} testID={testID}>
+            <Text className="text-primary text-[17px]" numberOfLines={2} testID={testID}>
                 {title}
             </Text>
             {isNotEmptyString(menuValue) ? (

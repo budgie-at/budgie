@@ -1,8 +1,10 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { plural } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { Text } from 'react-native';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
@@ -22,14 +24,17 @@ interface Props {
 
 export const BudgetEventRow = ({ event }: Props) => {
     const { budget, projection } = event;
+    const { t } = useLingui();
     const { formatMonthAndDay } = useFormatDate();
     const { instrument } = useGetInstrumentByIdQuery(budget.instrumentId);
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
     const { tags } = useGetTagByIdsQuery(isDefined(budget.tagId) ? [budget.tagId] : []);
-    const tagTitle = isNotEmptyArray(tags) ? tags[0].title : '';
+    const tagTitle = isNotEmptyArray(tags) && tags[0].title !== budget.name ? tags[0].title : '';
+    const { daysLeft } = projection;
+    const daysLeftLabel = isPositiveNumber(daysLeft) ? t({ message: plural(daysLeft, { one: '# day left', other: '# days left' }) }) : '';
     const startLabel = isDefined(budget.startsAt) ? formatMonthAndDay(budget.startsAt) : '';
     const endLabel = isDefined(budget.endsAt) ? formatMonthAndDay(budget.endsAt) : '';
-    const metaLabel = [tagTitle, `${startLabel} – ${endLabel}`].filter(isNotEmptyString).join(' · ');
+    const metaLabel = [`${startLabel} – ${endLabel}`, daysLeftLabel, tagTitle].filter(isNotEmptyString).join(' · ');
 
     const handlePress = () => {
         router.push({ pathname: '/budget/event/[id]', params: { id: String(budget.id) } });

@@ -1,10 +1,13 @@
+import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { View } from 'react-native';
 
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
+import { HeaderTextAction } from '../../../@generic/component/header-text-action/header-text-action';
+import { SNAPPING_SCREEN_CHROME_CONFIG } from '../../../@generic/constant/snapping-screen-chrome-config.constant';
+import { BudgetSelector } from '../../budget.selector';
 import { useBudgetDetailsData } from '../../hooks/use-budget-details-data.hook';
-import { BudgetDetailsEditButton } from '../budget-details-edit-button/budget-details-edit-button';
 import { BudgetDetailsOverview } from '../budget-details-overview/budget-details-overview';
 
 import type { BudgetEntityInterface } from '@budgie/contracts';
@@ -14,6 +17,7 @@ interface Props {
 }
 
 export const BudgetEventDetails = ({ budget }: Props) => {
+    const { t } = useLingui();
     const { projection, isLoading, periodStart, periodEnd, currencySymbol, dateLabel } = useBudgetDetailsData(budget);
 
     const handleFigurePress = () => {
@@ -26,10 +30,11 @@ export const BudgetEventDetails = ({ budget }: Props) => {
 
     return (
         <CollapsibleChromePage
+            chromeConfig={SNAPPING_SCREEN_CHROME_CONFIG}
             title={budget.name}
             subtitle={dateLabel}
             leading={<HeaderBackButton />}
-            trailing={<BudgetDetailsEditButton onPress={handleEditPress} />}
+            trailing={<HeaderTextAction label={t`Edit`} testID={BudgetSelector.DetailsEditButton} onPress={handleEditPress} />}
         >
             <View collapsable={false} className="gap-y-3xl">
                 <BudgetDetailsOverview

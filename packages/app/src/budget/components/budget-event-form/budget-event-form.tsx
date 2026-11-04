@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
-import { FormProvider } from 'react-hook-form';
+import { FormProvider, useWatch } from 'react-hook-form';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -8,15 +8,16 @@ import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/f
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { LoadingScreen } from '../../../@generic/component/loading-screen/loading-screen';
-import { PillButtonFooter } from '../../../@generic/component/pill-button-footer/pill-button-footer';
+import { SNAPPING_SCREEN_CHROME_CONFIG } from '../../../@generic/constant/snapping-screen-chrome-config.constant';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { BudgetSelector } from '../../budget.selector';
 import { useBudgetEventForm } from '../../hooks/use-budget-event-form.hook';
-import { resolveBudgetEventSaveBlocker } from '../../utils/resolve-budget-event-save-blocker.util';
 import { BudgetDeleteRow } from '../budget-delete-row/budget-delete-row';
 import { BudgetEventCategoryLimits } from '../budget-event-category-limits/budget-event-category-limits';
 import { BudgetEventDatesField } from '../budget-event-dates-field/budget-event-dates-field';
+import { BudgetEventSaveFooter } from '../budget-event-save-footer/budget-event-save-footer';
 import { BudgetEventTagField } from '../budget-event-tag-field/budget-event-tag-field';
+import { BudgetEventTagNote } from '../budget-event-tag-note/budget-event-tag-note';
 import { BudgetHeroAmountField } from '../budget-hero-amount-field/budget-hero-amount-field';
 import { BudgetNameField } from '../budget-name-field/budget-name-field';
 
@@ -27,13 +28,14 @@ interface Props {
 
 export const BudgetEventForm = ({ defaultInstrumentId, editingId }: Props) => {
     const { t } = useLingui();
-    const { form, handleCancel, handleSubmit, handleDelete, isEditing, isLoading } = useBudgetEventForm({ defaultInstrumentId, editingId });
-    const values = form.watch();
-    const { instrument } = useGetInstrumentByIdQuery(isPositiveNumber(values.instrumentId) ? values.instrumentId : defaultInstrumentId);
+    const { form, handleCancel, handleSubmit, handleDelete, isEditing, isLoading, isSaving } = useBudgetEventForm({
+        defaultInstrumentId,
+        editingId
+    });
+    const instrumentId = useWatch({ control: form.control, name: 'instrumentId' });
+    const { instrument } = useGetInstrumentByIdQuery(isPositiveNumber(instrumentId) ? instrumentId : defaultInstrumentId);
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
-    const saveBlocker = resolveBudgetEventSaveBlocker(values);
     const submitLabel = isEditing ? t`Save changes` : t`Create event`;
-    const saveLabel = isDefined(saveBlocker) ? t(saveBlocker) : submitLabel;
     const headerTitle = isEditing ? t`Edit event` : t`New event`;
 
     if (isLoading) {
@@ -47,35 +49,30 @@ export const BudgetEventForm = ({ defaultInstrumentId, editingId }: Props) => {
     return (
         <FormProvider {...form}>
             <CollapsibleChromePage
+                chromeConfig={SNAPPING_SCREEN_CHROME_CONFIG}
                 title={headerTitle}
                 leading={<GoBackButton onPress={handleCancel} />}
-                footer={
-                    <PillButtonFooter
-                        label={saveLabel}
-                        isDisabled={isDefined(saveBlocker)}
-                        testID={BudgetSelector.EventSaveButton}
-                        onPress={handleSubmit}
-                    />
-                }
+                footer={<BudgetEventSaveFooter submitLabel={submitLabel} isSaving={isSaving} onPress={handleSubmit} />}
             >
-                <FormLayoutGroup>
-                    <BudgetHeroAmountField
-                        control={form.control}
-                        name="overallLimit"
-                        label={t`Event limit`}
-                        currencySymbol={currencySymbol}
-                        testID={BudgetSelector.EventLimitInput}
-                    />
-                    <GroupedListSection title={t`Details`} footer={t`Tagged expenses also count in your main budget.`}>
+                <FormLayoutGroup className="gap-5xl">
+                    <GroupedListSection footer={<BudgetEventTagNote />}>
                         <BudgetNameField
                             control={form.control}
                             name="name"
                             placeholder={t`e.g. Japan trip`}
                             testID={BudgetSelector.EventNameInput}
+                            autoFocus={!isEditing}
                         />
-                        <BudgetEventTagField />
                         <BudgetEventDatesField />
+                        <BudgetEventTagField />
                     </GroupedListSection>
+                    <BudgetHeroAmountField
+                        control={form.control}
+                        name="overallLimit"
+                        label={t`Spending limit`}
+                        currencySymbol={currencySymbol}
+                        testID={BudgetSelector.EventLimitInput}
+                    />
                     <BudgetEventCategoryLimits currencySymbol={currencySymbol} />
                     {deleteRow}
                 </FormLayoutGroup>

@@ -8,6 +8,7 @@ import { DeletableRow } from '../../../@generic/component/deletable-row/deletabl
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { BudgetCategoryLimitCompactRowLayout } from '../budget-category-limit-compact-row-layout/budget-category-limit-compact-row-layout';
 import { BudgetCategoryLimitLabel } from '../budget-category-limit-label/budget-category-limit-label';
+import { BudgetCategoryLimitRemoveButton } from '../budget-category-limit-remove-button/budget-category-limit-remove-button';
 import { BudgetRolloverModeMenu } from '../budget-rollover-mode-menu/budget-rollover-mode-menu';
 
 interface Props {
@@ -24,11 +25,7 @@ export const BudgetCategoryLimitDeletableRow = ({ categoryId, index, testID, amo
     const { category } = useGetCategoryByIdQuery(categoryId);
     const icon = isDefined(category) ? category.icon : UserIconNameEnum.Shapes;
     const title = isDefined(category) ? category.title : '';
-    const confirmation = {
-        title: t`Remove category limit?`,
-        description: t`Swipe to remove this per-category cap from your budget.`,
-        buttonText: t`Remove`
-    };
+    const handleRemove = () => void onRemove(index);
     const leading = isDefined(rolloverName) ? (
         <BudgetRolloverModeMenu name={rolloverName} icon={icon} title={title} testID={testID} />
     ) : (
@@ -36,8 +33,12 @@ export const BudgetCategoryLimitDeletableRow = ({ categoryId, index, testID, amo
     );
 
     return (
-        <DeletableRow id={index} onDelete={onRemove} confirmation={confirmation}>
-            <BudgetCategoryLimitCompactRowLayout leading={leading} amountInput={amountInput} />
+        <DeletableRow id={index} onDelete={onRemove} label={t`Remove`}>
+            <BudgetCategoryLimitCompactRowLayout
+                leading={leading}
+                amountInput={amountInput}
+                trailing={<BudgetCategoryLimitRemoveButton title={title} onPress={handleRemove} />}
+            />
         </DeletableRow>
     );
 };
