@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { mustExec } from '@mobile-ci/e2e-simlock/exec';
 import { expect } from 'e2e';
 
 import * as a from '../budgie/accounts.ts';
@@ -10,7 +11,6 @@ import { BUNDLE_ID } from '../budgie/fixtures.ts';
 import * as i from '../budgie/imports.ts';
 import * as m from '../budgie/misc.ts';
 import * as t from '../budgie/transactions.ts';
-import { mustExec } from '../simlock/exec.ts';
 
 import * as st from './steps.ts';
 
@@ -361,10 +361,12 @@ export const SCENES: Readonly<Record<string, Scene>> = {
         run: async (ctx, { container }) => {
             await open(
                 ctx,
-                `budgie://settings/import?fileUri=file://${container}/Documents/E2EFixtures/e2e-budgie-import.csv`,
-                'ImportScreen.PresetChip.Budgie'
+                `budgie://import-csv?fileUri=file://${container}/Documents/E2EFixtures/e2e-budgie-import.csv`,
+                'ImportPresetPickerSelector.Toggle'
             );
+            await b.tapId(ctx, 'ImportPresetPickerSelector.Toggle');
             await b.tapId(ctx, 'ImportScreen.PresetChip.Budgie');
+            await b.expectText(ctx, /^Import \d+ transactions?$/);
         }
     },
     'custom-categories-2': {

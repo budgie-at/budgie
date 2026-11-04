@@ -7,5 +7,4 @@ export type PinSetupActionInterface =
     | { readonly type: PinSetupActionTypeEnum.NEW_PIN_REQUESTED }
     | { readonly type: PinSetupActionTypeEnum.NEW_PIN_ENTERED; readonly pin: string }
     | { readonly type: PinSetupActionTypeEnum.BIOMETRIC_REQUESTED }
-    | { readonly type: PinSetupActionTypeEnum.PINS_MISMATCHED; readonly error: string }
-    | { readonly type: PinSetupActionTypeEnum.SAVE_FAILED; readonly error: string };
+    | { readonly type: PinSetupActionTypeEnum.ERROR_REPORTED; readonly error: string };

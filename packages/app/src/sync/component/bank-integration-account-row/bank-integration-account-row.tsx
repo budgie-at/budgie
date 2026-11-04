@@ -1,26 +1,29 @@
-import { AccountAssociationEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
+import { AccountAssociationEnum, AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { SyncProviderRegistryService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { useRouter } from 'expo-router';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
+import { TONAL_DISC_BACKGROUND } from '../../../@generic/constant/tonal-disc-background.constant';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { cn } from '../../../@generic/utils/cn.util';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { testID } from '../../../@generic/utils/test-id.util';
+import { toTrueMinus } from '../../../@generic/utils/to-true-minus.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { AccountCardBaseSelector } from '../../../account/component/account-card-base/account-card-base.selector';
 import { AccountSyncBadge } from '../../../account/component/account-sync-badge/account-sync-badge';
+import { AccountSyncStateEnum } from '../../../account/enum/account-sync-state.enum';
 import { useAccountBalanceQuery } from '../../../account/query/use-account-balance.query';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
 import { useBankIntegrationAccountRowState } from '../../hook/use-bank-integration-account-row-state.hook';
 import { BankIntegrationAccountMenu } from '../bank-integration-account-menu/bank-integration-account-menu';
 
@@ -33,10 +36,10 @@ interface Props {
 
 export const BankIntegrationAccountRow = ({ account }: Props) => {
     const { t } = useLingui();
-    const router = useRouter();
     const { balance } = useAccountBalanceQuery(account.id);
     const formatDigits = useDisplayFormatDigits();
-    const { sync, syncState, switchLabel, description, isToggleVisible } = useBankIntegrationAccountRowState(account);
+    const formatAmount = useFormatInstrumentAmount();
+    const { sync, isFailed, leadLabel, switchLabel, isToggleVisible } = useBankIntegrationAccountRowState(account);
 
     const rowTestID = BankIntegrationSelector.AccountRow(account.id);
     const handleToggle = (enabled: boolean) =>
@@ -47,7 +50,8 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
                 )
             )
         );
-    const handlePress = () => void router.push({ pathname: '/account/[id]/update', params: { id: String(account.id) } });
+    const leadClassName = isFailed ? 'text-destructive-strong' : 'text-secondary-foreground';
+    const leadText = isNotEmptyString(leadLabel) ? `${leadLabel} · ` : '';
 
     const toggle = isToggleVisible ? (
         <ThemedSwitch
@@ -59,34 +63,55 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
     ) : null;
 
     return (
-        <SimpleHorizontalCell
-            testID={rowTestID}
-            singleLine
-            onPress={handlePress}
-            accessible={false}
-            onTitlePress={handlePress}
-            left={
-                <View className="relative">
-                    <CircleIcon icon={account.icon} variant="ghost" size={46} iconSize={20} border={false} />
-                    {isDefined(syncState) ? <AccountSyncBadge state={syncState} /> : null}
-                </View>
-            }
-            title={account.title}
-            description={description}
-            right={
-                <View className="flex-row items-center gap-x-lg">
+        <View testID={rowTestID} className="min-h-[60px] flex-row items-center gap-x-xl px-3xl">
+            <View className="absolute top-0 left-[64px] right-0 h-hairline bg-surface-separator" pointerEvents="none" />
+            <View className="relative">
+                <CircleIcon
+                    icon={account.icon}
+                    variant="primary"
+                    size={36}
+                    iconSize={18}
+                    radius={18}
+                    border={false}
+                    className={TONAL_DISC_BACKGROUND.primary}
+                />
+                {isFailed ? <AccountSyncBadge state={AccountSyncStateEnum.FAILED} /> : null}
+            </View>
+            <View className="min-w-0 flex-1 gap-y-xxs py-lg">
+                <Text className="text-[17px] text-primary" numberOfLines={2}>
+                    {account.title}
+                </Text>
+                <View className="flex-row">
+                    <Text
+                        className={cn('shrink text-[13px] leading-[18px]', leadClassName)}
+                        numberOfLines={1}
+                        accessibilityLabel={leadLabel}
+                    >
+                        {leadText}
+                    </Text>
                     <ProtectedText
-                        className="text-primary text-sm font-semibold"
+                        className="shrink-0 text-[13px] leading-[18px] text-secondary-foreground"
                         testID={AccountCardBaseSelector.Balance(account.title, formatDigits(balance))}
                     >
-                        {formatDigits(balance, account.instrument.symbol)}
+                        {toTrueMinus(formatAmount(balance, account.instrument.symbol, account.instrument.type))}
                     </ProtectedText>
-
-                    {toggle}
-
-                    <BankIntegrationAccountMenu accountId={account.id} rowTestID={rowTestID} />
                 </View>
-            }
-        />
+            </View>
+            <View className="flex-row items-center gap-x-sm">
+                <BankIntegrationAccountMenu accountId={account.id} title={account.title} rowTestID={rowTestID}>
+                    <CircleIcon
+                        icon={UserIconNameEnum.Ellipsis}
+                        variant="ghost"
+                        size={28}
+                        iconSize={18}
+                        radius={14}
+                        border={false}
+                        className={TONAL_DISC_BACKGROUND.ghost}
+                        iconClassName="text-secondary-foreground"
+                    />
+                </BankIntegrationAccountMenu>
+                {toggle}
+            </View>
+        </View>
     );
 };

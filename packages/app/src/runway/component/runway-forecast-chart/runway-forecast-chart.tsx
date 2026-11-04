@@ -6,8 +6,8 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { StyledLine } from '../../../@generic/component/styled-line/styled-line';
 import { StyledPath } from '../../../@generic/component/styled-path/styled-path';
+import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { RUNWAY_FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../constant/runway-footnote-max-font-size-multiplier.constant';
 import { useRunwayAmountLabel } from '../../hook/use-runway-amount-label.hook';
 import { buildRunwayForecastPath } from '../../utils/build-forecast-path.util';
 import { RunwayForecastAxisLabels } from '../runway-forecast-axis-labels/runway-forecast-axis-labels';
@@ -61,10 +61,7 @@ export const RunwayForecastChart = ({ computation }: Props) => {
         <RunwaySection
             title={t`Balance forecast`}
             footnote={
-                <Text
-                    maxFontSizeMultiplier={RUNWAY_FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
-                    className="px-3xl text-[13px] text-secondary-foreground"
-                >
+                <Text maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER} className="px-3xl text-[13px] text-secondary-foreground">
                     <Trans>Shading shows how much your months usually vary.</Trans>
                 </Text>
             }

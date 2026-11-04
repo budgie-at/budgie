@@ -1,11 +1,12 @@
 import { useLingui } from '@lingui/react/macro';
 
+import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { AiFeaturesPageSelector } from '../../../app/(tabs)/settings/ai-features-page.selector';
 import { SettingSwitch } from '../../../settings/components/setting-switch/setting-switch';
-import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { updateAiFeatureMutation } from '../../../settings/mutation/update-settings.mutation';
 
@@ -37,5 +38,5 @@ export const AiFeatureToggle = ({ settingKey, title, description, icon }: Props)
         />
     );
 
-    return <SettingsCard title={title} description={description} icon={icon} variant="positive" right={switchSlot} />;
+    return <GroupedListRow title={title} subtitle={description} left={<GroupedListIcon icon={icon} />} right={switchSlot} />;
 };

@@ -1,10 +1,10 @@
 import { randomBytes } from 'node:crypto';
 
 import { mobile } from '@e2e-dev/mobile';
+import { simlockDevices } from '@mobile-ci/e2e-simlock';
+import { E2E_DROP_APP } from '@mobile-ci/e2e-simlock/exec';
 
 import { BUNDLE_ID } from './budgie/fixtures.ts';
-import { E2E_DROP_APP } from './simlock/exec.ts';
-import { simlockDevices } from './simlock/provider.ts';
 
 import type { E2EConfig } from 'e2e';
 
@@ -39,6 +39,8 @@ export function iosTarget(device: string, sessionPrefix: string): E2EConfig['tar
             device: simlockDevices({
                 url: env('SIMLOCK_URL'),
                 token: env('SIMLOCK_TOKEN'),
+                platform: 'ios',
+                tenant: 'budgie-e2e',
                 device,
                 extraApps: [E2E_DROP_APP]
             })

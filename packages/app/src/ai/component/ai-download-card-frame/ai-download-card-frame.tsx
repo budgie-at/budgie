@@ -1,11 +1,12 @@
-import { useLingui } from '@lingui/react/macro';
+import { useAtomValue } from '@effect/atom-react/Hooks';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { Card } from '../../../@generic/component/card/card';
-import { Icon } from '../../../@generic/component/icon/icon';
-import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
-import { cn } from '../../../@generic/utils/cn.util';
+import { isDefined } from '@rnw-community/shared';
+
+import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { AI_DOWNLOAD_CARD_VISUALS } from '../../constant/ai-download-card-visuals.constant';
+import { aiModelDownloadSummaryAtom } from '../../constant/ai-model-download-summary-atom.constant';
 import { AiModelDownloadStatusEnum } from '../../enum/ai-model-download-status.enum';
 
 import type { PropsWithChildren } from 'react';
@@ -13,21 +14,29 @@ import type { PropsWithChildren } from 'react';
 interface Props {
     readonly status: AiModelDownloadStatusEnum;
     readonly testID?: string;
+    readonly subtitle: string;
 }
 
-export const AiDownloadCardFrame = ({ status, testID, children }: PropsWithChildren<Props>) => {
+export const AiDownloadCardFrame = ({ status, testID, subtitle, children }: PropsWithChildren<Props>) => {
     const { t } = useLingui();
-
-    const { icon, variant, label } = AI_DOWNLOAD_CARD_VISUALS[status];
+    const summary = useAtomValue(aiModelDownloadSummaryAtom);
+    const { icon } = AI_DOWNLOAD_CARD_VISUALS[status];
+    const value = status === AiModelDownloadStatusEnum.DISABLED ? t`Off` : `${summary.percent}%`;
+    const stateValue = status === AiModelDownloadStatusEnum.READY ? t`Ready` : value;
 
     return (
-        <Card variant={variant} size="md" className="gap-y-lg" testID={testID}>
-            <View className="flex-row items-center gap-x-sm">
-                <Icon icon={icon} size={16} className={cn(FOREGROUND_COLOR_PALETTE[variant])} />
-                <Text className={cn('text-sm font-semibold', FOREGROUND_COLOR_PALETTE[variant])}>{t(label)}</Text>
+        <View testID={testID}>
+            <View className="flex-row items-center gap-x-xl px-3xl py-[16px]">
+                <GroupedListIcon icon={icon} />
+                <View className="min-w-0 flex-1 gap-y-xxs">
+                    <Text className="text-[17px] text-primary">
+                        <Trans>On-device AI</Trans>
+                    </Text>
+                    <Text className="text-[13px] leading-[18px] text-secondary-foreground">{subtitle}</Text>
+                </View>
+                <Text className="text-[17px] font-normal text-secondary-foreground">{stateValue}</Text>
             </View>
-
-            {children}
-        </Card>
+            {isDefined(children) ? <View className="gap-y-lg px-3xl pb-lg pt-lg">{children}</View> : null}
+        </View>
     );
 };

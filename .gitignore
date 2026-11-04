@@ -37,9 +37,6 @@ packages/app/ios
 report.xml
 build-*.tar.gz
 *.app
-# The prebuilt simulator helper the e2e suite installs (e2e/support/simlock/e2e-drop/build.sh rebuilds it).
-!e2e/support/simlock/e2e-drop/E2EDrop.app/
-!e2e/support/simlock/e2e-drop/E2EDrop.app/**
 *.apk
 app*.tar.gz
 .ci-cache/

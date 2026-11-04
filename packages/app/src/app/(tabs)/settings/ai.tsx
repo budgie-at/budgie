@@ -1,16 +1,22 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { ScrollView, Text } from 'react-native';
+import { router } from 'expo-router';
+import { Text, View } from 'react-native';
 
-import { PageHeader } from '../../../@generic/component/page-header/page-header';
-import { Page } from '../../../@generic/component/page/page';
+import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
+import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
+import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
+import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
+import { isAiEnabled } from '../../../@generic/utils/is-ai-enabled.util';
 import { AiDownloadSelector } from '../../../ai/ai-download.selector';
 import { AiDownloadStatusCard } from '../../../ai/component/ai-download-status-card/ai-download-status-card';
 import { aiModelDownloadSummaryAtom } from '../../../ai/constant/ai-model-download-summary-atom.constant';
 import { AiModelDownloadStatusEnum } from '../../../ai/enum/ai-model-download-status.enum';
 import { SettingSwitch } from '../../../settings/components/setting-switch/setting-switch';
-import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 import { useSettingToggle } from '../../../settings/hook/use-setting-toggle.hook';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { goBackToSettings } from '../../../settings/utils/go-back-to-settings.util';
@@ -20,50 +26,73 @@ export default function AiSettingsPage() {
     const isAiWifiOnly = useSetting('isAiWifiOnly');
     const { status } = useAtomValue(aiModelDownloadSummaryAtom);
     const persistWifiOnly = useSettingToggle('isAiWifiOnly', t`Could not update the download setting`);
-
     const handleWifiOnlyChange = (next: boolean) => void persistWifiOnly(next);
-
-    const isReady = status === AiModelDownloadStatusEnum.READY;
-    const runsOnSlot = (
-        <Text className="text-sm text-secondary-foreground">
-            <Trans>This phone only</Trans>
-        </Text>
-    );
+    const handleEnableAi = () => void router.push('/settings/ai-features');
+    const isDisabled = status === AiModelDownloadStatusEnum.DISABLED;
+    const isAiBuildEnabled = isAiEnabled();
+    const canEnableAi = isDisabled || !isAiBuildEnabled;
+    const wifiClassName = isDisabled ? 'opacity-40' : '';
+    const downloadFooter =
+        status === AiModelDownloadStatusEnum.READY
+            ? t`If a download arrives damaged, Budgie deletes it and waits for you to retry.`
+            : t`Until the model is ready, categories come from simple rules on this phone. If a download arrives damaged, Budgie deletes it and waits for you to retry.`;
+    const footer = isDisabled ? t`Available when on-device AI is on.` : downloadFooter;
+    const wifiOnlyValue = isDisabled ? false : isAiWifiOnly;
     const wifiOnlySlot = (
         <SettingSwitch
-            value={isAiWifiOnly}
+            value={wifiOnlyValue}
+            disabled={isDisabled}
             onValueChange={handleWifiOnlyChange}
             testID={AiDownloadSelector.WifiOnlySwitch}
             stateOnTestID={AiDownloadSelector.WifiOnlySwitchStateOn}
             stateOffTestID={AiDownloadSelector.WifiOnlySwitchStateOff}
+            accessibilityLabel={t`Download only on Wi-Fi`}
         />
     );
 
     return (
-        <Page testID={AiDownloadSelector.Page} header={<PageHeader title={t`On-device AI`} onGoBack={goBackToSettings} />}>
-            <ScrollView className="flex-1" contentContainerClassName="gap-y-xl pb-5xl pt-3xl" showsVerticalScrollIndicator={false}>
-                <AiDownloadStatusCard />
-
-                <SettingsCard
-                    testID={AiDownloadSelector.WifiOnlyCard}
-                    icon={UserIconNameEnum.Wifi}
-                    variant="cyan"
-                    title={t`Download only on Wi-Fi`}
-                    right={wifiOnlySlot}
-                />
-                <SettingsCard icon={UserIconNameEnum.Smartphone} variant="positive" title={t`Runs on`} right={runsOnSlot} />
-
-                {isReady ? null : (
-                    <Text className="text-sm text-secondary-foreground px-xl">
-                        <Trans>
-                            Keep using Budgie meanwhile. Until the model is ready, categories come from simple rules on the phone.
-                        </Trans>
-                    </Text>
-                )}
-                <Text className="text-sm text-secondary-foreground px-xl">
-                    <Trans>If a download arrives damaged, Budgie deletes it and asks before starting again.</Trans>
-                </Text>
-            </ScrollView>
-        </Page>
+        <GroupedSurface>
+            <CollapsibleChromePage
+                scrimClassName="bg-surface"
+                title={t`On-device AI`}
+                leading={<GoBackButton onPress={goBackToSettings} />}
+                testID={AiDownloadSelector.Page}
+            >
+                <View className="gap-y-7xl pb-5xl">
+                    <GroupedListSection>
+                        <AiDownloadStatusCard />
+                        {canEnableAi ? (
+                            <GroupedListRow
+                                title={t`AI features`}
+                                left={<GroupedListIcon icon={UserIconNameEnum.Sparkles} />}
+                                onPress={handleEnableAi}
+                            />
+                        ) : null}
+                    </GroupedListSection>
+                    {isAiBuildEnabled ? (
+                        <GroupedListSection title={t`Download`} footer={footer}>
+                            <View className={wifiClassName}>
+                                <GroupedListRow
+                                    testID={AiDownloadSelector.WifiOnlyCard}
+                                    left={<GroupedListIcon icon={UserIconNameEnum.Wifi} />}
+                                    title={t`Download only on Wi-Fi`}
+                                    right={wifiOnlySlot}
+                                />
+                            </View>
+                            <GroupedListRow
+                                title={t`Runs on`}
+                                left={<GroupedListIcon icon={UserIconNameEnum.Smartphone} />}
+                                right={
+                                    <Text className="text-[17px] text-secondary-foreground">
+                                        <Trans>This phone only</Trans>
+                                    </Text>
+                                }
+                            />
+                        </GroupedListSection>
+                    ) : null}
+                    <MenuSpacer />
+                </View>
+            </CollapsibleChromePage>
+        </GroupedSurface>
     );
 }

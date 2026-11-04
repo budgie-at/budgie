@@ -1,12 +1,8 @@
-import { BankIntegrationEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { BankIntegrationEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { router } from 'expo-router';
-import { View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
-
-import { Button } from '../../../@generic/component/button/button';
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
+import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { getBankIntegrationTitle } from '../../../account/utils/get-bank-integration-title.util';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
@@ -16,6 +12,7 @@ import { getBankIntegrationCapabilities } from '../../utils/get-bank-integration
 import { BankIntegrationAccountList } from '../bank-integration-account-list/bank-integration-account-list';
 import { BankIntegrationKeyCard } from '../bank-integration-key-card/bank-integration-key-card';
 import { BankIntegrationOverview } from '../bank-integration-overview/bank-integration-overview';
+import { BankIntegrationStatements } from '../bank-integration-statements/bank-integration-statements';
 
 interface Props {
     readonly integration: BankIntegrationEntityInterface;
@@ -26,19 +23,7 @@ export const BankIntegrationPage = ({ integration }: Props) => {
 
     const capabilities = getBankIntegrationCapabilities(integration);
 
-    const handleImportFile = () => void router.push({ pathname: '/create-account/[type]', params: { type: integration.provider } });
-
-    const importFileButton = capabilities.supportsFileImport ? (
-        <Button
-            testID={BankIntegrationSelector.ImportFileButton}
-            variant="primary"
-            leftIcon={UserIconNameEnum.FileSpreadsheet}
-            content={t`Import file`}
-            onPress={handleImportFile}
-            className="flex-1"
-        />
-    ) : null;
-    const footer = isDefined(importFileButton) ? <View className="flex-row pt-xl px-7xl">{importFileButton}</View> : null;
+    const statements = capabilities.supportsFileImport ? <BankIntegrationStatements /> : null;
 
     const keyCard = capabilities.supportsAccountDiscovery ? <BankIntegrationKeyCard /> : null;
     const title = getBankIntegrationTitle(t(EXTERNAL_SOURCE[integration.provider]), integration.label, null);
@@ -46,18 +31,21 @@ export const BankIntegrationPage = ({ integration }: Props) => {
     const contextValue = { integration, capabilities };
 
     return (
-        <CollapsibleChromePage
-            testID={BankIntegrationSelector.Page}
-            title={title}
-            leading={<HeaderBackButton />}
-            contentClassName="gap-y-7xl"
-            footer={footer}
-        >
-            <BankIntegrationContext.Provider value={contextValue}>
-                <BankIntegrationOverview />
-                {keyCard}
-                <BankIntegrationAccountList />
-            </BankIntegrationContext.Provider>
-        </CollapsibleChromePage>
+        <GroupedSurface>
+            <CollapsibleChromePage
+                testID={BankIntegrationSelector.Page}
+                title={title}
+                leading={<HeaderBackButton />}
+                contentClassName="gap-y-3xl"
+                scrimClassName="bg-surface"
+            >
+                <BankIntegrationContext.Provider value={contextValue}>
+                    <BankIntegrationOverview />
+                    {statements}
+                    {keyCard}
+                    <BankIntegrationAccountList />
+                </BankIntegrationContext.Provider>
+            </CollapsibleChromePage>
+        </GroupedSurface>
     );
 };

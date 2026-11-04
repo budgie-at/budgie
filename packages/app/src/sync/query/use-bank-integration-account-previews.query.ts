@@ -10,7 +10,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { appAtomRuntime } from '../../@generic/runtime/app.runtime';
 
-export const bankIntegrationAccountPreviewsAtom = Atom.family((integrationId: number) =>
+const bankIntegrationAccountPreviewsAtom = Atom.family((integrationId: number) =>
     appAtomRuntime.atom(
         Effect.gen(function* () {
             const integration = yield* Effect.flatMap(BankIntegrationRepository, repository => repository.findById(integrationId));

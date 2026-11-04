@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { drop, exec, mustDrop, mustExec, untar, writeFile, type SimlockApi } from '../simlock/exec.ts';
+import { drop, exec, mustDrop, mustExec, untar, writeFile, type SimlockApi } from '@mobile-ci/e2e-simlock/exec';
 
 // E2E_APP_ID: the bundle id mobile-ci's e2e job installs; support/config.ts installs the app under it.
 export const BUNDLE_ID = process.env.E2E_APP_ID ?? 'com.vitalyiegorov.budgie.e2e';

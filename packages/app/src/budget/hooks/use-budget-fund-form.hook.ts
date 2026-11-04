@@ -25,7 +25,12 @@ import type { BudgetSinkingFundEntityInterface } from '@budgie/contracts';
 
 const FALLBACK_ROUTE = '/budget' as const;
 
-const buildFundFormValues = (fund: BudgetSinkingFundEntityInterface): BudgetFundFormValues => ({
+const buildFundFormValues = (
+    fund: Pick<
+        BudgetSinkingFundEntityInterface,
+        'name' | 'categoryId' | 'targetAmount' | 'dueAt' | 'repeatEveryMonths' | 'recurringSeriesId'
+    >
+): BudgetFundFormValues => ({
     name: fund.name,
     categoryId: fund.categoryId,
     targetAmount: convertFromMicroUnits(fund.targetAmount),
@@ -55,14 +60,7 @@ export const useBudgetFundForm = ({ budget, editingId }: UseBudgetFundFormOption
     const recurringSeriesId = useWatch({ control: form.control, name: 'recurringSeriesId' });
 
     const handleUseSuggestion = (suggestion: BudgetFundSuggestionInterface) => {
-        form.reset({
-            name: suggestion.name,
-            categoryId: suggestion.categoryId,
-            targetAmount: convertFromMicroUnits(suggestion.targetAmount),
-            dueAtMs: suggestion.dueAt.getTime(),
-            repeatEveryMonths: suggestion.repeatEveryMonths,
-            recurringSeriesId: suggestion.recurringSeriesId
-        });
+        form.reset(buildFundFormValues(suggestion));
     };
 
     const handleSubmit = () => {

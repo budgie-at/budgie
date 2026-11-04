@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { exec, mustExec, writeFile } from '../simlock/exec.ts';
+import { exec, mustExec, writeFile } from '@mobile-ci/e2e-simlock/exec';
 
 import { byId, openLink, type Budgie, type Ctx } from './core.ts';
 import { BUNDLE_ID } from './fixtures.ts';

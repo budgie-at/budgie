@@ -1,11 +1,13 @@
 import { isThisYear } from 'date-fns/isThisYear';
 
 import { useI18nContext } from '../context/i18n.context';
+import { formatRelativeToNow } from '../utils/format-relative-to-now.util';
 
 export const useFormatDate = () => {
     const { intl } = useI18nContext();
 
     return {
+        formatRelativeToNow: (date: Date, now: number) => formatRelativeToNow(date, now, intl),
         formatWeekdayAndDateWithTime: (date: Date | string) =>
             intl.formatDate(date, {
                 weekday: 'long',

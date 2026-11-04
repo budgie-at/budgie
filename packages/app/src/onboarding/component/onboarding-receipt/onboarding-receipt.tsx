@@ -26,7 +26,6 @@ export const OnboardingReceipt = () => {
             step={OnboardingStepEnum.SEALED}
             fileState={state}
             fileLock={lock}
-            isBackVisible={false}
             footer={
                 <>
                     <PillButton

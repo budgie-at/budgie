@@ -6,9 +6,9 @@ import { Text, View } from 'react-native';
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
-import { Card } from '../../../@generic/component/card/card';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
+import { SettingsPillButton } from '../../../settings/components/settings-pill-button/settings-pill-button';
 import { WalletCaptureReviewReasonEnum } from '../../enum/wallet-capture-review-reason.enum';
 import { WalletCaptureReviewDetailRow } from '../wallet-capture-review-detail-row/wallet-capture-review-detail-row';
 import { WalletCaptureReviewReasonIcon } from '../wallet-capture-review-reason-icon/wallet-capture-review-reason-icon';
@@ -60,14 +60,17 @@ export const WalletCaptureReviewCard = ({ item, accountTitle, instrumentSymbol, 
     };
 
     return (
-        <Card testID={WalletCaptureReviewCardSelector.Card(capture.captureId)} size="md" className="gap-y-xl">
+        <View
+            testID={WalletCaptureReviewCardSelector.Card(capture.captureId)}
+            className="gap-y-lg px-3xl py-lg border-t border-surface-separator"
+        >
             <View className="flex-row items-center gap-x-xl">
                 <WalletCaptureReviewReasonIcon reason={reason} />
                 <View className="flex-1 gap-y-xxs">
-                    <Text className="text-primary text-base font-semibold" numberOfLines={1}>
+                    <Text className="text-primary text-[17px]" numberOfLines={1}>
                         {merchant}
                     </Text>
-                    <Text className="text-secondary-foreground text-xs">{formatDayAndMonthAndYearWithTime(capture.capturedAt)}</Text>
+                    <Text className="text-secondary-foreground text-[13px]">{formatDayAndMonthAndYearWithTime(capture.capturedAt)}</Text>
                 </View>
                 <Text className="text-primary text-lg font-semibold">{amount}</Text>
             </View>
@@ -92,29 +95,22 @@ export const WalletCaptureReviewCard = ({ item, accountTitle, instrumentSymbol, 
 
             <View className="flex-row gap-x-lg">
                 {canImportCapture ? (
-                    <Button
-                        className="flex-1"
+                    <SettingsPillButton
                         testID={WalletCaptureReviewCardSelector.ImportButton(capture.captureId)}
                         onPress={handleImport}
-                        content={t`Import anyway`}
-                        leftIcon={UserIconNameEnum.Download}
-                        size="sm"
-                        variant="positive"
-                        disabled={isMutating}
+                        label={t`Import anyway`}
+                        variant="secondary"
                         isLoading={isMutating}
                     />
                 ) : null}
-                <Button
-                    className="flex-1"
+                <SettingsPillButton
                     testID={WalletCaptureReviewCardSelector.DismissButton(capture.captureId)}
                     onPress={handleDismiss}
-                    content={t`Dismiss`}
-                    leftIcon={UserIconNameEnum.X}
-                    size="sm"
-                    variant="ghost"
-                    disabled={isMutating}
+                    label={t`Dismiss`}
+                    variant="secondary"
+                    isLoading={isMutating}
                 />
             </View>
-        </Card>
+        </View>
     );
 };

@@ -7,6 +7,8 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { exec } from '@mobile-ci/e2e-simlock/exec';
+
 import * as a from '../support/budgie/accounts.ts';
 import * as c from '../support/budgie/categories.ts';
 import { Budgie } from '../support/budgie/core.ts';
@@ -15,7 +17,6 @@ import { BUNDLE_ID } from '../support/budgie/fixtures.ts';
 import * as t from '../support/budgie/transactions.ts';
 import { createTagFromTransaction, shellQuote, workerShell } from '../support/media/steps.ts';
 import { test } from '../support/media/test.ts';
-import { exec } from '../support/simlock/exec.ts';
 
 const FIXTURES = fileURLToPath(new URL('../../tests/app-tests/fixtures/', import.meta.url));
 /** The app-tests' node:sqlite stand-in for the sqlite3 CLI: the same on every host, Linux runners included. */
