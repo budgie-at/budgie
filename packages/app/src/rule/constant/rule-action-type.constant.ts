@@ -1,9 +1,9 @@
 import { RuleActionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { msg } from '@lingui/core/macro';
 
-import type { RuleOptionMetaInterface } from '../interface/rule-option-meta.interface';
+import type { RuleActionMetaInterface } from '../interface/rule-action-meta.interface';
 
-export const RULE_ACTION_TYPE: Record<RuleActionTypeEnum, RuleOptionMetaInterface> = {
+export const RULE_ACTION_TYPE: Record<RuleActionTypeEnum, RuleActionMetaInterface> = {
     [RuleActionTypeEnum.SET_CATEGORY]: {
         label: msg`Move to category`,
         phrase: msg`move to`,

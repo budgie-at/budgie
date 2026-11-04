@@ -1,17 +1,18 @@
-import { Trans } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { useCategorizeInboxGroupOptions } from '../../hook/use-categorize-inbox-group-options.hook';
+import { CategorizeInboxChoiceRow } from '../categorize-inbox-choice-row/categorize-inbox-choice-row';
 import { CategorizeInboxGroupAlreadyTrackedOption } from '../categorize-inbox-group-already-tracked-option/categorize-inbox-group-already-tracked-option';
-import { CategorizeInboxGroupLabelOption } from '../categorize-inbox-group-label-option/categorize-inbox-group-label-option';
 import { CategorizeInboxGroupLearnedTransferOption } from '../categorize-inbox-group-learned-transfer-option/categorize-inbox-group-learned-transfer-option';
 import { CategorizeInboxGroupMoreLabelsOption } from '../categorize-inbox-group-more-labels-option/categorize-inbox-group-more-labels-option';
 import { CategorizeInboxGroupMoveToCashOption } from '../categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option';
 import { CategorizeInboxGroupTransferLead } from '../categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead';
 import { CategorizeInboxGroupTransferOption } from '../categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option';
+import { CategorizeInboxLeadOption } from '../categorize-inbox-lead-option/categorize-inbox-lead-option';
 import { CategorizeInboxOptionCard } from '../categorize-inbox-option-card/categorize-inbox-option-card';
 import { CategorizeInboxOptionSectionTitle } from '../categorize-inbox-option-section-title/categorize-inbox-option-section-title';
 
@@ -22,15 +23,15 @@ interface Props {
 }
 
 export const CategorizeInboxGroupOptions = ({ cluster }: Props) => {
-    const { learnedAccount, isLeadTransfer, isCash, leadLabelOptions, otherLabelOptions, cashTransactionIds } =
+    const { learnedAccount, isLeadTransfer, isCash, bestMatchLabel, otherLabels, cashTransactionIds } =
         useCategorizeInboxGroupOptions(cluster);
+    const { t } = useLingui();
     const { strategy } = useCategorizeInboxContext();
 
     const hasTransferLead = isDefined(learnedAccount) || isLeadTransfer;
-    const hasLead = hasTransferLead || isNotEmptyArray(leadLabelOptions);
-    const candidateOptions = hasTransferLead ? [] : otherLabelOptions;
-    const hasSuggestions = isNotEmptyArray(leadLabelOptions) || isNotEmptyArray(candidateOptions);
-    const moreLabelsTitle = hasSuggestions ? strategy?.moreLabels : strategy?.chooseLabel;
+    const hasLead = hasTransferLead || isDefined(bestMatchLabel);
+    const candidateOptions = hasTransferLead ? [] : otherLabels;
+    const moreLabelsTitle = isDefined(bestMatchLabel) || isNotEmptyArray(candidateOptions) ? strategy?.moreLabels : strategy?.chooseLabel;
     const otherOptionsHeading = hasLead ? (
         <CategorizeInboxOptionSectionTitle>
             <Trans>Other options</Trans>
@@ -55,16 +56,21 @@ export const CategorizeInboxGroupOptions = ({ cluster }: Props) => {
             <View className="gap-y-md">
                 {learnedTransfer}
                 {leadTransfer}
-                {leadLabelOptions.map(option => (
-                    <CategorizeInboxGroupLabelOption key={option.label.id} {...option} />
-                ))}
+                {isDefined(bestMatchLabel) ? (
+                    <CategorizeInboxLeadOption
+                        choice={bestMatchLabel.id}
+                        icon={bestMatchLabel.icon}
+                        title={bestMatchLabel.title}
+                        subtitle={t`Best match`}
+                    />
+                ) : null}
             </View>
             {otherOptionsHeading}
             <CategorizeInboxOptionCard>
                 {moveToCash}
                 {alreadyTracked}
-                {candidateOptions.map(option => (
-                    <CategorizeInboxGroupLabelOption key={option.label.id} {...option} />
+                {candidateOptions.map(label => (
+                    <CategorizeInboxChoiceRow key={label.id} choice={label.id} icon={label.icon} title={label.title} />
                 ))}
                 {moreLabels}
                 {trailingTransfer}

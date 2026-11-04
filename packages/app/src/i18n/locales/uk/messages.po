@@ -1745,7 +1745,7 @@ msgstr "Відставання, {setAsideLabel} {rate}, щоб наздогна�
 msgid "Below this amount"
 msgstr "Менше за цю суму"
 
-#: src/categorize-inbox/components/categorize-inbox-group-label-option/categorize-inbox-group-label-option.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-options/categorize-inbox-group-options.tsx
 msgid "Best match"
 msgstr "Найкращий збіг"
 
@@ -2069,10 +2069,6 @@ msgstr "Автоматична категоризація імпортів"
 #: src/categorize-inbox/components/categorize-inbox-category-provider/categorize-inbox-category-provider.tsx
 msgid "Categorize"
 msgstr "Категоризувати"
-
-#: src/categorize-inbox/components/categorize-inbox-category-provider/categorize-inbox-category-provider.tsx
-msgid "Categorize as {categoryTitle}"
-msgstr "Категоризувати як {categoryTitle}"
 
 #: src/app/(main)/import-csv.tsx
 #: src/app/(tabs)/settings/categories.tsx
@@ -7308,10 +7304,6 @@ msgstr "Тег"
 #: src/tag/components/tags-feature-intro/tags-feature-intro.tsx
 msgid "Tag a transaction"
 msgstr "Позначити транзакцію"
-
-#: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
-msgid "Tag as {tagTitle}"
-msgstr "Додати тег {tagTitle}"
 
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Tag name"

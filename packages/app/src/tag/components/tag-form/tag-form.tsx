@@ -29,17 +29,12 @@ import { TagMonogram } from '../tag-monogram/tag-monogram';
 
 import { TagFormSelector } from './tag-form.selector';
 
-type TagFormAction = 'created' | 'updated' | 'merged' | 'cancelled';
-
-export interface TagFormResult {
-    readonly tag: TagEntityInterface;
-    readonly action: TagFormAction;
-}
+import type { TagFormResultInterface } from '../../interface/tag-form-result.interface';
 
 interface Props {
     readonly tag?: TagEntityInterface;
     readonly defaultTitle?: string;
-    readonly onSuccess: (result: TagFormResult) => void;
+    readonly onSuccess: (result: TagFormResultInterface) => void;
     readonly onCancel: () => void;
 }
 
@@ -91,9 +86,7 @@ export const TagForm = (props: Props) => {
         if (isDefined(tag)) {
             operation.start(EntityOperationEnum.MERGE, trackMutation =>
                 mergeTag(tag.id, trackMutation).pipe(
-                    Effect.tap(target =>
-                        isDefined(target) ? Effect.sync(() => void onSuccess({ tag: target, action: 'merged' })) : Effect.void
-                    )
+                    Effect.tap(target => (isDefined(target) ? Effect.sync(() => void onSuccess({ tag: target })) : Effect.void))
                 )
             );
         }
@@ -108,10 +101,10 @@ export const TagForm = (props: Props) => {
             } else if (isDefined(tag)) {
                 const translation = values.title === tag.title ? tag : { titleEn: null, titleTags: null };
                 const updatedTag = yield* tagService.update(tag.id, values, translation.titleEn, translation.titleTags);
-                onSuccess({ tag: updatedTag, action: 'updated' });
+                onSuccess({ tag: updatedTag });
             } else {
                 const createdTag = yield* tagService.create(values, null, null);
-                onSuccess({ tag: createdTag, action: 'created' });
+                onSuccess({ tag: createdTag });
             }
         }).pipe(toastOnFailure(isEditing ? t`Could not save tag` : t`Could not create tag`, t`Please try again later`));
 

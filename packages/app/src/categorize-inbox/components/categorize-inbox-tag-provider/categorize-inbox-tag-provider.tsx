@@ -45,7 +45,6 @@ export const CategorizeInboxTagProvider = ({ params, children }: Props) => {
         moreLabels: t`More tags`,
         chooseLabel: t`Choose tags`,
         writeFailed: t`Could not tag transactions`,
-        assignAs: tagTitle => t`Tag as ${tagTitle}`,
         doneThisSession: taggedCount =>
             t({ message: plural(taggedCount, { one: '# tagged this session', other: '# tagged this session' }) })
     };
