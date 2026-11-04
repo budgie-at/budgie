@@ -302,7 +302,6 @@ export type { ExchangeRateCreateEntityInterface } from './exchange-rate/entity/e
 export { HistoricalExchangeRateEntityTable } from './historical-exchange-rate/table/historical-exchange-rate-entity.table';
 
 export type { HistoricalExchangeRateEntityInterface } from './historical-exchange-rate/entity/historical-exchange-rate-entity.interface';
-export type { HistoricalExchangeRateCreateEntityInterface } from './historical-exchange-rate/entity/historical-exchange-rate-create-entity.interface';
 
 export { SettingsEntityTable } from './settings/table/settings-entity.table';
 

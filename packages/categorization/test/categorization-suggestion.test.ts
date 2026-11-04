@@ -28,6 +28,8 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { EMBEDDING_DIMENSIONS } from '../src/embedding/constant/embedding.constant';
+
 import { TestLayer, testDb, testSeedService } from './harness/test-context';
 
 interface FakeDocumentInterface {
@@ -186,9 +188,7 @@ describe('categorization/suggestion', () => {
                     title: 'Blue Bottle',
                     mccDescription: '',
                     categoryId,
-                    comment: '',
-                    embedding: new Uint8Array(4),
-                    dimensions: 1
+                    comment: ''
                 }))
             );
             yield* merchantEmbeddingRepository.deleteStaleCategories(transaction.id, [groceries.id, coffee.id]);
@@ -196,6 +196,31 @@ describe('categorization/suggestion', () => {
             const embeddings = yield* testDb.select().from(MerchantEmbeddingEntityTable);
 
             expect(embeddings.map(embedding => embedding.categoryId)).toEqual([coffee.id]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('upserting a merchant embedding stores the vector only in the vec table', () =>
+        Effect.gen(function* () {
+            const merchantEmbeddingRepository = yield* MerchantEmbeddingRepository;
+            const coffee = yield* seedCategory('Coffee');
+            const embedding = new Uint8Array(new Float32Array(EMBEDDING_DIMENSIONS).fill(0.5).buffer);
+            const params = {
+                title: 'Blue Bottle',
+                mccDescription: '',
+                categoryId: coffee.id,
+                comment: '',
+                embedding,
+                dimensions: EMBEDDING_DIMENSIONS
+            };
+
+            yield* testDb.run(sql`CREATE TABLE IF NOT EXISTS merchant_embedding_vec (rowid INTEGER PRIMARY KEY, embedding BLOB)`);
+            const firstId = yield* merchantEmbeddingRepository.upsert(params);
+            const secondId = yield* merchantEmbeddingRepository.upsert(params);
+            const vectorRows = yield* testDb.$client.unsafe<{ rowid: number }>('SELECT rowid FROM merchant_embedding_vec');
+
+            expect(secondId).toBe(firstId);
+            expect(vectorRows.map(row => row.rowid)).toEqual([firstId]);
+            expect(yield* merchantEmbeddingRepository.upsert({ ...params, dimensions: 1 })).toBeNull();
         }).pipe(Effect.provide(TestLayer))
     );
 
