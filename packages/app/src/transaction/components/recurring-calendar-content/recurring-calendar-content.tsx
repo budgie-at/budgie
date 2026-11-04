@@ -1,11 +1,11 @@
 import { UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
-import { Trans } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useReducer } from 'react';
 import { Text, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
@@ -32,6 +32,7 @@ const EMPTY_ENTRIES_BY_DAY: ReadonlyMap<number, readonly RecurringCalendarEntryI
 
 // eslint-disable-next-line complexity, max-statements, max-lines-per-function -- Page orchestration component with multiple hooks, state, and forecast logic
 export const RecurringCalendarContent = () => {
+    const { t } = useLingui();
     const { languageTag } = useLocaleInfo();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatDigits = useDisplayFormatDigits();
@@ -78,6 +79,8 @@ export const RecurringCalendarContent = () => {
         convertFromMicroUnits(selectedEntries.reduce((total, entry) => total + entry.latestAmount, 0)),
         defaultInstrument.symbol
     );
+    const displayMonthLabel = new Intl.DateTimeFormat(languageTag, { month: 'long' }).format(new Date(displayYear, displayMonth, 1));
+    const hasDetectedPayments = isPositiveNumber(data?.committedMonthlyExpense);
     const selectedDayTotal = isNotEmptyArray(selectedEntries) ? formattedDayExpense : '';
     const formattedForecastedTotal = formatDigits(forecastedTotalAmount, defaultInstrument.symbol);
     const displayedTotal = isDefined(data) ? totalAmount + forecastedTotalAmount : 0;
@@ -87,7 +90,7 @@ export const RecurringCalendarContent = () => {
             <KeyboardAwareScrollView
                 testID={RecurringCalendarSelector.Container}
                 contentContainerStyle={scrollContentStyle}
-                bottomOffset={12}
+                bottomOffset={56}
                 showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled"
                 keyboardDismissMode="on-drag"
@@ -99,10 +102,11 @@ export const RecurringCalendarContent = () => {
                             numberOfLines={1}
                             adjustsFontSizeToFit
                             minimumFontScale={0.5}
+                            maxFontSizeMultiplier={1.5}
                         >
                             {formatDigits(displayedTotal, defaultInstrument.symbol)}
                         </ProtectedText>
-                        <Text className="font-medium text-xs text-secondary-foreground">
+                        <Text maxFontSizeMultiplier={1.5} className="font-medium text-xs text-secondary-foreground">
                             <Trans>Monthly total</Trans>
                         </Text>
                     </View>
@@ -121,14 +125,14 @@ export const RecurringCalendarContent = () => {
                 {hasSelectedDay ? (
                     <RecurringCalendarEntryList
                         headerTestID={RecurringCalendarSelector.SelectedDayHeader(selectedDay)}
-                        title={new Intl.DateTimeFormat(languageTag, { weekday: 'long', month: 'short', day: 'numeric' }).format(
+                        title={new Intl.DateTimeFormat(languageTag, { weekday: 'short', month: 'short', day: 'numeric' }).format(
                             new Date(displayYear, displayMonth, selectedDay)
                         )}
                         formattedTotal={selectedDayTotal}
                         entries={selectedEntries}
                         emptyContent={
                             <View className="items-center gap-y-xl py-7xl px-3xl rounded-3xl bg-grouped-surface-row">
-                                <CircleIcon icon={UserIconNameEnum.CalendarCheck} size={36} iconSize={18} variant="ghost" />
+                                <CircleIcon icon={UserIconNameEnum.CalendarSearch} size={36} iconSize={18} variant="ghost" />
                                 <Text
                                     className="text-secondary-foreground text-sm text-center"
                                     testID={RecurringCalendarSelector.SelectedDayEmptyState}
@@ -172,7 +176,11 @@ export const RecurringCalendarContent = () => {
                         displayYear={displayYear}
                     />
                 ) : null}
-                {isDefined(data) && !hasEntries && !hasSelectedDay ? <RecurringCalendarEmptyState /> : null}
+                {isDefined(data) && !hasEntries && !hasSelectedDay ? (
+                    <RecurringCalendarEmptyState title={t`No recurring payments in ${displayMonthLabel}`}>
+                        {hasDetectedPayments ? null : <Trans>Recurring payments are detected automatically from your transactions.</Trans>}
+                    </RecurringCalendarEmptyState>
+                ) : null}
                 <MenuSpacer />
             </KeyboardAwareScrollView>
         </LoadingContent>

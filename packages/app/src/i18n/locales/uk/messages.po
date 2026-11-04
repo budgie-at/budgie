@@ -5352,12 +5352,12 @@ msgid "No receipt found"
 msgstr "Чек не знайдено"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+msgid "No recurring payments in {displayMonthLabel}"
+msgstr "Немає регулярних платежів ({displayMonthLabel})"
+
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "No recurring payments on this day"
 msgstr "Цього дня немає регулярних платежів"
-
-#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
-msgid "No recurring payments this month"
-msgstr "Цього місяця немає регулярних платежів"
 
 #: src/@generic/component/selector-search-empty-state/selector-search-empty-state.tsx
 msgid "No results for “{query}”"
@@ -6399,9 +6399,9 @@ msgstr "Регулярні"
 msgid "Recurring payment name"
 msgstr "Назва регулярного платежу"
 
-#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
-msgid "Recurring payments will appear here once patterns are detected from your transactions"
-msgstr "Повторювані платежі з’являться тут, щойно в ваших транзакціях буде виявлено закономірності"
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+msgid "Recurring payments are detected automatically from your transactions."
+msgstr "Регулярні платежі визначаються автоматично на основі ваших транзакцій."
 
 #: src/categorize-inbox/components/categorize-inbox-group-refine-options/categorize-inbox-group-refine-options.tsx
 msgid "Refine"

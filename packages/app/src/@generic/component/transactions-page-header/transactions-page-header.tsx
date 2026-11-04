@@ -32,7 +32,12 @@ export const TransactionsPageHeader = ({ activeTab, onChangeTab }: Props) => {
         <View className="bg-surface border-b-hairline border-surface-separator">
             {isAccessibilityTextSize ? (
                 <View className="px-5xl pb-md">
-                    <SegmentedControl segments={segments} value={activeTab} onChange={onChangeTab} className="min-h-[48px]" />
+                    <SegmentedControl
+                        segments={segments}
+                        value={activeTab}
+                        onChange={onChangeTab}
+                        className="min-h-[48px] bg-primary/45 dark:bg-surface-fill"
+                    />
                 </View>
             ) : (
                 <AnimatedTabBar tabs={TABS} activeTab={activeTab} onChangeTab={onChangeTab} />

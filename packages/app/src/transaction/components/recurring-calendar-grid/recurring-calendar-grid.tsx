@@ -14,6 +14,7 @@ import { useToday } from '../../../@generic/hook/use-today.hook';
 import { dateTypeToDate } from '../../../@generic/utils/date/date-type-to-date.util';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
 import { RecurringCalendarSelector } from '../recurring-calendar-content/recurring-calendar.selector';
+import { RecurringCalendarDayDots } from '../recurring-calendar-day-dots/recurring-calendar-day-dots';
 import { RecurringCalendarDay } from '../recurring-calendar-day/recurring-calendar-day';
 import { RecurringCalendarWeekday } from '../recurring-calendar-weekday/recurring-calendar-weekday';
 
@@ -188,12 +189,18 @@ export const RecurringCalendarGrid = (props: Props) => {
                 />
                 {hasEntries ? (
                     <View className="flex-row flex-wrap justify-center gap-x-5xl gap-y-sm pb-md" accessible>
-                        <Text className="text-[12px] text-secondary-foreground">
-                            ● <Trans>Recorded</Trans>
-                        </Text>
-                        <Text className="text-[12px] text-secondary-foreground">
-                            ○ <Trans>Expected</Trans>
-                        </Text>
+                        <View className="flex-row items-center gap-x-sm">
+                            <RecurringCalendarDayDots actualDots={1} forecastedDots={0} isSelected={false} className="static" />
+                            <Text maxFontSizeMultiplier={1.5} className="text-[12px] text-secondary-foreground">
+                                <Trans>Recorded</Trans>
+                            </Text>
+                        </View>
+                        <View className="flex-row items-center gap-x-sm">
+                            <RecurringCalendarDayDots actualDots={0} forecastedDots={1} isSelected={false} className="static" />
+                            <Text maxFontSizeMultiplier={1.5} className="text-[12px] text-secondary-foreground">
+                                <Trans>Expected</Trans>
+                            </Text>
+                        </View>
                     </View>
                 ) : null}
             </View>

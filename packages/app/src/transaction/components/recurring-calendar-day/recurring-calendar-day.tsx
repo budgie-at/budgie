@@ -5,6 +5,7 @@ import { CalendarDay as DatePickerCalendarDay } from 'react-native-ui-datepicker
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
@@ -15,24 +16,26 @@ import type { RecurringCalendarEntryInterface } from '@budgie/recurring';
 
 const MAX_DOTS = 3;
 
-const circleVariants = cva('w-[40px] h-[40px] items-center justify-center rounded-full', {
+const circleVariants = cva('items-center justify-center rounded-full', {
     variants: {
         isSelected: { true: 'bg-primary', false: '' },
-        isToday: { true: '', false: '' }
+        isToday: { true: '', false: '' },
+        hasEntries: { true: '', false: '' },
+        isAccessibilityTextSize: { true: 'w-[44px] h-[44px]', false: 'w-[40px] h-[40px]' }
     },
-    compoundVariants: [{ isToday: true, isSelected: false, className: 'border border-primary' }]
+    compoundVariants: [
+        { isToday: true, isSelected: false, className: 'border border-primary' },
+        { hasEntries: true, isSelected: false, className: 'bg-surface-fill' }
+    ]
 });
 
-const textVariants = cva('text-[15px] tabular-nums text-secondary-foreground', {
+const textVariants = cva('text-[15px] tabular-nums', {
     variants: {
+        isCurrentMonth: { true: 'text-primary', false: 'text-secondary-foreground' },
         isSelected: { true: 'text-primary-reverse font-semibold', false: '' },
         isToday: { true: 'font-semibold', false: '' },
         hasEntries: { true: 'font-semibold', false: '' }
-    },
-    compoundVariants: [
-        { isSelected: false, isToday: true, className: 'text-primary' },
-        { isSelected: false, hasEntries: true, className: 'text-primary' }
-    ]
+    }
 });
 
 interface Props {
@@ -44,6 +47,7 @@ interface Props {
 export const RecurringCalendarDay = ({ day, entriesByDay, forecastedEntriesByDay }: Props) => {
     const { t } = useLingui();
     const { languageTag } = useLocaleInfo();
+    const isAccessibilityTextSize = useIsAccessibilityTextSize();
     const dayOfMonth = day.number;
     const { isSelected, isCurrentMonth, isToday } = day;
     const entryCount = (isCurrentMonth ? entriesByDay.get(dayOfMonth)?.length : 0) ?? 0;
@@ -58,16 +62,16 @@ export const RecurringCalendarDay = ({ day, entriesByDay, forecastedEntriesByDay
     const accessibilityState = { selected: isSelected, disabled: day.isDisabled };
 
     return (
-        <View className="items-center py-px">
+        <View className="items-center">
             <View
-                className={circleVariants({ isSelected, isToday })}
+                className={circleVariants({ isSelected, isToday, hasEntries, isAccessibilityTextSize })}
                 accessible={isDefined(dayTestID)}
                 accessibilityRole="button"
                 accessibilityLabel={accessibilityLabel}
                 accessibilityState={accessibilityState}
                 {...testIDProps(dayTestID)}
             >
-                <Text maxFontSizeMultiplier={1.5} className={cn(textVariants({ isSelected, isToday, hasEntries }))}>
+                <Text maxFontSizeMultiplier={1.5} className={cn(textVariants({ isCurrentMonth, isSelected, isToday, hasEntries }))}>
                     {day.text}
                 </Text>
                 {hasEntries ? (

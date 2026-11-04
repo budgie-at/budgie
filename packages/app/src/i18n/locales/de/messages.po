@@ -5352,12 +5352,12 @@ msgid "No receipt found"
 msgstr "Kein Beleg gefunden"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+msgid "No recurring payments in {displayMonthLabel}"
+msgstr "Keine wiederkehrenden Zahlungen im {displayMonthLabel}"
+
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "No recurring payments on this day"
 msgstr "Keine wiederkehrenden Zahlungen an diesem Tag"
-
-#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
-msgid "No recurring payments this month"
-msgstr "Keine wiederkehrenden Zahlungen in diesem Monat"
 
 #: src/@generic/component/selector-search-empty-state/selector-search-empty-state.tsx
 msgid "No results for “{query}”"
@@ -6399,9 +6399,9 @@ msgstr "Wiederkehrend"
 msgid "Recurring payment name"
 msgstr "Name der wiederkehrenden Zahlung"
 
-#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
-msgid "Recurring payments will appear here once patterns are detected from your transactions"
-msgstr "Wiederkehrende Zahlungen erscheinen hier, sobald Muster in deinen Transaktionen erkannt werden"
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+msgid "Recurring payments are detected automatically from your transactions."
+msgstr "Wiederkehrende Zahlungen werden anhand der Transaktionen automatisch erkannt."
 
 #: src/categorize-inbox/components/categorize-inbox-group-refine-options/categorize-inbox-group-refine-options.tsx
 msgid "Refine"

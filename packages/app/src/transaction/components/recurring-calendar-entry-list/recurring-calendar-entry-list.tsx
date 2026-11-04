@@ -37,7 +37,7 @@ export const RecurringCalendarEntryList = ({
     return (
         <View className="gap-y-md">
             <View className="gap-x-xl flex-row flex-wrap justify-between items-center">
-                <Text className="text-[15px] font-semibold text-secondary-foreground" {...testIDProps(headerTestID)}>
+                <Text className="text-[15px] font-semibold text-primary" {...testIDProps(headerTestID)}>
                     {title}
                 </Text>
                 {hasTotal ? (
