@@ -24,9 +24,9 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { buildPrimaryEntry } from '../../core/utils/build-primary-entry.util';
 import { INZHUR_CASH_EXTERNAL_ID } from '../constant/inzhur-cash-external-id.constant';
 import { InzhurNotSetUpError } from '../error/inzhur-not-set-up.error';
-import { buildInzhurEntry } from '../utils/build-inzhur-entry.util';
 import { buildInzhurTransactionInput } from '../utils/build-inzhur-transaction-input.util';
 
 import type { InzhurSetupInterface } from '../interface/inzhur-setup.interface';
@@ -142,7 +142,7 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
                 if (differenceMicroUnits > 0) {
                     const externalId = `inzhur:actual-balance:${cashAccount.id}:${actualBalance}`;
                     const entry = {
-                        ...buildInzhurEntry(
+                        ...buildPrimaryEntry(
                             cashAccount.id,
                             TransactionEntryTypeEnum.DEBIT,
                             convertFromMicroUnits(differenceMicroUnits),

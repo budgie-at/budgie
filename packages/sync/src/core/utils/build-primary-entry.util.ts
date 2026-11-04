@@ -2,7 +2,7 @@ import { CategorySourceEnum, TransactionEntryKindEnum } from '@budgie/contracts'
 
 import type { TransactionEntryCreateInputInterface, TransactionEntryTypeEnum } from '@budgie/contracts';
 
-export const buildInzhurEntry = (
+export const buildPrimaryEntry = (
     accountId: number,
     type: TransactionEntryTypeEnum,
     amount: number,

@@ -25,12 +25,12 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 
 import { SyncFileReader } from '../../core/port/sync-file-reader.port';
 import { SyncWorkload } from '../../core/port/sync-workload.port';
+import { buildPrimaryEntry } from '../../core/utils/build-primary-entry.util';
 import { InzhurImportOutcomeEnum } from '../enum/inzhur-import-outcome.enum';
 import { InzhurNotSetUpError } from '../error/inzhur-not-set-up.error';
 import { InzhurPriceMissingError } from '../error/inzhur-price-missing.error';
 import { InzhurStatementInvalidError } from '../error/inzhur-statement-invalid.error';
 import { inzhurStatementParser } from '../parser/inzhur-statement.parser';
-import { buildInzhurEntry } from '../utils/build-inzhur-entry.util';
 import { buildInzhurTransactionInput } from '../utils/build-inzhur-transaction-input.util';
 
 import { InzhurSetupService } from './inzhur-setup.service';
@@ -271,7 +271,7 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
                 .map(plan => {
                     const externalId = `inzhur:${statement.statementDate}:${plan.isin}:dividend`;
                     const entry = {
-                        ...buildInzhurEntry(
+                        ...buildPrimaryEntry(
                             cashAccountId,
                             TransactionEntryTypeEnum.DEBIT,
                             convertFromMicroUnits(dividendByAccountId.get(plan.account.id) ?? 0),
@@ -294,12 +294,12 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
                     operatedAt,
                     isSell
                         ? [
-                              buildInzhurEntry(plan.account.id, TransactionEntryTypeEnum.CREDIT, quantity, externalId),
-                              buildInzhurEntry(cashAccountId, TransactionEntryTypeEnum.DEBIT, value, externalId)
+                              buildPrimaryEntry(plan.account.id, TransactionEntryTypeEnum.CREDIT, quantity, externalId),
+                              buildPrimaryEntry(cashAccountId, TransactionEntryTypeEnum.DEBIT, value, externalId)
                           ]
                         : [
-                              buildInzhurEntry(cashAccountId, TransactionEntryTypeEnum.CREDIT, value, externalId),
-                              buildInzhurEntry(plan.account.id, TransactionEntryTypeEnum.DEBIT, quantity, externalId)
+                              buildPrimaryEntry(cashAccountId, TransactionEntryTypeEnum.CREDIT, value, externalId),
+                              buildPrimaryEntry(plan.account.id, TransactionEntryTypeEnum.DEBIT, quantity, externalId)
                           ]
                 );
             });
