@@ -13,6 +13,7 @@ import * as Effect from 'effect/Effect';
 import { NotificationFeedbackType } from 'expo-haptics';
 import { useState } from 'react';
 import { ScrollView, Text, View, useWindowDimensions } from 'react-native';
+import { KeyboardController } from 'react-native-keyboard-controller';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -121,8 +122,10 @@ export const SplitEntriesModalContent = (props: Props) => {
 
     const handleAddEntry = () => {
         const newEntry = createEmptyEntry(entryType, accountId);
-        setEntries(previous => [...previous, newEntry]);
-        setAutoFocusIndex(entries.length);
+        void KeyboardController.dismiss().then(() => {
+            setEntries(previous => (previous.length > entries.length ? previous : [...previous, newEntry]));
+            setAutoFocusIndex(entries.length);
+        });
     };
 
     const handleRemoveEntry = (index: number) => {
