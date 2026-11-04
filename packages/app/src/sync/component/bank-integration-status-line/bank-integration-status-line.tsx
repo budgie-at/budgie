@@ -71,7 +71,7 @@ export const BankIntegrationStatusLine = ({ syncs }: Props) => {
     }
 
     return (
-        <View className="flex-row items-center justify-center gap-x-sm" testID={BankIntegrationSelector.StatusPill}>
+        <View className="flex-row flex-wrap items-center justify-center gap-x-sm gap-y-xxs" testID={BankIntegrationSelector.StatusPill}>
             <Icon icon={appearance.icon} size={15} className={appearance.className} />
             <Text className={cn(appearance.className, 'text-[15px] text-center shrink')}>{label}</Text>
         </View>
