@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FormsheetHeader } from '../../../@generic/component/formsheet-header/formsheet-header';
 import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
+import { BudgetSelector } from '../../budget.selector';
 import { BudgetDataState } from '../budget-data-state/budget-data-state';
 
 interface Props {
@@ -32,7 +33,7 @@ export const BudgetSheetState = (props: Props) => {
                 <FormsheetHeader size="sm" title={title} titleClassName="leading-tight" />
                 <View className="px-5xl pt-md pb-3xl gap-y-xl">
                     <BudgetDataState isLoading={isLoading} isError={isError} description={stateDescription} title={unavailableTitle} />
-                    <PillButton label={t`Close`} testID="BudgetDataState.CloseButton" onPress={handleClose} />
+                    <PillButton label={t`Close`} testID={BudgetSelector.DataStateCloseButton} onPress={handleClose} />
                 </View>
             </ScrollView>
         </View>
