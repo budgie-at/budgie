@@ -74,18 +74,19 @@ describe('DatabaseExportService.exportAndShare', () => {
         share.isFailing = false;
     });
 
-    it.effect('checkpoints, shares and then records only lastBackupAt without touching the PIN settings', () =>
-        Effect.gen(function* () {
-            const settingsRef = yield* Ref.make<SettingsEntityInterface>(DEFAULT_SETTINGS);
+    it.effect.each(['confirmed by the destination', 'cancelled'])(
+        'leaves settings unchanged when sharing is %s because the API reports no save result',
+        () =>
+            Effect.gen(function* () {
+                const settingsRef = yield* Ref.make<SettingsEntityInterface>(DEFAULT_SETTINGS);
 
-            yield* exportAndShare.pipe(Effect.provide(yield* makeExportLayer(settingsRef)));
+                yield* exportAndShare.pipe(Effect.provide(yield* makeExportLayer(settingsRef)));
 
-            expect(events).toEqual(['PRAGMA wal_checkpoint(FULL)', 'share', 'settings:lastBackupAt']);
-            const settings = yield* Ref.get(settingsRef);
+                expect(events).toEqual(['PRAGMA wal_checkpoint(FULL)', 'share']);
+                const settings = yield* Ref.get(settingsRef);
 
-            expect(settings.lastBackupAt).toBeInstanceOf(Date);
-            expect({ ...settings, lastBackupAt: null }).toEqual(DEFAULT_SETTINGS);
-        })
+                expect(settings).toBe(DEFAULT_SETTINGS);
+            })
     );
 
     it.effect('writes no setting when the share fails', () =>
