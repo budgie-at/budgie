@@ -326,6 +326,20 @@ export { NewProviderClient } from './[provider]/client/[provider].client';
 export { NewProviderSyncService } from './[provider]/service/[provider]-sync.service';
 ```
 
+## Account Continuation
+
+`makePollingSyncAccountContinuation` moves an existing account onto a live provider and back, with no per-bank code. It keeps the sync row and sets `backwardSyncLimitAt` and the forward cursor to the UTC day after the last non-deleted row, so history stays and no backward fetch runs. An empty account goes through normal history import. It refuses a different currency, two known and different IBANs, a bank account linked to another account, and a target with a live sync, which it reads from `bank_syncs` because some Monobank accounts have an empty `external_source`.
+
+Disconnecting keeps an account holding any row not from the connection and returns it to its previous provider or to `BANK`. Its rows and balance stay as they are. A later file import drops rows the connection delivered: from the start date on while connected, between the start date and the disconnect afterwards.
+
+The boundary has no overlap by design, and there is no content match. `connect.test.ts` pins these cases, and reconciliation corrects the balance in all of them:
+
+| Case                                                   | Result                  |
+| ------------------------------------------------------ | ----------------------- |
+| A row on the last day, absent from the imported file   | Lost, balance adjusted  |
+| A row in the file that the bank books on the next day  | Counted twice, adjusted |
+| A row booked late, dated before the start date         | Lost, balance adjusted  |
+
 ## Testing
 
 ### Test Location

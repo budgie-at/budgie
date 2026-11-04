@@ -11,6 +11,7 @@ import {
     fetchEnableBankingTransactions,
     fetchSyncById,
     seedEnableBankingAccount,
+    stubLongestFallbackRows,
     TestLayer
 } from '../../harness';
 
@@ -72,18 +73,7 @@ describe('enable-banking/history', () => {
             });
             stubAccount();
             const queries: URLSearchParams[] = [];
-            enableBankingStub.transactions(UID, ({ query }) => {
-                queries.push(query);
-
-                return query.get('strategy') === 'longest'
-                    ? {
-                          transactions: [
-                              buildEnableBankingTransaction({ entry_reference: 'kept' }),
-                              buildEnableBankingTransaction({ entry_reference: 'older', booking_date: enableBankingDaysAgo(60) })
-                          ]
-                      }
-                    : { status: 422, error: 'WRONG_TRANSACTIONS_PERIOD' };
-            });
+            stubLongestFallbackRows(UID, queries);
 
             yield* service.sync();
 

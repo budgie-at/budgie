@@ -2,7 +2,6 @@ import {
     AccountEntityTable,
     AccountExternalIdEntityTable,
     AccountTypeEnum,
-    BankIntegrationEntityTable,
     ExternalSourceEnum,
     PRECISION,
     SyncEntityTable,
@@ -10,23 +9,12 @@ import {
     TransactionEntityTable
 } from '@budgie/contracts';
 import { AccountBalanceIncrementalService } from '@budgie/ledger';
-import {
-    EnableBankingSyncService,
-    ResyncService,
-    SyncAccountBalanceStateEnum,
-    SyncAccountContinuationRefusalEnum,
-    SyncAccountTypeEnum,
-    SyncProviderEnum,
-    SyncTransactionTypeEnum
-} from '@budgie/sync';
+import { EnableBankingSyncService, ResyncService, SyncAccountContinuationRefusalEnum } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { isDefined } from '@rnw-community/shared';
-
 import {
-    buildEnableBankingToken,
     buildEnableBankingTransaction,
     ENABLE_BANKING_APPLICATION_ID,
     enableBankingDaysAgo,
@@ -37,152 +25,41 @@ import {
     fetchSyncById,
     findOrSeedEur,
     makeEnableBankingSyncStale,
-    makeStubFileBankSyncService,
     seed,
     skipRequestedSync,
     testDb,
     testSigner,
     TestLayer
 } from '../../harness';
-
-import type { SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';
-import type { JsonBodyType } from 'msw';
-
-const HASH = 'hash-connect';
-const UID = 'uid-connect';
-const SESSION = 'session-connect';
-const IBAN = 'DE89370400440532013000';
-const OTHER_IBAN = 'AT611904300234573201';
-const ERSTE_ID = 'erste-account';
-const DAY_MS = 24 * 60 * 60 * 1000;
-const LAST_ROW_DAYS_AGO = 10;
-const CALLBACK_URL = 'budgie://enable-banking/callback';
-const TOKEN = buildEnableBankingToken(SESSION);
-const VALID_UNTIL = '2099-01-01T00:00:00.000Z';
-
-const noonDaysAgo = (days: number) => new Date(`${enableBankingDaysAgo(days)}T12:00:00.000Z`);
-
-const startOfDayAfter = (days: number) => new Date(`${enableBankingDaysAgo(days - 1)}T00:00:00.000Z`);
-
-const buildBankAccount = (overrides: Partial<SyncAccountInterface> = {}): SyncAccountInterface => ({
-    id: HASH,
-    provider: SyncProviderEnum.ENABLE_BANKING,
-    currencyCode: 'EUR',
-    currencyCodeNumeric: 978,
-    balance: 0,
-    balanceState: SyncAccountBalanceStateEnum.REPRESENTABLE,
-    creditLimit: 0,
-    type: SyncAccountTypeEnum.CHECKING,
-    title: 'Synthetic Bank Giro',
-    ...overrides
-});
-
-const buildPdfRow = (id: string, time: Date): SyncTransactionInterface => ({
-    id,
-    provider: SyncProviderEnum.ERSTE,
-    accountId: ERSTE_ID,
-    type: SyncTransactionTypeEnum.EXPENSE,
-    time: Math.floor(time.getTime() / 1000),
-    description: 'SYNTHETIC CARD PAYMENT',
-    mcc: 0,
-    originalMcc: 0,
-    amount: 5,
-    operationAmount: 5,
-    currencyCode: 978,
-    commissionRate: 0,
-    cashbackAmount: 0,
-    balance: 0,
-    hold: false,
-    feeAmount: 0
-});
-
-interface SeedAccountOptions {
-    readonly provider?: ExternalSourceEnum;
-    readonly enabled?: boolean;
-    readonly externalSource?: ExternalSourceEnum | null;
-    readonly externalId?: string | null;
-    readonly iban?: string | null;
-    readonly rowDaysAgo?: readonly number[];
-    readonly rowSource?: ExternalSourceEnum | null;
-    readonly instrumentId?: number;
-    readonly setupBalance?: number | null;
-    readonly type?: AccountTypeEnum;
-}
-
-const seedConnectableAccount = (options: SeedAccountOptions = {}) =>
-    Effect.gen(function* () {
-        const instrumentId = options.instrumentId ?? (yield* findOrSeedEur()).id;
-        const provider = options.provider ?? ExternalSourceEnum.ERSTE;
-        const externalSource = options.externalSource === undefined ? provider : options.externalSource;
-        const account = yield* seed.account({
-            instrumentId,
-            type: options.type ?? AccountTypeEnum.BANK_SYNC,
-            externalId: options.externalId === undefined ? ERSTE_ID : options.externalId,
-            externalSource,
-            iban: options.iban ?? null
-        });
-        const sync = yield* seed.sync({
-            accountId: account.id,
-            provider,
-            enabled: options.enabled ?? true,
-            token: `integration-${provider}`,
-            setupBalance: options.setupBalance ?? null
-        });
-        const rowSource = options.rowSource === undefined ? provider : options.rowSource;
-        for (const [index, days] of (options.rowDaysAgo ?? [LAST_ROW_DAYS_AGO, LAST_ROW_DAYS_AGO + 5]).entries()) {
-            yield* seed.manualExpense({
-                accountId: account.id,
-                amount: 5 * PRECISION,
-                operatedAt: noonDaysAgo(days),
-                title: `Row ${index}`,
-                ...(isDefined(rowSource) && { externalSource: rowSource, externalId: `erste-row-${index}` })
-            });
-        }
-        const balances = yield* AccountBalanceIncrementalService;
-        yield* balances.updateBalancesByAccountIds([account.id]);
-
-        return { account, sync };
-    });
-
-const stubBank = (balance = '100.00', rows: JsonBodyType[] = []) => {
-    enableBankingStub.session(SESSION, [{ uid: UID, hash: HASH }]);
-    enableBankingStub.balances(UID, balance);
-    enableBankingStub.transactions(UID, () => ({ transactions: rows }));
-};
-
-const connect = (accountId: number, bankAccount: SyncAccountInterface = buildBankAccount()) =>
-    Effect.flatMap(EnableBankingSyncService, service => skipRequestedSync(service.connectAccount(accountId, TOKEN, bankAccount)));
-
-const fetchAccount = (accountId: number) =>
-    Effect.map(testDb.select().from(AccountEntityTable).where(eq(AccountEntityTable.id, accountId)), ([account]) => account);
-
-const fetchAccountRows = (accountId: number) =>
-    Effect.map(testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.fromAccountId, accountId)), rows =>
-        rows.filter(row => !isDefined(row.deletedAt))
-    );
-
-const findIntegrationId = (token: string) =>
-    Effect.map(
-        testDb.select().from(BankIntegrationEntityTable).where(eq(BankIntegrationEntityTable.token, token)),
-        integrations => integrations.at(0)?.id ?? null
-    );
-
-const requireIntegrationId = (token: string) => Effect.map(findIntegrationId(token), id => id ?? 0);
-
-const importPdf = (rows: readonly SyncTransactionInterface[], bankAccountId = ERSTE_ID, iban?: string) =>
-    Effect.gen(function* () {
-        const service = yield* makeStubFileBankSyncService(ExternalSourceEnum.ERSTE, {
-            getAccounts: () => [
-                buildBankAccount({ id: bankAccountId, provider: SyncProviderEnum.ERSTE, ...(isDefined(iban) && { iban }) })
-            ],
-            getTransactions: () => [...rows]
-        });
-
-        yield* service.executeImportForSelectedAccounts('statement.pdf', [bankAccountId]);
-    });
-
-const refusalOf = (accountId: number, bankAccount: SyncAccountInterface = buildBankAccount()) =>
-    Effect.map(Effect.flip(connect(accountId, bankAccount)), error => ('reason' in error ? error.reason : error._tag));
+import {
+    buildBankAccount,
+    buildPdfRow,
+    buildPending,
+    CALLBACK_URL,
+    connect,
+    connectSyncedReadyToDisconnect,
+    DAY_MS,
+    ERSTE_ID,
+    fetchAccount,
+    fetchAccountRows,
+    findIntegrationId,
+    HASH,
+    IBAN,
+    importPdf,
+    LAST_ROW_DAYS_AGO,
+    noonDaysAgo,
+    OTHER_IBAN,
+    refusalOf,
+    requireIntegrationId,
+    seedConnectableAccount,
+    seedConnectedReadyToDisconnect,
+    SESSION,
+    startOfDayAfter,
+    stubBank,
+    TOKEN,
+    UID,
+    VALID_UNTIL
+} from '../../harness/enable-banking/enable-banking-connect-scenario';
 
 describe('enable-banking/connect refusals', () => {
     it.effect('refuses an IBAN mismatch when both are known', () =>
@@ -291,16 +168,7 @@ describe('enable-banking/connect refusals', () => {
             );
 
             const result = yield* service.completeAuthorization(
-                {
-                    state: 'state-choices',
-                    applicationId: ENABLE_BANKING_APPLICATION_ID,
-                    aspspName: 'Synthetic Bank',
-                    aspspCountry: 'DE',
-                    integrationId: null,
-                    connectAccountId: account.id,
-                    callbackUrl: CALLBACK_URL,
-                    expiresAtMs: Date.now() + 60_000
-                },
+                buildPending('state-choices', account.id, null),
                 `${CALLBACK_URL}?code=c&state=state-choices`
             );
 
@@ -310,6 +178,23 @@ describe('enable-banking/connect refusals', () => {
                 'hash-other': SyncAccountContinuationRefusalEnum.IBAN_MISMATCH,
                 'hash-usd': SyncAccountContinuationRefusalEnum.CURRENCY_MISMATCH
             });
+        }).pipe(Effect.provide(TestLayer))
+    );
+});
+
+describe('enable-banking/connect foreign callback', () => {
+    it.effect('a callback with another state leaves the account untouched', () =>
+        Effect.gen(function* () {
+            const service = yield* EnableBankingSyncService;
+            const { account, sync } = yield* seedConnectableAccount();
+
+            const error = yield* Effect.flip(
+                service.completeAuthorization(buildPending('state-mine', account.id), `${CALLBACK_URL}?code=c&state=state-foreign`)
+            );
+
+            expect(error._tag).toBe('EnableBankingCallbackError');
+            expect((yield* fetchAccount(account.id)).externalId).toBe(ERSTE_ID);
+            expect((yield* fetchSyncById(sync.id)).provider).toBe(ExternalSourceEnum.ERSTE);
         }).pipe(Effect.provide(TestLayer))
     );
 });
@@ -446,16 +331,7 @@ describe('enable-banking/connect switch', () => {
             enableBankingStub.session('session-reconsent', [{ uid: UID, hash: HASH }]);
             yield* skipRequestedSync(
                 service.completeAuthorization(
-                    {
-                        state: 'state-reconsent',
-                        applicationId: ENABLE_BANKING_APPLICATION_ID,
-                        aspspName: 'Synthetic Bank',
-                        aspspCountry: 'DE',
-                        integrationId: (yield* fetchAccount(account.id)).integrationId,
-                        connectAccountId: null,
-                        callbackUrl: CALLBACK_URL,
-                        expiresAtMs: Date.now() + 60_000
-                    },
+                    buildPending('state-reconsent', null, (yield* fetchAccount(account.id)).integrationId),
                     `${CALLBACK_URL}?code=c&state=state-reconsent`
                 )
             );
@@ -576,10 +452,7 @@ describe('enable-banking/connect later PDF import', () => {
         Effect.gen(function* () {
             const service = yield* EnableBankingSyncService;
             const { account } = yield* seedConnectableAccount();
-            stubBank('90.00', [buildEnableBankingTransaction({ entry_reference: 'live', booking_date: enableBankingDaysAgo(3) })]);
-            yield* connect(account.id);
-            yield* service.sync();
-            enableBankingStub.deleteSession(SESSION);
+            yield* connectSyncedReadyToDisconnect(account.id);
             yield* service.disconnect(yield* requireIntegrationId(TOKEN));
             const rowsBefore = (yield* fetchAccountRows(account.id)).length;
 
@@ -594,6 +467,21 @@ describe('enable-banking/connect later PDF import', () => {
             expect(rows).not.toContain('delivered-by-connection');
         }).pipe(Effect.provide(TestLayer))
     );
+
+    it.effect('drops every PDF row on an account whose whole history came from the live connection', () =>
+        Effect.gen(function* () {
+            const service = yield* EnableBankingSyncService;
+            const { account } = yield* seedConnectableAccount({ rowDaysAgo: [] });
+            stubBank('50.00', [buildEnableBankingTransaction({ entry_reference: 'history', booking_date: enableBankingDaysAgo(30) })]);
+            expect(yield* connect(account.id)).toBeNull();
+            yield* service.sync();
+            const rowsBefore = (yield* fetchAccountRows(account.id)).length;
+
+            yield* importPdf([buildPdfRow('same-payment', noonDaysAgo(30))]);
+
+            expect((yield* fetchAccountRows(account.id)).length).toBe(rowsBefore);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });
 
 describe('enable-banking/connect disconnect', () => {
@@ -601,10 +489,7 @@ describe('enable-banking/connect disconnect', () => {
         Effect.gen(function* () {
             const service = yield* EnableBankingSyncService;
             const { account, sync } = yield* seedConnectableAccount();
-            stubBank('90.00', [buildEnableBankingTransaction({ entry_reference: 'live', booking_date: enableBankingDaysAgo(3) })]);
-            yield* connect(account.id);
-            yield* service.sync();
-            enableBankingStub.deleteSession(SESSION);
+            yield* connectSyncedReadyToDisconnect(account.id);
             const rowsBefore = yield* fetchAccountRows(account.id);
 
             yield* service.disconnect(yield* requireIntegrationId(TOKEN));
@@ -684,10 +569,7 @@ describe('enable-banking/connect disconnect', () => {
     it.effect('a failed key deletion keeps a continued account connected', () =>
         Effect.gen(function* () {
             const service = yield* EnableBankingSyncService;
-            const { account } = yield* seedConnectableAccount();
-            stubBank();
-            yield* connect(account.id);
-            enableBankingStub.deleteSession(SESSION);
+            const account = yield* seedConnectedReadyToDisconnect();
             testSigner.markUndeletable(ENABLE_BANKING_APPLICATION_ID);
 
             const error = yield* Effect.flip(service.disconnect(yield* requireIntegrationId(TOKEN)));
@@ -701,10 +583,7 @@ describe('enable-banking/connect disconnect', () => {
     it.effect('parks the released bank account in the create flow and lets it reconnect through Connect', () =>
         Effect.gen(function* () {
             const service = yield* EnableBankingSyncService;
-            const { account } = yield* seedConnectableAccount();
-            stubBank();
-            yield* connect(account.id);
-            enableBankingStub.deleteSession(SESSION);
+            const account = yield* seedConnectedReadyToDisconnect();
             yield* service.disconnect(yield* requireIntegrationId(TOKEN));
             enableBankingStub.authorizeSession(
                 'session-again',
@@ -714,16 +593,7 @@ describe('enable-banking/connect disconnect', () => {
             );
 
             const result = yield* service.completeAuthorization(
-                {
-                    state: 'state-again',
-                    applicationId: ENABLE_BANKING_APPLICATION_ID,
-                    aspspName: 'Synthetic Bank',
-                    aspspCountry: 'DE',
-                    integrationId: null,
-                    connectAccountId: null,
-                    callbackUrl: CALLBACK_URL,
-                    expiresAtMs: Date.now() + 60_000
-                },
+                buildPending('state-again', null, null),
                 `${CALLBACK_URL}?code=c&state=state-again`
             );
 

@@ -32,11 +32,12 @@ const seedCrossCurrencyRows = (source: ExternalSourceEnum) =>
 layer(TestLayer)('consolidation/enable-banking-transfer-pairing', it => {
     it.effect('never treats two Enable Banking accounts as the same bank for an unrelated USD expense and EUR income', () =>
         Effect.gen(function* () {
-            const { expense, income } = yield* seedCrossCurrencyRows(ExternalSourceEnum.ENABLE_BANKING);
+            const rows = yield* seedCrossCurrencyRows(ExternalSourceEnum.ENABLE_BANKING);
 
             expect(yield* runConsolidation()).toEqual({ found: 0, consolidated: 0 });
-            expect((yield* testQueryService.fetchTransactionById(expense.id)).consolidationParentTransactionId).toBeNull();
-            expect((yield* testQueryService.fetchTransactionById(income.id)).consolidationParentTransactionId).toBeNull();
+            for (const { id } of Object.values(rows)) {
+                expect((yield* testQueryService.fetchTransactionById(id)).consolidationParentTransactionId).toBeNull();
+            }
         })
     );
 

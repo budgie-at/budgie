@@ -14,7 +14,12 @@ import { isDefined } from '@rnw-community/shared';
 import { testDb } from '../scenario/setup';
 import { seed } from '../seed/seed';
 
-import { ENABLE_BANKING_APPLICATION_ID, enableBankingStub } from './enable-banking-stub';
+import {
+    buildEnableBankingTransaction,
+    ENABLE_BANKING_APPLICATION_ID,
+    enableBankingDaysAgo,
+    enableBankingStub
+} from './enable-banking-stub';
 
 const FAR_FUTURE = '2099-01-01T00:00:00.000Z';
 const NINE_HOURS_MS = 9 * 60 * 60 * 1000;
@@ -85,3 +90,18 @@ export const fetchSortedEnableBankingExternalIds = () =>
     Effect.map(fetchEnableBankingTransactions(), transactions =>
         transactions.map(transaction => transaction.externalId).sort((left, right) => (left ?? '').localeCompare(right ?? ''))
     );
+
+export const stubLongestFallbackRows = (uid: string, queries: URLSearchParams[]): void => {
+    enableBankingStub.transactions(uid, ({ query }) => {
+        queries.push(query);
+
+        return query.get('strategy') === 'longest'
+            ? {
+                  transactions: [
+                      buildEnableBankingTransaction({ entry_reference: 'kept' }),
+                      buildEnableBankingTransaction({ entry_reference: 'older', booking_date: enableBankingDaysAgo(60) })
+                  ]
+              }
+            : { status: 422, error: 'WRONG_TRANSACTIONS_PERIOD' };
+    });
+};

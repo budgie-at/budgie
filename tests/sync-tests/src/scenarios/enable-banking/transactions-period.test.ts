@@ -4,12 +4,11 @@ import * as Effect from 'effect/Effect';
 
 import {
     buildEnableBankingToken,
-    buildEnableBankingTransaction,
-    enableBankingDaysAgo,
     enableBankingStub,
     fetchEnableBankingTransactions,
     fetchSyncById,
     seedEnableBankingAccount,
+    stubLongestFallbackRows,
     TestLayer
 } from '../../harness';
 
@@ -30,18 +29,7 @@ describe('enable-banking/transactions-period', () => {
             enableBankingStub.session(SESSION, [{ uid: UID, hash: HASH }]);
             enableBankingStub.balances(UID);
             const queries: URLSearchParams[] = [];
-            enableBankingStub.transactions(UID, ({ query }) => {
-                queries.push(query);
-
-                return query.get('strategy') === 'longest'
-                    ? {
-                          transactions: [
-                              buildEnableBankingTransaction({ entry_reference: 'kept' }),
-                              buildEnableBankingTransaction({ entry_reference: 'older', booking_date: enableBankingDaysAgo(60) })
-                          ]
-                      }
-                    : { status: 422, error: 'WRONG_TRANSACTIONS_PERIOD' };
-            });
+            stubLongestFallbackRows(UID, queries);
 
             yield* service.sync();
 

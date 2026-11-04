@@ -88,9 +88,12 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
     });
 
     const isDeliveredByLiveConnection = ({ backwardSyncLimitAt, forwardSyncFromAt, provider }: SyncEntityInterface, timeMs: number) =>
-        isDefined(backwardSyncLimitAt) &&
-        timeMs >= backwardSyncLimitAt.getTime() &&
-        (provider !== definition.provider || (isDefined(forwardSyncFromAt) && timeMs < forwardSyncFromAt.getTime()));
+        provider === definition.provider
+            ? isDefined(backwardSyncLimitAt) &&
+              isDefined(forwardSyncFromAt) &&
+              timeMs >= backwardSyncLimitAt.getTime() &&
+              timeMs < forwardSyncFromAt.getTime()
+            : timeMs >= (backwardSyncLimitAt?.getTime() ?? 0);
 
     const importAccountTransactions = Effect.fnUntraced(function* (
         client: FileBasedSyncClientInterface,

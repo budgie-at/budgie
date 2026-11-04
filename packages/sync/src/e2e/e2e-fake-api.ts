@@ -206,7 +206,7 @@ export const installE2eFakeApi = (): void => {
         const match = REQUEST_PATTERN.exec(toUrl(input));
         const routes = isDefined(match) ? ROUTES_BY_HOST.get(match[1]) : null;
         if (!isDefined(match) || !isDefined(routes)) {
-            return realFetch(input, init);
+            return Reflect.apply(realFetch, globalThis, [input, init]);
         }
 
         if (REJECTED_TOKEN_PATTERN.test(new Headers(init?.headers).get('X-Token') ?? '')) {

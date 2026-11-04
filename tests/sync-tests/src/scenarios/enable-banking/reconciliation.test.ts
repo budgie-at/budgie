@@ -30,6 +30,20 @@ const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 const IBAN = 'DE89370400440532013000';
 const CALLBACK_URL = 'budgie://enable-banking/callback';
 
+const syncOneRowAgainstSnapshot = (snapshotAt?: string) =>
+    Effect.gen(function* () {
+        const service = yield* EnableBankingSyncService;
+        const { account } = yield* seedLinkedEnableBankingAccount(HASH, UID, SESSION);
+        enableBankingStub.balances(UID, '100.00', 'ITBD', snapshotAt);
+        enableBankingStub.transactions(UID, () => ({ transactions: [buildEnableBankingTransaction()] }));
+
+        yield* service.sync();
+
+        const [row] = yield* fetchEnableBankingTransactions();
+
+        return { account, row };
+    });
+
 describe('enable-banking/reconciliation', () => {
     it.effect('reconciles with the lookback because the stored cursor is fetchStartedAt, not the overlap', () =>
         Effect.gen(function* () {
@@ -58,29 +72,17 @@ describe('enable-banking/reconciliation', () => {
 
     it.effect('dates a row at noon of its booking day', () =>
         Effect.gen(function* () {
-            const service = yield* EnableBankingSyncService;
-            yield* seedLinkedEnableBankingAccount(HASH, UID, SESSION);
-            enableBankingStub.balances(UID);
-            enableBankingStub.transactions(UID, () => ({ transactions: [buildEnableBankingTransaction()] }));
+            const { row } = yield* syncOneRowAgainstSnapshot();
 
-            yield* service.sync();
-
-            const [row] = yield* fetchEnableBankingTransactions();
             expect(row.operatedAt).toEqual(new Date(`${enableBankingDaysAgo(1)}T12:00:00.000Z`));
         }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('caps the row time at a same-day snapshot, so a row the snapshot includes is not counted twice', () =>
         Effect.gen(function* () {
-            const service = yield* EnableBankingSyncService;
-            const { account } = yield* seedLinkedEnableBankingAccount(HASH, UID, SESSION);
             const snapshotAt = `${enableBankingDaysAgo(1)}T09:00:00.000Z`;
-            enableBankingStub.balances(UID, '100.00', 'ITBD', snapshotAt);
-            enableBankingStub.transactions(UID, () => ({ transactions: [buildEnableBankingTransaction()] }));
+            const { account, row } = yield* syncOneRowAgainstSnapshot(snapshotAt);
 
-            yield* service.sync();
-
-            const [row] = yield* fetchEnableBankingTransactions();
             expect(row.operatedAt).toEqual(new Date(snapshotAt));
             expect(yield* fetchAccountBalance(account.id)).toBe(100 * PRECISION);
         }).pipe(Effect.provide(TestLayer))
