@@ -3,6 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { EmptyFn } from '@rnw-community/shared';
 
 import { UpdateAccountPage } from '../../../account/component/update-account-page/update-account-page';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { isInzhurCashAccount } from '../../utils/is-inzhur-cash-account.util';
 import { InzhurCashReconciliation } from '../inzhur-cash-reconciliation/inzhur-cash-reconciliation';
 import { InzhurDividendPayoutField } from '../inzhur-dividend-payout-field/inzhur-dividend-payout-field';
@@ -22,8 +23,17 @@ interface Props {
 
 export const UpdateInzhurAccountPage = ({ account, balance, fields, instrumentSymbol, isSubmitting, onSubmit }: Props) => {
     const { t } = useLingui();
+    const formatDigits = useDisplayFormatDigits();
     const accountTitle = account.title;
     const isCash = isInzhurCashAccount(account);
+    const actualBalance = fields.currentBalance.field.value;
+    const differenceLabel = formatDigits(Math.abs(actualBalance - balance), instrumentSymbol);
+    const isDifferent = isCash && formatDigits(actualBalance) !== formatDigits(balance);
+    const outcomeCaption =
+        actualBalance > balance
+            ? t`Will record +${differenceLabel} as dividends kept in Inzhur`
+            : t`Will record −${differenceLabel} as a balance correction`;
+    const footerCaption = isDifferent ? outcomeCaption : null;
 
     const hero = isCash ? (
         <InzhurCashReconciliation
@@ -39,7 +49,7 @@ export const UpdateInzhurAccountPage = ({ account, balance, fields, instrumentSy
             account={account}
             fields={fields}
             title={t`Edit ${accountTitle}`}
-            detailsFooter=""
+            footerCaption={footerCaption}
             hero={hero}
             isSubmitting={isSubmitting}
             onSubmit={onSubmit}

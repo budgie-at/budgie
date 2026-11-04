@@ -88,6 +88,17 @@ const buildInstitutionGroups = (
 const isCryptoInstitution = (institution: InstitutionGroupInterface): boolean =>
     institution.accounts.every(account => account.type === AccountTypeEnum.CRYPTO_SYNC);
 
+const isInvestmentInstitution = (institution: InstitutionGroupInterface): boolean =>
+    institution.accounts.some(account => account.type === AccountTypeEnum.STOCKS);
+
+const getInstitutionSectionType = (institution: InstitutionGroupInterface): AccountTypeEnum => {
+    if (isCryptoInstitution(institution)) {
+        return AccountTypeEnum.CRYPTO;
+    }
+
+    return isInvestmentInstitution(institution) ? AccountTypeEnum.STOCKS : AccountTypeEnum.BANK;
+};
+
 const buildHomePageSections = (
     activeAccounts: AccountWithSyncEntityInterface[],
     integrationProviders: ReadonlyMap<number, ExternalSourceEnum>,
@@ -105,10 +116,7 @@ const buildHomePageSections = (
         integrationLabels,
         balanceSummary.balancesByAccountId
     );
-    const institutionsByType = new Map([
-        [AccountTypeEnum.BANK, institutions.filter(institution => !isCryptoInstitution(institution))],
-        [AccountTypeEnum.CRYPTO, institutions.filter(isCryptoInstitution)]
-    ]);
+    const institutionsByType = groupBy(institutions, getInstitutionSectionType);
     const debtGroups = groupBy(debtAccounts, account => getDebtSectionKind(account.debtType));
 
     const typeGroups = groupBy(typeAccounts, account => account.type);

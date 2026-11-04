@@ -1,4 +1,4 @@
-import { AccountEntityInterface } from '@budgie/contracts';
+import { AccountEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { ReactNode } from 'react';
 
@@ -25,22 +25,26 @@ interface Props {
     readonly fields: Pick<AccountFormBindingsInterface, 'title' | 'icon' | 'isActive' | 'includeInNetWorth'>;
     readonly hero: ReactNode;
     readonly title?: string;
-    readonly detailsFooter?: string;
+    readonly footerCaption?: string | null;
     readonly children?: ReactNode;
     readonly onSubmit: EmptyFn;
     readonly isSubmitting?: boolean;
 }
 
-export const UpdateAccountPage = ({ account, fields, hero, title, detailsFooter, children, onSubmit, isSubmitting }: Props) => {
+export const UpdateAccountPage = ({ account, fields, hero, title, footerCaption, children, onSubmit, isSubmitting }: Props) => {
     const { t } = useLingui();
     const { instrument } = useGetInstrumentByIdQuery(account.instrumentId);
 
     const providerTitle = isDefined(account.externalSource) ? BANK_PROVIDER_TITLE[account.externalSource] : null;
     const kindLabel = isDefined(providerTitle) ? t(providerTitle) : t(ACCOUNT_KIND_TITLE[account.type]);
     const currencyLabel = isDefined(instrument) ? instrument.name : null;
-    const defaultDetailsFooter = [kindLabel, currencyLabel].filter(isDefined).join(' · ');
-    const resolvedDetailsFooter = detailsFooter ?? defaultDetailsFooter;
-    const detailsSectionFooter = isNotEmptyString(resolvedDetailsFooter) ? resolvedDetailsFooter : null;
+    const accountTitle = account.title.toLocaleLowerCase();
+    const detailsFooter = [kindLabel, currencyLabel]
+        .filter(isDefined)
+        .filter(label => !accountTitle.includes(label.toLocaleLowerCase()))
+        .join(' · ');
+    const detailsIconVariant = account.externalSource === ExternalSourceEnum.INZHUR ? 'secondary' : ACCOUNT_COLOR[account.type];
+    const detailsSectionFooter = isNotEmptyString(detailsFooter) ? detailsFooter : null;
 
     return (
         <CollapsibleChromePage
@@ -49,6 +53,7 @@ export const UpdateAccountPage = ({ account, fields, hero, title, detailsFooter,
             testID={CreateAccountScreenSelector.ScrollView}
             footer={
                 <PillButtonFooter
+                    caption={footerCaption}
                     label={t`Save changes`}
                     isLoading={isSubmitting}
                     testID={CreateAccountScreenSelector.SubmitButton}
@@ -63,7 +68,7 @@ export const UpdateAccountPage = ({ account, fields, hero, title, detailsFooter,
                     <AccountDetailsField
                         titleBinding={fields.title}
                         iconBinding={fields.icon}
-                        variant={ACCOUNT_COLOR[account.type]}
+                        variant={detailsIconVariant}
                         placeholder={t`Account name`}
                         nameInputTestID={CreateAccountScreenSelector.NameInput}
                         selectNameOnFocus

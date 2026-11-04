@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CollapsibleHeaderBackdrop, ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 import { isDefined } from '@rnw-community/shared';
@@ -35,6 +36,7 @@ type Props = TitleProps & {
 };
 
 const FOOTER_CONTENT_BOTTOM_INSET = 96;
+const FOOTER_CLEARANCE = 16;
 
 export const CollapsibleChromePage = ({
     title,
@@ -55,7 +57,10 @@ export const CollapsibleChromePage = ({
     const handleFooterLayout = (event: LayoutChangeEvent) => {
         setFooterHeight(event.nativeEvent.layout.height);
     };
-    const contentInsetBottom = isDefined(footer) ? Math.max(footerHeight, FOOTER_CONTENT_BOTTOM_INSET) : 0;
+    const { bottom: safeAreaBottom } = useSafeAreaInsets();
+    const contentInsetBottom = isDefined(footer)
+        ? Math.max(footerHeight + FOOTER_CLEARANCE - safeAreaBottom, FOOTER_CONTENT_BOTTOM_INSET)
+        : 0;
     const { bottomOffset: bottomOffsetOverride, ...restScrollViewProps } = isDefined(scrollViewProps) ? scrollViewProps : {};
     const resolvedBottomOffset = isDefined(bottomOffsetOverride) ? bottomOffsetOverride : contentInsetBottom;
     const resolvedLargeTitle = isDefined(largeTitle) ? (

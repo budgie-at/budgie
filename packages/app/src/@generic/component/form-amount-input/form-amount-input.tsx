@@ -34,10 +34,10 @@ export const FormAmountInput = (props: Props) => {
 
     return (
         <View className="px-4">
-            <View className="h-[104px] flex-row items-center">
+            <View className="h-[104px] flex-row items-center border-b-2 border-surface-fill">
                 <AmountField fontSize={64} className="flex-1">
                     {showInstrumentAfterAmount ? null : (
-                        <AmountFieldPrefix scale={0.6} className="text-primary">
+                        <AmountFieldPrefix scale={1} className="font-semibold text-primary">
                             {prefix}
                         </AmountFieldPrefix>
                     )}
@@ -47,7 +47,7 @@ export const FormAmountInput = (props: Props) => {
                         value={absoluteValue}
                         format={format}
                         onChangeValue={changeAbsoluteValue}
-                        className="text-primary tabular-nums"
+                        className="font-semibold tracking-[-1px] text-primary tabular-nums"
                         placeholderTextColorClassName="accent-primary"
                         placeholder={format.format(0)}
                         textAlign={textAlign}

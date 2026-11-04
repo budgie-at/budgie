@@ -22,33 +22,29 @@ export const InzhurImportSummaryFundRow = ({ fund, symbol }: Props) => {
 
     const sign = deltaQuantity > 0 ? '+' : '−';
     const quantityLabel = `${sign}${formatFundQuantity(Math.abs(deltaQuantity))}`;
-    const boughtAmount = Math.max(exchangedAmount - dividendAmount, 0);
-    const boughtLabel = formatAmount(boughtAmount, symbol);
+    const tradedAmount = Math.max(exchangedAmount - dividendAmount, 0);
+    const tradedLabel = formatAmount(tradedAmount, symbol);
     const dividendLabel = formatAmount(dividendAmount, symbol);
-    const tradeLabel = deltaQuantity > 0 ? t`Bought ${boughtLabel}` : t`Sold ${boughtLabel}`;
+    const tradeLabel = deltaQuantity > 0 ? t`Bought with Inzhur cash · ${tradedLabel}` : t`Sold for Inzhur cash · ${tradedLabel}`;
     const details = [
-        isPositiveNumber(boughtAmount) ? tradeLabel : null,
-        isPositiveNumber(dividendAmount) ? t`Reinvested dividends ${dividendLabel}` : null
+        isPositiveNumber(dividendAmount) ? t`Reinvested dividends · ${dividendLabel}` : null,
+        isPositiveNumber(tradedAmount) ? tradeLabel : null
     ].filter(isDefined);
 
     return (
         <View
             accessible
             accessibilityLabel={[name, quantityLabel, ...details].join(', ')}
-            className="min-h-[56px] flex-row items-center gap-x-xl px-3xl py-lg"
+            className="gap-y-xs p-3xl"
             testID={InzhurSelector.SummaryFund(isin)}
         >
-            <Text className="flex-1 text-[17px] text-primary" numberOfLines={2}>
-                {name}
-            </Text>
-            <View className="items-end gap-y-xxs">
-                <Text className="text-[15px] font-semibold text-primary tabular-nums">{quantityLabel}</Text>
-                {details.map(detail => (
-                    <Text key={detail} className="text-[13px] text-secondary-foreground tabular-nums">
-                        {detail}
-                    </Text>
-                ))}
-            </View>
+            <Text className="text-[17px] font-semibold text-primary">{name}</Text>
+            <Text className="text-[15px] leading-[20px] text-primary tabular-nums">{quantityLabel}</Text>
+            {details.map(detail => (
+                <Text key={detail} className="text-[15px] leading-[20px] text-secondary-foreground tabular-nums">
+                    {detail}
+                </Text>
+            ))}
         </View>
     );
 };

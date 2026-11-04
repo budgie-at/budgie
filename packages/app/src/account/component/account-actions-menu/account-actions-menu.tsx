@@ -51,7 +51,7 @@ export const AccountActionsMenu = ({ accountId, accountType, balance, instrument
             trigger={<Icon icon={UserIconNameEnum.EllipsisVertical} className="text-primary" size={24} />}
             accessibilityLabel={t`Account actions`}
             isDisabled={isBusy}
-            triggerClassName="ml-auto h-10 w-10 items-center justify-center"
+            triggerClassName="ml-auto size-[44px] items-center justify-center"
             triggerTestID={AccountDetailsSelector.ActionsButton}
         >
             <ActionsMenuItem

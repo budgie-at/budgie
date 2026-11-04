@@ -28,7 +28,7 @@ interface Props {
     readonly institution: InstitutionGroupInterface;
 }
 
-const rowVariants = cva('min-h-[64px] gap-x-xl py-lg pr-lg pl-3xl active:scale-100 active:bg-surface-fill', {
+const rowVariants = cva('min-h-[64px] gap-x-xl py-lg pr-xl pl-3xl active:scale-100 active:bg-surface-fill', {
     variants: { isStacked: { true: 'gap-y-sm', false: 'flex-row items-center' } }
 });
 
@@ -69,7 +69,7 @@ export const InstitutionRow = ({ institution }: Props) => {
                     {title}
                 </Text>
                 {provider === ExternalSourceEnum.INZHUR ? (
-                    <InzhurInstitutionRowDetail accounts={accounts} />
+                    <InzhurInstitutionRowDetail />
                 ) : (
                     <InstitutionRowDetail accounts={accounts} accountsCountLabel={accountsCountLabel} />
                 )}

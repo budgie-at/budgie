@@ -15,8 +15,8 @@ export const InzhurFreshnessLine = () => {
     const priceDate = isDefined(freshness?.priceDate) ? formatMonthAndDayAndOptionalYear(freshness.priceDate) : null;
     const statementDate = isDefined(freshness?.statementDate) ? formatMonthAndDayAndOptionalYear(freshness.statementDate) : null;
     const parts = [
-        isDefined(priceDate) ? t`Prices · ${priceDate}` : null,
-        isDefined(statementDate) ? t`Statement · ${statementDate}` : null
+        isDefined(priceDate) ? t`Prices ${priceDate}` : null,
+        isDefined(statementDate) ? t`Statement ${statementDate}` : null
     ].filter(isDefined);
 
     if (!isNotEmptyArray(parts)) {
@@ -24,8 +24,11 @@ export const InzhurFreshnessLine = () => {
     }
 
     return (
-        <Text className="text-center text-[13px] leading-[18px] text-secondary-foreground tabular-nums" testID={InzhurSelector.Freshness}>
-            {parts.join('   ')}
+        <Text
+            className="px-5xl text-center text-[13px] leading-[18px] text-secondary-foreground tabular-nums"
+            testID={InzhurSelector.Freshness}
+        >
+            {parts.join(' · ')}
         </Text>
     );
 };

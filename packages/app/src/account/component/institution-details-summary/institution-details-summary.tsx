@@ -37,12 +37,8 @@ export const InstitutionDetailsSummary = ({ institution, balancesByAccountId }: 
             </View>
             <InstitutionConnectionRow syncs={syncs} />
             {isDefined(progress) ? <SyncImportProgress progress={progress} /> : null}
+            {isInzhur ? <InzhurImportStatementAction /> : null}
             <InstitutionAccounts institution={institution} balancesByAccountId={balancesByAccountId} />
-            {isInzhur ? (
-                <View className="px-3xl pb-md">
-                    <InzhurImportStatementAction />
-                </View>
-            ) : null}
         </View>
     );
 };

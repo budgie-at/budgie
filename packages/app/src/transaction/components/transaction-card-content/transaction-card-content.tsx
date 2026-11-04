@@ -5,9 +5,11 @@ import {
     isNegativeAdjustmentTransaction,
     isPositiveAdjustmentTransaction
 } from '@budgie/contracts';
-import { Trans } from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
 import { useContext } from 'react';
 import { Text } from 'react-native';
+
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
@@ -42,7 +44,9 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
     const iconClassName = iconVariant === 'secondary' ? 'bg-secondary-foreground/15' : '';
     const icon = isUncategorized ? UserIconNameEnum.CircleDashed : getTransactionIcon(transaction);
     const iconForegroundClassName = isUncategorized ? 'text-attention-foreground' : '';
+    const { t } = useLingui();
     const titleLineCount = isAccessibilityTextSize ? 4 : 1;
+    const adjustmentTitle = isNotEmptyString(transaction.title) ? transaction.title : t`Balance Adjustment`;
 
     return (
         <TransactionRowLayout
@@ -66,7 +70,7 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
                     numberOfLines={titleLineCount}
                     testID={TransactionCardSelector.AdjustmentBadge}
                 >
-                    <Trans>Balance Adjustment</Trans>
+                    {adjustmentTitle}
                 </Text>
             ) : (
                 <Text className="text-primary text-[15px] font-semibold" numberOfLines={titleLineCount} ellipsizeMode="tail">

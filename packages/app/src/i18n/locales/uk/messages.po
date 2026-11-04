@@ -499,14 +499,6 @@ msgstr "{freeSize} ГБ вільно"
 msgid "{fromAmount} and {toAmount}"
 msgstr "{fromAmount} і {toAmount}"
 
-#: src/inzhur/component/inzhur-institution-row-detail/inzhur-institution-row-detail.tsx
-msgid "{fundCount, plural, one {# fund} other {# funds}}"
-msgstr "{fundCount, plural, one {# фонд} few {# фонди} many {# фондів} other {# фонду}}"
-
-#: src/inzhur/component/inzhur-institution-row-detail/inzhur-institution-row-detail.tsx
-msgid "{fundsLabel} · Cash {cashLabel}"
-msgstr "{fundsLabel} · Готівка {cashLabel}"
-
 #: src/@generic/hook/use-format-file-size.hook.ts
 msgid "{gigabytes} GB"
 msgstr "{gigabytes} ГБ"
@@ -694,10 +686,6 @@ msgstr "{providerName} · Вартість придбання невідома"
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "{providerName} sync"
 msgstr "Синхронізація {providerName}"
-
-#: src/inzhur/component/inzhur-fund-holding-line/inzhur-fund-holding-line.tsx
-msgid "{quantityLabel} · {priceLabel} each"
-msgstr "{quantityLabel} · по {priceLabel}"
 
 #: src/account/component/fund-account-card/fund-account-card.tsx
 msgid "{quantityLabel}, worth {valueLabel}"
@@ -891,6 +879,10 @@ msgstr "Синхронізовано транзакцій: {transactionCount} з
 #: src/categorize-inbox/components/categorize-inbox-transfer-undo/categorize-inbox-transfer-undo.tsx
 msgid "{transferCount} now transfers"
 msgstr "Тепер переказів: {transferCount}"
+
+#: src/inzhur/component/inzhur-import-summary/inzhur-import-summary.tsx
+msgid "{uncoveredLabel} not matched to a bank top-up yet"
+msgstr "{uncoveredLabel} ще не зіставлено з поповненням із банку"
 
 #: src/settings/components/show-cents-row/show-cents-row.tsx
 msgid "{withCents} instead of {withoutCents}"
@@ -1117,10 +1109,6 @@ msgstr "Рахунок не знайдено"
 msgid "Account not found"
 msgstr "Рахунок не знайдено"
 
-#: src/inzhur/component/inzhur-statement-info-card/inzhur-statement-info-card.tsx
-msgid "Account statement, PDF"
-msgstr "Виписка з рахунку, PDF"
-
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 #: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
@@ -1151,6 +1139,10 @@ msgstr "Дія: {label}"
 #: src/settings/components/budget-management-card/budget-management-card.tsx
 msgid "Active budget"
 msgstr "Активний бюджет"
+
+#: src/inzhur/component/inzhur-cash-reconciliation/inzhur-cash-reconciliation.tsx
+msgid "Actual balance in Inzhur"
+msgstr "Фактичний баланс в Inzhur"
 
 #: src/budget/components/budget-event-category-limits/budget-event-category-limits.tsx
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
@@ -1589,10 +1581,6 @@ msgstr "Ви впевнені, що хочете видалити всі сво�
 msgid "Are you sure?"
 msgstr "Ви впевнені?"
 
-#: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
-msgid "As of {priceDate}"
-msgstr "Станом на {priceDate}"
-
 #: src/account/component/net-worth-composition/net-worth-composition.tsx
 msgid "Asset mix"
 msgstr "Структура активів"
@@ -1657,6 +1645,10 @@ msgstr "Автоматизація"
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Available once the import finishes"
 msgstr "Стане доступним після завершення імпорту"
+
+#: src/inzhur/component/inzhur-cash-account-card/inzhur-cash-account-card.tsx
+msgid "Available to invest"
+msgstr "Доступно для інвестування"
 
 #: src/app/(tabs)/settings/ai.tsx
 msgid "Available when on-device AI is on."
@@ -1744,8 +1736,8 @@ msgid "Bank account"
 msgstr "Банківський рахунок"
 
 #: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
-msgid "Bank dividends"
-msgstr "Дивіденди на банк"
+msgid "Bank dividends · all time"
+msgstr "Дивіденди на банк · за весь час"
 
 #: src/account/component/account-card-menu/account-card-menu.tsx
 msgid "Bank integration settings"
@@ -1861,8 +1853,8 @@ msgid "Borrowed debt account expected"
 msgstr "Очікувався рахунок позиченого боргу"
 
 #: src/inzhur/component/inzhur-import-summary-fund-row/inzhur-import-summary-fund-row.tsx
-msgid "Bought {boughtLabel}"
-msgstr "Куплено на {boughtLabel}"
+msgid "Bought with Inzhur cash · {tradedLabel}"
+msgstr "Куплено за готівку Inzhur · {tradedLabel}"
 
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 msgid "Browse icons"
@@ -1937,6 +1929,10 @@ msgstr "Budgie ще не має курсу для валюти цього пла
 msgid "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
 msgstr "Budgie зіткнувся з неочікуваною проблемою. Ви можете перезапустити застосунок або повідомити про проблему, щоб ми її дослідили."
 
+#: src/inzhur/component/inzhur-import-summary/inzhur-import-summary.tsx
+msgid "Budgie matches it automatically when the top-up arrives from your bank."
+msgstr "Budgie зіставить автоматично, щойно надійде поповнення з вашого банку."
+
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Budgie matches the card name, then uses your default account. Rename the account to match, or choose Account in the Shortcuts action."
 msgstr "Budgie шукає назву картки, а інакше використовує рахунок за замовчуванням. Перейменуйте рахунок відповідно або виберіть «Рахунок» у дії Швидких команд."
@@ -1949,9 +1945,9 @@ msgstr "Budgie планує відкладати {amountLabel} {rate}"
 msgid "Budgie reads these statements on this phone."
 msgstr "Budgie читає ці виписки на цьому телефоні."
 
-#: src/inzhur/component/inzhur-cash-reconciliation/inzhur-cash-reconciliation.tsx
-msgid "Budgie records a positive difference as estimated dividends."
-msgstr "Budgie записує додатну різницю як орієнтовні дивіденди."
+#: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
+msgid "Budgie reads your Inzhur account statement, updates certificates and cash, and records buys and dividends for you."
+msgstr "Budgie читає виписку з рахунку Inzhur, оновлює сертифікати й готівку та сам записує покупки й дивіденди."
 
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Budgie removes repeated bank imports and fixes transfers that landed on inactive accounts. Manual transactions are never changed."
@@ -1964,10 +1960,6 @@ msgstr "Budgie більше не відкладає на це гроші. Ваш
 #: src/sync/component/bank-integration-key-card/bank-integration-key-card.tsx
 msgid "Budgie syncs automatically and lists new Monobank accounts here as soon as they appear."
 msgstr "Budgie синхронізує автоматично й показує тут нові рахунки Monobank, щойно вони з’являються."
-
-#: src/inzhur/component/inzhur-statement-info-card/inzhur-statement-info-card.tsx
-msgid "Budgie updates your certificates and cash, and records buys and dividends for you."
-msgstr "Budgie оновлює ваші сертифікати й готівку та сам записує покупки й дивіденди."
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
@@ -2091,6 +2083,10 @@ msgctxt "Categorize inbox section chip"
 msgid "Cash"
 msgstr "Готівка"
 
+#: src/inzhur/component/inzhur-institution-row-detail/inzhur-institution-row-detail.tsx
+msgid "Cash {cashLabel} · Funds {fundsLabel}"
+msgstr "Готівка {cashLabel} · Фонди {fundsLabel}"
+
 #: src/account/constant/account-kind-title.constant.ts
 msgid "Cash & savings"
 msgstr "Готівка та заощадження"
@@ -2098,6 +2094,10 @@ msgstr "Готівка та заощадження"
 #: src/inzhur/component/inzhur-import-summary/inzhur-import-summary.tsx
 msgid "Cash added"
 msgstr "Готівки додано"
+
+#: src/inzhur/component/create-inzhur-account/create-inzhur-account.tsx
+msgid "Cash available in your Inzhur app. Import a statement next to add certificates."
+msgstr "Доступна готівка в застосунку Inzhur. Потім імпортуйте виписку, щоб додати сертифікати."
 
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "cash from an ATM"
@@ -2364,6 +2364,10 @@ msgstr "Обрати файл"
 #: src/receipt/components/receipt-source-menu/receipt-source-menu.tsx
 msgid "Choose from Photos"
 msgstr "Обрати з Фото"
+
+#: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
+msgid "Choose it here as a PDF"
+msgstr "Оберіть її тут як PDF"
 
 #: src/categorize-inbox/components/categorize-inbox-group-choose-payments-option/categorize-inbox-group-choose-payments-option.tsx
 #: src/categorize-inbox/components/categorize-inbox-payments-screen/categorize-inbox-payments-screen.tsx
@@ -3518,6 +3522,10 @@ msgstr "знизилась на {changeShare} за останні 24 годин�
 msgid "Download"
 msgstr "Завантажити"
 
+#: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
+msgid "Download «Виписка про стан рахунку»"
+msgstr "Завантажте «Виписка про стан рахунку»"
+
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "Download {remaining} GB"
 msgstr "Завантажити {remaining} ГБ"
@@ -3813,10 +3821,6 @@ msgstr "Введіть поточний PIN-код"
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
 msgid "Enter the backup's PIN"
 msgstr "Введіть PIN-код резервної копії"
-
-#: src/inzhur/component/create-inzhur-account/create-inzhur-account.tsx
-msgid "Enter the cash available in your Inzhur app. Import a statement next to add your certificates."
-msgstr "Введіть доступну готівку з застосунку Inzhur. Потім імпортуйте виписку, щоб додати сертифікати."
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
@@ -4379,6 +4383,7 @@ msgstr "Якщо ви його забудете, ніхто не зможе ві
 msgid "Ignores the minus sign."
 msgstr "Знак мінус ігнорується."
 
+#: src/inzhur/component/inzhur-import-statement-action/inzhur-import-statement-action.tsx
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Import"
 msgstr "Імпорт"
@@ -4434,10 +4439,6 @@ msgstr "Імпортувати файл"
 msgid "Import into"
 msgstr "Імпортувати в"
 
-#: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
-msgid "Import Inzhur statement"
-msgstr "Імпорт виписки Inzhur"
-
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Import Privatbank"
 msgstr "Імпорт Приватбанку"
@@ -4446,6 +4447,7 @@ msgstr "Імпорт Приватбанку"
 msgid "Import started"
 msgstr "Імпорт розпочато"
 
+#: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
 #: src/inzhur/component/inzhur-import-statement-action/inzhur-import-statement-action.tsx
 #: src/sync/component/bank-integration-statements/bank-integration-statements.tsx
 msgid "Import statement"
@@ -4494,10 +4496,6 @@ msgstr "У запасі, за сьогоднішніми цінами"
 #: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
 msgid "In Shortcuts, add a Transaction automation. Pick cards and Run Immediately."
 msgstr "У Командах додайте автоматизацію «Транзакція». Виберіть картки та «Запускати негайно»."
-
-#: src/inzhur/component/inzhur-cash-reconciliation/inzhur-cash-reconciliation.tsx
-msgid "In your Inzhur app"
-msgstr "У застосунку Inzhur"
 
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Include {title} in imports"
@@ -4584,6 +4582,10 @@ msgstr "Відсоткова ставка % (необов'язково)"
 msgid "Invalid file"
 msgstr "Невірний файл"
 
+#: src/account/constant/account-type.constant.ts
+msgid "Investments"
+msgstr "Інвестиції"
+
 #: src/account/constant/bank-provider-title.constant.ts
 #: src/app/(main)/create-account/index.tsx
 #: src/rule/constant/external-source.constant.ts
@@ -4597,6 +4599,10 @@ msgstr "Inzhur купує більше сертифікатів"
 #: src/inzhur/hook/use-inzhur-statement-import.hook.ts
 msgid "Inzhur is not set up"
 msgstr "Inzhur не налаштовано"
+
+#: src/inzhur/component/inzhur-import-summary/inzhur-import-summary.tsx
+msgid "Inzhur now {totalLabel}"
+msgstr "Inzhur тепер {totalLabel}"
 
 #: src/inzhur/component/inzhur-dividend-payout-option/inzhur-dividend-payout-option.tsx
 msgid "Inzhur sends dividends to your card"
@@ -6366,13 +6372,9 @@ msgstr "Графік цін, {rangeLabel}, від {fromLabel} до {toLabel}, м
 msgid "Price not available"
 msgstr "Ціна недоступна"
 
-#: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
-msgid "Price per certificate"
-msgstr "Ціна сертифіката"
-
 #: src/inzhur/component/inzhur-freshness-line/inzhur-freshness-line.tsx
-msgid "Prices · {priceDate}"
-msgstr "Ціни · {priceDate}"
+msgid "Prices {priceDate}"
+msgstr "Ціни {priceDate}"
 
 #: src/tag/components/tag-selector-row/tag-selector-row.tsx
 msgid "Primary"
@@ -6607,13 +6609,13 @@ msgstr "Отримані відшкодування"
 msgid "Reinvested"
 msgstr "Реінвестуються"
 
-#: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
-msgid "Reinvested dividends"
-msgstr "Реінвестовані дивіденди"
-
 #: src/inzhur/component/inzhur-import-summary-fund-row/inzhur-import-summary-fund-row.tsx
-msgid "Reinvested dividends {dividendLabel}"
-msgstr "Реінвестовані дивіденди {dividendLabel}"
+msgid "Reinvested dividends · {dividendLabel}"
+msgstr "Реінвестовані дивіденди · {dividendLabel}"
+
+#: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
+msgid "Reinvested dividends · all time"
+msgstr "Реінвестовані дивіденди · за весь час"
 
 #: src/sync/component/bank-integration-key-card/bank-integration-key-card.tsx
 msgid "Rejected · tap to update"
@@ -6713,10 +6715,6 @@ msgstr "Повідомити про помилку"
 #: src/settings/components/support-settings-rows/support-settings-rows.tsx
 msgid "Report a bug or idea"
 msgstr "Повідомити про помилку чи ідею"
-
-#: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
-msgid "Request an account statement"
-msgstr "Замовте виписку з рахунку"
 
 #: src/app/(main)/import-csv.tsx
 #: src/rule/components/rule-value-picker-button/rule-value-picker-button.tsx
@@ -6921,10 +6919,6 @@ msgstr "Зберегти комісію"
 #: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
 msgid "Save it"
 msgstr "Збережіть її"
-
-#: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
-msgid "Save it as a PDF"
-msgstr "Збережіть її як PDF"
 
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Save it to Files or another app."
@@ -7321,8 +7315,8 @@ msgid "SmartBudget"
 msgstr "SmartBudget"
 
 #: src/inzhur/component/inzhur-import-summary-fund-row/inzhur-import-summary-fund-row.tsx
-msgid "Sold {boughtLabel}"
-msgstr "Продано на {boughtLabel}"
+msgid "Sold for Inzhur cash · {tradedLabel}"
+msgstr "Продано за готівку Inzhur · {tradedLabel}"
 
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
 msgid "Some transactions may be hidden by the account or amount filter."
@@ -7458,8 +7452,8 @@ msgid "Starts on"
 msgstr "Починається"
 
 #: src/inzhur/component/inzhur-freshness-line/inzhur-freshness-line.tsx
-msgid "Statement · {statementDate}"
-msgstr "Виписка · {statementDate}"
+msgid "Statement {statementDate}"
+msgstr "Виписка {statementDate}"
 
 #: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
@@ -7492,7 +7486,6 @@ msgid "Step-by-step instructions"
 msgstr "Покрокова інструкція"
 
 #: src/account/constant/account-kind-title.constant.ts
-#: src/account/constant/account-type.constant.ts
 #: src/onboarding/constant/onboarding-account-options.constant.ts
 msgid "Stocks"
 msgstr "Акції"
@@ -8630,10 +8623,6 @@ msgstr "Обсяг (24 год)"
 msgid "Waiting"
 msgstr "Очікування"
 
-#: src/inzhur/component/inzhur-import-summary/inzhur-import-summary.tsx
-msgid "Waiting for a {uncoveredLabel} top-up from your bank"
-msgstr "Очікуємо поповнення на {uncoveredLabel} з вашого банку"
-
 #: src/ai/constant/ai-download-card-visuals.constant.ts
 msgid "Waiting for a connection"
 msgstr "Очікування з'єднання"
@@ -8750,6 +8739,14 @@ msgstr "Увесь період"
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Wi-Fi"
 msgstr "Wi-Fi"
+
+#: src/inzhur/component/update-inzhur-account-page/update-inzhur-account-page.tsx
+msgid "Will record +{differenceLabel} as dividends kept in Inzhur"
+msgstr "+{differenceLabel} буде записано як дивіденди, що лишилися в Inzhur"
+
+#: src/inzhur/component/update-inzhur-account-page/update-inzhur-account-page.tsx
+msgid "Will record −{differenceLabel} as a balance correction"
+msgstr "−{differenceLabel} буде записано як коригування балансу"
 
 #: src/account/constant/bank-provider-title.constant.ts
 #: src/rule/constant/external-source.constant.ts

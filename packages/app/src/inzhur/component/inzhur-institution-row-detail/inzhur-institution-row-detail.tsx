@@ -1,4 +1,3 @@
-import { InstrumentTypeEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
@@ -6,40 +5,31 @@ import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { PROTECTED_AMOUNT_PLACEHOLDER } from '../../../@generic/constant/protected-amount-placeholder.constant';
 import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
-import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
+import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { cn } from '../../../@generic/utils/cn.util';
-import { useAccountBalanceQuery } from '../../../account/query/use-account-balance.query';
+import { THOUSAND } from '../../../i18n/constant/compact-thresholds.constant';
+import { useFormatCompactDigits } from '../../../i18n/hook/use-format-compact-digits.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useInzhurStatementReminderQuery } from '../../query/use-inzhur-statement-reminder.query';
+import { useInzhurValueQuery } from '../../query/use-inzhur-value.query';
 import { InzhurSelector } from '../../selector/inzhur.selector';
-import { isInzhurCashAccount } from '../../utils/is-inzhur-cash-account.util';
 
-import type { AccountAssociationEnum, AccountWithSyncEntityInterface } from '@budgie/contracts';
-
-interface Props {
-    readonly accounts: readonly Pick<
-        AccountWithSyncEntityInterface,
-        'id' | 'externalSource' | 'externalId' | AccountAssociationEnum.INSTRUMENT
-    >[];
-}
-
-export const InzhurInstitutionRowDetail = ({ accounts }: Props) => {
+export const InzhurInstitutionRowDetail = () => {
     const { t } = useLingui();
     const reminder = useInzhurStatementReminderQuery();
+    const value = useInzhurValueQuery();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
-    const protectAmount = useProtectedAmountLabel();
-    const cashAccount = accounts.find(isInzhurCashAccount);
-    const { balance: cashBalance } = useAccountBalanceQuery(cashAccount?.id ?? 0);
+    const isAmountProtected = useIsAmountProtected();
+    const formatCashDigits = useFormatCompactDigits();
+    const formatFundsDigits = useFormatCompactDigits(THOUSAND);
 
-    const fundCount = accounts.filter(account => account.instrument.type === InstrumentTypeEnum.FUND).length;
-    const fundsLabel = t({ message: plural(fundCount, { one: '# fund', other: '# funds' }) });
-    const cashLabel = protectAmount(cashBalance, defaultInstrument.symbol);
-    const holdingsLabel = isDefined(cashAccount) ? t`${fundsLabel} · Cash ${cashLabel}` : fundsLabel;
+    const cashLabel = isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : formatCashDigits(value?.cash ?? 0, defaultInstrument.symbol);
+    const fundsLabel = isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : formatFundsDigits(value?.funds ?? 0, defaultInstrument.symbol);
     const staleLabel = isDefined(reminder)
         ? t({ message: plural(reminder.daysOld, { one: 'Statement # day old', other: 'Statement # days old' }) })
         : null;
-
     const toneClassName = isDefined(staleLabel) ? 'text-warning-strong' : 'text-secondary-foreground';
 
     return (
@@ -49,7 +39,7 @@ export const InzhurInstitutionRowDetail = ({ accounts }: Props) => {
             numberOfLines={2}
             testID={InzhurSelector.InstitutionDetail}
         >
-            {staleLabel ?? holdingsLabel}
+            {staleLabel ?? t`Cash ${cashLabel} · Funds ${fundsLabel}`}
         </Text>
     );
 };

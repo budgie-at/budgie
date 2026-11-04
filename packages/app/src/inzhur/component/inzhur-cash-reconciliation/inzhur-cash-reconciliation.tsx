@@ -18,26 +18,30 @@ export const InzhurCashReconciliation = ({ trackedBalance, value, onChange, inst
     const { t } = useLingui();
     const formatDigits = useDisplayFormatDigits();
 
-    const difference = value - trackedBalance;
-    const differenceSign = difference > 0 ? '+' : '';
-    const differenceLabel = `${differenceSign}${formatDigits(difference, instrumentSymbol)}`;
+    const differenceLabel = formatDigits(value - trackedBalance, instrumentSymbol);
+    const isDifferent = formatDigits(value) !== formatDigits(trackedBalance);
+    const signedDifferenceLabel = value > trackedBalance ? `+${differenceLabel}` : differenceLabel;
 
     return (
         <View className="gap-y-md pb-5xl">
-            <Text className="px-4 pt-md text-[13px] font-medium text-secondary-foreground">{t`In your Inzhur app`}</Text>
+            <Text className="px-4 pt-md text-[13px] font-medium text-secondary-foreground">{t`Actual balance in Inzhur`}</Text>
             <FormAmountInput testID={CreateAccountSelector.Amount} value={value} instrumentSymbol={instrumentSymbol} onChange={onChange} />
-            <GroupedListSection footer={t`Budgie records a positive difference as estimated dividends.`}>
-                <View accessible className="min-h-[44px] flex-row items-center gap-x-xl px-3xl py-md">
-                    <Text className="flex-1 text-[15px] text-primary">{t`Tracked by Budgie`}</Text>
-                    <ProtectedText className="text-[15px] text-secondary-foreground tabular-nums">
-                        {formatDigits(trackedBalance, instrumentSymbol)}
-                    </ProtectedText>
-                </View>
-                <View accessible className="min-h-[44px] flex-row items-center gap-x-xl px-3xl py-md">
-                    <Text className="flex-1 text-[15px] text-primary">{t`Difference`}</Text>
-                    <ProtectedText className="text-[15px] font-semibold text-primary tabular-nums">{differenceLabel}</ProtectedText>
-                </View>
-            </GroupedListSection>
+            {isDifferent ? (
+                <GroupedListSection>
+                    <View accessible className="min-h-[44px] flex-row items-center gap-x-xl px-3xl py-md">
+                        <Text className="flex-1 text-[15px] text-primary">{t`Tracked by Budgie`}</Text>
+                        <ProtectedText className="text-[15px] text-secondary-foreground tabular-nums">
+                            {formatDigits(trackedBalance, instrumentSymbol)}
+                        </ProtectedText>
+                    </View>
+                    <View accessible className="min-h-[44px] flex-row items-center gap-x-xl px-3xl py-md">
+                        <Text className="flex-1 text-[15px] text-primary">{t`Difference`}</Text>
+                        <ProtectedText className="text-[15px] font-semibold text-primary tabular-nums">
+                            {signedDifferenceLabel}
+                        </ProtectedText>
+                    </View>
+                </GroupedListSection>
+            ) : null}
         </View>
     );
 };

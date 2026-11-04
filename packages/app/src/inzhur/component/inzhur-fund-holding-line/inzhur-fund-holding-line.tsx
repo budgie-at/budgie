@@ -1,8 +1,7 @@
-import { useLingui } from '@lingui/react/macro';
-
 import { isDefined } from '@rnw-community/shared';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
+import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useFormatFundQuantity } from '../../../i18n/hook/use-format-fund-quantity.hook';
 import { useHryvniaInstrumentQuery } from '../../query/use-hryvnia-instrument.query';
@@ -16,7 +15,7 @@ interface Props {
 }
 
 export const InzhurFundHoldingLine = ({ account, balance }: Props) => {
-    const { t } = useLingui();
+    const { formatMonthAndDayAndOptionalYear } = useFormatDate();
     const { latestPrice } = useInzhurFundReturnsQuery(account.id, account.instrumentId);
     const symbol = useHryvniaInstrumentQuery()?.symbol ?? '';
     const formatAmount = useFormatDigits(2);
@@ -24,7 +23,8 @@ export const InzhurFundHoldingLine = ({ account, balance }: Props) => {
 
     const quantityLabel = formatFundQuantity(balance);
     const priceLabel = isDefined(latestPrice) ? formatAmount(latestPrice.price, symbol) : null;
-    const label = isDefined(priceLabel) ? t`${quantityLabel} · ${priceLabel} each` : quantityLabel;
+    const priceDate = isDefined(latestPrice) ? formatMonthAndDayAndOptionalYear(latestPrice.priceDate) : null;
+    const label = isDefined(priceLabel) ? `${quantityLabel} · ${priceLabel} · ${priceDate}` : quantityLabel;
 
     return <ProtectedText className="text-center text-[15px] leading-[20px] text-secondary-foreground tabular-nums">{label}</ProtectedText>;
 };
