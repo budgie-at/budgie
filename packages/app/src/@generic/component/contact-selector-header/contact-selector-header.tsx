@@ -34,8 +34,8 @@ export const ContactSelectorHeader = ({ search, onSearchChange, isLimited, canSe
                         accessibilityState={searchAccessibilityState}
                         placeholder={placeholder}
                         testID={ContactSelectorSelector.Search}
-                        containerClassName="h-[40px] flex-1 rounded-3xl border-0 bg-surface-fill px-md"
-                        inputClassName="ml-md h-[44px] text-[17px]"
+                        containerClassName="h-auto min-h-[44px] flex-1 rounded-3xl border-0 bg-surface-fill px-md"
+                        inputClassName="ml-md min-h-[44px] text-[17px]"
                     />
                 </View>
             </View>
