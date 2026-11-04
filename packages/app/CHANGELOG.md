@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.151.5](https://github.com/budgie-at/budgie/compare/v6.151.4...v6.151.5) (2026-11-04)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.151.4](https://github.com/budgie-at/budgie/compare/v6.151.3...v6.151.4) (2026-11-04)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.151.3](https://github.com/budgie-at/budgie/compare/v6.151.2...v6.151.3) (2026-11-04)
+
+### Bug Fixes
+
+* **app:** stop recording unconfirmed backup saves ([#1923](https://github.com/budgie-at/budgie/issues/1923)) ([b7106ef](https://github.com/budgie-at/budgie/commit/b7106ef162159e3fd6f473fe606f6b633881daef))
+
+
+## [6.151.2](https://github.com/budgie-at/budgie/compare/v6.151.1...v6.151.2) (2026-11-04)
+
+### Bug Fixes
+
+* **app:** stop a toast from sticking over the back button ([24ac156](https://github.com/budgie-at/budgie/commit/24ac156b870c11f917a57b0ff1fc8f252a573dcb))
+
+
+## [6.151.1](https://github.com/budgie-at/budgie/compare/v6.151.0...v6.151.1) (2026-11-04)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
 # [6.151.0](https://github.com/budgie-at/budgie/compare/v6.150.4...v6.151.0) (2026-11-04)
 
 ### Bug Fixes

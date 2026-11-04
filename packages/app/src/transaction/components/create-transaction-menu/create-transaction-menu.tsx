@@ -6,6 +6,7 @@ import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+import Toast from 'react-native-toast-message';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -139,6 +140,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
 
     useEffect(() => {
         if (isOpen) {
+            Toast.hide();
             rotation.set(withSpring(BUTTON_ROTATION_ACTIVE, SPRING_CONFIG));
             menuScale.set(withSpring(1, SPRING_CONFIG));
         } else if (isVisible) {

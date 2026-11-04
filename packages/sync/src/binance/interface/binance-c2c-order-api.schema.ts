@@ -11,7 +11,8 @@ const BinanceC2cOrderApiSchema = Schema.Struct({
     unitPrice: Schema.String,
     orderStatus: Schema.String,
     createTime: Schema.Number,
-    takerCommission: Schema.String
+    commission: Schema.optionalKey(Schema.String),
+    takerCommission: Schema.optionalKey(Schema.String)
 });
 
 export const BinanceC2cOrderListApiSchema = Schema.Struct({

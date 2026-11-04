@@ -1,3 +1,4 @@
+import { Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 
@@ -10,15 +11,23 @@ import { SEARCH_LIST_BOTTOM_CLEARANCE } from '../searchable-page/searchable-page
 
 import type { ReceiptScanToastStatusEnum } from '../../../receipt/enum/receipt-scan-toast-status.enum';
 import type { ToastActionInterface } from '../../interface/toast-action.interface';
+import type { ReactNode } from 'react';
 import type { ToastConfig, ToastConfigParams } from 'react-native-toast-message';
 
-const renderAppToast = (params: ToastConfigParams<unknown>) => <AppToast {...params} />;
+const renderDismissibleOnTap = (hide: () => void, toast: ReactNode) => (
+    <Pressable accessible={false} className="w-full items-center" onPress={hide}>
+        {toast}
+    </Pressable>
+);
+
+const renderAppToast = (params: ToastConfigParams<unknown>) => renderDismissibleOnTap(params.hide, <AppToast {...params} />);
 
 const APP_TOAST_CONFIG: ToastConfig = {
     success: renderAppToast,
     error: renderAppToast,
     info: renderAppToast,
-    [ACTION_TOAST_TYPE]: (params: ToastConfigParams<ToastActionInterface>) => <AppToast {...params} type="success" action={params.props} />,
+    [ACTION_TOAST_TYPE]: (params: ToastConfigParams<ToastActionInterface>) =>
+        renderDismissibleOnTap(params.hide, <AppToast {...params} type="success" action={params.props} />),
     [RECEIPT_SCAN_TOAST_TYPE]: (params: ToastConfigParams<ReceiptScanToastStatusEnum>) => <ReceiptScanToast {...params} />
 };
 
