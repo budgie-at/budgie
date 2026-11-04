@@ -71,7 +71,8 @@ export const SplitEntriesModalContent = (props: Props) => {
     const [hapticNotification] = useVibration();
 
     const [entries, setEntries] = useState<EntryWithLocalIdInterface[]>(() => initialEntries.map(addLocalId));
-    const [autoFocusIndex, setAutoFocusIndex] = useState(-1);
+    const [autoFocusId, setAutoFocusId] = useState<EntryWithLocalIdInterface['localId'] | null>(null);
+    const [isAddingEntry, setIsAddingEntry] = useState(false);
 
     const entriesTotalMicroUnits = convertToMicroUnits(sumEntryAmounts(entries));
     const totalAmountMicroUnits = convertToMicroUnits(totalAmount);
@@ -85,7 +86,7 @@ export const SplitEntriesModalContent = (props: Props) => {
     const allEntriesValid = entries.every(entry => isPositiveNumber(entry.categoryId) && isPositiveNumber(entry.amount));
     const allEntriesHaveAmount = entries.every(entry => isPositiveNumber(entry.amount));
     const hasMissingCategories = isFullySplit && !allEntriesValid;
-    const canAddEntry = remainingAmountMicroUnits > 0 && allEntriesHaveAmount;
+    const canAddEntry = remainingAmountMicroUnits > 0 && allEntriesHaveAmount && !isAddingEntry;
     const canConfirm = isFullySplit && allEntriesValid;
 
     const applyEntries = (nextEntries: EntryWithLocalIdInterface[]) => {
@@ -122,15 +123,24 @@ export const SplitEntriesModalContent = (props: Props) => {
 
     const handleAddEntry = () => {
         const newEntry = createEmptyEntry(entryType, accountId);
-        void KeyboardController.dismiss().then(() => {
-            setEntries(previous => (previous.length > entries.length ? previous : [...previous, newEntry]));
-            setAutoFocusIndex(entries.length);
-        });
+        setIsAddingEntry(true);
+
+        appRuntime.runFork(
+            logAndContinue(
+                Effect.promise(() => KeyboardController.dismiss()).pipe(
+                    Effect.map(() => {
+                        setEntries(previous => [...previous, newEntry]);
+                        setAutoFocusId(newEntry.localId);
+                        setIsAddingEntry(false);
+                    })
+                )
+            )
+        );
     };
 
     const handleRemoveEntry = (index: number) => {
         applyEntries(entries.filter((_, entryIndex) => entryIndex !== index));
-        setAutoFocusIndex(-1);
+        setAutoFocusId(null);
     };
 
     const handleConfirm = () => {
@@ -180,7 +190,7 @@ export const SplitEntriesModalContent = (props: Props) => {
                             entry={entry}
                             index={index}
                             currencySymbol={currencySymbol}
-                            autoFocus={index === autoFocusIndex}
+                            autoFocus={entry.localId === autoFocusId}
                             entryCount={entries.length}
                             onAmountChange={handleAmountChange}
                             onCategoryPress={handleCategoryPress}
