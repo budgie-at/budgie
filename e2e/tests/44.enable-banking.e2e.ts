@@ -6,6 +6,8 @@ import * as i from '../support/budgie/imports.ts';
 import { test } from '../support/budgie/test.ts';
 
 const NOT_A_KEY = 'This file is not an unencrypted RSA private key in PEM format.';
+const THROWAWAY_KEY = 'e2e00000-0000-4000-8000-0000000000e1.pem, txt';
+const SYNTHETIC_ACCOUNT = 'E2E Synthetic Bank E2E Current';
 
 test('44 enable banking', { tags: ['sync'] }, async ({ budgie }) => {
     const ctx = budgie.ctx;
@@ -16,9 +18,12 @@ test('44 enable banking', { tags: ['sync'] }, async ({ budgie }) => {
         await b.expectId(ctx, 'BankIntegration.Page', 10_000);
         await b.expectText(ctx, title);
     };
-    const pickInvalidKey = async (rowId: string) => {
+    const pickFile = async (rowId: string, file: string) => {
         await b.tapId(ctx, rowId);
-        await i.selectFileFromAppProvider(ctx, 'e2e-budgie-import, csv');
+        await i.selectFileFromAppProvider(ctx, file);
+    };
+    const pickInvalidKey = async (rowId: string) => {
+        await pickFile(rowId, 'e2e-budgie-import, csv');
         await b.expectText(ctx, NOT_A_KEY, 10_000);
     };
 
@@ -36,8 +41,35 @@ test('44 enable banking', { tags: ['sync'] }, async ({ budgie }) => {
 
     await b.phase('invalid key file is rejected', async () => {
         await pickInvalidKey('EnableBankingKeyStep.ChooseKeyFile');
-        await b.expectText(ctx, 'Choose key file');
+        await expect(id('EnableBankingKeyStep.ChooseKeyFile')).toHaveText(/^Choose key file/);
         await expect(id('CreateEnableBankingAccount.ContinueButton')).toBeDisabled();
+    });
+
+    await b.phase('connect a synthetic bank through the real flow', async () => {
+        await pickFile('EnableBankingKeyStep.ChooseKeyFile', THROWAWAY_KEY);
+        await expect(id('EnableBankingKeyStep.ChooseKeyFile')).toHaveText(/^Key file loaded/);
+        await expect(id('CreateEnableBankingAccount.ContinueButton')).toBeEnabled();
+        await b.tapId(ctx, 'CreateEnableBankingAccount.ContinueButton');
+        await b.expectId(ctx, 'EnableBankingBankRow.E2E Synthetic Bank', 15_000);
+        await b.tapId(ctx, 'EnableBankingBankRow.E2E Synthetic Bank');
+        await b.expectText(ctx, 'Choose accounts', 30_000);
+        const account = screen.getByRole('button', { name: /^E2E Synthetic Bank E2E Current, EUR/ }).first();
+        await expect(account).toBeVisible();
+        await expect(id('CreateEnableBankingAccount.ContinueButton')).toBeEnabled();
+        await b.tapId(ctx, 'CreateEnableBankingAccount.ContinueButton');
+        await b.expectId(ctx, 'HomePage.TotalBalance', 30_000);
+        await b.scrollTo(ctx, `AccountCard.${SYNTHETIC_ACCOUNT}`);
+        await expect(id(`AccountCard.${SYNTHETIC_ACCOUNT}`)).toHaveText(/€1,235, Up to date$/, { timeout: 90_000 });
+        await b.openLink(ctx, 'budgie://transactions');
+        await expect(screen.getByRole('button', { name: /^E2E Coffee, .*E2E Synthetic Bank E2E Current, €12,/ }).first()).toBeVisible({
+            timeout: 15_000
+        });
+        await expect(
+            screen.getByRole('button', { name: /^E2E Employer, .*E2E Synthetic Bank E2E Current, \+€500,/ }).first()
+        ).toBeVisible();
+        await expect(
+            screen.getByRole('button', { name: /^Balance Adjustment, .*E2E Synthetic Bank E2E Current, \+€747,/ }).first()
+        ).toBeVisible();
     });
 
     await b.phase('valid consent', async () => {
@@ -52,20 +84,20 @@ test('44 enable banking', { tags: ['sync'] }, async ({ budgie }) => {
     await b.phase('expired consent', async () => {
         await openIntegration(92, 'E2E Expired Bank');
         await b.expectText(ctx, 'Consent expired');
-        await b.expectId(ctx, 'EnableBankingConnectionCard.Reauthorize');
-        await b.expectText(ctx, 'Renews bank consent for syncing.');
+        await expect(id('EnableBankingConnectionCard.Reauthorize')).toHaveText(/Renews bank consent for syncing\.$/);
         await b.expectNoId(ctx, 'EnableBankingConnectionCard.ChooseKey');
     });
 
     await b.phase('account not linked', async () => {
         await openIntegration(93, 'E2E Unlinked Bank');
-        await b.expectId(ctx, 'EnableBankingConnectionCard.Reauthorize');
-        await b.expectText(ctx, 'An account is not linked. Link it in Enable Banking, then authorize.');
+        await expect(id('EnableBankingConnectionCard.Reauthorize')).toHaveText(
+            /An account is not linked\. Link it in Enable Banking, then authorize\.$/
+        );
     });
 
     await b.phase('key missing offers re-pick', async () => {
         await openIntegration(94, 'E2E Keyless Bank');
-        await b.expectText(ctx, 'The key is missing or was rejected.');
+        await expect(id('EnableBankingConnectionCard.ChooseKey')).toHaveText(/The key is missing or was rejected\.$/);
         await b.expectNoId(ctx, 'EnableBankingConnectionCard.Reauthorize');
         await pickInvalidKey('EnableBankingConnectionCard.ChooseKey');
         await b.expectId(ctx, 'EnableBankingConnectionCard.ChooseKey');
@@ -76,7 +108,7 @@ test('44 enable banking', { tags: ['sync'] }, async ({ budgie }) => {
         await b.scrollTo(ctx, 'EnableBankingConnectionCard.Disconnect');
         await b.tapId(ctx, 'EnableBankingConnectionCard.Disconnect');
         await b.expectText(ctx, 'Disconnect this bank?');
-        await screen.getByText('Disconnect').last().tap();
+        await screen.getByText('Disconnect').first().tap();
         await b.expectText(ctx, 'Disconnected on this phone', 15_000);
         await b.expectText(ctx, 'The consent stays valid at your bank until it expires.');
         await b.expectId(ctx, 'HomePage.TotalBalance', 10_000);
@@ -87,5 +119,17 @@ test('44 enable banking', { tags: ['sync'] }, async ({ budgie }) => {
         await b.openLink(ctx, 'budgie://bank-integration/91');
         await b.expectId(ctx, 'HomePage.TotalBalance', 10_000);
         await b.expectNoId(ctx, 'BankIntegration.Page');
+    });
+
+    await b.phase('disconnect the synthetic bank and revoke its session', async () => {
+        await openIntegration(95, 'E2E Synthetic Bank');
+        await b.scrollTo(ctx, 'EnableBankingConnectionCard.Disconnect');
+        await b.tapId(ctx, 'EnableBankingConnectionCard.Disconnect');
+        await b.expectText(ctx, 'Disconnect this bank?');
+        await screen.getByText('Disconnect').first().tap();
+        await b.expectText(ctx, 'Bank disconnected', 15_000);
+        await b.expectId(ctx, 'HomePage.TotalBalance', 10_000);
+        await a.openArchivedAccounts(ctx);
+        await b.expectId(ctx, `ArchivedAccountCard.${SYNTHETIC_ACCOUNT}`);
     });
 });

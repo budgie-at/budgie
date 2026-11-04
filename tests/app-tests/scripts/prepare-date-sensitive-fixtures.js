@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 const { execFileSync } = require('node:child_process');
-const { copyFileSync, mkdirSync } = require('node:fs');
+const { generateKeyPairSync } = require('node:crypto');
+const { copyFileSync, mkdirSync, writeFileSync } = require('node:fs');
 const path = require('node:path');
 const fixturesDirectoryPath = path.resolve(__dirname, '../fixtures');
 const outputDirectoryPath = process.argv[2];
@@ -1516,6 +1517,16 @@ const generateEnableBankingFixture = () => {
     );
 };
 
+const generateEnableBankingKey = () => {
+    const { privateKey } = generateKeyPairSync('rsa', {
+        modulusLength: 2048,
+        publicKeyEncoding: { type: 'spki', format: 'pem' },
+        privateKeyEncoding: { type: 'pkcs1', format: 'pem' }
+    });
+
+    writeFileSync(path.join(outputDirectoryPath, 'e2e00000-0000-4000-8000-0000000000e1.pem.txt'), privateKey);
+};
+
 generateRunwayCryptoFixture();
 generateBudgetMultiCurrencyFixture();
 generateRecurringFixture();
@@ -1528,6 +1539,7 @@ generateCategorizeInboxFixture();
 generateReceiptScanFixture();
 generateBinanceSyncErrorFixture();
 generateEnableBankingFixture();
+generateEnableBankingKey();
 
 const balanceMismatches = generatedFixturePaths.flatMap(findBalanceMismatches);
 

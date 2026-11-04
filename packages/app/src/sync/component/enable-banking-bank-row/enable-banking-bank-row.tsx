@@ -3,6 +3,8 @@ import { useLingui } from '@lingui/react/macro';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { EnableBankingBankLogo } from '../enable-banking-bank-logo/enable-banking-bank-logo';
 
+import { EnableBankingBankRowSelector } from './enable-banking-bank-row.selector';
+
 import type { EnableBankingBankInterface } from '@budgie/sync';
 
 interface Props {
@@ -24,5 +26,13 @@ export const EnableBankingBankRow = ({ bank, onSelect }: Props) => {
         onSelect(bank);
     };
 
-    return <GroupedListRow left={<EnableBankingBankLogo name={bank.name} />} title={bank.name} subtitle={subtitle} onPress={handlePress} />;
+    return (
+        <GroupedListRow
+            left={<EnableBankingBankLogo name={bank.name} />}
+            title={bank.name}
+            subtitle={subtitle}
+            onPress={handlePress}
+            testID={EnableBankingBankRowSelector.Row(bank.name)}
+        />
+    );
 };
