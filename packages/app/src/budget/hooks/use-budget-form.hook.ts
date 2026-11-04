@@ -4,7 +4,7 @@ import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
-import { useForm, useWatch } from 'react-hook-form';
+import * as ReactHookForm from 'react-hook-form';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -145,7 +145,7 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
 
     const formValues = resolveFormValues();
 
-    const form = useForm<BudgetFormValues>({
+    const form = ReactHookForm.useForm<BudgetFormValues>({
         mode: 'onChange',
         resolver: standardSchemaResolver(Schema.toStandardSchemaV1(BudgetFormSchema)),
         defaultValues: buildDefaultBudgetFormValues(t`Budget`, defaultInstrumentId),
@@ -155,7 +155,7 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
             keepErrors: true
         }
     });
-    const watchedFormValues = useWatch({ control: form.control, compute: values => values });
+    const watchedFormValues = ReactHookForm.useWatch({ control: form.control, compute: values => values });
     const isFormSyncing =
         (isEditing || hasAsyncTemplate) && !form.formState.isDirty && !areBudgetFormValuesEqual(watchedFormValues, formValues);
 
