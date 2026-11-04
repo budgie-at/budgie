@@ -3419,10 +3419,6 @@ msgstr "Dividends go to"
 msgid "Dividends kept on the Inzhur balance are reinvested in more certificates of this fund."
 msgstr "Dividends kept on the Inzhur balance are reinvested in more certificates of this fund."
 
-#: src/inzhur/component/inzhur-import-summary-fund-row/inzhur-import-summary-fund-row.tsx
-msgid "Dividends look reinvested, check the payout setting for this fund"
-msgstr "Dividends look reinvested, check the payout setting for this fund"
-
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "Do not sync history"
 msgstr "Do not sync history"
@@ -5465,10 +5461,6 @@ msgstr "No price history yet"
 #: src/market-data/component/currency-market-price-hero/currency-market-price-hero.tsx
 msgid "No price yet"
 msgstr "No price yet"
-
-#: src/inzhur/component/inzhur-import-summary-fund-row/inzhur-import-summary-fund-row.tsx
-msgid "No price yet, so cash was not changed for this fund"
-msgstr "No price yet, so cash was not changed for this fund"
 
 #: src/settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card.tsx
 msgid "No problems found"

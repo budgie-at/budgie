@@ -3418,10 +3418,6 @@ msgstr "Дивіденди надходять на"
 msgid "Dividends kept on the Inzhur balance are reinvested in more certificates of this fund."
 msgstr "Дивіденди, що залишаються на балансі Inzhur, реінвестуються в додаткові сертифікати цього фонду."
 
-#: src/inzhur/component/inzhur-import-summary-fund-row/inzhur-import-summary-fund-row.tsx
-msgid "Dividends look reinvested, check the payout setting for this fund"
-msgstr "Схоже, дивіденди реінвестовано — перевірте налаштування виплати для цього фонду"
-
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "Do not sync history"
 msgstr "Не синхронізувати історію"
@@ -5464,10 +5460,6 @@ msgstr "Історії цін ще немає"
 #: src/market-data/component/currency-market-price-hero/currency-market-price-hero.tsx
 msgid "No price yet"
 msgstr "Ціни ще немає"
-
-#: src/inzhur/component/inzhur-import-summary-fund-row/inzhur-import-summary-fund-row.tsx
-msgid "No price yet, so cash was not changed for this fund"
-msgstr "Ціни ще немає, тому залишок коштів для цього фонду не змінено"
 
 #: src/settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card.tsx
 msgid "No problems found"
