@@ -8,6 +8,8 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { Input } from '../../../@generic/component/input/input';
 import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
 
+import { EnableBankingKeyStepSelector } from './enable-banking-key-step.selector';
+
 interface Props {
     readonly applicationId: string;
     readonly isKeyPicked: boolean;
@@ -35,6 +37,7 @@ export const EnableBankingKeyStep = ({ applicationId, isKeyPicked, onApplication
                     subtitle={keySubtitle}
                     right={pickedMark}
                     onPress={onPickKey}
+                    testID={EnableBankingKeyStepSelector.ChooseKeyFile}
                 />
                 <SettingsRow
                     icon={UserIconNameEnum.Hash}
@@ -58,7 +61,11 @@ export const EnableBankingKeyStep = ({ applicationId, isKeyPicked, onApplication
             <GroupedListSection
                 footer={t`Personal accounts only. Enable Banking's Terms allow this for private individuals using their own accounts. By connecting you accept them.`}
             >
-                <GroupedListRow title={t`Read the Enable Banking Terms`} onPress={handleOpenTerms} />
+                <GroupedListRow
+                    title={t`Read the Enable Banking Terms`}
+                    onPress={handleOpenTerms}
+                    testID={EnableBankingKeyStepSelector.Terms}
+                />
             </GroupedListSection>
         </>
     );

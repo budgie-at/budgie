@@ -1461,6 +1461,61 @@ const generateBinanceSyncErrorFixture = () => {
     );
 };
 
+const generateEnableBankingFixture = () => {
+    const sourcePath = path.join(fixturesDirectoryPath, '31-debt.db');
+    const targetPath = path.join(outputDirectoryPath, '44-enable-banking.db');
+    const nowMs = Date.now();
+    const now = Math.floor(nowMs / 1000);
+    const eurInstrumentId = 2;
+    const isoInDays = days => new Date(nowMs + days * 24 * 60 * 60 * 1000).toISOString();
+    const token = (sessionId, validUntil) =>
+        JSON.stringify({
+            applicationId: 'e2e00000-0000-4000-8000-000000000000',
+            sessionId,
+            aspspName: 'E2E Synthetic Bank',
+            aspspCountry: 'DE',
+            validUntil
+        });
+    const integrations = [
+        { id: 91, label: 'E2E Valid Bank', token: token('e2e-session-valid', isoInDays(60)), errorCode: null, accounts: ['Current', 'Savings'] },
+        { id: 92, label: 'E2E Expired Bank', token: token('e2e-session-expired', isoInDays(-3)), errorCode: 'CONSENT_EXPIRED', accounts: ['Current'] },
+        { id: 93, label: 'E2E Unlinked Bank', token: token('e2e-session-unlinked', isoInDays(60)), errorCode: 'ACCOUNT_NOT_LINKED', accounts: ['Current'] },
+        { id: 94, label: 'E2E Keyless Bank', token: token('e2e-session-keyless', isoInDays(60)), errorCode: 'UNAUTHORIZED', accounts: ['Current'] }
+    ];
+    const accounts = integrations.flatMap(integration =>
+        integration.accounts.map((name, index) => ({ id: integration.id * 10 + index, integration, title: `${integration.label} ${name}` }))
+    );
+
+    copyFixture(sourcePath, targetPath);
+    runSqlite(
+        targetPath,
+        `
+        BEGIN;
+
+        INSERT INTO bank_integrations (id, provider, token, label, created_at, updated_at)
+        VALUES ${integrations.map(integration => `(${integration.id}, 'ENABLE_BANKING', '${integration.token}', '${integration.label}', ${now}, ${now})`).join(',\n')};
+
+        INSERT INTO accounts (id, created_at, updated_at, icon, "order", title, title_search, type, nature, instrument_id, external_id, external_source, integration_id, include_in_net_worth, is_active)
+        VALUES ${accounts.map(account => `(${account.id}, ${now}, ${now}, 'Wallet', ${account.id}, '${account.title}', '${account.title.toLowerCase()}', 'BANK_SYNC', 'ASSET', ${eurInstrumentId}, 'e2e-hash-${account.id}', 'ENABLE_BANKING', ${account.integration.id}, 1, 1)`).join(',\n')};
+
+        INSERT INTO account_balances (account_id, amount, created_at, updated_at)
+        VALUES ${accounts.map(account => `(${account.id}, 0, ${now}, ${now})`).join(',\n')};
+
+        INSERT INTO bank_syncs (account_id, provider, enabled, mode, status, error_count, last_error, last_error_code, forward_synced_at, forward_sync_from_at, created_at, updated_at)
+        VALUES ${accounts
+            .map(account =>
+                account.integration.errorCode === null
+                    ? `(${account.id}, 'ENABLE_BANKING', 1, 'FORWARD', 'IDLE', 0, NULL, NULL, ${now}, ${now}, ${now}, ${now})`
+                    : `(${account.id}, 'ENABLE_BANKING', 1, 'FORWARD', 'FAILED', 1, 'E2E synthetic failure', '${account.integration.errorCode}', ${now}, ${now}, ${now}, ${now})`
+            )
+            .join(',\n')};
+
+        COMMIT;
+        VACUUM;
+        `
+    );
+};
+
 generateRunwayCryptoFixture();
 generateBudgetMultiCurrencyFixture();
 generateRecurringFixture();
@@ -1472,6 +1527,7 @@ generateDebtSettlementFixture();
 generateCategorizeInboxFixture();
 generateReceiptScanFixture();
 generateBinanceSyncErrorFixture();
+generateEnableBankingFixture();
 
 const balanceMismatches = generatedFixturePaths.flatMap(findBalanceMismatches);
 
