@@ -45,6 +45,13 @@ export class InstrumentDailyMarketPriceRepository extends Context.Service<Instru
                             orderBy: { priceDate: 'desc' }
                         })
                     ),
+                findForDateOrBefore: (instrumentId: number, quoteInstrumentId: number, priceDate: string) =>
+                    Db.query(db =>
+                        db.query.InstrumentDailyMarketPriceEntityTable.findFirst({
+                            where: { ...buildInstrumentQuoteFilter(instrumentId, quoteInstrumentId), priceDate: { lte: priceDate } },
+                            orderBy: { priceDate: 'desc' }
+                        })
+                    ),
                 findRecent: (instrumentId: number, quoteInstrumentId: number, limit: number) =>
                     Db.query(db =>
                         db.query.InstrumentDailyMarketPriceEntityTable.findMany({
