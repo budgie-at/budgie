@@ -1487,6 +1487,8 @@ const generateEnableBankingFixture = () => {
         integration.accounts.map((name, index) => ({ id: integration.id * 10 + index, integration, title: `${integration.label} ${name}` }))
     );
 
+    const connectAccount = { id: 960, title: 'E2E Statement Account', rowAmount: 7000000, lastRowAt: now - 10 * 24 * 60 * 60 };
+
     copyFixture(sourcePath, targetPath);
     runSqlite(
         targetPath,
@@ -1510,6 +1512,18 @@ const generateEnableBankingFixture = () => {
                     : `(${account.id}, 'ENABLE_BANKING', 1, 'FORWARD', 'FAILED', 1, 'E2E synthetic failure', '${account.integration.errorCode}', ${now}, ${now}, ${now}, ${now})`
             )
             .join(',\n')};
+
+        INSERT INTO accounts (id, created_at, updated_at, icon, "order", title, title_search, type, nature, instrument_id, include_in_net_worth, is_active)
+        VALUES (${connectAccount.id}, ${now}, ${now}, 'Wallet', ${connectAccount.id}, '${connectAccount.title}', '${connectAccount.title.toLowerCase()}', 'BANK', 'ASSET', ${eurInstrumentId}, 1, 1);
+
+        INSERT INTO account_balances (account_id, amount, created_at, updated_at)
+        VALUES (${connectAccount.id}, -${connectAccount.rowAmount}, ${now}, ${now});
+
+        INSERT INTO transactions (created_at, updated_at, type, title, operated_at, comment, from_account_id, exchange_rate)
+        VALUES (${now}, ${now}, 'EXPENSE', 'E2E Manual Purchase', ${connectAccount.lastRowAt}, '', ${connectAccount.id}, 1.0);
+
+        INSERT INTO transaction_entries (created_at, updated_at, type, account_id, category_id, transaction_id, amount)
+        VALUES (${now}, ${now}, 'CREDIT', ${connectAccount.id}, NULL, last_insert_rowid(), ${connectAccount.rowAmount});
 
         COMMIT;
         VACUUM;

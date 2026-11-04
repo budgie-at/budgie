@@ -8,6 +8,8 @@ import { test } from '../support/budgie/test.ts';
 const NOT_A_KEY = 'This file is not an unencrypted RSA private key in PEM format.';
 const THROWAWAY_KEY = 'e2e00000-0000-4000-8000-0000000000e1.pem, txt';
 const SYNTHETIC_ACCOUNT = 'E2E Synthetic Bank E2E Current';
+const CONNECT_ACCOUNT = 'E2E Statement Account';
+const CONNECT_ACCOUNT_ID = 960;
 
 test('44 enable banking', { tags: ['sync'] }, async ({ budgie }) => {
     const ctx = budgie.ctx;
@@ -57,6 +59,8 @@ test('44 enable banking', { tags: ['sync'] }, async ({ budgie }) => {
         await expect(account).toBeVisible();
         await expect(id('CreateEnableBankingAccount.ContinueButton')).toBeEnabled();
         await b.tapId(ctx, 'CreateEnableBankingAccount.ContinueButton');
+        await b.expectId(ctx, 'SyncHistoryDepthOption.FULL', 10_000);
+        await b.tapId(ctx, 'CreateEnableBankingAccount.StartSyncButton');
         await b.expectId(ctx, 'HomePage.TotalBalance', 30_000);
         await b.scrollTo(ctx, `AccountCard.${SYNTHETIC_ACCOUNT}`);
         await expect(id(`AccountCard.${SYNTHETIC_ACCOUNT}`)).toHaveText(/€1,235, Up to date$/, { timeout: 90_000 });
@@ -119,6 +123,52 @@ test('44 enable banking', { tags: ['sync'] }, async ({ budgie }) => {
         await b.openLink(ctx, 'budgie://bank-integration/91');
         await b.expectId(ctx, 'HomePage.TotalBalance', 10_000);
         await b.expectNoId(ctx, 'BankIntegration.Page');
+    });
+
+    await b.phase('connect an existing account: a saved key skips the key step and a linked bank account is refused inline', async () => {
+        await b.openLink(ctx, `budgie://account/${CONNECT_ACCOUNT_ID}/update`);
+        await b.scrollTo(ctx, 'AccountConnectBankRow.Row');
+        await b.tapId(ctx, 'AccountConnectBankRow.Row');
+        await b.expectId(ctx, 'EnableBankingBankRow.E2E Synthetic Bank', 15_000);
+        await b.tapId(ctx, 'EnableBankingBankRow.E2E Synthetic Bank');
+        await b.expectText(ctx, 'Choose bank account', 30_000);
+        await b.expectText(ctx, 'Already linked to another account');
+        await expect(id('EnableBankingConnectAccountStep.ConnectButton')).toBeDisabled();
+    });
+
+    await b.phase('connect an existing account: history stays, new rows arrive from the day after the last one', async () => {
+        await b.openLink(ctx, `budgie://account/${CONNECT_ACCOUNT_ID}/update`);
+        await b.scrollTo(ctx, 'AccountConnectBankRow.Row');
+        await b.tapId(ctx, 'AccountConnectBankRow.Row');
+        await b.expectId(ctx, 'EnableBankingBankRow.E2E Connect Bank', 15_000);
+        await b.tapId(ctx, 'EnableBankingBankRow.E2E Connect Bank');
+        await b.expectText(ctx, 'Choose bank account', 30_000);
+        await expect(id('EnableBankingConnectAccountStep.ConnectButton')).toBeEnabled();
+        await b.tapId(ctx, 'EnableBankingConnectAccountStep.ConnectButton');
+        await b.expectText(ctx, /^Syncing from /u, 15_000);
+        await b.expectNoId(ctx, 'AccountConnectBankRow.Row');
+        await b.openLink(ctx, 'budgie://');
+        await b.scrollTo(ctx, `AccountCard.${CONNECT_ACCOUNT}`);
+        await expect(id(`AccountCard.${CONNECT_ACCOUNT}`)).toHaveText(/€1,235, Up to date$/, { timeout: 90_000 });
+        await b.openLink(ctx, 'budgie://transactions');
+        await expect(screen.getByRole('button', { name: /^E2E Manual Purchase, .*E2E Statement Account, €7,/ }).first()).toBeVisible({
+            timeout: 15_000
+        });
+        await expect(screen.getByRole('button', { name: /^E2E Coffee, .*E2E Statement Account, €12,/ }).first()).toBeVisible();
+    });
+
+    await b.phase('disconnect returns a connected account with its rows and balance', async () => {
+        await openIntegration(96, 'E2E Connect Bank');
+        await b.scrollTo(ctx, 'EnableBankingConnectionCard.Disconnect');
+        await b.tapId(ctx, 'EnableBankingConnectionCard.Disconnect');
+        await b.expectText(ctx, 'Disconnect this bank?');
+        await screen.getByText('Disconnect').first().tap();
+        await b.expectText(ctx, 'Bank disconnected', 15_000);
+        await b.expectId(ctx, 'HomePage.TotalBalance', 10_000);
+        await b.scrollTo(ctx, `AccountCard.${CONNECT_ACCOUNT}`);
+        await expect(id(`AccountCard.${CONNECT_ACCOUNT}`)).toHaveText(/€1,235/);
+        await b.openLink(ctx, `budgie://account/${CONNECT_ACCOUNT_ID}/update`);
+        await b.scrollTo(ctx, 'AccountConnectBankRow.Row');
     });
 
     await b.phase('disconnect the synthetic bank and revoke its session', async () => {
