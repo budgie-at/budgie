@@ -2,11 +2,13 @@ import { ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { ReactElement, ReactNode } from 'react';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { BANK_LOGO_RADIUS_RATIO } from '../../constant/bank-logo-radius-ratio.constant';
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { CircleIcon } from '../circle-icon/circle-icon';
+import { EnableBankingBankLogo } from '../enable-banking-bank-logo/enable-banking-bank-logo';
 
 import { BinanceIcon } from './icons/binance-icon';
 import { ErsteIcon } from './icons/erste-icon';
@@ -18,9 +20,8 @@ interface Props {
     readonly size?: number;
     readonly variant?: ColorPaletteVariant;
     readonly fallback?: ReactNode;
+    readonly bankName?: string | null;
 }
-
-const INSTITUTION_TILE_RADIUS_RATIO = 0.28;
 
 const iconVariant = cva('', {
     variants: { variant: FOREGROUND_COLOR_PALETTE }
@@ -44,7 +45,7 @@ const getBankIcon = (provider: ExternalSourceEnum, size: number): ReactElement |
                     border={false}
                     size={size}
                     iconSize={Math.round(size / 2)}
-                    radius={Math.round(size * INSTITUTION_TILE_RADIUS_RATIO)}
+                    radius={Math.round(size * BANK_LOGO_RADIUS_RATIO)}
                     className="bg-surface-disc"
                 />
             );
@@ -60,7 +61,11 @@ const getBankIcon = (provider: ExternalSourceEnum, size: number): ReactElement |
     }
 };
 
-export const BankLogo = ({ bankProvider, size = 32, variant = 'default', fallback }: Props) => {
+export const BankLogo = ({ bankProvider, size = 32, variant = 'default', fallback, bankName }: Props) => {
+    if (bankProvider === ExternalSourceEnum.ENABLE_BANKING && isNotEmptyString(bankName)) {
+        return <EnableBankingBankLogo name={bankName} size={size} />;
+    }
+
     const icon = getBankIcon(bankProvider, size);
 
     if (isDefined(icon)) {

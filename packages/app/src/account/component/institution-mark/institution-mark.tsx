@@ -7,11 +7,12 @@ import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-si
 interface Props {
     readonly provider: ExternalSourceEnum;
     readonly title: string;
+    readonly bankName?: string | null;
 }
 
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' as const };
 
-export const InstitutionMark = ({ provider, title }: Props) => {
+export const InstitutionMark = ({ provider, title, bankName }: Props) => {
     const monogram = (
         <View className="size-[44px] items-center justify-center rounded-[11px] bg-surface-disc" style={CONTINUOUS_CORNERS}>
             <Text maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER} className="text-[20px] font-semibold text-primary">
@@ -20,5 +21,5 @@ export const InstitutionMark = ({ provider, title }: Props) => {
         </View>
     );
 
-    return <BankLogo bankProvider={provider} size={44} fallback={monogram} />;
+    return <BankLogo bankProvider={provider} size={44} fallback={monogram} bankName={bankName} />;
 };

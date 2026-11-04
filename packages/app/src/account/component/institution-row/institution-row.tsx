@@ -57,7 +57,7 @@ export const InstitutionRow = ({ institution }: Props) => {
             className={rowVariants({ isStacked })}
             testID={InstitutionRowSelector.Row(integrationId)}
         >
-            <InstitutionMark provider={provider} title={title} />
+            <InstitutionMark provider={provider} title={title} bankName={label} />
 
             <View className="min-w-0 flex-1 gap-y-xxs">
                 <Text

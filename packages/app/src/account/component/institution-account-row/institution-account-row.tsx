@@ -14,11 +14,12 @@ import type { AccountWithSyncEntityInterface, ExternalSourceEnum } from '@budgie
 interface Props {
     readonly account: AccountWithSyncEntityInterface;
     readonly provider: ExternalSourceEnum;
+    readonly bankName: string | null;
     readonly balancesByAccountId: ReadonlyMap<number, HomeAccountBalanceInterface>;
     readonly position: TransactionListRowPositionEnum;
 }
 
-export const InstitutionAccountRow = ({ account, provider, balancesByAccountId, position }: Props) => {
+export const InstitutionAccountRow = ({ account, provider, bankName, balancesByAccountId, position }: Props) => {
     const displayAccount = {
         ...account,
         title: stripTransactionAccountTitlePrefix(account.title, provider) ?? account.title
@@ -27,7 +28,7 @@ export const InstitutionAccountRow = ({ account, provider, balancesByAccountId, 
         account.type === AccountTypeEnum.CRYPTO_SYNC ? (
             <CryptoCurrencyIcon code={account.instrument.code} size={44} className="bg-surface-disc" />
         ) : (
-            <InstitutionMark provider={provider} title={account.title} />
+            <InstitutionMark provider={provider} title={account.title} bankName={bankName} />
         );
 
     return (

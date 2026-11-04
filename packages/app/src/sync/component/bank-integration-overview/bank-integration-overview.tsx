@@ -22,7 +22,7 @@ export const BankIntegrationOverview = () => {
 
     return (
         <Animated.View style={animatedStyle} className="items-center gap-y-[8px] py-xl" testID={BankIntegrationSelector.Overview}>
-            <BankLogo bankProvider={integration.provider} size={56} />
+            <BankLogo bankProvider={integration.provider} size={56} bankName={integration.label} />
             <BankIntegrationStatusLine syncs={syncs} />
         </Animated.View>
     );

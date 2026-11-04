@@ -20,7 +20,7 @@ export const HomeSectionItem = ({ item, section, balancesByAccountId }: Props) =
         const [account] = item.accounts;
 
         return (
-            <AccountRowLeadingContext value={<InstitutionMark provider={item.provider} title={account.title} />}>
+            <AccountRowLeadingContext value={<InstitutionMark provider={item.provider} title={account.title} bankName={item.label} />}>
                 <AccountListItem account={account} balancesByAccountId={balancesByAccountId} />
             </AccountRowLeadingContext>
         );
