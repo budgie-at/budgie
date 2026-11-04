@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.152.0](https://github.com/budgie-at/budgie/compare/v6.151.6...v6.152.0) (2026-11-04)
+
+### Bug Fixes
+
+* **app:** keep the tags hint off the rows behind it ([285e03a](https://github.com/budgie-at/budgie/commit/285e03ac479e2bcfcc60a216e85fc40c361a4a2f))
+
+### Features
+
+* **app:** move destination and resync sheets onto the sheet surface ([1aa448b](https://github.com/budgie-at/budgie/commit/1aa448ba5945cccf012f5f30e862927398436735))
+* **app:** rebuild the rule and MCC pickers on the shared sheet ([3e2a8e6](https://github.com/budgie-at/budgie/commit/3e2a8e65d136762e65d44a0654399e3b42680e05))
+
+
 ## [6.151.6](https://github.com/budgie-at/budgie/compare/v6.151.5...v6.151.6) (2026-11-04)
 
 ### Bug Fixes
