@@ -1,15 +1,21 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
+import { Text } from 'react-native';
 
+import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
-import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
 import { useBankIntegration } from '../../context/bank-integration.context';
 import { useExplainEnableBankingError } from '../../hook/use-explain-enable-banking-error.hook';
 import { EnableBankingConnectionService } from '../../service/enable-banking-connection.service';
 
-export const EnableBankingReauthorizeRow = () => {
+interface Props {
+    readonly subtitle: string;
+}
+
+export const EnableBankingReauthorizeRow = ({ subtitle }: Props) => {
     const { t } = useLingui();
     const { integration } = useBankIntegration();
     const explainError = useExplainEnableBankingError();
@@ -24,11 +30,10 @@ export const EnableBankingReauthorizeRow = () => {
         );
 
     return (
-        <SettingsRow
-            icon={UserIconNameEnum.RefreshCw}
-            variant="primary"
-            title={t`Authorize again`}
-            subtitle={t`Renews the bank consent so syncing continues.`}
+        <GroupedListRow
+            left={<GroupedListIcon icon={UserIconNameEnum.RefreshCw} />}
+            title={<Text className="text-primary text-[17px] font-semibold">{t`Authorize again`}</Text>}
+            subtitle={subtitle}
             onPress={handlePress}
         />
     );

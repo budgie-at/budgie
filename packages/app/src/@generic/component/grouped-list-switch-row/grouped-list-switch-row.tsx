@@ -17,6 +17,7 @@ interface Props {
 
 export const GroupedListSwitchRow = ({ icon, title, subtitle, value, testID, titleTestID, switchTestID, onChange }: Props) => {
     const handlePress = () => void onChange(!value);
+    const pressableProps = { accessibilityState: { checked: value } };
 
     return (
         <GroupedListRow
@@ -26,6 +27,7 @@ export const GroupedListSwitchRow = ({ icon, title, subtitle, value, testID, tit
             testID={testID}
             titleTestID={titleTestID}
             onPress={handlePress}
+            pressableProps={pressableProps}
             right={<ThemedSwitch value={value} onValueChange={onChange} accessibilityLabel={title} testID={switchTestID} />}
         />
     );

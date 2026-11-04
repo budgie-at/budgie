@@ -17,7 +17,7 @@ import { EnableBankingSetupError } from '../error/enable-banking-setup.error';
 import type { MessageDescriptor } from '@lingui/core';
 
 const CALLBACK_FAILURE_LABEL: Record<EnableBankingCallbackFailureEnum, MessageDescriptor> = {
-    [EnableBankingCallbackFailureEnum.CANCELLED]: msg`Authorization was cancelled at your bank. Pick the bank to try again.`,
+    [EnableBankingCallbackFailureEnum.CANCELLED]: msg`Authorization was cancelled at your bank.`,
     [EnableBankingCallbackFailureEnum.EXPIRED]: msg`The authorization took too long. Start again.`,
     [EnableBankingCallbackFailureEnum.MALFORMED]: msg`Budgie could not read the response from your bank. Start again.`,
     [EnableBankingCallbackFailureEnum.STATE_MISMATCH]: msg`This response does not match an authorization started in Budgie. Start again.`

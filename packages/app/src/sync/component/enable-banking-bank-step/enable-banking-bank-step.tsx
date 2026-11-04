@@ -1,11 +1,20 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Arr from 'effect/Array';
 import * as Order from 'effect/Order';
 import { getLocales } from 'expo-localization';
-import { useState } from 'react';
+import { useDeferredValue, useState } from 'react';
 
+import { isNotEmptyArray } from '@rnw-community/shared';
+
+import { GroupedListItem } from '../../../@generic/component/grouped-list-item/grouped-list-item';
+import { GroupedListSectionTitle } from '../../../@generic/component/grouped-list-section-title/grouped-list-section-title';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
-import { Input } from '../../../@generic/component/input/input';
+import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
+import { SearchablePageEmptyState } from '../../../@generic/component/searchable-page-empty-state/searchable-page-empty-state';
+import { SearchablePageList } from '../../../@generic/component/searchable-page-list/searchable-page-list';
+import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
+import { GROUPED_LIST_SIZING } from '../../../@generic/constant/grouped-list-sizing.constant';
 import { EnableBankingBankRow } from '../enable-banking-bank-row/enable-banking-bank-row';
 
 import type { EnableBankingBankInterface } from '@budgie/sync';
@@ -13,35 +22,71 @@ import type { EnableBankingBankInterface } from '@budgie/sync';
 interface Props {
     readonly banks: readonly EnableBankingBankInterface[];
     readonly onSelectBank: (bank: EnableBankingBankInterface) => void;
+    readonly onGoBack: () => void;
 }
 
-const MAX_VISIBLE_BANKS = 30;
+const COMBINING_MARKS = /[̀-ͯ]/gu;
 
-export const EnableBankingBankStep = ({ banks, onSelectBank }: Props) => {
+const foldSearchText = (text: string): string => text.normalize('NFD').replaceAll(COMBINING_MARKS, '').toLowerCase();
+
+export const EnableBankingBankStep = ({ banks, onSelectBank, onGoBack }: Props) => {
     const { t } = useLingui();
     const [query, setQuery] = useState('');
+    const deferredQuery = useDeferredValue(query);
 
-    const normalizedQuery = query.trim().toLowerCase();
+    const normalizedQuery = foldSearchText(deferredQuery.trim());
     const regionCode = getLocales().at(0)?.regionCode?.toUpperCase();
-    const visibleBanks = Arr.sort(
+    const matchingBanks = Arr.sort(
         banks,
-        Order.combine(
-            Order.mapInput(Order.Boolean, (bank: EnableBankingBankInterface) => bank.country !== regionCode),
-            Order.mapInput(Order.String, (bank: EnableBankingBankInterface) => bank.name)
-        )
+        Order.mapInput(Order.String, (bank: EnableBankingBankInterface) => bank.name.toLocaleLowerCase())
     )
-        .filter(bank => bank.isSupported && `${bank.name} ${bank.country}`.toLowerCase().includes(normalizedQuery))
-        .slice(0, MAX_VISIBLE_BANKS);
+        .map((bank, index) => ({ ...bank, id: index }))
+        .filter(bank => bank.isSupported && foldSearchText(`${bank.name} ${bank.country}`).includes(normalizedQuery));
+    const localBanks = matchingBanks.filter(bank => bank.country === regionCode);
+    const otherBanks = matchingBanks.filter(bank => bank.country !== regionCode);
+    const hasBothGroups = isNotEmptyArray(localBanks) && isNotEmptyArray(otherBanks);
+    const listData = hasBothGroups ? otherBanks : matchingBanks;
 
-    return (
+    const renderCard = (bank: EnableBankingBankInterface, index: number, isLast: boolean) => (
+        <GroupedListItem isFirst={index === 0} isLast={isLast}>
+            <EnableBankingBankRow bank={bank} onSelect={onSelectBank} />
+        </GroupedListItem>
+    );
+
+    const listHeader = hasBothGroups ? (
         <>
-            <Input value={query} onChangeText={setQuery} placeholder={t`Search your bank`} autoCapitalize="none" autoCorrect={false} />
-
-            <GroupedListSection title={t`Banks`}>
-                {visibleBanks.map(bank => (
-                    <EnableBankingBankRow key={`${bank.country}.${bank.name}`} bank={bank} onSelect={onSelectBank} />
+            <GroupedListSection title={t`In your country`}>
+                {localBanks.map(bank => (
+                    <EnableBankingBankRow key={bank.id} bank={bank} onSelect={onSelectBank} />
                 ))}
             </GroupedListSection>
+            <GroupedListSectionTitle title={t`Other banks`} />
         </>
+    ) : null;
+
+    return (
+        <GroupedSurface>
+            <SearchablePage
+                title={t`Choose your bank`}
+                onGoBack={onGoBack}
+                search={query}
+                searchPlaceholder={t`Search your bank`}
+                onSearchChange={setQuery}
+            >
+                <SearchablePageList
+                    data={listData}
+                    emptyState={
+                        <SearchablePageEmptyState
+                            icon={UserIconNameEnum.Search}
+                            title={t`No banks found`}
+                            description={t`Try another name.`}
+                        />
+                    }
+                    listHeader={listHeader}
+                    renderCard={renderCard}
+                    sizing={GROUPED_LIST_SIZING}
+                />
+            </SearchablePage>
+        </GroupedSurface>
     );
 };

@@ -1,6 +1,8 @@
 import { BankIntegrationEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
+import { isNotEmptyString } from '@rnw-community/shared';
+
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
@@ -14,6 +16,7 @@ import { BankIntegrationKeyCard } from '../bank-integration-key-card/bank-integr
 import { BankIntegrationOverview } from '../bank-integration-overview/bank-integration-overview';
 import { BankIntegrationStatements } from '../bank-integration-statements/bank-integration-statements';
 import { EnableBankingConnectionCard } from '../enable-banking-connection-card/enable-banking-connection-card';
+import { EnableBankingDisconnectRow } from '../enable-banking-disconnect-row/enable-banking-disconnect-row';
 
 interface Props {
     readonly integration: BankIntegrationEntityInterface;
@@ -27,8 +30,11 @@ export const BankIntegrationPage = ({ integration }: Props) => {
     const statements = capabilities.supportsFileImport ? <BankIntegrationStatements /> : null;
 
     const monobankKeyCard = capabilities.supportsAccountDiscovery ? <BankIntegrationKeyCard /> : null;
-    const keyCard = integration.provider === ExternalSourceEnum.ENABLE_BANKING ? <EnableBankingConnectionCard /> : monobankKeyCard;
-    const title = getBankIntegrationTitle(t(EXTERNAL_SOURCE[integration.provider]), integration.label, null);
+    const isEnableBanking = integration.provider === ExternalSourceEnum.ENABLE_BANKING;
+    const keyCard = isEnableBanking ? <EnableBankingConnectionCard /> : monobankKeyCard;
+    const disconnect = isEnableBanking ? <EnableBankingDisconnectRow /> : null;
+    const defaultTitle = getBankIntegrationTitle(t(EXTERNAL_SOURCE[integration.provider]), integration.label, null);
+    const title = isEnableBanking && isNotEmptyString(integration.label) ? integration.label : defaultTitle;
 
     const contextValue = { integration, capabilities };
 
@@ -46,6 +52,7 @@ export const BankIntegrationPage = ({ integration }: Props) => {
                     {statements}
                     {keyCard}
                     <BankIntegrationAccountList />
+                    {disconnect}
                 </BankIntegrationContext.Provider>
             </CollapsibleChromePage>
         </GroupedSurface>

@@ -11,13 +11,12 @@ import { router } from 'expo-router';
 import { useEffect, useEffectEvent, useState } from 'react';
 import Toast from 'react-native-toast-message';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/component/button/button';
+import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { appAtomRegistry } from '../../../@generic/constant/app-atom-registry.constant';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { enableBankingCallbackUrlAtom } from '../../constant/enable-banking-callback-url-atom.constant';
 import { EnableBankingSetupErrorReasonEnum } from '../../enum/enable-banking-setup-error-reason.enum';
@@ -27,15 +26,17 @@ import { useExplainEnableBankingError } from '../../hook/use-explain-enable-bank
 import { useSyncAccountSetupFlow } from '../../hook/use-sync-account-setup-flow.hook';
 import { EnableBankingConnectionService } from '../../service/enable-banking-connection.service';
 import { parseEnableBankingApplicationId } from '../../utils/parse-enable-banking-application-id.util';
-import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
-import { EnableBankingAccountsNotice } from '../enable-banking-accounts-notice/enable-banking-accounts-notice';
+import { EnableBankingAccountsStep } from '../enable-banking-accounts-step/enable-banking-accounts-step';
 import { EnableBankingBankStep } from '../enable-banking-bank-step/enable-banking-bank-step';
 import { EnableBankingKeyStep } from '../enable-banking-key-step/enable-banking-key-step';
 import { EnableBankingSetupGuide } from '../enable-banking-setup-guide/enable-banking-setup-guide';
+import { EnableBankingSetupPage } from '../enable-banking-setup-page/enable-banking-setup-page';
 import { EnableBankingWaitingStep } from '../enable-banking-waiting-step/enable-banking-waiting-step';
-import { SyncAccountSetupPage } from '../sync-account-setup-page/sync-account-setup-page';
+
+import { CreateEnableBankingAccountSelector } from './create-enable-banking-account.selector';
 
 import type { EnableBankingAuthorizationResultInterface, EnableBankingBankInterface } from '@budgie/sync';
+import type { ReactNode } from 'react';
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration component with multiple hooks and handlers
 export const CreateEnableBankingAccount = () => {
@@ -84,7 +85,7 @@ export const CreateEnableBankingAccount = () => {
                     return;
                 }
 
-                accountSelection.setPreviews(selectablePreviews);
+                accountSelection.setPreviews(selectablePreviews, selectablePreviews);
                 setAuthorization(result);
                 setStep(EnableBankingSetupStepEnum.ACCOUNTS);
             }).pipe(
@@ -154,9 +155,7 @@ export const CreateEnableBankingAccount = () => {
         );
 
     const handleContinue = () => {
-        if (!isDefined(parsedApplicationId) || !(isDefined(pickedPem) || isKeySaved)) {
-            showErrorToast(t`Key required`, t`Enter the application ID and choose the key file.`);
-
+        if (!isDefined(parsedApplicationId)) {
             return;
         }
 
@@ -187,27 +186,33 @@ export const CreateEnableBankingAccount = () => {
             return;
         }
 
+        setStep(EnableBankingSetupStepEnum.WAITING);
         void run(
-            Effect.gen(function* () {
-                yield* Effect.flatMap(EnableBankingConnectionService, connection => connection.begin(parsedApplicationId, bank, null));
-                setStep(EnableBankingSetupStepEnum.WAITING);
-            }).pipe(Effect.mapError(explainError), toastOnFailure(t`Could not start the authorization`))
+            Effect.flatMap(EnableBankingConnectionService, connection => connection.begin(parsedApplicationId, bank, null)).pipe(
+                Effect.tapError(() =>
+                    Effect.sync(() => {
+                        setStep(EnableBankingSetupStepEnum.BANK);
+                    })
+                ),
+                Effect.mapError(explainError),
+                toastOnFailure(t`Could not start the authorization`)
+            )
         );
     };
 
     const handleChooseAnotherBank = () => {
+        if (isBusy) {
+            return;
+        }
+
         setStep(isNotEmptyArray(banks) ? EnableBankingSetupStepEnum.BANK : EnableBankingSetupStepEnum.KEY);
         void run(Effect.flatMap(EnableBankingConnectionService, connection => connection.discardPending()));
-    };
-
-    const handleChangeKey = () => {
-        setStep(EnableBankingSetupStepEnum.KEY);
     };
 
     const handleStepAwareGoBack = () => {
         switch (step) {
             case EnableBankingSetupStepEnum.BANK:
-                handleChangeKey();
+                setStep(EnableBankingSetupStepEnum.KEY);
                 break;
             case EnableBankingSetupStepEnum.WAITING:
                 handleChooseAnotherBank();
@@ -223,57 +228,70 @@ export const CreateEnableBankingAccount = () => {
     };
 
     const isKeyPicked = isDefined(pickedPem) || isKeySaved;
+    const isContinueDisabled = !isDefined(parsedApplicationId) || !isKeyPicked;
 
     const handleHaveKey = () => {
         setStep(EnableBankingSetupStepEnum.KEY);
     };
 
+    let title = t`Connect EU banks`;
     let stepContent = <EnableBankingSetupGuide />;
-    let footer = <Button onPress={handleHaveKey} content={t`I have my key file`} />;
+    let footerButton: ReactNode = (
+        <PillButton label={t`I have my key file`} onPress={handleHaveKey} testID={CreateEnableBankingAccountSelector.ContinueButton} />
+    );
 
     switch (step) {
         case EnableBankingSetupStepEnum.KEY:
+            title = t`Add your key`;
             stepContent = (
                 <EnableBankingKeyStep
                     applicationId={applicationId}
                     isKeyPicked={isKeyPicked}
-                    isLoading={isLoading}
                     onApplicationIdChange={handleApplicationIdChange}
                     onPickKey={handlePickKey}
                 />
             );
-            footer = <Button onPress={handleContinue} disabled={isLoading} isLoading={isLoading} content={t`Continue`} />;
-            break;
-        case EnableBankingSetupStepEnum.BANK:
-            stepContent = <EnableBankingBankStep banks={banks} onSelectBank={handleSelectBank} />;
-            footer = <Button variant="ghost" onPress={handleChangeKey} content={t`Change key`} />;
+            footerButton = (
+                <PillButton
+                    label={t`Continue`}
+                    onPress={handleContinue}
+                    isDisabled={isContinueDisabled}
+                    isLoading={isLoading}
+                    testID={CreateEnableBankingAccountSelector.ContinueButton}
+                />
+            );
             break;
         case EnableBankingSetupStepEnum.WAITING:
-            stepContent = <EnableBankingWaitingStep />;
-            footer = <Button variant="ghost" onPress={handleChooseAnotherBank} content={t`Choose another bank`} />;
+            title = t`Authorize at your bank`;
+            stepContent = <EnableBankingWaitingStep onChooseAnotherBank={handleChooseAnotherBank} />;
+            footerButton = null;
             break;
         case EnableBankingSetupStepEnum.ACCOUNTS:
-            stepContent = (
-                <>
-                    <AccountSelectionStep {...accountSelection} />
-                    <EnableBankingAccountsNotice parkedPreviews={parkedPreviews} />
-                </>
+            title = t`Choose accounts`;
+            stepContent = <EnableBankingAccountsStep {...accountSelection} parkedPreviews={parkedPreviews} />;
+            footerButton = isEmptyArray(accountSelection.accountPreviews) ? null : (
+                <PillButton
+                    label={t`Start sync`}
+                    onPress={handleSetupSync}
+                    isDisabled={isStartSyncDisabled}
+                    isLoading={isSettingUp}
+                    testID={CreateEnableBankingAccountSelector.ContinueButton}
+                />
             );
-            footer = <Button onPress={handleSetupSync} disabled={isStartSyncDisabled} isLoading={isSettingUp} content={t`Start Sync`} />;
             break;
+        case EnableBankingSetupStepEnum.BANK:
         case EnableBankingSetupStepEnum.GUIDE:
         default:
             break;
     }
 
+    if (step === EnableBankingSetupStepEnum.BANK) {
+        return <EnableBankingBankStep banks={banks} onSelectBank={handleSelectBank} onGoBack={handleStepAwareGoBack} />;
+    }
+
     return (
-        <SyncAccountSetupPage
-            title={t`Connect EU banks`}
-            description={t`Sync Trade Republic, N26 and other EU banks through your own Enable Banking application.`}
-            onGoBack={handleStepAwareGoBack}
-            footer={footer}
-        >
+        <EnableBankingSetupPage key={step} title={title} onGoBack={handleStepAwareGoBack} footerButton={footerButton}>
             {stepContent}
-        </SyncAccountSetupPage>
+        </EnableBankingSetupPage>
     );
 };

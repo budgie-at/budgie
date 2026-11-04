@@ -33,8 +33,8 @@ export const EnableBankingCopyValueRow = ({ label, value }: Props) => {
 
     return (
         <GroupedListRow
-            title={value}
-            subtitle={label}
+            title={label}
+            subtitle={value}
             right={<Icon icon={UserIconNameEnum.Copy} size={16} className="text-secondary-foreground" />}
             onPress={handlePress}
             pressableProps={accessibilityProps}

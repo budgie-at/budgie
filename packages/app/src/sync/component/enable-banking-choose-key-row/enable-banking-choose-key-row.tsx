@@ -2,13 +2,15 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { EnableBankingSyncService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
+import { Text } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
-import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
 import { useExplainEnableBankingError } from '../../hook/use-explain-enable-banking-error.hook';
 import { EnableBankingConnectionService } from '../../service/enable-banking-connection.service';
 
@@ -38,10 +40,9 @@ export const EnableBankingChooseKeyRow = ({ applicationId }: Props) => {
         );
 
     return (
-        <SettingsRow
-            icon={UserIconNameEnum.KeyRound}
-            variant="primary"
-            title={t`Choose key file again`}
+        <GroupedListRow
+            left={<GroupedListIcon icon={UserIconNameEnum.KeyRound} />}
+            title={<Text className="text-primary text-[17px] font-semibold">{t`Choose key file again`}</Text>}
             subtitle={t`The key is missing or was rejected.`}
             onPress={handlePress}
         />

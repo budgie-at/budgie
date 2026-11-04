@@ -44,7 +44,7 @@ export const SearchablePage = (props: Props) => {
 
                     <CollapsibleHeaderBackdrop />
 
-                    <CollapsibleChromeHeaderScrim />
+                    <CollapsibleChromeHeaderScrim className="bg-surface" />
 
                     <CollapsibleChromeHeader
                         leading={<GoBackButton onPress={onGoBack} />}

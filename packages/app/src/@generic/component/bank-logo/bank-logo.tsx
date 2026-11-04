@@ -20,6 +20,8 @@ interface Props {
     readonly fallback?: ReactNode;
 }
 
+const INSTITUTION_TILE_RADIUS_RATIO = 0.28;
+
 const iconVariant = cva('', {
     variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
@@ -35,6 +37,17 @@ const getBankIcon = (provider: ExternalSourceEnum, size: number): ReactElement |
         case ExternalSourceEnum.BINANCE:
             return <BinanceIcon size={size} />;
         case ExternalSourceEnum.ENABLE_BANKING:
+            return (
+                <CircleIcon
+                    icon={UserIconNameEnum.Landmark}
+                    variant="primary"
+                    border={false}
+                    size={size}
+                    iconSize={Math.round(size / 2)}
+                    radius={Math.round(size * INSTITUTION_TILE_RADIUS_RATIO)}
+                    className="bg-surface-disc"
+                />
+            );
         case ExternalSourceEnum.MANUAL:
         case ExternalSourceEnum.REVOLUT:
         case ExternalSourceEnum.COINBASE:
