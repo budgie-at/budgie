@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.151.2](https://github.com/budgie-at/budgie/compare/v6.151.1...v6.151.2) (2026-11-04)
+
+### Bug Fixes
+
+* **app:** stop a toast from sticking over the back button ([24ac156](https://github.com/budgie-at/budgie/commit/24ac156b870c11f917a57b0ff1fc8f252a573dcb))
+
+
 ## [6.151.1](https://github.com/budgie-at/budgie/compare/v6.151.0...v6.151.1) (2026-11-04)
 
 **Note:** Version bump only for package @budgie-at/root
