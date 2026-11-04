@@ -7,17 +7,17 @@ import { getAccountSyncState } from '../../account/utils/get-account-sync-state.
 import { BankIntegrationSyncStatusEnum } from '../enum/bank-integration-sync-status.enum';
 
 export const getBankIntegrationSyncStatus = (
-    syncs: Array<Pick<SyncEntityInterface, 'enabled' | 'status' | 'mode'>>,
+    syncs: Array<Pick<SyncEntityInterface, 'enabled' | 'status' | 'mode' | 'forwardSyncedAt'>>,
     isKeyRejected: boolean
 ): BankIntegrationSyncStatusEnum => {
     const states = syncs.map(getAccountSyncState);
 
-    if (states.includes(AccountSyncStateEnum.FAILED) || syncs.some(sync => sync.status === SyncStatusEnum.FAILED)) {
-        return BankIntegrationSyncStatusEnum.NEEDS_ATTENTION;
-    }
-
     if (isKeyRejected) {
         return BankIntegrationSyncStatusEnum.KEY_REJECTED;
+    }
+
+    if (states.includes(AccountSyncStateEnum.FAILED) || syncs.some(sync => sync.status === SyncStatusEnum.FAILED)) {
+        return BankIntegrationSyncStatusEnum.NEEDS_ATTENTION;
     }
 
     if (states.includes(AccountSyncStateEnum.SYNCING)) {

@@ -116,6 +116,11 @@ msgstr "{0, plural, one {Otras · # categoría} other {Otras · # categorías}}"
 msgid "{0, plural, one {Show # more group} other {Show # more groups}}"
 msgstr "{0, plural, one {Mostrar # grupo más} other {Mostrar # grupos más}}"
 
+#. placeholder {0}: syncs.filter(sync => sync.status === SyncStatusEnum.FAILED).length
+#: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
+msgid "{0, plural, one {Sync failed for # account} other {Sync failed for # accounts}}"
+msgstr "{0, plural, one {Error al sincronizar # cuenta} other {Error al sincronizar # cuentas}}"
+
 #. placeholder {0}: categoriesWithDefaultIcon.length
 #: src/app/(tabs)/settings/category-icons.tsx
 msgid "{0, plural, one {Tap a suggestion to replace the default icon} other {Tap a suggestion to replace each default icon}}"
@@ -1025,7 +1030,6 @@ msgid "Account {accountId} not found"
 msgstr "Cuenta {accountId} no encontrada"
 
 #: src/account/component/account-actions-menu/account-actions-menu.tsx
-#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Account actions"
 msgstr "Acciones de la cuenta"
 
@@ -1070,9 +1074,9 @@ msgstr "Cuentas · {accountsCount}"
 msgid "Accounts ({selectedAccountsCount})"
 msgstr "Cuentas ({selectedAccountsCount})"
 
-#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
-msgid "Accounts you sync or import appear here."
-msgstr "Aquí aparecen las cuentas que sincronizas o importas."
+#: src/sync/component/bank-integration-accounts-footer/bank-integration-accounts-footer.tsx
+msgid "Accounts you sync appear here."
+msgstr "Las cuentas que sincronices aparecerán aquí."
 
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Action: {label}"
@@ -1152,7 +1156,7 @@ msgstr "Añadir límites de categoría"
 msgid "Add condition"
 msgstr "Añadir condición"
 
-#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
+#: src/sync/component/bank-integration-add-deposit/bank-integration-add-deposit.tsx
 msgid "Add deposit"
 msgstr "Añadir depósito"
 
@@ -1420,6 +1424,7 @@ msgid "Anything except this value"
 msgstr "Cualquier cosa excepto este valor"
 
 #: src/sync/component/bank-integration-key-card/bank-integration-key-card.tsx
+#: src/sync/component/bank-integration-key-field/bank-integration-key-field.tsx
 msgid "API key"
 msgstr "Clave de API"
 
@@ -1511,6 +1516,10 @@ msgstr "¿Estás seguro?"
 #: src/account/component/net-worth-composition/net-worth-composition.tsx
 msgid "Asset mix"
 msgstr "Composición de activos"
+
+#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
+msgid "Assets · {accountCount}"
+msgstr "Activos · {accountCount}"
 
 #: src/account/component/institution-accounts/institution-accounts.tsx
 msgid "Assets · {accountsCount}"
@@ -1862,6 +1871,10 @@ msgstr "Budgie registra los pagos con Apple Pay en el momento en que pagas, medi
 msgid "Budgie stops setting money aside for it. Your transactions are not affected."
 msgstr "Budgie deja de reservar dinero para esto. Tus transacciones no se ven afectadas."
 
+#: src/sync/component/bank-integration-key-card/bank-integration-key-card.tsx
+msgid "Budgie syncs automatically and lists new Monobank accounts here as soon as they appear."
+msgstr "Budgie sincroniza automáticamente y muestra aquí las nuevas cuentas de Monobank en cuanto aparecen."
+
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
 msgstr "Budgie rellenará los valores faltantes en la moneda base usando tipos de cambio históricos. Es posible que las analíticas no estén disponibles hasta que termine."
@@ -1922,7 +1935,6 @@ msgstr "No se puede cambiar después"
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 #: src/app/(tabs)/settings/import.tsx
 #: src/app/convert-to-transfer.tsx
-#: src/app/resync-window-picker.tsx
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 #: src/budget/hooks/use-budget-event-form.hook.ts
 #: src/budget/hooks/use-budget-form.hook.ts
@@ -2154,6 +2166,10 @@ msgstr "Elige un PIN nuevo"
 msgid "Choose a period"
 msgstr "Elegir un periodo"
 
+#: src/app/resync-window-picker.tsx
+msgid "Choose a period to re-sync past transactions."
+msgstr "Elige un período para volver a sincronizar las transacciones pasadas."
+
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 #: src/auth/utils/get-pin-setup-meta.util.ts
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
@@ -2381,9 +2397,17 @@ msgstr "Conectar Binance"
 msgid "Connect Monobank"
 msgstr "Conectar Monobank"
 
+#: src/sync/component/bank-integration-key-card/bank-integration-key-card.tsx
+msgid "Connection"
+msgstr "Conexión"
+
 #: src/account/component/institution-settings-button/institution-settings-button.tsx
 msgid "Connection settings"
 msgstr "Ajustes de conexión"
+
+#: src/sync/component/bank-integration-import-status/bank-integration-import-status.tsx
+msgid "Connects using statement files"
+msgstr "Se conecta mediante archivos de extractos"
 
 #: ../ledger/src/transaction/service/transaction-transfer.service.ts
 msgid "Consolidated transactions cannot start a deposit"
@@ -3366,6 +3390,10 @@ msgstr "Fecha de vencimiento"
 msgid "Duplicate rule"
 msgstr "Duplicar regla"
 
+#: src/app/resync-window-picker.tsx
+msgid "Duplicates are merged automatically. Your categories, tags and notes stay."
+msgstr "Los duplicados se combinan automáticamente. Tus categorías, etiquetas y notas se conservan."
+
 #: src/rule/hooks/use-rule-text-value-meta.hook.ts
 msgid "e.g. ^uber.*trip"
 msgstr "p. ej. ^uber.*trip"
@@ -3557,10 +3585,6 @@ msgstr "Introduce todos los importes"
 msgid "Enter current PIN"
 msgstr "Ingresa el PIN actual"
 
-#: src/app/bank-integration-key.tsx
-msgid "Enter new token"
-msgstr "Ingresar nuevo token"
-
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
 msgid "Enter the backup's PIN"
 msgstr "Introduce el PIN de la copia de seguridad"
@@ -3589,6 +3613,10 @@ msgstr "Ingresa tu PIN"
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enter your PIN to turn it off. Anyone who can unlock this phone will be able to open Budgie."
 msgstr "Introduce tu PIN para desactivarlo. Cualquiera que pueda desbloquear este teléfono podrá abrir Budgie."
+
+#: src/sync/component/resync-window-option-row/resync-window-option-row.tsx
+msgid "Entire available history"
+msgstr "Todo el historial disponible"
 
 #: src/app/resync-window-picker.tsx
 msgid "Entire history will be re-synced on next sync."
@@ -3687,10 +3715,6 @@ msgstr "Tipo de cambio no encontrado"
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "Exchange rate: {rateLabel}. Tap to edit receiving amount"
 msgstr "Tipo de cambio: {rateLabel}. Toca para editar el monto a recibir"
-
-#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
-msgid "Excluded from file imports"
-msgstr "Excluida de las importaciones de archivos"
 
 #: src/budget/components/budget-limit-source-field/budget-limit-source-field.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
@@ -4109,6 +4133,10 @@ msgstr "Importar"
 msgid "Import a PDF statement"
 msgstr "Importar un extracto PDF"
 
+#: src/sync/component/bank-integration-statements/bank-integration-statements.tsx
+msgid "Import a statement from {bank} to add your accounts."
+msgstr "Importa un extracto de {bank} para añadir tus cuentas."
+
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Import accounts and transactions from Erste Bank PDF statement"
 msgstr "Importar cuentas y transacciones desde extracto PDF de Erste Bank"
@@ -4140,7 +4168,6 @@ msgstr "Error de importación"
 
 #: src/account/component/account-card-base/account-card-base.tsx
 #: src/account/component/account-card-menu/account-card-menu.tsx
-#: src/sync/component/bank-integration-page/bank-integration-page.tsx
 msgid "Import file"
 msgstr "Importar archivo"
 
@@ -4156,9 +4183,17 @@ msgstr "Importar Privatbank"
 msgid "Import started"
 msgstr "Importación iniciada"
 
+#: src/sync/component/bank-integration-statements/bank-integration-statements.tsx
+msgid "Import statement"
+msgstr "Importar extracto"
+
 #: src/app/(tabs)/settings/index.tsx
 msgid "Import, export, repair and reset"
 msgstr "Importar, exportar, reparar y restablecer"
+
+#: src/sync/component/bank-integration-import-status/bank-integration-import-status.tsx
+msgid "Imported from statement files"
+msgstr "Importado desde archivos de extractos"
 
 #: src/sync/utils/get-history-import-status-message.util.ts
 msgid "Importing history"
@@ -4171,6 +4206,10 @@ msgstr "Importando el historial · {percent}%"
 #: src/sync/component/sync-import-progress/sync-import-progress.tsx
 msgid "Importing history…"
 msgstr "Importando el historial…"
+
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Imports off"
+msgstr "Importación desactivada"
 
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "in {month}"
@@ -4192,6 +4231,10 @@ msgstr "En la autonomía, a precios de hoy"
 msgid "In Shortcuts, add a personal automation with the Transaction trigger, select your cards and choose Run Immediately."
 msgstr "En Atajos, añade una automatización personal con el activador Transacción, selecciona tus tarjetas y elige Ejecutar inmediatamente."
 
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Include {title} in imports"
+msgstr "Incluir {title} en las importaciones"
+
 #: src/runway/component/runway-settings-rows/runway-settings-rows.tsx
 msgid "Include crypto"
 msgstr "Incluir criptomonedas"
@@ -4205,7 +4248,6 @@ msgid "Include crypto in runway"
 msgstr "Incluir cripto en la autonomía"
 
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
-#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Include in file imports"
 msgstr "Incluir en las importaciones de archivos"
 
@@ -4363,6 +4405,10 @@ msgstr "La clave tiene demasiados permisos"
 msgid "Key rejected"
 msgstr "Clave rechazada"
 
+#: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
+msgid "Key rejected — sync is paused"
+msgstr "Clave rechazada — sincronización en pausa"
+
 #: src/app/bank-integration-key.tsx
 msgid "Key updated"
 msgstr "Clave actualizada"
@@ -4387,7 +4433,7 @@ msgstr "Último 1 mes"
 msgid "Last 3 months"
 msgstr "Últimos 3 meses"
 
-#: src/app/resync-window-picker.tsx
+#: src/sync/component/resync-window-option-row/resync-window-option-row.tsx
 msgid "Last 30 days"
 msgstr "Últimos 30 días"
 
@@ -4395,11 +4441,11 @@ msgstr "Últimos 30 días"
 msgid "Last 6 months"
 msgstr "Últimos 6 meses"
 
-#: src/app/resync-window-picker.tsx
+#: src/sync/component/resync-window-option-row/resync-window-option-row.tsx
 msgid "Last 7 days"
 msgstr "Últimos 7 días"
 
-#: src/app/resync-window-picker.tsx
+#: src/sync/component/resync-window-option-row/resync-window-option-row.tsx
 msgid "Last 90 days"
 msgstr "Últimos 90 días"
 
@@ -4410,6 +4456,10 @@ msgstr "Creada por última vez {lastBackupDate}"
 #: src/budget/components/budget-month-day-start-field/budget-month-day-start-field.tsx
 msgid "Last day of each month"
 msgstr "Último día de cada mes"
+
+#: src/sync/component/bank-integration-import-status/bank-integration-import-status.tsx
+msgid "Last import {importDate}"
+msgstr "Última importación {importDate}"
 
 #: src/@generic/constant/date-period.constant.ts
 msgid "Last Month"
@@ -4422,6 +4472,10 @@ msgstr "último pago {formattedLast}"
 #: src/account/component/institution-connection-row/institution-connection-row.tsx
 msgid "Last successful sync · {lastSyncedTime}"
 msgstr "Última sincronización correcta · {lastSyncedTime}"
+
+#: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
+msgid "Last synced {relative}"
+msgstr "Última sincronización: {relative}"
 
 #: src/@generic/constant/date-period.constant.ts
 msgid "Last Week"
@@ -4676,6 +4730,10 @@ msgstr "Fecha de vencimiento (Opcional)"
 #: src/app/transaction-amount-filter.tsx
 msgid "Maximum amount"
 msgstr "Importe máximo"
+
+#: src/sync/component/resync-window-option-row/resync-window-option-row.tsx
+msgid "May take a few minutes"
+msgstr "Puede tardar unos minutos"
 
 #: src/app/(tabs)/settings/import.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
@@ -5028,13 +5086,10 @@ msgstr "Sin cuenta que crear. Nunca se sincroniza ni se sube. Funciona sin ningu
 msgid "No accounts found"
 msgstr "No se encontraron cuentas"
 
-#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
-msgid "No accounts in this integration yet"
-msgstr "Aún no hay cuentas en esta integración"
-
 #: src/account/component/account-select-content/account-select-content.tsx
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+#: src/sync/component/bank-integration-empty-accounts/bank-integration-empty-accounts.tsx
 msgid "No accounts yet"
 msgstr "Aún no hay cuentas"
 
@@ -5288,6 +5343,10 @@ msgstr "no establecido"
 #: src/settings/components/budget-management-card/budget-management-card.tsx
 msgid "Not set"
 msgstr "Sin configurar"
+
+#: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
+msgid "Not synced yet"
+msgstr "Aún sin sincronizar"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Not synced: Auto-Invest, Binance Pay, Binance Card, gift cards, sub-account transfers, margin and futures."
@@ -5551,6 +5610,10 @@ msgstr "Si quieres, activa {biometricLabel}"
 msgid "Options"
 msgstr "Opciones"
 
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Options for {title}"
+msgstr "Opciones de {title}"
+
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
 #: src/rule/components/rule-condition-summary-row/rule-condition-summary-row.tsx
@@ -5722,9 +5785,13 @@ msgstr "Último año"
 msgid "Past years"
 msgstr "Años pasados"
 
+#: src/sync/component/bank-integration-key-field/bank-integration-key-field.tsx
+msgid "Paste API key"
+msgstr "Pegar clave API"
+
 #: src/app/bank-integration-key.tsx
-msgid "Paste the key from api.monobank.ua"
-msgstr "Pega la clave de api.monobank.ua"
+msgid "Paste the key from api.monobank.ua."
+msgstr "Pega la clave de api.monobank.ua."
 
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Paste your API token below:"
@@ -5791,6 +5858,10 @@ msgstr "Pagos por mes"
 msgid "Payments this rule already changed stay as they are."
 msgstr "Los pagos que esta regla ya cambió se quedan como están."
 
+#: src/sync/component/bank-integration-statements/bank-integration-statements.tsx
+msgid "PDF or spreadsheet from {bank}"
+msgstr "PDF u hoja de cálculo de {bank}"
+
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "PDF statement"
 msgstr "Extracto PDF"
@@ -5835,10 +5906,6 @@ msgstr "Elige una categoría para definir un límite"
 #: src/tag/components/tag-destination-sheet/tag-destination-sheet.tsx
 msgid "Pick a tag to continue"
 msgstr "Elige una etiqueta para continuar"
-
-#: src/app/resync-window-picker.tsx
-msgid "Pick a window. Existing data is preserved."
-msgstr "Elige un periodo. Los datos existentes se conservan."
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Pick one you'll remember but others won't guess."
@@ -6036,18 +6103,6 @@ msgid "Re-record"
 msgstr "Volver a grabar"
 
 #: src/app/resync-window-picker.tsx
-msgid "Re-sync Bank Account?"
-msgstr "¿Volver a sincronizar la cuenta bancaria?"
-
-#: src/app/resync-window-picker.tsx
-msgid "Re-sync entire history"
-msgstr "Resincronizar todo el historial"
-
-#: src/app/resync-window-picker.tsx
-msgid "Re-sync History"
-msgstr "Volver a sincronizar historial"
-
-#: src/app/resync-window-picker.tsx
 msgid "Re-sync of last 30 days will start on next sync."
 msgstr "La resincronización de los últimos 30 días comenzará en la próxima sincronización."
 
@@ -6058,10 +6113,6 @@ msgstr "La resincronización de los últimos 7 días comenzará en la próxima s
 #: src/app/resync-window-picker.tsx
 msgid "Re-sync of last 90 days will start on next sync."
 msgstr "La resincronización de los últimos 90 días comenzará en la próxima sincronización."
-
-#: src/app/resync-window-picker.tsx
-msgid "Re-sync transactions"
-msgstr "Resincronizar transacciones"
 
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "Read on this phone"
@@ -6304,10 +6355,6 @@ msgstr "Reservando {upcomingAmount} para {billsLabel}"
 #: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
 msgid "Reset total"
 msgstr "Restablecer total"
-
-#: src/app/resync-window-picker.tsx
-msgid "Resets all sync state"
-msgstr "Restablece todo el estado de sincronización"
 
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 msgid "Restart App"
@@ -7022,6 +7069,10 @@ msgstr "Empieza el"
 msgid "Statement imported"
 msgstr "Extracto importado"
 
+#: src/sync/component/bank-integration-statements/bank-integration-statements.tsx
+msgid "Statements"
+msgstr "Extractos"
+
 #: src/wallet-capture/component/apple-pay-capture-setup-row/apple-pay-capture-setup-row.tsx
 msgid "Step {stepNumber}"
 msgstr "Paso {stepNumber}"
@@ -7063,14 +7114,29 @@ msgid "Swipe to remove this per-category cap from your budget."
 msgstr "Desliza para eliminar este tope por categoría de tu presupuesto."
 
 #: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
-msgid "Switch on to start syncing"
-msgstr "Actívala para empezar a sincronizar"
+msgid "Switch on to start syncing."
+msgstr "Activa para empezar a sincronizar."
+
+#: src/sync/component/bank-integration-accounts-footer/bank-integration-accounts-footer.tsx
+msgid "Switched-off accounts are skipped on import."
+msgstr "Las cuentas desactivadas se omiten al importar."
+
+#: src/sync/component/bank-integration-accounts-footer/bank-integration-accounts-footer.tsx
+msgid "Switched-off accounts stop syncing. History stays."
+msgstr "Las cuentas desactivadas dejan de sincronizarse. El historial se conserva."
+
+#: src/sync/component/bank-integration-accounts-footer/bank-integration-accounts-footer.tsx
+msgid "Switched-off assets stop syncing. History stays."
+msgstr "Los activos desactivados dejan de sincronizarse. El historial se conserva."
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
-#: src/sync/component/bank-integration-new-account-row/bank-integration-new-account-row.tsx
-#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync"
 msgstr "Sincronización"
+
+#: src/sync/component/bank-integration-new-account-row/bank-integration-new-account-row.tsx
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Sync {title}"
+msgstr "Sincronizar {title}"
 
 #: src/settings/hooks/use-sync-repairs-action.hook.ts
 msgid "Sync data repaired"
@@ -7082,23 +7148,32 @@ msgstr "Reparaciones de datos de sincronización"
 
 #: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync failed"
 msgstr "Sincronización fallida"
 
+#: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
+msgid "Sync is off for all accounts"
+msgstr "Sincronización desactivada en todas las cuentas"
+
+#: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
+msgid "Sync is off for all assets"
+msgstr "La sincronización está desactivada para todos los activos"
+
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
-msgid "Sync Failed"
-msgstr "Sincronización fallida"
+msgid "Sync off"
+msgstr "Sincronización desactivada"
 
 #: src/app/(main)/create-account/index.tsx
 msgid "Sync or import"
 msgstr "Sincronizar o importar"
 
+#: src/app/resync-window-picker.tsx
 #: src/sync/component/resync-account/resync-account.tsx
 msgid "Sync past transactions"
 msgstr "Sincronizar transacciones anteriores"
 
 #: src/account/constant/account-sync-state-label.constant.ts
-#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync paused"
 msgstr "Sincronización pausada"
 
@@ -7118,6 +7193,10 @@ msgstr "Sincroniza con una clave API de solo lectura"
 msgid "Sync your Binance balances and transactions"
 msgstr "Sincroniza tus saldos y transacciones de Binance"
 
+#: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
+msgid "Synced {relative}"
+msgstr "Sincronizado {relative}"
+
 #: src/account/constant/account-sync-state-label.constant.ts
 msgid "Syncing"
 msgstr "Sincronizando"
@@ -7130,6 +7209,11 @@ msgstr "Sincronizando el historial bancario"
 msgid "Syncing history..."
 msgstr "Sincronizando historial..."
 
+#: src/sync/component/bank-integration-accounts-footer/bank-integration-accounts-footer.tsx
+msgid "Syncing resumes for all accounts once you update the key."
+msgstr "La sincronización de todas las cuentas se reanuda cuando actualizas la clave."
+
+#: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Syncing…"
@@ -7472,10 +7556,6 @@ msgstr "Esto eliminará el asiento de comisión de esta transacción."
 #: src/budget/hooks/use-budget-form.hook.ts
 msgid "This will remove your budget. You can create a new one anytime."
 msgstr "Esto eliminará tu presupuesto. Puedes crear uno nuevo cuando quieras."
-
-#: src/app/resync-window-picker.tsx
-msgid "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
-msgstr "Esto restablecerá el historial de sincronización y volverá a sincronizar todas las transacciones de esta cuenta bancaria. Tus transacciones, etiquetas y categorías existentes se conservarán y se actualizarán con cualquier dato nuevo."
 
 #: src/budget/constant/budget-period-this-label.constant.ts
 msgid "this year"
@@ -8361,6 +8441,10 @@ msgstr "Tú decides"
 msgctxt "Categorize inbox section chip"
 msgid "Your call"
 msgstr "Tú decides"
+
+#: src/sync/component/bank-integration-key-field/bank-integration-key-field.tsx
+msgid "Your current key was rejected. Paste a new one to resume syncing."
+msgstr "Tu clave actual fue rechazada. Pega una nueva para reanudar la sincronización."
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Your data"
