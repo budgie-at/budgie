@@ -37,6 +37,7 @@ type Props = TitleProps & {
 
 const FOOTER_CONTENT_BOTTOM_INSET = 96;
 const FOOTER_CLEARANCE = 16;
+const FOOTER_FADE_HEIGHT = 24;
 
 export const CollapsibleChromePage = ({
     title,
@@ -62,6 +63,7 @@ export const CollapsibleChromePage = ({
         ? Math.max(footerHeight + FOOTER_CLEARANCE - safeAreaBottom, FOOTER_CONTENT_BOTTOM_INSET)
         : 0;
     const { bottomOffset: bottomOffsetOverride, ...restScrollViewProps } = isDefined(scrollViewProps) ? scrollViewProps : {};
+    const footerFadeHeight = footerHeight - safeAreaBottom + FOOTER_FADE_HEIGHT;
     const resolvedBottomOffset = isDefined(bottomOffsetOverride) ? bottomOffsetOverride : contentInsetBottom;
     const resolvedLargeTitle = isDefined(largeTitle) ? (
         largeTitle
@@ -118,7 +120,11 @@ export const CollapsibleChromePage = ({
                     collapsedTitle={resolvedSmallTitle}
                 />
 
-                {isDefined(footer) ? <StickyFooterBand onLayout={handleFooterLayout}>{footer}</StickyFooterBand> : null}
+                {isDefined(footer) ? (
+                    <StickyFooterBand onLayout={handleFooterLayout} fadeHeight={footerFadeHeight}>
+                        {footer}
+                    </StickyFooterBand>
+                ) : null}
             </ScreenChromeFrame>
         </ScreenChromeThemeProvider>
     );

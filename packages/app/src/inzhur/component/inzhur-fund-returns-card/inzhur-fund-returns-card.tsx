@@ -4,7 +4,6 @@ import { View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useHryvniaInstrumentQuery } from '../../query/use-hryvnia-instrument.query';
 import { useInzhurFundReturnsQuery } from '../../query/use-inzhur-fund-returns.query';
 import { InzhurSelector } from '../../selector/inzhur.selector';
@@ -22,16 +21,19 @@ export const InzhurFundReturnsCard = ({ account }: Props) => {
     const { t } = useLingui();
     const { dividendTotals } = useInzhurFundReturnsQuery(account.id, account.instrumentId);
     const symbol = useHryvniaInstrumentQuery()?.symbol ?? '';
-    const formatAmount = useFormatDigits(2);
 
     const reinvested = convertFromMicroUnits(dividendTotals?.reinvested ?? 0);
     const bank = convertFromMicroUnits(dividendTotals?.bank ?? 0);
 
     return (
-        <View className="self-stretch rounded-3xl bg-surface-row py-md" style={CONTINUOUS_CORNERS} testID={InzhurSelector.FundReturns}>
-            <InzhurFundReturnRow label={t`Reinvested dividends · all time`} value={formatAmount(reinvested, symbol)} />
+        <View
+            className="gap-y-md self-stretch rounded-3xl bg-surface-row p-3xl"
+            style={CONTINUOUS_CORNERS}
+            testID={InzhurSelector.FundReturns}
+        >
+            <InzhurFundReturnRow label={t`Reinvested dividends · all time`} amount={reinvested} instrumentSymbol={symbol} />
             {isPositiveNumber(bank) ? (
-                <InzhurFundReturnRow label={t`Bank dividends · all time`} value={formatAmount(bank, symbol)} />
+                <InzhurFundReturnRow label={t`Bank dividends · all time`} amount={bank} instrumentSymbol={symbol} />
             ) : null}
         </View>
     );

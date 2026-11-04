@@ -8,8 +8,6 @@ import { InstitutionMark } from '../institution-mark/institution-mark';
 
 import type { AccountAssociationEnum, AccountWithSyncEntityInterface } from '@budgie/contracts';
 
-const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
-
 interface Props {
     readonly account: Pick<AccountWithSyncEntityInterface, 'type' | 'title' | AccountAssociationEnum.INSTRUMENT>;
     readonly provider: ExternalSourceEnum;
@@ -26,8 +24,8 @@ export const InstitutionAccountLeading = ({ account, provider }: Props) => {
 
     if (account.instrument.type === InstrumentTypeEnum.FUND) {
         return (
-            <View className="size-[40px] items-center justify-center rounded-[10px] bg-surface-disc" style={CONTINUOUS_CORNERS}>
-                <Text maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER} className="text-[17px] font-semibold text-primary">
+            <View className="size-[40px] items-center justify-center rounded-[10px] bg-surface-disc">
+                <Text maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER} className="text-[18px] leading-[22px] font-semibold text-primary">
                     {account.instrument.symbol.charAt(0)}
                 </Text>
             </View>

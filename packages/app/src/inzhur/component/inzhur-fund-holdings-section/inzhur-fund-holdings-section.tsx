@@ -15,9 +15,12 @@ export const InzhurFundHoldingsSection = ({ balance }: Props) => {
     const formatFundQuantity = useFormatFundQuantity();
 
     return (
-        <GroupedListSection footer={t`Updated from your Inzhur statements.`}>
+        <GroupedListSection>
             <View accessible className="min-h-[50px] flex-row items-center gap-x-xl px-3xl py-lg" testID={InzhurSelector.Holdings}>
-                <Text className="flex-1 text-[17px] text-primary">{t`Holdings`}</Text>
+                <View className="flex-1 gap-y-xxs">
+                    <Text className="text-[17px] text-primary">{t`Holdings`}</Text>
+                    <Text className="text-[13px] leading-[18px] text-secondary-foreground">{t`From statements`}</Text>
+                </View>
                 <ProtectedText className="text-[17px] text-secondary-foreground tabular-nums">{formatFundQuantity(balance)}</ProtectedText>
             </View>
         </GroupedListSection>

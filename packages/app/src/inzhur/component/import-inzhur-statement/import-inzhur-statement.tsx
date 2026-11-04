@@ -20,7 +20,11 @@ export const ImportInzhurStatement = () => {
 
     const { formatDayAndMonthAndYear } = useFormatDate();
 
-    const exportSteps = [t`Open the Inzhur app`, t`Download «Виписка про стан рахунку»`, t`Choose it here as a PDF`];
+    const exportSteps = [
+        t`Open the Inzhur app`,
+        { title: t`Download your account statement`, caption: t`«Виписка про стан рахунку» · PDF` },
+        t`Choose it here as a PDF`
+    ];
 
     const handleDone = () => void router.dismissTo('/');
 
@@ -63,7 +67,12 @@ export const ImportInzhurStatement = () => {
                             you.
                         </Trans>
                     </Text>
-                    <NumberedSteps title={t`How to export`} steps={exportSteps} />
+                    <View className="gap-y-md">
+                        <NumberedSteps title={t`How to export`} steps={exportSteps} />
+                        <Text className="px-3xl text-[13px] leading-[18px] text-secondary-foreground">
+                            <Trans>Read on your device. Nothing is uploaded.</Trans>
+                        </Text>
+                    </View>
                 </View>
             </CollapsibleChromePage>
         </GroupedSurface>

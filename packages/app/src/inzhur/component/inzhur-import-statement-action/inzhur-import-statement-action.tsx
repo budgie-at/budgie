@@ -16,7 +16,7 @@ import { InzhurSelector } from '../../selector/inzhur.selector';
 
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
-const bannerVariants = cva('min-h-[60px] rounded-3xl bg-warning-background py-md pr-md pl-3xl', {
+const bannerVariants = cva('min-h-[48px] rounded-3xl bg-grouped-surface-row py-xxs pr-xs pl-3xl', {
     variants: { isStacked: { true: 'items-start gap-y-md', false: 'flex-row items-center gap-x-md' } }
 });
 
@@ -58,10 +58,10 @@ export const InzhurImportStatementAction = () => {
                 onPress={handleImport}
                 accessibilityRole="button"
                 accessibilityLabel={t`Import statement`}
-                className="min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-cta-background px-xl active:opacity-80"
+                className="min-h-[44px] min-w-[44px] items-center justify-center px-md active:opacity-70"
                 testID={InzhurSelector.ImportStatementButton}
             >
-                <Text className="text-[15px] font-semibold text-cta-foreground">
+                <Text className="text-[15px] font-semibold text-default-foreground">
                     <Trans>Import</Trans>
                 </Text>
             </HapticPressable>

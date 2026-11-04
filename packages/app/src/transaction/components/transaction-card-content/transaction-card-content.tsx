@@ -53,7 +53,7 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
             icon={
                 <CircleIcon
                     size={36}
-                    iconSize={18}
+                    iconSize={20}
                     radius={18}
                     border={false}
                     icon={icon}

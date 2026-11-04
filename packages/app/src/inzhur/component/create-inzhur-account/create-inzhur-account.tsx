@@ -40,7 +40,7 @@ export const CreateInzhurAccount = () => {
             variant="primary"
             topContent={
                 <Text className="text-[15px] font-medium text-secondary-foreground">
-                    <Trans>Cash in Inzhur</Trans>
+                    <Trans>Cash in your Inzhur app</Trans>
                 </Text>
             }
             testID={InzhurSelector.CashAmount}
@@ -49,7 +49,7 @@ export const CreateInzhurAccount = () => {
                 className="mt-lg max-w-[300px] text-center text-sm leading-[20px] text-secondary-foreground"
                 lineBreakStrategyIOS="standard"
             >
-                <Trans>Cash available in your Inzhur app. Import a statement next to add certificates.</Trans>
+                <Trans>You can import a statement next.</Trans>
             </Text>
         </TransactionAmountDisplay>
     );

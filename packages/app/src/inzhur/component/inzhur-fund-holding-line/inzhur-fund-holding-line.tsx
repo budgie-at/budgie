@@ -1,3 +1,6 @@
+import { useLingui } from '@lingui/react/macro';
+import { Text, View } from 'react-native';
+
 import { isDefined } from '@rnw-community/shared';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
@@ -15,6 +18,7 @@ interface Props {
 }
 
 export const InzhurFundHoldingLine = ({ account, balance }: Props) => {
+    const { t } = useLingui();
     const { formatMonthAndDayAndOptionalYear } = useFormatDate();
     const { latestPrice } = useInzhurFundReturnsQuery(account.id, account.instrumentId);
     const symbol = useHryvniaInstrumentQuery()?.symbol ?? '';
@@ -24,7 +28,17 @@ export const InzhurFundHoldingLine = ({ account, balance }: Props) => {
     const quantityLabel = formatFundQuantity(balance);
     const priceLabel = isDefined(latestPrice) ? formatAmount(latestPrice.price, symbol) : null;
     const priceDate = isDefined(latestPrice) ? formatMonthAndDayAndOptionalYear(latestPrice.priceDate) : null;
-    const label = isDefined(priceLabel) ? `${quantityLabel} · ${priceLabel} · ${priceDate}` : quantityLabel;
 
-    return <ProtectedText className="text-center text-[15px] leading-[20px] text-secondary-foreground tabular-nums">{label}</ProtectedText>;
+    return (
+        <View className="items-center gap-y-xxs px-5xl">
+            <ProtectedText className="text-center text-[15px] leading-[20px] text-secondary-foreground tabular-nums">
+                {quantityLabel}
+            </ProtectedText>
+            {isDefined(priceLabel) ? (
+                <Text className="text-center text-[15px] leading-[20px] text-secondary-foreground tabular-nums">
+                    {t`${priceLabel} per certificate · price as of ${priceDate}`}
+                </Text>
+            ) : null}
+        </View>
+    );
 };

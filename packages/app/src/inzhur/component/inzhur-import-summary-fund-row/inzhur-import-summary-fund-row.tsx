@@ -6,6 +6,7 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useFormatFundQuantity } from '../../../i18n/hook/use-format-fund-quantity.hook';
 import { InzhurSelector } from '../../selector/inzhur.selector';
+import { InzhurSummaryAmountLine } from '../inzhur-summary-amount-line/inzhur-summary-amount-line';
 
 import type { InzhurFundChangeInterface } from '@budgie/sync';
 
@@ -23,27 +24,27 @@ export const InzhurImportSummaryFundRow = ({ fund, symbol }: Props) => {
     const sign = deltaQuantity > 0 ? '+' : '−';
     const quantityLabel = `${sign}${formatFundQuantity(Math.abs(deltaQuantity))}`;
     const tradedAmount = Math.max(exchangedAmount - dividendAmount, 0);
-    const tradedLabel = formatAmount(tradedAmount, symbol);
-    const dividendLabel = formatAmount(dividendAmount, symbol);
-    const tradeLabel = deltaQuantity > 0 ? t`Bought with Inzhur cash · ${tradedLabel}` : t`Sold for Inzhur cash · ${tradedLabel}`;
-    const details = [
-        isPositiveNumber(dividendAmount) ? t`Reinvested dividends · ${dividendLabel}` : null,
-        isPositiveNumber(tradedAmount) ? tradeLabel : null
+    const tradeLabel = deltaQuantity > 0 ? t`Bought with Inzhur cash` : t`Sold for Inzhur cash`;
+    const lines = [
+        isPositiveNumber(dividendAmount) ? { label: t`Reinvested dividends`, value: formatAmount(dividendAmount, symbol) } : null,
+        isPositiveNumber(tradedAmount) ? { label: tradeLabel, value: formatAmount(tradedAmount, symbol) } : null
     ].filter(isDefined);
 
     return (
         <View
             accessible
-            accessibilityLabel={[name, quantityLabel, ...details].join(', ')}
-            className="gap-y-xs p-3xl"
+            accessibilityLabel={[name, quantityLabel, ...lines.map(line => `${line.label} ${line.value}`)].join(', ')}
+            className="gap-y-xxs px-3xl py-[12px]"
             testID={InzhurSelector.SummaryFund(isin)}
         >
-            <Text className="text-[17px] font-semibold text-primary">{name}</Text>
-            <Text className="text-[15px] leading-[20px] text-primary tabular-nums">{quantityLabel}</Text>
-            {details.map(detail => (
-                <Text key={detail} className="text-[15px] leading-[20px] text-secondary-foreground tabular-nums">
-                    {detail}
+            <View className="flex-row items-baseline gap-x-xl">
+                <Text className="flex-1 text-[17px] font-semibold text-primary" numberOfLines={2}>
+                    {name}
                 </Text>
+                <Text className="text-[17px] font-semibold text-primary tabular-nums">{quantityLabel}</Text>
+            </View>
+            {lines.map(line => (
+                <InzhurSummaryAmountLine key={line.label} label={line.label} value={line.value} />
             ))}
         </View>
     );

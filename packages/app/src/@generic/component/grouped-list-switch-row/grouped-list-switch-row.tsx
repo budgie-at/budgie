@@ -7,7 +7,7 @@ import { ThemedSwitch } from '../themed-switch/themed-switch';
 interface Props {
     readonly icon: UserIconType;
     readonly title: string;
-    readonly subtitle: string;
+    readonly subtitle?: string;
     readonly value: boolean | undefined;
     readonly testID?: string;
     readonly titleTestID?: string;

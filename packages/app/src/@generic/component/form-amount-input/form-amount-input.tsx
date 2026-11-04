@@ -4,6 +4,9 @@ import { View } from 'react-native';
 import { useAmountFormat } from '../../hook/use-amount-format.hook';
 import { AmountSignCapsule } from '../amount-sign-capsule/amount-sign-capsule';
 
+const DEFAULT_FONT_SIZE = 64;
+const FIELD_VERTICAL_PADDING = 40;
+
 interface Props {
     readonly value: number;
     readonly testID?: string;
@@ -12,6 +15,7 @@ interface Props {
     readonly minimumDecimalPlaces?: number;
     readonly showInstrumentAfterAmount?: boolean;
     readonly onChange: (value: number) => void;
+    readonly fontSize?: number;
 }
 
 export const FormAmountInput = (props: Props) => {
@@ -22,9 +26,11 @@ export const FormAmountInput = (props: Props) => {
         allowNegative = false,
         minimumDecimalPlaces = 0,
         testID,
-        showInstrumentAfterAmount = false
+        showInstrumentAfterAmount = false,
+        fontSize = DEFAULT_FONT_SIZE
     } = props;
     const format = useAmountFormat(minimumDecimalPlaces);
+    const fieldStyle = { height: fontSize + FIELD_VERTICAL_PADDING };
     const { isNegative, absoluteValue, toggleSign, changeAbsoluteValue } = useAmountSign(value, onChange);
 
     const isNegativeAmount = allowNegative && isNegative;
@@ -34,8 +40,8 @@ export const FormAmountInput = (props: Props) => {
 
     return (
         <View className="px-4">
-            <View className="h-[104px] flex-row items-center border-b-2 border-surface-fill">
-                <AmountField fontSize={64} className="flex-1">
+            <View className="flex-row items-center border-b-2 border-surface-fill" style={fieldStyle}>
+                <AmountField fontSize={fontSize} className="flex-1">
                     {showInstrumentAfterAmount ? null : (
                         <AmountFieldPrefix scale={1} className="font-semibold text-primary">
                             {prefix}
