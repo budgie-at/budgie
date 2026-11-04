@@ -1,13 +1,13 @@
 import { cva } from 'class-variance-authority';
 import { View } from 'react-native';
 
-const dotVariants = cva('h-[4px] w-[4px] rounded-full', {
+const dotVariants = cva('h-[5px] w-[5px] rounded-full', {
     variants: {
         kind: {
             actual: 'bg-primary',
             actualSelected: 'bg-primary-reverse',
-            forecasted: 'border border-primary',
-            forecastedSelected: 'border border-primary-reverse'
+            forecasted: 'border-[1.5px] border-primary',
+            forecastedSelected: 'border-[1.5px] border-primary-reverse'
         }
     }
 });
@@ -19,7 +19,7 @@ interface Props {
 }
 
 export const RecurringCalendarDayDots = ({ actualDots, forecastedDots, isSelected }: Props) => (
-    <View className="flex-row gap-x-0.5 -mt-0.5">
+    <View className="absolute bottom-[4px] flex-row gap-x-[2px]">
         {Array.from({ length: actualDots }, (_, index) => (
             <View key={`a-${index}`} className={dotVariants({ kind: isSelected ? 'actualSelected' : 'actual' })} />
         ))}

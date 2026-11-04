@@ -1,14 +1,15 @@
-import { convertFromMicroUnits } from '@budgie/contracts';
+import { UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { Trans } from '@lingui/react/macro';
 import { useReducer } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
-import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { useToday } from '../../../@generic/hook/use-today.hook';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
@@ -25,11 +26,12 @@ import { RecurringCalendarSelector } from './recurring-calendar.selector';
 
 import type { RecurringCalendarEntryInterface } from '@budgie/recurring';
 
+const scrollContentStyle = { paddingBottom: 20, rowGap: 24 };
+
 const EMPTY_ENTRIES_BY_DAY: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]> = new Map();
 
 // eslint-disable-next-line complexity, max-statements, max-lines-per-function -- Page orchestration component with multiple hooks, state, and forecast logic
 export const RecurringCalendarContent = () => {
-    const { t } = useLingui();
     const { languageTag } = useLocaleInfo();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatDigits = useDisplayFormatDigits();
@@ -76,40 +78,33 @@ export const RecurringCalendarContent = () => {
         convertFromMicroUnits(selectedEntries.reduce((total, entry) => total + entry.latestAmount, 0)),
         defaultInstrument.symbol
     );
+    const selectedDayTotal = isNotEmptyArray(selectedEntries) ? formattedDayExpense : '';
     const formattedForecastedTotal = formatDigits(forecastedTotalAmount, defaultInstrument.symbol);
     const displayedTotal = isDefined(data) ? totalAmount + forecastedTotalAmount : 0;
-    const showCommitment = data?.committedMonthlyExpense !== displayedTotal;
-    const committedExpense = formatDigits(data?.committedMonthlyExpense ?? 0, defaultInstrument.symbol);
 
     return (
         <LoadingContent isLoading={!isDefined(data)} containerClassName="flex-1" className="flex-1">
-            <ScrollView
+            <KeyboardAwareScrollView
                 testID={RecurringCalendarSelector.Container}
-                contentContainerClassName="pb-5xl gap-y-7xl"
+                contentContainerStyle={scrollContentStyle}
+                bottomOffset={12}
                 showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled"
                 keyboardDismissMode="on-drag"
             >
                 <View className="gap-y-5xl pt-xl">
                     <View className="items-center gap-y-xs">
-                        <ProtectedMoney
-                            className="font-semibold tracking-[-1px]"
-                            hasAnimation={false}
-                            fontSize={40}
-                            minFontSize={24}
-                            maxFontSize={40}
-                            instrumentSymbol={defaultInstrument.symbol}
+                        <ProtectedText
+                            className="text-[40px] font-semibold text-primary text-center tabular-nums self-stretch"
+                            numberOfLines={1}
+                            adjustsFontSizeToFit
+                            minimumFontScale={0.5}
                         >
-                            {displayedTotal}
-                        </ProtectedMoney>
+                            {formatDigits(displayedTotal, defaultInstrument.symbol)}
+                        </ProtectedText>
                         <Text className="font-medium text-xs text-secondary-foreground">
                             <Trans>Monthly total</Trans>
                         </Text>
-                        {showCommitment ? (
-                            <ProtectedText className="text-xs text-secondary-foreground mt-sm">
-                                {t`Committed ${committedExpense} per month`}
-                            </ProtectedText>
-                        ) : null}
                     </View>
 
                     <RecurringCalendarGrid
@@ -129,17 +124,16 @@ export const RecurringCalendarContent = () => {
                         title={new Intl.DateTimeFormat(languageTag, { weekday: 'long', month: 'short', day: 'numeric' }).format(
                             new Date(displayYear, displayMonth, selectedDay)
                         )}
-                        formattedTotal={formattedDayExpense}
+                        formattedTotal={selectedDayTotal}
                         entries={selectedEntries}
-                        displayMonth={displayMonth}
-                        displayYear={displayYear}
                         emptyContent={
-                            <View className="items-center py-5xl px-3xl rounded-3xl bg-grouped-surface-row">
+                            <View className="items-center gap-y-xl py-7xl px-3xl rounded-3xl bg-grouped-surface-row">
+                                <CircleIcon icon={UserIconNameEnum.CalendarCheck} size={36} iconSize={18} variant="ghost" />
                                 <Text
                                     className="text-secondary-foreground text-sm text-center"
                                     testID={RecurringCalendarSelector.SelectedDayEmptyState}
                                 >
-                                    <Trans>No recurring payments detected</Trans>
+                                    <Trans>No recurring payments on this day</Trans>
                                 </Text>
                             </View>
                         }
@@ -180,7 +174,7 @@ export const RecurringCalendarContent = () => {
                 ) : null}
                 {isDefined(data) && !hasEntries && !hasSelectedDay ? <RecurringCalendarEmptyState /> : null}
                 <MenuSpacer />
-            </ScrollView>
+            </KeyboardAwareScrollView>
         </LoadingContent>
     );
 };

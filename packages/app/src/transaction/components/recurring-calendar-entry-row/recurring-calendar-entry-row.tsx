@@ -72,11 +72,11 @@ export const RecurringCalendarEntryRow = ({ entry, position, onPress, dayLabel }
     const handleRenameDone = () => void setIsRenaming(false);
     const confirmButtons =
         entry.userState === RecurringSeriesUserStateEnum.SUGGESTED
-            ? [{ text: t`Confirm`, onPress: () => void setUserState(RecurringSeriesUserStateEnum.CONFIRMED) }]
+            ? [{ text: t`Mark as recurring`, onPress: () => void setUserState(RecurringSeriesUserStateEnum.CONFIRMED) }]
             : [];
 
     const handleLongPress = () =>
-        void Alert.alert(entry.title, t`Swipe left to dismiss this recurring payment.`, [
+        void Alert.alert(entry.title, void 0, [
             ...confirmButtons,
             { text: t`Rename`, onPress: () => void setIsRenaming(true) },
             { text: t`Cancel`, style: 'cancel' }
@@ -98,10 +98,10 @@ export const RecurringCalendarEntryRow = ({ entry, position, onPress, dayLabel }
                             icon={<CircleIcon size={36} iconSize={18} radius={18} border={false} icon={icon} variant="secondary" />}
                             amount={<Text className="text-[15px] font-semibold text-primary tabular-nums">{formattedAmount}</Text>}
                         >
-                            <Text className="text-[15px] font-semibold text-primary" numberOfLines={2}>
+                            <Text className="text-[15px] font-semibold text-primary" numberOfLines={2} ellipsizeMode="tail">
                                 {entry.title}
                             </Text>
-                            <Text className="text-[13px] text-secondary-foreground" numberOfLines={2}>
+                            <Text className="text-[13px] text-secondary-foreground" numberOfLines={2} ellipsizeMode="tail">
                                 {description}
                             </Text>
                         </TransactionRowLayout>

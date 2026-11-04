@@ -421,6 +421,10 @@ msgstr "{formattedAveragePerDay} pro Tag"
 msgid "{formattedBalance} will be transferred to {destinationAccountTitle} and this deposit will be archived. You can restore it anytime from Settings → Archived Accounts."
 msgstr "{formattedBalance} wird auf {destinationAccountTitle} übertragen und diese Einlage wird archiviert. Sie können sie jederzeit unter Einstellungen → Archivierte Konten wiederherstellen."
 
+#: src/transaction/components/recurring-calendar-day/recurring-calendar-day.tsx
+msgid "{formattedDate}. Recorded: {entryCount}. Expected: {forecastedCount}."
+msgstr "{formattedDate}. Erfasst: {entryCount}. Erwartet: {forecastedCount}."
+
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "{formattedDifference} over limit"
 msgstr "{formattedDifference} über dem Limit"
@@ -2387,10 +2391,6 @@ msgstr "Kommentar"
 msgid "Comment"
 msgstr "Kommentar"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-msgid "Committed {committedExpense} per month"
-msgstr "Monatlich gebunden: {committedExpense}"
-
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Common"
 msgstr "Gängig"
@@ -2402,10 +2402,6 @@ msgstr "Vergleich: {label}"
 #: src/transaction/hook/use-quick-form-submit.hook.ts
 msgid "Complete every split entry"
 msgstr "Fülle jeden Aufteilungseintrag aus"
-
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
-msgid "Confirm"
-msgstr "Bestätigen"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Confirm it's you before choosing a new one."
@@ -4778,6 +4774,10 @@ msgstr "CSV-Spalten zuordnen"
 msgid "Mark as External?"
 msgstr "Als extern markieren?"
 
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Mark as recurring"
+msgstr "Als wiederkehrend markieren"
+
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Mark External"
 msgstr "Als extern markieren"
@@ -5352,8 +5352,8 @@ msgid "No receipt found"
 msgstr "Kein Beleg gefunden"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-msgid "No recurring payments detected"
-msgstr "Keine wiederkehrenden Zahlungen erkannt"
+msgid "No recurring payments on this day"
+msgstr "Keine wiederkehrenden Zahlungen an diesem Tag"
 
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
 msgid "No recurring payments this month"
@@ -7304,10 +7304,6 @@ msgstr "Support"
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "Swap accounts"
 msgstr "Konten tauschen"
-
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
-msgid "Swipe left to dismiss this recurring payment."
-msgstr "Nach links wischen, um diese wiederkehrende Zahlung auszublenden."
 
 #: src/budget/components/budget-category-limit-deletable-row/budget-category-limit-deletable-row.tsx
 msgid "Swipe to remove this per-category cap from your budget."

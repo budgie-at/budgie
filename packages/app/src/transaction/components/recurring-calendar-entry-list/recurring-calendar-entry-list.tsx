@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
@@ -31,6 +31,7 @@ export const RecurringCalendarEntryList = ({
     emptyContent
 }: Props) => {
     const { formatMonthAndDay } = useFormatDate();
+    const hasTotal = isNotEmptyString(formattedTotal);
     const hasDayLabels = isDefined(displayMonth) && isDefined(displayYear);
 
     return (
@@ -39,7 +40,9 @@ export const RecurringCalendarEntryList = ({
                 <Text className="text-[15px] font-semibold text-secondary-foreground" {...testIDProps(headerTestID)}>
                     {title}
                 </Text>
-                <ProtectedText className="text-[13px] tabular-nums text-secondary-foreground">{formattedTotal}</ProtectedText>
+                {hasTotal ? (
+                    <ProtectedText className="text-[13px] tabular-nums text-secondary-foreground">{formattedTotal}</ProtectedText>
+                ) : null}
             </View>
 
             <View>

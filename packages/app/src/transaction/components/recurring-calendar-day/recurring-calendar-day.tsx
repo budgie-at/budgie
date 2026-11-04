@@ -1,3 +1,4 @@
+import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 import { CalendarDay as DatePickerCalendarDay } from 'react-native-ui-datepicker';
@@ -6,6 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { cn } from '../../../@generic/utils/cn.util';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
+import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
 import { RecurringCalendarSelector } from '../recurring-calendar-content/recurring-calendar.selector';
 import { RecurringCalendarDayDots } from '../recurring-calendar-day-dots/recurring-calendar-day-dots';
 
@@ -15,17 +17,22 @@ const MAX_DOTS = 3;
 
 const circleVariants = cva('w-[40px] h-[40px] items-center justify-center rounded-full', {
     variants: {
-        isSelected: { true: 'bg-primary', false: '' }
-    }
+        isSelected: { true: 'bg-primary', false: '' },
+        isToday: { true: '', false: '' }
+    },
+    compoundVariants: [{ isToday: true, isSelected: false, className: 'border border-primary' }]
 });
 
-const textVariants = cva('text-[15px] tabular-nums', {
+const textVariants = cva('text-[15px] tabular-nums text-secondary-foreground', {
     variants: {
-        isCurrentMonth: { true: 'text-primary', false: 'text-secondary-foreground' },
         isSelected: { true: 'text-primary-reverse font-semibold', false: '' },
         isToday: { true: 'font-semibold', false: '' },
         hasEntries: { true: 'font-semibold', false: '' }
-    }
+    },
+    compoundVariants: [
+        { isSelected: false, isToday: true, className: 'text-primary' },
+        { isSelected: false, hasEntries: true, className: 'text-primary' }
+    ]
 });
 
 interface Props {
@@ -35,25 +42,35 @@ interface Props {
 }
 
 export const RecurringCalendarDay = ({ day, entriesByDay, forecastedEntriesByDay }: Props) => {
+    const { t } = useLingui();
+    const { languageTag } = useLocaleInfo();
     const dayOfMonth = day.number;
     const { isSelected, isCurrentMonth, isToday } = day;
     const entryCount = (isCurrentMonth ? entriesByDay.get(dayOfMonth)?.length : 0) ?? 0;
     const forecastedCount = (isCurrentMonth ? forecastedEntriesByDay.get(dayOfMonth)?.length : 0) ?? 0;
     const hasEntries = entryCount + forecastedCount > 0;
-    const hasDots = hasEntries && isCurrentMonth;
     const actualDots = Math.min(entryCount, MAX_DOTS);
     const forecastedDots = Math.min(forecastedCount, MAX_DOTS - actualDots);
-    const circleClassName = circleVariants({ isSelected });
-    const dayTextClassName = cn(textVariants({ isCurrentMonth, isSelected, isToday, hasEntries }), hasDots && '-mt-1');
     const dayTestID = isCurrentMonth ? RecurringCalendarSelector.CurrentMonthDay(dayOfMonth) : null;
+
+    const formattedDate = new Intl.DateTimeFormat(languageTag, { dateStyle: 'full' }).format(new Date(day.date));
+    const accessibilityLabel = t`${formattedDate}. Recorded: ${entryCount}. Expected: ${forecastedCount}.`;
+    const accessibilityState = { selected: isSelected, disabled: day.isDisabled };
 
     return (
         <View className="items-center py-px">
-            <View className={circleClassName} accessible={isDefined(dayTestID)} {...testIDProps(dayTestID)}>
-                <Text maxFontSizeMultiplier={1.5} className={dayTextClassName}>
+            <View
+                className={circleVariants({ isSelected, isToday })}
+                accessible={isDefined(dayTestID)}
+                accessibilityRole="button"
+                accessibilityLabel={accessibilityLabel}
+                accessibilityState={accessibilityState}
+                {...testIDProps(dayTestID)}
+            >
+                <Text maxFontSizeMultiplier={1.5} className={cn(textVariants({ isSelected, isToday, hasEntries }))}>
                     {day.text}
                 </Text>
-                {hasDots ? (
+                {hasEntries ? (
                     <RecurringCalendarDayDots actualDots={actualDots} forecastedDots={forecastedDots} isSelected={isSelected} />
                 ) : null}
             </View>

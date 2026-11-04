@@ -15,8 +15,14 @@ import { dateTypeToDate } from '../../../@generic/utils/date/date-type-to-date.u
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
 import { RecurringCalendarSelector } from '../recurring-calendar-content/recurring-calendar.selector';
 import { RecurringCalendarDay } from '../recurring-calendar-day/recurring-calendar-day';
+import { RecurringCalendarWeekday } from '../recurring-calendar-weekday/recurring-calendar-weekday';
 
 import type { RecurringCalendarEntryInterface } from '@budgie/recurring';
+
+const CALENDAR_CONTAINER_HEIGHT = 289;
+const CALENDAR_ROW_HEIGHT = 44;
+const dayTouchTargetStyle = { minHeight: CALENDAR_ROW_HEIGHT };
+const calendarDayStyles = { day: dayTouchTargetStyle, today: dayTouchTargetStyle, selected: dayTouchTargetStyle };
 
 interface Props {
     readonly entriesByDay: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]>;
@@ -84,7 +90,15 @@ export const RecurringCalendarGrid = (props: Props) => {
     const renderDay: CalendarComponents['Day'] = day => (
         <RecurringCalendarDay day={day} entriesByDay={entriesByDay} forecastedEntriesByDay={forecastedEntriesByDay} />
     );
-    const components: CalendarComponents = { Day: renderDay };
+    const renderWeekday: CalendarComponents['Weekday'] = weekday => <RecurringCalendarWeekday weekday={weekday} />;
+    const components: CalendarComponents = { Day: renderDay, Weekday: renderWeekday };
+    const calendarContainerStyle = {
+        maxHeight:
+            new Date(displayYear, displayMonth, 1).getDay() + new Date(displayYear, displayMonth + 1, 0).getDate() > 35
+                ? CALENDAR_CONTAINER_HEIGHT
+                : CALENDAR_CONTAINER_HEIGHT - CALENDAR_ROW_HEIGHT
+    };
+    const hasEntries = entriesByDay.size + forecastedEntriesByDay.size > 0;
 
     const handleDateChange = (value: { date: DateType }) => {
         const date = dateTypeToDate(value.date);
@@ -132,7 +146,15 @@ export const RecurringCalendarGrid = (props: Props) => {
                         accessibilityHint={t`Today`}
                         testID={RecurringCalendarSelector.MonthLabel}
                     >
-                        <Text className="text-primary text-[17px] font-semibold capitalize">{monthLabel}</Text>
+                        <Text
+                            numberOfLines={1}
+                            adjustsFontSizeToFit
+                            minimumFontScale={0.6}
+                            maxFontSizeMultiplier={2}
+                            className="text-primary text-[17px] font-semibold capitalize"
+                        >
+                            {monthLabel}
+                        </Text>
                     </HapticPressable>
                     <HapticPressable
                         onPress={handleNextMonth}
@@ -151,7 +173,9 @@ export const RecurringCalendarGrid = (props: Props) => {
                 <DatePicker
                     key={datePickerKey}
                     mode="single"
-                    containerHeight={289}
+                    containerHeight={CALENDAR_CONTAINER_HEIGHT}
+                    styles={calendarDayStyles}
+                    containerStyle={calendarContainerStyle}
                     hideHeader
                     showOutsideDays
                     month={displayMonth}
@@ -162,14 +186,16 @@ export const RecurringCalendarGrid = (props: Props) => {
                     components={components}
                     {...(isDefined(selectedDate) && { date: selectedDate })}
                 />
-                <View className="flex-row flex-wrap justify-center gap-x-5xl gap-y-sm pb-md" accessible>
-                    <Text className="text-[12px] text-secondary-foreground">
-                        ● <Trans>Recorded</Trans>
-                    </Text>
-                    <Text className="text-[12px] text-secondary-foreground">
-                        ○ <Trans>Expected</Trans>
-                    </Text>
-                </View>
+                {hasEntries ? (
+                    <View className="flex-row flex-wrap justify-center gap-x-5xl gap-y-sm pb-md" accessible>
+                        <Text className="text-[12px] text-secondary-foreground">
+                            ● <Trans>Recorded</Trans>
+                        </Text>
+                        <Text className="text-[12px] text-secondary-foreground">
+                            ○ <Trans>Expected</Trans>
+                        </Text>
+                    </View>
+                ) : null}
             </View>
         </GestureDetector>
     );

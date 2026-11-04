@@ -2,6 +2,7 @@ import { View } from 'react-native';
 import Animated, { useAnimatedStyle, useDerivedValue, useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { useReducedMotion } from '../../hook/use-reduced-motion.hook';
+import { cn } from '../../utils/cn.util';
 import { SegmentedControlItem } from '../segmented-control-item/segmented-control-item';
 
 import type { SegmentedControlSegmentInterface } from '../../interface/segmented-control-segment.interface';
@@ -12,13 +13,14 @@ interface Props<T extends string> {
     readonly value: T;
     readonly onChange: (value: T) => void;
     readonly disabled?: boolean;
+    readonly className?: string;
 }
 
 const TRACK_PADDING = 2;
 const THUMB_SPRING = { damping: 30, stiffness: 420, mass: 0.8 };
 const continuousCorners = { borderCurve: 'continuous' as const };
 
-export const SegmentedControl = <T extends string>({ segments, value, onChange, disabled = false }: Props<T>) => {
+export const SegmentedControl = <T extends string>({ segments, value, onChange, disabled = false, className }: Props<T>) => {
     const reducedMotion = useReducedMotion();
     const segmentWidth = useSharedValue(0);
     const activeIndex = Math.max(
@@ -43,7 +45,7 @@ export const SegmentedControl = <T extends string>({ segments, value, onChange, 
         <View
             accessibilityRole="tablist"
             accessibilityState={accessibilityState}
-            className="min-h-[36px] flex-row rounded-[10px] bg-surface-fill p-[2px]"
+            className={cn('min-h-[36px] flex-row rounded-[10px] bg-surface-fill p-[2px]', className)}
             style={continuousCorners}
             onLayout={handleLayout}
         >

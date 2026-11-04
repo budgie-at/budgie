@@ -63,4 +63,14 @@ test('20 recurring calendar', { tags: ['recurring'] }, async ({ budgie }) => {
         await b.scrollTo(ctx, 'RecurringCalendar.Row.E2E_Recurring_Rent');
         await b.expectId(ctx, 'RecurringCalendar.Row.E2E_Recurring_Rent');
     });
+    await b.phase('rename recurring series', async () => {
+        await b.scrollTo(ctx, 'RecurringCalendar.Row.E2E_Recurring_Rent');
+        await id('RecurringCalendar.Row.E2E_Recurring_Rent').longPress();
+        await b.tapText(ctx, 'Rename');
+        await b.expectId(ctx, 'RecurringCalendar.SeriesTitleInput');
+        await b.fillId(ctx, 'RecurringCalendar.SeriesTitleInput', 'E2E Renamed Rent');
+        await b.done(ctx);
+        await b.expectNoId(ctx, 'RecurringCalendar.SeriesTitleInput');
+        await b.expectId(ctx, 'RecurringCalendar.Row.E2E_Renamed_Rent');
+    });
 });

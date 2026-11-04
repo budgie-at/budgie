@@ -8,6 +8,7 @@ import { Input } from '../../../@generic/component/input/input';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
+import { RecurringCalendarSelector } from '../recurring-calendar-content/recurring-calendar.selector';
 
 import type { EmptyFn } from '@rnw-community/shared';
 import type { NativeSyntheticEvent, TextInputEndEditingEventData } from 'react-native';
@@ -38,6 +39,9 @@ export const RecurringSeriesTitleInput = ({ seriesId, title, onDone }: Props) =>
     return (
         <Input
             autoFocus
+            testID={RecurringCalendarSelector.SeriesTitleInput}
+            selectTextOnFocus
+            clearButtonMode="while-editing"
             defaultValue={title}
             returnKeyType="done"
             onEndEditing={handleSubmit}
