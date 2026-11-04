@@ -79,7 +79,7 @@ test('31 budget', { tags: ['budget'] }, async ({ budgie }) => {
         await expect(b.byText(screen, 'Budget unavailable')).toBeHidden();
         await b.openLink(ctx, 'budgie:///');
         await b.openLink(ctx, 'budgie://budget-period-summary?snapshotId=999999');
-        await expect(b.byText(screen, 'This summary is no longer available.')).toBeVisible({ timeout: 3_000 });
+        await expect(b.byText(screen, 'Summary unavailable')).toBeVisible({ timeout: 3_000 });
         await b.tapText(ctx, 'Close');
         await expect(b.byText(screen, 'Summary unavailable')).toBeHidden();
         await b.openLink(ctx, 'budgie:///');

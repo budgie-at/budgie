@@ -7758,10 +7758,6 @@ msgstr "Це видалить бюджет події. Ваші транзакц
 msgid "This removes the pending capture without creating a transaction."
 msgstr "Це видалить запис, що очікує, без створення транзакції."
 
-#: src/budget/components/budget-period-summary/budget-period-summary.tsx
-msgid "This summary is no longer available."
-msgstr "Цей підсумок більше недоступний."
-
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "This token already syncs one of your Monobank sections. Use the gear on its Home section to add accounts."
 msgstr "Цей токен уже синхронізує один із ваших розділів Monobank. Щоб додати рахунки, натисніть шестерню в його розділі на головному екрані."

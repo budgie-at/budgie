@@ -4,7 +4,7 @@ import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -155,8 +155,9 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
             keepErrors: true
         }
     });
+    const watchedFormValues = useWatch({ control: form.control, compute: values => values });
     const isFormSyncing =
-        (isEditing || hasAsyncTemplate) && !form.formState.isDirty && !areBudgetFormValuesEqual(form.getValues(), formValues);
+        (isEditing || hasAsyncTemplate) && !form.formState.isDirty && !areBudgetFormValuesEqual(watchedFormValues, formValues);
 
     const handlePeriodChange = (period: BudgetPeriodEnum) => {
         const anchor = defaultPeriodAnchorDate(period, today);

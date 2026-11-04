@@ -1,6 +1,8 @@
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
+import { isNotEmptyString } from '@rnw-community/shared';
+
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 
 interface Props {
@@ -28,7 +30,9 @@ export const BudgetDataState = ({ isLoading, isError = false, description, title
                     <Text accessibilityRole="header" className="text-lg leading-tight font-semibold text-primary">
                         {heading}
                     </Text>
-                    <Text className="text-sm leading-snug text-secondary-foreground">{stateDescription}</Text>
+                    {isNotEmptyString(stateDescription) ? (
+                        <Text className="text-sm leading-snug text-secondary-foreground">{stateDescription}</Text>
+                    ) : null}
                     <Text className="text-xs leading-snug text-secondary-foreground">
                         <Trans>Your transactions are not affected.</Trans>
                     </Text>

@@ -29,9 +29,7 @@ export const BudgetPeriodSummary = ({ snapshotId }: Props) => {
     const { formatFullPeriod } = useFormatBudgetPeriod();
     const { t } = useLingui();
 
-    const missingDescription = isError
-        ? t`Your data could not be loaded. Close this screen and try again.`
-        : t`This summary is no longer available.`;
+    const missingDescription = isError ? t`Your data could not be loaded. Close this screen and try again.` : '';
 
     if (!isDefined(snapshot)) {
         return (

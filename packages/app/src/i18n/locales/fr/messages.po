@@ -7758,10 +7758,6 @@ msgstr "Cela supprime le budget de l'événement. Vos transactions ne sont pas m
 msgid "This removes the pending capture without creating a transaction."
 msgstr "Cette action supprime la capture en attente sans créer de transaction."
 
-#: src/budget/components/budget-period-summary/budget-period-summary.tsx
-msgid "This summary is no longer available."
-msgstr "Ce résumé n’est plus disponible."
-
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "This token already syncs one of your Monobank sections. Use the gear on its Home section to add accounts."
 msgstr "Ce jeton synchronise déjà l'une de vos sections Monobank. Utilisez l'engrenage de sa section sur l'accueil pour ajouter des comptes."

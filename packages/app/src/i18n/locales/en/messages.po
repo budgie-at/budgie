@@ -7759,10 +7759,6 @@ msgstr "This removes the event budget. Your transactions are not affected."
 msgid "This removes the pending capture without creating a transaction."
 msgstr "This removes the pending capture without creating a transaction."
 
-#: src/budget/components/budget-period-summary/budget-period-summary.tsx
-msgid "This summary is no longer available."
-msgstr "This summary is no longer available."
-
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "This token already syncs one of your Monobank sections. Use the gear on its Home section to add accounts."
 msgstr "This token already syncs one of your Monobank sections. Use the gear on its Home section to add accounts."

@@ -1,9 +1,9 @@
-import { Trans, useLingui } from '@lingui/react/macro';
-import { ScrollView, Text, View, useWindowDimensions } from 'react-native';
+import { useLingui } from '@lingui/react/macro';
+import { ScrollView, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FormsheetHeader } from '../../../@generic/component/formsheet-header/formsheet-header';
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { BudgetDataState } from '../budget-data-state/budget-data-state';
 
@@ -29,19 +29,10 @@ export const BudgetSheetState = (props: Props) => {
     return (
         <View className="bg-sheet-surface" collapsable={false}>
             <ScrollView className="bg-sheet-surface" style={scrollViewStyle} contentInsetAdjustmentBehavior="automatic">
-                <FormsheetHeader size="md" title={title} titleClassName="leading-tight" />
+                <FormsheetHeader size="sm" title={title} titleClassName="leading-tight" />
                 <View className="px-5xl pt-md pb-3xl gap-y-xl">
                     <BudgetDataState isLoading={isLoading} isError={isError} description={stateDescription} title={unavailableTitle} />
-                    <HapticPressable
-                        accessibilityRole="button"
-                        accessibilityLabel={t`Close`}
-                        onPress={handleClose}
-                        className="min-h-[44px] items-center justify-center rounded-full bg-secondary-background px-3xl py-lg"
-                    >
-                        <Text className="text-md font-semibold text-primary">
-                            <Trans>Close</Trans>
-                        </Text>
-                    </HapticPressable>
+                    <PillButton label={t`Close`} testID="BudgetDataState.CloseButton" onPress={handleClose} />
                 </View>
             </ScrollView>
         </View>
