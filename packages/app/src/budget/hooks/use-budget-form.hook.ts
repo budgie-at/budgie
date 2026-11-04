@@ -124,9 +124,11 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
     const isEditing = isPositiveNumber(editingId);
     const hasAsyncTemplate = isDefined(templateKind) && templateKind !== BudgetTemplateKindEnum.EMPTY;
     const { budget, isLoading: isBudgetLoading, isError } = useGetActiveBudgetQuery();
-    const { categoryLimits: loadedCategoryLimits, isLoading: isCategoryLimitsLoading } = useGetBudgetCategoryLimitsQuery(
-        isEditing && isDefined(budget) ? budget.id : null
-    );
+    const {
+        categoryLimits: loadedCategoryLimits,
+        isLoading: isCategoryLimitsLoading,
+        isError: isCategoryLimitsError
+    } = useGetBudgetCategoryLimitsQuery(isEditing && isDefined(budget) ? budget.id : null);
     const { draft: templateDraft, isReady: isTemplateReady } = useBudgetTemplateDraft(isEditing ? null : templateKind);
 
     const resolveFormValues = (): BudgetFormValues => {
@@ -242,7 +244,7 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
         handlePeriodChange,
         isEditing,
         budget,
-        isError,
+        isError: isError || isCategoryLimitsError,
         isSubmitting,
         isLoading:
             (isEditing && (isBudgetLoading || (isDefined(budget) && isCategoryLimitsLoading))) ||
