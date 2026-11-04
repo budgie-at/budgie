@@ -6,6 +6,7 @@ import { ReceiptScanToast } from '../../../receipt/components/receipt-scan-toast
 import { RECEIPT_SCAN_TOAST_TYPE } from '../../../receipt/constant/receipt-scan-toast-type.constant';
 import { ACTION_TOAST_TYPE } from '../../constant/action-toast-type.constant';
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../constant/floating-tab-bar.constant';
+import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../constant/screen-chrome-content-inset.constant';
 import { AppToast } from '../app-toast/app-toast';
 import { SEARCH_LIST_BOTTOM_CLEARANCE } from '../searchable-page/searchable-page.constant';
 
@@ -31,12 +32,10 @@ const APP_TOAST_CONFIG: ToastConfig = {
     [RECEIPT_SCAN_TOAST_TYPE]: (params: ToastConfigParams<ReceiptScanToastStatusEnum>) => <ReceiptScanToast {...params} />
 };
 
-const TOAST_TOP_GAP = 8;
-
 export const AppToastHost = () => {
     const insets = useSafeAreaInsets();
 
-    const topOffset = insets.top + TOAST_TOP_GAP;
+    const topOffset = insets.top + SCREEN_CHROME_CONTENT_INSET_TOP;
     const bottomOffset = insets.bottom + FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + SEARCH_LIST_BOTTOM_CLEARANCE;
 
     return <Toast config={APP_TOAST_CONFIG} topOffset={topOffset} bottomOffset={bottomOffset} />;
