@@ -16,11 +16,7 @@ interface Props {
 export const OnboardingStepHeader = ({ fileState, fileLock, onBack }: Props) => (
     <View className="w-full bg-surface px-5xl pt-lg pb-lg flex-row items-center gap-x-md">
         {isDefined(onBack) ? (
-            <GoBackButton
-                testID={OnboardingStepLayoutSelector.BackButton}
-                className="size-[44px] items-center justify-center p-0"
-                onPress={onBack}
-            />
+            <GoBackButton testID={OnboardingStepLayoutSelector.BackButton} className="m-0 size-[44px]" onPress={onBack} />
         ) : (
             <View className="size-[44px]" />
         )}
