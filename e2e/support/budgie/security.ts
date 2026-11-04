@@ -67,17 +67,37 @@ export async function resumeAfterPinUnlock(ctx: Ctx, resumedScreenId: string): P
     await expectId(ctx, resumedScreenId, 10_000);
 }
 
+const openFolderPickerBrowseTab = async (ctx: Ctx): Promise<void> => {
+    const tabBar = byId(ctx.screen, 'DOC.browsingModeTabBar');
+    await expect(tabBar).toBeVisible({ timeout: 15_000 });
+    await tabBar
+        .getByRole('button', { name: 'Browse' })
+        .or(tabBar.getByRole('tab', { name: 'Browse' }))
+        .first()
+        .tap();
+    await sleep(800);
+};
+
+/**
+ * Cancels the folder picker with its own Cancel button, which only some of its screens show: a folder's
+ * navigation bar has Back instead, and a slimmed simulator's Recents tab fails with "Content Unavailable"
+ * and has neither. The Browse root always has it.
+ */
+export async function cancelBackupFolderPicker(ctx: Ctx): Promise<void> {
+    const { screen } = ctx;
+    const cancel = screen.getByRole('button', { name: 'Cancel', exact: true }).first();
+    await openFolderPickerBrowseTab(ctx);
+    for (let step = 0; step < 4 && !(await cancel.isVisible()); step++) {
+        await byId(screen, 'BackButton').tap();
+        await sleep(800);
+    }
+    await cancel.tap();
+    await expect(byId(screen, 'DOC.browsingModeTabBar')).toBeHidden({ timeout: 15_000 });
+}
+
 export async function saveBackupToFixtureDirectory(ctx: Ctx): Promise<void> {
     const { screen } = ctx;
-    await expect(screen.getByRole('button', { name: 'Cancel' }).first()).toBeVisible({ timeout: 15_000 });
-    const browse = screen
-        .getByRole('button', { name: 'Browse' })
-        .or(screen.getByRole('tab', { name: 'Browse' }))
-        .first();
-    if (await browse.isVisible()) {
-        await browse.tap();
-    }
+    await openFolderPickerBrowseTab(ctx);
     await openE2EFixturesFullPath(ctx, screen.getByTestId(/Title: E2EFixtures$/).first());
     await screen.getByRole('button', { name: 'Open', exact: true }).last().tap();
-    await expectId(ctx, 'SettingsPage.Container', 15_000);
 }
