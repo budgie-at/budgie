@@ -86,7 +86,7 @@ export async function openVisibleAccountSettings(ctx: Ctx): Promise<void> {
     await expectId(ctx, 'AccountDetails.ActionsButton', 10_000);
     await tapUntil(byId(ctx.screen, 'AccountDetails.ActionsButton'), () => expectId(ctx, 'AccountDetails.EditButton', 5_000));
     await tapId(ctx, 'AccountDetails.EditButton');
-    await expect(byText(ctx.screen, 'Edit Account')).toBeVisible({ timeout: 10_000 });
+    await expectId(ctx, 'AccountForm.ScrollView', 10_000);
 }
 
 /** subflows/accounts/open-account-settings */
