@@ -1,0 +1,1 @@
+export const SUGGESTION_ROW_HEIGHT = 44;

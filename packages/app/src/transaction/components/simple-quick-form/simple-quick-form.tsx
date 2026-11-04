@@ -1,15 +1,19 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
+import { t } from '@lingui/core/macro';
 import { ReactNode, Ref } from 'react';
+import { View } from 'react-native';
 
 import { useSimpleQuickForm } from '../../hook/use-simple-quick-form.hook';
+import { useTransactionKeypadEditing } from '../../hook/use-transaction-keypad-editing.hook';
+import { formatKeypadAmount } from '../../utils/format-keypad-amount.util';
 import { MccInfoRow } from '../mcc-info-row/mcc-info-row';
 import { QuickFormLayout } from '../quick-form-layout/quick-form-layout';
-import { QuickFormSecondaryLine } from '../quick-form-secondary-line/quick-form-secondary-line';
 import { QuickFormValidationSlot } from '../quick-form-validation-slot/quick-form-validation-slot';
 import { SimpleQuickFormControls } from '../simple-quick-form-controls/simple-quick-form-controls';
 import { SuggestionsContainer } from '../suggestions-container/suggestions-container';
 import { TransactionAmountDisplay } from '../transaction-amount-display/transaction-amount-display';
 import { TransactionFeePill } from '../transaction-fee-pill/transaction-fee-pill';
+import { TransactionFormActions } from '../transaction-form-actions/transaction-form-actions';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
 
 import { SimpleQuickFormSelector } from './simple-quick-form.selector';
@@ -28,65 +32,65 @@ interface Props {
 
 export const SimpleQuickForm = (props: Props) => {
     const { ref, transactionType, aiContext = '', isNewTransaction = false, children, onSubmit, onCancel } = props;
-    const {
-        displayValue,
-        currencySymbol,
-        instrumentType,
-        keypadHandlers,
-        setFromNumeric,
-        formState,
-        feeAmount,
-        handleFeePress,
-        amountDisplayRef,
-        amountVariant
-    } = useSimpleQuickForm(transactionType, ref);
+    const form = useSimpleQuickForm(transactionType, ref);
+    const { formState, amountDisplayRef } = form;
+    const { isEditingAmount, toggleKeypad, footerHeight, amountAccessoryIcon, amountAccessibilityHint } =
+        useTransactionKeypadEditing(isNewTransaction);
+    const displayAmount = isEditingAmount ? form.displayValue : formatKeypadAmount(form.displayValue, '.', '', 2);
+    const isConfirmDisabled = !formState.isAmountPositive;
 
     return (
         <SimpleQuickFormControls
             transactionType={transactionType}
-            currencySymbol={currencySymbol}
-            setFromNumeric={setFromNumeric}
+            currencySymbol={form.currencySymbol}
+            setFromNumeric={form.setFromNumeric}
             formState={formState}
             amountDisplayRef={amountDisplayRef}
             onSubmit={onSubmit}
         >
             {(fields, onConfirm) => (
                 <QuickFormLayout
-                    hero={
+                    footerHeight={footerHeight}
+                    amount={
                         <TransactionAmountDisplay
                             ref={amountDisplayRef}
-                            amount={displayValue}
-                            currencySymbol={currencySymbol}
-                            variant={amountVariant}
-                            topContent={
-                                <>
-                                    {children}
-                                    <MccInfoRow transactionTitle={formState.title} mccCategoryId={formState.mccCategoryId} />
-                                </>
-                            }
+                            amount={displayAmount}
+                            currencySymbol={form.currencySymbol}
+                            variant={form.amountVariant}
+                            onPress={toggleKeypad}
+                            accessoryIcon={amountAccessoryIcon}
+                            accessibilityHint={amountAccessibilityHint}
                             testID={SimpleQuickFormSelector.AmountInput}
-                        >
-                            <QuickFormSecondaryLine>
-                                <TransactionFeePill
-                                    amount={feeAmount}
-                                    currencySymbol={currencySymbol}
-                                    instrumentType={instrumentType}
-                                    showEmptyState={isNewTransaction}
-                                    onPress={handleFeePress}
-                                />
-                            </QuickFormSecondaryLine>
-                            <QuickFormValidationSlot />
-                        </TransactionAmountDisplay>
-                    }
-                    footer={
-                        <TransactionKeypad
-                            keypad={keypadHandlers}
-                            onConfirm={onConfirm}
-                            onCancel={onCancel}
-                            confirmTestID={SimpleQuickFormSelector.SubmitButton}
                         />
                     }
+                    context={
+                        <View className="items-center gap-y-[8px]">
+                            <MccInfoRow transactionTitle={formState.title} mccCategoryId={formState.mccCategoryId}>
+                                <TransactionFeePill
+                                    amount={form.feeAmount}
+                                    currencySymbol={form.currencySymbol}
+                                    instrumentType={form.instrumentType}
+                                    showEmptyState={isNewTransaction}
+                                    onPress={form.handleFeePress}
+                                />
+                                {children}
+                            </MccInfoRow>
+                            <QuickFormValidationSlot />
+                        </View>
+                    }
+                    footer={
+                        <TransactionFormActions
+                            label={t`Save`}
+                            isDisabled={isConfirmDisabled}
+                            onConfirm={onConfirm}
+                            onCancel={onCancel}
+                            testID={SimpleQuickFormSelector.SubmitButton}
+                        >
+                            {isEditingAmount ? <TransactionKeypad keypad={form.keypadHandlers} /> : null}
+                        </TransactionFormActions>
+                    }
                 >
+                    <View className="gap-y-[12px]">{fields}</View>
                     <SuggestionsContainer
                         isNewTransaction={isNewTransaction}
                         isSplitActive={formState.isSplitActive}
@@ -105,7 +109,6 @@ export const SimpleQuickForm = (props: Props) => {
                         onSelectComment={formState.handleSelectComment}
                         onFillPatternAmount={formState.handleFillPatternAmount}
                     />
-                    {fields}
                 </QuickFormLayout>
             )}
         </SimpleQuickFormControls>

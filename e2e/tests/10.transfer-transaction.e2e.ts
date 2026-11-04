@@ -32,11 +32,7 @@ test('10 transfer transaction', { tags: ['transactions'] }, async ({ budgie }) =
     await b.phase('create transfer', async () => {
         await t.navigateToTransactions(ctx);
         await t.openTransactionForm(ctx, 'ActionItem.Transfer', 'New Transfer');
-        for (let i = 0; i < 2; i++) {
-            await b.tapId(ctx, 'TransactionForm.SubmitButton');
-            await b.expectText(ctx, 'New Transfer');
-            await b.expectText(ctx, 'Enter an amount');
-        }
+        await expect(b.byId(ctx.screen, 'TransactionForm.SubmitButton')).toBeDisabled();
         await t.typeDigits(ctx, '50');
         await pickAccount('TransferForm.FromAccount', 'E2E Txn Account');
         await pickAccount('TransferForm.ToAccount', 'E2E Transfer Account');

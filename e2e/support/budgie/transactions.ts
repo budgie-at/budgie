@@ -14,11 +14,19 @@ export async function tapUntilId(ctx: Ctx, testId: string, targetId: string, ret
     });
 }
 
+async function focusAmount(ctx: Ctx): Promise<void> {
+    if (!(await byId(ctx.screen, 'TransactionKeypad.Digit.1').isVisible())) {
+        await tapId(ctx, 'TransactionForm.AmountInput');
+        await expectId(ctx, 'TransactionKeypad.Digit.1');
+    }
+}
+
 /** Taps keypad digits in order (`'42'` taps 4 then 2). */
 export async function typeDigits(ctx: Ctx, digits: string): Promise<void> {
+    await focusAmount(ctx);
     for (const digit of digits) {
         if (digit === '.') {
-            await ctx.screen.getByRole('button', { name: '.' }).first().tap();
+            await tapId(ctx, 'TransactionKeypad.Decimal');
         } else {
             await tapId(ctx, `TransactionKeypad.Digit.${digit}`);
         }
@@ -27,6 +35,7 @@ export async function typeDigits(ctx: Ctx, digits: string): Promise<void> {
 
 /** `longPressOn: TransactionKeypad.Backspace`: clears the whole amount. */
 export async function clearAmount(ctx: Ctx): Promise<void> {
+    await focusAmount(ctx);
     await byId(ctx.screen, 'TransactionKeypad.Backspace').longPress();
 }
 
