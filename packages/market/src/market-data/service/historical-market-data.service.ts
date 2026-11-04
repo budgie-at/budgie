@@ -142,6 +142,8 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
             const buildTimedValueMap = (values: ReadonlyArray<readonly [number, number]>): Map<string, number> =>
                 new Map(values.map(([timestamp, value]) => [format(new Date(timestamp), rateDateFormat), value]));
 
+            const getToday = Effect.map(Clock.currentTimeMillis, now => format(now, rateDateFormat));
+
             const getNextMissingFromDate = Effect.fn('HistoricalMarketDataService.getNextMissingFromDate')(function* (
                 instrumentId: number,
                 quoteInstrumentId: number
@@ -152,14 +154,14 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                     return format(addDays(parseISO(latestPrice.priceDate), 1), rateDateFormat);
                 }
 
-                return format(subDays(new Date(), dataWindowDays - 1), rateDateFormat);
+                return format(subDays(yield* Clock.currentTimeMillis, dataWindowDays - 1), rateDateFormat);
             });
 
             const buildAccountJobInput = Effect.fn('HistoricalMarketDataService.buildAccountJobInput')(function* (
                 instrumentId: number,
                 quoteInstrumentId: number
             ) {
-                const toDate = format(new Date(), rateDateFormat);
+                const toDate = yield* getToday;
                 const hasOpenJob = yield* instrumentMarketDataJobRepository.hasOpen(instrumentId, quoteInstrumentId);
 
                 if (hasOpenJob) {
@@ -258,8 +260,6 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
 
                 return [price];
             });
-
-            const getToday = Effect.map(Clock.currentTimeMillis, now => format(now, rateDateFormat));
 
             const getHeldFiatInstruments = Effect.fn('HistoricalMarketDataService.getHeldFiatInstruments')(function* () {
                 const baseInstrument = yield* exchangeRatesService.getBaseInstrument();

@@ -36,8 +36,9 @@ const InzhurLayer = (html: string) =>
         HistoricalMarketDataService.layer,
         AccountRepository.layer,
         InzhurPriceService.layer,
-        InstrumentDailyMarketPriceRepository.layer
-    ).pipe(Layer.provideMerge(makeHtmlHttpClientLayer(html)));
+        InstrumentDailyMarketPriceRepository.layer,
+        makeHtmlHttpClientLayer(html)
+    );
 
 const drainFundJob = Effect.fnUntraced(function* (instrumentId: number) {
     const historicalMarketDataService = yield* HistoricalMarketDataService;
@@ -56,12 +57,23 @@ const drainFundJob = Effect.fnUntraced(function* (instrumentId: number) {
     return job;
 });
 
+const drainFundJobWithPrices = Effect.fnUntraced(function* (instrumentId: number) {
+    const job = yield* drainFundJob(instrumentId);
+    const prices = yield* testDb
+        .select()
+        .from(InstrumentDailyMarketPriceEntityTable)
+        .where(eq(InstrumentDailyMarketPriceEntityTable.instrumentId, instrumentId));
+
+    return { job, prices };
+});
+
 const prepareFundAccount = Effect.fnUntraced(function* (isin: string) {
     const instrumentRepository = yield* InstrumentRepository;
     const fund = yield* Effect.flatMap(instrumentRepository.findByCode(isin), Effect.fromNullishOr);
     const dollar = yield* Effect.flatMap(instrumentRepository.findByCode(CurrencyEnum.USD), Effect.fromNullishOr);
     const hryvnia = yield* Effect.flatMap(instrumentRepository.findByCode(CurrencyEnum.UAH), Effect.fromNullishOr);
 
+    yield* testDb.delete(InstrumentDailyMarketPriceEntityTable).where(eq(InstrumentDailyMarketPriceEntityTable.instrumentId, fund.id));
     yield* TestClock.setTime(operatedAt.getTime());
     yield* setDefaultInstrument(dollar.id);
 
@@ -107,11 +119,7 @@ describe('inzhur certificate prices', () => {
             const entryBaseValuationService = yield* EntryBaseValuationService;
             const inzhurPriceService = yield* InzhurPriceService;
             const { fund, dollar, hryvnia, account } = yield* prepareFundAccount(realEstateIsin);
-            const job = yield* drainFundJob(fund.id);
-            const prices = yield* testDb
-                .select()
-                .from(InstrumentDailyMarketPriceEntityTable)
-                .where(eq(InstrumentDailyMarketPriceEntityTable.instrumentId, fund.id));
+            const { job, prices } = yield* drainFundJobWithPrices(fund.id);
             const hryvniaToDollar = yield* entryBaseValuationService.resolveHistoricalBaseExchangeRateOrNull(
                 hryvnia.id,
                 dollar.id,
@@ -161,11 +169,7 @@ describe('inzhur certificate prices', () => {
     it.effect('skips a fund that is not on the page without failing the job', () =>
         Effect.gen(function* () {
             const { fund } = yield* prepareFundAccount(realEstateIsin);
-            const job = yield* drainFundJob(fund.id);
-            const prices = yield* testDb
-                .select()
-                .from(InstrumentDailyMarketPriceEntityTable)
-                .where(eq(InstrumentDailyMarketPriceEntityTable.instrumentId, fund.id));
+            const { job, prices } = yield* drainFundJobWithPrices(fund.id);
 
             expect(job).not.toBeNull();
             expect(prices).toStrictEqual([]);
