@@ -78,6 +78,7 @@ describe('inzhur/bank-flows', () => {
 
             expect(yield* fetchSingleBankTransaction()).toMatchObject({
                 type: TransactionTypeEnum.TRANSFER,
+                title: 'Top-up to Inzhur',
                 fromAccountId: bankAccount.id,
                 toAccountId: cashAccount.id,
                 entries: [
@@ -190,6 +191,7 @@ describe('inzhur/bank-flows', () => {
 
             expect(yield* fetchSingleBankTransaction()).toMatchObject({
                 type: TransactionTypeEnum.TRANSFER,
+                title: 'Withdrawal from Inzhur',
                 fromAccountId: cashAccount.id,
                 toAccountId: bankAccount.id,
                 entries: [

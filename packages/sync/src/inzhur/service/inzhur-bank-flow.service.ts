@@ -34,6 +34,8 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
         const transactionTransferService = yield* TransactionTransferService;
         const inzhurSetupService = yield* InzhurSetupService;
         const { counterparties, dividendKeywords, externalSources } = INZHUR_BANK_DESCRIPTION_PATTERNS;
+        const topUpTitle = 'Top-up to Inzhur';
+        const withdrawalTitle = 'Withdrawal from Inzhur';
 
         const includesAny = (text: string, keywords: readonly string[]) => keywords.some(keyword => text.includes(keyword));
 
@@ -134,6 +136,8 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
                     moved += 1;
                 }
             }
+
+            yield* transactionRepository.retitleExternalTransfers(externalSources, setup.cashAccount.id, topUpTitle, withdrawalTitle);
 
             return moved;
         });

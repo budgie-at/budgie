@@ -93,9 +93,9 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
                 const cashAccount = Object.values(
                     yield* accountService.bulkCreate([
                         {
-                            title: 'Inzhur',
+                            title: 'Inzhur cash',
                             type: AccountTypeEnum.BANK_SYNC,
-                            icon: UserIconNameEnum.Landmark,
+                            icon: UserIconNameEnum.Banknote,
                             instrumentId: hryvnia.id,
                             currentBalance: openingCashBalance,
                             externalId: INZHUR_CASH_EXTERNAL_ID,

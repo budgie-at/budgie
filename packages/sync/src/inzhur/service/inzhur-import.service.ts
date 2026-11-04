@@ -146,7 +146,7 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
                     {
                         title: instrument.name,
                         type: AccountTypeEnum.STOCKS,
-                        icon: UserIconNameEnum.TrendingUp,
+                        icon: UserIconNameEnum.ChartLine,
                         instrumentId: instrument.id,
                         currentBalance: 0,
                         externalId: `inzhur:${holding.isin}`,
