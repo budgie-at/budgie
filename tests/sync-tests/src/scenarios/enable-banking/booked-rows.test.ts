@@ -41,6 +41,18 @@ const syncAgain = (syncId: number) =>
         yield* service.sync();
     });
 
+const CARD_TEXT = 'POS 12,50 AT K1 03.11.2026 SYNTHETIC CAFE';
+
+const cardRow = (overrides: Record<string, JsonBodyType> = {}) =>
+    buildEnableBankingTransaction({ creditor: null, booking_date: '2026-11-03', remittance_information: [CARD_TEXT], ...overrides });
+
+const syncOnce = Effect.gen(function* () {
+    const service = yield* EnableBankingSyncService;
+    yield* service.sync();
+
+    return yield* fetchEnableBankingTransactions();
+});
+
 describe('enable-banking/booked-rows', () => {
     it.effect('never stores a non-BOOK row', () =>
         Effect.gen(function* () {
@@ -195,5 +207,66 @@ describe('enable-banking/booked-rows', () => {
             expect(transactions).toHaveLength(1);
             expect(transactions[0].deletedAt).not.toBeNull();
         }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('titles a card row by its merchant, keeps the raw text as the comment and the reference as the identity', () =>
+        Effect.gen(function* () {
+            yield* seedWithRows([cardRow({ entry_reference: 'card-reference' })]);
+
+            const [transaction] = yield* syncOnce;
+
+            expect(transaction).toMatchObject({ title: 'SYNTHETIC CAFE', comment: CARD_TEXT, externalId: `${HASH}:card-reference` });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('keeps the raw title when the text does not parse or the merchant is empty', () =>
+        Effect.gen(function* () {
+            yield* seedWithRows([
+                cardRow({ entry_reference: 'unparsed', remittance_information: ['POS 12,50 SYNTHETIC CAFE'] }),
+                cardRow({ entry_reference: 'no-merchant', remittance_information: ['POS 12,50 AT K1 03.11.2026   '] }),
+                cardRow({ entry_reference: 'transfer', remittance_information: ['Synthetic rent'] })
+            ]);
+
+            const titles = (yield* syncOnce).map(transaction => [transaction.externalId, transaction.title]);
+
+            expect(titles).toEqual(
+                expect.arrayContaining([
+                    [`${HASH}:unparsed`, 'POS 12,50 SYNTHETIC CAFE'],
+                    [`${HASH}:no-merchant`, 'POS 12,50 AT K1 03.11.2026'],
+                    [`${HASH}:transfer`, 'Synthetic rent']
+                ])
+            );
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('prefers the structured counterparty name over any remittance text', () =>
+        Effect.gen(function* () {
+            yield* seedWithRows([cardRow({ creditor: { name: 'Synthetic Merchant Ltd' } })]);
+
+            const [transaction] = yield* syncOnce;
+
+            expect(transaction).toMatchObject({ title: 'Synthetic Merchant Ltd', comment: CARD_TEXT });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect(
+        'hashes the raw text for rows without a reference, so equal cleaned titles never collapse and re-fetches never duplicate',
+        () =>
+            Effect.gen(function* () {
+                const service = yield* EnableBankingSyncService;
+                const { sync } = yield* seedWithRows([
+                    cardRow({ entry_reference: null }),
+                    cardRow({ entry_reference: null, remittance_information: ['POS 12,50 AT K2 03.11.2026 SYNTHETIC CAFE'] })
+                ]);
+
+                const first = yield* syncOnce;
+                const firstIds = yield* fetchSortedEnableBankingExternalIds();
+                yield* makeEnableBankingSyncStale(sync.id);
+                yield* service.sync();
+
+                expect(first.map(transaction => transaction.title)).toEqual(['SYNTHETIC CAFE', 'SYNTHETIC CAFE']);
+                expect(firstIds).toEqual([`${HASH}:3dab0f8c3bcaa28f48386edbe47b28f1`, `${HASH}:94ee593acb11c74d044ae5191a0b62b7`]);
+                expect(yield* fetchSortedEnableBankingExternalIds()).toEqual(firstIds);
+            }).pipe(Effect.provide(TestLayer))
     );
 });

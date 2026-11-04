@@ -26,6 +26,7 @@ class EnableBankingMapper {
     private static readonly DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/u;
     private static readonly MILLISECONDS_PER_SECOND = 1000;
     private static readonly MCC_PATTERN = /^\d+$/u;
+    private static readonly CARD_PAYMENT_PATTERN = /^POS\s+\d[\d.,]*\s+[A-Z]{2}\s+K\d\s+\d{2}[./-]\d{2}[./-]\d{2,4}\s+(\S.*)$/u;
     private static readonly NUMERIC_CODE_BY_CURRENCY = new Map(
         Object.entries(CURRENCY_CODE_BY_NUMERIC_CODE).map(([numericCode, currencyCode]) => [currencyCode, Number(numericCode)])
     );
@@ -159,11 +160,17 @@ class EnableBankingMapper {
         const remittance = (transaction.remittance_information ?? []).join(' ').trim();
 
         return {
-            description: [name, remittance].find(isNotEmptyString) ?? 'Bank transaction',
+            description: [name, this.extractCardMerchant(remittance), remittance].find(isNotEmptyString) ?? 'Bank transaction',
             ...(isNotEmptyString(iban) && { counterIban: iban }),
             ...(isNotEmptyString(name) && { counterName: name }),
             ...(isNotEmptyString(remittance) && { comment: remittance })
         };
+    }
+
+    private extractCardMerchant(remittance: string): string | null {
+        const merchant = EnableBankingMapper.CARD_PAYMENT_PATTERN.exec(remittance)?.[1]?.replaceAll(/\s+/gu, ' ').trim();
+
+        return isNotEmptyString(merchant) ? merchant : null;
     }
 
     private mapTransaction(
