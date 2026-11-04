@@ -7,7 +7,6 @@ import * as Atom from 'effect/reactivity/Atom';
 import * as Reactivity from 'effect/reactivity/Reactivity';
 import * as References from 'effect/References';
 
-import { inzhurAppServicesLayer } from '../../inzhur/layer/inzhur-app-services.layer';
 import { DatabaseChangeService } from '../drizzle/service/database-change.service';
 import { DatabaseConnectionService } from '../drizzle/service/database-connection.service';
 import { isLoggingEnabled } from '../utils/is-logging-enabled.util';
@@ -30,7 +29,7 @@ const platformLayer = Layer.mergeAll(
     ).pipe(Layer.provideMerge(DatabaseChangeService.layer))
 ).pipe(Layer.provideMerge(Reactivity.layer));
 
-const appLayer = inzhurAppServicesLayer.pipe(Layer.provideMerge(appServicesLayer), Layer.provideMerge(platformLayer));
+const appLayer = appServicesLayer.pipe(Layer.provideMerge(platformLayer));
 
 export const appRuntime = ManagedRuntime.make(appLayer, { memoMap: appMemoMap });
 

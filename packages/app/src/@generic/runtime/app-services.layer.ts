@@ -129,6 +129,7 @@ import { CategoryIconBackfillService } from '../../category/service/category-ico
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
 import { DatabaseExportService } from '../../export/service/database-export.service';
 import { DatabaseImportService } from '../../import/service/database-import.service';
+import { InzhurStatementReminderService } from '../../inzhur/service/inzhur-statement-reminder.service';
 import { HistoricalMarketDataDrainerService } from '../../market-data/service/historical-market-data-drainer.service';
 import { OnboardingService } from '../../onboarding/service/onboarding.service';
 import { ReceiptScanService } from '../../receipt/service/receipt-scan.service';
@@ -189,6 +190,7 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     DatabaseRekeyService.layer,
     WidgetSnapshotBuilderService.layer,
     WidgetSnapshotService.layer,
+    InzhurStatementReminderService.layer,
     AppResetService.layer,
     DatabaseExportService.layer,
     DatabaseImportService.layer,

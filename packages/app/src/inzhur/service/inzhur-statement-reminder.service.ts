@@ -1,16 +1,15 @@
 import { InzhurSetupService } from '@budgie/sync';
 import { i18n } from '@lingui/core';
-import { msg } from '@lingui/core/macro';
+import { msg, plural } from '@lingui/core/macro';
 import { Storage } from '@op-engineering/op-sqlite';
 import * as Context from 'effect/Context';
-import * as Duration from 'effect/Duration';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
-import * as Schedule from 'effect/Schedule';
 import * as Notifications from 'expo-notifications';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { NativeCallError } from '../../@generic/error/native-call.error';
 import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { postLocalNotification } from '../../@generic/utils/post-local-notification.util';
 
@@ -41,7 +40,10 @@ export class InzhurStatementReminderService extends Context.Service<InzhurStatem
                     return;
                 }
 
-                const { status } = yield* Effect.promise(() => Notifications.requestPermissionsAsync());
+                const { status } = yield* Effect.tryPromise({
+                    try: () => Notifications.getPermissionsAsync(),
+                    catch: cause => new NativeCallError({ cause })
+                });
 
                 if (status !== Notifications.PermissionStatus.GRANTED) {
                     return;
@@ -51,17 +53,16 @@ export class InzhurStatementReminderService extends Context.Service<InzhurStatem
 
                 yield* postLocalNotification(
                     i18n._(msg`Time for a fresh Inzhur statement`),
-                    i18n._(
-                        msg`Your last statement is ${daysOld} days old and money has moved since. Import a new one to keep holdings accurate.`
-                    )
+                    plural(daysOld, {
+                        one: 'Your last statement is # day old and money has moved since. Import a new one to keep holdings accurate.',
+                        other: 'Your last statement is # days old and money has moved since. Import a new one to keep holdings accurate.'
+                    })
                 );
                 yield* Effect.promise(() => storage.setItem(storageKey, reminder.lastStatementDate));
             });
 
             return {
-                start: Effect.forkDetach(remind().pipe(logAndContinue, Effect.repeat(Schedule.spaced(Duration.hours(24))))).pipe(
-                    Effect.asVoid
-                )
+                start: Effect.forkDetach(logAndContinue(remind())).pipe(Effect.asVoid)
             };
         })
     }
