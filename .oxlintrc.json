@@ -1017,6 +1017,7 @@
                 "**/*.repository.ts",
                 "**/*.layer.ts",
                 "packages/sync/src/core/utils/make-*sync-service.util.ts",
+                "packages/sync/src/core/utils/make-polling-sync-account-continuation.util.ts",
                 "packages/consolidation/src/auto/utils/make-consolidation-family-strategy.util.ts"
             ],
             "rules": {
@@ -1191,6 +1192,12 @@
                 "n/no-unsupported-features/node-builtins": "off",
                 "typescript/dot-notation": "off",
                 "dot-notation": "off"
+            }
+        },
+        {
+            "files": ["packages/app/src/@generic/constant/bank-logo-names.constant.ts"],
+            "rules": {
+                "lingui/no-unlocalized-strings": "off"
             }
         },
         {
