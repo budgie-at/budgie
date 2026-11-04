@@ -6,7 +6,7 @@ import * as imports from '../support/budgie/imports.ts';
 import { test } from '../support/budgie/test.ts';
 
 test('44 inzhur statement import', { tags: ['import'] }, async ({ budgie }) => {
-    const {ctx} = budgie;
+    const { ctx } = budgie;
     const { screen } = ctx;
 
     await budgie.start({ fixture: '44-inzhur.db' });
@@ -33,12 +33,12 @@ test('44 inzhur statement import', { tags: ['import'] }, async ({ budgie }) => {
     });
 
     await core.phase('cash and fund holdings are shown on the institution', async () => {
-        const institution = screen.getByTestId(/^InstitutionRow\.\d+$/u).first();
-        await screen.scrollUntilVisible(institution, { direction: 'down', timeout: 15_000 });
-        await institution.tap();
+        await core.scrollTo(ctx, 'InstitutionRow.1');
+        await core.sleep(600);
+        await core.tapId(ctx, 'InstitutionRow.1');
         await core.expectId(ctx, 'Institution.Page', 10_000);
-        await expect(screen.getByTestId(/^AccountCard\.Balance\.Inzhur\.5_000(_0+)?$/u).first()).toBeVisible({ timeout: 10_000 });
-        await expect(screen.getByTestId(/^AccountCard\.Balance\.REIT\.1_950(_0+)?$/u).first()).toBeVisible({ timeout: 10_000 });
-        await expect(screen.getByTestId(/^AccountCard\.Balance\.ENERGY\.2(_0+)?$/iu).first()).toBeVisible({ timeout: 10_000 });
+        await core.expectId(ctx, 'AccountCard.Balance.Inzhur.5_000', 10_000);
+        await core.expectId(ctx, 'AccountCard.Balance.Inzhur_REIT.1_950', 10_000);
+        await core.expectId(ctx, 'AccountCard.Balance.Inzhur_Energy.2', 10_000);
     });
 });
