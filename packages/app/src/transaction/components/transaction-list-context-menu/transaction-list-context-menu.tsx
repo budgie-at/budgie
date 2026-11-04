@@ -5,9 +5,9 @@ import { View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { PopoverMenu } from '../../../@generic/component/popover-menu/popover-menu';
+import { ActionsMenuContext } from '../../../@generic/context/actions-menu.context';
+import { useDeferredMenuClose } from '../../../@generic/hook/use-deferred-menu-close.hook';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
-import { TransactionActionsMenuContext } from '../../context/transaction-actions-menu.context';
-import { useTransactionListContextMenuClose } from '../../hook/use-transaction-list-context-menu-close.hook';
 import { TransactionListAttachDebtMenuItem } from '../transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item';
 import { TransactionListConvertToInstallmentMenuItem } from '../transaction-list-convert-to-installment-menu-item/transaction-list-convert-to-installment-menu-item';
 import { TransactionListConvertToRefundMenuItem } from '../transaction-list-convert-to-refund-menu-item/transaction-list-convert-to-refund-menu-item';
@@ -29,19 +29,11 @@ export const TransactionListContextMenu = ({ ref }: Props) => {
     const [isOpen, setIsOpen] = useState(false);
     const [menuState, setMenuState] = useState<TransactionMenuStateInterface | null>(null);
 
-    const handleClose = () => {
-        setIsOpen(false);
-    };
-
-    const handleMenuCloseComplete = () => {
+    const { closeMenu, runPendingAction } = useDeferredMenuClose(isOpen, setIsOpen);
+    const handleCloseComplete = () => {
+        runPendingAction();
         setMenuState(null);
     };
-
-    const { closeMenu, handleCloseComplete } = useTransactionListContextMenuClose({
-        isOpen,
-        onClose: handleClose,
-        onCloseComplete: handleMenuCloseComplete
-    });
 
     useImperativeHandle(ref, () => ({
         open: (transaction, anchor) => {
@@ -59,7 +51,7 @@ export const TransactionListContextMenu = ({ ref }: Props) => {
 
     return (
         <PopoverMenu isOpen={isOpen} onClose={closeMenu} onCloseComplete={handleCloseComplete} anchor={menuState.anchor}>
-            <TransactionActionsMenuContext.Provider value={closeMenu}>
+            <ActionsMenuContext value={closeMenu}>
                 <View className="py-sm">
                     <TransactionListEditMenuItem transaction={transaction} />
                     <TransactionListConvertToRefundMenuItem transaction={transaction} />
@@ -70,7 +62,7 @@ export const TransactionListContextMenu = ({ ref }: Props) => {
                     <TransactionListDeleteMenuItem transaction={transaction} />
                     <TransactionListRevertMenuItem transaction={transaction} />
                 </View>
-            </TransactionActionsMenuContext.Provider>
+            </ActionsMenuContext>
         </PopoverMenu>
     );
 };

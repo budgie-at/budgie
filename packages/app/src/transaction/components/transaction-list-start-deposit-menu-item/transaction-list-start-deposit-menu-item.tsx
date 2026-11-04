@@ -5,8 +5,7 @@ import { router } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
-import { useTransactionActionsMenu } from '../../context/transaction-actions-menu.context';
+import { ActionsMenuItem } from '../../../@generic/component/actions-menu-item/actions-menu-item';
 import { TransactionListContextMenuSelector } from '../transaction-list-context-menu/transaction-list-context-menu.selector';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
@@ -17,7 +16,6 @@ interface Props {
 
 export const TransactionListStartDepositMenuItem = ({ transaction }: Props) => {
     const { t } = useLingui();
-    const closeMenu = useTransactionActionsMenu();
 
     const isVisible =
         !isDefined(transaction.consolidationType) &&
@@ -30,13 +28,11 @@ export const TransactionListStartDepositMenuItem = ({ transaction }: Props) => {
     }
 
     const handleStartDeposit = () => {
-        closeMenu(() => {
-            router.push({ pathname: '/transactions/[id]/start-deposit', params: { id: String(transaction.id) } });
-        });
+        router.push({ pathname: '/transactions/[id]/start-deposit', params: { id: String(transaction.id) } });
     };
 
     return (
-        <PopoverMenuItem
+        <ActionsMenuItem
             icon={UserIconNameEnum.Landmark}
             label={t`Start Deposit`}
             onPress={handleStartDeposit}

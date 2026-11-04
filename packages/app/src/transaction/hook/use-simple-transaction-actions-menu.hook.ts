@@ -147,8 +147,7 @@ export const useSimpleTransactionActionsMenu = ({
         actionsMenuProps: {
             transaction,
             onDelete,
-            isConsolidated,
-            onRevert: handleRevert,
+            ...(isConsolidated && { onRevert: handleRevert }),
             items: allItems.filter(item => item !== false)
         },
         debtSettlementAccount

@@ -9,15 +9,16 @@ import { useDeleteTransaction } from '../../hook/use-delete-transaction.hook';
 import { useSimpleTransactionActionsMenu } from '../../hook/use-simple-transaction-actions-menu.hook';
 import { getTransactionEditHref } from '../../utils/get-transaction-edit-href.util';
 import { getTransactionFeeEditHref } from '../../utils/get-transaction-fee-edit-href.util';
+import { TransactionInfoPageContent } from '../transaction-info-page-content/transaction-info-page-content';
 import { TransactionInfoPage } from '../transaction-info-page/transaction-info-page';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly transactionType: TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME;
-    readonly onOpenRefundSources?: () => void;
+    readonly onOpenSources?: () => void;
 }
 
-export const SimpleTransactionInfoPage = ({ transaction, transactionType, onOpenRefundSources }: Props) => {
+export const SimpleTransactionInfoPage = ({ transaction, transactionType, onOpenSources }: Props) => {
     const deleteTransaction = useDeleteTransaction();
     const { run } = useSingleFlight();
     const router = useRouter();
@@ -38,13 +39,15 @@ export const SimpleTransactionInfoPage = ({ transaction, transactionType, onOpen
     });
 
     return (
-        <TransactionInfoPage
-            transaction={transaction}
-            onDelete={handleDelete}
-            onFeePress={handleOpenFee}
-            editHref={getTransactionEditHref(transaction)}
-            actionItems={actionsMenuProps.items}
-            onOpenRefundSources={onOpenRefundSources}
-        />
+        <TransactionInfoPage>
+            <TransactionInfoPageContent
+                transaction={transaction}
+                onDelete={handleDelete}
+                onFeePress={handleOpenFee}
+                editHref={getTransactionEditHref(transaction)}
+                actionItems={actionsMenuProps.items}
+                onOpenSources={onOpenSources}
+            />
+        </TransactionInfoPage>
     );
 };

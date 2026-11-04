@@ -4,9 +4,8 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
+import { ActionsMenuItem } from '../../../@generic/component/actions-menu-item/actions-menu-item';
 import { useConvertToTransferModal } from '../../context/convert-to-transfer-modal.context';
-import { useTransactionActionsMenu } from '../../context/transaction-actions-menu.context';
 import { TransactionListContextMenuSelector } from '../transaction-list-context-menu/transaction-list-context-menu.selector';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
@@ -17,7 +16,6 @@ interface Props {
 
 export const TransactionListConvertToTransferMenuItem = ({ transaction }: Props) => {
     const { t } = useLingui();
-    const closeMenu = useTransactionActionsMenu();
     const [openConvertToTransfer] = useConvertToTransferModal();
 
     const isConsolidated = isDefined(transaction.consolidationType);
@@ -33,23 +31,21 @@ export const TransactionListConvertToTransferMenuItem = ({ transaction }: Props)
     const transactionType = isExpenseTransaction(transaction) ? TransactionTypeEnum.EXPENSE : TransactionTypeEnum.INCOME;
 
     const handleConvert = () => {
-        closeMenu(() => {
-            const [sourceEntry] = categoryEntries;
+        const [sourceEntry] = categoryEntries;
 
-            openConvertToTransfer({
-                transactionId: transaction.id,
-                transactionType,
-                excludeAccountId: sourceEntry.accountId,
-                sourceAmount: convertFromMicroUnits(sourceEntry.amount),
-                sourceInstrumentId: sourceEntry.account.instrumentId,
-                sourceCode: sourceEntry.account.instrument.code,
-                skipPostConvertNavigation: true
-            });
+        openConvertToTransfer({
+            transactionId: transaction.id,
+            transactionType,
+            excludeAccountId: sourceEntry.accountId,
+            sourceAmount: convertFromMicroUnits(sourceEntry.amount),
+            sourceInstrumentId: sourceEntry.account.instrumentId,
+            sourceCode: sourceEntry.account.instrument.code,
+            skipPostConvertNavigation: true
         });
     };
 
     return (
-        <PopoverMenuItem
+        <ActionsMenuItem
             icon={UserIconNameEnum.ArrowRightLeft}
             label={t`Convert to Transfer`}
             onPress={handleConvert}

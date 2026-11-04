@@ -9,13 +9,14 @@ import { isDefined, isNotEmptyString, isString } from '@rnw-community/shared';
 import { BACKGROUND_COLOR_PALETTE } from '../../constant/background-color-palette.constant';
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
 import { TestIDPartEnum } from '../../enum/test-id-part.enum';
-import { ButtonSizeType } from '../../type/button-size.type';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { cn } from '../../utils/cn.util';
 import { testID as testIDProps } from '../../utils/test-id.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 import { LoadingContent } from '../loading-content/loading-content';
+
+type ButtonSizeType = 'sm' | 'md' | 'lg';
 
 interface Props extends ComponentProps<typeof HapticPressable> {
     readonly content?: ReactNode;

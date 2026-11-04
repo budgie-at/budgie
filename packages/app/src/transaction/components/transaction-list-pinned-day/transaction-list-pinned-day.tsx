@@ -7,7 +7,6 @@ import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsi
 
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { getCollapsibleChromePinDistance } from '../../../@generic/utils/get-collapsible-chrome-pin-distance.util';
-import { PINNED_DAY_HEIGHT } from '../../constant/pinned-day-height.constant';
 import { TransactionListPinnedDayRow } from '../transaction-list-pinned-day-row/transaction-list-pinned-day-row';
 
 import type { TransactionsByDaySectionInterface } from '../../interface/transactions-by-day-section.interface';
@@ -19,6 +18,7 @@ interface Props {
     readonly anchorY: number;
 }
 
+const PINNED_DAY_HEIGHT = 32;
 const OFFSET_TOLERANCE = 0.5;
 
 export const TransactionListPinnedDay = ({ sections, headerOffsets, anchorY }: Props) => {

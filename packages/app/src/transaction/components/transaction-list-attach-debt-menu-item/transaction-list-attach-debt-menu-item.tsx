@@ -12,14 +12,13 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
+import { ActionsMenuItem } from '../../../@generic/component/actions-menu-item/actions-menu-item';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { getDebtOpeningMessages } from '../../../account/utils/get-debt-opening-messages.util';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
-import { useTransactionActionsMenu } from '../../context/transaction-actions-menu.context';
 import { TransactionListContextMenuSelector } from '../transaction-list-context-menu/transaction-list-context-menu.selector';
 
 import type { AccountSelectorCreateActionInterface } from '../../../account/interface/account-selector-create-action.interface';
@@ -32,7 +31,6 @@ interface Props {
 export const TransactionListAttachDebtMenuItem = ({ transaction }: Props) => {
     const { t } = useLingui();
     const formatDigits = useDisplayFormatDigits();
-    const closeMenu = useTransactionActionsMenu();
     const [openAccountSelector] = useAccountSelectorModal();
     const categoryEntries = getTransactionCategoryEntries(transaction.entries);
     if (
@@ -102,15 +100,11 @@ export const TransactionListAttachDebtMenuItem = ({ transaction }: Props) => {
         );
     };
 
-    const handleAttach = () => {
-        closeMenu(attachDebtToTransaction);
-    };
-
     return (
-        <PopoverMenuItem
+        <ActionsMenuItem
             icon={UserIconNameEnum.HandCoins}
             label={t`Attach debt`}
-            onPress={handleAttach}
+            onPress={attachDebtToTransaction}
             testID={TransactionListContextMenuSelector.AttachDebtSettlementButton}
         />
     );

@@ -3269,9 +3269,9 @@ msgstr "Видалити завантажені {downloaded} ГБ?"
 msgid "Delete this rule?"
 msgstr "Видалити це правило?"
 
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
 #: src/transaction/components/transaction-list-delete-menu-item/transaction-list-delete-menu-item.tsx
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Delete Transaction"
 msgstr "Видалити транзакцію"
 
@@ -5036,7 +5036,7 @@ msgstr "місяців залишилось"
 msgid "Months left beside your balance"
 msgstr "Залишок місяців поруч із балансом"
 
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "More actions"
 msgstr "Інші дії"
 
@@ -6946,9 +6946,9 @@ msgstr "Відправлення {fromCode}"
 msgid "Separate"
 msgstr "Розділити"
 
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
 #: src/transaction/components/transaction-list-revert-menu-item/transaction-list-revert-menu-item.tsx
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Separate Transactions"
 msgstr "Розділити транзакції"
 
@@ -7094,7 +7094,7 @@ msgstr "Показує, як це розраховано"
 msgid "Shows what is missing"
 msgstr "Показує, чого бракує"
 
-#: src/transaction/components/transaction-info-page-content/transaction-info-page-content.tsx
+#: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Similar transactions"
 msgstr "Схожі транзакції"
 

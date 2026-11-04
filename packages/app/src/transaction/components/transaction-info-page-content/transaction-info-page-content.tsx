@@ -1,7 +1,6 @@
 import { TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { getTransactionFeeEntries } from '@budgie/ledger';
 import { doesRuleMatchTransaction } from '@budgie/rules';
-import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';
 
@@ -12,7 +11,6 @@ import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-repl
 import { useGetEnabledRulesQuery } from '../../../rule/query/use-get-enabled-rules.query';
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
 import { useTransactionInfoHandoff } from '../../hook/use-transaction-info-handoff.hook';
-import { useTransactionInfoSimilarStatsQuery } from '../../query/use-transaction-info-similar-stats.query';
 import { convertTransactionToInput } from '../../utils/convert-transaction-to-input.util';
 import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
 import { TransactionActionsMenuSelector } from '../transaction-actions-menu/transaction-actions-menu.selector';
@@ -23,7 +21,6 @@ import { TransactionInfoGroup } from '../transaction-info-group/transaction-info
 import { TransactionInfoHeader } from '../transaction-info-header/transaction-info-header';
 import { TransactionInfoHero } from '../transaction-info-hero/transaction-info-hero';
 import { TransactionInfoMoneyRows } from '../transaction-info-money-rows/transaction-info-money-rows';
-import { TransactionInfoNavBand } from '../transaction-info-nav-band/transaction-info-nav-band';
 import { TransactionInfoNoteGroup } from '../transaction-info-note-group/transaction-info-note-group';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionInfoRefundSummary } from '../transaction-info-refund-summary/transaction-info-refund-summary';
@@ -31,24 +28,25 @@ import { TransactionInfoScrollView } from '../transaction-info-scroll-view/trans
 import { TransactionInfoSimilarCard } from '../transaction-info-similar-card/transaction-info-similar-card';
 import { TransactionInfoTagsSection } from '../transaction-info-tags-section/transaction-info-tags-section';
 
-import type { TransactionInfoPagePropsInterface } from '../../interface/transaction-info-page-props.interface';
+import type { TransactionActionsMenuItemInterface } from '../../interface/transaction-actions-menu-item.interface';
+import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import type { SuggestRuleDataInterface } from '@budgie/rules';
+import type { Href } from 'expo-router';
 
-export const TransactionInfoPageContent = ({
-    transaction,
-    editHref,
-    actionItems,
-    onDelete,
-    onFeePress,
-    onOpenRefundSources,
-    onOpenConsolidationSources
-}: TransactionInfoPagePropsInterface) => {
+interface Props {
+    readonly transaction: TransactionWithRelationsEntityInterface;
+    readonly editHref: Href | null;
+    readonly onDelete: () => unknown;
+    readonly onFeePress: () => void;
+    readonly actionItems: readonly TransactionActionsMenuItemInterface[];
+    readonly onOpenSources?: () => void;
+}
+
+export const TransactionInfoPageContent = ({ transaction, editHref, actionItems, onDelete, onFeePress, onOpenSources }: Props) => {
     const router = useRouter();
-    const { t } = useLingui();
     const { minimumHeight, handoff, onAmountLayout, onTitleLayout, onBodyLayout, onContentLayout, scrollRef, handleScrollEnd } =
         useTransactionInfoHandoff();
     const undoRefund = useRevertConsolidation(transaction.id, () => void dismissAllOrReplace('/'), true);
-    const { stats, isLoading } = useTransactionInfoSimilarStatsQuery(transaction);
     const { enabledRules } = useGetEnabledRulesQuery();
     const firstEntry = transaction.entries.at(0);
     const suggestRuleData: SuggestRuleDataInterface = {
@@ -91,19 +89,14 @@ export const TransactionInfoPageContent = ({
                             <TransactionInfoTagsSection transaction={transaction} />
                         </TransactionInfoGroup>
 
-                        <TransactionInfoNoteGroup
-                            transaction={transaction}
-                            onOpenSources={onOpenConsolidationSources ?? onOpenRefundSources}
-                        />
+                        <TransactionInfoNoteGroup transaction={transaction} onOpenSources={onOpenSources} />
 
-                        <TransactionInfoSimilarCard stats={stats} title={t`Similar transactions`} isLoading={isLoading} />
+                        <TransactionInfoSimilarCard transaction={transaction} />
 
                         <TransactionInfoActionsGroup transaction={transaction} items={pageActionItems} onDelete={handleDestructiveAction} />
                     </View>
                 </View>
             </TransactionInfoScrollView>
-
-            <TransactionInfoNavBand />
 
             <TransactionInfoHeader transaction={transaction} editHref={editHref} handoff={handoff} onGoBack={handleGoBack} />
         </ScreenChromeFrame>

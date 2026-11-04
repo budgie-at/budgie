@@ -22,7 +22,7 @@ export const TransactionInfoMoneyRows = ({ transaction, onFeePress }: Props) => 
     const { t } = useLingui();
     const formatDigits = useProtectedAmountLabel();
     const formatRate = useFormatDigits(0, 4);
-    const exchangeRate = getTransactionInfoExchangeRate(transaction, formatRate, formatDigits);
+    const exchangeRate = getTransactionInfoExchangeRate(transaction, formatRate);
     const feeEntries = getTransactionFeeEntries(transaction.entries);
     const feeAmount = convertFromMicroUnits(sumEntryAmounts(feeEntries));
     const feeDisplay = formatDigits(feeAmount, feeEntries.at(0)?.account.instrument.symbol ?? '');
@@ -33,7 +33,7 @@ export const TransactionInfoMoneyRows = ({ transaction, onFeePress }: Props) => 
                 <TransactionInfoRow
                     icon={UserIconNameEnum.ArrowRightLeft}
                     label={t`Exchange rate`}
-                    value={exchangeRate.label}
+                    value={exchangeRate}
                     testID={TransactionInfoPageSelector.Row.ExchangeRate}
                 />
             ) : null}

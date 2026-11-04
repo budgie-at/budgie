@@ -5,7 +5,7 @@ import { Text, View } from 'react-native';
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
-import { TRANSACTION_INFO_ROW_MAX_FONT_SCALE } from '../../constant/transaction-info-row-max-font-scale.constant';
+import { TRANSACTION_INFO_MAX_FONT_SCALE } from '../../constant/transaction-info-max-font-scale.constant';
 import { isTransactionNoteDuplicated } from '../../utils/is-transaction-note-duplicated.util';
 import { TransactionInfoGroup } from '../transaction-info-group/transaction-info-group';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
@@ -46,13 +46,13 @@ export const TransactionInfoNoteGroup = ({ transaction, onOpenSources }: Props) 
                     </View>
                     <View className="flex-1 min-w-0">
                         <Text
-                            maxFontSizeMultiplier={TRANSACTION_INFO_ROW_MAX_FONT_SCALE}
+                            maxFontSizeMultiplier={TRANSACTION_INFO_MAX_FONT_SCALE}
                             className="text-[13px] leading-[18px] text-transaction-detail-secondary"
                         >
                             <Trans>Note</Trans>
                         </Text>
                         <Text
-                            maxFontSizeMultiplier={TRANSACTION_INFO_ROW_MAX_FONT_SCALE}
+                            maxFontSizeMultiplier={TRANSACTION_INFO_MAX_FONT_SCALE}
                             className="text-[17px] leading-[24px] text-primary"
                             selectable
                         >

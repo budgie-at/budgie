@@ -3,8 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
-import { useTransactionActionsMenu } from '../../context/transaction-actions-menu.context';
+import { ActionsMenuItem } from '../../../@generic/component/actions-menu-item/actions-menu-item';
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
 import { TransactionListContextMenuSelector } from '../transaction-list-context-menu/transaction-list-context-menu.selector';
 
@@ -16,7 +15,6 @@ interface Props {
 
 export const TransactionListRevertMenuItem = ({ transaction }: Props) => {
     const { t } = useLingui();
-    const closeMenu = useTransactionActionsMenu();
     const isRefund = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
     const revertConsolidation = useRevertConsolidation(transaction.id, void 0, isRefund);
 
@@ -27,15 +25,11 @@ export const TransactionListRevertMenuItem = ({ transaction }: Props) => {
         return null;
     }
 
-    const handlePress = () => {
-        closeMenu(revertConsolidation);
-    };
-
     return (
-        <PopoverMenuItem
+        <ActionsMenuItem
             icon={UserIconNameEnum.Undo2}
             label={label}
-            onPress={handlePress}
+            onPress={revertConsolidation}
             variant="destructive"
             testID={TransactionListContextMenuSelector.RevertButton}
         />

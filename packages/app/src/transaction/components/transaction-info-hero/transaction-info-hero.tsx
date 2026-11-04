@@ -1,15 +1,15 @@
 import { AmountField, AmountFieldText } from '@budgie/amount-input';
-import { TransactionTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { TransactionTypeEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View, useWindowDimensions } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { MatchingRulesPill } from '../../../rule/components/matching-rules-pill/matching-rules-pill';
-import { TRANSACTION_INFO_AMOUNT_MAX_FONT_SCALE } from '../../constant/transaction-info-amount-max-font-scale.constant';
-import { TRANSACTION_INFO_HERO_MAX_FONT_SCALE } from '../../constant/transaction-info-hero-max-font-scale.constant';
+import { TRANSACTION_INFO_MAX_FONT_SCALE } from '../../constant/transaction-info-max-font-scale.constant';
 import { TRANSACTION_INFO_STACKED_FONT_SCALE } from '../../constant/transaction-info-stacked-font-scale.constant';
 import { TRANSACTION_TYPE } from '../../constant/transaction-type.constant';
 import { formatTransactionInfoAmount } from '../../utils/format-transaction-info-amount.util';
@@ -18,7 +18,6 @@ import { getTransactionInfoDestinationEntry } from '../../utils/get-transaction-
 import { getTransactionInfoPrimaryEntry } from '../../utils/get-transaction-info-primary-entry.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
 import { TransactionInfoHeroDate } from '../transaction-info-hero-date/transaction-info-hero-date';
-import { TransactionInfoHeroIcon } from '../transaction-info-hero-icon/transaction-info-hero-icon';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
@@ -55,7 +54,15 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onAmountLayo
         <View className={heroClassName}>
             {showIcon ? (
                 <View className="mb-xl">
-                    <TransactionInfoHeroIcon />
+                    <CircleIcon
+                        icon={UserIconNameEnum.ArrowRightLeft}
+                        variant="default"
+                        size={64}
+                        iconSize={30}
+                        radius={32}
+                        border={false}
+                        iconClassName="text-default-foreground"
+                    />
                 </View>
             ) : null}
 
@@ -63,7 +70,7 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onAmountLayo
                 <AmountField fontSize={amountFontSize} className="self-stretch">
                     <AmountFieldText
                         adjustsFontSizeToFit
-                        maxFontSizeMultiplier={TRANSACTION_INFO_AMOUNT_MAX_FONT_SCALE}
+                        maxFontSizeMultiplier={TRANSACTION_INFO_MAX_FONT_SCALE}
                         minimumFontScale={0.6}
                         testID={TransactionInfoPageSelector.Amount}
                         className={cn('leading-[48px] font-semibold tracking-[-1px] text-center', amountClassName)}
@@ -76,7 +83,7 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onAmountLayo
 
             {isNotEmptyString(destinationAmount) ? (
                 <Text
-                    maxFontSizeMultiplier={TRANSACTION_INFO_AMOUNT_MAX_FONT_SCALE}
+                    maxFontSizeMultiplier={TRANSACTION_INFO_MAX_FONT_SCALE}
                     className="text-[17px] leading-[22px] text-transaction-detail-secondary font-medium text-center tabular-nums"
                     selectable
                 >
@@ -87,7 +94,7 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onAmountLayo
             {isNotEmptyString(title) ? (
                 <Text
                     onLayout={onTitleLayout}
-                    maxFontSizeMultiplier={TRANSACTION_INFO_HERO_MAX_FONT_SCALE}
+                    maxFontSizeMultiplier={TRANSACTION_INFO_MAX_FONT_SCALE}
                     className="mt-xs text-[20px] leading-[25px] text-primary font-semibold text-center"
                     selectable
                 >
