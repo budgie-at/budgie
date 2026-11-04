@@ -1,10 +1,8 @@
-import { Db } from '@budgie/contracts';
 import { SyncDeferredError, SyncProviderEnum, SyncRequestSigner, SyncUnauthorizedError } from '@budgie/sync';
-import { sql } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { EnableBankingSecureStore } from '../service/enable-banking-secure-store.service';
 import { signRs256 } from '../utils/sign-rs256.util';
@@ -34,13 +32,7 @@ export const syncRequestSignerLayer = Layer.effect(
                 yield* secureStore
                     .removeKey(keyId)
                     .pipe(Effect.mapError(() => new SyncDeferredError({ provider, message: 'secure-storage-unavailable' })));
-            }),
-            generateState: Db.query(db => db.all<{ readonly state: string }>(sql`SELECT lower(hex(randomblob(32))) AS state`)).pipe(
-                Effect.orDie,
-                Effect.flatMap(([row]) =>
-                    isDefined(row) && isNotEmptyString(row.state) ? Effect.succeed(row.state) : Effect.die(new Error('No random state'))
-                )
-            )
+            })
         });
     })
 ).pipe(Layer.provide(EnableBankingSecureStore.layer));

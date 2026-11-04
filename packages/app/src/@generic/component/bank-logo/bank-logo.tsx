@@ -24,7 +24,7 @@ const iconVariant = cva('', {
     variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
 
-const getBankIcon = (provider: ExternalSourceEnum, size: number, variant: ColorPaletteVariant): ReactElement | null => {
+const getBankIcon = (provider: ExternalSourceEnum, size: number): ReactElement | null => {
     switch (provider) {
         case ExternalSourceEnum.MONOBANK:
             return <MonobankIcon size={size} />;
@@ -35,15 +35,6 @@ const getBankIcon = (provider: ExternalSourceEnum, size: number, variant: ColorP
         case ExternalSourceEnum.BINANCE:
             return <BinanceIcon size={size} />;
         case ExternalSourceEnum.ENABLE_BANKING:
-            return (
-                <CircleIcon
-                    border={false}
-                    className="rounded-5xl w-13 h-13"
-                    icon={UserIconNameEnum.Landmark}
-                    iconClassName={iconVariant({ variant })}
-                    variant="ghost"
-                />
-            );
         case ExternalSourceEnum.MANUAL:
         case ExternalSourceEnum.REVOLUT:
         case ExternalSourceEnum.COINBASE:
@@ -57,7 +48,7 @@ const getBankIcon = (provider: ExternalSourceEnum, size: number, variant: ColorP
 };
 
 export const BankLogo = ({ bankProvider, size = 32, variant = 'default', fallback }: Props) => {
-    const icon = getBankIcon(bankProvider, size, variant);
+    const icon = getBankIcon(bankProvider, size);
 
     if (isDefined(icon)) {
         return icon;

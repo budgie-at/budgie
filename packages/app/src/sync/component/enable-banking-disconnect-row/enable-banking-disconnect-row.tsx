@@ -11,7 +11,6 @@ import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
 import { useBankIntegration } from '../../context/bank-integration.context';
 import { useExplainEnableBankingError } from '../../hook/use-explain-enable-banking-error.hook';
-import { EnableBankingConnectionCardSelector } from '../enable-banking-connection-card/enable-banking-connection-card.selector';
 
 export const EnableBankingDisconnectRow = () => {
     const { t } = useLingui();
@@ -34,7 +33,7 @@ export const EnableBankingDisconnectRow = () => {
                     return;
                 }
 
-                const { isSessionRevoked } = yield* Effect.flatMap(EnableBankingSyncService, service => service.disconnect(integration.id));
+                const isSessionRevoked = yield* Effect.flatMap(EnableBankingSyncService, service => service.disconnect(integration.id));
 
                 Toast.show(
                     isSessionRevoked
@@ -49,13 +48,5 @@ export const EnableBankingDisconnectRow = () => {
             }).pipe(Effect.mapError(explainError), toastOnFailure(t`Could not disconnect`))
         );
 
-    return (
-        <SettingsRow
-            icon={UserIconNameEnum.LogOut}
-            variant="destructive"
-            title={t`Disconnect`}
-            onPress={handlePress}
-            testID={EnableBankingConnectionCardSelector.Disconnect}
-        />
-    );
+    return <SettingsRow icon={UserIconNameEnum.LogOut} variant="destructive" title={t`Disconnect`} onPress={handlePress} />;
 };

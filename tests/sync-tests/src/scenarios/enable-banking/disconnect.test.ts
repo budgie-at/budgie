@@ -34,16 +34,10 @@ describe('enable-banking/disconnect', () => {
             enableBankingStub.deleteSession('session-first');
             enableBankingStub.deleteSession('session-second');
 
-            expect(yield* service.disconnect(yield* findIntegrationId(firstToken))).toEqual({
-                isSessionRevoked: true,
-                isKeyRemoved: false
-            });
+            expect(yield* service.disconnect(yield* findIntegrationId(firstToken))).toBe(true);
             expect(testSigner.deletedKeyIds).toEqual([]);
 
-            expect(yield* service.disconnect(yield* findIntegrationId(secondToken))).toEqual({
-                isSessionRevoked: true,
-                isKeyRemoved: true
-            });
+            expect(yield* service.disconnect(yield* findIntegrationId(secondToken))).toBe(true);
             expect(testSigner.deletedKeyIds).toEqual([ENABLE_BANKING_APPLICATION_ID]);
         }).pipe(Effect.provide(TestLayer))
     );
@@ -73,9 +67,12 @@ describe('enable-banking/disconnect', () => {
             const { sync } = yield* seedEnableBankingAccount({ hash: 'hash-stuck', token });
             enableBankingStub.deleteSession('session-stuck', { status: 500, error: 'ASPSP_ERROR' });
 
-            const result = yield* service.disconnect(yield* findIntegrationId(token));
+            const integrationId = yield* findIntegrationId(token);
 
-            expect(result).toEqual({ isSessionRevoked: false, isKeyRemoved: true });
+            expect(yield* service.disconnect(integrationId)).toBe(false);
+            expect(yield* testDb.select().from(BankIntegrationEntityTable).where(eq(BankIntegrationEntityTable.id, integrationId))).toEqual(
+                []
+            );
             expect((yield* fetchSyncById(sync.id)).enabled).toBe(false);
 
             yield* service.sync();

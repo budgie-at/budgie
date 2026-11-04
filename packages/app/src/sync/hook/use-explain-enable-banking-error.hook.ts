@@ -20,7 +20,6 @@ const CALLBACK_FAILURE_LABEL: Record<EnableBankingCallbackFailureEnum, MessageDe
     [EnableBankingCallbackFailureEnum.CANCELLED]: msg`Authorization was cancelled at your bank. Pick the bank to try again.`,
     [EnableBankingCallbackFailureEnum.EXPIRED]: msg`The authorization took too long. Start again.`,
     [EnableBankingCallbackFailureEnum.MALFORMED]: msg`Budgie could not read the response from your bank. Start again.`,
-    [EnableBankingCallbackFailureEnum.REPLAYED]: msg`This authorization was already used. Start again.`,
     [EnableBankingCallbackFailureEnum.STATE_MISMATCH]: msg`This response does not match an authorization started in Budgie. Start again.`
 };
 

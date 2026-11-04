@@ -16,8 +16,6 @@ import { EnableBankingChooseKeyRow } from '../enable-banking-choose-key-row/enab
 import { EnableBankingDisconnectRow } from '../enable-banking-disconnect-row/enable-banking-disconnect-row';
 import { EnableBankingReauthorizeRow } from '../enable-banking-reauthorize-row/enable-banking-reauthorize-row';
 
-import { EnableBankingConnectionCardSelector } from './enable-banking-connection-card.selector';
-
 const decodeToken = Schema.decodeUnknownOption(Schema.fromJsonString(EnableBankingTokenSchema));
 const REAUTHORIZE_LEAD_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -38,13 +36,15 @@ export const EnableBankingConnectionCard = () => {
     const validUntilLabel = isDefined(validUntil) ? formatDayAndMonthAndYear(validUntil) : '';
 
     return (
-        <GroupedListSection title={t`Connection`} footer={t`Requests go from this phone to Enable Banking and your bank. Budgie has no server.`}>
+        <GroupedListSection
+            title={t`Connection`}
+            footer={t`Requests go from this phone to Enable Banking and your bank. Budgie has no server.`}
+        >
             <SettingsRow
                 icon={UserIconNameEnum.CalendarClock}
                 variant="primary"
                 title={t`Consent valid until`}
                 subtitle={validUntilLabel}
-                testID={EnableBankingConnectionCardSelector.ValidUntil}
             />
             {isNotLinked ? (
                 <SettingsRow
@@ -52,7 +52,6 @@ export const EnableBankingConnectionCard = () => {
                     variant="warning"
                     title={t`Account not linked`}
                     subtitle={t`Link every account you sync to your application in Enable Banking, then authorize again.`}
-                    testID={EnableBankingConnectionCardSelector.NotLinked}
                 />
             ) : null}
             {needsReauthorization ? <EnableBankingReauthorizeRow /> : null}

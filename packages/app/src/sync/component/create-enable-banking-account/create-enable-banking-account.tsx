@@ -26,8 +26,6 @@ import { EnableBankingKeyStep } from '../enable-banking-key-step/enable-banking-
 import { EnableBankingWaitingStep } from '../enable-banking-waiting-step/enable-banking-waiting-step';
 import { SyncAccountSetupPage } from '../sync-account-setup-page/sync-account-setup-page';
 
-import { CreateEnableBankingAccountSelector } from './create-enable-banking-account.selector';
-
 import type { EnableBankingAuthorizationResultInterface, EnableBankingBankInterface } from '@budgie/sync';
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration component with multiple hooks and handlers
@@ -51,7 +49,7 @@ export const CreateEnableBankingAccount = () => {
         isStartSyncDisabled
     } = useSyncAccountSetupFlow(EnableBankingSyncService, (enableBankingSyncService, selectedAccountIds) =>
         isDefined(authorization)
-            ? enableBankingSyncService.setupAccountSyncBatch(authorization.integrationId, authorization.accounts, selectedAccountIds)
+            ? enableBankingSyncService.setupAccountSyncBatch(authorization.token, authorization.accounts, selectedAccountIds)
             : Effect.void
     );
 
@@ -64,14 +62,16 @@ export const CreateEnableBankingAccount = () => {
             Effect.gen(function* () {
                 const result = yield* Effect.flatMap(EnableBankingConnectionService, connection => connection.finish(url));
 
-                if (result.isReconsent) {
+                const selectablePreviews = result.previews.filter(preview => !preview.isParked);
+
+                if (isDefined(result.integrationId) && selectablePreviews.every(preview => preview.hasSync)) {
                     Toast.show({ type: 'success', text1: t`Bank authorized again`, text2: t`Syncing resumes automatically.` });
                     router.dismissTo({ pathname: '/bank-integration/[id]', params: { id: String(result.integrationId) } });
 
                     return;
                 }
 
-                accountSelection.setPreviews(result.previews.filter(preview => !preview.isParked));
+                accountSelection.setPreviews(selectablePreviews);
                 setAuthorization(result);
                 setStep(EnableBankingSetupStepEnum.ACCOUNTS);
             }).pipe(
@@ -169,15 +169,7 @@ export const CreateEnableBankingAccount = () => {
             onPickKey={handlePickKey}
         />
     );
-    let footer = (
-        <Button
-            onPress={handleContinue}
-            disabled={isLoading}
-            isLoading={isLoading}
-            content={t`Continue`}
-            testID={CreateEnableBankingAccountSelector.ContinueButton}
-        />
-    );
+    let footer = <Button onPress={handleContinue} disabled={isLoading} isLoading={isLoading} content={t`Continue`} />;
 
     switch (step) {
         case EnableBankingSetupStepEnum.BANK:
@@ -186,14 +178,7 @@ export const CreateEnableBankingAccount = () => {
             break;
         case EnableBankingSetupStepEnum.WAITING:
             stepContent = <EnableBankingWaitingStep />;
-            footer = (
-                <Button
-                    variant="ghost"
-                    onPress={handleChooseAnotherBank}
-                    content={t`Choose another bank`}
-                    testID={CreateEnableBankingAccountSelector.ChooseAnotherBankButton}
-                />
-            );
+            footer = <Button variant="ghost" onPress={handleChooseAnotherBank} content={t`Choose another bank`} />;
             break;
         case EnableBankingSetupStepEnum.ACCOUNTS:
             stepContent = (
@@ -202,15 +187,7 @@ export const CreateEnableBankingAccount = () => {
                     <EnableBankingAccountsNotice parkedPreviews={parkedPreviews} />
                 </>
             );
-            footer = (
-                <Button
-                    onPress={handleSetupSync}
-                    disabled={isStartSyncDisabled}
-                    isLoading={isSettingUp}
-                    content={t`Start Sync`}
-                    testID={CreateEnableBankingAccountSelector.StartSyncButton}
-                />
-            );
+            footer = <Button onPress={handleSetupSync} disabled={isStartSyncDisabled} isLoading={isSettingUp} content={t`Start Sync`} />;
             break;
         case EnableBankingSetupStepEnum.KEY:
         default:
@@ -223,7 +200,6 @@ export const CreateEnableBankingAccount = () => {
             description={t`Sync Trade Republic, N26 and other EU banks through your own Enable Banking application.`}
             onGoBack={handleStepAwareGoBack}
             footer={footer}
-            scrollViewTestID={CreateEnableBankingAccountSelector.ScrollView}
         >
             {stepContent}
         </SyncAccountSetupPage>

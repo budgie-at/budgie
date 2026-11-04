@@ -63,11 +63,10 @@ export { EnableBankingCallbackError } from './enable-banking/error/enable-bankin
 export { EnableBankingCallbackFailureEnum } from './enable-banking/enum/enable-banking-callback-failure.enum';
 export { EnableBankingErrorCodeEnum } from './enable-banking/enum/enable-banking-error-code.enum';
 export { EnableBankingTokenSchema } from './enable-banking/constant/enable-banking-token.schema';
+export { EnableBankingPendingAuthorizationSchema } from './enable-banking/constant/enable-banking-pending-authorization.schema';
+export type { EnableBankingPendingAuthorizationInterface } from './enable-banking/constant/enable-banking-pending-authorization.schema';
 export type { EnableBankingAuthorizationResultInterface } from './enable-banking/interface/enable-banking-authorization-result.interface';
 export type { EnableBankingBankInterface } from './enable-banking/interface/enable-banking-bank.interface';
-export type { EnableBankingDisconnectResultInterface } from './enable-banking/interface/enable-banking-disconnect-result.interface';
-export type { EnableBankingPendingAuthorizationInterface } from './enable-banking/interface/enable-banking-pending-authorization.interface';
-export type { EnableBankingStartAuthorizationInputInterface } from './enable-banking/interface/enable-banking-start-authorization-input.interface';
 
 export { mapErsteTransaction } from './erste/mapper/erste.mapper';
 

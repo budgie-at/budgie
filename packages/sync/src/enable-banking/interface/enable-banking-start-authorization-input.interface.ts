@@ -1,4 +1,4 @@
-import type { EnableBankingPendingAuthorizationInterface } from './enable-banking-pending-authorization.interface';
+import type { EnableBankingPendingAuthorizationInterface } from '../constant/enable-banking-pending-authorization.schema';
 
 export interface EnableBankingStartAuthorizationInputInterface extends Pick<
     EnableBankingPendingAuthorizationInterface,

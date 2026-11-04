@@ -4,7 +4,6 @@ import { Text, View } from 'react-native';
 
 import { Button } from '../../../@generic/component/button/button';
 import { Input } from '../../../@generic/component/input/input';
-import { CreateEnableBankingAccountSelector } from '../create-enable-banking-account/create-enable-banking-account.selector';
 import { EnableBankingSetupGuide } from '../enable-banking-setup-guide/enable-banking-setup-guide';
 
 interface Props {
@@ -34,7 +33,6 @@ export const EnableBankingKeyStep = ({ applicationId, isKeyPicked, isLoading, on
                     placeholder={t`Filled in from the key file name`}
                     autoCapitalize="none"
                     autoCorrect={false}
-                    testID={CreateEnableBankingAccountSelector.ApplicationIdInput}
                 />
                 <Button
                     variant="ghost"
@@ -42,7 +40,6 @@ export const EnableBankingKeyStep = ({ applicationId, isKeyPicked, isLoading, on
                     content={pickKeyLabel}
                     onPress={onPickKey}
                     disabled={isLoading}
-                    testID={CreateEnableBankingAccountSelector.PickKeyButton}
                 />
             </View>
         </>

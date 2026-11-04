@@ -1,7 +1,7 @@
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { BaseSyncProviderClient } from '../../core/client/base-sync-provider.client';
 import { HTTP_STATUS_FORBIDDEN, HTTP_STATUS_TOO_MANY_REQUESTS, HTTP_STATUS_UNAUTHORIZED } from '../../core/constant/http-status.constant';
@@ -26,7 +26,6 @@ import type { SyncError } from '../../core/interface/sync-error.type';
 import type { EnableBankingTransactionApiInterface } from '../interface/enable-banking-transaction-api.schema';
 import type { EnableBankingTransactionQueryInterface } from '../interface/enable-banking-transaction-query.interface';
 import type * as Headers from 'effect/http/Headers';
-import type * as HttpClient from 'effect/http/HttpClient';
 import type { HttpMethod } from 'effect/http/HttpMethod';
 
 export class EnableBankingClient extends BaseSyncProviderClient {
@@ -84,7 +83,7 @@ export class EnableBankingClient extends BaseSyncProviderClient {
     }
 
     getBookedTransactions(accountUid: string, query: EnableBankingTransactionQueryInterface) {
-        return this.fetchTransactionPages(accountUid, query, null, []);
+        return this.fetchTransactionPages(accountUid, query);
     }
 
     protected override classifyApiError(
@@ -115,10 +114,9 @@ export class EnableBankingClient extends BaseSyncProviderClient {
             return new SyncRateLimitedError({
                 provider,
                 message: 'Enable Banking is limiting requests',
-                retryAfterMs:
-                    retryAfterSeconds > 0
-                        ? retryAfterSeconds * EnableBankingClient.MILLISECONDS_PER_SECOND
-                        : EnableBankingClient.DEFAULT_RETRY_AFTER_MS
+                retryAfterMs: isPositiveNumber(retryAfterSeconds)
+                    ? retryAfterSeconds * EnableBankingClient.MILLISECONDS_PER_SECOND
+                    : EnableBankingClient.DEFAULT_RETRY_AFTER_MS
             });
         }
 
@@ -133,38 +131,34 @@ export class EnableBankingClient extends BaseSyncProviderClient {
         return new SyncInvalidResponseError({ provider, message: 'Enable Banking rejected the request', apiCode });
     }
 
-    private fetchTransactionPages(
-        accountUid: string,
-        query: EnableBankingTransactionQueryInterface,
-        continuationKey: string | null,
-        collected: readonly EnableBankingTransactionApiInterface[]
-    ): Effect.Effect<EnableBankingTransactionApiInterface[], SyncError, HttpClient.HttpClient> {
-        return Effect.flatMap(this.fetchTransactionPage(accountUid, query, continuationKey), page => {
-            const transactions = [...collected, ...page.transactions];
-            if (!isNotEmptyString(page.continuation_key)) {
-                return Effect.succeed(transactions);
-            }
+    private fetchTransactionPages(accountUid: string, query: EnableBankingTransactionQueryInterface) {
+        const { provider } = this;
 
-            return page.continuation_key === continuationKey
-                ? Effect.fail(
-                      new SyncInvalidResponseError({ provider: this.provider, message: 'Enable Banking repeated a transactions page' })
-                  )
-                : this.fetchTransactionPages(accountUid, query, page.continuation_key, transactions);
+        return Effect.gen({ self: this }, function* () {
+            const transactions: EnableBankingTransactionApiInterface[] = [];
+            let continuationKey: string | null = null;
+
+            do {
+                const parameters: string[] = [
+                    'transaction_status=BOOK',
+                    ...(query.isLongest ? ['strategy=longest'] : []),
+                    ...(isDefined(query.dateFrom) ? [`date_from=${query.dateFrom}`] : []),
+                    ...(isDefined(continuationKey) ? [`continuation_key=${encodeURIComponent(continuationKey)}`] : [])
+                ];
+                const page: typeof EnableBankingTransactionPageApiSchema.Type = yield* this.fetchSanitized(
+                    EnableBankingTransactionPageApiSchema,
+                    `/accounts/${encodeURIComponent(accountUid)}/transactions?${parameters.join('&')}`
+                );
+                transactions.push(...page.transactions);
+
+                if (isNotEmptyString(page.continuation_key) && page.continuation_key === continuationKey) {
+                    return yield* new SyncInvalidResponseError({ provider, message: 'Enable Banking repeated a transactions page' });
+                }
+                continuationKey = isNotEmptyString(page.continuation_key) ? page.continuation_key : null;
+            } while (isDefined(continuationKey));
+
+            return transactions;
         });
-    }
-
-    private fetchTransactionPage(accountUid: string, query: EnableBankingTransactionQueryInterface, continuationKey: string | null) {
-        const parameters = [
-            'transaction_status=BOOK',
-            ...(query.isLongest ? ['strategy=longest'] : []),
-            ...(isDefined(query.dateFrom) ? [`date_from=${query.dateFrom}`] : []),
-            ...(isDefined(continuationKey) ? [`continuation_key=${encodeURIComponent(continuationKey)}`] : [])
-        ];
-
-        return this.fetchSanitized(
-            EnableBankingTransactionPageApiSchema,
-            `/accounts/${encodeURIComponent(accountUid)}/transactions?${parameters.join('&')}`
-        );
     }
 
     private fetchSanitized<S extends Schema.ConstraintDecoder<unknown>>(

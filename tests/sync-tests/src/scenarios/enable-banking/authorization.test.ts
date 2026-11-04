@@ -1,4 +1,4 @@
-import { AccountEntityTable, SyncEntityTable, SyncModeEnum } from '@budgie/contracts';
+import { AccountEntityTable, BankIntegrationEntityTable, SyncEntityTable, SyncModeEnum } from '@budgie/contracts';
 import { EnableBankingCallbackFailureEnum, EnableBankingErrorCodeEnum, EnableBankingSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
@@ -144,7 +144,7 @@ describe('enable-banking/authorization', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('persists the session whole, connects the selected account and rejects a replay', () =>
+    it.effect('persists the session whole and connects the selected account only once chosen', () =>
         Effect.gen(function* () {
             const service = yield* EnableBankingSyncService;
             const hash = 'hash-new';
@@ -168,16 +168,15 @@ describe('enable-banking/authorization', () => {
 
             const result = yield* service.completeAuthorization(pending(), callbackUrl);
 
-            expect(result.isReconsent).toBe(false);
+            expect(result.integrationId).toBeNull();
             expect(result.previews).toMatchObject([{ externalId: hash, title: 'Synthetic Bank Giro', isParked: false }]);
+            expect(yield* testDb.select().from(BankIntegrationEntityTable)).toHaveLength(1);
 
-            expect(yield* skipRequestedSync(service.setupAccountSyncBatch(result.integrationId, result.accounts, [hash]))).toBe(1);
+            expect(yield* skipRequestedSync(service.setupAccountSyncBatch(result.token, result.accounts, [hash]))).toBe(1);
+            expect(yield* testDb.select().from(BankIntegrationEntityTable)).toHaveLength(2);
             const [account] = yield* testDb.select().from(AccountEntityTable).where(eq(AccountEntityTable.externalId, hash));
             const [sync] = yield* testDb.select().from(SyncEntityTable).where(eq(SyncEntityTable.accountId, account.id));
             expect(sync).toMatchObject({ mode: SyncModeEnum.BACKWARD, setupBalance: null });
-
-            const replay = yield* Effect.flip(service.completeAuthorization(pending(), callbackUrl));
-            expect(replay).toMatchObject({ failure: EnableBankingCallbackFailureEnum.REPLAYED });
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -224,9 +223,7 @@ describe('enable-banking/authorization', () => {
             );
 
             expect(yield* service.validateCredentials(ENABLE_BANKING_APPLICATION_ID)).toEqual({
-                name: 'App',
                 isActive: true,
-                environment: 'PRODUCTION',
                 redirectUrls: ['https://budgie.at/cb']
             });
         }).pipe(Effect.provide(TestLayer))

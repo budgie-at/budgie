@@ -91,20 +91,16 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
                         isDefined(previousPem) ? secureStore.saveKey(applicationId, previousPem) : secureStore.removeKey(applicationId)
                     );
 
-                    yield* secureStore.saveKey(applicationId, pem);
-                    const application = yield* enableBankingSyncService
-                        .validateCredentials(applicationId)
-                        .pipe(Effect.tapError(() => restorePrevious));
-                    if (!application.isActive) {
-                        yield* restorePrevious;
-
-                        return yield* fail(EnableBankingSetupErrorReasonEnum.INACTIVE_APPLICATION);
-                    }
-                    if (!application.redirectUrls.includes(ENABLE_BANKING_RELAY_URL)) {
-                        yield* restorePrevious;
-
-                        return yield* fail(EnableBankingSetupErrorReasonEnum.REDIRECT_URL_MISSING);
-                    }
+                    yield* Effect.gen(function* () {
+                        yield* secureStore.saveKey(applicationId, pem);
+                        const application = yield* enableBankingSyncService.validateCredentials(applicationId);
+                        if (!application.isActive) {
+                            return yield* fail(EnableBankingSetupErrorReasonEnum.INACTIVE_APPLICATION);
+                        }
+                        if (!application.redirectUrls.includes(ENABLE_BANKING_RELAY_URL)) {
+                            return yield* fail(EnableBankingSetupErrorReasonEnum.REDIRECT_URL_MISSING);
+                        }
+                    }).pipe(Effect.tapError(() => restorePrevious));
                 }),
                 reauthorize: Effect.fn('EnableBankingConnectionService.reauthorize')(function* (integrationId: number) {
                     const integration = yield* bankIntegrationRepository.findById(integrationId);

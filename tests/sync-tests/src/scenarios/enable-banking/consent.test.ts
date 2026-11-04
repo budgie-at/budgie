@@ -1,6 +1,7 @@
-import { BankIntegrationEntityTable, SyncErrorCodeEnum, SyncStatusEnum } from '@budgie/contracts';
+import { AccountEntityTable, BankIntegrationEntityTable, SyncErrorCodeEnum, SyncStatusEnum } from '@budgie/contracts';
 import { EnableBankingSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
+import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import {
@@ -114,7 +115,7 @@ describe('enable-banking/consent', () => {
                 service.completeAuthorization(pendingFor(null, 'state-1'), `${CALLBACK_URL}?code=code-1&state=state-1`)
             );
 
-            expect(result.isReconsent).toBe(true);
+            expect(result.integrationId).not.toBeNull();
             expect(yield* fetchAccountIntegrationToken(account.id)).toBe(buildEnableBankingToken('session-new', VALID_UNTIL));
             expect((yield* fetchSyncById(sync.id)).forwardSyncedAt).toBeNull();
 
@@ -144,13 +145,12 @@ describe('enable-banking/consent', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('refuses a re-consent covering none of the connected accounts and revokes the new session', () =>
+    it.effect('refuses a re-consent covering none of the connected accounts', () =>
         Effect.gen(function* () {
             const service = yield* EnableBankingSyncService;
             const token = buildEnableBankingToken('session-keep');
             const { account } = yield* seedEnableBankingAccount({ hash: 'hash-keep', token });
             enableBankingStub.authorizeSession('session-foreign', 'Synthetic Bank', [accountResource('hash-foreign')], VALID_UNTIL);
-            enableBankingStub.deleteSession('session-foreign');
             const [integration] = yield* testDb.select().from(BankIntegrationEntityTable);
 
             const error = yield* Effect.flip(
@@ -159,7 +159,35 @@ describe('enable-banking/consent', () => {
 
             expect(error._tag).toBe('SyncTokenClientMismatchError');
             expect(yield* fetchAccountIntegrationToken(account.id)).toBe(token);
-            expect(enableBankingStub.requests).toContain('DELETE /sessions/session-foreign');
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('a re-consent that adds an unconnected account updates the token and connects it to the same integration', () =>
+        Effect.gen(function* () {
+            const service = yield* EnableBankingSyncService;
+            const { account } = yield* seedEnableBankingAccount({ hash: 'hash-known', token: buildEnableBankingToken('session-old') });
+            enableBankingStub.authorizeSession(
+                'session-new',
+                'Synthetic Bank',
+                [accountResource('hash-known'), accountResource('hash-added')],
+                VALID_UNTIL
+            );
+
+            const result = yield* skipRequestedSync(
+                service.completeAuthorization(pendingFor(null, 'state-3'), `${CALLBACK_URL}?code=code-3&state=state-3`)
+            );
+
+            expect(result.integrationId).not.toBeNull();
+            expect(result.previews.map(preview => [preview.externalId, preview.hasSync])).toEqual([
+                ['hash-known', true],
+                ['hash-added', false]
+            ]);
+            expect(yield* fetchAccountIntegrationToken(account.id)).toBe(buildEnableBankingToken('session-new', VALID_UNTIL));
+
+            expect(yield* skipRequestedSync(service.setupAccountSyncBatch(result.token, result.accounts, ['hash-added']))).toBe(1);
+            const [added] = yield* testDb.select().from(AccountEntityTable).where(eq(AccountEntityTable.externalId, 'hash-added'));
+            expect(added.integrationId).toBe(result.integrationId);
+            expect(yield* testDb.select().from(BankIntegrationEntityTable)).toHaveLength(1);
         }).pipe(Effect.provide(TestLayer))
     );
 });

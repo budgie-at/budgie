@@ -3,7 +3,6 @@ import { useState } from 'react';
 
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { Input } from '../../../@generic/component/input/input';
-import { CreateEnableBankingAccountSelector } from '../create-enable-banking-account/create-enable-banking-account.selector';
 import { EnableBankingBankRow } from '../enable-banking-bank-row/enable-banking-bank-row';
 
 import type { EnableBankingBankInterface } from '@budgie/sync';
@@ -26,14 +25,7 @@ export const EnableBankingBankStep = ({ banks, onSelectBank }: Props) => {
 
     return (
         <>
-            <Input
-                value={query}
-                onChangeText={setQuery}
-                placeholder={t`Search your bank`}
-                autoCapitalize="none"
-                autoCorrect={false}
-                testID={CreateEnableBankingAccountSelector.BankSearchInput}
-            />
+            <Input value={query} onChangeText={setQuery} placeholder={t`Search your bank`} autoCapitalize="none" autoCorrect={false} />
 
             <GroupedListSection title={t`Banks`}>
                 {visibleBanks.map(bank => (

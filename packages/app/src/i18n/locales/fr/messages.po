@@ -7857,10 +7857,6 @@ msgstr "Cette clé API appartient à un autre compte Binance."
 msgid "This API key can trade, withdraw or transfer funds. Create a key with only \"Enable Reading\" and try again."
 msgstr "Cette clé API peut trader, retirer ou transférer des fonds. Créez une clé avec uniquement « Enable Reading » et réessayez."
 
-#: src/sync/hook/use-explain-enable-banking-error.hook.ts
-msgid "This authorization was already used. Start again."
-msgstr "Cette autorisation a déjà été utilisée. Recommencez."
-
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
 #: src/import/hook/use-restore-backup.hook.ts

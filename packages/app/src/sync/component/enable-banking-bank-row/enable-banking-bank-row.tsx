@@ -1,7 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
 
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
-import { CreateEnableBankingAccountSelector } from '../create-enable-banking-account/create-enable-banking-account.selector';
 import { EnableBankingBankLogo } from '../enable-banking-bank-logo/enable-banking-bank-logo';
 
 import type { EnableBankingBankInterface } from '@budgie/sync';
@@ -22,7 +21,6 @@ export const EnableBankingBankRow = ({ bank, onSelect }: Props) => {
 
     return (
         <GroupedListRow
-            testID={CreateEnableBankingAccountSelector.BankRow(bank.name)}
             left={<EnableBankingBankLogo logoUrl={bank.logoUrl} />}
             title={bank.name}
             subtitle={subtitle}

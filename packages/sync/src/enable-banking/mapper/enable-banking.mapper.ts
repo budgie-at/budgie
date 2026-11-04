@@ -62,13 +62,12 @@ class EnableBankingMapper {
         const rows = transactions
             .filter(transaction => transaction.status === EnableBankingMapper.BOOKED_STATUS)
             .map(transaction => this.buildRow(transaction));
-        const datedRows = rows.filter((row): row is EnableBankingDatedRowInterface => isDefined(row.bookedOn));
+        const datedRows = rows.filter(isDefined);
         if (datedRows.length !== rows.length || this.hasReferenceAcrossDates(datedRows)) {
             return null;
         }
 
-        const externalIds = this.assignExternalIds(identificationHash, datedRows);
-        const mapped = datedRows.map(row => this.mapTransaction(identificationHash, currencyCode, row, externalIds.get(row) ?? ''));
+        const mapped = this.mapRowsWithExternalIds(identificationHash, currencyCode, datedRows);
         const stored = mapped.filter(isDefined);
 
         return stored.length === mapped.length ? stored.filter(transaction => isPositiveNumber(transaction.amount)) : null;
@@ -100,14 +99,13 @@ class EnableBankingMapper {
         };
     }
 
-    private buildRow(transaction: EnableBankingTransactionApiInterface) {
+    private buildRow(transaction: EnableBankingTransactionApiInterface): EnableBankingDatedRowInterface | null {
         const bookedOn = transaction.booking_date ?? transaction.value_date;
+        if (!isNotEmptyString(bookedOn) || !EnableBankingMapper.DATE_PATTERN.test(bookedOn)) {
+            return null;
+        }
 
-        return {
-            transaction,
-            bookedOn: isNotEmptyString(bookedOn) && EnableBankingMapper.DATE_PATTERN.test(bookedOn) ? bookedOn : null,
-            contentHash: generateStableExternalIdHash(this.buildContentKey(transaction))
-        };
+        return { transaction, bookedOn, contentHash: generateStableExternalIdHash(this.buildContentKey(transaction)) };
     }
 
     private hasReferenceAcrossDates(rows: readonly EnableBankingDatedRowInterface[]): boolean {
@@ -126,25 +124,22 @@ class EnableBankingMapper {
         });
     }
 
-    private assignExternalIds(identificationHash: string, rows: readonly EnableBankingDatedRowInterface[]) {
+    private mapRowsWithExternalIds(identificationHash: string, currencyCode: string, rows: readonly EnableBankingDatedRowInterface[]) {
         const occurrenceByKey = new Map<string, number>();
-        const externalIds = new Map<EnableBankingDatedRowInterface, string>();
 
-        for (const row of [...rows].sort((left, right) => left.contentHash.localeCompare(right.contentHash))) {
-            const reference = row.transaction.entry_reference;
-            const key = isNotEmptyString(reference) ? `reference:${reference}` : `content:${row.contentHash}`;
-            const occurrence = occurrenceByKey.get(key) ?? 0;
-            occurrenceByKey.set(key, occurrence + 1);
-
-            externalIds.set(
-                row,
-                isNotEmptyString(reference)
+        return [...rows]
+            .sort((left, right) => left.contentHash.localeCompare(right.contentHash))
+            .map(row => {
+                const reference = row.transaction.entry_reference;
+                const key = isNotEmptyString(reference) ? `reference:${reference}` : `content:${row.contentHash}`;
+                const occurrence = occurrenceByKey.get(key) ?? 0;
+                occurrenceByKey.set(key, occurrence + 1);
+                const externalId = isNotEmptyString(reference)
                     ? `${identificationHash}:${reference}${isPositiveNumber(occurrence) ? `:${occurrence}` : ''}`
-                    : `${identificationHash}:${generateStableExternalIdHash(`${row.contentHash}|${occurrence}`)}`
-            );
-        }
+                    : `${identificationHash}:${generateStableExternalIdHash(`${row.contentHash}|${occurrence}`)}`;
 
-        return externalIds;
+                return this.mapTransaction(identificationHash, currencyCode, row, externalId);
+            });
     }
 
     private resolveValidAmount(transaction: EnableBankingTransactionApiInterface, currencyCode: string): number | null {

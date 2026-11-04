@@ -8,7 +8,6 @@ import { SettingsRow } from '../../../settings/components/settings-row/settings-
 import { useBankIntegration } from '../../context/bank-integration.context';
 import { useExplainEnableBankingError } from '../../hook/use-explain-enable-banking-error.hook';
 import { EnableBankingConnectionService } from '../../service/enable-banking-connection.service';
-import { EnableBankingConnectionCardSelector } from '../enable-banking-connection-card/enable-banking-connection-card.selector';
 
 export const EnableBankingReauthorizeRow = () => {
     const { t } = useLingui();
@@ -31,7 +30,6 @@ export const EnableBankingReauthorizeRow = () => {
             title={t`Authorize again`}
             subtitle={t`Renews the bank consent so syncing continues.`}
             onPress={handlePress}
-            testID={EnableBankingConnectionCardSelector.Reauthorize}
         />
     );
 };

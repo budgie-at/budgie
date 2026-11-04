@@ -169,11 +169,7 @@ export class EnableBankingBatchService extends Context.Service<EnableBankingBatc
             return created.length;
         });
 
-        const resolveKeepFromMs = (startMs: number, limitAt: Date | null): number => {
-            const keepFromMs = Math.max(startMs, limitAt?.getTime() ?? 0);
-
-            return keepFromMs - (keepFromMs % millisecondsPerDay);
-        };
+        const floorToDayMs = (timeMs: number): number => timeMs - (timeMs % millisecondsPerDay);
 
         const toIsoDate = (timeMs: number): string => new Date(timeMs).toISOString().slice(0, isoDateLength);
 
@@ -200,7 +196,7 @@ export class EnableBankingBatchService extends Context.Service<EnableBankingBatc
 
         const syncForward = Effect.fnUntraced(function* (context: EnableBankingBatchContextInterface, sync: SyncEntityInterface) {
             const cursor = sync.forwardSyncFromAt ?? context.fetchStartedAt;
-            const keepFromMs = resolveKeepFromMs(cursor.getTime() - lookbackMs, sync.backwardSyncLimitAt);
+            const keepFromMs = floorToDayMs(cursor.getTime() - lookbackMs);
             const fetched = yield* fetchBatchData(context, { dateFrom: toIsoDate(keepFromMs), isLongest: false }).pipe(
                 Effect.catchIf(isBankRateLimited, () => Effect.succeed(null))
             );
@@ -212,18 +208,13 @@ export class EnableBankingBatchService extends Context.Service<EnableBankingBatc
         });
 
         const syncBackward = Effect.fnUntraced(function* (context: EnableBankingBatchContextInterface, sync: SyncEntityInterface) {
-            const limitAt = sync.backwardSyncLimitAt;
-            const keepFromMs = resolveKeepFromMs(0, limitAt);
-            const fetched = yield* fetchBatchData(context, {
-                dateFrom: isDefined(limitAt) ? toIsoDate(keepFromMs) : null,
-                isLongest: true
-            }).pipe(
+            const fetched = yield* fetchBatchData(context, { dateFrom: null, isLongest: true }).pipe(
                 Effect.catchIf(isBankRateLimited, () =>
                     Effect.fail(new SyncDeferredError({ provider: syncProvider, message: 'The bank fetch allowance is used up' }))
                 )
             );
 
-            return yield* commitFetched(fetched, keepFromMs, sync, context.fetchStartedAt);
+            return yield* commitFetched(fetched, 0, sync, context.fetchStartedAt);
         });
 
         return {
@@ -231,18 +222,10 @@ export class EnableBankingBatchService extends Context.Service<EnableBankingBatc
                 sessionByToken.clear();
                 mccCategoryLookupMap = yield* loadMccCategoryLookupMap(mccCategoryRepository, settingsRepository);
             }),
-            afterRun: () => {
-                sessionByToken.clear();
-            },
             execute: Effect.fn('EnableBankingBatchService.execute')(function* (sync: SyncEntityInterface, token: string) {
                 const nowMs = yield* Clock.currentTimeMillis;
                 const fetchStartedAt = new Date(Math.floor(nowMs / millisecondsPerSecond) * millisecondsPerSecond);
                 const isBackward = sync.mode === SyncModeEnum.BACKWARD;
-                const limitAt = sync.backwardSyncLimitAt;
-                if (isBackward && isDefined(limitAt) && limitAt >= (sync.backwardSyncFromAt ?? fetchStartedAt)) {
-                    return { transactions: [], completed: true, nextFrom: fetchStartedAt, nextTo: fetchStartedAt };
-                }
-
                 const credentials = yield* clientService.decodeCredentials(token);
                 const account = yield* accountRepository.findById(sync.accountId);
                 const hash = account?.externalId;

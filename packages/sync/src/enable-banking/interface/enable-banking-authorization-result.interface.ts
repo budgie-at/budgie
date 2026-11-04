@@ -2,8 +2,8 @@ import type { SyncAccountPreviewInterface } from '../../core/interface/sync-acco
 import type { SyncAccountInterface } from '../../core/interface/sync-account.interface';
 
 export interface EnableBankingAuthorizationResultInterface {
-    readonly integrationId: number;
-    readonly isReconsent: boolean;
+    readonly token: string;
+    readonly integrationId: number | null;
     readonly accounts: SyncAccountInterface[];
     readonly previews: SyncAccountPreviewInterface[];
 }

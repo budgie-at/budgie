@@ -8,7 +8,6 @@ const rsaSigner = makeNodeRsaSigner();
 const missingKeyIds = new Set<string>();
 const unavailableKeyIds = new Set<string>();
 const deletedKeyIds: string[] = [];
-let stateCounter = 0;
 
 export const testSigner = {
     verify: rsaSigner.verify,
@@ -41,10 +40,5 @@ export const testSyncRequestSignerLayer = Layer.succeed(SyncRequestSigner, {
     deleteKey: (keyId: string) =>
         Effect.sync(() => {
             deletedKeyIds.push(keyId);
-        }),
-    generateState: Effect.sync(() => {
-        stateCounter += 1;
-
-        return `test-state-${stateCounter}`;
-    })
+        })
 });

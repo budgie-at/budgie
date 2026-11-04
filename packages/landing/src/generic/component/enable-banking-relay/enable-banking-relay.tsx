@@ -5,7 +5,7 @@ import { I18nProvider } from '@lingui/react';
 import { Trans } from '@lingui/react/macro';
 import { useEffect, useRef } from 'react';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { messages as de } from '../../../i18n/locales/de/client-messages';
 import { messages as en } from '../../../i18n/locales/en/client-messages';
@@ -27,10 +27,12 @@ export const EnableBankingRelay = () => {
         i18n.activate(SUPPORTED_LOCALES.includes(language) ? language : 'en');
 
         const parameters = new URLSearchParams(window.location.search);
-        const forwarded = FORWARDED_PARAMETERS.flatMap(name => parameters.getAll(name).map(value => `${name}=${encodeURIComponent(value)}`));
+        const forwarded = FORWARDED_PARAMETERS.flatMap(name =>
+            parameters.getAll(name).map(value => `${name}=${encodeURIComponent(value)}`)
+        );
         window.history.replaceState(null, '', window.location.pathname);
 
-        if (isNotEmptyArray(forwarded) && linkRef.current !== null) {
+        if (isNotEmptyArray(forwarded) && isDefined(linkRef.current)) {
             const appUrl = `${APP_CALLBACK_URL}?${forwarded.join('&')}`;
             linkRef.current.href = appUrl;
             linkRef.current.hidden = false;

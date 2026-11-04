@@ -11,7 +11,7 @@ interface Props {
     readonly description: string;
     readonly onGoBack: () => void;
     readonly footer: ReactNode;
-    readonly scrollViewTestID: string;
+    readonly scrollViewTestID?: string;
     readonly children: ReactNode;
 }
 

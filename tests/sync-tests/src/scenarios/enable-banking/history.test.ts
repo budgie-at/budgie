@@ -17,7 +17,6 @@ import {
 const HASH = 'hash-history';
 const UID = 'uid-history';
 const SESSION = 'session-history';
-const DAY_MS = 24 * 60 * 60 * 1000;
 
 const stubAccount = (): void => {
     enableBankingStub.session(SESSION, [{ uid: UID, hash: HASH }]);
@@ -58,64 +57,6 @@ describe('enable-banking/history', () => {
             expect(stored).toMatchObject({ mode: SyncModeEnum.FORWARD, status: SyncStatusEnum.IDLE, setupBalance: null });
             expect(stored.forwardSyncedAt).not.toBeNull();
             expect(stored.reconciledAt).not.toBeNull();
-        }).pipe(Effect.provide(TestLayer))
-    );
-
-    it.effect('drops rows older than the history limit on the client', () =>
-        Effect.gen(function* () {
-            const service = yield* EnableBankingSyncService;
-            yield* seedEnableBankingAccount({
-                hash: HASH,
-                token: buildEnableBankingToken(SESSION),
-                mode: SyncModeEnum.BACKWARD,
-                backwardSyncLimitAt: new Date(Date.now() - 10 * DAY_MS)
-            });
-            stubAccount();
-            const queries: URLSearchParams[] = [];
-            enableBankingStub.transactions(UID, ({ query }) => {
-                queries.push(query);
-
-                return {
-                    transactions: [
-                        buildEnableBankingTransaction({ entry_reference: 'kept' }),
-                        buildEnableBankingTransaction({ entry_reference: 'dropped', booking_date: enableBankingDaysAgo(40) })
-                    ]
-                };
-            });
-
-            yield* service.sync();
-
-            expect(queries[0].get('date_from')).toBe(enableBankingDaysAgo(10));
-            expect((yield* fetchEnableBankingTransactions()).map(transaction => transaction.externalId)).toEqual([`${HASH}:kept`]);
-        }).pipe(Effect.provide(TestLayer))
-    );
-
-    it.effect('completes without a history fetch when the limit is at the start, then syncs forward', () =>
-        Effect.gen(function* () {
-            const service = yield* EnableBankingSyncService;
-            const startedAt = new Date();
-            const { sync } = yield* seedEnableBankingAccount({
-                hash: HASH,
-                token: buildEnableBankingToken(SESSION),
-                mode: SyncModeEnum.BACKWARD,
-                backwardSyncFromAt: startedAt,
-                backwardSyncLimitAt: startedAt,
-                forwardSyncFromAt: startedAt
-            });
-            stubAccount();
-            const queries: URLSearchParams[] = [];
-            enableBankingStub.transactions(UID, ({ query }) => {
-                queries.push(query);
-
-                return { transactions: [] };
-            });
-
-            yield* service.sync();
-
-            expect(queries).toHaveLength(1);
-            expect(queries[0].has('strategy')).toBe(false);
-            expect(queries[0].get('date_from')).toBe(startedAt.toISOString().slice(0, 10));
-            expect((yield* fetchSyncById(sync.id)).mode).toBe(SyncModeEnum.FORWARD);
         }).pipe(Effect.provide(TestLayer))
     );
 

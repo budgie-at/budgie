@@ -105,10 +105,10 @@ describe('enable-banking/reconciliation', () => {
                 `${CALLBACK_URL}?code=code-iban&state=state-iban`
             );
 
-            expect(result.isReconsent).toBe(false);
+            expect(result.integrationId).toBeNull();
             expect(result.previews[0]).toMatchObject({ externalId: 'hash-iban', isParked: true, existingAccountId: monobankAccount.id });
 
-            const connected = yield* skipRequestedSync(service.setupAccountSyncBatch(result.integrationId, result.accounts, ['hash-iban']));
+            const connected = yield* skipRequestedSync(service.setupAccountSyncBatch(result.token, result.accounts, ['hash-iban']));
 
             expect(connected).toBe(0);
             const [stored] = yield* testDb.select().from(AccountEntityTable).where(eq(AccountEntityTable.id, monobankAccount.id));

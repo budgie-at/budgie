@@ -11,7 +11,6 @@ import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
 import { useExplainEnableBankingError } from '../../hook/use-explain-enable-banking-error.hook';
 import { EnableBankingConnectionService } from '../../service/enable-banking-connection.service';
-import { EnableBankingConnectionCardSelector } from '../enable-banking-connection-card/enable-banking-connection-card.selector';
 
 interface Props {
     readonly applicationId: string;
@@ -45,7 +44,6 @@ export const EnableBankingChooseKeyRow = ({ applicationId }: Props) => {
             title={t`Choose key file again`}
             subtitle={t`The key is missing or was rejected.`}
             onPress={handlePress}
-            testID={EnableBankingConnectionCardSelector.ChooseKey}
         />
     );
 };
