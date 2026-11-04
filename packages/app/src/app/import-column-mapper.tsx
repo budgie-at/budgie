@@ -1,15 +1,14 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 
 import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { Button } from '../@generic/component/button/button';
-import { Footer } from '../@generic/component/footer/footer';
-import { Icon } from '../@generic/component/icon/icon';
+import { FormsheetHeader } from '../@generic/component/formsheet-header/formsheet-header';
+import { GroupedListCheckRow } from '../@generic/component/grouped-list-check-row/grouped-list-check-row';
+import { GroupedListSection } from '../@generic/component/grouped-list-section/grouped-list-section';
+import { GroupedSurface } from '../@generic/component/grouped-surface/grouped-surface';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
-import { ImportColumnMapperOption } from '../import/components/import-column-mapper-option/import-column-mapper-option';
 import { useImportColumnMapperModal, useImportColumnMapperModalParams } from '../import/context/import-column-mapper-modal.context';
 
 import { ImportColumnMapperModalSelector } from './import-column-mapper.selector';
@@ -22,11 +21,11 @@ export default function ImportColumnMapperModal() {
     useModalDismiss(dismissImportColumnMapper);
     const currentParams = useImportColumnMapperModalParams();
 
-    const { headers = [], selectedHeaders = [], currentValue, fieldLabel = '' } = currentParams ?? {};
+    const { samples = {}, headers = [], selectedHeaders = [], currentValue, fieldLabel = '', isRequired = false } = currentParams ?? {};
 
     const availableHeaders = headers.filter(header => header === currentValue || !selectedHeaders.includes(header)).sort(sortHeaders);
     const availableCount = availableHeaders.length;
-    const hasCurrentValue = isNotEmptyString(currentValue);
+    const canClear = !isRequired || isNotEmptyString(currentValue);
     const description = t({
         message: plural(availableCount, {
             one: '# column available',
@@ -42,59 +41,37 @@ export default function ImportColumnMapperModal() {
         resolveImportColumnMapper({ type: 'clear' });
     };
 
-    const handleDone = () => {
-        resolveImportColumnMapper(null);
-    };
-
     return (
-        <View className="flex-1 bg-primary-reverse">
-            <View className="border-b border-b-secondary-corner px-3xl pt-3xl pb-xl">
-                <Text className="text-primary text-lg font-semibold">{fieldLabel}</Text>
-                <Text className="text-secondary-foreground text-sm">{description}</Text>
-            </View>
-
-            {hasCurrentValue && (
-                <View className="px-3xl pt-3xl pb-md border-b border-b-secondary-corner">
-                    <Text className="text-secondary-foreground uppercase mb-sm text-xs font-medium">{t`Selected`}</Text>
-                    <Pressable
-                        onPress={handleClear}
-                        className="p-3xl rounded-xl bg-positive-background/10 border border-positive-corner flex-row items-center justify-between"
-                        testID={ImportColumnMapperModalSelector.ClearSelected}
-                    >
-                        <Text className="text-primary text-sm font-semibold">{currentValue}</Text>
-                        <View className="flex-row items-center gap-x-sm">
-                            <Text className="text-destructive-foreground text-xs">{t`Tap to clear`}</Text>
-                            <Icon icon={UserIconNameEnum.X} size={16} className="text-destructive-foreground" />
-                        </View>
-                    </Pressable>
-                </View>
-            )}
-
-            <ScrollView contentContainerClassName="pt-3xl px-3xl gap-y-md pb-5xl" showsVerticalScrollIndicator={false}>
-                <Text className="text-secondary-foreground uppercase mb-sm text-xs font-medium">{t`Available Columns`}</Text>
-
-                {isNotEmptyArray(availableHeaders) ? (
-                    <View className="gap-y-xs">
-                        {availableHeaders.map(header => (
-                            <ImportColumnMapperOption
-                                key={header}
-                                header={header}
-                                isSelected={header === currentValue}
-                                onSelect={handleSelect(header)}
-                                testID={ImportColumnMapperModalSelector.Header(header)}
-                            />
-                        ))}
-                    </View>
-                ) : (
+        <GroupedSurface>
+            <FormsheetHeader size="sm" title={fieldLabel} description={description} />
+            <ScrollView contentContainerClassName="px-5xl pb-5xl" showsVerticalScrollIndicator={false}>
+                <GroupedListSection>
+                    {canClear ? (
+                        <GroupedListCheckRow
+                            title={t`None`}
+                            onPress={handleClear}
+                            testID={ImportColumnMapperModalSelector.ClearSelected}
+                            isSelected={!isNotEmptyString(currentValue)}
+                        />
+                    ) : null}
+                    {availableHeaders.map(header => (
+                        <GroupedListCheckRow
+                            key={header}
+                            title={header}
+                            titleNumberOfLines={2}
+                            subtitle={samples[header]?.[0]}
+                            isSelected={header === currentValue}
+                            onPress={handleSelect(header)}
+                            testID={ImportColumnMapperModalSelector.Header(header)}
+                        />
+                    ))}
+                </GroupedListSection>
+                {isNotEmptyArray(availableHeaders) ? null : (
                     <View className="items-center py-5xl">
-                        <Text className="text-secondary-foreground text-sm">{t`All columns have been assigned`}</Text>
+                        <Text className="text-secondary-foreground text-[13px]">{t`All columns are already matched`}</Text>
                     </View>
                 )}
             </ScrollView>
-
-            <Footer>
-                <Button content={t`Done`} variant="secondary" onPress={handleDone} testID={ImportColumnMapperModalSelector.Done} />
-            </Footer>
-        </View>
+        </GroupedSurface>
     );
 }

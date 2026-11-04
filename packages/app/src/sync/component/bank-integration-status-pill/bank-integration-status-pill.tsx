@@ -1,4 +1,4 @@
-import { SyncEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { SyncEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
@@ -6,6 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 import { MetaPill } from '../../../@generic/component/meta-pill/meta-pill';
 import { MetaPillVariant } from '../../../@generic/type/meta-pill-variant.type';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
+import { BANK_INTEGRATION_SYNC_STATUS_ICON } from '../../constant/bank-integration-sync-status-icon.constant';
 import { useBankIntegration } from '../../context/bank-integration.context';
 import { BankIntegrationSyncStatusEnum } from '../../enum/bank-integration-sync-status.enum';
 import { useFormatSyncTime } from '../../hook/use-format-sync-time.hook';
@@ -23,14 +24,6 @@ const STATUS_VARIANT: Record<BankIntegrationSyncStatusEnum, MetaPillVariant> = {
     [BankIntegrationSyncStatusEnum.SYNCING]: 'warning',
     [BankIntegrationSyncStatusEnum.PAUSED]: 'default',
     [BankIntegrationSyncStatusEnum.UP_TO_DATE]: 'positive'
-};
-
-const STATUS_ICON: Record<BankIntegrationSyncStatusEnum, UserIconNameEnum> = {
-    [BankIntegrationSyncStatusEnum.NEEDS_ATTENTION]: UserIconNameEnum.CircleAlert,
-    [BankIntegrationSyncStatusEnum.KEY_REJECTED]: UserIconNameEnum.KeyRound,
-    [BankIntegrationSyncStatusEnum.SYNCING]: UserIconNameEnum.RefreshCw,
-    [BankIntegrationSyncStatusEnum.PAUSED]: UserIconNameEnum.CirclePause,
-    [BankIntegrationSyncStatusEnum.UP_TO_DATE]: UserIconNameEnum.CircleCheck
 };
 
 export const BankIntegrationStatusPill = ({ syncs }: Props) => {
@@ -54,7 +47,7 @@ export const BankIntegrationStatusPill = ({ syncs }: Props) => {
     return (
         <MetaPill
             label={statusLabels[status]}
-            icon={STATUS_ICON[status]}
+            icon={BANK_INTEGRATION_SYNC_STATUS_ICON[status]}
             variant={STATUS_VARIANT[status]}
             testID={BankIntegrationSelector.StatusPill}
         />

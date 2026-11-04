@@ -1,4 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 import { useEffect, useEffectEvent } from 'react';
 import { AccessibilityInfo, ActivityIndicator, Text, View } from 'react-native';
 import Animated, {
@@ -12,25 +14,45 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { PIN_SEALING_FADE_DURATION_MS } from '../../constant/pin-motion.constant';
+import { PinSetupModeEnum } from '../../enum/pin-setup-mode.enum';
 import { PinFormSelector } from '../pin-form/pin-form.selector';
 
+const SEALING_COPY = {
+    [PinSetupModeEnum.CREATE]: {
+        title: msg`Encrypting your data`,
+        description: msg`Keep Budgie open. It restarts when finished.`,
+        icon: UserIconNameEnum.LockKeyhole,
+        iconVariant: 'positive' as const
+    },
+    [PinSetupModeEnum.CHANGE]: {
+        title: msg`Updating your PIN`,
+        description: msg`Re-encrypting your data. Keep Budgie open, it restarts when finished.`,
+        icon: UserIconNameEnum.LockKeyhole,
+        iconVariant: 'positive' as const
+    },
+    [PinSetupModeEnum.DISABLE]: {
+        title: msg`Turning off app lock`,
+        description: msg`Decrypting your data. Keep Budgie open, it restarts when finished.`,
+        icon: UserIconNameEnum.LockKeyholeOpen,
+        iconVariant: 'secondary' as const
+    }
+};
+
 interface Props {
-    readonly title: string;
-    readonly description: string;
-    readonly icon: UserIconNameEnum;
-    readonly iconVariant: ColorPaletteVariant;
+    readonly mode: PinSetupModeEnum;
 }
 
+const PIN_SEALING_FADE_DURATION_MS = 260;
 const BREATH_DURATION_MS = 1_100;
 const BREATH_MIN_OPACITY = 0.55;
 
-export const PinSealingState = ({ title, description, icon, iconVariant }: Props) => {
+export const PinSealingState = ({ mode }: Props) => {
+    const { t } = useLingui();
+    const { title, description, icon, iconVariant } = SEALING_COPY[mode];
     const breath = useSharedValue(1);
     const isReducedMotion = useReducedMotion();
 
-    const announceTitle = useEffectEvent(() => void AccessibilityInfo.announceForAccessibility(title));
+    const announceTitle = useEffectEvent(() => void AccessibilityInfo.announceForAccessibility(t(title)));
 
     useEffect(() => {
         announceTitle();
@@ -61,10 +83,10 @@ export const PinSealingState = ({ title, description, icon, iconVariant }: Props
 
             <View className="items-center gap-y-md">
                 <Text className="text-3xl font-semibold tracking-tight text-primary text-center" accessibilityRole="header">
-                    {title}
+                    {t(title)}
                 </Text>
 
-                <Text className="text-sm text-secondary-foreground text-center max-w-[300px]">{description}</Text>
+                <Text className="text-sm text-secondary-foreground text-center max-w-[300px]">{t(description)}</Text>
             </View>
 
             <ActivityIndicator size="small" colorClassName="accent-secondary-foreground" />

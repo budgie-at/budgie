@@ -14,7 +14,6 @@ import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { MoneyDataUpgradeProgressStateEnum } from '../enum/money-data-upgrade-progress-state.enum';
 import { MoneyDataUpgradeStatusSnapshotInterface } from '../interface/money-data-upgrade-status-snapshot.interface';
-import { buildMoneyDataUpgradeStatusText } from '../utils/build-money-data-upgrade-status-text.util';
 
 import type { MoneyDataUpgradeRuntimeSnapshotInterface } from '@budgie/ledger';
 
@@ -57,6 +56,29 @@ export const useMoneyDataUpgradeStatus = () => {
     const { t } = useLingui();
     const runtimeResult = useAtomValue(moneyDataUpgradeProgressAtom);
     const runtimeSnapshot = AsyncResult.getOrElse(runtimeResult, () => EMPTY_RUNTIME_SNAPSHOT);
+
+    const buildMoneyDataUpgradeStatusText = (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface): string => {
+        if (isDefined(snapshot.lastError)) {
+            return t`Couldn't finish. Try again.`;
+        }
+
+        if (snapshot.isUpdatingBalances) {
+            return t`Recalculating balances`;
+        }
+
+        if (!snapshot.isRunning) {
+            return t`Fill missing currency conversions`;
+        }
+
+        if (!isPositiveNumber(snapshot.totalEntryCount)) {
+            return t`Preparing conversions`;
+        }
+
+        const { processedEntryCount } = snapshot;
+        const { totalEntryCount } = snapshot;
+
+        return t`Converting ${processedEntryCount} of ${totalEntryCount} transactions`;
+    };
 
     useEffect(() => {
         const fiber = appRuntime.runFork(

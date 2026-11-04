@@ -2,7 +2,7 @@ import { TransactionCreateInputInterface, UserIconNameEnum } from '@budgie/contr
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useTagsSelectorModal } from '../../../tag/context/tags-selector-modal.context';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
@@ -10,13 +10,7 @@ import { getTagsDisplayValue } from '../../utils/get-tags-display-value.util';
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 import { TransactionFieldIcon } from '../transaction-field-icon/transaction-field-icon';
 
-import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-
-interface Props {
-    readonly variant: ColorPaletteVariant;
-}
-
-export const TransactionTagsFieldIcon = ({ variant }: Props) => {
+export const TransactionTagsFieldIcon = () => {
     const { t } = useLingui();
     const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
     const [openTagsSelector] = useTagsSelectorModal();
@@ -32,15 +26,15 @@ export const TransactionTagsFieldIcon = ({ variant }: Props) => {
     };
 
     const tagsValue = getTagsDisplayValue(tags);
+    const tagsAccessibilityValue = isNotEmptyArray(tags) ? tags.map(tag => tag.title).join(', ') : void 0;
 
     return (
         <TransactionFieldIcon
             icon={UserIconNameEnum.Tag}
             label={t`Tags`}
             value={tagsValue}
-            variant={variant}
+            accessibilityValue={tagsAccessibilityValue}
             onPress={handlePress}
-            animationDelay={80}
             testID={SimpleQuickFormSelector.TagsSelector}
         />
     );

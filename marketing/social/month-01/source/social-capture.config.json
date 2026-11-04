@@ -51,7 +51,7 @@
         },
         {
             "name": "social-showcase-9",
-            "deepLink": "budgie://settings/import"
+            "deepLink": "budgie://settings/data"
         },
         {
             "name": "social-showcase-10",

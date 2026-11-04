@@ -39,5 +39,3 @@ export const withEntryAmount = <TEntry extends TransactionEntryCreateInputInterf
           };
 
 export const stripLocalId = ({ localId: _localId, ...entry }: EntryWithLocalIdInterface): TransactionEntryCreateInputInterface => entry;
-
-export const entryKeyExtractor = (item: EntryWithLocalIdInterface): string => item.localId;

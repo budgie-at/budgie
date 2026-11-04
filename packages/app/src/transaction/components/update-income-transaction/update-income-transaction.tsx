@@ -2,6 +2,7 @@ import { TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { useUpdateSimpleTransaction } from '../../hook/use-update-simple-transaction.hook';
+import { DebtSettlementPill } from '../debt-settlement-pill/debt-settlement-pill';
 import { RulePillSlot } from '../rule-pill-slot/rule-pill-slot';
 import { SimpleQuickForm } from '../simple-quick-form/simple-quick-form';
 import { UpdateSimpleTransactionPage } from '../update-simple-transaction-page/update-simple-transaction-page';
@@ -27,10 +28,10 @@ export const UpdateIncomeTransaction = ({ transaction, openFeeOnMount }: UpdateT
             <SimpleQuickForm
                 ref={formRef}
                 transactionType={TransactionTypeEnum.INCOME}
-                debtSettlementAccount={simpleTransaction.debtSettlementAccount}
                 onSubmit={simpleTransaction.handleSubmit}
                 onCancel={simpleTransaction.handleGoBack}
             >
+                <DebtSettlementPill account={simpleTransaction.debtSettlementAccount} />
                 <RulePillSlot ruleDetection={simpleTransaction.ruleDetection} />
             </SimpleQuickForm>
         </UpdateSimpleTransactionPage>

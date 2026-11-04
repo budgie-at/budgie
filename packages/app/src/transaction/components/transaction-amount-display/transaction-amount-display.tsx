@@ -1,14 +1,18 @@
 import { AmountField, AmountFieldText } from '@budgie/amount-input';
 import { cva } from 'class-variance-authority';
 import { ReactNode, RefObject, useEffect, useImperativeHandle, useRef } from 'react';
-import { Pressable, View } from 'react-native';
-import Animated, { FadeIn, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import { Pressable, useWindowDimensions, View } from 'react-native';
+import Animated, { ReduceMotion, FadeIn, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
+import { PROTECTED_AMOUNT_PLACEHOLDER } from '../../../@generic/constant/protected-amount-placeholder.constant';
+import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
+import { formatKeypadAmount } from '../../utils/format-keypad-amount.util';
 
 export interface TransactionAmountDisplayRef {
     shake: () => void;
@@ -25,17 +29,21 @@ interface Props {
     readonly children?: ReactNode;
 }
 
-const textVariants = cva('text-center font-semibold', {
+const textVariants = cva('text-center font-semibold tabular-nums', {
     variants: {
-        variant: FOREGROUND_COLOR_PALETTE
+        variant: { ...FOREGROUND_COLOR_PALETTE, positive: 'text-positive-strong' }
     }
 });
 
+const AMOUNT_MIN_HEIGHT = 64;
 const BOUNCE_SCALE = 1.04;
-const BOUNCE_SPRING = { damping: 12, mass: 0.8, stiffness: 200 };
-const RETURN_SPRING = { damping: 15, mass: 1, stiffness: 150 };
+const BOUNCE_SPRING = { damping: 12, mass: 0.8, stiffness: 200, reduceMotion: ReduceMotion.System };
+const RETURN_SPRING = { damping: 15, mass: 1, stiffness: 150, reduceMotion: ReduceMotion.System };
 
 export const TransactionAmountDisplay = ({ ref, amount, currencySymbol, variant, topContent, onPress, testID, children }: Props) => {
+    const isAmountProtected = useIsAmountProtected();
+    const amountContainerStyle = { minHeight: AMOUNT_MIN_HEIGHT * useWindowDimensions().fontScale };
+    const { decimalSeparator, digitGroupingSeparator } = useLocaleInfo();
     const { shake, animatedStyle: shakeStyle } = useShakeAnimation();
     const scale = useSharedValue(1);
     const previousAmount = useRef(amount);
@@ -59,13 +67,20 @@ export const TransactionAmountDisplay = ({ ref, amount, currencySymbol, variant,
         transform: [{ scale: scale.value }]
     }));
 
-    const fullDisplay = `${currencySymbol} ${amount}`;
+    const fullDisplay = isAmountProtected
+        ? PROTECTED_AMOUNT_PLACEHOLDER
+        : `${currencySymbol}${formatKeypadAmount(amount, decimalSeparator, digitGroupingSeparator)}`;
 
     return (
-        <Animated.View entering={FadeIn.duration(200)} className="flex-1 items-center justify-center">
+        <Animated.View entering={FadeIn.duration(200).reduceMotion(ReduceMotion.System)} className="items-center self-stretch">
+            <View className="min-h-[22px] flex-row flex-wrap items-center justify-center gap-xs self-stretch">{topContent}</View>
             <View className="items-center self-stretch">
-                {isDefined(topContent) ? <View className="absolute bottom-full mb-sm items-center z-10">{topContent}</View> : null}
-                <Pressable className="self-stretch" onPress={onPress} disabled={!isDefined(onPress)}>
+                <Pressable
+                    className="justify-center self-stretch"
+                    style={amountContainerStyle}
+                    onPress={onPress}
+                    disabled={!isDefined(onPress)}
+                >
                     <Animated.View style={shakeStyle} className="w-full">
                         <Animated.View style={scaleStyle}>
                             <AmountField fontSize={52}>

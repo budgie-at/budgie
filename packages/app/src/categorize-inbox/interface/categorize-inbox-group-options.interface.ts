@@ -1,5 +1,5 @@
 import type { CategorizeInboxGroupChoiceType } from './categorize-inbox-group-choice.type';
-import type { CategorizeInboxLabelOptionInterface } from './categorize-inbox-label-option.interface';
+import type { CategorizeInboxLabelInterface } from './categorize-inbox-label.interface';
 import type { AccountEntityInterface } from '@budgie/contracts';
 
 export interface CategorizeInboxGroupOptionsInterface {
@@ -7,8 +7,8 @@ export interface CategorizeInboxGroupOptionsInterface {
     readonly matchedAccount: Pick<AccountEntityInterface, 'id' | 'title'> | null;
     readonly isLeadTransfer: boolean;
     readonly isCash: boolean;
-    readonly leadLabelOptions: CategorizeInboxLabelOptionInterface[];
-    readonly otherLabelOptions: CategorizeInboxLabelOptionInterface[];
+    readonly bestMatchLabel: CategorizeInboxLabelInterface | null;
+    readonly otherLabels: CategorizeInboxLabelInterface[];
     readonly cashTransactionIds: number[];
     readonly leadChoice: CategorizeInboxGroupChoiceType | null;
 }

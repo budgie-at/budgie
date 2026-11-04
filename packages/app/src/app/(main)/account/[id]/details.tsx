@@ -10,7 +10,6 @@ import { CollapsibleChromeScrollFade } from '../../../../@generic/component/coll
 import { GroupedSurface } from '../../../../@generic/component/grouped-surface/grouped-surface';
 import { HeaderBackButton } from '../../../../@generic/component/header-back-button/header-back-button';
 import { RevealGate } from '../../../../@generic/component/reveal-gate/reveal-gate';
-import { SCREEN_CHROME_CONFIG } from '../../../../@generic/constant/screen-chrome-config.constant';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { ScreenChromeThemeProvider } from '../../../../@generic/provider/screen-chrome-theme.provider';
 import { AccountActionsMenu } from '../../../../account/component/account-actions-menu/account-actions-menu';
@@ -23,6 +22,7 @@ import { AccountDetailsStaticTitle } from '../../../../account/component/account
 import { AccountDetailsTitle } from '../../../../account/component/account-details-title/account-details-title';
 import { DebtAccountBalance } from '../../../../account/component/debt-account-balance/debt-account-balance';
 import { DepositDetailsCard } from '../../../../account/component/deposit-details-card/deposit-details-card';
+import { ACCOUNT_DETAILS_SCREEN_CHROME_CONFIG } from '../../../../account/constant/account-details-screen-chrome-config.constant';
 import { useIsStaticAccountDetailsHeader } from '../../../../account/hook/use-is-static-account-details-header.hook';
 import { useAccountBalanceQuery } from '../../../../account/query/use-account-balance.query';
 import { useDebtAccountProgressSummaryQuery } from '../../../../account/query/use-debt-account-progress-summary.query';
@@ -31,14 +31,6 @@ import { InstallmentPlanScheduleSummary } from '../../../../installment-plan/com
 import { CollapsibleChromeTransactionList } from '../../../../transaction/components/collapsible-chrome-transaction-list/collapsible-chrome-transaction-list';
 
 import { AccountDetailsSelector } from './account-details.selector';
-
-const TITLE_HANDOFF_DISTANCE = 24;
-const ACCOUNT_DETAILS_SCREEN_CHROME_CONFIG = {
-    ...SCREEN_CHROME_CONFIG,
-    smallTitleStart: 0,
-    largeTitleEnd: TITLE_HANDOFF_DISTANCE,
-    collapseEnd: TITLE_HANDOFF_DISTANCE
-};
 
 export default function AccountDetails() {
     const id = Number(useLocalSearchParams<IdParamInterface>().id);

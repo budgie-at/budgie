@@ -9,7 +9,6 @@ import { isDefined } from '@rnw-community/shared';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
-import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
 import { TransferAccountPicker } from '../transfer-account-picker/transfer-account-picker';
@@ -24,10 +23,9 @@ export interface TransactionTransferAccountsRowRef {
 
 interface Props {
     readonly ref?: RefObject<TransactionTransferAccountsRowRef | null>;
-    readonly variant: ColorPaletteVariant;
 }
 
-export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
+export const TransactionTransferAccountsRow = ({ ref }: Props) => {
     const { t } = useLingui();
     const { setValue } = useFormContext<TransactionCreateInputInterface>();
     const [openAccountSelector] = useAccountSelectorModal();
@@ -78,11 +76,11 @@ export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
     };
 
     return (
-        <Animated.View entering={FadeInUp.delay(ANIMATION_DELAY).duration(200)} className="flex-row items-center gap-sm">
+        <Animated.View entering={FadeInUp.delay(ANIMATION_DELAY).duration(200)} className="flex-row items-center">
             <TransferAccountPicker
                 label={t`From`}
                 account={fromAccount}
-                variant={variant}
+                placeholder={t`Select account`}
                 animatedStyle={fromAnimatedStyle}
                 testID={TransferQuickFormSelector.FromAccount}
                 selectedTestID={fromAccountSelectedTestID}
@@ -90,18 +88,19 @@ export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
             />
 
             <HapticPressable
+                className="h-[44px] w-[44px] items-center justify-center"
                 onPress={handleSwap}
                 testID={TransferQuickFormSelector.SwapAccounts}
                 accessibilityLabel={t`Swap accounts`}
                 accessibilityRole="button"
             >
-                <CircleIcon icon={UserIconNameEnum.ArrowLeftRight} variant="ghost" size={28} iconSize={12} />
+                <CircleIcon icon={UserIconNameEnum.ArrowLeftRight} variant="ghost" size={32} iconSize={16} />
             </HapticPressable>
 
             <TransferAccountPicker
                 label={t`To`}
                 account={toAccount}
-                variant={variant}
+                placeholder={t`Select account`}
                 animatedStyle={toAnimatedStyle}
                 testID={TransferQuickFormSelector.ToAccount}
                 selectedTestID={toAccountSelectedTestID}

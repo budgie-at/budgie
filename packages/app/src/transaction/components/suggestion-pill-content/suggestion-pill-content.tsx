@@ -15,14 +15,14 @@ const ICON_SIZE = 14;
 
 export const SuggestionPillContent = ({ icon, title, badge }: Props) => (
     <>
-        <View className="w-5 h-5 items-center justify-center rounded-md bg-secondary-background">
-            <Icon icon={icon} size={ICON_SIZE} className="text-ghost-foreground" />
+        <View className="h-[24px] w-[24px] items-center justify-center rounded-full bg-surface-fill">
+            <Icon icon={icon} size={ICON_SIZE} className="text-primary" />
         </View>
-        <Text className="text-xs font-medium text-ghost-foreground shrink" numberOfLines={1}>
+        <Text className="shrink text-[13px] font-medium text-primary" numberOfLines={1}>
             {title}
         </Text>
         {isNotEmptyString(badge) ? (
-            <Text className="text-xs text-secondary-foreground" numberOfLines={1}>
+            <Text className="text-[13px] text-secondary-foreground" numberOfLines={1}>
                 {badge}
             </Text>
         ) : null}

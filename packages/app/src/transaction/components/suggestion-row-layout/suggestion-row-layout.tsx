@@ -1,16 +1,12 @@
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { ReactNode, useRef } from 'react';
 import { ScrollView, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { aiSystemStatusAtom } from '../../../ai/constant/ai-system-status-atom.constant';
-import { EMBEDDING_COMPLETENESS_THRESHOLD } from '../../../ai/constant/embedding-completeness-threshold.constant';
 import { SuggestionLoadingIndicator } from '../suggestion-loading-indicator/suggestion-loading-indicator';
 
 interface Props {
     readonly showContent: boolean;
     readonly showLoading: boolean;
-    readonly isProcessing?: boolean;
     readonly children: ReactNode;
 }
 
@@ -18,12 +14,9 @@ const ANIMATION_DURATION = 200;
 const ENTER_DELAY = 400;
 
 export const SuggestionRowLayout = (props: Props) => {
-    const { showContent, showLoading, isProcessing = false, children } = props;
-    const snapshot = useAtomValue(aiSystemStatusAtom);
-    const isIncomplete = snapshot.percent < EMBEDDING_COMPLETENESS_THRESHOLD;
+    const { showContent, showLoading, children } = props;
     const scrollRef = useRef<ScrollView | null>(null);
 
-    const showBrain = showContent || isIncomplete || isProcessing;
     const showPills = showContent && !showLoading;
 
     const handleContentSizeChange = () => {
@@ -50,9 +43,12 @@ export const SuggestionRowLayout = (props: Props) => {
                     </ScrollView>
                 </Animated.View>
             ) : null}
-            {showBrain ? (
-                <Animated.View entering={FadeIn.duration(ANIMATION_DURATION).delay(ENTER_DELAY)}>
-                    <SuggestionLoadingIndicator showArrow={showPills} />
+            {showLoading ? (
+                <Animated.View
+                    entering={FadeIn.duration(ANIMATION_DURATION).delay(ENTER_DELAY)}
+                    exiting={FadeOut.duration(ANIMATION_DURATION)}
+                >
+                    <SuggestionLoadingIndicator />
                 </Animated.View>
             ) : null}
         </View>

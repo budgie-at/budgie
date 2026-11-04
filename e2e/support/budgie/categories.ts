@@ -36,7 +36,7 @@ export async function createCategoryFromTransaction(ctx: Ctx, name: string): Pro
     await createEntityFromTransaction(
         ctx,
         {
-            selector: 'TransactionForm.CategorySelector.Title',
+            selector: 'TransactionForm.CategorySelector',
             pickerInput: 'CategoryPickerBottomSheet.Input',
             createButton: 'CategoryPickerBottomSheet.CreateButton',
             formInput: 'CategoryForm.Input',
@@ -48,7 +48,7 @@ export async function createCategoryFromTransaction(ctx: Ctx, name: string): Pro
 
 /** subflows/categories/select-category */
 export async function selectCategory(ctx: Ctx, name: string): Promise<void> {
-    await tapUntil(ctx, 'TransactionForm.CategorySelector.Title', () => expectId(ctx, 'CategoryPickerBottomSheet.Input', 5_000));
+    await tapUntil(ctx, 'TransactionForm.CategorySelector', () => expectId(ctx, 'CategoryPickerBottomSheet.Input', 5_000));
     await pickCategoryCard(ctx, name);
 }
 

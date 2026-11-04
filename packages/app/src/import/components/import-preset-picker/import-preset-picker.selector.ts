@@ -1,3 +1,7 @@
 export const ImportPresetPickerSelector = {
-    PresetChip: (preset: string) => `ImportScreen.PresetChip.${preset}` as const
+    Toggle: 'ImportPresetPickerSelector.Toggle',
+    Custom: 'ImportScreen.PresetChip.Custom',
+    Budgie: 'ImportScreen.PresetChip.Budgie',
+    SmartBudget: 'ImportScreen.PresetChip.SmartBudget',
+    FinEye: 'ImportScreen.PresetChip.FinEye'
 } as const;

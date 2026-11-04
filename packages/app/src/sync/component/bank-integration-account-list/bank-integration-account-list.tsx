@@ -1,83 +1,68 @@
-import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { ExternalSourceEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { router } from 'expo-router';
-import { View } from 'react-native';
+import { Text } from 'react-native';
 
 import { isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { DashedActionRow } from '../../../@generic/component/dashed-action-row/dashed-action-row';
-import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useGetAccountsByIntegrationIdQuery } from '../../../account/query/use-get-accounts-by-integration-id.query';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
-import { SettingsGroup } from '../../../settings/components/settings-group/settings-group';
 import { useBankIntegration } from '../../context/bank-integration.context';
 import { BankIntegrationAccountRowSkeleton } from '../bank-integration-account-row-skeleton/bank-integration-account-row-skeleton';
 import { BankIntegrationAccountRow } from '../bank-integration-account-row/bank-integration-account-row';
+import { BankIntegrationAccountsFooter } from '../bank-integration-accounts-footer/bank-integration-accounts-footer';
+import { BankIntegrationAddDeposit } from '../bank-integration-add-deposit/bank-integration-add-deposit';
+import { BankIntegrationEmptyAccounts } from '../bank-integration-empty-accounts/bank-integration-empty-accounts';
 import { BankIntegrationNewAccounts } from '../bank-integration-new-accounts/bank-integration-new-accounts';
-import { BankIntegrationStatusBanner } from '../bank-integration-status-banner/bank-integration-status-banner';
 
 export const BankIntegrationAccountList = () => {
     const { t } = useLingui();
     const { integration, capabilities } = useBankIntegration();
     const { accounts, error } = useGetAccountsByIntegrationIdQuery(integration.id);
-
-    const handleAddDeposit = () =>
-        void router.push({
-            pathname: '/create-account/[type]',
-            params: { type: AccountTypeEnum.DEPOSIT, integrationId: String(integration.id) }
-        });
-
-    const addDepositRow = capabilities.supportsDeposit ? (
-        <DashedActionRow icon={UserIconNameEnum.Plus} onPress={handleAddDeposit} testID={BankIntegrationSelector.AddDepositButton}>
-            <Trans>Add deposit</Trans>
-        </DashedActionRow>
-    ) : null;
+    const footer = <BankIntegrationAccountsFooter />;
 
     if (isDefined(error)) {
         return (
-            <SettingsGroup title={t`Accounts`}>
-                <BankIntegrationStatusBanner
-                    variant="warning"
-                    text={t`Could not load accounts`}
+            <GroupedListSection title={t`Accounts`} footer={footer}>
+                <GroupedListRow
+                    title={
+                        <Text className="text-[17px] text-destructive-strong">
+                            <Trans>Could not load accounts</Trans>
+                        </Text>
+                    }
                     testID={BankIntegrationSelector.ErrorState}
                 />
-                {addDepositRow}
-            </SettingsGroup>
+                <BankIntegrationAddDeposit />
+            </GroupedListSection>
         );
     }
-
     if (!isDefined(accounts)) {
         return (
-            <SettingsGroup title={t`Accounts`}>
+            <GroupedListSection title={t`Accounts`} footer={footer}>
                 <BankIntegrationAccountRowSkeleton />
                 <BankIntegrationAccountRowSkeleton />
-            </SettingsGroup>
+            </GroupedListSection>
         );
     }
-
-    const linkedExternalIds = new Set(accounts.map(account => account.externalId).filter(isNotEmptyString));
-    const newAccounts = capabilities.supportsAccountDiscovery ? <BankIntegrationNewAccounts linkedExternalIds={linkedExternalIds} /> : null;
-    const linkedAccounts = isEmptyArray(accounts) ? (
-        <EmptyState
-            title={t`No accounts in this integration yet`}
-            description={t`Accounts you sync or import appear here.`}
-            testID={BankIntegrationSelector.EmptyState}
-        />
-    ) : (
-        <View className="gap-y-lg">
-            {accounts.map(account => (
-                <BankIntegrationAccountRow key={account.id} account={account} />
-            ))}
-        </View>
-    );
+    const newAccounts = capabilities.supportsAccountDiscovery ? (
+        <BankIntegrationNewAccounts linkedExternalIds={new Set(accounts.map(account => account.externalId).filter(isNotEmptyString))} />
+    ) : null;
     const accountCount = accounts.length;
-    const title = isEmptyArray(accounts) ? t`Accounts` : t`Accounts · ${accountCount}`;
+    const countTitle = integration.provider === ExternalSourceEnum.BINANCE ? t`Assets · ${accountCount}` : t`Accounts · ${accountCount}`;
+    const title = isEmptyArray(accounts) ? t`Accounts` : countTitle;
+    const emptyState = isEmptyArray(accounts) ? <BankIntegrationEmptyAccounts /> : null;
 
     return (
-        <SettingsGroup title={title}>
-            {linkedAccounts}
+        <>
             {newAccounts}
-            {addDepositRow}
-        </SettingsGroup>
+            <GroupedListSection title={title} footer={footer}>
+                {emptyState}
+                {accounts.map(account => (
+                    <BankIntegrationAccountRow key={account.id} account={account} />
+                ))}
+                <BankIntegrationAddDeposit />
+            </GroupedListSection>
+        </>
     );
 };

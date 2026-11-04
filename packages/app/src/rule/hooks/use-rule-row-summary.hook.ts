@@ -1,16 +1,31 @@
-import { RuleConditionMatchTypeEnum, RuleWithActionsRelationsEntityInterface } from '@budgie/contracts';
+import { RuleActionTypeEnum, RuleConditionMatchTypeEnum, RuleWithActionsRelationsEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { RULE_CONDITION_VALUE_MARKER } from '../constant/rule-condition-value-marker.constant';
-import { getRuleOutcomeParts } from '../utils/get-rule-outcome-parts.util';
 
 import { useRuleConditionFormatter } from './use-rule-condition-formatter.hook';
 
 import type { RuleRowSummaryInterface } from '../interface/rule-row-summary.interface';
+import type { RuleActionWithRelationsEntityInterface } from '@budgie/contracts';
 
 const OUTCOME_SEPARATOR = ' · ';
+
+const getActionOutcome = (action: RuleActionWithRelationsEntityInterface): string => {
+    switch (action.type) {
+        case RuleActionTypeEnum.SET_CATEGORY:
+            return action.category?.title ?? '';
+        case RuleActionTypeEnum.ADD_TAG:
+            return isNotEmptyString(action.tag?.title) ? `#${action.tag.title}` : '';
+        case RuleActionTypeEnum.CONVERT_TO_TRANSFER:
+        default:
+            return action.account?.title ?? '';
+    }
+};
+
+const getRuleOutcomeParts = (actions: readonly RuleActionWithRelationsEntityInterface[]): string[] =>
+    actions.map(getActionOutcome).filter(isNotEmptyString);
 
 export const useRuleRowSummary = (rule: RuleWithActionsRelationsEntityInterface): RuleRowSummaryInterface => {
     const { t } = useLingui();

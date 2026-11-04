@@ -2,7 +2,9 @@ import { AccountArchiveService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
+import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 
 import { useShelvedAccountAction } from './use-shelved-account-action.hook';
 
@@ -22,22 +24,20 @@ export const useDeleteArchivedAccount = (account: Pick<AccountEntityInterface, '
     });
 
     const deleteAccount = () =>
-        void Effect.runPromise(
-            confirmDeletion.pipe(
-                Effect.tap(isConfirmed =>
-                    Effect.sync(() => {
-                        if (isConfirmed) {
-                            runWithFeedback({
-                                action: Effect.flatMap(AccountArchiveService, accountArchiveService =>
-                                    accountArchiveService.deleteById(account.id)
-                                ),
-                                successText: t`Deleted “${accountTitle}”`,
-                                errorText: t`Could not delete account.`,
-                                undo: null
-                            });
-                        }
-                    })
-                )
+        void appRuntime.runFork(
+            logAndContinue(
+                Effect.gen(function* () {
+                    if (yield* confirmDeletion) {
+                        runWithFeedback({
+                            action: Effect.flatMap(AccountArchiveService, accountArchiveService =>
+                                accountArchiveService.deleteById(account.id)
+                            ),
+                            successText: t`Deleted “${accountTitle}”`,
+                            errorText: t`Could not delete account.`,
+                            undo: null
+                        });
+                    }
+                })
             )
         );
 

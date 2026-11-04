@@ -38,7 +38,6 @@ export const useMoveAndDeleteCategory = () => {
                             other: `# transactions`
                         })
                     }),
-                    variant: 'primary',
                     commitLabel: t`Move and delete`,
                     getCommitCopy: targetTitle => ({
                         summary: t({

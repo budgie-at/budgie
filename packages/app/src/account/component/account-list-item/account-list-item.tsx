@@ -1,4 +1,4 @@
-import { AccountTypeEnum, AccountWithSyncEntityInterface } from '@budgie/contracts';
+import { AccountWithSyncEntityInterface } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
@@ -12,11 +12,10 @@ import type { HomeAccountBalanceInterface } from '../../interface/home-account-b
 
 interface Props {
     readonly account: AccountWithSyncEntityInterface;
-    readonly type: AccountTypeEnum;
     readonly balancesByAccountId: ReadonlyMap<number, HomeAccountBalanceInterface>;
 }
 
-export const AccountListItem = ({ account, type, balancesByAccountId }: Props) => {
+export const AccountListItem = ({ account, balancesByAccountId }: Props) => {
     const { t } = useLingui();
 
     const accountBalance = balancesByAccountId.get(account.id);
@@ -38,5 +37,5 @@ export const AccountListItem = ({ account, type, balancesByAccountId }: Props) =
         );
     }
 
-    return <AccountCard account={account} balance={balance} convertedBalance={convertedBalance} type={type} />;
+    return <AccountCard account={account} balance={balance} convertedBalance={convertedBalance} />;
 };

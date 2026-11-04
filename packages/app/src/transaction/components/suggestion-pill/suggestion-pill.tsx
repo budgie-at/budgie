@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import Animated, { FadeIn, LinearTransition } from 'react-native-reanimated';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { cn } from '../../../@generic/utils/cn.util';
 
 interface Props {
     readonly index: number;
@@ -22,7 +23,7 @@ export const SuggestionPill = (props: Props) => {
             layout={LinearTransition.duration(animationDuration)}
         >
             <HapticPressable
-                className={`flex-row items-center gap-xxs px-sm py-xs bg-ghost-background rounded-xl shadow-sm ${maxWidth}`}
+                className={cn('h-[32px] flex-row items-center gap-xs rounded-full bg-transaction-detail-row pl-xs pr-md', maxWidth)}
                 onPress={onPress}
                 testID={testID}
             >

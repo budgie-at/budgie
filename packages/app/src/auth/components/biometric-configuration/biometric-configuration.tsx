@@ -9,24 +9,30 @@ import { isNotEmptyString } from '@rnw-community/shared';
 import { Button } from '../../../@generic/component/button/button';
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { PIN_ERROR_FADE_DURATION_MS, PIN_STEP_FADE_DURATION_MS } from '../../constant/pin-motion.constant';
+import { useAuthContext } from '../../context/auth.context';
+import { PinSetupModeEnum } from '../../enum/pin-setup-mode.enum';
+import { PinSetupStepEnum } from '../../enum/pin-setup-step.enum';
+import { getPinSetupMeta } from '../../utils/get-pin-setup-meta.util';
 import { BiometricBenefitRow } from '../biometric-benefit-row/biometric-benefit-row';
 import { PinFormSelector } from '../pin-form/pin-form.selector';
 
 interface Props {
-    readonly title: string;
-    readonly description: string;
-    readonly icon: UserIconNameEnum;
-    readonly iconVariant: ColorPaletteVariant;
-    readonly enableLabel: string;
     readonly isLoading: boolean;
     readonly error: string | null;
     readonly onSubmit: (enableBiometrics: boolean) => void;
 }
 
-export const BiometricConfiguration = ({ title, description, icon, iconVariant, enableLabel, isLoading, error, onSubmit }: Props) => {
+export const BiometricConfiguration = ({ isLoading, error, onSubmit }: Props) => {
     const { t } = useLingui();
+    const { isFaceIdAvailable, isTouchIdAvailable } = useAuthContext();
+    const { title, description, icon, iconVariant } = getPinSetupMeta(
+        PinSetupModeEnum.CREATE,
+        PinSetupStepEnum.BIOMETRIC,
+        isFaceIdAvailable,
+        isTouchIdAvailable
+    );
+    const enableLabel = isFaceIdAvailable ? t`Use Face ID` : t`Use Touch ID`;
 
     const benefits = [
         { icon: UserIconNameEnum.Zap, text: t`Unlock quickly without typing your PIN` },
@@ -36,7 +42,7 @@ export const BiometricConfiguration = ({ title, description, icon, iconVariant, 
 
     const isErrorVisible = isNotEmptyString(error) && !isLoading;
 
-    const announceTitle = useEffectEvent(() => void AccessibilityInfo.announceForAccessibility(title));
+    const announceTitle = useEffectEvent(() => void AccessibilityInfo.announceForAccessibility(t(title)));
     const announceError = useEffectEvent(() => void AccessibilityInfo.announceForAccessibility(error ?? ''));
 
     useEffect(() => {
@@ -60,10 +66,10 @@ export const BiometricConfiguration = ({ title, description, icon, iconVariant, 
 
                     <View className="items-center gap-y-md px-xl">
                         <Text className="text-3xl font-semibold tracking-tight text-primary text-center" accessibilityRole="header">
-                            {title}
+                            {t(title)}
                         </Text>
 
-                        <Text className="text-sm text-secondary-foreground text-center max-w-[300px]">{description}</Text>
+                        <Text className="text-sm text-secondary-foreground text-center max-w-[300px]">{t(description)}</Text>
                     </View>
                 </View>
 

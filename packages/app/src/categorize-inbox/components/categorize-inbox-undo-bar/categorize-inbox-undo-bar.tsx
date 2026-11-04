@@ -9,6 +9,7 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useRuleFormModal } from '../../../rule/context/rule-form-modal.context';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
+import { toCategorizeInboxTransactionIds } from '../../utils/to-categorize-inbox-transaction-ids.util';
 import { CategorizeInboxFollowUpButton } from '../categorize-inbox-follow-up-button/categorize-inbox-follow-up-button';
 import { CategorizeInboxUndoLayout } from '../categorize-inbox-undo-layout/categorize-inbox-undo-layout';
 
@@ -39,7 +40,7 @@ export const CategorizeInboxUndoBar = () => {
     const { assignments } = lastWrite;
     const [{ ruleConditionValue }] = assignments;
     const groupCount = new Set(assignments.map(assignment => assignment.key)).size;
-    const rowCount = new Set(assignments.flatMap(assignment => assignment.rows.map(row => row.transactionId))).size;
+    const rowCount = new Set(toCategorizeInboxTransactionIds(assignments)).size;
     const labels = groupCount === 1 ? assignments.map(assignment => strategy.labelsById.get(assignment.labelId)).filter(isDefined) : [];
     const title = resolveUndoBarTitle(
         labels,

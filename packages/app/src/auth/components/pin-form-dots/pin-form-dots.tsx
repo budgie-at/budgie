@@ -1,5 +1,4 @@
 import { useLingui } from '@lingui/react/macro';
-import React from 'react';
 import { View } from 'react-native';
 
 import { PIN_LENGTH } from '../../constant/pin-length.constant';
@@ -14,7 +13,6 @@ interface Props {
 export const PinFormDots = ({ filled, isError, isAccepted }: Props) => {
     const { t } = useLingui();
     const enteredCount = isError ? 0 : filled;
-    const pinDots = Array.from({ length: PIN_LENGTH }, (_, index) => ({ isFilled: index < filled }));
 
     return (
         <View
@@ -23,9 +21,11 @@ export const PinFormDots = ({ filled, isError, isAccepted }: Props) => {
             accessibilityLabel={t`PIN, ${enteredCount} of ${PIN_LENGTH} digits entered`}
             accessibilityLiveRegion="polite"
         >
-            {pinDots.map(({ isFilled }, index) => (
-                <PinFormDot key={index} isFilled={isFilled} isError={isError} isAccepted={isAccepted} />
-            ))}
+            {Array.from({ length: PIN_LENGTH }, (_, index) => {
+                const isFilled = index < filled;
+
+                return <PinFormDot key={index} isFilled={isFilled} isError={isError} isAccepted={isAccepted} />;
+            })}
         </View>
     );
 };

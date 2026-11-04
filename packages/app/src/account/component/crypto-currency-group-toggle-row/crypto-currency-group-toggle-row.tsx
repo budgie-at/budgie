@@ -17,14 +17,13 @@ interface Props {
     readonly instrumentCode: string;
     readonly isOpen: boolean;
     readonly onPress: EmptyFn;
-    readonly testID: string;
 }
 
 const toggleVariants = cva('min-h-[32px] flex-row items-center gap-x-xs self-start pt-xxs pb-md pr-xl active:scale-100 active:opacity-60', {
     variants: { isStacked: { true: 'pl-3xl', false: 'pl-[64px]' } }
 });
 
-export const CryptoCurrencyGroupToggleRow = ({ accountsCount, instrumentCode, isOpen, onPress, testID }: Props) => {
+export const CryptoCurrencyGroupToggleRow = ({ accountsCount, instrumentCode, isOpen, onPress }: Props) => {
     const { t } = useLingui();
     const isStacked = useIsAccessibilityTextSize();
 
@@ -44,7 +43,7 @@ export const CryptoCurrencyGroupToggleRow = ({ accountsCount, instrumentCode, is
             accessibilityState={toggleAccessibilityState}
             onPress={onPress}
             className={toggleVariants({ isStacked })}
-            testID={testID}
+            testID={CryptoCurrencyGroupCardSelector.Toggle(instrumentCode)}
         >
             <Text
                 className="text-[13px] font-medium text-secondary-foreground"

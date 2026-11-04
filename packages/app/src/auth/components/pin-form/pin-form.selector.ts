@@ -8,6 +8,5 @@ export const PinFormSelector = {
     ContinueButton: 'PinPage.ContinueButton',
     SkipBiometricButton: 'PinPage.SkipBiometricButton',
     RestartNewPinButton: 'PinPage.RestartNewPinButton',
-    StepIndicator: 'PinPage.StepIndicator',
     SealingState: 'PinPage.SealingState'
 } as const;

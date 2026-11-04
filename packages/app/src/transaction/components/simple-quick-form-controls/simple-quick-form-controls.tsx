@@ -1,5 +1,5 @@
 import { TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
-import { RefObject, useRef } from 'react';
+import { ReactNode, RefObject, useRef } from 'react';
 import { View } from 'react-native';
 
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
@@ -11,35 +11,31 @@ import { TransactionCategoryFieldIcon } from '../transaction-category-field-icon
 import { TransactionDateFieldIcon } from '../transaction-date-field-icon/transaction-date-field-icon';
 import { TransactionFieldIconRef } from '../transaction-field-icon/transaction-field-icon';
 import { TransactionFieldIcons } from '../transaction-field-icons/transaction-field-icons';
-import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
 import { TransactionNoteFieldIcon } from '../transaction-note-field-icon/transaction-note-field-icon';
 import { TransactionSplitFieldIcon } from '../transaction-split-field-icon/transaction-split-field-icon';
 import { TransactionTagsFieldIcon } from '../transaction-tags-field-icon/transaction-tags-field-icon';
 
 import type { useSimpleQuickFormState } from '../../hook/use-simple-quick-form-state.hook';
-import type { KeypadHandlersInterface } from '../../interface/keypad-handlers.interface';
 import type { TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 
 interface Props {
     readonly transactionType: TransactionTypeEnum;
     readonly currencySymbol: string;
-    readonly keypadHandlers: KeypadHandlersInterface;
     readonly setFromNumeric: (value: number) => void;
     readonly formState: ReturnType<typeof useSimpleQuickFormState>;
     readonly amountDisplayRef: RefObject<TransactionAmountDisplayRef | null>;
     readonly onSubmit: () => void;
-    readonly onCancel: () => void;
+    readonly children: (fields: ReactNode, onConfirm: () => void) => ReactNode;
 }
 
 export const SimpleQuickFormControls = ({
     transactionType,
     currencySymbol,
-    keypadHandlers,
     setFromNumeric,
     formState,
     amountDisplayRef,
     onSubmit,
-    onCancel
+    children
 }: Props) => {
     const isExpense = transactionType === TransactionTypeEnum.EXPENSE;
     const variant = isExpense ? 'destructive' : 'positive';
@@ -68,37 +64,24 @@ export const SimpleQuickFormControls = ({
         onSubmit
     });
 
-    return (
+    return children(
         <>
             <TransactionFieldIcons>
                 <TransactionSplitFieldIcon
-                    variant={variant}
                     splitEntryCount={formState.splitEntryCount}
                     isAmountPositive={formState.isAmountPositive}
                     onPress={handleSplitIconPress}
                 />
-                <TransactionDateFieldIcon variant={variant} onPress={handleDatePress} />
-                <TransactionNoteFieldIcon variant={variant} onPress={handleCommentPress} />
-                <TransactionTagsFieldIcon variant={variant} />
+                <TransactionDateFieldIcon onPress={handleDatePress} />
+                <TransactionNoteFieldIcon onPress={handleCommentPress} />
+                <TransactionTagsFieldIcon />
                 <TransactionCategoryFieldIcon ref={categoryIconRef} variant={variant} isSplitActive={formState.isSplitActive} />
             </TransactionFieldIcons>
 
-            <View className="mb-xl gap-sm">
-                <TransactionAccountRow
-                    ref={accountRowRef}
-                    variant={variant}
-                    fieldName={accountFieldName}
-                    testID={SimpleQuickFormSelector.AccountSelector}
-                />
+            <View className="pt-[12px]">
+                <TransactionAccountRow ref={accountRowRef} fieldName={accountFieldName} testID={SimpleQuickFormSelector.AccountSelector} />
             </View>
-
-            <TransactionKeypad
-                variant={variant}
-                keypad={keypadHandlers}
-                onConfirm={handleConfirm}
-                onCancel={onCancel}
-                confirmTestID={SimpleQuickFormSelector.SubmitButton}
-            />
-        </>
+        </>,
+        handleConfirm
     );
 };

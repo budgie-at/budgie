@@ -1,14 +1,15 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { plural } from '@lingui/core/macro';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
+import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { SearchablePageEmptyState } from '../../../@generic/component/searchable-page-empty-state/searchable-page-empty-state';
 import { SearchablePageErrorState } from '../../../@generic/component/searchable-page-error-state/searchable-page-error-state';
 import { useIconSearchCatalog } from '../../../@generic/hook/use-icon-search-catalog.hook';
@@ -54,32 +55,30 @@ export default function CategoryIconsPage() {
         retry();
         catalog.retry();
     };
-    const subtitle = isNotEmptyArray(categoriesWithDefaultIcon)
-        ? t({
-              message: plural(categoriesWithDefaultIcon.length, {
-                  one: 'Tap a suggestion to replace the default icon',
-                  other: 'Tap a suggestion to replace each default icon'
-              })
-          })
-        : void 0;
     const fallback = isFailure || catalog.isFailure ? <SearchablePageErrorState onRetry={handleRetry} /> : doneState;
 
     return (
-        <CollapsibleChromePage
-            title={t`Category Icons`}
-            subtitle={subtitle}
-            leading={<GoBackButton onPress={handleGoBack} />}
-            testID={CategoryIconsPageSelector.Container}
-        >
-            {isNotEmptyArray(categoriesWithDefaultIcon) ? (
-                <View className="gap-y-3xl">
-                    {categoriesWithDefaultIcon.map(category => (
-                        <CategoryIconFixRow key={category.id} category={category} />
-                    ))}
-                </View>
-            ) : (
-                fallback
-            )}
-        </CollapsibleChromePage>
+        <GroupedSurface>
+            <CollapsibleChromePage
+                scrimClassName="bg-surface"
+                title={t`Category icons`}
+                leading={<GoBackButton onPress={handleGoBack} />}
+                testID={CategoryIconsPageSelector.Container}
+            >
+                {isNotEmptyArray(categoriesWithDefaultIcon) ? (
+                    <View className="gap-y-7xl">
+                        <Text className="px-[16px] text-[13px] leading-[18px] text-secondary-foreground">
+                            <Trans>Tap a suggestion to use it for that category.</Trans>
+                        </Text>
+                        {categoriesWithDefaultIcon.map(category => (
+                            <CategoryIconFixRow key={category.id} category={category} />
+                        ))}
+                        <MenuSpacer />
+                    </View>
+                ) : (
+                    fallback
+                )}
+            </CollapsibleChromePage>
+        </GroupedSurface>
     );
 }

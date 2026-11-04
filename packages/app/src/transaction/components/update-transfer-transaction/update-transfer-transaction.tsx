@@ -40,8 +40,11 @@ export const UpdateTransferTransaction = ({ transaction, openFeeOnMount }: Updat
     return (
         <FormProvider {...form}>
             <FullPage
+                className="bg-grouped-surface"
                 header={
                     <PageHeader
+                        size="md"
+                        className="min-h-[52px]"
                         title={t`Edit Transfer`}
                         onGoBack={handleGoBack}
                         right={
@@ -56,7 +59,7 @@ export const UpdateTransferTransaction = ({ transaction, openFeeOnMount }: Updat
                     initialDestinationAmount={initialDestinationAmount}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}
-                    showInlineFeeAction={false}
+                    isNewTransaction={false}
                     {...(isConsolidated && { onConsolidationPress: () => void openConsolidationSource({ transactionId: transaction.id }) })}
                 />
             </FullPage>

@@ -8,7 +8,6 @@ import { emptyFn } from '@rnw-community/shared';
 
 import { ActionsMenuItem } from '../../../@generic/component/actions-menu-item/actions-menu-item';
 import { ActionsMenu } from '../../../@generic/component/actions-menu/actions-menu';
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
@@ -16,15 +15,16 @@ import { testID } from '../../../@generic/utils/test-id.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useArchiveAccount } from '../../../account/hooks/use-archive-account.hook';
 
+import type { ReactNode } from 'react';
+
 interface Props {
     readonly accountId: number;
     readonly rowTestID: string;
+    readonly title: string;
+    readonly children: ReactNode;
 }
 
-const TRIGGER_SIZE = 36;
-const TRIGGER_ICON_SIZE = 20;
-
-export const BankIntegrationAccountMenu = ({ accountId, rowTestID }: Props) => {
+export const BankIntegrationAccountMenu = ({ accountId, rowTestID, title, children }: Props) => {
     const { t } = useLingui();
     const router = useRouter();
     const { handleArchive, isLoading } = useArchiveAccount(accountId, emptyFn);
@@ -58,18 +58,11 @@ export const BankIntegrationAccountMenu = ({ accountId, rowTestID }: Props) => {
 
     return (
         <ActionsMenu
-            trigger={
-                <CircleIcon
-                    icon={UserIconNameEnum.EllipsisVertical}
-                    variant="ghost"
-                    size={TRIGGER_SIZE}
-                    iconSize={TRIGGER_ICON_SIZE}
-                    border={false}
-                />
-            }
-            accessibilityLabel={t`Account actions`}
+            trigger={children}
+            accessibilityLabel={t`Options for ${title}`}
             isDisabled={isBusy}
-            triggerClassName="items-center justify-center"
+            triggerClassName="items-center justify-center h-[44px] w-[28px]"
+            hitSlop={8}
             triggerTestID={triggerTestID}
         >
             <ActionsMenuItem

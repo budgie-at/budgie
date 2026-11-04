@@ -1,7 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
-import { EmptyFn } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
@@ -10,13 +10,13 @@ import { useIsCompactPinLayout } from '../../hook/use-is-compact-pin-layout.hook
 import { PinFormSelector } from '../pin-form/pin-form.selector';
 
 interface Props {
-    readonly isVisible: boolean;
-    readonly onPress: EmptyFn;
+    readonly onPress?: () => void;
 }
 
-export const PinFormDeleteButton = ({ isVisible, onPress }: Props) => {
+export const PinFormDeleteButton = ({ onPress }: Props) => {
     const { t } = useLingui();
     const isCompact = useIsCompactPinLayout();
+    const isVisible = isDefined(onPress);
 
     return (
         <HapticPressable

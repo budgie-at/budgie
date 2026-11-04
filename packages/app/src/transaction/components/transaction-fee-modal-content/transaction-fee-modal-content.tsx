@@ -3,15 +3,21 @@ import { t } from '@lingui/core/macro';
 import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 import { View } from 'react-native';
+import { useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller';
+import Animated, { interpolate, useAnimatedStyle } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { SheetTitle } from '../../../@generic/component/sheet-title/sheet-title';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { SplitEntryRow } from '../split-entry-row/split-entry-row';
+import { TransactionFeeSaveButton } from '../transaction-fee-save-button/transaction-fee-save-button';
 
 import { TransactionFeeModalContentSelector } from './transaction-fee-modal-content.selector';
 
@@ -30,6 +36,9 @@ interface Props {
 const ROW_INDEX = 0;
 
 export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, variant, onConfirm }: Props) => {
+    const { bottom } = useSafeAreaInsets();
+    const { progress } = useReanimatedKeyboardAnimation();
+    const bottomPaddingStyle = useAnimatedStyle(() => ({ paddingBottom: interpolate(progress.value, [0, 1], [Math.max(bottom, 16), 8]) }));
     const [openCategorySelector] = useCategorySelectorModal();
     const [feeEntry, setFeeEntry] = useState<TransactionEntryCreateInputInterface>(
         entry ?? {
@@ -84,18 +93,21 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
         );
 
     return (
-        <View className="px-xl pt-3xl pb-xl gap-lg">
-            <SplitEntryRow
-                index={ROW_INDEX}
-                entry={feeEntry}
-                currencySymbol={currencySymbol}
-                variant={variant}
-                autoFocus={!isDefined(entry)}
-                onAmountChange={handleAmountChange}
-                onCategoryPress={handleCategoryPress}
-            />
+        <Animated.View className="px-xl gap-lg bg-sheet-surface" style={bottomPaddingStyle}>
+            <SheetTitle title={t`Fee`} />
 
-            <View className="flex-row gap-x-md">
+            <GroupedListSection>
+                <SplitEntryRow
+                    index={ROW_INDEX}
+                    entry={feeEntry}
+                    currencySymbol={currencySymbol}
+                    autoFocus={!isDefined(entry)}
+                    onAmountChange={handleAmountChange}
+                    onCategoryPress={handleCategoryPress}
+                />
+            </GroupedListSection>
+
+            <View className="flex-row items-center gap-x-md">
                 {canRemove ? (
                     <Button
                         leftIcon={UserIconNameEnum.X}
@@ -107,16 +119,10 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
                     />
                 ) : null}
 
-                <Button
-                    className="flex-1"
-                    content={t`Save fee`}
-                    variant={variant}
-                    size="md"
-                    disabled={!canSave}
-                    onPress={handleConfirm}
-                    testID={TransactionFeeModalContentSelector.SaveButton}
-                />
+                <View className="flex-1">
+                    <TransactionFeeSaveButton isDisabled={!canSave} onPress={handleConfirm} />
+                </View>
             </View>
-        </View>
+        </Animated.View>
     );
 };

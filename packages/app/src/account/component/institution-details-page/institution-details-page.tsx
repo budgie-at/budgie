@@ -10,7 +10,6 @@ import { CollapsibleChromeHeader } from '../../../@generic/component/collapsible
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { RevealGate } from '../../../@generic/component/reveal-gate/reveal-gate';
-import { SCREEN_CHROME_CONFIG } from '../../../@generic/constant/screen-chrome-config.constant';
 import { ScreenChromeThemeProvider } from '../../../@generic/provider/screen-chrome-theme.provider';
 import { InstitutionSelector } from '../../../app/(main)/institution/institution.selector';
 import { decimalPlacesAtom, defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
@@ -18,6 +17,7 @@ import { BankIntegrationContext } from '../../../sync/context/bank-integration.c
 import { getBankIntegrationCapabilities } from '../../../sync/utils/get-bank-integration-capabilities.util';
 import { CollapsibleChromeTransactionList } from '../../../transaction/components/collapsible-chrome-transaction-list/collapsible-chrome-transaction-list';
 import { TransactionAccountTitlePrefixContext } from '../../../transaction/context/transaction-account-title-prefix.context';
+import { ACCOUNT_DETAILS_SCREEN_CHROME_CONFIG } from '../../constant/account-details-screen-chrome-config.constant';
 import { BANK_PROVIDER_TITLE } from '../../constant/bank-provider-title.constant';
 import { useIsStaticAccountDetailsHeader } from '../../hook/use-is-static-account-details-header.hook';
 import { getBankIntegrationTitle } from '../../utils/get-bank-integration-title.util';
@@ -37,13 +37,6 @@ interface Props {
     readonly institution: InstitutionGroupInterface;
     readonly balancesByAccountId: ReadonlyMap<number, HomeAccountBalanceInterface>;
 }
-
-const INSTITUTION_SCREEN_CHROME_CONFIG = {
-    ...SCREEN_CHROME_CONFIG,
-    smallTitleStart: 0,
-    largeTitleEnd: 24,
-    collapseEnd: 24
-};
 
 export const InstitutionDetailsPage = ({ integration, institution, balancesByAccountId }: Props) => {
     const { t } = useLingui();
@@ -76,7 +69,7 @@ export const InstitutionDetailsPage = ({ integration, institution, balancesByAcc
         <GroupedSurface testID={InstitutionSelector.Page}>
             <RevealGate isLoading={false}>
                 <BankIntegrationContext.Provider value={contextValue}>
-                    <ScreenChromeThemeProvider config={INSTITUTION_SCREEN_CHROME_CONFIG}>
+                    <ScreenChromeThemeProvider config={ACCOUNT_DETAILS_SCREEN_CHROME_CONFIG}>
                         <ScreenChromeFrame>
                             {transactionList}
                             <AccountDetailsHeaderBackdrop />

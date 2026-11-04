@@ -134,7 +134,7 @@ async function openFirstCategory(ctx: Ctx): Promise<void> {
 
 /** The category picker's search, then its first match: a rule suggestion follows on an edited expense. */
 async function pickSearchedCategory(ctx: Ctx, search: string): Promise<void> {
-    await b.tapId(ctx, 'TransactionForm.CategorySelector.Title');
+    await b.tapId(ctx, 'TransactionForm.CategorySelector');
     await b.expectId(ctx, 'CategoryPickerBottomSheet.Input', 10_000);
     await b.fillId(ctx, 'CategoryPickerBottomSheet.Input', search);
     await expect(pickerCategory(ctx).first()).toBeVisible({ timeout: 10_000 });
@@ -272,7 +272,7 @@ export const SCENES: Readonly<Record<string, Scene>> = {
     },
     'ai-tag-suggestions-1': {
         run: async ctx => {
-            await open(ctx, 'budgie://create-transaction/expense', 'TransactionForm.CategorySelector.Title');
+            await open(ctx, 'budgie://create-transaction/expense', 'TransactionForm.CategorySelector');
             await pickSearchedCategory(ctx, process.env.CATEGORY_SEARCH ?? 'Groceries');
             await b.expectId(ctx, 'SuggestionPill.PatternTag.0', 15_000);
         }
@@ -331,8 +331,8 @@ export const SCENES: Readonly<Record<string, Scene>> = {
             await transactionCard(ctx).first().tap();
             await b.expectId(ctx, 'TransactionInfo.Page', 10_000);
             await b.tapId(ctx, 'TransactionInfo.EditButton.Label');
-            await b.expectId(ctx, 'TransactionForm.CategorySelector.Title', 10_000);
-            await b.tapId(ctx, 'TransactionForm.CategorySelector.Title');
+            await b.expectId(ctx, 'TransactionForm.CategorySelector', 10_000);
+            await b.tapId(ctx, 'TransactionForm.CategorySelector');
             await expect(pickerCategory(ctx).first()).toBeVisible({ timeout: 10_000 });
             await pickerCategory(ctx).first().tap();
             await b.expectId(ctx, 'SuggestRule.Card', 15_000);
@@ -361,10 +361,12 @@ export const SCENES: Readonly<Record<string, Scene>> = {
         run: async (ctx, { container }) => {
             await open(
                 ctx,
-                `budgie://settings/import?fileUri=file://${container}/Documents/E2EFixtures/e2e-budgie-import.csv`,
-                'ImportScreen.PresetChip.Budgie'
+                `budgie://import-csv?fileUri=file://${container}/Documents/E2EFixtures/e2e-budgie-import.csv`,
+                'ImportPresetPickerSelector.Toggle'
             );
+            await b.tapId(ctx, 'ImportPresetPickerSelector.Toggle');
             await b.tapId(ctx, 'ImportScreen.PresetChip.Budgie');
+            await b.expectText(ctx, /^Import \d+ transactions?$/);
         }
     },
     'custom-categories-2': {
@@ -421,7 +423,7 @@ export const SCENES: Readonly<Record<string, Scene>> = {
     },
     'mcc-auto-category-2': {
         run: async ctx => {
-            await open(ctx, 'budgie://transactions/9001/expense/edit', 'TransactionForm.CategorySelector.Title');
+            await open(ctx, 'budgie://transactions/9001/expense/edit', 'TransactionForm.CategorySelector');
             await pickSearchedCategory(ctx, 'restaurants');
             await b.expectId(ctx, 'SuggestRule.Card', 15_000);
         }

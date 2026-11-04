@@ -1,9 +1,10 @@
 import { useLingui } from '@lingui/react/macro';
+import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
-import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { BANK_PROVIDER_TITLE } from '../../../account/constant/bank-provider-title.constant';
 import { SyncRepairsPageSelector } from '../../../app/(tabs)/settings/sync-repairs-page.selector';
 import { getSyncRepairText } from '../../utils/get-sync-repair-text.util';
@@ -17,12 +18,11 @@ export const SyncRepairSourceRow = ({ duplicateTransactionCount, externalSource 
     const title = isDefined(titleDescriptor) ? t(titleDescriptor) : externalSource;
 
     return (
-        <SimpleHorizontalCell
-            size="lg"
+        <GroupedListRow
             testID={SyncRepairsPageSelector.SourceRow(externalSource)}
             left={<BankLogo bankProvider={externalSource} />}
             title={title}
-            description={sourceDescription}
+            right={<Text className="text-secondary-foreground text-[17px]">{sourceDescription}</Text>}
         />
     );
 };

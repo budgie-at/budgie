@@ -2,7 +2,6 @@ import { TransactionCreateInputInterface, UserIconNameEnum } from '@budgie/contr
 import { getTransactionCategoryEntries } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -20,8 +19,6 @@ interface Props {
     readonly variant: ColorPaletteVariant;
     readonly isSplitActive: boolean;
 }
-
-const disabledOpacity = { opacity: 0.3 };
 
 export const TransactionCategoryFieldIcon = ({ ref, variant, isSplitActive }: Props) => {
     const { t } = useLingui();
@@ -46,21 +43,17 @@ export const TransactionCategoryFieldIcon = ({ ref, variant, isSplitActive }: Pr
     };
 
     const categoryIcon = category?.icon ?? UserIconNameEnum.Folder;
-    const pointerEvents = isSplitActive ? 'none' : 'auto';
-    const rootStyle = isSplitActive ? disabledOpacity : void 0;
+    const disabledHint = isSplitActive ? t`Categories are set per split item` : void 0;
 
     return (
-        <View className="flex-1" style={rootStyle} pointerEvents={pointerEvents}>
-            <TransactionFieldIcon
-                ref={ref}
-                icon={categoryIcon}
-                label={t`Category`}
-                value={category?.title}
-                variant={variant}
-                onPress={handlePress}
-                animationDelay={50}
-                testID={SimpleQuickFormSelector.CategorySelector}
-            />
-        </View>
+        <TransactionFieldIcon
+            ref={ref}
+            icon={categoryIcon}
+            label={t`Category`}
+            value={category?.title}
+            onPress={handlePress}
+            disabledHint={disabledHint}
+            testID={SimpleQuickFormSelector.CategorySelector}
+        />
     );
 };

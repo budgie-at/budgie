@@ -1,26 +1,30 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useEffect } from 'react';
-import { Text } from 'react-native';
-import Animated, { FadeIn, FadeOut, LinearTransition, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import { Text, View } from 'react-native';
+import Animated, { FadeIn, FadeOut, ReduceMotion, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-size-multiplier.constant';
 
 interface Props {
     readonly label: string;
     readonly isFlipped: boolean;
+    readonly accessibilityLabel?: string;
     readonly onPress?: () => void;
 }
 
 const ANIMATION_DURATION = 200;
-const ENTERING = FadeIn.duration(ANIMATION_DURATION);
-const EXITING = FadeOut.duration(ANIMATION_DURATION);
-const LAYOUT = LinearTransition.duration(ANIMATION_DURATION);
-const ICON_SIZE = 14;
+const ENTERING = FadeIn.duration(ANIMATION_DURATION).reduceMotion(ReduceMotion.System);
+const EXITING = FadeOut.duration(ANIMATION_DURATION).reduceMotion(ReduceMotion.System);
+const ICON_SIZE = 12;
+const HIT_SLOP = 10;
 const ROTATION_DEGREES = 180;
-const SPRING_CONFIG = { damping: 12, stiffness: 200 };
+const SPRING_CONFIG = { damping: 12, stiffness: 200, reduceMotion: ReduceMotion.System };
 
-export const CurrencyModePill = ({ label, isFlipped, onPress }: Props) => {
+export const CurrencyModePill = ({ label, isFlipped, accessibilityLabel, onPress }: Props) => {
     const rotation = useSharedValue(0);
 
     useEffect(() => {
@@ -28,17 +32,36 @@ export const CurrencyModePill = ({ label, isFlipped, onPress }: Props) => {
         // oxlint-disable-next-line react/exhaustive-deps -- rotation is a stable shared value reference
     }, [isFlipped]);
 
+    const accessibilityRole = isDefined(onPress) ? 'button' : 'text';
     const iconStyle = useAnimatedStyle(() => ({
         transform: [{ rotate: `${rotation.value}deg` }]
     }));
 
     return (
-        <Animated.View entering={ENTERING} exiting={EXITING} layout={LAYOUT}>
-            <HapticPressable onPress={onPress} className="flex-row items-center gap-x-xs bg-ghost-background rounded-xl px-xl py-xs mt-sm">
-                <Animated.View style={iconStyle}>
-                    <Icon icon={UserIconNameEnum.ArrowUpDown} className="text-secondary-foreground" size={ICON_SIZE} />
-                </Animated.View>
-                <Text className="text-xs text-secondary-foreground uppercase font-medium">{label}</Text>
+        <Animated.View entering={ENTERING} exiting={EXITING} className="min-w-0 shrink">
+            <HapticPressable
+                accessibilityLabel={accessibilityLabel ?? label}
+                accessibilityRole={accessibilityRole}
+                className="min-h-[44px] max-w-full justify-center"
+                disabled={!isDefined(onPress)}
+                hitSlop={HIT_SLOP}
+                onPress={onPress}
+            >
+                <View className="min-h-[28px] max-w-full flex-row items-center gap-x-xs rounded-full border-hairline border-surface-separator bg-transaction-detail-row px-md py-[4px] dark:border-transparent">
+                    {isDefined(onPress) ? (
+                        <Animated.View style={iconStyle}>
+                            <Icon icon={UserIconNameEnum.ArrowUpDown} className="text-secondary-foreground" size={ICON_SIZE} />
+                        </Animated.View>
+                    ) : null}
+                    <Text
+                        className="shrink text-[13px] leading-[18px] font-semibold text-secondary-foreground"
+                        maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                    >
+                        {label}
+                    </Text>
+                </View>
             </HapticPressable>
         </Animated.View>
     );
