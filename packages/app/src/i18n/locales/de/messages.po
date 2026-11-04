@@ -116,11 +116,6 @@ msgstr "{0, plural, one {Sonstige · # Kategorie} other {Sonstige · # Kategorie
 msgid "{0, plural, one {Show # more group} other {Show # more groups}}"
 msgstr "{0, plural, one {# weitere Gruppe anzeigen} other {# weitere Gruppen anzeigen}}"
 
-#. placeholder {0}: reminder.daysOld
-#: src/inzhur/component/inzhur-statement-reminder/inzhur-statement-reminder.tsx
-msgid "{0, plural, one {Statement is # day old} other {Statement is # days old}}"
-msgstr "{0, plural, one {Kontoauszug ist # Tag alt} other {Kontoauszug ist # Tage alt}}"
-
 #. placeholder {0}: syncs.filter(sync => sync.status === SyncStatusEnum.FAILED).length
 #: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
 msgid "{0, plural, one {Sync failed for # account} other {Sync failed for # accounts}}"
@@ -300,6 +295,14 @@ msgstr "{daysLeft, plural, one {Noch # Tag} other {Noch # Tage}}"
 #: src/budget/components/budget-widget-footer-row/budget-widget-footer-row.tsx
 msgid "{daysLeft, plural, one {# day} other {# days}}"
 msgstr "{daysLeft, plural, one {# Tag} other {# Tage}}"
+
+#: src/inzhur/component/inzhur-statement-reminder/inzhur-statement-reminder.tsx
+msgid "{daysOld, plural, one {Statement is # day old} other {Statement is # days old}}"
+msgstr "{daysOld, plural, one {Kontoauszug ist # Tag alt} other {Kontoauszug ist # Tage alt}}"
+
+#: src/inzhur/service/inzhur-statement-reminder.service.ts
+msgid "{daysOld, plural, one {Your last statement is # day old and money has moved since. Import a new one to keep holdings accurate.} other {Your last statement is # days old and money has moved since. Import a new one to keep holdings accurate.}}"
+msgstr "{daysOld, plural, one {Dein letzter Auszug ist # Tag alt und seitdem hat sich Geld bewegt. Importiere einen neuen, damit die Bestände stimmen.} other {Dein letzter Auszug ist # Tage alt und seitdem hat sich Geld bewegt. Importiere einen neuen, damit die Bestände stimmen.}}"
 
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "{daysRemaining, plural, one {# day left} other {# days left}}"
@@ -1206,7 +1209,7 @@ msgstr "Gebühr hinzufügen"
 msgid "Add Inzhur"
 msgstr "Inzhur hinzufügen"
 
-#: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
+#: src/inzhur/hook/use-inzhur-statement-import.hook.ts
 msgid "Add Inzhur first, then import a statement"
 msgstr "Füge zuerst Inzhur hinzu und importiere dann einen Auszug"
 
@@ -2334,7 +2337,7 @@ msgstr "Konto wählen, auf das es geht"
 msgid "Choose the other account"
 msgstr "Anderes Konto wählen"
 
-#: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
+#: src/inzhur/hook/use-inzhur-statement-import.hook.ts
 msgid "Choose the securities account statement PDF from Inzhur"
 msgstr "Wähle den PDF-Auszug des Wertpapierkontos von Inzhur"
 
@@ -2906,10 +2909,6 @@ msgstr "Einstellungen konnten nicht aktualisiert werden"
 #: src/ai/hook/use-ai-model-download-actions.hook.ts
 msgid "Could not update the AI model download"
 msgstr "Der Download der KI-Modelle konnte nicht aktualisiert werden"
-
-#: src/inzhur/component/inzhur-dividend-payout-field/inzhur-dividend-payout-field.tsx
-msgid "Could not update the dividend setting"
-msgstr "Die Dividendeneinstellung konnte nicht aktualisiert werden"
 
 #: src/app/(tabs)/settings/ai.tsx
 msgid "Could not update the download setting"
@@ -4386,7 +4385,7 @@ msgstr "CSV importieren"
 msgid "Import Erste Bank"
 msgstr "Erste Bank importieren"
 
-#: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
+#: src/inzhur/hook/use-inzhur-statement-import.hook.ts
 #: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "Import failed"
@@ -4560,7 +4559,7 @@ msgstr "Inzhur-Guthaben"
 msgid "Inzhur cash balance"
 msgstr "Inzhur-Bargeldguthaben"
 
-#: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
+#: src/inzhur/hook/use-inzhur-statement-import.hook.ts
 msgid "Inzhur is not set up"
 msgstr "Inzhur ist nicht eingerichtet"
 
@@ -5461,6 +5460,10 @@ msgstr "Noch kein Kursverlauf"
 msgid "No price yet"
 msgstr "Noch kein Kurs"
 
+#: src/inzhur/hook/use-inzhur-statement-import.hook.ts
+msgid "No price yet for {funds}. Try again tomorrow."
+msgstr "Noch kein Preis für {funds}. Versuche es morgen erneut."
+
 #: src/settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card.tsx
 msgid "No problems found"
 msgstr "Keine Probleme gefunden"
@@ -5550,7 +5553,7 @@ msgstr "Keine"
 msgid "Not all of your bank history is imported yet"
 msgstr "Dein Bankverlauf ist noch nicht vollständig importiert"
 
-#: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
+#: src/inzhur/hook/use-inzhur-statement-import.hook.ts
 msgid "Not an Inzhur statement"
 msgstr "Kein Inzhur-Auszug"
 
@@ -6324,6 +6327,10 @@ msgstr "Preis geändert"
 #: src/market-data/hook/use-market-chart-accessibility.hook.ts
 msgid "Price chart, {rangeLabel}, from {fromLabel} to {toLabel}, high {highLabel}, low {lowLabel}"
 msgstr "Kurschart, {rangeLabel}, von {fromLabel} bis {toLabel}, Hoch {highLabel}, Tief {lowLabel}"
+
+#: src/inzhur/hook/use-inzhur-statement-import.hook.ts
+msgid "Price not available"
+msgstr "Preis nicht verfügbar"
 
 #: src/tag/components/tag-selector-row/tag-selector-row.tsx
 msgid "Primary"
@@ -8558,6 +8565,10 @@ msgstr "Warte auf Verbindung"
 msgid "Waiting for a key"
 msgstr "Wartet auf einen Schlüssel"
 
+#: src/inzhur/component/inzhur-import-summary/inzhur-import-summary.tsx
+msgid "Waiting for a top-up of {uncoveredCashLabel} to appear from your bank"
+msgstr "Warte auf eine Aufladung von {uncoveredCashLabel} von deiner Bank"
+
 #: src/market-data/component/currency-market-price-hero/currency-market-price-hero.tsx
 msgid "Waiting for the first market quote"
 msgstr "Warte auf den ersten Marktkurs"
@@ -8835,10 +8846,6 @@ msgstr "Deine Datei. Deine PIN."
 #: src/inzhur/component/inzhur-import-summary/inzhur-import-summary.tsx
 msgid "Your holdings were taken as the starting point. Cash was not changed."
 msgstr "Deine Bestände wurden als Ausgangspunkt übernommen. Das Guthaben wurde nicht verändert."
-
-#: src/inzhur/service/inzhur-statement-reminder.service.ts
-msgid "Your last statement is {daysOld} days old and money has moved since. Import a new one to keep holdings accurate."
-msgstr "Dein letzter Auszug ist {daysOld} Tage alt und seitdem hat sich Geld bewegt. Importiere einen neuen, damit die Bestände stimmen."
 
 #: src/budget/components/budget-limit-source-field/budget-limit-source-field.tsx
 msgid "Your limit grows as income arrives this period"
