@@ -1,6 +1,7 @@
 import { DatabaseMigrationService } from '@app/@generic/drizzle/service/database-migration.service';
 import { Db } from '@budgie/contracts';
 import * as SqliteClient from '@effect/sql-sqlite-node/SqliteClient';
+import * as Duration from 'effect/Duration';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as ManagedRuntime from 'effect/ManagedRuntime';
@@ -14,7 +15,7 @@ export const makeTestDbLayer = (sourceDatabasePath: string | null) =>
         Db,
         Effect.gen(function* () {
             const path = yield* acquireTestDatabasePath(sourceDatabasePath);
-            const client = yield* SqliteClient.make({ filename: path });
+            const client = yield* SqliteClient.make({ filename: path, prepareCacheTTL: Duration.infinity });
 
             yield* client.unsafe('PRAGMA foreign_keys = ON');
 
