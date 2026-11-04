@@ -4,6 +4,7 @@ export interface FileBankSyncAccountImportResultInterface {
     readonly parsedTransactionCount: number;
     readonly newTransactions: TransactionEntityInterface[];
     readonly refilledTransactions: TransactionEntityInterface[];
+    readonly ruleTransactionInputs: TransactionCreateInputInterface[];
     readonly deferredRuleTransactionIds: number[];
     readonly deferredRuleTransactionInputs: TransactionCreateInputInterface[];
 }
