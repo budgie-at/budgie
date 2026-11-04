@@ -315,6 +315,7 @@ export async function consolidateMatches(ctx: Ctx): Promise<void> {
     await consolidate.tap({ position: await relativePoint(consolidate, 0.5, 0.25) });
     await expect(byText(screen, /high-confidence transfer/i)).toBeVisible({ timeout: 3_000 });
     await screen.getByText('Merge').last().tap();
+    await expect(byText(screen, 'Transfers and refunds merged')).toBeVisible({ timeout: 30_000 });
 }
 
 /** A point inside `locator` at fractions of its size, in the node's own coordinates (for `tap({ position })`, Maestro's `point: 'x%,y%'`). */

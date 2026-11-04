@@ -105,7 +105,7 @@ test('29 crypto account and market', { tags: ['crypto'] }, async ({ budgie }) =>
             'CurrencyMarket.Holdings.Value.ETH'
         );
         await b.expectText(ctx, '1 ETH');
-        await screen.scrollUntilVisible(id('CurrencyMarket.MarketCap.ETH'), { direction: 'down', timeout: 3_000 });
+        await b.scrollTo(ctx, 'CurrencyMarket.MarketCap.ETH');
         await ids('CurrencyMarket.Volume.ETH', 'CurrencyMarket.Updated.ETH');
         await backHome();
     });
