@@ -3,6 +3,8 @@ import {
     MccCategoryRepository,
     SettingsRepository,
     DebtEventRepository,
+    ExternalSourceEnum,
+    TransactionReceiptRepository,
     TransactionConsolidationTypeEnum,
     TransactionEntryRepository,
     TransactionRepository,
@@ -20,6 +22,7 @@ import type { TransactionEntityInterface, TransactionEntryEntityInterface } from
 export class UnconsolidationService extends Context.Service<UnconsolidationService>()('@budgie/consolidation/UnconsolidationService', {
     make: Effect.gen(function* () {
         const transactionEntryRepository = yield* TransactionEntryRepository;
+        const transactionReceiptRepository = yield* TransactionReceiptRepository;
         const transactionRepository = yield* TransactionRepository;
         const transactionConsolidationRepository = yield* TransactionConsolidationRepository;
         const transactionTagsRepository = yield* TransactionTagsRepository;
@@ -77,6 +80,12 @@ export class UnconsolidationService extends Context.Service<UnconsolidationServi
 
             const manualTags = yield* transactionTagsRepository.findByTransactionIds(manualTransactionIds);
             const manualTransactions = yield* transactionRepository.findByIds(manualTransactionIds);
+            const receiptSource = manualTransactions.find(transaction => transaction.externalSource === ExternalSourceEnum.RECEIPT);
+
+            if (isDefined(receiptSource)) {
+                yield* transactionReceiptRepository.moveToTransaction(canonicalTransactionId, receiptSource.id);
+            }
+
             const hasCopiedComment = manualTransactions.some(
                 manual => isNotEmptyString(manual.comment) && manual.comment === canonical.comment
             );
@@ -126,6 +135,7 @@ export class UnconsolidationService extends Context.Service<UnconsolidationServi
     static readonly layer = Layer.effect(UnconsolidationService, UnconsolidationService.make).pipe(
         Layer.provide([
             TransactionEntryRepository.layer,
+            TransactionReceiptRepository.layer,
             TransactionRepository.layer,
             TransactionConsolidationRepository.layer,
             TransactionTagsRepository.layer,
