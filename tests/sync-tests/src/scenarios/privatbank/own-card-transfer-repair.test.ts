@@ -5,7 +5,8 @@ import {
     ExternalSourceEnum,
     TransactionEntityTable,
     TransactionEntryEntityTable,
-    TransactionTypeEnum
+    TransactionTypeEnum,
+    TransactionUpdatedByEnum
 } from '@budgie/contracts';
 import { AccountArchiveService, TransactionTransferService } from '@budgie/ledger';
 import { UnpairedOwnCardTransferRepairService } from '@budgie/sync';
@@ -101,15 +102,6 @@ const seedArchivedCardWithMask = (externalId: string | null, iban: string) =>
         return archivedCard;
     });
 
-const expectNoLiveEntriesOnAccount = Effect.fnUntraced(function* (accountId: number) {
-    expect(
-        yield* testDb
-            .select()
-            .from(TransactionEntryEntityTable)
-            .where(and(eq(TransactionEntryEntityTable.accountId, accountId), isNull(TransactionEntryEntityTable.deletedAt)))
-    ).toHaveLength(0);
-});
-
 const expectNothingLeftToRepair = Effect.fnUntraced(function* () {
     const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
 
@@ -172,7 +164,7 @@ describe('privatbank/own-card-transfer-repair', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('leaves an own-card income from a card archived before the income untouched', () =>
+    it.effect('repairs an own-card income even when the counterpart was archived before it', () =>
         Effect.gen(function* () {
             const liveCard = yield* seedPrivatbankCard('1234');
             const income = yield* seedOwnCardIncome(liveCard.id);
@@ -180,23 +172,22 @@ describe('privatbank/own-card-transfer-repair', () => {
 
             yield* archiveAccount(archivedCard.id, ARCHIVED_BEFORE_INCOME_AT);
 
+            yield* expectRepairedFromCounterpart(archivedCard, income);
             yield* expectNothingLeftToRepair();
-            expect((yield* testQueryService.findTransactionById(income.id)).type).toBe(TransactionTypeEnum.INCOME);
-            yield* expectNoLiveEntriesOnAccount(archivedCard.id);
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('repairs against the card archived after the income when another card with the same ending was archived before it', () =>
+    it.effect('skips an ambiguous archived mask regardless of archive dates', () =>
         Effect.gen(function* () {
             const liveCard = yield* seedPrivatbankCard('1234');
             const earlierArchivedCard = yield* seedPrivatbankCard('4321');
             const laterArchivedCard = yield* seedPrivatbankCard('4321');
-            const income = yield* seedOwnCardIncome(liveCard.id);
+            yield* seedOwnCardIncome(liveCard.id);
 
             yield* archiveAccount(earlierArchivedCard.id, ARCHIVED_BEFORE_INCOME_AT);
             yield* archiveAccount(laterArchivedCard.id);
 
-            yield* expectRepairedFromCounterpart(laterArchivedCard, income);
+            yield* expectNothingLeftToRepair();
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -370,9 +361,64 @@ describe('privatbank/own-card-transfer-repair', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('heals a transfer from a card archived before the operation back to an income on the live card', () =>
+    it.effect.each([true, false])('excludes external accounts on either side (counterpart: %s)', externalCounterpart =>
         Effect.gen(function* () {
-            const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
+            const { archivedCard, liveCard } = yield* seedArchivedOwnCardScenario();
+
+            yield* testDb
+                .update(AccountEntityTable)
+                .set({ isExternal: true })
+                .where(eq(AccountEntityTable.id, externalCounterpart ? archivedCard.id : liveCard.id));
+
+            yield* expectNothingLeftToRepair();
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect.each([TransactionUpdatedByEnum.USER, TransactionUpdatedByEnum.RULE])(
+        'preserves an edited own-card income through two repair runs (%s)',
+        updatedBy =>
+            Effect.gen(function* () {
+                const { income } = yield* seedArchivedOwnCardScenario();
+
+                yield* testDb.update(TransactionEntityTable).set({ updatedBy }).where(eq(TransactionEntityTable.id, income.id));
+                const before = yield* testQueryService.findTransactionById(income.id);
+
+                yield* expectNothingLeftToRepair();
+                yield* expectNothingLeftToRepair();
+                expect(yield* testQueryService.findTransactionById(income.id)).toEqual(before);
+            }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('repairs pre- and post-archive incomes from the same tracked card as transfers', () =>
+        Effect.gen(function* () {
+            const repairService = yield* UnpairedOwnCardTransferRepairService;
+            const { archivedCard, income, liveCard } = yield* seedArchivedOwnCardScenario();
+            const laterIncome = yield* seed.bankPairIncome(
+                { externalId: 'later-own-card-income', operatedAt: new Date('2026-03-06T09:15:00.000Z') },
+                { accountId: liveCard.id, amount: OWN_CARD_AMOUNT }
+            );
+
+            yield* seed.updateTransaction(laterIncome.id, {
+                title: OWN_CARD_INCOME_TITLE,
+                externalSource: ExternalSourceEnum.PRIVATBANK
+            });
+            yield* archiveAccount(archivedCard.id, new Date('2026-03-05T09:15:00.000Z'));
+
+            expect(yield* repairService.countCandidates()).toBe(2);
+            expect(yield* repairService.repair()).toBe(2);
+            for (const transactionId of [income.id, laterIncome.id]) {
+                expect(yield* testQueryService.findTransactionById(transactionId)).toMatchObject({
+                    type: TransactionTypeEnum.TRANSFER,
+                    fromAccountId: archivedCard.id,
+                    toAccountId: liveCard.id
+                });
+            }
+            yield* expectNothingLeftToRepair();
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('preserves a user-converted transfer after the counterpart archive through two repair runs', () =>
+        Effect.gen(function* () {
             const transactionTransferService = yield* TransactionTransferService;
             const accountBalanceRepository = yield* AccountBalanceRepository;
             const liveCard = yield* seedPrivatbankCard('1234');
@@ -388,15 +434,17 @@ describe('privatbank/own-card-transfer-repair', () => {
             });
             yield* archiveAccount(archivedCard.id, ARCHIVED_BEFORE_INCOME_AT);
 
-            expect(yield* unpairedOwnCardTransferRepairService.countCandidates()).toBe(1);
-            expect(yield* unpairedOwnCardTransferRepairService.repair()).toBe(1);
+            yield* testDb
+                .update(TransactionEntityTable)
+                .set({ updatedBy: TransactionUpdatedByEnum.USER })
+                .where(eq(TransactionEntityTable.id, income.id));
+            yield* expectNothingLeftToRepair();
 
             const healed = yield* testQueryService.findTransactionById(income.id);
 
-            expect(healed.type).toBe(TransactionTypeEnum.INCOME);
-            expect(healed.fromAccountId).toBeNull();
+            expect(healed.type).toBe(TransactionTypeEnum.TRANSFER);
+            expect(healed.fromAccountId).toBe(archivedCard.id);
             expect(healed.toAccountId).toBe(liveCard.id);
-            yield* expectNoLiveEntriesOnAccount(archivedCard.id);
             expect((yield* accountBalanceRepository.getLedgerBalances([liveCard.id])).get(liveCard.id)).toBe(liveBalanceBefore);
             yield* expectNothingLeftToRepair();
         }).pipe(Effect.provide(TestLayer))

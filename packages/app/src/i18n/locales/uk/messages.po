@@ -1645,12 +1645,12 @@ msgid "Back up regularly and after imports."
 msgstr "Створюйте копію регулярно й після імпорту."
 
 #: src/settings/components/backup-row/backup-row.tsx
-msgid "Backup file"
-msgstr "Файл резервної копії"
+msgid "Backup"
+msgstr "Резервна копія"
 
-#: src/settings/components/backup-row/backup-row.tsx
-msgid "Backup file ready"
-msgstr "Файл резервної копії готовий"
+#: src/export/hook/use-backup-actions.hook.ts
+msgid "Backup saved"
+msgstr "Резервну копію збережено"
 
 #: src/market-data/component/currency-market-position/currency-market-position.tsx
 msgid "Balance"
@@ -2593,7 +2593,7 @@ msgstr "Не вдалося перетворити на повернення"
 msgid "Could not convert to transfers"
 msgstr "Не вдалося перетворити на перекази"
 
-#: src/settings/components/backup-row/backup-row.tsx
+#: src/export/hook/use-backup-actions.hook.ts
 msgid "Could not create a backup"
 msgstr "Не вдалося створити резервну копію"
 
@@ -4596,10 +4596,6 @@ msgstr "Останні 7 днів"
 msgid "Last 90 days"
 msgstr "Останні 90 днів"
 
-#: src/settings/components/backup-row/backup-row.tsx
-msgid "Last created {lastBackupDate}"
-msgstr "Востаннє створено {lastBackupDate}"
-
 #: src/budget/components/budget-month-day-start-field/budget-month-day-start-field.tsx
 msgid "Last day of each month"
 msgstr "Останній день кожного місяця"
@@ -4615,6 +4611,10 @@ msgstr "Минулий місяць"
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
 msgid "last payment {formattedLast}"
 msgstr "останній платіж {formattedLast}"
+
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Last saved {lastBackupDate}"
+msgstr "Востаннє збережено: {lastBackupDate}"
 
 #: src/account/component/institution-connection-row/institution-connection-row.tsx
 msgid "Last successful sync · {lastSyncedTime}"
@@ -5454,7 +5454,6 @@ msgid "Not counted in net worth"
 msgstr "Не враховується в чистих активах"
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
-#: src/settings/components/backup-row/backup-row.tsx
 msgid "Not created yet"
 msgstr "Ще не створено"
 
@@ -5484,6 +5483,10 @@ msgstr "Не зараз"
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Not on any transactions. This can’t be undone."
 msgstr "Не використовується в жодній транзакції. Це неможливо скасувати."
+
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Not saved yet"
+msgstr "Ще не збережено"
 
 #: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx
 msgid "not set"
@@ -6726,10 +6729,6 @@ msgstr "Зберегти комісію"
 msgid "Save it"
 msgstr "Збережіть її"
 
-#: src/settings/components/backup-row/backup-row.tsx
-msgid "Save it to Files or another app."
-msgstr "Збережіть його у Файлах або іншому застосунку."
-
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 msgid "Save rule"
 msgstr "Зберегти правило"
@@ -6745,6 +6744,10 @@ msgstr "Збережіть автоматизацію. Budgie зіставить
 #: src/budget/components/budget-funds-section/budget-funds-section.tsx
 msgid "Save up for yearly bills a little each period so they never surprise you"
 msgstr "Відкладайте потроху кожен період на річні рахунки, щоб вони не стали сюрпризом"
+
+#: src/export/hook/use-backup-actions.hook.ts
+msgid "Saved to your chosen folder."
+msgstr "Збережено у вибраній папці."
 
 #: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
@@ -6935,6 +6938,10 @@ msgstr "Оберіть експортований XLSX-файл"
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Selected"
 msgstr "Вибрано"
+
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Send a copy"
+msgstr "Надіслати копію"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Sending {fromCode}"

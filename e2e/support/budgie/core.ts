@@ -15,6 +15,8 @@ import { clearDatabase, ensureFixtures, seedDatabase } from './fixtures.ts';
 import type { Device } from '@e2e-dev/mobile';
 import type { App, Locator, Screen } from 'e2e';
 
+export const TOAST = 'toastAnimatedContainer';
+
 /** What every budgie helper takes: the test's own fixtures plus the leased device's simlock handle. */
 export interface Ctx {
     readonly screen: Screen;
@@ -43,6 +45,10 @@ export async function phase<T>(name: string, body: () => Promise<T>): Promise<T>
 }
 
 export async function tapId(ctx: Ctx, testId: string): Promise<void> {
+    // A top toast covers the header's back button and takes the tap; it hides itself within 5 s.
+    if (testId === 'PageHeader.BackButton') {
+        await expectNoId(ctx, TOAST, 8_000);
+    }
     await byId(ctx.screen, testId).tap();
 }
 

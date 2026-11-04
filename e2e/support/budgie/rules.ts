@@ -151,7 +151,8 @@ export async function createSuggestedRuleFromTransaction(
         await dragUp(ctx, 'RuleForm.Condition.1.Row');
         await expectId(ctx, 'RuleForm.Condition.2.Row');
     }
-    await tapUntil(ctx, 'PageHeader.BackButton', () => expectId(ctx, 'RulesPage.Page', 5_000));
+    await tapId(ctx, 'PageHeader.BackButton');
+    await expectId(ctx, 'RulesPage.Page', 5_000);
     await deleteFirstRuleViaForm(ctx);
     await expectNoRules(ctx);
 }
@@ -167,7 +168,7 @@ async function dragUp(ctx: Ctx, testId: string, distance = 300): Promise<void> {
     await sleep(400);
 }
 
-/** subflows/transactions/assert-transaction-tag, with the back tap retried (it can land while the info page settles). */
+/** subflows/transactions/assert-transaction-tag */
 export async function assertTransactionTagged(ctx: Ctx, labelId: string, tag: string): Promise<void> {
     await tapUntil(ctx, `TransactionCard.Label.${labelId}`, () => expectId(ctx, 'TransactionInfo.Page', 5_000));
     await scrollTo(ctx, 'TransactionInfo.Row.Tags');
@@ -176,6 +177,6 @@ export async function assertTransactionTagged(ctx: Ctx, labelId: string, tag: st
     await expect(byId(ctx.screen, 'TransactionInfo.Row.Tags')).toHaveAccessibleName(new RegExp(`(^|, )${escaped}(,|$)`), {
         timeout: 5_000
     });
-    await sleep(400);
-    await tapUntil(ctx, 'PageHeader.BackButton', () => expectId(ctx, 'TransactionsPage.Container', 5_000));
+    await tapId(ctx, 'PageHeader.BackButton');
+    await expectId(ctx, 'TransactionsPage.Container', 5_000);
 }
