@@ -23,9 +23,8 @@ export const InzhurImportSummary = ({ summary }: Props) => {
     const { t } = useLingui();
     const { formatDayAndMonthAndYear } = useFormatDate();
     const formatAmount = useFormatDigits(2);
-    const hryvnia = useHryvniaInstrumentQuery();
-    const symbol = hryvnia?.symbol ?? '';
-    const { outcome, statementDate, cashMoved, estimatedDividendAmount, funds } = summary;
+    const symbol = useHryvniaInstrumentQuery()?.symbol ?? '';
+    const { outcome, statementDate, cashMoved, estimatedDividendAmount, uncoveredCashAmount, funds } = summary;
 
     const statementDateLabel = formatDayAndMonthAndYear(statementDate);
     const title = t`Statement of ${statementDateLabel}`;
@@ -47,6 +46,9 @@ export const InzhurImportSummary = ({ summary }: Props) => {
             right={<InzhurImportSummaryValue>{formatAmount(estimatedDividendAmount, symbol)}</InzhurImportSummaryValue>}
         />
     ) : null;
+    const uncoveredCashLabel = formatAmount(uncoveredCashAmount, symbol);
+    const uncoveredCashFooter = t`Waiting for a top-up of ${uncoveredCashLabel} to appear from your bank`;
+    const sectionFooter = isPositiveNumber(uncoveredCashAmount) ? `${outcomeFooter}\n${uncoveredCashFooter}` : outcomeFooter;
     const fundSection = isEmptyArray(funds) ? null : (
         <GroupedListSection title={t`Funds`}>
             {funds.map(fund => (
@@ -57,7 +59,7 @@ export const InzhurImportSummary = ({ summary }: Props) => {
 
     return (
         <View className="gap-y-3xl" testID={InzhurSelector.Summary}>
-            <GroupedListSection title={title} footer={outcomeFooter}>
+            <GroupedListSection title={title} footer={sectionFooter}>
                 <GroupedListRow title={t`Funds updated`} right={<InzhurImportSummaryValue>{funds.length}</InzhurImportSummaryValue>} />
                 {cashRow}
                 {dividendRow}
