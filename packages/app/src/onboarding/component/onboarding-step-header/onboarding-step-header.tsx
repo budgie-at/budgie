@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 
-import { EmptyFn } from '@rnw-community/shared';
+import { EmptyFn, isDefined } from '@rnw-community/shared';
 
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
 import { OnboardingFileLockEnum } from '../../enum/onboarding-file-lock.enum';
@@ -10,13 +10,12 @@ import { OnboardingStepLayoutSelector } from '../onboarding-step-layout/onboardi
 interface Props {
     readonly fileState: string;
     readonly fileLock: OnboardingFileLockEnum;
-    readonly isBackVisible: boolean;
-    readonly onBack: EmptyFn;
+    readonly onBack?: EmptyFn;
 }
 
-export const OnboardingStepHeader = ({ fileState, fileLock, isBackVisible, onBack }: Props) => (
+export const OnboardingStepHeader = ({ fileState, fileLock, onBack }: Props) => (
     <View className="w-full bg-surface px-5xl pt-lg pb-lg flex-row items-center gap-x-md">
-        {isBackVisible ? (
+        {isDefined(onBack) ? (
             <GoBackButton
                 testID={OnboardingStepLayoutSelector.BackButton}
                 className="size-[44px] items-center justify-center p-0"

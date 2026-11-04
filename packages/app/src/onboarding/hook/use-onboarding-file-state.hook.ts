@@ -5,10 +5,9 @@ import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { accountCountAtom } from '../../account/query/use-search-accounts-grouped.query';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 import { OnboardingFileLockEnum } from '../enum/onboarding-file-lock.enum';
-
-import { accountCountAtom } from './use-is-onboarding-active.hook';
 
 import type { OnboardingFileStateInterface } from '../interface/onboarding-file-state.interface';
 

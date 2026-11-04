@@ -89,9 +89,7 @@ export const OnboardingPin = () => {
         <GroupedSurface testID={OnboardingPinSelector.Root}>
             <FullPage
                 className="bg-surface"
-                header={
-                    <OnboardingStepHeader fileState={fileState} fileLock={OnboardingFileLockEnum.OPEN} isBackVisible onBack={handleBack} />
-                }
+                header={<OnboardingStepHeader fileState={fileState} fileLock={OnboardingFileLockEnum.OPEN} onBack={handleBack} />}
             >
                 <View className="flex-1 px-xl">
                     <PinForm

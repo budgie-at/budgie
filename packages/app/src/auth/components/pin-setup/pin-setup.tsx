@@ -1,5 +1,3 @@
-import { UserIconNameEnum } from '@budgie/contracts';
-import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
@@ -20,27 +18,6 @@ import { PinRestartButton } from '../pin-restart-button/pin-restart-button';
 import { PinSealingState } from '../pin-sealing-state/pin-sealing-state';
 import { PinStepIndicator } from '../pin-step-indicator/pin-step-indicator';
 
-const SEALING_COPY = {
-    [PinSetupModeEnum.CREATE]: {
-        title: msg`Encrypting your data`,
-        description: msg`Keep Budgie open. It restarts when finished.`,
-        icon: UserIconNameEnum.LockKeyhole,
-        iconVariant: 'positive' as const
-    },
-    [PinSetupModeEnum.CHANGE]: {
-        title: msg`Updating your PIN`,
-        description: msg`Re-encrypting your data. Keep Budgie open, it restarts when finished.`,
-        icon: UserIconNameEnum.LockKeyhole,
-        iconVariant: 'positive' as const
-    },
-    [PinSetupModeEnum.DISABLE]: {
-        title: msg`Turning off app lock`,
-        description: msg`Decrypting your data. Keep Budgie open, it restarts when finished.`,
-        icon: UserIconNameEnum.LockKeyholeOpen,
-        iconVariant: 'secondary' as const
-    }
-};
-
 const getSetupSteps = (mode: PinSetupModeEnum, isSomeAvailable: boolean): PinSetupStepEnum[] => {
     if (mode === PinSetupModeEnum.CHANGE) {
         return [PinSetupStepEnum.VERIFY_OLD, PinSetupStepEnum.CREATE, PinSetupStepEnum.CONFIRM];
@@ -59,19 +36,16 @@ interface Props {
     readonly mode: PinSetupModeEnum;
 }
 
-// eslint-disable-next-line max-statements -- Setup screen orchestrates steps, biometric offer and sealing state
 export const PinSetup = ({ mode }: Props) => {
     const { isFaceIdAvailable, isTouchIdAvailable, isSomeAvailable } = useAuthContext();
     const { t } = useLingui();
 
-    const { state, addDigit, deleteDigit, restartNewPin, saveAndContinue } = usePinSetup({ mode });
-    const { title, description, icon, iconVariant } = getPinSetupMeta(state.mode, state.step, isFaceIdAvailable, isTouchIdAvailable);
+    const { state, addDigit, deleteDigit, restartNewPin, saveAndContinue } = usePinSetup(mode);
+    const { title, description, icon, iconVariant } = getPinSetupMeta(mode, state.step, isFaceIdAvailable, isTouchIdAvailable);
 
     const steps = getSetupSteps(mode, isSomeAvailable);
     const currentStepIndex = steps.indexOf(state.step);
     const hasSteps = steps.length > 1;
-    const enableBiometricLabel = isFaceIdAvailable ? t`Use Face ID` : t`Use Touch ID`;
-    const sealingCopy = SEALING_COPY[mode];
     const isBiometricStep = state.step === PinSetupStepEnum.BIOMETRIC;
     const isChoosingNewPin = state.step === PinSetupStepEnum.CREATE;
     const isConfirmingNewPin = state.step === PinSetupStepEnum.CONFIRM;
@@ -92,16 +66,7 @@ export const PinSetup = ({ mode }: Props) => {
 
             <View className="flex-1 px-5xl" accessibilityElementsHidden={state.isSealing}>
                 {isBiometricStep ? (
-                    <BiometricConfiguration
-                        title={t(title)}
-                        description={t(description)}
-                        icon={icon}
-                        iconVariant={iconVariant}
-                        enableLabel={enableBiometricLabel}
-                        isLoading={state.isLoading}
-                        error={state.error}
-                        onSubmit={saveAndContinue}
-                    />
+                    <BiometricConfiguration isLoading={state.isLoading} error={state.error} onSubmit={saveAndContinue} />
                 ) : (
                     <PinForm
                         header={<PinFormHeader title={t(title)} description={t(description)} icon={icon} iconVariant={iconVariant} />}
@@ -115,14 +80,7 @@ export const PinSetup = ({ mode }: Props) => {
                 )}
             </View>
 
-            {state.isSealing ? (
-                <PinSealingState
-                    title={t(sealingCopy.title)}
-                    description={t(sealingCopy.description)}
-                    icon={sealingCopy.icon}
-                    iconVariant={sealingCopy.iconVariant}
-                />
-            ) : null}
+            {state.isSealing ? <PinSealingState mode={mode} /> : null}
         </FullPage>
     );
 };
