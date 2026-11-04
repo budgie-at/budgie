@@ -5,34 +5,8 @@ import { isPositiveNumber } from '@rnw-community/shared';
 import { RUNWAY_CHART_LABEL_FONT_SIZE } from '../constant/runway-chart-label-font-size.constant';
 import { RUNWAY_HORIZON_MONTHS } from '../constant/runway-horizon-months.constant';
 
-import type { RunwayComputationInterface } from '../interface/runway-computation.interface';
-
-interface RunwayForecastPointInterface {
-    readonly x: number;
-    readonly y: number;
-}
-
-interface RunwayForecastGeometryInterface {
-    readonly likelyPath: string;
-    readonly bandPath: string;
-    readonly zeroY: number;
-    readonly runOutX: number | null;
-    readonly startLabelY: number;
-    readonly isZeroLabelVisible: boolean;
-    readonly endLabelY: number;
-    readonly endValue: number;
-    readonly tickXs: readonly number[];
-}
-
-interface BuildRunwayForecastPathParamsInterface {
-    readonly computation: RunwayComputationInterface;
-    readonly width: number;
-    readonly height: number;
-    readonly paddingLeft: number;
-    readonly paddingRight: number;
-    readonly paddingTop: number;
-    readonly paddingBottom: number;
-}
+import type { BuildRunwayForecastPathParamsInterface } from '../interface/build-runway-forecast-path-params.interface';
+import type { RunwayForecastPointInterface } from '../interface/runway-forecast-point.interface';
 
 const ZERO_VALUE = 0;
 const LABEL_ABOVE_GAP = 6;
@@ -47,7 +21,7 @@ const buildForecastPath = (points: readonly RunwayForecastPointInterface[], clos
     return close ? `${path} Z` : path;
 };
 
-export const buildRunwayForecastPath = (params: BuildRunwayForecastPathParamsInterface): RunwayForecastGeometryInterface => {
+export const buildRunwayForecastPath = (params: BuildRunwayForecastPathParamsInterface) => {
     const { computation, width, height, paddingLeft, paddingRight, paddingTop, paddingBottom } = params;
     const { liquid, net, netStandardDeviation, monthsUsed, runwayMonths } = computation;
 

@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
-import { RUNWAY_FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../constant/runway-footnote-max-font-size-multiplier.constant';
+import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
 import { useRunwayAmountLabel } from '../../hook/use-runway-amount-label.hook';
 
 interface Props {
@@ -16,7 +16,7 @@ export const RunwayHistorySpikeNote = ({ spikeLabel, expense }: Props) => {
 
     return (
         <Text
-            maxFontSizeMultiplier={RUNWAY_FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
+            maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
             className="px-3xl text-[13px] tabular-nums text-secondary-foreground"
         >
             <Trans>

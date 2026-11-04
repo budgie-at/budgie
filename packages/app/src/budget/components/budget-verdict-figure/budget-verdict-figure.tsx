@@ -1,20 +1,19 @@
 import { BudgetPaceStatusEnum } from '@budgie/budget';
-import { convertFromMicroUnits } from '@budgie/contracts';
+import { UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { HeroFigure } from '../../../@generic/component/hero-figure/hero-figure';
+import { Icon } from '../../../@generic/component/icon/icon';
 
 import type { BudgetProjectionScopeInterface } from '@budgie/budget';
-import type { ReactNode } from 'react';
 
 interface Props {
     readonly scope: BudgetProjectionScopeInterface;
     readonly currencySymbol: string;
-    readonly children?: ReactNode;
 }
 
-export const BudgetVerdictFigure = ({ scope, currencySymbol, children }: Props) => {
+export const BudgetVerdictFigure = ({ scope, currencySymbol }: Props) => {
     const { t } = useLingui();
     const isOver = scope.status === BudgetPaceStatusEnum.OVER;
     const figureAmount = isOver ? scope.spent - scope.limit : scope.safePerDay;
@@ -26,7 +25,7 @@ export const BudgetVerdictFigure = ({ scope, currencySymbol, children }: Props) 
             <HeroFigure amount={convertFromMicroUnits(figureAmount)} currencySymbol={currencySymbol} variant="primary" unit={unit} />
             <View className="flex-row items-center gap-x-xs">
                 <Text className="text-sm text-secondary-foreground">{caption}</Text>
-                {children}
+                <Icon icon={UserIconNameEnum.Info} size={14} className="text-secondary-foreground" />
             </View>
         </View>
     );

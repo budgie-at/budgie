@@ -1,8 +1,8 @@
+import { exec, type SimlockApi } from '@mobile-ci/e2e-simlock/exec';
 import { expect } from 'e2e';
 
 import { createEntityFromTransaction } from '../budgie/categories.ts';
 import { byId, expectId, openLink, scrollTo, sleep, tapId, type Ctx } from '../budgie/core.ts';
-import { exec, type SimlockApi } from '../simlock/exec.ts';
 
 /**
  * Steps only the media scenes and fixture builders take, each the port of the

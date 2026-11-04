@@ -2,11 +2,12 @@ import { RunwayDriverDimensionEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
-import { Text, View, useWindowDimensions } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { GrowBar } from '../../../@generic/component/grow-bar/grow-bar';
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { RUNWAY_MAX_FONT_SIZE_MULTIPLIER } from '../../constant/runway-max-font-size-multiplier.constant';
 import { useRunwayAmountLabel } from '../../hook/use-runway-amount-label.hook';
 import { RunwayDriverAmount } from '../runway-driver-amount/runway-driver-amount';
@@ -29,12 +30,10 @@ const headlineVariants = cva('gap-x-md', {
     }
 });
 
-const ACCESSIBILITY_FONT_SCALE = 1.6;
-
 export const RunwayDriverRow = ({ driver, dimension, maxAmount, rank }: Props) => {
     const { t } = useLingui();
     const formatAmount = useRunwayAmountLabel();
-    const isStacked = useWindowDimensions().fontScale >= ACCESSIBILITY_FONT_SCALE;
+    const isStacked = useIsAccessibilityTextSize();
 
     const { foldedDriverCount } = driver;
     const isFolded = isPositiveNumber(foldedDriverCount);
@@ -72,7 +71,7 @@ export const RunwayDriverRow = ({ driver, dimension, maxAmount, rank }: Props) =
                     ) : null}
                 </View>
 
-                <RunwayDriverAmount monthlyAmount={driver.monthlyAmount} isFolded={isFolded} />
+                <RunwayDriverAmount monthlyAmount={driver.monthlyAmount} />
             </View>
 
             {isFolded ? null : (

@@ -6,14 +6,9 @@ interface Props {
     readonly y: number;
     readonly label: string;
     readonly isSpike: boolean;
-    readonly hasLabel: boolean;
 }
 
-export const RunwayHistoryMonthLabel = ({ x, y, label, isSpike, hasLabel }: Props) => {
-    if (!hasLabel) {
-        return null;
-    }
-
+export const RunwayHistoryMonthLabel = ({ x, y, label, isSpike }: Props) => {
     const fillClassName = isSpike ? 'accent-primary' : 'accent-secondary-foreground';
     const fontWeight = isSpike ? '600' : '400';
 

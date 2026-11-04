@@ -487,6 +487,10 @@ msgstr "{groupCount, plural, one {# groupe} other {# groupes}}"
 msgid "{hiddenCount, plural, one {Show # more} other {Show # more}}"
 msgstr "{hiddenCount, plural, one {Afficher # de plus} other {Afficher # de plus}}"
 
+#: src/app/(tabs)/settings/import.tsx
+msgid "{importedCount} imported, {failedCount} failed"
+msgstr "{importedCount} importées, {failedCount} échouées"
+
 #: src/categorize-inbox/components/categorize-inbox-group-choose-payments-option/categorize-inbox-group-choose-payments-option.tsx
 msgid "{included} of {total}"
 msgstr "{included} sur {total}"
@@ -1377,7 +1381,7 @@ msgstr "Montant prêté"
 msgid "Amount or merchant is empty"
 msgstr "Le montant ou le commerçant est manquant"
 
-#: src/budget/components/budget-fund-target-field/budget-fund-target-field.tsx
+#: src/budget/components/budget-fund-form/budget-fund-form.tsx
 msgid "Amount to set aside"
 msgstr "Montant à mettre de côté"
 
@@ -1465,7 +1469,6 @@ msgstr "Appliquer aux transactions existantes ?"
 
 #: src/account/component/account-actions-menu/account-actions-menu.tsx
 #: src/account/component/debt-account-paid-off/debt-account-paid-off.tsx
-#: src/account/component/hidden-account-archive-menu-item/hidden-account-archive-menu-item.tsx
 #: src/account/component/inactive-account-card/inactive-account-card.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Archive"
@@ -2428,7 +2431,7 @@ msgstr "Contient"
 
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
-#: src/onboarding/component/onboarding-sealed-actions/onboarding-sealed-actions.tsx
+#: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
 #: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Continue"
@@ -2477,7 +2480,7 @@ msgstr "Convertir en virement"
 msgid "Convert to Transfer?"
 msgstr "Convertir en transfert ?"
 
-#: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Converting {processedEntryCount} of {totalEntryCount} transactions"
 msgstr "Conversion de {processedEntryCount} sur {totalEntryCount} transactions"
 
@@ -2841,7 +2844,7 @@ msgstr "Impossible de vérifier les autorisations de la clé API"
 msgid "Couldn’t check Monobank for new accounts"
 msgstr "Impossible de vérifier les nouveaux comptes chez Monobank"
 
-#: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Couldn't finish. Try again."
 msgstr "Opération inachevée. Réessayez."
 
@@ -2853,15 +2856,15 @@ msgstr "Impossible de charger la liste"
 msgid "Couldn’t load transaction counts"
 msgstr "Impossible de charger le nombre de transactions"
 
-#: src/auth/hook/use-pin-setup.hook.tsx
+#: src/auth/hook/use-pin-setup.hook.ts
 msgid "Couldn't save your PIN. Enter it again to retry."
 msgstr "Impossible d'enregistrer ton code PIN. Saisis-le à nouveau pour réessayer."
 
-#: src/auth/hook/use-pin-setup.hook.tsx
+#: src/auth/hook/use-pin-setup.hook.ts
 msgid "Couldn't save your PIN. Try again."
 msgstr "Impossible d'enregistrer ton code PIN. Réessaie."
 
-#: src/auth/hook/use-pin-setup.hook.tsx
+#: src/auth/hook/use-pin-setup.hook.ts
 msgid "Couldn't turn off app lock. Try again."
 msgstr "Impossible de désactiver le verrouillage. Réessaie."
 
@@ -2999,6 +3002,10 @@ msgstr "CSV exporté"
 msgid "CSV files"
 msgstr "Fichiers CSV"
 
+#: src/app/(tabs)/settings/import.tsx
+msgid "CSV import"
+msgstr "Import CSV"
+
 #: src/account/component/update-liability-account/update-liability-account.tsx
 msgid "Currency"
 msgstr "Devise"
@@ -3079,7 +3086,7 @@ msgstr "Les comptes de dette ne peuvent pas participer aux virements"
 msgid "Debts and loans"
 msgstr "Dettes et prêts"
 
-#: src/auth/components/pin-setup/pin-setup.tsx
+#: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Decrypting your data. Keep Budgie open, it restarts when finished."
 msgstr "Déchiffrement de tes données. Garde Budgie ouvert, l'app redémarre une fois terminé."
 
@@ -3151,7 +3158,6 @@ msgid "Delete last digit"
 msgstr "Effacer le dernier chiffre"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx
-#: src/account/component/archived-account-delete-menu-item/archived-account-delete-menu-item.tsx
 msgid "Delete permanently"
 msgstr "Supprimer définitivement"
 
@@ -3461,7 +3467,7 @@ msgstr "Modifier"
 #: src/account/component/account-actions-menu/account-actions-menu.tsx
 #: src/account/component/account-card-base/account-card-base.tsx
 #: src/account/component/account-card-menu/account-card-menu.tsx
-#: src/account/component/hidden-account-edit-menu-item/hidden-account-edit-menu-item.tsx
+#: src/account/component/inactive-account-card/inactive-account-card.tsx
 msgid "Edit account"
 msgstr "Modifier le compte"
 
@@ -3558,7 +3564,7 @@ msgstr "Chiffré · PIN"
 msgid "Encrypted · PIN and {biometricLabel}"
 msgstr "Chiffré · PIN et {biometricLabel}"
 
-#: src/auth/components/pin-setup/pin-setup.tsx
+#: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Encrypting your data"
 msgstr "Chiffrement de tes données"
 
@@ -3653,7 +3659,7 @@ msgstr "Erste Bank (PDF)"
 msgid "Estimated from your past transactions using your current limits."
 msgstr "Estimé à partir de tes transactions passées avec tes limites actuelles."
 
-#: src/budget/components/budget-event-limit-field/budget-event-limit-field.tsx
+#: src/budget/components/budget-event-form/budget-event-form.tsx
 msgid "Event limit"
 msgstr "Limite de l’événement"
 
@@ -3767,7 +3773,7 @@ msgstr "ID externe"
 msgid "Face ID"
 msgstr "Face ID"
 
-#: src/auth/hook/use-pin-setup.hook.tsx
+#: src/auth/hook/use-pin-setup.hook.ts
 msgid "Face ID wasn't completed. Try again or continue without it."
 msgstr "Face ID n'a pas abouti. Réessaie ou continue sans."
 
@@ -3838,7 +3844,7 @@ msgstr "Classer {count} en {labelTitle}"
 msgid "File {merchantTitle} as {candidateTitle}"
 msgstr "Classer {merchantTitle} en {candidateTitle}"
 
-#: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Fill missing currency conversions"
 msgstr "Compléter les conversions de devises manquantes"
 
@@ -3902,7 +3908,7 @@ msgstr "Montant fixe"
 msgid "Fixed-term savings with interest"
 msgstr "Épargne à terme avec intérêts"
 
-#: src/budget/components/budget-forecast-card/budget-forecast-card.tsx
+#: src/budget/components/budget-details-forecast/budget-details-forecast.tsx
 msgid "Forecast"
 msgstr "Prévision"
 
@@ -4367,7 +4373,7 @@ msgstr "Cagnottes"
 msgid "Keep"
 msgstr "Conserver"
 
-#: src/auth/components/pin-setup/pin-setup.tsx
+#: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Keep Budgie open. It restarts when finished."
 msgstr "Garde Budgie ouvert. L'app redémarre une fois terminé."
 
@@ -5909,7 +5915,7 @@ msgstr "Choisis-en un dont tu te souviendras, mais que les autres ne devineront 
 msgid "PIN, {enteredCount} of {PIN_LENGTH} digits entered"
 msgstr "Code PIN, {enteredCount} chiffres sur {PIN_LENGTH} saisis"
 
-#: src/auth/hook/use-pin-setup.hook.tsx
+#: src/auth/hook/use-pin-setup.hook.ts
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "PINs don't match. Try again."
 msgstr "Les codes PIN ne correspondent pas. Réessaie."
@@ -5995,7 +6001,7 @@ msgstr "Populaires"
 msgid "Positive"
 msgstr "Positif"
 
-#: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Preparing conversions"
 msgstr "Préparation des conversions"
 
@@ -6088,7 +6094,7 @@ msgstr "Relevée le {dateLabel} · au-dessus de la limite {count} périodes d’
 msgid "Rank"
 msgstr "Rang"
 
-#: src/auth/components/pin-setup/pin-setup.tsx
+#: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Re-encrypting your data. Keep Budgie open, it restarts when finished."
 msgstr "Rechiffrement de tes données. Garde Budgie ouvert, l'app redémarre une fois terminé."
 
@@ -6170,7 +6176,7 @@ msgstr "Recalculer à partir des transactions"
 msgid "Recalculates every day. Spend less today and tomorrow's amount grows."
 msgstr "Recalculé chaque jour. Dépense moins aujourd'hui et le montant de demain augmente."
 
-#: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Recalculating balances"
 msgstr "Recalcul des soldes"
 
@@ -6355,7 +6361,6 @@ msgid "Restart App"
 msgstr "Redémarrer l’application"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx
-#: src/account/component/archived-account-restore-menu-item/archived-account-restore-menu-item.tsx
 #: src/account/component/archived-account-trailing/archived-account-trailing.tsx
 #: src/import/hook/use-restore-backup.hook.ts
 msgid "Restore"
@@ -7707,7 +7712,7 @@ msgstr "Total prêté"
 msgid "Touch ID"
 msgstr "Touch ID"
 
-#: src/auth/hook/use-pin-setup.hook.tsx
+#: src/auth/hook/use-pin-setup.hook.ts
 msgid "Touch ID wasn't completed. Try again or continue without it."
 msgstr "Touch ID n'a pas abouti. Réessaie ou continue sans."
 
@@ -7901,7 +7906,7 @@ msgstr "Activez l'IA sur l'appareil pour télécharger les modèles."
 msgid "Turn payments into transfers"
 msgstr "Transformer les paiements en virements"
 
-#: src/auth/components/pin-setup/pin-setup.tsx
+#: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Turning off app lock"
 msgstr "Désactivation du verrouillage"
 
@@ -7983,7 +7988,6 @@ msgid "Undo refund?"
 msgstr "Annuler le remboursement ?"
 
 #: src/account/component/account-details-hidden-pill/account-details-hidden-pill.tsx
-#: src/account/component/hidden-account-unhide-menu-item/hidden-account-unhide-menu-item.tsx
 #: src/account/component/inactive-account-card/inactive-account-card.tsx
 msgid "Unhide"
 msgstr "Afficher"
@@ -8097,7 +8101,7 @@ msgstr "Mis à jour aujourd'hui"
 msgid "Updated yesterday"
 msgstr "Mis à jour hier"
 
-#: src/auth/components/pin-setup/pin-setup.tsx
+#: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Updating your PIN"
 msgstr "Mise à jour de ton code PIN"
 
@@ -8121,7 +8125,7 @@ msgstr "Utilisez de 1 à {CATEGORY_TITLE_MAX_LENGTH} caractères"
 msgid "Use 1 to {TAG_TITLE_MAX_LENGTH} characters"
 msgstr "Utilisez de 1 à {TAG_TITLE_MAX_LENGTH} caractères"
 
-#: src/auth/components/pin-setup/pin-setup.tsx
+#: src/auth/components/biometric-configuration/biometric-configuration.tsx
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Use Face ID"
 msgstr "Utiliser Face ID"
@@ -8147,7 +8151,7 @@ msgstr "Utilise le code PIN avec lequel cette sauvegarde a été scellée. Sans 
 msgid "Use these only if conversions, imports or balances look wrong."
 msgstr "À utiliser seulement si les conversions, imports ou soldes semblent faux."
 
-#: src/auth/components/pin-setup/pin-setup.tsx
+#: src/auth/components/biometric-configuration/biometric-configuration.tsx
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Use Touch ID"
 msgstr "Utiliser Touch ID"

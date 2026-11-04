@@ -1,6 +1,8 @@
+import { HistoricalExchangeRateRepository } from '@budgie/market';
 import { BinanceSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
+import { vi } from 'vitest';
 
 import {
     binanceStub,
@@ -59,6 +61,7 @@ describe('binance/stub-fidelity', () => {
 
                 yield* seedCryptoInstrument('ADA');
                 yield* setupUsdtSpotFixtureWithBalances('ADA', String(TRADE_COUNT));
+                const historicalRateLookup = vi.spyOn(yield* HistoricalExchangeRateRepository, 'findForDateOrBefore');
                 const requestedUrls: URL[] = [];
                 binanceStub.myTrades({ ADAUSDT: buildAdaFills() }, new Set<string>(), requestedUrls);
 
@@ -70,6 +73,7 @@ describe('binance/stub-fidelity', () => {
                 );
                 expect(adaRequests.map(url => url.searchParams.get('fromId'))).toStrictEqual([null, String(TRADE_BATCH_SIZE + 1)]);
                 expect(tradeIds).toHaveLength(TRADE_COUNT);
+                expect(historicalRateLookup.mock.calls.length).toBeLessThan(TRADE_COUNT);
             }).pipe(Effect.provide(TestLayer)),
         HEAVY_IMPORT_TIMEOUT_MS
     );

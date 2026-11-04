@@ -21,7 +21,7 @@ interface Props {
     readonly currencySymbol: string;
     readonly periodStart: Date;
     readonly periodEnd: Date;
-    readonly onFigurePress?: () => void;
+    readonly onFigurePress: () => void;
     readonly onPaceHintPress?: (target: BudgetHighlightTargetInterface) => void;
 }
 

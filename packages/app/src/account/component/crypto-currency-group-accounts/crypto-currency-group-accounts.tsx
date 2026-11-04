@@ -1,4 +1,3 @@
-import { AccountTypeEnum } from '@budgie/contracts';
 import { View } from 'react-native';
 
 import { CryptoCurrencyGroupInterface } from '../../interface/crypto-currency-group.interface';
@@ -15,7 +14,7 @@ export const CryptoCurrencyGroupAccounts = ({ group, balancesByAccountId }: Prop
         {group.accounts.map(account => (
             <View key={account.id}>
                 <View className="absolute top-0 right-0 left-[64px] h-hairline bg-surface-separator" pointerEvents="none" />
-                <AccountListItem account={account} type={AccountTypeEnum.CRYPTO} balancesByAccountId={balancesByAccountId} />
+                <AccountListItem account={account} balancesByAccountId={balancesByAccountId} />
             </View>
         ))}
     </View>

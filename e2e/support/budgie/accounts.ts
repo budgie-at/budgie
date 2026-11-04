@@ -1,33 +1,11 @@
+import { tapUntil } from '@mobile-ci/e2e-simlock/steps';
 import { expect } from 'e2e';
 
-import { byId, byText, done, expectId, expectNoId, openLink, scrollTo as coreScrollTo, sleep, tapId, type Ctx } from './core.ts';
-import { scrollToCentered } from './settings.ts';
+import { byId, byText, done, expectId, expectNoId, openLink, scrollTo, scrollToCentered, sleep, tapId, type Ctx } from './core.ts';
 
 import type { Locator } from 'e2e';
 
 const loc = (ctx: Ctx, id: string | RegExp): Locator => ctx.screen.getByTestId(id).first();
-
-/** `scrollTo` that leaves an already visible node alone: a scroll past the form's top edge makes XCTest record a failure and drop the runner session. */
-async function scrollTo(ctx: Ctx, testId: string, direction: 'up' | 'down' = 'down'): Promise<void> {
-    if (await byId(ctx.screen, testId).isVisible()) {
-        return;
-    }
-    await coreScrollTo(ctx, testId, direction);
-}
-
-/** Taps `locator`; when `next` does not settle within its own timeout and `locator` still shows, taps once more (Maestro's `retryTapIfNoChange`). */
-async function tapRetry(locator: Locator, next: () => Promise<void>): Promise<void> {
-    await locator.tap();
-    try {
-        await next();
-    } catch (cause) {
-        if (!(await locator.isVisible())) {
-            throw cause;
-        }
-        await locator.tap();
-        await next();
-    }
-}
 
 /** subflows/shared/select-account-by-search: the account picker is open; search `name` and pick it. */
 export async function selectAccountBySearch(ctx: Ctx, name: string): Promise<void> {
@@ -36,13 +14,13 @@ export async function selectAccountBySearch(ctx: Ctx, name: string): Promise<voi
     await done(ctx);
     const option = byId(ctx.screen, `AccountPickerBottomSheet.Option.${name}`);
     await expect(option).toBeVisible();
-    await tapRetry(option, () => expect(input).toBeHidden({ timeout: 5_000 }));
+    await tapUntil(option, () => expect(input).toBeHidden({ timeout: 5_000 }));
 }
 
 /** subflows/shared/select-account-from-native-picker */
 export async function selectAccountFromNativePicker(ctx: Ctx, optionId: string): Promise<void> {
     await ctx.screen.scrollUntilVisible(byId(ctx.screen, optionId), { timeout: 10_000 });
-    await tapRetry(byId(ctx.screen, optionId), () => expectNoId(ctx, 'AccountPickerBottomSheet.Input', 5_000));
+    await tapUntil(byId(ctx.screen, optionId), () => expectNoId(ctx, 'AccountPickerBottomSheet.Input', 5_000));
 }
 
 /** subflows/navigation/navigate-to-settings */
@@ -75,7 +53,7 @@ export async function openNewAccount(ctx: Ctx): Promise<void> {
         await tapId(ctx, 'AccountsEmptyState.AddAccountButton');
     } else {
         await expectId(ctx, 'ActionButton', 10_000);
-        await tapRetry(byId(screen, 'ActionButton'), () => expectId(ctx, 'ActionItem.AddAccount.Label', 5_000));
+        await tapUntil(byId(screen, 'ActionButton'), () => expectId(ctx, 'ActionItem.AddAccount.Label', 5_000));
         await tapId(ctx, 'ActionItem.AddAccount.Label');
     }
     await expectId(ctx, 'CreateAccount.BANK', 10_000);
@@ -86,14 +64,14 @@ export async function openAccountDetails(ctx: Ctx, name: string): Promise<void> 
     await sleep(400);
     // A card in the bottom band sits under the tab bar and the action button: a tap there lands on them.
     await scrollToCentered(ctx, `AccountCard.${name}`);
-    await tapRetry(byId(ctx.screen, `AccountCard.${name}`), () => expectId(ctx, 'AccountDetails.Page', 10_000));
+    await tapUntil(byId(ctx.screen, `AccountCard.${name}`), () => expectId(ctx, 'AccountDetails.Page', 10_000));
 }
 
 /** subflows/accounts/open-visible-account-settings: from account details to its edit form. */
 export async function openVisibleAccountSettings(ctx: Ctx): Promise<void> {
     await expectId(ctx, 'AccountDetails.Page', 10_000);
     await expectId(ctx, 'AccountDetails.ActionsButton', 10_000);
-    await tapRetry(byId(ctx.screen, 'AccountDetails.ActionsButton'), () => expectId(ctx, 'AccountDetails.EditButton', 5_000));
+    await tapUntil(byId(ctx.screen, 'AccountDetails.ActionsButton'), () => expectId(ctx, 'AccountDetails.EditButton', 5_000));
     await tapId(ctx, 'AccountDetails.EditButton');
     await expect(byText(ctx.screen, 'Edit Account')).toBeVisible({ timeout: 10_000 });
 }
@@ -115,7 +93,7 @@ async function submitAccountForm(ctx: Ctx, next: () => Promise<void>): Promise<v
     const submit = byId(ctx.screen, 'AccountForm.SubmitButton');
     await expect(submit).toBeVisible({ timeout: 3_000 });
     await expect(submit).toBeEnabled({ timeout: 3_000 });
-    await tapRetry(submit, next);
+    await tapUntil(submit, next);
 }
 
 /** subflows/accounts/update-account-balance: on the edit form, set the balance and save. */
@@ -197,7 +175,7 @@ async function setMainCurrency(ctx: Ctx, currency: string): Promise<void> {
 /** The account form's currency selector: open it, search `currency`, pick it. */
 async function pickAccountCurrency(ctx: Ctx, currency: string, expectSelected = true): Promise<void> {
     const search = byId(ctx.screen, 'CurrencySelector.SearchInput');
-    await tapRetry(byId(ctx.screen, 'AccountForm.CurrencySelector'), () => expect(search).toBeVisible({ timeout: 3_000 }));
+    await tapUntil(byId(ctx.screen, 'AccountForm.CurrencySelector'), () => expect(search).toBeVisible({ timeout: 3_000 }));
     await search.clear();
     await search.fill(currency);
     await expectId(ctx, `AccountForm.CurrencyOption.${currency}`, 3_000);
@@ -211,7 +189,7 @@ async function pickAccountCurrency(ctx: Ctx, currency: string, expectSelected = 
 /** Taps an account type on the create-account list and waits for the form. */
 async function chooseAccountType(ctx: Ctx, typeId: string): Promise<void> {
     await expectId(ctx, typeId, 3_000);
-    await tapRetry(byId(ctx.screen, typeId), () => expectId(ctx, 'AccountForm.NameInput', 3_000));
+    await tapUntil(byId(ctx.screen, typeId), () => expectId(ctx, 'AccountForm.NameInput', 3_000));
 }
 
 export interface DebtAccount {
@@ -249,7 +227,7 @@ export async function createDebtAccount(ctx: Ctx, debt: DebtAccount): Promise<vo
         await scrollTo(ctx, 'AccountForm.DebtType.LENT.Selected');
     } else {
         await scrollTo(ctx, 'AccountForm.DebtType.BORROW');
-        await tapRetry(byId(screen, 'AccountForm.DebtType.BORROW'), () => expectId(ctx, 'AccountForm.DebtType.BORROW.Selected', 2_000));
+        await tapUntil(byId(screen, 'AccountForm.DebtType.BORROW'), () => expectId(ctx, 'AccountForm.DebtType.BORROW.Selected', 2_000));
     }
 
     await scrollTo(ctx, 'AccountForm.TargetBalanceInput', 'up');
