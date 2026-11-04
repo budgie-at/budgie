@@ -33,7 +33,7 @@ export const ResyncWindowOptionRow = ({ option, onSelect }: Props) => {
     const handlePress = () => void onSelect(option.sinceDays);
 
     return (
-        <View className="bg-grouped-surface-row">
+        <View className="bg-surface-row">
             <SettingsRow
                 title={t(WINDOW_LABELS[String(option.sinceDays)])}
                 subtitle={subtitle}

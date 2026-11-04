@@ -2149,6 +2149,10 @@ msgstr "Check the spelling or create it as a new tag."
 msgid "Check the spelling or search by another name."
 msgstr "Check the spelling or search by another name."
 
+#: src/app/rule-mcc-selector.tsx
+msgid "Check the spelling or try a code like 5812."
+msgstr "Check the spelling or try a code like 5812."
+
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Check the spelling or try a code like EUR."
 msgstr "Check the spelling or try a code like EUR."
@@ -5336,10 +5340,6 @@ msgstr "No matching transactions"
 msgid "No MCC codes available"
 msgstr "No MCC codes available"
 
-#: src/app/rule-mcc-selector.tsx
-msgid "No MCC codes found"
-msgstr "No MCC codes found"
-
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No new transactions"
 msgstr "No new transactions"
@@ -8055,7 +8055,6 @@ msgid "Try a different merchant, amount, or date."
 msgstr "Try a different merchant, amount, or date."
 
 #: src/app/contact-selector.tsx
-#: src/app/rule-mcc-selector.tsx
 msgid "Try a different search term"
 msgstr "Try a different search term"
 
