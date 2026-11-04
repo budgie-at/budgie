@@ -119,7 +119,7 @@ export const RecurringCalendarContent = () => {
                 />
             </View>
 
-            <LoadingContent isLoading={isLoading} className="gap-y-5xl">
+            <LoadingContent isLoading={isLoading} className="gap-y-5xl" loadingIndicator={null}>
                 {hasSelectedDay ? (
                     <RecurringCalendarEntryList
                         headerTestID={RecurringCalendarSelector.SelectedDayHeader(selectedDay)}

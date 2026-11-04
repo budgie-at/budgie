@@ -36,7 +36,7 @@ export const TransactionsPageHeader = ({ activeTab, onChangeTab }: Props) => {
                         segments={segments}
                         value={activeTab}
                         onChange={onChangeTab}
-                        className="min-h-[48px] bg-primary/45 dark:bg-surface-fill"
+                        className="min-h-[48px] bg-segmented-track dark:bg-surface-fill"
                     />
                 </View>
             ) : (

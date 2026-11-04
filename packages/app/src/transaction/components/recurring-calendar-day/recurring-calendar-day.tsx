@@ -25,7 +25,7 @@ const circleVariants = cva('items-center justify-center rounded-full', {
     },
     compoundVariants: [
         { isToday: true, isSelected: false, className: 'border border-primary' },
-        { hasEntries: true, isSelected: false, className: 'bg-surface-fill dark:bg-primary/18' }
+        { hasEntries: true, isSelected: false, className: 'bg-primary/6 dark:bg-primary/18' }
     ]
 });
 
