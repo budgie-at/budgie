@@ -169,12 +169,7 @@ export const SplitEntriesModalContent = (props: Props) => {
         <View className="bg-sheet-surface">
             <SheetTitle title={t`Split`} />
 
-            <ScrollView
-                contentContainerStyle={CONTENT_CONTAINER_STYLE}
-                keyboardShouldPersistTaps="handled"
-                automaticallyAdjustKeyboardInsets
-                style={scrollStyle}
-            >
+            <ScrollView contentContainerStyle={CONTENT_CONTAINER_STYLE} keyboardShouldPersistTaps="handled" style={scrollStyle}>
                 <GroupedListSection>
                     {entries.map((entry, index) => (
                         <SplitEntriesItem
