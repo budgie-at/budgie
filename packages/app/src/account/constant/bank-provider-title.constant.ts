@@ -6,6 +6,7 @@ export const BANK_PROVIDER_TITLE: Partial<Record<ExternalSourceEnum, MessageDesc
     [ExternalSourceEnum.BINANCE]: msg`Binance`,
     [ExternalSourceEnum.COINBASE]: msg`Coinbase`,
     [ExternalSourceEnum.ERSTE]: msg`Erste`,
+    [ExternalSourceEnum.INZHUR]: msg`Inzhur`,
     [ExternalSourceEnum.MONOBANK]: msg`Monobank`,
     [ExternalSourceEnum.PRIVATBANK]: msg`PrivatBank`,
     [ExternalSourceEnum.REVOLUT]: msg`Revolut`,

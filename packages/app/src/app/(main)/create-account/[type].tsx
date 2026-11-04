@@ -4,6 +4,7 @@ import { Redirect, useLocalSearchParams } from 'expo-router';
 import { CreateDebtAccount } from '../../../account/component/create-debt-account/create-debt-account';
 import { CreateDepositAccount } from '../../../account/component/create-deposit-account/create-deposit-account';
 import { CreateSimpleAccount } from '../../../account/component/create-simple-account/create-simple-account';
+import { InzhurAccountEntry } from '../../../inzhur/component/inzhur-account-entry/inzhur-account-entry';
 import { CreateBinanceAccount } from '../../../sync/component/create-binance-account/create-binance-account';
 import { CreateErsteAccount } from '../../../sync/component/create-erste-account/create-erste-account';
 import { CreateMonobankAccount } from '../../../sync/component/create-monobank-account/create-monobank-account';
@@ -31,6 +32,8 @@ export default function CreateAccountType() {
             return <CreateErsteAccount />;
         case ExternalSourceEnum.BINANCE:
             return <CreateBinanceAccount />;
+        case ExternalSourceEnum.INZHUR:
+            return <InzhurAccountEntry />;
         case AccountTypeEnum.STOCKS:
         case AccountTypeEnum.SAVINGS:
         case AccountTypeEnum.BANK_SYNC:

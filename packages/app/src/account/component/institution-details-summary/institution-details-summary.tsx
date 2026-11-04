@@ -1,9 +1,11 @@
+import { ExternalSourceEnum } from '@budgie/contracts';
 import { resolveInitialSyncProgress } from '@budgie/sync';
 import { View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { InstitutionSelector } from '../../../app/(main)/institution/institution.selector';
+import { InzhurStatementReminder } from '../../../inzhur/component/inzhur-statement-reminder/inzhur-statement-reminder';
 import { BankIntegrationStatusPill } from '../../../sync/component/bank-integration-status-pill/bank-integration-status-pill';
 import { SyncImportProgress } from '../../../sync/component/sync-import-progress/sync-import-progress';
 import { ACCOUNT_DETAILS_HERO_BALANCE_HEIGHT } from '../../constant/account-details-hero-balance-height.constant';
@@ -29,6 +31,11 @@ export const InstitutionDetailsSummary = ({ institution, balancesByAccountId }: 
                 <View style={balanceSlotStyle} />
                 {isNotEmptyArray(syncs) ? <BankIntegrationStatusPill syncs={syncs} /> : null}
             </View>
+            {institution.provider === ExternalSourceEnum.INZHUR ? (
+                <View className="px-3xl">
+                    <InzhurStatementReminder />
+                </View>
+            ) : null}
             <InstitutionConnectionRow syncs={syncs} />
             {isDefined(progress) ? <SyncImportProgress progress={progress} /> : null}
             <InstitutionAccounts institution={institution} balancesByAccountId={balancesByAccountId} />

@@ -12,6 +12,7 @@ import { AuthService } from '../../auth/service/auth.service';
 import { BudgetAlertMonitorService } from '../../budget/service/budget-alert-monitor.service';
 import { CategoryIconBackfillService } from '../../category/service/category-icon-backfill.service';
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
+import { InzhurStatementReminderService } from '../../inzhur/service/inzhur-statement-reminder.service';
 import { HistoricalMarketDataDrainerService } from '../../market-data/service/historical-market-data-drainer.service';
 import { OnboardingService } from '../../onboarding/service/onboarding.service';
 import { BINANCE_SYNC_TASK } from '../../sync/constant/binance-sync-task.constant';
@@ -52,6 +53,7 @@ const registerBackgroundTasks = Effect.gen(function* () {
     const exchangeRateBackgroundService = yield* ExchangeRateBackgroundService;
     const budgetAlertMonitorService = yield* BudgetAlertMonitorService;
     const widgetSnapshotService = yield* WidgetSnapshotService;
+    const inzhurStatementReminderService = yield* InzhurStatementReminderService;
 
     yield* Effect.all(
         [
@@ -62,7 +64,8 @@ const registerBackgroundTasks = Effect.gen(function* () {
             reregisterTask(MONOBANK_SYNC_TASK, PROVIDER_SYNC_TASK_MINIMUM_INTERVAL_MINUTES),
             reregisterTask(BINANCE_SYNC_TASK, PROVIDER_SYNC_TASK_MINIMUM_INTERVAL_MINUTES),
             budgetAlertMonitorService.registerBackgroundTask(),
-            widgetSnapshotService.registerBackgroundTask()
+            widgetSnapshotService.registerBackgroundTask(),
+            inzhurStatementReminderService.start
         ].map(logAndContinue),
         { concurrency: 'unbounded', discard: true }
     );

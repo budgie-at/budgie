@@ -1,4 +1,4 @@
-import { AccountTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
@@ -12,6 +12,7 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
+import { InzhurStatementReminder } from '../../../inzhur/component/inzhur-statement-reminder/inzhur-statement-reminder';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { BANK_PROVIDER_TITLE } from '../../constant/bank-provider-title.constant';
 import { getBankIntegrationTitle } from '../../utils/get-bank-integration-title.util';
@@ -68,6 +69,7 @@ export const InstitutionRow = ({ institution }: Props) => {
                     {title}
                 </Text>
                 <InstitutionRowDetail accounts={accounts} accountsCountLabel={accountsCountLabel} />
+                {provider === ExternalSourceEnum.INZHUR ? <InzhurStatementReminder /> : null}
             </View>
 
             <InstitutionRowTotal integrationId={integrationId} total={total} />

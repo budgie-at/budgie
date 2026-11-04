@@ -1,5 +1,6 @@
-import { AccountTypeEnum, AccountWithInstrumentEntityInterface, InstrumentTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, AccountWithInstrumentEntityInterface, ExternalSourceEnum, InstrumentTypeEnum } from '@budgie/contracts';
 import { AccountService } from '@budgie/ledger';
+import { InzhurSetupService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Struct from 'effect/Struct';
@@ -11,6 +12,9 @@ import { CreateAccountCurrencyField } from '../../../@generic/component/create-a
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
+import { InzhurActualBalanceNote } from '../../../inzhur/component/inzhur-actual-balance-note/inzhur-actual-balance-note';
+import { InzhurDividendPayoutField } from '../../../inzhur/component/inzhur-dividend-payout-field/inzhur-dividend-payout-field';
+import { isInzhurCashAccount } from '../../../inzhur/utils/is-inzhur-cash-account.util';
 import { AccountSyncCard } from '../../../sync/component/account-sync-card/account-sync-card';
 import { useAccountUpdateBindings } from '../../hooks/use-account-update-bindings.hook';
 import { useLiabilityAccountForm } from '../../hooks/use-liability-account-form.hook';
@@ -30,8 +34,23 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         currentBalance: balance
     };
 
+    const isInzhurCash = isInzhurCashAccount(account);
+    const isInzhurFund = account.type === AccountTypeEnum.STOCKS && account.externalSource === ExternalSourceEnum.INZHUR;
+
     const { control, handleSubmit, instrument, isSubmitting } = useLiabilityAccountForm(formValues, values =>
-        Effect.flatMap(AccountService, accountService => accountService.updateById(account.id, Struct.omit(values, ['type'])))
+        Effect.gen(function* () {
+            const accountService = yield* AccountService;
+
+            if (!isInzhurCash) {
+                return yield* accountService.updateById(account.id, Struct.omit(values, ['type']));
+            }
+
+            const updatedAccount = yield* accountService.updateById(account.id, Struct.omit(values, ['type', 'currentBalance']));
+
+            yield* Effect.flatMap(InzhurSetupService, inzhurSetupService => inzhurSetupService.setActualBalance(values.currentBalance));
+
+            return updatedAccount;
+        })
     );
 
     const fields = {
@@ -65,6 +84,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         <UpdateAccountScreen
             account={account}
             allowNegativeBalance
+            {...(isInzhurCash && { balanceFieldLabel: t`Actual balance` })}
             fields={fields}
             instrumentSymbol={stickyInstrument.symbol}
             isSubmitting={isSubmitting}
@@ -72,6 +92,8 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         >
             {currencyField}
             {isSyncedAccount ? <AccountSyncCard accountId={account.id} /> : null}
+            {isInzhurFund ? <InzhurDividendPayoutField account={account} /> : null}
+            {isInzhurCash ? <InzhurActualBalanceNote /> : null}
         </UpdateAccountScreen>
     );
 };
