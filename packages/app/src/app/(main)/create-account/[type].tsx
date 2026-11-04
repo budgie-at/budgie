@@ -1,6 +1,8 @@
 import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 
+import { isNotEmptyString } from '@rnw-community/shared';
+
 import { CreateDebtAccount } from '../../../account/component/create-debt-account/create-debt-account';
 import { CreateDepositAccount } from '../../../account/component/create-deposit-account/create-deposit-account';
 import { CreateSimpleAccount } from '../../../account/component/create-simple-account/create-simple-account';
@@ -13,7 +15,12 @@ import { CreatePrivatbankAccount } from '../../../sync/component/create-privatba
 type AccountRouteType = AccountTypeEnum | ExternalSourceEnum;
 
 export default function CreateAccountType() {
-    const { type } = useLocalSearchParams<{ type: AccountRouteType }>();
+    const { type, connectAccountId, savedApplicationId } = useLocalSearchParams<{
+        type: AccountRouteType;
+        connectAccountId?: string;
+        savedApplicationId?: string;
+    }>();
+    const connectAccountIdNumber = isNotEmptyString(connectAccountId) ? Number(connectAccountId) : null;
 
     switch (type) {
         case AccountTypeEnum.CASH:
@@ -33,7 +40,7 @@ export default function CreateAccountType() {
         case ExternalSourceEnum.BINANCE:
             return <CreateBinanceAccount />;
         case ExternalSourceEnum.ENABLE_BANKING:
-            return <CreateEnableBankingAccount />;
+            return <CreateEnableBankingAccount connectAccountId={connectAccountIdNumber} savedApplicationId={savedApplicationId ?? null} />;
         case AccountTypeEnum.STOCKS:
         case AccountTypeEnum.SAVINGS:
         case AccountTypeEnum.BANK_SYNC:

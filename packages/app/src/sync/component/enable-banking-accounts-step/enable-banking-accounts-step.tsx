@@ -67,7 +67,7 @@ export const EnableBankingAccountsStep = ({
             {isNotEmptyArray(parkedPreviews) ? (
                 <GroupedListSection
                     title={t`Cannot connect`}
-                    footer={t`These accounts already sync through another connection or use a currency Budgie does not support.`}
+                    footer={t`These accounts already exist in Budgie or use a currency Budgie does not support. To continue an existing account, open it and tap Connect to bank.`}
                 >
                     {parkedPreviews.map(preview => (
                         <EnableBankingParkedAccountRow key={preview.externalId} preview={preview} />

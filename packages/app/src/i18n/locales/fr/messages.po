@@ -1011,19 +1011,19 @@ msgstr "par semaine"
 msgid "a year"
 msgstr "par an"
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "About 12 minutes"
 msgstr "Environ 12 minutes"
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "About 3 minutes"
 msgstr "Environ 3 minutes"
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "About 6 minutes"
 msgstr "Environ 6 minutes"
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "About a minute"
 msgstr "Environ une minute"
 
@@ -1366,6 +1366,10 @@ msgstr "Déjà dans Budgie"
 msgid "Already in this rule"
 msgstr "Déjà dans cette règle"
 
+#: src/sync/component/enable-banking-connect-account-row/enable-banking-connect-account-row.tsx
+msgid "Already linked to another account"
+msgstr "Déjà liée à un autre compte"
+
 #: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/account/component/update-debt-account/update-debt-account.tsx
 msgid "Already repaid"
@@ -1572,6 +1576,10 @@ msgstr "Êtes-vous sûr de vouloir supprimer toutes vos données ? Cette action 
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Are you sure?"
 msgstr "Êtes-vous sûr ?"
+
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+msgid "As far back as your bank allows"
+msgstr "Aussi loin que votre banque le permet"
 
 #: src/account/component/net-worth-composition/net-worth-composition.tsx
 msgid "Asset mix"
@@ -2010,7 +2018,7 @@ msgstr "octets"
 msgid "Can run for hours on old accounts, and much slower while the app is closed."
 msgstr "Peut prendre des heures sur d'anciens comptes, et bien plus lentement lorsque l'app est fermée."
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Can take hours"
 msgstr "Peut prendre des heures"
 
@@ -2340,6 +2348,10 @@ msgstr "Choisir une autre banque"
 msgid "Choose at least one"
 msgstr "Choisissez au moins une option"
 
+#: src/sync/component/enable-banking-connect-account-step/enable-banking-connect-account-step.tsx
+msgid "Choose bank account"
+msgstr "Choisir le compte bancaire"
+
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Choose both accounts"
 msgstr "Choisissez les deux comptes"
@@ -2363,6 +2375,10 @@ msgstr "Choisir un fichier"
 #: src/receipt/components/receipt-source-menu/receipt-source-menu.tsx
 msgid "Choose from Photos"
 msgstr "Choisir dans Photos"
+
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+msgid "Choose how far back to import. Your bank sends it in one go, and it may keep less than you ask for."
+msgstr "Choisissez jusqu’où remonter. Votre banque envoie tout d’un coup et peut conserver moins que demandé."
 
 #: src/sync/component/enable-banking-key-step/enable-banking-key-step.tsx
 msgid "Choose key file"
@@ -2518,6 +2534,7 @@ msgid "Confirm your PIN"
 msgstr "Confirme ton code PIN"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
+#: src/sync/component/enable-banking-connect-account-step/enable-banking-connect-account-step.tsx
 msgid "Connect"
 msgstr "Connecter"
 
@@ -2540,6 +2557,10 @@ msgstr "Connecter des banques de l'UE"
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Connect Monobank"
 msgstr "Connecter Monobank"
+
+#: src/sync/component/account-connect-bank-row/account-connect-bank-row.tsx
+msgid "Connect to bank"
+msgstr "Connecter à la banque"
 
 #: src/sync/component/bank-integration-key-card/bank-integration-key-card.tsx
 #: src/sync/component/enable-banking-connection-card/enable-banking-connection-card.tsx
@@ -2689,6 +2710,7 @@ msgid "Could not close deposit"
 msgstr "Impossible de clôturer le dépôt"
 
 #: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/component/enable-banking-connect-account-step/enable-banking-connect-account-step.tsx
 msgid "Could not connect the bank"
 msgstr "Impossible de connecter la banque"
 
@@ -2944,6 +2966,7 @@ msgstr "Impossible de configurer la synchronisation"
 msgid "Could not start syncing"
 msgstr "Impossible de lancer la synchronisation"
 
+#: src/sync/component/account-connect-bank-row/account-connect-bank-row.tsx
 #: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
 #: src/sync/component/enable-banking-reauthorize-row/enable-banking-reauthorize-row.tsx
 msgid "Could not start the authorization"
@@ -3506,6 +3529,14 @@ msgstr "Ne correspond pas"
 msgid "Different Binance account"
 msgstr "Autre compte Binance"
 
+#: src/sync/component/enable-banking-connect-account-row/enable-banking-connect-account-row.tsx
+msgid "Different currency from this account"
+msgstr "Devise différente de ce compte"
+
+#: src/sync/component/enable-banking-connect-account-row/enable-banking-connect-account-row.tsx
+msgid "Different IBAN from this account"
+msgstr "IBAN différent de ce compte"
+
 #: src/sync/component/enable-banking-disconnect-row/enable-banking-disconnect-row.tsx
 msgid "Disconnect"
 msgstr "Déconnecter"
@@ -3995,6 +4026,22 @@ msgstr "toutes les deux semaines"
 msgid "Every year"
 msgstr "Chaque année"
 
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+msgid "Everything from the last 3 months"
+msgstr "Tout des 3 derniers mois"
+
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+msgid "Everything from the last 6 months"
+msgstr "Tout des 6 derniers mois"
+
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+msgid "Everything from the last month"
+msgstr "Tout du dernier mois"
+
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+msgid "Everything from the last year"
+msgstr "Tout de la dernière année"
+
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
 msgid "Everything still stays on this device and nothing is uploaded. But anyone who can unlock your phone can open Budgie."
 msgstr "Tout reste sur cet appareil et rien n'est envoyé. Mais toute personne qui peut déverrouiller ton téléphone peut ouvrir Budgie."
@@ -4389,6 +4436,10 @@ msgstr "Masquer la répartition"
 msgid "Hide screen captures"
 msgstr "Masquer les captures d’écran"
 
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+msgid "History depth"
+msgstr "Profondeur de l’historique"
+
 #: src/sync/utils/get-history-import-status-message.util.ts
 msgid "History import needs attention"
 msgstr "L’importation de l’historique nécessite votre attention"
@@ -4538,6 +4589,10 @@ msgstr "Importation de l'historique · {percent}%"
 #: src/sync/component/sync-import-progress/sync-import-progress.tsx
 msgid "Importing history…"
 msgstr "Importation de l'historique…"
+
+#: src/sync/component/enable-banking-connect-account-step/enable-banking-connect-account-step.tsx
+msgid "Importing your bank history"
+msgstr "Importation de votre historique bancaire"
 
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Imports off"
@@ -4732,6 +4787,10 @@ msgstr "Activez uniquement \"Activer la lecture\" — n'autorisez jamais le trad
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Keep your PIN safe"
 msgstr "Garde ton code PIN en lieu sûr"
+
+#: src/sync/component/account-connect-bank-row/account-connect-bank-row.tsx
+msgid "Keeps this account and its history. New transactions come from your bank, starting the day after the last one."
+msgstr "Conserve ce compte et son historique. Les nouvelles transactions viennent de votre banque, à partir du lendemain de la dernière."
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Kept inside Budgie's file on this phone. Sent only to Monobank, never to us."
@@ -5207,7 +5266,7 @@ msgstr "Monobank limite la fréquence de vérification des clés. Réessayez dan
 msgid "Monobank rejected this key. Check it and try again."
 msgstr "Monobank a refusé cette clé. Vérifiez-la et réessayez."
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Monobank sends about one month of history per minute, for each account you selected."
 msgstr "Monobank envoie environ un mois d'historique par minute, pour chaque compte sélectionné."
 
@@ -5722,7 +5781,8 @@ msgstr "Non synchronisés : Auto-Invest, Binance Pay, Binance Card, cartes cadea
 msgid "Note"
 msgstr "Note"
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Nothing from the past is imported"
 msgstr "Rien du passé n'est importé"
 
@@ -7681,6 +7741,10 @@ msgstr "Synchronisation en cours"
 msgid "Syncing bank history"
 msgstr "Synchronisation de l’historique bancaire"
 
+#: src/sync/component/enable-banking-connect-account-step/enable-banking-connect-account-step.tsx
+msgid "Syncing from {startDay}"
+msgstr "Synchronisation depuis le {startDay}"
+
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Syncing history..."
 msgstr "Synchronisation de l'historique..."
@@ -7808,6 +7872,10 @@ msgstr "URL des conditions d'utilisation"
 msgid "The .pem file you saved"
 msgstr "Le fichier .pem que vous avez enregistré"
 
+#: src/sync/component/enable-banking-connect-account-step/enable-banking-connect-account-step.tsx
+msgid "The account keeps its history and syncs forward from the day after its last transaction."
+msgstr "Le compte conserve son historique et se synchronise à partir du lendemain de sa dernière transaction."
+
 #: src/sync/constant/sync-error-label.constant.ts
 msgid "The API key has the wrong permissions. Use a key with only \"Enable Reading\"."
 msgstr "La clé API a de mauvaises autorisations. Utilisez une clé avec uniquement « Enable Reading »."
@@ -7902,12 +7970,16 @@ msgid "There is no “forgot PIN”."
 msgstr "Il n’y a pas de « code PIN oublié »."
 
 #: src/sync/component/enable-banking-accounts-step/enable-banking-accounts-step.tsx
-msgid "These accounts already sync through another connection or use a currency Budgie does not support."
-msgstr "Ces comptes sont déjà synchronisés via une autre connexion ou utilisent une devise que Budgie ne prend pas en charge."
+msgid "These accounts already exist in Budgie or use a currency Budgie does not support. To continue an existing account, open it and tap Connect to bank."
+msgstr "Ces comptes existent déjà dans Budgie ou utilisent une devise non prise en charge. Pour poursuivre un compte existant, ouvrez-le et touchez Connecter à la banque."
 
 #: src/budget/constant/budget-period-this-label.constant.ts
 msgid "these two weeks"
 msgstr "ces deux semaines"
+
+#: src/sync/component/enable-banking-connect-account-row/enable-banking-connect-account-row.tsx
+msgid "This account already syncs"
+msgstr "Ce compte est déjà synchronisé"
 
 #: src/sync/constant/sync-error-label.constant.ts
 msgid "This account is not linked to the bank authorization. Link it in Enable Banking, then authorize again."

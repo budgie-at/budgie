@@ -12,6 +12,7 @@ import { GroupedListItem } from '../../../@generic/component/grouped-list-item/g
 import { GroupedListSectionTitle } from '../../../@generic/component/grouped-list-section-title/grouped-list-section-title';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
+import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { SearchablePageEmptyState } from '../../../@generic/component/searchable-page-empty-state/searchable-page-empty-state';
 import { SearchablePageList } from '../../../@generic/component/searchable-page-list/searchable-page-list';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
@@ -22,6 +23,7 @@ import type { EnableBankingBankInterface } from '@budgie/sync';
 
 interface Props {
     readonly banks: readonly EnableBankingBankInterface[];
+    readonly isLoading: boolean;
     readonly onSelectBank: (bank: EnableBankingBankInterface) => void;
     readonly onGoBack: () => void;
 }
@@ -30,7 +32,7 @@ const COMBINING_MARKS = /[̀-ͯ]/gu;
 
 const foldSearchText = (text: string): string => text.normalize('NFD').replaceAll(COMBINING_MARKS, '').toLowerCase();
 
-export const EnableBankingBankStep = ({ banks, onSelectBank, onGoBack }: Props) => {
+export const EnableBankingBankStep = ({ banks, isLoading, onSelectBank, onGoBack }: Props) => {
     const { t } = useLingui();
     const [query, setQuery] = useState('');
     const deferredQuery = useDeferredValue(query);
@@ -79,11 +81,13 @@ export const EnableBankingBankStep = ({ banks, onSelectBank, onGoBack }: Props) 
                 <SearchablePageList
                     data={listData}
                     emptyState={
-                        <SearchablePageEmptyState
-                            icon={UserIconNameEnum.Search}
-                            title={t`No banks found`}
-                            description={t`Try another name.`}
-                        />
+                        <LoadingContent isLoading={isLoading}>
+                            <SearchablePageEmptyState
+                                icon={UserIconNameEnum.Search}
+                                title={t`No banks found`}
+                                description={t`Try another name.`}
+                            />
+                        </LoadingContent>
                     }
                     listHeader={listHeader}
                     renderCard={renderCard}
