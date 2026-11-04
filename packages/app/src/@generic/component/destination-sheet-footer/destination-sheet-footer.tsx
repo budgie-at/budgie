@@ -32,11 +32,8 @@ export const DestinationSheetFooter = ({ commitCopy, commitLabel, pickLabel, onC
     }, [summary]);
 
     return (
-        <View className="gap-y-md border-t-hairline border-surface-separator bg-primary-reverse px-xl pt-lg" style={style}>
-            <View
-                pointerEvents="none"
-                className="absolute inset-x-0 bottom-full h-[24px] bg-linear-to-b from-primary-reverse/0 to-primary-reverse"
-            />
+        <View className="gap-y-md border-t-hairline border-surface-separator bg-surface px-xl pt-lg" style={style}>
+            <View pointerEvents="none" className="absolute inset-x-0 bottom-full h-[24px] bg-linear-to-b from-surface/0 to-surface" />
             {isNotEmptyString(summary) ? (
                 <Text className="text-secondary-foreground px-md text-[15px] leading-[20px]">{summary}</Text>
             ) : null}
