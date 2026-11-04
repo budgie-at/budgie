@@ -1373,7 +1373,7 @@ msgstr "Montant prêté"
 msgid "Amount or merchant is empty"
 msgstr "Le montant ou le commerçant est manquant"
 
-#: src/budget/components/budget-fund-target-field/budget-fund-target-field.tsx
+#: src/budget/components/budget-fund-form/budget-fund-form.tsx
 msgid "Amount to set aside"
 msgstr "Montant à mettre de côté"
 
@@ -3625,7 +3625,7 @@ msgstr "Erste Bank (PDF)"
 msgid "Estimated from your past transactions using your current limits."
 msgstr "Estimé à partir de tes transactions passées avec tes limites actuelles."
 
-#: src/budget/components/budget-event-limit-field/budget-event-limit-field.tsx
+#: src/budget/components/budget-event-form/budget-event-form.tsx
 msgid "Event limit"
 msgstr "Limite de l’événement"
 
@@ -3878,7 +3878,7 @@ msgstr "Montant fixe"
 msgid "Fixed-term savings with interest"
 msgstr "Épargne à terme avec intérêts"
 
-#: src/budget/components/budget-forecast-card/budget-forecast-card.tsx
+#: src/budget/components/budget-details-forecast/budget-details-forecast.tsx
 msgid "Forecast"
 msgstr "Prévision"
 

@@ -107,33 +107,26 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
             };
         });
 
-        const captureFromCamera = (): Effect.Effect<string | null> =>
-            isDefined(nativeModule)
-                ? Effect.promise(() => nativeModule.scan()).pipe(Effect.map(uris => uris.at(0) ?? null))
-                : Effect.succeed(null);
-
         const pickUri = <Result extends PickedAssetsResultInterface>(pick: () => Promise<Result>): Effect.Effect<string | null> =>
             Effect.promise(pick).pipe(
                 Effect.map(result => result.assets?.at(0)?.uri ?? null),
                 Effect.catchCause(cause => Effect.as(Effect.logError(cause), null))
             );
 
-        const captureFromPhotos = (): Effect.Effect<string | null> =>
-            pickUri(() => ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], allowsMultipleSelection: false }));
-
-        const captureFromFiles = (): Effect.Effect<string | null> =>
-            pickUri(() =>
+        const captureBySource: Record<ReceiptSourceEnum, Effect.Effect<string | null>> = {
+            [ReceiptSourceEnum.CAMERA]: isDefined(nativeModule)
+                ? Effect.promise(() => nativeModule.scan()).pipe(Effect.map(uris => uris.at(0) ?? null))
+                : Effect.succeed(null),
+            [ReceiptSourceEnum.PHOTOS]: pickUri(() =>
+                ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], allowsMultipleSelection: false })
+            ),
+            [ReceiptSourceEnum.FILES]: pickUri(() =>
                 DocumentPicker.getDocumentAsync({ type: ['image/*', 'application/pdf'], multiple: false, copyToCacheDirectory: true })
-            );
-
-        const captureBySource: Record<ReceiptSourceEnum, () => Effect.Effect<string | null>> = {
-            [ReceiptSourceEnum.CAMERA]: captureFromCamera,
-            [ReceiptSourceEnum.PHOTOS]: captureFromPhotos,
-            [ReceiptSourceEnum.FILES]: captureFromFiles
+            )
         };
 
         return {
-            capture: (source: ReceiptSourceEnum): Effect.Effect<string | null> => captureBySource[source](),
+            capture: (source: ReceiptSourceEnum): Effect.Effect<string | null> => captureBySource[source],
             process: Effect.fn('ReceiptScanService.process')(
                 function* (uri: string) {
                     const settings = yield* settingsRepository.findSettings();

@@ -16,8 +16,8 @@ import { resolveBudgetEventSaveBlocker } from '../../utils/resolve-budget-event-
 import { BudgetDeleteRow } from '../budget-delete-row/budget-delete-row';
 import { BudgetEventCategoryLimits } from '../budget-event-category-limits/budget-event-category-limits';
 import { BudgetEventDatesField } from '../budget-event-dates-field/budget-event-dates-field';
-import { BudgetEventLimitField } from '../budget-event-limit-field/budget-event-limit-field';
 import { BudgetEventTagField } from '../budget-event-tag-field/budget-event-tag-field';
+import { BudgetHeroAmountField } from '../budget-hero-amount-field/budget-hero-amount-field';
 import { BudgetNameField } from '../budget-name-field/budget-name-field';
 
 interface Props {
@@ -59,7 +59,13 @@ export const BudgetEventForm = ({ defaultInstrumentId, editingId }: Props) => {
                 }
             >
                 <FormLayoutGroup>
-                    <BudgetEventLimitField currencySymbol={currencySymbol} />
+                    <BudgetHeroAmountField
+                        control={form.control}
+                        name="overallLimit"
+                        label={t`Event limit`}
+                        currencySymbol={currencySymbol}
+                        testID={BudgetSelector.EventLimitInput}
+                    />
                     <GroupedListSection title={t`Details`} footer={t`Tagged expenses also count in your main budget.`}>
                         <BudgetNameField
                             control={form.control}

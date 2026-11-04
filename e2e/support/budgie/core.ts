@@ -1,6 +1,6 @@
+import { leaseIdForUdid, simlockApiFromEnv, type SimlockApi } from '@mobile-ci/e2e-simlock/exec';
+import { byId, done, scrollTo as scrollToLocator, tapUntil as tapLocatorUntil } from '@mobile-ci/e2e-simlock/steps';
 import { expect } from 'e2e';
-
-import { leaseIdForUdid, simlockApiFromEnv, type SimlockApi } from '../simlock/exec.ts';
 
 import { clearDatabase, ensureFixtures, seedDatabase } from './fixtures.ts';
 
@@ -16,8 +16,7 @@ export interface Ctx {
 
 export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-/** A React Native testID shows up on the host view and its wrapper; Maestro takes the first, so does this. */
-export const byId = (screen: Screen, testId: string): Locator => screen.getByTestId(testId).first();
+export { byId, done };
 
 /** Maestro's text selectors are case-insensitive regexes matching the whole string; this is the exact-text form most flows mean. */
 export const byText = (screen: Screen, text: string | RegExp): Locator => screen.getByText(text).first();
@@ -56,34 +55,31 @@ export async function expectText(ctx: Ctx, text: string | RegExp, timeout?: numb
     await expect(byText(ctx.screen, text)).toBeVisible(timeout === undefined ? undefined : { timeout });
 }
 
-/** Maestro's `scrollUntilVisible` (direction is where the content goes: `down` reveals what is below). */
+/** Maestro's `scrollUntilVisible` on a testID (direction is where the content goes: `down` reveals what is below). A visible node does not scroll. */
 export async function scrollTo(ctx: Ctx, testId: string, direction: 'up' | 'down' = 'down'): Promise<void> {
-    await ctx.screen.scrollUntilVisible(byId(ctx.screen, testId), { direction, timeout: 20_000 });
+    await scrollToLocator(ctx.screen, byId(ctx.screen, testId), direction);
 }
 
-/** Maestro's `tapOn: Done`: the keyboard's Done key, else hide the keyboard. */
-export async function done({ screen, device }: Ctx): Promise<void> {
-    // The keyboard's own Done key reads as a `key` with id `Done`; an accessory bar's as a button.
-    const keyboardKey = screen.getByTestId('Done');
-    const key = screen.getByRole('button', { name: 'Done' });
-    if (await keyboardKey.first().isVisible()) {
-        await keyboardKey.last().tap();
-    } else if (await key.first().isVisible()) {
-        await key.last().tap();
-    } else {
-        await device.dismissKeyboard();
-    }
-}
-
-/** Maestro's `retryTapIfNoChange`: tap again when the expected next state does not show. */
+/** Maestro's `retryTapIfNoChange` on a testID. */
 export async function tapUntil(ctx: Ctx, testId: string, next: () => Promise<void>): Promise<void> {
-    await tapId(ctx, testId);
-    try {
-        await next();
-    } catch {
-        await tapId(ctx, testId);
-        await next();
+    await tapLocatorUntil(byId(ctx.screen, testId), next);
+}
+
+/**
+ * Maestro's `centerElement`: scroll `testId` in, then drag it out of the bottom band where the floating action button
+ * and tab bar cover it. The drag starts at a fixed point clear of both, and a list that cannot scroll further is left
+ * as it is. The package's `scrollToCentered` drags from the node itself and fails at the list's end
+ * (rnw-community/mobile-ci#314).
+ */
+export async function scrollToCentered(ctx: Ctx, testId: string): Promise<void> {
+    await scrollTo(ctx, testId);
+    const box = await byId(ctx.screen, testId).boundingBox();
+    if (box === null || box.y + box.height / 2 < 560) {
+        return;
     }
+    const x = 200;
+    await ctx.screen.swipe({ from: { x, y: 600 }, to: { x, y: 600 - (box.y + box.height / 2 - 437) }, duration: 600 });
+    await sleep(600);
 }
 
 /** Clears iOS's "Open in “budgie”?" prompt that the first custom-scheme link on a fresh simulator shows. */

@@ -2,7 +2,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
-import { RUNWAY_FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../constant/runway-footnote-max-font-size-multiplier.constant';
+import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
 import { RUNWAY_MAX_FONT_SIZE_MULTIPLIER } from '../../constant/runway-max-font-size-multiplier.constant';
 import { RunwayCard } from '../runway-card/runway-card';
 
@@ -24,7 +24,7 @@ export const RunwayAllInToggle = ({ isAllIn, onToggle }: Props) => {
                 <ThemedSwitch accessibilityLabel={t`Include one‑offs`} value={isAllIn} onValueChange={onToggle} />
             </RunwayCard>
 
-            <Text maxFontSizeMultiplier={RUNWAY_FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER} className="px-3xl text-[13px] text-secondary-foreground">
+            <Text maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER} className="px-3xl text-[13px] text-secondary-foreground">
                 <Trans>Spreads irregular costs across the months.</Trans>
             </Text>
         </View>

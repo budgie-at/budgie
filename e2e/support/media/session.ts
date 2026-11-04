@@ -4,11 +4,11 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { exec, mustDrop, mustExec, writeFile } from '@mobile-ci/e2e-simlock/exec';
 import { expect } from 'e2e';
 
 import * as b from '../budgie/core.ts';
 import { BUNDLE_ID } from '../budgie/fixtures.ts';
-import { exec, mustDrop, mustExec, writeFile } from '../simlock/exec.ts';
 
 import { SCENES } from './scenes.ts';
 import { workerShell } from './steps.ts';

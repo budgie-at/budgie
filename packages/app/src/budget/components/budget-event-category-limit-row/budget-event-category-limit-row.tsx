@@ -1,4 +1,4 @@
-import { Controller, UseControllerReturn, useFormContext, useWatch } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetEventFormValues } from '../../constant/budget-event-form-schema.constant';
@@ -15,24 +15,20 @@ export const BudgetEventCategoryLimitRow = ({ currencySymbol, index, onRemove }:
     const { control } = useFormContext<BudgetEventFormValues>();
     const categoryId = useWatch({ control, name: `categoryLimits.${index}.categoryId` });
 
-    const renderAmount = ({
-        field: { value, onChange }
-    }: UseControllerReturn<BudgetEventFormValues, `categoryLimits.${number}.limitAmount`>) => (
-        <BudgetEditableAmountInput
-            testID={BudgetSelector.EventCategoryLimitAmountInput(index)}
-            value={value}
-            currencySymbol={currencySymbol}
-            className="min-w-[104px] max-w-[136px] text-right"
-            onChangeValue={onChange}
-        />
-    );
-
     return (
         <BudgetCategoryLimitDeletableRow
             categoryId={categoryId}
             index={index}
             testID={BudgetSelector.EventCategoryLimitRow(index)}
-            amountInput={<Controller control={control} name={`categoryLimits.${index}.limitAmount`} render={renderAmount} />}
+            amountInput={
+                <BudgetEditableAmountInput
+                    control={control}
+                    name={`categoryLimits.${index}.limitAmount`}
+                    testID={BudgetSelector.EventCategoryLimitAmountInput(index)}
+                    currencySymbol={currencySymbol}
+                    className="min-w-[104px] max-w-[136px] text-right"
+                />
+            }
             onRemove={onRemove}
         />
     );
