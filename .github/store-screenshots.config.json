@@ -23,18 +23,14 @@
         }
     ],
     "capture-scenes": [
-        { "name": "00-prime", "flow": "flows/setup/prime-deep-links-scene.flow.yaml" },
         { "name": "01-home", "deepLink": "budgie://", "readySelector": { "id": "HomePage.TotalBalance" } },
-        { "name": "03-analytics", "flow": "flows/store/03-analytics.flow.yaml" },
+        { "name": "03-analytics", "test": "03-analytics" },
         { "name": "04-budget", "deepLink": "budgie://budget", "readySelector": { "id": "BudgetDetails.EditButton" } },
-        { "name": "05-add-expense", "flow": "flows/store/05-add-expense.flow.yaml" },
-        { "name": "06-account", "flow": "flows/media/net-worth-tracker-2.flow.yaml" },
-        { "name": "07-settings", "flow": "flows/store/07-settings.flow.yaml" },
-        { "name": "09-inbox", "flow": "flows/media/bulk-categorize-transactions-1.flow.yaml" }
+        { "name": "05-add-expense", "test": "05-add-expense" },
+        { "name": "06-account", "test": "net-worth-tracker-2" },
+        { "name": "07-settings", "test": "07-settings" },
+        { "name": "09-inbox", "test": "bulk-categorize-transactions-1" }
     ],
-    "screenshots-dir": "tests/app-tests",
-    "maestro-config": "tests/app-tests/config.yaml",
-    "seed-command": "bash tests/app-tests/scripts/seed-screenshot-scene.sh",
     "settle-seconds": 6,
     "status-bar-override": true,
     "apple-screenshot-slots": {

@@ -21,25 +21,23 @@ export const RunwayVerdictFigure = ({ computation }: Props) => {
     const { isPositive, net, runwayMonths } = computation;
     const netAmount = convertFromMicroUnits(net);
     const monthsLeft = Math.round(runwayMonths ?? 0);
-    const growingTestID = RunwaySelector.VerdictFigure(`+${formatWholeDigits(netAmount, defaultInstrument.symbol)}`);
-    const burningTestID = RunwaySelector.VerdictFigure(`≈ ${formatWholeDigits(monthsLeft)}`);
-    const growingProps = {
-        amount: netAmount,
-        currencySymbol: defaultInstrument.symbol,
-        prefix: '+',
-        decimalPlaces: 0,
-        unit: t`per month`,
-        testID: growingTestID
-    };
-    const burningProps = {
-        amount: monthsLeft,
-        currencySymbol: '',
-        prefix: '≈',
-        decimalPlaces: 0,
-        unit: t`months left`,
-        testID: burningTestID
-    };
-    const figureProps = isPositive ? growingProps : burningProps;
+    const figureProps = isPositive
+        ? {
+              amount: netAmount,
+              currencySymbol: defaultInstrument.symbol,
+              prefix: '+',
+              decimalPlaces: 0,
+              unit: t`per month`,
+              testID: RunwaySelector.VerdictFigure(`+${formatWholeDigits(netAmount, defaultInstrument.symbol)}`)
+          }
+        : {
+              amount: monthsLeft,
+              currencySymbol: '',
+              prefix: '≈',
+              decimalPlaces: 0,
+              unit: t`months left`,
+              testID: RunwaySelector.VerdictFigure(`≈ ${formatWholeDigits(monthsLeft)}`)
+          };
 
     return <HeroFigure variant="primary" {...figureProps} />;
 };

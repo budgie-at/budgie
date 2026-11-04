@@ -4,7 +4,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { cn } from '../../../@generic/utils/cn.util';
 import { BUDGET_BAR_FILL_CLASS_NAME } from '../../constant/budget-bar-fill-class-name.constant';
-import { BUDGET_PACE_RESERVED_CLASS_NAME } from '../../constant/budget-pace-reserved-class-name.constant';
 import { buildBudgetPaceTrackMetrics } from '../../utils/build-budget-pace-track-metrics.util';
 
 import type { BudgetPaceVariant } from '../../type/budget-pace-variant.type';
@@ -15,6 +14,11 @@ interface Props {
     readonly tone: BudgetPaceVariant;
 }
 
+const BUDGET_PACE_RESERVED_CLASS_NAME: Record<BudgetPaceVariant, string> = {
+    positive: 'bg-primary/25',
+    warning: 'bg-warning-corner',
+    destructive: 'bg-destructive-corner'
+};
 const RING_BORDER_CLASS_NAME = {
     positive: 'border-primary',
     warning: 'border-warning-fill',

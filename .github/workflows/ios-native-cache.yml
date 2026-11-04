@@ -2,7 +2,7 @@ name: Warm the iOS e2e base binary
 
 # The warm-up. From mobile-ci v3 a pull request never compiles native code when
 # a base binary exists for its native key: it fetches the base, repacks this
-# commit's JavaScript into it on Linux, and hands the result to Maestro. A base
+# commit's JavaScript into it on Linux, and hands the result to the e2e suite. A base
 # is only ever published from the default branch, so this workflow is what makes
 # the very next pull request cheap. It plans on Linux first - a push that moved
 # no native surface finds every key already published and claims no Mac at all.
@@ -45,7 +45,7 @@ jobs:
             contents: read
             packages: write
             actions: read
-        uses: rnw-community/mobile-ci/.github/workflows/seed-native-cache.yml@3e22c383f15427da8e9b5e211701f133cc111535 # v4.8.0
+        uses: rnw-community/mobile-ci/.github/workflows/seed-native-cache.yml@cc00a7c34a0ffcced2944d9c9b7449f9ddcd1065 # v4.9.1
         with:
             control-runner-labels: '["self-hosted","linux-portable-2x4"]'
             ios-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
