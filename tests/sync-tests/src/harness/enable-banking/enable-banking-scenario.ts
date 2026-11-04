@@ -35,10 +35,16 @@ interface SeedOptions {
     readonly iban?: string;
 }
 
-export const seedEnableBankingAccount = (options: SeedOptions) =>
+export const findOrSeedEur = () =>
     Effect.gen(function* () {
         const existingEur = (yield* testDb.select().from(InstrumentEntityTable).where(eq(InstrumentEntityTable.code, 'EUR'))).at(0);
-        const eur = isDefined(existingEur) ? existingEur : yield* seed.instrument({ code: 'EUR', name: 'Euro', symbol: 'EUR' });
+
+        return isDefined(existingEur) ? existingEur : yield* seed.instrument({ code: 'EUR', name: 'Euro', symbol: 'EUR' });
+    });
+
+export const seedEnableBankingAccount = (options: SeedOptions) =>
+    Effect.gen(function* () {
+        const eur = yield* findOrSeedEur();
         const account = yield* seed.account({
             externalId: options.hash,
             externalSource: ExternalSourceEnum.ENABLE_BANKING,

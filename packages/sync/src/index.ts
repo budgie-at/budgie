@@ -118,5 +118,7 @@ export { UnpairedOwnCardTransferRepairService } from './privatbank/service/unpai
 export { PRIVATBANK_DUPLICATE_CANDIDATE_SQL } from './privatbank/constant/privatbank-duplicate-candidate-sql.constant';
 export type { SyncError } from './core/interface/sync-error.type';
 export type { SyncDuplicateRepairPreviewInterface } from './core/interface/sync-duplicate-repair-preview.interface';
-
-export { installE2eFakeApi } from './e2e/e2e-fake-api';
+export { SyncAccountContinuationRefusalEnum } from './core/enum/sync-account-continuation-refusal.enum';
+export { SyncAccountContinuationRefusedError } from './core/error/sync-account-continuation-refused.error';
+export { isLiveSync } from './core/utils/is-live-sync.util';
+export type { SyncAccountContinuationChoicesInterface } from './core/interface/sync-account-continuation-choices.interface';

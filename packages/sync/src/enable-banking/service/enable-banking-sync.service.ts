@@ -28,6 +28,7 @@ import { SyncRequestSigner } from '../../core/port/sync-request-signer.port';
 import { SyncBalanceReconciliationService } from '../../core/service/sync-balance-reconciliation.service';
 import { SyncIntegrationTokenService } from '../../core/service/sync-integration-token.service';
 import { generateDefaultSyncAccountTitle } from '../../core/utils/generate-default-sync-account-title.util';
+import { makePollingSyncAccountContinuation } from '../../core/utils/make-polling-sync-account-continuation.util';
 import { makePollingSyncAccountSetup } from '../../core/utils/make-polling-sync-account-setup.util';
 import { makePollingSyncService } from '../../core/utils/make-polling-sync-service.util';
 import { resolveSyncProgressUpdate } from '../../core/utils/resolve-sync-progress-update.util';
@@ -38,6 +39,7 @@ import { enableBankingMapper } from '../mapper/enable-banking.mapper';
 import { EnableBankingBatchService } from './enable-banking-batch.service';
 import { EnableBankingClientService } from './enable-banking-client.service';
 
+import type { SyncHistoryDepthEnum } from '../../core/enum/sync-history-depth.enum';
 import type { SyncAccountInterface } from '../../core/interface/sync-account.interface';
 import type { SyncBatchResultInterface } from '../../core/interface/sync-batch-result.interface';
 import type { EnableBankingPendingAuthorizationInterface } from '../constant/enable-banking-pending-authorization.schema';
@@ -61,6 +63,7 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
         const clientService = yield* EnableBankingClientService;
         const provider = ExternalSourceEnum.ENABLE_BANKING;
         const createOrUpdateSync = yield* makePollingSyncAccountSetup(provider);
+        const accountContinuation = yield* makePollingSyncAccountContinuation(provider);
         const millisecondsPerSecond = 1000;
         const forwardSyncStaleThresholdMs = 8 * 60 * 60 * millisecondsPerSecond;
         const consentMarginSeconds = 60;
@@ -98,13 +101,20 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
             const instrumentCodes = new Set((yield* instrumentRepository.getAll()).map(instrument => instrument.code));
             const ibans = accounts.map(account => account.iban).filter(isNotEmptyString);
             const accountsWithIban = isNotEmptyArray(ibans) ? yield* accountRepository.findByIbans(ibans) : [];
+            const aliases = yield* accountRepository.findExternalIdAliases(accounts.map(account => account.id));
 
             return new Set(
                 accounts
                     .filter(
                         account =>
                             !instrumentCodes.has(account.currencyCode) ||
-                            accountsWithIban.some(existing => existing.iban === account.iban && existing.externalId !== account.id)
+                            accountsWithIban.some(existing => existing.iban === account.iban && existing.externalId !== account.id) ||
+                            aliases.some(
+                                alias =>
+                                    alias.externalId === account.id &&
+                                    alias.account.externalId !== account.id &&
+                                    !isDefined(alias.account.deletedAt)
+                            )
                     )
                     .map(account => account.id)
             );
@@ -267,6 +277,7 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
                     aspspName: input.aspspName,
                     aspspCountry: input.aspspCountry,
                     integrationId: input.integrationId,
+                    connectAccountId: input.connectAccountId,
                     callbackUrl: input.callbackUrl,
                     expiresAtMs: nowMs + pendingAuthorizationLifetimeMs
                 };
@@ -299,19 +310,23 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
                     token,
                     integrationId: reconsentIntegrationId,
                     accounts,
-                    previews: yield* pollingSyncService.mapAccountsToPreview(accounts, account => unconnectableIds.has(account.id))
+                    previews: yield* pollingSyncService.mapAccountsToPreview(accounts, account => unconnectableIds.has(account.id)),
+                    connectChoices: isDefined(pending.connectAccountId)
+                        ? yield* accountContinuation.findChoices(pending.connectAccountId, accounts)
+                        : null
                 } satisfies EnableBankingAuthorizationResultInterface;
             }),
             setupAccountSyncBatch: Effect.fn('EnableBankingSyncService.setupAccountSyncBatch')(function* (
                 token: string,
                 accounts: SyncAccountInterface[],
-                externalIds: readonly string[]
+                externalIds: readonly string[],
+                historyDepth: SyncHistoryDepthEnum
             ) {
                 const unconnectableIds = yield* findUnconnectableExternalIds(accounts);
                 const selectedAccounts = accounts.filter(account => externalIds.includes(account.id) && !unconnectableIds.has(account.id));
                 for (const selectedAccount of selectedAccounts) {
                     const account = yield* pollingSyncService.getOrCreateSyncAccount(selectedAccount);
-                    yield* createOrUpdateSync(account.id, token);
+                    yield* createOrUpdateSync(account.id, token, historyDepth);
                 }
 
                 if (isNotEmptyArray(selectedAccounts)) {
@@ -322,6 +337,19 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
                 }
 
                 return selectedAccounts.length;
+            }),
+            connectAccount: Effect.fn('EnableBankingSyncService.connectAccount')(function* (
+                accountId: number,
+                token: string,
+                bankAccount: SyncAccountInterface
+            ) {
+                const startAt = yield* accountContinuation.connect(accountId, token, bankAccount);
+                const credentials = yield* clientService.decodeCredentials(token);
+                const integration = yield* syncIntegrationTokenService.getOrCreateIntegration(provider, token);
+                yield* syncIntegrationTokenService.fillIntegrationLabel(integration.id, credentials.aspspName);
+                yield* pollingSyncService.requestSync();
+
+                return startAt;
             }),
             disconnect: Effect.fn('EnableBankingSyncService.disconnect')(function* (integrationId: number) {
                 const integration = yield* bankIntegrationRepository.findById(integrationId);
@@ -344,8 +372,10 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
                 }
 
                 for (const account of yield* accountRepository.findByIntegrationId(integrationId)) {
-                    yield* accountArchiveService.archiveById(account.id);
-                    yield* syncRepository.setEnabled(account.id, false);
+                    if (!(yield* accountContinuation.release(account))) {
+                        yield* accountArchiveService.archiveById(account.id);
+                        yield* syncRepository.setEnabled(account.id, false);
+                    }
                 }
                 yield* bankIntegrationRepository.deleteById(integrationId);
 

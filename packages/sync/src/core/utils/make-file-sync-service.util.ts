@@ -21,7 +21,7 @@ import type { FileSyncServiceDefinitionInterface } from '../interface/file-sync-
 import type { ImportContextInterface } from '../interface/import-context.interface';
 import type { SyncAccountInterface } from '../interface/sync-account.interface';
 import type { SyncTransactionInterface } from '../interface/sync-transaction.interface';
-import type { AccountEntityInterface } from '@budgie/contracts';
+import type { AccountEntityInterface, SyncEntityInterface } from '@budgie/contracts';
 
 export const makeFileSyncService = Effect.fnUntraced(function* (definition: FileSyncServiceDefinitionInterface) {
     const syncWorkload = yield* SyncWorkload;
@@ -35,6 +35,7 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
     const ruleEngineService = yield* RuleEngineService;
     const accountReissueMergeService = yield* AccountReissueMergeService;
     const syncService = yield* makeSyncService(definition);
+    const millisecondsPerSecond = 1000;
     const resolveMccCategoryLookupKey =
         definition.resolveMccCategoryLookupKey ?? ((transaction: SyncTransactionInterface) => transaction.category ?? '');
 
@@ -86,6 +87,11 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
         return account;
     });
 
+    const isDeliveredByLiveConnection = ({ backwardSyncLimitAt, forwardSyncFromAt, provider }: SyncEntityInterface, timeMs: number) =>
+        isDefined(backwardSyncLimitAt) &&
+        timeMs >= backwardSyncLimitAt.getTime() &&
+        (provider !== definition.provider || (isDefined(forwardSyncFromAt) && timeMs < forwardSyncFromAt.getTime()));
+
     const importAccountTransactions = Effect.fnUntraced(function* (
         client: FileBasedSyncClientInterface,
         bankAccount: SyncAccountInterface,
@@ -93,7 +99,10 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
     ) {
         const account = yield* prepareImportAccount(bankAccount);
 
-        const transactions = client.getTransactions(bankAccount.id);
+        const sync = yield* syncRepository.getByAccountId(account.id);
+        const transactions = client
+            .getTransactions(bankAccount.id)
+            .filter(transaction => !isDefined(sync) || !isDeliveredByLiveConnection(sync, transaction.time * millisecondsPerSecond));
         if (!isNotEmptyArray(transactions)) {
             return {
                 newTransactions: [],

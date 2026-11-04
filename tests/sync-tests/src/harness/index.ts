@@ -39,6 +39,7 @@ export {
     buildEnableBankingToken,
     fetchEnableBankingTransactions,
     fetchSortedEnableBankingExternalIds,
+    findOrSeedEur,
     makeEnableBankingSyncStale,
     seedEnableBankingAccount,
     seedLinkedEnableBankingAccount

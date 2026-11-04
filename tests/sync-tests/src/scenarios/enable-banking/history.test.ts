@@ -60,6 +60,87 @@ describe('enable-banking/history', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('a history limit requests only date_from and drops older rows when the bank falls back to longest', () =>
+        Effect.gen(function* () {
+            const service = yield* EnableBankingSyncService;
+            const limitAt = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+            yield* seedEnableBankingAccount({
+                hash: HASH,
+                token: buildEnableBankingToken(SESSION),
+                mode: SyncModeEnum.BACKWARD,
+                backwardSyncLimitAt: limitAt
+            });
+            stubAccount();
+            const queries: URLSearchParams[] = [];
+            enableBankingStub.transactions(UID, ({ query }) => {
+                queries.push(query);
+
+                return query.get('strategy') === 'longest'
+                    ? {
+                          transactions: [
+                              buildEnableBankingTransaction({ entry_reference: 'kept' }),
+                              buildEnableBankingTransaction({ entry_reference: 'older', booking_date: enableBankingDaysAgo(60) })
+                          ]
+                      }
+                    : { status: 422, error: 'WRONG_TRANSACTIONS_PERIOD' };
+            });
+
+            yield* service.sync();
+
+            expect(queries[0].get('date_from')).toBe(limitAt.toISOString().slice(0, 10));
+            expect(queries[0].has('strategy')).toBe(false);
+            expect(queries[1].has('date_from')).toBe(false);
+            expect((yield* fetchEnableBankingTransactions()).map(row => row.externalId)).toEqual([`${HASH}:kept`]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('new-only history fetches nothing old and the forward run still reconciles today', () =>
+        Effect.gen(function* () {
+            const service = yield* EnableBankingSyncService;
+            const now = new Date();
+            const { sync } = yield* seedEnableBankingAccount({
+                hash: HASH,
+                token: buildEnableBankingToken(SESSION),
+                mode: SyncModeEnum.BACKWARD,
+                backwardSyncFromAt: now,
+                forwardSyncFromAt: now,
+                backwardSyncLimitAt: now
+            });
+            stubAccount();
+            const queries: URLSearchParams[] = [];
+            enableBankingStub.transactions(UID, ({ query }) => {
+                queries.push(query);
+
+                return { transactions: [buildEnableBankingTransaction({ booking_date: enableBankingDaysAgo(2) })] };
+            });
+
+            yield* service.sync();
+
+            expect(queries.every(query => !query.has('strategy'))).toBe(true);
+            expect(yield* fetchEnableBankingTransactions()).toEqual([]);
+            expect((yield* fetchSyncById(sync.id)).reconciledAt).not.toBeNull();
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('the forward lookback never crosses a history limit', () =>
+        Effect.gen(function* () {
+            const service = yield* EnableBankingSyncService;
+            const limitAt = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
+            yield* seedEnableBankingAccount({ hash: HASH, token: buildEnableBankingToken(SESSION), backwardSyncLimitAt: limitAt });
+            stubAccount();
+            enableBankingStub.transactions(UID, () => ({
+                transactions: [
+                    buildEnableBankingTransaction({ entry_reference: 'kept' }),
+                    buildEnableBankingTransaction({ entry_reference: 'older', booking_date: enableBankingDaysAgo(5) })
+                ]
+            }));
+
+            yield* service.sync();
+
+            expect((yield* fetchEnableBankingTransactions()).map(row => row.externalId)).toEqual([`${HASH}:kept`]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('does no backward work in a background run and still syncs forward accounts', () =>
         Effect.gen(function* () {
             const service = yield* EnableBankingSyncService;

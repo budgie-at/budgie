@@ -15,6 +15,11 @@ const SECONDS_PER_HOUR = 3600;
 const UAH_NUMERIC_CODE = 980;
 const REJECTED_TOKEN_PATTERN = /^e2e-rejected/u;
 
+const SYNTHETIC_BANK = 'E2E Synthetic Bank';
+const CONNECT_BANK = 'E2E Connect Bank';
+const CONNECT_CODE = 'e2e-connect-code';
+const CONNECT_SESSION = 'e2e-connect-session';
+
 const dayAgo = (days: number): string => new Date(Date.now() - days * MILLISECONDS_PER_DAY).toISOString().slice(0, ISO_DATE_LENGTH);
 
 const ENABLE_BANKING_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandlerType]> = [
@@ -32,31 +37,47 @@ const ENABLE_BANKING_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandler
         'GET',
         /^\/aspsps$/u,
         () => ({
-            aspsps: [{ name: 'E2E Synthetic Bank', country: 'DE', maximum_consent_validity: NINETY_DAYS * 24 * 60 * 60, beta: false }]
+            aspsps: [SYNTHETIC_BANK, CONNECT_BANK].map(name => ({
+                name,
+                country: 'DE',
+                maximum_consent_validity: NINETY_DAYS * 24 * 60 * 60,
+                beta: false
+            }))
         })
     ],
     [
         'POST',
         /^\/auth$/u,
-        body => ({ url: `budgie://enable-banking/callback?code=e2e-code&state=${/"state":"([^"]+)"/u.exec(body)?.[1] ?? ''}` })
+        body => ({
+            url: `budgie://enable-banking/callback?code=${body.includes(CONNECT_BANK) ? CONNECT_CODE : 'e2e-code'}&state=${/"state":"([^"]+)"/u.exec(body)?.[1] ?? ''}`
+        })
     ],
     [
         'POST',
         /^\/sessions$/u,
-        () => ({
-            session_id: 'e2e-session',
-            accounts: [
-                {
-                    account_id: { iban: 'DE89370400440532013000' },
-                    name: 'E2E Current',
-                    cash_account_type: 'CACC',
-                    currency: 'EUR',
-                    identification_hash: 'e2e-hash-1'
-                }
-            ],
-            aspsp: { name: 'E2E Synthetic Bank', country: 'DE' },
-            access: { valid_until: new Date(Date.now() + (NINETY_DAYS - 1) * MILLISECONDS_PER_DAY).toISOString() }
-        })
+        body => {
+            const isConnectBank = body.includes(CONNECT_CODE);
+
+            return {
+                session_id: isConnectBank ? CONNECT_SESSION : 'e2e-session',
+                accounts: [
+                    {
+                        ...(!isConnectBank && { account_id: { iban: 'DE89370400440532013000' } }),
+                        name: isConnectBank ? 'E2E Savings' : 'E2E Current',
+                        cash_account_type: 'CACC',
+                        currency: 'EUR',
+                        identification_hash: isConnectBank ? 'e2e-hash-connect' : 'e2e-hash-1'
+                    }
+                ],
+                aspsp: { name: isConnectBank ? CONNECT_BANK : SYNTHETIC_BANK, country: 'DE' },
+                access: { valid_until: new Date(Date.now() + (NINETY_DAYS - 1) * MILLISECONDS_PER_DAY).toISOString() }
+            };
+        }
+    ],
+    [
+        'GET',
+        new RegExp(`^/sessions/${CONNECT_SESSION}$`, 'u'),
+        () => ({ status: 'AUTHORIZED', accounts_data: [{ uid: 'e2e-uid-connect', identification_hash: 'e2e-hash-connect' }] })
     ],
     [
         'GET',

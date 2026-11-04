@@ -1,5 +1,5 @@
 import { Db, makeLoggerLayer } from '@budgie/contracts';
-import { installE2eFakeApi } from '@budgie/sync';
+import { installE2eFakeApi } from '@budgie/sync/e2e';
 import * as Effect from 'effect/Effect';
 import * as FetchHttpClient from 'effect/http/FetchHttpClient';
 import * as Layer from 'effect/Layer';

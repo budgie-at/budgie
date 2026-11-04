@@ -1,0 +1,6 @@
+export enum SyncAccountContinuationRefusalEnum {
+    CURRENCY_MISMATCH = 'CURRENCY_MISMATCH',
+    IBAN_MISMATCH = 'IBAN_MISMATCH',
+    LINKED_ELSEWHERE = 'LINKED_ELSEWHERE',
+    LIVE_SYNC = 'LIVE_SYNC'
+}
