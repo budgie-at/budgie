@@ -10,7 +10,6 @@ import { BankIntegrationSyncStatusEnum } from '../enum/bank-integration-sync-sta
 import { useBankIntegrationAccountPreviewsQuery } from '../query/use-bank-integration-account-previews.query';
 import { useBankIntegrationSyncsQuery } from '../query/use-bank-integration-syncs.query';
 import { getAccountIdentityLabel } from '../utils/get-account-identity-label.util';
-import { getAccountMaskLabel } from '../utils/get-account-mask-label.util';
 import { getBankIntegrationSyncStatus } from '../utils/get-bank-integration-sync-status.util';
 
 import { useAccountSync } from './use-account-sync.hook';
@@ -38,14 +37,7 @@ export const useBankIntegrationAccountRowState = (
     const liveSyncLabel = capabilities.supportsLiveSync && isDefined(syncState) ? (syncIssueLabels[syncState] ?? '') : '';
     const stateLabel = capabilities.supportsFileImport && sync?.enabled === false ? t`Imports off` : liveSyncLabel;
 
-    const stateLabels = [
-        hasFailed ? t`Sync failed` : '',
-        stateLabel,
-        account.isActive ? '' : t`Hidden from Home`,
-        hasFailed && isNotEmptyString(account.iban) ? getAccountMaskLabel(account.iban) : ''
-    ]
-        .filter(isNotEmptyString)
-        .join(' · ');
+    const stateLabels = [stateLabel, account.isActive ? '' : t`Hidden from Home`].filter(isNotEmptyString).join(' · ');
     const identityLabel =
         integration.provider === ExternalSourceEnum.BINANCE ? '' : getAccountIdentityLabel(account.instrument.code, account.iban);
 

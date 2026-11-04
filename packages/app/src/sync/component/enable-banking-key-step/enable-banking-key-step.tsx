@@ -1,6 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { Linking } from 'react-native';
+import { Linking, Text } from 'react-native';
 
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
@@ -58,7 +58,10 @@ export const EnableBankingKeyStep = ({ applicationId, isKeyPicked, onApplication
             <GroupedListSection
                 footer={t`Personal accounts only. Enable Banking's Terms allow this for private individuals using their own accounts. By connecting you accept them.`}
             >
-                <GroupedListRow title={t`Read the Enable Banking Terms`} onPress={handleOpenTerms} />
+                <GroupedListRow
+                    title={<Text className="text-primary text-[17px]">{t`Read the Enable Banking Terms`}</Text>}
+                    onPress={handleOpenTerms}
+                />
             </GroupedListSection>
         </>
     );

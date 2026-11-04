@@ -13,7 +13,6 @@ import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-s
 import { TONAL_DISC_BACKGROUND } from '../../../@generic/constant/tonal-disc-background.constant';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { cn } from '../../../@generic/utils/cn.util';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { toTrueMinus } from '../../../@generic/utils/to-true-minus.util';
@@ -67,7 +66,6 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
                 )
             )
         );
-    const leadClassName = isFailed ? 'text-destructive-strong' : 'text-secondary-foreground';
     const leadText = isNotEmptyString(leadLabel) ? `${leadLabel} · ` : '';
 
     const toggle = isToggleVisible ? (
@@ -90,9 +88,10 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
                 <Text className="text-[17px] text-primary" numberOfLines={2}>
                     {account.title}
                 </Text>
+                {isFailed ? <Text className="text-destructive-strong text-[13px] leading-[18px]">{t`Sync failed`}</Text> : null}
                 <View className="flex-row">
                     <Text
-                        className={cn('shrink text-[13px] leading-[18px]', leadClassName)}
+                        className="shrink text-[13px] leading-[18px] text-secondary-foreground"
                         numberOfLines={1}
                         accessibilityLabel={leadLabel}
                     >

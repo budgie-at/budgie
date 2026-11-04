@@ -45,7 +45,7 @@ export const EnableBankingAccountsStep = ({
                             <HapticPressable
                                 onPress={handleToggleAll}
                                 accessibilityRole="button"
-                                className="min-h-[44px] justify-end px-3xl pb-md active:opacity-70"
+                                className="-mt-[16px] min-h-[44px] justify-end px-3xl pb-md active:opacity-70"
                             >
                                 <Text className="text-primary text-[15px] font-semibold">{toggleAllLabel}</Text>
                             </HapticPressable>

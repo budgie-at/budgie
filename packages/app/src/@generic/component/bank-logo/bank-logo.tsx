@@ -1,6 +1,6 @@
 import { ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Image } from 'expo-image';
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -27,7 +27,11 @@ export const BankLogo = ({ bankProvider, bankName, size = 32 }: Props) => {
     const tileStyle = { width: size, height: size, borderRadius: radius, borderCurve: 'continuous' as const };
 
     if (isDefined(slug)) {
-        return <Image source={BANK_LOGO[slug]} style={tileStyle} contentFit="cover" />;
+        return (
+            <View className="overflow-hidden border-hairline border-surface-separator" style={tileStyle}>
+                <Image source={BANK_LOGO[slug]} style={StyleSheet.absoluteFill} contentFit="cover" />
+            </View>
+        );
     }
 
     if (!hasName) {
