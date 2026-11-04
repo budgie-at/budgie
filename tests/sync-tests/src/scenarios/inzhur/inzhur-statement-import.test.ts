@@ -74,6 +74,13 @@ describe('inzhur/statement-import', () => {
                 [AccountTypeEnum.STOCKS, DividendPayoutEnum.REINVEST, setup.integration.id]
             ]);
             expect(setup.cashAccount).toMatchObject({ type: AccountTypeEnum.BANK_SYNC, externalSource: ExternalSourceEnum.INZHUR });
+
+            const adjustments = yield* testDb
+                .select({ title: TransactionEntityTable.title })
+                .from(TransactionEntityTable)
+                .where(eq(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT));
+
+            expect(adjustments.map(adjustment => adjustment.title).sort()).toEqual(['', 'Opening holdings', 'Opening holdings']);
         }).pipe(Effect.provide(makeInzhurLayer({ [FIRST_URI]: buildInzhurBaselineItems(1950, 2) })))
     );
 

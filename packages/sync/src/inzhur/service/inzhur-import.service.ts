@@ -57,6 +57,7 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
         const transferCreationService = yield* TransferCreationService;
         const provider = ExternalSourceEnum.INZHUR;
         const statementNoonSuffix = 'T12:00:00.000Z';
+        const openingHoldingsTitle = 'Opening holdings';
         const canonicalFundNameByKeyword = {
             REIT: 'Inzhur REIT',
             ЕНЕРДЖІ: 'Inzhur Energy',
@@ -191,7 +192,7 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
                     const deltaMicroUnits = convertToMicroUnits(holding.quantity) - (yield* readBalance(account.id));
 
                     if (deltaMicroUnits !== 0) {
-                        yield* accountService.adjustBalanceTo(account.id, holding.quantity, operatedAt);
+                        yield* accountService.adjustBalanceTo(account.id, holding.quantity, operatedAt, openingHoldingsTitle);
                         funds.push({
                             isin: holding.isin,
                             name: instruments.find(instrument => instrument.id === account.instrumentId)?.name ?? account.title,
