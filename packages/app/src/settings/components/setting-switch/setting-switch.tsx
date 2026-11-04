@@ -9,15 +9,30 @@ interface Props {
     readonly stateOnTestID: string;
     readonly stateOffTestID: string;
     readonly accessibilityLabel?: string;
+    readonly disabled?: boolean;
 }
 
-export const SettingSwitch = ({ value, onValueChange, testID, stateOnTestID, stateOffTestID, accessibilityLabel }: Props) => {
+export const SettingSwitch = ({
+    value,
+    onValueChange,
+    testID,
+    stateOnTestID,
+    stateOffTestID,
+    accessibilityLabel,
+    disabled = false
+}: Props) => {
     const stateMarkerTestID = value ? stateOnTestID : stateOffTestID;
 
     return (
         <View className="flex-row items-center gap-x-xs">
             <View testID={stateMarkerTestID} className="h-1 w-1" />
-            <ThemedSwitch testID={testID} value={value} onValueChange={onValueChange} accessibilityLabel={accessibilityLabel} />
+            <ThemedSwitch
+                testID={testID}
+                value={value}
+                onValueChange={onValueChange}
+                accessibilityLabel={accessibilityLabel}
+                disabled={disabled}
+            />
         </View>
     );
 };

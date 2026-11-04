@@ -1,9 +1,9 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { Button } from '../../../@generic/component/button/button';
 import { useFormatGigabytes } from '../../../@generic/hook/use-format-gigabytes.hook';
+import { isAiEnabled } from '../../../@generic/utils/is-ai-enabled.util';
+import { SettingsPillButton } from '../../../settings/components/settings-pill-button/settings-pill-button';
 import { AiDownloadSelector } from '../../ai-download.selector';
 import { AiModelDownloadStatusEnum } from '../../enum/ai-model-download-status.enum';
 import { useAiDownloadPreflight } from '../../hook/use-ai-download-preflight.hook';
@@ -20,26 +20,26 @@ export const AiDownloadIdleCard = () => {
     const remaining = formatGigabytes(preflight.remainingBytes);
     const total = formatGigabytes(preflight.totalBytes);
     const isDownloadDisabled = !preflight.hasEnoughSpace;
+    const downloadHint = isDownloadDisabled ? t`Not enough free space for the download.` : void 0;
 
     if (preflight.status === AiModelDownloadStatusEnum.NOT_STARTED) {
         return (
-            <AiDownloadCardFrame status={preflight.status} testID={AiDownloadSelector.StatusCard}>
+            <AiDownloadCardFrame
+                status={preflight.status}
+                testID={AiDownloadSelector.StatusCard}
+                subtitle={t`${remaining} GB one-time download`}
+            >
                 <View className="gap-y-sm">
-                    <Text className="text-lg font-semibold text-primary">
-                        <Trans>{remaining} GB one-time download</Trans>
-                    </Text>
                     <AiDownloadPreflightNote preflight={preflight} />
                 </View>
 
-                <Button
+                <SettingsPillButton
                     testID={AiDownloadSelector.DownloadButton}
-                    size="sm"
-                    variant="primary"
-                    className="self-start"
-                    leftIcon={UserIconNameEnum.Download}
-                    content={t`Download ${remaining} GB`}
-                    disabled={isDownloadDisabled}
+                    variant="secondary"
+                    label={t`Download ${remaining} GB`}
                     onPress={actions.resume}
+                    isDisabled={isDownloadDisabled}
+                    accessibilityHint={downloadHint}
                 />
             </AiDownloadCardFrame>
         );
@@ -49,17 +49,15 @@ export const AiDownloadIdleCard = () => {
     const description = isReady
         ? t`Categories, tags and voice notes are handled on this phone.`
         : t`Turn on on-device AI to download the models.`;
+    const subtitle = isAiEnabled() ? description : t`Not available in this version`;
 
     return (
-        <AiDownloadCardFrame status={preflight.status} testID={AiDownloadSelector.StatusCard}>
-            <View className="gap-y-sm">
-                {isReady ? (
-                    <Text className="text-lg font-semibold text-primary">
-                        <Trans>{total} GB on this phone</Trans>
-                    </Text>
-                ) : null}
-                <Text className="text-sm text-secondary-foreground">{description}</Text>
-            </View>
+        <AiDownloadCardFrame status={preflight.status} testID={AiDownloadSelector.StatusCard} subtitle={subtitle}>
+            {isReady ? (
+                <Text className="text-[17px] text-primary">
+                    <Trans>{total} GB on this phone</Trans>
+                </Text>
+            ) : null}
         </AiDownloadCardFrame>
     );
 };

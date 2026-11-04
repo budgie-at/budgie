@@ -361,10 +361,12 @@ export const SCENES: Readonly<Record<string, Scene>> = {
         run: async (ctx, { container }) => {
             await open(
                 ctx,
-                `budgie://settings/import?fileUri=file://${container}/Documents/E2EFixtures/e2e-budgie-import.csv`,
-                'ImportScreen.PresetChip.Budgie'
+                `budgie://import-csv?fileUri=file://${container}/Documents/E2EFixtures/e2e-budgie-import.csv`,
+                'ImportPresetPickerSelector.Toggle'
             );
+            await b.tapId(ctx, 'ImportPresetPickerSelector.Toggle');
             await b.tapId(ctx, 'ImportScreen.PresetChip.Budgie');
+            await b.expectText(ctx, /^Import \d+ transactions?$/);
         }
     },
     'custom-categories-2': {

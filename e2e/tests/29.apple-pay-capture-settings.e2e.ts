@@ -16,13 +16,15 @@ test('29 apple pay capture settings', { tags: ['settings'] }, async ({ budgie })
         await b.tapId(ctx, 'SettingsPage.ApplePayCaptureCard');
         await b.expectId(ctx, 'ApplePayCaptureSettings.Container', 10_000);
         await b.expectText(ctx, /^Apple Pay capture$/i);
+        await b.expectText(ctx, 'Record Apple Pay purchases');
     });
 
     await b.phase('shortcuts and guide', async () => {
         await b.scrollTo(ctx, 'ApplePayCaptureSettings.OpenShortcutsButton');
         await b.expectId(ctx, 'ApplePayCaptureSettings.OpenShortcutsButton');
+        await b.scrollTo(ctx, 'ApplePayCaptureSettings.InstructionsGuideLink');
         await b.expectId(ctx, 'ApplePayCaptureSettings.InstructionsGuideLink');
-        await screen.scrollUntilVisible(b.byText(screen, /Wallet history/i), { direction: 'down', timeout: 20_000 });
-        await expect(b.byText(screen, /Wallet history/i)).toBeVisible();
+        await screen.scrollUntilVisible(b.byText(screen, /can't import Wallet history/i), { direction: 'down', timeout: 20_000 });
+        await expect(b.byText(screen, /can't import Wallet history/i)).toBeVisible();
     });
 });
