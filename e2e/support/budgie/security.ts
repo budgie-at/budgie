@@ -95,9 +95,14 @@ export async function cancelBackupFolderPicker(ctx: Ctx): Promise<void> {
     await expect(byId(screen, 'DOC.browsingModeTabBar')).toBeHidden({ timeout: 15_000 });
 }
 
+/**
+ * The picker reopens where it was left, and its `Title:` test id can still name the previous folder, so the
+ * folder's own navigation title proves where the picker is.
+ */
 export async function saveBackupToFixtureDirectory(ctx: Ctx): Promise<void> {
     const { screen } = ctx;
+    const fixturesTitle = screen.getByRole('button', { name: 'E2EFixtures, Actions Menu', exact: true }).first();
     await openFolderPickerBrowseTab(ctx);
-    await openE2EFixturesFullPath(ctx, screen.getByTestId(/Title: E2EFixtures$/).first());
+    await openE2EFixturesFullPath(ctx, fixturesTitle, fixturesTitle);
     await screen.getByRole('button', { name: 'Open', exact: true }).last().tap();
 }
