@@ -11,6 +11,7 @@ export const SettingsPageSelector = {
     DataEncryptionStateOff: 'SettingsPage.DataEncryption.State.Off',
     DataBackup: 'SettingsPage.DataBackup',
     DataBackupButton: 'SettingsPage.DataBackupButton',
+    DataBackupShareButton: 'SettingsPage.DataBackupShareButton',
     AppLockCard: 'SettingsPage.AppLockCard',
     AppLockChangePinButton: 'SettingsPage.AppLockChangePinButton',
     AppLockDisableButton: 'SettingsPage.AppLockDisableButton',
