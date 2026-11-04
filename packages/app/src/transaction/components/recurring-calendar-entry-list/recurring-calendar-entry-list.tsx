@@ -37,11 +37,13 @@ export const RecurringCalendarEntryList = ({
     return (
         <View className="gap-y-md">
             <View className="gap-x-xl flex-row flex-wrap justify-between items-center">
-                <Text className="text-[15px] font-semibold text-primary" {...testIDProps(headerTestID)}>
+                <Text maxFontSizeMultiplier={2} className="text-[15px] font-semibold text-primary" {...testIDProps(headerTestID)}>
                     {title}
                 </Text>
                 {hasTotal ? (
-                    <ProtectedText className="text-[13px] tabular-nums text-secondary-foreground">{formattedTotal}</ProtectedText>
+                    <ProtectedText maxFontSizeMultiplier={2} className="text-[13px] tabular-nums text-secondary-foreground">
+                        {formattedTotal}
+                    </ProtectedText>
                 ) : null}
             </View>
 

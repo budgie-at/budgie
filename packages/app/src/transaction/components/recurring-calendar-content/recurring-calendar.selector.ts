@@ -12,7 +12,6 @@ export const RecurringCalendarSelector = {
     SeriesTitleInput: 'RecurringCalendar.SeriesTitleInput',
     EmptyMonth: 'RecurringCalendar.EmptyMonth',
     RecordedHeader: 'RecurringCalendar.RecordedHeader',
-    UpcomingHeader: 'RecurringCalendar.UpcomingHeader',
-    AllRecurringHeader: 'RecurringCalendar.AllRecurringHeader',
+    ExpectedHeader: 'RecurringCalendar.ExpectedHeader',
     Row: (title: string) => `RecurringCalendar.Row.${normalizePart(title)}` as const
 } as const;

@@ -1326,10 +1326,6 @@ msgstr "All conditions"
 msgid "All past amounts are converted"
 msgstr "All past amounts are converted"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-msgid "All recurring"
-msgstr "All recurring"
-
 #: src/import/utils/get-import-required-footer.util.ts
 msgid "All required fields matched. Tap a field to change it."
 msgstr "All required fields matched. Tap a field to change it."
@@ -2407,6 +2403,10 @@ msgstr "Complete every split entry"
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Confirm it's you before choosing a new one."
 msgstr "Confirm it's you before choosing a new one."
+
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Confirm recurring"
+msgstr "Confirm recurring"
 
 #: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx
 msgid "Confirm tag selection"
@@ -3819,6 +3819,7 @@ msgstr "Exchange rate not found"
 msgid "Exchange rate: {rateLabel}"
 msgstr "Exchange rate: {rateLabel}"
 
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 #: src/transaction/components/recurring-calendar-grid/recurring-calendar-grid.tsx
 msgid "Expected"
 msgstr "Expected"
@@ -4774,10 +4775,6 @@ msgstr "Map CSV columns"
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Mark as External?"
 msgstr "Mark as External?"
-
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
-msgid "Mark as recurring"
-msgstr "Mark as recurring"
 
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Mark External"
@@ -8270,10 +8267,6 @@ msgstr "Up to date"
 msgid "Up to date · {lastSyncedLabel}"
 msgstr "Up to date · {lastSyncedLabel}"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-msgid "Upcoming"
-msgstr "Upcoming"
-
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Upcoming this period"
@@ -8377,6 +8370,10 @@ msgstr "Value"
 #: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
 msgid "View source transactions"
 msgstr "View source transactions"
+
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+msgid "View your payments in another month."
+msgstr "View your payments in another month."
 
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
 msgid "Voice notes"

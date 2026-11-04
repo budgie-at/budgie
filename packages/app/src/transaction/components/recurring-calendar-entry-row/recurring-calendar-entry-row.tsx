@@ -47,6 +47,8 @@ export const RecurringCalendarEntryRow = ({ entry, position, onPress, dayLabel }
     const protectAmount = useProtectedAmountLabel();
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
     const labelLineLimit = isAccessibilityTextSize ? 0 : 2;
+    const showSeparateDayLabel = isAccessibilityTextSize && isNotEmptyString(dayLabel);
+    const separatorClassName = isAccessibilityTextSize ? 'left-3xl' : void 0;
 
     const formattedAmount = protectAmount(convertFromMicroUnits(entry.latestAmount), defaultInstrument.symbol);
     const alertLabels = {
@@ -54,7 +56,7 @@ export const RecurringCalendarEntryRow = ({ entry, position, onPress, dayLabel }
         [RecurringAlertEnum.PRICE_CHANGE]: t`Price changed`
     };
     const detail = isDefined(entry.alert) ? alertLabels[entry.alert] : (entry.categoryTitle ?? entry.title);
-    const description = isNotEmptyString(dayLabel) ? `${dayLabel} · ${detail}` : detail;
+    const description = isNotEmptyString(dayLabel) && !isAccessibilityTextSize ? `${dayLabel} · ${detail}` : detail;
     const icon = entry.categoryIcon ?? UserIconNameEnum.Wallet;
     let handlePress = onPress;
 
@@ -80,7 +82,7 @@ export const RecurringCalendarEntryRow = ({ entry, position, onPress, dayLabel }
     const handleRenameDone = () => void setIsRenaming(false);
     const confirmButtons =
         entry.userState === RecurringSeriesUserStateEnum.SUGGESTED
-            ? [{ text: t`Mark as recurring`, onPress: () => void setUserState(RecurringSeriesUserStateEnum.CONFIRMED) }]
+            ? [{ text: t`Confirm recurring`, onPress: () => void setUserState(RecurringSeriesUserStateEnum.CONFIRMED) }]
             : [];
 
     const handleLongPress = () =>
@@ -91,7 +93,7 @@ export const RecurringCalendarEntryRow = ({ entry, position, onPress, dayLabel }
         ]);
 
     return (
-        <TransactionRowSurface position={position}>
+        <TransactionRowSurface position={position} separatorClassName={separatorClassName}>
             {isRenaming ? (
                 <RecurringSeriesTitleInput seriesId={entry.seriesId} title={entry.title} onDone={handleRenameDone} />
             ) : (
@@ -109,6 +111,7 @@ export const RecurringCalendarEntryRow = ({ entry, position, onPress, dayLabel }
                             <Text className="text-[15px] font-semibold text-primary" numberOfLines={labelLineLimit} ellipsizeMode="tail">
                                 {entry.title}
                             </Text>
+                            {showSeparateDayLabel ? <Text className="text-[13px] text-secondary-foreground mt-xs">{dayLabel}</Text> : null}
                             <Text className="text-[13px] text-secondary-foreground" numberOfLines={labelLineLimit} ellipsizeMode="tail">
                                 {description}
                             </Text>

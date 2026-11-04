@@ -1,4 +1,4 @@
-import { UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { convertFromMicroUnits } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useReducer } from 'react';
@@ -7,7 +7,6 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
@@ -49,7 +48,6 @@ export const RecurringCalendarContent = () => {
     const totalAmount = data?.totalAmount ?? 0;
     const forecastedTotalAmount = data?.forecastedTotalAmount ?? 0;
 
-    const isCurrentMonth = displayYear === now.getFullYear() && displayMonth === now.getMonth();
     const hasSelectedDay = isDefined(selectedDay);
 
     const selectedEntries = isDefined(selectedDay)
@@ -58,12 +56,8 @@ export const RecurringCalendarContent = () => {
 
     const allRecordedEntries = [...entriesByDay.values()].flat().sort((left, right) => left.dayOfMonth - right.dayOfMonth);
     const allForecastedEntries = [...forecastedEntriesByDay.values()].flat().sort((left, right) => left.dayOfMonth - right.dayOfMonth);
-    const allMonthlyEntries = [...entriesByDay.values(), ...forecastedEntriesByDay.values()]
-        .flat()
-        .sort((left, right) => left.dayOfMonth - right.dayOfMonth);
-    const showUpcomingList = !isDefined(selectedDay) && isCurrentMonth && isNotEmptyArray(allForecastedEntries);
-    const showRecordedList = showUpcomingList && isNotEmptyArray(allRecordedEntries);
-    const showMonthlyList = !isDefined(selectedDay) && (!isCurrentMonth || !showUpcomingList) && isNotEmptyArray(allMonthlyEntries);
+    const showExpectedList = !hasSelectedDay && isNotEmptyArray(allForecastedEntries);
+    const showRecordedList = !hasSelectedDay && isNotEmptyArray(allRecordedEntries);
 
     const handleSelectDay = (day: number) => {
         dispatch({ type: RecurringCalendarActionTypeEnum.DAY_TOGGLED, day });
@@ -131,23 +125,18 @@ export const RecurringCalendarContent = () => {
                         formattedTotal={selectedDayTotal}
                         entries={selectedEntries}
                         emptyContent={
-                            <View className="items-center gap-y-xl py-7xl px-3xl rounded-3xl bg-grouped-surface-row">
-                                <CircleIcon icon={UserIconNameEnum.CalendarSearch} size={36} iconSize={18} variant="ghost" />
-                                <Text
-                                    className="text-secondary-foreground text-sm text-center"
-                                    testID={RecurringCalendarSelector.SelectedDayEmptyState}
-                                >
-                                    <Trans>No recurring payments on this day</Trans>
-                                </Text>
-                            </View>
+                            <RecurringCalendarEmptyState
+                                title={t`No recurring payments on this day`}
+                                testID={RecurringCalendarSelector.SelectedDayEmptyState}
+                            />
                         }
                     />
                 ) : null}
 
-                {showUpcomingList ? (
+                {showExpectedList ? (
                     <RecurringCalendarEntryList
-                        headerTestID={RecurringCalendarSelector.UpcomingHeader}
-                        title={<Trans>Upcoming</Trans>}
+                        headerTestID={RecurringCalendarSelector.ExpectedHeader}
+                        title={<Trans>Expected</Trans>}
                         formattedTotal={formattedForecastedTotal}
                         entries={allForecastedEntries}
                         displayMonth={displayMonth}
@@ -166,19 +155,13 @@ export const RecurringCalendarContent = () => {
                     />
                 ) : null}
 
-                {showMonthlyList ? (
-                    <RecurringCalendarEntryList
-                        headerTestID={RecurringCalendarSelector.AllRecurringHeader}
-                        title={<Trans>All recurring</Trans>}
-                        formattedTotal={formatDigits(displayedTotal, defaultInstrument.symbol)}
-                        entries={allMonthlyEntries}
-                        displayMonth={displayMonth}
-                        displayYear={displayYear}
-                    />
-                ) : null}
                 {isDefined(data) && !hasEntries && !hasSelectedDay ? (
                     <RecurringCalendarEmptyState title={t`No recurring payments in ${displayMonthLabel}`}>
-                        {hasDetectedPayments ? null : <Trans>Recurring payments are detected automatically from your transactions.</Trans>}
+                        {hasDetectedPayments ? (
+                            <Trans>View your payments in another month.</Trans>
+                        ) : (
+                            <Trans>Recurring payments are detected automatically from your transactions.</Trans>
+                        )}
                     </RecurringCalendarEmptyState>
                 ) : null}
                 <MenuSpacer />

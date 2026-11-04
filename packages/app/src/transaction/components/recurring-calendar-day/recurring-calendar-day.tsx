@@ -29,7 +29,7 @@ const circleVariants = cva('items-center justify-center rounded-full', {
     ]
 });
 
-const textVariants = cva('text-[15px] tabular-nums', {
+const textVariants = cva('text-[15px] tabular-nums pb-[4px]', {
     variants: {
         isCurrentMonth: { true: 'text-primary', false: 'text-secondary-foreground' },
         isSelected: { true: 'text-primary-reverse font-semibold', false: '' },

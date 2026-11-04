@@ -99,7 +99,9 @@ export const RecurringCalendarGrid = (props: Props) => {
                 ? CALENDAR_CONTAINER_HEIGHT
                 : CALENDAR_CONTAINER_HEIGHT - CALENDAR_ROW_HEIGHT
     };
-    const hasEntries = entriesByDay.size + forecastedEntriesByDay.size > 0;
+    const hasRecordedEntries = entriesByDay.size > 0;
+    const hasExpectedEntries = forecastedEntriesByDay.size > 0;
+    const hasEntries = hasRecordedEntries || hasExpectedEntries;
 
     const handleDateChange = (value: { date: DateType }) => {
         const date = dateTypeToDate(value.date);
@@ -189,18 +191,22 @@ export const RecurringCalendarGrid = (props: Props) => {
                 />
                 {hasEntries ? (
                     <View className="flex-row flex-wrap justify-center gap-x-5xl gap-y-sm pb-md" accessible>
-                        <View className="flex-row items-center gap-x-sm">
-                            <RecurringCalendarDayDots actualDots={1} forecastedDots={0} isSelected={false} className="static" />
-                            <Text maxFontSizeMultiplier={1.5} className="text-[12px] text-secondary-foreground">
-                                <Trans>Recorded</Trans>
-                            </Text>
-                        </View>
-                        <View className="flex-row items-center gap-x-sm">
-                            <RecurringCalendarDayDots actualDots={0} forecastedDots={1} isSelected={false} className="static" />
-                            <Text maxFontSizeMultiplier={1.5} className="text-[12px] text-secondary-foreground">
-                                <Trans>Expected</Trans>
-                            </Text>
-                        </View>
+                        {hasRecordedEntries ? (
+                            <View className="flex-row items-center gap-x-sm">
+                                <RecurringCalendarDayDots actualDots={1} forecastedDots={0} isSelected={false} className="static" />
+                                <Text maxFontSizeMultiplier={1.5} className="text-[12px] text-secondary-foreground">
+                                    <Trans>Recorded</Trans>
+                                </Text>
+                            </View>
+                        ) : null}
+                        {hasExpectedEntries ? (
+                            <View className="flex-row items-center gap-x-sm">
+                                <RecurringCalendarDayDots actualDots={0} forecastedDots={1} isSelected={false} className="static" />
+                                <Text maxFontSizeMultiplier={1.5} className="text-[12px] text-secondary-foreground">
+                                    <Trans>Expected</Trans>
+                                </Text>
+                            </View>
+                        ) : null}
                     </View>
                 ) : null}
             </View>
