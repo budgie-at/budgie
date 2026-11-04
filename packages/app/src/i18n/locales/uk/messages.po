@@ -2148,6 +2148,10 @@ msgstr "Перевірте написання або створіть його �
 msgid "Check the spelling or search by another name."
 msgstr "Перевірте написання або пошукайте за іншою назвою."
 
+#: src/app/rule-mcc-selector.tsx
+msgid "Check the spelling or try a code like 5812."
+msgstr "Перевірте написання або спробуйте код, наприклад 5812."
+
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Check the spelling or try a code like EUR."
 msgstr "Перевірте написання або спробуйте код, як-от EUR."
@@ -5335,10 +5339,6 @@ msgstr "Немає відповідних транзакцій"
 msgid "No MCC codes available"
 msgstr "Немає доступних MCC-кодів"
 
-#: src/app/rule-mcc-selector.tsx
-msgid "No MCC codes found"
-msgstr "MCC-кодів не знайдено"
-
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No new transactions"
 msgstr "Нових транзакцій немає"
@@ -8047,7 +8047,6 @@ msgid "Try a different merchant, amount, or date."
 msgstr "Спробуйте іншого продавця, суму або дату."
 
 #: src/app/contact-selector.tsx
-#: src/app/rule-mcc-selector.tsx
 msgid "Try a different search term"
 msgstr "Спробуйте інший пошуковий запит"
 
