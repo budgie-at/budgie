@@ -44,7 +44,7 @@ test('12 account archive and expense convert to transfer', { tags: ['accounts', 
         await t.navigateToTransactions(ctx);
         await t.openTransactionForm(ctx, 'ActionItem.Expense', 'New Expense');
         // A keypad tap can land while the form is still settling and be dropped: re-enter until the amount reads 30.
-        await t.retry(2, async () => {
+        await b.retry(2, async () => {
             await t.clearAmount(ctx);
             await t.typeDigits(ctx, '30');
             await expect(b.byId(ctx.screen, 'TransactionForm.AmountInput')).toHaveText(/^\$\s*30$/, { timeout: 2_000 });

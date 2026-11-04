@@ -1,13 +1,14 @@
 import { expect } from 'e2e';
 
-import { scrollToCentre } from './accounts.ts';
 import {
     byId,
     byText,
     expectId,
     fillId,
     openLink,
+    retry,
     scrollTo,
+    scrollToCentre,
     selectCategoryBySearch,
     settledBounds,
     sleep,
@@ -15,7 +16,6 @@ import {
     tapUntil,
     type Ctx
 } from './core.ts';
-import { retry } from './transactions.ts';
 
 /** `openLink: budgie://budget` + the empty budget widget the flows tap to start a budget; a tap Home swallows while it settles is repeated. */
 export async function openEmptyBudget(ctx: Ctx): Promise<void> {
@@ -147,22 +147,4 @@ export async function saveFromHeader(ctx: Ctx): Promise<void> {
     await endAmountEditing(ctx);
     await expectId(ctx, 'BudgetSetup.SaveButton', 3_000);
     await tapId(ctx, 'BudgetSetup.SaveButton');
-}
-
-/** Scrolls the setup form to `testId`, then drags it further up until it clears the fixed save footer, which would take a tap aimed at it. */
-export async function scrollAboveFooter(ctx: Ctx, testId: string): Promise<void> {
-    const { screen } = ctx;
-    await scrollTo(ctx, testId);
-    for (let attempt = 0; attempt < 3; attempt++) {
-        const target = await byId(screen, testId).boundingBox();
-        const footer = await byId(screen, 'BudgetSetup.SaveButton').boundingBox();
-        if (target === null || footer === null || target.y + target.height < footer.y - 8) {
-            return;
-        }
-        // Drag from well above the footer: a drag that starts on it moves nothing.
-        const x = target.x + target.width / 2;
-        const y = footer.y - 150;
-        await screen.swipe({ from: { x, y }, to: { x, y: y - 250 }, duration: 400 });
-        await sleep(400);
-    }
 }

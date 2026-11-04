@@ -1,6 +1,5 @@
 import { expect } from 'e2e';
 
-import { scrollToCentre } from './accounts.ts';
 import { swipeRowToDelete } from './categories.ts';
 import {
     byId,
@@ -9,6 +8,7 @@ import {
     expectNoId,
     openLink,
     scrollTo,
+    scrollToCentre,
     selectCategoryBySearch,
     sleep,
     tapId,
