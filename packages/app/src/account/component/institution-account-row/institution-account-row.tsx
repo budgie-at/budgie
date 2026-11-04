@@ -24,11 +24,12 @@ export const InstitutionAccountRow = ({ account, provider, bankName, balancesByA
         ...account,
         title: stripTransactionAccountTitlePrefix(account.title, provider) ?? account.title
     };
+    const logoBankName = bankName ?? account.title;
     const leading =
         account.type === AccountTypeEnum.CRYPTO_SYNC ? (
             <CryptoCurrencyIcon code={account.instrument.code} size={44} className="bg-surface-disc" />
         ) : (
-            <BankLogo bankProvider={provider} bankName={bankName ?? account.title} size={44} />
+            <BankLogo bankProvider={provider} bankName={logoBankName} size={44} />
         );
 
     return (

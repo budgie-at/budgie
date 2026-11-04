@@ -4,7 +4,7 @@ const COMBINING_MARKS = /[̀-ͯ]/gu;
 const NON_ALPHANUMERIC = /[^a-z0-9]+/gu;
 
 const SLUG_BY_NORMALIZED_NAME = new Map(
-    Object.entries(BANK_LOGO_NAMES).flatMap(([slug, names]) => names.split(' ').map(name => [name, slug] as const))
+    Object.entries(BANK_LOGO_NAMES).flatMap(([slug, names]) => names.split(',').map(name => [name, slug] as const))
 );
 
 const normalizeBankName = (name: string): string =>

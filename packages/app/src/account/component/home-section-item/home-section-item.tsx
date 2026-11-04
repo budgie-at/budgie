@@ -18,9 +18,10 @@ interface Props {
 export const HomeSectionItem = ({ item, section, balancesByAccountId }: Props) => {
     if (isInstitutionGroup(item) && item.accounts.length === 1) {
         const [account] = item.accounts;
+        const bankName = item.label ?? account.title;
 
         return (
-            <AccountRowLeadingContext value={<BankLogo bankProvider={item.provider} bankName={item.label ?? account.title} size={44} />}>
+            <AccountRowLeadingContext value={<BankLogo bankProvider={item.provider} bankName={bankName} size={44} />}>
                 <AccountListItem account={account} balancesByAccountId={balancesByAccountId} />
             </AccountRowLeadingContext>
         );

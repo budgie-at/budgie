@@ -47,6 +47,7 @@ export const InstitutionRow = ({ institution }: Props) => {
     const accountsCountLabel = accounts.every(account => account.type === AccountTypeEnum.CRYPTO_SYNC)
         ? t({ message: plural(accountsCount, { one: '# asset', other: '# assets' }) })
         : t({ message: plural(accountsCount, { one: '# account', other: '# accounts' }) });
+    const bankName = label ?? title;
     const accessibilityLabel = [title, protectAmount(total, defaultInstrument.symbol), accountsCountLabel].join(', ');
 
     return (
@@ -57,7 +58,7 @@ export const InstitutionRow = ({ institution }: Props) => {
             className={rowVariants({ isStacked })}
             testID={InstitutionRowSelector.Row(integrationId)}
         >
-            <BankLogo bankProvider={provider} bankName={label ?? title} size={44} />
+            <BankLogo bankProvider={provider} bankName={bankName} size={44} />
 
             <View className="min-w-0 flex-1 gap-y-xxs">
                 <Text
