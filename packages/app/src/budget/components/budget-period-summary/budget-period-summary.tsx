@@ -15,21 +15,26 @@ import { useGetBudgetPeriodSnapshotQuery } from '../../query/use-get-budget-peri
 import { BudgetPeriodSummaryCategoryRow } from '../budget-period-summary-category-row/budget-period-summary-category-row';
 import { BudgetPeriodSummaryLimitRow } from '../budget-period-summary-limit-row/budget-period-summary-limit-row';
 import { BudgetPeriodSummaryTotal } from '../budget-period-summary-total/budget-period-summary-total';
+import { BudgetSheetState } from '../budget-sheet-state/budget-sheet-state';
 
 interface Props {
     readonly snapshotId: number;
 }
 
 export const BudgetPeriodSummary = ({ snapshotId }: Props) => {
-    const { snapshot } = useGetBudgetPeriodSnapshotQuery(snapshotId);
+    const { snapshot, isLoading, isError } = useGetBudgetPeriodSnapshotQuery(snapshotId);
     const { budget } = useGetActiveBudgetQuery();
     const { instrument } = useGetInstrumentByIdQuery(isDefined(budget) ? budget.instrumentId : 0);
     const { formatMonthAndDay } = useFormatDate();
     const { formatFullPeriod } = useFormatBudgetPeriod();
     const { t } = useLingui();
 
+    const missingDescription = isError
+        ? t`Your data could not be loaded. Close this screen and try again.`
+        : t`This period summary is no longer available. Close this screen to see your budget history.`;
+
     if (!isDefined(snapshot)) {
-        return null;
+        return <BudgetSheetState title={t`Period summary`} isLoading={isLoading} isError={isError} description={missingDescription} />;
     }
 
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';

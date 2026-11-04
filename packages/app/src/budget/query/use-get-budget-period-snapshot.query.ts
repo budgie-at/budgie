@@ -12,6 +12,7 @@ import type { BudgetPeriodSnapshotWithCategoriesEntityInterface } from '@budgie/
 interface UseGetBudgetPeriodSnapshotResult {
     readonly snapshot: BudgetPeriodSnapshotWithCategoriesEntityInterface | null;
     readonly isLoading: boolean;
+    readonly isError: boolean;
 }
 
 const budgetPeriodSnapshotAtom = databaseQueryFamily(
@@ -24,10 +25,10 @@ export const useGetBudgetPeriodSnapshotQuery = (snapshotId: number): UseGetBudge
     const result = useLiveAtomValue(budgetPeriodSnapshotAtom(snapshotId));
 
     if (AsyncResult.isInitial(result)) {
-        return { snapshot: null, isLoading: true };
+        return { snapshot: null, isLoading: true, isError: false };
     }
 
     const snapshot = AsyncResult.getOrElse(result, () => null);
 
-    return { snapshot: isDefined(snapshot) ? snapshot : null, isLoading: false };
+    return { snapshot: isDefined(snapshot) ? snapshot : null, isLoading: false, isError: AsyncResult.isFailure(result) };
 };

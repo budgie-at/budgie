@@ -10,6 +10,7 @@ import type { BudgetLimitChangeEntityInterface } from '@budgie/contracts';
 interface UseGetBudgetLimitChangesResult {
     readonly limitChanges: readonly BudgetLimitChangeEntityInterface[];
     readonly isLoading: boolean;
+    readonly isError: boolean;
 }
 
 const LIMIT_CHANGE_HISTORY_SIZE = 50;
@@ -25,8 +26,12 @@ export const useGetBudgetLimitChangesQuery = (budgetId: number): UseGetBudgetLim
     const result = useLiveAtomValue(budgetLimitChangesAtom(budgetId));
 
     if (AsyncResult.isInitial(result)) {
-        return { limitChanges: EMPTY_LIMIT_CHANGES, isLoading: true };
+        return { limitChanges: EMPTY_LIMIT_CHANGES, isLoading: true, isError: false };
     }
 
-    return { limitChanges: AsyncResult.getOrElse(result, () => EMPTY_LIMIT_CHANGES), isLoading: false };
+    return {
+        limitChanges: AsyncResult.getOrElse(result, () => EMPTY_LIMIT_CHANGES),
+        isLoading: false,
+        isError: AsyncResult.isFailure(result)
+    };
 };

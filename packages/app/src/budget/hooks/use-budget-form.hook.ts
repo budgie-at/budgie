@@ -119,11 +119,11 @@ const areBudgetFormValuesEqual = (left: BudgetFormValues, right: BudgetFormValue
 // eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration hook with multiple hooks and handlers owns seeding, cadence rescaling, delete and submit
 export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = null }: UseBudgetFormOptionsInterface) => {
     const { t } = useLingui();
-    const { run } = useSingleFlight();
+    const { run, isLoading: isSubmitting } = useSingleFlight();
     const today = useToday();
     const isEditing = isPositiveNumber(editingId);
     const hasAsyncTemplate = isDefined(templateKind) && templateKind !== BudgetTemplateKindEnum.EMPTY;
-    const { budget, isLoading: isBudgetLoading } = useGetActiveBudgetQuery();
+    const { budget, isLoading: isBudgetLoading, isError } = useGetActiveBudgetQuery();
     const { categoryLimits: loadedCategoryLimits, isLoading: isCategoryLimitsLoading } = useGetBudgetCategoryLimitsQuery(
         isEditing && isDefined(budget) ? budget.id : null
     );
@@ -242,8 +242,10 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
         handlePeriodChange,
         isEditing,
         budget,
+        isError,
+        isSubmitting,
         isLoading:
-            (isEditing && (isBudgetLoading || isCategoryLimitsLoading || !isDefined(budget))) ||
+            (isEditing && (isBudgetLoading || (isDefined(budget) && isCategoryLimitsLoading))) ||
             (!isEditing && hasAsyncTemplate && !isTemplateReady) ||
             isFormSyncing
     };

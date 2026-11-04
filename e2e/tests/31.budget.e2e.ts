@@ -64,8 +64,24 @@ test('31 budget', { tags: ['budget'] }, async ({ budgie }) => {
         await b.tapId(ctx, 'PageHeader.BackButton');
     });
 
+    await b.phase('missing budget sheets stay readable', async () => {
+        await b.openLink(ctx, 'budgie://budget-limit-changes');
+        await expect(b.byText(screen, 'Budget unavailable')).toBeVisible({ timeout: 3_000 });
+        await b.openLink(ctx, 'budgie://');
+        await b.openLink(ctx, 'budgie://budget-safe-to-spend?eventId=999999');
+        await expect(b.byText(screen, 'Budget unavailable')).toBeVisible({ timeout: 3_000 });
+        await b.openLink(ctx, 'budgie://');
+        await b.openLink(ctx, 'budgie://budget-period-summary?snapshotId=999999');
+        await expect(
+            b.byText(screen, 'This period summary is no longer available. Close this screen to see your budget history.')
+        ).toBeVisible({ timeout: 3_000 });
+        await b.openLink(ctx, 'budgie://');
+    });
+
     await b.phase('create budget', async () => {
         await b.openLink(ctx, 'budgie://budget');
+        await expect(b.byText(screen, 'Budget unavailable')).toBeVisible({ timeout: 3_000 });
+        await b.tapId(ctx, 'PageHeader.BackButton');
         await b.expectId(ctx, 'BudgetWidget.EmptyState', 3_000);
         await b.tapId(ctx, 'BudgetWidget.EmptyState');
         await b.expectId(ctx, 'BudgetCreate.Template.Generic', 3_000);

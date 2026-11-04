@@ -1,15 +1,18 @@
+import { useLingui } from '@lingui/react/macro';
+
 import { isDefined } from '@rnw-community/shared';
 
-import { LoadingScreen } from '../@generic/component/loading-screen/loading-screen';
 import { BudgetLimitChangesSheet } from '../budget/components/budget-limit-changes-sheet/budget-limit-changes-sheet';
+import { BudgetSheetState } from '../budget/components/budget-sheet-state/budget-sheet-state';
 import { useGetActiveBudgetQuery } from '../budget/query/use-get-active-budget.query';
 
 export default function BudgetLimitChangesRoute() {
-    const { budget, isLoading } = useGetActiveBudgetQuery();
+    const { t } = useLingui();
+    const { budget, isLoading, isError } = useGetActiveBudgetQuery();
 
-    if (isLoading) {
-        return <LoadingScreen />;
+    if (!isDefined(budget)) {
+        return <BudgetSheetState title={t`Limit changes`} isLoading={isLoading} isError={isError} />;
     }
 
-    return isDefined(budget) ? <BudgetLimitChangesSheet budget={budget} /> : null;
+    return <BudgetLimitChangesSheet budget={budget} />;
 }
