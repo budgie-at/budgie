@@ -10,7 +10,6 @@ import { InzhurSelector } from '../../selector/inzhur.selector';
 interface Props {
     readonly payout: DividendPayoutEnum;
     readonly isSelected: boolean;
-    readonly isDisabled: boolean;
     readonly onSelect: (payout: DividendPayoutEnum) => void;
 }
 
@@ -23,14 +22,12 @@ const OPTION = {
     }
 } as const;
 
-export const InzhurDividendPayoutOption = ({ payout, isSelected, isDisabled, onSelect }: Props) => {
+export const InzhurDividendPayoutOption = ({ payout, isSelected, onSelect }: Props) => {
     const { t } = useLingui();
     const { icon, title, subtitle } = OPTION[payout];
 
     const handlePress = () => {
-        if (!isDisabled) {
-            onSelect(payout);
-        }
+        onSelect(payout);
     };
     const check = (
         <View className="size-5 items-center justify-center">

@@ -161,6 +161,23 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
             effect => Db.transaction(effect)
         );
 
+        const updateCashAccount = Effect.fn('InzhurSetupService.updateCashAccount')(
+            function* (update: Parameters<typeof accountService.updateById>[1], actualBalance: number) {
+                const existingSetup = yield* findSetup();
+
+                if (!isDefined(existingSetup)) {
+                    return yield* new InzhurNotSetUpError();
+                }
+
+                const updatedAccount = yield* accountService.updateById(existingSetup.cashAccount.id, update);
+
+                yield* setActualBalance(actualBalance);
+
+                return updatedAccount;
+            },
+            effect => Db.transaction(effect)
+        );
+
         const findStatementReminder = Effect.fn('InzhurSetupService.findStatementReminder')(function* (now: Date) {
             const setup = yield* findSetup();
             const { lastStatementDate, cashSync, cashAccount } = setup ?? {};
@@ -180,7 +197,7 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
             return activityCount > 0 ? ({ daysOld, lastStatementDate } satisfies InzhurStatementReminderInterface) : null;
         });
 
-        return { findSetup, setup, setActualBalance, findStatementReminder };
+        return { findSetup, setup, setActualBalance, updateCashAccount, findStatementReminder };
     })
 }) {
     static readonly layer = Layer.effect(InzhurSetupService, InzhurSetupService.make).pipe(

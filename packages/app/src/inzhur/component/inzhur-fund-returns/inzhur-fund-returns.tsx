@@ -1,7 +1,7 @@
-import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
 import { View } from 'react-native';
 
 import { CollapsibleChromeScrollFade } from '../../../@generic/component/collapsible-chrome-scroll-fade/collapsible-chrome-scroll-fade';
+import { isInzhurFundAccount } from '../../utils/is-inzhur-fund-account.util';
 import { InzhurFundReturnsCard } from '../inzhur-fund-returns-card/inzhur-fund-returns-card';
 
 import type { AccountEntityInterface } from '@budgie/contracts';
@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const InzhurFundReturns = ({ account }: Props) => {
-    if (account.type !== AccountTypeEnum.STOCKS || account.externalSource !== ExternalSourceEnum.INZHUR) {
+    if (!isInzhurFundAccount(account)) {
         return null;
     }
 

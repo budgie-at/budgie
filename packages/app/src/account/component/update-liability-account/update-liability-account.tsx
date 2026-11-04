@@ -1,4 +1,4 @@
-import { AccountTypeEnum, AccountWithInstrumentEntityInterface, ExternalSourceEnum, InstrumentTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, AccountWithInstrumentEntityInterface, InstrumentTypeEnum } from '@budgie/contracts';
 import { AccountService } from '@budgie/ledger';
 import { InzhurSetupService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
@@ -15,6 +15,7 @@ import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined
 import { InzhurActualBalanceNote } from '../../../inzhur/component/inzhur-actual-balance-note/inzhur-actual-balance-note';
 import { InzhurDividendPayoutField } from '../../../inzhur/component/inzhur-dividend-payout-field/inzhur-dividend-payout-field';
 import { isInzhurCashAccount } from '../../../inzhur/utils/is-inzhur-cash-account.util';
+import { isInzhurFundAccount } from '../../../inzhur/utils/is-inzhur-fund-account.util';
 import { AccountSyncCard } from '../../../sync/component/account-sync-card/account-sync-card';
 import { useAccountUpdateBindings } from '../../hooks/use-account-update-bindings.hook';
 import { useLiabilityAccountForm } from '../../hooks/use-liability-account-form.hook';
@@ -30,26 +31,34 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
     const { balance } = useAccountBalanceQuery(account.id);
 
     const formValues = {
-        ...Struct.pick(account, ['externalId', 'iban', 'type', 'icon', 'title', 'instrumentId', 'includeInNetWorth', 'isActive']),
+        ...Struct.pick(account, [
+            'externalId',
+            'iban',
+            'type',
+            'icon',
+            'title',
+            'instrumentId',
+            'includeInNetWorth',
+            'isActive',
+            'dividendPayout'
+        ]),
         currentBalance: balance
     };
 
     const isInzhurCash = isInzhurCashAccount(account);
-    const isInzhurFund = account.type === AccountTypeEnum.STOCKS && account.externalSource === ExternalSourceEnum.INZHUR;
+    const isInzhurFund = isInzhurFundAccount(account);
 
     const { control, handleSubmit, instrument, isSubmitting } = useLiabilityAccountForm(formValues, values =>
         Effect.gen(function* () {
-            const accountService = yield* AccountService;
-
-            if (!isInzhurCash) {
-                return yield* accountService.updateById(account.id, Struct.omit(values, ['type']));
+            if (isInzhurCash) {
+                return yield* Effect.flatMap(InzhurSetupService, inzhurSetupService =>
+                    inzhurSetupService.updateCashAccount(Struct.omit(values, ['type', 'currentBalance']), values.currentBalance)
+                );
             }
 
-            const updatedAccount = yield* accountService.updateById(account.id, Struct.omit(values, ['type', 'currentBalance']));
-
-            yield* Effect.flatMap(InzhurSetupService, inzhurSetupService => inzhurSetupService.setActualBalance(values.currentBalance));
-
-            return updatedAccount;
+            return yield* Effect.flatMap(AccountService, accountService =>
+                accountService.updateById(account.id, Struct.omit(values, ['type']))
+            );
         })
     );
 
@@ -61,7 +70,8 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
             isActive: 'isActive',
             includeInNetWorth: 'includeInNetWorth'
         }),
-        instrumentId: useController({ control, name: 'instrumentId' })
+        instrumentId: useController({ control, name: 'instrumentId' }),
+        dividendPayout: useController({ control, name: 'dividendPayout' })
     };
     const stickyInstrument = useStickyDefinedValue(instrument);
     const isSyncedAccount = account.type === AccountTypeEnum.BANK_SYNC || account.type === AccountTypeEnum.CRYPTO_SYNC;
@@ -92,7 +102,9 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         >
             {currencyField}
             {isSyncedAccount ? <AccountSyncCard accountId={account.id} /> : null}
-            {isInzhurFund ? <InzhurDividendPayoutField account={account} /> : null}
+            {isInzhurFund ? (
+                <InzhurDividendPayoutField value={fields.dividendPayout.field.value} onChange={fields.dividendPayout.field.onChange} />
+            ) : null}
             {isInzhurCash ? <InzhurActualBalanceNote /> : null}
         </UpdateAccountScreen>
     );
