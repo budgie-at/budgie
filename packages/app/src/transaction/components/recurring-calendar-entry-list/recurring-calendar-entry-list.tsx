@@ -52,22 +52,18 @@ export const RecurringCalendarEntryList = ({
             </View>
 
             <View>
-                {isNotEmptyArray(entries) ? (
-                    <View>
-                        {entries.map((entry, index) => (
-                            <RecurringCalendarEntryRow
-                                key={entry.key}
-                                entry={entry}
-                                position={getTransactionListRowPosition(index, entries.length)}
-                                {...(hasDayLabels && {
-                                    dayLabel: formatMonthAndDay(new Date(displayYear, displayMonth, entry.dayOfMonth))
-                                })}
-                            />
-                        ))}
-                    </View>
-                ) : (
-                    emptyContent
-                )}
+                {isNotEmptyArray(entries)
+                    ? entries.map((entry, index) => (
+                          <RecurringCalendarEntryRow
+                              key={entry.key}
+                              entry={entry}
+                              position={getTransactionListRowPosition(index, entries.length)}
+                              {...(hasDayLabels && {
+                                  dayLabel: formatMonthAndDay(new Date(displayYear, displayMonth, entry.dayOfMonth))
+                              })}
+                          />
+                      ))
+                    : emptyContent}
             </View>
         </View>
     );

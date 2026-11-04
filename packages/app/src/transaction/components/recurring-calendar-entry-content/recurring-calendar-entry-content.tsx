@@ -3,7 +3,7 @@ import { RecurringAlertEnum } from '@budgie/recurring';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -11,7 +11,6 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
-import { TransactionRowLayout } from '../transaction-row-layout/transaction-row-layout';
 
 import type { RecurringCalendarEntryInterface } from '@budgie/recurring';
 
@@ -23,8 +22,16 @@ interface Props {
     readonly dayLabel?: string;
 }
 
-const amountVariants = cva('text-[16px] font-semibold text-primary tabular-nums', {
-    variants: { isAccessibilityTextSize: { true: 'mt-xs mb-sm', false: '' } }
+const rowVariants = cva('flex-row gap-x-xl', {
+    variants: { isAccessibilityTextSize: { true: 'flex-wrap items-start gap-y-sm', false: 'min-h-11 items-center' } }
+});
+
+const labelsVariants = cva('flex-1 min-w-0 gap-y-xxs', {
+    variants: { isAccessibilityTextSize: { true: '', false: 'min-h-[38px] justify-center mr-xs' } }
+});
+
+const amountVariants = cva('shrink-0 text-[16px] font-semibold text-primary tabular-nums', {
+    variants: { isAccessibilityTextSize: { true: 'basis-full pl-[48px]', false: '' } }
 });
 
 export const RecurringCalendarEntryContent = ({ entry, dayLabel }: Props) => {
@@ -35,12 +42,6 @@ export const RecurringCalendarEntryContent = ({ entry, dayLabel }: Props) => {
     const labelLineLimit = isAccessibilityTextSize ? 0 : 2;
     const statusLabel = entry.isForecast ? t`Expected` : t`Recorded`;
     const metadataLabel = isNotEmptyString(dayLabel) ? dayLabel : statusLabel;
-    const amount = (
-        <Text dynamicTypeRamp="headline" className={amountVariants({ isAccessibilityTextSize })}>
-            {protectAmount(convertFromMicroUnits(entry.latestAmount), defaultInstrument.symbol)}
-        </Text>
-    );
-    const trailingAmount = isAccessibilityTextSize ? null : amount;
     const alertLabels = {
         [RecurringAlertEnum.OVERDUE]: t`Overdue`,
         [RecurringAlertEnum.PRICE_CHANGE]: t`Price changed`
@@ -50,32 +51,35 @@ export const RecurringCalendarEntryContent = ({ entry, dayLabel }: Props) => {
     const icon = entry.categoryIcon ?? UserIconNameEnum.Wallet;
 
     return (
-        <TransactionRowLayout
-            icon={<CircleIcon size={36} iconSize={18} radius={18} border={false} icon={icon} variant="secondary" />}
-            amount={trailingAmount}
-        >
-            <Text
-                dynamicTypeRamp="headline"
-                className="text-[16px] font-semibold text-primary"
-                numberOfLines={labelLineLimit}
-                ellipsizeMode="tail"
-            >
-                {entry.title}
-            </Text>
-            {isAccessibilityTextSize ? amount : null}
-            {isAccessibilityTextSize ? (
-                <Text dynamicTypeRamp="footnote" className="text-[12px] text-secondary-foreground mt-xs">
-                    {metadataLabel}
+        <View className={rowVariants({ isAccessibilityTextSize })}>
+            <CircleIcon size={36} iconSize={18} radius={18} border={false} icon={icon} variant="secondary" />
+            <View className={labelsVariants({ isAccessibilityTextSize })}>
+                <Text
+                    dynamicTypeRamp="headline"
+                    className="text-[16px] font-semibold text-primary"
+                    numberOfLines={labelLineLimit}
+                    ellipsizeMode="tail"
+                    lineBreakStrategyIOS="standard"
+                >
+                    {entry.title}
                 </Text>
-            ) : null}
-            <Text
-                dynamicTypeRamp="footnote"
-                className="text-[12px] text-secondary-foreground"
-                numberOfLines={labelLineLimit}
-                ellipsizeMode="tail"
-            >
-                {description}
+                {isAccessibilityTextSize ? (
+                    <Text dynamicTypeRamp="footnote" className="text-[12px] text-secondary-foreground">
+                        {metadataLabel}
+                    </Text>
+                ) : null}
+                <Text
+                    dynamicTypeRamp="footnote"
+                    className="text-[12px] text-secondary-foreground"
+                    numberOfLines={labelLineLimit}
+                    ellipsizeMode="tail"
+                >
+                    {description}
+                </Text>
+            </View>
+            <Text dynamicTypeRamp="headline" className={amountVariants({ isAccessibilityTextSize })}>
+                {protectAmount(convertFromMicroUnits(entry.latestAmount), defaultInstrument.symbol)}
             </Text>
-        </TransactionRowLayout>
+        </View>
     );
 };

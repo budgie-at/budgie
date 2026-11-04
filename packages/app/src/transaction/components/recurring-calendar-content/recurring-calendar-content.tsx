@@ -2,14 +2,12 @@ import { convertFromMicroUnits } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useReducer } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
-import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { useToday } from '../../../@generic/hook/use-today.hook';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
@@ -20,12 +18,13 @@ import { recurringCalendarReducer } from '../../utils/recurring-calendar-reducer
 import { RecurringCalendarEmptyState } from '../recurring-calendar-empty-state/recurring-calendar-empty-state';
 import { RecurringCalendarEntryList } from '../recurring-calendar-entry-list/recurring-calendar-entry-list';
 import { RecurringCalendarGrid } from '../recurring-calendar-grid/recurring-calendar-grid';
+import { RecurringCalendarSummary } from '../recurring-calendar-summary/recurring-calendar-summary';
 
 import { RecurringCalendarSelector } from './recurring-calendar.selector';
 
 import type { RecurringCalendarEntryInterface } from '@budgie/recurring';
 
-const scrollContentStyle = { paddingBottom: 20, rowGap: 12 };
+const scrollContentStyle = { paddingTop: 4, paddingBottom: 20, rowGap: 12 };
 
 const EMPTY_ENTRIES_BY_DAY: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]> = new Map();
 
@@ -89,41 +88,18 @@ export const RecurringCalendarContent = () => {
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="on-drag"
         >
-            <View className="gap-y-md pt-xl">
-                <View className="items-center gap-y-xs">
-                    <LoadingContent
-                        isLoading={isLoading}
-                        containerClassName="self-stretch"
-                        loadingIndicator={
-                            <ActivityIndicator size="small" colorClassName="accent-primary" style={StyleSheet.absoluteFill} />
-                        }
-                    >
-                        <ProtectedText
-                            className="text-[32px] font-semibold text-primary text-center tabular-nums self-stretch"
-                            numberOfLines={1}
-                            adjustsFontSizeToFit
-                            minimumFontScale={0.5}
-                            maxFontSizeMultiplier={1.5}
-                        >
-                            {formatDigits(displayedTotal, defaultInstrument.symbol)}
-                        </ProtectedText>
-                    </LoadingContent>
-                    <Text maxFontSizeMultiplier={1.5} className="font-medium text-xs text-secondary-foreground">
-                        <Trans>Monthly total</Trans>
-                    </Text>
-                </View>
+            <RecurringCalendarGrid
+                isLoading={isLoading}
+                entriesByDay={entriesByDay}
+                forecastedEntriesByDay={forecastedEntriesByDay}
+                selectedDay={selectedDay}
+                onSelectDay={handleSelectDay}
+                displayMonth={displayMonth}
+                displayYear={displayYear}
+                onChangeMonth={handleChangeMonth}
+            />
 
-                <RecurringCalendarGrid
-                    isLoading={isLoading}
-                    entriesByDay={entriesByDay}
-                    forecastedEntriesByDay={forecastedEntriesByDay}
-                    selectedDay={selectedDay}
-                    onSelectDay={handleSelectDay}
-                    displayMonth={displayMonth}
-                    displayYear={displayYear}
-                    onChangeMonth={handleChangeMonth}
-                />
-            </View>
+            <RecurringCalendarSummary isLoading={isLoading} formattedTotal={formatDigits(displayedTotal, defaultInstrument.symbol)} />
 
             <LoadingContent isLoading={isLoading} className="gap-y-5xl" loadingIndicator={null}>
                 {hasSelectedDay ? (

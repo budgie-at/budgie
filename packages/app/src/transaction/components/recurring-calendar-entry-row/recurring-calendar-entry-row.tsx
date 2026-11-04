@@ -10,7 +10,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { DeletableRow } from '../../../@generic/component/deletable-row/deletable-row';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
@@ -33,8 +32,6 @@ export const RecurringCalendarEntryRow = ({ entry, position, onPress, dayLabel }
     const router = useRouter();
     const { t } = useLingui();
     const [isRenaming, setIsRenaming] = useState(false);
-    const isAccessibilityTextSize = useIsAccessibilityTextSize();
-    const separatorInset = isAccessibilityTextSize ? 16 : void 0;
     let handlePress = onPress;
 
     if (!isDefined(handlePress) && isDefined(entry.latestTransactionId)) {
@@ -70,7 +67,7 @@ export const RecurringCalendarEntryRow = ({ entry, position, onPress, dayLabel }
         ]);
 
     return (
-        <TransactionRowSurface position={position} separatorInset={separatorInset}>
+        <TransactionRowSurface position={position}>
             {isRenaming ? (
                 <RecurringSeriesTitleInput seriesId={entry.seriesId} title={entry.title} onDone={handleRenameDone} />
             ) : (
