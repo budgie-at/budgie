@@ -70,14 +70,20 @@ test('31 budget', { tags: ['budget'] }, async ({ budgie }) => {
         await b.tapId(ctx, 'PageHeader.BackButton');
         await b.openLink(ctx, 'budgie://budget-limit-changes');
         await expect(b.byText(screen, 'Budget unavailable')).toBeVisible({ timeout: 3_000 });
+        await b.tapText(ctx, 'Close');
+        await expect(b.byText(screen, 'Budget unavailable')).toBeHidden();
         await b.openLink(ctx, 'budgie://');
         await b.openLink(ctx, 'budgie://budget-safe-to-spend?eventId=999999');
         await expect(b.byText(screen, 'Budget unavailable')).toBeVisible({ timeout: 3_000 });
+        await b.tapText(ctx, 'Close');
+        await expect(b.byText(screen, 'Budget unavailable')).toBeHidden();
         await b.openLink(ctx, 'budgie://');
         await b.openLink(ctx, 'budgie://budget-period-summary?snapshotId=999999');
         await expect(
             b.byText(screen, 'This period summary is no longer available. Close this screen to see your budget history.')
         ).toBeVisible({ timeout: 3_000 });
+        await b.tapText(ctx, 'Close');
+        await expect(b.byText(screen, 'Period summary unavailable')).toBeHidden();
         await b.openLink(ctx, 'budgie://');
     });
 

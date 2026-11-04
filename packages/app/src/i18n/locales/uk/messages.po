@@ -2358,6 +2358,7 @@ msgid "Clipboard is empty"
 msgstr "Буфер обміну порожній"
 
 #: src/@generic/component/sheet-title-row/sheet-title-row.tsx
+#: src/budget/components/budget-sheet-state/budget-sheet-state.tsx
 #: src/sync/component/get-token-card/get-token-card.tsx
 msgid "Close"
 msgstr "Закрити"
@@ -6053,6 +6054,10 @@ msgstr "Період"
 msgid "Period summary"
 msgstr "Підсумок періоду"
 
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
+msgid "Period summary unavailable"
+msgstr "Підсумок періоду недоступний"
+
 #: src/@generic/hook/use-contacts.hook.ts
 msgid "Permission to access contacts was denied."
 msgstr "Відмовлено в доступі до контактів."
@@ -7656,6 +7661,10 @@ msgstr "Цю резервну копію створено старішою ве�
 msgid "This backup was made by an older Budgie version and cannot be restored."
 msgstr "Цю резервну копію створено старішою версією Budgie, її не можна відновити."
 
+#: src/budget/components/budget-sheet-state/budget-sheet-state.tsx
+msgid "This budget may have been deleted."
+msgstr "Можливо, цей бюджет видалено."
+
 #: src/budget/components/budget-data-state/budget-data-state.tsx
 msgid "This budget may have been deleted. Go back to see your current budget."
 msgstr "Можливо, цей бюджет видалено. Поверніться, щоб переглянути поточний бюджет."
@@ -8682,6 +8691,8 @@ msgid "Your data"
 msgstr "Ваші дані"
 
 #: src/budget/components/budget-data-state/budget-data-state.tsx
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
+#: src/budget/components/budget-sheet-state/budget-sheet-state.tsx
 msgid "Your data could not be loaded. Close this screen and try again."
 msgstr "Не вдалося завантажити дані. Закрийте цей екран і спробуйте ще раз."
 

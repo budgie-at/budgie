@@ -7,11 +7,12 @@ interface Props {
     readonly isLoading: boolean;
     readonly isError?: boolean;
     readonly description?: string;
+    readonly title?: string;
 }
 
-export const BudgetDataState = ({ isLoading, isError = false, description }: Props) => {
+export const BudgetDataState = ({ isLoading, isError = false, description, title }: Props) => {
     const { t } = useLingui();
-    const title = isError ? t`Could not load budget` : t`Budget unavailable`;
+    const heading = title ?? (isError ? t`Could not load budget` : t`Budget unavailable`);
     const stateDescription =
         description ??
         (isError
@@ -25,7 +26,7 @@ export const BudgetDataState = ({ isLoading, isError = false, description }: Pro
             <LoadingContent isLoading={isLoading}>
                 <View className="gap-y-md">
                     <Text accessibilityRole="header" className="text-lg font-semibold text-primary">
-                        {title}
+                        {heading}
                     </Text>
                     <Text className="text-sm text-secondary-foreground">{stateDescription}</Text>
                     <Text className="text-xs text-secondary-foreground">

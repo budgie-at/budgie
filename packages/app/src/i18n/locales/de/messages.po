@@ -2358,6 +2358,7 @@ msgid "Clipboard is empty"
 msgstr "Die Zwischenablage ist leer"
 
 #: src/@generic/component/sheet-title-row/sheet-title-row.tsx
+#: src/budget/components/budget-sheet-state/budget-sheet-state.tsx
 #: src/sync/component/get-token-card/get-token-card.tsx
 msgid "Close"
 msgstr "Schließen"
@@ -6053,6 +6054,10 @@ msgstr "Zeitraum"
 msgid "Period summary"
 msgstr "Zeitraumübersicht"
 
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
+msgid "Period summary unavailable"
+msgstr "Zeitraumübersicht nicht verfügbar"
+
 #: src/@generic/hook/use-contacts.hook.ts
 msgid "Permission to access contacts was denied."
 msgstr "Die Berechtigung zum Zugriff auf Kontakte wurde verweigert."
@@ -7656,6 +7661,10 @@ msgstr "Dieses Backup wurde mit einer älteren Budgie-Version erstellt und kann 
 msgid "This backup was made by an older Budgie version and cannot be restored."
 msgstr "Dieses Backup wurde mit einer älteren Budgie-Version erstellt und kann nicht wiederhergestellt werden."
 
+#: src/budget/components/budget-sheet-state/budget-sheet-state.tsx
+msgid "This budget may have been deleted."
+msgstr "Dieses Budget wurde möglicherweise gelöscht."
+
 #: src/budget/components/budget-data-state/budget-data-state.tsx
 msgid "This budget may have been deleted. Go back to see your current budget."
 msgstr "Dieses Budget wurde möglicherweise gelöscht. Gehe zurück, um dein aktuelles Budget zu sehen."
@@ -8682,6 +8691,8 @@ msgid "Your data"
 msgstr "Ihre Daten"
 
 #: src/budget/components/budget-data-state/budget-data-state.tsx
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
+#: src/budget/components/budget-sheet-state/budget-sheet-state.tsx
 msgid "Your data could not be loaded. Close this screen and try again."
 msgstr "Deine Daten konnten nicht geladen werden. Schließe diese Ansicht und versuche es erneut."
 

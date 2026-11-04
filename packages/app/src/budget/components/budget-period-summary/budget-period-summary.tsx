@@ -34,7 +34,15 @@ export const BudgetPeriodSummary = ({ snapshotId }: Props) => {
         : t`This period summary is no longer available. Close this screen to see your budget history.`;
 
     if (!isDefined(snapshot)) {
-        return <BudgetSheetState title={t`Period summary`} isLoading={isLoading} isError={isError} description={missingDescription} />;
+        return (
+            <BudgetSheetState
+                title={t`Period summary`}
+                unavailableTitle={t`Period summary unavailable`}
+                isLoading={isLoading}
+                isError={isError}
+                description={missingDescription}
+            />
+        );
     }
 
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
