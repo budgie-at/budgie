@@ -54,12 +54,12 @@ test('07 settings preferences', { tags: ['settings'] }, async ({ budgie }) => {
     });
 
     await b.phase('appearance and cents', async () => {
-        await a.scrollToCentre(ctx, 'SettingsPage.DarkModeCard');
+        await b.scrollToCentre(ctx, 'SettingsPage.DarkModeCard');
         await b.expectId(ctx, 'SettingsPage.DarkModeCard');
         await b.tapText(ctx, 'Dark');
         await b.tapText(ctx, 'Light');
         await b.expectId(ctx, 'SettingsPage.ShowCentsCard');
-        await a.scrollToCentre(ctx, 'SettingsPage.ShowCentsCard');
+        await b.scrollToCentre(ctx, 'SettingsPage.ShowCentsCard');
         await toggleCents(true);
         await b.tapId(ctx, 'TabBar.Home');
         await b.expectId(ctx, 'AccountCard.Balance.E2E_Settings_Bank.100_00', 10_000);
@@ -70,7 +70,7 @@ test('07 settings preferences', { tags: ['settings'] }, async ({ budgie }) => {
 
         await b.openLink(ctx, 'budgie://settings?anchor=appearance');
         await b.expectId(ctx, 'SettingsPage.ShowCentsCard', 10_000);
-        await a.scrollToCentre(ctx, 'SettingsPage.ShowCentsCard');
+        await b.scrollToCentre(ctx, 'SettingsPage.ShowCentsCard');
         await toggleCents(false);
         await b.tapId(ctx, 'TabBar.Home');
         await b.expectId(ctx, 'AccountCard.Balance.E2E_Settings_Bank.100', 10_000);

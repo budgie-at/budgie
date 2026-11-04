@@ -2,24 +2,9 @@ import { expect } from 'e2e';
 
 import { selectAccountBySearch } from './accounts.ts';
 import { pickCategoryCard } from './categories.ts';
-import { byId, byText, expectId, expectNoId, openLink, scrollTo, selectCategoryBySearch, sleep, tapId, type Ctx } from './core.ts';
+import { byId, byText, expectId, expectNoId, openLink, retry, scrollTo, selectCategoryBySearch, sleep, tapId, type Ctx } from './core.ts';
 
 import type { Locator } from 'e2e';
-
-/** Maestro's `retry: { maxRetries }`: runs `body` up to `1 + retries` times, rethrowing the last failure. */
-export async function retry(retries: number, body: (attempt: number) => Promise<void>): Promise<void> {
-    for (let attempt = 1; ; attempt++) {
-        try {
-            await body(attempt);
-            return;
-        } catch (cause) {
-            if (attempt > retries) {
-                throw cause;
-            }
-            console.log(`[retry] attempt ${attempt} failed: ${(cause as Error).message.split('\n')[0]}`);
-        }
-    }
-}
 
 /** Taps `testId` until `targetId` shows (each wait `timeout`), up to `1 + retries` taps. */
 export async function tapUntilId(ctx: Ctx, testId: string, targetId: string, retries = 3, timeout = 3_000): Promise<void> {
