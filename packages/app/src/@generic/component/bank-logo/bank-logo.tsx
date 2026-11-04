@@ -1,88 +1,56 @@
 import { ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
-import { cva } from 'class-variance-authority';
-import { ReactElement, ReactNode } from 'react';
+import { Image } from 'expo-image';
+import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { BANK_LOGO_RADIUS_RATIO } from '../../constant/bank-logo-radius-ratio.constant';
-import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
-import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
+import { BANK_LOGO } from '../../constant/bank-logo.constant';
+import { BANK_PROVIDER_LOGO_SLUG } from '../../constant/bank-provider-logo-slug.constant';
+import { MAX_FONT_SIZE_MULTIPLIER } from '../../constant/max-font-size-multiplier.constant';
+import { getBankLogoSlug } from '../../utils/get-bank-logo-slug.util';
 import { CircleIcon } from '../circle-icon/circle-icon';
-import { EnableBankingBankLogo } from '../enable-banking-bank-logo/enable-banking-bank-logo';
-
-import { BinanceIcon } from './icons/binance-icon';
-import { ErsteIcon } from './icons/erste-icon';
-import { MonobankIcon } from './icons/monobank-icon';
-import { PrivatbankIcon } from './icons/privatbank-icon';
 
 interface Props {
-    readonly bankProvider: ExternalSourceEnum;
-    readonly size?: number;
-    readonly variant?: ColorPaletteVariant;
-    readonly fallback?: ReactNode;
+    readonly bankProvider?: ExternalSourceEnum;
     readonly bankName?: string | null;
+    readonly size?: number;
 }
 
-const iconVariant = cva('', {
-    variants: { variant: FOREGROUND_COLOR_PALETTE }
-});
+const TILE_RADIUS_RATIO = 0.28;
+const LETTER_SIZE_RATIO = 0.47;
 
-const getBankIcon = (provider: ExternalSourceEnum, size: number): ReactElement | null => {
-    switch (provider) {
-        case ExternalSourceEnum.MONOBANK:
-            return <MonobankIcon size={size} />;
-        case ExternalSourceEnum.PRIVATBANK:
-            return <PrivatbankIcon size={size} />;
-        case ExternalSourceEnum.ERSTE:
-            return <ErsteIcon size={size} />;
-        case ExternalSourceEnum.BINANCE:
-            return <BinanceIcon size={size} />;
-        case ExternalSourceEnum.ENABLE_BANKING:
-            return (
-                <CircleIcon
-                    icon={UserIconNameEnum.Landmark}
-                    variant="primary"
-                    border={false}
-                    size={size}
-                    iconSize={Math.round(size / 2)}
-                    radius={Math.round(size * BANK_LOGO_RADIUS_RATIO)}
-                    className="bg-surface-disc"
-                />
-            );
-        case ExternalSourceEnum.MANUAL:
-        case ExternalSourceEnum.REVOLUT:
-        case ExternalSourceEnum.COINBASE:
-        case ExternalSourceEnum.WISE:
-        case ExternalSourceEnum.CSV:
-        case ExternalSourceEnum.RECEIPT:
-        case ExternalSourceEnum.APPLE_PAY_AUTOMATION:
-        default:
-            return null;
-    }
-};
+export const BankLogo = ({ bankProvider, bankName, size = 32 }: Props) => {
+    const hasName = isNotEmptyString(bankName);
+    const nameSlug = hasName ? getBankLogoSlug(bankName) : null;
+    const slug = (isDefined(bankProvider) ? BANK_PROVIDER_LOGO_SLUG[bankProvider] : null) ?? nameSlug;
+    const radius = Math.round(size * TILE_RADIUS_RATIO);
+    const tileStyle = { width: size, height: size, borderRadius: radius, borderCurve: 'continuous' as const };
 
-export const BankLogo = ({ bankProvider, size = 32, variant = 'default', fallback, bankName }: Props) => {
-    if (bankProvider === ExternalSourceEnum.ENABLE_BANKING && isNotEmptyString(bankName)) {
-        return <EnableBankingBankLogo name={bankName} size={size} />;
+    if (isDefined(slug)) {
+        return <Image source={BANK_LOGO[slug]} style={tileStyle} contentFit="cover" />;
     }
 
-    const icon = getBankIcon(bankProvider, size);
-
-    if (isDefined(icon)) {
-        return icon;
+    if (!hasName) {
+        return (
+            <CircleIcon
+                icon={UserIconNameEnum.Landmark}
+                variant="primary"
+                border={false}
+                size={size}
+                iconSize={Math.round(size / 2)}
+                radius={radius}
+                className="bg-surface-disc"
+            />
+        );
     }
 
-    if (isDefined(fallback)) {
-        return fallback;
-    }
+    const letterStyle = { fontSize: Math.round(size * LETTER_SIZE_RATIO) };
 
     return (
-        <CircleIcon
-            border={false}
-            className="rounded-5xl w-13 h-13"
-            icon={UserIconNameEnum.PiggyBank}
-            iconClassName={iconVariant({ variant })}
-            variant="ghost"
-        />
+        <View className="items-center justify-center bg-surface-disc" style={tileStyle}>
+            <Text maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER} className="font-semibold text-primary" style={letterStyle}>
+                {bankName.trim().charAt(0).toLocaleUpperCase()}
+            </Text>
+        </View>
     );
 };

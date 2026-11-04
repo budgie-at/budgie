@@ -41,12 +41,12 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
     const { balance } = useAccountBalanceQuery(account.id);
     const formatDigits = useDisplayFormatDigits();
     const formatAmount = useFormatInstrumentAmount();
-    const { integration } = useBankIntegration();
+    const { integration, capabilities } = useBankIntegration();
     const { sync, isFailed, leadLabel, switchLabel, isToggleVisible } = useBankIntegrationAccountRowState(account);
 
     const rowTestID = BankIntegrationSelector.AccountRow(account.id);
     const accountIcon =
-        integration.provider === ExternalSourceEnum.ENABLE_BANKING ? (
+        capabilities.supportsFileImport || integration.provider === ExternalSourceEnum.ENABLE_BANKING ? (
             <BankLogo bankProvider={integration.provider} size={36} bankName={integration.label} />
         ) : (
             <CircleIcon

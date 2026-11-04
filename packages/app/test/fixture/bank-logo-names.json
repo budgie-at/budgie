@@ -55,6 +55,9 @@
 "belfius": [
 "Belfius"
 ],
+"binance": [
+"Binance"
+],
 "bnl": [
 "Banca Nazionale del Lavoro"
 ],
@@ -305,6 +308,9 @@
 "millennium-bcp": [
 "Millennium BCP"
 ],
+"monobank": [
+"Monobank"
+],
 "mps": [
 "Banca Monte dei Paschi di Siena"
 ],
@@ -350,6 +356,9 @@
 "poste-italiane": [
 "BancoPosta",
 "Postepay"
+],
+"privatbank": [
+"Privatbank"
 ],
 "rabobank": [
 "Rabobank"

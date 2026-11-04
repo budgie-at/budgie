@@ -1,4 +1,4 @@
-export const ENABLE_BANKING_LOGO_NAMES: Readonly<Record<string, string>> = {
+export const BANK_LOGO_NAMES: Readonly<Record<string, string>> = {
     abanca: 'abanca',
     'abn-amro': 'abnamro',
     aib: 'aib',
@@ -15,6 +15,7 @@ export const ENABLE_BANKING_LOGO_NAMES: Readonly<Record<string, string>> = {
     bbva: 'bbva',
     bcr: 'bancacomercialaromana',
     belfius: 'belfius',
+    binance: 'binance',
     bnl: 'bancanazionaledellavoro',
     'bnp-paribas': 'bnpparibas',
     'bnp-paribas-fortis': 'bnpparibasfortis',
@@ -67,6 +68,7 @@ export const ENABLE_BANKING_LOGO_NAMES: Readonly<Record<string, string>> = {
     'mbh-bank': 'mbhbankexbudapestbank mbhbankexmkbbank mbhbankextakarekbank',
     mediolanum: 'bancamediolanum',
     'millennium-bcp': 'millenniumbcp',
+    monobank: 'monobank',
     mps: 'bancamontedeipaschidisiena',
     n26: 'n26',
     nbg: 'nationalbankofgreece',
@@ -82,6 +84,7 @@ export const ENABLE_BANKING_LOGO_NAMES: Readonly<Record<string, string>> = {
     'pko-bp': 'pkobankpolski',
     postbank: 'postbank',
     'poste-italiane': 'bancoposta postepay',
+    privatbank: 'privatbank',
     rabobank: 'rabobank',
     raiffeisen: 'raiffeisen raiffeisenbank',
     revolut: 'revolut',

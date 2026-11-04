@@ -1,3 +1,4 @@
+import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { AccountRowLeadingContext } from '../../context/account-row-leading.context';
 import { HomeAccountBalanceInterface } from '../../interface/home-account-balance.interface';
 import { HomeSectionInterface } from '../../interface/home-section.interface';
@@ -6,7 +7,6 @@ import { isInstitutionGroup } from '../../type-guard/is-institution-group.type-g
 import { AccountListItem } from '../account-list-item/account-list-item';
 import { CryptoCurrencyGroupCard } from '../crypto-currency-group-card/crypto-currency-group-card';
 import { DebtAccountCard } from '../debt-account-card/debt-account-card';
-import { InstitutionMark } from '../institution-mark/institution-mark';
 import { InstitutionRow } from '../institution-row/institution-row';
 
 interface Props {
@@ -20,7 +20,7 @@ export const HomeSectionItem = ({ item, section, balancesByAccountId }: Props) =
         const [account] = item.accounts;
 
         return (
-            <AccountRowLeadingContext value={<InstitutionMark provider={item.provider} title={account.title} bankName={item.label} />}>
+            <AccountRowLeadingContext value={<BankLogo bankProvider={item.provider} bankName={item.label ?? account.title} size={44} />}>
                 <AccountListItem account={account} balancesByAccountId={balancesByAccountId} />
             </AccountRowLeadingContext>
         );

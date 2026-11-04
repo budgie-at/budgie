@@ -13,6 +13,7 @@ import logoBawag from '../component/bank-logo/logos/bawag.webp';
 import logoBbva from '../component/bank-logo/logos/bbva.webp';
 import logoBcr from '../component/bank-logo/logos/bcr.webp';
 import logoBelfius from '../component/bank-logo/logos/belfius.webp';
+import logoBinance from '../component/bank-logo/logos/binance.webp';
 import logoBnl from '../component/bank-logo/logos/bnl.webp';
 import logoBnpParibasFortis from '../component/bank-logo/logos/bnp-paribas-fortis.webp';
 import logoBnpParibas from '../component/bank-logo/logos/bnp-paribas.webp';
@@ -62,6 +63,7 @@ import logoMbank from '../component/bank-logo/logos/mbank.webp';
 import logoMbhBank from '../component/bank-logo/logos/mbh-bank.webp';
 import logoMediolanum from '../component/bank-logo/logos/mediolanum.webp';
 import logoMillenniumBcp from '../component/bank-logo/logos/millennium-bcp.webp';
+import logoMonobank from '../component/bank-logo/logos/monobank.webp';
 import logoMps from '../component/bank-logo/logos/mps.webp';
 import logoN26 from '../component/bank-logo/logos/n26.webp';
 import logoNbg from '../component/bank-logo/logos/nbg.webp';
@@ -77,6 +79,7 @@ import logoPiraeus from '../component/bank-logo/logos/piraeus.webp';
 import logoPkoBp from '../component/bank-logo/logos/pko-bp.webp';
 import logoPostbank from '../component/bank-logo/logos/postbank.webp';
 import logoPosteItaliane from '../component/bank-logo/logos/poste-italiane.webp';
+import logoPrivatbank from '../component/bank-logo/logos/privatbank.webp';
 import logoRabobank from '../component/bank-logo/logos/rabobank.webp';
 import logoRaiffeisen from '../component/bank-logo/logos/raiffeisen.webp';
 import logoRevolut from '../component/bank-logo/logos/revolut.webp';
@@ -99,7 +102,7 @@ import logoVolksbankRaiffeisenbank from '../component/bank-logo/logos/volksbank-
 import logoWise from '../component/bank-logo/logos/wise.webp';
 import logoWizink from '../component/bank-logo/logos/wizink.webp';
 
-export const ENABLE_BANKING_LOGO: Readonly<Record<string, number>> = {
+export const BANK_LOGO: Readonly<Record<string, number>> = {
     abanca: logoAbanca,
     'abn-amro': logoAbnAmro,
     aib: logoAib,
@@ -115,6 +118,7 @@ export const ENABLE_BANKING_LOGO: Readonly<Record<string, number>> = {
     bbva: logoBbva,
     bcr: logoBcr,
     belfius: logoBelfius,
+    binance: logoBinance,
     bnl: logoBnl,
     'bnp-paribas': logoBnpParibas,
     'bnp-paribas-fortis': logoBnpParibasFortis,
@@ -164,6 +168,7 @@ export const ENABLE_BANKING_LOGO: Readonly<Record<string, number>> = {
     'mbh-bank': logoMbhBank,
     mediolanum: logoMediolanum,
     'millennium-bcp': logoMillenniumBcp,
+    monobank: logoMonobank,
     mps: logoMps,
     n26: logoN26,
     nbg: logoNbg,
@@ -179,6 +184,7 @@ export const ENABLE_BANKING_LOGO: Readonly<Record<string, number>> = {
     'pko-bp': logoPkoBp,
     postbank: logoPostbank,
     'poste-italiane': logoPosteItaliane,
+    privatbank: logoPrivatbank,
     rabobank: logoRabobank,
     raiffeisen: logoRaiffeisen,
     revolut: logoRevolut,
