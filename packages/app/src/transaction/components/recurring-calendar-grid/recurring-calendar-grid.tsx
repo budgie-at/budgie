@@ -128,11 +128,11 @@ export const RecurringCalendarGrid = (props: Props) => {
                         onPress={handleCurrentMonth}
                         className="min-h-[44px] flex-1 items-center justify-center"
                         accessibilityRole="button"
-                        accessibilityLabel={t`Today`}
+                        accessibilityLabel={monthLabel}
+                        accessibilityHint={t`Today`}
+                        testID={RecurringCalendarSelector.MonthLabel}
                     >
-                        <Text className="text-primary text-[17px] font-semibold capitalize" testID={RecurringCalendarSelector.MonthLabel}>
-                            {monthLabel}
-                        </Text>
+                        <Text className="text-primary text-[17px] font-semibold capitalize">{monthLabel}</Text>
                     </HapticPressable>
                     <HapticPressable
                         onPress={handleNextMonth}
