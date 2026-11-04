@@ -101,6 +101,7 @@ export { ErsteSyncService } from './erste/service/erste-sync.service';
 
 export { InzhurImportService } from './inzhur/service/inzhur-import.service';
 export { InzhurSetupService } from './inzhur/service/inzhur-setup.service';
+export { InzhurBankFlowService } from './inzhur/service/inzhur-bank-flow.service';
 export { InzhurImportOutcomeEnum } from './inzhur/enum/inzhur-import-outcome.enum';
 export { InzhurNotSetUpError } from './inzhur/error/inzhur-not-set-up.error';
 export { InzhurStatementInvalidError } from './inzhur/error/inzhur-statement-invalid.error';

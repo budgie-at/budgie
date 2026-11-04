@@ -199,6 +199,32 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                 return transaction;
             }),
 
+            findIncomeAndExpenseByExternalSources: Effect.fn('TransactionRepository.findIncomeAndExpenseByExternalSources')(function* (
+                externalSources: readonly ExternalSourceEnum[],
+                transactionIds: readonly number[] | null
+            ) {
+                if (isDefined(transactionIds) && isEmptyArray(transactionIds)) {
+                    return [];
+                }
+
+                return yield* Db.query(db =>
+                    db.query.TransactionEntityTable.findMany({
+                        where: {
+                            deletedAt: { isNull: true },
+                            consolidationParentTransactionId: { isNull: true },
+                            type: { in: [TransactionTypeEnum.INCOME, TransactionTypeEnum.EXPENSE] },
+                            externalSource: { in: [...externalSources] },
+                            ...(isDefined(transactionIds) && { id: { in: [...transactionIds] } })
+                        },
+                        with: {
+                            [TransactionAssociationEnum.ENTRIES]: {
+                                where: transactionFilters.ledgerEntryFilter
+                            }
+                        }
+                    })
+                );
+            }),
+
             findByIdsWithEntries: Effect.fn('TransactionRepository.findByIdsWithEntries')(function* (ids: number[]) {
                 if (!isNotEmptyArray(ids)) {
                     return [];
