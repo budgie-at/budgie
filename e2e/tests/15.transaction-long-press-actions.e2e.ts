@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/15.transaction-long-press-actions.flow.yaml.
 import * as a from '../support/budgie/accounts.ts';
 import * as b from '../support/budgie/core.ts';
 import { test } from '../support/budgie/test.ts';

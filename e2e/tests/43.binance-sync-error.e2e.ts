@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/43.binance-sync-error.flow.yaml.
 import { expect } from 'e2e';
 
 import * as b from '../support/budgie/core.ts';

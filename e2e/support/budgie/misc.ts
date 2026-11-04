@@ -14,11 +14,11 @@ import type { Screen } from 'e2e';
 const SCROLL_VIEW = 'scroll-view' as Parameters<Screen['getByRole']>[0];
 
 /**
- * Maestro's `swipe: from: <chip>, direction: LEFT|RIGHT` on the transaction
- * filter chips, verified by the chip the flow asserts next: pages the chip
+ * Swipes the transaction filter chips, verified by the chip the test asserts
+ * next: pages the chip
  * row (the scroll view holding `anchorId`) until `targetId` shows.
- * `direction` is the content's: `right` reveals the chips on the right
- * (Maestro `LEFT`), `left` the ones on the left (Maestro `RIGHT`).
+ * `direction` is the content's: `right` reveals the chips on the right,
+ * `left` the ones on the left.
  */
 export async function revealChip(ctx: Ctx, anchorId: string, targetId: string, direction: 'left' | 'right'): Promise<void> {
     const row = ctx.screen

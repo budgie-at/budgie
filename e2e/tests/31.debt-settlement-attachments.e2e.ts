@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/31.debt-settlement-attachments.flow.yaml.
 import { expect } from 'e2e';
 
 import { exitAccountDetailsToHome, openAccountDetails, selectAccountBySearch } from '../support/budgie/accounts.ts';

@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/08.expense-transaction.flow.yaml.
 import { expect } from 'e2e';
 
 import * as c from '../support/budgie/categories.ts';

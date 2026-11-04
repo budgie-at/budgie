@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/27.mcc-default-category.flow.yaml.
 import * as a from '../support/budgie/accounts.ts';
 import * as b from '../support/budgie/core.ts';
 import * as i from '../support/budgie/imports.ts';

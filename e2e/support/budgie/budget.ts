@@ -127,7 +127,7 @@ export async function swipeToDelete(ctx: Ctx, rowId: string): Promise<void> {
     const action = byId(screen, 'DeletableRow.DeleteButton');
     await retry(2, async () => {
         const box = await settledBounds(ctx, rowId);
-        // The row's testID sits on its short label: drag from well right of it to near the screen's left edge, as Maestro's LEFT swipe does.
+        // The row's testID sits on its short label: drag from well right of it to near the screen's left edge.
         const y = box.y + box.height / 2;
         await screen.swipe({ from: { x: box.x + 260, y }, to: { x: 20, y }, duration: 300 });
         await expect(action).toBeVisible({ timeout: 3_000 });

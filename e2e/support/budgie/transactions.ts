@@ -234,7 +234,7 @@ export async function createExpense(
 
 /**
  * The fee-sheet round trip the 08/09/10 flows share on a transaction's edit form:
- * see the sheet's first entry and save button, drag it down (Maestro's `swipe: DOWN`), back on `formTitle`.
+ * see the sheet's first entry and save button, drag it down, back on `formTitle`.
  */
 export async function openAndDismissFeeSheet(ctx: Ctx, formTitle: string): Promise<void> {
     const { screen } = ctx;
@@ -245,7 +245,7 @@ export async function openAndDismissFeeSheet(ctx: Ctx, formTitle: string): Promi
 }
 
 /**
- * Drags the open bottom sheet down by its grabber until `contentId` leaves the screen (Maestro's `swipe: DOWN`).
+ * Drags the open bottom sheet down by its grabber until `contentId` leaves the screen.
  * With the keyboard up, agent-device rejects any drag long enough to dismiss the sheet ("does not fit inside
  * the viewport"), and a decimal pad has no dismiss key; then the sheet's backdrop (`PopoverDismissRegion`),
  * the other way a user closes it, is tapped instead. The sheet may stop at its collapsed detent on the way,
@@ -318,7 +318,7 @@ export async function consolidateMatches(ctx: Ctx): Promise<void> {
     await expect(byText(screen, 'Transfers and refunds merged')).toBeVisible({ timeout: 30_000 });
 }
 
-/** A point inside `locator` at fractions of its size, in the node's own coordinates (for `tap({ position })`, Maestro's `point: 'x%,y%'`). */
+/** A point inside `locator` at fractions of its size, in the node's own coordinates (for `tap({ position })`). */
 async function relativePoint(locator: Locator, fx: number, fy: number): Promise<{ x: number; y: number }> {
     const box = await locator.boundingBox();
     if (box === null) {
