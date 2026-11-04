@@ -1,12 +1,10 @@
-import { sql } from 'drizzle-orm';
-import { index, int, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
+import { int, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
-import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
 
 export const HistoricalExchangeRateEntityTable = sqliteTable(
     'historical_exchange_rates',
-    withBaseEntityTableColumns({
+    {
         sourceInstrumentId: int('source_instrument_id', { mode: 'number' })
             .notNull()
             .references(() => InstrumentEntityTable.id, { onDelete: 'cascade' }),
@@ -15,11 +13,6 @@ export const HistoricalExchangeRateEntityTable = sqliteTable(
             .references(() => InstrumentEntityTable.id, { onDelete: 'cascade' }),
         rateDate: text('rate_date').notNull(),
         rate: int('rate', { mode: 'number' }).notNull()
-    }),
-    table => [
-        unique().on(table.sourceInstrumentId, table.targetInstrumentId, table.rateDate),
-        index('historical_exchange_rates_lookup_idx')
-            .on(table.sourceInstrumentId, table.targetInstrumentId, sql`${table.rateDate} DESC`)
-            .where(sql`${table.deletedAt} IS NULL`)
-    ]
+    },
+    ({ sourceInstrumentId, targetInstrumentId, rateDate }) => [primaryKey({ columns: [sourceInstrumentId, targetInstrumentId, rateDate] })]
 );

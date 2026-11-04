@@ -22,6 +22,7 @@ import m0018 from './20261029131908_dedupe_recurring_series/migration.sql';
 import m0019 from './20261030001632_binance_multi_account_and_sync_error_code/migration.sql';
 import m0020 from './20261031052517_budget_v3/migration.sql';
 import m0021 from './20261031231028_category_icon_source/migration.sql';
+import m0022 from './20261104170422_compact_rates_and_embeddings/migration.sql';
 
 export default {
     migrations: {
@@ -46,6 +47,7 @@ export default {
         '20261029131908_dedupe_recurring_series': m0018,
         '20261030001632_binance_multi_account_and_sync_error_code': m0019,
         '20261031052517_budget_v3': m0020,
-        '20261031231028_category_icon_source': m0021
+        '20261031231028_category_icon_source': m0021,
+        '20261104170422_compact_rates_and_embeddings': m0022
     }
 };

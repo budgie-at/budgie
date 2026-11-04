@@ -5,6 +5,7 @@ import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { ExchangeRatesSyncService } from '../src/exchange-rate/service/exchange-rates-sync.service';
+import { HistoricalExchangeRateRepository } from '../src/historical-exchange-rate/repository/historical-exchange-rate.repository';
 import { EntryBaseValuationService } from '../src/valuation/service/entry-base-valuation.service';
 
 import { makeFakeHttpClientLayer, setDefaultInstrument, TestLayer, testDb, testSeedService } from './test-context';
@@ -75,6 +76,26 @@ describe('fiat rate history', () => {
             expect(hryvniaRows).toHaveLength(1);
             expect(hryvniaRows[0]?.rate).toBeCloseTo(0.9 / 45, 12);
             expect(new Set(rows.map(row => row.sourceInstrumentId)).size).toBe(rows.length);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('overwrites the rate on conflict and still resolves the latest rate on or before a date', () =>
+        Effect.gen(function* () {
+            const historicalExchangeRateRepository = yield* HistoricalExchangeRateRepository;
+            const euro = yield* findInstrumentByCode(CurrencyEnum.EUR);
+            const hryvnia = yield* findInstrumentByCode(CurrencyEnum.UAH);
+            const key = { sourceInstrumentId: hryvnia.id, targetInstrumentId: euro.id };
+
+            yield* historicalExchangeRateRepository.bulkUpsert([{ ...key, rateDate: '2030-01-01', rate: 0.02 }]);
+            yield* historicalExchangeRateRepository.bulkUpsert([
+                { ...key, rateDate: '2030-01-01', rate: 0.03 },
+                { ...key, rateDate: '2030-01-05', rate: 0.04 }
+            ]);
+            yield* historicalExchangeRateRepository.bulkUpsert([]);
+
+            const found = yield* historicalExchangeRateRepository.findForDateOrBefore(hryvnia.id, euro.id, '2030-01-03');
+
+            expect(found?.rate).toBe(0.03);
         }).pipe(Effect.provide(TestLayer))
     );
 });

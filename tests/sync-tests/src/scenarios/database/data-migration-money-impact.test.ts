@@ -11,7 +11,38 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { seed, seedBankPair, testDb, TestLayer, DEBT_OPENING_MESSAGES } from '../../harness';
 
-const applyMigration = (migrationName: string) => {
+const COMPACT_MIGRATION = '20261104170422_compact_rates_and_embeddings';
+
+const PRE_MIGRATION_SCHEMA: Readonly<Record<string, readonly string[]>> = {
+    [COMPACT_MIGRATION]: [
+        'DROP TABLE historical_exchange_rates',
+        `CREATE TABLE historical_exchange_rates (
+            id integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+            created_at integer DEFAULT (unixepoch()) NOT NULL,
+            updated_at integer DEFAULT (unixepoch()) NOT NULL,
+            deleted_at integer,
+            source_instrument_id integer NOT NULL,
+            target_instrument_id integer NOT NULL,
+            rate_date text NOT NULL,
+            rate integer NOT NULL,
+            FOREIGN KEY (source_instrument_id) REFERENCES instruments(id) ON UPDATE no action ON DELETE cascade,
+            FOREIGN KEY (target_instrument_id) REFERENCES instruments(id) ON UPDATE no action ON DELETE cascade
+        )`,
+        'CREATE UNIQUE INDEX historical_exchange_rates_unique ON historical_exchange_rates (source_instrument_id, target_instrument_id, rate_date)',
+        'CREATE INDEX historical_exchange_rates_lookup_idx ON historical_exchange_rates (source_instrument_id, target_instrument_id, rate_date DESC) WHERE deleted_at IS NULL',
+        "ALTER TABLE comment_embeddings ADD embedding blob NOT NULL DEFAULT x''",
+        'ALTER TABLE comment_embeddings ADD dimensions integer NOT NULL DEFAULT 0',
+        "ALTER TABLE merchant_embeddings ADD embedding blob NOT NULL DEFAULT x''",
+        'ALTER TABLE merchant_embeddings ADD dimensions integer NOT NULL DEFAULT 0',
+        'CREATE INDEX idx_transaction_entries_transaction_id ON transaction_entries (transaction_id)',
+        'CREATE INDEX idx_transaction_entries_account_id ON transaction_entries (account_id)'
+    ]
+};
+
+const restorePreMigrationSchema = (migrationName: string) =>
+    Effect.forEach(PRE_MIGRATION_SCHEMA[migrationName] ?? [], statement => testDb.$client.unsafe(statement).raw, { discard: true });
+
+const replayMigration = (migrationName: string) => {
     const migrationSql = readFileSync(resolve(process.cwd(), '../../packages/app/drizzle', migrationName, 'migration.sql'), 'utf8');
     const dropAddedColumns = Array.from(
         migrationSql.matchAll(/ALTER TABLE `(\w+)` ADD `(\w+)`/gu),
@@ -24,6 +55,9 @@ const applyMigration = (migrationName: string) => {
         { discard: true }
     );
 };
+
+const applyMigration = (migrationName: string) =>
+    restorePreMigrationSchema(migrationName).pipe(Effect.andThen(replayMigration(migrationName)));
 
 const MIGRATIONS_FOLDER = resolve(process.cwd(), '../../packages/app/drizzle');
 const DATA_CHANGE_PATTERN = /\b(?:UPDATE\s+\S+\s+SET|INSERT(?:\s+OR\s+\w+)?\s+INTO|DELETE\s+FROM)\b/iu;
@@ -101,6 +135,22 @@ describe.runIf(isNotEmptyArray(dataMigrations))('database/data-migration-money-i
             yield* accountBalanceIncrementalService.updateAllBalances(false);
 
             expect(yield* accountBalanceRepository.getLedgerBalances(accountIds)).toEqual(ledgerBefore);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('the compact migration keeps exactly the live historical rates with identical values', () =>
+        Effect.gen(function* () {
+            yield* restorePreMigrationSchema(COMPACT_MIGRATION);
+            yield* testDb.$client.unsafe(
+                `INSERT INTO historical_exchange_rates (deleted_at, source_instrument_id, target_instrument_id, rate_date, rate) VALUES (NULL, 1, 2, '2031-01-01', 0.5), (1, 1, 2, '2031-01-02', 0.25)`
+            ).raw;
+            yield* replayMigration(COMPACT_MIGRATION);
+
+            const rows = yield* testDb.$client.unsafe<{ rate_date: string; rate: number }>(
+                `SELECT rate_date, rate FROM historical_exchange_rates WHERE rate_date >= '2031-01-01'`
+            );
+
+            expect(rows).toEqual([{ rate_date: '2031-01-01', rate: 0.5 }]);
         }).pipe(Effect.provide(TestLayer))
     );
 });

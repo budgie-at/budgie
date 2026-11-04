@@ -36,7 +36,7 @@ import { InstrumentMarketDataJobRepository } from '../repository/instrument-mark
 import type { MarketDataJobResultInterface } from '../interface/market-data-job-result.interface';
 import type {
     AccountEntityInterface,
-    HistoricalExchangeRateCreateEntityInterface,
+    HistoricalExchangeRateEntityInterface,
     InstrumentDailyMarketPriceCreateEntityInterface,
     InstrumentEntityInterface,
     InstrumentMarketDataJobEntityInterface
@@ -111,7 +111,7 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
 
             const buildHistoricalRateInputs = (
                 prices: InstrumentDailyMarketPriceCreateEntityInterface[]
-            ): HistoricalExchangeRateCreateEntityInterface[] =>
+            ): HistoricalExchangeRateEntityInterface[] =>
                 prices.flatMap(price => [
                     {
                         sourceInstrumentId: price.instrumentId,
