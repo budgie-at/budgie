@@ -154,7 +154,9 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
                         );
                     yield* secureStore.removePending();
 
-                    return yield* enableBankingSyncService.completeAuthorization(pending, callbackUrl);
+                    const authorization = yield* enableBankingSyncService.completeAuthorization(pending, callbackUrl);
+
+                    return { ...authorization, bankName: pending.aspspName };
                 })
             };
         })

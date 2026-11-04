@@ -125,7 +125,7 @@ export const OnboardingSeal = () => {
 
                 {isSomeAvailable ? (
                     <GroupedListSwitchRow
-                        icon={biometricIcon}
+                        left={<GroupedListIcon icon={biometricIcon} />}
                         title={biometricLabel}
                         subtitle=""
                         value={isBiometricEnabled}

@@ -12,10 +12,10 @@ import { EnableBankingAccountRow } from '../enable-banking-account-row/enable-ba
 import { EnableBankingParkedAccountRow } from '../enable-banking-parked-account-row/enable-banking-parked-account-row';
 
 import type { AccountSelectionInterface } from '../../interface/account-selection.interface';
-import type { SyncAccountPreviewInterface } from '@budgie/sync';
+import type { EnableBankingAuthorizationInterface } from '../../interface/enable-banking-authorization.interface';
 
 interface Props extends Omit<AccountSelectionInterface, 'setPreviews'> {
-    readonly parkedPreviews: readonly SyncAccountPreviewInterface[];
+    readonly authorization: Pick<EnableBankingAuthorizationInterface, 'bankName' | 'previews'> | null;
 }
 
 export const EnableBankingAccountsStep = ({
@@ -24,9 +24,11 @@ export const EnableBankingAccountsStep = ({
     onToggle,
     onSelectAll,
     onDeselectAll,
-    parkedPreviews
+    authorization
 }: Props) => {
     const { t } = useLingui();
+    const bankName = authorization?.bankName;
+    const parkedPreviews = authorization?.previews.filter(preview => preview.isParked) ?? [];
     const missingAccount = t`Missing an account? Link it to your application in Enable Banking, then connect this bank again.`;
     const accountsCount = accountPreviews.length;
     const areAllSelected = isNotEmptyArray(accountPreviews) && selectedAccounts.size === accountsCount;
@@ -56,6 +58,7 @@ export const EnableBankingAccountsStep = ({
                             <EnableBankingAccountRow
                                 key={preview.externalId}
                                 preview={preview}
+                                bankName={bankName}
                                 isSelected={selectedAccounts.has(preview.externalId)}
                                 onToggle={onToggle}
                             />

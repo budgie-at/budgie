@@ -1,11 +1,10 @@
-import { UserIconType } from '@budgie/contracts';
-
-import { GroupedListIcon } from '../grouped-list-icon/grouped-list-icon';
 import { GroupedListRow } from '../grouped-list-row/grouped-list-row';
 import { ThemedSwitch } from '../themed-switch/themed-switch';
 
+import type { ReactNode } from 'react';
+
 interface Props {
-    readonly icon: UserIconType;
+    readonly left: ReactNode;
     readonly title: string;
     readonly subtitle: string;
     readonly value: boolean | undefined;
@@ -15,13 +14,13 @@ interface Props {
     readonly onChange: (value: boolean) => void;
 }
 
-export const GroupedListSwitchRow = ({ icon, title, subtitle, value, testID, titleTestID, switchTestID, onChange }: Props) => {
+export const GroupedListSwitchRow = ({ left, title, subtitle, value, testID, titleTestID, switchTestID, onChange }: Props) => {
     const handlePress = () => void onChange(!value);
     const pressableProps = { accessibilityState: { checked: value } };
 
     return (
         <GroupedListRow
-            left={<GroupedListIcon icon={icon} />}
+            left={left}
             title={title}
             subtitle={subtitle}
             testID={testID}

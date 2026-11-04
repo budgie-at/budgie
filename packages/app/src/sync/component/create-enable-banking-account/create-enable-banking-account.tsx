@@ -35,7 +35,8 @@ import { EnableBankingWaitingStep } from '../enable-banking-waiting-step/enable-
 
 import { CreateEnableBankingAccountSelector } from './create-enable-banking-account.selector';
 
-import type { EnableBankingAuthorizationResultInterface, EnableBankingBankInterface } from '@budgie/sync';
+import type { EnableBankingAuthorizationInterface } from '../../interface/enable-banking-authorization.interface';
+import type { EnableBankingBankInterface } from '@budgie/sync';
 import type { ReactNode } from 'react';
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration component with multiple hooks and handlers
@@ -52,7 +53,7 @@ export const CreateEnableBankingAccount = () => {
     const [isKeySaved, setIsKeySaved] = useState(false);
     const [savedApplicationId, setSavedApplicationId] = useState<string | null>(null);
     const [banks, setBanks] = useState<readonly EnableBankingBankInterface[]>([]);
-    const [authorization, setAuthorization] = useState<EnableBankingAuthorizationResultInterface | null>(null);
+    const [authorization, setAuthorization] = useState<EnableBankingAuthorizationInterface | null>(null);
     const { isLoading: isBusy, run } = useSingleFlight();
 
     const {
@@ -69,7 +70,6 @@ export const CreateEnableBankingAccount = () => {
 
     const parsedApplicationId = parseEnableBankingApplicationId(applicationId);
     const isLoading = isBusy || isSettingUp;
-    const parkedPreviews = authorization?.previews.filter(preview => preview.isParked) ?? [];
 
     const handleCallback = useEffectEvent((url: string) =>
         run(
@@ -270,7 +270,7 @@ export const CreateEnableBankingAccount = () => {
             break;
         case EnableBankingSetupStepEnum.ACCOUNTS:
             title = t`Choose accounts`;
-            stepContent = <EnableBankingAccountsStep {...accountSelection} parkedPreviews={parkedPreviews} />;
+            stepContent = <EnableBankingAccountsStep {...accountSelection} authorization={authorization} />;
             footerButton = isEmptyArray(accountSelection.accountPreviews) ? null : (
                 <PillButton
                     label={t`Start sync`}
