@@ -1,7 +1,7 @@
 import { useAtomRefresh, useAtomValue } from '@effect/atom-react/Hooks';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
-import * as Contacts from 'expo-contacts';
+import * as Contacts from 'expo-contacts/legacy';
 
 import { NativeCallError } from '../error/native-call.error';
 import { appAtomRuntime } from '../runtime/app.runtime';

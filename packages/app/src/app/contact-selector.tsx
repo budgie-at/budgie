@@ -29,8 +29,8 @@ export default function ContactSelectorModal() {
 
     const selectedContactId = useContactSelectorModalParams()?.selectedContactId;
     const sections = [{ title: null, data: filterContacts(contacts, search) }];
-    const isSearching = isNotEmptyString(search);
     const hasContacts = isNotEmptyArray(contacts);
+    const isSearching = hasContacts && isNotEmptyString(search);
     const hasLimitedContacts = isLimited && hasContacts;
     const renderItem = (item: Contact) => {
         const handleSelect = () => void resolveContactSelector(item);
