@@ -4,7 +4,7 @@ import { AccountBalanceIncrementalService, TransactionImportService, Transaction
 import { RuleEngineService } from '@budgie/rules';
 import * as Effect from 'effect/Effect';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { SyncWorkload } from '../port/sync-workload.port';
 import { AccountReissueMergeService } from '../service/account-reissue-merge.service';
@@ -98,6 +98,7 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
             return {
                 newTransactions: [],
                 refilledTransactions: [],
+                ruleTransactionInputs: [],
                 deferredRuleTransactionIds: [],
                 deferredRuleTransactionInputs: [],
                 parsedTransactionCount: 0
@@ -144,6 +145,7 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
         return {
             newTransactions,
             refilledTransactions: pairedRefills.map(({ transaction }) => transaction),
+            ruleTransactionInputs: [...ruled.transactionInputs, ...pairedRefills.map(({ input }) => input)],
             deferredRuleTransactionIds: [
                 ...ruled.postCreateIndexes.map(index => newTransactions[index]?.id).filter(isDefined),
                 ...pairedRefills.map(({ transaction }) => transaction.id)
@@ -178,13 +180,31 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
         ]);
         const context: ImportContextInterface = { mccCategoryLookupMap, existingTransactionIdMap };
         const accountImportResults = yield* Db.transaction(importAccounts(client, bankAccounts, context));
-        yield* accountReissueMergeService.mergeReissuedAccounts();
+        const mergedAccountCount = yield* accountReissueMergeService.mergeReissuedAccounts();
 
         const transactionsToProcess = accountImportResults.flatMap(result => [...result.newTransactions, ...result.refilledTransactions]);
-        yield* syncWorkload.enqueueRuleApplication(
-            accountImportResults.flatMap(result => result.deferredRuleTransactionIds),
-            accountImportResults.flatMap(result => result.deferredRuleTransactionInputs)
-        );
+        if (isPositiveNumber(mergedAccountCount)) {
+            const mergedAccounts = yield* syncService.findAccountsByExternalId(bankAccounts.map(account => account.id));
+
+            for (const [index, result] of accountImportResults.entries()) {
+                const account = mergedAccounts.get(bankAccounts[index].id);
+
+                yield* syncWorkload.enqueueRuleApplication(
+                    [...result.newTransactions, ...result.refilledTransactions].map(transaction => transaction.id),
+                    result.ruleTransactionInputs.map(input => ({
+                        ...input,
+                        fromAccountId: isDefined(input.fromAccountId) ? (account?.id ?? input.fromAccountId) : null,
+                        toAccountId: isDefined(input.toAccountId) ? (account?.id ?? input.toAccountId) : null,
+                        entries: input.entries.map(entry => ({ ...entry, accountId: account?.id ?? entry.accountId }))
+                    }))
+                );
+            }
+        } else {
+            yield* syncWorkload.enqueueRuleApplication(
+                accountImportResults.flatMap(result => result.deferredRuleTransactionIds),
+                accountImportResults.flatMap(result => result.deferredRuleTransactionInputs)
+            );
+        }
         const scope = buildConsolidationScopeFromTransactions(transactionsToProcess);
         if (isDefined(scope)) {
             yield* syncWorkload.enqueueTransferConsolidation(scope);
