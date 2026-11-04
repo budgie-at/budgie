@@ -24,7 +24,7 @@ export const BudgetDataState = ({ isLoading, isError = false, description, title
     const accessibilityState = { busy: isLoading };
 
     return (
-        <View accessibilityLabel={t`Budget`} accessibilityState={accessibilityState} className="rounded-2xl bg-secondary-background p-3xl">
+        <View accessibilityLabel={t`Budget`} accessibilityState={accessibilityState} className="rounded-2xl bg-surface-row p-3xl">
             <LoadingContent isLoading={isLoading}>
                 <View className="gap-y-md">
                     <Text accessibilityRole="header" className="text-lg leading-tight font-semibold text-primary">
