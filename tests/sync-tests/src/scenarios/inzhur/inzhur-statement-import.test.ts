@@ -98,8 +98,8 @@ describe('inzhur/statement-import', () => {
                 [INZHUR_ENERGY_LAYOUT.isin, -1, 4000, 0]
             ]);
             expect(ledger.map(({ type, externalId, title }) => [type, externalId, title])).toEqual([
-                [TransactionTypeEnum.TRANSFER, `inzhur:${SECOND_DATE_ISO}:${INZHUR_REIT_LAYOUT.isin}:buy`, 'Inzhur REIT'],
-                [TransactionTypeEnum.TRANSFER, `inzhur:${SECOND_DATE_ISO}:${INZHUR_ENERGY_LAYOUT.isin}:sell`, 'Inzhur Energy']
+                [TransactionTypeEnum.TRANSFER, `inzhur:${SECOND_DATE_ISO}:${INZHUR_REIT_LAYOUT.isin}:buy`, 'Bought Inzhur REIT'],
+                [TransactionTypeEnum.TRANSFER, `inzhur:${SECOND_DATE_ISO}:${INZHUR_ENERGY_LAYOUT.isin}:sell`, 'Sold Inzhur Energy']
             ]);
             expect(ledger[0].entries).toEqual([
                 { accountId: cashAccount.id, type: TransactionEntryTypeEnum.CREDIT, amount: 500 * PRECISION, categoryId: null },
@@ -135,7 +135,7 @@ describe('inzhur/statement-import', () => {
             expect(ledger.slice(0, 2).map(({ fundAccountId }) => fundAccountId)).toEqual([reitAccount.id, energyAccount.id]);
             expect(ledger.slice(2).map(({ fundAccountId }) => fundAccountId)).toEqual([null, null]);
             expect(ledger[0]).toMatchObject({
-                title: 'Inzhur REIT',
+                title: 'Reinvested dividends · Inzhur REIT',
                 entries: [
                     {
                         accountId: cashAccount.id,

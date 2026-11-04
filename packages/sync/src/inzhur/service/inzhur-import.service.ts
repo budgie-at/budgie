@@ -281,7 +281,10 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
                         categoryId: INVESTMENTS_CATEGORY_ID
                     };
 
-                    return { ...buildInzhurTransactionInput(plan.name, externalId, operatedAt, [entry]), fundAccountId: plan.account.id };
+                    return {
+                        ...buildInzhurTransactionInput(`Reinvested dividends · ${plan.name}`, externalId, operatedAt, [entry]),
+                        fundAccountId: plan.account.id
+                    };
                 });
             const transferInputs = plans.map(plan => {
                 const isSell = plan.deltaMicroUnits < 0;
@@ -290,7 +293,7 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
                 const value = convertFromMicroUnits(plan.valueMicroUnits);
 
                 return buildInzhurTransactionInput(
-                    plan.name,
+                    `${isSell ? 'Sold' : 'Bought'} ${plan.name}`,
                     externalId,
                     operatedAt,
                     isSell
