@@ -3820,6 +3820,7 @@ msgid "Exchange rate: {rateLabel}"
 msgstr "Exchange rate: {rateLabel}"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/transaction/components/recurring-calendar-grid/recurring-calendar-grid.tsx
 msgid "Expected"
 msgstr "Expected"
@@ -6384,6 +6385,7 @@ msgid "Record expense"
 msgstr "Record expense"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/transaction/components/recurring-calendar-grid/recurring-calendar-grid.tsx
 msgid "Recorded"
 msgstr "Recorded"

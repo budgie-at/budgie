@@ -4,8 +4,8 @@ import { View } from 'react-native';
 import { TransactionsPageSelector } from '../../../app/(tabs)/transactions-page.selector';
 import { useIsAccessibilityTextSize } from '../../hook/use-is-accessibility-text-size.hook';
 import { TransactionsTabType } from '../../type/transactions-tab.type';
-import { AnimatedTabBar } from '../animated-tab-bar/animated-tab-bar';
 import { SegmentedControl } from '../segmented-control/segmented-control';
+import { TransactionsPageTab } from '../transactions-page-tab/transactions-page-tab';
 
 import type { SegmentedControlSegmentInterface } from '../../interface/segmented-control-segment.interface';
 import type { TabConfigInterface } from '../../interface/tab-config.interface';
@@ -40,7 +40,13 @@ export const TransactionsPageHeader = ({ activeTab, onChangeTab }: Props) => {
                     />
                 </View>
             ) : (
-                <AnimatedTabBar tabs={TABS} activeTab={activeTab} onChangeTab={onChangeTab} />
+                <View className="px-5xl pb-md">
+                    <View className="flex-row items-center gap-x-xl">
+                        {TABS.map(tab => (
+                            <TransactionsPageTab key={tab.key} tab={tab} activeTab={activeTab} onChangeTab={onChangeTab} />
+                        ))}
+                    </View>
+                </View>
             )}
         </View>
     );

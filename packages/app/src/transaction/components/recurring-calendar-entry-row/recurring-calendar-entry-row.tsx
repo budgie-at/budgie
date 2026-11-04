@@ -47,8 +47,9 @@ export const RecurringCalendarEntryRow = ({ entry, position, onPress, dayLabel }
     const protectAmount = useProtectedAmountLabel();
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
     const labelLineLimit = isAccessibilityTextSize ? 0 : 2;
-    const showSeparateDayLabel = isAccessibilityTextSize && isNotEmptyString(dayLabel);
-    const separatorClassName = isAccessibilityTextSize ? 'left-3xl' : void 0;
+    const separatorInset = isAccessibilityTextSize ? 16 : void 0;
+    const statusLabel = entry.isForecast ? t`Expected` : t`Recorded`;
+    const metadataLabel = isNotEmptyString(dayLabel) ? dayLabel : statusLabel;
 
     const formattedAmount = protectAmount(convertFromMicroUnits(entry.latestAmount), defaultInstrument.symbol);
     const alertLabels = {
@@ -56,7 +57,7 @@ export const RecurringCalendarEntryRow = ({ entry, position, onPress, dayLabel }
         [RecurringAlertEnum.PRICE_CHANGE]: t`Price changed`
     };
     const detail = isDefined(entry.alert) ? alertLabels[entry.alert] : (entry.categoryTitle ?? entry.title);
-    const description = isNotEmptyString(dayLabel) && !isAccessibilityTextSize ? `${dayLabel} · ${detail}` : detail;
+    const description = isAccessibilityTextSize ? detail : `${metadataLabel} · ${detail}`;
     const icon = entry.categoryIcon ?? UserIconNameEnum.Wallet;
     let handlePress = onPress;
 
@@ -93,7 +94,7 @@ export const RecurringCalendarEntryRow = ({ entry, position, onPress, dayLabel }
         ]);
 
     return (
-        <TransactionRowSurface position={position} separatorClassName={separatorClassName}>
+        <TransactionRowSurface position={position} separatorInset={separatorInset}>
             {isRenaming ? (
                 <RecurringSeriesTitleInput seriesId={entry.seriesId} title={entry.title} onDone={handleRenameDone} />
             ) : (
@@ -111,7 +112,9 @@ export const RecurringCalendarEntryRow = ({ entry, position, onPress, dayLabel }
                             <Text className="text-[15px] font-semibold text-primary" numberOfLines={labelLineLimit} ellipsizeMode="tail">
                                 {entry.title}
                             </Text>
-                            {showSeparateDayLabel ? <Text className="text-[13px] text-secondary-foreground mt-xs">{dayLabel}</Text> : null}
+                            {isAccessibilityTextSize ? (
+                                <Text className="text-[13px] text-secondary-foreground mt-xs">{metadataLabel}</Text>
+                            ) : null}
                             <Text className="text-[13px] text-secondary-foreground" numberOfLines={labelLineLimit} ellipsizeMode="tail">
                                 {description}
                             </Text>

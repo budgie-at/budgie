@@ -1,5 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui, Trans } from '@lingui/react/macro';
+import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 import { Directions, Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { runOnJS } from 'react-native-reanimated';
@@ -20,12 +21,17 @@ import { RecurringCalendarWeekday } from '../recurring-calendar-weekday/recurrin
 
 import type { RecurringCalendarEntryInterface } from '@budgie/recurring';
 
+const legendVariants = cva('flex-row flex-wrap justify-center gap-x-5xl gap-y-sm pb-md', {
+    variants: { hasEntries: { true: '', false: 'opacity-0' } }
+});
+
 const CALENDAR_CONTAINER_HEIGHT = 289;
 const CALENDAR_ROW_HEIGHT = 44;
 const dayTouchTargetStyle = { minHeight: CALENDAR_ROW_HEIGHT };
 const calendarDayStyles = { day: dayTouchTargetStyle, today: dayTouchTargetStyle, selected: dayTouchTargetStyle };
 
 interface Props {
+    readonly isLoading: boolean;
     readonly entriesByDay: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]>;
     readonly forecastedEntriesByDay: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]>;
     readonly selectedDay: number | undefined;
@@ -37,7 +43,7 @@ interface Props {
 
 // eslint-disable-next-line max-statements, max-lines-per-function -- Component with shared date-picker integration and month navigation logic
 export const RecurringCalendarGrid = (props: Props) => {
-    const { entriesByDay, forecastedEntriesByDay, selectedDay, onSelectDay, displayMonth, displayYear, onChangeMonth } = props;
+    const { isLoading, entriesByDay, forecastedEntriesByDay, selectedDay, onSelectDay, displayMonth, displayYear, onChangeMonth } = props;
 
     const { t } = useLingui();
     const { languageTag } = useLocaleInfo();
@@ -89,7 +95,7 @@ export const RecurringCalendarGrid = (props: Props) => {
         });
     const swipeGesture = Gesture.Race(swipeLeft, swipeRight);
     const renderDay: CalendarComponents['Day'] = day => (
-        <RecurringCalendarDay day={day} entriesByDay={entriesByDay} forecastedEntriesByDay={forecastedEntriesByDay} />
+        <RecurringCalendarDay day={day} isLoading={isLoading} entriesByDay={entriesByDay} forecastedEntriesByDay={forecastedEntriesByDay} />
     );
     const renderWeekday: CalendarComponents['Weekday'] = weekday => <RecurringCalendarWeekday weekday={weekday} />;
     const components: CalendarComponents = { Day: renderDay, Weekday: renderWeekday };
@@ -102,6 +108,9 @@ export const RecurringCalendarGrid = (props: Props) => {
     const hasRecordedEntries = entriesByDay.size > 0;
     const hasExpectedEntries = forecastedEntriesByDay.size > 0;
     const hasEntries = hasRecordedEntries || hasExpectedEntries;
+    const showExpectedLegend = hasExpectedEntries || !hasEntries;
+    const showRecordedLegend = hasRecordedEntries || !hasEntries;
+    const legendAccessibility = hasEntries ? 'auto' : 'no-hide-descendants';
 
     const handleDateChange = (value: { date: DateType }) => {
         const date = dateTypeToDate(value.date);
@@ -189,26 +198,29 @@ export const RecurringCalendarGrid = (props: Props) => {
                     components={components}
                     {...(isDefined(selectedDate) && { date: selectedDate })}
                 />
-                {hasEntries ? (
-                    <View className="flex-row flex-wrap justify-center gap-x-5xl gap-y-sm pb-md" accessible>
-                        {hasRecordedEntries ? (
-                            <View className="flex-row items-center gap-x-sm">
-                                <RecurringCalendarDayDots actualDots={1} forecastedDots={0} isSelected={false} className="static" />
-                                <Text maxFontSizeMultiplier={1.5} className="text-[12px] text-secondary-foreground">
-                                    <Trans>Recorded</Trans>
-                                </Text>
-                            </View>
-                        ) : null}
-                        {hasExpectedEntries ? (
-                            <View className="flex-row items-center gap-x-sm">
-                                <RecurringCalendarDayDots actualDots={0} forecastedDots={1} isSelected={false} className="static" />
-                                <Text maxFontSizeMultiplier={1.5} className="text-[12px] text-secondary-foreground">
-                                    <Trans>Expected</Trans>
-                                </Text>
-                            </View>
-                        ) : null}
-                    </View>
-                ) : null}
+                <View
+                    className={legendVariants({ hasEntries })}
+                    accessible={hasEntries}
+                    accessibilityElementsHidden={!hasEntries}
+                    importantForAccessibility={legendAccessibility}
+                >
+                    {showExpectedLegend ? (
+                        <View className="flex-row items-center gap-x-sm">
+                            <RecurringCalendarDayDots actualDots={0} forecastedDots={1} isSelected={false} className="static" />
+                            <Text maxFontSizeMultiplier={1.5} className="text-[12px] text-secondary-foreground">
+                                <Trans>Expected</Trans>
+                            </Text>
+                        </View>
+                    ) : null}
+                    {showRecordedLegend ? (
+                        <View className="flex-row items-center gap-x-sm">
+                            <RecurringCalendarDayDots actualDots={1} forecastedDots={0} isSelected={false} className="static" />
+                            <Text maxFontSizeMultiplier={1.5} className="text-[12px] text-secondary-foreground">
+                                <Trans>Recorded</Trans>
+                            </Text>
+                        </View>
+                    ) : null}
+                </View>
             </View>
         </GestureDetector>
     );

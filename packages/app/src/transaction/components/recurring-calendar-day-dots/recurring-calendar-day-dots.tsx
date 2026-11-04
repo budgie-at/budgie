@@ -3,13 +3,13 @@ import { View } from 'react-native';
 
 import { cn } from '../../../@generic/utils/cn.util';
 
-const dotVariants = cva('h-[5px] w-[5px] rounded-full', {
+const dotVariants = cva('rounded-full', {
     variants: {
         kind: {
-            actual: 'bg-primary',
-            actualSelected: 'bg-primary-reverse',
-            forecasted: 'border-[1.5px] border-primary',
-            forecastedSelected: 'border-[1.5px] border-primary-reverse'
+            actual: 'h-[5px] w-[5px] bg-primary',
+            actualSelected: 'h-[5px] w-[5px] bg-primary-reverse',
+            forecasted: 'h-[6px] w-[6px] border-[1.5px] border-primary',
+            forecastedSelected: 'h-[6px] w-[6px] border-[1.5px] border-primary-reverse'
         }
     }
 });
@@ -22,7 +22,7 @@ interface Props {
 }
 
 export const RecurringCalendarDayDots = ({ actualDots, forecastedDots, isSelected, className }: Props) => (
-    <View className={cn('absolute bottom-[5px] flex-row gap-x-[3px]', className)}>
+    <View className={cn('absolute bottom-[5px] flex-row items-center gap-x-[3px]', className)}>
         {Array.from({ length: actualDots }, (_, index) => (
             <View key={`a-${index}`} className={dotVariants({ kind: isSelected ? 'actualSelected' : 'actual' })} />
         ))}

@@ -25,7 +25,7 @@ const circleVariants = cva('items-center justify-center rounded-full', {
     },
     compoundVariants: [
         { isToday: true, isSelected: false, className: 'border border-primary' },
-        { hasEntries: true, isSelected: false, className: 'bg-surface-fill' }
+        { hasEntries: true, isSelected: false, className: 'bg-surface-fill dark:bg-primary/18' }
     ]
 });
 
@@ -40,11 +40,12 @@ const textVariants = cva('text-[15px] tabular-nums pb-[4px]', {
 
 interface Props {
     readonly day: DatePickerCalendarDay;
+    readonly isLoading: boolean;
     readonly entriesByDay: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]>;
     readonly forecastedEntriesByDay: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]>;
 }
 
-export const RecurringCalendarDay = ({ day, entriesByDay, forecastedEntriesByDay }: Props) => {
+export const RecurringCalendarDay = ({ day, isLoading, entriesByDay, forecastedEntriesByDay }: Props) => {
     const { t } = useLingui();
     const { languageTag } = useLocaleInfo();
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
@@ -58,8 +59,8 @@ export const RecurringCalendarDay = ({ day, entriesByDay, forecastedEntriesByDay
     const dayTestID = isCurrentMonth ? RecurringCalendarSelector.CurrentMonthDay(dayOfMonth) : null;
 
     const formattedDate = new Intl.DateTimeFormat(languageTag, { dateStyle: 'full' }).format(new Date(day.date));
-    const accessibilityLabel = t`${formattedDate}. Recorded: ${entryCount}. Expected: ${forecastedCount}.`;
-    const accessibilityState = { selected: isSelected, disabled: day.isDisabled };
+    const accessibilityLabel = isLoading ? formattedDate : t`${formattedDate}. Recorded: ${entryCount}. Expected: ${forecastedCount}.`;
+    const accessibilityState = { selected: isSelected, disabled: day.isDisabled, busy: isLoading };
 
     return (
         <View className="items-center">

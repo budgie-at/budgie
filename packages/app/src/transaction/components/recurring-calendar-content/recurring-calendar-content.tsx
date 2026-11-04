@@ -29,7 +29,7 @@ const scrollContentStyle = { paddingBottom: 20, rowGap: 24 };
 
 const EMPTY_ENTRIES_BY_DAY: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]> = new Map();
 
-// eslint-disable-next-line complexity, max-statements, max-lines-per-function -- Page orchestration component with multiple hooks, state, and forecast logic
+// eslint-disable-next-line max-statements, max-lines-per-function -- Page orchestration component with multiple hooks, state, and forecast logic
 export const RecurringCalendarContent = () => {
     const { t } = useLingui();
     const { languageTag } = useLocaleInfo();
@@ -42,6 +42,7 @@ export const RecurringCalendarContent = () => {
         displayYear: now.getFullYear()
     });
     const data = useRecurringCalendar(displayYear, displayMonth);
+    const isLoading = !isDefined(data);
 
     const entriesByDay = data?.entriesByDay ?? EMPTY_ENTRIES_BY_DAY;
     const forecastedEntriesByDay = data?.forecastedEntriesByDay ?? EMPTY_ENTRIES_BY_DAY;
@@ -80,17 +81,17 @@ export const RecurringCalendarContent = () => {
     const displayedTotal = isDefined(data) ? totalAmount + forecastedTotalAmount : 0;
 
     return (
-        <LoadingContent isLoading={!isDefined(data)} containerClassName="flex-1" className="flex-1">
-            <KeyboardAwareScrollView
-                testID={RecurringCalendarSelector.Container}
-                contentContainerStyle={scrollContentStyle}
-                bottomOffset={56}
-                showsVerticalScrollIndicator={false}
-                keyboardShouldPersistTaps="handled"
-                keyboardDismissMode="on-drag"
-            >
-                <View className="gap-y-5xl pt-xl">
-                    <View className="items-center gap-y-xs">
+        <KeyboardAwareScrollView
+            testID={RecurringCalendarSelector.Container}
+            contentContainerStyle={scrollContentStyle}
+            bottomOffset={40}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="on-drag"
+        >
+            <View className="gap-y-5xl pt-xl">
+                <View className="items-center gap-y-xs">
+                    <LoadingContent isLoading={isLoading} containerClassName="self-stretch">
                         <ProtectedText
                             className="text-[40px] font-semibold text-primary text-center tabular-nums self-stretch"
                             numberOfLines={1}
@@ -100,22 +101,25 @@ export const RecurringCalendarContent = () => {
                         >
                             {formatDigits(displayedTotal, defaultInstrument.symbol)}
                         </ProtectedText>
-                        <Text maxFontSizeMultiplier={1.5} className="font-medium text-xs text-secondary-foreground">
-                            <Trans>Monthly total</Trans>
-                        </Text>
-                    </View>
-
-                    <RecurringCalendarGrid
-                        entriesByDay={entriesByDay}
-                        forecastedEntriesByDay={forecastedEntriesByDay}
-                        selectedDay={selectedDay}
-                        onSelectDay={handleSelectDay}
-                        displayMonth={displayMonth}
-                        displayYear={displayYear}
-                        onChangeMonth={handleChangeMonth}
-                    />
+                    </LoadingContent>
+                    <Text maxFontSizeMultiplier={1.5} className="font-medium text-xs text-secondary-foreground">
+                        <Trans>Monthly total</Trans>
+                    </Text>
                 </View>
 
+                <RecurringCalendarGrid
+                    isLoading={isLoading}
+                    entriesByDay={entriesByDay}
+                    forecastedEntriesByDay={forecastedEntriesByDay}
+                    selectedDay={selectedDay}
+                    onSelectDay={handleSelectDay}
+                    displayMonth={displayMonth}
+                    displayYear={displayYear}
+                    onChangeMonth={handleChangeMonth}
+                />
+            </View>
+
+            <LoadingContent isLoading={isLoading} className="gap-y-5xl">
                 {hasSelectedDay ? (
                     <RecurringCalendarEntryList
                         headerTestID={RecurringCalendarSelector.SelectedDayHeader(selectedDay)}
@@ -155,7 +159,7 @@ export const RecurringCalendarContent = () => {
                     />
                 ) : null}
 
-                {isDefined(data) && !hasEntries && !hasSelectedDay ? (
+                {!hasEntries && !hasSelectedDay ? (
                     <RecurringCalendarEmptyState title={t`No recurring payments in ${displayMonthLabel}`}>
                         {hasDetectedPayments ? (
                             <Trans>View your payments in another month.</Trans>
@@ -164,8 +168,8 @@ export const RecurringCalendarContent = () => {
                         )}
                     </RecurringCalendarEmptyState>
                 ) : null}
-                <MenuSpacer />
-            </KeyboardAwareScrollView>
-        </LoadingContent>
+            </LoadingContent>
+            <MenuSpacer />
+        </KeyboardAwareScrollView>
     );
 };
