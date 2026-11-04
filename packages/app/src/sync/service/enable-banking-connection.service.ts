@@ -52,15 +52,21 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
                     maximumConsentValiditySeconds: bank.maximumConsentValiditySeconds
                 });
                 yield* secureStore.savePending(pending);
-                yield* Effect.promise(() => Linking.openURL(url));
+                yield* Effect.tryPromise({
+                    try: () => Linking.openURL(url),
+                    catch: () => fail(EnableBankingSetupErrorReasonEnum.BROWSER_UNAVAILABLE)
+                });
             });
 
             return {
                 begin,
-                discardPending: () => Effect.asVoid(secureStore.takePending()),
+                discardPending: () => secureStore.removePending(),
                 pickKeyFile: Effect.fn('EnableBankingConnectionService.pickKeyFile')(function* () {
                     return yield* Effect.acquireUseRelease(
-                        Effect.promise(() => DocumentPicker.getDocumentAsync({ type: '*/*', copyToCacheDirectory: true })),
+                        Effect.tryPromise({
+                            try: () => DocumentPicker.getDocumentAsync({ type: '*/*', copyToCacheDirectory: true }),
+                            catch: () => fail(EnableBankingSetupErrorReasonEnum.UNREADABLE_FILE)
+                        }),
                         result => {
                             const asset = result.assets?.at(0);
                             if (result.canceled || !isDefined(asset)) {
@@ -118,10 +124,22 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
                     yield* begin(credentials.applicationId, bank, integrationId);
                 }),
                 finish: Effect.fn('EnableBankingConnectionService.finish')(function* (callbackUrl: string) {
-                    const pending = yield* secureStore.takePending();
+                    const pending = yield* secureStore.readPending();
                     if (!isDefined(pending)) {
                         return yield* new EnableBankingCallbackError({ failure: EnableBankingCallbackFailureEnum.STATE_MISMATCH });
                     }
+
+                    yield* enableBankingSyncService
+                        .resolveCallbackCode(pending, callbackUrl)
+                        .pipe(
+                            Effect.tapError(error =>
+                                error.failure === EnableBankingCallbackFailureEnum.EXPIRED ||
+                                error.failure === EnableBankingCallbackFailureEnum.CANCELLED
+                                    ? secureStore.removePending()
+                                    : Effect.void
+                            )
+                        );
+                    yield* secureStore.removePending();
 
                     return yield* enableBankingSyncService.completeAuthorization(pending, callbackUrl);
                 })

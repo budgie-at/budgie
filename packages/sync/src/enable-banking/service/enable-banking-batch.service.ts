@@ -19,7 +19,6 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
-import { SyncConsentExpiredError } from '../../core/error/sync-consent-expired.error';
 import { SyncDeferredError } from '../../core/error/sync-deferred.error';
 import { SyncInvalidResponseError } from '../../core/error/sync-invalid-response.error';
 import { pollingSyncDependenciesLayer } from '../../core/layer/polling-sync-dependencies.layer';
@@ -33,7 +32,6 @@ import { EnableBankingClientService } from './enable-banking-client.service';
 import type { SyncTransactionInterface } from '../../core/interface/sync-transaction.interface';
 import type { EnableBankingTokenInterface } from '../constant/enable-banking-token.schema';
 import type { EnableBankingBatchContextInterface } from '../interface/enable-banking-batch-context.interface';
-import type { EnableBankingSessionApiInterface } from '../interface/enable-banking-session-api.schema';
 import type { EnableBankingTransactionQueryInterface } from '../interface/enable-banking-transaction-query.interface';
 import type { MccCategoryLookupInterface, SyncEntityInterface } from '@budgie/contracts';
 
@@ -54,14 +52,9 @@ export class EnableBankingBatchService extends Context.Service<EnableBankingBatc
         const millisecondsPerDay = 24 * 60 * 60 * millisecondsPerSecond;
         const lookbackMs = 7 * millisecondsPerDay;
         const isoDateLength = 10;
-        const authorizedSessionStatus = 'AUTHORIZED';
-        const sessionByToken = new Map<string, EnableBankingSessionApiInterface>();
         let mccCategoryLookupMap = new Map<string, MccCategoryLookupInterface>();
 
         const failInvalid = (message: string) => new SyncInvalidResponseError({ provider: syncProvider, message });
-
-        const failConsentExpired = () =>
-            new SyncConsentExpiredError({ provider: syncProvider, message: 'The bank consent has expired or was revoked' });
 
         const failAccountNotLinked = () =>
             new SyncInvalidResponseError({
@@ -78,28 +71,8 @@ export class EnableBankingBatchService extends Context.Service<EnableBankingBatc
         const isBankRateLimited = hasApiCode(EnableBankingErrorCodeEnum.ASPSP_RATE_LIMIT_EXCEEDED);
         const isWrongTransactionsPeriod = hasApiCode(EnableBankingErrorCodeEnum.WRONG_TRANSACTIONS_PERIOD);
 
-        const resolveSession = Effect.fnUntraced(function* (token: string, credentials: EnableBankingTokenInterface) {
-            const cachedSession = sessionByToken.get(token);
-            if (isDefined(cachedSession)) {
-                return cachedSession;
-            }
-
-            const session = yield* clientService.withClient(credentials.applicationId, client => client.getSession(credentials.sessionId));
-            sessionByToken.set(token, session);
-
-            return session;
-        });
-
         const resolveAccountUid = Effect.fnUntraced(function* (token: string, credentials: EnableBankingTokenInterface, hash: string) {
-            if (Date.parse(credentials.validUntil) <= (yield* Clock.currentTimeMillis)) {
-                return yield* failConsentExpired();
-            }
-
-            const session = yield* resolveSession(token, credentials);
-            if (session.status !== authorizedSessionStatus) {
-                return yield* failConsentExpired();
-            }
-
+            const session = yield* clientService.resolveAuthorizedSession(token, credentials);
             const accountUid = session.accounts_data.find(item => item.identification_hash === hash)?.uid;
 
             return isDefined(accountUid) ? accountUid : yield* failAccountNotLinked();
@@ -219,7 +192,7 @@ export class EnableBankingBatchService extends Context.Service<EnableBankingBatc
 
         return {
             beforeRun: Effect.fn('EnableBankingBatchService.beforeRun')(function* () {
-                sessionByToken.clear();
+                yield* clientService.clearSessions();
                 mccCategoryLookupMap = yield* loadMccCategoryLookupMap(mccCategoryRepository, settingsRepository);
             }),
             execute: Effect.fn('EnableBankingBatchService.execute')(function* (sync: SyncEntityInterface, token: string) {

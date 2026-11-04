@@ -66,7 +66,7 @@ The host app owns scheduling and native IO and provides three layer-less ports:
 - `SyncWorkload`: background/user lanes (`run`, `runUser`, `hasQueuedWork`, `awaitQueuedUserWork`),
   background task registration and the deferred rule-application and transfer-consolidation queues.
 - `SyncFileReader`: PDF text items and raw bytes for a file URI.
-- `SyncRequestSigner`: RS256 signature, key removal and secure random state for per-user API keys (Enable Banking).
+- `SyncRequestSigner`: RS256 signature and key removal for per-user API keys (Enable Banking).
 
 `LedgerWorkload` (from `@budgie/ledger`) covers foreground-exclusive work, and consolidation needs the
 `P2pTransferTitleResolver` port from `@budgie/consolidation`.
@@ -90,13 +90,13 @@ Each bank provider has:
 
 ### Supported Providers
 
-| Provider   | Status         | Implementation |
-| ---------- | -------------- | -------------- |
-| Monobank   | ✅ Implemented | Full support   |
+| Provider       | Status        | Implementation          |
+| -------------- | ------------- | ----------------------- |
+| Monobank       | ✅ Implemented | Full support            |
 | Enable Banking | ✅ Implemented | On-device, per-user key |
-| Privatbank | 📋 Planned     | -              |
-| Revolut    | 📋 Planned     | -              |
-| Wise       | 📋 Planned     | -              |
+| Privatbank     | 📋 Planned     | -                       |
+| Revolut        | 📋 Planned     | -                       |
+| Wise           | 📋 Planned     | -                       |
 
 ### Provider Parser Pattern
 

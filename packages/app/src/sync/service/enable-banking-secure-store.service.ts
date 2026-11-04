@@ -32,14 +32,11 @@ export class EnableBankingSecureStore extends Context.Service<EnableBankingSecur
             removeKey: (applicationId: string) => remove(keyName(applicationId)),
             saveKey: (applicationId: string, pem: string) => write(keyName(applicationId), pem),
             savePending: (pending: EnableBankingPendingAuthorizationInterface) => write(pendingName, JSON.stringify(pending)),
-            takePending: Effect.fn('EnableBankingSecureStore.takePending')(function* () {
+            removePending: () => remove(pendingName),
+            readPending: Effect.fn('EnableBankingSecureStore.readPending')(function* () {
                 const stored = yield* read(pendingName);
-                if (!isDefined(stored)) {
-                    return null;
-                }
-                yield* remove(pendingName);
 
-                return yield* decodePending(stored).pipe(Effect.orElseSucceed(() => null));
+                return isDefined(stored) ? yield* decodePending(stored).pipe(Effect.orElseSucceed(() => null)) : null;
             })
         };
     })

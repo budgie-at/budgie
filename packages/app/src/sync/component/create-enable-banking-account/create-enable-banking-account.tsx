@@ -1,4 +1,4 @@
-import { EnableBankingSyncService } from '@budgie/sync';
+import { EnableBankingCallbackError, EnableBankingCallbackFailureEnum, EnableBankingSyncService } from '@budgie/sync';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -37,6 +37,7 @@ export const CreateEnableBankingAccount = () => {
     const [step, setStep] = useState(() => (isDefined(callbackUrl) ? EnableBankingSetupStepEnum.WAITING : EnableBankingSetupStepEnum.KEY));
     const [applicationId, setApplicationId] = useState('');
     const [pickedPem, setPickedPem] = useState<string | null>(null);
+    const [isKeySaved, setIsKeySaved] = useState(false);
     const [banks, setBanks] = useState<readonly EnableBankingBankInterface[]>([]);
     const [authorization, setAuthorization] = useState<EnableBankingAuthorizationResultInterface | null>(null);
     const { isLoading: isBusy, run } = useSingleFlight();
@@ -75,13 +76,20 @@ export const CreateEnableBankingAccount = () => {
                 setAuthorization(result);
                 setStep(EnableBankingSetupStepEnum.ACCOUNTS);
             }).pipe(
+                Effect.tapError(error =>
+                    Effect.sync(() => {
+                        const isForeignCallback =
+                            error instanceof EnableBankingCallbackError &&
+                            (error.failure === EnableBankingCallbackFailureEnum.STATE_MISMATCH ||
+                                error.failure === EnableBankingCallbackFailureEnum.MALFORMED);
+
+                        if (!isForeignCallback) {
+                            setStep(isNotEmptyArray(banks) ? EnableBankingSetupStepEnum.BANK : EnableBankingSetupStepEnum.KEY);
+                        }
+                    })
+                ),
                 Effect.mapError(explainError),
-                toastOnFailure(t`Could not connect the bank`),
-                Effect.tapError(() =>
-                    Effect.sync(
-                        () => void setStep(isNotEmptyArray(banks) ? EnableBankingSetupStepEnum.BANK : EnableBankingSetupStepEnum.KEY)
-                    )
-                )
+                toastOnFailure(t`Could not connect the bank`)
             )
         )
     );
@@ -93,6 +101,11 @@ export const CreateEnableBankingAccount = () => {
         }
     }, [callbackUrl]);
 
+    const handleApplicationIdChange = (value: string) => {
+        setApplicationId(value);
+        setIsKeySaved(false);
+    };
+
     const handlePickKey = () =>
         run(
             Effect.gen(function* () {
@@ -100,6 +113,7 @@ export const CreateEnableBankingAccount = () => {
 
                 if (isDefined(picked)) {
                     setPickedPem(picked.pem);
+                    setIsKeySaved(false);
                     if (isDefined(picked.applicationId)) {
                         setApplicationId(picked.applicationId);
                     }
@@ -108,7 +122,7 @@ export const CreateEnableBankingAccount = () => {
         );
 
     const handleContinue = () => {
-        if (!isDefined(parsedApplicationId) || !isDefined(pickedPem)) {
+        if (!isDefined(parsedApplicationId) || !(isDefined(pickedPem) || isKeySaved)) {
             showErrorToast(t`Key required`, t`Enter the application ID and choose the key file.`);
 
             return;
@@ -116,7 +130,11 @@ export const CreateEnableBankingAccount = () => {
 
         void run(
             Effect.gen(function* () {
-                yield* Effect.flatMap(EnableBankingConnectionService, connection => connection.saveKey(parsedApplicationId, pickedPem));
+                if (isDefined(pickedPem)) {
+                    yield* Effect.flatMap(EnableBankingConnectionService, connection => connection.saveKey(parsedApplicationId, pickedPem));
+                    setPickedPem(null);
+                    setIsKeySaved(true);
+                }
                 setBanks(yield* Effect.flatMap(EnableBankingSyncService, service => service.listBanks(parsedApplicationId)));
                 setStep(EnableBankingSetupStepEnum.BANK);
             }).pipe(Effect.mapError(explainError), toastOnFailure(t`Could not verify the application`))
@@ -160,12 +178,14 @@ export const CreateEnableBankingAccount = () => {
         }
     };
 
+    const isKeyPicked = isDefined(pickedPem) || isKeySaved;
+
     let stepContent = (
         <EnableBankingKeyStep
             applicationId={applicationId}
-            isKeyPicked={isDefined(pickedPem)}
+            isKeyPicked={isKeyPicked}
             isLoading={isLoading}
-            onApplicationIdChange={setApplicationId}
+            onApplicationIdChange={handleApplicationIdChange}
             onPickKey={handlePickKey}
         />
     );

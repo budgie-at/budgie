@@ -27,6 +27,7 @@ const SETUP_ERROR_LABEL: Record<EnableBankingSetupErrorReasonEnum, MessageDescri
     [EnableBankingSetupErrorReasonEnum.INVALID_FORMAT]: msg`This file is not an unencrypted RSA private key in PEM format.`,
     [EnableBankingSetupErrorReasonEnum.ENCRYPTED]: msg`This key is password protected. Use the .pem file as downloaded from Enable Banking.`,
     [EnableBankingSetupErrorReasonEnum.UNREADABLE_FILE]: msg`Could not read the selected file.`,
+    [EnableBankingSetupErrorReasonEnum.BROWSER_UNAVAILABLE]: msg`Could not open your browser. Try again.`,
     [EnableBankingSetupErrorReasonEnum.STORAGE_FAILED]: msg`Could not save the key in this phone's secure storage. Nothing was connected.`,
     [EnableBankingSetupErrorReasonEnum.INACTIVE_APPLICATION]: msg`This Enable Banking application is not active.`,
     [EnableBankingSetupErrorReasonEnum.REDIRECT_URL_MISSING]: msg`The application does not list the redirect URL shown in the setup steps. Add it exactly as shown.`

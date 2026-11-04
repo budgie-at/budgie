@@ -13,7 +13,7 @@ import {
 import { AccountArchiveService } from '@budgie/ledger';
 import { sql } from 'drizzle-orm';
 import * as Clock from 'effect/Clock';
-import { Service } from 'effect/Context';
+import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
@@ -47,7 +47,7 @@ import type { EnableBankingBankInterface } from '../interface/enable-banking-ban
 import type { EnableBankingStartAuthorizationInputInterface } from '../interface/enable-banking-start-authorization-input.interface';
 import type { SyncEntityInterface } from '@budgie/contracts';
 
-export class EnableBankingSyncService extends Service<EnableBankingSyncService>()('@budgie/sync/EnableBankingSyncService', {
+export class EnableBankingSyncService extends Context.Service<EnableBankingSyncService>()('@budgie/sync/EnableBankingSyncService', {
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
         const bankIntegrationRepository = yield* BankIntegrationRepository;
@@ -272,6 +272,8 @@ export class EnableBankingSyncService extends Service<EnableBankingSyncService>(
 
                 return { url, pending };
             }),
+            resolveCallbackCode: (pending: EnableBankingPendingAuthorizationInterface, callbackUrl: string) =>
+                resolveCode(pending, callbackUrl),
             completeAuthorization: Effect.fn('EnableBankingSyncService.completeAuthorization')(function* (
                 pending: EnableBankingPendingAuthorizationInterface,
                 callbackUrl: string
@@ -343,7 +345,7 @@ export class EnableBankingSyncService extends Service<EnableBankingSyncService>(
 
                 if (isDefined(credentials) && !(yield* isApplicationUsedByOtherIntegration(integrationId, credentials.applicationId))) {
                     yield* clientService.forgetJwt(credentials.applicationId);
-                    yield* syncRequestSigner.deleteKey(credentials.applicationId);
+                    yield* syncRequestSigner.deleteKey(credentials.applicationId).pipe(Effect.ignore);
                 }
 
                 return isSessionRevoked;

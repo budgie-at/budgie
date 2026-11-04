@@ -2807,6 +2807,10 @@ msgstr "Could not open Shortcuts"
 msgid "Could not open the link"
 msgstr "Could not open the link"
 
+#: src/sync/hook/use-explain-enable-banking-error.hook.ts
+msgid "Could not open your browser. Try again."
+msgstr "Could not open your browser. Try again."
+
 #: src/sync/constant/sync-error-label.constant.ts
 msgid "Could not reach the server. Check your connection; sync will retry automatically."
 msgstr "Could not reach the server. Check your connection; sync will retry automatically."

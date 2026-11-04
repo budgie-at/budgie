@@ -8,11 +8,15 @@ import * as Schema from 'effect/Schema';
 import { isDefined } from '@rnw-community/shared';
 
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
+import { SyncConsentExpiredError } from '../../core/error/sync-consent-expired.error';
 import { SyncInvalidResponseError } from '../../core/error/sync-invalid-response.error';
 import { SyncUnauthorizedError } from '../../core/error/sync-unauthorized.error';
 import { SyncRequestSigner } from '../../core/port/sync-request-signer.port';
 import { EnableBankingClient } from '../client/enable-banking.client';
 import { EnableBankingTokenSchema } from '../constant/enable-banking-token.schema';
+
+import type { EnableBankingTokenInterface } from '../constant/enable-banking-token.schema';
+import type { EnableBankingSessionApiInterface } from '../interface/enable-banking-session-api.schema';
 
 export class EnableBankingClientService extends Context.Service<EnableBankingClientService>()('@budgie/sync/EnableBankingClientService', {
     make: Effect.gen(function* () {
@@ -21,6 +25,8 @@ export class EnableBankingClientService extends Context.Service<EnableBankingCli
         const jwtLifetimeSeconds = 23 * 60 * 60;
         const jwtRefreshMarginMs = 5 * 60 * millisecondsPerSecond;
         const decodeToken = Schema.decodeUnknownEffect(Schema.fromJsonString(EnableBankingTokenSchema));
+        const authorizedSessionStatus = 'AUTHORIZED';
+        const sessionByToken = new Map<string, EnableBankingSessionApiInterface>();
         const jwtByApplicationId = new Map<string, { readonly jwt: string; readonly expiresAtMs: number }>();
 
         const encodeSigningInput = (applicationId: string, issuedAtSeconds: number) =>
@@ -46,7 +52,42 @@ export class EnableBankingClientService extends Context.Service<EnableBankingCli
             return new EnableBankingClient(jwt);
         });
 
+        const withClient = <A, E, R>(applicationId: string, use: (client: EnableBankingClient) => Effect.Effect<A, E, R>) =>
+            resolveClient(applicationId).pipe(
+                Effect.flatMap(use),
+                Effect.tapError(error =>
+                    Effect.sync(() => {
+                        if (error instanceof SyncUnauthorizedError) {
+                            jwtByApplicationId.delete(applicationId);
+                        }
+                    })
+                )
+            );
+
+        const failConsentExpired = () =>
+            new SyncConsentExpiredError({
+                provider: SyncProviderEnum.ENABLE_BANKING,
+                message: 'The bank consent has expired or was revoked'
+            });
+
         return {
+            withClient,
+            clearSessions: () =>
+                Effect.sync(() => {
+                    sessionByToken.clear();
+                }),
+            resolveAuthorizedSession: Effect.fnUntraced(function* (token: string, credentials: EnableBankingTokenInterface) {
+                if (Date.parse(credentials.validUntil) <= (yield* Clock.currentTimeMillis)) {
+                    return yield* failConsentExpired();
+                }
+
+                const cachedSession = sessionByToken.get(token);
+                const session =
+                    cachedSession ?? (yield* withClient(credentials.applicationId, client => client.getSession(credentials.sessionId)));
+                sessionByToken.set(token, session);
+
+                return session.status === authorizedSessionStatus ? session : yield* failConsentExpired();
+            }),
             decodeCredentials: (token: string) =>
                 decodeToken(token).pipe(
                     Effect.mapError(
@@ -60,18 +101,7 @@ export class EnableBankingClientService extends Context.Service<EnableBankingCli
             forgetJwt: (applicationId: string) =>
                 Effect.sync(() => {
                     jwtByApplicationId.delete(applicationId);
-                }),
-            withClient: <A, E, R>(applicationId: string, use: (client: EnableBankingClient) => Effect.Effect<A, E, R>) =>
-                resolveClient(applicationId).pipe(
-                    Effect.flatMap(use),
-                    Effect.tapError(error =>
-                        Effect.sync(() => {
-                            if (error instanceof SyncUnauthorizedError) {
-                                jwtByApplicationId.delete(applicationId);
-                            }
-                        })
-                    )
-                )
+                })
         };
     })
 }) {
