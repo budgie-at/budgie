@@ -27,10 +27,13 @@ import * as Effect from 'effect/Effect';
 
 import { fetchAccountBalance, testDb } from '../../harness';
 import { buildForeignDocumentItems } from '../../harness/inzhur/build-foreign-document-items';
-import { buildInzhurBaselineItems, buildInzhurHoldings } from '../../harness/inzhur/build-inzhur-baseline-items';
+import { buildInzhurBaselineItems } from '../../harness/inzhur/build-inzhur-baseline-items';
 import { buildInzhurStatementItems } from '../../harness/inzhur/build-inzhur-statement-items';
+import { expectBaselineUntouched } from '../../harness/inzhur/expect-baseline-untouched';
 import { fetchInzhurLedger } from '../../harness/inzhur/fetch-inzhur-ledger';
+import { importBaselineFundInstrument } from '../../harness/inzhur/import-baseline-fund-instrument';
 import { importInzhurStatement } from '../../harness/inzhur/import-inzhur-statement';
+import { importWithBankPayoutReit } from '../../harness/inzhur/import-with-bank-payout-reit';
 import {
     INZHUR_ENERGY_LAYOUT,
     INZHUR_MILTECH_LAYOUT,
@@ -47,6 +50,7 @@ import {
     SECOND_DATE_ISO,
     SECOND_URI
 } from '../../harness/inzhur/inzhur-statement-fixtures.constant';
+import { makeInzhurFollowUpLayer } from '../../harness/inzhur/make-inzhur-follow-up-layer';
 import { makeInzhurLayer } from '../../harness/inzhur/make-inzhur-layer';
 import { requireInzhurFundAccount } from '../../harness/inzhur/require-inzhur-fund-account';
 import { requireInzhurSetup } from '../../harness/inzhur/require-inzhur-setup';
@@ -101,14 +105,7 @@ describe('inzhur/statement-import', () => {
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(4500 * PRECISION);
             expect(yield* fetchAccountBalance(reitAccount.id)).toBe(1050 * PRECISION);
             expect(yield* fetchAccountBalance(energyAccount.id)).toBe(PRECISION);
-        }).pipe(
-            Effect.provide(
-                makeInzhurLayer({
-                    [FIRST_URI]: buildInzhurBaselineItems(1000, 2),
-                    [SECOND_URI]: buildInzhurStatementItems(SECOND_DATE, buildInzhurHoldings(1050, 1))
-                })
-            )
-        )
+        }).pipe(Effect.provide(makeInzhurFollowUpLayer(1050, 1)))
     );
 
     it.effect('records buys beyond the cash as reinvested dividends when both funds reinvest', () =>
@@ -144,35 +141,18 @@ describe('inzhur/statement-import', () => {
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(0);
             expect(yield* fetchAccountBalance(reitAccount.id)).toBe(1100 * PRECISION);
             expect(yield* fetchAccountBalance(energyAccount.id)).toBe(3 * PRECISION);
-        }).pipe(
-            Effect.provide(
-                makeInzhurLayer({
-                    [FIRST_URI]: buildInzhurBaselineItems(1000, 2),
-                    [SECOND_URI]: buildInzhurStatementItems(SECOND_DATE, buildInzhurHoldings(1100, 3))
-                })
-            )
-        )
+        }).pipe(Effect.provide(makeInzhurFollowUpLayer(1100, 3)))
     );
 
     it.effect('settles the bank-payout fund with cash and reinvests only the other fund', () =>
         Effect.gen(function* () {
-            const { cashAccount, reitAccount, energyAccount } = yield* setUpInzhurWithBaseline(1000, 1000, 2);
-            yield* setInzhurPayout(reitAccount.id, DividendPayoutEnum.BANK);
-
-            const summary = yield* importInzhurStatement(SECOND_URI);
+            const { cashAccount, energyAccount, summary } = yield* importWithBankPayoutReit(1000);
 
             expect(summary.funds.map(fund => fund.dividendAmount)).toEqual([0, 4000]);
             expect((yield* fetchInzhurLedger()).filter(({ type }) => type === TransactionTypeEnum.INCOME)).toHaveLength(1);
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(0);
             expect(yield* fetchAccountBalance(energyAccount.id)).toBe(3 * PRECISION);
-        }).pipe(
-            Effect.provide(
-                makeInzhurLayer({
-                    [FIRST_URI]: buildInzhurBaselineItems(1000, 2),
-                    [SECOND_URI]: buildInzhurStatementItems(SECOND_DATE, buildInzhurHoldings(1100, 3))
-                })
-            )
-        )
+        }).pipe(Effect.provide(makeInzhurFollowUpLayer(1100, 3)))
     );
 
     it.effect('leaves the cash account negative for bank-payout funds and reports the uncovered amount', () =>
@@ -188,34 +168,17 @@ describe('inzhur/statement-import', () => {
             expect(summary).toMatchObject({ estimatedDividendAmount: 0, uncoveredCashAmount: 4900, cashMoved: -5000 });
             expect(ledger.map(({ type }) => type)).toEqual([TransactionTypeEnum.TRANSFER, TransactionTypeEnum.TRANSFER]);
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(-4900 * PRECISION);
-        }).pipe(
-            Effect.provide(
-                makeInzhurLayer({
-                    [FIRST_URI]: buildInzhurBaselineItems(1000, 2),
-                    [SECOND_URI]: buildInzhurStatementItems(SECOND_DATE, buildInzhurHoldings(1100, 3))
-                })
-            )
-        )
+        }).pipe(Effect.provide(makeInzhurFollowUpLayer(1100, 3)))
     );
 
     it.effect('estimates only the reinvesting fund when the bank-payout fund exhausts the cash first', () =>
         Effect.gen(function* () {
-            const { cashAccount, reitAccount } = yield* setUpInzhurWithBaseline(600, 1000, 2);
-            yield* setInzhurPayout(reitAccount.id, DividendPayoutEnum.BANK);
-
-            const summary = yield* importInzhurStatement(SECOND_URI);
+            const { cashAccount, summary } = yield* importWithBankPayoutReit(600);
 
             expect(summary.funds.map(fund => fund.dividendAmount)).toEqual([0, 4000]);
             expect(summary.uncoveredCashAmount).toBe(400);
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(-400 * PRECISION);
-        }).pipe(
-            Effect.provide(
-                makeInzhurLayer({
-                    [FIRST_URI]: buildInzhurBaselineItems(1000, 2),
-                    [SECOND_URI]: buildInzhurStatementItems(SECOND_DATE, buildInzhurHoldings(1100, 3))
-                })
-            )
-        )
+        }).pipe(Effect.provide(makeInzhurFollowUpLayer(1100, 3)))
     );
 
     it.effect('fails with the unpriced fund names and writes nothing when a changed fund has no price', () =>
@@ -229,18 +192,8 @@ describe('inzhur/statement-import', () => {
 
             expect(error).toBeInstanceOf(InzhurPriceMissingError);
             expect(error).toMatchObject({ fundNames: ['Inzhur REIT'] });
-            expect(yield* fetchInzhurLedger()).toEqual([]);
-            expect(yield* fetchAccountBalance(cashAccount.id)).toBe(1000 * PRECISION);
-            expect(yield* fetchAccountBalance(reitAccount.id)).toBe(1000 * PRECISION);
-            expect((yield* requireInzhurSetup()).lastStatementDate).toBe('2026-09-30');
-        }).pipe(
-            Effect.provide(
-                makeInzhurLayer({
-                    [FIRST_URI]: buildInzhurBaselineItems(1000, 2),
-                    [SECOND_URI]: buildInzhurStatementItems(SECOND_DATE, buildInzhurHoldings(1050, 2))
-                })
-            )
-        )
+            yield* expectBaselineUntouched(cashAccount.id, reitAccount.id);
+        }).pipe(Effect.provide(makeInzhurFollowUpLayer(1050, 2)))
     );
 
     it.effect('needs no price for the baseline statement', () =>
@@ -266,14 +219,7 @@ describe('inzhur/statement-import', () => {
 
             expect(summary.funds).toMatchObject([{ deltaQuantity: 50, exchangedAmount: 500 }]);
             expect(summary.cashMoved).toBe(-500);
-        }).pipe(
-            Effect.provide(
-                makeInzhurLayer({
-                    [FIRST_URI]: buildInzhurBaselineItems(1000, 2),
-                    [SECOND_URI]: buildInzhurStatementItems(SECOND_DATE, buildInzhurHoldings(1050, 2))
-                })
-            )
-        )
+        }).pipe(Effect.provide(makeInzhurFollowUpLayer(1050, 2)))
     );
 
     it.effect('prefers the earlier price when it is closer to the statement date', () =>
@@ -287,14 +233,7 @@ describe('inzhur/statement-import', () => {
             const summary = yield* importInzhurStatement(SECOND_URI);
 
             expect(summary.funds).toMatchObject([{ deltaQuantity: 50, exchangedAmount: 400 }]);
-        }).pipe(
-            Effect.provide(
-                makeInzhurLayer({
-                    [FIRST_URI]: buildInzhurBaselineItems(1000, 2),
-                    [SECOND_URI]: buildInzhurStatementItems(SECOND_DATE, buildInzhurHoldings(1050, 2))
-                })
-            )
-        )
+        }).pipe(Effect.provide(makeInzhurFollowUpLayer(1050, 2)))
     );
 
     it.effect('changes nothing when the same or an older statement is imported again', () =>
@@ -311,14 +250,7 @@ describe('inzhur/statement-import', () => {
             expect(yield* fetchInzhurLedger()).toEqual(ledgerBefore);
             expect([yield* fetchAccountBalance(cashAccount.id), yield* fetchAccountBalance(reitAccount.id)]).toEqual(balancesBefore);
             expect((yield* requireInzhurSetup()).lastStatementDate).toBe(SECOND_DATE_ISO);
-        }).pipe(
-            Effect.provide(
-                makeInzhurLayer({
-                    [FIRST_URI]: buildInzhurBaselineItems(1000, 2),
-                    [SECOND_URI]: buildInzhurStatementItems(SECOND_DATE, buildInzhurHoldings(1050, 2))
-                })
-            )
-        )
+        }).pipe(Effect.provide(makeInzhurFollowUpLayer(1050, 2)))
     );
 
     it.effect('creates a fund instrument and account for an unknown ISIN without reading personal data', () =>
@@ -365,14 +297,7 @@ describe('inzhur/statement-import', () => {
 
     it.effect('names a new fund canonically when the statement name carries a known keyword', () =>
         Effect.gen(function* () {
-            const inzhurSetupService = yield* InzhurSetupService;
-            yield* inzhurSetupService.setup(0);
-
-            yield* importInzhurStatement(FIRST_URI);
-            const [instrument] = yield* testDb
-                .select()
-                .from(InstrumentEntityTable)
-                .where(eq(InstrumentEntityTable.code, INZHUR_MILTECH_LAYOUT.isin));
+            const instrument = yield* importBaselineFundInstrument(INZHUR_MILTECH_LAYOUT.isin);
 
             expect(instrument).toMatchObject({
                 name: 'Inzhur MilTech',
@@ -413,14 +338,7 @@ describe('inzhur/statement-import', () => {
 
     it.effect('never takes footer text as the fund name when the fund block has no status line', () =>
         Effect.gen(function* () {
-            const inzhurSetupService = yield* InzhurSetupService;
-            yield* inzhurSetupService.setup(0);
-
-            yield* importInzhurStatement(FIRST_URI);
-            const [instrument] = yield* testDb
-                .select()
-                .from(InstrumentEntityTable)
-                .where(eq(InstrumentEntityTable.code, INZHUR_UNTERMINATED_LAYOUT.isin));
+            const instrument = yield* importBaselineFundInstrument(INZHUR_UNTERMINATED_LAYOUT.isin);
 
             expect(instrument.name).toBe(INZHUR_UNTERMINATED_LAYOUT.isin);
         }).pipe(
@@ -443,10 +361,7 @@ describe('inzhur/statement-import', () => {
             const error = yield* Effect.flip(importInzhurStatement(SECOND_URI));
 
             expect(error).toBeInstanceOf(InzhurStatementInvalidError);
-            expect(yield* fetchInzhurLedger()).toEqual([]);
-            expect(yield* fetchAccountBalance(cashAccount.id)).toBe(1000 * PRECISION);
-            expect(yield* fetchAccountBalance(reitAccount.id)).toBe(1000 * PRECISION);
-            expect((yield* requireInzhurSetup()).lastStatementDate).toBe('2026-09-30');
+            yield* expectBaselineUntouched(cashAccount.id, reitAccount.id);
         }).pipe(
             Effect.provide(
                 makeInzhurLayer({
@@ -499,14 +414,7 @@ describe('inzhur/statement-import', () => {
                 '2026-09-30T12:00:00.000Z',
                 `${SECOND_DATE_ISO}T12:00:00.000Z`
             ]);
-        }).pipe(
-            Effect.provide(
-                makeInzhurLayer({
-                    [FIRST_URI]: buildInzhurBaselineItems(1000, 2),
-                    [SECOND_URI]: buildInzhurStatementItems(SECOND_DATE, buildInzhurHoldings(1200, 2))
-                })
-            )
-        )
+        }).pipe(Effect.provide(makeInzhurFollowUpLayer(1200, 2)))
     );
 
     it.effect('fails with a typed error for a document that is not an Inzhur statement', () =>

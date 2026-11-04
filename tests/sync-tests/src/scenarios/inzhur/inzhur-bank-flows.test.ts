@@ -51,6 +51,15 @@ const setUpBankFlow = Effect.fnUntraced(function* (openingCash: number) {
     return { ...funds, bankAccount };
 });
 
+const setUpToppedUpBankFlow = Effect.gen(function* () {
+    const flow = yield* setUpBankFlow(0);
+
+    yield* importInzhurBankTransaction(flow.bankAccount.id, 'top-up', TOP_UP_DESCRIPTION, -1000, OPERATED_AT);
+    yield* consolidate;
+
+    return flow;
+});
+
 const fetchSingleBankTransaction = Effect.fnUntraced(function* () {
     const [transaction, ...rest] = yield* fetchBankTransactions();
 
@@ -62,10 +71,7 @@ const fetchSingleBankTransaction = Effect.fnUntraced(function* () {
 describe('inzhur/bank-flows', () => {
     it.effect('turns a card payment to Inzhur into a transfer into the cash account', () =>
         Effect.gen(function* () {
-            const { bankAccount, cashAccount, reitAccount } = yield* setUpBankFlow(0);
-
-            yield* importInzhurBankTransaction(bankAccount.id, 'top-up', TOP_UP_DESCRIPTION, -1000, OPERATED_AT);
-            yield* consolidate;
+            const { bankAccount, cashAccount, reitAccount } = yield* setUpToppedUpBankFlow;
 
             expect(yield* fetchSingleBankTransaction()).toMatchObject({
                 type: TransactionTypeEnum.TRANSFER,
@@ -84,10 +90,8 @@ describe('inzhur/bank-flows', () => {
 
     it.effect('reduces the topped-up cash once and raises the fund quantity when the statement shows a buy', () =>
         Effect.gen(function* () {
-            const { bankAccount, cashAccount, reitAccount } = yield* setUpBankFlow(0);
+            const { bankAccount, cashAccount, reitAccount } = yield* setUpToppedUpBankFlow;
 
-            yield* importInzhurBankTransaction(bankAccount.id, 'top-up', TOP_UP_DESCRIPTION, -1000, OPERATED_AT);
-            yield* consolidate;
             const summary = yield* importInzhurStatement(SECOND_URI);
 
             expect(summary).toMatchObject({ outcome: InzhurImportOutcomeEnum.APPLIED, cashMoved: -500, estimatedDividendAmount: 0 });

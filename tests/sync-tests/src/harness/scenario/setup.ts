@@ -1,4 +1,6 @@
 import { assertStoredBalancesMatchLedger, buildTestDb, resetTestDb } from '@budgie-at/test-kit';
+import { InstrumentDailyMarketPriceEntityTable } from '@budgie/contracts';
+import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 import { vi, afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
 
@@ -74,7 +76,13 @@ beforeAll(() => {
 beforeEach(() => {
     walletCaptureNativeStub.reset();
     if (!isDefined(backupDatabasePath)) {
-        return Effect.runPromise(resetTestDb(testDb));
+        return Effect.runPromise(
+            resetTestDb(testDb).pipe(
+                Effect.andThen(
+                    testDb.delete(InstrumentDailyMarketPriceEntityTable).where(eq(InstrumentDailyMarketPriceEntityTable.source, 'INZHUR'))
+                )
+            )
+        );
     }
 
     return undefined;
