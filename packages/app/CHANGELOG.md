@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.151.6](https://github.com/budgie-at/budgie/compare/v6.151.5...v6.151.6) (2026-11-04)
+
+### Bug Fixes
+
+* **app:** record backup dates after confirmed saves ([34b7354](https://github.com/budgie-at/budgie/commit/34b7354b29fa78c9ff6c9ba7dcbcec0d23728375))
+* **app:** stop recording unconfirmed backup saves ([477c3e1](https://github.com/budgie-at/budgie/commit/477c3e1e480e4613dc37e1798f1e87a51bd5e6c9))
+
+
 ## [6.151.5](https://github.com/budgie-at/budgie/compare/v6.151.4...v6.151.5) (2026-11-04)
 
 **Note:** Version bump only for package @budgie-at/app
