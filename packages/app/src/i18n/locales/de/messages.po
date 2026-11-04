@@ -4458,6 +4458,10 @@ msgstr "Zinssatz % (Optional)"
 msgid "Invalid file"
 msgstr "Ungültige Datei"
 
+#: src/rule/constant/external-source.constant.ts
+msgid "Inzhur"
+msgstr "Inzhur"
+
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "is"
 msgstr "ist"

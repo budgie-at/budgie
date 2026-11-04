@@ -23,5 +23,6 @@ export const SYNC_PROVIDER_CAPABILITIES: Record<ExternalSourceEnum, SyncProvider
         supportsDeposit: false
     },
     [ExternalSourceEnum.COINBASE]: { ...NO_SYNC_SERVICE, supportsDeposit: false },
-    [ExternalSourceEnum.RECEIPT]: { ...NO_SYNC_SERVICE, supportsDeposit: false }
+    [ExternalSourceEnum.RECEIPT]: { ...NO_SYNC_SERVICE, supportsDeposit: false },
+    [ExternalSourceEnum.INZHUR]: { supportsTokenAuth: false, supportsFileImport: true, supportsDeposit: false }
 };

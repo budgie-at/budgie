@@ -4458,6 +4458,10 @@ msgstr "Taux d'intérêt % (Facultatif)"
 msgid "Invalid file"
 msgstr "Fichier invalide"
 
+#: src/rule/constant/external-source.constant.ts
+msgid "Inzhur"
+msgstr "Inzhur"
+
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "is"
 msgstr "est"

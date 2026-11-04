@@ -41,6 +41,7 @@ export { AccountNotFoundError } from './account/error/account-not-found.error';
 export { AccountTypeEnum } from './account/enum/account-type.enum';
 export { AccountNatureEnum } from './account/enum/account-nature.enum';
 export { ExternalSourceEnum } from './account/enum/external-source.enum';
+export { DividendPayoutEnum } from './account/enum/dividend-payout.enum';
 export { AccountDebtTypeEnum } from './account/enum/account-debt-type.enum';
 export { AccountAssociationEnum } from './account/enum/account-association.enum';
 

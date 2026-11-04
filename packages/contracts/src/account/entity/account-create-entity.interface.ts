@@ -17,6 +17,7 @@ export type AccountCreateEntityInterface = PartialByKeysType<
     | 'interestRate'
     | 'installmentCount'
     | 'externalSource'
+    | 'dividendPayout'
     | 'integrationId'
     | 'includeInNetWorth'
     | 'isActive'

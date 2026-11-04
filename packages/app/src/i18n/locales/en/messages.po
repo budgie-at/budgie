@@ -4459,6 +4459,10 @@ msgstr "Interest Rate % (Optional)"
 msgid "Invalid file"
 msgstr "Invalid file"
 
+#: src/rule/constant/external-source.constant.ts
+msgid "Inzhur"
+msgstr "Inzhur"
+
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "is"
 msgstr "is"
