@@ -79,4 +79,32 @@ describe('enable-banking/disconnect', () => {
             expect(enableBankingStub.requests).toEqual(['DELETE /sessions/session-stuck']);
         }).pipe(Effect.provide(TestLayer))
     );
+
+    it.effect('a failed key deletion removes nothing and a retry succeeds after the session is already revoked', () =>
+        Effect.gen(function* () {
+            const service = yield* EnableBankingSyncService;
+            const token = buildEnableBankingToken('session-retry');
+            yield* seedEnableBankingAccount({ hash: 'hash-retry', token });
+            const integrationId = yield* findIntegrationId(token);
+            enableBankingStub.deleteSession('session-retry');
+            testSigner.markUndeletable(ENABLE_BANKING_APPLICATION_ID);
+
+            const error = yield* Effect.flip(service.disconnect(integrationId));
+
+            expect(error._tag).toBe('SyncDeferredError');
+            expect(
+                yield* testDb.select().from(BankIntegrationEntityTable).where(eq(BankIntegrationEntityTable.id, integrationId))
+            ).toHaveLength(1);
+
+            testSigner.clearUndeletable(ENABLE_BANKING_APPLICATION_ID);
+            enableBankingStub.deleteSession('session-retry', { status: 400, error: 'SESSION_DOES_NOT_EXIST' });
+
+            yield* service.disconnect(integrationId);
+
+            expect(yield* testDb.select().from(BankIntegrationEntityTable).where(eq(BankIntegrationEntityTable.id, integrationId))).toEqual(
+                []
+            );
+            expect(testSigner.deletedKeyIds).toEqual([ENABLE_BANKING_APPLICATION_ID]);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

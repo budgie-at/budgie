@@ -202,7 +202,7 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
             yield* pollingSyncService.requestSync();
         });
 
-        const isApplicationUsedByOtherIntegration = Effect.fnUntraced(function* (integrationId: number, applicationId: string) {
+        const isApplicationUsedByOtherIntegration = Effect.fnUntraced(function* (integrationId: number | null, applicationId: string) {
             const otherIntegrationIds = new Set(
                 (yield* accountRepository.findByExternalSource(provider))
                     .map(account => account.integrationId)
@@ -236,6 +236,8 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
                     isSupported: !isNotEmptyArray(aspsp.required_psu_headers ?? [])
                 }));
             }),
+            isApplicationInUse: (applicationId: string) => isApplicationUsedByOtherIntegration(null, applicationId),
+            forgetCredentials: (applicationId: string) => clientService.forgetJwt(applicationId),
             validateCredentials: Effect.fn('EnableBankingSyncService.validateCredentials')(function* (applicationId: string) {
                 yield* clientService.forgetJwt(applicationId);
                 const application = yield* clientService.withClient(applicationId, client => client.getApplication());
@@ -337,16 +339,16 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
                               Effect.orElseSucceed(() => false)
                           )
                     : false;
+                if (isDefined(credentials) && !(yield* isApplicationUsedByOtherIntegration(integrationId, credentials.applicationId))) {
+                    yield* clientService.forgetJwt(credentials.applicationId);
+                    yield* syncRequestSigner.deleteKey(credentials.applicationId);
+                }
+
                 for (const account of yield* accountRepository.findByIntegrationId(integrationId)) {
                     yield* accountArchiveService.archiveById(account.id);
                     yield* syncRepository.setEnabled(account.id, false);
                 }
                 yield* bankIntegrationRepository.deleteById(integrationId);
-
-                if (isDefined(credentials) && !(yield* isApplicationUsedByOtherIntegration(integrationId, credentials.applicationId))) {
-                    yield* clientService.forgetJwt(credentials.applicationId);
-                    yield* syncRequestSigner.deleteKey(credentials.applicationId).pipe(Effect.ignore);
-                }
 
                 return isSessionRevoked;
             })

@@ -11,6 +11,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { Button } from '../../../@generic/component/button/button';
 import { appAtomRegistry } from '../../../@generic/constant/app-atom-registry.constant';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { enableBankingCallbackUrlAtom } from '../../constant/enable-banking-callback-url-atom.constant';
@@ -38,6 +39,7 @@ export const CreateEnableBankingAccount = () => {
     const [applicationId, setApplicationId] = useState('');
     const [pickedPem, setPickedPem] = useState<string | null>(null);
     const [isKeySaved, setIsKeySaved] = useState(false);
+    const [savedApplicationId, setSavedApplicationId] = useState<string | null>(null);
     const [banks, setBanks] = useState<readonly EnableBankingBankInterface[]>([]);
     const [authorization, setAuthorization] = useState<EnableBankingAuthorizationResultInterface | null>(null);
     const { isLoading: isBusy, run } = useSingleFlight();
@@ -101,7 +103,27 @@ export const CreateEnableBankingAccount = () => {
         }
     }, [callbackUrl]);
 
+    const discardSavedKey = (applicationIdToDiscard: string | null) => {
+        if (isDefined(applicationIdToDiscard)) {
+            appRuntime.runFork(
+                Effect.flatMap(EnableBankingConnectionService, connection => connection.discardUnusedKey(applicationIdToDiscard)).pipe(
+                    Effect.ignore
+                )
+            );
+        }
+    };
+
+    const handleUnmount = useEffectEvent(() => {
+        discardSavedKey(savedApplicationId);
+    });
+
+    useEffect(() => () => void handleUnmount(), []);
+
     const handleApplicationIdChange = (value: string) => {
+        if (value !== savedApplicationId) {
+            discardSavedKey(savedApplicationId);
+            setSavedApplicationId(null);
+        }
         setApplicationId(value);
         setIsKeySaved(false);
     };
@@ -134,6 +156,7 @@ export const CreateEnableBankingAccount = () => {
                     yield* Effect.flatMap(EnableBankingConnectionService, connection => connection.saveKey(parsedApplicationId, pickedPem));
                     setPickedPem(null);
                     setIsKeySaved(true);
+                    setSavedApplicationId(parsedApplicationId);
                 }
                 setBanks(yield* Effect.flatMap(EnableBankingSyncService, service => service.listBanks(parsedApplicationId)));
                 setStep(EnableBankingSetupStepEnum.BANK);

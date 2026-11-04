@@ -7,6 +7,7 @@ import {
 } from '@budgie/sync';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
+import * as Exit from 'effect/Exit';
 import * as Layer from 'effect/Layer';
 import * as Schema from 'effect/Schema';
 import * as DocumentPicker from 'expo-document-picker';
@@ -92,9 +93,12 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
                     );
                 }),
                 saveKey: Effect.fn('EnableBankingConnectionService.saveKey')(function* (applicationId: string, pem: string) {
-                    const previousPem = yield* secureStore.readKey(applicationId).pipe(Effect.orElseSucceed(() => null));
+                    const previousPem = yield* secureStore.readKey(applicationId);
                     const restorePrevious = Effect.ignore(
-                        isDefined(previousPem) ? secureStore.saveKey(applicationId, previousPem) : secureStore.removeKey(applicationId)
+                        (isDefined(previousPem)
+                            ? secureStore.saveKey(applicationId, previousPem)
+                            : secureStore.removeKey(applicationId)
+                        ).pipe(Effect.andThen(enableBankingSyncService.forgetCredentials(applicationId)))
                     );
 
                     yield* Effect.gen(function* () {
@@ -106,7 +110,16 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
                         if (!application.redirectUrls.includes(ENABLE_BANKING_RELAY_URL)) {
                             return yield* fail(EnableBankingSetupErrorReasonEnum.REDIRECT_URL_MISSING);
                         }
-                    }).pipe(Effect.tapError(() => restorePrevious));
+                    }).pipe(Effect.onExit(exit => (Exit.isSuccess(exit) ? Effect.void : restorePrevious)));
+                }),
+                discardUnusedKey: Effect.fn('EnableBankingConnectionService.discardUnusedKey')(function* (applicationId: string) {
+                    const pending = yield* secureStore.readPending();
+                    if (pending?.applicationId === applicationId || (yield* enableBankingSyncService.isApplicationInUse(applicationId))) {
+                        return;
+                    }
+
+                    yield* secureStore.removeKey(applicationId);
+                    yield* enableBankingSyncService.forgetCredentials(applicationId);
                 }),
                 reauthorize: Effect.fn('EnableBankingConnectionService.reauthorize')(function* (integrationId: number) {
                     const integration = yield* bankIntegrationRepository.findById(integrationId);
