@@ -46,6 +46,11 @@ const isUnitAccountSql = sql`(${inArray(AccountEntityTable.type, CRYPTO_ACCOUNT_
 const buildNetWorthExchangeRateConversionSql = (defaultInstrumentId: number) =>
     sql`CASE WHEN ${isUnitAccountSql} THEN ${buildStrictExchangeRateConversionSql(defaultInstrumentId)} ELSE ${buildFiatExchangeRateConversionSql(defaultInstrumentId)} END`;
 
+const MINOR_UNIT_MICRO_UNITS_SQL = sql.raw('10000.0');
+
+const getConvertedBalanceSql = (balanceSql: SQL, exchangeRateSql: SQL) =>
+    sql<number>`ROUND((${balanceSql}) * ${exchangeRateSql} / ${MINOR_UNIT_MICRO_UNITS_SQL}) * ${MINOR_UNIT_MICRO_UNITS_SQL}`;
+
 const getActiveAccountWhereSql = (...conditions: SQL[]) =>
     and(...conditions, eq(AccountEntityTable.isActive, true), isNull(AccountEntityTable.deletedAt));
 
@@ -188,8 +193,8 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
             return Db.query(db =>
                 db
                     .select({
-                        fiatTotal: sql<number>`COALESCE(SUM(CASE WHEN ${notInArray(AccountEntityTable.type, CRYPTO_ACCOUNT_TYPES)} THEN (${balanceSql}) * ${fiatExchangeRateSql} ELSE 0 END), 0)`,
-                        cryptoTotal: sql<number>`COALESCE(SUM(CASE WHEN ${inArray(AccountEntityTable.type, CRYPTO_ACCOUNT_TYPES)} THEN (${balanceSql}) * ${cryptoExchangeRateSql} ELSE 0 END), 0)`,
+                        fiatTotal: sql<number>`COALESCE(SUM(CASE WHEN ${notInArray(AccountEntityTable.type, CRYPTO_ACCOUNT_TYPES)} THEN ${getConvertedBalanceSql(balanceSql, fiatExchangeRateSql)} ELSE 0 END), 0)`,
+                        cryptoTotal: sql<number>`COALESCE(SUM(CASE WHEN ${inArray(AccountEntityTable.type, CRYPTO_ACCOUNT_TYPES)} THEN ${getConvertedBalanceSql(balanceSql, cryptoExchangeRateSql)} ELSE 0 END), 0)`,
                         fiatCount: sql<number>`COALESCE(SUM(CASE WHEN ${notInArray(AccountEntityTable.type, CRYPTO_ACCOUNT_TYPES)} THEN 1 ELSE 0 END), 0)`,
                         cryptoCount: sql<number>`COALESCE(SUM(CASE WHEN ${inArray(AccountEntityTable.type, CRYPTO_ACCOUNT_TYPES)} THEN 1 ELSE 0 END), 0)`
                     })
@@ -212,7 +217,7 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
         getHomeAccountRows: (defaultInstrumentId: number) => {
             const balanceSql = getAccountBalanceWithTransactionsSql();
             const exchangeRateSql = buildNetWorthExchangeRateConversionSql(defaultInstrumentId);
-            const convertedBalanceSql = sql<number>`COALESCE((${balanceSql}) * ${exchangeRateSql}, 0)`;
+            const convertedBalanceSql = sql<number>`COALESCE(${getConvertedBalanceSql(balanceSql, exchangeRateSql)}, 0)`;
             const convertedTargetBalanceSql = getConvertedDebtTargetBalanceSql(defaultInstrumentId, exchangeRateSql);
             const debtProgressSql = getDebtProgressSql(null, null, AccountEntityTable.targetBalance);
             const convertedDebtProgressSql = getDebtProgressSql(defaultInstrumentId, exchangeRateSql, convertedTargetBalanceSql);
@@ -297,7 +302,7 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
             return Db.query(db =>
                 db
                     .select({
-                        netWorth: sql<number>`COALESCE(SUM((${getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}), 0)`
+                        netWorth: sql<number>`COALESCE(SUM(${getConvertedBalanceSql(getAccountBalanceWithTransactionsSql(), exchangeRateSql)}), 0)`
                     })
                     .from(AccountEntityTable)
                     .where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt)))
@@ -308,7 +313,9 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
 
             return Db.query(db =>
                 db
-                    .select({ total: sql<number>`COALESCE(SUM((${getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}), 0)` })
+                    .select({
+                        total: sql<number>`COALESCE(SUM(${getConvertedBalanceSql(getAccountBalanceWithTransactionsSql(), exchangeRateSql)}), 0)`
+                    })
                     .from(AccountEntityTable)
                     .where(getActiveAccountWhereSql(eq(AccountEntityTable.type, accountType)))
             );
@@ -319,7 +326,9 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
 
             return Db.query(db =>
                 db
-                    .select({ total: sql<number>`COALESCE(SUM((${getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}), 0)` })
+                    .select({
+                        total: sql<number>`COALESCE(SUM(${getConvertedBalanceSql(getAccountBalanceWithTransactionsSql(), exchangeRateSql)}), 0)`
+                    })
                     .from(AccountEntityTable)
                     .where(getActiveAccountWhereSql(inArray(AccountEntityTable.type, accountTypes)))
             );

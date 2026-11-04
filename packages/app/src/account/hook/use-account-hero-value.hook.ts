@@ -1,4 +1,4 @@
-import { InstrumentTypeEnum } from '@budgie/contracts';
+import { InstrumentTypeEnum, convertFromMicroUnits, convertToMicroUnits } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 
 import { isDefined } from '@rnw-community/shared';
@@ -8,6 +8,8 @@ import { defaultInstrumentAtom } from '../../settings/constants/settings-atoms.c
 
 import type { AccountHeroValueInterface } from '../interface/account-hero-value.interface';
 
+const MINOR_UNIT_MICRO_UNITS = 10_000;
+
 export const useAccountHeroValue = (account: AccountHeroValueInterface['account'], balance: number): AccountHeroValueInterface => {
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const valuationRate = useUnitValuationRateQuery(account.instrument.id, defaultInstrument.id);
@@ -16,5 +18,7 @@ export const useAccountHeroValue = (account: AccountHeroValueInterface['account'
         return { balance, account };
     }
 
-    return { balance: balance * valuationRate, account: { type: account.type, instrument: defaultInstrument } };
+    const valueMicroUnits = Math.round((convertToMicroUnits(balance) * valuationRate) / MINOR_UNIT_MICRO_UNITS) * MINOR_UNIT_MICRO_UNITS;
+
+    return { balance: convertFromMicroUnits(valueMicroUnits), account: { type: account.type, instrument: defaultInstrument } };
 };

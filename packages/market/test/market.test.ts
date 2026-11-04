@@ -270,7 +270,7 @@ describe('base valuation', () => {
             const unpricedAccount = yield* testSeedService.account({ instrumentId: unpricedFund.id, type: AccountTypeEnum.STOCKS });
             yield* testDb.insert(InstrumentDailyMarketPriceEntityTable).values([
                 { instrumentId: fund.id, quoteInstrumentId: hryvnia.id, priceDate: '2026-11-03', price: 11.5, source: 'test' },
-                { instrumentId: fund.id, quoteInstrumentId: hryvnia.id, priceDate: '2026-11-04', price: 11.68, source: 'test' }
+                { instrumentId: fund.id, quoteInstrumentId: hryvnia.id, priceDate: '2026-11-04', price: 11.675, source: 'test' }
             ]);
             yield* exchangeRateRepository.bulkUpsert([
                 { baseInstrumentId: dollar.id, quoteInstrumentId: hryvnia.id, rate: 40, source: 'test' }
@@ -284,11 +284,16 @@ describe('base valuation', () => {
             const dollarRows = yield* accountBalanceRepository.getHomeAccountRows(dollar.id);
             const findRow = (rows: typeof hryvniaRows, accountId: number) => rows.find(row => row.account.id === accountId);
 
-            expect(convertFromMicroUnits(findRow(hryvniaRows, fundAccount.id)?.convertedBalance ?? 0)).toBeCloseTo(2283 * 11.68, 2);
-            expect(convertFromMicroUnits(findRow(dollarRows, fundAccount.id)?.convertedBalance ?? 0)).toBeCloseTo((2283 * 11.68) / 40, 2);
+            expect(convertFromMicroUnits(findRow(hryvniaRows, fundAccount.id)?.convertedBalance ?? 0)).toBe(26_654.03);
+            expect(convertFromMicroUnits(findRow(dollarRows, fundAccount.id)?.convertedBalance ?? 0)).toBeCloseTo((2283 * 11.675) / 40, 2);
             expect(findRow(hryvniaRows, fundAccount.id)?.isValued).toBe(true);
             expect(findRow(hryvniaRows, unpricedAccount.id)?.isValued).toBe(false);
             expect(findRow(hryvniaRows, unpricedAccount.id)?.convertedBalance).toBe(0);
+
+            const [{ netWorth }] = yield* accountBalanceRepository.getNetWorth(hryvnia.id);
+            const rowsTotal = hryvniaRows.reduce((total, row) => total + row.convertedBalance, 0);
+
+            expect(netWorth).toBe(rowsTotal);
         }).pipe(Effect.provide(Layer.mergeAll(TestLayer, AccountBalanceRepository.layer.pipe(Layer.provide(TestLayer)))))
     );
 });
