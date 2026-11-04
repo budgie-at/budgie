@@ -54,13 +54,7 @@ export const RecurringCalendarEntryContent = ({ entry, dayLabel }: Props) => {
         <View className={rowVariants({ isAccessibilityTextSize })}>
             <CircleIcon size={36} iconSize={18} radius={18} border={false} icon={icon} variant="secondary" />
             <View className={labelsVariants({ isAccessibilityTextSize })}>
-                <Text
-                    dynamicTypeRamp="headline"
-                    className="text-[16px] font-semibold text-primary"
-                    numberOfLines={labelLineLimit}
-                    ellipsizeMode="tail"
-                    lineBreakStrategyIOS="standard"
-                >
+                <Text dynamicTypeRamp="headline" className="text-[16px] font-semibold text-primary" lineBreakStrategyIOS="standard">
                     {entry.title}
                 </Text>
                 {isAccessibilityTextSize ? (

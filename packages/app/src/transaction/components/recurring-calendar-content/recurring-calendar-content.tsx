@@ -101,7 +101,7 @@ export const RecurringCalendarContent = () => {
 
             <RecurringCalendarSummary isLoading={isLoading} formattedTotal={formatDigits(displayedTotal, defaultInstrument.symbol)} />
 
-            <LoadingContent isLoading={isLoading} className="gap-y-5xl" loadingIndicator={null}>
+            <LoadingContent isLoading={isLoading} className="gap-y-sm" loadingIndicator={null}>
                 {hasSelectedDay ? (
                     <RecurringCalendarEntryList
                         headerTestID={RecurringCalendarSelector.SelectedDayHeader(selectedDay)}
