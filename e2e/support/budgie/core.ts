@@ -81,9 +81,9 @@ export async function scrollToCentered(ctx: Ctx, testId: string): Promise<void> 
     await scrollToCenteredId(ctx, testId, { viewportHeight: VIEWPORT_HEIGHT, bottomBandPx: 314, dragX: 200 });
 }
 
-/** Maestro's `scrollUntilVisible … centerElement: true`: brings `testId` to the middle third, clear of the floating tab bar and header that cover taps at the edges. */
+/** Maestro's `scrollUntilVisible … centerElement: true`: brings `testId` near the middle, clear of the floating tab bar and header. 200 lets the last row of a list rest at 621 without its bounce reading as movement. */
 export async function scrollToCentre(ctx: Ctx, testId: string, direction: 'up' | 'down' = 'down'): Promise<void> {
-    await scrollToMiddle(ctx, testId, { viewportHeight: VIEWPORT_HEIGHT, direction, dragX: 201 });
+    await scrollToMiddle(ctx, testId, { viewportHeight: VIEWPORT_HEIGHT, direction, tolerancePx: 200, dragX: 201 });
 }
 
 /** Clears iOS's "Open in “budgie”?" prompt that the first custom-scheme link on a fresh simulator shows. */
