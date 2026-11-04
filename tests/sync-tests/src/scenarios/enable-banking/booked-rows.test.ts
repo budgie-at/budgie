@@ -124,7 +124,7 @@ describe('enable-banking/booked-rows', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('falls back to value_date at midnight UTC', () =>
+    it.effect('falls back to value_date at noon UTC', () =>
         Effect.gen(function* () {
             const service = yield* EnableBankingSyncService;
             const valueDate = enableBankingDaysAgo(2);
@@ -133,7 +133,7 @@ describe('enable-banking/booked-rows', () => {
             yield* service.sync();
 
             const [transaction] = yield* fetchEnableBankingTransactions();
-            expect(transaction.operatedAt).toEqual(new Date(`${valueDate}T00:00:00.000Z`));
+            expect(transaction.operatedAt).toEqual(new Date(`${valueDate}T12:00:00.000Z`));
         }).pipe(Effect.provide(TestLayer))
     );
 

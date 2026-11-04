@@ -3,5 +3,6 @@ import type { EnableBankingTransactionApiInterface } from './enable-banking-tran
 export interface EnableBankingDatedRowInterface {
     readonly transaction: EnableBankingTransactionApiInterface;
     readonly bookedOn: string;
+    readonly operatedAtMs: number;
     readonly contentHash: string;
 }

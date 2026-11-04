@@ -25,6 +25,7 @@ class EnableBankingMapper {
     private static readonly AMOUNT_PATTERN = /^(-?)(\d+)(?:\.(\d+))?$/u;
     private static readonly DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/u;
     private static readonly MILLISECONDS_PER_SECOND = 1000;
+    private static readonly NOON_OFFSET_MS = 12 * 60 * 60 * 1000;
     private static readonly MCC_PATTERN = /^\d+$/u;
     private static readonly CARD_PAYMENT_PATTERN = /^POS\s+\d[\d.,]*\s+[A-Z]{2}\s+K\d\s+\d{2}[./-]\d{2}[./-]\d{2,4}\s+(\S.*)$/u;
     private static readonly NUMERIC_CODE_BY_CURRENCY = new Map(
@@ -58,11 +59,12 @@ class EnableBankingMapper {
     mapTransactions(
         identificationHash: string,
         currencyCode: string,
-        transactions: readonly EnableBankingTransactionApiInterface[]
+        transactions: readonly EnableBankingTransactionApiInterface[],
+        snapshotAt: Date
     ): SyncTransactionInterface[] | null {
         const rows = transactions
             .filter(transaction => transaction.status === EnableBankingMapper.BOOKED_STATUS)
-            .map(transaction => this.buildRow(transaction));
+            .map(transaction => this.buildRow(transaction, snapshotAt));
         const datedRows = rows.filter(isDefined);
         if (datedRows.length !== rows.length || this.hasReferenceAcrossDates(datedRows)) {
             return null;
@@ -100,13 +102,22 @@ class EnableBankingMapper {
         };
     }
 
-    private buildRow(transaction: EnableBankingTransactionApiInterface): EnableBankingDatedRowInterface | null {
+    private buildRow(transaction: EnableBankingTransactionApiInterface, snapshotAt: Date): EnableBankingDatedRowInterface | null {
         const bookedOn = transaction.booking_date ?? transaction.value_date;
-        if (!isNotEmptyString(bookedOn) || !EnableBankingMapper.DATE_PATTERN.test(bookedOn)) {
+        const dayStartMs = isNotEmptyString(bookedOn) ? Date.parse(`${bookedOn}T00:00:00.000Z`) : Number.NaN;
+        if (!isNotEmptyString(bookedOn) || !EnableBankingMapper.DATE_PATTERN.test(bookedOn) || !Number.isFinite(dayStartMs)) {
             return null;
         }
 
-        return { transaction, bookedOn, contentHash: generateStableExternalIdHash(this.buildContentKey(transaction)) };
+        const snapshotAtMs = snapshotAt.getTime();
+        const noonMs = dayStartMs + EnableBankingMapper.NOON_OFFSET_MS;
+
+        return {
+            transaction,
+            bookedOn,
+            operatedAtMs: snapshotAtMs >= dayStartMs && snapshotAtMs < noonMs ? snapshotAtMs : noonMs,
+            contentHash: generateStableExternalIdHash(this.buildContentKey(transaction))
+        };
     }
 
     private hasReferenceAcrossDates(rows: readonly EnableBankingDatedRowInterface[]): boolean {
@@ -160,7 +171,7 @@ class EnableBankingMapper {
         const remittance = (transaction.remittance_information ?? []).join(' ').trim();
 
         return {
-            description: [name, this.extractCardMerchant(remittance), remittance].find(isNotEmptyString) ?? 'Bank transaction',
+            description: [name, this.extractCardMerchant(remittance), remittance].find(isNotEmptyString) ?? '',
             ...(isNotEmptyString(iban) && { counterIban: iban }),
             ...(isNotEmptyString(name) && { counterName: name }),
             ...(isNotEmptyString(remittance) && { comment: remittance })
@@ -176,12 +187,11 @@ class EnableBankingMapper {
     private mapTransaction(
         identificationHash: string,
         currencyCode: string,
-        { transaction, bookedOn }: EnableBankingDatedRowInterface,
+        { transaction, operatedAtMs }: EnableBankingDatedRowInterface,
         externalId: string
     ): SyncTransactionInterface | null {
         const microUnits = this.resolveValidAmount(transaction, currencyCode);
-        const operatedAtMs = Date.parse(`${bookedOn}T00:00:00.000Z`);
-        if (!isDefined(microUnits) || !Number.isFinite(operatedAtMs)) {
+        if (!isDefined(microUnits)) {
             return null;
         }
 
