@@ -7,10 +7,8 @@ import Animated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated
 
 import { emptyFn, getErrorMessage } from '@rnw-community/shared';
 
-import { HorizontalCell } from '../../../@generic/component/horizontal-cell/horizontal-cell';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
-import { AiProgressBar } from '../../../settings/components/ai-progress-bar/ai-progress-bar';
-import { AI_SUBSYSTEM_CARD_VISUALS } from '../../constant/ai-subsystem-card-visuals.constant';
 import { AiSubsystemCardStateEnum } from '../../enum/ai-subsystem-card-state.enum';
 import { useLongPressHold } from '../../hook/use-long-press-hold.hook';
 import { AiSubsystemStatusSnapshotInterface } from '../../interface/ai-subsystem-status-snapshot.interface';
@@ -59,20 +57,19 @@ export const AiSubsystemStatusCardLayout = (props: Props) => {
         return null;
     }
 
-    const visuals = AI_SUBSYSTEM_CARD_VISUALS[snapshot.state];
-
-    const leftContent = renderLeftIcon(holdProgress, visuals.colorClass);
+    const leftContent = renderLeftIcon(holdProgress, 'text-secondary-foreground');
     const percentText = `${snapshot.percent}%`;
-    const rightContent = <Text className={`text-sm font-medium text-right w-12 ${visuals.colorClass}`}>{percentText}</Text>;
+    const rightContent = <Text className="text-[17px] text-secondary-foreground">{percentText}</Text>;
 
     return (
         <Pressable onPressIn={handlePressIn} onPressOut={handlePressOut}>
             <Animated.View style={scaleStyle}>
-                <HorizontalCell left={leftContent} right={rightContent} contentClassName="gap-y-xs">
-                    <Text className="text-sm font-medium text-primary">{title}</Text>
-                    <Text className="text-xs font-medium text-secondary-foreground">{snapshot.statusText}</Text>
-                    <AiProgressBar progress={snapshot.percent} />
-                </HorizontalCell>
+                <GroupedListRow
+                    left={leftContent}
+                    title={<Text className="text-[17px] text-primary">{title}</Text>}
+                    subtitle={snapshot.statusText}
+                    right={rightContent}
+                />
             </Animated.View>
         </Pressable>
     );

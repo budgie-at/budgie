@@ -54,17 +54,19 @@ test('36 bank integration settings', { tags: ['sync'] }, async ({ budgie }) => {
         await expect(id('AccountSyncCard.Switch')).toBeChecked();
     });
 
-    await b.phase('row opens editor, menu opens details', async () => {
+    await b.phase('menu opens editor and details', async () => {
         await openIntegration(1);
         await b.expectId(ctx, 'BankIntegration.AccountRow.1');
-        await b.tapId(ctx, 'BankIntegration.AccountRow.1');
-        await b.expectId(ctx, 'AccountForm.ScrollView', 10_000);
-        await back('BankIntegration.Page');
         await b.tapId(ctx, 'BankIntegration.AccountRow.1.Menu');
         await b.expectId(ctx, 'BankIntegration.AccountRow.1.Menu.Details', 3_000);
         await b.expectId(ctx, 'BankIntegration.AccountRow.1.Menu.Edit');
         await b.expectId(ctx, 'BankIntegration.AccountRow.1.Menu.External');
         await b.expectId(ctx, 'BankIntegration.AccountRow.1.Menu.Archive');
+        await b.tapId(ctx, 'BankIntegration.AccountRow.1.Menu.Edit');
+        await b.expectId(ctx, 'AccountForm.ScrollView', 10_000);
+        await back('BankIntegration.Page');
+        await b.tapId(ctx, 'BankIntegration.AccountRow.1.Menu');
+        await b.expectId(ctx, 'BankIntegration.AccountRow.1.Menu.Details', 3_000);
         await b.tapId(ctx, 'BankIntegration.AccountRow.1.Menu.Details');
         await b.expectId(ctx, 'AccountDetails.Page', 10_000);
         await back('BankIntegration.Page');

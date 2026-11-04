@@ -3,7 +3,7 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
 import { BudgetCategoryLimitDeletableRow } from '../budget-category-limit-deletable-row/budget-category-limit-deletable-row';
-import { BudgetLimitAmountInput } from '../budget-limit-amount-input/budget-limit-amount-input';
+import { BudgetEditableAmountInput } from '../budget-editable-amount-input/budget-editable-amount-input';
 
 interface Props {
     readonly currencySymbol: string;
@@ -21,7 +21,9 @@ export const BudgetCategoryLimitCompactRow = ({ currencySymbol, index, onRemove 
             index={index}
             testID={BudgetSelector.SetupCategoryLimitRow(index)}
             amountInput={
-                <BudgetLimitAmountInput
+                <BudgetEditableAmountInput
+                    control={control}
+                    className="min-w-[104px] max-w-[136px] text-right"
                     currencySymbol={currencySymbol}
                     name={`categoryLimits.${index}.limitAmount`}
                     testID={BudgetSelector.SetupCategoryLimitAmountInput(index)}

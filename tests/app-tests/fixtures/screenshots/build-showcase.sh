@@ -21,11 +21,7 @@ cleanup() {
 
 trap cleanup EXIT
 
-if ! command -v sqlite3 >/dev/null 2>&1; then
-    echo "build-showcase: sqlite3 was not found in PATH" >&2
-
-    exit 1
-fi
+command -v sqlite3 >/dev/null 2>&1 || PATH="$FIXTURES_DIR/../scripts/sqlite-fallback:$PATH"
 
 if [ ! -f "$BASE_FIXTURE_PATH" ]; then
     echo "build-showcase: base fixture is missing: $BASE_FIXTURE_PATH" >&2

@@ -18,10 +18,6 @@
     ],
     "capture-scenes": [
         {
-            "name": "00-prime",
-            "flow": "flows/setup/prime-deep-links-scene.flow.yaml"
-        },
-        {
             "name": "social-showcase-1",
             "deepLink": "budgie://"
         },
@@ -55,7 +51,7 @@
         },
         {
             "name": "social-showcase-9",
-            "deepLink": "budgie://settings/import"
+            "deepLink": "budgie://settings/data"
         },
         {
             "name": "social-showcase-10",
@@ -75,15 +71,15 @@
         },
         {
             "name": "social-showcase-14",
-            "flow": "flows/social/social-accounts-scrolled.flow.yaml"
+            "test": "social-accounts-scrolled"
         },
         {
             "name": "social-showcase-15",
-            "flow": "flows/social/social-voice-entry.flow.yaml"
+            "test": "social-voice-entry"
         },
         {
             "name": "social-showcase-16",
-            "flow": "flows/social/social-ai-suggestion.flow.yaml"
+            "test": "social-ai-suggestion"
         },
         {
             "name": "social-showcase-17",
@@ -99,16 +95,13 @@
         },
         {
             "name": "social-lock-1",
-            "flow": "flows/media/pin-app-lock-1.flow.yaml"
+            "test": "pin-app-lock-1"
         },
         {
             "name": "social-lock-2",
             "deepLink": "budgie://settings?anchor=security"
         }
     ],
-    "screenshots-dir": "tests/app-tests",
-    "maestro-config": "tests/app-tests/config.yaml",
-    "seed-command": "bash tests/app-tests/scripts/seed-screenshot-scene.sh",
     "settle-seconds": 6,
     "status-bar-override": true,
     "build-env": "APP_VARIANT=e2e\nEXPO_PUBLIC_AI_DISABLE=true\nEXPO_PUBLIC_LOGGING_DISABLE=true\n",

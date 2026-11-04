@@ -22,7 +22,7 @@ export async function retry(retries: number, body: (attempt: number) => Promise<
 }
 
 /** Taps `testId` until `targetId` shows (each wait `timeout`), up to `1 + retries` taps. */
-async function tapUntilId(ctx: Ctx, testId: string, targetId: string, retries = 3, timeout = 3_000): Promise<void> {
+export async function tapUntilId(ctx: Ctx, testId: string, targetId: string, retries = 3, timeout = 3_000): Promise<void> {
     await retry(retries, async () => {
         await tapId(ctx, testId);
         await expectId(ctx, targetId, timeout);

@@ -10,6 +10,7 @@ import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useAccountSync } from '../../../sync/hook/use-account-sync.hook';
 import { BANK_PROVIDER_TITLE } from '../../constant/bank-provider-title.constant';
 import { AccountFormBindingsInterface } from '../../interface/account-form-bindings.interface';
+import { isCryptoAccountType } from '../../utils/is-crypto-account-type.util';
 import { AccountBalanceField } from '../account-balance-field/account-balance-field';
 import { AccountBalanceReadout } from '../account-balance-readout/account-balance-readout';
 import { UpdateAccountPage } from '../update-account-page/update-account-page';
@@ -31,7 +32,7 @@ export const UpdateAccountScreen = (props: Props) => {
     const { sync } = useAccountSync(account.id);
     const { formatMonthAndDayWithTime } = useFormatDate();
 
-    const showInstrumentAfterAmount = account.type === AccountTypeEnum.CRYPTO || account.type === AccountTypeEnum.CRYPTO_SYNC;
+    const showInstrumentAfterAmount = isCryptoAccountType(account.type);
     const minimumDecimalPlaces = showInstrumentAfterAmount ? MICRO_UNIT_DECIMAL_PLACES : 0;
     const isReadOnlyBalance =
         (account.type === AccountTypeEnum.BANK_SYNC || account.type === AccountTypeEnum.CRYPTO_SYNC) &&

@@ -3,32 +3,27 @@ import { MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, useWindowDimensions, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { CircleIcon } from '../@generic/component/circle-icon/circle-icon';
 import { FormsheetHeader } from '../@generic/component/formsheet-header/formsheet-header';
-import { HorizontalCell } from '../@generic/component/horizontal-cell/horizontal-cell';
+import { GroupedListSection } from '../@generic/component/grouped-list-section/grouped-list-section';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { useSingleFlight } from '../@generic/hook/use-single-flight.hook';
-import { appRuntime } from '../@generic/runtime/app.runtime';
-import { confirmAlert } from '../@generic/utils/confirm-alert/confirm-alert.util';
-import { logAndContinue } from '../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../@generic/utils/toast-on-failure.util';
+import { useGetAccountByIdQuery } from '../account/query/use-get-account-by-id.query';
+import { ResyncWindowOptionRow } from '../sync/component/resync-window-option-row/resync-window-option-row';
 import { RESYNC_WINDOW_OPTIONS } from '../sync/constant/resync-window-options.constant';
 import { useResyncWindowPickerModal, useResyncWindowPickerModalParams } from '../sync/context/resync-window-picker-modal.context';
 
-import { ResyncWindowPickerSelector } from './resync-window-picker.selector';
-
-import type { ResyncWindowOptionInterface } from '../sync/interface/resync-window-option.interface';
-
-const WINDOW_TEXT: Record<string, { readonly label: MessageDescriptor; readonly successMessage: MessageDescriptor }> = {
-    null: { label: msg`Re-sync entire history`, successMessage: msg`Entire history will be re-synced on next sync.` },
-    7: { label: msg`Last 7 days`, successMessage: msg`Re-sync of last 7 days will start on next sync.` },
-    30: { label: msg`Last 30 days`, successMessage: msg`Re-sync of last 30 days will start on next sync.` },
-    90: { label: msg`Last 90 days`, successMessage: msg`Re-sync of last 90 days will start on next sync.` }
+const WINDOW_SUCCESS_MESSAGES: Record<string, MessageDescriptor> = {
+    null: msg`Entire history will be re-synced on next sync.`,
+    7: msg`Re-sync of last 7 days will start on next sync.`,
+    30: msg`Re-sync of last 30 days will start on next sync.`,
+    90: msg`Re-sync of last 90 days will start on next sync.`
 };
 
 export default function ResyncWindowPickerModal() {
@@ -38,6 +33,16 @@ export default function ResyncWindowPickerModal() {
     const { run } = useSingleFlight();
 
     const accountId = useResyncWindowPickerModalParams()?.accountId ?? 0;
+    const { account } = useGetAccountByIdQuery(accountId);
+    const { bottom, top } = useSafeAreaInsets();
+    const { height } = useWindowDimensions();
+    const options = isPositiveNumber(accountId) && isDefined(account) ? RESYNC_WINDOW_OPTIONS : [];
+    const styles = { scroll: { flexGrow: 0, maxHeight: height - top }, content: { paddingBottom: bottom } };
+    const accountTitle = account?.title;
+    const accountHeading =
+        isPositiveNumber(accountId) && isNotEmptyString(accountTitle) ? (
+            <Text className="text-center text-[15px] font-semibold text-primary">{accountTitle}</Text>
+        ) : null;
 
     const resync = (sinceDays: number | null) => {
         void run(
@@ -48,7 +53,7 @@ export default function ResyncWindowPickerModal() {
                             void Toast.show({
                                 type: 'success',
                                 text1: t`Bank sync reset`,
-                                text2: t(WINDOW_TEXT[String(sinceDays)].successMessage)
+                                text2: t(WINDOW_SUCCESS_MESSAGES[String(sinceDays)])
                             })
                     )
                 ),
@@ -57,64 +62,41 @@ export default function ResyncWindowPickerModal() {
         );
     };
 
-    const handleOptionPress = (option: ResyncWindowOptionInterface) => () => {
-        resolveResyncWindowPicker(null);
-
-        if (isDefined(option.sinceDays)) {
-            resync(option.sinceDays);
-
+    const handleOptionPress = (sinceDays: number | null) => {
+        if (!isPositiveNumber(accountId) || !isDefined(account)) {
             return;
         }
 
-        appRuntime.runFork(
-            logAndContinue(
-                Effect.gen(function* () {
-                    const confirmed = yield* confirmAlert({
-                        title: t`Re-sync Bank Account?`,
-                        message: t`This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data.`,
-                        confirmText: t`Re-sync History`,
-                        cancelText: t`Cancel`
-                    });
-
-                    if (confirmed) {
-                        resync(null);
-                    }
-                })
-            )
-        );
+        resolveResyncWindowPicker(null);
+        resync(sinceDays);
     };
 
     return (
-        <View className="flex-1 bg-primary-reverse">
-            <FormsheetHeader size="md" title={t`Re-sync transactions`} description={t`Pick a window. Existing data is preserved.`} />
-
-            <ScrollView contentContainerClassName="px-3xl pt-md gap-y-md pb-5xl" showsVerticalScrollIndicator={false}>
-                {RESYNC_WINDOW_OPTIONS.map(option => {
-                    const label = t(WINDOW_TEXT[String(option.sinceDays)].label);
-                    const { isDestructive } = option;
-                    const labelClassName = isDestructive
-                        ? 'text-md font-semibold text-destructive-foreground'
-                        : 'text-md font-semibold text-primary';
-                    const iconVariant = isDestructive ? 'destructive' : 'primary';
-                    const optionTestID = ResyncWindowPickerSelector.Option(option.sinceDays ?? 'all');
-
-                    return (
-                        <HorizontalCell
-                            key={String(option.sinceDays)}
-                            size="md"
-                            onPress={handleOptionPress(option)}
-                            left={<CircleIcon icon={option.icon} variant={iconVariant} size={40} iconSize={18} />}
-                            testID={optionTestID}
-                        >
-                            <Text className={labelClassName}>{label}</Text>
-                            {isDestructive ? (
-                                <Text className="mt-1 text-sm text-secondary-foreground">
-                                    <Trans>Resets all sync state</Trans>
-                                </Text>
-                            ) : null}
-                        </HorizontalCell>
-                    );
-                })}
+        <View className="bg-grouped-surface" collapsable={false}>
+            <ScrollView style={styles.scroll} bounces={false} showsVerticalScrollIndicator={false}>
+                <FormsheetHeader size="md" title={t`Sync past transactions`} className="pb-[4px]" />
+                <View className="gap-y-[4px] px-3xl">
+                    {accountHeading}
+                    <Text className="text-center text-[13px] text-secondary-foreground">
+                        <Trans>Choose a period to re-sync past transactions.</Trans>
+                    </Text>
+                </View>
+                <View className="px-3xl pt-[24px] gap-y-[24px]" style={styles.content}>
+                    <GroupedListSection>
+                        {options
+                            .filter(option => isDefined(option.sinceDays))
+                            .map(option => (
+                                <ResyncWindowOptionRow key={String(option.sinceDays)} option={option} onSelect={handleOptionPress} />
+                            ))}
+                    </GroupedListSection>
+                    <GroupedListSection footer={t`Duplicates are merged automatically. Your categories, tags and notes stay.`}>
+                        {options
+                            .filter(option => !isDefined(option.sinceDays))
+                            .map(option => (
+                                <ResyncWindowOptionRow key={String(option.sinceDays)} option={option} onSelect={handleOptionPress} />
+                            ))}
+                    </GroupedListSection>
+                </View>
             </ScrollView>
         </View>
     );

@@ -1,10 +1,10 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
-import { Button } from '../../../@generic/component/button/button';
-import { Card } from '../../../@generic/component/card/card';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { SyncRepairsPageSelector } from '../../../app/(tabs)/settings/sync-repairs-page.selector';
+import { SettingsPillButton } from '../settings-pill-button/settings-pill-button';
 
 interface Props {
     readonly errorMessage: string;
@@ -16,22 +16,28 @@ export const SyncRepairsErrorCard = ({ errorMessage, isLoading, onRefresh }: Pro
     const { t } = useLingui();
 
     return (
-        <Card variant="destructive" className="gap-y-lg">
-            <Text className="text-destructive-foreground text-sm font-semibold">
-                <Trans>Could not check sync data</Trans>
-            </Text>
-            <Text testID={SyncRepairsPageSelector.ErrorText} className="text-destructive-foreground text-sm">
-                {errorMessage}
-            </Text>
-            <Button
-                testID={SyncRepairsPageSelector.ErrorRetryButton}
-                onPress={onRefresh}
-                disabled={isLoading}
-                content={t`Try Again`}
-                leftIcon={UserIconNameEnum.RefreshCw}
-                variant="destructive"
-                size="sm"
+        <GroupedListSection>
+            <GroupedListRow
+                title={
+                    <Text className="text-destructive-foreground text-[17px]">
+                        <Trans>Could not check sync data</Trans>
+                    </Text>
+                }
+                subtitle={
+                    <Text testID={SyncRepairsPageSelector.ErrorText} className="text-destructive-foreground text-[13px]" selectable>
+                        {errorMessage}
+                    </Text>
+                }
+                right={
+                    <SettingsPillButton
+                        testID={SyncRepairsPageSelector.ErrorRetryButton}
+                        label={t`Try again`}
+                        onPress={onRefresh}
+                        isLoading={isLoading}
+                        variant="secondary"
+                    />
+                }
             />
-        </Card>
+        </GroupedListSection>
     );
 };

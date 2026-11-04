@@ -25,14 +25,13 @@ interface Props {
     readonly step: OnboardingStepEnum;
     readonly fileState: string;
     readonly fileLock: OnboardingFileLockEnum;
-    readonly isBackVisible?: boolean;
     readonly isLoading?: boolean;
     readonly footer?: ReactNode;
     readonly children: ReactNode;
 }
 
 export const OnboardingStepLayout = (props: Props) => {
-    const { step, fileState, fileLock, isBackVisible = true, isLoading = false, footer, children } = props;
+    const { step, fileState, fileLock, isLoading = false, footer, children } = props;
 
     const { goBack } = useOnboardingNavigation();
     const onboardingStep = useSetting('onboardingStep');
@@ -44,6 +43,7 @@ export const OnboardingStepLayout = (props: Props) => {
         }
     });
 
+    const isBackVisible = step !== OnboardingStepEnum.SEALED;
     const headerRowStyle = { paddingHorizontal: 0 };
 
     return (
@@ -52,7 +52,7 @@ export const OnboardingStepLayout = (props: Props) => {
                 <BottomChromeInsetProvider>
                     <ScreenChromeFrame>
                         <ScreenChromeHeader inFlow rowStyle={headerRowStyle}>
-                            <OnboardingStepHeader fileState={fileState} fileLock={fileLock} isBackVisible={isBackVisible} onBack={goBack} />
+                            <OnboardingStepHeader fileState={fileState} fileLock={fileLock} {...(isBackVisible && { onBack: goBack })} />
                         </ScreenChromeHeader>
 
                         <RevealGate isLoading={isLoading}>

@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.150.4](https://github.com/budgie-at/budgie/compare/v6.150.3...v6.150.4) (2026-11-04)
+
+### Bug Fixes
+
+* **sync:** reuse batch valuations for imported transfers ([39d8986](https://github.com/budgie-at/budgie/commit/39d8986fd73b77e63363efa18ac1ee2bc395b56a))
+
+
 # [6.148.0](https://github.com/budgie-at/budgie/compare/v6.147.1...v6.148.0) (2026-11-02)
 
 **Note:** Version bump only for package @budgie/ledger

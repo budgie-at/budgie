@@ -42,17 +42,12 @@ import { updateCategory } from '../../utils/update-category.util';
 
 import { CategoryFormSelector } from './category-form.selector';
 
-type CategoryFormAction = 'created' | 'updated' | 'cancelled';
-
-export interface CategoryFormResult {
-    readonly category: CategoryEntityInterface;
-    readonly action: CategoryFormAction;
-}
+import type { CategoryFormResultInterface } from '../../interface/category-form-result.interface';
 
 interface Props {
     readonly category?: CategoryEntityInterface;
     readonly defaultTitle?: string;
-    readonly onSuccess: (result: CategoryFormResult) => void;
+    readonly onSuccess: (result: CategoryFormResultInterface) => void;
     readonly onCancel: () => void;
 }
 
@@ -124,10 +119,10 @@ export const CategoryForm = (props: Props) => {
                 const isTitleChanged = values.title !== category.title;
                 const translation = isTitleChanged ? { titleEn: null, titleTags: null } : category;
                 const updatedCategory = yield* updateCategory(category.id, input, translation, language);
-                onSuccess({ category: updatedCategory, action: 'updated' });
+                onSuccess({ category: updatedCategory });
             } else {
                 const createdCategory = yield* createCategory(input, { titleEn: null, titleTags: null });
-                onSuccess({ category: createdCategory, action: 'created' });
+                onSuccess({ category: createdCategory });
             }
         }).pipe(toastOnFailure(isEditing ? t`Could not save category` : t`Could not create category`, t`Please try again later`));
 

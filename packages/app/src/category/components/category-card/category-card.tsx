@@ -1,14 +1,13 @@
-import { CategoryEntityInterface, isEmojiIcon } from '@budgie/contracts';
+import { CategoryEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { EntityListRow } from '../../../@generic/component/entity-list-row/entity-list-row';
-import { TONAL_DISC_BACKGROUND } from '../../../@generic/constant/tonal-disc-background.constant';
 import { useDeleteCategory } from '../../hooks/use-delete-category.hook';
 import { getCategoryDisplayIcon } from '../../utils/get-category-display-icon.util';
+import { CategoryIconDisc } from '../category-icon-disc/category-icon-disc';
 
 import { CategoryCardSelector } from './category-card.selector';
 
@@ -28,7 +27,6 @@ export const CategoryCard = ({ onOpen, category, usage, isFirst, isLast }: Props
     const deleteCategory = useDeleteCategory();
     const handleOpen = () => void onOpen(category);
     const icon = getCategoryDisplayIcon(category);
-    const iconSize = isEmojiIcon(icon) ? 22 : 18;
     const operations: EntityRowOperationsInterface = {
         deleteLabel: isPositiveNumber(usage?.transactionCount) ? t`Move transactions and delete…` : t`Delete…`,
         onDelete: trackMutation => deleteCategory(category.id, trackMutation)
@@ -40,15 +38,7 @@ export const CategoryCard = ({ onOpen, category, usage, isFirst, isLast }: Props
             entity={category}
             left={
                 <View testID={CategoryCardSelector.Icon(category.title, icon)} accessibilityElementsHidden>
-                    <CircleIcon
-                        icon={icon}
-                        variant="secondary"
-                        size={36}
-                        iconSize={iconSize}
-                        radius={18}
-                        border={false}
-                        className={TONAL_DISC_BACKGROUND.secondary}
-                    />
+                    <CategoryIconDisc category={category} />
                 </View>
             }
             usage={usage}

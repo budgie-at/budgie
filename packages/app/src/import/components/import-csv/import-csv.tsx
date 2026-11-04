@@ -29,7 +29,7 @@ export const ImportCsv = () => {
                     return;
                 }
 
-                router.push({ pathname: '/settings/import', params: { fileUri: uri } });
+                router.push({ pathname: '/import-csv', params: { fileUri: uri } });
             }).pipe(toastOnFailure(t`Could not select CSV file`))
         );
 

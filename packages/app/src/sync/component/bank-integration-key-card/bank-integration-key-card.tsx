@@ -2,11 +2,9 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { HorizontalCell } from '../../../@generic/component/horizontal-cell/horizontal-cell';
-import { Icon } from '../../../@generic/component/icon/icon';
-import { cn } from '../../../@generic/utils/cn.util';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
+import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
 import { useBankIntegrationKeyModal } from '../../context/bank-integration-key-modal.context';
 import { useBankIntegration } from '../../context/bank-integration.context';
 import { useBankIntegrationAccountPreviewsQuery } from '../../query/use-bank-integration-account-previews.query';
@@ -17,23 +15,25 @@ export const BankIntegrationKeyCard = () => {
     const { integration } = useBankIntegration();
     const [openKeyModal] = useBankIntegrationKeyModal();
     const { isKeyRejected } = useBankIntegrationAccountPreviewsQuery(integration.id);
-
+    const footer = isKeyRejected ? null : t`Budgie syncs automatically and lists new Monobank accounts here as soon as they appear.`;
     const handlePress = () => void openKeyModal(integration.id);
-    const iconVariant = isKeyRejected ? 'destructive' : 'positive';
     const keyLabel = isKeyRejected ? t`Rejected · tap to update` : maskToken(integration.token);
-    const keyLabelClassName = isKeyRejected ? 'text-destructive-foreground' : 'font-mono text-secondary-foreground';
+    const keyLabelClassName = isKeyRejected ? 'text-[13px] text-destructive-strong' : 'text-[13px] font-mono text-secondary-foreground';
 
     return (
-        <HorizontalCell
-            onPress={handlePress}
-            left={<CircleIcon icon={UserIconNameEnum.KeyRound} variant={iconVariant} border={false} size={36} iconSize={20} />}
-            right={<Icon className="text-primary ml-auto" icon={UserIconNameEnum.ChevronRight} size={20} />}
-            testID={BankIntegrationSelector.KeyCard}
-        >
-            <Text className="text-sm font-medium text-primary">{t`API key`}</Text>
-            <Text className={cn('text-sm font-medium', keyLabelClassName)} numberOfLines={1}>
-                {keyLabel}
-            </Text>
-        </HorizontalCell>
+        <GroupedListSection title={t`Connection`} footer={footer}>
+            <SettingsRow
+                icon={UserIconNameEnum.KeyRound}
+                variant="primary"
+                title={t`API key`}
+                subtitle={
+                    <Text className={keyLabelClassName} numberOfLines={1}>
+                        {keyLabel}
+                    </Text>
+                }
+                onPress={handlePress}
+                testID={BankIntegrationSelector.KeyCard}
+            />
+        </GroupedListSection>
     );
 };

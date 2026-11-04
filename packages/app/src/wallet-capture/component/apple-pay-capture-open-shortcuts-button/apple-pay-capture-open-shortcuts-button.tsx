@@ -1,4 +1,3 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { Linking } from 'react-native';
@@ -39,8 +38,8 @@ export const ApplePayCaptureOpenShortcutsButton = ({ testID }: Props) => {
             testID={testID}
             onPress={handlePressOpenShortcuts}
             content={t`Open Shortcuts`}
-            leftIcon={UserIconNameEnum.ExternalLink}
-            variant="positive"
+            variant="cta"
+            className="min-h-[48px] rounded-full py-lg"
         />
     );
 };

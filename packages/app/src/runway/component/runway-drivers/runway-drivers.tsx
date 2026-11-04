@@ -6,7 +6,7 @@ import { Text, View } from 'react-native';
 import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { SegmentedTabs } from '../../../@generic/component/segmented-tabs/segmented-tabs';
-import { RUNWAY_FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../constant/runway-footnote-max-font-size-multiplier.constant';
+import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
 import { RunwaySelector } from '../../runway.selector';
 import { RunwayDriverRow } from '../runway-driver-row/runway-driver-row';
 import { RunwaySection } from '../runway-section/runway-section';
@@ -38,7 +38,7 @@ export const RunwayDrivers = ({ drivers, dimension, onChangeDimension }: Props) 
             accessory={
                 <View className="gap-y-md">
                     <Text
-                        maxFontSizeMultiplier={RUNWAY_FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
+                        maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
                         className="-mt-xs px-3xl text-[13px] text-secondary-foreground"
                     >
                         <Trans>Average per month</Trans>

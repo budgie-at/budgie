@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.150.4](https://github.com/budgie-at/budgie/compare/v6.150.3...v6.150.4) (2026-11-04)
+
+### Bug Fixes
+
+* **app:** restore independent onboarding account-count atom ([ffa1795](https://github.com/budgie-at/budgie/commit/ffa1795a1ac33cc6e2b35dcaed704f17d181e0cd))
+* **import-export:** parse CSV amounts strictly and reject ambiguous values ([503a6b0](https://github.com/budgie-at/budgie/commit/503a6b06338a53d2f8cfb0c192124e3a1b4e3bf6))
+
+
+## [6.150.3](https://github.com/budgie-at/budgie/compare/v6.150.2...v6.150.3) (2026-11-03)
+
+### Bug Fixes
+
+* **app:** refresh budget translation references ([b0c1ec2](https://github.com/budgie-at/budgie/commit/b0c1ec22064d7590eb15ff931c6cdb862f402537))
+
+
+## [6.150.2](https://github.com/budgie-at/budgie/compare/v6.150.1...v6.150.2) (2026-11-03)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.150.1](https://github.com/budgie-at/budgie/compare/v6.150.0...v6.150.1) (2026-11-03)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
 # [6.150.0](https://github.com/budgie-at/budgie/compare/v6.149.0...v6.150.0) (2026-11-03)
 
 ### Bug Fixes

@@ -161,7 +161,7 @@ test('31 debt settlement attachments', { tags: ['debt'] }, async ({ budgie }) =>
         await b.scrollTo(ctx, expense);
         await expect(id(expense)).toHaveText(/, Repayment,/);
         await borrowedFromHome();
-        await balances(BORROWED, ['OutstandingAmount.13274', 'PaidAmount.1726', 'TotalAmount.15000']);
+        await balances(BORROWED, ['OutstandingAmount.274', 'PaidAmount.14726', 'TotalAmount.15000']);
         await exitAccountDetailsToHome(ctx);
     });
 
@@ -175,7 +175,7 @@ test('31 debt settlement attachments', { tags: ['debt'] }, async ({ budgie }) =>
         await b.scrollTo(ctx, card('E2E_Borrowed_Debt_Attach_Income'));
         await expect(id(card('E2E_Borrowed_Debt_Attach_Income'))).toHaveText(/, To E2E Txn Account,/);
         await borrowedFromHome();
-        await balances(BORROWED, ['OutstandingAmount.13368_067', 'PaidAmount.1726', 'TotalAmount.15094_067', 'Percentage.11_43']);
+        await balances(BORROWED, ['OutstandingAmount.368_067', 'PaidAmount.14726', 'TotalAmount.15094_067', 'Percentage.97_56']);
         await exitAccountDetailsToHome(ctx);
     });
 
@@ -211,7 +211,7 @@ test('31 debt settlement attachments', { tags: ['debt'] }, async ({ budgie }) =>
         await b.expectId(ctx, card('E2E_Cross_Currency_Debt_Attach'), 5_000);
         await expect(id(card('E2E_Cross_Currency_Debt_Attach'))).toHaveText(/, Repayment · E2E Borrowed Debt,/);
         await home();
-        await balances(BORROWED, ['OutstandingAmount.13281_767', 'PaidAmount.1812_3', 'TotalAmount.15094_067', 'Percentage.12_01']);
+        await balances(BORROWED, ['OutstandingAmount.281_767', 'PaidAmount.14812_3', 'TotalAmount.15094_067', 'Percentage.98_13']);
         await exitAccountDetailsToHome(ctx);
     });
 
