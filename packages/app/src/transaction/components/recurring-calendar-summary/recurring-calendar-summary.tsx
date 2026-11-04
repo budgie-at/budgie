@@ -13,7 +13,7 @@ const continuousCorners = { borderCurve: 'continuous' as const };
 
 export const RecurringCalendarSummary = ({ isLoading, formattedTotal }: Props) => (
     <View
-        className="min-h-11 flex-row flex-wrap items-center justify-between gap-x-xl gap-y-xxs rounded-3xl bg-grouped-surface-row px-3xl py-lg mb-md"
+        className="min-h-11 flex-row flex-wrap items-center justify-between gap-x-xl gap-y-xxs rounded-3xl bg-grouped-surface-row px-3xl py-lg"
         style={continuousCorners}
     >
         <Text dynamicTypeRamp="body" className="shrink text-[16px] text-primary">
