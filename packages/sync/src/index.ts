@@ -104,6 +104,7 @@ export { InzhurSetupService } from './inzhur/service/inzhur-setup.service';
 export { InzhurBankFlowService } from './inzhur/service/inzhur-bank-flow.service';
 export { InzhurImportOutcomeEnum } from './inzhur/enum/inzhur-import-outcome.enum';
 export { InzhurNotSetUpError } from './inzhur/error/inzhur-not-set-up.error';
+export { InzhurPriceMissingError } from './inzhur/error/inzhur-price-missing.error';
 export { InzhurStatementInvalidError } from './inzhur/error/inzhur-statement-invalid.error';
 export type { InzhurFundChangeInterface } from './inzhur/interface/inzhur-fund-change.interface';
 export type { InzhurImportSummaryInterface } from './inzhur/interface/inzhur-import-summary.interface';

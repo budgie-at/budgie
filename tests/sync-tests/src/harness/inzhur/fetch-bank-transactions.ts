@@ -25,12 +25,13 @@ export const fetchBankTransactions = Effect.fnUntraced(function* () {
               .orderBy(asc(TransactionEntryEntityTable.id))
         : [];
 
-    return transactions.map(({ id, externalId, type, title, fromAccountId, toAccountId }) => ({
+    return transactions.map(({ id, externalId, type, title, fromAccountId, toAccountId, fundAccountId }) => ({
         externalId,
         type,
         title,
         fromAccountId,
         toAccountId,
+        fundAccountId,
         entries: entries
             .filter(({ transactionId }) => transactionId === id)
             .map(({ accountId, type: entryType, amount, categoryId }) => ({ accountId, type: entryType, amount, categoryId }))

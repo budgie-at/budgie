@@ -20,16 +20,14 @@ export const InzhurImportSummaryFundRow = ({ fund, symbol }: Props) => {
     const { t } = useLingui();
     const formatQuantity = useFormatDigits(0, QUANTITY_DECIMAL_PLACES);
     const formatAmount = useFormatDigits(2);
-    const { isin, name, deltaQuantity, exchangedAmount, dividendAmount, isPriceMissing, isPayoutSettingStale } = fund;
+    const { isin, name, deltaQuantity, exchangedAmount, dividendAmount } = fund;
 
     const quantityLabel = `${deltaQuantity > 0 ? '+' : ''}${formatQuantity(deltaQuantity)}`;
     const exchangedLabel = formatAmount(exchangedAmount, symbol);
     const dividendLabel = formatAmount(dividendAmount, symbol);
     const details = [
         isPositiveNumber(exchangedAmount) ? t`Exchanged for ${exchangedLabel}` : null,
-        isPositiveNumber(dividendAmount) ? t`Estimated dividends ${dividendLabel}` : null,
-        isPriceMissing ? t`No price yet, so cash was not changed for this fund` : null,
-        isPayoutSettingStale ? t`Dividends look reinvested, check the payout setting for this fund` : null
+        isPositiveNumber(dividendAmount) ? t`Estimated dividends ${dividendLabel}` : null
     ].filter(isDefined);
     const subtitle = details.map(detail => (
         <Text key={detail} className="text-secondary-foreground text-[13px] leading-[18px]">

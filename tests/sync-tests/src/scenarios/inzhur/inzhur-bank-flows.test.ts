@@ -11,7 +11,7 @@ import { InzhurImportOutcomeEnum, TransferConsolidationService } from '@budgie/s
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { fetchAccountBalance, seed } from '../../harness';
+import { fetchAccountBalance, seed, testQueryService } from '../../harness';
 import { buildInzhurBaselineItems, buildInzhurHoldings } from '../../harness/inzhur/build-inzhur-baseline-items';
 import { buildInzhurStatementItems } from '../../harness/inzhur/build-inzhur-statement-items';
 import { fetchBankTransactions } from '../../harness/inzhur/fetch-bank-transactions';
@@ -28,7 +28,6 @@ const UAH_INSTRUMENT_ID = 1;
 const OPERATED_AT = new Date('2026-10-15T12:00:00.000Z');
 const TOP_UP_DESCRIPTION = 'Оплата ТОВ "ІНЖУР КЕПІТАЛ" поповнення рахунку';
 const DIVIDEND_DESCRIPTION = 'ТОВ ІНЖУР КЕПІТАЛ виплата доходу';
-const FUND_TITLE = 'Inzhur REIT';
 
 const layer = makeInzhurLayer({
     [FIRST_URI]: buildInzhurBaselineItems(1000, 2),
@@ -113,7 +112,8 @@ describe('inzhur/bank-flows', () => {
 
             expect(yield* fetchSingleBankTransaction()).toMatchObject({
                 type: TransactionTypeEnum.INCOME,
-                title: FUND_TITLE,
+                title: `ІНЖУР КЕПІТАЛ дивіденд ${INZHUR_REIT_LAYOUT.isin}`,
+                fundAccountId: reitAccount.id,
                 entries: [{ accountId: bankAccount.id, amount: 120 * PRECISION, categoryId: INVESTMENTS_CATEGORY_ID }]
             });
             expect(yield* requireInzhurFundAccount(INZHUR_REIT_LAYOUT.isin)).toMatchObject({
@@ -139,7 +139,8 @@ describe('inzhur/bank-flows', () => {
 
             expect(yield* fetchSingleBankTransaction()).toMatchObject({
                 type: TransactionTypeEnum.INCOME,
-                title: FUND_TITLE,
+                title: DIVIDEND_DESCRIPTION,
+                fundAccountId: reitAccount.id,
                 entries: [{ categoryId: INVESTMENTS_CATEGORY_ID }]
             });
         }).pipe(Effect.provide(layer))
@@ -157,8 +158,18 @@ describe('inzhur/bank-flows', () => {
             yield* consolidate;
 
             expect(yield* fetchBankTransactions()).toMatchObject([
-                { type: TransactionTypeEnum.INCOME, title: DIVIDEND_DESCRIPTION, entries: [{ categoryId: INVESTMENTS_CATEGORY_ID }] },
-                { type: TransactionTypeEnum.INCOME, title: `${DIVIDEND_DESCRIPTION} 2`, entries: [{ categoryId: INVESTMENTS_CATEGORY_ID }] }
+                {
+                    type: TransactionTypeEnum.INCOME,
+                    title: DIVIDEND_DESCRIPTION,
+                    fundAccountId: null,
+                    entries: [{ categoryId: INVESTMENTS_CATEGORY_ID }]
+                },
+                {
+                    type: TransactionTypeEnum.INCOME,
+                    title: `${DIVIDEND_DESCRIPTION} 2`,
+                    fundAccountId: null,
+                    entries: [{ categoryId: INVESTMENTS_CATEGORY_ID }]
+                }
             ]);
         }).pipe(Effect.provide(layer))
     );
@@ -181,6 +192,28 @@ describe('inzhur/bank-flows', () => {
             });
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(3000 * PRECISION);
             expect(yield* fetchAccountBalance(bankAccount.id)).toBe(2000 * PRECISION);
+        }).pipe(Effect.provide(layer))
+    );
+
+    it.effect('leaves card-to-card transfers mentioning Inzhur untouched', () =>
+        Effect.gen(function* () {
+            const { bankAccount, cashAccount } = yield* setUpBankFlow(0);
+            const transferMcc = yield* testQueryService.findMccByCode('4829');
+
+            yield* importInzhurBankTransaction(bankAccount.id, 'p2p', 'Переказ на картку Inzhur', -300, OPERATED_AT, {
+                mccCategoryId: transferMcc.id
+            });
+            yield* importInzhurBankTransaction(bankAccount.id, 'iban', TOP_UP_DESCRIPTION, -1000, OPERATED_AT, {
+                mccCategoryId: transferMcc.id,
+                counterIban: 'UA213223130000026007233566001'
+            });
+            yield* consolidate;
+
+            expect(yield* fetchBankTransactions()).toMatchObject([
+                { externalId: 'p2p', type: TransactionTypeEnum.EXPENSE },
+                { externalId: 'iban', type: TransactionTypeEnum.TRANSFER, toAccountId: cashAccount.id }
+            ]);
+            expect(yield* fetchAccountBalance(cashAccount.id)).toBe(1000 * PRECISION);
         }).pipe(Effect.provide(layer))
     );
 

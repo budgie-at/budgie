@@ -3,6 +3,10 @@ import { TransactionImportService, TransactionService } from '@budgie/ledger';
 import { mapBankTransactionToCreateInput, SyncProviderEnum, SyncTransactionTypeEnum } from '@budgie/sync';
 import * as Effect from 'effect/Effect';
 
+import { isDefined } from '@rnw-community/shared';
+
+import type { InzhurBankTransactionOptionsInterface } from './inzhur-bank-transaction-options.interface';
+
 const MILLISECONDS_PER_SECOND = 1000;
 const UAH_CURRENCY_CODE = 980;
 
@@ -11,7 +15,8 @@ export const importInzhurBankTransaction = Effect.fnUntraced(function* (
     externalId: string,
     description: string,
     amount: number,
-    operatedAt: Date
+    operatedAt: Date,
+    options: InzhurBankTransactionOptionsInterface = {}
 ) {
     const transactionImportService = yield* TransactionImportService;
     const transactionService = yield* TransactionService;
@@ -33,10 +38,11 @@ export const importInzhurBankTransaction = Effect.fnUntraced(function* (
             provider: SyncProviderEnum.MONOBANK,
             accountId: 'inzhur-test-card',
             type: amount < 0 ? SyncTransactionTypeEnum.EXPENSE : SyncTransactionTypeEnum.INCOME,
-            feeAmount: 0
+            feeAmount: 0,
+            ...(isDefined(options.counterIban) && { counterIban: options.counterIban })
         },
         accountId,
-        null,
+        isDefined(options.mccCategoryId) ? { id: options.mccCategoryId, defaultCategoryId: null } : null,
         ExternalSourceEnum.MONOBANK
     );
     yield* transactionImportService.bulkUpsertPreparedImported(

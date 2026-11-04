@@ -1,3 +1,4 @@
+// eslint-disable max-lines -- approved by liaugust: appServicesLayer is the single registration point
 import { TranslationLlmService, VoiceLlmService } from '@budgie/ai';
 import {
     BudgetCategoryLimitRepository,
@@ -27,6 +28,7 @@ import {
     DebtEventRepository,
     InstallmentPlanRepository,
     InstrumentRepository,
+    InvestmentReturnRepository,
     MccCategoryRepository,
     SettingsRepository,
     SyncRepository,
@@ -75,7 +77,8 @@ import {
     ExchangeRatesService,
     HistoricalExchangeRateRepository,
     InstrumentDailyMarketPriceRepository,
-    InstrumentMarketDataJobRepository
+    InstrumentMarketDataJobRepository,
+    InzhurPriceService
 } from '@budgie/market';
 import { RecurringService } from '@budgie/recurring';
 import { RuleEngineService, RuleMatcherService, RuleRepository, RuleService, TransactionRuleRepository } from '@budgie/rules';
@@ -85,6 +88,9 @@ import {
     ErsteSyncService,
     ExternalAccountService,
     AccountReissueMergeService,
+    InzhurBankFlowService,
+    InzhurImportService,
+    InzhurSetupService,
     MonobankSyncService,
     PrivatbankCategoryMatcherService,
     PrivatbankSyncService,
@@ -253,6 +259,11 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     ErsteSyncService.layer,
     PrivatbankSyncService.layer,
     SyncProviderRegistryService.layer,
+    InzhurPriceService.layer,
+    InzhurSetupService.layer,
+    InzhurImportService.layer,
+    InzhurBankFlowService.layer,
+    InvestmentReturnRepository.layer,
     ResyncService.layer,
     AppDataSyncService.layer,
     BackgroundSyncSessionService.layer,

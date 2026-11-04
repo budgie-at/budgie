@@ -25,11 +25,12 @@ export const fetchInzhurLedger = Effect.fnUntraced(function* () {
               .orderBy(asc(TransactionEntryEntityTable.id))
         : [];
 
-    return transactions.map(({ id, externalId, type, title, operatedAt }) => ({
+    return transactions.map(({ id, externalId, type, title, operatedAt, fundAccountId }) => ({
         externalId,
         type,
         title,
         operatedAt,
+        fundAccountId,
         entries: entries
             .filter(({ transactionId }) => transactionId === id)
             .map(({ accountId, type: entryType, amount, categoryId }) => ({ accountId, type: entryType, amount, categoryId }))

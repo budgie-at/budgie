@@ -7,7 +7,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { BinanceSyncService } from '../../binance/service/binance-sync.service';
 import { ErsteSyncService } from '../../erste/service/erste-sync.service';
-import { inzhurServicesLayer } from '../../inzhur/layer/inzhur-services.layer';
 import { MonobankSyncService } from '../../monobank/service/monobank-sync.service';
 import { PrivatbankSyncService } from '../../privatbank/service/privatbank-sync.service';
 
@@ -85,7 +84,6 @@ export class SyncProviderRegistryService extends Context.Service<SyncProviderReg
             BinanceSyncService.layer,
             ErsteSyncService.layer,
             PrivatbankSyncService.layer
-        ]),
-        Layer.provideMerge(inzhurServicesLayer)
+        ])
     );
 }

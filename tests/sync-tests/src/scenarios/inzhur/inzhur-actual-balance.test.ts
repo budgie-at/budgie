@@ -3,14 +3,17 @@ import {
     ExternalSourceEnum,
     INVESTMENTS_CATEGORY_ID,
     PRECISION,
+    TransactionEntityTable,
+    TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { InzhurNotSetUpError, InzhurSetupService, TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
+import { and, asc, eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { fetchAccountBalance, seed } from '../../harness';
+import { fetchAccountBalance, seed, testDb } from '../../harness';
 import { buildInzhurBaselineItems } from '../../harness/inzhur/build-inzhur-baseline-items';
 import { fetchInzhurLedger } from '../../harness/inzhur/fetch-inzhur-ledger';
 import { importInzhurBankTransaction } from '../../harness/inzhur/import-inzhur-bank-transaction';
@@ -22,6 +25,7 @@ const UAH_INSTRUMENT_ID = 1;
 const TOP_UP_DESCRIPTION = 'Оплата ТОВ "ІНЖУР КЕПІТАЛ" поповнення рахунку';
 const TOP_UP_AT = new Date('2026-10-15T12:00:00.000Z');
 const ESTIMATED_DIVIDEND_TITLE = 'Inzhur dividends (estimated)';
+const BALANCE_CORRECTION_TITLE = 'Inzhur balance correction';
 
 const layer = makeInzhurLayer({ [FIRST_URI]: buildInzhurBaselineItems(1000, 2) });
 
@@ -50,12 +54,14 @@ describe('inzhur/actual-balance', () => {
             const { cashAccount } = yield* setUpInzhurWithBaseline(1000, 1000, 2);
 
             expect(yield* setActualBalance(1250)).toBe(250);
+            expect(yield* setActualBalance(1250)).toBe(0);
 
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(1250 * PRECISION);
             expect(yield* fetchInzhurLedger()).toMatchObject([
                 {
                     type: TransactionTypeEnum.INCOME,
                     title: ESTIMATED_DIVIDEND_TITLE,
+                    externalId: `inzhur:actual-balance:${cashAccount.id}:1250`,
                     entries: [
                         {
                             accountId: cashAccount.id,
@@ -69,13 +75,30 @@ describe('inzhur/actual-balance', () => {
         }).pipe(Effect.provide(layer))
     );
 
-    it.effect('records a lower actual balance as a plain adjustment', () =>
+    it.effect('records a lower actual balance as a titled adjustment once', () =>
         Effect.gen(function* () {
             const { cashAccount } = yield* setUpInzhurWithBaseline(1000, 1000, 2);
 
             expect(yield* setActualBalance(900)).toBe(-100);
+            expect(yield* setActualBalance(900)).toBe(0);
+
+            const adjustments = yield* testDb
+                .select({ title: TransactionEntityTable.title, amount: TransactionEntryEntityTable.amount })
+                .from(TransactionEntityTable)
+                .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                .where(
+                    and(
+                        eq(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT),
+                        eq(TransactionEntryEntityTable.accountId, cashAccount.id)
+                    )
+                )
+                .orderBy(asc(TransactionEntityTable.id));
 
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(900 * PRECISION);
+            expect(adjustments).toEqual([
+                { title: '', amount: 1000 * PRECISION },
+                { title: BALANCE_CORRECTION_TITLE, amount: 100 * PRECISION }
+            ]);
             expect(yield* fetchInzhurLedger()).toEqual([]);
         }).pipe(Effect.provide(layer))
     );

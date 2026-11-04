@@ -55,10 +55,15 @@ export class ResyncService extends Context.Service<ResyncService>()('@budgie/syn
         return {
             resync: Effect.fn('ResyncService.resync')(function* (input: ResyncInputInterface) {
                 const { accountId, sinceDays } = input;
+                const sync = yield* syncRepository.getByAccountId(accountId);
+
+                if (sync?.provider === ExternalSourceEnum.INZHUR) {
+                    return;
+                }
+
                 if (isDefined(sinceDays)) {
                     yield* Db.transaction(resyncWindowed(accountId, sinceDays));
                 } else {
-                    const sync = yield* syncRepository.getByAccountId(accountId);
                     const setupBalance =
                         sync?.provider === ExternalSourceEnum.MONOBANK ? yield* monobankSyncService.fetchSetupBalance(accountId) : null;
                     yield* Db.transaction(resyncFull(accountId, setupBalance));

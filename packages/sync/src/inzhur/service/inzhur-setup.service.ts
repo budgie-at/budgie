@@ -3,7 +3,6 @@ import {
     AccountRepository,
     AccountTypeEnum,
     BankIntegrationRepository,
-    CategorySourceEnum,
     CurrencyEnum,
     Db,
     ExternalSourceEnum,
@@ -12,9 +11,7 @@ import {
     InvestmentReturnRepository,
     SyncModeEnum,
     SyncRepository,
-    TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
-    TransactionTypeEnum,
     UserIconNameEnum,
     convertFromMicroUnits,
     convertToMicroUnits
@@ -29,6 +26,8 @@ import { isDefined } from '@rnw-community/shared';
 
 import { INZHUR_CASH_EXTERNAL_ID } from '../constant/inzhur-cash-external-id.constant';
 import { InzhurNotSetUpError } from '../error/inzhur-not-set-up.error';
+import { buildInzhurEntry } from '../utils/build-inzhur-entry.util';
+import { buildInzhurTransactionInput } from '../utils/build-inzhur-transaction-input.util';
 
 import type { InzhurSetupInterface } from '../interface/inzhur-setup.interface';
 import type { InzhurStatementReminderInterface } from '../interface/inzhur-statement-reminder.interface';
@@ -46,6 +45,7 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
         const provider = ExternalSourceEnum.INZHUR;
         const staleStatementDays = 30;
         const estimatedDividendTitle = 'Inzhur dividends (estimated)';
+        const balanceCorrectionTitle = 'Inzhur balance correction';
 
         const findSetup = Effect.fn('InzhurSetupService.findSetup')(function* () {
             const integration = yield* bankIntegrationRepository.findFileImportIntegration(provider);
@@ -133,44 +133,26 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
                 const currentMicroUnits = (yield* accountBalanceRepository.getByAccountId(cashAccount.id)).at(0)?.balance ?? 0;
                 const differenceMicroUnits = convertToMicroUnits(actualBalance) - currentMicroUnits;
 
+                const operatedAt = new Date();
+
                 if (differenceMicroUnits < 0) {
-                    yield* accountService.updateById(cashAccount.id, { currentBalance: actualBalance });
+                    yield* accountService.adjustBalanceTo(cashAccount.id, actualBalance, operatedAt, balanceCorrectionTitle);
                 }
 
                 if (differenceMicroUnits > 0) {
-                    const operatedAt = new Date();
-                    const externalId = `inzhur:actual-balance:${operatedAt.toISOString()}`;
-                    const amount = convertFromMicroUnits(differenceMicroUnits);
+                    const externalId = `inzhur:actual-balance:${cashAccount.id}:${actualBalance}`;
+                    const entry = {
+                        ...buildInzhurEntry(
+                            cashAccount.id,
+                            TransactionEntryTypeEnum.DEBIT,
+                            convertFromMicroUnits(differenceMicroUnits),
+                            externalId
+                        ),
+                        categoryId: INVESTMENTS_CATEGORY_ID
+                    };
 
                     yield* transactionService.bulkCreate([
-                        {
-                            amount,
-                            title: estimatedDividendTitle,
-                            comment: '',
-                            type: TransactionTypeEnum.INCOME,
-                            exchangeRate: 1,
-                            operatedAt,
-                            externalId,
-                            updatedBy: null,
-                            externalSource: provider,
-                            fromAccountId: null,
-                            toAccountId: cashAccount.id,
-                            tagIds: [],
-                            entries: [
-                                {
-                                    accountId: cashAccount.id,
-                                    type: TransactionEntryTypeEnum.DEBIT,
-                                    amount,
-                                    categoryId: INVESTMENTS_CATEGORY_ID,
-                                    categorySource: CategorySourceEnum.USER,
-                                    mccCategoryId: null,
-                                    kind: TransactionEntryKindEnum.PRIMARY,
-                                    externalId,
-                                    exchangeRate: 1,
-                                    toIban: null
-                                }
-                            ]
-                        }
+                        buildInzhurTransactionInput(estimatedDividendTitle, externalId, operatedAt, [entry])
                     ]);
                 }
 

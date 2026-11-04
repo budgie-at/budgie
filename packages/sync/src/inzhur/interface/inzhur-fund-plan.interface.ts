@@ -5,6 +5,6 @@ export interface InzhurFundPlanInterface {
     readonly name: string;
     readonly account: AccountEntityInterface;
     readonly deltaMicroUnits: number;
-    readonly price: number | null;
+    readonly price: number;
     readonly valueMicroUnits: number;
 }

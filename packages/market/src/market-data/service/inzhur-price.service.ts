@@ -51,17 +51,6 @@ export class InzhurPriceService extends Context.Service<InzhurPriceService>()('@
 
                 return yield* parsePrices(yield* response.text);
             }),
-            findPriceOnOrBefore: Effect.fn('InzhurPriceService.findPriceOnOrBefore')(function* (instrumentId: number, priceDate: string) {
-                const hryvnia = yield* instrumentRepository.findByCode(CurrencyEnum.UAH);
-
-                if (!isDefined(hryvnia)) {
-                    return null;
-                }
-
-                const price = yield* instrumentDailyMarketPriceRepository.findForDateOrBefore(instrumentId, hryvnia.id, priceDate);
-
-                return price?.price ?? null;
-            }),
             findNearestPrice: Effect.fn('InzhurPriceService.findNearestPrice')(function* (instrumentId: number, priceDate: string) {
                 const hryvnia = yield* instrumentRepository.findByCode(CurrencyEnum.UAH);
 

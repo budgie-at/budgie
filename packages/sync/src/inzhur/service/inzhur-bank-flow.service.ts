@@ -5,6 +5,7 @@ import {
     DividendPayoutEnum,
     INVESTMENTS_CATEGORY_ID,
     InstrumentRepository,
+    MccCategoryRepository,
     TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
     TransactionRepository,
@@ -29,11 +30,12 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
         const instrumentRepository = yield* InstrumentRepository;
+        const mccCategoryRepository = yield* MccCategoryRepository;
         const transactionRepository = yield* TransactionRepository;
         const transactionRuleRepository = yield* TransactionRuleRepository;
         const transactionTransferService = yield* TransactionTransferService;
         const inzhurSetupService = yield* InzhurSetupService;
-        const { counterparties, dividendKeywords, externalSources } = INZHUR_BANK_DESCRIPTION_PATTERNS;
+        const { counterparties, dividendKeywords, externalSources, peerTransferMcc } = INZHUR_BANK_DESCRIPTION_PATTERNS;
 
         const includesAny = (text: string, keywords: readonly string[]) => keywords.some(keyword => text.includes(keyword));
 
@@ -88,11 +90,21 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
             const fund = yield* attributeDividend(description, setup);
 
             if (isDefined(fund)) {
-                yield* transactionRepository.updateById(transaction.id, { title: fund.title });
+                yield* transactionRepository.updateById(transaction.id, { fundAccountId: fund.id });
             }
 
             yield* transactionRuleRepository.setCategoryByTransactionIds([transaction.id], INVESTMENTS_CATEGORY_ID);
             yield* transactionRepository.touchUpdatedAt(transaction.id);
+        });
+
+        const isPeerTransfer = Effect.fnUntraced(function* (transaction: TransactionWithEntriesEntityInterface) {
+            const entry = transaction.entries.find(item => item.kind === TransactionEntryKindEnum.PRIMARY);
+
+            if (!isDefined(entry) || !isDefined(entry.mccCategoryId) || isNotEmptyString(entry.toIban)) {
+                return false;
+            }
+
+            return (yield* mccCategoryRepository.findById(entry.mccCategoryId))?.mcc === peerTransferMcc;
         });
 
         const processTransaction = Effect.fnUntraced(function* (
@@ -101,7 +113,7 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
         ) {
             const description = `${transaction.title} ${transaction.comment}`.toLowerCase();
 
-            if (!includesAny(description, counterparties)) {
+            if (!includesAny(description, counterparties) || (yield* isPeerTransfer(transaction))) {
                 return false;
             }
 
@@ -148,6 +160,7 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
         Layer.provide([
             AccountRepository.layer,
             InstrumentRepository.layer,
+            MccCategoryRepository.layer,
             TransactionRepository.layer,
             TransactionRuleRepository.layer,
             TransactionTransferService.layer,

@@ -58,7 +58,8 @@ const buildHoldingItems = (holding: InzhurStatementHoldingInterface, top: number
 
 export const buildInzhurStatementItems = (
     statementDate: string,
-    holdings: readonly InzhurStatementHoldingInterface[]
+    holdings: readonly InzhurStatementHoldingInterface[],
+    footerLines: readonly string[] = []
 ): PdfTextItemInterface[] => {
     let top = TABLE_TOP;
     const holdingItems: PdfTextItemInterface[] = [];
@@ -68,5 +69,7 @@ export const buildInzhurStatementItems = (
         top -= (Math.max(holding.layout.nameLines.length, TYPE_LINES.length) + 1) * LINE_HEIGHT;
     }
 
-    return [...buildHeaderItems(statementDate), ...holdingItems];
+    const footerItems = footerLines.map((line, index) => item(top - index * LINE_HEIGHT, X_NAME, line));
+
+    return [...buildHeaderItems(statementDate), ...holdingItems, ...footerItems];
 };

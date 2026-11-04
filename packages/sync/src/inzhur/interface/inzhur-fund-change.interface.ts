@@ -5,6 +5,4 @@ export interface InzhurFundChangeInterface {
     readonly deltaQuantity: number;
     readonly exchangedAmount: number;
     readonly dividendAmount: number;
-    readonly isPriceMissing: boolean;
-    readonly isPayoutSettingStale: boolean;
 }

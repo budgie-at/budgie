@@ -6,5 +6,6 @@ export interface InzhurImportSummaryInterface {
     readonly statementDate: string;
     readonly cashMoved: number;
     readonly estimatedDividendAmount: number;
+    readonly uncoveredCashAmount: number;
     readonly funds: readonly InzhurFundChangeInterface[];
 }
