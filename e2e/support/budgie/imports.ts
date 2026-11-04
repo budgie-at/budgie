@@ -42,7 +42,7 @@ const folderId = (name: string): RegExp => new RegExp(`^${quote(name)}(, (Folder
  * list), walk to On My iPhone → budgie (E2E) → E2EFixtures, going back up
  * when it is elsewhere.
  */
-async function openE2EFixturesFullPath(ctx: Ctx, row: Locator): Promise<void> {
+export async function openE2EFixturesFullPath(ctx: Ctx, row: Locator): Promise<void> {
     const { screen } = ctx;
     const item = (name: string) => screen.getByTestId(folderId(name)).first();
     const inside = (title: string) => screen.getByTestId(new RegExp(`Title: ${quote(title)}$`)).first();
