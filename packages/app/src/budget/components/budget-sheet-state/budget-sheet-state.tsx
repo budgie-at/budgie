@@ -1,7 +1,7 @@
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { ScrollView, Text, View, useWindowDimensions } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { initialWindowMetrics } from 'react-native-safe-area-context';
 
 import { FormsheetHeader } from '../../../@generic/component/formsheet-header/formsheet-header';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -22,9 +22,12 @@ export const BudgetSheetState = (props: Props) => {
     const { title, isLoading, isError, description, unavailableTitle } = props;
     const { t } = useLingui();
     const { height } = useWindowDimensions();
-    const { top, bottom } = useSafeAreaInsets();
+    const windowInsets = initialWindowMetrics?.insets;
     const [headerHeight, setHeaderHeight] = useState(0);
-    const scrollViewStyle = { flexGrow: 0, maxHeight: Math.max(0, height - top - bottom - headerHeight) };
+    const scrollViewStyle = {
+        flexGrow: 0,
+        maxHeight: Math.max(0, height - (windowInsets?.top ?? 0) - (windowInsets?.bottom ?? 0) - headerHeight)
+    };
     const handleHeaderLayout = (event: LayoutChangeEvent) => {
         setHeaderHeight(event.nativeEvent.layout.height);
     };
