@@ -86,13 +86,13 @@ export class CommentEmbeddingRepository extends Context.Service<CommentEmbedding
                 tagTable: CommentEmbeddingTagEntityTable,
                 foreignKeyColumn: CommentEmbeddingTagEntityTable.commentEmbeddingId,
                 createTagRow: (embeddingId, tagId) => ({ commentEmbeddingId: embeddingId, tagId }),
-                upsertRow: (db, { comment, categoryId, embedding, dimensions }: UpsertCommentEmbeddingParamsInterface) =>
+                upsertRow: (db, { comment, categoryId }: UpsertCommentEmbeddingParamsInterface) =>
                     db
                         .insert(CommentEmbeddingEntityTable)
-                        .values({ comment, categoryId, embedding, dimensions })
+                        .values({ comment, categoryId })
                         .onConflictDoUpdate({
                             target: [CommentEmbeddingEntityTable.comment, CommentEmbeddingEntityTable.categoryId],
-                            set: { embedding, dimensions, updatedAt: new Date() }
+                            set: { updatedAt: new Date() }
                         })
                         .returning({ id: CommentEmbeddingEntityTable.id })
             }),

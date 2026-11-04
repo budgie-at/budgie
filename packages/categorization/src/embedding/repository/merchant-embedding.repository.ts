@@ -112,20 +112,17 @@ export class MerchantEmbeddingRepository extends Context.Service<MerchantEmbeddi
                 tagTable: MerchantEmbeddingTagEntityTable,
                 foreignKeyColumn: MerchantEmbeddingTagEntityTable.merchantEmbeddingId,
                 createTagRow: (embeddingId, tagId) => ({ merchantEmbeddingId: embeddingId, tagId }),
-                upsertRow: (
-                    db,
-                    { title, mccDescription, categoryId, comment, embedding, dimensions }: UpsertMerchantEmbeddingParamsInterface
-                ) =>
+                upsertRow: (db, { title, mccDescription, categoryId, comment }: UpsertMerchantEmbeddingParamsInterface) =>
                     db
                         .insert(MerchantEmbeddingEntityTable)
-                        .values({ title, mccDescription, categoryId, comment, embedding, dimensions })
+                        .values({ title, mccDescription, categoryId, comment })
                         .onConflictDoUpdate({
                             target: [
                                 MerchantEmbeddingEntityTable.title,
                                 MerchantEmbeddingEntityTable.mccDescription,
                                 MerchantEmbeddingEntityTable.categoryId
                             ],
-                            set: { comment, embedding, dimensions, updatedAt: new Date() }
+                            set: { comment, updatedAt: new Date() }
                         })
                         .returning({ id: MerchantEmbeddingEntityTable.id })
             }),

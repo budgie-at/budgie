@@ -40,19 +40,21 @@ FROM (
         (SELECT MAX(rate_date) FROM historical_exchange_rates) AS latest_rate_date
 );
 CREATE TEMP TABLE slim_keep AS
-SELECT id FROM historical_exchange_rates WHERE rate_date >= (SELECT lower_bound FROM slim_window)
+SELECT source_instrument_id, target_instrument_id, rate_date FROM historical_exchange_rates WHERE rate_date >= (SELECT lower_bound FROM slim_window)
 UNION
-SELECT id FROM (
-    SELECT id, ROW_NUMBER() OVER (PARTITION BY source_instrument_id, target_instrument_id ORDER BY rate_date ASC) AS position
+SELECT source_instrument_id, target_instrument_id, rate_date FROM (
+    SELECT source_instrument_id, target_instrument_id, rate_date, ROW_NUMBER() OVER (PARTITION BY source_instrument_id, target_instrument_id ORDER BY rate_date ASC) AS position
     FROM historical_exchange_rates
 ) WHERE position = 1
 UNION
-SELECT id FROM (
-    SELECT id, ROW_NUMBER() OVER (PARTITION BY source_instrument_id, target_instrument_id ORDER BY rate_date DESC) AS position
+SELECT source_instrument_id, target_instrument_id, rate_date FROM (
+    SELECT source_instrument_id, target_instrument_id, rate_date, ROW_NUMBER() OVER (PARTITION BY source_instrument_id, target_instrument_id ORDER BY rate_date DESC) AS position
     FROM historical_exchange_rates
     WHERE rate_date < (SELECT lower_bound FROM slim_window)
 ) WHERE position = 1;
-DELETE FROM historical_exchange_rates WHERE (SELECT lower_bound FROM slim_window) IS NOT NULL AND id NOT IN (SELECT id FROM slim_keep);
+DELETE FROM historical_exchange_rates
+WHERE (SELECT lower_bound FROM slim_window) IS NOT NULL
+    AND (source_instrument_id, target_instrument_id, rate_date) NOT IN (SELECT source_instrument_id, target_instrument_id, rate_date FROM slim_keep);
 DROP TABLE slim_keep;
 DROP TABLE slim_window;
 VACUUM;

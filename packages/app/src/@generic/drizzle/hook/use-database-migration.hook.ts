@@ -7,6 +7,7 @@ import * as Atom from 'effect/reactivity/Atom';
 import { appAtomRuntime } from '../../runtime/app.runtime';
 import { DatabaseMigrationStatusEnum } from '../enum/database-migration-status.enum';
 import { DatabaseOpenError } from '../error/database-open.error';
+import { DatabaseMaintenanceService } from '../service/database-maintenance.service';
 import { DatabaseMigrationService } from '../service/database-migration.service';
 
 const databaseMigrationAtom = appAtomRuntime
@@ -17,6 +18,7 @@ const databaseMigrationAtom = appAtomRuntime
             performance.mark('budgie:runtime-ready');
             yield* databaseMigrationService.migrate();
             performance.mark('budgie:migrations-done');
+            yield* (yield* DatabaseMaintenanceService).compact().pipe(Effect.catchCause(Effect.logError));
         })
     )
     .pipe(Atom.keepAlive);
