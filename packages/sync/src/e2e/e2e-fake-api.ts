@@ -1,11 +1,19 @@
 import { isDefined } from '@rnw-community/shared';
 
+import { HTTP_STATUS_UNAUTHORIZED } from '../core/constant/http-status.constant';
+
+import type { ClientInfo, StatementItem } from '@liaugust/monobank-sdk';
+
 type FakeHandlerType = (body: string) => unknown;
 
 const REQUEST_PATTERN = /^https:\/\/([^/?#]+)([^?#]*)/u;
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 const ISO_DATE_LENGTH = 10;
 const NINETY_DAYS = 90;
+const MILLISECONDS_PER_SECOND = 1000;
+const SECONDS_PER_HOUR = 3600;
+const UAH_NUMERIC_CODE = 980;
+const REJECTED_TOKEN_PATTERN = /^e2e-rejected/u;
 
 const dayAgo = (days: number): string => new Date(Date.now() - days * MILLISECONDS_PER_DAY).toISOString().slice(0, ISO_DATE_LENGTH);
 
@@ -88,7 +96,74 @@ const ENABLE_BANKING_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandler
     ]
 ];
 
-const ROUTES_BY_HOST = new Map([['api.enablebanking.com', ENABLE_BANKING_ROUTES]]);
+const MONOBANK_CLIENT_INFO = {
+    clientId: 'e2e-client',
+    name: 'E2E Client',
+    accounts: [
+        {
+            id: 'e2e-mono-card',
+            sendId: 'e2e-send',
+            balance: 150_000,
+            creditLimit: 0,
+            currencyCode: UAH_NUMERIC_CODE,
+            cashbackType: 'UAH',
+            iban: 'UA213223130000026007233566001',
+            maskedPan: ['537541******1234'],
+            type: 'black'
+        }
+    ],
+    jars: [
+        {
+            id: 'e2e-mono-jar',
+            sendId: 'e2e-jar-send',
+            title: 'E2E Jar',
+            description: 'E2E Jar',
+            balance: 50_000,
+            goal: null,
+            currencyCode: UAH_NUMERIC_CODE
+        }
+    ]
+} satisfies ClientInfo;
+
+const monobankStatement = (): StatementItem[] => {
+    const nowSeconds = Math.floor(Date.now() / MILLISECONDS_PER_SECOND);
+    const item = { currencyCode: UAH_NUMERIC_CODE, commissionRate: 0, cashbackAmount: 0, hold: false };
+
+    return [
+        {
+            ...item,
+            id: 'e2e-mono-tx-1',
+            time: nowSeconds - SECONDS_PER_HOUR,
+            description: 'E2E Grocery',
+            mcc: 5411,
+            originalMcc: 5411,
+            amount: -25_000,
+            operationAmount: -25_000,
+            balance: 150_000
+        },
+        {
+            ...item,
+            id: 'e2e-mono-tx-2',
+            time: nowSeconds - 2 * SECONDS_PER_HOUR,
+            description: 'E2E Salary',
+            mcc: 4829,
+            originalMcc: 4829,
+            amount: 100_000,
+            operationAmount: 100_000,
+            balance: 175_000
+        }
+    ];
+};
+
+const MONOBANK_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandlerType]> = [
+    ['GET', /^\/personal\/client-info$/u, () => MONOBANK_CLIENT_INFO],
+    ['GET', /^\/personal\/statement\/[^/]+\/\d+(\/\d+)?$/u, monobankStatement]
+];
+
+const ROUTES_BY_HOST = new Map([
+    ['api.enablebanking.com', ENABLE_BANKING_ROUTES],
+    ['api.monobank.ua', MONOBANK_ROUTES]
+]);
 
 const readBody = (body: unknown): string => {
     if (body instanceof Uint8Array) {
@@ -111,6 +186,10 @@ export const installE2eFakeApi = (): void => {
         const routes = isDefined(match) ? ROUTES_BY_HOST.get(match[1]) : null;
         if (!isDefined(match) || !isDefined(routes)) {
             return realFetch(input, init);
+        }
+
+        if (REJECTED_TOKEN_PATTERN.test(new Headers(init?.headers).get('X-Token') ?? '')) {
+            return Promise.resolve(respond(HTTP_STATUS_UNAUTHORIZED, { errorDescription: 'Unknown X-Token' }));
         }
 
         const method = init?.method ?? 'GET';

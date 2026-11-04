@@ -131,7 +131,15 @@ export const CreateMonobankAccount = () => {
     );
 
     let stepContent = <TokenInputStep token={token} onTokenChange={handleTokenChange} />;
-    let footer = <Button onPress={handleFetchAccounts} disabled={isLoading} isLoading={isLoading} content={t`Connect`} />;
+    let footer = (
+        <Button
+            onPress={handleFetchAccounts}
+            disabled={isLoading}
+            isLoading={isLoading}
+            content={t`Connect`}
+            testID={CreateMonobankAccountSelector.FetchAccountsButton}
+        />
+    );
 
     switch (step) {
         case SetupStepEnum.ACCOUNTS:
@@ -145,7 +153,14 @@ export const CreateMonobankAccount = () => {
             break;
         case SetupStepEnum.HISTORY:
             stepContent = <SyncHistoryDepthStep selectedDepth={historyDepth} onSelect={handleHistoryDepthSelect} />;
-            footer = <Button onPress={handleSetupSync} disabled={isStartSyncDisabled} content={t`Start Sync`} />;
+            footer = (
+                <Button
+                    onPress={handleSetupSync}
+                    disabled={isStartSyncDisabled}
+                    content={t`Start Sync`}
+                    testID={CreateMonobankAccountSelector.StartSyncButton}
+                />
+            );
             break;
         case SetupStepEnum.TOKEN:
         default:

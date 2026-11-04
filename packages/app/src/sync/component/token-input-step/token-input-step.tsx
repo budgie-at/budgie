@@ -11,6 +11,8 @@ import { isLikelyMonoToken } from '../../type-guard/is-likely-mono-token.type-gu
 import { PasteTokenButton } from '../paste-token-button/paste-token-button';
 import { SyncCredentialsStepHeader } from '../sync-credentials-step-header/sync-credentials-step-header';
 
+import { TokenInputStepSelector } from './token-input-step.selector';
+
 interface Props {
     readonly token: string;
     readonly onTokenChange: (token: string) => void;
@@ -43,6 +45,7 @@ export const TokenInputStep = ({ token, onTokenChange }: Props) => {
                         autoCapitalize="none"
                         autoCorrect={false}
                         secureTextEntry
+                        testID={TokenInputStepSelector.Input}
                     />
                     <PasteTokenButton onPaste={onTokenChange} />
                 </View>
