@@ -15088,6 +15088,10 @@ msgstr "Restaura las comisiones de transferencia que faltaban y convierte de nue
 msgid "Restoring a PIN-protected backup asks for that backup’s PIN, and that PIN becomes your app PIN, so the restored data stays readable."
 msgstr "Al restaurar una copia protegida con PIN, se te pide el PIN de esa copia y pasa a ser tu PIN de la app, de modo que los datos restaurados siguen siendo legibles."
 
+#: src/generic/component/enable-banking-relay/enable-banking-relay.tsx
+msgid "Return to Budgie"
+msgstr "Volver a Budgie"
+
 #: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "Returned it? The plan closes too"
 msgstr "¿Lo devolvió? El plan también se cierra"

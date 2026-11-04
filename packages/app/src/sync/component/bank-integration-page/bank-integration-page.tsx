@@ -1,4 +1,4 @@
-import { BankIntegrationEntityInterface } from '@budgie/contracts';
+import { BankIntegrationEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
@@ -13,6 +13,7 @@ import { BankIntegrationAccountList } from '../bank-integration-account-list/ban
 import { BankIntegrationKeyCard } from '../bank-integration-key-card/bank-integration-key-card';
 import { BankIntegrationOverview } from '../bank-integration-overview/bank-integration-overview';
 import { BankIntegrationStatements } from '../bank-integration-statements/bank-integration-statements';
+import { EnableBankingConnectionCard } from '../enable-banking-connection-card/enable-banking-connection-card';
 
 interface Props {
     readonly integration: BankIntegrationEntityInterface;
@@ -25,7 +26,8 @@ export const BankIntegrationPage = ({ integration }: Props) => {
 
     const statements = capabilities.supportsFileImport ? <BankIntegrationStatements /> : null;
 
-    const keyCard = capabilities.supportsAccountDiscovery ? <BankIntegrationKeyCard /> : null;
+    const monobankKeyCard = capabilities.supportsAccountDiscovery ? <BankIntegrationKeyCard /> : null;
+    const keyCard = integration.provider === ExternalSourceEnum.ENABLE_BANKING ? <EnableBankingConnectionCard /> : monobankKeyCard;
     const title = getBankIntegrationTitle(t(EXTERNAL_SOURCE[integration.provider]), integration.label, null);
 
     const contextValue = { integration, capabilities };

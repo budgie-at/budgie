@@ -7,6 +7,7 @@ import * as Atom from 'effect/reactivity/Atom';
 import * as Reactivity from 'effect/reactivity/Reactivity';
 import * as References from 'effect/References';
 
+import { syncRequestSignerLayer } from '../../sync/layer/sync-request-signer.layer';
 import { DatabaseChangeService } from '../drizzle/service/database-change.service';
 import { DatabaseConnectionService } from '../drizzle/service/database-connection.service';
 import { isLoggingEnabled } from '../utils/is-logging-enabled.util';
@@ -21,6 +22,7 @@ const platformLayer = Layer.mergeAll(
         Effect.map(DatabaseConnectionService, databaseConnectionService => databaseConnectionService.db)
     ).pipe(Layer.provideMerge(DatabaseConnectionService.layer)),
     FetchHttpClient.layer,
+    syncRequestSignerLayer,
     makeLoggerLayer(isLoggingEnabled()),
     Layer.succeed(References.TracerEnabled, isLoggingEnabled()),
     Layer.effect(

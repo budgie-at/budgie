@@ -15088,6 +15088,10 @@ msgstr "Відновлює втрачені комісії за перекази
 msgid "Restoring a PIN-protected backup asks for that backup’s PIN, and that PIN becomes your app PIN, so the restored data stays readable."
 msgstr "Під час відновлення резервної копії, захищеної PIN-кодом, застосунок запитує PIN саме цієї копії, і він стає PIN-кодом застосунку, тож відновлені дані лишаються читабельними."
 
+#: src/generic/component/enable-banking-relay/enable-banking-relay.tsx
+msgid "Return to Budgie"
+msgstr "Повернутися до Budgie"
+
 #: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "Returned it? The plan closes too"
 msgstr "Повернули товар? План теж закриється"

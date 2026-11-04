@@ -6,6 +6,7 @@ import * as Layer from 'effect/Layer';
 import { isDefined } from '@rnw-community/shared';
 
 import { BinanceSyncService } from '../../binance/service/binance-sync.service';
+import { EnableBankingSyncService } from '../../enable-banking/service/enable-banking-sync.service';
 import { ErsteSyncService } from '../../erste/service/erste-sync.service';
 import { MonobankSyncService } from '../../monobank/service/monobank-sync.service';
 import { PrivatbankSyncService } from '../../privatbank/service/privatbank-sync.service';
@@ -18,15 +19,20 @@ export class SyncProviderRegistryService extends Context.Service<SyncProviderReg
             const bankIntegrationRepository = yield* BankIntegrationRepository;
             const monobankSyncService = yield* MonobankSyncService;
             const binanceSyncService = yield* BinanceSyncService;
+            const enableBankingSyncService = yield* EnableBankingSyncService;
             const ersteSyncService = yield* ErsteSyncService;
             const privatbankSyncService = yield* PrivatbankSyncService;
-            const pollingServiceByProvider = new Map<ExternalSourceEnum, typeof monobankSyncService | typeof binanceSyncService>([
+            const pollingServiceByProvider = new Map<
+                ExternalSourceEnum,
+                typeof monobankSyncService | typeof binanceSyncService | typeof enableBankingSyncService
+            >([
                 [ExternalSourceEnum.MONOBANK, monobankSyncService],
-                [ExternalSourceEnum.BINANCE, binanceSyncService]
+                [ExternalSourceEnum.BINANCE, binanceSyncService],
+                [ExternalSourceEnum.ENABLE_BANKING, enableBankingSyncService]
             ]);
             const serviceByProvider = new Map<
                 ExternalSourceEnum,
-                typeof monobankSyncService | typeof binanceSyncService | typeof ersteSyncService
+                typeof monobankSyncService | typeof binanceSyncService | typeof enableBankingSyncService | typeof ersteSyncService
             >([
                 ...pollingServiceByProvider,
                 [ExternalSourceEnum.ERSTE, ersteSyncService],
@@ -82,6 +88,7 @@ export class SyncProviderRegistryService extends Context.Service<SyncProviderReg
             BankIntegrationRepository.layer,
             MonobankSyncService.layer,
             BinanceSyncService.layer,
+            EnableBankingSyncService.layer,
             ErsteSyncService.layer,
             PrivatbankSyncService.layer
         ])

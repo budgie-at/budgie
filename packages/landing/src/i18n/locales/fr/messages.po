@@ -15088,6 +15088,10 @@ msgstr "Rétablit les frais de virement manquants et retransforme les virements 
 msgid "Restoring a PIN-protected backup asks for that backup’s PIN, and that PIN becomes your app PIN, so the restored data stays readable."
 msgstr "La restauration d’une sauvegarde protégée par code PIN demande le code PIN de cette sauvegarde, qui devient le code PIN de votre application : les données restaurées restent ainsi lisibles."
 
+#: src/generic/component/enable-banking-relay/enable-banking-relay.tsx
+msgid "Return to Budgie"
+msgstr "Retourner à Budgie"
+
 #: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "Returned it? The plan closes too"
 msgstr "Article retourné ? Le plan se clôt aussi"

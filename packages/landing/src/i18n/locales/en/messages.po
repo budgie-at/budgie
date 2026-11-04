@@ -15087,6 +15087,10 @@ msgstr "Restores transfer fees that went missing, and turns stale transfers back
 msgid "Restoring a PIN-protected backup asks for that backup’s PIN, and that PIN becomes your app PIN, so the restored data stays readable."
 msgstr "Restoring a PIN-protected backup asks for that backup’s PIN, and that PIN becomes your app PIN, so the restored data stays readable."
 
+#: src/generic/component/enable-banking-relay/enable-banking-relay.tsx
+msgid "Return to Budgie"
+msgstr "Return to Budgie"
+
 #: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "Returned it? The plan closes too"
 msgstr "Returned it? The plan closes too"

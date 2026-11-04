@@ -1,6 +1,8 @@
 import { SyncErrorCodeEnum } from '@budgie/contracts';
 
 import { BinanceKeyPermissionsError } from '../../binance/error/binance-key-permissions.error';
+import { EnableBankingErrorCodeEnum } from '../../enable-banking/enum/enable-banking-error-code.enum';
+import { SyncConsentExpiredError } from '../error/sync-consent-expired.error';
 import { SyncInvalidResponseError } from '../error/sync-invalid-response.error';
 import { SyncNetworkError } from '../error/sync-network.error';
 import { SyncRateLimitedError } from '../error/sync-rate-limited.error';
@@ -12,6 +14,14 @@ const TIMESTAMP_OUTSIDE_WINDOW_API_CODE = -1021;
 export const resolveSyncErrorCode = (error: unknown): SyncErrorCodeEnum | null => {
     if (error instanceof SyncUnauthorizedError) {
         return SyncErrorCodeEnum.UNAUTHORIZED;
+    }
+
+    if (error instanceof SyncConsentExpiredError) {
+        return SyncErrorCodeEnum.CONSENT_EXPIRED;
+    }
+
+    if (error instanceof SyncInvalidResponseError && error.apiCode === EnableBankingErrorCodeEnum.ACCOUNT_NOT_LINKED) {
+        return SyncErrorCodeEnum.ACCOUNT_NOT_LINKED;
     }
 
     if (error instanceof BinanceKeyPermissionsError) {

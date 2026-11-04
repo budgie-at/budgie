@@ -272,6 +272,10 @@ msgstr "{count, plural, one {Use # payment} other {Use # payments}}"
 msgid "{count} of {rowCount} selected"
 msgstr "{count} of {rowCount} selected"
 
+#: src/sync/component/enable-banking-bank-row/enable-banking-bank-row.tsx
+msgid "{country} · Beta"
+msgstr "{country} · Beta"
+
 #: src/onboarding/component/onboarding-currency-row/onboarding-currency-row.tsx
 msgid "{currencyName} · from your region"
 msgstr "{currencyName} · from your region"
@@ -1084,6 +1088,10 @@ msgstr "Account not found"
 msgid "Account not found"
 msgstr "Account not found"
 
+#: src/sync/component/enable-banking-connection-card/enable-banking-connection-card.tsx
+msgid "Account not linked"
+msgstr "Account not linked"
+
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 #: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
@@ -1482,6 +1490,10 @@ msgstr "Apple Pay capture"
 msgid "Apple Pay purchase"
 msgstr "Apple Pay purchase"
 
+#: src/sync/component/enable-banking-key-step/enable-banking-key-step.tsx
+msgid "Application ID"
+msgstr "Application ID"
+
 #: src/rule/components/rule-actions-section/rule-actions-section.tsx
 msgid "Applies to new payments as they arrive from your bank or an import."
 msgstr "Applies to new payments as they arrive from your bank or an import."
@@ -1584,6 +1596,14 @@ msgstr "At last known price, ≈ {rateLabel} per {instrumentCode}"
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Attach debt"
 msgstr "Attach debt"
+
+#: src/sync/hook/use-explain-enable-banking-error.hook.ts
+msgid "Authorization was cancelled at your bank. Pick the bank to try again."
+msgstr "Authorization was cancelled at your bank. Pick the bank to try again."
+
+#: src/sync/component/enable-banking-reauthorize-row/enable-banking-reauthorize-row.tsx
+msgid "Authorize again"
+msgstr "Authorize again"
 
 #: src/settings/components/theme-switch/theme-switch.tsx
 msgid "Automatic"
@@ -1694,6 +1714,14 @@ msgstr "Bank"
 msgid "Bank account"
 msgstr "Bank account"
 
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+msgid "Bank authorized again"
+msgstr "Bank authorized again"
+
+#: src/sync/component/enable-banking-disconnect-row/enable-banking-disconnect-row.tsx
+msgid "Bank disconnected"
+msgstr "Bank disconnected"
+
 #: src/account/component/account-card-menu/account-card-menu.tsx
 msgid "Bank integration settings"
 msgstr "Bank integration settings"
@@ -1714,6 +1742,10 @@ msgstr "Bank sync reset"
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "Bank, import or manual entry"
 msgstr "Bank, import or manual entry"
+
+#: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
+msgid "Banks"
+msgstr "Banks"
 
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
 msgid "Bars compare each category with the largest one."
@@ -1860,9 +1892,17 @@ msgstr "Budgie can sort notes on this phone"
 msgid "Budgie can't reset your PIN"
 msgstr "Budgie can't reset your PIN"
 
+#: src/sync/component/enable-banking-waiting-step/enable-banking-waiting-step.tsx
+msgid "Budgie continues when you return. If you stay in the browser, use the Return to Budgie link on the page."
+msgstr "Budgie continues when you return. If you stay in the browser, use the Return to Budgie link on the page."
+
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 msgid "Budgie could not open your data"
 msgstr "Budgie could not open your data"
+
+#: src/sync/hook/use-explain-enable-banking-error.hook.ts
+msgid "Budgie could not read the response from your bank. Start again."
+msgstr "Budgie could not read the response from your bank. Start again."
 
 #: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
 msgid "Budgie deleted the damaged part. It starts again only when you ask."
@@ -1875,6 +1915,10 @@ msgstr "Budgie encrypts your data on this phone. It takes a few seconds."
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Budgie has no exchange rate for this payment currency yet."
 msgstr "Budgie has no exchange rate for this payment currency yet."
+
+#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
+msgid "Budgie has no server. Requests go from this phone to Enable Banking, which talks to your bank. Your key stays in this phone's secure storage."
+msgstr "Budgie has no server. Requests go from this phone to Enable Banking, which talks to your bank. Your key stays in this phone's secure storage."
 
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 msgid "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
@@ -1974,6 +2018,7 @@ msgstr "Can't be changed later"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 #: src/settings/components/truncate-data/truncate-data.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+#: src/sync/component/enable-banking-disconnect-row/enable-banking-disconnect-row.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 #: src/tag/hooks/use-delete-tag.hook.ts
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
@@ -2119,6 +2164,10 @@ msgstr "Change"
 msgid "Change icon, current: {iconName}"
 msgstr "Change icon, current: {iconName}"
 
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+msgid "Change key"
+msgstr "Change key"
+
 #: src/settings/components/pin-management-rows/pin-management-rows.tsx
 msgid "Change PIN"
 msgstr "Change PIN"
@@ -2260,6 +2309,10 @@ msgstr "Choose an action"
 msgid "Choose and confirm a PIN"
 msgstr "Choose and confirm a PIN"
 
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+msgid "Choose another bank"
+msgstr "Choose another bank"
+
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Choose at least one"
 msgstr "Choose at least one"
@@ -2287,6 +2340,14 @@ msgstr "Choose file"
 #: src/receipt/components/receipt-source-menu/receipt-source-menu.tsx
 msgid "Choose from Photos"
 msgstr "Choose from Photos"
+
+#: src/sync/component/enable-banking-key-step/enable-banking-key-step.tsx
+msgid "Choose key file (.pem)"
+msgstr "Choose key file (.pem)"
+
+#: src/sync/component/enable-banking-choose-key-row/enable-banking-choose-key-row.tsx
+msgid "Choose key file again"
+msgstr "Choose key file again"
 
 #: src/categorize-inbox/components/categorize-inbox-group-choose-payments-option/categorize-inbox-group-choose-payments-option.tsx
 #: src/categorize-inbox/components/categorize-inbox-payments-screen/categorize-inbox-payments-screen.tsx
@@ -2445,11 +2506,16 @@ msgstr "Connect a bank or import a statement first, then rules can categorise an
 msgid "Connect Binance"
 msgstr "Connect Binance"
 
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+msgid "Connect EU banks"
+msgstr "Connect EU banks"
+
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Connect Monobank"
 msgstr "Connect Monobank"
 
 #: src/sync/component/bank-integration-key-card/bank-integration-key-card.tsx
+#: src/sync/component/enable-banking-connection-card/enable-banking-connection-card.tsx
 msgid "Connection"
 msgstr "Connection"
 
@@ -2460,6 +2526,10 @@ msgstr "Connection settings"
 #: src/sync/component/bank-integration-import-status/bank-integration-import-status.tsx
 msgid "Connects using statement files"
 msgstr "Connects using statement files"
+
+#: src/sync/component/enable-banking-connection-card/enable-banking-connection-card.tsx
+msgid "Consent valid until"
+msgstr "Consent valid until"
 
 #: ../ledger/src/transaction/service/transaction-transfer.service.ts
 msgid "Consolidated transactions cannot start a deposit"
@@ -2488,6 +2558,7 @@ msgstr "Contains"
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 #: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
 #: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Continue"
@@ -2577,6 +2648,10 @@ msgstr "Could not check sync data"
 #: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
 msgid "Could not close deposit"
 msgstr "Could not close deposit"
+
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+msgid "Could not connect the bank"
+msgstr "Could not connect the bank"
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Could not convert past amounts"
@@ -2672,6 +2747,10 @@ msgstr "Could not delete tag"
 msgid "Could not delete transaction."
 msgstr "Could not delete transaction."
 
+#: src/sync/component/enable-banking-disconnect-row/enable-banking-disconnect-row.tsx
+msgid "Could not disconnect"
+msgstr "Could not disconnect"
+
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "Could not erase the data"
 msgstr "Could not erase the data"
@@ -2736,6 +2815,14 @@ msgstr "Could not reach the server. Check your connection; sync will retry autom
 msgid "Could not read CSV file"
 msgstr "Could not read CSV file"
 
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+msgid "Could not read the key"
+msgstr "Could not read the key"
+
+#: src/sync/hook/use-explain-enable-banking-error.hook.ts
+msgid "Could not read the selected file."
+msgstr "Could not read the selected file."
+
 #: src/app/(tabs)/settings/apple-pay-capture.tsx
 msgid "Could not read Wallet captures"
 msgstr "Could not read Wallet captures"
@@ -2785,6 +2872,10 @@ msgstr "Could not save fund"
 msgid "Could not save tag"
 msgstr "Could not save tag"
 
+#: src/sync/hook/use-explain-enable-banking-error.hook.ts
+msgid "Could not save the key in this phone's secure storage. Nothing was connected."
+msgstr "Could not save the key in this phone's secure storage. Nothing was connected."
+
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Could not seal the file"
 msgstr "Could not seal the file"
@@ -2809,6 +2900,11 @@ msgstr "Could not set up sync"
 #: src/sync/component/bank-integration-new-account-row/bank-integration-new-account-row.tsx
 msgid "Could not start syncing"
 msgstr "Could not start syncing"
+
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/component/enable-banking-reauthorize-row/enable-banking-reauthorize-row.tsx
+msgid "Could not start the authorization"
+msgstr "Could not start the authorization"
 
 #: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 #: src/categorize-inbox/hook/use-categorize-inbox-last-write.hook.ts
@@ -2878,6 +2974,10 @@ msgstr "Could not update the AI model download"
 msgid "Could not update the download setting"
 msgstr "Could not update the download setting"
 
+#: src/sync/component/enable-banking-choose-key-row/enable-banking-choose-key-row.tsx
+msgid "Could not update the key"
+msgstr "Could not update the key"
+
 #: src/app/bank-integration-key.tsx
 msgid "Could not update the key. Try again."
 msgstr "Could not update the key. Try again."
@@ -2895,6 +2995,10 @@ msgstr "Could not update transaction."
 #: src/sync/utils/toast-binance-key-permissions-error.util.ts
 msgid "Could not verify the API key permissions"
 msgstr "Could not verify the API key permissions"
+
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+msgid "Could not verify the application"
+msgstr "Could not verify the application"
 
 #: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
 msgid "Couldn’t check Monobank for new accounts"
@@ -3354,6 +3458,18 @@ msgstr "Didn't match"
 msgid "Different Binance account"
 msgstr "Different Binance account"
 
+#: src/sync/component/enable-banking-disconnect-row/enable-banking-disconnect-row.tsx
+msgid "Disconnect"
+msgstr "Disconnect"
+
+#: src/sync/component/enable-banking-disconnect-row/enable-banking-disconnect-row.tsx
+msgid "Disconnect this bank?"
+msgstr "Disconnect this bank?"
+
+#: src/sync/component/enable-banking-disconnect-row/enable-banking-disconnect-row.tsx
+msgid "Disconnected on this phone"
+msgstr "Disconnected on this phone"
+
 #: src/budget/components/budget-period-recap-card/budget-period-recap-card.tsx
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
@@ -3658,6 +3774,15 @@ msgstr "empty"
 msgid "Empty canvas"
 msgstr "Empty canvas"
 
+#: src/account/constant/bank-provider-title.constant.ts
+#: src/rule/constant/external-source.constant.ts
+msgid "Enable Banking"
+msgstr "Enable Banking"
+
+#: src/sync/hook/use-explain-enable-banking-error.hook.ts
+msgid "Enable Banking rejected the redirect URL. Correct the redirect URL registered in your application so it matches the setup steps exactly."
+msgstr "Enable Banking rejected the redirect URL. Correct the redirect URL registered in your application so it matches the setup steps exactly."
+
 #: src/rule/components/rule-list-row/rule-list-row.tsx
 msgid "Enable rule: {primaryOutcome}"
 msgstr "Enable rule: {primaryOutcome}"
@@ -3707,6 +3832,10 @@ msgstr "Enter an amount to split it"
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enter current PIN"
 msgstr "Enter current PIN"
+
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+msgid "Enter the application ID and choose the key file."
+msgstr "Enter the application ID and choose the key file."
 
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
 msgid "Enter the backup's PIN"
@@ -3781,6 +3910,10 @@ msgstr "Erste Bank (PDF)"
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
 msgid "Estimated from your past transactions using your current limits."
 msgstr "Estimated from your past transactions using your current limits."
+
+#: src/app/(main)/create-account/index.tsx
+msgid "EU banks"
+msgstr "EU banks"
 
 #: src/budget/components/budget-event-form/budget-event-form.tsx
 msgid "Event limit"
@@ -3972,6 +4105,10 @@ msgstr "File {merchantTitle} as {candidateTitle}"
 msgid "Fill missing currency conversions"
 msgstr "Fill missing currency conversions"
 
+#: src/sync/component/enable-banking-key-step/enable-banking-key-step.tsx
+msgid "Filled in from the key file name"
+msgstr "Filled in from the key file name"
+
 #: src/app/transaction-account-filter.tsx
 msgid "Filter accounts"
 msgstr "Filter accounts"
@@ -4004,6 +4141,10 @@ msgstr "FinEye"
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Fingerprint"
 msgstr "Fingerprint"
+
+#: src/sync/component/enable-banking-waiting-step/enable-banking-waiting-step.tsx
+msgid "Finish authorizing at your bank"
+msgstr "Finish authorizing at your bank"
 
 #: src/sync/component/analytics-sync-account-progress/analytics-sync-account-progress.tsx
 msgid "Finish importing this account’s history to include it in analytics."
@@ -4508,6 +4649,10 @@ msgstr "It will no longer appear in the calendar."
 msgid "It's the only key to your file. There's no account and no copy on a server, so there's nothing to reset it from."
 msgstr "It's the only key to your file. There's no account and no copy on a server, so there's nothing to reset it from."
 
+#: src/sync/component/enable-banking-disconnect-row/enable-banking-disconnect-row.tsx
+msgid "Its accounts stop syncing and are removed from your active accounts."
+msgstr "Its accounts stop syncing and are removed from your active accounts."
+
 #: src/account/hooks/use-delete-archived-account.hook.ts
 msgid "Its transactions go too. Transfers stay in the other account as “Transfer (account deleted)”. This can’t be undone."
 msgstr "Its transactions go too. Transfers stay in the other account as “Transfer (account deleted)”. This can’t be undone."
@@ -4540,6 +4685,10 @@ msgstr "Keep your PIN safe"
 msgid "Kept inside Budgie's file on this phone. Sent only to Monobank, never to us."
 msgstr "Kept inside Budgie's file on this phone. Sent only to Monobank, never to us."
 
+#: src/sync/component/enable-banking-key-step/enable-banking-key-step.tsx
+msgid "Key file loaded. Choose another"
+msgstr "Key file loaded. Choose another"
+
 #: src/sync/utils/toast-binance-key-permissions-error.util.ts
 msgid "Key has too many permissions"
 msgstr "Key has too many permissions"
@@ -4552,7 +4701,12 @@ msgstr "Key rejected"
 msgid "Key rejected — sync is paused"
 msgstr "Key rejected — sync is paused"
 
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+msgid "Key required"
+msgstr "Key required"
+
 #: src/app/bank-integration-key.tsx
+#: src/sync/component/enable-banking-choose-key-row/enable-banking-choose-key-row.tsx
 msgid "Key updated"
 msgstr "Key updated"
 
@@ -4710,6 +4864,14 @@ msgstr "Limit from"
 #: src/budget/components/budget-limit-changes-row/budget-limit-changes-row.tsx
 msgid "Limits are tuned automatically after 3 steady periods"
 msgstr "Limits are tuned automatically after 3 steady periods"
+
+#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
+msgid "Link each of your own accounts to the application"
+msgstr "Link each of your own accounts to the application"
+
+#: src/sync/component/enable-banking-connection-card/enable-banking-connection-card.tsx
+msgid "Link every account you sync to your application in Enable Banking, then authorize again."
+msgstr "Link every account you sync to your application in Enable Banking, then authorize again."
 
 #: src/account/component/account-switch-field/account-switch-field.tsx
 msgid "List it on the Home screen"
@@ -4945,6 +5107,10 @@ msgstr "Merged {consolidated} of {foundPairsText}."
 #: src/app/transaction-amount-filter.tsx
 msgid "Minimum amount"
 msgstr "Minimum amount"
+
+#: src/sync/component/enable-banking-accounts-notice/enable-banking-accounts-notice.tsx
+msgid "Missing an account? Link it to your application in Enable Banking, then connect this bank again."
+msgstr "Missing an account? Link it to your application in Enable Banking, then connect this bank again."
 
 #: src/transaction/hook/use-transaction-filter-page-title.hook.ts
 msgid "Missing categories"
@@ -5691,6 +5857,10 @@ msgstr "Open Budgie with a touch. Your PIN stays the key to your data."
 msgid "Open Budgie with Face ID or Touch ID. Your PIN stays the key to your data."
 msgstr "Open Budgie with Face ID or Touch ID. Your PIN stays the key to your data."
 
+#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
+msgid "Open Enable Banking"
+msgstr "Open Enable Banking"
+
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Open George (Erste Bank online banking)"
 msgstr "Open George (Erste Bank online banking)"
@@ -6040,6 +6210,10 @@ msgstr "Period"
 msgid "Permission to access contacts was denied."
 msgstr "Permission to access contacts was denied."
 
+#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
+msgid "Personal accounts only. Enable Banking's Terms allow this for private individuals using their own accounts. By connecting you accept them."
+msgstr "Personal accounts only. Enable Banking's Terms allow this for private individuals using their own accounts. By connecting you accept them."
+
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
 msgid "Phone lock"
 msgstr "Phone lock"
@@ -6284,6 +6458,10 @@ msgstr "Re-sync of last 90 days will start on next sync."
 msgid "Read on this phone"
 msgstr "Read on this phone"
 
+#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
+msgid "Read the Enable Banking Terms"
+msgstr "Read the Enable Banking Terms"
+
 #: src/receipt/components/receipt-scan-toast/receipt-scan-toast.tsx
 msgid "Reading receipt"
 msgstr "Reading receipt"
@@ -6400,6 +6578,10 @@ msgstr "Recurring"
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Recurring payments will appear here once patterns are detected from your transactions"
 
+#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
+msgid "Redirect URL"
+msgstr "Redirect URL"
+
 #: src/categorize-inbox/components/categorize-inbox-group-refine-options/categorize-inbox-group-refine-options.tsx
 msgid "Refine"
 msgstr "Refine"
@@ -6495,6 +6677,10 @@ msgstr "Rename"
 msgid "Rename plan, {value}"
 msgstr "Rename plan, {value}"
 
+#: src/sync/component/enable-banking-reauthorize-row/enable-banking-reauthorize-row.tsx
+msgid "Renews the bank consent so syncing continues."
+msgstr "Renews the bank consent so syncing continues."
+
 #: src/account/constant/debt-settled-label.constant.ts
 msgid "Repaid"
 msgstr "Repaid"
@@ -6522,6 +6708,10 @@ msgstr "Report a Bug"
 #: src/settings/components/support-settings-rows/support-settings-rows.tsx
 msgid "Report a bug or idea"
 msgstr "Report a bug or idea"
+
+#: src/sync/component/enable-banking-connection-card/enable-banking-connection-card.tsx
+msgid "Requests go from this phone to Enable Banking and your bank. Budgie has no server."
+msgstr "Requests go from this phone to Enable Banking and your bank. Budgie has no server."
 
 #: src/app/(main)/import-csv.tsx
 #: src/rule/components/rule-value-picker-button/rule-value-picker-button.tsx
@@ -6739,6 +6929,10 @@ msgstr "Save rule"
 msgid "Save set aside"
 msgstr "Save set aside"
 
+#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
+msgid "Save the .pem key file the application gives you"
+msgstr "Save the .pem key file the application gives you"
+
 #: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
 msgid "Save the automation. Budgie matches card names to accounts for all your cards."
 msgstr "Save the automation. Budgie matches card names to accounts for all your cards."
@@ -6868,6 +7062,10 @@ msgstr "Search tags..."
 #: src/tag/components/tag-destination-sheet/tag-destination-sheet.tsx
 msgid "Search tags…"
 msgstr "Search tags…"
+
+#: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
+msgid "Search your bank"
+msgstr "Search your bank"
 
 #: src/@generic/component/selector-modal-search-header/selector-modal-search-header.tsx
 msgid "Search…"
@@ -7006,6 +7204,14 @@ msgstr "Set Maturity Date"
 msgid "Set Return Date"
 msgstr "Set Return Date"
 
+#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
+msgid "Set the redirect URL of the application to the address shown below, exactly"
+msgstr "Set the redirect URL of the application to the address shown below, exactly"
+
+#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
+msgid "Set up once"
+msgstr "Set up once"
+
 #: src/app/(tabs)/settings/index.tsx
 msgid "Settings"
 msgstr "Settings"
@@ -7094,6 +7300,10 @@ msgstr "Shows how this is calculated"
 #: src/rule/components/rule-form-submit-bar/rule-form-submit-bar.tsx
 msgid "Shows what is missing"
 msgstr "Shows what is missing"
+
+#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
+msgid "Sign in to the Enable Banking control panel as yourself and register an application"
+msgstr "Sign in to the Enable Banking control panel as yourself and register an application"
 
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Similar transactions"
@@ -7221,6 +7431,7 @@ msgid "Start from scratch and set every limit yourself"
 msgstr "Start from scratch and set every limit yourself"
 
 #: src/sync/component/create-binance-account/create-binance-account.tsx
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Start Sync"
 msgstr "Start Sync"
@@ -7378,6 +7589,10 @@ msgstr "Sync repairs"
 msgid "Sync stopped"
 msgstr "Sync stopped"
 
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+msgid "Sync Trade Republic, N26 and other EU banks through your own Enable Banking application."
+msgstr "Sync Trade Republic, N26 and other EU banks through your own Enable Banking application."
+
 #: src/app/(main)/create-account/index.tsx
 msgid "Sync with a read-only API key"
 msgstr "Sync with a read-only API key"
@@ -7413,6 +7628,11 @@ msgstr "Syncing bank history"
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Syncing history..."
 msgstr "Syncing history..."
+
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/component/enable-banking-choose-key-row/enable-banking-choose-key-row.tsx
+msgid "Syncing resumes automatically."
+msgstr "Syncing resumes automatically."
 
 #: src/sync/component/bank-integration-accounts-footer/bank-integration-accounts-footer.tsx
 msgid "Syncing resumes for all accounts once you update the key."
@@ -7520,9 +7740,21 @@ msgstr "The API key has the wrong permissions. Use a key with only \"Enable Read
 msgid "The API key or token was rejected. Check that it is correct, read-only and not restricted to other IP addresses."
 msgstr "The API key or token was rejected. Check that it is correct, read-only and not restricted to other IP addresses."
 
+#: src/sync/hook/use-explain-enable-banking-error.hook.ts
+msgid "The application does not list the redirect URL shown in the setup steps. Add it exactly as shown."
+msgstr "The application does not list the redirect URL shown in the setup steps. Add it exactly as shown."
+
+#: src/sync/hook/use-explain-enable-banking-error.hook.ts
+msgid "The authorization took too long. Start again."
+msgstr "The authorization took too long. Start again."
+
 #: src/account/component/start-deposit-form/start-deposit-form.tsx
 msgid "The bank did not report the deposit currency. Confirm the currency and the receiving amount."
 msgstr "The bank did not report the deposit currency. Confirm the currency and the receiving amount."
+
+#: src/sync/component/enable-banking-disconnect-row/enable-banking-disconnect-row.tsx
+msgid "The consent stays valid at your bank until it expires."
+msgstr "The consent stays valid at your bank until it expires."
 
 #: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
 msgid "The download arrived damaged."
@@ -7539,6 +7771,10 @@ msgstr "The downloaded AI model data is removed from this phone. Nothing downloa
 #: src/installment-plan/component/convert-to-installment-total-input/convert-to-installment-total-input.tsx
 msgid "The exact amount you will pay, fee included"
 msgstr "The exact amount you will pay, fee included"
+
+#: src/sync/component/enable-banking-choose-key-row/enable-banking-choose-key-row.tsx
+msgid "The key is missing or was rejected."
+msgstr "The key is missing or was rejected."
 
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
@@ -7589,9 +7825,17 @@ msgstr "Then"
 msgid "There is no “forgot PIN”."
 msgstr "There is no “forgot PIN”."
 
+#: src/sync/component/enable-banking-accounts-notice/enable-banking-accounts-notice.tsx
+msgid "These accounts cannot be connected: they already sync through another connection or use a currency Budgie does not support."
+msgstr "These accounts cannot be connected: they already sync through another connection or use a currency Budgie does not support."
+
 #: src/budget/constant/budget-period-this-label.constant.ts
 msgid "these two weeks"
 msgstr "these two weeks"
+
+#: src/sync/constant/sync-error-label.constant.ts
+msgid "This account is not linked to the bank authorization. Link it in Enable Banking, then authorize again."
+msgstr "This account is not linked to the bank authorization. Link it in Enable Banking, then authorize again."
 
 #: src/account/component/archived-account-closed-menu-note/archived-account-closed-menu-note.tsx
 msgid "This account was closed at the provider, so it can’t come back to Home."
@@ -7613,6 +7857,10 @@ msgstr "This API key belongs to a different Binance account."
 #: src/sync/utils/toast-binance-key-permissions-error.util.ts
 msgid "This API key can trade, withdraw or transfer funds. Create a key with only \"Enable Reading\" and try again."
 msgstr "This API key can trade, withdraw or transfer funds. Create a key with only \"Enable Reading\" and try again."
+
+#: src/sync/hook/use-explain-enable-banking-error.hook.ts
+msgid "This authorization was already used. Start again."
+msgstr "This authorization was already used. Start again."
 
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
@@ -7649,6 +7897,14 @@ msgstr "This deletes {DB_NAME} and everything in it from this phone. It can't be
 msgid "This doesn't look like a Monobank token yet"
 msgstr "This doesn't look like a Monobank token yet"
 
+#: src/sync/hook/use-explain-enable-banking-error.hook.ts
+msgid "This Enable Banking application is not active."
+msgstr "This Enable Banking application is not active."
+
+#: src/sync/hook/use-explain-enable-banking-error.hook.ts
+msgid "This file is not an unencrypted RSA private key in PEM format."
+msgstr "This file is not an unencrypted RSA private key in PEM format."
+
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 msgid "This is where your data lives and who can read it. You can find it again in Settings › Your data."
 msgstr "This is where your data lives and who can read it. You can find it again in Settings › Your data."
@@ -7660,6 +7916,10 @@ msgstr "This key already syncs another of your Monobank sections."
 #: src/app/bank-integration-key.tsx
 msgid "This key is for a different Monobank client."
 msgstr "This key is for a different Monobank client."
+
+#: src/sync/hook/use-explain-enable-banking-error.hook.ts
+msgid "This key is password protected. Use the .pem file as downloaded from Enable Banking."
+msgstr "This key is password protected. Use the .pem file as downloaded from Enable Banking."
 
 #: src/budget/constant/budget-period-this-label.constant.ts
 msgid "this month"
@@ -7721,6 +7981,10 @@ msgstr "This removes the event budget. Your transactions are not affected."
 #: src/wallet-capture/hook/use-wallet-capture-settings.hook.ts
 msgid "This removes the pending capture without creating a transaction."
 msgstr "This removes the pending capture without creating a transaction."
+
+#: src/sync/hook/use-explain-enable-banking-error.hook.ts
+msgid "This response does not match an authorization started in Budgie. Start again."
+msgstr "This response does not match an authorization started in Budgie. Start again."
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "This token already syncs one of your Monobank sections. Use the gear on its Home section to add accounts."
@@ -7929,6 +8193,10 @@ msgstr "Track a trip or project with its own limit. Tagged expenses still count 
 #: src/app/(main)/create-account/index.tsx
 msgid "Track manually"
 msgstr "Track manually"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Trade Republic, N26 and other EU banks"
+msgstr "Trade Republic, N26 and other EU banks"
 
 #: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Transaction already has a debt attachment"
@@ -8629,6 +8897,10 @@ msgstr "Your balance covers {coverMonths} months of spending."
 #: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
 msgid "Your balance is already below zero."
 msgstr "Your balance is already below zero."
+
+#: src/sync/constant/sync-error-label.constant.ts
+msgid "Your bank consent has expired. Authorize this bank again to keep syncing."
+msgstr "Your bank consent has expired. Authorize this bank again to keep syncing."
 
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "Your budget is ahead of pace"

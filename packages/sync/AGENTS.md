@@ -61,11 +61,12 @@ Every provider sync service is a `Context.Service` whose `make` spreads a family
 `makeSyncService`. `SyncProviderRegistryService` resolves the service for an account. The services depend on
 `@budgie/contracts` repositories and `@budgie/ledger`, `@budgie/rules` and `@budgie/consolidation` services.
 
-The host app owns scheduling and native IO and provides two layer-less ports:
+The host app owns scheduling and native IO and provides three layer-less ports:
 
 - `SyncWorkload`: background/user lanes (`run`, `runUser`, `hasQueuedWork`, `awaitQueuedUserWork`),
   background task registration and the deferred rule-application and transfer-consolidation queues.
 - `SyncFileReader`: PDF text items and raw bytes for a file URI.
+- `SyncRequestSigner`: RS256 signature, key removal and secure random state for per-user API keys (Enable Banking).
 
 `LedgerWorkload` (from `@budgie/ledger`) covers foreground-exclusive work, and consolidation needs the
 `P2pTransferTitleResolver` port from `@budgie/consolidation`.
@@ -92,6 +93,7 @@ Each bank provider has:
 | Provider   | Status         | Implementation |
 | ---------- | -------------- | -------------- |
 | Monobank   | ✅ Implemented | Full support   |
+| Enable Banking | ✅ Implemented | On-device, per-user key |
 | Privatbank | 📋 Planned     | -              |
 | Revolut    | 📋 Planned     | -              |
 | Wise       | 📋 Planned     | -              |

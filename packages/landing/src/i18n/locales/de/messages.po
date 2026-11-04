@@ -15088,6 +15088,10 @@ msgstr "Stellt fehlende Überweisungsgebühren wieder her und macht veraltete Ü
 msgid "Restoring a PIN-protected backup asks for that backup’s PIN, and that PIN becomes your app PIN, so the restored data stays readable."
 msgstr "Beim Wiederherstellen eines PIN-geschützten Backups wirst du nach der PIN dieses Backups gefragt, und diese PIN wird zu deiner App-PIN, damit die wiederhergestellten Daten lesbar bleiben."
 
+#: src/generic/component/enable-banking-relay/enable-banking-relay.tsx
+msgid "Return to Budgie"
+msgstr "Zurück zu Budgie"
+
 #: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "Returned it? The plan closes too"
 msgstr "Zurückgegeben? Dann schließt auch der Plan"

@@ -65,6 +65,11 @@ export default function Index() {
                     title={t`Binance`}
                     bankProvider={ExternalSourceEnum.BINANCE}
                 />
+                <CreateSyncCard
+                    description={t`Trade Republic, N26 and other EU banks`}
+                    title={t`EU banks`}
+                    bankProvider={ExternalSourceEnum.ENABLE_BANKING}
+                />
             </GroupedListSection>
 
             <MenuSpacer />

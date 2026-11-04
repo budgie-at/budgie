@@ -4,5 +4,6 @@ export enum SyncProviderEnum {
     ERSTE = 'ERSTE',
     REVOLUT = 'REVOLUT',
     WISE = 'WISE',
-    BINANCE = 'BINANCE'
+    BINANCE = 'BINANCE',
+    ENABLE_BANKING = 'ENABLE_BANKING'
 }
