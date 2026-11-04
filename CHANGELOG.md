@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.151.4](https://github.com/budgie-at/budgie/compare/v6.151.3...v6.151.4) (2026-11-04)
+
+### Bug Fixes
+
+* **sync:** preserve own-card transfers and user edits ([4bc1f09](https://github.com/budgie-at/budgie/commit/4bc1f09f00d66b21fc5c579c85d8be601b395a6a))
+
+
 ## [6.151.3](https://github.com/budgie-at/budgie/compare/v6.151.2...v6.151.3) (2026-11-04)
 
 ### Bug Fixes
