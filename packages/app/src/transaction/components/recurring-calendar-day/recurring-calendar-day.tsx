@@ -9,6 +9,7 @@ import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-access
 import { cn } from '../../../@generic/utils/cn.util';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
+import { RECURRING_CALENDAR_CELL_STYLE } from '../../constant/recurring-calendar-cell-style.constant';
 import { RecurringCalendarSelector } from '../recurring-calendar-content/recurring-calendar.selector';
 import { RecurringCalendarDayDots } from '../recurring-calendar-day-dots/recurring-calendar-day-dots';
 
@@ -57,19 +58,21 @@ export const RecurringCalendarDay = (props: Props) => {
     const forecastedCount = (isCurrentMonth ? forecastedEntriesByDay.get(dayOfMonth)?.length : 0) ?? 0;
     const hasEntries = entryCount + forecastedCount > 0;
     const actualDots = Math.min(entryCount, isPositiveNumber(forecastedCount) ? MAX_DOTS - 1 : MAX_DOTS);
-    const forecastedDots = Math.min(forecastedCount, MAX_DOTS - actualDots);
     const dayTestID = isCurrentMonth ? RecurringCalendarSelector.CurrentMonthDay(dayOfMonth) : null;
 
     const formattedDate = new Intl.DateTimeFormat(languageTag, { dateStyle: 'full' }).format(day.date);
     const accessibilityLabel = isLoading ? formattedDate : t`${formattedDate}. Recorded: ${entryCount}. Expected: ${forecastedCount}.`;
     const accessibilityState = { selected: isSelected, disabled: day.isDisabled, busy: isLoading };
+    const handlePress = () => {
+        onSelectDay(dayOfMonth);
+    };
 
     return (
         <HapticPressable
             className="min-h-[44px] items-center justify-center"
-            style={{ width: `${99.9 / 7}%` }}
+            style={RECURRING_CALENDAR_CELL_STYLE}
             hitSlop={0}
-            onPress={() => onSelectDay(dayOfMonth)}
+            onPress={handlePress}
             disabled={day.isDisabled}
             accessible={isCurrentMonth}
             accessibilityRole="button"
@@ -82,7 +85,11 @@ export const RecurringCalendarDay = (props: Props) => {
                     {dayOfMonth}
                 </Text>
                 {hasEntries ? (
-                    <RecurringCalendarDayDots actualDots={actualDots} forecastedDots={forecastedDots} isSelected={isSelected} />
+                    <RecurringCalendarDayDots
+                        actualDots={actualDots}
+                        forecastedDots={Math.min(forecastedCount, MAX_DOTS - actualDots)}
+                        isSelected={isSelected}
+                    />
                 ) : null}
             </View>
         </HapticPressable>

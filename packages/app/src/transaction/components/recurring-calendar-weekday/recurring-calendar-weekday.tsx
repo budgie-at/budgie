@@ -2,6 +2,7 @@ import { Text, View } from 'react-native';
 
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
+import { RECURRING_CALENDAR_CELL_STYLE } from '../../constant/recurring-calendar-cell-style.constant';
 
 interface Props {
     readonly date: Date;
@@ -15,7 +16,7 @@ export const RecurringCalendarWeekday = ({ date }: Props) => {
     const label = isAccessibilityTextSize ? shortLabel.slice(0, 1) : shortLabel;
 
     return (
-        <View className="h-[25px] items-center justify-center" style={{ width: `${99.9 / 7}%` }}>
+        <View className="h-[25px] items-center justify-center" style={RECURRING_CALENDAR_CELL_STYLE}>
             <Text
                 accessibilityLabel={fullLabel}
                 maxFontSizeMultiplier={1.3}

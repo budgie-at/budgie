@@ -85,7 +85,7 @@ export const DatePicker = (props: ComponentProps<typeof DateTimePicker>) => {
         Day: day => renderDay(day, shouldShowTodayIndicator)
     };
     const mergedComponents = { ...defaultComponents, ...props.components };
-    const themedStyles = { ...buildStyles(primary, rangeFill, header, shouldShowTodayIndicator), ...props.styles };
+    const themedStyles = buildStyles(primary, rangeFill, header, shouldShowTodayIndicator);
 
     /* oxlint-disable lingui/no-unlocalized-strings */
     const classNames = {

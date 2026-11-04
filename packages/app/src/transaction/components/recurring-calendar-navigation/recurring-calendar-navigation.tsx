@@ -57,6 +57,7 @@ export const RecurringCalendarNavigation = ({ displayMonth, displayYear, onChang
             runOnJS(handlePrevMonth)();
         });
     const swipeGesture = Gesture.Race(swipeLeft, swipeRight);
+
     return (
         <GestureDetector gesture={swipeGesture}>
             <View className="gap-y-sm">
