@@ -103,6 +103,13 @@ test('31 budget', { tags: ['budget'] }, async ({ budgie }) => {
         await expect(id('BudgetWidget.SpentLabel')).toHaveText('€0 / €1,000');
     });
 
+    await b.phase('stale edit link cannot edit the active budget', async () => {
+        await b.openLink(ctx, 'budgie://budget/edit?id=999999');
+        await expect(b.byText(screen, 'Budget unavailable')).toBeVisible({ timeout: 3_000 });
+        await b.tapId(ctx, 'PageHeader.BackButton');
+        await expect(id('BudgetWidget.SpentLabel')).toHaveText('€0 / €1,000');
+    });
+
     await b.phase('matching expense', async () => {
         await navigateToTransactions(ctx);
         await openTransactionForm(ctx, 'ActionItem.Expense', 'New Expense');

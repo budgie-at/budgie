@@ -52,7 +52,7 @@ export const BudgetSetupForm = ({ defaultInstrumentId, editingId, templateKind }
     const isSaveDisabled = isLoading || isDefined(saveBlocker);
     const saveLabel = isDefined(saveBlocker) ? t(saveBlocker) : submitLabel;
 
-    return isEditing && !isLoading && (!isDefined(budget) || isError) ? (
+    return isEditing && !isLoading && (!isDefined(budget) || budget.id !== editingId || isError) ? (
         <BudgetPageState title={headerTitle} isLoading={false} isError={isError} />
     ) : (
         <FormProvider {...form}>
