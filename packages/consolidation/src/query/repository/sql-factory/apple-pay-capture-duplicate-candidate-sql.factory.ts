@@ -1,4 +1,10 @@
-import { ExternalSourceEnum, TransactionEntryKindEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    ExternalSourceEnum,
+    TransactionConsolidationTypeEnum,
+    TransactionEntryKindEnum,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 
 import { buildConsolidationScanScopeSql } from '../../utils/build-consolidation-scan-scope-sql.util';
 
@@ -14,6 +20,7 @@ const APPLE_PAY_CAPTURE_DUPLICATE_PAIRS_SQL = `
     WITH captures AS MATERIALIZED (
         SELECT
             capture_tx.id AS captureTransactionId,
+            capture_tx.external_source AS externalSource,
             capture_tx.operated_at AS operatedAt,
             capture_entry.account_id AS accountId,
             capture_entry.amount AS amount,
@@ -25,16 +32,18 @@ const APPLE_PAY_CAPTURE_DUPLICATE_PAIRS_SQL = `
             AND capture_entry.original_transaction_id IS NULL
             AND capture_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
             AND capture_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
-        WHERE capture_tx.external_source = '${ExternalSourceEnum.APPLE_PAY_AUTOMATION}'
+        WHERE capture_tx.external_source IN ('${ExternalSourceEnum.APPLE_PAY_AUTOMATION}', '${ExternalSourceEnum.RECEIPT}')
             AND capture_tx.type = '${TransactionTypeEnum.EXPENSE}'
             AND capture_tx.deleted_at IS NULL
             AND capture_tx.consolidation_parent_transaction_id IS NULL
-            AND capture_tx.consolidation_type IS NULL
+            AND (capture_tx.consolidation_type IS NULL
+                OR capture_tx.consolidation_type = '${TransactionConsolidationTypeEnum.MANUAL_EXPENSE_DUPLICATE}')
             AND NOT EXISTS (
                 SELECT 1
                 FROM transaction_entries capture_split_entry
                 WHERE capture_split_entry.transaction_id = capture_tx.id
                     AND capture_split_entry.deleted_at IS NULL
+                    AND capture_split_entry.original_transaction_id IS NULL
                     AND capture_split_entry.id != capture_entry.id
             )
             AND NOT EXISTS (
@@ -53,6 +62,7 @@ const APPLE_PAY_CAPTURE_DUPLICATE_PAIRS_SQL = `
     bank_charges AS MATERIALIZED (
         SELECT
             bank_tx.id AS bankTransactionId,
+            bank_tx.external_source AS externalSource,
             bank_tx.operated_at AS operatedAt,
             bank_entry.account_id AS accountId,
             bank_entry.exchange_rate != 1 AS isForeignCurrency,
@@ -77,7 +87,16 @@ const APPLE_PAY_CAPTURE_DUPLICATE_PAIRS_SQL = `
             AND bank_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
         WHERE bank_tx.deleted_at IS NULL
             AND bank_tx.consolidation_parent_transaction_id IS NULL
-            AND bank_tx.consolidation_type IS NULL
+            AND (bank_tx.consolidation_type IS NULL OR (
+                bank_tx.consolidation_type = '${TransactionConsolidationTypeEnum.MANUAL_EXPENSE_DUPLICATE}'
+                AND NOT EXISTS (
+                    SELECT 1 FROM transactions source
+                    WHERE source.consolidation_parent_transaction_id = bank_tx.id
+                        AND (source.external_source IS NULL OR source.external_source NOT IN (
+                            '${ExternalSourceEnum.APPLE_PAY_AUTOMATION}', '${ExternalSourceEnum.RECEIPT}'
+                        ))
+                )
+            ))
             AND bank_tx.external_id IS NOT NULL
             AND bank_tx.external_source IS NOT NULL
             AND bank_tx.external_source NOT IN (
@@ -91,10 +110,8 @@ const APPLE_PAY_CAPTURE_DUPLICATE_PAIRS_SQL = `
                 WHERE bank_split_entry.transaction_id = bank_tx.id
                     AND bank_split_entry.deleted_at IS NULL
                     AND bank_split_entry.id != bank_entry.id
-                    AND (
-                        bank_split_entry.original_transaction_id IS NOT NULL
-                        OR bank_split_entry.type != '${TransactionEntryTypeEnum.FEE}'
-                    )
+                    AND bank_split_entry.original_transaction_id IS NULL
+                    AND bank_split_entry.type != '${TransactionEntryTypeEnum.FEE}'
             )
             AND NOT EXISTS (
                 SELECT 1
@@ -113,6 +130,24 @@ const APPLE_PAY_CAPTURE_DUPLICATE_PAIRS_SQL = `
         FROM captures capture
         INNER JOIN bank_charges bank
             ON bank.accountId = capture.accountId
+            AND bank.bankTransactionId != capture.captureTransactionId
+            AND (capture.externalSource != '${ExternalSourceEnum.RECEIPT}' OR (
+                bank.externalSource != '${ExternalSourceEnum.RECEIPT}'
+                AND NOT EXISTS (
+                    SELECT 1 FROM transaction_receipts receipt
+                    WHERE receipt.transaction_id = bank.bankTransactionId
+                )
+            ))
+            AND NOT EXISTS (
+                SELECT 1 FROM transactions source
+                WHERE source.external_source = capture.externalSource
+                    AND (source.consolidation_parent_transaction_id = bank.bankTransactionId OR
+                        source.consolidation_parent_transaction_id IN (
+                            SELECT child.id FROM transactions child
+                            WHERE child.consolidation_parent_transaction_id = bank.bankTransactionId
+                        )
+                    )
+            )
             AND ABS(capture.operatedAt - bank.operatedAt) <= ${APPLE_PAY_CAPTURE_TIME_WINDOW_SECONDS}
             AND (
                 capture.amount = bank.amount
