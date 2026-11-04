@@ -1,5 +1,6 @@
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { ScrollView, Text, View, useWindowDimensions } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FormsheetHeader } from '../../../@generic/component/formsheet-header/formsheet-header';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -17,13 +18,16 @@ interface Props {
 export const BudgetSheetState = (props: Props) => {
     const { title, isLoading, isError, description, unavailableTitle } = props;
     const { t } = useLingui();
-    const handleClose = () => goBackOrReplace('/');
+    const { height } = useWindowDimensions();
+    const { top, bottom } = useSafeAreaInsets();
+    const scrollViewStyle = { maxHeight: height - top - bottom };
+    const handleClose = () => void goBackOrReplace('/');
     const stateDescription =
         description ??
         (isError ? t`Your data could not be loaded. Close this screen and try again.` : t`This budget may have been deleted.`);
 
     return (
-        <View className="bg-sheet-surface">
+        <ScrollView className="bg-sheet-surface" style={scrollViewStyle} contentInsetAdjustmentBehavior="automatic">
             <FormsheetHeader size="md" title={title} />
             <View className="px-5xl pt-md pb-3xl gap-y-xl">
                 <BudgetDataState isLoading={isLoading} isError={isError} description={stateDescription} title={unavailableTitle} />
@@ -38,6 +42,6 @@ export const BudgetSheetState = (props: Props) => {
                     </Text>
                 </HapticPressable>
             </View>
-        </View>
+        </ScrollView>
     );
 };
