@@ -92,7 +92,7 @@ jobs:
                   node-version: 22.22.2
 
             - name: Restore package manager cache
-              uses: rnw-community/mobile-ci/actions/node-pm-cache@6898d7c629f03307f5d4d122de173cc232188209 # v4.9.0
+              uses: rnw-community/mobile-ci/actions/node-pm-cache@cc00a7c34a0ffcced2944d9c9b7449f9ddcd1065 # v4.9.1
               with:
                   package-manager: pnpm
 
@@ -161,7 +161,7 @@ jobs:
                   node-version: 22.22.2
 
             - name: Restore package manager cache
-              uses: rnw-community/mobile-ci/actions/node-pm-cache@6898d7c629f03307f5d4d122de173cc232188209 # v4.9.0
+              uses: rnw-community/mobile-ci/actions/node-pm-cache@cc00a7c34a0ffcced2944d9c9b7449f9ddcd1065 # v4.9.1
               with:
                   package-manager: pnpm
 
@@ -240,7 +240,7 @@ jobs:
                   node-version: 22.22.2
 
             - name: Restore package manager cache
-              uses: rnw-community/mobile-ci/actions/node-pm-cache@6898d7c629f03307f5d4d122de173cc232188209 # v4.9.0
+              uses: rnw-community/mobile-ci/actions/node-pm-cache@cc00a7c34a0ffcced2944d9c9b7449f9ddcd1065 # v4.9.1
               with:
                   package-manager: pnpm
 
@@ -257,9 +257,7 @@ jobs:
         permissions:
             contents: write
             pull-requests: write
-        # v4.8.0 until rnw-community/mobile-ci#315 ships: v4.9.0's github-release-publish
-        # is a bash 5.2 syntax error on these runners.
-        uses: rnw-community/mobile-ci/.github/workflows/expo-ota-preview.yml@3e22c383f15427da8e9b5e211701f133cc111535 # v4.8.0
+        uses: rnw-community/mobile-ci/.github/workflows/expo-ota-preview.yml@cc00a7c34a0ffcced2944d9c9b7449f9ddcd1065 # v4.9.1
         with:
             app-dir: packages/app
             scheme: budgie
@@ -278,7 +276,7 @@ jobs:
         permissions:
             contents: read
             pull-requests: read
-        uses: rnw-community/mobile-ci/.github/workflows/expo-fingerprint-guard.yml@6898d7c629f03307f5d4d122de173cc232188209 # v4.9.0
+        uses: rnw-community/mobile-ci/.github/workflows/expo-fingerprint-guard.yml@cc00a7c34a0ffcced2944d9c9b7449f9ddcd1065 # v4.9.1
         with:
             working-directory: packages/app
             platforms: ios
@@ -303,7 +301,7 @@ jobs:
             contents: read
             packages: write
             actions: read
-        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@6898d7c629f03307f5d4d122de173cc232188209 # v4.9.0
+        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@cc00a7c34a0ffcced2944d9c9b7449f9ddcd1065 # v4.9.1
         with:
             control-runner-labels: '["self-hosted","linux-portable-2x4"]'
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
