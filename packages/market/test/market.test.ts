@@ -3,6 +3,7 @@ import {
     AccountBalanceRepository,
     AccountTypeEnum,
     ExchangeRateEntityTable,
+    InstrumentDailyMarketPriceEntityTable,
     InstrumentTypeEnum,
     PRECISION,
     convertFromMicroUnits,
@@ -152,7 +153,7 @@ describe('base valuation', () => {
                 { baseInstrumentId: bitcoin.id, quoteInstrumentId: quote.id, rate: 50_000, source: 'test' }
             ]);
 
-            const rates = yield* exchangeRateRepository.findCryptoAccountValuationRates(quote.id);
+            const rates = yield* exchangeRateRepository.findUnitAccountValuationRates(quote.id);
 
             expect(rates).toStrictEqual([{ instrumentId: bitcoin.id, rate: 50_000 }]);
         }).pipe(Effect.provide(TestLayer))
@@ -168,7 +169,7 @@ describe('base valuation', () => {
                 { baseInstrumentId: quote.id, quoteInstrumentId: bitcoin.id, rate: 0.00004, source: 'test' }
             ]);
 
-            const rates = yield* exchangeRateRepository.findCryptoAccountValuationRates(quote.id);
+            const rates = yield* exchangeRateRepository.findUnitAccountValuationRates(quote.id);
 
             expect(rates).toHaveLength(1);
             expect(rates[0]?.rate).toBeCloseTo(25_000, 6);
@@ -193,7 +194,7 @@ describe('base valuation', () => {
                 { sourceInstrumentId: bitcoin.id, targetInstrumentId: quote.id, rateDate: '2024-01-01', rate: 41_000 }
             ]);
 
-            const rates = yield* exchangeRateRepository.findCryptoAccountValuationRates(quote.id);
+            const rates = yield* exchangeRateRepository.findUnitAccountValuationRates(quote.id);
 
             expect(rates).toStrictEqual([{ instrumentId: bitcoin.id, rate: 41_000 }]);
         }).pipe(Effect.provide(TestLayer))
@@ -211,7 +212,7 @@ describe('base valuation', () => {
                 { sourceInstrumentId: bitcoin.id, targetInstrumentId: quote.id, rateDate: '2024-01-01', rate: 40_000 }
             ]);
 
-            const rates = yield* exchangeRateRepository.findCryptoAccountValuationRates(quote.id);
+            const rates = yield* exchangeRateRepository.findUnitAccountValuationRates(quote.id);
 
             expect(rates.map(row => row.rate)).toStrictEqual([50_000]);
         }).pipe(Effect.provide(TestLayer))
@@ -239,7 +240,7 @@ describe('base valuation', () => {
                 { accountId: etherAccount.id, amount: convertToMicroUnits(4.125) }
             ]);
 
-            const rates = yield* exchangeRateRepository.findCryptoAccountValuationRates(quote.id);
+            const rates = yield* exchangeRateRepository.findUnitAccountValuationRates(quote.id);
             const rows = yield* accountBalanceRepository.getHomeAccountRows(quote.id);
 
             for (const account of [bitcoinAccount, etherAccount]) {
@@ -254,6 +255,40 @@ describe('base valuation', () => {
             }
 
             expect(rows.find(homeRow => homeRow.account.id === etherAccount.id)?.convertedBalance).toBeGreaterThan(0);
+        }).pipe(Effect.provide(Layer.mergeAll(TestLayer, AccountBalanceRepository.layer.pipe(Layer.provide(TestLayer)))))
+    );
+
+    it.effect('values fund certificates by the latest market price converted to the base instrument', () =>
+        Effect.gen(function* () {
+            const exchangeRateRepository = yield* ExchangeRateRepository;
+            const accountBalanceRepository = yield* AccountBalanceRepository;
+            const { base: fund, quote: hryvnia } = yield* seedPair('TF1', 'TH1', InstrumentTypeEnum.FUND);
+            const { base: unpricedFund } = yield* seedPair('TF2', 'TH2', InstrumentTypeEnum.FUND);
+            const dollar = yield* testSeedService.instrument({ code: 'TD1', name: 'TD1', symbol: 'TD1' });
+
+            const fundAccount = yield* testSeedService.account({ instrumentId: fund.id, type: AccountTypeEnum.STOCKS });
+            const unpricedAccount = yield* testSeedService.account({ instrumentId: unpricedFund.id, type: AccountTypeEnum.STOCKS });
+            yield* testDb.insert(InstrumentDailyMarketPriceEntityTable).values([
+                { instrumentId: fund.id, quoteInstrumentId: hryvnia.id, priceDate: '2026-11-03', price: 11.5, source: 'test' },
+                { instrumentId: fund.id, quoteInstrumentId: hryvnia.id, priceDate: '2026-11-04', price: 11.68, source: 'test' }
+            ]);
+            yield* exchangeRateRepository.bulkUpsert([
+                { baseInstrumentId: dollar.id, quoteInstrumentId: hryvnia.id, rate: 40, source: 'test' }
+            ]);
+            yield* testDb.insert(AccountBalanceEntityTable).values([
+                { accountId: fundAccount.id, amount: convertToMicroUnits(2283) },
+                { accountId: unpricedAccount.id, amount: convertToMicroUnits(87) }
+            ]);
+
+            const hryvniaRows = yield* accountBalanceRepository.getHomeAccountRows(hryvnia.id);
+            const dollarRows = yield* accountBalanceRepository.getHomeAccountRows(dollar.id);
+            const findRow = (rows: typeof hryvniaRows, accountId: number) => rows.find(row => row.account.id === accountId);
+
+            expect(convertFromMicroUnits(findRow(hryvniaRows, fundAccount.id)?.convertedBalance ?? 0)).toBeCloseTo(2283 * 11.68, 2);
+            expect(convertFromMicroUnits(findRow(dollarRows, fundAccount.id)?.convertedBalance ?? 0)).toBeCloseTo((2283 * 11.68) / 40, 2);
+            expect(findRow(hryvniaRows, fundAccount.id)?.isValued).toBe(true);
+            expect(findRow(hryvniaRows, unpricedAccount.id)?.isValued).toBe(false);
+            expect(findRow(hryvniaRows, unpricedAccount.id)?.convertedBalance).toBe(0);
         }).pipe(Effect.provide(Layer.mergeAll(TestLayer, AccountBalanceRepository.layer.pipe(Layer.provide(TestLayer)))))
     );
 });

@@ -3,7 +3,6 @@ import {
     AccountTypeEnum,
     BankIntegrationEntityTable,
     DebtEventEntityTable,
-    InstrumentEntityTable,
     convertFromMicroUnits
 } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
@@ -29,7 +28,7 @@ import type { InstitutionGroupInterface } from '../interface/institution-group.i
 import type { AccountWithSyncEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
 
 export const homeAccountRowsAtom = databaseQueryFamily(
-    [...ACCOUNT_CONVERTED_BALANCE_TABLES, InstrumentEntityTable, DebtEventEntityTable, BankIntegrationEntityTable],
+    [...ACCOUNT_CONVERTED_BALANCE_TABLES, DebtEventEntityTable, BankIntegrationEntityTable],
     AccountBalanceRepository,
     (accountBalanceRepository, defaultInstrumentId: number) => accountBalanceRepository.getHomeAccountRows(defaultInstrumentId)
 );
@@ -239,6 +238,7 @@ export const useHomePageDataQuery = () => {
             debtType: row.account.debtType,
             includeInNetWorth: row.account.includeInNetWorth,
             isActive: row.account.isActive,
+            isValued: row.isValued,
             hasLedgerHistory: row.hasLedgerHistory === 1
         };
         const { accountId, convertedBalance, isActive } = homeAccountBalance;

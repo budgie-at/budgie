@@ -2,6 +2,7 @@ import { SQL, SQLWrapper, sql } from 'drizzle-orm';
 
 import { ExchangeRateEntityTable } from '../../exchange-rate/table/exchange-rate-entity.table';
 import { HistoricalExchangeRateEntityTable } from '../../historical-exchange-rate/table/historical-exchange-rate-entity.table';
+import { InstrumentDailyMarketPriceEntityTable } from '../../instrument-daily-market-price/table/instrument-daily-market-price-entity.table';
 
 export const getDirectExchangeRateSql = (defaultInstrumentId: number, instrumentIdRef: SQL | SQLWrapper | number): SQL =>
     sql`
@@ -55,10 +56,34 @@ export const getInverseHistoricalExchangeRateSql = (defaultInstrumentId: number,
         )
     `;
 
-export const getExchangeRateWithHistoricalFallbackSql = (defaultInstrumentId: number, instrumentIdRef: SQL | SQLWrapper | number): SQL =>
+const getStoredExchangeRateSql = (defaultInstrumentId: number, instrumentIdRef: SQL | SQLWrapper | number): SQL =>
     sql`COALESCE(
         ${getDirectExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
         ${getInverseExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
         ${getHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
         ${getInverseHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)}
+    )`;
+
+const getMarketPriceExchangeRateSql = (defaultInstrumentId: number, instrumentIdRef: SQL | SQLWrapper | number): SQL => {
+    const quoteInstrumentIdSql = sql`${InstrumentDailyMarketPriceEntityTable.quoteInstrumentId}`;
+
+    return sql`
+        (
+            SELECT ${InstrumentDailyMarketPriceEntityTable.price} * (
+                CASE WHEN ${quoteInstrumentIdSql} = ${defaultInstrumentId} THEN 1.0
+                ELSE ${getStoredExchangeRateSql(defaultInstrumentId, quoteInstrumentIdSql)} END
+            )
+            FROM ${InstrumentDailyMarketPriceEntityTable}
+            WHERE ${InstrumentDailyMarketPriceEntityTable.instrumentId} = ${instrumentIdRef}
+              AND ${InstrumentDailyMarketPriceEntityTable.deletedAt} IS NULL
+            ORDER BY ${InstrumentDailyMarketPriceEntityTable.priceDate} DESC
+            LIMIT 1
+        )
+    `;
+};
+
+export const getExchangeRateWithHistoricalFallbackSql = (defaultInstrumentId: number, instrumentIdRef: SQL | SQLWrapper | number): SQL =>
+    sql`COALESCE(
+        ${getStoredExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
+        ${getMarketPriceExchangeRateSql(defaultInstrumentId, instrumentIdRef)}
     )`;

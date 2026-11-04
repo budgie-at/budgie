@@ -1,11 +1,12 @@
 import {
     AccountEntityTable,
-    CRYPTO_ACCOUNT_TYPES,
     Db,
     ExchangeRateEntityTable,
+    InstrumentEntityTable,
+    InstrumentTypeEnum,
     getExchangeRateWithHistoricalFallbackSql
 } from '@budgie/contracts';
-import { and, inArray, isNull, sql } from 'drizzle-orm';
+import { and, eq, isNull, ne, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -39,7 +40,7 @@ export class ExchangeRateRepository extends Context.Service<ExchangeRateReposito
                         where: { baseInstrumentId, quoteInstrumentId }
                     })
                 ),
-            findCryptoAccountValuationRates: (quoteInstrumentId: number) =>
+            findUnitAccountValuationRates: (quoteInstrumentId: number) =>
                 Db.query(db =>
                     db
                         .selectDistinct({
@@ -47,7 +48,8 @@ export class ExchangeRateRepository extends Context.Service<ExchangeRateReposito
                             rate: sql<number | null>`${getExchangeRateWithHistoricalFallbackSql(quoteInstrumentId, outerInstrumentId)}`
                         })
                         .from(AccountEntityTable)
-                        .where(and(inArray(AccountEntityTable.type, CRYPTO_ACCOUNT_TYPES), isNull(AccountEntityTable.deletedAt)))
+                        .innerJoin(InstrumentEntityTable, eq(InstrumentEntityTable.id, AccountEntityTable.instrumentId))
+                        .where(and(ne(InstrumentEntityTable.type, InstrumentTypeEnum.FIAT), isNull(AccountEntityTable.deletedAt)))
                 )
         };
     })

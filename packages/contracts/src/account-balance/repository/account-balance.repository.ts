@@ -19,6 +19,7 @@ import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { BankIntegrationEntityTable } from '../../bank-integration/table/bank-integration-entity.table';
 import { DebtEventDirectionEnum } from '../../debt-event/enum/debt-event-direction.enum';
 import { DebtEventEntityTable } from '../../debt-event/table/debt-event-entity.table';
+import { InstrumentTypeEnum } from '../../instrument/enum/instrument-type.enum';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
 import { SyncModeEnum } from '../../sync/enum/sync-mode.enum';
 import { SyncEntityTable } from '../../sync/table/sync-entity.table';
@@ -40,8 +41,10 @@ const buildFiatExchangeRateConversionSql = (defaultInstrumentId: number) =>
 const buildStrictExchangeRateConversionSql = (defaultInstrumentId: number) =>
     getExchangeRateWithHistoricalFallbackSql(defaultInstrumentId, sql.raw('accounts.instrument_id'));
 
+const isUnitAccountSql = sql`(${inArray(AccountEntityTable.type, CRYPTO_ACCOUNT_TYPES)} OR EXISTS (SELECT 1 FROM ${InstrumentEntityTable} WHERE ${InstrumentEntityTable.id} = ${AccountEntityTable.instrumentId} AND ${InstrumentEntityTable.type} != ${InstrumentTypeEnum.FIAT}))`;
+
 const buildNetWorthExchangeRateConversionSql = (defaultInstrumentId: number) =>
-    sql`CASE WHEN ${inArray(AccountEntityTable.type, CRYPTO_ACCOUNT_TYPES)} THEN ${buildStrictExchangeRateConversionSql(defaultInstrumentId)} ELSE ${buildFiatExchangeRateConversionSql(defaultInstrumentId)} END`;
+    sql`CASE WHEN ${isUnitAccountSql} THEN ${buildStrictExchangeRateConversionSql(defaultInstrumentId)} ELSE ${buildFiatExchangeRateConversionSql(defaultInstrumentId)} END`;
 
 const getActiveAccountWhereSql = (...conditions: SQL[]) =>
     and(...conditions, eq(AccountEntityTable.isActive, true), isNull(AccountEntityTable.deletedAt));
@@ -178,7 +181,7 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                     )
             ),
         getAssetClassTotals: (defaultInstrumentId: number) => {
-            const fiatExchangeRateSql = buildFiatExchangeRateConversionSql(defaultInstrumentId);
+            const fiatExchangeRateSql = buildNetWorthExchangeRateConversionSql(defaultInstrumentId);
             const cryptoExchangeRateSql = buildStrictExchangeRateConversionSql(defaultInstrumentId);
             const balanceSql = getAccountBalanceWithTransactionsSql();
 
@@ -221,6 +224,7 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                         balance: balanceSql,
                         sync: SyncEntityTable,
                         convertedBalance: convertedBalanceSql,
+                        isValued: sql<boolean>`(${exchangeRateSql}) IS NOT NULL`.mapWith(Boolean),
                         convertedDebtOutstandingAmount: convertedDebtProgressSql.outstandingAmount,
                         convertedDebtOverpaidAmount: convertedDebtProgressSql.overpaidAmount,
                         convertedDebtPaidAmount: convertedDebtProgressSql.paidAmount,
@@ -300,10 +304,7 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
             );
         },
         getTotalByAccountType: (defaultInstrumentId: number, accountType: AccountTypeEnum) => {
-            const isCryptoAccountType = CRYPTO_ACCOUNT_TYPES.includes(accountType);
-            const exchangeRateSql = isCryptoAccountType
-                ? buildStrictExchangeRateConversionSql(defaultInstrumentId)
-                : buildFiatExchangeRateConversionSql(defaultInstrumentId);
+            const exchangeRateSql = buildNetWorthExchangeRateConversionSql(defaultInstrumentId);
 
             return Db.query(db =>
                 db
