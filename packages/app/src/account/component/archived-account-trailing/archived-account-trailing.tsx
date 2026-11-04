@@ -1,18 +1,20 @@
 import { AccountEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
+import { EmptyFn } from '@rnw-community/shared';
+
 import { MetaPill } from '../../../@generic/component/meta-pill/meta-pill';
 import { SettingsPillButton } from '../../../settings/components/settings-pill-button/settings-pill-button';
-import { useArchivedAccountActions } from '../../context/archived-account-actions.context';
 import { ArchivedAccountCardSelector } from '../archived-account-card/archived-account-card.selector';
 
 interface Props {
     readonly account: Pick<AccountEntityInterface, 'title' | 'isExternal'>;
+    readonly isLoading: boolean;
+    readonly onRestore: EmptyFn;
 }
 
-export const ArchivedAccountTrailing = ({ account }: Props) => {
+export const ArchivedAccountTrailing = ({ account, isLoading, onRestore }: Props) => {
     const { t } = useLingui();
-    const { isLoading, restore } = useArchivedAccountActions();
     const accountTitle = account.title;
 
     if (account.isExternal) {
@@ -26,7 +28,7 @@ export const ArchivedAccountTrailing = ({ account }: Props) => {
             variant="secondary"
             size="sm"
             isLoading={isLoading}
-            onPress={restore}
+            onPress={onRestore}
             testID={ArchivedAccountCardSelector.RestoreButton(accountTitle)}
         />
     );

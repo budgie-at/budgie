@@ -19,7 +19,7 @@ import { BudgetFundDueField } from '../budget-fund-due-field/budget-fund-due-fie
 import { BudgetFundPreview } from '../budget-fund-preview/budget-fund-preview';
 import { BudgetFundRepeatField } from '../budget-fund-repeat-field/budget-fund-repeat-field';
 import { BudgetFundSuggestionBanner } from '../budget-fund-suggestion-banner/budget-fund-suggestion-banner';
-import { BudgetFundTargetField } from '../budget-fund-target-field/budget-fund-target-field';
+import { BudgetHeroAmountField } from '../budget-hero-amount-field/budget-hero-amount-field';
 import { BudgetNameField } from '../budget-name-field/budget-name-field';
 
 import type { BudgetEntityInterface } from '@budgie/contracts';
@@ -61,7 +61,13 @@ export const BudgetFundForm = ({ budget, editingId }: Props) => {
                     {isDefined(suggestion) ? (
                         <BudgetFundSuggestionBanner suggestion={suggestion} currencySymbol={currencySymbol} onUse={handleUseSuggestion} />
                     ) : null}
-                    <BudgetFundTargetField currencySymbol={currencySymbol} />
+                    <BudgetHeroAmountField
+                        control={form.control}
+                        name="targetAmount"
+                        label={t`Amount to set aside`}
+                        currencySymbol={currencySymbol}
+                        testID={BudgetSelector.FundTargetInput}
+                    />
                     <GroupedListSection>
                         <BudgetNameField
                             control={form.control}

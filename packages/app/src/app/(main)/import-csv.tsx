@@ -20,7 +20,7 @@ import { useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { BottomChromeInsetProvider, ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
-import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { GroupedListSection } from '../../@generic/component/grouped-list-section/grouped-list-section';
 import { GroupedSurface } from '../../@generic/component/grouped-surface/grouped-surface';
@@ -122,9 +122,14 @@ export default function ImportScreen() {
                 const ruleApplicationDrainerService = yield* RuleApplicationDrainerService;
 
                 yield* YIELD_TO_UI;
-                const { transactionIds, transactions } = yield* importerService.replaceAll(columnMap, csvText);
+                const { transactionIds, transactions, rowErrors } = yield* importerService.replaceAll(columnMap, csvText);
                 yield* ruleApplicationDrainerService.enqueueTransactions(transactionIds, transactions);
 
+                if (isNotEmptyArray(rowErrors)) {
+                    const importedCount = transactionIds.length;
+                    const failedCount = rowErrors.length;
+                    showErrorToast(t`CSV import`, t`${importedCount} imported, ${failedCount} failed`);
+                }
                 router.back();
             }).pipe(toastOnFailure(t`Could not import CSV file`))
         );

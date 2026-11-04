@@ -22,9 +22,7 @@ export const TruncateData = () => {
         t`Could not delete data`
     );
 
-    const handleTruncate = () => run(Effect.flatMap(AppResetService, appResetService => appResetService.clearAllDataAndRestart()));
-
-    const handlePress = () => void handleTruncate();
+    const handlePress = () => void run(Effect.flatMap(AppResetService, appResetService => appResetService.clearAllDataAndRestart()));
 
     return (
         <SettingsRow

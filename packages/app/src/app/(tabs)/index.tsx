@@ -51,7 +51,7 @@ export default function HomePage() {
                     activeAccountCount={activeAccountCount}
                     isLoading={isLoading}
                     bottomInset={bottom}
-                    balanceSummary={balanceSummary}
+                    balancesByAccountId={balanceSummary.balancesByAccountId}
                     listHeaderComponent={listHeaderComponent}
                 />
             </GroupedSurface>

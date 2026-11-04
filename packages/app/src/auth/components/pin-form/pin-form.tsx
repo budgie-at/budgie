@@ -114,7 +114,7 @@ export const PinForm = ({
 
                     <PinFormButton digit="0" onPress={onDigitPress} disabled={isDisabled} />
 
-                    <PinFormDeleteButton isVisible={canDelete} onPress={onDeletePress} />
+                    <PinFormDeleteButton {...(canDelete && { onPress: onDeletePress })} />
                 </View>
             </View>
 
