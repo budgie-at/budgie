@@ -1,7 +1,20 @@
 import { tapUntil } from '@mobile-ci/e2e-simlock/steps';
 import { expect } from 'e2e';
 
-import { byId, byText, done, expectId, expectNoId, openLink, scrollTo, scrollToCentered, sleep, tapId, type Ctx } from './core.ts';
+import {
+    byId,
+    byText,
+    done,
+    expectId,
+    expectNoId,
+    openLink,
+    scrollTo,
+    scrollToCentered,
+    scrollToCentre,
+    sleep,
+    tapId,
+    type Ctx
+} from './core.ts';
 
 import type { Locator } from 'e2e';
 
@@ -483,31 +496,6 @@ export async function setDepositTerms(ctx: Ctx, rate: string, maturityDay: strin
 /** Taps the account form's submit button once it is enabled, retrying a tap that does not take, until `waitId` shows. */
 export async function submitAccountFormUntil(ctx: Ctx, waitId: string, timeout = 15_000): Promise<void> {
     await submitAccountForm(ctx, () => expectId(ctx, waitId, timeout));
-}
-
-/**
- * Maestro's `scrollUntilVisible … centerElement: true`: scroll `testId` into view, then drag the content until
- * the node sits in the middle third of the screen, clear of the floating tab bar and header that cover taps at the edges.
- */
-export async function scrollToCentre(ctx: Ctx, testId: string, direction: 'up' | 'down' = 'down'): Promise<void> {
-    const node = byId(ctx.screen, testId);
-    if (!(await node.isVisible())) {
-        await scrollTo(ctx, testId, direction);
-    }
-    for (let i = 0; i < 3; i++) {
-        const box = await node.boundingBox();
-        if (box === null) {
-            return;
-        }
-        const centre = box.y + box.height / 2;
-        const delta = Math.round(centre - 437);
-        if (Math.abs(delta) < 150) {
-            return;
-        }
-        const step = Math.max(-300, Math.min(300, delta));
-        await ctx.screen.swipe({ from: { x: 201, y: 500 }, to: { x: 201, y: 500 - step }, duration: 400 });
-        await sleep(400);
-    }
 }
 
 /**

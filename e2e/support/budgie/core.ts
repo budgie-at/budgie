@@ -1,5 +1,13 @@
 import { leaseIdForUdid, simlockApiFromEnv, type SimlockApi } from '@mobile-ci/e2e-simlock/exec';
-import { byId, done, scrollTo as scrollToLocator, tapUntil as tapLocatorUntil } from '@mobile-ci/e2e-simlock/steps';
+import {
+    byId,
+    done,
+    retry,
+    scrollTo as scrollToLocator,
+    scrollToCentered as scrollToCenteredId,
+    scrollToMiddle,
+    tapUntil as tapLocatorUntil
+} from '@mobile-ci/e2e-simlock/steps';
 import { expect } from 'e2e';
 
 import { clearDatabase, ensureFixtures, seedDatabase } from './fixtures.ts';
@@ -16,7 +24,10 @@ export interface Ctx {
 
 export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-export { byId, done };
+export { byId, done, retry };
+
+/** iPhone 17 Pro, the one device the suite leases, in the points `boundingBox()` reports. */
+const VIEWPORT_HEIGHT = 874;
 
 /** Maestro's text selectors are case-insensitive regexes matching the whole string; this is the exact-text form most flows mean. */
 export const byText = (screen: Screen, text: string | RegExp): Locator => screen.getByText(text).first();
@@ -65,21 +76,14 @@ export async function tapUntil(ctx: Ctx, testId: string, next: () => Promise<voi
     await tapLocatorUntil(byId(ctx.screen, testId), next);
 }
 
-/**
- * Maestro's `centerElement`: scroll `testId` in, then drag it out of the bottom band where the floating action button
- * and tab bar cover it. The drag starts at a fixed point clear of both, and a list that cannot scroll further is left
- * as it is. The package's `scrollToCentered` drags from the node itself and fails at the list's end
- * (rnw-community/mobile-ci#314).
- */
+/** Maestro's `centerElement`: drags `testId` out of the bottom band where the floating action button and tab bar cover it, along a column clear of the settings switches. */
 export async function scrollToCentered(ctx: Ctx, testId: string): Promise<void> {
-    await scrollTo(ctx, testId);
-    const box = await byId(ctx.screen, testId).boundingBox();
-    if (box === null || box.y + box.height / 2 < 560) {
-        return;
-    }
-    const x = 200;
-    await ctx.screen.swipe({ from: { x, y: 600 }, to: { x, y: 600 - (box.y + box.height / 2 - 437) }, duration: 600 });
-    await sleep(600);
+    await scrollToCenteredId(ctx, testId, { viewportHeight: VIEWPORT_HEIGHT, bottomBandPx: 314, dragX: 200 });
+}
+
+/** Maestro's `scrollUntilVisible … centerElement: true`: brings `testId` to the middle third, clear of the floating tab bar and header that cover taps at the edges. */
+export async function scrollToCentre(ctx: Ctx, testId: string, direction: 'up' | 'down' = 'down'): Promise<void> {
+    await scrollToMiddle(ctx, testId, { viewportHeight: VIEWPORT_HEIGHT, direction, dragX: 201 });
 }
 
 /** Clears iOS's "Open in “budgie”?" prompt that the first custom-scheme link on a fresh simulator shows. */

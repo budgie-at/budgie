@@ -1,4 +1,5 @@
 // Port of tests/app-tests/flows/31.budget.flow.yaml.
+import { scrollAbove } from '@mobile-ci/e2e-simlock/steps';
 import { expect } from 'e2e';
 
 import * as bu from '../support/budgie/budget.ts';
@@ -206,7 +207,7 @@ test('31 budget', { tags: ['budget'] }, async ({ budgie }) => {
     await b.phase('delete budget', async () => {
         await openBudgetCard();
         await bu.openEditBudget(ctx);
-        await bu.scrollAboveFooter(ctx, 'BudgetSetup.DeleteButton');
+        await scrollAbove(ctx, 'BudgetSetup.DeleteButton', b.byId(screen, 'BudgetSetup.SaveButton'));
         await b.tapId(ctx, 'BudgetSetup.DeleteButton');
         await expect(b.byText(screen, 'Delete budget?')).toBeVisible({ timeout: 3_000 });
         await screen.getByText('Delete').last().tap();
