@@ -41,7 +41,7 @@ const buildHeaderItems = (statementDate: string): PdfTextItemInterface[] => [
 ];
 
 const buildHoldingItems = (holding: InzhurStatementHoldingInterface, top: number): PdfTextItemInterface[] => {
-    const { layout, quantity } = holding;
+    const { layout, quantity, isTotalMerged = false } = holding;
     const nominalText = `${layout.nominalValue.toFixed(2).replace('.', ',')} (UAH)`;
 
     return [
@@ -50,8 +50,9 @@ const buildHoldingItems = (holding: InzhurStatementHoldingInterface, top: number
         ...TYPE_LINES.map((line, index) => item(top - index * LINE_HEIGHT, X_TYPE, line)),
         item(top, X_ISIN, layout.isin),
         item(top, X_NOMINAL, nominalText),
-        item(top, X_QUANTITY, formatSpaced(quantity)),
-        item(top, X_TOTAL, formatSpaced(quantity * layout.nominalValue)),
+        ...(isTotalMerged
+            ? [item(top, X_QUANTITY, `${formatSpaced(quantity)} ${formatSpaced(quantity * layout.nominalValue)}`)]
+            : [item(top, X_QUANTITY, formatSpaced(quantity)), item(top, X_TOTAL, formatSpaced(quantity * layout.nominalValue))]),
         ...X_BLOCKED.map(x => item(top, x, '0'))
     ];
 };

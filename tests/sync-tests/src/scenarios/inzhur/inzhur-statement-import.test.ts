@@ -196,6 +196,30 @@ describe('inzhur/statement-import', () => {
         }).pipe(Effect.provide(makeInzhurFollowUpLayer(1050, 2)))
     );
 
+    it.effect('reads the quantity from a row whose quantity and total face value are merged into one text item', () =>
+        Effect.gen(function* () {
+            const inzhurSetupService = yield* InzhurSetupService;
+            yield* inzhurSetupService.setup(0);
+
+            yield* importInzhurStatement(FIRST_URI);
+
+            const reitAccount = yield* requireInzhurFundAccount(INZHUR_REIT_LAYOUT.isin);
+            const energyAccount = yield* requireInzhurFundAccount(INZHUR_ENERGY_LAYOUT.isin);
+
+            expect(yield* fetchAccountBalance(reitAccount.id)).toBe(2283 * PRECISION);
+            expect(yield* fetchAccountBalance(energyAccount.id)).toBe(3 * PRECISION);
+        }).pipe(
+            Effect.provide(
+                makeInzhurLayer({
+                    [FIRST_URI]: buildInzhurStatementItems(FIRST_DATE, [
+                        { layout: INZHUR_REIT_LAYOUT, quantity: 2283 },
+                        { layout: INZHUR_ENERGY_LAYOUT, quantity: 3, isTotalMerged: true }
+                    ])
+                })
+            )
+        )
+    );
+
     it.effect('needs no price for the baseline statement', () =>
         Effect.gen(function* () {
             const inzhurSetupService = yield* InzhurSetupService;

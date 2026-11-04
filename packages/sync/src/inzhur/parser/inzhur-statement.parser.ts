@@ -134,7 +134,7 @@ class InzhurStatementParser {
     }
 
     private parseQuantity(tokens: readonly string[], isin: string): Result.Result<number, string> {
-        const { NOMINAL_REGEX, NUMBER_REGEX, TOTAL_TOLERANCE } = InzhurStatementParser;
+        const { NOMINAL_REGEX, NUMBER_REGEX } = InzhurStatementParser;
         const nominalIndex = tokens.findIndex(token => NOMINAL_REGEX.test(token));
         const nominalMatch = nominalIndex >= 0 ? NOMINAL_REGEX.exec(tokens[nominalIndex]) : null;
 
@@ -151,13 +151,50 @@ class InzhurStatementParser {
             return Result.fail(`Quantity not found for ${isin}`);
         }
 
-        const quantity = this.parseNumber(quantityText);
-        const isTotalInconsistent =
-            isDefined(totalText) &&
-            NUMBER_REGEX.test(totalText) &&
-            Math.abs(quantity * this.parseNumber(nominalText) - this.parseNumber(totalText)) > TOTAL_TOLERANCE;
+        return this.resolveQuantity(quantityText, totalText, this.parseNumber(nominalText), isin);
+    }
 
-        return isTotalInconsistent ? Result.fail(`Quantity does not match total face value for ${isin}`) : Result.succeed(quantity);
+    private resolveQuantity(
+        quantityText: string,
+        totalText: string | undefined,
+        nominal: number,
+        isin: string
+    ): Result.Result<number, string> {
+        const plainQuantity = this.parseNumber(quantityText);
+        const hasSeparateTotal = isDefined(totalText) && InzhurStatementParser.NUMBER_REGEX.test(totalText);
+
+        if (hasSeparateTotal && this.matchesTotal(plainQuantity, nominal, totalText)) {
+            return Result.succeed(plainQuantity);
+        }
+
+        const mergedQuantities = this.findMergedQuantities(quantityText, nominal);
+
+        if (mergedQuantities.length === 1) {
+            return Result.succeed(mergedQuantities[0]);
+        }
+
+        return isEmptyArray(mergedQuantities) && !hasSeparateTotal
+            ? Result.succeed(plainQuantity)
+            : Result.fail(`Quantity does not match total face value for ${isin}`);
+    }
+
+    private matchesTotal(quantity: number, nominal: number, total: string): boolean {
+        const { NUMBER_REGEX, TOTAL_TOLERANCE } = InzhurStatementParser;
+
+        return NUMBER_REGEX.test(total) && Math.abs(quantity * nominal - this.parseNumber(total)) <= TOTAL_TOLERANCE;
+    }
+
+    private findMergedQuantities(mergedText: string, nominal: number): number[] {
+        const groups = mergedText.split(/[\s\u00A0]+/u);
+
+        return groups
+            .slice(1)
+            .map((_, index) => ({
+                quantityText: groups.slice(0, index + 1).join(' '),
+                totalText: groups.slice(index + 1).join(' ')
+            }))
+            .filter(({ quantityText, totalText }) => this.matchesTotal(this.parseNumber(quantityText), nominal, totalText))
+            .map(({ quantityText }) => this.parseNumber(quantityText));
     }
 
     private parseHolding(
