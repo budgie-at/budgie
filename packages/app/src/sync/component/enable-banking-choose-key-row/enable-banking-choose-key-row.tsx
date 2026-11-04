@@ -13,6 +13,7 @@ import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useExplainEnableBankingError } from '../../hook/use-explain-enable-banking-error.hook';
 import { EnableBankingConnectionService } from '../../service/enable-banking-connection.service';
+import { EnableBankingConnectionCardSelector } from '../enable-banking-connection-card/enable-banking-connection-card.selector';
 
 interface Props {
     readonly applicationId: string;
@@ -45,6 +46,7 @@ export const EnableBankingChooseKeyRow = ({ applicationId }: Props) => {
             title={<Text className="text-primary text-[17px] font-semibold">{t`Choose key file again`}</Text>}
             subtitle={t`The key is missing or was rejected.`}
             onPress={handlePress}
+            testID={EnableBankingConnectionCardSelector.ChooseKey}
         />
     );
 };

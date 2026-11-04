@@ -10,6 +10,7 @@ import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useBankIntegration } from '../../context/bank-integration.context';
 import { useExplainEnableBankingError } from '../../hook/use-explain-enable-banking-error.hook';
 import { EnableBankingConnectionService } from '../../service/enable-banking-connection.service';
+import { EnableBankingConnectionCardSelector } from '../enable-banking-connection-card/enable-banking-connection-card.selector';
 
 interface Props {
     readonly subtitle: string;
@@ -35,6 +36,7 @@ export const EnableBankingReauthorizeRow = ({ subtitle }: Props) => {
             title={<Text className="text-primary text-[17px] font-semibold">{t`Authorize again`}</Text>}
             subtitle={<Text className="text-secondary-foreground text-[13px] leading-[18px]">{subtitle}</Text>}
             onPress={handlePress}
+            testID={EnableBankingConnectionCardSelector.Reauthorize}
         />
     );
 };

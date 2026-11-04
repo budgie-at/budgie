@@ -118,3 +118,5 @@ export { UnpairedOwnCardTransferRepairService } from './privatbank/service/unpai
 export { PRIVATBANK_DUPLICATE_CANDIDATE_SQL } from './privatbank/constant/privatbank-duplicate-candidate-sql.constant';
 export type { SyncError } from './core/interface/sync-error.type';
 export type { SyncDuplicateRepairPreviewInterface } from './core/interface/sync-duplicate-repair-preview.interface';
+
+export { installE2eFakeApi } from './e2e/e2e-fake-api';
