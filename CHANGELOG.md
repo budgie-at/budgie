@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.151.3](https://github.com/budgie-at/budgie/compare/v6.151.2...v6.151.3) (2026-11-04)
+
+### Bug Fixes
+
+* **app:** stop recording unconfirmed backup saves ([#1923](https://github.com/budgie-at/budgie/issues/1923)) ([b7106ef](https://github.com/budgie-at/budgie/commit/b7106ef162159e3fd6f473fe606f6b633881daef))
+* **sync:** apply account rules after card reissue merges ([7c7b450](https://github.com/budgie-at/budgie/commit/7c7b450e7cb0d1f2fc0c0243e95864dae8486c9f))
+* **sync:** preserve Binance P2P commission fields ([8bd085a](https://github.com/budgie-at/budgie/commit/8bd085a37431cc79b0109e8e65e57f19d484cb8e))
+
+
 ## [6.151.2](https://github.com/budgie-at/budgie/compare/v6.151.1...v6.151.2) (2026-11-04)
 
 ### Bug Fixes
