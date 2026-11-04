@@ -128,9 +128,14 @@ export default function ImportScreen() {
                 const ruleApplicationDrainerService = yield* RuleApplicationDrainerService;
 
                 yield* YIELD_TO_UI;
-                const { transactionIds, transactions } = yield* importerService.replaceAll(columnMap, csvText);
+                const { transactionIds, transactions, rowErrors } = yield* importerService.replaceAll(columnMap, csvText);
                 yield* ruleApplicationDrainerService.enqueueTransactions(transactionIds, transactions);
 
+                if (isNotEmptyArray(rowErrors)) {
+                    const importedCount = transactionIds.length;
+                    const failedCount = rowErrors.length;
+                    showErrorToast(t`CSV import`, t`${importedCount} imported, ${failedCount} failed`);
+                }
                 router.back();
             }).pipe(toastOnFailure(t`Could not import CSV file`))
         );
