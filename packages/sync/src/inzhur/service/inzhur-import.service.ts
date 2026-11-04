@@ -10,6 +10,7 @@ import {
     InstrumentPriceProviderEnum,
     InstrumentRepository,
     InstrumentTypeEnum,
+    INVESTMENTS_CATEGORY_ID,
     SyncModeEnum,
     SyncRepository,
     TransactionEntryKindEnum,
@@ -73,7 +74,6 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
         const transactionService = yield* TransactionService;
         const transferCreationService = yield* TransferCreationService;
         const provider = ExternalSourceEnum.INZHUR;
-        const investmentsCategoryId = 19;
         const statementNoonSuffix = 'T12:00:00.000Z';
 
         const readBalance = Effect.fnUntraced(function* (accountId: number) {
@@ -322,7 +322,7 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
                                 dividendByAccountId.get(plan.account.id) ?? 0,
                                 externalId
                             ),
-                            categoryId: investmentsCategoryId
+                            categoryId: INVESTMENTS_CATEGORY_ID
                         }
                     ]);
                 });
