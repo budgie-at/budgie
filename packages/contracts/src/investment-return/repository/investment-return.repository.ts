@@ -1,4 +1,4 @@
-import { SQL, and, eq, gt, isNull, ne, or, sql } from 'drizzle-orm';
+import { SQL, and, desc, eq, gt, isNull, ne, or, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -8,6 +8,7 @@ import { Db } from '../../@generic/service/db.service';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { INVESTMENTS_CATEGORY_ID } from '../../category/constant/investments-category-id.constant';
+import { InstrumentDailyMarketPriceEntityTable } from '../../instrument-daily-market-price/table/instrument-daily-market-price-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
@@ -44,6 +45,24 @@ export class InvestmentReturnRepository extends Context.Service<InvestmentReturn
                                 )
                             )
                     ).pipe(Effect.map((rows): FundDividendTotalsInterface => rows.at(0) ?? { bank: 0, reinvested: 0 })),
+
+                findLatestPrice: (instrumentId: number) =>
+                    Db.query(db =>
+                        db
+                            .select({
+                                price: InstrumentDailyMarketPriceEntityTable.price,
+                                priceDate: InstrumentDailyMarketPriceEntityTable.priceDate
+                            })
+                            .from(InstrumentDailyMarketPriceEntityTable)
+                            .where(
+                                and(
+                                    eq(InstrumentDailyMarketPriceEntityTable.instrumentId, instrumentId),
+                                    isNull(InstrumentDailyMarketPriceEntityTable.deletedAt)
+                                )
+                            )
+                            .orderBy(desc(InstrumentDailyMarketPriceEntityTable.priceDate))
+                            .limit(1)
+                    ).pipe(Effect.map(rows => rows.at(0) ?? null)),
 
                 countTransfersSince: (accountId: number, since: Date) =>
                     Db.query(db =>
