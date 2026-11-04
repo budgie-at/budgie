@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.151.5](https://github.com/budgie-at/budgie/compare/v6.151.4...v6.151.5) (2026-11-04)
+
+### Bug Fixes
+
+* **consolidation:** chain receipt, Apple Pay and bank merges ([4072ba1](https://github.com/budgie-at/budgie/commit/4072ba1b81c94e6e530e51713c6628119b8b359f))
+* **consolidation:** merge captures that absorbed receipts ([5cc6541](https://github.com/budgie-at/budgie/commit/5cc6541bd15b7185685594dc1f7099866efe5c82))
+
+
 ## [6.151.4](https://github.com/budgie-at/budgie/compare/v6.151.3...v6.151.4) (2026-11-04)
 
 ### Bug Fixes
