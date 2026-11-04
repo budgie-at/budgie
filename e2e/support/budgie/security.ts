@@ -97,7 +97,8 @@ export async function cancelBackupFolderPicker(ctx: Ctx): Promise<void> {
 
 export async function saveBackupToFixtureDirectory(ctx: Ctx): Promise<void> {
     const { screen } = ctx;
+    const fixturesTitle = screen.getByRole('button', { name: 'E2EFixtures, Actions Menu', exact: true }).first();
     await openFolderPickerBrowseTab(ctx);
-    await openE2EFixturesFullPath(ctx, screen.getByTestId(/Title: E2EFixtures$/).first());
+    await openE2EFixturesFullPath(ctx, fixturesTitle, fixturesTitle);
     await screen.getByRole('button', { name: 'Open', exact: true }).last().tap();
 }

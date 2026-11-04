@@ -6,7 +6,7 @@ import * as Layer from 'effect/Layer';
 
 import { bulkUpsert } from '../../@generic/utils/bulk-upsert.util';
 
-import type { HistoricalExchangeRateCreateEntityInterface } from '@budgie/contracts';
+import type { HistoricalExchangeRateEntityInterface } from '@budgie/contracts';
 
 export class HistoricalExchangeRateRepository extends Context.Service<HistoricalExchangeRateRepository>()(
     '@budgie/market/HistoricalExchangeRateRepository',
@@ -15,12 +15,11 @@ export class HistoricalExchangeRateRepository extends Context.Service<Historical
             const buildPairCondition = (sourceInstrumentId: number, targetInstrumentId: number) =>
                 ({
                     sourceInstrumentId,
-                    targetInstrumentId,
-                    deletedAt: { isNull: true }
+                    targetInstrumentId
                 }) as const;
 
             return {
-                bulkUpsert: (inputs: HistoricalExchangeRateCreateEntityInterface[]) =>
+                bulkUpsert: (inputs: HistoricalExchangeRateEntityInterface[]) =>
                     bulkUpsert(
                         HistoricalExchangeRateEntityTable,
                         [
@@ -54,7 +53,6 @@ export class HistoricalExchangeRateRepository extends Context.Service<Historical
                                 and(
                                     eq(HistoricalExchangeRateEntityTable.sourceInstrumentId, sourceInstrumentId),
                                     eq(HistoricalExchangeRateEntityTable.targetInstrumentId, targetInstrumentId),
-                                    isNull(HistoricalExchangeRateEntityTable.deletedAt),
                                     gte(HistoricalExchangeRateEntityTable.rateDate, sinceDate)
                                 )
                             )
