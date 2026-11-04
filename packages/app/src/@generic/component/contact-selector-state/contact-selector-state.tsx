@@ -2,6 +2,8 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { Button } from '../button/button';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { ContactSelectorSelector } from '../contact-selector/contact-selector.selector';
@@ -24,7 +26,7 @@ export const ContactSelectorState = ({ isLoading, title, description, icon, onRe
     const accessibilityState = { busy: isLoading };
 
     return (
-        <View className="items-center gap-y-md" testID={ContactSelectorSelector.State}>
+        <View className="items-center gap-y-[12px]" testID={ContactSelectorSelector.State}>
             <View accessible accessibilityLabel={t`Contacts`} accessibilityState={accessibilityState}>
                 <LoadingContent isLoading={isLoading}>
                     <CircleIcon
@@ -45,7 +47,7 @@ export const ContactSelectorState = ({ isLoading, title, description, icon, onRe
                 <Text className="text-secondary-foreground text-center text-sm leading-[20px]">{description}</Text>
             </View>
             {children}
-            {onRetry ? (
+            {isDefined(onRetry) ? (
                 <Button
                     content={t`Try again`}
                     onPress={onRetry}
