@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.151.5](https://github.com/budgie-at/budgie/compare/v6.151.4...v6.151.5) (2026-11-04)
+
+### Bug Fixes
+
+* **consolidation:** chain receipt, Apple Pay and bank merges ([4072ba1](https://github.com/budgie-at/budgie/commit/4072ba1b81c94e6e530e51713c6628119b8b359f))
+* **consolidation:** merge captures that absorbed receipts ([5cc6541](https://github.com/budgie-at/budgie/commit/5cc6541bd15b7185685594dc1f7099866efe5c82))
+
+
+## [6.151.4](https://github.com/budgie-at/budgie/compare/v6.151.3...v6.151.4) (2026-11-04)
+
+### Bug Fixes
+
+* **sync:** preserve own-card transfers and user edits ([4bc1f09](https://github.com/budgie-at/budgie/commit/4bc1f09f00d66b21fc5c579c85d8be601b395a6a))
+
+
+## [6.151.3](https://github.com/budgie-at/budgie/compare/v6.151.2...v6.151.3) (2026-11-04)
+
+### Bug Fixes
+
+* **app:** stop recording unconfirmed backup saves ([#1923](https://github.com/budgie-at/budgie/issues/1923)) ([b7106ef](https://github.com/budgie-at/budgie/commit/b7106ef162159e3fd6f473fe606f6b633881daef))
+* **sync:** apply account rules after card reissue merges ([7c7b450](https://github.com/budgie-at/budgie/commit/7c7b450e7cb0d1f2fc0c0243e95864dae8486c9f))
+* **sync:** preserve Binance P2P commission fields ([8bd085a](https://github.com/budgie-at/budgie/commit/8bd085a37431cc79b0109e8e65e57f19d484cb8e))
+
+
+## [6.151.2](https://github.com/budgie-at/budgie/compare/v6.151.1...v6.151.2) (2026-11-04)
+
+### Bug Fixes
+
+* **app:** stop a toast from sticking over the back button ([24ac156](https://github.com/budgie-at/budgie/commit/24ac156b870c11f917a57b0ff1fc8f252a573dcb))
+
+
 ## [6.151.1](https://github.com/budgie-at/budgie/compare/v6.151.0...v6.151.1) (2026-11-04)
 
 **Note:** Version bump only for package @budgie-at/root

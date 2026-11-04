@@ -2,12 +2,15 @@ import { Db, makeEffectSqliteClientDatabase, SettingsRepository } from '@budgie/
 import { describe, expect, it } from '@effect/vitest';
 import { withReplicas } from 'drizzle-orm/sqlite-core/effect';
 import * as Cause from 'effect/Cause';
+import * as Deferred from 'effect/Deferred';
 import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
+import * as Fiber from 'effect/Fiber';
 import { identity } from 'effect/Function';
 import * as Layer from 'effect/Layer';
 import * as Reactivity from 'effect/reactivity/Reactivity';
 import * as Ref from 'effect/Ref';
+import * as Semaphore from 'effect/Semaphore';
 import * as SqlClient from 'effect/sql/SqlClient';
 import * as SqlConnection from 'effect/sql/SqlConnection';
 import * as Statement from 'effect/sql/Statement';
@@ -16,6 +19,7 @@ import { beforeEach, vi } from 'vitest';
 
 import { isString } from '@rnw-community/shared';
 
+import { toastOnFailure } from '../src/@generic/utils/toast-on-failure.util';
 import { DatabaseExportService } from '../src/export/service/database-export.service';
 import { DEFAULT_SETTINGS } from '../src/settings/constants/default-settings.constant';
 
@@ -28,7 +32,9 @@ const native = vi.hoisted(() => ({
     picker: vi.fn<() => Promise<Pick<Directory, 'uri'>>>(),
     copy: vi.fn<(destination: string) => Promise<void>>(),
     zip: vi.fn<(paths: string[], destination: string) => Promise<string>>(),
-    share: vi.fn<(uri: string, options?: SharingOptions) => Promise<void>>()
+    share: vi.fn<(uri: string, options?: SharingOptions) => Promise<void>>(),
+    afterCheckpoint: vi.fn<() => Effect.Effect<void>>(),
+    toast: vi.fn<(options: unknown) => void>()
 }));
 
 vi.mock('expo-file-system', () => {
@@ -56,12 +62,27 @@ vi.mock('expo-file-system', () => {
 });
 vi.mock('react-native-zip-archive', () => ({ zip: native.zip }));
 vi.mock('expo-sharing', () => ({ isAvailableAsync: () => Promise.resolve(true), shareAsync: native.share }));
+vi.mock('react-native-toast-message', () => ({ default: { show: native.toast } }));
+
+const checkpointResult = { busy: 0, log: 1, checkpointed: 1 };
 
 const recordStatement = (sql: string) => Effect.sync(() => void events.push(sql)).pipe(Effect.as([]));
 
+const recordRawStatement = Effect.fnUntraced(function* (sql: string) {
+    yield* recordStatement(sql);
+
+    if (sql === 'PRAGMA wal_checkpoint(FULL)') {
+        yield* native.afterCheckpoint();
+
+        return [checkpointResult];
+    }
+
+    return [];
+});
+
 const recordingConnection: SqlConnection.Connection = {
     execute: recordStatement,
-    executeRaw: recordStatement,
+    executeRaw: recordRawStatement,
     executeStream: () => Stream.empty,
     executeValues: recordStatement,
     executeValuesUnprepared: recordStatement,
@@ -69,8 +90,15 @@ const recordingConnection: SqlConnection.Connection = {
 };
 
 const makeExportLayer = Effect.fnUntraced(function* (settingsRef: Ref.Ref<SettingsEntityInterface>) {
+    const connections = SqlClient.makeSqliteAcquirers({
+        connection: Effect.succeed(recordingConnection),
+        semaphore: yield* Semaphore.make(1)
+    });
     const client = yield* SqlClient.make({
-        acquirer: Effect.succeed(recordingConnection),
+        acquirer: connections.acquirer,
+        borrower: run => connections.borrower(run).pipe(Effect.ensuring(Effect.yieldNow)),
+        transactionAcquirer: connections.transactionAcquirer,
+        onCommitFailure: connections.onCommitFailure,
         compiler: Statement.makeCompilerSqlite(),
         driver: 'recording',
         spanAttributes: []
@@ -87,7 +115,8 @@ const makeExportLayer = Effect.fnUntraced(function* (settingsRef: Ref.Ref<Settin
                     )
             })
         ),
-        Layer.provideMerge(Layer.succeed(Db, withReplicas(database, [database])))
+        Layer.provideMerge(Layer.succeed(Db, withReplicas(database, [database]))),
+        Layer.provideMerge(Layer.succeed(SqlClient.SqlClient, client))
     );
 });
 
@@ -97,18 +126,26 @@ const previousSettings = { ...DEFAULT_SETTINGS, lastBackupAt: new Date('2025-01-
 
 const expectFailedBackup = Effect.fnUntraced(function* (failure: Error) {
     const settingsRef = yield* Ref.make<SettingsEntityInterface>(previousSettings);
-    const exit = yield* saveBackup.pipe(Effect.provide(yield* makeExportLayer(settingsRef)), Effect.exit);
+    const exit = yield* saveBackup.pipe(
+        toastOnFailure('Could not create a backup'),
+        Effect.provide(yield* makeExportLayer(settingsRef)),
+        Effect.exit
+    );
 
     expect(Exit.isFailure(exit)).toBe(true);
     if (Exit.isFailure(exit)) {
         expect(Cause.squash(exit.cause)).toBe(failure);
     }
     expect(yield* Ref.get(settingsRef)).toBe(previousSettings);
+    expect(native.toast).toHaveBeenCalledWith({ type: 'error', text1: 'Could not create a backup', text2: failure.message });
 });
 
 describe('DatabaseExportService', () => {
     beforeEach(() => {
         events.splice(0);
+        Object.assign(checkpointResult, { busy: 0, log: 1, checkpointed: 1 });
+        native.afterCheckpoint.mockReset().mockReturnValue(Effect.void);
+        native.toast.mockClear();
         native.picker.mockReset().mockImplementation(() => {
             events.push('picker');
 
@@ -170,7 +207,7 @@ describe('DatabaseExportService', () => {
             })
     );
 
-    it.effect('propagates a failed destination write without updating the date and cleans the cache', () =>
+    it.effect('shows the existing error toast without updating the date when the destination write fails', () =>
         Effect.gen(function* () {
             const failure = new Error('Destination write failed');
             native.copy.mockImplementation((destination: string) =>
@@ -197,6 +234,50 @@ describe('DatabaseExportService', () => {
             native[operation === 'copy' ? 'copy' : 'zip'].mockRejectedValue(failure);
             yield* expectFailedBackup(failure);
             expect(events.filter(event => event === 'cleanup')).toHaveLength(2);
+        })
+    );
+
+    it.effect.each([
+        { method: 'saveBackup', busy: 1, log: 1, checkpointed: 0 },
+        { method: 'exportAndShare', busy: 1, log: 1, checkpointed: 0 },
+        { method: 'saveBackup', busy: 0, log: 2, checkpointed: 1 }
+    ] as const)('rejects an unsafe checkpoint: %s', ({ method, busy, log, checkpointed }) =>
+        Effect.gen(function* () {
+            Object.assign(checkpointResult, { busy, log, checkpointed });
+            const settingsRef = yield* Ref.make<SettingsEntityInterface>(previousSettings);
+            const exit = yield* Effect.flatMap(DatabaseExportService, service => service[method]()).pipe(
+                Effect.provide(yield* makeExportLayer(settingsRef)),
+                Effect.exit
+            );
+
+            expect(Exit.isFailure(exit)).toBe(true);
+            expect(native.copy).not.toHaveBeenCalled();
+            expect(native.zip).not.toHaveBeenCalled();
+            expect(native.share).not.toHaveBeenCalled();
+            expect(yield* Ref.get(settingsRef)).toBe(previousSettings);
+        })
+    );
+
+    it.effect('keeps a competing app write outside the checkpoint-to-copy interval', () =>
+        Effect.gen(function* () {
+            const checkpointReached = yield* Deferred.make<void>();
+            const settingsRef = yield* Ref.make<SettingsEntityInterface>(previousSettings);
+            native.afterCheckpoint.mockReturnValue(Deferred.succeed(checkpointReached, undefined).pipe(Effect.andThen(Effect.yieldNow)));
+            native.copy.mockImplementation(destination =>
+                Promise.resolve().then(() => void events.push(destination.includes('/cache/') ? 'snapshot' : 'saved'))
+            );
+
+            yield* Effect.gen(function* () {
+                const client = yield* SqlClient.SqlClient;
+                const writer = yield* Effect.forkChild(
+                    Deferred.await(checkpointReached).pipe(Effect.andThen(client`INSERT INTO checkpoint_probe VALUES (2)`.raw))
+                );
+
+                yield* saveBackup;
+                yield* Fiber.join(writer);
+            }).pipe(Effect.provide(yield* makeExportLayer(settingsRef)));
+
+            expect(events.indexOf('snapshot')).toBeLessThan(events.indexOf('INSERT INTO checkpoint_probe VALUES (2)'));
         })
     );
 
