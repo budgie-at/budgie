@@ -82,18 +82,12 @@ export const RecurringCalendarEntryRow = ({ entry, position, onPress, dayLabel }
             { text: t`Cancel`, style: 'cancel' }
         ]);
 
-    const dismissConfirmation = {
-        title: t`Dismiss recurring payment?`,
-        description: t`It will no longer appear in the calendar.`,
-        buttonText: t`Dismiss`
-    };
-
     return (
         <TransactionRowSurface position={position}>
             {isRenaming ? (
                 <RecurringSeriesTitleInput seriesId={entry.seriesId} title={entry.title} onDone={handleRenameDone} />
             ) : (
-                <DeletableRow id={entry.seriesId} onDelete={handleDismiss} confirmation={dismissConfirmation}>
+                <DeletableRow id={entry.seriesId} onDelete={handleDismiss} label={t`Dismiss`}>
                     <HapticPressable
                         className="px-3xl py-xl active:scale-100 active:opacity-70"
                         testID={RecurringCalendarSelector.Row(entry.title)}
@@ -104,10 +98,10 @@ export const RecurringCalendarEntryRow = ({ entry, position, onPress, dayLabel }
                             icon={<CircleIcon size={36} iconSize={18} radius={18} border={false} icon={icon} variant="secondary" />}
                             amount={<Text className="text-[15px] font-semibold text-primary tabular-nums">{formattedAmount}</Text>}
                         >
-                            <Text className="text-[15px] font-semibold text-primary" numberOfLines={1}>
+                            <Text className="text-[15px] font-semibold text-primary" numberOfLines={2}>
                                 {entry.title}
                             </Text>
-                            <Text className="text-[13px] text-secondary-foreground" numberOfLines={1}>
+                            <Text className="text-[13px] text-secondary-foreground" numberOfLines={2}>
                                 {description}
                             </Text>
                         </TransactionRowLayout>

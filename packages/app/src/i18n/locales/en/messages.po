@@ -1323,8 +1323,8 @@ msgid "All past amounts are converted"
 msgstr "All past amounts are converted"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-msgid "All Recurring"
-msgstr "All Recurring"
+msgid "All recurring"
+msgstr "All recurring"
 
 #: src/import/utils/get-import-required-footer.util.ts
 msgid "All required fields matched. Tap a field to change it."
@@ -1766,10 +1766,6 @@ msgstr "Between"
 #: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
 msgid "Between {lowestCount} and {MAX_INSTALLMENT_COUNT} months"
 msgstr "Between {lowestCount} and {MAX_INSTALLMENT_COUNT} months"
-
-#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
-msgid "Billing Dates"
-msgstr "Billing Dates"
 
 #: src/account/constant/bank-provider-title.constant.ts
 #: src/app/(main)/create-account/index.tsx
@@ -3130,10 +3126,6 @@ msgstr "Day {elapsedDays} of {totalDays}. {overLabel}."
 msgid "Day {periodStartDay} of each month"
 msgstr "Day {periodStartDay} of each month"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-msgid "Day {selectedDay}"
-msgstr "Day {selectedDay}"
-
 #: src/account/component/deposit-details-card/deposit-details-card.tsx
 msgid "Days Remaining"
 msgstr "Days Remaining"
@@ -3360,10 +3352,6 @@ msgstr "Different Binance account"
 #: src/wallet-capture/hook/use-wallet-capture-settings.hook.ts
 msgid "Dismiss"
 msgstr "Dismiss"
-
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
-msgid "Dismiss recurring payment?"
-msgstr "Dismiss recurring payment?"
 
 #: src/wallet-capture/hook/use-wallet-capture-settings.hook.ts
 msgid "Dismiss Wallet capture?"
@@ -3834,6 +3822,10 @@ msgstr "Exchange rate not found"
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "Exchange rate: {rateLabel}"
 msgstr "Exchange rate: {rateLabel}"
+
+#: src/transaction/components/recurring-calendar-grid/recurring-calendar-grid.tsx
+msgid "Expected"
+msgstr "Expected"
 
 #: src/budget/components/budget-limit-source-field/budget-limit-source-field.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
@@ -4500,10 +4492,6 @@ msgstr "Is not"
 msgid "It encrypts everything in Budgie. Pick one you'll remember but others won't guess."
 msgstr "It encrypts everything in Budgie. Pick one you'll remember but others won't guess."
 
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
-msgid "It will no longer appear in the calendar."
-msgstr "It will no longer appear in the calendar."
-
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "It's the only key to your file. There's no account and no copy on a server, so there's nothing to reset it from."
 msgstr "It's the only key to your file. There's no account and no copy on a server, so there's nothing to reset it from."
@@ -5017,10 +5005,6 @@ msgstr "Monthly"
 msgid "Monthly budget"
 msgstr "Monthly budget"
 
-#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
-msgid "Monthly Costs"
-msgstr "Monthly Costs"
-
 #: src/runway/component/runway-history-chart/runway-history-chart.tsx
 msgid "Monthly history"
 msgstr "Monthly history"
@@ -5209,6 +5193,10 @@ msgstr "Next field"
 msgid "next month"
 msgstr "next month"
 
+#: src/transaction/components/recurring-calendar-grid/recurring-calendar-grid.tsx
+msgid "Next month"
+msgstr "Next month"
+
 #: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
 msgid "Next payment"
 msgstr "Next payment"
@@ -5365,9 +5353,12 @@ msgid "No receipt found"
 msgstr "No receipt found"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
 msgid "No recurring payments detected"
 msgstr "No recurring payments detected"
+
+#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
+msgid "No recurring payments this month"
+msgstr "No recurring payments this month"
 
 #: src/@generic/component/selector-search-empty-state/selector-search-empty-state.tsx
 msgid "No results for “{query}”"
@@ -6179,6 +6170,10 @@ msgstr "Press and hold to seal"
 msgid "Previous field"
 msgstr "Previous field"
 
+#: src/transaction/components/recurring-calendar-grid/recurring-calendar-grid.tsx
+msgid "Previous month"
+msgstr "Previous month"
+
 #: src/transaction/components/statistics-change-label/statistics-change-label.tsx
 msgid "previous period"
 msgstr "previous period"
@@ -6391,10 +6386,19 @@ msgstr "Record card taps with Shortcuts"
 msgid "Record expense"
 msgstr "Record expense"
 
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/transaction/components/recurring-calendar-grid/recurring-calendar-grid.tsx
+msgid "Recorded"
+msgstr "Recorded"
+
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx
 #: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
 msgid "Recurring"
 msgstr "Recurring"
+
+#: src/transaction/components/recurring-series-title-input/recurring-series-title-input.tsx
+msgid "Recurring payment name"
+msgstr "Recurring payment name"
 
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
@@ -7289,10 +7293,6 @@ msgstr "Stocks"
 msgid "Storage"
 msgstr "Storage"
 
-#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
-msgid "Subscriptions"
-msgstr "Subscriptions"
-
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-learned-transfer-option/categorize-inbox-group-learned-transfer-option.tsx
 msgid "Suggested"
@@ -7849,6 +7849,7 @@ msgstr "To set aside this period"
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 #: src/budget/components/budget-day-strip-key/budget-day-strip-key.tsx
 #: src/market-data/hook/use-market-chart-timeline.hook.ts
+#: src/transaction/components/recurring-calendar-grid/recurring-calendar-grid.tsx
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
 #: src/transaction/query/use-get-transaction-sections.query.ts
 #: src/widget/service/widget-snapshot-builder.service.ts

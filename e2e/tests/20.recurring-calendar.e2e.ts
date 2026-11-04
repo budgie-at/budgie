@@ -12,6 +12,9 @@ test('20 recurring calendar', { tags: ['recurring'] }, async ({ budgie }) => {
         if (await id('RecurringCalendar.UpcomingHeader').isVisible()) {
             await expect(id('RecurringCalendar.UpcomingHeader')).toBeVisible();
             await expect(id('RecurringCalendar.Row.E2E_Recurring_Gym')).toBeVisible();
+            await b.scrollTo(ctx, 'RecurringCalendar.RecordedHeader');
+            await b.expectId(ctx, 'RecurringCalendar.Row.E2E_Recurring_Rent');
+            await b.scrollTo(ctx, 'RecurringCalendar.MonthLabel', 'up');
         }
     };
 
@@ -45,5 +48,19 @@ test('20 recurring calendar', { tags: ['recurring'] }, async ({ budgie }) => {
         await b.expectId(ctx, 'RecurringCalendar.AllRecurringHeader', 5_000);
         await b.expectId(ctx, 'RecurringCalendar.Row.E2E_Recurring_Rent');
         await b.expectId(ctx, 'RecurringCalendar.Row.E2E_Recurring_Gym');
+    });
+    await b.phase('empty month retains navigation', async () => {
+        for (let month = 0; month < 3; month += 1) {
+            await b.tapId(ctx, 'RecurringCalendar.PreviousMonthButton');
+        }
+        await b.scrollTo(ctx, 'RecurringCalendar.EmptyMonth');
+        await b.expectId(ctx, 'RecurringCalendar.EmptyMonth');
+        await b.scrollTo(ctx, 'RecurringCalendar.MonthLabel', 'up');
+        await b.expectId(ctx, 'RecurringCalendar.NextMonthButton');
+        for (let month = 0; month < 3; month += 1) {
+            await b.tapId(ctx, 'RecurringCalendar.NextMonthButton');
+        }
+        await b.scrollTo(ctx, 'RecurringCalendar.Row.E2E_Recurring_Rent');
+        await b.expectId(ctx, 'RecurringCalendar.Row.E2E_Recurring_Rent');
     });
 });

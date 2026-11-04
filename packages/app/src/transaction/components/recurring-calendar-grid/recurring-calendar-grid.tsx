@@ -1,4 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { useLingui, Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 import { Directions, Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { runOnJS } from 'react-native-reanimated';
@@ -31,6 +32,7 @@ interface Props {
 export const RecurringCalendarGrid = (props: Props) => {
     const { entriesByDay, forecastedEntriesByDay, selectedDay, onSelectDay, displayMonth, displayYear, onChangeMonth } = props;
 
+    const { t } = useLingui();
     const { languageTag } = useLocaleInfo();
     const now = useToday();
     const currentMonth = now.getMonth();
@@ -52,6 +54,8 @@ export const RecurringCalendarGrid = (props: Props) => {
         onChangeMonth(newYear, newMonth);
     };
 
+    const handleCurrentMonth = () => void onChangeMonth(currentYear, currentMonth);
+
     const handleNextMonth = () => {
         if (isCurrentMonthDisplayed) {
             return;
@@ -63,7 +67,8 @@ export const RecurringCalendarGrid = (props: Props) => {
         onChangeMonth(newYear, newMonth);
     };
 
-    const nextChevronClassName = isCurrentMonthDisplayed ? 'text-secondary-foreground opacity-30' : 'text-primary';
+    const nextMonthAccessibilityState = { disabled: isCurrentMonthDisplayed };
+    const nextChevronClassName = isCurrentMonthDisplayed ? 'text-secondary-foreground opacity-0' : 'text-primary';
 
     const swipeLeft = Gesture.Fling()
         .direction(Directions.LEFT)
@@ -111,19 +116,31 @@ export const RecurringCalendarGrid = (props: Props) => {
                 <View className="flex-row items-center justify-between">
                     <HapticPressable
                         onPress={handlePrevMonth}
+                        accessibilityRole="button"
+                        accessibilityLabel={t`Previous month`}
                         hitSlop={12}
-                        className="p-sm"
+                        className="min-h-[44px] min-w-[44px] items-center justify-center"
                         testID={RecurringCalendarSelector.PreviousMonthButton}
                     >
                         <Icon icon={UserIconNameEnum.ChevronLeft} className="text-primary" size={20} />
                     </HapticPressable>
-                    <Text className="text-primary text-sm font-semibold capitalize" testID={RecurringCalendarSelector.MonthLabel}>
-                        {monthLabel}
-                    </Text>
+                    <HapticPressable
+                        onPress={handleCurrentMonth}
+                        className="min-h-[44px] flex-1 items-center justify-center"
+                        accessibilityRole="button"
+                        accessibilityLabel={t`Today`}
+                    >
+                        <Text className="text-primary text-[17px] font-semibold capitalize" testID={RecurringCalendarSelector.MonthLabel}>
+                            {monthLabel}
+                        </Text>
+                    </HapticPressable>
                     <HapticPressable
                         onPress={handleNextMonth}
+                        accessibilityRole="button"
+                        accessibilityLabel={t`Next month`}
+                        accessibilityState={nextMonthAccessibilityState}
                         hitSlop={12}
-                        className="p-sm"
+                        className="min-h-[44px] min-w-[44px] items-center justify-center"
                         disabled={isCurrentMonthDisplayed}
                         testID={RecurringCalendarSelector.NextMonthButton}
                     >
@@ -134,6 +151,7 @@ export const RecurringCalendarGrid = (props: Props) => {
                 <DatePicker
                     key={datePickerKey}
                     mode="single"
+                    containerHeight={289}
                     hideHeader
                     showOutsideDays
                     month={displayMonth}
@@ -144,6 +162,14 @@ export const RecurringCalendarGrid = (props: Props) => {
                     components={components}
                     {...(isDefined(selectedDate) && { date: selectedDate })}
                 />
+                <View className="flex-row flex-wrap justify-center gap-x-5xl gap-y-sm pb-md" accessible>
+                    <Text className="text-[12px] text-secondary-foreground">
+                        ● <Trans>Recorded</Trans>
+                    </Text>
+                    <Text className="text-[12px] text-secondary-foreground">
+                        ○ <Trans>Expected</Trans>
+                    </Text>
+                </View>
             </View>
         </GestureDetector>
     );

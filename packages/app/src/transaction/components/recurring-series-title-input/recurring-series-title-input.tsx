@@ -10,7 +10,7 @@ import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 
 import type { EmptyFn } from '@rnw-community/shared';
-import type { NativeSyntheticEvent, TextInputSubmitEditingEventData } from 'react-native';
+import type { NativeSyntheticEvent, TextInputEndEditingEventData } from 'react-native';
 
 interface Props {
     readonly seriesId: number;
@@ -21,7 +21,7 @@ interface Props {
 export const RecurringSeriesTitleInput = ({ seriesId, title, onDone }: Props) => {
     const { t } = useLingui();
 
-    const handleSubmit = (event: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
+    const handleSubmit = (event: NativeSyntheticEvent<TextInputEndEditingEventData>) => {
         const nextTitle = event.nativeEvent.text.trim();
         if (isNotEmptyString(nextTitle) && nextTitle !== title) {
             appRuntime.runFork(
@@ -35,5 +35,14 @@ export const RecurringSeriesTitleInput = ({ seriesId, title, onDone }: Props) =>
         onDone();
     };
 
-    return <Input autoFocus defaultValue={title} returnKeyType="done" onSubmitEditing={handleSubmit} onBlur={onDone} />;
+    return (
+        <Input
+            autoFocus
+            defaultValue={title}
+            returnKeyType="done"
+            onEndEditing={handleSubmit}
+            accessibilityLabel={t`Recurring payment name`}
+            className="min-h-[44px] h-auto px-3xl py-xl text-[15px]"
+        />
+    );
 };

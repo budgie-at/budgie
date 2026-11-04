@@ -13,30 +13,19 @@ import type { RecurringCalendarEntryInterface } from '@budgie/recurring';
 
 const MAX_DOTS = 3;
 
-const circleVariants = cva('w-10 h-10 items-center justify-center rounded-full', {
+const circleVariants = cva('w-[40px] h-[40px] items-center justify-center rounded-full', {
     variants: {
-        isCurrentMonth: { true: '', false: 'opacity-30' },
-        isSelected: { true: 'bg-primary', false: '' },
-        hasEntries: { true: '', false: '' },
-        hasOnlyForecasted: { true: '', false: '' }
-    },
-    compoundVariants: [
-        { hasEntries: true, isSelected: false, hasOnlyForecasted: false, className: 'bg-surface-fill' },
-        { hasOnlyForecasted: true, isSelected: false, className: 'bg-surface-fill opacity-50' }
-    ]
+        isSelected: { true: 'bg-primary', false: '' }
+    }
 });
 
-const textVariants = cva('text-sm', {
+const textVariants = cva('text-[15px] tabular-nums', {
     variants: {
-        hasEntries: { true: '', false: '' },
+        isCurrentMonth: { true: 'text-primary', false: 'text-secondary-foreground' },
         isSelected: { true: 'text-primary-reverse font-semibold', false: '' },
-        isToday: { true: '', false: '' }
-    },
-    compoundVariants: [
-        { hasEntries: false, isSelected: false, className: 'text-secondary-foreground' },
-        { hasEntries: true, isSelected: false, className: 'text-primary font-semibold' },
-        { isToday: true, isSelected: false, className: 'text-primary font-semibold' }
-    ]
+        isToday: { true: 'font-semibold', false: '' },
+        hasEntries: { true: 'font-semibold', false: '' }
+    }
 });
 
 interface Props {
@@ -51,25 +40,21 @@ export const RecurringCalendarDay = ({ day, entriesByDay, forecastedEntriesByDay
     const entryCount = (isCurrentMonth ? entriesByDay.get(dayOfMonth)?.length : 0) ?? 0;
     const forecastedCount = (isCurrentMonth ? forecastedEntriesByDay.get(dayOfMonth)?.length : 0) ?? 0;
     const hasEntries = entryCount + forecastedCount > 0;
-    const hasOnlyForecasted = entryCount === 0 && forecastedCount > 0;
     const hasDots = hasEntries && isCurrentMonth;
     const actualDots = Math.min(entryCount, MAX_DOTS);
     const forecastedDots = Math.min(forecastedCount, MAX_DOTS - actualDots);
-    const circleClassName = circleVariants({ isCurrentMonth, isSelected, hasEntries, hasOnlyForecasted });
-    const dayTextClassName = cn(textVariants({ hasEntries, isSelected, isToday }), hasDots && '-mt-1');
+    const circleClassName = circleVariants({ isSelected });
+    const dayTextClassName = cn(textVariants({ isCurrentMonth, isSelected, isToday, hasEntries }), hasDots && '-mt-1');
     const dayTestID = isCurrentMonth ? RecurringCalendarSelector.CurrentMonthDay(dayOfMonth) : null;
 
     return (
         <View className="items-center py-px">
             <View className={circleClassName} accessible={isDefined(dayTestID)} {...testIDProps(dayTestID)}>
-                <Text className={dayTextClassName}>{day.text}</Text>
+                <Text maxFontSizeMultiplier={1.5} className={dayTextClassName}>
+                    {day.text}
+                </Text>
                 {hasDots ? (
-                    <RecurringCalendarDayDots
-                        dayOfMonth={dayOfMonth}
-                        actualDots={actualDots}
-                        forecastedDots={forecastedDots}
-                        isSelected={isSelected}
-                    />
+                    <RecurringCalendarDayDots actualDots={actualDots} forecastedDots={forecastedDots} isSelected={isSelected} />
                 ) : null}
             </View>
         </View>
