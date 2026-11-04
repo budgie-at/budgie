@@ -18,6 +18,7 @@ import * as TestClock from 'effect/testing/TestClock';
 import { isDefined } from '@rnw-community/shared';
 
 import { InzhurPriceParseError } from '../src/market-data/error/inzhur-price-parse.error';
+import { InstrumentDailyMarketPriceRepository } from '../src/market-data/repository/instrument-daily-market-price.repository';
 import { HistoricalMarketDataService } from '../src/market-data/service/historical-market-data.service';
 import { InzhurPriceService } from '../src/market-data/service/inzhur-price.service';
 import { EntryBaseValuationService } from '../src/valuation/service/entry-base-valuation.service';
@@ -30,9 +31,13 @@ const energyIsin = 'UA5000012246';
 const operatedAt = new Date('2026-06-03T12:00:00.000Z');
 
 const InzhurLayer = (html: string) =>
-    Layer.mergeAll(TestLayer, HistoricalMarketDataService.layer, AccountRepository.layer, InzhurPriceService.layer).pipe(
-        Layer.provideMerge(makeHtmlHttpClientLayer(html))
-    );
+    Layer.mergeAll(
+        TestLayer,
+        HistoricalMarketDataService.layer,
+        AccountRepository.layer,
+        InzhurPriceService.layer,
+        InstrumentDailyMarketPriceRepository.layer
+    ).pipe(Layer.provideMerge(makeHtmlHttpClientLayer(html)));
 
 const drainFundJob = Effect.fnUntraced(function* (instrumentId: number) {
     const historicalMarketDataService = yield* HistoricalMarketDataService;
@@ -66,13 +71,14 @@ const prepareFundAccount = Effect.fnUntraced(function* (isin: string) {
 });
 
 describe('inzhur certificate prices', () => {
-    it.effect('reads the certificate price of each seeded fund from the saved page', () =>
+    it.effect('reads the certificate price of each fund named on the saved page', () =>
         Effect.gen(function* () {
             const inzhurPriceService = yield* InzhurPriceService;
 
             expect(yield* inzhurPriceService.fetchPrices()).toStrictEqual([
-                { isin: realEstateIsin, price: 11.675 },
-                { isin: energyIsin, price: 6742.3637 }
+                { fundName: 'Inzhur MilTech', price: 1053.7456 },
+                { fundName: 'Inzhur REIT', price: 11.675 },
+                { fundName: 'Inzhur Energy', price: 6742.3637 }
             ]);
         }).pipe(Effect.provide(InzhurLayer(fixtureHtml)))
     );
@@ -123,10 +129,47 @@ describe('inzhur certificate prices', () => {
             ]);
             expect(hryvniaToDollar).toBeGreaterThan(0);
             expect(valuation.baseAmount).toBe(Math.round(100 * PRECISION * 11.675 * (hryvniaToDollar ?? 0)));
-            expect(yield* inzhurPriceService.findPriceOnOrBefore(fund.id, '2026-06-10')).toBe(11.675);
-            expect(yield* inzhurPriceService.findPriceOnOrBefore(fund.id, '2026-06-02')).toBeNull();
+            expect(yield* inzhurPriceService.findNearestPrice(fund.id, '2026-06-10')).toBe(11.675);
+            expect(yield* inzhurPriceService.findNearestPrice(fund.id, '2026-06-02')).toBe(11.675);
             expect(yield* drainFundJob(fund.id)).toBeNull();
         }).pipe(Effect.provide(InzhurLayer(fixtureHtml)))
+    );
+
+    it.effect('picks the stored price nearest to the date, whether it was stored before or after', () =>
+        Effect.gen(function* () {
+            const inzhurPriceService = yield* InzhurPriceService;
+            const instrumentDailyMarketPriceRepository = yield* InstrumentDailyMarketPriceRepository;
+            const { fund, hryvnia } = yield* prepareFundAccount(realEstateIsin);
+            const buildPrice = (priceDate: string, price: number) => ({
+                instrumentId: fund.id,
+                quoteInstrumentId: hryvnia.id,
+                priceDate,
+                price,
+                marketCap: null,
+                volume: null,
+                source: 'inzhur.reit'
+            });
+
+            yield* instrumentDailyMarketPriceRepository.bulkUpsert([buildPrice('2026-06-03', 11), buildPrice('2026-06-20', 12)]);
+
+            expect(yield* inzhurPriceService.findNearestPrice(fund.id, '2026-06-10')).toBe(11);
+            expect(yield* inzhurPriceService.findNearestPrice(fund.id, '2026-06-12')).toBe(12);
+            expect(yield* inzhurPriceService.findNearestPrice(fund.id, '2026-07-30')).toBe(12);
+        }).pipe(Effect.provide(InzhurLayer(fixtureHtml)))
+    );
+
+    it.effect('skips a fund that is not on the page without failing the job', () =>
+        Effect.gen(function* () {
+            const { fund } = yield* prepareFundAccount(realEstateIsin);
+            const job = yield* drainFundJob(fund.id);
+            const prices = yield* testDb
+                .select()
+                .from(InstrumentDailyMarketPriceEntityTable)
+                .where(eq(InstrumentDailyMarketPriceEntityTable.instrumentId, fund.id));
+
+            expect(job).not.toBeNull();
+            expect(prices).toStrictEqual([]);
+        }).pipe(Effect.provide(InzhurLayer(fixtureHtml.replaceAll('Inzhur REIT', 'Inzhur Other'))))
     );
 
     it.effect('leaves a fund entry unvalued instead of dying while no price is stored', () =>

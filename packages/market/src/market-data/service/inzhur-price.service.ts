@@ -1,4 +1,5 @@
 import { CurrencyEnum, InstrumentRepository } from '@budgie/contracts';
+import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as HttpClient from 'effect/http/HttpClient';
@@ -19,10 +20,6 @@ export class InzhurPriceService extends Context.Service<InzhurPriceService>()('@
         const instrumentRepository = yield* InstrumentRepository;
         const pageUrl = 'https://www.inzhur.reit/';
         const fetchTimeoutMs = 15_000;
-        const isinByFundName: Record<string, string> = {
-            'Inzhur REIT': 'UA5000014044',
-            'Inzhur Energy': 'UA5000012246'
-        };
         const certificatePricePattern =
             /&quot;value&quot;:\[0,&quot;([^&]+)&quot;\],&quot;dynamicValue&quot;:\[0,&quot;initialInvestment&quot;\],&quot;hint&quot;:\[0,&quot;(?:(?!&quot;).)*?фонду (Inzhur [A-Za-z]+)/gu;
         const certificatePriceSchema = Schema.NumberFromString.check(Schema.isGreaterThan(0));
@@ -36,20 +33,11 @@ export class InzhurPriceService extends Context.Service<InzhurPriceService>()('@
             const prices = yield* Effect.forEach(matches, ([, rawPrice = '', fundName = '']) =>
                 Schema.decodeUnknownEffect(certificatePriceSchema)(rawPrice).pipe(
                     Effect.mapError(() => new InzhurPriceParseError({ reason: `invalid price "${rawPrice}" for ${fundName}` })),
-                    Effect.map((price): InzhurFundPriceInterface | null => {
-                        const isin = isinByFundName[fundName];
-
-                        return isDefined(isin) ? { isin, price } : null;
-                    })
+                    Effect.map((price): InzhurFundPriceInterface => ({ fundName, price }))
                 )
             );
-            const knownPrices = prices.filter(isDefined);
 
-            if (!isNotEmptyArray(knownPrices)) {
-                return yield* new InzhurPriceParseError({ reason: 'no known fund found on the page' });
-            }
-
-            return knownPrices;
+            return prices;
         });
 
         return {
@@ -73,6 +61,23 @@ export class InzhurPriceService extends Context.Service<InzhurPriceService>()('@
                 const price = yield* instrumentDailyMarketPriceRepository.findForDateOrBefore(instrumentId, hryvnia.id, priceDate);
 
                 return price?.price ?? null;
+            }),
+            findNearestPrice: Effect.fn('InzhurPriceService.findNearestPrice')(function* (instrumentId: number, priceDate: string) {
+                const hryvnia = yield* instrumentRepository.findByCode(CurrencyEnum.UAH);
+
+                if (!isDefined(hryvnia)) {
+                    return null;
+                }
+
+                const [before, after] = yield* Effect.all([
+                    instrumentDailyMarketPriceRepository.findForDateOrBefore(instrumentId, hryvnia.id, priceDate),
+                    instrumentDailyMarketPriceRepository.findForDateOrAfter(instrumentId, hryvnia.id, priceDate)
+                ]);
+                const distanceInDays = (price: { readonly priceDate: string } | undefined) =>
+                    isDefined(price) ? Math.abs(differenceInCalendarDays(price.priceDate, priceDate)) : Number.POSITIVE_INFINITY;
+                const nearest = distanceInDays(before) <= distanceInDays(after) ? before : after;
+
+                return nearest?.price ?? null;
             })
         };
     })

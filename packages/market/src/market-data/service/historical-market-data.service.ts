@@ -30,7 +30,6 @@ import { fetchJson } from '../../@generic/utils/fetch-json.util';
 import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 import { HistoricalExchangeRateRepository } from '../../historical-exchange-rate/repository/historical-exchange-rate.repository';
 import { EntryBaseValuationService } from '../../valuation/service/entry-base-valuation.service';
-import { InzhurPriceParseError } from '../error/inzhur-price-parse.error';
 import { InstrumentDailyMarketPriceRepository } from '../repository/instrument-daily-market-price.repository';
 import { InstrumentMarketDataJobRepository } from '../repository/instrument-market-data-job.repository';
 
@@ -241,10 +240,10 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                 job: InstrumentMarketDataJobEntityInterface
             ) {
                 const fundPrices = yield* inzhurPriceService.fetchPrices();
-                const fundPrice = fundPrices.find(({ isin }) => isin === instrument.providerInstrumentId);
+                const fundPrice = fundPrices.find(({ fundName }) => fundName.toLowerCase() === instrument.name.toLowerCase());
 
                 if (!isDefined(fundPrice)) {
-                    return yield* new InzhurPriceParseError({ reason: `fund ${instrument.code} is not listed on the page` });
+                    return [];
                 }
 
                 const price: InstrumentDailyMarketPriceCreateEntityInterface = {

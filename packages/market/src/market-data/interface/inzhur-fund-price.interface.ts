@@ -1,4 +1,4 @@
 export interface InzhurFundPriceInterface {
-    readonly isin: string;
+    readonly fundName: string;
     readonly price: number;
 }

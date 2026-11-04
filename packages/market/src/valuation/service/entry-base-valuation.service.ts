@@ -24,7 +24,11 @@ import { HistoricalExchangeRateRepository } from '../../historical-exchange-rate
 import type { EntryBaseValuationContextInterface } from '../interface/entry-base-valuation-context.interface';
 import type { EntryBaseValuationInputInterface } from '../interface/entry-base-valuation-input.interface';
 import type { EntryBaseValuationInterface } from '../interface/entry-base-valuation.interface';
-import type { TransactionCreateInputInterface, TransactionEntryCreateInputInterface } from '@budgie/contracts';
+import type {
+    AccountWithInstrumentEntityInterface,
+    TransactionCreateInputInterface,
+    TransactionEntryCreateInputInterface
+} from '@budgie/contracts';
 
 export class EntryBaseValuationService extends Context.Service<EntryBaseValuationService>()('@budgie/market/EntryBaseValuationService', {
     make: Effect.gen(function* () {
@@ -42,15 +46,13 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
         });
 
         const resolveMissingBaseValuation = Effect.fnUntraced(function* (
-            accountType: AccountTypeEnum,
-            sourceInstrumentId: number,
+            account: AccountWithInstrumentEntityInterface,
             targetInstrumentId: number
         ) {
-            const sourceInstrument = yield* instrumentRepository.findById(sourceInstrumentId);
             const isPriceDriven =
-                accountType === AccountTypeEnum.CRYPTO ||
-                accountType === AccountTypeEnum.CRYPTO_SYNC ||
-                sourceInstrument?.type === InstrumentTypeEnum.FUND;
+                account.type === AccountTypeEnum.CRYPTO ||
+                account.type === AccountTypeEnum.CRYPTO_SYNC ||
+                account.instrument.type === InstrumentTypeEnum.FUND;
 
             if (isPriceDriven) {
                 const missingValuation: EntryBaseValuationInterface = {
@@ -62,7 +64,7 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
                 return missingValuation;
             }
 
-            return yield* Effect.die(new Error(`Exchange rate ${sourceInstrumentId}->${targetInstrumentId} not found`));
+            return yield* Effect.die(new Error(`Exchange rate ${account.instrumentId}->${targetInstrumentId} not found`));
         });
 
         const resolveHistoricalEuroRate = Effect.fnUntraced(function* (instrumentId: number, euroInstrumentId: number, rateDate: string) {
@@ -142,28 +144,35 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
 
         const resolveHistoricalBaseExchangeRateOrNull = Effect.fn('EntryBaseValuationService.resolveHistoricalBaseExchangeRateOrNull')(
             function* (sourceInstrumentId: number, targetInstrumentId: number, operatedAt: Date) {
-                const directRate = yield* resolveDirectHistoricalRateOrNull(sourceInstrumentId, targetInstrumentId, operatedAt);
-
-                if (isDefined(directRate)) {
-                    return directRate;
-                }
-
-                const sourceInstrument = yield* instrumentRepository.findById(sourceInstrumentId);
-                const hryvniaInstrument = yield* instrumentRepository.findByCode(CurrencyEnum.UAH);
-
-                if (sourceInstrument?.type !== InstrumentTypeEnum.FUND || !isDefined(hryvniaInstrument)) {
-                    return null;
-                }
-
-                const fundToHryvniaRate = yield* resolveDirectHistoricalRateOrNull(sourceInstrumentId, hryvniaInstrument.id, operatedAt);
-                const hryvniaToTargetRate =
-                    targetInstrumentId === hryvniaInstrument.id
-                        ? 1
-                        : yield* resolveDirectHistoricalRateOrNull(hryvniaInstrument.id, targetInstrumentId, operatedAt);
-
-                return isDefined(fundToHryvniaRate) && isDefined(hryvniaToTargetRate) ? fundToHryvniaRate * hryvniaToTargetRate : null;
+                return yield* resolveDirectHistoricalRateOrNull(sourceInstrumentId, targetInstrumentId, operatedAt);
             }
         );
+
+        const resolveFundHistoricalBaseExchangeRateOrNull = Effect.fnUntraced(function* (
+            sourceInstrumentId: number,
+            targetInstrumentId: number,
+            operatedAt: Date
+        ) {
+            const directRate = yield* resolveDirectHistoricalRateOrNull(sourceInstrumentId, targetInstrumentId, operatedAt);
+
+            if (isDefined(directRate)) {
+                return directRate;
+            }
+
+            const hryvniaInstrument = yield* instrumentRepository.findByCode(CurrencyEnum.UAH);
+
+            if (!isDefined(hryvniaInstrument)) {
+                return null;
+            }
+
+            const fundToHryvniaRate = yield* resolveDirectHistoricalRateOrNull(sourceInstrumentId, hryvniaInstrument.id, operatedAt);
+            const hryvniaToTargetRate =
+                targetInstrumentId === hryvniaInstrument.id
+                    ? 1
+                    : yield* resolveDirectHistoricalRateOrNull(hryvniaInstrument.id, targetInstrumentId, operatedAt);
+
+            return isDefined(fundToHryvniaRate) && isDefined(hryvniaToTargetRate) ? fundToHryvniaRate * hryvniaToTargetRate : null;
+        });
 
         const createContext = Effect.fn('EntryBaseValuationService.createContext')(function* () {
             const context: EntryBaseValuationContextInterface = {
@@ -174,8 +183,10 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
                 }),
                 rates: yield* Cache.make({
                     capacity: Number.MAX_SAFE_INTEGER,
-                    lookup: ([sourceInstrumentId, targetInstrumentId, rateDayStart]: readonly [number, number, number]) =>
-                        resolveHistoricalBaseExchangeRateOrNull(sourceInstrumentId, targetInstrumentId, new Date(rateDayStart))
+                    lookup: ([sourceInstrumentId, targetInstrumentId, rateDayStart, isFund]: readonly [number, number, number, boolean]) =>
+                        isFund
+                            ? resolveFundHistoricalBaseExchangeRateOrNull(sourceInstrumentId, targetInstrumentId, new Date(rateDayStart))
+                            : resolveHistoricalBaseExchangeRateOrNull(sourceInstrumentId, targetInstrumentId, new Date(rateDayStart))
                 })
             };
 
@@ -204,11 +215,12 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
             const baseExchangeRate = yield* Cache.get(context.rates, [
                 account.instrumentId,
                 baseInstrument.id,
-                startOfDay(operatedAt).getTime()
+                startOfDay(operatedAt).getTime(),
+                account.instrument.type === InstrumentTypeEnum.FUND
             ]);
 
             if (!isDefined(baseExchangeRate)) {
-                return yield* resolveMissingBaseValuation(account.type, account.instrumentId, baseInstrument.id);
+                return yield* resolveMissingBaseValuation(account, baseInstrument.id);
             }
 
             return buildBaseValuation(baseInstrument.id, baseExchangeRate, amount);
