@@ -18,7 +18,7 @@ interface Props {
 
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
-const containerVariants = cva('min-h-[52px] items-center justify-center rounded-full px-5xl py-md active:opacity-80', {
+const containerVariants = cva('min-h-[52px] items-center justify-center rounded-xl px-5xl py-md active:opacity-80', {
     variants: {
         variant: { primary: '', destructive: '' },
         isDisabled: { true: '', false: '' }

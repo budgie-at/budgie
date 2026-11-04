@@ -11,7 +11,7 @@ interface Props extends ComponentProps<typeof PillButton> {
 }
 
 export const PillButtonFooter = ({ caption, ...props }: Props) => (
-    <View className="gap-y-md border-t-hairline border-surface-separator bg-surface px-5xl pt-lg">
+    <View className="gap-y-md bg-surface px-5xl pt-lg">
         <View className="absolute inset-x-0 top-full h-[64px] bg-surface" pointerEvents="none" />
         {isNotEmptyString(caption) ? (
             <Text className="text-center text-[15px] leading-[20px] text-primary tabular-nums" accessibilityLiveRegion="polite">

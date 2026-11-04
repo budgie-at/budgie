@@ -22,8 +22,7 @@ export const ImportInzhurStatement = () => {
 
     const exportSteps = [
         t`Open the Inzhur app`,
-        { title: t`Download your account statement`, caption: t`«Виписка про стан рахунку» · PDF` },
-        t`Choose it here as a PDF`
+        { title: t`Download your account statement`, caption: t`«Виписка про стан рахунку» · PDF` }
     ];
 
     const handleDone = () => void router.dismissTo('/');
@@ -35,7 +34,7 @@ export const ImportInzhurStatement = () => {
             <GroupedSurface>
                 <CollapsibleChromePage
                     title={t`Statement imported`}
-                    subtitle={t`Statement of ${statementDate}`}
+                    subtitle={statementDate}
                     testID={InzhurSelector.ImportPage}
                     footer={<PillButtonFooter label={t`Done`} testID={InzhurSelector.DoneButton} onPress={handleDone} />}
                 >

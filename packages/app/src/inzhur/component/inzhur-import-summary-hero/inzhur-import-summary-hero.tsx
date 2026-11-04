@@ -31,7 +31,7 @@ export const InzhurImportSummaryHero = ({ funds }: Props) => {
     const isHeroShown = isDefined(inzhurValue) && isDefined(heroAccount);
 
     return (
-        <View accessible className="items-center gap-y-sm py-3xl">
+        <View accessible className="items-start gap-y-xs px-3xl pt-md">
             <Text className="text-[13px] font-medium text-secondary-foreground">{t`Inzhur total`}</Text>
             {isHeroShown ? <AccountDetailsHeroBalanceValue balance={inzhurValue.total} account={heroAccount} /> : null}
             {isNotEmptyArray(funds) ? (

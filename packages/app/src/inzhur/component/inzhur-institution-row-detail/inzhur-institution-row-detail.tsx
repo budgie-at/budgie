@@ -1,10 +1,12 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { Icon } from '../../../@generic/component/icon/icon';
 import { PROTECTED_AMOUNT_PLACEHOLDER } from '../../../@generic/constant/protected-amount-placeholder.constant';
 import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
 import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
@@ -29,14 +31,26 @@ export const InzhurInstitutionRowDetail = () => {
         : null;
 
     return (
-        <Text
-            className="text-[13px] text-secondary-foreground tabular-nums"
-            maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
-            numberOfLines={2}
-            testID={InzhurSelector.InstitutionDetail}
-        >
-            {t`${cashLabel} cash · ${fundsLabel}`}
-            {isDefined(staleLabel) ? <Text className="text-warning-strong">{` · ${staleLabel}`}</Text> : null}
-        </Text>
+        <View className="gap-y-xxs" testID={InzhurSelector.InstitutionDetail}>
+            <Text
+                className="text-[13px] text-secondary-foreground tabular-nums"
+                maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+                numberOfLines={2}
+            >
+                {t`${cashLabel} cash · ${fundsLabel}`}
+            </Text>
+            {isDefined(staleLabel) ? (
+                <View className="flex-row items-center gap-x-xs">
+                    <Icon icon={UserIconNameEnum.Clock} size={13} className="text-warning-strong" />
+                    <Text
+                        className="shrink text-[13px] text-warning-strong"
+                        maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+                        numberOfLines={2}
+                    >
+                        {staleLabel}
+                    </Text>
+                </View>
+            ) : null}
+        </View>
     );
 };

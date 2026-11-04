@@ -49,8 +49,10 @@ export const AccountDetailsHero = ({ account, balance }: Props) => (
             </Animated.View>
         )}
 
-        <Animated.View layout={LinearTransition}>
-            <AccountDetailsMonthChips accountId={account.id} />
-        </Animated.View>
+        {isInzhurFundAccount(account) ? null : (
+            <Animated.View layout={LinearTransition}>
+                <AccountDetailsMonthChips accountId={account.id} />
+            </Animated.View>
+        )}
     </View>
 );

@@ -36,8 +36,10 @@ export const TransactionFundEntryAmount = ({ entry, variant, sign, testID }: Pro
 
     return (
         <View className="shrink-0 items-end gap-y-xxs" testID={testID}>
-            {isDefined(valueLabel) ? <Text className={amountVariants({ variant })}>{valueLabel}</Text> : null}
-            <Text className="text-[13px] text-secondary-foreground text-right tabular-nums">{quantityLabel}</Text>
+            <Text className={amountVariants({ variant })}>{valueLabel ?? quantityLabel}</Text>
+            {isDefined(valueLabel) ? (
+                <Text className="text-[13px] text-secondary-foreground text-right tabular-nums">{quantityLabel}</Text>
+            ) : null}
         </View>
     );
 };

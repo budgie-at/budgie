@@ -18,6 +18,7 @@ import { useAccountCardMenu } from '../../hook/use-account-card-menu.hook';
 import { getAccountSyncState } from '../../utils/get-account-sync-state.util';
 import { AccountCardBalance } from '../account-card-balance/account-card-balance';
 import { AccountCardConvertedBalance } from '../account-card-converted-balance/account-card-converted-balance';
+import { AccountCardDisclosure } from '../account-card-disclosure/account-card-disclosure';
 import { AccountCardMenu } from '../account-card-menu/account-card-menu';
 import { AccountCardTitle } from '../account-card-title/account-card-title';
 import { AccountSyncBadge } from '../account-sync-badge/account-sync-badge';
@@ -112,6 +113,8 @@ export const AccountCardBase = ({ account, balance, convertedBalance, amountLabe
                     {children ?? <AccountCardBalance title={title} balance={balance} instrumentSymbol={instrument.symbol} />}
                     <AccountCardConvertedBalance instrumentId={instrument.id} convertedBalance={convertedBalance} />
                 </View>
+
+                {isStacked ? null : <AccountCardDisclosure />}
             </HapticPressable>
 
             <AccountCardMenu

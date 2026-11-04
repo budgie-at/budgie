@@ -36,7 +36,12 @@ export const InzhurFundHoldingLine = ({ account, balance }: Props) => {
             </ProtectedText>
             {isDefined(priceLabel) ? (
                 <Text className="text-center text-[15px] leading-[20px] text-secondary-foreground tabular-nums">
-                    {t`${priceLabel} per certificate · price as of ${priceDate}`}
+                    {t`${priceLabel} per certificate`}
+                </Text>
+            ) : null}
+            {isDefined(priceDate) ? (
+                <Text className="text-center text-[13px] leading-[18px] text-secondary-foreground tabular-nums">
+                    {t`Price as of ${priceDate}`}
                 </Text>
             ) : null}
         </View>

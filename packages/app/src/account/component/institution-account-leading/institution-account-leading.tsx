@@ -1,9 +1,7 @@
 import { AccountTypeEnum, ExternalSourceEnum, InstrumentTypeEnum, UserIconNameEnum } from '@budgie/contracts';
-import { Text, View } from 'react-native';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { CryptoCurrencyIcon } from '../../../@generic/component/crypto-currency-icon/crypto-currency-icon';
-import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-size-multiplier.constant';
+import { NeutralIconTile } from '../../../@generic/component/neutral-icon-tile/neutral-icon-tile';
 import { InstitutionMark } from '../institution-mark/institution-mark';
 
 import type { AccountAssociationEnum, AccountWithSyncEntityInterface } from '@budgie/contracts';
@@ -22,26 +20,7 @@ export const InstitutionAccountLeading = ({ account, provider }: Props) => {
         return <InstitutionMark provider={provider} title={account.title} />;
     }
 
-    if (account.instrument.type === InstrumentTypeEnum.FUND) {
-        return (
-            <View className="size-[40px] items-center justify-center rounded-[10px] bg-surface-disc">
-                <Text maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER} className="text-[18px] leading-[22px] font-semibold text-primary">
-                    {account.instrument.symbol.charAt(0)}
-                </Text>
-            </View>
-        );
-    }
+    const icon = account.instrument.type === InstrumentTypeEnum.FUND ? UserIconNameEnum.ChartLine : UserIconNameEnum.Banknote;
 
-    return (
-        <CircleIcon
-            icon={UserIconNameEnum.Banknote}
-            size={40}
-            iconSize={20}
-            radius={10}
-            variant="ghost"
-            border={false}
-            className="bg-surface-disc"
-            iconClassName="text-primary"
-        />
-    );
+    return <NeutralIconTile icon={icon} />;
 };

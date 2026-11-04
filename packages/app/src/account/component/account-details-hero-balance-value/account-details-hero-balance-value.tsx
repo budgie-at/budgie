@@ -1,10 +1,11 @@
 import { AccountAssociationEnum, AccountWithInstrumentEntityInterface, InstrumentTypeEnum } from '@budgie/contracts';
 import { Text } from 'react-native';
 
-import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
+import { MoneyText } from '../../../@generic/component/money-text/money-text';
 import { Ticker } from '../../../@generic/component/ticker/ticker';
 import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-size-multiplier.constant';
 import { PROTECTED_HERO_PLACEHOLDER } from '../../../@generic/constant/protected-hero-placeholder.constant';
+import { MoneyTextVariantEnum } from '../../../@generic/enum/money-text-variant.enum';
 import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { getTextStyleForTicket } from '../../../@generic/utils/get-text-style-for-ticket.util';
 import { MILLION } from '../../../i18n/constant/compact-thresholds.constant';
@@ -52,14 +53,5 @@ export const AccountDetailsHeroBalanceValue = ({ balance, account }: Props) => {
         );
     }
 
-    return (
-        <ProtectedMoney
-            className="font-semibold tracking-[-1px]"
-            minFontSize={24}
-            maxFontSize={ACCOUNT_DETAILS_HERO_BALANCE_HEIGHT}
-            instrumentSymbol={account.instrument.symbol}
-        >
-            {balance}
-        </ProtectedMoney>
-    );
+    return <MoneyText amount={balance} instrumentSymbol={account.instrument.symbol} variant={MoneyTextVariantEnum.HERO} />;
 };

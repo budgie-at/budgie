@@ -1,7 +1,9 @@
 import { AmountField, AmountFieldInput, AmountFieldPrefix, AmountFieldSuffix, useAmountSign } from '@budgie/amount-input';
+import { useState } from 'react';
 import { View } from 'react-native';
 
 import { useAmountFormat } from '../../hook/use-amount-format.hook';
+import { cn } from '../../utils/cn.util';
 import { AmountSignCapsule } from '../amount-sign-capsule/amount-sign-capsule';
 
 const DEFAULT_FONT_SIZE = 64;
@@ -30,7 +32,11 @@ export const FormAmountInput = (props: Props) => {
         fontSize = DEFAULT_FONT_SIZE
     } = props;
     const format = useAmountFormat(minimumDecimalPlaces);
+    const [isFocused, setIsFocused] = useState(false);
     const fieldStyle = { height: fontSize + FIELD_VERTICAL_PADDING };
+    const focusClassName = isFocused ? 'border-default-foreground/50' : 'border-transparent';
+    const handleFocus = () => void setIsFocused(true);
+    const handleBlur = () => void setIsFocused(false);
     const { isNegative, absoluteValue, toggleSign, changeAbsoluteValue } = useAmountSign(value, onChange);
 
     const isNegativeAmount = allowNegative && isNegative;
@@ -40,7 +46,7 @@ export const FormAmountInput = (props: Props) => {
 
     return (
         <View className="px-4">
-            <View className="flex-row items-center border-b-2 border-surface-fill" style={fieldStyle}>
+            <View className={cn('flex-row items-center rounded-2xl border-2 px-xs', focusClassName)} style={fieldStyle}>
                 <AmountField fontSize={fontSize} className="flex-1">
                     {showInstrumentAfterAmount ? null : (
                         <AmountFieldPrefix scale={1} className="font-semibold text-primary">
@@ -58,6 +64,8 @@ export const FormAmountInput = (props: Props) => {
                         placeholder={format.format(0)}
                         textAlign={textAlign}
                         selectTextOnFocus
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
                     />
 
                     {showInstrumentAfterAmount ? (

@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -15,8 +15,8 @@ export const InzhurFreshnessLine = () => {
     const priceDate = isDefined(freshness?.priceDate) ? formatMonthAndDayAndOptionalYear(freshness.priceDate) : null;
     const statementDate = isDefined(freshness?.statementDate) ? formatMonthAndDayAndOptionalYear(freshness.statementDate) : null;
     const parts = [
-        isDefined(priceDate) ? t`Prices ${priceDate}` : null,
-        isDefined(statementDate) ? t`Statement ${statementDate}` : null
+        isDefined(priceDate) ? t`Prices as of ${priceDate}` : null,
+        isDefined(statementDate) ? t`Statement as of ${statementDate}` : null
     ].filter(isDefined);
 
     if (!isNotEmptyArray(parts)) {
@@ -24,11 +24,12 @@ export const InzhurFreshnessLine = () => {
     }
 
     return (
-        <Text
-            className="px-5xl text-center text-[13px] leading-[18px] text-secondary-foreground tabular-nums"
-            testID={InzhurSelector.Freshness}
-        >
-            {parts.join(' · ')}
-        </Text>
+        <View className="items-center gap-y-xs px-5xl" testID={InzhurSelector.Freshness}>
+            {parts.map(part => (
+                <Text key={part} className="text-center text-[13px] leading-[18px] text-secondary-foreground tabular-nums">
+                    {part}
+                </Text>
+            ))}
+        </View>
     );
 };

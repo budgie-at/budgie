@@ -20,5 +20,9 @@ export const InstitutionMark = ({ provider, title }: Props) => {
         </View>
     );
 
-    return <BankLogo bankProvider={provider} size={44} fallback={monogram} />;
+    return (
+        <View className="overflow-hidden rounded-[11px] dark:border-hairline dark:border-white/15" style={CONTINUOUS_CORNERS}>
+            <BankLogo bankProvider={provider} size={44} fallback={monogram} />
+        </View>
+    );
 };

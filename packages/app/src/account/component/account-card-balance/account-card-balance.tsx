@@ -1,14 +1,6 @@
-import { useAtomValue } from '@effect/atom-react/Hooks';
-import { Text } from 'react-native';
-
-import { isPositiveNumber } from '@rnw-community/shared';
-
-import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
-import { cn } from '../../../@generic/utils/cn.util';
-import { toTrueMinus } from '../../../@generic/utils/to-true-minus.util';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
+import { MoneyText } from '../../../@generic/component/money-text/money-text';
+import { MoneyTextVariantEnum } from '../../../@generic/enum/money-text-variant.enum';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { AccountCardBaseSelector } from '../account-card-base/account-card-base.selector';
 
 interface Props {
@@ -19,29 +11,14 @@ interface Props {
 }
 
 export const AccountCardBalance = ({ title, balance, instrumentSymbol, testID }: Props) => {
-    const decimalPlaces = useAtomValue(decimalPlacesAtom);
-    const formatDigits = useFormatDigits(decimalPlaces);
-
-    const isZero = formatDigits(Math.abs(balance)) === formatDigits(0);
-    const formattedBalance = isZero ? formatDigits(0, instrumentSymbol) : toTrueMinus(formatDigits(balance, instrumentSymbol));
-    const fractionStart = isPositiveNumber(decimalPlaces) ? formattedBalance.length - decimalPlaces - 1 : formattedBalance.length;
-    const toneClassName = cn(
-        isZero && 'text-secondary-foreground',
-        !isZero && balance < 0 && 'text-destructive-foreground',
-        !isZero && balance > 0 && 'text-primary'
-    );
+    const formatDigits = useDisplayFormatDigits();
 
     return (
-        <ProtectedText
+        <MoneyText
+            amount={balance}
+            instrumentSymbol={instrumentSymbol}
+            variant={MoneyTextVariantEnum.ROW}
             testID={testID ?? AccountCardBaseSelector.Balance(title, formatDigits(balance))}
-            numberOfLines={1}
-            adjustsFontSizeToFit
-            minimumFontScale={0.6}
-            maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
-            className={cn('text-[17px] font-semibold tracking-tight tabular-nums', toneClassName)}
-        >
-            {formattedBalance.slice(0, fractionStart)}
-            <Text className="text-[13px] font-medium text-secondary-foreground">{formattedBalance.slice(fractionStart)}</Text>
-        </ProtectedText>
+        />
     );
 };

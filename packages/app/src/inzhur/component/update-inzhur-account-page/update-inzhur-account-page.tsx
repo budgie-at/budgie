@@ -24,7 +24,6 @@ interface Props {
 export const UpdateInzhurAccountPage = ({ account, balance, fields, instrumentSymbol, isSubmitting, onSubmit }: Props) => {
     const { t } = useLingui();
     const formatDigits = useDisplayFormatDigits();
-    const accountTitle = account.title;
     const isCash = isInzhurCashAccount(account);
     const actualBalance = fields.currentBalance.field.value;
     const differenceLabel = formatDigits(Math.abs(actualBalance - balance), instrumentSymbol);
@@ -33,6 +32,7 @@ export const UpdateInzhurAccountPage = ({ account, balance, fields, instrumentSy
         actualBalance > balance
             ? t`Will record +${differenceLabel} as dividends kept in Inzhur`
             : t`Will record −${differenceLabel} as a balance correction`;
+    const holdingsRow = isCash ? null : <InzhurFundHoldingsSection balance={balance} />;
     const footerCaption = isDifferent ? outcomeCaption : null;
 
     const hero = isCash ? (
@@ -48,17 +48,14 @@ export const UpdateInzhurAccountPage = ({ account, balance, fields, instrumentSy
         <UpdateAccountPage
             account={account}
             fields={fields}
-            title={t`Edit ${accountTitle}`}
+            details={holdingsRow}
             footerCaption={footerCaption}
             hero={hero}
             isSubmitting={isSubmitting}
             onSubmit={onSubmit}
         >
             {isCash ? null : (
-                <>
-                    <InzhurFundHoldingsSection balance={balance} />
-                    <InzhurDividendPayoutField value={fields.dividendPayout.field.value} onChange={fields.dividendPayout.field.onChange} />
-                </>
+                <InzhurDividendPayoutField value={fields.dividendPayout.field.value} onChange={fields.dividendPayout.field.onChange} />
             )}
         </UpdateAccountPage>
     );

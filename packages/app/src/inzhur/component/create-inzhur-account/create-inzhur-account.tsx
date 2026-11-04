@@ -1,12 +1,17 @@
+import { ExternalSourceEnum } from '@budgie/contracts';
 import { InzhurSetupService } from '@budgie/sync';
 import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ScreenChromeFrame, ScreenChromeHeader } from '@rnw-community/react-native-screen-chrome';
+import { ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 
-import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
+import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
+import { CollapsibleChromeHeader } from '../../../@generic/component/collapsible-chrome-header/collapsible-chrome-header';
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
+import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
+import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../../@generic/constant/screen-chrome-content-inset.constant';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { ScreenChromeThemeProvider } from '../../../@generic/provider/screen-chrome-theme.provider';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
@@ -24,7 +29,9 @@ export const CreateInzhurAccount = () => {
     const { isLoading, run } = useSingleFlight();
     const { displayValue, numericValue, handlers } = useKeypadInput();
     const hryvnia = useHryvniaInstrumentQuery();
+    const { top } = useSafeAreaInsets();
 
+    const contentStyle = { paddingTop: top + SCREEN_CHROME_CONTENT_INSET_TOP };
     const handleGoBack = () => void goBackOrReplace('/');
     const handleAdd = () =>
         run(
@@ -39,9 +46,12 @@ export const CreateInzhurAccount = () => {
             currencySymbol={hryvnia?.symbol ?? ''}
             variant="primary"
             topContent={
-                <Text className="text-[15px] font-medium text-secondary-foreground">
-                    <Trans>Cash in your Inzhur app</Trans>
-                </Text>
+                <View className="items-center gap-y-lg">
+                    <BankLogo bankProvider={ExternalSourceEnum.INZHUR} size={48} />
+                    <Text className="text-[15px] font-medium text-secondary-foreground">
+                        <Trans>Opening Inzhur cash balance</Trans>
+                    </Text>
+                </View>
             }
             testID={InzhurSelector.CashAmount}
         >
@@ -49,7 +59,7 @@ export const CreateInzhurAccount = () => {
                 className="mt-lg max-w-[300px] text-center text-sm leading-[20px] text-secondary-foreground"
                 lineBreakStrategyIOS="standard"
             >
-                <Trans>You can import a statement next.</Trans>
+                <Trans>Enter 0 if you have no cash. Funds come from your statement.</Trans>
             </Text>
         </TransactionAmountDisplay>
     );
@@ -59,28 +69,29 @@ export const CreateInzhurAccount = () => {
             onConfirm={handleAdd}
             onCancel={handleGoBack}
             isConfirmDisabled={isLoading}
-            confirmLabel={t`Add Inzhur`}
+            confirmLabel={t`Continue`}
             confirmTestID={InzhurSelector.AddButton}
         />
+    );
+    const largeTitle = (
+        <Text className="text-3xl font-medium text-primary" numberOfLines={1}>
+            <Trans>Add Inzhur</Trans>
+        </Text>
+    );
+    const smallTitle = (
+        <Text className="text-center text-lg font-semibold text-primary" numberOfLines={1}>
+            <Trans>Add Inzhur</Trans>
+        </Text>
     );
 
     return (
         <GroupedSurface testID={InzhurSelector.CreatePage}>
             <ScreenChromeThemeProvider>
                 <ScreenChromeFrame>
-                    <ScreenChromeHeader inFlow>
-                        <View className="min-h-[52px] flex-row items-center px-xl">
-                            <GoBackButton className="size-[44px] items-center justify-center p-0" onPress={handleGoBack} />
-                            <Text className="flex-1 text-center text-[17px] font-semibold text-primary" accessibilityRole="header">
-                                <Trans>Add Inzhur</Trans>
-                            </Text>
-                            <View className="size-[44px]" />
-                        </View>
-                    </ScreenChromeHeader>
-
-                    <View className="flex-1 px-5xl pb-safe">
+                    <View className="flex-1 px-5xl pb-safe" style={contentStyle}>
                         <QuickFormLayout hero={hero} footer={keypad} heroAlignment={QuickFormHeroAlignmentEnum.CENTER} />
                     </View>
+                    <CollapsibleChromeHeader leading={<HeaderBackButton />} expandedTitle={largeTitle} collapsedTitle={smallTitle} />
                 </ScreenChromeFrame>
             </ScreenChromeThemeProvider>
         </GroupedSurface>

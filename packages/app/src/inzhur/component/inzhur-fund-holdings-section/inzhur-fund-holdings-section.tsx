@@ -1,7 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { useFormatFundQuantity } from '../../../i18n/hook/use-format-fund-quantity.hook';
 import { InzhurSelector } from '../../selector/inzhur.selector';
@@ -15,14 +14,12 @@ export const InzhurFundHoldingsSection = ({ balance }: Props) => {
     const formatFundQuantity = useFormatFundQuantity();
 
     return (
-        <GroupedListSection>
-            <View accessible className="min-h-[50px] flex-row items-center gap-x-xl px-3xl py-lg" testID={InzhurSelector.Holdings}>
-                <View className="flex-1 gap-y-xxs">
-                    <Text className="text-[17px] text-primary">{t`Holdings`}</Text>
-                    <Text className="text-[13px] leading-[18px] text-secondary-foreground">{t`From statements`}</Text>
-                </View>
-                <ProtectedText className="text-[17px] text-secondary-foreground tabular-nums">{formatFundQuantity(balance)}</ProtectedText>
+        <View accessible className="min-h-[50px] flex-row items-center gap-x-xl px-3xl py-lg" testID={InzhurSelector.Holdings}>
+            <View className="flex-1 gap-y-xxs">
+                <Text className="text-[17px] text-primary">{t`Holdings`}</Text>
+                <Text className="text-[13px] leading-[18px] text-secondary-foreground">{t`From statements`}</Text>
             </View>
-        </GroupedListSection>
+            <ProtectedText className="text-[17px] text-secondary-foreground tabular-nums">{formatFundQuantity(balance)}</ProtectedText>
+        </View>
     );
 };

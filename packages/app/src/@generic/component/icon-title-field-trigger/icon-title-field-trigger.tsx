@@ -1,4 +1,4 @@
-import { isEmojiIcon, UserIconNameEnum, UserIconType } from '@budgie/contracts';
+import { isEmojiIcon, UserIconType } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
@@ -7,7 +7,6 @@ import { useIconSearchEntries } from '../../hook/use-icon-search-entries.hook';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
-import { Icon } from '../icon/icon';
 
 interface Props {
     readonly icon: UserIconType;
@@ -17,7 +16,7 @@ interface Props {
     readonly iconTestID?: string;
 }
 
-const ICON_HIT_SLOP = 6;
+const ICON_HIT_SLOP = 4;
 
 export const IconTitleFieldTrigger = ({ icon, variant, onPress, testID, iconTestID }: Props) => {
     const { t } = useLingui();
@@ -28,10 +27,10 @@ export const IconTitleFieldTrigger = ({ icon, variant, onPress, testID, iconTest
         <HapticPressable
             onPress={onPress}
             accessibilityRole="button"
-            accessibilityLabel={t`Change icon, current: ${iconName}`}
-            accessibilityHint={t`Opens the icon picker`}
+            accessibilityLabel={t`Change icon`}
+            accessibilityHint={t`Current icon: ${iconName}. Opens the icon picker.`}
             hitSlop={ICON_HIT_SLOP}
-            className="active:opacity-70"
+            className="size-[44px] items-center justify-center active:opacity-70"
             testID={testID}
         >
             <View testID={iconTestID}>
@@ -44,9 +43,6 @@ export const IconTitleFieldTrigger = ({ icon, variant, onPress, testID, iconTest
                     icon={icon}
                     className={TONAL_DISC_BACKGROUND[variant]}
                 />
-            </View>
-            <View className="absolute -right-[5px] -bottom-[5px] h-[24px] w-[24px] items-center justify-center rounded-full border-2 border-grouped-surface-row bg-surface-disc">
-                <Icon icon={UserIconNameEnum.Pencil} size={14} className="text-primary" />
             </View>
         </HapticPressable>
     );
