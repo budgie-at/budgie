@@ -148,7 +148,7 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
     const form = ReactHookForm.useForm<BudgetFormValues>({
         mode: 'onChange',
         resolver: standardSchemaResolver(Schema.toStandardSchemaV1(BudgetFormSchema)),
-        defaultValues: buildDefaultBudgetFormValues(t`Budget`, defaultInstrumentId),
+        defaultValues: formValues,
         values: formValues,
         resetOptions: {
             keepDirtyValues: true,
