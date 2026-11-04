@@ -128,31 +128,35 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
             return false;
         });
 
+        const applyInTransaction = Effect.fnUntraced(function* (
+            scope: ConsolidationScanScopeInterface | null,
+            setup: InzhurSetupInterface
+        ) {
+            const transactions = yield* transactionRepository.findIncomeAndExpenseByExternalSources(
+                externalSources,
+                scope?.transactionIds ?? null
+            );
+            let moved = 0;
+
+            for (const transaction of transactions) {
+                if (yield* processTransaction(transaction, setup)) {
+                    moved += 1;
+                }
+            }
+
+            return moved;
+        });
+
         return {
-            apply: Effect.fn('InzhurBankFlowService.apply')(
-                function* (scope: ConsolidationScanScopeInterface | null) {
-                    const setup = yield* inzhurSetupService.findSetup();
+            apply: Effect.fn('InzhurBankFlowService.apply')(function* (scope: ConsolidationScanScopeInterface | null) {
+                const setup = yield* inzhurSetupService.findSetup();
 
-                    if (!isDefined(setup)) {
-                        return 0;
-                    }
+                if (!isDefined(setup)) {
+                    return 0;
+                }
 
-                    const transactions = yield* transactionRepository.findIncomeAndExpenseByExternalSources(
-                        externalSources,
-                        scope?.transactionIds ?? null
-                    );
-                    let moved = 0;
-
-                    for (const transaction of transactions) {
-                        if (yield* processTransaction(transaction, setup)) {
-                            moved += 1;
-                        }
-                    }
-
-                    return moved;
-                },
-                effect => Db.transaction(effect)
-            )
+                return yield* Db.transaction(applyInTransaction(scope, setup));
+            })
         };
     })
 }) {
