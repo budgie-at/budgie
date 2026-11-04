@@ -1,4 +1,5 @@
 import { Trans, useLingui } from '@lingui/react/macro';
+import { useState } from 'react';
 import { ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -6,6 +7,8 @@ import { FormsheetHeader } from '../../../@generic/component/formsheet-header/fo
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { BudgetDataState } from '../budget-data-state/budget-data-state';
+
+import type { LayoutChangeEvent } from 'react-native';
 
 interface Props {
     readonly title: string;
@@ -20,7 +23,11 @@ export const BudgetSheetState = (props: Props) => {
     const { t } = useLingui();
     const { height } = useWindowDimensions();
     const { top, bottom } = useSafeAreaInsets();
-    const scrollViewStyle = { flexGrow: 0, maxHeight: height - top - bottom };
+    const [headerHeight, setHeaderHeight] = useState(0);
+    const scrollViewStyle = { flexGrow: 0, maxHeight: Math.max(0, height - top - bottom - headerHeight) };
+    const handleHeaderLayout = (event: LayoutChangeEvent) => {
+        setHeaderHeight(event.nativeEvent.layout.height);
+    };
     const handleClose = () => void goBackOrReplace('/');
     const stateDescription =
         description ??
@@ -28,8 +35,10 @@ export const BudgetSheetState = (props: Props) => {
 
     return (
         <View className="bg-sheet-surface" collapsable={false}>
-            <ScrollView className="bg-sheet-surface" style={scrollViewStyle} contentInsetAdjustmentBehavior="automatic">
+            <View onLayout={handleHeaderLayout}>
                 <FormsheetHeader size="md" title={title} titleClassName="leading-tight" />
+            </View>
+            <ScrollView style={scrollViewStyle} contentInsetAdjustmentBehavior="never">
                 <View className="px-5xl pt-md pb-3xl gap-y-xl">
                     <BudgetDataState isLoading={isLoading} isError={isError} description={stateDescription} title={unavailableTitle} />
                     <HapticPressable
