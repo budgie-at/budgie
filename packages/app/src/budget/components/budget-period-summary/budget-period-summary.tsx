@@ -31,13 +31,13 @@ export const BudgetPeriodSummary = ({ snapshotId }: Props) => {
 
     const missingDescription = isError
         ? t`Your data could not be loaded. Close this screen and try again.`
-        : t`This period summary is no longer available. Close this screen to see your budget history.`;
+        : t`This summary is no longer available.`;
 
     if (!isDefined(snapshot)) {
         return (
             <BudgetSheetState
                 title={t`Period summary`}
-                unavailableTitle={t`Period summary unavailable`}
+                unavailableTitle={t`Summary unavailable`}
                 isLoading={isLoading}
                 isError={isError}
                 description={missingDescription}

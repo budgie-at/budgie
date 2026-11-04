@@ -6054,10 +6054,6 @@ msgstr "Період"
 msgid "Period summary"
 msgstr "Підсумок періоду"
 
-#: src/budget/components/budget-period-summary/budget-period-summary.tsx
-msgid "Period summary unavailable"
-msgstr "Підсумок періоду недоступний"
-
 #: src/@generic/hook/use-contacts.hook.ts
 msgid "Permission to access contacts was denied."
 msgstr "Відмовлено в доступі до контактів."
@@ -7326,6 +7322,10 @@ msgstr "Підписки"
 msgid "Suggested"
 msgstr "Запропоновані"
 
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
+msgid "Summary unavailable"
+msgstr "Підсумок недоступний"
+
 #: src/app/(tabs)/settings/index.tsx
 msgid "Support"
 msgstr "Підтримка"
@@ -7718,10 +7718,6 @@ msgstr "Цього місяця: витрачено {formattedExpense}, дохі
 msgid "This pattern isn't valid yet"
 msgstr "Цей шаблон поки некоректний"
 
-#: src/budget/components/budget-period-summary/budget-period-summary.tsx
-msgid "This period summary is no longer available. Close this screen to see your budget history."
-msgstr "Підсумок цього періоду більше недоступний. Закрийте цей екран, щоб переглянути історію бюджету."
-
 #: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "This phone"
 msgstr "Цей телефон"
@@ -7761,6 +7757,10 @@ msgstr "Це видалить бюджет події. Ваші транзакц
 #: src/wallet-capture/hook/use-wallet-capture-settings.hook.ts
 msgid "This removes the pending capture without creating a transaction."
 msgstr "Це видалить запис, що очікує, без створення транзакції."
+
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
+msgid "This summary is no longer available."
+msgstr "Цей підсумок більше недоступний."
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "This token already syncs one of your Monobank sections. Use the gear on its Home section to add accounts."

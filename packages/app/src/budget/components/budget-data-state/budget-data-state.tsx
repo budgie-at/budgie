@@ -25,11 +25,11 @@ export const BudgetDataState = ({ isLoading, isError = false, description, title
         <View accessibilityLabel={t`Budget`} accessibilityState={accessibilityState} className="rounded-2xl bg-secondary-background p-3xl">
             <LoadingContent isLoading={isLoading}>
                 <View className="gap-y-md">
-                    <Text accessibilityRole="header" className="text-lg font-semibold text-primary">
+                    <Text accessibilityRole="header" className="text-lg leading-tight font-semibold text-primary">
                         {heading}
                     </Text>
-                    <Text className="text-sm text-secondary-foreground">{stateDescription}</Text>
-                    <Text className="text-xs text-secondary-foreground">
+                    <Text className="text-sm leading-snug text-secondary-foreground">{stateDescription}</Text>
+                    <Text className="text-xs leading-snug text-secondary-foreground">
                         <Trans>Your transactions are not affected.</Trans>
                     </Text>
                 </View>

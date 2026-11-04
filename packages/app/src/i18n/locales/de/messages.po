@@ -6054,10 +6054,6 @@ msgstr "Zeitraum"
 msgid "Period summary"
 msgstr "Zeitraumübersicht"
 
-#: src/budget/components/budget-period-summary/budget-period-summary.tsx
-msgid "Period summary unavailable"
-msgstr "Zeitraumübersicht nicht verfügbar"
-
 #: src/@generic/hook/use-contacts.hook.ts
 msgid "Permission to access contacts was denied."
 msgstr "Die Berechtigung zum Zugriff auf Kontakte wurde verweigert."
@@ -7326,6 +7322,10 @@ msgstr "Abonnements"
 msgid "Suggested"
 msgstr "Vorgeschlagen"
 
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
+msgid "Summary unavailable"
+msgstr "Zusammenfassung nicht verfügbar"
+
 #: src/app/(tabs)/settings/index.tsx
 msgid "Support"
 msgstr "Support"
@@ -7718,10 +7718,6 @@ msgstr "Diesen Monat: ausgegeben {formattedExpense}, Einnahmen {formattedIncome}
 msgid "This pattern isn't valid yet"
 msgstr "Dieses Muster ist noch ungültig"
 
-#: src/budget/components/budget-period-summary/budget-period-summary.tsx
-msgid "This period summary is no longer available. Close this screen to see your budget history."
-msgstr "Diese Zeitraumübersicht ist nicht mehr verfügbar. Schließe diese Ansicht, um deinen Budgetverlauf zu sehen."
-
 #: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "This phone"
 msgstr "Dieses Telefon"
@@ -7761,6 +7757,10 @@ msgstr "Dadurch wird das Ereignisbudget entfernt. Deine Transaktionen bleiben un
 #: src/wallet-capture/hook/use-wallet-capture-settings.hook.ts
 msgid "This removes the pending capture without creating a transaction."
 msgstr "Dadurch wird die ausstehende Erfassung entfernt, ohne eine Transaktion zu erstellen."
+
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
+msgid "This summary is no longer available."
+msgstr "Diese Zusammenfassung ist nicht mehr verfügbar."
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "This token already syncs one of your Monobank sections. Use the gear on its Home section to add accounts."
