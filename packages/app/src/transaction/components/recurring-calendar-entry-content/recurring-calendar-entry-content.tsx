@@ -23,7 +23,7 @@ interface Props {
     readonly dayLabel?: string;
 }
 
-const amountVariants = cva('text-[15px] font-semibold text-primary tabular-nums', {
+const amountVariants = cva('text-[16px] font-semibold text-primary tabular-nums', {
     variants: { isAccessibilityTextSize: { true: 'mt-xs mb-sm', false: '' } }
 });
 
@@ -56,7 +56,7 @@ export const RecurringCalendarEntryContent = ({ entry, dayLabel }: Props) => {
         >
             <Text
                 dynamicTypeRamp="headline"
-                className="text-[15px] font-semibold text-primary"
+                className="text-[16px] font-semibold text-primary"
                 numberOfLines={labelLineLimit}
                 ellipsizeMode="tail"
             >
@@ -64,13 +64,13 @@ export const RecurringCalendarEntryContent = ({ entry, dayLabel }: Props) => {
             </Text>
             {isAccessibilityTextSize ? amount : null}
             {isAccessibilityTextSize ? (
-                <Text dynamicTypeRamp="footnote" className="text-[13px] text-secondary-foreground mt-xs">
+                <Text dynamicTypeRamp="footnote" className="text-[12px] text-secondary-foreground mt-xs">
                     {metadataLabel}
                 </Text>
             ) : null}
             <Text
                 dynamicTypeRamp="footnote"
-                className="text-[13px] text-secondary-foreground"
+                className="text-[12px] text-secondary-foreground"
                 numberOfLines={labelLineLimit}
                 ellipsizeMode="tail"
             >
