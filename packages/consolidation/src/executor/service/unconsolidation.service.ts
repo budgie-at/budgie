@@ -80,7 +80,12 @@ export class UnconsolidationService extends Context.Service<UnconsolidationServi
 
             const manualTags = yield* transactionTagsRepository.findByTransactionIds(manualTransactionIds);
             const manualTransactions = yield* transactionRepository.findByIds(manualTransactionIds);
-            const receiptSource = manualTransactions.find(transaction => transaction.externalSource === ExternalSourceEnum.RECEIPT);
+            const receiptSource = manualTransactions.find(
+                transaction =>
+                    transaction.externalSource === ExternalSourceEnum.RECEIPT ||
+                    (transaction.externalSource === ExternalSourceEnum.APPLE_PAY_AUTOMATION &&
+                        transaction.consolidationType === TransactionConsolidationTypeEnum.MANUAL_EXPENSE_DUPLICATE)
+            );
 
             if (isDefined(receiptSource)) {
                 yield* transactionReceiptRepository.moveToTransaction(canonicalTransactionId, receiptSource.id);

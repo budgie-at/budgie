@@ -36,10 +36,8 @@ const APPLE_PAY_CAPTURE_DUPLICATE_PAIRS_SQL = `
             AND capture_tx.type = '${TransactionTypeEnum.EXPENSE}'
             AND capture_tx.deleted_at IS NULL
             AND capture_tx.consolidation_parent_transaction_id IS NULL
-            AND (capture_tx.consolidation_type IS NULL OR (
-                capture_tx.external_source = '${ExternalSourceEnum.RECEIPT}'
-                AND capture_tx.consolidation_type = '${TransactionConsolidationTypeEnum.MANUAL_EXPENSE_DUPLICATE}'
-            ))
+            AND (capture_tx.consolidation_type IS NULL
+                OR capture_tx.consolidation_type = '${TransactionConsolidationTypeEnum.MANUAL_EXPENSE_DUPLICATE}')
             AND NOT EXISTS (
                 SELECT 1
                 FROM transaction_entries capture_split_entry

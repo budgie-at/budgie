@@ -369,7 +369,8 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                                         manualTransaction.externalSource !== ExternalSourceEnum.RECEIPT))) ||
                             (isDefined(manualTransaction.consolidationType) &&
                                 (manualTransaction.consolidationType !== TransactionConsolidationTypeEnum.MANUAL_EXPENSE_DUPLICATE ||
-                                    manualTransaction.externalSource !== ExternalSourceEnum.RECEIPT))
+                                    (manualTransaction.externalSource !== ExternalSourceEnum.RECEIPT &&
+                                        manualTransaction.externalSource !== ExternalSourceEnum.APPLE_PAY_AUTOMATION)))
                         ) {
                             return false;
                         }

@@ -1,15 +1,60 @@
 import { ConsolidationCandidateRepository } from '@budgie/consolidation';
-import { ExternalSourceEnum, TransactionReceiptEntityTable, convertToMicroUnits } from '@budgie/contracts';
+import { ExternalSourceEnum, TransactionEntityTable, TransactionReceiptEntityTable, convertToMicroUnits } from '@budgie/contracts';
 import { expect, layer } from '@effect/vitest';
+import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import { seedApplePayCardAccount } from '../harness/apple-pay-capture-fixture';
 import { seedPurchaseBank, seedPurchaseCapture } from '../harness/apple-pay-capture-scenario';
-import { expectSourcesRestored, fetchLedgerBalances, fetchOwnLedgerEntries } from '../harness/consolidation-revert-audit';
+import {
+    expectSourceStateRestored,
+    expectSourcesRestored,
+    fetchLedgerBalances,
+    fetchOwnLedgerEntries,
+    snapshotSourceState
+} from '../harness/consolidation-revert-audit';
 import { expectSecondConsolidationRunStable, runConsolidation } from '../harness/run-consolidation';
 import { testDb, testQueryService, unconsolidateById, TestLayer } from '../harness/test-context';
 
 layer(TestLayer)('consolidation/receipt-apple-pay-chain', it => {
+    it.effect('merges a capture that absorbed a null-external-id receipt into the later bank row and reverts both merges', () =>
+        Effect.gen(function* () {
+            const card = yield* seedApplePayCardAccount('Synthetic card');
+            const receipt = yield* seedPurchaseBank(card.id, { source: ExternalSourceEnum.RECEIPT });
+
+            yield* testDb.update(TransactionEntityTable).set({ externalId: null }).where(eq(TransactionEntityTable.id, receipt.id));
+            yield* testDb
+                .insert(TransactionReceiptEntityTable)
+                .values({ transactionId: receipt.id, fingerprint: 'synthetic-null-receipt' });
+
+            const capture = yield* seedPurchaseCapture(card.id);
+            const sourceState = yield* snapshotSourceState([receipt.id, capture.id]);
+
+            expect((yield* runConsolidation()).consolidated).toBe(1);
+            expect((yield* testQueryService.fetchTransactionById(receipt.id)).consolidationParentTransactionId).toBe(capture.id);
+
+            const bank = yield* seedPurchaseBank(card.id);
+            const bankState = yield* snapshotSourceState([bank.id]);
+            const candidates = yield* Effect.flatMap(ConsolidationCandidateRepository, repository =>
+                repository.findApplePayCaptureDuplicateCandidates(null)
+            );
+
+            expect(candidates).toEqual([{ syncedTransactionId: bank.id, manualTransactionId: capture.id }]);
+            expect((yield* runConsolidation()).consolidated).toBe(1);
+            expect((yield* testQueryService.fetchTransactionById(capture.id)).consolidationParentTransactionId).toBe(bank.id);
+            expect(yield* fetchLedgerBalances([card.id])).toEqual([[card.id, -convertToMicroUnits(100)]]);
+            expect(yield* testDb.select().from(TransactionReceiptEntityTable)).toMatchObject([{ transactionId: bank.id }]);
+            yield* expectSecondConsolidationRunStable();
+            yield* unconsolidateById(bank.id);
+            expect((yield* testQueryService.fetchTransactionById(receipt.id)).consolidationParentTransactionId).toBe(capture.id);
+            expect(yield* testDb.select().from(TransactionReceiptEntityTable)).toMatchObject([{ transactionId: capture.id }]);
+            yield* unconsolidateById(capture.id);
+            yield* expectSourceStateRestored([...sourceState, ...bankState]);
+            expect(yield* fetchLedgerBalances([card.id])).toEqual([[card.id, -3 * convertToMicroUnits(100)]]);
+            expect(yield* testDb.select().from(TransactionReceiptEntityTable)).toMatchObject([{ transactionId: receipt.id }]);
+        })
+    );
+
     it.effect.each([false, true])('counts the payment once and reverts the chain with bank first: %s', bankFirst =>
         Effect.gen(function* () {
             const card = yield* seedApplePayCardAccount('Synthetic card');
