@@ -25,8 +25,11 @@ import { setInzhurPayout } from '../../harness/inzhur/set-inzhur-payout';
 import { setUpInzhurWithBaseline } from '../../harness/inzhur/set-up-inzhur-with-baseline';
 
 const UAH_INSTRUMENT_ID = 1;
-const OPERATED_AT = new Date('2026-10-15T12:00:00.000Z');
-const TOP_UP_DESCRIPTION = 'Оплата ТОВ "ІНЖУР КЕПІТАЛ" поповнення рахунку';
+const MILLISECONDS_PER_DAY = 86_400_000;
+const OPERATED_AT = new Date(Date.now() + MILLISECONDS_PER_DAY);
+const BEFORE_SETUP_AT = new Date(Date.now() - MILLISECONDS_PER_DAY);
+const TOP_UP_DESCRIPTION = 'ТОВ "Інжур Кепітал"';
+const MONEY_TRANSFER_MCC = '4829';
 const DIVIDEND_DESCRIPTION = 'ТОВ ІНЖУР КЕПІТАЛ виплата доходу';
 
 const layer = makeInzhurLayer({
@@ -199,25 +202,47 @@ describe('inzhur/bank-flows', () => {
         }).pipe(Effect.provide(layer))
     );
 
-    it.effect('leaves card-to-card transfers mentioning Inzhur untouched', () =>
+    it.effect('turns a real-shaped money transfer top-up without an IBAN into a transfer into the cash account', () =>
         Effect.gen(function* () {
             const { bankAccount, cashAccount } = yield* setUpBankFlow(0);
-            const transferMcc = yield* testQueryService.findMccByCode('4829');
+            const transferMcc = yield* testQueryService.findMccByCode(MONEY_TRANSFER_MCC);
 
-            yield* importInzhurBankTransaction(bankAccount.id, 'p2p', 'Переказ на картку Inzhur', -300, OPERATED_AT, {
+            yield* importInzhurBankTransaction(bankAccount.id, 'real-shaped', TOP_UP_DESCRIPTION, -1000, OPERATED_AT, {
                 mccCategoryId: transferMcc.id
-            });
-            yield* importInzhurBankTransaction(bankAccount.id, 'iban', TOP_UP_DESCRIPTION, -1000, OPERATED_AT, {
-                mccCategoryId: transferMcc.id,
-                counterIban: 'UA213223130000026007233566001'
             });
             yield* consolidate;
 
             expect(yield* fetchBankTransactions()).toMatchObject([
-                { externalId: 'p2p', type: TransactionTypeEnum.EXPENSE },
-                { externalId: 'iban', type: TransactionTypeEnum.TRANSFER, toAccountId: cashAccount.id }
+                { externalId: 'real-shaped', type: TransactionTypeEnum.TRANSFER, toAccountId: cashAccount.id }
             ]);
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(1000 * PRECISION);
+        }).pipe(Effect.provide(layer))
+    );
+
+    it.effect('leaves a top-up made before Inzhur was set up untouched', () =>
+        Effect.gen(function* () {
+            const { bankAccount, cashAccount } = yield* setUpBankFlow(0);
+
+            yield* importInzhurBankTransaction(bankAccount.id, 'before-setup', TOP_UP_DESCRIPTION, -1000, BEFORE_SETUP_AT);
+            yield* consolidate;
+
+            expect(yield* fetchBankTransactions()).toMatchObject([{ externalId: 'before-setup', type: TransactionTypeEnum.EXPENSE }]);
+            expect(yield* fetchAccountBalance(cashAccount.id)).toBe(0);
+        }).pipe(Effect.provide(layer))
+    );
+
+    it.effect('leaves a person-to-person transfer from someone whose name contains Inzhur untouched', () =>
+        Effect.gen(function* () {
+            const { bankAccount, cashAccount } = yield* setUpBankFlow(0);
+            const transferMcc = yield* testQueryService.findMccByCode(MONEY_TRANSFER_MCC);
+
+            yield* importInzhurBankTransaction(bankAccount.id, 'p2p', 'Іван Інжур', -300, OPERATED_AT, {
+                mccCategoryId: transferMcc.id
+            });
+            yield* consolidate;
+
+            expect(yield* fetchBankTransactions()).toMatchObject([{ externalId: 'p2p', type: TransactionTypeEnum.EXPENSE }]);
+            expect(yield* fetchAccountBalance(cashAccount.id)).toBe(0);
         }).pipe(Effect.provide(layer))
     );
 

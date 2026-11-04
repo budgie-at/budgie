@@ -23,7 +23,7 @@ import { setUpInzhurWithBaseline } from '../../harness/inzhur/set-up-inzhur-with
 
 const UAH_INSTRUMENT_ID = 1;
 const TOP_UP_DESCRIPTION = 'Оплата ТОВ "ІНЖУР КЕПІТАЛ" поповнення рахунку';
-const TOP_UP_AT = new Date('2026-10-15T12:00:00.000Z');
+const TOP_UP_AT = new Date(Date.now() + 86_400_000);
 const ESTIMATED_DIVIDEND_TITLE = 'Inzhur dividends (estimated)';
 const BALANCE_CORRECTION_TITLE = 'Inzhur balance correction';
 
