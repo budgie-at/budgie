@@ -35,12 +35,19 @@ interface Props {
 export const BudgetSetupForm = ({ defaultInstrumentId, editingId, templateKind }: Props) => {
     const { t } = useLingui();
     const scrollViewRef = useRef<KeyboardAwareScrollViewRef | null>(null);
-    const { form, handleCancel, handleSubmit, handleDelete, handlePeriodChange, isEditing, isLoading, isError, isSubmitting, budget } =
-        useBudgetForm({
-            defaultInstrumentId,
-            editingId,
-            templateKind
-        });
+    const {
+        form,
+        handleCancel,
+        handleSubmit,
+        handleDelete,
+        handlePeriodChange,
+        isEditing,
+        isLoading,
+        isError,
+        isSubmitting,
+        isUnavailable,
+        budget
+    } = useBudgetForm({ defaultInstrumentId, editingId, templateKind });
     const { instrumentId, saveBlocker: watchedSaveBlocker } = useWatch({
         control: form.control,
         compute: values => {
@@ -61,7 +68,7 @@ export const BudgetSetupForm = ({ defaultInstrumentId, editingId, templateKind }
     const isSaveDisabled = isLoading || isDefined(saveBlocker);
     const saveLabel = isDefined(saveBlocker) ? t(saveBlocker) : submitLabel;
 
-    return isEditing && !isLoading && (!isDefined(budget) || budget.id !== editingId || isError) ? (
+    return isUnavailable ? (
         <BudgetPageState title={headerTitle} isLoading={false} isError={isError} />
     ) : (
         <FormProvider {...form}>

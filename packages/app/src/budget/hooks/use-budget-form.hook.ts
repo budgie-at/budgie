@@ -245,6 +245,7 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
         handlePeriodChange,
         isEditing,
         budget,
+        isUnavailable: isEditing && !isBudgetLoading && (!isDefined(budget) || budget.id !== editingId || isError || isCategoryLimitsError),
         isError: isError || isCategoryLimitsError,
         isSubmitting,
         isLoading:
