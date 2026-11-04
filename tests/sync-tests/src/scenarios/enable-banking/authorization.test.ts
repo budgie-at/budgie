@@ -208,7 +208,7 @@ describe('enable-banking/authorization', () => {
 
             expect(yield* service.listBanks(ENABLE_BANKING_APPLICATION_ID, 'DE')).toMatchObject([
                 { name: 'Open Bank', isSupported: true, isBeta: false, maximumConsentValiditySeconds: 7_776_000 },
-                { name: 'Header Bank', isSupported: false, isBeta: true, logoUrl: null }
+                { name: 'Header Bank', isSupported: false, isBeta: true }
             ]);
         }).pipe(Effect.provide(TestLayer))
     );

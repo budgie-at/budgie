@@ -230,7 +230,6 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
                 return aspsps.map((aspsp): EnableBankingBankInterface => ({
                     name: aspsp.name,
                     country: aspsp.country,
-                    logoUrl: aspsp.logo ?? null,
                     maximumConsentValiditySeconds: aspsp.maximum_consent_validity,
                     isBeta: aspsp.beta === true,
                     isSupported: !isNotEmptyArray(aspsp.required_psu_headers ?? [])
