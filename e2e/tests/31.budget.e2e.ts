@@ -65,6 +65,9 @@ test('31 budget', { tags: ['budget'] }, async ({ budgie }) => {
     });
 
     await b.phase('missing budget sheets stay readable', async () => {
+        await b.openLink(ctx, 'budgie://budget/edit?id=999999');
+        await expect(b.byText(screen, 'Budget unavailable')).toBeVisible({ timeout: 3_000 });
+        await b.tapId(ctx, 'PageHeader.BackButton');
         await b.openLink(ctx, 'budgie://budget-limit-changes');
         await expect(b.byText(screen, 'Budget unavailable')).toBeVisible({ timeout: 3_000 });
         await b.openLink(ctx, 'budgie://');
