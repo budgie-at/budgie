@@ -13,8 +13,7 @@ const APP_TESTS = fileURLToPath(new URL('../../../tests/app-tests/', import.meta
 const MARKER = 'Documents/E2EFixtures/.simlock-staged';
 
 /**
- * The fixtures the Maestro shard installs once (`setup-ios-e2e-fixtures.sh`),
- * staged on this machine by that same script: its `APP_DATA_CONTAINER`
+ * The app's fixtures, staged on this machine by `setup-ios-e2e-fixtures.sh`: its `APP_DATA_CONTAINER`
  * override points it at a local directory, and every `xcrun` call in it is
  * `|| true`, so on Linux it only builds and normalizes the files. The result
  * is the app container's `Documents/`, packed once per run.

@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/13.income-convert-to-transfer.flow.yaml.
 import * as a from '../support/budgie/accounts.ts';
 import * as c from '../support/budgie/categories.ts';
 import * as b from '../support/budgie/core.ts';
