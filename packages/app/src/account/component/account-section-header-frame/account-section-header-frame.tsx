@@ -16,11 +16,9 @@ interface Props {
     readonly title: string;
     readonly total: number | null;
     readonly leading?: ReactNode;
-    readonly trailing?: ReactNode;
-    readonly footer?: ReactNode;
 }
 
-export const AccountSectionHeaderFrame = ({ title, total, leading, trailing, footer }: Props) => {
+export const AccountSectionHeaderFrame = ({ title, total, leading }: Props) => {
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatDigits = useDisplayFormatDigits();
 
@@ -39,7 +37,6 @@ export const AccountSectionHeaderFrame = ({ title, total, leading, trailing, foo
                     >
                         {title}
                     </Text>
-                    {trailing}
                 </View>
                 {isDefined(formattedTotal) ? (
                     <ProtectedText
@@ -50,7 +47,6 @@ export const AccountSectionHeaderFrame = ({ title, total, leading, trailing, foo
                     </ProtectedText>
                 ) : null}
             </View>
-            {footer}
         </View>
     );
 };

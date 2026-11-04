@@ -62,12 +62,12 @@ export const CashCard = ({ accounts, total, balancesByAccountId }: Props) => {
                             {index > 0 ? (
                                 <View className="absolute top-0 right-0 left-[64px] h-hairline bg-surface-separator" pointerEvents="none" />
                             ) : null}
-                            <AccountListItem account={account} type={AccountTypeEnum.CASH} balancesByAccountId={balancesByAccountId} />
+                            <AccountListItem account={account} balancesByAccountId={balancesByAccountId} />
                         </View>
                     ))
                 ) : (
                     <AccountRowLeadingContext value={cashTile}>
-                        <AccountListItem account={accounts[0]} type={AccountTypeEnum.CASH} balancesByAccountId={balancesByAccountId} />
+                        <AccountListItem account={accounts[0]} balancesByAccountId={balancesByAccountId} />
                     </AccountRowLeadingContext>
                 )}
 

@@ -1465,7 +1465,6 @@ msgstr "Apply to existing transactions?"
 
 #: src/account/component/account-actions-menu/account-actions-menu.tsx
 #: src/account/component/debt-account-paid-off/debt-account-paid-off.tsx
-#: src/account/component/hidden-account-archive-menu-item/hidden-account-archive-menu-item.tsx
 #: src/account/component/inactive-account-card/inactive-account-card.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Archive"
@@ -3136,7 +3135,6 @@ msgid "Delete last digit"
 msgstr "Delete last digit"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx
-#: src/account/component/archived-account-delete-menu-item/archived-account-delete-menu-item.tsx
 msgid "Delete permanently"
 msgstr "Delete permanently"
 
@@ -3442,7 +3440,7 @@ msgstr "Edit"
 #: src/account/component/account-actions-menu/account-actions-menu.tsx
 #: src/account/component/account-card-base/account-card-base.tsx
 #: src/account/component/account-card-menu/account-card-menu.tsx
-#: src/account/component/hidden-account-edit-menu-item/hidden-account-edit-menu-item.tsx
+#: src/account/component/inactive-account-card/inactive-account-card.tsx
 msgid "Edit account"
 msgstr "Edit account"
 
@@ -6317,7 +6315,6 @@ msgid "Restart App"
 msgstr "Restart App"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx
-#: src/account/component/archived-account-restore-menu-item/archived-account-restore-menu-item.tsx
 #: src/account/component/archived-account-trailing/archived-account-trailing.tsx
 #: src/import/hook/use-restore-backup.hook.ts
 msgid "Restore"
@@ -7912,7 +7909,6 @@ msgid "Undo refund?"
 msgstr "Undo refund?"
 
 #: src/account/component/account-details-hidden-pill/account-details-hidden-pill.tsx
-#: src/account/component/hidden-account-unhide-menu-item/hidden-account-unhide-menu-item.tsx
 #: src/account/component/inactive-account-card/inactive-account-card.tsx
 msgid "Unhide"
 msgstr "Unhide"
