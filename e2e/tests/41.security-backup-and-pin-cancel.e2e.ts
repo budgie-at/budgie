@@ -16,7 +16,7 @@ test('41 security backup and pin cancel', { tags: ['security'] }, async ({ budgi
         await b.expectId(ctx, 'SettingsPage.DataEncryption.State.Off', 5_000);
         await b.expectText(ctx, 'Not saved yet');
         await b.tapId(ctx, 'SettingsPage.DataBackupButton');
-        await ctx.screen.getByRole('button', { name: 'Cancel', exact: true }).first().tap();
+        await sec.cancelBackupFolderPicker(ctx);
         await b.expectText(ctx, 'Not saved yet');
         await expect(b.byId(ctx.screen, 'SettingsPage.DataBackupButton')).toBeEnabled();
         await expect(b.byId(ctx.screen, b.TOAST)).toBeHidden({ timeout: 100 });
@@ -28,8 +28,9 @@ test('41 security backup and pin cancel', { tags: ['security'] }, async ({ budgi
     await b.phase('backup saved to chosen directory', async () => {
         await b.tapId(ctx, 'SettingsPage.DataBackupButton');
         await sec.saveBackupToFixtureDirectory(ctx);
+        await b.expectText(ctx, 'Backup saved', 15_000);
         await b.expectText(ctx, /^Last saved /);
-        await b.expectText(ctx, 'Backup saved');
+        await b.expectId(ctx, 'SettingsPage.Container');
         await b.expectNoId(ctx, b.TOAST, 8_000);
     });
 
