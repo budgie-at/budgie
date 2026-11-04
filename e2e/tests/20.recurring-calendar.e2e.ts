@@ -1,5 +1,3 @@
-import { expect } from 'e2e';
-
 import * as b from '../support/budgie/core.ts';
 import { test } from '../support/budgie/test.ts';
 import * as t from '../support/budgie/transactions.ts';
@@ -7,14 +5,12 @@ import * as t from '../support/budgie/transactions.ts';
 test('20 recurring calendar', { tags: ['recurring'] }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     const id = (testId: string) => b.byId(ctx.screen, testId);
-    const expectedIfShown = async () => {
-        if (await id('RecurringCalendar.ExpectedHeader').isVisible()) {
-            await expect(id('RecurringCalendar.ExpectedHeader')).toBeVisible();
-            await expect(id('RecurringCalendar.Row.E2E_Recurring_Gym')).toBeVisible();
-            await b.scrollTo(ctx, 'RecurringCalendar.RecordedHeader');
-            await b.expectId(ctx, 'RecurringCalendar.Row.E2E_Recurring_Rent');
-            await b.scrollTo(ctx, 'RecurringCalendar.MonthLabel', 'up');
-        }
+    const expectExpectedAndRecordedRows = async () => {
+        await b.expectId(ctx, 'RecurringCalendar.ExpectedHeader', 5_000);
+        await b.expectId(ctx, 'RecurringCalendar.Row.E2E_Recurring_Gym');
+        await b.scrollTo(ctx, 'RecurringCalendar.RecordedHeader');
+        await b.expectId(ctx, 'RecurringCalendar.Row.E2E_Recurring_Rent');
+        await b.scrollTo(ctx, 'RecurringCalendar.MonthLabel', 'up');
     };
 
     await budgie.start({ fixture: '20.db' });
@@ -23,7 +19,7 @@ test('20 recurring calendar', { tags: ['recurring'] }, async ({ budgie }) => {
         await t.navigateToTransactions(ctx);
         await b.tapId(ctx, 'TransactionsPage.Tab.Recurring');
         await b.expectId(ctx, 'RecurringCalendar.Container', 5_000);
-        await expectedIfShown();
+        await expectExpectedAndRecordedRows();
     });
 
     await b.phase('select and deselect day 19', async () => {
@@ -33,7 +29,7 @@ test('20 recurring calendar', { tags: ['recurring'] }, async ({ budgie }) => {
         await b.tapId(ctx, 'RecurringCalendar.Day.CurrentMonth.19');
         await b.expectNoId(ctx, 'RecurringCalendar.SelectedDayHeader.19', 5_000);
         await b.expectId(ctx, 'RecurringCalendar.Day.CurrentMonth.19');
-        await expectedIfShown();
+        await expectExpectedAndRecordedRows();
     });
 
     await b.phase('empty day', async () => {
