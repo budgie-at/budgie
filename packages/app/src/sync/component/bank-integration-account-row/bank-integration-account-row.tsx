@@ -97,7 +97,7 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
                     </ProtectedText>
                 </View>
             </View>
-            <View className="flex-row items-center gap-x-sm">
+            <View className="-ml-[8px] flex-row items-center gap-x-xs">
                 <BankIntegrationAccountMenu accountId={account.id} title={account.title} rowTestID={rowTestID}>
                     <CircleIcon
                         icon={UserIconNameEnum.Ellipsis}
