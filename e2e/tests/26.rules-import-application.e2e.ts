@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/26.rules-import-application.flow.yaml.
 import * as b from '../support/budgie/core.ts';
 import { importTestTransactions } from '../support/budgie/imports.ts';
 import * as r from '../support/budgie/rules.ts';

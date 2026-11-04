@@ -1,5 +1,3 @@
-// Port of tests/app-tests/flows/29.apple-pay-capture-settings.flow.yaml.
-// The Maestro flow imports nothing and runs on whatever the previous flow left; this starts on an empty home.
 import { expect } from 'e2e';
 
 import * as b from '../support/budgie/core.ts';

@@ -23,8 +23,8 @@ export async function importTestTransactions(ctx: Ctx, csvFixturesUri: string, n
 
 /**
  * A picker row's identifier: the file name, with the extension or not
- * (`e2e-budgie-import`, `16.db`), or Maestro's `name, ext` form, which the
- * iOS 26.5 simulators report. The flows' `name(, ext)?`.
+ * (`e2e-budgie-import`, `16.db`), or the `name, ext` form, which the
+ * iOS 26.5 simulators report.
  */
 function fileRowId(name: string): RegExp {
     const [base, ext] = name.split(', ');

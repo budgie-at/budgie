@@ -1,6 +1,4 @@
-// Port of tests/app-tests/flows/42.receipt-scan-share.flow.yaml. The Maestro flow shares the
-// receipt PDF from the Files app through the share sheet; here the share extension's hand-off
-// is done host-side (misc.shareFixtureWithApp), the rest of the flow is as written.
+// The share extension's hand-off of the receipt PDF is done host-side (misc.shareFixtureWithApp).
 import { expect } from 'e2e';
 
 import * as c from '../support/budgie/categories.ts';

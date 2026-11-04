@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/31.budget.flow.yaml.
 import { scrollAbove } from '@mobile-ci/e2e-simlock/steps';
 import { expect } from 'e2e';
 
@@ -41,7 +40,7 @@ test('31 budget', { tags: ['budget'] }, async ({ budgie }) => {
         try {
             await expect(id(switchId)).toHaveValue(to, { timeout: 3_000 });
         } catch (cause) {
-            // Maestro's setup launch grants notifications; simctl cannot on this runtime, so the push switch's system prompt is accepted here.
+            // simctl cannot grant notifications on this runtime, so the push switch's system prompt is accepted here.
             try {
                 await ctx.device.alert('accept');
             } catch {

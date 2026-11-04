@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/26.rules-conflicts.flow.yaml.
 import { expect } from 'e2e';
 
 import * as b from '../support/budgie/core.ts';

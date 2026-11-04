@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/16.erste-pdf-import.flow.yaml.
 import { expect } from 'e2e';
 
 import * as a from '../support/budgie/accounts.ts';

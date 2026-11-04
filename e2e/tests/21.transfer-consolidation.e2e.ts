@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/21.transfer-consolidation.flow.yaml.
 import { expect } from 'e2e';
 
 import * as b from '../support/budgie/core.ts';
@@ -28,7 +27,7 @@ test('21 transfer consolidation', { tags: ['transactions'] }, async ({ budgie })
         await b.scrollTo(ctx, card('Bridge_Out'));
         await b.expectId(ctx, card('Bridge_In'));
         await b.scrollTo(ctx, card('Bridge_Chain_Out'));
-        // The chain rows sit just past where Maestro's longer scroll stride stops; scroll on to each before asserting it.
+        // The chain rows sit just past where one scroll stride stops; scroll on to each before asserting it.
         await b.scrollTo(ctx, card('Chain_Source'));
         await b.expectId(ctx, card('Chain_Source'));
         await b.scrollTo(ctx, card('Chain_Target'));

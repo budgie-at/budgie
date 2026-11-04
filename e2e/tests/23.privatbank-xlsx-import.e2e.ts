@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/23.privatbank-xlsx-import.flow.yaml.
 import { expect } from 'e2e';
 
 import * as a from '../support/budgie/accounts.ts';
