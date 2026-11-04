@@ -16,12 +16,12 @@ import { InzhurFundReturnMoneyRow } from '../inzhur-fund-return-money-row/inzhur
 import type { AccountEntityInterface } from '@budgie/contracts';
 
 interface Props {
-    readonly account: Pick<AccountEntityInterface, 'title' | 'instrumentId'>;
+    readonly account: Pick<AccountEntityInterface, 'id' | 'instrumentId'>;
 }
 
 export const InzhurFundReturnsCard = ({ account }: Props) => {
     const { t } = useLingui();
-    const { dividendTotals, latestPrice } = useInzhurFundReturnsQuery(account.title, account.instrumentId);
+    const { dividendTotals, latestPrice } = useInzhurFundReturnsQuery(account.id, account.instrumentId);
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const hryvnia = useHryvniaInstrumentQuery();
     const { formatDayAndMonthAndYear } = useFormatDate();

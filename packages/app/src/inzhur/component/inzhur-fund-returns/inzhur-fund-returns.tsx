@@ -7,7 +7,7 @@ import { InzhurFundReturnsCard } from '../inzhur-fund-returns-card/inzhur-fund-r
 import type { AccountEntityInterface } from '@budgie/contracts';
 
 interface Props {
-    readonly account: Pick<AccountEntityInterface, 'title' | 'instrumentId' | 'type' | 'externalSource'>;
+    readonly account: Pick<AccountEntityInterface, 'id' | 'instrumentId' | 'type' | 'externalSource'>;
 }
 
 export const InzhurFundReturns = ({ account }: Props) => {

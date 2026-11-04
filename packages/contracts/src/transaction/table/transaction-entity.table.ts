@@ -36,6 +36,7 @@ export const TransactionEntityTable = sqliteTable(
         consolidationType: text('consolidation_type', {
             enum: convertEnumToDrizzleEnum(TransactionConsolidationTypeEnum)
         }).$type<TransactionConsolidationTypeEnum>(),
+        fundAccountId: int('fund_account_id', { mode: 'number' }).references(() => AccountEntityTable.id, { onDelete: 'set null' }),
         operatedWeekday: int('operated_weekday', { mode: 'number' })
             .generatedAlwaysAs(sql`CAST(strftime('%w', operated_at, 'unixepoch') AS INTEGER)`, { mode: 'virtual' })
             .notNull(),

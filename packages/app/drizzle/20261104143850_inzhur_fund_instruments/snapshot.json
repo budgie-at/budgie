@@ -1,7 +1,7 @@
 {
     "version": "7",
     "dialect": "sqlite",
-    "id": "835d5c1e-fd01-4b9f-aaf2-b8d1d2b709e2",
+    "id": "846c63da-16d3-4688-acbe-ee3c835fb256",
     "prevIds": ["0167756e-e2bb-4ea5-bae2-47231ea1df76"],
     "ddl": [
         {
@@ -3826,6 +3826,16 @@
         },
         {
             "type": "integer",
+            "notNull": false,
+            "autoincrement": false,
+            "default": null,
+            "generated": null,
+            "name": "fund_account_id",
+            "entityType": "columns",
+            "table": "transactions"
+        },
+        {
+            "type": "integer",
             "notNull": true,
             "autoincrement": false,
             "default": null,
@@ -4714,6 +4724,17 @@
             "onDelete": "SET NULL",
             "nameExplicit": false,
             "name": "fk_transactions_consolidation_parent_transaction_id_transactions_id_fk",
+            "entityType": "fks",
+            "table": "transactions"
+        },
+        {
+            "columns": ["fund_account_id"],
+            "tableTo": "accounts",
+            "columnsTo": ["id"],
+            "onUpdate": "NO ACTION",
+            "onDelete": "SET NULL",
+            "nameExplicit": false,
+            "name": "fk_transactions_fund_account_id_accounts_id_fk",
             "entityType": "fks",
             "table": "transactions"
         },

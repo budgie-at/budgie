@@ -1,4 +1,4 @@
-import { SQL, and, desc, eq, gt, isNull, ne, or, sql } from 'drizzle-orm';
+import { SQL, and, eq, gt, isNotNull, isNull, ne, or, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -8,29 +8,30 @@ import { Db } from '../../@generic/service/db.service';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { INVESTMENTS_CATEGORY_ID } from '../../category/constant/investments-category-id.constant';
-import { InstrumentDailyMarketPriceEntityTable } from '../../instrument-daily-market-price/table/instrument-daily-market-price-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
-
-import type { FundDividendTotalsInterface } from '../interface/fund-dividend-totals.interface';
 
 export class InvestmentReturnRepository extends Context.Service<InvestmentReturnRepository>()(
     '@budgie/contracts/InvestmentReturnRepository',
     {
         make: Effect.sync(() => {
             const buildTotalSql = (comparison: SQL) =>
-                sql<number>`COALESCE(SUM(CASE WHEN ${comparison} THEN COALESCE(${TransactionEntryEntityTable.baseAmount}, ${TransactionEntryEntityTable.amount}) ELSE 0 END), 0)`;
+                sql<number>`COALESCE(SUM(CASE WHEN ${comparison} THEN ${TransactionEntryEntityTable.amount} ELSE 0 END), 0)`;
 
             const bankTotalSql = buildTotalSql(sql`${AccountEntityTable.externalSource} IS NOT ${ExternalSourceEnum.INZHUR}`);
             const reinvestedTotalSql = buildTotalSql(sql`${AccountEntityTable.externalSource} IS ${ExternalSourceEnum.INZHUR}`);
 
             return {
-                getFundDividendTotals: (fundTitle: string) =>
+                getFundDividendTotals: () =>
                     Db.query(db =>
                         db
-                            .select({ bank: bankTotalSql, reinvested: reinvestedTotalSql })
+                            .select({
+                                fundAccountId: sql<number>`${TransactionEntityTable.fundAccountId}`,
+                                bank: bankTotalSql,
+                                reinvested: reinvestedTotalSql
+                            })
                             .from(TransactionEntryEntityTable)
                             .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
                             .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
@@ -41,28 +42,11 @@ export class InvestmentReturnRepository extends Context.Service<InvestmentReturn
                                     eq(TransactionEntityTable.type, TransactionTypeEnum.INCOME),
                                     eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.DEBIT),
                                     eq(TransactionEntryEntityTable.categoryId, INVESTMENTS_CATEGORY_ID),
-                                    eq(TransactionEntityTable.title, fundTitle)
+                                    isNotNull(TransactionEntityTable.fundAccountId)
                                 )
                             )
-                    ).pipe(Effect.map((rows): FundDividendTotalsInterface => rows.at(0) ?? { bank: 0, reinvested: 0 })),
-
-                findLatestPrice: (instrumentId: number) =>
-                    Db.query(db =>
-                        db
-                            .select({
-                                price: InstrumentDailyMarketPriceEntityTable.price,
-                                priceDate: InstrumentDailyMarketPriceEntityTable.priceDate
-                            })
-                            .from(InstrumentDailyMarketPriceEntityTable)
-                            .where(
-                                and(
-                                    eq(InstrumentDailyMarketPriceEntityTable.instrumentId, instrumentId),
-                                    isNull(InstrumentDailyMarketPriceEntityTable.deletedAt)
-                                )
-                            )
-                            .orderBy(desc(InstrumentDailyMarketPriceEntityTable.priceDate))
-                            .limit(1)
-                    ).pipe(Effect.map(rows => rows.at(0) ?? null)),
+                            .groupBy(TransactionEntityTable.fundAccountId)
+                    ),
 
                 countTransfersSince: (accountId: number, since: Date) =>
                     Db.query(db =>

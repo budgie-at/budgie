@@ -315,7 +315,6 @@ export { SettingsRepository } from './settings/repository/settings.repository';
 
 export { StatisticsRepository } from './statistics/repository/statistics.repository';
 export { InvestmentReturnRepository } from './investment-return/repository/investment-return.repository';
-export type { FundDividendTotalsInterface } from './investment-return/interface/fund-dividend-totals.interface';
 
 export type { StatisticsFilterInterface } from './statistics/interface/statistics-filter.interface';
 
