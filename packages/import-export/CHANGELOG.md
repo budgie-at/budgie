@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.150.4](https://github.com/budgie-at/budgie/compare/v6.150.3...v6.150.4) (2026-11-04)
+
+### Bug Fixes
+
+* **import-export:** parse CSV amounts strictly and reject ambiguous values ([503a6b0](https://github.com/budgie-at/budgie/commit/503a6b06338a53d2f8cfb0c192124e3a1b4e3bf6))
+
+
 # [6.148.0](https://github.com/budgie-at/budgie/compare/v6.147.1...v6.148.0) (2026-11-02)
 
 **Note:** Version bump only for package @budgie/import-export
