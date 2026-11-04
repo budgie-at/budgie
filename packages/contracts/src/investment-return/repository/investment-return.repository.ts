@@ -52,11 +52,8 @@ export class InvestmentReturnRepository extends Context.Service<InvestmentReturn
                     Db.query(db =>
                         db
                             .select({ count: sql<number>`COUNT(DISTINCT ${TransactionEntityTable.id})` })
-                            .from(TransactionEntityTable)
-                            .innerJoin(
-                                TransactionEntryEntityTable,
-                                eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id)
-                            )
+                            .from(TransactionEntryEntityTable)
+                            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
                             .where(
                                 and(
                                     transactionFilters.buildVisibleTransactionCondition(),
