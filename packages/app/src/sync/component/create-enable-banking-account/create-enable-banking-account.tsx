@@ -1,4 +1,9 @@
-import { EnableBankingCallbackError, EnableBankingCallbackFailureEnum, EnableBankingSyncService } from '@budgie/sync';
+import {
+    EnableBankingCallbackError,
+    EnableBankingCallbackFailureEnum,
+    EnableBankingSyncService,
+    SyncUnauthorizedError
+} from '@budgie/sync';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -15,7 +20,9 @@ import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { enableBankingCallbackUrlAtom } from '../../constant/enable-banking-callback-url-atom.constant';
+import { EnableBankingSetupErrorReasonEnum } from '../../enum/enable-banking-setup-error-reason.enum';
 import { EnableBankingSetupStepEnum } from '../../enum/enable-banking-setup-step.enum';
+import { EnableBankingSetupError } from '../../error/enable-banking-setup.error';
 import { useExplainEnableBankingError } from '../../hook/use-explain-enable-banking-error.hook';
 import { useSyncAccountSetupFlow } from '../../hook/use-sync-account-setup-flow.hook';
 import { EnableBankingConnectionService } from '../../service/enable-banking-connection.service';
@@ -24,6 +31,7 @@ import { AccountSelectionStep } from '../account-selection-step/account-selectio
 import { EnableBankingAccountsNotice } from '../enable-banking-accounts-notice/enable-banking-accounts-notice';
 import { EnableBankingBankStep } from '../enable-banking-bank-step/enable-banking-bank-step';
 import { EnableBankingKeyStep } from '../enable-banking-key-step/enable-banking-key-step';
+import { EnableBankingSetupGuide } from '../enable-banking-setup-guide/enable-banking-setup-guide';
 import { EnableBankingWaitingStep } from '../enable-banking-waiting-step/enable-banking-waiting-step';
 import { SyncAccountSetupPage } from '../sync-account-setup-page/sync-account-setup-page';
 
@@ -35,7 +43,9 @@ export const CreateEnableBankingAccount = () => {
     const explainError = useExplainEnableBankingError();
     const callbackUrl = useAtomValue(enableBankingCallbackUrlAtom);
 
-    const [step, setStep] = useState(() => (isDefined(callbackUrl) ? EnableBankingSetupStepEnum.WAITING : EnableBankingSetupStepEnum.KEY));
+    const [step, setStep] = useState(() =>
+        isDefined(callbackUrl) ? EnableBankingSetupStepEnum.WAITING : EnableBankingSetupStepEnum.GUIDE
+    );
     const [applicationId, setApplicationId] = useState('');
     const [pickedPem, setPickedPem] = useState<string | null>(null);
     const [isKeySaved, setIsKeySaved] = useState(false);
@@ -158,7 +168,15 @@ export const CreateEnableBankingAccount = () => {
                     setIsKeySaved(true);
                     setSavedApplicationId(parsedApplicationId);
                 }
-                setBanks(yield* Effect.flatMap(EnableBankingSyncService, service => service.listBanks(parsedApplicationId)));
+                setBanks(
+                    yield* Effect.flatMap(EnableBankingSyncService, service => service.listBanks(parsedApplicationId)).pipe(
+                        Effect.mapError(error =>
+                            error instanceof SyncUnauthorizedError
+                                ? new EnableBankingSetupError({ reason: EnableBankingSetupErrorReasonEnum.INACTIVE_APPLICATION })
+                                : error
+                        )
+                    )
+                );
                 setStep(EnableBankingSetupStepEnum.BANK);
             }).pipe(Effect.mapError(explainError), toastOnFailure(t`Could not verify the application`))
         );
@@ -195,6 +213,9 @@ export const CreateEnableBankingAccount = () => {
                 handleChooseAnotherBank();
                 break;
             case EnableBankingSetupStepEnum.KEY:
+                setStep(EnableBankingSetupStepEnum.GUIDE);
+                break;
+            case EnableBankingSetupStepEnum.GUIDE:
             case EnableBankingSetupStepEnum.ACCOUNTS:
             default:
                 handleGoBack();
@@ -203,18 +224,26 @@ export const CreateEnableBankingAccount = () => {
 
     const isKeyPicked = isDefined(pickedPem) || isKeySaved;
 
-    let stepContent = (
-        <EnableBankingKeyStep
-            applicationId={applicationId}
-            isKeyPicked={isKeyPicked}
-            isLoading={isLoading}
-            onApplicationIdChange={handleApplicationIdChange}
-            onPickKey={handlePickKey}
-        />
-    );
-    let footer = <Button onPress={handleContinue} disabled={isLoading} isLoading={isLoading} content={t`Continue`} />;
+    const handleHaveKey = () => {
+        setStep(EnableBankingSetupStepEnum.KEY);
+    };
+
+    let stepContent = <EnableBankingSetupGuide />;
+    let footer = <Button onPress={handleHaveKey} content={t`I have my key file`} />;
 
     switch (step) {
+        case EnableBankingSetupStepEnum.KEY:
+            stepContent = (
+                <EnableBankingKeyStep
+                    applicationId={applicationId}
+                    isKeyPicked={isKeyPicked}
+                    isLoading={isLoading}
+                    onApplicationIdChange={handleApplicationIdChange}
+                    onPickKey={handlePickKey}
+                />
+            );
+            footer = <Button onPress={handleContinue} disabled={isLoading} isLoading={isLoading} content={t`Continue`} />;
+            break;
         case EnableBankingSetupStepEnum.BANK:
             stepContent = <EnableBankingBankStep banks={banks} onSelectBank={handleSelectBank} />;
             footer = <Button variant="ghost" onPress={handleChangeKey} content={t`Change key`} />;
@@ -232,7 +261,7 @@ export const CreateEnableBankingAccount = () => {
             );
             footer = <Button onPress={handleSetupSync} disabled={isStartSyncDisabled} isLoading={isSettingUp} content={t`Start Sync`} />;
             break;
-        case EnableBankingSetupStepEnum.KEY:
+        case EnableBankingSetupStepEnum.GUIDE:
         default:
             break;
     }

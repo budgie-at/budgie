@@ -29,7 +29,7 @@ const SETUP_ERROR_LABEL: Record<EnableBankingSetupErrorReasonEnum, MessageDescri
     [EnableBankingSetupErrorReasonEnum.UNREADABLE_FILE]: msg`Could not read the selected file.`,
     [EnableBankingSetupErrorReasonEnum.BROWSER_UNAVAILABLE]: msg`Could not open your browser. Try again.`,
     [EnableBankingSetupErrorReasonEnum.STORAGE_FAILED]: msg`Could not save the key in this phone's secure storage. Nothing was connected.`,
-    [EnableBankingSetupErrorReasonEnum.INACTIVE_APPLICATION]: msg`This Enable Banking application is not active.`,
+    [EnableBankingSetupErrorReasonEnum.INACTIVE_APPLICATION]: msg`This application is not active yet. Open it in Enable Banking, tap Activate by linking accounts and log in to your bank, then choose the key again.`,
     [EnableBankingSetupErrorReasonEnum.REDIRECT_URL_MISSING]: msg`The application does not list the redirect URL shown in the setup steps. Add it exactly as shown.`
 };
 

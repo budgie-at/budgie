@@ -17,6 +17,8 @@ const encryptedPem = privateKey.export({ type: 'pkcs8', format: 'pem', cipher: '
 
 it('reads the application id from a key file name', () => {
     expect(parseEnableBankingApplicationId(`${APPLICATION_ID}.pem`)).toBe(APPLICATION_ID);
+    expect(parseEnableBankingApplicationId(`${APPLICATION_ID}.pem.txt`)).toBe(APPLICATION_ID);
+    expect(parseEnableBankingApplicationId(`${APPLICATION_ID}.txt`)).toBeNull();
     expect(parseEnableBankingApplicationId(` ${APPLICATION_ID} `)).toBe(APPLICATION_ID);
     expect(parseEnableBankingApplicationId('private.key')).toBeNull();
     expect(parseEnableBankingApplicationId(`${APPLICATION_ID} (1).pem`)).toBeNull();

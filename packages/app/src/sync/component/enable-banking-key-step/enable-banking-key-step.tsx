@@ -4,7 +4,6 @@ import { Text, View } from 'react-native';
 
 import { Button } from '../../../@generic/component/button/button';
 import { Input } from '../../../@generic/component/input/input';
-import { EnableBankingSetupGuide } from '../enable-banking-setup-guide/enable-banking-setup-guide';
 
 interface Props {
     readonly applicationId: string;
@@ -21,8 +20,6 @@ export const EnableBankingKeyStep = ({ applicationId, isKeyPicked, isLoading, on
 
     return (
         <>
-            <EnableBankingSetupGuide />
-
             <View className="gap-y-md">
                 <Text className="text-secondary-foreground text-sm px-md">
                     <Trans>Application ID</Trans>

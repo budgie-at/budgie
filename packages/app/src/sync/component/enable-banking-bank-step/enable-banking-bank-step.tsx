@@ -1,4 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
+import * as Arr from 'effect/Array';
+import * as Order from 'effect/Order';
+import { getLocales } from 'expo-localization';
 import { useState } from 'react';
 
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
@@ -19,7 +22,14 @@ export const EnableBankingBankStep = ({ banks, onSelectBank }: Props) => {
     const [query, setQuery] = useState('');
 
     const normalizedQuery = query.trim().toLowerCase();
-    const visibleBanks = banks
+    const regionCode = getLocales().at(0)?.regionCode?.toUpperCase();
+    const visibleBanks = Arr.sort(
+        banks,
+        Order.combine(
+            Order.mapInput(Order.Boolean, (bank: EnableBankingBankInterface) => bank.country !== regionCode),
+            Order.mapInput(Order.String, (bank: EnableBankingBankInterface) => bank.name)
+        )
+    )
         .filter(bank => bank.isSupported && `${bank.name} ${bank.country}`.toLowerCase().includes(normalizedQuery))
         .slice(0, MAX_VISIBLE_BANKS);
 

@@ -1349,6 +1349,10 @@ msgstr "Весь час"
 msgid "Allocated"
 msgstr "Розподілено"
 
+#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
+msgid "Allowed redirect URL"
+msgstr "Дозволена URL-адреса перенаправлення"
+
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "Already in Budgie"
 msgstr "Уже в Budgie"
@@ -1492,6 +1496,10 @@ msgstr "Покупка через Apple Pay"
 #: src/sync/component/enable-banking-key-step/enable-banking-key-step.tsx
 msgid "Application ID"
 msgstr "ID застосунку"
+
+#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
+msgid "Application name"
+msgstr "Назва застосунку"
 
 #: src/rule/components/rule-actions-section/rule-actions-section.tsx
 msgid "Applies to new payments as they arrive from your bank or an import."
@@ -1867,6 +1875,7 @@ msgstr "Назва бюджету"
 #: src/import/components/import-preset-options/import-preset-options.tsx
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 #: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "Budgie"
 msgstr "Budgie"
@@ -2609,6 +2618,14 @@ msgstr "Конвертувати у переказ?"
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Converting {processedEntryCount} of {totalEntryCount} transactions"
 msgstr "Конвертується {processedEntryCount} з {totalEntryCount} транзакцій"
+
+#: src/sync/component/enable-banking-copy-value-row/enable-banking-copy-value-row.tsx
+msgid "Copied"
+msgstr "Скопійовано"
+
+#: src/sync/component/enable-banking-copy-value-row/enable-banking-copy-value-row.tsx
+msgid "Copies the value"
+msgstr "Копіює значення"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Copy the API Key and Secret Key into the fields below"
@@ -3418,6 +3435,10 @@ msgstr "Баланс депозиту не може стати відʼємни�
 msgid "Deposits"
 msgstr "Депозити"
 
+#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
+msgid "Description"
+msgstr "Опис"
+
 #: src/categorize-inbox/components/categorize-inbox-payments-select-all/categorize-inbox-payments-select-all.tsx
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Deselect all"
@@ -3765,6 +3786,10 @@ msgstr "Редагувати переказ"
 msgid "Edits the total of the plan"
 msgstr "Змінює загальну суму плану"
 
+#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
+msgid "Email for data protection: use your own email. Tap a value to copy it."
+msgstr "Email для захисту даних: використай власну пошту. Торкнись значення, щоб скопіювати."
+
 #: src/app/icon-selector.tsx
 msgid "Emoji"
 msgstr "Емодзі"
@@ -4104,6 +4129,10 @@ msgstr "Віднести {count} до {labelTitle}"
 msgid "File {merchantTitle} as {candidateTitle}"
 msgstr "Віднести {merchantTitle} до {candidateTitle}"
 
+#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
+msgid "Fill in every field with the values below. All are required for Production."
+msgstr "Заповни кожне поле значеннями нижче. Для Production усі вони обов'язкові."
+
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Fill missing currency conversions"
 msgstr "Заповнити відсутні конвертації валют"
@@ -4379,6 +4408,10 @@ msgstr "Як експортувати"
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "I have a Budgie backup"
 msgstr "У мене є резервна копія Budgie"
+
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+msgid "I have my key file"
+msgstr "У мене є файл ключа"
 
 #: src/app/icon-selector.tsx
 msgid "Icon"
@@ -4867,10 +4900,6 @@ msgstr "Ліміт залежить від"
 #: src/budget/components/budget-limit-changes-row/budget-limit-changes-row.tsx
 msgid "Limits are tuned automatically after 3 steady periods"
 msgstr "Ліміти налаштовуються автоматично після 3 стабільних періодів"
-
-#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
-msgid "Link each of your own accounts to the application"
-msgstr "Прив'яжіть кожен зі своїх рахунків до застосунку"
 
 #: src/sync/component/enable-banking-connection-card/enable-banking-connection-card.tsx
 msgid "Link every account you sync to your application in Enable Banking, then authorize again."
@@ -5744,6 +5773,10 @@ msgstr "За поточного темпу кошти закінчаться д�
 msgid "On the {coveredAmountWithCode} with known cost"
 msgstr "На {coveredAmountWithCode} з відомою вартістю"
 
+#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
+msgid "On the new application tap Activate by linking accounts and log in to your bank. Use Link accounts for each further bank."
+msgstr "У новому застосунку натисни «Activate by linking accounts» і увійди у свій банк. Для кожного наступного банку використовуй «Link accounts»."
+
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "On this iPhone"
 msgstr "На цьому iPhone"
@@ -5836,6 +5869,10 @@ msgstr "Ключ лише у вас."
 msgid "Open {openPrice}"
 msgstr "Відкриття {openPrice}"
 
+#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
+msgid "Open API applications, then Add a new application."
+msgstr "Відкрий «API applications», потім «Add a new application»."
+
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Open Binance to get your API key"
 msgstr "Відкрийте Binance, щоб отримати API-ключ"
@@ -5863,6 +5900,10 @@ msgstr "Відкривайте Budgie за допомогою Face ID або Tou
 #: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
 msgid "Open Enable Banking"
 msgstr "Відкрити Enable Banking"
+
+#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
+msgid "Open Enable Banking below and sign in with the link sent to your email."
+msgstr "Відкрий Enable Banking нижче й увійди за посиланням, надісланим на пошту."
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Open George (Erste Bank online banking)"
@@ -6217,6 +6258,10 @@ msgstr "Відмовлено в доступі до контактів."
 msgid "Personal accounts only. Enable Banking's Terms allow this for private individuals using their own accounts. By connecting you accept them."
 msgstr "Лише особисті рахунки. Умови Enable Banking дозволяють це приватним особам зі своїми рахунками. Підключаючись, ви приймаєте їх."
 
+#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
+msgid "Personal finance tracking"
+msgstr "Personal finance tracking"
+
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
 msgid "Phone lock"
 msgstr "Блокування телефона"
@@ -6383,6 +6428,10 @@ msgstr "Основний"
 #: src/settings/components/support-settings-rows/support-settings-rows.tsx
 msgid "Privacy policy"
 msgstr "Політика конфіденційності"
+
+#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
+msgid "Privacy URL"
+msgstr "URL політики конфіденційності"
 
 #: src/app/(main)/create-account/index.tsx
 #: src/rule/constant/external-source.constant.ts
@@ -6580,10 +6629,6 @@ msgstr "Регулярні"
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Повторювані платежі з’являться тут, щойно в ваших транзакціях буде виявлено закономірності"
-
-#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
-msgid "Redirect URL"
-msgstr "URL перенаправлення"
 
 #: src/categorize-inbox/components/categorize-inbox-group-refine-options/categorize-inbox-group-refine-options.tsx
 msgid "Refine"
@@ -6932,10 +6977,6 @@ msgstr "Зберегти правило"
 msgid "Save set aside"
 msgstr "Зберегти відкладення"
 
-#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
-msgid "Save the .pem key file the application gives you"
-msgstr "Збережіть файл ключа .pem, який дає застосунок"
-
 #: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
 msgid "Save the automation. Budgie matches card names to accounts for all your cards."
 msgstr "Збережіть автоматизацію. Budgie зіставить назви карток із рахунками для всіх ваших карток."
@@ -7191,6 +7232,10 @@ msgstr "Відкладено"
 msgid "Set budget"
 msgstr "Створити бюджет"
 
+#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
+msgid "Set Environment to Production (it defaults to Sandbox, which only reaches test banks). Leave the key option on Generate in the browser."
+msgstr "Встанови Environment на Production (за замовчуванням Sandbox, який працює лише з тестовими банками). Залиш параметр ключа на «Generate in the browser»."
+
 #: src/budget/constant/budget-save-blocker-label.constant.ts
 msgid "Set every category limit to continue"
 msgstr "Встановіть усі ліміти категорій, щоб продовжити"
@@ -7208,12 +7253,8 @@ msgid "Set Return Date"
 msgstr "Встановити дату повернення"
 
 #: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
-msgid "Set the redirect URL of the application to the address shown below, exactly"
-msgstr "Вкажіть як URL перенаправлення застосунку точно ту адресу, що наведена нижче"
-
-#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
-msgid "Set up once"
-msgstr "Налаштувати одноразово"
+msgid "Set up once, about 5 minutes"
+msgstr "Одноразове налаштування, близько 5 хвилин"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Settings"
@@ -7303,10 +7344,6 @@ msgstr "Показує, як це розраховано"
 #: src/rule/components/rule-form-submit-bar/rule-form-submit-bar.tsx
 msgid "Shows what is missing"
 msgstr "Показує, чого бракує"
-
-#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
-msgid "Sign in to the Enable Banking control panel as yourself and register an application"
-msgstr "Увійдіть у панель керування Enable Banking від свого імені та зареєструйте застосунок"
 
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Similar transactions"
@@ -7707,6 +7744,10 @@ msgstr "Торкніться пропозиції, щоб використати
 msgid "Tap re-record to try again"
 msgstr "Торкніться «Записати знову», щоб спробувати ще раз"
 
+#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
+msgid "Tap Register. The key file downloads to your Files app, in Downloads. Keep it secret and do not send it to anyone."
+msgstr "Натисни «Register». Файл ключа завантажиться в застосунок «Файли», у «Завантаження». Тримай його в таємниці й нікому не надсилай."
+
 #: src/@generic/component/amount-sign-capsule/amount-sign-capsule.tsx
 msgid "Tap to change sign"
 msgstr "Торкніться, щоб змінити знак"
@@ -7734,6 +7775,10 @@ msgstr "Торкніться для вибору"
 #: src/account/constant/account-kind-title.constant.ts
 msgid "Term deposit"
 msgstr "Строковий депозит"
+
+#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
+msgid "Terms URL"
+msgstr "URL умов використання"
 
 #: src/sync/constant/sync-error-label.constant.ts
 msgid "The API key has the wrong permissions. Use a key with only \"Enable Reading\"."
@@ -7861,6 +7906,10 @@ msgstr "Цей API-ключ належить іншому акаунту Binance
 msgid "This API key can trade, withdraw or transfer funds. Create a key with only \"Enable Reading\" and try again."
 msgstr "Цей API-ключ може торгувати, виводити або переказувати кошти. Створіть ключ лише з «Enable Reading» і спробуйте ще раз."
 
+#: src/sync/hook/use-explain-enable-banking-error.hook.ts
+msgid "This application is not active yet. Open it in Enable Banking, tap Activate by linking accounts and log in to your bank, then choose the key again."
+msgstr "Цей застосунок ще не активний. Відкрий його в Enable Banking, натисни «Activate by linking accounts» і увійди у свій банк. Потім вибери ключ ще раз."
+
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
 #: src/import/hook/use-restore-backup.hook.ts
@@ -7895,10 +7944,6 @@ msgstr "Це видалить {DB_NAME} і все, що в ньому, з цьо
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "This doesn't look like a Monobank token yet"
 msgstr "Це ще не схоже на токен Monobank"
-
-#: src/sync/hook/use-explain-enable-banking-error.hook.ts
-msgid "This Enable Banking application is not active."
-msgstr "Цей застосунок Enable Banking неактивний."
 
 #: src/sync/hook/use-explain-enable-banking-error.hook.ts
 msgid "This file is not an unencrypted RSA private key in PEM format."
@@ -8643,6 +8688,10 @@ msgstr "Оцінка недоступна"
 #: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
 msgid "Value"
 msgstr "Вартість"
+
+#: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
+msgid "Values for step 4"
+msgstr "Значення для кроку 4"
 
 #: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
 msgid "View source transactions"
