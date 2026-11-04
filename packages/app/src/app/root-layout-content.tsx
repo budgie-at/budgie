@@ -191,7 +191,10 @@ export const RootLayoutContent = () => {
                                                                         options={COMPACT_SELECTOR_OPTIONS}
                                                                     />
                                                                     <Stack.Screen name="resync-window-picker" options={sheetOptions} />
-                                                                    <Stack.Screen name="contact-selector" options={SELECTOR_OPTIONS} />
+                                                                    <Stack.Screen
+                                                                        name="contact-selector"
+                                                                        options={COMPACT_SELECTOR_OPTIONS}
+                                                                    />
                                                                     <Stack.Screen name="tags-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="category-destination"
