@@ -124,7 +124,9 @@ class IconSearchService {
     }
 
     private getFamily(icon: UserIconType): string {
-        return isEmojiIcon(icon) ? (Array.from(icon).at(0) ?? icon) : (/^(?:reicon:)?[A-Z][a-z]*/u.exec(icon)?.[0] ?? icon);
+        return isEmojiIcon(icon)
+            ? icon.replaceAll(/[\u{1F3FB}-\u{1F3FF}]|\u{FE0F}|\u{200D}[\u{2640}\u{2642}]/gu, '')
+            : (/^(?:reicon:)?[A-Z][a-z]*/u.exec(icon)?.[0] ?? icon);
     }
 
     private score(entries: readonly IconSearchEntryInterface[], terms: readonly string[], allowPrefix: boolean) {

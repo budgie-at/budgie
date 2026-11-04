@@ -1,13 +1,13 @@
 import { useLingui } from '@lingui/react/macro';
-import { useEffect, useReducer, useRef, useState } from 'react';
-import { View } from 'react-native';
+import { useEffect, useEffectEvent, useReducer, useRef, useState } from 'react';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { SelectorModalDescription } from '../@generic/component/selector-modal-description/selector-modal-description';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
+import { SelectorNoResultsState } from '../@generic/component/selector-no-results-state/selector-no-results-state';
+import { SheetSurface } from '../@generic/component/sheet-surface/sheet-surface';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
-import { prepareSelectorGridData } from '../@generic/utils/prepare-selector-grid-data.util';
 import { TagsSelectContent } from '../tag/components/tags-select-content/tags-select-content';
 import { TagsSelectorDoneButton } from '../tag/components/tags-selector-done-button/tags-selector-done-button';
 import { useTagFormModal } from '../tag/context/tag-form-modal.context';
@@ -18,14 +18,6 @@ import { reorderTagIdsByPrimary } from '../tag/utils/reorder-tag-ids-by-primary.
 import { tagsSelectorReducer } from '../tag/utils/tags-selector-reducer.util';
 
 import { TagsSelectorModalSelector } from './tags-selector-modal.selector';
-
-const isSelectionDirty = (selected: number[], initial: number[]): boolean => {
-    if (selected.length !== initial.length) {
-        return true;
-    }
-
-    return selected.some((id, index) => id !== initial[index]);
-};
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration component with multiple hooks and handlers
 export default function TagsSelectorModal() {
@@ -56,8 +48,13 @@ export default function TagsSelectorModal() {
 
     const hasResolvedRef = useRef(false);
 
-    const data = prepareSelectorGridData(tags, excludeTagIds, selected);
-    const dirty = isSelectionDirty(selected, initialTagIds) || primaryTagId !== initialPrimaryTagId;
+    const data = (tags ?? []).filter(tag => !excludeTagIds.includes(tag.id));
+    const query = search.trim();
+    const primaryHint = enablePrimarySelection && isNotEmptyArray(selected) ? t`★ Primary · hold another tag to change it` : null;
+    const dirty =
+        selected.length !== initialTagIds.length ||
+        selected.some((id, index) => id !== initialTagIds[index]) ||
+        primaryTagId !== initialPrimaryTagId;
 
     const resolveSelection = (tagIds: number[]) => {
         hasResolvedRef.current = true;
@@ -75,7 +72,7 @@ export default function TagsSelectorModal() {
     const handlePrimarySelect = (tagId: number) => void dispatch({ type: TagsSelectorActionTypeEnum.PRIMARY_SELECTED, tagId });
 
     const handleCreatePress = () => {
-        openTagForm({ defaultTitle: search }, result => {
+        openTagForm({ defaultTitle: query }, result => {
             if (isDefined(result) && singleSelect) {
                 resolveSelection([result.tag.id]);
             } else if (isDefined(result)) {
@@ -86,20 +83,26 @@ export default function TagsSelectorModal() {
 
     const handleDone = () => void resolveSelection(reorderTagIdsByPrimary(selected, primaryTagId));
 
-    useEffect(
-        () => () => {
-            if (!hasResolvedRef.current) {
-                resolveTagsSelector(null, { skipBack: true });
-            }
-        },
-        [resolveTagsSelector]
+    const handleUnmount = useEffectEvent(() => {
+        if (!hasResolvedRef.current) {
+            resolveTagsSelector(null, { skipBack: true });
+        }
+    });
+
+    useEffect(() => () => void handleUnmount(), []);
+
+    const listEmptyComponent = isNotEmptyString(query) ? (
+        <SelectorNoResultsState query={query} hint={t`Check the spelling or create it as a new tag.`} onCreate={handleCreatePress} />
+    ) : (
+        void 0
     );
 
     return (
-        <View className="flex-1 bg-primary-reverse" collapsable={false}>
+        <SheetSurface>
             <SelectorModalSearchHeader
                 search={search}
                 onSearchChange={setSearch}
+                title={t`Tags`}
                 placeholder={t`Search tags…`}
                 createLabel={t`Create tag`}
                 onCreate={handleCreatePress}
@@ -108,22 +111,25 @@ export default function TagsSelectorModal() {
             />
 
             <SelectorModalDescription title={title} description={description}>
-                {topOffset => (
-                    <TagsSelectContent
-                        topOffset={topOffset}
-                        data={data}
-                        selectedTagIds={selected}
-                        primaryTagId={primaryTagId}
-                        isLoading={isLoading}
-                        onSelect={handleSelectTag}
-                        {...(enablePrimarySelection && { onPrimarySelect: handlePrimarySelect })}
-                    />
-                )}
+                <TagsSelectContent
+                    listEmptyComponent={listEmptyComponent}
+                    data={data}
+                    selectedTagIds={selected}
+                    primaryTagId={primaryTagId}
+                    isLoading={isLoading}
+                    onSelect={handleSelectTag}
+                    {...(enablePrimarySelection && { onPrimarySelect: handlePrimarySelect })}
+                />
             </SelectorModalDescription>
 
             {dirty && !singleSelect ? (
-                <TagsSelectorDoneButton count={selected.length} onPress={handleDone} testID={TagsSelectorModalSelector.DoneButton} />
+                <TagsSelectorDoneButton
+                    count={selected.length}
+                    onPress={handleDone}
+                    hint={primaryHint}
+                    testID={TagsSelectorModalSelector.DoneButton}
+                />
             ) : null}
-        </View>
+        </SheetSurface>
     );
 }

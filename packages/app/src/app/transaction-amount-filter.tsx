@@ -18,7 +18,6 @@ import {
     useTransactionAmountFilterModalParams
 } from '../transaction/context/transaction-amount-filter-modal.context';
 
-const CONTENT_TOP_SPACE = 96;
 const KEYBOARD_STICKY_OFFSET = { closed: 0, opened: 12 };
 
 export default function TransactionAmountFilterModal() {
@@ -42,13 +41,12 @@ export default function TransactionAmountFilterModal() {
 
     const hasSelected = isPositiveNumber(fromValue) || isPositiveNumber(toValue);
     const applyLabel = hasSelected ? t`Show selected range` : t`Show all amounts`;
-    const contentStyle = { paddingTop: CONTENT_TOP_SPACE };
 
     return (
         <FilterSheet>
             <TransactionFilterSelectorHeader title={t`Filter by amount`} onClose={handleClose} />
 
-            <View className="flex-1 px-7xl" style={contentStyle}>
+            <View className="flex-1 px-7xl">
                 <Text className="text-secondary-foreground text-sm mb-7xl">
                     <Trans>Show transactions when any main amount is inside this range, regardless of currency.</Trans>
                 </Text>

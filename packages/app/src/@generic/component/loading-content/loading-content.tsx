@@ -7,15 +7,16 @@ interface Props {
     readonly children: ReactNode;
     readonly isLoading: boolean;
     readonly className?: string;
+    readonly containerClassName?: string;
 }
 
-export const LoadingContent = ({ children, isLoading, className }: Props) => {
+export const LoadingContent = ({ children, isLoading, className, containerClassName }: Props) => {
     const contentPointerEvents = isLoading ? 'none' : 'auto';
     const contentImportantForAccessibility = isLoading ? 'no-hide-descendants' : 'auto';
     const accessibilityState = { busy: isLoading };
 
     return (
-        <View accessibilityState={accessibilityState}>
+        <View accessibilityState={accessibilityState} className={containerClassName}>
             <View
                 pointerEvents={contentPointerEvents}
                 accessibilityElementsHidden={isLoading}

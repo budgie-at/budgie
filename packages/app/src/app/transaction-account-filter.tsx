@@ -25,8 +25,6 @@ import {
 } from '../transaction/context/transaction-account-filter-modal.context';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
-const LIST_TOP_SPACE = 88;
-
 const ANALYTICS_ACCOUNT_FILTER_TYPES = [
     AccountTypeEnum.BANK,
     AccountTypeEnum.BANK_SYNC,
@@ -79,7 +77,7 @@ export default function TransactionAccountFilterModal() {
         <FilterSheet>
             <TransactionFilterSelectorHeader title={t`Filter accounts`} onClose={handleClose} />
 
-            <FilterSheetList alignToBottom topSpacing={LIST_TOP_SPACE}>
+            <FilterSheetList alignToBottom>
                 {isLoading ? <FilterSheetSkeleton alignToBottom /> : null}
 
                 {isNotEmptyArray(accountGroups) && !isLoading ? (

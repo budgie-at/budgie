@@ -23,7 +23,7 @@ export const AccountDetailsField = (props: Props) => {
     const [openIconSelector] = useIconSelectorModal();
 
     const handleIconPress = () => {
-        openIconSelector({ selectedIcon: iconBinding.field.value, variant }, selectedIcon => {
+        openIconSelector({ selectedIcon: iconBinding.field.value }, selectedIcon => {
             if (selectedIcon) {
                 iconBinding.field.onChange(selectedIcon);
             }

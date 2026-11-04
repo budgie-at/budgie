@@ -1,72 +1,37 @@
 import { useLingui } from '@lingui/react/macro';
-import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
-import { emptyFn } from '@rnw-community/shared';
-
-import { CountryFlag } from '../@generic/component/country-flag/country-flag';
-import { EmptyState } from '../@generic/component/empty-state/empty-state';
-import { SearchableSelectorList } from '../@generic/component/searchable-selector-list/searchable-selector-list';
-import { SelectorCard } from '../@generic/component/selector-card/selector-card';
+import { GroupedListSection } from '../@generic/component/grouped-list-section/grouped-list-section';
+import { SheetSurface } from '../@generic/component/sheet-surface/sheet-surface';
+import { SheetTitleRow } from '../@generic/component/sheet-title-row/sheet-title-row';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
+import { LanguageSelectorRow } from '../i18n/components/language-selector-row/language-selector-row';
 import { LANGUAGES } from '../i18n/constant/languages.constant';
 import { useLanguageSelectorModal, useLanguageSelectorModalParams } from '../i18n/context/language-selector-modal.context';
-import { LanguageInterface } from '../i18n/interface/language.interface';
-
-import { LanguageSelectorModalSelector } from './language-selector-modal.selector';
-
-const keyExtractor = (item: LanguageInterface) => item.code;
-
-const filterLanguages = (
-    languages: LanguageInterface[],
-    search: string,
-    translate: (name: LanguageInterface['name']) => string
-): LanguageInterface[] =>
-    languages.filter(
-        ({ name, code }) =>
-            translate(name).toLowerCase().includes(search.toLowerCase()) || code.toLowerCase().includes(search.toLowerCase())
-    );
 
 export default function LanguageSelectorModal() {
     const { t } = useLingui();
     const [, resolveLanguageSelector, dismissLanguageSelector] = useLanguageSelectorModal();
     useModalDismiss(dismissLanguageSelector);
-    const currentParams = useLanguageSelectorModalParams();
-    const [search, setSearch] = useState('');
-
-    const selectedLanguage = currentParams?.selectedLanguage;
-    const data = filterLanguages(LANGUAGES, search, t);
-
-    const renderItem = ({ item }: { item: LanguageInterface }) => {
-        const isSelected = item.code === selectedLanguage;
-        const handleSelect = isSelected ? emptyFn : () => void resolveLanguageSelector(item.code);
-
-        return (
-            <SelectorCard
-                isSelected={isSelected}
-                onPress={handleSelect}
-                testID={LanguageSelectorModalSelector.Option(item.code)}
-                iconSlot={
-                    <View className="w-12 h-12 bg-secondary-background rounded-5xl items-center justify-center">
-                        <CountryFlag language={item.code} size={28} />
-                    </View>
-                }
-                title={<Text className="text-primary font-medium text-md">{t(item.name)}</Text>}
-                subtitle={<Text className="text-sm text-secondary-foreground">{item.code}</Text>}
-            />
-        );
-    };
+    const selectedLanguage = useLanguageSelectorModalParams()?.selectedLanguage;
 
     return (
-        <SearchableSelectorList
-            search={search}
-            onSearchChange={setSearch}
-            searchPlaceholder={t`Search languages...`}
-            searchTestID={LanguageSelectorModalSelector.SearchInput}
-            data={data}
-            keyExtractor={keyExtractor}
-            renderItem={renderItem}
-            emptyState={<EmptyState title={t`No languages found`} description={t`Try a different search term`} />}
-        />
+        <SheetSurface>
+            <View className="px-3xl pt-7xl pb-5xl">
+                <SheetTitleRow title={t`Language`} />
+            </View>
+            <ScrollView className="flex-1 px-3xl" contentContainerClassName="pb-safe-or-[16px]">
+                <GroupedListSection>
+                    {LANGUAGES.map(item => (
+                        <LanguageSelectorRow
+                            key={item.code}
+                            item={item}
+                            selectedLanguage={selectedLanguage}
+                            onSelect={resolveLanguageSelector}
+                        />
+                    ))}
+                </GroupedListSection>
+            </ScrollView>
+        </SheetSurface>
     );
 }

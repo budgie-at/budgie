@@ -17,6 +17,6 @@ export const SelectorCreateButton = ({ label, onPress, testID }: Props) => (
         className="h-[44px] w-[44px] items-center justify-center rounded-full bg-surface-fill active:opacity-70"
         testID={testID}
     >
-        <Icon icon={UserIconNameEnum.Plus} size={22} className="text-primary" />
+        <Icon icon={UserIconNameEnum.Plus} size={20} className="text-primary" />
     </HapticPressable>
 );

@@ -2,7 +2,9 @@ import { isEmojiIcon } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
+import { IconSelectorSectionEnum } from '../src/@generic/enum/icon-selector-section.enum';
 import { iconSearchService } from '../src/@generic/service/icon-search.service';
+import { buildIconSelectorRows } from '../src/@generic/utils/build-icon-selector-rows.util';
 import { PLACEHOLDER_CATEGORY_ICONS } from '../src/category/constant/placeholder-category-icon.constant';
 import { getCategoryIconTerms } from '../src/category/utils/get-category-icon-terms.util';
 
@@ -134,6 +136,45 @@ describe('IconSearchService', () => {
             const entries = yield* iconSearchService.load();
 
             expect(iconSearchService.suggest(entries, ['Plants']).map(({ icon }) => icon)).not.toContain('reicon:Airplane');
+        })
+    );
+
+    it.effect('browsesTheCompleteCatalogWithDistinctKeysForDuplicateTitles', () =>
+        Effect.gen(function* () {
+            const entries = yield* iconSearchService.load();
+            const glyphs = entries.filter(({ icon }) => !isEmojiIcon(icon));
+            const rows = buildIconSelectorRows([
+                { id: IconSelectorSectionEnum.ICONS, title: 'Icons', entries: glyphs },
+                { id: IconSelectorSectionEnum.EMOJI, title: 'Icons', entries: entries.filter(({ icon }) => isEmojiIcon(icon)) }
+            ]);
+
+            expect(glyphs.length).toBeGreaterThan(2600);
+            expect(
+                rows
+                    .flatMap(row => row.entries)
+                    .map(({ icon }) => icon)
+                    .sort()
+            ).toEqual(entries.map(({ icon }) => icon).sort());
+            expect(new Set(rows.map(row => row.key)).size).toBe(rows.length);
+        })
+    );
+
+    it.effect('keepsLowerScoringPrefixMatchesAlongsideExactMatches', () =>
+        Effect.gen(function* () {
+            const entries = yield* iconSearchService.load();
+            const matches = iconSearchService.rank(entries, ['cat']);
+
+            expect(matches.map(({ icon }) => icon)).toContain('reicon:Category');
+            expect(matches.some(({ icon }) => isEmojiIcon(icon))).toBe(true);
+        })
+    );
+
+    it.effect('keepsBicycleInTheFirstVisibleIconRowForBike', () =>
+        Effect.gen(function* () {
+            const entries = yield* iconSearchService.load();
+            const glyphs = iconSearchService.rank(entries, ['bike']).filter(({ icon }) => !isEmojiIcon(icon));
+
+            expect(glyphs.slice(0, 3).map(({ icon }) => icon)).toContain('reicon:Bicycle');
         })
     );
 

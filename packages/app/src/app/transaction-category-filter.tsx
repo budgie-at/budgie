@@ -18,7 +18,6 @@ import { prepareTransactionFilterGridData } from '../transaction/utils/prepare-t
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
 const FOOTER_BOTTOM_SPACE = 132;
-const LIST_TOP_SPACE = 88;
 
 export default function TransactionCategoryFilterModal() {
     const { t } = useLingui();
@@ -55,9 +54,8 @@ export default function TransactionCategoryFilterModal() {
                 data={data}
                 variant="cta"
                 selectedCategoryIds={selectedCategoryIds}
-                isLoading={isLoading}
                 additionalBottomPadding={FOOTER_BOTTOM_SPACE}
-                topOffset={LIST_TOP_SPACE}
+                isLoading={isLoading}
                 onSelect={handleSelect}
                 cardTestID={TransactionFiltersSelector.CategoryOption}
             />

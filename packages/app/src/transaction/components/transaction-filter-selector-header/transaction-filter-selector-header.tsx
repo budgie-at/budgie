@@ -23,7 +23,7 @@ export const TransactionFilterSelectorHeader = ({ title, onClose }: Props) => {
     );
 
     return (
-        <View className="absolute top-0 right-0 left-0 z-10 bg-primary-reverse" style={containerStyle}>
+        <View className="z-10 bg-primary-reverse" style={containerStyle}>
             <PageHeader className="border-b-0" size="md" title={title} right={right} />
         </View>
     );

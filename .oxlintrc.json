@@ -708,7 +708,8 @@
                 "packages/landing/**/*.{ts,tsx}"
             ],
             "excludeFiles": [
-                "packages/app/**/*.selector.ts"
+                "packages/app/**/*.selector.ts",
+                "packages/app/src/i18n/constant/languages.constant.ts"
             ],
             "rules": {
                 "lingui/no-unlocalized-strings": [

@@ -5,6 +5,7 @@ import { FilterSheetBulkToggle } from '../@generic/component/filter-sheet/filter
 import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { useSearchableFilterState } from '../@generic/hook/use-searchable-filter-state/use-searchable-filter-state.hook';
+import { sortSelectedFirst } from '../@generic/utils/sort-selected-first.util';
 import { TagsSelectContent } from '../tag/components/tags-select-content/tags-select-content';
 import { useSearchTagsQuery } from '../tag/query/use-search-tags.query';
 import { TransactionFilterSelectorFooter } from '../transaction/components/transaction-filter-selector-footer/transaction-filter-selector-footer';
@@ -14,11 +15,7 @@ import {
     useTransactionTagFilterModal,
     useTransactionTagFilterModalParams
 } from '../transaction/context/transaction-tag-filter-modal.context';
-import { prepareTransactionFilterGridData } from '../transaction/utils/prepare-transaction-filter-grid-data.util';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
-
-const FOOTER_BOTTOM_SPACE = 132;
-const LIST_TOP_SPACE = 88;
 
 export default function TransactionTagFilterModal() {
     const { t } = useLingui();
@@ -32,7 +29,7 @@ export default function TransactionTagFilterModal() {
     const { tags, isLoading } = useSearchTagsQuery(search);
 
     const selectedTagIds = localValue ?? [];
-    const data = prepareTransactionFilterGridData(tags, selectedTagIds);
+    const data = sortSelectedFirst(tags ?? [], selectedTagIds);
 
     const handleSelect = (selected: number) => void setLocalValue(previous => toggleFilterSelection(previous, [selected]));
     const handleSelectAll = () => void setLocalValue(() => (tags ?? []).map(tag => tag.id));
@@ -51,14 +48,7 @@ export default function TransactionTagFilterModal() {
         <FilterSheet>
             <TransactionFilterSelectorHeader title={t`Filter tags`} onClose={handleClose} />
 
-            <TagsSelectContent
-                data={data}
-                selectedTagIds={selectedTagIds}
-                isLoading={isLoading}
-                additionalBottomPadding={FOOTER_BOTTOM_SPACE}
-                topOffset={LIST_TOP_SPACE}
-                onSelect={handleSelect}
-            />
+            <TagsSelectContent data={data} selectedTagIds={selectedTagIds} isLoading={isLoading} onSelect={handleSelect} />
 
             <TransactionFilterSelectorFooter
                 searchValue={search}

@@ -25,7 +25,7 @@ export const LanguageSelector = () => {
 
     const handleOpen = () => {
         openLanguageSelector({ selectedLanguage: language }, result => {
-            if (isDefined(result)) {
+            if (isDefined(result) && result !== language) {
                 appRuntime.runFork(
                     logAndContinue(
                         updateSettingsMutation({ language: result }).pipe(

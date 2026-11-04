@@ -50,6 +50,7 @@ const DETENT_90 = 0.9;
 const DETENT_70 = 0.7;
 const DETENT_40 = 0.4;
 const DETENT_55 = 0.55;
+const DETENT_62 = 0.62;
 const DETENT_85 = 0.85;
 const DETENT_82 = 0.82;
 const DETENT_96 = 0.96;
@@ -71,6 +72,8 @@ const LOCK_SCREEN_OPTIONS: NativeStackNavigationOptions = { presentation: 'fullS
 const FADE_OPTIONS: NativeStackNavigationOptions = { animation: 'fade' };
 
 const SELECTOR_OPTIONS = formSheetOptions([DETENT_40, DETENT_70], 0);
+const CURRENCY_SELECTOR_OPTIONS = formSheetOptions([DETENT_62, DETENT_90], 0);
+const COMPACT_SELECTOR_OPTIONS = formSheetOptions([DETENT_55, DETENT_90], 0);
 
 const DESTINATION_OPTIONS = formSheetOptions([DETENT_90]);
 
@@ -175,9 +178,18 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="(main)/analytics/transactions" />
                                                                     <Stack.Screen name="(main)/categorize" />
                                                                     <Stack.Screen name="category-selector" options={SELECTOR_OPTIONS} />
-                                                                    <Stack.Screen name="account-selector" options={SELECTOR_OPTIONS} />
-                                                                    <Stack.Screen name="currency-selector" options={SELECTOR_OPTIONS} />
-                                                                    <Stack.Screen name="language-selector" options={SELECTOR_OPTIONS} />
+                                                                    <Stack.Screen
+                                                                        name="account-selector"
+                                                                        options={COMPACT_SELECTOR_OPTIONS}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="currency-selector"
+                                                                        options={CURRENCY_SELECTOR_OPTIONS}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="language-selector"
+                                                                        options={COMPACT_SELECTOR_OPTIONS}
+                                                                    />
                                                                     <Stack.Screen
                                                                         name="resync-window-picker"
                                                                         options={fitToContentsSheetOptions(groupedSheetSurface)}

@@ -810,6 +810,10 @@ msgstr "{title} läuft zu schnell"
 msgid "{title}, {protectedAmount} per month"
 msgstr "{title}, {protectedAmount} pro Monat"
 
+#: src/tag/components/tag-selector-row/tag-selector-row.tsx
+msgid "{title}, primary"
+msgstr "{title}, primär"
+
 #: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
 msgid "{title}, rollover {currentLabel}. Double tap to change."
 msgstr "{title}, Übertrag {currentLabel}. Zum Ändern doppelt tippen."
@@ -901,6 +905,10 @@ msgstr "−{changePercent} ggü. {shortPreviousLabel}"
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} Mon."
+
+#: src/app/tags-selector.tsx
+msgid "★ Primary · hold another tag to change it"
+msgstr "★ Haupttag · halte ein anderes Tag gedrückt, um ihn zu ändern"
 
 #: src/account/component/crypto-currency-group-market-link/crypto-currency-group-market-link.tsx
 msgid "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
@@ -1023,6 +1031,7 @@ msgstr "Über diesem Betrag"
 msgid "account"
 msgstr "Konto"
 
+#: src/app/account-selector.tsx
 #: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
 #: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
@@ -1307,10 +1316,6 @@ msgstr "Alle Spalten sind bereits zugeordnet"
 #: src/rule/components/rule-condition-match-type-selector/rule-condition-match-type-selector.tsx
 msgid "All conditions"
 msgstr "Alle Bedingungen"
-
-#: src/app/icon-selector.tsx
-msgid "All icons"
-msgstr "Alle Symbole"
 
 #: src/money-data/component/money-data-upgrade-status-card/money-data-upgrade-status-card.tsx
 msgid "All past amounts are converted"
@@ -2081,6 +2086,7 @@ msgstr "Kategorisieren"
 
 #: src/app/(main)/import-csv.tsx
 #: src/app/(tabs)/settings/categories.tsx
+#: src/app/category-selector.tsx
 #: src/budget/components/budget-fund-category-field/budget-fund-category-field.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
 #: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx
@@ -2128,10 +2134,12 @@ msgstr "Formular prüfen, um fortzufahren"
 msgid "Check the key and secret, then try again."
 msgstr "Prüfe Schlüssel und Secret und versuche es erneut."
 
+#: src/app/category-selector.tsx
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "Check the spelling or create it as a new category."
 msgstr "Prüfe die Schreibweise oder lege sie als neue Kategorie an."
 
+#: src/app/tags-selector.tsx
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
 msgid "Check the spelling or create it as a new tag."
 msgstr "Prüfe die Schreibweise oder lege ihn als neuen Tag an."
@@ -2139,6 +2147,18 @@ msgstr "Prüfe die Schreibweise oder lege ihn als neuen Tag an."
 #: src/account/component/shelved-accounts-no-matches-state/shelved-accounts-no-matches-state.tsx
 msgid "Check the spelling or search by another name."
 msgstr "Prüfe die Schreibweise oder suche nach einem anderen Namen."
+
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
+msgid "Check the spelling or try a code like EUR."
+msgstr "Prüfe die Schreibweise oder versuche einen Code wie EUR."
+
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
+msgid "Check the spelling or try a ticker like BTC."
+msgstr "Prüfe die Schreibweise oder versuche ein Kürzel wie BTC."
+
+#: src/account/component/account-select-content/account-select-content.tsx
+msgid "Check the spelling or try another account name."
+msgstr "Prüfe die Schreibweise oder versuche einen anderen Kontonamen."
 
 #: src/account/constant/account-kind-title.constant.ts
 #: src/app/(tabs)/settings/sync-repairs.tsx
@@ -2327,6 +2347,7 @@ msgstr "Die Zwischenablage enthält kein gültiges Monobank-Token"
 msgid "Clipboard is empty"
 msgstr "Die Zwischenablage ist leer"
 
+#: src/@generic/component/sheet-title-row/sheet-title-row.tsx
 #: src/sync/component/get-token-card/get-token-card.tsx
 msgid "Close"
 msgstr "Schließen"
@@ -2373,6 +2394,10 @@ msgstr "Kommentar"
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "Committed {committedExpense} per month"
 msgstr "Monatlich gebunden: {committedExpense}"
+
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
+msgid "Common"
+msgstr "Gängig"
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Comparison: {label}"
@@ -2446,6 +2471,10 @@ msgstr "Konsolidierung"
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx
 msgid "Contact (optional)"
 msgstr "Kontakt (optional)"
+
+#: src/app/contact-selector.tsx
+msgid "Contacts"
+msgstr "Kontakte"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "contains"
@@ -2903,8 +2932,13 @@ msgid "Covered by your liquid balance."
 msgstr "Durch dein liquides Guthaben gedeckt."
 
 #: src/@generic/component/searchable-page-empty-state-actions/searchable-page-empty-state-actions.tsx
+#: src/@generic/component/selector-no-results-state/selector-no-results-state.tsx
 msgid "Create “{query}”"
 msgstr "„{query}“ erstellen"
+
+#: src/category/components/category-select-content/category-select-content.tsx
+msgid "Create a category to get started."
+msgstr "Erstelle eine Kategorie, um loszulegen."
 
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
@@ -2914,6 +2948,10 @@ msgstr "Erstellen Sie zuerst ein Schuldenkonto."
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create a new System-generated API key"
 msgstr "Erstellen Sie einen neuen systemgenerierten API-Schlüssel"
+
+#: src/tag/components/tags-select-content/tags-select-content.tsx
+msgid "Create a new tag to get started."
+msgstr "Erstelle ein neues Tag, um loszulegen."
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create a read-only API key and secret"
@@ -3001,6 +3039,7 @@ msgstr "Erstellen Sie Ihr erstes Konto, um Ihre Finanzen zu verfolgen"
 msgid "Credentials required"
 msgstr "Zugangsdaten erforderlich"
 
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 #: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/constant/onboarding-account-options.constant.ts
@@ -3036,6 +3075,7 @@ msgstr "CSV-Import"
 msgid "currency"
 msgstr "Währung"
 
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 #: src/account/component/update-liability-account/update-liability-account.tsx
 #: src/import/utils/get-import-match-description.util.ts
 msgid "Currency"
@@ -3604,6 +3644,10 @@ msgstr "Überweisung bearbeiten"
 #: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
 msgid "Edits the total of the plan"
 msgstr "Ändert den Gesamtbetrag des Plans"
+
+#: src/app/icon-selector.tsx
+msgid "Emoji"
+msgstr "Emoji"
 
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "empty"
@@ -4191,9 +4235,17 @@ msgstr "So exportieren Sie"
 msgid "I have a Budgie backup"
 msgstr "Ich habe ein Budgie-Backup"
 
+#: src/app/icon-selector.tsx
+msgid "Icon"
+msgstr "Symbol"
+
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 msgid "Icon updated for {categoryTitle}"
 msgstr "Symbol für {categoryTitle} aktualisiert"
+
+#: src/app/icon-selector.tsx
+msgid "Icons"
+msgstr "Symbole"
 
 #: src/app/(tabs)/settings/ai.tsx
 msgid "If a download arrives damaged, Budgie deletes it and waits for you to retry."
@@ -4511,6 +4563,7 @@ msgstr "Wissen, was du ausgeben kannst"
 msgid "Label matching payments with a tag"
 msgstr "Passende Zahlungen mit einem Tag versehen"
 
+#: src/app/language-selector.tsx
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
 msgstr "Sprache"
@@ -4709,6 +4762,10 @@ msgstr "Wartung"
 msgid "Make a PIN after all"
 msgstr "Doch eine PIN erstellen"
 
+#: src/tag/components/tag-selector-row/tag-selector-row.tsx
+msgid "Make primary"
+msgstr "Als Haupttag festlegen"
+
 #: src/budget/components/budget-details-edit-button/budget-details-edit-button.tsx
 msgid "Manage budget"
 msgstr "Budget verwalten"
@@ -4833,6 +4890,10 @@ msgstr "MCC"
 #: src/app/rule-mcc-selector.tsx
 msgid "MCC categories are not loaded"
 msgstr "MCC-Kategorien sind nicht geladen"
+
+#: src/app/rule-mcc-selector.tsx
+msgid "MCC codes"
+msgstr "MCC-Codes"
 
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "merchant category"
@@ -5167,7 +5228,6 @@ msgstr "Kein Konto nötig · Dauert etwa eine Minute"
 msgid "No account to sign up for. Never synced or uploaded. Works with no connection at all."
 msgstr "Kein Konto nötig. Nie synchronisiert oder hochgeladen. Funktioniert ganz ohne Verbindung."
 
-#: src/account/component/account-select-content/account-select-content.tsx
 #: src/app/transaction-account-filter.tsx
 msgid "No accounts found"
 msgstr "Keine Konten gefunden"
@@ -5215,14 +5275,6 @@ msgstr "Keine Kontakte auf diesem Gerät gefunden."
 msgid "No contacts yet"
 msgstr "Noch keine Kontakte"
 
-#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
-msgid "No crypto found"
-msgstr "Keine Kryptowährungen gefunden"
-
-#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
-msgid "No currencies found"
-msgstr "Keine Währungen gefunden"
-
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No custom categories yet"
 msgstr "Noch keine eigenen Kategorien"
@@ -5247,7 +5299,7 @@ msgstr "Keine ausgeblendeten Konten"
 msgid "No hidden accounts match “{search}”"
 msgstr "Keine ausgeblendeten Konten passen zu „{search}“"
 
-#: src/app/icon-selector.tsx
+#: src/@generic/component/icon-selector-empty-state/icon-selector-empty-state.tsx
 msgid "No icons found"
 msgstr "Keine Symbole gefunden"
 
@@ -5258,10 +5310,6 @@ msgstr "Keine Einnahmen"
 #: src/app/voice-review.tsx
 msgid "No items to save"
 msgstr "Keine Einträge zum Speichern"
-
-#: src/app/language-selector.tsx
-msgid "No languages found"
-msgstr "Keine Sprachen gefunden"
 
 #: src/budget/components/budget-limit-changes-sheet/budget-limit-changes-sheet.tsx
 msgid "No limit changes yet"
@@ -5319,6 +5367,10 @@ msgstr "Kein Beleg gefunden"
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
 msgid "No recurring payments detected"
 msgstr "Keine wiederkehrenden Zahlungen erkannt"
+
+#: src/@generic/component/selector-search-empty-state/selector-search-empty-state.tsx
+msgid "No results for “{query}”"
+msgstr "Keine Ergebnisse für „{query}“"
 
 #: src/rule/components/rule-empty-state/rule-empty-state.tsx
 msgid "No rules match “{search}”"
@@ -5780,6 +5832,10 @@ msgstr "Sonstiges Budget: {threshold}% verbraucht"
 msgid "Other budget: limit reached"
 msgstr "Sonstiges Budget: Limit erreicht"
 
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
+msgid "Other currencies"
+msgstr "Weitere Währungen"
+
 #: src/categorize-inbox/components/categorize-inbox-group-options/categorize-inbox-group-options.tsx
 msgid "Other options"
 msgstr "Weitere Optionen"
@@ -6141,6 +6197,10 @@ msgstr "Preis geändert"
 #: src/market-data/hook/use-market-chart-accessibility.hook.ts
 msgid "Price chart, {rangeLabel}, from {fromLabel} to {toLabel}, high {highLabel}, low {lowLabel}"
 msgstr "Kurschart, {rangeLabel}, von {fromLabel} bis {toLabel}, Hoch {highLabel}, Tief {lowLabel}"
+
+#: src/tag/components/tag-selector-row/tag-selector-row.tsx
+msgid "Primary"
+msgstr "Primär"
 
 #: src/settings/components/support-settings-rows/support-settings-rows.tsx
 msgid "Privacy policy"
@@ -6514,6 +6574,10 @@ msgstr "Das Wiederherstellen einer Sicherung ersetzt alle aktuellen Budgie-Daten
 msgid "Restoring a backup replaces all current Budgie data. This backup is protected by a PIN, which becomes your app PIN. The app restarts afterwards. This can't be undone."
 msgstr "Das Wiederherstellen einer Sicherung ersetzt alle aktuellen Budgie-Daten. Diese Sicherung ist mit einer PIN geschützt, die zu deiner App-PIN wird. Die App startet danach neu. Dies kann nicht rückgängig gemacht werden."
 
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
+msgid "Results"
+msgstr "Ergebnisse"
+
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 msgid "Resume"
 msgstr "Fortsetzen"
@@ -6732,11 +6796,14 @@ msgstr "Versiegelt. Nur deine PIN öffnet sie."
 msgid "Sealed. Only your PIN opens this file."
 msgstr "Versiegelt. Nur deine PIN öffnet diese Datei."
 
-#: src/app/account-selector.tsx
 #: src/app/transaction-account-filter.tsx
 #: src/categorize-inbox/components/categorize-inbox-transfer-screen/categorize-inbox-transfer-screen.tsx
 msgid "Search accounts..."
 msgstr "Konten durchsuchen..."
+
+#: src/app/account-selector.tsx
+msgid "Search accounts…"
+msgstr "Konten durchsuchen…"
 
 #: src/app/(tabs)/settings/archived.tsx
 msgid "Search archived accounts…"
@@ -6756,16 +6823,16 @@ msgid "Search categories…"
 msgstr "Kategorien suchen…"
 
 #: src/app/contact-selector.tsx
-msgid "Search contacts..."
-msgstr "Kontakte suchen..."
+msgid "Search contacts…"
+msgstr "Kontakte suchen…"
 
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
-msgid "Search crypto..."
-msgstr "Kryptowährungen suchen..."
+msgid "Search crypto"
+msgstr "Krypto suchen"
 
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
-msgid "Search currencies..."
-msgstr "Währungen durchsuchen..."
+msgid "Search currencies"
+msgstr "Währungen suchen"
 
 #: src/app/(tabs)/settings/categories.tsx
 msgid "Search custom categories…"
@@ -6780,16 +6847,12 @@ msgid "Search hidden accounts…"
 msgstr "Ausgeblendete Konten suchen…"
 
 #: src/app/icon-selector.tsx
-msgid "Search icons and emoji…"
-msgstr "Symbole und Emojis suchen…"
+msgid "Search icons"
+msgstr "Symbole suchen"
 
 #: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx
 msgid "Search keywords: {keywords}"
 msgstr "Suchbegriffe: {keywords}"
-
-#: src/app/language-selector.tsx
-msgid "Search languages..."
-msgstr "Sprachen durchsuchen..."
 
 #: src/rule/components/rules-list-page/rules-list-page.tsx
 msgid "Search rules"
@@ -6808,6 +6871,10 @@ msgstr "Tags suchen…"
 #: src/@generic/component/selector-modal-search-header/selector-modal-search-header.tsx
 msgid "Search…"
 msgstr "Suchen…"
+
+#: src/@generic/component/section-index-rail/section-index-rail.tsx
+msgid "Section index"
+msgstr "Abschnittsindex"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Security"
@@ -6864,6 +6931,10 @@ msgstr "Heruntergeladene PDF-Datei auswählen"
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Select the exported XLSX file"
 msgstr "Exportierte XLSX-Datei auswählen"
+
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
+msgid "Selected"
+msgstr "Ausgewählt"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Sending {fromCode}"
@@ -7221,7 +7292,6 @@ msgstr "Speicher"
 msgid "Subscriptions"
 msgstr "Abonnements"
 
-#: src/app/icon-selector.tsx
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-learned-transfer-option/categorize-inbox-group-learned-transfer-option.tsx
 msgid "Suggested"
@@ -7375,6 +7445,7 @@ msgstr "Getaggte Ausgaben zählen auch in deinem Hauptbudget."
 #: src/@generic/component/analytics-segmented-control/analytics-segmented-control.tsx
 #: src/app/(tabs)/analytics.tsx
 #: src/app/(tabs)/settings/tags.tsx
+#: src/app/tags-selector.tsx
 #: src/settings/components/organize-settings-rows/organize-settings-rows.tsx
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
@@ -7811,6 +7882,10 @@ msgstr "Zu früh für eine Prognose"
 msgid "Too many attempts. Try again in {time}"
 msgstr "Zu viele Versuche. Versuche es in {time} erneut"
 
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
+msgid "Top by market cap"
+msgstr "Top nach Marktkapitalisierung"
+
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/component/debt-account-card/debt-account-card.tsx
@@ -7971,19 +8046,14 @@ msgstr "Fehlerbehebung"
 msgid "Try a different merchant, amount, or date."
 msgstr "Versuche einen anderen Händler, Betrag oder ein anderes Datum."
 
-#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
-#: src/account/component/account-select-content/account-select-content.tsx
 #: src/app/contact-selector.tsx
-#: src/app/icon-selector.tsx
-#: src/app/language-selector.tsx
 #: src/app/rule-mcc-selector.tsx
-#: src/category/components/category-select-content/category-select-content.tsx
 msgid "Try a different search term"
 msgstr "Versuchen Sie einen anderen Suchbegriff"
 
-#: src/tag/components/tags-select-content/tags-select-content.tsx
-msgid "Try a different search term or create a new tag"
-msgstr "Versuchen Sie einen anderen Suchbegriff oder erstellen Sie ein neues Tag"
+#: src/@generic/component/icon-selector-empty-state/icon-selector-empty-state.tsx
+msgid "Try a simpler word like “car” or “food”."
+msgstr "Versuche ein einfacheres Wort wie „Auto“ oder „Essen“."
 
 #: src/rule/components/rule-empty-state/rule-empty-state.tsx
 msgid "Try a title, category or tag name."

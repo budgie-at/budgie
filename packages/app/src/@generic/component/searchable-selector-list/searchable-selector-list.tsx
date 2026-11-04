@@ -1,50 +1,88 @@
+import { useEffect } from 'react';
 import { View } from 'react-native';
 
-import { LEGEND_LIST_STYLE } from '../../constant/legend-list.constant';
-import { useFormsheetListContentStyle } from '../../hook/use-formsheet-list-content-style/use-formsheet-list-content-style.hook';
-import { BudgieLegendList } from '../budgie-legend-list/budgie-legend-list';
-import { ListItemSeparator } from '../list-item-separator/list-item-separator';
-import { SelectorModalSearchHeader } from '../selector-modal-search-header/selector-modal-search-header';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import type { LegendListRenderItemProps } from '@legendapp/list/react-native';
+import { SelectorRowKindEnum } from '../../enum/selector-row-kind.enum';
+import { useFormsheetListContentStyle } from '../../hook/use-formsheet-list-content-style/use-formsheet-list-content-style.hook';
+import { useSectionIndex } from '../../hook/use-section-index/use-section-index.hook';
+import { cn } from '../../utils/cn.util';
+import { flattenSelectorSections } from '../../utils/flatten-selector-sections.util';
+import { GroupedListItem } from '../grouped-list-item/grouped-list-item';
+import { GroupedListSectionTitle } from '../grouped-list-section-title/grouped-list-section-title';
+import { SectionIndexRail } from '../section-index-rail/section-index-rail';
+import { SelectorList } from '../selector-list/selector-list';
+import { SheetBottomFade } from '../sheet-bottom-fade/sheet-bottom-fade';
+import { SheetSurface } from '../sheet-surface/sheet-surface';
+
+import type { SelectorListRowInterface } from '../../interface/selector-list-row.interface';
+import type { SelectorSectionInterface } from '../../interface/selector-section.interface';
 import type { ReactElement } from 'react';
 
 interface Props<T> {
-    readonly search: string;
-    readonly onSearchChange: (value: string) => void;
-    readonly searchPlaceholder: string;
-    readonly searchTestID?: string;
-    readonly data: T[];
+    readonly header: ReactElement;
+    readonly sections: readonly SelectorSectionInterface<T>[];
     readonly keyExtractor: (item: T) => string;
-    readonly renderItem: (info: LegendListRenderItemProps<T>) => ReactElement;
+    readonly renderItem: (item: T) => ReactElement;
     readonly emptyState: ReactElement;
+    readonly query: string;
 }
 
-export const SearchableSelectorList = <T,>(props: Props<T>) => {
-    const { search, onSearchChange, searchPlaceholder, searchTestID, data, keyExtractor, renderItem, emptyState } = props;
+const ESTIMATED_ROW_HEIGHT = 60;
+const RAIL_GUTTER = 30;
+const RAIL_POSITION_STYLE = { top: 0, right: 4, bottom: 24 };
+
+const rowKeyExtractor = <T,>(row: SelectorListRowInterface<T>) => row.key;
+
+const getRowType = <T,>(row: SelectorListRowInterface<T>) => (isDefined(row.item) ? SelectorRowKindEnum.ITEM : SelectorRowKindEnum.TITLE);
+
+export const SearchableSelectorList = <T,>({ header, sections, keyExtractor, renderItem, emptyState, query }: Props<T>) => {
     const contentContainerStyle = useFormsheetListContentStyle();
+    const rows = flattenSelectorSections(sections, keyExtractor);
+    const { listRef, sectionLetters, visibleLetter, handleSectionLetter, handleViewableItemsChanged } = useSectionIndex(rows);
+    const hasRail = isNotEmptyArray(sectionLetters);
+    const listContentStyle = hasRail ? { ...contentContainerStyle, paddingRight: RAIL_GUTTER } : contentContainerStyle;
+
+    const renderRow = ({ item: row }: { item: SelectorListRowInterface<T> }) =>
+        isDefined(row.item) ? (
+            <View className={cn(row.isLast && 'pb-3xl')}>
+                <GroupedListItem isFirst={row.isFirst} isLast={row.isLast}>
+                    {renderItem(row.item)}
+                </GroupedListItem>
+            </View>
+        ) : (
+            <View className="pt-md">
+                <GroupedListSectionTitle title={row.title ?? ''} />
+            </View>
+        );
+
+    const listOptions = {
+        getItemType: getRowType,
+        estimatedItemSize: ESTIMATED_ROW_HEIGHT,
+        contentContainerStyle: listContentStyle,
+        onViewableItemsChanged: handleViewableItemsChanged,
+        ListEmptyComponent: emptyState
+    };
+
+    useEffect(() => {
+        void listRef.current?.scrollToOffset({ offset: 0, animated: false });
+    }, [query, listRef]);
 
     return (
-        <View className="flex-1 bg-primary-reverse">
-            <SelectorModalSearchHeader
-                search={search}
-                onSearchChange={onSearchChange}
-                placeholder={searchPlaceholder}
-                testID={searchTestID}
-            />
+        <SheetSurface>
+            {header}
 
-            <View className="absolute inset-0 bg-primary-reverse">
-                <BudgieLegendList
-                    style={LEGEND_LIST_STYLE}
-                    data={data}
-                    keyExtractor={keyExtractor}
-                    renderItem={renderItem}
-                    keyboardShouldPersistTaps="handled"
-                    contentContainerStyle={contentContainerStyle}
-                    ItemSeparatorComponent={ListItemSeparator}
-                    ListEmptyComponent={<View className="flex-1 justify-center">{emptyState}</View>}
-                />
+            <View className="flex-1">
+                <SelectorList listRef={listRef} data={rows} keyExtractor={rowKeyExtractor} renderItem={renderRow} options={listOptions}>
+                    {hasRail ? (
+                        <View className="absolute z-30 justify-center pt-md" style={RAIL_POSITION_STYLE}>
+                            <SectionIndexRail letters={sectionLetters} activeLetter={visibleLetter} onSelect={handleSectionLetter} />
+                        </View>
+                    ) : null}
+                </SelectorList>
             </View>
-        </View>
+
+            <SheetBottomFade />
+        </SheetSurface>
     );
 };
