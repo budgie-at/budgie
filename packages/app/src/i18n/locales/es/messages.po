@@ -7616,6 +7616,10 @@ msgstr "Sincronizar {title}"
 msgid "Sync failed"
 msgstr "Sincronización fallida"
 
+#: src/sync/component/bank-integration-account-row/bank-integration-account-row.tsx
+msgid "Sync failed for {title}"
+msgstr "Error de sincronización de {title}"
+
 #: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
 msgid "Sync is off for all accounts"
 msgstr "Sincronización desactivada en todas las cuentas"

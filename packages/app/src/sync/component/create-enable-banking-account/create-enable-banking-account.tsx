@@ -186,9 +186,11 @@ export const CreateEnableBankingAccount = () => {
             return;
         }
 
-        setStep(EnableBankingSetupStepEnum.WAITING);
         void run(
-            Effect.flatMap(EnableBankingConnectionService, connection => connection.begin(parsedApplicationId, bank, null)).pipe(
+            Effect.gen(function* () {
+                setStep(EnableBankingSetupStepEnum.WAITING);
+                yield* Effect.flatMap(EnableBankingConnectionService, connection => connection.begin(parsedApplicationId, bank, null));
+            }).pipe(
                 Effect.tapError(() =>
                     Effect.sync(() => {
                         setStep(EnableBankingSetupStepEnum.BANK);
@@ -263,7 +265,7 @@ export const CreateEnableBankingAccount = () => {
             break;
         case EnableBankingSetupStepEnum.WAITING:
             title = t`Authorize at your bank`;
-            stepContent = <EnableBankingWaitingStep onChooseAnotherBank={handleChooseAnotherBank} />;
+            stepContent = <EnableBankingWaitingStep isBusy={isBusy} onChooseAnotherBank={handleChooseAnotherBank} />;
             footerButton = null;
             break;
         case EnableBankingSetupStepEnum.ACCOUNTS:

@@ -51,7 +51,12 @@ export const BankLogo = ({ bankProvider, bankName, size = 32 }: Props) => {
     const letterStyle = { fontSize: Math.round(size * LETTER_SIZE_RATIO) };
 
     return (
-        <View className="items-center justify-center bg-surface-disc" style={tileStyle}>
+        <View
+            className="items-center justify-center bg-surface-disc"
+            style={tileStyle}
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+        >
             <Text maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER} className="font-semibold text-primary" style={letterStyle}>
                 {bankName.trim().charAt(0).toLocaleUpperCase()}
             </Text>

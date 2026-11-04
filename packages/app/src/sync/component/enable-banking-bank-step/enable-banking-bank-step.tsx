@@ -8,7 +8,6 @@ import { View } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { GroupedListItem } from '../../../@generic/component/grouped-list-item/grouped-list-item';
 import { GroupedListSectionTitle } from '../../../@generic/component/grouped-list-section-title/grouped-list-section-title';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
@@ -16,6 +15,7 @@ import { SearchablePageEmptyState } from '../../../@generic/component/searchable
 import { SearchablePageList } from '../../../@generic/component/searchable-page-list/searchable-page-list';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
 import { GROUPED_LIST_SIZING } from '../../../@generic/constant/grouped-list-sizing.constant';
+import { EnableBankingBankListItem } from '../enable-banking-bank-list-item/enable-banking-bank-list-item';
 import { EnableBankingBankRow } from '../enable-banking-bank-row/enable-banking-bank-row';
 
 import type { EnableBankingBankInterface } from '@budgie/sync';
@@ -49,9 +49,7 @@ export const EnableBankingBankStep = ({ banks, onSelectBank, onGoBack }: Props) 
     const listData = hasBothGroups ? otherBanks : matchingBanks;
 
     const renderCard = (bank: EnableBankingBankInterface, index: number, isLast: boolean) => (
-        <GroupedListItem isFirst={index === 0} isLast={isLast}>
-            <EnableBankingBankRow bank={bank} onSelect={onSelectBank} />
-        </GroupedListItem>
+        <EnableBankingBankListItem bank={bank} isFirst={index === 0} isLast={isLast} onSelect={onSelectBank} />
     );
 
     const listHeader = hasBothGroups ? (
