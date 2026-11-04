@@ -42,3 +42,9 @@ export const TestLayer = Layer.mergeAll(
     HistoricalExchangeRateRepository.layer,
     InstrumentRepository.layer
 ).pipe(Layer.provideMerge(makeTestPlatformLayer(testDb)));
+
+export const makeHtmlHttpClientLayer = (html: string) =>
+    Layer.succeed(
+        HttpClient.HttpClient,
+        HttpClient.make((request, _url) => Effect.succeed(HttpClientResponse.fromWeb(request, new Response(html, { status: 200 }))))
+    );
