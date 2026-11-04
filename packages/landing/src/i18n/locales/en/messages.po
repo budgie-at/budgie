@@ -6426,6 +6426,10 @@ msgstr "Contains malicious code or harmful components"
 msgid "Context-aware menu — actions adapt to the transaction so you never see an option that does not apply"
 msgstr "Context-aware menu — actions adapt to the transaction so you never see an option that does not apply"
 
+#: src/generic/component/enable-banking-relay/enable-banking-relay.tsx
+msgid "Continue in the Budgie app"
+msgstr "Continue in the Budgie app"
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Continue using YNAB for one month"
 msgstr "Continue using YNAB for one month"

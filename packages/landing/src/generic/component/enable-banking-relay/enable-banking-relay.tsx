@@ -3,6 +3,7 @@
 import { setupI18n } from '@lingui/core';
 import { I18nProvider } from '@lingui/react';
 import { Trans } from '@lingui/react/macro';
+import Image from 'next/image';
 import { useEffect, useRef } from 'react';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -42,8 +43,12 @@ export const EnableBankingRelay = () => {
 
     return (
         <I18nProvider i18n={i18n}>
-            <main className="flex min-h-dvh flex-col items-center justify-center gap-6 p-6 text-center">
-                <a ref={linkRef} hidden className="rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground">
+            <main className="flex min-h-dvh flex-col items-center justify-center gap-6 bg-background p-6 text-center text-foreground">
+                <Image alt="" className="rounded-2xl" height={64} src="/logo/white-on-black.svg" width={64} />
+                <p className="text-lg font-semibold">
+                    <Trans>Continue in the Budgie app</Trans>
+                </p>
+                <a ref={linkRef} hidden className="min-h-11 rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground">
                     <Trans>Return to Budgie</Trans>
                 </a>
             </main>
