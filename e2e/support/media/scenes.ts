@@ -432,7 +432,7 @@ export const SCENES: Readonly<Record<string, Scene>> = {
         run: async ctx => {
             const card = rx(/^SettingsPage\.LanguageCard\..+$/);
             await open(ctx, 'budgie://settings?anchor=general', card(ctx));
-            await a.openSettingsCard(ctx, /^SettingsPage\.LanguageCard\..+$/, 'LanguageSelector.SearchInput');
+            await a.openSettingsCard(ctx, /^SettingsPage\.LanguageCard\..+$/, 'LanguageSelector.Option.en');
         }
     },
     'net-worth-tracker-2': { run: homeToDebtCard },

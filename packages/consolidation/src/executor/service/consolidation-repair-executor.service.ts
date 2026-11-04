@@ -1,6 +1,7 @@
 import {
     Db,
     DebtEventRepository,
+    ExternalSourceEnum,
     TransactionConsolidationTypeEnum,
     TransactionEntryTypeEnum,
     TransactionRepository,
@@ -352,18 +353,24 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                 ),
                 consolidateManualExpenseDuplicate: Effect.fn('ConsolidationRepairExecutorService.consolidateManualExpenseDuplicate')(
                     function* (candidate: ManualExpenseDuplicateCandidateInterface) {
-                        const transactions = yield* consolidationEligibilityService.findEligibleSourceTransactions([
-                            candidate.syncedTransactionId,
-                            candidate.manualTransactionId
-                        ]);
+                        const transactions = yield* consolidationEligibilityService.findEligibleSourceTransactions(
+                            [candidate.syncedTransactionId, candidate.manualTransactionId],
+                            [candidate.syncedTransactionId, candidate.manualTransactionId]
+                        );
                         const syncedTransaction = transactions?.find(transaction => transaction.id === candidate.syncedTransactionId);
                         const manualTransaction = transactions?.find(transaction => transaction.id === candidate.manualTransactionId);
 
                         if (
                             !isDefined(syncedTransaction) ||
                             !isDefined(manualTransaction) ||
-                            isDefined(syncedTransaction.consolidationType) ||
-                            isDefined(manualTransaction.consolidationType)
+                            (isDefined(syncedTransaction.consolidationType) &&
+                                (syncedTransaction.consolidationType !== TransactionConsolidationTypeEnum.MANUAL_EXPENSE_DUPLICATE ||
+                                    (manualTransaction.externalSource !== ExternalSourceEnum.APPLE_PAY_AUTOMATION &&
+                                        manualTransaction.externalSource !== ExternalSourceEnum.RECEIPT))) ||
+                            (isDefined(manualTransaction.consolidationType) &&
+                                (manualTransaction.consolidationType !== TransactionConsolidationTypeEnum.MANUAL_EXPENSE_DUPLICATE ||
+                                    (manualTransaction.externalSource !== ExternalSourceEnum.RECEIPT &&
+                                        manualTransaction.externalSource !== ExternalSourceEnum.APPLE_PAY_AUTOMATION)))
                         ) {
                             return false;
                         }

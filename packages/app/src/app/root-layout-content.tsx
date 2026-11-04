@@ -190,10 +190,7 @@ export const RootLayoutContent = () => {
                                                                         name="language-selector"
                                                                         options={COMPACT_SELECTOR_OPTIONS}
                                                                     />
-                                                                    <Stack.Screen
-                                                                        name="resync-window-picker"
-                                                                        options={fitToContentsSheetOptions(groupedSheetSurface)}
-                                                                    />
+                                                                    <Stack.Screen name="resync-window-picker" options={sheetOptions} />
                                                                     <Stack.Screen name="contact-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen name="tags-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen
@@ -264,10 +261,7 @@ export const RootLayoutContent = () => {
                                                                     />
                                                                     <Stack.Screen name="budget-period-summary" options={sheetOptions} />
                                                                     <Stack.Screen name="rule-form" />
-                                                                    <Stack.Screen
-                                                                        name="rule-selector"
-                                                                        options={formSheetOptions('fitToContents')}
-                                                                    />
+                                                                    <Stack.Screen name="rule-selector" options={sheetOptions} />
                                                                     <Stack.Screen name="rule-mcc-selector" options={SELECTOR_OPTIONS} />
                                                                 </Stack>
                                                             </VoiceInputProvider>

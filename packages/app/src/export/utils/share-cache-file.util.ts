@@ -5,10 +5,10 @@ import { isAvailableAsync, shareAsync } from 'expo-sharing';
 
 import type { SharingOptions } from 'expo-sharing';
 
-export const shareCacheFile = Effect.fn('shareCacheFile')(function* (
+export const shareCacheFile = Effect.fn('shareCacheFile')(function* <Error, Requirements>(
     fileNamePrefix: string,
     extension: string,
-    writeFile: (file: File) => Effect.Effect<void>,
+    writeFile: (file: File) => Effect.Effect<void, Error, Requirements>,
     sharingOptions: Pick<SharingOptions, 'mimeType' | 'UTI'>
 ) {
     const fileName = `${fileNamePrefix}-${format(new Date(), 'yyyy-MM-dd-HHmmss')}.${extension}`;

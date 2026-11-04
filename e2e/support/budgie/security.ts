@@ -2,6 +2,7 @@ import { expect } from 'e2e';
 
 import { byId, byText, expectId, sleep, tapId, type Ctx } from './core.ts';
 import { BUNDLE_ID } from './fixtures.ts';
+import { openE2EFixturesFullPath } from './imports.ts';
 
 /** The backup's system share sheet ("Save to Files"): swipe it down from that row, retried like the flow's `retry: maxRetries: 2`. */
 export async function dismissSaveToFilesSheet(ctx: Ctx): Promise<void> {
@@ -64,4 +65,39 @@ export async function resumeAfterPinUnlock(ctx: Ctx, resumedScreenId: string): P
     await expect(byText(screen, 'Enter your PIN')).toBeVisible({ timeout: 3_000 });
     await enterPin(ctx, '1234');
     await expectId(ctx, resumedScreenId, 10_000);
+}
+
+const openFolderPickerBrowseTab = async (ctx: Ctx): Promise<void> => {
+    const tabBar = byId(ctx.screen, 'DOC.browsingModeTabBar');
+    await expect(tabBar).toBeVisible({ timeout: 15_000 });
+    await tabBar
+        .getByRole('button', { name: 'Browse' })
+        .or(tabBar.getByRole('tab', { name: 'Browse' }))
+        .first()
+        .tap();
+    await sleep(800);
+};
+
+/**
+ * Cancels the folder picker with its own Cancel button, which only some of its screens show: a folder's
+ * navigation bar has Back instead, and a slimmed simulator's Recents tab fails with "Content Unavailable"
+ * and has neither. The Browse root always has it.
+ */
+export async function cancelBackupFolderPicker(ctx: Ctx): Promise<void> {
+    const { screen } = ctx;
+    const cancel = screen.getByRole('button', { name: 'Cancel', exact: true }).first();
+    await openFolderPickerBrowseTab(ctx);
+    for (let step = 0; step < 4 && !(await cancel.isVisible()); step++) {
+        await byId(screen, 'BackButton').tap();
+        await sleep(800);
+    }
+    await cancel.tap();
+    await expect(byId(screen, 'DOC.browsingModeTabBar')).toBeHidden({ timeout: 15_000 });
+}
+
+export async function saveBackupToFixtureDirectory(ctx: Ctx): Promise<void> {
+    const { screen } = ctx;
+    await openFolderPickerBrowseTab(ctx);
+    await openE2EFixturesFullPath(ctx, screen.getByTestId(/Title: E2EFixtures$/).first());
+    await screen.getByRole('button', { name: 'Open', exact: true }).last().tap();
 }

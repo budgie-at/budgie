@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/12.account-archive-and-expense-convert-to-transfer.flow.yaml.
 import { expect } from 'e2e';
 
 import * as a from '../support/budgie/accounts.ts';
@@ -35,6 +34,9 @@ test('12 account archive and expense convert to transfer', { tags: ['accounts', 
         await b.expectId(ctx, `ArchivedAccountCard.RestoreButton.${TARGET}`, 10_000);
         await b.tapId(ctx, `ArchivedAccountCard.RestoreButton.${TARGET}`);
         await b.expectNoId(ctx, `ArchivedAccountCard.RestoreButton.${TARGET}`, 10_000);
+        // A finger held on a toast past its timeout must not leave it on screen for good.
+        await b.byId(ctx.screen, b.TOAST).longPress({ duration: 6_000 });
+        await b.expectNoId(ctx, b.TOAST, 3_000);
         await b.tapId(ctx, 'TabBar.Home');
         await b.expectId(ctx, 'HomePage.TotalBalance', 10_000);
         await b.expectId(ctx, `AccountCard.${TARGET}`);
@@ -44,7 +46,7 @@ test('12 account archive and expense convert to transfer', { tags: ['accounts', 
         await t.navigateToTransactions(ctx);
         await t.openTransactionForm(ctx, 'ActionItem.Expense', 'New Expense');
         // A keypad tap can land while the form is still settling and be dropped: re-enter until the amount reads 30.
-        await t.retry(2, async () => {
+        await b.retry(2, async () => {
             await t.clearAmount(ctx);
             await t.typeDigits(ctx, '30');
             await expect(b.byId(ctx.screen, 'TransactionForm.AmountInput')).toHaveText(/^\$\s*30$/, { timeout: 2_000 });

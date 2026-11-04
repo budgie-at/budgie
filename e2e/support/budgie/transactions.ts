@@ -2,24 +2,9 @@ import { expect } from 'e2e';
 
 import { selectAccountBySearch } from './accounts.ts';
 import { pickCategoryCard } from './categories.ts';
-import { byId, byText, expectId, expectNoId, openLink, scrollTo, selectCategoryBySearch, sleep, tapId, type Ctx } from './core.ts';
+import { byId, byText, expectId, expectNoId, openLink, retry, scrollTo, selectCategoryBySearch, sleep, tapId, type Ctx } from './core.ts';
 
 import type { Locator } from 'e2e';
-
-/** Maestro's `retry: { maxRetries }`: runs `body` up to `1 + retries` times, rethrowing the last failure. */
-export async function retry(retries: number, body: (attempt: number) => Promise<void>): Promise<void> {
-    for (let attempt = 1; ; attempt++) {
-        try {
-            await body(attempt);
-            return;
-        } catch (cause) {
-            if (attempt > retries) {
-                throw cause;
-            }
-            console.log(`[retry] attempt ${attempt} failed: ${(cause as Error).message.split('\n')[0]}`);
-        }
-    }
-}
 
 /** Taps `testId` until `targetId` shows (each wait `timeout`), up to `1 + retries` taps. */
 export async function tapUntilId(ctx: Ctx, testId: string, targetId: string, retries = 3, timeout = 3_000): Promise<void> {
@@ -249,7 +234,7 @@ export async function createExpense(
 
 /**
  * The fee-sheet round trip the 08/09/10 flows share on a transaction's edit form:
- * see the sheet's first entry and save button, drag it down (Maestro's `swipe: DOWN`), back on `formTitle`.
+ * see the sheet's first entry and save button, drag it down, back on `formTitle`.
  */
 export async function openAndDismissFeeSheet(ctx: Ctx, formTitle: string): Promise<void> {
     const { screen } = ctx;
@@ -260,7 +245,7 @@ export async function openAndDismissFeeSheet(ctx: Ctx, formTitle: string): Promi
 }
 
 /**
- * Drags the open bottom sheet down by its grabber until `contentId` leaves the screen (Maestro's `swipe: DOWN`).
+ * Drags the open bottom sheet down by its grabber until `contentId` leaves the screen.
  * With the keyboard up, agent-device rejects any drag long enough to dismiss the sheet ("does not fit inside
  * the viewport"), and a decimal pad has no dismiss key; then the sheet's backdrop (`PopoverDismissRegion`),
  * the other way a user closes it, is tapped instead. The sheet may stop at its collapsed detent on the way,
@@ -330,9 +315,10 @@ export async function consolidateMatches(ctx: Ctx): Promise<void> {
     await consolidate.tap({ position: await relativePoint(consolidate, 0.5, 0.25) });
     await expect(byText(screen, /high-confidence transfer/i)).toBeVisible({ timeout: 3_000 });
     await screen.getByText('Merge').last().tap();
+    await expect(byText(screen, 'Transfers and refunds merged')).toBeVisible({ timeout: 30_000 });
 }
 
-/** A point inside `locator` at fractions of its size, in the node's own coordinates (for `tap({ position })`, Maestro's `point: 'x%,y%'`). */
+/** A point inside `locator` at fractions of its size, in the node's own coordinates (for `tap({ position })`). */
 async function relativePoint(locator: Locator, fx: number, fy: number): Promise<{ x: number; y: number }> {
     const box = await locator.boundingBox();
     if (box === null) {

@@ -1,6 +1,3 @@
-// Port of tests/app-tests/flows/25.rules-crud.flow.yaml: one Maestro command
-// per awaited call, sections in the flow's order. The Maestro flow stays the
-// source of truth until this suite replaces it.
 import { expect } from 'e2e';
 
 import * as b from '../support/budgie/core.ts';

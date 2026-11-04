@@ -1645,12 +1645,12 @@ msgid "Back up regularly and after imports."
 msgstr "Haz copias con regularidad y después de importar."
 
 #: src/settings/components/backup-row/backup-row.tsx
-msgid "Backup file"
-msgstr "Archivo de copia"
+msgid "Backup"
+msgstr "Copia de seguridad"
 
-#: src/settings/components/backup-row/backup-row.tsx
-msgid "Backup file ready"
-msgstr "Archivo de copia listo"
+#: src/export/hook/use-backup-actions.hook.ts
+msgid "Backup saved"
+msgstr "Copia de seguridad guardada"
 
 #: src/market-data/component/currency-market-position/currency-market-position.tsx
 msgid "Balance"
@@ -2144,6 +2144,10 @@ msgstr "Revisa la ortografía o créala como nueva etiqueta."
 msgid "Check the spelling or search by another name."
 msgstr "Revisa la ortografía o busca otro nombre."
 
+#: src/app/rule-mcc-selector.tsx
+msgid "Check the spelling or try a code like 5812."
+msgstr "Revisa la ortografía o prueba con un código como 5812."
+
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Check the spelling or try a code like EUR."
 msgstr "Revisa la ortografía o prueba con un código como EUR."
@@ -2581,7 +2585,7 @@ msgstr "No se pudo convertir en reembolso"
 msgid "Could not convert to transfers"
 msgstr "No se pudieron convertir en transferencias"
 
-#: src/settings/components/backup-row/backup-row.tsx
+#: src/export/hook/use-backup-actions.hook.ts
 msgid "Could not create a backup"
 msgstr "No se pudo crear la copia"
 
@@ -4578,10 +4582,6 @@ msgstr "Últimos 7 días"
 msgid "Last 90 days"
 msgstr "Últimos 90 días"
 
-#: src/settings/components/backup-row/backup-row.tsx
-msgid "Last created {lastBackupDate}"
-msgstr "Creada por última vez {lastBackupDate}"
-
 #: src/budget/components/budget-month-day-start-field/budget-month-day-start-field.tsx
 msgid "Last day of each month"
 msgstr "Último día de cada mes"
@@ -4597,6 +4597,10 @@ msgstr "Mes pasado"
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
 msgid "last payment {formattedLast}"
 msgstr "último pago {formattedLast}"
+
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Last saved {lastBackupDate}"
+msgstr "Última copia guardada: {lastBackupDate}"
 
 #: src/account/component/institution-connection-row/institution-connection-row.tsx
 msgid "Last successful sync · {lastSyncedTime}"
@@ -5006,7 +5010,7 @@ msgstr "Presupuesto mensual"
 msgid "Monthly history"
 msgstr "Historial mensual"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/transaction/components/recurring-calendar-summary/recurring-calendar-summary.tsx
 msgid "Monthly total"
 msgstr "Total mensual"
 
@@ -5321,10 +5325,6 @@ msgstr "No hay transacciones coincidentes"
 msgid "No MCC codes available"
 msgstr "No hay códigos MCC disponibles"
 
-#: src/app/rule-mcc-selector.tsx
-msgid "No MCC codes found"
-msgstr "No se encontraron códigos MCC"
-
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No new transactions"
 msgstr "No hay transacciones nuevas"
@@ -5443,7 +5443,6 @@ msgid "Not counted in net worth"
 msgstr "No cuenta en el patrimonio neto"
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
-#: src/settings/components/backup-row/backup-row.tsx
 msgid "Not created yet"
 msgstr "Aún no creada"
 
@@ -5473,6 +5472,10 @@ msgstr "Ahora no"
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Not on any transactions. This can’t be undone."
 msgstr "No está en ninguna transacción. Esto no se puede deshacer."
+
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Not saved yet"
+msgstr "Aún no se ha guardado"
 
 #: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx
 msgid "not set"
@@ -6729,10 +6732,6 @@ msgstr "Guardar comisión"
 msgid "Save it"
 msgstr "Guárdala"
 
-#: src/settings/components/backup-row/backup-row.tsx
-msgid "Save it to Files or another app."
-msgstr "Guárdalo en Archivos o en otra app."
-
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 msgid "Save rule"
 msgstr "Guardar regla"
@@ -6748,6 +6747,10 @@ msgstr "Guarda la automatización. Budgie asigna los nombres de tarjeta a las cu
 #: src/budget/components/budget-funds-section/budget-funds-section.tsx
 msgid "Save up for yearly bills a little each period so they never surprise you"
 msgstr "Ahorra un poco cada periodo para las facturas anuales y que nunca te sorprendan"
+
+#: src/export/hook/use-backup-actions.hook.ts
+msgid "Saved to your chosen folder."
+msgstr "Guardada en la carpeta elegida."
 
 #: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
@@ -6938,6 +6941,10 @@ msgstr "Selecciona el archivo XLSX exportado"
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Selected"
 msgstr "Seleccionado"
+
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Send a copy"
+msgstr "Enviar una copia"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Sending {fromCode}"
@@ -8043,7 +8050,6 @@ msgid "Try a different merchant, amount, or date."
 msgstr "Prueba con otro comercio, importe o fecha."
 
 #: src/app/contact-selector.tsx
-#: src/app/rule-mcc-selector.tsx
 msgid "Try a different search term"
 msgstr "Prueba con un término de búsqueda diferente"
 

@@ -9,8 +9,10 @@ import Toast from 'react-native-toast-message';
 
 import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { FormsheetHeader } from '../@generic/component/formsheet-header/formsheet-header';
 import { GroupedListSection } from '../@generic/component/grouped-list-section/grouped-list-section';
+import { GroupedSurface } from '../@generic/component/grouped-surface/grouped-surface';
+import { SheetTitleRow } from '../@generic/component/sheet-title-row/sheet-title-row';
+import { GroupedSurfacePaletteEnum } from '../@generic/enum/grouped-surface-palette.enum';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { useSingleFlight } from '../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../@generic/utils/toast-on-failure.util';
@@ -72,9 +74,11 @@ export default function ResyncWindowPickerModal() {
     };
 
     return (
-        <View className="bg-grouped-surface" collapsable={false}>
+        <GroupedSurface palette={GroupedSurfacePaletteEnum.SHEET} className="flex-none">
             <ScrollView style={styles.scroll} bounces={false} showsVerticalScrollIndicator={false}>
-                <FormsheetHeader size="md" title={t`Sync past transactions`} className="pb-[4px]" />
+                <View className="px-3xl pt-7xl pb-md">
+                    <SheetTitleRow title={t`Sync past transactions`} />
+                </View>
                 <View className="gap-y-[4px] px-3xl">
                     {accountHeading}
                     <Text className="text-center text-[13px] text-secondary-foreground">
@@ -98,6 +102,6 @@ export default function ResyncWindowPickerModal() {
                     </GroupedListSection>
                 </View>
             </ScrollView>
-        </View>
+        </GroupedSurface>
     );
 }

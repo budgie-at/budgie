@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.151.5](https://github.com/budgie-at/budgie/compare/v6.151.4...v6.151.5) (2026-11-04)
+
+**Note:** Version bump only for package @budgie/import-export
+
+
+
+
+
+# [6.151.0](https://github.com/budgie-at/budgie/compare/v6.150.4...v6.151.0) (2026-11-04)
+
+### Bug Fixes
+
+* **app:** auto-map CSV amount and date columns only when every previewed value is importer-safe ([0ab8b28](https://github.com/budgie-at/budgie/commit/0ab8b2853415133eaf0b013991cf6b73a8aee60c))
+* **app:** validate whole CSV columns before auto-mapping and address review findings ([0a2d3fc](https://github.com/budgie-at/budgie/commit/0a2d3fc9964a14404b2104b75654e8b49f424ad0))
+
+### Features
+
+* **app:** match CSV columns by name, show sample values and tighten settings subpage states ([2330944](https://github.com/budgie-at/budgie/commit/233094413d4a64ab88eab9b42b5f7a5d4cf0ad08))
+
+
 ## [6.150.4](https://github.com/budgie-at/budgie/compare/v6.150.3...v6.150.4) (2026-11-04)
 
 ### Bug Fixes

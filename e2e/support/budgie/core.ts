@@ -1,11 +1,21 @@
 import { leaseIdForUdid, simlockApiFromEnv, type SimlockApi } from '@mobile-ci/e2e-simlock/exec';
-import { byId, done, scrollTo as scrollToLocator, tapUntil as tapLocatorUntil } from '@mobile-ci/e2e-simlock/steps';
+import {
+    byId,
+    done,
+    retry,
+    scrollTo as scrollToLocator,
+    scrollToCentered as scrollToCenteredId,
+    scrollToMiddle,
+    tapUntil as tapLocatorUntil
+} from '@mobile-ci/e2e-simlock/steps';
 import { expect } from 'e2e';
 
 import { clearDatabase, ensureFixtures, seedDatabase } from './fixtures.ts';
 
 import type { Device } from '@e2e-dev/mobile';
 import type { App, Locator, Screen } from 'e2e';
+
+export const TOAST = 'toastAnimatedContainer';
 
 /** What every budgie helper takes: the test's own fixtures plus the leased device's simlock handle. */
 export interface Ctx {
@@ -16,9 +26,12 @@ export interface Ctx {
 
 export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-export { byId, done };
+export { byId, done, retry };
 
-/** Maestro's text selectors are case-insensitive regexes matching the whole string; this is the exact-text form most flows mean. */
+/** iPhone 17 Pro, the one device the suite leases, in the points `boundingBox()` reports. */
+const VIEWPORT_HEIGHT = 874;
+
+/** Text selectors are case-insensitive regexes matching the whole string; this is the exact-text form most tests mean. */
 export const byText = (screen: Screen, text: string | RegExp): Locator => screen.getByText(text).first();
 
 /** Times a named phase; the timings land in the run log. */
@@ -32,6 +45,10 @@ export async function phase<T>(name: string, body: () => Promise<T>): Promise<T>
 }
 
 export async function tapId(ctx: Ctx, testId: string): Promise<void> {
+    // A top toast covers the header's back button and takes the tap; it hides itself within 5 s.
+    if (testId === 'PageHeader.BackButton') {
+        await expectNoId(ctx, TOAST, 8_000);
+    }
     await byId(ctx.screen, testId).tap();
 }
 
@@ -55,31 +72,24 @@ export async function expectText(ctx: Ctx, text: string | RegExp, timeout?: numb
     await expect(byText(ctx.screen, text)).toBeVisible(timeout === undefined ? undefined : { timeout });
 }
 
-/** Maestro's `scrollUntilVisible` on a testID (direction is where the content goes: `down` reveals what is below). A visible node does not scroll. */
+/** Scrolls until a testID is visible (direction is where the content goes: `down` reveals what is below). A visible node does not scroll. */
 export async function scrollTo(ctx: Ctx, testId: string, direction: 'up' | 'down' = 'down'): Promise<void> {
     await scrollToLocator(ctx.screen, byId(ctx.screen, testId), direction);
 }
 
-/** Maestro's `retryTapIfNoChange` on a testID. */
+/** Taps a testID until `next` holds. */
 export async function tapUntil(ctx: Ctx, testId: string, next: () => Promise<void>): Promise<void> {
     await tapLocatorUntil(byId(ctx.screen, testId), next);
 }
 
-/**
- * Maestro's `centerElement`: scroll `testId` in, then drag it out of the bottom band where the floating action button
- * and tab bar cover it. The drag starts at a fixed point clear of both, and a list that cannot scroll further is left
- * as it is. The package's `scrollToCentered` drags from the node itself and fails at the list's end
- * (rnw-community/mobile-ci#314).
- */
+/** Drags `testId` out of the bottom band where the floating action button and tab bar cover it, along a column clear of the settings switches. */
 export async function scrollToCentered(ctx: Ctx, testId: string): Promise<void> {
-    await scrollTo(ctx, testId);
-    const box = await byId(ctx.screen, testId).boundingBox();
-    if (box === null || box.y + box.height / 2 < 560) {
-        return;
-    }
-    const x = 200;
-    await ctx.screen.swipe({ from: { x, y: 600 }, to: { x, y: 600 - (box.y + box.height / 2 - 437) }, duration: 600 });
-    await sleep(600);
+    await scrollToCenteredId(ctx, testId, { viewportHeight: VIEWPORT_HEIGHT, bottomBandPx: 314, dragX: 200 });
+}
+
+/** Brings `testId` near the middle, clear of the floating tab bar and header. 200 lets the last row of a list rest at 621 without its bounce reading as movement. */
+export async function scrollToCentre(ctx: Ctx, testId: string, direction: 'up' | 'down' = 'down'): Promise<void> {
+    await scrollToMiddle(ctx, testId, { viewportHeight: VIEWPORT_HEIGHT, direction, tolerancePx: 200, dragX: 201 });
 }
 
 /** Clears iOS's "Open in “budgie”?" prompt that the first custom-scheme link on a fresh simulator shows. */
@@ -120,9 +130,8 @@ export interface StartOptions {
 const primed = new Set<string>();
 
 /**
- * Per-test device state, the Maestro shard's `pre-flow-command` and
- * `prime-deep-links` folded together: fixtures staged in the app container,
- * the flow's database seeded, the app launched fresh on it.
+ * Per-test device state: fixtures staged in the app container, the test's
+ * database seeded, the app launched fresh on it.
  */
 export class Budgie {
     readonly api: SimlockApi = simlockApiFromEnv();

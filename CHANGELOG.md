@@ -3,6 +3,123 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.152.0](https://github.com/budgie-at/budgie/compare/v6.151.6...v6.152.0) (2026-11-04)
+
+### Bug Fixes
+
+* **app:** keep the tags hint off the rows behind it ([285e03a](https://github.com/budgie-at/budgie/commit/285e03ac479e2bcfcc60a216e85fc40c361a4a2f))
+
+### Features
+
+* **app:** move destination and resync sheets onto the sheet surface ([1aa448b](https://github.com/budgie-at/budgie/commit/1aa448ba5945cccf012f5f30e862927398436735))
+* **app:** rebuild the rule and MCC pickers on the shared sheet ([3e2a8e6](https://github.com/budgie-at/budgie/commit/3e2a8e65d136762e65d44a0654399e3b42680e05))
+
+
+## [6.151.6](https://github.com/budgie-at/budgie/compare/v6.151.5...v6.151.6) (2026-11-04)
+
+### Bug Fixes
+
+* **app:** record backup dates after confirmed saves ([34b7354](https://github.com/budgie-at/budgie/commit/34b7354b29fa78c9ff6c9ba7dcbcec0d23728375))
+* **app:** stop recording unconfirmed backup saves ([477c3e1](https://github.com/budgie-at/budgie/commit/477c3e1e480e4613dc37e1798f1e87a51bd5e6c9))
+
+
+## [6.151.5](https://github.com/budgie-at/budgie/compare/v6.151.4...v6.151.5) (2026-11-04)
+
+### Bug Fixes
+
+* **consolidation:** chain receipt, Apple Pay and bank merges ([4072ba1](https://github.com/budgie-at/budgie/commit/4072ba1b81c94e6e530e51713c6628119b8b359f))
+* **consolidation:** merge captures that absorbed receipts ([5cc6541](https://github.com/budgie-at/budgie/commit/5cc6541bd15b7185685594dc1f7099866efe5c82))
+
+
+## [6.151.4](https://github.com/budgie-at/budgie/compare/v6.151.3...v6.151.4) (2026-11-04)
+
+### Bug Fixes
+
+* **sync:** preserve own-card transfers and user edits ([4bc1f09](https://github.com/budgie-at/budgie/commit/4bc1f09f00d66b21fc5c579c85d8be601b395a6a))
+
+
+## [6.151.3](https://github.com/budgie-at/budgie/compare/v6.151.2...v6.151.3) (2026-11-04)
+
+### Bug Fixes
+
+* **app:** stop recording unconfirmed backup saves ([#1923](https://github.com/budgie-at/budgie/issues/1923)) ([b7106ef](https://github.com/budgie-at/budgie/commit/b7106ef162159e3fd6f473fe606f6b633881daef))
+* **sync:** apply account rules after card reissue merges ([7c7b450](https://github.com/budgie-at/budgie/commit/7c7b450e7cb0d1f2fc0c0243e95864dae8486c9f))
+* **sync:** preserve Binance P2P commission fields ([8bd085a](https://github.com/budgie-at/budgie/commit/8bd085a37431cc79b0109e8e65e57f19d484cb8e))
+
+
+## [6.151.2](https://github.com/budgie-at/budgie/compare/v6.151.1...v6.151.2) (2026-11-04)
+
+### Bug Fixes
+
+* **app:** stop a toast from sticking over the back button ([24ac156](https://github.com/budgie-at/budgie/commit/24ac156b870c11f917a57b0ff1fc8f252a573dcb))
+
+
+## [6.151.1](https://github.com/budgie-at/budgie/compare/v6.151.0...v6.151.1) (2026-11-04)
+
+**Note:** Version bump only for package @budgie-at/root
+
+
+
+
+
+# [6.151.0](https://github.com/budgie-at/budgie/compare/v6.150.4...v6.151.0) (2026-11-04)
+
+### Bug Fixes
+
+* **app:** address bank integration accessibility and QA findings ([16f8bd8](https://github.com/budgie-at/budgie/commit/16f8bd86fbc575f31f5ad22fe720ffce042f2283))
+* **app:** address transaction form review findings ([c58f5cb](https://github.com/budgie-at/budgie/commit/c58f5cbfc8c8bb33ac305bbca33628cce849a6e5))
+* **app:** auto-map CSV amount and date columns only when every previewed value is importer-safe ([0ab8b28](https://github.com/budgie-at/budgie/commit/0ab8b2853415133eaf0b013991cf6b73a8aee60c))
+* **app:** clarify bank account subtitles and sync failures ([17852fb](https://github.com/budgie-at/budgie/commit/17852fb77cbe653c63d5429f1238882bb818136b))
+* **app:** correct bank integration layout and sync states ([5487049](https://github.com/budgie-at/budgie/commit/54870495007cf2f743b087313dcd0b1da75753fb))
+* **app:** drop the wrapping row count, align the blocker line and keep the sync explanation ([73e26eb](https://github.com/budgie-at/budgie/commit/73e26ebb9dc7be556964ef9215c6716cd0de8aa4))
+* **app:** include keyboard space in split sheet layout ([a39d3f2](https://github.com/budgie-at/budgie/commit/a39d3f2dea5aa81583df93362ece47fa039e2e7d))
+* **app:** infer only importer-safe CSV values, pin the import action with screen chrome and keep pills accessible ([bef780b](https://github.com/budgie-at/budgie/commit/bef780bb17f9bee97c4ec4398cc7995fe6ce7928))
+* **app:** keep bank account rows to two lines ([f5bd92f](https://github.com/budgie-at/budgie/commit/f5bd92feb1f99f73f1ebddcfaa0f3749258c90cd))
+* **app:** keep every re-sync option reachable at large text sizes ([b8ca4f4](https://github.com/budgie-at/budgie/commit/b8ca4f464343d488a34ea3be9a759bde09a0f5f5))
+* **app:** keep split inputs reachable above the keyboard ([035d77f](https://github.com/budgie-at/budgie/commit/035d77fc50d7fbc2b2cb37e21ad508c1ff976990))
+* **app:** keep the column picker header out of the sheet scroll ([0e737a5](https://github.com/budgie-at/budgie/commit/0e737a59fab45d7d151b4fcde9251afdb05607a8))
+* **app:** keep the re-sync sheet fitted to its content ([8a0f5f3](https://github.com/budgie-at/budgie/commit/8a0f5f36de90b35644ee9a5da62a72054a8ddd69))
+* **app:** keep the shared collapsing chrome timing on bank integration settings ([91ec7a9](https://github.com/budgie-at/budgie/commit/91ec7a98c9fcce80d62868f55e44b4ff03dcc8d8))
+* **app:** keep the switch label message translatable ([6ac935b](https://github.com/budgie-at/budgie/commit/6ac935b5f776610a842f3fda61c03fd9aadbe464))
+* **app:** list sample-matched CSV fields without Intl.ListFormat, which Hermes lacks ([c7d680e](https://github.com/budgie-at/budgie/commit/c7d680edc7712ce26d9d8c465c879620e07a6b1d))
+* **app:** pin transaction keypad actions, visible sign segment and editable fee input ([ef3fe10](https://github.com/budgie-at/budgie/commit/ef3fe104bec2c8b40e5f64a346ea957555338994))
+* **app:** preserve account context and refine bank sync sheets ([76e6df8](https://github.com/budgie-at/budgie/commit/76e6df899bd8af89da3e3a052b4f11f20f259bd7))
+* **app:** preserve transaction editing and selector behavior ([22408fa](https://github.com/budgie-at/budgie/commit/22408fa12589e5c6f1a0c189d246abd20519a289))
+* **app:** put the column picker header in its list and size the AI status row to content ([701441a](https://github.com/budgie-at/budgie/commit/701441a75882620cd39976b8e7632306cb0ef7c0))
+* **app:** put the re-sync account and instruction on separate lines ([184dfd4](https://github.com/budgie-at/budgie/commit/184dfd4d61dd2aad986e30e0407043ffb60519d6))
+* **app:** refine bank integration copy and hierarchy ([fd3eb58](https://github.com/budgie-at/budgie/commit/fd3eb585eace3dca1171c1197e9815a589796761))
+* **app:** restore generic fallback icons for suggestions ([9e38b73](https://github.com/budgie-at/budgie/commit/9e38b732070f2f976bb9fee388c800fdf9a96fe0))
+* **app:** reuse the shared actions menu and simplify bank row state ([4e6d550](https://github.com/budgie-at/budgie/commit/4e6d550e31a2d809d21ed5cc8089a2f913b76556))
+* **app:** shorten the excluded-from-imports row state ([cfda8e8](https://github.com/budgie-at/budgie/commit/cfda8e818cb9dbd242b536ef69c5da069faa95f5))
+* **app:** shrink transaction keypad before it covers the receiving row ([605be57](https://github.com/budgie-at/budgie/commit/605be574a8a367e45f13a64e7292662506667d51))
+* **app:** tighten bank integration rows and clarify sync states ([12e17e0](https://github.com/budgie-at/budgie/commit/12e17e074d333900efaee629c023d945ec8918e7))
+* **app:** unify bank account subtitles and polish sync sheets ([a73d98a](https://github.com/budgie-at/budgie/commit/a73d98afc0787c95b63e787eceba8a9b6f41e42e))
+* **app:** validate whole CSV columns before auto-mapping and address review findings ([0a2d3fc](https://github.com/budgie-at/budgie/commit/0a2d3fc9964a14404b2104b75654e8b49f424ad0))
+
+### Features
+
+* **app:** anchored amount group, readable field values and locale-safe fee input ([b350b6b](https://github.com/budgie-at/budgie/commit/b350b6b6c9d31ecf8f058aa251532ceaed972af1))
+* **app:** categorised icon picker with section chips ([d80b6d3](https://github.com/budgie-at/budgie/commit/d80b6d3d915982060f6c03d1f626cf9910df290b))
+* **app:** centred transaction hero, named field captions and grouped fee amounts ([b396885](https://github.com/budgie-at/budgie/commit/b3968857043b02973bbb78cdd36cd1186695c674))
+* **app:** centred transaction hero, visible edit fees and labelled split removal ([2408865](https://github.com/budgie-at/budgie/commit/24088657a9c871b492a9e7dda524aed326a81b97))
+* **app:** compact the CSV format picker, explain inferred columns and fix light-mode pills ([57cadf2](https://github.com/budgie-at/budgie/commit/57cadf20bc05e29f051a9787dc7fcc228ba49a27))
+* **app:** fit language sheet to its five languages ([652567b](https://github.com/budgie-at/budgie/commit/652567b8fe549f818b0fe5ecd281d99cebf97904))
+* **app:** fixed transaction hero, stable field strip, sign segment and content-sized split sheet ([6ddcd69](https://github.com/budgie-at/budgie/commit/6ddcd699e3d02289da0f88a986014828761f7a2d))
+* **app:** grouped surfaces, honest import readiness and inline repair results on settings subpages ([84ca8f2](https://github.com/budgie-at/budgie/commit/84ca8f201cdba84111280f09c01c78f54e69c30c))
+* **app:** index rail and search highlight in crypto sheet ([a032d0c](https://github.com/budgie-at/budgie/commit/a032d0cebf4ea9d9b369a64adae56a216b003e07))
+* **app:** infer CSV columns from sample values and give sync repairs a verb pill ([c6839e5](https://github.com/budgie-at/budgie/commit/c6839e5cdb7673937ec5c1ece14ca21bb8d6b6f3))
+* **app:** match CSV columns by name, show sample values and tighten settings subpage states ([2330944](https://github.com/budgie-at/budgie/commit/233094413d4a64ab88eab9b42b5f7a5d4cf0ad08))
+* **app:** neutral transaction form semantics, visible validation and grouped sheets ([2c9a10a](https://github.com/budgie-at/budgie/commit/2c9a10a9626f904a306f30f490c78f439a6da5c2))
+* **app:** opaque CSV action tray with blocker guidance and quieter column labels ([37a1dc4](https://github.com/budgie-at/budgie/commit/37a1dc44c4ae2c3e90b8fde718d5c5419f0c9864))
+* **app:** polish bank integration settings as grouped lists ([5297bbc](https://github.com/budgie-at/budgie/commit/5297bbc9869769a3c8a3b663bfb41f43587d43d8))
+* **app:** polish selector bottom sheets ([4cf41ac](https://github.com/budgie-at/budgie/commit/4cf41ace60d22b0fe44dd1ee22cb0697536eeb5d))
+* **app:** rebuild settings subpages as grouped lists ([f1c0046](https://github.com/budgie-at/budgie/commit/f1c004670afc8a5c95f9eeccd22ad10816cd6295))
+* **app:** round flags and honest sections in currency sheet ([43976cf](https://github.com/budgie-at/budgie/commit/43976cf8b624ab7350c1bc13f6596360452d4bec))
+* **app:** titled pickers with chips, create-from-search and stable order ([2eee05c](https://github.com/budgie-at/budgie/commit/2eee05c46086d97265ace9ccbefebd56c0caee19))
+* **app:** top-anchored transaction form hero, readable field strip and single receiving row ([dff638d](https://github.com/budgie-at/budgie/commit/dff638d9f86989afd5282f6962912acf578918ae))
+* **app:** true minus, semibold selection and stable tag chips ([830ed8a](https://github.com/budgie-at/budgie/commit/830ed8a8aa22f49164adc9c384c358967055ab06))
+
+
 ## [6.150.4](https://github.com/budgie-at/budgie/compare/v6.150.3...v6.150.4) (2026-11-04)
 
 ### Bug Fixes

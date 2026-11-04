@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/26.rules-suggestions.flow.yaml.
 import * as b from '../support/budgie/core.ts';
 import * as r from '../support/budgie/rules.ts';
 import { test } from '../support/budgie/test.ts';

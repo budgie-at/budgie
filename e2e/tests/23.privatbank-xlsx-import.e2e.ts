@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/23.privatbank-xlsx-import.flow.yaml.
 import { expect } from 'e2e';
 
 import * as a from '../support/budgie/accounts.ts';
@@ -19,6 +18,9 @@ test('23 privatbank xlsx import', { tags: ['import'] }, async ({ budgie }) => {
         await b.byId(screen, CARD).longPress();
         await b.tapId(ctx, 'AccountCardMenu.ImportButton');
         await i.selectFileFromAppProvider(ctx, 'privatbank-statement-002, xlsx');
+        // A re-import leaves the balance as it was, so only its result toast tells that the import has finished.
+        await b.expectText(ctx, /already imported/, 20_000);
+        await b.expectNoId(ctx, b.TOAST, 8_000);
         await b.expectId(ctx, 'AccountCard.Balance.Privatbank_1234.547', 5_000);
         await b.tapId(ctx, CARD);
     };
@@ -78,14 +80,6 @@ test('23 privatbank xlsx import', { tags: ['import'] }, async ({ budgie }) => {
         await b.expectId(ctx, 'TransactionInfo.Page', 5_000);
         await b.expectText(ctx, 'EDITED PRIVATBANK DEDUP TEST');
         await b.tapId(ctx, 'PageHeader.BackButton');
-        // The card's tap can push the info page twice (seen once in a run); back until the account shows.
-        try {
-            await b.expectId(ctx, 'AccountDetails.Page', 3_000);
-        } catch {
-            if (await b.byId(screen, 'TransactionInfo.Page').isVisible()) {
-                await b.tapId(ctx, 'PageHeader.BackButton');
-            }
-        }
     });
 
     await b.phase('edit imported account balance', async () => {

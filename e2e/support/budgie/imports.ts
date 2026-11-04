@@ -23,8 +23,8 @@ export async function importTestTransactions(ctx: Ctx, csvFixturesUri: string, n
 
 /**
  * A picker row's identifier: the file name, with the extension or not
- * (`e2e-budgie-import`, `16.db`), or Maestro's `name, ext` form, which the
- * iOS 26.5 simulators report. The flows' `name(, ext)?`.
+ * (`e2e-budgie-import`, `16.db`), or the `name, ext` form, which the
+ * iOS 26.5 simulators report.
  */
 function fileRowId(name: string): RegExp {
     const [base, ext] = name.split(', ');
@@ -42,7 +42,7 @@ const folderId = (name: string): RegExp => new RegExp(`^${quote(name)}(, (Folder
  * list), walk to On My iPhone → budgie (E2E) → E2EFixtures, going back up
  * when it is elsewhere.
  */
-async function openE2EFixturesFullPath(ctx: Ctx, row: Locator): Promise<void> {
+export async function openE2EFixturesFullPath(ctx: Ctx, row: Locator): Promise<void> {
     const { screen } = ctx;
     const item = (name: string) => screen.getByTestId(folderId(name)).first();
     const inside = (title: string) => screen.getByTestId(new RegExp(`Title: ${quote(title)}$`)).first();

@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/21.transfer-consolidation.flow.yaml.
 import { expect } from 'e2e';
 
 import * as b from '../support/budgie/core.ts';
@@ -28,7 +27,7 @@ test('21 transfer consolidation', { tags: ['transactions'] }, async ({ budgie })
         await b.scrollTo(ctx, card('Bridge_Out'));
         await b.expectId(ctx, card('Bridge_In'));
         await b.scrollTo(ctx, card('Bridge_Chain_Out'));
-        // The chain rows sit just past where Maestro's longer scroll stride stops; scroll on to each before asserting it.
+        // The chain rows sit just past where one scroll stride stops; scroll on to each before asserting it.
         await b.scrollTo(ctx, card('Chain_Source'));
         await b.expectId(ctx, card('Chain_Source'));
         await b.scrollTo(ctx, card('Chain_Target'));
@@ -39,15 +38,8 @@ test('21 transfer consolidation', { tags: ['transactions'] }, async ({ budgie })
 
     await b.phase('verify canonicals', async () => {
         await t.navigateToTransactions(ctx);
-        const p1 = id(card('P1_Out'));
-        if (!(await p1.isVisible())) {
-            try {
-                await screen.scrollUntilVisible(p1, { direction: 'up', timeout: 5_000 });
-            } catch {
-                await b.scrollTo(ctx, card('P1_Out'));
-            }
-        }
-        await expect(text(/From E2E Consolidation A to E2E Consolidation B/)).toBeVisible({ timeout: 60_000 });
+        await b.scrollTo(ctx, card('P1_Out'), 'up');
+        await expect(text(/From E2E Consolidation A to E2E Consolidation B/)).toBeVisible();
         await b.expectId(ctx, card('P2_Out'));
         await expect(text(/From E2E Consolidation USD to E2E Consolidation EUR/)).toBeVisible();
         await b.expectId(ctx, card('ATM_Out'));
@@ -74,7 +66,8 @@ test('21 transfer consolidation', { tags: ['transactions'] }, async ({ budgie })
     });
 
     await b.phase('revert canonical 1', async () => {
-        await b.scrollTo(ctx, card('P1_Out'), 'up');
+        // Visible is not enough: the top row can sit clipped under the sticky "Today" header, which takes the tap.
+        await b.scrollToCentre(ctx, card('P1_Out'), 'up');
         await b.tapId(ctx, card('P1_Out'));
         await b.expectId(ctx, 'TransactionInfo.Row.Consolidation', 10_000);
         await b.tapId(ctx, 'TransactionInfo.Row.Consolidation');

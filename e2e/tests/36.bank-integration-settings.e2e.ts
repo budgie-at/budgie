@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/36.bank-integration-settings.flow.yaml.
 import { expect } from 'e2e';
 
 import * as b from '../support/budgie/core.ts';

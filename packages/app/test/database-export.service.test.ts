@@ -1,42 +1,88 @@
 import { Db, makeEffectSqliteClientDatabase, SettingsRepository } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import { withReplicas } from 'drizzle-orm/sqlite-core/effect';
+import * as Cause from 'effect/Cause';
+import * as Deferred from 'effect/Deferred';
 import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
+import * as Fiber from 'effect/Fiber';
 import { identity } from 'effect/Function';
 import * as Layer from 'effect/Layer';
 import * as Reactivity from 'effect/reactivity/Reactivity';
 import * as Ref from 'effect/Ref';
+import * as Semaphore from 'effect/Semaphore';
 import * as SqlClient from 'effect/sql/SqlClient';
 import * as SqlConnection from 'effect/sql/SqlConnection';
 import * as Statement from 'effect/sql/Statement';
 import * as Stream from 'effect/Stream';
 import { beforeEach, vi } from 'vitest';
 
+import { isString } from '@rnw-community/shared';
+
+import { toastOnFailure } from '../src/@generic/utils/toast-on-failure.util';
 import { DatabaseExportService } from '../src/export/service/database-export.service';
 import { DEFAULT_SETTINGS } from '../src/settings/constants/default-settings.constant';
 
 import type { SettingsEntityInterface } from '@budgie/contracts';
+import type { Directory, File } from 'expo-file-system';
+import type { SharingOptions } from 'expo-sharing';
 
 const events = vi.hoisted(() => new Array<string>());
-const share = vi.hoisted(() => ({ isFailing: false }));
-
-vi.mock('expo-file-system', () => ({ Directory: vi.fn(), File: vi.fn(), Paths: { cache: '' } }));
-vi.mock('react-native-zip-archive', () => ({ zip: () => Promise.resolve('') }));
-vi.mock('../src/export/utils/share-cache-file.util', () => ({
-    shareCacheFile: () =>
-        Effect.suspend(() => {
-            events.push('share');
-
-            return share.isFailing ? Effect.die(new Error('Share sheet failed')) : Effect.void;
-        })
+const native = vi.hoisted(() => ({
+    picker: vi.fn<() => Promise<Pick<Directory, 'uri'>>>(),
+    copy: vi.fn<(destination: string) => Promise<void>>(),
+    zip: vi.fn<(paths: string[], destination: string) => Promise<string>>(),
+    share: vi.fn<(uri: string, options?: SharingOptions) => Promise<void>>(),
+    afterCheckpoint: vi.fn<() => Effect.Effect<void>>(),
+    toast: vi.fn<(options: unknown) => void>()
 }));
+
+vi.mock('expo-file-system', () => {
+    class FileSystemEntryMock {
+        static readonly pickDirectoryAsync = native.picker;
+        readonly uri: string;
+        readonly name: string;
+        readonly exists = true;
+
+        constructor(parent: string | Pick<File, 'uri'>, name: string) {
+            this.uri = `${isString(parent) ? parent : parent.uri}/${name}`;
+            this.name = name;
+        }
+
+        copy(destination: Pick<File, 'uri'>) {
+            return native.copy(destination.uri);
+        }
+
+        delete() {
+            events.push('cleanup');
+        }
+    }
+
+    return { Directory: FileSystemEntryMock, File: FileSystemEntryMock, Paths: { cache: 'file:///cache', document: 'file:///documents' } };
+});
+vi.mock('react-native-zip-archive', () => ({ zip: native.zip }));
+vi.mock('expo-sharing', () => ({ isAvailableAsync: () => Promise.resolve(true), shareAsync: native.share }));
+vi.mock('react-native-toast-message', () => ({ default: { show: native.toast } }));
+
+const checkpointResult = { busy: 0, log: 1, checkpointed: 1 };
 
 const recordStatement = (sql: string) => Effect.sync(() => void events.push(sql)).pipe(Effect.as([]));
 
+const recordRawStatement = Effect.fnUntraced(function* (sql: string) {
+    yield* recordStatement(sql);
+
+    if (sql === 'PRAGMA wal_checkpoint(FULL)') {
+        yield* native.afterCheckpoint();
+
+        return [checkpointResult];
+    }
+
+    return [];
+});
+
 const recordingConnection: SqlConnection.Connection = {
     execute: recordStatement,
-    executeRaw: recordStatement,
+    executeRaw: recordRawStatement,
     executeStream: () => Stream.empty,
     executeValues: recordStatement,
     executeValuesUnprepared: recordStatement,
@@ -44,8 +90,15 @@ const recordingConnection: SqlConnection.Connection = {
 };
 
 const makeExportLayer = Effect.fnUntraced(function* (settingsRef: Ref.Ref<SettingsEntityInterface>) {
+    const connections = SqlClient.makeSqliteAcquirers({
+        connection: Effect.succeed(recordingConnection),
+        semaphore: yield* Semaphore.make(1)
+    });
     const client = yield* SqlClient.make({
-        acquirer: Effect.succeed(recordingConnection),
+        acquirer: connections.acquirer,
+        borrower: run => connections.borrower(run).pipe(Effect.ensuring(Effect.yieldNow)),
+        transactionAcquirer: connections.transactionAcquirer,
+        onCommitFailure: connections.onCommitFailure,
         compiler: Statement.makeCompilerSqlite(),
         driver: 'recording',
         spanAttributes: []
@@ -62,42 +115,186 @@ const makeExportLayer = Effect.fnUntraced(function* (settingsRef: Ref.Ref<Settin
                     )
             })
         ),
-        Layer.provideMerge(Layer.succeed(Db, withReplicas(database, [database])))
+        Layer.provideMerge(Layer.succeed(Db, withReplicas(database, [database]))),
+        Layer.provideMerge(Layer.succeed(SqlClient.SqlClient, client))
     );
 });
 
-const exportAndShare = Effect.flatMap(DatabaseExportService, service => service.exportAndShare());
+const saveBackup = Effect.flatMap(DatabaseExportService, service => service.saveBackup());
 
-describe('DatabaseExportService.exportAndShare', () => {
+const previousSettings = { ...DEFAULT_SETTINGS, lastBackupAt: new Date('2025-01-01T00:00:00Z') };
+
+const expectFailedBackup = Effect.fnUntraced(function* (failure: Error) {
+    const settingsRef = yield* Ref.make<SettingsEntityInterface>(previousSettings);
+    const exit = yield* saveBackup.pipe(
+        toastOnFailure('Could not create a backup'),
+        Effect.provide(yield* makeExportLayer(settingsRef)),
+        Effect.exit
+    );
+
+    expect(Exit.isFailure(exit)).toBe(true);
+    if (Exit.isFailure(exit)) {
+        expect(Cause.squash(exit.cause)).toBe(failure);
+    }
+    expect(yield* Ref.get(settingsRef)).toBe(previousSettings);
+    expect(native.toast).toHaveBeenCalledWith({ type: 'error', text1: 'Could not create a backup', text2: failure.message });
+});
+
+describe('DatabaseExportService', () => {
     beforeEach(() => {
         events.splice(0);
-        share.isFailing = false;
+        Object.assign(checkpointResult, { busy: 0, log: 1, checkpointed: 1 });
+        native.afterCheckpoint.mockReset().mockReturnValue(Effect.void);
+        native.toast.mockClear();
+        native.picker.mockReset().mockImplementation(() => {
+            events.push('picker');
+
+            return Promise.resolve({ uri: 'file:///chosen' });
+        });
+        native.copy.mockReset().mockImplementation((destination: string) => {
+            events.push(destination.includes('/cache/') ? 'snapshot' : 'saved');
+
+            return Promise.resolve();
+        });
+        native.zip.mockReset().mockImplementation(() => {
+            events.push('zip');
+
+            return Promise.resolve('archive');
+        });
+        native.share.mockReset().mockResolvedValue(undefined);
     });
 
-    it.effect('checkpoints, shares and then records only lastBackupAt without touching the PIN settings', () =>
+    it.effect.each(['file:///chosen', 'content://documents/tree/primary%3ABackups'])(
+        'records the backup date only after copying the zip to %s',
+        directoryUri =>
+            Effect.gen(function* () {
+                native.picker.mockResolvedValue({ uri: directoryUri });
+                const settingsRef = yield* Ref.make<SettingsEntityInterface>(previousSettings);
+
+                expect(yield* saveBackup.pipe(Effect.provide(yield* makeExportLayer(settingsRef)))).toBe(true);
+                expect(native.copy).toHaveBeenLastCalledWith(directoryUri);
+                expect(events).toEqual([
+                    'PRAGMA wal_checkpoint(FULL)',
+                    'snapshot',
+                    'zip',
+                    'cleanup',
+                    'saved',
+                    'cleanup',
+                    'settings:lastBackupAt'
+                ]);
+
+                const settings = yield* Ref.get(settingsRef);
+
+                expect(settings.lastBackupAt).toBeInstanceOf(Date);
+                expect({ ...settings, lastBackupAt: previousSettings.lastBackupAt }).toEqual(previousSettings);
+                expect(settings.lastBackupAt).not.toEqual(previousSettings.lastBackupAt);
+                expect(native.share).not.toHaveBeenCalled();
+            })
+    );
+
+    it.effect.each(['ERR_FILE_PICKING_CANCELLED', 'ERR_PICKER_CANCELLED'])(
+        'returns cancellation without changing the previous date for %s',
+        code =>
+            Effect.gen(function* () {
+                native.picker.mockRejectedValue(Object.assign(new Error('Picker cancelled'), { code }));
+                const settingsRef = yield* Ref.make<SettingsEntityInterface>(previousSettings);
+
+                expect(yield* saveBackup.pipe(Effect.provide(yield* makeExportLayer(settingsRef)))).toBe(false);
+                expect(yield* Ref.get(settingsRef)).toBe(previousSettings);
+                expect(events).toEqual([]);
+                expect(native.copy).not.toHaveBeenCalled();
+                expect(native.share).not.toHaveBeenCalled();
+            })
+    );
+
+    it.effect('shows the existing error toast without updating the date when the destination write fails', () =>
         Effect.gen(function* () {
-            const settingsRef = yield* Ref.make<SettingsEntityInterface>(DEFAULT_SETTINGS);
-
-            yield* exportAndShare.pipe(Effect.provide(yield* makeExportLayer(settingsRef)));
-
-            expect(events).toEqual(['PRAGMA wal_checkpoint(FULL)', 'share', 'settings:lastBackupAt']);
-            const settings = yield* Ref.get(settingsRef);
-
-            expect(settings.lastBackupAt).toBeInstanceOf(Date);
-            expect({ ...settings, lastBackupAt: null }).toEqual(DEFAULT_SETTINGS);
+            const failure = new Error('Destination write failed');
+            native.copy.mockImplementation((destination: string) =>
+                destination.includes('/cache/') ? Promise.resolve() : Promise.reject(failure)
+            );
+            yield* expectFailedBackup(failure);
+            expect(events.filter(event => event === 'cleanup')).toHaveLength(2);
+            expect(native.share).not.toHaveBeenCalled();
         })
     );
 
-    it.effect('writes no setting when the share fails', () =>
+    it.effect('propagates picker errors other than cancellation', () =>
         Effect.gen(function* () {
-            share.isFailing = true;
-            const settingsRef = yield* Ref.make<SettingsEntityInterface>(DEFAULT_SETTINGS);
+            const failure = new Error('Picker unavailable');
+            native.picker.mockRejectedValue(failure);
+            yield* expectFailedBackup(failure);
+            expect(native.copy).not.toHaveBeenCalled();
+        })
+    );
 
-            const exit = yield* exportAndShare.pipe(Effect.provide(yield* makeExportLayer(settingsRef)), Effect.exit);
+    it.effect.each(['copy', 'zip'])('cleans cache files and preserves the backup date when archive %s fails', operation =>
+        Effect.gen(function* () {
+            const failure = new Error('Archive failed');
+            native[operation === 'copy' ? 'copy' : 'zip'].mockRejectedValue(failure);
+            yield* expectFailedBackup(failure);
+            expect(events.filter(event => event === 'cleanup')).toHaveLength(2);
+        })
+    );
+
+    it.effect.each([
+        { method: 'saveBackup', busy: 1, log: 1, checkpointed: 0 },
+        { method: 'exportAndShare', busy: 1, log: 1, checkpointed: 0 },
+        { method: 'saveBackup', busy: 0, log: 2, checkpointed: 1 }
+    ] as const)('rejects an unsafe checkpoint: %s', ({ method, busy, log, checkpointed }) =>
+        Effect.gen(function* () {
+            Object.assign(checkpointResult, { busy, log, checkpointed });
+            const settingsRef = yield* Ref.make<SettingsEntityInterface>(previousSettings);
+            const exit = yield* Effect.flatMap(DatabaseExportService, service => service[method]()).pipe(
+                Effect.provide(yield* makeExportLayer(settingsRef)),
+                Effect.exit
+            );
 
             expect(Exit.isFailure(exit)).toBe(true);
-            expect(events).toEqual(['PRAGMA wal_checkpoint(FULL)', 'share']);
-            expect(yield* Ref.get(settingsRef)).toBe(DEFAULT_SETTINGS);
+            expect(native.copy).not.toHaveBeenCalled();
+            expect(native.zip).not.toHaveBeenCalled();
+            expect(native.share).not.toHaveBeenCalled();
+            expect(yield* Ref.get(settingsRef)).toBe(previousSettings);
+        })
+    );
+
+    it.effect('keeps a competing app write outside the checkpoint-to-copy interval', () =>
+        Effect.gen(function* () {
+            const checkpointReached = yield* Deferred.make<void>();
+            const settingsRef = yield* Ref.make<SettingsEntityInterface>(previousSettings);
+            native.afterCheckpoint.mockReturnValue(Deferred.succeed(checkpointReached, undefined).pipe(Effect.andThen(Effect.yieldNow)));
+            native.copy.mockImplementation(destination =>
+                Promise.resolve().then(() => void events.push(destination.includes('/cache/') ? 'snapshot' : 'saved'))
+            );
+
+            yield* Effect.gen(function* () {
+                const client = yield* SqlClient.SqlClient;
+                const writer = yield* Effect.forkChild(
+                    Deferred.await(checkpointReached).pipe(Effect.andThen(client`INSERT INTO checkpoint_probe VALUES (2)`.raw))
+                );
+
+                yield* saveBackup;
+                yield* Fiber.join(writer);
+            }).pipe(Effect.provide(yield* makeExportLayer(settingsRef)));
+
+            expect(events.indexOf('snapshot')).toBeLessThan(events.indexOf('INSERT INTO checkpoint_probe VALUES (2)'));
+        })
+    );
+
+    it.effect('shares a copy without updating the previous backup date', () =>
+        Effect.gen(function* () {
+            const settingsRef = yield* Ref.make<SettingsEntityInterface>(previousSettings);
+
+            yield* Effect.flatMap(DatabaseExportService, service => service.exportAndShare()).pipe(
+                Effect.provide(yield* makeExportLayer(settingsRef))
+            );
+
+            expect(native.share).toHaveBeenCalledWith(
+                expect.stringContaining('budgie-backup-'),
+                expect.objectContaining({ mimeType: 'application/zip' })
+            );
+            expect(native.picker).not.toHaveBeenCalled();
+            expect(yield* Ref.get(settingsRef)).toBe(previousSettings);
         })
     );
 });
