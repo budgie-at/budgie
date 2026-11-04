@@ -1049,6 +1049,9 @@ importers:
       '@budgie/ledger':
         specifier: workspace:*
         version: link:../ledger
+      '@budgie/market':
+        specifier: workspace:*
+        version: link:../market
       '@budgie/rules':
         specifier: workspace:*
         version: link:../rules

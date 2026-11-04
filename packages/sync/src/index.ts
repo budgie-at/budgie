@@ -99,6 +99,15 @@ export { BinanceSyncService } from './binance/service/binance-sync.service';
 
 export { ErsteSyncService } from './erste/service/erste-sync.service';
 
+export { InzhurImportService } from './inzhur/service/inzhur-import.service';
+export { InzhurSetupService } from './inzhur/service/inzhur-setup.service';
+export { InzhurImportOutcomeEnum } from './inzhur/enum/inzhur-import-outcome.enum';
+export { InzhurNotSetUpError } from './inzhur/error/inzhur-not-set-up.error';
+export { InzhurStatementInvalidError } from './inzhur/error/inzhur-statement-invalid.error';
+export type { InzhurFundChangeInterface } from './inzhur/interface/inzhur-fund-change.interface';
+export type { InzhurImportSummaryInterface } from './inzhur/interface/inzhur-import-summary.interface';
+export type { InzhurSetupInterface } from './inzhur/interface/inzhur-setup.interface';
+
 export { PrivatbankSyncService } from './privatbank/service/privatbank-sync.service';
 export { PrivatbankCategoryMatcherService } from './privatbank/service/privatbank-category-matcher.service';
 export { UnpairedOwnCardTransferRepairService } from './privatbank/service/unpaired-own-card-transfer-repair.service';
