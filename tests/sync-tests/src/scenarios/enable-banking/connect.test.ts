@@ -8,7 +8,7 @@ import {
     SyncModeEnum,
     TransactionEntityTable
 } from '@budgie/contracts';
-import { AccountBalanceIncrementalService } from '@budgie/ledger';
+import { AccountBalanceIncrementalService, BalanceAdjustmentService } from '@budgie/ledger';
 import { EnableBankingSyncService, ResyncService, SyncAccountContinuationRefusalEnum } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
@@ -298,6 +298,46 @@ describe('enable-banking/connect switch', () => {
 
             expect(queries[0].get('strategy')).toBe('longest');
             expect(yield* fetchEnableBankingTransactions()).toHaveLength(1);
+            expect(yield* fetchAccountBalance(account.id)).toBe(50 * PRECISION);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('starts after the last real row when a balance adjustment is dated today, and imports the gap', () =>
+        Effect.gen(function* () {
+            const service = yield* EnableBankingSyncService;
+            const balanceAdjustmentService = yield* BalanceAdjustmentService;
+            const balances = yield* AccountBalanceIncrementalService;
+            const { account } = yield* seedConnectableAccount();
+            yield* balanceAdjustmentService.create(account.id, 40 * PRECISION, new Date());
+            yield* balances.updateBalancesByAccountIds([account.id]);
+            stubBank('90.00', [buildEnableBankingTransaction({ entry_reference: 'gap', booking_date: enableBankingDaysAgo(5) })]);
+
+            expect(yield* connect(account.id)).toEqual(startOfDayAfter(LAST_ROW_DAYS_AGO));
+
+            yield* service.sync();
+
+            expect(yield* fetchSortedEnableBankingExternalIds()).toEqual([`${HASH}:gap`]);
+            expect(yield* fetchAccountBalance(account.id)).toBe(90 * PRECISION);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('sends a manual account holding only an opening balance adjustment through normal history import', () =>
+        Effect.gen(function* () {
+            const service = yield* EnableBankingSyncService;
+            const balanceAdjustmentService = yield* BalanceAdjustmentService;
+            const balances = yield* AccountBalanceIncrementalService;
+            const { id: instrumentId } = yield* findOrSeedEur();
+            const account = yield* seed.account({ instrumentId, type: AccountTypeEnum.BANK, externalId: null, externalSource: null });
+            yield* balanceAdjustmentService.create(account.id, 30 * PRECISION, new Date());
+            yield* balances.updateBalancesByAccountIds([account.id]);
+            stubBank('50.00', [buildEnableBankingTransaction({ entry_reference: 'old', booking_date: enableBankingDaysAgo(400) })]);
+
+            expect(yield* connect(account.id)).toBeNull();
+
+            yield* service.sync();
+
+            expect(enableBankingStub.requests.some(request => request.includes('strategy=longest'))).toBe(true);
+            expect(yield* fetchSortedEnableBankingExternalIds()).toEqual([`${HASH}:old`]);
             expect(yield* fetchAccountBalance(account.id)).toBe(50 * PRECISION);
         }).pipe(Effect.provide(TestLayer))
     );
