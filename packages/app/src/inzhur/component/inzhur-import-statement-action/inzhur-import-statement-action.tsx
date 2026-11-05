@@ -11,6 +11,8 @@ import { GroupedListActionRow } from '../../../@generic/component/grouped-list-a
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
+import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
+import { useInzhurFreshnessQuery } from '../../query/use-inzhur-freshness.query';
 import { useInzhurStatementReminderQuery } from '../../query/use-inzhur-statement-reminder.query';
 import { InzhurSelector } from '../../selector/inzhur.selector';
 
@@ -23,7 +25,10 @@ const bannerVariants = cva('min-h-[48px] rounded-3xl bg-grouped-surface-row py-x
 export const InzhurImportStatementAction = () => {
     const { t } = useLingui();
     const reminder = useInzhurStatementReminderQuery();
+    const freshness = useInzhurFreshnessQuery();
     const isStacked = useIsAccessibilityTextSize();
+    const { formatMonthAndDayAndOptionalYear } = useFormatDate();
+    const statementDate = isDefined(freshness?.statementDate) ? formatMonthAndDayAndOptionalYear(freshness.statementDate) : '';
 
     const handleImport = () => void router.push({ pathname: '/create-account/[type]', params: { type: ExternalSourceEnum.INZHUR } });
 
@@ -36,19 +41,27 @@ export const InzhurImportStatementAction = () => {
                 isDisabled={false}
                 isLoading={false}
                 labelClassName="text-primary"
+                trailing={<Text className="text-[15px] text-secondary-foreground tabular-nums">{t`Last ${statementDate}`}</Text>}
                 testID={InzhurSelector.ImportStatementButton}
             />
         );
     }
 
-    const staleLabel = t({ message: plural(reminder.daysOld, { one: 'Statement is # day old', other: 'Statement is # days old' }) });
+    const titleLineProps = isStacked ? {} : { numberOfLines: 1, adjustsFontSizeToFit: true, minimumFontScale: 0.85 };
+    const staleLabel = t({
+        message: plural(reminder.daysOld, {
+            one: `Last statement ${statementDate} · # day ago`,
+            other: `Last statement ${statementDate} · # days ago`
+        })
+    });
 
     return (
         <View className={bannerVariants({ isStacked })} style={CONTINUOUS_CORNERS}>
             <View className="min-w-0 flex-1 flex-row items-center gap-x-md self-stretch">
                 <Icon icon={UserIconNameEnum.Clock} size={20} className="text-warning-strong" />
                 <Text
-                    className="flex-1 text-[15px] leading-[20px] font-medium text-warning-strong"
+                    className="flex-1 text-[15px] leading-[20px] text-warning-strong tabular-nums"
+                    {...titleLineProps}
                     testID={InzhurSelector.StatementReminder}
                 >
                     {staleLabel}

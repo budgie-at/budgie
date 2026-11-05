@@ -34,7 +34,7 @@ export const FormAmountInput = (props: Props) => {
     const format = useAmountFormat(minimumDecimalPlaces);
     const [isFocused, setIsFocused] = useState(false);
     const fieldStyle = { height: fontSize + FIELD_VERTICAL_PADDING };
-    const focusClassName = isFocused ? 'border-default-foreground/50' : 'border-transparent';
+    const focusClassName = isFocused ? 'border-default-foreground/60' : 'border-surface-fill';
     const handleFocus = () => void setIsFocused(true);
     const handleBlur = () => void setIsFocused(false);
     const { isNegative, absoluteValue, toggleSign, changeAbsoluteValue } = useAmountSign(value, onChange);

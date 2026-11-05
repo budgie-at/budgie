@@ -2,6 +2,7 @@ import { InstrumentTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
+import { TransactionFundTradeAmount } from '../transaction-fund-trade-amount/transaction-fund-trade-amount';
 
 import type { AggregatedTransactionEntryInterface } from '../../interface/aggregated-transaction-entry.interface';
 
@@ -15,26 +16,28 @@ interface Props {
 export const TransactionTransferAmount = ({ fromEntry, toEntry, accountId, testID }: Props) => {
     const formatDigits = useFormatInstrumentAmount();
 
-    const isIncoming = accountId === toEntry.account.id;
-    const contextEntry = isIncoming ? toEntry : fromEntry;
-    const counterpartEntry = isIncoming ? fromEntry : toEntry;
-    const isFundContext = contextEntry.account.instrument.type === InstrumentTypeEnum.FUND;
-    const isFundTrade = isFundContext || counterpartEntry.account.instrument.type === InstrumentTypeEnum.FUND;
-    const primaryEntry = isFundContext ? counterpartEntry : contextEntry;
-    const secondaryEntry = isFundContext ? contextEntry : counterpartEntry;
+    if (toEntry.account.instrument.type === InstrumentTypeEnum.FUND) {
+        return <TransactionFundTradeAmount fundEntry={toEntry} moneyEntry={fromEntry} quantitySign="+" testID={testID} />;
+    }
 
-    const sign = isIncoming && !isFundTrade ? '+' : '';
+    if (fromEntry.account.instrument.type === InstrumentTypeEnum.FUND) {
+        return <TransactionFundTradeAmount fundEntry={fromEntry} moneyEntry={toEntry} quantitySign="−" testID={testID} />;
+    }
+
+    const isIncoming = accountId === toEntry.account.id;
+    const primaryEntry = isIncoming ? toEntry : fromEntry;
+    const secondaryEntry = isIncoming ? fromEntry : toEntry;
+
+    const sign = isIncoming ? '+' : '';
     const formatEntry = (entry: AggregatedTransactionEntryInterface) =>
         formatDigits(convertFromMicroUnits(entry.amount), entry.account.instrument.symbol, entry.account.instrument.type);
-    const primaryAmount = formatEntry(primaryEntry);
-    const secondaryAmount = formatEntry(secondaryEntry);
-    const isSecondaryShown = !isFundTrade && primaryEntry.account.instrument.id !== secondaryEntry.account.instrument.id;
+    const isCrossCurrency = primaryEntry.account.instrument.id !== secondaryEntry.account.instrument.id;
 
     return (
         <View className="shrink-0 gap-y-xxs items-end" testID={testID}>
-            <Text className="text-[15px] font-semibold text-right text-primary tabular-nums">{`${sign}${primaryAmount}`}</Text>
-            {isSecondaryShown ? (
-                <Text className="text-secondary-foreground text-[13px] text-right tabular-nums">{secondaryAmount}</Text>
+            <Text className="text-[15px] font-semibold text-right text-primary tabular-nums">{`${sign}${formatEntry(primaryEntry)}`}</Text>
+            {isCrossCurrency ? (
+                <Text className="text-secondary-foreground text-[13px] text-right tabular-nums">{formatEntry(secondaryEntry)}</Text>
             ) : null}
         </View>
     );

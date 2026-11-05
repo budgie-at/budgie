@@ -1,27 +1,27 @@
-import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 import { useResolveClassNames } from 'uniwind';
 
 import { ScreenChromeHeader } from '@rnw-community/react-native-screen-chrome';
 
-import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
+import type { ReactNode } from 'react';
 
 interface Props {
-    readonly onGoBack: () => void;
+    readonly title: string;
+    readonly leading?: ReactNode;
+    readonly inFlow?: boolean;
 }
 
-export const ImportScreenHeader = ({ onGoBack }: Props) => {
-    const { t } = useLingui();
+export const FixedChromeHeader = ({ title, leading, inFlow }: Props) => {
     const style = useResolveClassNames('bg-surface');
 
     return (
-        <ScreenChromeHeader style={style}>
+        <ScreenChromeHeader style={style} inFlow={inFlow}>
             <View className="absolute inset-0 items-center justify-center px-[60px]" pointerEvents="none">
-                <Text className="text-primary text-[17px] font-semibold" accessibilityRole="header">
-                    {t`Map CSV columns`}
+                <Text className="text-primary text-[17px] font-semibold" accessibilityRole="header" numberOfLines={1}>
+                    {title}
                 </Text>
             </View>
-            <GoBackButton onPress={onGoBack} />
+            {leading}
         </ScreenChromeHeader>
     );
 };

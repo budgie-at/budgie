@@ -1,4 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { INZHUR_CANONICAL_FUNDS } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
@@ -12,6 +13,7 @@ import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-access
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useFormatFundQuantity } from '../../../i18n/hook/use-format-fund-quantity.hook';
 import { InzhurSelector } from '../../selector/inzhur.selector';
+import { getInzhurShortTitle } from '../../utils/get-inzhur-short-title.util';
 
 import type { InzhurFundChangeInterface } from '@budgie/sync';
 
@@ -31,6 +33,7 @@ export const InzhurImportSummaryFundRow = ({ fund, symbol }: Props) => {
     const isStacked = useIsAccessibilityTextSize();
     const { isin, name, deltaQuantity, exchangedAmount, dividendAmount } = fund;
 
+    const fundIcon = INZHUR_CANONICAL_FUNDS.find(canonicalFund => canonicalFund.name === name)?.icon ?? UserIconNameEnum.ChartLine;
     const sign = deltaQuantity > 0 ? '+' : '−';
     const quantityLabel = `${sign}${formatFundQuantity(Math.abs(deltaQuantity))}`;
     const tradedAmount = Math.max(exchangedAmount - dividendAmount, 0);
@@ -48,11 +51,11 @@ export const InzhurImportSummaryFundRow = ({ fund, symbol }: Props) => {
             className="flex-row items-center gap-x-xl px-3xl py-[12px]"
             testID={InzhurSelector.SummaryFund(isin)}
         >
-            <NeutralIconTile icon={UserIconNameEnum.ChartLine} />
+            <NeutralIconTile icon={fundIcon} />
             <View className="flex-1 gap-y-xxs">
                 <View className={lineVariants({ isStacked })}>
                     <Text className="flex-1 text-[17px] font-semibold text-primary" numberOfLines={2}>
-                        {name}
+                        {getInzhurShortTitle(name)}
                     </Text>
                     <MoneyText amount={exchangedAmount} instrumentSymbol={symbol} variant={MoneyTextVariantEnum.ROW} />
                 </View>

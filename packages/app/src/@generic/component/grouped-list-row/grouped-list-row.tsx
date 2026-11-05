@@ -37,7 +37,7 @@ export const GroupedListRow = (props: Props) => {
 
     const chevron = isPressable ? <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" /> : null;
     const accessory = right ?? chevron;
-    const separatorClassName = isDefined(left) ? 'left-[64px]' : 'left-[16px]';
+    const separatorClassName = isDefined(left) ? 'left-[68px]' : 'left-[16px]';
     const subtitleNode = isNotEmptyString(subtitle) ? (
         <Text className="text-secondary-foreground text-[13px] leading-[18px]" numberOfLines={3}>
             {subtitle}

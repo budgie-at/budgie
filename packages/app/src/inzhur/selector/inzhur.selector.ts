@@ -5,6 +5,8 @@ export const InzhurSelector = {
     ImportPage: 'Inzhur.ImportPage',
     SelectFileButton: 'Inzhur.SelectFileButton',
     DoneButton: 'Inzhur.DoneButton',
+    ViewTransactionsButton: 'Inzhur.ViewTransactionsButton',
+    LastImported: 'Inzhur.LastImported',
     Summary: 'Inzhur.Summary',
     SummaryUncoveredCash: 'Inzhur.SummaryUncoveredCash',
     SummaryFund: (isin: string) => `Inzhur.SummaryFund.${isin}` as const,

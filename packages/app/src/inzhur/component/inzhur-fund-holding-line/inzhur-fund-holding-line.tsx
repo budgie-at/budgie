@@ -29,16 +29,13 @@ export const InzhurFundHoldingLine = ({ account, balance }: Props) => {
     const priceLabel = isDefined(latestPrice) ? formatAmount(latestPrice.price, symbol) : null;
     const priceDate = isDefined(latestPrice) ? formatMonthAndDayAndOptionalYear(latestPrice.priceDate) : null;
 
+    const holdingLabel = isDefined(priceLabel) ? t`${quantityLabel} · ${priceLabel} each` : quantityLabel;
+
     return (
         <View className="items-center gap-y-xxs px-5xl">
             <ProtectedText className="text-center text-[15px] leading-[20px] text-secondary-foreground tabular-nums">
-                {quantityLabel}
+                {holdingLabel}
             </ProtectedText>
-            {isDefined(priceLabel) ? (
-                <Text className="text-center text-[15px] leading-[20px] text-secondary-foreground tabular-nums">
-                    {t`${priceLabel} per certificate`}
-                </Text>
-            ) : null}
             {isDefined(priceDate) ? (
                 <Text className="text-center text-[13px] leading-[18px] text-secondary-foreground tabular-nums">
                     {t`Price as of ${priceDate}`}

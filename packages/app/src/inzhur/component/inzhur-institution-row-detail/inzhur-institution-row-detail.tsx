@@ -27,7 +27,7 @@ export const InzhurInstitutionRowDetail = () => {
     const cashLabel = isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : formatCashDigits(value?.cash ?? 0, defaultInstrument.symbol);
     const fundsLabel = t({ message: plural(value?.fundCount ?? 0, { one: '# fund', other: '# funds' }) });
     const staleLabel = isDefined(reminder)
-        ? t({ message: plural(reminder.daysOld, { one: 'Statement # day old', other: 'Statement # days old' }) })
+        ? t({ message: plural(reminder.daysOld, { one: 'Statement · # day old', other: 'Statement · # days old' }) })
         : null;
 
     return (

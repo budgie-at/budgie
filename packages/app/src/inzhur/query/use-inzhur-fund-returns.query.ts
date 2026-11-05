@@ -38,7 +38,14 @@ const fundLatestPriceAtom = databaseQueryFamily(
         )
 );
 
+const fundFirstEntryAtom = databaseQueryFamily(
+    [TransactionEntityTable, TransactionEntryEntityTable],
+    InvestmentReturnRepository,
+    (investmentReturnRepository, fundAccountId: number) => investmentReturnRepository.findFirstEntryOperatedAt(fundAccountId)
+);
+
 export const useInzhurFundReturnsQuery = (fundAccountId: number, instrumentId: number) => ({
     dividendTotals: AsyncResult.getOrElse(useLiveAtomValue(fundDividendTotalsAtom(fundAccountId)), () => null),
-    latestPrice: AsyncResult.getOrElse(useLiveAtomValue(fundLatestPriceAtom(instrumentId)), () => null)
+    latestPrice: AsyncResult.getOrElse(useLiveAtomValue(fundLatestPriceAtom(instrumentId)), () => null),
+    firstEntryAt: AsyncResult.getOrElse(useLiveAtomValue(fundFirstEntryAtom(fundAccountId)), () => null)
 });

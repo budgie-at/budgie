@@ -6,7 +6,7 @@ import { ReactNode } from 'react';
 import { EmptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { AccountDetailsField } from '../../../@generic/component/account-details-field/account-details-field';
-import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
+import { FixedChromePage } from '../../../@generic/component/fixed-chrome-page/fixed-chrome-page';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
@@ -53,7 +53,7 @@ export const UpdateAccountPage = ({ account, fields, hero, details, footerCaptio
 
     return (
         <GroupedSurface>
-            <CollapsibleChromePage
+            <FixedChromePage
                 title={t`Edit ${accountTitle}`}
                 leading={<HeaderBackButton />}
                 testID={CreateAccountScreenSelector.ScrollView}
@@ -101,7 +101,7 @@ export const UpdateAccountPage = ({ account, fields, hero, details, footerCaptio
                         <ArchiveAccount accountId={account.id} />
                     </GroupedListSection>
                 </FormLayoutGroup>
-            </CollapsibleChromePage>
+            </FixedChromePage>
         </GroupedSurface>
     );
 };

@@ -15,10 +15,12 @@ interface Props {
 export const InzhurAwaitingTopUpRow = ({ amount, instrumentSymbol }: Props) => (
     <View accessible className="min-h-[44px] flex-row items-start gap-x-xl" testID={InzhurSelector.SummaryUncoveredCash}>
         <View className="flex-1 gap-y-xxs">
-            <View className="flex-row items-center gap-x-xs">
-                <Icon icon={UserIconNameEnum.Clock} size={17} className="text-warning-strong" />
-                <Text className="text-[17px] text-warning-strong">
-                    <Trans>Awaiting top-up</Trans>
+            <View className="flex-row items-start gap-x-xs">
+                <View className="h-[22px] justify-center">
+                    <Icon icon={UserIconNameEnum.Clock} size={17} className="text-warning-strong" />
+                </View>
+                <Text className="shrink text-[17px] leading-[22px] font-semibold text-warning-strong" lineBreakStrategyIOS="standard">
+                    <Trans>Bank top-up not matched yet</Trans>
                 </Text>
             </View>
             <Text className="text-[13px] leading-[18px] text-secondary-foreground" lineBreakStrategyIOS="standard">

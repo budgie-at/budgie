@@ -28,9 +28,9 @@ export const SettingsRow = ({ icon, variant, title, subtitle, right, onPress, te
                 <CircleIcon
                     icon={icon}
                     variant={variant}
-                    size={36}
-                    iconSize={18}
-                    radius={18}
+                    size={40}
+                    iconSize={20}
+                    radius={20}
                     border={false}
                     className={TONAL_DISC_BACKGROUND[variant]}
                 />

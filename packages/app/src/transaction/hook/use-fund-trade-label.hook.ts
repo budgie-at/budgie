@@ -1,15 +1,12 @@
-import { InstrumentTypeEnum, TransactionTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { InstrumentTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
-
-import { useFormatFundQuantity } from '../../i18n/hook/use-format-fund-quantity.hook';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
 export const useFundTradeLabel = (transaction: TransactionWithRelationsEntityInterface) => {
     const { t } = useLingui();
-    const formatFundQuantity = useFormatFundQuantity();
     const fundEntry = transaction.entries.find(entry => entry.account.instrument.type === InstrumentTypeEnum.FUND);
     const cashEntry = transaction.entries.find(entry => entry.account.instrument.type !== InstrumentTypeEnum.FUND);
 
@@ -22,9 +19,6 @@ export const useFundTradeLabel = (transaction: TransactionWithRelationsEntityInt
     }
 
     const cashTitle = cashEntry.account.title;
-    const quantityLabel = formatFundQuantity(convertFromMicroUnits(fundEntry.amount));
 
-    return transaction.toAccountId === fundEntry.accountId
-        ? t`Bought with ${cashTitle} · +${quantityLabel}`
-        : t`Sold for ${cashTitle} · −${quantityLabel}`;
+    return transaction.toAccountId === fundEntry.accountId ? t`From ${cashTitle}` : t`To ${cashTitle}`;
 };

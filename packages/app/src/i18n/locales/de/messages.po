@@ -112,6 +112,11 @@ msgstr "{0, plural, one {# Transaktion} other {# Transaktionen}}"
 msgid "{0, plural, one {Average · # month} other {Average · # months}}"
 msgstr "{0, plural, one {Durchschnitt · # Monat} other {Durchschnitt · # Monate}}"
 
+#. placeholder {0}: reminder.daysOld
+#: src/inzhur/component/inzhur-import-statement-action/inzhur-import-statement-action.tsx
+msgid "{0, plural, one {Last statement {statementDate} · # day ago} other {Last statement {statementDate} · # days ago}}"
+msgstr "{0, plural, one {Letzter Auszug {statementDate} · vor # Tag} other {Letzter Auszug {statementDate} · vor # Tagen}}"
+
 #. placeholder {0}: Number(draft ?? selectedCount)
 #: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
 msgid "{0, plural, one {month} other {months}}"
@@ -129,13 +134,8 @@ msgstr "{0, plural, one {# weitere Gruppe anzeigen} other {# weitere Gruppen anz
 
 #. placeholder {0}: reminder.daysOld
 #: src/inzhur/component/inzhur-institution-row-detail/inzhur-institution-row-detail.tsx
-msgid "{0, plural, one {Statement # day old} other {Statement # days old}}"
-msgstr "{0, plural, one {Auszug # Tag alt} other {Auszug # Tage alt}}"
-
-#. placeholder {0}: reminder.daysOld
-#: src/inzhur/component/inzhur-import-statement-action/inzhur-import-statement-action.tsx
-msgid "{0, plural, one {Statement is # day old} other {Statement is # days old}}"
-msgstr "{0, plural, one {Der Auszug ist # Tag alt} other {Der Auszug ist # Tage alt}}"
+msgid "{0, plural, one {Statement · # day old} other {Statement · # days old}}"
+msgstr "{0, plural, one {Auszug · # Tag alt} other {Auszug · # Tage alt}}"
 
 #. placeholder {0}: syncs.filter(sync => sync.status === SyncStatusEnum.FAILED).length
 #: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
@@ -694,10 +694,6 @@ msgstr "{periodLabel}: {amount} unter dem Limit abgeschlossen"
 msgid "{periodLabel}, spent {spentAmount} of {limitAmount}"
 msgstr "{periodLabel}, {spentAmount} von {limitAmount} ausgegeben"
 
-#: src/inzhur/component/inzhur-fund-holding-line/inzhur-fund-holding-line.tsx
-msgid "{priceLabel} per certificate"
-msgstr "{priceLabel} pro Zertifikat"
-
 #: src/budget/hooks/use-budget-forecast-labels.hook.ts
 msgid "{projectedAmount} · {gapAmount} over"
 msgstr "{projectedAmount} · {gapAmount} drüber"
@@ -713,6 +709,10 @@ msgstr "{providerName} · Anschaffungskosten unbekannt"
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "{providerName} sync"
 msgstr "{providerName}-Synchronisation"
+
+#: src/inzhur/component/inzhur-fund-holding-line/inzhur-fund-holding-line.tsx
+msgid "{quantityLabel} · {priceLabel} each"
+msgstr "{quantityLabel} · je {priceLabel}"
 
 #: src/account/component/fund-account-card/fund-account-card.tsx
 msgid "{quantityLabel}, worth {valueLabel}"
@@ -1293,6 +1293,10 @@ msgid "Add your first transaction to see where your money goes."
 msgstr "Füge deine erste Transaktion hinzu, um zu sehen, wohin dein Geld fließt."
 
 #: src/inzhur/component/inzhur-import-summary/inzhur-import-summary.tsx
+msgid "Added by this statement"
+msgstr "Durch diesen Auszug hinzugekommen"
+
+#: src/inzhur/component/inzhur-import-summary-funding/inzhur-import-summary-funding.tsx
 msgid "Added to Inzhur cash"
 msgstr "Zum Inzhur-Guthaben hinzugefügt"
 
@@ -1698,10 +1702,6 @@ msgstr "Ø {averageCost} pro {instrumentCode}"
 msgid "Avg {averageCost} per {instrumentCode} · known for {coveredAmount} of {totalAmount}"
 msgstr "Ø {averageCost} pro {instrumentCode} · Kaufpreis bekannt für {coveredAmount} von {totalAmount}"
 
-#: src/inzhur/component/inzhur-awaiting-top-up-row/inzhur-awaiting-top-up-row.tsx
-msgid "Awaiting top-up"
-msgstr "Einzahlung ausstehend"
-
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Back up"
 msgstr "Sichern"
@@ -1779,6 +1779,10 @@ msgstr "Bank-Synchronisation"
 #: src/app/resync-window-picker.tsx
 msgid "Bank sync reset"
 msgstr "Bank-Synchronisation zurückgesetzt"
+
+#: src/inzhur/component/inzhur-awaiting-top-up-row/inzhur-awaiting-top-up-row.tsx
+msgid "Bank top-up not matched yet"
+msgstr "Bankeinzahlung noch nicht zugeordnet"
 
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "Bank, import or manual entry"
@@ -1875,10 +1879,6 @@ msgstr "Geliehen"
 #: src/account/utils/get-debt-opening-messages.util.ts
 msgid "Borrowed debt account expected"
 msgstr "Geliehenes Schuldkonto erwartet"
-
-#: src/transaction/hook/use-fund-trade-label.hook.ts
-msgid "Bought with {cashTitle} · +{quantityLabel}"
-msgstr "Gekauft mit {cashTitle} · +{quantityLabel}"
 
 #: src/inzhur/component/inzhur-import-summary-fund-row/inzhur-import-summary-fund-row.tsx
 msgid "Bought with Inzhur cash"
@@ -2118,6 +2118,14 @@ msgstr "Bargeld & Ersparnisse"
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "cash from an ATM"
 msgstr "Bargeld vom Automaten"
+
+#: src/inzhur/component/inzhur-cash-reconciliation/inzhur-cash-reconciliation.tsx
+msgid "Cash in Inzhur"
+msgstr "Guthaben bei Inzhur"
+
+#: src/inzhur/component/create-inzhur-account/create-inzhur-account.tsx
+msgid "Cash in Inzhur today"
+msgstr "Guthaben bei Inzhur heute"
 
 #: src/app/(main)/create-account/index.tsx
 msgid "Cash wallets and savings goals"
@@ -3498,7 +3506,7 @@ msgstr "Enthält nicht"
 #: src/@generic/component/keyboard-done-accessory/keyboard-done-accessory.tsx
 #: src/app/note-input.tsx
 #: src/categorize-inbox/components/categorize-inbox-done-button/categorize-inbox-done-button.tsx
-#: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
+#: src/inzhur/component/inzhur-import-summary-footer/inzhur-import-summary-footer.tsx
 #: src/onboarding/component/onboarding-keyboard-controls/onboarding-keyboard-controls.tsx
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
@@ -3798,8 +3806,8 @@ msgid "English"
 msgstr "Englisch"
 
 #: src/inzhur/component/create-inzhur-account/create-inzhur-account.tsx
-msgid "Enter 0 if you have no cash. Funds come from your statement."
-msgstr "Gib 0 ein, wenn du kein Guthaben hast. Fonds kommen aus deinem Auszug."
+msgid "Enter 0 if you have none. Your fund certificates are added when you import a statement."
+msgstr "Gib 0 ein, wenn du keins hast. Deine Fondszertifikate kommen beim Import eines Auszugs hinzu."
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Enter a balance to save"
@@ -3828,8 +3836,8 @@ msgid "Enter the backup's PIN"
 msgstr "Gib die PIN des Backups ein"
 
 #: src/inzhur/component/inzhur-cash-reconciliation/inzhur-cash-reconciliation.tsx
-msgid "Enter the cash shown in Inzhur. Saving records a balance adjustment, not a transfer. A higher balance is recorded as dividends kept in Inzhur."
-msgstr "Gib das in Inzhur angezeigte Guthaben ein. Beim Speichern wird eine Saldoanpassung verbucht, keine Überweisung. Ein höherer Saldo wird als bei Inzhur verbliebene Dividenden verbucht."
+msgid "Enter the cash Inzhur shows. If it's higher, Budgie records the difference as dividends kept in Inzhur. If it's lower, Budgie records an adjustment."
+msgstr "Gib das Guthaben ein, das Inzhur anzeigt. Ist es höher, verbucht Budgie die Differenz als bei Inzhur verbliebene Dividenden. Ist es niedriger, verbucht Budgie eine Anpassung."
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
@@ -3897,13 +3905,13 @@ msgstr "Erste Bank"
 msgid "Erste Bank (PDF)"
 msgstr "Erste Bank (PDF)"
 
+#: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
+msgid "Estimated from statements"
+msgstr "Aus Auszügen geschätzt"
+
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
 msgid "Estimated from your past transactions using your current limits."
 msgstr "Geschätzt aus deinen früheren Transaktionen mit deinen aktuellen Limits."
-
-#: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
-msgid "Estimated from your statements"
-msgstr "Aus deinen Auszügen geschätzt"
 
 #: src/budget/components/budget-event-form/budget-event-form.tsx
 msgid "Event limit"
@@ -4181,6 +4189,10 @@ msgstr "Französisch"
 msgid "From"
 msgstr "Von"
 
+#: src/transaction/hook/use-fund-trade-label.hook.ts
+msgid "From {cashTitle}"
+msgstr "Von {cashTitle}"
+
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead.tsx
 msgid "From {counterparty}"
 msgstr "Von {counterparty}"
@@ -4219,10 +4231,6 @@ msgstr "Ausgangswährung"
 #: src/transaction/hook/use-fund-trade-label.hook.ts
 msgid "From first statement"
 msgstr "Aus dem ersten Auszug"
-
-#: src/inzhur/component/inzhur-import-summary/inzhur-import-summary.tsx
-msgid "From Inzhur cash"
-msgstr "Aus Inzhur-Guthaben"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "From one amount to another"
@@ -4625,17 +4633,21 @@ msgstr "Inzhur"
 msgid "Inzhur buys more certificates"
 msgstr "Inzhur kauft weitere Zertifikate"
 
+#: src/inzhur/component/inzhur-import-summary-funding/inzhur-import-summary-funding.tsx
+msgid "Inzhur cash"
+msgstr "Inzhur-Guthaben"
+
 #: src/inzhur/hook/use-inzhur-statement-import.hook.ts
 msgid "Inzhur is not set up"
 msgstr "Inzhur ist nicht eingerichtet"
 
 #: src/inzhur/component/inzhur-dividend-payout-option/inzhur-dividend-payout-option.tsx
-msgid "Inzhur sends dividends to your card"
-msgstr "Inzhur zahlt Dividenden auf deine Karte"
+msgid "Inzhur sends dividends to your bank card"
+msgstr "Inzhur zahlt Dividenden auf deine Bankkarte"
 
 #: src/inzhur/component/inzhur-import-summary-hero/inzhur-import-summary-hero.tsx
-msgid "Inzhur total"
-msgstr "Inzhur gesamt"
+msgid "Inzhur value now"
+msgstr "Inzhur-Wert jetzt"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "is"
@@ -4747,6 +4759,10 @@ msgstr "Passende Zahlungen mit einem Tag versehen"
 msgid "Language"
 msgstr "Sprache"
 
+#: src/inzhur/component/inzhur-import-statement-action/inzhur-import-statement-action.tsx
+msgid "Last {statementDate}"
+msgstr "Zuletzt {statementDate}"
+
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "Last 1 month"
 msgstr "Letzter 1 Monat"
@@ -4782,6 +4798,10 @@ msgstr "Letzter Tag jedes Monats"
 #: src/sync/component/bank-integration-import-status/bank-integration-import-status.tsx
 msgid "Last import {importDate}"
 msgstr "Letzter Import {importDate}"
+
+#: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
+msgid "Last imported: {lastStatementDate} statement"
+msgstr "Zuletzt importiert: Auszug vom {lastStatementDate}"
 
 #: src/@generic/constant/date-period.constant.ts
 msgid "Last Month"
@@ -4957,7 +4977,7 @@ msgstr "Manuell"
 msgid "Manual adjustment"
 msgstr "Manuelle Anpassung"
 
-#: src/import/components/import-screen-header/import-screen-header.tsx
+#: src/app/(main)/import-csv.tsx
 msgid "Map CSV columns"
 msgstr "CSV-Spalten zuordnen"
 
@@ -5909,10 +5929,6 @@ msgstr "Shortcuts öffnen"
 msgid "Open the Inzhur app"
 msgstr "Öffne die Inzhur-App"
 
-#: src/inzhur/component/create-inzhur-account/create-inzhur-account.tsx
-msgid "Opening Inzhur cash balance"
-msgstr "Anfangsguthaben bei Inzhur"
-
 #: src/rule/components/rule-list-row/rule-list-row.tsx
 msgid "Opens the rule editor"
 msgstr "Öffnet den Regeleditor"
@@ -6092,6 +6108,14 @@ msgstr "Schuldet Ihnen"
 #: src/installment-plan/component/installment-plan-paid-summary/installment-plan-paid-summary.tsx
 msgid "Paid {paidAmount} · {paidCount} of {installmentCount}"
 msgstr "Bezahlt {paidAmount} · {paidCount} von {installmentCount}"
+
+#: src/inzhur/component/inzhur-import-summary-funding/inzhur-import-summary-funding.tsx
+msgid "Paid for the {boughtFundName} buy"
+msgstr "Bezahlt für den Kauf von {boughtFundName}"
+
+#: src/inzhur/component/inzhur-import-summary-funding/inzhur-import-summary-funding.tsx
+msgid "Paid for these buys"
+msgstr "Bezahlt für diese Käufe"
 
 #: src/transaction/components/transaction-info-debt-progress/transaction-info-debt-progress.tsx
 msgid "Paid to date: {paid}"
@@ -6402,6 +6426,7 @@ msgid "Price not available"
 msgstr "Preis nicht verfügbar"
 
 #: src/inzhur/component/inzhur-freshness-line/inzhur-freshness-line.tsx
+#: src/inzhur/component/inzhur-import-summary-hero/inzhur-import-summary-hero.tsx
 msgid "Prices as of {priceDate}"
 msgstr "Preise vom {priceDate}"
 
@@ -7197,10 +7222,6 @@ msgstr "Lege ein Limit fest und verfolge deine Ausgaben"
 msgid "Set a limit to continue"
 msgstr "Limit festlegen, um fortzufahren"
 
-#: src/inzhur/component/inzhur-cash-reconciliation/inzhur-cash-reconciliation.tsx
-msgid "Set actual cash balance"
-msgstr "Tatsächliches Guthaben festlegen"
-
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Set Amount and Merchant to Shortcut Input."
 msgstr "Betrag und Händler als Kurzbefehl-Eingabe festlegen."
@@ -7330,6 +7351,10 @@ msgstr "Ähnliche Transaktionen"
 msgid "Since {fromLabel}"
 msgstr "Seit {fromLabel}"
 
+#: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
+msgid "Since {sinceDate} · estimated from statements"
+msgstr "Seit {sinceDate} · aus Auszügen geschätzt"
+
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Skip"
 msgstr "Überspringen"
@@ -7347,10 +7372,6 @@ msgstr "Intelligente Vorschläge"
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "SmartBudget"
 msgstr "SmartBudget"
-
-#: src/transaction/hook/use-fund-trade-label.hook.ts
-msgid "Sold for {cashTitle} · −{quantityLabel}"
-msgstr "Verkauft gegen {cashTitle} · −{quantityLabel}"
 
 #: src/inzhur/component/inzhur-import-summary-fund-row/inzhur-import-summary-fund-row.tsx
 msgid "Sold for Inzhur cash"
@@ -7488,10 +7509,6 @@ msgstr "Beginnt bei {startLabel}. Endet bei {endLabel}. Reicht bis etwa {runOutL
 #: src/budget/components/budget-weekday-start-field/budget-weekday-start-field.tsx
 msgid "Starts on"
 msgstr "Beginnt am"
-
-#: src/inzhur/component/inzhur-freshness-line/inzhur-freshness-line.tsx
-msgid "Statement as of {statementDate}"
-msgstr "Auszug vom {statementDate}"
 
 #: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
@@ -8049,6 +8066,10 @@ msgstr "An {accountTitle}"
 #: src/categorize-inbox/components/categorize-inbox-transfer-undo/categorize-inbox-transfer-undo.tsx
 msgid "To {accountTitle}, rule saved"
 msgstr "An {accountTitle}, Regel gespeichert"
+
+#: src/transaction/hook/use-fund-trade-label.hook.ts
+msgid "To {cashTitle}"
+msgstr "An {cashTitle}"
 
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead.tsx
 msgid "To {counterparty}"
@@ -8639,6 +8660,10 @@ msgstr "Wert nicht verfügbar"
 #: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
 msgid "View source transactions"
 msgstr "Quelltransaktionen anzeigen"
+
+#: src/inzhur/component/inzhur-import-summary-footer/inzhur-import-summary-footer.tsx
+msgid "View transactions"
+msgstr "Transaktionen ansehen"
 
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
 msgid "Voice notes"

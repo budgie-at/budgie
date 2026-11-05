@@ -2,8 +2,9 @@ import { convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
-import { isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useHryvniaInstrumentQuery } from '../../query/use-hryvnia-instrument.query';
 import { useInzhurFundReturnsQuery } from '../../query/use-inzhur-fund-returns.query';
 import { InzhurSelector } from '../../selector/inzhur.selector';
@@ -19,11 +20,14 @@ const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 export const InzhurFundReturnsCard = ({ account }: Props) => {
     const { t } = useLingui();
-    const { dividendTotals } = useInzhurFundReturnsQuery(account.id, account.instrumentId);
+    const { dividendTotals, firstEntryAt } = useInzhurFundReturnsQuery(account.id, account.instrumentId);
+    const { formatMonthAndDayAndOptionalYear } = useFormatDate();
     const symbol = useHryvniaInstrumentQuery()?.symbol ?? '';
 
     const reinvested = convertFromMicroUnits(dividendTotals?.reinvested ?? 0);
     const bank = convertFromMicroUnits(dividendTotals?.bank ?? 0);
+    const sinceDate = isDefined(firstEntryAt) ? formatMonthAndDayAndOptionalYear(firstEntryAt) : null;
+    const reinvestedCaption = isDefined(sinceDate) ? t`Since ${sinceDate} · estimated from statements` : t`Estimated from statements`;
 
     return (
         <View
@@ -31,12 +35,7 @@ export const InzhurFundReturnsCard = ({ account }: Props) => {
             style={CONTINUOUS_CORNERS}
             testID={InzhurSelector.FundReturns}
         >
-            <InzhurMoneyRow
-                label={t`Reinvested dividends`}
-                caption={t`Estimated from your statements`}
-                amount={reinvested}
-                instrumentSymbol={symbol}
-            />
+            <InzhurMoneyRow label={t`Reinvested dividends`} caption={reinvestedCaption} amount={reinvested} instrumentSymbol={symbol} />
             {isPositiveNumber(bank) ? (
                 <InzhurMoneyRow
                     label={t`Bank dividends`}

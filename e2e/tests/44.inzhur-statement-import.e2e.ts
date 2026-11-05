@@ -36,7 +36,7 @@ test('44 inzhur statement import', { tags: ['import'] }, async ({ budgie }) => {
         await core.sleep(600);
         await core.tapId(ctx, 'InstitutionRow.1');
         await core.expectId(ctx, 'Institution.Page', 10_000);
-        await core.expectId(ctx, 'AccountCard.Balance.Inzhur_cash.5_000', 10_000);
+        await core.expectId(ctx, 'AccountCard.Balance.Cash.5_000', 10_000);
         await expect(core.byText(screen, '1,950 certificates')).toBeVisible({ timeout: 10_000 });
         await expect(core.byText(screen, '2 certificates')).toBeVisible({ timeout: 10_000 });
     });

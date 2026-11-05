@@ -6,7 +6,7 @@ interface Props {
 
 export const InzhurIcon = ({ size = 32 }: Props) => (
     <Svg width={size} height={size} viewBox="0 0 56 56" fill="none">
-        <Rect width="56" height="56" rx="14" fill="#101820" />
+        <Rect width="56" height="56" rx="14" fill="#262C35" />
         <G translateX={5.9} translateY={7.05} scale={0.776}>
             <Path
                 fill="#FFFFFF"

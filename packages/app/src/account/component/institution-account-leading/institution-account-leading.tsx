@@ -1,4 +1,4 @@
-import { AccountTypeEnum, ExternalSourceEnum, InstrumentTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
 
 import { CryptoCurrencyIcon } from '../../../@generic/component/crypto-currency-icon/crypto-currency-icon';
 import { NeutralIconTile } from '../../../@generic/component/neutral-icon-tile/neutral-icon-tile';
@@ -7,7 +7,7 @@ import { InstitutionMark } from '../institution-mark/institution-mark';
 import type { AccountAssociationEnum, AccountWithSyncEntityInterface } from '@budgie/contracts';
 
 interface Props {
-    readonly account: Pick<AccountWithSyncEntityInterface, 'type' | 'title' | AccountAssociationEnum.INSTRUMENT>;
+    readonly account: Pick<AccountWithSyncEntityInterface, 'type' | 'title' | 'icon' | AccountAssociationEnum.INSTRUMENT>;
     readonly provider: ExternalSourceEnum;
 }
 
@@ -20,7 +20,5 @@ export const InstitutionAccountLeading = ({ account, provider }: Props) => {
         return <InstitutionMark provider={provider} title={account.title} />;
     }
 
-    const icon = account.instrument.type === InstrumentTypeEnum.FUND ? UserIconNameEnum.ChartLine : UserIconNameEnum.Banknote;
-
-    return <NeutralIconTile icon={icon} />;
+    return <NeutralIconTile icon={account.icon} />;
 };

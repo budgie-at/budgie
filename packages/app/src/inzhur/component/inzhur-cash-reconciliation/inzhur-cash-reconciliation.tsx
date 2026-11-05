@@ -27,8 +27,8 @@ export const InzhurCashReconciliation = ({ trackedBalance, value, onChange, inst
     return (
         <View className="gap-y-3xl pb-3xl">
             <GroupedListSection
-                title={t`Set actual cash balance`}
-                footer={t`Enter the cash shown in Inzhur. Saving records a balance adjustment, not a transfer. A higher balance is recorded as dividends kept in Inzhur.`}
+                title={t`Cash in Inzhur`}
+                footer={t`Enter the cash Inzhur shows. If it's higher, Budgie records the difference as dividends kept in Inzhur. If it's lower, Budgie records an adjustment.`}
             >
                 <View className="py-xs">
                     <FormAmountInput

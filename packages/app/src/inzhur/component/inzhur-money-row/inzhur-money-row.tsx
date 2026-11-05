@@ -24,7 +24,7 @@ export const InzhurMoneyRow = ({ label, caption, amount, instrumentSymbol }: Pro
     return (
         <View accessible className={rowVariants({ isStacked })}>
             <View className="flex-1 gap-y-xxs">
-                <Text className="text-[17px] text-primary">{label}</Text>
+                <Text className="text-[17px] font-semibold text-primary">{label}</Text>
                 {isDefined(caption) ? <Text className="text-[13px] leading-[18px] text-secondary-foreground">{caption}</Text> : null}
             </View>
             <MoneyText amount={amount} instrumentSymbol={instrumentSymbol} variant={MoneyTextVariantEnum.ROW} />

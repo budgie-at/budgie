@@ -21,7 +21,7 @@ const ICON_HIT_SLOP = 4;
 export const IconTitleFieldTrigger = ({ icon, variant, onPress, testID, iconTestID }: Props) => {
     const { t } = useLingui();
     const iconName = useIconSearchEntries().find(entry => entry.icon === icon)?.label ?? icon;
-    const iconSize = isEmojiIcon(icon) ? 22 : 18;
+    const iconSize = isEmojiIcon(icon) ? 22 : 20;
 
     return (
         <HapticPressable
@@ -36,9 +36,9 @@ export const IconTitleFieldTrigger = ({ icon, variant, onPress, testID, iconTest
             <View testID={iconTestID}>
                 <CircleIcon
                     variant={variant}
-                    size={36}
+                    size={40}
                     iconSize={iconSize}
-                    radius={18}
+                    radius={20}
                     border={false}
                     icon={icon}
                     className={TONAL_DISC_BACKGROUND[variant]}

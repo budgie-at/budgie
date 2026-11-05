@@ -6,19 +6,22 @@ import type { ReactNode } from 'react';
 
 interface Props {
     readonly children: ReactNode;
+    readonly testID?: string;
 }
 
-export const ImportScreenScroll = ({ children }: Props) => {
+const CONTENT_BOTTOM_CLEARANCE = 24;
+
+export const FixedChromeScroll = ({ children, testID }: Props) => {
     const { chromeHeight } = useBottomChromeInset();
     const { config } = useScreenChrome();
-
-    const contentInsetBottom = chromeHeight + 24;
+    const contentInsetBottom = chromeHeight + CONTENT_BOTTOM_CLEARANCE;
 
     return (
         <ScreenChromeScrollView
             contentInsetTop={config.headerHeight}
             contentInsetBottom={contentInsetBottom}
             keyboardShouldPersistTaps="handled"
+            testID={testID}
         >
             <View className="gap-y-7xl px-5xl pt-xl">{children}</View>
         </ScreenChromeScrollView>

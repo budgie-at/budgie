@@ -3,8 +3,8 @@ import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
 import { InzhurSelector } from '../../selector/inzhur.selector';
 
 interface Props {
@@ -17,10 +17,10 @@ const OPTION = {
     [DividendPayoutEnum.BANK]: {
         icon: UserIconNameEnum.Landmark,
         title: msg`Paid to my bank`,
-        subtitle: msg`Inzhur sends dividends to your card`
+        subtitle: msg`Inzhur sends dividends to your bank card`
     },
     [DividendPayoutEnum.REINVEST]: {
-        icon: UserIconNameEnum.TrendingUp,
+        icon: UserIconNameEnum.RefreshCw,
         title: msg`Reinvested`,
         subtitle: msg`Inzhur buys more certificates`
     }
@@ -33,20 +33,24 @@ export const InzhurDividendPayoutOption = ({ payout, isSelected, onSelect }: Pro
     const handlePress = () => {
         onSelect(payout);
     };
-    const check = (
-        <View className="size-5 items-center justify-center">
-            {isSelected ? <Icon icon={UserIconNameEnum.Check} size={20} className="text-primary" /> : null}
-        </View>
-    );
+    const pressableProps = { accessibilityState: { selected: isSelected } };
 
     return (
-        <SettingsRow
-            icon={icon}
-            variant="primary"
+        <GroupedListRow
+            left={
+                <View className="size-[40px] items-center justify-center">
+                    <Icon icon={icon} size={20} className="text-primary" />
+                </View>
+            }
             title={t(title)}
             subtitle={t(subtitle)}
-            right={check}
+            right={
+                <View className="size-5 items-center justify-center">
+                    {isSelected ? <Icon icon={UserIconNameEnum.Check} size={20} className="text-primary" /> : null}
+                </View>
+            }
             onPress={handlePress}
+            pressableProps={pressableProps}
             testID={InzhurSelector.PayoutOption(payout)}
         />
     );

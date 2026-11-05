@@ -1,5 +1,6 @@
 import { ExternalSourceEnum } from '@budgie/contracts';
 
+import { getInzhurShortTitle } from '../../../inzhur/utils/get-inzhur-short-title.util';
 import { stripTransactionAccountTitlePrefix } from '../../../transaction/utils/strip-transaction-account-title-prefix.util';
 import { AccountRowDisclosureContext } from '../../context/account-row-disclosure.context';
 import { AccountRowLeadingContext } from '../../context/account-row-leading.context';
@@ -16,8 +17,11 @@ interface Props {
 }
 
 export const InstitutionAccountRow = ({ account, provider, balancesByAccountId }: Props) => {
-    const titlePrefix = provider === ExternalSourceEnum.INZHUR ? null : provider;
-    const displayAccount = { ...account, title: stripTransactionAccountTitlePrefix(account.title, titlePrefix) ?? account.title };
+    const title =
+        provider === ExternalSourceEnum.INZHUR
+            ? getInzhurShortTitle(account.title)
+            : (stripTransactionAccountTitlePrefix(account.title, provider) ?? account.title);
+    const displayAccount = { ...account, title };
 
     return (
         <AccountRowDisclosureContext value>
