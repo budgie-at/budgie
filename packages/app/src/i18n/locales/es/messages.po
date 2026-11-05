@@ -8407,6 +8407,7 @@ msgid "View your payments in another month."
 msgstr "Consulta tus pagos en otro mes."
 
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
+#: src/app/voice-review.tsx
 msgid "Voice notes"
 msgstr "Notas de voz"
 
