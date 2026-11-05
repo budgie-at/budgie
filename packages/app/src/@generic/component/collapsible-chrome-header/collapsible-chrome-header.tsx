@@ -5,9 +5,11 @@ import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 import { isDefined } from '@rnw-community/shared';
 
 import type { ReactNode } from 'react';
+import type { ViewProps } from 'react-native';
 
 interface Props {
     readonly expandedTitle: ReactNode;
+    readonly expandedTitlePointerEvents?: ViewProps['pointerEvents'];
     readonly collapsedTitle: ReactNode;
     readonly leading?: ReactNode;
     readonly trailing?: ReactNode;
@@ -60,7 +62,14 @@ const collapsibleChromeHeaderStyles = StyleSheet.create({
     }
 });
 
-export const CollapsibleChromeHeader = ({ expandedTitle, collapsedTitle, leading, trailing, testID }: Props): ReactNode => {
+export const CollapsibleChromeHeader = ({
+    expandedTitle,
+    expandedTitlePointerEvents = 'none',
+    collapsedTitle,
+    leading,
+    trailing,
+    testID
+}: Props): ReactNode => {
     const { config } = useScreenChrome();
 
     const collapseDistance = config.collapseEnd - config.collapseStart;
@@ -99,7 +108,7 @@ export const CollapsibleChromeHeader = ({ expandedTitle, collapsedTitle, leading
         </View>
     );
     const expandedContent = (
-        <View style={collapsibleChromeHeaderStyles.expandedTitleLayerContent} pointerEvents="box-none">
+        <View style={collapsibleChromeHeaderStyles.expandedTitleLayerContent} pointerEvents={expandedTitlePointerEvents}>
             {expandedTitle}
         </View>
     );

@@ -1,6 +1,7 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { SectionList } from 'react-native';
 import Animated from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useScreenChrome, useScreenChromeScrollProps } from '@rnw-community/react-native-screen-chrome';
 
@@ -43,12 +44,19 @@ export const HomeSectionsList = ({
 }: Props) => {
     const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
+    const { top } = useSafeAreaInsets();
     const { config } = useScreenChrome();
     const { onScroll } = useCollapsibleChromeScroll();
-    const bottomPadding = FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottomInset;
+    const collapsedHeaderHeight = config.collapsedHeaderHeight ?? config.headerHeight;
+    const listStyle = { marginTop: top + collapsedHeaderHeight };
     const scrollProps = useScreenChromeScrollProps({
-        contentInsetTop: config.headerHeight,
-        contentContainerStyle: { paddingBottom: bottomPadding, paddingHorizontal: LIST_HORIZONTAL_PADDING, flexGrow: 1 }
+        includeTopSafeArea: false,
+        contentInsetTop: config.headerHeight - collapsedHeaderHeight,
+        contentContainerStyle: {
+            paddingBottom: FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottomInset,
+            paddingHorizontal: LIST_HORIZONTAL_PADDING,
+            flexGrow: 1
+        }
     });
     const listFormatKey = `${defaultInstrumentId}-${decimalPlaces}`;
     const listFooterComponent =
@@ -89,6 +97,7 @@ export const HomeSectionsList = ({
             ListEmptyComponent={listEmptyComponent}
             {...scrollProps}
             onScroll={onScroll}
+            style={listStyle}
         />
     );
 };

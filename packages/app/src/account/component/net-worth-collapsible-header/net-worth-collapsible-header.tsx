@@ -32,7 +32,7 @@ export const NetWorthCollapsibleHeader = (props: Props) => {
     const formattedNetWorth = toTrueMinus(formatDigits(netWorth, defaultInstrument.symbol));
     const formattedNetWorthValue = formatDigits(netWorth);
     const expandedContent = (
-        <View className="flex-1 justify-end gap-y-sm pt-sm pr-[12px] pb-lg pl-[16px]">
+        <View className="flex-1 justify-end gap-y-sm pt-sm pr-[12px] pb-lg pl-[16px]" pointerEvents="box-none">
             <View className="flex-row items-center justify-between">
                 <Text maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER} className="text-[15px] font-medium text-secondary-foreground">
                     <Trans>Total Balance</Trans>
@@ -81,6 +81,7 @@ export const NetWorthCollapsibleHeader = (props: Props) => {
             <CollapsibleChromeHeader
                 testID={HomePageSelector.TotalBalance}
                 expandedTitle={expandedContent}
+                expandedTitlePointerEvents="box-none"
                 collapsedTitle={collapsedContent}
             />
         </>
