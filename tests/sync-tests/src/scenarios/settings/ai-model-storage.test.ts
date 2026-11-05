@@ -121,23 +121,19 @@ describe('AI model storage ownership', () => {
     it.effect('holds the real SQLite writer lock from the final settings read through deletion', () =>
         provideStorage(
             Effect.gen(function* () {
-                const { storage, repository, reading, finishReading } = yield* Effect.gen(function* () {
-                    yield* makeStorage;
-                    const repository = yield* SettingsRepository;
-                    const reading = yield* Deferred.make<boolean>();
-                    const finishReading = yield* Deferred.make<boolean>();
-                    const storage = yield* AiModelStorageService.make.pipe(
-                        Effect.provideService(SettingsRepository, {
-                            ...repository,
-                            getSettings: () =>
-                                repository
-                                    .getSettings()
-                                    .pipe(Effect.tap(() => Effect.andThen(Deferred.succeed(reading, true), Deferred.await(finishReading))))
-                        })
-                    );
-
-                    return { storage, repository, reading, finishReading };
-                });
+                yield* makeStorage;
+                const repository = yield* SettingsRepository;
+                const reading = yield* Deferred.make<boolean>();
+                const finishReading = yield* Deferred.make<boolean>();
+                const storage = yield* AiModelStorageService.make.pipe(
+                    Effect.provideService(SettingsRepository, {
+                        ...repository,
+                        getSettings: () =>
+                            repository
+                                .getSettings()
+                                .pipe(Effect.tap(() => Effect.andThen(Deferred.succeed(reading, true), Deferred.await(finishReading))))
+                    })
+                );
                 files.set(CHAT_MODEL_FILENAME, 1_000);
                 const deletion = yield* Effect.forkChild(storage.deleteUnused());
                 yield* Deferred.await(reading);
@@ -257,28 +253,22 @@ describe('AI inventory reactivity', () => {
                 yield* Effect.yieldNow;
                 const ready = yield* AtomRegistry.getResult(appAtomRegistry, aiModelStorageAtom);
                 expect(ready.unusedBytes).toBe(0);
-                yield* Effect.gen(function* () {
-                    const previous = appAtomRegistry.get(aiModelStorageAtom);
-                    patchAtom(chatModelSnapshotAtom, { errorMessage: null });
-                    yield* Effect.yieldNow;
-                    expect(appAtomRegistry.get(aiModelStorageAtom)).toBe(previous);
-                });
-                yield* Effect.gen(function* () {
-                    patchAtom(chatModelSnapshotAtom, { status: AiSubsystemStatusEnum.SUSPENDED });
-                    yield* Effect.yieldNow;
-                    expect((yield* AtomRegistry.getResult(appAtomRegistry, aiModelStorageAtom)).unusedBytes).toBe(1_000);
-                    expect(AsyncResult.isSuccess(appAtomRegistry.get(aiModelStorageAtom))).toBe(true);
-                });
-                yield* Effect.gen(function* () {
-                    patchAtom(chatModelSnapshotAtom, { status: AiSubsystemStatusEnum.DOWNLOADING });
-                    yield* AtomRegistry.getResult(appAtomRegistry, aiModelStorageAtom, { suspendOnWaiting: true });
-                    files.set(CHAT_MODEL_FILENAME, 2_000);
-                    patchAtom(chatModelSnapshotAtom, { status: AiSubsystemStatusEnum.READY });
-                    yield* Effect.yieldNow;
-                    expect(
-                        (yield* AtomRegistry.getResult(appAtomRegistry, aiModelStorageAtom, { suspendOnWaiting: true })).totalBytes
-                    ).toBe(2_000);
-                });
+                const previous = appAtomRegistry.get(aiModelStorageAtom);
+                patchAtom(chatModelSnapshotAtom, { errorMessage: null });
+                yield* Effect.yieldNow;
+                expect(appAtomRegistry.get(aiModelStorageAtom)).toBe(previous);
+                patchAtom(chatModelSnapshotAtom, { status: AiSubsystemStatusEnum.SUSPENDED });
+                yield* Effect.yieldNow;
+                expect((yield* AtomRegistry.getResult(appAtomRegistry, aiModelStorageAtom)).unusedBytes).toBe(1_000);
+                expect(AsyncResult.isSuccess(appAtomRegistry.get(aiModelStorageAtom))).toBe(true);
+                patchAtom(chatModelSnapshotAtom, { status: AiSubsystemStatusEnum.DOWNLOADING });
+                yield* AtomRegistry.getResult(appAtomRegistry, aiModelStorageAtom, { suspendOnWaiting: true });
+                files.set(CHAT_MODEL_FILENAME, 2_000);
+                patchAtom(chatModelSnapshotAtom, { status: AiSubsystemStatusEnum.READY });
+                yield* Effect.yieldNow;
+                expect((yield* AtomRegistry.getResult(appAtomRegistry, aiModelStorageAtom, { suspendOnWaiting: true })).totalBytes).toBe(
+                    2_000
+                );
             })
         )
     );

@@ -201,11 +201,9 @@ layer(aiModelDownloadStub)('AI native ownership in-flight work', it => {
     it.effect('joins interrupted transcription before native release', () =>
         Effect.gen(function* () {
             const stt = yield* SttService.make;
-            yield* Effect.gen(function* () {
-                yield* stt.start();
-                yield* stt.streamStart(null);
-                stt.streamInsert(new Float32Array(transcriptionSampleCount).fill(0.5));
-            });
+            yield* stt.start();
+            yield* stt.streamStart(null);
+            stt.streamInsert(new Float32Array(transcriptionSampleCount).fill(0.5));
             const transcription = yield* holdNativeCall({ result: 'done' });
             native.whisperContext.transcribeData.mockImplementation(() => ({ promise: transcription.invoke() }));
             const transcribing = yield* Effect.forkChild(stt.stopStream(true));

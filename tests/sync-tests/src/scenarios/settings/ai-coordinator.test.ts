@@ -189,20 +189,18 @@ describe('AI shutdown recovery', () => {
         Effect.gen(function* () {
             const { coordinator, resumes, started, setIdle, setShutdown } = yield* makeLifecycle();
             const settled = yield* Deferred.make<boolean>();
-            const failed = yield* Effect.gen(function* () {
-                if (failure === 'timeout') {
-                    setIdle(Effect.asVoid(Deferred.await(settled)));
-                } else {
-                    setShutdown(Effect.fail(new NativeCallError({ cause: 'release failed' })));
-                }
-                const restarting = yield* Effect.forkChild(Effect.exit(coordinator.restart()));
-                if (failure === 'timeout') {
-                    yield* TestClock.adjust('5001 millis');
-                }
-                yield* Deferred.succeed(settled, true);
+            if (failure === 'timeout') {
+                setIdle(Effect.asVoid(Deferred.await(settled)));
+            } else {
+                setShutdown(Effect.fail(new NativeCallError({ cause: 'release failed' })));
+            }
+            const restarting = yield* Effect.forkChild(Effect.exit(coordinator.restart()));
+            if (failure === 'timeout') {
+                yield* TestClock.adjust('5001 millis');
+            }
+            yield* Deferred.succeed(settled, true);
 
-                return yield* Fiber.join(restarting);
-            });
+            const failed = yield* Fiber.join(restarting);
             expect(Exit.isFailure(failed)).toBe(true);
             expect(resumes).toHaveLength(1);
             setIdle(Effect.void);
@@ -218,12 +216,10 @@ describe('AI shutdown recovery', () => {
         Effect.gen(function* () {
             const { coordinator, started, stopping, setShutdown } = yield* makeLifecycle();
             const listener = appState.addEventListener.mock.calls.at(-1)?.[1];
-            yield* Effect.gen(function* () {
-                setShutdown(Effect.fail(new NativeCallError({ cause: 'release failed' })));
-                listener?.('background');
-                yield* TestClock.adjust(60_000);
-                yield* Deferred.await(stopping);
-            });
+            setShutdown(Effect.fail(new NativeCallError({ cause: 'release failed' })));
+            listener?.('background');
+            yield* TestClock.adjust(60_000);
+            yield* Deferred.await(stopping);
             const retrying = yield* Deferred.make<boolean>();
             setShutdown(Effect.andThen(Deferred.succeed(retrying, true), Effect.fail(new NativeCallError({ cause: 'release failed' }))));
             listener?.('active');
