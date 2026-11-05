@@ -2213,6 +2213,10 @@ msgstr "Kategorie wählen"
 msgid "Choose a category to continue"
 msgstr "Kategorie wählen, um fortzufahren"
 
+#: src/transaction/hook/use-convert-transfer-form.hook.ts
+msgid "Choose a destination account"
+msgstr "Zielkonto wählen"
+
 #: src/auth/components/pin-restart-button/pin-restart-button.tsx
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Choose a different PIN"
@@ -2244,6 +2248,10 @@ msgstr "Wähle eine PIN"
 msgid "Choose a source"
 msgstr "Quelle wählen"
 
+#: src/transaction/hook/use-convert-transfer-form.hook.ts
+msgid "Choose a source account"
+msgstr "Quellkonto wählen"
+
 #: src/rule/components/rule-action-tag-selector/rule-action-tag-selector.tsx
 msgid "Choose a tag"
 msgstr "Tag wählen"
@@ -2256,6 +2264,10 @@ msgstr "Tag wählen, um fortzufahren"
 #: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx
 msgid "Choose a type"
 msgstr "Typ wählen"
+
+#: src/transaction/components/convert-transfer-accounts/convert-transfer-accounts.tsx
+msgid "Choose account"
+msgstr "Konto wählen"
 
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Choose accounts"
@@ -2554,6 +2566,7 @@ msgid "Convert to Refund?"
 msgstr "In Rückerstattung umwandeln?"
 
 #: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
+#: src/transaction/components/convert-transfer-form/convert-transfer-form.tsx
 #: src/transaction/components/transaction-list-convert-to-transfer-menu-item/transaction-list-convert-to-transfer-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Convert to Transfer"
@@ -3419,6 +3432,7 @@ msgstr "Enthält nicht"
 #: src/onboarding/component/onboarding-keyboard-controls/onboarding-keyboard-controls.tsx
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
+#: src/transaction/components/convert-transfer-form/convert-transfer-form.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 #: src/transaction/hook/use-transaction-keypad-editing.hook.ts
@@ -4094,6 +4108,10 @@ msgctxt "transfer account"
 msgid "From"
 msgstr "Von"
 
+#: src/transaction/components/convert-transfer-summary/convert-transfer-summary.tsx
+msgid "From {accountTitle}"
+msgstr "Von {accountTitle}"
+
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead.tsx
 msgid "From {counterparty}"
 msgstr "Von {counterparty}"
@@ -4112,6 +4130,7 @@ msgstr "Von {source} an {destination}"
 
 #: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/app/(main)/import-csv.tsx
+#: src/transaction/components/convert-transfer-accounts/convert-transfer-accounts.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "From account"
 msgstr "Von Konto"
@@ -6410,6 +6429,10 @@ msgstr "Beleg"
 msgid "Received"
 msgstr "Erhalten"
 
+#: src/transaction/components/convert-transfer-form/convert-transfer-form.tsx
+msgid "Receiving"
+msgstr "Empfang"
+
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Receiving · {toCode}"
 msgstr "Empfang · {toCode}"
@@ -7010,6 +7033,10 @@ msgstr "Ausgewählt"
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Send a copy"
 msgstr "Kopie senden"
+
+#: src/transaction/components/convert-transfer-form/convert-transfer-form.tsx
+msgid "Sending"
+msgstr "Senden"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Sending {fromCode}"
@@ -7871,6 +7898,7 @@ msgid "To"
 msgstr "An"
 
 #: src/categorize-inbox/components/categorize-inbox-transfer-undo/categorize-inbox-transfer-undo.tsx
+#: src/transaction/components/convert-transfer-summary/convert-transfer-summary.tsx
 msgid "To {accountTitle}"
 msgstr "An {accountTitle}"
 
@@ -7892,6 +7920,7 @@ msgstr "Bis {toText}"
 
 #: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/app/(main)/import-csv.tsx
+#: src/transaction/components/convert-transfer-accounts/convert-transfer-accounts.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "To account"
 msgstr "Auf Konto"
