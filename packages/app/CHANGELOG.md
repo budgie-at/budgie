@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.162.0](https://github.com/budgie-at/budgie/compare/v6.161.0...v6.162.0) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** give transaction filter chips a 44pt touch target ([70aa6a0](https://github.com/budgie-at/budgie/commit/70aa6a097df70ebaa3f305db3e135e6b0dfb7008))
+* **app:** keep the transactions header compact under shared chrome ([14b7d58](https://github.com/budgie-at/budgie/commit/14b7d586e5780720a59078a3258392f8c8381282))
+* **app:** satisfy lint for the transactions header style ([7f26792](https://github.com/budgie-at/budgie/commit/7f267928fe14dc370d807cdeaa27b5930915f09a))
+
+### Features
+
+* **app:** fixed shared chrome and stable loading for the Transactions tab ([771d978](https://github.com/budgie-at/budgie/commit/771d978df56f01a51f4b2a496b4976e88da77771))
+
+
 # [6.161.0](https://github.com/budgie-at/budgie/compare/v6.160.1...v6.161.0) (2026-11-05)
 
 ### Bug Fixes
