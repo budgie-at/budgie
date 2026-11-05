@@ -1156,7 +1156,12 @@
             ],
             "rules": {
                 "budgie/effect-no-imperative": "error",
-                "budgie/shared-guards": "error"
+                "budgie/shared-guards": "error",
+                "effecttsgo/async-function": "error",
+                "effecttsgo/node-builtin-import": "error",
+                "effecttsgo/process-env": "error",
+                "effecttsgo/schema-sync": "error",
+                "effecttsgo/global-random": "error"
             }
         },
         {
