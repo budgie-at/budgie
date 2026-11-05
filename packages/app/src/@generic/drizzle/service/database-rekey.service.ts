@@ -8,6 +8,8 @@ import * as Layer from 'effect/Layer';
 import * as Reactivity from 'effect/reactivity/Reactivity';
 import { File } from 'expo-file-system';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { DATABASE_DIRECTORY } from '../constant/database-directory.constant';
 import { DATABASE_LOCATION } from '../constant/database-location.constant';
 import { DB_NAME } from '../constant/db-name.constant';
@@ -78,7 +80,7 @@ export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>(
             deleteDatabaseFiles(backupUri);
             yield* exportDatabase(params.nextKey);
 
-            if (params.nextSettings) {
+            if (isDefined(params.nextSettings)) {
                 yield* updateMigratedDatabaseSettings(params.nextKey, params.nextSettings);
             }
         });

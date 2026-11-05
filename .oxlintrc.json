@@ -1161,7 +1161,8 @@
                 "effecttsgo/node-builtin-import": "error",
                 "effecttsgo/process-env": "error",
                 "effecttsgo/schema-sync": "error",
-                "effecttsgo/global-random": "error"
+                "effecttsgo/global-random": "error",
+                "effecttsgo/strict-boolean-expressions": "error"
             }
         },
         {
