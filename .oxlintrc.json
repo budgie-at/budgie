@@ -87,7 +87,6 @@
         "effecttsgo/layer-merge-all-with-dependencies": "error",
         "effecttsgo/service-not-as-class": "error",
         "effecttsgo/leaking-requirements": "off",
-        "effecttsgo/flat-map-conditional-to-filter-or-fail": "off",
         "effecttsgo/any-unknown-in-error-context": "off",
         "effecttsgo/lazy-effect": "off",
         "effecttsgo/unnecessary-effect-gen": "off",

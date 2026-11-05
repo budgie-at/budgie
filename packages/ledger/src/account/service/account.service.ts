@@ -65,9 +65,7 @@ export class AccountService extends Context.Service<AccountService>()('@budgie/l
         );
 
         const orFail = <A>(id: number, findAccount: Effect.Effect<A | undefined, DbError, Db>) =>
-            Effect.flatMap(findAccount, account =>
-                isDefined(account) ? Effect.succeed(account) : Effect.fail(new AccountNotFoundError({ id }))
-            );
+            Effect.filterOrFail(findAccount, isDefined<A>, () => new AccountNotFoundError({ id }));
 
         const updateWithBalance = Effect.fn('AccountService.updateWithBalance')(
             function* (

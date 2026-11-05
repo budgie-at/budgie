@@ -39,9 +39,7 @@ export const makePollingSyncAccountContinuation = Effect.fnUntraced(function* (p
     const clearedSyncProblems = { status: SyncStatusEnum.IDLE, errorCount: 0, lastError: null, lastErrorCode: null, lastWarning: null };
 
     const requireAccount = (accountId: number) =>
-        Effect.flatMap(accountRepository.findById(accountId), account =>
-            isDefined(account) ? Effect.succeed(account) : Effect.die(new Error('Account to connect not found'))
-        );
+        Effect.filterOrElse(accountRepository.findById(accountId), isDefined, () => Effect.die(new Error('Account to connect not found')));
 
     const findKeysLinkedElsewhere = Effect.fnUntraced(function* (accountId: number, externalIds: string[], ibans: string[]) {
         const [byExternalId, aliases, byIban] = yield* Effect.all([
