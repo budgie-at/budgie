@@ -60,6 +60,16 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
         const statementNoonSuffix = 'T12:00:00.000Z';
         const openingHoldingsTitle = 'Opening holdings';
 
+        const buildTradeTitle = (plan: InzhurFundPlanInterface, dividendMicroUnits: number) => {
+            const shortName = plan.name.replace(/^Inzhur\s+/u, '');
+
+            if (plan.deltaMicroUnits < 0) {
+                return `Sold ${shortName}`;
+            }
+
+            return dividendMicroUnits >= plan.valueMicroUnits ? `Dividends reinvested in ${shortName}` : `Bought ${shortName}`;
+        };
+
         const buildOperatedAt = (statementDate: string) => new Date(`${statementDate}${statementNoonSuffix}`);
 
         const readBalance = Effect.fnUntraced(function* (accountId: number) {
@@ -288,7 +298,7 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
                 const value = convertFromMicroUnits(plan.valueMicroUnits);
 
                 return buildInzhurTransactionInput(
-                    `${isSell ? 'Sold' : 'Bought'} ${plan.name}`,
+                    buildTradeTitle(plan, dividendByAccountId.get(plan.account.id) ?? 0),
                     externalId,
                     operatedAt,
                     isSell

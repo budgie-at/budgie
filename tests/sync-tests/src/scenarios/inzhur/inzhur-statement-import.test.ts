@@ -100,8 +100,8 @@ describe('inzhur/statement-import', () => {
                 [INZHUR_ENERGY_LAYOUT.isin, -1, 4000, 0]
             ]);
             expect(ledger.map(({ type, externalId, title }) => [type, externalId, title])).toEqual([
-                [TransactionTypeEnum.TRANSFER, `inzhur:${SECOND_DATE_ISO}:${INZHUR_REIT_LAYOUT.isin}:buy`, 'Bought Inzhur REIT'],
-                [TransactionTypeEnum.TRANSFER, `inzhur:${SECOND_DATE_ISO}:${INZHUR_ENERGY_LAYOUT.isin}:sell`, 'Sold Inzhur Energy']
+                [TransactionTypeEnum.TRANSFER, `inzhur:${SECOND_DATE_ISO}:${INZHUR_REIT_LAYOUT.isin}:buy`, 'Bought REIT'],
+                [TransactionTypeEnum.TRANSFER, `inzhur:${SECOND_DATE_ISO}:${INZHUR_ENERGY_LAYOUT.isin}:sell`, 'Sold Energy']
             ]);
             expect(ledger[0].entries).toEqual([
                 { accountId: cashAccount.id, type: TransactionEntryTypeEnum.CREDIT, amount: 500 * PRECISION, categoryId: null },
@@ -186,6 +186,11 @@ describe('inzhur/statement-import', () => {
 
             expect(summary.funds.map(fund => fund.dividendAmount)).toEqual([0, 4000]);
             expect(summary.uncoveredCashAmount).toBe(400);
+            expect(
+                (yield* fetchInzhurLedger())
+                    .filter(transaction => transaction.type === TransactionTypeEnum.TRANSFER)
+                    .map(transaction => transaction.title)
+            ).toEqual(['Bought REIT', 'Dividends reinvested in Energy']);
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(-400 * PRECISION);
         }).pipe(Effect.provide(makeInzhurFollowUpLayer(1100, 3)))
     );
