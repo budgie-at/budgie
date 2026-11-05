@@ -25,10 +25,10 @@ export const TransactionCardLayout = ({ icon, title, children, amount }: Props) 
     }
 
     return (
-        <View className="gap-y-md">
-            <View className="flex-row items-start gap-x-xl">
-                {icon}
+        <View className="gap-y-xs">
+            <View className="flex-row items-start gap-x-md">
                 <View className="flex-1 min-w-0">{title}</View>
+                {icon}
             </View>
             {children}
             <View className="flex-row">{amount}</View>

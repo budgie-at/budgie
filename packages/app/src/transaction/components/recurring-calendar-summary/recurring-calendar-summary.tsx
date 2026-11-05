@@ -25,7 +25,7 @@ export const RecurringCalendarSummary = ({ isLoading, formattedTotal, formattedE
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
 
     return (
-        <View className="gap-y-xl rounded-3xl bg-grouped-surface-row p-3xl" style={continuousCorners}>
+        <View className="gap-y-md rounded-3xl bg-grouped-surface-row p-3xl" style={continuousCorners}>
             <View className={totalVariants({ isAccessibilityTextSize })}>
                 <Text dynamicTypeRamp="footnote" className="text-[13px] text-secondary-foreground">
                     <Trans>Monthly total</Trans>

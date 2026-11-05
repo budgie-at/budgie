@@ -29,7 +29,7 @@ export const TransactionListEmptyState = ({ isLoading, hasFiltersSelected, onCle
         ? { title: t`No matching transactions`, description: t`Try adjusting your filters to see more results` }
         : {
               title: t`No transactions yet`,
-              description: t`Start tracking your spending by using the mic button or adding transactions manually`
+              description: t`Tap + to add your first transaction`
           };
 
     return (

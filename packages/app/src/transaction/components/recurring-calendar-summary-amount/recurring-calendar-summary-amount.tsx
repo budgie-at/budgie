@@ -20,10 +20,10 @@ export const RecurringCalendarSummaryAmount = ({ formattedAmount, children }: Pr
 
     return (
         <View className={amountVariants({ isAccessibilityTextSize })}>
-            <Text dynamicTypeRamp="footnote" className="text-[13px] text-secondary-foreground">
+            <Text dynamicTypeRamp="caption2" className="text-[12px] text-secondary-foreground">
                 {children}
             </Text>
-            <ProtectedText dynamicTypeRamp="body" className="text-[15px] font-medium text-primary tabular-nums">
+            <ProtectedText dynamicTypeRamp="footnote" className="text-[13px] font-medium text-primary tabular-nums">
                 {formattedAmount}
             </ProtectedText>
         </View>

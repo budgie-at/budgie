@@ -5333,8 +5333,8 @@ msgid "No icons found"
 msgstr "No se encontraron iconos"
 
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
-msgid "No income"
-msgstr "Sin ingresos"
+msgid "No income in this view"
+msgstr "No hay ingresos en esta vista"
 
 #: src/app/voice-review.tsx
 msgid "No items to save"
@@ -5416,14 +5416,14 @@ msgstr "No hay contactos compartidos"
 msgid "No source transactions"
 msgstr "No hay transacciones de origen"
 
-#: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
-msgid "No spending"
-msgstr "Sin gastos"
-
 #: src/category/components/categories-feature-intro/categories-feature-intro.tsx
 #: src/transaction/components/statistics-spending-hero/statistics-spending-hero.tsx
 msgid "No spending in this period"
 msgstr "Sin gastos en este período"
+
+#: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
+msgid "No spending in this view"
+msgstr "No hay gastos en esta vista"
 
 #: src/runway/component/runway-drivers/runway-drivers.tsx
 msgid "No spending in this window."
@@ -7304,10 +7304,6 @@ msgstr "Empieza desde cero y define cada límite tú mismo"
 msgid "Start Sync"
 msgstr "Iniciar sincronización"
 
-#: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
-msgid "Start tracking your spending by using the mic button or adding transactions manually"
-msgstr "Comienza a rastrear tus gastos usando el botón de micrófono o agregando transacciones manualmente"
-
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Starter budget"
 msgstr "Presupuesto inicial"
@@ -7550,6 +7546,10 @@ msgstr "Toca \"Obtener clave API\" arriba e inicia sesión en Binance"
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Tap \"Get API Token\" above to open api.monobank.ua"
 msgstr "Toca «Get API Token» arriba para abrir api.monobank.ua"
+
+#: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
+msgid "Tap + to add your first transaction"
+msgstr "Toca + para añadir tu primera transacción"
 
 #: src/app/(tabs)/settings/category-icons.tsx
 msgid "Tap a suggestion to use it for that category."

@@ -5334,8 +5334,8 @@ msgid "No icons found"
 msgstr "No icons found"
 
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
-msgid "No income"
-msgstr "No income"
+msgid "No income in this view"
+msgstr "No income in this view"
 
 #: src/app/voice-review.tsx
 msgid "No items to save"
@@ -5417,14 +5417,14 @@ msgstr "No shared contacts"
 msgid "No source transactions"
 msgstr "No source transactions"
 
-#: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
-msgid "No spending"
-msgstr "No spending"
-
 #: src/category/components/categories-feature-intro/categories-feature-intro.tsx
 #: src/transaction/components/statistics-spending-hero/statistics-spending-hero.tsx
 msgid "No spending in this period"
 msgstr "No spending in this period"
+
+#: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
+msgid "No spending in this view"
+msgstr "No spending in this view"
 
 #: src/runway/component/runway-drivers/runway-drivers.tsx
 msgid "No spending in this window."
@@ -7305,10 +7305,6 @@ msgstr "Start from scratch and set every limit yourself"
 msgid "Start Sync"
 msgstr "Start Sync"
 
-#: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
-msgid "Start tracking your spending by using the mic button or adding transactions manually"
-msgstr "Start tracking your spending by using the mic button or adding transactions manually"
-
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Starter budget"
 msgstr "Starter budget"
@@ -7551,6 +7547,10 @@ msgstr "Tap \"Get API Key\" above and sign in to Binance"
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Tap \"Get API Token\" above to open api.monobank.ua"
 msgstr "Tap \"Get API Token\" above to open api.monobank.ua"
+
+#: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
+msgid "Tap + to add your first transaction"
+msgstr "Tap + to add your first transaction"
 
 #: src/app/(tabs)/settings/category-icons.tsx
 msgid "Tap a suggestion to use it for that category."
