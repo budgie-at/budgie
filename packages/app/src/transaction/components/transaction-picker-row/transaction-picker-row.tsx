@@ -31,9 +31,9 @@ export const TransactionPickerRow = ({ item, position, isSelected = false, onPre
 
     const isIncome = item.type === TransactionTypeEnum.INCOME;
     const signedAmount = `${isIncome ? '+' : ''}${protectAmount(convertFromMicroUnits(item.amount), item.currencySymbol)}`;
-    const description = isNotEmptyString(item.categoryTitle)
-        ? `${formatMonthAndDay(item.operatedAt)} · ${item.accountTitle} · ${item.categoryTitle}`
-        : `${formatMonthAndDay(item.operatedAt)} · ${item.accountTitle}`;
+    const description = [formatMonthAndDay(item.operatedAt), item.accountTitle, item.categoryTitle]
+        .filter(isNotEmptyString)
+        .join(textLineLimit === 0 ? '\n' : ' · ');
     const icon = item.categoryIcon ?? (isIncome ? UserIconNameEnum.BanknoteArrowDown : UserIconNameEnum.BanknoteArrowUp);
     const iconVariant = isIncome ? 'positive' : 'secondary';
     const amountClassName = isIncome

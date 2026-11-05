@@ -67,7 +67,13 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
             showsVerticalScrollIndicator={false}
             testID={ConvertToRefundModalSelector.Picker}
         >
-            <FormsheetHeader size={headerSize} title={t`Convert to Refund`} description={t`Select the original expense for this refund.`} />
+            <FormsheetHeader
+                size={headerSize}
+                title={t`Convert to Refund`}
+                description={t`Select the original expense for this refund.`}
+                descriptionClassName="leading-[18px]"
+                titleClassName="leading-[22px]"
+            />
             <SearchInput
                 value={search}
                 placeholder={t`Search expenses`}
