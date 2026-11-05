@@ -2,7 +2,6 @@ import { AccountRepository, SyncErrorCodeEnum, SyncModeEnum, SyncRepository, Syn
 import * as Cause from 'effect/Cause';
 import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
-import * as Layer from 'effect/Layer';
 import * as Predicate from 'effect/Predicate';
 import * as Schema from 'effect/Schema';
 import * as Semaphore from 'effect/Semaphore';
@@ -28,7 +27,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
     const syncRepository = yield* SyncRepository;
     const accountRepository = yield* AccountRepository;
     const syncIntegrationTokenService = yield* SyncIntegrationTokenService;
-    const rateGate = yield* Effect.provide(PollingSyncRateGate, Layer.fresh(PollingSyncRateGate.layer));
+    const rateGate = yield* PollingSyncRateGate;
     const attemptSemaphore = yield* Semaphore.make(1);
     const forwardSyncStaleThresholdMs = definition.forwardSyncStaleThresholdMs ?? 2 * 60 * 1000;
     const syncErrorThreshold = 3;

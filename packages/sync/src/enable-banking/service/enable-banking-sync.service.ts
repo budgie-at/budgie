@@ -25,7 +25,7 @@ import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncConsentExpiredError } from '../../core/error/sync-consent-expired.error';
 import { SyncTokenClientMismatchError } from '../../core/error/sync-token-client-mismatch.error';
 import { SyncUnauthorizedError } from '../../core/error/sync-unauthorized.error';
-import { pollingSyncDependenciesLayer } from '../../core/layer/polling-sync-dependencies.layer';
+import { makePollingSyncDependenciesLayer } from '../../core/layer/polling-sync-dependencies.layer';
 import { SyncRequestSigner } from '../../core/port/sync-request-signer.port';
 import { SyncBalanceReconciliationService } from '../../core/service/sync-balance-reconciliation.service';
 import { SyncIntegrationTokenService } from '../../core/service/sync-integration-token.service';
@@ -390,7 +390,7 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
 }) {
     static readonly layer = Layer.effect(EnableBankingSyncService, EnableBankingSyncService.make).pipe(
         Layer.provide([
-            pollingSyncDependenciesLayer,
+            makePollingSyncDependenciesLayer(),
             AccountArchiveService.layer,
             BankIntegrationRepository.layer,
             SyncBalanceReconciliationService.layer,

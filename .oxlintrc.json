@@ -116,7 +116,8 @@
         "effecttsgo/process-env-in-effect": "error",
         "effecttsgo/effect-try-without-catch": "error",
         "effecttsgo/global-json-in-effect": "error",
-        "effecttsgo/instance-of-schema": "error"
+        "effecttsgo/instance-of-schema": "error",
+        "effecttsgo/strict-effect-provide": "error"
     },
     "overrides": [
         {

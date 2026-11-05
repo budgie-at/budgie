@@ -15,7 +15,7 @@ import { SyncDeferredError } from '../../core/error/sync-deferred.error';
 import { SyncInvalidResponseError } from '../../core/error/sync-invalid-response.error';
 import { SyncRegionUnavailableError } from '../../core/error/sync-region-unavailable.error';
 import { SyncUnauthorizedError } from '../../core/error/sync-unauthorized.error';
-import { pollingSyncDependenciesLayer } from '../../core/layer/polling-sync-dependencies.layer';
+import { makePollingSyncDependenciesLayer } from '../../core/layer/polling-sync-dependencies.layer';
 import { SyncWorkload } from '../../core/port/sync-workload.port';
 import { SyncIntegrationTokenService } from '../../core/service/sync-integration-token.service';
 import { makePollingSyncAccountSetup } from '../../core/utils/make-polling-sync-account-setup.util';
@@ -552,7 +552,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
 }) {
     static readonly layer = Layer.effect(BinanceSyncService, BinanceSyncService.make).pipe(
         Layer.provide([
-            pollingSyncDependenciesLayer,
+            makePollingSyncDependenciesLayer(),
             AccountBalanceIncrementalService.layer,
             BinanceAccountService.layer,
             BinanceAssetCodeService.layer,
