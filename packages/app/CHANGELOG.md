@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.153.0](https://github.com/budgie-at/budgie/compare/v6.152.1...v6.153.0) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** expose recurring calendar day button semantics ([988c8b6](https://github.com/budgie-at/budgie/commit/988c8b6aade4c31aab95139756e6a82cb50a6f3f))
+* **app:** label recurring month navigation action ([891288f](https://github.com/budgie-at/budgie/commit/891288fd7135f27e68f50c7bac3d49556439ee29))
+* **app:** make recurring calendar accessible and keyboard aware ([1f6b476](https://github.com/budgie-at/budgie/commit/1f6b476c282d8eb1a76344e37705ff4cfed5a85b))
+* **app:** polish recurring calendar summary and entries ([00f689c](https://github.com/budgie-at/budgie/commit/00f689cf966f565daec07b315bc475dbb7119e58))
+* **app:** polish recurring calendar titles and spacing ([4960b6f](https://github.com/budgie-at/budgie/commit/4960b6f1d13fd5cbba528a6d60a91fe4451f523c))
+* **app:** stabilize recurring loading and row boundaries ([9e6c448](https://github.com/budgie-at/budgie/commit/9e6c44879c094905356ef2a4ed167e8c6ae87091))
+* **app:** tighten recurring calendar spacing ([98ad7da](https://github.com/budgie-at/budgie/commit/98ad7da77811e8cd20cbda7b533ee7b3b451e2f5))
+
+### Features
+
+* **app:** polish recurring calendar layout ([aab0e46](https://github.com/budgie-at/budgie/commit/aab0e46d7a780dff90436fcb1c720a5ebc619d49))
+* **app:** polish recurring transactions ([56ff22c](https://github.com/budgie-at/budgie/commit/56ff22c4b0e2c9ae75de4aa903824eb6c3f5b650))
+* **app:** refine recurring calendar typography and states ([a28515a](https://github.com/budgie-at/budgie/commit/a28515a03fbd95d147e8e571c061ae3f7f7a4c1f))
+* **app:** refine recurring state hierarchy ([e68c2bc](https://github.com/budgie-at/budgie/commit/e68c2bcc365f980ec02798924089bf3fcb39d34b))
+
+
 ## [6.152.1](https://github.com/budgie-at/budgie/compare/v6.152.0...v6.152.1) (2026-11-04)
 
 ### Bug Fixes
