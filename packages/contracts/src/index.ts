@@ -98,7 +98,6 @@ export { DebtEventRepository } from './debt-event/repository/debt-event.reposito
 
 export { InstallmentPlanRepository } from './installment-plan/repository/installment-plan.repository';
 export { INSTALLMENT_AMOUNT_TOLERANCE } from './installment-plan/constant/installment-amount-tolerance.constant';
-export { INSTALLMENT_DUE_DATE_TOLERANCE_DAYS } from './installment-plan/constant/installment-due-date-tolerance-days.constant';
 export { getInstallmentDueDate } from './installment-plan/utils/get-installment-due-date.util';
 
 export type { InstallmentPlanScheduleInterface } from './installment-plan/interface/installment-plan-schedule.interface';
