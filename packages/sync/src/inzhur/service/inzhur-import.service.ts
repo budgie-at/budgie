@@ -60,15 +60,7 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
         const statementNoonSuffix = 'T12:00:00.000Z';
         const openingHoldingsTitle = 'Opening holdings';
 
-        const buildTradeTitle = (plan: InzhurFundPlanInterface, dividendMicroUnits: number) => {
-            const shortName = plan.name.replace(/^Inzhur\s+/u, '');
-
-            if (plan.deltaMicroUnits < 0) {
-                return `Sold ${shortName}`;
-            }
-
-            return dividendMicroUnits >= plan.valueMicroUnits ? `Dividends reinvested in ${shortName}` : `Bought ${shortName}`;
-        };
+        const buildShortName = (plan: InzhurFundPlanInterface) => plan.name.replace(/^Inzhur\s+/u, '');
 
         const buildOperatedAt = (statementDate: string) => new Date(`${statementDate}${statementNoonSuffix}`);
 
@@ -287,7 +279,7 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
                     };
 
                     return {
-                        ...buildInzhurTransactionInput(`Reinvested dividends · ${plan.name}`, externalId, operatedAt, [entry]),
+                        ...buildInzhurTransactionInput(`${buildShortName(plan)} dividends`, externalId, operatedAt, [entry]),
                         fundAccountId: plan.account.id
                     };
                 });
@@ -298,7 +290,7 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
                 const value = convertFromMicroUnits(plan.valueMicroUnits);
 
                 return buildInzhurTransactionInput(
-                    buildTradeTitle(plan, dividendByAccountId.get(plan.account.id) ?? 0),
+                    isSell ? `Sold ${buildShortName(plan)}` : `Bought ${buildShortName(plan)}`,
                     externalId,
                     operatedAt,
                     isSell

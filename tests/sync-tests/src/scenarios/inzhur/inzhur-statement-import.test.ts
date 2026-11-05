@@ -1,18 +1,21 @@
 import {
     AccountTypeEnum,
     AccountEntityTable,
+    DEFAULT_TRANSACTION_FILTER,
     DividendPayoutEnum,
     ExternalSourceEnum,
     InstrumentEntityTable,
     InstrumentPriceProviderEnum,
     InstrumentTypeEnum,
     INVESTMENTS_CATEGORY_ID,
+    LanguageEnum,
     PRECISION,
     SyncRepository,
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
+    TransactionViewRepository,
     UserIconNameEnum
 } from '@budgie/contracts';
 import {
@@ -137,7 +140,7 @@ describe('inzhur/statement-import', () => {
             expect(ledger.slice(0, 2).map(({ fundAccountId }) => fundAccountId)).toEqual([reitAccount.id, energyAccount.id]);
             expect(ledger.slice(2).map(({ fundAccountId }) => fundAccountId)).toEqual([null, null]);
             expect(ledger[0]).toMatchObject({
-                title: 'Reinvested dividends · Inzhur REIT',
+                title: 'REIT dividends',
                 entries: [
                     {
                         accountId: cashAccount.id,
@@ -150,6 +153,30 @@ describe('inzhur/statement-import', () => {
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(0);
             expect(yield* fetchAccountBalance(reitAccount.id)).toBe(1100 * PRECISION);
             expect(yield* fetchAccountBalance(energyAccount.id)).toBe(3 * PRECISION);
+        }).pipe(Effect.provide(makeInzhurFollowUpLayer(1100, 3)))
+    );
+
+    it.effect('lists the reinvested dividends of a fund in that fund account transactions', () =>
+        Effect.gen(function* () {
+            const { reitAccount } = yield* setUpInzhurWithBaseline(100, 1000, 2);
+
+            yield* importInzhurStatement(SECOND_URI);
+            const transactionViewRepository = yield* TransactionViewRepository;
+            const transactions = yield* transactionViewRepository.getAll(
+                10,
+                { ...DEFAULT_TRANSACTION_FILTER, accountIds: [reitAccount.id] },
+                LanguageEnum.EN
+            );
+
+            expect(transactions.map(({ type, externalId }) => [type, externalId])).toEqual(
+                expect.arrayContaining([
+                    [TransactionTypeEnum.INCOME, `inzhur:${SECOND_DATE_ISO}:${INZHUR_REIT_LAYOUT.isin}:dividend`],
+                    [TransactionTypeEnum.TRANSFER, `inzhur:${SECOND_DATE_ISO}:${INZHUR_REIT_LAYOUT.isin}:buy`]
+                ])
+            );
+            expect(transactions.map(({ externalId }) => externalId)).not.toContain(
+                `inzhur:${SECOND_DATE_ISO}:${INZHUR_ENERGY_LAYOUT.isin}:dividend`
+            );
         }).pipe(Effect.provide(makeInzhurFollowUpLayer(1100, 3)))
     );
 
@@ -190,7 +217,7 @@ describe('inzhur/statement-import', () => {
                 (yield* fetchInzhurLedger())
                     .filter(transaction => transaction.type === TransactionTypeEnum.TRANSFER)
                     .map(transaction => transaction.title)
-            ).toEqual(['Bought REIT', 'Dividends reinvested in Energy']);
+            ).toEqual(['Bought REIT', 'Bought Energy']);
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(-400 * PRECISION);
         }).pipe(Effect.provide(makeInzhurFollowUpLayer(1100, 3)))
     );
