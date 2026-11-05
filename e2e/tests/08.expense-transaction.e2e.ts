@@ -36,7 +36,7 @@ test('08 expense transaction', { tags: ['transactions'] }, async ({ budgie }) =>
         await t.submitTransactionAndWait(ctx);
         await b.expectId(ctx, 'TransactionCard.Label.E2E_Test_Expense', 5_000);
         await expect(id('TransactionCard.Category.E2E_Txn_Category')).toHaveText('E2E Txn Category');
-        await expect(id('TransactionCard.Label.E2E_Test_Expense')).toHaveText(/· E2E Txn Account,/);
+        await expect(id('TransactionCard.Label.E2E_Test_Expense')).toHaveText('E2E Test Expense, E2E Txn Category, E2E Txn Account, $42');
         await home('58');
         await b.expectId(ctx, 'AccountCard.Balance.E2E_Txn_Account.58');
         await t.navigateToTransactions(ctx);
@@ -81,7 +81,9 @@ test('08 expense transaction', { tags: ['transactions'] }, async ({ budgie }) =>
 
         await b.expectId(ctx, 'TransactionCard.Label.E2E_Edited_Expense', 5_000);
         await expect(id('TransactionCard.Category.E2E_Edited_Category')).toHaveText('E2E Edited Category');
-        await expect(id('TransactionCard.Label.E2E_Edited_Expense')).toHaveText(/· E2E Txn Account,/);
+        await expect(id('TransactionCard.Label.E2E_Edited_Expense')).toHaveText(
+            'E2E Edited Expense, E2E Edited Category, E2E Txn Account, $33'
+        );
         await b.expectNoId(ctx, 'TransactionCard.Label.E2E_Test_Expense');
         await home('67');
         await b.expectId(ctx, 'AccountCard.Balance.E2E_Txn_Account.67');

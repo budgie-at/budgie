@@ -74,7 +74,6 @@ export default function CreateExpenseTransactionPage() {
                     aiContext={normalizedAiContext}
                     isNewTransaction
                     onSubmit={handleSubmit}
-                    onCancel={handleGoBack}
                 />
             </TransactionFormScreen>
         </FormProvider>

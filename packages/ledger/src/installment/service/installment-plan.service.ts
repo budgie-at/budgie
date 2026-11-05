@@ -26,6 +26,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
+import { AccountArchiveService } from '../../account/service/account-archive.service';
 import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { TransactionDebtSettlementService } from '../../transaction/service/transaction-debt-settlement.service';
 
@@ -38,6 +39,7 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
         const debtEventRepository = yield* DebtEventRepository;
         const installmentPlanRepository = yield* InstallmentPlanRepository;
         const transactionRepository = yield* TransactionRepository;
+        const accountArchiveService = yield* AccountArchiveService;
         const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
         const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
         const entryBaseValuationService = yield* EntryBaseValuationService;
@@ -418,6 +420,21 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                 },
                 effect => Db.transaction(effect)
             ),
+            revertExpense: Effect.fn('InstallmentPlanService.revertExpense')(
+                function* (debtAccountId: number) {
+                    const account = yield* accountRepository.findById(debtAccountId);
+
+                    if (!isDefined(account) || account.debtType !== AccountDebtTypeEnum.INSTALLMENT) {
+                        return;
+                    }
+
+                    const parts = yield* installmentPlanRepository.findParts(debtAccountId);
+
+                    yield* Effect.forEach(parts, part => transactionDebtSettlementService.detach(part.transactionId), { discard: true });
+                    yield* accountArchiveService.deleteById(debtAccountId);
+                },
+                effect => Db.transaction(effect)
+            ),
             attachDueParts: Effect.fn('InstallmentPlanService.attachDueParts')(
                 function* () {
                     const activePlanIds = yield* findActivePlanIds();
@@ -443,6 +460,7 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
             DebtEventRepository.layer,
             InstallmentPlanRepository.layer,
             TransactionRepository.layer,
+            AccountArchiveService.layer,
             AccountBalanceIncrementalService.layer,
             TransactionDebtSettlementService.layer,
             EntryBaseValuationService.layer

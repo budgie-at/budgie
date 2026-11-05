@@ -1,18 +1,20 @@
-import { RecurringSeriesKindEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { RecurringSeriesKindEnum, convertFromMicroUnits, UserIconNameEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
-import { Text, View } from 'react-native';
+import { View, Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { TransactionCardLayout } from '../../../transaction/components/transaction-card-layout/transaction-card-layout';
+import { TRANSACTION_SECONDARY_MAX_FONT_SIZE_MULTIPLIER } from '../../../transaction/constant/transaction-secondary-max-font-size-multiplier.constant';
 import { useRecurringCadenceLabel } from '../../hook/use-recurring-cadence-label.hook';
 import { RecurringAlertBadge } from '../recurring-alert-badge/recurring-alert-badge';
-import { RecurringRowLayout } from '../recurring-row-layout/recurring-row-layout';
 
 import type { RecurringSeriesListItemInterface } from '@budgie/recurring';
 
@@ -41,10 +43,23 @@ export const RecurringListRowContent = ({ series, isPossible }: Props) => {
     const amount = protectAmount(convertFromMicroUnits(series.amount), defaultInstrument.symbol);
 
     return (
-        <RecurringRowLayout
-            icon={series.categoryIcon}
-            title={series.title}
-            trailing={
+        <TransactionCardLayout
+            icon={
+                <CircleIcon
+                    size={36}
+                    iconSize={18}
+                    radius={18}
+                    border={false}
+                    icon={series.categoryIcon ?? UserIconNameEnum.Wallet}
+                    variant="secondary"
+                />
+            }
+            title={
+                <Text dynamicTypeRamp="headline" className="text-[16px] font-semibold text-primary" lineBreakStrategyIOS="standard">
+                    {series.title}
+                </Text>
+            }
+            amount={
                 <View className="shrink-0 items-end gap-y-xxs">
                     <Text dynamicTypeRamp="headline" className={amountVariants({ kind: series.kind })}>
                         {amount}
@@ -55,12 +70,13 @@ export const RecurringListRowContent = ({ series, isPossible }: Props) => {
         >
             <Text
                 dynamicTypeRamp="footnote"
+                maxFontSizeMultiplier={TRANSACTION_SECONDARY_MAX_FONT_SIZE_MULTIPLIER}
                 className="text-[12px] text-secondary-foreground"
                 numberOfLines={subtitleLineLimit}
                 ellipsizeMode="tail"
             >
                 {subtitle}
             </Text>
-        </RecurringRowLayout>
+        </TransactionCardLayout>
     );
 };

@@ -145,6 +145,7 @@
             --color-surface-row-opaque: rgb(242, 242, 242);
             --color-grouped-surface: rgb(242, 242, 247);
             --color-grouped-surface-row: rgb(255, 255, 255);
+            --color-transaction-form-row: var(--color-grouped-surface-row);
             --color-surface-fill: rgba(118, 118, 128, 0.12);
             --color-segmented-track: rgba(118, 118, 128, 0.12);
             --color-grouped-surface-fill: rgb(255, 255, 255);
@@ -250,6 +251,7 @@
             --color-surface-row-opaque: rgb(13, 13, 13);
             --color-grouped-surface: rgb(0, 0, 0);
             --color-grouped-surface-row: rgb(13, 13, 13);
+            --color-transaction-form-row: rgb(21, 21, 23);
             --color-surface-fill: rgba(118, 118, 128, 0.24);
             --color-segmented-track: rgba(118, 118, 128, 0.24);
             --color-grouped-surface-fill: rgba(118, 118, 128, 0.24);

@@ -8,10 +8,13 @@ import { Icon } from '../icon/icon';
 
 interface Props {
     readonly title: string;
+    readonly maxFontSizeMultiplier?: number;
+    readonly closeButtonSize?: number;
 }
 
-export const SheetTitleRow = ({ title }: Props) => {
+export const SheetTitleRow = ({ title, maxFontSizeMultiplier, closeButtonSize = 36 }: Props) => {
     const { t } = useLingui();
+    const closeButtonStyle = { width: closeButtonSize, height: closeButtonSize };
     const handleClose = () => void router.back();
 
     return (
@@ -21,14 +24,19 @@ export const SheetTitleRow = ({ title }: Props) => {
                 accessibilityRole="button"
                 accessibilityLabel={t`Close`}
                 hitSlop={8}
-                className="h-[36px] w-[36px] items-center justify-center rounded-full bg-surface-fill active:opacity-70"
+                className="items-center justify-center rounded-full bg-surface-fill active:opacity-70"
+                style={closeButtonStyle}
             >
                 <Icon icon={UserIconNameEnum.X} size={16} className="text-primary/80" />
             </HapticPressable>
-            <Text className="text-primary flex-1 text-center text-[17px] font-semibold leading-[22px]" accessibilityRole="header">
+            <Text
+                className="text-primary flex-1 text-center text-[17px] font-semibold leading-[22px]"
+                accessibilityRole="header"
+                maxFontSizeMultiplier={maxFontSizeMultiplier}
+            >
                 {title}
             </Text>
-            <View className="w-[36px]" />
+            <View style={closeButtonStyle} />
         </View>
     );
 };

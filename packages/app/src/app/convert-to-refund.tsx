@@ -8,8 +8,8 @@ import { useConvertToRefundModal, useConvertToRefundModalParams } from '../trans
 
 import { ConvertToRefundModalSelector } from './convert-to-refund-modal.selector';
 
-const COMPACT_DETENT = 0.62;
 const EXPANDED_DETENT = 0.9;
+const ACCESSIBILITY_DETENT = 1;
 
 export default function ConvertToRefundModal() {
     const [, resolveConvertToRefund, dismissConvertToRefund] = useConvertToRefundModal();
@@ -17,7 +17,7 @@ export default function ConvertToRefundModal() {
     const currentParams = useConvertToRefundModalParams();
     const screenOptions = {
         ...useModalRouteState(currentParams, dismissConvertToRefund),
-        sheetAllowedDetents: isAccessibilityTextSize ? [EXPANDED_DETENT] : [COMPACT_DETENT, EXPANDED_DETENT],
+        sheetAllowedDetents: isAccessibilityTextSize ? [ACCESSIBILITY_DETENT] : [EXPANDED_DETENT],
         sheetInitialDetentIndex: 0
     };
     const refundIncomeTransactionId = currentParams?.refundIncomeTransactionId ?? 0;

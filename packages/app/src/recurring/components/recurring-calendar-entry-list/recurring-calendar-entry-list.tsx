@@ -36,7 +36,7 @@ export const RecurringCalendarEntryList = ({
 
     return (
         <View className="gap-y-md">
-            <View className="gap-x-xl flex-row flex-wrap justify-between items-center">
+            <View className="gap-x-xl flex-row flex-wrap justify-between items-center px-3xl">
                 <Text
                     dynamicTypeRamp="footnote"
                     className="text-[13px] font-medium text-secondary-foreground"

@@ -1085,7 +1085,7 @@ msgstr "Більше за цю суму"
 msgid "account"
 msgstr "рахунок"
 
-#: src/app/account-selector.tsx
+#: src/account/component/account-selector-header/account-selector-header.tsx
 #: src/recurring/components/recurring-form-account-field/recurring-form-account-field.tsx
 #: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
@@ -1173,6 +1173,9 @@ msgstr "Активний бюджет"
 #: src/budget/components/budget-event-category-limits/budget-event-category-limits.tsx
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 #: src/budget/components/budget-list-section/budget-list-section.tsx
+#: src/transaction/components/transaction-date-tags-row/transaction-date-tags-row.tsx
+#: src/transaction/components/transaction-fee-field-icon/transaction-fee-field-icon.tsx
+#: src/transaction/components/transaction-note-field-icon/transaction-note-field-icon.tsx
 msgid "Add"
 msgstr "Додати"
 
@@ -1487,6 +1490,10 @@ msgstr "Сума"
 #: src/account/component/update-debt-account/update-debt-account.tsx
 msgid "Amount borrowed"
 msgstr "Позичена сума"
+
+#: src/recurring/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
+msgid "Amount changed"
+msgstr "Сума змінилася"
 
 #: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/account/component/update-debt-account/update-debt-account.tsx
@@ -2115,12 +2122,13 @@ msgstr "Змінити пізніше не можна"
 #: src/account/hooks/use-delete-archived-account.hook.ts
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 #: src/budget/hooks/use-budget-event-form.hook.ts
 #: src/budget/hooks/use-budget-form.hook.ts
 #: src/budget/hooks/use-budget-fund-form.hook.ts
 #: src/category/hooks/use-delete-category.hook.ts
 #: src/import/hook/use-restore-backup.hook.ts
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
@@ -2133,7 +2141,7 @@ msgstr "Змінити пізніше не можна"
 #: src/sync/component/enable-banking-disconnect-row/enable-banking-disconnect-row.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 #: src/tag/hooks/use-delete-tag.hook.ts
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 #: src/transaction/components/transaction-form-actions/transaction-form-actions.tsx
@@ -2343,6 +2351,9 @@ msgstr "Перевіряємо історію транзакцій"
 #: src/budget/components/budget-fund-category-field/budget-fund-category-field.tsx
 #: src/import/components/import-column-map-field/import-column-map-field.tsx
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
+#: src/transaction/components/transaction-account-row/transaction-account-row.tsx
+#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
+#: src/transaction/components/transfer-account-picker/transfer-account-picker.tsx
 msgid "Choose"
 msgstr "Вибрати"
 
@@ -2359,6 +2370,10 @@ msgstr "Виберіть категорію"
 #: src/rule/utils/get-rule-form-issue.util.ts
 msgid "Choose a category to continue"
 msgstr "Виберіть категорію, щоб продовжити"
+
+#: src/transaction/hook/use-convert-transfer-form.hook.ts
+msgid "Choose a destination account"
+msgstr "Виберіть рахунок отримувача"
 
 #: src/auth/components/pin-restart-button/pin-restart-button.tsx
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
@@ -2391,6 +2406,10 @@ msgstr "Виберіть PIN-код"
 msgid "Choose a source"
 msgstr "Виберіть джерело"
 
+#: src/transaction/hook/use-convert-transfer-form.hook.ts
+msgid "Choose a source account"
+msgstr "Виберіть рахунок відправника"
+
 #: src/rule/components/rule-action-tag-selector/rule-action-tag-selector.tsx
 msgid "Choose a tag"
 msgstr "Виберіть тег"
@@ -2403,6 +2422,10 @@ msgstr "Виберіть тег, щоб продовжити"
 #: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx
 msgid "Choose a type"
 msgstr "Виберіть тип"
+
+#: src/transaction/components/convert-transfer-accounts/convert-transfer-accounts.tsx
+msgid "Choose account"
+msgstr "Виберіть рахунок"
 
 #: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
@@ -2725,7 +2748,6 @@ msgstr "Помилка конвертації"
 
 #: src/money-data/component/money-data-upgrade-status-card/money-data-upgrade-status-card.tsx
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 msgid "Convert"
 msgstr "Конвертувати"
@@ -2738,7 +2760,6 @@ msgstr "Конвертувати минулі суми"
 msgid "Convert past amounts?"
 msgstr "Конвертувати минулі суми?"
 
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 #: src/transaction/components/transaction-list-convert-to-refund-menu-item/transaction-list-convert-to-refund-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Convert to Refund"
@@ -2749,6 +2770,7 @@ msgid "Convert to Refund?"
 msgstr "Перетворити на повернення?"
 
 #: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
+#: src/transaction/components/convert-transfer-form/convert-transfer-form.tsx
 #: src/transaction/components/transaction-list-convert-to-transfer-menu-item/transaction-list-convert-to-transfer-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Convert to Transfer"
@@ -2911,7 +2933,7 @@ msgstr "Не вдалося видалити транзакцію."
 msgid "Could not disconnect"
 msgstr "Не вдалося відключити"
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "Could not erase the data"
 msgstr "Не вдалося стерти дані"
 
@@ -2942,10 +2964,6 @@ msgstr "Не вдалося завантажити бюджет"
 #: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
 msgid "Could not load contacts"
 msgstr "Не вдалося завантажити контакти"
-
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
-msgid "Could not load sources. Please try again."
-msgstr "Не вдалося завантажити джерела. Спробуйте ще раз."
 
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Could not mark account as external"
@@ -3093,6 +3111,7 @@ msgid "Could not undo the move to cash"
 msgstr "Не вдалося скасувати перенесення в готівку"
 
 #: src/account/hooks/use-shelved-account-action.hook.ts
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
 msgid "Could not undo."
 msgstr "Не вдалося скасувати."
 
@@ -3192,6 +3211,7 @@ msgid "Couldn't finish. Try again."
 msgstr "Не вдалося завершити. Спробуйте ще раз."
 
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
+#: src/transaction/components/transaction-picker-failure/transaction-picker-failure.tsx
 msgid "Couldn’t load this list"
 msgstr "Не вдалося завантажити список"
 
@@ -3575,7 +3595,7 @@ msgstr "Видалити…"
 msgid "Deleted “{accountTitle}”"
 msgstr "«{accountTitle}» видалено"
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "Deletes {DB_NAME} from this phone"
 msgstr "Видаляє {DB_NAME} з цього телефона"
 
@@ -3704,7 +3724,7 @@ msgstr "Не містить"
 #: src/categorize-inbox/components/categorize-inbox-done-button/categorize-inbox-done-button.tsx
 #: src/onboarding/component/onboarding-keyboard-controls/onboarding-keyboard-controls.tsx
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
+#: src/transaction/components/convert-transfer-form/convert-transfer-form.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 #: src/transaction/hook/use-transaction-keypad-editing.hook.ts
@@ -4065,10 +4085,6 @@ msgstr "Введіть усі суми"
 msgid "Enter an amount"
 msgstr "Введіть суму"
 
-#: src/transaction/components/transaction-split-field-icon/transaction-split-field-icon.tsx
-msgid "Enter an amount to split it"
-msgstr "Введіть суму, щоб розділити її"
-
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enter current PIN"
 msgstr "Введіть поточний PIN-код"
@@ -4116,15 +4132,15 @@ msgstr "Уся доступна історія"
 msgid "Entire history will be re-synced on next sync."
 msgstr "Уся історія буде повторно синхронізована під час наступної синхронізації."
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "Erase"
 msgstr "Стерти"
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "Erase and start fresh"
 msgstr "Стерти й почати заново"
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "Erase and start fresh?"
 msgstr "Стерти й почати заново?"
 
@@ -4261,6 +4277,7 @@ msgstr "Курс обміну: {rateLabel}"
 #: src/recurring/components/recurring-calendar-content/recurring-calendar-content.tsx
 #: src/recurring/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 #: src/recurring/components/recurring-calendar-legend/recurring-calendar-legend.tsx
+#: src/recurring/components/recurring-calendar-summary/recurring-calendar-summary.tsx
 msgid "Expected"
 msgstr "Очікується"
 
@@ -4340,12 +4357,12 @@ msgid "Features"
 msgstr "Функції"
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+#: src/transaction/components/transaction-fee-field-icon/transaction-fee-field-icon.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Fee"
 msgstr "Комісія"
 
-#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
 #: src/transaction/hook/use-transaction-fee-label.hook.ts
 msgid "Fee {formattedAmount}"
 msgstr "Комісія {formattedAmount}"
@@ -4485,9 +4502,17 @@ msgid "French"
 msgstr "Французька"
 
 #: src/app/transaction-amount-filter.tsx
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "From"
 msgstr "З"
+
+#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
+msgctxt "transfer account"
+msgid "From"
+msgstr "Звідки"
+
+#: src/transaction/components/convert-transfer-summary/convert-transfer-summary.tsx
+msgid "From {accountTitle}"
+msgstr "З {accountTitle}"
 
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead.tsx
 msgid "From {counterparty}"
@@ -4507,6 +4532,7 @@ msgstr "З {source} на {destination}"
 
 #: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/app/(main)/import-csv.tsx
+#: src/transaction/components/convert-transfer-accounts/convert-transfer-accounts.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "From account"
 msgstr "З рахунку"
@@ -4957,6 +4983,10 @@ msgstr "Це єдиний ключ до вашого файлу. Немає ні
 msgid "Its accounts stop syncing and are removed from your active accounts."
 msgstr "Його рахунки перестануть синхронізуватися й буде вилучено з активних рахунків."
 
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
+msgid "Its payments become regular expenses again and the plan disappears. This can't be undone."
+msgstr "Його платежі знову стануть звичайними витратами, а план зникне. Це неможливо скасувати."
+
 #: src/account/hooks/use-delete-archived-account.hook.ts
 msgid "Its transactions go too. Transfers stay in the other account as “Transfer (account deleted)”. This can’t be undone."
 msgstr "Його транзакції теж буде видалено. Перекази залишаться в іншому рахунку як «Переказ (рахунок видалено)». Це не можна скасувати."
@@ -5173,6 +5203,10 @@ msgstr "Обмежений доступ · Керувати в налаштув�
 #: src/budget/components/budget-limit-changes-row/budget-limit-changes-row.tsx
 msgid "Limits are tuned automatically after 3 steady periods"
 msgstr "Ліміти налаштовуються автоматично після 3 стабільних періодів"
+
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
+msgid "Link refund"
+msgstr "Пов’язати повернення"
 
 #: src/account/component/account-switch-field/account-switch-field.tsx
 msgid "List it on the Home screen"
@@ -5814,8 +5848,8 @@ msgid "No icons found"
 msgstr "Іконки не знайдено"
 
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
-msgid "No income"
-msgstr "Немає доходів"
+msgid "No income in this view"
+msgstr "У цьому поданні немає доходів"
 
 #: src/app/voice-review.tsx
 msgid "No items to save"
@@ -5901,14 +5935,14 @@ msgstr "Немає доступних контактів"
 msgid "No source transactions"
 msgstr "Немає вихідних транзакцій"
 
-#: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
-msgid "No spending"
-msgstr "Немає витрат"
-
 #: src/category/components/categories-feature-intro/categories-feature-intro.tsx
 #: src/transaction/components/statistics-spending-hero/statistics-spending-hero.tsx
 msgid "No spending in this period"
 msgstr "Немає витрат за цей період"
+
+#: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
+msgid "No spending in this view"
+msgstr "У цьому поданні немає витрат"
 
 #: src/runway/component/runway-drivers/runway-drivers.tsx
 msgid "No spending in this window."
@@ -6023,9 +6057,7 @@ msgstr "Не регулярний"
 msgid "Not saved yet"
 msgstr "Ще не збережено"
 
-#: src/transaction/components/transaction-field-caption/transaction-field-caption.tsx
 #: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx
-#: src/transaction/components/transaction-metadata-field/transaction-metadata-field.tsx
 msgid "not set"
 msgstr "не встановлено"
 
@@ -6173,7 +6205,7 @@ msgstr "раз на місяць"
 msgid "Once you have 3 months of transactions, Runway shows how long your balance lasts."
 msgstr "Коли у вас будуть транзакції за 3 місяці, запас покаже, на скільки вистачить вашого балансу."
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "One you exported with a PIN you remember"
 msgstr "Ту, яку ви експортували з PIN-кодом, що пам'ятаєте"
 
@@ -6372,10 +6404,16 @@ msgstr "Або розблокуйте за допомогою Touch ID."
 msgid "Organize"
 msgstr "Упорядкування"
 
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
+msgid "Original expense"
+msgstr "Початкова витрата"
+
 #: src/transaction/components/refund-transaction-info-content/refund-transaction-info-content.tsx
 msgid "Original purchase"
 msgstr "Початкова покупка"
 
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/consolidation-source-row/consolidation-source-row.tsx
 msgid "Original transaction"
 msgstr "Початкова транзакція"
@@ -6704,6 +6742,10 @@ msgstr "План створено"
 msgid "Plan name"
 msgstr "Назва плану"
 
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
+msgid "Plan reverted"
+msgstr "План скасовано"
+
 #: src/installment-plan/component/convert-to-installment-total-input/convert-to-installment-total-input.tsx
 msgid "Plan total"
 msgstr "Сума плану"
@@ -6736,6 +6778,7 @@ msgstr "Будь ласка, введіть ваш API-токен Монобан
 
 #: src/app/convert-to-transfer.tsx
 #: src/installment-plan/component/convert-to-installment-create-button/convert-to-installment-create-button.tsx
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
 msgid "Please try again"
 msgstr "Будь ласка, спробуйте ще раз"
 
@@ -6790,7 +6833,6 @@ msgid "Price {ageLabel} · {date}"
 msgstr "Ціна {ageLabel} · {date}"
 
 #: src/recurring/components/recurring-alert-badge/recurring-alert-badge.tsx
-#: src/recurring/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 msgid "Price changed"
 msgstr "Ціна змінилася"
 
@@ -6965,14 +7007,18 @@ msgstr "Перерахунок балансів"
 
 #: src/receipt/hook/use-receipt-scan.hook.ts
 #: src/rule/constant/external-source.constant.ts
-#: src/transaction/components/transaction-card-subtitle/transaction-card-subtitle.tsx
 #: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
+#: src/transaction/components/transaction-receipt-marker/transaction-receipt-marker.tsx
 msgid "Receipt"
 msgstr "Чек"
 
 #: src/transaction/components/statistics-drill-down-summary/statistics-drill-down-summary.tsx
 msgid "Received"
 msgstr "Отримано"
+
+#: src/transaction/hook/use-convert-transfer-form.hook.ts
+msgid "Receiving"
+msgstr "Отримання"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Receiving · {toCode}"
@@ -7010,6 +7056,7 @@ msgstr "Записати витрату"
 #: src/recurring/components/recurring-calendar-content/recurring-calendar-content.tsx
 #: src/recurring/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 #: src/recurring/components/recurring-calendar-legend/recurring-calendar-legend.tsx
+#: src/recurring/components/recurring-calendar-summary/recurring-calendar-summary.tsx
 msgid "Recorded"
 msgstr "Зафіксовано"
 
@@ -7038,6 +7085,10 @@ msgstr "Нагадування про регулярні платежі"
 msgid "Refine"
 msgstr "Уточнити"
 
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
+msgid "Refund"
+msgstr "Повернення"
+
 #: src/transaction/components/refund-transaction-info-content/refund-transaction-info-content.tsx
 msgid "Refund from {merchant}"
 msgstr "Повернення від {merchant}"
@@ -7053,6 +7104,10 @@ msgstr "Повернено {formattedRefundedAmount}"
 #: src/transaction/components/statistics-drill-down-caption/statistics-drill-down-caption.tsx
 msgid "Refunded in full · {refundLabel}"
 msgstr "Повністю повернено · {refundLabel}"
+
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+msgid "Refunds"
+msgstr "Повернення"
 
 #: src/transaction/components/transaction-info-refund-summary/transaction-info-refund-summary.tsx
 msgid "Refunds received"
@@ -7203,7 +7258,7 @@ msgstr "Відновити"
 msgid "Restore {accountTitle}"
 msgstr "Відновити {accountTitle}"
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "Restore a backup"
 msgstr "Відновити з резервної копії"
 
@@ -7462,7 +7517,7 @@ msgstr "Запечатано. Лише ваш PIN-код відкриває це
 msgid "Search accounts..."
 msgstr "Пошук рахунків..."
 
-#: src/app/account-selector.tsx
+#: src/account/component/account-selector-header/account-selector-header.tsx
 msgid "Search accounts…"
 msgstr "Пошук рахунків…"
 
@@ -7565,10 +7620,6 @@ msgstr "Дивіться витрати за контекстом, а не ли�
 msgid "Seen {seenCount}× · {cadence}"
 msgstr "Помічено {seenCount}× · {cadence}"
 
-#: src/transaction/components/transaction-account-row/transaction-account-row.tsx
-msgid "Select"
-msgstr "Вибрати"
-
 #: src/@generic/component/contact-selector/contact-selector.tsx
 msgid "Select a contact"
 msgstr "Виберіть контакт"
@@ -7578,8 +7629,6 @@ msgid "Select a valid column"
 msgstr "Виберіть дійсний стовпець"
 
 #: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
-#: src/transaction/components/transaction-account-row/transaction-account-row.tsx
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "Select account"
 msgstr "Виберіть рахунок"
 
@@ -7609,10 +7658,6 @@ msgstr "Оберіть завантажений PDF-файл"
 msgid "Select the exported XLSX file"
 msgstr "Оберіть експортований XLSX-файл"
 
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
-msgid "Select the original expense for this refund."
-msgstr "Виберіть початкову витрату для цього повернення."
-
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Selected"
 msgstr "Вибрано"
@@ -7620,6 +7665,10 @@ msgstr "Вибрано"
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Send a copy"
 msgstr "Надіслати копію"
+
+#: src/transaction/hook/use-convert-transfer-form.hook.ts
+msgid "Sending"
+msgstr "Надсилання"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Sending {fromCode}"
@@ -7685,10 +7734,6 @@ msgstr "Створити бюджет"
 #: src/budget/constant/budget-save-blocker-label.constant.ts
 msgid "Set every category limit to continue"
 msgstr "Встановіть усі ліміти категорій, щоб продовжити"
-
-#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
-msgid "Set fee"
-msgstr "Встановити комісію"
 
 #: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
 msgid "Set Maturity Date"
@@ -7928,10 +7973,6 @@ msgstr "Почніть з нуля та задайте кожен ліміт с�
 msgid "Start sync"
 msgstr "Розпочати синхронізацію"
 
-#: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
-msgid "Start tracking your spending by using the mic button or adding transactions manually"
-msgstr "Почніть відстежувати свої витрати, використовуючи кнопку мікрофона або додаючи транзакції вручну"
-
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Starter budget"
 msgstr "Стартовий бюджет"
@@ -8005,7 +8046,7 @@ msgstr "Підсумок недоступний"
 msgid "Support"
 msgstr "Підтримка"
 
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
+#: src/transaction/components/transfer-swap-button/transfer-swap-button.tsx
 msgid "Swap accounts"
 msgstr "Поміняти рахунки"
 
@@ -8187,6 +8228,10 @@ msgstr "Натисніть \"Отримати API-ключ\" вгорі та у�
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Tap \"Get API Token\" above to open api.monobank.ua"
 msgstr "Торкніться «Get API Token» вище, щоб відкрити api.monobank.ua"
+
+#: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
+msgid "Tap + to add your first transaction"
+msgstr "Натисніть +, щоб додати першу транзакцію"
 
 #: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
 msgid "Tap <0>Register</0>. The key file downloads to Files, in Downloads. Keep it secret."
@@ -8437,7 +8482,7 @@ msgstr "Цей запис схожий на наявну транзакцію."
 msgid "This connection returned no accounts Budgie can add."
 msgstr "Це підключення не повернуло рахунків, які Budgie може додати."
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "This deletes {DB_NAME} and everything in it from this phone. It can't be undone."
 msgstr "Це видалить {DB_NAME} і все, що в ньому, з цього телефона. Скасувати неможливо."
 
@@ -8591,11 +8636,16 @@ msgid "Title"
 msgstr "Назва"
 
 #: src/app/transaction-amount-filter.tsx
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "To"
 msgstr "На"
 
+#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
+msgctxt "transfer account"
+msgid "To"
+msgstr "Куди"
+
 #: src/categorize-inbox/components/categorize-inbox-transfer-undo/categorize-inbox-transfer-undo.tsx
+#: src/transaction/components/convert-transfer-summary/convert-transfer-summary.tsx
 msgid "To {accountTitle}"
 msgstr "До {accountTitle}"
 
@@ -8617,6 +8667,7 @@ msgstr "До {toText}"
 
 #: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/app/(main)/import-csv.tsx
+#: src/transaction/components/convert-transfer-accounts/convert-transfer-accounts.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "To account"
 msgstr "На рахунок"
@@ -8871,8 +8922,7 @@ msgstr "Спробуйте налаштувати фільтри, щоб поб�
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
+#: src/transaction/components/transaction-picker-failure/transaction-picker-failure.tsx
 msgid "Try again"
 msgstr "Спробувати ще раз"
 
@@ -8977,6 +9027,7 @@ msgstr "Недоступно"
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
 #: src/category/components/stats-by-categories/stats-by-categories.tsx
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
+#: src/transaction/components/transaction-category-field-icon/transaction-category-field-icon.tsx
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 #: src/transaction/components/transaction-info-split-entry-row/transaction-info-split-entry-row.tsx
 #: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
@@ -8989,10 +9040,20 @@ msgstr "У межах ліміту"
 
 #: src/account/hooks/use-shelved-account-action.hook.ts
 #: src/categorize-inbox/components/categorize-inbox-undo-layout/categorize-inbox-undo-layout.tsx
+#: src/installment-plan/hook/use-open-convert-to-installment.hook.ts
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
 #: src/recurring/components/recurring-detail-history-row/recurring-detail-history-row.tsx
 #: src/recurring/hook/use-remove-recurring-series.hook.ts
 msgid "Undo"
 msgstr "Скасувати"
+
+#: src/account/component/account-actions-menu/account-actions-menu.tsx
+msgid "Undo pay in parts"
+msgstr "Скасувати оплату частинами"
+
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
+msgid "Undo pay in parts?"
+msgstr "Скасувати оплату частинами?"
 
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
@@ -9510,6 +9571,7 @@ msgid "Your data could not be loaded. Close this screen and try again."
 msgstr "Не вдалося завантажити дані. Закрийте цей екран і спробуйте ще раз."
 
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
+#: src/transaction/components/transaction-picker-failure/transaction-picker-failure.tsx
 msgid "Your data is safe. Reading it failed this time."
 msgstr "Ваші дані в безпеці. Цього разу не вдалося їх прочитати."
 
