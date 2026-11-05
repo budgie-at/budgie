@@ -2,6 +2,7 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { TRANSACTION_SECONDARY_MAX_FONT_SIZE_MULTIPLIER } from '../../constant/transaction-secondary-max-font-size-multiplier.constant';
 import { useTransactionSubtitleSegments } from '../../hook/use-transaction-subtitle-segments.hook';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
@@ -16,11 +17,19 @@ export const TransactionCardStackedSubtitle = ({ transaction, accountId }: Props
 
     return (
         <View className="gap-y-xxs">
-            <Text dynamicTypeRamp="caption2" className="text-[12px] text-secondary-foreground">
+            <Text
+                dynamicTypeRamp="footnote"
+                maxFontSizeMultiplier={TRANSACTION_SECONDARY_MAX_FONT_SIZE_MULTIPLIER}
+                className="text-[12px] text-secondary-foreground"
+            >
                 {[...segments, feeLabel].filter(isDefined).join(' · ')}
             </Text>
             {isDefined(accountTitle) ? (
-                <Text dynamicTypeRamp="caption2" className="text-[12px] text-secondary-foreground">
+                <Text
+                    dynamicTypeRamp="footnote"
+                    maxFontSizeMultiplier={TRANSACTION_SECONDARY_MAX_FONT_SIZE_MULTIPLIER}
+                    className="text-[12px] text-secondary-foreground"
+                >
                     {accountTitle}
                 </Text>
             ) : null}

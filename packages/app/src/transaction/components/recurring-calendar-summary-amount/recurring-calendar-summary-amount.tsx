@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
+import { TRANSACTION_SECONDARY_MAX_FONT_SIZE_MULTIPLIER } from '../../constant/transaction-secondary-max-font-size-multiplier.constant';
 
 import type { ReactNode } from 'react';
 
@@ -20,10 +21,18 @@ export const RecurringCalendarSummaryAmount = ({ formattedAmount, children }: Pr
 
     return (
         <View className={amountVariants({ isAccessibilityTextSize })}>
-            <Text dynamicTypeRamp="caption2" className="text-[12px] text-secondary-foreground">
+            <Text
+                dynamicTypeRamp="footnote"
+                maxFontSizeMultiplier={TRANSACTION_SECONDARY_MAX_FONT_SIZE_MULTIPLIER}
+                className="text-[12px] text-secondary-foreground"
+            >
                 {children}
             </Text>
-            <ProtectedText dynamicTypeRamp="footnote" className="text-[13px] font-medium text-primary tabular-nums">
+            <ProtectedText
+                dynamicTypeRamp="footnote"
+                maxFontSizeMultiplier={TRANSACTION_SECONDARY_MAX_FONT_SIZE_MULTIPLIER}
+                className="text-[13px] font-medium text-primary tabular-nums"
+            >
                 {formattedAmount}
             </ProtectedText>
         </View>

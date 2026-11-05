@@ -18,7 +18,7 @@ export const RecurringCalendarToolbar = (props: Props) => {
     const { monthLabel, isCurrentMonthDisplayed, onPreviousMonth, onCurrentMonth, onNextMonth } = props;
     const { t } = useLingui();
     const nextMonthAccessibilityState = { disabled: isCurrentMonthDisplayed };
-    const nextChevronClassName = isCurrentMonthDisplayed ? 'text-secondary-foreground opacity-40' : 'text-primary';
+    const nextChevronClassName = isCurrentMonthDisplayed ? 'text-secondary-foreground' : 'text-primary';
 
     return (
         <View className="flex-row items-center justify-between">
