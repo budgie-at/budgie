@@ -41,9 +41,9 @@ const buildFundFormValues = (
 
 export const useBudgetFundForm = ({ budget, editingId }: UseBudgetFundFormOptionsInterface) => {
     const { t } = useLingui();
-    const { run } = useSingleFlight();
+    const { run, isLoading: isSubmitting } = useSingleFlight();
     const isEditing = isPositiveNumber(editingId);
-    const { funds } = useGetBudgetFundsQuery(budget.id);
+    const { funds, isLoading, isError } = useGetBudgetFundsQuery(budget.id);
     const editingFund = funds.find(fund => fund.id === editingId);
     const suggestions = useGetBudgetFundSuggestionsQuery(budget.id, budget.instrumentId);
 
@@ -118,6 +118,9 @@ export const useBudgetFundForm = ({ budget, editingId }: UseBudgetFundFormOption
         handleUseSuggestion,
         handleSubmit,
         handleDelete,
-        isEditing
+        isEditing,
+        isLoading,
+        isSubmitting,
+        isError
     };
 };
