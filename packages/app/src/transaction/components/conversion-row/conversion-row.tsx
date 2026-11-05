@@ -1,14 +1,14 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { Text } from 'react-native';
 import Animated, { FadeInUp, ReduceMotion } from 'react-native-reanimated';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
-import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { PROTECTED_AMOUNT_PLACEHOLDER } from '../../../@generic/constant/protected-amount-placeholder.constant';
 import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { TransactionFormIcon } from '../transaction-form-icon/transaction-form-icon';
 import { TransactionFormRow } from '../transaction-form-row/transaction-form-row';
 import { TransferQuickFormSelector } from '../transfer-quick-form/transfer-quick-form.selector';
 
@@ -47,16 +47,20 @@ export const ConversionRow = (props: Props) => {
 
     return (
         <Animated.View entering={ENTERING_ANIMATION}>
-            <GroupedListSection footer={rateLabel}>
-                <TransactionFormRow
-                    left={<GroupedListIcon icon={UserIconNameEnum.Banknote} />}
-                    label={label}
-                    value={displayAmount}
-                    onPress={onPress}
-                    testID={TransferQuickFormSelector.ConversionRow}
-                    pressableProps={pressableProps}
-                />
-            </GroupedListSection>
+            <TransactionFormRow
+                left={<TransactionFormIcon icon={UserIconNameEnum.Coins} />}
+                label={label}
+                value={displayAmount}
+                onPress={onPress}
+                testID={TransferQuickFormSelector.ConversionRow}
+                pressableProps={pressableProps}
+            />
+            <Text
+                className="-mt-[8px] pr-[44px] pb-[10px] text-right text-[13px] leading-[18px] text-secondary-foreground"
+                maxFontSizeMultiplier={2}
+            >
+                {rateLabel}
+            </Text>
         </Animated.View>
     );
 };

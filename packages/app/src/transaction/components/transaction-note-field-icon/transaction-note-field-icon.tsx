@@ -4,6 +4,7 @@ import { useFormContext, useWatch } from 'react-hook-form';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { TransactionFormRowStackedContext } from '../../context/transaction-form-row-stacked.context';
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 import { TransactionFieldIcon } from '../transaction-field-icon/transaction-field-icon';
 
@@ -18,16 +19,19 @@ export const TransactionNoteFieldIcon = ({ onPress }: Props) => {
     const { control } = useFormContext<TransactionCreateInputInterface>();
     const comment = useWatch({ control, name: 'comment' });
 
-    const noteValue = isNotEmptyString(comment) ? comment : void 0;
+    const hasNote = isNotEmptyString(comment);
+    const noteValue = hasNote ? comment : void 0;
 
     return (
-        <TransactionFieldIcon
-            icon={UserIconNameEnum.MessageSquare}
-            label={t`Note`}
-            value={noteValue}
-            placeholder={t`Add`}
-            onPress={onPress}
-            testID={SimpleQuickFormSelector.CommentInput}
-        />
+        <TransactionFormRowStackedContext value={hasNote}>
+            <TransactionFieldIcon
+                icon={UserIconNameEnum.MessageSquare}
+                label={t`Note`}
+                value={noteValue}
+                placeholder={t`Add`}
+                onPress={onPress}
+                testID={SimpleQuickFormSelector.CommentInput}
+            />
+        </TransactionFormRowStackedContext>
     );
 };

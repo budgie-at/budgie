@@ -244,7 +244,7 @@ export const TransferQuickForm = (props: Props) => {
             context={
                 <View className="items-center gap-y-[4px]">
                     <QuickFormSecondaryLine>
-                        {isDefined(display.amountCode) ? (
+                        {isDefined(display.amountCode) && isEditingDestination ? (
                             <CurrencyModePill
                                 label={currencyPillLabel}
                                 accessibilityLabel={display.amountLabel}
@@ -268,20 +268,18 @@ export const TransferQuickForm = (props: Props) => {
             }
         >
             <View className="gap-[12px]">
-                <TransactionTransferAccountsRow ref={transferAccountsRef} />
-
-                {conversion.isCrossCurrency ? (
-                    <ConversionRow
-                        {...display.conversionRowProps}
-                        isManualRate={conversion.isManualRate}
-                        onPress={handleConversionRowPress}
-                    />
-                ) : null}
+                <TransactionTransferAccountsRow ref={transferAccountsRef}>
+                    {conversion.isCrossCurrency ? (
+                        <ConversionRow
+                            {...display.conversionRowProps}
+                            isManualRate={conversion.isManualRate}
+                            onPress={handleConversionRowPress}
+                        />
+                    ) : null}
+                </TransactionTransferAccountsRow>
                 <TransactionFieldIcons>
                     <TransactionDateFieldIcon onPress={handleDatePress} />
                     <TransactionNoteFieldIcon onPress={handleCommentPress} />
-                </TransactionFieldIcons>
-                <TransactionFieldIcons>
                     <TransactionFeeFieldIcon
                         amount={feeAmount}
                         currencySymbol={feeCurrencySymbol}

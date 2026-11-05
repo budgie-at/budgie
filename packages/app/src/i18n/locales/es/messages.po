@@ -6441,7 +6441,7 @@ msgstr "Recibiendo · {toCode}"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Receiving {toCode}"
-msgstr "Recibiendo {toCode}"
+msgstr "Importe en {toCode}"
 
 #: src/account/component/start-deposit-form/start-deposit-form.tsx
 msgid "Receiving amount"

@@ -13,7 +13,7 @@ interface Props {
     readonly children?: ReactNode;
 }
 
-const MERCHANT_MAX_FONT_SCALE = 1.6;
+const MERCHANT_MAX_FONT_SCALE = 1.35;
 
 export const MccInfoRow = ({ transactionTitle, mccCategoryId, children }: Props) => {
     const { mccCategory } = useGetMccCategoryByIdQuery(mccCategoryId);

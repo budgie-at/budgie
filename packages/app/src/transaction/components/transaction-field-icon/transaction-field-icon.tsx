@@ -5,11 +5,11 @@ import Animated from 'react-native-reanimated';
 
 import { isNotEmptyString, isString } from '@rnw-community/shared';
 
-import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
+import { TransactionFormIcon } from '../transaction-form-icon/transaction-form-icon';
 import { TransactionFormRow } from '../transaction-form-row/transaction-form-row';
 
 export interface TransactionFieldIconRef {
@@ -46,7 +46,7 @@ export const TransactionFieldIcon = (props: Props) => {
     return (
         <Animated.View style={shakeStyle} className={cn(isDisabled && 'opacity-40')}>
             <TransactionFormRow
-                left={<GroupedListIcon icon={icon} />}
+                left={<TransactionFormIcon icon={icon} />}
                 label={label}
                 value={value}
                 placeholder={placeholder}

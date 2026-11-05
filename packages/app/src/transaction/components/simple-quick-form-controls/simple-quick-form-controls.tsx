@@ -77,15 +77,13 @@ export const SimpleQuickFormControls = ({
             <TransactionFieldIcons>
                 <TransactionDateTagsRow onDatePress={handleDatePress} />
                 <TransactionNoteFieldIcon onPress={handleCommentPress} />
-            </TransactionFieldIcons>
-            <TransactionFieldIcons>
                 {fee}
-                <TransactionSplitFieldIcon
-                    splitEntryCount={formState.splitEntryCount}
-                    isAmountPositive={formState.isAmountPositive}
-                    onPress={handleSplitIconPress}
-                />
             </TransactionFieldIcons>
+            <TransactionSplitFieldIcon
+                splitEntryCount={formState.splitEntryCount}
+                isAmountPositive={formState.isAmountPositive}
+                onPress={handleSplitIconPress}
+            />
         </View>,
         handleConfirm
     );
