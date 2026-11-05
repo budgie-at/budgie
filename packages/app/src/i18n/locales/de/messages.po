@@ -2052,6 +2052,7 @@ msgstr "Kann später nicht geändert werden"
 #: src/budget/hooks/use-budget-fund-form.hook.ts
 #: src/category/hooks/use-delete-category.hook.ts
 #: src/import/hook/use-restore-backup.hook.ts
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
@@ -3016,6 +3017,7 @@ msgid "Could not undo the move to cash"
 msgstr "Verschieben ins Bargeld konnte nicht rückgängig gemacht werden"
 
 #: src/account/hooks/use-shelved-account-action.hook.ts
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
 msgid "Could not undo."
 msgstr "Rückgängig machen fehlgeschlagen."
 
@@ -4792,6 +4794,10 @@ msgstr "Sie ist der einzige Schlüssel zu deiner Datei. Es gibt kein Konto und k
 msgid "Its accounts stop syncing and are removed from your active accounts."
 msgstr "Seine Konten werden nicht mehr synchronisiert und aus deinen aktiven Konten entfernt."
 
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
+msgid "Its payments become regular expenses again and the plan disappears. This can't be undone."
+msgstr "Die Zahlungen werden wieder zu regulären Ausgaben und der Plan verschwindet. Das lässt sich nicht rückgängig machen."
+
 #: src/account/hooks/use-delete-archived-account.hook.ts
 msgid "Its transactions go too. Transfers stay in the other account as “Transfer (account deleted)”. This can’t be undone."
 msgstr "Seine Buchungen werden ebenfalls gelöscht. Überweisungen bleiben im anderen Konto als „Überweisung (Konto gelöscht)“. Das lässt sich nicht rückgängig machen."
@@ -6458,6 +6464,10 @@ msgstr "Plan erstellt"
 msgid "Plan name"
 msgstr "Name des Plans"
 
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
+msgid "Plan reverted"
+msgstr "Plan rückgängig gemacht"
+
 #: src/installment-plan/component/convert-to-installment-total-input/convert-to-installment-total-input.tsx
 msgid "Plan total"
 msgstr "Plan-Gesamtbetrag"
@@ -6490,6 +6500,7 @@ msgstr "Bitte geben Sie Ihren Monobank API-Token ein"
 
 #: src/app/convert-to-transfer.tsx
 #: src/installment-plan/component/convert-to-installment-create-button/convert-to-installment-create-button.tsx
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
 msgid "Please try again"
 msgstr "Bitte versuchen Sie es erneut"
 
@@ -8680,8 +8691,18 @@ msgstr "Unter dem Limit"
 
 #: src/account/hooks/use-shelved-account-action.hook.ts
 #: src/categorize-inbox/components/categorize-inbox-undo-layout/categorize-inbox-undo-layout.tsx
+#: src/installment-plan/hook/use-open-convert-to-installment.hook.ts
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
 msgid "Undo"
 msgstr "Rückgängig"
+
+#: src/account/component/account-actions-menu/account-actions-menu.tsx
+msgid "Undo pay in parts"
+msgstr "Ratenzahlung rückgängig machen"
+
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
+msgid "Undo pay in parts?"
+msgstr "Ratenzahlung rückgängig machen?"
 
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
