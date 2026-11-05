@@ -3548,6 +3548,10 @@ msgstr "Wallet-Erfassung verwerfen?"
 msgid "Display"
 msgstr "Anzeige"
 
+#: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
+msgid "Dividends"
+msgstr "Dividenden"
+
 #: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
 msgid "Dividends {dividendsLabel}"
 msgstr "Dividenden {dividendsLabel}"
@@ -4416,6 +4420,10 @@ msgstr "Direkt zu Budgie"
 #: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
 msgid "Goes back to the total worked out from the payments and fee"
 msgstr "Kehrt zur aus Zahlungen und Gebühr berechneten Summe zurück"
+
+#: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
+msgid "Gross, {netLabel} after tax"
+msgstr "Brutto, {netLabel} nach Steuern"
 
 #: src/runway/component/runway-verdict/runway-verdict.tsx
 msgid "Growing"

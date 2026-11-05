@@ -3548,6 +3548,10 @@ msgstr "Відхилити запис із Wallet?"
 msgid "Display"
 msgstr "Відображення"
 
+#: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
+msgid "Dividends"
+msgstr "Дивіденди"
+
 #: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
 msgid "Dividends {dividendsLabel}"
 msgstr "Дивіденди {dividendsLabel}"
@@ -4416,6 +4420,10 @@ msgstr "Одразу до Budgie"
 #: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
 msgid "Goes back to the total worked out from the payments and fee"
 msgstr "Повертає суму, розраховану з платежів і комісії"
+
+#: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
+msgid "Gross, {netLabel} after tax"
+msgstr "Брутто, {netLabel} після податку"
 
 #: src/runway/component/runway-verdict/runway-verdict.tsx
 msgid "Growing"

@@ -3548,6 +3548,10 @@ msgstr "¿Descartar la captura de Wallet?"
 msgid "Display"
 msgstr "Pantalla"
 
+#: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
+msgid "Dividends"
+msgstr "Dividendos"
+
 #: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
 msgid "Dividends {dividendsLabel}"
 msgstr "Dividendos {dividendsLabel}"
@@ -4416,6 +4420,10 @@ msgstr "Ir directamente a Budgie"
 #: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
 msgid "Goes back to the total worked out from the payments and fee"
 msgstr "Vuelve al total calculado a partir de los pagos y la comisión"
+
+#: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
+msgid "Gross, {netLabel} after tax"
+msgstr "Brutos, {netLabel} tras impuestos"
 
 #: src/runway/component/runway-verdict/runway-verdict.tsx
 msgid "Growing"
