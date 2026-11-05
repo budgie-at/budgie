@@ -8,6 +8,7 @@ import {
 } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
 import { fetchAccountBalance } from '../../harness';
 import { buildInzhurBaselineItems } from '../../harness/inzhur/build-inzhur-baseline-items';
@@ -105,7 +106,7 @@ describe('inzhur/operations-review', () => {
 
             expect(summary.funds.find(fund => fund.name === REIT)).toMatchObject({ boughtQuantity: 480, isQuantityEstimated: true });
             expect(yield* fetchAccountBalance(reit.id)).toBe(480 * PRECISION);
-        }).pipe(Effect.provide(inzhurHomeClientLayer({ [REIT]: 10 })), Effect.provide(layer))
+        }).pipe(Effect.provide(Layer.merge(layer, inzhurHomeClientLayer({ [REIT]: 10 }))))
     );
 
     it.effect('rolls back cleanly with a typed error when no price can be found at all', () =>
@@ -114,7 +115,7 @@ describe('inzhur/operations-review', () => {
 
             expect(yield* Effect.flip(importInzhurOperations(FULL_URI))).toBeInstanceOf(InzhurPriceMissingError);
             expect((yield* requireInzhurSetup()).fundAccounts).toEqual([]);
-        }).pipe(Effect.provide(inzhurHomeClientLayer({})), Effect.provide(layer))
+        }).pipe(Effect.provide(Layer.merge(layer, inzhurHomeClientLayer({}))))
     );
 
     it.effect('does not let a later export re-match a bank transfer an earlier export already claimed', () =>
