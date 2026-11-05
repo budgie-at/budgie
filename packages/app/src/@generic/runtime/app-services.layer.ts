@@ -155,7 +155,6 @@ const ledgerWorkloadLayer = Layer.effect(
     Effect.map(Workload, workload => LedgerWorkload.of({ runForeground: workload.runForeground }))
 ).pipe(Layer.provide(Workload.layer));
 const ledgerPortsLayer = Layer.mergeAll(ledgerWorkloadLayer, p2pTransferTitleResolverLayer);
-
 export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     AccountRepository.layer,
     AccountBalanceRepository.layer,

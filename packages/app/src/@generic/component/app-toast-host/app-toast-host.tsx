@@ -25,7 +25,7 @@ const APP_TOAST_CONFIG: ToastConfig = {
     error: renderAppToast,
     info: renderAppToast,
     [ACTION_TOAST_TYPE]: (params: ToastConfigParams<ToastActionInterface>) => (
-        <Pressable accessible={false} className="w-[92%]" onPress={params.hide}>
+        <Pressable accessible={false} className="w-[92%]" onPress={() => params.hide()}>
             <AppToast {...params} type="success" action={params.props} />
         </Pressable>
     ),
