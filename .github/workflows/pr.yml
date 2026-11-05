@@ -141,8 +141,16 @@ jobs:
               run: git diff --exit-code
 
     unit-tests:
-        name: Unit tests
+        name: Unit tests (${{ matrix.suite }})
         runs-on: [self-hosted, linux-portable-4x8]
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - suite: packages
+                      filter: '!@budgie-at/sync-tests'
+                    - suite: sync
+                      filter: '@budgie-at/sync-tests'
         timeout-minutes: 45
         permissions:
             contents: read
@@ -172,7 +180,7 @@ jobs:
               run: pnpm build
 
             - name: Unit tests
-              run: pnpm test --concurrency=2
+              run: pnpm test --concurrency=2 --filter='${{ matrix.filter }}'
 
     e2e-script-tests:
         name: E2E script self-tests
