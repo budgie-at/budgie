@@ -8,7 +8,8 @@ import {
     TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
     TransactionRepository,
-    TransactionTypeEnum
+    TransactionTypeEnum,
+    TransactionUpdatedByEnum
 } from '@budgie/contracts';
 import { TransactionTransferService } from '@budgie/ledger';
 import { TransactionRuleRepository } from '@budgie/rules';
@@ -19,6 +20,7 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { INZHUR_BANK_DESCRIPTION_PATTERNS } from '../constant/inzhur-bank-description-patterns.constant';
+import { INZHUR_UNATTRIBUTED_DIVIDEND_TITLE } from '../constant/inzhur-unattributed-dividend-title.constant';
 
 import { InzhurSetupService } from './inzhur-setup.service';
 
@@ -95,6 +97,27 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
 
             yield* transactionRuleRepository.setCategoryByTransactionIds([transaction.id], INVESTMENTS_CATEGORY_ID);
             yield* transactionRepository.touchUpdatedAt(transaction.id);
+
+            return fund?.id ?? null;
+        });
+
+        const retitleDividend = Effect.fnUntraced(function* (
+            transaction: TransactionWithEntriesEntityInterface,
+            fundAccountId: number | null,
+            setup: InzhurSetupInterface
+        ) {
+            const fund = setup.fundAccounts.find(account => account.id === fundAccountId);
+            const title = isDefined(fund) ? `${fund.title.replace(/^Inzhur\s+/u, '')} dividends` : INZHUR_UNATTRIBUTED_DIVIDEND_TITLE;
+
+            if (transaction.title === title || transaction.updatedBy === TransactionUpdatedByEnum.USER) {
+                return;
+            }
+
+            const comment = transaction.comment.includes(transaction.title)
+                ? transaction.comment
+                : [transaction.title, transaction.comment].filter(isNotEmptyString).join(' · ');
+
+            yield* transactionRepository.updateById(transaction.id, { title, comment });
         });
 
         const processTransaction = Effect.fnUntraced(function* (
@@ -114,9 +137,11 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
                 return yield* transactionTransferService.convertToTransferAccount(transaction.id, setup.cashAccount.id);
             }
 
-            if (isUnprocessedDividend(transaction)) {
-                yield* recordDividend(transaction, description, setup);
-            }
+            const fundAccountId = isUnprocessedDividend(transaction)
+                ? yield* recordDividend(transaction, description, setup)
+                : transaction.fundAccountId;
+
+            yield* retitleDividend(transaction, fundAccountId, setup);
 
             return false;
         });

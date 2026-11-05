@@ -25,10 +25,12 @@ export const fetchSourceLedger = Effect.fnUntraced(function* (source: ExternalSo
               .orderBy(asc(TransactionEntryEntityTable.id))
         : [];
 
-    return transactions.map(({ id, externalId, type, title, operatedAt, fromAccountId, toAccountId, fundAccountId }) => ({
+    return transactions.map(({ id, externalId, type, title, comment, operatedAt, fromAccountId, toAccountId, fundAccountId }) => ({
+        id,
         externalId,
         type,
         title,
+        comment,
         operatedAt,
         fromAccountId,
         toAccountId,

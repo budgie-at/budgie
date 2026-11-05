@@ -5,7 +5,9 @@ import {
     INVESTMENTS_CATEGORY_ID,
     PRECISION,
     TransactionEntryTypeEnum,
-    TransactionTypeEnum
+    TransactionRepository,
+    TransactionTypeEnum,
+    TransactionUpdatedByEnum
 } from '@budgie/contracts';
 import { InzhurImportOutcomeEnum, TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
@@ -120,7 +122,8 @@ describe('inzhur/bank-flows', () => {
 
             expect(yield* fetchSingleBankTransaction()).toMatchObject({
                 type: TransactionTypeEnum.INCOME,
-                title: `ІНЖУР КЕПІТАЛ дивіденд ${INZHUR_REIT_LAYOUT.isin}`,
+                title: 'REIT dividends',
+                comment: `ІНЖУР КЕПІТАЛ дивіденд ${INZHUR_REIT_LAYOUT.isin}`,
                 fundAccountId: reitAccount.id,
                 entries: [{ accountId: bankAccount.id, amount: 120 * PRECISION, categoryId: INVESTMENTS_CATEGORY_ID }]
             });
@@ -147,7 +150,8 @@ describe('inzhur/bank-flows', () => {
 
             expect(yield* fetchSingleBankTransaction()).toMatchObject({
                 type: TransactionTypeEnum.INCOME,
-                title: DIVIDEND_DESCRIPTION,
+                title: 'REIT dividends',
+                comment: DIVIDEND_DESCRIPTION,
                 fundAccountId: reitAccount.id,
                 entries: [{ categoryId: INVESTMENTS_CATEGORY_ID }]
             });
@@ -168,17 +172,39 @@ describe('inzhur/bank-flows', () => {
             expect(yield* fetchBankTransactions()).toMatchObject([
                 {
                     type: TransactionTypeEnum.INCOME,
-                    title: DIVIDEND_DESCRIPTION,
+                    title: 'Inzhur dividends',
+                    comment: DIVIDEND_DESCRIPTION,
                     fundAccountId: null,
                     entries: [{ categoryId: INVESTMENTS_CATEGORY_ID }]
                 },
                 {
                     type: TransactionTypeEnum.INCOME,
-                    title: `${DIVIDEND_DESCRIPTION} 2`,
+                    title: 'Inzhur dividends',
+                    comment: `${DIVIDEND_DESCRIPTION} 2`,
                     fundAccountId: null,
                     entries: [{ categoryId: INVESTMENTS_CATEGORY_ID }]
                 }
             ]);
+        }).pipe(Effect.provide(layer))
+    );
+
+    it.effect('titles a dividend again when a resync restores the bank description, but keeps a title the user set', () =>
+        Effect.gen(function* () {
+            const { bankAccount, reitAccount } = yield* setUpBankFlow(0);
+            const transactionRepository = yield* TransactionRepository;
+
+            yield* setInzhurPayout(reitAccount.id, DividendPayoutEnum.BANK);
+            yield* importInzhurBankTransaction(bankAccount.id, 'dividend', DIVIDEND_DESCRIPTION, 80, OPERATED_AT);
+            yield* consolidate;
+            const dividend = yield* fetchSingleBankTransaction();
+
+            yield* transactionRepository.updateById(dividend.id, { title: DIVIDEND_DESCRIPTION });
+            yield* consolidate;
+            expect(yield* fetchSingleBankTransaction()).toMatchObject({ title: 'REIT dividends', comment: DIVIDEND_DESCRIPTION });
+
+            yield* transactionRepository.updateById(dividend.id, { title: 'Quarterly payout', updatedBy: TransactionUpdatedByEnum.USER });
+            yield* consolidate;
+            expect(yield* fetchSingleBankTransaction()).toMatchObject({ title: 'Quarterly payout', comment: DIVIDEND_DESCRIPTION });
         }).pipe(Effect.provide(layer))
     );
 

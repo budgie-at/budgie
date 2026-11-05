@@ -112,6 +112,7 @@ export type { InzhurSetupInterface } from './inzhur/interface/inzhur-setup.inter
 export type { InzhurStatementReminderInterface } from './inzhur/interface/inzhur-statement-reminder.interface';
 export { INZHUR_CASH_EXTERNAL_ID } from './inzhur/constant/inzhur-cash-external-id.constant';
 export { INZHUR_CANONICAL_FUNDS } from './inzhur/constant/inzhur-canonical-funds.constant';
+export { INZHUR_UNATTRIBUTED_DIVIDEND_TITLE } from './inzhur/constant/inzhur-unattributed-dividend-title.constant';
 export type { InzhurCanonicalFundInterface } from './inzhur/interface/inzhur-canonical-fund.interface';
 
 export { PrivatbankSyncService } from './privatbank/service/privatbank-sync.service';
