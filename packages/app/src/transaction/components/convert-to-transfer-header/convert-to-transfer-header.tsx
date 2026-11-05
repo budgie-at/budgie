@@ -16,7 +16,7 @@ export const ConvertToTransferHeader = ({ isLoading }: Props) => {
             <LoadingContent isLoading={isLoading}>
                 <Text
                     maxFontSizeMultiplier={2}
-                    className="text-primary px-5xl pt-xl pb-lg text-center text-[17px] leading-[22px] font-semibold"
+                    className="text-primary max-w-[320px] self-center px-5xl pt-xl pb-lg text-center text-[17px] leading-[22px] font-semibold"
                 >
                     <Trans>Convert to Transfer</Trans>
                 </Text>
