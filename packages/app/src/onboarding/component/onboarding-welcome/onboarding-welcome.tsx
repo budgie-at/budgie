@@ -25,7 +25,7 @@ export const OnboardingWelcome = () => {
     return (
         <GroupedSurface testID={OnboardingWelcomeSelector.Root}>
             <ScrollView className="flex-1 pt-safe pb-safe" contentContainerStyle={contentContainerStyle}>
-                <View className="items-center gap-y-lg">
+                <View className="items-center gap-y-xs">
                     <BudgieLogo size={72} />
 
                     <View className="items-center gap-y-lg">
