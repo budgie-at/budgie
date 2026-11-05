@@ -919,6 +919,7 @@ msgid "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 msgstr "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 
 #: src/transaction/components/conversion-row/conversion-row.tsx
+#: src/transaction/components/convert-transfer-rate-row/convert-transfer-rate-row.tsx
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 
@@ -3670,6 +3671,7 @@ msgid "Edit Tag"
 msgstr "Редагувати тег"
 
 #: src/transaction/components/conversion-row/conversion-row.tsx
+#: src/transaction/components/convert-transfer-rate-row/convert-transfer-rate-row.tsx
 msgid "Edit the amount"
 msgstr "Змінити суму"
 

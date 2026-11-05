@@ -19,11 +19,13 @@ interface Props {
 }
 
 const MIN_MENU_HEIGHT = 44;
+const MAX_MENU_ICON_SCALE = 1.75;
 
 export const TransactionInfoMoreActionsRow = ({ items }: Props) => {
     const { t } = useLingui();
     const { anchor, frameRef, closeMenu, handleCloseComplete, handleToggleMenu, isMenuOpen } = usePopoverMenuAnchor();
-    const { height } = useWindowDimensions();
+    const { height, fontScale } = useWindowDimensions();
+    const iconSize = 20 * Math.min(fontScale, MAX_MENU_ICON_SCALE);
     const { top } = useSafeAreaInsets();
     const menuContentStyle = { maxHeight: Math.max(MIN_MENU_HEIGHT, (anchor?.y ?? height) - top - 16) };
     const label = t`More Actions…`;
@@ -49,6 +51,7 @@ export const TransactionInfoMoreActionsRow = ({ items }: Props) => {
                             <ActionsMenuItem
                                 key={item.key}
                                 icon={item.icon}
+                                iconSize={iconSize}
                                 label={item.label}
                                 subtitle={item.consequence}
                                 onPress={item.onPress}

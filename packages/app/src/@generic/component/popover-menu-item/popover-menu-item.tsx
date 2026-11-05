@@ -12,6 +12,7 @@ type MenuItemVariant = 'default' | 'destructive';
 
 interface Props {
     readonly icon: UserIconNameEnum;
+    readonly iconSize?: number;
     readonly label: string;
     readonly onPress: EmptyFn;
     readonly variant?: MenuItemVariant;
@@ -42,15 +43,19 @@ const iconVariants = cva<{ variant: Record<MenuItemVariant, ClassValue> }>('', {
     defaultVariants: { variant: 'default' }
 });
 
-export const PopoverMenuItem = ({ icon, label, onPress, variant = 'default', rightLabel, subtitle, testID }: Props) => (
-    <HapticPressable onPress={onPress} className={containerClassName()} accessibilityRole="menuitem" testID={testID}>
-        <Icon icon={icon} size={20} className={iconVariants({ variant })} />
-        <View className="grow shrink">
-            <Text className={textVariants({ variant })}>{label}</Text>
-            {isNotEmptyString(subtitle) ? (
-                <Text className="mt-xxs text-[13px] leading-[19px] text-popover-secondary">{subtitle}</Text>
-            ) : null}
-        </View>
-        {isDefined(rightLabel) ? <Text className="text-sm text-secondary-foreground">{rightLabel}</Text> : null}
-    </HapticPressable>
-);
+export const PopoverMenuItem = (props: Props) => {
+    const { icon, iconSize = 20, label, onPress, variant = 'default', rightLabel, subtitle, testID } = props;
+
+    return (
+        <HapticPressable onPress={onPress} className={containerClassName()} accessibilityRole="menuitem" testID={testID}>
+            <Icon icon={icon} size={iconSize} className={iconVariants({ variant })} />
+            <View className="grow shrink">
+                <Text className={textVariants({ variant })}>{label}</Text>
+                {isNotEmptyString(subtitle) ? (
+                    <Text className="mt-xxs text-[13px] leading-[19px] text-popover-secondary">{subtitle}</Text>
+                ) : null}
+            </View>
+            {isDefined(rightLabel) ? <Text className="text-sm text-secondary-foreground">{rightLabel}</Text> : null}
+        </HapticPressable>
+    );
+};

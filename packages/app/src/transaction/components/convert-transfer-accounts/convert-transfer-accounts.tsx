@@ -1,18 +1,15 @@
 import { AccountTypeEnum, TransactionCreateInputInterface, TransactionTypeEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useFormContext } from 'react-hook-form';
+import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useConvertToTransferModalParams } from '../../context/convert-to-transfer-modal.context';
 import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
-import { QuickFormFieldError } from '../quick-form-field-error/quick-form-field-error';
 import { TransferAccountPicker } from '../transfer-account-picker/transfer-account-picker';
 import { TransferQuickFormSelector } from '../transfer-quick-form/transfer-quick-form.selector';
-
-const ACCOUNT_FIELDS = ['fromAccountId', 'toAccountId'] as const;
 
 export const ConvertTransferAccounts = () => {
     const { t } = useLingui();
@@ -46,15 +43,17 @@ export const ConvertTransferAccounts = () => {
     };
 
     return (
-        <GroupedListSection footer={<QuickFormFieldError fields={ACCOUNT_FIELDS} />}>
-            <TransferAccountPicker
-                label={label}
-                account={account}
-                placeholder={t`Choose account`}
-                testID={testID}
-                selectedTestID={selectedTestID}
-                onPress={handlePress}
-            />
-        </GroupedListSection>
+        <TransferAccountPicker
+            label={label}
+            account={account}
+            placeholder={
+                <Text className="min-w-0 flex-1 text-[17px] leading-[22px] font-medium text-primary" maxFontSizeMultiplier={2}>
+                    <Trans>Choose account</Trans>
+                </Text>
+            }
+            testID={testID}
+            selectedTestID={selectedTestID}
+            onPress={handlePress}
+        />
     );
 };
