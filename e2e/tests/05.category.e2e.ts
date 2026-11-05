@@ -57,6 +57,7 @@ test('05 category', { tags: ['categories'] }, async ({ budgie }) => {
     });
 
     await b.phase('edit primary category text + icon', async () => {
+        await b.expectNoId(ctx, b.TOAST, 8_000);
         await b.tapId(ctx, 'CategoryCard.E2E Category Primary');
         await c.pickIcon(ctx, 'heart', 'reicon:Heart');
         await nameAndSubmit('E2E Category Updated', true);

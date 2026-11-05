@@ -45,10 +45,6 @@ export async function phase<T>(name: string, body: () => Promise<T>): Promise<T>
 }
 
 export async function tapId(ctx: Ctx, testId: string): Promise<void> {
-    // A top toast covers the header's back button and takes the tap; it hides itself within 5 s.
-    if (testId === 'PageHeader.BackButton') {
-        await expectNoId(ctx, TOAST, 8_000);
-    }
     await byId(ctx.screen, testId).tap();
 }
 
