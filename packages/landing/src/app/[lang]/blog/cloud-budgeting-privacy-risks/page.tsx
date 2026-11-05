@@ -939,7 +939,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Multi-device sync</strong>: Your data exists on one device unless you manually transfer it
+                                <strong>Multi-device sync</strong>: Your own devices stay in sync through your iCloud; there is no vendor sync service
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -949,12 +949,12 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Shared budgets</strong>: Collaborative features require local network sync
+                                <strong>Shared budgets</strong>: You can share chosen accounts with family through iCloud; there is no vendor collaboration server
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Cloud backup</strong>: You manage your own backups
+                                <strong>Cloud backup</strong>: Your own iCloud on iOS; manual export elsewhere
                             </Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
@@ -977,7 +977,8 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Local-only storage</strong>: All data stored in a local database on your device
+                                <strong>Local-first storage</strong>: All data stored in a local database on your device and synced through
+                                your own iCloud on iOS
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -1172,10 +1173,10 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                         <BlogFaqItem question={<Trans>What happens to my data if Budgie shuts down?</Trans>}>
                             <Trans>
                                 Nothing happens to your data because Budgie does not have your data. Everything is stored on your device and,
-                                on iOS with iCloud backup on, in your own iCloud. If Budgie as a company ceased to exist, your app would continue
-                                to function with all your data intact. You can export data at any time in standard formats. There is no server
-                                to shut down, no migration to worry about, no acquisition that could change data handling. Your data remains
-                                yours permanently.
+                                on iOS with iCloud backup or sync on, in your own iCloud. If Budgie as a company ceased to exist, your app would
+                                continue to function with all your data intact. You can export data at any time in standard formats. There is no
+                                server to shut down, no migration to worry about, no acquisition that could change data handling. Your data
+                                remains yours permanently.
                             </Trans>
                         </BlogFaqItem>
                     </BlogFaqSection>

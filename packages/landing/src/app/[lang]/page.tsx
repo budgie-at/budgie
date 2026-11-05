@@ -70,8 +70,8 @@ export default async function LandingPage(props: PageLangParam) {
                     title={<Trans>Offline-first expense tracker</Trans>}
                 >
                     <Trans>
-                        No account, no cloud sync, no tracking. The database lives on your phone and the app never needs a connection to
-                        open, search or calculate anything.
+                        No account, no vendor cloud, no tracking. The database lives on your phone, syncs between your own devices through
+                        your iCloud, and the app never needs a connection to open, search or calculate anything.
                     </Trans>
                 </CapabilityBento.Anchor>
 
@@ -150,7 +150,7 @@ export default async function LandingPage(props: PageLangParam) {
                     title={<Trans>A private budget app alternative</Trans>}
                 >
                     <Trans>
-                        Your finances stay on your device, with app lock, screenshot protection and a backup you control.
+                        Your finances stay in storage you control, with app lock, screenshot protection and encrypted sync.
                     </Trans>
                 </CapabilityBento.Cell>
 

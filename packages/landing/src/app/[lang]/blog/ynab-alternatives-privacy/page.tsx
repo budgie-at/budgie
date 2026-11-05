@@ -350,7 +350,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Data Storage</strong>: Your device + backups you control
+                                <strong>Data Storage</strong>: Your device + your own iCloud
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -626,7 +626,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     <BlogArticleProse>
                         <Trans>
                             Budgie takes a fundamentally different approach to budgeting software. Built from the ground up as an
-                            offline-first application, your financial data stays on your device, with an encrypted backup you control rather
+                            offline-first application, your financial data stays in storage you control, with encrypted sync and backup rather
                             than a company database.
                         </Trans>
                     </BlogArticleProse>
@@ -644,8 +644,8 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>True offline-first architecture.</strong> Your data lives on your phone, with an encrypted backup you
-                                control. There are no Budgie servers storing your transactions.
+                                <strong>True offline-first architecture.</strong> Your data lives on your phone and in your own iCloud, with
+                                encrypted sync and backup you control. There are no Budgie servers storing your transactions.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -1396,7 +1396,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                         <BlogArticleListItem>
                             <Trans>
                                 Your bank access details are stored in the app&apos;s database on your device, encrypted once you set a PIN,
-                                and copied only to backups you control
+                                and copied only to storage you control
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>

@@ -36,7 +36,7 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                 tagline={
                     <Trans>
                         Category, tag, and merchant suggestions that run entirely on your phone and learn from your corrections. Your
-                        statements never leave the device.
+                        statements are never sent to an AI service.
                     </Trans>
                 }
             >
@@ -126,7 +126,11 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                     />
                 }
                 heading={<Trans>Check it on your own phone</Trans>}
-                lede={<Trans>Suggestions are worked out on the device, so you can see for yourself that nothing leaves it.</Trans>}
+                lede={
+                    <Trans>
+                        Suggestions are worked out on the device, so you can see for yourself that nothing is sent to an AI service.
+                    </Trans>
+                }
             >
                 <FeatureProof.Fact icon={Plane}>
                     <Trans>Turn on airplane mode: suggestions keep coming</Trans>
@@ -168,8 +172,8 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                 <FeatureBenefits.Benefit icon={TrendUp} title={<Trans>Learns from every correction</Trans>}>
                     <Trans>Every correction counts on the spot — accuracy improves as you use it</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={ShieldCheck} title={<Trans>Statements stay on your phone</Trans>}>
-                    <Trans>Statements never leave the device — no cloud AI, no remote processing, ever</Trans>
+                <FeatureBenefits.Benefit icon={ShieldCheck} title={<Trans>Statements stay out of AI clouds</Trans>}>
+                    <Trans>Statements are never sent to an AI service — no cloud AI, no remote processing, ever</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Included>
                     <FeatureBenefits.Item>

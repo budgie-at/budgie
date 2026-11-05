@@ -65,8 +65,8 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                 <FeatureStory.Point index={1}>
                     <Trans>
                         Export Database writes one compressed file with everything, PIN-locked if you have a PIN set. Import Database
-                        restores it on a new phone after you pick the file and enter that PIN if the backup was PIN-locked. A restore
-                        replaces the data on that phone; it is not sync.
+                        restores it on a new device after you pick the file and enter that PIN if the backup was PIN-locked. A restore
+                        replaces the data on that device; on iOS your own devices also stay in sync through your iCloud.
                     </Trans>
                 </FeatureStory.Point>
                 <FeatureStory.Point index={2}>
@@ -170,10 +170,10 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                     question={<Trans>Can I use Budgie on a phone and a tablet at once?</Trans>}
                     answer={
                         <Trans>
-                            Budgie does not sync between devices. On iOS an encrypted backup goes to your own iCloud automatically. You can
-                            also move your data by copying a backup file through your own iCloud Drive, Google Drive, or Dropbox and restoring
-                            it on the second device — but a restore replaces everything on that device, and later changes stay on the device
-                            where you made them. If the backup was PIN-locked, enter that PIN when you restore.
+                            Yes. On iOS Budgie syncs between your own devices through your iCloud automatically. You can also move your
+                            data by copying a backup file through your own iCloud Drive, Google Drive, or Dropbox and restoring it on the
+                            second device — but a restore replaces everything on that device. If the backup was PIN-locked, enter that PIN
+                            when you restore.
                         </Trans>
                     }
                 />

@@ -30,7 +30,7 @@ export const Footer = async ({ lang }: Props) => {
 
                         <p className="text-sm text-muted-foreground">
                             <Trans>
-                                The privacy-first expense tracker that keeps your financial data on your device and in backups you control.
+                                The privacy-first expense tracker that keeps your financial data on your device and synced with your own iCloud.
                             </Trans>
                         </p>
 

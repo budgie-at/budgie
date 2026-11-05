@@ -278,7 +278,7 @@ export default async function OpenSourcePillarHubPage(props: PageLangParam) {
                         answer={
                             <Trans>
                                 The code stays public. The community can keep building. Your data stays yours regardless — on your device
-                                and in backups you control.
+                                and in storage you control.
                             </Trans>
                         }
                     />

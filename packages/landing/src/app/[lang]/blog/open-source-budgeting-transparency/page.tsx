@@ -973,7 +973,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Privacy by design</strong> - Your data stays yours, on your device and in backups you control
+                                <strong>Privacy by design</strong> - Your data stays yours, on your device and in storage you control
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -1030,7 +1030,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                         <BlogFaqItem question={<Trans>What if the project is abandoned? Will I lose access to my data?</Trans>}>
                             <Trans>
                                 One of the key benefits of public-source and offline-first architecture is data sovereignty. Your data is
-                                stored on your device and in backups you control, not locked in some company’s database that might
+                                stored on your device and in storage you control, not locked in some company’s database that might
                                 disappear. If Budgie development stopped tomorrow, your data would still be on your phone, and the public source
                                 code would allow anyone to continue development or create export tools. You’re never locked in.
                             </Trans>
