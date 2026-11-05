@@ -36,6 +36,19 @@ const seedBaselinePrices = (reitPrice: number) =>
         seedInzhurPrice(INZHUR_ENERGY_LAYOUT.isin, FIRST_DAY, ENERGY_PRICE)
     ]);
 
+const topUpFromBank = Effect.fnUntraced(function* (externalId: string) {
+    const bankAccount = yield* seed.account({
+        title: 'Monobank Card',
+        externalId,
+        externalSource: ExternalSourceEnum.MONOBANK,
+        type: AccountTypeEnum.BANK_SYNC,
+        instrumentId: UAH_INSTRUMENT_ID
+    });
+
+    yield* importInzhurBankTransaction(bankAccount.id, 'top-up', 'ТОВ "Інжур Кепітал"', -1000, TOP_UP_AT);
+    yield* Effect.flatMap(TransferConsolidationService, service => service.consolidate(null));
+});
+
 const findAllTimeGain = Effect.fnUntraced(function* () {
     const report = yield* Effect.flatMap(InzhurGainService, service => service.getInstitutionReport(TODAY));
 
@@ -74,6 +87,10 @@ describe('inzhur/gain', () => {
             const startValue = 100 + 1000 * (REIT_PRICE - 1) + 2 * ENERGY_PRICE;
 
             expect(yield* findAllTimeGain()).toMatchObject({ startValue, gain: 1000, percent: 1000 / startValue });
+            const report = yield* Effect.flatMap(InzhurGainService, service => service.getInstitutionReport(TODAY));
+
+            expect(report?.gainSeries.at(0)).toEqual({ date: FIRST_DAY, value: 0 });
+            expect(report?.gainSeries.at(-1)?.value).toBe(1000);
             expect(yield* findFundAllTimeGain(reitAccount.id)).toMatchObject({ gain: 1000 });
         }).pipe(Effect.provide(makeGainLayer(1000, 2)))
     );
@@ -82,18 +99,26 @@ describe('inzhur/gain', () => {
         Effect.gen(function* () {
             yield* setUpInzhurWithBaseline(0, 1000, 2);
             yield* seedBaselinePrices(REIT_PRICE);
-            const bankAccount = yield* seed.account({
-                title: 'Monobank Card',
-                externalId: 'inzhur-gain-card',
-                externalSource: ExternalSourceEnum.MONOBANK,
-                type: AccountTypeEnum.BANK_SYNC,
-                instrumentId: UAH_INSTRUMENT_ID
-            });
-
-            yield* importInzhurBankTransaction(bankAccount.id, 'top-up', 'ТОВ "Інжур Кепітал"', -1000, TOP_UP_AT);
-            yield* Effect.flatMap(TransferConsolidationService, service => service.consolidate(null));
+            yield* topUpFromBank('inzhur-gain-card');
 
             expect(yield* findAllTimeGain()).toMatchObject({ contributions: 1000, gain: 0 });
+            const report = yield* Effect.flatMap(InzhurGainService, service => service.getInstitutionReport(TODAY));
+
+            expect(report?.gainSeries.every(point => point.value === 0)).toBe(true);
+            expect(report?.series.at(-1)?.value).toBe((report?.series.at(0)?.value ?? 0) + 1000);
+        }).pipe(Effect.provide(makeGainLayer(1000, 2)))
+    );
+
+    it.effect('keeps a top-up between statements out of the gain since the previous statement', () =>
+        Effect.gen(function* () {
+            yield* setUpInzhurWithBaseline(0, 1000, 2);
+            yield* seedBaselinePrices(REIT_PRICE);
+            yield* topUpFromBank('inzhur-gain-since-card');
+
+            expect(yield* Effect.flatMap(InzhurGainService, service => service.getInstitutionGainSince(FIRST_DAY, TODAY))).toMatchObject({
+                contributions: 1000,
+                gain: 0
+            });
         }).pipe(Effect.provide(makeGainLayer(1000, 2)))
     );
 

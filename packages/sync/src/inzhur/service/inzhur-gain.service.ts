@@ -198,6 +198,11 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
                 .filter((point): point is InzhurValuePointInterface => isDefined(point.value))
                 .map(point => ({ date: point.date, value: roundMoney(point.value) }));
 
+        const buildGainSeries = (ledger: InzhurGainLedgerInterface, measure: InzhurGainMeasureInterface, today: string) =>
+            listDays(ledger.firstDay, today)
+                .map(date => ({ date, value: buildGain(ledger, measure, ledger.firstDay, date).gain }))
+                .filter((point): point is InzhurValuePointInterface => isDefined(point.value));
+
         return {
             getInstitutionReport: Effect.fn('InzhurGainService.getInstitutionReport')(function* (today: string) {
                 const ledger = yield* loadLedger();
@@ -213,6 +218,7 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
 
                 return {
                     series: buildSeries(ledger, today, measure.valueOn),
+                    gainSeries: buildGainSeries(ledger, measure, today),
                     prices: [],
                     gains: buildRangedGains(ledger, measure, today)
                 } satisfies InzhurGainReportInterface;
@@ -231,6 +237,7 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
 
                 return {
                     series: buildSeries(ledger, today, measure.valueOn),
+                    gainSeries: buildGainSeries(ledger, measure, today),
                     prices: (ledger.pricesByAccountId.get(fundAccountId) ?? []).filter(
                         price => price.date >= ledger.firstDay && price.date <= today
                     ),

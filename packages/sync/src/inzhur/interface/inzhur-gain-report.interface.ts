@@ -3,6 +3,7 @@ import type { InzhurValuePointInterface } from './inzhur-value-point.interface';
 
 export interface InzhurGainReportInterface {
     readonly series: readonly InzhurValuePointInterface[];
+    readonly gainSeries: readonly InzhurValuePointInterface[];
     readonly prices: readonly InzhurValuePointInterface[];
     readonly gains: readonly InzhurRangedGainInterface[];
 }
