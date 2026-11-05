@@ -1,7 +1,7 @@
 import { AccountTypeEnum, TransactionCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useImperativeHandle, useState } from 'react';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useFormState } from 'react-hook-form';
 import { LayoutChangeEvent, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -10,6 +10,8 @@ import { GroupedListSection } from '../../../@generic/component/grouped-list-sec
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
+import { QuickFormFieldError } from '../quick-form-field-error/quick-form-field-error';
+import { TransactionFormRowPlaceholder } from '../transaction-form-row-placeholder/transaction-form-row-placeholder';
 import { TransferAccountPicker } from '../transfer-account-picker/transfer-account-picker';
 import { TransferQuickFormSelector } from '../transfer-quick-form/transfer-quick-form.selector';
 import { TransferSwapButton } from '../transfer-swap-button/transfer-swap-button';
@@ -23,11 +25,14 @@ interface Props {
     readonly ref?: RefObject<TransactionTransferAccountsRowRef | null>;
 }
 
+const TRANSFER_ACCOUNT_FIELDS = ['fromAccountId', 'toAccountId'] as const;
+
 // eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const TransactionTransferAccountsRow = ({ ref }: Props) => {
     const { t } = useLingui();
     const [fromRowHeight, setFromRowHeight] = useState(0);
-    const { setValue } = useFormContext<TransactionCreateInputInterface>();
+    const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
+    const { errors } = useFormState({ control });
     const [openAccountSelector] = useAccountSelectorModal();
     const { shake: shakeFrom, animatedStyle: fromAnimatedStyle } = useShakeAnimation();
     const { shake: shakeTo, animatedStyle: toAnimatedStyle } = useShakeAnimation();
@@ -77,15 +82,18 @@ export const TransactionTransferAccountsRow = ({ ref }: Props) => {
 
     const handleFromLayout = (event: LayoutChangeEvent) => void setFromRowHeight(event.nativeEvent.layout.height);
     const canSwap = isDefined(fromAccountId) && isDefined(toAccountId);
+    const missingPlaceholder = <TransactionFormRowPlaceholder tone="destructive">{t`Choose`}</TransactionFormRowPlaceholder>;
+    const fromPlaceholder = isDefined(errors.root?.['fromAccountId']) ? missingPlaceholder : t`Choose`;
+    const toPlaceholder = isDefined(errors.root?.['toAccountId']) ? missingPlaceholder : t`Choose`;
 
     return (
         <View>
-            <GroupedListSection>
+            <GroupedListSection footer={<QuickFormFieldError fields={TRANSFER_ACCOUNT_FIELDS} />}>
                 <View onLayout={handleFromLayout}>
                     <TransferAccountPicker
                         label={t({ message: 'From', context: 'transfer account' })}
                         account={fromAccount}
-                        placeholder={t`Choose`}
+                        placeholder={fromPlaceholder}
                         animatedStyle={fromAnimatedStyle}
                         testID={TransferQuickFormSelector.FromAccount}
                         selectedTestID={fromAccountSelectedTestID}
@@ -95,7 +103,7 @@ export const TransactionTransferAccountsRow = ({ ref }: Props) => {
                 <TransferAccountPicker
                     label={t({ message: 'To', context: 'transfer account' })}
                     account={toAccount}
-                    placeholder={t`Choose`}
+                    placeholder={toPlaceholder}
                     animatedStyle={toAnimatedStyle}
                     testID={TransferQuickFormSelector.ToAccount}
                     selectedTestID={toAccountSelectedTestID}

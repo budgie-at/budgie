@@ -2,7 +2,6 @@ import { TransactionCreateInputInterface, UserIconNameEnum } from '@budgie/contr
 import { getTransactionCategoryEntries } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -11,6 +10,7 @@ import { useGetCategoryByIdQuery } from '../../../category/query/use-get-categor
 import { setPrimaryCategory } from '../../utils/set-primary-category.util';
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 import { TransactionFieldIcon, TransactionFieldIconRef } from '../transaction-field-icon/transaction-field-icon';
+import { TransactionFormRowPlaceholder } from '../transaction-form-row-placeholder/transaction-form-row-placeholder';
 
 import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import type { RefObject } from 'react';
@@ -52,15 +52,7 @@ export const TransactionCategoryFieldIcon = ({ ref, variant, isSplitActive }: Pr
             icon={categoryIcon}
             label={t`Category`}
             value={category?.title}
-            placeholder={
-                <Text
-                    className="min-w-0 flex-1 text-right text-[17px] leading-[22px] text-attention-foreground"
-                    maxFontSizeMultiplier={2}
-                    numberOfLines={1}
-                >
-                    {t`Uncategorized`}
-                </Text>
-            }
+            placeholder={<TransactionFormRowPlaceholder tone="attention">{t`Uncategorized`}</TransactionFormRowPlaceholder>}
             onPress={handlePress}
             disabledHint={disabledHint}
             testID={SimpleQuickFormSelector.CategorySelector}

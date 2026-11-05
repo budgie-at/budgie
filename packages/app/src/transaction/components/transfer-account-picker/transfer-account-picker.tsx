@@ -1,17 +1,19 @@
 import { AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { t } from '@lingui/core/macro';
+import { ReactElement } from 'react';
 import { ViewStyle } from 'react-native';
 import Animated, { AnimatedStyle } from 'react-native-reanimated';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isString } from '@rnw-community/shared';
 
-import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { AccountInactiveIcon } from '../../../account/component/account-inactive-icon/account-inactive-icon';
 import { TransactionFormRow } from '../transaction-form-row/transaction-form-row';
 
 interface Props {
     readonly label: string;
-    readonly placeholder: string;
+    readonly placeholder: string | ReactElement;
     readonly account: AccountWithInstrumentEntityInterface | null | undefined;
     readonly animatedStyle?: AnimatedStyle<ViewStyle>;
     readonly testID?: string;
@@ -19,9 +21,12 @@ interface Props {
     readonly onPress: () => void;
 }
 
+const ROW_STYLE = { minHeight: 60 };
+
 export const TransferAccountPicker = ({ label, placeholder, account, animatedStyle, testID, selectedTestID, onPress }: Props) => {
     const hasAccount = isDefined(account);
-    const pressableProps = { accessibilityLabel: `${label}: ${account?.title ?? placeholder}` };
+    const accessibilityPlaceholder = isString(placeholder) ? placeholder : t`Choose`;
+    const pressableProps = { accessibilityLabel: `${label}: ${account?.title ?? accessibilityPlaceholder}`, style: ROW_STYLE };
     const icon = hasAccount ? account.icon : UserIconNameEnum.Wallet;
     const isInactiveAccount = hasAccount && !account.isActive;
 
@@ -30,7 +35,15 @@ export const TransferAccountPicker = ({ label, placeholder, account, animatedSty
             <TransactionFormRow
                 left={
                     <AccountInactiveIcon isInactive={isInactiveAccount} size={36}>
-                        <GroupedListIcon icon={icon} />
+                        <CircleIcon
+                            icon={icon}
+                            variant="secondary"
+                            size={30}
+                            iconSize={16}
+                            radius={15}
+                            border={false}
+                            className="bg-surface-disc"
+                        />
                     </AccountInactiveIcon>
                 }
                 label={label}

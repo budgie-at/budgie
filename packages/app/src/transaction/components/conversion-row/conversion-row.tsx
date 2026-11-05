@@ -34,12 +34,12 @@ export const ConversionRow = (props: Props) => {
     const formatAmount = useFormatDigits(2);
     const formatRate = useFormatDigits(0, 6);
 
-    const prefix = isManualRate ? '=' : '\u2248';
+    const prefix = isManualRate ? '' : '\u2248 ';
     const formattedAmount = formatAmount(isPositiveNumber(destinationAmount) ? destinationAmount : 0, destinationSymbol);
     const formattedRate = isPositiveNumber(exchangeRate) ? formatRate(exchangeRate) : '—';
     const rateLabel = t`1 ${sourceCode} = ${formattedRate} ${destinationCode}`;
     const exchangeRateLabel = t`Exchange rate: ${rateLabel}`;
-    const displayAmount = isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : `${prefix} ${formattedAmount}`;
+    const displayAmount = isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : `${prefix}${formattedAmount}`;
     const pressableProps = {
         accessibilityLabel: `${label}: ${displayAmount}. ${exchangeRateLabel}`,
         accessibilityHint: t`Edit the amount`
@@ -49,7 +49,7 @@ export const ConversionRow = (props: Props) => {
         <Animated.View entering={ENTERING_ANIMATION}>
             <GroupedListSection footer={rateLabel}>
                 <TransactionFormRow
-                    left={<GroupedListIcon icon={UserIconNameEnum.ArrowLeftRight} />}
+                    left={<GroupedListIcon icon={UserIconNameEnum.Banknote} />}
                     label={label}
                     value={displayAmount}
                     onPress={onPress ?? emptyFn}

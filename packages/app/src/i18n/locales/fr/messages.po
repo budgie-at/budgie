@@ -2195,6 +2195,7 @@ msgstr "Vérification de l’historique des transactions"
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
+#: src/transaction/components/transfer-account-picker/transfer-account-picker.tsx
 msgid "Choose"
 msgstr "Choisir"
 
@@ -7380,7 +7381,7 @@ msgstr "Résumé indisponible"
 msgid "Support"
 msgstr "Assistance"
 
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
+#: src/transaction/components/transfer-swap-button/transfer-swap-button.tsx
 msgid "Swap accounts"
 msgstr "Échanger les comptes"
 

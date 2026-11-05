@@ -8,6 +8,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 import type { QuickFormValidationField } from '../../interface/quick-form-validation-field.type';
 
 const VALIDATION_FIELDS: readonly QuickFormValidationField[] = ['amount', 'fromAccountId', 'toAccountId', 'entries'];
+const INLINE_MESSAGE_FIELDS: readonly QuickFormValidationField[] = ['amount', 'entries'];
 
 export const QuickFormValidationSlot = () => {
     const { control, clearErrors } = useFormContext<TransactionCreateInputInterface>();
@@ -15,7 +16,7 @@ export const QuickFormValidationSlot = () => {
     const fieldValues = useWatch({ control, name: VALIDATION_FIELDS });
     const previousFieldValuesRef = useRef(fieldValues);
 
-    const message = VALIDATION_FIELDS.map(field => errors.root?.[field]?.message).find(isNotEmptyString);
+    const message = INLINE_MESSAGE_FIELDS.map(field => errors.root?.[field]?.message).find(isNotEmptyString);
 
     useEffect(() => {
         VALIDATION_FIELDS.forEach((field, index) => {
