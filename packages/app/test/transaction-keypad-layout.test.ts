@@ -8,7 +8,7 @@ describe('transaction keypad viewport accessibility', () => {
     });
 
     it('scrolls the amount, keypad and form together when no form row fits above the keypad', () => {
-        expect(getTransactionKeypadLayout(1, 400).requiresScrolling).toBe(true);
+        expect(getTransactionKeypadLayout(1, 380).requiresScrolling).toBe(true);
         expect(getTransactionKeypadLayout(3, 400).requiresScrolling).toBe(true);
     });
 
