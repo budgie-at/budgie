@@ -60,6 +60,13 @@ const convert = Effect.fnUntraced(function* (transactionId: number, installmentC
     });
 });
 
+const convertWithSchedule = Effect.fnUntraced(function* (transactionId: number, installmentCount: number, totalAmount: number) {
+    const { accountId } = yield* convert(transactionId, installmentCount, totalAmount);
+    const installmentPlanRepository = yield* InstallmentPlanRepository;
+
+    return { accountId, schedule: yield* installmentPlanRepository.getSchedule(accountId) };
+});
+
 const runPostSync = Effect.fnUntraced(function* () {
     const transferConsolidationService = yield* TransferConsolidationService;
 
@@ -541,9 +548,7 @@ describe('installment plan', () => {
             const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, 'UA-backward');
             const first = yield* seedPart(card.id, 'Платіж itbox.ua', 28_058.33, new Date(2026, 7, 12, 10));
             const second = yield* seedPart(card.id, 'Щомісячний платіж itbox.ua', 28_058.34, new Date(2026, 8, 12, 9));
-            const { accountId } = yield* convert(second.id, 3, 84_175);
-            const installmentPlanRepository = yield* InstallmentPlanRepository;
-            const schedule = yield* installmentPlanRepository.getSchedule(accountId);
+            const { accountId, schedule } = yield* convertWithSchedule(second.id, 3, 84_175);
 
             expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id, second.id]);
             expect(schedule?.paidCount).toBe(2);
@@ -581,9 +586,7 @@ describe('installment plan', () => {
             const first = yield* seedPart(card.id, 'Платіж itbox.ua', 28_058.33, new Date(2026, 0, 31, 10));
             const second = yield* seedPart(card.id, 'Щомісячний платіж itbox.ua', 28_058.33, new Date(2026, 1, 25, 9));
             const third = yield* seedPart(card.id, 'Щомісячний платіж itbox.ua', 28_058.33, new Date(2026, 2, 31, 9));
-            const { accountId } = yield* convert(third.id, 3, 84_174.99);
-            const installmentPlanRepository = yield* InstallmentPlanRepository;
-            const schedule = yield* installmentPlanRepository.getSchedule(accountId);
+            const { accountId, schedule } = yield* convertWithSchedule(third.id, 3, 84_174.99);
 
             expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id, second.id, third.id]);
             expect(schedule?.paidCount).toBe(3);
@@ -642,9 +645,7 @@ describe('installment plan', () => {
             Effect.gen(function* () {
                 const cash = yield* seedBankSyncAccount('Cash', null, 'UA-flex-middle');
                 const parts = yield* Effect.forEach([0, 1, 2, 3, 4, 5], month => seedLaptop(cash.id, 1_000, new Date(2026, month, 12, 10)));
-                const { accountId } = yield* convert(parts[2].id, 6, 6_000);
-                const installmentPlanRepository = yield* InstallmentPlanRepository;
-                const schedule = yield* installmentPlanRepository.getSchedule(accountId);
+                const { accountId, schedule } = yield* convertWithSchedule(parts[2].id, 6, 6_000);
 
                 expect((yield* fetchAttachedTransactionIds(accountId)).toSorted((left, right) => left - right)).toEqual(
                     parts.map(part => part.id)
@@ -660,9 +661,7 @@ describe('installment plan', () => {
                 const first = yield* seedLaptop(cash.id, 1_000, new Date(2026, 0, 12, 10));
                 const second = yield* seedLaptop(cash.id, 1_000, new Date(2026, 1, 12, 10));
                 const third = yield* seedLaptop(cash.id, 1_000, new Date(2026, 1, 20, 10));
-                const { accountId } = yield* convert(first.id, 6, 6_000);
-                const installmentPlanRepository = yield* InstallmentPlanRepository;
-                const schedule = yield* installmentPlanRepository.getSchedule(accountId);
+                const { accountId, schedule } = yield* convertWithSchedule(first.id, 6, 6_000);
 
                 expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id, second.id, third.id]);
                 expect(schedule?.paidCount).toBe(3);
@@ -676,9 +675,7 @@ describe('installment plan', () => {
                 const cash = yield* seedBankSyncAccount('Cash', null, 'UA-flex-double');
                 const first = yield* seedLaptop(cash.id, 1_000, new Date(2026, 0, 12, 10));
                 const double = yield* seedLaptop(cash.id, 2_000, new Date(2026, 1, 12, 10));
-                const { accountId } = yield* convert(first.id, 6, 6_000);
-                const installmentPlanRepository = yield* InstallmentPlanRepository;
-                const schedule = yield* installmentPlanRepository.getSchedule(accountId);
+                const { accountId, schedule } = yield* convertWithSchedule(first.id, 6, 6_000);
 
                 expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id, double.id]);
                 expect(schedule?.paidCount).toBe(3);
