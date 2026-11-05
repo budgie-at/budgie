@@ -73,8 +73,7 @@ export const TransactionAmountDisplay = ({
         ? PROTECTED_AMOUNT_PLACEHOLDER
         : `${displaySymbol}${formatKeypadAmount(amount, decimalSeparator, digitGroupingSeparator)}`;
 
-    const emptyAmountClassName = variant === 'positive' ? 'text-positive-strong/40' : 'text-secondary-foreground';
-    const amountClassName = cn(textVariants({ variant }), !isPositiveNumber(Number(amount)) && emptyAmountClassName);
+    const amountClassName = cn(textVariants({ variant }), !isPositiveNumber(Number(amount)) && 'text-secondary-foreground');
     const caretHeight = textLayout.height * CARET_HEIGHT_RATIO;
     const accessoryStyle = {
         left: (textLayout.containerWidth + textLayout.width) / 2 + CARET_GAP,

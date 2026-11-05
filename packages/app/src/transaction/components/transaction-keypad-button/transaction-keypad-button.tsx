@@ -28,6 +28,7 @@ const PRESSED_OPACITY = 0.8;
 const SPRING_DAMPING = 15;
 const SPRING_STIFFNESS = 300;
 const OPACITY_DURATION_MS = 50;
+const COMMA_GLYPH_STYLE = { transform: [{ translateY: -6 }] };
 
 const buttonVariants = cva<{
     buttonVariant: Record<KeypadButtonVariant, ClassValue>;
@@ -76,6 +77,7 @@ export const TransactionKeypadButton = (props: Props) => {
     }));
 
     const resolvedAccessibilityLabel = accessibilityLabel ?? value ?? icon;
+    const glyphStyle = value === ',' ? COMMA_GLYPH_STYLE : void 0;
     const contentClassName = textVariants({ buttonVariant: variant });
 
     return (
@@ -93,7 +95,7 @@ export const TransactionKeypadButton = (props: Props) => {
                 {isDefined(icon) ? (
                     <Icon className={contentClassName} icon={icon} size={ICON_SIZE} />
                 ) : (
-                    <Text className={contentClassName} maxFontSizeMultiplier={TRANSACTION_KEYPAD_MAX_FONT_SCALE}>
+                    <Text className={contentClassName} style={glyphStyle} maxFontSizeMultiplier={TRANSACTION_KEYPAD_MAX_FONT_SCALE}>
                         {value}
                     </Text>
                 )}

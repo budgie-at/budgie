@@ -16,7 +16,7 @@ interface Props {
 }
 
 const MAX_FONT_SCALE = 2;
-const INLINE_LINES = 2;
+const INLINE_LINES = 1;
 const STACKED_LINES = 3;
 const LARGE_TEXT_LINES = 6;
 

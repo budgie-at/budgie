@@ -92,7 +92,7 @@ export const TransferQuickForm = (props: Props) => {
     const isConfirmDisabled = [
         props.isSubmitting,
         conversion.isPending && !isEditingDestination,
-        ![sourceKeypad.numericValue, activeKeypad.numericValue].every(isPositiveNumber)
+        ![sourceKeypad.numericValue, activeKeypad.numericValue, fromAccountId, toAccountId].every(isPositiveNumber)
     ].some(Boolean);
 
     const hasInitializedRef = useRef(false);
