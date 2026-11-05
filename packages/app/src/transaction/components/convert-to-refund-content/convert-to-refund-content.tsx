@@ -59,7 +59,9 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
 
     return (
         <TransactionPickerSheet
-            header={<TransactionPickerSheetHeader title={t`Refund`} closeLabel={t`Cancel`} onClose={handleResolve} />}
+            header={
+                <TransactionPickerSheetHeader title={t`Refund`} closeLabel={t`Cancel`} onClose={handleResolve} disabled={isConverting} />
+            }
             footer={
                 <ConvertToRefundFooter
                     selectedCandidate={selectedCandidate}

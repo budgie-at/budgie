@@ -7,9 +7,10 @@ interface Props {
     readonly closeLabel: string;
     readonly onClose: () => void;
     readonly closeTestID?: string;
+    readonly disabled?: boolean;
 }
 
-export const TransactionPickerSheetHeader = ({ title, closeLabel, onClose, closeTestID }: Props) => (
+export const TransactionPickerSheetHeader = ({ title, closeLabel, onClose, closeTestID, disabled }: Props) => (
     <View className="min-h-11 flex-row items-center gap-x-xl">
         <Text dynamicTypeRamp="title3" accessibilityRole="header" className="flex-1 text-[17px] font-semibold text-primary">
             {title}
@@ -21,7 +22,7 @@ export const TransactionPickerSheetHeader = ({ title, closeLabel, onClose, close
             testID={closeTestID}
             className="min-h-11 justify-center px-sm active:opacity-60"
         >
-            <Text dynamicTypeRamp="footnote" className="text-[15px] font-semibold text-primary">
+            <Text dynamicTypeRamp="caption2" className="text-[14px] font-semibold text-primary">
                 {closeLabel}
             </Text>
         </HapticPressable>

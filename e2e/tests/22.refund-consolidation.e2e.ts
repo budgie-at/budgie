@@ -33,7 +33,7 @@ test('22 refund consolidation', { tags: ['transactions'] }, async ({ budgie }) =
         await b.tapText(ctx, 'Convert to Refund');
         await b.expectId(ctx, 'ConvertToRefund.Page', 10_000);
         await b.expectId(ctx, 'ConvertToRefund.CandidateRow.2');
-        await expect(b.byText(screen, 'Convert to Refund')).toBeVisible();
+        await expect(b.byText(screen, 'Refund')).toBeVisible();
         await b.tapId(ctx, 'ConvertToRefund.CandidateRow.2');
         await expect(id('ConvertToRefund.ConvertButton')).toBeEnabled();
         await id('ConvertToRefund.SearchInput').fill('E2E Refund Full');
