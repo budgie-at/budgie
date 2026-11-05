@@ -27,11 +27,9 @@ interface Props {
 export const TransactionPickerRow = ({ item, position, isSelected = false, onPress, testID }: Props) => {
     const { formatMonthAndDay } = useFormatDate();
     const protectAmount = useProtectedAmountLabel();
-    const isAccessibilityTextSize = useIsAccessibilityTextSize();
-    const textLineLimit = isAccessibilityTextSize ? undefined : 2;
+    const textLineLimit = useIsAccessibilityTextSize() ? 0 : 2;
 
     const isIncome = item.type === TransactionTypeEnum.INCOME;
-    const iconClassName = isIncome ? 'text-positive-strong' : undefined;
     const signedAmount = `${isIncome ? '+' : ''}${protectAmount(convertFromMicroUnits(item.amount), item.currencySymbol)}`;
     const description = isNotEmptyString(item.categoryTitle)
         ? `${formatMonthAndDay(item.operatedAt)} · ${item.accountTitle} · ${item.categoryTitle}`
@@ -41,26 +39,15 @@ export const TransactionPickerRow = ({ item, position, isSelected = false, onPre
     const amountClassName = isIncome
         ? 'text-[15px] font-semibold tabular-nums text-positive-strong'
         : 'text-[15px] font-semibold tabular-nums text-primary';
-    const selectionClassName = isSelected ? 'w-6 items-center' : 'w-6 items-center opacity-0';
     const content = (
         <TransactionRowLayout
-            icon={
-                <CircleIcon
-                    size={36}
-                    iconSize={18}
-                    radius={18}
-                    border={false}
-                    icon={icon}
-                    variant={iconVariant}
-                    iconClassName={iconClassName}
-                />
-            }
+            icon={<CircleIcon size={36} iconSize={18} radius={18} border={false} icon={icon} variant={iconVariant} />}
             amount={
                 <View className="shrink-0 flex-row items-center gap-x-sm">
                     <Text className={amountClassName}>{signedAmount}</Text>
                     {isDefined(onPress) ? (
-                        <View className={selectionClassName}>
-                            <Icon icon={UserIconNameEnum.Check} size={16} className="text-primary" />
+                        <View className="w-6 items-center">
+                            {isSelected ? <Icon icon={UserIconNameEnum.Check} size={16} className="text-primary" /> : null}
                         </View>
                     ) : null}
                 </View>
