@@ -4,8 +4,11 @@ import * as Layer from 'effect/Layer';
 
 import type { PdfTextItemInterface } from '@budgie/sync';
 
-export const inzhurStatementReaderLayer = (itemsByUri: Readonly<Record<string, PdfTextItemInterface[]>>) =>
+export const inzhurStatementReaderLayer = (
+    itemsByUri: Readonly<Record<string, PdfTextItemInterface[]>>,
+    bytesByUri: Readonly<Record<string, Uint8Array>> = {}
+) =>
     Layer.succeed(SyncFileReader, {
         readPdfTextItems: uri => Effect.succeed(itemsByUri[uri] ?? []),
-        readBytes: () => Effect.succeed(new Uint8Array())
+        readBytes: uri => Effect.succeed(bytesByUri[uri] ?? new Uint8Array())
     });
