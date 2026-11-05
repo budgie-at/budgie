@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.160.0](https://github.com/budgie-at/budgie/compare/v6.159.0...v6.160.0) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** match the rule option sheet background to its grouped surface ([1029312](https://github.com/budgie-at/budgie/commit/10293123c42a4d344d3ca82315098ceb5e6e017c))
+* **app:** match the rule selector sheet background in dark mode ([984f56b](https://github.com/budgie-at/budgie/commit/984f56b2cf0f936e3edbb62dcd316b4f957d9b50))
+
+### Features
+
+* **app:** scroll the rule option sheet when options exceed the viewport ([5958ebd](https://github.com/budgie-at/budgie/commit/5958ebd18ca8008c1a3a8f67b55dd0950e8b5b1d))
+
+
 # [6.159.0](https://github.com/budgie-at/budgie/compare/v6.158.0...v6.159.0) (2026-11-05)
 
 ### Bug Fixes
