@@ -168,7 +168,7 @@ export const createTestVitestConfig = (rootDir: string, setupFile: string) => {
             setupFiles: [here(setupFile)],
             include: ['src/scenarios/**/*.test.ts'],
             pool: 'forks',
-            fileParallelism: false,
+            maxWorkers: 4,
             testTimeout: 20_000
         }
     };
