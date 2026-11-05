@@ -1953,7 +1953,6 @@ msgstr "Ne pourra pas être modifiée"
 #: src/account/hooks/use-delete-archived-account.hook.ts
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
-#: src/app/convert-to-transfer.tsx
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 #: src/budget/hooks/use-budget-event-form.hook.ts
 #: src/budget/hooks/use-budget-form.hook.ts
@@ -2496,7 +2495,6 @@ msgstr "Continuer sans code PIN"
 msgid "Conversion failed"
 msgstr "Échec de la conversion"
 
-#: src/app/convert-to-transfer.tsx
 #: src/money-data/component/money-data-upgrade-status-card/money-data-upgrade-status-card.tsx
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
@@ -2521,15 +2519,11 @@ msgstr "Convertir en remboursement"
 msgid "Convert to Refund?"
 msgstr "Convertir en remboursement ?"
 
-#: src/app/convert-to-transfer.tsx
+#: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
 #: src/transaction/components/transaction-list-convert-to-transfer-menu-item/transaction-list-convert-to-transfer-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Convert to Transfer"
 msgstr "Convertir en virement"
-
-#: src/app/convert-to-transfer.tsx
-msgid "Convert to Transfer?"
-msgstr "Convertir en transfert ?"
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Converting {processedEntryCount} of {totalEntryCount} transactions"
@@ -7738,14 +7732,6 @@ msgstr "Cette semaine"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Cela effacera tous les soldes de compte mis en cache et les recalculera à partir de vos transactions. Cela peut prendre un moment."
-
-#: src/app/convert-to-transfer.tsx
-msgid "This will convert the expense to a transfer between accounts."
-msgstr "Cela convertira la dépense en un transfert entre comptes."
-
-#: src/app/convert-to-transfer.tsx
-msgid "This will convert the income to a transfer between accounts."
-msgstr "Cela convertira le revenu en un transfert entre comptes."
 
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "This will keep one entry with the full transaction amount."
