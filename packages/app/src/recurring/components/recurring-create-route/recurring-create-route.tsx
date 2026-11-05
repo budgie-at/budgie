@@ -12,13 +12,12 @@ import { buildDefaultRecurringFormValues } from '../../utils/build-default-recur
 import { buildRecurringFormValuesFromTransaction } from '../../utils/build-recurring-form-values-from-transaction.util';
 import { RecurringSeriesFormScreen } from '../recurring-series-form-screen/recurring-series-form-screen';
 
-const CREATE_TARGET = { mode: RecurringFormModeEnum.CREATE } as const;
-
 export const RecurringCreateRoute = () => {
     const { transactionId } = useLocalSearchParams<{ transactionId?: string | string[] }>();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const now = useRecurringNow();
-    const { transaction, isLoading } = useGetTransactionByIdQuery(parsePositiveRouteParam(transactionId));
+    const parsedTransactionId = parsePositiveRouteParam(transactionId);
+    const { transaction, isLoading } = useGetTransactionByIdQuery(parsedTransactionId);
 
     if (isLoading) {
         return null;
@@ -28,5 +27,7 @@ export const RecurringCreateRoute = () => {
         ? buildRecurringFormValuesFromTransaction(transaction, defaultInstrument.id)
         : buildDefaultRecurringFormValues(defaultInstrument.id, now);
 
-    return <RecurringSeriesFormScreen target={CREATE_TARGET} initialValues={initialValues} />;
+    const target = { mode: RecurringFormModeEnum.CREATE, transactionId: parsedTransactionId } as const;
+
+    return <RecurringSeriesFormScreen target={target} initialValues={initialValues} />;
 };
