@@ -79,7 +79,7 @@ export default function VoiceReviewModal() {
         isEmptyArray(rows) ? [EMPTY_SHEET_DETENT, EXPANDED_SHEET_DETENT] : [0.65, EXPANDED_SHEET_DETENT],
         fontScale >= VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE ? 1 : 0
     );
-    const titleClassName = fontScale >= VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE ? 'text-[15px] leading-[20px]' : undefined;
+    const titleClassName = fontScale >= VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE ? 'text-[15px] leading-[20px]' : '';
     const canDelete = rows.length > 1;
     const canSaveToAccount = canSave && isPositiveNumber(accountId);
 

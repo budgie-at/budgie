@@ -29,7 +29,7 @@ export const VoiceReviewFooter = (props: Props) => {
     const { t } = useLingui();
     const { fontScale } = useWindowDimensions();
     const formatDigits = useDisplayFormatDigits();
-    const reRecordIcon = fontScale >= VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE ? undefined : UserIconNameEnum.RefreshCw;
+    const reRecordIconProps = fontScale < VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE ? { leftIcon: UserIconNameEnum.RefreshCw } : {};
     const reRecordVariant = isPositiveNumber(count) ? 'secondary' : 'cta';
     const actionLayoutClassName = fontScale >= VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE ? 'flex-col gap-y-md' : 'flex-row gap-x-md';
     const actionClassName = fontScale >= VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE ? 'min-h-[44px] px-md' : 'flex-1 min-h-[44px] px-md';
@@ -57,7 +57,7 @@ export const VoiceReviewFooter = (props: Props) => {
                 />
                 <Button
                     variant={reRecordVariant}
-                    leftIcon={reRecordIcon}
+                    {...reRecordIconProps}
                     content={t`Re-record`}
                     onPress={onReRecord}
                     disabled={isSaving}
