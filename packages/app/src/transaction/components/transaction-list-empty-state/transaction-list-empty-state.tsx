@@ -1,12 +1,13 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { ActivityIndicator, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { TransactionsPageSelector } from '../../../app/(tabs)/transactions-page.selector';
 
 interface Props {
@@ -18,10 +19,6 @@ interface Props {
 export const TransactionListEmptyState = ({ isLoading, hasFiltersSelected, onClearFilters }: Props) => {
     const { t } = useLingui();
 
-    if (isLoading) {
-        return <ActivityIndicator size="large" />;
-    }
-
     const emptyStateText = hasFiltersSelected
         ? { title: t`No matching transactions`, description: t`Try adjusting your filters to see more results` }
         : {
@@ -30,7 +27,7 @@ export const TransactionListEmptyState = ({ isLoading, hasFiltersSelected, onCle
           };
 
     return (
-        <View className="flex-1 items-center py-[48px]">
+        <LoadingContent isLoading={isLoading} containerClassName="flex-1" className="flex-1 items-center py-[48px]">
             <View className="flex-2" />
 
             <CircleIcon
@@ -67,6 +64,6 @@ export const TransactionListEmptyState = ({ isLoading, hasFiltersSelected, onCle
             ) : null}
 
             <View className="flex-3" />
-        </View>
+        </LoadingContent>
     );
 };
