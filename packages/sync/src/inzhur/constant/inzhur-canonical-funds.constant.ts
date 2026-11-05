@@ -5,5 +5,7 @@ import type { InzhurCanonicalFundInterface } from '../interface/inzhur-canonical
 export const INZHUR_CANONICAL_FUNDS: readonly InzhurCanonicalFundInterface[] = [
     { keyword: 'REIT', name: 'Inzhur REIT', icon: UserIconNameEnum.Building2 },
     { keyword: 'ЕНЕРДЖІ', name: 'Inzhur Energy', icon: UserIconNameEnum.Zap },
-    { keyword: 'МІЛТЕХ', name: 'Inzhur MilTech', icon: UserIconNameEnum.Shield }
+    { keyword: 'МІЛТЕХ', name: 'Inzhur MilTech', icon: UserIconNameEnum.Shield },
+    { keyword: 'OCEAN', name: 'Inzhur Ocean', icon: UserIconNameEnum.Waves },
+    { keyword: 'ОКЕАН', name: 'Inzhur Ocean', icon: UserIconNameEnum.Waves }
 ];

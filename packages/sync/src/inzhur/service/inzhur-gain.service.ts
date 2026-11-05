@@ -1,7 +1,9 @@
 import {
     CurrencyEnum,
+    ExternalSourceEnum,
     InstrumentRepository,
     InvestmentReturnRepository,
+    TransactionRepository,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
     convertFromMicroUnits
@@ -13,10 +15,12 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { INZHUR_OPERATION_EXTERNAL_ID_PREFIX } from '../constant/inzhur-operation-external-id-prefix.constant';
 import { InzhurGainRangeEnum } from '../enum/inzhur-gain-range.enum';
 
 import { InzhurSetupService } from './inzhur-setup.service';
 
+import type { InzhurCostReturnInterface } from '../interface/inzhur-cost-return.interface';
 import type { InzhurDatedMovementInterface } from '../interface/inzhur-dated-movement.interface';
 import type { InzhurGainLedgerInterface } from '../interface/inzhur-gain-ledger.interface';
 import type { InzhurGainMeasureInterface } from '../interface/inzhur-gain-measure.interface';
@@ -32,6 +36,7 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
         const instrumentRepository = yield* InstrumentRepository;
         const instrumentDailyMarketPriceRepository = yield* InstrumentDailyMarketPriceRepository;
         const inzhurSetupService = yield* InzhurSetupService;
+        const transactionRepository = yield* TransactionRepository;
         const dayMilliseconds = 86_400_000;
         const priceHistoryLimit = 1000;
         const rangeDays = { [InzhurGainRangeEnum.MONTH]: 30, [InzhurGainRangeEnum.THREE_MONTHS]: 90 };
@@ -244,6 +249,50 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
                     gains: buildRangedGains(ledger, measure, today)
                 } satisfies InzhurGainReportInterface;
             }),
+            getFundCostReturn: Effect.fn('InzhurGainService.getFundCostReturn')(function* (fundAccountId: number, today: string) {
+                const ledger = yield* loadLedger();
+
+                if (!isDefined(ledger) || !ledger.fundAccountIds.includes(fundAccountId)) {
+                    return null;
+                }
+
+                const idByExternalId = yield* transactionRepository.findIdMapByExternalSource(ExternalSourceEnum.INZHUR, [fundAccountId]);
+                const isOperationsBacked = [...idByExternalId.keys()].some(externalId =>
+                    externalId.startsWith(INZHUR_OPERATION_EXTERNAL_ID_PREFIX)
+                );
+                const value = fundValueOn(ledger, fundAccountId, today);
+
+                if (!isOperationsBacked || !isDefined(value)) {
+                    return null;
+                }
+
+                const cashItems = ledger.dated.filter(item => item.movement.accountId === ledger.cashAccountId);
+                const trades = cashItems.filter(
+                    item =>
+                        item.movement.transactionType === TransactionTypeEnum.TRANSFER &&
+                        findCounterpartId(ledger, item.movement) === fundAccountId
+                );
+                const fundItems = cashItems.filter(item => item.movement.fundAccountId === fundAccountId);
+                const invested = trades.filter(item => item.amount < 0).reduce((total, item) => total - item.amount, 0);
+                const proceeds = trades.filter(item => item.amount > 0).reduce((total, item) => total + item.amount, 0);
+                const dividends = fundItems
+                    .filter(item => item.movement.transactionType === TransactionTypeEnum.INCOME)
+                    .reduce((total, item) => total + item.amount, 0);
+                const tax = fundItems
+                    .filter(item => item.movement.transactionType === TransactionTypeEnum.EXPENSE)
+                    .reduce((total, item) => total - item.amount, 0);
+                const returnAmount = value + proceeds + dividends - tax - invested;
+
+                return {
+                    invested: roundMoney(invested),
+                    proceeds: roundMoney(proceeds),
+                    dividends: roundMoney(dividends),
+                    tax: roundMoney(tax),
+                    value: roundMoney(value),
+                    returnAmount: roundMoney(returnAmount),
+                    percent: isPositiveNumber(invested) ? returnAmount / invested : null
+                } satisfies InzhurCostReturnInterface;
+            }),
             getInstitutionGainSince: Effect.fn('InzhurGainService.getInstitutionGainSince')(function* (startDate: string, today: string) {
                 const ledger = yield* loadLedger();
 
@@ -265,6 +314,7 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
         Layer.provide([
             InvestmentReturnRepository.layer,
             InstrumentRepository.layer,
+            TransactionRepository.layer,
             InstrumentDailyMarketPriceRepository.layer,
             InzhurSetupService.layer
         ])

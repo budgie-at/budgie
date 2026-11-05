@@ -22,9 +22,11 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { INZHUR_BANK_DESCRIPTION_PATTERNS } from '../constant/inzhur-bank-description-patterns.constant';
 import { INZHUR_UNATTRIBUTED_DIVIDEND_TITLE } from '../constant/inzhur-unattributed-dividend-title.constant';
 import { InzhurBankFlowKindEnum } from '../enum/inzhur-bank-flow-kind.enum';
+import { InzhurOperationKindEnum } from '../enum/inzhur-operation-kind.enum';
 import { sumSignedAccountEntries } from '../utils/sum-signed-account-entries.util';
 
 import { InzhurBeforeTrackingService } from './inzhur-before-tracking.service';
+import { InzhurCashPairingService } from './inzhur-cash-pairing.service';
 import { InzhurSetupLookupService } from './inzhur-setup-lookup.service';
 
 import type { InzhurBankFlowSummaryInterface } from '../interface/inzhur-bank-flow-summary.interface';
@@ -40,6 +42,7 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
         const transactionTransferService = yield* TransactionTransferService;
         const inzhurSetupLookupService = yield* InzhurSetupLookupService;
         const inzhurBeforeTrackingService = yield* InzhurBeforeTrackingService;
+        const inzhurCashPairingService = yield* InzhurCashPairingService;
         const { counterparties, companyIbans, dividendKeywords, externalSources, withdrawalPhrases } = INZHUR_BANK_DESCRIPTION_PATTERNS;
         const topUpTitle = 'Top-up to Inzhur';
         const withdrawalTitle = 'Withdrawal from Inzhur';
@@ -146,6 +149,34 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
             };
         });
 
+        const convertAndPair = Effect.fnUntraced(function* (
+            transaction: TransactionWithEntriesEntityInterface,
+            setup: InzhurSetupInterface
+        ) {
+            const amountMicroUnits = transaction.entries.find(
+                entry => entry.kind === TransactionEntryKindEnum.PRIMARY && entry.type !== TransactionEntryTypeEnum.FEE
+            )?.amount;
+            const placeholderId = isDefined(amountMicroUnits)
+                ? yield* inzhurCashPairingService.findPlaceholderId(
+                      setup.cashAccount.id,
+                      transaction.type === TransactionTypeEnum.EXPENSE
+                          ? InzhurOperationKindEnum.TOP_UP
+                          : InzhurOperationKindEnum.WITHDRAWAL,
+                      amountMicroUnits,
+                      transaction.operatedAt
+                  )
+                : null;
+            const outcome = yield* convertToCash(transaction, setup);
+
+            if (!isDefined(outcome) || !isDefined(placeholderId)) {
+                return outcome;
+            }
+
+            yield* inzhurCashPairingService.release(placeholderId);
+
+            return { ...outcome, preSetupCashDelta: 0 };
+        });
+
         const processTransaction = Effect.fnUntraced(function* (
             transaction: TransactionWithEntriesEntityInterface,
             setup: InzhurSetupInterface
@@ -170,7 +201,7 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
             const isWithdrawalPhrase = !isExpense && includesAny(description, withdrawalPhrases);
 
             if (transaction.type !== TransactionTypeEnum.INCOME || isWithdrawalPhrase || !includesAny(description, dividendKeywords)) {
-                return yield* convertToCash(transaction, setup);
+                return yield* convertAndPair(transaction, setup);
             }
 
             const isUnprocessed = isUnprocessedDividend(transaction);
@@ -237,7 +268,8 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
             TransactionRuleRepository.layer,
             TransactionTransferService.layer,
             InzhurSetupLookupService.layer,
-            InzhurBeforeTrackingService.layer
+            InzhurBeforeTrackingService.layer,
+            InzhurCashPairingService.layer
         ])
     );
 }

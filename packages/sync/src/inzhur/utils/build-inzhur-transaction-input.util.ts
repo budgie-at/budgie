@@ -4,6 +4,14 @@ import { isDefined } from '@rnw-community/shared';
 
 import type { TransactionCreateInputInterface, TransactionEntryCreateInputInterface } from '@budgie/contracts';
 
+const resolveType = (creditEntry: unknown, debitEntry: unknown) => {
+    if (!isDefined(creditEntry)) {
+        return TransactionTypeEnum.INCOME;
+    }
+
+    return isDefined(debitEntry) ? TransactionTypeEnum.TRANSFER : TransactionTypeEnum.EXPENSE;
+};
+
 export const buildInzhurTransactionInput = (
     title: string,
     externalId: string,
@@ -17,7 +25,7 @@ export const buildInzhurTransactionInput = (
         amount: (creditEntry ?? debitEntry)?.amount ?? 0,
         title,
         comment: '',
-        type: isDefined(creditEntry) ? TransactionTypeEnum.TRANSFER : TransactionTypeEnum.INCOME,
+        type: resolveType(creditEntry, debitEntry),
         exchangeRate: 1,
         operatedAt,
         externalId,

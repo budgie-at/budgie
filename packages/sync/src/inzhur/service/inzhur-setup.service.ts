@@ -25,6 +25,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { buildPrimaryEntry } from '../../core/utils/build-primary-entry.util';
 import { INZHUR_CASH_EXTERNAL_ID } from '../constant/inzhur-cash-external-id.constant';
+import { INZHUR_BALANCE_CORRECTION_TITLE } from '../constant/inzhur-estimate-titles.constant';
 import { InzhurNotSetUpError } from '../error/inzhur-not-set-up.error';
 import { buildInzhurTransactionInput } from '../utils/build-inzhur-transaction-input.util';
 
@@ -51,7 +52,6 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
         const provider = ExternalSourceEnum.INZHUR;
         const staleStatementDays = 30;
         const estimatedDividendTitle = 'Inzhur dividends (estimated)';
-        const balanceCorrectionTitle = 'Inzhur balance correction';
 
         const setup = Effect.fn('InzhurSetupService.setup')(
             function* (enteredCashBalance: number) {
@@ -128,7 +128,7 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
                 const operatedAt = new Date();
 
                 if (differenceMicroUnits < 0) {
-                    yield* accountService.adjustBalanceTo(cashAccount.id, actualBalance, operatedAt, balanceCorrectionTitle);
+                    yield* accountService.adjustBalanceTo(cashAccount.id, actualBalance, operatedAt, INZHUR_BALANCE_CORRECTION_TITLE);
                 }
 
                 if (differenceMicroUnits > 0) {

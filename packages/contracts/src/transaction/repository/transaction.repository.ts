@@ -442,6 +442,23 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                         )
                 ),
 
+            findByAccountIdsWithEntries: (accountIds: readonly number[]) =>
+                Db.query(db =>
+                    db.query.TransactionEntityTable.findMany({
+                        where: {
+                            deletedAt: { isNull: true },
+                            consolidationParentTransactionId: { isNull: true },
+                            OR: [{ fromAccountId: { in: [...accountIds] } }, { toAccountId: { in: [...accountIds] } }]
+                        },
+                        with: {
+                            [TransactionAssociationEnum.ENTRIES]: {
+                                where: transactionFilters.ledgerEntryFilter
+                            }
+                        },
+                        orderBy: { operatedAt: 'asc', id: 'asc' }
+                    })
+                ),
+
             findTransfersForConversion: (accountId: number) =>
                 Db.query(db =>
                     db.query.TransactionEntityTable.findMany({

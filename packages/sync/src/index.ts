@@ -100,9 +100,17 @@ export { BinanceSyncService } from './binance/service/binance-sync.service';
 export { ErsteSyncService } from './erste/service/erste-sync.service';
 
 export { InzhurImportService } from './inzhur/service/inzhur-import.service';
+export { InzhurOperationsImportService } from './inzhur/service/inzhur-operations-import.service';
+export type { InzhurOperationsImportSummaryInterface } from './inzhur/interface/inzhur-operations-import-summary.interface';
+export type { InzhurOperationsFundSummaryInterface } from './inzhur/interface/inzhur-operations-fund-summary.interface';
+export type { InzhurFundReconciliationInterface } from './inzhur/interface/inzhur-fund-reconciliation.interface';
+export type { InzhurUnrecognisedOperationInterface } from './inzhur/interface/inzhur-unrecognised-operation.interface';
+export type { InzhurFlowSummaryInterface } from './inzhur/interface/inzhur-flow-summary.interface';
+export type { InzhurBankMatchesInterface } from './inzhur/interface/inzhur-bank-matches.interface';
 export { InzhurSetupService } from './inzhur/service/inzhur-setup.service';
 export { InzhurGainService } from './inzhur/service/inzhur-gain.service';
 export { InzhurGainRangeEnum } from './inzhur/enum/inzhur-gain-range.enum';
+export type { InzhurCostReturnInterface } from './inzhur/interface/inzhur-cost-return.interface';
 export type { InzhurGainInterface } from './inzhur/interface/inzhur-gain.interface';
 export type { InzhurGainReportInterface } from './inzhur/interface/inzhur-gain-report.interface';
 export type { InzhurRangedGainInterface } from './inzhur/interface/inzhur-ranged-gain.interface';

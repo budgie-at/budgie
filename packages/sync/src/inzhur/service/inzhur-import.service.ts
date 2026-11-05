@@ -1,17 +1,11 @@
 import {
     AccountBalanceRepository,
-    AccountTypeEnum,
     Db,
     DividendPayoutEnum,
-    ExternalSourceEnum,
-    InstrumentPriceProviderEnum,
     InstrumentRepository,
-    InstrumentTypeEnum,
     INVESTMENTS_CATEGORY_ID,
-    SyncModeEnum,
     SyncRepository,
     TransactionEntryTypeEnum,
-    UserIconNameEnum,
     convertFromMicroUnits,
     convertToMicroUnits
 } from '@budgie/contracts';
@@ -26,20 +20,22 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 import { SyncFileReader } from '../../core/port/sync-file-reader.port';
 import { SyncWorkload } from '../../core/port/sync-workload.port';
 import { buildPrimaryEntry } from '../../core/utils/build-primary-entry.util';
-import { INZHUR_CANONICAL_FUNDS } from '../constant/inzhur-canonical-funds.constant';
+import { INZHUR_OPENING_HOLDINGS_TITLE } from '../constant/inzhur-estimate-titles.constant';
 import { InzhurImportOutcomeEnum } from '../enum/inzhur-import-outcome.enum';
 import { InzhurNotSetUpError } from '../error/inzhur-not-set-up.error';
 import { InzhurPriceMissingError } from '../error/inzhur-price-missing.error';
 import { InzhurStatementInvalidError } from '../error/inzhur-statement-invalid.error';
 import { inzhurStatementParser } from '../parser/inzhur-statement.parser';
+import { buildInzhurTradeEntries } from '../utils/build-inzhur-trade-entries.util';
 import { buildInzhurTransactionInput } from '../utils/build-inzhur-transaction-input.util';
 
 import { InzhurBeforeTrackingService } from './inzhur-before-tracking.service';
+import { InzhurFundAccountService } from './inzhur-fund-account.service';
+import { InzhurQuantityReconcileService } from './inzhur-quantity-reconcile.service';
 import { InzhurSetupService } from './inzhur-setup.service';
 
 import type { InzhurFundChangeInterface } from '../interface/inzhur-fund-change.interface';
 import type { InzhurFundPlanInterface } from '../interface/inzhur-fund-plan.interface';
-import type { InzhurHoldingInterface } from '../interface/inzhur-holding.interface';
 import type { InzhurImportSummaryInterface } from '../interface/inzhur-import-summary.interface';
 import type { InzhurSetupInterface } from '../interface/inzhur-setup.interface';
 import type { InzhurStatementInterface } from '../interface/inzhur-statement.interface';
@@ -52,15 +48,15 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
         const instrumentRepository = yield* InstrumentRepository;
         const inzhurPriceService = yield* InzhurPriceService;
         const inzhurSetupService = yield* InzhurSetupService;
+        const inzhurFundAccountService = yield* InzhurFundAccountService;
+        const inzhurQuantityReconcileService = yield* InzhurQuantityReconcileService;
         const inzhurBeforeTrackingService = yield* InzhurBeforeTrackingService;
         const syncFileReader = yield* SyncFileReader;
         const syncRepository = yield* SyncRepository;
         const syncWorkload = yield* SyncWorkload;
         const transactionService = yield* TransactionService;
         const transferCreationService = yield* TransferCreationService;
-        const provider = ExternalSourceEnum.INZHUR;
         const statementNoonSuffix = 'T12:00:00.000Z';
-        const openingHoldingsTitle = 'Opening holdings';
 
         const buildShortName = (plan: InzhurFundPlanInterface) => plan.name.replace(/^Inzhur\s+/u, '');
 
@@ -103,26 +99,6 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
             };
         };
 
-        const resolveInstrument = Effect.fnUntraced(function* (holding: InzhurHoldingInterface) {
-            const existingInstrument = yield* instrumentRepository.findByCode(holding.isin);
-
-            if (isDefined(existingInstrument)) {
-                return existingInstrument;
-            }
-
-            const upperCaseName = holding.name.toUpperCase();
-            const name = INZHUR_CANONICAL_FUNDS.find(fund => upperCaseName.includes(fund.keyword))?.name ?? holding.name;
-
-            return yield* instrumentRepository.create({
-                type: InstrumentTypeEnum.FUND,
-                code: holding.isin,
-                name,
-                symbol: name.split(' ').at(-1)?.toUpperCase() ?? holding.isin,
-                priceProvider: InstrumentPriceProviderEnum.INZHUR,
-                providerInstrumentId: holding.isin
-            });
-        });
-
         const findFundAccountByIsin = Effect.fnUntraced(function* (setup: InzhurSetupInterface) {
             const instruments = yield* instrumentRepository.getAll();
             const codeByInstrumentId = new Map(instruments.map(instrument => [instrument.id, instrument.code]));
@@ -139,39 +115,17 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
             return accountByIsin;
         });
 
-        const createFundAccount = Effect.fnUntraced(function* (holding: InzhurHoldingInterface, integrationId: number) {
-            const instrument = yield* resolveInstrument(holding);
-            const createdAccount = Object.values(
-                yield* accountService.bulkCreate([
-                    {
-                        title: instrument.name,
-                        type: AccountTypeEnum.STOCKS,
-                        icon: INZHUR_CANONICAL_FUNDS.find(fund => fund.name === instrument.name)?.icon ?? UserIconNameEnum.ChartLine,
-                        instrumentId: instrument.id,
-                        currentBalance: 0,
-                        externalId: `inzhur:${holding.isin}`,
-                        externalSource: provider,
-                        dividendPayout: DividendPayoutEnum.REINVEST,
-                        integrationId
-                    }
-                ])
-            ).at(0);
-
-            if (!isDefined(createdAccount)) {
-                return yield* Effect.die(new Error('Failed to create Inzhur fund account'));
-            }
-
-            yield* syncRepository.create({ accountId: createdAccount.id, provider, enabled: true, mode: SyncModeEnum.FORWARD });
-
-            return createdAccount;
-        });
-
         const ensureFundAccounts = Effect.fnUntraced(function* (statement: InzhurStatementInterface, setup: InzhurSetupInterface) {
             const accountByIsin = yield* findFundAccountByIsin(setup);
 
             for (const holding of statement.holdings) {
                 if (!accountByIsin.has(holding.isin)) {
-                    accountByIsin.set(holding.isin, yield* createFundAccount(holding, setup.integration.id));
+                    const adopted = yield* inzhurFundAccountService.adoptIsin(setup, holding.isin, holding.name);
+
+                    accountByIsin.set(
+                        holding.isin,
+                        adopted ?? (yield* inzhurFundAccountService.create(holding.isin, holding.name, setup.integration.id))
+                    );
                 }
             }
 
@@ -191,7 +145,7 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
                     const deltaMicroUnits = convertToMicroUnits(holding.quantity) - (yield* readBalance(account.id));
 
                     if (deltaMicroUnits !== 0) {
-                        yield* accountService.adjustBalanceTo(account.id, holding.quantity, operatedAt, openingHoldingsTitle);
+                        yield* accountService.adjustBalanceTo(account.id, holding.quantity, operatedAt, INZHUR_OPENING_HOLDINGS_TITLE);
                         funds.push({
                             isin: holding.isin,
                             name: instruments.find(instrument => instrument.id === account.instrumentId)?.name ?? account.title,
@@ -289,22 +243,19 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
             const transferInputs = plans.map(plan => {
                 const isSell = plan.deltaMicroUnits < 0;
                 const externalId = `inzhur:${statement.statementDate}:${plan.isin}:${isSell ? 'sell' : 'buy'}`;
-                const quantity = convertFromMicroUnits(Math.abs(plan.deltaMicroUnits));
-                const value = convertFromMicroUnits(plan.valueMicroUnits);
 
                 return buildInzhurTransactionInput(
                     isSell ? `Sold ${buildShortName(plan)}` : `Bought ${buildShortName(plan)}`,
                     externalId,
                     operatedAt,
-                    isSell
-                        ? [
-                              buildPrimaryEntry(plan.account.id, TransactionEntryTypeEnum.CREDIT, quantity, externalId),
-                              buildPrimaryEntry(cashAccountId, TransactionEntryTypeEnum.DEBIT, value, externalId)
-                          ]
-                        : [
-                              buildPrimaryEntry(cashAccountId, TransactionEntryTypeEnum.CREDIT, value, externalId),
-                              buildPrimaryEntry(plan.account.id, TransactionEntryTypeEnum.DEBIT, quantity, externalId)
-                          ]
+                    buildInzhurTradeEntries({
+                        isSell,
+                        externalId,
+                        cashAccountId,
+                        fundAccountId: plan.account.id,
+                        cashAmount: convertFromMicroUnits(plan.valueMicroUnits),
+                        quantity: convertFromMicroUnits(Math.abs(plan.deltaMicroUnits))
+                    })
                 );
             });
 
@@ -334,6 +285,35 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
             };
         });
 
+        const reconcileStatement = Effect.fnUntraced(function* (statement: InzhurStatementInterface, setup: InzhurSetupInterface) {
+            const accountByIsin = yield* ensureFundAccounts(statement, setup);
+            const instruments = yield* instrumentRepository.getAll();
+            const accounts = new Map([...setup.fundAccounts, ...accountByIsin.values()].map(account => [account.id, account]));
+            const quantityByIsin = new Map(statement.holdings.map(holding => [holding.isin, holding.quantity]));
+            const isinByAccountId = new Map([...accountByIsin].map(([isin, account]) => [account.id, isin]));
+            const reconciliations = yield* inzhurQuantityReconcileService.reconcile(
+                statement.statementDate,
+                new Map([...accounts.keys()].map(accountId => [accountId, quantityByIsin.get(isinByAccountId.get(accountId) ?? '') ?? 0]))
+            );
+
+            yield* syncRepository.update(setup.cashSync.id, { forwardSyncedAt: buildOperatedAt(statement.statementDate) });
+
+            return {
+                outcome: InzhurImportOutcomeEnum.APPLIED,
+                cashMoved: 0,
+                estimatedDividendAmount: 0,
+                uncoveredCashAmount: 0,
+                funds: reconciliations.map(({ accountId, difference }): InzhurFundChangeInterface => ({
+                    isin: isinByAccountId.get(accountId) ?? '',
+                    name: instruments.find(instrument => instrument.id === accounts.get(accountId)?.instrumentId)?.name ?? '',
+                    accountId,
+                    deltaQuantity: difference,
+                    exchangedAmount: 0,
+                    dividendAmount: 0
+                }))
+            };
+        });
+
         const apply = Effect.fn('InzhurImportService.apply')(function* (statement: InzhurStatementInterface) {
             const setup = yield* inzhurSetupService.findSetup();
 
@@ -353,6 +333,14 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
                     estimatedDividendAmount: 0,
                     uncoveredCashAmount: 0,
                     funds: []
+                } satisfies InzhurImportSummaryInterface;
+            }
+
+            if (yield* inzhurQuantityReconcileService.hasOperationsLedger(setup.cashAccount.id)) {
+                return {
+                    ...(yield* Db.transaction(reconcileStatement(statement, setup))),
+                    statementDate,
+                    previousStatementDate: lastStatementDate
                 } satisfies InzhurImportSummaryInterface;
             }
 
@@ -384,6 +372,8 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
             InstrumentRepository.layer,
             InzhurPriceService.layer,
             InzhurBeforeTrackingService.layer,
+            InzhurFundAccountService.layer,
+            InzhurQuantityReconcileService.layer,
             InzhurSetupService.layer,
             SyncRepository.layer,
             TransactionService.layer,
