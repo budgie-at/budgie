@@ -44,7 +44,7 @@ export const RecurringCalendarEntryContent = ({ entry, dayLabel }: Props) => {
     const metadataLabel = isNotEmptyString(dayLabel) ? dayLabel : statusLabel;
     const alertLabels = {
         [RecurringAlertEnum.OVERDUE]: t`Overdue`,
-        [RecurringAlertEnum.PRICE_CHANGE]: t`Price changed`
+        [RecurringAlertEnum.PRICE_CHANGE]: t`Amount changed`
     };
     const detail = isDefined(entry.alert) ? alertLabels[entry.alert] : (entry.categoryTitle ?? entry.title);
     const description = isAccessibilityTextSize ? detail : `${metadataLabel} · ${detail}`;
