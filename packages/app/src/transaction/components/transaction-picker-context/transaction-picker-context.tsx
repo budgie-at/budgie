@@ -7,9 +7,10 @@ import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-
 
 interface Props {
     readonly transactionId: number;
+    readonly label: string;
 }
 
-export const TransactionPickerContext = ({ transactionId }: Props) => {
+export const TransactionPickerContext = ({ transactionId, label }: Props) => {
     const { transaction } = useGetTransactionByIdQuery(transactionId);
     const protectAmount = useProtectedAmountLabel();
 
@@ -19,10 +20,10 @@ export const TransactionPickerContext = ({ transactionId }: Props) => {
 
     return (
         <View className="gap-y-xs py-xl">
-            <Text dynamicTypeRamp="title3" className="text-[20px] font-semibold tabular-nums text-primary">
-                {formatTransactionInfoAmount(transaction, protectAmount)}
+            <Text dynamicTypeRamp="footnote" className="text-[13px] tabular-nums text-secondary-foreground">
+                {label} · {formatTransactionInfoAmount(transaction, protectAmount)}
             </Text>
-            <Text dynamicTypeRamp="caption1" className="text-[13px] text-secondary-foreground">
+            <Text dynamicTypeRamp="caption1" className="text-[13px] font-semibold text-primary">
                 {getTransactionDisplayTitle(transaction)}
             </Text>
         </View>

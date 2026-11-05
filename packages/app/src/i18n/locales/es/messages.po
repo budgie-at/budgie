@@ -5831,6 +5831,7 @@ msgstr "O desbloquea con Touch ID."
 msgid "Organize"
 msgstr "Organizar"
 
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 msgid "Original expense"
 msgstr "Gasto original"

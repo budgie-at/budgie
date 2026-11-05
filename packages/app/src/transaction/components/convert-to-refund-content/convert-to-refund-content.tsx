@@ -77,7 +77,7 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
                 keyboardShouldPersistTaps="handled"
                 testID={ConvertToRefundModalSelector.Picker}
             >
-                <TransactionPickerContext transactionId={refundIncomeTransactionId} />
+                <TransactionPickerContext transactionId={refundIncomeTransactionId} label={t`Refund`} />
                 <SearchInput
                     value={search}
                     allowFontScaling

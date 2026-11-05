@@ -51,7 +51,7 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
             }
         >
             <ScrollView className="flex-1" contentContainerClassName="grow px-xl pb-xl" keyboardShouldPersistTaps="handled">
-                <TransactionPickerContext transactionId={transactionId} />
+                <TransactionPickerContext transactionId={transactionId} label={t`Original expense`} />
                 <LoadingContent isLoading={isLoading} containerClassName="grow shrink-0">
                     {hasError ? <TransactionPickerFailure onRetry={retry} /> : null}
                     {showEmptyState ? (
