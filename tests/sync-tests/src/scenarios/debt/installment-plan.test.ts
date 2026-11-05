@@ -718,7 +718,11 @@ describe('installment plan', () => {
                 const cash = yield* seedBankSyncAccount('Cash', null, 'UA-flex-early');
                 const first = yield* seedLaptop(cash.id, 1_000, new Date(2026, 0, 12, 10));
                 const early = yield* seedLaptop(cash.id, 1_000, new Date(2026, 1, 5, 10));
-                const { accountId } = yield* convert(first.id, 6, 6_000);
+                const { accountId, schedule } = yield* convertWithSchedule(first.id, 6, 6_000);
+
+                expect(schedule?.nextDueAt?.getMonth()).toBe(2);
+                expect(schedule?.nextDueAt?.getDate()).toBe(12);
+
                 const onTime = yield* seedLaptop(cash.id, 1_000, new Date(2026, 2, 12, 10));
 
                 yield* runPostSync();

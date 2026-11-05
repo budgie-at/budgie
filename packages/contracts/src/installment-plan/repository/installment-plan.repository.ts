@@ -20,7 +20,6 @@ import { TransactionEntryEntityTable } from '../../transaction-entry/table/trans
 import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { INSTALLMENT_AMOUNT_TOLERANCE } from '../constant/installment-amount-tolerance.constant';
-import { INSTALLMENT_DUE_DATE_TOLERANCE_DAYS } from '../constant/installment-due-date-tolerance-days.constant';
 import { getInstallmentDueDate } from '../utils/get-installment-due-date.util';
 
 import type { InstallmentPlanScheduleInterface } from '../interface/installment-plan-schedule.interface';
@@ -66,32 +65,6 @@ export class InstallmentPlanRepository extends Context.Service<InstallmentPlanRe
                     )
                     .orderBy(asc(TransactionEntityTable.operatedAt), asc(TransactionEntityTable.id))
             );
-
-        const getNextDueAt = (anchorAt: Date, latestPartAt: Date | null, fallbackMonthOffset: number) => {
-            if (!isDefined(latestPartAt)) {
-                return getInstallmentDueDate(anchorAt, fallbackMonthOffset);
-            }
-
-            const getEarliestMatchAt = (monthOffset: number) => {
-                const dueAt = getInstallmentDueDate(anchorAt, monthOffset);
-
-                return new Date(
-                    dueAt.getFullYear(),
-                    dueAt.getMonth(),
-                    dueAt.getDate() - INSTALLMENT_DUE_DATE_TOLERANCE_DAYS,
-                    dueAt.getHours(),
-                    dueAt.getMinutes(),
-                    dueAt.getSeconds()
-                );
-            };
-            let nextMonthOffset = 1;
-
-            while (getEarliestMatchAt(nextMonthOffset) <= latestPartAt) {
-                nextMonthOffset += 1;
-            }
-
-            return getInstallmentDueDate(anchorAt, nextMonthOffset);
-        };
 
         return {
             findParts,
@@ -151,7 +124,8 @@ export class InstallmentPlanRepository extends Context.Service<InstallmentPlanRe
                 const remainingAmount = progress?.outstandingAmount ?? 0;
                 const regularAmount = Math.round(totalAmount / account.installmentCount);
                 const isOpen = isPositiveNumber(remainingAmount);
-                const isFlexiblePlan = isDefined(latestPart) && latestPart.externalSource !== ExternalSourceEnum.MONOBANK;
+                const isFlexiblePlan =
+                    isDefined(firstPart) && isDefined(latestPart) && firstPart.externalSource !== ExternalSourceEnum.MONOBANK;
                 const isLastPart = isFlexiblePlan
                     ? remainingAmount <= regularAmount + INSTALLMENT_AMOUNT_TOLERANCE
                     : parts.length >= account.installmentCount - 1;
@@ -160,16 +134,23 @@ export class InstallmentPlanRepository extends Context.Service<InstallmentPlanRe
                     isFlexiblePlan && isPositiveNumber(regularAmount)
                         ? Math.min(account.installmentCount, Math.floor((paidAmount + INSTALLMENT_AMOUNT_TOLERANCE) / regularAmount))
                         : parts.length;
-                const nextDueAt = isDefined(anchorAt)
-                    ? getNextDueAt(anchorAt, isFlexiblePlan ? latestPart.operatedAt : null, isDefined(firstPart) ? parts.length : 1)
+                const flexibleMonthOffset = isFlexiblePlan
+                    ? Math.max(
+                          1,
+                          (latestPart.operatedAt.getFullYear() - firstPart.operatedAt.getFullYear()) * 12 +
+                              latestPart.operatedAt.getMonth() -
+                              firstPart.operatedAt.getMonth() +
+                              1
+                      )
                     : null;
+                const monthOffset = flexibleMonthOffset ?? (isDefined(firstPart) ? parts.length : 1);
                 const schedule: InstallmentPlanScheduleInterface = {
                     installmentCount: account.installmentCount,
                     paidCount,
                     totalAmount,
                     paidAmount,
                     remainingAmount,
-                    nextDueAt: isOpen ? nextDueAt : null,
+                    nextDueAt: isOpen && isDefined(anchorAt) ? getInstallmentDueDate(anchorAt, monthOffset) : null,
                     nextAmount: isOpen ? nextAmount : null,
                     instrumentId: account.instrumentId
                 };
