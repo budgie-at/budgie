@@ -6961,10 +6961,6 @@ msgstr "Ver los {total}"
 msgid "See spending by context, not just category"
 msgstr "Ver gastos por contexto, no solo por categoría"
 
-#: src/transaction/components/transaction-account-row/transaction-account-row.tsx
-msgid "Select"
-msgstr "Seleccionar"
-
 #: src/@generic/component/contact-selector/contact-selector.tsx
 msgid "Select a contact"
 msgstr "Selecciona un contacto"

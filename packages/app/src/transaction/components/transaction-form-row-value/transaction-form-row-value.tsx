@@ -10,20 +10,17 @@ interface Props {
     readonly value?: string;
     readonly placeholder?: string | ReactElement;
     readonly isStacked: boolean;
-    readonly isLargeText: boolean;
     readonly testID?: string;
     readonly onOverflow: (value: string) => void;
 }
 
 const MAX_FONT_SCALE = 2;
 const INLINE_LINES = 1;
-const STACKED_LINES = 2;
-const LARGE_TEXT_LINES = 8;
+const STACKED_LINES = 3;
 
-export const TransactionFormRowValue = ({ value, placeholder, isStacked, isLargeText, testID, onOverflow }: Props) => {
+export const TransactionFormRowValue = ({ value, placeholder, isStacked, testID, onOverflow }: Props) => {
     const alignmentClassName = isStacked ? '' : 'text-right';
-    const stackedLineCount = isLargeText ? LARGE_TEXT_LINES : STACKED_LINES;
-    const lineCount = isStacked ? stackedLineCount : INLINE_LINES;
+    const lineCount = isStacked ? STACKED_LINES : INLINE_LINES;
 
     const handleMeasureLayout = (event: NativeSyntheticEvent<TextLayoutEventData>) => {
         if (isNotEmptyString(value) && event.nativeEvent.lines.length > INLINE_LINES) {
