@@ -716,6 +716,20 @@ describe('installment plan', () => {
             }).pipe(Effect.provide(TestLayer))
         );
 
+        it.effect('keeps attaching parts after a part paid well before its due date', () =>
+            Effect.gen(function* () {
+                const cash = yield* seedBankSyncAccount('Cash', null, 'UA-flex-early');
+                const first = yield* seedLaptop(cash.id, 1_000, new Date(2026, 0, 12, 10));
+                const early = yield* seedLaptop(cash.id, 1_000, new Date(2026, 1, 5, 10));
+                const { accountId } = yield* convert(first.id, 6, 6_000);
+                const onTime = yield* seedLaptop(cash.id, 1_000, new Date(2026, 2, 12, 10));
+
+                yield* runPostSync();
+
+                expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id, early.id, onTime.id]);
+            }).pipe(Effect.provide(TestLayer))
+        );
+
         it.effect('never attaches a payment that would exceed the total', () =>
             Effect.gen(function* () {
                 const cash = yield* seedBankSyncAccount('Cash', null, 'UA-flex-cap');

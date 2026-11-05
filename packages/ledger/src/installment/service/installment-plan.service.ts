@@ -20,7 +20,7 @@ import {
 } from '@budgie/contracts';
 import { EntryBaseValuationService } from '@budgie/market';
 import { t } from '@lingui/core/macro';
-import { addDays, differenceInCalendarMonths, endOfDay, startOfDay, subDays } from 'date-fns';
+import { addDays, differenceInCalendarMonths, endOfDay, max, startOfDay, subDays } from 'date-fns';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -263,10 +263,11 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
             }
 
             const regularAmount = Math.round(schedule.totalAmount / schedule.installmentCount);
+            const lastDueAt = getInstallmentDueDate(firstPart.operatedAt, schedule.installmentCount - 1);
             const candidates = yield* installmentPlanRepository.findCandidates(
                 firstPart.accountId,
                 firstPart.operatedAt,
-                endOfDay(addDays(schedule.nextDueAt, INSTALLMENT_DUE_DATE_TOLERANCE_DAYS))
+                endOfDay(addDays(max([schedule.nextDueAt, lastDueAt]), INSTALLMENT_DUE_DATE_TOLERANCE_DAYS))
             );
 
             return candidates
