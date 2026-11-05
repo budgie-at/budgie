@@ -1,7 +1,8 @@
 import { ReactNode, useRef } from 'react';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, useWindowDimensions, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
+import { SUGGESTION_ROW_HEIGHT } from '../../constant/suggestion-row-height.constant';
 import { SuggestionLoadingIndicator } from '../suggestion-loading-indicator/suggestion-loading-indicator';
 
 interface Props {
@@ -16,6 +17,7 @@ const ENTER_DELAY = 400;
 export const SuggestionRowLayout = (props: Props) => {
     const { showContent, showLoading, children } = props;
     const scrollRef = useRef<ScrollView | null>(null);
+    const rowStyle = { height: SUGGESTION_ROW_HEIGHT * useWindowDimensions().fontScale };
 
     const showPills = showContent && !showLoading;
 
@@ -24,7 +26,7 @@ export const SuggestionRowLayout = (props: Props) => {
     };
 
     return (
-        <View className="h-10 flex-row items-center justify-end overflow-hidden">
+        <View className="flex-row items-center justify-end overflow-hidden" style={rowStyle}>
             {showPills ? (
                 <Animated.View
                     entering={FadeIn.duration(ANIMATION_DURATION).delay(ENTER_DELAY)}

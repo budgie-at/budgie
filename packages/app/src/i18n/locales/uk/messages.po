@@ -1148,6 +1148,10 @@ msgstr "Додайте назву, щоб продовжити"
 msgid "Add a note..."
 msgstr "Додати нотатку..."
 
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "Add a person in Contacts, then return here."
+msgstr "Додайте людину в «Контактах» і поверніться сюди."
+
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "Add a PIN any time later"
 msgstr "PIN-код можна додати будь-коли пізніше"
@@ -1353,6 +1357,10 @@ msgstr "Весь час"
 #: src/budget/components/budget-allocation-summary/budget-allocation-summary.tsx
 msgid "Allocated"
 msgstr "Розподілено"
+
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "Allow contacts access in Settings."
+msgstr "Дозвольте доступ до контактів у налаштуваннях."
 
 #: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
 msgid "Allowed redirect URL"
@@ -2034,7 +2042,6 @@ msgstr "Змінити пізніше не можна"
 #: src/account/hooks/use-delete-archived-account.hook.ts
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
-#: src/app/convert-to-transfer.tsx
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 #: src/budget/hooks/use-budget-event-form.hook.ts
 #: src/budget/hooks/use-budget-form.hook.ts
@@ -2057,7 +2064,7 @@ msgstr "Змінити пізніше не можна"
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
-#: src/transaction/components/transaction-keypad/transaction-keypad.tsx
+#: src/transaction/components/transaction-form-actions/transaction-form-actions.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
@@ -2370,6 +2377,10 @@ msgstr "Обрати категорію"
 msgid "Choose columns for {missingFieldLabels}"
 msgstr "Виберіть стовпці для {missingFieldLabels}"
 
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "Choose contacts to share in Settings."
+msgstr "Виберіть контакти для доступу в налаштуваннях."
+
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Choose dates to sync again"
 msgstr "Оберіть дати для повторної синхронізації"
@@ -2598,9 +2609,14 @@ msgstr "Консолідація"
 msgid "Contact (optional)"
 msgstr "Контакт (необов'язково)"
 
-#: src/app/contact-selector.tsx
+#: src/@generic/component/contact-selector-header/contact-selector-header.tsx
+#: src/@generic/component/contact-selector-state/contact-selector-state.tsx
 msgid "Contacts"
 msgstr "Контакти"
+
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "Contacts access is off"
+msgstr "Доступ до контактів вимкнено"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "contains"
@@ -2627,7 +2643,6 @@ msgstr "Продовжити без PIN-коду"
 msgid "Conversion failed"
 msgstr "Помилка конвертації"
 
-#: src/app/convert-to-transfer.tsx
 #: src/money-data/component/money-data-upgrade-status-card/money-data-upgrade-status-card.tsx
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
@@ -2652,15 +2667,11 @@ msgstr "Перетворити на повернення"
 msgid "Convert to Refund?"
 msgstr "Перетворити на повернення?"
 
-#: src/app/convert-to-transfer.tsx
+#: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
 #: src/transaction/components/transaction-list-convert-to-transfer-menu-item/transaction-list-convert-to-transfer-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Convert to Transfer"
 msgstr "Перетворити на переказ"
-
-#: src/app/convert-to-transfer.tsx
-msgid "Convert to Transfer?"
-msgstr "Конвертувати у переказ?"
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Converting {processedEntryCount} of {totalEntryCount} transactions"
@@ -2842,6 +2853,10 @@ msgstr "Не вдалося завантажити рахунки"
 #: src/budget/components/budget-data-state/budget-data-state.tsx
 msgid "Could not load budget"
 msgstr "Не вдалося завантажити бюджет"
+
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "Could not load contacts"
+msgstr "Не вдалося завантажити контакти"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Could not load sources. Please try again."
@@ -3180,7 +3195,6 @@ msgid "Create event"
 msgstr "Створити подію"
 
 #: src/account/component/account-select-content/account-select-content.tsx
-#: src/app/contact-selector.tsx
 msgid "Create one to get started."
 msgstr "Створіть один, щоб розпочати."
 
@@ -3292,6 +3306,7 @@ msgstr "дата"
 #: src/app/date-picker.tsx
 #: src/import/utils/get-import-match-description.util.ts
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
+#: src/transaction/components/transaction-date-tags-row/transaction-date-tags-row.tsx
 msgid "Date"
 msgstr "Дата"
 
@@ -3365,6 +3380,7 @@ msgstr "Валюта за замовчуванням"
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/tag/components/tag-card/tag-card.tsx
 #: src/tag/hooks/use-delete-tag.hook.ts
+#: src/transaction/components/transaction-keypad/transaction-keypad.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Delete"
 msgstr "Видалити"
@@ -3591,6 +3607,7 @@ msgstr "Не містить"
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
+#: src/transaction/hook/use-transaction-keypad-editing.hook.ts
 msgid "Done"
 msgstr "Готово"
 
@@ -3900,6 +3917,7 @@ msgstr "Введіть усі суми"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 #: src/transaction/hook/use-quick-form-submit.hook.ts
+#: src/transaction/hook/use-transaction-keypad-editing.hook.ts
 msgid "Enter an amount"
 msgstr "Введіть суму"
 
@@ -4136,10 +4154,6 @@ msgstr "Розпізнавання обличчя"
 #: src/budget/components/budget-history-section/budget-history-section.tsx
 msgid "Faded bars are estimated from your past transactions using your current limits."
 msgstr "Бліді стовпчики оцінено за твоїми минулими транзакціями з поточними лімітами."
-
-#: src/@generic/hook/use-contacts.hook.ts
-msgid "Failed to load contacts."
-msgstr "Не вдалося завантажити контакти."
 
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
 msgid "Features"
@@ -4970,6 +4984,10 @@ msgstr "Зміни лімітів"
 msgid "Limit from"
 msgstr "Ліміт залежить від"
 
+#: src/@generic/component/contact-selector-header/contact-selector-header.tsx
+msgid "Limited access · Manage in Settings"
+msgstr "Обмежений доступ · Керувати в налаштуваннях"
+
 #: src/budget/components/budget-limit-changes-row/budget-limit-changes-row.tsx
 msgid "Limits are tuned automatically after 3 steady periods"
 msgstr "Ліміти налаштовуються автоматично після 3 стабільних періодів"
@@ -4989,6 +5007,10 @@ msgstr "Зберігається на"
 #: src/transaction/components/suggestion-loading-indicator/suggestion-loading-indicator.tsx
 msgid "Loading AI model..."
 msgstr "Завантаження моделі ШІ..."
+
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "Loading contacts"
+msgstr "Завантаження контактів"
 
 #: src/account/component/debt-account-card/debt-account-card.tsx
 msgid "Loading debt progress"
@@ -5539,17 +5561,9 @@ msgstr "Категорій не знайдено"
 msgid "No categories match “{trimmedSearch}”"
 msgstr "Немає категорій, що відповідають «{trimmedSearch}»"
 
-#: src/app/contact-selector.tsx
-msgid "No contacts found"
-msgstr "Контактів не знайдено"
-
-#: src/@generic/hook/use-contacts.hook.ts
-msgid "No contacts found on this device."
-msgstr "На цьому пристрої не знайдено контактів."
-
-#: src/app/contact-selector.tsx
-msgid "No contacts yet"
-msgstr "Поки немає контактів"
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "No contacts on this device"
+msgstr "На цьому пристрої немає контактів"
 
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No custom categories yet"
@@ -5598,6 +5612,10 @@ msgstr "Ринкової ціни ще немає, тому вартість і 
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No matching accounts"
 msgstr "Немає відповідних рахунків"
+
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "No matching contacts"
+msgstr "Контактів не знайдено"
 
 #: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 msgid "No matching expenses"
@@ -5650,6 +5668,10 @@ msgstr "Немає результатів для «{query}»"
 #: src/rule/components/rule-empty-state/rule-empty-state.tsx
 msgid "No rules match “{search}”"
 msgstr "Немає правил для «{search}»"
+
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "No shared contacts"
+msgstr "Немає доступних контактів"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "No source transactions"
@@ -5763,7 +5785,9 @@ msgstr "Не використовується в жодній транзакці
 msgid "Not saved yet"
 msgstr "Ще не збережено"
 
+#: src/transaction/components/transaction-field-caption/transaction-field-caption.tsx
 #: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx
+#: src/transaction/components/transaction-metadata-field/transaction-metadata-field.tsx
 msgid "not set"
 msgstr "не встановлено"
 
@@ -5872,6 +5896,7 @@ msgstr "За планом"
 #: src/ai/component/ai-download-card-frame/ai-download-card-frame.tsx
 #: src/ai/component/ai-system-status-banner/ai-system-status-banner.tsx
 #: src/app/(tabs)/settings/ai.tsx
+#: src/transaction/components/suggestion-loading-indicator/suggestion-loading-indicator.tsx
 msgid "On-device AI"
 msgstr "ШІ на пристрої"
 
@@ -6003,6 +6028,10 @@ msgstr "Відкрийте Приват24 і виберіть картку аб�
 
 #: src/budget/components/budget-missing-currency-guard/budget-missing-currency-guard.tsx
 msgid "Open settings"
+msgstr "Відкрити налаштування"
+
+#: src/@generic/component/contact-selector-settings-button/contact-selector-settings-button.tsx
+msgid "Open Settings"
 msgstr "Відкрити налаштування"
 
 #: src/wallet-capture/component/apple-pay-capture-open-shortcuts-button/apple-pay-capture-open-shortcuts-button.tsx
@@ -6333,10 +6362,6 @@ msgstr "Період"
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
 msgid "Period summary"
 msgstr "Підсумок періоду"
-
-#: src/@generic/hook/use-contacts.hook.ts
-msgid "Permission to access contacts was denied."
-msgstr "Відмовлено в доступі до контактів."
 
 #: src/sync/component/enable-banking-key-step/enable-banking-key-step.tsx
 msgid "Personal accounts only. Enable Banking's Terms allow this for private individuals using their own accounts. By connecting you accept them."
@@ -7034,8 +7059,9 @@ msgstr "Та сама умова, що й у правила вище"
 
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
-#: src/transaction/components/transaction-keypad/transaction-keypad.tsx
+#: src/transaction/components/simple-quick-form/simple-quick-form.tsx
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
+#: src/transaction/components/update-adjustment-transaction/update-adjustment-transaction.tsx
 msgid "Save"
 msgstr "Зберегти"
 
@@ -7160,7 +7186,11 @@ msgstr "Пошук категорій..."
 msgid "Search categories…"
 msgstr "Пошук категорій…"
 
-#: src/app/contact-selector.tsx
+#: src/@generic/component/contact-selector-header/contact-selector-header.tsx
+msgid "Search contacts"
+msgstr "Пошук контактів"
+
+#: src/@generic/component/contact-selector-header/contact-selector-header.tsx
 msgid "Search contacts…"
 msgstr "Шукати контакти…"
 
@@ -7205,6 +7235,10 @@ msgstr "Пошук тегів..."
 #: src/tag/components/tag-destination-sheet/tag-destination-sheet.tsx
 msgid "Search tags…"
 msgstr "Пошук тегів…"
+
+#: src/@generic/component/contact-selector-header/contact-selector-header.tsx
+msgid "Search unavailable"
+msgstr "Пошук недоступний"
 
 #: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
 msgid "Search your bank"
@@ -7817,9 +7851,9 @@ msgstr "Витрати з тегом також враховуються в ос
 #: src/app/tags-selector.tsx
 #: src/settings/components/organize-settings-rows/organize-settings-rows.tsx
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
+#: src/transaction/components/transaction-date-tags-row/transaction-date-tags-row.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 #: src/transaction/components/transaction-info-tags-section/transaction-info-tags-section.tsx
-#: src/transaction/components/transaction-tags-field-icon/transaction-tags-field-icon.tsx
 msgid "Tags"
 msgstr "Теги"
 
@@ -8182,14 +8216,6 @@ msgstr "Цього тижня"
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Це очистить всі кешовані баланси рахунків і перерахує їх на основі ваших транзакцій. Це може зайняти деякий час."
 
-#: src/app/convert-to-transfer.tsx
-msgid "This will convert the expense to a transfer between accounts."
-msgstr "Це конвертує витрату у переказ між рахунками."
-
-#: src/app/convert-to-transfer.tsx
-msgid "This will convert the income to a transfer between accounts."
-msgstr "Це конвертує дохід у переказ між рахунками."
-
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "This will keep one entry with the full transaction amount."
 msgstr "Це залишить один запис із повною сумою транзакції."
@@ -8294,7 +8320,7 @@ msgstr "Відкласти в цьому періоді"
 #: src/budget/components/budget-day-strip-key/budget-day-strip-key.tsx
 #: src/market-data/hook/use-market-chart-timeline.hook.ts
 #: src/transaction/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
-#: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
+#: src/transaction/hook/use-transaction-date-label.hook.ts
 #: src/transaction/query/use-get-transaction-sections.query.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Today"
@@ -8496,10 +8522,6 @@ msgstr "Усунення проблем"
 msgid "Try a different merchant, amount, or date."
 msgstr "Спробуйте іншого продавця, суму або дату."
 
-#: src/app/contact-selector.tsx
-msgid "Try a different search term"
-msgstr "Спробуйте інший пошуковий запит"
-
 #: src/@generic/component/icon-selector-empty-state/icon-selector-empty-state.tsx
 msgid "Try a simpler word like “car” or “food”."
 msgstr "Спробуйте простіше слово, наприклад «авто» чи «їжа»."
@@ -8512,6 +8534,7 @@ msgstr "Спробуйте назву, категорію чи тег."
 msgid "Try adjusting your filters to see more results"
 msgstr "Спробуйте налаштувати фільтри, щоб побачити більше результатів"
 
+#: src/@generic/component/contact-selector-state/contact-selector-state.tsx
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 #: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
@@ -8526,9 +8549,17 @@ msgstr "Спробувати ще раз"
 msgid "Try Again"
 msgstr "Спробувати знову"
 
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "Try another name, phone number or email."
+msgstr "Спробуйте інше ім’я, номер телефону або електронну адресу."
+
 #: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
 msgid "Try another name."
 msgstr "Спробуйте іншу назву."
+
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "Try loading your contacts again."
+msgstr "Спробуйте завантажити контакти ще раз."
 
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 msgid "Try switching on Airplane Mode. Budgie works exactly the same."
@@ -8834,6 +8865,7 @@ msgid "View your payments in another month."
 msgstr "Перегляньте платежі в іншому місяці."
 
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
+#: src/app/voice-review.tsx
 msgid "Voice notes"
 msgstr "Голосові нотатки"
 
@@ -9000,7 +9032,7 @@ msgstr "Рік"
 msgid "Yearly budget"
 msgstr "Річний бюджет"
 
-#: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
+#: src/transaction/hook/use-transaction-date-label.hook.ts
 #: src/transaction/query/use-get-transaction-sections.query.ts
 msgid "Yesterday"
 msgstr "Вчора"
@@ -9098,6 +9130,10 @@ msgstr "Ваш вибір"
 msgctxt "Categorize inbox section chip"
 msgid "Your call"
 msgstr "Ваш вибір"
+
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "Your contacts will appear here."
+msgstr "Ваші контакти з’являться тут."
 
 #: src/sync/component/bank-integration-key-field/bank-integration-key-field.tsx
 msgid "Your current key was rejected. Paste a new one to resume syncing."

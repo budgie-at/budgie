@@ -1148,6 +1148,10 @@ msgstr "Namen eingeben, um fortzufahren"
 msgid "Add a note..."
 msgstr "Notiz hinzufügen..."
 
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "Add a person in Contacts, then return here."
+msgstr "Füge eine Person in Kontakte hinzu und kehre zurück."
+
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "Add a PIN any time later"
 msgstr "Eine PIN kannst du jederzeit später hinzufügen"
@@ -1353,6 +1357,10 @@ msgstr "Gesamte Zeit"
 #: src/budget/components/budget-allocation-summary/budget-allocation-summary.tsx
 msgid "Allocated"
 msgstr "Zugewiesen"
+
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "Allow contacts access in Settings."
+msgstr "Erlaube den Kontaktzugriff in den Einstellungen."
 
 #: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
 msgid "Allowed redirect URL"
@@ -2034,7 +2042,6 @@ msgstr "Kann später nicht geändert werden"
 #: src/account/hooks/use-delete-archived-account.hook.ts
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
-#: src/app/convert-to-transfer.tsx
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 #: src/budget/hooks/use-budget-event-form.hook.ts
 #: src/budget/hooks/use-budget-form.hook.ts
@@ -2057,7 +2064,7 @@ msgstr "Kann später nicht geändert werden"
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
-#: src/transaction/components/transaction-keypad/transaction-keypad.tsx
+#: src/transaction/components/transaction-form-actions/transaction-form-actions.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
@@ -2370,6 +2377,10 @@ msgstr "Kategorie auswählen"
 msgid "Choose columns for {missingFieldLabels}"
 msgstr "Spalten für {missingFieldLabels} auswählen"
 
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "Choose contacts to share in Settings."
+msgstr "Wähle in den Einstellungen Kontakte zum Teilen."
+
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Choose dates to sync again"
 msgstr "Zeitraum für erneute Synchronisation wählen"
@@ -2598,9 +2609,14 @@ msgstr "Konsolidierung"
 msgid "Contact (optional)"
 msgstr "Kontakt (optional)"
 
-#: src/app/contact-selector.tsx
+#: src/@generic/component/contact-selector-header/contact-selector-header.tsx
+#: src/@generic/component/contact-selector-state/contact-selector-state.tsx
 msgid "Contacts"
 msgstr "Kontakte"
+
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "Contacts access is off"
+msgstr "Kontaktzugriff ist deaktiviert"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "contains"
@@ -2627,7 +2643,6 @@ msgstr "Ohne PIN fortfahren"
 msgid "Conversion failed"
 msgstr "Konvertierung fehlgeschlagen"
 
-#: src/app/convert-to-transfer.tsx
 #: src/money-data/component/money-data-upgrade-status-card/money-data-upgrade-status-card.tsx
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
@@ -2652,15 +2667,11 @@ msgstr "In Rückerstattung umwandeln"
 msgid "Convert to Refund?"
 msgstr "In Rückerstattung umwandeln?"
 
-#: src/app/convert-to-transfer.tsx
+#: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
 #: src/transaction/components/transaction-list-convert-to-transfer-menu-item/transaction-list-convert-to-transfer-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Convert to Transfer"
 msgstr "In Überweisung umwandeln"
-
-#: src/app/convert-to-transfer.tsx
-msgid "Convert to Transfer?"
-msgstr "In Überweisung umwandeln?"
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Converting {processedEntryCount} of {totalEntryCount} transactions"
@@ -2842,6 +2853,10 @@ msgstr "Konten konnten nicht geladen werden"
 #: src/budget/components/budget-data-state/budget-data-state.tsx
 msgid "Could not load budget"
 msgstr "Budget konnte nicht geladen werden"
+
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "Could not load contacts"
+msgstr "Kontakte konnten nicht geladen werden"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Could not load sources. Please try again."
@@ -3180,7 +3195,6 @@ msgid "Create event"
 msgstr "Ereignis erstellen"
 
 #: src/account/component/account-select-content/account-select-content.tsx
-#: src/app/contact-selector.tsx
 msgid "Create one to get started."
 msgstr "Erstellen Sie eines, um zu beginnen."
 
@@ -3292,6 +3306,7 @@ msgstr "Datum"
 #: src/app/date-picker.tsx
 #: src/import/utils/get-import-match-description.util.ts
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
+#: src/transaction/components/transaction-date-tags-row/transaction-date-tags-row.tsx
 msgid "Date"
 msgstr "Datum"
 
@@ -3365,6 +3380,7 @@ msgstr "Standardwährung"
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/tag/components/tag-card/tag-card.tsx
 #: src/tag/hooks/use-delete-tag.hook.ts
+#: src/transaction/components/transaction-keypad/transaction-keypad.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Delete"
 msgstr "Löschen"
@@ -3591,6 +3607,7 @@ msgstr "Enthält nicht"
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
+#: src/transaction/hook/use-transaction-keypad-editing.hook.ts
 msgid "Done"
 msgstr "Fertig"
 
@@ -3900,6 +3917,7 @@ msgstr "Alle Beträge eingeben"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 #: src/transaction/hook/use-quick-form-submit.hook.ts
+#: src/transaction/hook/use-transaction-keypad-editing.hook.ts
 msgid "Enter an amount"
 msgstr "Betrag eingeben"
 
@@ -4136,10 +4154,6 @@ msgstr "Gesichtserkennung"
 #: src/budget/components/budget-history-section/budget-history-section.tsx
 msgid "Faded bars are estimated from your past transactions using your current limits."
 msgstr "Blasse Balken sind aus deinen früheren Transaktionen mit deinen aktuellen Limits geschätzt."
-
-#: src/@generic/hook/use-contacts.hook.ts
-msgid "Failed to load contacts."
-msgstr "Kontakte konnten nicht geladen werden."
 
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
 msgid "Features"
@@ -4970,6 +4984,10 @@ msgstr "Limitänderungen"
 msgid "Limit from"
 msgstr "Limit aus"
 
+#: src/@generic/component/contact-selector-header/contact-selector-header.tsx
+msgid "Limited access · Manage in Settings"
+msgstr "Eingeschränkter Zugriff · In Einstellungen verwalten"
+
 #: src/budget/components/budget-limit-changes-row/budget-limit-changes-row.tsx
 msgid "Limits are tuned automatically after 3 steady periods"
 msgstr "Limits werden nach 3 gleichmäßigen Zeiträumen automatisch angepasst"
@@ -4989,6 +5007,10 @@ msgstr "Gespeichert auf"
 #: src/transaction/components/suggestion-loading-indicator/suggestion-loading-indicator.tsx
 msgid "Loading AI model..."
 msgstr "KI-Modell wird geladen..."
+
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "Loading contacts"
+msgstr "Kontakte werden geladen"
 
 #: src/account/component/debt-account-card/debt-account-card.tsx
 msgid "Loading debt progress"
@@ -5539,17 +5561,9 @@ msgstr "Keine Kategorien gefunden"
 msgid "No categories match “{trimmedSearch}”"
 msgstr "Keine Kategorien passen zu „{trimmedSearch}“"
 
-#: src/app/contact-selector.tsx
-msgid "No contacts found"
-msgstr "Keine Kontakte gefunden"
-
-#: src/@generic/hook/use-contacts.hook.ts
-msgid "No contacts found on this device."
-msgstr "Keine Kontakte auf diesem Gerät gefunden."
-
-#: src/app/contact-selector.tsx
-msgid "No contacts yet"
-msgstr "Noch keine Kontakte"
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "No contacts on this device"
+msgstr "Keine Kontakte auf diesem Gerät"
 
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No custom categories yet"
@@ -5598,6 +5612,10 @@ msgstr "Noch kein Marktkurs, daher lassen sich Wert und Rendite nicht berechnen.
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No matching accounts"
 msgstr "Keine passenden Konten"
+
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "No matching contacts"
+msgstr "Keine passenden Kontakte"
 
 #: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 msgid "No matching expenses"
@@ -5650,6 +5668,10 @@ msgstr "Keine Ergebnisse für „{query}“"
 #: src/rule/components/rule-empty-state/rule-empty-state.tsx
 msgid "No rules match “{search}”"
 msgstr "Keine Regeln für „{search}“"
+
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "No shared contacts"
+msgstr "Keine freigegebenen Kontakte"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "No source transactions"
@@ -5763,7 +5785,9 @@ msgstr "Bei keiner Transaktion verwendet. Dies kann nicht rückgängig gemacht w
 msgid "Not saved yet"
 msgstr "Noch nicht gespeichert"
 
+#: src/transaction/components/transaction-field-caption/transaction-field-caption.tsx
 #: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx
+#: src/transaction/components/transaction-metadata-field/transaction-metadata-field.tsx
 msgid "not set"
 msgstr "nicht gesetzt"
 
@@ -5872,6 +5896,7 @@ msgstr "Im Plan"
 #: src/ai/component/ai-download-card-frame/ai-download-card-frame.tsx
 #: src/ai/component/ai-system-status-banner/ai-system-status-banner.tsx
 #: src/app/(tabs)/settings/ai.tsx
+#: src/transaction/components/suggestion-loading-indicator/suggestion-loading-indicator.tsx
 msgid "On-device AI"
 msgstr "On-Device-KI"
 
@@ -6003,6 +6028,10 @@ msgstr "Öffnen Sie Privat24 und wählen Sie die Karte oder das Konto aus, das S
 
 #: src/budget/components/budget-missing-currency-guard/budget-missing-currency-guard.tsx
 msgid "Open settings"
+msgstr "Einstellungen öffnen"
+
+#: src/@generic/component/contact-selector-settings-button/contact-selector-settings-button.tsx
+msgid "Open Settings"
 msgstr "Einstellungen öffnen"
 
 #: src/wallet-capture/component/apple-pay-capture-open-shortcuts-button/apple-pay-capture-open-shortcuts-button.tsx
@@ -6333,10 +6362,6 @@ msgstr "Zeitraum"
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
 msgid "Period summary"
 msgstr "Zeitraumübersicht"
-
-#: src/@generic/hook/use-contacts.hook.ts
-msgid "Permission to access contacts was denied."
-msgstr "Die Berechtigung zum Zugriff auf Kontakte wurde verweigert."
 
 #: src/sync/component/enable-banking-key-step/enable-banking-key-step.tsx
 msgid "Personal accounts only. Enable Banking's Terms allow this for private individuals using their own accounts. By connecting you accept them."
@@ -7034,8 +7059,9 @@ msgstr "Gleicher Auslöser wie eine Regel darüber"
 
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
-#: src/transaction/components/transaction-keypad/transaction-keypad.tsx
+#: src/transaction/components/simple-quick-form/simple-quick-form.tsx
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
+#: src/transaction/components/update-adjustment-transaction/update-adjustment-transaction.tsx
 msgid "Save"
 msgstr "Speichern"
 
@@ -7160,7 +7186,11 @@ msgstr "Kategorien durchsuchen..."
 msgid "Search categories…"
 msgstr "Kategorien suchen…"
 
-#: src/app/contact-selector.tsx
+#: src/@generic/component/contact-selector-header/contact-selector-header.tsx
+msgid "Search contacts"
+msgstr "Kontakte suchen"
+
+#: src/@generic/component/contact-selector-header/contact-selector-header.tsx
 msgid "Search contacts…"
 msgstr "Kontakte suchen…"
 
@@ -7205,6 +7235,10 @@ msgstr "Tags durchsuchen..."
 #: src/tag/components/tag-destination-sheet/tag-destination-sheet.tsx
 msgid "Search tags…"
 msgstr "Tags suchen…"
+
+#: src/@generic/component/contact-selector-header/contact-selector-header.tsx
+msgid "Search unavailable"
+msgstr "Suche nicht verfügbar"
 
 #: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
 msgid "Search your bank"
@@ -7817,9 +7851,9 @@ msgstr "Getaggte Ausgaben zählen auch in deinem Hauptbudget."
 #: src/app/tags-selector.tsx
 #: src/settings/components/organize-settings-rows/organize-settings-rows.tsx
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
+#: src/transaction/components/transaction-date-tags-row/transaction-date-tags-row.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 #: src/transaction/components/transaction-info-tags-section/transaction-info-tags-section.tsx
-#: src/transaction/components/transaction-tags-field-icon/transaction-tags-field-icon.tsx
 msgid "Tags"
 msgstr "Tags"
 
@@ -8182,14 +8216,6 @@ msgstr "Diese Woche"
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Dadurch werden alle zwischengespeicherten Kontostände gelöscht und anhand Ihrer Transaktionen neu berechnet. Dies kann einen Moment dauern."
 
-#: src/app/convert-to-transfer.tsx
-msgid "This will convert the expense to a transfer between accounts."
-msgstr "Dies wandelt die Ausgabe in eine Überweisung zwischen Konten um."
-
-#: src/app/convert-to-transfer.tsx
-msgid "This will convert the income to a transfer between accounts."
-msgstr "Dadurch wird das Einkommen in eine Überweisung zwischen Konten umgewandelt."
-
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "This will keep one entry with the full transaction amount."
 msgstr "Dadurch bleibt ein Eintrag mit dem vollständigen Transaktionsbetrag erhalten."
@@ -8294,7 +8320,7 @@ msgstr "In diesem Zeitraum zurückzulegen"
 #: src/budget/components/budget-day-strip-key/budget-day-strip-key.tsx
 #: src/market-data/hook/use-market-chart-timeline.hook.ts
 #: src/transaction/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
-#: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
+#: src/transaction/hook/use-transaction-date-label.hook.ts
 #: src/transaction/query/use-get-transaction-sections.query.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Today"
@@ -8496,10 +8522,6 @@ msgstr "Fehlerbehebung"
 msgid "Try a different merchant, amount, or date."
 msgstr "Versuche einen anderen Händler, Betrag oder ein anderes Datum."
 
-#: src/app/contact-selector.tsx
-msgid "Try a different search term"
-msgstr "Versuchen Sie einen anderen Suchbegriff"
-
 #: src/@generic/component/icon-selector-empty-state/icon-selector-empty-state.tsx
 msgid "Try a simpler word like “car” or “food”."
 msgstr "Versuche ein einfacheres Wort wie „Auto“ oder „Essen“."
@@ -8512,6 +8534,7 @@ msgstr "Versuche einen Titel, eine Kategorie oder einen Tag."
 msgid "Try adjusting your filters to see more results"
 msgstr "Versuchen Sie, Ihre Filter anzupassen, um mehr Ergebnisse zu sehen"
 
+#: src/@generic/component/contact-selector-state/contact-selector-state.tsx
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 #: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
@@ -8526,9 +8549,17 @@ msgstr "Erneut versuchen"
 msgid "Try Again"
 msgstr "Erneut versuchen"
 
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "Try another name, phone number or email."
+msgstr "Versuche einen anderen Namen, eine Telefonnummer oder E-Mail-Adresse."
+
 #: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
 msgid "Try another name."
 msgstr "Versuche einen anderen Namen."
+
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "Try loading your contacts again."
+msgstr "Versuche, deine Kontakte erneut zu laden."
 
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 msgid "Try switching on Airplane Mode. Budgie works exactly the same."
@@ -8834,6 +8865,7 @@ msgid "View your payments in another month."
 msgstr "Sieh dir deine Zahlungen in einem anderen Monat an."
 
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
+#: src/app/voice-review.tsx
 msgid "Voice notes"
 msgstr "Sprachnotizen"
 
@@ -9000,7 +9032,7 @@ msgstr "Jahr"
 msgid "Yearly budget"
 msgstr "Jahresbudget"
 
-#: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
+#: src/transaction/hook/use-transaction-date-label.hook.ts
 #: src/transaction/query/use-get-transaction-sections.query.ts
 msgid "Yesterday"
 msgstr "Gestern"
@@ -9098,6 +9130,10 @@ msgstr "Deine Entscheidung"
 msgctxt "Categorize inbox section chip"
 msgid "Your call"
 msgstr "Deine Wahl"
+
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "Your contacts will appear here."
+msgstr "Deine Kontakte erscheinen hier."
 
 #: src/sync/component/bank-integration-key-field/bank-integration-key-field.tsx
 msgid "Your current key was rejected. Paste a new one to resume syncing."

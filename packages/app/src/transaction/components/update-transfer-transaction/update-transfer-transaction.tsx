@@ -4,8 +4,6 @@ import { FormProvider } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { PageHeader } from '../../../@generic/component/page-header/page-header';
-import { FullPage } from '../../../@generic/component/page/full-page';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
 import { useConsolidationSourceModal } from '../../context/consolidation-source-modal.context';
@@ -13,6 +11,7 @@ import { useTransactionFeeFormActions } from '../../hook/use-transaction-fee-for
 import { useTransferTransactionActions } from '../../hook/use-transfer-transaction-actions.hook';
 import { useUpdateTransactionForm } from '../../hook/use-update-transaction-form.hook';
 import { convertTransactionToInput } from '../../utils/convert-transaction-to-input.util';
+import { TransactionFormScreen } from '../transaction-form-screen/transaction-form-screen';
 import { TransferQuickForm } from '../transfer-quick-form/transfer-quick-form';
 import { UpdateTransactionActionsMenu } from '../update-transaction-actions-menu/update-transaction-actions-menu';
 
@@ -41,17 +40,10 @@ export const UpdateTransferTransaction = ({ transaction, openFeeOnMount }: Updat
 
     return (
         <FormProvider {...form}>
-            <FullPage
-                className="bg-grouped-surface"
-                header={
-                    <PageHeader
-                        size="md"
-                        className="min-h-[52px]"
-                        title={t`Edit Transfer`}
-                        onGoBack={handleGoBack}
-                        right={<UpdateTransactionActionsMenu {...actionsMenuProps} onDelete={handleDelete} />}
-                    />
-                }
+            <TransactionFormScreen
+                title={t`Edit Transfer`}
+                onGoBack={handleGoBack}
+                right={<UpdateTransactionActionsMenu {...actionsMenuProps} onDelete={handleDelete} />}
             >
                 <TransferQuickForm
                     ref={formRef}
@@ -62,7 +54,7 @@ export const UpdateTransferTransaction = ({ transaction, openFeeOnMount }: Updat
                     isNewTransaction={false}
                     {...(isConsolidated && { onConsolidationPress: () => void openConsolidationSource({ transactionId: transaction.id }) })}
                 />
-            </FullPage>
+            </TransactionFormScreen>
         </FormProvider>
     );
 };

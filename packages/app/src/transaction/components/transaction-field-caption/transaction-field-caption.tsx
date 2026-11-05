@@ -1,37 +1,26 @@
-import { Text, useWindowDimensions, View } from 'react-native';
+import { t } from '@lingui/core/macro';
+import { Text, View } from 'react-native';
 
-import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
-import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
+import { isNotEmptyString } from '@rnw-community/shared';
 
 interface Props {
     readonly label: string;
     readonly value?: string;
+    readonly placeholder?: string;
     readonly testID?: string;
 }
 
-export const TransactionFieldCaption = ({ label, value, testID }: Props) => {
-    const { fontScale } = useWindowDimensions();
-    const nameStyle = { height: 16 * fontScale };
-    const valueStyle = { height: 36 * fontScale };
+export const TransactionFieldCaption = ({ label, value, placeholder, testID }: Props) => {
+    const hasValue = isNotEmptyString(value);
+    const displayValue = hasValue ? value : (placeholder ?? t`not set`);
+    const valueClassName = hasValue ? 'text-[17px] leading-[22px] text-primary' : 'text-[17px] leading-[22px] text-secondary-foreground';
 
     return (
-        <View className="self-stretch">
-            <Text
-                className="text-center text-[12px] leading-[16px] text-secondary-foreground"
-                style={nameStyle}
-                numberOfLines={1}
-                ellipsizeMode="tail"
-            >
-                {label}
-            </Text>
-            <Text
-                className="text-center text-[13px] leading-[18px] text-primary"
-                style={valueStyle}
-                numberOfLines={2}
-                ellipsizeMode="tail"
-                {...testIDProps(testID, TestIDPartEnum.TITLE)}
-            >
-                {value}
+        <View className="min-w-0 gap-y-[4px]">
+            <Text className="text-[13px] leading-[18px] text-secondary-foreground">{label}</Text>
+
+            <Text className={valueClassName} numberOfLines={2} ellipsizeMode="tail" testID={testID}>
+                {displayValue}
             </Text>
         </View>
     );
