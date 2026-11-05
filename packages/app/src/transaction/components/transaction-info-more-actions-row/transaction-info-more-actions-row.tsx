@@ -1,6 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { View } from 'react-native';
+import { ScrollView, View, useWindowDimensions } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ActionsMenuItem } from '../../../@generic/component/actions-menu-item/actions-menu-item';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -20,6 +21,9 @@ interface Props {
 export const TransactionInfoMoreActionsRow = ({ items }: Props) => {
     const { t } = useLingui();
     const { anchor, frameRef, closeMenu, handleCloseComplete, handleToggleMenu, isMenuOpen } = usePopoverMenuAnchor();
+    const { height } = useWindowDimensions();
+    const { top } = useSafeAreaInsets();
+    const menuContentStyle = { maxHeight: Math.max(44, (anchor?.y ?? height) - top - 16) };
     const label = t`More Actions…`;
 
     return (
@@ -38,7 +42,7 @@ export const TransactionInfoMoreActionsRow = ({ items }: Props) => {
 
             <PopoverMenu isOpen={isMenuOpen} onClose={closeMenu} onCloseComplete={handleCloseComplete} anchor={anchor} placement="top">
                 <ActionsMenuContext value={closeMenu}>
-                    <View className="min-w-[280px] py-sm">
+                    <ScrollView className="min-w-[280px] py-sm" style={menuContentStyle} bounces={false}>
                         {items.map(item => (
                             <ActionsMenuItem
                                 key={item.key}
@@ -49,7 +53,7 @@ export const TransactionInfoMoreActionsRow = ({ items }: Props) => {
                                 testID={item.testID}
                             />
                         ))}
-                    </View>
+                    </ScrollView>
                 </ActionsMenuContext>
             </PopoverMenu>
         </View>
