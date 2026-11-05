@@ -14,6 +14,7 @@ const TABULAR_NUMS_STYLE = { fontVariant: ['tabular-nums' as const] };
 
 interface Props {
     readonly count: number;
+    readonly isSaving: boolean;
     readonly totalAmount: number;
     readonly currencySymbol: string;
     readonly onCancel: () => void;
@@ -22,17 +23,17 @@ interface Props {
 }
 
 export const VoiceReviewFooter = (props: Props) => {
-    const { count, totalAmount, currencySymbol, onCancel, onReRecord, children } = props;
+    const { count, isSaving, totalAmount, currencySymbol, onCancel, onReRecord, children } = props;
     const { t } = useLingui();
     const formatDigits = useDisplayFormatDigits();
     const totalLabel = formatDigits(totalAmount, `${currencySymbol} `);
 
     return (
-        <View className="border-t border-secondary-background bg-background px-lg pt-md pb-safe">
+        <View className="border-t border-surface-separator bg-surface px-lg pt-lg pb-safe-or-[16px]">
             {isPositiveNumber(count) ? (
-                <View className="mb-md flex-row items-baseline justify-between">
-                    <Text className="text-sm uppercase tracking-wider text-secondary-foreground">{t`Total`}</Text>
-                    <Text className="text-2xl font-bold text-primary" style={TABULAR_NUMS_STYLE}>
+                <View className="mb-lg flex-row flex-wrap gap-x-lg gap-y-xs items-baseline justify-between">
+                    <Text className="text-md text-secondary-foreground">{t`Total`}</Text>
+                    <Text className="text-2xl font-semibold text-primary" style={TABULAR_NUMS_STYLE}>
                         {totalLabel}
                     </Text>
                 </View>
@@ -43,7 +44,8 @@ export const VoiceReviewFooter = (props: Props) => {
                     variant="ghost"
                     content={t`Cancel`}
                     onPress={onCancel}
-                    className="flex-1"
+                    disabled={isSaving}
+                    className="flex-1 min-h-[44px] px-md"
                     testID={VoiceReviewFooterSelector.CancelButton}
                 />
                 <Button
@@ -51,7 +53,8 @@ export const VoiceReviewFooter = (props: Props) => {
                     leftIcon={UserIconNameEnum.RefreshCw}
                     content={t`Re-record`}
                     onPress={onReRecord}
-                    className="flex-1"
+                    disabled={isSaving}
+                    className="flex-1 min-h-[44px] px-md"
                     testID={VoiceReviewFooterSelector.ReRecordButton}
                 />
             </View>

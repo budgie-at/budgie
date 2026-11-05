@@ -8387,6 +8387,7 @@ msgid "View source transactions"
 msgstr "Voir les transactions source"
 
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
+#: src/app/voice-review.tsx
 msgid "Voice notes"
 msgstr "Notes vocales"
 
