@@ -18,7 +18,7 @@ const OPTION = {
     [DividendPayoutEnum.BANK]: {
         icon: UserIconNameEnum.Landmark,
         title: msg`Paid to your bank`,
-        subtitle: msg`Sent to your bank card`
+        subtitle: msg`Inzhur sends them to your card`
     },
     [DividendPayoutEnum.REINVEST]: {
         icon: UserIconNameEnum.RefreshCw,

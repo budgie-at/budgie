@@ -28,7 +28,7 @@ export const InzhurCashReconciliation = ({ value, onChange, instrumentSymbol }: 
                 <Icon icon={UserIconNameEnum.Pencil} size={20} className="text-secondary-foreground" />
             </FormAmountInput>
             <Text className="px-3xl pt-md text-[13px] leading-[18px] text-secondary-foreground">
-                {t`Saving records the difference as an adjustment, or as dividends kept in Inzhur if the balance went up.`}
+                {t`An increase is recorded as estimated dividends kept in Inzhur. A decrease is recorded as a balance correction.`}
             </Text>
         </View>
     );

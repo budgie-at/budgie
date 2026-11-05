@@ -159,6 +159,10 @@ msgstr "{accountsCount, plural, one {# asset} other {# assets}}"
 msgid "{ageDays, plural, one {# day old} other {# days old}}"
 msgstr "{ageDays, plural, one {# day old} other {# days old}}"
 
+#: src/inzhur/component/inzhur-import-statement-action/inzhur-import-statement-action.tsx
+msgid "{ageLabel}. Import statement"
+msgstr "{ageLabel}. Import statement"
+
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "{applied, plural, one {# matching transaction updated} other {# matching transactions updated}}"
 msgstr "{applied, plural, one {# matching transaction updated} other {# matching transactions updated}}"
@@ -698,8 +702,8 @@ msgid "{providerName} sync"
 msgstr "{providerName} sync"
 
 #: src/inzhur/component/inzhur-fund-holding-line/inzhur-fund-holding-line.tsx
-msgid "{quantityLabel} · {priceLabel} each"
-msgstr "{quantityLabel} · {priceLabel} each"
+msgid "{quantityLabel} · {priceLabel} each · {priceDate}"
+msgstr "{quantityLabel} · {priceLabel} each · {priceDate}"
 
 #: src/inzhur/component/update-inzhur-account-page/update-inzhur-account-page.tsx
 msgid "{quantityLabel}, updated from statements"
@@ -825,10 +829,6 @@ msgstr "{splitEntryCount, plural, one {# item} other {# items}}"
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "{statementAccountCount, plural, one {# account. Balances come from the statement.} other {# accounts. Balances come from the statement.}}"
 msgstr "{statementAccountCount, plural, one {# account. Balances come from the statement.} other {# accounts. Balances come from the statement.}}"
-
-#: src/inzhur/component/inzhur-import-statement-action/inzhur-import-statement-action.tsx
-msgid "{statementDate} statement"
-msgstr "{statementDate} statement"
 
 #: src/inzhur/component/inzhur-import-summary-hero/inzhur-import-summary-hero.tsx
 msgid "{statementLabel} statement"
@@ -1493,6 +1493,10 @@ msgstr "Amount to set aside"
 msgid "an account"
 msgstr "an account"
 
+#: src/inzhur/component/inzhur-cash-reconciliation/inzhur-cash-reconciliation.tsx
+msgid "An increase is recorded as estimated dividends kept in Inzhur. A decrease is recorded as a balance correction."
+msgstr "An increase is recorded as estimated dividends kept in Inzhur. A decrease is recorded as a balance correction."
+
 #: src/app/(tabs)/analytics.tsx
 msgid "Analytics"
 msgstr "Analytics"
@@ -1892,12 +1896,8 @@ msgid "Bought"
 msgstr "Bought"
 
 #: src/inzhur/component/inzhur-import-summary-fund-row/inzhur-import-summary-fund-row.tsx
-msgid "Bought with dividends"
-msgstr "Bought with dividends"
-
-#: src/inzhur/component/inzhur-import-summary-fund-row/inzhur-import-summary-fund-row.tsx
-msgid "Bought with dividends (estimated)"
-msgstr "Bought with dividends (estimated)"
+msgid "Bought with dividends · estimated"
+msgstr "Bought with dividends · estimated"
 
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 msgid "Browse icons"
@@ -2129,10 +2129,6 @@ msgstr "Cash & savings"
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "cash from an ATM"
 msgstr "cash from an ATM"
-
-#: src/inzhur/component/create-inzhur-account/create-inzhur-account.tsx
-msgid "Cash in Inzhur today"
-msgstr "Cash in Inzhur today"
 
 #: src/app/(main)/create-account/index.tsx
 msgid "Cash wallets and savings goals"
@@ -3839,6 +3835,10 @@ msgstr "Enter the backup's PIN"
 msgid "Enter the same PIN again."
 msgstr "Enter the same PIN again."
 
+#: src/inzhur/component/create-inzhur-account/create-inzhur-account.tsx
+msgid "Enter your available cash. Certificates are added with your first statement."
+msgstr "Enter your available cash. Certificates are added with your first statement."
+
 #: src/sync/component/binance-sync-token-inputs/binance-sync-token-inputs.tsx
 msgid "Enter your Binance API key"
 msgstr "Enter your Binance API key"
@@ -3900,13 +3900,13 @@ msgstr "Erste Bank"
 msgid "Erste Bank (PDF)"
 msgstr "Erste Bank (PDF)"
 
-#: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
-msgid "Estimated from statements"
-msgstr "Estimated from statements"
+#: src/transaction/hook/use-dividend-role-label.hook.ts
+msgid "Estimated"
+msgstr "Estimated"
 
 #: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
-msgid "Estimated from statements since {sinceDate}"
-msgstr "Estimated from statements since {sinceDate}"
+msgid "Estimated dividends to date"
+msgstr "Estimated dividends to date"
 
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
 msgid "Estimated from your past transactions using your current limits."
@@ -4189,8 +4189,8 @@ msgid "From"
 msgstr "From"
 
 #: src/transaction/hook/use-fund-trade-label.hook.ts
-msgid "From {cashTitle} · {signedQuantity}"
-msgstr "From {cashTitle} · {signedQuantity}"
+msgid "From {cashTitle} · +{quantity}"
+msgstr "From {cashTitle} · +{quantity}"
 
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead.tsx
 msgid "From {counterparty}"
@@ -4266,6 +4266,14 @@ msgstr "Funding account"
 #: src/account/component/start-deposit-funding-summary/start-deposit-funding-summary.tsx
 msgid "Funding amount"
 msgstr "Funding amount"
+
+#: src/inzhur/component/inzhur-import-summary-funding/inzhur-import-summary-funding.tsx
+msgid "Funding for {boughtFundName}"
+msgstr "Funding for {boughtFundName}"
+
+#: src/inzhur/component/inzhur-import-summary-funding/inzhur-import-summary-funding.tsx
+msgid "Funding for these buys"
+msgstr "Funding for these buys"
 
 #: src/categorize-inbox/components/categorize-inbox-transfer-rule-switch/categorize-inbox-transfer-rule-switch.tsx
 msgid "Future “{displayTitle}” payments"
@@ -4369,14 +4377,6 @@ msgstr "Hold to seal with this PIN"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Home screen"
 msgstr "Home screen"
-
-#: src/inzhur/component/inzhur-import-summary-funding/inzhur-import-summary-funding.tsx
-msgid "How the {boughtFundName} buy was funded"
-msgstr "How the {boughtFundName} buy was funded"
-
-#: src/inzhur/component/inzhur-import-summary-funding/inzhur-import-summary-funding.tsx
-msgid "How these buys were funded"
-msgstr "How these buys were funded"
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "How to compare"
@@ -4646,6 +4646,10 @@ msgstr "Inzhur buys more certificates"
 msgid "Inzhur is not set up"
 msgstr "Inzhur is not set up"
 
+#: src/inzhur/component/inzhur-dividend-payout-option/inzhur-dividend-payout-option.tsx
+msgid "Inzhur sends them to your card"
+msgstr "Inzhur sends them to your card"
+
 #: src/inzhur/component/inzhur-import-summary-hero/inzhur-import-summary-hero.tsx
 msgid "Inzhur value now"
 msgstr "Inzhur value now"
@@ -4803,6 +4807,10 @@ msgstr "Last import {importDate}"
 #: src/@generic/constant/date-period.constant.ts
 msgid "Last Month"
 msgstr "Last Month"
+
+#: src/inzhur/component/inzhur-import-statement-action/inzhur-import-statement-action.tsx
+msgid "Last one {statementDate}"
+msgstr "Last one {statementDate}"
 
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
 msgid "last payment {formattedLast}"
@@ -4999,8 +5007,8 @@ msgid "Match on"
 msgstr "Match on"
 
 #: src/inzhur/component/inzhur-dividend-payout-field/inzhur-dividend-payout-field.tsx
-msgid "Match your setting in the Inzhur app. Budgie uses it to record dividends."
-msgstr "Match your setting in the Inzhur app. Budgie uses it to record dividends."
+msgid "Match your choice in the Inzhur app. This only changes how Budgie records dividends."
+msgstr "Match your choice in the Inzhur app. This only changes how Budgie records dividends."
 
 #: src/import/utils/get-import-match-description.util.ts
 msgid "Matched by column name and sample values."
@@ -6114,6 +6122,10 @@ msgstr "Paid to date: {paid}"
 msgid "Paid to your bank"
 msgstr "Paid to your bank"
 
+#: src/transaction/hook/use-dividend-role-label.hook.ts
+msgid "Paid to your bank · {bankTitle}"
+msgstr "Paid to your bank · {bankTitle}"
+
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Pair transfers and refunds"
 msgstr "Pair transfers and refunds"
@@ -6398,10 +6410,6 @@ msgstr "Previous period"
 msgid "Price {ageLabel} · {date}"
 msgstr "Price {ageLabel} · {date}"
 
-#: src/inzhur/component/inzhur-fund-holding-line/inzhur-fund-holding-line.tsx
-msgid "Price as of {priceDate}"
-msgstr "Price as of {priceDate}"
-
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Price changed"
 msgstr "Price changed"
@@ -6615,8 +6623,8 @@ msgid "Record expense"
 msgstr "Record expense"
 
 #: src/inzhur/component/inzhur-import-summary/inzhur-import-summary.tsx
-msgid "Recorded automatically. Budgie matches the bank top-up when it arrives. You can edit any entry like a normal transaction."
-msgstr "Recorded automatically. Budgie matches the bank top-up when it arrives. You can edit any entry like a normal transaction."
+msgid "Recorded automatically. Budgie matches the top-up when it reaches your bank."
+msgstr "Recorded automatically. Budgie matches the top-up when it reaches your bank."
 
 #: src/inzhur/component/inzhur-import-summary/inzhur-import-summary.tsx
 msgid "Recorded automatically. You can edit any entry like a normal transaction."
@@ -6656,19 +6664,22 @@ msgid "Refunds received"
 msgstr "Refunds received"
 
 #: src/inzhur/component/inzhur-dividend-payout-option/inzhur-dividend-payout-option.tsx
+#: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
 msgid "Reinvested"
 msgstr "Reinvested"
 
-#: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
-#: src/inzhur/component/inzhur-import-summary-fund-row/inzhur-import-summary-fund-row.tsx
-#: src/transaction/hook/use-fund-trade-label.hook.ts
+#: src/transaction/hook/use-transaction-row-title.hook.ts
 msgid "Reinvested dividends"
 msgstr "Reinvested dividends"
 
 #: src/inzhur/component/inzhur-import-summary-fund-row/inzhur-import-summary-fund-row.tsx
-#: src/transaction/hook/use-fund-trade-label.hook.ts
-msgid "Reinvested dividends (estimated)"
-msgstr "Reinvested dividends (estimated)"
+#: src/transaction/hook/use-dividend-role-label.hook.ts
+msgid "Reinvested dividends · estimated"
+msgstr "Reinvested dividends · estimated"
+
+#: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
+msgid "Reinvested since {sinceDate}"
+msgstr "Reinvested since {sinceDate}"
 
 #: src/sync/component/bank-integration-key-card/bank-integration-key-card.tsx
 msgid "Rejected · tap to update"
@@ -6993,10 +7004,6 @@ msgstr "Save the automation. Budgie matches card names to accounts for all your 
 msgid "Save up for yearly bills a little each period so they never surprise you"
 msgstr "Save up for yearly bills a little each period so they never surprise you"
 
-#: src/inzhur/component/inzhur-cash-reconciliation/inzhur-cash-reconciliation.tsx
-msgid "Saving records the difference as an adjustment, or as dividends kept in Inzhur if the balance went up."
-msgstr "Saving records the difference as an adjustment, or as dividends kept in Inzhur if the balance went up."
-
 #: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/constant/onboarding-account-options.constant.ts
@@ -7190,10 +7197,6 @@ msgstr "Selected"
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Sending {fromCode}"
 msgstr "Sending {fromCode}"
-
-#: src/inzhur/component/inzhur-dividend-payout-option/inzhur-dividend-payout-option.tsx
-msgid "Sent to your bank card"
-msgstr "Sent to your bank card"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
@@ -8082,8 +8085,8 @@ msgid "To {accountTitle}, rule saved"
 msgstr "To {accountTitle}, rule saved"
 
 #: src/transaction/hook/use-fund-trade-label.hook.ts
-msgid "To {cashTitle} · {signedQuantity}"
-msgstr "To {cashTitle} · {signedQuantity}"
+msgid "To {cashTitle} · −{quantity}"
+msgstr "To {cashTitle} · −{quantity}"
 
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead.tsx
 msgid "To {counterparty}"
@@ -8483,6 +8486,10 @@ msgstr "Unhide"
 #: src/account/component/inactive-account-card/inactive-account-card.tsx
 msgid "Unhide {accountTitle}"
 msgstr "Unhide {accountTitle}"
+
+#: src/inzhur/component/create-inzhur-account/create-inzhur-account.tsx
+msgid "Uninvested cash in Inzhur"
+msgstr "Uninvested cash in Inzhur"
 
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Unknown card"
@@ -8944,10 +8951,6 @@ msgstr "Your call"
 msgctxt "Categorize inbox section chip"
 msgid "Your call"
 msgstr "Your call"
-
-#: src/inzhur/component/create-inzhur-account/create-inzhur-account.tsx
-msgid "Your certificates come in with your first statement."
-msgstr "Your certificates come in with your first statement."
 
 #: src/sync/component/bank-integration-key-field/bank-integration-key-field.tsx
 msgid "Your current key was rejected. Paste a new one to resume syncing."

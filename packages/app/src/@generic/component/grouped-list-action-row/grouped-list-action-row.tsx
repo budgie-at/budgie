@@ -3,8 +3,8 @@ import { Text, View } from 'react-native';
 
 import { cn } from '../../utils/cn.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
-import { Icon } from '../icon/icon';
 import { LoadingContent } from '../loading-content/loading-content';
+import { NeutralIconTile } from '../neutral-icon-tile/neutral-icon-tile';
 
 import type { ReactNode } from 'react';
 
@@ -33,15 +33,15 @@ export const GroupedListActionRow = ({ label, icon, onPress, isDisabled, isLoadi
             accessibilityLabel={label}
             accessibilityState={accessibilityState}
             className={cn(
-                'min-h-[50px] justify-center rounded-3xl bg-surface-row px-3xl py-lg active:opacity-70',
+                'min-h-[56px] justify-center rounded-3xl bg-surface-row px-3xl py-md active:opacity-70',
                 isDisabled && !isLoading && 'opacity-40'
             )}
             style={CONTINUOUS_CORNERS}
             testID={testID}
         >
             <LoadingContent isLoading={isLoading}>
-                <View className="flex-row items-center gap-x-md">
-                    <Icon icon={icon} size={20} className={labelClassName} />
+                <View className="flex-row items-center gap-x-xl">
+                    <NeutralIconTile icon={icon} iconClassName={labelClassName} />
                     <Text className={cn('flex-1 text-[17px]', labelClassName)}>{label}</Text>
                     {trailing}
                 </View>

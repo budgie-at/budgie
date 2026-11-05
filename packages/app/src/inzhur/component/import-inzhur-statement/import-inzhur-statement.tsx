@@ -7,7 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 import { FixedChromePage } from '../../../@generic/component/fixed-chrome-page/fixed-chrome-page';
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
-import { PillButton } from '../../../@generic/component/pill-button/pill-button';
+import { PillButtonFooter } from '../../../@generic/component/pill-button-footer/pill-button-footer';
 import { InstitutionMark } from '../../../account/component/institution-mark/institution-mark';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { NumberedSteps } from '../../../sync/component/numbered-steps/numbered-steps';
@@ -45,27 +45,34 @@ export const ImportInzhurStatement = () => {
 
     return (
         <GroupedSurface>
-            <FixedChromePage title={t`Import statement`} leading={<HeaderBackButton />} testID={InzhurSelector.ImportPage}>
-                <View className="items-center gap-y-lg">
+            <FixedChromePage
+                title={t`Import statement`}
+                leading={<HeaderBackButton />}
+                testID={InzhurSelector.ImportPage}
+                footer={
+                    <View className="bg-surface">
+                        <Text
+                            className="mx-5xl px-3xl pt-md text-[13px] leading-[18px] text-secondary-foreground"
+                            testID={InzhurSelector.LastImported}
+                        >
+                            {privacyCaption}
+                        </Text>
+                        <PillButtonFooter
+                            label={t`Choose PDF statement`}
+                            isLoading={isLoading}
+                            testID={InzhurSelector.SelectFileButton}
+                            onPress={handleSelectFile}
+                        />
+                    </View>
+                }
+            >
+                <View className="items-start gap-y-lg px-3xl">
                     <InstitutionMark provider={ExternalSourceEnum.INZHUR} title={brandTitle} />
-                    <Text className="px-3xl text-center text-[15px] leading-[20px] text-secondary-foreground">
+                    <Text className="text-[15px] leading-[20px] text-secondary-foreground">
                         <Trans>Budgie reads your Inzhur statement and updates certificates, cash, buys and dividends.</Trans>
                     </Text>
                 </View>
-                <View className="gap-y-md">
-                    <NumberedSteps title={t`How to export`} steps={exportSteps} />
-                    <Text className="px-3xl text-[13px] leading-[18px] text-secondary-foreground" testID={InzhurSelector.LastImported}>
-                        {privacyCaption}
-                    </Text>
-                </View>
-                <View className="px-3xl">
-                    <PillButton
-                        label={t`Choose PDF statement`}
-                        isLoading={isLoading}
-                        testID={InzhurSelector.SelectFileButton}
-                        onPress={handleSelectFile}
-                    />
-                </View>
+                <NumberedSteps title={t`How to export`} steps={exportSteps} />
             </FixedChromePage>
         </GroupedSurface>
     );

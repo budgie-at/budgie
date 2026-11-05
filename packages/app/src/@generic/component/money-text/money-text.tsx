@@ -44,9 +44,9 @@ const fractionVariants = cva('text-secondary-foreground', {
         variant: {
             [MoneyTextVariantEnum.HERO]: 'text-[26px] font-semibold',
             [MoneyTextVariantEnum.FIELD]: 'text-[24px] font-semibold',
-            [MoneyTextVariantEnum.ROW]: 'text-[11px] font-medium',
-            [MoneyTextVariantEnum.BODY]: 'text-[11px] font-medium',
-            [MoneyTextVariantEnum.LINE]: 'text-[11px]',
+            [MoneyTextVariantEnum.ROW]: 'text-[13px] font-medium',
+            [MoneyTextVariantEnum.BODY]: 'text-[13px] font-medium',
+            [MoneyTextVariantEnum.LINE]: 'text-[13px]',
             [MoneyTextVariantEnum.CAPTION]: 'text-[11px]'
         }
     }

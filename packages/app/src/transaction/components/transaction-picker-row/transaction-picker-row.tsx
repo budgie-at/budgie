@@ -7,10 +7,10 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { ListRow } from '../../../@generic/component/list-row/list-row';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { TransactionListRowPositionEnum } from '../../enum/transaction-list-row-position.enum';
-import { TransactionRowLayout } from '../transaction-row-layout/transaction-row-layout';
 import { TransactionRowSurface } from '../transaction-row-surface/transaction-row-surface';
 
 import type { TransactionPickerItemInterface } from '../../interface/transaction-picker-item.interface';
@@ -38,22 +38,25 @@ export const TransactionPickerRow = ({ item, position, isSelected = false, onPre
         ? 'text-[15px] font-semibold tabular-nums text-positive-foreground'
         : 'text-[15px] font-semibold tabular-nums text-primary';
     const content = (
-        <TransactionRowLayout
-            icon={<CircleIcon size={36} iconSize={18} radius={18} border={false} icon={icon} variant={iconVariant} />}
-            amount={
+        <ListRow
+            leading={<CircleIcon size={36} iconSize={18} radius={18} border={false} icon={icon} variant={iconVariant} />}
+            title={
+                <Text className="text-[15px] font-semibold text-primary" numberOfLines={1}>
+                    {isNotEmptyString(item.title) ? item.title : t`No title`}
+                </Text>
+            }
+            trailing={
                 <View className="shrink-0 items-end gap-y-xxs">
                     <Text className={amountClassName}>{signedAmount}</Text>
                     {isSelected ? <Icon icon={UserIconNameEnum.Check} size={16} className="text-positive-foreground" /> : null}
                 </View>
             }
-        >
-            <Text className="text-[15px] font-semibold text-primary" numberOfLines={1}>
-                {isNotEmptyString(item.title) ? item.title : t`No title`}
-            </Text>
-            <Text className="text-[13px] text-secondary-foreground" numberOfLines={1}>
-                {description}
-            </Text>
-        </TransactionRowLayout>
+            detail={
+                <Text className="text-[13px] text-secondary-foreground" numberOfLines={1}>
+                    {description}
+                </Text>
+            }
+        />
     );
 
     if (!isDefined(onPress)) {

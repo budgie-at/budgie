@@ -97,7 +97,7 @@ export const useTransactionSubtitleSegments = (
     const feeLabel = useTransactionFeeLabel(transaction);
     const scopedCategoryIds = useContext(StatisticsCategoryIdsContext);
     const accountTitlePrefix = useContext(TransactionAccountTitlePrefixContext);
-    const fundTradeVariants = useFundTradeLabel(transaction);
+    const fundTradeLabel = useFundTradeLabel(transaction, accountId);
 
     const counterparty = getTransactionCounterparty(transaction, isDefined(accountTitlePrefix) ? null : accountId);
     const displayTitle = getTransactionDisplayTitle(transaction);
@@ -114,7 +114,7 @@ export const useTransactionSubtitleSegments = (
         .filter(category => !(scopedCategoryIds?.length === 1 && scopedCategoryIds.includes(category.id)))
         .map(category => category.title);
     const counterpartyLabel = [
-        fundTradeVariants?.at(0),
+        fundTradeLabel,
         isNotEmptyString(source) && isNotEmptyString(destination) ? t`From ${source} to ${destination}` : null,
         isNotEmptyString(destination) ? t`To ${destination}` : null,
         isNotEmptyString(source) ? t`From ${source}` : null
@@ -138,15 +138,14 @@ export const useTransactionSubtitleSegments = (
     return {
         segments: [
             refundedLabel,
-            (isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction)) && !isDefined(fundTradeVariants)
+            (isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction)) && !isDefined(fundTradeLabel)
                 ? t`Manual adjustment`
                 : null,
             isUncategorizedTransaction(transaction) ? t`Uncategorized` : null,
             ...relationSegments
         ].filter(isNotEmptyString),
         feeLabel,
-        accountTitle: isDefined(fundTradeVariants) ? null : stripTransactionAccountTitlePrefix(ownAccountTitle, accountTitlePrefix),
-        fundTradeVariants,
+        accountTitle: isDefined(fundTradeLabel) ? null : stripTransactionAccountTitlePrefix(ownAccountTitle, accountTitlePrefix),
         categoryLabel: !isDefined(counterparty) && categories.length === 1 ? (categories.at(0)?.title ?? null) : null
     };
 };

@@ -12,6 +12,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { DeletableRow } from '../../../@generic/component/deletable-row/deletable-row';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { ListRow } from '../../../@generic/component/list-row/list-row';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
@@ -20,7 +21,6 @@ import { defaultInstrumentAtom } from '../../../settings/constants/settings-atom
 import { TransactionListRowPositionEnum } from '../../enum/transaction-list-row-position.enum';
 import { RecurringCalendarSelector } from '../recurring-calendar-content/recurring-calendar.selector';
 import { RecurringSeriesTitleInput } from '../recurring-series-title-input/recurring-series-title-input';
-import { TransactionRowLayout } from '../transaction-row-layout/transaction-row-layout';
 import { TransactionRowSurface } from '../transaction-row-surface/transaction-row-surface';
 
 import type { RecurringCalendarEntryInterface } from '@budgie/recurring';
@@ -100,17 +100,20 @@ export const RecurringCalendarEntryRow = ({ entry, position, onPress, dayLabel }
                         onLongPress={handleLongPress}
                         {...(isDefined(handlePress) && { onPress: handlePress, accessibilityRole: 'button' as const })}
                     >
-                        <TransactionRowLayout
-                            icon={<CircleIcon size={36} iconSize={18} radius={18} border={false} icon={icon} variant="secondary" />}
-                            amount={<Text className="text-[15px] font-semibold text-primary tabular-nums">{formattedAmount}</Text>}
-                        >
-                            <Text className="text-[15px] font-semibold text-primary" numberOfLines={1}>
-                                {entry.title}
-                            </Text>
-                            <Text className="text-[13px] text-secondary-foreground" numberOfLines={1}>
-                                {description}
-                            </Text>
-                        </TransactionRowLayout>
+                        <ListRow
+                            leading={<CircleIcon size={36} iconSize={18} radius={18} border={false} icon={icon} variant="secondary" />}
+                            title={
+                                <Text className="text-[15px] font-semibold text-primary" numberOfLines={1}>
+                                    {entry.title}
+                                </Text>
+                            }
+                            trailing={<Text className="text-[15px] font-semibold text-primary tabular-nums">{formattedAmount}</Text>}
+                            detail={
+                                <Text className="text-[13px] text-secondary-foreground" numberOfLines={1}>
+                                    {description}
+                                </Text>
+                            }
+                        />
                     </HapticPressable>
                 </DeletableRow>
             )}

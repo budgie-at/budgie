@@ -20,14 +20,10 @@ const rowVariants = cva('bg-grouped-surface-row overflow-hidden', {
         }
     }
 });
-const SEPARATED_POSITIONS = new Set([TransactionListRowPositionEnum.MIDDLE, TransactionListRowPositionEnum.LAST]);
 const continuousCorners = { borderCurve: 'continuous' as const };
 
 export const TransactionRowSurface = ({ position = TransactionListRowPositionEnum.SINGLE, children }: Props) => (
     <View className={rowVariants({ position })} style={continuousCorners}>
         {children}
-        {SEPARATED_POSITIONS.has(position) ? (
-            <View className="absolute top-0 right-0 left-[64px] h-hairline bg-surface-separator" pointerEvents="none" />
-        ) : null}
     </View>
 );

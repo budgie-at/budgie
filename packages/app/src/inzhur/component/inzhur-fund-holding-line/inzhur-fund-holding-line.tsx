@@ -1,5 +1,4 @@
 import { useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -26,21 +25,13 @@ export const InzhurFundHoldingLine = ({ account, balance }: Props) => {
     const formatFundQuantity = useFormatFundQuantity();
 
     const quantityLabel = formatFundQuantity(balance);
-    const priceLabel = isDefined(latestPrice) ? formatAmount(latestPrice.price, symbol) : null;
-    const priceDate = isDefined(latestPrice) ? formatMonthAndDayAndOptionalYear(latestPrice.priceDate) : null;
-
-    const holdingLabel = isDefined(priceLabel) ? t`${quantityLabel} · ${priceLabel} each` : quantityLabel;
+    const priceLabel = isDefined(latestPrice) ? formatAmount(latestPrice.price, symbol) : '';
+    const priceDate = isDefined(latestPrice) ? formatMonthAndDayAndOptionalYear(latestPrice.priceDate) : '';
+    const holdingLabel = isDefined(latestPrice) ? t`${quantityLabel} · ${priceLabel} each · ${priceDate}` : quantityLabel;
 
     return (
-        <View className="items-center gap-y-xxs px-5xl">
-            <ProtectedText className="text-center text-[15px] leading-[20px] text-secondary-foreground tabular-nums">
-                {holdingLabel}
-            </ProtectedText>
-            {isDefined(priceDate) ? (
-                <Text className="text-center text-[13px] leading-[18px] text-secondary-foreground tabular-nums">
-                    {t`Price as of ${priceDate}`}
-                </Text>
-            ) : null}
-        </View>
+        <ProtectedText className="px-5xl text-center text-[15px] leading-[20px] text-secondary-foreground tabular-nums">
+            {holdingLabel}
+        </ProtectedText>
     );
 };

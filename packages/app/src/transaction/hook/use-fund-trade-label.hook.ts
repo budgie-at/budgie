@@ -1,33 +1,28 @@
-import { ExternalSourceEnum, InstrumentTypeEnum, TransactionTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { InstrumentTypeEnum, TransactionTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { useFormatFundQuantity } from '../../i18n/hook/use-format-fund-quantity.hook';
 
+import { useDividendRoleLabel } from './use-dividend-role-label.hook';
+
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
-export const useFundTradeLabel = (transaction: TransactionWithRelationsEntityInterface) => {
+export const useFundTradeLabel = (transaction: TransactionWithRelationsEntityInterface, accountId: number | null) => {
     const { t } = useLingui();
     const formatFundQuantity = useFormatFundQuantity();
+    const dividendRole = useDividendRoleLabel(transaction, accountId);
     const fundEntry = transaction.entries.find(entry => entry.account.instrument.type === InstrumentTypeEnum.FUND);
 
-    if (
-        transaction.type === TransactionTypeEnum.INCOME &&
-        transaction.externalSource === ExternalSourceEnum.INZHUR &&
-        isDefined(transaction.fundAccountId)
-    ) {
-        return [t`Reinvested dividends (estimated)`, t`Reinvested dividends`];
-    }
-
-    if (!isDefined(fundEntry)) {
-        return null;
+    if (isDefined(dividendRole) || !isDefined(fundEntry)) {
+        return dividendRole;
     }
 
     const quantity = formatFundQuantity(convertFromMicroUnits(fundEntry.amount));
 
     if (transaction.type === TransactionTypeEnum.ADJUSTMENT) {
-        return [t`From first statement · ${quantity}`, quantity];
+        return t`From first statement · ${quantity}`;
     }
 
     const cashTitle = transaction.entries.find(entry => entry.account.instrument.type !== InstrumentTypeEnum.FUND)?.account.title;
@@ -36,10 +31,5 @@ export const useFundTradeLabel = (transaction: TransactionWithRelationsEntityInt
         return null;
     }
 
-    const signedQuantity = transaction.toAccountId === fundEntry.accountId ? `+${quantity}` : `−${quantity}`;
-
-    return [
-        transaction.toAccountId === fundEntry.accountId ? t`From ${cashTitle} · ${signedQuantity}` : t`To ${cashTitle} · ${signedQuantity}`,
-        signedQuantity
-    ];
+    return transaction.toAccountId === fundEntry.accountId ? t`From ${cashTitle} · +${quantity}` : t`To ${cashTitle} · −${quantity}`;
 };

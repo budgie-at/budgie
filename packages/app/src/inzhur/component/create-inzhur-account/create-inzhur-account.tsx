@@ -17,6 +17,7 @@ import { InstitutionMark } from '../../../account/component/institution-mark/ins
 import { QuickFormLayout } from '../../../transaction/components/quick-form-layout/quick-form-layout';
 import { TransactionAmountDisplay } from '../../../transaction/components/transaction-amount-display/transaction-amount-display';
 import { TransactionKeypad } from '../../../transaction/components/transaction-keypad/transaction-keypad';
+import { QuickFormHeroAlignmentEnum } from '../../../transaction/enum/quick-form-hero-alignment.enum';
 import { useKeypadInput } from '../../../transaction/hook/use-keypad-input.hook';
 import { useHryvniaInstrumentQuery } from '../../query/use-hryvnia-instrument.query';
 import { InzhurSelector } from '../../selector/inzhur.selector';
@@ -44,7 +45,7 @@ export const CreateInzhurAccount = () => {
                 <View className="items-center gap-y-lg">
                     <InstitutionMark provider={ExternalSourceEnum.INZHUR} title={t`Inzhur`} />
                     <Text className="text-[15px] font-medium text-secondary-foreground">
-                        <Trans>Cash in Inzhur today</Trans>
+                        <Trans>Uninvested cash in Inzhur</Trans>
                     </Text>
                 </View>
             }
@@ -54,7 +55,7 @@ export const CreateInzhurAccount = () => {
                 className="mt-lg max-w-[300px] text-center text-sm leading-[20px] text-secondary-foreground"
                 lineBreakStrategyIOS="standard"
             >
-                <Trans>Your certificates come in with your first statement.</Trans>
+                <Trans>Enter your available cash. Certificates are added with your first statement.</Trans>
             </Text>
         </TransactionAmountDisplay>
     );
@@ -75,7 +76,7 @@ export const CreateInzhurAccount = () => {
                 <ScreenChromeFrame>
                     <FixedChromeHeader title={t`Add Inzhur`} leading={<HeaderBackButton />} inFlow />
                     <View className="flex-1 px-5xl pb-safe">
-                        <QuickFormLayout hero={hero} footer={keypad} />
+                        <QuickFormLayout hero={hero} footer={keypad} heroAlignment={QuickFormHeroAlignmentEnum.START} />
                     </View>
                 </ScreenChromeFrame>
             </ScreenChromeThemeProvider>

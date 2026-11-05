@@ -27,7 +27,7 @@ export const InzhurFundReturnsCard = ({ account }: Props) => {
     const reinvested = convertFromMicroUnits(dividendTotals?.reinvested ?? 0);
     const bank = convertFromMicroUnits(dividendTotals?.bank ?? 0);
     const sinceDate = isDefined(firstEntryAt) ? formatMonthAndDayAndOptionalYear(firstEntryAt) : null;
-    const reinvestedCaption = isDefined(sinceDate) ? t`Estimated from statements since ${sinceDate}` : t`Estimated from statements`;
+    const reinvestedCaption = isDefined(sinceDate) ? t`Reinvested since ${sinceDate}` : t`Reinvested`;
 
     return (
         <View
@@ -35,7 +35,12 @@ export const InzhurFundReturnsCard = ({ account }: Props) => {
             style={CONTINUOUS_CORNERS}
             testID={InzhurSelector.FundReturns}
         >
-            <InzhurMoneyRow label={t`Reinvested dividends`} caption={reinvestedCaption} amount={reinvested} instrumentSymbol={symbol} />
+            <InzhurMoneyRow
+                label={t`Estimated dividends to date`}
+                caption={reinvestedCaption}
+                amount={reinvested}
+                instrumentSymbol={symbol}
+            />
             {isPositiveNumber(bank) ? (
                 <InzhurMoneyRow
                     label={t`Bank dividends`}

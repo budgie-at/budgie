@@ -21,7 +21,7 @@ export const InzhurImportSummaryFunding = ({ summary, symbol }: Props) => {
 
     const boughtFunds = funds.filter(fund => fund.deltaQuantity > 0 && fund.exchangedAmount > fund.dividendAmount);
     const boughtFundName = getInzhurShortTitle(boughtFunds.at(0)?.name ?? '');
-    const spentTitle = boughtFunds.length === 1 ? t`How the ${boughtFundName} buy was funded` : t`How these buys were funded`;
+    const spentTitle = boughtFunds.length === 1 ? t`Funding for ${boughtFundName}` : t`Funding for these buys`;
     const isSpent = cashMoved < 0;
     const title = isSpent ? spentTitle : t`Added to Inzhur cash`;
     const cashLabel = isSpent ? t`From Inzhur cash` : t`To Inzhur cash`;
