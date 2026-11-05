@@ -16,7 +16,7 @@ interface Props {
 
 export const TransactionKeypadConfirmButton = ({ label, isDisabled, onPress, testID }: Props) => {
     const backgroundClassName = isDisabled ? 'bg-cta-disabled-background' : 'bg-cta-background active:opacity-80';
-    const contentClassName = isDisabled ? 'text-cta-disabled-foreground' : 'text-cta-foreground';
+    const contentClassName = isDisabled ? 'text-cta-disabled-foreground opacity-40' : 'text-cta-foreground';
     const accessibilityState = { disabled: isDisabled };
     const { fontScale } = useWindowDimensions();
     const iconSize = 20 * Math.min(fontScale, TRANSACTION_KEYPAD_MAX_FONT_SCALE);
