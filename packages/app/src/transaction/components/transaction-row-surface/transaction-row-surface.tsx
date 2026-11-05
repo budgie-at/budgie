@@ -1,6 +1,7 @@
 import { cva } from 'class-variance-authority';
 import { StyleSheet, View } from 'react-native';
 
+import { cn } from '../../../@generic/utils/cn.util';
 import { TransactionListRowPositionEnum } from '../../enum/transaction-list-row-position.enum';
 
 import type { ReactNode } from 'react';
@@ -8,6 +9,8 @@ import type { ReactNode } from 'react';
 interface Props {
     readonly position?: TransactionListRowPositionEnum;
     readonly children: ReactNode;
+    readonly separatorInset?: number;
+    readonly className?: string;
 }
 
 const rowVariants = cva('bg-grouped-surface-row overflow-hidden', {
@@ -22,13 +25,22 @@ const rowVariants = cva('bg-grouped-surface-row overflow-hidden', {
 });
 const SEPARATED_POSITIONS = new Set([TransactionListRowPositionEnum.MIDDLE, TransactionListRowPositionEnum.LAST]);
 const continuousCorners = { borderCurve: 'continuous' as const };
-const separatorStyle = { height: StyleSheet.hairlineWidth };
+const DEFAULT_SEPARATOR_INSET = 64;
 
-export const TransactionRowSurface = ({ position = TransactionListRowPositionEnum.SINGLE, children }: Props) => (
-    <View className={rowVariants({ position })} style={continuousCorners}>
-        {children}
-        {SEPARATED_POSITIONS.has(position) ? (
-            <View className="absolute top-0 right-0 left-[64px] bg-surface-separator" style={separatorStyle} pointerEvents="none" />
-        ) : null}
-    </View>
-);
+export const TransactionRowSurface = ({
+    position = TransactionListRowPositionEnum.SINGLE,
+    children,
+    separatorInset = DEFAULT_SEPARATOR_INSET,
+    className
+}: Props) => {
+    const separatorStyle = { height: StyleSheet.hairlineWidth, left: separatorInset };
+
+    return (
+        <View className={cn(rowVariants({ position }), className)} style={continuousCorners}>
+            {children}
+            {SEPARATED_POSITIONS.has(position) ? (
+                <View className="absolute top-0 right-0 bg-surface-separator" style={separatorStyle} pointerEvents="none" />
+            ) : null}
+        </View>
+    );
+};

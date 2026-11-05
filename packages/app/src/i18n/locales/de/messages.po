@@ -1988,7 +1988,7 @@ msgstr "Kann später nicht geändert werden"
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 #: src/tag/hooks/use-delete-tag.hook.ts
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
@@ -2543,7 +2543,6 @@ msgstr "Konvertierung fehlgeschlagen"
 
 #: src/money-data/component/money-data-upgrade-status-card/money-data-upgrade-status-card.tsx
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 msgid "Convert"
 msgstr "Umwandeln"
@@ -2556,7 +2555,6 @@ msgstr "Frühere Beträge umrechnen"
 msgid "Convert past amounts?"
 msgstr "Frühere Beträge umrechnen?"
 
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 #: src/transaction/components/transaction-list-convert-to-refund-menu-item/transaction-list-convert-to-refund-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Convert to Refund"
@@ -2740,10 +2738,6 @@ msgstr "Budget konnte nicht geladen werden"
 #: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
 msgid "Could not load contacts"
 msgstr "Kontakte konnten nicht geladen werden"
-
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
-msgid "Could not load sources. Please try again."
-msgstr "Quellen konnten nicht geladen werden. Bitte erneut versuchen."
 
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Could not mark account as external"
@@ -2950,6 +2944,7 @@ msgid "Couldn't finish. Try again."
 msgstr "Nicht abgeschlossen. Versuche es erneut."
 
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
+#: src/transaction/components/transaction-picker-failure/transaction-picker-failure.tsx
 msgid "Couldn’t load this list"
 msgstr "Liste konnte nicht geladen werden"
 
@@ -3432,7 +3427,6 @@ msgstr "Enthält nicht"
 #: src/categorize-inbox/components/categorize-inbox-done-button/categorize-inbox-done-button.tsx
 #: src/onboarding/component/onboarding-keyboard-controls/onboarding-keyboard-controls.tsx
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/convert-transfer-form/convert-transfer-form.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
@@ -4765,6 +4759,10 @@ msgstr "Eingeschränkter Zugriff · In Einstellungen verwalten"
 msgid "Limits are tuned automatically after 3 steady periods"
 msgstr "Limits werden nach 3 gleichmäßigen Zeiträumen automatisch angepasst"
 
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
+msgid "Link refund"
+msgstr "Erstattung verknüpfen"
+
 #: src/account/component/account-switch-field/account-switch-field.tsx
 msgid "List it on the Home screen"
 msgstr "Auf der Startseite anzeigen"
@@ -5861,10 +5859,16 @@ msgstr "Oder mit Touch ID entsperren."
 msgid "Organize"
 msgstr "Organisieren"
 
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
+msgid "Original expense"
+msgstr "Ursprüngliche Ausgabe"
+
 #: src/transaction/components/refund-transaction-info-content/refund-transaction-info-content.tsx
 msgid "Original purchase"
 msgstr "Ursprünglicher Kauf"
 
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/consolidation-source-row/consolidation-source-row.tsx
 msgid "Original transaction"
 msgstr "Ursprüngliche Transaktion"
@@ -6437,7 +6441,7 @@ msgstr "Empfang · {toCode}"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Receiving {toCode}"
-msgstr "Betrag in {toCode}"
+msgstr "Empfang {toCode}"
 
 #: src/account/component/start-deposit-form/start-deposit-form.tsx
 msgid "Receiving amount"
@@ -6487,6 +6491,10 @@ msgstr "Wiederkehrende Zahlungen werden anhand der Transaktionen automatisch erk
 msgid "Refine"
 msgstr "Verfeinern"
 
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
+msgid "Refund"
+msgstr "Rückerstattung"
+
 #: src/transaction/components/refund-transaction-info-content/refund-transaction-info-content.tsx
 msgid "Refund from {merchant}"
 msgstr "Rückerstattung von {merchant}"
@@ -6502,6 +6510,10 @@ msgstr "Erstattet {formattedRefundedAmount}"
 #: src/transaction/components/statistics-drill-down-caption/statistics-drill-down-caption.tsx
 msgid "Refunded in full · {refundLabel}"
 msgstr "Vollständig erstattet · {refundLabel}"
+
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+msgid "Refunds"
+msgstr "Erstattungen"
 
 #: src/transaction/components/transaction-info-refund-summary/transaction-info-refund-summary.tsx
 msgid "Refunds received"
@@ -7019,10 +7031,6 @@ msgstr "Heruntergeladene PDF-Datei auswählen"
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Select the exported XLSX file"
 msgstr "Exportierte XLSX-Datei auswählen"
-
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
-msgid "Select the original expense for this refund."
-msgstr "Wähle die ursprüngliche Ausgabe für diese Erstattung."
 
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Selected"
@@ -8169,8 +8177,7 @@ msgstr "Versuchen Sie, Ihre Filter anzupassen, um mehr Ergebnisse zu sehen"
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
+#: src/transaction/components/transaction-picker-failure/transaction-picker-failure.tsx
 msgid "Try again"
 msgstr "Erneut versuchen"
 
@@ -8773,6 +8780,7 @@ msgid "Your data could not be loaded. Close this screen and try again."
 msgstr "Deine Daten konnten nicht geladen werden. Schließe diese Ansicht und versuche es erneut."
 
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
+#: src/transaction/components/transaction-picker-failure/transaction-picker-failure.tsx
 msgid "Your data is safe. Reading it failed this time."
 msgstr "Deine Daten sind sicher. Nur das Lesen ist diesmal fehlgeschlagen."
 
