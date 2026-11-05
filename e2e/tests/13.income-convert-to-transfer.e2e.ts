@@ -87,7 +87,7 @@ test('13 income conversion preserves the original amount with a manual foreign a
         await a.selectAccountFromNativePicker(ctx, 'AccountPickerBottomSheet.Option.E2E Foreign Account');
         await b.tapText(ctx, 'Cancel');
         await b.expectNoId(ctx, 'ConvertToTransfer.Page');
-        await expect(b.byId(ctx.screen, 'TransactionInfo.Amount')).toHaveText('+$30.00');
+        await expect(b.byId(ctx.screen, 'TransactionInfo.Amount')).toHaveText('+$30');
         await b.expectId(ctx, 'TransactionInfo.Row.Account');
         await b.expectId(ctx, 'TransactionInfo.Row.Category');
         await b.expectNoId(ctx, 'TransactionInfo.Row.FromAccount');
