@@ -21,12 +21,10 @@ interface Props {
     readonly onPress: () => void;
 }
 
-const ROW_STYLE = { minHeight: 60 };
-
 export const TransferAccountPicker = ({ label, placeholder, account, animatedStyle, testID, selectedTestID, onPress }: Props) => {
     const hasAccount = isDefined(account);
     const accessibilityPlaceholder = isString(placeholder) ? placeholder : t`Choose`;
-    const pressableProps = { accessibilityLabel: `${label}: ${account?.title ?? accessibilityPlaceholder}`, style: ROW_STYLE };
+    const pressableProps = { accessibilityLabel: `${label}: ${account?.title ?? accessibilityPlaceholder}` };
     const icon = hasAccount ? account.icon : UserIconNameEnum.Wallet;
     const isInactiveAccount = hasAccount && !account.isActive;
 

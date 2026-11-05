@@ -1,6 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
-import { use } from 'react';
+import { useState } from 'react';
 import { Text, useWindowDimensions, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
@@ -8,7 +8,6 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { TRANSACTION_LARGE_TEXT_SCALE } from '../../constant/transaction-large-text-scale.constant';
-import { TransactionFormRowStackedContext } from '../../context/transaction-form-row-stacked.context';
 import { TransactionFormRowValue } from '../transaction-form-row-value/transaction-form-row-value';
 
 import type { ComponentProps, ReactElement, ReactNode } from 'react';
@@ -38,9 +37,9 @@ const labelVariants = cva('shrink-0', {
 export const TransactionFormRow = (props: Props) => {
     const { left, label, value, placeholder, valueTestID, onPress, testID, pressableProps } = props;
     const { fontScale } = useWindowDimensions();
-    const isStackedByLayout = use(TransactionFormRowStackedContext);
+    const [overflowingValue, setOverflowingValue] = useState<string | null>(null);
     const isLargeText = fontScale >= TRANSACTION_LARGE_TEXT_SCALE;
-    const isStacked = isLargeText || isStackedByLayout;
+    const isStacked = isLargeText || (isNotEmptyString(value) && overflowingValue === value);
     const isAction = !isNotEmptyString(value) && !isDefined(placeholder);
     const labelMaxFontScale = isLargeText && !isAction ? STACKED_LABEL_MAX_FONT_SCALE : LABEL_MAX_FONT_SCALE;
     const stackedLeading = isLargeText ? null : <View className="self-start pt-[2px]">{left}</View>;
@@ -65,6 +64,7 @@ export const TransactionFormRow = (props: Props) => {
                         isStacked={isStacked}
                         isLargeText={isLargeText}
                         testID={valueTestID}
+                        onOverflow={setOverflowingValue}
                     />
                 </View>
             }
