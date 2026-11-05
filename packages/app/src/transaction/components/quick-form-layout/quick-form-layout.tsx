@@ -87,7 +87,7 @@ export const QuickFormLayout = ({ amount, context, suggestions, children, keypad
                             <View className="gap-y-[8px] pt-[12px] pb-[8px]">
                                 {suggestions}
                                 {pinnedKeypad}
-                                {actions}
+                                <View className="pt-[8px]">{actions}</View>
                             </View>
                         </ScreenChromeFooter>
                     </RevealGate>

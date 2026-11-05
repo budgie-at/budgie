@@ -16,7 +16,7 @@ const ICON_SIZE = 14;
 
 export const SuggestionPillContent = ({ icon, title, badge }: Props) => (
     <>
-        <View className="h-[24px] w-[24px] items-center justify-center rounded-full bg-surface-fill">
+        <View className="h-[24px] w-[24px] items-center justify-center rounded-full bg-surface-disc">
             <Icon icon={icon} size={ICON_SIZE} className="text-primary" />
         </View>
         <Text className="shrink text-[13px] font-medium text-primary" maxFontSizeMultiplier={SUGGESTION_MAX_FONT_SCALE} numberOfLines={1}>
