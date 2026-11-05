@@ -85,7 +85,11 @@ describe('inzhur/statement-import', () => {
                 .from(TransactionEntityTable)
                 .where(eq(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT));
 
-            expect(adjustments.map(adjustment => adjustment.title).sort()).toEqual(['', 'Opening holdings', 'Opening holdings']);
+            expect(adjustments.map(adjustment => adjustment.title).sort()).toEqual([
+                'Balance before tracking',
+                'Opening holdings',
+                'Opening holdings'
+            ]);
         }).pipe(Effect.provide(makeInzhurLayer({ [FIRST_URI]: buildInzhurBaselineItems(1950, 2) })))
     );
 

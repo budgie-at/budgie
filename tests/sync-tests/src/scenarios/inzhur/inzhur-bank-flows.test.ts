@@ -29,7 +29,6 @@ import { setUpInzhurWithBaseline } from '../../harness/inzhur/set-up-inzhur-with
 const UAH_INSTRUMENT_ID = 1;
 const MILLISECONDS_PER_DAY = 86_400_000;
 const OPERATED_AT = new Date(Date.now() + MILLISECONDS_PER_DAY);
-const BEFORE_SETUP_AT = new Date(Date.now() - MILLISECONDS_PER_DAY);
 const TOP_UP_DESCRIPTION = 'ТОВ "Інжур Кепітал"';
 const MONEY_TRANSFER_MCC = '4829';
 const DIVIDEND_DESCRIPTION = 'ТОВ ІНЖУР КЕПІТАЛ виплата доходу';
@@ -244,18 +243,6 @@ describe('inzhur/bank-flows', () => {
                 { externalId: 'real-shaped', type: TransactionTypeEnum.TRANSFER, toAccountId: cashAccount.id }
             ]);
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(1000 * PRECISION);
-        }).pipe(Effect.provide(layer))
-    );
-
-    it.effect('leaves a top-up made before Inzhur was set up untouched', () =>
-        Effect.gen(function* () {
-            const { bankAccount, cashAccount } = yield* setUpBankFlow(0);
-
-            yield* importInzhurBankTransaction(bankAccount.id, 'before-setup', TOP_UP_DESCRIPTION, -1000, BEFORE_SETUP_AT);
-            yield* consolidate;
-
-            expect(yield* fetchBankTransactions()).toMatchObject([{ externalId: 'before-setup', type: TransactionTypeEnum.EXPENSE }]);
-            expect(yield* fetchAccountBalance(cashAccount.id)).toBe(0);
         }).pipe(Effect.provide(layer))
     );
 

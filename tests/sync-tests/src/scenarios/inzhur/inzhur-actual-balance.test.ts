@@ -96,7 +96,7 @@ describe('inzhur/actual-balance', () => {
 
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(900 * PRECISION);
             expect(adjustments).toEqual([
-                { title: '', amount: 1000 * PRECISION },
+                { title: 'Balance before tracking', amount: 1000 * PRECISION },
                 { title: BALANCE_CORRECTION_TITLE, amount: 100 * PRECISION }
             ]);
             expect(yield* fetchInzhurLedger()).toEqual([]);

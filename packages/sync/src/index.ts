@@ -115,6 +115,8 @@ export { InzhurStatementInvalidError } from './inzhur/error/inzhur-statement-inv
 export type { InzhurFundChangeInterface } from './inzhur/interface/inzhur-fund-change.interface';
 export type { InzhurImportSummaryInterface } from './inzhur/interface/inzhur-import-summary.interface';
 export type { InzhurSetupInterface } from './inzhur/interface/inzhur-setup.interface';
+export type { InzhurSetupResultInterface } from './inzhur/interface/inzhur-setup-result.interface';
+export type { InzhurLinkedPaymentsInterface } from './inzhur/interface/inzhur-linked-payments.interface';
 export type { InzhurStatementReminderInterface } from './inzhur/interface/inzhur-statement-reminder.interface';
 export { INZHUR_CASH_EXTERNAL_ID } from './inzhur/constant/inzhur-cash-external-id.constant';
 export { INZHUR_CANONICAL_FUNDS } from './inzhur/constant/inzhur-canonical-funds.constant';

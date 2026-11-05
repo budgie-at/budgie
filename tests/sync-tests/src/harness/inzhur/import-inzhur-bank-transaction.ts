@@ -39,7 +39,8 @@ export const importInzhurBankTransaction = Effect.fnUntraced(function* (
             accountId: 'inzhur-test-card',
             type: amount < 0 ? SyncTransactionTypeEnum.EXPENSE : SyncTransactionTypeEnum.INCOME,
             feeAmount: 0,
-            ...(isDefined(options.counterIban) && { counterIban: options.counterIban })
+            ...(isDefined(options.counterIban) && { counterIban: options.counterIban }),
+            ...(isDefined(options.comment) && { comment: options.comment })
         },
         accountId,
         isDefined(options.mccCategoryId) ? { id: options.mccCategoryId, defaultCategoryId: null } : null,

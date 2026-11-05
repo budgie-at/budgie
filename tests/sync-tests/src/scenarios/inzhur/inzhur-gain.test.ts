@@ -10,6 +10,7 @@ import { buildInzhurStatementItems } from '../../harness/inzhur/build-inzhur-sta
 import { importInzhurBankTransaction } from '../../harness/inzhur/import-inzhur-bank-transaction';
 import { importInzhurStatement } from '../../harness/inzhur/import-inzhur-statement';
 import { INZHUR_ENERGY_LAYOUT, INZHUR_REIT_LAYOUT } from '../../harness/inzhur/inzhur-fund-layouts';
+import { inzhurLedgerWorkloadLayer } from '../../harness/inzhur/inzhur-ledger-workload.layer';
 import { ENERGY_PRICE, FIRST_URI, REIT_PRICE, SECOND_DATE, SECOND_URI } from '../../harness/inzhur/inzhur-statement-fixtures.constant';
 import { makeInzhurLayer } from '../../harness/inzhur/make-inzhur-layer';
 import { seedInzhurPrice } from '../../harness/inzhur/seed-inzhur-price';
@@ -23,7 +24,7 @@ const UAH_INSTRUMENT_ID = 1;
 
 const makeGainLayer = (reitQuantity: number, energyQuantity: number) =>
     Layer.provideMerge(
-        InzhurGainService.layer,
+        InzhurGainService.layer.pipe(Layer.provide(inzhurLedgerWorkloadLayer)),
         makeInzhurLayer({
             [FIRST_URI]: buildInzhurBaselineItems(1000, 2),
             [SECOND_URI]: buildInzhurStatementItems(SECOND_DATE, buildInzhurHoldings(reitQuantity, energyQuantity))

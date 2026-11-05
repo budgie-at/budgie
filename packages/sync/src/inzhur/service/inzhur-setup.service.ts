@@ -1,6 +1,5 @@
 import {
     AccountBalanceRepository,
-    AccountRepository,
     AccountTypeEnum,
     BankIntegrationRepository,
     CurrencyEnum,
@@ -29,56 +28,37 @@ import { INZHUR_CASH_EXTERNAL_ID } from '../constant/inzhur-cash-external-id.con
 import { InzhurNotSetUpError } from '../error/inzhur-not-set-up.error';
 import { buildInzhurTransactionInput } from '../utils/build-inzhur-transaction-input.util';
 
+import { InzhurBankFlowService } from './inzhur-bank-flow.service';
+import { InzhurBeforeTrackingService } from './inzhur-before-tracking.service';
+import { InzhurSetupLookupService } from './inzhur-setup-lookup.service';
+
+import type { InzhurSetupResultInterface } from '../interface/inzhur-setup-result.interface';
 import type { InzhurSetupInterface } from '../interface/inzhur-setup.interface';
 import type { InzhurStatementReminderInterface } from '../interface/inzhur-statement-reminder.interface';
 
 export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@budgie/sync/InzhurSetupService', {
     make: Effect.gen(function* () {
-        const accountRepository = yield* AccountRepository;
         const accountBalanceRepository = yield* AccountBalanceRepository;
         const accountService = yield* AccountService;
         const bankIntegrationRepository = yield* BankIntegrationRepository;
         const instrumentRepository = yield* InstrumentRepository;
         const investmentReturnRepository = yield* InvestmentReturnRepository;
         const syncRepository = yield* SyncRepository;
+        const inzhurBankFlowService = yield* InzhurBankFlowService;
+        const inzhurBeforeTrackingService = yield* InzhurBeforeTrackingService;
+        const inzhurSetupLookupService = yield* InzhurSetupLookupService;
         const transactionService = yield* TransactionService;
         const provider = ExternalSourceEnum.INZHUR;
         const staleStatementDays = 30;
         const estimatedDividendTitle = 'Inzhur dividends (estimated)';
         const balanceCorrectionTitle = 'Inzhur balance correction';
 
-        const findSetup = Effect.fn('InzhurSetupService.findSetup')(function* () {
-            const integration = yield* bankIntegrationRepository.findFileImportIntegration(provider);
-
-            if (!isDefined(integration)) {
-                return null;
-            }
-
-            const accounts = (yield* accountRepository.findByExternalSource(provider)).filter(
-                account => account.integrationId === integration.id
-            );
-            const cashAccount = accounts.find(account => account.externalId === INZHUR_CASH_EXTERNAL_ID);
-            const cashSync = isDefined(cashAccount) ? yield* syncRepository.getByAccountId(cashAccount.id) : null;
-
-            if (!isDefined(cashAccount) || !isDefined(cashSync)) {
-                return null;
-            }
-
-            return {
-                integration,
-                cashAccount,
-                cashSync,
-                fundAccounts: accounts.filter(account => account.id !== cashAccount.id),
-                lastStatementDate: cashSync.forwardSyncedAt?.toISOString().slice(0, 10) ?? null
-            } satisfies InzhurSetupInterface;
-        });
-
         const setup = Effect.fn('InzhurSetupService.setup')(
-            function* (openingCashBalance: number) {
-                const existingSetup = yield* findSetup();
+            function* (enteredCashBalance: number) {
+                const existingSetup = yield* inzhurSetupLookupService.findSetup();
 
                 if (isDefined(existingSetup)) {
-                    return existingSetup;
+                    return { ...existingSetup, linked: { topUps: 0, withdrawals: 0, dividends: 0 } } satisfies InzhurSetupResultInterface;
                 }
 
                 const hryvnia = yield* instrumentRepository.findByCode(CurrencyEnum.UAH);
@@ -97,7 +77,7 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
                             type: AccountTypeEnum.BANK_SYNC,
                             icon: UserIconNameEnum.Banknote,
                             instrumentId: hryvnia.id,
-                            currentBalance: openingCashBalance,
+                            currentBalance: 0,
                             externalId: INZHUR_CASH_EXTERNAL_ID,
                             externalSource: provider,
                             integrationId: integration.id
@@ -116,14 +96,26 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
                     mode: SyncModeEnum.FORWARD
                 });
 
-                return { integration, cashAccount, cashSync, fundAccounts: [], lastStatementDate: null } satisfies InzhurSetupInterface;
+                const created = {
+                    integration,
+                    cashAccount,
+                    cashSync,
+                    fundAccounts: [],
+                    lastStatementDate: null
+                } satisfies InzhurSetupInterface;
+                const { topUps, withdrawals, dividends } = yield* inzhurBankFlowService.convert(created, null);
+                const cashMicroUnits = (yield* accountBalanceRepository.getByAccountId(cashAccount.id)).at(0)?.balance ?? 0;
+
+                yield* inzhurBeforeTrackingService.replace(cashAccount.id, convertToMicroUnits(enteredCashBalance) - cashMicroUnits);
+
+                return { ...created, linked: { topUps, withdrawals, dividends } } satisfies InzhurSetupResultInterface;
             },
             effect => Db.transaction(effect)
         );
 
         const setActualBalance = Effect.fn('InzhurSetupService.setActualBalance')(
             function* (actualBalance: number) {
-                const setup = yield* findSetup();
+                const setup = yield* inzhurSetupLookupService.findSetup();
 
                 if (!isDefined(setup)) {
                     return yield* new InzhurNotSetUpError();
@@ -163,7 +155,7 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
 
         const updateCashAccount = Effect.fn('InzhurSetupService.updateCashAccount')(
             function* (update: Parameters<typeof accountService.updateById>[1], actualBalance: number) {
-                const existingSetup = yield* findSetup();
+                const existingSetup = yield* inzhurSetupLookupService.findSetup();
 
                 if (!isDefined(existingSetup)) {
                     return yield* new InzhurNotSetUpError();
@@ -179,7 +171,7 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
         );
 
         const findStatementReminder = Effect.fn('InzhurSetupService.findStatementReminder')(function* (now: Date) {
-            const setup = yield* findSetup();
+            const setup = yield* inzhurSetupLookupService.findSetup();
             const { lastStatementDate, cashSync, cashAccount } = setup ?? {};
 
             if (!isDefined(lastStatementDate) || !isDefined(cashSync?.forwardSyncedAt) || !isDefined(cashAccount)) {
@@ -197,15 +189,17 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
             return activityCount > 0 ? ({ daysOld, lastStatementDate } satisfies InzhurStatementReminderInterface) : null;
         });
 
-        return { findSetup, setup, setActualBalance, updateCashAccount, findStatementReminder };
+        return { findSetup: () => inzhurSetupLookupService.findSetup(), setup, setActualBalance, updateCashAccount, findStatementReminder };
     })
 }) {
     static readonly layer = Layer.effect(InzhurSetupService, InzhurSetupService.make).pipe(
         Layer.provide([
             AccountBalanceRepository.layer,
-            AccountRepository.layer,
             AccountService.layer,
             BankIntegrationRepository.layer,
+            InzhurBankFlowService.layer,
+            InzhurBeforeTrackingService.layer,
+            InzhurSetupLookupService.layer,
             InstrumentRepository.layer,
             InvestmentReturnRepository.layer,
             SyncRepository.layer,
