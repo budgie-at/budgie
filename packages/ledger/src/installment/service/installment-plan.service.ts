@@ -8,6 +8,8 @@ import {
     DebtEventRepository,
     DebtEventSourceEnum,
     ExternalSourceEnum,
+    INSTALLMENT_AMOUNT_TOLERANCE,
+    INSTALLMENT_DUE_DATE_TOLERANCE_DAYS,
     InstallmentPlanRepository,
     TransactionConsolidationTypeEnum,
     TransactionEntryKindEnum,
@@ -41,8 +43,6 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
         const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
         const entryBaseValuationService = yield* EntryBaseValuationService;
 
-        const dueDateToleranceDays = 3;
-        const amountTolerance = 10_000;
         const normalizeTitle = (title: string) => title.trim().replaceAll(/\s+/gu, ' ').toLowerCase();
         const monobankLegacyPaymentPrefix = 'Платіж ';
         const monobankMonthlyPartPrefix = 'Щомісячний платіж ';
@@ -63,11 +63,27 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                       getMonobankPaymentMerchant(title) === getMonobankPaymentMerchant(referenceTitle))
                 : normalizeTitle(title) === normalizeTitle(referenceTitle);
 
+        const isFlexiblePlanSource = (externalSource: ExternalSourceEnum | null) => externalSource !== ExternalSourceEnum.MONOBANK;
+        const isSamePlanExpense = (
+            candidate: Pick<TransactionEntityInterface, 'externalSource' | 'title'>,
+            reference: Pick<TransactionEntityInterface, 'externalSource' | 'title'>
+        ) => candidate.externalSource === reference.externalSource && normalizeTitle(candidate.title) === normalizeTitle(reference.title);
+        const isAcceptableFlexibleAmount = (amount: number, regularAmount: number, remainingAmount: number) => {
+            const multiple = Math.round(amount / regularAmount);
+
+            return (
+                Math.abs(amount - remainingAmount) <= INSTALLMENT_AMOUNT_TOLERANCE ||
+                (isPositiveNumber(multiple) &&
+                    Math.abs(amount - multiple * regularAmount) <= INSTALLMENT_AMOUNT_TOLERANCE &&
+                    amount <= remainingAmount + INSTALLMENT_AMOUNT_TOLERANCE)
+            );
+        };
+
         const findDueCandidates = (accountId: number, dueAt: Date) =>
             installmentPlanRepository.findCandidates(
                 accountId,
-                startOfDay(subDays(dueAt, dueDateToleranceDays)),
-                endOfDay(addDays(dueAt, dueDateToleranceDays))
+                startOfDay(subDays(dueAt, INSTALLMENT_DUE_DATE_TOLERANCE_DAYS)),
+                endOfDay(addDays(dueAt, INSTALLMENT_DUE_DATE_TOLERANCE_DAYS))
             );
 
         const hasUnconvertedMonthlyOwner = Effect.fnUntraced(function* (
@@ -88,14 +104,14 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                     !planTransactionIds.includes(purchase.transactionId) &&
                     purchase.externalSource === ExternalSourceEnum.MONOBANK &&
                     purchase.title.startsWith(monobankLegacyPaymentPrefix) &&
-                    Math.abs(purchase.amount - candidate.amount) <= amountTolerance &&
+                    Math.abs(purchase.amount - candidate.amount) <= INSTALLMENT_AMOUNT_TOLERANCE &&
                     [monthOffset - 1, monthOffset, monthOffset + 1].some(offset => {
                         const dueAt = getInstallmentDueDate(purchase.operatedAt, offset);
 
                         return (
                             isPositiveNumber(offset) &&
-                            candidate.operatedAt >= startOfDay(subDays(dueAt, dueDateToleranceDays)) &&
-                            candidate.operatedAt <= endOfDay(addDays(dueAt, dueDateToleranceDays))
+                            candidate.operatedAt >= startOfDay(subDays(dueAt, INSTALLMENT_DUE_DATE_TOLERANCE_DAYS)) &&
+                            candidate.operatedAt <= endOfDay(addDays(dueAt, INSTALLMENT_DUE_DATE_TOLERANCE_DAYS))
                         );
                     })
                 );
@@ -117,7 +133,7 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                 candidates.filter(
                     candidate =>
                         candidate.externalSource === firstPart.externalSource &&
-                        (Math.abs(candidate.amount - nextAmount) <= amountTolerance || candidate.amount === remainingAmount) &&
+                        (Math.abs(candidate.amount - nextAmount) <= INSTALLMENT_AMOUNT_TOLERANCE || candidate.amount === remainingAmount) &&
                         matchesNextPartTitle(firstPart.externalSource, candidate.title, firstPart.title)
                 ),
                 candidate =>
@@ -145,6 +161,40 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
             return { transaction, primaryEntry };
         });
 
+        const findFlexibleEarlierParts = Effect.fnUntraced(function* (
+            transaction: Pick<TransactionEntityInterface, 'id' | 'operatedAt' | 'externalSource' | 'title'>,
+            primaryEntry: Pick<TransactionEntryEntityInterface, 'accountId' | 'amount'>,
+            installmentCount: number,
+            totalAmount: number
+        ) {
+            const regularAmount = Math.round(totalAmount / installmentCount);
+            const candidates = yield* installmentPlanRepository.findCandidates(
+                primaryEntry.accountId,
+                startOfDay(
+                    subDays(getInstallmentDueDate(transaction.operatedAt, -(installmentCount - 1)), INSTALLMENT_DUE_DATE_TOLERANCE_DAYS)
+                ),
+                transaction.operatedAt
+            );
+            const newestFirst = candidates
+                .filter(candidate => candidate.transactionId !== transaction.id && isSamePlanExpense(candidate, transaction))
+                .sort((left, right) => right.operatedAt.getTime() - left.operatedAt.getTime() || right.transactionId - left.transactionId);
+            const earlierParts: Array<(typeof newestFirst)[number]> = [];
+            let remainingAmount = totalAmount - primaryEntry.amount;
+
+            for (const candidate of newestFirst) {
+                if (remainingAmount <= INSTALLMENT_AMOUNT_TOLERANCE) {
+                    break;
+                }
+
+                if (isAcceptableFlexibleAmount(candidate.amount, regularAmount, remainingAmount)) {
+                    earlierParts.unshift(candidate);
+                    remainingAmount -= candidate.amount;
+                }
+            }
+
+            return earlierParts.map(part => ({ id: part.transactionId, operatedAt: part.operatedAt }));
+        });
+
         const findEarlierPart = Effect.fnUntraced(function* (
             transaction: Pick<TransactionEntityInterface, 'externalSource' | 'title'>,
             primaryEntry: Pick<TransactionEntryEntityInterface, 'accountId' | 'amount'>,
@@ -154,7 +204,7 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
             const [match, ...ambiguousMatches] = candidates.filter(
                 candidate =>
                     candidate.externalSource === transaction.externalSource &&
-                    Math.abs(candidate.amount - primaryEntry.amount) <= amountTolerance &&
+                    Math.abs(candidate.amount - primaryEntry.amount) <= INSTALLMENT_AMOUNT_TOLERANCE &&
                     matchesEarlierPartTitle(transaction.externalSource, candidate.title, transaction.title)
             );
 
@@ -164,8 +214,13 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
         const findEarlierParts = Effect.fnUntraced(function* (
             transaction: Pick<TransactionEntityInterface, 'id' | 'operatedAt' | 'externalSource' | 'title'>,
             primaryEntry: Pick<TransactionEntryEntityInterface, 'accountId' | 'amount'>,
-            installmentCount: number
+            installmentCount: number,
+            totalAmount: number
         ) {
+            if (isFlexiblePlanSource(transaction.externalSource)) {
+                return yield* findFlexibleEarlierParts(transaction, primaryEntry, installmentCount, totalAmount);
+            }
+
             const earlierParts: Array<Effect.Success<ReturnType<typeof installmentPlanRepository.findCandidates>>[number]> = [];
 
             while (earlierParts.length < installmentCount - 1) {
@@ -193,6 +248,54 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
             return earlierParts.map(part => ({ id: part.transactionId, operatedAt: part.operatedAt }));
         });
 
+        const findFlexibleNextPartMatches = Effect.fnUntraced(function* (debtAccountId: number) {
+            const schedule = yield* installmentPlanRepository.getSchedule(debtAccountId);
+            const [firstPart] = yield* installmentPlanRepository.findParts(debtAccountId);
+
+            if (
+                !isDefined(schedule) ||
+                !isDefined(schedule.nextDueAt) ||
+                !isDefined(firstPart) ||
+                !isPositiveNumber(schedule.remainingAmount) ||
+                !isFlexiblePlanSource(firstPart.externalSource)
+            ) {
+                return [];
+            }
+
+            const regularAmount = Math.round(schedule.totalAmount / schedule.installmentCount);
+            const candidates = yield* installmentPlanRepository.findCandidates(
+                firstPart.accountId,
+                firstPart.operatedAt,
+                endOfDay(addDays(schedule.nextDueAt, INSTALLMENT_DUE_DATE_TOLERANCE_DAYS))
+            );
+
+            return candidates
+                .filter(
+                    candidate =>
+                        isSamePlanExpense(candidate, firstPart) &&
+                        isAcceptableFlexibleAmount(candidate.amount, regularAmount, schedule.remainingAmount)
+                )
+                .sort((left, right) => left.operatedAt.getTime() - right.operatedAt.getTime() || left.transactionId - right.transactionId);
+        });
+
+        const attachFlexiblePart = Effect.fnUntraced(function* (debtAccountId: number, activePlanIds: readonly number[]) {
+            const matches = yield* findFlexibleNextPartMatches(debtAccountId);
+            const otherPlanMatches = yield* Effect.forEach(
+                activePlanIds.filter(planId => planId !== debtAccountId),
+                findFlexibleNextPartMatches
+            );
+            const claimedTransactionIds = new Set(otherPlanMatches.flat().map(candidate => candidate.transactionId));
+            const match = matches.find(candidate => !claimedTransactionIds.has(candidate.transactionId));
+
+            if (!isDefined(match)) {
+                return false;
+            }
+
+            yield* transactionDebtSettlementService.attach({ debtAccountId, transactionId: match.transactionId });
+
+            return true;
+        });
+
         const findEarlyPayoffMatches = Effect.fnUntraced(function* (debtAccountId: number) {
             const schedule = yield* installmentPlanRepository.getSchedule(debtAccountId);
             const parts = yield* installmentPlanRepository.findParts(debtAccountId);
@@ -206,14 +309,16 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
             const candidates = yield* installmentPlanRepository.findCandidates(
                 latestPart.accountId,
                 latestPart.operatedAt,
-                endOfDay(addDays(getInstallmentDueDate(firstPart.operatedAt, schedule.installmentCount - 1), dueDateToleranceDays))
+                endOfDay(
+                    addDays(getInstallmentDueDate(firstPart.operatedAt, schedule.installmentCount - 1), INSTALLMENT_DUE_DATE_TOLERANCE_DAYS)
+                )
             );
 
             return candidates.filter(
                 candidate =>
                     candidate.externalSource === ExternalSourceEnum.MONOBANK &&
                     firstPart.externalSource === ExternalSourceEnum.MONOBANK &&
-                    Math.abs(candidate.amount - schedule.remainingAmount) <= amountTolerance &&
+                    Math.abs(candidate.amount - schedule.remainingAmount) <= INSTALLMENT_AMOUNT_TOLERANCE &&
                     candidate.title.startsWith(monobankEarlyPayoffPrefix) &&
                     normalizeTitle(candidate.title.slice(monobankEarlyPayoffPrefix.length)) === getMonobankPaymentMerchant(firstPart.title)
             );
@@ -256,6 +361,12 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
 
         const attachPlanDueParts = Effect.fnUntraced(function* (debtAccountId: number, activePlanIds: readonly number[]) {
             const attachNextPartOrPayoff = Effect.fnUntraced(function* () {
+                const [firstPart] = yield* installmentPlanRepository.findParts(debtAccountId);
+
+                if (isDefined(firstPart) && isFlexiblePlanSource(firstPart.externalSource)) {
+                    return yield* attachFlexiblePart(debtAccountId, activePlanIds);
+                }
+
                 const [, ...ambiguousMonthlyMatches] = yield* findNextPartMatches(debtAccountId);
 
                 if (isNotEmptyArray(ambiguousMonthlyMatches)) {
@@ -301,7 +412,7 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                         return yield* Effect.die(new Error(t`Account ${primaryEntry.accountId} not found`));
                     }
 
-                    const earlierParts = yield* findEarlierParts(transaction, primaryEntry, input.installmentCount);
+                    const earlierParts = yield* findEarlierParts(transaction, primaryEntry, input.installmentCount, input.totalAmount);
                     const planStartedAt = earlierParts.at(0)?.operatedAt ?? transaction.operatedAt;
                     const [{ count }] = yield* accountRepository.count();
                     const account = yield* accountRepository.create({
