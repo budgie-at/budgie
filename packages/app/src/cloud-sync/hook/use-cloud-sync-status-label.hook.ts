@@ -32,14 +32,18 @@ const CLOUD_SYNC_STATUS_MESSAGE: Record<Exclude<CloudSyncStatusEnum, CloudSyncSt
 export const useCloudSyncStatusLabel = () => {
     const { t } = useLingui();
     const { formatRelativeToNow } = useFormatDate();
-    const { status, lastSyncedAt } = useAtomValue(cloudSyncStatusAtom);
+    const { status, lastSyncedAt, isQuotaExceeded } = useAtomValue(cloudSyncStatusAtom);
     const now = AsyncResult.getOrElse(useAtomValue(cloudSyncStatusNowAtom), Date.now);
 
     const relative = isDefined(lastSyncedAt) ? formatRelativeToNow(new Date(lastSyncedAt), now) : '';
     const idleLabel = isDefined(lastSyncedAt) ? t`Synced ${relative}` : t`Not synced yet`;
 
+    const statusLabel = status === CloudSyncStatusEnum.IDLE ? idleLabel : t(CLOUD_SYNC_STATUS_MESSAGE[status]);
+    const isActive = status === CloudSyncStatusEnum.IDLE || status === CloudSyncStatusEnum.SYNCING;
+    const isQuotaBlocking = isQuotaExceeded && isActive;
+
     return {
-        label: status === CloudSyncStatusEnum.IDLE ? idleLabel : t(CLOUD_SYNC_STATUS_MESSAGE[status]),
-        isHealthy: status === CloudSyncStatusEnum.IDLE || status === CloudSyncStatusEnum.SYNCING
+        label: isQuotaBlocking ? t`iCloud storage full` : statusLabel,
+        isHealthy: isActive && !isQuotaExceeded
     };
 };

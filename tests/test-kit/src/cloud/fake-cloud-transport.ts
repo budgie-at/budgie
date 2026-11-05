@@ -39,6 +39,10 @@ export class FakeCloudTransport {
         this.changes.set(`${zone}|${recordName}`, { version: this.version, zone, recordName, recordType, record: null });
     }
 
+    inventory(zone: string): ReadonlySet<string> {
+        return new Set([...this.changes.values()].filter(change => change.zone === zone && change.record !== null).map(({ recordName }) => recordName));
+    }
+
     systemFieldsFor(version: number): string {
         return JSON.stringify({ modifiedAt: version });
     }

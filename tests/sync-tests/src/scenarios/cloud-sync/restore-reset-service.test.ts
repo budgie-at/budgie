@@ -35,6 +35,28 @@ const readOutboxCount = testDb.$client
     .unsafe<{ readonly total: number }>('SELECT COUNT(*) AS total FROM sync_outbox')
     .pipe(Effect.map(([row]) => row.total));
 
+const readAccountCount = testDb.$client
+    .unsafe<{ readonly total: number }>('SELECT COUNT(*) AS total FROM accounts')
+    .pipe(Effect.map(([row]) => row.total));
+
+const startRestoreWithBaselineAccount = (context: ReturnType<typeof makeSyncServiceContext>) =>
+    Effect.gen(function* () {
+        const service = yield* CloudSyncService;
+        const identity = yield* SyncIdentityRepository;
+        const account = yield* seed.account({ title: 'Cash' });
+
+        yield* testDb.$client.unsafe(
+            `INSERT INTO sync_record (sync_zone, sync_id, record_type, system_fields, updated_at) SELECT sync_zone, sync_id, 'Account', 'old-system-fields', 1 FROM accounts WHERE id = ?`,
+            [account.id]
+        );
+        context.store.holder.state = { ...context.store.holder.state, restorePhase: CloudSyncRestorePhaseEnum.PENDING };
+        context.transport.behavior.zoneMeta = metaWith(yield* identity.ensureLineageId());
+        yield* service.reconfigure();
+        yield* service.handleFetchedChanges(fetchedEvent([metaWith(yield* identity.ensureLineageId())]));
+
+        return { service, accountSyncId: account.syncId };
+    });
+
 const flatten = (batches: readonly (readonly ICloudRecordPayload[])[]) => batches.flat();
 
 describe('cloud-sync/restore-reset service', () => {
@@ -86,6 +108,46 @@ describe('cloud-sync/restore-reset service', () => {
 
                 expect(context.store.holder.state.restorePhase).toBe(CloudSyncRestorePhaseEnum.NONE);
                 expect(flatten(context.transport.calls.savedBatches).some(({ recordType }) => recordType === 'Account')).toBe(true);
+            })
+        );
+    });
+
+    it.live('deletes nothing while the zone inventory fails and reconciles at the next fetch cycle end', () => {
+        const context = makeSyncServiceContext();
+
+        return context.run(
+            Effect.gen(function* () {
+                const { service } = yield* startRestoreWithBaselineAccount(context);
+
+                context.transport.behavior.isInventoryFailing = true;
+                yield* service.handleDidFetch({ scope: ICloudSyncScope.PRIVATE });
+
+                expect(context.transport.calls.inventoryRequests).toBe(1);
+                expect(context.store.holder.state.restorePhase).toBe(CloudSyncRestorePhaseEnum.FETCHING);
+                expect(yield* readAccountCount).toBe(1);
+
+                context.transport.behavior.isInventoryFailing = false;
+                yield* service.handleDidFetch({ scope: ICloudSyncScope.PRIVATE });
+
+                expect(context.transport.calls.inventoryRequests).toBe(2);
+                expect(context.store.holder.state.restorePhase).toBe(CloudSyncRestorePhaseEnum.NONE);
+                expect(yield* readAccountCount).toBe(0);
+            })
+        );
+    });
+
+    it.effect('keeps a restored row the zone inventory lists and finishes reconciliation', () => {
+        const context = makeSyncServiceContext();
+
+        return context.run(
+            Effect.gen(function* () {
+                const { service, accountSyncId } = yield* startRestoreWithBaselineAccount(context);
+
+                context.transport.behavior.zoneInventory = [{ recordName: accountSyncId ?? '', recordType: 'Account' }];
+                yield* service.handleDidFetch({ scope: ICloudSyncScope.PRIVATE });
+
+                expect(context.store.holder.state.restorePhase).toBe(CloudSyncRestorePhaseEnum.NONE);
+                expect(yield* readAccountCount).toBe(1);
             })
         );
     });

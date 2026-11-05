@@ -121,6 +121,11 @@ export interface ICloudFetchedRecord extends ICloudRecordId {
     readonly encryptedFields: Readonly<Record<string, ICloudWireValue>>;
 }
 
+export interface ICloudZoneInventoryRecord {
+    readonly recordName: string;
+    readonly recordType: string;
+}
+
 export interface ICloudFetchedDeletion extends ICloudRecordId {
     readonly recordType: string;
 }
@@ -231,6 +236,7 @@ declare class ICloudNativeModule extends NativeModule<ICloudNativeEvents> {
     addPendingDeletes(scope: ICloudSyncScope, recordIds: readonly ICloudRecordId[]): Promise<void>;
     confirmFetchedBatch(scope: ICloudSyncScope, batchId: string): Promise<void>;
     fetchRecord(zoneName: string, recordName: string): Promise<ICloudFetchedRecord | null>;
+    fetchZoneInventory(scope: ICloudSyncScope, zoneName: string): Promise<readonly ICloudZoneInventoryRecord[]>;
     ensureZone(scope: ICloudSyncScope, zoneName: string): Promise<void>;
     deleteZone(scope: ICloudSyncScope, zoneName: string): Promise<void>;
     createHouseholdShare(zoneName: string): Promise<void>;

@@ -92,6 +92,14 @@ public final class ICloudModule: Module {
       }
     }
 
+    AsyncFunction("fetchZoneInventory") { (rawScope: String, zoneName: String) async throws -> [[String: String]] in
+      do {
+        return try await ICloudInventory.fetch(scope: try ICloudDatabase.scope(rawScope), zoneName: zoneName)
+      } catch {
+        throw ICloudDatabase.syncError(error)
+      }
+    }
+
     AsyncFunction("ensureZone") { (rawScope: String, zoneName: String) async throws in
       let scope = try ICloudDatabase.scope(rawScope)
       guard scope == .privateScope else {

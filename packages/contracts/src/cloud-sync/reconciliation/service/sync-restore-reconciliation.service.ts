@@ -31,12 +31,19 @@ export class SyncRestoreReconciliationService extends Context.Service<SyncRestor
 
                     yield* recordRepository.invalidateAll();
                 }),
-                complete: Effect.fn('SyncRestoreReconciliationService.complete')(function* (syncZone: string) {
+                complete: Effect.fn('SyncRestoreReconciliationService.complete')(function* (
+                    syncZone: string,
+                    zoneInventory: ReadonlySet<string>
+                ) {
                     const unconfirmed = yield* recordRepository.findUnconfirmed();
                     const deletions: SyncIncomingDeletionInterface[] = [];
                     const results: SyncApplyResultInterface[] = [];
 
                     for (const { syncZone: zone, syncId, recordType } of unconfirmed) {
+                        if (zoneInventory.has(syncId)) {
+                            continue;
+                        }
+
                         if (dataRecordTypes.has(recordType)) {
                             deletions.push({ recordType, recordName: syncId, zone });
                         } else {

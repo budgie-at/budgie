@@ -3,6 +3,7 @@ import { SyncAutomationService } from '@app/cloud-sync-automation/service/sync-a
 import { BankOwnershipService } from '@app/cloud-sync/service/bank-ownership.service';
 import { CloudSyncSafetyCopyService } from '@app/cloud-sync/service/cloud-sync-safety-copy.service';
 import { CloudSyncStateStore } from '@app/cloud-sync/service/cloud-sync-state-store.service';
+import { CloudSyncTransportError } from '@app/cloud-sync/error/cloud-sync-transport.error';
 import { CloudSyncTransport } from '@app/cloud-sync/service/cloud-sync-transport.service';
 import { CloudSyncService } from '@app/cloud-sync/service/cloud-sync.service';
 import { syncAccountBalanceRefresherLayer } from '@app/cloud-sync/layer/sync-account-balance-refresher.layer';
@@ -38,7 +39,8 @@ import type {
     ICloudFetchedRecord,
     ICloudRecordId,
     ICloudRecordPayload,
-    ICloudSentChangesEvent
+    ICloudSentChangesEvent,
+    ICloudZoneInventoryRecord
 } from '../../../../../packages/app/modules/icloud';
 
 export const INSTALL_ID = 'install-a';
@@ -52,11 +54,14 @@ interface FakeTransportCallsInterface {
     readonly deletedZones: string[];
     readonly ensuredZones: string[];
     readonly confirmProbe: number[];
+    inventoryRequests: number;
 }
 
 interface FakeTransportBehaviorInterface {
     accountStatus: ICloudAccountStatusResult;
     zoneMeta: ICloudFetchedRecord | null;
+    zoneInventory: readonly ICloudZoneInventoryRecord[];
+    isInventoryFailing: boolean;
     confirmProbeSql: string;
 }
 
@@ -69,11 +74,14 @@ export const makeFakeTransport = () => {
         confirmed: [],
         deletedZones: [],
         ensuredZones: [],
-        confirmProbe: []
+        confirmProbe: [],
+        inventoryRequests: 0
     };
     const behavior: FakeTransportBehaviorInterface = {
         accountStatus: { status: 'available', userRecordName: 'user-a' },
         zoneMeta: null,
+        zoneInventory: [],
+        isInventoryFailing: false,
         confirmProbeSql: 'SELECT COUNT(*) AS total FROM accounts'
     };
 
@@ -99,6 +107,14 @@ export const makeFakeTransport = () => {
                 behavior.zoneMeta = null;
             }),
         fetchRecord: () => Effect.sync(() => behavior.zoneMeta),
+        fetchZoneInventory: () =>
+            Effect.suspend(() => {
+                calls.inventoryRequests += 1;
+
+                return behavior.isInventoryFailing
+                    ? Effect.fail(new CloudSyncTransportError({ code: 'NETWORK_UNAVAILABLE', message: 'inventory failed' }))
+                    : Effect.succeed(behavior.zoneInventory);
+            }),
         addPendingSaves: (_scope: ICloudSyncScope, records: readonly ICloudRecordPayload[]) =>
             Effect.sync(() => {
                 calls.savedBatches.push([...records]);

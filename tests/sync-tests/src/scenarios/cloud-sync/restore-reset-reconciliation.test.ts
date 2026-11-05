@@ -9,7 +9,7 @@ import { testDb } from '../../harness';
 
 import { deviceLayer, expectBalancesMatchLedger, onDevice, pullDevice, pushDevice, readOutboxRows, refreshAllBalances } from './apply-harness';
 
-import type { DB } from '@budgie/contracts';
+import type { DB, DbError } from '@budgie/contracts';
 
 const OPERATED_AT = new Date('2026-10-02T10:00:00Z');
 
@@ -46,18 +46,23 @@ const fullFetch = (database: DB, cloud: FakeCloudTransport, deviceId: string) =>
         })
     );
 
-const restoreAndReconcile = (restored: DB, cloud: FakeCloudTransport) =>
+const reconcile = (restored: DB, inventory: ReadonlySet<string>, fetch: Effect.Effect<void, DbError>) =>
     onRestoredDevice(
         restored,
         Effect.gen(function* () {
             const reconciliation = yield* SyncRestoreReconciliationService;
 
             yield* reconciliation.prepare(true);
-            yield* fullFetch(restored, cloud, 'device-restored').pipe(Effect.provideService(Db, restored));
+            yield* fetch;
 
-            return yield* reconciliation.complete(PERSONAL_SYNC_ZONE);
+            return yield* reconciliation.complete(PERSONAL_SYNC_ZONE, inventory);
         })
     );
+
+const restoreAndReconcile = (restored: DB, cloud: FakeCloudTransport) =>
+    reconcile(restored, cloud.inventory(PERSONAL_SYNC_ZONE), fullFetch(restored, cloud, 'device-restored'));
+
+const reconcileWithoutFetch = (restored: DB, inventory: ReadonlySet<string>) => reconcile(restored, inventory, Effect.void);
 
 const acquireRestoredDevice = Effect.acquireRelease(
     Effect.promise(() => buildTestDb(null)),
@@ -144,6 +149,31 @@ describe('cloud-sync/restore-reset reconciliation', () => {
                 expect(yield* readTitles(restored)).toEqual(['Cafe', 'Lunch']);
                 expect(yield* readTitles(testDb)).toEqual(['Cafe', 'Lunch']);
                 expect(yield* readOutbox(restored)).toEqual([]);
+                yield* expectBalancesMatchLedger(restored);
+            })
+        );
+
+        it.effect('keeps every restored row when the zone inventory lists it, even if the fetch did not deliver it', () =>
+            Effect.gen(function* () {
+                const { restored, cloud } = yield* setupBackup;
+                const results = yield* reconcileWithoutFetch(restored, cloud.inventory(PERSONAL_SYNC_ZONE));
+
+                expect(results).toEqual([]);
+                expect(yield* readTitles(restored)).toEqual(['Cafe', 'Lunch']);
+                expect(yield* readOutbox(restored)).toEqual([]);
+                yield* expectBalancesMatchLedger(restored);
+            })
+        );
+
+        it.effect('deletes only restored rows absent from the zone inventory', () =>
+            Effect.gen(function* () {
+                const { restored, cloud } = yield* setupBackup;
+                const lunchSyncId = yield* readSyncId(testDb, 'Lunch');
+                const inventory = new Set([...cloud.inventory(PERSONAL_SYNC_ZONE)].filter(recordName => recordName !== lunchSyncId));
+                const results = yield* reconcileWithoutFetch(restored, inventory);
+
+                expect(results.flatMap(result => result.deleted['Transaction'] ?? [])).toEqual([lunchSyncId]);
+                expect(yield* readTitles(restored)).toEqual(['Cafe']);
                 yield* expectBalancesMatchLedger(restored);
             })
         );

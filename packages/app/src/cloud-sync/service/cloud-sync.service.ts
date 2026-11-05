@@ -716,7 +716,13 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
                 return;
             }
 
-            const results = yield* reconciliationService.complete(PERSONAL_SYNC_ZONE);
+            const inventory = yield* transport.fetchZoneInventory(scope, CLOUD_SYNC_RECORDS.personalZoneName).pipe(Effect.option);
+
+            if (Option.isNone(inventory)) {
+                return;
+            }
+
+            const results = yield* reconciliationService.complete(PERSONAL_SYNC_ZONE, new Set(inventory.value.map(({ recordName }) => recordName)));
 
             yield* stateStore.update({ restorePhase: CloudSyncRestorePhaseEnum.NONE });
             yield* patch({ isReconciling: false });
