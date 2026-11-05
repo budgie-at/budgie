@@ -9,6 +9,7 @@ import type { DbMutationInterface } from '../interface/db-mutation.interface';
 import type { DB } from '../type/db.type';
 import type { TransactionBoundaryType } from '../type/transaction-boundary.type';
 
+/** @effect-leakable-service */
 export class Db extends Context.Service<Db, DB>()('@budgie/contracts/Db') {
     static readonly TransactionBoundary = Context.Reference<TransactionBoundaryType>('@budgie/contracts/Db/TransactionBoundary', {
         defaultValue: () => effect => effect
