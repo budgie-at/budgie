@@ -6846,8 +6846,8 @@ msgid "Search custom categories…"
 msgstr "Eigene Kategorien suchen…"
 
 #: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
-msgid "Search expenses refunded by this income"
-msgstr "Ausgaben suchen, die diese Einnahme erstattet"
+msgid "Search expenses"
+msgstr "Ausgaben suchen"
 
 #: src/app/(tabs)/settings/inactive.tsx
 msgid "Search hidden accounts…"
@@ -6956,6 +6956,10 @@ msgstr "Senden {fromCode}"
 #: src/transaction/hook/use-revert-consolidation.hook.ts
 msgid "Separate"
 msgstr "Trennen"
+
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+msgid "Separate restores all linked transactions."
+msgstr "„Trennen“ stellt alle verknüpften Transaktionen wieder her."
 
 #: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
 #: src/transaction/components/transaction-list-revert-menu-item/transaction-list-revert-menu-item.tsx

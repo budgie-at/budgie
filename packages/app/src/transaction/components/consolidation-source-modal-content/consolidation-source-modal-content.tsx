@@ -45,7 +45,7 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >
-                <FormsheetHeader size="md" title={t`Source transactions`} />
+                <FormsheetHeader size="md" title={t`Source transactions`} description={t`Separate restores all linked transactions.`} />
                 <LoadingContent isLoading={isLoading} containerClassName="flex-1" className="flex-1">
                     {hasError ? (
                         <View className="gap-y-md px-xl py-xl">
@@ -60,6 +60,8 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
                             title={t`No source transactions`}
                             description={t`There are no linked transactions to show.`}
                             className="flex-1 px-xl"
+                            titleClassName="text-center font-semibold text-primary"
+                            descriptionClassName="text-center text-secondary-foreground"
                         />
                     ) : null}
 
@@ -71,7 +73,7 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
                 <View className="flex-row gap-x-md">
                     <Button
                         content={t`Done`}
-                        variant="secondary"
+                        variant="primary"
                         size="md"
                         onPress={onClose}
                         testID={ConsolidationSourceModalSelector.DoneButton}

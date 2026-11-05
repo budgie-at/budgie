@@ -72,9 +72,9 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
                             circleIcon={UserIconNameEnum.SearchX}
                             title={t`No matching expenses`}
                             description={t`Try a different merchant, amount, or date.`}
-                            className="flex-1 px-2xl py-0"
-                            titleClassName="text-center"
-                            descriptionClassName="max-w-[260px] text-center leading-5"
+                            className="px-2xl py-3xl"
+                            titleClassName="text-center font-semibold text-primary"
+                            descriptionClassName="max-w-[260px] text-center text-secondary-foreground leading-5"
                         />
                     ) : null}
 
@@ -95,7 +95,7 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
 
             <TransactionPickerSearchDock
                 search={search}
-                searchPlaceholder={t`Search expenses refunded by this income`}
+                searchPlaceholder={t`Search expenses`}
                 onSearchChange={setSearch}
                 searchTestID={ConvertToRefundModalSelector.SearchInput}
             >
