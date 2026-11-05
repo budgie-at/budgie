@@ -33,7 +33,7 @@ export const TransactionFormRow = (props: Props) => {
     const isLargeText = fontScale >= TRANSACTION_LARGE_TEXT_SCALE;
     const isStacked = isLargeText || (isNotEmptyString(value) && overflowingValue === value);
     const labelMaxFontScale = isLargeText ? STACKED_LABEL_MAX_FONT_SCALE : LABEL_MAX_FONT_SCALE;
-    const leading = isLargeText ? <View className="self-start pt-[2px]">{left}</View> : left;
+    const leading = isLargeText ? null : left;
     const valueNode = (
         <TransactionFormRowValue
             value={value}

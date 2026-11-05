@@ -34,7 +34,7 @@ export const TransactionKeypadConfirmButton = ({ label, isDisabled, onPress, tes
             testID={testID}
         >
             <View className="max-w-full flex-row items-center justify-center gap-x-sm px-lg">
-                {isDisabled ? null : <Icon className={contentClassName} icon={UserIconNameEnum.Check} size={iconSize} />}
+                <Icon className={contentClassName} icon={UserIconNameEnum.Check} size={iconSize} />
                 <Text
                     className={cn('min-w-0 shrink text-[17px] font-semibold', contentClassName)}
                     numberOfLines={1}

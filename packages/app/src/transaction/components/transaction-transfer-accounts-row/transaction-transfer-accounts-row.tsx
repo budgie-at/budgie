@@ -9,6 +9,7 @@ import { isDefined } from '@rnw-community/shared';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
+import { TransactionFormRowPlaceholderToneEnum } from '../../enum/transaction-form-row-placeholder-tone.enum';
 import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
 import { QuickFormFieldError } from '../quick-form-field-error/quick-form-field-error';
 import { TransactionFormRowPlaceholder } from '../transaction-form-row-placeholder/transaction-form-row-placeholder';
@@ -82,7 +83,9 @@ export const TransactionTransferAccountsRow = ({ ref }: Props) => {
 
     const handleFromLayout = (event: LayoutChangeEvent) => void setFromRowHeight(event.nativeEvent.layout.height);
     const canSwap = isDefined(fromAccountId) && isDefined(toAccountId);
-    const missingPlaceholder = <TransactionFormRowPlaceholder tone="destructive">{t`Choose`}</TransactionFormRowPlaceholder>;
+    const missingPlaceholder = (
+        <TransactionFormRowPlaceholder tone={TransactionFormRowPlaceholderToneEnum.DESTRUCTIVE}>{t`Choose`}</TransactionFormRowPlaceholder>
+    );
     const fromPlaceholder = isDefined(errors.root?.['fromAccountId']) ? missingPlaceholder : t`Choose`;
     const toPlaceholder = isDefined(errors.root?.['toAccountId']) ? missingPlaceholder : t`Choose`;
 

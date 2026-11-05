@@ -11,6 +11,7 @@ export const useQuickFormLayout = (hasKeypad: boolean) => {
     const { fontScale } = useWindowDimensions();
     const [height, setHeight] = useState(0);
     const [amountHeight, setAmountHeight] = useState(0);
+    const [startsWithKeypad] = useState(hasKeypad);
     const [scrollMetrics, setScrollMetrics] = useState({ content: 0, viewport: 0 });
     const scrollY = useScreenChromeScrollY();
     const { requiresScrolling } = getTransactionKeypadLayout(fontScale, height === 0 ? Infinity : height - amountHeight);
@@ -26,7 +27,7 @@ export const useQuickFormLayout = (hasKeypad: boolean) => {
         void setScrollMetrics(previous => ({ ...previous, viewport: event.nativeEvent.layout.height }));
 
     return {
-        isScrollingLayout: requiresScrolling || (fontScale >= TRANSACTION_LARGE_TEXT_SCALE && !hasKeypad),
+        isScrollingLayout: requiresScrolling || (fontScale >= TRANSACTION_LARGE_TEXT_SCALE && !startsWithKeypad),
         topEdgeStyle,
         bottomEdgeStyle,
         handleLayout,

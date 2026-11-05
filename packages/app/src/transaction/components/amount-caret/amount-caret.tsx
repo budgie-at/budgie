@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import Animated, {
+    cancelAnimation,
     useAnimatedStyle,
     useReducedMotion,
     useSharedValue,
@@ -21,7 +22,10 @@ export const AmountCaret = ({ height }: Props) => {
     const animatedStyle = useAnimatedStyle(() => ({ opacity: opacity.get(), height }));
 
     useEffect(() => {
-        if (!isReducedMotion) {
+        if (isReducedMotion) {
+            cancelAnimation(opacity);
+            opacity.set(1);
+        } else {
             opacity.set(
                 withRepeat(
                     withSequence(withTiming(MIN_OPACITY, { duration: BLINK_STEP_MS }), withTiming(1, { duration: BLINK_STEP_MS })),

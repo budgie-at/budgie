@@ -2,7 +2,7 @@ import { TransactionCreateInputInterface, UserIconNameEnum } from '@budgie/contr
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { useTagsSelectorModal } from '../../../tag/context/tags-selector-modal.context';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
@@ -28,6 +28,7 @@ export const TransactionDateTagsRow = ({ onDatePress }: Props) => {
     const hiddenTagCount = tagTitles.length - VISIBLE_TAG_COUNT;
     const visibleTags = tagTitles.slice(0, VISIBLE_TAG_COUNT).join(', ');
     const tagsValue = isPositiveNumber(hiddenTagCount) ? `${visibleTags}${NO_BREAK_SPACE}+${hiddenTagCount}` : visibleTags;
+    const tagsDisplayValue = isNotEmptyArray(tagTitles) ? tagsValue : void 0;
 
     const handleTagsPress = () => {
         openTagsSelector({ initialTagIds: tagIds, enablePrimarySelection: true }, selectedTagIds => {
@@ -49,7 +50,7 @@ export const TransactionDateTagsRow = ({ onDatePress }: Props) => {
             <TransactionFieldIcon
                 icon={UserIconNameEnum.Tag}
                 label={t`Tags`}
-                value={tagsValue}
+                value={tagsDisplayValue}
                 placeholder={t`Add`}
                 onPress={handleTagsPress}
                 testID={SimpleQuickFormSelector.TagsSelector}
