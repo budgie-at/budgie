@@ -66,7 +66,7 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
                             circleIcon={UserIconNameEnum.GitMerge}
                             title={t`No source transactions`}
                             description={t`There are no linked transactions to show.`}
-                            className="flex-1 px-xl"
+                            className="px-xl py-sm"
                             titleClassName="text-center font-semibold text-primary"
                             descriptionClassName="text-center text-secondary-foreground"
                         />
