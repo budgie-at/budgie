@@ -1,11 +1,13 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
-import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 
-import { EmptyFn, isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
+import { EmptyFn, isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
+import { FormsheetHeader } from '../../../@generic/component/formsheet-header/formsheet-header';
+import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
 import { useGetConsolidationSourcesQuery } from '../../query/use-get-consolidation-sources.query';
 import { getTransactionListRowPosition } from '../../utils/get-transaction-list-row-position.util';
@@ -19,19 +21,12 @@ interface Props {
     readonly onRevertSuccess: EmptyFn;
 }
 
-const COMPACT_SOURCE_LIST_LIMIT = 2;
-
 export const ConsolidationSourceModalContent = ({ transactionId, onClose, onRevertSuccess }: Props) => {
-    const { sources, consolidationType, hasError, isLoading } = useGetConsolidationSourcesQuery(transactionId);
+    const { sources, consolidationType, hasError, isLoading, retry } = useGetConsolidationSourcesQuery(transactionId);
     const revertConsolidation = useRevertConsolidation(transactionId, onRevertSuccess);
 
-    const hasSources = isNotEmptyArray(sources);
-    const showEmptyState = isEmptyArray(sources) && !isLoading && !hasError;
+    const showEmptyState = isEmptyArray(sources) && !hasError;
     const showRevert = isDefined(consolidationType);
-    const useCompactSourceList = sources.length <= COMPACT_SOURCE_LIST_LIMIT;
-    const useFlexibleContainer = isLoading || showEmptyState || (hasSources && !useCompactSourceList);
-    const containerClassName = useFlexibleContainer ? 'flex-1' : '';
-    const footerClassName = showRevert ? 'flex-row gap-x-md' : '';
     const sourceRows = sources.map((source, index) => (
         <ConsolidationSourceRow
             key={source.entryId}
@@ -43,43 +38,37 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
     ));
 
     return (
-        <View className={containerClassName}>
-            {hasError ? (
-                <Text className="px-xl pb-md pt-xl text-sm text-destructive-foreground">
-                    {t`Could not load sources. Please try again.`}
-                </Text>
-            ) : null}
+        <View className="flex-1">
+            <ScrollView
+                className="flex-1"
+                contentContainerClassName="grow pb-2xl"
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+            >
+                <FormsheetHeader size="md" title={t`Source transactions`} />
+                <LoadingContent isLoading={isLoading} containerClassName="flex-1" className="flex-1">
+                    {hasError ? (
+                        <View className="gap-y-md px-xl py-xl">
+                            <Text className="text-sm text-destructive-foreground">{t`Could not load sources. Please try again.`}</Text>
+                            <Button content={t`Try again`} onPress={retry} variant="secondary" />
+                        </View>
+                    ) : null}
 
-            {isLoading ? (
-                <View className="flex-1 items-center justify-center">
-                    <ActivityIndicator />
-                </View>
-            ) : null}
+                    {showEmptyState ? (
+                        <EmptyState
+                            circleIcon={UserIconNameEnum.GitMerge}
+                            title={t`No source transactions`}
+                            description={t`There are no linked transactions to show.`}
+                            className="flex-1 px-xl"
+                        />
+                    ) : null}
 
-            {showEmptyState ? (
-                <EmptyState
-                    circleIcon={UserIconNameEnum.GitMerge}
-                    title={t`No source transactions`}
-                    description={t`This consolidated transfer has no moved source entries.`}
-                    className="flex-1 px-xl"
-                />
-            ) : null}
-
-            {hasSources && useCompactSourceList ? <View className="px-xl pt-3xl pb-2xl">{sourceRows}</View> : null}
-
-            {hasSources && !useCompactSourceList ? (
-                <ScrollView
-                    className="flex-1"
-                    contentContainerClassName="px-xl pt-3xl pb-2xl"
-                    keyboardShouldPersistTaps="handled"
-                    showsVerticalScrollIndicator={false}
-                >
-                    {sourceRows}
-                </ScrollView>
-            ) : null}
+                    <View className="px-xl">{sourceRows}</View>
+                </LoadingContent>
+            </ScrollView>
 
             <View className="px-xl pb-xl">
-                <View className={footerClassName}>
+                <View className="flex-row gap-x-md">
                     <Button
                         content={t`Done`}
                         variant="secondary"

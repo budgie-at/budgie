@@ -2512,6 +2512,7 @@ msgstr "Convertir importes pasados"
 msgid "Convert past amounts?"
 msgstr "¿Convertir importes pasados?"
 
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 #: src/transaction/components/transaction-list-convert-to-refund-menu-item/transaction-list-convert-to-refund-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Convert to Refund"
@@ -7167,6 +7168,10 @@ msgstr "origen"
 msgid "Source"
 msgstr "Fuente"
 
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+msgid "Source transactions"
+msgstr "Transacciones de origen"
+
 #: src/transaction/components/transaction-sources-field-icon/transaction-sources-field-icon.tsx
 msgid "Sources"
 msgstr "Fuentes"
@@ -7586,6 +7591,10 @@ msgstr "entonces"
 msgid "Then"
 msgstr "Entonces"
 
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+msgid "There are no linked transactions to show."
+msgstr "No hay transacciones vinculadas que mostrar."
+
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "There is no “forgot PIN”."
 msgstr "No existe «olvidé el PIN»."
@@ -7637,10 +7646,6 @@ msgstr "Esta copia de seguridad se creó con una versión anterior de Budgie y n
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "This capture looks similar to an existing transaction."
 msgstr "Esta captura es similar a una transacción existente."
-
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
-msgid "This consolidated transfer has no moved source entries."
-msgstr "Esta transferencia consolidada no tiene movimientos de origen movidos."
 
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "This deletes {DB_NAME} and everything in it from this phone. It can't be undone."
@@ -8071,6 +8076,8 @@ msgstr "Intenta ajustar tus filtros para ver más resultados"
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 msgid "Try again"
 msgstr "Inténtalo de nuevo"
 

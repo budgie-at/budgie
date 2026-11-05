@@ -14,17 +14,19 @@ interface Props {
     readonly showRevert: boolean;
     readonly onClose: () => void;
     readonly onConvert: () => void;
+    readonly isConverting: boolean;
     readonly onRevert: () => void;
 }
 
-export const ConvertToRefundFooter = ({ selectedCandidate, showRevert, onClose, onConvert, onRevert }: Props) => {
+export const ConvertToRefundFooter = (props: Props) => {
+    const { selectedCandidate, showRevert, onClose, onConvert, onRevert, isConverting } = props;
     const { t } = useLingui();
     const isConvertDisabled = !isDefined(selectedCandidate);
     const leftAction = showRevert ? t`Done` : t`Cancel`;
 
     return (
         <View className="flex-row gap-x-md">
-            <Button content={leftAction} variant="secondary" size="md" onPress={onClose} className="flex-1" />
+            <Button content={leftAction} variant="secondary" size="md" onPress={onClose} disabled={isConverting} className="flex-1" />
             {showRevert ? (
                 <Button
                     content={t`Undo Refund`}
@@ -38,11 +40,12 @@ export const ConvertToRefundFooter = ({ selectedCandidate, showRevert, onClose, 
             ) : (
                 <Button
                     content={t`Convert`}
-                    variant="positive"
+                    variant="cta"
                     size="md"
                     leftIcon={UserIconNameEnum.ReceiptText}
                     onPress={onConvert}
                     disabled={isConvertDisabled}
+                    isLoading={isConverting}
                     testID={ConvertToRefundModalSelector.ConvertButton}
                     className="flex-1"
                 />

@@ -5,10 +5,17 @@ import { useModalRouteState } from '../@generic/hook/use-modal-route-state/use-m
 import { ConsolidationSourceModalContent } from '../transaction/components/consolidation-source-modal-content/consolidation-source-modal-content';
 import { useConsolidationSourceModal, useConsolidationSourceModalParams } from '../transaction/context/consolidation-source-modal.context';
 
+const COMPACT_DETENT = 0.55;
+const EXPANDED_DETENT = 0.9;
+
 export default function ConsolidationSourceModal() {
     const [, resolveConsolidationSource, dismissConsolidationSource] = useConsolidationSourceModal();
     const currentParams = useConsolidationSourceModalParams();
-    const screenOptions = useModalRouteState(currentParams, dismissConsolidationSource);
+    const screenOptions = {
+        ...useModalRouteState(currentParams, dismissConsolidationSource),
+        sheetAllowedDetents: [COMPACT_DETENT, EXPANDED_DETENT],
+        sheetInitialDetentIndex: 0
+    };
 
     const handleClose = () => {
         resolveConsolidationSource(null);
@@ -19,7 +26,7 @@ export default function ConsolidationSourceModal() {
     }
 
     return (
-        <View className="bg-grouped-surface" collapsable={false}>
+        <View className="flex-1 bg-grouped-surface" collapsable={false}>
             <Stack.Screen options={screenOptions} />
             <ConsolidationSourceModalContent
                 transactionId={currentParams.transactionId}

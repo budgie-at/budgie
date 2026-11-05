@@ -16,9 +16,9 @@ export const useConvertToRefundAction = (
     resolveConvertToRefund: ConvertToRefundModalResolveType
 ) => {
     const { t } = useLingui();
-    const { run } = useSingleFlight();
+    const { run, isLoading } = useSingleFlight();
 
-    return () => {
+    const convert = () => {
         if (!isDefined(selectedCandidate)) {
             return;
         }
@@ -49,4 +49,6 @@ export const useConvertToRefundAction = (
             )
         );
     };
+
+    return { convert, isLoading };
 };

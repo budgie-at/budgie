@@ -1,11 +1,14 @@
 import { TransactionConsolidationTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 
-import { isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { Button } from '../../../@generic/component/button/button';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
+import { FormsheetHeader } from '../../../@generic/component/formsheet-header/formsheet-header';
+import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { ConvertToRefundModalSelector } from '../../../app/convert-to-refund-modal.selector';
 import { useConvertToRefundAction } from '../../hook/use-convert-to-refund-action.hook';
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
@@ -29,7 +32,7 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
     const [search, setSearch] = useState('');
     const [selectedCandidate, setSelectedCandidate] = useState<TransactionPickerItemInterface | null>(null);
     const { transaction } = useGetTransactionByIdQuery(refundIncomeTransactionId);
-    const { candidates, errorMessage, isLoading } = useRefundableExpenseCandidatesQuery(refundIncomeTransactionId, search);
+    const { candidates, errorMessage, isLoading, retry } = useRefundableExpenseCandidatesQuery(refundIncomeTransactionId, search);
     const canonicalTransactionId = transaction?.consolidationParentTransactionId ?? refundIncomeTransactionId;
     const showRevert =
         transaction?.consolidationType === TransactionConsolidationTypeEnum.REFUND ||
@@ -40,41 +43,42 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
     };
 
     const revertRefund = useRevertConsolidation(canonicalTransactionId, handleResolve, true);
-    const convertToRefund = useConvertToRefundAction(refundIncomeTransactionId, selectedCandidate, resolveConvertToRefund);
-    const hasCandidates = isNotEmptyArray(candidates);
-    const showEmpty = !isLoading && isEmptyArray(candidates);
+    const { convert, isLoading: isConverting } = useConvertToRefundAction(
+        refundIncomeTransactionId,
+        selectedCandidate,
+        resolveConvertToRefund
+    );
+    const showEmpty = isEmptyArray(candidates) && !isNotEmptyString(errorMessage);
 
     return (
         <View className="flex-1 pt-2xl" collapsable={false} testID={ConvertToRefundModalSelector.Picker}>
-            <View className="flex-1">
-                {isNotEmptyString(errorMessage) ? (
-                    <Text className="px-xl pb-md pt-xl text-sm text-destructive-foreground">{errorMessage}</Text>
-                ) : null}
+            <ScrollView
+                className="flex-1"
+                contentContainerClassName="grow pb-lg"
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+            >
+                <FormsheetHeader size="md" title={t`Convert to Refund`} />
+                <LoadingContent isLoading={isLoading} containerClassName="flex-1" className="flex-1">
+                    {isNotEmptyString(errorMessage) ? (
+                        <View className="gap-y-md px-xl py-xl">
+                            <Text className="text-sm text-destructive-foreground">{errorMessage}</Text>
+                            <Button content={t`Try again`} onPress={retry} variant="secondary" />
+                        </View>
+                    ) : null}
 
-                {isLoading ? (
-                    <View className="flex-1 items-center justify-center">
-                        <ActivityIndicator />
-                    </View>
-                ) : null}
+                    {showEmpty ? (
+                        <EmptyState
+                            circleIcon={UserIconNameEnum.SearchX}
+                            title={t`No matching expenses`}
+                            description={t`Try a different merchant, amount, or date.`}
+                            className="flex-1 px-2xl py-0"
+                            titleClassName="text-center"
+                            descriptionClassName="max-w-[260px] text-center leading-5"
+                        />
+                    ) : null}
 
-                {showEmpty ? (
-                    <EmptyState
-                        circleIcon={UserIconNameEnum.SearchX}
-                        title={t`No matching expenses`}
-                        description={t`Try a different merchant, amount, or date.`}
-                        className="flex-1 px-2xl py-0"
-                        titleClassName="text-center"
-                        descriptionClassName="max-w-[260px] text-center leading-5"
-                    />
-                ) : null}
-
-                {hasCandidates ? (
-                    <ScrollView
-                        className="flex-1"
-                        contentContainerClassName="px-xl pb-lg"
-                        keyboardShouldPersistTaps="handled"
-                        showsVerticalScrollIndicator={false}
-                    >
+                    <View className="px-xl">
                         {candidates.map((candidate, index) => (
                             <TransactionPickerRow
                                 key={candidate.id}
@@ -85,9 +89,9 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
                                 testID={ConvertToRefundModalSelector.CandidateRow(candidate.id)}
                             />
                         ))}
-                    </ScrollView>
-                ) : null}
-            </View>
+                    </View>
+                </LoadingContent>
+            </ScrollView>
 
             <TransactionPickerSearchDock
                 search={search}
@@ -99,7 +103,8 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
                     selectedCandidate={selectedCandidate}
                     showRevert={showRevert}
                     onClose={handleResolve}
-                    onConvert={convertToRefund}
+                    onConvert={convert}
+                    isConverting={isConverting}
                     onRevert={revertRefund}
                 />
             </TransactionPickerSearchDock>

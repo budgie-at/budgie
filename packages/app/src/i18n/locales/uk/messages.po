@@ -2512,6 +2512,7 @@ msgstr "Конвертувати минулі суми"
 msgid "Convert past amounts?"
 msgstr "Конвертувати минулі суми?"
 
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 #: src/transaction/components/transaction-list-convert-to-refund-menu-item/transaction-list-convert-to-refund-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Convert to Refund"
@@ -7167,6 +7168,10 @@ msgstr "джерело"
 msgid "Source"
 msgstr "Джерело"
 
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+msgid "Source transactions"
+msgstr "Вихідні транзакції"
+
 #: src/transaction/components/transaction-sources-field-icon/transaction-sources-field-icon.tsx
 msgid "Sources"
 msgstr "Джерела"
@@ -7586,6 +7591,10 @@ msgstr "тоді"
 msgid "Then"
 msgstr "Тоді"
 
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+msgid "There are no linked transactions to show."
+msgstr "Немає пов’язаних транзакцій для відображення."
+
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "There is no “forgot PIN”."
 msgstr "Немає кнопки «забув PIN-код»."
@@ -7637,10 +7646,6 @@ msgstr "Цю резервну копію створено старішою ве�
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "This capture looks similar to an existing transaction."
 msgstr "Цей запис схожий на наявну транзакцію."
-
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
-msgid "This consolidated transfer has no moved source entries."
-msgstr "Цей консолідований переказ не має перенесених вихідних записів."
 
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "This deletes {DB_NAME} and everything in it from this phone. It can't be undone."
@@ -8071,6 +8076,8 @@ msgstr "Спробуйте налаштувати фільтри, щоб поб�
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 msgid "Try again"
 msgstr "Спробувати ще раз"
 
