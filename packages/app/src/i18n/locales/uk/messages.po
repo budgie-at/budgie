@@ -3730,10 +3730,6 @@ msgstr "Введіть усі суми"
 msgid "Enter an amount"
 msgstr "Введіть суму"
 
-#: src/transaction/components/transaction-split-field-icon/transaction-split-field-icon.tsx
-msgid "Enter an amount to split it"
-msgstr "Введіть суму, щоб розділити її"
-
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enter current PIN"
 msgstr "Введіть поточний PIN-код"

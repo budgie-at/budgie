@@ -11,9 +11,9 @@ interface Props {
     readonly onPress: () => void;
 }
 
-const SWAP_SIZE = 26;
-const SWAP_HIT_SLOP = 9;
-const DISABLED_OPACITY = 0.3;
+const SWAP_SIZE = 28;
+const SWAP_HIT_SLOP = 8;
+const DISABLED_OPACITY = 0.4;
 
 export const TransferSwapButton = ({ dividerOffset, isEnabled, onPress }: Props) => {
     const { t } = useLingui();
@@ -23,7 +23,7 @@ export const TransferSwapButton = ({ dividerOffset, isEnabled, onPress }: Props)
 
     return (
         <HapticPressable
-            className="absolute left-[18px] h-[26px] w-[26px] items-center justify-center rounded-full border border-surface-separator bg-grouped-surface-row"
+            className="absolute left-[56px] h-[28px] w-[28px] items-center justify-center rounded-full bg-surface-disc"
             style={style}
             hitSlop={SWAP_HIT_SLOP}
             onPress={onPress}

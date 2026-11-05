@@ -29,7 +29,7 @@ const CHEVRON_MAX_SCALE = 1.5;
 
 const labelVariants = cva('shrink-0', {
     variants: {
-        isStacked: { true: 'text-[13px] leading-[18px]', false: 'text-[17px] leading-[22px]' },
+        isStacked: { true: 'text-[15px] leading-[20px]', false: 'text-[17px] leading-[22px]' },
         isAction: { true: 'text-primary', false: 'text-secondary-foreground' }
     }
 });
@@ -42,7 +42,7 @@ export const TransactionFormRow = (props: Props) => {
     const isStacked = isLargeText || (isNotEmptyString(value) && overflowingValue === value);
     const isAction = !isNotEmptyString(value) && !isDefined(placeholder);
     const labelMaxFontScale = isLargeText && !isAction ? STACKED_LABEL_MAX_FONT_SCALE : LABEL_MAX_FONT_SCALE;
-    const stackedLeading = isLargeText ? null : <View className="self-start pt-[2px]">{left}</View>;
+    const stackedLeading = isLargeText ? null : <View className="self-start pt-[17px]">{left}</View>;
     const leading = isStacked ? stackedLeading : left;
     const chevronSize = 16 * Math.min(fontScale, CHEVRON_MAX_SCALE);
     const titleClassName = isStacked ? 'min-w-0 items-start gap-y-xxs' : 'min-w-0 flex-row items-center gap-x-lg';

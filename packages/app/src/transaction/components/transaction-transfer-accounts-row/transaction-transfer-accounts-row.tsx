@@ -84,6 +84,7 @@ export const TransactionTransferAccountsRow = ({ ref, children }: Props) => {
 
     const handleFromLayout = (event: LayoutChangeEvent) => void setFromRowHeight(event.nativeEvent.layout.height);
     const canSwap = isDefined(fromAccountId) && isDefined(toAccountId);
+    const hasAnyAccount = isDefined(fromAccountId) || isDefined(toAccountId);
     const missingPlaceholder = (
         <TransactionFormRowPlaceholder tone={TransactionFormRowPlaceholderToneEnum.DESTRUCTIVE}>{t`Choose`}</TransactionFormRowPlaceholder>
     );
@@ -115,7 +116,7 @@ export const TransactionTransferAccountsRow = ({ ref, children }: Props) => {
                 />
                 {children}
             </GroupedListSection>
-            <TransferSwapButton dividerOffset={fromRowHeight} isEnabled={canSwap} onPress={handleSwap} />
+            {hasAnyAccount ? <TransferSwapButton dividerOffset={fromRowHeight} isEnabled={canSwap} onPress={handleSwap} /> : null}
         </View>
     );
 };

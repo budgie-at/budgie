@@ -279,13 +279,13 @@ export const TransferQuickForm = (props: Props) => {
                 </TransactionTransferAccountsRow>
                 <TransactionFieldIcons>
                     <TransactionDateFieldIcon onPress={handleDatePress} />
-                    <TransactionNoteFieldIcon onPress={handleCommentPress} />
                     <TransactionFeeFieldIcon
                         amount={feeAmount}
                         currencySymbol={feeCurrencySymbol}
                         instrumentType={feeInstrumentType}
                         onPress={handleFeePress}
                     />
+                    <TransactionNoteFieldIcon onPress={handleCommentPress} />
                     {isDefined(props.onConsolidationPress) ? <TransactionSourcesFieldIcon onPress={props.onConsolidationPress} /> : null}
                 </TransactionFieldIcons>
             </View>
