@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.155.0](https://github.com/budgie-at/budgie/compare/v6.154.0...v6.155.0) (2026-11-05)
+
+### Features
+
+* **app:** finish convert-to-transfer sheet ([a35403a](https://github.com/budgie-at/budgie/commit/a35403a072711c0cdda1edb94219bcc99983897a))
+
+
 # [6.154.0](https://github.com/budgie-at/budgie/compare/v6.153.0...v6.154.0) (2026-11-05)
 
 ### Bug Fixes
