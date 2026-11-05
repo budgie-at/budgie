@@ -7070,6 +7070,7 @@ msgstr "Définir un budget"
 msgid "Set every category limit to continue"
 msgstr "Définissez chaque limite de catégorie pour continuer"
 
+#: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
 #: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
 msgid "Set fee"
 msgstr "Définir les frais"
