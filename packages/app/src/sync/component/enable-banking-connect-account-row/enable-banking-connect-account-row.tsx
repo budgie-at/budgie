@@ -31,7 +31,6 @@ export const EnableBankingConnectAccountRow = ({ preview, refusal, isSelected, o
     };
     const subtitle = isDefined(refusal) ? refusalLabel[refusal] : getAccountIdentityLabel(preview.currencyCode, preview.iban);
     const accessory = isSelected ? <Icon icon={UserIconNameEnum.Check} size={20} className="text-primary" /> : <></>;
-    const accessibilityState = { selected: isSelected, disabled: isDefined(refusal) };
     const icon = isDefined(refusal) ? UserIconNameEnum.Unlink : UserIconNameEnum.Landmark;
 
     const handlePress = () => {
@@ -45,7 +44,7 @@ export const EnableBankingConnectAccountRow = ({ preview, refusal, isSelected, o
             subtitle={subtitle}
             right={accessory}
             testID={EnableBankingConnectAccountRowSelector.Row(preview.externalId)}
-            {...(!isDefined(refusal) && { onPress: handlePress, pressableProps: { accessibilityState } })}
+            {...(!isDefined(refusal) && { onPress: handlePress, pressableProps: { accessibilityState: { selected: isSelected } } })}
         />
     );
 };
