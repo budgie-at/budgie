@@ -7,12 +7,7 @@ export const ThemedSwitch = ({
     className,
     ...props
 }: Omit<ComponentProps<typeof Switch>, 'thumbColor' | 'ios_backgroundColor' | 'trackColor'>) => (
-    <View className={cn('justify-center', className)}>
-        <Switch
-            {...props}
-            trackColorOnClassName="accent-switch-on"
-            trackColorOffClassName="accent-secondary-corner"
-            ios_backgroundColorClassName="accent-secondary-corner"
-        />
+    <View className={cn('ios:h-[28px] ios:justify-start', className)}>
+        <Switch {...props} />
     </View>
 );
