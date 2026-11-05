@@ -1,6 +1,6 @@
 import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { useRouter } from 'expo-router';
-import { ComponentType, ReactElement, RefCallback, useEffect, useEffectEvent, useRef } from 'react';
+import { ComponentType, ReactElement, RefCallback, useEffect, useRef } from 'react';
 import { View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -99,15 +99,13 @@ export const TransactionSectionsList = ({
         }
     };
 
-    const handleSectionsChange = useEffectEvent(publishHeaderOffsets);
-
     const contentContainerStyle = {
         paddingBottom: footerSpacerMultiplier * (FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN) + bottom,
         ...(isEmptyArray(flatData) && { flexGrow: 1, paddingBottom: bottom }),
         ...(isEmptyArray(flatData) && !isDefined(listHeader) && { justifyContent: 'center' as const })
     };
 
-    useEffect(() => void handleSectionsChange(), [sections]);
+    useEffect(publishHeaderOffsets, [publishHeaderOffsets]);
 
     return (
         <>

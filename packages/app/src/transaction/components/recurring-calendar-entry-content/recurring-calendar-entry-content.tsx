@@ -30,10 +30,6 @@ const labelsVariants = cva('min-w-0 gap-y-xxs', {
     variants: { isAccessibilityTextSize: { true: '', false: 'flex-1 min-h-[38px] justify-center mr-xs' } }
 });
 
-const amountVariants = cva('shrink-0 text-[16px] font-semibold text-primary tabular-nums', {
-    variants: { isAccessibilityTextSize: { true: '', false: '' } }
-});
-
 export const RecurringCalendarEntryContent = ({ entry, dayLabel }: Props) => {
     const { t } = useLingui();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
@@ -71,7 +67,7 @@ export const RecurringCalendarEntryContent = ({ entry, dayLabel }: Props) => {
                     {description}
                 </Text>
             </View>
-            <Text dynamicTypeRamp="headline" className={amountVariants({ isAccessibilityTextSize })}>
+            <Text dynamicTypeRamp="headline" className="shrink-0 text-[16px] font-semibold text-primary tabular-nums">
                 {protectAmount(convertFromMicroUnits(entry.latestAmount), defaultInstrument.symbol)}
             </Text>
         </View>

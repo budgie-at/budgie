@@ -45,7 +45,7 @@ export const TransactionListEmptyState = ({ isLoading, hasFiltersSelected, onCle
                 title={emptyStateText.title}
                 titleClassName="text-md text-primary font-semibold"
                 description={emptyStateText.description}
-                descriptionClassName="text-center max-w-[250px]"
+                descriptionClassName="text-secondary-foreground text-center max-w-[250px]"
                 className="py-0"
                 testID={TransactionsPageSelector.EmptyState}
             />
