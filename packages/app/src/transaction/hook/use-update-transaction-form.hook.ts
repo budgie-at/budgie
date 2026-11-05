@@ -30,7 +30,13 @@ export const useUpdateTransactionForm = ({ id, schema, transaction, receipt = nu
     const form = useForm({
         mode: 'onSubmit',
         values: transaction,
-        resolver: standardSchemaResolver(Schema.toStandardSchemaV1(schema))
+        resolver: standardSchemaResolver(
+            Schema.toStandardSchemaV1(
+                schema.mapFields(fields => ({ ...fields, title: Schema.Union([fields.title, Schema.Literal(transaction.title)]) }), {
+                    unsafePreserveChecks: true
+                })
+            )
+        )
     });
 
     const handleSubmit = (data: TransactionCreateInputInterface) =>
