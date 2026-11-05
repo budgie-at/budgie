@@ -20,15 +20,23 @@ const renderAppToast = (params: ToastConfigParams<unknown>) => (
     </View>
 );
 
+const renderActionToast = (params: ToastConfigParams<ToastActionInterface>) => {
+    const handlePress = () => {
+        params.hide();
+    };
+
+    return (
+        <Pressable accessible={false} className="w-[92%]" onPress={handlePress}>
+            <AppToast {...params} type="success" action={params.props} />
+        </Pressable>
+    );
+};
+
 const APP_TOAST_CONFIG: ToastConfig = {
     success: renderAppToast,
     error: renderAppToast,
     info: renderAppToast,
-    [ACTION_TOAST_TYPE]: (params: ToastConfigParams<ToastActionInterface>) => (
-        <Pressable accessible={false} className="w-[92%]" onPress={() => params.hide()}>
-            <AppToast {...params} type="success" action={params.props} />
-        </Pressable>
-    ),
+    [ACTION_TOAST_TYPE]: renderActionToast,
     [RECEIPT_SCAN_TOAST_TYPE]: (params: ToastConfigParams<ReceiptScanToastStatusEnum>) => <ReceiptScanToast {...params} />
 };
 
