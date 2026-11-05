@@ -3,7 +3,8 @@ import { Text, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { TRANSACTION_SECONDARY_MAX_FONT_SIZE_MULTIPLIER } from '../../constant/transaction-secondary-max-font-size-multiplier.constant';
-import { useTransactionSubtitleSegments } from '../../hook/use-transaction-subtitle-segments.hook';
+import { useTransactionCardSubtitle } from '../../hook/use-transaction-card-subtitle.hook';
+import { TransactionReceiptMarker } from '../transaction-receipt-marker/transaction-receipt-marker';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
@@ -13,16 +14,19 @@ interface Props {
 }
 
 export const TransactionCardStackedSubtitle = ({ transaction, accountId }: Props) => {
-    const { segments, feeLabel, accountTitle } = useTransactionSubtitleSegments(transaction, accountId);
+    const { description, accessibilityLabel, accountTitle, subtitleTestID } = useTransactionCardSubtitle(transaction, accountId);
 
     return (
         <View className="gap-y-xxs">
+            {isDefined(transaction.receipt) ? <TransactionReceiptMarker transactionId={transaction.id} /> : null}
             <Text
+                accessibilityLabel={accessibilityLabel}
+                {...(isDefined(subtitleTestID) && { testID: subtitleTestID })}
                 dynamicTypeRamp="footnote"
                 maxFontSizeMultiplier={TRANSACTION_SECONDARY_MAX_FONT_SIZE_MULTIPLIER}
                 className="text-[12px] text-secondary-foreground"
             >
-                {[...segments, feeLabel].filter(isDefined).join(' · ')}
+                {description}
             </Text>
             {isDefined(accountTitle) ? (
                 <Text

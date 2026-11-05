@@ -13,9 +13,7 @@ import { useKeypadInput } from './use-keypad-input.hook';
 import { useQuickFormValidation } from './use-quick-form-validation.hook';
 import { useTransferAccounts } from './use-transfer-accounts.hook';
 
-import type { ConvertTransferFormResultInterface } from '../interface/convert-transfer-form-result.interface';
-
-export const useConvertTransferForm = (onSubmit: () => void): ConvertTransferFormResultInterface => {
+export const useConvertTransferForm = (onSubmit: () => void) => {
     const { t } = useLingui();
     const params = useConvertToTransferModalParams();
     const { setValue } = useFormContext<TransactionCreateInputInterface>();
@@ -70,5 +68,15 @@ export const useConvertTransferForm = (onSubmit: () => void): ConvertTransferFor
         }
     };
 
-    return { originalAccount, fromAccount, counterAccount, isEditing, conversion, keypad, handleEdit, handleConfirm };
+    return {
+        originalAccount,
+        fromAccount,
+        counterAccount,
+        isEditing,
+        conversion,
+        keypad,
+        handleEdit,
+        handleConfirm,
+        conversionLabel: params?.transactionType === TransactionTypeEnum.EXPENSE ? t`Receiving` : t`Sending`
+    };
 };

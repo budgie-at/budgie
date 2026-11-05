@@ -1,7 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { ClassValue } from 'cn';
-import { Text, View } from 'react-native';
+import { Text, View, useWindowDimensions } from 'react-native';
 
 import { EmptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -12,7 +12,6 @@ type MenuItemVariant = 'default' | 'destructive';
 
 interface Props {
     readonly icon: UserIconNameEnum;
-    readonly fontScale?: number;
     readonly label: string;
     readonly onPress: EmptyFn;
     readonly variant?: MenuItemVariant;
@@ -49,20 +48,19 @@ const iconVariants = cva<{ variant: Record<MenuItemVariant, ClassValue> }>('', {
 });
 
 export const PopoverMenuItem = (props: Props) => {
-    const { icon, fontScale, label, onPress, variant = 'default', rightLabel, subtitle, testID } = props;
+    const { icon, label, onPress, variant = 'default', rightLabel, subtitle, testID } = props;
 
-    const iconSize = 20 * Math.min(fontScale ?? 1, MAX_MENU_ICON_SCALE);
+    const { fontScale } = useWindowDimensions();
+    const iconSize = 20 * Math.min(fontScale, MAX_MENU_ICON_SCALE);
     const iconStyle = {
-        ...(isDefined(fontScale) && {
-            alignSelf: 'flex-start' as const,
-            marginTop: Math.max((MENU_LABEL_LINE_HEIGHT * fontScale - iconSize) / 2, 0)
-        })
+        alignSelf: 'flex-start' as const,
+        marginTop: Math.max((MENU_LABEL_LINE_HEIGHT * fontScale - iconSize) / 2, 0)
     };
 
     return (
         <HapticPressable
             onPress={onPress}
-            className={containerClassName({ isAdaptive: isDefined(fontScale) })}
+            className={containerClassName({ isAdaptive: true })}
             accessibilityRole="menuitem"
             testID={testID}
         >

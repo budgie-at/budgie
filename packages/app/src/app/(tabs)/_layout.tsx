@@ -1,5 +1,5 @@
-import { usePathname } from 'expo-router';
 import { TabList, TabSlot, TabTrigger, Tabs } from 'expo-router/ui';
+import { useState } from 'react';
 import { View } from 'react-native';
 
 import { EdgeFade } from '@rnw-community/react-native-screen-chrome';
@@ -8,7 +8,9 @@ import { AnimatedBackdrop } from '../../@generic/component/animated-backdrop/ani
 import { TabButtons } from '../../@generic/component/tab-buttons/tab-buttons';
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../@generic/constant/floating-tab-bar.constant';
 import { useCreateActionContext } from '../../@generic/context/create-action.context';
+import { TabBarBackdropContext } from '../../@generic/context/tab-bar-backdrop.context';
 import { TabBarClearanceContext } from '../../@generic/context/tab-bar-clearance.context';
+import { TabBarBackdropEnum } from '../../@generic/enum/tab-bar-backdrop.enum';
 import { useVoiceInputContext } from '../../ai/context/voice-input.context';
 import { useIsOnboardingActive, useIsOnboardingPending } from '../../onboarding/hook/use-is-onboarding-active.hook';
 import { CreateTransactionMenu } from '../../transaction/components/create-transaction-menu/create-transaction-menu';
@@ -18,7 +20,8 @@ const TAB_BAR_Z_INDEX = 3;
 const TAB_BAR_CLEARANCE = FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN - 15;
 
 export default function TabsLayout() {
-    const isDefaultTabFadeVisible = usePathname() !== '/transactions';
+    const [tabBarBackdrop, setTabBarBackdrop] = useState(TabBarBackdropEnum.FADE);
+    const isDefaultTabFadeVisible = tabBarBackdrop === TabBarBackdropEnum.FADE;
     const { isMenuOpen, openMenu, setIsMenuOpen } = useCreateActionContext();
     const { isOpen: isVoiceInputOpen, close: closeVoiceInput } = useVoiceInputContext();
     const isOnboardingActive = useIsOnboardingActive();
@@ -43,7 +46,9 @@ export default function TabsLayout() {
         <>
             <Tabs>
                 <TabBarClearanceContext value={TAB_BAR_CLEARANCE}>
-                    <TabSlot />
+                    <TabBarBackdropContext value={setTabBarBackdrop}>
+                        <TabSlot />
+                    </TabBarBackdropContext>
                 </TabBarClearanceContext>
 
                 <TabList className="hidden">

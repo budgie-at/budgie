@@ -1,16 +1,17 @@
 import { TransactionTypeEnum, TransactionCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { ScopedVariables, useCSSVariable } from 'uniwind';
+import { useCSSVariable } from 'uniwind';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { TRANSFER_ACCOUNT_FIELDS } from '../../constant/transfer-account-fields.constant';
 import { useConvertTransferForm } from '../../hook/use-convert-transfer-form.hook';
 import { useQuickFormFee } from '../../hook/use-quick-form-fee.hook';
+import { ConversionRow } from '../conversion-row/conversion-row';
 import { ConvertTransferAccounts } from '../convert-transfer-accounts/convert-transfer-accounts';
-import { ConvertTransferRateRow } from '../convert-transfer-rate-row/convert-transfer-rate-row';
 import { ConvertTransferSummary } from '../convert-transfer-summary/convert-transfer-summary';
 import { QuickFormFieldError } from '../quick-form-field-error/quick-form-field-error';
 import { QuickFormLayout } from '../quick-form-layout/quick-form-layout';
@@ -25,8 +26,6 @@ interface Props {
     readonly onSubmit: () => void;
     readonly onCancel: () => void;
 }
-
-const ACCOUNT_FIELDS = ['fromAccountId', 'toAccountId'] as const;
 
 export const ConvertTransferForm = ({ isSubmitting, onSubmit, onCancel }: Props) => {
     const rowColor = useCSSVariable('--color-grouped-surface-row');
@@ -49,6 +48,11 @@ export const ConvertTransferForm = ({ isSubmitting, onSubmit, onCancel }: Props)
         !isDefined(form.originalAccount) ||
         (form.isEditing && !isPositiveNumber(form.keypad.numericValue));
     const displayExchangeRate = isPositiveNumber(form.conversion.exchangeRate) ? 1 / form.conversion.exchangeRate : 0;
+    const rate = {
+        sourceCode: form.originalAccount?.instrument.code ?? '',
+        destinationCode: form.counterAccount?.instrument.code ?? '',
+        exchangeRate: displayExchangeRate
+    };
     const keypad = form.isEditing ? <TransactionKeypad keypad={form.keypad.handlers} /> : null;
     const amount = form.isEditing ? (
         <TransactionAmountDisplay
@@ -63,6 +67,7 @@ export const ConvertTransferForm = ({ isSubmitting, onSubmit, onCancel }: Props)
 
     return (
         <QuickFormLayout
+            surfaceVariables={rowColors}
             amount={amount}
             keypad={keypad}
             actions={
@@ -75,33 +80,30 @@ export const ConvertTransferForm = ({ isSubmitting, onSubmit, onCancel }: Props)
                 />
             }
         >
-            <ScopedVariables variables={rowColors}>
-                <GroupedListSection footer={<QuickFormFieldError fields={ACCOUNT_FIELDS} />}>
-                    <ConvertTransferAccounts />
-                    {form.conversion.isCrossCurrency ? (
-                        <LoadingContent isLoading={form.conversion.isPending}>
-                            <ConvertTransferRateRow
-                                destinationAmount={form.conversion.destinationAmount}
-                                destinationSymbol={form.counterAccount?.instrument.symbol ?? ''}
-                                destinationInstrumentType={form.counterAccount?.instrument.type}
-                                sourceCode={form.originalAccount?.instrument.code ?? ''}
-                                destinationCode={form.counterAccount?.instrument.code ?? ''}
-                                exchangeRate={displayExchangeRate}
-                                isManualRate={form.conversion.isManualRate}
-                                onPress={form.handleEdit}
-                            />
-                        </LoadingContent>
-                    ) : null}
-                    {isDefined(form.fromAccount) ? (
-                        <TransactionFeeFieldIcon
-                            amount={feeAmount}
-                            currencySymbol={form.fromAccount.instrument.symbol}
-                            instrumentType={form.fromAccount.instrument.type}
-                            onPress={handleFeePress}
+            <GroupedListSection footer={<QuickFormFieldError fields={TRANSFER_ACCOUNT_FIELDS} />}>
+                <ConvertTransferAccounts />
+                {form.conversion.isCrossCurrency ? (
+                    <LoadingContent isLoading={form.conversion.isPending}>
+                        <ConversionRow
+                            label={form.conversionLabel}
+                            destinationAmount={form.conversion.destinationAmount}
+                            destinationSymbol={form.counterAccount?.instrument.symbol ?? ''}
+                            destinationInstrumentType={form.counterAccount?.instrument.type}
+                            rate={rate}
+                            isManualRate={form.conversion.isManualRate}
+                            onPress={form.handleEdit}
                         />
-                    ) : null}
-                </GroupedListSection>
-            </ScopedVariables>
+                    </LoadingContent>
+                ) : null}
+                {isDefined(form.fromAccount) ? (
+                    <TransactionFeeFieldIcon
+                        amount={feeAmount}
+                        currencySymbol={form.fromAccount.instrument.symbol}
+                        instrumentType={form.fromAccount.instrument.type}
+                        onPress={handleFeePress}
+                    />
+                ) : null}
+            </GroupedListSection>
         </QuickFormLayout>
     );
 };

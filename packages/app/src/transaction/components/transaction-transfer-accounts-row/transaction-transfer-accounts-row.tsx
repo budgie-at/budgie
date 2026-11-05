@@ -1,16 +1,15 @@
-import { AccountTypeEnum, TransactionCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { ReactNode, RefObject, useImperativeHandle, useState } from 'react';
-import { useFormContext, useFormState } from 'react-hook-form';
+import { useFormState } from 'react-hook-form';
 import { LayoutChangeEvent, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
-import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
+import { TRANSFER_ACCOUNT_FIELDS } from '../../constant/transfer-account-fields.constant';
 import { TransactionFormRowPlaceholderToneEnum } from '../../enum/transaction-form-row-placeholder-tone.enum';
-import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
+import { useTransferAccountSelection } from '../../hook/use-transfer-account-selection.hook';
 import { QuickFormFieldError } from '../quick-form-field-error/quick-form-field-error';
 import { TransactionFormRowPlaceholder } from '../transaction-form-row-placeholder/transaction-form-row-placeholder';
 import { TransferAccountPicker } from '../transfer-account-picker/transfer-account-picker';
@@ -27,64 +26,20 @@ interface Props {
     readonly children?: ReactNode;
 }
 
-const TRANSFER_ACCOUNT_FIELDS = ['fromAccountId', 'toAccountId'] as const;
-
-// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const TransactionTransferAccountsRow = ({ ref, children }: Props) => {
     const { t } = useLingui();
     const [fromRowHeight, setFromRowHeight] = useState(0);
-    const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
-    const { errors } = useFormState({ control });
-    const [openAccountSelector] = useAccountSelectorModal();
+    const { errors } = useFormState();
     const { shake: shakeFrom, animatedStyle: fromAnimatedStyle } = useShakeAnimation();
     const { shake: shakeTo, animatedStyle: toAnimatedStyle } = useShakeAnimation();
-    const { fromAccountId, toAccountId, fromAccount, toAccount } = useTransferAccounts();
+    const { fromAccount, toAccount, handleFromPress, handleToPress, handleSwap, canSwap, hasAnyAccount } = useTransferAccountSelection();
 
     useImperativeHandle(ref, () => ({ shakeFrom, shakeTo }));
 
     const fromAccountSelectedTestID = isDefined(fromAccount) ? TransferQuickFormSelector.SelectedFromAccount(fromAccount.title) : void 0;
     const toAccountSelectedTestID = isDefined(toAccount) ? TransferQuickFormSelector.SelectedToAccount(toAccount.title) : void 0;
 
-    const handleFromPress = () => {
-        openAccountSelector(
-            {
-                initialAccountId: fromAccountId,
-                excludeAccountId: toAccountId,
-                excludeAccountTypes: [AccountTypeEnum.DEBT],
-                onlyActive: false
-            },
-            selectedAccountId => {
-                if (isDefined(selectedAccountId)) {
-                    setValue('fromAccountId', selectedAccountId);
-                }
-            }
-        );
-    };
-
-    const handleToPress = () => {
-        openAccountSelector(
-            {
-                initialAccountId: toAccountId,
-                excludeAccountId: fromAccountId,
-                excludeAccountTypes: [AccountTypeEnum.DEBT],
-                onlyActive: false
-            },
-            selectedAccountId => {
-                if (isDefined(selectedAccountId)) {
-                    setValue('toAccountId', selectedAccountId);
-                }
-            }
-        );
-    };
-
-    const handleSwap = () => {
-        setValue('fromAccountId', toAccountId);
-        setValue('toAccountId', fromAccountId);
-    };
-
     const handleFromLayout = (event: LayoutChangeEvent) => void setFromRowHeight(event.nativeEvent.layout.height);
-    const canSwap = isDefined(fromAccountId) && isDefined(toAccountId);
-    const hasAnyAccount = isDefined(fromAccountId) || isDefined(toAccountId);
     const missingPlaceholder = (
         <TransactionFormRowPlaceholder tone={TransactionFormRowPlaceholderToneEnum.DESTRUCTIVE}>{t`Choose`}</TransactionFormRowPlaceholder>
     );

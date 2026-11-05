@@ -49,7 +49,6 @@ interface Props {
     readonly isNewTransaction?: boolean;
     readonly onSubmit: () => void;
     readonly onConsolidationPress?: () => void;
-    readonly onCancel?: () => void;
 }
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Transfer form orchestrates multiple hooks and display computations
@@ -92,7 +91,7 @@ export const TransferQuickForm = (props: Props) => {
     const isConfirmDisabled = [
         props.isSubmitting,
         conversion.isPending && !isEditingDestination,
-        ![sourceKeypad.numericValue, activeKeypad.numericValue, fromAccountId, toAccountId].every(isPositiveNumber)
+        ![sourceKeypad.numericValue, activeKeypad.numericValue].every(isPositiveNumber)
     ].some(Boolean);
 
     const hasInitializedRef = useRef(false);
@@ -262,7 +261,6 @@ export const TransferQuickForm = (props: Props) => {
                     label={confirmLabel}
                     isDisabled={isConfirmDisabled}
                     onConfirm={handleConfirm}
-                    onCancel={props.onCancel}
                     testID={SimpleQuickFormSelector.SubmitButton}
                 />
             }
@@ -271,7 +269,10 @@ export const TransferQuickForm = (props: Props) => {
                 <TransactionTransferAccountsRow ref={transferAccountsRef}>
                     {conversion.isCrossCurrency ? (
                         <ConversionRow
-                            {...display.conversionRowProps}
+                            label={display.conversionRowProps.label}
+                            destinationAmount={display.conversionRowProps.destinationAmount}
+                            destinationSymbol={display.conversionRowProps.destinationSymbol}
+                            rate={display.conversionRowProps}
                             isManualRate={conversion.isManualRate}
                             onPress={handleConversionRowPress}
                         />

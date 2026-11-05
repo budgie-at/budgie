@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
+import { ComponentProps, ReactNode } from 'react';
 import { View } from 'react-native';
 import Animated from 'react-native-reanimated';
-import { ScopedVariables, useUniwind } from 'uniwind';
+import { ScopedVariables, useCSSVariable } from 'uniwind';
 
 import { BottomChromeInsetProvider, ScreenChromeFooter, ScreenChromeScrollView } from '@rnw-community/react-native-screen-chrome';
 import { isDefined } from '@rnw-community/shared';
@@ -11,6 +11,7 @@ import { useQuickFormLayout } from '../../hook/use-quick-form-layout.hook';
 
 interface Props {
     readonly amount: ReactNode;
+    readonly surfaceVariables?: ComponentProps<typeof ScopedVariables>['variables'];
     readonly context?: ReactNode;
     readonly suggestions?: ReactNode;
     readonly children: ReactNode;
@@ -22,11 +23,9 @@ const FOOTER_STYLE = { position: 'relative' } as const;
 const HIDDEN_EDGE_FADE_PROPS = { style: { display: 'none' } } as const;
 const CONTENT_STYLE = { paddingBottom: 16 };
 const SCROLL_VIEW_STYLE = { flex: 1 };
-const DARK_ROW_COLORS = { '--color-grouped-surface-row': '#151517', '--color-surface-row': '#151517' };
-const DEFAULT_ROW_COLORS = {};
 
-export const QuickFormLayout = ({ amount, context, suggestions, children, keypad, actions }: Props) => {
-    const { theme } = useUniwind();
+export const QuickFormLayout = ({ amount, context, suggestions, children, keypad, actions, surfaceVariables }: Props) => {
+    const rowColor = useCSSVariable('--color-transaction-form-row');
     const {
         isScrollingLayout,
         topEdgeStyle,
@@ -37,7 +36,10 @@ export const QuickFormLayout = ({ amount, context, suggestions, children, keypad
         handleScrollLayout,
         isLoading
     } = useQuickFormLayout(isDefined(keypad));
-    const rowColors = theme === 'dark' ? DARK_ROW_COLORS : DEFAULT_ROW_COLORS;
+    const rowColors = {
+        ...(isDefined(rowColor) && { '--color-grouped-surface-row': rowColor, '--color-surface-row': rowColor }),
+        ...surfaceVariables
+    };
     const header = (
         <View className="pt-[4px] pb-[12px]" onLayout={handleAmountLayout}>
             {amount}

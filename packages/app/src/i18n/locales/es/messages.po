@@ -923,7 +923,6 @@ msgid "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 msgstr "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 
 #: src/transaction/components/conversion-row/conversion-row.tsx
-#: src/transaction/components/convert-transfer-rate-row/convert-transfer-rate-row.tsx
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 
@@ -3872,7 +3871,6 @@ msgid "Edit Tag"
 msgstr "Editar etiqueta"
 
 #: src/transaction/components/conversion-row/conversion-row.tsx
-#: src/transaction/components/convert-transfer-rate-row/convert-transfer-rate-row.tsx
 msgid "Edit the amount"
 msgstr "Editar el importe"
 
@@ -6735,8 +6733,8 @@ msgstr "Recalculando saldos"
 
 #: src/receipt/hook/use-receipt-scan.hook.ts
 #: src/rule/constant/external-source.constant.ts
-#: src/transaction/components/transaction-card-subtitle/transaction-card-subtitle.tsx
 #: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
+#: src/transaction/components/transaction-receipt-marker/transaction-receipt-marker.tsx
 msgid "Receipt"
 msgstr "Recibo"
 
@@ -6744,7 +6742,7 @@ msgstr "Recibo"
 msgid "Received"
 msgstr "Recibido"
 
-#: src/transaction/components/convert-transfer-rate-row/convert-transfer-rate-row.tsx
+#: src/transaction/hook/use-convert-transfer-form.hook.ts
 msgid "Receiving"
 msgstr "Recibiendo"
 
@@ -7366,7 +7364,7 @@ msgstr "Seleccionado"
 msgid "Send a copy"
 msgstr "Enviar una copia"
 
-#: src/transaction/components/convert-transfer-rate-row/convert-transfer-rate-row.tsx
+#: src/transaction/hook/use-convert-transfer-form.hook.ts
 msgid "Sending"
 msgstr "Enviando"
 
