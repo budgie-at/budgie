@@ -2,28 +2,35 @@ import { AITransactionInterface } from '@budgie/ai';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
+import { Stack } from 'expo-router';
 import { useEffect, useEffectEvent } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Text, View, useWindowDimensions } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { isDefined, isEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
+import { GroupedListSection } from '../@generic/component/grouped-list-section/grouped-list-section';
+import { SheetSurface } from '../@generic/component/sheet-surface/sheet-surface';
+import { SheetTitle } from '../@generic/component/sheet-title/sheet-title';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { appRuntime } from '../@generic/runtime/app.runtime';
+import { formSheetOptions } from '../@generic/utils/form-sheet-options.util';
 import { useGetAccountByIdQuery } from '../account/query/use-get-account-by-id.query';
 import { VoiceReviewFooter } from '../ai/component/voice-review-footer/voice-review-footer';
+import { VoiceReviewItem } from '../ai/component/voice-review-item/voice-review-item';
 import { VoiceReviewSaveButton } from '../ai/component/voice-review-save-button/voice-review-save-button';
+import { VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE } from '../ai/constant/voice-review-accessibility-font-scale.constant';
 import { useVoiceReviewModal, useVoiceReviewModalParams } from '../ai/context/voice-review-modal.context';
 import { useVoiceReview } from '../ai/hook/use-voice-review.hook';
 import { VoiceReviewRowInterface } from '../ai/interface/voice-review-row.interface';
 import { useCategorySelectorModal } from '../category/context/category-selector-modal.context';
 import { defaultAccountAtom } from '../settings/constants/settings-atoms.constant';
-import { SplitEntryDeleteButton } from '../transaction/components/split-entry-delete-button/split-entry-delete-button';
-import { SplitEntryRow } from '../transaction/components/split-entry-row/split-entry-row';
 
 import { VoiceReviewSelector } from './voice-review.selector';
 
-const SCROLL_BOTTOM_PADDING = 16;
-const SCROLL_CONTENT_STYLE = { paddingBottom: SCROLL_BOTTOM_PADDING } as const;
+const EMPTY_SHEET_DETENT = 0.45;
+const EXPANDED_SHEET_DETENT = 0.95;
+const SCROLL_CONTENT_STYLE = { paddingHorizontal: 16, paddingTop: 16, paddingBottom: 24, flexGrow: 1 } as const;
 
 const sumAmounts = (rows: { readonly amount: number }[]): number => rows.reduce((accumulator, row) => accumulator + row.amount, 0);
 
@@ -52,6 +59,7 @@ const mapExtractedToReviewRows = (transactions: AITransactionInterface[]): Voice
 // eslint-disable-next-line max-statements, max-lines-per-function -- Form-sheet route orchestrates per-row category, save, and re-record
 export default function VoiceReviewModal() {
     const { t } = useLingui();
+    const { fontScale } = useWindowDimensions();
     const defaultAccount = useAtomValue(defaultAccountAtom);
     const [, resolveVoiceReview, dismissVoiceReview] = useVoiceReviewModal();
     useModalDismiss(dismissVoiceReview);
@@ -67,7 +75,13 @@ export default function VoiceReviewModal() {
     const accountId = defaultAccount?.id ?? null;
     const { account: accountWithInstrument } = useGetAccountByIdQuery(accountId ?? 0);
     const currencySymbol = accountWithInstrument?.instrument.symbol ?? '';
+    const screenOptions = formSheetOptions(
+        isEmptyArray(rows) ? [EMPTY_SHEET_DETENT, EXPANDED_SHEET_DETENT] : [0.65, EXPANDED_SHEET_DETENT],
+        fontScale >= VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE ? 1 : 0
+    );
+    const titleClassName = fontScale >= VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE ? 'text-[15px] leading-[20px]' : '';
     const canDelete = rows.length > 1;
+    const canSaveToAccount = canSave && isPositiveNumber(accountId);
 
     const handleCategoryPress = (rowId: string, currentCategoryId: number | null) => {
         const excludeCategoryIds = rows
@@ -116,66 +130,65 @@ export default function VoiceReviewModal() {
     };
 
     return (
-        <View className="flex-1 bg-primary-reverse" collapsable={false} testID={VoiceReviewSelector.Page}>
-            {isNotEmptyString(originalText) ? (
-                <View className="mx-lg mb-lg mt-2xl flex-row gap-x-md rounded-2xl bg-secondary-background px-lg py-md">
-                    <View className="w-[2px] rounded-full bg-secondary-foreground/30" />
-                    <Text className="flex-1 text-(length:--text-lg) text-primary" numberOfLines={4}>
-                        {originalText}
-                    </Text>
-                </View>
-            ) : null}
+        <SheetSurface>
+            <Stack.Screen options={screenOptions} />
+            <View className="flex-1" testID={VoiceReviewSelector.Page} collapsable={false}>
+                <SheetTitle title={t`Voice notes`} className={titleClassName} />
+                <KeyboardAwareScrollView
+                    className="flex-1"
+                    contentContainerStyle={SCROLL_CONTENT_STYLE}
+                    keyboardShouldPersistTaps="handled"
+                    keyboardDismissMode="on-drag"
+                    bottomOffset={24}
+                >
+                    {isEmptyArray(rows) ? (
+                        <View className="flex-1 justify-center items-center gap-y-md px-xl py-3xl">
+                            <Text className="text-xl leading-[24px] font-semibold text-primary text-center">{t`No items to save`}</Text>
+                            <Text className="text-md text-secondary-foreground text-center">{t`Tap re-record to try again`}</Text>
+                        </View>
+                    ) : (
+                        <GroupedListSection>
+                            {rows.map((row, index) => (
+                                <VoiceReviewItem
+                                    key={row.id}
+                                    row={row}
+                                    index={index}
+                                    currencySymbol={currencySymbol}
+                                    canDelete={canDelete}
+                                    onAmountChange={editAmount}
+                                    onCategoryPress={handleCategoryPress}
+                                    onDelete={deleteRow}
+                                />
+                            ))}
+                        </GroupedListSection>
+                    )}
+                    {isNotEmptyString(originalText) ? (
+                        <View className="mt-xl px-xl py-lg">
+                            <Text className="text-md leading-relaxed text-secondary-foreground" selectable>
+                                {originalText}
+                            </Text>
+                        </View>
+                    ) : null}
+                </KeyboardAwareScrollView>
 
-            <ScrollView className="flex-1" contentContainerStyle={SCROLL_CONTENT_STYLE} keyboardShouldPersistTaps="handled">
-                {isEmptyArray(rows) ? (
-                    <View className="items-center px-lg py-3xl">
-                        <Text className="text-md text-secondary-foreground">{t`No items to save`}</Text>
-                        <Text className="mt-xs text-sm text-secondary-foreground opacity-60">{t`Tap re-record to try again`}</Text>
-                    </View>
-                ) : (
-                    <View className="gap-y-md px-lg">
-                        {rows.map((row, index) => {
-                            const handleAmount = (amount: number) => void editAmount(row.id, amount);
-                            const handleCategory = () => void handleCategoryPress(row.id, row.categoryId);
-                            const handleDelete = () => void deleteRow(row.id);
-
-                            return (
-                                <View key={row.id} className="overflow-hidden rounded-3xl bg-secondary-background">
-                                    <SplitEntryRow
-                                        index={index}
-                                        entry={row}
-                                        currencySymbol={currencySymbol}
-                                        autoFocus={false}
-                                        onAmountChange={handleAmount}
-                                        onCategoryPress={handleCategory}
-                                    >
-                                        {canDelete ? (
-                                            <SplitEntryDeleteButton index={index} categoryId={row.categoryId} onPress={handleDelete} />
-                                        ) : null}
-                                    </SplitEntryRow>
-                                </View>
-                            );
-                        })}
-                    </View>
-                )}
-            </ScrollView>
-
-            <VoiceReviewFooter
-                count={rows.length}
-                totalAmount={totalAmount}
-                currencySymbol={currencySymbol}
-                onCancel={handleCancel}
-                onReRecord={handleReRecord}
-            >
-                <VoiceReviewSaveButton
+                <VoiceReviewFooter
                     count={rows.length}
-                    canSave={canSave}
-                    hasInvalidAmounts={hasInvalidAmounts}
-                    hasMissingCategories={hasMissingCategories}
                     isSaving={isSaving}
-                    onSave={handleSave}
-                />
-            </VoiceReviewFooter>
-        </View>
+                    totalAmount={totalAmount}
+                    currencySymbol={currencySymbol}
+                    onCancel={handleCancel}
+                    onReRecord={handleReRecord}
+                >
+                    <VoiceReviewSaveButton
+                        count={rows.length}
+                        canSave={canSaveToAccount}
+                        hasInvalidAmounts={hasInvalidAmounts}
+                        hasMissingCategories={hasMissingCategories}
+                        isSaving={isSaving}
+                        onSave={handleSave}
+                    />
+                </VoiceReviewFooter>
+            </View>
+        </SheetSurface>
     );
 }

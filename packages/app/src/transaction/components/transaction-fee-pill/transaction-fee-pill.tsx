@@ -1,14 +1,14 @@
-import { InstrumentTypeEnum } from '@budgie/contracts';
+import { InstrumentTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { Text, View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-size-multiplier.constant';
 import { PROTECTED_AMOUNT_PLACEHOLDER } from '../../../@generic/constant/protected-amount-placeholder.constant';
 import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
-import { cn } from '../../../@generic/utils/cn.util';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
 
 import { TransactionFeePillSelector } from './transaction-fee-pill.selector';
@@ -36,7 +36,8 @@ export const TransactionFeePill = ({ amount, currencySymbol, instrumentType, sho
         ? PROTECTED_AMOUNT_PLACEHOLDER
         : formatInstrumentAmount(amount, currencySymbol, instrumentType ?? null);
     const label = hasFee ? t`Fee ${formattedAmount}` : t`Set fee`;
-    const labelClassName = hasFee ? 'text-primary' : 'text-secondary-foreground';
+    const visualLabel = hasFee ? formattedAmount : label;
+    const icon = hasFee ? UserIconNameEnum.Receipt : UserIconNameEnum.Plus;
 
     return (
         <HapticPressable
@@ -47,16 +48,17 @@ export const TransactionFeePill = ({ amount, currencySymbol, instrumentType, sho
             onPress={onPress}
             testID={TransactionFeePillSelector.Pill}
         >
-            <View className="min-h-[28px] max-w-full flex-row items-center rounded-full border-hairline border-surface-separator bg-transaction-detail-row px-xl py-[4px] dark:border-transparent">
+            <View className="min-h-[28px] max-w-full flex-row items-center gap-x-[6px] rounded-full border-hairline border-surface-separator px-[8px] py-[4px]">
+                <Icon icon={icon} size={16} className="text-primary" />
                 <Text
                     accessible={false}
                     accessibilityElementsHidden
                     importantForAccessibility="no-hide-descendants"
-                    className={cn('shrink text-[13px] leading-[18px] font-medium tabular-nums', labelClassName)}
+                    className="shrink text-[15px] leading-[20px] font-medium tabular-nums text-primary"
                     maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
                     numberOfLines={1}
                 >
-                    {label}
+                    {visualLabel}
                 </Text>
             </View>
         </HapticPressable>

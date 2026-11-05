@@ -13,6 +13,7 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 import { ColorPaletteVariant } from '../../@generic/type/color-palette-variant.type';
 import { useSplitEntriesModal } from '../context/split-entries-modal.context';
 import { sumEntryAmounts } from '../utils/sum-entry-amounts.util';
+import { sumTransactionAmounts } from '../utils/sum-transaction-amounts.util';
 
 import type { QuickFormAccountFieldName } from '../interface/quick-form-account-field-name.type';
 
@@ -76,8 +77,9 @@ export const useQuickFormSplit = ({
             return;
         }
 
-        const categoryTotalAmount = sumEntryAmounts(result);
-        const totalAmount = transactionType === TransactionTypeEnum.EXPENSE ? categoryTotalAmount + feeTotal : categoryTotalAmount;
+        const categoryTotalAmount = sumTransactionAmounts(...result.map(entry => entry.amount));
+        const totalAmount =
+            transactionType === TransactionTypeEnum.EXPENSE ? sumTransactionAmounts(categoryTotalAmount, feeTotal) : categoryTotalAmount;
 
         setValue('entries', [...result, ...currentFeeEntries], { shouldValidate: false });
         setValue('amount', totalAmount);
@@ -92,7 +94,8 @@ export const useQuickFormSplit = ({
         const currentAmount = getValues('amount');
         const selectedAccountId = getValues(accountFieldName);
         const accountId = isDefined(selectedAccountId) ? selectedAccountId : 0;
-        const splitAmount = transactionType === TransactionTypeEnum.EXPENSE ? Math.max(currentAmount - feeTotal, 0) : currentAmount;
+        const splitAmount =
+            transactionType === TransactionTypeEnum.EXPENSE ? Math.max(sumTransactionAmounts(currentAmount, -feeTotal), 0) : currentAmount;
 
         openSplitEntries(
             {

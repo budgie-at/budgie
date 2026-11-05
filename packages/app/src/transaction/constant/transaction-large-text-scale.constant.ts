@@ -1,0 +1,1 @@
+export const TRANSACTION_LARGE_TEXT_SCALE = 1.35;

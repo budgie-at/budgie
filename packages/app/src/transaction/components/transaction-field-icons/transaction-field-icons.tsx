@@ -1,8 +1,9 @@
 import { ReactNode } from 'react';
-import { View } from 'react-native';
+
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 
 interface Props {
     readonly children: ReactNode;
 }
 
-export const TransactionFieldIcons = ({ children }: Props) => <View className="flex-row justify-center">{children}</View>;
+export const TransactionFieldIcons = ({ children }: Props) => <GroupedListSection>{children}</GroupedListSection>;

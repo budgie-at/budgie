@@ -6,18 +6,14 @@ import * as Effect from 'effect/Effect';
 import { useLocalSearchParams } from 'expo-router';
 import { FormProvider } from 'react-hook-form';
 
-import { PageHeader } from '../../../@generic/component/page-header/page-header';
-import { FullPage } from '../../../@generic/component/page/full-page';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { parsePositiveRouteParam } from '../../../@generic/utils/parse-positive-route-param.util';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
+import { TransactionFormScreen } from '../../../transaction/components/transaction-form-screen/transaction-form-screen';
 import { TransferQuickForm } from '../../../transaction/components/transfer-quick-form/transfer-quick-form';
 import { useCreateTransactionForm } from '../../../transaction/hook/use-create-transaction-form.hook';
 
-import type { Edge } from 'react-native-safe-area-context';
 /* jscpd:ignore-end */
-
-const SAFE_EDGES: Edge[] = ['top', 'bottom'];
 
 /* jscpd:ignore-start */
 export default function CreateTransferTransactionPage() {
@@ -44,13 +40,9 @@ export default function CreateTransferTransactionPage() {
 
     return (
         <FormProvider {...form}>
-            <FullPage
-                className="bg-grouped-surface"
-                header={<PageHeader size="md" className="min-h-[52px]" title={t`New Transfer`} onGoBack={handleGoBack} />}
-                safeEdges={SAFE_EDGES}
-            >
+            <TransactionFormScreen title={t`New Transfer`} onGoBack={handleGoBack}>
                 <TransferQuickForm variant="default" onSubmit={handleSubmit} onCancel={handleGoBack} />
-            </FullPage>
+            </TransactionFormScreen>
         </FormProvider>
     );
 }

@@ -7,13 +7,12 @@ import * as Effect from 'effect/Effect';
 import { useLocalSearchParams } from 'expo-router';
 import { FormProvider } from 'react-hook-form';
 
-import { PageHeader } from '../../../@generic/component/page-header/page-header';
-import { FullPage } from '../../../@generic/component/page/full-page';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { parsePositiveRouteParam } from '../../../@generic/utils/parse-positive-route-param.util';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
 import { defaultAccountAtom } from '../../../settings/constants/settings-atoms.constant';
 import { SimpleQuickForm } from '../../../transaction/components/simple-quick-form/simple-quick-form';
+import { TransactionFormScreen } from '../../../transaction/components/transaction-form-screen/transaction-form-screen';
 import { useCreateTransactionForm } from '../../../transaction/hook/use-create-transaction-form.hook';
 /* jscpd:ignore-end */
 
@@ -43,17 +42,14 @@ export default function CreateIncomeTransactionPage() {
 
     return (
         <FormProvider {...form}>
-            <FullPage
-                className="bg-grouped-surface"
-                header={<PageHeader size="md" className="min-h-[52px]" title={t`New Income`} onGoBack={handleGoBack} />}
-            >
+            <TransactionFormScreen title={t`New Income`} onGoBack={handleGoBack}>
                 <SimpleQuickForm
                     transactionType={TransactionTypeEnum.INCOME}
                     isNewTransaction
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}
                 />
-            </FullPage>
+            </TransactionFormScreen>
         </FormProvider>
     );
 }

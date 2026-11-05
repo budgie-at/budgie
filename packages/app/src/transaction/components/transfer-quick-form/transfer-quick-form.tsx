@@ -4,7 +4,7 @@ import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { Ref, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -15,9 +15,11 @@ import { useKeypadInput } from '../../hook/use-keypad-input.hook';
 import { useQuickFormFee } from '../../hook/use-quick-form-fee.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormValidation } from '../../hook/use-quick-form-validation.hook';
+import { useTransactionKeypadEditing } from '../../hook/use-transaction-keypad-editing.hook';
 import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
+import { applyTransferDestinationAmount } from '../../utils/apply-transfer-destination-amount.util';
 import { computeTransferDisplay } from '../../utils/compute-transfer-display.util';
-import { shouldShowTransferPillSeparator } from '../../utils/should-show-transfer-pill-separator.util';
+import { formatKeypadAmount } from '../../utils/format-keypad-amount.util';
 import { ConversionRow } from '../conversion-row/conversion-row';
 import { CurrencyModePill } from '../currency-mode-pill/currency-mode-pill';
 import { QuickFormLayout } from '../quick-form-layout/quick-form-layout';
@@ -28,6 +30,7 @@ import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transa
 import { TransactionDateFieldIcon } from '../transaction-date-field-icon/transaction-date-field-icon';
 import { TransactionFeePill } from '../transaction-fee-pill/transaction-fee-pill';
 import { TransactionFieldIcons } from '../transaction-field-icons/transaction-field-icons';
+import { TransactionFormActions } from '../transaction-form-actions/transaction-form-actions';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
 import { TransactionNoteFieldIcon } from '../transaction-note-field-icon/transaction-note-field-icon';
 import { TransactionSourcesFieldIcon } from '../transaction-sources-field-icon/transaction-sources-field-icon';
@@ -51,16 +54,7 @@ interface Props {
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Transfer form orchestrates multiple hooks and display computations
 export const TransferQuickForm = (props: Props) => {
-    const {
-        ref,
-        variant,
-        initialDestinationAmount,
-        isSubmitting,
-        isNewTransaction = true,
-        onSubmit,
-        onCancel,
-        onConsolidationPress
-    } = props;
+    const { variant, isNewTransaction = true } = props;
 
     const { t } = useLingui();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
@@ -69,10 +63,14 @@ export const TransferQuickForm = (props: Props) => {
     const { handleCommentPress, handleDatePress } = useQuickFormModals();
     const { fromAccountId, toAccountId, fromAccount, toAccount } = useTransferAccounts();
 
+    const { isEditingAmount, toggleKeypad, startEditingAmount, footerHeight, amountAccessoryIcon, amountAccessibilityHint } =
+        useTransactionKeypadEditing(isNewTransaction);
+
     const [isEditingDestination, setIsEditingDestination] = useState(false);
 
     const initialAmount = getValues('amount');
-    const conversion = useCurrencyConversion();
+    const fromInstrumentId = fromAccount?.instrumentId ?? 0;
+    const toInstrumentId = toAccount?.instrumentId ?? 0;
     const entries = useWatch({ control, name: 'entries' });
 
     const handleSourceAmountChange = (value: number) => {
@@ -87,13 +85,16 @@ export const TransferQuickForm = (props: Props) => {
     });
 
     const destinationKeypad = useKeypadInput({
-        initialValue: initialDestinationAmount ?? 0
+        initialValue: props.initialDestinationAmount ?? 0
     });
 
+    const conversion = useCurrencyConversion(fromInstrumentId, toInstrumentId, sourceKeypad.numericValue);
     const activeKeypad = isEditingDestination ? destinationKeypad : sourceKeypad;
-
-    const fromInstrumentId = fromAccount?.instrumentId ?? 0;
-    const toInstrumentId = toAccount?.instrumentId ?? 0;
+    const isConfirmDisabled = [
+        props.isSubmitting,
+        conversion.isPending && !isEditingDestination,
+        ![sourceKeypad.numericValue, activeKeypad.numericValue].every(isPositiveNumber)
+    ].some(Boolean);
 
     const hasInitializedRef = useRef(false);
 
@@ -101,19 +102,18 @@ export const TransferQuickForm = (props: Props) => {
         const isCrossCurrency = fromInstrumentId !== toInstrumentId && fromInstrumentId > 0 && toInstrumentId > 0;
 
         if (!isCrossCurrency) {
+            conversion.reset();
+            hasInitializedRef.current = [fromInstrumentId, toInstrumentId].every(isPositiveNumber);
+
             return;
         }
 
-        const hasStoredDestination = isPositiveNumber(initialDestinationAmount) && initialDestinationAmount !== initialAmount;
+        const hasStoredDestination = isPositiveNumber(props.initialDestinationAmount);
 
         if (hasStoredDestination && !hasInitializedRef.current) {
-            conversion.setManualDestinationAmount(sourceKeypad.numericValue, initialDestinationAmount);
+            conversion.setManualDestinationAmount(sourceKeypad.numericValue, props.initialDestinationAmount);
             hasInitializedRef.current = true;
 
-            return;
-        }
-
-        if (hasInitializedRef.current && conversion.isManualRate) {
             return;
         }
 
@@ -150,6 +150,8 @@ export const TransferQuickForm = (props: Props) => {
         receivingLabel: t`Receiving ${toCode}`
     });
 
+    const displayAmount = isEditingAmount ? display.displayAmount : formatKeypadAmount(display.displayAmount, '.', '', 2);
+
     const finishDestinationEditing = () => {
         const destinationAmount = destinationKeypad.numericValue;
 
@@ -160,7 +162,15 @@ export const TransferQuickForm = (props: Props) => {
         setIsEditingDestination(false);
     };
 
+    const handleAmountPress = () => {
+        if (isEditingAmount && isEditingDestination) {
+            finishDestinationEditing();
+        }
+        toggleKeypad();
+    };
+
     const handleConversionRowPress = () => {
+        startEditingAmount();
         if (isEditingDestination) {
             finishDestinationEditing();
         } else {
@@ -169,11 +179,9 @@ export const TransferQuickForm = (props: Props) => {
         }
     };
 
-    useImperativeHandle(ref, () => ({ openFee: handleFeePress }));
+    useImperativeHandle(props.ref, () => ({ openFee: handleFeePress }));
     const currencyPillLabel = isEditingDestination ? t`Receiving · ${toCode}` : fromCode;
-    const showPillSeparator = shouldShowTransferPillSeparator(display.amountCode, isNewTransaction, feeAmount);
     const confirmLabel = isEditingDestination ? t`Done` : t`Save`;
-    const conversionPress = conversion.isCrossCurrency ? handleConversionRowPress : void 0;
 
     const handleConfirm = () => {
         if (isEditingDestination) {
@@ -201,15 +209,12 @@ export const TransferQuickForm = (props: Props) => {
             return;
         }
 
-        if (conversion.isCrossCurrency) {
-            setValue('exchangeRate', conversion.exchangeRate);
-        }
+        setValue('exchangeRate', conversion.exchangeRate);
 
-        const transferEntries = buildTransferEntries({
-            fromAccountId: from,
-            toAccountId: to,
-            amount
-        });
+        const transferEntries = applyTransferDestinationAmount(
+            buildTransferEntries({ fromAccountId: from, toAccountId: to, amount }),
+            conversion.destinationAmount
+        );
         const feeEntries = getTransactionFeeEntries(getValues('entries')).map(entry => ({
             ...entry,
             accountId: from,
@@ -218,33 +223,34 @@ export const TransferQuickForm = (props: Props) => {
 
         setValue('entries', [...transferEntries, ...feeEntries], { shouldValidate: false });
 
-        onSubmit();
+        props.onSubmit();
     };
 
     return (
         <QuickFormLayout
-            hero={
+            footerHeight={footerHeight}
+            amount={
                 <TransactionAmountDisplay
                     ref={amountDisplayRef}
-                    amount={display.displayAmount}
+                    amount={displayAmount}
                     currencySymbol={display.displaySymbol}
                     variant="primary"
-                    onPress={conversionPress}
+                    onPress={handleAmountPress}
+                    accessoryIcon={amountAccessoryIcon}
+                    accessibilityHint={amountAccessibilityHint}
                     testID={SimpleQuickFormSelector.AmountInput}
-                >
+                />
+            }
+            context={
+                <View className="items-center gap-y-[4px]">
                     <QuickFormSecondaryLine>
                         {isDefined(display.amountCode) ? (
                             <CurrencyModePill
                                 label={currencyPillLabel}
                                 accessibilityLabel={display.amountLabel}
                                 isFlipped={isEditingDestination}
-                                onPress={conversionPress}
+                                onPress={handleConversionRowPress}
                             />
-                        ) : null}
-                        {showPillSeparator ? (
-                            <Text className="self-center text-secondary-foreground" accessible={false}>
-                                ·
-                            </Text>
                         ) : null}
                         <TransactionFeePill
                             amount={feeAmount}
@@ -255,37 +261,35 @@ export const TransferQuickForm = (props: Props) => {
                         />
                     </QuickFormSecondaryLine>
                     <QuickFormValidationSlot />
-                </TransactionAmountDisplay>
+                </View>
             }
             footer={
-                <TransactionKeypad
-                    keypad={activeKeypad.handlers}
+                <TransactionFormActions
+                    label={confirmLabel}
+                    isDisabled={isConfirmDisabled}
                     onConfirm={handleConfirm}
-                    onCancel={onCancel}
-                    confirmLabel={confirmLabel}
-                    confirmTestID={SimpleQuickFormSelector.SubmitButton}
-                    isConfirmDisabled={isSubmitting}
-                />
+                    onCancel={props.onCancel}
+                    testID={SimpleQuickFormSelector.SubmitButton}
+                >
+                    {isEditingAmount ? <TransactionKeypad keypad={activeKeypad.handlers} /> : null}
+                </TransactionFormActions>
             }
         >
-            <TransactionFieldIcons>
-                <TransactionDateFieldIcon onPress={handleDatePress} />
-                <TransactionNoteFieldIcon onPress={handleCommentPress} />
-                {isDefined(onConsolidationPress) ? <TransactionSourcesFieldIcon onPress={onConsolidationPress} /> : null}
-            </TransactionFieldIcons>
-
-            <View className="gap-[12px] pt-[12px]">
+            <View className="gap-[12px]">
                 <TransactionTransferAccountsRow ref={transferAccountsRef} />
 
-                <View className="min-h-[56px]">
-                    {conversion.isCrossCurrency ? (
-                        <ConversionRow
-                            {...display.conversionRowProps}
-                            isManualRate={conversion.isManualRate}
-                            onPress={handleConversionRowPress}
-                        />
-                    ) : null}
-                </View>
+                {conversion.isCrossCurrency ? (
+                    <ConversionRow
+                        {...display.conversionRowProps}
+                        isManualRate={conversion.isManualRate}
+                        onPress={handleConversionRowPress}
+                    />
+                ) : null}
+                <TransactionFieldIcons>
+                    <TransactionDateFieldIcon onPress={handleDatePress} />
+                    <TransactionNoteFieldIcon onPress={handleCommentPress} />
+                    {isDefined(props.onConsolidationPress) ? <TransactionSourcesFieldIcon onPress={props.onConsolidationPress} /> : null}
+                </TransactionFieldIcons>
             </View>
         </QuickFormLayout>
     );

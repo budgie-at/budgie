@@ -55,9 +55,11 @@ test('31 transaction info', { tags: ['transactions'] }, async ({ budgie }) => {
     await b.phase('edit a similar expense, stats update', async () => {
         await b.openLink(ctx, 'budgie://transactions/5/expense/edit');
         await expect(b.byText(screen, 'Edit Expense')).toBeVisible({ timeout: 10_000 });
-        await b.expectId(ctx, 'TransactionKeypad.Digit.1');
+        await b.expectNoId(ctx, 'TransactionKeypad.Digit.1');
         await clearAmount(ctx);
         await typeDigits(ctx, '20');
+        await b.tapId(ctx, 'TransactionForm.AmountInput');
+        await b.expectNoId(ctx, 'TransactionKeypad.Digit.1');
         await b.tapId(ctx, 'TransactionForm.SubmitButton');
         await b.expectId(ctx, 'TransactionInfo.Page', 15_000);
         await b.scrollTo(ctx, 'TransactionInfo.Amount', 'up');

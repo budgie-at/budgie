@@ -1,5 +1,8 @@
 import { Trans, useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
+import { useResolveClassNames } from 'uniwind';
+
+import { ScreenChromeHeader } from '@rnw-community/react-native-screen-chrome';
 
 import { TransactionsPageSelector } from '../../../app/(tabs)/transactions-page.selector';
 import { useIsAccessibilityTextSize } from '../../hook/use-is-accessibility-text-size.hook';
@@ -23,15 +26,20 @@ const TABS: readonly TabConfigInterface<TransactionsTabType>[] = [
 export const TransactionsPageHeader = ({ activeTab, onChangeTab }: Props) => {
     const { t } = useLingui();
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
+    const backgroundStyle = useResolveClassNames('bg-surface');
+    const borderWidthStyle = useResolveClassNames('border-b-hairline');
+    const borderColorStyle = useResolveClassNames('border-surface-separator');
+    const headerStyle = [backgroundStyle, borderWidthStyle, borderColorStyle];
+    const rowStyle = useResolveClassNames('px-0');
     const segments: readonly SegmentedControlSegmentInterface<TransactionsTabType>[] = [
         { value: 'transactions', label: t`Transactions`, testID: TransactionsPageSelector.TransactionsTab },
         { value: 'recurring', label: t`Recurring`, testID: TransactionsPageSelector.RecurringTab }
     ];
 
     return (
-        <View className="bg-surface border-b-hairline border-surface-separator">
+        <ScreenChromeHeader inFlow style={headerStyle} rowStyle={rowStyle}>
             {isAccessibilityTextSize ? (
-                <View className="px-5xl pb-md">
+                <View className="flex-1 px-5xl pb-md">
                     <SegmentedControl
                         segments={segments}
                         value={activeTab}
@@ -40,7 +48,7 @@ export const TransactionsPageHeader = ({ activeTab, onChangeTab }: Props) => {
                     />
                 </View>
             ) : (
-                <View className="px-5xl pb-md">
+                <View className="flex-1 px-5xl pb-md">
                     <View className="flex-row items-center gap-x-xl">
                         {TABS.map(tab => (
                             <TransactionsPageTab key={tab.key} tab={tab} activeTab={activeTab} onChangeTab={onChangeTab} />
@@ -48,6 +56,6 @@ export const TransactionsPageHeader = ({ activeTab, onChangeTab }: Props) => {
                     </View>
                 </View>
             )}
-        </View>
+        </ScreenChromeHeader>
     );
 };

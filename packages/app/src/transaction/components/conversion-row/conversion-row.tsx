@@ -10,7 +10,7 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-size-multiplier.constant';
 import { PROTECTED_AMOUNT_PLACEHOLDER } from '../../../@generic/constant/protected-amount-placeholder.constant';
 import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
-import { formatExchangeRate } from '../../../@generic/utils/format-exchange-rate.util';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { TransferQuickFormSelector } from '../transfer-quick-form/transfer-quick-form.selector';
 
 interface Props {
@@ -32,13 +32,15 @@ export const ConversionRow = (props: Props) => {
     const { label, destinationAmount, destinationSymbol, sourceCode, destinationCode, exchangeRate, isManualRate, onPress } = props;
     const { t } = useLingui();
     const isAmountProtected = useIsAmountProtected();
+    const formatAmount = useFormatDigits(2);
+    const formatRate = useFormatDigits(0, 6);
 
     const prefix = isManualRate ? '=' : '\u2248';
-    const formattedAmount = isPositiveNumber(destinationAmount) ? destinationAmount.toFixed(2) : '0.00';
-    const formattedRate = isPositiveNumber(exchangeRate) ? formatExchangeRate(exchangeRate) : '—';
+    const formattedAmount = formatAmount(isPositiveNumber(destinationAmount) ? destinationAmount : 0, destinationSymbol);
+    const formattedRate = isPositiveNumber(exchangeRate) ? formatRate(exchangeRate) : '—';
     const rateLabel = t`1 ${sourceCode} = ${formattedRate} ${destinationCode}`;
     const exchangeRateLabel = t`Exchange rate: ${rateLabel}`;
-    const displayAmount = isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : `${prefix} ${destinationSymbol}${formattedAmount}`;
+    const displayAmount = isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : `${prefix} ${formattedAmount}`;
     const accessibilityLabel = `${label}: ${displayAmount}. ${exchangeRateLabel}`;
 
     return (
