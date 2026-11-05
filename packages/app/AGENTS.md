@@ -21,6 +21,8 @@ pnpm i18n:sync
 
 Before `pnpm ios` against a simulator you booted yourself, slim it: `. ../../tests/app-tests/scripts/mobile-ci-slim-simulator.sh && slim_simulator <udid>`. Every simulator this repo touches runs slim — see root `AGENTS.md`, "Simulator Dev Testing".
 
+OTA updates only carry assets matching `updates.assetPatternsToBeBundled` in `app.config.js` (`assets/icons/*`). An image required from anywhere else renders blank after an OTA until the next store build, and E2E cannot catch it because its build has updates disabled. Changing that pattern moves the native fingerprint, so put new images in `assets/icons/`.
+
 ## Structure
 
 ```
