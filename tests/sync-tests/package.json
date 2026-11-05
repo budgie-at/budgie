@@ -17,6 +17,7 @@
         "@budgie/contracts": "workspace:^",
         "@budgie/ledger": "workspace:*",
         "@budgie/market": "workspace:*",
+        "@budgie/recurring": "workspace:*",
         "@budgie/rules": "workspace:*",
         "@budgie/sync": "workspace:*",
         "@effect/sql-sqlite-node": "4.0.6",

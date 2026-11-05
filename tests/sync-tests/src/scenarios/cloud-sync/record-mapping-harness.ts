@@ -37,7 +37,8 @@ import {
     TransactionReceiptEntityTable,
     TransactionTypeEnum,
     TransactionUpdatedByEnum,
-    encodeSyncAggregate
+    encodeSyncAggregate,
+    isSyncAggregateRecordType
 } from '@budgie/contracts';
 import { eq, getTableColumns } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -144,18 +145,20 @@ export const loadSyncState = (database: DB) =>
             }
 
             for (const parent of parentRows) {
-                aggregates.push({
-                    recordType: definition.recordType,
-                    parent,
-                    children: Object.fromEntries(
-                        definition.children.map(child => [
-                            child.descriptor.tableName,
-                            (childRowsByTable.get(child.descriptor.tableName) ?? []).filter(
-                                row => row[child.descriptor.parentLink?.property ?? ''] === parent['id']
-                            )
-                        ])
-                    )
-                });
+                if (isSyncAggregateRecordType(definition.recordType)) {
+                    aggregates.push({
+                        recordType: definition.recordType,
+                        parent,
+                        children: Object.fromEntries(
+                            definition.children.map(child => [
+                                child.descriptor.tableName,
+                                (childRowsByTable.get(child.descriptor.tableName) ?? []).filter(
+                                    row => row[child.descriptor.parentLink?.property ?? ''] === parent['id']
+                                )
+                            ])
+                        )
+                    });
+                }
             }
         }
 

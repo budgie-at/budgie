@@ -230,6 +230,7 @@ declare class ICloudNativeModule extends NativeModule<ICloudNativeEvents> {
     addPendingSaves(scope: ICloudSyncScope, records: readonly ICloudRecordPayload[]): Promise<void>;
     addPendingDeletes(scope: ICloudSyncScope, recordIds: readonly ICloudRecordId[]): Promise<void>;
     confirmFetchedBatch(scope: ICloudSyncScope, batchId: string): Promise<void>;
+    fetchRecord(zoneName: string, recordName: string): Promise<ICloudFetchedRecord | null>;
     ensureZone(scope: ICloudSyncScope, zoneName: string): Promise<void>;
     deleteZone(scope: ICloudSyncScope, zoneName: string): Promise<void>;
     createHouseholdShare(zoneName: string): Promise<void>;

@@ -213,6 +213,24 @@
         "entries": { "type": "STRING", "encrypted": true },
         "linkId": { "type": "STRING", "encrypted": true }
       }
+    },
+    {
+      "recordType": "SyncMeta",
+      "fields": {
+        "schemaVersion": { "type": "INT64" },
+        "__booleanFields": { "type": "STRING", "encrypted": true },
+        "lineageId": { "type": "STRING", "encrypted": true }
+      }
+    },
+    {
+      "recordType": "SyncDevice",
+      "fields": {
+        "schemaVersion": { "type": "INT64" },
+        "__booleanFields": { "type": "STRING", "encrypted": true },
+        "installId": { "type": "STRING", "encrypted": true },
+        "lastSyncedAt": { "type": "DOUBLE", "encrypted": true },
+        "deviceName": { "type": "STRING", "encrypted": true }
+      }
     }
   ]
 }

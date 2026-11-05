@@ -410,6 +410,7 @@ export { generateSyncId } from './cloud-sync/utils/generate-sync-id.util';
 export { deriveSyncId } from './cloud-sync/utils/derive-sync-id.util';
 export { deriveSeedSyncId } from './cloud-sync/utils/derive-seed-sync-id.util';
 export { deriveBankTransactionSyncId } from './cloud-sync/utils/derive-bank-transaction-sync-id.util';
+export { deriveConsolidationSyncId } from './cloud-sync/apply/utils/derive-consolidation-sync-id.util';
 
 export { SyncRecordEntityTable } from './cloud-sync/table/sync-record-entity.table';
 export { SyncOutboxEntityTable } from './cloud-sync/table/sync-outbox-entity.table';
@@ -484,6 +485,7 @@ export { mergeSyncRow } from './cloud-sync/apply/utils/merge-sync-row.util';
 export { SYNC_AUTHORSHIP_COLUMNS } from './cloud-sync/apply/constant/sync-authorship-columns.constant';
 export type { SyncApplyBatchInterface } from './cloud-sync/apply/interface/sync-apply-batch.interface';
 export type { SyncApplyResultInterface } from './cloud-sync/apply/interface/sync-apply-result.interface';
+export type { SyncDerivedMergeInterface } from './cloud-sync/apply/interface/sync-derived-merge.interface';
 export type { SyncIncomingRecordInterface } from './cloud-sync/apply/interface/sync-incoming-record.interface';
 export type { SyncIncomingDeletionInterface } from './cloud-sync/apply/interface/sync-incoming-deletion.interface';
 export type { SyncPausedZoneInterface } from './cloud-sync/apply/interface/sync-paused-zone.interface';
@@ -492,3 +494,7 @@ export type { SyncReenqueuedRecordInterface } from './cloud-sync/apply/interface
 export type { SyncMergeInputInterface } from './cloud-sync/apply/interface/sync-merge-input.interface';
 export type { SyncMergeResultInterface } from './cloud-sync/apply/interface/sync-merge-result.interface';
 export type { SyncCellType } from './cloud-sync/apply/type/sync-cell.type';
+export { isSyncAggregateRecordType } from './cloud-sync/upload/type-guard/is-sync-aggregate-record-type.type-guard';
+export { listClearedSyncFields } from './cloud-sync/mapping/utils/list-cleared-sync-fields.util';
+export { SyncResetRepository } from './cloud-sync/repository/sync-reset.repository';
+export { BankSyncInstallId } from './cloud-sync/constant/bank-sync-install-id.constant';

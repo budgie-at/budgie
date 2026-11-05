@@ -1,6 +1,7 @@
 import CloudKit
 import ExpoModulesCore
 import Foundation
+import UIKit
 
 public final class ICloudModule: Module {
   private let hostsLock = NSLock()
@@ -48,6 +49,7 @@ public final class ICloudModule: Module {
         return existing
       }
       previous?.stop()
+      DispatchQueue.main.async { UIApplication.shared.registerForRemoteNotifications() }
     }
 
     AsyncFunction("stopSync") { [weak self] (rawScope: String) throws in
@@ -75,6 +77,19 @@ public final class ICloudModule: Module {
 
     AsyncFunction("confirmFetchedBatch") { [weak self] (rawScope: String, batchId: String) throws in
       try self?.host(rawScope).confirm(batchId: batchId)
+    }
+
+    AsyncFunction("fetchRecord") { (zoneName: String, recordName: String) async throws -> [String: Any]? in
+      let recordID = CKRecord.ID(recordName: recordName, zoneID: ICloudDatabase.zoneID(zoneName: zoneName, ownerName: ICloudDatabase.defaultOwnerName))
+      do {
+        return ICloudRecordCodec.dictionary(from: try await ICloudDatabase.database.record(for: recordID))
+      } catch {
+        let code = (error as NSError).code
+        if code == CKError.Code.unknownItem.rawValue || code == CKError.Code.zoneNotFound.rawValue {
+          return nil
+        }
+        throw ICloudDatabase.syncError(error)
+      }
     }
 
     AsyncFunction("ensureZone") { (rawScope: String, zoneName: String) async throws in

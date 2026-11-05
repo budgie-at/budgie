@@ -299,6 +299,7 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
             incomeCalendar: Effect.fn('RecurringService.incomeCalendar')(function* (year: number, month: number, now: Date) {
                 return projectRecurringMonth(yield* syncSeriesAdoptingLegacyOnce(now), year, month, now, RecurringSeriesKindEnum.INCOME);
             }),
+            detect: (now: Date) => syncSeriesAdoptingLegacyOnce(now).pipe(Effect.asVoid),
             setUserState: (seriesId: number, userState: RecurringSeriesUserStateEnum) =>
                 recurringRepository.updateSeries(seriesId, { userState }),
             rename: (seriesId: number, title: string) => recurringRepository.updateSeries(seriesId, { title })

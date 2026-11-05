@@ -4,5 +4,5 @@ import type { SyncRecordDefinitionInterface } from './sync-record-definition.int
 
 export interface SyncRecordDecoderInterface {
     readonly definition: SyncRecordDefinitionInterface;
-    readonly schema: Schema.Constraint;
+    readonly schema: Schema.ConstraintDecoder<unknown>;
 }

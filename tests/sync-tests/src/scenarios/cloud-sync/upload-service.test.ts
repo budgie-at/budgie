@@ -86,7 +86,7 @@ describe('cloud-sync/upload-service', () => {
 
                 expect(remaining.map(row => row.syncId)).toContain(sent.syncId);
                 expect(stored.systemFields).toBe('{"changeTag":"1"}');
-                expect(JSON.parse(stored.payload)).toEqual(sent.records[0].encryptedFields);
+                expect(JSON.parse(stored.payload)).toEqual(sent.records[0]);
 
                 const secondBatch = yield* uploadService.pending(10);
                 const resent = secondBatch.saves.find(save => save.syncId === sent.syncId);

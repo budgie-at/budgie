@@ -32,6 +32,7 @@ import { normalizeSyncCell } from '../utils/normalize-sync-cell.util';
 import { SyncApplyTracker } from '../utils/sync-apply-tracker.util';
 
 import { SyncAccountBalanceRefresher } from './sync-account-balance-refresher.service';
+import { SyncDerivedMatcherService } from './sync-derived-matcher.service';
 
 import type { SyncRowReferenceInterface } from '../../mapping/interface/sync-row-reference.interface';
 import type { SyncRowInterface } from '../../mapping/interface/sync-row.interface';
@@ -64,6 +65,7 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
         const recordRepository = yield* SyncRecordRepository;
         const pendingRepository = yield* SyncPendingRepository;
         const balanceRefresher = yield* SyncAccountBalanceRefresher;
+        const derivedMatcher = yield* SyncDerivedMatcherService;
 
         const definitions = Object.values(SYNC_RECORD_DEFINITIONS);
         const descriptors: Record<string, SyncTableDescriptorInterface> = Object.fromEntries(
@@ -807,7 +809,9 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
                     }
                 }
 
-                return tracker.toResult(yield* repository.countPending(), yield* findPausedZones());
+                const merged = yield* derivedMatcher.mergeRecurringSeries(tracker.touchedSyncIds(SyncRecordTypeEnum.RECURRING_SERIES));
+
+                return tracker.toResult(yield* repository.countPending(), yield* findPausedZones(), merged);
             },
             effect => Db.transaction(effect)
         );
@@ -847,7 +851,8 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
             SyncApplyStateRepository.layer,
             SyncOutboxRepository.layer,
             SyncRecordRepository.layer,
-            SyncPendingRepository.layer
+            SyncPendingRepository.layer,
+            SyncDerivedMatcherService.layer
         ])
     );
 }

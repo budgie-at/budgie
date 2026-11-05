@@ -147,6 +147,16 @@ export class SyncIdentityRepository extends Context.Service<SyncIdentityReposito
         return {
             findLineageId,
             ensureLineageId,
+            adoptLineageId: (lineageId: string) => Db.query(db => db.update(SettingsEntityTable).set({ lineageId })),
+            hasUserData: Effect.fn('SyncIdentityRepository.hasUserData')(function* () {
+                const [row] = yield* Db.query(db =>
+                    db.$client.unsafe<{ total: number }>(
+                        `SELECT (SELECT COUNT(*) FROM accounts WHERE deleted_at IS NULL) + (SELECT COUNT(*) FROM transactions WHERE deleted_at IS NULL) AS total`
+                    )
+                );
+
+                return (row?.total ?? 0) > 0;
+            }),
             countMissing: Effect.fn('SyncIdentityRepository.countMissing')(function* () {
                 const [row] = yield* Db.query(db =>
                     db.$client.unsafe<{ total: number }>(

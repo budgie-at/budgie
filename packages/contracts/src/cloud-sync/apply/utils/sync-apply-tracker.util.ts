@@ -1,6 +1,7 @@
 import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import type { SyncApplyResultInterface } from '../interface/sync-apply-result.interface';
+import type { SyncDerivedMergeInterface } from '../interface/sync-derived-merge.interface';
 import type { SyncPausedZoneInterface } from '../interface/sync-paused-zone.interface';
 import type { SyncRejectedRecordInterface } from '../interface/sync-rejected-record.interface';
 import type { SyncReenqueuedRecordInterface } from '../interface/sync-reenqueued-record.interface';
@@ -47,7 +48,15 @@ export class SyncApplyTracker {
         return [...this.outboxDecisions.values()];
     }
 
-    toResult(heldBack: number, pausedZones: readonly SyncPausedZoneInterface[]): SyncApplyResultInterface {
+    touchedSyncIds(recordType: string): readonly string[] {
+        return [...(this.touchedByType.get(recordType) ?? [])];
+    }
+
+    toResult(
+        heldBack: number,
+        pausedZones: readonly SyncPausedZoneInterface[],
+        merged: readonly SyncDerivedMergeInterface[]
+    ): SyncApplyResultInterface {
         return {
             touched: SyncApplyTracker.toRecord(this.touchedByType),
             touchedRows: SyncApplyTracker.toRecord(this.touchedByTable),
@@ -56,7 +65,8 @@ export class SyncApplyTracker {
             skipped: this.skippedCount,
             rejected: this.rejectedRecords,
             pausedZones,
-            reenqueued: this.pendingOutboxDecisions.filter(({ changedColumns }) => !isEmptyArray(changedColumns))
+            reenqueued: this.pendingOutboxDecisions.filter(({ changedColumns }) => !isEmptyArray(changedColumns)),
+            merged
         };
     }
 

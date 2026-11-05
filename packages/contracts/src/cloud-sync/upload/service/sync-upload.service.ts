@@ -22,6 +22,7 @@ import { isSyncAggregateRecordType } from '../type-guard/is-sync-aggregate-recor
 
 import type { SyncOutboxEntityInterface } from '../../entity/sync-outbox-entity.interface';
 import type { SyncIdentityInterface } from '../../mapping/interface/sync-identity.interface';
+import type { SyncRecordInterface } from '../../mapping/interface/sync-record.interface';
 import type { SyncRecordDefinitionInterface } from '../../mapping/interface/sync-record-definition.interface';
 import type { SyncReferenceResolverInterface } from '../../mapping/interface/sync-reference-resolver.interface';
 import type { SyncRowInputType } from '../../mapping/type/sync-row-input.type';
@@ -38,7 +39,7 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
         const syncOutboxRepository = yield* SyncOutboxRepository;
         const syncRecordRepository = yield* SyncRecordRepository;
         const changedColumnsSchema = Schema.fromJsonString(Schema.Array(Schema.String));
-        const linkedRecordSchema = Schema.fromJsonString(Schema.Struct({ linkId: Schema.String }));
+        const linkedRecordSchema = Schema.fromJsonString(Schema.Struct({ encryptedFields: Schema.Struct({ linkId: Schema.String }) }));
 
         const parseChangedColumns = (changedColumns: string): readonly string[] =>
             Option.getOrElse(Schema.decodeUnknownOption(changedColumnsSchema)(changedColumns), () => []);
@@ -150,6 +151,42 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
             reason
         });
 
+        const findStaleLegTargets = Effect.fnUntraced(function* (records: readonly SyncRecordInterface[]) {
+            const home = records.find(record => record.recordType === SyncRecordTypeEnum.TRANSACTION);
+
+            if (!isDefined(home)) {
+                return [];
+            }
+
+            const stored = yield* syncRecordRepository.find(home.zone, home.recordName);
+            const linked = Option.flatMap(Option.fromNullishOr(stored?.payload), payload =>
+                Schema.decodeUnknownOption(linkedRecordSchema)(payload)
+            );
+
+            if (Option.isNone(linked)) {
+                return [];
+            }
+
+            const currentLegZones = new Set(
+                records.filter(record => record.recordType === SyncRecordTypeEnum.TRANSACTION_LEG).map(({ zone }) => zone)
+            );
+            const storedLegs = yield* Db.query(db =>
+                db
+                    .select({ syncZone: SyncRecordEntityTable.syncZone, syncId: SyncRecordEntityTable.syncId })
+                    .from(SyncRecordEntityTable)
+                    .where(
+                        and(
+                            eq(SyncRecordEntityTable.syncId, linked.value.encryptedFields.linkId),
+                            eq(SyncRecordEntityTable.recordType, SyncRecordTypeEnum.TRANSACTION_LEG)
+                        )
+                    )
+            );
+
+            return storedLegs
+                .filter(leg => !currentLegZones.has(leg.syncZone))
+                .map((leg): SyncRecordTargetInterface => ({ recordName: leg.syncId, zone: leg.syncZone }));
+        });
+
         const buildSave = Effect.fnUntraced(function* (row: SyncOutboxEntityInterface) {
             if (!isSyncAggregateRecordType(row.recordType)) {
                 return rejected(row, `Unknown record type ${row.recordType}`);
@@ -185,7 +222,8 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
                 syncId: row.syncId,
                 syncRevision: row.syncRevision,
                 records: encoded.success,
-                changedFields: mapChangedFields(definition, parseChangedColumns(row.changedColumns))
+                changedFields: mapChangedFields(definition, parseChangedColumns(row.changedColumns)),
+                staleTargets: yield* findStaleLegTargets(encoded.success)
             } satisfies SyncUploadSaveInterface;
         });
 
@@ -205,7 +243,7 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
                       db
                           .select({ syncZone: SyncRecordEntityTable.syncZone, syncId: SyncRecordEntityTable.syncId })
                           .from(SyncRecordEntityTable)
-                          .where(eq(SyncRecordEntityTable.syncId, linked.value.linkId))
+                          .where(eq(SyncRecordEntityTable.syncId, linked.value.encryptedFields.linkId))
                   )
                 : [];
 
@@ -252,7 +290,7 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
                                         syncId: record.recordName,
                                         recordType: record.recordType,
                                         systemFields,
-                                        payload: JSON.stringify(record.encryptedFields),
+                                        payload: JSON.stringify(record),
                                         schemaVersion: record.schemaVersion
                                     });
                                 }

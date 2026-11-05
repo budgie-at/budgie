@@ -14,6 +14,7 @@ import { AuthService } from '../../auth/service/auth.service';
 import { BudgetAlertMonitorService } from '../../budget/service/budget-alert-monitor.service';
 import { CategoryIconBackfillService } from '../../category/service/category-icon-backfill.service';
 import { CloudBackupTriggerService } from '../../cloud-backup/service/cloud-backup-trigger.service';
+import { CloudSyncService } from '../../cloud-sync/service/cloud-sync.service';
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
 import { HistoricalMarketDataDrainerService } from '../../market-data/service/historical-market-data-drainer.service';
 import { OnboardingService } from '../../onboarding/service/onboarding.service';
@@ -97,6 +98,12 @@ const initializeAppServices = Effect.gen(function* () {
     yield* logAndContinue(historicalMarketDataDrainerService.enqueueActiveAccounts());
     yield* logAndContinue((yield* CategoryIconBackfillService).applyConfidentIcons());
     yield* logAndContinue(workload.run((yield* SyncIdentityRepository).backfill()));
+
+    const cloudSyncService = yield* Effect.serviceOption(CloudSyncService);
+
+    if (Option.isSome(cloudSyncService)) {
+        yield* logAndContinue(cloudSyncService.value.start());
+    }
 });
 
 const scheduleAppServicesInitialization = Effect.sleep(STARTUP_SERVICE_DELAY_MS).pipe(

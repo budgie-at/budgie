@@ -12,6 +12,8 @@ export class SyncRecordRepository extends Context.Service<SyncRecordRepository>(
     make: Effect.succeed({
         find: (syncZone: string, syncId: string) =>
             Db.query(db => db.query.SyncRecordEntityTable.findFirst({ where: { syncZone, syncId } })),
+        findByRecordType: (recordType: string) =>
+            Db.query(db => db.query.SyncRecordEntityTable.findMany({ where: { recordType } })),
         upsert: (input: SyncRecordCreateEntityInterface) =>
             Db.query(db =>
                 db

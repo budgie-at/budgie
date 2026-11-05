@@ -11,7 +11,7 @@ import type { SyncColumnDescriptorInterface } from '../interface/sync-column-des
 import type { SyncRecordDecoderInterface } from '../interface/sync-record-decoder.interface';
 import type { SyncRecordDefinitionInterface } from '../interface/sync-record-definition.interface';
 
-const buildValueSchema = (column: SyncColumnDescriptorInterface): Schema.Constraint => {
+const buildValueSchema = (column: SyncColumnDescriptorInterface): Schema.ConstraintDecoder<unknown> => {
     if (isDefined(column.reference)) {
         return Schema.String;
     }
@@ -28,12 +28,12 @@ const buildValueSchema = (column: SyncColumnDescriptorInterface): Schema.Constra
     }
 };
 
-const buildFields = (columns: readonly SyncColumnDescriptorInterface[]): Record<string, Schema.Constraint> =>
+const buildFields = (columns: readonly SyncColumnDescriptorInterface[]): Record<string, Schema.ConstraintDecoder<unknown>> =>
     Object.fromEntries(
         columns.map(column => [column.field, column.isRequired ? buildValueSchema(column) : Schema.optionalKey(buildValueSchema(column))])
     );
 
-const buildLinkFields = (linkRole: SyncLinkRoleEnum | null): Record<string, Schema.Constraint> => {
+const buildLinkFields = (linkRole: SyncLinkRoleEnum | null): Record<string, Schema.ConstraintDecoder<unknown>> => {
     switch (linkRole) {
         case SyncLinkRoleEnum.HOME:
             return { linkId: Schema.optionalKey(Schema.String), legCount: Schema.optionalKey(Schema.Finite) };

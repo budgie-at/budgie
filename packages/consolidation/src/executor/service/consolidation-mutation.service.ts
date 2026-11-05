@@ -1,12 +1,15 @@
 import {
     CategorySourceEnum,
+    Db,
+    PERSONAL_SYNC_ZONE,
     TransactionEntryKindEnum,
     TransactionEntryRepository,
     TransactionEntryTypeEnum,
     TransactionRepository,
     TransactionConsolidationRepository,
     TransactionTagsRepository,
-    TransactionTypeEnum
+    TransactionTypeEnum,
+    deriveConsolidationSyncId
 } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -86,11 +89,30 @@ export class ConsolidationMutationService extends Context.Service<ConsolidationM
                 );
             });
 
+            const deriveCanonicalSyncId = Effect.fnUntraced(function* (sourceTransactionIds: readonly number[]) {
+                const sources = yield* transactionRepository.findByIds([...sourceTransactionIds]);
+                const sourceSyncIds = sources.map(source => source.syncId).filter(isDefined);
+
+                if (sourceSyncIds.length !== sourceTransactionIds.length) {
+                    return null;
+                }
+
+                const syncId = deriveConsolidationSyncId(sourceSyncIds);
+                const existing = yield* Db.query(db =>
+                    db.query.TransactionEntityTable.findFirst({ where: { syncZone: PERSONAL_SYNC_ZONE, syncId } })
+                );
+
+                return isDefined(existing) ? null : syncId;
+            });
+
             return {
                 createCanonicalTransfer: Effect.fn('ConsolidationMutationService.createCanonicalTransfer')(function* (
-                    input: CanonicalTransferInputInterface
+                    input: CanonicalTransferInputInterface,
+                    sourceTransactionIds: readonly number[]
                 ) {
+                    const syncId = yield* deriveCanonicalSyncId(sourceTransactionIds);
                     const canonicalTransaction = yield* transactionRepository.create({
+                        ...(isDefined(syncId) && { syncId }),
                         type: TransactionTypeEnum.TRANSFER,
                         title: input.title,
                         externalId: null,
