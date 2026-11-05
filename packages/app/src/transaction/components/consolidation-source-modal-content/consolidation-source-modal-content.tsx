@@ -48,6 +48,7 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
 
     return (
         <TransactionPickerSheet
+            testID={ConsolidationSourceModalSelector.Picker}
             header={
                 <TransactionPickerSheetHeader
                     title={sourceTitle}

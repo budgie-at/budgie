@@ -1502,10 +1502,6 @@ msgstr "Застосувати"
 msgid "Apply merchant categories"
 msgstr "Застосовувати категорії продавця"
 
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
-msgid "Apply refund"
-msgstr "Застосувати повернення"
-
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Apply to existing transactions?"
 msgstr "Застосувати до наявних транзакцій?"
@@ -4735,6 +4731,10 @@ msgstr "Обмежений доступ · Керувати в налаштув�
 #: src/budget/components/budget-limit-changes-row/budget-limit-changes-row.tsx
 msgid "Limits are tuned automatically after 3 steady periods"
 msgstr "Ліміти налаштовуються автоматично після 3 стабільних періодів"
+
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
+msgid "Link refund"
+msgstr "Пов’язати повернення"
 
 #: src/account/component/account-switch-field/account-switch-field.tsx
 msgid "List it on the Home screen"

@@ -1502,10 +1502,6 @@ msgstr "Anwenden"
 msgid "Apply merchant categories"
 msgstr "Händlerkategorien anwenden"
 
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
-msgid "Apply refund"
-msgstr "Erstattung anwenden"
-
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Apply to existing transactions?"
 msgstr "Auf bestehende Transaktionen anwenden?"
@@ -4735,6 +4731,10 @@ msgstr "Eingeschränkter Zugriff · In Einstellungen verwalten"
 #: src/budget/components/budget-limit-changes-row/budget-limit-changes-row.tsx
 msgid "Limits are tuned automatically after 3 steady periods"
 msgstr "Limits werden nach 3 gleichmäßigen Zeiträumen automatisch angepasst"
+
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
+msgid "Link refund"
+msgstr "Erstattung verknüpfen"
 
 #: src/account/component/account-switch-field/account-switch-field.tsx
 msgid "List it on the Home screen"

@@ -73,8 +73,7 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
         >
             <TransactionPickerContext
                 transactionId={refundIncomeTransactionId}
-                label={t`Refund`}
-                labelClassName="text-[17px] font-semibold text-primary"
+                labelClassName="text-[17px] font-semibold text-positive-strong"
             />
             <SearchInput
                 value={search}
