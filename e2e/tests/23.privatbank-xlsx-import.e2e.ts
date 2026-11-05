@@ -78,7 +78,7 @@ test('23 privatbank xlsx import', { tags: ['import'] }, async ({ budgie }) => {
         await b.scrollTo(ctx, 'TransactionCard.Label.E2E_Privatbank_Coffee');
         await b.tapId(ctx, 'TransactionCard.Label.E2E_Privatbank_Coffee');
         await b.expectId(ctx, 'TransactionInfo.Page', 5_000);
-        await b.expectText(ctx, 'EDITED PRIVATBANK DEDUP TEST');
+        await expect(b.byId(screen, 'TransactionInfo.Row.Note')).toHaveAccessibleName('Note, EDITED PRIVATBANK DEDUP TEST');
         await b.tapId(ctx, 'PageHeader.BackButton');
     });
 

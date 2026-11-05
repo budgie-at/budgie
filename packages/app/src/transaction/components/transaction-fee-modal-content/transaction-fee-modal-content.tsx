@@ -2,7 +2,7 @@ import { BANK_FEE_CATEGORY_ID, CategorySourceEnum, TransactionEntryTypeEnum, Use
 import { t } from '@lingui/core/macro';
 import * as Effect from 'effect/Effect';
 import { useState } from 'react';
-import { View } from 'react-native';
+import { ScrollView, View, useWindowDimensions } from 'react-native';
 import { useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller';
 import Animated, { interpolate, useAnimatedStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -34,11 +34,14 @@ interface Props {
 }
 
 const ROW_INDEX = 0;
+const CONTENT_CONTAINER_STYLE = { flexGrow: 1 };
 
 export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, variant, onConfirm }: Props) => {
-    const { bottom } = useSafeAreaInsets();
-    const { progress } = useReanimatedKeyboardAnimation();
-    const bottomPaddingStyle = useAnimatedStyle(() => ({ paddingBottom: interpolate(progress.value, [0, 1], [Math.max(bottom, 16), 8]) }));
+    const { bottom, top } = useSafeAreaInsets();
+    const { height: windowHeight } = useWindowDimensions();
+    const { progress, height } = useReanimatedKeyboardAnimation();
+    const sheetStyle = useAnimatedStyle(() => ({ maxHeight: windowHeight - top - Math.abs(height.value) - 24 }));
+    const bottomPaddingStyle = useAnimatedStyle(() => ({ paddingBottom: interpolate(progress.value, [0, 1], [Math.max(bottom, 16), 16]) }));
     const [openCategorySelector] = useCategorySelectorModal();
     const [feeEntry, setFeeEntry] = useState<TransactionEntryCreateInputInterface>(
         entry ?? {
@@ -53,7 +56,6 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
     );
 
     const canSave = isPositiveNumber(feeEntry.categoryId) && isPositiveNumber(feeEntry.amount);
-    const canRemove = isDefined(entry);
 
     const handleAmountChange = (amount: number) => {
         setFeeEntry(previous => ({ ...previous, amount }));
@@ -93,36 +95,40 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
         );
 
     return (
-        <Animated.View className="px-xl gap-lg bg-sheet-surface" style={bottomPaddingStyle}>
-            <SheetTitle title={t`Fee`} />
+        <Animated.View className="bg-sheet-surface" style={sheetStyle}>
+            <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={CONTENT_CONTAINER_STYLE}>
+                <Animated.View className="px-xl gap-lg" style={bottomPaddingStyle}>
+                    <SheetTitle title={t`Fee`} />
 
-            <GroupedListSection>
-                <SplitEntryRow
-                    index={ROW_INDEX}
-                    entry={feeEntry}
-                    currencySymbol={currencySymbol}
-                    autoFocus={!isDefined(entry)}
-                    onAmountChange={handleAmountChange}
-                    onCategoryPress={handleCategoryPress}
-                />
-            </GroupedListSection>
+                    <GroupedListSection>
+                        <SplitEntryRow
+                            index={ROW_INDEX}
+                            entry={feeEntry}
+                            currencySymbol={currencySymbol}
+                            autoFocus={!isDefined(entry)}
+                            onAmountChange={handleAmountChange}
+                            onCategoryPress={handleCategoryPress}
+                        />
+                    </GroupedListSection>
 
-            <View className="flex-row items-center gap-x-md">
-                {canRemove ? (
-                    <Button
-                        leftIcon={UserIconNameEnum.X}
-                        variant="destructive"
-                        size="md"
-                        className="aspect-square"
-                        onPress={handleRemove}
-                        testID={TransactionFeeModalContentSelector.RemoveButton}
-                    />
-                ) : null}
+                    <View className="flex-row items-center gap-x-md">
+                        {isDefined(entry) ? (
+                            <Button
+                                leftIcon={UserIconNameEnum.X}
+                                variant="destructive"
+                                size="md"
+                                className="aspect-square"
+                                onPress={handleRemove}
+                                testID={TransactionFeeModalContentSelector.RemoveButton}
+                            />
+                        ) : null}
 
-                <View className="flex-1">
-                    <TransactionFeeSaveButton isDisabled={!canSave} onPress={handleConfirm} />
-                </View>
-            </View>
+                        <View className="flex-1">
+                            <TransactionFeeSaveButton isDisabled={!canSave} onPress={handleConfirm} />
+                        </View>
+                    </View>
+                </Animated.View>
+            </ScrollView>
         </Animated.View>
     );
 };

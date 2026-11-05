@@ -1,15 +1,17 @@
-import { UserIconType } from '@budgie/contracts';
+import { UserIconNameEnum, UserIconType } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { RefObject, useImperativeHandle } from 'react';
 import { View } from 'react-native';
-import Animated, { ReduceMotion, FadeInUp, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { cn } from '../../../@generic/utils/cn.util';
+import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { TransactionFieldCaption } from '../transaction-field-caption/transaction-field-caption';
 
 export interface TransactionFieldIconRef {
@@ -27,75 +29,44 @@ interface Props {
     readonly testID?: string;
 }
 
-const PRESSED_SCALE = 0.95;
-const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
+const ROW_STYLE = { minHeight: 48, paddingVertical: 10 };
 
 export const TransactionFieldIcon = (props: Props) => {
     const { ref, icon, label, value, onPress, accessibilityValue, disabledHint, testID } = props;
 
-    const pressed = useSharedValue(false);
     const { shake, animatedStyle: shakeStyle } = useShakeAnimation();
 
     useImperativeHandle(ref, () => ({ shake }));
 
-    const pressedStyle = useAnimatedStyle(() => ({
-        transform: [
-            { scale: withSpring(pressed.value ? PRESSED_SCALE : 1, { damping: 15, stiffness: 300, reduceMotion: ReduceMotion.System }) }
-        ]
-    }));
-
-    const handlePressIn = () => {
-        pressed.set(true);
-    };
-
-    const handlePressOut = () => {
-        pressed.set(false);
-    };
-
-    const hasValue = isNotEmptyString(value);
     const isDisabled = isNotEmptyString(disabledHint);
-    const tileOpacity = isDisabled ? 'opacity-40' : 'opacity-100';
+    const rowClassName = cn('bg-grouped-surface-row', isDisabled && 'opacity-40');
     const accessibilityLabel = `${label}: ${accessibilityValue ?? value ?? t`not set`}`;
-    const accessibilityState = { disabled: isDisabled };
+    const pressableProps = {
+        style: ROW_STYLE,
+        disabled: isDisabled,
+        accessibilityLabel,
+        accessibilityHint: disabledHint,
+        accessibilityState: { disabled: isDisabled }
+    };
 
     return (
-        <Animated.View entering={FadeInUp.delay(100).duration(200).reduceMotion(ReduceMotion.System)} className="w-1/5">
-            <Animated.View style={shakeStyle}>
-                <Animated.View style={pressedStyle}>
-                    <HapticPressable
-                        className="items-center gap-xs px-xxs"
-                        disabled={isDisabled}
-                        onPress={onPress}
-                        onPressIn={handlePressIn}
-                        onPressOut={handlePressOut}
-                        accessibilityLabel={accessibilityLabel}
-                        accessibilityHint={disabledHint}
-                        accessibilityRole="button"
-                        accessibilityState={accessibilityState}
-                        accessible
-                        collapsable={false}
-                        nativeID={testID}
-                        testID={testID}
-                    >
-                        <View
-                            className={cn(
-                                'h-[44px] w-[44px] items-center justify-center rounded-[14px] border-hairline',
-                                'border-surface-separator bg-transaction-detail-row dark:border-transparent',
-                                tileOpacity
-                            )}
-                            style={CONTINUOUS_CORNERS}
-                        >
-                            <Icon className="text-secondary-foreground" icon={icon} size={20} />
-                            {hasValue ? (
-                                <View className="absolute top-[5px] right-[5px] h-[9px] w-[9px] items-center justify-center rounded-full bg-surface">
-                                    <View className="h-[5px] w-[5px] rounded-full bg-primary" />
-                                </View>
-                            ) : null}
-                        </View>
-                        <TransactionFieldCaption label={label} value={value} testID={testID} />
-                    </HapticPressable>
-                </Animated.View>
-            </Animated.View>
+        <Animated.View style={shakeStyle} className={rowClassName}>
+            <GroupedListRow
+                title={<TransactionFieldCaption label={label} value={value} {...testIDProps(testID, TestIDPartEnum.TITLE)} />}
+                left={
+                    <View className="h-[28px] w-[28px] items-center justify-center">
+                        <Icon className="text-secondary-foreground" icon={icon} size={20} />
+                    </View>
+                }
+                right={
+                    <View className="w-[24px] shrink-0 items-end">
+                        <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
+                    </View>
+                }
+                onPress={onPress}
+                testID={testID}
+                pressableProps={pressableProps}
+            />
         </Animated.View>
     );
 };

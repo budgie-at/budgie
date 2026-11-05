@@ -7,12 +7,11 @@ import * as Schema from 'effect/Schema';
 import { router } from 'expo-router';
 import { FormProvider, useForm } from 'react-hook-form';
 
-import { PageHeader } from '../@generic/component/page-header/page-header';
 import { ModalPage } from '../@generic/component/page/modal-page';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { useSingleFlight } from '../@generic/hook/use-single-flight.hook';
-import { confirmAlert } from '../@generic/utils/confirm-alert/confirm-alert.util';
 import { toastOnFailure } from '../@generic/utils/toast-on-failure.util';
+import { ConvertToTransferHeader } from '../transaction/components/convert-to-transfer-header/convert-to-transfer-header';
 import { TransferQuickForm } from '../transaction/components/transfer-quick-form/transfer-quick-form';
 import { useConvertToTransferModal, useConvertToTransferModalParams } from '../transaction/context/convert-to-transfer-modal.context';
 
@@ -20,13 +19,13 @@ import { ConvertToTransferModalSelector } from './convert-to-transfer-modal.sele
 
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
 
-// eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks and handlers
+// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export default function ConvertToTransferModal() {
     const { t } = useLingui();
     const [, resolveConvertToTransfer, dismissConvertToTransfer] = useConvertToTransferModal();
     useModalDismiss(dismissConvertToTransfer);
     const currentParams = useConvertToTransferModalParams();
-    const { run } = useSingleFlight();
+    const { isLoading, run } = useSingleFlight();
 
     const transactionId = currentParams?.transactionId ?? 0;
     const transactionType = currentParams?.transactionType ?? TransactionTypeEnum.EXPENSE;
@@ -35,7 +34,6 @@ export default function ConvertToTransferModal() {
     const skipPostConvertNavigation = currentParams?.skipPostConvertNavigation === true;
 
     const isExpense = transactionType === TransactionTypeEnum.EXPENSE;
-    const colorVariant = isExpense ? 'default' : 'positive';
 
     const fromAccountId = isExpense ? excludeAccountId : 0;
     const toAccountId = isExpense ? 0 : excludeAccountId;
@@ -57,10 +55,6 @@ export default function ConvertToTransferModal() {
         })
     });
 
-    const description = isExpense
-        ? t`This will convert the expense to a transfer between accounts.`
-        : t`This will convert the income to a transfer between accounts.`;
-
     const handleCancel = () => {
         resolveConvertToTransfer(false);
     };
@@ -68,18 +62,6 @@ export default function ConvertToTransferModal() {
     const handleSubmit = () =>
         run(
             Effect.gen(function* () {
-                const confirmed = yield* confirmAlert({
-                    title: t`Convert to Transfer?`,
-                    message: description,
-                    confirmText: t`Convert`,
-                    cancelText: t`Cancel`,
-                    isDestructive: false
-                });
-
-                if (!confirmed) {
-                    return;
-                }
-
                 const formValues = form.getValues();
                 const convertParams = {
                     id: transactionId,
@@ -114,9 +96,9 @@ export default function ConvertToTransferModal() {
             <ModalPage
                 className="bg-grouped-surface"
                 testID={ConvertToTransferModalSelector.Page}
-                header={<PageHeader title={t`Convert to Transfer`} onGoBack={handleCancel} />}
+                header={<ConvertToTransferHeader isLoading={isLoading} />}
             >
-                <TransferQuickForm variant={colorVariant} onSubmit={handleSubmit} onCancel={handleCancel} />
+                <TransferQuickForm variant="default" isSubmitting={isLoading} onSubmit={handleSubmit} onCancel={handleCancel} />
             </ModalPage>
         </FormProvider>
     );

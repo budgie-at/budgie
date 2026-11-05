@@ -22,11 +22,14 @@ import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
 import { useKeypadInput } from '../../hook/use-keypad-input.hook';
+import { useTransactionKeypadEditing } from '../../hook/use-transaction-keypad-editing.hook';
+import { formatKeypadAmount } from '../../utils/format-keypad-amount.util';
 import { AdjustmentAccountSummary } from '../adjustment-account-summary/adjustment-account-summary';
-import { QuickFormCaptionSlot } from '../quick-form-caption-slot/quick-form-caption-slot';
 import { QuickFormLayout } from '../quick-form-layout/quick-form-layout';
 import { QuickFormSecondaryLine } from '../quick-form-secondary-line/quick-form-secondary-line';
+import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
+import { TransactionFormActions } from '../transaction-form-actions/transaction-form-actions';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
 
 import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
@@ -97,6 +100,8 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
     const { t } = useLingui();
     const { markForEmbedding } = useEmbeddingGenerator();
     const amountDisplayRef = useRef<TransactionAmountDisplayRef | null>(null);
+    const { isEditingAmount, toggleKeypad, footerHeight, amountAccessoryIcon, amountAccessibilityHint } =
+        useTransactionKeypadEditing(false);
     const details = getAdjustmentDetails(transaction);
     const { isLoading: isSubmitting, run } = useSingleFlight();
     const [isIncrease, toggleIsIncrease] = useReducer((current: boolean) => !current, details?.initialIsIncrease ?? true);
@@ -109,8 +114,11 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
     }
 
     const variant: ColorPaletteVariant = isIncrease ? 'positive' : 'primary';
-    const signedInstrumentSymbol = `${isIncrease ? '+' : '\u2212'}${details.instrumentSymbol}`;
-    const confirmDisabled = isSubmitting || !isPositiveNumber(numericValue);
+    const display = {
+        symbol: `${isIncrease ? '+' : '\u2212'}${details.instrumentSymbol}`,
+        amount: isEditingAmount ? displayValue : formatKeypadAmount(displayValue, '.', '', 2),
+        isDisabled: isSubmitting || !isPositiveNumber(numericValue)
+    };
 
     const handleGoBack = () => void goBackOrReplace('/');
 
@@ -137,26 +145,28 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
 
     return (
         <QuickFormLayout
-            hero={
+            footerHeight={footerHeight}
+            amount={
                 <TransactionAmountDisplay
                     ref={amountDisplayRef}
-                    amount={displayValue}
-                    currencySymbol={signedInstrumentSymbol}
+                    amount={display.amount}
+                    currencySymbol={display.symbol}
                     variant={variant}
-                >
-                    <QuickFormSecondaryLine>
-                        <AmountSignPill isIncrease={isIncrease} onToggle={toggleIsIncrease} />
-                    </QuickFormSecondaryLine>
-                    <QuickFormCaptionSlot />
-                </TransactionAmountDisplay>
+                    onPress={toggleKeypad}
+                    accessoryIcon={amountAccessoryIcon}
+                    accessibilityHint={amountAccessibilityHint}
+                    testID={SimpleQuickFormSelector.AmountInput}
+                />
+            }
+            context={
+                <QuickFormSecondaryLine>
+                    <AmountSignPill isIncrease={isIncrease} onToggle={toggleIsIncrease} />
+                </QuickFormSecondaryLine>
             }
             footer={
-                <TransactionKeypad
-                    keypad={handlers}
-                    onConfirm={handleConfirm}
-                    onCancel={handleGoBack}
-                    isConfirmDisabled={confirmDisabled}
-                />
+                <TransactionFormActions label={t`Save`} isDisabled={display.isDisabled} onConfirm={handleConfirm} onCancel={handleGoBack}>
+                    {isEditingAmount ? <TransactionKeypad keypad={handlers} /> : null}
+                </TransactionFormActions>
             }
         >
             <View className="pt-[12px]">
