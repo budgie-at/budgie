@@ -15,7 +15,6 @@ import type { RecurringChargeInterface } from '../interface/recurring-charge.int
 import type { RecurringSeriesEventInterface } from '../interface/recurring-series-event.interface';
 import type { RecurringSeriesInterface } from '../interface/recurring-series.interface';
 
-export const DAY_MS = 86_400_000;
 export const DAYS_PER_MONTH = 30.44;
 const RECENT_INTERVAL_COUNT = 4;
 const RECENT_AMOUNT_COUNT = 3;
@@ -39,7 +38,7 @@ const median = (values: readonly number[]): number => {
     return sorted.length % 2 === 1 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
 };
 
-export const monthIndex = (timestamp: number): number => {
+const monthIndex = (timestamp: number): number => {
     const date = new Date(timestamp);
 
     return date.getFullYear() * 12 + date.getMonth();

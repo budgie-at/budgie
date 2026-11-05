@@ -192,9 +192,6 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
                 confidence: 100
             });
 
-        const setUserState = (seriesId: number, userState: RecurringSeriesUserStateEnum) =>
-            recurringRepository.updateSeries(seriesId, { userState });
-
         return {
             calendar: Effect.fn('RecurringService.calendar')(function* (year: number, month: number, now: Date) {
                 const { models } = yield* loadReadyModels(now);
@@ -244,6 +241,7 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
             update: Effect.fn('RecurringService.update')(function* (seriesId: number, patch: RecurringUpdateInputInterface) {
                 const series = yield* requireSeries(seriesId);
                 const hasCadencePatch = isDefined(patch.cadenceUnit) || isDefined(patch.cadenceInterval);
+                const isOwnedFieldPatch = Object.keys(patch).some(key => key !== 'reminderDaysBefore');
 
                 return yield* recurringRepository.updateSeries(seriesId, {
                     ...patch,
@@ -255,30 +253,33 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
                             })
                         )
                     }),
-                    ...(series.source === RecurringSeriesSourceEnum.DETECTED && { userState: RecurringSeriesUserStateEnum.CONFIRMED })
+                    ...(series.source === RecurringSeriesSourceEnum.DETECTED &&
+                        isOwnedFieldPatch && { userState: RecurringSeriesUserStateEnum.CONFIRMED })
                 });
             }),
             confirm: Effect.fn('RecurringService.confirm')(function* (seriesId: number) {
                 yield* requireSeries(seriesId);
 
-                return yield* setUserState(seriesId, RecurringSeriesUserStateEnum.CONFIRMED);
+                return yield* recurringRepository.updateSeries(seriesId, { userState: RecurringSeriesUserStateEnum.CONFIRMED });
             }),
-            dismiss: Effect.fn('RecurringService.dismiss')(function* (seriesId: number) {
+            restoreUserState: Effect.fn('RecurringService.restoreUserState')(function* (
+                seriesId: number,
+                userState: RecurringSeriesUserStateEnum
+            ) {
                 yield* requireSeries(seriesId);
 
-                return yield* setUserState(seriesId, RecurringSeriesUserStateEnum.DISMISSED);
-            }),
-            undismiss: Effect.fn('RecurringService.undismiss')(function* (seriesId: number) {
-                yield* requireSeries(seriesId);
-
-                return yield* setUserState(seriesId, RecurringSeriesUserStateEnum.SUGGESTED);
+                return yield* recurringRepository.updateSeries(seriesId, { userState });
             }),
             remove: Effect.fn('RecurringService.remove')(function* (seriesId: number) {
                 const series = yield* requireSeries(seriesId);
-                const removal: RecurringRemovalInterface = { seriesId, source: series.source };
+                const removal: RecurringRemovalInterface = {
+                    seriesId,
+                    source: series.source,
+                    previousUserState: series.userState
+                };
 
                 if (series.source === RecurringSeriesSourceEnum.DETECTED) {
-                    yield* setUserState(seriesId, RecurringSeriesUserStateEnum.DISMISSED);
+                    yield* recurringRepository.updateSeries(seriesId, { userState: RecurringSeriesUserStateEnum.DISMISSED });
 
                     return removal;
                 }
@@ -356,7 +357,9 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
                 }
                 const series = yield* recurringRepository.findSeriesById(link.seriesId);
 
-                return isDefined(series) && !isDefined(series.deletedAt) ? series : null;
+                return isDefined(series) && !isDefined(series.deletedAt) && series.userState !== RecurringSeriesUserStateEnum.DISMISSED
+                    ? series
+                    : null;
             }),
             fittingSeries: Effect.fn('RecurringService.fittingSeries')(function* (transactionId: number, now: Date) {
                 const charge = yield* findCharge(transactionId, TRACKED_KINDS);
@@ -427,9 +430,7 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
                         return yield* requireSeries(series.id);
                     })
                 );
-            }),
-            setUserState,
-            rename: (seriesId: number, title: string) => recurringRepository.updateSeries(seriesId, { title })
+            })
         };
     })
 }) {

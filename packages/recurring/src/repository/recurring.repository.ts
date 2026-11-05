@@ -127,14 +127,6 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
                     language,
                     kind
                 )(eq(TransactionEntityTable.id, transactionId)).pipe(Effect.map(([charge]) => charge)),
-            findSeries: (kind: RecurringSeriesKindEnum = RecurringSeriesKindEnum.EXPENSE) =>
-                Db.query(db =>
-                    db
-                        .select()
-                        .from(RecurringSeriesEntityTable)
-                        .where(and(isNull(RecurringSeriesEntityTable.deletedAt), eq(RecurringSeriesEntityTable.kind, kind)))
-                        .orderBy(RecurringSeriesEntityTable.id)
-                ),
             findAllSeries: () =>
                 Db.query(db =>
                     db

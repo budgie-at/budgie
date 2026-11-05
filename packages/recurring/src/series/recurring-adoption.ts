@@ -11,10 +11,30 @@ import type { RecurringChargeInterface } from '../interface/recurring-charge.int
 import type { RecurringSeriesInterface } from '../interface/recurring-series.interface';
 import type { RecurringSeriesEntityInterface } from '@budgie/contracts';
 
+const LEGACY_PROCESSOR_PREFIX_PATTERN = /^(?:PAYPAL|PP|SQ|SQU|GOOGLE|SUMUP|ZETTLE|IZ)\s+/u;
+const IBAN_SEGMENT_PATTERN = /^[A-Z]{2}\d{2}[A-Z0-9]{8,30}$/u;
+
 const isQualifiedIdentity = (key: string): boolean => {
     const segments = key.split('|');
 
     return segments.length >= 4 && (/^\d+$/u.test(segments[2]) || /^\d+$/u.test(segments[3]));
+};
+
+const isNumericSegment = (segment: string | undefined): boolean => /^\d*$/u.test(segment ?? '');
+
+const storedKeyVariants = (key: string): string[] => {
+    const segments = key.split('|');
+    const counterpartyIndex = segments.length >= 4 && isNumericSegment(segments[2]) ? 3 : 2;
+    const counterparty = segments[counterpartyIndex];
+    if (!isDefined(counterparty) || IBAN_SEGMENT_PATTERN.test(counterparty)) {
+        return [key];
+    }
+    const normalized = normalizeRecurringDescription(counterparty);
+    const unprefixed = normalized.replace(LEGACY_PROCESSOR_PREFIX_PATTERN, '');
+
+    return [...new Set([normalized, unprefixed].filter(isNotEmptyString))].map(variant =>
+        segments.map((segment, index) => (index === counterpartyIndex ? variant : segment)).join('|')
+    );
 };
 
 const indexHistoricalCharges = (charges: readonly RecurringChargeInterface[]) => {
@@ -126,10 +146,11 @@ const amountGap = (series: RecurringSeriesInterface, row: RecurringSeriesEntityI
 
 export const resolveKeyedRows = (
     detected: readonly RecurringSeriesInterface[],
-    rows: readonly RecurringSeriesEntityInterface[],
+    storedRows: readonly RecurringSeriesEntityInterface[],
     historicalCharges: readonly RecurringChargeInterface[],
     zeroLinkRowIds: ReadonlySet<number>
 ): (RecurringSeriesEntityInterface | null)[] => {
+    const rows = storedRows.flatMap(row => storedKeyVariants(row.merchantKey).map(merchantKey => ({ ...row, merchantKey })));
     const exactRows = detected.map(series =>
         rows.find(
             item =>
@@ -150,6 +171,7 @@ export const resolveKeyedRows = (
                           canonicalFamily(item.merchantKey) === canonicalFamily(series.merchantKey) &&
                           matchesCycle(series, item)
                   )
+                  .filter((item, itemIndex, items) => items.findIndex(candidate => candidate.id === item.id) === itemIndex)
                   .sort((first, second) => amountGap(series, first) - amountGap(series, second))
     );
     const qualifiedRows = qualifiedCandidates.map(([best, runnerUp], index) => {
@@ -171,6 +193,8 @@ export const resolveKeyedRows = (
     for (const row of qualifiedRows.filter(isDefined)) {
         claimed.add(row.id);
     }
+
+    const storedById = new Map(storedRows.map(row => [row.id, row]));
 
     return detected.map((series, index) => {
         const qualifiedRow = exactRows[index] ?? qualifiedRows[index];
@@ -195,6 +219,6 @@ export const resolveKeyedRows = (
             claimed.add(row.id);
         }
 
-        return row;
+        return isDefined(row) ? (storedById.get(row.id) ?? null) : null;
     });
 };

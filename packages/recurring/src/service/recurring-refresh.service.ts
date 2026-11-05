@@ -18,12 +18,13 @@ import * as Semaphore from 'effect/Semaphore';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { RecurringAdoptionEnum } from '../enum/recurring-adoption.enum';
 import { RecurringRepository } from '../repository/recurring.repository';
 import { resolveKeyedRows } from '../series/recurring-adoption';
 import { scoreDetectedSeries } from '../series/recurring-confidence';
 import { buildDetectedSchedule } from '../series/recurring-detected-schedule';
 import { matchRecurringTransactions } from '../series/recurring-matcher';
-import { cadenceToleranceDays, nearestCycleDate } from '../series/recurring-schedule';
+import { cadencePeriodDays, cadenceToleranceDays, nearestCycleDate } from '../series/recurring-schedule';
 import { detectRecurringSeries, identity, isSeriesActive, nearestCycle } from '../series/recurring-series';
 
 import type { RecurringChargeInterface } from '../interface/recurring-charge.interface';
@@ -58,6 +59,30 @@ const valuesEqual = (first: unknown, second: unknown): boolean =>
     first instanceof Date && second instanceof Date ? first.getTime() === second.getTime() : first === second;
 
 const chargeKey = (kind: RecurringSeriesKindEnum, transactionId: number): string => `${kind}:${transactionId}`;
+
+const isUserOwned = (row: RecurringSeriesEntityInterface): boolean =>
+    row.source === RecurringSeriesSourceEnum.MANUAL || row.userState === RecurringSeriesUserStateEnum.CONFIRMED;
+
+const STREAM_PERIOD_RATIO = 1.25;
+
+const isSameStream = (owner: RecurringSeriesEntityInterface, series: RecurringSeriesInterface): boolean => {
+    if (isUserOwned(owner)) {
+        const ownerPeriod = cadencePeriodDays(owner);
+
+        return Math.max(ownerPeriod, series.periodDays) <= Math.min(ownerPeriod, series.periodDays) * STREAM_PERIOD_RATIO;
+    }
+    const schedule = buildDetectedSchedule(series);
+
+    return owner.cadenceUnit === schedule.cadenceUnit && owner.cadenceInterval === schedule.cadenceInterval;
+};
+
+const resolveAdoption = (isAdopted: boolean, isKeyed: boolean): RecurringAdoptionEnum => {
+    if (isAdopted) {
+        return RecurringAdoptionEnum.ADOPTED;
+    }
+
+    return isKeyed ? RecurringAdoptionEnum.KEYED : RecurringAdoptionEnum.NONE;
+};
 
 const pairKey = (seriesId: number, value: number): string => `${seriesId}:${value}`;
 
@@ -126,7 +151,7 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
         const store = Effect.fnUntraced(function* (
             series: RecurringSeriesInterface,
             row: RecurringSeriesEntityInterface | null,
-            isAdopted: boolean,
+            adoption: RecurringAdoptionEnum,
             now: Date
         ) {
             if (!isDefined(row)) {
@@ -148,7 +173,8 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
                 row.userState === RecurringSeriesUserStateEnum.CONFIRMED
                     ? {
                           ...observedFacts(series, now),
-                          ...(isAdopted && { ...identityFacts(series), ...buildDetectedSchedule(series) })
+                          ...(adoption !== RecurringAdoptionEnum.NONE && { merchantKey: series.merchantKey }),
+                          ...(adoption === RecurringAdoptionEnum.ADOPTED && { ...identityFacts(series), ...buildDetectedSchedule(series) })
                       }
                     : { ...observedFacts(series, now), ...structuralFacts(series), ...identityFacts(series) };
             const current = new Map(Object.entries(row));
@@ -183,14 +209,12 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
             const rowById = new Map(rows.map(row => [row.id, row]));
             const overlaps = detected.map(series => {
                 const counts = new Map<number, number>();
-                const schedule = buildDetectedSchedule(series);
                 for (const event of series.events) {
                     const seriesId = liveByTransaction.get(event.transactionId);
                     const owner = isDefined(seriesId) ? rowById.get(seriesId) : null;
                     if (
                         isDefined(owner) &&
-                        owner.cadenceUnit === schedule.cadenceUnit &&
-                        owner.cadenceInterval === schedule.cadenceInterval &&
+                        isSameStream(owner, series) &&
                         nearestCycle(new Date(series.anchorTimestamp), new Date(event.timestamp), series).deviation <= series.toleranceDays
                     ) {
                         counts.set(owner.id, (counts.get(owner.id) ?? 0) + 1);
@@ -230,23 +254,28 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
                 historicalCharges,
                 zeroLinkRowIds
             );
+            const keyedIndexes = new Set<number>();
             unresolvedIndexes.forEach((detectedIndex, keyedIndex) => {
                 const row = keyedRows[keyedIndex];
                 if (isDefined(row)) {
                     resolved.set(detectedIndex, row);
+                    keyedIndexes.add(detectedIndex);
                 }
             });
 
             const linkInputs: RecurringSeriesTransactionCreateEntityInterface[] = [];
             let seriesWritten = 0;
-            for (const [index, series] of detected.entries()) {
+            const isOwnedByUser = (series: RecurringSeriesInterface): boolean =>
+                series.events.some(event => {
+                    const owner = rowById.get(liveByTransaction.get(event.transactionId) ?? 0);
+
+                    return isDefined(owner) && isUserOwned(owner) && isSameStream(owner, series);
+                });
+            const storable = [...detected.entries()].filter(([index, series]) => resolved.has(index) || !isOwnedByUser(series));
+            for (const [index, series] of storable) {
                 const matchedRow = resolved.get(index) ?? null;
-                const stored = yield* store(
-                    series,
-                    matchedRow,
-                    isDefined(matchedRow) && !overlapIndexes.has(index) && !everLinkedSeriesIds.has(matchedRow.id),
-                    now
-                );
+                const isAdopted = isDefined(matchedRow) && !overlapIndexes.has(index) && !everLinkedSeriesIds.has(matchedRow.id);
+                const stored = yield* store(series, matchedRow, resolveAdoption(isAdopted, keyedIndexes.has(index)), now);
                 seriesWritten += stored.written;
                 for (const event of series.events) {
                     const date = startOfDay(new Date(event.timestamp));
@@ -372,19 +401,16 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
             matchRecent: Effect.fn('RecurringRefreshService.matchRecent')(function* (now: Date) {
                 return yield* permit.withPermits(1)(matchRecentUnlocked(now));
             }),
-            detect: Effect.fn('RecurringRefreshService.detect')(function* (now: Date) {
-                return yield* permit.withPermits(1)(
-                    Effect.map(Effect.all([matchRecentUnlocked(now), detectUnlocked(now)]), ([matched, detected]) =>
-                        mergeSummaries(matched, detected)
-                    )
-                );
-            }),
             refresh: Effect.fn('RecurringRefreshService.refresh')(function* (now: Date) {
                 return yield* refreshUnlocked(now);
             }),
             ensureInitial: (now: Date) =>
                 initialPermit.withPermits(1)(
-                    Effect.flatMap(Ref.get(isInitialDone), isDone => (isDone ? Effect.void : Effect.ignore(refreshUnlocked(now))))
+                    Effect.flatMap(Ref.get(isInitialDone), isDone =>
+                        isDone
+                            ? Effect.void
+                            : Effect.ignore(Effect.andThen(permit.withPermits(1)(matchRecentUnlocked(now)), Ref.set(isInitialDone, true)))
+                    )
                 )
         };
     })

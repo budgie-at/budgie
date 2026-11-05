@@ -15,8 +15,8 @@ import * as Effect from 'effect/Effect';
 import { RecurringAlertEnum, RecurringRefreshService, RecurringSeriesNotFoundError, RecurringService } from '../src/index';
 import { RecurringRepository } from '../src/repository/recurring.repository';
 
-import { DEFAULT_INSTRUMENT_ID, NOW, seedCharges, seedMonthlyCharges } from './recurring-seed';
-import { TestLayer, testDb, testDbHandle } from './test-context';
+import { DEFAULT_INSTRUMENT_ID, NOW, seedCharges, seedDetectedSeries, seedMonthlyCharges, seedNetflixCharge } from './recurring-seed';
+import { TestLayer, detectAt, findSeries, setUserState, testDb, testDbHandle } from './test-context';
 
 import type { RecurringManualInputInterface } from '../src/index';
 
@@ -91,12 +91,8 @@ layer(TestLayer)('recurringService commands', it => {
 
     it.effect('confirms detected series on edit and keeps manual series confirmed', () =>
         Effect.gen(function* () {
-            const seed = yield* seedCharges();
-            yield* seedMonthlyCharges(seed, 'NETFLIX', [5, 4, 3, 2], 5, 12);
-            const refresh = yield* refreshService;
             const service = yield* recurringService;
-            yield* refresh.detect(NOW);
-            const [detected] = yield* (yield* repository).findAllSeries();
+            const { detected } = yield* seedDetectedSeries();
             const manual = yield* service.createManual(manualInput({ title: 'Gym' }));
 
             const editedDetected = yield* service.update(detected.id, { cadenceUnit: RecurringCadenceUnitEnum.YEAR, cadenceInterval: 2 });
@@ -126,7 +122,11 @@ layer(TestLayer)('recurringService commands', it => {
             yield* service.restore(created.id);
             const afterRestore = yield* repository.pipe(Effect.flatMap(items => Effect.all([items.findAllSeries(), items.findLinks()])));
 
-            expect(removal).toEqual({ seriesId: created.id, source: RecurringSeriesSourceEnum.MANUAL });
+            expect(removal).toEqual({
+                seriesId: created.id,
+                source: RecurringSeriesSourceEnum.MANUAL,
+                previousUserState: RecurringSeriesUserStateEnum.CONFIRMED
+            });
             expect(afterRemove).toEqual([[], []]);
             expect(afterRestore[0].map(row => row.id)).toEqual([created.id]);
             expect(afterRestore[1].map(link => link.transactionId).sort((first, second) => first - second)).toEqual(
@@ -137,19 +137,19 @@ layer(TestLayer)('recurringService commands', it => {
 
     it.effect('dismisses detected series on remove and brings them back as suggestions', () =>
         Effect.gen(function* () {
-            const seed = yield* seedCharges();
-            yield* seedMonthlyCharges(seed, 'NETFLIX', [5, 4, 3, 2], 5, 12);
-            const refresh = yield* refreshService;
             const service = yield* recurringService;
-            yield* refresh.detect(NOW);
-            const [detected] = yield* (yield* repository).findAllSeries();
+            const { detected } = yield* seedDetectedSeries();
 
             const removal = yield* service.remove(detected.id);
             const [dismissed] = yield* (yield* repository).findAllSeries();
-            const restored = yield* service.undismiss(detected.id);
+            const restored = yield* setUserState(detected.id, RecurringSeriesUserStateEnum.SUGGESTED);
             const confirmed = yield* service.confirm(detected.id);
 
-            expect(removal).toEqual({ seriesId: detected.id, source: RecurringSeriesSourceEnum.DETECTED });
+            expect(removal).toEqual({
+                seriesId: detected.id,
+                source: RecurringSeriesSourceEnum.DETECTED,
+                previousUserState: RecurringSeriesUserStateEnum.SUGGESTED
+            });
             expect(dismissed.userState).toBe(RecurringSeriesUserStateEnum.DISMISSED);
             expect(restored.userState).toBe(RecurringSeriesUserStateEnum.SUGGESTED);
             expect(confirmed.userState).toBe(RecurringSeriesUserStateEnum.CONFIRMED);
@@ -158,8 +158,7 @@ layer(TestLayer)('recurringService commands', it => {
 
     it.effect('adds a transaction to a series by flipping an earlier exclusion and learning the merchant key', () =>
         Effect.gen(function* () {
-            const seed = yield* seedCharges();
-            const [transactionId] = yield* seedMonthlyCharges(seed, 'NETFLIX', [0], 5, 12);
+            const transactionId = yield* seedNetflixCharge();
             const service = yield* recurringService;
             const created = yield* service.createManual(manualInput());
 
@@ -181,8 +180,7 @@ layer(TestLayer)('recurringService commands', it => {
 
     it.effect('moves a transaction between series and excludes it from the previous one', () =>
         Effect.gen(function* () {
-            const seed = yield* seedCharges();
-            const [transactionId] = yield* seedMonthlyCharges(seed, 'NETFLIX', [0], 5, 12);
+            const transactionId = yield* seedNetflixCharge();
             const service = yield* recurringService;
             const first = yield* service.createManual(manualInput());
             const second = yield* service.createManual(manualInput({ title: 'Streaming' }));
@@ -206,8 +204,7 @@ layer(TestLayer)('recurringService commands', it => {
 
     it.effect('suggests fitting series by merchant first and amount second', () =>
         Effect.gen(function* () {
-            const seed = yield* seedCharges();
-            const [transactionId] = yield* seedMonthlyCharges(seed, 'NETFLIX', [0], 5, 12);
+            const transactionId = yield* seedNetflixCharge();
             const service = yield* recurringService;
             yield* openReads;
             const byAmount = yield* service.createManual(manualInput({ title: 'Spotify', amount: 12.5 * PRECISION }));
@@ -225,11 +222,10 @@ layer(TestLayer)('recurringService commands', it => {
         Effect.gen(function* () {
             const seed = yield* seedCharges();
             const ids = yield* seedMonthlyCharges(seed, 'NETFLIX', [5, 4, 3, 2, 1, 0], 5, 12);
-            const refresh = yield* refreshService;
             const service = yield* recurringService;
-            yield* refresh.detect(NOW);
+            yield* detectAt(NOW);
             const [detected] = yield* (yield* repository).findAllSeries();
-            yield* service.dismiss(detected.id);
+            yield* setUserState(detected.id, RecurringSeriesUserStateEnum.DISMISSED);
             yield* (yield* repository).updateSeries(detected.id, { merchantKey: 'EXPENSE|2|NETFLIX|12000000' });
 
             const revived = yield* service.makeRecurringFromTransaction(
@@ -296,6 +292,55 @@ layer(TestLayer)('recurringService commands', it => {
             expect(detail.history).toMatchObject([{ transactionId: cheap, amount: 16 * PRECISION, isExcluded: false }]);
             expect(detail.nextDates).toEqual([new Date(2026, 6, 5), new Date(2026, 7, 5), new Date(2026, 8, 5)]);
             expect(failure).toBeInstanceOf(RecurringSeriesNotFoundError);
+        })
+    );
+
+    it.effect('restores the exact previous state after removing a confirmed detected series', () =>
+        Effect.gen(function* () {
+            const service = yield* recurringService;
+            const { detected } = yield* seedDetectedSeries();
+            yield* service.confirm(detected.id);
+
+            const removal = yield* service.remove(detected.id);
+            const [dismissed] = yield* findSeries();
+            yield* service.restoreUserState(detected.id, removal.previousUserState);
+            const [restored] = yield* findSeries();
+
+            expect(removal.previousUserState).toBe(RecurringSeriesUserStateEnum.CONFIRMED);
+            expect(dismissed.userState).toBe(RecurringSeriesUserStateEnum.DISMISSED);
+            expect(restored.userState).toBe(RecurringSeriesUserStateEnum.CONFIRMED);
+        })
+    );
+
+    it.effect('does not let a dismissed series own a transaction but keeps its automatic links', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            const [transactionId] = yield* seedMonthlyCharges(seed, 'NETFLIX', [5, 4, 3, 2], 5, 12);
+            const service = yield* recurringService;
+            yield* detectAt(NOW);
+            const [detected] = yield* findSeries();
+
+            const owned = yield* service.seriesForTransaction(transactionId);
+            yield* service.remove(detected.id);
+            const afterDismiss = yield* service.seriesForTransaction(transactionId);
+            const links = yield* (yield* repository).findLinksByTransactionId(transactionId);
+
+            expect(owned?.id).toBe(detected.id);
+            expect(afterDismiss).toBeNull();
+            expect(links).toHaveLength(1);
+        })
+    );
+
+    it.effect('confirms a detected series on a schedule edit but not on a reminder-only edit', () =>
+        Effect.gen(function* () {
+            const service = yield* recurringService;
+            const { detected } = yield* seedDetectedSeries();
+
+            const reminded = yield* service.update(detected.id, { reminderDaysBefore: 3 });
+            const retitled = yield* service.update(detected.id, { title: 'Streaming' });
+
+            expect(reminded).toMatchObject({ userState: RecurringSeriesUserStateEnum.SUGGESTED, reminderDaysBefore: 3 });
+            expect(retitled.userState).toBe(RecurringSeriesUserStateEnum.CONFIRMED);
         })
     );
 });
