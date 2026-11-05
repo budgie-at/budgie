@@ -1,14 +1,18 @@
 import { TransactionConsolidationTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 
-import { isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { Button } from '../../../@generic/component/button/button';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
+import { FormsheetHeader } from '../../../@generic/component/formsheet-header/formsheet-header';
+import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { ConvertToRefundModalSelector } from '../../../app/convert-to-refund-modal.selector';
 import { useConvertToRefundAction } from '../../hook/use-convert-to-refund-action.hook';
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
+import { useSheetFooterLayout } from '../../hook/use-sheet-footer-layout.hook';
 import { useGetTransactionByIdQuery } from '../../query/use-get-transaction-by-id.query';
 import { useRefundableExpenseCandidatesQuery } from '../../query/use-refundable-expense-candidates.query';
 import { getTransactionListRowPosition } from '../../utils/get-transaction-list-row-position.util';
@@ -29,7 +33,7 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
     const [search, setSearch] = useState('');
     const [selectedCandidate, setSelectedCandidate] = useState<TransactionPickerItemInterface | null>(null);
     const { transaction } = useGetTransactionByIdQuery(refundIncomeTransactionId);
-    const { candidates, errorMessage, isLoading } = useRefundableExpenseCandidatesQuery(refundIncomeTransactionId, search);
+    const { candidates, errorMessage, isLoading, retry } = useRefundableExpenseCandidatesQuery(refundIncomeTransactionId, search);
     const canonicalTransactionId = transaction?.consolidationParentTransactionId ?? refundIncomeTransactionId;
     const showRevert =
         transaction?.consolidationType === TransactionConsolidationTypeEnum.REFUND ||
@@ -39,70 +43,80 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
         resolveConvertToRefund(null);
     };
 
+    const handleSearchChange = (value: string) => {
+        setSearch(value);
+        setSelectedCandidate(null);
+    };
+
+    const { contentContainerStyle, handleFooterLayout } = useSheetFooterLayout();
     const revertRefund = useRevertConsolidation(canonicalTransactionId, handleResolve, true);
-    const convertToRefund = useConvertToRefundAction(refundIncomeTransactionId, selectedCandidate, resolveConvertToRefund);
-    const hasCandidates = isNotEmptyArray(candidates);
-    const showEmpty = !isLoading && isEmptyArray(candidates);
+    const { convert, isLoading: isConverting } = useConvertToRefundAction(
+        refundIncomeTransactionId,
+        selectedCandidate,
+        resolveConvertToRefund
+    );
+    const showEmpty = isEmptyArray(candidates) && !isNotEmptyString(errorMessage);
 
     return (
         <View className="flex-1 pt-2xl" collapsable={false} testID={ConvertToRefundModalSelector.Picker}>
-            <View className="flex-1">
-                {isNotEmptyString(errorMessage) ? (
-                    <Text className="px-xl pb-md pt-xl text-sm text-destructive-foreground">{errorMessage}</Text>
-                ) : null}
-
-                {isLoading ? (
-                    <View className="flex-1 items-center justify-center">
-                        <ActivityIndicator />
-                    </View>
-                ) : null}
-
-                {showEmpty ? (
-                    <EmptyState
-                        circleIcon={UserIconNameEnum.SearchX}
-                        title={t`No matching expenses`}
-                        description={t`Try a different merchant, amount, or date.`}
-                        className="flex-1 px-2xl py-0"
-                        titleClassName="text-center"
-                        descriptionClassName="max-w-[260px] text-center leading-5"
-                    />
-                ) : null}
-
-                {hasCandidates ? (
-                    <ScrollView
-                        className="flex-1"
-                        contentContainerClassName="px-xl pb-lg"
-                        keyboardShouldPersistTaps="handled"
-                        showsVerticalScrollIndicator={false}
-                    >
-                        {candidates.map((candidate, index) => (
-                            <TransactionPickerRow
-                                key={candidate.id}
-                                position={getTransactionListRowPosition(index, candidates.length)}
-                                item={candidate}
-                                isSelected={selectedCandidate?.id === candidate.id}
-                                onPress={setSelectedCandidate}
-                                testID={ConvertToRefundModalSelector.CandidateRow(candidate.id)}
-                            />
-                        ))}
-                    </ScrollView>
-                ) : null}
-            </View>
-
-            <TransactionPickerSearchDock
-                search={search}
-                searchPlaceholder={t`Search expenses refunded by this income`}
-                onSearchChange={setSearch}
-                searchTestID={ConvertToRefundModalSelector.SearchInput}
+            <ScrollView
+                className="flex-1"
+                contentContainerClassName="grow px-xl"
+                contentContainerStyle={contentContainerStyle}
+                automaticallyAdjustKeyboardInsets
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
             >
-                <ConvertToRefundFooter
-                    selectedCandidate={selectedCandidate}
-                    showRevert={showRevert}
-                    onClose={handleResolve}
-                    onConvert={convertToRefund}
-                    onRevert={revertRefund}
-                />
-            </TransactionPickerSearchDock>
+                <FormsheetHeader size="md" title={t`Convert to Refund`} description={t`Select the original expense for this refund.`} />
+                <LoadingContent isLoading={isLoading} containerClassName="flex-1" className="flex-1">
+                    {isNotEmptyString(errorMessage) ? (
+                        <View className="gap-y-md py-xl">
+                            <Text className="text-sm text-destructive-foreground">{errorMessage}</Text>
+                            <Button content={t`Try again`} onPress={retry} variant="secondary" />
+                        </View>
+                    ) : null}
+
+                    {showEmpty ? (
+                        <EmptyState
+                            circleIcon={UserIconNameEnum.SearchX}
+                            title={t`No matching expenses`}
+                            description={t`Try a different merchant, amount, or date.`}
+                            className="px-sm py-3xl"
+                            titleClassName="text-center font-semibold text-primary"
+                            descriptionClassName="max-w-[260px] text-center text-secondary-foreground leading-5"
+                        />
+                    ) : null}
+
+                    {candidates.map((candidate, index) => (
+                        <TransactionPickerRow
+                            key={candidate.id}
+                            position={getTransactionListRowPosition(index, candidates.length)}
+                            item={candidate}
+                            isSelected={selectedCandidate?.id === candidate.id}
+                            onPress={setSelectedCandidate}
+                            testID={ConvertToRefundModalSelector.CandidateRow(candidate.id)}
+                        />
+                    ))}
+                </LoadingContent>
+            </ScrollView>
+
+            <View className="absolute bottom-0 left-0 right-0 bg-grouped-surface" onLayout={handleFooterLayout}>
+                <TransactionPickerSearchDock
+                    search={search}
+                    searchPlaceholder={t`Search expenses`}
+                    onSearchChange={handleSearchChange}
+                    searchTestID={ConvertToRefundModalSelector.SearchInput}
+                >
+                    <ConvertToRefundFooter
+                        selectedCandidate={selectedCandidate}
+                        showRevert={showRevert}
+                        onClose={handleResolve}
+                        onConvert={convert}
+                        isConverting={isConverting}
+                        onRevert={revertRefund}
+                    />
+                </TransactionPickerSearchDock>
+            </View>
         </View>
     );
 };
