@@ -80,13 +80,12 @@ export const TransactionAmountDisplay = ({ ref, amount, currencySymbol, variant,
                     style={amountContainerStyle}
                     onPress={onPress}
                     disabled={!isDefined(onPress)}
+                    testID={testID}
                 >
                     <Animated.View style={shakeStyle} className="w-full">
                         <Animated.View style={scaleStyle}>
                             <AmountField fontSize={52}>
-                                <AmountFieldText className={textVariants({ variant })} testID={testID}>
-                                    {fullDisplay}
-                                </AmountFieldText>
+                                <AmountFieldText className={textVariants({ variant })}>{fullDisplay}</AmountFieldText>
                             </AmountField>
                         </Animated.View>
                     </Animated.View>
