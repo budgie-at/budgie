@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.161.0](https://github.com/budgie-at/budgie/compare/v6.160.1...v6.161.0) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** keep PIN setup readable with large text ([f420180](https://github.com/budgie-at/budgie/commit/f420180b73d9685d9ae8e7011cd5b1ee4c1659aa))
+* **app:** verify onboarding keyboard dismissal ([f41251a](https://github.com/budgie-at/budgie/commit/f41251a46470c512975d61de6d44c14925fb5ae7))
+
+### Features
+
+* **app:** bring onboarding welcome content together ([d142b8a](https://github.com/budgie-at/budgie/commit/d142b8a82fbf8dc2e8c08c531315a6ac3852506f))
+* **app:** clarify onboarding actions and PIN warning ([7878a45](https://github.com/budgie-at/budgie/commit/7878a45d5e442645b9af2d11e9699e07ac577852))
+
+
 ## [6.160.1](https://github.com/budgie-at/budgie/compare/v6.160.0...v6.160.1) (2026-11-05)
 
 ### Bug Fixes
