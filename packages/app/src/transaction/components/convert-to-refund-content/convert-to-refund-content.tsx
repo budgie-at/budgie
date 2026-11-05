@@ -7,10 +7,8 @@ import { isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared
 
 import { Button } from '../../../@generic/component/button/button';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
-import { FormsheetHeader } from '../../../@generic/component/formsheet-header/formsheet-header';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { SearchInput } from '../../../@generic/component/search-input/search-input';
-import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { ConvertToRefundModalSelector } from '../../../app/convert-to-refund-modal.selector';
 import { useConvertToRefundAction } from '../../hook/use-convert-to-refund-action.hook';
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
@@ -18,6 +16,7 @@ import { useGetTransactionByIdQuery } from '../../query/use-get-transaction-by-i
 import { useRefundableExpenseCandidatesQuery } from '../../query/use-refundable-expense-candidates.query';
 import { getTransactionListRowPosition } from '../../utils/get-transaction-list-row-position.util';
 import { ConvertToRefundFooter } from '../convert-to-refund-footer/convert-to-refund-footer';
+import { ConvertToRefundHeader } from '../convert-to-refund-header/convert-to-refund-header';
 import { TransactionPickerRow } from '../transaction-picker-row/transaction-picker-row';
 
 import type { ConvertToRefundModalResolveType } from '../../interface/convert-to-refund-modal-resolve.type';
@@ -48,10 +47,6 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
         setSelectedCandidate(null);
     };
 
-    const isAccessibilityTextSize = useIsAccessibilityTextSize();
-    const headerSize = isAccessibilityTextSize ? 'sm' : 'md';
-    const headerTitle = isAccessibilityTextSize ? t`Expenses` : t`Convert to Refund`;
-    const headerDescription = isAccessibilityTextSize ? '' : t`Select the original expense for this refund.`;
     const revertRefund = useRevertConsolidation(canonicalTransactionId, handleResolve, true);
     const { convert, isLoading: isConverting } = useConvertToRefundAction(
         refundIncomeTransactionId,
@@ -69,13 +64,7 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
             showsVerticalScrollIndicator={false}
             testID={ConvertToRefundModalSelector.Picker}
         >
-            <FormsheetHeader
-                size={headerSize}
-                title={headerTitle}
-                description={headerDescription}
-                descriptionClassName="leading-[18px]"
-                titleClassName="leading-[22px]"
-            />
+            <ConvertToRefundHeader />
             <SearchInput
                 value={search}
                 allowFontScaling

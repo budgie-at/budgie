@@ -2538,7 +2538,7 @@ msgstr "Convert past amounts"
 msgid "Convert past amounts?"
 msgstr "Convert past amounts?"
 
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
+#: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
 #: src/transaction/components/transaction-list-convert-to-refund-menu-item/transaction-list-convert-to-refund-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Convert to Refund"
@@ -3899,7 +3899,7 @@ msgstr "Expense, income or transfer"
 
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
+#: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
 #: src/transaction/hook/use-transaction-filter-page-title.hook.ts
 msgid "Expenses"
 msgstr "Expenses"
@@ -6999,7 +6999,7 @@ msgstr "Select the downloaded PDF file"
 msgid "Select the exported XLSX file"
 msgstr "Select the exported XLSX file"
 
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
+#: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
 msgid "Select the original expense for this refund."
 msgstr "Select the original expense for this refund."
 
