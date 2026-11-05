@@ -7,6 +7,6 @@ export class SyncRateLimitedError extends Schema.TaggedError<SyncRateLimitedErro
     {
         provider: Schema.Enum(SyncProviderEnum),
         message: Schema.String,
-        retryAfterMs: Schema.optional(Schema.Number)
+        retryAfterMs: Schema.optional(Schema.Finite)
     }
 ) {}

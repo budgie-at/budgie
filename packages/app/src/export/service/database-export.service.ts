@@ -30,7 +30,7 @@ export class DatabaseExportService extends Context.Service<DatabaseExportService
                 }
             });
         const completedCheckpoint = Schema.Tuple([
-            Schema.Struct({ busy: Schema.Literals([0]), log: Schema.Number, checkpointed: Schema.Number }).check(
+            Schema.Struct({ busy: Schema.Literals([0]), log: Schema.Finite, checkpointed: Schema.Finite }).check(
                 Schema.makeFilter(checkpoint => checkpoint.log === checkpoint.checkpointed)
             )
         ]);

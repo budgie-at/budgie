@@ -7,6 +7,6 @@ export class SyncInvalidResponseError extends Schema.TaggedError<SyncInvalidResp
     {
         provider: Schema.Enum(SyncProviderEnum),
         message: Schema.String,
-        apiCode: Schema.optional(Schema.Union([Schema.String, Schema.Number]))
+        apiCode: Schema.optional(Schema.Union([Schema.String, Schema.Finite]))
     }
 ) {}

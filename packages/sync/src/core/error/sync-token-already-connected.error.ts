@@ -5,7 +5,7 @@ export class SyncTokenAlreadyConnectedError extends Schema.TaggedError<SyncToken
     'SyncTokenAlreadyConnectedError',
     {
         provider: Schema.Enum(ExternalSourceEnum),
-        integrationId: Schema.Number,
+        integrationId: Schema.Finite,
         message: Schema.String
     }
 ) {}

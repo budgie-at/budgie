@@ -56,9 +56,9 @@ export class AiModelDownloadService extends Context.Service<AiModelDownloadServi
                     Schema.String,
                     Schema.Struct({
                         resumeData: Schema.String,
-                        bytesWritten: Schema.Number,
-                        totalBytes: Schema.Number,
-                        reportedTotalBytes: Schema.Number
+                        bytesWritten: Schema.Finite,
+                        totalBytes: Schema.Finite,
+                        reportedTotalBytes: Schema.Finite
                     })
                 )
             })

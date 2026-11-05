@@ -11,7 +11,7 @@ export class DatabaseMaintenanceService extends Context.Service<DatabaseMaintena
         const vectorChunkSize = 1024;
         const minFreelistPages = 1024;
         const minFreelistRatio = 10;
-        const CountRowsSchema = Schema.Array(Schema.Struct({ count: Schema.Number }));
+        const CountRowsSchema = Schema.Array(Schema.Struct({ count: Schema.Finite }));
 
         const readCount = Effect.fnUntraced(function* (query: string) {
             const { $primary } = yield* Db;

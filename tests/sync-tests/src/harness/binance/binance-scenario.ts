@@ -30,7 +30,7 @@ const EARN_DAY_KEY_LENGTH = 10;
 const DEFAULT_RECENT_DAY_OF_MONTH = 15;
 const SPOT_QUOTE_FREE = '100';
 const decodeHistoryProgress = Schema.decodeUnknownSync(
-    Schema.fromJsonString(Schema.Record(Schema.String, Schema.Struct({ headAt: Schema.Number, tailAt: Schema.Number })))
+    Schema.fromJsonString(Schema.Record(Schema.String, Schema.Struct({ headAt: Schema.Finite, tailAt: Schema.Finite })))
 );
 
 export const fetchHistoryProgress = (token: string) =>

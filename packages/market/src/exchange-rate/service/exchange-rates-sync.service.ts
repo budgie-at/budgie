@@ -36,9 +36,9 @@ export class ExchangeRatesSyncService extends Context.Service<ExchangeRatesSyncS
         const exchangeRateApiResponseSchema = Schema.Struct({
             base: Schema.String,
             date: Schema.String,
-            rates: Schema.Record(Schema.String, Schema.Number)
+            rates: Schema.Record(Schema.String, Schema.Finite)
         });
-        const coinGeckoSimplePriceResponseSchema = Schema.Record(Schema.String, Schema.Record(Schema.String, Schema.Number));
+        const coinGeckoSimplePriceResponseSchema = Schema.Record(Schema.String, Schema.Record(Schema.String, Schema.Finite));
         const syncPermit = yield* Semaphore.make(1);
         const lastSyncedAtMs = yield* Ref.make<number | null>(null);
 

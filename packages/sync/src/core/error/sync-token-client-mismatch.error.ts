@@ -6,7 +6,7 @@ export class SyncTokenClientMismatchError extends Schema.TaggedError<SyncTokenCl
     'SyncTokenClientMismatchError',
     {
         provider: Schema.Enum(SyncProviderEnum),
-        integrationId: Schema.Number,
+        integrationId: Schema.Finite,
         message: Schema.String
     }
 ) {}

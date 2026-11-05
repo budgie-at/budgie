@@ -62,7 +62,7 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                 Schema.Struct({
                     date: Schema.String.check(Schema.isPattern(/^\d{4}-\d{2}-\d{2}$/u)),
                     quote: Schema.String,
-                    rate: Schema.Number
+                    rate: Schema.Finite
                 })
             );
             const coinGeckoCoinsApiUrl = 'https://api.coingecko.com/api/v3/coins';
@@ -71,7 +71,7 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
             const source = 'coingecko.com';
             const rateDateFormat = 'yyyy-MM-dd';
             const staleLockMs = 5 * 60 * 1000;
-            const coinGeckoTimedValueSchema = Schema.Tuple([Schema.Number, Schema.Number]);
+            const coinGeckoTimedValueSchema = Schema.Tuple([Schema.Finite, Schema.Finite]);
             const coinGeckoMarketChartResponseSchema = Schema.Struct({
                 prices: Schema.Array(coinGeckoTimedValueSchema),
                 market_caps: Schema.Array(coinGeckoTimedValueSchema),

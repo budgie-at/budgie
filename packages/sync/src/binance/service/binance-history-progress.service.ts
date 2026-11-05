@@ -11,7 +11,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import type { BinanceHistorySourceEnum } from '../enum/binance-history-source.enum';
 
-const BinanceHistoryProgressSchema = Schema.Struct({ headAt: Schema.Number, tailAt: Schema.Number });
+const BinanceHistoryProgressSchema = Schema.Struct({ headAt: Schema.Finite, tailAt: Schema.Finite });
 const BinanceHistoryProgressMapSchema = Schema.Record(Schema.String, BinanceHistoryProgressSchema);
 
 export class BinanceHistoryProgressService extends Context.Service<BinanceHistoryProgressService>()(

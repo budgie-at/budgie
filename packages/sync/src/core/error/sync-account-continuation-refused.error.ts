@@ -6,7 +6,7 @@ export class SyncAccountContinuationRefusedError extends Schema.TaggedError<
     SyncAccountContinuationRefusedError,
     { readonly brand: unique symbol }
 >()('SyncAccountContinuationRefusedError', {
-    accountId: Schema.Number,
+    accountId: Schema.Finite,
     reason: Schema.Enum(SyncAccountContinuationRefusalEnum),
     message: Schema.String
 }) {}

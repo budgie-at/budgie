@@ -33,7 +33,7 @@ export abstract class BaseSyncProviderClient {
     private static readonly RETRY_BASE_DELAY = '300 millis';
 
     private static readonly ApiErrorSchema = Schema.Struct({
-        code: Schema.optional(Schema.Union([Schema.String, Schema.Number])),
+        code: Schema.optional(Schema.Union([Schema.String, Schema.Finite])),
         error: Schema.optional(Schema.NullOr(Schema.String)),
         message: Schema.optional(Schema.String),
         msg: Schema.optional(Schema.String)

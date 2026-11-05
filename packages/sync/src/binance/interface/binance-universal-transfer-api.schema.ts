@@ -6,8 +6,8 @@ const BinanceUniversalTransferApiSchema = Schema.Struct({
     amount: Schema.String,
     type: Schema.String,
     status: Schema.String,
-    tranId: Schema.Number,
-    timestamp: Schema.Number
+    tranId: Schema.Finite,
+    timestamp: Schema.Finite
 });
 
 export const BinanceUniversalTransferListApiSchema = Schema.Struct({

@@ -90,7 +90,7 @@
         "effecttsgo/any-unknown-in-error-context": "off",
         "effecttsgo/lazy-effect": "off",
         "effecttsgo/unnecessary-effect-gen": "off",
-        "effecttsgo/schema-number": "off",
+        "effecttsgo/schema-number": "error",
         "effecttsgo/schema-class-missing-brand": "error",
         "effecttsgo/crypto-random-uuid": "error",
         "effecttsgo/crypto-random-uuid-in-effect": "error",

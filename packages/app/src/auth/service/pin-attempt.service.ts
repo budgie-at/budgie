@@ -19,7 +19,7 @@ export class PinAttemptService extends Context.Service<PinAttemptService>()('@bu
         const freeAttempts = 5;
         const lockoutDurations = [Duration.seconds(30), Duration.minutes(1), Duration.minutes(5), Duration.minutes(15), Duration.hours(1)];
         const PinAttemptsSchema = Schema.fromJsonString(
-            Schema.Struct({ failedAttempts: Schema.Number, lockoutStartedAt: Schema.Number, lockoutEndsAt: Schema.Number })
+            Schema.Struct({ failedAttempts: Schema.Finite, lockoutStartedAt: Schema.Finite, lockoutEndsAt: Schema.Finite })
         );
         const noAttempts: typeof PinAttemptsSchema.Type = { failedAttempts: 0, lockoutStartedAt: 0, lockoutEndsAt: 0 };
 
