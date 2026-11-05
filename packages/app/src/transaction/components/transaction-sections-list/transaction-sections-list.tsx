@@ -1,6 +1,6 @@
 import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { useRouter } from 'expo-router';
-import { ComponentType, ReactElement, RefCallback, useEffect, useEffectEvent, useRef } from 'react';
+import { ComponentType, ReactElement, RefCallback, useRef } from 'react';
 import { View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -12,6 +12,7 @@ import { PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popo
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@generic/constant/floating-tab-bar.constant';
 import { LegendListPositionSourceInterface } from '../../../@generic/interface/legend-list-position-source.interface';
 import { TransactionListItemKindEnum } from '../../enum/transaction-list-item-kind.enum';
+import { useTransactionListHeaderOffsets } from '../../hook/use-transaction-list-header-offsets.hook';
 import { TransactionListContextMenuRefInterface } from '../../interface/transaction-list-context-menu-ref.interface';
 import { TransactionsByDaySectionInterface } from '../../interface/transactions-by-day-section.interface';
 import { TransactionListItemType } from '../../type/transaction-list-item.type';
@@ -59,7 +60,6 @@ export const TransactionSectionsList = ({
     const { bottom } = useSafeAreaInsets();
 
     const menuRef = useRef<TransactionListContextMenuRefInterface>(null);
-    const listRef = useRef<LegendListPositionSourceInterface | null>(null);
 
     const handlePress = (transaction: TransactionWithRelationsEntityInterface) => {
         router.push(getTransactionHref(transaction));
@@ -87,27 +87,13 @@ export const TransactionSectionsList = ({
     const { items: flatData, headerIndices } = buildTransactionListItems(sections);
     const stickyHeaderIndices = isDefined(headerOffsets) ? [] : headerIndices;
 
-    const handleListRef = (list: LegendListPositionSourceInterface | null) => {
-        listRef.current = list;
-    };
-
-    const publishHeaderOffsets = () => {
-        const state = listRef.current?.getState();
-
-        if (isDefined(state)) {
-            headerOffsets?.set(headerIndices.map(index => state.positionAtIndex(index)));
-        }
-    };
+    const { handleListRef, publishHeaderOffsets } = useTransactionListHeaderOffsets(sections, headerIndices, headerOffsets);
 
     const contentContainerStyle = {
         paddingBottom: footerSpacerMultiplier * (FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN) + bottom,
         ...(isEmptyArray(flatData) && { flexGrow: 1 }),
         ...(isEmptyArray(flatData) && !isDefined(listHeader) && { justifyContent: 'center' as const })
     };
-
-    const handleSectionsChange = useEffectEvent(publishHeaderOffsets);
-
-    useEffect(() => void handleSectionsChange(), [sections]);
 
     return (
         <>
