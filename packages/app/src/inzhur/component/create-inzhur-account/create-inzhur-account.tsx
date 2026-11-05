@@ -1,5 +1,6 @@
 import { ExternalSourceEnum } from '@budgie/contracts';
 import { InzhurSetupService } from '@budgie/sync';
+import { useAtomSet } from '@effect/atom-react/Hooks';
 import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { Text, View } from 'react-native';
@@ -20,6 +21,7 @@ import { TransactionAmountDisplay } from '../../../transaction/components/transa
 import { TransactionKeypad } from '../../../transaction/components/transaction-keypad/transaction-keypad';
 import { QuickFormHeroAlignmentEnum } from '../../../transaction/enum/quick-form-hero-alignment.enum';
 import { useKeypadInput } from '../../../transaction/hook/use-keypad-input.hook';
+import { inzhurLinkedPaymentsAtom } from '../../constant/inzhur-linked-payments-atom.constant';
 import { useHryvniaInstrumentQuery } from '../../query/use-hryvnia-instrument.query';
 import { InzhurSelector } from '../../selector/inzhur.selector';
 
@@ -28,12 +30,16 @@ export const CreateInzhurAccount = () => {
     const { isLoading, run } = useSingleFlight();
     const { displayValue, numericValue, handlers } = useKeypadInput();
     const hryvnia = useHryvniaInstrumentQuery();
+    const setLinkedPayments = useAtomSet(inzhurLinkedPaymentsAtom);
     const amountVariant = isPositiveNumber(numericValue) ? 'primary' : 'secondary';
 
     const handleGoBack = () => void goBackOrReplace('/');
     const handleAdd = () =>
         run(
             Effect.flatMap(InzhurSetupService, inzhurSetupService => inzhurSetupService.setup(numericValue)).pipe(
+                Effect.tap(({ linked }) =>
+                    Effect.sync(() => void setLinkedPayments(linked.topUps + linked.withdrawals + linked.dividends))
+                ),
                 toastOnFailure(t`Could not add Inzhur`)
             )
         );

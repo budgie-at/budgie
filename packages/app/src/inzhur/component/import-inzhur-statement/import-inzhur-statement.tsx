@@ -16,6 +16,7 @@ import { useInzhurSetupQuery } from '../../query/use-inzhur-setup.query';
 import { InzhurSelector } from '../../selector/inzhur.selector';
 import { InzhurImportSummaryFooter } from '../inzhur-import-summary-footer/inzhur-import-summary-footer';
 import { InzhurImportSummary } from '../inzhur-import-summary/inzhur-import-summary';
+import { InzhurLinkedPaymentsLine } from '../inzhur-linked-payments-line/inzhur-linked-payments-line';
 
 export const ImportInzhurStatement = () => {
     const { t } = useLingui();
@@ -73,6 +74,7 @@ export const ImportInzhurStatement = () => {
                     </Text>
                 </View>
                 <NumberedSteps title={t`How to export`} steps={exportSteps} />
+                <InzhurLinkedPaymentsLine />
             </FixedChromePage>
         </GroupedSurface>
     );

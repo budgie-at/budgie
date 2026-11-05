@@ -545,6 +545,10 @@ msgstr "{installmentCount, plural, one {# Zahlung insgesamt} other {# Zahlungen 
 msgid "{installmentCount, plural, one {Split into # payment} other {Split into # payments}}"
 msgstr "{installmentCount, plural, one {In # Zahlung aufteilen} other {In # Zahlungen aufteilen}}"
 
+#: src/inzhur/component/inzhur-linked-payments-line/inzhur-linked-payments-line.tsx
+msgid "{linkedCount, plural, one {Linked # past Inzhur payment from your bank} other {Linked # past Inzhur payments from your bank}}"
+msgstr "{linkedCount, plural, one {# frühere Inzhur-Zahlung aus deiner Bank verknüpft} other {# frühere Inzhur-Zahlungen aus deiner Bank verknüpft}}"
+
 #: src/market-data/component/currency-market-chart-status/currency-market-chart-status.tsx
 msgid "{loadedDays} of {totalDays} days"
 msgstr "{loadedDays} von {totalDays} Tagen"

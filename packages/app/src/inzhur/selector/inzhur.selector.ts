@@ -7,6 +7,7 @@ export const InzhurSelector = {
     DoneButton: 'Inzhur.DoneButton',
     ViewTransactionsButton: 'Inzhur.ViewTransactionsButton',
     LastImported: 'Inzhur.LastImported',
+    LinkedPayments: 'Inzhur.LinkedPayments',
     Summary: 'Inzhur.Summary',
     GainLine: 'Inzhur.GainLine',
     ValueChart: 'Inzhur.ValueChart',
