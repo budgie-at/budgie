@@ -5,7 +5,6 @@ import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { useFormatFundQuantity } from '../../../i18n/hook/use-format-fund-quantity.hook';
@@ -36,15 +35,14 @@ export const FundAccountCard = ({ account, balance, convertedBalance }: Props) =
     );
 
     return (
-        <AccountCardBase account={account} balance={balance} convertedBalance={null} amountLabel={t`${quantityLabel}, worth ${valueLabel}`}>
+        <AccountCardBase
+            account={account}
+            balance={balance}
+            convertedBalance={null}
+            amountLabel={t`${quantityLabel}, worth ${valueLabel}`}
+            subtitle={quantityLabel}
+        >
             {value}
-            <ProtectedText
-                numberOfLines={1}
-                maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
-                className="text-[13px] text-secondary-foreground tabular-nums"
-            >
-                {quantityLabel}
-            </ProtectedText>
         </AccountCardBase>
     );
 };

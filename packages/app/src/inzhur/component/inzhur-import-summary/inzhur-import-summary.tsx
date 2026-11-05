@@ -2,10 +2,9 @@ import { InzhurImportOutcomeEnum } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
-import { useFormatFundQuantity } from '../../../i18n/hook/use-format-fund-quantity.hook';
 import { useHryvniaInstrumentQuery } from '../../query/use-hryvnia-instrument.query';
 import { InzhurSelector } from '../../selector/inzhur.selector';
 import { InzhurImportSummaryFundRow } from '../inzhur-import-summary-fund-row/inzhur-import-summary-fund-row';
@@ -21,16 +20,15 @@ interface Props {
 export const InzhurImportSummary = ({ summary }: Props) => {
     const { t } = useLingui();
     const symbol = useHryvniaInstrumentQuery()?.symbol ?? '';
-    const formatFundQuantity = useFormatFundQuantity();
-    const { outcome, cashMoved, funds } = summary;
+    const { outcome, cashMoved, funds, uncoveredCashAmount } = summary;
 
     const footnote = {
         [InzhurImportOutcomeEnum.BASELINE]: t`Your holdings were taken as the starting point. Cash was not changed.`,
-        [InzhurImportOutcomeEnum.APPLIED]: t`Recorded automatically. You can edit any entry like a normal transaction.`,
+        [InzhurImportOutcomeEnum.APPLIED]: isPositiveNumber(uncoveredCashAmount)
+            ? t`Recorded automatically. Budgie matches the bank top-up when it arrives. You can edit any entry like a normal transaction.`
+            : t`Recorded automatically. You can edit any entry like a normal transaction.`,
         [InzhurImportOutcomeEnum.UNCHANGED]: t`This statement is not newer than the last one you imported, so nothing changed.`
     }[outcome];
-    const totalDelta = funds.reduce((total, fund) => total + fund.deltaQuantity, 0);
-    const certificatesLabel = `${totalDelta < 0 ? '−' : '+'}${formatFundQuantity(Math.abs(totalDelta))}`;
     const isCashMovementShown = outcome === InzhurImportOutcomeEnum.APPLIED && cashMoved !== 0;
 
     return (
@@ -38,7 +36,7 @@ export const InzhurImportSummary = ({ summary }: Props) => {
             <InzhurImportSummaryHero statementDate={summary.statementDate} />
 
             {isNotEmptyArray(funds) ? (
-                <GroupedListSection title={t`Added by this statement · ${certificatesLabel}`}>
+                <GroupedListSection title={t`Added by this statement`}>
                     {funds.map(fund => (
                         <InzhurImportSummaryFundRow key={fund.isin} fund={fund} symbol={symbol} />
                     ))}

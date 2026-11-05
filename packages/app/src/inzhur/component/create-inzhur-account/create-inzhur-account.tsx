@@ -17,7 +17,6 @@ import { InstitutionMark } from '../../../account/component/institution-mark/ins
 import { QuickFormLayout } from '../../../transaction/components/quick-form-layout/quick-form-layout';
 import { TransactionAmountDisplay } from '../../../transaction/components/transaction-amount-display/transaction-amount-display';
 import { TransactionKeypad } from '../../../transaction/components/transaction-keypad/transaction-keypad';
-import { QuickFormHeroAlignmentEnum } from '../../../transaction/enum/quick-form-hero-alignment.enum';
 import { useKeypadInput } from '../../../transaction/hook/use-keypad-input.hook';
 import { useHryvniaInstrumentQuery } from '../../query/use-hryvnia-instrument.query';
 import { InzhurSelector } from '../../selector/inzhur.selector';
@@ -76,7 +75,7 @@ export const CreateInzhurAccount = () => {
                 <ScreenChromeFrame>
                     <FixedChromeHeader title={t`Add Inzhur`} leading={<HeaderBackButton />} inFlow />
                     <View className="flex-1 px-5xl pb-safe">
-                        <QuickFormLayout hero={hero} footer={keypad} heroAlignment={QuickFormHeroAlignmentEnum.CENTER} />
+                        <QuickFormLayout hero={hero} footer={keypad} />
                     </View>
                 </ScreenChromeFrame>
             </ScreenChromeThemeProvider>

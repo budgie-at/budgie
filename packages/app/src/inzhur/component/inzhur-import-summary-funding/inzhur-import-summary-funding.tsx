@@ -34,7 +34,7 @@ export const InzhurImportSummaryFunding = ({ summary, symbol }: Props) => {
                 {isPositiveNumber(uncoveredCashAmount) ? (
                     <InzhurMoneyRow
                         label={t`From a bank top-up`}
-                        caption={t`Not matched yet. Budgie matches it automatically when the bank transaction arrives.`}
+                        caption={t`Waiting for the bank transfer`}
                         amount={uncoveredCashAmount}
                         instrumentSymbol={symbol}
                         icon={UserIconNameEnum.Clock}

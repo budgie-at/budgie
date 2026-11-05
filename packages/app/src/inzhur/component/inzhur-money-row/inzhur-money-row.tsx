@@ -27,7 +27,7 @@ export const InzhurMoneyRow = ({ label, caption, amount, instrumentSymbol, icon,
             {isDefined(icon) ? <NeutralIconTile icon={icon} iconClassName={iconClassName} /> : null}
             <View className="min-h-[40px] flex-1 justify-center gap-y-xxs">
                 <View className="flex-row items-baseline gap-x-xl">
-                    <Text className="flex-1 text-[17px] text-primary" {...labelLineProps}>
+                    <Text className="flex-1 text-[17px] font-semibold text-primary" {...labelLineProps}>
                         {label}
                     </Text>
                     {isStacked ? null : (

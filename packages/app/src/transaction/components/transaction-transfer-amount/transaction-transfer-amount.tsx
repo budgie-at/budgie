@@ -4,7 +4,6 @@ import { Text, View } from 'react-native';
 import { MoneyText } from '../../../@generic/component/money-text/money-text';
 import { MoneyTextVariantEnum } from '../../../@generic/enum/money-text-variant.enum';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
-import { TransactionFundTradeAmount } from '../transaction-fund-trade-amount/transaction-fund-trade-amount';
 
 import type { AggregatedTransactionEntryInterface } from '../../interface/aggregated-transaction-entry.interface';
 
@@ -18,12 +17,19 @@ interface Props {
 export const TransactionTransferAmount = ({ fromEntry, toEntry, accountId, testID }: Props) => {
     const formatDigits = useFormatInstrumentAmount();
 
-    if (toEntry.account.instrument.type === InstrumentTypeEnum.FUND) {
-        return <TransactionFundTradeAmount fundEntry={toEntry} moneyEntry={fromEntry} quantitySign="+" testID={testID} />;
-    }
+    if (toEntry.account.instrument.type === InstrumentTypeEnum.FUND || fromEntry.account.instrument.type === InstrumentTypeEnum.FUND) {
+        const moneyEntry = toEntry.account.instrument.type === InstrumentTypeEnum.FUND ? fromEntry : toEntry;
 
-    if (fromEntry.account.instrument.type === InstrumentTypeEnum.FUND) {
-        return <TransactionFundTradeAmount fundEntry={fromEntry} moneyEntry={toEntry} quantitySign="−" testID={testID} />;
+        return (
+            <View className="shrink-0 items-end" testID={testID}>
+                <MoneyText
+                    amount={convertFromMicroUnits(moneyEntry.amount)}
+                    instrumentSymbol={moneyEntry.account.instrument.symbol}
+                    variant={MoneyTextVariantEnum.ROW}
+                    tone="primary"
+                />
+            </View>
+        );
     }
 
     const isIncoming = accountId === toEntry.account.id;
@@ -41,12 +47,12 @@ export const TransactionTransferAmount = ({ fromEntry, toEntry, accountId, testI
                 <MoneyText
                     amount={convertFromMicroUnits(primaryEntry.amount)}
                     instrumentSymbol={primaryEntry.account.instrument.symbol}
-                    variant={MoneyTextVariantEnum.BODY}
+                    variant={MoneyTextVariantEnum.ROW}
                     prefix={sign}
                     tone="primary"
                 />
             ) : (
-                <Text className="text-[15px] font-semibold text-right text-primary tabular-nums">{`${sign}${formatEntry(primaryEntry)}`}</Text>
+                <Text className="text-[17px] font-semibold tracking-tight text-right text-primary tabular-nums">{`${sign}${formatEntry(primaryEntry)}`}</Text>
             )}
             {isCrossCurrency ? (
                 <Text className="text-secondary-foreground text-[13px] text-right tabular-nums">{formatEntry(secondaryEntry)}</Text>

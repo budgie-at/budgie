@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const NumberedStepRow = ({ title, caption, index }: Props) => (
-    <View className="min-h-[44px] flex-row items-start gap-x-xl px-3xl py-md">
+    <View className="min-h-[56px] flex-row items-start gap-x-xl px-3xl py-md">
         <View className="h-[20px] justify-center">
             <View className="size-6 items-center justify-center rounded-full bg-surface-disc">
                 <Text className="text-[13px] font-semibold text-primary tabular-nums">{index + 1}</Text>

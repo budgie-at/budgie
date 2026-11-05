@@ -66,14 +66,14 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
         >
             {isAdjustment ? (
                 <Text
-                    className="text-primary text-[15px] font-semibold"
+                    className="text-primary text-[17px] font-semibold"
                     numberOfLines={titleLineCount}
                     testID={TransactionCardSelector.AdjustmentBadge}
                 >
                     {adjustmentTitle}
                 </Text>
             ) : (
-                <Text className="text-primary text-[15px] font-semibold" numberOfLines={titleLineCount} ellipsizeMode="tail">
+                <Text className="text-primary text-[17px] font-semibold" numberOfLines={titleLineCount} ellipsizeMode="tail">
                     {displayTitle}
                 </Text>
             )}

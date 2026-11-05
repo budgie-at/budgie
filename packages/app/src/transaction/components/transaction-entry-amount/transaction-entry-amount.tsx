@@ -30,7 +30,7 @@ export const TransactionEntryAmount = ({ debtEvent, entry, variant, sign, testID
     const formatDigits = useFormatInstrumentAmount();
 
     if (entry.account.instrument.type === InstrumentTypeEnum.FUND) {
-        return <TransactionFundEntryAmount entry={entry} variant={variant} sign={sign} testID={testID} />;
+        return <TransactionFundEntryAmount entry={entry} testID={testID} />;
     }
 
     const amount = convertFromMicroUnits(entry.amount);
@@ -69,7 +69,7 @@ export const TransactionEntryAmount = ({ debtEvent, entry, variant, sign, testID
                 <MoneyText
                     amount={amount}
                     instrumentSymbol={entry.account.instrument.symbol}
-                    variant={MoneyTextVariantEnum.BODY}
+                    variant={MoneyTextVariantEnum.ROW}
                     prefix={sign}
                     tone={variant}
                 />

@@ -6,6 +6,7 @@ import { Text, View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
+import { FirstFittingText } from '../../../@generic/component/first-fitting-text/first-fitting-text';
 import { MoneyText } from '../../../@generic/component/money-text/money-text';
 import { NeutralIconTile } from '../../../@generic/component/neutral-icon-tile/neutral-icon-tile';
 import { MoneyTextVariantEnum } from '../../../@generic/enum/money-text-variant.enum';
@@ -38,15 +39,15 @@ export const InzhurImportSummaryFundRow = ({ fund, symbol }: Props) => {
     const tradedAmount = Math.max(exchangedAmount - dividendAmount, 0);
     const hasDividends = isPositiveNumber(dividendAmount);
     const hasPurchase = isPositiveNumber(tradedAmount);
-    const purchaseLabel = hasDividends ? t`Purchase with reinvested dividends` : t`Purchase`;
-    const buyRoleLabel = hasPurchase ? purchaseLabel : t`Reinvested dividends`;
-    const roleLabel = deltaQuantity > 0 ? buyRoleLabel : t`Sale`;
-    const detailLabel = `${roleLabel} · ${quantityLabel}`;
+    const purchaseLabels = hasDividends ? [t`Bought with dividends (estimated)`, t`Bought with dividends`] : [t`Bought`];
+    const buyRoleLabels = hasPurchase ? purchaseLabels : [t`Reinvested dividends (estimated)`, t`Reinvested dividends`];
+    const roleLabels = deltaQuantity > 0 ? buyRoleLabels : [t`Sold`];
+    const detailVariants = [...roleLabels.map(roleLabel => `${roleLabel} · ${quantityLabel}`), quantityLabel];
 
     return (
         <View
             accessible
-            accessibilityLabel={[name, formatAmount(exchangedAmount, symbol), detailLabel].join(', ')}
+            accessibilityLabel={[name, formatAmount(exchangedAmount, symbol), detailVariants.at(0)].join(', ')}
             className="flex-row items-center gap-x-xl px-3xl py-[12px]"
             testID={InzhurSelector.SummaryFund(isin)}
         >
@@ -58,7 +59,7 @@ export const InzhurImportSummaryFundRow = ({ fund, symbol }: Props) => {
                     </Text>
                     <MoneyText amount={exchangedAmount} instrumentSymbol={symbol} variant={MoneyTextVariantEnum.ROW} />
                 </View>
-                <Text className="text-[13px] leading-[18px] text-secondary-foreground tabular-nums">{detailLabel}</Text>
+                <FirstFittingText variants={detailVariants} className="text-[13px] leading-[18px] text-secondary-foreground tabular-nums" />
             </View>
         </View>
     );

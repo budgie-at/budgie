@@ -1,28 +1,19 @@
-import { cva } from 'class-variance-authority';
 import { ReactNode } from 'react';
 import { ScrollView, View } from 'react-native';
 
 import { BottomChromeInsetProvider, ScreenChromeFooter } from '@rnw-community/react-native-screen-chrome';
 
-import { QuickFormHeroAlignmentEnum } from '../../enum/quick-form-hero-alignment.enum';
 import { useQuickFormLayout } from '../../hook/use-quick-form-layout.hook';
 
 interface Props {
     readonly hero: ReactNode;
     readonly children?: ReactNode;
     readonly footer: ReactNode;
-    readonly heroAlignment?: QuickFormHeroAlignmentEnum;
 }
-
-const heroContainerVariants = cva('grow pt-[16px] pb-[28px]', {
-    variants: {
-        heroAlignment: { [QuickFormHeroAlignmentEnum.CENTER]: 'justify-center', [QuickFormHeroAlignmentEnum.END]: 'justify-end' }
-    }
-});
 
 const HIDDEN_EDGE_FADE_PROPS = { style: { display: 'none' } } as const;
 
-export const QuickFormLayout = ({ hero, children, footer, heroAlignment = QuickFormHeroAlignmentEnum.END }: Props) => {
+export const QuickFormLayout = ({ hero, children, footer }: Props) => {
     const {
         requiresScrolling,
         handleLayout,
@@ -59,7 +50,7 @@ export const QuickFormLayout = ({ hero, children, footer, heroAlignment = QuickF
                     contentInsetAdjustmentBehavior="never"
                     automaticallyAdjustContentInsets={false}
                 >
-                    <View className={heroContainerVariants({ heroAlignment })}>
+                    <View className="grow justify-end pt-[16px] pb-[28px]">
                         <View onLayout={handleHeroLayout}>{hero}</View>
                     </View>
                     <View onLayout={handleFieldsLayout}>{children}</View>

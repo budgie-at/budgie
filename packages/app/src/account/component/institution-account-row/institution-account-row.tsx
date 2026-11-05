@@ -2,7 +2,6 @@ import { ExternalSourceEnum } from '@budgie/contracts';
 
 import { getInzhurShortTitle } from '../../../inzhur/utils/get-inzhur-short-title.util';
 import { stripTransactionAccountTitlePrefix } from '../../../transaction/utils/strip-transaction-account-title-prefix.util';
-import { AccountRowDisclosureContext } from '../../context/account-row-disclosure.context';
 import { AccountRowLeadingContext } from '../../context/account-row-leading.context';
 import { AccountListItem } from '../account-list-item/account-list-item';
 import { InstitutionAccountLeading } from '../institution-account-leading/institution-account-leading';
@@ -24,10 +23,8 @@ export const InstitutionAccountRow = ({ account, provider, balancesByAccountId }
     const displayAccount = { ...account, title };
 
     return (
-        <AccountRowDisclosureContext value>
-            <AccountRowLeadingContext value={<InstitutionAccountLeading account={account} provider={provider} />}>
-                <AccountListItem account={displayAccount} balancesByAccountId={balancesByAccountId} />
-            </AccountRowLeadingContext>
-        </AccountRowDisclosureContext>
+        <AccountRowLeadingContext value={<InstitutionAccountLeading account={account} provider={provider} />}>
+            <AccountListItem account={displayAccount} balancesByAccountId={balancesByAccountId} />
+        </AccountRowLeadingContext>
     );
 };

@@ -9,6 +9,7 @@ import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.co
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
 import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../constant/row-max-font-size-multiplier.constant';
 import { MoneyTextVariantEnum } from '../../enum/money-text-variant.enum';
+import { useProtectedAmountLabel } from '../../hook/use-protected-amount-label.hook';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { cn } from '../../utils/cn.util';
 import { toTrueMinus } from '../../utils/to-true-minus.util';
@@ -29,6 +30,7 @@ const wholeVariants = cva('tabular-nums', {
     variants: {
         variant: {
             [MoneyTextVariantEnum.HERO]: 'text-center text-[44px] leading-[48px] font-semibold tracking-[-1px]',
+            [MoneyTextVariantEnum.FIELD]: 'text-[40px] font-semibold tracking-[-1px]',
             [MoneyTextVariantEnum.ROW]: 'text-[17px] font-semibold tracking-tight',
             [MoneyTextVariantEnum.BODY]: 'text-[15px] font-semibold',
             [MoneyTextVariantEnum.LINE]: 'text-[15px] leading-[20px] text-secondary-foreground',
@@ -41,6 +43,7 @@ const fractionVariants = cva('text-secondary-foreground', {
     variants: {
         variant: {
             [MoneyTextVariantEnum.HERO]: 'text-[26px] font-semibold',
+            [MoneyTextVariantEnum.FIELD]: 'text-[24px] font-semibold',
             [MoneyTextVariantEnum.ROW]: 'text-[11px] font-medium',
             [MoneyTextVariantEnum.BODY]: 'text-[11px] font-medium',
             [MoneyTextVariantEnum.LINE]: 'text-[11px]',
@@ -52,11 +55,13 @@ const fractionVariants = cva('text-secondary-foreground', {
 export const MoneyText = ({ amount, instrumentSymbol, variant, prefix = '', tone, testID }: Props) => {
     const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const formatDigits = useFormatDigits(decimalPlaces);
+    const protectAmount = useProtectedAmountLabel();
 
     const isZero = formatDigits(Math.abs(amount)) === formatDigits(0);
     const formatted = isZero ? formatDigits(0, instrumentSymbol) : toTrueMinus(formatDigits(amount, instrumentSymbol));
     const fractionStart = isPositiveNumber(decimalPlaces) ? formatted.length - decimalPlaces - 1 : formatted.length;
     const isHero = variant === MoneyTextVariantEnum.HERO;
+    const accessibilityLabel = `${prefix}${protectAmount(amount, instrumentSymbol)}`;
     const isSignTone = !MUTED_VARIANTS.has(variant) && !isDefined(tone);
     const toneClassName = cn(
         isDefined(tone) && FOREGROUND_COLOR_PALETTE[tone],
@@ -71,6 +76,7 @@ export const MoneyText = ({ amount, instrumentSymbol, variant, prefix = '', tone
     return (
         <ProtectedText
             testID={testID}
+            accessibilityLabel={accessibilityLabel}
             numberOfLines={1}
             adjustsFontSizeToFit
             {...scalingProps}

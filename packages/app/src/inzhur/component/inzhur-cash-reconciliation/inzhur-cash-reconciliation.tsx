@@ -1,59 +1,35 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { FormAmountInput } from '../../../@generic/component/form-amount-input/form-amount-input';
 import { GroupedListSectionTitle } from '../../../@generic/component/grouped-list-section-title/grouped-list-section-title';
-import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
-import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
+import { Icon } from '../../../@generic/component/icon/icon';
+import { MoneyText } from '../../../@generic/component/money-text/money-text';
+import { MoneyTextVariantEnum } from '../../../@generic/enum/money-text-variant.enum';
 import { CreateAccountSelector } from '../../../app/(main)/create-account/create-account.selector';
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
-
-const CASH_INPUT_FONT_SIZE = 40;
 
 interface Props {
-    readonly trackedBalance: number;
     readonly value: number;
     readonly onChange: (value: number) => void;
     readonly instrumentSymbol: string;
 }
 
-export const InzhurCashReconciliation = ({ trackedBalance, value, onChange, instrumentSymbol }: Props) => {
+export const InzhurCashReconciliation = ({ value, onChange, instrumentSymbol }: Props) => {
     const { t } = useLingui();
-    const formatDigits = useDisplayFormatDigits();
-
-    const differenceLabel = formatDigits(value - trackedBalance, instrumentSymbol);
-    const isDifferent = formatDigits(value) !== formatDigits(trackedBalance);
-    const signedDifferenceLabel = value > trackedBalance ? `+${differenceLabel}` : differenceLabel;
 
     return (
-        <View className="gap-y-3xl pb-3xl">
-            <View>
-                <GroupedListSectionTitle title={t`Actual balance`} />
-                <FormAmountInput
-                    testID={CreateAccountSelector.Amount}
-                    value={value}
-                    instrumentSymbol={instrumentSymbol}
-                    onChange={onChange}
-                    fontSize={CASH_INPUT_FONT_SIZE}
-                />
-                <Text className="px-3xl pt-md text-[13px] leading-[18px] text-secondary-foreground">{t`Enter the cash shown in Inzhur.`}</Text>
-            </View>
-            {isDifferent ? (
-                <GroupedListSection>
-                    <View accessible className="min-h-[44px] flex-row items-center gap-x-xl px-3xl py-md">
-                        <Text className="flex-1 text-[15px] text-primary">{t`Tracked by Budgie`}</Text>
-                        <ProtectedText className="text-[15px] text-secondary-foreground tabular-nums">
-                            {formatDigits(trackedBalance, instrumentSymbol)}
-                        </ProtectedText>
-                    </View>
-                    <View accessible className="min-h-[44px] flex-row items-center gap-x-xl px-3xl py-md">
-                        <Text className="flex-1 text-[15px] text-primary">{t`Difference`}</Text>
-                        <ProtectedText className="text-[15px] font-semibold text-primary tabular-nums">
-                            {signedDifferenceLabel}
-                        </ProtectedText>
-                    </View>
-                </GroupedListSection>
-            ) : null}
+        <View className="pb-3xl">
+            <GroupedListSectionTitle title={t`Set actual balance`} />
+            <FormAmountInput testID={CreateAccountSelector.Amount} value={value} instrumentSymbol={instrumentSymbol} onChange={onChange}>
+                <View className="flex-1">
+                    <MoneyText amount={value} instrumentSymbol={instrumentSymbol} variant={MoneyTextVariantEnum.FIELD} tone="primary" />
+                </View>
+                <Icon icon={UserIconNameEnum.Pencil} size={20} className="text-secondary-foreground" />
+            </FormAmountInput>
+            <Text className="px-3xl pt-md text-[13px] leading-[18px] text-secondary-foreground">
+                {t`Saving records the difference as an adjustment, or as dividends kept in Inzhur if the balance went up.`}
+            </Text>
         </View>
     );
 };

@@ -27,14 +27,14 @@ interface Props {
     readonly account: AccountEntityInterface;
     readonly fields: Pick<AccountFormBindingsInterface, 'title' | 'icon' | 'isActive' | 'includeInNetWorth'>;
     readonly hero: ReactNode;
-    readonly details?: ReactNode;
+    readonly detailsFooter?: string | null;
     readonly footerCaption?: string | null;
     readonly children?: ReactNode;
     readonly onSubmit: EmptyFn;
     readonly isSubmitting?: boolean;
 }
 
-export const UpdateAccountPage = ({ account, fields, hero, details, footerCaption, children, onSubmit, isSubmitting }: Props) => {
+export const UpdateAccountPage = ({ account, fields, hero, detailsFooter, footerCaption, children, onSubmit, isSubmitting }: Props) => {
     const { t } = useLingui();
     const { instrument } = useGetInstrumentByIdQuery(account.instrumentId);
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
@@ -44,12 +44,12 @@ export const UpdateAccountPage = ({ account, fields, hero, details, footerCaptio
     const currencyLabel = isDefined(instrument) && instrument.id !== defaultInstrumentId ? instrument.name : null;
     const accountTitle = account.title;
     const lowerCaseTitle = accountTitle.toLocaleLowerCase();
-    const detailsFooter = [kindLabel, currencyLabel]
+    const kindFooter = [kindLabel, currencyLabel]
         .filter(isDefined)
         .filter(label => !lowerCaseTitle.includes(label.toLocaleLowerCase()))
         .join(' · ');
     const detailsIconVariant = account.externalSource === ExternalSourceEnum.INZHUR ? 'secondary' : ACCOUNT_COLOR[account.type];
-    const detailsSectionFooter = isNotEmptyString(detailsFooter) ? detailsFooter : null;
+    const detailsSectionFooter = detailsFooter ?? (isNotEmptyString(kindFooter) ? kindFooter : null);
 
     return (
         <GroupedSurface>
@@ -79,7 +79,6 @@ export const UpdateAccountPage = ({ account, fields, hero, details, footerCaptio
                             nameInputTestID={CreateAccountScreenSelector.NameInput}
                             selectNameOnFocus
                         />
-                        {details}
                     </GroupedListSection>
 
                     {children}

@@ -47,15 +47,15 @@ export const InzhurImportStatementAction = () => {
         );
     }
 
-    const ageLabel = t({ message: plural(reminder.daysOld, { one: '# day ago', other: '# days ago' }) });
+    const ageLabel = t({ message: plural(reminder.daysOld, { one: 'Statement # day ago', other: 'Statement # days ago' }) });
 
     return (
         <View className={bannerVariants({ isStacked })} style={CONTINUOUS_CORNERS}>
             <View className="min-w-0 flex-1 flex-row items-center gap-x-xl self-stretch">
                 <NeutralIconTile icon={UserIconNameEnum.Clock} iconClassName="text-warning-strong" />
                 <View className="flex-1 gap-y-xxs" testID={InzhurSelector.StatementReminder}>
-                    <Text className="text-[17px] text-primary">{t`Last statement ${statementDate}`}</Text>
-                    <Text className="text-[13px] leading-[18px] text-secondary-foreground">{ageLabel}</Text>
+                    <Text className="text-[17px] font-semibold text-primary">{ageLabel}</Text>
+                    <Text className="text-[13px] leading-[18px] text-secondary-foreground">{t`${statementDate} statement`}</Text>
                 </View>
             </View>
             <HapticPressable

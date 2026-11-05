@@ -12,7 +12,6 @@ export const InzhurSelector = {
     SummaryFund: (isin: string) => `Inzhur.SummaryFund.${isin}` as const,
     PayoutOption: (payout: string) => `Inzhur.PayoutOption.${payout}` as const,
     FundReturns: 'Inzhur.FundReturns',
-    Holdings: 'Inzhur.Holdings',
     StatementReminder: 'Inzhur.StatementReminder',
     Freshness: 'Inzhur.Freshness',
     ImportStatementButton: 'Inzhur.ImportStatementButton',

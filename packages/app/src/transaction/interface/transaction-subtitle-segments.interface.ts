@@ -3,4 +3,5 @@ export interface TransactionSubtitleSegmentsInterface {
     readonly feeLabel: string | null;
     readonly accountTitle: string | null;
     readonly categoryLabel: string | null;
+    readonly fundTradeVariants: readonly string[] | null;
 }

@@ -5,6 +5,7 @@ import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanima
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { FirstFittingText } from '../../../@generic/component/first-fitting-text/first-fitting-text';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useTransactionSubtitleSegments } from '../../hook/use-transaction-subtitle-segments.hook';
 import { isUncategorizedTransaction } from '../../utils/is-uncategorized-transaction.util';
@@ -20,7 +21,7 @@ interface Props {
 
 export const TransactionCardSubtitle = ({ transaction, accountId }: Props) => {
     const { t } = useLingui();
-    const { segments, feeLabel, accountTitle, categoryLabel } = useTransactionSubtitleSegments(transaction, accountId);
+    const { segments, feeLabel, accountTitle, categoryLabel, fundTradeVariants } = useTransactionSubtitleSegments(transaction, accountId);
     const segmentsBoxWidth = useSharedValue(0);
     const segmentsLineWidth = useSharedValue(0);
     const trailingStyle = useAnimatedStyle(() => ({
@@ -56,7 +57,10 @@ export const TransactionCardSubtitle = ({ transaction, accountId }: Props) => {
                     <Icon icon={UserIconNameEnum.Paperclip} size={12} className="text-secondary-foreground" />
                 </View>
             ) : null}
-            {hasSegments ? (
+            {isDefined(fundTradeVariants) ? (
+                <FirstFittingText variants={fundTradeVariants} className="text-[13px] text-secondary-foreground" />
+            ) : null}
+            {hasSegments && !isDefined(fundTradeVariants) ? (
                 <Text
                     className="shrink text-[13px] text-secondary-foreground"
                     numberOfLines={1}

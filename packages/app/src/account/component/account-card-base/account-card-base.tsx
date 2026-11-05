@@ -18,7 +18,6 @@ import { useAccountCardMenu } from '../../hook/use-account-card-menu.hook';
 import { getAccountSyncState } from '../../utils/get-account-sync-state.util';
 import { AccountCardBalance } from '../account-card-balance/account-card-balance';
 import { AccountCardConvertedBalance } from '../account-card-converted-balance/account-card-converted-balance';
-import { AccountCardDisclosure } from '../account-card-disclosure/account-card-disclosure';
 import { AccountCardMenu } from '../account-card-menu/account-card-menu';
 import { AccountCardTitle } from '../account-card-title/account-card-title';
 import { AccountSyncBadge } from '../account-sync-badge/account-sync-badge';
@@ -33,11 +32,12 @@ interface Props {
     readonly balance: number;
     readonly convertedBalance: number | null;
     readonly amountLabel?: string;
+    readonly subtitle?: string;
     readonly onImport?: EmptyFn;
     readonly children?: ReactNode;
 }
 
-const rowVariants = cva('min-h-[60px] gap-x-xl py-lg pr-xl pl-3xl active:scale-100 active:bg-surface-fill', {
+const rowVariants = cva('min-h-[60px] gap-x-xl px-3xl py-lg active:scale-100 active:bg-surface-fill', {
     variants: { isStacked: { true: 'gap-y-sm', false: 'flex-row items-center' } }
 });
 const leadingVariants = cva('flex-row items-center gap-x-xl', {
@@ -47,7 +47,7 @@ const amountVariants = cva('gap-y-xxs', {
     variants: { isStacked: { true: 'items-start', false: 'max-w-[55%] shrink-0 items-end' } }
 });
 
-export const AccountCardBase = ({ account, balance, convertedBalance, amountLabel, onImport, children }: Props) => {
+export const AccountCardBase = ({ account, balance, convertedBalance, amountLabel, subtitle, onImport, children }: Props) => {
     const { id, title, icon, iban, type, integrationId, sync, instrument } = account;
 
     const { t } = useLingui();
@@ -103,18 +103,24 @@ export const AccountCardBase = ({ account, balance, convertedBalance, amountLabe
                     )}
 
                     {isStacked ? null : (
-                        <AccountCardTitle title={title} iban={iban} syncState={syncState} syncStateLabel={syncStateLabel} />
+                        <AccountCardTitle
+                            title={title}
+                            subtitle={subtitle}
+                            iban={iban}
+                            syncState={syncState}
+                            syncStateLabel={syncStateLabel}
+                        />
                     )}
                 </View>
 
-                {isStacked ? <AccountCardTitle title={title} iban={iban} syncState={syncState} syncStateLabel={syncStateLabel} /> : null}
+                {isStacked ? (
+                    <AccountCardTitle title={title} subtitle={subtitle} iban={iban} syncState={syncState} syncStateLabel={syncStateLabel} />
+                ) : null}
 
                 <View className={amountVariants({ isStacked })}>
                     {children ?? <AccountCardBalance title={title} balance={balance} instrumentSymbol={instrument.symbol} />}
                     <AccountCardConvertedBalance instrumentId={instrument.id} convertedBalance={convertedBalance} />
                 </View>
-
-                {isStacked ? null : <AccountCardDisclosure />}
             </HapticPressable>
 
             <AccountCardMenu

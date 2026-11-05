@@ -17,7 +17,7 @@ interface Props {
 const OPTION = {
     [DividendPayoutEnum.BANK]: {
         icon: UserIconNameEnum.Landmark,
-        title: msg`Paid to my bank`,
+        title: msg`Paid to your bank`,
         subtitle: msg`Sent to your bank card`
     },
     [DividendPayoutEnum.REINVEST]: {
