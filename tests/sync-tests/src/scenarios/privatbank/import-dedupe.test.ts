@@ -33,12 +33,10 @@ const seedPrivatbankParsedDateTransaction = (accountId: number) =>
         });
     });
 const fetchPrivatbankTransactions = () =>
-    Effect.gen(function* () {
-        return yield* testDb
-            .select()
-            .from(TransactionEntityTable)
-            .where(and(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.PRIVATBANK), isNull(TransactionEntityTable.deletedAt)));
-    });
+    testDb
+        .select()
+        .from(TransactionEntityTable)
+        .where(and(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.PRIVATBANK), isNull(TransactionEntityTable.deletedAt)));
 
 describe('privatbank/import-dedupe', () => {
     it.effect('reuses transactions imported with the old parsed-date external id and heals their time to the Kyiv statement time', () =>

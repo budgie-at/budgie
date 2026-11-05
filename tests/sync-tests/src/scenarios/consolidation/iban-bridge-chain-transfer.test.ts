@@ -68,16 +68,14 @@ const seedBridgeRows = (operatedAt: Date, bridgeAccountId: number, transferMccId
     });
 
 const seedTargetIncome = (externalId: string, operatedAt: Date, targetAccountId: number, transferMccId: number) =>
-    Effect.gen(function* () {
-        return yield* seedBankPair.income(
-            { externalId, operatedAt },
-            {
-                accountId: targetAccountId,
-                amount: UAH_AMOUNT,
-                mccCategoryId: transferMccId
-            }
-        );
-    });
+    seedBankPair.income(
+        { externalId, operatedAt },
+        {
+            accountId: targetAccountId,
+            amount: UAH_AMOUNT,
+            mccCategoryId: transferMccId
+        }
+    );
 
 const seedDirectTransfer = (
     operatedAt: Date,
@@ -85,19 +83,17 @@ const seedDirectTransfer = (
     targetAccountId: number,
     consolidationType: TransactionConsolidationTypeEnum | null = null
 ) =>
-    Effect.gen(function* () {
-        return yield* seed.directTransfer({
-            consolidationType,
-            exchangeRate: UAH_TO_EUR_RATE,
-            operatedAt,
-            sourceAccountId,
-            sourceAmount: EUR_AMOUNT,
-            sourceEntryExchangeRate: UAH_TO_EUR_RATE,
-            targetAccountId,
-            targetAmount: UAH_AMOUNT,
-            toIban: TARGET_IBAN,
-            title: 'На чорну картку'
-        });
+    seed.directTransfer({
+        consolidationType,
+        exchangeRate: UAH_TO_EUR_RATE,
+        operatedAt,
+        sourceAccountId,
+        sourceAmount: EUR_AMOUNT,
+        sourceEntryExchangeRate: UAH_TO_EUR_RATE,
+        targetAccountId,
+        targetAmount: UAH_AMOUNT,
+        toIban: TARGET_IBAN,
+        title: 'На чорну картку'
     });
 
 const seedBridgeReclaimFixture = (consolidationType: TransactionConsolidationTypeEnum | null) =>

@@ -30,20 +30,16 @@ const ARCHIVED_BEFORE_INCOME_AT = new Date('2026-03-01T09:15:00.000Z');
 const CONVERSION_FAILURE_MESSAGE = 'conversion failed';
 
 const seedPrivatbankCard = (cardEnding: string) =>
-    Effect.gen(function* () {
-        return yield* seed.account({
-            title: `Privatbank •${cardEnding}`,
-            type: AccountTypeEnum.BANK_SYNC,
-            externalSource: ExternalSourceEnum.PRIVATBANK,
-            externalId: `4000 **** **** ${cardEnding}`,
-            iban: `UA00PRIVATBANK${cardEnding}`
-        });
+    seed.account({
+        title: `Privatbank •${cardEnding}`,
+        type: AccountTypeEnum.BANK_SYNC,
+        externalSource: ExternalSourceEnum.PRIVATBANK,
+        externalId: `4000 **** **** ${cardEnding}`,
+        iban: `UA00PRIVATBANK${cardEnding}`
     });
 
 const archiveAccount = (accountId: number, archivedAt: Date = new Date()) =>
-    Effect.gen(function* () {
-        yield* testDb.update(AccountEntityTable).set({ deletedAt: archivedAt }).where(eq(AccountEntityTable.id, accountId));
-    });
+    Effect.asVoid(testDb.update(AccountEntityTable).set({ deletedAt: archivedAt }).where(eq(AccountEntityTable.id, accountId)));
 
 const seedOwnCardIncome = (accountId: number, title: string = OWN_CARD_INCOME_TITLE) =>
     Effect.gen(function* () {

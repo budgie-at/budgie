@@ -32,19 +32,15 @@ export const P2P_SPLIT_BANK_PRIMARY_AMOUNT = 20 * P2P_ASSET_AMOUNT;
 export const P2P_SPLIT_BANK_EXTRA_AMOUNT = 21 * P2P_ASSET_AMOUNT;
 
 export const seedP2pUsdt = () =>
-    Effect.gen(function* () {
-        return yield* testSeedService.instrument({
-            code: 'USDT',
-            name: 'Tether',
-            symbol: 'USDT',
-            type: InstrumentTypeEnum.CRYPTO
-        });
+    testSeedService.instrument({
+        code: 'USDT',
+        name: 'Tether',
+        symbol: 'USDT',
+        type: InstrumentTypeEnum.CRYPTO
     });
 
 export const seedP2pExchangeRate = (baseInstrumentId: number, quoteInstrumentId: number, rate: number) =>
-    Effect.gen(function* () {
-        yield* testDb.insert(ExchangeRateEntityTable).values({ baseInstrumentId, quoteInstrumentId, rate, source: 'test' });
-    });
+    Effect.asVoid(testDb.insert(ExchangeRateEntityTable).values({ baseInstrumentId, quoteInstrumentId, rate, source: 'test' }));
 
 export const seedP2pFiatInstrument = (code: string): Pick<InstrumentCreateEntityInterface, 'code' | 'name' | 'symbol' | 'type'> => ({
     code,
@@ -54,24 +50,20 @@ export const seedP2pFiatInstrument = (code: string): Pick<InstrumentCreateEntity
 });
 
 export const seedP2pAccount = (type: AccountTypeEnum, instrumentId: number) =>
-    Effect.gen(function* () {
-        return yield* testSeedService.account({
-            title: `${type} P2P account`,
-            type,
-            nature: type === AccountTypeEnum.DEBT ? AccountNatureEnum.LIABILITY : AccountNatureEnum.ASSET,
-            instrumentId,
-            icon: UserIconNameEnum.Wallet,
-            externalId: `${type}-p2p-account`
-        });
+    testSeedService.account({
+        title: `${type} P2P account`,
+        type,
+        nature: type === AccountTypeEnum.DEBT ? AccountNatureEnum.LIABILITY : AccountNatureEnum.ASSET,
+        instrumentId,
+        icon: UserIconNameEnum.Wallet,
+        externalId: `${type}-p2p-account`
     });
 
 export const seedP2pBankBuyExpense = (accountId: number) =>
-    Effect.gen(function* () {
-        return yield* testSeedService.bankPairExpense(
-            { externalId: 'mono-p2p-bank-expense', operatedAt: P2P_OPERATED_AT },
-            { accountId, amount: P2P_BANK_AMOUNT }
-        );
-    });
+    testSeedService.bankPairExpense(
+        { externalId: 'mono-p2p-bank-expense', operatedAt: P2P_OPERATED_AT },
+        { accountId, amount: P2P_BANK_AMOUNT }
+    );
 
 export const seedP2pBuyIncome = (accountId: number, quotedInstrumentId: number | null) =>
     Effect.gen(function* () {

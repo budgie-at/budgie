@@ -41,12 +41,7 @@ export const fetchHistoryProgress = (token: string) =>
     });
 
 export const fetchBinanceTransactions = () =>
-    Effect.gen(function* () {
-        return yield* testDb
-            .select()
-            .from(TransactionEntityTable)
-            .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.BINANCE));
-    });
+    testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.BINANCE));
 
 export const fetchSortedBinanceExternalIds = () =>
     Effect.map(fetchBinanceTransactions(), transactions =>
@@ -54,14 +49,9 @@ export const fetchSortedBinanceExternalIds = () =>
     );
 
 export const fetchBinanceEntriesByExternalId = (externalId: string) =>
-    Effect.gen(function* () {
-        return yield* testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.externalId, externalId));
-    });
+    testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.externalId, externalId));
 
-export const seedCryptoInstrument = (code: string) =>
-    Effect.gen(function* () {
-        return yield* seed.instrument({ code, name: code, symbol: code, type: InstrumentTypeEnum.CRYPTO });
-    });
+export const seedCryptoInstrument = (code: string) => seed.instrument({ code, name: code, symbol: code, type: InstrumentTypeEnum.CRYPTO });
 
 export const setupAdaUsdtFixture = (
     mode: SyncModeEnum,

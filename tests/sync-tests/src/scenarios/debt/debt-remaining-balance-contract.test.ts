@@ -34,19 +34,15 @@ import type { TransactionCreateEntityInterface, TransactionEntryCreateEntityInte
 const OPERATED_AT = new Date('2026-06-02T12:00:00.000Z');
 
 const seedDebtAccount = (debtType: AccountDebtTypeEnum, targetBalance: number, instrumentId = 1) =>
-    Effect.gen(function* () {
-        return yield* seed.account({ title: 'Debt contract account', type: AccountTypeEnum.DEBT, debtType, targetBalance, instrumentId });
-    });
+    seed.account({ title: 'Debt contract account', type: AccountTypeEnum.DEBT, debtType, targetBalance, instrumentId });
 
 const insertDebtEvent = (debtAccountId: number, direction: DebtEventDirectionEnum, amount: number) =>
-    Effect.gen(function* () {
-        return yield* insertOne(DebtEventEntityTable, {
-            debtAccountId,
-            direction,
-            source: DebtEventSourceEnum.MANUAL,
-            amount,
-            operatedAt: OPERATED_AT
-        });
+    insertOne(DebtEventEntityTable, {
+        debtAccountId,
+        direction,
+        source: DebtEventSourceEnum.MANUAL,
+        amount,
+        operatedAt: OPERATED_AT
     });
 
 const seedPartiallySettledDebt = (debtType: AccountDebtTypeEnum, instrumentId = 1) =>
@@ -70,14 +66,10 @@ const readHomeRow = Effect.fnUntraced(function* (accountId: number, defaultInstr
 });
 
 const updateDebtEventAmount = (debtEventId: number, amount: number) =>
-    Effect.gen(function* () {
-        yield* testDb.update(DebtEventEntityTable).set({ amount }).where(eq(DebtEventEntityTable.id, debtEventId));
-    });
+    Effect.asVoid(testDb.update(DebtEventEntityTable).set({ amount }).where(eq(DebtEventEntityTable.id, debtEventId)));
 
 const softDeleteDebtEvent = (debtEventId: number) =>
-    Effect.gen(function* () {
-        yield* testDb.update(DebtEventEntityTable).set({ deletedAt: new Date() }).where(eq(DebtEventEntityTable.id, debtEventId));
-    });
+    Effect.asVoid(testDb.update(DebtEventEntityTable).set({ deletedAt: new Date() }).where(eq(DebtEventEntityTable.id, debtEventId)));
 
 const sumConvertedOutstandingByDebtType = Effect.fnUntraced(function* (defaultInstrumentId: number, debtType: AccountDebtTypeEnum) {
     const accountBalanceRepository = yield* AccountBalanceRepository;

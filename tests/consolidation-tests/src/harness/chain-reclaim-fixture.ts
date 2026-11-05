@@ -27,18 +27,16 @@ const seedDirectTransfer = (input: {
     readonly targetAccountId: number;
     readonly toIban: string;
 }) =>
-    Effect.gen(function* () {
-        return yield* testSeedService.directTransfer({
-            consolidationType: input.consolidationType,
-            exchangeRate: input.exchangeRate,
-            operatedAt: IBAN_BRIDGE_OPERATED_AT,
-            sourceAccountId: input.sourceAccountId,
-            sourceAmount: input.sourceAmount,
-            sourceEntryExchangeRate: input.exchangeRate,
-            targetAccountId: input.targetAccountId,
-            targetAmount: IBAN_BRIDGE_UAH_AMOUNT,
-            toIban: input.toIban
-        });
+    testSeedService.directTransfer({
+        consolidationType: input.consolidationType,
+        exchangeRate: input.exchangeRate,
+        operatedAt: IBAN_BRIDGE_OPERATED_AT,
+        sourceAccountId: input.sourceAccountId,
+        sourceAmount: input.sourceAmount,
+        sourceEntryExchangeRate: input.exchangeRate,
+        targetAccountId: input.targetAccountId,
+        targetAmount: IBAN_BRIDGE_UAH_AMOUNT,
+        toIban: input.toIban
     });
 
 export const seedChainReclaimFixture = (input: {

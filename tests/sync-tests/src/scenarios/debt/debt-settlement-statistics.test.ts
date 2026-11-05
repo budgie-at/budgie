@@ -1163,32 +1163,28 @@ const createTransaction = (
     transaction: Pick<TransactionCreateEntityInterface, 'type' | 'title' | 'externalSource' | 'fromAccountId' | 'toAccountId'>,
     operatedAt = new Date('2026-06-02T12:00:00.000Z')
 ) =>
-    Effect.gen(function* () {
-        return yield* insertOne(TransactionEntityTable, {
-            ...transaction,
-            externalId: null,
-            operatedAt,
-            comment: '',
-            exchangeRate: 1,
-            updatedBy: null
-        } satisfies TransactionCreateEntityInterface);
-    });
+    insertOne(TransactionEntityTable, {
+        ...transaction,
+        externalId: null,
+        operatedAt,
+        comment: '',
+        exchangeRate: 1,
+        updatedBy: null
+    } satisfies TransactionCreateEntityInterface);
 
 const createTransactionEntry = (
     entry: Pick<TransactionEntryCreateEntityInterface, 'transactionId' | 'accountId' | 'type' | 'kind' | 'amount' | 'categoryId'>
 ) =>
-    Effect.gen(function* () {
-        return yield* insertOne(TransactionEntryEntityTable, {
-            ...entry,
-            mccCategoryId: null,
-            externalId: null,
-            exchangeRate: 1,
-            baseInstrumentId: 1,
-            baseExchangeRate: 1,
-            baseAmount: entry.amount,
-            toIban: null
-        } satisfies TransactionEntryCreateEntityInterface);
-    });
+    insertOne(TransactionEntryEntityTable, {
+        ...entry,
+        mccCategoryId: null,
+        externalId: null,
+        exchangeRate: 1,
+        baseInstrumentId: 1,
+        baseExchangeRate: 1,
+        baseAmount: entry.amount,
+        toIban: null
+    } satisfies TransactionEntryCreateEntityInterface);
 
 const findAccountById = (accountId: number) =>
     Effect.gen(function* () {
@@ -1238,8 +1234,8 @@ const createDebtEvent = ({
     DebtEventCreateEntityInterface,
     'debtAccountId' | 'transactionId' | 'transactionEntryId' | 'direction' | 'source' | 'amount' | 'operatedAt'
 >) =>
-    Effect.gen(function* () {
-        yield* insertOne(DebtEventEntityTable, {
+    Effect.asVoid(
+        insertOne(DebtEventEntityTable, {
             debtAccountId,
             transactionId,
             transactionEntryId,
@@ -1250,8 +1246,8 @@ const createDebtEvent = ({
             baseExchangeRate: 1,
             baseAmount: amount,
             operatedAt
-        } satisfies DebtEventCreateEntityInterface);
-    });
+        } satisfies DebtEventCreateEntityInterface)
+    );
 
 const DEBT_V2_JANUARY_OPERATED_AT = new Date('2026-01-15T12:00:00.000Z');
 const DEBT_V2_MARCH_OPERATED_AT = new Date('2026-03-10T12:00:00.000Z');
@@ -1363,9 +1359,7 @@ const readCategoryAmount = Effect.fnUntraced(function* (
 });
 
 const readDebtAccountEntries = (accountId: number) =>
-    Effect.gen(function* () {
-        return yield* testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.accountId, accountId));
-    });
+    testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.accountId, accountId));
 
 const expectDebtTile = Effect.fnUntraced(function* (
     accountId: number,

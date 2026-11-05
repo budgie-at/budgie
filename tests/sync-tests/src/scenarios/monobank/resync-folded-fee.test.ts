@@ -32,9 +32,7 @@ const atmWithdrawal = buildMonobank.transaction({
 });
 
 const fetchAtmEntries = () =>
-    Effect.gen(function* () {
-        return yield* testDb.select().from(TransactionEntryEntityTable).where(like(TransactionEntryEntityTable.externalId, 'tx-atm%'));
-    });
+    testDb.select().from(TransactionEntryEntityTable).where(like(TransactionEntryEntityTable.externalId, 'tx-atm%'));
 
 describe('monobank/resync-folded-fee', () => {
     it.effect('splits a folded ATM fee into its own entry and restores the MCC without moving the balance', () =>

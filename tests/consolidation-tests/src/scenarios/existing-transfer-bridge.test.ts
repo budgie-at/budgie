@@ -44,10 +44,7 @@ const seedExistingTransferBridgeFixture = () =>
         };
     });
 
-const fetchBridgeCanonicalId = () =>
-    Effect.gen(function* () {
-        return yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER);
-    });
+const fetchBridgeCanonicalId = () => fetchSingleCanonicalId(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER);
 
 layer(TestLayer)('consolidation/existing-transfer-bridge', it => {
     it.effect('nests a hand-created bridge transfer under a new source to target canonical', () =>

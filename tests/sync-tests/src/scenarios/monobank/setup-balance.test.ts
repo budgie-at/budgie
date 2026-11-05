@@ -40,19 +40,15 @@ const setupMonobankSync = Effect.fnUntraced(function* (bankAccount: Account) {
 });
 
 const fetchBalanceAdjustments = (accountId: number) =>
-    Effect.gen(function* () {
-        return yield* testDb
-            .select({
-                amount: TransactionEntryEntityTable.amount,
-                type: TransactionEntryEntityTable.type,
-                operatedAt: TransactionEntityTable.operatedAt
-            })
-            .from(TransactionEntryEntityTable)
-            .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionEntryEntityTable.transactionId))
-            .where(
-                and(eq(TransactionEntryEntityTable.accountId, accountId), eq(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT))
-            );
-    });
+    testDb
+        .select({
+            amount: TransactionEntryEntityTable.amount,
+            type: TransactionEntryEntityTable.type,
+            operatedAt: TransactionEntityTable.operatedAt
+        })
+        .from(TransactionEntryEntityTable)
+        .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionEntryEntityTable.transactionId))
+        .where(and(eq(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT), eq(TransactionEntryEntityTable.accountId, accountId)));
 
 const importHistory = Effect.fnUntraced(function* (onLaterRequest: () => Promise<void> | void = emptyFn) {
     const monobankSyncService = yield* MonobankSyncService;

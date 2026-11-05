@@ -89,7 +89,7 @@
         "effecttsgo/leaking-requirements": "off",
         "effecttsgo/any-unknown-in-error-context": "off",
         "effecttsgo/lazy-effect": "off",
-        "effecttsgo/unnecessary-effect-gen": "off",
+        "effecttsgo/unnecessary-effect-gen": "error",
         "effecttsgo/schema-number": "error",
         "effecttsgo/schema-class-missing-brand": "error",
         "effecttsgo/crypto-random-uuid": "error",

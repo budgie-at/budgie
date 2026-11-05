@@ -56,19 +56,12 @@ const fetchPrimaryEntry = (transactionId: number) =>
     });
 
 const fetchDebtEvents = (debtAccountId: number) =>
-    Effect.gen(function* () {
-        return yield* testDb.select().from(DebtEventEntityTable).where(eq(DebtEventEntityTable.debtAccountId, debtAccountId));
-    });
+    testDb.select().from(DebtEventEntityTable).where(eq(DebtEventEntityTable.debtAccountId, debtAccountId));
 
 const fetchAccountEntries = (accountId: number) =>
-    Effect.gen(function* () {
-        return yield* testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.accountId, accountId));
-    });
+    testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.accountId, accountId));
 
-const createCashAccount = () =>
-    Effect.gen(function* () {
-        return yield* seed.account({ title: 'Category cash account', type: AccountTypeEnum.BANK_SYNC });
-    });
+const createCashAccount = () => seed.account({ title: 'Category cash account', type: AccountTypeEnum.BANK_SYNC });
 
 const createDebtAccount = (debtType: AccountDebtTypeEnum) =>
     Effect.gen(function* () {

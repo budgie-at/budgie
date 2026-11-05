@@ -35,16 +35,16 @@ const REPAIR_WRONG_AMOUNT = REPAIR_PRIMARY_AMOUNT + REPAIR_EXTRA_AMOUNT;
 const REPAIR_SCOPE_WINDOW_MS = 60_000;
 
 const backfillP2pQuote = (quotedInstrumentId: number, incomeTransactionId: number) =>
-    Effect.gen(function* () {
-        yield* testDb
+    Effect.asVoid(
+        testDb
             .update(TransactionEntryEntityTable)
             .set({
                 quotedInstrumentId,
                 quotedAmount: REPAIR_PRIMARY_AMOUNT,
                 quotedUnitPrice: 35 * PRECISION
             })
-            .where(eq(TransactionEntryEntityTable.originalTransactionId, incomeTransactionId));
-    });
+            .where(eq(TransactionEntryEntityTable.originalTransactionId, incomeTransactionId))
+    );
 
 const seedWrongP2pRepairScenario = (externalIdPrefix: string, bankAccountId: number, binanceAccountId: number) =>
     Effect.gen(function* () {

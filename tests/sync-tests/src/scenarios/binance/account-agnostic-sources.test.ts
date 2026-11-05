@@ -34,9 +34,7 @@ import { mockServer } from '../../harness/scenario/mock-server';
 import type { Services } from '../../harness/scenario/test-runtime';
 
 const fetchAccountByExternalId = (externalId: string) =>
-    Effect.gen(function* () {
-        return yield* testDb.select().from(AccountEntityTable).where(eq(AccountEntityTable.externalId, externalId));
-    });
+    testDb.select().from(AccountEntityTable).where(eq(AccountEntityTable.externalId, externalId));
 
 const seedOrphanAccount = (externalId: string, instrumentId: number) =>
     seed.account({ externalId, externalSource: ExternalSourceEnum.BINANCE, type: AccountTypeEnum.CRYPTO_SYNC, instrumentId });

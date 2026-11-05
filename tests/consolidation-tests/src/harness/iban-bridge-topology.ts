@@ -160,10 +160,7 @@ export const expectBridgeLedgerAmounts = (canonicalId: number, sourceAccountId: 
         expect((yield* fetchLedgerEntry(canonicalId, targetAccountId)).amount).toBe(IBAN_BRIDGE_UAH_AMOUNT);
     });
 
-export const fetchBridgeCanonicalId = () =>
-    Effect.gen(function* () {
-        return yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER);
-    });
+export const fetchBridgeCanonicalId = () => fetchSingleCanonicalId(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER);
 
 export const countCanonicalDuplicateCandidates = Effect.fnUntraced(function* () {
     const consolidationCandidateRepository = yield* ConsolidationCandidateRepository;

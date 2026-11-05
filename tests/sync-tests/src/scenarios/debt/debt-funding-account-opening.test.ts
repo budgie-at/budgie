@@ -53,14 +53,10 @@ const openDebt = Effect.fnUntraced(function* (
 });
 
 const readEntries = (accountId: number) =>
-    Effect.gen(function* () {
-        return yield* testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.accountId, accountId));
-    });
+    testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.accountId, accountId));
 
 const readDebtEvents = (debtAccountId: number) =>
-    Effect.gen(function* () {
-        return yield* testDb.select().from(DebtEventEntityTable).where(eq(DebtEventEntityTable.debtAccountId, debtAccountId));
-    });
+    testDb.select().from(DebtEventEntityTable).where(eq(DebtEventEntityTable.debtAccountId, debtAccountId));
 
 describe('opening a debt from a funding account', () => {
     it.effect.each([
