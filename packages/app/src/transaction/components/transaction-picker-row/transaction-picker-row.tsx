@@ -1,5 +1,6 @@
 import { TransactionTypeEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
+import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
@@ -24,6 +25,10 @@ interface Props {
     readonly testID?: string;
 }
 
+const pressableVariants = cva('px-3xl py-xl active:scale-100 active:opacity-70', {
+    variants: { selected: { true: 'bg-secondary-background' } }
+});
+
 export const TransactionPickerRow = ({ item, position, isSelected = false, onPress, testID }: Props) => {
     const { formatMonthAndDay } = useFormatDate();
     const protectAmount = useProtectedAmountLabel();
@@ -43,22 +48,27 @@ export const TransactionPickerRow = ({ item, position, isSelected = false, onPre
         <TransactionRowLayout
             icon={<CircleIcon size={36} iconSize={18} radius={18} border={false} icon={icon} variant={iconVariant} />}
             amount={
-                <View className="shrink-0 flex-row items-center gap-x-sm">
-                    <Text className={amountClassName}>{signedAmount}</Text>
-                    {isDefined(onPress) ? (
-                        <View className="w-6 items-center">
-                            {isSelected ? <Icon icon={UserIconNameEnum.Check} size={16} className="text-primary" /> : null}
-                        </View>
-                    ) : null}
+                <View className="shrink min-w-0 gap-y-xxs">
+                    <View className="flex-row items-center gap-x-sm">
+                        <Text className={amountClassName}>{signedAmount}</Text>
+                        {isDefined(onPress) ? (
+                            <View className="w-6 items-center">
+                                {isSelected ? <Icon icon={UserIconNameEnum.Check} size={24} className="text-primary" /> : null}
+                            </View>
+                        ) : null}
+                    </View>
+                    {textLineLimit === 0 ? <Text className="text-[13px] text-secondary-foreground">{description}</Text> : null}
                 </View>
             }
         >
             <Text className="text-[15px] font-semibold text-primary" numberOfLines={textLineLimit}>
                 {isNotEmptyString(item.title) ? item.title : t`No title`}
             </Text>
-            <Text className="text-[13px] text-secondary-foreground" numberOfLines={textLineLimit}>
-                {description}
-            </Text>
+            {textLineLimit === 0 ? null : (
+                <Text className="text-[13px] text-secondary-foreground" numberOfLines={textLineLimit}>
+                    {description}
+                </Text>
+            )}
         </TransactionRowLayout>
     );
 
@@ -78,7 +88,7 @@ export const TransactionPickerRow = ({ item, position, isSelected = false, onPre
     return (
         <TransactionRowSurface position={position}>
             <HapticPressable
-                className="px-3xl py-xl active:scale-100 active:opacity-70"
+                className={pressableVariants({ selected: isSelected })}
                 onPress={handlePress}
                 testID={testID}
                 accessibilityRole="radio"

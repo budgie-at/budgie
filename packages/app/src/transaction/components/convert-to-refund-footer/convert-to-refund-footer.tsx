@@ -32,7 +32,7 @@ export const ConvertToRefundFooter = (props: Props) => {
         <View className={footerClassName}>
             <Button
                 content={leftAction}
-                variant="secondary"
+                variant="primary"
                 size="md"
                 onPress={onClose}
                 disabled={isConverting}

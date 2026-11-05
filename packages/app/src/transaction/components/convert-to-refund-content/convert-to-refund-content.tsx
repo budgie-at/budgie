@@ -50,6 +50,8 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
 
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
     const headerSize = isAccessibilityTextSize ? 'sm' : 'md';
+    const headerTitle = isAccessibilityTextSize ? t`Expenses` : t`Convert to Refund`;
+    const headerDescription = isAccessibilityTextSize ? '' : t`Select the original expense for this refund.`;
     const revertRefund = useRevertConsolidation(canonicalTransactionId, handleResolve, true);
     const { convert, isLoading: isConverting } = useConvertToRefundAction(
         refundIncomeTransactionId,
@@ -69,13 +71,15 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
         >
             <FormsheetHeader
                 size={headerSize}
-                title={t`Convert to Refund`}
-                description={t`Select the original expense for this refund.`}
+                title={headerTitle}
+                description={headerDescription}
                 descriptionClassName="leading-[18px]"
                 titleClassName="leading-[22px]"
             />
             <SearchInput
                 value={search}
+                allowFontScaling
+                containerClassName="h-auto min-h-[50px] py-sm"
                 placeholder={t`Search expenses`}
                 onChangeText={handleSearchChange}
                 testID={ConvertToRefundModalSelector.SearchInput}
