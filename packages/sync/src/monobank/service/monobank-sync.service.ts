@@ -40,7 +40,7 @@ import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncNetworkError } from '../../core/error/sync-network.error';
 import { SyncTokenClientMismatchError } from '../../core/error/sync-token-client-mismatch.error';
 import { SyncUnauthorizedError } from '../../core/error/sync-unauthorized.error';
-import { pollingSyncServiceDependenciesLayer } from '../../core/layer/polling-sync-dependencies.layer';
+import { pollingSyncDependenciesLayer } from '../../core/layer/polling-sync-dependencies.layer';
 import { SyncWorkload } from '../../core/port/sync-workload.port';
 import { SyncBalanceReconciliationService } from '../../core/service/sync-balance-reconciliation.service';
 import { SyncIntegrationTokenService } from '../../core/service/sync-integration-token.service';
@@ -477,7 +477,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
 }) {
     static readonly layer = Layer.effect(MonobankSyncService, MonobankSyncService.make).pipe(
         Layer.provide([
-            Layer.fresh(pollingSyncServiceDependenciesLayer),
+            pollingSyncDependenciesLayer,
             BankIntegrationRepository.layer,
             MccCategoryRepository.layer,
             SettingsRepository.layer,

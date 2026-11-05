@@ -8,7 +8,6 @@ import {
 import { AccountService, TransactionService } from '@budgie/ledger';
 import * as Layer from 'effect/Layer';
 
-import { PollingSyncRateGate } from '../service/polling-sync-rate-gate.service';
 import { SyncIntegrationTokenService } from '../service/sync-integration-token.service';
 
 export const pollingSyncDependenciesLayer = Layer.mergeAll(
@@ -21,5 +20,3 @@ export const pollingSyncDependenciesLayer = Layer.mergeAll(
     TransactionService.layer,
     SyncIntegrationTokenService.layer
 );
-
-export const pollingSyncServiceDependenciesLayer = Layer.merge(pollingSyncDependenciesLayer, PollingSyncRateGate.layer);
