@@ -9,7 +9,7 @@ for the conventions.
 ## CI/CD
 
 `pr.yml` runs the e2e suite (`e2e/tests`) on every pull request that touches the
-app, through rnw-community/mobile-ci's `ios-maestro.yml` with `test-framework: e2e`:
+app, through rnw-community/mobile-ci's `ios-e2e.yml`:
 the repacked or built app goes to a Linux runner that leases simulators from the farm.
 
 Bank import tests use committed sanitized statement fixtures from
@@ -55,7 +55,7 @@ through `seed-screenshot-scene.sh`; the captures ship in the run's e2e report
 artifact under `media/raw/ios/iphone-17-pro/en/dark/`. `pr.yml`'s
 `detect-mobile-impact` keeps those same paths out of the full iOS suite.
 `store-screenshots.yml` captures the store set the same way, through
-mobile-ci's `store-screenshots.yml` with `test-framework: e2e`.
+mobile-ci's `store-screenshots.yml`.
 
 The capture reads the device's own pixels (`simctl io screenshot`'s bytes), which
 screenshot protection does not blank, so a scene seeded with

@@ -7,7 +7,6 @@
         "appId": "com.vitalyiegorov.budgie.e2e",
         "prebuildCommand": "npx expo prebuild -p ios --clean --no-install"
     },
-    "capture-mode": "direct",
     "capture-manifest": [
         {
             "platform": "ios",

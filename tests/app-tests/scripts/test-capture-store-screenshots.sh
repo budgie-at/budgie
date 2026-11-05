@@ -69,7 +69,6 @@ cat > "$CONFIG" <<'JSON'
             "appearances": ["dark"]
         }
     ],
-    "capture-mode": "direct",
     "capture-scenes": [
         { "name": "01-home", "deepLink": "budgie://", "readySelector": { "id": "HomePage.TotalBalance" } },
         { "name": "02-transactions", "deepLink": "budgie://transactions", "settleSeconds": 7 },
@@ -103,8 +102,6 @@ assert_fails 'unknown argument fails closed' bash "$TARGET" --config "$CONFIG" -
 assert_fails 'invalid --status-bar fails closed' bash "$TARGET" --config "$CONFIG" --dry-run --status-bar loud
 assert_fails 'non-integer --settle fails closed' bash "$TARGET" --config "$CONFIG" --dry-run --settle later
 assert_fails 'missing config fails closed' bash "$TARGET" --config "$WORK_DIR/absent.json" --dry-run
-jq '."capture-mode" = "flows"' "$CONFIG" > "$WORK_DIR/flows.json"
-assert_fails 'flows capture-mode fails closed' bash "$TARGET" --config "$WORK_DIR/flows.json" --dry-run
 jq '."capture-scenes" += [{"name": "x", "flow": "flows/x.flow.yaml"}]' "$CONFIG" > "$WORK_DIR/maestro.json"
 assert_fails 'a Maestro flow scene fails closed' bash "$TARGET" --config "$WORK_DIR/maestro.json" --dry-run
 assert_fails 'no --scenes match fails closed' bash "$TARGET" --config "$CONFIG" --dry-run --scenes nope

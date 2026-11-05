@@ -18,9 +18,6 @@ ok() { echo "ok   $1"; }
 
 jq empty "$CONFIG" 2>/dev/null && ok 'config is valid JSON' || fail 'config is not valid JSON'
 
-MODE=$(jq -r '."capture-mode"' "$CONFIG")
-[ "$MODE" = 'direct' ] && ok 'capture-mode is direct' || fail "capture-mode is '$MODE', expected direct"
-
 SCENES_TS="$REPO_ROOT/e2e/support/media/scenes.ts"
 NAMES=$(jq -r '."capture-scenes"[].name' "$CONFIG")
 

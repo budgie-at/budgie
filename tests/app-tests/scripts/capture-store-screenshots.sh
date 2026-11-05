@@ -2,7 +2,7 @@
 # Local store, landing and social screenshot capture through the e2e
 # project's media capture (e2e/media.config.ts), against simulators leased
 # from the simlock farm: the same capture rnw-community/mobile-ci's
-# store-screenshots.yml runs with test-framework: e2e, so a local run and a CI
+# store-screenshots.yml runs, so a local run and a CI
 # run produce byte-comparable raw captures.
 #
 # Scenes, locales, appearances and devices are read from a capture config
@@ -84,9 +84,6 @@ command -v jq >/dev/null 2>&1 || fail "'jq' is required to read $CONFIG_PATH"
 [ -f "$CONFIG_PATH" ] || fail "no capture config at $CONFIG_PATH"
 jq -e . "$CONFIG_PATH" >/dev/null 2>&1 || fail "$CONFIG_PATH is not valid JSON"
 
-if [ "$(jq -r '."capture-mode" // "flows"' "$CONFIG_PATH")" != 'direct' ]; then
-    fail "$CONFIG_PATH is not in capture-mode 'direct'; the e2e capture takes a capture-scenes manifest"
-fi
 flow_scenes=$(jq -r '[."capture-scenes"[] | select(has("flow")) | .name] | join(", ")' "$CONFIG_PATH")
 [ -z "$flow_scenes" ] || fail "scenes $flow_scenes declare a Maestro flow; name their e2e scene with 'test' (e2e/support/media/scenes.ts)"
 

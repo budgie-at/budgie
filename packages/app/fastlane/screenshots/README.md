@@ -45,7 +45,7 @@ SIMLOCK_URL=<gateway> SIMLOCK_TOKEN=<agent token> \
 ```
 
 The runner hands the e2e project's media capture (`e2e/media.config.ts`) the same
-plan mobile-ci's `store-screenshots.yml` hands it in CI (`test-framework: e2e`):
+plan mobile-ci's `store-screenshots.yml` hands it in CI:
 one cell per locale x appearance x scene, captured on simulators of the manifest's
 model leased from the Mac Studio simlock farm. For every cell the capture builds
 the scene's showcase database (`seed-screenshot-scene.sh --dry-run`), installs it
