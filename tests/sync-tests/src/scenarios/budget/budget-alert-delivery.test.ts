@@ -6,6 +6,7 @@ import { AccountTypeEnum, BudgetPeriodEnum, PRECISION, SettingsRepository } from
 import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+import * as TestClock from 'effect/testing/TestClock';
 import { vi } from 'vitest';
 
 import { testDb } from '../../harness/scenario/setup';
@@ -30,6 +31,7 @@ const FIRED_TRIGGERS = 4;
 layer(BudgetAlertLayer)('budget/alert-delivery', it => {
     it.effect('delivers every crossed threshold exactly once across consecutive runs', () =>
         Effect.gen(function* () {
+            yield* TestClock.setTime(Date.now());
             scheduledNotifications.mockClear();
             const budgetService = yield* BudgetService;
             const monitor = yield* BudgetAlertMonitorService;

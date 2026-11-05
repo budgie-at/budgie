@@ -4,6 +4,7 @@ import { getUnixTime } from 'date-fns/getUnixTime';
 import { subHours } from 'date-fns/subHours';
 import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Schema from 'effect/Schema';
@@ -43,6 +44,8 @@ import type { BinanceTransferInterface } from '../interface/binance-transfer.int
 import type { SyncEntityInterface } from '@budgie/contracts';
 import type * as HttpClient from 'effect/http/HttpClient';
 
+const HISTORY_STARTED_AT = new Date('2017-07-01T00:00:00.000Z');
+
 export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@budgie/sync/BinanceSyncService', {
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
@@ -71,11 +74,11 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             BinanceHistorySourceEnum.DUST
         ]);
         const decodeCredentials = Schema.decodeUnknownEffect(Schema.fromJsonString(BinanceCredentialsSchema));
-        const historyStartedAt = new Date('2017-07-01T00:00:00.000Z');
         const headOverlapSeconds = forwardOverlapHours * 60 * 60;
         const freshRunState = (deadlineAtMs: number, startedAtMs: number): BinanceRunStateInterface => ({
             deadlineAtMs,
             startedAtMs,
+            startedAt: new Date(startedAtMs),
             isDeferred: false,
             providerSourceFailed: false,
             tokenRuns: new Map()
@@ -92,10 +95,10 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         const resolveWindowStart = (sync: SyncEntityInterface): Date =>
             sync.mode !== SyncModeEnum.BACKWARD && isDefined(sync.forwardSyncedAt)
                 ? subHours(sync.forwardSyncedAt, forwardOverlapHours)
-                : historyStartedAt;
+                : HISTORY_STARTED_AT;
 
         const resolveHeadStartSeconds = (headAt: number): number =>
-            Math.max(getUnixTime(historyStartedAt), Math.floor(headAt / 1000) - headOverlapSeconds);
+            Math.max(getUnixTime(HISTORY_STARTED_AT), Math.floor(headAt / 1000) - headOverlapSeconds);
 
         const isFiatRefreshDue = (token: string): boolean => {
             const fiatSyncedAtMs = fiatSyncedAtMsByToken.get(token);
@@ -204,11 +207,8 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 binanceSourceCommitService.removeByExternalIds(token, client.getRejectedCapitalExternalIds())
             );
             if (!isRunDeferred()) {
-                const pendingFromMs = client.getCapitalPendingFromMs();
                 yield* databaseLock.withPermit(
-                    syncRepository.update(sync.id, {
-                        binanceCapitalPendingFromAt: isDefined(pendingFromMs) ? new Date(pendingFromMs) : null
-                    })
+                    syncRepository.update(sync.id, { binanceCapitalPendingFromAt: client.getCapitalPendingFromAt() })
                 );
             }
 
@@ -261,7 +261,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             const isFiat = source === BinanceHistorySourceEnum.FIAT;
             const integration = yield* databaseLock.withPermit(syncIntegrationTokenService.getOrCreateIntegration(provider, token));
             const progress = yield* databaseLock.withPermit(binanceHistoryProgressService.find(integration.id, source));
-            const lookbackSeconds = getUnixTime(historyStartedAt);
+            const lookbackSeconds = getUnixTime(HISTORY_STARTED_AT);
             const isBackfillPending = isDefined(progress)
                 ? Math.floor(progress.tailAt / 1000) > lookbackSeconds
                 : isFiat || newHistorySources.has(source) || sync.mode === SyncModeEnum.BACKWARD || !isDefined(sync.forwardSyncedAt);
@@ -407,7 +407,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 return;
             }
 
-            const now = new Date();
+            const now = yield* DateTime.nowAsDate;
             for (const backwardSync of yield* syncRepository.getPendingBackwardSync(provider)) {
                 if ((yield* syncIntegrationTokenService.resolveAccountToken(provider, backwardSync.accountId)) === token) {
                     yield* syncRepository.update(backwardSync.id, {
@@ -426,7 +426,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
 
             const integration = yield* syncIntegrationTokenService.getOrCreateIntegration(provider, token);
             const exchangeAccounts = yield* fetchExchangeAccounts(token);
-            yield* binanceBalanceCorrectionService.correctAllBalances(exchangeAccounts, integration.id, new Date(run.startedAtMs));
+            yield* binanceBalanceCorrectionService.correctAllBalances(exchangeAccounts, integration.id, run.startedAt);
             patchTokenRun(token, { balancesCorrected: true });
         });
 
@@ -436,8 +436,9 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             executeSyncBatch: Effect.fn('BinanceSyncService.executeSyncBatch')(function* (sync: SyncEntityInterface, token: string) {
                 const account = yield* accountRepository.findById(sync.accountId);
                 const externalAccountId = account?.externalId ?? null;
+                const now = yield* DateTime.nowAsDate;
                 if (!isNotEmptyString(externalAccountId)) {
-                    return { transactions: [], nextTo: new Date(), nextFrom: new Date(), completed: true };
+                    return { transactions: [], nextTo: now, nextFrom: now, completed: true };
                 }
 
                 const changedCount = isRunDeferred()
@@ -454,7 +455,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 }
                 yield* getRunSignedClient(token).failWithSourceFailure();
 
-                const progressDate = isRunDeferred() ? (sync.backwardSyncFromAt ?? sync.forwardSyncFromAt ?? new Date()) : new Date();
+                const progressDate = isRunDeferred() ? (sync.backwardSyncFromAt ?? sync.forwardSyncFromAt ?? now) : now;
 
                 return {
                     transactions: [],

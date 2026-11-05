@@ -18,6 +18,7 @@ import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
 import { startOfDay } from 'date-fns/startOfDay';
 import { startOfMonth } from 'date-fns/startOfMonth';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
@@ -293,7 +294,7 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                     ],
                     { concurrency: 'unbounded' }
                 );
-                const referenceDate = new Date();
+                const referenceDate = yield* DateTime.nowAsDate;
                 const series = fillRunwaySeriesMonths(seriesRows, referenceDate);
                 const computation = computeRunway({
                     series,
@@ -320,12 +321,14 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                 isRunwayCryptoIncluded: boolean,
                 context: WidgetSnapshotContextInterface
             ) {
+                const now = yield* DateTime.nowAsDate;
+                const monthStart = startOfMonth(now);
                 const [netWorthRows, homeRows, monthRows] = yield* Effect.all(
                     [
                         accountBalanceRepository.getNetWorth(instrument.id),
                         accountBalanceRepository.getHomeAccountRows(instrument.id),
                         statisticsRepository.getTotalIncomeAndExpenseQuery(
-                            { ...DEFAULT_TRANSACTION_FILTER, date: { from: startOfMonth(new Date()), to: null } },
+                            { ...DEFAULT_TRANSACTION_FILTER, date: { from: monthStart, to: null } },
                             instrument.id
                         )
                     ],
@@ -357,7 +360,7 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                     return null;
                 }
 
-                const now = new Date();
+                const now = yield* DateTime.nowAsDate;
                 const { periodStart, nextPeriodStart } = resolveBudgetWindow(budget, now);
                 const [instrument, projection] = yield* Effect.all(
                     [instrumentRepository.findById(budget.instrumentId), budgetProjectionService.project(budget, now)],
@@ -388,7 +391,7 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                     : null;
 
                 const periodDays = Math.max(differenceInCalendarDays(periodEnd, periodStart) + 1, 1);
-                const daysCount = Math.max(differenceInCalendarDays(periodEnd, new Date()) + 1, 1);
+                const daysCount = Math.max(differenceInCalendarDays(periodEnd, now) + 1, 1);
                 const formattedAmount = formatCompactWithSymbol(Math.abs(limitAmount - spentAmount), symbol, context);
                 const caption = buildBudgetCaption(isOverLimit, formattedLimit, context);
                 const formattedPeriod = formatPeriod(periodStart, periodEnd, context);

@@ -2,6 +2,7 @@ import { Db } from '@budgie/contracts';
 import { formatToMillis } from 'drizzle-orm/migrator.utils';
 import { migrate } from 'drizzle-orm/sqlite-core/effect';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
@@ -48,9 +49,12 @@ export class DatabaseMigrationService extends Context.Service<DatabaseMigrationS
 
             yield* client.withTransaction(
                 Effect.gen(function* () {
+                    const now = yield* DateTime.now;
+                    const appliedAt = DateTime.formatIso(now);
+
                     yield* client`ALTER TABLE ${migrationsTable} ADD COLUMN name text`;
                     yield* client`ALTER TABLE ${migrationsTable} ADD COLUMN applied_at TEXT`;
-                    yield* client`INSERT INTO ${migrationsTable} (hash, created_at, name, applied_at) VALUES (${baselineMigration.hash}, ${baselineMigration.folderMillis}, ${baselineMigration.name}, ${new Date().toISOString()})`;
+                    yield* client`INSERT INTO ${migrationsTable} (hash, created_at, name, applied_at) VALUES (${baselineMigration.hash}, ${baselineMigration.folderMillis}, ${baselineMigration.name}, ${appliedAt})`;
                 })
             );
         });

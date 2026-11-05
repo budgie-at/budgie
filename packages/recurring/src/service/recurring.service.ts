@@ -26,6 +26,7 @@ import type { RecurringTrackedSeriesInterface } from '../interface/recurring-tra
 import type { RecurringSeriesCreateEntityInterface, RecurringSeriesEntityInterface } from '@budgie/contracts';
 
 const HISTORY_MONTHS = 24;
+const startOfHistory = (now: Date): Date => new Date(now.getFullYear(), now.getMonth() - HISTORY_MONTHS, now.getDate());
 const TRACKED_KINDS = [RecurringSeriesKindEnum.EXPENSE, RecurringSeriesKindEnum.INCOME] as const;
 
 export class RecurringService extends Context.Service<RecurringService>()('@budgie/recurring/RecurringService', {
@@ -265,7 +266,7 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
 
         const syncSeries = Effect.fnUntraced(function* (now: Date, isLegacyAdoption: boolean) {
             const { defaultInstrumentId, language } = yield* settingsRepository.getSettings();
-            const since = new Date(now.getFullYear(), now.getMonth() - HISTORY_MONTHS, now.getDate());
+            const since = startOfHistory(now);
             const charges = (yield* Effect.forEach(TRACKED_KINDS, kind =>
                 recurringRepository.findCharges(defaultInstrumentId, language, since, kind)
             )).flat();

@@ -14,6 +14,7 @@ import { msg } from '@lingui/core/macro';
 import { Storage } from '@op-engineering/op-sqlite';
 import * as EffectArray from 'effect/Array';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Option from 'effect/Option';
@@ -242,7 +243,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
                     return;
                 }
 
-                const now = new Date();
+                const now = yield* DateTime.nowAsDate;
                 const periodStartMs = resolveBudgetWindow(budget, now).periodStart.getTime();
                 const spent = yield* budgetProjectionService.spent(budget, now);
                 const categoryLimits = yield* budgetCategoryLimitRepository.getByBudget(budget.id);

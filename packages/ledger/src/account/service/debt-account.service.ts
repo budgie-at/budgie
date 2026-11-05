@@ -11,6 +11,7 @@ import {
 } from '@budgie/contracts';
 import { EntryBaseValuationService } from '@budgie/market';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
@@ -166,7 +167,7 @@ export class DebtAccountService extends Context.Service<DebtAccountService>()('@
         return {
             createDebt: Effect.fn('DebtAccountService.createDebt')(
                 function* (input: DebtAccountCreateInputInterface) {
-                    const operatedAt = new Date();
+                    const operatedAt = yield* DateTime.nowAsDate;
                     const createdAccount = yield* createDebtRecord(input, convertToMicroUnits(input.targetBalance));
                     const valuedAccount = yield* updateDebtTargetBaseValuation(createdAccount, operatedAt);
                     const returnedAmount = convertToMicroUnits(input.currentBalance);
@@ -181,7 +182,7 @@ export class DebtAccountService extends Context.Service<DebtAccountService>()('@
             updateDebtById: Effect.fn('DebtAccountService.updateDebtById')(
                 function* (id: number, input: DebtAccountUpdateInputInterface) {
                     const { currentBalance } = input;
-                    const operatedAt = new Date();
+                    const operatedAt = yield* DateTime.nowAsDate;
                     const valuedAccount = yield* updateDebtAccountFields(id, input, operatedAt);
 
                     if (!shouldSyncManualDebtEvents(input)) {

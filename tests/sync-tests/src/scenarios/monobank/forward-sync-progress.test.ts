@@ -3,6 +3,7 @@ import { describe, expect, it } from '@effect/vitest';
 import * as Deferred from 'effect/Deferred';
 import * as Effect from 'effect/Effect';
 import * as FiberSet from 'effect/FiberSet';
+import * as TestClock from 'effect/testing/TestClock';
 import { HttpResponse, delay, http } from 'msw';
 
 import {
@@ -64,6 +65,7 @@ describe('monobank/forward-sync-progress', () => {
 
     it.effect('continues every stale forward account after queued user work stops the first run', () =>
         Effect.gen(function* () {
+            yield* TestClock.setTime(Date.now());
             const workload = yield* Workload;
             const userWorkDone = yield* Deferred.make<void>();
             const queueUserWork = yield* FiberSet.makeRuntime<Workload>();

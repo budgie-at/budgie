@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-max-depth */
 import { BudgetPeriodCloseService } from '@budgie/budget';
 import { I18nProvider as LinguiProvider } from '@lingui/react';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import { Stack, type NativeStackNavigationOptions } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -115,7 +116,8 @@ const handleAppStateChange = (isActive: boolean): void => {
                     })
                 )
             );
-            yield* logAndContinue(workload.run(budgetPeriodCloseService.closeDuePeriods(new Date())));
+            const now = yield* DateTime.nowAsDate;
+            yield* logAndContinue(workload.run(budgetPeriodCloseService.closeDuePeriods(now)));
         })
     );
 };

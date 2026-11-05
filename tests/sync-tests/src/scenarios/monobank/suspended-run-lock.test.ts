@@ -30,6 +30,7 @@ const nextTaskDelayMs = 0;
 describe('monobank/suspended-run-lock', () => {
     it.effect('keeps a sync request made during the active account run', () =>
         Effect.gen(function* () {
+            yield* TestClock.setTime(Date.now());
             const monobankSyncService = yield* MonobankSyncService;
             const workload = yield* Workload;
             const syncRepository = yield* SyncRepository;

@@ -2,8 +2,8 @@ import { CurrencyEnum, SettingsRepository, TransactionReceiptRepository, convert
 import { parseReceipt, toMerchantTitle } from '@budgie/import-export';
 import { ReceiptMatchResultKindEnum, ReceiptMatchService } from '@budgie/ledger';
 import { SyncFileReader } from '@budgie/sync';
-import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Option from 'effect/Option';
@@ -83,9 +83,8 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
                 return { ...failure(ReceiptScanFailureEnum.MANUAL), aiContext };
             }
 
-            const now = yield* Clock.currentTimeMillis;
             const amount = convertFromMicroUnits(draft.total);
-            const occurredAt = draft.occurredAt ?? new Date(now);
+            const occurredAt = draft.occurredAt ?? (yield* DateTime.nowAsDate);
 
             const title = toMerchantTitle(draft.isPaid ? (draft.merchantCandidates.at(0) ?? '') : (draft.merchantLegalName ?? ''));
             const categoryId = draft.isPaid ? yield* transactionReceiptRepository.findMerchantCategoryId(draft.merchantVatId, title) : null;

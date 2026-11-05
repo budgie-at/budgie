@@ -1,5 +1,6 @@
 import { and, asc, eq, getTableColumns, inArray, isNotNull, isNull, lt, or } from 'drizzle-orm';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
@@ -81,7 +82,7 @@ export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/c
                 }
             }),
             resetForResync: Effect.fn('SyncRepository.resetForResync')(function* (accountId: number, setupBalance: number | null) {
-                const now = new Date();
+                const now = yield* DateTime.nowAsDate;
 
                 yield* Db.query(db =>
                     db

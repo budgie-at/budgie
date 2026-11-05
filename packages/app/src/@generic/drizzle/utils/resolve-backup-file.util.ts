@@ -1,3 +1,4 @@
+import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
 import { Directory, File, FileMode, Paths } from 'expo-file-system';
 import { listContents, unzip } from 'react-native-zip-archive';
@@ -30,9 +31,10 @@ export const resolveBackupFile = Effect.fn('resolveBackupFile')(function* (sourc
         return sourceUri;
     }
 
+    const extractedAt = yield* Clock.currentTimeMillis;
     const extractDirectory = yield* Effect.acquireRelease(
         Effect.sync(() => {
-            const directory = new Directory(Paths.cache, `backup-extract-${Date.now()}`);
+            const directory = new Directory(Paths.cache, `backup-extract-${extractedAt}`);
 
             directory.create({ idempotent: true, intermediates: true });
 

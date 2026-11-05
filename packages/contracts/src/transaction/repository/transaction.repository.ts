@@ -1,3 +1,4 @@
+import * as DateTime from 'effect/DateTime';
 /* eslint-disable max-lines -- Transaction repository is the kitchen sink for tx queries + filter builders + bank-sync helpers */
 import { SQL, and, count, eq, gte, inArray, isNotNull, isNull, lte, ne, notExists, or, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
@@ -42,7 +43,7 @@ export class TransactionRepository extends Context.Service<TransactionRepository
 
             const time = result[0]?.operatedAt;
             if (isPositiveNumber(time)) {
-                return new Date(time * 1000);
+                return DateTime.toDateUtc(DateTime.makeUnsafe(time * 1000));
             }
 
             return null;

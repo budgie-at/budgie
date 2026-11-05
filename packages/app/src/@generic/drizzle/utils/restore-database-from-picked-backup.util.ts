@@ -1,3 +1,4 @@
+import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
 import * as DocumentPicker from 'expo-document-picker';
 import { File } from 'expo-file-system';
@@ -53,7 +54,7 @@ const replaceDatabaseFromUri = Effect.fn('restoreDatabaseFromPickedBackup.replac
         )
     );
 
-    const unopenableName = `${DB_NAME}.unopenable-${Date.now()}`;
+    const unopenableName = `${DB_NAME}.unopenable-${yield* Clock.currentTimeMillis}`;
 
     yield* Effect.forEach(['', '-wal', '-shm'], suffix => moveIfExists(`${DB_NAME}${suffix}`, `${unopenableName}${suffix}`), {
         discard: true

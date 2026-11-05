@@ -14,6 +14,7 @@ import { AccountArchiveService } from '@budgie/ledger';
 import { sql } from 'drizzle-orm';
 import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Predicate from 'effect/Predicate';
@@ -74,9 +75,10 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
 
         const applyProgressUpdate = Effect.fnUntraced(function* (sync: SyncEntityInterface, result: SyncBatchResultInterface) {
             const isFetchedHistory = sync.mode === SyncModeEnum.BACKWARD && isDefined(result.balanceSnapshot);
+            const now = yield* DateTime.nowAsDate;
             yield* syncRepository.update(sync.id, {
                 ...resolveSyncProgressUpdate(sync, result),
-                ...(isFetchedHistory && { forwardSyncedAt: new Date(), forwardSyncFromAt: result.nextFrom })
+                ...(isFetchedHistory && { forwardSyncedAt: now, forwardSyncFromAt: result.nextFrom })
             });
             if (result.completed && isDefined(result.balanceSnapshot)) {
                 yield* syncBalanceReconciliationService.reconcile(sync.accountId, result.balanceSnapshot);

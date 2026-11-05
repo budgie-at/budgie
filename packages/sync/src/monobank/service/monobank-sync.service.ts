@@ -26,6 +26,7 @@ import { min } from 'date-fns/min';
 import { subSeconds } from 'date-fns/subSeconds';
 import * as Cache from 'effect/Cache';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
 import * as Layer from 'effect/Layer';
@@ -138,7 +139,8 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
 
         const completeBackwardHistory = Effect.fn('MonobankSyncService.completeBackwardHistory')(
             function* (sync: SyncEntityInterface, setupBalance: number, result: SyncBatchResultInterface) {
-                const setupAt = sync.forwardSyncFromAt ?? new Date();
+                const now = yield* DateTime.nowAsDate;
+                const setupAt = sync.forwardSyncFromAt ?? now;
                 const oldestTransactionAt = yield* transactionService.getEarliestTransactionTimeByAccountId(sync.accountId);
                 const openingBalanceAt = isDefined(oldestTransactionAt) ? subSeconds(oldestTransactionAt, 1) : setupAt;
 
@@ -232,8 +234,8 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
 
         const getNextTimeFromTransaction = (transaction: SyncTransactionInterface): Date => addSeconds(fromUnixTime(transaction.time), -1);
 
-        const fetchBalanceSnapshot = (client: MonobankClient, accountId: string) => {
-            const at = fromUnixTime(getUnixTime(new Date()));
+        const fetchBalanceSnapshot = (client: MonobankClient, accountId: string, now: Date) => {
+            const at = fromUnixTime(getUnixTime(now));
 
             return Effect.all([client.getAccounts, client.getJars()]).pipe(
                 Effect.map(([accounts, jars]) => {
@@ -246,9 +248,9 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
         };
 
         const syncTransactionsForward = Effect.fnUntraced(function* (client: MonobankClient, accountId: string, from: Date) {
+            const now = yield* DateTime.nowAsDate;
             const balanceSnapshot =
-                addSeconds(from, MONOBANK_MAX_PERIOD_SECONDS) >= new Date() ? yield* fetchBalanceSnapshot(client, accountId) : null;
-            const now = new Date();
+                addSeconds(from, MONOBANK_MAX_PERIOD_SECONDS) >= now ? yield* fetchBalanceSnapshot(client, accountId, now) : null;
             const to = min([now, addSeconds(from, MONOBANK_MAX_PERIOD_SECONDS)]);
             const transactions = yield* client.getTransactions(accountId, getUnixTime(from), getUnixTime(to));
             const oldestTransaction = transactions.at(-1);
@@ -265,7 +267,8 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             accountId: string,
             sync: SyncEntityInterface
         ) {
-            const to = sync.backwardSyncFromAt ?? new Date();
+            const now = yield* DateTime.nowAsDate;
+            const to = sync.backwardSyncFromAt ?? now;
             const limitAt = sync.backwardSyncLimitAt;
             const firstEmptyFromInStreak = sync.backwardSyncedAt;
 
@@ -326,16 +329,15 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             accountIcon: account => (account.type === SyncAccountTypeEnum.JAR ? UserIconNameEnum.PiggyBank : UserIconNameEnum.Landmark),
             executeSyncBatch: Effect.fn('MonobankSyncService.executeSyncBatch')(function* (sync: SyncEntityInterface, token: string) {
                 const account = yield* accountRepository.findById(sync.accountId);
+                const now = yield* DateTime.nowAsDate;
                 if (!isDefined(account) || !isNotEmptyString(account.externalId)) {
-                    const now = new Date();
-
                     return { transactions: [], nextTo: now, nextFrom: now, completed: true };
                 }
 
                 const client = new MonobankClient(token);
                 const result =
                     sync.mode === SyncModeEnum.FORWARD
-                        ? yield* syncTransactionsForward(client, account.externalId, sync.forwardSyncFromAt ?? new Date())
+                        ? yield* syncTransactionsForward(client, account.externalId, sync.forwardSyncFromAt ?? now)
                         : yield* syncTransactionsBackward(client, account.externalId, sync);
                 yield* Effect.yieldNow;
                 const changedTransactions = yield* processFetchedTransactions(result.transactions, account.id);

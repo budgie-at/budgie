@@ -1,6 +1,6 @@
 import { useAtomRefresh, useAtomValue } from '@effect/atom-react/Hooks';
 import { addDays, isSameDay, startOfDay } from 'date-fns';
-import * as Clock from 'effect/Clock';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Fiber from 'effect/Fiber';
 import * as Atom from 'effect/reactivity/Atom';
@@ -12,12 +12,11 @@ import { appRuntime } from '../../@generic/runtime/app.runtime';
 const debtDeadlineDateAtom = Atom.make(context => {
     const fiber = appRuntime.runFork(
         Effect.gen(function* () {
-            const startedAtMs = yield* Clock.currentTimeMillis;
-            const now = new Date(startedAtMs);
+            const now = yield* DateTime.nowAsDate;
 
             yield* Effect.sleep(startOfDay(addDays(now, 1)).getTime() - now.getTime());
-            const wokeAtMs = yield* Clock.currentTimeMillis;
-            context.setSelf(new Date(wokeAtMs));
+            const wokeAt = yield* DateTime.nowAsDate;
+            context.setSelf(wokeAt);
         }).pipe(Effect.forever, Effect.tapDefect(Effect.logError))
     );
     const subscription = AppState.addEventListener('change', nextAppState => {

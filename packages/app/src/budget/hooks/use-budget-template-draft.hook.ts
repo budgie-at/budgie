@@ -48,19 +48,20 @@ const SUGGESTED_TEMPLATE_CONFIG: BudgetSuggestedTemplateConfigInterface = {
 
 const emptyResolutionAtom = Atom.make(AsyncResult.success(EMPTY_RESOLUTION));
 
-export const suggestedBudgetTemplateAtom = Atom.family((key: { readonly nowTimestamp: number; readonly baseInstrumentId: number }) =>
-    databaseQueryAtom(
+export const suggestedBudgetTemplateAtom = Atom.family((key: { readonly nowTimestamp: number; readonly baseInstrumentId: number }) => {
+    const now = new Date(key.nowTimestamp);
+
+    return databaseQueryAtom(
         [TransactionEntryEntityTable, TransactionEntityTable, AccountEntityTable, ExchangeRateEntityTable],
         Effect.gen(function* () {
             const budgetRepository = yield* BudgetRepository;
-            const now = new Date(key.nowTimestamp);
             const window = computeTrailingMonthsWindow(now, MAX_WINDOW_MONTHS);
             const entries = yield* budgetRepository.findBudgetSpentEntries(window.start, window.end, key.baseInstrumentId);
 
             return buildSuggestedBudgetTemplateResolution(entries, now, key.baseInstrumentId, SUGGESTED_TEMPLATE_CONFIG);
         })
-    )
-);
+    );
+});
 
 export const genericBudgetTemplateAtom = Atom.family((currencyCode: string) =>
     databaseQueryAtom(

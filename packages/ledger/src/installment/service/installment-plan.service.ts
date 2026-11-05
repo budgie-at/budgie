@@ -32,6 +32,8 @@ import { TransactionDebtSettlementService } from '../../transaction/service/tran
 import type { InstallmentPlanConvertInputInterface } from '../interface/installment-plan-convert-input.interface';
 import type { TransactionEntityInterface, TransactionEntryEntityInterface } from '@budgie/contracts';
 
+const UNIX_EPOCH = new Date(0);
+
 export class InstallmentPlanService extends Context.Service<InstallmentPlanService>()('@budgie/ledger/InstallmentPlanService', {
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
@@ -83,7 +85,7 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                 return false;
             }
 
-            const purchases = yield* installmentPlanRepository.findCandidates(accountId, new Date(0), candidate.operatedAt);
+            const purchases = yield* installmentPlanRepository.findCandidates(accountId, UNIX_EPOCH, candidate.operatedAt);
 
             return purchases.some(purchase => {
                 const monthOffset = differenceInCalendarMonths(candidate.operatedAt, purchase.operatedAt);

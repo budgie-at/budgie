@@ -641,8 +641,8 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return this.deferredFrontierMsBySource.get(source) ?? null;
     }
 
-    getCapitalPendingFromMs(): number | null {
-        return this.capitalPendingFromMs;
+    getCapitalPendingFromAt(): Date | null {
+        return isDefined(this.capitalPendingFromMs) ? new Date(this.capitalPendingFromMs) : null;
     }
 
     getRejectedCapitalExternalIds(): ReadonlySet<string> {

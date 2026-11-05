@@ -19,6 +19,7 @@ import * as Arr from 'effect/Array';
 import * as Cause from 'effect/Cause';
 import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Order from 'effect/Order';
@@ -140,14 +141,17 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                     return format(addDays(parseISO(latestPrice.priceDate), 1), rateDateFormat);
                 }
 
-                return format(subDays(new Date(), dataWindowDays - 1), rateDateFormat);
+                const now = yield* DateTime.nowAsDate;
+
+                return format(subDays(now, dataWindowDays - 1), rateDateFormat);
             });
 
             const buildAccountJobInput = Effect.fn('HistoricalMarketDataService.buildAccountJobInput')(function* (
                 instrumentId: number,
                 quoteInstrumentId: number
             ) {
-                const toDate = format(new Date(), rateDateFormat);
+                const now = yield* DateTime.nowAsDate;
+                const toDate = format(now, rateDateFormat);
                 const hasOpenJob = yield* instrumentMarketDataJobRepository.hasOpen(instrumentId, quoteInstrumentId);
 
                 if (hasOpenJob) {
@@ -405,7 +409,8 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
             return {
                 enqueueAccounts,
                 claimNextJob: Effect.gen(function* () {
-                    const staleLockedBefore = new Date(Date.now() - staleLockMs);
+                    const now = yield* DateTime.now;
+                    const staleLockedBefore = DateTime.toDateUtc(DateTime.subtractDuration(now, staleLockMs));
 
                     return yield* instrumentMarketDataJobRepository.claimNext(maxAttempts, staleLockedBefore);
                 }),

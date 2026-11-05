@@ -18,6 +18,7 @@ for (const mode of [SyncModeEnum.FORWARD, SyncModeEnum.BACKWARD]) {
         `serves a ready independent ${mode} credential after exhausted failure yields to queued work`,
         () =>
             Effect.gen(function* () {
+                yield* TestClock.setTime(Date.now());
                 const service = yield* MonobankSyncService;
                 const workload = yield* Workload;
                 const runFork = yield* FiberSet.makeRuntime<Workload>();

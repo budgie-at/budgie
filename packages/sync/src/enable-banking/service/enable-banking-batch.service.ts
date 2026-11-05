@@ -13,6 +13,7 @@ import { TransactionService } from '@budgie/ledger';
 import { RuleEngineService } from '@budgie/rules';
 import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Schema from 'effect/Schema';
@@ -210,7 +211,9 @@ export class EnableBankingBatchService extends Context.Service<EnableBankingBatc
             }),
             execute: Effect.fn('EnableBankingBatchService.execute')(function* (sync: SyncEntityInterface, token: string) {
                 const nowMs = yield* Clock.currentTimeMillis;
-                const fetchStartedAt = new Date(Math.floor(nowMs / millisecondsPerSecond) * millisecondsPerSecond);
+                const fetchStartedAt = DateTime.toDateUtc(
+                    DateTime.makeUnsafe(Math.floor(nowMs / millisecondsPerSecond) * millisecondsPerSecond)
+                );
                 const isBackward = sync.mode === SyncModeEnum.BACKWARD;
                 const limitAt = sync.backwardSyncLimitAt;
                 if (isBackward && isDefined(limitAt) && limitAt >= (sync.backwardSyncFromAt ?? fetchStartedAt)) {

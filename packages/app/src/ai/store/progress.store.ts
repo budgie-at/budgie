@@ -1,3 +1,4 @@
+import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
 import * as Semaphore from 'effect/Semaphore';
 
@@ -12,10 +13,12 @@ export class ProgressStore {
 
     readonly refresh = Effect.fn('ProgressStore.refresh')(
         function* (this: ProgressStore) {
-            if (Date.now() - this.lastRefreshAt < this.throttleMs) {
+            const now = yield* Clock.currentTimeMillis;
+
+            if (now - this.lastRefreshAt < this.throttleMs) {
                 return;
             }
-            this.lastRefreshAt = Date.now();
+            this.lastRefreshAt = now;
             const [total, pending] = yield* this.countTotalAndPending;
             const percent = total === 0 ? ProgressStore.FULL_PERCENT : Math.round(((total - pending) / total) * ProgressStore.FULL_PERCENT);
             appAtomRegistry.set(this.snapshot, { percent, pending, total });

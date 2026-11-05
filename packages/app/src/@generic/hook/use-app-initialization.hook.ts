@@ -1,4 +1,5 @@
 import { BudgetPeriodCloseService } from '@budgie/budget';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as BackgroundTask from 'expo-background-task';
 import * as SplashScreen from 'expo-splash-screen';
@@ -84,7 +85,11 @@ const initializeAppServices = Effect.gen(function* () {
     yield* widgetSnapshotService.start();
     yield* backgroundSyncSessionService.start();
     yield* logAndContinue(workload.run(appDataSyncService.sync()));
-    yield* logAndContinue(workload.run((yield* BudgetPeriodCloseService).closeDuePeriods(new Date())));
+    yield* logAndContinue(
+        Effect.flatMap(BudgetPeriodCloseService, service =>
+            Effect.flatMap(DateTime.nowAsDate, now => workload.run(service.closeDuePeriods(now)))
+        )
+    );
     yield* logAndContinue(onboardingService.initializeLocale());
     yield* logAndContinue(historicalMarketDataDrainerService.enqueueActiveAccounts());
     yield* logAndContinue((yield* CategoryIconBackfillService).applyConfidentIcons());

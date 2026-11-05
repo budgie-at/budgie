@@ -11,6 +11,7 @@ import {
     SyncStatusEnum,
     TransactionRepository
 } from '@budgie/contracts';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -103,9 +104,9 @@ export const makePollingSyncAccountContinuation = Effect.fnUntraced(function* (p
     });
 
     const moveSyncToProvider = Effect.fnUntraced(function* (accountId: number, lastRowAt: Date | null) {
-        const now = new Date();
+        const now = yield* DateTime.nowAsDate;
         const startAt = isDefined(lastRowAt)
-            ? new Date(lastRowAt.getTime() - (lastRowAt.getTime() % millisecondsPerDay) + millisecondsPerDay)
+            ? DateTime.toDateUtc(DateTime.makeUnsafe(lastRowAt.getTime() - (lastRowAt.getTime() % millisecondsPerDay) + millisecondsPerDay))
             : null;
         const values = {
             ...clearedSyncProblems,
@@ -160,7 +161,7 @@ export const makePollingSyncAccountContinuation = Effect.fnUntraced(function* (p
                 provider: previousProvider,
                 enabled: !LIVE_SYNC_PROVIDERS.has(previousProvider),
                 mode: SyncModeEnum.FORWARD,
-                forwardSyncFromAt: new Date(),
+                forwardSyncFromAt: yield* DateTime.nowAsDate,
                 reconciledAt: null,
                 reconciledBalance: null,
                 reconciliationTransactionId: null
