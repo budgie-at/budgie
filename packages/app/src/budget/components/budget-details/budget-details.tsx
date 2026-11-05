@@ -16,6 +16,7 @@ import { BudgetEventsSection } from '../budget-events-section/budget-events-sect
 import { BudgetFundsSection } from '../budget-funds-section/budget-funds-section';
 import { BudgetHistorySection } from '../budget-history-section/budget-history-section';
 import { BudgetLimitChangesRow } from '../budget-limit-changes-row/budget-limit-changes-row';
+import { BudgetPageState } from '../budget-page-state/budget-page-state';
 import { BudgetPeriodRecap } from '../budget-period-recap/budget-period-recap';
 
 import type { BudgetEntityInterface } from '@budgie/contracts';
@@ -25,7 +26,7 @@ interface Props {
 }
 
 export const BudgetDetails = ({ budget }: Props) => {
-    const { projection, isLoading, periodStart, periodEnd, currencySymbol, dateLabel } = useBudgetDetailsData(budget);
+    const { projection, isLoading, isError, periodStart, periodEnd, currencySymbol, dateLabel } = useBudgetDetailsData(budget);
     const riskiestAheadScope = findRiskiestAheadScope(projection);
     const { scrollRef, contentRef, setHighlightTarget, highlightContextValue } = useBudgetDetailsReveal(
         isLoading,
@@ -40,6 +41,10 @@ export const BudgetDetails = ({ budget }: Props) => {
     const handleFigurePress = () => {
         router.push('/budget-safe-to-spend');
     };
+
+    if (isError) {
+        return <BudgetPageState title={budget.name} isLoading={false} isError />;
+    }
 
     return (
         <CollapsibleChromePage

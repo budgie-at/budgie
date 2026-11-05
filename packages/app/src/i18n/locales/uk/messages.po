@@ -1814,7 +1814,9 @@ msgstr "Очікувався рахунок позиченого боргу"
 msgid "Browse icons"
 msgstr "Переглянути значки"
 
+#: src/app/(main)/budget/index.tsx
 #: src/app/(tabs)/settings/index.tsx
+#: src/budget/components/budget-data-state/budget-data-state.tsx
 #: src/budget/hooks/use-budget-form.hook.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Budget"
@@ -1835,6 +1837,10 @@ msgstr "Бюджет заблоковано, {formattedDaysLeft}. Розблок
 #: src/budget/components/budget-setup-form/budget-setup-form.tsx
 msgid "Budget name"
 msgstr "Назва бюджету"
+
+#: src/budget/components/budget-data-state/budget-data-state.tsx
+msgid "Budget unavailable"
+msgstr "Бюджет недоступний"
 
 #: src/import/components/import-preset-options/import-preset-options.tsx
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
@@ -2360,6 +2366,7 @@ msgid "Clipboard is empty"
 msgstr "Буфер обміну порожній"
 
 #: src/@generic/component/sheet-title-row/sheet-title-row.tsx
+#: src/budget/components/budget-sheet-state/budget-sheet-state.tsx
 #: src/sync/component/get-token-card/get-token-card.tsx
 msgid "Close"
 msgstr "Закрити"
@@ -2707,6 +2714,10 @@ msgstr "Не вдалося завантажити"
 #: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
 msgid "Could not load accounts"
 msgstr "Не вдалося завантажити рахунки"
+
+#: src/budget/components/budget-data-state/budget-data-state.tsx
+msgid "Could not load budget"
+msgstr "Не вдалося завантажити бюджет"
 
 #: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
 msgid "Could not load contacts"
@@ -4662,7 +4673,7 @@ msgstr "Зникає з головної, підсумків і бюджетів
 msgid "Leaves your income"
 msgstr "Зникне з ваших доходів"
 
-#: src/budget/components/budget-setup-progress/budget-setup-progress.tsx
+#: src/budget/components/budget-setup-progress-content/budget-setup-progress-content.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
 msgid "Left"
 msgstr "Залишилось"
@@ -4703,6 +4714,7 @@ msgstr "Ліміт {limitAmount}"
 msgid "Limit {limitAmount} · above chart"
 msgstr "Ліміт {limitAmount} · вище графіка"
 
+#: src/app/budget-limit-changes.tsx
 #: src/budget/components/budget-limit-changes-row/budget-limit-changes-row.tsx
 #: src/budget/components/budget-limit-changes-sheet/budget-limit-changes-sheet.tsx
 msgid "Limit changes"
@@ -5872,7 +5884,7 @@ msgstr "перевитрата"
 msgid "Over"
 msgstr "Перевищено"
 
-#: src/budget/components/budget-setup-progress/budget-setup-progress.tsx
+#: src/budget/components/budget-setup-progress-content/budget-setup-progress-content.tsx
 #: src/budget/constant/budget-pace-status-label.constant.ts
 msgid "Over budget"
 msgstr "Понад бюджет"
@@ -6054,6 +6066,10 @@ msgstr "Відсоток від суми плану без комісії"
 #: src/budget/components/budget-setup-form/budget-setup-form.tsx
 msgid "Period"
 msgstr "Період"
+
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
+msgid "Period summary"
+msgstr "Підсумок періоду"
 
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
 msgid "Phone lock"
@@ -6712,6 +6728,7 @@ msgstr "Запас"
 msgid "Runway needs 3 complete months of transactions to forecast your balance."
 msgstr "Для розрахунку запасу потрібно 3 повні місяці транзакцій."
 
+#: src/app/budget-safe-to-spend.tsx
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 msgid "Safe to spend"
 msgstr "Безпечно витрачати"
@@ -7023,6 +7040,7 @@ msgstr "Передайте Суму і Продавця у вхідні дані
 msgid "Set an amount to continue"
 msgstr "Вкажіть суму, щоб продовжити"
 
+#: src/app/(main)/budget/fund.tsx
 #: src/budget/components/budget-funds-section/budget-funds-section.tsx
 msgid "Set aside"
 msgstr "Відкладено"
@@ -7334,6 +7352,10 @@ msgstr "Сховище"
 #: src/categorize-inbox/components/categorize-inbox-group-learned-transfer-option/categorize-inbox-group-learned-transfer-option.tsx
 msgid "Suggested"
 msgstr "Запропоновані"
+
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
+msgid "Summary unavailable"
+msgstr "Підсумок недоступний"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Support"
@@ -7665,6 +7687,14 @@ msgstr "Цю резервну копію створено старішою ве�
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 msgid "This backup was made by an older Budgie version and cannot be restored."
 msgstr "Цю резервну копію створено старішою версією Budgie, її не можна відновити."
+
+#: src/budget/components/budget-sheet-state/budget-sheet-state.tsx
+msgid "This budget may have been deleted."
+msgstr "Можливо, цей бюджет видалено."
+
+#: src/budget/components/budget-data-state/budget-data-state.tsx
+msgid "This budget may have been deleted. Go back to see your current budget."
+msgstr "Можливо, цей бюджет видалено. Поверніться, щоб переглянути поточний бюджет."
 
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "This capture looks similar to an existing transaction."
@@ -8693,6 +8723,12 @@ msgstr "Ваш поточний ключ відхилено. Вставте но
 msgid "Your data"
 msgstr "Ваші дані"
 
+#: src/budget/components/budget-data-state/budget-data-state.tsx
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
+#: src/budget/components/budget-sheet-state/budget-sheet-state.tsx
+msgid "Your data could not be loaded. Close this screen and try again."
+msgstr "Не вдалося завантажити дані. Закрийте цей екран і спробуйте ще раз."
+
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
 msgid "Your data is safe. Reading it failed this time."
 msgstr "Ваші дані в безпеці. Цього разу не вдалося їх прочитати."
@@ -8762,6 +8798,10 @@ msgstr "Ваші теги"
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Your transaction file is ready to share."
 msgstr "Ваш файл транзакцій готовий до поширення."
+
+#: src/budget/components/budget-data-state/budget-data-state.tsx
+msgid "Your transactions are not affected."
+msgstr "Це не впливає на ваші транзакції."
 
 #: src/sync/service/background-sync-session.service.ts
 msgid "Your transactions keep importing in the background"

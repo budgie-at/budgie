@@ -1,6 +1,7 @@
 import type { BudgetLimitSourceEnum } from '@budgie/contracts';
 
 export const BudgetSelector = {
+    DataStateCloseButton: 'BudgetDataState.CloseButton',
     WidgetEmptyState: 'BudgetWidget.EmptyState',
     WidgetCard: 'BudgetWidget.Card',
     WidgetSpentLabel: 'BudgetWidget.SpentLabel',
