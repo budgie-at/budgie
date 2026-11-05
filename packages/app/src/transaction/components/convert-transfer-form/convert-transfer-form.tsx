@@ -4,7 +4,7 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 import { ScopedVariables, useCSSVariable } from 'uniwind';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { useConvertTransferForm } from '../../hook/use-convert-transfer-form.hook';
 import { useQuickFormFee } from '../../hook/use-quick-form-fee.hook';
@@ -41,8 +41,12 @@ export const ConvertTransferForm = ({ isSubmitting, onSubmit, onCancel }: Props)
     });
     const label = form.originalAccount?.id === form.fromAccount?.id ? t`Receiving` : t`Sending`;
     const confirmLabel = form.isEditing ? t`Done` : t`Convert to Transfer`;
-    const isDisabled = isSubmitting || form.conversion.isPending;
-    const displayExchangeRate = form.conversion.exchangeRate > 0 ? 1 / form.conversion.exchangeRate : 0;
+    const isDisabled =
+        isSubmitting ||
+        form.conversion.isPending ||
+        !isDefined(form.originalAccount) ||
+        (form.isEditing && !isPositiveNumber(form.keypad.numericValue));
+    const displayExchangeRate = isPositiveNumber(form.conversion.exchangeRate) ? 1 / form.conversion.exchangeRate : 0;
     const keypad = form.isEditing ? <TransactionKeypad keypad={form.keypad.handlers} /> : null;
     const amount = form.isEditing ? (
         <TransactionAmountDisplay
@@ -84,14 +88,16 @@ export const ConvertTransferForm = ({ isSubmitting, onSubmit, onCancel }: Props)
                             onPress={form.handleEdit}
                         />
                     ) : null}
-                    <TransactionFieldIcons>
-                        <TransactionFeeFieldIcon
-                            amount={feeAmount}
-                            currencySymbol={form.fromAccount?.instrument.symbol ?? ''}
-                            instrumentType={form.fromAccount?.instrument.type}
-                            onPress={handleFeePress}
-                        />
-                    </TransactionFieldIcons>
+                    {isDefined(form.fromAccount) ? (
+                        <TransactionFieldIcons>
+                            <TransactionFeeFieldIcon
+                                amount={feeAmount}
+                                currencySymbol={form.fromAccount.instrument.symbol}
+                                instrumentType={form.fromAccount.instrument.type}
+                                onPress={handleFeePress}
+                            />
+                        </TransactionFieldIcons>
+                    ) : null}
                 </View>
             </ScopedVariables>
         </QuickFormLayout>
