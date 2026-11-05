@@ -49,6 +49,7 @@ test('24 split transaction and analytics', { tags: ['transactions'] }, async ({ 
         await t.typeDigits(ctx, '45');
         await t.selectAccount(ctx, 'E2E Txn Account');
         await t.enterComment(ctx, 'E2E Split Expense');
+        await b.scrollTo(ctx, 'TransactionFieldIcon.Split');
         await b.tapId(ctx, 'TransactionFieldIcon.Split');
         await b.expectId(ctx, 'SplitEntryRow.Amount.0');
         await amount(0, '20');
