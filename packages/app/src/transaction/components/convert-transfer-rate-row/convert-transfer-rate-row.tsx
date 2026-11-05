@@ -7,7 +7,7 @@ import { PROTECTED_AMOUNT_PLACEHOLDER } from '../../../@generic/constant/protect
 import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { TRANSACTION_LARGE_TEXT_SCALE } from '../../constant/transaction-large-text-scale.constant';
-import { useConvertToTransferModalParams } from '../../context/convert-to-transfer-modal.context';
+import { useConvertToTransferModalParams } from '../../hook/use-convert-to-transfer-modal-params.hook';
 import { TransactionFormIcon } from '../transaction-form-icon/transaction-form-icon';
 import { TransactionFormRow } from '../transaction-form-row/transaction-form-row';
 import { TransferQuickFormSelector } from '../transfer-quick-form/transfer-quick-form.selector';

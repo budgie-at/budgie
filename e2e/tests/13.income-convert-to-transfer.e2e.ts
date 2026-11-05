@@ -79,6 +79,22 @@ test('13 income conversion preserves the original amount with a manual foreign a
         await b.expectId(ctx, 'TransactionCard.Label.E2E_Manual_FX_Income');
     });
 
+    await b.phase('cancel conversion without changing the income', async () => {
+        await t.openTransaction(ctx, 'E2E_Manual_FX_Income');
+        await t.openInfoConversions(ctx);
+        await b.tapText(ctx, 'Convert to Transfer');
+        await b.tapId(ctx, 'TransferForm.FromAccount');
+        await a.selectAccountFromNativePicker(ctx, 'AccountPickerBottomSheet.Option.E2E Foreign Account');
+        await b.tapText(ctx, 'Cancel');
+        await b.expectNoId(ctx, 'ConvertToTransfer.Page');
+        await expect(b.byId(ctx.screen, 'TransactionInfo.Amount')).toHaveText('+$30.00');
+        await b.expectId(ctx, 'TransactionInfo.Row.Account');
+        await b.expectId(ctx, 'TransactionInfo.Row.Category');
+        await b.expectNoId(ctx, 'TransactionInfo.Row.FromAccount');
+        await b.tapId(ctx, 'PageHeader.BackButton');
+        await b.expectId(ctx, 'TransactionsPage.Container');
+    });
+
     await b.phase('convert using a manual foreign sending amount', async () => {
         await t.openTransaction(ctx, 'E2E_Manual_FX_Income');
         await t.openInfoConversions(ctx);

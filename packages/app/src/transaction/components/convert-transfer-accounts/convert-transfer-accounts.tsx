@@ -6,7 +6,7 @@ import { Text } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
-import { useConvertToTransferModalParams } from '../../context/convert-to-transfer-modal.context';
+import { useConvertToTransferModalParams } from '../../hook/use-convert-to-transfer-modal-params.hook';
 import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
 import { TransferAccountPicker } from '../transfer-account-picker/transfer-account-picker';
 import { TransferQuickFormSelector } from '../transfer-quick-form/transfer-quick-form.selector';

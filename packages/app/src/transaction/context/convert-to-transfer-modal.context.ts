@@ -13,11 +13,11 @@ export interface ConvertToTransferModalParams {
     readonly skipPostConvertNavigation?: boolean;
 }
 
-const [ConvertToTransferModalContext, useConvertToTransferModal, useConvertToTransferModalParams] = createModalContext<
+const [ConvertToTransferModalContext, useConvertToTransferModal, useCurrentConvertToTransferModalParams] = createModalContext<
     ConvertToTransferModalParams,
     boolean
 >(false);
 
-export { useConvertToTransferModal, useConvertToTransferModalParams };
+export { useConvertToTransferModal, useCurrentConvertToTransferModalParams };
 
 export const ConvertToTransferModalProvider = createModalProvider(ConvertToTransferModalContext, '/convert-to-transfer');

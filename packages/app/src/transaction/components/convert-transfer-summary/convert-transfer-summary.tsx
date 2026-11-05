@@ -8,7 +8,7 @@ import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-prote
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { ConvertToTransferModalSelector } from '../../../app/convert-to-transfer-modal.selector';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useConvertToTransferModalParams } from '../../context/convert-to-transfer-modal.context';
+import { useConvertToTransferModalParams } from '../../hook/use-convert-to-transfer-modal-params.hook';
 
 export const ConvertTransferSummary = () => {
     const { t } = useLingui();

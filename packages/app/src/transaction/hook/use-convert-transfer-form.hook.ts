@@ -6,8 +6,8 @@ import { useFormContext } from 'react-hook-form';
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { useGetAccountByIdQuery } from '../../account/query/use-get-account-by-id.query';
-import { useConvertToTransferModalParams } from '../context/convert-to-transfer-modal.context';
 
+import { useConvertToTransferModalParams } from './use-convert-to-transfer-modal-params.hook';
 import { useCurrencyConversion } from './use-currency-conversion.hook';
 import { useKeypadInput } from './use-keypad-input.hook';
 import { useQuickFormValidation } from './use-quick-form-validation.hook';
