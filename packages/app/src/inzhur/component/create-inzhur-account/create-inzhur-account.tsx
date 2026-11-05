@@ -21,7 +21,6 @@ import { TransactionAmountDisplay } from '../../../transaction/components/transa
 import { TransactionFormActions } from '../../../transaction/components/transaction-form-actions/transaction-form-actions';
 import { TransactionKeypad } from '../../../transaction/components/transaction-keypad/transaction-keypad';
 import { useKeypadInput } from '../../../transaction/hook/use-keypad-input.hook';
-import { useTransactionKeypadEditing } from '../../../transaction/hook/use-transaction-keypad-editing.hook';
 import { inzhurLinkedPaymentsAtom } from '../../constant/inzhur-linked-payments-atom.constant';
 import { useHryvniaInstrumentQuery } from '../../query/use-hryvnia-instrument.query';
 import { InzhurSelector } from '../../selector/inzhur.selector';
@@ -30,7 +29,6 @@ export const CreateInzhurAccount = () => {
     const { t } = useLingui();
     const { isLoading, run } = useSingleFlight();
     const { displayValue, numericValue, handlers } = useKeypadInput();
-    const { footerHeight } = useTransactionKeypadEditing(true);
     const hryvnia = useHryvniaInstrumentQuery();
     const setLinkedPayments = useAtomSet(inzhurLinkedPaymentsAtom);
     const amountVariant = isPositiveNumber(numericValue) ? 'primary' : 'secondary';
@@ -51,6 +49,7 @@ export const CreateInzhurAccount = () => {
             amount={displayValue}
             currencySymbol={hryvnia?.symbol ?? ''}
             variant={amountVariant}
+            isEditing
             testID={InzhurSelector.CashAmount}
         />
     );
@@ -65,16 +64,14 @@ export const CreateInzhurAccount = () => {
             </Text>
         </View>
     );
-    const footer = (
+    const actions = (
         <TransactionFormActions
             label={t`Continue`}
             isDisabled={isLoading}
             onConfirm={handleAdd}
             onCancel={handleGoBack}
             testID={InzhurSelector.AddButton}
-        >
-            <TransactionKeypad keypad={handlers} />
-        </TransactionFormActions>
+        />
     );
 
     return (
@@ -83,7 +80,12 @@ export const CreateInzhurAccount = () => {
                 <ScreenChromeFrame>
                     <FixedChromeHeader title={t`Add Inzhur`} leading={<HeaderBackButton />} inFlow />
                     <View className="flex-1 px-5xl pb-safe">
-                        <QuickFormLayout amount={amount} context={context} footer={footer} footerHeight={footerHeight} />
+                        <QuickFormLayout
+                            amount={amount}
+                            context={context}
+                            keypad={<TransactionKeypad keypad={handlers} />}
+                            actions={actions}
+                        />
                     </View>
                 </ScreenChromeFrame>
             </ScreenChromeThemeProvider>

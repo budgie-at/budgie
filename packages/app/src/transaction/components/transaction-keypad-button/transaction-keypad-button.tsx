@@ -10,7 +10,7 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { Icon } from '../../../@generic/component/icon/icon';
 import { TRANSACTION_KEYPAD_MAX_FONT_SCALE } from '../../constant/transaction-keypad-max-font-scale.constant';
 
-type KeypadButtonVariant = 'digit' | 'action' | 'cancel';
+type KeypadButtonVariant = 'digit' | 'action';
 
 interface Props {
     readonly value?: string;
@@ -28,6 +28,7 @@ const PRESSED_OPACITY = 0.8;
 const SPRING_DAMPING = 15;
 const SPRING_STIFFNESS = 300;
 const OPACITY_DURATION_MS = 50;
+const COMMA_GLYPH_STYLE = { transform: [{ translateY: -6 }] };
 
 const buttonVariants = cva<{
     buttonVariant: Record<KeypadButtonVariant, ClassValue>;
@@ -35,8 +36,7 @@ const buttonVariants = cva<{
     variants: {
         buttonVariant: {
             digit: 'flex-1 bg-grouped-surface-fill active:opacity-70',
-            action: 'flex-1 bg-grouped-surface-fill active:opacity-70',
-            cancel: 'flex-1 bg-grouped-surface-fill active:opacity-70'
+            action: 'flex-1 bg-grouped-surface-fill active:opacity-70'
         }
     },
     defaultVariants: { buttonVariant: 'digit' }
@@ -48,8 +48,7 @@ const textVariants = cva<{
     variants: {
         buttonVariant: {
             digit: 'text-primary',
-            action: 'text-secondary-foreground',
-            cancel: 'text-secondary-foreground'
+            action: 'text-secondary-foreground'
         }
     },
     defaultVariants: { buttonVariant: 'digit' }
@@ -78,6 +77,7 @@ export const TransactionKeypadButton = (props: Props) => {
     }));
 
     const resolvedAccessibilityLabel = accessibilityLabel ?? value ?? icon;
+    const glyphStyle = value === ',' ? COMMA_GLYPH_STYLE : void 0;
     const contentClassName = textVariants({ buttonVariant: variant });
 
     return (
@@ -95,7 +95,7 @@ export const TransactionKeypadButton = (props: Props) => {
                 {isDefined(icon) ? (
                     <Icon className={contentClassName} icon={icon} size={ICON_SIZE} />
                 ) : (
-                    <Text className={contentClassName} maxFontSizeMultiplier={TRANSACTION_KEYPAD_MAX_FONT_SCALE}>
+                    <Text className={contentClassName} style={glyphStyle} maxFontSizeMultiplier={TRANSACTION_KEYPAD_MAX_FONT_SCALE}>
                         {value}
                     </Text>
                 )}

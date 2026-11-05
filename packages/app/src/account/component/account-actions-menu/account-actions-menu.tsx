@@ -1,4 +1,4 @@
-import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { AccountDebtTypeEnum, AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 
@@ -7,29 +7,34 @@ import { ActionsMenu } from '../../../@generic/component/actions-menu/actions-me
 import { Icon } from '../../../@generic/component/icon/icon';
 import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
 import { AccountDetailsSelector } from '../../../app/(main)/account/[id]/account-details.selector';
+import { useRevertInstallmentPlan } from '../../../installment-plan/hook/use-revert-installment-plan.hook';
 import { useArchiveAccount } from '../../hooks/use-archive-account.hook';
 
 import { useDepositCloseAction } from './use-deposit-close-action.hook';
 
+import type { AccountEntityInterface } from '@budgie/contracts';
+
 interface Props {
-    readonly accountId: number;
-    readonly accountType: AccountTypeEnum;
+    readonly account: Pick<AccountEntityInterface, 'id' | 'type' | 'debtType'>;
     readonly balance: number;
     readonly instrumentSymbol: string;
 }
 
-export const AccountActionsMenu = ({ accountId, accountType, balance, instrumentSymbol }: Props) => {
+export const AccountActionsMenu = ({ account, balance, instrumentSymbol }: Props) => {
     const { t } = useLingui();
     const router = useRouter();
-    const closeAction = useDepositCloseAction(accountId, balance, instrumentSymbol);
-    const archiveAction = useArchiveAccount(accountId, () => void dismissAllOrReplace('/'));
+    const closeAction = useDepositCloseAction(account.id, balance, instrumentSymbol);
+    const archiveAction = useArchiveAccount(account.id, () => void dismissAllOrReplace('/'));
+    const revertAction = useRevertInstallmentPlan();
 
-    const handleEdit = () => void router.navigate({ pathname: '/account/[id]/update', params: { id: String(accountId) } });
+    const handleEdit = () => void router.navigate({ pathname: '/account/[id]/update', params: { id: String(account.id) } });
+    const handleRevert = () => void revertAction.revert(account.id, () => void dismissAllOrReplace('/'));
 
-    const isBusy = closeAction.isLoading || archiveAction.isLoading;
+    const isBusy = closeAction.isLoading || archiveAction.isLoading || revertAction.isLoading;
+    const isInstallmentPlan = account.type === AccountTypeEnum.DEBT && account.debtType === AccountDebtTypeEnum.INSTALLMENT;
 
     const typeSpecificItem =
-        accountType === AccountTypeEnum.DEPOSIT ? (
+        account.type === AccountTypeEnum.DEPOSIT ? (
             <ActionsMenuItem
                 icon={UserIconNameEnum.LogOut}
                 label={t`Close Deposit`}
@@ -60,6 +65,15 @@ export const AccountActionsMenu = ({ accountId, accountType, balance, instrument
                 onPress={handleEdit}
                 testID={AccountDetailsSelector.EditButton}
             />
+            {isInstallmentPlan ? (
+                <ActionsMenuItem
+                    icon={UserIconNameEnum.Undo2}
+                    label={t`Undo pay in parts`}
+                    onPress={handleRevert}
+                    variant="destructive"
+                    testID={AccountDetailsSelector.RevertInstallmentPlanButton}
+                />
+            ) : null}
             {typeSpecificItem}
         </ActionsMenu>
     );

@@ -10,6 +10,7 @@ interface Props<T extends string> {
     readonly segment: SegmentedControlSegmentInterface<T>;
     readonly isActive: boolean;
     readonly disabled: boolean;
+    readonly maxFontSizeMultiplier?: number;
     readonly onPress: (value: T) => void;
 }
 
@@ -22,7 +23,8 @@ const labelVariants = cva('text-[13px]', {
     }
 });
 
-export const SegmentedControlItem = <T extends string>({ segment, isActive, disabled, onPress }: Props<T>) => {
+export const SegmentedControlItem = <T extends string>(props: Props<T>) => {
+    const { segment, isActive, disabled, onPress, maxFontSizeMultiplier = MAX_FONT_SIZE_MULTIPLIER } = props;
     const handlePress = () => void onPress(segment.value);
 
     const isSelected = isActive && !disabled;
@@ -42,7 +44,7 @@ export const SegmentedControlItem = <T extends string>({ segment, isActive, disa
                 numberOfLines={1}
                 adjustsFontSizeToFit
                 minimumFontScale={0.6}
-                maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+                maxFontSizeMultiplier={maxFontSizeMultiplier}
                 className={labelVariants({ isActive: isSelected, disabled })}
             >
                 {segment.label}

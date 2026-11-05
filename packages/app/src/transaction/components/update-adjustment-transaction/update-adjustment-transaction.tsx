@@ -100,8 +100,7 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
     const { t } = useLingui();
     const { markForEmbedding } = useEmbeddingGenerator();
     const amountDisplayRef = useRef<TransactionAmountDisplayRef | null>(null);
-    const { isEditingAmount, toggleKeypad, footerHeight, amountAccessoryIcon, amountAccessibilityHint } =
-        useTransactionKeypadEditing(false);
+    const { isEditingAmount, toggleKeypad, amountAccessibilityHint } = useTransactionKeypadEditing(false);
     const details = getAdjustmentDetails(transaction);
     const { isLoading: isSubmitting, run } = useSingleFlight();
     const [isIncrease, toggleIsIncrease] = useReducer((current: boolean) => !current, details?.initialIsIncrease ?? true);
@@ -120,7 +119,7 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
         isDisabled: isSubmitting || !isPositiveNumber(numericValue)
     };
 
-    const handleGoBack = () => void goBackOrReplace('/');
+    const keypad = isEditingAmount ? <TransactionKeypad keypad={handlers} /> : null;
 
     const handleConfirm = () => {
         if (!isPositiveNumber(numericValue)) {
@@ -145,7 +144,6 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
 
     return (
         <QuickFormLayout
-            footerHeight={footerHeight}
             amount={
                 <TransactionAmountDisplay
                     ref={amountDisplayRef}
@@ -153,7 +151,7 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
                     currencySymbol={display.symbol}
                     variant={variant}
                     onPress={toggleKeypad}
-                    accessoryIcon={amountAccessoryIcon}
+                    isEditing={isEditingAmount}
                     accessibilityHint={amountAccessibilityHint}
                     testID={SimpleQuickFormSelector.AmountInput}
                 />
@@ -163,11 +161,8 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
                     <AmountSignPill isIncrease={isIncrease} onToggle={toggleIsIncrease} />
                 </QuickFormSecondaryLine>
             }
-            footer={
-                <TransactionFormActions label={t`Save`} isDisabled={display.isDisabled} onConfirm={handleConfirm} onCancel={handleGoBack}>
-                    {isEditingAmount ? <TransactionKeypad keypad={handlers} /> : null}
-                </TransactionFormActions>
-            }
+            keypad={keypad}
+            actions={<TransactionFormActions label={t`Save`} isDisabled={display.isDisabled} onConfirm={handleConfirm} />}
         >
             <View className="pt-[12px]">
                 <AdjustmentAccountSummary details={details} />
