@@ -65,6 +65,14 @@ test('12 account archive and expense convert to transfer', { tags: ['accounts', 
         await t.openInfoConversions(ctx);
         await b.tapText(ctx, 'Convert to Transfer');
         await b.expectId(ctx, 'ConvertToTransfer.Page');
+        await b.expectNoId(ctx, 'TransactionKeypad.Digit.1');
+        await b.expectId(ctx, 'TransactionForm.SubmitButton');
+        await b.tapId(ctx, 'TransactionForm.AmountInput');
+        await b.expectId(ctx, 'TransactionKeypad.Digit.1');
+        await b.expectId(ctx, 'TransactionForm.SubmitButton');
+        await b.tapId(ctx, 'TransactionForm.AmountInput');
+        await b.expectNoId(ctx, 'TransactionKeypad.Digit.1');
+        await b.expectId(ctx, 'TransactionForm.SubmitButton');
         await b.tapId(ctx, 'TransactionForm.SubmitButton');
         await b.expectId(ctx, 'ConvertToTransfer.Page');
         await b.tapId(ctx, 'TransferForm.ToAccount');
