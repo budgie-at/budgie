@@ -26,17 +26,17 @@ export const TransactionSplitFieldIcon = ({ splitEntryCount, isAmountPositive, o
               })
           })
         : void 0;
-    const splitEnabled = isAmountPositive || isSplitActive;
-    const disabledHint = splitEnabled ? void 0 : t`Enter an amount to split it`;
+    if (!isAmountPositive && !isSplitActive) {
+        return null;
+    }
 
     return (
-        <GroupedListSection footer={disabledHint}>
+        <GroupedListSection>
             <TransactionFieldIcon
                 icon={UserIconNameEnum.Split}
                 label={t`Split`}
                 value={splitValue}
                 onPress={onPress}
-                disabledHint={disabledHint}
                 testID={TransactionFieldIconsSelector.Split}
             />
         </GroupedListSection>

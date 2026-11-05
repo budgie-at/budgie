@@ -3746,10 +3746,6 @@ msgstr "Saisissez tous les montants"
 msgid "Enter an amount"
 msgstr "Saisissez un montant"
 
-#: src/transaction/components/transaction-split-field-icon/transaction-split-field-icon.tsx
-msgid "Enter an amount to split it"
-msgstr "Saisissez un montant pour le répartir"
-
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enter current PIN"
 msgstr "Entrez le code PIN actuel"

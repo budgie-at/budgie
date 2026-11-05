@@ -44,7 +44,7 @@ export const TransactionCategoryFieldIcon = ({ ref, variant, isSplitActive }: Pr
         });
     };
 
-    const categoryIcon = category?.icon ?? UserIconNameEnum.CircleDashed;
+    const categoryIcon = category?.icon ?? UserIconNameEnum.Folder;
     const disabledHint = isSplitActive ? t`Categories are set per split item` : void 0;
 
     return (

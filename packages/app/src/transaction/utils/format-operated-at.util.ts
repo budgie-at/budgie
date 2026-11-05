@@ -17,5 +17,9 @@ export const formatOperatedAt = ({ date, today, yesterday, formatDate }: FormatO
         return yesterday;
     }
 
-    return formatDate(date, { month: 'short', day: 'numeric' });
+    return formatDate(date, {
+        month: 'long',
+        day: 'numeric',
+        ...(date.getFullYear() !== new Date().getFullYear() && { year: 'numeric' })
+    });
 };

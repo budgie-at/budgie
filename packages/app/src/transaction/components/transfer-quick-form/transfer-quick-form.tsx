@@ -92,7 +92,7 @@ export const TransferQuickForm = (props: Props) => {
     const isConfirmDisabled = [
         props.isSubmitting,
         conversion.isPending && !isEditingDestination,
-        ![sourceKeypad.numericValue, activeKeypad.numericValue].every(isPositiveNumber)
+        ![sourceKeypad.numericValue, activeKeypad.numericValue, fromAccountId, toAccountId].every(isPositiveNumber)
     ].some(Boolean);
 
     const hasInitializedRef = useRef(false);
@@ -279,13 +279,13 @@ export const TransferQuickForm = (props: Props) => {
                 </TransactionTransferAccountsRow>
                 <TransactionFieldIcons>
                     <TransactionDateFieldIcon onPress={handleDatePress} />
-                    <TransactionNoteFieldIcon onPress={handleCommentPress} />
                     <TransactionFeeFieldIcon
                         amount={feeAmount}
                         currencySymbol={feeCurrencySymbol}
                         instrumentType={feeInstrumentType}
                         onPress={handleFeePress}
                     />
+                    <TransactionNoteFieldIcon onPress={handleCommentPress} />
                     {isDefined(props.onConsolidationPress) ? <TransactionSourcesFieldIcon onPress={props.onConsolidationPress} /> : null}
                 </TransactionFieldIcons>
             </View>

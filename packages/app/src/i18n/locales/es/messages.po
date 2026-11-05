@@ -3746,10 +3746,6 @@ msgstr "Introduce todos los importes"
 msgid "Enter an amount"
 msgstr "Introduce un importe"
 
-#: src/transaction/components/transaction-split-field-icon/transaction-split-field-icon.tsx
-msgid "Enter an amount to split it"
-msgstr "Introduce un importe para dividirlo"
-
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enter current PIN"
 msgstr "Ingresa el PIN actual"
