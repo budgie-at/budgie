@@ -1,4 +1,4 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
 import { MonobankConnectionResultEnum, MonobankSyncService, SyncHistoryDepthEnum } from '@budgie/sync';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
@@ -7,9 +7,11 @@ import { router } from 'expo-router';
 import { useReducer } from 'react';
 import Toast from 'react-native-toast-message';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { Button } from '../../../@generic/component/button/button';
+import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { OnboardingNote } from '../../../onboarding/component/onboarding-note/onboarding-note';
 import { useIsOnboardingActive } from '../../../onboarding/hook/use-is-onboarding-active.hook';
@@ -18,9 +20,9 @@ import { CreateMonobankAccountActionTypeEnum } from '../../enum/create-monobank-
 import { SetupStepEnum } from '../../enum/setup-step.enum';
 import { useSyncAccountSetupFlow } from '../../hook/use-sync-account-setup-flow.hook';
 import { createMonobankAccountReducer } from '../../utils/create-monobank-account-reducer.util';
-import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
-import { SyncAccountSetupPage } from '../sync-account-setup-page/sync-account-setup-page';
-import { SyncHistoryDepthStep } from '../sync-history-depth-step/sync-history-depth-step';
+import { SyncAccountsStep } from '../sync-accounts-step/sync-accounts-step';
+import { SyncHistoryStep } from '../sync-history-step/sync-history-step';
+import { SyncSetupPage } from '../sync-setup-page/sync-setup-page';
 import { TokenInputStep } from '../token-input-step/token-input-step';
 
 import { CreateMonobankAccountSelector } from './create-monobank-account.selector';
@@ -109,6 +111,10 @@ export const CreateMonobankAccount = () => {
         dispatch({ type: CreateMonobankAccountActionTypeEnum.HISTORY_DEPTH_SELECTED, historyDepth: value });
     };
 
+    const tokenStepDescription =
+        step === SetupStepEnum.TOKEN
+            ? t`Monobank gives you a personal token. Budgie uses it to talk to the bank directly, with no one in between.`
+            : '';
     const selectedAccountCount = accountSelection.selectedAccounts.size;
     const addAccountsLabel = t({ message: plural(selectedAccountCount, { one: 'Add # account', other: 'Add # accounts' }) });
     const onboardingHistoryNote = isOnboardingActive ? (
@@ -117,35 +123,76 @@ export const CreateMonobankAccount = () => {
             text={t`Budgie brings in the last month of history, then asks Monobank for new transactions when you open the app.`}
         />
     ) : null;
-    const accountsFooterVariant = isOnboardingActive ? 'cta' : 'primary';
-    const accountsFooterLabel = isOnboardingActive ? addAccountsLabel : t`Continue`;
-    const handleAccountsFooterPress = isOnboardingActive ? handleSetupSync : handleContinueToHistory;
-    const accountsFooter = (
+    const accountsFooter = isOnboardingActive ? (
         <Button
-            variant={accountsFooterVariant}
-            onPress={handleAccountsFooterPress}
+            variant="cta"
+            onPress={handleSetupSync}
             disabled={isStartSyncDisabled}
-            content={accountsFooterLabel}
+            content={addAccountsLabel}
+            testID={CreateMonobankAccountSelector.ContinueButton}
+        />
+    ) : (
+        <PillButton
+            label={t`Continue`}
+            onPress={handleContinueToHistory}
+            isDisabled={isStartSyncDisabled}
             testID={CreateMonobankAccountSelector.ContinueButton}
         />
     );
 
     let stepContent = <TokenInputStep token={token} onTokenChange={handleTokenChange} />;
-    let footer = <Button onPress={handleFetchAccounts} disabled={isLoading} isLoading={isLoading} content={t`Connect`} />;
+    let footer = (
+        <PillButton
+            label={t`Connect`}
+            onPress={handleFetchAccounts}
+            isDisabled={isLoading}
+            isLoading={isLoading}
+            testID={CreateMonobankAccountSelector.FetchAccountsButton}
+        />
+    );
+
+    const historyPace = t`Monobank sends about one month of history per minute, for each account you selected.`;
+    const historyDurationByDepth: Partial<Record<SyncHistoryDepthEnum, string>> = {
+        [SyncHistoryDepthEnum.YEAR_1]: t`Runs in the background, and much slower while the app is closed.`,
+        [SyncHistoryDepthEnum.FULL]: t`Can run for hours on old accounts, and much slower while the app is closed.`
+    };
+    const historyDescription = [historyPace, historyDurationByDepth[historyDepth]].filter(isDefined).join(' ');
+    const historyHintByDepth = {
+        [SyncHistoryDepthEnum.MONTH_1]: t`About a minute`,
+        [SyncHistoryDepthEnum.MONTHS_3]: t`About 3 minutes`,
+        [SyncHistoryDepthEnum.MONTHS_6]: t`About 6 minutes`,
+        [SyncHistoryDepthEnum.YEAR_1]: t`About 12 minutes`,
+        [SyncHistoryDepthEnum.FULL]: t`Can take hours`,
+        [SyncHistoryDepthEnum.NEW_ONLY]: t`Nothing from the past is imported`
+    };
 
     switch (step) {
         case SetupStepEnum.ACCOUNTS:
             stepContent = (
                 <>
-                    <AccountSelectionStep {...accountSelection} />
+                    <SyncAccountsStep {...accountSelection} logo={<BankLogo bankProvider={ExternalSourceEnum.MONOBANK} size={36} />} />
                     {onboardingHistoryNote}
                 </>
             );
             footer = accountsFooter;
             break;
         case SetupStepEnum.HISTORY:
-            stepContent = <SyncHistoryDepthStep selectedDepth={historyDepth} onSelect={handleHistoryDepthSelect} />;
-            footer = <Button onPress={handleSetupSync} disabled={isStartSyncDisabled} content={t`Start Sync`} />;
+            stepContent = (
+                <SyncHistoryStep
+                    selectedDepth={historyDepth}
+                    description={historyDescription}
+                    hintByDepth={historyHintByDepth}
+                    onSelect={handleHistoryDepthSelect}
+                />
+            );
+            footer = (
+                <PillButton
+                    label={t`Start sync`}
+                    onPress={handleSetupSync}
+                    isDisabled={isStartSyncDisabled}
+                    testID={CreateMonobankAccountSelector.StartSyncButton}
+                />
+            );
             break;
         case SetupStepEnum.TOKEN:
         default:
@@ -153,14 +200,14 @@ export const CreateMonobankAccount = () => {
     }
 
     return (
-        <SyncAccountSetupPage
+        <SyncSetupPage
             title={t`Connect Monobank`}
-            description={t`Monobank gives you a personal token. Budgie uses it to talk to the bank directly, with no one in between.`}
+            description={tokenStepDescription}
             onGoBack={handleStepAwareGoBack}
-            footer={footer}
-            scrollViewTestID={CreateMonobankAccountSelector.ScrollView}
+            footerButton={footer}
+            testID={CreateMonobankAccountSelector.ScrollView}
         >
             {stepContent}
-        </SyncAccountSetupPage>
+        </SyncSetupPage>
     );
 };

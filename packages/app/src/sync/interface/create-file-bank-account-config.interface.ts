@@ -1,9 +1,10 @@
 import type { AppServices } from '../../@generic/runtime/app.runtime';
-import type { UserIconNameEnum } from '@budgie/contracts';
+import type { ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
 import type { FileBankSyncImportReviewInterface, SyncAccountPreviewInterface } from '@budgie/sync';
 import type * as Effect from 'effect/Effect';
 
 export interface CreateFileBankAccountConfigInterface {
+    readonly provider: ExternalSourceEnum;
     readonly mimeType: string;
     readonly title: string;
     readonly description: string;

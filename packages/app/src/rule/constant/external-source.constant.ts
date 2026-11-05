@@ -9,6 +9,7 @@ export const EXTERNAL_SOURCE: Record<ExternalSourceEnum, MessageDescriptor> = {
     [ExternalSourceEnum.ERSTE]: msg`Erste`,
     [ExternalSourceEnum.REVOLUT]: msg`Revolut`,
     [ExternalSourceEnum.BINANCE]: msg`Binance`,
+    [ExternalSourceEnum.ENABLE_BANKING]: msg`Enable Banking`,
     [ExternalSourceEnum.COINBASE]: msg`Coinbase`,
     [ExternalSourceEnum.WISE]: msg`Wise`,
     [ExternalSourceEnum.APPLE_PAY_AUTOMATION]: msg`Apple Pay automation`,

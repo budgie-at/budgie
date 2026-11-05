@@ -1,4 +1,4 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
 import { ErsteSyncService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -12,6 +12,7 @@ export const CreateErsteAccount = () => {
     const { t } = useLingui();
 
     const config: CreateFileBankAccountConfigInterface = {
+        provider: ExternalSourceEnum.ERSTE,
         mimeType: PDF_MIME_TYPE,
         title: t`Import Erste Bank`,
         description: t`Import accounts and transactions from Erste Bank PDF statement`,

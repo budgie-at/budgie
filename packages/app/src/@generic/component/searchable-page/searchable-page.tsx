@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 import { CollapsibleHeaderBackdrop, ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 import { EmptyFn } from '@rnw-community/shared';
 
+import { CHROME_TITLE_TEXT_PROPS } from '../../constant/chrome-title-text-props.constant';
 import { ScreenChromeThemeProvider } from '../../provider/screen-chrome-theme.provider';
 import { CollapsibleChromeHeaderScrim } from '../collapsible-chrome-header-scrim/collapsible-chrome-header-scrim';
 import { CollapsibleChromeHeader } from '../collapsible-chrome-header/collapsible-chrome-header';
@@ -24,12 +25,12 @@ interface Props {
 export const SearchablePage = (props: Props) => {
     const { title, onGoBack, search, searchPlaceholder, onSearchChange, searchInputTestID, testID, children } = props;
     const largeTitleLayer = (
-        <Text className="text-primary font-medium text-3xl" numberOfLines={1}>
+        <Text className="text-primary font-medium text-3xl" {...CHROME_TITLE_TEXT_PROPS}>
             {title}
         </Text>
     );
     const smallTitleLayer = (
-        <Text className="text-primary text-lg font-semibold text-center" numberOfLines={1}>
+        <Text className="text-primary text-lg font-semibold text-center" {...CHROME_TITLE_TEXT_PROPS}>
             {title}
         </Text>
     );
@@ -44,7 +45,7 @@ export const SearchablePage = (props: Props) => {
 
                     <CollapsibleHeaderBackdrop />
 
-                    <CollapsibleChromeHeaderScrim />
+                    <CollapsibleChromeHeaderScrim className="bg-surface" />
 
                     <CollapsibleChromeHeader
                         leading={<GoBackButton onPress={onGoBack} />}

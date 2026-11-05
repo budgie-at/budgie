@@ -61,11 +61,12 @@ Every provider sync service is a `Context.Service` whose `make` spreads a family
 `makeSyncService`. `SyncProviderRegistryService` resolves the service for an account. The services depend on
 `@budgie/contracts` repositories and `@budgie/ledger`, `@budgie/rules` and `@budgie/consolidation` services.
 
-The host app owns scheduling and native IO and provides two layer-less ports:
+The host app owns scheduling and native IO and provides three layer-less ports:
 
 - `SyncWorkload`: background/user lanes (`run`, `runUser`, `hasQueuedWork`, `awaitQueuedUserWork`),
   background task registration and the deferred rule-application and transfer-consolidation queues.
 - `SyncFileReader`: PDF text items and raw bytes for a file URI.
+- `SyncRequestSigner`: RS256 signature and key removal for per-user API keys (Enable Banking).
 
 `LedgerWorkload` (from `@budgie/ledger`) covers foreground-exclusive work, and consolidation needs the
 `P2pTransferTitleResolver` port from `@budgie/consolidation`.
@@ -89,12 +90,13 @@ Each bank provider has:
 
 ### Supported Providers
 
-| Provider   | Status         | Implementation |
-| ---------- | -------------- | -------------- |
-| Monobank   | ✅ Implemented | Full support   |
-| Privatbank | 📋 Planned     | -              |
-| Revolut    | 📋 Planned     | -              |
-| Wise       | 📋 Planned     | -              |
+| Provider       | Status        | Implementation          |
+| -------------- | ------------- | ----------------------- |
+| Monobank       | ✅ Implemented | Full support            |
+| Enable Banking | ✅ Implemented | On-device, per-user key |
+| Privatbank     | 📋 Planned     | -                       |
+| Revolut        | 📋 Planned     | -                       |
+| Wise           | 📋 Planned     | -                       |
 
 ### Provider Parser Pattern
 
@@ -323,6 +325,20 @@ Map provider-specific types to generic interfaces.
 export { NewProviderClient } from './[provider]/client/[provider].client';
 export { NewProviderSyncService } from './[provider]/service/[provider]-sync.service';
 ```
+
+## Account Continuation
+
+`makePollingSyncAccountContinuation` moves an existing account onto a live provider and back, with no per-bank code. It keeps the sync row and sets `backwardSyncLimitAt` and the forward cursor to the UTC day after the last non-deleted row, so history stays and no backward fetch runs. An empty account goes through normal history import. It refuses a different currency, two known and different IBANs, a bank account linked to another account, and a target with a live sync, which it reads from `bank_syncs` because some Monobank accounts have an empty `external_source`.
+
+Disconnecting keeps an account holding any row not from the connection and returns it to its previous provider or to `BANK`. Its rows and balance stay as they are. A later file import drops rows the connection delivered: from the start date on while connected, between the start date and the disconnect afterwards.
+
+The boundary has no overlap by design, and there is no content match. `connect.test.ts` pins these cases, and reconciliation corrects the balance in all of them:
+
+| Case                                                   | Result                  |
+| ------------------------------------------------------ | ----------------------- |
+| A row on the last day, absent from the imported file   | Lost, balance adjusted  |
+| A row in the file that the bank books on the next day  | Counted twice, adjusted |
+| A row booked late, dated before the start date         | Lost, balance adjusted  |
 
 ## Testing
 

@@ -2,6 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 
+import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { GroupedListSwitchRow } from '../../../@generic/component/grouped-list-switch-row/grouped-list-switch-row';
 import { AccountSwitchFieldKindEnum } from '../../enum/account-switch-field-kind.enum';
 import { CreateAccountScreenSelector } from '../create-account-screen/create-account-screen.selector';
@@ -37,7 +38,7 @@ export const AccountSwitchField = ({ kind, value, onChange }: Props) => {
 
     return (
         <GroupedListSwitchRow
-            icon={icon}
+            left={<GroupedListIcon icon={icon} />}
             title={t(title)}
             subtitle={t(subtitle)}
             value={value}

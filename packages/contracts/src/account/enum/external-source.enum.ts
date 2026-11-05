@@ -5,6 +5,7 @@ export enum ExternalSourceEnum {
     ERSTE = 'ERSTE',
     REVOLUT = 'REVOLUT',
     BINANCE = 'BINANCE',
+    ENABLE_BANKING = 'ENABLE_BANKING',
     COINBASE = 'COINBASE',
     WISE = 'WISE',
     APPLE_PAY_AUTOMATION = 'APPLE_PAY_AUTOMATION',

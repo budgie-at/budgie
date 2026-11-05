@@ -137,7 +137,11 @@ export class TransactionService extends Context.Service<TransactionService>()('@
                         yield* unconsolidationService.unconsolidateById(id);
                         yield* accountBalanceIncrementalService.updateAllBalances(true);
                     } else {
-                        yield* transactionRepository.deleteById(id);
+                        if (transaction?.externalSource === ExternalSourceEnum.ENABLE_BANKING && isDefined(transaction.externalId)) {
+                            yield* transactionRepository.archiveByIds([id]);
+                        } else {
+                            yield* transactionRepository.deleteById(id);
+                        }
                         yield* transactionTagsRepository.deleteByTransactionId(id);
                         yield* transactionEntryRepository.deleteByTransactionId(id);
                         yield* accountBalanceIncrementalService.updateBalancesByAccountIds(

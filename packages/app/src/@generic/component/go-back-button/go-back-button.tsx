@@ -28,7 +28,7 @@ export const GoBackButton = ({
             accessible
             accessibilityLabel={resolvedAccessibilityLabel}
             accessibilityRole={accessibilityRole}
-            className={cn('relative p-md', className)}
+            className={cn('relative -m-[2px] min-h-[44px] min-w-[44px] items-center justify-center', className)}
             collapsable={false}
             nativeID={testID}
             testID={testID}

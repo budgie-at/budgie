@@ -12,7 +12,6 @@ import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-s
 import { TONAL_DISC_BACKGROUND } from '../../../@generic/constant/tonal-disc-background.constant';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { cn } from '../../../@generic/utils/cn.util';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { toTrueMinus } from '../../../@generic/utils/to-true-minus.util';
@@ -25,6 +24,7 @@ import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/ba
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
 import { useBankIntegrationAccountRowState } from '../../hook/use-bank-integration-account-row-state.hook';
+import { BankIntegrationAccountIcon } from '../bank-integration-account-icon/bank-integration-account-icon';
 import { BankIntegrationAccountMenu } from '../bank-integration-account-menu/bank-integration-account-menu';
 
 interface Props {
@@ -41,6 +41,7 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
     const formatAmount = useFormatInstrumentAmount();
     const { sync, isFailed, leadLabel, switchLabel, isToggleVisible } = useBankIntegrationAccountRowState(account);
 
+    const { title } = account;
     const rowTestID = BankIntegrationSelector.AccountRow(account.id);
     const handleToggle = (enabled: boolean) =>
         void appRuntime.runFork(
@@ -50,7 +51,6 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
                 )
             )
         );
-    const leadClassName = isFailed ? 'text-destructive-strong' : 'text-secondary-foreground';
     const leadText = isNotEmptyString(leadLabel) ? `${leadLabel} · ` : '';
 
     const toggle = isToggleVisible ? (
@@ -66,24 +66,21 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
         <View testID={rowTestID} className="min-h-[60px] flex-row items-center gap-x-xl px-3xl">
             <View className="absolute top-0 left-[64px] right-0 h-hairline bg-surface-separator" pointerEvents="none" />
             <View className="relative">
-                <CircleIcon
-                    icon={account.icon}
-                    variant="primary"
-                    size={36}
-                    iconSize={18}
-                    radius={18}
-                    border={false}
-                    className={TONAL_DISC_BACKGROUND.primary}
-                />
+                <BankIntegrationAccountIcon icon={account.icon} />
                 {isFailed ? <AccountSyncBadge state={AccountSyncStateEnum.FAILED} /> : null}
             </View>
             <View className="min-w-0 flex-1 gap-y-xxs py-lg">
                 <Text className="text-[17px] text-primary" numberOfLines={2}>
                     {account.title}
                 </Text>
+                {isFailed ? (
+                    <Text className="text-destructive-strong text-[13px] leading-[18px]" accessibilityLabel={t`Sync failed for ${title}`}>
+                        {t`Sync failed`}
+                    </Text>
+                ) : null}
                 <View className="flex-row">
                     <Text
-                        className={cn('shrink text-[13px] leading-[18px]', leadClassName)}
+                        className="shrink text-[13px] leading-[18px] text-secondary-foreground"
                         numberOfLines={1}
                         accessibilityLabel={leadLabel}
                     >
@@ -97,7 +94,7 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
                     </ProtectedText>
                 </View>
             </View>
-            <View className="flex-row items-center gap-x-sm">
+            <View className="-ml-[8px] flex-row items-center gap-x-xs">
                 <BankIntegrationAccountMenu accountId={account.id} title={account.title} rowTestID={rowTestID}>
                     <CircleIcon
                         icon={UserIconNameEnum.Ellipsis}

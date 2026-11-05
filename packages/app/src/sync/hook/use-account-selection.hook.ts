@@ -7,9 +7,9 @@ export const useAccountSelection = (): AccountSelectionInterface => {
     const [accountPreviews, setAccountPreviews] = useState<SyncAccountPreviewInterface[]>([]);
     const [selectedAccounts, setSelectedAccounts] = useState<Set<string>>(new Set());
 
-    const setPreviews = (previews: SyncAccountPreviewInterface[]) => {
+    const setPreviews = (previews: SyncAccountPreviewInterface[], selectedPreviews = previews.filter(preview => preview.hasSync)) => {
         setAccountPreviews(previews);
-        setSelectedAccounts(new Set(previews.filter(preview => preview.hasSync).map(preview => preview.externalId)));
+        setSelectedAccounts(new Set(selectedPreviews.map(preview => preview.externalId)));
     };
 
     const onToggle = (externalId: string) => {

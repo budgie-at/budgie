@@ -8,7 +8,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../constant/floating-tab-bar.constant';
 import {
     LEGEND_LIST_CONTENT_GAP,
     LEGEND_LIST_HEADER_HEIGHT,
@@ -16,6 +15,7 @@ import {
     legendListKeyExtractor
 } from '../../constant/legend-list.constant';
 import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../constant/screen-chrome-content-inset.constant';
+import { useSearchInputBottom } from '../../hook/use-search-input-bottom.hook';
 import { useStickyDefinedValue } from '../../hook/use-sticky-defined-value.hook';
 import { useVibration } from '../../hook/use-vibration.hook';
 import { IdInterface } from '../../interface/id.interface';
@@ -23,7 +23,7 @@ import { appRuntime } from '../../runtime/app.runtime';
 import { logAndContinue } from '../../utils/log-and-continue.util';
 import { DeletableRow } from '../deletable-row/deletable-row';
 import { LoadingContent } from '../loading-content/loading-content';
-import { SEARCH_INPUT_VERTICAL_OFFSET, SEARCH_LIST_BOTTOM_CLEARANCE } from '../searchable-page/searchable-page.constant';
+import { SEARCH_LIST_BOTTOM_CLEARANCE } from '../searchable-page/searchable-page.constant';
 
 import type { LegendListSizingInterface } from '../../interface/legend-list-sizing.interface';
 import type { AppServices } from '../../runtime/app.runtime';
@@ -59,8 +59,7 @@ export const SearchablePageList = <T extends IdInterface>({
     const insets = useSafeAreaInsets();
     const items = useStickyDefinedValue(data);
     const paddingTop = insets.top + SCREEN_CHROME_CONTENT_INSET_TOP;
-    const paddingBottom =
-        FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + insets.bottom - SEARCH_INPUT_VERTICAL_OFFSET + SEARCH_LIST_BOTTOM_CLEARANCE;
+    const paddingBottom = useSearchInputBottom() + SEARCH_LIST_BOTTOM_CLEARANCE;
 
     if (!isNotEmptyArray(items)) {
         const emptyStateContainerStyle = { paddingTop, paddingBottom };

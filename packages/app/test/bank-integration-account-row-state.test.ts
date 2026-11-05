@@ -35,9 +35,10 @@ vi.mock('../src/sync/query/use-bank-integration-syncs.query', () => ({
 vi.mock('../src/sync/hook/use-account-sync.hook', () => ({ useAccountSync: () => ({ sync: state.hasSync ? state.sync : null }) }));
 
 it.each([
-    [false, false, 'FAILED', false, true, false, 'Sync failed · Sync off', true],
-    [false, false, 'FAILED', true, false, false, 'Sync failed · Hidden from Home', true],
-    [false, true, 'FAILED', false, false, false, 'Sync failed · Hidden from Home', true],
+    [false, false, 'FAILED', true, true, false, 'USD', true],
+    [false, false, 'FAILED', false, true, false, 'Sync off', true],
+    [false, false, 'FAILED', true, false, false, 'Hidden from Home', true],
+    [false, true, 'FAILED', false, false, false, 'Hidden from Home', true],
     [false, true, 'SYNCING', true, true, false, 'USD', false],
     [false, true, 'IDLE', false, false, false, 'Hidden from Home', false],
     [false, false, 'IDLE', false, true, false, 'Sync off', false],
@@ -47,7 +48,7 @@ it.each([
     [false, false, 'SYNCING', true, true, false, 'Syncing…', false],
     [false, false, 'IDLE', true, true, false, 'USD', false],
     [false, false, 'IDLE', false, false, true, 'Imports off · Hidden from Home', false],
-    [false, false, 'FAILED', false, true, true, 'Sync failed · Imports off', true]
+    [false, false, 'FAILED', false, true, true, 'Imports off', true]
 ])('row subtitle %s/%s/%s/%s/%s/%s', (allSyncOff, rejected, status, enabled, active, fileImport, subtitle, failed) => {
     Object.assign(state, { allSyncOff, isKeyRejected: rejected, supportsLiveSync: !fileImport, supportsFileImport: fileImport });
     Object.assign(state.sync, { status, enabled });
