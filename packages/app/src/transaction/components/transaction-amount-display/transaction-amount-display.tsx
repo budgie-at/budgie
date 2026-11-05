@@ -15,6 +15,7 @@ import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.ho
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
 import { formatKeypadAmount } from '../../utils/format-keypad-amount.util';
+import { AmountCaret } from '../amount-caret/amount-caret';
 
 export interface TransactionAmountDisplayRef {
     shake: () => void;
@@ -27,7 +28,7 @@ interface Props {
     readonly variant: ColorPaletteVariant;
     readonly onPress?: () => void;
     readonly testID?: string;
-    readonly accessoryIcon?: UserIconNameEnum;
+    readonly isEditing: boolean;
     readonly accessibilityHint?: string;
 }
 
@@ -40,6 +41,8 @@ const textVariants = cva('text-center font-semibold tabular-nums', {
 const AMOUNT_MIN_HEIGHT = 56;
 const MAX_AMOUNT_FONT_SCALE = 1.35;
 const ACCESSORY_GAP = 6;
+const CARET_GAP = 2;
+const CARET_HEIGHT_RATIO = 0.72;
 export const TransactionAmountDisplay = ({
     ref,
     amount,
@@ -47,11 +50,11 @@ export const TransactionAmountDisplay = ({
     variant,
     onPress,
     testID,
-    accessoryIcon,
+    isEditing,
     accessibilityHint
 }: Props) => {
     const [containerWidth, setContainerWidth] = useState(0);
-    const [textWidth, setTextWidth] = useState(0);
+    const [textLayout, setTextLayout] = useState({ width: 0, height: 0 });
     const isAmountProtected = useIsAmountProtected();
     const amountContainerStyle = { minHeight: AMOUNT_MIN_HEIGHT * Math.min(useWindowDimensions().fontScale, MAX_AMOUNT_FONT_SCALE) };
     const { decimalSeparator, digitGroupingSeparator } = useLocaleInfo();
@@ -61,16 +64,17 @@ export const TransactionAmountDisplay = ({
 
     const handleContainerLayout = (event: LayoutChangeEvent) => void setContainerWidth(event.nativeEvent.layout.width);
     const handleTextLayout = (event: NativeSyntheticEvent<TextLayoutEventData>) =>
-        void setTextWidth(event.nativeEvent.lines.at(0)?.width ?? 0);
+        void setTextLayout({ width: event.nativeEvent.lines.at(0)?.width ?? 0, height: event.nativeEvent.lines.at(0)?.height ?? 0 });
 
     const displaySymbol = variant === 'positive' && !currencySymbol.startsWith('+') ? `+${currencySymbol}` : currencySymbol;
     const fullDisplay = isAmountProtected
         ? PROTECTED_AMOUNT_PLACEHOLDER
         : `${displaySymbol}${formatKeypadAmount(amount, decimalSeparator, digitGroupingSeparator)}`;
 
+    const caretHeight = textLayout.height * CARET_HEIGHT_RATIO;
     const accessoryStyle = {
-        left: (containerWidth + textWidth) / 2 + ACCESSORY_GAP,
-        opacity: containerWidth > 0 && textWidth > 0 ? 1 : 0
+        left: (containerWidth + textLayout.width) / 2 + (isEditing ? CARET_GAP : ACCESSORY_GAP),
+        opacity: containerWidth > 0 && textLayout.width > 0 ? 1 : 0
     };
 
     return (
@@ -94,15 +98,13 @@ export const TransactionAmountDisplay = ({
                         {fullDisplay}
                     </AmountFieldText>
                 </AmountField>
-                {isDefined(accessoryIcon) ? (
-                    <View
-                        pointerEvents="none"
-                        className="absolute top-0 bottom-0 w-[28px] items-center justify-center"
-                        style={accessoryStyle}
-                    >
-                        <Icon icon={accessoryIcon} size={18} className="text-secondary-foreground" />
-                    </View>
-                ) : null}
+                <View pointerEvents="none" className="absolute top-0 bottom-0 justify-center" style={accessoryStyle}>
+                    {isEditing ? (
+                        <AmountCaret height={caretHeight} />
+                    ) : (
+                        <Icon icon={UserIconNameEnum.Pencil} size={18} className="text-secondary-foreground" />
+                    )}
+                </View>
             </Animated.View>
         </Pressable>
     );

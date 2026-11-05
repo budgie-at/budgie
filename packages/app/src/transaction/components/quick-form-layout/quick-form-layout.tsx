@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { View } from 'react-native';
+import { useWindowDimensions, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { ScopedVariables, useUniwind } from 'uniwind';
 
@@ -9,8 +9,10 @@ import {
     ScreenChromeScrollView,
     useScrollFadeStyle
 } from '@rnw-community/react-native-screen-chrome';
+import { isDefined } from '@rnw-community/shared';
 
 import { RevealGate } from '../../../@generic/component/reveal-gate/reveal-gate';
+import { TRANSACTION_LARGE_TEXT_SCALE } from '../../constant/transaction-large-text-scale.constant';
 import { useQuickFormLayout } from '../../hook/use-quick-form-layout.hook';
 
 interface Props {
@@ -31,13 +33,14 @@ const DEFAULT_ROW_COLORS = {};
 
 export const QuickFormLayout = ({ amount, context, suggestions, children, keypad, actions }: Props) => {
     const { theme } = useUniwind();
-    const { isScrollingLayout, handleLayout, handleAmountLayout, isLoading } = useQuickFormLayout();
+    const { fontScale } = useWindowDimensions();
+    const { requiresScrolling, handleLayout, handleAmountLayout, isLoading } = useQuickFormLayout();
+    const isScrollingLayout = requiresScrolling || (fontScale >= TRANSACTION_LARGE_TEXT_SCALE && !isDefined(keypad));
     const rowColors = theme === 'dark' ? DARK_ROW_COLORS : DEFAULT_ROW_COLORS;
     const topFadeStyle = useScrollFadeStyle([0, 16], [0, 1]);
     const header = (
-        <View className="pt-[4px] pb-[8px]" onLayout={handleAmountLayout}>
+        <View className="pt-[4px] pb-[12px]" onLayout={handleAmountLayout}>
             {amount}
-            {suggestions}
         </View>
     );
     const scrollingKeypad = isScrollingLayout ? keypad : null;
@@ -73,11 +76,12 @@ export const QuickFormLayout = ({ amount, context, suggestions, children, keypad
                             </Animated.View>
                             <View
                                 pointerEvents="none"
-                                className="absolute bottom-0 left-0 right-0 h-[16px] bg-linear-to-t from-grouped-surface to-grouped-surface/0"
+                                className="absolute bottom-0 left-0 right-0 h-[24px] bg-linear-to-t from-grouped-surface to-grouped-surface/0"
                             />
                         </View>
                         <ScreenChromeFooter includeBottomSafeArea={false} edgeFadeProps={HIDDEN_EDGE_FADE_PROPS} style={FOOTER_STYLE}>
                             <View className="gap-y-[8px] pt-[12px] pb-[8px]">
+                                {suggestions}
                                 {pinnedKeypad}
                                 {actions}
                             </View>

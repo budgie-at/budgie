@@ -2,6 +2,7 @@ import { TransactionCreateInputInterface, UserIconNameEnum } from '@budgie/contr
 import { getTransactionCategoryEntries } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
+import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -42,7 +43,7 @@ export const TransactionCategoryFieldIcon = ({ ref, variant, isSplitActive }: Pr
         });
     };
 
-    const categoryIcon = category?.icon ?? UserIconNameEnum.Folder;
+    const categoryIcon = category?.icon ?? UserIconNameEnum.CircleDashed;
     const disabledHint = isSplitActive ? t`Categories are set per split item` : void 0;
 
     return (
@@ -51,7 +52,15 @@ export const TransactionCategoryFieldIcon = ({ ref, variant, isSplitActive }: Pr
             icon={categoryIcon}
             label={t`Category`}
             value={category?.title}
-            placeholder={t`Choose`}
+            placeholder={
+                <Text
+                    className="min-w-0 flex-1 text-right text-[17px] leading-[22px] text-attention-foreground"
+                    maxFontSizeMultiplier={2}
+                    numberOfLines={1}
+                >
+                    {t`Uncategorized`}
+                </Text>
+            }
             onPress={handlePress}
             disabledHint={disabledHint}
             testID={SimpleQuickFormSelector.CategorySelector}

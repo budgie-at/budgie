@@ -33,7 +33,7 @@ export const SimpleQuickForm = (props: Props) => {
     const { ref, transactionType, aiContext = '', isNewTransaction = false, children, onSubmit } = props;
     const form = useSimpleQuickForm(transactionType, ref);
     const { formState, amountDisplayRef } = form;
-    const { isEditingAmount, toggleKeypad, amountAccessoryIcon, amountAccessibilityHint } = useTransactionKeypadEditing(isNewTransaction);
+    const { isEditingAmount, toggleKeypad, amountAccessibilityHint } = useTransactionKeypadEditing(isNewTransaction);
     const displayAmount = isEditingAmount ? form.displayValue : formatKeypadAmount(form.displayValue, '.', '', 2);
     const isConfirmDisabled = !formState.isAmountPositive;
     const keypad = isEditingAmount ? <TransactionKeypad keypad={form.keypadHandlers} /> : null;
@@ -84,7 +84,7 @@ export const SimpleQuickForm = (props: Props) => {
                             currencySymbol={form.currencySymbol}
                             variant={form.amountVariant}
                             onPress={toggleKeypad}
-                            accessoryIcon={amountAccessoryIcon}
+                            isEditing={isEditingAmount}
                             accessibilityHint={amountAccessibilityHint}
                             testID={SimpleQuickFormSelector.AmountInput}
                         />

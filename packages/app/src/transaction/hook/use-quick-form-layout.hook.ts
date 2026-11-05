@@ -12,7 +12,7 @@ export const useQuickFormLayout = () => {
     const handleAmountLayout = (event: LayoutChangeEvent) => void setAmountHeight(event.nativeEvent.layout.height);
 
     return {
-        isScrollingLayout: requiresScrolling,
+        requiresScrolling,
         handleLayout,
         handleAmountLayout,
         isLoading: height === 0 || amountHeight === 0

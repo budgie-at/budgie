@@ -100,7 +100,7 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
     const { t } = useLingui();
     const { markForEmbedding } = useEmbeddingGenerator();
     const amountDisplayRef = useRef<TransactionAmountDisplayRef | null>(null);
-    const { isEditingAmount, toggleKeypad, amountAccessoryIcon, amountAccessibilityHint } = useTransactionKeypadEditing(false);
+    const { isEditingAmount, toggleKeypad, amountAccessibilityHint } = useTransactionKeypadEditing(false);
     const details = getAdjustmentDetails(transaction);
     const { isLoading: isSubmitting, run } = useSingleFlight();
     const [isIncrease, toggleIsIncrease] = useReducer((current: boolean) => !current, details?.initialIsIncrease ?? true);
@@ -151,7 +151,7 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
                     currencySymbol={display.symbol}
                     variant={variant}
                     onPress={toggleKeypad}
-                    accessoryIcon={amountAccessoryIcon}
+                    isEditing={isEditingAmount}
                     accessibilityHint={amountAccessibilityHint}
                     testID={SimpleQuickFormSelector.AmountInput}
                 />

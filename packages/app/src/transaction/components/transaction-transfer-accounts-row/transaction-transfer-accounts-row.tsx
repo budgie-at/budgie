@@ -24,8 +24,8 @@ interface Props {
     readonly ref?: RefObject<TransactionTransferAccountsRowRef | null>;
 }
 
-const SWAP_SIZE = 36;
-const SWAP_HIT_SLOP = 4;
+const SWAP_SIZE = 32;
+const SWAP_HIT_SLOP = 6;
 
 // eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const TransactionTransferAccountsRow = ({ ref }: Props) => {
@@ -107,7 +107,7 @@ export const TransactionTransferAccountsRow = ({ ref }: Props) => {
                 />
             </GroupedListSection>
             <HapticPressable
-                className="absolute left-[16px] h-[36px] w-[36px] items-center justify-center rounded-full border-[3px] border-grouped-surface-row bg-surface-disc"
+                className="absolute left-[18px] h-[32px] w-[32px] items-center justify-center rounded-full border-2 border-grouped-surface-row bg-surface-disc"
                 style={swapStyle}
                 hitSlop={SWAP_HIT_SLOP}
                 onPress={handleSwap}
@@ -115,7 +115,7 @@ export const TransactionTransferAccountsRow = ({ ref }: Props) => {
                 accessibilityLabel={t`Swap accounts`}
                 accessibilityRole="button"
             >
-                <Icon icon={UserIconNameEnum.ArrowUpDown} size={16} className="text-primary" />
+                <Icon icon={UserIconNameEnum.ArrowUpDown} size={15} className="text-primary" />
             </HapticPressable>
         </View>
     );

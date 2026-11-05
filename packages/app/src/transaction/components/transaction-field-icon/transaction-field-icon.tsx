@@ -1,6 +1,6 @@
 import { UserIconType } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
-import { RefObject, useImperativeHandle } from 'react';
+import { ReactElement, RefObject, useImperativeHandle } from 'react';
 import Animated from 'react-native-reanimated';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -21,7 +21,7 @@ interface Props {
     readonly icon: UserIconType;
     readonly label: string;
     readonly value?: string;
-    readonly placeholder?: string;
+    readonly placeholder?: string | ReactElement;
     readonly onPress: () => void;
     readonly disabledHint?: string;
     readonly testID?: string;

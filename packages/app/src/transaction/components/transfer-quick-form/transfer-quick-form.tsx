@@ -63,8 +63,7 @@ export const TransferQuickForm = (props: Props) => {
     const { handleCommentPress, handleDatePress } = useQuickFormModals();
     const { fromAccountId, toAccountId, fromAccount, toAccount } = useTransferAccounts();
 
-    const { isEditingAmount, toggleKeypad, startEditingAmount, amountAccessoryIcon, amountAccessibilityHint } =
-        useTransactionKeypadEditing(isNewTransaction);
+    const { isEditingAmount, toggleKeypad, startEditingAmount, amountAccessibilityHint } = useTransactionKeypadEditing(isNewTransaction);
 
     const [isEditingDestination, setIsEditingDestination] = useState(false);
 
@@ -237,7 +236,7 @@ export const TransferQuickForm = (props: Props) => {
                     currencySymbol={display.displaySymbol}
                     variant="primary"
                     onPress={handleAmountPress}
-                    accessoryIcon={amountAccessoryIcon}
+                    isEditing={isEditingAmount}
                     accessibilityHint={amountAccessibilityHint}
                     testID={SimpleQuickFormSelector.AmountInput}
                 />
@@ -281,6 +280,8 @@ export const TransferQuickForm = (props: Props) => {
                 <TransactionFieldIcons>
                     <TransactionDateFieldIcon onPress={handleDatePress} />
                     <TransactionNoteFieldIcon onPress={handleCommentPress} />
+                </TransactionFieldIcons>
+                <TransactionFieldIcons>
                     <TransactionFeeFieldIcon
                         amount={feeAmount}
                         currencySymbol={feeCurrencySymbol}
