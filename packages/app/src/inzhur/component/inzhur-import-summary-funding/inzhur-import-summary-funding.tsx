@@ -29,15 +29,17 @@ export const InzhurImportSummaryFunding = ({ summary, symbol }: Props) => {
 
     return (
         <GroupedListSection title={title}>
-            <View className="gap-y-lg px-3xl py-[12px]">
+            <View className="min-h-[64px] justify-center px-3xl py-[12px]">
                 <InzhurMoneyRow
                     label={cashLabel}
-                    caption={t`Available balance`}
+                    {...(isSpent && { caption: t`Used for this purchase` })}
                     amount={cashAmount}
                     instrumentSymbol={symbol}
                     icon={UserIconNameEnum.Banknote}
                 />
-                {isPositiveNumber(uncoveredCashAmount) ? (
+            </View>
+            {isPositiveNumber(uncoveredCashAmount) ? (
+                <View className="min-h-[64px] justify-center px-3xl py-[12px]">
                     <InzhurMoneyRow
                         label={t`From a bank top-up`}
                         caption={t`Bank transaction not matched yet`}
@@ -46,8 +48,8 @@ export const InzhurImportSummaryFunding = ({ summary, symbol }: Props) => {
                         icon={UserIconNameEnum.Clock}
                         iconClassName="text-warning-strong"
                     />
-                ) : null}
-            </View>
+                </View>
+            ) : null}
         </GroupedListSection>
     );
 };

@@ -12,7 +12,6 @@ import { HeaderBackButton } from '../../../@generic/component/header-back-button
 import { RevealGate } from '../../../@generic/component/reveal-gate/reveal-gate';
 import { ScreenChromeThemeProvider } from '../../../@generic/provider/screen-chrome-theme.provider';
 import { InstitutionSelector } from '../../../app/(main)/institution/institution.selector';
-import { inzhurChartScrubAtom } from '../../../inzhur/constant/inzhur-chart-scrub-atom.constant';
 import { decimalPlacesAtom, defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { BankIntegrationContext } from '../../../sync/context/bank-integration.context';
 import { getBankIntegrationCapabilities } from '../../../sync/utils/get-bank-integration-capabilities.util';
@@ -43,8 +42,7 @@ export const InstitutionDetailsPage = ({ integration, institution, balancesByAcc
     const { t } = useLingui();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const decimalPlaces = useAtomValue(decimalPlacesAtom);
-    const shownTotal = useAtomValue(inzhurChartScrubAtom)?.value ?? institution.total;
-    const displayTotal = Number(shownTotal.toFixed(decimalPlaces)) === 0 ? 0 : shownTotal;
+    const displayTotal = Number(institution.total.toFixed(decimalPlaces)) === 0 ? 0 : institution.total;
     const totalAccount = { type: AccountTypeEnum.BANK, instrument: defaultInstrument };
     const isStaticHeader = useIsStaticAccountDetailsHeader();
     const titleDescriptor = BANK_PROVIDER_TITLE[institution.provider];

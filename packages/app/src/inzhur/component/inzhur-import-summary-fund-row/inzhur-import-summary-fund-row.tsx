@@ -32,14 +32,14 @@ export const InzhurImportSummaryFundRow = ({ fund, symbol }: Props) => {
     const quantityLabel = `${deltaQuantity > 0 ? '+' : '−'}${formatFundQuantity(Math.abs(deltaQuantity))}`;
     const hasPurchase = isPositiveNumber(Math.max(exchangedAmount - dividendAmount, 0));
     const purchaseSegments = isPositiveNumber(dividendAmount) ? [t`Bought with dividends`, t`estimated`] : [t`Bought`];
-    const buySegments = hasPurchase ? purchaseSegments : [t`Reinvested`, t`estimated`];
+    const buySegments = hasPurchase ? purchaseSegments : [t`Reinvested dividends`, t`estimated`];
     const detailSegments = [...(deltaQuantity > 0 ? buySegments : [t`Sold`]), quantityLabel];
 
     return (
         <View
             accessible
             accessibilityLabel={[name, formatAmount(exchangedAmount, symbol), ...detailSegments].join(', ')}
-            className="px-3xl py-[12px]"
+            className="min-h-[64px] justify-center px-3xl py-[12px]"
             testID={InzhurSelector.SummaryFund(isin)}
         >
             <ListRow

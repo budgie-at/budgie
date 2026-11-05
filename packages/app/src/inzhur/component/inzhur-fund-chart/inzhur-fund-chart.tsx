@@ -15,6 +15,12 @@ export const InzhurFundChart = ({ fundAccountId }: Props) => {
     const report = useInzhurFundGainQuery(fundAccountId);
 
     return isDefined(report) ? (
-        <InzhurPerformanceChart points={report.prices} gains={report.gains} subject={t`Price`} testID={InzhurSelector.PriceChart} />
+        <InzhurPerformanceChart
+            points={report.prices}
+            gains={report.gains}
+            subject={t`Price`}
+            caption={t`Price per certificate`}
+            testID={InzhurSelector.PriceChart}
+        />
     ) : null;
 };

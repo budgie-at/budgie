@@ -32,7 +32,7 @@ export const InzhurImportSummary = ({ summary }: Props) => {
     const isCashMovementShown = outcome === InzhurImportOutcomeEnum.APPLIED && cashMoved !== 0;
 
     return (
-        <View className="gap-y-3xl" testID={InzhurSelector.Summary}>
+        <View className="gap-y-md" testID={InzhurSelector.Summary}>
             <InzhurImportSummaryHero statementDate={summary.statementDate} previousStatementDate={summary.previousStatementDate} />
 
             {isNotEmptyArray(funds) ? (

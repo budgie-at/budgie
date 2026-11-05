@@ -15,8 +15,6 @@ import { buildMarketChartGeometry } from '../../utils/build-market-chart-geometr
 import { getMarketChartTone } from '../../utils/get-market-chart-tone.util';
 import { CurrencyMarketChartCursor } from '../currency-market-chart-cursor/currency-market-chart-cursor';
 import { CurrencyMarketChartDateChip } from '../currency-market-chart-date-chip/currency-market-chart-date-chip';
-import { CurrencyMarketChartExtremes } from '../currency-market-chart-extremes/currency-market-chart-extremes';
-import { CurrencyMarketChartOpenLabel } from '../currency-market-chart-open-label/currency-market-chart-open-label';
 import { CurrencyMarketChartScrubClip } from '../currency-market-chart-scrub-clip/currency-market-chart-scrub-clip';
 import { CurrencyMarketChartSeries } from '../currency-market-chart-series/currency-market-chart-series';
 
@@ -40,7 +38,7 @@ const FUTURE_CLIP_ID = 'currency-market-chart-future';
 const FILL_URL = `url(#${FILL_ID})`;
 const PAST_CLIP_URL = `url(#${PAST_CLIP_ID})`;
 const FUTURE_CLIP_URL = `url(#${FUTURE_CLIP_ID})`;
-const FILL_TOP_OPACITY = 0.18;
+const FILL_TOP_OPACITY = 0.1;
 const FUTURE_OPACITY = 0.35;
 const BASELINE_DASH = '2 4';
 const LINE_WIDTH = 2;
@@ -85,7 +83,7 @@ export const CurrencyMarketChart = ({ prices, selectedIndex, rangeLabel, startLa
     const handleLayout = (event: LayoutChangeEvent) => void setWidth(event.nativeEvent.layout.width);
 
     return (
-        <View {...accessibilityProps} className="h-[184px] w-full" testID={testID}>
+        <View {...accessibilityProps} className="w-full px-[4px]" testID={testID}>
             <GestureDetector gesture={panGesture}>
                 <View className="h-[164px] w-full" onLayout={handleLayout}>
                     <Svg width={width} height={MARKET_CHART_PLOT_HEIGHT}>
@@ -117,23 +115,6 @@ export const CurrencyMarketChart = ({ prices, selectedIndex, rangeLabel, startLa
                         <CurrencyMarketChartSeries {...series} clipPath={FUTURE_CLIP_URL} opacity={FUTURE_OPACITY} />
                     </Svg>
 
-                    <CurrencyMarketChartExtremes
-                        values={values}
-                        xs={geometry.xs}
-                        ys={geometry.ys}
-                        chartWidth={width}
-                        activeIndex={activeIndex}
-                    />
-
-                    <CurrencyMarketChartOpenLabel
-                        values={values}
-                        xs={geometry.xs}
-                        ys={geometry.ys}
-                        baselineY={geometry.baselineY}
-                        chartWidth={width}
-                        activeIndex={activeIndex}
-                    />
-
                     <CurrencyMarketChartDateChip activeIndex={activeIndex} xs={geometry.xs} chartWidth={width} priceDate={scrubDate} />
 
                     <CurrencyMarketChartCursor
@@ -145,7 +126,7 @@ export const CurrencyMarketChart = ({ prices, selectedIndex, rangeLabel, startLa
                 </View>
             </GestureDetector>
 
-            <View className="mt-xs h-[16px] flex-row items-center justify-between">
+            <View className="mt-xs min-h-[16px] flex-row items-center justify-between">
                 <Text className="text-secondary-foreground text-[12px] leading-[16px] tabular-nums" numberOfLines={1}>
                     {startLabel}
                 </Text>

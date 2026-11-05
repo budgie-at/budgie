@@ -22,12 +22,5 @@ export const InzhurSinceStatementLine = ({ previousStatementDate }: Props) => {
 
     const statementLabel = formatMonthAndDayAndOptionalYear(previousStatementDate);
 
-    return (
-        <InzhurGainLine
-            gain={gain.gain}
-            percent={null}
-            suffix={t`since the ${statementLabel} statement`}
-            testID={InzhurSelector.SinceStatement}
-        />
-    );
+    return <InzhurGainLine gain={gain.gain} percent={null} suffix={t`since ${statementLabel}`} testID={InzhurSelector.SinceStatement} />;
 };

@@ -700,10 +700,6 @@ msgstr "{providerName} · Sin coste de adquisición"
 msgid "{providerName} sync"
 msgstr "Sincronización de {providerName}"
 
-#: src/inzhur/component/inzhur-fund-holding-line/inzhur-fund-holding-line.tsx
-msgid "{quantityLabel} · {priceLabel} each"
-msgstr "{quantityLabel} · {priceLabel} cada uno"
-
 #: src/inzhur/component/update-inzhur-account-page/update-inzhur-account-page.tsx
 msgid "{quantityLabel} · updated from statements"
 msgstr "{quantityLabel} · actualizado desde los extractos"
@@ -916,6 +912,10 @@ msgstr "{transactionCount} transacciones sincronizadas desde {historyStart}"
 #: src/categorize-inbox/components/categorize-inbox-transfer-undo/categorize-inbox-transfer-undo.tsx
 msgid "{transferCount} now transfers"
 msgstr "{transferCount} ahora son transferencias"
+
+#: src/inzhur/component/inzhur-fund-holding-line/inzhur-fund-holding-line.tsx
+msgid "{unitPrice} each"
+msgstr "{unitPrice} cada uno"
 
 #: src/settings/components/show-cents-row/show-cents-row.tsx
 msgid "{withCents} instead of {withoutCents}"
@@ -1690,10 +1690,6 @@ msgstr "El ajuste automático está desactivado"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Automation"
 msgstr "Automatización"
-
-#: src/inzhur/component/inzhur-import-summary-funding/inzhur-import-summary-funding.tsx
-msgid "Available balance"
-msgstr "Saldo disponible"
 
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Available once the import finishes"
@@ -4297,6 +4293,14 @@ msgstr "Futuros pagos «{displayTitle}»"
 msgid "Future «{jarName}» payments"
 msgstr "Futuros pagos «{jarName}»"
 
+#: src/inzhur/component/inzhur-institution-chart/inzhur-institution-chart.tsx
+msgid "Gain"
+msgstr "Ganancia"
+
+#: src/inzhur/component/inzhur-institution-chart/inzhur-institution-chart.tsx
+msgid "Gain since {startLabel}"
+msgstr "Ganancia desde el {startLabel}"
+
 #: src/app/(tabs)/settings/index.tsx
 msgid "General"
 msgstr "General"
@@ -5900,10 +5904,6 @@ msgstr "Solo cuando falta la categoría"
 msgid "Only you hold the key."
 msgstr "Solo tú tienes la llave."
 
-#: src/market-data/component/currency-market-chart-open-label/currency-market-chart-open-label.tsx
-msgid "Open {openPrice}"
-msgstr "Apertura {openPrice}"
-
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Open Binance to get your API key"
 msgstr "Abra Binance para obtener su clave API"
@@ -6440,10 +6440,6 @@ msgstr "Precio"
 msgid "Price {ageLabel} · {date}"
 msgstr "Precio {ageLabel} · {date}"
 
-#: src/inzhur/component/inzhur-fund-holding-line/inzhur-fund-holding-line.tsx
-msgid "Price as of {priceDate}"
-msgstr "Precio al {priceDate}"
-
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Price changed"
 msgstr "Precio cambiado"
@@ -6455,6 +6451,10 @@ msgstr "Gráfico de precios, {rangeLabel}, de {fromLabel} a {toLabel}, máximo {
 #: src/inzhur/hook/use-inzhur-statement-import.hook.ts
 msgid "Price not available"
 msgstr "Precio no disponible"
+
+#: src/inzhur/component/inzhur-fund-chart/inzhur-fund-chart.tsx
+msgid "Price per certificate"
+msgstr "Precio por certificado"
 
 #: src/inzhur/component/inzhur-freshness-line/inzhur-freshness-line.tsx
 msgid "Prices as of {priceDate}"
@@ -6699,10 +6699,10 @@ msgstr "Reembolsos recibidos"
 
 #: src/inzhur/component/inzhur-dividend-payout-option/inzhur-dividend-payout-option.tsx
 #: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
-#: src/inzhur/component/inzhur-import-summary-fund-row/inzhur-import-summary-fund-row.tsx
 msgid "Reinvested"
 msgstr "Reinvertidos"
 
+#: src/inzhur/component/inzhur-import-summary-fund-row/inzhur-import-summary-fund-row.tsx
 #: src/transaction/hook/use-transaction-row-title.hook.ts
 msgid "Reinvested dividends"
 msgstr "Dividendos reinvertidos"
@@ -7402,14 +7402,14 @@ msgstr "Transacciones similares"
 msgid "Since {fromLabel}"
 msgstr "Desde {fromLabel}"
 
-#: src/inzhur/component/inzhur-fund-gain-line/inzhur-fund-gain-line.tsx
+#: src/inzhur/component/inzhur-all-time-gain-line/inzhur-all-time-gain-line.tsx
 #: src/inzhur/component/inzhur-institution-gain-line/inzhur-institution-gain-line.tsx
 msgid "since {startLabel}"
 msgstr "desde el {startLabel}"
 
 #: src/inzhur/component/inzhur-since-statement-line/inzhur-since-statement-line.tsx
-msgid "since the {statementLabel} statement"
-msgstr "desde el extracto del {statementLabel}"
+msgid "since {statementLabel}"
+msgstr "desde el {statementLabel}"
 
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Skip"
@@ -8693,6 +8693,10 @@ msgstr "Úsalas solo si las conversiones, importaciones o saldos parecen incorre
 msgid "Use Touch ID"
 msgstr "Usar Touch ID"
 
+#: src/inzhur/component/inzhur-import-summary-funding/inzhur-import-summary-funding.tsx
+msgid "Used for this purchase"
+msgstr "Usado para esta compra"
+
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx
 msgid "Used for totals and reports"
 msgstr "Para totales e informes"
@@ -8705,7 +8709,6 @@ msgstr "Usa una expresión regular de hasta 200 caracteres, sin distinguir mayú
 msgid "Valuation unavailable"
 msgstr "Valoración no disponible"
 
-#: src/inzhur/component/inzhur-institution-chart/inzhur-institution-chart.tsx
 #: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
 msgid "Value"
 msgstr "Valor"

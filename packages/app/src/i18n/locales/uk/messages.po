@@ -700,10 +700,6 @@ msgstr "{providerName} · Вартість придбання невідома"
 msgid "{providerName} sync"
 msgstr "Синхронізація {providerName}"
 
-#: src/inzhur/component/inzhur-fund-holding-line/inzhur-fund-holding-line.tsx
-msgid "{quantityLabel} · {priceLabel} each"
-msgstr "{quantityLabel} · {priceLabel} за штуку"
-
 #: src/inzhur/component/update-inzhur-account-page/update-inzhur-account-page.tsx
 msgid "{quantityLabel} · updated from statements"
 msgstr "{quantityLabel} · оновлено з виписок"
@@ -916,6 +912,10 @@ msgstr "Синхронізовано транзакцій: {transactionCount} з
 #: src/categorize-inbox/components/categorize-inbox-transfer-undo/categorize-inbox-transfer-undo.tsx
 msgid "{transferCount} now transfers"
 msgstr "Тепер переказів: {transferCount}"
+
+#: src/inzhur/component/inzhur-fund-holding-line/inzhur-fund-holding-line.tsx
+msgid "{unitPrice} each"
+msgstr "{unitPrice} за штуку"
 
 #: src/settings/components/show-cents-row/show-cents-row.tsx
 msgid "{withCents} instead of {withoutCents}"
@@ -1690,10 +1690,6 @@ msgstr "Автоматичне налаштування вимкнено"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Automation"
 msgstr "Автоматизація"
-
-#: src/inzhur/component/inzhur-import-summary-funding/inzhur-import-summary-funding.tsx
-msgid "Available balance"
-msgstr "Доступний баланс"
 
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Available once the import finishes"
@@ -4297,6 +4293,14 @@ msgstr "Майбутні платежі «{displayTitle}»"
 msgid "Future «{jarName}» payments"
 msgstr "Майбутні платежі «{jarName}»"
 
+#: src/inzhur/component/inzhur-institution-chart/inzhur-institution-chart.tsx
+msgid "Gain"
+msgstr "Прибуток"
+
+#: src/inzhur/component/inzhur-institution-chart/inzhur-institution-chart.tsx
+msgid "Gain since {startLabel}"
+msgstr "Прибуток з {startLabel}"
+
 #: src/app/(tabs)/settings/index.tsx
 msgid "General"
 msgstr "Загальне"
@@ -5900,10 +5904,6 @@ msgstr "Лише якщо категорії немає"
 msgid "Only you hold the key."
 msgstr "Ключ лише у вас."
 
-#: src/market-data/component/currency-market-chart-open-label/currency-market-chart-open-label.tsx
-msgid "Open {openPrice}"
-msgstr "Відкриття {openPrice}"
-
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Open Binance to get your API key"
 msgstr "Відкрийте Binance, щоб отримати API-ключ"
@@ -6440,10 +6440,6 @@ msgstr "Ціна"
 msgid "Price {ageLabel} · {date}"
 msgstr "Ціна {ageLabel} · {date}"
 
-#: src/inzhur/component/inzhur-fund-holding-line/inzhur-fund-holding-line.tsx
-msgid "Price as of {priceDate}"
-msgstr "Ціна на {priceDate}"
-
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Price changed"
 msgstr "Ціна змінилася"
@@ -6455,6 +6451,10 @@ msgstr "Графік цін, {rangeLabel}, від {fromLabel} до {toLabel}, м
 #: src/inzhur/hook/use-inzhur-statement-import.hook.ts
 msgid "Price not available"
 msgstr "Ціна недоступна"
+
+#: src/inzhur/component/inzhur-fund-chart/inzhur-fund-chart.tsx
+msgid "Price per certificate"
+msgstr "Ціна за сертифікат"
 
 #: src/inzhur/component/inzhur-freshness-line/inzhur-freshness-line.tsx
 msgid "Prices as of {priceDate}"
@@ -6699,10 +6699,10 @@ msgstr "Отримані відшкодування"
 
 #: src/inzhur/component/inzhur-dividend-payout-option/inzhur-dividend-payout-option.tsx
 #: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
-#: src/inzhur/component/inzhur-import-summary-fund-row/inzhur-import-summary-fund-row.tsx
 msgid "Reinvested"
 msgstr "Реінвестуються"
 
+#: src/inzhur/component/inzhur-import-summary-fund-row/inzhur-import-summary-fund-row.tsx
 #: src/transaction/hook/use-transaction-row-title.hook.ts
 msgid "Reinvested dividends"
 msgstr "Реінвестовані дивіденди"
@@ -7402,14 +7402,14 @@ msgstr "Схожі транзакції"
 msgid "Since {fromLabel}"
 msgstr "З {fromLabel}"
 
-#: src/inzhur/component/inzhur-fund-gain-line/inzhur-fund-gain-line.tsx
+#: src/inzhur/component/inzhur-all-time-gain-line/inzhur-all-time-gain-line.tsx
 #: src/inzhur/component/inzhur-institution-gain-line/inzhur-institution-gain-line.tsx
 msgid "since {startLabel}"
 msgstr "з {startLabel}"
 
 #: src/inzhur/component/inzhur-since-statement-line/inzhur-since-statement-line.tsx
-msgid "since the {statementLabel} statement"
-msgstr "з виписки від {statementLabel}"
+msgid "since {statementLabel}"
+msgstr "з {statementLabel}"
 
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Skip"
@@ -8693,6 +8693,10 @@ msgstr "Використовуйте, лише якщо конвертації, 
 msgid "Use Touch ID"
 msgstr "Використовувати Touch ID"
 
+#: src/inzhur/component/inzhur-import-summary-funding/inzhur-import-summary-funding.tsx
+msgid "Used for this purchase"
+msgstr "Використано для цієї покупки"
+
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx
 msgid "Used for totals and reports"
 msgstr "Для підсумків і звітів"
@@ -8705,7 +8709,6 @@ msgstr "Використовує регулярний вираз до 200 сим
 msgid "Valuation unavailable"
 msgstr "Оцінка недоступна"
 
-#: src/inzhur/component/inzhur-institution-chart/inzhur-institution-chart.tsx
 #: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
 msgid "Value"
 msgstr "Вартість"

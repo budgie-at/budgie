@@ -1,13 +1,13 @@
 import { InzhurGainRangeEnum } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
-import { SegmentedControl } from '../../../@generic/component/segmented-control/segmented-control';
 import { CurrencyMarketChart } from '../../../market-data/component/currency-market-chart/currency-market-chart';
 import { useMarketChartTimeline } from '../../../market-data/hook/use-market-chart-timeline.hook';
 import { useInzhurChartScrub } from '../../hook/use-inzhur-chart-scrub.hook';
 import { useInzhurChartSummary } from '../../hook/use-inzhur-chart-summary.hook';
+import { InzhurRangeControl } from '../inzhur-range-control/inzhur-range-control';
 
 import type { InzhurRangedGainInterface, InzhurValuePointInterface } from '@budgie/sync';
 
@@ -15,12 +15,13 @@ interface Props {
     readonly points: readonly InzhurValuePointInterface[];
     readonly gains: readonly InzhurRangedGainInterface[];
     readonly subject: string;
+    readonly caption: string;
     readonly testID: string;
 }
 
 const MIN_CHART_POINTS = 2;
 
-export const InzhurPerformanceChart = ({ points, gains, subject, testID }: Props) => {
+export const InzhurPerformanceChart = ({ points, gains, subject, caption, testID }: Props) => {
     const { t } = useLingui();
     const [range, setRange] = useState(InzhurGainRangeEnum.ALL);
 
@@ -47,7 +48,8 @@ export const InzhurPerformanceChart = ({ points, gains, subject, testID }: Props
     }
 
     return (
-        <View className="gap-y-xl self-stretch">
+        <View className="gap-y-md self-stretch">
+            <Text className="px-xs text-[13px] leading-[18px] text-secondary-foreground">{caption}</Text>
             <CurrencyMarketChart
                 prices={prices}
                 selectedIndex={scrubIndex}
@@ -57,7 +59,7 @@ export const InzhurPerformanceChart = ({ points, gains, subject, testID }: Props
                 testID={testID}
                 onScrub={handleScrub}
             />
-            {segments.length > 1 ? <SegmentedControl segments={segments} value={range} onChange={handleRangeChange} /> : null}
+            {segments.length > 1 ? <InzhurRangeControl segments={segments} value={range} onChange={handleRangeChange} /> : null}
         </View>
     );
 };

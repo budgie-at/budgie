@@ -1,10 +1,10 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
+import { joinWithMiddot } from '../../../@generic/utils/join-with-middot.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useFormatFundQuantity } from '../../../i18n/hook/use-format-fund-quantity.hook';
@@ -19,29 +19,25 @@ interface Props {
     readonly balance: number;
 }
 
+const UNIT_PRICE_DECIMALS = 3;
+
 export const InzhurFundHoldingLine = ({ account, balance }: Props) => {
-    const { t } = useLingui();
     const { formatMonthAndDayAndOptionalYear } = useFormatDate();
     const { latestPrice } = useInzhurFundReturnsQuery(account.id, account.instrumentId);
     const symbol = useHryvniaInstrumentQuery()?.symbol ?? '';
-    const formatAmount = useFormatDigits(2, 4);
+    const formatAmount = useFormatDigits(UNIT_PRICE_DECIMALS, UNIT_PRICE_DECIMALS);
     const formatFundQuantity = useFormatFundQuantity();
     const scrubbedPoint = useAtomValue(inzhurChartScrubAtom);
+    const { t } = useLingui();
 
-    const quantityLabel = formatFundQuantity(balance);
     const shownPrice = scrubbedPoint ?? (isDefined(latestPrice) ? { value: latestPrice.price, date: latestPrice.priceDate } : null);
-    const priceLabel = isDefined(shownPrice) ? formatAmount(shownPrice.value, symbol) : '';
-    const priceDate = isDefined(shownPrice) ? formatMonthAndDayAndOptionalYear(shownPrice.date) : '';
-    const holdingLabel = isDefined(latestPrice) ? t`${quantityLabel} · ${priceLabel} each` : quantityLabel;
+    const unitPrice = isDefined(shownPrice) ? formatAmount(shownPrice.value, symbol) : null;
+    const priceLabel = isDefined(unitPrice) ? t`${unitPrice} each` : null;
+    const priceDate = isDefined(shownPrice) ? formatMonthAndDayAndOptionalYear(shownPrice.date) : null;
 
     return (
-        <View className="items-center px-5xl">
-            <ProtectedText className="text-center text-[15px] leading-[20px] text-secondary-foreground tabular-nums">
-                {holdingLabel}
-            </ProtectedText>
-            {isDefined(latestPrice) ? (
-                <Text className="text-center text-[15px] leading-[20px] text-secondary-foreground tabular-nums">{t`Price as of ${priceDate}`}</Text>
-            ) : null}
-        </View>
+        <ProtectedText className="px-5xl text-center text-[15px] leading-[20px] text-secondary-foreground tabular-nums">
+            {joinWithMiddot([formatFundQuantity(balance), priceLabel, priceDate])}
+        </ProtectedText>
     );
 };

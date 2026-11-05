@@ -76,7 +76,7 @@
         @variant light {
             --color-positive-strong: rgb(0, 122, 82);
             --color-destructive-strong: rgb(196, 38, 45);
-            --color-warning-strong: rgb(138, 90, 0);
+            --color-warning-strong: rgb(170, 77, 8);
             --color-transaction-detail-row: rgb(255, 255, 255);
             --color-transaction-detail-bar: rgb(249, 249, 249);
             --color-transaction-detail-bar-separator: rgba(60, 60, 67, 0.29);

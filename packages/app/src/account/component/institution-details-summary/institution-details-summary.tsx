@@ -35,8 +35,8 @@ export const InstitutionDetailsSummary = ({ institution, balancesByAccountId }: 
         <View className="gap-y-4xl">
             <View className="items-center gap-y-lg pb-md" testID={InstitutionSelector.Hero}>
                 <View style={balanceSlotStyle} />
-                {isInzhur ? <InzhurFreshnessLine /> : statusLine}
                 {isInzhur ? <InzhurInstitutionGainLine /> : null}
+                {isInzhur ? <InzhurFreshnessLine /> : statusLine}
             </View>
             {isInzhur ? <InzhurInstitutionChart /> : null}
             <InstitutionConnectionRow syncs={syncs} />

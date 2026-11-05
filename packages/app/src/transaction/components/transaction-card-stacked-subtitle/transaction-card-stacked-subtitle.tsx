@@ -1,7 +1,6 @@
 import { Text } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
-
+import { joinWithMiddot } from '../../../@generic/utils/join-with-middot.util';
 import { useTransactionSubtitleSegments } from '../../hook/use-transaction-subtitle-segments.hook';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
@@ -16,7 +15,7 @@ export const TransactionCardStackedSubtitle = ({ transaction, accountId }: Props
 
     return (
         <Text className="text-[13px] text-secondary-foreground" numberOfLines={4}>
-            {[...segments, feeLabel, accountTitle].filter(isDefined).join(' · ')}
+            {joinWithMiddot([...segments, feeLabel, accountTitle])}
         </Text>
     );
 };
