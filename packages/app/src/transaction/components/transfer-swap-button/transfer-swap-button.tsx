@@ -11,18 +11,18 @@ interface Props {
     readonly onPress: () => void;
 }
 
-const SWAP_SIZE = 32;
-const SWAP_HIT_SLOP = 6;
+const SWAP_SIZE = 30;
+const SWAP_HIT_SLOP = 7;
 
 export const TransferSwapButton = ({ dividerOffset, isEnabled, onPress }: Props) => {
     const { t } = useLingui();
     const style = { top: dividerOffset - SWAP_SIZE / 2, opacity: dividerOffset > 0 ? 1 : 0 };
     const accessibilityState = { disabled: !isEnabled };
-    const iconClassName = isEnabled ? 'text-secondary-foreground' : 'text-secondary-foreground opacity-40';
+    const iconClassName = isEnabled ? 'text-primary' : 'text-primary opacity-30';
 
     return (
         <HapticPressable
-            className="absolute right-[8px] h-[32px] w-[32px] items-center justify-center rounded-full border-hairline border-surface-separator bg-grouped-surface-row"
+            className="absolute left-[16px] h-[30px] w-[30px] items-center justify-center rounded-full border-hairline border-surface-separator bg-surface-disc"
             style={style}
             hitSlop={SWAP_HIT_SLOP}
             onPress={onPress}

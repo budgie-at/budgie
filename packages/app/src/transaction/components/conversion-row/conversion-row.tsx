@@ -48,7 +48,7 @@ export const ConversionRow = (props: Props) => {
     return (
         <Animated.View entering={ENTERING_ANIMATION}>
             <TransactionFormRow
-                left={<TransactionFormIcon icon={UserIconNameEnum.Banknote} />}
+                left={<TransactionFormIcon icon={UserIconNameEnum.Coins} />}
                 label={label}
                 value={displayAmount}
                 onPress={onPress}
@@ -56,7 +56,7 @@ export const ConversionRow = (props: Props) => {
                 pressableProps={pressableProps}
             />
             <Text
-                className="-mt-[8px] pr-[46px] pb-[10px] text-right text-[13px] leading-[18px] text-secondary-foreground"
+                className="-mt-[8px] pr-[44px] pb-[10px] text-right text-[13px] leading-[18px] text-secondary-foreground"
                 maxFontSizeMultiplier={2}
             >
                 {rateLabel}

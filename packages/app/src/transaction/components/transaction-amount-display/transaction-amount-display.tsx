@@ -5,7 +5,7 @@ import { RefObject, useImperativeHandle, useState } from 'react';
 import { LayoutChangeEvent, NativeSyntheticEvent, Pressable, TextLayoutEventData, useWindowDimensions, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
@@ -13,6 +13,7 @@ import { PROTECTED_AMOUNT_PLACEHOLDER } from '../../../@generic/constant/protect
 import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { cn } from '../../../@generic/utils/cn.util';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
 import { formatKeypadAmount } from '../../utils/format-keypad-amount.util';
 import { AmountCaret } from '../amount-caret/amount-caret';
@@ -71,6 +72,7 @@ export const TransactionAmountDisplay = ({
         ? PROTECTED_AMOUNT_PLACEHOLDER
         : `${displaySymbol}${formatKeypadAmount(amount, decimalSeparator, digitGroupingSeparator)}`;
 
+    const amountClassName = cn(textVariants({ variant }), !isPositiveNumber(Number(amount)) && 'opacity-35');
     const caretHeight = textLayout.height * CARET_HEIGHT_RATIO;
     const accessoryStyle = {
         left: (containerWidth + textLayout.width) / 2 + (isEditing ? CARET_GAP : ACCESSORY_GAP),
@@ -92,7 +94,7 @@ export const TransactionAmountDisplay = ({
                 <AmountField fontSize={40}>
                     <AmountFieldText
                         maxFontSizeMultiplier={MAX_AMOUNT_FONT_SCALE}
-                        className={textVariants({ variant })}
+                        className={amountClassName}
                         onTextLayout={handleTextLayout}
                     >
                         {fullDisplay}
