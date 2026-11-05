@@ -5,7 +5,6 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import { router } from 'expo-router';
-import { useRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { ModalPage } from '../@generic/component/page/modal-page';
@@ -18,7 +17,6 @@ import { useConvertToTransferModal, useConvertToTransferModalParams } from '../t
 
 import { ConvertToTransferModalSelector } from './convert-to-transfer-modal.selector';
 
-import type { SimpleQuickFormRefInterface } from '../transaction/interface/simple-quick-form-ref.interface';
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
 
 // eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
@@ -28,7 +26,6 @@ export default function ConvertToTransferModal() {
     useModalDismiss(dismissConvertToTransfer);
     const currentParams = useConvertToTransferModalParams();
     const { isLoading, run } = useSingleFlight();
-    const transferFormRef = useRef<SimpleQuickFormRefInterface>(null);
 
     const transactionId = currentParams?.transactionId ?? 0;
     const transactionType = currentParams?.transactionType ?? TransactionTypeEnum.EXPENSE;
@@ -99,10 +96,9 @@ export default function ConvertToTransferModal() {
             <ModalPage
                 className="bg-grouped-surface"
                 testID={ConvertToTransferModalSelector.Page}
-                header={<ConvertToTransferHeader isLoading={isLoading} onFeePress={() => transferFormRef.current?.openFee()} />}
+                header={<ConvertToTransferHeader isLoading={isLoading} />}
             >
                 <TransferQuickForm
-                    ref={transferFormRef}
                     variant="default"
                     isNewTransaction={false}
                     isSubmitting={isLoading}

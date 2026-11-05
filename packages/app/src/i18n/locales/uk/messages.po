@@ -3945,7 +3945,6 @@ msgid "Features"
 msgstr "Функції"
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
-#: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
 #: src/transaction/components/transaction-fee-field-icon/transaction-fee-field-icon.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
