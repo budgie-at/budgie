@@ -11,6 +11,7 @@ interface Props {
     readonly expandedTitle: ReactNode;
     readonly expandedTitlePointerEvents?: ViewProps['pointerEvents'];
     readonly collapsedTitle: ReactNode;
+    readonly collapsedTitlePointerEvents?: ViewProps['pointerEvents'];
     readonly leading?: ReactNode;
     readonly trailing?: ReactNode;
     readonly testID?: string;
@@ -66,6 +67,7 @@ export const CollapsibleChromeHeader = ({
     expandedTitle,
     expandedTitlePointerEvents = 'none',
     collapsedTitle,
+    collapsedTitlePointerEvents = 'none',
     leading,
     trailing,
     testID
@@ -113,7 +115,7 @@ export const CollapsibleChromeHeader = ({
         </View>
     );
     const collapsedContent = (
-        <View style={collapsibleChromeHeaderStyles.titleLayerContent} pointerEvents="none">
+        <View style={collapsibleChromeHeaderStyles.titleLayerContent} pointerEvents={collapsedTitlePointerEvents}>
             {collapsedTitle}
         </View>
     );

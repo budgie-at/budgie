@@ -56,7 +56,7 @@ export const NetWorthCollapsibleHeader = (props: Props) => {
     );
 
     const collapsedContent = (
-        <View className="self-stretch flex-row items-center justify-between gap-x-md pr-[12px] pl-[16px]">
+        <View className="self-stretch flex-row items-center justify-between gap-x-md pr-[12px] pl-[16px]" pointerEvents="box-none">
             <Text
                 maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
                 numberOfLines={1}
@@ -64,6 +64,7 @@ export const NetWorthCollapsibleHeader = (props: Props) => {
             >
                 <Trans>Total Balance</Trans>
             </Text>
+            {isRunwayPillEnabled ? <RunwayPill /> : null}
             <ProtectedText
                 maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
                 numberOfLines={1}
@@ -83,6 +84,7 @@ export const NetWorthCollapsibleHeader = (props: Props) => {
                 expandedTitle={expandedContent}
                 expandedTitlePointerEvents="box-none"
                 collapsedTitle={collapsedContent}
+                collapsedTitlePointerEvents="box-none"
             />
         </>
     );
