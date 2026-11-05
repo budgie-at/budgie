@@ -14,7 +14,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import { File } from 'expo-file-system';
 import { Linking } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import { ENABLE_BANKING_CALLBACK_URL } from '../constant/enable-banking-callback-url.constant';
 import { ENABLE_BANKING_RELAY_URL } from '../constant/enable-banking-relay-url.constant';
@@ -95,10 +95,13 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
                         },
                         result =>
                             Effect.ignore(
-                                Effect.try(() => {
-                                    for (const asset of result.assets ?? []) {
-                                        new File(asset.uri).delete();
-                                    }
+                                Effect.try({
+                                    try: () => {
+                                        for (const asset of result.assets ?? []) {
+                                            new File(asset.uri).delete();
+                                        }
+                                    },
+                                    catch: emptyFn
                                 })
                             )
                     );

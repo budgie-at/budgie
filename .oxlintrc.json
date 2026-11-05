@@ -114,7 +114,8 @@
         "effecttsgo/provide-merge-all-to-array": "error",
         "effecttsgo/nested-effect-gen-yield": "error",
         "effecttsgo/global-random-in-effect": "error",
-        "effecttsgo/process-env-in-effect": "error"
+        "effecttsgo/process-env-in-effect": "error",
+        "effecttsgo/effect-try-without-catch": "error"
     },
     "overrides": [
         {

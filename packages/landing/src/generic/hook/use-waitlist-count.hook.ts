@@ -4,6 +4,8 @@ import * as Effect from 'effect/Effect';
 import * as Fiber from 'effect/Fiber';
 import { useEffect, useState } from 'react';
 
+import { emptyFn } from '@rnw-community/shared';
+
 import { getWaitlistCount } from '../action/waitlist.action';
 
 export const useWaitlistCount = (isEnabled: boolean) => {
@@ -12,7 +14,7 @@ export const useWaitlistCount = (isEnabled: boolean) => {
     useEffect(() => {
         const fiber = Effect.runFork(
             isEnabled
-                ? Effect.tryPromise(async () => await getWaitlistCount()).pipe(
+                ? Effect.tryPromise({ try: async () => await getWaitlistCount(), catch: emptyFn }).pipe(
                       Effect.tap(count => Effect.sync(() => void setWaitlistCount(count))),
                       Effect.ignore
                   )

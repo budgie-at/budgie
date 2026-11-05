@@ -13,7 +13,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import { File } from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { emptyFn, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { ReceiptScannerModule } from '../../../modules/receipt-scanner';
 import { waitForIdle } from '../../@generic/utils/wait-for-idle.util';
@@ -134,7 +134,7 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
 
                     return yield* processReceipt(uri, baseCurrency).pipe(
                         Effect.catchCause(cause => Effect.as(Effect.logError(cause), failure(ReceiptScanFailureEnum.FAILED))),
-                        Effect.ensuring(Effect.ignore(Effect.try(() => void new File(uri).delete()))),
+                        Effect.ensuring(Effect.ignore(Effect.try({ try: () => void new File(uri).delete(), catch: emptyFn }))),
                         Effect.tap(() => waitForIdle)
                     );
                 },
