@@ -42,7 +42,7 @@ export const TransactionPickerRow = ({ item, position, isSelected = false, onPre
 
     if (!isDefined(onPress)) {
         return (
-            <TransactionRowSurface position={position} separatorInset={separatorInset}>
+            <TransactionRowSurface position={position} separatorInset={separatorInset} className="bg-surface-row">
                 <View accessible className="px-xl py-xl" testID={testID} accessibilityLabel={accessibilityLabel}>
                     {content}
                 </View>
@@ -54,7 +54,7 @@ export const TransactionPickerRow = ({ item, position, isSelected = false, onPre
     const accessibilityState = { selected: isSelected };
 
     return (
-        <TransactionRowSurface position={position} separatorInset={separatorInset}>
+        <TransactionRowSurface position={position} separatorInset={separatorInset} className="bg-surface-row">
             <HapticPressable
                 className={pressableVariants({ selected: isSelected })}
                 onPress={handlePress}

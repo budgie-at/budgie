@@ -1,5 +1,7 @@
 import { Text, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { useGetTransactionByIdQuery } from '../../query/use-get-transaction-by-id.query';
 import { formatTransactionInfoAmount } from '../../utils/format-transaction-info-amount.util';
@@ -14,7 +16,7 @@ export const TransactionPickerContext = ({ transactionId, label }: Props) => {
     const { transaction } = useGetTransactionByIdQuery(transactionId);
     const protectAmount = useProtectedAmountLabel();
 
-    if (!transaction) {
+    if (!isDefined(transaction)) {
         return null;
     }
 

@@ -40,9 +40,7 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
         transaction?.consolidationType === TransactionConsolidationTypeEnum.REFUND ||
         isDefined(transaction?.consolidationParentTransactionId);
 
-    const handleResolve = () => {
-        resolveConvertToRefund(null);
-    };
+    const handleResolve = () => void resolveConvertToRefund(null);
 
     const handleSearchChange = (value: string) => {
         setSearch(value);

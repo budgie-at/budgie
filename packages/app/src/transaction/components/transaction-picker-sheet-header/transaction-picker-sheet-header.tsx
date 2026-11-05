@@ -16,6 +16,7 @@ export const TransactionPickerSheetHeader = ({ title, closeLabel, onClose, close
             {title}
         </Text>
         <HapticPressable
+            disabled={disabled}
             accessibilityRole="button"
             accessibilityLabel={closeLabel}
             onPress={onClose}
