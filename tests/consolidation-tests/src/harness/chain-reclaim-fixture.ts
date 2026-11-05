@@ -46,7 +46,7 @@ export const seedChainReclaimFixture = (input: {
     readonly directToIban?: string;
 }) =>
     Effect.gen(function* () {
-        const { sourceAccount, bridgeAccount, targetAccount, transferMccId } = yield* seedIbanBridgeTopology();
+        const { sourceAccount, bridgeAccount, targetAccount, transferMccId } = yield* seedIbanBridgeTopology;
         const sourceAmount = input.directSourceAmount ?? IBAN_BRIDGE_EUR_AMOUNT;
         const directTransfer = yield* seedDirectTransfer({
             consolidationType: input.consolidationType,

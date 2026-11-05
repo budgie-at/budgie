@@ -22,8 +22,8 @@ const snapshotTransactions = Effect.gen(function* () {
     const transactionRepository = yield* TransactionRepository;
     const accountRepository = yield* AccountRepository;
     const categoryRepository = yield* CategoryRepository;
-    const accounts = yield* accountRepository.getAll();
-    const categories = yield* categoryRepository.findAllNonSystem();
+    const accounts = yield* accountRepository.getAll;
+    const categories = yield* categoryRepository.findAllNonSystem;
     const transactions = yield* transactionRepository.getAllAfter(null, 100);
     const instrumentIdByAccountId = new Map(accounts.map(account => [account.id, account.instrumentId]));
     const categoryTitleById = new Map(categories.map(category => [category.id, category.title]));

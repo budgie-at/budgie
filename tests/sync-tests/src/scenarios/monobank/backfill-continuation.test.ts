@@ -448,7 +448,7 @@ describe('monobank/backfill-continuation', () => {
             expect(requestCount).toBeGreaterThanOrEqual(4);
             expect((yield* fetchSyncById(sync.id)).mode).toBe(SyncModeEnum.FORWARD);
             expect(
-                (yield* fetchPersistedMonobankTransactions()).find(transaction => transaction.externalId === 'real-rule-first')?.type
+                (yield* fetchPersistedMonobankTransactions).find(transaction => transaction.externalId === 'real-rule-first')?.type
             ).toBe(TransactionTypeEnum.TRANSFER);
         }).pipe(Effect.provide(TestClockLayer))
     );

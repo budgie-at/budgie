@@ -205,7 +205,7 @@ export class EnableBankingBatchService extends Context.Service<EnableBankingBatc
 
         return {
             beforeRun: Effect.fn('EnableBankingBatchService.beforeRun')(function* () {
-                yield* clientService.clearSessions();
+                yield* clientService.clearSessions;
                 mccCategoryLookupMap = yield* loadMccCategoryLookupMap(mccCategoryRepository, settingsRepository);
             }),
             execute: Effect.fn('EnableBankingBatchService.execute')(function* (sync: SyncEntityInterface, token: string) {

@@ -22,4 +22,4 @@ export const pollingSyncDependenciesLayer = Layer.mergeAll(
     SyncIntegrationTokenService.layer
 );
 
-export const makePollingSyncDependenciesLayer = () => Layer.merge(pollingSyncDependenciesLayer, Layer.fresh(PollingSyncRateGate.layer));
+export const pollingSyncServiceDependenciesLayer = Layer.merge(pollingSyncDependenciesLayer, PollingSyncRateGate.layer);

@@ -113,12 +113,11 @@ export const seedP2pIncome = (
         return transaction;
     });
 
-export const fetchP2pCanonical = () =>
-    Effect.gen(function* () {
-        return getDefined((yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).at(0), () => {
-            throw new Error('P2P canonical transaction not found');
-        });
+export const fetchP2pCanonical = Effect.gen(function* () {
+    return getDefined((yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).at(0), () => {
+        throw new Error('P2P canonical transaction not found');
     });
+});
 
 export const expectConsolidatedToP2pCanonical = (
     expense: TransactionEntityInterface,
@@ -127,7 +126,7 @@ export const expectConsolidatedToP2pCanonical = (
     toAccountId: number
 ) =>
     Effect.gen(function* () {
-        const canonical = yield* fetchP2pCanonical();
+        const canonical = yield* fetchP2pCanonical;
         expect(canonical.fromAccountId).toBe(fromAccountId);
         expect(canonical.toAccountId).toBe(toAccountId);
         expect((yield* testQueryService.findTransactionById(expense.id)).consolidationParentTransactionId).toBe(canonical.id);

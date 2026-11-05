@@ -7,7 +7,7 @@ import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util
 
 export const inactiveAccountsAtom = databaseQueryAtom(
     [AccountEntityTable, InstrumentEntityTable],
-    Effect.flatMap(AccountRepository, accountRepository => accountRepository.getAllInactive())
+    Effect.flatMap(AccountRepository, accountRepository => accountRepository.getAllInactive)
 );
 
 export const useInactiveAccountsQuery = () =>

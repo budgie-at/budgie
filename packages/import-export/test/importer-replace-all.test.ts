@@ -20,7 +20,7 @@ const existingCsv = [
 const snapshotData = Effect.gen(function* () {
     const accountRepository = yield* AccountRepository;
     const transactionRepository = yield* TransactionRepository;
-    const accounts = yield* accountRepository.getAll();
+    const accounts = yield* accountRepository.getAll;
     const transactions = yield* transactionRepository.getAllAfter(null, 100);
 
     return {

@@ -168,40 +168,38 @@ export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/c
                         .where(and(...buildEnabledProviderConditions(provider), eq(SyncEntityTable.mode, SyncModeEnum.BACKWARD)))
                         .orderBy(asc(SyncEntityTable.backwardBatchAt), asc(SyncEntityTable.id))
                 ),
-            getAllPendingBackwardSyncs: () =>
-                Db.query(db =>
-                    selectWithActiveAccount(db).where(and(...enabledConditions, eq(SyncEntityTable.mode, SyncModeEnum.BACKWARD)))
-                ),
-            getHistorySyncs: () =>
-                Db.query(db =>
-                    db
-                        .select({
-                            sync: getTableColumns(SyncEntityTable),
-                            account: {
-                                id: AccountEntityTable.id,
-                                title: AccountEntityTable.title,
-                                type: AccountEntityTable.type,
-                                isActive: AccountEntityTable.isActive,
-                                integrationId: AccountEntityTable.integrationId
-                            }
-                        })
-                        .from(SyncEntityTable)
-                        .innerJoin(AccountEntityTable, eq(SyncEntityTable.accountId, AccountEntityTable.id))
-                        .where(
-                            and(
-                                eq(SyncEntityTable.mode, SyncModeEnum.BACKWARD),
-                                isNull(SyncEntityTable.deletedAt),
-                                isNull(AccountEntityTable.deletedAt)
-                            )
+            getAllPendingBackwardSyncs: Db.query(db =>
+                selectWithActiveAccount(db).where(and(...enabledConditions, eq(SyncEntityTable.mode, SyncModeEnum.BACKWARD)))
+            ),
+            getHistorySyncs: Db.query(db =>
+                db
+                    .select({
+                        sync: getTableColumns(SyncEntityTable),
+                        account: {
+                            id: AccountEntityTable.id,
+                            title: AccountEntityTable.title,
+                            type: AccountEntityTable.type,
+                            isActive: AccountEntityTable.isActive,
+                            integrationId: AccountEntityTable.integrationId
+                        }
+                    })
+                    .from(SyncEntityTable)
+                    .innerJoin(AccountEntityTable, eq(SyncEntityTable.accountId, AccountEntityTable.id))
+                    .where(
+                        and(
+                            eq(SyncEntityTable.mode, SyncModeEnum.BACKWARD),
+                            isNull(SyncEntityTable.deletedAt),
+                            isNull(AccountEntityTable.deletedAt)
                         )
-                ),
+                    )
+            ),
             setStatus: (id: number, status: SyncStatusEnum) =>
                 Db.query(db => db.update(SyncEntityTable).set({ status }).where(eq(SyncEntityTable.id, id))),
             deleteByAccountId: (accountId: number) =>
                 Db.query(db => db.delete(SyncEntityTable).where(eq(SyncEntityTable.accountId, accountId))),
             setEnabled: (accountId: number, enabled: boolean) =>
                 Db.query(db => db.update(SyncEntityTable).set({ enabled }).where(eq(SyncEntityTable.accountId, accountId))),
-            truncate: () => Db.query(db => db.delete(SyncEntityTable))
+            truncate: Db.query(db => db.delete(SyncEntityTable))
         };
     })
 }) {

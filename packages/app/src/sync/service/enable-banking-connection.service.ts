@@ -63,9 +63,9 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
 
             return {
                 begin,
-                discardPending: () => secureStore.removePending(),
+                discardPending: secureStore.removePending,
                 findSavedApplicationId: Effect.fn('EnableBankingConnectionService.findSavedApplicationId')(function* () {
-                    for (const applicationId of yield* enableBankingSyncService.listApplicationIds()) {
+                    for (const applicationId of yield* enableBankingSyncService.listApplicationIds) {
                         const storedKey = yield* secureStore.readKey(applicationId);
                         if (isDefined(storedKey)) {
                             return applicationId;
@@ -131,7 +131,7 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
                     const pending = yield* secureStore.readPending();
                     if (
                         pending?.applicationId === applicationId ||
-                        (yield* enableBankingSyncService.listApplicationIds()).includes(applicationId)
+                        (yield* enableBankingSyncService.listApplicationIds).includes(applicationId)
                     ) {
                         return;
                     }
@@ -166,11 +166,11 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
                             Effect.tapError(error =>
                                 error.failure === EnableBankingCallbackFailureEnum.EXPIRED ||
                                 error.failure === EnableBankingCallbackFailureEnum.CANCELLED
-                                    ? secureStore.removePending()
+                                    ? secureStore.removePending
                                     : Effect.void
                             )
                         );
-                    yield* secureStore.removePending();
+                    yield* secureStore.removePending;
 
                     const authorization = yield* enableBankingSyncService.completeAuthorization(pending, callbackUrl);
 

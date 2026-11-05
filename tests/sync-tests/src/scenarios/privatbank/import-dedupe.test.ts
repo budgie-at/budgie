@@ -41,7 +41,7 @@ const fetchPrivatbankTransactions = () =>
 describe('privatbank/import-dedupe', () => {
     it.effect('reuses transactions imported with the old parsed-date external id and heals their time to the Kyiv statement time', () =>
         Effect.gen(function* () {
-            const accountId = yield* seedPrivatbankAccount();
+            const accountId = yield* seedPrivatbankAccount;
             const client = new StubPrivatbankFileClient();
             const syncService = yield* makeStubFileBankSyncService(ExternalSourceEnum.PRIVATBANK, client);
             const [importedTransaction] = client.getTransactions(PRIVATBANK_CARD_ID);

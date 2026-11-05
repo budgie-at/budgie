@@ -31,13 +31,12 @@ export const P2P_BANK_AMOUNT = (P2P_QUOTED_UNIT_PRICE * P2P_ASSET_AMOUNT) / PREC
 export const P2P_SPLIT_BANK_PRIMARY_AMOUNT = 20 * P2P_ASSET_AMOUNT;
 export const P2P_SPLIT_BANK_EXTRA_AMOUNT = 21 * P2P_ASSET_AMOUNT;
 
-export const seedP2pUsdt = () =>
-    testSeedService.instrument({
-        code: 'USDT',
-        name: 'Tether',
-        symbol: 'USDT',
-        type: InstrumentTypeEnum.CRYPTO
-    });
+export const seedP2pUsdt = testSeedService.instrument({
+    code: 'USDT',
+    name: 'Tether',
+    symbol: 'USDT',
+    type: InstrumentTypeEnum.CRYPTO
+});
 
 export const seedP2pExchangeRate = (baseInstrumentId: number, quoteInstrumentId: number, rate: number) =>
     Effect.asVoid(testDb.insert(ExchangeRateEntityTable).values({ baseInstrumentId, quoteInstrumentId, rate, source: 'test' }));
@@ -107,7 +106,7 @@ export const seedP2pBuyIncome = (accountId: number, quotedInstrumentId: number |
 
 export const seedP2pBuy = (bankAccount: AccountEntityInterface) =>
     Effect.gen(function* () {
-        const usdt = yield* seedP2pUsdt();
+        const usdt = yield* seedP2pUsdt;
         const binanceAccount = yield* seedP2pAccount(AccountTypeEnum.CRYPTO_SYNC, usdt.id);
 
         yield* seedP2pExchangeRate(1, usdt.id, P2P_QUOTED_UNIT_PRICE);

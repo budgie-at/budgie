@@ -18,17 +18,16 @@ const IBAN_BRIDGE_EUR_TO_UAH_RATE = IBAN_BRIDGE_UAH_AMOUNT / IBAN_BRIDGE_EUR_AMO
 export const IBAN_BRIDGE_OPERATED_AT = new Date('2026-05-20T18:38:00');
 export const IBAN_BRIDGE_TRANSFER_MCC = '4829';
 
-export const seedIbanBridgeTopology = () =>
-    Effect.gen(function* () {
-        const eur = yield* testSeedService.instrument({ code: 'EUR', name: 'Euro', symbol: 'EUR' });
+export const seedIbanBridgeTopology = Effect.gen(function* () {
+    const eur = yield* testSeedService.instrument({ code: 'EUR', name: 'Euro', symbol: 'EUR' });
 
-        return {
-            sourceAccount: yield* testSeedService.bankSyncAccount('Reclaim Source EUR', null, IBAN_BRIDGE_SOURCE_IBAN, eur.id),
-            bridgeAccount: yield* testSeedService.bankSyncAccount('Reclaim Bridge UAH', null, IBAN_BRIDGE_BRIDGE_IBAN),
-            targetAccount: yield* testSeedService.bankSyncAccount('Reclaim Target UAH', null, IBAN_BRIDGE_TARGET_IBAN),
-            transferMccId: (yield* testQueryService.findMccByCode(IBAN_BRIDGE_TRANSFER_MCC)).id
-        };
-    });
+    return {
+        sourceAccount: yield* testSeedService.bankSyncAccount('Reclaim Source EUR', null, IBAN_BRIDGE_SOURCE_IBAN, eur.id),
+        bridgeAccount: yield* testSeedService.bankSyncAccount('Reclaim Bridge UAH', null, IBAN_BRIDGE_BRIDGE_IBAN),
+        targetAccount: yield* testSeedService.bankSyncAccount('Reclaim Target UAH', null, IBAN_BRIDGE_TARGET_IBAN),
+        transferMccId: (yield* testQueryService.findMccByCode(IBAN_BRIDGE_TRANSFER_MCC)).id
+    };
+});
 
 export const seedIbanBridgeIncomeLeg = (bridgeAccountId: number, transferMccId: number) =>
     testSeedService.bankPairIncome(
@@ -108,7 +107,7 @@ export const parentConsolidationSource = (sourceTransactionId: number, canonical
     });
 
 export const seedBridgeAddressedDuplicateBeforeCanonical = Effect.fnUntraced(function* () {
-    const topology = yield* seedIbanBridgeTopology();
+    const topology = yield* seedIbanBridgeTopology;
     const legs = yield* seedIbanBridgeLegs(topology.bridgeAccount.id, topology.transferMccId);
 
     return {
@@ -132,7 +131,7 @@ export const expectIbanBridgeBalances = Effect.fnUntraced(function* (
 });
 
 export const seedIbanBridgeCanonicalDuplicateFixture = Effect.fnUntraced(function* () {
-    const topology = yield* seedIbanBridgeTopology();
+    const topology = yield* seedIbanBridgeTopology;
     const legs = yield* seedIbanBridgeLegs(topology.bridgeAccount.id, topology.transferMccId);
 
     yield* runConsolidation();
@@ -160,7 +159,7 @@ export const expectBridgeLedgerAmounts = (canonicalId: number, sourceAccountId: 
         expect((yield* fetchLedgerEntry(canonicalId, targetAccountId)).amount).toBe(IBAN_BRIDGE_UAH_AMOUNT);
     });
 
-export const fetchBridgeCanonicalId = () => fetchSingleCanonicalId(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER);
+export const fetchBridgeCanonicalId = fetchSingleCanonicalId(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER);
 
 export const countCanonicalDuplicateCandidates = Effect.fnUntraced(function* () {
     const consolidationCandidateRepository = yield* ConsolidationCandidateRepository;

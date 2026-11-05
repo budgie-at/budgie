@@ -110,7 +110,7 @@ export class AuthService extends Context.Service<AuthService>()('@budgie/app/Aut
                     );
 
                     if (result.success) {
-                        yield* pinAttemptService.reset();
+                        yield* pinAttemptService.reset;
                     }
 
                     return result.success;

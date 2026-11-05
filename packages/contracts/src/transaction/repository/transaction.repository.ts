@@ -395,7 +395,7 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                     })
                 ),
 
-            truncate: () => Db.query(db => db.delete(TransactionEntityTable)),
+            truncate: Db.query(db => db.delete(TransactionEntityTable)),
 
             restoreByAccountIds: (accountIds: number[]) =>
                 Db.query(db =>
@@ -492,10 +492,9 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                 );
             }),
 
-            countAllActive: () =>
-                Db.query(db =>
-                    db.select({ value: count() }).from(TransactionEntityTable).where(isNull(TransactionEntityTable.deletedAt))
-                ).pipe(Effect.map(([row]) => row.value))
+            countAllActive: Db.query(db =>
+                db.select({ value: count() }).from(TransactionEntityTable).where(isNull(TransactionEntityTable.deletedAt))
+            ).pipe(Effect.map(([row]) => row.value))
         };
     })
 }) {

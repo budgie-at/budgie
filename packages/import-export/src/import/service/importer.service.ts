@@ -288,7 +288,7 @@ export class ImporterService extends Context.Service<ImporterService>()('@budgie
         });
 
         const initializeInstruments = Effect.fn('ImporterService.initializeInstruments')(function* () {
-            const instruments = yield* instrumentRepository.getAll();
+            const instruments = yield* instrumentRepository.getAll;
 
             return instruments.reduce<Record<string, InstrumentEntityInterface>>((acc, instrument) => {
                 acc[instrument.code] = instrument;
@@ -342,12 +342,12 @@ export class ImporterService extends Context.Service<ImporterService>()('@budgie
 
                 yield* Effect.all(
                     [
-                        accountRepository.truncate(),
+                        accountRepository.truncate,
                         categoryRepository.truncate(false),
-                        transactionTagsRepository.truncate(),
-                        transactionEntryRepository.truncate(),
-                        transactionRepository.truncate(),
-                        accountBalanceRepository.truncate()
+                        transactionTagsRepository.truncate,
+                        transactionEntryRepository.truncate,
+                        transactionRepository.truncate,
+                        accountBalanceRepository.truncate
                     ],
                     { discard: true }
                 );

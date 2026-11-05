@@ -2,12 +2,7 @@ import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import {
-    expectConsolidationParent,
-    expectRevertRestoresSources,
-    fetchOwnLedgerEntries,
-    fetchSingleCanonicalId
-} from '../harness/consolidation-revert-audit';
+import { expectConsolidationParent, expectRevertRestoresSources, fetchOwnLedgerEntries } from '../harness/consolidation-revert-audit';
 import {
     IBAN_BRIDGE_OPERATED_AT,
     IBAN_BRIDGE_TARGET_IBAN,
@@ -15,7 +10,8 @@ import {
     seedIbanBridgeIncomeLeg,
     seedIbanBridgeSourceExpense,
     seedIbanBridgeTopology,
-    expectBridgeLedgerAmounts
+    expectBridgeLedgerAmounts,
+    fetchBridgeCanonicalId
 } from '../harness/iban-bridge-topology';
 import { runConsolidation } from '../harness/run-consolidation';
 import { testQueryService, testSeedService, TestLayer } from '../harness/test-context';
@@ -24,7 +20,7 @@ const EXISTING_TRANSFER_LEDGER_ENTRY_COUNT = 2;
 
 const seedExistingTransferBridgeFixture = () =>
     Effect.gen(function* () {
-        const topology = yield* seedIbanBridgeTopology();
+        const topology = yield* seedIbanBridgeTopology;
 
         return {
             ...topology,
@@ -44,8 +40,6 @@ const seedExistingTransferBridgeFixture = () =>
         };
     });
 
-const fetchBridgeCanonicalId = () => fetchSingleCanonicalId(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER);
-
 layer(TestLayer)('consolidation/existing-transfer-bridge', it => {
     it.effect('nests a hand-created bridge transfer under a new source to target canonical', () =>
         Effect.gen(function* () {
@@ -53,7 +47,7 @@ layer(TestLayer)('consolidation/existing-transfer-bridge', it => {
                 yield* seedExistingTransferBridgeFixture();
 
             const result = yield* runConsolidation();
-            const canonicalId = yield* fetchBridgeCanonicalId();
+            const canonicalId = yield* fetchBridgeCanonicalId;
 
             expect(result.consolidated).toBe(1);
             yield* expectConsolidationParent(sourceExpense.id, canonicalId);

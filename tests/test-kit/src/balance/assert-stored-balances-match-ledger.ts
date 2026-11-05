@@ -10,7 +10,7 @@ export const assertStoredBalancesMatchLedger = (database: DB) =>
         const mismatches = yield* Effect.gen(function* () {
             const accountRepository = yield* AccountRepository;
             const accountBalanceRepository = yield* AccountBalanceRepository;
-            const accounts = yield* accountRepository.getAllActiveAccountsExceptBankAuthoritative();
+            const accounts = yield* accountRepository.getAllActiveAccountsExceptBankAuthoritative;
             const accountIds = accounts.filter(({ type }) => type !== AccountTypeEnum.DEBT).map(({ id }) => id);
             const ledgerBalances = yield* accountBalanceRepository.getLedgerBalances(accountIds);
             const storedBalances = yield* accountBalanceRepository.getByAccountIds(accountIds);

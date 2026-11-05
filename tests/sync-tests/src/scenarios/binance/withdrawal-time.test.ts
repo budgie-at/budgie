@@ -30,7 +30,7 @@ describe('binance/withdrawal-time', () => {
 
                 yield* binanceSyncService.sync();
 
-                const transactions = yield* fetchBinanceTransactions();
+                const transactions = yield* fetchBinanceTransactions;
                 expect(transactions).toHaveLength(1);
                 expect(transactions[0].operatedAt.toISOString()).toBe(`${utcDay}T23:30:00.000Z`);
             })

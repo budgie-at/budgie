@@ -58,7 +58,7 @@ describe('monobank/forward-sync-progress', () => {
             const syncAfter = yield* fetchSyncById(syncId);
             expect(syncAfter.forwardSyncFromAt).toEqual(syncBefore.forwardSyncFromAt);
             expect(syncAfter.lastError).not.toBeNull();
-            expect(yield* fetchPersistedMonobankTransactions()).toHaveLength(0);
+            expect(yield* fetchPersistedMonobankTransactions).toHaveLength(0);
         }).pipe(Effect.provide(TestLayer))
     );
 

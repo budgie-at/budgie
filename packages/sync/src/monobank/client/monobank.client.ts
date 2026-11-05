@@ -30,9 +30,9 @@ export class MonobankClient implements SyncProviderClientInterface {
     private static readonly RETRY_MAX_ATTEMPTS = 4;
     private static readonly RETRY_MAX_DELAY_MS = 2_000;
 
-    readonly getAccounts = Effect.fn('MonobankClient.getAccounts')(function* (this: MonobankClient) {
+    readonly getAccounts = Effect.gen({ self: this }, function* () {
         return (yield* this.fetchClientInfo()).accounts.map(monobankAccountMapper);
-    });
+    }).pipe(Effect.withSpan('MonobankClient.getAccounts'));
 
     readonly getJars = Effect.fn('MonobankClient.getJars')(function* (this: MonobankClient) {
         return ((yield* this.fetchClientInfo()).jars ?? []).map(monobankJarMapper);

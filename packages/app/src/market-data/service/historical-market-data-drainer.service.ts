@@ -22,7 +22,7 @@ export class HistoricalMarketDataDrainerService extends Context.Service<Historic
             const drainKey = 'historical-market-data';
 
             const drainNextJob = Effect.fn('HistoricalMarketDataDrainerService.drainNextJob')(function* () {
-                const job = yield* workload.run(historicalMarketDataService.claimNextJob());
+                const job = yield* workload.run(historicalMarketDataService.claimNextJob);
 
                 if (!isDefined(job)) {
                     return false;
@@ -63,10 +63,10 @@ export class HistoricalMarketDataDrainerService extends Context.Service<Historic
                 enqueueAccounts,
                 scheduleDrain,
                 enqueueActiveAccounts: Effect.fn('HistoricalMarketDataDrainerService.enqueueActiveAccounts')(function* () {
-                    const activeAccounts = yield* accountRepository.getAllActiveAccounts();
+                    const activeAccounts = yield* accountRepository.getAllActiveAccounts;
                     yield* enqueueAccounts(activeAccounts);
                 }),
-                cancelScheduledDrain: () => workload.cancelScheduled(drainKey)
+                cancelScheduledDrain: workload.cancelScheduled(drainKey)
             };
         })
     }

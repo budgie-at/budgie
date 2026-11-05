@@ -23,7 +23,7 @@ export class WalletCaptureNativeService extends Context.Service<WalletCaptureNat
 
         return {
             refreshAccounts: Effect.fn('WalletCaptureNativeService.refreshAccounts')(function* () {
-                const accounts = yield* accountRepository.getAllActiveAccounts();
+                const accounts = yield* accountRepository.getAllActiveAccounts;
 
                 yield* callNative(() =>
                     AppIntents.setEntityCatalogAsync(

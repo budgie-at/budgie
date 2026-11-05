@@ -140,7 +140,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
             period: BudgetPeriodEnum
         ) {
             const thisPeriod = i18n._(BUDGET_PERIOD_THIS_LABEL[period]);
-            const settings = yield* settingsRepository.findSettings();
+            const settings = yield* settingsRepository.findSettings;
             const language = isDefined(settings) ? settings.language : LanguageEnum.EN;
             const [category] = yield* categoryRepository.findById(categoryId, language);
             const categoryName = isDefined(category) ? category.title : i18n._(msg`Category`);
@@ -233,7 +233,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
 
         return {
             run: Effect.fn('BudgetAlertMonitorService.run')(function* () {
-                const [budget, settings] = yield* Effect.all([budgetRepository.findMain(), settingsRepository.findSettings()], {
+                const [budget, settings] = yield* Effect.all([budgetRepository.findMain, settingsRepository.findSettings], {
                     concurrency: 'unbounded'
                 });
                 const isBudgetPushEnabled = isDefined(settings) ? settings.isBudgetPushEnabled : false;

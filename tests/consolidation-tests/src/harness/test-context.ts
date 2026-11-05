@@ -69,7 +69,7 @@ export const rebuildStoredBalances = Effect.flatMap(AccountBalanceIncrementalSer
 
 export const seedStoredBalancesOnce = Effect.gen(function* () {
     const accountBalanceRepository = yield* AccountBalanceRepository;
-    const [{ updatedAt }] = yield* accountBalanceRepository.getLatestUpdatedAt();
+    const [{ updatedAt }] = yield* accountBalanceRepository.getLatestUpdatedAt;
 
     if (!isDefined(updatedAt)) {
         yield* rebuildStoredBalances;

@@ -54,13 +54,13 @@ export class AiModelResidencyService extends Context.Service<AiModelResidencySer
                 return;
             }
             if (getStatus(subsystem) !== AiSubsystemStatusEnum.ERROR) {
-                yield* subsystems[subsystem].start();
+                yield* subsystems[subsystem].start;
             }
         });
 
         const unloadWhileUnleased = Effect.fn('AiModelResidencyService.unloadWhileUnleased')(function* (subsystem: AiSubsystemNameEnum) {
             if (!isPositiveNumber(getLeaseCount(subsystem))) {
-                yield* subsystems[subsystem].stop();
+                yield* subsystems[subsystem].stop;
             }
         });
 
@@ -68,7 +68,7 @@ export class AiModelResidencyService extends Context.Service<AiModelResidencySer
             subsystem: AiSubsystemNameEnum
         ) {
             if (isAiEnabled() && !isSuspended && isPositiveNumber(getLeaseCount(subsystem))) {
-                yield* subsystems[subsystem].start();
+                yield* subsystems[subsystem].start;
             }
         });
 
@@ -116,7 +116,7 @@ export class AiModelResidencyService extends Context.Service<AiModelResidencySer
                     clearIdleTimer(subsystem);
                 });
                 yield* lock.withPermit(
-                    Effect.forEach(Object.values(subsystems), service => service.stop(), {
+                    Effect.forEach(Object.values(subsystems), service => service.stop, {
                         concurrency: 'unbounded',
                         discard: true
                     })
@@ -128,7 +128,7 @@ export class AiModelResidencyService extends Context.Service<AiModelResidencySer
                 yield* lock.withPermit(
                     Effect.forEach(
                         Object.values(AiSubsystemNameEnum),
-                        subsystem => (enabledSubsystems.has(subsystem) ? loadWhileLeased(subsystem) : subsystems[subsystem].stop()),
+                        subsystem => (enabledSubsystems.has(subsystem) ? loadWhileLeased(subsystem) : subsystems[subsystem].stop),
                         { discard: true }
                     )
                 );

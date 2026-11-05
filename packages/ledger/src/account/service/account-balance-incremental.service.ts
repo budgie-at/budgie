@@ -95,7 +95,7 @@ export class AccountBalanceIncrementalService extends Context.Service<AccountBal
                 }
 
                 if (truncate) {
-                    yield* accountBalanceRepository.truncateExceptBankAuthoritative();
+                    yield* accountBalanceRepository.truncateExceptBankAuthoritative;
                 }
 
                 const accountIds = accounts.map(({ id }) => id);
@@ -112,7 +112,7 @@ export class AccountBalanceIncrementalService extends Context.Service<AccountBal
             return {
                 updateAllBalances: Effect.fn('AccountBalanceIncrementalService.updateAllBalances')(
                     function* (truncate: boolean) {
-                        const accounts = yield* accountRepository.getAllActiveAccountsExceptBankAuthoritative();
+                        const accounts = yield* accountRepository.getAllActiveAccountsExceptBankAuthoritative;
                         const previousDepositBalances = yield* getPreviousDepositBalances(accounts);
 
                         yield* upsertLatestBalances(accounts, truncate, previousDepositBalances);

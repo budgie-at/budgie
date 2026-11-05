@@ -164,7 +164,7 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
         }
 
         setStep(isNotEmptyArray(banks) ? EnableBankingSetupStepEnum.BANK : EnableBankingSetupStepEnum.KEY);
-        void run(Effect.flatMap(EnableBankingConnectionService, connection => connection.discardPending()));
+        void run(Effect.flatMap(EnableBankingConnectionService, connection => connection.discardPending));
     };
 
     const handleStepAwareGoBack = () => {

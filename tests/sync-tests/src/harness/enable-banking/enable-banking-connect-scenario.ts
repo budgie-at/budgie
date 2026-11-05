@@ -109,7 +109,7 @@ interface SeedAccountOptions {
 
 export const seedConnectableAccount = (options: SeedAccountOptions = {}) =>
     Effect.gen(function* () {
-        const instrumentId = options.instrumentId ?? (yield* findOrSeedEur()).id;
+        const instrumentId = options.instrumentId ?? (yield* findOrSeedEur).id;
         const provider = options.provider ?? ExternalSourceEnum.ERSTE;
         const externalSource = options.externalSource === undefined ? provider : options.externalSource;
         const account = yield* seed.account({
@@ -191,12 +191,11 @@ export const connectSyncedReadyToDisconnect = (accountId: number) =>
         enableBankingStub.deleteSession(SESSION);
     });
 
-export const seedConnectedReadyToDisconnect = () =>
-    Effect.gen(function* () {
-        const { account } = yield* seedConnectableAccount();
-        stubBank();
-        yield* connect(account.id);
-        enableBankingStub.deleteSession(SESSION);
+export const seedConnectedReadyToDisconnect = Effect.gen(function* () {
+    const { account } = yield* seedConnectableAccount();
+    stubBank();
+    yield* connect(account.id);
+    enableBankingStub.deleteSession(SESSION);
 
-        return account;
-    });
+    return account;
+});

@@ -40,13 +40,13 @@ describe('sync/analytics-history-completeness', () => {
                     .where(eq(SyncEntityTable.id, deletedSync.id))
             );
 
-            const rows = yield* repository.getHistorySyncs();
+            const rows = yield* repository.getHistorySyncs;
             expect(rows.map(row => row.sync.id).sort((left, right) => left - right)).toEqual(
                 [active.id, paused.id, failed.id].sort((left, right) => left - right)
             );
             expect(rows.find(row => row.sync.id === paused.id)?.account.title).toBe('Paused');
-            expect((yield* repository.getAllPendingBackwardSyncs()).map(sync => sync.id)).toEqual([active.id]);
-            expect(yield* explainQueryPlan(repository.getHistorySyncs())).not.toEqual([]);
+            expect((yield* repository.getAllPendingBackwardSyncs).map(sync => sync.id)).toEqual([active.id]);
+            expect(yield* explainQueryPlan(repository.getHistorySyncs)).not.toEqual([]);
         }).pipe(Effect.provide(TestLayer))
     );
 });

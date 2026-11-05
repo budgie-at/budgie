@@ -40,7 +40,7 @@ import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncNetworkError } from '../../core/error/sync-network.error';
 import { SyncTokenClientMismatchError } from '../../core/error/sync-token-client-mismatch.error';
 import { SyncUnauthorizedError } from '../../core/error/sync-unauthorized.error';
-import { makePollingSyncDependenciesLayer } from '../../core/layer/polling-sync-dependencies.layer';
+import { pollingSyncServiceDependenciesLayer } from '../../core/layer/polling-sync-dependencies.layer';
 import { SyncWorkload } from '../../core/port/sync-workload.port';
 import { SyncBalanceReconciliationService } from '../../core/service/sync-balance-reconciliation.service';
 import { SyncIntegrationTokenService } from '../../core/service/sync-integration-token.service';
@@ -235,7 +235,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
         const fetchBalanceSnapshot = (client: MonobankClient, accountId: string) => {
             const at = fromUnixTime(getUnixTime(new Date()));
 
-            return Effect.all([client.getAccounts(), client.getJars()]).pipe(
+            return Effect.all([client.getAccounts, client.getJars()]).pipe(
                 Effect.map(([accounts, jars]) => {
                     const bankAccount = [...accounts, ...jars].find(item => item.id === accountId);
 
@@ -302,7 +302,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             (token: string) => {
                 const client = new MonobankClient(token);
 
-                return Effect.as(client.getAccounts(), client);
+                return Effect.as(client.getAccounts, client);
             },
             { capacity: 16, timeToLive: exit => (Exit.isSuccess(exit) ? MONOBANK_RATE_LIMIT_MS : 0) }
         );
@@ -310,7 +310,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
         const loadClient = (token: string) => Cache.get(loadedClientCache, token);
 
         const fetchBankAccountsAndJars = Effect.fnUntraced(function* (client: MonobankClient) {
-            const accounts = yield* client.getAccounts();
+            const accounts = yield* client.getAccounts;
             const jars = yield* client.getJars();
 
             return [...accounts, ...jars];
@@ -477,7 +477,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
 }) {
     static readonly layer = Layer.effect(MonobankSyncService, MonobankSyncService.make).pipe(
         Layer.provide([
-            makePollingSyncDependenciesLayer(),
+            Layer.fresh(pollingSyncServiceDependenciesLayer),
             BankIntegrationRepository.layer,
             MccCategoryRepository.layer,
             SettingsRepository.layer,

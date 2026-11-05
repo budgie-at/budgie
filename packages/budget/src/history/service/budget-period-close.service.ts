@@ -379,7 +379,7 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
         return {
             closeDuePeriods: Effect.fn('BudgetPeriodCloseService.closeDuePeriods')(
                 function* (now: Date) {
-                    const budget = yield* budgetRepository.findMain();
+                    const budget = yield* budgetRepository.findMain;
 
                     if (!isDefined(budget) || !isPositiveNumber(budget.instrumentId)) {
                         return;
@@ -387,7 +387,7 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
 
                     const [latestSnapshot] = yield* budgetPeriodSnapshotRepository.findRecent(budget.id, 1);
                     const latestPeriodStart = isDefined(latestSnapshot) ? latestSnapshot.periodStart : null;
-                    const earliestOperatedAt = yield* budgetRepository.findEarliestOperatedAt();
+                    const earliestOperatedAt = yield* budgetRepository.findEarliestOperatedAt;
                     const windows = computeClosedPeriods(budget, now, latestPeriodStart, earliestOperatedAt);
                     const categoryLimits = yield* budgetCategoryLimitRepository.getByBudget(budget.id);
 

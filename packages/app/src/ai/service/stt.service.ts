@@ -111,52 +111,48 @@ export class SttService extends Context.Service<SttService>()('@budgie/app/SttSe
 
         return {
             snapshot: sttSnapshotAtom,
-            start: Effect.fn('SttService.start')(
-                function* () {
-                    if (isReady()) {
-                        return;
-                    }
-                    yield* releaseContext();
-                    const modelPath = aiModelDownloadService.modelPath(AiSubsystemNameEnum.STT);
-                    if (!isDefined(modelPath)) {
-                        patchAtom(sttSnapshotAtom, { status: AiSubsystemStatusEnum.DOWNLOADING });
+            start: Effect.gen(function* () {
+                if (isReady()) {
+                    return;
+                }
+                yield* releaseContext();
+                const modelPath = aiModelDownloadService.modelPath(AiSubsystemNameEnum.STT);
+                if (!isDefined(modelPath)) {
+                    patchAtom(sttSnapshotAtom, { status: AiSubsystemStatusEnum.DOWNLOADING });
 
-                        return;
-                    }
-                    patchAtom(sttSnapshotAtom, { status: AiSubsystemStatusEnum.INITIALIZING });
-                    const whisperModule = yield* Effect.promise(() => import('whisper.rn'));
-                    whisper = whisperModule;
-                    context = yield* Effect.promise(() => whisperModule.initWhisper({ filePath: modelPath }));
-                    patchAtom(sttSnapshotAtom, { status: AiSubsystemStatusEnum.READY, errorMessage: null });
-                },
-                effect =>
-                    Effect.catchCause(effect, cause =>
-                        Effect.sync(() => {
-                            patchAtom(sttSnapshotAtom, {
-                                status: AiSubsystemStatusEnum.ERROR,
-                                errorMessage: getRootErrorMessage(Cause.squash(cause))
-                            });
-                        }).pipe(Effect.andThen(aiModelDownloadService.markDamaged(AiSubsystemNameEnum.STT)))
-                    ),
-                effect => streamLock.withPermit(Effect.uninterruptible(effect))
+                    return;
+                }
+                patchAtom(sttSnapshotAtom, { status: AiSubsystemStatusEnum.INITIALIZING });
+                const whisperModule = yield* Effect.promise(() => import('whisper.rn'));
+                whisper = whisperModule;
+                context = yield* Effect.promise(() => whisperModule.initWhisper({ filePath: modelPath }));
+                patchAtom(sttSnapshotAtom, { status: AiSubsystemStatusEnum.READY, errorMessage: null });
+            }).pipe(
+                Effect.catchCause(cause =>
+                    Effect.sync(() => {
+                        patchAtom(sttSnapshotAtom, {
+                            status: AiSubsystemStatusEnum.ERROR,
+                            errorMessage: getRootErrorMessage(Cause.squash(cause))
+                        });
+                    }).pipe(Effect.andThen(aiModelDownloadService.markDamaged(AiSubsystemNameEnum.STT)))
+                ),
+                effect => streamLock.withPermit(Effect.uninterruptible(effect)),
+                Effect.withSpan('SttService.start')
             ),
-            stop: Effect.fn('SttService.stop')(
-                function* () {
-                    const { status } = appAtomRegistry.get(sttSnapshotAtom);
-                    if (status === AiSubsystemStatusEnum.SUSPENDED || status === AiSubsystemStatusEnum.DISABLED) {
-                        return;
-                    }
-                    audioStream = null;
-                    streamLanguage = null;
-                    yield* releaseContext();
-                    patchAtom(sttSnapshotAtom, {
-                        status: AiSubsystemStatusEnum.SUSPENDED,
-                        committedTranscription: '',
-                        nonCommittedTranscription: ''
-                    });
-                },
-                effect => streamLock.withPermit(Effect.uninterruptible(effect))
-            ),
+            stop: Effect.gen(function* () {
+                const { status } = appAtomRegistry.get(sttSnapshotAtom);
+                if (status === AiSubsystemStatusEnum.SUSPENDED || status === AiSubsystemStatusEnum.DISABLED) {
+                    return;
+                }
+                audioStream = null;
+                streamLanguage = null;
+                yield* releaseContext();
+                patchAtom(sttSnapshotAtom, {
+                    status: AiSubsystemStatusEnum.SUSPENDED,
+                    committedTranscription: '',
+                    nonCommittedTranscription: ''
+                });
+            }).pipe(effect => streamLock.withPermit(Effect.uninterruptible(effect)), Effect.withSpan('SttService.stop')),
             streamStart: Effect.fn('SttService.streamStart')(
                 function* (language: string | null) {
                     if (!isReady() || !isDefined(context)) {

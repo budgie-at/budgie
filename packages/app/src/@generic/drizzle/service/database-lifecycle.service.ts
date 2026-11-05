@@ -44,7 +44,7 @@ export class DatabaseLifecycleService extends Context.Service<DatabaseLifecycleS
             yield* workload.block;
             yield* transferConsolidationDrainerService.cancelPending();
             yield* ruleApplicationDrainerService.cancelPending();
-            yield* historicalMarketDataDrainerService.cancelScheduledDrain();
+            yield* historicalMarketDataDrainerService.cancelScheduledDrain;
             yield* workload.awaitForegroundIdle.pipe(Effect.timeoutOption(drainTimeoutMs));
             yield* workload
                 .runForeground(work)

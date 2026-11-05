@@ -29,7 +29,7 @@ layer(TestLayer)('consolidation/p2p-fiat-transfer atomic constraints', it => {
         Effect.gen(function* () {
             const euro = yield* testSeedService.instrument(seedP2pFiatInstrument('EUR'));
             const euroBankAccount = yield* testSeedService.bankSyncAccount('EUR bank', ExternalSourceEnum.MONOBANK, null, euro.id);
-            const usdt = yield* seedP2pUsdt();
+            const usdt = yield* seedP2pUsdt;
             const binanceAccount = yield* seedP2pAccount(AccountTypeEnum.CRYPTO_SYNC, usdt.id);
 
             yield* seedP2pBankBuyExpense(euroBankAccount.id);
@@ -49,7 +49,7 @@ layer(TestLayer)('consolidation/p2p-fiat-transfer atomic constraints', it => {
                 type: InstrumentTypeEnum.CRYPTO
             });
             const bitcoinBankAccount = yield* testSeedService.bankSyncAccount('BTC bank', ExternalSourceEnum.MONOBANK, null, bitcoin.id);
-            const usdt = yield* seedP2pUsdt();
+            const usdt = yield* seedP2pUsdt;
             const binanceAccount = yield* seedP2pAccount(AccountTypeEnum.CRYPTO_SYNC, usdt.id);
 
             yield* seedP2pBankBuyExpense(bitcoinBankAccount.id);
@@ -63,7 +63,7 @@ layer(TestLayer)('consolidation/p2p-fiat-transfer atomic constraints', it => {
     it.effect('matches a quote-less P2P buy against a fiat bank instrument', () =>
         Effect.gen(function* () {
             const bankAccount = yield* testSeedService.bankSyncAccount('Fiat bank', ExternalSourceEnum.MONOBANK, null);
-            const usdt = yield* seedP2pUsdt();
+            const usdt = yield* seedP2pUsdt;
             const binanceAccount = yield* seedP2pAccount(AccountTypeEnum.CRYPTO_SYNC, usdt.id);
 
             yield* seedP2pBankBuyExpense(bankAccount.id);
@@ -80,7 +80,7 @@ layer(TestLayer)('consolidation/p2p-fiat-transfer atomic constraints', it => {
     it.effect('groups bank expenses that use the P2P quoted instrument', () =>
         Effect.gen(function* () {
             const bankAccount = yield* testSeedService.bankSyncAccount('Split fiat bank', ExternalSourceEnum.MONOBANK, null);
-            const usdt = yield* seedP2pUsdt();
+            const usdt = yield* seedP2pUsdt;
             const binanceAccount = yield* seedP2pAccount(AccountTypeEnum.CRYPTO_SYNC, usdt.id);
 
             yield* testSeedService.bankPairExpense(

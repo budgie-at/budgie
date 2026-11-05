@@ -149,7 +149,7 @@ describe('binance/c2c-orders reconciliation', () => {
             expect(enqueue.mock.calls).toEqual(
                 expect.arrayContaining([[expect.objectContaining({ transactionIds: [existingTransaction.id] })]])
             );
-            expect((yield* fetchBinanceTransactions()).map(transaction => transaction.id)).toContain(historicalTransaction.id);
+            expect((yield* fetchBinanceTransactions).map(transaction => transaction.id)).toContain(historicalTransaction.id);
         }).pipe(Effect.provide(TestLayer))
     );
 });
@@ -222,7 +222,7 @@ describe('binance/c2c-orders mapping', () => {
 
             yield* binanceSyncService.sync();
 
-            expect(yield* fetchBinanceTransactions()).toHaveLength(0);
+            expect(yield* fetchBinanceTransactions).toHaveLength(0);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -234,13 +234,13 @@ describe('binance/c2c-orders mapping', () => {
             stubBuyC2cOrder('c2c-dup');
 
             yield* binanceSyncService.sync();
-            expect(yield* fetchBinanceTransactions()).toHaveLength(1);
+            expect(yield* fetchBinanceTransactions).toHaveLength(1);
 
             resetBinanceSyncForResync();
             stubBuyC2cOrder('c2c-dup');
             yield* binanceSyncService.sync();
 
-            expect(yield* fetchBinanceTransactions()).toHaveLength(1);
+            expect(yield* fetchBinanceTransactions).toHaveLength(1);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -254,7 +254,7 @@ describe('binance/c2c-orders mapping', () => {
 
             yield* binanceSyncService.sync();
 
-            const transactions = yield* fetchBinanceTransactions();
+            const transactions = yield* fetchBinanceTransactions;
             expect(transactions).toHaveLength(1);
             expect(transactions[0].externalId).toBe('dep-after-c2c-403');
             expect((yield* fetchSyncById(sync.id)).lastWarning).toBe(SyncWarningEnum.C2C_UNAVAILABLE);

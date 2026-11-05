@@ -233,7 +233,7 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                     return null;
                 }
 
-                const accounts = yield* accountRepository.getAllActiveAccounts();
+                const accounts = yield* accountRepository.getAllActiveAccounts;
                 const heldInstrumentIds = new Set([baseInstrument.id, ...accounts.map(account => account.instrumentId)]);
                 const unsupportedIds = yield* instrumentMarketDataJobRepository.findUnsupportedInstrumentIds(euroInstrument.id);
                 const unsupportedInstrumentIds = new Set(unsupportedIds);
@@ -390,7 +390,7 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                     return;
                 }
 
-                const instruments = yield* instrumentRepository.getAll();
+                const instruments = yield* instrumentRepository.getAll;
                 const instrumentById = new Map(instruments.map(instrument => [instrument.id, instrument]));
                 const inputs = yield* Effect.forEach(
                     getCandidateInstrumentIds(accounts, instrumentById),
@@ -404,7 +404,11 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
 
             return {
                 enqueueAccounts,
-                claimNextJob: () => instrumentMarketDataJobRepository.claimNext(maxAttempts, new Date(Date.now() - staleLockMs)),
+                claimNextJob: Effect.gen(function* () {
+                    const staleLockedBefore = new Date(Date.now() - staleLockMs);
+
+                    return yield* instrumentMarketDataJobRepository.claimNext(maxAttempts, staleLockedBefore);
+                }),
                 fetchJobData: Effect.fn('HistoricalMarketDataService.fetchJobData')(function* (
                     job: InstrumentMarketDataJobEntityInterface
                 ) {

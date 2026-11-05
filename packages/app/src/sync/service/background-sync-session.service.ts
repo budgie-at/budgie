@@ -19,7 +19,7 @@ export class BackgroundSyncSessionService extends Context.Service<BackgroundSync
             const reactivity = yield* Reactivity.Reactivity;
             const syncRepository = yield* SyncRepository;
 
-            const pendingBackwardSyncs = syncRepository.getAllPendingBackwardSyncs();
+            const pendingBackwardSyncs = syncRepository.getAllPendingBackwardSyncs;
 
             return {
                 start: Effect.fn('BackgroundSyncSessionService.start')(function* () {

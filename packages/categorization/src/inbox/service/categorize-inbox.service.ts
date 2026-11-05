@@ -137,7 +137,7 @@ export class CategorizeInboxService extends Context.Service<CategorizeInboxServi
             rows: CategorizeInboxRowInterface[],
             defaultInstrumentId: number
         ) {
-            const tagEvidence = yield* transactionCategorizeInboxRepository.findTagEvidence();
+            const tagEvidence = yield* transactionCategorizeInboxRepository.findTagEvidence;
             const tagContext = categorizeInboxEngineService.buildContext(
                 tagEvidence,
                 defaultInstrumentId,

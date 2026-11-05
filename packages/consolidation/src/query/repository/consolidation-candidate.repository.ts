@@ -87,10 +87,11 @@ export class ConsolidationCandidateRepository extends Context.Service<Consolidat
                     find<P2pFiatAuthoritativeCandidateInterface>(buildP2pFiatAuthoritativeCandidateSql(scope)),
                 findP2pFiatAuthoritativeRepairCandidates: (scope: ConsolidationScanScopeInterface | null) =>
                     find<P2pFiatAuthoritativeRepairCandidateInterface>(buildP2pFiatAuthoritativeRepairCandidateSql(scope)),
-                findBridgeClaimedRepairCandidates: () => find<BridgeClaimRepairCandidateInterface>(BRIDGE_CLAIM_REPAIR_CANDIDATES_SQL),
-                findMissingTransferFeeEntries: () => find<FeeEntrySourceInterface>(MISSING_TRANSFER_FEE_ENTRIES_SQL),
-                countTransferPairManualReviewCandidates: () =>
-                    find<{ readonly count: number }>(TRANSFER_PAIR_MANUAL_REVIEW_COUNT_SQL).pipe(Effect.map(([row]) => row.count))
+                findBridgeClaimedRepairCandidates: find<BridgeClaimRepairCandidateInterface>(BRIDGE_CLAIM_REPAIR_CANDIDATES_SQL),
+                findMissingTransferFeeEntries: find<FeeEntrySourceInterface>(MISSING_TRANSFER_FEE_ENTRIES_SQL),
+                countTransferPairManualReviewCandidates: find<{ readonly count: number }>(TRANSFER_PAIR_MANUAL_REVIEW_COUNT_SQL).pipe(
+                    Effect.map(([row]) => row.count)
+                )
             };
         })
     }

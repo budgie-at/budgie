@@ -141,7 +141,7 @@ export class SyncRepairService extends Context.Service<SyncRepairService>()('@bu
                 (yield* consolidationCoordinatorService.countExistingTransferIncomeDuplicateRepairCandidates()) +
                 (yield* consolidationCoordinatorService.countBridgeClaimRepairCandidates()) +
                 (yield* consolidationCoordinatorService.countMissingTransferFeeRepairCandidates()) +
-                (yield* accountReissueMergeService.countCandidates()) +
+                (yield* accountReissueMergeService.countCandidates) +
                 (yield* externalAccountService.countCandidates()) +
                 (yield* unpairedOwnCardTransferRepairService.countCandidates());
 

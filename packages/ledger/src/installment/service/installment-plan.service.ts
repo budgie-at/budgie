@@ -372,7 +372,7 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
 
                     const earlierParts = yield* findEarlierParts(transaction, primaryEntry, input.installmentCount, input.totalAmount);
                     const planStartedAt = earlierParts.at(0)?.operatedAt ?? transaction.operatedAt;
-                    const [{ count }] = yield* accountRepository.count();
+                    const [{ count }] = yield* accountRepository.count;
                     const account = yield* accountRepository.create({
                         title: input.title,
                         icon: UserIconNameEnum.CalendarClock,

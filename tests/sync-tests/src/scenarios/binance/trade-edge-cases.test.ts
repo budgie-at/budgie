@@ -74,7 +74,7 @@ describe('binance/trade-edge-cases', () => {
 
             yield* binanceSyncService.sync();
 
-            expect(yield* fetchSortedBinanceExternalIds()).toStrictEqual(expectedIds);
+            expect(yield* fetchSortedBinanceExternalIds).toStrictEqual(expectedIds);
         }).pipe(Effect.provide(TestLayer))
     );
 });

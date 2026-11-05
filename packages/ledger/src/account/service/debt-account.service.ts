@@ -35,7 +35,7 @@ export class DebtAccountService extends Context.Service<DebtAccountService>()('@
             input: DebtAccountCreateInputInterface,
             targetBalance: number
         ) {
-            const [{ count }] = yield* accountRepository.count();
+            const [{ count }] = yield* accountRepository.count;
             const nature = input.debtType === AccountDebtTypeEnum.LENT ? AccountNatureEnum.ASSET : AccountNatureEnum.LIABILITY;
 
             return yield* accountRepository.create({ ...input, targetBalance, order: count + 1, nature });

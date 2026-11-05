@@ -88,35 +88,35 @@ layer(aiModelDownloadStub)('AI native ownership', it => {
     it.effect('interrupts a loaded context when native stopCompletion returns synchronous undefined', () =>
         Effect.gen(function* () {
             const chat = yield* ChatService.make;
-            yield* chat.model.start();
+            yield* chat.model.start;
             expect(chat.model.context).toBe(native.context);
             native.context.stopCompletion.mockReturnValueOnce(void 0);
             yield* chat.interrupt;
             expect(native.context.stopCompletion).toHaveReturnedWith(void 0);
-            yield* chat.model.stop();
+            yield* chat.model.stop;
         })
     );
 
     it.effect('preserves NativeCallError when native stopCompletion rejects', () =>
         Effect.gen(function* () {
             const chat = yield* ChatService.make;
-            yield* chat.model.start();
+            yield* chat.model.start;
             const cause = new Error('stop failed');
             native.context.stopCompletion.mockRejectedValueOnce(cause);
             expect(yield* Effect.flip(chat.interrupt)).toEqual(NativeCallError.make({ cause }));
-            yield* chat.model.stop();
+            yield* chat.model.stop;
         })
     );
 
     it.effect('retains the llama context and protected status when release fails, then retries', () =>
         Effect.gen(function* () {
             const chat = yield* ChatService.make;
-            yield* chat.model.start();
+            yield* chat.model.start;
             native.context.release.mockRejectedValueOnce(new Error('release failed'));
-            expect(Exit.isFailure(yield* Effect.exit(chat.model.stop()))).toBe(true);
+            expect(Exit.isFailure(yield* Effect.exit(chat.model.stop))).toBe(true);
             expect(chat.model.context).toBe(native.context);
             expect(appAtomRegistry.get(chat.model.snapshot).status).not.toBe(AiSubsystemStatusEnum.SUSPENDED);
-            yield* chat.model.stop();
+            yield* chat.model.stop;
             expect(native.context.release).toHaveBeenCalledTimes(2);
             expect(chat.model.context).toBeNull();
             expect(appAtomRegistry.get(chat.model.snapshot).status).toBe(AiSubsystemStatusEnum.SUSPENDED);
@@ -126,11 +126,11 @@ layer(aiModelDownloadStub)('AI native ownership', it => {
     it.effect('retains whisper ownership and retries a failed native release', () =>
         Effect.gen(function* () {
             const stt = yield* SttService.make;
-            yield* stt.start();
+            yield* stt.start;
             native.releaseWhisper.mockRejectedValueOnce(new Error('release failed'));
-            expect(Exit.isFailure(yield* Effect.exit(stt.stop()))).toBe(true);
+            expect(Exit.isFailure(yield* Effect.exit(stt.stop))).toBe(true);
             expect(appAtomRegistry.get(stt.snapshot).status).toBe(AiSubsystemStatusEnum.ERROR);
-            yield* stt.stop();
+            yield* stt.stop;
             expect(native.releaseWhisper).toHaveBeenCalledTimes(2);
             expect(appAtomRegistry.get(stt.snapshot).status).toBe(AiSubsystemStatusEnum.SUSPENDED);
         })
@@ -143,11 +143,11 @@ layer(aiModelDownloadStub)('AI native ownership initialization', it => {
             const chat = yield* ChatService.make;
             const initialization = yield* holdNativeCall(native.context);
             native.initialize.mockImplementation(initialization.invoke);
-            const starting = yield* Effect.forkChild(chat.model.start());
+            const starting = yield* Effect.forkChild(chat.model.start);
             yield* initialization.entered;
             const interrupting = yield* Effect.forkChild(Fiber.interrupt(starting));
             yield* Effect.yieldNow;
-            const stopping = yield* Effect.forkChild(chat.model.stop());
+            const stopping = yield* Effect.forkChild(chat.model.stop);
             yield* Effect.yieldNow;
             const pending = {
                 starting: !isDefined(starting.pollUnsafe()),
@@ -165,7 +165,7 @@ layer(aiModelDownloadStub)('AI native ownership initialization', it => {
     it.effect('keeps the completion lock until actual native completion settles after interruption', () =>
         Effect.gen(function* () {
             const chat = yield* ChatService.make;
-            yield* chat.model.start();
+            yield* chat.model.start;
             const completion = yield* holdNativeCall({ text: 'done', interrupted: true });
             native.context.completion.mockImplementation(completion.invoke);
             const generating = yield* Effect.forkChild(chat.generate('system', 'user'));
@@ -175,7 +175,7 @@ layer(aiModelDownloadStub)('AI native ownership initialization', it => {
             expect(interrupted.stopping).toBe(true);
             yield* completion.complete;
             yield* interrupted.join;
-            yield* chat.model.stop();
+            yield* chat.model.stop;
         })
     );
 
@@ -184,9 +184,9 @@ layer(aiModelDownloadStub)('AI native ownership initialization', it => {
             const stt = yield* SttService.make;
             const initialization = yield* holdNativeCall(native.whisperContext);
             native.initializeWhisper.mockImplementation(initialization.invoke);
-            const starting = yield* Effect.forkChild(stt.start());
+            const starting = yield* Effect.forkChild(stt.start);
             yield* initialization.entered;
-            const stopping = yield* Effect.forkChild(stt.stop());
+            const stopping = yield* Effect.forkChild(stt.stop);
             yield* Effect.yieldNow;
             const prematureReleases = native.releaseWhisper.mock.calls.length;
             yield* initialization.complete.pipe(Effect.andThen(Fiber.join(starting)), Effect.andThen(Fiber.join(stopping)));
@@ -201,14 +201,14 @@ layer(aiModelDownloadStub)('AI native ownership in-flight work', it => {
     it.effect('joins interrupted transcription before native release', () =>
         Effect.gen(function* () {
             const stt = yield* SttService.make;
-            yield* stt.start();
+            yield* stt.start;
             yield* stt.streamStart(null);
             stt.streamInsert(new Float32Array(transcriptionSampleCount).fill(0.5));
             const transcription = yield* holdNativeCall({ result: 'done' });
             native.whisperContext.transcribeData.mockImplementation(() => ({ promise: transcription.invoke() }));
             const transcribing = yield* Effect.forkChild(stt.stopStream(true));
             yield* transcription.entered;
-            const interrupted = yield* interruptAndStop(transcribing, stt.stop());
+            const interrupted = yield* interruptAndStop(transcribing, stt.stop);
             const prematureReleases = native.releaseWhisper.mock.calls.length;
             yield* transcription.complete;
             yield* interrupted.join;
@@ -225,8 +225,8 @@ layer(aiModelDownloadStub)('AI native ownership in-flight work', it => {
                     Layer.mock(SttService, {
                         snapshot: sttSnapshotAtom,
                         streamInsert: emptyFn,
-                        start: () => Effect.void,
-                        stop: () => Effect.void
+                        start: Effect.void,
+                        stop: Effect.void
                     })
                 ])
             );
@@ -247,12 +247,12 @@ layer(aiModelDownloadStub)('AI native ownership in-flight work', it => {
     it.effect('joins embedding native work before interruption releases its caller', () =>
         Effect.gen(function* () {
             const embedding = yield* LocalEmbeddingService.make;
-            yield* embedding.model.start();
+            yield* embedding.model.start;
             const completion = yield* holdNativeCall({ embedding: [1] });
             native.context.embedding.mockImplementation(completion.invoke);
             const generating = yield* Effect.forkChild(embedding.embed('text'));
             yield* completion.entered;
-            const interrupted = yield* interruptAndStop(generating, embedding.model.stop());
+            const interrupted = yield* interruptAndStop(generating, embedding.model.stop);
             const pending = {
                 generating: interrupted.running,
                 stopping: interrupted.stopping,

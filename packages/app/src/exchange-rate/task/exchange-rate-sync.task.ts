@@ -12,7 +12,7 @@ TaskManager.defineTask(EXCHANGE_RATE_SYNC_TASK, () =>
         Effect.gen(function* () {
             const workload = yield* Workload;
             const exchangeRateBackgroundService = yield* ExchangeRateBackgroundService;
-            yield* workload.run(exchangeRateBackgroundService.sync());
+            yield* workload.run(exchangeRateBackgroundService.sync);
 
             return BackgroundTask.BackgroundTaskResult.Success;
         })

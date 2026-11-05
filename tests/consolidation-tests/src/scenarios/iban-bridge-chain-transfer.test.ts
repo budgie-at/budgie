@@ -22,7 +22,7 @@ const byTransactionId = (left: number, right: number): number => left - right;
 
 const seedIbanBridgeChainFixture = () =>
     Effect.gen(function* () {
-        const topology = yield* seedIbanBridgeTopology();
+        const topology = yield* seedIbanBridgeTopology;
 
         return {
             ...topology,

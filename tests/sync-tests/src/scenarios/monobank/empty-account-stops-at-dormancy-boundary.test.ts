@@ -32,7 +32,7 @@ describe('monobank/empty-account-stops-at-dormancy-boundary', () => {
             yield* monobankSyncService.sync();
 
             expect(monobankRequestCount).toBe(EXPECTED_DORMANCY_BOUNDARY_REQUESTS);
-            expect(yield* fetchPersistedMonobankTransactions()).toHaveLength(0);
+            expect(yield* fetchPersistedMonobankTransactions).toHaveLength(0);
 
             const finalSync = yield* fetchSyncById(sync.id);
             expect(finalSync.mode).toBe(SyncModeEnum.FORWARD);

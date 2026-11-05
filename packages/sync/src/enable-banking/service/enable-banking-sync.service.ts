@@ -25,7 +25,7 @@ import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncConsentExpiredError } from '../../core/error/sync-consent-expired.error';
 import { SyncTokenClientMismatchError } from '../../core/error/sync-token-client-mismatch.error';
 import { SyncUnauthorizedError } from '../../core/error/sync-unauthorized.error';
-import { makePollingSyncDependenciesLayer } from '../../core/layer/polling-sync-dependencies.layer';
+import { pollingSyncServiceDependenciesLayer } from '../../core/layer/polling-sync-dependencies.layer';
 import { SyncRequestSigner } from '../../core/port/sync-request-signer.port';
 import { SyncBalanceReconciliationService } from '../../core/service/sync-balance-reconciliation.service';
 import { SyncIntegrationTokenService } from '../../core/service/sync-integration-token.service';
@@ -101,7 +101,7 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
         });
 
         const findUnconnectableExternalIds = Effect.fnUntraced(function* (accounts: readonly SyncAccountInterface[]) {
-            const instrumentCodes = new Set((yield* instrumentRepository.getAll()).map(instrument => instrument.code));
+            const instrumentCodes = new Set((yield* instrumentRepository.getAll).map(instrument => instrument.code));
             const accountsWithIban = yield* accountRepository.findByIbans(accounts.map(account => account.iban).filter(isNotEmptyString));
             const aliases = yield* accountRepository.findExternalIdAliases(accounts.map(account => account.id));
 
@@ -255,7 +255,7 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
                     isSupported: !isNotEmptyArray(aspsp.required_psu_headers ?? [])
                 }));
             }),
-            listApplicationIds: () => listApplicationIds(null),
+            listApplicationIds: listApplicationIds(null),
             forgetCredentials: (applicationId: string) => clientService.forgetJwt(applicationId),
             validateCredentials: Effect.fn('EnableBankingSyncService.validateCredentials')(function* (applicationId: string) {
                 yield* clientService.forgetJwt(applicationId);
@@ -390,7 +390,7 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
 }) {
     static readonly layer = Layer.effect(EnableBankingSyncService, EnableBankingSyncService.make).pipe(
         Layer.provide([
-            makePollingSyncDependenciesLayer(),
+            Layer.fresh(pollingSyncServiceDependenciesLayer),
             AccountArchiveService.layer,
             BankIntegrationRepository.layer,
             SyncBalanceReconciliationService.layer,

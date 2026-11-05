@@ -59,7 +59,7 @@ describe('binance/fiat-orders', () => {
 
             yield* binanceSyncService.sync();
 
-            const transactions = yield* fetchBinanceTransactions();
+            const transactions = yield* fetchBinanceTransactions;
             expect(transactions).toHaveLength(1);
             expect(transactions[0].externalId).toBe('fiat-eur');
         }).pipe(Effect.provide(TestLayer))

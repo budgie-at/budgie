@@ -8,7 +8,7 @@ import { useSearchTagsQuery } from './use-search-tags.query';
 
 export const tagUsageAtom = databaseQueryAtom(
     [TransactionTagsEntityTable, TransactionEntityTable],
-    Effect.flatMap(TagRepository, tagRepository => tagRepository.findUsage())
+    Effect.flatMap(TagRepository, tagRepository => tagRepository.findUsage)
 );
 
 export const useTagsWithUsageQuery = (search: string) => {

@@ -228,30 +228,28 @@ export class TransactionCategorizeInboxRepository extends Context.Service<Transa
                             )
                         )
                     ),
-                findCategoryEvidence: () =>
-                    Db.query(db =>
-                        selectEvidence(db, sql<number>`${TransactionEntryEntityTable.categoryId}`.mapWith(Number))
-                            .innerJoin(CategoryEntityTable, eq(CategoryEntityTable.id, TransactionEntryEntityTable.categoryId))
-                            .where(
-                                buildEvidenceWhere([
-                                    isNotNull(TransactionEntryEntityTable.categoryId),
-                                    notInArray(TransactionEntryEntityTable.categorySource, [
-                                        CategorySourceEnum.MCC_DEFAULT,
-                                        CategorySourceEnum.INBOX
-                                    ]),
-                                    eq(CategoryEntityTable.isSystemCategory, false),
-                                    isNull(CategoryEntityTable.deletedAt)
-                                ])
-                            )
-                            .groupBy(...buildEvidenceGroupBy(), TransactionEntryEntityTable.categoryId)
-                    ),
-                findTagEvidence: () =>
-                    Db.query(db =>
-                        selectEvidence(db, sql<number>`${TransactionTagsEntityTable.tagId}`.mapWith(Number))
-                            .innerJoin(TransactionTagsEntityTable, eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id))
-                            .where(buildEvidenceWhere([eq(TransactionTagsEntityTable.source, TagSourceEnum.USER)]))
-                            .groupBy(...buildEvidenceGroupBy(), TransactionTagsEntityTable.tagId)
-                    )
+                findCategoryEvidence: Db.query(db =>
+                    selectEvidence(db, sql<number>`${TransactionEntryEntityTable.categoryId}`.mapWith(Number))
+                        .innerJoin(CategoryEntityTable, eq(CategoryEntityTable.id, TransactionEntryEntityTable.categoryId))
+                        .where(
+                            buildEvidenceWhere([
+                                isNotNull(TransactionEntryEntityTable.categoryId),
+                                notInArray(TransactionEntryEntityTable.categorySource, [
+                                    CategorySourceEnum.MCC_DEFAULT,
+                                    CategorySourceEnum.INBOX
+                                ]),
+                                eq(CategoryEntityTable.isSystemCategory, false),
+                                isNull(CategoryEntityTable.deletedAt)
+                            ])
+                        )
+                        .groupBy(...buildEvidenceGroupBy(), TransactionEntryEntityTable.categoryId)
+                ),
+                findTagEvidence: Db.query(db =>
+                    selectEvidence(db, sql<number>`${TransactionTagsEntityTable.tagId}`.mapWith(Number))
+                        .innerJoin(TransactionTagsEntityTable, eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id))
+                        .where(buildEvidenceWhere([eq(TransactionTagsEntityTable.source, TagSourceEnum.USER)]))
+                        .groupBy(...buildEvidenceGroupBy(), TransactionTagsEntityTable.tagId)
+                )
             };
         })
     }

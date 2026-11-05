@@ -129,7 +129,7 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
             capture: (source: ReceiptSourceEnum): Effect.Effect<string | null> => captureBySource[source],
             process: Effect.fn('ReceiptScanService.process')(
                 function* (uri: string) {
-                    const settings = yield* settingsRepository.findSettings();
+                    const settings = yield* settingsRepository.findSettings;
                     const baseCurrency = Option.getOrElse(decodeCurrency(settings?.defaultInstrument?.code), () => CurrencyEnum.EUR);
 
                     return yield* processReceipt(uri, baseCurrency).pipe(

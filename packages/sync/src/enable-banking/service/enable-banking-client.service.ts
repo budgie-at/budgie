@@ -72,10 +72,9 @@ export class EnableBankingClientService extends Context.Service<EnableBankingCli
 
         return {
             withClient,
-            clearSessions: () =>
-                Effect.sync(() => {
-                    sessionByToken.clear();
-                }),
+            clearSessions: Effect.sync(() => {
+                sessionByToken.clear();
+            }),
             resolveAuthorizedSession: Effect.fnUntraced(function* (token: string, credentials: EnableBankingTokenInterface) {
                 if (Date.parse(credentials.validUntil) <= (yield* Clock.currentTimeMillis)) {
                     return yield* failConsentExpired();

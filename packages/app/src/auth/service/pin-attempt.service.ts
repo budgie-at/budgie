@@ -93,7 +93,7 @@ export class PinAttemptService extends Context.Service<PinAttemptService>()('@bu
         });
 
         return {
-            getRemainingLockoutMillis: () => lock.withPermit(readRemainingLockoutMillis()),
+            getRemainingLockoutMillis: lock.withPermit(readRemainingLockoutMillis()),
             verify: Effect.fn('PinAttemptService.verify')(function* <E, R>(check: Effect.Effect<boolean, E, R>) {
                 return yield* lock
                     .withPermit(
@@ -118,7 +118,7 @@ export class PinAttemptService extends Context.Service<PinAttemptService>()('@bu
                     )
                     .pipe(Effect.uninterruptible);
             }),
-            reset: () => lock.withPermit(clearAttempts)
+            reset: lock.withPermit(clearAttempts)
         };
     })
 }) {

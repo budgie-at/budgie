@@ -149,7 +149,7 @@ describe('monobank/suspended-run-lock', () => {
             yield* Fiber.join(backgroundSync);
 
             expect(didReplacementRequestStartWhileForegroundWasSuspended).toBe(false);
-            expect(yield* fetchPersistedMonobankTransactions()).toHaveLength(1);
+            expect(yield* fetchPersistedMonobankTransactions).toHaveLength(1);
         }).pipe(Effect.provide(TestLayer))
     );
 });

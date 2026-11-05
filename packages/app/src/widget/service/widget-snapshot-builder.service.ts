@@ -351,7 +351,7 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
             });
 
             const buildBudget = Effect.fn('WidgetSnapshotBuilderService.buildBudget')(function* (context: WidgetSnapshotContextInterface) {
-                const budget = yield* budgetRepository.findMain();
+                const budget = yield* budgetRepository.findMain;
 
                 if (!isDefined(budget) || !isPositiveNumber(budget.instrumentId)) {
                     return null;
@@ -490,7 +490,7 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
             });
 
             const buildSnapshot = Effect.fn('WidgetSnapshotBuilderService.buildSnapshot')(function* (isMaskForced: boolean) {
-                const settings = yield* settingsRepository.findSettings();
+                const settings = yield* settingsRepository.findSettings;
                 const instrument = settings?.defaultInstrument ?? DEFAULT_INSTRUMENT;
                 const language = settings?.language ?? LanguageEnum.EN;
                 const messages = yield* Effect.orDie(i18nLoadLanguageMessages(language));

@@ -19,13 +19,13 @@ export class ExternalAccountService extends Context.Service<ExternalAccountServi
                 yield* ruleEngineService.applyRulesToTransactionIds(archivedTransactionIds);
             }),
             countCandidates: Effect.fn('ExternalAccountService.countCandidates')(function* () {
-                const accounts = yield* accountRepository.findExternal();
+                const accounts = yield* accountRepository.findExternal;
                 const transfers = yield* Effect.forEach(accounts, account => transactionRepository.findTransfersForConversion(account.id));
 
                 return transfers.flat().length;
             }),
             repair: Effect.fn('ExternalAccountService.repair')(function* () {
-                const accounts = yield* accountRepository.findExternal();
+                const accounts = yield* accountRepository.findExternal;
                 const convertedTransactionIds = yield* Db.transaction(
                     Effect.forEach(accounts, account => accountTransferConversionService.convertAccountTransfers(account.id, null))
                 );

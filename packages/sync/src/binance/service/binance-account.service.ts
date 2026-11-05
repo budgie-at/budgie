@@ -132,7 +132,7 @@ export class BinanceAccountService extends Context.Service<BinanceAccountService
             findResolvableAccounts: Effect.fn('BinanceAccountService.findResolvableAccounts')(function* (
                 exchangeAccounts: SyncAccountInterface[]
             ) {
-                const instruments = yield* instrumentRepository.getAll();
+                const instruments = yield* instrumentRepository.getAll;
 
                 return exchangeAccounts.map(exchangeAccount => toResolvableAccount(exchangeAccount, instruments)).filter(isDefined);
             }),
@@ -141,7 +141,7 @@ export class BinanceAccountService extends Context.Service<BinanceAccountService
                 integrationId: number
             ) {
                 const exchangeAccountById = new Map(exchangeAccounts.map(account => [account.id, account]));
-                const instruments = yield* instrumentRepository.getAll();
+                const instruments = yield* instrumentRepository.getAll;
 
                 return (codecAccountId: string) => {
                     const canonicalAccountId = canonicalizeAccountId(codecAccountId);

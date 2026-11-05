@@ -110,19 +110,17 @@ export const makeEmbeddingRepository = <TUpsert extends { readonly dimensions: n
             db => db.$client.unsafe(`DELETE FROM ${config.vecTableName} WHERE rowid IN (${ids.map(() => '?').join(', ')})`, ids).raw
         );
     }),
-    countAll: () =>
-        Db.query(db =>
-            db
-                .select({ count: sql<number>`COUNT(*)` })
-                .from(config.embeddingTable)
-                .where(isNull(config.deletedAtColumn))
-        ).pipe(Effect.map(([result]) => result.count)),
-    truncate: () =>
-        Db.transaction(
-            Effect.gen(function* () {
-                yield* Db.query(db => db.delete(config.tagTable));
-                yield* Db.query(db => db.delete(config.embeddingTable));
-                yield* Db.query(db => db.$client.unsafe(`DELETE FROM ${config.vecTableName}`).raw);
-            })
-        )
+    countAll: Db.query(db =>
+        db
+            .select({ count: sql<number>`COUNT(*)` })
+            .from(config.embeddingTable)
+            .where(isNull(config.deletedAtColumn))
+    ).pipe(Effect.map(([result]) => result.count)),
+    truncate: Db.transaction(
+        Effect.gen(function* () {
+            yield* Db.query(db => db.delete(config.tagTable));
+            yield* Db.query(db => db.delete(config.embeddingTable));
+            yield* Db.query(db => db.$client.unsafe(`DELETE FROM ${config.vecTableName}`).raw);
+        })
+    )
 });

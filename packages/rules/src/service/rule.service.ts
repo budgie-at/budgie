@@ -167,7 +167,7 @@ export class RuleService extends Context.Service<RuleService>()('@budgie/rules/R
 
         const createFromSuggestion = Effect.fn('RuleService.createFromSuggestion')(function* (suggestRuleData: SuggestRuleDataInterface) {
             const ruleInput = yield* buildSuggestionInput(suggestRuleData);
-            const existingRules = yield* ruleRepository.findAllWithConditions();
+            const existingRules = yield* ruleRepository.findAllWithConditions;
             const duplicateRule = existingRules.find(
                 rule =>
                     rule.conditionMatchType === ruleInput.conditionMatchType &&

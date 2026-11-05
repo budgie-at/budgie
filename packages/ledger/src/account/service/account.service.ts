@@ -54,7 +54,7 @@ export class AccountService extends Context.Service<AccountService>()('@budgie/l
                 { currentBalance, ...input }: LiabilityAccountCreateInputInterface | DepositAccountCreateInputInterface,
                 nature: AccountNatureEnum
             ) {
-                const [{ count }] = yield* accountRepository.count();
+                const [{ count }] = yield* accountRepository.count;
                 const createdAccount = yield* accountRepository.create({ ...input, order: count + 1, nature });
 
                 yield* adjustBalanceTo(createdAccount.id, currentBalance);
@@ -90,7 +90,7 @@ export class AccountService extends Context.Service<AccountService>()('@budgie/l
 
         const processBatch = Effect.fn('AccountService.processBatch')(
             function* (batch: LiabilityAccountCreateInputInterface[]) {
-                const [{ count }] = yield* accountRepository.count();
+                const [{ count }] = yield* accountRepository.count;
                 const accounts = yield* accountRepository.bulkCreate(
                     batch.map((input, index) => ({ ...input, order: count + index + 1, nature: AccountNatureEnum.LIABILITY }))
                 );

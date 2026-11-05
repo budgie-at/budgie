@@ -147,11 +147,11 @@ export class ExporterService extends Context.Service<ExporterService>()('@budgie
             exportToCsv: Effect.fn('ExporterService.exportToCsv')(function* () {
                 const [accounts, deletedAccounts, categories, instruments, mccCategories] = yield* Effect.all(
                     [
-                        accountRepository.getAll(),
-                        accountRepository.getAllArchived(),
-                        categoryRepository.findAllNonSystem(),
-                        instrumentRepository.getAll(),
-                        mccCategoryRepository.findAll()
+                        accountRepository.getAll,
+                        accountRepository.getAllArchived,
+                        categoryRepository.findAllNonSystem,
+                        instrumentRepository.getAll,
+                        mccCategoryRepository.findAll
                     ],
                     { concurrency: 'unbounded' }
                 );

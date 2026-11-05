@@ -72,7 +72,7 @@ export class WalletCaptureImportService extends Context.Service<WalletCaptureImp
                 return isDefined(account) && account.isActive ? { ...record, accountId: account.id } : null;
             }
 
-            const candidates = (yield* accountRepository.getAllActiveAccounts()).filter(account => account.type !== AccountTypeEnum.DEBT);
+            const candidates = (yield* accountRepository.getAllActiveAccounts).filter(account => account.type !== AccountTypeEnum.DEBT);
             const { defaultAccountId } = yield* settingsRepository.getSettings();
             const accountId =
                 findAccountIdByCardName(record.cardName, candidates) ??

@@ -77,7 +77,7 @@ export class TransactionTagsRepository extends Context.Service<TransactionTagsRe
         deleteByTransactionId: (id: number) =>
             Db.query(db => db.delete(TransactionTagsEntityTable).where(eq(TransactionTagsEntityTable.transactionId, id))),
 
-        truncate: () => Db.query(db => db.delete(TransactionTagsEntityTable))
+        truncate: Db.query(db => db.delete(TransactionTagsEntityTable))
     })
 }) {
     static readonly layer = Layer.effect(TransactionTagsRepository, TransactionTagsRepository.make);

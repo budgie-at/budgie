@@ -40,16 +40,15 @@ interface SeedOptions {
     readonly iban?: string;
 }
 
-export const findOrSeedEur = () =>
-    Effect.gen(function* () {
-        const existingEur = (yield* testDb.select().from(InstrumentEntityTable).where(eq(InstrumentEntityTable.code, 'EUR'))).at(0);
+export const findOrSeedEur = Effect.gen(function* () {
+    const existingEur = (yield* testDb.select().from(InstrumentEntityTable).where(eq(InstrumentEntityTable.code, 'EUR'))).at(0);
 
-        return isDefined(existingEur) ? existingEur : yield* seed.instrument({ code: 'EUR', name: 'Euro', symbol: 'EUR' });
-    });
+    return isDefined(existingEur) ? existingEur : yield* seed.instrument({ code: 'EUR', name: 'Euro', symbol: 'EUR' });
+});
 
 export const seedEnableBankingAccount = (options: SeedOptions) =>
     Effect.gen(function* () {
-        const eur = yield* findOrSeedEur();
+        const eur = yield* findOrSeedEur;
         const account = yield* seed.account({
             externalId: options.hash,
             externalSource: ExternalSourceEnum.ENABLE_BANKING,
@@ -86,10 +85,9 @@ export const seedLinkedEnableBankingAccount = (hash: string, uid: string, sessio
         })
     );
 
-export const fetchSortedEnableBankingExternalIds = () =>
-    Effect.map(fetchEnableBankingTransactions(), transactions =>
-        transactions.map(transaction => transaction.externalId).sort((left, right) => (left ?? '').localeCompare(right ?? ''))
-    );
+export const fetchSortedEnableBankingExternalIds = Effect.map(fetchEnableBankingTransactions(), transactions =>
+    transactions.map(transaction => transaction.externalId).sort((left, right) => (left ?? '').localeCompare(right ?? ''))
+);
 
 export const stubLongestFallbackRows = (uid: string, queries: URLSearchParams[]): void => {
     enableBankingStub.transactions(uid, ({ query }) => {

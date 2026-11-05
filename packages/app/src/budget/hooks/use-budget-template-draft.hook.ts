@@ -67,7 +67,7 @@ export const genericBudgetTemplateAtom = Atom.family((currencyCode: string) =>
         [CategoryEntityTable],
         Effect.gen(function* () {
             const categoryRepository = yield* CategoryRepository;
-            const categories = yield* categoryRepository.findAllNonSystem();
+            const categories = yield* categoryRepository.findAllNonSystem;
             const draft = resolveGenericBudgetTemplate(categories, currencyCode);
 
             return { draft, isReady: true, isAvailable: isNotEmptyArray(draft.categoryLimits), stats: null };

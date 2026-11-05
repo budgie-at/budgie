@@ -40,13 +40,13 @@ export const fetchHistoryProgress = (token: string) =>
         return decodeHistoryProgress(integration.historyProgress ?? '{}');
     });
 
-export const fetchBinanceTransactions = () =>
-    testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.BINANCE));
+export const fetchBinanceTransactions = Effect.suspend(() =>
+    testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.BINANCE))
+);
 
-export const fetchSortedBinanceExternalIds = () =>
-    Effect.map(fetchBinanceTransactions(), transactions =>
-        transactions.map(transaction => transaction.externalId).sort((left, right) => (left ?? '').localeCompare(right ?? ''))
-    );
+export const fetchSortedBinanceExternalIds = Effect.map(fetchBinanceTransactions, transactions =>
+    transactions.map(transaction => transaction.externalId).sort((left, right) => (left ?? '').localeCompare(right ?? ''))
+);
 
 export const fetchBinanceEntriesByExternalId = (externalId: string) =>
     testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.externalId, externalId));
@@ -91,7 +91,7 @@ export const setupUsdtSpotFixtureWithBalances = (baseAsset: string, baseFree: st
 
 export const expectSingleBinanceTransaction = (transactionType: TransactionTypeEnum, externalId: string) =>
     Effect.gen(function* () {
-        const transactions = yield* fetchBinanceTransactions();
+        const transactions = yield* fetchBinanceTransactions;
 
         expect(transactions).toHaveLength(1);
         expect(transactions[0].type).toBe(transactionType);
@@ -127,13 +127,13 @@ export const resetBinanceSyncForResync = (): void => {
 export const expectNoDuplicateAfterResync = Effect.fnUntraced(function* (restubForResync: () => void) {
     const binanceSyncService = yield* BinanceSyncService;
 
-    expect(yield* fetchBinanceTransactions()).toHaveLength(1);
+    expect(yield* fetchBinanceTransactions).toHaveLength(1);
 
     resetBinanceSyncForResync();
     restubForResync();
     yield* binanceSyncService.sync();
 
-    expect(yield* fetchBinanceTransactions()).toHaveLength(1);
+    expect(yield* fetchBinanceTransactions).toHaveLength(1);
 });
 
 export const setupFiatScenario = (mode = SyncModeEnum.FORWARD) =>

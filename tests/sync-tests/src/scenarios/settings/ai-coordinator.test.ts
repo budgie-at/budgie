@@ -134,7 +134,7 @@ describe('AiCoordinatorService lifecycle', () => {
     it.effect('reaches suspension and replacement after synchronous native chat interruption', () =>
         Effect.gen(function* () {
             const { coordinator, chat, resumes, stopping, started } = yield* makeLifecycle();
-            yield* chat.model.start();
+            yield* chat.model.start;
             expect(chat.model.context).toBe(native.context);
             yield* coordinator.restart();
             expect(Deferred.isDoneUnsafe(stopping)).toBe(true);
@@ -142,7 +142,7 @@ describe('AiCoordinatorService lifecycle', () => {
             expect(native.context.stopCompletion).toHaveReturnedWith(void 0);
             expect(resumes).toEqual([[AiSubsystemNameEnum.CHAT], [AiSubsystemNameEnum.CHAT]]);
             yield* coordinator.stop();
-            yield* chat.model.stop();
+            yield* chat.model.stop;
         }).pipe(provideTestServices)
     );
 
