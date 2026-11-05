@@ -24,7 +24,7 @@ export const ContactSelectorEmpty = (props: Props) => {
                 isLoading={isLoading}
                 title={t`Could not load contacts`}
                 description={t`Try loading your contacts again.`}
-                icon={UserIconNameEnum.UserRoundX}
+                icon={UserIconNameEnum.UserX}
                 onRetry={onRetry}
             />
         );
