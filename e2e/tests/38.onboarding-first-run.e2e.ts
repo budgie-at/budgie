@@ -20,6 +20,10 @@ test('38 onboarding first run', { tags: ['onboarding'] }, async ({ budgie }) => 
         await b.tapId(ctx, 'OnboardingAccounts.BANK');
         await b.tapId(ctx, 'OnboardingAccounts.AddButton');
         await b.expectId(ctx, 'OnboardingBalances.LaterButton', 3_000);
+        await b.fillId(ctx, 'OnboardingBalanceRow.1.Amount', '1234567.89');
+        await b.expectText(ctx, 'Done', 3_000);
+        await b.tapText(ctx, 'Done');
+        await b.expectText(ctx, 'Save balances', 3_000);
         await b.tapId(ctx, 'OnboardingStepLayout.BackButton');
         await b.expectId(ctx, 'OnboardingAccounts.CASH', 3_000);
         await b.tapId(ctx, 'OnboardingAccounts.AddButton');
