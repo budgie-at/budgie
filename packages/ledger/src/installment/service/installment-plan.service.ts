@@ -52,16 +52,6 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
 
             return normalizeTitle(isDefined(matchingPrefix) ? title.slice(matchingPrefix.length) : title);
         };
-        const matchesNextPartTitle = (externalSource: ExternalSourceEnum | null, title: string, referenceTitle: string): boolean =>
-            externalSource === ExternalSourceEnum.MONOBANK
-                ? title.startsWith(monobankMonthlyPartPrefix)
-                : normalizeTitle(title) === normalizeTitle(referenceTitle);
-        const matchesEarlierPartTitle = (externalSource: ExternalSourceEnum | null, title: string, referenceTitle: string): boolean =>
-            externalSource === ExternalSourceEnum.MONOBANK
-                ? title.startsWith(monobankMonthlyPartPrefix) ||
-                  (title.startsWith(monobankLegacyPaymentPrefix) &&
-                      getMonobankPaymentMerchant(title) === getMonobankPaymentMerchant(referenceTitle))
-                : normalizeTitle(title) === normalizeTitle(referenceTitle);
 
         const isSamePlanExpense = (
             candidate: Pick<TransactionEntityInterface, 'externalSource' | 'title'>,
@@ -158,7 +148,7 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                     candidate =>
                         candidate.externalSource === firstPart.externalSource &&
                         (Math.abs(candidate.amount - nextAmount) <= INSTALLMENT_AMOUNT_TOLERANCE || candidate.amount === remainingAmount) &&
-                        matchesNextPartTitle(firstPart.externalSource, candidate.title, firstPart.title)
+                        candidate.title.startsWith(monobankMonthlyPartPrefix)
                 ),
                 candidate =>
                     hasUnconvertedMonthlyOwner(firstPart.accountId, candidate, [firstPart.transactionId]).pipe(
@@ -227,7 +217,9 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                 candidate =>
                     candidate.externalSource === transaction.externalSource &&
                     Math.abs(candidate.amount - primaryEntry.amount) <= INSTALLMENT_AMOUNT_TOLERANCE &&
-                    matchesEarlierPartTitle(transaction.externalSource, candidate.title, transaction.title)
+                    (candidate.title.startsWith(monobankMonthlyPartPrefix) ||
+                        (candidate.title.startsWith(monobankLegacyPaymentPrefix) &&
+                            getMonobankPaymentMerchant(candidate.title) === getMonobankPaymentMerchant(transaction.title)))
             );
 
             return isDefined(match) && !isNotEmptyArray(ambiguousMatches) ? match : null;
