@@ -18,12 +18,14 @@ interface Props {
     readonly items: readonly TransactionActionsMenuItemInterface[];
 }
 
+const MIN_MENU_HEIGHT = 44;
+
 export const TransactionInfoMoreActionsRow = ({ items }: Props) => {
     const { t } = useLingui();
     const { anchor, frameRef, closeMenu, handleCloseComplete, handleToggleMenu, isMenuOpen } = usePopoverMenuAnchor();
     const { height } = useWindowDimensions();
     const { top } = useSafeAreaInsets();
-    const menuContentStyle = { maxHeight: Math.max(44, (anchor?.y ?? height) - top - 16) };
+    const menuContentStyle = { maxHeight: Math.max(MIN_MENU_HEIGHT, (anchor?.y ?? height) - top - 16) };
     const label = t`More Actions…`;
 
     return (
