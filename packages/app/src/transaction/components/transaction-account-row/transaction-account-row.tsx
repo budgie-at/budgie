@@ -2,12 +2,11 @@ import { AccountTypeEnum, TransactionCreateInputInterface, TransactionTypeEnum, 
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useImperativeHandle } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { StyleSheet, Text, View } from 'react-native';
-import Animated, { FadeInUp } from 'react-native-reanimated';
+import { StyleSheet, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
@@ -16,8 +15,7 @@ import { AccountInactiveIcon } from '../../../account/component/account-inactive
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
-
-const ANIMATION_DELAY = 170;
+import { TransactionFieldCaption } from '../transaction-field-caption/transaction-field-caption';
 
 export interface TransactionAccountRowRef {
     shake: () => void;
@@ -65,10 +63,10 @@ export const TransactionAccountRow = ({ ref, fieldName, label, testID }: Props) 
     const hasTestID = isNotEmptyString(testID);
 
     return (
-        <Animated.View entering={FadeInUp.delay(ANIMATION_DELAY).duration(200)}>
+        <View>
             <Animated.View style={shakeStyle}>
                 <HapticPressable
-                    className="relative min-h-[56px] flex-row items-center gap-md rounded-2xl border-hairline border-surface-separator bg-transaction-detail-row px-lg py-md dark:border-transparent"
+                    className="relative min-h-[48px] flex-row items-center gap-xl bg-grouped-surface-row px-[16px] py-[10px]"
                     onPress={handlePress}
                     accessibilityLabel={accessibilityLabel}
                     accessibilityRole="button"
@@ -82,30 +80,25 @@ export const TransactionAccountRow = ({ ref, fieldName, label, testID }: Props) 
                     ) : null}
 
                     <AccountInactiveIcon isInactive={isInactiveAccount} size={28}>
-                        <CircleIcon
-                            icon={account?.icon ?? UserIconNameEnum.Wallet}
-                            variant="ghost"
-                            border={false}
-                            size={28}
-                            iconSize={14}
-                            radius={8}
-                        />
+                        <View className="h-[28px] w-[28px] items-center justify-center">
+                            <Icon icon={account?.icon ?? UserIconNameEnum.Wallet} size={20} className="text-secondary-foreground" />
+                        </View>
                     </AccountInactiveIcon>
 
                     <View className="flex-1">
-                        <Text className="text-[13px] leading-[18px] text-secondary-foreground">{displayLabel}</Text>
-                        <Text
-                            className="text-[15px] leading-[20px] font-medium text-primary"
-                            numberOfLines={1}
+                        <TransactionFieldCaption
+                            label={displayLabel}
+                            value={account?.title}
+                            placeholder={t`Select account`}
                             {...testIDProps(selectedAccountTestID)}
-                        >
-                            {account?.title ?? t`Select account`}
-                        </Text>
+                        />
                     </View>
 
-                    <Icon icon={UserIconNameEnum.ChevronDown} size={16} className="text-secondary-foreground" />
+                    <View className="w-[20px] shrink-0 items-end">
+                        <Icon icon={UserIconNameEnum.ChevronDown} size={16} className="text-secondary-foreground" />
+                    </View>
                 </HapticPressable>
             </Animated.View>
-        </Animated.View>
+        </View>
     );
 };

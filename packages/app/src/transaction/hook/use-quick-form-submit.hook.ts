@@ -11,6 +11,7 @@ import { TransactionAmountDisplayRef } from '../components/transaction-amount-di
 import { TransactionFieldIconRef } from '../components/transaction-field-icon/transaction-field-icon';
 import { buildPrimaryEntry } from '../utils/build-primary-entry.util';
 import { sumEntryAmounts } from '../utils/sum-entry-amounts.util';
+import { sumTransactionAmounts } from '../utils/sum-transaction-amounts.util';
 
 import { useQuickFormValidation } from './use-quick-form-validation.hook';
 
@@ -76,7 +77,7 @@ export const useQuickFormSubmit = ({
         const feeEntries = getTransactionFeeEntries(currentEntries).map(entry => ({ ...entry, accountId }));
         const feeTotal = sumEntryAmounts(feeEntries);
         const formCategoryId = categoryEntry?.categoryId ?? 0;
-        const categoryAmount = transactionType === TransactionTypeEnum.EXPENSE ? amount - feeTotal : amount;
+        const categoryAmount = transactionType === TransactionTypeEnum.EXPENSE ? sumTransactionAmounts(amount, -feeTotal) : amount;
 
         const isValid = validateAndShake([
             buildAmountCheck(isPositiveNumber(amount), t`Enter an amount`),
@@ -107,9 +108,11 @@ export const useQuickFormSubmit = ({
         const categoryEntries = getTransactionCategoryEntries(currentEntries);
         const feeEntries = getTransactionFeeEntries(currentEntries).map(entry => ({ ...entry, accountId }));
         const allEntriesValid = categoryEntries.every(entry => isPositiveNumber(entry.amount) && isPositiveNumber(entry.categoryId));
-        const categoryTotalAmount = sumEntryAmounts(categoryEntries);
+        const categoryTotalAmount = sumTransactionAmounts(...categoryEntries.map(entry => entry.amount));
         const totalAmount =
-            transactionType === TransactionTypeEnum.EXPENSE ? categoryTotalAmount + sumEntryAmounts(feeEntries) : categoryTotalAmount;
+            transactionType === TransactionTypeEnum.EXPENSE
+                ? sumTransactionAmounts(categoryTotalAmount, sumEntryAmounts(feeEntries))
+                : categoryTotalAmount;
 
         const isValid = validateAndShake([
             buildAmountCheck(isPositiveNumber(categoryTotalAmount), t`Enter an amount`),

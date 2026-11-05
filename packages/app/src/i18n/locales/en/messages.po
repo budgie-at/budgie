@@ -1981,7 +1981,7 @@ msgstr "Can't be changed later"
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
-#: src/transaction/components/transaction-keypad/transaction-keypad.tsx
+#: src/transaction/components/transaction-form-actions/transaction-form-actions.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
@@ -3116,6 +3116,7 @@ msgstr "date"
 #: src/app/date-picker.tsx
 #: src/import/utils/get-import-match-description.util.ts
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
+#: src/transaction/components/transaction-date-tags-row/transaction-date-tags-row.tsx
 msgid "Date"
 msgstr "Date"
 
@@ -3189,6 +3190,7 @@ msgstr "Default currency"
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/tag/components/tag-card/tag-card.tsx
 #: src/tag/hooks/use-delete-tag.hook.ts
+#: src/transaction/components/transaction-keypad/transaction-keypad.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Delete"
 msgstr "Delete"
@@ -3390,6 +3392,7 @@ msgstr "Does not contain"
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
+#: src/transaction/hook/use-transaction-keypad-editing.hook.ts
 msgid "Done"
 msgstr "Done"
 
@@ -3690,6 +3693,7 @@ msgstr "Enter all amounts"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 #: src/transaction/hook/use-quick-form-submit.hook.ts
+#: src/transaction/hook/use-transaction-keypad-editing.hook.ts
 msgid "Enter an amount"
 msgstr "Enter an amount"
 
@@ -5484,7 +5488,9 @@ msgstr "Not on any transactions. This can’t be undone."
 msgid "Not saved yet"
 msgstr "Not saved yet"
 
+#: src/transaction/components/transaction-field-caption/transaction-field-caption.tsx
 #: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx
+#: src/transaction/components/transaction-metadata-field/transaction-metadata-field.tsx
 msgid "not set"
 msgstr "not set"
 
@@ -5588,6 +5594,7 @@ msgstr "On track"
 #: src/ai/component/ai-download-card-frame/ai-download-card-frame.tsx
 #: src/ai/component/ai-system-status-banner/ai-system-status-banner.tsx
 #: src/app/(tabs)/settings/ai.tsx
+#: src/transaction/components/suggestion-loading-indicator/suggestion-loading-indicator.tsx
 msgid "On-device AI"
 msgstr "On-device AI"
 
@@ -6714,8 +6721,9 @@ msgstr "Same trigger as a rule above"
 
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
-#: src/transaction/components/transaction-keypad/transaction-keypad.tsx
+#: src/transaction/components/simple-quick-form/simple-quick-form.tsx
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
+#: src/transaction/components/update-adjustment-transaction/update-adjustment-transaction.tsx
 msgid "Save"
 msgstr "Save"
 
@@ -7467,9 +7475,9 @@ msgstr "Tagged expenses also count in your main budget."
 #: src/app/tags-selector.tsx
 #: src/settings/components/organize-settings-rows/organize-settings-rows.tsx
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
+#: src/transaction/components/transaction-date-tags-row/transaction-date-tags-row.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 #: src/transaction/components/transaction-info-tags-section/transaction-info-tags-section.tsx
-#: src/transaction/components/transaction-tags-field-icon/transaction-tags-field-icon.tsx
 msgid "Tags"
 msgstr "Tags"
 
@@ -7868,7 +7876,7 @@ msgstr "To set aside this period"
 #: src/budget/components/budget-day-strip-key/budget-day-strip-key.tsx
 #: src/market-data/hook/use-market-chart-timeline.hook.ts
 #: src/transaction/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
-#: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
+#: src/transaction/hook/use-transaction-date-label.hook.ts
 #: src/transaction/query/use-get-transaction-sections.query.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Today"
@@ -8566,7 +8574,7 @@ msgstr "Year"
 msgid "Yearly budget"
 msgstr "Yearly budget"
 
-#: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
+#: src/transaction/hook/use-transaction-date-label.hook.ts
 #: src/transaction/query/use-get-transaction-sections.query.ts
 msgid "Yesterday"
 msgstr "Yesterday"

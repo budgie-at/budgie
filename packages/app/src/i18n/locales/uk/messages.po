@@ -1980,7 +1980,7 @@ msgstr "Змінити пізніше не можна"
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
-#: src/transaction/components/transaction-keypad/transaction-keypad.tsx
+#: src/transaction/components/transaction-form-actions/transaction-form-actions.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
@@ -3115,6 +3115,7 @@ msgstr "дата"
 #: src/app/date-picker.tsx
 #: src/import/utils/get-import-match-description.util.ts
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
+#: src/transaction/components/transaction-date-tags-row/transaction-date-tags-row.tsx
 msgid "Date"
 msgstr "Дата"
 
@@ -3188,6 +3189,7 @@ msgstr "Валюта за замовчуванням"
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/tag/components/tag-card/tag-card.tsx
 #: src/tag/hooks/use-delete-tag.hook.ts
+#: src/transaction/components/transaction-keypad/transaction-keypad.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Delete"
 msgstr "Видалити"
@@ -3389,6 +3391,7 @@ msgstr "Не містить"
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
+#: src/transaction/hook/use-transaction-keypad-editing.hook.ts
 msgid "Done"
 msgstr "Готово"
 
@@ -3689,6 +3692,7 @@ msgstr "Введіть усі суми"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 #: src/transaction/hook/use-quick-form-submit.hook.ts
+#: src/transaction/hook/use-transaction-keypad-editing.hook.ts
 msgid "Enter an amount"
 msgstr "Введіть суму"
 
@@ -5483,7 +5487,9 @@ msgstr "Не використовується в жодній транзакці
 msgid "Not saved yet"
 msgstr "Ще не збережено"
 
+#: src/transaction/components/transaction-field-caption/transaction-field-caption.tsx
 #: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx
+#: src/transaction/components/transaction-metadata-field/transaction-metadata-field.tsx
 msgid "not set"
 msgstr "не встановлено"
 
@@ -5587,6 +5593,7 @@ msgstr "За планом"
 #: src/ai/component/ai-download-card-frame/ai-download-card-frame.tsx
 #: src/ai/component/ai-system-status-banner/ai-system-status-banner.tsx
 #: src/app/(tabs)/settings/ai.tsx
+#: src/transaction/components/suggestion-loading-indicator/suggestion-loading-indicator.tsx
 msgid "On-device AI"
 msgstr "ШІ на пристрої"
 
@@ -6713,8 +6720,9 @@ msgstr "Та сама умова, що й у правила вище"
 
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
-#: src/transaction/components/transaction-keypad/transaction-keypad.tsx
+#: src/transaction/components/simple-quick-form/simple-quick-form.tsx
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
+#: src/transaction/components/update-adjustment-transaction/update-adjustment-transaction.tsx
 msgid "Save"
 msgstr "Зберегти"
 
@@ -7466,9 +7474,9 @@ msgstr "Витрати з тегом також враховуються в ос
 #: src/app/tags-selector.tsx
 #: src/settings/components/organize-settings-rows/organize-settings-rows.tsx
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
+#: src/transaction/components/transaction-date-tags-row/transaction-date-tags-row.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 #: src/transaction/components/transaction-info-tags-section/transaction-info-tags-section.tsx
-#: src/transaction/components/transaction-tags-field-icon/transaction-tags-field-icon.tsx
 msgid "Tags"
 msgstr "Теги"
 
@@ -7867,7 +7875,7 @@ msgstr "Відкласти в цьому періоді"
 #: src/budget/components/budget-day-strip-key/budget-day-strip-key.tsx
 #: src/market-data/hook/use-market-chart-timeline.hook.ts
 #: src/transaction/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
-#: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
+#: src/transaction/hook/use-transaction-date-label.hook.ts
 #: src/transaction/query/use-get-transaction-sections.query.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Today"
@@ -8565,7 +8573,7 @@ msgstr "Рік"
 msgid "Yearly budget"
 msgstr "Річний бюджет"
 
-#: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
+#: src/transaction/hook/use-transaction-date-label.hook.ts
 #: src/transaction/query/use-get-transaction-sections.query.ts
 msgid "Yesterday"
 msgstr "Вчора"
