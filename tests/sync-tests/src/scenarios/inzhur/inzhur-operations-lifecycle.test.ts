@@ -23,7 +23,6 @@ import { importInzhurStatement } from '../../harness/inzhur/import-inzhur-statem
 import { INZHUR_REIT_LAYOUT } from '../../harness/inzhur/inzhur-fund-layouts';
 import {
     CASH_AFTER_HISTORY,
-    CONVERSION_AT,
     DIVIDEND_TYPE,
     FULL_HISTORY_ROWS,
     OCEAN,
@@ -36,8 +35,7 @@ import { requireInzhurFundAccount } from '../../harness/inzhur/require-inzhur-fu
 import { requireInzhurFundByName } from '../../harness/inzhur/require-inzhur-fund-by-name';
 import { requireInzhurSetup } from '../../harness/inzhur/require-inzhur-setup';
 import { seedInzhurBankAccount } from '../../harness/inzhur/seed-inzhur-bank-account';
-import { seedInzhurFundInstrument } from '../../harness/inzhur/seed-inzhur-fund-instrument';
-import { seedInzhurPrice } from '../../harness/inzhur/seed-inzhur-price';
+import { seedInzhurReitPrices } from '../../harness/inzhur/seed-inzhur-reit-prices';
 import { setUpInzhurWithBaseline } from '../../harness/inzhur/set-up-inzhur-with-baseline';
 
 const URI = 'operations.xlsx';
@@ -45,7 +43,7 @@ const OLDER_URI = 'older.xlsx';
 const NEWER_URI = 'newer.xlsx';
 const PARTIAL_URI = 'partial.xlsx';
 const FRESH_URI = 'fresh.xlsx';
-const REIT_CODE = 'INZHUR:REIT';
+const LONG_URI = 'long.xlsx';
 const ENERGY_NAME = 'Inzhur Energy';
 const PARTIAL_ROWS = [
     { at: '2026-02-01T10:00:00', type: 'Купівля 10 сертифікатів', fund: REIT, credit: 100 },
@@ -57,6 +55,11 @@ const bytesByUri = {
     [OLDER_URI]: buildInzhurOperationsWorkbook(FULL_HISTORY_ROWS.slice(0, 4)),
     [NEWER_URI]: buildInzhurOperationsWorkbook(FULL_HISTORY_ROWS.slice(4)),
     [PARTIAL_URI]: buildInzhurOperationsWorkbook(PARTIAL_ROWS),
+    [LONG_URI]: buildInzhurOperationsWorkbook([
+        ...FULL_HISTORY_ROWS,
+        { at: '2026-11-02T10:00:00', type: TOP_UP_TYPE, debit: 1 },
+        { at: '2026-11-02T10:01:00', type: 'Виведення з брокерського рахунку', credit: 1 }
+    ]),
     [FRESH_URI]: buildInzhurOperationsWorkbook([...FULL_HISTORY_ROWS, { at: '2026-06-10T10:00:00', type: TOP_UP_TYPE, debit: 50 }])
 };
 const statementItems = {
@@ -65,11 +68,7 @@ const statementItems = {
 };
 const layer = makeInzhurOperationsLayer(bytesByUri, statementItems);
 
-const seedReit = Effect.gen(function* () {
-    yield* seedInzhurFundInstrument(REIT_CODE, REIT);
-    yield* seedInzhurPrice(REIT_CODE, CONVERSION_AT.slice(0, 10), 10);
-    yield* seedInzhurPrice(REIT_CODE, '2026-01-10', 10);
-});
+const seedReit = seedInzhurReitPrices;
 
 const setUp = (enteredCash: number) => Effect.flatMap(InzhurSetupService, service => service.setup(enteredCash));
 
@@ -121,7 +120,7 @@ describe('inzhur/operations-lifecycle', () => {
 
             expect((yield* fetchInzhurLedger()).some(({ externalId }) => externalId?.endsWith(':dividend'))).toBe(true);
 
-            const summary = yield* importInzhurOperations(URI);
+            const summary = yield* importInzhurOperations(LONG_URI);
             const leftovers = (yield* fetchInzhurLedger()).filter(({ externalId }) => !externalId?.startsWith('inzhur:op:'));
 
             expect(summary.removedEstimateCount).toBeGreaterThan(0);
@@ -140,7 +139,7 @@ describe('inzhur/operations-lifecycle', () => {
     it.effect('fills the converted quantity from a holdings statement when one is imported', () =>
         Effect.gen(function* () {
             const { reitAccount } = yield* setUpInzhurWithBaseline(100, 470, 2);
-            const summary = yield* importInzhurOperations(URI);
+            const summary = yield* importInzhurOperations(LONG_URI);
 
             expect(yield* fetchAccountBalance(reitAccount.id)).toBe(470 * PRECISION);
             expect(summary.funds.find(fund => fund.name === REIT)).toMatchObject({ boughtQuantity: 470, isQuantityEstimated: false });
