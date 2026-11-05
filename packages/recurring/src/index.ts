@@ -1,4 +1,18 @@
 export { RecurringService } from './service/recurring.service';
+export { RecurringRefreshService } from './service/recurring-refresh.service';
+export { RecurringRepository } from './repository/recurring.repository';
 export { RecurringAlertEnum } from './enum/recurring-alert.enum';
+export { RECURRING_ACTIVE_CONFIDENCE } from './constant/recurring-active-confidence.constant';
+export { buildRecurringActiveCondition } from './utils/build-recurring-active-condition.util';
+export { nextOccurrences, monthlyEquivalent, cadencePeriodDays, cadenceToleranceDays } from './series/recurring-schedule';
+export { RecurringSeriesNotFoundError } from './error/recurring-series-not-found.error';
+export { RecurringTransactionNotFoundError } from './error/recurring-transaction-not-found.error';
 export type { RecurringCalendarDataInterface } from './interface/recurring-calendar-data.interface';
 export type { RecurringCalendarEntryInterface } from './interface/recurring-calendar-entry.interface';
+export type { RecurringSeriesListItemInterface } from './interface/recurring-series-list-item.interface';
+export type { RecurringSeriesDetailInterface } from './interface/recurring-series-detail.interface';
+export type { RecurringHistoryItemInterface } from './interface/recurring-history-item.interface';
+export type { RecurringManualInputInterface } from './interface/recurring-manual-input.interface';
+export type { RecurringUpdateInputInterface } from './interface/recurring-update-input.interface';
+export type { RecurringRemovalInterface } from './interface/recurring-removal.interface';
+export type { RecurringRefreshSummaryInterface } from './interface/recurring-refresh-summary.interface';

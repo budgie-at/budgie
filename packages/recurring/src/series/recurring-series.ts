@@ -1,11 +1,14 @@
 import { addDays } from 'date-fns/addDays';
 import { addMonths } from 'date-fns/addMonths';
 import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
+import * as Arr from 'effect/Array';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { RECURRING_AMOUNT_RATIO } from '../constant/recurring-amount-ratio.constant';
 import { normalizeRecurringDescription } from '../utils/normalize-recurring-description.util';
+
+import { continueRecurringSeries } from './recurring-continuation';
 
 import type { RecurringCadenceInterface } from '../interface/recurring-cadence.interface';
 import type { RecurringChargeInterface } from '../interface/recurring-charge.interface';
@@ -16,9 +19,9 @@ export const DAY_MS = 86_400_000;
 export const DAYS_PER_MONTH = 30.44;
 const RECENT_INTERVAL_COUNT = 4;
 const RECENT_AMOUNT_COUNT = 3;
-const PRICE_CHANGE_RATIO = 0.05;
-const ACTIVE_PERIOD_RATIO = 1.5;
-const CADENCES: readonly RecurringCadenceInterface[] = [
+export const PRICE_CHANGE_RATIO = 0.05;
+export const ACTIVE_PERIOD_RATIO = 1.5;
+export const CADENCES: readonly RecurringCadenceInterface[] = [
     { periodMonths: null, periodDays: 7, toleranceDays: 1 },
     { periodMonths: null, periodDays: 14, toleranceDays: 2 },
     { periodMonths: 1, periodDays: DAYS_PER_MONTH, toleranceDays: 4 },
@@ -42,14 +45,14 @@ export const monthIndex = (timestamp: number): number => {
     return date.getFullYear() * 12 + date.getMonth();
 };
 
-const description = (charge: RecurringChargeInterface): string => (isNotEmptyString(charge.title) ? charge.title : charge.comment);
+export const description = (charge: RecurringChargeInterface): string => (isNotEmptyString(charge.title) ? charge.title : charge.comment);
 
-const counterpartyKey = (charge: RecurringChargeInterface): string =>
+export const counterpartyKey = (charge: RecurringChargeInterface): string =>
     isNotEmptyString(charge.counterpartyIban)
         ? charge.counterpartyIban.replaceAll(/\s/gu, '').toUpperCase()
         : normalizeRecurringDescription(description(charge));
 
-const identity = (charge: RecurringChargeInterface): string =>
+export const identity = (charge: RecurringChargeInterface): string =>
     isNotEmptyString(counterpartyKey(charge)) ? `${charge.kind}|${charge.instrumentId}|${counterpartyKey(charge)}` : '';
 
 const cleanTokens = (charge: RecurringChargeInterface, referenceTail: RegExp, numericToken: RegExp): string[] =>
@@ -269,17 +272,11 @@ const detectMerchantSeries = (charges: readonly RecurringChargeInterface[]): Rec
 };
 
 export const detectRecurringSeries = (charges: readonly RecurringChargeInterface[]): RecurringSeriesInterface[] => {
-    const groups = new Map<string, RecurringChargeInterface[]>();
-    for (const charge of charges) {
-        const key = identity(charge);
-        if (isNotEmptyString(key)) {
-            const group = groups.get(key) ?? [];
-            group.push(charge);
-            groups.set(key, group);
-        }
-    }
-
-    return [...groups.values()].flatMap(group => {
+    const groups = Arr.groupBy(
+        charges.filter(charge => isNotEmptyString(identity(charge))),
+        identity
+    );
+    const detected = Object.values(groups).flatMap(group => {
         const series = detectMerchantSeries(group);
 
         return series.filter(
@@ -296,4 +293,6 @@ export const detectRecurringSeries = (charges: readonly RecurringChargeInterface
                     ))
         );
     });
+
+    return continueRecurringSeries(detected);
 };

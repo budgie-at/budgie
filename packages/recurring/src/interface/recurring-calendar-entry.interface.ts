@@ -14,6 +14,6 @@ export interface RecurringCalendarEntryInterface {
     readonly latestTransactionId: number | null;
     readonly dayOfMonth: number;
     readonly periodDays: number;
-    readonly accountId: number;
+    readonly accountId: number | null;
     readonly isForecast: boolean;
 }
