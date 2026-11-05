@@ -1,6 +1,9 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 
 interface Props {
     readonly title: string;
@@ -10,22 +13,32 @@ interface Props {
     readonly disabled?: boolean;
 }
 
-export const TransactionPickerSheetHeader = ({ title, closeLabel, onClose, closeTestID, disabled }: Props) => (
-    <View className="min-h-11 flex-row items-center gap-x-xl">
-        <Text dynamicTypeRamp="title3" accessibilityRole="header" className="flex-1 text-[17px] font-semibold text-primary">
-            {title}
-        </Text>
-        <HapticPressable
-            disabled={disabled}
-            accessibilityRole="button"
-            accessibilityLabel={closeLabel}
-            onPress={onClose}
-            testID={closeTestID}
-            className="min-h-11 justify-center px-sm active:opacity-60"
-        >
-            <Text dynamicTypeRamp="caption2" className="text-[14px] font-semibold text-primary">
-                {closeLabel}
-            </Text>
-        </HapticPressable>
-    </View>
-);
+export const TransactionPickerSheetHeader = ({ title, closeLabel, onClose, closeTestID, disabled }: Props) => {
+    const largeText = useIsAccessibilityTextSize();
+
+    return (
+        <View className="min-h-11 flex-row items-center justify-end gap-x-xl">
+            {largeText ? null : (
+                <Text dynamicTypeRamp="title3" accessibilityRole="header" className="flex-1 text-[17px] font-semibold text-primary">
+                    {title}
+                </Text>
+            )}
+            <HapticPressable
+                disabled={disabled}
+                accessibilityRole="button"
+                accessibilityLabel={closeLabel}
+                onPress={onClose}
+                testID={closeTestID}
+                className="min-h-11 min-w-11 items-center justify-center px-sm active:opacity-60"
+            >
+                {largeText ? (
+                    <Icon icon={UserIconNameEnum.X} size={24} className="text-primary" />
+                ) : (
+                    <Text dynamicTypeRamp="caption2" className="text-[14px] font-semibold text-primary">
+                        {closeLabel}
+                    </Text>
+                )}
+            </HapticPressable>
+        </View>
+    );
+};

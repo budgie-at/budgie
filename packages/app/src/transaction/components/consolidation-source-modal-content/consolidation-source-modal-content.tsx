@@ -1,6 +1,6 @@
 import { TransactionConsolidationTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { ScrollView, Text } from 'react-native';
+import { Text } from 'react-native';
 
 import { EmptyFn, isDefined, isEmptyArray } from '@rnw-community/shared';
 
@@ -13,7 +13,6 @@ import { TransactionPickerAction } from '../transaction-picker-action/transactio
 import { TransactionPickerContext } from '../transaction-picker-context/transaction-picker-context';
 import { TransactionPickerEmpty } from '../transaction-picker-empty/transaction-picker-empty';
 import { TransactionPickerFailure } from '../transaction-picker-failure/transaction-picker-failure';
-import { TransactionPickerSheetHeader } from '../transaction-picker-sheet-header/transaction-picker-sheet-header';
 import { TransactionPickerSheet } from '../transaction-picker-sheet/transaction-picker-sheet';
 
 import { ConsolidationSourceModalSelector } from './consolidation-source-modal-content.selector';
@@ -34,14 +33,10 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
 
     return (
         <TransactionPickerSheet
-            header={
-                <TransactionPickerSheetHeader
-                    title={t`Sources`}
-                    closeLabel={t`Done`}
-                    onClose={onClose}
-                    closeTestID={ConsolidationSourceModalSelector.DoneButton}
-                />
-            }
+            title={t`Sources`}
+            closeLabel={t`Done`}
+            onClose={onClose}
+            closeTestID={ConsolidationSourceModalSelector.DoneButton}
             footer={
                 <TransactionPickerAction
                     label={t`Separate all`}
@@ -51,31 +46,29 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
                 />
             }
         >
-            <ScrollView className="flex-1" contentContainerClassName="grow px-xl pb-xl" keyboardShouldPersistTaps="handled">
-                <TransactionPickerContext transactionId={transactionId} label={contextLabel} />
-                <LoadingContent isLoading={isLoading} containerClassName="grow shrink-0">
-                    {hasError ? <TransactionPickerFailure onRetry={retry} /> : null}
-                    {showEmptyState ? (
-                        <TransactionPickerEmpty
-                            icon={UserIconNameEnum.GitMerge}
-                            title={t`No source transactions`}
-                            description={t`There are no linked transactions to show.`}
-                        />
-                    ) : null}
-                    {sources.map((source, index) => (
-                        <ConsolidationSourceRow
-                            key={source.entryId}
-                            source={source}
-                            position={getTransactionListRowPosition(index, sources.length)}
-                            consolidationType={consolidationType}
-                            testID={ConsolidationSourceModalSelector.Row(index)}
-                        />
-                    ))}
-                </LoadingContent>
-                <Text dynamicTypeRamp="footnote" className="pt-md text-[13px] text-secondary-foreground">
-                    <Trans>Each source becomes a separate transaction.</Trans>
-                </Text>
-            </ScrollView>
+            <TransactionPickerContext transactionId={transactionId} label={contextLabel} />
+            <LoadingContent isLoading={isLoading} containerClassName="grow shrink-0">
+                {hasError ? <TransactionPickerFailure onRetry={retry} /> : null}
+                {showEmptyState ? (
+                    <TransactionPickerEmpty
+                        icon={UserIconNameEnum.GitMerge}
+                        title={t`No source transactions`}
+                        description={t`There are no linked transactions to show.`}
+                    />
+                ) : null}
+                {sources.map((source, index) => (
+                    <ConsolidationSourceRow
+                        key={source.entryId}
+                        source={source}
+                        position={getTransactionListRowPosition(index, sources.length)}
+                        consolidationType={consolidationType}
+                        testID={ConsolidationSourceModalSelector.Row(index)}
+                    />
+                ))}
+            </LoadingContent>
+            <Text dynamicTypeRamp="footnote" className="pt-md text-[13px] text-secondary-foreground">
+                <Trans>Each source becomes a separate transaction.</Trans>
+            </Text>
         </TransactionPickerSheet>
     );
 };

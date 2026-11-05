@@ -1,7 +1,7 @@
 import { TransactionConsolidationTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { ScrollView, Text } from 'react-native';
+import { Text } from 'react-native';
 
 import { isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
@@ -18,7 +18,6 @@ import { TransactionPickerContext } from '../transaction-picker-context/transact
 import { TransactionPickerEmpty } from '../transaction-picker-empty/transaction-picker-empty';
 import { TransactionPickerFailure } from '../transaction-picker-failure/transaction-picker-failure';
 import { TransactionPickerRow } from '../transaction-picker-row/transaction-picker-row';
-import { TransactionPickerSheetHeader } from '../transaction-picker-sheet-header/transaction-picker-sheet-header';
 import { TransactionPickerSheet } from '../transaction-picker-sheet/transaction-picker-sheet';
 
 import type { ConvertToRefundModalResolveType } from '../../interface/convert-to-refund-modal-resolve.type';
@@ -57,9 +56,11 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
 
     return (
         <TransactionPickerSheet
-            header={
-                <TransactionPickerSheetHeader title={t`Refund`} closeLabel={t`Cancel`} onClose={handleResolve} disabled={isConverting} />
-            }
+            title={t`Refund`}
+            closeLabel={t`Cancel`}
+            onClose={handleResolve}
+            disabled={isConverting}
+            testID={ConvertToRefundModalSelector.Picker}
             footer={
                 <ConvertToRefundFooter
                     selectedCandidate={selectedCandidate}
@@ -70,50 +71,45 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
                 />
             }
         >
-            <ScrollView
-                className="flex-1"
-                contentContainerClassName="grow px-xl pb-xl"
-                automaticallyAdjustKeyboardInsets
-                keyboardShouldPersistTaps="handled"
-                testID={ConvertToRefundModalSelector.Picker}
+            <TransactionPickerContext transactionId={refundIncomeTransactionId} label={t`Refund`} />
+            <Text dynamicTypeRamp="footnote" className="pb-xl text-[15px] text-secondary-foreground">
+                <Trans>Choose the original expense.</Trans>
+            </Text>
+            <SearchInput
+                value={search}
+                allowFontScaling
+                containerClassName="h-auto min-h-[50px] py-sm"
+                placeholder={t`Search expenses`}
+                onChangeText={handleSearchChange}
+                testID={ConvertToRefundModalSelector.SearchInput}
+            />
+            <Text
+                dynamicTypeRamp="footnote"
+                accessibilityRole="header"
+                className="pt-xl pb-md text-[13px] font-semibold text-secondary-foreground"
             >
-                <TransactionPickerContext transactionId={refundIncomeTransactionId} label={t`Refund`} />
-                <SearchInput
-                    value={search}
-                    allowFontScaling
-                    containerClassName="h-auto min-h-[50px] py-sm"
-                    placeholder={t`Search expenses`}
-                    onChangeText={handleSearchChange}
-                    testID={ConvertToRefundModalSelector.SearchInput}
-                />
-                <Text
-                    dynamicTypeRamp="footnote"
-                    accessibilityRole="header"
-                    className="pt-xl pb-md text-[13px] font-semibold text-secondary-foreground"
-                >
-                    <Trans>Original expense</Trans>
-                </Text>
-                <LoadingContent isLoading={isLoading} containerClassName="grow shrink-0">
-                    {isNotEmptyString(errorMessage) ? <TransactionPickerFailure onRetry={retry} /> : null}
-                    {showEmpty ? (
-                        <TransactionPickerEmpty
-                            icon={UserIconNameEnum.SearchX}
-                            title={t`No matching expenses`}
-                            description={t`Try a different merchant, amount, or date.`}
-                        />
-                    ) : null}
-                    {candidates.map((candidate, index) => (
-                        <TransactionPickerRow
-                            key={candidate.id}
-                            position={getTransactionListRowPosition(index, candidates.length)}
-                            item={candidate}
-                            isSelected={selectedCandidate?.id === candidate.id}
-                            onPress={setSelectedCandidate}
-                            testID={ConvertToRefundModalSelector.CandidateRow(candidate.id)}
-                        />
-                    ))}
-                </LoadingContent>
-            </ScrollView>
+                <Trans>Original expense</Trans>
+            </Text>
+            <LoadingContent isLoading={isLoading} containerClassName="grow shrink-0">
+                {isNotEmptyString(errorMessage) ? <TransactionPickerFailure onRetry={retry} /> : null}
+                {showEmpty ? (
+                    <TransactionPickerEmpty
+                        icon={UserIconNameEnum.SearchX}
+                        title={t`No matching expenses`}
+                        description={t`Try a different merchant, amount, or date.`}
+                    />
+                ) : null}
+                {candidates.map((candidate, index) => (
+                    <TransactionPickerRow
+                        key={candidate.id}
+                        position={getTransactionListRowPosition(index, candidates.length)}
+                        item={candidate}
+                        isSelected={selectedCandidate?.id === candidate.id}
+                        onPress={setSelectedCandidate}
+                        testID={ConvertToRefundModalSelector.CandidateRow(candidate.id)}
+                    />
+                ))}
+            </LoadingContent>
         </TransactionPickerSheet>
     );
 };

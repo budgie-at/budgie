@@ -25,6 +25,7 @@ export const TransactionPickerRowContent = ({ item, title, amount, date, selecti
         item.type === TransactionTypeEnum.INCOME
             ? 'text-[17px] font-semibold tabular-nums text-positive-strong'
             : 'text-[17px] font-semibold tabular-nums text-primary';
+    const amountRowClassName = largeText ? 'flex-row items-center justify-between gap-x-md' : 'flex-row items-center gap-x-sm';
     const icon = item.categoryIcon ?? UserIconNameEnum.ReceiptText;
 
     return (
@@ -35,7 +36,7 @@ export const TransactionPickerRowContent = ({ item, title, amount, date, selecti
                     <Text dynamicTypeRamp="body" className={titleClassName}>
                         {title}
                     </Text>
-                    <View className="flex-row items-center gap-x-sm">
+                    <View className={amountRowClassName}>
                         <Text dynamicTypeRamp="body" className={amountClassName}>
                             {amount}
                         </Text>

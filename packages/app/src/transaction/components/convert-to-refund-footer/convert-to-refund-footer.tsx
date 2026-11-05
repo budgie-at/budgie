@@ -17,7 +17,7 @@ interface Props {
 
 export const ConvertToRefundFooter = ({ selectedCandidate, showRevert, onConvert, onRevert, isConverting }: Props) => {
     const { t } = useLingui();
-    const label = showRevert ? t`Undo Refund` : t`Convert`;
+    const label = showRevert ? t`Undo Refund` : t`Apply refund`;
     const onPress = showRevert ? onRevert : onConvert;
     const disabled = !showRevert && !isDefined(selectedCandidate);
     const testID = showRevert ? ConvertToRefundModalSelector.RevertButton : ConvertToRefundModalSelector.ConvertButton;

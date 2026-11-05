@@ -1502,6 +1502,10 @@ msgstr "Anwenden"
 msgid "Apply merchant categories"
 msgstr "Händlerkategorien anwenden"
 
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
+msgid "Apply refund"
+msgstr "Erstattung anwenden"
+
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Apply to existing transactions?"
 msgstr "Auf bestehende Transaktionen anwenden?"
@@ -2321,6 +2325,10 @@ msgstr "Konto wählen, von dem es kommt"
 msgid "Choose the account it goes to"
 msgstr "Konto wählen, auf das es geht"
 
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
+msgid "Choose the original expense."
+msgstr "Ursprüngliche Ausgabe auswählen."
+
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Choose the other account"
 msgstr "Anderes Konto wählen"
@@ -2524,7 +2532,6 @@ msgstr "Konvertierung fehlgeschlagen"
 
 #: src/money-data/component/money-data-upgrade-status-card/money-data-upgrade-status-card.tsx
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 msgid "Convert"
 msgstr "Umwandeln"

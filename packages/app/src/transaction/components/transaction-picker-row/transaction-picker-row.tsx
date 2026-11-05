@@ -24,6 +24,8 @@ interface Props {
     readonly testID?: string;
 }
 
+const NORMAL_TEXT_INSET = 52;
+
 const pressableVariants = cva('px-xl py-xl active:scale-100 active:opacity-70', {
     variants: { selected: { true: 'bg-secondary-background' } }
 });
@@ -31,13 +33,22 @@ const pressableVariants = cva('px-xl py-xl active:scale-100 active:opacity-70', 
 export const TransactionPickerRow = ({ item, position, isSelected = false, onPress, testID }: Props) => {
     const { formatMonthAndDayWithTime } = useFormatDate();
     const protectAmount = useProtectedAmountLabel();
-    const separatorInset = useIsAccessibilityTextSize() ? 16 : 60;
+    const largeText = useIsAccessibilityTextSize();
+    const separatorInset = largeText ? 12 : NORMAL_TEXT_INSET;
+    const selectionSize = largeText ? 32 : 28;
     const signedAmount = `${item.type === TransactionTypeEnum.INCOME ? '+' : ''}${protectAmount(convertFromMicroUnits(item.amount), item.currencySymbol)}`;
     const title = isNotEmptyString(item.title) ? item.title : t`No title`;
-    const date = formatMonthAndDayWithTime(item.operatedAt);
     const selectionIcon = isSelected ? UserIconNameEnum.CircleCheck : UserIconNameEnum.Circle;
-    const selection = isDefined(onPress) ? <Icon icon={selectionIcon} size={28} className="text-primary" /> : null;
-    const content = <TransactionPickerRowContent item={item} title={title} date={date} amount={signedAmount} selection={selection} />;
+    const selection = isDefined(onPress) ? <Icon icon={selectionIcon} size={selectionSize} className="text-primary" /> : null;
+    const content = (
+        <TransactionPickerRowContent
+            item={item}
+            title={title}
+            date={formatMonthAndDayWithTime(item.operatedAt)}
+            amount={signedAmount}
+            selection={selection}
+        />
+    );
 
     if (!isDefined(onPress)) {
         return (

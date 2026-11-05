@@ -13,7 +13,7 @@ interface Props {
 export const TransactionPickerAction = ({ label, onPress, disabled, isLoading, testID }: Props) => (
     <Button
         content={
-            <Text dynamicTypeRamp="body" className="text-[17px] font-semibold text-center">
+            <Text dynamicTypeRamp="headline" className="text-[17px] font-semibold text-center">
                 {label}
             </Text>
         }
