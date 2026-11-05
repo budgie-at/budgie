@@ -1,8 +1,7 @@
-import { ScrollView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
@@ -32,37 +31,40 @@ export const RecurringCalendarEntryList = ({
     emptyContent
 }: Props) => {
     const { formatMonthAndDay } = useFormatDate();
+    const hasTotal = isNotEmptyString(formattedTotal);
     const hasDayLabels = isDefined(displayMonth) && isDefined(displayYear);
-    const rowsClassName = hasDayLabels ? 'pt-lg' : '';
 
     return (
-        <View className="flex-1 pt-lg">
-            <View className="bg-surface py-md -mx-5xl px-5xl flex-row justify-between items-center">
-                <Text className="text-[13px] font-semibold text-primary" {...testIDProps(headerTestID)}>
+        <View className="gap-y-md">
+            <View className="gap-x-xl flex-row flex-wrap justify-between items-center">
+                <Text
+                    dynamicTypeRamp="footnote"
+                    className="text-[13px] font-medium text-secondary-foreground"
+                    {...testIDProps(headerTestID)}
+                >
                     {title}
                 </Text>
-                <ProtectedText className="text-[13px] tabular-nums text-secondary-foreground">{formattedTotal}</ProtectedText>
+                {hasTotal ? (
+                    <ProtectedText dynamicTypeRamp="footnote" className="text-[12px] tabular-nums text-secondary-foreground">
+                        {formattedTotal}
+                    </ProtectedText>
+                ) : null}
             </View>
 
-            <ScrollView className="flex-1" contentContainerClassName="pb-5xl" showsVerticalScrollIndicator={false}>
-                {isNotEmptyArray(entries) ? (
-                    <View className={rowsClassName}>
-                        {entries.map((entry, index) => (
-                            <RecurringCalendarEntryRow
-                                key={entry.key}
-                                entry={entry}
-                                position={getTransactionListRowPosition(index, entries.length)}
-                                {...(hasDayLabels && {
-                                    dayLabel: formatMonthAndDay(new Date(displayYear, displayMonth, entry.dayOfMonth))
-                                })}
-                            />
-                        ))}
-                    </View>
-                ) : (
-                    emptyContent
-                )}
-                <MenuSpacer />
-            </ScrollView>
+            <View>
+                {isNotEmptyArray(entries)
+                    ? entries.map((entry, index) => (
+                          <RecurringCalendarEntryRow
+                              key={entry.key}
+                              entry={entry}
+                              position={getTransactionListRowPosition(index, entries.length)}
+                              {...(hasDayLabels && {
+                                  dayLabel: formatMonthAndDay(new Date(displayYear, displayMonth, entry.dayOfMonth))
+                              })}
+                          />
+                      ))
+                    : emptyContent}
+            </View>
         </View>
     );
 };

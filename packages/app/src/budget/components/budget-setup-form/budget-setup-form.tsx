@@ -1,6 +1,8 @@
+import { BudgetLimitSourceEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRef } from 'react';
 import { FormProvider, useWatch } from 'react-hook-form';
+import { View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -21,6 +23,7 @@ import { BudgetLimitSourceField } from '../budget-limit-source-field/budget-limi
 import { BudgetNameField } from '../budget-name-field/budget-name-field';
 import { BudgetPageState } from '../budget-page-state/budget-page-state';
 import { BudgetPeriodField } from '../budget-period-field/budget-period-field';
+import { BudgetSetupProgressContent } from '../budget-setup-progress-content/budget-setup-progress-content';
 import { BudgetSetupProgress } from '../budget-setup-progress/budget-setup-progress';
 import { BudgetStartsOnField } from '../budget-starts-on-field/budget-starts-on-field';
 
@@ -35,19 +38,8 @@ interface Props {
 export const BudgetSetupForm = ({ defaultInstrumentId, editingId, templateKind }: Props) => {
     const { t } = useLingui();
     const scrollViewRef = useRef<KeyboardAwareScrollViewRef | null>(null);
-    const {
-        form,
-        handleCancel,
-        handleSubmit,
-        handleDelete,
-        handlePeriodChange,
-        isEditing,
-        isLoading,
-        isError,
-        isSubmitting,
-        isUnavailable,
-        budget
-    } = useBudgetForm({ defaultInstrumentId, editingId, templateKind });
+    const budgetForm = useBudgetForm({ defaultInstrumentId, editingId, templateKind });
+    const { form, isEditing, isLoading, isError, isSubmitting, isUnavailable, budget } = budgetForm;
     const { instrumentId, saveBlocker: watchedSaveBlocker } = useWatch({
         control: form.control,
         compute: values => {
@@ -67,6 +59,7 @@ export const BudgetSetupForm = ({ defaultInstrumentId, editingId, templateKind }
     const [headerTitle, submitLabel] = isEditing ? [t`Edit budget`, t`Save changes`] : [t`Create budget`, t`Create budget`];
     const isSaveDisabled = isLoading || isDefined(saveBlocker);
     const saveLabel = isDefined(saveBlocker) ? t(saveBlocker) : submitLabel;
+    const hasProgress = isEditing && (!isDefined(budget) || budget.limitSource === BudgetLimitSourceEnum.FIXED);
 
     return isUnavailable ? (
         <BudgetPageState title={headerTitle} isLoading={false} isError={isError} />
@@ -74,7 +67,7 @@ export const BudgetSetupForm = ({ defaultInstrumentId, editingId, templateKind }
         <FormProvider {...form}>
             <CollapsibleChromePage
                 title={headerTitle}
-                leading={<GoBackButton onPress={handleCancel} />}
+                leading={<GoBackButton onPress={budgetForm.handleCancel} />}
                 contentClassName="gap-y-7xl"
                 scrollViewProps={scrollViewProps}
                 footer={
@@ -84,12 +77,20 @@ export const BudgetSetupForm = ({ defaultInstrumentId, editingId, templateKind }
                         isLoading={isSubmitting}
                         isDisabled={isSaveDisabled}
                         testID={BudgetSelector.SetupSaveButton}
-                        onPress={handleSubmit}
+                        onPress={budgetForm.handleSubmit}
                     />
                 }
             >
                 <LoadingContent isLoading={isLoading} className="gap-y-7xl">
-                    {isEditing && isDefined(budget) ? <BudgetSetupProgress budget={budget} currencySymbol={currencySymbol} /> : null}
+                    {hasProgress ? (
+                        <View collapsable={false}>
+                            {isDefined(budget) ? (
+                                <BudgetSetupProgress budget={budget} currencySymbol={currencySymbol} />
+                            ) : (
+                                <BudgetSetupProgressContent scope={null} currencySymbol={currencySymbol} />
+                            )}
+                        </View>
+                    ) : null}
                     <GroupedListSection title={t`Details`}>
                         <BudgetNameField
                             control={form.control}
@@ -99,14 +100,18 @@ export const BudgetSetupForm = ({ defaultInstrumentId, editingId, templateKind }
                         />
                     </GroupedListSection>
                     <GroupedListSection title={t`Period`}>
-                        <BudgetPeriodField onPeriodChange={handlePeriodChange} />
+                        <BudgetPeriodField onPeriodChange={budgetForm.handlePeriodChange} />
                         <BudgetStartsOnField />
                     </GroupedListSection>
                     <BudgetLimitSourceField currencySymbol={currencySymbol} />
                     <BudgetAutoTuneField />
                     <BudgetInlineCategoryLimits currencySymbol={currencySymbol} onCategoryAdded={handleCategoryAdded} />
                     {isEditing ? (
-                        <BudgetDeleteRow title={t`Delete budget`} testID={BudgetSelector.SetupDeleteButton} onDelete={handleDelete} />
+                        <BudgetDeleteRow
+                            title={t`Delete budget`}
+                            testID={BudgetSelector.SetupDeleteButton}
+                            onDelete={budgetForm.handleDelete}
+                        />
                     ) : null}
                 </LoadingContent>
             </CollapsibleChromePage>

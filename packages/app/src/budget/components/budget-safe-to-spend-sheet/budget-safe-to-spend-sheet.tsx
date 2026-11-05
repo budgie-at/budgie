@@ -14,9 +14,9 @@ import { BudgetSelector } from '../../budget.selector';
 import { useGetBudgetProjectionQuery } from '../../query/use-get-budget-projection.query';
 import { buildBudgetDayStripCells } from '../../utils/build-budget-day-strip-cells.util';
 import { resolveBudgetWindow } from '../../utils/resolve-budget-window.util';
-import { BudgetDataState } from '../budget-data-state/budget-data-state';
 import { BudgetDayStripKey } from '../budget-day-strip-key/budget-day-strip-key';
 import { BudgetSafeToSpendSummary } from '../budget-safe-to-spend-summary/budget-safe-to-spend-summary';
+import { BudgetSheetState } from '../budget-sheet-state/budget-sheet-state';
 import { BudgetUpcomingChargeRow } from '../budget-upcoming-charge-row/budget-upcoming-charge-row';
 
 import type { BudgetEntityInterface } from '@budgie/contracts';
@@ -51,32 +51,32 @@ export const BudgetSafeToSpendSheet = ({ budget }: Props) => {
         </View>
     ) : null;
 
+    if (isError) {
+        return <BudgetSheetState title={t`Safe to spend`} isLoading={false} isError />;
+    }
+
     return (
         <View className="bg-sheet-surface" collapsable={false} testID={BudgetSelector.SafeToSpendSheet}>
             <FormsheetHeader size="md" title={t`Safe to spend`} description={t`Until ${periodEndLabel}`} />
 
             <ScrollView contentContainerClassName="px-5xl pt-md gap-y-3xl pb-3xl" showsVerticalScrollIndicator={false}>
-                {isError ? (
-                    <BudgetDataState isLoading={false} isError />
-                ) : (
-                    <LoadingContent isLoading={isLoading} className="gap-y-3xl">
-                        <BudgetSafeToSpendSummary projection={projection} currencySymbol={currencySymbol} />
+                <LoadingContent isLoading={isLoading} className="gap-y-3xl">
+                    <BudgetSafeToSpendSummary projection={projection} currencySymbol={currencySymbol} />
 
-                        {upcomingSection}
+                    {upcomingSection}
 
-                        <View className="gap-y-md">
-                            <SectionHeader label={t`Reading the day strip`} />
-                            <Text className="text-sm text-secondary-foreground">
-                                <Trans>Each bar compares one day&apos;s spending with your daily plan.</Trans>
-                            </Text>
-                            <BudgetDayStripKey dayStates={presentDayStates} />
-                        </View>
-
-                        <Text className="text-xxs text-secondary-foreground">
-                            <Trans>Recalculates every day. Spend less today and tomorrow&apos;s amount grows.</Trans>
+                    <View className="gap-y-md">
+                        <SectionHeader label={t`Reading the day strip`} />
+                        <Text className="text-sm text-secondary-foreground">
+                            <Trans>Each bar compares one day&apos;s spending with your daily plan.</Trans>
                         </Text>
-                    </LoadingContent>
-                )}
+                        <BudgetDayStripKey dayStates={presentDayStates} />
+                    </View>
+
+                    <Text className="text-xxs text-secondary-foreground">
+                        <Trans>Recalculates every day. Spend less today and tomorrow&apos;s amount grows.</Trans>
+                    </Text>
+                </LoadingContent>
             </ScrollView>
         </View>
     );

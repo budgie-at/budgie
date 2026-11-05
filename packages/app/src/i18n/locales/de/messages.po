@@ -421,6 +421,10 @@ msgstr "{formattedAveragePerDay} pro Tag"
 msgid "{formattedBalance} will be transferred to {destinationAccountTitle} and this deposit will be archived. You can restore it anytime from Settings → Archived Accounts."
 msgstr "{formattedBalance} wird auf {destinationAccountTitle} übertragen und diese Einlage wird archiviert. Sie können sie jederzeit unter Einstellungen → Archivierte Konten wiederherstellen."
 
+#: src/transaction/components/recurring-calendar-day/recurring-calendar-day.tsx
+msgid "{formattedDate}. Recorded: {entryCount}. Expected: {forecastedCount}."
+msgstr "{formattedDate}. Erfasst: {entryCount}. Erwartet: {forecastedCount}."
+
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "{formattedDifference} over limit"
 msgstr "{formattedDifference} über dem Limit"
@@ -1321,10 +1325,6 @@ msgstr "Alle Bedingungen"
 msgid "All past amounts are converted"
 msgstr "Alle früheren Beträge sind umgerechnet"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-msgid "All Recurring"
-msgstr "Alle wiederkehrenden"
-
 #: src/import/utils/get-import-required-footer.util.ts
 msgid "All required fields matched. Tap a field to change it."
 msgstr "Alle Pflichtfelder zugeordnet. Tippe auf ein Feld, um es zu ändern."
@@ -1765,10 +1765,6 @@ msgstr "Zwischen"
 #: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
 msgid "Between {lowestCount} and {MAX_INSTALLMENT_COUNT} months"
 msgstr "Zwischen {lowestCount} und {MAX_INSTALLMENT_COUNT} Monaten"
-
-#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
-msgid "Billing Dates"
-msgstr "Abrechnungsdaten"
 
 #: src/account/constant/bank-provider-title.constant.ts
 #: src/app/(main)/create-account/index.tsx
@@ -2402,10 +2398,6 @@ msgstr "Kommentar"
 msgid "Comment"
 msgstr "Kommentar"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-msgid "Committed {committedExpense} per month"
-msgstr "Monatlich gebunden: {committedExpense}"
-
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Common"
 msgstr "Gängig"
@@ -2418,13 +2410,13 @@ msgstr "Vergleich: {label}"
 msgid "Complete every split entry"
 msgstr "Fülle jeden Aufteilungseintrag aus"
 
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
-msgid "Confirm"
-msgstr "Bestätigen"
-
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Confirm it's you before choosing a new one."
 msgstr "Bestätige, dass du es bist, bevor du eine neue wählst."
+
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Confirm recurring"
+msgstr "Wiederkehrende Zahlung bestätigen"
 
 #: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx
 msgid "Confirm tag selection"
@@ -3144,10 +3136,6 @@ msgstr "Tag {elapsedDays} von {totalDays}. {overLabel}."
 msgid "Day {periodStartDay} of each month"
 msgstr "Tag {periodStartDay} jedes Monats"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-msgid "Day {selectedDay}"
-msgstr "Tag {selectedDay}"
-
 #: src/account/component/deposit-details-card/deposit-details-card.tsx
 msgid "Days Remaining"
 msgstr "Verbleibende Tage"
@@ -3374,10 +3362,6 @@ msgstr "Anderes Binance-Konto"
 #: src/wallet-capture/hook/use-wallet-capture-settings.hook.ts
 msgid "Dismiss"
 msgstr "Ausblenden"
-
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
-msgid "Dismiss recurring payment?"
-msgstr "Wiederkehrende Zahlung ausblenden?"
 
 #: src/wallet-capture/hook/use-wallet-capture-settings.hook.ts
 msgid "Dismiss Wallet capture?"
@@ -3848,6 +3832,12 @@ msgstr "Wechselkurs nicht gefunden"
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "Exchange rate: {rateLabel}"
 msgstr "Wechselkurs: {rateLabel}"
+
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
+#: src/transaction/components/recurring-calendar-legend/recurring-calendar-legend.tsx
+msgid "Expected"
+msgstr "Erwartet"
 
 #: src/budget/components/budget-limit-source-field/budget-limit-source-field.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
@@ -4514,10 +4504,6 @@ msgstr "Ist nicht"
 msgid "It encrypts everything in Budgie. Pick one you'll remember but others won't guess."
 msgstr "Sie verschlüsselt alles in Budgie. Wähle eine, die du dir merkst, die andere aber nicht erraten."
 
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
-msgid "It will no longer appear in the calendar."
-msgstr "Sie wird nicht mehr im Kalender angezeigt."
-
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "It's the only key to your file. There's no account and no copy on a server, so there's nothing to reset it from."
 msgstr "Sie ist der einzige Schlüssel zu deiner Datei. Es gibt kein Konto und keine Kopie auf einem Server, also nichts, worüber man sie zurücksetzen könnte."
@@ -4671,7 +4657,7 @@ msgstr "Verschwindet von Startseite, Summen und Budgets. Wiederherstellen unter 
 msgid "Leaves your income"
 msgstr "Verlässt deine Einnahmen"
 
-#: src/budget/components/budget-setup-progress/budget-setup-progress.tsx
+#: src/budget/components/budget-setup-progress-content/budget-setup-progress-content.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
 msgid "Left"
 msgstr "Übrig"
@@ -5032,15 +5018,11 @@ msgstr "Monatlich"
 msgid "Monthly budget"
 msgstr "Monatsbudget"
 
-#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
-msgid "Monthly Costs"
-msgstr "Monatliche Kosten"
-
 #: src/runway/component/runway-history-chart/runway-history-chart.tsx
 msgid "Monthly history"
 msgstr "Monatsverlauf"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/transaction/components/recurring-calendar-summary/recurring-calendar-summary.tsx
 msgid "Monthly total"
 msgstr "Monatssumme"
 
@@ -5224,6 +5206,10 @@ msgstr "Nächstes Feld"
 msgid "next month"
 msgstr "nächsten Monat"
 
+#: src/transaction/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
+msgid "Next month"
+msgstr "Nächster Monat"
+
 #: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
 msgid "Next payment"
 msgstr "Nächste Zahlung"
@@ -5376,9 +5362,12 @@ msgid "No receipt found"
 msgstr "Kein Beleg gefunden"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
-msgid "No recurring payments detected"
-msgstr "Keine wiederkehrenden Zahlungen erkannt"
+msgid "No recurring payments in {displayMonthLabel}"
+msgstr "Keine wiederkehrenden Zahlungen im {displayMonthLabel}"
+
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+msgid "No recurring payments on this day"
+msgstr "Keine wiederkehrenden Zahlungen an diesem Tag"
 
 #: src/@generic/component/selector-search-empty-state/selector-search-empty-state.tsx
 msgid "No results for “{query}”"
@@ -5867,7 +5856,7 @@ msgstr "drüber"
 msgid "Over"
 msgstr "Drüber"
 
-#: src/budget/components/budget-setup-progress/budget-setup-progress.tsx
+#: src/budget/components/budget-setup-progress-content/budget-setup-progress-content.tsx
 #: src/budget/constant/budget-pace-status-label.constant.ts
 msgid "Over budget"
 msgstr "Über Budget"
@@ -5896,7 +5885,7 @@ msgstr "Gesamtbudget: {threshold}% ausgegeben"
 msgid "Overdrawn"
 msgstr "Überzogen"
 
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 msgid "Overdue"
 msgstr "Überfällig"
 
@@ -6197,6 +6186,10 @@ msgstr "Gedrückt halten zum Versiegeln"
 msgid "Previous field"
 msgstr "Vorheriges Feld"
 
+#: src/transaction/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
+msgid "Previous month"
+msgstr "Vorheriger Monat"
+
 #: src/transaction/components/statistics-change-label/statistics-change-label.tsx
 msgid "previous period"
 msgstr "Vorperiode"
@@ -6209,7 +6202,7 @@ msgstr "Vorheriger Zeitraum"
 msgid "Price {ageLabel} · {date}"
 msgstr "Kurs {ageLabel} · {date}"
 
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 msgid "Price changed"
 msgstr "Preis geändert"
 
@@ -6409,14 +6402,24 @@ msgstr "Kartenzahlungen mit Kurzbefehlen erfassen"
 msgid "Record expense"
 msgstr "Ausgabe erfassen"
 
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
+#: src/transaction/components/recurring-calendar-legend/recurring-calendar-legend.tsx
+msgid "Recorded"
+msgstr "Erfasst"
+
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx
 #: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
 msgid "Recurring"
 msgstr "Wiederkehrend"
 
-#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
-msgid "Recurring payments will appear here once patterns are detected from your transactions"
-msgstr "Wiederkehrende Zahlungen erscheinen hier, sobald Muster in deinen Transaktionen erkannt werden"
+#: src/transaction/components/recurring-series-title-input/recurring-series-title-input.tsx
+msgid "Recurring payment name"
+msgstr "Name der wiederkehrenden Zahlung"
+
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+msgid "Recurring payments are detected automatically from your transactions."
+msgstr "Wiederkehrende Zahlungen werden anhand der Transaktionen automatisch erkannt."
 
 #: src/categorize-inbox/components/categorize-inbox-group-refine-options/categorize-inbox-group-refine-options.tsx
 msgid "Refine"
@@ -7313,10 +7316,6 @@ msgstr "Aktien"
 msgid "Storage"
 msgstr "Speicher"
 
-#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
-msgid "Subscriptions"
-msgstr "Abonnements"
-
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-learned-transfer-option/categorize-inbox-group-learned-transfer-option.tsx
 msgid "Suggested"
@@ -7333,10 +7332,6 @@ msgstr "Support"
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "Swap accounts"
 msgstr "Konten tauschen"
-
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
-msgid "Swipe left to dismiss this recurring payment."
-msgstr "Nach links wischen, um diese wiederkehrende Zahlung auszublenden."
 
 #: src/budget/components/budget-category-limit-deletable-row/budget-category-limit-deletable-row.tsx
 msgid "Swipe to remove this per-category cap from your budget."
@@ -7885,6 +7880,7 @@ msgstr "In diesem Zeitraum zurückzulegen"
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 #: src/budget/components/budget-day-strip-key/budget-day-strip-key.tsx
 #: src/market-data/hook/use-market-chart-timeline.hook.ts
+#: src/transaction/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
 #: src/transaction/query/use-get-transaction-sections.query.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -8308,10 +8304,6 @@ msgstr "Auf dem neuesten Stand"
 msgid "Up to date · {lastSyncedLabel}"
 msgstr "Aktuell · {lastSyncedLabel}"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-msgid "Upcoming"
-msgstr "Bevorstehend"
-
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Upcoming this period"
@@ -8415,6 +8407,10 @@ msgstr "Wert"
 #: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
 msgid "View source transactions"
 msgstr "Quelltransaktionen anzeigen"
+
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+msgid "View your payments in another month."
+msgstr "Sieh dir deine Zahlungen in einem anderen Monat an."
 
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
 msgid "Voice notes"
