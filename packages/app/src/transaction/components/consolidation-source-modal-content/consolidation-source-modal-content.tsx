@@ -8,6 +8,7 @@ import { Button } from '../../../@generic/component/button/button';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { FormsheetHeader } from '../../../@generic/component/formsheet-header/formsheet-header';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
 import { useGetConsolidationSourcesQuery } from '../../query/use-get-consolidation-sources.query';
 import { getTransactionListRowPosition } from '../../utils/get-transaction-list-row-position.util';
@@ -22,11 +23,14 @@ interface Props {
 }
 
 export const ConsolidationSourceModalContent = ({ transactionId, onClose, onRevertSuccess }: Props) => {
+    const isAccessibilityTextSize = useIsAccessibilityTextSize();
     const { sources, consolidationType, hasError, isLoading, retry } = useGetConsolidationSourcesQuery(transactionId);
     const revertConsolidation = useRevertConsolidation(transactionId, onRevertSuccess);
 
     const showEmptyState = isEmptyArray(sources) && !hasError;
     const showRevert = isDefined(consolidationType);
+    const footerClassName = isAccessibilityTextSize ? 'flex-col gap-y-md' : 'flex-row gap-x-md';
+    const buttonClassName = isAccessibilityTextSize ? '' : 'flex-1';
     const sourceRows = sources.map((source, index) => (
         <ConsolidationSourceRow
             key={source.entryId}
@@ -45,7 +49,7 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >
-                <FormsheetHeader size="md" title={t`Source transactions`} description={t`Separate restores all linked transactions.`} />
+                <FormsheetHeader size="md" title={t`Sources`} description={t`Each source becomes a separate transaction.`} />
                 <LoadingContent isLoading={isLoading} containerClassName="flex-1" className="flex-1">
                     {hasError ? (
                         <View className="gap-y-md px-xl py-xl">
@@ -70,25 +74,25 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
             </ScrollView>
 
             <View className="px-xl pb-xl">
-                <View className="flex-row gap-x-md">
+                <View className={footerClassName}>
                     <Button
                         content={t`Done`}
                         variant="primary"
                         size="md"
                         onPress={onClose}
                         testID={ConsolidationSourceModalSelector.DoneButton}
-                        className="flex-1"
+                        className={buttonClassName}
                     />
 
                     {showRevert ? (
                         <Button
-                            content={t`Separate`}
-                            variant="destructive"
+                            content={t`Separate all`}
+                            variant="primary"
                             size="md"
                             leftIcon={UserIconNameEnum.Undo2}
                             onPress={revertConsolidation}
                             testID={ConsolidationSourceModalSelector.RevertButton}
-                            className="flex-1"
+                            className={buttonClassName}
                         />
                     ) : null}
                 </View>

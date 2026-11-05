@@ -3559,6 +3559,10 @@ msgstr "напр. Netflix"
 msgid "Each bar compares one day's spending with your daily plan."
 msgstr "Кожен стовпчик порівнює витрати за день із вашим денним планом."
 
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+msgid "Each source becomes a separate transaction."
+msgstr "Кожне джерело знову стане окремою транзакцією."
+
 #: src/budget/hooks/use-budget-day-strip-labels.hook.ts
 msgid "Each week against your {allowanceLabel} weekly allowance"
 msgstr "Кожен тиждень порівняно з вашим тижневим бюджетом {allowanceLabel}"
@@ -6956,6 +6960,10 @@ msgstr "Оберіть завантажений PDF-файл"
 msgid "Select the exported XLSX file"
 msgstr "Оберіть експортований XLSX-файл"
 
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
+msgid "Select the original expense for this refund."
+msgstr "Виберіть початкову витрату для цього повернення."
+
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Selected"
 msgstr "Вибрано"
@@ -6968,15 +6976,14 @@ msgstr "Надіслати копію"
 msgid "Sending {fromCode}"
 msgstr "Відправлення {fromCode}"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
 msgid "Separate"
 msgstr "Розділити"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
-msgid "Separate restores all linked transactions."
-msgstr "Роз’єднання відновлює всі пов’язані транзакції."
+msgid "Separate all"
+msgstr "Роз’єднати всі"
 
 #: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
 #: src/transaction/components/transaction-list-revert-menu-item/transaction-list-revert-menu-item.tsx
@@ -7191,9 +7198,6 @@ msgid "Source"
 msgstr "Джерело"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
-msgid "Source transactions"
-msgstr "Вихідні транзакції"
-
 #: src/transaction/components/transaction-sources-field-icon/transaction-sources-field-icon.tsx
 msgid "Sources"
 msgstr "Джерела"

@@ -3559,6 +3559,10 @@ msgstr "ex. Netflix"
 msgid "Each bar compares one day's spending with your daily plan."
 msgstr "Chaque barre compare les dépenses d’une journée à votre plan quotidien."
 
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+msgid "Each source becomes a separate transaction."
+msgstr "Chaque source redevient une transaction distincte."
+
 #: src/budget/hooks/use-budget-day-strip-labels.hook.ts
 msgid "Each week against your {allowanceLabel} weekly allowance"
 msgstr "Chaque semaine par rapport à votre allocation hebdomadaire de {allowanceLabel}"
@@ -6956,6 +6960,10 @@ msgstr "Sélectionnez le fichier PDF téléchargé"
 msgid "Select the exported XLSX file"
 msgstr "Sélectionnez le fichier XLSX exporté"
 
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
+msgid "Select the original expense for this refund."
+msgstr "Sélectionnez la dépense initiale de ce remboursement."
+
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Selected"
 msgstr "Sélectionné"
@@ -6968,15 +6976,14 @@ msgstr "Envoyer une copie"
 msgid "Sending {fromCode}"
 msgstr "Envoi {fromCode}"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
 msgid "Separate"
 msgstr "Séparer"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
-msgid "Separate restores all linked transactions."
-msgstr "Séparer rétablit toutes les transactions liées."
+msgid "Separate all"
+msgstr "Tout séparer"
 
 #: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
 #: src/transaction/components/transaction-list-revert-menu-item/transaction-list-revert-menu-item.tsx
@@ -7191,9 +7198,6 @@ msgid "Source"
 msgstr "Source"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
-msgid "Source transactions"
-msgstr "Transactions sources"
-
 #: src/transaction/components/transaction-sources-field-icon/transaction-sources-field-icon.tsx
 msgid "Sources"
 msgstr "Sources"

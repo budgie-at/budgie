@@ -42,6 +42,11 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
         resolveConvertToRefund(null);
     };
 
+    const handleSearchChange = (value: string) => {
+        setSearch(value);
+        setSelectedCandidate(null);
+    };
+
     const revertRefund = useRevertConsolidation(canonicalTransactionId, handleResolve, true);
     const { convert, isLoading: isConverting } = useConvertToRefundAction(
         refundIncomeTransactionId,
@@ -58,7 +63,7 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >
-                <FormsheetHeader size="md" title={t`Convert to Refund`} />
+                <FormsheetHeader size="md" title={t`Convert to Refund`} description={t`Select the original expense for this refund.`} />
                 <LoadingContent isLoading={isLoading} containerClassName="flex-1" className="flex-1">
                     {isNotEmptyString(errorMessage) ? (
                         <View className="gap-y-md px-xl py-xl">
@@ -96,7 +101,7 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
             <TransactionPickerSearchDock
                 search={search}
                 searchPlaceholder={t`Search expenses`}
-                onSearchChange={setSearch}
+                onSearchChange={handleSearchChange}
                 searchTestID={ConvertToRefundModalSelector.SearchInput}
             >
                 <ConvertToRefundFooter
