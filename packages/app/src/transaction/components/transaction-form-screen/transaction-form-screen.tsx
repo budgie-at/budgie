@@ -19,7 +19,7 @@ interface Props {
 
 export const TransactionFormScreen = ({ title, onGoBack, right, children }: Props) => {
     const { bottom } = useSafeAreaInsets();
-    const contentStyle = { paddingBottom: bottom };
+    const contentStyle = { paddingBottom: Math.max(bottom, 8) };
 
     return (
         <GroupedSurface>

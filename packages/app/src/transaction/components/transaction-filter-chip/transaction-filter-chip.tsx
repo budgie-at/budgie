@@ -34,6 +34,8 @@ const textVariants = cva('text-[13px] font-medium', {
 
 export const TransactionFilterChip = ({ label, onPress, isActive, testID }: Props) => (
     <HapticPressable className={chipVariants({ isActive })} hitSlop={FILTER_CHIP_HIT_SLOP} onPress={onPress} testID={testID}>
-        <Text className={textVariants({ isActive })}>{label}</Text>
+        <Text maxFontSizeMultiplier={2} dynamicTypeRamp="body" className={textVariants({ isActive })}>
+            {label}
+        </Text>
     </HapticPressable>
 );

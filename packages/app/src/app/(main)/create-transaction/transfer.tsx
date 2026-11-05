@@ -41,7 +41,7 @@ export default function CreateTransferTransactionPage() {
     return (
         <FormProvider {...form}>
             <TransactionFormScreen title={t`New Transfer`} onGoBack={handleGoBack}>
-                <TransferQuickForm variant="default" onSubmit={handleSubmit} onCancel={handleGoBack} />
+                <TransferQuickForm variant="default" onSubmit={handleSubmit} />
             </TransactionFormScreen>
         </FormProvider>
     );

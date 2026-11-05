@@ -1,8 +1,6 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
 import { Ref, useImperativeHandle, useRef } from 'react';
 
-import { isPositiveNumber } from '@rnw-community/shared';
-
 import { TransactionAmountDisplayRef } from '../components/transaction-amount-display/transaction-amount-display';
 
 import { useQuickFormAmount } from './use-quick-form-amount.hook';
@@ -16,7 +14,7 @@ export const useSimpleQuickForm = (transactionType: TransactionTypeEnum, ref?: R
     const isExpense = transactionType === TransactionTypeEnum.EXPENSE;
     const variant = isExpense ? 'destructive' : 'positive';
     const accountFieldName = isExpense ? 'fromAccountId' : 'toAccountId';
-    const { displayValue, numericValue, currencySymbol, instrumentType, keypadHandlers, setFromNumeric } = useQuickFormAmount({
+    const { displayValue, currencySymbol, instrumentType, keypadHandlers, setFromNumeric } = useQuickFormAmount({
         accountFieldName
     });
     const formState = useSimpleQuickFormState({ accountFieldName, setFromNumeric });
@@ -29,7 +27,7 @@ export const useSimpleQuickForm = (transactionType: TransactionTypeEnum, ref?: R
         setFromNumeric
     });
     const amountDisplayRef = useRef<TransactionAmountDisplayRef>(null);
-    const amountVariant: ColorPaletteVariant = !isExpense && isPositiveNumber(numericValue) ? 'positive' : 'primary';
+    const amountVariant: ColorPaletteVariant = isExpense ? 'primary' : 'positive';
 
     useImperativeHandle(ref, () => ({ openFee: handleFeePress }));
 

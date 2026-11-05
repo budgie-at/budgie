@@ -15,7 +15,7 @@ interface Props {
 export const StatisticsDrillDownEmptyState = ({ isLoading, hasFiltersSelected, type }: Props) => {
     const { t } = useLingui();
 
-    const title = type === TransactionTypeEnum.INCOME ? t`No income` : t`No spending`;
+    const title = type === TransactionTypeEnum.INCOME ? t`No income in this view` : t`No spending in this view`;
 
     return (
         <LoadingContent isLoading={isLoading}>

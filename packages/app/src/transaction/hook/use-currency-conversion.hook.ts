@@ -15,7 +15,7 @@ interface ConversionState {
     readonly isManualRate: boolean;
 }
 
-interface UseCurrencyConversionResult {
+export interface UseCurrencyConversionResult {
     readonly isPending: boolean;
     readonly isCrossCurrency: boolean;
     readonly destinationAmount: number;

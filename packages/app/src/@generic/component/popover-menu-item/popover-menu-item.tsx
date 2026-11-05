@@ -1,7 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { ClassValue } from 'cn';
-import { Text, View } from 'react-native';
+import { Text, View, useWindowDimensions } from 'react-native';
 
 import { EmptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -20,7 +20,12 @@ interface Props {
     readonly testID?: string;
 }
 
-const containerClassName = cva('flex-row items-center gap-x-lg px-xl py-lg active:bg-secondary-background');
+const MAX_MENU_ICON_SCALE = 1.75;
+const MENU_LABEL_LINE_HEIGHT = 21;
+
+const containerClassName = cva('flex-row items-center gap-x-lg px-xl py-lg active:bg-secondary-background', {
+    variants: { isAdaptive: { true: 'min-h-[44px]' } }
+});
 
 const textVariants = cva<{ variant: Record<MenuItemVariant, ClassValue> }>('text-base font-medium', {
     variants: {
@@ -42,15 +47,31 @@ const iconVariants = cva<{ variant: Record<MenuItemVariant, ClassValue> }>('', {
     defaultVariants: { variant: 'default' }
 });
 
-export const PopoverMenuItem = ({ icon, label, onPress, variant = 'default', rightLabel, subtitle, testID }: Props) => (
-    <HapticPressable onPress={onPress} className={containerClassName()} accessibilityRole="menuitem" testID={testID}>
-        <Icon icon={icon} size={20} className={iconVariants({ variant })} />
-        <View className="grow shrink">
-            <Text className={textVariants({ variant })}>{label}</Text>
-            {isNotEmptyString(subtitle) ? (
-                <Text className="mt-xxs text-[13px] leading-[19px] text-popover-secondary">{subtitle}</Text>
-            ) : null}
-        </View>
-        {isDefined(rightLabel) ? <Text className="text-sm text-secondary-foreground">{rightLabel}</Text> : null}
-    </HapticPressable>
-);
+export const PopoverMenuItem = (props: Props) => {
+    const { icon, label, onPress, variant = 'default', rightLabel, subtitle, testID } = props;
+
+    const { fontScale } = useWindowDimensions();
+    const iconSize = 20 * Math.min(fontScale, MAX_MENU_ICON_SCALE);
+    const iconStyle = {
+        alignSelf: 'flex-start' as const,
+        marginTop: Math.max((MENU_LABEL_LINE_HEIGHT * fontScale - iconSize) / 2, 0)
+    };
+
+    return (
+        <HapticPressable
+            onPress={onPress}
+            className={containerClassName({ isAdaptive: true })}
+            accessibilityRole="menuitem"
+            testID={testID}
+        >
+            <Icon icon={icon} size={iconSize} style={iconStyle} className={iconVariants({ variant })} />
+            <View className="grow shrink">
+                <Text className={textVariants({ variant })}>{label}</Text>
+                {isNotEmptyString(subtitle) ? (
+                    <Text className="mt-xxs text-[13px] leading-[19px] text-popover-secondary">{subtitle}</Text>
+                ) : null}
+            </View>
+            {isDefined(rightLabel) ? <Text className="text-sm text-secondary-foreground">{rightLabel}</Text> : null}
+        </HapticPressable>
+    );
+};

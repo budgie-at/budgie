@@ -8,6 +8,7 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { TransactionsPageSelector } from '../../../app/(tabs)/transactions-page.selector';
 
 interface Props {
@@ -18,16 +19,21 @@ interface Props {
 
 export const TransactionListEmptyState = ({ isLoading, hasFiltersSelected, onClearFilters }: Props) => {
     const { t } = useLingui();
+    const isAccessibilityTextSize = useIsAccessibilityTextSize();
+    const contentClassName = isAccessibilityTextSize ? 'grow items-center py-3xl' : 'grow items-center py-[48px]';
+    const descriptionClassName = isAccessibilityTextSize
+        ? 'text-secondary-foreground text-center'
+        : 'text-secondary-foreground text-center max-w-[250px]';
 
     const emptyStateText = hasFiltersSelected
         ? { title: t`No matching transactions`, description: t`Try adjusting your filters to see more results` }
         : {
               title: t`No transactions yet`,
-              description: t`Start tracking your spending by using the mic button or adding transactions manually`
+              description: t`Tap + to add your first transaction`
           };
 
     return (
-        <LoadingContent isLoading={isLoading} containerClassName="flex-1" className="flex-1 items-center py-[48px]">
+        <LoadingContent isLoading={isLoading} containerClassName="grow" className={contentClassName}>
             <View className="flex-2" />
 
             <CircleIcon
@@ -45,7 +51,7 @@ export const TransactionListEmptyState = ({ isLoading, hasFiltersSelected, onCle
                 title={emptyStateText.title}
                 titleClassName="text-md text-primary font-semibold"
                 description={emptyStateText.description}
-                descriptionClassName="text-center max-w-[250px]"
+                descriptionClassName={descriptionClassName}
                 className="py-0"
                 testID={TransactionsPageSelector.EmptyState}
             />

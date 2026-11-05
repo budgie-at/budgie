@@ -1,5 +1,6 @@
 import { TransactionCategorizeInboxRepository } from '@budgie/categorization';
 import {
+    AccountRepository,
     CategoryEntityTable,
     CategorySourceEnum,
     DEFAULT_TRANSACTION_FILTER,
@@ -11,6 +12,7 @@ import {
     PRECISION,
     TransactionEntryEntityTable,
     TransactionEntityTable,
+    TransactionRepository,
     TransactionTypeEnum
 } from '@budgie/contracts';
 import {
@@ -89,6 +91,13 @@ const fetchAttachedTransactionIds = Effect.fnUntraced(function* (debtAccountId: 
         .where(eq(DebtEventEntityTable.debtAccountId, debtAccountId));
 
     return rows.map(row => row.transactionId).filter(isDefined);
+});
+
+const fetchDebtEventsForPlan = Effect.fnUntraced(function* (debtAccountId: number) {
+    return yield* testDb
+        .select({ id: DebtEventEntityTable.id, transactionId: DebtEventEntityTable.transactionId })
+        .from(DebtEventEntityTable)
+        .where(eq(DebtEventEntityTable.debtAccountId, debtAccountId));
 });
 
 const fetchDebtEventAmounts = Effect.fnUntraced(function* (debtAccountId: number, direction: DebtEventDirectionEnum) {
@@ -747,4 +756,68 @@ describe('installment plan', () => {
             }).pipe(Effect.provide(TestLayer))
         );
     });
+
+    it.effect('reverts a plan back to standalone expenses and removes the plan account', () =>
+        Effect.gen(function* () {
+            const cash = yield* seedBankSyncAccount('Cash', null, 'UA-revert');
+            const first = yield* seed.manualExpense({
+                accountId: cash.id,
+                title: 'Laptop',
+                amount: toMicroUnits(500),
+                operatedAt: new Date(2026, 0, 12, 10)
+            });
+            const second = yield* seed.manualExpense({
+                accountId: cash.id,
+                title: 'Laptop',
+                amount: toMicroUnits(500),
+                operatedAt: new Date(2026, 1, 12, 10)
+            });
+            const categories = yield* testDb.select({ id: CategoryEntityTable.id }).from(CategoryEntityTable);
+            const [userCategory, aiCategory] = categories.map(category => category.id);
+            const accountRepository = yield* AccountRepository;
+            const transactionRepository = yield* TransactionRepository;
+            const installmentPlanService = yield* InstallmentPlanService;
+            const sourceBalanceBefore = yield* fetchAccountBalance(cash.id);
+
+            yield* setEntryCategory(first.id, userCategory, CategorySourceEnum.USER);
+            yield* setEntryCategory(second.id, aiCategory, CategorySourceEnum.AI);
+
+            const { accountId } = yield* convert(first.id, 3, 1_500);
+
+            expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id, second.id]);
+            expect(yield* fetchEntryCategory(first.id)).toEqual({
+                categoryId: userCategory,
+                categorySource: CategorySourceEnum.USER
+            });
+            expect(yield* fetchEntryCategory(second.id)).toEqual({
+                categoryId: userCategory,
+                categorySource: CategorySourceEnum.DEBT_SETTLEMENT
+            });
+
+            yield* installmentPlanService.revertExpense(accountId);
+            yield* installmentPlanService.revertExpense(accountId);
+
+            expect(yield* fetchDebtEventsForPlan(accountId)).toEqual([]);
+            expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([]);
+            expect(yield* accountRepository.findByIdIncludingArchived(accountId)).toBeUndefined();
+
+            const transactions = yield* transactionRepository.findByIds([first.id, second.id]);
+
+            expect(transactions).toHaveLength(2);
+            expect(transactions.every(transaction => transaction.type === TransactionTypeEnum.EXPENSE)).toBe(true);
+            expect(yield* fetchEntryCategory(first.id)).toEqual({
+                categoryId: userCategory,
+                categorySource: CategorySourceEnum.USER
+            });
+            expect(yield* fetchEntryCategory(second.id)).toEqual({
+                categoryId: null,
+                categorySource: CategorySourceEnum.USER
+            });
+            expect(yield* fetchAccountBalance(cash.id)).toBe(sourceBalanceBefore);
+
+            yield* installmentPlanService.revertExpense(cash.id);
+
+            expect((yield* accountRepository.findByIdIncludingArchived(cash.id))?.id).toBe(cash.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

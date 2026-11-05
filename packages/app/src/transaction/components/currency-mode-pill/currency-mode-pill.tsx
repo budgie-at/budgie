@@ -47,7 +47,7 @@ export const CurrencyModePill = ({ label, isFlipped, accessibilityLabel, onPress
                 hitSlop={HIT_SLOP}
                 onPress={onPress}
             >
-                <View className="min-h-[28px] max-w-full flex-row items-center gap-x-xs rounded-full border-hairline border-surface-separator bg-transaction-detail-row px-md py-[4px] dark:border-transparent">
+                <View className="min-h-[32px] max-w-full flex-row items-center gap-x-xs rounded-full border-hairline border-surface-separator bg-transaction-detail-row px-md py-[4px] dark:border-transparent">
                     {isDefined(onPress) ? (
                         <Animated.View style={iconStyle}>
                             <Icon icon={UserIconNameEnum.ArrowUpDown} className="text-secondary-foreground" size={ICON_SIZE} />

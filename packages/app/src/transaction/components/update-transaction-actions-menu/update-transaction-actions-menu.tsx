@@ -5,7 +5,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { ActionsMenuItem } from '../../../@generic/component/actions-menu-item/actions-menu-item';
 import { ActionsMenu } from '../../../@generic/component/actions-menu/actions-menu';
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { CreateRuleMenuItem } from '../create-rule-menu-item/create-rule-menu-item';
 import { TransactionActionsMenuSelector } from '../transaction-actions-menu/transaction-actions-menu.selector';
 
@@ -25,7 +25,7 @@ export const UpdateTransactionActionsMenu = ({ transaction, items, onDelete, onR
 
     return (
         <ActionsMenu
-            trigger={<CircleIcon icon={UserIconNameEnum.Ellipsis} variant="ghost" size={44} iconSize={24} border={false} />}
+            trigger={<Icon icon={UserIconNameEnum.Ellipsis} size={24} className="text-primary" />}
             accessibilityLabel={t`More actions`}
             triggerClassName="min-h-[44px] min-w-[44px] items-center justify-center active:scale-100 active:opacity-70"
             triggerTestID={TransactionActionsMenuSelector.TriggerButton}

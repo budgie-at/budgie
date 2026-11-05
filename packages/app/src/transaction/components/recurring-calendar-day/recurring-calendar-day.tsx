@@ -23,7 +23,7 @@ const circleVariants = cva('items-center justify-center rounded-full', {
         isSelected: { true: 'bg-primary', false: '' },
         isToday: { true: '', false: '' },
         hasEntries: { true: '', false: '' },
-        isAccessibilityTextSize: { true: 'w-[44px] h-[44px]', false: 'w-[40px] h-[40px]' }
+        isAccessibilityTextSize: { true: 'w-[44px] h-[44px]', false: 'w-[36px] h-[36px]' }
     },
     compoundVariants: [
         { isToday: true, isSelected: false, className: 'border border-primary' },
@@ -31,7 +31,7 @@ const circleVariants = cva('items-center justify-center rounded-full', {
     ]
 });
 
-const textVariants = cva('text-[15px] tabular-nums pb-[4px]', {
+const textVariants = cva('text-[15px] leading-[20px] tabular-nums pb-[8px]', {
     variants: {
         isCurrentMonth: { true: 'text-primary', false: 'text-secondary-foreground' },
         isSelected: { true: 'text-primary-reverse font-semibold', false: '' },
