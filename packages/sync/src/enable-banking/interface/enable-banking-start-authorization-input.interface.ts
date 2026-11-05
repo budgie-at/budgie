@@ -2,7 +2,7 @@ import type { EnableBankingPendingAuthorizationInterface } from '../constant/ena
 
 export interface EnableBankingStartAuthorizationInputInterface extends Pick<
     EnableBankingPendingAuthorizationInterface,
-    'applicationId' | 'aspspName' | 'aspspCountry' | 'integrationId' | 'callbackUrl'
+    'applicationId' | 'aspspName' | 'aspspCountry' | 'integrationId' | 'connectAccountId' | 'callbackUrl'
 > {
     readonly redirectUrl: string;
     readonly maximumConsentValiditySeconds: number;

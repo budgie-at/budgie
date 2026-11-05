@@ -1,4 +1,4 @@
-import { BankIntegrationRepository } from '@budgie/contracts';
+import { AccountRepository, BankIntegrationRepository, ExternalSourceEnum } from '@budgie/contracts';
 import {
     EnableBankingCallbackError,
     EnableBankingCallbackFailureEnum,
@@ -33,6 +33,7 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
         make: Effect.gen(function* () {
             const secureStore = yield* EnableBankingSecureStore;
             const enableBankingSyncService = yield* EnableBankingSyncService;
+            const accountRepository = yield* AccountRepository;
             const bankIntegrationRepository = yield* BankIntegrationRepository;
             const decodeToken = Schema.decodeUnknownEffect(Schema.fromJsonString(EnableBankingTokenSchema));
 
@@ -41,13 +42,15 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
             const begin = Effect.fn('EnableBankingConnectionService.begin')(function* (
                 applicationId: string,
                 bank: Pick<EnableBankingBankInterface, 'name' | 'country' | 'maximumConsentValiditySeconds'>,
-                integrationId: number | null
+                integrationId: number | null,
+                connectAccountId: number | null = null
             ) {
                 const { url, pending } = yield* enableBankingSyncService.startAuthorization({
                     applicationId,
                     aspspName: bank.name,
                     aspspCountry: bank.country,
                     integrationId,
+                    connectAccountId,
                     callbackUrl: ENABLE_BANKING_CALLBACK_URL,
                     redirectUrl: ENABLE_BANKING_RELAY_URL,
                     maximumConsentValiditySeconds: bank.maximumConsentValiditySeconds
@@ -62,6 +65,21 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
             return {
                 begin,
                 discardPending: () => secureStore.removePending(),
+                findSavedApplicationId: Effect.fn('EnableBankingConnectionService.findSavedApplicationId')(function* () {
+                    const accounts = yield* accountRepository.findByExternalSource(ExternalSourceEnum.ENABLE_BANKING);
+                    const integrationIds = new Set(accounts.map(account => account.integrationId).filter(isDefined));
+                    for (const integrationId of integrationIds) {
+                        const integration = yield* bankIntegrationRepository.findById(integrationId);
+                        const credentials = isDefined(integration)
+                            ? yield* decodeToken(integration.token).pipe(Effect.orElseSucceed(() => null))
+                            : null;
+                        if (isDefined(credentials) && isDefined(yield* secureStore.readKey(credentials.applicationId))) {
+                            return credentials.applicationId;
+                        }
+                    }
+
+                    return null;
+                }),
                 pickKeyFile: Effect.fn('EnableBankingConnectionService.pickKeyFile')(function* () {
                     return yield* Effect.acquireUseRelease(
                         Effect.tryPromise({
@@ -163,7 +181,7 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
     }
 ) {
     static readonly layer = Layer.effect(EnableBankingConnectionService, EnableBankingConnectionService.make).pipe(
-        Layer.provide([EnableBankingSecureStore.layer, BankIntegrationRepository.layer]),
+        Layer.provide([EnableBankingSecureStore.layer, AccountRepository.layer, BankIntegrationRepository.layer]),
         Layer.provideMerge(EnableBankingSyncService.layer)
     );
 }

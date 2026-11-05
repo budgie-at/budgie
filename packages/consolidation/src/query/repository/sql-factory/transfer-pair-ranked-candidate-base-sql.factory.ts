@@ -1,5 +1,6 @@
 import {
     AccountTypeEnum,
+    ExternalSourceEnum,
     InstrumentTypeEnum,
     REFUND_TIME_WINDOW_SECONDS,
     REFUND_TITLE_PREFIXES,
@@ -196,6 +197,7 @@ const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                             AND income_entries.incomeBankSource IS NOT NULL
                             AND income_entries.incomeBankSource != ''
                             AND expense_entries.expenseBankSource = income_entries.incomeBankSource
+                            AND expense_entries.expenseBankSource != '${ExternalSourceEnum.ENABLE_BANKING}'
                         THEN 1
                         WHEN expense_entries.expenseAccountBankHint IS NOT NULL
                             AND expense_entries.expenseAccountBankHint != ''

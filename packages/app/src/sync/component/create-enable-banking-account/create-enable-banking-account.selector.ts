@@ -1,3 +1,4 @@
 export const CreateEnableBankingAccountSelector = {
-    ContinueButton: 'CreateEnableBankingAccount.ContinueButton'
+    ContinueButton: 'CreateEnableBankingAccount.ContinueButton',
+    StartSyncButton: 'CreateEnableBankingAccount.StartSyncButton'
 } as const;

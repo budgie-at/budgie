@@ -11,6 +11,7 @@ import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-aler
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useBankIntegration } from '../../context/bank-integration.context';
 import { useExplainEnableBankingError } from '../../hook/use-explain-enable-banking-error.hook';
+import { EnableBankingConnectionCardSelector } from '../enable-banking-connection-card/enable-banking-connection-card.selector';
 
 export const EnableBankingDisconnectRow = () => {
     const { t } = useLingui();
@@ -64,6 +65,7 @@ export const EnableBankingDisconnectRow = () => {
             isDisabled={false}
             isLoading={isLoading}
             onPress={handlePress}
+            testID={EnableBankingConnectionCardSelector.Disconnect}
         />
     );
 };

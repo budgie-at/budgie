@@ -9,6 +9,10 @@
             "types": "./dist/esm/index.d.ts",
             "default": "./dist/esm/index.js"
         },
+        "./e2e": {
+            "types": "./dist/esm/e2e/e2e-fake-api.d.ts",
+            "default": "./dist/esm/e2e/e2e-fake-api.js"
+        },
         "./package.json": "./package.json"
     },
     "main": "./dist/esm/index.js",

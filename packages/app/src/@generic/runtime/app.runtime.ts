@@ -1,4 +1,5 @@
 import { Db, makeLoggerLayer } from '@budgie/contracts';
+import { installE2eFakeApi } from '@budgie/sync/e2e';
 import * as Effect from 'effect/Effect';
 import * as FetchHttpClient from 'effect/http/FetchHttpClient';
 import * as Layer from 'effect/Layer';
@@ -6,6 +7,7 @@ import * as ManagedRuntime from 'effect/ManagedRuntime';
 import * as Atom from 'effect/reactivity/Atom';
 import * as Reactivity from 'effect/reactivity/Reactivity';
 import * as References from 'effect/References';
+import Constants from 'expo-constants';
 
 import { syncRequestSignerLayer } from '../../sync/layer/sync-request-signer.layer';
 import { DatabaseChangeService } from '../drizzle/service/database-change.service';
@@ -13,6 +15,10 @@ import { DatabaseConnectionService } from '../drizzle/service/database-connectio
 import { isLoggingEnabled } from '../utils/is-logging-enabled.util';
 
 import { appServicesLayer } from './app-services.layer';
+
+if (Constants.expoConfig?.extra?.['appVariant'] === 'e2e') {
+    installE2eFakeApi();
+}
 
 const appMemoMap = Layer.makeMemoMapUnsafe();
 

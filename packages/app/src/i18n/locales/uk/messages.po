@@ -1011,19 +1011,19 @@ msgstr "на тиждень"
 msgid "a year"
 msgstr "на рік"
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "About 12 minutes"
 msgstr "Близько 12 хвилин"
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "About 3 minutes"
 msgstr "Близько 3 хвилин"
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "About 6 minutes"
 msgstr "Близько 6 хвилин"
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "About a minute"
 msgstr "Близько хвилини"
 
@@ -1366,6 +1366,10 @@ msgstr "Уже в Budgie"
 msgid "Already in this rule"
 msgstr "Уже є в цьому правилі"
 
+#: src/sync/component/enable-banking-connect-account-row/enable-banking-connect-account-row.tsx
+msgid "Already linked to another account"
+msgstr "Вже прив’язано до іншого рахунку"
+
 #: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/account/component/update-debt-account/update-debt-account.tsx
 msgid "Already repaid"
@@ -1572,6 +1576,10 @@ msgstr "Ви впевнені, що хочете видалити всі сво�
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Are you sure?"
 msgstr "Ви впевнені?"
+
+#: src/sync/component/enable-banking-history-step/enable-banking-history-step.tsx
+msgid "As far back as your bank allows"
+msgstr "Настільки давно, наскільки дозволяє банк"
 
 #: src/account/component/net-worth-composition/net-worth-composition.tsx
 msgid "Asset mix"
@@ -2010,7 +2018,7 @@ msgstr "байт"
 msgid "Can run for hours on old accounts, and much slower while the app is closed."
 msgstr "Може тривати годинами для старих рахунків і значно повільніше, коли застосунок закрито."
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Can take hours"
 msgstr "Може тривати годинами"
 
@@ -2340,6 +2348,10 @@ msgstr "Вибрати інший банк"
 msgid "Choose at least one"
 msgstr "Оберіть принаймні один варіант"
 
+#: src/sync/component/enable-banking-connect-account-step/enable-banking-connect-account-step.tsx
+msgid "Choose bank account"
+msgstr "Виберіть банківський рахунок"
+
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Choose both accounts"
 msgstr "Виберіть обидва рахунки"
@@ -2363,6 +2375,10 @@ msgstr "Обрати файл"
 #: src/receipt/components/receipt-source-menu/receipt-source-menu.tsx
 msgid "Choose from Photos"
 msgstr "Обрати з Фото"
+
+#: src/sync/component/enable-banking-history-step/enable-banking-history-step.tsx
+msgid "Choose how far back to import. Your bank sends it in one go, and it may keep less than you ask for."
+msgstr "Виберіть, за який період імпортувати. Банк надсилає все одразу й може зберігати менше, ніж ви просите."
 
 #: src/sync/component/enable-banking-key-step/enable-banking-key-step.tsx
 msgid "Choose key file"
@@ -2518,6 +2534,7 @@ msgid "Confirm your PIN"
 msgstr "Підтвердьте PIN-код"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
+#: src/sync/component/enable-banking-connect-account-step/enable-banking-connect-account-step.tsx
 msgid "Connect"
 msgstr "Підключити"
 
@@ -2540,6 +2557,10 @@ msgstr "Підключити банки ЄС"
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Connect Monobank"
 msgstr "Підключити Монобанк"
+
+#: src/sync/component/account-connect-bank-row/account-connect-bank-row.tsx
+msgid "Connect to bank"
+msgstr "Підключити до банку"
 
 #: src/sync/component/bank-integration-key-card/bank-integration-key-card.tsx
 #: src/sync/component/enable-banking-connection-card/enable-banking-connection-card.tsx
@@ -2688,7 +2709,8 @@ msgstr "Не вдалося перевірити дані синхронізац
 msgid "Could not close deposit"
 msgstr "Не вдалося закрити депозит"
 
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/component/enable-banking-connect-account-step/enable-banking-connect-account-step.tsx
+#: src/sync/hook/use-enable-banking-callback.hook.ts
 msgid "Could not connect the bank"
 msgstr "Не вдалося підключити банк"
 
@@ -2858,7 +2880,7 @@ msgstr "Не вдалося зв'язатися із сервером. Пере�
 msgid "Could not read CSV file"
 msgstr "Не вдалося прочитати CSV-файл"
 
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/hook/use-enable-banking-key-state.hook.ts
 msgid "Could not read the key"
 msgstr "Не вдалося прочитати ключ"
 
@@ -2944,6 +2966,7 @@ msgstr "Не вдалося налаштувати синхронізацію"
 msgid "Could not start syncing"
 msgstr "Не вдалося почати синхронізацію"
 
+#: src/sync/component/account-connect-bank-row/account-connect-bank-row.tsx
 #: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
 #: src/sync/component/enable-banking-reauthorize-row/enable-banking-reauthorize-row.tsx
 msgid "Could not start the authorization"
@@ -3506,6 +3529,14 @@ msgstr "Не збігається"
 msgid "Different Binance account"
 msgstr "Інший акаунт Binance"
 
+#: src/sync/component/enable-banking-connect-account-row/enable-banking-connect-account-row.tsx
+msgid "Different currency from this account"
+msgstr "Інша валюта, ніж у цього рахунку"
+
+#: src/sync/component/enable-banking-connect-account-row/enable-banking-connect-account-row.tsx
+msgid "Different IBAN from this account"
+msgstr "Інший IBAN, ніж у цього рахунку"
+
 #: src/sync/component/enable-banking-disconnect-row/enable-banking-disconnect-row.tsx
 msgid "Disconnect"
 msgstr "Відключити"
@@ -3995,6 +4026,22 @@ msgstr "кожні два тижні"
 msgid "Every year"
 msgstr "Щороку"
 
+#: src/sync/component/enable-banking-history-step/enable-banking-history-step.tsx
+msgid "Everything from the last 3 months"
+msgstr "Усе за останні 3 місяці"
+
+#: src/sync/component/enable-banking-history-step/enable-banking-history-step.tsx
+msgid "Everything from the last 6 months"
+msgstr "Усе за останні 6 місяців"
+
+#: src/sync/component/enable-banking-history-step/enable-banking-history-step.tsx
+msgid "Everything from the last month"
+msgstr "Усе за останній місяць"
+
+#: src/sync/component/enable-banking-history-step/enable-banking-history-step.tsx
+msgid "Everything from the last year"
+msgstr "Усе за останній рік"
+
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
 msgid "Everything still stays on this device and nothing is uploaded. But anyone who can unlock your phone can open Budgie."
 msgstr "Усе й надалі лишається на цьому пристрої, нічого не вивантажується. Але будь-хто, хто може розблокувати ваш телефон, зможе відкрити Budgie."
@@ -4389,6 +4436,10 @@ msgstr "Сховати розподіл"
 msgid "Hide screen captures"
 msgstr "Приховувати знімки екрана"
 
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+msgid "History depth"
+msgstr "Глибина історії"
+
 #: src/sync/utils/get-history-import-status-message.util.ts
 msgid "History import needs attention"
 msgstr "Імпорт історії потребує уваги"
@@ -4538,6 +4589,10 @@ msgstr "Імпортуємо історію · {percent}%"
 #: src/sync/component/sync-import-progress/sync-import-progress.tsx
 msgid "Importing history…"
 msgstr "Імпортуємо історію…"
+
+#: src/sync/component/enable-banking-connect-account-step/enable-banking-connect-account-step.tsx
+msgid "Importing your bank history"
+msgstr "Імпортуємо історію з банку"
 
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Imports off"
@@ -4732,6 +4787,10 @@ msgstr "Залиште увімкненим лише \"Дозволити чит
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Keep your PIN safe"
 msgstr "Зберігайте PIN у безпеці"
+
+#: src/sync/component/account-connect-bank-row/account-connect-bank-row.tsx
+msgid "Keeps this account and its history. New transactions come from your bank, starting the day after the last one."
+msgstr "Рахунок та його історія залишаються. Нові транзакції надходитимуть із банку, починаючи з наступного дня після останньої."
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Kept inside Budgie's file on this phone. Sent only to Monobank, never to us."
@@ -5207,7 +5266,7 @@ msgstr "Monobank обмежує, як часто можна перевіряти
 msgid "Monobank rejected this key. Check it and try again."
 msgstr "Monobank відхилив цей ключ. Перевірте його та спробуйте ще раз."
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Monobank sends about one month of history per minute, for each account you selected."
 msgstr "Monobank надсилає близько одного місяця історії за хвилину для кожного вибраного рахунку."
 
@@ -5722,7 +5781,8 @@ msgstr "Не синхронізуються: Auto-Invest, Binance Pay, Binance C
 msgid "Note"
 msgstr "Нотатка"
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
+#: src/sync/component/enable-banking-history-step/enable-banking-history-step.tsx
 msgid "Nothing from the past is imported"
 msgstr "Нічого з минулого не імпортується"
 
@@ -7685,6 +7745,10 @@ msgstr "Синхронізація"
 msgid "Syncing bank history"
 msgstr "Синхронізація банківської історії"
 
+#: src/sync/component/enable-banking-connect-account-step/enable-banking-connect-account-step.tsx
+msgid "Syncing from {startDay}"
+msgstr "Синхронізація з {startDay}"
+
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Syncing history..."
 msgstr "Синхронізація історії..."
@@ -7812,6 +7876,10 @@ msgstr "URL умов використання"
 msgid "The .pem file you saved"
 msgstr "Збережений файл .pem"
 
+#: src/sync/component/enable-banking-connect-account-step/enable-banking-connect-account-step.tsx
+msgid "The account keeps its history and syncs forward from the day after its last transaction."
+msgstr "Рахунок зберігає історію й синхронізується з наступного дня після останньої транзакції."
+
 #: src/sync/constant/sync-error-label.constant.ts
 msgid "The API key has the wrong permissions. Use a key with only \"Enable Reading\"."
 msgstr "Ключ API має неправильні дозволи. Використовуйте ключ лише з «Enable Reading»."
@@ -7906,12 +7974,16 @@ msgid "There is no “forgot PIN”."
 msgstr "Немає кнопки «забув PIN-код»."
 
 #: src/sync/component/enable-banking-accounts-step/enable-banking-accounts-step.tsx
-msgid "These accounts already sync through another connection or use a currency Budgie does not support."
-msgstr "Ці рахунки вже синхронізуються через інше підключення або використовують валюту, яку Budgie не підтримує."
+msgid "These accounts already exist in Budgie or use a currency Budgie does not support. To continue an existing account, open it and tap Connect to bank."
+msgstr "Ці рахунки вже є в Budgie або використовують валюту, яку Budgie не підтримує. Щоб продовжити наявний рахунок, відкрийте його й торкніться «Підключити до банку»."
 
 #: src/budget/constant/budget-period-this-label.constant.ts
 msgid "these two weeks"
 msgstr "ці два тижні"
+
+#: src/sync/component/enable-banking-connect-account-row/enable-banking-connect-account-row.tsx
+msgid "This account already syncs"
+msgstr "Цей рахунок уже синхронізується"
 
 #: src/sync/constant/sync-error-label.constant.ts
 msgid "This account is not linked to the bank authorization. Link it in Enable Banking, then authorize again."

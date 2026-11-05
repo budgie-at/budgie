@@ -1,5 +1,5 @@
 import { AccountEntityTable, BankIntegrationEntityTable, SyncErrorCodeEnum, SyncStatusEnum } from '@budgie/contracts';
-import { EnableBankingSyncService } from '@budgie/sync';
+import { EnableBankingSyncService, SyncHistoryDepthEnum } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -29,6 +29,7 @@ const pendingFor = (integrationId: number | null, state: string) => ({
     aspspName: 'Synthetic Bank',
     aspspCountry: 'DE',
     integrationId,
+    connectAccountId: null,
     callbackUrl: CALLBACK_URL,
     expiresAtMs: Date.now() + 60_000
 });
@@ -184,7 +185,11 @@ describe('enable-banking/consent', () => {
             ]);
             expect(yield* fetchAccountIntegrationToken(account.id)).toBe(buildEnableBankingToken('session-new', VALID_UNTIL));
 
-            expect(yield* skipRequestedSync(service.setupAccountSyncBatch(result.token, result.accounts, ['hash-added']))).toBe(1);
+            expect(
+                yield* skipRequestedSync(
+                    service.setupAccountSyncBatch(result.token, result.accounts, ['hash-added'], SyncHistoryDepthEnum.FULL)
+                )
+            ).toBe(1);
             const [added] = yield* testDb.select().from(AccountEntityTable).where(eq(AccountEntityTable.externalId, 'hash-added'));
             expect(added.integrationId).toBe(result.integrationId);
             expect(yield* testDb.select().from(BankIntegrationEntityTable)).toHaveLength(1);

@@ -80,13 +80,20 @@ export const enableBankingStub = {
             })
         );
     },
-    balances: (uid: string, amount = '100.00', balanceType = 'ITBD'): void => {
+    balances: (uid: string, amount = '100.00', balanceType = 'ITBD', lastChangeDateTime?: string): void => {
         mockServer.use(
             http.get(`${BASE_URL}/accounts/${uid}/balances`, ({ request }) => {
                 record(request);
 
                 return HttpResponse.json({
-                    balances: [{ name: 'Booked', balance_amount: { amount, currency: 'EUR' }, balance_type: balanceType }]
+                    balances: [
+                        {
+                            name: 'Booked',
+                            balance_amount: { amount, currency: 'EUR' },
+                            balance_type: balanceType,
+                            ...(lastChangeDateTime === undefined ? {} : { last_change_date_time: lastChangeDateTime })
+                        }
+                    ]
                 });
             })
         );

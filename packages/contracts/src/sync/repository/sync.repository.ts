@@ -91,7 +91,6 @@ export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/c
                             status: SyncStatusEnum.IDLE,
                             backwardSyncFromAt: now,
                             backwardSyncedAt: null,
-                            backwardSyncLimitAt: null,
                             forwardSyncFromAt: now,
                             forwardSyncedAt: null,
                             backwardBatchAt: null,
@@ -198,6 +197,8 @@ export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/c
                 ),
             setStatus: (id: number, status: SyncStatusEnum) =>
                 Db.query(db => db.update(SyncEntityTable).set({ status }).where(eq(SyncEntityTable.id, id))),
+            deleteByAccountId: (accountId: number) =>
+                Db.query(db => db.delete(SyncEntityTable).where(eq(SyncEntityTable.accountId, accountId))),
             setEnabled: (accountId: number, enabled: boolean) =>
                 Db.query(db => db.update(SyncEntityTable).set({ enabled }).where(eq(SyncEntityTable.accountId, accountId))),
             truncate: () => Db.query(db => db.delete(SyncEntityTable))

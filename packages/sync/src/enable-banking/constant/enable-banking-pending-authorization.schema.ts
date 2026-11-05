@@ -6,6 +6,7 @@ export const EnableBankingPendingAuthorizationSchema = Schema.Struct({
     aspspName: Schema.String,
     aspspCountry: Schema.String,
     integrationId: Schema.NullOr(Schema.Number),
+    connectAccountId: Schema.NullOr(Schema.Number),
     callbackUrl: Schema.String,
     expiresAtMs: Schema.Number
 });

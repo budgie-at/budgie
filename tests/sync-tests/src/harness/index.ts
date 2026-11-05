@@ -39,9 +39,11 @@ export {
     buildEnableBankingToken,
     fetchEnableBankingTransactions,
     fetchSortedEnableBankingExternalIds,
+    findOrSeedEur,
     makeEnableBankingSyncStale,
     seedEnableBankingAccount,
-    seedLinkedEnableBankingAccount
+    seedLinkedEnableBankingAccount,
+    stubLongestFallbackRows
 } from './enable-banking/enable-banking-scenario';
 export { testSigner } from './enable-banking/test-sync-request-signer';
 export type { TimeWindow } from './binance/binance-stub';

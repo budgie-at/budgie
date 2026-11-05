@@ -21,6 +21,7 @@ import { createMonobankAccountReducer } from '../../utils/create-monobank-accoun
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
 import { SyncAccountSetupPage } from '../sync-account-setup-page/sync-account-setup-page';
 import { SyncHistoryDepthStep } from '../sync-history-depth-step/sync-history-depth-step';
+import { SyncHistoryDurationNotice } from '../sync-history-duration-notice/sync-history-duration-notice';
 import { TokenInputStep } from '../token-input-step/token-input-step';
 
 import { CreateMonobankAccountSelector } from './create-monobank-account.selector';
@@ -131,7 +132,24 @@ export const CreateMonobankAccount = () => {
     );
 
     let stepContent = <TokenInputStep token={token} onTokenChange={handleTokenChange} />;
-    let footer = <Button onPress={handleFetchAccounts} disabled={isLoading} isLoading={isLoading} content={t`Connect`} />;
+    let footer = (
+        <Button
+            onPress={handleFetchAccounts}
+            disabled={isLoading}
+            isLoading={isLoading}
+            content={t`Connect`}
+            testID={CreateMonobankAccountSelector.FetchAccountsButton}
+        />
+    );
+
+    const historyHintByDepth = {
+        [SyncHistoryDepthEnum.MONTH_1]: t`About a minute`,
+        [SyncHistoryDepthEnum.MONTHS_3]: t`About 3 minutes`,
+        [SyncHistoryDepthEnum.MONTHS_6]: t`About 6 minutes`,
+        [SyncHistoryDepthEnum.YEAR_1]: t`About 12 minutes`,
+        [SyncHistoryDepthEnum.FULL]: t`Can take hours`,
+        [SyncHistoryDepthEnum.NEW_ONLY]: t`Nothing from the past is imported`
+    };
 
     switch (step) {
         case SetupStepEnum.ACCOUNTS:
@@ -144,8 +162,25 @@ export const CreateMonobankAccount = () => {
             footer = accountsFooter;
             break;
         case SetupStepEnum.HISTORY:
-            stepContent = <SyncHistoryDepthStep selectedDepth={historyDepth} onSelect={handleHistoryDepthSelect} />;
-            footer = <Button onPress={handleSetupSync} disabled={isStartSyncDisabled} content={t`Start Sync`} />;
+            stepContent = (
+                <>
+                    <SyncHistoryDepthStep
+                        selectedDepth={historyDepth}
+                        description={t`Monobank sends about one month of history per minute, for each account you selected.`}
+                        hintByDepth={historyHintByDepth}
+                        onSelect={handleHistoryDepthSelect}
+                    />
+                    <SyncHistoryDurationNotice depth={historyDepth} />
+                </>
+            );
+            footer = (
+                <Button
+                    onPress={handleSetupSync}
+                    disabled={isStartSyncDisabled}
+                    content={t`Start Sync`}
+                    testID={CreateMonobankAccountSelector.StartSyncButton}
+                />
+            );
             break;
         case SetupStepEnum.TOKEN:
         default:

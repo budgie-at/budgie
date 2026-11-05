@@ -1,5 +1,5 @@
 import { AccountEntityTable, BankIntegrationEntityTable, SyncEntityTable, SyncModeEnum } from '@budgie/contracts';
-import { EnableBankingCallbackFailureEnum, EnableBankingErrorCodeEnum, EnableBankingSyncService } from '@budgie/sync';
+import { EnableBankingCallbackFailureEnum, EnableBankingErrorCodeEnum, EnableBankingSyncService, SyncHistoryDepthEnum } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -26,6 +26,7 @@ const pending = (overrides: { readonly state?: string; readonly expiresAtMs?: nu
     aspspName: 'Synthetic Bank',
     aspspCountry: 'DE',
     integrationId: null,
+    connectAccountId: null,
     callbackUrl: CALLBACK_URL,
     expiresAtMs: overrides.expiresAtMs ?? Date.now() + 60_000
 });
@@ -80,6 +81,7 @@ describe('enable-banking/authorization', () => {
                 aspspName: 'Synthetic Bank',
                 aspspCountry: 'DE',
                 integrationId: null,
+                connectAccountId: null,
                 callbackUrl: CALLBACK_URL,
                 redirectUrl: 'https://budgie.at/enable-banking/callback',
                 maximumConsentValiditySeconds: 7_776_000
@@ -111,6 +113,7 @@ describe('enable-banking/authorization', () => {
                     aspspName: 'Synthetic Bank',
                     aspspCountry: 'DE',
                     integrationId: null,
+                    connectAccountId: null,
                     callbackUrl: CALLBACK_URL,
                     redirectUrl: 'https://budgie.at/wrong',
                     maximumConsentValiditySeconds: 86_400
@@ -172,7 +175,9 @@ describe('enable-banking/authorization', () => {
             expect(result.previews).toMatchObject([{ externalId: hash, title: 'Synthetic Bank Giro', isParked: false }]);
             expect(yield* testDb.select().from(BankIntegrationEntityTable)).toHaveLength(1);
 
-            expect(yield* skipRequestedSync(service.setupAccountSyncBatch(result.token, result.accounts, [hash]))).toBe(1);
+            expect(
+                yield* skipRequestedSync(service.setupAccountSyncBatch(result.token, result.accounts, [hash], SyncHistoryDepthEnum.FULL))
+            ).toBe(1);
             expect(yield* testDb.select().from(BankIntegrationEntityTable)).toHaveLength(2);
             const [account] = yield* testDb.select().from(AccountEntityTable).where(eq(AccountEntityTable.externalId, hash));
             const [sync] = yield* testDb.select().from(SyncEntityTable).where(eq(SyncEntityTable.accountId, account.id));
