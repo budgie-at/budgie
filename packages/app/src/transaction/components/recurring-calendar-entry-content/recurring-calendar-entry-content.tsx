@@ -22,16 +22,16 @@ interface Props {
     readonly dayLabel?: string;
 }
 
-const rowVariants = cva('flex-row gap-x-xl', {
-    variants: { isAccessibilityTextSize: { true: 'flex-wrap items-start gap-y-sm', false: 'min-h-11 items-center' } }
+const rowVariants = cva('gap-x-xl', {
+    variants: { isAccessibilityTextSize: { true: 'gap-y-sm', false: 'flex-row min-h-11 items-center' } }
 });
 
-const labelsVariants = cva('flex-1 min-w-0 gap-y-xxs', {
-    variants: { isAccessibilityTextSize: { true: '', false: 'min-h-[38px] justify-center mr-xs' } }
+const labelsVariants = cva('min-w-0 gap-y-xxs', {
+    variants: { isAccessibilityTextSize: { true: '', false: 'flex-1 min-h-[38px] justify-center mr-xs' } }
 });
 
 const amountVariants = cva('shrink-0 text-[16px] font-semibold text-primary tabular-nums', {
-    variants: { isAccessibilityTextSize: { true: 'basis-full pl-[48px]', false: '' } }
+    variants: { isAccessibilityTextSize: { true: '', false: '' } }
 });
 
 export const RecurringCalendarEntryContent = ({ entry, dayLabel }: Props) => {

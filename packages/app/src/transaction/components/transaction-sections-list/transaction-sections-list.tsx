@@ -1,7 +1,7 @@
 import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { useRouter } from 'expo-router';
 import { ComponentType, ReactElement, RefCallback, useEffect, useEffectEvent, useRef } from 'react';
-import { View } from 'react-native';
+import { View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined, isEmptyArray } from '@rnw-community/shared';
@@ -55,6 +55,7 @@ export const TransactionSectionsList = ({
     headerOffsets
 }: Props) => {
     const router = useRouter();
+    const { fontScale } = useWindowDimensions();
     const { bottom } = useSafeAreaInsets();
 
     const menuRef = useRef<TransactionListContextMenuRefInterface>(null);
@@ -112,6 +113,7 @@ export const TransactionSectionsList = ({
         <>
             <GroupedSurface>
                 <ListComponent
+                    key={fontScale}
                     style={LIST_STYLE}
                     data={flatData}
                     keyExtractor={keyExtractor}
