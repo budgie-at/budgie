@@ -10,7 +10,7 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { Icon } from '../../../@generic/component/icon/icon';
 import { TRANSACTION_KEYPAD_MAX_FONT_SCALE } from '../../constant/transaction-keypad-max-font-scale.constant';
 
-type KeypadButtonVariant = 'digit' | 'action' | 'cancel';
+type KeypadButtonVariant = 'digit' | 'action';
 
 interface Props {
     readonly value?: string;
@@ -35,8 +35,7 @@ const buttonVariants = cva<{
     variants: {
         buttonVariant: {
             digit: 'flex-1 bg-grouped-surface-fill active:opacity-70',
-            action: 'flex-1 bg-grouped-surface-fill active:opacity-70',
-            cancel: 'flex-1 bg-grouped-surface-fill active:opacity-70'
+            action: 'flex-1 bg-grouped-surface-fill active:opacity-70'
         }
     },
     defaultVariants: { buttonVariant: 'digit' }
@@ -48,8 +47,7 @@ const textVariants = cva<{
     variants: {
         buttonVariant: {
             digit: 'text-primary',
-            action: 'text-secondary-foreground',
-            cancel: 'text-secondary-foreground'
+            action: 'text-secondary-foreground'
         }
     },
     defaultVariants: { buttonVariant: 'digit' }

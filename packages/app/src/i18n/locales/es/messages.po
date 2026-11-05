@@ -1121,6 +1121,9 @@ msgstr "Presupuesto activo"
 #: src/budget/components/budget-event-category-limits/budget-event-category-limits.tsx
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 #: src/budget/components/budget-list-section/budget-list-section.tsx
+#: src/transaction/components/transaction-date-tags-row/transaction-date-tags-row.tsx
+#: src/transaction/components/transaction-fee-field-icon/transaction-fee-field-icon.tsx
+#: src/transaction/components/transaction-note-field-icon/transaction-note-field-icon.tsx
 msgid "Add"
 msgstr "Añadir"
 
@@ -2190,6 +2193,9 @@ msgstr "Comprobando el historial de transacciones"
 #: src/budget/components/budget-fund-category-field/budget-fund-category-field.tsx
 #: src/import/components/import-column-map-field/import-column-map-field.tsx
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
+#: src/transaction/components/transaction-account-row/transaction-account-row.tsx
+#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
+#: src/transaction/components/transfer-account-picker/transfer-account-picker.tsx
 msgid "Choose"
 msgstr "Elegir"
 
@@ -3939,12 +3945,13 @@ msgid "Features"
 msgstr "Funciones"
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+#: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
+#: src/transaction/components/transaction-fee-field-icon/transaction-fee-field-icon.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Fee"
 msgstr "Comisión"
 
-#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
 #: src/transaction/hook/use-transaction-fee-label.hook.ts
 msgid "Fee {formattedAmount}"
 msgstr "Comisión {formattedAmount}"
@@ -4080,9 +4087,13 @@ msgid "French"
 msgstr "Francés"
 
 #: src/app/transaction-amount-filter.tsx
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "From"
 msgstr "De"
+
+#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
+msgctxt "transfer account"
+msgid "From"
+msgstr "Desde"
 
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead.tsx
 msgid "From {counterparty}"
@@ -5519,9 +5530,7 @@ msgstr "No está en ninguna transacción. Esto no se puede deshacer."
 msgid "Not saved yet"
 msgstr "Aún no se ha guardado"
 
-#: src/transaction/components/transaction-field-caption/transaction-field-caption.tsx
 #: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx
-#: src/transaction/components/transaction-metadata-field/transaction-metadata-field.tsx
 msgid "not set"
 msgstr "no establecido"
 
@@ -6966,8 +6975,6 @@ msgid "Select a valid column"
 msgstr "Selecciona una columna válida"
 
 #: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
-#: src/transaction/components/transaction-account-row/transaction-account-row.tsx
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "Select account"
 msgstr "Seleccionar cuenta"
 
@@ -7069,11 +7076,6 @@ msgstr "Crear presupuesto"
 #: src/budget/constant/budget-save-blocker-label.constant.ts
 msgid "Set every category limit to continue"
 msgstr "Define todos los límites de categoría para continuar"
-
-#: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
-#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
-msgid "Set fee"
-msgstr "Establecer comisión"
 
 #: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
 msgid "Set Maturity Date"
@@ -7380,7 +7382,7 @@ msgstr "Resumen no disponible"
 msgid "Support"
 msgstr "Soporte"
 
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
+#: src/transaction/components/transfer-swap-button/transfer-swap-button.tsx
 msgid "Swap accounts"
 msgstr "Intercambiar cuentas"
 
@@ -7865,7 +7867,11 @@ msgid "Title"
 msgstr "Título"
 
 #: src/app/transaction-amount-filter.tsx
+msgid "To"
+msgstr "A"
+
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
+msgctxt "transfer account"
 msgid "To"
 msgstr "A"
 
@@ -8243,6 +8249,7 @@ msgstr "No disponible"
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
 #: src/category/components/stats-by-categories/stats-by-categories.tsx
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
+#: src/transaction/components/transaction-category-field-icon/transaction-category-field-icon.tsx
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 #: src/transaction/components/transaction-info-split-entry-row/transaction-info-split-entry-row.tsx
 #: src/transaction/hook/use-transaction-subtitle-segments.hook.ts

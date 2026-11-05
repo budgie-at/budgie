@@ -10,6 +10,7 @@ import { useGetCategoryByIdQuery } from '../../../category/query/use-get-categor
 import { setPrimaryCategory } from '../../utils/set-primary-category.util';
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 import { TransactionFieldIcon, TransactionFieldIconRef } from '../transaction-field-icon/transaction-field-icon';
+import { TransactionFormRowPlaceholder } from '../transaction-form-row-placeholder/transaction-form-row-placeholder';
 
 import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import type { RefObject } from 'react';
@@ -42,7 +43,7 @@ export const TransactionCategoryFieldIcon = ({ ref, variant, isSplitActive }: Pr
         });
     };
 
-    const categoryIcon = category?.icon ?? UserIconNameEnum.Folder;
+    const categoryIcon = category?.icon ?? UserIconNameEnum.CircleDashed;
     const disabledHint = isSplitActive ? t`Categories are set per split item` : void 0;
 
     return (
@@ -51,6 +52,7 @@ export const TransactionCategoryFieldIcon = ({ ref, variant, isSplitActive }: Pr
             icon={categoryIcon}
             label={t`Category`}
             value={category?.title}
+            placeholder={<TransactionFormRowPlaceholder tone="attention">{t`Uncategorized`}</TransactionFormRowPlaceholder>}
             onPress={handlePress}
             disabledHint={disabledHint}
             testID={SimpleQuickFormSelector.CategorySelector}

@@ -33,7 +33,7 @@ export const ConvertToTransferHeader = ({ isLoading, onFeePress }: Props) => {
             </View>
             <HapticPressable
                 accessibilityRole="button"
-                accessibilityLabel={t`Set fee`}
+                accessibilityLabel={t`Fee`}
                 disabled={isLoading}
                 onPress={onFeePress}
                 className="h-[44px] w-[44px] items-center justify-center rounded-full bg-grouped-surface-row active:opacity-70"
