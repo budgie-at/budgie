@@ -1,14 +1,14 @@
 import { convertFromMicroUnits, convertToMicroUnits } from '@budgie/contracts';
 
 import { InzhurOperationKindEnum } from '../enum/inzhur-operation-kind.enum';
+import { findLowestDayEndBalance } from '../utils/find-lowest-day-end-balance.util';
+import { toKyivDay } from '../utils/to-kyiv-day.util';
 
 import type { InzhurOperationInterface } from '../interface/inzhur-operation.interface';
 import type { InzhurOperationsPlanInterface } from '../interface/inzhur-operations-plan.interface';
 import type { InzhurPlannedActionInterface } from '../interface/inzhur-planned-action.interface';
 
 class InzhurOperationsPlanner {
-    private static readonly TIME_ZONE = 'Europe/Kyiv';
-
     plan(operations: readonly InzhurOperationInterface[]): InzhurOperationsPlanInterface {
         const surcharges = operations.filter(operation => operation.kind === InzhurOperationKindEnum.SURCHARGE);
         const claimedSurcharges = new Set<InzhurOperationInterface>();
@@ -38,21 +38,11 @@ class InzhurOperationsPlanner {
     }
 
     private dipsBelowZero(operations: readonly InzhurOperationInterface[]): boolean {
-        let balance = 0;
-
-        for (const operation of operations) {
-            balance += this.cashDelta(operation);
-
-            if (balance < 0) {
-                return true;
-            }
-        }
-
-        return false;
+        return findLowestDayEndBalance(operations.map(operation => ({ at: operation.occurredAt, delta: this.cashDelta(operation) }))) < 0;
     }
 
     private toDay(date: Date): string {
-        return date.toLocaleDateString('en-CA', { timeZone: InzhurOperationsPlanner.TIME_ZONE });
+        return toKyivDay(date);
     }
 
     private toAction(

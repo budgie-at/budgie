@@ -33,6 +33,7 @@ import { inzhurOperationsPlanner } from '../planner/inzhur-operations.planner';
 import { inzhurQuantityResolver } from '../planner/inzhur-quantity.resolver';
 import { buildInzhurTradeEntries } from '../utils/build-inzhur-trade-entries.util';
 import { buildInzhurTransactionInput } from '../utils/build-inzhur-transaction-input.util';
+import { findLowestDayEndBalance } from '../utils/find-lowest-day-end-balance.util';
 import { sumSignedAccountEntries } from '../utils/sum-signed-account-entries.util';
 
 import { InzhurBankFlowService } from './inzhur-bank-flow.service';
@@ -227,13 +228,12 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                 yield* inzhurBeforeTrackingService.moveTo(cashAccountId, openingAt);
 
                 const cashLedger = yield* transactionRepository.findByAccountIdsWithEntries([cashAccountId]);
-                let running = 0;
-                let minimum = 0;
-
-                for (const transaction of cashLedger) {
-                    running += sumSignedAccountEntries(transaction.entries, cashAccountId);
-                    minimum = Math.min(minimum, running);
-                }
+                const minimum = findLowestDayEndBalance(
+                    cashLedger.map(transaction => ({
+                        at: transaction.operatedAt,
+                        delta: sumSignedAccountEntries(transaction.entries, cashAccountId)
+                    }))
+                );
 
                 if (minimum < 0) {
                     yield* inzhurBeforeTrackingService.shift(cashAccountId, -minimum, fundAccountIds);

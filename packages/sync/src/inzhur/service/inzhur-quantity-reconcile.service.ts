@@ -7,6 +7,7 @@ import * as Layer from 'effect/Layer';
 import { isDefined } from '@rnw-community/shared';
 
 import { INZHUR_OPERATION_EXTERNAL_ID_PREFIX } from '../constant/inzhur-operation-external-id-prefix.constant';
+import { INZHUR_RECONCILE_EXTERNAL_ID_PREFIX } from '../constant/inzhur-reconcile-external-id-prefix.constant';
 import { sumSignedAccountEntries } from '../utils/sum-signed-account-entries.util';
 
 import type { InzhurReconciliationInterface } from '../interface/inzhur-reconciliation.interface';
@@ -39,7 +40,7 @@ export class InzhurQuantityReconcileService extends Context.Service<InzhurQuanti
                     const reconciliations: InzhurReconciliationInterface[] = [];
 
                     for (const [accountId, targetQuantity] of targetQuantityByAccountId) {
-                        const externalId = `inzhur:reconcile:${statementDate}:${accountId}`;
+                        const externalId = `${INZHUR_RECONCILE_EXTERNAL_ID_PREFIX}${statementDate}:${accountId}`;
                         const previousId = idByExternalId.get(externalId);
 
                         if (isDefined(previousId)) {

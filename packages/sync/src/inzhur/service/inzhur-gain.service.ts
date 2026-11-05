@@ -16,6 +16,7 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { INZHUR_OPERATION_EXTERNAL_ID_PREFIX } from '../constant/inzhur-operation-external-id-prefix.constant';
+import { INZHUR_RECONCILE_EXTERNAL_ID_PREFIX } from '../constant/inzhur-reconcile-external-id-prefix.constant';
 import { InzhurGainRangeEnum } from '../enum/inzhur-gain-range.enum';
 
 import { InzhurSetupService } from './inzhur-setup.service';
@@ -60,6 +61,9 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
         const findPriceOn = (prices: readonly InzhurValuePointInterface[], day: string) =>
             prices.findLast(price => price.date <= day)?.value ?? null;
 
+        const isReconcile = (movement: LedgerMovementInterface) =>
+            isDefined(movement.externalId) && movement.externalId.startsWith(INZHUR_RECONCILE_EXTERNAL_ID_PREFIX);
+
         const loadLedger = Effect.fnUntraced(function* () {
             const setup = yield* inzhurSetupService.findSetup();
 
@@ -81,7 +85,10 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
                 [cashAccountId, ...fundAccountIds]
                     .map(accountId =>
                         movements.find(
-                            movement => movement.accountId === accountId && movement.transactionType === TransactionTypeEnum.ADJUSTMENT
+                            movement =>
+                                movement.accountId === accountId &&
+                                movement.transactionType === TransactionTypeEnum.ADJUSTMENT &&
+                                !isReconcile(movement)
                         )
                     )
                     .filter(isDefined)
@@ -136,7 +143,14 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
         const findCounterpartId = (ledger: InzhurGainLedgerInterface, movement: LedgerMovementInterface) =>
             movement.fromAccountId === ledger.cashAccountId ? movement.toAccountId : movement.fromAccountId;
 
+        const reconcileValueOf = (ledger: InzhurGainLedgerInterface, item: InzhurDatedMovementInterface) =>
+            item.amount * (findPriceOn(ledger.pricesByAccountId.get(item.movement.accountId) ?? [], item.day) ?? 0);
+
         const institutionFlowOf = (ledger: InzhurGainLedgerInterface, item: InzhurDatedMovementInterface) => {
+            if (isReconcile(item.movement)) {
+                return ledger.fundAccountIds.includes(item.movement.accountId) ? reconcileValueOf(ledger, item) : 0;
+            }
+
             const counterpartId = findCounterpartId(ledger, item.movement);
             const isExternalTransfer =
                 item.movement.transactionType === TransactionTypeEnum.TRANSFER &&
@@ -146,6 +160,10 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
         };
 
         const fundFlowOf = (ledger: InzhurGainLedgerInterface, accountId: number, item: InzhurDatedMovementInterface) => {
+            if (isReconcile(item.movement)) {
+                return item.movement.accountId === accountId ? reconcileValueOf(ledger, item) : 0;
+            }
+
             if (item.movement.accountId !== ledger.cashAccountId) {
                 return 0;
             }
@@ -281,7 +299,10 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
                 const tax = fundItems
                     .filter(item => item.movement.transactionType === TransactionTypeEnum.EXPENSE)
                     .reduce((total, item) => total - item.amount, 0);
-                const returnAmount = value + proceeds + dividends - tax - invested;
+                const reconciled = ledger.dated
+                    .filter(item => item.movement.accountId === fundAccountId && isReconcile(item.movement))
+                    .reduce((total, item) => total + reconcileValueOf(ledger, item), 0);
+                const returnAmount = value + proceeds + dividends - tax - invested - reconciled;
 
                 return {
                     invested: roundMoney(invested),

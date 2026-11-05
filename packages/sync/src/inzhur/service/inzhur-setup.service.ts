@@ -21,13 +21,14 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { buildPrimaryEntry } from '../../core/utils/build-primary-entry.util';
 import { INZHUR_CASH_EXTERNAL_ID } from '../constant/inzhur-cash-external-id.constant';
 import { INZHUR_BALANCE_CORRECTION_TITLE } from '../constant/inzhur-estimate-titles.constant';
 import { InzhurNotSetUpError } from '../error/inzhur-not-set-up.error';
 import { buildInzhurTransactionInput } from '../utils/build-inzhur-transaction-input.util';
+import { parseInzhurOperationExternalId } from '../utils/parse-inzhur-operation-external-id.util';
 
 import { InzhurBankFlowService } from './inzhur-bank-flow.service';
 import { InzhurBeforeTrackingService } from './inzhur-before-tracking.service';
@@ -170,23 +171,41 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
             effect => Db.transaction(effect)
         );
 
+        const findLastOperationAt = Effect.fnUntraced(function* (cashAccountId: number) {
+            const idByExternalId = yield* transactionService.findIdMapByExternalSource(provider, [cashAccountId]);
+            const times = [...idByExternalId.keys()]
+                .map(externalId => parseInzhurOperationExternalId(externalId)?.occurredAt.getTime())
+                .filter(isDefined);
+
+            return isNotEmptyArray(times) ? new Date(Math.max(...times)) : null;
+        });
+
         const findStatementReminder = Effect.fn('InzhurSetupService.findStatementReminder')(function* (now: Date) {
             const setup = yield* inzhurSetupLookupService.findSetup();
-            const { lastStatementDate, cashSync, cashAccount } = setup ?? {};
 
-            if (!isDefined(lastStatementDate) || !isDefined(cashSync?.forwardSyncedAt) || !isDefined(cashAccount)) {
+            if (!isDefined(setup)) {
                 return null;
             }
 
-            const daysOld = differenceInCalendarDays(now, cashSync.forwardSyncedAt);
+            const { cashSync, cashAccount } = setup;
+            const importDates = [cashSync.forwardSyncedAt, yield* findLastOperationAt(cashAccount.id)].filter(isDefined);
+
+            if (!isNotEmptyArray(importDates)) {
+                return null;
+            }
+
+            const lastImportAt = new Date(Math.max(...importDates.map(date => date.getTime())));
+            const daysOld = differenceInCalendarDays(now, lastImportAt);
 
             if (daysOld <= staleStatementDays) {
                 return null;
             }
 
-            const activityCount = yield* investmentReturnRepository.countTransfersSince(cashAccount.id, cashSync.forwardSyncedAt);
+            const activityCount = yield* investmentReturnRepository.countTransfersSince(cashAccount.id, lastImportAt);
 
-            return activityCount > 0 ? ({ daysOld, lastStatementDate } satisfies InzhurStatementReminderInterface) : null;
+            return activityCount > 0
+                ? ({ daysOld, lastStatementDate: lastImportAt.toISOString().slice(0, 10) } satisfies InzhurStatementReminderInterface)
+                : null;
         });
 
         return { findSetup: () => inzhurSetupLookupService.findSetup(), setup, setActualBalance, updateCashAccount, findStatementReminder };

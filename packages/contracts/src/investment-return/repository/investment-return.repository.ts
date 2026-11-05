@@ -78,7 +78,8 @@ export class InvestmentReturnRepository extends Context.Service<InvestmentReturn
                                 transactionType: TransactionEntityTable.type,
                                 fromAccountId: TransactionEntityTable.fromAccountId,
                                 toAccountId: TransactionEntityTable.toAccountId,
-                                fundAccountId: TransactionEntityTable.fundAccountId
+                                fundAccountId: TransactionEntityTable.fundAccountId,
+                                externalId: TransactionEntityTable.externalId
                             })
                             .from(TransactionEntryEntityTable)
                             .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))

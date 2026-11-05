@@ -10,4 +10,5 @@ export interface LedgerMovementInterface {
     readonly fromAccountId: number | null;
     readonly toAccountId: number | null;
     readonly fundAccountId: number | null;
+    readonly externalId: string | null;
 }
