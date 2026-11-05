@@ -15,8 +15,6 @@ export const TransactionCardStackedSubtitle = ({ transaction, accountId }: Props
     const { segments, feeLabel, accountTitle } = useTransactionSubtitleSegments(transaction, accountId);
 
     return (
-        <Text className="text-[13px] text-secondary-foreground" numberOfLines={4}>
-            {[...segments, feeLabel, accountTitle].filter(isDefined).join(' · ')}
-        </Text>
+        <Text className="text-[13px] text-secondary-foreground">{[...segments, feeLabel, accountTitle].filter(isDefined).join(' · ')}</Text>
     );
 };

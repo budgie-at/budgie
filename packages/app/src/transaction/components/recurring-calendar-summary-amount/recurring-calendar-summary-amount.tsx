@@ -1,6 +1,8 @@
+import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 
 import type { ReactNode } from 'react';
 
@@ -9,13 +11,21 @@ interface Props {
     readonly children: ReactNode;
 }
 
-export const RecurringCalendarSummaryAmount = ({ formattedAmount, children }: Props) => (
-    <View className="flex-1 min-w-0 gap-y-xxs">
-        <Text dynamicTypeRamp="footnote" className="text-[13px] text-secondary-foreground">
-            {children}
-        </Text>
-        <ProtectedText dynamicTypeRamp="body" className="text-[15px] font-medium text-primary tabular-nums">
-            {formattedAmount}
-        </ProtectedText>
-    </View>
-);
+const amountVariants = cva('min-w-0 gap-y-xxs', {
+    variants: { isAccessibilityTextSize: { true: 'flex-row flex-wrap items-center justify-between gap-x-md', false: 'flex-1' } }
+});
+
+export const RecurringCalendarSummaryAmount = ({ formattedAmount, children }: Props) => {
+    const isAccessibilityTextSize = useIsAccessibilityTextSize();
+
+    return (
+        <View className={amountVariants({ isAccessibilityTextSize })}>
+            <Text dynamicTypeRamp="footnote" className="text-[13px] text-secondary-foreground">
+                {children}
+            </Text>
+            <ProtectedText dynamicTypeRamp="body" className="text-[15px] font-medium text-primary tabular-nums">
+                {formattedAmount}
+            </ProtectedText>
+        </View>
+    );
+};

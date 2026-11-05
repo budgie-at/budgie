@@ -101,7 +101,7 @@ export const TransactionSectionsList = ({
 
     const contentContainerStyle = {
         paddingBottom: footerSpacerMultiplier * (FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN) + bottom,
-        ...(isEmptyArray(flatData) && { flexGrow: 1, paddingBottom: bottom }),
+        ...(isEmptyArray(flatData) && { flexGrow: 1 }),
         ...(isEmptyArray(flatData) && !isDefined(listHeader) && { justifyContent: 'center' as const })
     };
 

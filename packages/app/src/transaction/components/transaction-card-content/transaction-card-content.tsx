@@ -46,7 +46,7 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
         isUncategorized && 'text-attention-foreground',
         iconVariant === 'positive' && 'text-positive-strong'
     );
-    const titleLineCount = isAccessibilityTextSize ? 4 : 1;
+    const titleLineCount = isAccessibilityTextSize ? 0 : 1;
 
     const titleContent = (
         <Text
