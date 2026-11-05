@@ -25,7 +25,7 @@ test('45 monobank sync', { tags: ['sync'] }, async ({ budgie }) => {
     await b.phase('accounts and jars come from the bank', async () => {
         await b.fillId(ctx, 'TokenInputStep.Input', 'e2e-monobank-token-0123456789abcdef');
         await b.tapId(ctx, 'CreateMonobankAccount.FetchAccountsButton');
-        await b.expectText(ctx, 'Found 2 accounts', 15_000);
+        await b.expectText(ctx, 'Accounts · 1', 15_000);
         await b.expectId(ctx, 'SyncAccountSelection.Row.Monobank_Black_1234');
         await b.expectId(ctx, 'SyncAccountSelection.Row.Monobank_E2E_Jar_');
     });

@@ -7,6 +7,7 @@ import Toast from 'react-native-toast-message';
 
 import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
+import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { appAtomRegistry } from '../../../@generic/constant/app-atom-registry.constant';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
@@ -20,13 +21,14 @@ import { useEnableBankingKeyState } from '../../hook/use-enable-banking-key-stat
 import { useExplainEnableBankingError } from '../../hook/use-explain-enable-banking-error.hook';
 import { useSyncAccountSetupFlow } from '../../hook/use-sync-account-setup-flow.hook';
 import { EnableBankingConnectionService } from '../../service/enable-banking-connection.service';
-import { EnableBankingAccountsStep } from '../enable-banking-accounts-step/enable-banking-accounts-step';
 import { EnableBankingBankStep } from '../enable-banking-bank-step/enable-banking-bank-step';
 import { EnableBankingConnectAccountStep } from '../enable-banking-connect-account-step/enable-banking-connect-account-step';
 import { EnableBankingHistoryStep } from '../enable-banking-history-step/enable-banking-history-step';
 import { EnableBankingKeyStep } from '../enable-banking-key-step/enable-banking-key-step';
 import { EnableBankingSetupGuide } from '../enable-banking-setup-guide/enable-banking-setup-guide';
 import { EnableBankingWaitingStep } from '../enable-banking-waiting-step/enable-banking-waiting-step';
+import { SyncAccountsStep } from '../sync-accounts-step/sync-accounts-step';
+import { SyncParkedAccountsSection } from '../sync-parked-accounts-section/sync-parked-accounts-section';
 import { SyncSetupPage } from '../sync-setup-page/sync-setup-page';
 
 import { CreateEnableBankingAccountSelector } from './create-enable-banking-account.selector';
@@ -200,6 +202,8 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
         setStep(EnableBankingSetupStepEnum.KEY);
     };
 
+    const missingAccount = t`Missing an account? Link it to your application in Enable Banking, then connect this bank again.`;
+    const parkedPreviews = authorization?.previews.filter(preview => preview.isParked) ?? [];
     let title = t`Connect EU banks`;
     let stepContent = <EnableBankingSetupGuide />;
     let footerButton: ReactNode = (
@@ -234,7 +238,20 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
             break;
         case EnableBankingSetupStepEnum.ACCOUNTS:
             title = t`Choose accounts`;
-            stepContent = <EnableBankingAccountsStep {...accountSelection} authorization={authorization} />;
+            stepContent = (
+                <>
+                    <SyncAccountsStep
+                        {...accountSelection}
+                        logo={<BankLogo bankName={authorization?.bankName} size={36} />}
+                        footer={`${t`Balances and history come from your bank through Enable Banking.`} ${missingAccount}`}
+                        emptyDescription={missingAccount}
+                    />
+                    <SyncParkedAccountsSection
+                        previews={parkedPreviews}
+                        footer={t`These accounts already exist in Budgie or use a currency Budgie does not support. To continue an existing account, open it and tap Connect to bank.`}
+                    />
+                </>
+            );
             footerButton = isEmptyArray(accountSelection.accountPreviews) ? null : (
                 <PillButton
                     label={t`Continue`}

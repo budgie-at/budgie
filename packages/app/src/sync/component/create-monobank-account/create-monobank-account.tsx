@@ -1,4 +1,4 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
 import { MonobankConnectionResultEnum, MonobankSyncService, SyncHistoryDepthEnum } from '@budgie/sync';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
@@ -9,6 +9,7 @@ import Toast from 'react-native-toast-message';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { Button } from '../../../@generic/component/button/button';
 import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
@@ -19,7 +20,7 @@ import { CreateMonobankAccountActionTypeEnum } from '../../enum/create-monobank-
 import { SetupStepEnum } from '../../enum/setup-step.enum';
 import { useSyncAccountSetupFlow } from '../../hook/use-sync-account-setup-flow.hook';
 import { createMonobankAccountReducer } from '../../utils/create-monobank-account-reducer.util';
-import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
+import { SyncAccountsStep } from '../sync-accounts-step/sync-accounts-step';
 import { SyncHistoryDepthStep } from '../sync-history-depth-step/sync-history-depth-step';
 import { SyncHistoryDurationNotice } from '../sync-history-duration-notice/sync-history-duration-notice';
 import { SyncSetupPage } from '../sync-setup-page/sync-setup-page';
@@ -164,7 +165,12 @@ export const CreateMonobankAccount = () => {
         case SetupStepEnum.ACCOUNTS:
             stepContent = (
                 <>
-                    <AccountSelectionStep {...accountSelection} />
+                    <SyncAccountsStep
+                        {...accountSelection}
+                        logo={<BankLogo bankProvider={ExternalSourceEnum.MONOBANK} size={36} />}
+                        footer={t`Choose what to track. Balances and history come straight from the bank.`}
+                        emptyDescription={t`Monobank returned no accounts for this token.`}
+                    />
                     {onboardingHistoryNote}
                 </>
             );

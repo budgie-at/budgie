@@ -7,16 +7,17 @@ import { ReactElement, useState } from 'react';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useOnboardingRedirect } from '../../../onboarding/hook/use-onboarding-redirect.hook';
 import { FileImportStepEnum } from '../../enum/file-import-step.enum';
 import { useAccountSelection } from '../../hook/use-account-selection.hook';
-import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
 import { CreateFileBankAccountFooter } from '../create-file-bank-account-footer/create-file-bank-account-footer';
 import { FileImportReviewStep } from '../file-import-review-step/file-import-review-step';
 import { FileUploadStep } from '../file-upload-step/file-upload-step';
+import { SyncAccountsStep } from '../sync-accounts-step/sync-accounts-step';
 import { SyncSetupPage } from '../sync-setup-page/sync-setup-page';
 
 import { CreateFileBankAccountSelector } from './create-file-bank-account.selector';
@@ -94,7 +95,14 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
                 isLoading={isLoading}
             />
         ),
-        [FileImportStepEnum.ACCOUNTS]: <AccountSelectionStep {...accountSelection} />,
+        [FileImportStepEnum.ACCOUNTS]: (
+            <SyncAccountsStep
+                {...accountSelection}
+                logo={<BankLogo bankProvider={config.provider} size={36} />}
+                footer={t`Choose what to track. Balances and history come straight from the bank.`}
+                emptyDescription={t`This file has no accounts Budgie can import.`}
+            />
+        ),
         [FileImportStepEnum.REVIEW]: isDefined(review) ? <FileImportReviewStep review={review} fileName={fileName} /> : null
     };
     const footer = (
