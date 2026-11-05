@@ -33,3 +33,4 @@ export { BudgetPeriodCategorySnapshotEntityTable } from './budget-period-categor
 export { BudgetSinkingFundEntityTable } from './budget-sinking-fund/table/budget-sinking-fund-entity.table';
 export { BudgetLimitChangeEntityTable } from './budget-limit-change/table/budget-limit-change-entity.table';
 export { RecurringSeriesEntityTable } from './recurring-series/table/recurring-series-entity.table';
+export { RecurringSeriesTransactionEntityTable } from './recurring-series-transaction/table/recurring-series-transaction-entity.table';

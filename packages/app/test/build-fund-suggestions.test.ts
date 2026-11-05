@@ -1,4 +1,10 @@
-import { RecurringSeriesKindEnum, RecurringSeriesStatusEnum, RecurringSeriesUserStateEnum } from '@budgie/contracts';
+import {
+    RecurringCadenceUnitEnum,
+    RecurringSeriesKindEnum,
+    RecurringSeriesSourceEnum,
+    RecurringSeriesStatusEnum,
+    RecurringSeriesUserStateEnum
+} from '@budgie/contracts';
 import { expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -22,6 +28,15 @@ const seriesOf = (overrides: Partial<RecurringSeriesEntityInterface>): Recurring
     title: 'Car insurance',
     categoryId: 7,
     lastSeenAt: new Date(2026, 2, 14),
+    source: RecurringSeriesSourceEnum.DETECTED,
+    accountId: null,
+    cadenceUnit: RecurringCadenceUnitEnum.YEAR,
+    cadenceInterval: 1,
+    anchorDate: new Date(2026, 2, 14),
+    instrumentId: null,
+    endsAt: null,
+    reminderDaysBefore: null,
+    confidence: 60,
     ...overrides
 });
 
