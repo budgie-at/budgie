@@ -20,7 +20,7 @@ export const InzhurFreshnessLine = () => {
 
     return (
         <Text
-            className="px-5xl text-center text-[13px] leading-[18px] text-secondary-foreground tabular-nums"
+            className="px-5xl text-center text-[15px] leading-[20px] text-secondary-foreground tabular-nums"
             testID={InzhurSelector.Freshness}
         >
             {t`Prices as of ${priceDate}`}

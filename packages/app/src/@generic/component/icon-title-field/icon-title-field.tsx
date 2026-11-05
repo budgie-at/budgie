@@ -31,6 +31,6 @@ export const IconTitleField = ({ tile, label, error, testID, children }: Props) 
                 {children}
             </View>
         </View>
-        {isNotEmptyString(error) ? <Text className="text-destructive-foreground pl-[48px] text-[13px]">{error}</Text> : null}
+        {isNotEmptyString(error) ? <Text className="text-destructive-foreground pl-[52px] text-[13px]">{error}</Text> : null}
     </View>
 );

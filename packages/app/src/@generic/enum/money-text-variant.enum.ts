@@ -1,5 +1,7 @@
 export enum MoneyTextVariantEnum {
     HERO = 'HERO',
     ROW = 'ROW',
-    LINE = 'LINE'
+    BODY = 'BODY',
+    LINE = 'LINE',
+    CAPTION = 'CAPTION'
 }

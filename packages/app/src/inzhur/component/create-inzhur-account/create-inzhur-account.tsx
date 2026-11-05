@@ -6,7 +6,6 @@ import { Text, View } from 'react-native';
 
 import { ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 
-import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { FixedChromeHeader } from '../../../@generic/component/fixed-chrome-header/fixed-chrome-header';
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
@@ -14,6 +13,7 @@ import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { ScreenChromeThemeProvider } from '../../../@generic/provider/screen-chrome-theme.provider';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
+import { InstitutionMark } from '../../../account/component/institution-mark/institution-mark';
 import { QuickFormLayout } from '../../../transaction/components/quick-form-layout/quick-form-layout';
 import { TransactionAmountDisplay } from '../../../transaction/components/transaction-amount-display/transaction-amount-display';
 import { TransactionKeypad } from '../../../transaction/components/transaction-keypad/transaction-keypad';
@@ -43,9 +43,7 @@ export const CreateInzhurAccount = () => {
             variant="primary"
             topContent={
                 <View className="items-center gap-y-lg">
-                    <View className="overflow-hidden rounded-[12px] dark:border dark:border-white/12">
-                        <BankLogo bankProvider={ExternalSourceEnum.INZHUR} size={48} />
-                    </View>
+                    <InstitutionMark provider={ExternalSourceEnum.INZHUR} title={t`Inzhur`} />
                     <Text className="text-[15px] font-medium text-secondary-foreground">
                         <Trans>Cash in Inzhur today</Trans>
                     </Text>
@@ -57,7 +55,7 @@ export const CreateInzhurAccount = () => {
                 className="mt-lg max-w-[300px] text-center text-sm leading-[20px] text-secondary-foreground"
                 lineBreakStrategyIOS="standard"
             >
-                <Trans>Enter 0 if you have none. Your fund certificates are added when you import a statement.</Trans>
+                <Trans>Your certificates come in with your first statement.</Trans>
             </Text>
         </TransactionAmountDisplay>
     );

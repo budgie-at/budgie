@@ -27,7 +27,7 @@ export const InzhurInstitutionRowDetail = () => {
     const cashLabel = isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : formatCashDigits(value?.cash ?? 0, defaultInstrument.symbol);
     const fundsLabel = t({ message: plural(value?.fundCount ?? 0, { one: '# fund', other: '# funds' }) });
     const staleLabel = isDefined(reminder)
-        ? t({ message: plural(reminder.daysOld, { one: 'Statement · # day old', other: 'Statement · # days old' }) })
+        ? t({ message: plural(reminder.daysOld, { one: 'Statement # day old', other: 'Statement # days old' }) })
         : null;
 
     return (
@@ -43,7 +43,7 @@ export const InzhurInstitutionRowDetail = () => {
                 <View className="flex-row items-center gap-x-xs">
                     <Icon icon={UserIconNameEnum.Clock} size={13} className="text-warning-strong" />
                     <Text
-                        className="shrink text-[13px] text-warning-strong"
+                        className="shrink text-[13px] text-secondary-foreground"
                         maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
                         numberOfLines={2}
                     >

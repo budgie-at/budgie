@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
@@ -5,7 +6,6 @@ import { isPositiveNumber } from '@rnw-community/shared';
 
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { getInzhurShortTitle } from '../../utils/get-inzhur-short-title.util';
-import { InzhurAwaitingTopUpRow } from '../inzhur-awaiting-top-up-row/inzhur-awaiting-top-up-row';
 import { InzhurMoneyRow } from '../inzhur-money-row/inzhur-money-row';
 
 import type { InzhurImportSummaryInterface } from '@budgie/sync';
@@ -21,17 +21,25 @@ export const InzhurImportSummaryFunding = ({ summary, symbol }: Props) => {
 
     const boughtFunds = funds.filter(fund => fund.deltaQuantity > 0 && fund.exchangedAmount > fund.dividendAmount);
     const boughtFundName = getInzhurShortTitle(boughtFunds.at(0)?.name ?? '');
-    const spentTitle = boughtFunds.length === 1 ? t`Paid for the ${boughtFundName} buy` : t`Paid for these buys`;
+    const spentTitle = boughtFunds.length === 1 ? t`How the ${boughtFundName} buy was funded` : t`How these buys were funded`;
     const isSpent = cashMoved < 0;
     const title = isSpent ? spentTitle : t`Added to Inzhur cash`;
+    const cashLabel = isSpent ? t`From Inzhur cash` : t`To Inzhur cash`;
     const cashAmount = isSpent ? Math.abs(cashMoved) - uncoveredCashAmount : cashMoved;
 
     return (
         <GroupedListSection title={title}>
-            <View className="gap-y-md px-3xl py-md">
-                <InzhurMoneyRow label={t`Inzhur cash`} amount={cashAmount} instrumentSymbol={symbol} />
+            <View className="gap-y-lg px-3xl py-[12px]">
+                <InzhurMoneyRow label={cashLabel} amount={cashAmount} instrumentSymbol={symbol} icon={UserIconNameEnum.Banknote} />
                 {isPositiveNumber(uncoveredCashAmount) ? (
-                    <InzhurAwaitingTopUpRow amount={uncoveredCashAmount} instrumentSymbol={symbol} />
+                    <InzhurMoneyRow
+                        label={t`From a bank top-up`}
+                        caption={t`Not matched yet. Budgie matches it automatically when the bank transaction arrives.`}
+                        amount={uncoveredCashAmount}
+                        instrumentSymbol={symbol}
+                        icon={UserIconNameEnum.Clock}
+                        iconClassName="text-warning-strong"
+                    />
                 ) : null}
             </View>
         </GroupedListSection>

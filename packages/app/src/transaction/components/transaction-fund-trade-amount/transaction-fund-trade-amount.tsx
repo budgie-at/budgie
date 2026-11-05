@@ -22,9 +22,10 @@ export const TransactionFundTradeAmount = ({ fundEntry, moneyEntry, quantitySign
             <MoneyText
                 amount={convertFromMicroUnits(moneyEntry.amount)}
                 instrumentSymbol={moneyEntry.account.instrument.symbol}
-                variant={MoneyTextVariantEnum.ROW}
+                variant={MoneyTextVariantEnum.BODY}
+                tone="primary"
             />
-            <Text className="text-[15px] text-secondary-foreground text-right tabular-nums">
+            <Text className="text-[13px] text-secondary-foreground text-right tabular-nums">
                 {`${quantitySign}${formatFundQuantity(convertFromMicroUnits(fundEntry.amount))}`}
             </Text>
         </View>

@@ -2,6 +2,7 @@ import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { FormAmountInput } from '../../../@generic/component/form-amount-input/form-amount-input';
+import { GroupedListSectionTitle } from '../../../@generic/component/grouped-list-section-title/grouped-list-section-title';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { CreateAccountSelector } from '../../../app/(main)/create-account/create-account.selector';
@@ -26,20 +27,17 @@ export const InzhurCashReconciliation = ({ trackedBalance, value, onChange, inst
 
     return (
         <View className="gap-y-3xl pb-3xl">
-            <GroupedListSection
-                title={t`Cash in Inzhur`}
-                footer={t`Enter the cash Inzhur shows. If it's higher, Budgie records the difference as dividends kept in Inzhur. If it's lower, Budgie records an adjustment.`}
-            >
-                <View className="py-xs">
-                    <FormAmountInput
-                        testID={CreateAccountSelector.Amount}
-                        value={value}
-                        instrumentSymbol={instrumentSymbol}
-                        onChange={onChange}
-                        fontSize={CASH_INPUT_FONT_SIZE}
-                    />
-                </View>
-            </GroupedListSection>
+            <View>
+                <GroupedListSectionTitle title={t`Actual balance`} />
+                <FormAmountInput
+                    testID={CreateAccountSelector.Amount}
+                    value={value}
+                    instrumentSymbol={instrumentSymbol}
+                    onChange={onChange}
+                    fontSize={CASH_INPUT_FONT_SIZE}
+                />
+                <Text className="px-3xl pt-md text-[13px] leading-[18px] text-secondary-foreground">{t`Enter the cash shown in Inzhur.`}</Text>
+            </View>
             {isDifferent ? (
                 <GroupedListSection>
                     <View accessible className="min-h-[44px] flex-row items-center gap-x-xl px-3xl py-md">

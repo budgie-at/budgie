@@ -30,8 +30,8 @@ export const UpdateInzhurAccountPage = ({ account, balance, fields, instrumentSy
     const isDifferent = isCash && formatDigits(actualBalance) !== formatDigits(balance);
     const outcomeCaption =
         actualBalance > balance
-            ? t`Will record +${differenceLabel} as dividends kept in Inzhur`
-            : t`Will record −${differenceLabel} as a balance correction`;
+            ? t`+${differenceLabel} will be recorded as dividends kept in Inzhur`
+            : t`−${differenceLabel} will be recorded as an adjustment`;
     const holdingsRow = isCash ? null : <InzhurFundHoldingsSection balance={balance} />;
     const footerCaption = isDifferent ? outcomeCaption : null;
 

@@ -22,7 +22,7 @@ export const InzhurFundHoldingLine = ({ account, balance }: Props) => {
     const { formatMonthAndDayAndOptionalYear } = useFormatDate();
     const { latestPrice } = useInzhurFundReturnsQuery(account.id, account.instrumentId);
     const symbol = useHryvniaInstrumentQuery()?.symbol ?? '';
-    const formatAmount = useFormatDigits(2);
+    const formatAmount = useFormatDigits(2, 4);
     const formatFundQuantity = useFormatFundQuantity();
 
     const quantityLabel = formatFundQuantity(balance);

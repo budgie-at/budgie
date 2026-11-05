@@ -1,6 +1,8 @@
 import { InstrumentTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
+import { MoneyText } from '../../../@generic/component/money-text/money-text';
+import { MoneyTextVariantEnum } from '../../../@generic/enum/money-text-variant.enum';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
 import { TransactionFundTradeAmount } from '../transaction-fund-trade-amount/transaction-fund-trade-amount';
 
@@ -35,7 +37,17 @@ export const TransactionTransferAmount = ({ fromEntry, toEntry, accountId, testI
 
     return (
         <View className="shrink-0 gap-y-xxs items-end" testID={testID}>
-            <Text className="text-[15px] font-semibold text-right text-primary tabular-nums">{`${sign}${formatEntry(primaryEntry)}`}</Text>
+            {primaryEntry.account.instrument.type === InstrumentTypeEnum.FIAT ? (
+                <MoneyText
+                    amount={convertFromMicroUnits(primaryEntry.amount)}
+                    instrumentSymbol={primaryEntry.account.instrument.symbol}
+                    variant={MoneyTextVariantEnum.BODY}
+                    prefix={sign}
+                    tone="primary"
+                />
+            ) : (
+                <Text className="text-[15px] font-semibold text-right text-primary tabular-nums">{`${sign}${formatEntry(primaryEntry)}`}</Text>
+            )}
             {isCrossCurrency ? (
                 <Text className="text-secondary-foreground text-[13px] text-right tabular-nums">{formatEntry(secondaryEntry)}</Text>
             ) : null}

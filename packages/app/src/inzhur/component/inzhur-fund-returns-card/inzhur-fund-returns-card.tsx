@@ -27,7 +27,7 @@ export const InzhurFundReturnsCard = ({ account }: Props) => {
     const reinvested = convertFromMicroUnits(dividendTotals?.reinvested ?? 0);
     const bank = convertFromMicroUnits(dividendTotals?.bank ?? 0);
     const sinceDate = isDefined(firstEntryAt) ? formatMonthAndDayAndOptionalYear(firstEntryAt) : null;
-    const reinvestedCaption = isDefined(sinceDate) ? t`Since ${sinceDate} · estimated from statements` : t`Estimated from statements`;
+    const reinvestedCaption = isDefined(sinceDate) ? t`Estimated from statements since ${sinceDate}` : t`Estimated from statements`;
 
     return (
         <View

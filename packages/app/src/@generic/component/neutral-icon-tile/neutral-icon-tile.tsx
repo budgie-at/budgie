@@ -4,9 +4,10 @@ import type { UserIconType } from '@budgie/contracts';
 
 interface Props {
     readonly icon: UserIconType;
+    readonly iconClassName?: string;
 }
 
-export const NeutralIconTile = ({ icon }: Props) => (
+export const NeutralIconTile = ({ icon, iconClassName = 'text-primary' }: Props) => (
     <CircleIcon
         icon={icon}
         size={40}
@@ -15,6 +16,6 @@ export const NeutralIconTile = ({ icon }: Props) => (
         variant="ghost"
         border={false}
         className="bg-surface-disc"
-        iconClassName="text-primary"
+        iconClassName={iconClassName}
     />
 );

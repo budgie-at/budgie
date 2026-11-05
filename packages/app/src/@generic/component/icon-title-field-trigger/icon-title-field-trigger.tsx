@@ -30,7 +30,7 @@ export const IconTitleFieldTrigger = ({ icon, variant, onPress, testID, iconTest
             accessibilityLabel={t`Change icon`}
             accessibilityHint={t`Current icon: ${iconName}. Opens the icon picker.`}
             hitSlop={ICON_HIT_SLOP}
-            className="size-[44px] items-center justify-center active:opacity-70"
+            className="size-[40px] items-center justify-center active:opacity-70"
             testID={testID}
         >
             <View testID={iconTestID}>
@@ -38,7 +38,7 @@ export const IconTitleFieldTrigger = ({ icon, variant, onPress, testID, iconTest
                     variant={variant}
                     size={40}
                     iconSize={iconSize}
-                    radius={20}
+                    radius={10}
                     border={false}
                     icon={icon}
                     className={TONAL_DISC_BACKGROUND[variant]}

@@ -33,8 +33,8 @@ export const FormAmountInput = (props: Props) => {
     } = props;
     const format = useAmountFormat(minimumDecimalPlaces);
     const [isFocused, setIsFocused] = useState(false);
-    const fieldStyle = { height: fontSize + FIELD_VERTICAL_PADDING };
-    const focusClassName = isFocused ? 'border-default-foreground/60' : 'border-surface-fill';
+    const fieldStyle = { height: fontSize + FIELD_VERTICAL_PADDING, borderCurve: 'continuous' as const };
+    const focusClassName = isFocused ? 'border-default-foreground' : 'border-transparent';
     const handleFocus = () => void setIsFocused(true);
     const handleBlur = () => void setIsFocused(false);
     const { isNegative, absoluteValue, toggleSign, changeAbsoluteValue } = useAmountSign(value, onChange);
@@ -45,8 +45,11 @@ export const FormAmountInput = (props: Props) => {
     const textAlign = showInstrumentAfterAmount ? 'right' : 'left';
 
     return (
-        <View className="px-4">
-            <View className={cn('flex-row items-center rounded-2xl border-2 px-xs', focusClassName)} style={fieldStyle}>
+        <View>
+            <View
+                className={cn('flex-row items-center rounded-3xl border-[1.5px] bg-surface-row px-3xl', focusClassName)}
+                style={fieldStyle}
+            >
                 <AmountField fontSize={fontSize} className="flex-1">
                     {showInstrumentAfterAmount ? null : (
                         <AmountFieldPrefix scale={1} className="font-semibold text-primary">

@@ -1,3 +1,4 @@
+import { ExternalSourceEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -7,6 +8,7 @@ import { FixedChromePage } from '../../../@generic/component/fixed-chrome-page/f
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { PillButtonFooter } from '../../../@generic/component/pill-button-footer/pill-button-footer';
+import { InstitutionMark } from '../../../account/component/institution-mark/institution-mark';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { NumberedSteps } from '../../../sync/component/numbered-steps/numbered-steps';
 import { useInzhurStatementImport } from '../../hook/use-inzhur-statement-import.hook';
@@ -26,6 +28,10 @@ export const ImportInzhurStatement = () => {
         { title: t`Download your account statement`, caption: t`«Виписка про стан рахунку» · PDF` }
     ];
     const lastStatementDate = isDefined(setup?.lastStatementDate) ? formatMonthAndDayAndOptionalYear(setup.lastStatementDate) : null;
+    const brandTitle = t`Inzhur`;
+    const privacyCaption = isDefined(lastStatementDate)
+        ? t`Read on your device. Nothing is uploaded. Last\u00A0import:\u00A0${lastStatementDate}`
+        : t`Read on your device. Nothing is uploaded.`;
 
     if (isDefined(summary)) {
         return (
@@ -52,21 +58,20 @@ export const ImportInzhurStatement = () => {
                     />
                 }
             >
-                <Text className="px-3xl text-[15px] leading-[20px] text-secondary-foreground">
-                    <Trans>
-                        Budgie reads your Inzhur account statement, updates certificates and cash, and records buys and dividends for you.
-                    </Trans>
-                </Text>
+                <View className="items-center gap-y-lg">
+                    <InstitutionMark provider={ExternalSourceEnum.INZHUR} title={brandTitle} />
+                    <Text className="px-3xl text-center text-[15px] leading-[20px] text-secondary-foreground">
+                        <Trans>
+                            Budgie reads your Inzhur account statement, updates certificates and cash, and records buys and dividends for
+                            you.
+                        </Trans>
+                    </Text>
+                </View>
                 <View className="gap-y-md">
                     <NumberedSteps title={t`How to export`} steps={exportSteps} />
-                    <Text className="px-3xl text-[13px] leading-[18px] text-secondary-foreground">
-                        <Trans>Read on your device. Nothing is uploaded.</Trans>
+                    <Text className="px-3xl text-[13px] leading-[18px] text-secondary-foreground" testID={InzhurSelector.LastImported}>
+                        {privacyCaption}
                     </Text>
-                    {isDefined(lastStatementDate) ? (
-                        <Text className="px-3xl text-[13px] leading-[18px] text-secondary-foreground" testID={InzhurSelector.LastImported}>
-                            {t`Last imported: ${lastStatementDate} statement`}
-                        </Text>
-                    ) : null}
                 </View>
             </FixedChromePage>
         </GroupedSurface>

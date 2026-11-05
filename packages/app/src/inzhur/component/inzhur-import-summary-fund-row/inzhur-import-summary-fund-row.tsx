@@ -4,7 +4,7 @@ import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isPositiveNumber } from '@rnw-community/shared';
 
 import { MoneyText } from '../../../@generic/component/money-text/money-text';
 import { NeutralIconTile } from '../../../@generic/component/neutral-icon-tile/neutral-icon-tile';
@@ -34,15 +34,14 @@ export const InzhurImportSummaryFundRow = ({ fund, symbol }: Props) => {
     const { isin, name, deltaQuantity, exchangedAmount, dividendAmount } = fund;
 
     const fundIcon = INZHUR_CANONICAL_FUNDS.find(canonicalFund => canonicalFund.name === name)?.icon ?? UserIconNameEnum.ChartLine;
-    const sign = deltaQuantity > 0 ? '+' : '−';
-    const quantityLabel = `${sign}${formatFundQuantity(Math.abs(deltaQuantity))}`;
+    const quantityLabel = `${deltaQuantity > 0 ? '+' : '−'}${formatFundQuantity(Math.abs(deltaQuantity))}`;
     const tradedAmount = Math.max(exchangedAmount - dividendAmount, 0);
-    const tradeLabel = deltaQuantity > 0 ? t`Bought with Inzhur cash` : t`Sold for Inzhur cash`;
-    const roles = [
-        isPositiveNumber(dividendAmount) ? t`Reinvested dividends` : null,
-        isPositiveNumber(tradedAmount) ? tradeLabel : null
-    ].filter(isDefined);
-    const detailLabel = [quantityLabel, ...roles].join(' · ');
+    const hasDividends = isPositiveNumber(dividendAmount);
+    const hasPurchase = isPositiveNumber(tradedAmount);
+    const purchaseLabel = hasDividends ? t`Purchase with reinvested dividends` : t`Purchase`;
+    const buyRoleLabel = hasPurchase ? purchaseLabel : t`Reinvested dividends`;
+    const roleLabel = deltaQuantity > 0 ? buyRoleLabel : t`Sale`;
+    const detailLabel = `${roleLabel} · ${quantityLabel}`;
 
     return (
         <View

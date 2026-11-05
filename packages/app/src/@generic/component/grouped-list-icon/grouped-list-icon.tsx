@@ -13,7 +13,7 @@ export const GroupedListIcon = ({ icon, iconClassName }: Props) => (
         variant="secondary"
         size={40}
         iconSize={20}
-        radius={20}
+        radius={10}
         border={false}
         className="bg-surface-disc"
         iconClassName={iconClassName}

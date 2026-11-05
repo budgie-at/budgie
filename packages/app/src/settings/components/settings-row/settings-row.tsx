@@ -30,7 +30,7 @@ export const SettingsRow = ({ icon, variant, title, subtitle, right, onPress, te
                     variant={variant}
                     size={40}
                     iconSize={20}
-                    radius={20}
+                    radius={10}
                     border={false}
                     className={TONAL_DISC_BACKGROUND[variant]}
                 />

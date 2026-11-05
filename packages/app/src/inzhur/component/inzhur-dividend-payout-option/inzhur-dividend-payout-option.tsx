@@ -3,6 +3,7 @@ import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
+import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { InzhurSelector } from '../../selector/inzhur.selector';
@@ -17,7 +18,7 @@ const OPTION = {
     [DividendPayoutEnum.BANK]: {
         icon: UserIconNameEnum.Landmark,
         title: msg`Paid to my bank`,
-        subtitle: msg`Inzhur sends dividends to your bank card`
+        subtitle: msg`Sent to your bank card`
     },
     [DividendPayoutEnum.REINVEST]: {
         icon: UserIconNameEnum.RefreshCw,
@@ -37,11 +38,7 @@ export const InzhurDividendPayoutOption = ({ payout, isSelected, onSelect }: Pro
 
     return (
         <GroupedListRow
-            left={
-                <View className="size-[40px] items-center justify-center">
-                    <Icon icon={icon} size={20} className="text-primary" />
-                </View>
-            }
+            left={<GroupedListIcon icon={icon} />}
             title={t(title)}
             subtitle={t(subtitle)}
             right={
