@@ -9,6 +9,7 @@ export { RecurringSeriesNotFoundError } from './error/recurring-series-not-found
 export { RecurringTransactionNotFoundError } from './error/recurring-transaction-not-found.error';
 export type { RecurringCalendarDataInterface } from './interface/recurring-calendar-data.interface';
 export type { RecurringCalendarEntryInterface } from './interface/recurring-calendar-entry.interface';
+export type { RecurringPriceChangeInterface } from './interface/recurring-price-change.interface';
 export type { RecurringSeriesListItemInterface } from './interface/recurring-series-list-item.interface';
 export type { RecurringSeriesDetailInterface } from './interface/recurring-series-detail.interface';
 export type { RecurringHistoryItemInterface } from './interface/recurring-history-item.interface';

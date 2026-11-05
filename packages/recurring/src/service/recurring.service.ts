@@ -18,7 +18,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { RecurringSeriesNotFoundError } from '../error/recurring-series-not-found.error';
 import { RecurringTransactionNotFoundError } from '../error/recurring-transaction-not-found.error';
 import { RecurringRepository } from '../repository/recurring.repository';
-import { isCycleCovered, resolveRecurringAlert } from '../series/recurring-alert';
+import { isCycleCovered, resolveRecurringAlert, resolveRecurringPriceChange } from '../series/recurring-alert';
 import { merchantIdentityOf } from '../series/recurring-matcher';
 import { projectRecurringMonth } from '../series/recurring-projection';
 import { cadencePeriodDays, monthlyEquivalent, nearestCycleDate, nextOccurrences } from '../series/recurring-schedule';
@@ -106,6 +106,7 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
                 nativeAmount: series.amount,
                 monthlyEquivalent: Math.round(monthlyEquivalent({ ...series, amount: series.defaultAmount })),
                 alert: resolveRecurringAlert(model, now),
+                priceChange: resolveRecurringPriceChange(model, now),
                 categoryId: series.categoryId,
                 categoryTitle: series.categoryTitle,
                 categoryIcon: series.categoryIcon,

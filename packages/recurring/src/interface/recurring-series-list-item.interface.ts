@@ -1,4 +1,5 @@
 import type { RecurringAlertEnum } from '../enum/recurring-alert.enum';
+import type { RecurringPriceChangeInterface } from './recurring-price-change.interface';
 import type {
     RecurringCadenceUnitEnum,
     RecurringSeriesKindEnum,
@@ -22,6 +23,7 @@ export interface RecurringSeriesListItemInterface {
     readonly nativeAmount: number;
     readonly monthlyEquivalent: number;
     readonly alert: RecurringAlertEnum | null;
+    readonly priceChange: RecurringPriceChangeInterface | null;
     readonly categoryId: number | null;
     readonly categoryTitle: string | null;
     readonly categoryIcon: UserIconType | null;

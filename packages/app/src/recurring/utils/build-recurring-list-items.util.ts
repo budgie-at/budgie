@@ -1,0 +1,71 @@
+import { RecurringSeriesKindEnum } from '@budgie/contracts';
+
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+
+import { getTransactionListRowPosition } from '../../transaction/utils/get-transaction-list-row-position.util';
+import { RecurringListItemKindEnum } from '../enum/recurring-list-item-kind.enum';
+import { RecurringSectionEnum } from '../enum/recurring-section.enum';
+
+import { isPossibleRecurringSeries } from './is-possible-recurring-series.util';
+
+import type { RecurringListItemsInterface } from '../interface/recurring-list-items.interface';
+import type { RecurringListItemType } from '../type/recurring-list-item.type';
+import type { RecurringSeriesListItemInterface } from '@budgie/recurring';
+
+const compareByNextDate = (left: RecurringSeriesListItemInterface, right: RecurringSeriesListItemInterface): number => {
+    if (!isDefined(left.nextDate) || !isDefined(right.nextDate)) {
+        return Number(!isDefined(left.nextDate)) - Number(!isDefined(right.nextDate));
+    }
+
+    return left.nextDate.getTime() - right.nextDate.getTime();
+};
+
+const compareByConfidence = (left: RecurringSeriesListItemInterface, right: RecurringSeriesListItemInterface): number =>
+    right.confidence - left.confidence;
+
+export const buildRecurringListItems = (
+    series: readonly RecurringSeriesListItemInterface[],
+    isPossibleExpanded: boolean
+): RecurringListItemsInterface => {
+    const tracked = series.filter(item => item.isActive && !isPossibleRecurringSeries(item));
+    const sections = [
+        {
+            section: RecurringSectionEnum.EXPENSES,
+            entries: tracked.filter(item => item.kind === RecurringSeriesKindEnum.EXPENSE).sort(compareByNextDate)
+        },
+        {
+            section: RecurringSectionEnum.INCOME,
+            entries: tracked.filter(item => item.kind === RecurringSeriesKindEnum.INCOME).sort(compareByNextDate)
+        },
+        { section: RecurringSectionEnum.POSSIBLE, entries: series.filter(isPossibleRecurringSeries).sort(compareByConfidence) }
+    ];
+    const items: RecurringListItemType[] = [];
+    const headerIndices: number[] = [];
+
+    for (const { section, entries } of sections.filter(({ entries: sectionEntries }) => isNotEmptyArray(sectionEntries))) {
+        const isCollapsed = section === RecurringSectionEnum.POSSIBLE && !isPossibleExpanded;
+
+        headerIndices.push(items.length);
+        items.push({
+            type: RecurringListItemKindEnum.HEADER,
+            id: `header-${section}`,
+            section,
+            count: entries.length,
+            isCollapsed
+        });
+
+        if (!isCollapsed) {
+            items.push(
+                ...entries.map((entry, index) => ({
+                    type: RecurringListItemKindEnum.ROW as const,
+                    id: `row-${entry.id}`,
+                    series: entry,
+                    position: getTransactionListRowPosition(index, entries.length),
+                    isPossible: section === RecurringSectionEnum.POSSIBLE
+                }))
+            );
+        }
+    }
+
+    return { items, headerIndices };
+};

@@ -13,6 +13,7 @@ import { countsInForecasts, isSeriesEnded } from './recurring-state';
 
 import type { RecurringChargeInterface } from '../interface/recurring-charge.interface';
 import type { RecurringLinkedChargeInterface } from '../interface/recurring-linked-charge.interface';
+import type { RecurringPriceChangeInterface } from '../interface/recurring-price-change.interface';
 import type { RecurringReadModelInterface } from '../interface/recurring-read-model.interface';
 
 const PRICE_CHANGE_ALERT_DAYS = 183;
@@ -98,4 +99,27 @@ export const resolveRecurringAlert = (model: RecurringReadModelInterface, now: D
     }
 
     return isEnding(model, now) ? RecurringAlertEnum.ENDING : null;
+};
+
+export const resolveRecurringPriceChange = (model: RecurringReadModelInterface, now: Date): RecurringPriceChangeInterface | null => {
+    const linked = model.links
+        .filter(({ link }) => !link.isExcluded)
+        .sort((first, second) => first.charge.operatedAt.getTime() - second.charge.operatedAt.getTime());
+    const change = findPriceChange(model, now);
+    const previous = isDefined(change)
+        ? linked.at(linked.findIndex(({ charge }) => charge.transactionId === change.transactionId) - 1)
+        : null;
+    const latest = linked.at(-1);
+
+    if (isDefined(change) && isDefined(previous)) {
+        return {
+            fromAmount: Math.round(previous.charge.defaultAmount),
+            toAmount: Math.round(change.defaultAmount),
+            changedAt: change.operatedAt
+        };
+    }
+
+    return hasPriceChange(model, now) && isDefined(latest)
+        ? { fromAmount: model.series.defaultAmount, toAmount: Math.round(latest.charge.defaultAmount), changedAt: latest.charge.operatedAt }
+        : null;
 };

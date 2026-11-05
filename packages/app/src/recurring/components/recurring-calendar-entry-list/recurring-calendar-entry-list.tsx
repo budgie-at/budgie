@@ -5,7 +5,7 @@ import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/sha
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { getTransactionListRowPosition } from '../../utils/get-transaction-list-row-position.util';
+import { getTransactionListRowPosition } from '../../../transaction/utils/get-transaction-list-row-position.util';
 import { RecurringCalendarEntryRow } from '../recurring-calendar-entry-row/recurring-calendar-entry-row';
 
 import type { RecurringCalendarEntryInterface } from '@budgie/recurring';
