@@ -269,7 +269,10 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
                 );
 
                 if (isNotEmptyArray(postedKeys)) {
-                    yield* Effect.promise(() => storage.setItem(storageKey, JSON.stringify([...deliveredKeys, ...postedKeys])));
+                    const firedTriggers = yield* Schema.encodeEffect(firedTriggersSchema)([...deliveredKeys, ...postedKeys]).pipe(
+                        Effect.orDie
+                    );
+                    yield* Effect.promise(() => storage.setItem(storageKey, firedTriggers));
                 }
             }),
             registerBackgroundTask: Effect.fn('BudgetAlertMonitorService.registerBackgroundTask')(function* () {

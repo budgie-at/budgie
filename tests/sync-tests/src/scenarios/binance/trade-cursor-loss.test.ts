@@ -77,7 +77,7 @@ describe('binance/trade-cursor-loss', () => {
             yield* binanceSyncService.sync();
 
             expect(yield* fetchSortedBinanceExternalIds()).toEqual([firstTradeExternalId]);
-            expect(yield* readStoredCursor(sync.id)).toBe(JSON.stringify({ ADAUSDT: FIRST_TRADE_ID }));
+            expect(yield* readStoredCursor(sync.id)).toBe(`{"ADAUSDT":${FIRST_TRADE_ID}}`);
 
             yield* makeSyncDueAgain(sync.id);
             binanceStub.serverTime(SERVER_AHEAD_MS);
@@ -124,7 +124,7 @@ describe('binance/trade-cursor-loss', () => {
             yield* binanceSyncService.sync();
 
             expect(yield* fetchSortedBinanceExternalIds()).toEqual([firstTradeExternalId, secondTradeExternalId]);
-            expect(yield* readStoredCursor(sync.id)).toBe(JSON.stringify({ ADAUSDT: SECOND_TRADE_ID }));
+            expect(yield* readStoredCursor(sync.id)).toBe(`{"ADAUSDT":${SECOND_TRADE_ID}}`);
         }).pipe(Effect.provide(TestLayer))
     );
 });

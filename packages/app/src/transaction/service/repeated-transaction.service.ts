@@ -8,6 +8,7 @@ import {
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+import * as Schema from 'effect/Schema';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
@@ -74,6 +75,8 @@ export class RepeatedTransactionService extends Context.Service<RepeatedTransact
             return patternCacheService.memoize(amountCacheKey, transactionPatternRepository.findAmountBasedPatterns(amountQuery, language));
         };
 
+        const encodeJson = Schema.encodeUnknownEffect(Schema.fromJsonString(Schema.Unknown));
+
         return {
             getSuggestions: Effect.fn('RepeatedTransactionService.getSuggestions')(function* (params: GetSuggestionsParamsInterface) {
                 const { currentTime, type, language, accountId, categoryId } = params;
@@ -86,7 +89,7 @@ export class RepeatedTransactionService extends Context.Service<RepeatedTransact
                     ...(isPositiveNumber(categoryId) && { categoryId }),
                     limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
                 };
-                const repeatedCacheKey = `repeated:${language}:${JSON.stringify(repeatedQuery)}`;
+                const repeatedCacheKey = `repeated:${language}:${yield* encodeJson(repeatedQuery)}`;
                 const timeQuery = patternCacheService.memoize(
                     repeatedCacheKey,
                     transactionPatternRepository.findRepeatedPatterns(repeatedQuery, language)

@@ -19,6 +19,7 @@ export class BinanceHistoryProgressService extends Context.Service<BinanceHistor
     {
         make: Effect.gen(function* () {
             const bankIntegrationRepository = yield* BankIntegrationRepository;
+            const encodeProgressMap = Schema.encodeEffect(Schema.fromJsonString(BinanceHistoryProgressMapSchema));
             const decodeProgressMap = Schema.decodeUnknownResult(Schema.fromJsonString(BinanceHistoryProgressMapSchema));
 
             const load = Effect.fnUntraced(function* (integrationId: number) {
@@ -39,7 +40,9 @@ export class BinanceHistoryProgressService extends Context.Service<BinanceHistor
                     progress: typeof BinanceHistoryProgressSchema.Type
                 ) {
                     yield* bankIntegrationRepository.updateById(integrationId, {
-                        historyProgress: JSON.stringify({ ...(yield* load(integrationId)), [source]: progress })
+                        historyProgress: yield* encodeProgressMap({ ...(yield* load(integrationId)), [source]: progress }).pipe(
+                            Effect.orDie
+                        )
                     });
                 })
             };

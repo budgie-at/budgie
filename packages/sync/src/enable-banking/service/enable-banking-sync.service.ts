@@ -16,6 +16,7 @@ import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+import * as Schema from 'effect/Schema';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
@@ -32,6 +33,7 @@ import { makePollingSyncAccountContinuation } from '../../core/utils/make-pollin
 import { makePollingSyncAccountSetup } from '../../core/utils/make-polling-sync-account-setup.util';
 import { makePollingSyncService } from '../../core/utils/make-polling-sync-service.util';
 import { resolveSyncProgressUpdate } from '../../core/utils/resolve-sync-progress-update.util';
+import { EnableBankingTokenSchema } from '../constant/enable-banking-token.schema';
 import { EnableBankingCallbackFailureEnum } from '../enum/enable-banking-callback-failure.enum';
 import { EnableBankingCallbackError } from '../error/enable-banking-callback.error';
 import { enableBankingMapper } from '../mapper/enable-banking.mapper';
@@ -43,7 +45,6 @@ import type { SyncHistoryDepthEnum } from '../../core/enum/sync-history-depth.en
 import type { SyncAccountInterface } from '../../core/interface/sync-account.interface';
 import type { SyncBatchResultInterface } from '../../core/interface/sync-batch-result.interface';
 import type { EnableBankingPendingAuthorizationInterface } from '../constant/enable-banking-pending-authorization.schema';
-import type { EnableBankingTokenInterface } from '../constant/enable-banking-token.schema';
 import type { EnableBankingAuthorizationResultInterface } from '../interface/enable-banking-authorization-result.interface';
 import type { EnableBankingBankInterface } from '../interface/enable-banking-bank.interface';
 import type { EnableBankingStartAuthorizationInputInterface } from '../interface/enable-banking-start-authorization-input.interface';
@@ -52,6 +53,7 @@ import type { SyncEntityInterface } from '@budgie/contracts';
 export class EnableBankingSyncService extends Context.Service<EnableBankingSyncService>()('@budgie/sync/EnableBankingSyncService', {
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
+        const encodeToken = Schema.encodeEffect(Schema.fromJsonString(EnableBankingTokenSchema));
         const bankIntegrationRepository = yield* BankIntegrationRepository;
         const instrumentRepository = yield* InstrumentRepository;
         const syncRepository = yield* SyncRepository;
@@ -299,13 +301,13 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
             ) {
                 const code = yield* resolveCode(pending, callbackUrl);
                 const session = yield* clientService.withClient(pending.applicationId, client => client.authorizeSession(code));
-                const token = JSON.stringify({
+                const token = yield* encodeToken({
                     applicationId: pending.applicationId,
                     sessionId: session.session_id,
                     aspspName: session.aspsp.name,
                     aspspCountry: session.aspsp.country,
                     validUntil: session.access.valid_until
-                } satisfies EnableBankingTokenInterface);
+                }).pipe(Effect.orDie);
                 const accounts = session.accounts.map(account => enableBankingMapper.mapAccount(session.aspsp.name, account));
                 const reconsentIntegrationId = pending.integrationId ?? (yield* findIntegrationIdByAccounts(accounts));
                 if (isDefined(reconsentIntegrationId)) {

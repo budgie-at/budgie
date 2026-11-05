@@ -62,7 +62,7 @@ describe('test database lifecycle', () => {
             rmSync(sourceDirectoryPath, { recursive: true, force: true });
 
             expect(Exit.isFailure(exit)).toBe(true);
-            expect(JSON.stringify(Exit.isFailure(exit) ? Cause.pretty(exit.cause) : '')).toContain('file is not a database');
+            expect(Exit.isFailure(exit) ? Cause.pretty(exit.cause) : '').toContain('file is not a database');
             expect(getTemporaryDatabaseDirectories(sourceDatabasePath)).toHaveLength(0);
         })
     );
