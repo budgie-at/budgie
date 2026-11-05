@@ -2504,7 +2504,6 @@ msgid "Contains"
 msgstr "Contient"
 
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
-#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 #: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
 #: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
@@ -2514,6 +2513,10 @@ msgstr "Continuer"
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
 msgid "Continue without a PIN"
 msgstr "Continuer sans code PIN"
+
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Continue without accounts"
+msgstr "Continuer sans compte"
 
 #: src/app/convert-to-transfer.tsx
 msgid "Conversion failed"
