@@ -7,6 +7,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { TransactionListRowPositionEnum } from '../../enum/transaction-list-row-position.enum';
@@ -26,8 +27,11 @@ interface Props {
 export const TransactionPickerRow = ({ item, position, isSelected = false, onPress, testID }: Props) => {
     const { formatMonthAndDay } = useFormatDate();
     const protectAmount = useProtectedAmountLabel();
+    const isAccessibilityTextSize = useIsAccessibilityTextSize();
+    const textLineLimit = isAccessibilityTextSize ? undefined : 2;
 
     const isIncome = item.type === TransactionTypeEnum.INCOME;
+    const iconClassName = isIncome ? 'text-positive-strong' : undefined;
     const signedAmount = `${isIncome ? '+' : ''}${protectAmount(convertFromMicroUnits(item.amount), item.currencySymbol)}`;
     const description = isNotEmptyString(item.categoryTitle)
         ? `${formatMonthAndDay(item.operatedAt)} · ${item.accountTitle} · ${item.categoryTitle}`
@@ -35,12 +39,22 @@ export const TransactionPickerRow = ({ item, position, isSelected = false, onPre
     const icon = item.categoryIcon ?? (isIncome ? UserIconNameEnum.BanknoteArrowDown : UserIconNameEnum.BanknoteArrowUp);
     const iconVariant = isIncome ? 'positive' : 'secondary';
     const amountClassName = isIncome
-        ? 'text-[15px] font-semibold tabular-nums text-positive-foreground'
+        ? 'text-[15px] font-semibold tabular-nums text-positive-strong'
         : 'text-[15px] font-semibold tabular-nums text-primary';
     const selectionClassName = isSelected ? 'w-6 items-center' : 'w-6 items-center opacity-0';
     const content = (
         <TransactionRowLayout
-            icon={<CircleIcon size={36} iconSize={18} radius={18} border={false} icon={icon} variant={iconVariant} />}
+            icon={
+                <CircleIcon
+                    size={36}
+                    iconSize={18}
+                    radius={18}
+                    border={false}
+                    icon={icon}
+                    variant={iconVariant}
+                    iconClassName={iconClassName}
+                />
+            }
             amount={
                 <View className="shrink-0 flex-row items-center gap-x-sm">
                     <Text className={amountClassName}>{signedAmount}</Text>
@@ -52,10 +66,10 @@ export const TransactionPickerRow = ({ item, position, isSelected = false, onPre
                 </View>
             }
         >
-            <Text className="text-[15px] font-semibold text-primary" numberOfLines={2}>
+            <Text className="text-[15px] font-semibold text-primary" numberOfLines={textLineLimit}>
                 {isNotEmptyString(item.title) ? item.title : t`No title`}
             </Text>
-            <Text className="text-[13px] text-secondary-foreground" numberOfLines={2}>
+            <Text className="text-[13px] text-secondary-foreground" numberOfLines={textLineLimit}>
                 {description}
             </Text>
         </TransactionRowLayout>

@@ -30,6 +30,7 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
     const showEmptyState = isEmptyArray(sources) && !hasError;
     const showRevert = isDefined(consolidationType);
     const isRevertDisabled = isLoading || hasError || isEmptyArray(sources);
+    const headerSize = isAccessibilityTextSize ? 'sm' : 'md';
     const footerClassName = isAccessibilityTextSize ? 'flex-col gap-y-md' : 'flex-row gap-x-md';
     const buttonClassName = isAccessibilityTextSize ? '' : 'flex-1';
     const sourceRows = sources.map((source, index) => (
@@ -49,8 +50,8 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
         >
-            <FormsheetHeader size="md" title={t`Sources`} description={t`Each source becomes a separate transaction.`} />
-            <LoadingContent isLoading={isLoading} containerClassName="grow shrink-0">
+            <FormsheetHeader size={headerSize} title={t`Sources`} />
+            <LoadingContent isLoading={isLoading} containerClassName="shrink-0">
                 {hasError ? (
                     <View className="gap-y-md px-xl py-xl">
                         <Text className="text-sm text-destructive-foreground">{t`Could not load sources. Please try again.`}</Text>
@@ -72,7 +73,8 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
                 <View className="px-xl">{sourceRows}</View>
             </LoadingContent>
 
-            <View className="shrink-0 bg-grouped-surface px-xl pt-md pb-safe-or-[16px]">
+            <View className="mt-auto shrink-0 gap-y-md bg-grouped-surface px-xl pt-md pb-safe-or-[16px]">
+                <Text className="text-center text-sm text-secondary-foreground">{t`Each source becomes a separate transaction.`}</Text>
                 <View className={footerClassName}>
                     <Button
                         content={t`Done`}
