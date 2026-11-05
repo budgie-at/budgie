@@ -52,7 +52,7 @@ export const TransactionPickerRow = ({ item, position, isSelected = false, onPre
                 </View>
             }
         >
-            <Text className="text-[15px] font-semibold text-primary" numberOfLines={1}>
+            <Text className="text-[15px] font-semibold text-primary" numberOfLines={2}>
                 {isNotEmptyString(item.title) ? item.title : t`No title`}
             </Text>
             <Text className="text-[13px] text-secondary-foreground" numberOfLines={2}>

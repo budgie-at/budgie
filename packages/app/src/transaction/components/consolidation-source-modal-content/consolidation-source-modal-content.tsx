@@ -10,6 +10,7 @@ import { FormsheetHeader } from '../../../@generic/component/formsheet-header/fo
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
+import { useSheetFooterLayout } from '../../hook/use-sheet-footer-layout.hook';
 import { useGetConsolidationSourcesQuery } from '../../query/use-get-consolidation-sources.query';
 import { getTransactionListRowPosition } from '../../utils/get-transaction-list-row-position.util';
 import { ConsolidationSourceRow } from '../consolidation-source-row/consolidation-source-row';
@@ -25,6 +26,7 @@ interface Props {
 export const ConsolidationSourceModalContent = ({ transactionId, onClose, onRevertSuccess }: Props) => {
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
     const { sources, consolidationType, hasError, isLoading, retry } = useGetConsolidationSourcesQuery(transactionId);
+    const { contentContainerStyle, handleFooterLayout } = useSheetFooterLayout();
     const revertConsolidation = useRevertConsolidation(transactionId, onRevertSuccess);
 
     const showEmptyState = isEmptyArray(sources) && !hasError;
@@ -45,7 +47,8 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
         <View className="flex-1">
             <ScrollView
                 className="flex-1"
-                contentContainerClassName="grow pb-2xl"
+                contentContainerClassName="grow"
+                contentContainerStyle={contentContainerStyle}
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >
@@ -73,7 +76,10 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
                 </LoadingContent>
             </ScrollView>
 
-            <View className="px-xl pb-xl">
+            <View
+                className="absolute bottom-0 left-0 right-0 bg-grouped-surface px-xl pt-md pb-safe-or-[16px]"
+                onLayout={handleFooterLayout}
+            >
                 <View className={footerClassName}>
                     <Button
                         content={t`Done`}
@@ -89,7 +95,6 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
                             content={t`Separate all`}
                             variant="primary"
                             size="md"
-                            leftIcon={UserIconNameEnum.Undo2}
                             onPress={revertConsolidation}
                             testID={ConsolidationSourceModalSelector.RevertButton}
                             className={buttonClassName}
