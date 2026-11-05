@@ -1,7 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Text, useWindowDimensions, View } from 'react-native';
 
-import { isDefined, isNotEmptyString, isString } from '@rnw-community/shared';
+import { isNotEmptyString, isString } from '@rnw-community/shared';
 
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { Icon } from '../../../@generic/component/icon/icon';
@@ -23,20 +23,19 @@ interface Props {
 
 const VALUE_MAX_FONT_SCALE = 2;
 const STACKED_LABEL_MAX_FONT_SCALE = 1.3;
+const CHEVRON_MAX_SCALE = 1.5;
 
 export const TransactionFormRow = (props: Props) => {
     const { left, label, value, placeholder, valueTestID, onPress, testID, pressableProps } = props;
     const { fontScale } = useWindowDimensions();
     const isStacked = fontScale >= TRANSACTION_LARGE_TEXT_SCALE;
     const hasValue = isNotEmptyString(value);
-    const isAction = !hasValue && !isDefined(placeholder);
     const valueLayoutClassName = isStacked ? '' : 'min-w-0 flex-1 text-right';
-    const valueLineCount = isStacked ? 3 : 1;
-    const labelClassName = isAction
-        ? 'shrink-0 text-[17px] leading-[22px] text-primary'
-        : 'shrink-0 text-[17px] leading-[22px] text-secondary-foreground';
+    const chevronSize = 16 * Math.min(fontScale, CHEVRON_MAX_SCALE);
+    const valueLineCount = isStacked ? 3 : 2;
     const labelMaxFontScale = isStacked ? STACKED_LABEL_MAX_FONT_SCALE : VALUE_MAX_FONT_SCALE;
-    const chevron = <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />;
+    const chevron = <Icon icon={UserIconNameEnum.ChevronRight} size={chevronSize} className="text-secondary-foreground" />;
+    const leading = isStacked ? <View className="self-start pt-[2px]">{left}</View> : left;
     const placeholderText = isString(placeholder) ? (
         <Text
             className={cn('text-[17px] leading-[22px] text-secondary-foreground', valueLayoutClassName)}
@@ -61,7 +60,7 @@ export const TransactionFormRow = (props: Props) => {
         placeholderText
     );
     const labelText = (
-        <Text className={labelClassName} maxFontSizeMultiplier={labelMaxFontScale}>
+        <Text className="shrink-0 text-[17px] leading-[22px] text-secondary-foreground" maxFontSizeMultiplier={labelMaxFontScale}>
             {label}
         </Text>
     );
@@ -77,5 +76,7 @@ export const TransactionFormRow = (props: Props) => {
         </View>
     );
 
-    return <GroupedListRow left={left} title={title} right={chevron} onPress={onPress} testID={testID} pressableProps={pressableProps} />;
+    return (
+        <GroupedListRow left={leading} title={title} right={chevron} onPress={onPress} testID={testID} pressableProps={pressableProps} />
+    );
 };

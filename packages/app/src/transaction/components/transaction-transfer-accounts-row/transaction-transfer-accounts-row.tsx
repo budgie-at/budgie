@@ -1,4 +1,4 @@
-import { AccountTypeEnum, TransactionCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
+import { AccountTypeEnum, TransactionCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useImperativeHandle, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -7,13 +7,12 @@ import { LayoutChangeEvent, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/component/icon/icon';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
 import { TransferAccountPicker } from '../transfer-account-picker/transfer-account-picker';
 import { TransferQuickFormSelector } from '../transfer-quick-form/transfer-quick-form.selector';
+import { TransferSwapButton } from '../transfer-swap-button/transfer-swap-button';
 
 export interface TransactionTransferAccountsRowRef {
     shakeFrom: () => void;
@@ -23,9 +22,6 @@ export interface TransactionTransferAccountsRowRef {
 interface Props {
     readonly ref?: RefObject<TransactionTransferAccountsRowRef | null>;
 }
-
-const SWAP_SIZE = 32;
-const SWAP_HIT_SLOP = 6;
 
 // eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const TransactionTransferAccountsRow = ({ ref }: Props) => {
@@ -80,7 +76,7 @@ export const TransactionTransferAccountsRow = ({ ref }: Props) => {
     };
 
     const handleFromLayout = (event: LayoutChangeEvent) => void setFromRowHeight(event.nativeEvent.layout.height);
-    const swapStyle = { top: fromRowHeight - SWAP_SIZE / 2, opacity: fromRowHeight > 0 ? 1 : 0 };
+    const canSwap = isDefined(fromAccountId) && isDefined(toAccountId);
 
     return (
         <View>
@@ -106,17 +102,7 @@ export const TransactionTransferAccountsRow = ({ ref }: Props) => {
                     onPress={handleToPress}
                 />
             </GroupedListSection>
-            <HapticPressable
-                className="absolute left-[18px] h-[32px] w-[32px] items-center justify-center rounded-full border-2 border-grouped-surface-row bg-surface-disc"
-                style={swapStyle}
-                hitSlop={SWAP_HIT_SLOP}
-                onPress={handleSwap}
-                testID={TransferQuickFormSelector.SwapAccounts}
-                accessibilityLabel={t`Swap accounts`}
-                accessibilityRole="button"
-            >
-                <Icon icon={UserIconNameEnum.ArrowUpDown} size={15} className="text-primary" />
-            </HapticPressable>
+            <TransferSwapButton dividerOffset={fromRowHeight} isEnabled={canSwap} onPress={handleSwap} />
         </View>
     );
 };

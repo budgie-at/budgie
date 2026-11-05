@@ -13,6 +13,7 @@ interface Props {
 }
 
 const BLINK_STEP_MS = 500;
+const MIN_OPACITY = 0.25;
 
 export const AmountCaret = ({ height }: Props) => {
     const isReducedMotion = useReducedMotion();
@@ -22,7 +23,10 @@ export const AmountCaret = ({ height }: Props) => {
     useEffect(() => {
         if (!isReducedMotion) {
             opacity.set(
-                withRepeat(withSequence(withTiming(0, { duration: BLINK_STEP_MS }), withTiming(1, { duration: BLINK_STEP_MS })), -1)
+                withRepeat(
+                    withSequence(withTiming(MIN_OPACITY, { duration: BLINK_STEP_MS }), withTiming(1, { duration: BLINK_STEP_MS })),
+                    -1
+                )
             );
         }
     }, [isReducedMotion, opacity]);

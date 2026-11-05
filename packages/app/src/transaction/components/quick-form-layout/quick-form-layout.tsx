@@ -1,18 +1,12 @@
 import { ReactNode } from 'react';
-import { useWindowDimensions, View } from 'react-native';
+import { View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { ScopedVariables, useUniwind } from 'uniwind';
 
-import {
-    BottomChromeInsetProvider,
-    ScreenChromeFooter,
-    ScreenChromeScrollView,
-    useScrollFadeStyle
-} from '@rnw-community/react-native-screen-chrome';
+import { BottomChromeInsetProvider, ScreenChromeFooter, ScreenChromeScrollView } from '@rnw-community/react-native-screen-chrome';
 import { isDefined } from '@rnw-community/shared';
 
 import { RevealGate } from '../../../@generic/component/reveal-gate/reveal-gate';
-import { TRANSACTION_LARGE_TEXT_SCALE } from '../../constant/transaction-large-text-scale.constant';
 import { useQuickFormLayout } from '../../hook/use-quick-form-layout.hook';
 
 interface Props {
@@ -33,11 +27,17 @@ const DEFAULT_ROW_COLORS = {};
 
 export const QuickFormLayout = ({ amount, context, suggestions, children, keypad, actions }: Props) => {
     const { theme } = useUniwind();
-    const { fontScale } = useWindowDimensions();
-    const { requiresScrolling, handleLayout, handleAmountLayout, isLoading } = useQuickFormLayout();
-    const isScrollingLayout = requiresScrolling || (fontScale >= TRANSACTION_LARGE_TEXT_SCALE && !isDefined(keypad));
+    const {
+        isScrollingLayout,
+        topEdgeStyle,
+        bottomEdgeStyle,
+        handleLayout,
+        handleAmountLayout,
+        handleContentSizeChange,
+        handleScrollLayout,
+        isLoading
+    } = useQuickFormLayout(isDefined(keypad));
     const rowColors = theme === 'dark' ? DARK_ROW_COLORS : DEFAULT_ROW_COLORS;
-    const topFadeStyle = useScrollFadeStyle([0, 16], [0, 1]);
     const header = (
         <View className="pt-[4px] pb-[12px]" onLayout={handleAmountLayout}>
             {amount}
@@ -55,6 +55,8 @@ export const QuickFormLayout = ({ amount, context, suggestions, children, keypad
                         <View className="relative flex-1">
                             <ScreenChromeScrollView
                                 style={SCROLL_VIEW_STYLE}
+                                onContentSizeChange={handleContentSizeChange}
+                                onLayout={handleScrollLayout}
                                 showsVerticalScrollIndicator
                                 includeTopSafeArea={false}
                                 contentContainerStyle={CONTENT_STYLE}
@@ -70,13 +72,15 @@ export const QuickFormLayout = ({ amount, context, suggestions, children, keypad
                                     {children}
                                 </View>
                             </ScreenChromeScrollView>
-                            <Animated.View pointerEvents="none" style={topFadeStyle} className="absolute top-0 left-0 right-0 h-[24px]">
-                                <View className="h-[8px] bg-grouped-surface" />
-                                <View className="h-[16px] bg-linear-to-b from-grouped-surface to-grouped-surface/0" />
-                            </Animated.View>
-                            <View
+                            <Animated.View
                                 pointerEvents="none"
-                                className="absolute bottom-0 left-0 right-0 h-[24px] bg-linear-to-t from-grouped-surface to-grouped-surface/0"
+                                style={topEdgeStyle}
+                                className="absolute top-0 -left-[20px] -right-[20px] h-hairline bg-surface-separator"
+                            />
+                            <Animated.View
+                                pointerEvents="none"
+                                style={bottomEdgeStyle}
+                                className="absolute bottom-0 -left-[20px] -right-[20px] h-hairline bg-surface-separator"
                             />
                         </View>
                         <ScreenChromeFooter includeBottomSafeArea={false} edgeFadeProps={HIDDEN_EDGE_FADE_PROPS} style={FOOTER_STYLE}>

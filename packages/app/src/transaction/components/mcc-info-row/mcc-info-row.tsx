@@ -18,7 +18,7 @@ const MERCHANT_MAX_FONT_SCALE = 1.6;
 
 export const MccInfoRow = ({ transactionTitle, mccCategoryId, children }: Props) => {
     const { mccCategory } = useGetMccCategoryByIdQuery(mccCategoryId);
-    const titleLineCount = useWindowDimensions().fontScale >= TRANSACTION_LARGE_TEXT_SCALE ? 4 : 2;
+    const titleLineCount = useWindowDimensions().fontScale >= TRANSACTION_LARGE_TEXT_SCALE ? 3 : 2;
 
     return (
         <View className="items-center gap-y-[8px] self-stretch">
