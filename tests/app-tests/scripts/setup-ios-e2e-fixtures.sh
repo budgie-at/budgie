@@ -67,7 +67,6 @@ WITH RECURSIVE latest AS (
     FROM historical_exchange_rates AS rates
     JOIN instruments AS source ON source.id = rates.source_instrument_id AND source.type = 'FIAT'
     JOIN instruments AS target ON target.id = rates.target_instrument_id AND target.type = 'FIAT'
-    WHERE rates.deleted_at IS NULL
     GROUP BY rates.source_instrument_id, rates.target_instrument_id
 ),
 days(source_instrument_id, target_instrument_id, rate_date, rate) AS (
@@ -77,7 +76,6 @@ days(source_instrument_id, target_instrument_id, rate_date, rate) AS (
         ON rates.source_instrument_id = latest.source_instrument_id
         AND rates.target_instrument_id = latest.target_instrument_id
         AND rates.rate_date = latest.rate_date
-        AND rates.deleted_at IS NULL
     WHERE latest.rate_date < '$FIAT_RATES_THROUGH_DATE'
     UNION ALL
     SELECT source_instrument_id, target_instrument_id, date(rate_date, '+1 day'), rate FROM days WHERE rate_date < '$FIAT_RATES_THROUGH_DATE'
@@ -106,7 +104,6 @@ WHERE held.type = 'FIAT'
         SELECT 1 FROM historical_exchange_rates AS rates
         WHERE rates.source_instrument_id = held.id
             AND rates.target_instrument_id = euro.id
-            AND rates.deleted_at IS NULL
     );
 "
 }

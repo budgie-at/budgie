@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/32.budget-multi-currency.flow.yaml.
 import { expect } from 'e2e';
 
 import * as bu from '../support/budgie/budget.ts';

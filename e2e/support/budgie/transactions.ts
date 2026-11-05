@@ -14,11 +14,19 @@ export async function tapUntilId(ctx: Ctx, testId: string, targetId: string, ret
     });
 }
 
+async function focusAmount(ctx: Ctx): Promise<void> {
+    if (!(await byId(ctx.screen, 'TransactionKeypad.Digit.1').isVisible())) {
+        await tapId(ctx, 'TransactionForm.AmountInput');
+        await expectId(ctx, 'TransactionKeypad.Digit.1');
+    }
+}
+
 /** Taps keypad digits in order (`'42'` taps 4 then 2). */
 export async function typeDigits(ctx: Ctx, digits: string): Promise<void> {
+    await focusAmount(ctx);
     for (const digit of digits) {
         if (digit === '.') {
-            await ctx.screen.getByRole('button', { name: '.' }).first().tap();
+            await tapId(ctx, 'TransactionKeypad.Decimal');
         } else {
             await tapId(ctx, `TransactionKeypad.Digit.${digit}`);
         }
@@ -27,6 +35,7 @@ export async function typeDigits(ctx: Ctx, digits: string): Promise<void> {
 
 /** `longPressOn: TransactionKeypad.Backspace`: clears the whole amount. */
 export async function clearAmount(ctx: Ctx): Promise<void> {
+    await focusAmount(ctx);
     await byId(ctx.screen, 'TransactionKeypad.Backspace').longPress();
 }
 
@@ -171,13 +180,6 @@ export async function longPressConvertToTransfer(ctx: Ctx, cardId: string): Prom
     await expectId(ctx, 'ConvertToTransfer.Page', 10_000);
 }
 
-/** subflows/transactions/confirm-convert-to-transfer */
-export async function confirmConvertToTransfer(ctx: Ctx): Promise<void> {
-    await expect(byText(ctx.screen, 'Convert to Transfer?')).toBeVisible({ timeout: 10_000 });
-    await ctx.screen.getByText('Convert').first().tap();
-    await expectNoId(ctx, 'ConvertToTransfer.Page', 15_000);
-}
-
 /** subflows/transactions/confirm-revert-consolidation */
 export async function confirmRevertConsolidation(ctx: Ctx): Promise<void> {
     const ask = byText(ctx.screen, 'Separate transactions?');
@@ -234,7 +236,7 @@ export async function createExpense(
 
 /**
  * The fee-sheet round trip the 08/09/10 flows share on a transaction's edit form:
- * see the sheet's first entry and save button, drag it down (Maestro's `swipe: DOWN`), back on `formTitle`.
+ * see the sheet's first entry and save button, drag it down, back on `formTitle`.
  */
 export async function openAndDismissFeeSheet(ctx: Ctx, formTitle: string): Promise<void> {
     const { screen } = ctx;
@@ -245,7 +247,7 @@ export async function openAndDismissFeeSheet(ctx: Ctx, formTitle: string): Promi
 }
 
 /**
- * Drags the open bottom sheet down by its grabber until `contentId` leaves the screen (Maestro's `swipe: DOWN`).
+ * Drags the open bottom sheet down by its grabber until `contentId` leaves the screen.
  * With the keyboard up, agent-device rejects any drag long enough to dismiss the sheet ("does not fit inside
  * the viewport"), and a decimal pad has no dismiss key; then the sheet's backdrop (`PopoverDismissRegion`),
  * the other way a user closes it, is tapped instead. The sheet may stop at its collapsed detent on the way,
@@ -318,7 +320,7 @@ export async function consolidateMatches(ctx: Ctx): Promise<void> {
     await expect(byText(screen, 'Transfers and refunds merged')).toBeVisible({ timeout: 30_000 });
 }
 
-/** A point inside `locator` at fractions of its size, in the node's own coordinates (for `tap({ position })`, Maestro's `point: 'x%,y%'`). */
+/** A point inside `locator` at fractions of its size, in the node's own coordinates (for `tap({ position })`). */
 async function relativePoint(locator: Locator, fx: number, fy: number): Promise<{ x: number; y: number }> {
     const box = await locator.boundingBox();
     if (box === null) {

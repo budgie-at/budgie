@@ -3,13 +3,22 @@ import {
     AccountExternalIdEntityTable,
     convertToMicroUnits,
     ExternalSourceEnum,
+    RuleActionEntityTable,
+    RuleActionTypeEnum,
+    RuleConditionEntityTable,
+    RuleConditionFieldEnum,
+    RuleConditionOperatorEnum,
+    TransactionEntryEntityTable,
+    TransactionTagsEntityTable,
     SyncEntityTable,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { AccountReissueMergeService, ExternalAccountService, SyncRepairService } from '@budgie/sync';
+import { RuleEngineService } from '@budgie/rules';
+import { AccountReissueMergeService, ExternalAccountService, SyncRepairService, SyncWorkload } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq, isNull } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
+import { vi } from 'vitest';
 
 import { fetchAccountBalance, seed, testDb, TestLayer } from '../../harness';
 import {
@@ -19,6 +28,7 @@ import {
     makeOwnCardStatementService,
     seedOwnCard
 } from '../../harness/file-sync/privatbank-own-card-statement';
+import { seedTitleRule } from '../../harness/seed/seed-title-rule';
 
 import type { PrivatbankRowInterface } from '@budgie/sync';
 
@@ -67,6 +77,79 @@ const seedSplitCard = (card: string, rows: readonly (readonly [number, string, s
     });
 
 describe('account/card-reissue-merge', () => {
+    it.effect('applies predecessor account rules to the first reissued import without duplicate tags on re-import', () =>
+        Effect.gen(function* () {
+            yield* quickImport(chainRows.slice(0, 3));
+            const [predecessor] = yield* fetchLiveAccounts();
+            const category = yield* seed.category('Reissued rule category');
+            const tag = yield* seed.tag('Reissued rule tag');
+            const existingTag = yield* seed.tag('Pre-insert rule tag');
+            const rule = yield* seedTitleRule(RENT, {
+                type: RuleActionTypeEnum.SET_CATEGORY,
+                categoryId: category.id,
+                accountId: null
+            });
+            yield* testDb.insert(RuleConditionEntityTable).values({
+                ruleId: rule.id,
+                field: RuleConditionFieldEnum.ACCOUNT_ID,
+                operator: RuleConditionOperatorEnum.EQUALS,
+                value: String(predecessor.id),
+                secondaryValue: null
+            });
+            yield* testDb.insert(RuleActionEntityTable).values({
+                ruleId: rule.id,
+                type: RuleActionTypeEnum.ADD_TAG,
+                tagId: tag.id
+            });
+            const existingRule = yield* seedTitleRule(RENT, {
+                type: RuleActionTypeEnum.SET_CATEGORY,
+                categoryId: category.id,
+                accountId: null
+            });
+            yield* testDb
+                .update(RuleActionEntityTable)
+                .set({ type: RuleActionTypeEnum.ADD_TAG, tagId: existingTag.id, categoryId: null })
+                .where(eq(RuleActionEntityTable.ruleId, existingRule.id));
+            const syncWorkload = yield* SyncWorkload;
+            const ruleEngineService = yield* RuleEngineService;
+            const enqueue = vi.spyOn(syncWorkload, 'enqueueRuleApplication').mockReturnValue(Effect.void);
+
+            yield* quickImport(chainRows);
+            for (const [transactionIds, transactionInputs] of enqueue.mock.calls) {
+                yield* ruleEngineService.applyRulesToTransactions(transactionIds, transactionInputs);
+            }
+
+            const imported = (yield* fetchVisibleTransactions()).filter(
+                transaction => transaction.title === RENT && transaction.operatedAt >= day('2026-07-01')
+            );
+            const entries = yield* testDb.select().from(TransactionEntryEntityTable);
+            const tags = yield* testDb.select().from(TransactionTagsEntityTable);
+            expect(imported).toHaveLength(2);
+            expect(imported.every(transaction => transaction.fromAccountId === predecessor.id)).toBe(true);
+            expect(
+                entries.filter(entry => imported.some(transaction => transaction.id === entry.transactionId)).map(entry => entry.categoryId)
+            ).toEqual([category.id, category.id]);
+            expect(tags.filter(transactionTag => transactionTag.tagId === tag.id)).toHaveLength(2);
+            expect(tags.filter(transactionTag => transactionTag.tagId === existingTag.id)).toHaveLength(2);
+            expect(
+                enqueue.mock.calls
+                    .flatMap(([, inputs]) => inputs)
+                    .every(
+                        input =>
+                            input.entries.every(entry => entry.accountId === predecessor.id) &&
+                            (input.fromAccountId ?? input.toAccountId) === predecessor.id
+                    )
+            ).toBe(true);
+
+            enqueue.mockClear();
+            expect(yield* quickImport(chainRows)).toMatchObject({ newTransactionCount: 0 });
+            for (const [transactionIds, transactionInputs] of enqueue.mock.calls) {
+                yield* ruleEngineService.applyRulesToTransactions(transactionIds, transactionInputs);
+            }
+            expect(yield* testDb.select().from(TransactionTagsEntityTable)).toEqual(tags);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('merges a reissued card chain into the oldest card and resolves old card numbers on re-import', () =>
         Effect.gen(function* () {
             yield* quickImport(chainRows);

@@ -17,9 +17,8 @@ import {
     type Ctx
 } from './core.ts';
 
-/** `openLink: budgie://budget` + the empty budget widget the flows tap to start a budget; a tap Home swallows while it settles is repeated. */
 export async function openEmptyBudget(ctx: Ctx): Promise<void> {
-    await openLink(ctx, 'budgie://budget');
+    await openLink(ctx, 'budgie:///');
     await expectId(ctx, 'BudgetWidget.EmptyState', 3_000);
     await tapUntil(ctx, 'BudgetWidget.EmptyState', () => expectId(ctx, 'BudgetCreate.Template.Empty', 5_000));
 }
@@ -127,7 +126,7 @@ export async function swipeToDelete(ctx: Ctx, rowId: string): Promise<void> {
     const action = byId(screen, 'DeletableRow.DeleteButton');
     await retry(2, async () => {
         const box = await settledBounds(ctx, rowId);
-        // The row's testID sits on its short label: drag from well right of it to near the screen's left edge, as Maestro's LEFT swipe does.
+        // The row's testID sits on its short label: drag from well right of it to near the screen's left edge.
         const y = box.y + box.height / 2;
         await screen.swipe({ from: { x: box.x + 260, y }, to: { x: 20, y }, duration: 300 });
         await expect(action).toBeVisible({ timeout: 3_000 });

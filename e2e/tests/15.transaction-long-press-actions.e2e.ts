@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/15.transaction-long-press-actions.flow.yaml.
 import * as a from '../support/budgie/accounts.ts';
 import * as b from '../support/budgie/core.ts';
 import { test } from '../support/budgie/test.ts';
@@ -48,7 +47,7 @@ test('15 transaction long press actions', { tags: ['transactions'] }, async ({ b
         await b.expectId(ctx, 'AccountPickerBottomSheet.Input');
         await a.selectAccountFromNativePicker(ctx, 'AccountPickerBottomSheet.Option.E2E Expense Target');
         await b.tapId(ctx, 'TransactionForm.SubmitButton');
-        await t.confirmConvertToTransfer(ctx);
+        await b.expectNoId(ctx, 'ConvertToTransfer.Page', 15_000);
         await b.expectId(ctx, 'TransactionsPage.Container', 15_000);
     });
 

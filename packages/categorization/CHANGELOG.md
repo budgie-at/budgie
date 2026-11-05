@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.162.1](https://github.com/budgie-at/budgie/compare/v6.162.0...v6.162.1) (2026-11-05)
+
+**Note:** Version bump only for package @budgie/categorization
+
+
+
+
+
+## [6.152.1](https://github.com/budgie-at/budgie/compare/v6.152.0...v6.152.1) (2026-11-04)
+
+### Bug Fixes
+
+* shrink backups by compacting rates and embeddings ([#1935](https://github.com/budgie-at/budgie/issues/1935)) ([635b32b](https://github.com/budgie-at/budgie/commit/635b32bc1b4c22bb9e02fd4eac348ee4522d0a0b))
+
+
+## [6.151.5](https://github.com/budgie-at/budgie/compare/v6.151.4...v6.151.5) (2026-11-04)
+
+**Note:** Version bump only for package @budgie/categorization
+
+
+
+
+
 ## [6.150.4](https://github.com/budgie-at/budgie/compare/v6.150.3...v6.150.4) (2026-11-04)
 
 **Note:** Version bump only for package @budgie/categorization

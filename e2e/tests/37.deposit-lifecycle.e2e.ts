@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/37.deposit-lifecycle.flow.yaml.
 import { expect } from 'e2e';
 
 import * as a from '../support/budgie/accounts.ts';

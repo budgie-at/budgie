@@ -37,22 +37,27 @@ export const TransactionPickerRow = ({ item, position, isSelected = false, onPre
     const amountClassName = isIncome
         ? 'text-[15px] font-semibold tabular-nums text-positive-foreground'
         : 'text-[15px] font-semibold tabular-nums text-primary';
+    const selectionClassName = isSelected ? 'w-6 items-center' : 'w-6 items-center opacity-0';
     const content = (
         <ListRow
             leading={<CircleIcon size={36} iconSize={18} radius={18} border={false} icon={icon} variant={iconVariant} />}
             title={
-                <Text className="text-[15px] font-semibold text-primary" numberOfLines={1}>
+                <Text className="text-[15px] font-semibold text-primary" numberOfLines={2}>
                     {isNotEmptyString(item.title) ? item.title : t`No title`}
                 </Text>
             }
             trailing={
-                <View className="shrink-0 items-end gap-y-xxs">
+                <View className="shrink-0 flex-row items-center gap-x-sm">
                     <Text className={amountClassName}>{signedAmount}</Text>
-                    {isSelected ? <Icon icon={UserIconNameEnum.Check} size={16} className="text-positive-foreground" /> : null}
+                    {isDefined(onPress) ? (
+                        <View className={selectionClassName}>
+                            <Icon icon={UserIconNameEnum.Check} size={16} className="text-primary" />
+                        </View>
+                    ) : null}
                 </View>
             }
             detail={
-                <Text className="text-[13px] text-secondary-foreground" numberOfLines={1}>
+                <Text className="text-[13px] text-secondary-foreground" numberOfLines={2}>
                     {description}
                 </Text>
             }

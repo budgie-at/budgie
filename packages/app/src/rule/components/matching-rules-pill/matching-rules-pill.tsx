@@ -46,8 +46,16 @@ export const MatchingRulesPill = ({ matchingRulesCount, matchingRuleIds }: Props
     return (
         <View className="items-center">
             <Animated.View entering={FadeIn.duration(200)} exiting={FadeOut.duration(200)}>
-                <HapticPressable testID={MatchingRulesPillSelector.Pill} onPress={handlePress} className="self-center">
-                    <RuleIndicatorPill icon={UserIconNameEnum.Workflow}>{label}</RuleIndicatorPill>
+                <HapticPressable
+                    testID={MatchingRulesPillSelector.Pill}
+                    onPress={handlePress}
+                    accessibilityLabel={label}
+                    accessibilityRole="button"
+                    className="min-h-[44px] max-w-full items-center justify-center self-center active:opacity-70"
+                >
+                    <RuleIndicatorPill icon={UserIconNameEnum.Workflow} className="min-h-[28px]" textClassName="text-[13px]">
+                        {label}
+                    </RuleIndicatorPill>
                 </HapticPressable>
             </Animated.View>
         </View>

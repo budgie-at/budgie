@@ -18,9 +18,10 @@ import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { InstitutionMark } from '../../../account/component/institution-mark/institution-mark';
 import { QuickFormLayout } from '../../../transaction/components/quick-form-layout/quick-form-layout';
 import { TransactionAmountDisplay } from '../../../transaction/components/transaction-amount-display/transaction-amount-display';
+import { TransactionFormActions } from '../../../transaction/components/transaction-form-actions/transaction-form-actions';
 import { TransactionKeypad } from '../../../transaction/components/transaction-keypad/transaction-keypad';
-import { QuickFormHeroAlignmentEnum } from '../../../transaction/enum/quick-form-hero-alignment.enum';
 import { useKeypadInput } from '../../../transaction/hook/use-keypad-input.hook';
+import { useTransactionKeypadEditing } from '../../../transaction/hook/use-transaction-keypad-editing.hook';
 import { inzhurLinkedPaymentsAtom } from '../../constant/inzhur-linked-payments-atom.constant';
 import { useHryvniaInstrumentQuery } from '../../query/use-hryvnia-instrument.query';
 import { InzhurSelector } from '../../selector/inzhur.selector';
@@ -29,6 +30,7 @@ export const CreateInzhurAccount = () => {
     const { t } = useLingui();
     const { isLoading, run } = useSingleFlight();
     const { displayValue, numericValue, handlers } = useKeypadInput();
+    const { footerHeight } = useTransactionKeypadEditing(true);
     const hryvnia = useHryvniaInstrumentQuery();
     const setLinkedPayments = useAtomSet(inzhurLinkedPaymentsAtom);
     const amountVariant = isPositiveNumber(numericValue) ? 'primary' : 'secondary';
@@ -44,38 +46,35 @@ export const CreateInzhurAccount = () => {
             )
         );
 
-    const hero = (
+    const amount = (
         <TransactionAmountDisplay
             amount={displayValue}
             currencySymbol={hryvnia?.symbol ?? ''}
             variant={amountVariant}
-            topContent={
-                <View className="items-center gap-y-lg">
-                    <InstitutionMark provider={ExternalSourceEnum.INZHUR} title={t`Inzhur`} />
-                    <Text className="text-[15px] font-medium text-secondary-foreground">
-                        <Trans>Inzhur cash</Trans>
-                    </Text>
-                </View>
-            }
             testID={InzhurSelector.CashAmount}
-        >
-            <Text
-                className="mt-lg max-w-[300px] text-center text-sm leading-[20px] text-secondary-foreground"
-                lineBreakStrategyIOS="standard"
-            >
+        />
+    );
+    const context = (
+        <View className="items-center gap-y-lg">
+            <InstitutionMark provider={ExternalSourceEnum.INZHUR} title={t`Inzhur`} />
+            <Text className="text-[15px] font-medium text-secondary-foreground">
+                <Trans>Inzhur cash</Trans>
+            </Text>
+            <Text className="max-w-[300px] text-center text-sm leading-[20px] text-secondary-foreground" lineBreakStrategyIOS="standard">
                 <Trans>Money not yet invested in a fund. Certificates are added from your first statement.</Trans>
             </Text>
-        </TransactionAmountDisplay>
+        </View>
     );
-    const keypad = (
-        <TransactionKeypad
-            keypad={handlers}
+    const footer = (
+        <TransactionFormActions
+            label={t`Continue`}
+            isDisabled={isLoading}
             onConfirm={handleAdd}
             onCancel={handleGoBack}
-            isConfirmDisabled={isLoading}
-            confirmLabel={t`Continue`}
-            confirmTestID={InzhurSelector.AddButton}
-        />
+            testID={InzhurSelector.AddButton}
+        >
+            <TransactionKeypad keypad={handlers} />
+        </TransactionFormActions>
     );
 
     return (
@@ -84,7 +83,7 @@ export const CreateInzhurAccount = () => {
                 <ScreenChromeFrame>
                     <FixedChromeHeader title={t`Add Inzhur`} leading={<HeaderBackButton />} inFlow />
                     <View className="flex-1 px-5xl pb-safe">
-                        <QuickFormLayout hero={hero} footer={keypad} heroAlignment={QuickFormHeroAlignmentEnum.CENTER} />
+                        <QuickFormLayout amount={amount} context={context} footer={footer} footerHeight={footerHeight} />
                     </View>
                 </ScreenChromeFrame>
             </ScreenChromeThemeProvider>

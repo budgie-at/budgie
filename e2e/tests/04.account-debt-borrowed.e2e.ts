@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/04.account-debt-borrowed.flow.yaml.
 import { expect } from 'e2e';
 
 import * as a from '../support/budgie/accounts.ts';

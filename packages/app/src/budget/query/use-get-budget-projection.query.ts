@@ -19,6 +19,7 @@ import type { BudgetEntityInterface } from '@budgie/contracts';
 interface UseGetBudgetProjectionResult {
     readonly projection: BudgetProjectionInterface;
     readonly isLoading: boolean;
+    readonly isError: boolean;
 }
 
 export const budgetProjectionAtom = databaseQueryFamily(
@@ -34,7 +35,7 @@ export const useGetBudgetProjectionQuery = (budget: BudgetEntityInterface): UseG
     const result = useLiveAtomValue(budgetProjectionAtom(toBudgetProjectionKey(budget, new Date(today).setHours(0, 0, 0, 0))));
 
     if (AsyncResult.isSuccess(result)) {
-        return { projection: result.value, isLoading: false };
+        return { projection: result.value, isLoading: false, isError: false };
     }
 
     return {
@@ -48,6 +49,7 @@ export const useGetBudgetProjectionQuery = (budget: BudgetEntityInterface): UseG
             upcomingCharges: [],
             reservations: []
         }),
-        isLoading: true
+        isLoading: true,
+        isError: AsyncResult.isFailure(result)
     };
 };

@@ -1,13 +1,11 @@
-import { UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { ContactSelectorCard } from '../@generic/component/contact-selector-card/contact-selector-card';
-import { EmptyState } from '../@generic/component/empty-state/empty-state';
+import { ContactSelectorEmpty } from '../@generic/component/contact-selector-empty/contact-selector-empty';
+import { ContactSelectorHeader } from '../@generic/component/contact-selector-header/contact-selector-header';
 import { SearchableSelectorList } from '../@generic/component/searchable-selector-list/searchable-selector-list';
-import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { useContactSelectorModal, useContactSelectorModalParams } from '../@generic/context/contact-selector-modal.context';
 import { Contact, useContacts } from '../@generic/hook/use-contacts.hook';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
@@ -24,19 +22,16 @@ const filterContacts = (contacts: Contact[], search: string): Contact[] =>
     });
 
 export default function ContactSelectorModal() {
-    const { t } = useLingui();
     const [, resolveContactSelector, dismissContactSelector] = useContactSelectorModal();
     useModalDismiss(dismissContactSelector);
     const [search, setSearch] = useState('');
-    const contacts = useContacts();
+    const { contacts, isLoading, isInitial, isFailure, isDenied, isLimited, retry } = useContacts();
 
     const selectedContactId = useContactSelectorModalParams()?.selectedContactId;
     const sections = [{ title: null, data: filterContacts(contacts, search) }];
-    const isSearching = isNotEmptyString(search);
-    const emptyIcon = isSearching ? UserIconNameEnum.Search : UserIconNameEnum.User;
-    const emptyTitle = isSearching ? t`No contacts found` : t`No contacts yet`;
-    const emptyDescription = isSearching ? t`Try a different search term` : t`Create one to get started.`;
-
+    const hasContacts = isNotEmptyArray(contacts);
+    const isSearching = hasContacts && isNotEmptyString(search);
+    const hasLimitedContacts = isLimited && hasContacts;
     const renderItem = (item: Contact) => {
         const handleSelect = () => void resolveContactSelector(item);
 
@@ -56,17 +51,22 @@ export default function ContactSelectorModal() {
         <SearchableSelectorList
             query={search.trim()}
             header={
-                <SelectorModalSearchHeader
-                    title={t`Contacts`}
-                    search={search}
-                    onSearchChange={setSearch}
-                    placeholder={t`Search contacts…`}
-                />
+                <ContactSelectorHeader search={search} onSearchChange={setSearch} isLimited={hasLimitedContacts} canSearch={hasContacts} />
             }
             sections={sections}
             keyExtractor={keyExtractor}
             renderItem={renderItem}
-            emptyState={<EmptyState icon={emptyIcon} title={emptyTitle} description={emptyDescription} />}
+            emptyState={
+                <ContactSelectorEmpty
+                    isLoading={isLoading}
+                    isInitial={isInitial}
+                    isFailure={isFailure}
+                    isDenied={isDenied}
+                    isLimited={isLimited}
+                    isSearching={isSearching}
+                    onRetry={retry}
+                />
+            }
         />
     );
 }

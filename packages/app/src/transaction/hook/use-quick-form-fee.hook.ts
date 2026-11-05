@@ -12,6 +12,7 @@ import { isDefined } from '@rnw-community/shared';
 import { ColorPaletteVariant } from '../../@generic/type/color-palette-variant.type';
 import { useTransactionFeeModal } from '../context/transaction-fee-modal.context';
 import { sumEntryAmounts } from '../utils/sum-entry-amounts.util';
+import { sumTransactionAmounts } from '../utils/sum-transaction-amounts.util';
 
 import type { TransactionFeeModalResult } from '../context/transaction-fee-modal.context';
 import type { QuickFormAccountFieldName } from '../interface/quick-form-account-field-name.type';
@@ -61,7 +62,7 @@ export const useQuickFormFee = ({
         });
 
         if (transactionType === TransactionTypeEnum.EXPENSE) {
-            const nextAmount = Math.max(getValues('amount') - previousFeeAmount + nextFeeAmount, 0);
+            const nextAmount = Math.max(sumTransactionAmounts(getValues('amount'), -previousFeeAmount, nextFeeAmount), 0);
 
             setValue('amount', nextAmount, { shouldDirty: true });
             setFromNumeric?.(nextAmount);

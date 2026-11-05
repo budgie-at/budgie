@@ -18,7 +18,7 @@ import { ExchangeRatesService } from './exchange-rates.service';
 
 import type {
     ExchangeRateCreateEntityInterface,
-    HistoricalExchangeRateCreateEntityInterface,
+    HistoricalExchangeRateEntityInterface,
     InstrumentEntityInterface
 } from '@budgie/contracts';
 
@@ -70,7 +70,7 @@ export class ExchangeRatesSyncService extends Context.Service<ExchangeRatesSyncS
             instruments: InstrumentEntityInterface[],
             rates: Record<string, number>,
             rateDate: string
-        ): HistoricalExchangeRateCreateEntityInterface[] => {
+        ): HistoricalExchangeRateEntityInterface[] => {
             const euroRate = rates[CurrencyEnum.EUR];
 
             if (!isDefined(euroInstrument) || !isPositiveNumber(euroRate)) {

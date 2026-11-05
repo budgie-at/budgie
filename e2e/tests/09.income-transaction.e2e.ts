@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/09.income-transaction.flow.yaml.
 import { expect } from 'e2e';
 
 import * as c from '../support/budgie/categories.ts';
@@ -21,11 +20,7 @@ test('09 income transaction', { tags: ['transactions'] }, async ({ budgie }) => 
     await b.phase('create income', async () => {
         await t.navigateToTransactions(ctx);
         await t.openTransactionForm(ctx, 'ActionItem.Income', 'New Income');
-        for (let i = 0; i < 2; i++) {
-            await b.tapId(ctx, 'TransactionForm.SubmitButton');
-            await b.expectText(ctx, 'New Income');
-            await b.expectText(ctx, 'Enter an amount');
-        }
+        await expect(b.byId(ctx.screen, 'TransactionForm.SubmitButton')).toBeDisabled();
         await t.typeDigits(ctx, '100');
         await t.selectAccount(ctx, 'E2E Txn Account');
         await c.selectCategory(ctx, 'E2E Txn Category');

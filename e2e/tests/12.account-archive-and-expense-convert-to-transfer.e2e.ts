@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/12.account-archive-and-expense-convert-to-transfer.flow.yaml.
 import { expect } from 'e2e';
 
 import * as a from '../support/budgie/accounts.ts';
@@ -66,11 +65,13 @@ test('12 account archive and expense convert to transfer', { tags: ['accounts', 
         await t.openInfoConversions(ctx);
         await b.tapText(ctx, 'Convert to Transfer');
         await b.expectId(ctx, 'ConvertToTransfer.Page');
+        await b.tapId(ctx, 'TransactionForm.SubmitButton');
+        await b.expectId(ctx, 'ConvertToTransfer.Page');
         await b.tapId(ctx, 'TransferForm.ToAccount');
         await b.expectId(ctx, 'AccountPickerBottomSheet.Input');
         await a.selectAccountFromNativePicker(ctx, `AccountPickerBottomSheet.Option.${TARGET}`);
         await b.tapId(ctx, 'TransactionForm.SubmitButton');
-        await t.confirmConvertToTransfer(ctx);
+        await b.expectNoId(ctx, 'ConvertToTransfer.Page', 15_000);
         await b.expectId(ctx, 'TransactionInfo.Page', 3_000);
         await b.tapId(ctx, 'PageHeader.BackButton');
         await b.expectId(ctx, 'TransactionsPage.Container', 10_000);

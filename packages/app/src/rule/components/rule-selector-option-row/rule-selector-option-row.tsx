@@ -1,9 +1,9 @@
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
-import { emptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { SelectorCard } from '../../../@generic/component/selector-card/selector-card';
+import { SelectorRow } from '../../../@generic/component/selector-row/selector-row';
 import { cn } from '../../../@generic/utils/cn.util';
 import { RuleGlyph } from '../rule-glyph/rule-glyph';
 
@@ -19,29 +19,24 @@ interface Props {
 export const RuleSelectorOptionRow = ({ option, isSelected, onPress, testID }: Props) => {
     const isDisabled = isDefined(option.disabledReason);
     const handlePress = isDisabled ? emptyFn : () => void onPress(option.value);
-    const accessibilityState = { disabled: isDisabled, selected: isSelected };
-    const cardClassName = cn('py-xl', isSelected && 'bg-surface-fill');
-    const iconSlot = isDefined(option.glyph) ? (
-        <View className="h-[40px] w-[40px] items-center justify-center rounded-full bg-ghost-background">
-            <RuleGlyph glyph={option.glyph} size={24} className="text-ghost-foreground" />
+    const pointerEvents = isDisabled ? 'none' : 'auto';
+    const disc = isDefined(option.glyph) ? (
+        <View className="h-[36px] w-[36px] items-center justify-center rounded-full bg-surface-disc">
+            <RuleGlyph glyph={option.glyph} size={20} className="text-primary" />
         </View>
     ) : (
-        <CircleIcon icon={option.icon} size={40} iconSize={20} radius={20} variant="ghost" border={false} />
+        <CircleIcon icon={option.icon} size={36} iconSize={18} radius={18} variant="secondary" border={false} className="bg-surface-disc" />
     );
-    const pointerEvents = isDisabled ? 'none' : 'auto';
-    const subtitleText = option.disabledReason ?? option.description;
-    const subtitle = isNotEmptyString(subtitleText) ? <Text className="text-sm text-secondary-foreground">{subtitleText}</Text> : null;
 
     return (
-        <View className={cn(isDisabled && 'opacity-40')} pointerEvents={pointerEvents} accessibilityState={accessibilityState}>
-            <SelectorCard
+        <View className={cn(isDisabled && 'opacity-40')} pointerEvents={pointerEvents}>
+            <SelectorRow
                 testID={testID}
                 isSelected={isSelected}
-                className={cardClassName}
                 onPress={handlePress}
-                iconSlot={iconSlot}
+                left={disc}
                 title={option.label}
-                subtitle={subtitle}
+                subtitle={option.disabledReason ?? option.description}
             />
         </View>
     );

@@ -20,7 +20,7 @@ export const bulkUpsert = <Table extends SQLiteTable>(
 
     return isNotEmptyArray(inputs)
         ? Db.query(db => {
-              const updateSet = { ...set, updatedAt: new Date() };
+              const updateSet = { ...set, ...('updatedAt' in columns && { updatedAt: new Date() }) };
 
               return db.insert(table).values(inputs).onConflictDoUpdate({ target, set: updateSet });
           }).pipe(Effect.asVoid)

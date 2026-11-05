@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.162.1](https://github.com/budgie-at/budgie/compare/v6.162.0...v6.162.1) (2026-11-05)
+
+### Bug Fixes
+
+* **ledger:** match installment parts paid early, twice or in multiples ([d76a9dd](https://github.com/budgie-at/budgie/commit/d76a9dd0d4617f71a367e5fb2b7f34e1f53eec1a))
+
+
+## [6.152.1](https://github.com/budgie-at/budgie/compare/v6.152.0...v6.152.1) (2026-11-04)
+
+### Bug Fixes
+
+* shrink backups by compacting rates and embeddings ([#1935](https://github.com/budgie-at/budgie/issues/1935)) ([635b32b](https://github.com/budgie-at/budgie/commit/635b32bc1b4c22bb9e02fd4eac348ee4522d0a0b))
+
+
 # [6.148.0](https://github.com/budgie-at/budgie/compare/v6.147.1...v6.148.0) (2026-11-02)
 
 ### Features

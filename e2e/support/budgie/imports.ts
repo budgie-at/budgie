@@ -23,8 +23,8 @@ export async function importTestTransactions(ctx: Ctx, csvFixturesUri: string, n
 
 /**
  * A picker row's identifier: the file name, with the extension or not
- * (`e2e-budgie-import`, `16.db`), or Maestro's `name, ext` form, which the
- * iOS 26.5 simulators report. The flows' `name(, ext)?`.
+ * (`e2e-budgie-import`, `16.db`), or the `name, ext` form, which the
+ * iOS 26.5 simulators report.
  */
 function fileRowId(name: string): RegExp {
     const [base, ext] = name.split(', ');
@@ -42,15 +42,18 @@ const folderId = (name: string): RegExp => new RegExp(`^${quote(name)}(, (Folder
  * list), walk to On My iPhone → budgie (E2E) → E2EFixtures, going back up
  * when it is elsewhere.
  */
-async function openE2EFixturesFullPath(ctx: Ctx, row: Locator): Promise<void> {
+export async function openE2EFixturesFullPath(
+    ctx: Ctx,
+    row: Locator,
+    inFixtures: Locator = ctx.screen.getByTestId(/Title: E2EFixtures$/).first()
+): Promise<void> {
     const { screen } = ctx;
     const item = (name: string) => screen.getByTestId(folderId(name)).first();
-    const inside = (title: string) => screen.getByTestId(new RegExp(`Title: ${quote(title)}$`)).first();
     for (let step = 0; step < 6; step++) {
         if (await row.isVisible()) {
             return;
         }
-        if (await inside('E2EFixtures').isVisible()) {
+        if (await inFixtures.isVisible()) {
             return;
         }
         if (await byText(screen, /could not be displayed/).isVisible()) {
@@ -61,7 +64,7 @@ async function openE2EFixturesFullPath(ctx: Ctx, row: Locator): Promise<void> {
         const fixtures = item('E2EFixtures');
         if (await fixtures.isVisible()) {
             await fixtures.tap();
-            await expect(inside('E2EFixtures')).toBeVisible({ timeout: 8_000 });
+            await expect(inFixtures).toBeVisible({ timeout: 8_000 });
             return;
         }
         const container = item('budgie (E2E)');

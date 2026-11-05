@@ -3,6 +3,211 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.162.1](https://github.com/budgie-at/budgie/compare/v6.162.0...v6.162.1) (2026-11-05)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+# [6.162.0](https://github.com/budgie-at/budgie/compare/v6.161.0...v6.162.0) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** give transaction filter chips a 44pt touch target ([70aa6a0](https://github.com/budgie-at/budgie/commit/70aa6a097df70ebaa3f305db3e135e6b0dfb7008))
+* **app:** keep the transactions header compact under shared chrome ([14b7d58](https://github.com/budgie-at/budgie/commit/14b7d586e5780720a59078a3258392f8c8381282))
+* **app:** satisfy lint for the transactions header style ([7f26792](https://github.com/budgie-at/budgie/commit/7f267928fe14dc370d807cdeaa27b5930915f09a))
+
+### Features
+
+* **app:** fixed shared chrome and stable loading for the Transactions tab ([771d978](https://github.com/budgie-at/budgie/commit/771d978df56f01a51f4b2a496b4976e88da77771))
+
+
+# [6.161.0](https://github.com/budgie-at/budgie/compare/v6.160.1...v6.161.0) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** keep PIN setup readable with large text ([f420180](https://github.com/budgie-at/budgie/commit/f420180b73d9685d9ae8e7011cd5b1ee4c1659aa))
+* **app:** verify onboarding keyboard dismissal ([f41251a](https://github.com/budgie-at/budgie/commit/f41251a46470c512975d61de6d44c14925fb5ae7))
+
+### Features
+
+* **app:** bring onboarding welcome content together ([d142b8a](https://github.com/budgie-at/budgie/commit/d142b8a82fbf8dc2e8c08c531315a6ac3852506f))
+* **app:** clarify onboarding actions and PIN warning ([7878a45](https://github.com/budgie-at/budgie/commit/7878a45d5e442645b9af2d11e9699e07ac577852))
+
+
+## [6.160.1](https://github.com/budgie-at/budgie/compare/v6.160.0...v6.160.1) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** give SegmentedControl 44pt touch targets ([39e9b6c](https://github.com/budgie-at/budgie/commit/39e9b6c20b5628749e2460522e12ac80c2c1ff15))
+
+
+# [6.160.0](https://github.com/budgie-at/budgie/compare/v6.159.0...v6.160.0) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** match the rule option sheet background to its grouped surface ([1029312](https://github.com/budgie-at/budgie/commit/10293123c42a4d344d3ca82315098ceb5e6e017c))
+* **app:** match the rule selector sheet background in dark mode ([984f56b](https://github.com/budgie-at/budgie/commit/984f56b2cf0f936e3edbb62dcd316b4f957d9b50))
+
+### Features
+
+* **app:** scroll the rule option sheet when options exceed the viewport ([5958ebd](https://github.com/budgie-at/budgie/commit/5958ebd18ca8008c1a3a8f67b55dd0950e8b5b1d))
+
+
+# [6.159.0](https://github.com/budgie-at/budgie/compare/v6.158.0...v6.159.0) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** keep compact source empty copy above footer ([e5f3ee3](https://github.com/budgie-at/budgie/commit/e5f3ee33d0f03b2075e989a39440711f8fb740f4))
+* **app:** keep refund choices clear and support large text ([9d16f42](https://github.com/budgie-at/budgie/commit/9d16f42bd8c5fec747c730c58ffcea6d9d410e8a))
+* **app:** pin measured sheet footers above the safe area ([943bd2a](https://github.com/budgie-at/budgie/commit/943bd2a6ec06ed90cd19a85a5dd15e4b0af34f6c))
+
+### Features
+
+* **app:** refine refund sheet density and keyboard states ([88eaa2c](https://github.com/budgie-at/budgie/commit/88eaa2ca9ee23f05ca48525a5c31f71ea2657637))
+* **app:** stabilize refund and source sheet states ([e5ac080](https://github.com/budgie-at/budgie/commit/e5ac0800d0f4a738af90669b7d19b1abd86f9c19))
+
+
+# [6.158.0](https://github.com/budgie-at/budgie/compare/v6.157.0...v6.158.0) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** expand contact recovery for accessibility text ([f7b1203](https://github.com/budgie-at/budgie/commit/f7b120300023cd28922309caa8da15aa8ce105e2))
+* **app:** let contact search grow with text size ([d963916](https://github.com/budgie-at/budgie/commit/d963916423b6e3ff558c75bc2cc600d650fecbb7))
+* **app:** render the contact error glyph ([37454b5](https://github.com/budgie-at/budgie/commit/37454b5c75f55e7d12d003af11f6ed429b9bd436))
+* **app:** restore Expo contact reads and limited recovery ([c8e98ab](https://github.com/budgie-at/budgie/commit/c8e98abe3a6273b00abcd41a8c0b140ec45887d1))
+
+### Features
+
+* **app:** finish contact selector states ([3906a9d](https://github.com/budgie-at/budgie/commit/3906a9da0d4817bc163cc4dc3e15e02937b26940))
+* **app:** refine contact recovery spacing ([3526922](https://github.com/budgie-at/budgie/commit/3526922017a5a5edc5e74d72ce683f5063d3db9a))
+
+
+# [6.157.0](https://github.com/budgie-at/budgie/compare/v6.156.0...v6.157.0) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** adapt voice review to accessibility text ([2441ffc](https://github.com/budgie-at/budgie/commit/2441ffcbd6b5fbc57288d4dc97459466d045b37c))
+* **app:** balance voice review accessibility typography ([df99dba](https://github.com/budgie-at/budgie/commit/df99dba51a58a10caec67a0b49ca83f79bc8a695))
+
+### Features
+
+* **app:** emphasize voice recovery in compact empty sheet ([6163c64](https://github.com/budgie-at/budgie/commit/6163c64ec1348f34d9de32e7ebb9977b8e26bdff))
+* **app:** finish voice review sheet ([b15f694](https://github.com/budgie-at/budgie/commit/b15f694e9383bac04e9c32142f86a2078426b9ea))
+
+
+# [6.156.0](https://github.com/budgie-at/budgie/compare/v6.155.0...v6.156.0) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** keep transaction suggestions visible ([e5642d2](https://github.com/budgie-at/budgie/commit/e5642d23e47e213062ca4feacbe7655fc056c214))
+
+### Features
+
+* **app:** redesign transaction forms ([7e9c7ab](https://github.com/budgie-at/budgie/commit/7e9c7abb612fe1b8b83a418ffd66edd73dc1ac31))
+
+
+# [6.155.0](https://github.com/budgie-at/budgie/compare/v6.154.0...v6.155.0) (2026-11-05)
+
+### Features
+
+* **app:** finish convert-to-transfer sheet ([a35403a](https://github.com/budgie-at/budgie/commit/a35403a072711c0cdda1edb94219bcc99983897a))
+
+
+# [6.154.0](https://github.com/budgie-at/budgie/compare/v6.153.0...v6.154.0) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** bound budget sheets independently of modal insets ([4cd66e1](https://github.com/budgie-at/budgie/commit/4cd66e1449c663a7fb168f6254c2a89415d63b7a))
+* **app:** clarify unavailable budget sheet recovery ([ee88251](https://github.com/budgie-at/budgie/commit/ee882513ded3fc59d62f5ce8d70d3841a80adde6))
+* **app:** hydrate warm budget edits from resolved defaults ([a7c168c](https://github.com/budgie-at/budgie/commit/a7c168c4c22e8b1b984cbf161e434aae82e0e59d))
+* **app:** keep budget readiness and hydration reactive ([5f831aa](https://github.com/budgie-at/budgie/commit/5f831aaf577f59a6b630f7f77ebc592d215965d8))
+* **app:** keep failed budget limits out of edit defaults ([0f5a6ff](https://github.com/budgie-at/budgie/commit/0f5a6ffa03a20114b22807c01adc3cd2f09d0b6b))
+* **app:** let unavailable budget sheets scroll at large text sizes ([cc565dc](https://github.com/budgie-at/budgie/commit/cc565dc70698a77d5edb333f93c8e5782b932a14))
+* **app:** preserve the sheet header through cold budget reads ([30032e2](https://github.com/budgie-at/budgie/commit/30032e2bbd94496649660d29e2000eceb23e3a8e))
+* **app:** register budget recovery selector ([25c474f](https://github.com/budgie-at/budgie/commit/25c474f8b673be21d82c916ab262427459c5e5ae))
+* **app:** reject stale active-budget edit links ([7031142](https://github.com/budgie-at/budgie/commit/7031142abc4c436dacffb51c8795857b4d1a5c50))
+* **app:** resolve stale budget links before form hydration ([2a0d6cb](https://github.com/budgie-at/budgie/commit/2a0d6cba35b53f2c23de74b927ea6e48248dec5b))
+* **app:** return home after deleting the active budget ([a27686f](https://github.com/budgie-at/budgie/commit/a27686f58c39b131236a43aa25d8a8ca42fbfe9b))
+* **app:** stabilize unavailable sheet content sizing ([71b1196](https://github.com/budgie-at/budgie/commit/71b119633fa06dc0e6ff82305aaee783ceb6f706))
+
+### Features
+
+* **app:** finish budget loading and missing-data states ([443d594](https://github.com/budgie-at/budgie/commit/443d59445234ad2a8e3ad57b8a46ea8023b7a3c7))
+
+
+# [6.153.0](https://github.com/budgie-at/budgie/compare/v6.152.1...v6.153.0) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** expose recurring calendar day button semantics ([988c8b6](https://github.com/budgie-at/budgie/commit/988c8b6aade4c31aab95139756e6a82cb50a6f3f))
+* **app:** label recurring month navigation action ([891288f](https://github.com/budgie-at/budgie/commit/891288fd7135f27e68f50c7bac3d49556439ee29))
+* **app:** make recurring calendar accessible and keyboard aware ([1f6b476](https://github.com/budgie-at/budgie/commit/1f6b476c282d8eb1a76344e37705ff4cfed5a85b))
+* **app:** polish recurring calendar summary and entries ([00f689c](https://github.com/budgie-at/budgie/commit/00f689cf966f565daec07b315bc475dbb7119e58))
+* **app:** polish recurring calendar titles and spacing ([4960b6f](https://github.com/budgie-at/budgie/commit/4960b6f1d13fd5cbba528a6d60a91fe4451f523c))
+* **app:** stabilize recurring loading and row boundaries ([9e6c448](https://github.com/budgie-at/budgie/commit/9e6c44879c094905356ef2a4ed167e8c6ae87091))
+* **app:** tighten recurring calendar spacing ([98ad7da](https://github.com/budgie-at/budgie/commit/98ad7da77811e8cd20cbda7b533ee7b3b451e2f5))
+
+### Features
+
+* **app:** polish recurring calendar layout ([aab0e46](https://github.com/budgie-at/budgie/commit/aab0e46d7a780dff90436fcb1c720a5ebc619d49))
+* **app:** polish recurring transactions ([56ff22c](https://github.com/budgie-at/budgie/commit/56ff22c4b0e2c9ae75de4aa903824eb6c3f5b650))
+* **app:** refine recurring calendar typography and states ([a28515a](https://github.com/budgie-at/budgie/commit/a28515a03fbd95d147e8e571c061ae3f7f7a4c1f))
+* **app:** refine recurring state hierarchy ([e68c2bc](https://github.com/budgie-at/budgie/commit/e68c2bcc365f980ec02798924089bf3fcb39d34b))
+
+
+## [6.152.1](https://github.com/budgie-at/budgie/compare/v6.152.0...v6.152.1) (2026-11-04)
+
+### Bug Fixes
+
+* shrink backups by compacting rates and embeddings ([#1935](https://github.com/budgie-at/budgie/issues/1935)) ([635b32b](https://github.com/budgie-at/budgie/commit/635b32bc1b4c22bb9e02fd4eac348ee4522d0a0b))
+
+
+# [6.152.0](https://github.com/budgie-at/budgie/compare/v6.151.6...v6.152.0) (2026-11-04)
+
+### Bug Fixes
+
+* **app:** keep the tags hint off the rows behind it ([285e03a](https://github.com/budgie-at/budgie/commit/285e03ac479e2bcfcc60a216e85fc40c361a4a2f))
+
+### Features
+
+* **app:** move destination and resync sheets onto the sheet surface ([1aa448b](https://github.com/budgie-at/budgie/commit/1aa448ba5945cccf012f5f30e862927398436735))
+* **app:** rebuild the rule and MCC pickers on the shared sheet ([3e2a8e6](https://github.com/budgie-at/budgie/commit/3e2a8e65d136762e65d44a0654399e3b42680e05))
+
+
+## [6.151.6](https://github.com/budgie-at/budgie/compare/v6.151.5...v6.151.6) (2026-11-04)
+
+### Bug Fixes
+
+* **app:** record backup dates after confirmed saves ([34b7354](https://github.com/budgie-at/budgie/commit/34b7354b29fa78c9ff6c9ba7dcbcec0d23728375))
+* **app:** stop recording unconfirmed backup saves ([477c3e1](https://github.com/budgie-at/budgie/commit/477c3e1e480e4613dc37e1798f1e87a51bd5e6c9))
+
+
+## [6.151.5](https://github.com/budgie-at/budgie/compare/v6.151.4...v6.151.5) (2026-11-04)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.151.4](https://github.com/budgie-at/budgie/compare/v6.151.3...v6.151.4) (2026-11-04)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.151.3](https://github.com/budgie-at/budgie/compare/v6.151.2...v6.151.3) (2026-11-04)
+
+### Bug Fixes
+
+* **app:** stop recording unconfirmed backup saves ([#1923](https://github.com/budgie-at/budgie/issues/1923)) ([b7106ef](https://github.com/budgie-at/budgie/commit/b7106ef162159e3fd6f473fe606f6b633881daef))
+
+
 ## [6.151.2](https://github.com/budgie-at/budgie/compare/v6.151.1...v6.151.2) (2026-11-04)
 
 ### Bug Fixes

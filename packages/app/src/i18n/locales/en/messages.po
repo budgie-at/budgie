@@ -483,6 +483,10 @@ msgstr "{formattedAveragePerDay} a day"
 msgid "{formattedBalance} will be transferred to {destinationAccountTitle} and this deposit will be archived. You can restore it anytime from Settings → Archived Accounts."
 msgstr "{formattedBalance} will be transferred to {destinationAccountTitle} and this deposit will be archived. You can restore it anytime from Settings → Archived Accounts."
 
+#: src/transaction/components/recurring-calendar-day/recurring-calendar-day.tsx
+msgid "{formattedDate}. Recorded: {entryCount}. Expected: {forecastedCount}."
+msgstr "{formattedDate}. Recorded: {entryCount}. Expected: {forecastedCount}."
+
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "{formattedDifference} over limit"
 msgstr "{formattedDifference} over limit"
@@ -1244,6 +1248,10 @@ msgstr "Add a name to continue"
 msgid "Add a note..."
 msgstr "Add a note..."
 
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "Add a person in Contacts, then return here."
+msgstr "Add a person in Contacts, then return here."
+
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "Add a PIN any time later"
 msgstr "Add a PIN any time later"
@@ -1451,10 +1459,6 @@ msgstr "All conditions"
 msgid "All past amounts are converted"
 msgstr "All past amounts are converted"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-msgid "All Recurring"
-msgstr "All Recurring"
-
 #: src/import/utils/get-import-required-footer.util.ts
 msgid "All required fields matched. Tap a field to change it."
 msgstr "All required fields matched. Tap a field to change it."
@@ -1470,6 +1474,10 @@ msgstr "All Time"
 #: src/budget/components/budget-allocation-summary/budget-allocation-summary.tsx
 msgid "Allocated"
 msgstr "Allocated"
+
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "Allow contacts access in Settings."
+msgstr "Allow contacts access in Settings."
 
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "Already in Budgie"
@@ -1779,12 +1787,12 @@ msgid "Back up regularly and after imports."
 msgstr "Back up regularly and after imports."
 
 #: src/settings/components/backup-row/backup-row.tsx
-msgid "Backup file"
-msgstr "Backup file"
+msgid "Backup"
+msgstr "Backup"
 
-#: src/settings/components/backup-row/backup-row.tsx
-msgid "Backup file ready"
-msgstr "Backup file ready"
+#: src/export/hook/use-backup-actions.hook.ts
+msgid "Backup saved"
+msgstr "Backup saved"
 
 #: src/market-data/component/currency-market-position/currency-market-position.tsx
 msgid "Balance"
@@ -1908,10 +1916,6 @@ msgstr "Between"
 msgid "Between {lowestCount} and {MAX_INSTALLMENT_COUNT} months"
 msgstr "Between {lowestCount} and {MAX_INSTALLMENT_COUNT} months"
 
-#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
-msgid "Billing Dates"
-msgstr "Billing Dates"
-
 #: src/account/constant/bank-provider-title.constant.ts
 #: src/app/(main)/create-account/index.tsx
 #: src/rule/constant/external-source.constant.ts
@@ -1964,7 +1968,9 @@ msgstr "Bought with dividends"
 msgid "Browse icons"
 msgstr "Browse icons"
 
+#: src/app/(main)/budget/index.tsx
 #: src/app/(tabs)/settings/index.tsx
+#: src/budget/components/budget-data-state/budget-data-state.tsx
 #: src/budget/hooks/use-budget-form.hook.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Budget"
@@ -1985,6 +1991,10 @@ msgstr "Budget locked, {formattedDaysLeft}. Unlock to view."
 #: src/budget/components/budget-setup-form/budget-setup-form.tsx
 msgid "Budget name"
 msgstr "Budget name"
+
+#: src/budget/components/budget-data-state/budget-data-state.tsx
+msgid "Budget unavailable"
+msgstr "Budget unavailable"
 
 #: src/import/components/import-preset-options/import-preset-options.tsx
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
@@ -2115,7 +2125,6 @@ msgstr "Can't be changed later"
 #: src/account/hooks/use-delete-archived-account.hook.ts
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
-#: src/app/convert-to-transfer.tsx
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 #: src/budget/hooks/use-budget-event-form.hook.ts
 #: src/budget/hooks/use-budget-form.hook.ts
@@ -2137,7 +2146,7 @@ msgstr "Can't be changed later"
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
-#: src/transaction/components/transaction-keypad/transaction-keypad.tsx
+#: src/transaction/components/transaction-form-actions/transaction-form-actions.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
@@ -2307,6 +2316,10 @@ msgstr "Check the spelling or create it as a new tag."
 msgid "Check the spelling or search by another name."
 msgstr "Check the spelling or search by another name."
 
+#: src/app/rule-mcc-selector.tsx
+msgid "Check the spelling or try a code like 5812."
+msgstr "Check the spelling or try a code like 5812."
+
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Check the spelling or try a code like EUR."
 msgstr "Check the spelling or try a code like EUR."
@@ -2434,6 +2447,10 @@ msgstr "Choose category"
 msgid "Choose columns for {missingFieldLabels}"
 msgstr "Choose columns for {missingFieldLabels}"
 
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "Choose contacts to share in Settings."
+msgstr "Choose contacts to share in Settings."
+
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Choose dates to sync again"
 msgstr "Choose dates to sync again"
@@ -2515,6 +2532,7 @@ msgid "Clipboard is empty"
 msgstr "Clipboard is empty"
 
 #: src/@generic/component/sheet-title-row/sheet-title-row.tsx
+#: src/budget/components/budget-sheet-state/budget-sheet-state.tsx
 #: src/sync/component/get-token-card/get-token-card.tsx
 msgid "Close"
 msgstr "Close"
@@ -2558,10 +2576,6 @@ msgstr "comment"
 msgid "Comment"
 msgstr "Comment"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-msgid "Committed {committedExpense} per month"
-msgstr "Committed {committedExpense} per month"
-
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Common"
 msgstr "Common"
@@ -2574,13 +2588,13 @@ msgstr "Comparison: {label}"
 msgid "Complete every split entry"
 msgstr "Complete every split entry"
 
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
-msgid "Confirm"
-msgstr "Confirm"
-
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Confirm it's you before choosing a new one."
 msgstr "Confirm it's you before choosing a new one."
+
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Confirm recurring"
+msgstr "Confirm recurring"
 
 #: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx
 msgid "Confirm tag selection"
@@ -2639,9 +2653,14 @@ msgstr "Consolidation"
 msgid "Contact (optional)"
 msgstr "Contact (optional)"
 
-#: src/app/contact-selector.tsx
+#: src/@generic/component/contact-selector-header/contact-selector-header.tsx
+#: src/@generic/component/contact-selector-state/contact-selector-state.tsx
 msgid "Contacts"
 msgstr "Contacts"
+
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "Contacts access is off"
+msgstr "Contacts access is off"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "contains"
@@ -2653,7 +2672,6 @@ msgstr "Contains"
 
 #: src/inzhur/component/create-inzhur-account/create-inzhur-account.tsx
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
-#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 #: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
 #: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
@@ -2664,6 +2682,10 @@ msgstr "Continue"
 msgid "Continue without a PIN"
 msgstr "Continue without a PIN"
 
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Continue without accounts"
+msgstr "Continue without accounts"
+
 #: src/app/convert-to-transfer.tsx
 msgid "Conversion failed"
 msgstr "Conversion failed"
@@ -2672,7 +2694,6 @@ msgstr "Conversion failed"
 msgid "Conversions"
 msgstr "Conversions"
 
-#: src/app/convert-to-transfer.tsx
 #: src/money-data/component/money-data-upgrade-status-card/money-data-upgrade-status-card.tsx
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
@@ -2688,6 +2709,7 @@ msgstr "Convert past amounts"
 msgid "Convert past amounts?"
 msgstr "Convert past amounts?"
 
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 #: src/transaction/components/transaction-list-convert-to-refund-menu-item/transaction-list-convert-to-refund-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Convert to Refund"
@@ -2697,15 +2719,11 @@ msgstr "Convert to Refund"
 msgid "Convert to Refund?"
 msgstr "Convert to Refund?"
 
-#: src/app/convert-to-transfer.tsx
+#: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
 #: src/transaction/components/transaction-list-convert-to-transfer-menu-item/transaction-list-convert-to-transfer-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Convert to Transfer"
 msgstr "Convert to Transfer"
-
-#: src/app/convert-to-transfer.tsx
-msgid "Convert to Transfer?"
-msgstr "Convert to Transfer?"
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Converting {processedEntryCount} of {totalEntryCount} transactions"
@@ -2765,7 +2783,7 @@ msgstr "Could not convert to refund"
 msgid "Could not convert to transfers"
 msgstr "Could not convert to transfers"
 
-#: src/settings/components/backup-row/backup-row.tsx
+#: src/export/hook/use-backup-actions.hook.ts
 msgid "Could not create a backup"
 msgstr "Could not create a backup"
 
@@ -2870,6 +2888,14 @@ msgstr "Could not load"
 #: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
 msgid "Could not load accounts"
 msgstr "Could not load accounts"
+
+#: src/budget/components/budget-data-state/budget-data-state.tsx
+msgid "Could not load budget"
+msgstr "Could not load budget"
+
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "Could not load contacts"
+msgstr "Could not load contacts"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Could not load sources. Please try again."
@@ -3174,7 +3200,6 @@ msgid "Create event"
 msgstr "Create event"
 
 #: src/account/component/account-select-content/account-select-content.tsx
-#: src/app/contact-selector.tsx
 msgid "Create one to get started."
 msgstr "Create one to get started."
 
@@ -3290,6 +3315,7 @@ msgstr "date"
 #: src/app/date-picker.tsx
 #: src/import/utils/get-import-match-description.util.ts
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
+#: src/transaction/components/transaction-date-tags-row/transaction-date-tags-row.tsx
 msgid "Date"
 msgstr "Date"
 
@@ -3304,10 +3330,6 @@ msgstr "Day {elapsedDays} of {totalDays}. {overLabel}."
 #: src/budget/components/budget-month-day-start-field/budget-month-day-start-field.tsx
 msgid "Day {periodStartDay} of each month"
 msgstr "Day {periodStartDay} of each month"
-
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-msgid "Day {selectedDay}"
-msgstr "Day {selectedDay}"
 
 #: src/account/component/deposit-details-card/deposit-details-card.tsx
 msgid "Days Remaining"
@@ -3367,6 +3389,7 @@ msgstr "Default currency"
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/tag/components/tag-card/tag-card.tsx
 #: src/tag/hooks/use-delete-tag.hook.ts
+#: src/transaction/components/transaction-keypad/transaction-keypad.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Delete"
 msgstr "Delete"
@@ -3537,10 +3560,6 @@ msgstr "Different Binance account"
 msgid "Dismiss"
 msgstr "Dismiss"
 
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
-msgid "Dismiss recurring payment?"
-msgstr "Dismiss recurring payment?"
-
 #: src/wallet-capture/hook/use-wallet-capture-settings.hook.ts
 msgid "Dismiss Wallet capture?"
 msgstr "Dismiss Wallet capture?"
@@ -3586,6 +3605,7 @@ msgstr "Does not contain"
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
+#: src/transaction/hook/use-transaction-keypad-editing.hook.ts
 msgid "Done"
 msgstr "Done"
 
@@ -3757,6 +3777,10 @@ msgstr "e.g. Netflix"
 msgid "Each bar compares one day's spending with your daily plan."
 msgstr "Each bar compares one day's spending with your daily plan."
 
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+msgid "Each source becomes a separate transaction."
+msgstr "Each source becomes a separate transaction."
+
 #: src/budget/hooks/use-budget-day-strip-labels.hook.ts
 msgid "Each week against your {allowanceLabel} weekly allowance"
 msgstr "Each week against your {allowanceLabel} weekly allowance"
@@ -3894,6 +3918,7 @@ msgstr "Enter all amounts"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 #: src/transaction/hook/use-quick-form-submit.hook.ts
+#: src/transaction/hook/use-transaction-keypad-editing.hook.ts
 msgid "Enter an amount"
 msgstr "Enter an amount"
 
@@ -4044,6 +4069,12 @@ msgstr "Exchange rate not found"
 msgid "Exchange rate: {rateLabel}"
 msgstr "Exchange rate: {rateLabel}"
 
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
+#: src/transaction/components/recurring-calendar-legend/recurring-calendar-legend.tsx
+msgid "Expected"
+msgstr "Expected"
+
 #: src/budget/components/budget-limit-source-field/budget-limit-source-field.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
 msgid "Expected income"
@@ -4112,10 +4143,6 @@ msgstr "Facial recognition"
 #: src/budget/components/budget-history-section/budget-history-section.tsx
 msgid "Faded bars are estimated from your past transactions using your current limits."
 msgstr "Faded bars are estimated from your past transactions using your current limits."
-
-#: src/@generic/hook/use-contacts.hook.ts
-msgid "Failed to load contacts."
-msgstr "Failed to load contacts."
 
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
 msgid "Features"
@@ -4806,10 +4833,6 @@ msgstr "Is not"
 msgid "It encrypts everything in Budgie. Pick one you'll remember but others won't guess."
 msgstr "It encrypts everything in Budgie. Pick one you'll remember but others won't guess."
 
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
-msgid "It will no longer appear in the calendar."
-msgstr "It will no longer appear in the calendar."
-
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "It's the only key to your file. There's no account and no copy on a server, so there's nothing to reset it from."
 msgstr "It's the only key to your file. There's no account and no copy on a server, so there's nothing to reset it from."
@@ -4903,10 +4926,6 @@ msgstr "Last 7 days"
 msgid "Last 90 days"
 msgstr "Last 90 days"
 
-#: src/settings/components/backup-row/backup-row.tsx
-msgid "Last created {lastBackupDate}"
-msgstr "Last created {lastBackupDate}"
-
 #: src/budget/components/budget-month-day-start-field/budget-month-day-start-field.tsx
 msgid "Last day of each month"
 msgstr "Last day of each month"
@@ -4926,6 +4945,10 @@ msgstr "Last one {statementDate}"
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
 msgid "last payment {formattedLast}"
 msgstr "last payment {formattedLast}"
+
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Last saved {lastBackupDate}"
+msgstr "Last saved {lastBackupDate}"
 
 #: src/account/component/institution-connection-row/institution-connection-row.tsx
 msgid "Last successful sync · {lastSyncedTime}"
@@ -4967,7 +4990,7 @@ msgstr "Leave it empty for now"
 msgid "Leaves your income"
 msgstr "Leaves your income"
 
-#: src/budget/components/budget-setup-progress/budget-setup-progress.tsx
+#: src/budget/components/budget-setup-progress-content/budget-setup-progress-content.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
 msgid "Left"
 msgstr "Left"
@@ -5008,6 +5031,7 @@ msgstr "Limit {limitAmount}"
 msgid "Limit {limitAmount} · above chart"
 msgstr "Limit {limitAmount} · above chart"
 
+#: src/app/budget-limit-changes.tsx
 #: src/budget/components/budget-limit-changes-row/budget-limit-changes-row.tsx
 #: src/budget/components/budget-limit-changes-sheet/budget-limit-changes-sheet.tsx
 msgid "Limit changes"
@@ -5016,6 +5040,10 @@ msgstr "Limit changes"
 #: src/budget/components/budget-limit-source-field/budget-limit-source-field.tsx
 msgid "Limit from"
 msgstr "Limit from"
+
+#: src/@generic/component/contact-selector-header/contact-selector-header.tsx
+msgid "Limited access · Manage in Settings"
+msgstr "Limited access · Manage in Settings"
 
 #: src/budget/components/budget-limit-changes-row/budget-limit-changes-row.tsx
 msgid "Limits are tuned automatically after 3 steady periods"
@@ -5032,6 +5060,10 @@ msgstr "Lives on"
 #: src/transaction/components/suggestion-loading-indicator/suggestion-loading-indicator.tsx
 msgid "Loading AI model..."
 msgstr "Loading AI model..."
+
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "Loading contacts"
+msgstr "Loading contacts"
 
 #: src/account/component/debt-account-card/debt-account-card.tsx
 msgid "Loading debt progress"
@@ -5335,15 +5367,11 @@ msgstr "Monthly"
 msgid "Monthly budget"
 msgstr "Monthly budget"
 
-#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
-msgid "Monthly Costs"
-msgstr "Monthly Costs"
-
 #: src/runway/component/runway-history-chart/runway-history-chart.tsx
 msgid "Monthly history"
 msgstr "Monthly history"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/transaction/components/recurring-calendar-summary/recurring-calendar-summary.tsx
 msgid "Monthly total"
 msgstr "Monthly total"
 
@@ -5527,6 +5555,10 @@ msgstr "Next field"
 msgid "next month"
 msgstr "next month"
 
+#: src/transaction/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
+msgid "Next month"
+msgstr "Next month"
+
 #: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
 msgid "Next payment"
 msgstr "Next payment"
@@ -5582,17 +5614,9 @@ msgstr "No categories found"
 msgid "No categories match “{trimmedSearch}”"
 msgstr "No categories match “{trimmedSearch}”"
 
-#: src/app/contact-selector.tsx
-msgid "No contacts found"
-msgstr "No contacts found"
-
-#: src/@generic/hook/use-contacts.hook.ts
-msgid "No contacts found on this device."
-msgstr "No contacts found on this device."
-
-#: src/app/contact-selector.tsx
-msgid "No contacts yet"
-msgstr "No contacts yet"
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "No contacts on this device"
+msgstr "No contacts on this device"
 
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No custom categories yet"
@@ -5642,6 +5666,10 @@ msgstr "No market price yet, so value and return can’t be calculated."
 msgid "No matching accounts"
 msgstr "No matching accounts"
 
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "No matching contacts"
+msgstr "No matching contacts"
+
 #: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 msgid "No matching expenses"
 msgstr "No matching expenses"
@@ -5653,10 +5681,6 @@ msgstr "No matching transactions"
 #: src/app/rule-mcc-selector.tsx
 msgid "No MCC codes available"
 msgstr "No MCC codes available"
-
-#: src/app/rule-mcc-selector.tsx
-msgid "No MCC codes found"
-msgstr "No MCC codes found"
 
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No new transactions"
@@ -5687,9 +5711,12 @@ msgid "No receipt found"
 msgstr "No receipt found"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
-msgid "No recurring payments detected"
-msgstr "No recurring payments detected"
+msgid "No recurring payments in {displayMonthLabel}"
+msgstr "No recurring payments in {displayMonthLabel}"
+
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+msgid "No recurring payments on this day"
+msgstr "No recurring payments on this day"
 
 #: src/@generic/component/selector-search-empty-state/selector-search-empty-state.tsx
 msgid "No results for “{query}”"
@@ -5698,6 +5725,10 @@ msgstr "No results for “{query}”"
 #: src/rule/components/rule-empty-state/rule-empty-state.tsx
 msgid "No rules match “{search}”"
 msgstr "No rules match “{search}”"
+
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "No shared contacts"
+msgstr "No shared contacts"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "No source transactions"
@@ -5781,7 +5812,6 @@ msgid "Not counted in net worth"
 msgstr "Not counted in net worth"
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
-#: src/settings/components/backup-row/backup-row.tsx
 msgid "Not created yet"
 msgstr "Not created yet"
 
@@ -5812,7 +5842,13 @@ msgstr "Not now"
 msgid "Not on any transactions. This can’t be undone."
 msgstr "Not on any transactions. This can’t be undone."
 
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Not saved yet"
+msgstr "Not saved yet"
+
+#: src/transaction/components/transaction-field-caption/transaction-field-caption.tsx
 #: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx
+#: src/transaction/components/transaction-metadata-field/transaction-metadata-field.tsx
 msgid "not set"
 msgstr "not set"
 
@@ -5920,6 +5956,7 @@ msgstr "On track"
 #: src/ai/component/ai-download-card-frame/ai-download-card-frame.tsx
 #: src/ai/component/ai-system-status-banner/ai-system-status-banner.tsx
 #: src/app/(tabs)/settings/ai.tsx
+#: src/transaction/components/suggestion-loading-indicator/suggestion-loading-indicator.tsx
 msgid "On-device AI"
 msgstr "On-device AI"
 
@@ -6040,6 +6077,10 @@ msgstr "Open Privat24 and select the card or account you want to import"
 #: src/budget/components/budget-missing-currency-guard/budget-missing-currency-guard.tsx
 msgid "Open settings"
 msgstr "Open settings"
+
+#: src/@generic/component/contact-selector-settings-button/contact-selector-settings-button.tsx
+msgid "Open Settings"
+msgstr "Open Settings"
 
 #: src/wallet-capture/component/apple-pay-capture-open-shortcuts-button/apple-pay-capture-open-shortcuts-button.tsx
 msgid "Open Shortcuts"
@@ -6187,7 +6228,7 @@ msgstr "over"
 msgid "Over"
 msgstr "Over"
 
-#: src/budget/components/budget-setup-progress/budget-setup-progress.tsx
+#: src/budget/components/budget-setup-progress-content/budget-setup-progress-content.tsx
 #: src/budget/constant/budget-pace-status-label.constant.ts
 msgid "Over budget"
 msgstr "Over budget"
@@ -6216,7 +6257,7 @@ msgstr "Overall budget: {threshold}% spent"
 msgid "Overdrawn"
 msgstr "Overdrawn"
 
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 msgid "Overdue"
 msgstr "Overdue"
 
@@ -6382,9 +6423,9 @@ msgstr "Percent of the plan total before the fee"
 msgid "Period"
 msgstr "Period"
 
-#: src/@generic/hook/use-contacts.hook.ts
-msgid "Permission to access contacts was denied."
-msgstr "Permission to access contacts was denied."
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
+msgid "Period summary"
+msgstr "Period summary"
 
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
 msgid "Phone lock"
@@ -6525,6 +6566,10 @@ msgstr "Press and hold to seal"
 msgid "Previous field"
 msgstr "Previous field"
 
+#: src/transaction/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
+msgid "Previous month"
+msgstr "Previous month"
+
 #: src/transaction/components/statistics-change-label/statistics-change-label.tsx
 msgid "previous period"
 msgstr "previous period"
@@ -6541,7 +6586,7 @@ msgstr "Price"
 msgid "Price {ageLabel} · {date}"
 msgstr "Price {ageLabel} · {date}"
 
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 msgid "Price changed"
 msgstr "Price changed"
 
@@ -6761,6 +6806,12 @@ msgstr "Record card taps with Shortcuts"
 msgid "Record expense"
 msgstr "Record expense"
 
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
+#: src/transaction/components/recurring-calendar-legend/recurring-calendar-legend.tsx
+msgid "Recorded"
+msgstr "Recorded"
+
 #: src/inzhur/component/inzhur-import-summary/inzhur-import-summary.tsx
 msgid "Recorded automatically. Budgie will match this top-up to the transfer from your bank."
 msgstr "Recorded automatically. Budgie will match this top-up to the transfer from your bank."
@@ -6774,9 +6825,13 @@ msgstr "Recorded automatically. You can edit any entry like a normal transaction
 msgid "Recurring"
 msgstr "Recurring"
 
-#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
-msgid "Recurring payments will appear here once patterns are detected from your transactions"
-msgstr "Recurring payments will appear here once patterns are detected from your transactions"
+#: src/transaction/components/recurring-series-title-input/recurring-series-title-input.tsx
+msgid "Recurring payment name"
+msgstr "Recurring payment name"
+
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+msgid "Recurring payments are detected automatically from your transactions."
+msgstr "Recurring payments are detected automatically from your transactions."
 
 #: src/categorize-inbox/components/categorize-inbox-group-refine-options/categorize-inbox-group-refine-options.tsx
 msgid "Refine"
@@ -7083,6 +7138,7 @@ msgstr "Runway"
 msgid "Runway needs 3 complete months of transactions to forecast your balance."
 msgstr "Runway needs 3 complete months of transactions to forecast your balance."
 
+#: src/app/budget-safe-to-spend.tsx
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 msgid "Safe to spend"
 msgstr "Safe to spend"
@@ -7097,8 +7153,9 @@ msgstr "Same trigger as a rule above"
 
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
-#: src/transaction/components/transaction-keypad/transaction-keypad.tsx
+#: src/transaction/components/simple-quick-form/simple-quick-form.tsx
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
+#: src/transaction/components/update-adjustment-transaction/update-adjustment-transaction.tsx
 msgid "Save"
 msgstr "Save"
 
@@ -7127,10 +7184,6 @@ msgstr "Save fee"
 msgid "Save it"
 msgstr "Save it"
 
-#: src/settings/components/backup-row/backup-row.tsx
-msgid "Save it to Files or another app."
-msgstr "Save it to Files or another app."
-
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 msgid "Save rule"
 msgstr "Save rule"
@@ -7146,6 +7199,10 @@ msgstr "Save the automation. Budgie matches card names to accounts for all your 
 #: src/budget/components/budget-funds-section/budget-funds-section.tsx
 msgid "Save up for yearly bills a little each period so they never surprise you"
 msgstr "Save up for yearly bills a little each period so they never surprise you"
+
+#: src/export/hook/use-backup-actions.hook.ts
+msgid "Saved to your chosen folder."
+msgstr "Saved to your chosen folder."
 
 #: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
@@ -7223,7 +7280,11 @@ msgstr "Search categories..."
 msgid "Search categories…"
 msgstr "Search categories…"
 
-#: src/app/contact-selector.tsx
+#: src/@generic/component/contact-selector-header/contact-selector-header.tsx
+msgid "Search contacts"
+msgstr "Search contacts"
+
+#: src/@generic/component/contact-selector-header/contact-selector-header.tsx
 msgid "Search contacts…"
 msgstr "Search contacts…"
 
@@ -7240,8 +7301,8 @@ msgid "Search custom categories…"
 msgstr "Search custom categories…"
 
 #: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
-msgid "Search expenses refunded by this income"
-msgstr "Search expenses refunded by this income"
+msgid "Search expenses"
+msgstr "Search expenses"
 
 #: src/app/(tabs)/settings/inactive.tsx
 msgid "Search hidden accounts…"
@@ -7268,6 +7329,10 @@ msgstr "Search tags..."
 #: src/tag/components/tag-destination-sheet/tag-destination-sheet.tsx
 msgid "Search tags…"
 msgstr "Search tags…"
+
+#: src/@generic/component/contact-selector-header/contact-selector-header.tsx
+msgid "Search unavailable"
+msgstr "Search unavailable"
 
 #: src/@generic/component/selector-modal-search-header/selector-modal-search-header.tsx
 msgid "Search…"
@@ -7333,19 +7398,30 @@ msgstr "Select the downloaded PDF file"
 msgid "Select the exported XLSX file"
 msgstr "Select the exported XLSX file"
 
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
+msgid "Select the original expense for this refund."
+msgstr "Select the original expense for this refund."
+
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Selected"
 msgstr "Selected"
+
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Send a copy"
+msgstr "Send a copy"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Sending {fromCode}"
 msgstr "Sending {fromCode}"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
 msgid "Separate"
 msgstr "Separate"
+
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+msgid "Separate all"
+msgstr "Separate all"
 
 #: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
 #: src/transaction/components/transaction-list-revert-menu-item/transaction-list-revert-menu-item.tsx
@@ -7386,6 +7462,7 @@ msgstr "Set Amount and Merchant to Shortcut Input."
 msgid "Set an amount to continue"
 msgstr "Set an amount to continue"
 
+#: src/app/(main)/budget/fund.tsx
 #: src/budget/components/budget-funds-section/budget-funds-section.tsx
 msgid "Set aside"
 msgstr "Set aside"
@@ -7587,6 +7664,7 @@ msgstr "source"
 msgid "Source"
 msgstr "Source"
 
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/transaction-sources-field-icon/transaction-sources-field-icon.tsx
 msgid "Sources"
 msgstr "Sources"
@@ -7722,14 +7800,14 @@ msgstr "Stocks"
 msgid "Storage"
 msgstr "Storage"
 
-#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
-msgid "Subscriptions"
-msgstr "Subscriptions"
-
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-learned-transfer-option/categorize-inbox-group-learned-transfer-option.tsx
 msgid "Suggested"
 msgstr "Suggested"
+
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
+msgid "Summary unavailable"
+msgstr "Summary unavailable"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Support"
@@ -7738,10 +7816,6 @@ msgstr "Support"
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "Swap accounts"
 msgstr "Swap accounts"
-
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
-msgid "Swipe left to dismiss this recurring payment."
-msgstr "Swipe left to dismiss this recurring payment."
 
 #: src/budget/components/budget-category-limit-deletable-row/budget-category-limit-deletable-row.tsx
 msgid "Swipe to remove this per-category cap from your budget."
@@ -7882,9 +7956,9 @@ msgstr "Tagged expenses also count in your main budget."
 #: src/app/tags-selector.tsx
 #: src/settings/components/organize-settings-rows/organize-settings-rows.tsx
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
+#: src/transaction/components/transaction-date-tags-row/transaction-date-tags-row.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 #: src/transaction/components/transaction-info-tags-section/transaction-info-tags-section.tsx
-#: src/transaction/components/transaction-tags-field-icon/transaction-tags-field-icon.tsx
 msgid "Tags"
 msgstr "Tags"
 
@@ -8022,6 +8096,10 @@ msgstr "then"
 msgid "Then"
 msgstr "Then"
 
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+msgid "There are no linked transactions to show."
+msgstr "There are no linked transactions to show."
+
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "There is no “forgot PIN”."
 msgstr "There is no “forgot PIN”."
@@ -8070,13 +8148,17 @@ msgstr "This backup was made by an older Budgie version and cannot be imported."
 msgid "This backup was made by an older Budgie version and cannot be restored."
 msgstr "This backup was made by an older Budgie version and cannot be restored."
 
+#: src/budget/components/budget-sheet-state/budget-sheet-state.tsx
+msgid "This budget may have been deleted."
+msgstr "This budget may have been deleted."
+
+#: src/budget/components/budget-data-state/budget-data-state.tsx
+msgid "This budget may have been deleted. Go back to see your current budget."
+msgstr "This budget may have been deleted. Go back to see your current budget."
+
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "This capture looks similar to an existing transaction."
 msgstr "This capture looks similar to an existing transaction."
-
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
-msgid "This consolidated transfer has no moved source entries."
-msgstr "This consolidated transfer has no moved source entries."
 
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "This deletes {DB_NAME} and everything in it from this phone. It can't be undone."
@@ -8178,14 +8260,6 @@ msgstr "This Week"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
-
-#: src/app/convert-to-transfer.tsx
-msgid "This will convert the expense to a transfer between accounts."
-msgstr "This will convert the expense to a transfer between accounts."
-
-#: src/app/convert-to-transfer.tsx
-msgid "This will convert the income to a transfer between accounts."
-msgstr "This will convert the income to a transfer between accounts."
 
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "This will keep one entry with the full transaction amount."
@@ -8302,7 +8376,8 @@ msgstr "To set aside this period"
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 #: src/budget/components/budget-day-strip-key/budget-day-strip-key.tsx
 #: src/market-data/hook/use-market-chart-timeline.hook.ts
-#: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
+#: src/transaction/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
+#: src/transaction/hook/use-transaction-date-label.hook.ts
 #: src/transaction/query/use-get-transaction-sections.query.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Today"
@@ -8504,11 +8579,6 @@ msgstr "Troubleshooting"
 msgid "Try a different merchant, amount, or date."
 msgstr "Try a different merchant, amount, or date."
 
-#: src/app/contact-selector.tsx
-#: src/app/rule-mcc-selector.tsx
-msgid "Try a different search term"
-msgstr "Try a different search term"
-
 #: src/@generic/component/icon-selector-empty-state/icon-selector-empty-state.tsx
 msgid "Try a simpler word like “car” or “food”."
 msgstr "Try a simpler word like “car” or “food”."
@@ -8521,12 +8591,15 @@ msgstr "Try a title, category or tag name."
 msgid "Try adjusting your filters to see more results"
 msgstr "Try adjusting your filters to see more results"
 
+#: src/@generic/component/contact-selector-state/contact-selector-state.tsx
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 #: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 msgid "Try again"
 msgstr "Try again"
 
@@ -8534,6 +8607,14 @@ msgstr "Try again"
 #: src/ai/component/voice-input-error/voice-input-error.tsx
 msgid "Try Again"
 msgstr "Try Again"
+
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "Try another name, phone number or email."
+msgstr "Try another name, phone number or email."
+
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "Try loading your contacts again."
+msgstr "Try loading your contacts again."
 
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 msgid "Try switching on Airplane Mode. Budgie works exactly the same."
@@ -8730,10 +8811,6 @@ msgstr "Up to date"
 msgid "Up to date · {lastSyncedLabel}"
 msgstr "Up to date · {lastSyncedLabel}"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-msgid "Upcoming"
-msgstr "Upcoming"
-
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Upcoming this period"
@@ -8854,7 +8931,12 @@ msgstr "View source transactions"
 msgid "View transactions"
 msgstr "View transactions"
 
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+msgid "View your payments in another month."
+msgstr "View your payments in another month."
+
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
+#: src/app/voice-review.tsx
 msgid "Voice notes"
 msgstr "Voice notes"
 
@@ -9029,7 +9111,7 @@ msgstr "Year"
 msgid "Yearly budget"
 msgstr "Yearly budget"
 
-#: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
+#: src/transaction/hook/use-transaction-date-label.hook.ts
 #: src/transaction/query/use-get-transaction-sections.query.ts
 msgid "Yesterday"
 msgstr "Yesterday"
@@ -9124,6 +9206,10 @@ msgctxt "Categorize inbox section chip"
 msgid "Your call"
 msgstr "Your call"
 
+#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+msgid "Your contacts will appear here."
+msgstr "Your contacts will appear here."
+
 #: src/sync/component/bank-integration-key-field/bank-integration-key-field.tsx
 msgid "Your current key was rejected. Paste a new one to resume syncing."
 msgstr "Your current key was rejected. Paste a new one to resume syncing."
@@ -9131,6 +9217,12 @@ msgstr "Your current key was rejected. Paste a new one to resume syncing."
 #: src/app/(tabs)/settings/index.tsx
 msgid "Your data"
 msgstr "Your data"
+
+#: src/budget/components/budget-data-state/budget-data-state.tsx
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
+#: src/budget/components/budget-sheet-state/budget-sheet-state.tsx
+msgid "Your data could not be loaded. Close this screen and try again."
+msgstr "Your data could not be loaded. Close this screen and try again."
 
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
 msgid "Your data is safe. Reading it failed this time."
@@ -9205,6 +9297,10 @@ msgstr "Your tags"
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Your transaction file is ready to share."
 msgstr "Your transaction file is ready to share."
+
+#: src/budget/components/budget-data-state/budget-data-state.tsx
+msgid "Your transactions are not affected."
+msgstr "Your transactions are not affected."
 
 #: src/sync/service/background-sync-session.service.ts
 msgid "Your transactions keep importing in the background"

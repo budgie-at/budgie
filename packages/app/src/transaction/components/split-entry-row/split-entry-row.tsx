@@ -12,6 +12,8 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { cn } from '../../../@generic/utils/cn.util';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { DEFAULT_DECIMAL_PLACES } from '../../../i18n/constant/default-decimal-places.constant';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { TRANSACTION_LARGE_TEXT_SCALE } from '../../constant/transaction-large-text-scale.constant';
 
 import { SplitEntryRowSelector } from './split-entry-row.selector';
 
@@ -25,9 +27,6 @@ interface Props {
     readonly children?: ReactNode;
 }
 
-const ACCESSIBILITY_FONT_SCALE = 1.35;
-const CIRCLE_ICON_SIZE = 44;
-const CIRCLE_ICON_INNER_SIZE = 22;
 const ACCEPTED_DECIMAL_SEPARATORS = ['.', ','];
 const ENTERING = FadeIn.reduceMotion(ReduceMotion.System);
 const EXITING = FadeOutDown.reduceMotion(ReduceMotion.System);
@@ -37,16 +36,16 @@ const amountInputStyle = { textAlign: 'right' as const, fontSize: 17, fontWeight
 export const SplitEntryRow = (props: Props) => {
     const { index, entry, currencySymbol, autoFocus, onAmountChange, onCategoryPress, children } = props;
     const { fontScale } = useWindowDimensions();
+    const formatDigits = useFormatDigits(DEFAULT_DECIMAL_PLACES);
     const [isAmountFocused, setIsAmountFocused] = useState(false);
-    const categoryLayoutClassName = fontScale >= ACCESSIBILITY_FONT_SCALE ? 'w-full' : 'flex-1';
+    const categoryLayoutClassName = fontScale >= TRANSACTION_LARGE_TEXT_SCALE ? 'w-full' : 'flex-1';
 
     const handleAmountFocus = () => void setIsAmountFocused(true);
     const handleAmountBlur = () => void setIsAmountFocused(false);
-    const categoryId = entry.categoryId ?? 0;
 
     const { t } = useLingui();
-    const hasCategorySelected = isPositiveNumber(categoryId);
-    const { category } = useGetCategoryByIdQuery(categoryId);
+    const hasCategorySelected = isPositiveNumber(entry.categoryId);
+    const { category } = useGetCategoryByIdQuery(entry.categoryId ?? 0);
 
     const categoryIcon = hasCategorySelected && isDefined(category) ? category.icon : UserIconNameEnum.Circle;
     const categoryTitle = isDefined(category) ? category.title : t`Select category`;
@@ -63,13 +62,17 @@ export const SplitEntryRow = (props: Props) => {
                 >
                     <CircleIcon
                         icon={categoryIcon}
-                        size={CIRCLE_ICON_SIZE}
-                        iconSize={CIRCLE_ICON_INNER_SIZE}
+                        size={28}
+                        iconSize={16}
                         border={false}
                         variant={iconVariant}
                         iconClassName={titleClassName}
                     />
-                    <Text className={cn('text-md font-semibold flex-1 shrink', titleClassName)} numberOfLines={1} ellipsizeMode="tail">
+                    <Text
+                        className={cn('text-[17px] leading-[22px] font-medium flex-1 shrink', titleClassName)}
+                        numberOfLines={2}
+                        ellipsizeMode="tail"
+                    >
                         {categoryTitle}
                     </Text>
                 </HapticPressable>
@@ -93,7 +96,7 @@ export const SplitEntryRow = (props: Props) => {
                         autoFocus={autoFocus}
                         selectTextOnFocus
                         style={amountInputStyle}
-                        placeholder="0.00"
+                        placeholder={formatDigits(0)}
                         minimumDecimalPlaces={DEFAULT_DECIMAL_PLACES}
                         testID={SplitEntryRowSelector.Amount(index)}
                     />

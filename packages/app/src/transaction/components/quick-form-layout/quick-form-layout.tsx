@@ -1,75 +1,93 @@
-import { cva } from 'class-variance-authority';
-import { ReactNode } from 'react';
+import { ReactNode, useRef } from 'react';
 import { ScrollView, View } from 'react-native';
+import Animated from 'react-native-reanimated';
+import { ScopedVariables, useUniwind } from 'uniwind';
 
-import { BottomChromeInsetProvider, ScreenChromeFooter } from '@rnw-community/react-native-screen-chrome';
+import {
+    BottomChromeInsetProvider,
+    ScreenChromeFooter,
+    ScreenChromeScrollView,
+    useScrollFadeStyle
+} from '@rnw-community/react-native-screen-chrome';
 
-import { QuickFormHeroAlignmentEnum } from '../../enum/quick-form-hero-alignment.enum';
+import { RevealGate } from '../../../@generic/component/reveal-gate/reveal-gate';
 import { useQuickFormLayout } from '../../hook/use-quick-form-layout.hook';
 
 interface Props {
-    readonly hero: ReactNode;
+    readonly amount: ReactNode;
+    readonly context?: ReactNode;
+    readonly suggestions?: ReactNode;
     readonly children?: ReactNode;
     readonly footer: ReactNode;
-    readonly heroAlignment?: QuickFormHeroAlignmentEnum;
+    readonly footerHeight?: number;
 }
 
-const heroContainerVariants = cva('grow pb-[28px]', {
-    variants: {
-        heroAlignment: {
-            [QuickFormHeroAlignmentEnum.CENTER]: 'justify-center pt-[16px]',
-            [QuickFormHeroAlignmentEnum.END]: 'justify-end pt-[16px]'
+const FOOTER_STYLE = { position: 'relative' } as const;
+const CONTENT_STYLE = { paddingBottom: 16 };
+const SCROLL_VIEW_STYLE = { flex: 1 };
+const DARK_ROW_COLORS = { '--color-grouped-surface-row': '#151517', '--color-surface-row': '#151517' };
+const DEFAULT_ROW_COLORS = {};
+
+export const QuickFormLayout = ({ amount, context, suggestions, children, footer, footerHeight }: Props) => {
+    const { theme } = useUniwind();
+    const scrollRef = useRef<ScrollView>(null);
+    const { requiresScrolling, handleLayout, handleAmountLayout, isLoading, keypadContainerStyle } = useQuickFormLayout(footerHeight);
+    const handleContentSizeChange = () => {
+        if (requiresScrolling) {
+            scrollRef.current?.scrollToEnd({ animated: false });
         }
-    }
-});
-
-const HIDDEN_EDGE_FADE_PROPS = { style: { display: 'none' } } as const;
-
-export const QuickFormLayout = ({ hero, children, footer, heroAlignment = QuickFormHeroAlignmentEnum.END }: Props) => {
-    const {
-        requiresScrolling,
-        handleLayout,
-        handleHeroLayout,
-        handleFieldsLayout,
-        overflows,
-        bottomPadding,
-        footerStyle,
-        contentStyle,
-        keypadContainerStyle
-    } = useQuickFormLayout();
-
+    };
+    const rowColors = theme === 'dark' ? DARK_ROW_COLORS : DEFAULT_ROW_COLORS;
+    const topFadeStyle = useScrollFadeStyle([0, 16], [0, 1]);
     const footerContent = (
-        <View>
-            <View className="h-[12px] shrink-0" />
-            <View style={footerStyle}>
-                <ScreenChromeFooter includeBottomSafeArea={false} edgeFadeProps={HIDDEN_EDGE_FADE_PROPS} bottomOffset={bottomPadding}>
-                    <View style={keypadContainerStyle}>{footer}</View>
-                </ScreenChromeFooter>
-            </View>
+        <View className="pt-[16px] pb-[8px]">
+            <ScreenChromeFooter includeBottomSafeArea={false} style={FOOTER_STYLE}>
+                <View style={keypadContainerStyle}>{footer}</View>
+            </ScreenChromeFooter>
         </View>
     );
-    const scrollEnabled = requiresScrolling || overflows;
 
     return (
-        <BottomChromeInsetProvider>
-            <View className="flex-1" onLayout={handleLayout}>
-                <ScrollView
-                    className="flex-1"
-                    contentContainerStyle={contentStyle}
-                    scrollEnabled={scrollEnabled}
-                    bounces={false}
-                    showsVerticalScrollIndicator={false}
-                    contentInsetAdjustmentBehavior="never"
-                    automaticallyAdjustContentInsets={false}
-                >
-                    <View className={heroContainerVariants({ heroAlignment })}>
-                        <View onLayout={handleHeroLayout}>{hero}</View>
-                    </View>
-                    <View onLayout={handleFieldsLayout}>{children}</View>
-                    {requiresScrolling ? footerContent : null}
-                </ScrollView>
-                {requiresScrolling ? null : footerContent}
-            </View>
-        </BottomChromeInsetProvider>
+        <ScopedVariables variables={rowColors}>
+            <BottomChromeInsetProvider>
+                <View className="flex-1" onLayout={handleLayout}>
+                    <RevealGate isLoading={isLoading}>
+                        <View className="pt-[4px] pb-[8px]" onLayout={handleAmountLayout}>
+                            {amount}
+                            {suggestions}
+                        </View>
+                        <View className="relative flex-1">
+                            <ScreenChromeScrollView
+                                ref={scrollRef}
+                                onContentSizeChange={handleContentSizeChange}
+                                style={SCROLL_VIEW_STYLE}
+                                showsVerticalScrollIndicator
+                                includeTopSafeArea={false}
+                                contentContainerStyle={CONTENT_STYLE}
+                                bounces={false}
+                                keyboardShouldPersistTaps="handled"
+                                contentInsetAdjustmentBehavior="never"
+                                automaticallyAdjustContentInsets={false}
+                            >
+                                <View className="gap-y-[12px]">
+                                    {context}
+                                    {children}
+                                    {requiresScrolling ? footerContent : null}
+                                </View>
+                            </ScreenChromeScrollView>
+                            <Animated.View pointerEvents="none" style={topFadeStyle} className="absolute top-0 left-0 right-0 h-[32px]">
+                                <View className="h-[16px] bg-grouped-surface" />
+                                <View className="h-[16px] bg-linear-to-b from-grouped-surface to-grouped-surface/0" />
+                            </Animated.View>
+                            <View
+                                pointerEvents="none"
+                                className="absolute bottom-0 left-0 right-0 h-[8px] bg-linear-to-t from-grouped-surface to-grouped-surface/0"
+                            />
+                        </View>
+                        {requiresScrolling ? null : footerContent}
+                    </RevealGate>
+                </View>
+            </BottomChromeInsetProvider>
+        </ScopedVariables>
     );
 };

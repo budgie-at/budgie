@@ -4,10 +4,9 @@ import { Redirect, useLocalSearchParams } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { PageHeader } from '../../../../@generic/component/page-header/page-header';
-import { FullPage } from '../../../../@generic/component/page/full-page';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
+import { TransactionFormScreen } from '../../../../transaction/components/transaction-form-screen/transaction-form-screen';
 import { UpdateAdjustmentTransaction } from '../../../../transaction/components/update-adjustment-transaction/update-adjustment-transaction';
 import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-get-transaction-by-id.query';
 import { getTransactionHref } from '../../../../transaction/utils/get-transaction-href.util';
@@ -33,11 +32,8 @@ export default function UpdateAdjustmentTransactionPage() {
     const handleGoBack = () => void goBackOrReplace('/');
 
     return (
-        <FullPage
-            className="bg-grouped-surface"
-            header={<PageHeader size="md" className="min-h-[52px]" title={t`Balance Adjustment`} onGoBack={handleGoBack} />}
-        >
+        <TransactionFormScreen title={t`Balance Adjustment`} onGoBack={handleGoBack}>
             <UpdateAdjustmentTransaction transaction={transaction} transactionId={transactionId} />
-        </FullPage>
+        </TransactionFormScreen>
     );
 }

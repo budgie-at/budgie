@@ -28,10 +28,16 @@ export const TransactionKeypadConfirmButton = ({ label, isDisabled, onPress, tes
             disabled={isDisabled}
             onPress={onPress}
             style={CONTINUOUS_CORNERS}
+            testID={testID}
         >
-            <View className="flex-row items-center gap-x-sm" collapsable={false} testID={testID}>
+            <View className="max-w-full flex-row items-center justify-center gap-x-sm px-lg">
                 <Icon className={contentClassName} icon={UserIconNameEnum.Check} size={20} />
-                <Text className={cn('text-[17px] font-semibold', contentClassName)} numberOfLines={1}>
+                <Text
+                    className={cn('min-w-0 shrink text-[17px] font-semibold', contentClassName)}
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.5}
+                >
                     {label}
                 </Text>
             </View>

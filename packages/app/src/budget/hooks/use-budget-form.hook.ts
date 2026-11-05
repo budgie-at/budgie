@@ -4,7 +4,8 @@ import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
-import { useForm } from 'react-hook-form';
+import { router } from 'expo-router';
+import * as ReactHookForm from 'react-hook-form';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -119,14 +120,16 @@ const areBudgetFormValuesEqual = (left: BudgetFormValues, right: BudgetFormValue
 // eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration hook with multiple hooks and handlers owns seeding, cadence rescaling, delete and submit
 export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = null }: UseBudgetFormOptionsInterface) => {
     const { t } = useLingui();
-    const { run } = useSingleFlight();
+    const { run, isLoading: isSubmitting } = useSingleFlight();
     const today = useToday();
     const isEditing = isPositiveNumber(editingId);
     const hasAsyncTemplate = isDefined(templateKind) && templateKind !== BudgetTemplateKindEnum.EMPTY;
-    const { budget, isLoading: isBudgetLoading } = useGetActiveBudgetQuery();
-    const { categoryLimits: loadedCategoryLimits, isLoading: isCategoryLimitsLoading } = useGetBudgetCategoryLimitsQuery(
-        isEditing && isDefined(budget) ? budget.id : null
-    );
+    const { budget, isLoading: isBudgetLoading, isError } = useGetActiveBudgetQuery();
+    const {
+        categoryLimits: loadedCategoryLimits,
+        isLoading: isCategoryLimitsLoading,
+        isError: isCategoryLimitsError
+    } = useGetBudgetCategoryLimitsQuery(isEditing && isDefined(budget) ? budget.id : null);
     const { draft: templateDraft, isReady: isTemplateReady } = useBudgetTemplateDraft(isEditing ? null : templateKind);
 
     const resolveFormValues = (): BudgetFormValues => {
@@ -143,18 +146,19 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
 
     const formValues = resolveFormValues();
 
-    const form = useForm<BudgetFormValues>({
+    const form = ReactHookForm.useForm<BudgetFormValues>({
         mode: 'onChange',
         resolver: standardSchemaResolver(Schema.toStandardSchemaV1(BudgetFormSchema)),
-        defaultValues: buildDefaultBudgetFormValues(t`Budget`, defaultInstrumentId),
+        defaultValues: formValues,
         values: formValues,
         resetOptions: {
             keepDirtyValues: true,
             keepErrors: true
         }
     });
+    const watchedFormValues = ReactHookForm.useWatch({ control: form.control, compute: values => values });
     const isFormSyncing =
-        (isEditing || hasAsyncTemplate) && !form.formState.isDirty && !areBudgetFormValuesEqual(form.getValues(), formValues);
+        (isEditing || hasAsyncTemplate) && !form.formState.isDirty && !areBudgetFormValuesEqual(watchedFormValues, formValues);
 
     const handlePeriodChange = (period: BudgetPeriodEnum) => {
         const anchor = defaultPeriodAnchorDate(period, today);
@@ -198,7 +202,7 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
                 const budgetService = yield* BudgetService;
 
                 yield* budgetService.deleteBudget(budget.id);
-                goBackOrReplace('/');
+                router.dismissTo('/');
             }).pipe(toastOnFailure(t`Could not delete budget`))
         );
 
@@ -242,8 +246,11 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
         handlePeriodChange,
         isEditing,
         budget,
+        isUnavailable: isEditing && !isBudgetLoading && (!isDefined(budget) || budget.id !== editingId || isError || isCategoryLimitsError),
+        isError: isError || isCategoryLimitsError,
+        isSubmitting,
         isLoading:
-            (isEditing && (isBudgetLoading || isCategoryLimitsLoading || !isDefined(budget))) ||
+            (isEditing && (isBudgetLoading || (isDefined(budget) && isCategoryLimitsLoading))) ||
             (!isEditing && hasAsyncTemplate && !isTemplateReady) ||
             isFormSyncing
     };

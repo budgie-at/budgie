@@ -5,36 +5,41 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-size-multiplier.constant';
 import { useGetMccCategoryByIdQuery } from '../../../mcc-category/query/use-get-mcc-category-by-id.query';
 
+import type { ReactNode } from 'react';
+
 interface Props {
     readonly transactionTitle: string;
     readonly mccCategoryId: number | null;
+    readonly children?: ReactNode;
 }
 
-export const MccInfoRow = ({ transactionTitle, mccCategoryId }: Props) => {
+export const MccInfoRow = ({ transactionTitle, mccCategoryId, children }: Props) => {
     const { mccCategory } = useGetMccCategoryByIdQuery(mccCategoryId);
 
     return (
-        <>
+        <View className="items-center gap-y-[8px] self-stretch">
             {isNotEmptyString(transactionTitle) ? (
                 <Text
-                    className="shrink text-center text-[15px] leading-[20px] font-medium text-secondary-foreground"
+                    className="px-[16px] text-center text-[17px] leading-[22px] font-medium text-primary"
+                    numberOfLines={2}
                     maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
                 >
                     {transactionTitle}
                 </Text>
             ) : null}
 
-            {isDefined(mccCategory) ? (
-                <View className="shrink-0 rounded-full border border-primary/20 bg-primary/10 px-md py-xxs">
+            <View className="max-w-full flex-row flex-wrap items-center justify-center gap-x-[8px] gap-y-[8px]">
+                {isDefined(mccCategory) ? (
                     <Text
-                        className="text-xs font-medium text-primary/80"
+                        className="shrink text-[13px] leading-[18px] text-secondary-foreground"
                         maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
                         numberOfLines={1}
                     >
                         {mccCategory.shortDescription}
                     </Text>
-                </View>
-            ) : null}
-        </>
+                ) : null}
+                {children}
+            </View>
+        </View>
     );
 };

@@ -1067,6 +1067,9 @@ importers:
       date-fns:
         specifier: ^4.4.0
         version: 4.4.0
+      drizzle-orm:
+        specifier: 1.0.0-rc.4
+        version: 1.0.0-rc.4(patch_hash=793e8ddeeefa9deacc42a0f266feba15c226019990829f2eab8997ec36c21c60)(@effect/sql-sqlite-node@4.0.6(effect@4.0.6))(@op-engineering/op-sqlite@18.2.5(react-native@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(@opentelemetry/api@1.9.1)(@sinclair/typebox@0.34.41)(@types/better-sqlite3@9.6.0)(arktype@2.2.8)(better-sqlite3@13.0.3)(effect@4.0.6)(expo-sqlite@58.0.7(expo@58.0.14)(react-native@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(zod@4.6.7)
       effect:
         specifier: 4.0.6
         version: 4.0.6

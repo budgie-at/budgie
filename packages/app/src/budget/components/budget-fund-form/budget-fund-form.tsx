@@ -8,6 +8,7 @@ import { CollapsibleChromePage } from '../../../@generic/component/collapsible-c
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
+import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { PillButtonFooter } from '../../../@generic/component/pill-button-footer/pill-button-footer';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { BudgetSelector } from '../../budget.selector';
@@ -21,6 +22,7 @@ import { BudgetFundRepeatField } from '../budget-fund-repeat-field/budget-fund-r
 import { BudgetFundSuggestionBanner } from '../budget-fund-suggestion-banner/budget-fund-suggestion-banner';
 import { BudgetHeroAmountField } from '../budget-hero-amount-field/budget-hero-amount-field';
 import { BudgetNameField } from '../budget-name-field/budget-name-field';
+import { BudgetPageState } from '../budget-page-state/budget-page-state';
 
 import type { BudgetEntityInterface } from '@budgie/contracts';
 
@@ -31,17 +33,24 @@ interface Props {
 
 export const BudgetFundForm = ({ budget, editingId }: Props) => {
     const { t } = useLingui();
-    const { form, editingFund, suggestion, handleUseSuggestion, handleSubmit, handleDelete, isEditing } = useBudgetFundForm({
-        budget,
-        editingId
-    });
+    const { form, editingFund, suggestion, handleUseSuggestion, handleSubmit, handleDelete, isEditing, isLoading, isSubmitting, isError } =
+        useBudgetFundForm({
+            budget,
+            editingId
+        });
     const values = form.watch();
     const { instrument } = useGetInstrumentByIdQuery(budget.instrumentId);
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
     const saveBlocker = resolveBudgetFundSaveBlocker(values);
     const [title, submitLabel] = isEditing ? [t`Edit set aside`, t`Save changes`] : [t`New set aside`, t`Save set aside`];
+    const isSaveDisabled = isLoading || isDefined(saveBlocker);
+    const isFormLoading = isEditing && isLoading;
     const saveLabel = isDefined(saveBlocker) ? t(saveBlocker) : submitLabel;
     const fundedAmount = isDefined(editingFund) ? editingFund.fundedAmount : 0;
+
+    if (isEditing && !isLoading && !isDefined(editingFund)) {
+        return <BudgetPageState title={title} isLoading={false} isError={isError} />;
+    }
 
     return (
         <FormProvider {...form}>
@@ -51,41 +60,49 @@ export const BudgetFundForm = ({ budget, editingId }: Props) => {
                 footer={
                     <PillButtonFooter
                         label={saveLabel}
-                        isDisabled={isDefined(saveBlocker)}
+                        accessibilityLabel={submitLabel}
+                        isLoading={isSubmitting}
+                        isDisabled={isSaveDisabled}
                         testID={BudgetSelector.FundSaveButton}
                         onPress={handleSubmit}
                     />
                 }
             >
-                <FormLayoutGroup>
-                    {isDefined(suggestion) ? (
-                        <BudgetFundSuggestionBanner suggestion={suggestion} currencySymbol={currencySymbol} onUse={handleUseSuggestion} />
-                    ) : null}
-                    <BudgetHeroAmountField
-                        control={form.control}
-                        name="targetAmount"
-                        label={t`Amount to set aside`}
-                        currencySymbol={currencySymbol}
-                        testID={BudgetSelector.FundTargetInput}
-                    />
-                    <GroupedListSection>
-                        <BudgetNameField
+                <LoadingContent isLoading={isFormLoading}>
+                    <FormLayoutGroup>
+                        {isDefined(suggestion) ? (
+                            <BudgetFundSuggestionBanner
+                                suggestion={suggestion}
+                                currencySymbol={currencySymbol}
+                                onUse={handleUseSuggestion}
+                            />
+                        ) : null}
+                        <BudgetHeroAmountField
                             control={form.control}
-                            name="name"
-                            placeholder={t`e.g. Car insurance`}
-                            testID={BudgetSelector.FundNameInput}
+                            name="targetAmount"
+                            label={t`Amount to set aside`}
+                            currencySymbol={currencySymbol}
+                            testID={BudgetSelector.FundTargetInput}
                         />
-                        <BudgetFundCategoryField />
-                        <BudgetFundDueField />
-                    </GroupedListSection>
-                    <View className="gap-y-md">
-                        <BudgetFundRepeatField />
-                        <BudgetFundPreview budget={budget} fundedAmount={fundedAmount} currencySymbol={currencySymbol} />
-                    </View>
-                    {isEditing ? (
-                        <BudgetDeleteRow title={t`Delete set aside`} testID={BudgetSelector.FundDeleteButton} onDelete={handleDelete} />
-                    ) : null}
-                </FormLayoutGroup>
+                        <GroupedListSection>
+                            <BudgetNameField
+                                control={form.control}
+                                name="name"
+                                placeholder={t`e.g. Car insurance`}
+                                testID={BudgetSelector.FundNameInput}
+                            />
+                            <BudgetFundCategoryField />
+                            <BudgetFundDueField />
+                        </GroupedListSection>
+                        <View className="gap-y-md">
+                            <BudgetFundRepeatField />
+                            <BudgetFundPreview budget={budget} fundedAmount={fundedAmount} currencySymbol={currencySymbol} />
+                        </View>
+                        {isEditing ? (
+                            <BudgetDeleteRow title={t`Delete set aside`} testID={BudgetSelector.FundDeleteButton} onDelete={handleDelete} />
+                        ) : null}
+                    </FormLayoutGroup>
+                </LoadingContent>
             </CollapsibleChromePage>
         </FormProvider>
     );

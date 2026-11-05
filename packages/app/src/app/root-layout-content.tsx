@@ -25,6 +25,7 @@ import { DatabaseMigrationStatusEnum } from '../@generic/drizzle/enum/database-m
 import { useDatabaseMigration } from '../@generic/drizzle/hook/use-database-migration.hook';
 import { useAppInitialization } from '../@generic/hook/use-app-initialization.hook';
 import { useAppState } from '../@generic/hook/use-app-state.hook';
+import { useIsAccessibilityTextSize } from '../@generic/hook/use-is-accessibility-text-size.hook';
 import { CreateActionProvider } from '../@generic/provider/create-action.provider';
 import { ModalProvider } from '../@generic/provider/modal.provider';
 import { ScreenChromeThemeProvider } from '../@generic/provider/screen-chrome-theme.provider';
@@ -122,8 +123,14 @@ const handleAppStateChange = (isActive: boolean): void => {
 // eslint-disable-next-line max-lines-per-function -- Layout component requires many lines
 export const RootLayoutContent = () => {
     const databaseMigrationStatus = useDatabaseMigration();
-    const [sheetSurface, groupedSheetSurface] = useCSSVariable(['--color-sheet-surface', '--color-grouped-surface']);
+    const [sheetSurface, groupedSheetSurface, sheetGroupedSurface] = useCSSVariable([
+        '--color-sheet-surface',
+        '--color-grouped-surface',
+        '--color-sheet-grouped-surface'
+    ]);
     const sheetOptions = fitToContentsSheetOptions(sheetSurface);
+    const isAccessibilityTextSize = useIsAccessibilityTextSize();
+    const contactSelectorOptions = formSheetOptions([DETENT_55, DETENT_90], isAccessibilityTextSize ? 1 : 0);
 
     useAppInitialization(databaseMigrationStatus === DatabaseMigrationStatusEnum.MIGRATED);
     useAppState(handleAppStateChange);
@@ -190,11 +197,11 @@ export const RootLayoutContent = () => {
                                                                         name="language-selector"
                                                                         options={COMPACT_SELECTOR_OPTIONS}
                                                                     />
+                                                                    <Stack.Screen name="resync-window-picker" options={sheetOptions} />
                                                                     <Stack.Screen
-                                                                        name="resync-window-picker"
-                                                                        options={fitToContentsSheetOptions(groupedSheetSurface)}
+                                                                        name="contact-selector"
+                                                                        options={contactSelectorOptions}
                                                                     />
-                                                                    <Stack.Screen name="contact-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen name="tags-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="category-destination"
@@ -266,7 +273,7 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="rule-form" />
                                                                     <Stack.Screen
                                                                         name="rule-selector"
-                                                                        options={formSheetOptions('fitToContents')}
+                                                                        options={fitToContentsSheetOptions(sheetGroupedSurface)}
                                                                     />
                                                                     <Stack.Screen name="rule-mcc-selector" options={SELECTOR_OPTIONS} />
                                                                 </Stack>

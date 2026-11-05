@@ -4,7 +4,6 @@ import Animated, { AnimatedStyle } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { cn } from '../../../@generic/utils/cn.util';
@@ -29,32 +28,34 @@ export const TransferAccountPicker = ({ label, placeholder, account, animatedSty
     const titleClassName = hasAccount ? 'text-primary' : 'text-secondary-foreground';
 
     return (
-        <Animated.View style={animatedStyle} className="flex-1">
+        <Animated.View style={animatedStyle} className="self-stretch">
             <HapticPressable
-                className="min-h-[56px] flex-row items-center gap-sm rounded-2xl border-hairline border-surface-separator bg-transaction-detail-row py-md px-md dark:border-transparent"
+                className="min-h-[56px] flex-row items-center gap-x-[12px] rounded-3xl border-hairline border-surface-separator bg-grouped-surface-row py-[8px] px-[16px] dark:border-transparent"
                 onPress={onPress}
                 testID={testID}
                 accessibilityLabel={accessibilityLabel}
                 accessibilityRole="button"
             >
                 <AccountInactiveIcon isInactive={isInactiveAccount} size={28}>
-                    <CircleIcon icon={icon} variant="ghost" border={false} size={28} iconSize={14} radius={8} />
+                    <View className="h-[28px] w-[28px] items-center justify-center">
+                        <Icon icon={icon} size={20} className="text-secondary-foreground" />
+                    </View>
                 </AccountInactiveIcon>
 
                 <View className="flex-1 justify-center">
-                    <View className="flex-row items-center gap-xxs">
-                        <Text className="shrink text-[13px] leading-[18px] text-secondary-foreground" numberOfLines={1}>
-                            {label}
-                        </Text>
-                        <Icon icon={UserIconNameEnum.ChevronDown} size={12} className="text-secondary-foreground" />
-                    </View>
+                    <Text className="text-[13px] leading-[18px] text-secondary-foreground" numberOfLines={2}>
+                        {label}
+                    </Text>
                     <Text
-                        className={cn('text-[15px] leading-[20px] font-medium', titleClassName)}
-                        numberOfLines={1}
+                        className={cn('text-[16px] leading-[21px] font-medium', titleClassName)}
+                        numberOfLines={2}
                         {...testIDProps(hasAccount && selectedTestID)}
                     >
                         {account?.title ?? placeholder}
                     </Text>
+                </View>
+                <View className="w-[20px] shrink-0 items-end">
+                    <Icon icon={UserIconNameEnum.ChevronDown} size={16} className="text-secondary-foreground" />
                 </View>
             </HapticPressable>
         </Animated.View>

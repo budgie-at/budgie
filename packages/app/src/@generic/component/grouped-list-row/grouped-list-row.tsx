@@ -19,6 +19,7 @@ interface Props {
     readonly onPress?: (event: GestureResponderEvent) => void;
     readonly pressableProps?: Pick<
         ComponentProps<typeof HapticPressable>,
+        | 'style'
         | 'onLongPress'
         | 'disabled'
         | 'accessibilityLabel'

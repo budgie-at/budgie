@@ -8,6 +8,7 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { Icon } from '../../../@generic/component/icon/icon';
 import { cn } from '../../../@generic/utils/cn.util';
 import { FILTER_CHIP_CLASS_NAME } from '../../constant/filter-chip-class-name.constant';
+import { FILTER_CHIP_HIT_SLOP } from '../../constant/filter-chip-hit-slop.constant';
 
 import { UncategorizedTransactionsPillSelector } from './uncategorized-transactions-pill.selector';
 
@@ -31,6 +32,7 @@ export const UncategorizedTransactionsPill = ({ count, onPress }: Props) => {
     return (
         <Animated.View entering={ENTERING_ANIMATION} className="-my-[6px] py-[6px]">
             <HapticPressable
+                hitSlop={FILTER_CHIP_HIT_SLOP}
                 onPress={onPress}
                 accessibilityRole="button"
                 accessibilityLabel={pillText}
