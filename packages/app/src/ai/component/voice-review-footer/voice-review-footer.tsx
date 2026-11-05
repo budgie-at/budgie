@@ -31,7 +31,7 @@ export const VoiceReviewFooter = (props: Props) => {
     const formatDigits = useDisplayFormatDigits();
     const reRecordVariant = isPositiveNumber(count) ? 'secondary' : 'cta';
     const actionLayoutClassName = fontScale >= VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE ? 'flex-col gap-y-md' : 'flex-row gap-x-md';
-    const actionClassName = cn('min-h-[44px] px-md', fontScale < VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE && 'flex-1');
+    const actionClassName = fontScale >= VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE ? 'min-h-[44px] px-md' : 'flex-1 min-h-[44px] px-md';
     const totalLabel = formatDigits(totalAmount, `${currencySymbol} `);
 
     return (
