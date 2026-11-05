@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.162.1](https://github.com/budgie-at/budgie/compare/v6.162.0...v6.162.1) (2026-11-05)
+
+### Bug Fixes
+
+* **ledger:** keep attaching installment parts after an early payment ([c885f63](https://github.com/budgie-at/budgie/commit/c885f630961804c4533929f4b8ad20145eb674e2))
+* **ledger:** match installment parts paid early, twice or in multiples ([d76a9dd](https://github.com/budgie-at/budgie/commit/d76a9dd0d4617f71a367e5fb2b7f34e1f53eec1a))
+
+
 # [6.162.0](https://github.com/budgie-at/budgie/compare/v6.161.0...v6.162.0) (2026-11-05)
 
 ### Bug Fixes
