@@ -1,18 +1,17 @@
 import { TransactionTypeEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { cva } from 'class-variance-authority';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { TransactionListRowPositionEnum } from '../../enum/transaction-list-row-position.enum';
-import { TransactionRowLayout } from '../transaction-row-layout/transaction-row-layout';
+import { TransactionPickerRowContent } from '../transaction-picker-row-content/transaction-picker-row-content';
 import { TransactionRowSurface } from '../transaction-row-surface/transaction-row-surface';
 
 import type { TransactionPickerItemInterface } from '../../interface/transaction-picker-item.interface';
@@ -25,57 +24,26 @@ interface Props {
     readonly testID?: string;
 }
 
-const pressableVariants = cva('px-3xl py-xl active:scale-100 active:opacity-70', {
+const pressableVariants = cva('px-xl py-xl active:scale-100 active:opacity-70', {
     variants: { selected: { true: 'bg-secondary-background' } }
 });
 
 export const TransactionPickerRow = ({ item, position, isSelected = false, onPress, testID }: Props) => {
-    const { formatMonthAndDay } = useFormatDate();
+    const { formatMonthAndDayWithTime } = useFormatDate();
     const protectAmount = useProtectedAmountLabel();
-    const textLineLimit = useIsAccessibilityTextSize() ? 0 : 2;
-
-    const isIncome = item.type === TransactionTypeEnum.INCOME;
-    const signedAmount = `${isIncome ? '+' : ''}${protectAmount(convertFromMicroUnits(item.amount), item.currencySymbol)}`;
-    const description = [formatMonthAndDay(item.operatedAt), item.accountTitle, item.categoryTitle]
-        .filter(isNotEmptyString)
-        .join(textLineLimit === 0 ? '\n' : ' · ');
-    const icon = item.categoryIcon ?? (isIncome ? UserIconNameEnum.BanknoteArrowDown : UserIconNameEnum.BanknoteArrowUp);
-    const iconVariant = isIncome ? 'positive' : 'secondary';
-    const amountClassName = isIncome
-        ? 'text-[15px] font-semibold tabular-nums text-positive-strong'
-        : 'text-[15px] font-semibold tabular-nums text-primary';
-    const content = (
-        <TransactionRowLayout
-            icon={<CircleIcon size={36} iconSize={18} radius={18} border={false} icon={icon} variant={iconVariant} />}
-            amount={
-                <View className="shrink min-w-0 gap-y-xxs">
-                    <View className="flex-row items-center gap-x-sm">
-                        <Text className={amountClassName}>{signedAmount}</Text>
-                        {isDefined(onPress) ? (
-                            <View className="w-6 items-center">
-                                {isSelected ? <Icon icon={UserIconNameEnum.Check} size={24} className="text-primary" /> : null}
-                            </View>
-                        ) : null}
-                    </View>
-                    {textLineLimit === 0 ? <Text className="text-[13px] text-secondary-foreground">{description}</Text> : null}
-                </View>
-            }
-        >
-            <Text className="text-[15px] font-semibold text-primary" numberOfLines={textLineLimit}>
-                {isNotEmptyString(item.title) ? item.title : t`No title`}
-            </Text>
-            {textLineLimit === 0 ? null : (
-                <Text className="text-[13px] text-secondary-foreground" numberOfLines={textLineLimit}>
-                    {description}
-                </Text>
-            )}
-        </TransactionRowLayout>
-    );
+    const separatorInset = useIsAccessibilityTextSize() ? 16 : 60;
+    const signedAmount = `${item.type === TransactionTypeEnum.INCOME ? '+' : ''}${protectAmount(convertFromMicroUnits(item.amount), item.currencySymbol)}`;
+    const title = isNotEmptyString(item.title) ? item.title : t`No title`;
+    const date = formatMonthAndDayWithTime(item.operatedAt);
+    const accessibilityLabel = [title, date, item.accountTitle, item.categoryTitle, signedAmount].filter(isNotEmptyString).join(', ');
+    const selectionIcon = isSelected ? UserIconNameEnum.CircleCheck : UserIconNameEnum.Circle;
+    const selection = isDefined(onPress) ? <Icon icon={selectionIcon} size={28} className="text-primary" /> : null;
+    const content = <TransactionPickerRowContent item={item} title={title} date={date} amount={signedAmount} selection={selection} />;
 
     if (!isDefined(onPress)) {
         return (
-            <TransactionRowSurface position={position}>
-                <View accessible className="px-3xl py-xl" testID={testID}>
+            <TransactionRowSurface position={position} separatorInset={separatorInset}>
+                <View accessible className="px-xl py-xl" testID={testID} accessibilityLabel={accessibilityLabel}>
                     {content}
                 </View>
             </TransactionRowSurface>
@@ -86,11 +54,12 @@ export const TransactionPickerRow = ({ item, position, isSelected = false, onPre
     const accessibilityState = { selected: isSelected };
 
     return (
-        <TransactionRowSurface position={position}>
+        <TransactionRowSurface position={position} separatorInset={separatorInset}>
             <HapticPressable
                 className={pressableVariants({ selected: isSelected })}
                 onPress={handlePress}
                 testID={testID}
+                accessibilityLabel={accessibilityLabel}
                 accessibilityRole="radio"
                 accessibilityState={accessibilityState}
             >

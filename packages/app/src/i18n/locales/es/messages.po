@@ -1984,7 +1984,7 @@ msgstr "No se puede cambiar después"
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 #: src/tag/hooks/use-delete-tag.hook.ts
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
@@ -2537,7 +2537,6 @@ msgstr "Convertir importes pasados"
 msgid "Convert past amounts?"
 msgstr "¿Convertir importes pasados?"
 
-#: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
 #: src/transaction/components/transaction-list-convert-to-refund-menu-item/transaction-list-convert-to-refund-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Convert to Refund"
@@ -2720,10 +2719,6 @@ msgstr "No se pudo cargar el presupuesto"
 #: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
 msgid "Could not load contacts"
 msgstr "No se pudieron cargar los contactos"
-
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
-msgid "Could not load sources. Please try again."
-msgstr "No se pudieron cargar las fuentes. Inténtalo de nuevo."
 
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Could not mark account as external"
@@ -2930,6 +2925,7 @@ msgid "Couldn't finish. Try again."
 msgstr "No se pudo completar. Inténtalo de nuevo."
 
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
+#: src/transaction/components/transaction-picker-failure/transaction-picker-failure.tsx
 msgid "Couldn’t load this list"
 msgstr "No se pudo cargar la lista"
 
@@ -3412,7 +3408,6 @@ msgstr "No contiene"
 #: src/categorize-inbox/components/categorize-inbox-done-button/categorize-inbox-done-button.tsx
 #: src/onboarding/component/onboarding-keyboard-controls/onboarding-keyboard-controls.tsx
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 #: src/transaction/hook/use-transaction-keypad-editing.hook.ts
@@ -3898,7 +3893,6 @@ msgstr "Gasto, ingreso o transferencia"
 
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
-#: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
 #: src/transaction/hook/use-transaction-filter-page-title.hook.ts
 msgid "Expenses"
 msgstr "Gastos"
@@ -5837,6 +5831,10 @@ msgstr "O desbloquea con Touch ID."
 msgid "Organize"
 msgstr "Organizar"
 
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
+msgid "Original expense"
+msgstr "Gasto original"
+
 #: src/transaction/components/refund-transaction-info-content/refund-transaction-info-content.tsx
 msgid "Original purchase"
 msgstr "Compra original"
@@ -6459,6 +6457,10 @@ msgstr "Los pagos recurrentes se detectan automáticamente a partir de tus trans
 msgid "Refine"
 msgstr "Ajustar"
 
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
+msgid "Refund"
+msgstr "Reembolso"
+
 #: src/transaction/components/refund-transaction-info-content/refund-transaction-info-content.tsx
 msgid "Refund from {merchant}"
 msgstr "Reembolso de {merchant}"
@@ -6997,10 +6999,6 @@ msgstr "Selecciona el archivo PDF descargado"
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Select the exported XLSX file"
 msgstr "Selecciona el archivo XLSX exportado"
-
-#: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
-msgid "Select the original expense for this refund."
-msgstr "Selecciona el gasto original de este reembolso."
 
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Selected"
@@ -8141,8 +8139,7 @@ msgstr "Intenta ajustar tus filtros para ver más resultados"
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
+#: src/transaction/components/transaction-picker-failure/transaction-picker-failure.tsx
 msgid "Try again"
 msgstr "Inténtalo de nuevo"
 
@@ -8744,6 +8741,7 @@ msgid "Your data could not be loaded. Close this screen and try again."
 msgstr "No se pudieron cargar tus datos. Cierra esta pantalla e inténtalo de nuevo."
 
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
+#: src/transaction/components/transaction-picker-failure/transaction-picker-failure.tsx
 msgid "Your data is safe. Reading it failed this time."
 msgstr "Tus datos están a salvo. Solo falló la lectura esta vez."
 

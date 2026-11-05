@@ -1,21 +1,18 @@
 import { Stack } from 'expo-router';
 import { View } from 'react-native';
 
-import { useIsAccessibilityTextSize } from '../@generic/hook/use-is-accessibility-text-size.hook';
 import { useModalRouteState } from '../@generic/hook/use-modal-route-state/use-modal-route-state.hook';
 import { ConsolidationSourceModalContent } from '../transaction/components/consolidation-source-modal-content/consolidation-source-modal-content';
 import { useConsolidationSourceModal, useConsolidationSourceModalParams } from '../transaction/context/consolidation-source-modal.context';
 
-const COMPACT_DETENT = 0.5;
 const EXPANDED_DETENT = 0.9;
 
 export default function ConsolidationSourceModal() {
     const [, resolveConsolidationSource, dismissConsolidationSource] = useConsolidationSourceModal();
-    const isAccessibilityTextSize = useIsAccessibilityTextSize();
     const currentParams = useConsolidationSourceModalParams();
     const screenOptions = {
         ...useModalRouteState(currentParams, dismissConsolidationSource),
-        sheetAllowedDetents: isAccessibilityTextSize ? [EXPANDED_DETENT] : [COMPACT_DETENT, EXPANDED_DETENT],
+        sheetAllowedDetents: [EXPANDED_DETENT],
         sheetInitialDetentIndex: 0
     };
 
