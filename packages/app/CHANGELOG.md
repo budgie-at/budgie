@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.160.1](https://github.com/budgie-at/budgie/compare/v6.160.0...v6.160.1) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** give SegmentedControl 44pt touch targets ([39e9b6c](https://github.com/budgie-at/budgie/commit/39e9b6c20b5628749e2460522e12ac80c2c1ff15))
+
+
 # [6.160.0](https://github.com/budgie-at/budgie/compare/v6.159.0...v6.160.0) (2026-11-05)
 
 ### Bug Fixes
