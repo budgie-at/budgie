@@ -1,6 +1,7 @@
 import { AccountRepository, TransactionRepository } from '@budgie/contracts';
 import { describe, expect, it, vi } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
+import * as Schema from 'effect/Schema';
 
 import { IMPORT_PRESETS } from '../src/import/constant/import-presets.constant';
 import { ImportPresetEnum } from '../src/import/enum/import-preset.enum';
@@ -112,7 +113,7 @@ describe('importer strict amounts', () => {
                 ].join('\n')
             );
             expect(result.rowErrors).toHaveLength(2);
-            expect(result.rowErrors.every(error => error instanceof ImportRowError)).toBe(true);
+            expect(result.rowErrors.every(error => Schema.is(ImportRowError)(error))).toBe(true);
             expect(result.transactions.map(transaction => transaction.amount)).toEqual([1234, 12.5, 1234.56]);
             expect(result.transactions[0].entries.map(entry => entry.amount)).toEqual([1234, 1234]);
             const transactionRepository = yield* TransactionRepository;

@@ -29,6 +29,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
 import * as Layer from 'effect/Layer';
+import * as Schema from 'effect/Schema';
 
 import { isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
@@ -318,7 +319,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             accountType: AccountTypeEnum.BANK_SYNC,
             rateLimitMs: MONOBANK_RATE_LIMIT_MS,
             shouldRequestSyncWhenEnabled: true,
-            shouldKeepFailedSyncEnabledAfterError: error => error instanceof SyncNetworkError,
+            shouldKeepFailedSyncEnabledAfterError: error => Schema.is(SyncNetworkError)(error),
             generateAccountTitle,
             accountIcon: account => (account.type === SyncAccountTypeEnum.JAR ? UserIconNameEnum.PiggyBank : UserIconNameEnum.Landmark),
             executeSyncBatch: Effect.fn('MonobankSyncService.executeSyncBatch')(function* (sync: SyncEntityInterface, token: string) {
@@ -348,7 +349,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
                 sync.mode === SyncModeEnum.BACKWARD && result.completed && isDefined(sync.setupBalance)
                     ? completeBackwardHistory(sync, sync.setupBalance, result)
                     : updateProgressAndReconcile(sync, result),
-            isCredentialWideError: error => error instanceof SyncUnauthorizedError
+            isCredentialWideError: error => Schema.is(SyncUnauthorizedError)(error)
         });
 
         const rotateIntegrationToken = Effect.fnUntraced(function* (integrationId: number, client: MonobankClient, token: string) {

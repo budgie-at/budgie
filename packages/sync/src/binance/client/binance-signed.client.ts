@@ -624,7 +624,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     isolateSourceFailure<E, R>(effect: Effect.Effect<number, E, R>) {
         return effect.pipe(
             Effect.catchIf(
-                error => error instanceof SyncNetworkError || error instanceof SyncInvalidResponseError,
+                error => Schema.is(SyncNetworkError)(error) || Schema.is(SyncInvalidResponseError)(error),
                 error => this.recordSourceFailure(error)
             )
         );
@@ -1056,15 +1056,15 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     }
 
     private isSourceUnavailable(source: BinanceHistorySourceEnum, error: SyncError): boolean {
-        if (error instanceof SyncRegionUnavailableError) {
+        if (Schema.is(SyncRegionUnavailableError)(error)) {
             return true;
         }
 
-        if (error instanceof SyncInvalidResponseError) {
+        if (Schema.is(SyncInvalidResponseError)(error)) {
             return isDefined(error.apiCode);
         }
 
-        return error instanceof SyncUnauthorizedError && source === BinanceHistorySourceEnum.C2C;
+        return Schema.is(SyncUnauthorizedError)(error) && source === BinanceHistorySourceEnum.C2C;
     }
 
     private defineRewardSource<T>({

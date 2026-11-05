@@ -1,6 +1,7 @@
 import { EnableBankingSyncService, SyncHistoryDepthEnum, SyncUnauthorizedError } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
+import * as Schema from 'effect/Schema';
 import { router } from 'expo-router';
 import { useEffect, useEffectEvent, useState } from 'react';
 import Toast from 'react-native-toast-message';
@@ -108,7 +109,7 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
                 setBanks(
                     yield* Effect.flatMap(EnableBankingSyncService, service => service.listBanks(parsedApplicationId)).pipe(
                         Effect.mapError(error =>
-                            error instanceof SyncUnauthorizedError
+                            Schema.is(SyncUnauthorizedError)(error)
                                 ? new EnableBankingSetupError({ reason: EnableBankingSetupErrorReasonEnum.INACTIVE_APPLICATION })
                                 : error
                         )

@@ -167,7 +167,7 @@ export class EnableBankingClient extends BaseSyncProviderClient {
 
         return this.fetchJson(schema, endpoint, method, body).pipe(
             Effect.mapError(error =>
-                error instanceof SyncInvalidResponseError && !isDefined(error.apiCode)
+                Schema.is(SyncInvalidResponseError)(error) && !isDefined(error.apiCode)
                     ? new SyncInvalidResponseError({ provider, message: 'Enable Banking returned an unexpected response' })
                     : error
             )

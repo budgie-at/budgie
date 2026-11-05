@@ -485,14 +485,14 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             isRunDeferred,
             isRetryableError: error =>
                 !(
-                    error instanceof SyncUnauthorizedError ||
-                    error instanceof SyncInvalidResponseError ||
-                    error instanceof SyncRegionUnavailableError ||
-                    error instanceof SyncDeferredError
+                    Schema.is(SyncUnauthorizedError)(error) ||
+                    Schema.is(SyncInvalidResponseError)(error) ||
+                    Schema.is(SyncRegionUnavailableError)(error) ||
+                    Schema.is(SyncDeferredError)(error)
                 ),
-            isCredentialWideError: error => error instanceof SyncUnauthorizedError,
+            isCredentialWideError: error => Schema.is(SyncUnauthorizedError)(error),
             shouldKeepSyncsEnabledAfterError: error =>
-                error instanceof SyncRegionUnavailableError || (run.providerSourceFailed && error instanceof SyncInvalidResponseError)
+                Schema.is(SyncRegionUnavailableError)(error) || (run.providerSourceFailed && Schema.is(SyncInvalidResponseError)(error))
         });
 
         return {

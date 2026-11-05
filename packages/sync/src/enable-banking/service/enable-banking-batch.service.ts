@@ -15,6 +15,7 @@ import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+import * as Schema from 'effect/Schema';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
@@ -66,7 +67,7 @@ export class EnableBankingBatchService extends Context.Service<EnableBankingBatc
         const hasApiCode =
             (apiCode: EnableBankingErrorCodeEnum) =>
             (error: unknown): boolean =>
-                error instanceof SyncInvalidResponseError && error.apiCode === apiCode;
+                Schema.is(SyncInvalidResponseError)(error) && error.apiCode === apiCode;
 
         const isBankRateLimited = hasApiCode(EnableBankingErrorCodeEnum.ASPSP_RATE_LIMIT_EXCEEDED);
         const isWrongTransactionsPeriod = hasApiCode(EnableBankingErrorCodeEnum.WRONG_TRANSACTIONS_PERIOD);

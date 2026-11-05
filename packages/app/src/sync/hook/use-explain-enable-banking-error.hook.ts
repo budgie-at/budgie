@@ -7,6 +7,7 @@ import {
 } from '@budgie/sync';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
+import * as Schema from 'effect/Schema';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -36,13 +37,13 @@ const SETUP_ERROR_LABEL: Record<EnableBankingSetupErrorReasonEnum, MessageDescri
 const REDIRECT_URL_LABEL = msg`Enable Banking rejected the redirect URL. Correct the redirect URL registered in your application so it matches the setup steps exactly.`;
 
 const resolveLabel = (error: unknown): MessageDescriptor | null => {
-    if (error instanceof EnableBankingCallbackError) {
+    if (Schema.is(EnableBankingCallbackError)(error)) {
         return CALLBACK_FAILURE_LABEL[error.failure];
     }
-    if (error instanceof EnableBankingSetupError) {
+    if (Schema.is(EnableBankingSetupError)(error)) {
         return SETUP_ERROR_LABEL[error.reason];
     }
-    if (error instanceof SyncInvalidResponseError && error.apiCode === EnableBankingErrorCodeEnum.REDIRECT_URI_NOT_ALLOWED) {
+    if (Schema.is(SyncInvalidResponseError)(error) && error.apiCode === EnableBankingErrorCodeEnum.REDIRECT_URI_NOT_ALLOWED) {
         return REDIRECT_URL_LABEL;
     }
 

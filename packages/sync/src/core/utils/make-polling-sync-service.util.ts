@@ -4,6 +4,7 @@ import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Predicate from 'effect/Predicate';
+import * as Schema from 'effect/Schema';
 import * as Semaphore from 'effect/Semaphore';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -179,7 +180,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
 
     const handleError = Effect.fnUntraced(function* (cause: Cause.Cause<unknown>) {
         const error = Cause.squash(cause);
-        if (error instanceof SyncRateLimitedError) {
+        if (Schema.is(SyncRateLimitedError)(error)) {
             return (yield* shouldYieldAfterBatch(error.retryAfterMs)) ? true : null;
         }
 
@@ -269,8 +270,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
     });
 
     const sync = Effect.fn('AbstractPollingSyncService.sync')(function* (deadlineAtMs: number = Number.POSITIVE_INFINITY) {
-        const outcome = yield* attemptSemaphore.withPermit(runSyncAttempt(deadlineAtMs));
-        const { continuationAtMs } = outcome;
+        const { result, continuationAtMs } = yield* attemptSemaphore.withPermit(runSyncAttempt(deadlineAtMs));
         if (isDefined<number>(continuationAtMs)) {
             yield* syncWorkload.schedule(
                 `sync:${definition.provider}`,
@@ -278,7 +278,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
             );
         }
 
-        return outcome.result;
+        return result;
     });
 
     const requestSync = Effect.fnUntraced(function* () {

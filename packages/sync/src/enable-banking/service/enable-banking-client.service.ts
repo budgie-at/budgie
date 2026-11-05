@@ -57,7 +57,7 @@ export class EnableBankingClientService extends Context.Service<EnableBankingCli
                 Effect.flatMap(use),
                 Effect.tapError(error =>
                     Effect.sync(() => {
-                        if (error instanceof SyncUnauthorizedError) {
+                        if (Schema.is(SyncUnauthorizedError)(error)) {
                             jwtByApplicationId.delete(applicationId);
                         }
                     })

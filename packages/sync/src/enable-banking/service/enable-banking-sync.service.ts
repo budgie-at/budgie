@@ -16,6 +16,7 @@ import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+import * as Predicate from 'effect/Predicate';
 import * as Schema from 'effect/Schema';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
@@ -95,7 +96,7 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
             applyProgressUpdate,
             beforeSyncRun: () => batchService.beforeRun(),
             isRetryableError: () => false,
-            isCredentialWideError: error => error instanceof SyncUnauthorizedError || error instanceof SyncConsentExpiredError,
+            isCredentialWideError: Predicate.or(Schema.is(SyncUnauthorizedError), Schema.is(SyncConsentExpiredError)),
             shouldKeepFailedSyncEnabledAfterError: () => true
         });
 

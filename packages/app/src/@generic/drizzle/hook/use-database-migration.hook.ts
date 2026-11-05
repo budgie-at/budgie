@@ -3,6 +3,7 @@ import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import * as Atom from 'effect/reactivity/Atom';
+import * as Schema from 'effect/Schema';
 
 import { appAtomRuntime } from '../../runtime/app.runtime';
 import { DatabaseMigrationStatusEnum } from '../enum/database-migration-status.enum';
@@ -28,5 +29,5 @@ export const useDatabaseMigration = (): DatabaseMigrationStatusEnum =>
         onInitial: () => DatabaseMigrationStatusEnum.MIGRATING,
         onSuccess: () => DatabaseMigrationStatusEnum.MIGRATED,
         onFailure: ({ cause }) =>
-            Cause.squash(cause) instanceof DatabaseOpenError ? DatabaseMigrationStatusEnum.UNOPENABLE : DatabaseMigrationStatusEnum.FAILED
+            Schema.is(DatabaseOpenError)(Cause.squash(cause)) ? DatabaseMigrationStatusEnum.UNOPENABLE : DatabaseMigrationStatusEnum.FAILED
     });
