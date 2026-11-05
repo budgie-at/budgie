@@ -74,11 +74,11 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
             </LoadingContent>
 
             <View className="mt-auto shrink-0 gap-y-md bg-grouped-surface px-xl pt-md pb-safe-or-[16px]">
-                <Text className="text-center text-sm text-secondary-foreground">{t`Each source becomes a separate transaction.`}</Text>
+                <Text className="text-center text-sm leading-tight text-secondary-foreground">{t`Each source becomes a separate transaction.`}</Text>
                 <View className={footerClassName}>
                     <Button
                         content={t`Done`}
-                        variant="primary"
+                        variant="cta"
                         size="md"
                         onPress={onClose}
                         testID={ConsolidationSourceModalSelector.DoneButton}
@@ -88,7 +88,7 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
                     {showRevert ? (
                         <Button
                             content={t`Separate all`}
-                            variant="primary"
+                            variant="secondary"
                             size="md"
                             onPress={revertConsolidation}
                             disabled={isRevertDisabled}

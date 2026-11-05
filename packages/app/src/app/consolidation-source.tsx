@@ -6,7 +6,7 @@ import { useModalRouteState } from '../@generic/hook/use-modal-route-state/use-m
 import { ConsolidationSourceModalContent } from '../transaction/components/consolidation-source-modal-content/consolidation-source-modal-content';
 import { useConsolidationSourceModal, useConsolidationSourceModalParams } from '../transaction/context/consolidation-source-modal.context';
 
-const COMPACT_DETENT = 0.6;
+const COMPACT_DETENT = 0.5;
 const EXPANDED_DETENT = 0.9;
 
 export default function ConsolidationSourceModal() {
