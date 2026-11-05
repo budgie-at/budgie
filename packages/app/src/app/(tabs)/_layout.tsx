@@ -53,6 +53,11 @@ export default function TabsLayout() {
                     <>
                         {isDefaultTabFadeVisible ? <EdgeFade position="bottom" chromeHeight={FLOATING_TAB_BAR_HEIGHT} /> : null}
                         <View className="absolute inset-x-0 bottom-0" pointerEvents="box-none" style={tabBarWrapperStyle}>
+                            {isDefaultTabFadeVisible ? null : (
+                                <View className="absolute inset-0 bg-grouped-surface" pointerEvents="none">
+                                    <View className="absolute inset-x-0 bottom-full h-[20px] bg-linear-to-b from-grouped-surface/0 to-grouped-surface" />
+                                </View>
+                            )}
                             <View className="flex-row items-center justify-between px-lg pb-safe pt-md">
                                 <TabButtons />
 
