@@ -5,7 +5,7 @@ import { addYears } from 'date-fns/addYears';
 import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
 import { startOfDay } from 'date-fns/startOfDay';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { CADENCES, DAYS_PER_MONTH } from './recurring-series';
 
@@ -56,6 +56,9 @@ export const nearestCycleDate = (schedule: RecurringScheduleInterface, date: Dat
 };
 
 export const nextOccurrences = (schedule: RecurringScheduleInterface, from: Date, count: number): Date[] => {
+    if (!isPositiveNumber(schedule.cadenceInterval)) {
+        return [];
+    }
     const fromDay = startOfDay(from);
     const dates: Date[] = [];
     let cycle = Math.max(0, Math.floor(differenceInCalendarDays(fromDay, schedule.anchorDate) / cadencePeriodDays(schedule)) - 1);
@@ -76,6 +79,9 @@ export const nextOccurrences = (schedule: RecurringScheduleInterface, from: Date
 };
 
 export const occurrencesInRange = (schedule: RecurringScheduleInterface, from: Date, to: Date): Date[] => {
+    if (!isPositiveNumber(schedule.cadenceInterval)) {
+        return [];
+    }
     const dates: Date[] = [];
     let cycle = Math.max(0, Math.floor(differenceInCalendarDays(from, schedule.anchorDate) / cadencePeriodDays(schedule)) - 1);
     let date = cycleDateAt(schedule, cycle);

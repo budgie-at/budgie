@@ -1,0 +1,49 @@
+import { useLingui } from '@lingui/react/macro';
+import { useController, useFormContext } from 'react-hook-form';
+import { View } from 'react-native';
+
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { SegmentedControl } from '../../../@generic/component/segmented-control/segmented-control';
+import { RecurringReminderChoiceEnum } from '../../enum/recurring-reminder-choice.enum';
+import { RecurringSeriesFormSelector } from '../recurring-series-form-screen/recurring-series-form.selector';
+
+import type { SegmentedControlSegmentInterface } from '../../../@generic/interface/segmented-control-segment.interface';
+import type { RecurringSeriesFormValues } from '../../constant/recurring-series-form-schema.constant';
+
+export const RecurringFormReminderSection = () => {
+    const { t } = useLingui();
+    const { control } = useFormContext<RecurringSeriesFormValues>();
+    const {
+        field: { value, onChange }
+    } = useController({ control, name: 'reminder' });
+    const segments: readonly SegmentedControlSegmentInterface<RecurringReminderChoiceEnum>[] = [
+        {
+            value: RecurringReminderChoiceEnum.OFF,
+            label: t`Off`,
+            testID: RecurringSeriesFormSelector.Reminder(RecurringReminderChoiceEnum.OFF)
+        },
+        {
+            value: RecurringReminderChoiceEnum.SAME_DAY,
+            label: t`Same day`,
+            testID: RecurringSeriesFormSelector.Reminder(RecurringReminderChoiceEnum.SAME_DAY)
+        },
+        {
+            value: RecurringReminderChoiceEnum.ONE_DAY,
+            label: t`1 day`,
+            testID: RecurringSeriesFormSelector.Reminder(RecurringReminderChoiceEnum.ONE_DAY)
+        },
+        {
+            value: RecurringReminderChoiceEnum.THREE_DAYS,
+            label: t`3 days`,
+            testID: RecurringSeriesFormSelector.Reminder(RecurringReminderChoiceEnum.THREE_DAYS)
+        }
+    ];
+
+    return (
+        <GroupedListSection title={t`Reminder`} footer={t`Notify before the payment is due.`}>
+            <View className="p-md">
+                <SegmentedControl segments={segments} value={value} onChange={onChange} className="min-h-[44px]" />
+            </View>
+        </GroupedListSection>
+    );
+};

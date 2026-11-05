@@ -104,3 +104,12 @@ it.effect('converts every cadence to a monthly equivalent', () =>
         expect(monthlyEquivalent({ cadenceUnit: RecurringCadenceUnitEnum.WEEK, cadenceInterval: 2, amount: 12 })).toBeCloseTo(26);
     })
 );
+
+it.effect('yields no occurrences for a non-positive cadence interval', () =>
+    Effect.sync(() => {
+        const broken = schedule(RecurringCadenceUnitEnum.MONTH, 0, new Date(2026, 0, 31));
+
+        expect(nextOccurrences(broken, new Date(2026, 0, 31), 3)).toEqual([]);
+        expect(occurrencesInRange(broken, new Date(2026, 0, 1), new Date(2026, 5, 1))).toEqual([]);
+    })
+);
