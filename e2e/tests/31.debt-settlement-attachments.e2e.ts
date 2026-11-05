@@ -122,7 +122,7 @@ test('31 debt settlement attachments', { tags: ['debt'] }, async ({ budgie }) =>
         await selectAccountBySearch(ctx, LENT);
         await b.tapId(ctx, 'PageHeader.BackButton');
         await b.expectId(ctx, income, 5_000);
-        await expect(id(income)).toHaveText(/, Repayment · E2E Lent Debt,/);
+        await expect(id(income)).toHaveText(/, Repayment, E2E Lent Debt,/);
 
         await home();
         await balances(LENT, ['OutstandingAmount.12905_933', 'PaidAmount.2094_067', 'TotalAmount.15000', 'Percentage.13_96']);
@@ -199,7 +199,9 @@ test('31 debt settlement attachments', { tags: ['debt'] }, async ({ budgie }) =>
     await b.phase('expense with a fee attached to lent debt', async () => {
         await attachFromList('E2E_Fee_Debt_Attach_Expense', LENT);
         await b.expectId(ctx, card('E2E_Fee_Debt_Attach_Expense'), 5_000);
-        await expect(id(card('E2E_Fee_Debt_Attach_Expense'))).toHaveText(/, From E2E Txn Account to E2E Lent Debt,/);
+        await expect(id(card('E2E_Fee_Debt_Attach_Expense'))).toHaveText(
+            'E2E Fee Debt Attach Expense, From E2E Txn Account to E2E Lent Debt, Fee $5, $105 → €86'
+        );
         await home();
         await balances(LENT, ['OutstandingAmount.13492_233', 'PaidAmount.2094_067', 'TotalAmount.15586_3', 'Percentage.13_44']);
         await exitAccountDetailsToHome(ctx);
@@ -208,7 +210,7 @@ test('31 debt settlement attachments', { tags: ['debt'] }, async ({ budgie }) =>
     await b.phase('cross-currency expense attached to borrowed debt', async () => {
         await attachFromList('E2E_Cross_Currency_Debt_Attach', BORROWED);
         await b.expectId(ctx, card('E2E_Cross_Currency_Debt_Attach'), 5_000);
-        await expect(id(card('E2E_Cross_Currency_Debt_Attach'))).toHaveText(/, Repayment · E2E Borrowed Debt,/);
+        await expect(id(card('E2E_Cross_Currency_Debt_Attach'))).toHaveText(/, Repayment, E2E Borrowed Debt,/);
         await home();
         await balances(BORROWED, ['OutstandingAmount.281_767', 'PaidAmount.14812_3', 'TotalAmount.15094_067', 'Percentage.98_13']);
         await exitAccountDetailsToHome(ctx);

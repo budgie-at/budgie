@@ -33,7 +33,7 @@ test('22 refund consolidation', { tags: ['transactions'] }, async ({ budgie }) =
         await b.tapText(ctx, 'Convert to Refund');
         await b.expectId(ctx, 'ConvertToRefund.Page', 10_000);
         await b.expectId(ctx, 'ConvertToRefund.CandidateRow.2');
-        await expect(b.byText(screen, 'Convert to Refund')).toBeVisible();
+        await expect(b.byText(screen, 'Refund')).toBeVisible();
         await b.tapId(ctx, 'ConvertToRefund.CandidateRow.2');
         await expect(id('ConvertToRefund.ConvertButton')).toBeEnabled();
         await id('ConvertToRefund.SearchInput').fill('E2E Refund Full');
@@ -51,7 +51,7 @@ test('22 refund consolidation', { tags: ['transactions'] }, async ({ budgie }) =
         await expect(b.byText(screen, 'Convert to Refund?')).toBeVisible();
         await screen.getByRole('button', { name: 'Convert' }).last().tap();
         await b.expectId(ctx, 'TransactionInfo.Row.Consolidation', 10_000);
-        await sources(/^E2E Refund Partial, .*\+₴40$/i);
+        await sources(/^E2E Refund Partial, \+₴40, .*/i);
         await b.tapId(ctx, 'ConsolidationSourceModal.RevertButton');
         await t.confirmRevertConsolidation(ctx);
         await openInfo('3/income');
@@ -100,10 +100,10 @@ test('22 refund consolidation', { tags: ['transactions'] }, async ({ budgie }) =
 
     await b.phase('consolidation sources', async () => {
         await openInfo('4/expense', 'TransactionInfo.Row.Consolidation');
-        await sources(/^E2E Refund Full, .*\+₴55$/i);
+        await sources(/^E2E Refund Full, \+₴55, .*/i);
         await closeSources();
         await openInfo('9/expense', 'TransactionInfo.Row.Consolidation');
-        await sources(/^Скасування\. E2E Refund Localized, .*\+₴18$/i);
+        await sources(/^Скасування\. E2E Refund Localized, \+₴18, .*/i);
         await closeSources();
     });
 

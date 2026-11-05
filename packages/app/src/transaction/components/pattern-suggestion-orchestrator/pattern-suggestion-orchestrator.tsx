@@ -13,7 +13,6 @@ import { getPatternTagIds } from '../../utils/get-pattern-tag-ids.util';
 import { mergePatternCategories } from '../../utils/merge-pattern-categories.util';
 import { IconTitleSuggestionRow } from '../icon-title-suggestion-row/icon-title-suggestion-row';
 import { IconTitleSuggestionRowSelector } from '../icon-title-suggestion-row/icon-title-suggestion-row.selector';
-import { SuggestionRowSpacer } from '../suggestion-row-spacer/suggestion-row-spacer';
 
 interface Props extends SuggestionOrchestratorSharedProps {
     readonly config: PatternSuggestionOrchestratorConfig;
@@ -151,5 +150,5 @@ export const PatternSuggestionOrchestrator = (props: Props) => {
         );
     }
 
-    return <SuggestionRowSpacer />;
+    return null;
 };

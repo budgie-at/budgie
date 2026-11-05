@@ -53,7 +53,7 @@ export const MatchingRulesPill = ({ matchingRulesCount, matchingRuleIds }: Props
                     accessibilityRole="button"
                     className="min-h-[44px] max-w-full items-center justify-center self-center active:opacity-70"
                 >
-                    <RuleIndicatorPill icon={UserIconNameEnum.Workflow} className="min-h-[28px]" textClassName="text-[13px]">
+                    <RuleIndicatorPill icon={UserIconNameEnum.Workflow} className="min-h-[32px] px-lg" textClassName="text-[15px]">
                         {label}
                     </RuleIndicatorPill>
                 </HapticPressable>

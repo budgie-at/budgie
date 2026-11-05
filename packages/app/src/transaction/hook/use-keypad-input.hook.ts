@@ -11,7 +11,7 @@ interface UseKeypadInputConfig {
     readonly onChange?: (value: number) => void;
 }
 
-interface UseKeypadInputResult {
+export interface UseKeypadInputResult {
     readonly displayValue: string;
     readonly numericValue: number;
     readonly handlers: KeypadHandlersInterface;

@@ -14,6 +14,7 @@ interface Props extends ComponentProps<typeof TextInput> {
     readonly onChangeText: (value: string) => void;
     readonly containerClassName?: string;
     readonly inputClassName?: string;
+    readonly clearButtonClassName?: string;
 }
 
 const ANIMATION_DURATION = 140;
@@ -26,6 +27,7 @@ export const SearchInput = (props: Props) => {
         onChangeText,
         containerClassName,
         inputClassName,
+        clearButtonClassName,
         className,
         autoCapitalize,
         autoCorrect,
@@ -64,13 +66,13 @@ export const SearchInput = (props: Props) => {
                 submitBehavior={resolvedSubmitBehavior}
                 className={cn('ml-sm flex-1 text-md text-primary', className, inputClassName)}
             />
-            <View className="ml-sm h-[32px] w-[32px] items-center justify-center">
+            <View className={cn('ml-sm h-[32px] w-[32px] items-center justify-center', clearButtonClassName)}>
                 {showClear ? (
                     <Animated.View entering={ENTERING} exiting={EXITING}>
                         <Pressable
                             accessibilityLabel={t`Tap to clear`}
                             accessibilityRole="button"
-                            className="h-[32px] w-[32px] items-center justify-center"
+                            className={cn('h-[32px] w-[32px] items-center justify-center', clearButtonClassName)}
                             hitSlop={8}
                             onPress={handleClear}
                         >

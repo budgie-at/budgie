@@ -25,6 +25,7 @@ export const TransactionNoteFieldIcon = ({ onPress }: Props) => {
             icon={UserIconNameEnum.MessageSquare}
             label={t`Note`}
             value={noteValue}
+            placeholder={t`Add`}
             onPress={onPress}
             testID={SimpleQuickFormSelector.CommentInput}
         />
