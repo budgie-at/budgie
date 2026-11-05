@@ -51,6 +51,26 @@ export const SimpleQuickForm = (props: Props) => {
             {(fields, onConfirm) => (
                 <QuickFormLayout
                     footerHeight={footerHeight}
+                    suggestions={
+                        <SuggestionsContainer
+                            isNewTransaction={isNewTransaction}
+                            isSplitActive={formState.isSplitActive}
+                            transactionType={transactionType}
+                            transactionTitle={formState.title}
+                            categoryId={formState.categoryId}
+                            isCategoryUserConfirmed={formState.isCategoryUserConfirmed}
+                            mccCategoryId={formState.mccCategoryId}
+                            comment={formState.comment}
+                            aiContext={aiContext}
+                            accountId={formState.accountId}
+                            amount={formState.amount}
+                            hasTagsSelected={formState.hasTagsSelected}
+                            onSelectCategory={formState.handleSelectCategory}
+                            onSelectTag={formState.handleSelectTag}
+                            onSelectComment={formState.handleSelectComment}
+                            onFillPatternAmount={formState.handleFillPatternAmount}
+                        />
+                    }
                     amount={
                         <TransactionAmountDisplay
                             ref={amountDisplayRef}
@@ -91,24 +111,6 @@ export const SimpleQuickForm = (props: Props) => {
                     }
                 >
                     <View className="gap-y-[12px]">{fields}</View>
-                    <SuggestionsContainer
-                        isNewTransaction={isNewTransaction}
-                        isSplitActive={formState.isSplitActive}
-                        transactionType={transactionType}
-                        transactionTitle={formState.title}
-                        categoryId={formState.categoryId}
-                        isCategoryUserConfirmed={formState.isCategoryUserConfirmed}
-                        mccCategoryId={formState.mccCategoryId}
-                        comment={formState.comment}
-                        aiContext={aiContext}
-                        accountId={formState.accountId}
-                        amount={formState.amount}
-                        hasTagsSelected={formState.hasTagsSelected}
-                        onSelectCategory={formState.handleSelectCategory}
-                        onSelectTag={formState.handleSelectTag}
-                        onSelectComment={formState.handleSelectComment}
-                        onFillPatternAmount={formState.handleFillPatternAmount}
-                    />
                 </QuickFormLayout>
             )}
         </SimpleQuickFormControls>

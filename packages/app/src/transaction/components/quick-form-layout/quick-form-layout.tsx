@@ -16,6 +16,7 @@ import { useQuickFormLayout } from '../../hook/use-quick-form-layout.hook';
 interface Props {
     readonly amount: ReactNode;
     readonly context?: ReactNode;
+    readonly suggestions?: ReactNode;
     readonly children: ReactNode;
     readonly footer: ReactNode;
     readonly footerHeight?: number;
@@ -27,7 +28,7 @@ const SCROLL_VIEW_STYLE = { flex: 1 };
 const DARK_ROW_COLORS = { '--color-grouped-surface-row': '#151517', '--color-surface-row': '#151517' };
 const DEFAULT_ROW_COLORS = {};
 
-export const QuickFormLayout = ({ amount, context, children, footer, footerHeight }: Props) => {
+export const QuickFormLayout = ({ amount, context, suggestions, children, footer, footerHeight }: Props) => {
     const { theme } = useUniwind();
     const scrollRef = useRef<ScrollView>(null);
     const { requiresScrolling, handleLayout, handleAmountLayout, isLoading, keypadContainerStyle } = useQuickFormLayout(footerHeight);
@@ -53,6 +54,7 @@ export const QuickFormLayout = ({ amount, context, children, footer, footerHeigh
                     <RevealGate isLoading={isLoading}>
                         <View className="pt-[4px] pb-[8px]" onLayout={handleAmountLayout}>
                             {amount}
+                            {suggestions}
                         </View>
                         <View className="relative flex-1">
                             <ScreenChromeScrollView
