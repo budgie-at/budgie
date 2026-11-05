@@ -108,7 +108,7 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
                     () =>
                         void dispatch({
                             type: LlmCategorizationActionTypeEnum.CATEGORIZATION_FAILED,
-                            error: getRootErrorMessage(Cause.squash(cause))
+                            error: cause.pipe(Cause.squash, getRootErrorMessage)
                         })
                 )
             )

@@ -459,7 +459,7 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                     );
                 }),
                 failJob: (job: InstrumentMarketDataJobEntityInterface, cause: Cause.Cause<unknown>) =>
-                    instrumentMarketDataJobRepository.markFailed(job.id, getErrorMessage(Cause.squash(cause)))
+                    instrumentMarketDataJobRepository.markFailed(job.id, cause.pipe(Cause.squash, getErrorMessage))
             };
         })
     }

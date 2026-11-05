@@ -284,10 +284,12 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
         const syncSeriesAdoptingLegacyOnce = (now: Date) =>
             Effect.flatMap(Ref.get(isLegacyAdoptionPending), isPending =>
                 isPending
-                    ? legacyAdoptionLock.withPermits(1)(
-                          Effect.flatMap(Ref.get(isLegacyAdoptionPending), isStillPending =>
+                    ? isLegacyAdoptionPending.pipe(
+                          Ref.get,
+                          Effect.flatMap(isStillPending =>
                               Effect.tap(syncSeries(now, isStillPending), () => Ref.set(isLegacyAdoptionPending, false))
-                          )
+                          ),
+                          legacyAdoptionLock.withPermits(1)
                       )
                     : syncSeries(now, false)
             );

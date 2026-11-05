@@ -241,7 +241,7 @@ describe('privatbank/own-card-transfer-repair', () => {
                 Effect.die(new Error(CONVERSION_FAILURE_MESSAGE))
             );
 
-            const cause = yield* Effect.flip(Effect.sandbox(unpairedOwnCardTransferRepairService.repair()));
+            const cause = yield* unpairedOwnCardTransferRepairService.repair().pipe(Effect.sandbox, Effect.flip);
 
             expect(Cause.squash(cause)).toMatchObject({ message: CONVERSION_FAILURE_MESSAGE });
 

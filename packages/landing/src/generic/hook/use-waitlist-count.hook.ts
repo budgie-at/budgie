@@ -21,7 +21,7 @@ export const useWaitlistCount = (isEnabled: boolean) => {
                 : Effect.void
         );
 
-        return () => void Effect.runFork(Fiber.interrupt(fiber));
+        return () => void fiber.pipe(Fiber.interrupt, Effect.runFork);
     }, [isEnabled]);
 
     return waitlistCount;

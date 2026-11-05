@@ -117,7 +117,7 @@ const makeLifecycle = Effect.fnUntraced(function* (
         started,
         holdShutdown: Effect.gen(function* () {
             const released = yield* Deferred.make<boolean>();
-            shutdown = Effect.asVoid(Deferred.await(released));
+            shutdown = released.pipe(Deferred.await, Effect.asVoid);
 
             return { release: Deferred.succeed(released, true) };
         }),
@@ -190,11 +190,11 @@ describe('AI shutdown recovery', () => {
             const { coordinator, resumes, started, setIdle, setShutdown } = yield* makeLifecycle();
             const settled = yield* Deferred.make<boolean>();
             if (failure === 'timeout') {
-                setIdle(Effect.asVoid(Deferred.await(settled)));
+                setIdle(settled.pipe(Deferred.await, Effect.asVoid));
             } else {
                 setShutdown(Effect.fail(NativeCallError.make({ cause: 'release failed' })));
             }
-            const restarting = yield* Effect.forkChild(Effect.exit(coordinator.restart()));
+            const restarting = yield* coordinator.restart().pipe(Effect.exit, Effect.forkChild);
             if (failure === 'timeout') {
                 yield* TestClock.adjust('5001 millis');
             }

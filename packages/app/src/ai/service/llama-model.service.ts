@@ -48,7 +48,10 @@ export class LlamaModelService implements AiSubsystemServiceInterface {
     }).pipe(
         Effect.catchCause(cause =>
             Effect.sync(() => {
-                patchAtom(this.snapshot, { status: AiSubsystemStatusEnum.ERROR, errorMessage: getRootErrorMessage(Cause.squash(cause)) });
+                patchAtom(this.snapshot, {
+                    status: AiSubsystemStatusEnum.ERROR,
+                    errorMessage: cause.pipe(Cause.squash, getRootErrorMessage)
+                });
             })
         ),
         effect => this.contextLock.withPermit(Effect.uninterruptible(effect)),

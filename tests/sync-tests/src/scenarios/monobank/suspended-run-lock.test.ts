@@ -68,11 +68,12 @@ describe('monobank/suspended-run-lock', () => {
                 ),
                 spy => Effect.sync(() => void spy.mockRestore())
             );
-            const blockerWork = yield* Effect.forkChild(
-                inWorkload(Effect.andThen(Deferred.succeed(blockerStarted, undefined), Deferred.await(blockerGate)))
+            const blockerWork = yield* Effect.andThen(Deferred.succeed(blockerStarted, undefined), Deferred.await(blockerGate)).pipe(
+                inWorkload,
+                Effect.forkChild
             );
             yield* Deferred.await(blockerStarted);
-            const queuedWork = yield* Effect.forkChild(inWorkload(Effect.void));
+            const queuedWork = yield* Effect.void.pipe(inWorkload, Effect.forkChild);
 
             mockServer.use(
                 http.get(statementEndpoint, ({ params }) => {
@@ -91,14 +92,14 @@ describe('monobank/suspended-run-lock', () => {
 
             const firstSync = yield* Effect.forkChild(monobankSyncService.sync());
             yield* Deferred.await(firstRequestStarted);
-            const nestedSync = yield* Effect.forkChild(inWorkload(monobankSyncService.sync()));
+            const nestedSync = yield* monobankSyncService.sync().pipe(inWorkload, Effect.forkChild);
             yield* Deferred.succeed(firstRequestRelease, undefined);
             yield* Fiber.join(firstSync);
             yield* Deferred.succeed(blockerGate, undefined);
             yield* Fiber.join(blockerWork);
             yield* Fiber.join(queuedWork);
             yield* Deferred.await(secondClaimStarted);
-            const workBehindSecondSync = yield* Effect.forkChild(inWorkload(Effect.void));
+            const workBehindSecondSync = yield* Effect.void.pipe(inWorkload, Effect.forkChild);
             for (let attempt = 0; attempt < 100 && !(yield* workload.hasQueuedWork); attempt += 1) {
                 yield* TestClock.withLive(Effect.sleep(10));
             }
@@ -137,10 +138,10 @@ describe('monobank/suspended-run-lock', () => {
                 })
             );
 
-            const foregroundSync = yield* Effect.forkChild(inWorkload(monobankSyncService.sync()).pipe(Effect.ignore));
+            const foregroundSync = yield* monobankSyncService.sync().pipe(inWorkload, Effect.ignore, Effect.forkChild);
             yield* Effect.promise(() => statementRequestStarted.promise);
             yield* workload.interruptBackground;
-            const backgroundSync = yield* Effect.forkChild(inWorkload(monobankSyncService.sync()));
+            const backgroundSync = yield* monobankSyncService.sync().pipe(inWorkload, Effect.forkChild);
             yield* Effect.sleep(nextTaskDelayMs);
             const didReplacementRequestStartWhileForegroundWasSuspended = requestedStatementCount === 2;
 

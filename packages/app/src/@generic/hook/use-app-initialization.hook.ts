@@ -92,7 +92,7 @@ const initializeAppServices = Effect.gen(function* () {
 
 const scheduleAppServicesInitialization = Effect.sleep(STARTUP_SERVICE_DELAY_MS).pipe(
     Effect.andThen(waitForIdle),
-    Effect.andThen(Effect.forkDetach(logAndContinue(initializeAppServices)))
+    Effect.andThen(initializeAppServices.pipe(logAndContinue, Effect.forkDetach))
 );
 
 const hideSplashScreen = Effect.sleep(SPLASH_HIDE_DELAY_MS).pipe(Effect.andThen(Effect.promise(() => SplashScreen.hideAsync())));

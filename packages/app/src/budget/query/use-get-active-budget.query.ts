@@ -13,4 +13,4 @@ export const activeBudgetAtom = databaseQueryAtom(
     Effect.flatMap(BudgetRepository, budgetRepository => budgetRepository.findMain)
 );
 
-export const useGetActiveBudgetQuery = (): BudgetQueryResultInterface => resolveBudgetQueryResult(useLiveAtomValue(activeBudgetAtom));
+export const useGetActiveBudgetQuery = (): BudgetQueryResultInterface => activeBudgetAtom.pipe(useLiveAtomValue, resolveBudgetQueryResult);

@@ -34,7 +34,7 @@ export abstract class BaseSyncProviderClient {
 
     private static readonly ApiErrorSchema = Schema.Struct({
         code: Schema.optional(Schema.Union([Schema.String, Schema.Finite])),
-        error: Schema.optional(Schema.NullOr(Schema.String)),
+        error: Schema.String.pipe(Schema.NullOr, Schema.optional),
         message: Schema.optional(Schema.String),
         msg: Schema.optional(Schema.String)
     });

@@ -29,5 +29,7 @@ export const useDatabaseMigration = (): DatabaseMigrationStatusEnum =>
         onInitial: () => DatabaseMigrationStatusEnum.MIGRATING,
         onSuccess: () => DatabaseMigrationStatusEnum.MIGRATED,
         onFailure: ({ cause }) =>
-            Schema.is(DatabaseOpenError)(Cause.squash(cause)) ? DatabaseMigrationStatusEnum.UNOPENABLE : DatabaseMigrationStatusEnum.FAILED
+            cause.pipe(Cause.squash, Schema.is(DatabaseOpenError))
+                ? DatabaseMigrationStatusEnum.UNOPENABLE
+                : DatabaseMigrationStatusEnum.FAILED
     });

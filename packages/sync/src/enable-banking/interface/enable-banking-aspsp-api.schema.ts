@@ -4,8 +4,8 @@ const EnableBankingAspspApiSchema = Schema.Struct({
     name: Schema.String,
     country: Schema.String,
     maximum_consent_validity: Schema.Finite,
-    beta: Schema.optional(Schema.NullOr(Schema.Boolean)),
-    required_psu_headers: Schema.optional(Schema.NullOr(Schema.Array(Schema.String)))
+    beta: Schema.Boolean.pipe(Schema.NullOr, Schema.optional),
+    required_psu_headers: Schema.String.pipe(Schema.Array, Schema.NullOr, Schema.optional)
 });
 
 export const EnableBankingAspspListApiSchema = Schema.Struct({ aspsps: Schema.Array(EnableBankingAspspApiSchema) });

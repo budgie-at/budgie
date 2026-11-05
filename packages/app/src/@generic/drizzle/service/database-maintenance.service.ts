@@ -66,8 +66,9 @@ export class DatabaseMaintenanceService extends Context.Service<DatabaseMaintena
 
         return {
             compact: Effect.fn('DatabaseMaintenanceService.compact')(function* () {
-                const vectorExit = yield* Effect.exit(
-                    withFileTempStore(Effect.forEach(vectorTableNames, compactVectorTable, { discard: true }))
+                const vectorExit = yield* Effect.forEach(vectorTableNames, compactVectorTable, { discard: true }).pipe(
+                    withFileTempStore,
+                    Effect.exit
                 );
 
                 yield* withFileTempStore(vacuumWhenFragmented());

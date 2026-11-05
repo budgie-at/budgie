@@ -48,7 +48,7 @@ export class RuleApplicationDrainerService extends Context.Service<RuleApplicati
                         Effect.logError('processPendingTransactionBatch:throw', {
                             queuedTransactionIds: transactionIds.join(','),
                             queuedInputCount: transactionInputs.length,
-                            errorMessage: getErrorMessage(Cause.squash(cause))
+                            errorMessage: cause.pipe(Cause.squash, getErrorMessage)
                         })
                     ),
                     Effect.ignoreCause

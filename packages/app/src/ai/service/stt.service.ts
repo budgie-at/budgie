@@ -132,7 +132,7 @@ export class SttService extends Context.Service<SttService>()('@budgie/app/SttSe
                     Effect.sync(() => {
                         patchAtom(sttSnapshotAtom, {
                             status: AiSubsystemStatusEnum.ERROR,
-                            errorMessage: getRootErrorMessage(Cause.squash(cause))
+                            errorMessage: cause.pipe(Cause.squash, getRootErrorMessage)
                         });
                     }).pipe(Effect.andThen(aiModelDownloadService.markDamaged(AiSubsystemNameEnum.STT)))
                 ),

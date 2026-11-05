@@ -28,28 +28,25 @@ export class BackgroundSyncSessionService extends Context.Service<BackgroundSync
                         return;
                     }
 
-                    yield* Effect.forkDetach(
-                        logAndContinue(
-                            Stream.runForEach(
-                                reactivity.stream([getTableName(SyncEntityTable)], pendingBackwardSyncs).pipe(
-                                    Stream.mapAccum(
-                                        () => 0,
-                                        (completed, syncs) => [isNotEmptyArray(syncs) ? completed + 1 : 0, [[syncs, completed] as const]]
-                                    )
-                                ),
-                                ([syncs, completed]) =>
-                                    Effect.promise(() =>
-                                        isNotEmptyArray(syncs)
-                                            ? nativeModule.update(
-                                                  t`Syncing bank history`,
-                                                  t`Your transactions keep importing in the background`,
-                                                  completed,
-                                                  completed + syncs.length
-                                              )
-                                            : nativeModule.stop()
-                                    )
+                    yield* reactivity.stream([getTableName(SyncEntityTable)], pendingBackwardSyncs).pipe(
+                        Stream.mapAccum(
+                            () => 0,
+                            (completed, syncs) => [isNotEmptyArray(syncs) ? completed + 1 : 0, [[syncs, completed] as const]]
+                        ),
+                        Stream.runForEach(([syncs, completed]) =>
+                            Effect.promise(() =>
+                                isNotEmptyArray(syncs)
+                                    ? nativeModule.update(
+                                          t`Syncing bank history`,
+                                          t`Your transactions keep importing in the background`,
+                                          completed,
+                                          completed + syncs.length
+                                      )
+                                    : nativeModule.stop()
                             )
-                        )
+                        ),
+                        logAndContinue,
+                        Effect.forkDetach
                     );
                 })
             };

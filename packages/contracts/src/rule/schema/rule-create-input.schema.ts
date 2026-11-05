@@ -7,6 +7,6 @@ import { RuleConditionMatchTypeEnum } from '../enum/rule-condition-match-type.en
 export const RuleCreateInputSchema = Schema.Struct({
     enabled: Schema.Boolean,
     conditionMatchType: Schema.Enum(RuleConditionMatchTypeEnum),
-    conditions: Schema.mutable(Schema.Array(RuleConditionCreateInputSchema)),
-    actions: Schema.mutable(Schema.Array(RuleActionCreateInputSchema))
+    conditions: RuleConditionCreateInputSchema.pipe(Schema.Array, Schema.mutable),
+    actions: RuleActionCreateInputSchema.pipe(Schema.Array, Schema.mutable)
 });

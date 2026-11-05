@@ -53,7 +53,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
 
         const backgroundTaskMinimumIntervalMinutes = 15;
         const storageKeyPrefix = '@budgie:budget-alerts-fired';
-        const firedTriggersSchema = Schema.fromJsonString(Schema.Array(Schema.String));
+        const firedTriggersSchema = Schema.String.pipe(Schema.Array, Schema.fromJsonString);
         const storage = yield* Effect.acquireRelease(
             Effect.sync(() => new Storage({ name: 'budget-alerts.sqlite' })),
             budgetAlertStorage =>

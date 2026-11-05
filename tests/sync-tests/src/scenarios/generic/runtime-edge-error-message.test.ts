@@ -27,7 +27,7 @@ describe('generic/runtime-edge-error-message', () => {
         Effect.gen(function* () {
             const exit = yield* Effect.exit(effect);
 
-            expect(Exit.isFailure(exit) ? getErrorMessage(Cause.squash(exit.cause)) : null).toBe(KEYCHAIN_LOCKED);
+            expect(Exit.isFailure(exit) ? exit.cause.pipe(Cause.squash, getErrorMessage) : null).toBe(KEYCHAIN_LOCKED);
         }).pipe(Effect.provide(TestLayer))
     );
 });

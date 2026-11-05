@@ -73,7 +73,7 @@ const holdNativeCall = Effect.fnUntraced(function* <A>(result: A) {
 });
 
 const interruptAndStop = Effect.fnUntraced(function* <A, E, B, E2, R>(running: Fiber.Fiber<A, E>, stop: Effect.Effect<B, E2, R>) {
-    const interrupting = yield* Effect.forkChild(Fiber.interrupt(running));
+    const interrupting = yield* running.pipe(Fiber.interrupt, Effect.forkChild);
     const stopping = yield* Effect.forkChild(stop);
     yield* Effect.yieldNow;
 
@@ -145,7 +145,7 @@ layer(aiModelDownloadStub)('AI native ownership initialization', it => {
             native.initialize.mockImplementation(initialization.invoke);
             const starting = yield* Effect.forkChild(chat.model.start);
             yield* initialization.entered;
-            const interrupting = yield* Effect.forkChild(Fiber.interrupt(starting));
+            const interrupting = yield* starting.pipe(Fiber.interrupt, Effect.forkChild);
             yield* Effect.yieldNow;
             const stopping = yield* Effect.forkChild(chat.model.stop);
             yield* Effect.yieldNow;

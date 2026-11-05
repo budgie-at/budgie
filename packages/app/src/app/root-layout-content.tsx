@@ -110,7 +110,7 @@ const handleAppStateChange = (isActive: boolean): void => {
                 workload.run(
                     Effect.gen(function* () {
                         if (yield* appDataSyncService.sync()) {
-                            yield* Effect.forkDetach(logAndContinue(historicalMarketDataDrainerService.enqueueActiveAccounts()));
+                            yield* historicalMarketDataDrainerService.enqueueActiveAccounts().pipe(logAndContinue, Effect.forkDetach);
                         }
                     })
                 )
