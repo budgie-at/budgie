@@ -27,6 +27,8 @@ import { defaultAccountAtom } from '../settings/constants/settings-atoms.constan
 
 import { VoiceReviewSelector } from './voice-review.selector';
 
+const EMPTY_SHEET_DETENT = 0.45;
+const EXPANDED_SHEET_DETENT = 0.95;
 const SCROLL_CONTENT_STYLE = { paddingHorizontal: 16, paddingTop: 16, paddingBottom: 24, flexGrow: 1 } as const;
 
 const sumAmounts = (rows: { readonly amount: number }[]): number => rows.reduce((accumulator, row) => accumulator + row.amount, 0);
@@ -71,7 +73,10 @@ export default function VoiceReviewModal() {
     const accountId = defaultAccount?.id ?? null;
     const { account: accountWithInstrument } = useGetAccountByIdQuery(accountId ?? 0);
     const currencySymbol = accountWithInstrument?.instrument.symbol ?? '';
-    const screenOptions = formSheetOptions(isEmptyArray(rows) ? [0.45, 0.95] : [0.65, 0.95], 0);
+    const screenOptions = formSheetOptions(
+        isEmptyArray(rows) ? [EMPTY_SHEET_DETENT, EXPANDED_SHEET_DETENT] : [0.65, EXPANDED_SHEET_DETENT],
+        0
+    );
     const canDelete = rows.length > 1;
     const canSaveToAccount = canSave && isPositiveNumber(accountId);
 
