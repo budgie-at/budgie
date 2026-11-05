@@ -14,11 +14,19 @@ export async function tapUntilId(ctx: Ctx, testId: string, targetId: string, ret
     });
 }
 
+async function focusAmount(ctx: Ctx): Promise<void> {
+    if (!(await byId(ctx.screen, 'TransactionKeypad.Digit.1').isVisible())) {
+        await tapId(ctx, 'TransactionForm.AmountInput');
+        await expectId(ctx, 'TransactionKeypad.Digit.1');
+    }
+}
+
 /** Taps keypad digits in order (`'42'` taps 4 then 2). */
 export async function typeDigits(ctx: Ctx, digits: string): Promise<void> {
+    await focusAmount(ctx);
     for (const digit of digits) {
         if (digit === '.') {
-            await ctx.screen.getByRole('button', { name: '.' }).first().tap();
+            await tapId(ctx, 'TransactionKeypad.Decimal');
         } else {
             await tapId(ctx, `TransactionKeypad.Digit.${digit}`);
         }
@@ -27,6 +35,7 @@ export async function typeDigits(ctx: Ctx, digits: string): Promise<void> {
 
 /** `longPressOn: TransactionKeypad.Backspace`: clears the whole amount. */
 export async function clearAmount(ctx: Ctx): Promise<void> {
+    await focusAmount(ctx);
     await byId(ctx.screen, 'TransactionKeypad.Backspace').longPress();
 }
 
@@ -169,13 +178,6 @@ export async function longPressConvertToTransfer(ctx: Ctx, cardId: string): Prom
     await expectId(ctx, 'TransactionContextMenu.StartDepositButton');
     await tapId(ctx, 'TransactionContextMenu.ConvertToTransferButton');
     await expectId(ctx, 'ConvertToTransfer.Page', 10_000);
-}
-
-/** subflows/transactions/confirm-convert-to-transfer */
-export async function confirmConvertToTransfer(ctx: Ctx): Promise<void> {
-    await expect(byText(ctx.screen, 'Convert to Transfer?')).toBeVisible({ timeout: 10_000 });
-    await ctx.screen.getByText('Convert').first().tap();
-    await expectNoId(ctx, 'ConvertToTransfer.Page', 15_000);
 }
 
 /** subflows/transactions/confirm-revert-consolidation */

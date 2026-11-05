@@ -23,7 +23,7 @@ export const TransactionFeeSaveButton = ({ isDisabled, onPress }: Props) => {
             disabled={isDisabled}
             accessibilityRole="button"
             accessibilityState={accessibilityState}
-            className={cn('min-h-[52px] items-center justify-center rounded-full px-5xl py-md', backgroundClassName)}
+            className={cn('min-h-[52px] items-center justify-center rounded-3xl px-xl py-md', backgroundClassName)}
             style={CONTINUOUS_CORNERS}
             testID={TransactionFeeModalContentSelector.SaveButton}
         >

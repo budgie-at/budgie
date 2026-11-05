@@ -21,11 +21,7 @@ test('08 expense transaction', { tags: ['transactions'] }, async ({ budgie }) =>
         await t.navigateToTransactions(ctx);
         await t.openTransactionForm(ctx, 'ActionItem.Expense', 'New Expense');
         await b.expectId(ctx, 'TransactionForm.SelectedAccount.E2E_Txn_Account');
-        for (let i = 0; i < 2; i++) {
-            await b.tapId(ctx, 'TransactionForm.SubmitButton');
-            await b.expectText(ctx, 'New Expense');
-            await b.expectText(ctx, 'Enter an amount');
-        }
+        await expect(b.byId(ctx.screen, 'TransactionForm.SubmitButton')).toBeDisabled();
         await t.typeDigits(ctx, '42');
         await t.selectAccount(ctx, 'E2E Txn Account');
         await c.createCategoryFromTransaction(ctx, 'E2E Txn Category');
@@ -71,8 +67,7 @@ test('08 expense transaction', { tags: ['transactions'] }, async ({ budgie }) =>
         await b.expectNoId(ctx, 'TransactionActionsMenu.RevertButton');
         await b.tapId(ctx, 'TransactionActionsMenu.TriggerButton');
 
-        await b.tapId(ctx, 'TransactionKeypad.Backspace');
-        await b.tapId(ctx, 'TransactionKeypad.Backspace');
+        await t.clearAmount(ctx);
         await t.typeDigits(ctx, '33');
         await c.createCategoryFromTransaction(ctx, 'E2E Edited Category');
         await t.editComment(ctx, 'E2E Edited Expense');

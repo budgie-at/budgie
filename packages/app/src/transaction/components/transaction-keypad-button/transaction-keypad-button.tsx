@@ -8,6 +8,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { TRANSACTION_KEYPAD_MAX_FONT_SCALE } from '../../constant/transaction-keypad-max-font-scale.constant';
 
 type KeypadButtonVariant = 'digit' | 'action' | 'cancel';
 
@@ -33,9 +34,9 @@ const buttonVariants = cva<{
 }>('min-h-[44px] items-center justify-center rounded-xl', {
     variants: {
         buttonVariant: {
-            digit: 'flex-1 bg-transaction-detail-row',
-            action: 'flex-1 bg-transparent',
-            cancel: 'flex-1 bg-transaction-detail-row'
+            digit: 'flex-1 bg-grouped-surface-fill active:opacity-70',
+            action: 'flex-1 bg-grouped-surface-fill active:opacity-70',
+            cancel: 'flex-1 bg-grouped-surface-fill active:opacity-70'
         }
     },
     defaultVariants: { buttonVariant: 'digit' }
@@ -94,7 +95,9 @@ export const TransactionKeypadButton = (props: Props) => {
                 {isDefined(icon) ? (
                     <Icon className={contentClassName} icon={icon} size={ICON_SIZE} />
                 ) : (
-                    <Text className={contentClassName}>{value}</Text>
+                    <Text className={contentClassName} maxFontSizeMultiplier={TRANSACTION_KEYPAD_MAX_FONT_SCALE}>
+                        {value}
+                    </Text>
                 )}
             </Animated.View>
         </HapticPressable>

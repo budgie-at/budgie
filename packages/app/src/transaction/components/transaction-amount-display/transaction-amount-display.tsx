@@ -1,11 +1,13 @@
 import { AmountField, AmountFieldText } from '@budgie/amount-input';
+import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
-import { ReactNode, RefObject, useEffect, useImperativeHandle, useRef } from 'react';
+import { RefObject, useImperativeHandle } from 'react';
 import { Pressable, useWindowDimensions, View } from 'react-native';
-import Animated, { ReduceMotion, FadeIn, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { Icon } from '../../../@generic/component/icon/icon';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { PROTECTED_AMOUNT_PLACEHOLDER } from '../../../@generic/constant/protected-amount-placeholder.constant';
 import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
@@ -23,10 +25,10 @@ interface Props {
     readonly amount: string;
     readonly currencySymbol: string;
     readonly variant: ColorPaletteVariant;
-    readonly topContent?: ReactNode;
     readonly onPress?: () => void;
     readonly testID?: string;
-    readonly children?: ReactNode;
+    readonly accessoryIcon?: UserIconNameEnum;
+    readonly accessibilityHint?: string;
 }
 
 const textVariants = cva('text-center font-semibold tabular-nums', {
@@ -35,64 +37,54 @@ const textVariants = cva('text-center font-semibold tabular-nums', {
     }
 });
 
-const AMOUNT_MIN_HEIGHT = 64;
-const BOUNCE_SCALE = 1.04;
-const BOUNCE_SPRING = { damping: 12, mass: 0.8, stiffness: 200, reduceMotion: ReduceMotion.System };
-const RETURN_SPRING = { damping: 15, mass: 1, stiffness: 150, reduceMotion: ReduceMotion.System };
-
-export const TransactionAmountDisplay = ({ ref, amount, currencySymbol, variant, topContent, onPress, testID, children }: Props) => {
+const AMOUNT_MIN_HEIGHT = 56;
+const MAX_AMOUNT_FONT_SCALE = 2;
+export const TransactionAmountDisplay = ({
+    ref,
+    amount,
+    currencySymbol,
+    variant,
+    onPress,
+    testID,
+    accessoryIcon,
+    accessibilityHint
+}: Props) => {
     const isAmountProtected = useIsAmountProtected();
-    const amountContainerStyle = { minHeight: AMOUNT_MIN_HEIGHT * useWindowDimensions().fontScale };
+    const amountContainerStyle = { minHeight: AMOUNT_MIN_HEIGHT * Math.min(useWindowDimensions().fontScale, MAX_AMOUNT_FONT_SCALE) };
     const { decimalSeparator, digitGroupingSeparator } = useLocaleInfo();
     const { shake, animatedStyle: shakeStyle } = useShakeAnimation();
-    const scale = useSharedValue(1);
-    const previousAmount = useRef(amount);
 
     useImperativeHandle(ref, () => ({ shake }));
 
-    useEffect(() => {
-        if (amount !== previousAmount.current) {
-            scale.set(
-                withSpring(BOUNCE_SCALE, BOUNCE_SPRING, finished => {
-                    if (finished) {
-                        scale.set(withSpring(1, RETURN_SPRING));
-                    }
-                })
-            );
-            previousAmount.current = amount;
-        }
-    }, [amount, scale]);
-
-    const scaleStyle = useAnimatedStyle(() => ({
-        transform: [{ scale: scale.value }]
-    }));
-
+    const displaySymbol = variant === 'positive' && !currencySymbol.startsWith('+') ? `+${currencySymbol}` : currencySymbol;
     const fullDisplay = isAmountProtected
         ? PROTECTED_AMOUNT_PLACEHOLDER
-        : `${currencySymbol}${formatKeypadAmount(amount, decimalSeparator, digitGroupingSeparator)}`;
+        : `${displaySymbol}${formatKeypadAmount(amount, decimalSeparator, digitGroupingSeparator)}`;
 
     return (
-        <Animated.View entering={FadeIn.duration(200).reduceMotion(ReduceMotion.System)} className="items-center self-stretch">
-            <View className="min-h-[22px] flex-row flex-wrap items-center justify-center gap-xs self-stretch">{topContent}</View>
-            <View className="items-center self-stretch">
-                <Pressable
-                    className="justify-center self-stretch"
-                    style={amountContainerStyle}
-                    onPress={onPress}
-                    disabled={!isDefined(onPress)}
-                >
-                    <Animated.View style={shakeStyle} className="w-full">
-                        <Animated.View style={scaleStyle}>
-                            <AmountField fontSize={52}>
-                                <AmountFieldText className={textVariants({ variant })} testID={testID}>
-                                    {fullDisplay}
-                                </AmountFieldText>
-                            </AmountField>
-                        </Animated.View>
-                    </Animated.View>
-                </Pressable>
-                {children}
-            </View>
-        </Animated.View>
+        <Pressable
+            className="flex-row items-center justify-center self-stretch"
+            style={amountContainerStyle}
+            onPress={onPress}
+            disabled={!isDefined(onPress)}
+            accessibilityRole="button"
+            accessibilityLabel={fullDisplay}
+            accessibilityHint={accessibilityHint}
+            testID={testID}
+        >
+            {isDefined(accessoryIcon) ? <View className="w-[44px]" /> : null}
+            <Animated.View style={shakeStyle} className="min-w-0 flex-1">
+                <AmountField fontSize={40}>
+                    <AmountFieldText maxFontSizeMultiplier={MAX_AMOUNT_FONT_SCALE} className={textVariants({ variant })}>
+                        {fullDisplay}
+                    </AmountFieldText>
+                </AmountField>
+            </Animated.View>
+            {isDefined(accessoryIcon) ? (
+                <View className="h-[44px] w-[44px] items-center justify-center">
+                    <Icon icon={accessoryIcon} size={20} className="text-secondary-foreground" />
+                </View>
+            ) : null}
+        </Pressable>
     );
 };

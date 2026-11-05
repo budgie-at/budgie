@@ -40,12 +40,35 @@ test('11 cross currency transfer transaction', { tags: ['transactions'] }, async
         await b.expectId(ctx, 'TransferForm.ConversionRow', 5_000);
         await t.clearAmount(ctx);
         await t.typeDigits(ctx, '50');
+        await b.expectText(ctx, /43\.15/);
         await b.tapId(ctx, 'TransactionForm.SubmitButton');
         await b.expectId(ctx, 'TransactionInfo.Page', 15_000);
         await b.expectId(ctx, 'TransactionInfo.Row.ExchangeRate');
         await b.tapId(ctx, 'PageHeader.BackButton');
         await b.expectId(ctx, 'TransactionCard.Label.E2E_Cross_Currency_Transfer', 5_000);
-        await home('50', '150');
+        await home('50', '143');
+        await b.expectId(ctx, 'HomePage.NetWorthValue.216');
+        await transactionsTab();
+    });
+
+    await b.phase('preserve the manual rate after changing the source amount', async () => {
+        await t.openTransaction(ctx, 'E2E_Cross_Currency_Transfer');
+        await b.tapId(ctx, 'TransactionInfo.EditButton.Label');
+        await b.tapId(ctx, 'TransferForm.ConversionRow');
+        await t.clearAmount(ctx);
+        await t.typeDigits(ctx, '45');
+        await b.tapId(ctx, 'TransactionForm.SubmitButton');
+        await t.clearAmount(ctx);
+        await t.typeDigits(ctx, '25');
+        await b.expectText(ctx, /22\.50/);
+        await b.tapId(ctx, 'TransactionForm.SubmitButton');
+        await b.expectId(ctx, 'TransactionInfo.Page', 15_000);
+        await b.tapId(ctx, 'TransactionInfo.EditButton.Label');
+        await b.expectText(ctx, /22\.50/);
+        await b.tapId(ctx, 'PageHeader.BackButton');
+        await b.expectId(ctx, 'TransactionInfo.Page');
+        await b.tapId(ctx, 'PageHeader.BackButton');
+        await home('75', '122');
         await transactionsTab();
     });
 

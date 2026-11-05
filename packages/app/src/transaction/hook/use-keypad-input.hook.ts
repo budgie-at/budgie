@@ -18,23 +18,19 @@ interface UseKeypadInputResult {
     readonly setFromNumeric: (value: number) => void;
 }
 
-const formatNumericDisplay = (value: number, maxDecimalPlaces: number): string => {
-    const rounded = Number.parseFloat(value.toFixed(maxDecimalPlaces));
-
-    return rounded.toString();
-};
+const formatNumericInput = (value: number): string => value.toLocaleString('en-US', { useGrouping: false, maximumFractionDigits: 20 });
 
 export const useKeypadInput = (config: UseKeypadInputConfig = {}): UseKeypadInputResult => {
     const { initialValue = 0, onChange } = config;
     const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const maxDecimals = Math.max(decimalPlaces, 2);
-    const [displayValue, setDisplayValue] = useState(() => (initialValue === 0 ? '0' : formatNumericDisplay(initialValue, maxDecimals)));
-    const numericValue = Number.parseFloat(displayValue) || 0;
+    const [inputValue, setInputValue] = useState(() => formatNumericInput(initialValue));
+    const numericValue = Number.parseFloat(inputValue) || 0;
 
     const commit = (nextDisplayValue: string) => {
         const nextNumericValue = Number.parseFloat(nextDisplayValue) || 0;
 
-        setDisplayValue(nextDisplayValue);
+        setInputValue(nextDisplayValue);
 
         if (nextNumericValue !== numericValue) {
             onChange?.(nextNumericValue);
@@ -42,33 +38,33 @@ export const useKeypadInput = (config: UseKeypadInputConfig = {}): UseKeypadInpu
     };
 
     const handleDigit = (digit: string) => {
-        if (displayValue === '0') {
+        if (inputValue === '0') {
             commit(digit);
 
             return;
         }
 
-        const [, decimalPart] = displayValue.split('.');
+        const [, decimalPart] = inputValue.split('.');
 
         if (isDefined(decimalPart) && decimalPart.length >= maxDecimals) {
             return;
         }
 
-        commit(displayValue + digit);
+        commit(inputValue + digit);
     };
 
     const handleDecimal = () => {
-        if (!displayValue.includes('.')) {
-            commit(`${displayValue}.`);
+        if (!inputValue.includes('.')) {
+            commit(`${inputValue}.`);
         }
     };
 
     const handleBackspace = () => {
-        commit(displayValue.length <= 1 ? '0' : displayValue.slice(0, -1));
+        commit(inputValue.length <= 1 ? '0' : inputValue.slice(0, -1));
     };
 
     const setFromNumeric = (value: number) => {
-        commit(value === 0 ? '0' : formatNumericDisplay(value, maxDecimals));
+        commit(formatNumericInput(value));
     };
 
     const handlers: KeypadHandlersInterface = {
@@ -80,5 +76,5 @@ export const useKeypadInput = (config: UseKeypadInputConfig = {}): UseKeypadInpu
         }
     };
 
-    return { displayValue, numericValue, handlers, setFromNumeric };
+    return { displayValue: inputValue, numericValue, handlers, setFromNumeric };
 };

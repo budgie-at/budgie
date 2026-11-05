@@ -13,7 +13,9 @@ import * as Effect from 'effect/Effect';
 import { NotificationFeedbackType } from 'expo-haptics';
 import { useState } from 'react';
 import { ScrollView, Text, View, useWindowDimensions } from 'react-native';
-import { KeyboardController } from 'react-native-keyboard-controller';
+import { KeyboardController, useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller';
+import Animated, { useAnimatedStyle } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -45,8 +47,6 @@ import { SplitEntriesItem } from '../split-entries-item/split-entries-item';
 
 import { SplitEntriesModalContentSelector } from './split-entries-modal-content.selector';
 
-const SHEET_MAX_HEIGHT_RATIO = 0.7;
-const SHEET_CHROME_HEIGHT = 160;
 const CONTENT_CONTAINER_STYLE = { paddingHorizontal: 16, paddingBottom: 12 };
 
 interface Props {
@@ -62,8 +62,10 @@ interface Props {
 export const SplitEntriesModalContent = (props: Props) => {
     const { initialEntries, variant, entryType, currencySymbol, totalAmount, onConfirm } = props;
 
-    const { height, fontScale } = useWindowDimensions();
-    const scrollStyle = { maxHeight: Math.max(100, height * SHEET_MAX_HEIGHT_RATIO - SHEET_CHROME_HEIGHT * fontScale), flexGrow: 0 };
+    const { height: windowHeight } = useWindowDimensions();
+    const { top } = useSafeAreaInsets();
+    const { height } = useReanimatedKeyboardAnimation();
+    const sheetStyle = useAnimatedStyle(() => ({ maxHeight: windowHeight - top - Math.abs(height.value) - 24 }));
     const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const splitRemainderDecimalPlaces = Math.max(decimalPlaces, DEFAULT_DECIMAL_PLACES);
     const formatDigits = useFormatDigits(splitRemainderDecimalPlaces);
@@ -181,10 +183,9 @@ export const SplitEntriesModalContent = (props: Props) => {
     const remainderClassName = isOverBudget ? 'text-destructive-strong' : 'text-secondary-foreground';
 
     return (
-        <View className="bg-sheet-surface">
-            <SheetTitle title={t`Split`} />
-
-            <ScrollView contentContainerStyle={CONTENT_CONTAINER_STYLE} keyboardShouldPersistTaps="handled" style={scrollStyle}>
+        <Animated.View className="bg-sheet-surface" style={sheetStyle}>
+            <ScrollView contentContainerStyle={CONTENT_CONTAINER_STYLE} keyboardShouldPersistTaps="handled">
+                <SheetTitle title={t`Split`} />
                 <GroupedListSection>
                     {entries.map((entry, index) => (
                         <SplitEntriesItem
@@ -221,16 +222,15 @@ export const SplitEntriesModalContent = (props: Props) => {
                         </GroupedListSection>
                     </View>
                 ) : null}
+                <View className="bg-sheet-surface pt-3xl pb-safe-or-[16px]">
+                    <PillButton
+                        label={t`Done`}
+                        isDisabled={!canConfirm}
+                        onPress={handleConfirm}
+                        testID={SplitEntriesModalContentSelector.ConfirmButton}
+                    />
+                </View>
             </ScrollView>
-
-            <View className="bg-sheet-surface px-xl pt-3xl pb-safe-or-[16px] ios:pb-0">
-                <PillButton
-                    label={t`Done`}
-                    isDisabled={!canConfirm}
-                    onPress={handleConfirm}
-                    testID={SplitEntriesModalContentSelector.ConfirmButton}
-                />
-            </View>
-        </View>
+        </Animated.View>
     );
 };

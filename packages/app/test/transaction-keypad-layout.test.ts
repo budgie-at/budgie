@@ -7,14 +7,22 @@ describe('transaction keypad viewport accessibility', () => {
         expect(getTransactionKeypadLayout(3, 400).requiresScrolling).toBe(true);
     });
 
+    it('keeps enough room for a complete large-text metadata row', () => {
+        expect(getTransactionKeypadLayout(3, 500).requiresScrolling).toBe(true);
+    });
+
     it('keeps the keypad fixed when the viewport has room for the form', () => {
         expect(getTransactionKeypadLayout(1, 700).requiresScrolling).toBe(false);
     });
 
-    it('retains large-text key sizes in the scrolling fallback', () => {
+    it('keeps the form viewport available when the amount keypad is collapsed', () => {
+        expect(getTransactionKeypadLayout(3, 400, 72).requiresScrolling).toBe(false);
+    });
+
+    it('retains minimum digit targets and larger primary labels in the scrolling fallback', () => {
         const layout = getTransactionKeypadLayout(3, 400);
 
-        expect(layout.rowStyle.minHeight).toBeGreaterThanOrEqual(96);
+        expect(layout.rowStyle.minHeight).toBeGreaterThanOrEqual(44);
         expect(layout.confirmRowStyle.minHeight).toBeGreaterThanOrEqual(72);
     });
 });
