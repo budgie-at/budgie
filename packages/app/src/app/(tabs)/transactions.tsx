@@ -34,7 +34,7 @@ export default function TransactionsPage() {
                         <TransactionsPageContent activeTab={activeTab} tabs={TABS} onChangeTab={setActiveTab} />
                     </View>
                     <View pointerEvents="none" className="absolute inset-x-0 bottom-0">
-                        <View className="h-[32px] bg-linear-to-b from-surface/0 to-surface" />
+                        <View className="h-[20px] bg-linear-to-b from-surface/0 to-surface" />
                         <View className="bg-surface" style={tabBarScrimStyle} />
                     </View>
                 </ScreenChromeFrame>

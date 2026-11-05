@@ -20,10 +20,10 @@ import { isEarnedIncomeTransaction } from '../../utils/is-earned-income-transact
 import { isUncategorizedTransaction } from '../../utils/is-uncategorized-transaction.util';
 import { stripTransactionAccountTitlePrefix } from '../../utils/strip-transaction-account-title-prefix.util';
 import { TransactionAmount } from '../transaction-amount/transaction-amount';
+import { TransactionCardLayout } from '../transaction-card-layout/transaction-card-layout';
 import { TransactionCardStackedSubtitle } from '../transaction-card-stacked-subtitle/transaction-card-stacked-subtitle';
 import { TransactionCardSubtitle } from '../transaction-card-subtitle/transaction-card-subtitle';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
-import { TransactionRowLayout } from '../transaction-row-layout/transaction-row-layout';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -48,8 +48,19 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
     );
     const titleLineCount = isAccessibilityTextSize ? 4 : 1;
 
+    const titleContent = (
+        <Text
+            className="text-primary text-[15px] font-semibold"
+            numberOfLines={titleLineCount}
+            ellipsizeMode="tail"
+            {...(isAdjustment && { testID: TransactionCardSelector.AdjustmentBadge })}
+        >
+            {isAdjustment ? <Trans>Balance Adjustment</Trans> : displayTitle}
+        </Text>
+    );
+
     return (
-        <TransactionRowLayout
+        <TransactionCardLayout
             icon={
                 <CircleIcon
                     size={36}
@@ -63,26 +74,13 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
                 />
             }
             amount={<TransactionAmount transaction={transaction} accountId={accountId} />}
+            title={titleContent}
         >
-            {isAdjustment ? (
-                <Text
-                    className="text-primary text-[15px] font-semibold"
-                    numberOfLines={titleLineCount}
-                    testID={TransactionCardSelector.AdjustmentBadge}
-                >
-                    <Trans>Balance Adjustment</Trans>
-                </Text>
-            ) : (
-                <Text className="text-primary text-[15px] font-semibold" numberOfLines={titleLineCount} ellipsizeMode="tail">
-                    {displayTitle}
-                </Text>
-            )}
-
             {isAccessibilityTextSize ? (
                 <TransactionCardStackedSubtitle transaction={transaction} accountId={accountId} />
             ) : (
                 <TransactionCardSubtitle transaction={transaction} accountId={accountId} />
             )}
-        </TransactionRowLayout>
+        </TransactionCardLayout>
     );
 };

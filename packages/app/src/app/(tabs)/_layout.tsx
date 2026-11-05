@@ -1,3 +1,4 @@
+import { usePathname } from 'expo-router';
 import { TabList, TabSlot, TabTrigger, Tabs } from 'expo-router/ui';
 import { View } from 'react-native';
 
@@ -15,6 +16,7 @@ import { CreateTransactionTrigger } from '../../transaction/components/create-tr
 const TAB_BAR_Z_INDEX = 3;
 
 export default function TabsLayout() {
+    const isDefaultTabFadeVisible = usePathname() !== '/transactions';
     const { isMenuOpen, openMenu, setIsMenuOpen } = useCreateActionContext();
     const { isOpen: isVoiceInputOpen, close: closeVoiceInput } = useVoiceInputContext();
     const isOnboardingActive = useIsOnboardingActive();
@@ -49,7 +51,7 @@ export default function TabsLayout() {
 
                 {isTabBarVisible ? (
                     <>
-                        <EdgeFade position="bottom" chromeHeight={FLOATING_TAB_BAR_HEIGHT} />
+                        {isDefaultTabFadeVisible ? <EdgeFade position="bottom" chromeHeight={FLOATING_TAB_BAR_HEIGHT} /> : null}
                         <View className="absolute inset-x-0 bottom-0" pointerEvents="box-none" style={tabBarWrapperStyle}>
                             <View className="flex-row items-center justify-between px-lg pb-safe pt-md">
                                 <TabButtons />
