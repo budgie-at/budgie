@@ -2,17 +2,13 @@ import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
 import { InzhurGainRangeEnum, InzhurGainService, TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
-import * as Layer from 'effect/Layer';
 
 import { seed } from '../../harness';
-import { buildInzhurBaselineItems, buildInzhurHoldings } from '../../harness/inzhur/build-inzhur-baseline-items';
-import { buildInzhurStatementItems } from '../../harness/inzhur/build-inzhur-statement-items';
 import { importInzhurBankTransaction } from '../../harness/inzhur/import-inzhur-bank-transaction';
 import { importInzhurStatement } from '../../harness/inzhur/import-inzhur-statement';
 import { INZHUR_ENERGY_LAYOUT, INZHUR_REIT_LAYOUT } from '../../harness/inzhur/inzhur-fund-layouts';
-import { inzhurLedgerWorkloadLayer } from '../../harness/inzhur/inzhur-ledger-workload.layer';
-import { ENERGY_PRICE, FIRST_URI, REIT_PRICE, SECOND_DATE, SECOND_URI } from '../../harness/inzhur/inzhur-statement-fixtures.constant';
-import { makeInzhurLayer } from '../../harness/inzhur/make-inzhur-layer';
+import { ENERGY_PRICE, REIT_PRICE, SECOND_URI } from '../../harness/inzhur/inzhur-statement-fixtures.constant';
+import { makeInzhurGainLayer } from '../../harness/inzhur/make-inzhur-gain-layer';
 import { seedInzhurPrice } from '../../harness/inzhur/seed-inzhur-price';
 import { setUpInzhurWithBaseline } from '../../harness/inzhur/set-up-inzhur-with-baseline';
 
@@ -21,15 +17,6 @@ const MILLISECONDS_PER_DAY = 86_400_000;
 const TOP_UP_AT = new Date(Date.now() + MILLISECONDS_PER_DAY);
 const TODAY = new Date(Date.now() + 2 * MILLISECONDS_PER_DAY).toISOString().slice(0, 10);
 const UAH_INSTRUMENT_ID = 1;
-
-const makeGainLayer = (reitQuantity: number, energyQuantity: number) =>
-    Layer.provideMerge(
-        InzhurGainService.layer.pipe(Layer.provide(inzhurLedgerWorkloadLayer)),
-        makeInzhurLayer({
-            [FIRST_URI]: buildInzhurBaselineItems(1000, 2),
-            [SECOND_URI]: buildInzhurStatementItems(SECOND_DATE, buildInzhurHoldings(reitQuantity, energyQuantity))
-        })
-    );
 
 const seedBaselinePrices = (reitPrice: number) =>
     Effect.all([
@@ -76,7 +63,7 @@ describe('inzhur/gain', () => {
                 gain: 0,
                 percent: 0
             });
-        }).pipe(Effect.provide(makeGainLayer(1000, 2)))
+        }).pipe(Effect.provide(makeInzhurGainLayer(1000, 2)))
     );
 
     it.effect('counts a price rise as gain for the institution and the fund', () =>
@@ -93,7 +80,7 @@ describe('inzhur/gain', () => {
             expect(report?.gainSeries.at(0)).toEqual({ date: FIRST_DAY, value: 0 });
             expect(report?.gainSeries.at(-1)?.value).toBe(1000);
             expect(yield* findFundAllTimeGain(reitAccount.id)).toMatchObject({ gain: 1000 });
-        }).pipe(Effect.provide(makeGainLayer(1000, 2)))
+        }).pipe(Effect.provide(makeInzhurGainLayer(1000, 2)))
     );
 
     it.effect('treats a bank top-up as a contribution, not gain', () =>
@@ -107,7 +94,7 @@ describe('inzhur/gain', () => {
 
             expect(report?.gainSeries.every(point => point.value === 0)).toBe(true);
             expect(report?.series.at(-1)?.value).toBe((report?.series.at(0)?.value ?? 0) + 1000);
-        }).pipe(Effect.provide(makeGainLayer(1000, 2)))
+        }).pipe(Effect.provide(makeInzhurGainLayer(1000, 2)))
     );
 
     it.effect('keeps a top-up between statements out of the gain since the previous statement', () =>
@@ -120,7 +107,7 @@ describe('inzhur/gain', () => {
                 contributions: 1000,
                 gain: 0
             });
-        }).pipe(Effect.provide(makeGainLayer(1000, 2)))
+        }).pipe(Effect.provide(makeInzhurGainLayer(1000, 2)))
     );
 
     it.effect('treats a buy paid from cash as no gain for the institution or the fund', () =>
@@ -132,7 +119,7 @@ describe('inzhur/gain', () => {
 
             expect(yield* findAllTimeGain()).toMatchObject({ contributions: 0, gain: 0 });
             expect(yield* findFundAllTimeGain(reitAccount.id)).toMatchObject({ contributions: 500, gain: 0 });
-        }).pipe(Effect.provide(makeGainLayer(1050, 2)))
+        }).pipe(Effect.provide(makeInzhurGainLayer(1050, 2)))
     );
 
     it.effect('counts reinvested dividends as gain for the institution and the fund', () =>
@@ -144,7 +131,7 @@ describe('inzhur/gain', () => {
 
             expect(yield* findAllTimeGain()).toMatchObject({ contributions: 0, gain: 1000 });
             expect(yield* findFundAllTimeGain(reitAccount.id)).toMatchObject({ contributions: 0, gain: 1000 });
-        }).pipe(Effect.provide(makeGainLayer(1100, 2)))
+        }).pipe(Effect.provide(makeInzhurGainLayer(1100, 2)))
     );
 
     it.effect('treats a sell into cash as no gain', () =>
@@ -156,7 +143,7 @@ describe('inzhur/gain', () => {
 
             expect(yield* findAllTimeGain()).toMatchObject({ contributions: 0, gain: 0 });
             expect(yield* findFundAllTimeGain(energyAccount.id)).toMatchObject({ contributions: -ENERGY_PRICE, gain: 0 });
-        }).pipe(Effect.provide(makeGainLayer(1000, 1)))
+        }).pipe(Effect.provide(makeInzhurGainLayer(1000, 1)))
     );
 
     it.effect('returns a null gain instead of failing when a price is missing at the start', () =>
@@ -165,7 +152,7 @@ describe('inzhur/gain', () => {
 
             expect(yield* findAllTimeGain()).toMatchObject({ startValue: null, gain: null, percent: null });
             expect(yield* findFundAllTimeGain(reitAccount.id)).toMatchObject({ startValue: null, gain: null });
-        }).pipe(Effect.provide(makeGainLayer(1000, 2)))
+        }).pipe(Effect.provide(makeInzhurGainLayer(1000, 2)))
     );
 
     it.effect('builds a daily value series and offers only the ranges that have data', () =>
@@ -183,6 +170,6 @@ describe('inzhur/gain', () => {
             expect(report?.gains.at(-1)?.range).toBe(InzhurGainRangeEnum.ALL);
             expect(fundReport?.prices.map(price => price.date)).toEqual([FIRST_DAY, '2026-10-31']);
             expect(sinceSecond).toMatchObject({ startDate: '2026-10-31', gain: 0 });
-        }).pipe(Effect.provide(makeGainLayer(1000, 2)))
+        }).pipe(Effect.provide(makeInzhurGainLayer(1000, 2)))
     );
 });

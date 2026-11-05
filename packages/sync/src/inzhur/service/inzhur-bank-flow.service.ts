@@ -215,7 +215,11 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
                         const summary = yield* convert(setup, scope);
 
                         if (summary.preSetupCashDelta !== 0) {
-                            yield* inzhurBeforeTrackingService.shift(setup.cashAccount.id, -summary.preSetupCashDelta);
+                            yield* inzhurBeforeTrackingService.shift(
+                                setup.cashAccount.id,
+                                -summary.preSetupCashDelta,
+                                setup.fundAccounts.map(account => account.id)
+                            );
                         }
 
                         return summary.topUps + summary.withdrawals;

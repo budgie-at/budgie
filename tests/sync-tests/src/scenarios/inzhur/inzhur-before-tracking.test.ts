@@ -5,9 +5,8 @@ import * as Effect from 'effect/Effect';
 
 import { fetchAccountBalance, seed } from '../../harness';
 import { fetchBankTransactions } from '../../harness/inzhur/fetch-bank-transactions';
-import { fetchSourceLedger } from '../../harness/inzhur/fetch-source-ledger';
+import { fetchBeforeTrackingCorrections } from '../../harness/inzhur/fetch-before-tracking-corrections';
 import { importInzhurBankTransaction } from '../../harness/inzhur/import-inzhur-bank-transaction';
-import { INZHUR_BEFORE_TRACKING_EXTERNAL_ID } from '../../harness/inzhur/inzhur-before-tracking-external-id.constant';
 import { makeInzhurLayer } from '../../harness/inzhur/make-inzhur-layer';
 
 const UAH_INSTRUMENT_ID = 1;
@@ -55,12 +54,6 @@ const setUpAfterTopUp = Effect.fnUntraced(function* (enteredCash: number) {
     return { bankAccount, cashAccount };
 });
 
-const fetchCorrections = Effect.gen(function* () {
-    const ledger = yield* fetchSourceLedger(ExternalSourceEnum.INZHUR);
-
-    return ledger.filter(transaction => transaction.externalId === INZHUR_BEFORE_TRACKING_EXTERNAL_ID);
-});
-
 describe('inzhur/before-tracking', () => {
     it.effect('links past payments and books a negative correction so cash equals the entered amount', () =>
         Effect.gen(function* () {
@@ -81,7 +74,7 @@ describe('inzhur/before-tracking', () => {
                 },
                 { externalId: 'dividend', type: TransactionTypeEnum.INCOME, title: 'Inzhur dividends' }
             ]);
-            expect(yield* fetchCorrections).toMatchObject([
+            expect(yield* fetchBeforeTrackingCorrections).toMatchObject([
                 { type: TransactionTypeEnum.ADJUSTMENT, title: 'Invested before tracking', entries: [{ amount: 700 * PRECISION }] }
             ]);
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(500 * PRECISION);
@@ -95,7 +88,7 @@ describe('inzhur/before-tracking', () => {
             yield* importHistory(bankAccount.id);
             const { cashAccount } = yield* setUp(2000);
 
-            expect(yield* fetchCorrections).toMatchObject([
+            expect(yield* fetchBeforeTrackingCorrections).toMatchObject([
                 { type: TransactionTypeEnum.ADJUSTMENT, title: 'Balance before tracking', entries: [{ amount: 800 * PRECISION }] }
             ]);
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(2000 * PRECISION);
@@ -106,7 +99,7 @@ describe('inzhur/before-tracking', () => {
         Effect.gen(function* () {
             const { cashAccount } = yield* setUpAfterTopUp(1000);
 
-            expect(yield* fetchCorrections).toEqual([]);
+            expect(yield* fetchBeforeTrackingCorrections).toEqual([]);
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(1000 * PRECISION);
         }).pipe(Effect.provide(layer))
     );
@@ -122,7 +115,9 @@ describe('inzhur/before-tracking', () => {
                 { externalId: 'top-up-1', type: TransactionTypeEnum.TRANSFER },
                 { externalId: 'late-top-up', type: TransactionTypeEnum.TRANSFER }
             ]);
-            expect(yield* fetchCorrections).toMatchObject([{ title: 'Invested before tracking', entries: [{ amount: 800 * PRECISION }] }]);
+            expect(yield* fetchBeforeTrackingCorrections).toMatchObject([
+                { title: 'Invested before tracking', entries: [{ amount: 800 * PRECISION }] }
+            ]);
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(500 * PRECISION);
         }).pipe(Effect.provide(layer))
     );
@@ -136,7 +131,7 @@ describe('inzhur/before-tracking', () => {
             yield* importInzhurBankTransaction(bankAccount.id, 'late-top-up', TOP_UP_DESCRIPTION, -300, PAST_AT);
             yield* consolidate;
 
-            expect(yield* fetchCorrections).toEqual([]);
+            expect(yield* fetchBeforeTrackingCorrections).toEqual([]);
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(300 * PRECISION);
         }).pipe(Effect.provide(layer))
     );
@@ -148,7 +143,7 @@ describe('inzhur/before-tracking', () => {
             yield* importInzhurBankTransaction(bankAccount.id, 'new-top-up', TOP_UP_DESCRIPTION, -400, FUTURE_AT);
             yield* consolidate;
 
-            expect(yield* fetchCorrections).toMatchObject([{ entries: [{ amount: 500 * PRECISION }] }]);
+            expect(yield* fetchBeforeTrackingCorrections).toMatchObject([{ entries: [{ amount: 500 * PRECISION }] }]);
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(900 * PRECISION);
         }).pipe(Effect.provide(layer))
     );
@@ -192,7 +187,7 @@ describe('inzhur/before-tracking', () => {
             yield* importHistory(bankAccount.id);
             const { cashAccount } = yield* setUp(500);
             const firstBank = yield* fetchBankTransactions();
-            const firstCorrections = yield* fetchCorrections;
+            const firstCorrections = yield* fetchBeforeTrackingCorrections;
 
             const second = yield* setUp(9999);
 
@@ -202,7 +197,7 @@ describe('inzhur/before-tracking', () => {
 
             expect(second.linked).toEqual({ topUps: 0, withdrawals: 0, dividends: 0 });
             expect(yield* fetchBankTransactions()).toEqual(firstBank);
-            expect(yield* fetchCorrections).toEqual(firstCorrections);
+            expect(yield* fetchBeforeTrackingCorrections).toEqual(firstCorrections);
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(500 * PRECISION);
         }).pipe(Effect.provide(layer))
     );

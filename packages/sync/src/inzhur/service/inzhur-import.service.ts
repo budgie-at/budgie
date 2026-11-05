@@ -34,6 +34,7 @@ import { InzhurStatementInvalidError } from '../error/inzhur-statement-invalid.e
 import { inzhurStatementParser } from '../parser/inzhur-statement.parser';
 import { buildInzhurTransactionInput } from '../utils/build-inzhur-transaction-input.util';
 
+import { InzhurBeforeTrackingService } from './inzhur-before-tracking.service';
 import { InzhurSetupService } from './inzhur-setup.service';
 
 import type { InzhurFundChangeInterface } from '../interface/inzhur-fund-change.interface';
@@ -51,6 +52,7 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
         const instrumentRepository = yield* InstrumentRepository;
         const inzhurPriceService = yield* InzhurPriceService;
         const inzhurSetupService = yield* InzhurSetupService;
+        const inzhurBeforeTrackingService = yield* InzhurBeforeTrackingService;
         const syncFileReader = yield* SyncFileReader;
         const syncRepository = yield* SyncRepository;
         const syncWorkload = yield* SyncWorkload;
@@ -202,6 +204,7 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
                 }
             }
 
+            yield* inzhurBeforeTrackingService.moveTo(setup.cashAccount.id, operatedAt);
             yield* syncRepository.update(setup.cashSync.id, { forwardSyncedAt: operatedAt });
 
             return {
@@ -380,6 +383,7 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
             AccountService.layer,
             InstrumentRepository.layer,
             InzhurPriceService.layer,
+            InzhurBeforeTrackingService.layer,
             InzhurSetupService.layer,
             SyncRepository.layer,
             TransactionService.layer,

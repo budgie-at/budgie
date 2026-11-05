@@ -4,7 +4,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { sumSignedAccountEntries } from '../utils/sum-signed-account-entries.util';
 
@@ -33,7 +33,11 @@ export class InzhurBeforeTrackingService extends Context.Service<InzhurBeforeTra
                     : null;
             });
 
-            const replace = Effect.fn('InzhurBeforeTrackingService.replace')(function* (accountId: number, amount: number) {
+            const replace = Effect.fn('InzhurBeforeTrackingService.replace')(function* (
+                accountId: number,
+                amount: number,
+                createdAt: Date = new Date()
+            ) {
                 const existing = yield* findExisting(accountId);
 
                 if (existing?.amount === amount) {
@@ -51,7 +55,7 @@ export class InzhurBeforeTrackingService extends Context.Service<InzhurBeforeTra
                 const id = yield* balanceAdjustmentService.create(
                     accountId,
                     amount,
-                    existing?.operatedAt ?? new Date(),
+                    existing?.operatedAt ?? createdAt,
                     amount < 0 ? investedTitle : balanceTitle
                 );
 
@@ -61,10 +65,27 @@ export class InzhurBeforeTrackingService extends Context.Service<InzhurBeforeTra
 
             return {
                 replace,
-                shift: Effect.fn('InzhurBeforeTrackingService.shift')(function* (accountId: number, delta: number) {
+                moveTo: Effect.fn('InzhurBeforeTrackingService.moveTo')(function* (accountId: number, operatedAt: Date) {
                     const existing = yield* findExisting(accountId);
 
-                    yield* replace(accountId, (existing?.amount ?? 0) + delta);
+                    if (isDefined(existing) && existing.operatedAt.getTime() !== operatedAt.getTime()) {
+                        yield* transactionRepository.updateById(existing.id, { operatedAt });
+                    }
+                }),
+                shift: Effect.fn('InzhurBeforeTrackingService.shift')(function* (
+                    accountId: number,
+                    delta: number,
+                    fundAccountIds: readonly number[]
+                ) {
+                    const existing = yield* findExisting(accountId);
+                    const openingTimes = (yield* Effect.forEach(fundAccountIds, fundAccountId =>
+                        transactionService.getEarliestTransactionTimeByAccountId(fundAccountId)
+                    )).filter(isDefined);
+                    const openingAt = isNotEmptyArray(openingTimes)
+                        ? new Date(Math.min(...openingTimes.map(time => time.getTime())))
+                        : new Date();
+
+                    yield* replace(accountId, (existing?.amount ?? 0) + delta, openingAt);
                 })
             };
         })
