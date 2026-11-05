@@ -1,4 +1,4 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { TransactionConsolidationTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ScrollView, Text } from 'react-native';
 
@@ -28,6 +28,7 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
     const { t } = useLingui();
     const { sources, consolidationType, hasError, isLoading, retry } = useGetConsolidationSourcesQuery(transactionId);
     const revertConsolidation = useRevertConsolidation(transactionId, onRevertSuccess);
+    const contextLabel = consolidationType === TransactionConsolidationTypeEnum.REFUND ? t`Original expense` : t`Original transaction`;
     const showEmptyState = isEmptyArray(sources) && !hasError;
     const isRevertDisabled = isLoading || hasError || isEmptyArray(sources) || !isDefined(consolidationType);
 
@@ -51,7 +52,7 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
             }
         >
             <ScrollView className="flex-1" contentContainerClassName="grow px-xl pb-xl" keyboardShouldPersistTaps="handled">
-                <TransactionPickerContext transactionId={transactionId} label={t`Original expense`} />
+                <TransactionPickerContext transactionId={transactionId} label={contextLabel} />
                 <LoadingContent isLoading={isLoading} containerClassName="grow shrink-0">
                     {hasError ? <TransactionPickerFailure onRetry={retry} /> : null}
                     {showEmptyState ? (

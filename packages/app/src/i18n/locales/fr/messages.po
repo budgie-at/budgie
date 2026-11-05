@@ -5840,6 +5840,7 @@ msgstr "Dépense d’origine"
 msgid "Original purchase"
 msgstr "Achat d’origine"
 
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/consolidation-source-row/consolidation-source-row.tsx
 msgid "Original transaction"
 msgstr "Transaction d’origine"

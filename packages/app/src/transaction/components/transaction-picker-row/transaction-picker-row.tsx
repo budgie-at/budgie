@@ -35,7 +35,6 @@ export const TransactionPickerRow = ({ item, position, isSelected = false, onPre
     const signedAmount = `${item.type === TransactionTypeEnum.INCOME ? '+' : ''}${protectAmount(convertFromMicroUnits(item.amount), item.currencySymbol)}`;
     const title = isNotEmptyString(item.title) ? item.title : t`No title`;
     const date = formatMonthAndDayWithTime(item.operatedAt);
-    const accessibilityLabel = [title, date, item.accountTitle, item.categoryTitle, signedAmount].filter(isNotEmptyString).join(', ');
     const selectionIcon = isSelected ? UserIconNameEnum.CircleCheck : UserIconNameEnum.Circle;
     const selection = isDefined(onPress) ? <Icon icon={selectionIcon} size={28} className="text-primary" /> : null;
     const content = <TransactionPickerRowContent item={item} title={title} date={date} amount={signedAmount} selection={selection} />;
@@ -43,7 +42,7 @@ export const TransactionPickerRow = ({ item, position, isSelected = false, onPre
     if (!isDefined(onPress)) {
         return (
             <TransactionRowSurface position={position} separatorInset={separatorInset} className="bg-surface-row">
-                <View accessible className="px-xl py-xl" testID={testID} accessibilityLabel={accessibilityLabel}>
+                <View accessible className="px-xl py-xl" testID={testID}>
                     {content}
                 </View>
             </TransactionRowSurface>
@@ -59,7 +58,6 @@ export const TransactionPickerRow = ({ item, position, isSelected = false, onPre
                 className={pressableVariants({ selected: isSelected })}
                 onPress={handlePress}
                 testID={testID}
-                accessibilityLabel={accessibilityLabel}
                 accessibilityRole="radio"
                 accessibilityState={accessibilityState}
             >

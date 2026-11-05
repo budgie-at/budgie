@@ -5840,6 +5840,7 @@ msgstr "Gasto original"
 msgid "Original purchase"
 msgstr "Compra original"
 
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/consolidation-source-row/consolidation-source-row.tsx
 msgid "Original transaction"
 msgstr "Transacción original"
