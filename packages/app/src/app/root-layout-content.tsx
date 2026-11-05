@@ -267,7 +267,10 @@ export const RootLayoutContent = () => {
                                                                     />
                                                                     <Stack.Screen name="budget-period-summary" options={sheetOptions} />
                                                                     <Stack.Screen name="rule-form" />
-                                                                    <Stack.Screen name="rule-selector" options={sheetOptions} />
+                                                                    <Stack.Screen
+                                                                        name="rule-selector"
+                                                                        options={fitToContentsSheetOptions(groupedSheetSurface)}
+                                                                    />
                                                                     <Stack.Screen name="rule-mcc-selector" options={SELECTOR_OPTIONS} />
                                                                 </Stack>
                                                             </VoiceInputProvider>
