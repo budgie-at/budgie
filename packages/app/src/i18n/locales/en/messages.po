@@ -846,6 +846,14 @@ msgstr "{statusLabel} · {downloaded} of {total} GB"
 msgid "{statusLabel}, {daysLeftLabel}."
 msgstr "{statusLabel}, {daysLeftLabel}."
 
+#: src/inzhur/hook/use-inzhur-chart-summary.hook.ts
+msgid "{subject} fell from {fromLabel} to {toLabel} since {sinceLabel}"
+msgstr "{subject} fell from {fromLabel} to {toLabel} since {sinceLabel}"
+
+#: src/inzhur/hook/use-inzhur-chart-summary.hook.ts
+msgid "{subject} rose from {fromLabel} to {toLabel} since {sinceLabel}"
+msgstr "{subject} rose from {fromLabel} to {toLabel} since {sinceLabel}"
+
 #: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 msgstr "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
@@ -978,6 +986,7 @@ msgstr "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 
+#: src/inzhur/component/inzhur-performance-chart/inzhur-performance-chart.tsx
 #: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
 msgid "1M"
 msgstr "1M"
@@ -1006,6 +1015,7 @@ msgstr "24h change"
 msgid "24h change · {staleDate}"
 msgstr "24h change · {staleDate}"
 
+#: src/inzhur/component/inzhur-performance-chart/inzhur-performance-chart.tsx
 #: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
 msgid "3M"
 msgstr "3M"
@@ -1367,6 +1377,7 @@ msgid "AI off"
 msgstr "AI off"
 
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
+#: src/inzhur/component/inzhur-performance-chart/inzhur-performance-chart.tsx
 msgid "All"
 msgstr "All"
 
@@ -6422,6 +6433,10 @@ msgstr "previous period"
 msgid "Previous period"
 msgstr "Previous period"
 
+#: src/inzhur/component/inzhur-fund-chart/inzhur-fund-chart.tsx
+msgid "Price"
+msgstr "Price"
+
 #: src/market-data/component/currency-market-stale-price/currency-market-stale-price.tsx
 msgid "Price {ageLabel} · {date}"
 msgstr "Price {ageLabel} · {date}"
@@ -7387,6 +7402,15 @@ msgstr "Similar transactions"
 #: src/i18n/hook/use-format-date-range.hook.ts
 msgid "Since {fromLabel}"
 msgstr "Since {fromLabel}"
+
+#: src/inzhur/component/inzhur-fund-gain-line/inzhur-fund-gain-line.tsx
+#: src/inzhur/component/inzhur-institution-gain-line/inzhur-institution-gain-line.tsx
+msgid "since {startLabel}"
+msgstr "since {startLabel}"
+
+#: src/inzhur/component/inzhur-since-statement-line/inzhur-since-statement-line.tsx
+msgid "since the {statementLabel} statement"
+msgstr "since the {statementLabel} statement"
 
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Skip"
@@ -8682,6 +8706,7 @@ msgstr "Uses a regular expression of up to 200 characters, ignoring letter case.
 msgid "Valuation unavailable"
 msgstr "Valuation unavailable"
 
+#: src/inzhur/component/inzhur-institution-chart/inzhur-institution-chart.tsx
 #: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
 msgid "Value"
 msgstr "Value"

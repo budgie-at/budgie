@@ -1,3 +1,4 @@
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -7,6 +8,7 @@ import { ProtectedText } from '../../../@generic/component/protected-text/protec
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useFormatFundQuantity } from '../../../i18n/hook/use-format-fund-quantity.hook';
+import { inzhurChartScrubAtom } from '../../constant/inzhur-chart-scrub-atom.constant';
 import { useHryvniaInstrumentQuery } from '../../query/use-hryvnia-instrument.query';
 import { useInzhurFundReturnsQuery } from '../../query/use-inzhur-fund-returns.query';
 
@@ -24,10 +26,12 @@ export const InzhurFundHoldingLine = ({ account, balance }: Props) => {
     const symbol = useHryvniaInstrumentQuery()?.symbol ?? '';
     const formatAmount = useFormatDigits(2, 4);
     const formatFundQuantity = useFormatFundQuantity();
+    const scrubbedPoint = useAtomValue(inzhurChartScrubAtom);
 
     const quantityLabel = formatFundQuantity(balance);
-    const priceLabel = isDefined(latestPrice) ? formatAmount(latestPrice.price, symbol) : '';
-    const priceDate = isDefined(latestPrice) ? formatMonthAndDayAndOptionalYear(latestPrice.priceDate) : '';
+    const shownPrice = scrubbedPoint ?? (isDefined(latestPrice) ? { value: latestPrice.price, date: latestPrice.priceDate } : null);
+    const priceLabel = isDefined(shownPrice) ? formatAmount(shownPrice.value, symbol) : '';
+    const priceDate = isDefined(shownPrice) ? formatMonthAndDayAndOptionalYear(shownPrice.date) : '';
     const holdingLabel = isDefined(latestPrice) ? t`${quantityLabel} · ${priceLabel} each` : quantityLabel;
 
     return (

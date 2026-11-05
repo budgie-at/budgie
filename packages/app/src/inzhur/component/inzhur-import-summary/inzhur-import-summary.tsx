@@ -33,7 +33,7 @@ export const InzhurImportSummary = ({ summary }: Props) => {
 
     return (
         <View className="gap-y-3xl" testID={InzhurSelector.Summary}>
-            <InzhurImportSummaryHero statementDate={summary.statementDate} />
+            <InzhurImportSummaryHero statementDate={summary.statementDate} previousStatementDate={summary.previousStatementDate} />
 
             {isNotEmptyArray(funds) ? (
                 <GroupedListSection title={t`Added by this statement`}>

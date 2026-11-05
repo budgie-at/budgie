@@ -9,12 +9,14 @@ import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useHryvniaInstrumentQuery } from '../../query/use-hryvnia-instrument.query';
 import { useInzhurFreshnessQuery } from '../../query/use-inzhur-freshness.query';
 import { useInzhurValueQuery } from '../../query/use-inzhur-value.query';
+import { InzhurSinceStatementLine } from '../inzhur-since-statement-line/inzhur-since-statement-line';
 
 interface Props {
     readonly statementDate: string;
+    readonly previousStatementDate: string | null;
 }
 
-export const InzhurImportSummaryHero = ({ statementDate }: Props) => {
+export const InzhurImportSummaryHero = ({ statementDate, previousStatementDate }: Props) => {
     const { t } = useLingui();
     const hryvnia = useHryvniaInstrumentQuery();
     const inzhurValue = useInzhurValueQuery();
@@ -31,6 +33,7 @@ export const InzhurImportSummaryHero = ({ statementDate }: Props) => {
         <View accessible className="items-stretch gap-y-xs">
             <Text className="text-center text-[15px] leading-[20px] text-secondary-foreground">{t`Inzhur value now`}</Text>
             {isHeroShown ? <AccountDetailsHeroBalanceValue balance={inzhurValue.total} account={heroAccount} /> : null}
+            {isDefined(previousStatementDate) ? <InzhurSinceStatementLine previousStatementDate={previousStatementDate} /> : null}
             <Text className="text-center text-[15px] leading-[20px] text-secondary-foreground tabular-nums">{sourceLabel}</Text>
         </View>
     );

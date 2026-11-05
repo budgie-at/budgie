@@ -7,6 +7,8 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { InstitutionSelector } from '../../../app/(main)/institution/institution.selector';
 import { InzhurFreshnessLine } from '../../../inzhur/component/inzhur-freshness-line/inzhur-freshness-line';
 import { InzhurImportStatementAction } from '../../../inzhur/component/inzhur-import-statement-action/inzhur-import-statement-action';
+import { InzhurInstitutionChart } from '../../../inzhur/component/inzhur-institution-chart/inzhur-institution-chart';
+import { InzhurInstitutionGainLine } from '../../../inzhur/component/inzhur-institution-gain-line/inzhur-institution-gain-line';
 import { BankIntegrationStatusPill } from '../../../sync/component/bank-integration-status-pill/bank-integration-status-pill';
 import { SyncImportProgress } from '../../../sync/component/sync-import-progress/sync-import-progress';
 import { ACCOUNT_DETAILS_HERO_BALANCE_HEIGHT } from '../../constant/account-details-hero-balance-height.constant';
@@ -34,7 +36,9 @@ export const InstitutionDetailsSummary = ({ institution, balancesByAccountId }: 
             <View className="items-center gap-y-lg pb-md" testID={InstitutionSelector.Hero}>
                 <View style={balanceSlotStyle} />
                 {isInzhur ? <InzhurFreshnessLine /> : statusLine}
+                {isInzhur ? <InzhurInstitutionGainLine /> : null}
             </View>
+            {isInzhur ? <InzhurInstitutionChart /> : null}
             <InstitutionConnectionRow syncs={syncs} />
             {isDefined(progress) ? <SyncImportProgress progress={progress} /> : null}
             {isInzhur ? <InzhurImportStatementAction /> : null}
