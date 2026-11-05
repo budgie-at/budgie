@@ -55,7 +55,7 @@ export const TransactionAccountRow = ({ ref, fieldName, label, testID }: Props) 
     };
 
     const displayLabel = label ?? t`Account`;
-    const accessibilityLabel = `${displayLabel}: ${account?.title ?? t`Select`}`;
+    const accessibilityLabel = `${displayLabel}: ${account?.title ?? t`Choose`}`;
     const isInactiveAccount = isDefined(account) && !account.isActive;
     const selectedAccountTestID = isDefined(account?.title) ? SimpleQuickFormSelector.SelectedAccount(account.title) : null;
     const pressableProps = { accessibilityLabel };

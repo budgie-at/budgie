@@ -2,7 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import Animated, { FadeInUp, ReduceMotion } from 'react-native-reanimated';
 
-import { emptyFn, isPositiveNumber } from '@rnw-community/shared';
+import { isPositiveNumber } from '@rnw-community/shared';
 
 import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
@@ -20,7 +20,7 @@ interface Props {
     readonly destinationCode: string;
     readonly exchangeRate: number;
     readonly isManualRate: boolean;
-    readonly onPress?: () => void;
+    readonly onPress: () => void;
 }
 
 const ANIMATION_DELAY = 100;
@@ -52,7 +52,7 @@ export const ConversionRow = (props: Props) => {
                     left={<GroupedListIcon icon={UserIconNameEnum.Banknote} />}
                     label={label}
                     value={displayAmount}
-                    onPress={onPress ?? emptyFn}
+                    onPress={onPress}
                     testID={TransferQuickFormSelector.ConversionRow}
                     pressableProps={pressableProps}
                 />

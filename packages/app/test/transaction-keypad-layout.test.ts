@@ -4,11 +4,11 @@ import { getTransactionKeypadLayout } from '../src/transaction/utils/get-transac
 
 describe('transaction keypad viewport accessibility', () => {
     it('keeps the keypad pinned at the largest text size while a form row still fits above it', () => {
-        expect(getTransactionKeypadLayout(3, 460).requiresScrolling).toBe(false);
+        expect(getTransactionKeypadLayout(3, 520).requiresScrolling).toBe(false);
     });
 
     it('scrolls the amount, keypad and form together when no form row fits above the keypad', () => {
-        expect(getTransactionKeypadLayout(1, 380).requiresScrolling).toBe(true);
+        expect(getTransactionKeypadLayout(1, 420).requiresScrolling).toBe(true);
         expect(getTransactionKeypadLayout(3, 400).requiresScrolling).toBe(true);
     });
 

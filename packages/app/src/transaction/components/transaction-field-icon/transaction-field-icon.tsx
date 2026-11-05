@@ -3,7 +3,7 @@ import { t } from '@lingui/core/macro';
 import { ReactElement, RefObject, useImperativeHandle } from 'react';
 import Animated from 'react-native-reanimated';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyString, isString } from '@rnw-community/shared';
 
 import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
@@ -35,9 +35,10 @@ export const TransactionFieldIcon = (props: Props) => {
     useImperativeHandle(ref, () => ({ shake }));
 
     const isDisabled = isNotEmptyString(disabledHint);
+    const accessibilityPlaceholder = isString(placeholder) ? placeholder : t`not set`;
     const pressableProps = {
         disabled: isDisabled,
-        accessibilityLabel: `${label}: ${value ?? t`not set`}`,
+        accessibilityLabel: `${label}: ${value ?? accessibilityPlaceholder}`,
         accessibilityHint: disabledHint,
         accessibilityState: { disabled: isDisabled }
     };

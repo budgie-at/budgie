@@ -1,3 +1,4 @@
+import { SUGGESTION_ROW_HEIGHT } from '../constant/suggestion-row-height.constant';
 import { TRANSACTION_KEYPAD_MAX_FONT_SCALE } from '../constant/transaction-keypad-max-font-scale.constant';
 
 const KEY_HEIGHT = 44;
@@ -7,7 +8,7 @@ export const getTransactionKeypadLayout = (fontScale: number, availableHeight = 
     const rowHeight = Math.max(KEY_HEIGHT, 32 * Math.min(fontScale, TRANSACTION_KEYPAD_MAX_FONT_SCALE));
     const actionHeight = Math.max(50, 24 * Math.min(fontScale, TRANSACTION_KEYPAD_MAX_FONT_SCALE));
     const digitsHeight = rowHeight * 4 + 18;
-    const footerHeight = digitsHeight + actionHeight + 28;
+    const footerHeight = digitsHeight + actionHeight + SUGGESTION_ROW_HEIGHT + 36;
 
     return {
         requiresScrolling: footerHeight + MIN_FORM_VIEWPORT_HEIGHT > availableHeight,

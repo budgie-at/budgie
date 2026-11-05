@@ -7,6 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
+import { TransactionFormRowPlaceholderToneEnum } from '../../enum/transaction-form-row-placeholder-tone.enum';
 import { setPrimaryCategory } from '../../utils/set-primary-category.util';
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 import { TransactionFieldIcon, TransactionFieldIconRef } from '../transaction-field-icon/transaction-field-icon';
@@ -52,7 +53,11 @@ export const TransactionCategoryFieldIcon = ({ ref, variant, isSplitActive }: Pr
             icon={categoryIcon}
             label={t`Category`}
             value={category?.title}
-            placeholder={<TransactionFormRowPlaceholder tone="attention">{t`Uncategorized`}</TransactionFormRowPlaceholder>}
+            placeholder={
+                <TransactionFormRowPlaceholder
+                    tone={TransactionFormRowPlaceholderToneEnum.ATTENTION}
+                >{t`Uncategorized`}</TransactionFormRowPlaceholder>
+            }
             onPress={handlePress}
             disabledHint={disabledHint}
             testID={SimpleQuickFormSelector.CategorySelector}
