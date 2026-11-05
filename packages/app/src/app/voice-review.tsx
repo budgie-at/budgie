@@ -79,6 +79,7 @@ export default function VoiceReviewModal() {
         isEmptyArray(rows) ? [EMPTY_SHEET_DETENT, EXPANDED_SHEET_DETENT] : [0.65, EXPANDED_SHEET_DETENT],
         fontScale >= VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE ? 1 : 0
     );
+    const titleClassName = fontScale >= VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE ? 'text-[15px] leading-[20px]' : undefined;
     const canDelete = rows.length > 1;
     const canSaveToAccount = canSave && isPositiveNumber(accountId);
 
@@ -132,7 +133,7 @@ export default function VoiceReviewModal() {
         <SheetSurface>
             <Stack.Screen options={screenOptions} />
             <View className="flex-1" testID={VoiceReviewSelector.Page} collapsable={false}>
-                <SheetTitle title={t`Voice notes`} />
+                <SheetTitle title={t`Voice notes`} className={titleClassName} />
                 <KeyboardAwareScrollView
                     className="flex-1"
                     contentContainerStyle={SCROLL_CONTENT_STYLE}
@@ -142,7 +143,7 @@ export default function VoiceReviewModal() {
                 >
                     {isEmptyArray(rows) ? (
                         <View className="flex-1 justify-center items-center gap-y-md px-xl py-3xl">
-                            <Text className="text-xl font-semibold text-primary text-center">{t`No items to save`}</Text>
+                            <Text className="text-xl leading-[24px] font-semibold text-primary text-center">{t`No items to save`}</Text>
                             <Text className="text-md text-secondary-foreground text-center">{t`Tap re-record to try again`}</Text>
                         </View>
                     ) : (
