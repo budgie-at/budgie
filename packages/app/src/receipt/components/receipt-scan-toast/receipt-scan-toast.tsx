@@ -36,7 +36,7 @@ export const ReceiptScanToast = ({ text1, text2, props: status, onPress }: Props
 
     return (
         <Pressable
-            className="w-full items-center"
+            className="w-[92%]"
             accessibilityRole="button"
             accessibilityHint={accessibilityHint}
             onPress={onPress}
