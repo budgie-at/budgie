@@ -48,6 +48,25 @@ export class InvestmentReturnRepository extends Context.Service<InvestmentReturn
                             .groupBy(TransactionEntityTable.fundAccountId)
                     ),
 
+                findFirstEntryOperatedAt: (accountId: number) =>
+                    Db.query(db =>
+                        db
+                            .select({
+                                operatedAt: sql<Date | null>`MIN(${TransactionEntityTable.operatedAt})`.mapWith(
+                                    TransactionEntityTable.operatedAt
+                                )
+                            })
+                            .from(TransactionEntryEntityTable)
+                            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                            .where(
+                                and(
+                                    transactionFilters.buildVisibleTransactionCondition(),
+                                    transactionFilters.buildLedgerEntryCondition(),
+                                    eq(TransactionEntryEntityTable.accountId, accountId)
+                                )
+                            )
+                    ).pipe(Effect.map(rows => rows.at(0)?.operatedAt ?? null)),
+
                 countTransfersSince: (accountId: number, since: Date) =>
                     Db.query(db =>
                         db

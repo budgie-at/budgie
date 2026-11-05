@@ -49,6 +49,9 @@ describe('inzhur/fund-returns', () => {
                 { fundAccountId: reitAccount.id, bank: 120 * PRECISION, reinvested: 980 * PRECISION },
                 { fundAccountId: energyAccount.id, bank: 0, reinvested: 3920 * PRECISION }
             ]);
+            expect(yield* investmentReturnRepository.findFirstEntryOperatedAt(reitAccount.id)).toEqual(
+                new Date('2026-09-30T12:00:00.000Z')
+            );
         }).pipe(Effect.provide(layer))
     );
 });

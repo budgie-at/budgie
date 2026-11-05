@@ -26,6 +26,7 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 import { SyncFileReader } from '../../core/port/sync-file-reader.port';
 import { SyncWorkload } from '../../core/port/sync-workload.port';
 import { buildPrimaryEntry } from '../../core/utils/build-primary-entry.util';
+import { INZHUR_CANONICAL_FUNDS } from '../constant/inzhur-canonical-funds.constant';
 import { InzhurImportOutcomeEnum } from '../enum/inzhur-import-outcome.enum';
 import { InzhurNotSetUpError } from '../error/inzhur-not-set-up.error';
 import { InzhurPriceMissingError } from '../error/inzhur-price-missing.error';
@@ -58,11 +59,6 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
         const provider = ExternalSourceEnum.INZHUR;
         const statementNoonSuffix = 'T12:00:00.000Z';
         const openingHoldingsTitle = 'Opening holdings';
-        const canonicalFundNameByKeyword = {
-            REIT: 'Inzhur REIT',
-            ЕНЕРДЖІ: 'Inzhur Energy',
-            МІЛТЕХ: 'Inzhur MilTech'
-        };
 
         const buildOperatedAt = (statementDate: string) => new Date(`${statementDate}${statementNoonSuffix}`);
 
@@ -111,8 +107,7 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
             }
 
             const upperCaseName = holding.name.toUpperCase();
-            const canonicalName = Object.entries(canonicalFundNameByKeyword).find(([keyword]) => upperCaseName.includes(keyword))?.[1];
-            const name = canonicalName ?? holding.name;
+            const name = INZHUR_CANONICAL_FUNDS.find(fund => upperCaseName.includes(fund.keyword))?.name ?? holding.name;
 
             return yield* instrumentRepository.create({
                 type: InstrumentTypeEnum.FUND,
@@ -147,7 +142,7 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
                     {
                         title: instrument.name,
                         type: AccountTypeEnum.STOCKS,
-                        icon: UserIconNameEnum.ChartLine,
+                        icon: INZHUR_CANONICAL_FUNDS.find(fund => fund.name === instrument.name)?.icon ?? UserIconNameEnum.ChartLine,
                         instrumentId: instrument.id,
                         currentBalance: 0,
                         externalId: `inzhur:${holding.isin}`,

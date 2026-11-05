@@ -12,7 +12,8 @@ import {
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
-    TransactionTypeEnum
+    TransactionTypeEnum,
+    UserIconNameEnum
 } from '@budgie/contracts';
 import {
     InzhurImportOutcomeEnum,
@@ -69,6 +70,7 @@ describe('inzhur/statement-import', () => {
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(1000 * PRECISION);
             expect(yield* fetchInzhurLedger()).toEqual([]);
             expect(setup.lastStatementDate).toBe('2026-09-30');
+            expect([reitAccount, energyAccount].map(account => account.icon)).toEqual([UserIconNameEnum.Building2, UserIconNameEnum.Zap]);
             expect([reitAccount, energyAccount].map(account => [account.type, account.dividendPayout, account.integrationId])).toEqual([
                 [AccountTypeEnum.STOCKS, DividendPayoutEnum.REINVEST, setup.integration.id],
                 [AccountTypeEnum.STOCKS, DividendPayoutEnum.REINVEST, setup.integration.id]
