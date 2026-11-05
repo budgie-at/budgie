@@ -140,6 +140,18 @@ msgstr "{accountsCount, plural, one {# asset} other {# assets}}"
 msgid "{ageDays, plural, one {# day old} other {# days old}}"
 msgstr "{ageDays, plural, one {# day old} other {# days old}}"
 
+#: src/recurring/service/recurring-reminder.service.ts
+msgid "{amount} due in {daysUntilDue} days"
+msgstr "{amount} due in {daysUntilDue} days"
+
+#: src/recurring/service/recurring-reminder.service.ts
+msgid "{amount} due today"
+msgstr "{amount} due today"
+
+#: src/recurring/service/recurring-reminder.service.ts
+msgid "{amount} due tomorrow"
+msgstr "{amount} due tomorrow"
+
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "{applied, plural, one {# matching transaction updated} other {# matching transactions updated}}"
 msgstr "{applied, plural, one {# matching transaction updated} other {# matching transactions updated}}"
@@ -326,6 +338,10 @@ msgstr "{downloaded} of {total} GB is kept. It carries on when you're back on Wi
 msgid "{downloaded} of {total} GB is kept. It carries on when you're back online."
 msgstr "{downloaded} of {total} GB is kept. It carries on when you're back online."
 
+#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
+msgid "{dueSoonCount, plural, one {# payment} other {# payments}}"
+msgstr "{dueSoonCount, plural, one {# payment} other {# payments}}"
+
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "{duplicateTransactionCount, plural, one {# skipped} other {# skipped}}"
 msgstr "{duplicateTransactionCount, plural, one {# skipped} other {# skipped}}"
@@ -430,7 +446,7 @@ msgstr "{formattedAveragePerDay} a day"
 msgid "{formattedBalance} will be transferred to {destinationAccountTitle} and this deposit will be archived. You can restore it anytime from Settings → Archived Accounts."
 msgstr "{formattedBalance} will be transferred to {destinationAccountTitle} and this deposit will be archived. You can restore it anytime from Settings → Archived Accounts."
 
-#: src/transaction/components/recurring-calendar-day/recurring-calendar-day.tsx
+#: src/recurring/components/recurring-calendar-day/recurring-calendar-day.tsx
 msgid "{formattedDate}. Recorded: {entryCount}. Expected: {forecastedCount}."
 msgstr "{formattedDate}. Recorded: {entryCount}. Expected: {forecastedCount}."
 
@@ -510,6 +526,10 @@ msgstr "{importedCount} imported, {failedCount} failed"
 #: src/categorize-inbox/components/categorize-inbox-group-choose-payments-option/categorize-inbox-group-choose-payments-option.tsx
 msgid "{included} of {total}"
 msgstr "{included} of {total}"
+
+#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
+msgid "{incomeAmount} / month"
+msgstr "{incomeAmount} / month"
 
 #: src/installment-plan/component/installment-timeline/installment-timeline.tsx
 msgid "{installmentCount, plural, one {# monthly payment until {finalPaymentLabel}, the first one is already paid, next on {nextPaymentLabel}} other {# monthly payments until {finalPaymentLabel}, the first one is already paid, next on {nextPaymentLabel}}}"
@@ -807,9 +827,17 @@ msgstr "{statusLabel}, {daysLeftLabel}."
 msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 msgstr "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 
+#: src/recurring/hook/use-remove-recurring-series.hook.ts
+msgid "{title} deleted"
+msgstr "{title} deleted"
+
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "{title} is ahead of pace"
 msgstr "{title} is ahead of pace"
+
+#: src/recurring/hook/use-remove-recurring-series.hook.ts
+msgid "{title} is no longer tracked"
+msgstr "{title} is no longer tracked"
 
 #: src/budget/components/budget-pace-hint-line/budget-pace-hint-line.tsx
 msgid "{title} is running fast"
@@ -910,6 +938,10 @@ msgstr "−{carriedLabel} carried"
 msgid "−{changePercent} vs {shortPreviousLabel}"
 msgstr "−{changePercent} vs {shortPreviousLabel}"
 
+#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
+msgid "≈ {committedAmount} / month"
+msgstr "≈ {committedAmount} / month"
+
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "≈ {formattedMonths} mo"
@@ -926,6 +958,11 @@ msgstr "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
+
+#: src/recurring/components/recurring-form-reminder-section/recurring-form-reminder-section.tsx
+#: src/recurring/components/recurring-reminder-choices/recurring-reminder-choices.tsx
+msgid "1 day"
+msgstr "1 day"
 
 #: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
 msgid "1M"
@@ -954,6 +991,11 @@ msgstr "24h change"
 #: src/market-data/component/currency-market-daily-change-row/currency-market-daily-change-row.tsx
 msgid "24h change · {staleDate}"
 msgstr "24h change · {staleDate}"
+
+#: src/recurring/components/recurring-form-reminder-section/recurring-form-reminder-section.tsx
+#: src/recurring/components/recurring-reminder-choices/recurring-reminder-choices.tsx
+msgid "3 days"
+msgstr "3 days"
 
 #: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
 msgid "3M"
@@ -987,6 +1029,10 @@ msgstr "A payment has to match every condition."
 #: src/rule/components/rule-conditions-section/rule-conditions-section.tsx
 msgid "A payment only has to match one condition."
 msgstr "A payment only has to match one condition."
+
+#: src/recurring/hook/use-recurring-alert-message.hook.ts
+msgid "A payment was expected but has not been recorded yet."
+msgstr "A payment was expected but has not been recorded yet."
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "A rough number is fine. Fix it any time."
@@ -1041,6 +1087,7 @@ msgid "account"
 msgstr "account"
 
 #: src/app/account-selector.tsx
+#: src/recurring/components/recurring-form-account-field/recurring-form-account-field.tsx
 #: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
 #: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
@@ -1211,6 +1258,10 @@ msgstr "Add fee"
 msgid "Add item"
 msgstr "Add item"
 
+#: src/recurring/components/recurring-pane-toolbar/recurring-pane-toolbar.tsx
+msgid "Add recurring payment"
+msgstr "Add recurring payment"
+
 #: src/rule/constant/rule-action-type.constant.ts
 msgid "add tag"
 msgstr "add tag"
@@ -1236,6 +1287,10 @@ msgstr "Add tags to these transactions"
 msgid "Add the Budgie action"
 msgstr "Add the Budgie action"
 
+#: src/recurring/components/make-recurring-sheet/make-recurring-sheet.tsx
+msgid "Add to an existing payment"
+msgstr "Add to an existing payment"
+
 #: src/import/components/import-csv/import-csv.tsx
 msgid "Add transactions from a spreadsheet"
 msgstr "Add transactions from a spreadsheet"
@@ -1256,6 +1311,10 @@ msgstr "Add your first transaction to see where your money goes."
 msgid "Add your key"
 msgstr "Add your key"
 
+#: src/recurring/components/make-recurring-sheet/make-recurring-sheet.tsx
+msgid "Added to {title}"
+msgstr "Added to {title}"
+
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 msgid "Adds a fee to the plan total"
 msgstr "Adds a fee to the plan total"
@@ -1275,6 +1334,10 @@ msgstr "Adjusts category limits after 3 periods of steady over or under spending
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "Advanced regular expression"
 msgstr "Advanced regular expression"
+
+#: src/recurring/components/recurring-form-end-section/recurring-form-end-section.tsx
+msgid "After"
+msgstr "After"
 
 #: src/budget/components/budget-held-back-note/budget-held-back-note.tsx
 msgid "After {reservedAmount} for set-asides and {upcomingAmount} for bills"
@@ -1413,6 +1476,7 @@ msgstr "amount"
 
 #: src/app/(main)/import-csv.tsx
 #: src/import/utils/get-import-match-description.util.ts
+#: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
@@ -1471,6 +1535,10 @@ msgstr "and"
 #: src/rule/hooks/use-rule-row-summary.hook.ts
 msgid "and +{extraCount}"
 msgstr "and +{extraCount}"
+
+#: src/recurring/components/recurring-form-account-field/recurring-form-account-field.tsx
+msgid "Any account"
+msgstr "Any account"
 
 #: src/rule/components/rule-condition-match-type-selector/rule-condition-match-type-selector.tsx
 msgid "Any condition"
@@ -1889,6 +1957,7 @@ msgstr "Browse icons"
 msgid "Budget"
 msgstr "Budget"
 
+#: src/budget/service/budget-alert-monitor.service.ts
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Budget alerts"
 msgstr "Budget alerts"
@@ -2066,7 +2135,6 @@ msgstr "Can't be changed later"
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 #: src/tag/hooks/use-delete-tag.hook.ts
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 #: src/transaction/components/transaction-form-actions/transaction-form-actions.tsx
@@ -2183,6 +2251,7 @@ msgstr "Categorize"
 #: src/app/category-selector.tsx
 #: src/budget/components/budget-fund-category-field/budget-fund-category-field.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
+#: src/recurring/components/recurring-form-category-field/recurring-form-category-field.tsx
 #: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx
 #: src/transaction/components/transaction-category-field-icon/transaction-category-field-icon.tsx
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
@@ -2523,6 +2592,10 @@ msgstr "comment"
 msgid "Comment"
 msgstr "Comment"
 
+#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
+msgid "Committed"
+msgstr "Committed"
+
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Common"
 msgstr "Common"
@@ -2538,10 +2611,6 @@ msgstr "Complete every split entry"
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Confirm it's you before choosing a new one."
 msgstr "Confirm it's you before choosing a new one."
-
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
-msgid "Confirm recurring"
-msgstr "Confirm recurring"
 
 #: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx
 msgid "Confirm tag selection"
@@ -2709,6 +2778,10 @@ msgstr "Copy the token and paste it below"
 #: src/market-data/component/currency-market-cost-basis-row/currency-market-cost-basis-row.tsx
 msgid "Cost basis"
 msgstr "Cost basis"
+
+#: src/recurring/components/make-recurring-sheet/make-recurring-sheet.tsx
+msgid "Could not add to recurring payment."
+msgstr "Could not add to recurring payment."
 
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "Could not apply rule to existing transactions"
@@ -2935,10 +3008,6 @@ msgstr "Could not rebuild balances"
 msgid "Could not remove unused downloads"
 msgstr "Could not remove unused downloads"
 
-#: src/transaction/components/recurring-series-title-input/recurring-series-title-input.tsx
-msgid "Could not rename recurring payment."
-msgstr "Could not rename recurring payment."
-
 #: src/settings/hooks/use-sync-repairs-action.hook.ts
 msgid "Could not repair sync data"
 msgstr "Could not repair sync data"
@@ -2950,6 +3019,10 @@ msgstr "Could not reset bank sync"
 #: src/account/hooks/use-restore-archived-account.hook.ts
 msgid "Could not restore account."
 msgstr "Could not restore account."
+
+#: src/recurring/hook/use-remove-recurring-series.hook.ts
+msgid "Could not restore recurring payment."
+msgstr "Could not restore recurring payment."
 
 #: src/budget/components/budget-limit-changes-sheet/budget-limit-changes-sheet.tsx
 #: src/budget/hooks/use-budget-form.hook.ts
@@ -2967,6 +3040,10 @@ msgstr "Could not save event"
 #: src/budget/hooks/use-budget-fund-form.hook.ts
 msgid "Could not save fund"
 msgstr "Could not save fund"
+
+#: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
+msgid "Could not save recurring payment."
+msgstr "Could not save recurring payment."
 
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Could not save tag"
@@ -3040,9 +3117,15 @@ msgstr "Could not update key"
 msgid "Could not update notifications"
 msgstr "Could not update notifications"
 
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+#: src/recurring/components/recurring-detail-history-row/recurring-detail-history-row.tsx
+#: src/recurring/components/recurring-detail-mark-recurring-menu-item/recurring-detail-mark-recurring-menu-item.tsx
+#: src/recurring/hook/use-remove-recurring-series.hook.ts
 msgid "Could not update recurring payment."
 msgstr "Could not update recurring payment."
+
+#: src/recurring/components/recurring-reminder-choices/recurring-reminder-choices.tsx
+msgid "Could not update reminder."
+msgstr "Could not update reminder."
 
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
@@ -3207,6 +3290,10 @@ msgstr "Create Category"
 msgid "Create event"
 msgstr "Create event"
 
+#: src/recurring/components/make-recurring-create-row/make-recurring-create-row.tsx
+msgid "Create new recurring payment"
+msgstr "Create new recurring payment"
+
 #: src/account/component/account-select-content/account-select-content.tsx
 msgid "Create one to get started."
 msgstr "Create one to get started."
@@ -3293,6 +3380,7 @@ msgstr "Current balance"
 #: src/budget/components/budget-fund-repeat-field/budget-fund-repeat-field.tsx
 #: src/import/components/import-preset-options/import-preset-options.tsx
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
+#: src/recurring/components/recurring-form-repeat-chip/recurring-form-repeat-chip.tsx
 msgid "Custom"
 msgstr "Custom"
 
@@ -3390,6 +3478,8 @@ msgstr "Default currency"
 #: src/budget/hooks/use-budget-form.hook.ts
 #: src/budget/hooks/use-budget-fund-form.hook.ts
 #: src/category/hooks/use-delete-category.hook.ts
+#: src/recurring/components/recurring-detail-destructive-row/recurring-detail-destructive-row.tsx
+#: src/recurring/components/recurring-list-row/recurring-list-row.tsx
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/tag/components/tag-card/tag-card.tsx
 #: src/tag/hooks/use-delete-tag.hook.ts
@@ -3581,7 +3671,6 @@ msgid "Disconnected on this phone"
 msgstr "Disconnected on this phone"
 
 #: src/budget/components/budget-period-recap-card/budget-period-recap-card.tsx
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 #: src/wallet-capture/hook/use-wallet-capture-settings.hook.ts
 msgid "Dismiss"
@@ -3715,6 +3804,10 @@ msgstr "Due {dueDate}"
 msgid "Due date"
 msgstr "Due date"
 
+#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
+msgid "Due next 7 days"
+msgstr "Due next 7 days"
+
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "Duplicate rule"
 msgstr "Duplicate rule"
@@ -3779,6 +3872,10 @@ msgstr "e.g. Main card"
 msgid "e.g. Netflix"
 msgstr "e.g. Netflix"
 
+#: src/recurring/components/recurring-form-title-field/recurring-form-title-field.tsx
+msgid "e.g. Netflix, Rent"
+msgstr "e.g. Netflix, Rent"
+
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 msgid "Each bar compares one day's spending with your daily plan."
 msgstr "Each bar compares one day's spending with your daily plan."
@@ -3792,6 +3889,7 @@ msgid "Each week against your {allowanceLabel} weekly allowance"
 msgstr "Each week against your {allowanceLabel} weekly allowance"
 
 #: src/@generic/component/entity-list-row/entity-list-row.tsx
+#: src/recurring/components/recurring-detail-edit-button/recurring-detail-edit-button.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 #: src/transaction/components/transaction-info-edit-button/transaction-info-edit-button.tsx
 msgid "Edit"
@@ -3840,6 +3938,11 @@ msgstr "Edit fee"
 #: src/transaction/components/update-income-transaction/update-income-transaction.tsx
 msgid "Edit Income"
 msgstr "Edit Income"
+
+#: src/recurring/components/recurring-detail-edit-button/recurring-detail-edit-button.tsx
+#: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
+msgid "Edit recurring payment"
+msgstr "Edit recurring payment"
 
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 msgid "Edit Rule"
@@ -3917,6 +4020,28 @@ msgstr "Encrypted · PIN and {biometricLabel}"
 #: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Encrypting your data"
 msgstr "Encrypting your data"
+
+#: src/recurring/components/recurring-form-end-section/recurring-form-end-section.tsx
+msgid "End date"
+msgstr "End date"
+
+#: src/recurring/components/recurring-alert-badge/recurring-alert-badge.tsx
+#: src/recurring/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
+#: src/recurring/hook/use-recurring-alert-message.hook.ts
+msgid "Ending soon"
+msgstr "Ending soon"
+
+#: src/recurring/components/recurring-form-end-section/recurring-form-end-section.tsx
+msgid "Ends"
+msgstr "Ends"
+
+#: src/recurring/components/recurring-alert-badge/recurring-alert-badge.tsx
+msgid "Ends {endsMonth}"
+msgstr "Ends {endsMonth}"
+
+#: src/recurring/hook/use-recurring-alert-message.hook.ts
+msgid "Ends on {endsDate}"
+msgstr "Ends on {endsDate}"
 
 #: src/i18n/constant/languages.constant.ts
 msgid "English"
@@ -4037,6 +4162,34 @@ msgstr "Event limit"
 msgid "Events"
 msgstr "Events"
 
+#: src/recurring/components/recurring-form-custom-cadence/recurring-form-custom-cadence.tsx
+msgid "Every"
+msgstr "Every"
+
+#: src/recurring/hook/use-recurring-cadence-label.hook.ts
+msgid "Every {cadenceInterval} months"
+msgstr "Every {cadenceInterval} months"
+
+#: src/recurring/hook/use-recurring-cadence-label.hook.ts
+msgid "Every {cadenceInterval} weeks"
+msgstr "Every {cadenceInterval} weeks"
+
+#: src/recurring/hook/use-recurring-cadence-label.hook.ts
+msgid "Every {cadenceInterval} years"
+msgstr "Every {cadenceInterval} years"
+
+#: src/recurring/hook/use-recurring-schedule-description.hook.ts
+msgid "Every {weekday}"
+msgstr "Every {weekday}"
+
+#: src/recurring/components/recurring-form-repeat-chip/recurring-form-repeat-chip.tsx
+msgid "Every 2 weeks"
+msgstr "Every 2 weeks"
+
+#: src/recurring/hook/use-recurring-schedule-description.hook.ts
+msgid "Every month on day {dayOfMonth}"
+msgstr "Every month on day {dayOfMonth}"
+
 #: src/budget/components/budget-fund-repeat-field/budget-fund-repeat-field.tsx
 msgid "Every N months"
 msgstr "Every N months"
@@ -4060,6 +4213,10 @@ msgstr "every two weeks"
 #: src/budget/components/budget-fund-repeat-field/budget-fund-repeat-field.tsx
 msgid "Every year"
 msgstr "Every year"
+
+#: src/recurring/hook/use-recurring-schedule-description.hook.ts
+msgid "Every year on {monthAndDay}"
+msgstr "Every year on {monthAndDay}"
 
 #: src/sync/component/sync-history-step/sync-history-step.tsx
 msgid "Everything from the last 3 months"
@@ -4098,9 +4255,9 @@ msgstr "Exchange rate not found"
 msgid "Exchange rate: {rateLabel}"
 msgstr "Exchange rate: {rateLabel}"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
-#: src/transaction/components/recurring-calendar-legend/recurring-calendar-legend.tsx
+#: src/recurring/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/recurring/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
+#: src/recurring/components/recurring-calendar-legend/recurring-calendar-legend.tsx
 msgid "Expected"
 msgstr "Expected"
 
@@ -4125,6 +4282,7 @@ msgstr "Expected return date"
 msgid "Expected Return Date (Optional)"
 msgstr "Expected Return Date (Optional)"
 
+#: src/recurring/components/recurring-form-kind-field/recurring-form-kind-field.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -4135,6 +4293,7 @@ msgstr "Expense"
 msgid "Expense, income or transfer"
 msgstr "Expense, income or transfer"
 
+#: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
 #: src/transaction/hook/use-transaction-filter-page-title.hook.ts
@@ -4693,6 +4852,8 @@ msgstr "Includes crypto"
 
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
+#: src/recurring/components/recurring-form-kind-field/recurring-form-kind-field.tsx
+#: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
 #: src/tag/components/stats-by-tags-panel/stats-by-tags-panel.tsx
@@ -5070,6 +5231,11 @@ msgstr "Make a PIN after all"
 msgid "Make primary"
 msgstr "Make primary"
 
+#: src/recurring/components/make-recurring-sheet/make-recurring-sheet.tsx
+#: src/transaction/components/transaction-info-recurring-row/transaction-info-recurring-row.tsx
+msgid "Make recurring"
+msgstr "Make recurring"
+
 #: src/budget/components/budget-details-edit-button/budget-details-edit-button.tsx
 msgid "Manage budget"
 msgstr "Manage budget"
@@ -5093,6 +5259,10 @@ msgstr "Map CSV columns"
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Mark as External?"
 msgstr "Mark as External?"
+
+#: src/recurring/components/recurring-detail-mark-recurring-menu-item/recurring-detail-mark-recurring-menu-item.tsx
+msgid "Mark as recurring"
+msgstr "Mark as recurring"
 
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Mark External"
@@ -5316,6 +5486,8 @@ msgstr "Monobank sends about one month of history per minute, for each account y
 msgid "Month"
 msgstr "Month"
 
+#: src/recurring/components/recurring-form-repeat-chip/recurring-form-repeat-chip.tsx
+#: src/recurring/hook/use-recurring-cadence-label.hook.ts
 #: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
 msgid "Monthly"
 msgstr "Monthly"
@@ -5328,9 +5500,13 @@ msgstr "Monthly budget"
 msgid "Monthly history"
 msgstr "Monthly history"
 
-#: src/transaction/components/recurring-calendar-summary/recurring-calendar-summary.tsx
+#: src/recurring/components/recurring-calendar-summary/recurring-calendar-summary.tsx
 msgid "Monthly total"
 msgstr "Monthly total"
+
+#: src/recurring/components/recurring-form-custom-cadence/recurring-form-custom-cadence.tsx
+msgid "Months"
+msgstr "Months"
 
 #: src/runway/component/runway-verdict-figure/runway-verdict-figure.tsx
 msgid "months left"
@@ -5340,6 +5516,7 @@ msgstr "months left"
 msgid "Months left beside your balance"
 msgstr "Months left beside your balance"
 
+#: src/recurring/components/recurring-detail-menu/recurring-detail-menu.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "More actions"
 msgstr "More actions"
@@ -5423,6 +5600,7 @@ msgstr "Moved to cash"
 
 #: src/budget/components/budget-name-field/budget-name-field.tsx
 #: src/category/components/category-form/category-form.tsx
+#: src/recurring/components/recurring-form-title-field/recurring-form-title-field.tsx
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Name"
 msgstr "Name"
@@ -5456,6 +5634,10 @@ msgstr "Net"
 msgid "Net worth"
 msgstr "Net worth"
 
+#: src/recurring/components/recurring-form-end-section/recurring-form-end-section.tsx
+msgid "Never"
+msgstr "Never"
+
 #: src/app/(main)/create-account/index.tsx
 msgid "New Account"
 msgstr "New Account"
@@ -5488,6 +5670,10 @@ msgstr "New in Monobank"
 msgid "New Income"
 msgstr "New Income"
 
+#: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
+msgid "New recurring payment"
+msgstr "New recurring payment"
+
 #: src/budget/components/budget-fund-form/budget-fund-form.tsx
 msgid "New set aside"
 msgstr "New set aside"
@@ -5504,6 +5690,10 @@ msgstr "New Transfer"
 msgid "Next {formattedNextAmount} · {nextDate}"
 msgstr "Next {formattedNextAmount} · {nextDate}"
 
+#: src/recurring/components/recurring-list-row-content/recurring-list-row-content.tsx
+msgid "next {nextDateLabel}"
+msgstr "next {nextDateLabel}"
+
 #: src/onboarding/component/onboarding-keyboard-controls/onboarding-keyboard-controls.tsx
 msgid "Next field"
 msgstr "Next field"
@@ -5512,10 +5702,11 @@ msgstr "Next field"
 msgid "next month"
 msgstr "next month"
 
-#: src/transaction/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
+#: src/recurring/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
 msgid "Next month"
 msgstr "Next month"
 
+#: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 #: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
 msgid "Next payment"
 msgstr "Next payment"
@@ -5524,9 +5715,17 @@ msgstr "Next payment"
 msgid "Next payment {nextPaymentLabel}"
 msgstr "Next payment {nextPaymentLabel}"
 
+#: src/recurring/components/recurring-detail-next-payments/recurring-detail-next-payments.tsx
+msgid "Next payments"
+msgstr "Next payments"
+
 #: src/transaction/components/statistics-period-control/statistics-period-control.tsx
 msgid "Next period"
 msgstr "Next period"
+
+#: src/recurring/components/recurring-detail-hero/recurring-detail-hero.tsx
+msgid "Next: {nextDateLabel}"
+msgstr "Next: {nextDateLabel}"
 
 #: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
 msgid "No account needed · Takes about a minute"
@@ -5671,13 +5870,17 @@ msgstr "No purchase price is recorded for this balance, so the return can’t be
 msgid "No receipt found"
 msgstr "No receipt found"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/recurring/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "No recurring payments in {displayMonthLabel}"
 msgstr "No recurring payments in {displayMonthLabel}"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/recurring/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "No recurring payments on this day"
 msgstr "No recurring payments on this day"
+
+#: src/recurring/components/recurring-list-empty-state/recurring-list-empty-state.tsx
+msgid "No recurring payments yet"
+msgstr "No recurring payments yet"
 
 #: src/@generic/component/selector-search-empty-state/selector-search-empty-state.tsx
 msgid "No results for “{query}”"
@@ -5744,8 +5947,13 @@ msgstr "No transactions matched"
 msgid "No transactions yet"
 msgstr "No transactions yet"
 
+#: src/recurring/components/recurring-list-row-content/recurring-list-row-content.tsx
+msgid "no upcoming payment"
+msgstr "no upcoming payment"
+
 #: src/app/import-column-mapper.tsx
 #: src/import/components/import-column-map-field/import-column-map-field.tsx
+#: src/recurring/components/recurring-form-category-field/recurring-form-category-field.tsx
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "None"
@@ -5799,6 +6007,15 @@ msgstr "Not now"
 msgid "Not on any transactions. This can’t be undone."
 msgstr "Not on any transactions. This can’t be undone."
 
+#: src/recurring/components/recurring-detail-history-row/recurring-detail-history-row.tsx
+msgid "Not part of this"
+msgstr "Not part of this"
+
+#: src/recurring/components/recurring-detail-destructive-row/recurring-detail-destructive-row.tsx
+#: src/recurring/components/recurring-list-row/recurring-list-row.tsx
+msgid "Not recurring"
+msgstr "Not recurring"
+
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Not saved yet"
 msgstr "Not saved yet"
@@ -5832,6 +6049,14 @@ msgstr "Note"
 msgid "Nothing from the past is imported"
 msgstr "Nothing from the past is imported"
 
+#: src/recurring/components/recurring-reminder-denied-row/recurring-reminder-denied-row.tsx
+msgid "Notifications are off · Open Settings"
+msgstr "Notifications are off · Open Settings"
+
+#: src/recurring/components/recurring-form-reminder-section/recurring-form-reminder-section.tsx
+msgid "Notify before the payment is due."
+msgstr "Notify before the payment is due."
+
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Notify me near a limit"
 msgstr "Notify me near a limit"
@@ -5858,6 +6083,9 @@ msgstr "of {total} GB"
 
 #: src/ai/component/ai-download-card-frame/ai-download-card-frame.tsx
 #: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
+#: src/recurring/components/recurring-form-reminder-section/recurring-form-reminder-section.tsx
+#: src/recurring/components/recurring-reminder-choices/recurring-reminder-choices.tsx
+#: src/recurring/components/recurring-reminder-denied-row/recurring-reminder-denied-row.tsx
 #: src/rule/hooks/use-rule-row-summary.hook.ts
 #: src/settings/components/app-lock-row/app-lock-row.tsx
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
@@ -5886,6 +6114,10 @@ msgstr "On"
 #: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
 msgid "On {nextDate} · Monthly"
 msgstr "On {nextDate} · Monthly"
+
+#: src/recurring/components/recurring-form-end-section/recurring-form-end-section.tsx
+msgid "On date"
+msgstr "On date"
 
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "On pace to run out by {runOutDate}. Keeping under {perDayAmount}/day keeps it on track."
@@ -5970,6 +6202,10 @@ msgstr "Only income transactions can be converted"
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "Only me, with a PIN"
 msgstr "Only me, with a PIN"
+
+#: src/recurring/hook/use-recurring-schedule-preview.hook.ts
+msgid "Only one payment"
+msgstr "Only one payment"
 
 #: ../ledger/src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only single-entry expenses can be converted"
@@ -6223,7 +6459,8 @@ msgstr "Overall budget: {threshold}% spent"
 msgid "Overdrawn"
 msgstr "Overdrawn"
 
-#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
+#: src/recurring/components/recurring-alert-badge/recurring-alert-badge.tsx
+#: src/recurring/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 msgid "Overdue"
 msgstr "Overdue"
 
@@ -6328,6 +6565,10 @@ msgstr "Pay in parts"
 msgid "Pay in parts · {operatedAtLabel} · {accountTitle}"
 msgstr "Pay in parts · {operatedAtLabel} · {accountTitle}"
 
+#: src/recurring/components/recurring-detail-history/recurring-detail-history.tsx
+msgid "Payment history"
+msgstr "Payment history"
+
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
 msgid "Payment schedule unavailable"
 msgstr "Payment schedule unavailable"
@@ -6337,6 +6578,7 @@ msgid "Payment size in its account currency"
 msgstr "Payment size in its account currency"
 
 #: src/installment-plan/component/installment-plan-count-field/installment-plan-count-field.tsx
+#: src/recurring/components/recurring-form-end-section/recurring-form-end-section.tsx
 msgid "Payments"
 msgstr "Payments"
 
@@ -6512,6 +6754,10 @@ msgstr "Popular"
 msgid "Positive"
 msgstr "Positive"
 
+#: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
+msgid "Possible"
+msgstr "Possible"
+
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Preparing conversions"
 msgstr "Preparing conversions"
@@ -6524,7 +6770,7 @@ msgstr "Press and hold to seal"
 msgid "Previous field"
 msgstr "Previous field"
 
-#: src/transaction/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
+#: src/recurring/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
 msgid "Previous month"
 msgstr "Previous month"
 
@@ -6540,13 +6786,18 @@ msgstr "Previous period"
 msgid "Price {ageLabel} · {date}"
 msgstr "Price {ageLabel} · {date}"
 
-#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
+#: src/recurring/components/recurring-alert-badge/recurring-alert-badge.tsx
+#: src/recurring/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 msgid "Price changed"
 msgstr "Price changed"
 
 #: src/market-data/hook/use-market-chart-accessibility.hook.ts
 msgid "Price chart, {rangeLabel}, from {fromLabel} to {toLabel}, high {highLabel}, low {lowLabel}"
 msgstr "Price chart, {rangeLabel}, from {fromLabel} to {toLabel}, high {highLabel}, low {lowLabel}"
+
+#: src/recurring/hook/use-recurring-alert-message.hook.ts
+msgid "Price went from {fromAmount} to {toAmount} on {changedDate}"
+msgstr "Price went from {fromAmount} to {toAmount} on {changedDate}"
 
 #: src/tag/components/tag-selector-row/tag-selector-row.tsx
 msgid "Primary"
@@ -6588,6 +6839,11 @@ msgstr "Projected spend"
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Push notifications are disabled"
 msgstr "Push notifications are disabled"
+
+#: src/recurring/components/recurring-form-repeat-chip/recurring-form-repeat-chip.tsx
+#: src/recurring/hook/use-recurring-cadence-label.hook.ts
+msgid "Quarterly"
+msgstr "Quarterly"
 
 #: src/installment-plan/component/installment-count-chips/installment-count-chips.tsx
 msgid "Quick picks"
@@ -6748,9 +7004,9 @@ msgstr "Record card taps with Shortcuts"
 msgid "Record expense"
 msgstr "Record expense"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
-#: src/transaction/components/recurring-calendar-legend/recurring-calendar-legend.tsx
+#: src/recurring/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/recurring/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
+#: src/recurring/components/recurring-calendar-legend/recurring-calendar-legend.tsx
 msgid "Recorded"
 msgstr "Recorded"
 
@@ -6759,13 +7015,21 @@ msgstr "Recorded"
 msgid "Recurring"
 msgstr "Recurring"
 
-#: src/transaction/components/recurring-series-title-input/recurring-series-title-input.tsx
+#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
+msgid "Recurring income"
+msgstr "Recurring income"
+
+#: src/recurring/components/recurring-form-title-field/recurring-form-title-field.tsx
 msgid "Recurring payment name"
 msgstr "Recurring payment name"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/recurring/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "Recurring payments are detected automatically from your transactions."
 msgstr "Recurring payments are detected automatically from your transactions."
+
+#: src/recurring/service/recurring-reminder.service.ts
+msgid "Recurring reminders"
+msgstr "Recurring reminders"
 
 #: src/categorize-inbox/components/categorize-inbox-group-refine-options/categorize-inbox-group-refine-options.tsx
 msgid "Refine"
@@ -6800,6 +7064,11 @@ msgstr "Rejected · tap to update"
 msgid "Remaining"
 msgstr "Remaining"
 
+#: src/recurring/components/recurring-detail-reminder-row/recurring-detail-reminder-row.tsx
+#: src/recurring/components/recurring-form-reminder-section/recurring-form-reminder-section.tsx
+msgid "Reminder"
+msgstr "Reminder"
+
 #: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
 #: src/app/(tabs)/settings/sync-repairs.tsx
 #: src/budget/components/budget-category-limit-deletable-row/budget-category-limit-deletable-row.tsx
@@ -6817,6 +7086,10 @@ msgstr "Remove action {position}"
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Remove all duplicates"
 msgstr "Remove all duplicates"
+
+#: src/recurring/components/recurring-form-category-field/recurring-form-category-field.tsx
+msgid "Remove category"
+msgstr "Remove category"
 
 #: src/budget/components/budget-category-limit-deletable-row/budget-category-limit-deletable-row.tsx
 msgid "Remove category limit?"
@@ -6854,9 +7127,9 @@ msgstr "Remove split?"
 msgid "Remove unused downloads"
 msgstr "Remove unused downloads"
 
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
-msgid "Rename"
-msgstr "Rename"
+#: src/recurring/components/recurring-detail-history-row/recurring-detail-history-row.tsx
+msgid "Removed from this series"
+msgstr "Removed from this series"
 
 #: src/installment-plan/component/convert-to-installment-header/convert-to-installment-header.tsx
 msgid "Rename plan, {value}"
@@ -6879,6 +7152,7 @@ msgid "Repayment"
 msgstr "Repayment"
 
 #: src/budget/components/budget-fund-repeat-field/budget-fund-repeat-field.tsx
+#: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 msgid "Repeats"
 msgstr "Repeats"
 
@@ -7067,11 +7341,17 @@ msgstr "Safe to spend"
 msgid "Safe to spend today"
 msgstr "Safe to spend today"
 
+#: src/recurring/components/recurring-form-reminder-section/recurring-form-reminder-section.tsx
+#: src/recurring/components/recurring-reminder-choices/recurring-reminder-choices.tsx
+msgid "Same day"
+msgstr "Same day"
+
 #: src/rule/components/rule-list-row/rule-list-row.tsx
 msgid "Same trigger as a rule above"
 msgstr "Same trigger as a rule above"
 
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
+#: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 #: src/transaction/components/simple-quick-form/simple-quick-form.tsx
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
@@ -7278,6 +7558,10 @@ msgstr "See all {total}"
 msgid "See spending by context, not just category"
 msgstr "See spending by context, not just category"
 
+#: src/recurring/components/recurring-list-row-content/recurring-list-row-content.tsx
+msgid "Seen {seenCount}× · {cadence}"
+msgstr "Seen {seenCount}× · {cadence}"
+
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx
 msgid "Select"
 msgstr "Select"
@@ -7459,6 +7743,10 @@ msgstr "Show budget"
 msgid "Show budget on Home screen"
 msgstr "Show budget on Home screen"
 
+#: src/recurring/components/recurring-pane-toolbar/recurring-pane-toolbar.tsx
+msgid "Show calendar"
+msgstr "Show calendar"
+
 #: src/settings/components/show-cents-row/show-cents-row.tsx
 msgid "Show cents"
 msgstr "Show cents"
@@ -7468,6 +7756,7 @@ msgid "Show less"
 msgstr "Show less"
 
 #: src/categorize-inbox/components/categorize-inbox-show-list-button/categorize-inbox-show-list-button.tsx
+#: src/recurring/components/recurring-pane-toolbar/recurring-pane-toolbar.tsx
 msgid "Show list"
 msgstr "Show list"
 
@@ -8013,6 +8302,10 @@ msgstr "The note on a payment"
 msgid "The PIN becomes the encryption key"
 msgstr "The PIN becomes the encryption key"
 
+#: src/recurring/hook/use-recurring-alert-message.hook.ts
+msgid "The price changed."
+msgstr "The price changed."
+
 #: src/transaction/hook/use-revert-consolidation.hook.ts
 msgid "The refund and the purchase become separate entries again."
 msgstr "The refund and the purchase become separate entries again."
@@ -8045,6 +8338,14 @@ msgstr "then"
 msgid "Then"
 msgstr "Then"
 
+#: src/recurring/hook/use-recurring-schedule-preview.hook.ts
+msgid "Then {dates}"
+msgstr "Then {dates}"
+
+#: src/recurring/hook/use-recurring-schedule-preview.hook.ts
+msgid "Then {dates}…"
+msgstr "Then {dates}…"
+
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "There are no linked transactions to show."
 msgstr "There are no linked transactions to show."
@@ -8060,6 +8361,10 @@ msgstr "These accounts already exist in Budgie or use a currency Budgie does not
 #: src/budget/constant/budget-period-this-label.constant.ts
 msgid "these two weeks"
 msgstr "these two weeks"
+
+#: src/recurring/components/recurring-list-empty-state/recurring-list-empty-state.tsx
+msgid "They are detected from your transactions, or add one with +."
+msgstr "They are detected from your transactions, or add one with +."
 
 #: src/sync/component/enable-banking-connect-account-row/enable-banking-connect-account-row.tsx
 msgid "This account already syncs"
@@ -8341,7 +8646,7 @@ msgstr "To set aside this period"
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 #: src/budget/components/budget-day-strip-key/budget-day-strip-key.tsx
 #: src/market-data/hook/use-market-chart-timeline.hook.ts
-#: src/transaction/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
+#: src/recurring/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
 #: src/transaction/hook/use-transaction-date-label.hook.ts
 #: src/transaction/query/use-get-transaction-sections.query.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -8681,6 +8986,8 @@ msgstr "Under limit"
 
 #: src/account/hooks/use-shelved-account-action.hook.ts
 #: src/categorize-inbox/components/categorize-inbox-undo-layout/categorize-inbox-undo-layout.tsx
+#: src/recurring/components/recurring-detail-history-row/recurring-detail-history-row.tsx
+#: src/recurring/hook/use-remove-recurring-series.hook.ts
 msgid "Undo"
 msgstr "Undo"
 
@@ -8833,6 +9140,10 @@ msgstr "Use 1 to {CATEGORY_TITLE_MAX_LENGTH} characters"
 msgid "Use 1 to {TAG_TITLE_MAX_LENGTH} characters"
 msgstr "Use 1 to {TAG_TITLE_MAX_LENGTH} characters"
 
+#: src/recurring/components/recurring-form-account-field/recurring-form-account-field.tsx
+msgid "Use any account"
+msgstr "Use any account"
+
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Use Face ID"
@@ -8876,11 +9187,19 @@ msgstr "Uses a regular expression of up to 200 characters, ignoring letter case.
 msgid "Value"
 msgstr "Value"
 
+#: src/recurring/components/make-recurring-sheet/make-recurring-sheet.tsx
+msgid "View"
+msgstr "View"
+
+#: src/transaction/components/transaction-info-recurring-row/transaction-info-recurring-row.tsx
+msgid "View recurring"
+msgstr "View recurring"
+
 #: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
 msgid "View source transactions"
 msgstr "View source transactions"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/recurring/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "View your payments in another month."
 msgstr "View your payments in another month."
 
@@ -8938,9 +9257,18 @@ msgstr "Week"
 msgid "Week {currentWeek} of {totalWeeks}. {overLabel}."
 msgstr "Week {currentWeek} of {totalWeeks}. {overLabel}."
 
+#: src/recurring/components/recurring-form-repeat-chip/recurring-form-repeat-chip.tsx
+#: src/recurring/hook/use-recurring-cadence-label.hook.ts
+msgid "Weekly"
+msgstr "Weekly"
+
 #: src/budget/constant/budget-period-title-label.constant.ts
 msgid "Weekly budget"
 msgstr "Weekly budget"
+
+#: src/recurring/components/recurring-form-custom-cadence/recurring-form-custom-cadence.tsx
+msgid "Weeks"
+msgstr "Weeks"
 
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "What goes inside?"
@@ -9048,9 +9376,18 @@ msgstr "XLSX export"
 msgid "Year"
 msgstr "Year"
 
+#: src/recurring/components/recurring-form-repeat-chip/recurring-form-repeat-chip.tsx
+#: src/recurring/hook/use-recurring-cadence-label.hook.ts
+msgid "Yearly"
+msgstr "Yearly"
+
 #: src/budget/constant/budget-period-title-label.constant.ts
 msgid "Yearly budget"
 msgstr "Yearly budget"
+
+#: src/recurring/components/recurring-form-custom-cadence/recurring-form-custom-cadence.tsx
+msgid "Years"
+msgstr "Years"
 
 #: src/transaction/hook/use-transaction-date-label.hook.ts
 #: src/transaction/query/use-get-transaction-sections.query.ts

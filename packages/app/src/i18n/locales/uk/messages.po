@@ -139,6 +139,18 @@ msgstr "{accountsCount, plural, one {# актив} few {# активи} many {# 
 msgid "{ageDays, plural, one {# day old} other {# days old}}"
 msgstr "{ageDays, plural, one {# день тому} few {# дні тому} many {# днів тому} other {# дня тому}}"
 
+#: src/recurring/service/recurring-reminder.service.ts
+msgid "{amount} due in {daysUntilDue} days"
+msgstr "{amount} до сплати через {daysUntilDue} дн."
+
+#: src/recurring/service/recurring-reminder.service.ts
+msgid "{amount} due today"
+msgstr "{amount} до сплати сьогодні"
+
+#: src/recurring/service/recurring-reminder.service.ts
+msgid "{amount} due tomorrow"
+msgstr "{amount} до сплати завтра"
+
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "{applied, plural, one {# matching transaction updated} other {# matching transactions updated}}"
 msgstr "{applied, plural, one {# відповідну транзакцію оновлено} other {# відповідних транзакцій оновлено}}"
@@ -325,6 +337,10 @@ msgstr "{downloaded} з {total} ГБ збережено. Завантаженн�
 msgid "{downloaded} of {total} GB is kept. It carries on when you're back online."
 msgstr "{downloaded} з {total} ГБ збережено. Завантаження продовжиться, коли ви знову будете онлайн."
 
+#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
+msgid "{dueSoonCount, plural, one {# payment} other {# payments}}"
+msgstr "{dueSoonCount, plural, one {# платіж} few {# платежі} many {# платежів} other {# платежу}}"
+
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "{duplicateTransactionCount, plural, one {# skipped} other {# skipped}}"
 msgstr "{duplicateTransactionCount, plural, one {# пропущено} few {# пропущено} many {# пропущено} other {# пропущено}}"
@@ -429,7 +445,7 @@ msgstr "{formattedAveragePerDay} на день"
 msgid "{formattedBalance} will be transferred to {destinationAccountTitle} and this deposit will be archived. You can restore it anytime from Settings → Archived Accounts."
 msgstr "{formattedBalance} буде переведено на {destinationAccountTitle}, а цей депозит буде архівовано. Ви можете відновити його в будь-який час у Налаштуваннях → Архівовані рахунки."
 
-#: src/transaction/components/recurring-calendar-day/recurring-calendar-day.tsx
+#: src/recurring/components/recurring-calendar-day/recurring-calendar-day.tsx
 msgid "{formattedDate}. Recorded: {entryCount}. Expected: {forecastedCount}."
 msgstr "{formattedDate}. Зафіксовано: {entryCount}. Очікується: {forecastedCount}."
 
@@ -509,6 +525,10 @@ msgstr "Імпортовано: {importedCount}, помилок: {failedCount}"
 #: src/categorize-inbox/components/categorize-inbox-group-choose-payments-option/categorize-inbox-group-choose-payments-option.tsx
 msgid "{included} of {total}"
 msgstr "{included} з {total}"
+
+#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
+msgid "{incomeAmount} / month"
+msgstr "{incomeAmount} / міс."
 
 #: src/installment-plan/component/installment-timeline/installment-timeline.tsx
 msgid "{installmentCount, plural, one {# monthly payment until {finalPaymentLabel}, the first one is already paid, next on {nextPaymentLabel}} other {# monthly payments until {finalPaymentLabel}, the first one is already paid, next on {nextPaymentLabel}}}"
@@ -806,9 +826,17 @@ msgstr "{statusLabel}, {daysLeftLabel}."
 msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 msgstr "{taggedCount, plural, one {# з тегом за цей сеанс} few {# з тегами за цей сеанс} many {# з тегами за цей сеанс} other {# з тегами за цей сеанс}}"
 
+#: src/recurring/hook/use-remove-recurring-series.hook.ts
+msgid "{title} deleted"
+msgstr "{title} видалено"
+
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "{title} is ahead of pace"
 msgstr "{title} випереджає темп"
+
+#: src/recurring/hook/use-remove-recurring-series.hook.ts
+msgid "{title} is no longer tracked"
+msgstr "{title} більше не відстежується"
 
 #: src/budget/components/budget-pace-hint-line/budget-pace-hint-line.tsx
 msgid "{title} is running fast"
@@ -909,6 +937,10 @@ msgstr "−{carriedLabel} перенесено"
 msgid "−{changePercent} vs {shortPreviousLabel}"
 msgstr "−{changePercent} до {shortPreviousLabel}"
 
+#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
+msgid "≈ {committedAmount} / month"
+msgstr "≈ {committedAmount} / міс."
+
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "≈ {formattedMonths} mo"
@@ -925,6 +957,11 @@ msgstr "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
+
+#: src/recurring/components/recurring-form-reminder-section/recurring-form-reminder-section.tsx
+#: src/recurring/components/recurring-reminder-choices/recurring-reminder-choices.tsx
+msgid "1 day"
+msgstr "1 день"
 
 #: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
 msgid "1M"
@@ -953,6 +990,11 @@ msgstr "Зміна за 24 год"
 #: src/market-data/component/currency-market-daily-change-row/currency-market-daily-change-row.tsx
 msgid "24h change · {staleDate}"
 msgstr "Зміна за 24 год · {staleDate}"
+
+#: src/recurring/components/recurring-form-reminder-section/recurring-form-reminder-section.tsx
+#: src/recurring/components/recurring-reminder-choices/recurring-reminder-choices.tsx
+msgid "3 days"
+msgstr "3 дні"
 
 #: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
 msgid "3M"
@@ -986,6 +1028,10 @@ msgstr "Платіж має відповідати всім умовам."
 #: src/rule/components/rule-conditions-section/rule-conditions-section.tsx
 msgid "A payment only has to match one condition."
 msgstr "Платежу достатньо відповідати одній умові."
+
+#: src/recurring/hook/use-recurring-alert-message.hook.ts
+msgid "A payment was expected but has not been recorded yet."
+msgstr "Очікувався платіж, але його ще не зафіксовано."
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "A rough number is fine. Fix it any time."
@@ -1040,6 +1086,7 @@ msgid "account"
 msgstr "рахунок"
 
 #: src/app/account-selector.tsx
+#: src/recurring/components/recurring-form-account-field/recurring-form-account-field.tsx
 #: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
 #: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
@@ -1210,6 +1257,10 @@ msgstr "Додати комісію"
 msgid "Add item"
 msgstr "Додати запис"
 
+#: src/recurring/components/recurring-pane-toolbar/recurring-pane-toolbar.tsx
+msgid "Add recurring payment"
+msgstr "Додати регулярний платіж"
+
 #: src/rule/constant/rule-action-type.constant.ts
 msgid "add tag"
 msgstr "додати тег"
@@ -1235,6 +1286,10 @@ msgstr "Додати теги до цих транзакцій"
 msgid "Add the Budgie action"
 msgstr "Додайте дію Budgie"
 
+#: src/recurring/components/make-recurring-sheet/make-recurring-sheet.tsx
+msgid "Add to an existing payment"
+msgstr "Додати до наявного платежу"
+
 #: src/import/components/import-csv/import-csv.tsx
 msgid "Add transactions from a spreadsheet"
 msgstr "Додати транзакції з таблиці"
@@ -1255,6 +1310,10 @@ msgstr "Додайте першу транзакцію, щоб побачити,
 msgid "Add your key"
 msgstr "Додайте свій ключ"
 
+#: src/recurring/components/make-recurring-sheet/make-recurring-sheet.tsx
+msgid "Added to {title}"
+msgstr "Додано до {title}"
+
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 msgid "Adds a fee to the plan total"
 msgstr "Додає комісію до суми плану"
@@ -1274,6 +1333,10 @@ msgstr "Коригує ліміти категорій після 3 період
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "Advanced regular expression"
 msgstr "Розширений регулярний вираз"
+
+#: src/recurring/components/recurring-form-end-section/recurring-form-end-section.tsx
+msgid "After"
+msgstr "Після"
 
 #: src/budget/components/budget-held-back-note/budget-held-back-note.tsx
 msgid "After {reservedAmount} for set-asides and {upcomingAmount} for bills"
@@ -1412,6 +1475,7 @@ msgstr "сума"
 
 #: src/app/(main)/import-csv.tsx
 #: src/import/utils/get-import-match-description.util.ts
+#: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
@@ -1470,6 +1534,10 @@ msgstr "та"
 #: src/rule/hooks/use-rule-row-summary.hook.ts
 msgid "and +{extraCount}"
 msgstr "і +{extraCount}"
+
+#: src/recurring/components/recurring-form-account-field/recurring-form-account-field.tsx
+msgid "Any account"
+msgstr "Будь-який рахунок"
 
 #: src/rule/components/rule-condition-match-type-selector/rule-condition-match-type-selector.tsx
 msgid "Any condition"
@@ -1888,6 +1956,7 @@ msgstr "Переглянути значки"
 msgid "Budget"
 msgstr "Бюджет"
 
+#: src/budget/service/budget-alert-monitor.service.ts
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Budget alerts"
 msgstr "Сповіщення про бюджет"
@@ -2065,7 +2134,6 @@ msgstr "Змінити пізніше не можна"
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 #: src/tag/hooks/use-delete-tag.hook.ts
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 #: src/transaction/components/transaction-form-actions/transaction-form-actions.tsx
@@ -2182,6 +2250,7 @@ msgstr "Категоризувати"
 #: src/app/category-selector.tsx
 #: src/budget/components/budget-fund-category-field/budget-fund-category-field.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
+#: src/recurring/components/recurring-form-category-field/recurring-form-category-field.tsx
 #: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx
 #: src/transaction/components/transaction-category-field-icon/transaction-category-field-icon.tsx
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
@@ -2522,6 +2591,10 @@ msgstr "коментар"
 msgid "Comment"
 msgstr "Коментар"
 
+#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
+msgid "Committed"
+msgstr "Заплановано"
+
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Common"
 msgstr "Поширені"
@@ -2537,10 +2610,6 @@ msgstr "Заповніть кожен запис розподілу"
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Confirm it's you before choosing a new one."
 msgstr "Підтвердьте, що це ви, перш ніж вибрати новий."
-
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
-msgid "Confirm recurring"
-msgstr "Підтвердити регулярний платіж"
 
 #: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx
 msgid "Confirm tag selection"
@@ -2708,6 +2777,10 @@ msgstr "Скопіюйте токен і вставте його нижче"
 #: src/market-data/component/currency-market-cost-basis-row/currency-market-cost-basis-row.tsx
 msgid "Cost basis"
 msgstr "Собівартість"
+
+#: src/recurring/components/make-recurring-sheet/make-recurring-sheet.tsx
+msgid "Could not add to recurring payment."
+msgstr "Не вдалося додати до регулярного платежу."
 
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "Could not apply rule to existing transactions"
@@ -2934,10 +3007,6 @@ msgstr "Не вдалося перерахувати баланси"
 msgid "Could not remove unused downloads"
 msgstr "Не вдалося видалити невикористані завантаження"
 
-#: src/transaction/components/recurring-series-title-input/recurring-series-title-input.tsx
-msgid "Could not rename recurring payment."
-msgstr "Не вдалося перейменувати регулярний платіж."
-
 #: src/settings/hooks/use-sync-repairs-action.hook.ts
 msgid "Could not repair sync data"
 msgstr "Не вдалося виправити дані синхронізації"
@@ -2949,6 +3018,10 @@ msgstr "Не вдалося скинути синхронізацію з бан�
 #: src/account/hooks/use-restore-archived-account.hook.ts
 msgid "Could not restore account."
 msgstr "Не вдалося відновити рахунок."
+
+#: src/recurring/hook/use-remove-recurring-series.hook.ts
+msgid "Could not restore recurring payment."
+msgstr "Не вдалося відновити регулярний платіж."
 
 #: src/budget/components/budget-limit-changes-sheet/budget-limit-changes-sheet.tsx
 #: src/budget/hooks/use-budget-form.hook.ts
@@ -2966,6 +3039,10 @@ msgstr "Не вдалося зберегти подію"
 #: src/budget/hooks/use-budget-fund-form.hook.ts
 msgid "Could not save fund"
 msgstr "Не вдалося зберегти фонд"
+
+#: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
+msgid "Could not save recurring payment."
+msgstr "Не вдалося зберегти регулярний платіж."
 
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Could not save tag"
@@ -3039,9 +3116,15 @@ msgstr "Не вдалося оновити ключ"
 msgid "Could not update notifications"
 msgstr "Не вдалося оновити сповіщення"
 
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+#: src/recurring/components/recurring-detail-history-row/recurring-detail-history-row.tsx
+#: src/recurring/components/recurring-detail-mark-recurring-menu-item/recurring-detail-mark-recurring-menu-item.tsx
+#: src/recurring/hook/use-remove-recurring-series.hook.ts
 msgid "Could not update recurring payment."
 msgstr "Не вдалося оновити регулярний платіж."
+
+#: src/recurring/components/recurring-reminder-choices/recurring-reminder-choices.tsx
+msgid "Could not update reminder."
+msgstr "Не вдалося оновити нагадування."
 
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
@@ -3206,6 +3289,10 @@ msgstr "Створити категорію"
 msgid "Create event"
 msgstr "Створити подію"
 
+#: src/recurring/components/make-recurring-create-row/make-recurring-create-row.tsx
+msgid "Create new recurring payment"
+msgstr "Створити регулярний платіж"
+
 #: src/account/component/account-select-content/account-select-content.tsx
 msgid "Create one to get started."
 msgstr "Створіть один, щоб розпочати."
@@ -3292,6 +3379,7 @@ msgstr "Поточний баланс"
 #: src/budget/components/budget-fund-repeat-field/budget-fund-repeat-field.tsx
 #: src/import/components/import-preset-options/import-preset-options.tsx
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
+#: src/recurring/components/recurring-form-repeat-chip/recurring-form-repeat-chip.tsx
 msgid "Custom"
 msgstr "Власний"
 
@@ -3389,6 +3477,8 @@ msgstr "Валюта за замовчуванням"
 #: src/budget/hooks/use-budget-form.hook.ts
 #: src/budget/hooks/use-budget-fund-form.hook.ts
 #: src/category/hooks/use-delete-category.hook.ts
+#: src/recurring/components/recurring-detail-destructive-row/recurring-detail-destructive-row.tsx
+#: src/recurring/components/recurring-list-row/recurring-list-row.tsx
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/tag/components/tag-card/tag-card.tsx
 #: src/tag/hooks/use-delete-tag.hook.ts
@@ -3580,7 +3670,6 @@ msgid "Disconnected on this phone"
 msgstr "Відключено на цьому телефоні"
 
 #: src/budget/components/budget-period-recap-card/budget-period-recap-card.tsx
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 #: src/wallet-capture/hook/use-wallet-capture-settings.hook.ts
 msgid "Dismiss"
@@ -3714,6 +3803,10 @@ msgstr "Термін: {dueDate}"
 msgid "Due date"
 msgstr "Дата платежу"
 
+#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
+msgid "Due next 7 days"
+msgstr "До сплати в наступні 7 днів"
+
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "Duplicate rule"
 msgstr "Дублювати правило"
@@ -3778,6 +3871,10 @@ msgstr "напр. основна картка"
 msgid "e.g. Netflix"
 msgstr "напр. Netflix"
 
+#: src/recurring/components/recurring-form-title-field/recurring-form-title-field.tsx
+msgid "e.g. Netflix, Rent"
+msgstr "напр. Netflix, оренда"
+
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 msgid "Each bar compares one day's spending with your daily plan."
 msgstr "Кожен стовпчик порівнює витрати за день із вашим денним планом."
@@ -3791,6 +3888,7 @@ msgid "Each week against your {allowanceLabel} weekly allowance"
 msgstr "Кожен тиждень порівняно з вашим тижневим бюджетом {allowanceLabel}"
 
 #: src/@generic/component/entity-list-row/entity-list-row.tsx
+#: src/recurring/components/recurring-detail-edit-button/recurring-detail-edit-button.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 #: src/transaction/components/transaction-info-edit-button/transaction-info-edit-button.tsx
 msgid "Edit"
@@ -3839,6 +3937,11 @@ msgstr "Редагувати комісію"
 #: src/transaction/components/update-income-transaction/update-income-transaction.tsx
 msgid "Edit Income"
 msgstr "Редагувати дохід"
+
+#: src/recurring/components/recurring-detail-edit-button/recurring-detail-edit-button.tsx
+#: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
+msgid "Edit recurring payment"
+msgstr "Редагувати регулярний платіж"
 
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 msgid "Edit Rule"
@@ -3916,6 +4019,28 @@ msgstr "Зашифровано · PIN і {biometricLabel}"
 #: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Encrypting your data"
 msgstr "Шифруємо ваші дані"
+
+#: src/recurring/components/recurring-form-end-section/recurring-form-end-section.tsx
+msgid "End date"
+msgstr "Дата завершення"
+
+#: src/recurring/components/recurring-alert-badge/recurring-alert-badge.tsx
+#: src/recurring/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
+#: src/recurring/hook/use-recurring-alert-message.hook.ts
+msgid "Ending soon"
+msgstr "Скоро завершиться"
+
+#: src/recurring/components/recurring-form-end-section/recurring-form-end-section.tsx
+msgid "Ends"
+msgstr "Завершується"
+
+#: src/recurring/components/recurring-alert-badge/recurring-alert-badge.tsx
+msgid "Ends {endsMonth}"
+msgstr "Завершується у {endsMonth}"
+
+#: src/recurring/hook/use-recurring-alert-message.hook.ts
+msgid "Ends on {endsDate}"
+msgstr "Завершується {endsDate}"
 
 #: src/i18n/constant/languages.constant.ts
 msgid "English"
@@ -4036,6 +4161,34 @@ msgstr "Ліміт події"
 msgid "Events"
 msgstr "Події"
 
+#: src/recurring/components/recurring-form-custom-cadence/recurring-form-custom-cadence.tsx
+msgid "Every"
+msgstr "Кожні"
+
+#: src/recurring/hook/use-recurring-cadence-label.hook.ts
+msgid "Every {cadenceInterval} months"
+msgstr "Кожні {cadenceInterval} міс."
+
+#: src/recurring/hook/use-recurring-cadence-label.hook.ts
+msgid "Every {cadenceInterval} weeks"
+msgstr "Кожні {cadenceInterval} тижн."
+
+#: src/recurring/hook/use-recurring-cadence-label.hook.ts
+msgid "Every {cadenceInterval} years"
+msgstr "Кожні {cadenceInterval} р."
+
+#: src/recurring/hook/use-recurring-schedule-description.hook.ts
+msgid "Every {weekday}"
+msgstr "Щотижня, {weekday}"
+
+#: src/recurring/components/recurring-form-repeat-chip/recurring-form-repeat-chip.tsx
+msgid "Every 2 weeks"
+msgstr "Кожні 2 тижні"
+
+#: src/recurring/hook/use-recurring-schedule-description.hook.ts
+msgid "Every month on day {dayOfMonth}"
+msgstr "Щомісяця {dayOfMonth} числа"
+
 #: src/budget/components/budget-fund-repeat-field/budget-fund-repeat-field.tsx
 msgid "Every N months"
 msgstr "Кожні N місяців"
@@ -4059,6 +4212,10 @@ msgstr "кожні два тижні"
 #: src/budget/components/budget-fund-repeat-field/budget-fund-repeat-field.tsx
 msgid "Every year"
 msgstr "Щороку"
+
+#: src/recurring/hook/use-recurring-schedule-description.hook.ts
+msgid "Every year on {monthAndDay}"
+msgstr "Щороку {monthAndDay}"
 
 #: src/sync/component/sync-history-step/sync-history-step.tsx
 msgid "Everything from the last 3 months"
@@ -4097,9 +4254,9 @@ msgstr "Курс обміну не знайдено"
 msgid "Exchange rate: {rateLabel}"
 msgstr "Курс обміну: {rateLabel}"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
-#: src/transaction/components/recurring-calendar-legend/recurring-calendar-legend.tsx
+#: src/recurring/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/recurring/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
+#: src/recurring/components/recurring-calendar-legend/recurring-calendar-legend.tsx
 msgid "Expected"
 msgstr "Очікується"
 
@@ -4124,6 +4281,7 @@ msgstr "Очікувана дата повернення"
 msgid "Expected Return Date (Optional)"
 msgstr "Очікувана дата повернення (Необов'язково)"
 
+#: src/recurring/components/recurring-form-kind-field/recurring-form-kind-field.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -4134,6 +4292,7 @@ msgstr "Витрата"
 msgid "Expense, income or transfer"
 msgstr "Витрата, дохід або переказ"
 
+#: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
 #: src/transaction/hook/use-transaction-filter-page-title.hook.ts
@@ -4692,6 +4851,8 @@ msgstr "Включно з криптовалютою"
 
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
+#: src/recurring/components/recurring-form-kind-field/recurring-form-kind-field.tsx
+#: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
 #: src/tag/components/stats-by-tags-panel/stats-by-tags-panel.tsx
@@ -5069,6 +5230,11 @@ msgstr "Усе ж створити PIN-код"
 msgid "Make primary"
 msgstr "Зробити основним"
 
+#: src/recurring/components/make-recurring-sheet/make-recurring-sheet.tsx
+#: src/transaction/components/transaction-info-recurring-row/transaction-info-recurring-row.tsx
+msgid "Make recurring"
+msgstr "Зробити регулярним"
+
 #: src/budget/components/budget-details-edit-button/budget-details-edit-button.tsx
 msgid "Manage budget"
 msgstr "Керувати бюджетом"
@@ -5092,6 +5258,10 @@ msgstr "Зіставити стовпці CSV"
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Mark as External?"
 msgstr "Позначити як зовнішній?"
+
+#: src/recurring/components/recurring-detail-mark-recurring-menu-item/recurring-detail-mark-recurring-menu-item.tsx
+msgid "Mark as recurring"
+msgstr "Позначити як регулярний"
 
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Mark External"
@@ -5315,6 +5485,8 @@ msgstr "Monobank надсилає близько одного місяця іс�
 msgid "Month"
 msgstr "Місяць"
 
+#: src/recurring/components/recurring-form-repeat-chip/recurring-form-repeat-chip.tsx
+#: src/recurring/hook/use-recurring-cadence-label.hook.ts
 #: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
 msgid "Monthly"
 msgstr "Щомісяця"
@@ -5327,9 +5499,13 @@ msgstr "Місячний бюджет"
 msgid "Monthly history"
 msgstr "Місячна історія"
 
-#: src/transaction/components/recurring-calendar-summary/recurring-calendar-summary.tsx
+#: src/recurring/components/recurring-calendar-summary/recurring-calendar-summary.tsx
 msgid "Monthly total"
 msgstr "Місячний підсумок"
+
+#: src/recurring/components/recurring-form-custom-cadence/recurring-form-custom-cadence.tsx
+msgid "Months"
+msgstr "Місяці"
 
 #: src/runway/component/runway-verdict-figure/runway-verdict-figure.tsx
 msgid "months left"
@@ -5339,6 +5515,7 @@ msgstr "місяців залишилось"
 msgid "Months left beside your balance"
 msgstr "Залишок місяців поруч із балансом"
 
+#: src/recurring/components/recurring-detail-menu/recurring-detail-menu.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "More actions"
 msgstr "Інші дії"
@@ -5422,6 +5599,7 @@ msgstr "Перенесено в готівку"
 
 #: src/budget/components/budget-name-field/budget-name-field.tsx
 #: src/category/components/category-form/category-form.tsx
+#: src/recurring/components/recurring-form-title-field/recurring-form-title-field.tsx
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Name"
 msgstr "Назва"
@@ -5455,6 +5633,10 @@ msgstr "Чистий"
 msgid "Net worth"
 msgstr "Чисті активи"
 
+#: src/recurring/components/recurring-form-end-section/recurring-form-end-section.tsx
+msgid "Never"
+msgstr "Ніколи"
+
 #: src/app/(main)/create-account/index.tsx
 msgid "New Account"
 msgstr "Новий рахунок"
@@ -5487,6 +5669,10 @@ msgstr "Нові в Monobank"
 msgid "New Income"
 msgstr "Новий дохід"
 
+#: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
+msgid "New recurring payment"
+msgstr "Новий регулярний платіж"
+
 #: src/budget/components/budget-fund-form/budget-fund-form.tsx
 msgid "New set aside"
 msgstr "Нове відкладення"
@@ -5503,6 +5689,10 @@ msgstr "Новий переказ"
 msgid "Next {formattedNextAmount} · {nextDate}"
 msgstr "Наступний {formattedNextAmount} · {nextDate}"
 
+#: src/recurring/components/recurring-list-row-content/recurring-list-row-content.tsx
+msgid "next {nextDateLabel}"
+msgstr "далі {nextDateLabel}"
+
 #: src/onboarding/component/onboarding-keyboard-controls/onboarding-keyboard-controls.tsx
 msgid "Next field"
 msgstr "Наступне поле"
@@ -5511,10 +5701,11 @@ msgstr "Наступне поле"
 msgid "next month"
 msgstr "наступного місяця"
 
-#: src/transaction/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
+#: src/recurring/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
 msgid "Next month"
 msgstr "Наступний місяць"
 
+#: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 #: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
 msgid "Next payment"
 msgstr "Наступний платіж"
@@ -5523,9 +5714,17 @@ msgstr "Наступний платіж"
 msgid "Next payment {nextPaymentLabel}"
 msgstr "Наступний платіж {nextPaymentLabel}"
 
+#: src/recurring/components/recurring-detail-next-payments/recurring-detail-next-payments.tsx
+msgid "Next payments"
+msgstr "Наступні платежі"
+
 #: src/transaction/components/statistics-period-control/statistics-period-control.tsx
 msgid "Next period"
 msgstr "Наступний період"
+
+#: src/recurring/components/recurring-detail-hero/recurring-detail-hero.tsx
+msgid "Next: {nextDateLabel}"
+msgstr "Далі: {nextDateLabel}"
 
 #: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
 msgid "No account needed · Takes about a minute"
@@ -5670,13 +5869,17 @@ msgstr "Для цього балансу не записано ціну купі
 msgid "No receipt found"
 msgstr "Чек не знайдено"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/recurring/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "No recurring payments in {displayMonthLabel}"
 msgstr "Немає регулярних платежів ({displayMonthLabel})"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/recurring/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "No recurring payments on this day"
 msgstr "Цього дня немає регулярних платежів"
+
+#: src/recurring/components/recurring-list-empty-state/recurring-list-empty-state.tsx
+msgid "No recurring payments yet"
+msgstr "Ще немає регулярних платежів"
 
 #: src/@generic/component/selector-search-empty-state/selector-search-empty-state.tsx
 msgid "No results for “{query}”"
@@ -5743,8 +5946,13 @@ msgstr "Жодна транзакція не відповідає"
 msgid "No transactions yet"
 msgstr "Поки немає транзакцій"
 
+#: src/recurring/components/recurring-list-row-content/recurring-list-row-content.tsx
+msgid "no upcoming payment"
+msgstr "немає майбутніх платежів"
+
 #: src/app/import-column-mapper.tsx
 #: src/import/components/import-column-map-field/import-column-map-field.tsx
+#: src/recurring/components/recurring-form-category-field/recurring-form-category-field.tsx
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "None"
@@ -5798,6 +6006,15 @@ msgstr "Не зараз"
 msgid "Not on any transactions. This can’t be undone."
 msgstr "Не використовується в жодній транзакції. Це неможливо скасувати."
 
+#: src/recurring/components/recurring-detail-history-row/recurring-detail-history-row.tsx
+msgid "Not part of this"
+msgstr "Не належить до цієї серії"
+
+#: src/recurring/components/recurring-detail-destructive-row/recurring-detail-destructive-row.tsx
+#: src/recurring/components/recurring-list-row/recurring-list-row.tsx
+msgid "Not recurring"
+msgstr "Не регулярний"
+
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Not saved yet"
 msgstr "Ще не збережено"
@@ -5831,6 +6048,14 @@ msgstr "Нотатка"
 msgid "Nothing from the past is imported"
 msgstr "Нічого з минулого не імпортується"
 
+#: src/recurring/components/recurring-reminder-denied-row/recurring-reminder-denied-row.tsx
+msgid "Notifications are off · Open Settings"
+msgstr "Сповіщення вимкнено · Відкрити налаштування"
+
+#: src/recurring/components/recurring-form-reminder-section/recurring-form-reminder-section.tsx
+msgid "Notify before the payment is due."
+msgstr "Нагадати до настання строку платежу."
+
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Notify me near a limit"
 msgstr "Сповіщати біля ліміту"
@@ -5857,6 +6082,9 @@ msgstr "з {total} ГБ"
 
 #: src/ai/component/ai-download-card-frame/ai-download-card-frame.tsx
 #: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
+#: src/recurring/components/recurring-form-reminder-section/recurring-form-reminder-section.tsx
+#: src/recurring/components/recurring-reminder-choices/recurring-reminder-choices.tsx
+#: src/recurring/components/recurring-reminder-denied-row/recurring-reminder-denied-row.tsx
 #: src/rule/hooks/use-rule-row-summary.hook.ts
 #: src/settings/components/app-lock-row/app-lock-row.tsx
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
@@ -5885,6 +6113,10 @@ msgstr "Увімк."
 #: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
 msgid "On {nextDate} · Monthly"
 msgstr "{nextDate} · Щомісяця"
+
+#: src/recurring/components/recurring-form-end-section/recurring-form-end-section.tsx
+msgid "On date"
+msgstr "На дату"
 
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "On pace to run out by {runOutDate}. Keeping under {perDayAmount}/day keeps it on track."
@@ -5969,6 +6201,10 @@ msgstr "Можна конвертувати лише дохідні транза
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "Only me, with a PIN"
 msgstr "Лише я, з PIN-кодом"
+
+#: src/recurring/hook/use-recurring-schedule-preview.hook.ts
+msgid "Only one payment"
+msgstr "Лише один платіж"
 
 #: ../ledger/src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only single-entry expenses can be converted"
@@ -6222,7 +6458,8 @@ msgstr "Загальний бюджет: {threshold}% витрачено"
 msgid "Overdrawn"
 msgstr "У мінусі"
 
-#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
+#: src/recurring/components/recurring-alert-badge/recurring-alert-badge.tsx
+#: src/recurring/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 msgid "Overdue"
 msgstr "Прострочено"
 
@@ -6327,6 +6564,10 @@ msgstr "Оплата частинами"
 msgid "Pay in parts · {operatedAtLabel} · {accountTitle}"
 msgstr "Оплата частинами · {operatedAtLabel} · {accountTitle}"
 
+#: src/recurring/components/recurring-detail-history/recurring-detail-history.tsx
+msgid "Payment history"
+msgstr "Історія платежів"
+
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
 msgid "Payment schedule unavailable"
 msgstr "Графік платежів недоступний"
@@ -6336,6 +6577,7 @@ msgid "Payment size in its account currency"
 msgstr "Сума платежу у валюті рахунку"
 
 #: src/installment-plan/component/installment-plan-count-field/installment-plan-count-field.tsx
+#: src/recurring/components/recurring-form-end-section/recurring-form-end-section.tsx
 msgid "Payments"
 msgstr "Платежі"
 
@@ -6511,6 +6753,10 @@ msgstr "Популярні"
 msgid "Positive"
 msgstr "Додатний"
 
+#: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
+msgid "Possible"
+msgstr "Можливі"
+
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Preparing conversions"
 msgstr "Підготовка конвертацій"
@@ -6523,7 +6769,7 @@ msgstr "Натисніть і утримуйте, щоб запечатати"
 msgid "Previous field"
 msgstr "Попереднє поле"
 
-#: src/transaction/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
+#: src/recurring/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
 msgid "Previous month"
 msgstr "Попередній місяць"
 
@@ -6539,13 +6785,18 @@ msgstr "Попередній період"
 msgid "Price {ageLabel} · {date}"
 msgstr "Ціна {ageLabel} · {date}"
 
-#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
+#: src/recurring/components/recurring-alert-badge/recurring-alert-badge.tsx
+#: src/recurring/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 msgid "Price changed"
 msgstr "Ціна змінилася"
 
 #: src/market-data/hook/use-market-chart-accessibility.hook.ts
 msgid "Price chart, {rangeLabel}, from {fromLabel} to {toLabel}, high {highLabel}, low {lowLabel}"
 msgstr "Графік цін, {rangeLabel}, від {fromLabel} до {toLabel}, максимум {highLabel}, мінімум {lowLabel}"
+
+#: src/recurring/hook/use-recurring-alert-message.hook.ts
+msgid "Price went from {fromAmount} to {toAmount} on {changedDate}"
+msgstr "Ціна змінилася з {fromAmount} на {toAmount} ({changedDate})"
 
 #: src/tag/components/tag-selector-row/tag-selector-row.tsx
 msgid "Primary"
@@ -6587,6 +6838,11 @@ msgstr "Прогноз витрат"
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Push notifications are disabled"
 msgstr "Push-сповіщення вимкнено"
+
+#: src/recurring/components/recurring-form-repeat-chip/recurring-form-repeat-chip.tsx
+#: src/recurring/hook/use-recurring-cadence-label.hook.ts
+msgid "Quarterly"
+msgstr "Щокварталу"
 
 #: src/installment-plan/component/installment-count-chips/installment-count-chips.tsx
 msgid "Quick picks"
@@ -6747,9 +7003,9 @@ msgstr "Записувати оплати карткою через Швидкі
 msgid "Record expense"
 msgstr "Записати витрату"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
-#: src/transaction/components/recurring-calendar-legend/recurring-calendar-legend.tsx
+#: src/recurring/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/recurring/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
+#: src/recurring/components/recurring-calendar-legend/recurring-calendar-legend.tsx
 msgid "Recorded"
 msgstr "Зафіксовано"
 
@@ -6758,13 +7014,21 @@ msgstr "Зафіксовано"
 msgid "Recurring"
 msgstr "Регулярні"
 
-#: src/transaction/components/recurring-series-title-input/recurring-series-title-input.tsx
+#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
+msgid "Recurring income"
+msgstr "Регулярні доходи"
+
+#: src/recurring/components/recurring-form-title-field/recurring-form-title-field.tsx
 msgid "Recurring payment name"
 msgstr "Назва регулярного платежу"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/recurring/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "Recurring payments are detected automatically from your transactions."
 msgstr "Регулярні платежі визначаються автоматично на основі ваших транзакцій."
+
+#: src/recurring/service/recurring-reminder.service.ts
+msgid "Recurring reminders"
+msgstr "Нагадування про регулярні платежі"
 
 #: src/categorize-inbox/components/categorize-inbox-group-refine-options/categorize-inbox-group-refine-options.tsx
 msgid "Refine"
@@ -6799,6 +7063,11 @@ msgstr "Відхилено · торкніться, щоб оновити"
 msgid "Remaining"
 msgstr "Залишок"
 
+#: src/recurring/components/recurring-detail-reminder-row/recurring-detail-reminder-row.tsx
+#: src/recurring/components/recurring-form-reminder-section/recurring-form-reminder-section.tsx
+msgid "Reminder"
+msgstr "Нагадування"
+
 #: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
 #: src/app/(tabs)/settings/sync-repairs.tsx
 #: src/budget/components/budget-category-limit-deletable-row/budget-category-limit-deletable-row.tsx
@@ -6816,6 +7085,10 @@ msgstr "Видалити дію {position}"
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Remove all duplicates"
 msgstr "Видалити всі дублікати"
+
+#: src/recurring/components/recurring-form-category-field/recurring-form-category-field.tsx
+msgid "Remove category"
+msgstr "Прибрати категорію"
 
 #: src/budget/components/budget-category-limit-deletable-row/budget-category-limit-deletable-row.tsx
 msgid "Remove category limit?"
@@ -6853,9 +7126,9 @@ msgstr "Прибрати розділення?"
 msgid "Remove unused downloads"
 msgstr "Видалити невикористані завантаження"
 
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
-msgid "Rename"
-msgstr "Перейменувати"
+#: src/recurring/components/recurring-detail-history-row/recurring-detail-history-row.tsx
+msgid "Removed from this series"
+msgstr "Вилучено з цієї серії"
 
 #: src/installment-plan/component/convert-to-installment-header/convert-to-installment-header.tsx
 msgid "Rename plan, {value}"
@@ -6878,6 +7151,7 @@ msgid "Repayment"
 msgstr "Погашення"
 
 #: src/budget/components/budget-fund-repeat-field/budget-fund-repeat-field.tsx
+#: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 msgid "Repeats"
 msgstr "Повторюється"
 
@@ -7066,11 +7340,17 @@ msgstr "Безпечно витрачати"
 msgid "Safe to spend today"
 msgstr "Можна витратити сьогодні"
 
+#: src/recurring/components/recurring-form-reminder-section/recurring-form-reminder-section.tsx
+#: src/recurring/components/recurring-reminder-choices/recurring-reminder-choices.tsx
+msgid "Same day"
+msgstr "Того ж дня"
+
 #: src/rule/components/rule-list-row/rule-list-row.tsx
 msgid "Same trigger as a rule above"
 msgstr "Та сама умова, що й у правила вище"
 
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
+#: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 #: src/transaction/components/simple-quick-form/simple-quick-form.tsx
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
@@ -7277,6 +7557,10 @@ msgstr "Показати всі {total}"
 msgid "See spending by context, not just category"
 msgstr "Дивіться витрати за контекстом, а не лише за категорією"
 
+#: src/recurring/components/recurring-list-row-content/recurring-list-row-content.tsx
+msgid "Seen {seenCount}× · {cadence}"
+msgstr "Помічено {seenCount}× · {cadence}"
+
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx
 msgid "Select"
 msgstr "Вибрати"
@@ -7458,6 +7742,10 @@ msgstr "Показувати бюджет"
 msgid "Show budget on Home screen"
 msgstr "Показувати бюджет на головному екрані"
 
+#: src/recurring/components/recurring-pane-toolbar/recurring-pane-toolbar.tsx
+msgid "Show calendar"
+msgstr "Показати календар"
+
 #: src/settings/components/show-cents-row/show-cents-row.tsx
 msgid "Show cents"
 msgstr "Показувати копійки"
@@ -7467,6 +7755,7 @@ msgid "Show less"
 msgstr "Показати менше"
 
 #: src/categorize-inbox/components/categorize-inbox-show-list-button/categorize-inbox-show-list-button.tsx
+#: src/recurring/components/recurring-pane-toolbar/recurring-pane-toolbar.tsx
 msgid "Show list"
 msgstr "Показати список"
 
@@ -8012,6 +8301,10 @@ msgstr "Нотатка до платежу"
 msgid "The PIN becomes the encryption key"
 msgstr "PIN-код стає ключем шифрування"
 
+#: src/recurring/hook/use-recurring-alert-message.hook.ts
+msgid "The price changed."
+msgstr "Ціна змінилася."
+
 #: src/transaction/hook/use-revert-consolidation.hook.ts
 msgid "The refund and the purchase become separate entries again."
 msgstr "Повернення і покупка знову стануть окремими записами."
@@ -8044,6 +8337,14 @@ msgstr "тоді"
 msgid "Then"
 msgstr "Тоді"
 
+#: src/recurring/hook/use-recurring-schedule-preview.hook.ts
+msgid "Then {dates}"
+msgstr "Далі {dates}"
+
+#: src/recurring/hook/use-recurring-schedule-preview.hook.ts
+msgid "Then {dates}…"
+msgstr "Далі {dates}…"
+
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "There are no linked transactions to show."
 msgstr "Немає пов’язаних транзакцій для відображення."
@@ -8059,6 +8360,10 @@ msgstr "Ці рахунки вже є в Budgie або використовую�
 #: src/budget/constant/budget-period-this-label.constant.ts
 msgid "these two weeks"
 msgstr "ці два тижні"
+
+#: src/recurring/components/recurring-list-empty-state/recurring-list-empty-state.tsx
+msgid "They are detected from your transactions, or add one with +."
+msgstr "Вони визначаються з ваших транзакцій, або додайте свій через +."
 
 #: src/sync/component/enable-banking-connect-account-row/enable-banking-connect-account-row.tsx
 msgid "This account already syncs"
@@ -8340,7 +8645,7 @@ msgstr "Відкласти в цьому періоді"
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 #: src/budget/components/budget-day-strip-key/budget-day-strip-key.tsx
 #: src/market-data/hook/use-market-chart-timeline.hook.ts
-#: src/transaction/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
+#: src/recurring/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
 #: src/transaction/hook/use-transaction-date-label.hook.ts
 #: src/transaction/query/use-get-transaction-sections.query.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -8680,6 +8985,8 @@ msgstr "У межах ліміту"
 
 #: src/account/hooks/use-shelved-account-action.hook.ts
 #: src/categorize-inbox/components/categorize-inbox-undo-layout/categorize-inbox-undo-layout.tsx
+#: src/recurring/components/recurring-detail-history-row/recurring-detail-history-row.tsx
+#: src/recurring/hook/use-remove-recurring-series.hook.ts
 msgid "Undo"
 msgstr "Скасувати"
 
@@ -8832,6 +9139,10 @@ msgstr "Використайте від 1 до {CATEGORY_TITLE_MAX_LENGTH} си�
 msgid "Use 1 to {TAG_TITLE_MAX_LENGTH} characters"
 msgstr "Використайте від 1 до {TAG_TITLE_MAX_LENGTH} символів"
 
+#: src/recurring/components/recurring-form-account-field/recurring-form-account-field.tsx
+msgid "Use any account"
+msgstr "Використовувати будь-який рахунок"
+
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Use Face ID"
@@ -8875,11 +9186,19 @@ msgstr "Використовує регулярний вираз до 200 сим
 msgid "Value"
 msgstr "Вартість"
 
+#: src/recurring/components/make-recurring-sheet/make-recurring-sheet.tsx
+msgid "View"
+msgstr "Переглянути"
+
+#: src/transaction/components/transaction-info-recurring-row/transaction-info-recurring-row.tsx
+msgid "View recurring"
+msgstr "Переглянути регулярний"
+
 #: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
 msgid "View source transactions"
 msgstr "Переглянути вихідні транзакції"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/recurring/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "View your payments in another month."
 msgstr "Перегляньте платежі в іншому місяці."
 
@@ -8937,9 +9256,18 @@ msgstr "Тиждень"
 msgid "Week {currentWeek} of {totalWeeks}. {overLabel}."
 msgstr "Тиждень {currentWeek} з {totalWeeks}. {overLabel}."
 
+#: src/recurring/components/recurring-form-repeat-chip/recurring-form-repeat-chip.tsx
+#: src/recurring/hook/use-recurring-cadence-label.hook.ts
+msgid "Weekly"
+msgstr "Щотижня"
+
 #: src/budget/constant/budget-period-title-label.constant.ts
 msgid "Weekly budget"
 msgstr "Тижневий бюджет"
+
+#: src/recurring/components/recurring-form-custom-cadence/recurring-form-custom-cadence.tsx
+msgid "Weeks"
+msgstr "Тижні"
 
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "What goes inside?"
@@ -9047,9 +9375,18 @@ msgstr "XLSX-експорт"
 msgid "Year"
 msgstr "Рік"
 
+#: src/recurring/components/recurring-form-repeat-chip/recurring-form-repeat-chip.tsx
+#: src/recurring/hook/use-recurring-cadence-label.hook.ts
+msgid "Yearly"
+msgstr "Щороку"
+
 #: src/budget/constant/budget-period-title-label.constant.ts
 msgid "Yearly budget"
 msgstr "Річний бюджет"
+
+#: src/recurring/components/recurring-form-custom-cadence/recurring-form-custom-cadence.tsx
+msgid "Years"
+msgstr "Роки"
 
 #: src/transaction/hook/use-transaction-date-label.hook.ts
 #: src/transaction/query/use-get-transaction-sections.query.ts
