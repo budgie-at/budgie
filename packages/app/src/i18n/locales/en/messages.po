@@ -2047,7 +2047,7 @@ msgstr "Can't be changed later"
 #: src/account/hooks/use-delete-archived-account.hook.ts
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 #: src/budget/hooks/use-budget-event-form.hook.ts
 #: src/budget/hooks/use-budget-form.hook.ts
 #: src/budget/hooks/use-budget-fund-form.hook.ts
@@ -2839,7 +2839,7 @@ msgstr "Could not delete transaction."
 msgid "Could not disconnect"
 msgstr "Could not disconnect"
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "Could not erase the data"
 msgstr "Could not erase the data"
 
@@ -3486,7 +3486,7 @@ msgstr "Delete…"
 msgid "Deleted “{accountTitle}”"
 msgstr "Deleted “{accountTitle}”"
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "Deletes {DB_NAME} from this phone"
 msgstr "Deletes {DB_NAME} from this phone"
 
@@ -3988,15 +3988,15 @@ msgstr "Entire available history"
 msgid "Entire history will be re-synced on next sync."
 msgstr "Entire history will be re-synced on next sync."
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "Erase"
 msgstr "Erase"
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "Erase and start fresh"
 msgstr "Erase and start fresh"
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "Erase and start fresh?"
 msgstr "Erase and start fresh?"
 
@@ -5938,7 +5938,7 @@ msgstr "once a month"
 msgid "Once you have 3 months of transactions, Runway shows how long your balance lasts."
 msgstr "Once you have 3 months of transactions, Runway shows how long your balance lasts."
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "One you exported with a PIN you remember"
 msgstr "One you exported with a PIN you remember"
 
@@ -6926,7 +6926,7 @@ msgstr "Restore"
 msgid "Restore {accountTitle}"
 msgstr "Restore {accountTitle}"
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "Restore a backup"
 msgstr "Restore a backup"
 
@@ -8129,7 +8129,7 @@ msgstr "This capture looks similar to an existing transaction."
 msgid "This connection returned no accounts Budgie can add."
 msgstr "This connection returned no accounts Budgie can add."
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "This deletes {DB_NAME} and everything in it from this phone. It can't be undone."
 msgstr "This deletes {DB_NAME} and everything in it from this phone. It can't be undone."
 

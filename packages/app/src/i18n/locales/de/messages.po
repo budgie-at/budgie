@@ -2046,7 +2046,7 @@ msgstr "Kann später nicht geändert werden"
 #: src/account/hooks/use-delete-archived-account.hook.ts
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 #: src/budget/hooks/use-budget-event-form.hook.ts
 #: src/budget/hooks/use-budget-form.hook.ts
 #: src/budget/hooks/use-budget-fund-form.hook.ts
@@ -2838,7 +2838,7 @@ msgstr "Transaktion konnte nicht gelöscht werden."
 msgid "Could not disconnect"
 msgstr "Trennen nicht möglich"
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "Could not erase the data"
 msgstr "Die Daten konnten nicht gelöscht werden"
 
@@ -3485,7 +3485,7 @@ msgstr "Löschen…"
 msgid "Deleted “{accountTitle}”"
 msgstr "„{accountTitle}“ gelöscht"
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "Deletes {DB_NAME} from this phone"
 msgstr "Löscht {DB_NAME} von diesem Telefon"
 
@@ -3987,15 +3987,15 @@ msgstr "Gesamter verfügbarer Verlauf"
 msgid "Entire history will be re-synced on next sync."
 msgstr "Der gesamte Verlauf wird beim nächsten Sync neu synchronisiert."
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "Erase"
 msgstr "Löschen"
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "Erase and start fresh"
 msgstr "Löschen und neu anfangen"
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "Erase and start fresh?"
 msgstr "Löschen und neu anfangen?"
 
@@ -5937,7 +5937,7 @@ msgstr "einmal im Monat"
 msgid "Once you have 3 months of transactions, Runway shows how long your balance lasts."
 msgstr "Sobald du 3 Monate an Transaktionen hast, zeigt die Reichweite, wie lange dein Guthaben reicht."
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "One you exported with a PIN you remember"
 msgstr "Eines, das du mit einer PIN exportiert hast, die du noch weißt"
 
@@ -6925,7 +6925,7 @@ msgstr "Wiederherstellen"
 msgid "Restore {accountTitle}"
 msgstr "{accountTitle} wiederherstellen"
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "Restore a backup"
 msgstr "Backup wiederherstellen"
 
@@ -8128,7 +8128,7 @@ msgstr "Diese Erfassung ähnelt einer vorhandenen Transaktion."
 msgid "This connection returned no accounts Budgie can add."
 msgstr "Über diese Verbindung kamen keine Konten, die Budgie hinzufügen kann."
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "This deletes {DB_NAME} and everything in it from this phone. It can't be undone."
 msgstr "Damit werden {DB_NAME} und alles darin von diesem Telefon gelöscht. Das lässt sich nicht rückgängig machen."
 
