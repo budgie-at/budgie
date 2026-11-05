@@ -5,7 +5,7 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { NumberedSteps } from '../numbered-steps/numbered-steps';
+import { SyncGuideSteps } from '../sync-guide-steps/sync-guide-steps';
 
 interface Props {
     readonly steps: readonly string[];
@@ -28,7 +28,7 @@ export const FileUploadStep = (props: Props) => {
 
     return (
         <View className="gap-y-2xl pt-md">
-            <NumberedSteps title={t`How to export`} steps={steps} />
+            <SyncGuideSteps title={t`How to export`} steps={steps} />
 
             <Animated.View entering={FadeInDown.delay(DROP_ZONE_DELAY_MS).duration(DROP_ZONE_ANIMATION_DURATION_MS)}>
                 <HapticPressable onPress={onSelectFile} disabled={isLoading}>

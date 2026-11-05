@@ -26,6 +26,9 @@ export const BinanceSyncTokenInputs = ({ apiKey, apiSecret, onApiKeyChange, onAp
                     placeholder={t`Enter your Binance API key`}
                     autoCapitalize="none"
                     autoCorrect={false}
+                    autoComplete="off"
+                    textContentType="none"
+                    importantForAutofill="no"
                     secureTextEntry
                     testID={SyncTokenSectionSelector.BinanceApiKeyInput}
                 />
@@ -41,6 +44,9 @@ export const BinanceSyncTokenInputs = ({ apiKey, apiSecret, onApiKeyChange, onAp
                     placeholder={t`Enter your Binance API secret`}
                     autoCapitalize="none"
                     autoCorrect={false}
+                    autoComplete="off"
+                    textContentType="none"
+                    importantForAutofill="no"
                     secureTextEntry
                     testID={SyncTokenSectionSelector.BinanceApiSecretInput}
                 />

@@ -15,6 +15,7 @@ import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined
 import { UpdateInzhurAccountPage } from '../../../inzhur/component/update-inzhur-account-page/update-inzhur-account-page';
 import { isInzhurCashAccount } from '../../../inzhur/utils/is-inzhur-cash-account.util';
 import { isInzhurFundAccount } from '../../../inzhur/utils/is-inzhur-fund-account.util';
+import { AccountConnectBankRow } from '../../../sync/component/account-connect-bank-row/account-connect-bank-row';
 import { AccountSyncCard } from '../../../sync/component/account-sync-card/account-sync-card';
 import { useAccountUpdateBindings } from '../../hooks/use-account-update-bindings.hook';
 import { useLiabilityAccountForm } from '../../hooks/use-liability-account-form.hook';
@@ -45,7 +46,6 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
     };
 
     const isInzhurCash = isInzhurCashAccount(account);
-    const isInzhurFund = isInzhurFundAccount(account);
 
     const { control, handleSubmit, instrument, isSubmitting } = useLiabilityAccountForm(formValues, values =>
         Effect.gen(function* () {
@@ -89,7 +89,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         return <EmptyScreen />;
     }
 
-    if (isInzhurCash || isInzhurFund) {
+    if (isInzhurCash || isInzhurFundAccount(account)) {
         return (
             <UpdateInzhurAccountPage
                 account={account}
@@ -113,6 +113,9 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         >
             {currencyField}
             {isSyncedAccount ? <AccountSyncCard accountId={account.id} /> : null}
+            {account.type === AccountTypeEnum.BANK || account.type === AccountTypeEnum.BANK_SYNC ? (
+                <AccountConnectBankRow accountId={account.id} />
+            ) : null}
         </UpdateAccountScreen>
     );
 };

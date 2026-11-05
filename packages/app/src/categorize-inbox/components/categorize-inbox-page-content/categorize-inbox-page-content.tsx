@@ -7,6 +7,7 @@ import { isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { CollapsibleChromeHeader } from '../../../@generic/component/collapsible-chrome-header/collapsible-chrome-header';
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
+import { CHROME_TITLE_TEXT_PROPS } from '../../../@generic/constant/chrome-title-text-props.constant';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { CategorizeInboxDoneButton } from '../categorize-inbox-done-button/categorize-inbox-done-button';
 import { CategorizeInboxEmptyState } from '../categorize-inbox-empty-state/categorize-inbox-empty-state';
@@ -64,12 +65,12 @@ export const CategorizeInboxPageContent = ({ params }: Props) => {
                 leading={<GoBackButton onPress={handleGoBack} />}
                 trailing={showListButton}
                 expandedTitle={
-                    <Text className="text-primary text-[22px] font-semibold text-center" numberOfLines={1}>
+                    <Text className="text-primary text-[22px] font-semibold text-center" {...CHROME_TITLE_TEXT_PROPS}>
                         {pageTitle}
                     </Text>
                 }
                 collapsedTitle={
-                    <Text className="text-primary text-[17px] font-semibold text-center" numberOfLines={1}>
+                    <Text className="text-primary text-[17px] font-semibold text-center" {...CHROME_TITLE_TEXT_PROPS}>
                         {pageTitle}
                     </Text>
                 }

@@ -12,10 +12,11 @@ import type { AccountWithSyncEntityInterface } from '@budgie/contracts';
 interface Props {
     readonly account: AccountWithSyncEntityInterface;
     readonly provider: ExternalSourceEnum;
+    readonly bankName: string | null;
     readonly balancesByAccountId: ReadonlyMap<number, HomeAccountBalanceInterface>;
 }
 
-export const InstitutionAccountRow = ({ account, provider, balancesByAccountId }: Props) => {
+export const InstitutionAccountRow = ({ account, provider, bankName, balancesByAccountId }: Props) => {
     const title =
         provider === ExternalSourceEnum.INZHUR
             ? getInzhurShortTitle(account.title)
@@ -23,7 +24,7 @@ export const InstitutionAccountRow = ({ account, provider, balancesByAccountId }
     const displayAccount = { ...account, title };
 
     return (
-        <AccountRowLeadingContext value={<InstitutionAccountLeading account={account} provider={provider} />}>
+        <AccountRowLeadingContext value={<InstitutionAccountLeading account={account} provider={provider} bankName={bankName} />}>
             <AccountListItem account={displayAccount} balancesByAccountId={balancesByAccountId} />
         </AccountRowLeadingContext>
     );

@@ -286,8 +286,30 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                         ? sql<number | null>`MAX(${TransactionEntityTable.operatedAt})`
                         : sql<number | null>`MIN(${TransactionEntityTable.operatedAt})`;
 
-                return yield* selectOperatedAtTime(aggregateSql, and(...transactionFilters.buildAccountCondition([accountId])));
+                return yield* selectOperatedAtTime(
+                    aggregateSql,
+                    and(...transactionFilters.buildAccountCondition([accountId]), isNull(TransactionEntityTable.deletedAt))
+                );
             }),
+
+            findExternalSourcesByAccountId: (accountId: number) =>
+                Db.query(db =>
+                    db
+                        .select({
+                            externalSource: TransactionEntityTable.externalSource,
+                            lastOperatedAt: sql<number>`MAX(${TransactionEntityTable.operatedAt})`
+                        })
+                        .from(TransactionEntityTable)
+                        .where(
+                            and(
+                                ...transactionFilters.buildAccountCondition([accountId]),
+                                isNull(TransactionEntityTable.deletedAt),
+                                isNull(TransactionEntityTable.consolidationType),
+                                ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT)
+                            )
+                        )
+                        .groupBy(TransactionEntityTable.externalSource)
+                ),
 
             archiveByAccountIds: Effect.fn('TransactionRepository.archiveByAccountIds')(function* (accountIds: number[]) {
                 const ledgerEntryCondition = transactionFilters.buildLedgerEntryCondition();

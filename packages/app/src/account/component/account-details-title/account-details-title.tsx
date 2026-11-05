@@ -4,6 +4,8 @@ import Animated, { Extrapolation, interpolate, useAnimatedStyle, useSharedValue 
 import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
 import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 
+import { CHROME_TITLE_TEXT_PROPS } from '../../../@generic/constant/chrome-title-text-props.constant';
+
 import type { LayoutChangeEvent } from 'react-native';
 
 interface Props {
@@ -51,7 +53,11 @@ export const AccountDetailsTitle = ({ title }: Props) => {
                     style={titleAnimatedStyle}
                     onLayout={handleTitleLayout}
                 >
-                    <Text className="text-primary font-semibold text-2xl text-center" numberOfLines={1} accessibilityRole="header">
+                    <Text
+                        className="text-primary font-semibold text-2xl text-center"
+                        {...CHROME_TITLE_TEXT_PROPS}
+                        accessibilityRole="header"
+                    >
                         {title}
                     </Text>
                 </Animated.View>

@@ -161,6 +161,7 @@ const buildBankSyncTransaction = (input: ApplePayBankExpenseInputInterface): Syn
             return buildErsteTransaction(input);
         case ExternalSourceEnum.BINANCE:
             return buildBinanceWithdrawalTransaction(input);
+        case ExternalSourceEnum.ENABLE_BANKING:
         case ExternalSourceEnum.MANUAL:
         case ExternalSourceEnum.MONOBANK:
         case ExternalSourceEnum.REVOLUT:

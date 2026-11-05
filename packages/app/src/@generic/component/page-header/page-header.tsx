@@ -5,6 +5,7 @@ import { Text, View } from 'react-native';
 
 import { EmptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { CHROME_TITLE_TEXT_PROPS } from '../../constant/chrome-title-text-props.constant';
 import { PageHeaderSize } from '../../type/page-header-size.type';
 import { cn } from '../../utils/cn.util';
 import { GoBackButton } from '../go-back-button/go-back-button';
@@ -38,7 +39,7 @@ export const PageHeader = ({ size = 'lg', bottom, title, className, left, onGoBa
 
             <View className="gap-y-xs mr-auto flex-1">
                 {isNotEmptyString(title) ? (
-                    <Text className="text-primary font-medium text-3xl" numberOfLines={1}>
+                    <Text className="text-primary font-medium text-3xl" {...CHROME_TITLE_TEXT_PROPS}>
                         {title}
                     </Text>
                 ) : null}

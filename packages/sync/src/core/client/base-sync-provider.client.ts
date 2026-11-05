@@ -34,6 +34,7 @@ export abstract class BaseSyncProviderClient {
 
     private static readonly ApiErrorSchema = Schema.Struct({
         code: Schema.optional(Schema.Union([Schema.String, Schema.Number])),
+        error: Schema.optional(Schema.NullOr(Schema.String)),
         message: Schema.optional(Schema.String),
         msg: Schema.optional(Schema.String)
     });
@@ -42,7 +43,7 @@ export abstract class BaseSyncProviderClient {
     protected readonly retryMethods: readonly HttpMethod[] = ['GET'];
 
     private readonly execute = Effect.fn('BaseSyncProviderClient.execute')(
-        function* (this: BaseSyncProviderClient, endpoint: string, method: HttpMethod) {
+        function* (this: BaseSyncProviderClient, endpoint: string, method: HttpMethod, body: unknown) {
             const client = (yield* HttpClient.HttpClient).pipe(
                 HttpClient.tap(response =>
                     Effect.sync(() => {
@@ -57,7 +58,9 @@ export abstract class BaseSyncProviderClient {
                 })
             );
 
-            return yield* client.execute(HttpClientRequest.make(method)(`${this.baseUrl}${endpoint}`, { headers: this.headers }));
+            const request = HttpClientRequest.make(method)(`${this.baseUrl}${endpoint}`, { headers: this.headers });
+
+            return yield* client.execute(isDefined(body) ? HttpClientRequest.bodyJsonUnsafe(request, body) : request);
         },
         Effect.timeout(SYNC_TIMEOUT_MS),
         effect => effect.pipe(Effect.catch(error => this.toSyncError(error)))
@@ -79,15 +82,20 @@ export abstract class BaseSyncProviderClient {
         );
         const message = apiError?.msg ?? apiError?.message ?? `HTTP ${response.status}`;
 
-        return yield* this.classifyApiError(response.status, message, apiError?.code, response.headers);
+        return yield* this.classifyApiError(response.status, message, apiError?.error ?? apiError?.code, response.headers);
     });
 
     protected abstract readonly provider: SyncProviderEnum;
     protected abstract readonly baseUrl: string;
     protected abstract readonly headers: Record<string, string>;
 
-    protected fetchJson<S extends Schema.ConstraintDecoder<unknown>>(schema: S, endpoint: string, method: HttpMethod = 'GET') {
-        return this.execute(endpoint, method).pipe(
+    protected fetchJson<S extends Schema.ConstraintDecoder<unknown>>(
+        schema: S,
+        endpoint: string,
+        method: HttpMethod = 'GET',
+        body: unknown = null
+    ) {
+        return this.execute(endpoint, method, body).pipe(
             Effect.flatMap(HttpClientResponse.schemaBodyJson(schema)),
             Effect.catchTag('SchemaError', error =>
                 Effect.fail(new SyncInvalidResponseError({ provider: this.provider, message: error.message }))

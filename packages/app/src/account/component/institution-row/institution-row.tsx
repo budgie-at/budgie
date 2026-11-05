@@ -7,6 +7,7 @@ import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ListRow } from '../../../@generic/component/list-row/list-row';
 import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
@@ -16,7 +17,6 @@ import { defaultInstrumentAtom } from '../../../settings/constants/settings-atom
 import { BANK_PROVIDER_TITLE } from '../../constant/bank-provider-title.constant';
 import { getBankIntegrationTitle } from '../../utils/get-bank-integration-title.util';
 import { AccountCardBalance } from '../account-card-balance/account-card-balance';
-import { InstitutionMark } from '../institution-mark/institution-mark';
 import { InstitutionRowDetail } from '../institution-row-detail/institution-row-detail';
 
 import { InstitutionRowSelector } from './institution-row.selector';
@@ -42,6 +42,7 @@ export const InstitutionRow = ({ institution }: Props) => {
     const accountsCountLabel = accounts.every(account => account.type === AccountTypeEnum.CRYPTO_SYNC)
         ? t({ message: plural(accountsCount, { one: '# asset', other: '# assets' }) })
         : t({ message: plural(accountsCount, { one: '# account', other: '# accounts' }) });
+    const bankName = label ?? title;
     const accessibilityLabel = [title, protectAmount(total, defaultInstrument.symbol), accountsCountLabel].join(', ');
 
     const detail =
@@ -60,7 +61,7 @@ export const InstitutionRow = ({ institution }: Props) => {
             testID={InstitutionRowSelector.Row(integrationId)}
         >
             <ListRow
-                leading={<InstitutionMark provider={provider} title={title} />}
+                leading={<BankLogo bankProvider={provider} bankName={bankName} size={44} />}
                 title={
                     <Text
                         className="text-[17px] font-semibold text-primary"

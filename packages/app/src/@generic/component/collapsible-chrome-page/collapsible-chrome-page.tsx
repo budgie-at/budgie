@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CollapsibleHeaderBackdrop, ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 import { isDefined } from '@rnw-community/shared';
 
+import { CHROME_TITLE_TEXT_PROPS } from '../../constant/chrome-title-text-props.constant';
 import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../constant/screen-chrome-content-inset.constant';
 import { TestIDPartEnum } from '../../enum/test-id-part.enum';
 import { ScreenChromeThemeProvider } from '../../provider/screen-chrome-theme.provider';
@@ -69,11 +70,11 @@ export const CollapsibleChromePage = ({
         largeTitle
     ) : (
         <View className="gap-y-xs">
-            <Text className="text-primary font-medium text-3xl" numberOfLines={1}>
+            <Text className="text-primary font-medium text-3xl" {...CHROME_TITLE_TEXT_PROPS}>
                 {title}
             </Text>
             {isDefined(subtitle) ? (
-                <Text className="text-secondary-foreground text-xs" numberOfLines={1}>
+                <Text className="text-secondary-foreground text-xs" {...CHROME_TITLE_TEXT_PROPS}>
                     {subtitle}
                 </Text>
             ) : null}
@@ -83,11 +84,11 @@ export const CollapsibleChromePage = ({
         smallTitle
     ) : (
         <View className="items-center">
-            <Text className="text-primary text-lg font-semibold text-center" numberOfLines={1}>
+            <Text className="text-primary text-lg font-semibold text-center" {...CHROME_TITLE_TEXT_PROPS}>
                 {title}
             </Text>
             {isDefined(subtitle) ? (
-                <Text className="text-secondary-foreground text-xs text-center" numberOfLines={1}>
+                <Text className="text-secondary-foreground text-xs text-center" {...CHROME_TITLE_TEXT_PROPS}>
                     {subtitle}
                 </Text>
             ) : null}

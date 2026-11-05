@@ -4,6 +4,7 @@ import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-na
 import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
 import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 
+import { CHROME_TITLE_TEXT_PROPS } from '../../../@generic/constant/chrome-title-text-props.constant';
 import { ACCOUNT_DETAILS_NAV_BALANCE_FADE_START } from '../../constant/account-details-nav-balance-fade-start.constant';
 import { useAccountDetailsBalanceLabel } from '../../hook/use-account-details-balance-label.hook';
 import { useAccountHeroValue } from '../../hook/use-account-hero-value.hook';
@@ -39,7 +40,11 @@ export const AccountDetailsStaticTitle = ({ title, ...props }: Props) => {
     return (
         <View className="absolute inset-x-0 top-0 pt-safe px-[72px]" style={Z_INDEX_STYLE} pointerEvents="none">
             <View className="items-center justify-center" style={titleBandStyle}>
-                <Text className="text-primary font-semibold text-[17px] text-center" numberOfLines={1} accessibilityRole="header">
+                <Text
+                    className="text-primary font-semibold text-[17px] text-center"
+                    {...CHROME_TITLE_TEXT_PROPS}
+                    accessibilityRole="header"
+                >
                     {title}
                 </Text>
                 <Animated.Text

@@ -8,6 +8,7 @@ import { Text, View } from 'react-native';
 import { ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 import { isPositiveNumber } from '@rnw-community/shared';
 
+import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { FixedChromeHeader } from '../../../@generic/component/fixed-chrome-header/fixed-chrome-header';
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
@@ -15,7 +16,6 @@ import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { ScreenChromeThemeProvider } from '../../../@generic/provider/screen-chrome-theme.provider';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
-import { InstitutionMark } from '../../../account/component/institution-mark/institution-mark';
 import { QuickFormLayout } from '../../../transaction/components/quick-form-layout/quick-form-layout';
 import { TransactionAmountDisplay } from '../../../transaction/components/transaction-amount-display/transaction-amount-display';
 import { TransactionFormActions } from '../../../transaction/components/transaction-form-actions/transaction-form-actions';
@@ -56,7 +56,7 @@ export const CreateInzhurAccount = () => {
     );
     const context = (
         <View className="items-center gap-y-lg">
-            <InstitutionMark provider={ExternalSourceEnum.INZHUR} title={t`Inzhur`} />
+            <BankLogo bankProvider={ExternalSourceEnum.INZHUR} bankName={t`Inzhur`} size={44} />
             <Text className="text-[15px] font-medium text-secondary-foreground">
                 <Trans>Inzhur cash</Trans>
             </Text>

@@ -16,6 +16,7 @@ import { InzhurStatementReminderService } from '../../inzhur/service/inzhur-stat
 import { HistoricalMarketDataDrainerService } from '../../market-data/service/historical-market-data-drainer.service';
 import { OnboardingService } from '../../onboarding/service/onboarding.service';
 import { BINANCE_SYNC_TASK } from '../../sync/constant/binance-sync-task.constant';
+import { ENABLE_BANKING_SYNC_TASK } from '../../sync/constant/enable-banking-sync-task.constant';
 import { MONOBANK_SYNC_TASK } from '../../sync/constant/monobank-sync-task.constant';
 import { TRANSFER_CONSOLIDATION_TASK } from '../../sync/constant/transfer-consolidation-task.constant';
 import { AppDataSyncService } from '../../sync/service/app-data-sync.service';
@@ -63,6 +64,7 @@ const registerBackgroundTasks = Effect.gen(function* () {
             registerTaskOnce(TRANSFER_CONSOLIDATION_TASK, TRANSFER_CONSOLIDATION_TASK_MINIMUM_INTERVAL_MINUTES),
             reregisterTask(MONOBANK_SYNC_TASK, PROVIDER_SYNC_TASK_MINIMUM_INTERVAL_MINUTES),
             reregisterTask(BINANCE_SYNC_TASK, PROVIDER_SYNC_TASK_MINIMUM_INTERVAL_MINUTES),
+            reregisterTask(ENABLE_BANKING_SYNC_TASK, PROVIDER_SYNC_TASK_MINIMUM_INTERVAL_MINUTES),
             budgetAlertMonitorService.registerBackgroundTask(),
             widgetSnapshotService.registerBackgroundTask(),
             inzhurStatementReminderService.start
