@@ -438,7 +438,9 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                 countMissingTransferFeeRepairCandidates: Effect.fn(
                     'ConsolidationCoordinatorService.countMissingTransferFeeRepairCandidates'
                 )(function* () {
-                    return countCanonicals(yield* consolidationCandidateRepository.findMissingTransferFeeEntries());
+                    const missingFeeEntries = yield* consolidationCandidateRepository.findMissingTransferFeeEntries();
+
+                    return countCanonicals(missingFeeEntries);
                 }),
                 repairMissingTransferFees,
                 repairBridgeClaimedTransferPairs: Effect.fn('ConsolidationCoordinatorService.repairBridgeClaimedTransferPairs')(

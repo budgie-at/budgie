@@ -215,7 +215,8 @@ export class TransferCreationService extends Context.Service<TransferCreationSer
                     const entryValuations = yield* entryBaseValuationService.valueTransactionsEntries(inputs);
                     const transactions: TransactionEntityInterface[] = [];
                     for (const [index, input] of inputs.entries()) {
-                        transactions.push(yield* persistSyncedTransfer(input, entryValuations[index]));
+                        const syncedTransfer = yield* persistSyncedTransfer(input, entryValuations[index]);
+                        transactions.push(syncedTransfer);
                     }
 
                     yield* accountBalanceIncrementalService.updateBalancesByAccountIds(getEntryAccountIds(inputs));

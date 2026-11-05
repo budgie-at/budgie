@@ -259,14 +259,13 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
                 const storageKey = buildStorageKey(budget.id, periodStartMs);
                 const deliveredKeys = yield* loadDeliveredTriggerKeys(storageKey);
                 const newTriggers = selectTriggersToPost(triggers, deliveredKeys);
-                const postedKeys = EffectArray.getSomes(
-                    yield* Effect.forEach(newTriggers, trigger =>
-                        (trigger.kind === BudgetAlertKindEnum.PACE
-                            ? postPaceAlert(trigger, projection, budget.instrumentId)
-                            : postTrigger(trigger, effectiveLimits.overallLimit, spent, budget.period)
-                        ).pipe(Effect.as(buildTriggerKey(trigger)), Effect.option)
-                    )
+                const postedAlerts = yield* Effect.forEach(newTriggers, trigger =>
+                    (trigger.kind === BudgetAlertKindEnum.PACE
+                        ? postPaceAlert(trigger, projection, budget.instrumentId)
+                        : postTrigger(trigger, effectiveLimits.overallLimit, spent, budget.period)
+                    ).pipe(Effect.as(buildTriggerKey(trigger)), Effect.option)
                 );
+                const postedKeys = EffectArray.getSomes(postedAlerts);
 
                 if (isNotEmptyArray(postedKeys)) {
                     const firedTriggers = yield* Schema.encodeEffect(firedTriggersSchema)([...deliveredKeys, ...postedKeys]).pipe(

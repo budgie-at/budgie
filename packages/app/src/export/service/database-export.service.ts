@@ -44,9 +44,9 @@ export class DatabaseExportService extends Context.Service<DatabaseExportService
                         yield* Effect.gen(function* () {
                             const connection = yield* client.reserve;
 
-                            yield* Schema.decodeUnknownEffect(completedCheckpoint)(
-                                yield* connection.executeRaw(...client`PRAGMA wal_checkpoint(FULL)`.compile())
-                            ).pipe(Effect.orDie);
+                            const checkpointRows = yield* connection.executeRaw(...client`PRAGMA wal_checkpoint(FULL)`.compile());
+
+                            yield* Schema.decodeUnknownEffect(completedCheckpoint)(checkpointRows).pipe(Effect.orDie);
                             yield* Effect.promise(() => new File(DATABASE_DIRECTORY, DB_NAME).copy(databaseCopy));
                         }).pipe(Effect.scoped);
                         yield* Effect.promise(() => zip([toNativePath(databaseCopy.uri)], toNativePath(archive.uri)));
@@ -86,7 +86,8 @@ export class DatabaseExportService extends Context.Service<DatabaseExportService
                         ),
                     removeCacheFile
                 );
-                yield* settingsRepository.update({ lastBackupAt: new Date(yield* Clock.currentTimeMillis) });
+                const backedUpAtMs = yield* Clock.currentTimeMillis;
+                yield* settingsRepository.update({ lastBackupAt: new Date(backedUpAtMs) });
 
                 return true;
             }),

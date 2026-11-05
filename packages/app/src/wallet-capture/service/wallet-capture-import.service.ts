@@ -166,7 +166,8 @@ export class WalletCaptureImportService extends Context.Service<WalletCaptureImp
                 }
             }
 
-            importedCaptures.push(yield* importAndAcknowledgeCapture(record, importedTransactionId));
+            const importedCapture = yield* importAndAcknowledgeCapture(record, importedTransactionId);
+            importedCaptures.push(importedCapture);
 
             return null;
         });

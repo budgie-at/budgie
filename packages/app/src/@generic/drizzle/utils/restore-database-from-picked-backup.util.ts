@@ -26,7 +26,9 @@ const moveIfExists = Effect.fnUntraced(function* (sourceName: string, destinatio
 });
 
 const verifyProbe = Effect.fn('restoreDatabaseFromPickedBackup.verifyProbe')(function* () {
-    const lastCreatedAt = yield* readLastMigrationCreatedAt(yield* openSqliteClient(probeDatabaseName, yield* readDatabaseKey));
+    const databaseKey = yield* readDatabaseKey;
+    const probeClient = yield* openSqliteClient(probeDatabaseName, databaseKey);
+    const lastCreatedAt = yield* readLastMigrationCreatedAt(probeClient);
 
     if (!isSupportedMigrationCreatedAt(lastCreatedAt)) {
         return yield* UnsupportedBackupError.make();

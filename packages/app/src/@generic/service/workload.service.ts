@@ -56,7 +56,8 @@ export class Workload extends Context.Service<
                 SubscriptionRef.make<ReadonlySet<Fiber.Fiber<unknown, unknown>>>(new Set()),
                 SubscriptionRef.make(0)
             ]);
-            const runBackground = yield* FiberSet.runtime(yield* FiberSet.make())<Db | HttpClient.HttpClient>();
+            const backgroundFiberSet = yield* FiberSet.make();
+            const runBackground = yield* FiberSet.runtime(backgroundFiberSet)<Db | HttpClient.HttpClient>();
             const scheduled = yield* FiberMap.make<string>();
             const scheduledBackground = yield* FiberMap.make<string>();
             const backgroundSchedulingAllowed = yield* Latch.make(true);

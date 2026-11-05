@@ -416,9 +416,8 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
                         return yield* Effect.die(new Error(t`Receiving amount must be greater than zero`));
                     }
 
-                    const sourceAccount = yield* accountService.findByIdOrFail(
-                        yield* requireTransferAccountId(transaction.fromAccountId, 'source')
-                    );
+                    const transferAccountId = yield* requireTransferAccountId(transaction.fromAccountId, 'source');
+                    const sourceAccount = yield* accountService.findByIdOrFail(transferAccountId);
                     const [sourceEntry] = getTransactionCategoryEntries(transaction.entries);
 
                     if (!isPositiveNumber(sourceEntry.amount) || !Number.isSafeInteger(sourceEntry.amount)) {

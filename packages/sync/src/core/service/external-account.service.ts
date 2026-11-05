@@ -15,7 +15,8 @@ export class ExternalAccountService extends Context.Service<ExternalAccountServi
 
         return {
             markExternal: Effect.fn('ExternalAccountService.markExternal')(function* (accountId: number) {
-                yield* ruleEngineService.applyRulesToTransactionIds(yield* accountArchiveService.markExternalById(accountId));
+                const archivedTransactionIds = yield* accountArchiveService.markExternalById(accountId);
+                yield* ruleEngineService.applyRulesToTransactionIds(archivedTransactionIds);
             }),
             countCandidates: Effect.fn('ExternalAccountService.countCandidates')(function* () {
                 const accounts = yield* accountRepository.findExternal();

@@ -77,9 +77,10 @@ export abstract class BaseSyncProviderClient {
         }
 
         const { response } = error;
-        const apiError = Option.getOrUndefined(
-            yield* HttpClientResponse.schemaBodyJson(BaseSyncProviderClient.ApiErrorSchema)(response).pipe(Effect.option)
+        const apiErrorOption = yield* HttpClientResponse.schemaBodyJson(BaseSyncProviderClient.ApiErrorSchema)(response).pipe(
+            Effect.option
         );
+        const apiError = Option.getOrUndefined(apiErrorOption);
         const message = apiError?.msg ?? apiError?.message ?? `HTTP ${response.status}`;
 
         return yield* this.classifyApiError(response.status, message, apiError?.error ?? apiError?.code, response.headers);

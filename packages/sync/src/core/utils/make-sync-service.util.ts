@@ -107,9 +107,8 @@ export const makeSyncService = Effect.fnUntraced(function* (
                 return yield* Effect.die(new Error(`Instrument not found for currency: ${account.currencyCode}`));
             }
 
-            const [createdAccount] = Object.values(
-                yield* accountService.bulkCreate([mapSyncAccountToCreateInput(definition, account, instrument.id)])
-            );
+            const createdAccounts = yield* accountService.bulkCreate([mapSyncAccountToCreateInput(definition, account, instrument.id)]);
+            const [createdAccount] = Object.values(createdAccounts);
             if (!isDefined(createdAccount)) {
                 return yield* Effect.die(new Error('Failed to create sync account'));
             }

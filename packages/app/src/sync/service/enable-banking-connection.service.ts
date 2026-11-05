@@ -66,7 +66,8 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
                 discardPending: () => secureStore.removePending(),
                 findSavedApplicationId: Effect.fn('EnableBankingConnectionService.findSavedApplicationId')(function* () {
                     for (const applicationId of yield* enableBankingSyncService.listApplicationIds()) {
-                        if (isDefined(yield* secureStore.readKey(applicationId))) {
+                        const storedKey = yield* secureStore.readKey(applicationId);
+                        if (isDefined(storedKey)) {
                             return applicationId;
                         }
                     }

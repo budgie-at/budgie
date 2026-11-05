@@ -98,7 +98,8 @@ export class PinAttemptService extends Context.Service<PinAttemptService>()('@bu
                 return yield* lock
                     .withPermit(
                         Effect.gen(function* () {
-                            if (isPositiveNumber(yield* readRemainingLockoutMillis())) {
+                            const remainingLockoutMillis = yield* readRemainingLockoutMillis();
+                            if (isPositiveNumber(remainingLockoutMillis)) {
                                 return false;
                             }
 

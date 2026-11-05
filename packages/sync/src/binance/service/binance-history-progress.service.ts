@@ -32,7 +32,9 @@ export class BinanceHistoryProgressService extends Context.Service<BinanceHistor
 
             return {
                 find: Effect.fn('BinanceHistoryProgressService.find')(function* (integrationId: number, source: BinanceHistorySourceEnum) {
-                    return Option.getOrNull(Record.get(yield* load(integrationId), source));
+                    const historyProgress = yield* load(integrationId);
+
+                    return Option.getOrNull(Record.get(historyProgress, source));
                 }),
                 save: Effect.fn('BinanceHistoryProgressService.save')(function* (
                     integrationId: number,

@@ -94,18 +94,17 @@ export class BinanceAccountService extends Context.Service<BinanceAccountService
         });
 
         const createAccount = Effect.fnUntraced(function* (resolvableAccount: BinanceResolvableAccountInterface, integrationId: number) {
-            const createdAccount = Object.values(
-                yield* accountService.bulkCreate([
-                    {
-                        ...mapSyncAccountToCreateInput(
-                            BINANCE_ACCOUNT_DEFINITION,
-                            resolvableAccount.exchangeAccount,
-                            resolvableAccount.instrumentId
-                        ),
-                        integrationId
-                    }
-                ])
-            ).at(0);
+            const createdAccounts = yield* accountService.bulkCreate([
+                {
+                    ...mapSyncAccountToCreateInput(
+                        BINANCE_ACCOUNT_DEFINITION,
+                        resolvableAccount.exchangeAccount,
+                        resolvableAccount.instrumentId
+                    ),
+                    integrationId
+                }
+            ]);
+            const createdAccount = Object.values(createdAccounts).at(0);
             if (!isDefined(createdAccount)) {
                 return yield* Effect.die(new Error('Failed to create Binance account'));
             }

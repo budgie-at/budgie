@@ -12,10 +12,12 @@ import { appRuntime } from '../../@generic/runtime/app.runtime';
 const debtDeadlineDateAtom = Atom.make(context => {
     const fiber = appRuntime.runFork(
         Effect.gen(function* () {
-            const now = new Date(yield* Clock.currentTimeMillis);
+            const startedAtMs = yield* Clock.currentTimeMillis;
+            const now = new Date(startedAtMs);
 
             yield* Effect.sleep(startOfDay(addDays(now, 1)).getTime() - now.getTime());
-            context.setSelf(new Date(yield* Clock.currentTimeMillis));
+            const wokeAtMs = yield* Clock.currentTimeMillis;
+            context.setSelf(new Date(wokeAtMs));
         }).pipe(Effect.forever, Effect.tapDefect(Effect.logError))
     );
     const subscription = AppState.addEventListener('change', nextAppState => {

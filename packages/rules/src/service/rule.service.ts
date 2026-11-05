@@ -160,7 +160,9 @@ export class RuleService extends Context.Service<RuleService>()('@budgie/rules/R
         const createFromSuggestionAllowingDuplicate = Effect.fn('RuleService.createFromSuggestionAllowingDuplicate')(function* (
             suggestRuleData: SuggestRuleDataInterface
         ) {
-            return yield* create(yield* buildSuggestionInput(suggestRuleData));
+            const suggestionInput = yield* buildSuggestionInput(suggestRuleData);
+
+            return yield* create(suggestionInput);
         });
 
         const createFromSuggestion = Effect.fn('RuleService.createFromSuggestion')(function* (suggestRuleData: SuggestRuleDataInterface) {

@@ -225,13 +225,17 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
             valueMicroUnitEntry: Effect.fn('EntryBaseValuationService.valueMicroUnitEntry')(function* (
                 input: EntryBaseValuationInputInterface
             ) {
-                return yield* valueAccountAmount(input, yield* createContext());
+                const valuationContext = yield* createContext();
+
+                return yield* valueAccountAmount(input, valuationContext);
             }),
             valueEntries: Effect.fn('EntryBaseValuationService.valueEntries')(function* (
                 entries: TransactionEntryCreateInputInterface[],
                 operatedAt: Date
             ) {
-                return yield* valueEntriesInContext(entries, operatedAt, yield* createContext());
+                const valuationContext = yield* createContext();
+
+                return yield* valueEntriesInContext(entries, operatedAt, valuationContext);
             }),
             valueTransactionsEntries: Effect.fn('EntryBaseValuationService.valueTransactionsEntries')(function* (
                 transactions: readonly Pick<TransactionCreateInputInterface, 'entries' | 'operatedAt'>[]

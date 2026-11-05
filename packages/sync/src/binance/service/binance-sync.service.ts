@@ -148,7 +148,8 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             const integration = yield* syncIntegrationTokenService.getOrCreateIntegration(provider, token);
 
             yield* binanceAccountService.attachOrphanAccounts(integration.id);
-            yield* binanceAccountService.anchorAllBalances(yield* fetchExchangeAccounts(token), integration.id);
+            const exchangeAccounts = yield* fetchExchangeAccounts(token);
+            yield* binanceAccountService.anchorAllBalances(exchangeAccounts, integration.id);
             patchTokenRun(token, { balancesAnchored: true });
         });
 
@@ -240,7 +241,8 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                       getRunSignedClient(token).getFiatPaymentTransfers(fromUnixTime, toUnixTime)
                   );
             if (!isRunDeferred()) {
-                fiatSyncedAtMsByToken.set(token, yield* Clock.currentTimeMillis);
+                const syncedAtMs = yield* Clock.currentTimeMillis;
+                fiatSyncedAtMsByToken.set(token, syncedAtMs);
             }
 
             return committedCount + transferredCount;
@@ -315,7 +317,8 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             }
 
             const client = getRunSignedClient(token);
-            client.noteTouchedAssets(yield* binanceSourceCommitService.findAssetCodes(token));
+            const assetCodes = yield* binanceSourceCommitService.findAssetCodes(token);
+            client.noteTouchedAssets(assetCodes);
             const transfers = yield* binanceTradeCursorService.fetchTransferBatch(client, sync, externalAccountId, {
                 fromUnixTime: getUnixTime(resolveWindowStart(sync)),
                 eligibleSoldOffBaseAssets: yield* binanceAssetCodeService.resolveEligibleSoldOffBaseAssets(provider)
@@ -422,11 +425,8 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             }
 
             const integration = yield* syncIntegrationTokenService.getOrCreateIntegration(provider, token);
-            yield* binanceBalanceCorrectionService.correctAllBalances(
-                yield* fetchExchangeAccounts(token),
-                integration.id,
-                new Date(run.startedAtMs)
-            );
+            const exchangeAccounts = yield* fetchExchangeAccounts(token);
+            yield* binanceBalanceCorrectionService.correctAllBalances(exchangeAccounts, integration.id, new Date(run.startedAtMs));
             patchTokenRun(token, { balancesCorrected: true });
         });
 
@@ -534,7 +534,8 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 const resolvableAccounts = yield* binanceAccountService.findResolvableAccounts(
                     (yield* client.getAccounts()).filter(exchangeAccount => externalIds.includes(exchangeAccount.id))
                 );
-                const integration = yield* binanceAccountService.resolveSetupIntegration(token, yield* client.getAccountUid());
+                const accountUid = yield* client.getAccountUid();
+                const integration = yield* binanceAccountService.resolveSetupIntegration(token, accountUid);
 
                 for (const resolvableAccount of resolvableAccounts) {
                     const account = yield* binanceAccountService.setupAccount(resolvableAccount, integration.id);

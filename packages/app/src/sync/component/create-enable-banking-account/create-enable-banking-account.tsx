@@ -106,15 +106,14 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
         void run(
             Effect.gen(function* () {
                 yield* savePickedKey(parsedApplicationId);
-                setBanks(
-                    yield* Effect.flatMap(EnableBankingSyncService, service => service.listBanks(parsedApplicationId)).pipe(
-                        Effect.mapError(error =>
-                            Schema.is(SyncUnauthorizedError)(error)
-                                ? EnableBankingSetupError.make({ reason: EnableBankingSetupErrorReasonEnum.INACTIVE_APPLICATION })
-                                : error
-                        )
+                const banks = yield* Effect.flatMap(EnableBankingSyncService, service => service.listBanks(parsedApplicationId)).pipe(
+                    Effect.mapError(error =>
+                        Schema.is(SyncUnauthorizedError)(error)
+                            ? EnableBankingSetupError.make({ reason: EnableBankingSetupErrorReasonEnum.INACTIVE_APPLICATION })
+                            : error
                     )
                 );
+                setBanks(banks);
                 setStep(EnableBankingSetupStepEnum.BANK);
             }).pipe(
                 Effect.tapError(() =>

@@ -110,7 +110,8 @@ export class EnableBankingBatchService extends Context.Service<EnableBankingBatc
             }
 
             const existingIds = yield* transactionRepository.findIdMapByExternalSource(provider, [accountId]);
-            const deletedIds = new Set(yield* transactionRepository.findDeletedExternalIdsByExternalSource(provider, [accountId]));
+            const deletedExternalIds = yield* transactionRepository.findDeletedExternalIdsByExternalSource(provider, [accountId]);
+            const deletedIds = new Set(deletedExternalIds);
             const newTransactions = transactions.filter(transaction => !existingIds.has(transaction.id) && !deletedIds.has(transaction.id));
             if (!isNotEmptyArray(newTransactions)) {
                 return 0;

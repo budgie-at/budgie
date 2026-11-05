@@ -30,7 +30,8 @@ export class Db extends Context.Service<Db, DB>()('@budgie/contracts/Db') {
         return Effect.gen(function* () {
             const db = yield* Db;
 
-            if (Option.isSome(yield* Effect.serviceOption(db.$client.transactionService))) {
+            const transactionServiceOption = yield* Effect.serviceOption(db.$client.transactionService);
+            if (Option.isSome(transactionServiceOption)) {
                 return yield* effect;
             }
 

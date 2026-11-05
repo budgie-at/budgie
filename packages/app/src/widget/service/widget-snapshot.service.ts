@@ -76,7 +76,8 @@ export class WidgetSnapshotService extends Context.Service<WidgetSnapshotService
         const isLocked = yield* Ref.make(false);
         const publishedSnapshotKey = yield* Ref.make('');
         const encodeJson = Schema.encodeUnknownEffect(Schema.fromJsonString(Schema.Unknown));
-        const runFork = yield* FiberSet.runtime(yield* FiberSet.make())();
+        const forkFiberSet = yield* FiberSet.make();
+        const runFork = yield* FiberSet.runtime(forkFiberSet)();
 
         const pushToWidgets = (snapshot: WidgetSnapshotInterface): void => {
             NetWorthWidget.updateSnapshot({

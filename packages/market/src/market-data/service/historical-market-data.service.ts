@@ -235,9 +235,8 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
 
                 const accounts = yield* accountRepository.getAllActiveAccounts();
                 const heldInstrumentIds = new Set([baseInstrument.id, ...accounts.map(account => account.instrumentId)]);
-                const unsupportedInstrumentIds = new Set(
-                    yield* instrumentMarketDataJobRepository.findUnsupportedInstrumentIds(euroInstrument.id)
-                );
+                const unsupportedIds = yield* instrumentMarketDataJobRepository.findUnsupportedInstrumentIds(euroInstrument.id);
+                const unsupportedInstrumentIds = new Set(unsupportedIds);
                 const fiatInstruments = yield* instrumentRepository.findByType(InstrumentTypeEnum.FIAT);
 
                 return {

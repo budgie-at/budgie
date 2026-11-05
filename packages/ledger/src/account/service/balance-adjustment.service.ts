@@ -102,7 +102,8 @@ export class BalanceAdjustmentService extends Context.Service<BalanceAdjustmentS
         return {
             create,
             rebaseReconciliations: Effect.fn('BalanceAdjustmentService.rebaseReconciliations')(function* (accountIds: number[]) {
-                yield* Effect.forEach(yield* syncRepository.findReconciledByAccountIds(accountIds), rebase, { discard: true });
+                const reconciledSyncs = yield* syncRepository.findReconciledByAccountIds(accountIds);
+                yield* Effect.forEach(reconciledSyncs, rebase, { discard: true });
             })
         };
     })

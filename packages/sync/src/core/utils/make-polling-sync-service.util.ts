@@ -30,7 +30,6 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
     const rateGate = yield* PollingSyncRateGate;
     const attemptSemaphore = yield* Semaphore.make(1);
     const forwardSyncStaleThresholdMs = definition.forwardSyncStaleThresholdMs ?? 2 * 60 * 1000;
-    const syncErrorThreshold = 3;
     const processedForwardSyncIds = new Set<number>();
     const exhaustedSyncIds = new Set<number>();
     const isNotExhausted = (sync: SyncEntityInterface) => !exhaustedSyncIds.has(sync.id);
@@ -63,7 +62,8 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         let earliestRequestAtMs = Number.POSITIVE_INFINITY;
         const candidates = [...backwardSyncs, ...forwardSyncs.filter(sync => !processedForwardSyncIds.has(sync.id))].filter(isNotExhausted);
         for (const sync of candidates) {
-            const requestAtMs = Math.max(nowMs, yield* rateGate.requestReadyAtMs(yield* resolveSyncToken(sync)));
+            const requestReadyAtMs = yield* Effect.flatMap(resolveSyncToken(sync), syncToken => rateGate.requestReadyAtMs(syncToken));
+            const requestAtMs = Math.max(nowMs, requestReadyAtMs);
             if (requestAtMs < earliestRequestAtMs) {
                 pendingSync = sync;
                 earliestRequestAtMs = requestAtMs;
@@ -125,7 +125,8 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         }
 
         if (isDefined(definition.beforeProcessRun)) {
-            yield* definition.beforeProcessRun([...new Set(yield* Effect.forEach(enabledSyncs, resolveSyncToken))]);
+            const syncTokens = yield* Effect.forEach(enabledSyncs, resolveSyncToken);
+            yield* definition.beforeProcessRun([...new Set(syncTokens)]);
             if (yield* shouldStopProcessing) {
                 return true;
             }
@@ -147,7 +148,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
 
     const retryAfterError = Effect.fnUntraced(function* (enabledSyncs: SyncEntityInterface[], errorMessage: string) {
         const syncToRetry = enabledSyncs.find(sync => sync.id === failedSyncId) ?? enabledSyncs[0];
-        if (!isDefined(syncToRetry) || syncToRetry.errorCount >= syncErrorThreshold) {
+        if (!isDefined(syncToRetry) || syncToRetry.errorCount >= 3) {
             return false;
         }
 

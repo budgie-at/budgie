@@ -193,7 +193,8 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
                 return [];
             }
 
-            const prepared = yield* ruleEngineService.prepareCreateInputsForRules(yield* mapBankTransactions(newTransactions, accountId));
+            const mappedTransactions = yield* mapBankTransactions(newTransactions, accountId);
+            const prepared = yield* ruleEngineService.prepareCreateInputsForRules(mappedTransactions);
             const createdTransactions = yield* transactionService.bulkCreate(prepared.transactionInputs);
             const postCreateTransactionIds = prepared.postCreateIndexes.map(index => createdTransactions[index]?.id).filter(isDefined);
             const postCreateTransactionInputs = prepared.postCreateIndexes
@@ -218,7 +219,8 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
 
             const createdTransactions = yield* createNewTransactions(newTransactions, accountId);
             if (isNotEmptyArray(existingTransactions)) {
-                yield* transactionService.bulkUpdateImported(yield* mapBankTransactions(existingTransactions, accountId));
+                const mappedTransactions = yield* mapBankTransactions(existingTransactions, accountId);
+                yield* transactionService.bulkUpdateImported(mappedTransactions);
                 yield* accountBalanceIncrementalService.updateAllBalances(true);
             }
 
@@ -358,7 +360,8 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             if (isDefined(previousToken)) {
                 yield* Cache.invalidate(loadedClientCache, previousToken);
             }
-            yield* syncIntegrationTokenService.fillIntegrationLabel(integrationId, yield* client.getClientName());
+            const clientName = yield* client.getClientName();
+            yield* syncIntegrationTokenService.fillIntegrationLabel(integrationId, clientName);
             yield* pollingSyncService.requestSync();
         });
 
@@ -389,7 +392,11 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
                 yield* pollingSyncService.requestSync();
             }),
             fetchAccountsPreview: Effect.fn('MonobankSyncService.fetchAccountsPreview')(function* (token: string) {
-                return yield* mapBankAccountsToPreview(yield* fetchBankAccountsAndJars(yield* loadClient(token)));
+                const client = yield* loadClient(token);
+
+                const bankAccounts = yield* fetchBankAccountsAndJars(client);
+
+                return yield* mapBankAccountsToPreview(bankAccounts);
             }),
             fetchNewConnectionAccountsPreview: Effect.fn('MonobankSyncService.fetchNewConnectionAccountsPreview')(function* (
                 token: string
@@ -449,13 +456,15 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
                 }
 
                 const integration = yield* syncIntegrationTokenService.getOrCreateIntegration(provider, token);
-                yield* syncIntegrationTokenService.fillIntegrationLabel(integration.id, yield* client.getClientName());
+                const clientName = yield* client.getClientName();
+                yield* syncIntegrationTokenService.fillIntegrationLabel(integration.id, clientName);
                 yield* pollingSyncService.requestSync();
             }),
             fetchSetupBalance: Effect.fn('MonobankSyncService.fetchSetupBalance')(function* (accountId: number) {
                 const account = yield* accountRepository.findById(accountId);
                 const token = yield* syncIntegrationTokenService.resolveAccountToken(provider, accountId);
-                const bankAccounts = yield* fetchBankAccountsAndJars(yield* loadClient(token));
+                const client = yield* loadClient(token);
+                const bankAccounts = yield* fetchBankAccountsAndJars(client);
                 const bankAccount = bankAccounts.find(item => item.id === account?.externalId);
                 if (!isDefined(bankAccount)) {
                     return yield* Effect.die(new Error(UNKNOWN_SYNC_ERROR));

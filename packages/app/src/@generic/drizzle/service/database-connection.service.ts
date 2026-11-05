@@ -38,7 +38,8 @@ export class DatabaseConnectionService extends Context.Service<DatabaseConnectio
                 ],
                 { discard: true }
             ).pipe(Effect.mapError(cause => DatabaseOpenError.make({ cause })));
-        const openConnection = openSqliteClient(DB_NAME, yield* readDatabaseKey).pipe(Scope.provide(scope));
+        const databaseKey = yield* readDatabaseKey;
+        const openConnection = openSqliteClient(DB_NAME, databaseKey).pipe(Scope.provide(scope));
         const [writer, reader] = yield* Effect.all([openConnection, openConnection], { concurrency: 'unbounded' });
 
         yield* applyPragmas(writer, [

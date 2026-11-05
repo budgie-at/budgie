@@ -171,7 +171,8 @@ export class ExchangeRatesSyncService extends Context.Service<ExchangeRatesSyncS
                     yield* syncFiatRates(baseInstrument);
                     yield* Effect.sleep(1);
                     yield* syncCryptoRates(baseInstrument);
-                    yield* Ref.set(lastSyncedAtMs, yield* Clock.currentTimeMillis);
+                    const syncedAtMs = yield* Clock.currentTimeMillis;
+                    yield* Ref.set(lastSyncedAtMs, syncedAtMs);
                 },
                 syncPermit.withPermitsIfAvailable(1),
                 Effect.asVoid

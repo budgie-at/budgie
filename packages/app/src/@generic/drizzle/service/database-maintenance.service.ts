@@ -15,7 +15,8 @@ export class DatabaseMaintenanceService extends Context.Service<DatabaseMaintena
 
         const readCount = Effect.fnUntraced(function* (query: string) {
             const { $primary } = yield* Db;
-            const [first] = yield* Schema.decodeUnknownEffect(CountRowsSchema)(yield* $primary.$client.unsafe(query));
+            const rows = yield* $primary.$client.unsafe(query);
+            const [first] = yield* Schema.decodeUnknownEffect(CountRowsSchema)(rows);
 
             return first.count;
         });

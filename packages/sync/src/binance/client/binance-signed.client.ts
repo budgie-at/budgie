@@ -197,9 +197,8 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private static readonly decodeCredentials = Schema.decodeUnknownOption(Schema.fromJsonString(BinanceCredentialsSchema));
 
     readonly getAccounts = Effect.fn('BinanceSignedClient.getAccounts')(function* (this: BinanceSignedClient) {
-        const balanceByAsset = this.buildSpotBalanceMap(
-            yield* this.signedRequest(BinanceAssetBalanceListApiSchema, SPOT_BALANCE_ENDPOINT, 'POST')
-        );
+        const spotBalances = yield* this.signedRequest(BinanceAssetBalanceListApiSchema, SPOT_BALANCE_ENDPOINT, 'POST');
+        const balanceByAsset = this.buildSpotBalanceMap(spotBalances);
         const earnPositions = yield* this.collectPages(current =>
             this.fetchEarnPage(BinanceEarnPositionListApiSchema, EARN_POSITION_ENDPOINT, { current, size: EARN_PAGE_SIZE })
         );

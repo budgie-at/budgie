@@ -63,7 +63,8 @@ export class HistoricalMarketDataDrainerService extends Context.Service<Historic
                 enqueueAccounts,
                 scheduleDrain,
                 enqueueActiveAccounts: Effect.fn('HistoricalMarketDataDrainerService.enqueueActiveAccounts')(function* () {
-                    yield* enqueueAccounts(yield* accountRepository.getAllActiveAccounts());
+                    const activeAccounts = yield* accountRepository.getAllActiveAccounts();
+                    yield* enqueueAccounts(activeAccounts);
                 }),
                 cancelScheduledDrain: () => workload.cancelScheduled(drainKey)
             };

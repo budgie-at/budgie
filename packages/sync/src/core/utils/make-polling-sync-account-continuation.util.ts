@@ -142,7 +142,9 @@ export const makePollingSyncAccountContinuation = Effect.fnUntraced(function* (p
             yield* bankIntegrationRepository.deleteIfUnreferenced(account.integrationId);
         }
 
-        return yield* moveSyncToProvider(account.id, yield* transactionRepository.getTransactionTimeByAccountId(account.id, 'latest'));
+        const latestTransactionTime = yield* transactionRepository.getTransactionTimeByAccountId(account.id, 'latest');
+
+        return yield* moveSyncToProvider(account.id, latestTransactionTime);
     });
 
     const releaseToProvider = Effect.fnUntraced(function* (account: AccountEntityInterface, previousProvider: ExternalSourceEnum) {
@@ -193,7 +195,9 @@ export const makePollingSyncAccountContinuation = Effect.fnUntraced(function* (p
                 });
             }
 
-            return yield* Db.transaction(connectWork(yield* requireAccount(accountId), token, bankAccount));
+            const syncAccount = yield* requireAccount(accountId);
+
+            return yield* Db.transaction(connectWork(syncAccount, token, bankAccount));
         }),
         release: Effect.fnUntraced(function* (account: AccountEntityInterface) {
             const foreignSources = (yield* transactionRepository.findExternalSourcesByAccountId(account.id)).filter(

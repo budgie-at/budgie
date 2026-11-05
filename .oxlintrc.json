@@ -118,7 +118,8 @@
         "effecttsgo/global-json-in-effect": "error",
         "effecttsgo/instance-of-schema": "error",
         "effecttsgo/strict-effect-provide": "error",
-        "effecttsgo/new-schema-class": "error"
+        "effecttsgo/new-schema-class": "error",
+        "effecttsgo/yield-in-call-argument": "error"
     },
     "overrides": [
         {

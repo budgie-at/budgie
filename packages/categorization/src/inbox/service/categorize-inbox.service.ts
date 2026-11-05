@@ -36,9 +36,13 @@ export class CategorizeInboxService extends Context.Service<CategorizeInboxServi
             tagSource: TagSourceEnum
         ) {
             if (labelKind === CategorizeInboxLabelKindEnum.TAG) {
-                return yield* touchUpdated(
-                    yield* transactionCategorizeInboxRepository.addTagByTransactionIds(transactionIds, labelId, tagSource)
+                const taggedTransactionIds = yield* transactionCategorizeInboxRepository.addTagByTransactionIds(
+                    transactionIds,
+                    labelId,
+                    tagSource
                 );
+
+                return yield* touchUpdated(taggedTransactionIds);
             }
 
             const updatedTransactionIds = yield* transactionCategorizeInboxRepository.updateUncategorizedCategoryByTransactionIds(
@@ -111,7 +115,12 @@ export class CategorizeInboxService extends Context.Service<CategorizeInboxServi
             labelId: number
         ) {
             if (labelKind === CategorizeInboxLabelKindEnum.TAG) {
-                return yield* touchUpdated(yield* transactionCategorizeInboxRepository.removeTagByTransactionIds(transactionIds, labelId));
+                const untaggedTransactionIds = yield* transactionCategorizeInboxRepository.removeTagByTransactionIds(
+                    transactionIds,
+                    labelId
+                );
+
+                return yield* touchUpdated(untaggedTransactionIds);
             }
 
             return yield* transactionCategorizeInboxRepository.clearCategoryByTransactionIds(transactionIds, labelId);

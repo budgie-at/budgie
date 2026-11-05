@@ -26,7 +26,8 @@ export const i18nLoadLanguageMessages = (language: LanguageEnum) =>
     );
 
 export const i18nEnsureLanguageActivated = Effect.fn('i18n.ensureLanguageActivated')(function* (language: LanguageEnum) {
-    i18n.load(language, yield* i18nLoadLanguageMessages(language));
+    const languageMessages = yield* i18nLoadLanguageMessages(language);
+    i18n.load(language, languageMessages);
     i18n.activate(language);
 });
 

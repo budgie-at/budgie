@@ -412,7 +412,8 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                         transactionId => transactionDebtSettlementService.attach({ debtAccountId: account.id, transactionId }),
                         { discard: true }
                     );
-                    yield* attachPlanDueParts(account.id, yield* findActivePlanIds());
+                    const activePlanIds = yield* findActivePlanIds();
+                    yield* attachPlanDueParts(account.id, activePlanIds);
 
                     return { accountId: account.id };
                 },

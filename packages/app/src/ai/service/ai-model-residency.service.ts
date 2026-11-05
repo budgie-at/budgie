@@ -99,13 +99,11 @@ export class AiModelResidencyService extends Context.Service<AiModelResidencySer
                     return;
                 }
                 clearIdleTimer(subsystem);
-                idleTimers.set(
-                    subsystem,
-                    yield* Effect.forkIn(
-                        Effect.delay(Effect.uninterruptible(lock.withPermit(unloadWhileUnleased(subsystem))), MODEL_IDLE_RELEASE_DELAY_MS),
-                        layerScope
-                    )
+                const idleReleaseFiber = yield* Effect.forkIn(
+                    Effect.delay(Effect.uninterruptible(lock.withPermit(unloadWhileUnleased(subsystem))), MODEL_IDLE_RELEASE_DELAY_MS),
+                    layerScope
                 );
+                idleTimers.set(subsystem, idleReleaseFiber);
             }),
             releaseNow: Effect.fn('AiModelResidencyService.releaseNow')(function* (subsystem: AiSubsystemNameEnum) {
                 leases.set(subsystem, Math.max(0, getLeaseCount(subsystem) - 1));
