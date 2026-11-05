@@ -1,6 +1,6 @@
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
@@ -10,12 +10,14 @@ import type { ReactNode } from 'react';
 
 interface Props {
     readonly title: string;
+    readonly description?: string;
     readonly onGoBack: () => void;
     readonly footerButton: ReactNode;
+    readonly testID?: string;
     readonly children: ReactNode;
 }
 
-export const EnableBankingSetupPage = ({ title, onGoBack, footerButton, children }: Props) => {
+export const SyncSetupPage = ({ title, description, onGoBack, footerButton, testID, children }: Props) => {
     const footer = isDefined(footerButton) ? (
         <View className="border-t-hairline border-surface-separator bg-surface px-5xl pt-lg">
             <View className="absolute inset-x-0 top-full h-[64px] bg-surface" pointerEvents="none" />
@@ -31,7 +33,11 @@ export const EnableBankingSetupPage = ({ title, onGoBack, footerButton, children
                 scrimClassName="bg-surface"
                 contentClassName="gap-y-3xl"
                 footer={footer}
+                testID={testID}
             >
+                {isNotEmptyString(description) ? (
+                    <Text className="text-secondary-foreground px-3xl text-[15px] leading-[20px]">{description}</Text>
+                ) : null}
                 {children}
             </CollapsibleChromePage>
         </GroupedSurface>

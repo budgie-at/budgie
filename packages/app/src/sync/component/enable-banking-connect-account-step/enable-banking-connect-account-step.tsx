@@ -14,7 +14,7 @@ import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { EnableBankingConnectAccountRow } from '../enable-banking-connect-account-row/enable-banking-connect-account-row';
-import { EnableBankingSetupPage } from '../enable-banking-setup-page/enable-banking-setup-page';
+import { SyncSetupPage } from '../sync-setup-page/sync-setup-page';
 
 import { EnableBankingConnectAccountStepSelector } from './enable-banking-connect-account-step.selector';
 
@@ -63,7 +63,7 @@ export const EnableBankingConnectAccountStep = ({ token, accounts, previews, cho
     };
 
     return (
-        <EnableBankingSetupPage
+        <SyncSetupPage
             title={t`Choose bank account`}
             onGoBack={handleGoBack}
             footerButton={
@@ -87,6 +87,6 @@ export const EnableBankingConnectAccountStep = ({ token, accounts, previews, cho
                     />
                 ))}
             </GroupedListSection>
-        </EnableBankingSetupPage>
+        </SyncSetupPage>
     );
 };

@@ -26,8 +26,8 @@ import { EnableBankingConnectAccountStep } from '../enable-banking-connect-accou
 import { EnableBankingHistoryStep } from '../enable-banking-history-step/enable-banking-history-step';
 import { EnableBankingKeyStep } from '../enable-banking-key-step/enable-banking-key-step';
 import { EnableBankingSetupGuide } from '../enable-banking-setup-guide/enable-banking-setup-guide';
-import { EnableBankingSetupPage } from '../enable-banking-setup-page/enable-banking-setup-page';
 import { EnableBankingWaitingStep } from '../enable-banking-waiting-step/enable-banking-waiting-step';
+import { SyncSetupPage } from '../sync-setup-page/sync-setup-page';
 
 import { CreateEnableBankingAccountSelector } from './create-enable-banking-account.selector';
 
@@ -279,8 +279,8 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
     }
 
     return (
-        <EnableBankingSetupPage key={step} title={title} onGoBack={handleStepAwareGoBack} footerButton={footerButton}>
+        <SyncSetupPage key={step} title={title} onGoBack={handleStepAwareGoBack} footerButton={footerButton}>
             {stepContent}
-        </EnableBankingSetupPage>
+        </SyncSetupPage>
     );
 };

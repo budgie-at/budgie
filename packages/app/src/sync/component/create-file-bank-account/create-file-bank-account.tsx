@@ -7,10 +7,8 @@ import { ReactElement, useState } from 'react';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
-import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
-import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
+import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useOnboardingRedirect } from '../../../onboarding/hook/use-onboarding-redirect.hook';
 import { FileImportStepEnum } from '../../enum/file-import-step.enum';
@@ -19,6 +17,7 @@ import { AccountSelectionStep } from '../account-selection-step/account-selectio
 import { CreateFileBankAccountFooter } from '../create-file-bank-account-footer/create-file-bank-account-footer';
 import { FileImportReviewStep } from '../file-import-review-step/file-import-review-step';
 import { FileUploadStep } from '../file-upload-step/file-upload-step';
+import { SyncSetupPage } from '../sync-setup-page/sync-setup-page';
 
 import { CreateFileBankAccountSelector } from './create-file-bank-account.selector';
 
@@ -39,6 +38,8 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
     const accountSelection = useAccountSelection();
     const { selectedAccounts, setPreviews } = accountSelection;
     const onboardingHref = useOnboardingRedirect();
+
+    const handleGoBack = () => void goBackOrReplace('/');
 
     const handleSelectFile = () =>
         run(
@@ -109,14 +110,14 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
     );
 
     return (
-        <CollapsibleChromePage
+        <SyncSetupPage
             title={config.title}
-            subtitle={config.description}
-            leading={<HeaderBackButton />}
+            description={config.description}
+            onGoBack={handleGoBack}
+            footerButton={footer}
             testID={CreateFileBankAccountSelector.ScrollView}
-            footer={footer}
         >
-            <FormLayoutGroup>{stepContent[step]}</FormLayoutGroup>
-        </CollapsibleChromePage>
+            {stepContent[step]}
+        </SyncSetupPage>
     );
 };

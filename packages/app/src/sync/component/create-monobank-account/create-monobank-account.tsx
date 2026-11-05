@@ -10,6 +10,7 @@ import Toast from 'react-native-toast-message';
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
+import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { OnboardingNote } from '../../../onboarding/component/onboarding-note/onboarding-note';
 import { useIsOnboardingActive } from '../../../onboarding/hook/use-is-onboarding-active.hook';
@@ -19,9 +20,9 @@ import { SetupStepEnum } from '../../enum/setup-step.enum';
 import { useSyncAccountSetupFlow } from '../../hook/use-sync-account-setup-flow.hook';
 import { createMonobankAccountReducer } from '../../utils/create-monobank-account-reducer.util';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
-import { SyncAccountSetupPage } from '../sync-account-setup-page/sync-account-setup-page';
 import { SyncHistoryDepthStep } from '../sync-history-depth-step/sync-history-depth-step';
 import { SyncHistoryDurationNotice } from '../sync-history-duration-notice/sync-history-duration-notice';
+import { SyncSetupPage } from '../sync-setup-page/sync-setup-page';
 import { TokenInputStep } from '../token-input-step/token-input-step';
 
 import { CreateMonobankAccountSelector } from './create-monobank-account.selector';
@@ -110,6 +111,10 @@ export const CreateMonobankAccount = () => {
         dispatch({ type: CreateMonobankAccountActionTypeEnum.HISTORY_DEPTH_SELECTED, historyDepth: value });
     };
 
+    const tokenStepDescription =
+        step === SetupStepEnum.TOKEN
+            ? t`Monobank gives you a personal token. Budgie uses it to talk to the bank directly, with no one in between.`
+            : '';
     const selectedAccountCount = accountSelection.selectedAccounts.size;
     const addAccountsLabel = t({ message: plural(selectedAccountCount, { one: 'Add # account', other: 'Add # accounts' }) });
     const onboardingHistoryNote = isOnboardingActive ? (
@@ -118,26 +123,30 @@ export const CreateMonobankAccount = () => {
             text={t`Budgie brings in the last month of history, then asks Monobank for new transactions when you open the app.`}
         />
     ) : null;
-    const accountsFooterVariant = isOnboardingActive ? 'cta' : 'primary';
-    const accountsFooterLabel = isOnboardingActive ? addAccountsLabel : t`Continue`;
-    const handleAccountsFooterPress = isOnboardingActive ? handleSetupSync : handleContinueToHistory;
-    const accountsFooter = (
+    const accountsFooter = isOnboardingActive ? (
         <Button
-            variant={accountsFooterVariant}
-            onPress={handleAccountsFooterPress}
+            variant="cta"
+            onPress={handleSetupSync}
             disabled={isStartSyncDisabled}
-            content={accountsFooterLabel}
+            content={addAccountsLabel}
+            testID={CreateMonobankAccountSelector.ContinueButton}
+        />
+    ) : (
+        <PillButton
+            label={t`Continue`}
+            onPress={handleContinueToHistory}
+            isDisabled={isStartSyncDisabled}
             testID={CreateMonobankAccountSelector.ContinueButton}
         />
     );
 
     let stepContent = <TokenInputStep token={token} onTokenChange={handleTokenChange} />;
     let footer = (
-        <Button
+        <PillButton
+            label={t`Connect`}
             onPress={handleFetchAccounts}
-            disabled={isLoading}
+            isDisabled={isLoading}
             isLoading={isLoading}
-            content={t`Connect`}
             testID={CreateMonobankAccountSelector.FetchAccountsButton}
         />
     );
@@ -174,10 +183,10 @@ export const CreateMonobankAccount = () => {
                 </>
             );
             footer = (
-                <Button
+                <PillButton
+                    label={t`Start sync`}
                     onPress={handleSetupSync}
-                    disabled={isStartSyncDisabled}
-                    content={t`Start Sync`}
+                    isDisabled={isStartSyncDisabled}
                     testID={CreateMonobankAccountSelector.StartSyncButton}
                 />
             );
@@ -188,14 +197,14 @@ export const CreateMonobankAccount = () => {
     }
 
     return (
-        <SyncAccountSetupPage
+        <SyncSetupPage
             title={t`Connect Monobank`}
-            description={t`Monobank gives you a personal token. Budgie uses it to talk to the bank directly, with no one in between.`}
+            description={tokenStepDescription}
             onGoBack={handleStepAwareGoBack}
-            footer={footer}
-            scrollViewTestID={CreateMonobankAccountSelector.ScrollView}
+            footerButton={footer}
+            testID={CreateMonobankAccountSelector.ScrollView}
         >
             {stepContent}
-        </SyncAccountSetupPage>
+        </SyncSetupPage>
     );
 };

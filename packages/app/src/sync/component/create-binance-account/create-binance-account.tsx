@@ -5,7 +5,7 @@ import { useReducer } from 'react';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/component/button/button';
+import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { CreateBinanceAccountActionTypeEnum } from '../../enum/create-binance-account-action-type.enum';
 import { SetupStepEnum } from '../../enum/setup-step.enum';
@@ -15,7 +15,7 @@ import { toastBinanceKeyPermissionsError } from '../../utils/toast-binance-key-p
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
 import { BinanceParkedAssetsNotice } from '../binance-parked-assets-notice/binance-parked-assets-notice';
 import { KeySecretInputStep } from '../key-secret-input-step/key-secret-input-step';
-import { SyncAccountSetupPage } from '../sync-account-setup-page/sync-account-setup-page';
+import { SyncSetupPage } from '../sync-setup-page/sync-setup-page';
 
 import { CreateBinanceAccountSelector } from './create-binance-account.selector';
 
@@ -74,7 +74,15 @@ export const CreateBinanceAccount = () => {
             <BinanceParkedAssetsNotice parkedPreviews={parkedPreviews} />
         </>
     );
-    let footer = <Button onPress={handleSetupSync} disabled={isStartSyncDisabled} content={t`Start Sync`} />;
+    let footer = (
+        <PillButton
+            label={t`Start sync`}
+            onPress={handleSetupSync}
+            isDisabled={isStartSyncDisabled}
+            testID={CreateBinanceAccountSelector.StartSyncButton}
+        />
+    );
+    let description = '';
 
     if (step === SetupStepEnum.TOKEN) {
         pageContent = (
@@ -85,18 +93,27 @@ export const CreateBinanceAccount = () => {
                 onApiSecretChange={handleApiSecretChange}
             />
         );
-        footer = <Button onPress={handleFetchAccounts} disabled={isLoading} content={t`Fetch Accounts`} />;
+        footer = (
+            <PillButton
+                label={t`Fetch accounts`}
+                onPress={handleFetchAccounts}
+                isDisabled={isLoading}
+                isLoading={isLoading}
+                testID={CreateBinanceAccountSelector.FetchAccountsButton}
+            />
+        );
+        description = t`Sync your Binance balances and transactions`;
     }
 
     return (
-        <SyncAccountSetupPage
+        <SyncSetupPage
             title={t`Connect Binance`}
-            description={t`Sync your Binance balances and transactions`}
+            description={description}
             onGoBack={handleGoBack}
-            footer={footer}
-            scrollViewTestID={CreateBinanceAccountSelector.ScrollView}
+            footerButton={footer}
+            testID={CreateBinanceAccountSelector.ScrollView}
         >
             {pageContent}
-        </SyncAccountSetupPage>
+        </SyncSetupPage>
     );
 };
