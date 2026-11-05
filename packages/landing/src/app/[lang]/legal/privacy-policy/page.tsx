@@ -44,7 +44,8 @@ export default async function PrivacyPolicyPage(props: PageLangParam) {
                     Budgie (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) is committed to protecting your privacy. This Privacy Policy
                     explains how we collect, use, disclose, and safeguard your information when you use our mobile application and website
                     (collectively, the &quot;Service&quot;). We are a privacy-first financial tracking application that operates on an
-                    offline-first basis, meaning your financial data stays on your device.
+                    offline-first basis, meaning your financial data is kept on your device, with an encrypted backup in your own
+                    iCloud when you leave backups on.
                 </Trans>
             </p>
             <h2>
@@ -55,8 +56,9 @@ export default async function PrivacyPolicyPage(props: PageLangParam) {
             </h3>
             <p>
                 <Trans>
-                    The following data is stored exclusively on your device and is never transmitted to our servers unless you explicitly
-                    enable optional cloud features:
+                    The following data is stored on your device. On iOS an encrypted copy is also written to your own iCloud unless you
+                    turn backups off; Apple can see the backup&apos;s date, device name and model, and app version. Nothing is
+                    transmitted to our servers, and no Budgie server receives your financial data:
                 </Trans>
             </p>
             <ul>
@@ -141,7 +143,10 @@ export default async function PrivacyPolicyPage(props: PageLangParam) {
             </h3>
             <p>
                 <Trans>
-                    All your financial data is stored locally on your device. We utilize device-level security features including:
+                    All your financial data is stored on your device. On iOS an encrypted backup is also stored in your own iCloud:
+                    every record is encrypted on your device before it leaves, and the backup is end-to-end encrypted when you turn on
+                    Apple&apos;s Advanced Data Protection. Backup metadata — the date, device name and model, and app version — is
+                    visible to Apple. We utilize device-level security features including:
                 </Trans>
             </p>
             <ul>
@@ -164,6 +169,9 @@ export default async function PrivacyPolicyPage(props: PageLangParam) {
             <ul>
                 <li>
                     <Trans>Bank sync providers (only with your explicit authorization)</Trans>
+                </li>
+                <li>
+                    <Trans>iCloud backup (Apple, only while backups are on)</Trans>
                 </li>
                 <li>
                     <Trans>Market data providers for investment pricing</Trans>
@@ -236,7 +244,7 @@ export default async function PrivacyPolicyPage(props: PageLangParam) {
                 </li>
                 <li>
                     <Trans>
-                        <strong>Opt-out</strong>: Disable analytics and optional cloud features in app settings
+                        <strong>Opt-out</strong>: Disable analytics, iCloud backup and optional cloud features in app settings
                     </Trans>
                 </li>
                 <li>
@@ -260,10 +268,10 @@ export default async function PrivacyPolicyPage(props: PageLangParam) {
             </h2>
             <p>
                 <Trans>
-                    Since your financial data is stored locally on your device, international data transfers are minimal. However, if you
-                    use optional cloud features, your data may be processed in countries where our service providers operate. We ensure
-                    appropriate safeguards are in place to protect your data in compliance with applicable data protection laws including
-                    GDPR and CCPA.
+                    Your financial data is stored on your device. If you leave iCloud backup on, your encrypted backup is stored in your
+                    own iCloud account under Apple&apos;s terms. If you use other optional cloud features, your data may be processed in
+                    countries where our service providers operate. We ensure appropriate safeguards are in place to protect your data in
+                    compliance with applicable data protection laws including GDPR and CCPA.
                 </Trans>
             </p>
             <h2>
@@ -271,9 +279,10 @@ export default async function PrivacyPolicyPage(props: PageLangParam) {
             </h2>
             <p>
                 <Trans>
-                    Your financial data remains on your device until you choose to delete it. If you use optional cloud features, we retain
-                    your data only as long as necessary to provide the Service or as required by law. Anonymous analytics data may be
-                    retained indefinitely in aggregated form.
+                    Your financial data remains on your device until you choose to delete it, and an iCloud backup remains in your own
+                    iCloud until you delete it or turn backups off. If you use other optional cloud features, we retain your data only as
+                    long as necessary to provide the Service or as required by law. Anonymous analytics data may be retained indefinitely
+                    in aggregated form.
                 </Trans>
             </p>
             <h2>

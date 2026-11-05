@@ -1,0 +1,17 @@
+{
+  "records": [
+    {
+      "recordType": "Backup",
+      "fields": {
+        "createdAt": { "type": "TIMESTAMP", "queryable": true, "sortable": true },
+        "installId": { "type": "STRING", "queryable": true },
+        "deviceName": { "type": "STRING" },
+        "deviceModel": { "type": "STRING" },
+        "appVersion": { "type": "STRING" },
+        "schemaVersion": { "type": "INT64" },
+        "archive": { "type": "ASSET" },
+        "backupKey": { "type": "STRING", "encrypted": true }
+      }
+    }
+  ]
+}

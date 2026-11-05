@@ -24,9 +24,9 @@ export const ProofBand = ({ locale }: Props) => (
 
                     <p className="measure text-sm md:text-base leading-relaxed text-muted-foreground text-pretty">
                         <Trans>
-                            Every transaction, budget and chart is computed on your phone. There is no account to create, so there is
-                            nothing to sign into, nothing to sync and nothing to leak. Turn the radio off and the app behaves exactly the
-                            same.
+                            Every transaction, budget and chart is computed on your phone. There is no account to create and no Budgie
+                            database to leak; the only copy that leaves the phone is the encrypted backup in your own iCloud. Turn the
+                            radio off and the app behaves exactly the same.
                         </Trans>
                     </p>
 
@@ -43,7 +43,7 @@ export const ProofBand = ({ locale }: Props) => (
                     <p className="measure text-sm md:text-base leading-relaxed text-muted-foreground text-pretty">
                         <Trans>
                             The application source is published under the O&apos;SAASY license, so anyone can read the code that touches
-                            money, check that nothing is uploaded, and open an issue when it is not.
+                            money, check that no data reaches a Budgie server, and open an issue when it is not.
                         </Trans>
                     </p>
 

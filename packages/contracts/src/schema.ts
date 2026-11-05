@@ -33,3 +33,8 @@ export { BudgetPeriodCategorySnapshotEntityTable } from './budget-period-categor
 export { BudgetSinkingFundEntityTable } from './budget-sinking-fund/table/budget-sinking-fund-entity.table';
 export { BudgetLimitChangeEntityTable } from './budget-limit-change/table/budget-limit-change-entity.table';
 export { RecurringSeriesEntityTable } from './recurring-series/table/recurring-series-entity.table';
+export { SyncRecordEntityTable } from './cloud-sync/table/sync-record-entity.table';
+export { SyncOutboxEntityTable } from './cloud-sync/table/sync-outbox-entity.table';
+export { SyncPendingEntityTable } from './cloud-sync/table/sync-pending-entity.table';
+export { SyncApplyStateEntityTable } from './cloud-sync/table/sync-apply-state-entity.table';
+export { SyncZoneRegistryEntityTable } from './cloud-sync/table/sync-zone-registry-entity.table';

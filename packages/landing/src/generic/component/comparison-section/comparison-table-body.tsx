@@ -4,8 +4,8 @@ import { ComparisonRow } from './comparison-row';
 
 export const ComparisonTableBody = () => (
     <tbody>
-        <ComparisonRow budgie feature={<Trans>100% Offline</Trans>} others={false} />
-        <ComparisonRow budgie feature={<Trans>Data on your device only</Trans>} others={false} />
+        <ComparisonRow budgie feature={<Trans>Works fully offline</Trans>} others={false} />
+        <ComparisonRow budgie feature={<Trans>On your device and in backups you control</Trans>} others={false} />
         <ComparisonRow budgie feature={<Trans>Biometric lock + on-device encryption with your PIN</Trans>} others={false} />
         <ComparisonRow budgie feature={<Trans>Source-available code</Trans>} others={false} />
         <ComparisonRow budgie feature={<Trans>No account required</Trans>} others={false} />

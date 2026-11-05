@@ -149,7 +149,9 @@ export default async function LandingPage(props: PageLangParam) {
                     slug="private-budget-app-alternative"
                     title={<Trans>A private budget app alternative</Trans>}
                 >
-                    <Trans>Your finances stay on your device, with app lock and screenshot protection built in.</Trans>
+                    <Trans>
+                        Your finances stay on your device, with app lock, screenshot protection and a backup you control.
+                    </Trans>
                 </CapabilityBento.Cell>
 
                 <CapabilityBento.Cell
@@ -160,7 +162,7 @@ export default async function LandingPage(props: PageLangParam) {
                     slug="ai-auto-categorization"
                     title={<Trans>Categorization that runs on your phone</Trans>}
                 >
-                    <Trans>Category suggestions are computed on-device, so your transactions are never sent to a server.</Trans>
+                    <Trans>Category suggestions are computed on-device, so no transaction is sent to an AI service.</Trans>
                 </CapabilityBento.Cell>
             </CapabilityBento>
 

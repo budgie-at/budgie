@@ -61,8 +61,9 @@ export default async function TermsOfServicePage(props: PageLangParam) {
                 <Trans>
                     Budgie is a privacy-first, offline-first mobile application designed to help users track expenses, manage budgets, sync
                     bank accounts (optional), monitor investments (stocks and cryptocurrency), track debts and loans, set financial goals,
-                    and access AI-powered financial insights. The Service operates primarily on your device, with optional cloud features
-                    that require explicit user consent.
+                    and access AI-powered financial insights. The Service operates primarily on your device, with encrypted backups to
+                    your own iCloud on iOS, which you can turn off in Settings, and optional cloud features that require explicit user
+                    consent.
                 </Trans>
             </p>
             <p>
@@ -224,9 +225,9 @@ export default async function TermsOfServicePage(props: PageLangParam) {
             </h3>
             <p>
                 <Trans>
-                    YOU ARE SOLELY RESPONSIBLE FOR BACKING UP YOUR DATA. While the Service stores data locally on your device and may offer
-                    optional cloud backup features, we are not responsible for any loss of data. We strongly recommend regularly exporting
-                    your data using the built-in export features.
+                    YOU ARE SOLELY RESPONSIBLE FOR BACKING UP YOUR DATA. The Service stores data on your device and, on iOS by default, an
+                    encrypted backup in your own iCloud, which you can turn off in Settings. We are not responsible for any loss of data.
+                    We strongly recommend regularly exporting your data using the built-in export features.
                 </Trans>
             </p>
             <h3>
@@ -413,7 +414,7 @@ export default async function TermsOfServicePage(props: PageLangParam) {
                     <Trans>Data stored locally on your device will remain accessible</Trans>
                 </li>
                 <li>
-                    <Trans>We may delete any cloud-stored data in accordance with our data retention policy</Trans>
+                    <Trans>Encrypted backups in your own iCloud remain in your account until you delete them or turn backup off</Trans>
                 </li>
             </ul>
             <p>

@@ -101,7 +101,7 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
                         <Trans>Free, with no tiers</Trans>
                     </FeatureVersus.Item>
                     <FeatureVersus.Item>
-                        <Trans>Your data stays on your phone</Trans>
+                        <Trans>Your data stays on your phone and in backups you control</Trans>
                     </FeatureVersus.Item>
                     <FeatureVersus.Item>
                         <Trans>Bank sync and PDF or CSV import included</Trans>

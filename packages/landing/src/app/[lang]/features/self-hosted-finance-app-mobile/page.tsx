@@ -70,7 +70,7 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                     </Trans>
                 </FeatureStory.Point>
                 <FeatureStory.Point index={2}>
-                    <Trans>No server to patch, renew certificates for, or pay for — just a file only you hold.</Trans>
+                    <Trans>No server to patch, renew certificates for, or pay for — just a file in storage you control.</Trans>
                 </FeatureStory.Point>
             </FeatureStory>
 
@@ -132,7 +132,7 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Server} title={<Trans>No server to maintain</Trans>}>
-                    <Trans>No server to patch, renew certificates for, or pay for — just a file only you hold.</Trans>
+                    <Trans>No server to patch, renew certificates for, or pay for — just a file in storage you control.</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Benefit icon={Lock} title={<Trans>Your data on your phone</Trans>}>
                     <Trans>On your phone, encrypted when a PIN is set</Trans>
@@ -170,10 +170,10 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                     question={<Trans>Can I use Budgie on a phone and a tablet at once?</Trans>}
                     answer={
                         <Trans>
-                            Budgie does not sync between devices. You can move your data by copying the backup file through your own iCloud
-                            Drive, Google Drive, or Dropbox and restoring it on the second device — but a restore replaces everything on
-                            that device, and later changes stay on the device where you made them. If the backup was PIN-locked, enter that
-                            PIN when you restore.
+                            Budgie does not sync between devices. On iOS an encrypted backup goes to your own iCloud automatically. You can
+                            also move your data by copying a backup file through your own iCloud Drive, Google Drive, or Dropbox and restoring
+                            it on the second device — but a restore replaces everything on that device, and later changes stay on the device
+                            where you made them. If the backup was PIN-locked, enter that PIN when you restore.
                         </Trans>
                     }
                 />

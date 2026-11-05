@@ -21,8 +21,9 @@ export const FaqSection = () => (
                     <FaqSectionItem
                         answer={
                             <Trans>
-                                On your phone, and nowhere else. Budgie has no account system and no server of its own, so there is nothing
-                                to upload and nothing for us to read. Set a PIN and the data is encrypted on the device with that PIN.
+                                On your phone, and in your own iCloud if you leave backups on. Budgie has no account system and no server of
+                                its own, so there is nothing for us to read. Set a PIN and the database is encrypted on the device with that
+                                PIN; the iCloud backup is encrypted there too, and end-to-end with Advanced Data Protection.
                             </Trans>
                         }
                         index={0}

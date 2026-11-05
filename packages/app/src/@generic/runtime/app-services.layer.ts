@@ -42,7 +42,13 @@ import {
     TransactionReceiptRepository,
     TransactionDayNetAmountRepository,
     TransactionViewRepository,
-    TransactionTagsRepository
+    TransactionTagsRepository,
+    SyncApplyStateRepository,
+    SyncIdentityRepository,
+    SyncOutboxRepository,
+    SyncPendingRepository,
+    SyncRecordRepository,
+    SyncZoneRegistryRepository
 } from '@budgie/contracts';
 import { ExporterService, ImporterService } from '@budgie/import-export';
 import {
@@ -191,6 +197,12 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     ImporterService.layer,
     TagRepository.layer,
     TagService.layer,
+    SyncApplyStateRepository.layer,
+    SyncIdentityRepository.layer,
+    SyncOutboxRepository.layer,
+    SyncPendingRepository.layer,
+    SyncRecordRepository.layer,
+    SyncZoneRegistryRepository.layer,
     CategoryRepository.layer,
     CategoryService.layer,
     CategoryIconBackfillService.layer,

@@ -191,8 +191,8 @@ export default async function ErsteGeorgePdfStatementImportPage(props: PageLangP
                     <BlogArticleProse>
                         <Trans>
                             If you already keep an account in Budgie with the same IBAN, the bookings go into that account instead of a new
-                            one. The PDF is read on your phone: the statement is not uploaded anywhere, and the bookings are stored only on
-                            your device.
+                            one. The PDF is read on your phone: the statement is not uploaded anywhere, and the bookings stay in the
+                            database on your device, backed up only to storage you own.
                         </Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>

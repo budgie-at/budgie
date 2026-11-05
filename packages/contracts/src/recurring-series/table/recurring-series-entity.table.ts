@@ -3,6 +3,8 @@ import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { convertEnumToDrizzleEnum } from '../../@generic/utils/convert-enum-to-drizzle-enum.util';
 import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
+import { syncIdentityUniqueIndex } from '../../cloud-sync/utils/sync-identity-unique-index.util';
+import { withSyncIdentityColumns } from '../../cloud-sync/utils/with-sync-identity-columns.util';
 import { RecurringSeriesKindEnum } from '../enum/recurring-series-kind.enum';
 import { RecurringSeriesStatusEnum } from '../enum/recurring-series-status.enum';
 import { RecurringSeriesUserStateEnum } from '../enum/recurring-series-user-state.enum';
@@ -10,6 +12,7 @@ import { RecurringSeriesUserStateEnum } from '../enum/recurring-series-user-stat
 export const RecurringSeriesEntityTable = sqliteTable(
     'recurring_series',
     withBaseEntityTableColumns({
+        ...withSyncIdentityColumns(),
         merchantKey: text('merchant_key').notNull(),
         kind: text('kind', { enum: convertEnumToDrizzleEnum(RecurringSeriesKindEnum) })
             .$type<RecurringSeriesKindEnum>()
@@ -25,5 +28,6 @@ export const RecurringSeriesEntityTable = sqliteTable(
         title: text('title').notNull(),
         categoryId: int('category_id').references(() => CategoryEntityTable.id, { onDelete: 'set null' }),
         lastSeenAt: int('last_seen_at', { mode: 'timestamp' }).notNull()
-    })
+    }),
+    table => [syncIdentityUniqueIndex('recurring_series', table)]
 );

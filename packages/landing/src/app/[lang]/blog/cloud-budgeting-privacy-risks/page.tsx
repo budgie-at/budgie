@@ -873,7 +873,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                             Offline-first does not mean you cannot sync with banks. It means the sync architecture protects your privacy.
                             With traditional cloud sync, your data flows from your device to a cloud server, then to an aggregator, and
                             finally to the bank, with databases at each step. With offline-first sync, bank data flows directly to your
-                            device and is stored only in your local database.
+                            device and is stored in your local database.
                         </Trans>
                     </BlogArticleProse>
 
@@ -1171,10 +1171,11 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
 
                         <BlogFaqItem question={<Trans>What happens to my data if Budgie shuts down?</Trans>}>
                             <Trans>
-                                Nothing happens to your data because Budgie does not have your data. Everything is stored locally on your
-                                device. If Budgie as a company ceased to exist, your app would continue to function with all your data
-                                intact. You can export data at any time in standard formats. There is no server to shut down, no migration
-                                to worry about, no acquisition that could change data handling. Your data remains yours permanently.
+                                Nothing happens to your data because Budgie does not have your data. Everything is stored on your device and,
+                                on iOS with iCloud backup on, in your own iCloud. If Budgie as a company ceased to exist, your app would continue
+                                to function with all your data intact. You can export data at any time in standard formats. There is no server
+                                to shut down, no migration to worry about, no acquisition that could change data handling. Your data remains
+                                yours permanently.
                             </Trans>
                         </BlogFaqItem>
                     </BlogFaqSection>

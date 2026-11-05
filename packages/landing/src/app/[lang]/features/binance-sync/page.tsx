@@ -189,8 +189,8 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                     </p>
                     <p>
                         <Trans>
-                            Your key and secret stay on your device. Nothing is proxied through a Budgie server, because there is no Budgie
-                            server: the app talks to Binance directly, the same way it talks to your bank.
+                            Your key and secret stay in the app&apos;s database on your device. Nothing is proxied through a Budgie
+                            server, because there is no Budgie server: the app talks to Binance directly, the same way it talks to your bank.
                         </Trans>
                     </p>
                 </FeatureDetails.Item>

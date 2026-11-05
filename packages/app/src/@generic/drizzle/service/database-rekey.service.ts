@@ -5,6 +5,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import { identity } from 'effect/Function';
 import * as Layer from 'effect/Layer';
+import * as Schema from 'effect/Schema';
 import * as Reactivity from 'effect/reactivity/Reactivity';
 import { File } from 'expo-file-system';
 
@@ -36,6 +37,7 @@ export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>(
             deleteFileIfExists(`${databaseUri}-shm`);
         };
 
+        const RandomKeyRowsSchema = Schema.NonEmptyArray(Schema.Struct({ key: Schema.String }));
         const escapeSqlString = (value: string): string => value.replaceAll("'", "''");
         const tempDatabaseName = 'auth-migration.db';
         const tempDatabaseUri = new File(DATABASE_DIRECTORY, tempDatabaseName).uri;
@@ -46,19 +48,29 @@ export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>(
             yield* Effect.promise(() => new File(sourceUri).move(new File(targetUri)));
         });
 
-        const exportDatabase = Effect.fn('DatabaseRekeyService.exportDatabase')(function* (nextKey: string | null) {
+        const exportEncryptedCopy = Effect.fn('DatabaseRekeyService.exportEncryptedCopy')(function* (
+            destinationPath: string,
+            key: string | null
+        ) {
             const { $client: client } = yield* Db;
 
             yield* client.unsafe('PRAGMA wal_checkpoint(FULL)').raw;
-            yield* client.unsafe(
-                `ATTACH DATABASE '${escapeSqlString(`${DATABASE_LOCATION}/${tempDatabaseName}`)}' AS migrated KEY '${escapeSqlString(nextKey ?? '')}'`
-            ).raw;
+            yield* client.unsafe(`ATTACH DATABASE '${escapeSqlString(destinationPath)}' AS migrated KEY '${escapeSqlString(key ?? '')}'`).raw;
             yield* client
                 .unsafe('PRAGMA migrated.journal_mode = DELETE')
                 .raw.pipe(
                     Effect.andThen(client.unsafe(`SELECT sqlcipher_export('migrated')`).raw),
                     Effect.ensuring(Effect.ignore(client.unsafe('DETACH DATABASE migrated').raw))
                 );
+        });
+
+        const generateKey = Effect.fn('DatabaseRekeyService.generateKey')(function* () {
+            const { $client: client } = yield* Db;
+            const [row] = yield* Schema.decodeUnknownEffect(RandomKeyRowsSchema)(
+                yield* client.unsafe('SELECT lower(hex(randomblob(32))) AS key')
+            );
+
+            return row.key;
         });
 
         const updateMigratedDatabaseSettings = Effect.fn('DatabaseRekeyService.updateMigratedDatabaseSettings')(function* (
@@ -76,7 +88,7 @@ export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>(
         const prepare = Effect.fn('DatabaseRekeyService.prepare')(function* (params: RekeyParamsInterface) {
             deleteDatabaseFiles(tempDatabaseUri);
             deleteDatabaseFiles(backupUri);
-            yield* exportDatabase(params.nextKey);
+            yield* exportEncryptedCopy(`${DATABASE_LOCATION}/${tempDatabaseName}`, params.nextKey);
 
             if (params.nextSettings) {
                 yield* updateMigratedDatabaseSettings(params.nextKey, params.nextSettings);
@@ -105,6 +117,8 @@ export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>(
         });
 
         return {
+            exportEncryptedCopy,
+            generateKey,
             rekey: Effect.fn('DatabaseRekeyService.rekey')(function* (params: RekeyParamsInterface, onCommit: Effect.Effect<void>) {
                 yield* prepare(params).pipe(
                     Effect.andThen(commit(onCommit).pipe(Effect.onError(() => restoreBackupDatabase()))),

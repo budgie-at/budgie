@@ -108,7 +108,7 @@ const getExpoConfig = ({ config }) => ({
         },
         infoPlist: {
             BGTaskSchedulerPermittedIdentifiers: ['$(PRODUCT_BUNDLE_IDENTIFIER).sync.*'],
-            UIBackgroundModes: ['processing'],
+            UIBackgroundModes: IS_E2E ? ['processing'] : ['processing', 'remote-notification'],
             NSCameraUsageDescription: CAMERA_USAGE,
             LSApplicationQueriesSchemes: ['shortcuts']
         },
@@ -116,7 +116,12 @@ const getExpoConfig = ({ config }) => ({
         entitlements: {
             'com.apple.developer.kernel.extended-virtual-addressing': true,
             'com.apple.developer.kernel.increased-memory-limit': true,
-            'com.apple.security.application-groups': [getAppGroup()]
+            'com.apple.security.application-groups': [getAppGroup()],
+            ...(!IS_E2E && {
+                'com.apple.developer.icloud-services': ['CloudKit'],
+                'com.apple.developer.icloud-container-identifiers': [`iCloud.${getUniqueIdentifier(false)}`],
+                'aps-environment': IS_PRODUCTION ? 'production' : 'development'
+            })
         },
         icon: {
             dark: './assets/icons/ios-dark.png',
@@ -189,7 +194,8 @@ const getExpoConfig = ({ config }) => ({
                 },
                 ios: {
                     ccacheEnabled: true,
-                    usePrecompiledModules: true
+                    usePrecompiledModules: true,
+                    deploymentTarget: '17.0'
                 }
             }
         ],

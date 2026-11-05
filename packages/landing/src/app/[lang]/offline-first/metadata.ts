@@ -9,7 +9,7 @@ export const OFFLINE_FIRST_PILLAR_HUB_METADATA: PillarHubMetadataInterface = {
     pillar: PillarEnum.PRIVACY,
     title: msg`Offline Budget App — Track Expenses Without Internet`,
     metaTitle: msg`Offline Budget App — Works Without Internet — Budgie`,
-    metaDescription: msg`Budgie is a fully offline budget app. Add expenses, view analytics, and import bank statements without any internet connection. Your data stays on your device.`,
+    metaDescription: msg`Budgie is a fully offline budget app. Add expenses, view analytics, and import bank statements without internet. Your data is backed up to storage you control.`,
     seoKeywords: [
         msg`offline budget app`,
         msg`offline expense tracker`,

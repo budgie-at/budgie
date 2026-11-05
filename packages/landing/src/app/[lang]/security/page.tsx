@@ -106,8 +106,9 @@ export default async function SecurityPillarHubPage(props: PageLangParam) {
                 <FeaturePageFaqItem
                     answer={
                         <Trans>
-                            Set a PIN and Budgie encrypts your data on the device, with that PIN as the key itself. The PIN is the only key
-                            and it never leaves your device. Remove the PIN and the file is rewritten unencrypted — private to the app
+                            Set a PIN and Budgie encrypts your data on the device, with that PIN as the key itself. That PIN never leaves
+                            your device. The iCloud backup uses its own key, so it is encrypted in iCloud and end-to-end encrypted with
+                            Advanced Data Protection. Remove the PIN and the local file is rewritten unencrypted — private to the app
                             sandbox, but no longer protected.
                         </Trans>
                     }
@@ -134,9 +135,10 @@ export default async function SecurityPillarHubPage(props: PageLangParam) {
                 <FeaturePageFaqItem
                     answer={
                         <Trans>
-                            If a PIN was set when you exported, yes — the backup is a copy of your already-encrypted data, so anyone with
-                            your cloud account sees an unreadable file. Export with no PIN set and the copy is unencrypted. Budgie never
-                            uploads anything itself; you choose where the file goes through the share sheet.
+                            The automatic iCloud backup is encrypted in iCloud, and end-to-end encrypted when you turn on Apple&apos;s
+                            Advanced Data Protection; its metadata — backup date, device name and model, and app version — is visible to
+                            Apple. A manual export is a copy of your already-encrypted data if a PIN was set, and unencrypted if not. Budgie
+                            runs no server of its own and never receives a copy.
                         </Trans>
                     }
                     question={<Trans>Are my backups safe if someone accesses my cloud storage?</Trans>}
@@ -144,8 +146,9 @@ export default async function SecurityPillarHubPage(props: PageLangParam) {
                 <FeaturePageFaqItem
                     answer={
                         <Trans>
-                            No. Because Budgie stores all data locally and has no backend that receives financial information, there is no
-                            server to breach. The entire attack surface is limited to your device.
+                            No. Budgie runs no server of its own, so there is no Budgie backend to breach. On iOS the encrypted backup sits
+                            in your own iCloud, protected by Apple&apos;s account security and, with Advanced Data Protection on, end-to-end
+                            encrypted.
                         </Trans>
                     }
                     question={<Trans>Does Budgie have any server-side security risks?</Trans>}

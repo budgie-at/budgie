@@ -5,6 +5,8 @@ import { convertEnumToDrizzleEnum } from '../../@generic/utils/convert-enum-to-d
 import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
+import { syncIdentityUniqueIndex } from '../../cloud-sync/utils/sync-identity-unique-index.util';
+import { withSyncIdentityColumns } from '../../cloud-sync/utils/with-sync-identity-columns.util';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
 import { MccCategoryEntityTable } from '../../mcc-category/table/mcc-category-entity.table';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
@@ -15,6 +17,7 @@ import { TransactionEntryTypeEnum } from '../enum/transaction-entry-type.enum';
 export const TransactionEntryEntityTable = sqliteTable(
     'transaction_entries',
     withBaseEntityTableColumns({
+        ...withSyncIdentityColumns(),
         type: text('type', { enum: convertEnumToDrizzleEnum(TransactionEntryTypeEnum) })
             .$type<TransactionEntryTypeEnum>()
             .notNull(),
@@ -31,6 +34,7 @@ export const TransactionEntryEntityTable = sqliteTable(
             .default(CategorySourceEnum.USER)
             .$type<CategorySourceEnum>(),
         mccCategoryId: int('mcc_category_id', { mode: 'number' }).references(() => MccCategoryEntityTable.id, { onDelete: 'set null' }),
+        sequence: int('sequence', { mode: 'number' }).notNull().default(0),
         transactionId: int('transaction_id', { mode: 'number' })
             .notNull()
             .references(() => TransactionEntityTable.id, { onDelete: 'cascade' }),
@@ -58,6 +62,7 @@ export const TransactionEntryEntityTable = sqliteTable(
         })
     }),
     table => [
+        syncIdentityUniqueIndex('transaction_entries', table),
         index('transaction_entries_transaction_idx').on(table.transactionId),
         index('transaction_entries_account_idx').on(table.accountId),
         index('transaction_entries_account_external_idx')
