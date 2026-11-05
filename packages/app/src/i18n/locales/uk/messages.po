@@ -1036,7 +1036,7 @@ msgstr "Більше за цю суму"
 msgid "account"
 msgstr "рахунок"
 
-#: src/app/account-selector.tsx
+#: src/account/component/account-selector-header/account-selector-header.tsx
 #: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
 #: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
@@ -6431,7 +6431,7 @@ msgstr "Чек"
 msgid "Received"
 msgstr "Отримано"
 
-#: src/transaction/components/convert-transfer-form/convert-transfer-form.tsx
+#: src/transaction/components/convert-transfer-rate-row/convert-transfer-rate-row.tsx
 msgid "Receiving"
 msgstr "Отримання"
 
@@ -6891,7 +6891,7 @@ msgstr "Запечатано. Лише ваш PIN-код відкриває це
 msgid "Search accounts..."
 msgstr "Пошук рахунків..."
 
-#: src/app/account-selector.tsx
+#: src/account/component/account-selector-header/account-selector-header.tsx
 msgid "Search accounts…"
 msgstr "Пошук рахунків…"
 
@@ -7036,7 +7036,7 @@ msgstr "Вибрано"
 msgid "Send a copy"
 msgstr "Надіслати копію"
 
-#: src/transaction/components/convert-transfer-form/convert-transfer-form.tsx
+#: src/transaction/components/convert-transfer-rate-row/convert-transfer-rate-row.tsx
 msgid "Sending"
 msgstr "Надсилання"
 

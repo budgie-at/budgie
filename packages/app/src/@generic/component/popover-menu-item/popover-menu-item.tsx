@@ -12,7 +12,7 @@ type MenuItemVariant = 'default' | 'destructive';
 
 interface Props {
     readonly icon: UserIconNameEnum;
-    readonly iconSize?: number;
+    readonly fontScale?: number;
     readonly label: string;
     readonly onPress: EmptyFn;
     readonly variant?: MenuItemVariant;
@@ -21,7 +21,12 @@ interface Props {
     readonly testID?: string;
 }
 
-const containerClassName = cva('flex-row items-center gap-x-lg px-xl py-lg active:bg-secondary-background');
+const MAX_MENU_ICON_SCALE = 1.75;
+const MENU_LABEL_LINE_HEIGHT = 21;
+
+const containerClassName = cva('flex-row items-center gap-x-lg px-xl py-lg active:bg-secondary-background', {
+    variants: { isAdaptive: { true: 'min-h-[44px]' } }
+});
 
 const textVariants = cva<{ variant: Record<MenuItemVariant, ClassValue> }>('text-base font-medium', {
     variants: {
@@ -44,11 +49,24 @@ const iconVariants = cva<{ variant: Record<MenuItemVariant, ClassValue> }>('', {
 });
 
 export const PopoverMenuItem = (props: Props) => {
-    const { icon, iconSize = 20, label, onPress, variant = 'default', rightLabel, subtitle, testID } = props;
+    const { icon, fontScale, label, onPress, variant = 'default', rightLabel, subtitle, testID } = props;
+
+    const iconSize = 20 * Math.min(fontScale ?? 1, MAX_MENU_ICON_SCALE);
+    const iconStyle = {
+        ...(isDefined(fontScale) && {
+            alignSelf: 'flex-start' as const,
+            marginTop: Math.max((MENU_LABEL_LINE_HEIGHT * fontScale - iconSize) / 2, 0)
+        })
+    };
 
     return (
-        <HapticPressable onPress={onPress} className={containerClassName()} accessibilityRole="menuitem" testID={testID}>
-            <Icon icon={icon} size={iconSize} className={iconVariants({ variant })} />
+        <HapticPressable
+            onPress={onPress}
+            className={containerClassName({ isAdaptive: isDefined(fontScale) })}
+            accessibilityRole="menuitem"
+            testID={testID}
+        >
+            <Icon icon={icon} size={iconSize} style={iconStyle} className={iconVariants({ variant })} />
             <View className="grow shrink">
                 <Text className={textVariants({ variant })}>{label}</Text>
                 {isNotEmptyString(subtitle) ? (

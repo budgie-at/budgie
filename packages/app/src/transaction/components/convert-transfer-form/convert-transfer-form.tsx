@@ -42,7 +42,6 @@ export const ConvertTransferForm = ({ isSubmitting, onSubmit, onCancel }: Props)
         transactionType: TransactionTypeEnum.TRANSFER,
         variant: 'default'
     });
-    const label = form.originalAccount?.id === form.fromAccount?.id ? t`Receiving` : t`Sending`;
     const confirmLabel = form.isEditing ? t`Done` : t`Convert to Transfer`;
     const isDisabled =
         isSubmitting ||
@@ -82,9 +81,9 @@ export const ConvertTransferForm = ({ isSubmitting, onSubmit, onCancel }: Props)
                     {form.conversion.isCrossCurrency ? (
                         <LoadingContent isLoading={form.conversion.isPending}>
                             <ConvertTransferRateRow
-                                label={label}
                                 destinationAmount={form.conversion.destinationAmount}
                                 destinationSymbol={form.counterAccount?.instrument.symbol ?? ''}
+                                destinationInstrumentType={form.counterAccount?.instrument.type}
                                 sourceCode={form.originalAccount?.instrument.code ?? ''}
                                 destinationCode={form.counterAccount?.instrument.code ?? ''}
                                 exchangeRate={displayExchangeRate}

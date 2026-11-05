@@ -1037,7 +1037,7 @@ msgstr "Above this amount"
 msgid "account"
 msgstr "account"
 
-#: src/app/account-selector.tsx
+#: src/account/component/account-selector-header/account-selector-header.tsx
 #: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
 #: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
@@ -6432,7 +6432,7 @@ msgstr "Receipt"
 msgid "Received"
 msgstr "Received"
 
-#: src/transaction/components/convert-transfer-form/convert-transfer-form.tsx
+#: src/transaction/components/convert-transfer-rate-row/convert-transfer-rate-row.tsx
 msgid "Receiving"
 msgstr "Receiving"
 
@@ -6892,7 +6892,7 @@ msgstr "Sealed. Only your PIN opens this file."
 msgid "Search accounts..."
 msgstr "Search accounts..."
 
-#: src/app/account-selector.tsx
+#: src/account/component/account-selector-header/account-selector-header.tsx
 msgid "Search accounts…"
 msgstr "Search accounts…"
 
@@ -7037,7 +7037,7 @@ msgstr "Selected"
 msgid "Send a copy"
 msgstr "Send a copy"
 
-#: src/transaction/components/convert-transfer-form/convert-transfer-form.tsx
+#: src/transaction/components/convert-transfer-rate-row/convert-transfer-rate-row.tsx
 msgid "Sending"
 msgstr "Sending"
 
