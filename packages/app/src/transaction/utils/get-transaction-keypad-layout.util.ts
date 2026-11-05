@@ -6,7 +6,7 @@ const MIN_FORM_VIEWPORT_HEIGHT = 120;
 export const getTransactionKeypadLayout = (fontScale: number, availableHeight = Infinity) => {
     const rowHeight = Math.max(KEY_HEIGHT, 32 * Math.min(fontScale, TRANSACTION_KEYPAD_MAX_FONT_SCALE));
     const actionHeight = Math.max(50, 24 * Math.min(fontScale, TRANSACTION_KEYPAD_MAX_FONT_SCALE));
-    const digitsHeight = rowHeight * 4 + 24;
+    const digitsHeight = rowHeight * 4 + 18;
     const footerHeight = digitsHeight + actionHeight + 28;
 
     return {

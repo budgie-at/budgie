@@ -11,19 +11,18 @@ interface Props {
     readonly onPress: () => void;
 }
 
-const SWAP_SIZE = 24;
-const SWAP_HIT_SLOP = 10;
-const DISABLED_OPACITY = 0.4;
+const SWAP_SIZE = 28;
+const SWAP_HIT_SLOP = 8;
 
 export const TransferSwapButton = ({ dividerOffset, isEnabled, onPress }: Props) => {
     const { t } = useLingui();
-    const enabledOpacity = isEnabled ? 1 : DISABLED_OPACITY;
-    const style = { top: dividerOffset - SWAP_SIZE / 2, opacity: dividerOffset > 0 ? enabledOpacity : 0 };
+    const style = { top: dividerOffset - SWAP_SIZE / 2, opacity: dividerOffset > 0 ? 1 : 0 };
     const accessibilityState = { disabled: !isEnabled };
+    const iconClassName = isEnabled ? 'text-secondary-foreground' : 'text-secondary-foreground opacity-40';
 
     return (
         <HapticPressable
-            className="absolute left-[19px] h-[24px] w-[24px] items-center justify-center rounded-full border-hairline border-surface-separator bg-grouped-surface-row"
+            className="absolute left-[20px] h-[28px] w-[28px] items-center justify-center rounded-full border-hairline border-surface-separator bg-grouped-surface-row"
             style={style}
             hitSlop={SWAP_HIT_SLOP}
             onPress={onPress}
@@ -33,7 +32,7 @@ export const TransferSwapButton = ({ dividerOffset, isEnabled, onPress }: Props)
             accessibilityLabel={t`Swap accounts`}
             accessibilityRole="button"
         >
-            <Icon icon={UserIconNameEnum.ArrowUpDown} size={13} className="text-primary" />
+            <Icon icon={UserIconNameEnum.ArrowUpDown} size={13} className={iconClassName} />
         </HapticPressable>
     );
 };

@@ -39,12 +39,16 @@ export const TransactionFormRow = (props: Props) => {
             value={value}
             placeholder={placeholder}
             isStacked={isStacked}
+            isLargeText={isLargeText}
             testID={valueTestID}
             onOverflow={setOverflowingValue}
         />
     );
+    const labelClassName = isStacked
+        ? 'shrink-0 text-[15px] leading-[20px] text-secondary-foreground'
+        : 'shrink-0 text-[17px] leading-[22px] text-secondary-foreground';
     const labelText = (
-        <Text className="shrink-0 text-[17px] leading-[22px] text-secondary-foreground" maxFontSizeMultiplier={labelMaxFontScale}>
+        <Text className={labelClassName} maxFontSizeMultiplier={labelMaxFontScale}>
             {label}
         </Text>
     );

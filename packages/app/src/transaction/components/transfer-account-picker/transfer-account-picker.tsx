@@ -6,7 +6,7 @@ import Animated, { AnimatedStyle } from 'react-native-reanimated';
 
 import { isDefined, isString } from '@rnw-community/shared';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { AccountInactiveIcon } from '../../../account/component/account-inactive-icon/account-inactive-icon';
 import { TransactionFormRow } from '../transaction-form-row/transaction-form-row';
@@ -21,12 +21,10 @@ interface Props {
     readonly onPress: () => void;
 }
 
-const ROW_STYLE = { minHeight: 60 };
-
 export const TransferAccountPicker = ({ label, placeholder, account, animatedStyle, testID, selectedTestID, onPress }: Props) => {
     const hasAccount = isDefined(account);
     const accessibilityPlaceholder = isString(placeholder) ? placeholder : t`Choose`;
-    const pressableProps = { accessibilityLabel: `${label}: ${account?.title ?? accessibilityPlaceholder}`, style: ROW_STYLE };
+    const pressableProps = { accessibilityLabel: `${label}: ${account?.title ?? accessibilityPlaceholder}` };
     const icon = hasAccount ? account.icon : UserIconNameEnum.Wallet;
     const isInactiveAccount = hasAccount && !account.isActive;
 
@@ -35,15 +33,7 @@ export const TransferAccountPicker = ({ label, placeholder, account, animatedSty
             <TransactionFormRow
                 left={
                     <AccountInactiveIcon isInactive={isInactiveAccount} size={36}>
-                        <CircleIcon
-                            icon={icon}
-                            variant="secondary"
-                            size={30}
-                            iconSize={16}
-                            radius={15}
-                            border={false}
-                            className="bg-surface-disc"
-                        />
+                        <GroupedListIcon icon={icon} />
                     </AccountInactiveIcon>
                 }
                 label={label}
