@@ -2,17 +2,20 @@ import { isExpenseTransaction } from '@budgie/contracts';
 import { getTransactionCategoryEntries } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import Toast from 'react-native-toast-message';
 
 import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
+import { showActionToast } from '../../@generic/utils/show-action-toast/show-action-toast';
 import { useConvertToInstallmentModal } from '../context/convert-to-installment-modal.context';
+
+import { useRevertInstallmentPlan } from './use-revert-installment-plan.hook';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
 export const useOpenConvertToInstallment = (transaction: TransactionWithRelationsEntityInterface) => {
     const { t } = useLingui();
     const [openConvertToInstallment] = useConvertToInstallmentModal();
+    const { revert } = useRevertInstallmentPlan();
     const categoryEntries = getTransactionCategoryEntries(transaction.entries);
     const [sourceEntry, ...extraEntries] = categoryEntries;
     const isEligible =
@@ -26,6 +29,19 @@ export const useOpenConvertToInstallment = (transaction: TransactionWithRelation
         return null;
     }
 
+    const handleUndoPlan = (accountId: number) => () =>
+        void revert(
+            accountId,
+            () => {
+                if (router.canGoBack()) {
+                    router.back();
+                } else {
+                    router.replace('/');
+                }
+            },
+            false
+        );
+
     return () =>
         void openConvertToInstallment(
             {
@@ -38,7 +54,7 @@ export const useOpenConvertToInstallment = (transaction: TransactionWithRelation
             },
             accountId => {
                 if (isDefined(accountId)) {
-                    Toast.show({ type: 'success', text1: t`Plan created` });
+                    showActionToast(t`Plan created`, { label: t`Undo`, onPress: handleUndoPlan(accountId) });
                     router.push({ pathname: '/account/[id]/details', params: { id: String(accountId) } });
                 }
             }

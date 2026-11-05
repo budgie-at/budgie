@@ -2059,6 +2059,7 @@ msgstr "Змінити пізніше не можна"
 #: src/budget/hooks/use-budget-fund-form.hook.ts
 #: src/category/hooks/use-delete-category.hook.ts
 #: src/import/hook/use-restore-backup.hook.ts
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
@@ -3033,6 +3034,7 @@ msgid "Could not undo the move to cash"
 msgstr "Не вдалося скасувати перенесення в готівку"
 
 #: src/account/hooks/use-shelved-account-action.hook.ts
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
 msgid "Could not undo."
 msgstr "Не вдалося скасувати."
 
@@ -4816,6 +4818,10 @@ msgstr "Це єдиний ключ до вашого файлу. Немає ні
 msgid "Its accounts stop syncing and are removed from your active accounts."
 msgstr "Його рахунки перестануть синхронізуватися й буде вилучено з активних рахунків."
 
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
+msgid "Its payments become regular expenses again and the plan disappears. This can't be undone."
+msgstr "Його платежі знову стануть звичайними витратами, а план зникне. Це неможливо скасувати."
+
 #: src/account/hooks/use-delete-archived-account.hook.ts
 msgid "Its transactions go too. Transfers stay in the other account as “Transfer (account deleted)”. This can’t be undone."
 msgstr "Його транзакції теж буде видалено. Перекази залишаться в іншому рахунку як «Переказ (рахунок видалено)». Це не можна скасувати."
@@ -6490,6 +6496,10 @@ msgstr "План створено"
 msgid "Plan name"
 msgstr "Назва плану"
 
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
+msgid "Plan reverted"
+msgstr "План скасовано"
+
 #: src/installment-plan/component/convert-to-installment-total-input/convert-to-installment-total-input.tsx
 msgid "Plan total"
 msgstr "Сума плану"
@@ -6522,6 +6532,7 @@ msgstr "Будь ласка, введіть ваш API-токен Монобан
 
 #: src/app/convert-to-transfer.tsx
 #: src/installment-plan/component/convert-to-installment-create-button/convert-to-installment-create-button.tsx
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
 msgid "Please try again"
 msgstr "Будь ласка, спробуйте ще раз"
 
@@ -8717,8 +8728,18 @@ msgstr "У межах ліміту"
 
 #: src/account/hooks/use-shelved-account-action.hook.ts
 #: src/categorize-inbox/components/categorize-inbox-undo-layout/categorize-inbox-undo-layout.tsx
+#: src/installment-plan/hook/use-open-convert-to-installment.hook.ts
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
 msgid "Undo"
 msgstr "Скасувати"
+
+#: src/account/component/account-actions-menu/account-actions-menu.tsx
+msgid "Undo pay in parts"
+msgstr "Скасувати оплату частинами"
+
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
+msgid "Undo pay in parts?"
+msgstr "Скасувати оплату частинами?"
 
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx

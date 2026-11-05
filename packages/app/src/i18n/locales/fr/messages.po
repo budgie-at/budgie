@@ -2059,6 +2059,7 @@ msgstr "Ne pourra pas être modifiée"
 #: src/budget/hooks/use-budget-fund-form.hook.ts
 #: src/category/hooks/use-delete-category.hook.ts
 #: src/import/hook/use-restore-backup.hook.ts
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
@@ -3033,6 +3034,7 @@ msgid "Could not undo the move to cash"
 msgstr "Impossible d'annuler le déplacement vers les espèces"
 
 #: src/account/hooks/use-shelved-account-action.hook.ts
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
 msgid "Could not undo."
 msgstr "Impossible d’annuler."
 
@@ -4816,6 +4818,10 @@ msgstr "C'est la seule clé de ton fichier. Il n'y a ni compte ni copie sur un s
 msgid "Its accounts stop syncing and are removed from your active accounts."
 msgstr "Ses comptes ne sont plus synchronisés et sont retirés de vos comptes actifs."
 
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
+msgid "Its payments become regular expenses again and the plan disappears. This can't be undone."
+msgstr "Ses paiements redeviennent des dépenses normales et le plan disparaît. Cette action est irréversible."
+
 #: src/account/hooks/use-delete-archived-account.hook.ts
 msgid "Its transactions go too. Transfers stay in the other account as “Transfer (account deleted)”. This can’t be undone."
 msgstr "Ses transactions sont supprimées aussi. Les virements restent dans l’autre compte comme « Virement (compte supprimé) ». Cette action est irréversible."
@@ -6490,6 +6496,10 @@ msgstr "Plan créé"
 msgid "Plan name"
 msgstr "Nom du plan"
 
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
+msgid "Plan reverted"
+msgstr "Plan annulé"
+
 #: src/installment-plan/component/convert-to-installment-total-input/convert-to-installment-total-input.tsx
 msgid "Plan total"
 msgstr "Total du plan"
@@ -6522,6 +6532,7 @@ msgstr "Veuillez entrer votre jeton API Monobank"
 
 #: src/app/convert-to-transfer.tsx
 #: src/installment-plan/component/convert-to-installment-create-button/convert-to-installment-create-button.tsx
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
 msgid "Please try again"
 msgstr "Veuillez réessayer"
 
@@ -8717,8 +8728,18 @@ msgstr "Sous la limite"
 
 #: src/account/hooks/use-shelved-account-action.hook.ts
 #: src/categorize-inbox/components/categorize-inbox-undo-layout/categorize-inbox-undo-layout.tsx
+#: src/installment-plan/hook/use-open-convert-to-installment.hook.ts
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
 msgid "Undo"
 msgstr "Annuler"
+
+#: src/account/component/account-actions-menu/account-actions-menu.tsx
+msgid "Undo pay in parts"
+msgstr "Annuler le paiement échelonné"
+
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
+msgid "Undo pay in parts?"
+msgstr "Annuler le paiement échelonné ?"
 
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
