@@ -171,13 +171,6 @@ export async function longPressConvertToTransfer(ctx: Ctx, cardId: string): Prom
     await expectId(ctx, 'ConvertToTransfer.Page', 10_000);
 }
 
-/** subflows/transactions/confirm-convert-to-transfer */
-export async function confirmConvertToTransfer(ctx: Ctx): Promise<void> {
-    await expect(byText(ctx.screen, 'Convert to Transfer?')).toBeVisible({ timeout: 10_000 });
-    await ctx.screen.getByText('Convert').first().tap();
-    await expectNoId(ctx, 'ConvertToTransfer.Page', 15_000);
-}
-
 /** subflows/transactions/confirm-revert-consolidation */
 export async function confirmRevertConsolidation(ctx: Ctx): Promise<void> {
     const ask = byText(ctx.screen, 'Separate transactions?');
