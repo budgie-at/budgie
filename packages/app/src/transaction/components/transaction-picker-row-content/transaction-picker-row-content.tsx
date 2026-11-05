@@ -19,35 +19,61 @@ interface Props {
 
 export const TransactionPickerRowContent = ({ item, title, amount, date, selection }: Props) => {
     const largeText = useIsAccessibilityTextSize();
-    const mainClassName = largeText ? 'gap-y-sm' : 'flex-row items-start gap-x-md';
-    const titleClassName = largeText ? 'text-[16px] font-semibold text-primary' : 'flex-1 text-[16px] font-semibold text-primary';
     const amountClassName =
         item.type === TransactionTypeEnum.INCOME
             ? 'text-[17px] font-semibold tabular-nums text-positive-strong'
             : 'text-[17px] font-semibold tabular-nums text-primary';
-    const amountRowClassName = largeText ? 'flex-row items-center justify-between gap-x-md' : 'flex-row items-center gap-x-sm';
     const icon = item.categoryIcon ?? UserIconNameEnum.ReceiptText;
+
+    if (largeText) {
+        return (
+            <View className="gap-y-sm">
+                <View className="flex-row items-center justify-between gap-x-md">
+                    <Text dynamicTypeRamp="body" className={amountClassName}>
+                        {amount}
+                    </Text>
+                    {selection}
+                </View>
+                <Text dynamicTypeRamp="caption1" className="text-[14px] font-medium text-secondary-foreground">
+                    {date}
+                </Text>
+                <Text dynamicTypeRamp="body" className="text-[16px] font-semibold text-primary">
+                    {title}
+                </Text>
+                <Text dynamicTypeRamp="caption1" className="text-[13px] text-secondary-foreground">
+                    {item.accountTitle}
+                </Text>
+                {isNotEmptyString(item.categoryTitle) ? (
+                    <Text dynamicTypeRamp="caption1" className="text-[13px] text-secondary-foreground">
+                        {item.categoryTitle}
+                    </Text>
+                ) : null}
+            </View>
+        );
+    }
 
     return (
         <View className="flex-row items-start gap-x-md">
-            {largeText ? null : <CircleIcon icon={icon} size={32} iconSize={16} variant="secondary" border={false} />}
+            <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+                <CircleIcon icon={icon} size={32} iconSize={16} variant="secondary" border={false} />
+            </View>
             <View className="flex-1 min-w-0 gap-y-sm">
-                <View className={mainClassName}>
-                    <Text dynamicTypeRamp="body" className={titleClassName}>
+                <View className="flex-row items-start gap-x-md">
+                    <Text dynamicTypeRamp="body" className="flex-1 text-[16px] font-semibold text-primary">
                         {title}
                     </Text>
-                    <View className={amountRowClassName}>
+                    <View className="flex-row items-center gap-x-sm">
                         <Text dynamicTypeRamp="body" className={amountClassName}>
                             {amount}
                         </Text>
                         {selection}
                     </View>
                 </View>
-                <View className="gap-y-xxs">
+                <View className="gap-y-xs">
                     <Text dynamicTypeRamp="caption1" className="text-[13px] text-secondary-foreground">
                         {item.accountTitle}
                     </Text>
-                    <Text dynamicTypeRamp="caption2" className="text-[12px] text-secondary-foreground">
+                    <Text dynamicTypeRamp="caption1" className="text-[14px] font-medium text-secondary-foreground">
                         {date}
                     </Text>
                     {isNotEmptyString(item.categoryTitle) ? (

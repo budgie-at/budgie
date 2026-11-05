@@ -61,7 +61,7 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
                 <TransactionPickerSheetHeader title={t`Refund`} closeLabel={t`Cancel`} onClose={handleResolve} disabled={isConverting} />
             }
             testID={ConvertToRefundModalSelector.Picker}
-            footer={
+            pinnedFooter={
                 <ConvertToRefundFooter
                     selectedCandidate={selectedCandidate}
                     showRevert={showRevert}
@@ -76,9 +76,6 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
                 label={t`Refund`}
                 labelClassName="text-[17px] font-semibold text-primary"
             />
-            <Text dynamicTypeRamp="footnote" accessibilityRole="header" className="pb-xl text-[15px] text-secondary-foreground">
-                <Trans>Choose the original expense.</Trans>
-            </Text>
             <SearchInput
                 value={search}
                 allowFontScaling
@@ -87,6 +84,13 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
                 onChangeText={handleSearchChange}
                 testID={ConvertToRefundModalSelector.SearchInput}
             />
+            <Text
+                dynamicTypeRamp="footnote"
+                accessibilityRole="header"
+                className="pt-xl text-[13px] font-semibold text-secondary-foreground"
+            >
+                <Trans>Original expense</Trans>
+            </Text>
             <LoadingContent isLoading={isLoading} containerClassName="grow shrink-0 pt-xl">
                 {isNotEmptyString(errorMessage) ? <TransactionPickerFailure onRetry={retry} /> : null}
                 {showEmpty ? (

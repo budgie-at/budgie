@@ -30,34 +30,35 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
     const largeText = useIsAccessibilityTextSize();
     const { sources, consolidationType, hasError, isLoading, retry } = useGetConsolidationSourcesQuery(transactionId);
     const revertConsolidation = useRevertConsolidation(transactionId, onRevertSuccess);
+    const sourceTitle = consolidationType === TransactionConsolidationTypeEnum.REFUND ? t`Refunds` : t`Sources`;
     const contextLabel = consolidationType === TransactionConsolidationTypeEnum.REFUND ? t`Original expense` : t`Original transaction`;
     const showEmptyState = isEmptyArray(sources) && !hasError;
     const isRevertDisabled = isLoading || hasError || isEmptyArray(sources) || !isDefined(consolidationType);
+
+    const separationAction = (
+        <TransactionPickerAction
+            label={t`Separate all`}
+            onPress={revertConsolidation}
+            disabled={isRevertDisabled}
+            testID={ConsolidationSourceModalSelector.RevertButton}
+        />
+    );
+    const pinnedFooter = largeText ? null : separationAction;
+    const scrollFooter = largeText ? separationAction : null;
 
     return (
         <TransactionPickerSheet
             header={
                 <TransactionPickerSheetHeader
-                    title={t`Sources`}
+                    title={sourceTitle}
                     closeLabel={t`Done`}
                     onClose={onClose}
                     closeTestID={ConsolidationSourceModalSelector.DoneButton}
                 />
             }
-            footer={
-                <TransactionPickerAction
-                    label={t`Separate all`}
-                    onPress={revertConsolidation}
-                    disabled={isRevertDisabled}
-                    testID={ConsolidationSourceModalSelector.RevertButton}
-                />
-            }
+            pinnedFooter={pinnedFooter}
+            scrollFooter={scrollFooter}
         >
-            {largeText ? (
-                <Text dynamicTypeRamp="title2" accessibilityRole="header" className="pt-xl text-[20px] font-semibold text-primary">
-                    <Trans>Sources</Trans>
-                </Text>
-            ) : null}
             <TransactionPickerContext transactionId={transactionId} label={contextLabel} />
             <LoadingContent isLoading={isLoading} containerClassName="grow shrink-0">
                 {hasError ? <TransactionPickerFailure onRetry={retry} /> : null}
@@ -78,9 +79,11 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
                     />
                 ))}
             </LoadingContent>
-            <Text dynamicTypeRamp="footnote" className="pt-md text-[13px] text-secondary-foreground">
-                <Trans>Each source becomes a separate transaction.</Trans>
-            </Text>
+            {isRevertDisabled ? null : (
+                <Text dynamicTypeRamp="footnote" className="pt-md text-[13px] text-secondary-foreground">
+                    <Trans>Each source becomes a separate transaction.</Trans>
+                </Text>
+            )}
         </TransactionPickerSheet>
     );
 };

@@ -2325,10 +2325,6 @@ msgstr "Choisir le compte d’origine"
 msgid "Choose the account it goes to"
 msgstr "Choisir le compte de destination"
 
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
-msgid "Choose the original expense."
-msgstr "Choisissez la dépense d’origine."
-
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Choose the other account"
 msgstr "Choisir l’autre compte"
@@ -5839,6 +5835,7 @@ msgid "Organize"
 msgstr "Organiser"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 msgid "Original expense"
 msgstr "Dépense d’origine"
 
@@ -6484,6 +6481,10 @@ msgstr "Remboursé {formattedRefundedAmount}"
 #: src/transaction/components/statistics-drill-down-caption/statistics-drill-down-caption.tsx
 msgid "Refunded in full · {refundLabel}"
 msgstr "Remboursé intégralement · {refundLabel}"
+
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+msgid "Refunds"
+msgstr "Remboursements"
 
 #: src/transaction/components/transaction-info-refund-summary/transaction-info-refund-summary.tsx
 msgid "Refunds received"

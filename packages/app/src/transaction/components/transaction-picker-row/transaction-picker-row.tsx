@@ -27,7 +27,7 @@ interface Props {
 const NORMAL_TEXT_INSET = 52;
 
 const pressableVariants = cva('px-xl py-xl active:scale-100 active:opacity-70', {
-    variants: { selected: { true: 'bg-secondary-background' } }
+    variants: { selected: { true: 'bg-surface-fill' } }
 });
 
 export const TransactionPickerRow = ({ item, position, isSelected = false, onPress, testID }: Props) => {
@@ -35,7 +35,7 @@ export const TransactionPickerRow = ({ item, position, isSelected = false, onPre
     const protectAmount = useProtectedAmountLabel();
     const largeText = useIsAccessibilityTextSize();
     const separatorInset = largeText ? 12 : NORMAL_TEXT_INSET;
-    const selectionSize = largeText ? 32 : 28;
+    const selectionSize = largeText ? 32 : 24;
     const signedAmount = `${item.type === TransactionTypeEnum.INCOME ? '+' : ''}${protectAmount(convertFromMicroUnits(item.amount), item.currencySymbol)}`;
     const title = isNotEmptyString(item.title) ? item.title : t`No title`;
     const selectionIcon = isSelected ? UserIconNameEnum.CircleCheck : UserIconNameEnum.Circle;

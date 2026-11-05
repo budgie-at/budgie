@@ -2325,10 +2325,6 @@ msgstr "Виберіть рахунок, з якого надходить"
 msgid "Choose the account it goes to"
 msgstr "Виберіть рахунок, на який надходить"
 
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
-msgid "Choose the original expense."
-msgstr "Виберіть початкову витрату."
-
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Choose the other account"
 msgstr "Виберіть інший рахунок"
@@ -5839,6 +5835,7 @@ msgid "Organize"
 msgstr "Упорядкування"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 msgid "Original expense"
 msgstr "Початкова витрата"
 
@@ -6484,6 +6481,10 @@ msgstr "Повернено {formattedRefundedAmount}"
 #: src/transaction/components/statistics-drill-down-caption/statistics-drill-down-caption.tsx
 msgid "Refunded in full · {refundLabel}"
 msgstr "Повністю повернено · {refundLabel}"
+
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+msgid "Refunds"
+msgstr "Повернення"
 
 #: src/transaction/components/transaction-info-refund-summary/transaction-info-refund-summary.tsx
 msgid "Refunds received"

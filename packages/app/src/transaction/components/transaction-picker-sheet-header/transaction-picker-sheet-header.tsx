@@ -1,4 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -13,23 +14,25 @@ interface Props {
     readonly disabled?: boolean;
 }
 
+const closeVariants = cva('min-h-11 min-w-11 items-center justify-center px-sm active:opacity-60', {
+    variants: { disabled: { true: 'opacity-50' } }
+});
+
 export const TransactionPickerSheetHeader = ({ title, closeLabel, onClose, closeTestID, disabled }: Props) => {
     const largeText = useIsAccessibilityTextSize();
 
     return (
         <View className="min-h-11 flex-row items-center justify-end gap-x-xl">
-            {largeText ? null : (
-                <Text dynamicTypeRamp="title3" accessibilityRole="header" className="flex-1 text-[17px] font-semibold text-primary">
-                    {title}
-                </Text>
-            )}
+            <Text dynamicTypeRamp="headline" accessibilityRole="header" className="flex-1 text-[17px] font-semibold text-primary">
+                {title}
+            </Text>
             <HapticPressable
                 disabled={disabled}
                 accessibilityRole="button"
                 accessibilityLabel={closeLabel}
                 onPress={onClose}
                 testID={closeTestID}
-                className="min-h-11 min-w-11 items-center justify-center px-sm active:opacity-60"
+                className={closeVariants({ disabled })}
             >
                 {largeText ? (
                     <Icon icon={UserIconNameEnum.X} size={24} className="text-primary" />
