@@ -43,36 +43,34 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
     ));
 
     return (
-        <View className="flex-1">
-            <ScrollView
-                className="flex-1"
-                contentContainerClassName="grow pb-md"
-                keyboardShouldPersistTaps="handled"
-                showsVerticalScrollIndicator={false}
-            >
-                <FormsheetHeader size="md" title={t`Sources`} description={t`Each source becomes a separate transaction.`} />
-                <LoadingContent isLoading={isLoading} containerClassName="grow shrink-0">
-                    {hasError ? (
-                        <View className="gap-y-md px-xl py-xl">
-                            <Text className="text-sm text-destructive-foreground">{t`Could not load sources. Please try again.`}</Text>
-                            <Button content={t`Try again`} onPress={retry} variant="secondary" />
-                        </View>
-                    ) : null}
+        <ScrollView
+            className="flex-1"
+            contentContainerClassName="grow"
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+        >
+            <FormsheetHeader size="md" title={t`Sources`} description={t`Each source becomes a separate transaction.`} />
+            <LoadingContent isLoading={isLoading} containerClassName="grow shrink-0">
+                {hasError ? (
+                    <View className="gap-y-md px-xl py-xl">
+                        <Text className="text-sm text-destructive-foreground">{t`Could not load sources. Please try again.`}</Text>
+                        <Button content={t`Try again`} onPress={retry} variant="secondary" />
+                    </View>
+                ) : null}
 
-                    {showEmptyState ? (
-                        <EmptyState
-                            circleIcon={UserIconNameEnum.GitMerge}
-                            title={t`No source transactions`}
-                            description={t`There are no linked transactions to show.`}
-                            className="px-xl py-sm"
-                            titleClassName="text-center font-semibold text-primary"
-                            descriptionClassName="text-center text-secondary-foreground"
-                        />
-                    ) : null}
+                {showEmptyState ? (
+                    <EmptyState
+                        circleIcon={UserIconNameEnum.GitMerge}
+                        title={t`No source transactions`}
+                        description={t`There are no linked transactions to show.`}
+                        className="px-xl py-sm"
+                        titleClassName="text-center font-semibold text-primary"
+                        descriptionClassName="text-center text-secondary-foreground"
+                    />
+                ) : null}
 
-                    <View className="px-xl">{sourceRows}</View>
-                </LoadingContent>
-            </ScrollView>
+                <View className="px-xl">{sourceRows}</View>
+            </LoadingContent>
 
             <View className="shrink-0 bg-grouped-surface px-xl pt-md pb-safe-or-[16px]">
                 <View className={footerClassName}>
@@ -98,6 +96,6 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
                     ) : null}
                 </View>
             </View>
-        </View>
+        </ScrollView>
     );
 };
