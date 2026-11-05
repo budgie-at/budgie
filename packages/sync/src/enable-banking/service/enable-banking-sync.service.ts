@@ -99,8 +99,7 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
 
         const findUnconnectableExternalIds = Effect.fnUntraced(function* (accounts: readonly SyncAccountInterface[]) {
             const instrumentCodes = new Set((yield* instrumentRepository.getAll()).map(instrument => instrument.code));
-            const ibans = accounts.map(account => account.iban).filter(isNotEmptyString);
-            const accountsWithIban = isNotEmptyArray(ibans) ? yield* accountRepository.findByIbans(ibans) : [];
+            const accountsWithIban = yield* accountRepository.findByIbans(accounts.map(account => account.iban).filter(isNotEmptyString));
             const aliases = yield* accountRepository.findExternalIdAliases(accounts.map(account => account.id));
 
             return new Set(
@@ -212,24 +211,32 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
             yield* pollingSyncService.requestSync();
         });
 
-        const isApplicationUsedByOtherIntegration = Effect.fnUntraced(function* (integrationId: number | null, applicationId: string) {
-            const otherIntegrationIds = new Set(
+        const listApplicationIds = Effect.fnUntraced(function* (excludedIntegrationId: number | null) {
+            const integrationIds = new Set(
                 (yield* accountRepository.findByExternalSource(provider))
                     .map(account => account.integrationId)
                     .filter(isDefined)
-                    .filter(otherIntegrationId => otherIntegrationId !== integrationId)
+                    .filter(integrationId => integrationId !== excludedIntegrationId)
             );
-            for (const otherIntegrationId of otherIntegrationIds) {
-                const otherIntegration = yield* bankIntegrationRepository.findById(otherIntegrationId);
-                const credentials = isDefined(otherIntegration)
-                    ? yield* clientService.decodeCredentials(otherIntegration.token).pipe(Effect.orElseSucceed(() => null))
+            const applicationIds: string[] = [];
+            for (const integrationId of integrationIds) {
+                const integration = yield* bankIntegrationRepository.findById(integrationId);
+                const credentials = isDefined(integration)
+                    ? yield* clientService.decodeCredentials(integration.token).pipe(Effect.orElseSucceed(() => null))
                     : null;
-                if (credentials?.applicationId === applicationId) {
-                    return true;
+                if (isDefined(credentials)) {
+                    applicationIds.push(credentials.applicationId);
                 }
             }
 
-            return false;
+            return applicationIds;
+        });
+
+        const labelIntegrationAndRequestSync = Effect.fnUntraced(function* (token: string) {
+            const credentials = yield* clientService.decodeCredentials(token);
+            const integration = yield* syncIntegrationTokenService.getOrCreateIntegration(provider, token);
+            yield* syncIntegrationTokenService.fillIntegrationLabel(integration.id, credentials.aspspName);
+            yield* pollingSyncService.requestSync();
         });
 
         return {
@@ -245,7 +252,7 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
                     isSupported: !isNotEmptyArray(aspsp.required_psu_headers ?? [])
                 }));
             }),
-            isApplicationInUse: (applicationId: string) => isApplicationUsedByOtherIntegration(null, applicationId),
+            listApplicationIds: () => listApplicationIds(null),
             forgetCredentials: (applicationId: string) => clientService.forgetJwt(applicationId),
             validateCredentials: Effect.fn('EnableBankingSyncService.validateCredentials')(function* (applicationId: string) {
                 yield* clientService.forgetJwt(applicationId);
@@ -330,10 +337,7 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
                 }
 
                 if (isNotEmptyArray(selectedAccounts)) {
-                    const credentials = yield* clientService.decodeCredentials(token);
-                    const integration = yield* syncIntegrationTokenService.getOrCreateIntegration(provider, token);
-                    yield* syncIntegrationTokenService.fillIntegrationLabel(integration.id, credentials.aspspName);
-                    yield* pollingSyncService.requestSync();
+                    yield* labelIntegrationAndRequestSync(token);
                 }
 
                 return selectedAccounts.length;
@@ -344,10 +348,7 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
                 bankAccount: SyncAccountInterface
             ) {
                 const startAt = yield* accountContinuation.connect(accountId, token, bankAccount);
-                const credentials = yield* clientService.decodeCredentials(token);
-                const integration = yield* syncIntegrationTokenService.getOrCreateIntegration(provider, token);
-                yield* syncIntegrationTokenService.fillIntegrationLabel(integration.id, credentials.aspspName);
-                yield* pollingSyncService.requestSync();
+                yield* labelIntegrationAndRequestSync(token);
 
                 return startAt;
             }),
@@ -366,7 +367,7 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
                               Effect.orElseSucceed(() => false)
                           )
                     : false;
-                if (isDefined(credentials) && !(yield* isApplicationUsedByOtherIntegration(integrationId, credentials.applicationId))) {
+                if (isDefined(credentials) && !(yield* listApplicationIds(integrationId)).includes(credentials.applicationId)) {
                     yield* clientService.forgetJwt(credentials.applicationId);
                     yield* syncRequestSigner.deleteKey(credentials.applicationId);
                 }

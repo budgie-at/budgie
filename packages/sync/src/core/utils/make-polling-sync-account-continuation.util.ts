@@ -61,8 +61,7 @@ export const makePollingSyncAccountContinuation = Effect.fnUntraced(function* (p
         const account = yield* requireAccount(accountId);
         const accountIban = resolveMatchableIban(normalizeAccountIban(account.iban));
         const sync = yield* syncRepository.getByAccountId(accountId);
-        const instruments = yield* instrumentRepository.getAll();
-        const instrumentCode = instruments.find(instrument => instrument.id === account.instrumentId)?.code;
+        const instrumentCode = (yield* instrumentRepository.findById(account.instrumentId))?.code;
         const keysElsewhere = yield* findKeysLinkedElsewhere(
             accountId,
             bankAccounts.map(bankAccount => bankAccount.id),

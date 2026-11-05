@@ -1,4 +1,4 @@
-import { AccountRepository, BankIntegrationRepository, ExternalSourceEnum } from '@budgie/contracts';
+import { BankIntegrationRepository } from '@budgie/contracts';
 import {
     EnableBankingCallbackError,
     EnableBankingCallbackFailureEnum,
@@ -33,7 +33,6 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
         make: Effect.gen(function* () {
             const secureStore = yield* EnableBankingSecureStore;
             const enableBankingSyncService = yield* EnableBankingSyncService;
-            const accountRepository = yield* AccountRepository;
             const bankIntegrationRepository = yield* BankIntegrationRepository;
             const decodeToken = Schema.decodeUnknownEffect(Schema.fromJsonString(EnableBankingTokenSchema));
 
@@ -66,15 +65,9 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
                 begin,
                 discardPending: () => secureStore.removePending(),
                 findSavedApplicationId: Effect.fn('EnableBankingConnectionService.findSavedApplicationId')(function* () {
-                    const accounts = yield* accountRepository.findByExternalSource(ExternalSourceEnum.ENABLE_BANKING);
-                    const integrationIds = new Set(accounts.map(account => account.integrationId).filter(isDefined));
-                    for (const integrationId of integrationIds) {
-                        const integration = yield* bankIntegrationRepository.findById(integrationId);
-                        const credentials = isDefined(integration)
-                            ? yield* decodeToken(integration.token).pipe(Effect.orElseSucceed(() => null))
-                            : null;
-                        if (isDefined(credentials) && isDefined(yield* secureStore.readKey(credentials.applicationId))) {
-                            return credentials.applicationId;
+                    for (const applicationId of yield* enableBankingSyncService.listApplicationIds()) {
+                        if (isDefined(yield* secureStore.readKey(applicationId))) {
+                            return applicationId;
                         }
                     }
 
@@ -132,7 +125,10 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
                 }),
                 discardUnusedKey: Effect.fn('EnableBankingConnectionService.discardUnusedKey')(function* (applicationId: string) {
                     const pending = yield* secureStore.readPending();
-                    if (pending?.applicationId === applicationId || (yield* enableBankingSyncService.isApplicationInUse(applicationId))) {
+                    if (
+                        pending?.applicationId === applicationId ||
+                        (yield* enableBankingSyncService.listApplicationIds()).includes(applicationId)
+                    ) {
                         return;
                     }
 
@@ -181,7 +177,7 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
     }
 ) {
     static readonly layer = Layer.effect(EnableBankingConnectionService, EnableBankingConnectionService.make).pipe(
-        Layer.provide([EnableBankingSecureStore.layer, AccountRepository.layer, BankIntegrationRepository.layer]),
+        Layer.provide([EnableBankingSecureStore.layer, BankIntegrationRepository.layer]),
         Layer.provideMerge(EnableBankingSyncService.layer)
     );
 }

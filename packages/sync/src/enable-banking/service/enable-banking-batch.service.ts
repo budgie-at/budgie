@@ -222,9 +222,7 @@ export class EnableBankingBatchService extends Context.Service<EnableBankingBatc
                     return yield* failAccountNotLinked();
                 }
 
-                const currencyCode = (yield* instrumentRepository.getAll()).find(
-                    instrument => instrument.id === account.instrumentId
-                )?.code;
+                const currencyCode = (yield* instrumentRepository.findById(account.instrumentId))?.code;
                 if (!isDefined(currencyCode)) {
                     return yield* failInvalid('The account currency is not known');
                 }
