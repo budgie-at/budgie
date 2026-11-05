@@ -30,7 +30,7 @@ export const EnableBankingConnectAccountRow = ({ preview, refusal, isSelected, o
         [SyncAccountContinuationRefusalEnum.LIVE_SYNC]: t`This account already syncs`
     };
     const subtitle = isDefined(refusal) ? refusalLabel[refusal] : getAccountIdentityLabel(preview.currencyCode, preview.iban);
-    const accessory = isSelected ? <Icon icon={UserIconNameEnum.Check} size={20} className="text-primary" /> : null;
+    const accessory = isSelected ? <Icon icon={UserIconNameEnum.Check} size={20} className="text-primary" /> : <></>;
     const accessibilityState = { selected: isSelected, disabled: isDefined(refusal) };
     const icon = isDefined(refusal) ? UserIconNameEnum.Unlink : UserIconNameEnum.Landmark;
 
