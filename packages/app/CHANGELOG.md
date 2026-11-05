@@ -3,6 +3,52 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.161.0](https://github.com/budgie-at/budgie/compare/v6.160.1...v6.161.0) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** keep PIN setup readable with large text ([f420180](https://github.com/budgie-at/budgie/commit/f420180b73d9685d9ae8e7011cd5b1ee4c1659aa))
+* **app:** verify onboarding keyboard dismissal ([f41251a](https://github.com/budgie-at/budgie/commit/f41251a46470c512975d61de6d44c14925fb5ae7))
+
+### Features
+
+* **app:** bring onboarding welcome content together ([d142b8a](https://github.com/budgie-at/budgie/commit/d142b8a82fbf8dc2e8c08c531315a6ac3852506f))
+* **app:** clarify onboarding actions and PIN warning ([7878a45](https://github.com/budgie-at/budgie/commit/7878a45d5e442645b9af2d11e9699e07ac577852))
+
+
+## [6.160.1](https://github.com/budgie-at/budgie/compare/v6.160.0...v6.160.1) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** give SegmentedControl 44pt touch targets ([39e9b6c](https://github.com/budgie-at/budgie/commit/39e9b6c20b5628749e2460522e12ac80c2c1ff15))
+
+
+# [6.160.0](https://github.com/budgie-at/budgie/compare/v6.159.0...v6.160.0) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** match the rule option sheet background to its grouped surface ([1029312](https://github.com/budgie-at/budgie/commit/10293123c42a4d344d3ca82315098ceb5e6e017c))
+* **app:** match the rule selector sheet background in dark mode ([984f56b](https://github.com/budgie-at/budgie/commit/984f56b2cf0f936e3edbb62dcd316b4f957d9b50))
+
+### Features
+
+* **app:** scroll the rule option sheet when options exceed the viewport ([5958ebd](https://github.com/budgie-at/budgie/commit/5958ebd18ca8008c1a3a8f67b55dd0950e8b5b1d))
+
+
+# [6.159.0](https://github.com/budgie-at/budgie/compare/v6.158.0...v6.159.0) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** keep compact source empty copy above footer ([e5f3ee3](https://github.com/budgie-at/budgie/commit/e5f3ee33d0f03b2075e989a39440711f8fb740f4))
+* **app:** keep refund choices clear and support large text ([9d16f42](https://github.com/budgie-at/budgie/commit/9d16f42bd8c5fec747c730c58ffcea6d9d410e8a))
+* **app:** pin measured sheet footers above the safe area ([943bd2a](https://github.com/budgie-at/budgie/commit/943bd2a6ec06ed90cd19a85a5dd15e4b0af34f6c))
+
+### Features
+
+* **app:** refine refund sheet density and keyboard states ([88eaa2c](https://github.com/budgie-at/budgie/commit/88eaa2ca9ee23f05ca48525a5c31f71ea2657637))
+* **app:** stabilize refund and source sheet states ([e5ac080](https://github.com/budgie-at/budgie/commit/e5ac0800d0f4a738af90669b7d19b1abd86f9c19))
+
+
 # [6.158.0](https://github.com/budgie-at/budgie/compare/v6.157.0...v6.158.0) (2026-11-05)
 
 ### Bug Fixes

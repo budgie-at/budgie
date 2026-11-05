@@ -13,6 +13,15 @@ test('38 onboarding PIN seal', { tags: ['onboarding'] }, async ({ budgie }) => {
         await b.tapId(ctx, 'OnboardingKey.PinOption');
         await b.expectId(ctx, 'PinPage.Digit.1', 3_000);
         await enterPin(ctx, '1234');
+        await b.expectText(ctx, 'Confirm your PIN', 3_000);
+        await enterPin(ctx, '4321');
+        await b.expectText(ctx, "PINs don't match. Try again.", 3_000);
+        await b.tapId(ctx, 'OnboardingStepLayout.BackButton');
+        await b.expectText(ctx, 'Choose a PIN', 3_000);
+        await enterPin(ctx, '1234');
+        await b.tapId(ctx, 'PinPage.RestartNewPinButton');
+        await b.expectText(ctx, 'Choose a PIN', 3_000);
+        await enterPin(ctx, '1234');
         await enterPin(ctx, '1234');
     });
 

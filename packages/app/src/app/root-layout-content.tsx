@@ -123,7 +123,11 @@ const handleAppStateChange = (isActive: boolean): void => {
 // eslint-disable-next-line max-lines-per-function -- Layout component requires many lines
 export const RootLayoutContent = () => {
     const databaseMigrationStatus = useDatabaseMigration();
-    const [sheetSurface, groupedSheetSurface] = useCSSVariable(['--color-sheet-surface', '--color-grouped-surface']);
+    const [sheetSurface, groupedSheetSurface, sheetGroupedSurface] = useCSSVariable([
+        '--color-sheet-surface',
+        '--color-grouped-surface',
+        '--color-sheet-grouped-surface'
+    ]);
     const sheetOptions = fitToContentsSheetOptions(sheetSurface);
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
     const contactSelectorOptions = formSheetOptions([DETENT_55, DETENT_90], isAccessibilityTextSize ? 1 : 0);
@@ -267,7 +271,10 @@ export const RootLayoutContent = () => {
                                                                     />
                                                                     <Stack.Screen name="budget-period-summary" options={sheetOptions} />
                                                                     <Stack.Screen name="rule-form" />
-                                                                    <Stack.Screen name="rule-selector" options={sheetOptions} />
+                                                                    <Stack.Screen
+                                                                        name="rule-selector"
+                                                                        options={fitToContentsSheetOptions(sheetGroupedSurface)}
+                                                                    />
                                                                     <Stack.Screen name="rule-mcc-selector" options={SELECTOR_OPTIONS} />
                                                                 </Stack>
                                                             </VoiceInputProvider>

@@ -2635,7 +2635,6 @@ msgid "Contains"
 msgstr "Містить"
 
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
-#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 #: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
 #: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
 #: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
@@ -2646,6 +2645,10 @@ msgstr "Продовжити"
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
 msgid "Continue without a PIN"
 msgstr "Продовжити без PIN-коду"
+
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Continue without accounts"
+msgstr "Продовжити без рахунків"
 
 #: src/app/convert-to-transfer.tsx
 msgid "Conversion failed"
@@ -2666,6 +2669,7 @@ msgstr "Конвертувати минулі суми"
 msgid "Convert past amounts?"
 msgstr "Конвертувати минулі суми?"
 
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 #: src/transaction/components/transaction-list-convert-to-refund-menu-item/transaction-list-convert-to-refund-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Convert to Refund"
@@ -3777,6 +3781,10 @@ msgstr "напр. Netflix"
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 msgid "Each bar compares one day's spending with your daily plan."
 msgstr "Кожен стовпчик порівнює витрати за день із вашим денним планом."
+
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+msgid "Each source becomes a separate transaction."
+msgstr "Кожне джерело знову стане окремою транзакцією."
 
 #: src/budget/hooks/use-budget-day-strip-labels.hook.ts
 msgid "Each week against your {allowanceLabel} weekly allowance"
@@ -7212,8 +7220,8 @@ msgid "Search custom categories…"
 msgstr "Пошук власних категорій…"
 
 #: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
-msgid "Search expenses refunded by this income"
-msgstr "Пошук витрат для цього повернення"
+msgid "Search expenses"
+msgstr "Пошук витрат"
 
 #: src/app/(tabs)/settings/inactive.tsx
 msgid "Search hidden accounts…"
@@ -7313,6 +7321,10 @@ msgstr "Оберіть завантажений PDF-файл"
 msgid "Select the exported XLSX file"
 msgstr "Оберіть експортований XLSX-файл"
 
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
+msgid "Select the original expense for this refund."
+msgstr "Виберіть початкову витрату для цього повернення."
+
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Selected"
 msgstr "Вибрано"
@@ -7325,11 +7337,14 @@ msgstr "Надіслати копію"
 msgid "Sending {fromCode}"
 msgstr "Відправлення {fromCode}"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
 msgid "Separate"
 msgstr "Розділити"
+
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+msgid "Separate all"
+msgstr "Роз’єднати всі"
 
 #: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
 #: src/transaction/components/transaction-list-revert-menu-item/transaction-list-revert-menu-item.tsx
@@ -7551,6 +7566,7 @@ msgstr "джерело"
 msgid "Source"
 msgstr "Джерело"
 
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/transaction-sources-field-icon/transaction-sources-field-icon.tsx
 msgid "Sources"
 msgstr "Джерела"
@@ -8028,6 +8044,10 @@ msgstr "тоді"
 msgid "Then"
 msgstr "Тоді"
 
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+msgid "There are no linked transactions to show."
+msgstr "Немає пов’язаних транзакцій для відображення."
+
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "There is no “forgot PIN”."
 msgstr "Немає кнопки «забув PIN-код»."
@@ -8107,10 +8127,6 @@ msgstr "Цей запис схожий на наявну транзакцію."
 #: src/sync/component/sync-accounts-step/sync-accounts-step.tsx
 msgid "This connection returned no accounts Budgie can add."
 msgstr "Це підключення не повернуло рахунків, які Budgie може додати."
-
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
-msgid "This consolidated transfer has no moved source entries."
-msgstr "Цей консолідований переказ не має перенесених вихідних записів."
 
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "This deletes {DB_NAME} and everything in it from this phone. It can't be undone."
@@ -8546,6 +8562,8 @@ msgstr "Спробуйте налаштувати фільтри, щоб поб�
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 msgid "Try again"
 msgstr "Спробувати ще раз"
 
