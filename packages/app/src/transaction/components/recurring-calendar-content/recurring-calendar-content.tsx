@@ -2,14 +2,15 @@ import { convertFromMicroUnits } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useReducer } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
-import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
+import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { useToday } from '../../../@generic/hook/use-today.hook';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { RecurringCalendarActionTypeEnum } from '../../enum/recurring-calendar-action-type.enum';
 import { useRecurringCalendar } from '../../hook/use-recurring-calendar.hook';
@@ -17,16 +18,20 @@ import { recurringCalendarReducer } from '../../utils/recurring-calendar-reducer
 import { RecurringCalendarEmptyState } from '../recurring-calendar-empty-state/recurring-calendar-empty-state';
 import { RecurringCalendarEntryList } from '../recurring-calendar-entry-list/recurring-calendar-entry-list';
 import { RecurringCalendarGrid } from '../recurring-calendar-grid/recurring-calendar-grid';
+import { RecurringCalendarSummary } from '../recurring-calendar-summary/recurring-calendar-summary';
 
 import { RecurringCalendarSelector } from './recurring-calendar.selector';
 
 import type { RecurringCalendarEntryInterface } from '@budgie/recurring';
 
+const scrollContentStyle = { paddingTop: 4, paddingBottom: 20, rowGap: 8 };
+
 const EMPTY_ENTRIES_BY_DAY: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]> = new Map();
 
-// eslint-disable-next-line complexity, max-statements, max-lines-per-function -- Page orchestration component with multiple hooks, state, and forecast logic
+// eslint-disable-next-line max-statements, max-lines-per-function -- Page orchestration component with multiple hooks, state, and forecast logic
 export const RecurringCalendarContent = () => {
     const { t } = useLingui();
+    const { languageTag } = useLocaleInfo();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatDigits = useDisplayFormatDigits();
 
@@ -36,25 +41,23 @@ export const RecurringCalendarContent = () => {
         displayYear: now.getFullYear()
     });
     const data = useRecurringCalendar(displayYear, displayMonth);
+    const isLoading = !isDefined(data);
 
     const entriesByDay = data?.entriesByDay ?? EMPTY_ENTRIES_BY_DAY;
     const forecastedEntriesByDay = data?.forecastedEntriesByDay ?? EMPTY_ENTRIES_BY_DAY;
     const totalAmount = data?.totalAmount ?? 0;
     const forecastedTotalAmount = data?.forecastedTotalAmount ?? 0;
 
-    const isCurrentMonth = displayYear === now.getFullYear() && displayMonth === now.getMonth();
     const hasSelectedDay = isDefined(selectedDay);
 
     const selectedEntries = isDefined(selectedDay)
         ? [...(entriesByDay.get(selectedDay) ?? []), ...(forecastedEntriesByDay.get(selectedDay) ?? [])]
         : [];
 
+    const allRecordedEntries = [...entriesByDay.values()].flat().sort((left, right) => left.dayOfMonth - right.dayOfMonth);
     const allForecastedEntries = [...forecastedEntriesByDay.values()].flat().sort((left, right) => left.dayOfMonth - right.dayOfMonth);
-    const allMonthlyEntries = [...entriesByDay.values(), ...forecastedEntriesByDay.values()]
-        .flat()
-        .sort((left, right) => left.dayOfMonth - right.dayOfMonth);
-    const showUpcomingList = !isDefined(selectedDay) && isCurrentMonth && isNotEmptyArray(allForecastedEntries);
-    const showMonthlyList = !isDefined(selectedDay) && !isCurrentMonth && isNotEmptyArray(allMonthlyEntries);
+    const showExpectedList = !hasSelectedDay && isNotEmptyArray(allForecastedEntries);
+    const showRecordedList = !hasSelectedDay && isNotEmptyArray(allRecordedEntries);
 
     const handleSelectDay = (day: number) => {
         dispatch({ type: RecurringCalendarActionTypeEnum.DAY_TOGGLED, day });
@@ -70,90 +73,85 @@ export const RecurringCalendarContent = () => {
         convertFromMicroUnits(selectedEntries.reduce((total, entry) => total + entry.latestAmount, 0)),
         defaultInstrument.symbol
     );
+    const displayMonthLabel = new Intl.DateTimeFormat(languageTag, { month: 'long' }).format(new Date(displayYear, displayMonth, 1));
+    const hasDetectedPayments = isPositiveNumber(data?.committedMonthlyExpense);
+    const selectedDayTotal = isNotEmptyArray(selectedEntries) ? formattedDayExpense : '';
     const formattedForecastedTotal = formatDigits(forecastedTotalAmount, defaultInstrument.symbol);
     const displayedTotal = isDefined(data) ? totalAmount + forecastedTotalAmount : 0;
-    const committedExpense = formatDigits(data?.committedMonthlyExpense ?? 0, defaultInstrument.symbol);
-
-    if (isDefined(data) && !hasEntries) {
-        return (
-            <ScrollView contentContainerClassName="py-5xl" showsVerticalScrollIndicator={false}>
-                <RecurringCalendarEmptyState />
-            </ScrollView>
-        );
-    }
 
     return (
-        <View className="flex-1" testID={RecurringCalendarSelector.Container}>
-            <View className="gap-y-xl pt-md">
-                <View className="items-center gap-y-lg">
-                    <ProtectedMoney
-                        className="font-semibold tracking-[-1px]"
-                        fontSize={48}
-                        minFontSize={24}
-                        maxFontSize={48}
-                        instrumentSymbol={defaultInstrument.symbol}
-                    >
-                        {displayedTotal}
-                    </ProtectedMoney>
-                    <Text className="font-medium text-xs text-secondary-foreground">
-                        <Trans>Monthly total</Trans>
-                    </Text>
-                    <ProtectedText className="text-xs text-secondary-foreground">
-                        {t`Committed ${committedExpense} per month`}
-                    </ProtectedText>
-                </View>
+        <KeyboardAwareScrollView
+            testID={RecurringCalendarSelector.Container}
+            contentContainerStyle={scrollContentStyle}
+            bottomOffset={40}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="on-drag"
+        >
+            <RecurringCalendarGrid
+                isLoading={isLoading}
+                entriesByDay={entriesByDay}
+                forecastedEntriesByDay={forecastedEntriesByDay}
+                selectedDay={selectedDay}
+                onSelectDay={handleSelectDay}
+                displayMonth={displayMonth}
+                displayYear={displayYear}
+                onChangeMonth={handleChangeMonth}
+            />
 
-                <RecurringCalendarGrid
-                    entriesByDay={entriesByDay}
-                    forecastedEntriesByDay={forecastedEntriesByDay}
-                    selectedDay={selectedDay}
-                    onSelectDay={handleSelectDay}
-                    displayMonth={displayMonth}
-                    displayYear={displayYear}
-                    onChangeMonth={handleChangeMonth}
-                />
-            </View>
+            <RecurringCalendarSummary isLoading={isLoading} formattedTotal={formatDigits(displayedTotal, defaultInstrument.symbol)} />
 
-            {hasSelectedDay ? (
-                <RecurringCalendarEntryList
-                    headerTestID={RecurringCalendarSelector.SelectedDayHeader(selectedDay)}
-                    title={<Trans>Day {selectedDay}</Trans>}
-                    formattedTotal={formattedDayExpense}
-                    entries={selectedEntries}
-                    emptyContent={
-                        <View className="items-center py-5xl px-5xl">
-                            <Text
-                                className="text-secondary-foreground text-sm text-center"
+            <LoadingContent isLoading={isLoading} className="gap-y-sm" loadingIndicator={null}>
+                {hasSelectedDay ? (
+                    <RecurringCalendarEntryList
+                        headerTestID={RecurringCalendarSelector.SelectedDayHeader(selectedDay)}
+                        title={new Intl.DateTimeFormat(languageTag, { weekday: 'short', month: 'short', day: 'numeric' }).format(
+                            new Date(displayYear, displayMonth, selectedDay)
+                        )}
+                        formattedTotal={selectedDayTotal}
+                        entries={selectedEntries}
+                        emptyContent={
+                            <RecurringCalendarEmptyState
+                                title={t`No recurring payments on this day`}
                                 testID={RecurringCalendarSelector.SelectedDayEmptyState}
-                            >
-                                <Trans>No recurring payments detected</Trans>
-                            </Text>
-                        </View>
-                    }
-                />
-            ) : null}
+                            />
+                        }
+                    />
+                ) : null}
 
-            {showUpcomingList ? (
-                <RecurringCalendarEntryList
-                    headerTestID={RecurringCalendarSelector.UpcomingHeader}
-                    title={<Trans>Upcoming</Trans>}
-                    formattedTotal={formattedForecastedTotal}
-                    entries={allForecastedEntries}
-                    displayMonth={displayMonth}
-                    displayYear={displayYear}
-                />
-            ) : null}
+                {showExpectedList ? (
+                    <RecurringCalendarEntryList
+                        headerTestID={RecurringCalendarSelector.ExpectedHeader}
+                        title={<Trans>Expected</Trans>}
+                        formattedTotal={formattedForecastedTotal}
+                        entries={allForecastedEntries}
+                        displayMonth={displayMonth}
+                        displayYear={displayYear}
+                    />
+                ) : null}
 
-            {showMonthlyList ? (
-                <RecurringCalendarEntryList
-                    headerTestID={RecurringCalendarSelector.AllRecurringHeader}
-                    title={<Trans>All Recurring</Trans>}
-                    formattedTotal={formatDigits(displayedTotal, defaultInstrument.symbol)}
-                    entries={allMonthlyEntries}
-                    displayMonth={displayMonth}
-                    displayYear={displayYear}
-                />
-            ) : null}
-        </View>
+                {showRecordedList ? (
+                    <RecurringCalendarEntryList
+                        headerTestID={RecurringCalendarSelector.RecordedHeader}
+                        title={<Trans>Recorded</Trans>}
+                        formattedTotal={formatDigits(totalAmount, defaultInstrument.symbol)}
+                        entries={allRecordedEntries}
+                        displayMonth={displayMonth}
+                        displayYear={displayYear}
+                    />
+                ) : null}
+
+                {!hasEntries && !hasSelectedDay ? (
+                    <RecurringCalendarEmptyState title={t`No recurring payments in ${displayMonthLabel}`}>
+                        {hasDetectedPayments ? (
+                            <Trans>View your payments in another month.</Trans>
+                        ) : (
+                            <Trans>Recurring payments are detected automatically from your transactions.</Trans>
+                        )}
+                    </RecurringCalendarEmptyState>
+                ) : null}
+            </LoadingContent>
+            <MenuSpacer />
+        </KeyboardAwareScrollView>
     );
 };

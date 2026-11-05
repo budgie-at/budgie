@@ -9,7 +9,9 @@ export const RecurringCalendarSelector = {
     CurrentMonthDay: (day: number) => `RecurringCalendar.Day.CurrentMonth.${day}` as const,
     SelectedDayHeader: (day: number) => `RecurringCalendar.SelectedDayHeader.${normalizePart(day)}` as const,
     SelectedDayEmptyState: 'RecurringCalendar.SelectedDayEmptyState',
-    UpcomingHeader: 'RecurringCalendar.UpcomingHeader',
-    AllRecurringHeader: 'RecurringCalendar.AllRecurringHeader',
+    SeriesTitleInput: 'RecurringCalendar.SeriesTitleInput',
+    EmptyMonth: 'RecurringCalendar.EmptyMonth',
+    RecordedHeader: 'RecurringCalendar.RecordedHeader',
+    ExpectedHeader: 'RecurringCalendar.ExpectedHeader',
     Row: (title: string) => `RecurringCalendar.Row.${normalizePart(title)}` as const
 } as const;
