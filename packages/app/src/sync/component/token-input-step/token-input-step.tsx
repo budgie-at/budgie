@@ -25,7 +25,7 @@ export const TokenInputStep = ({ token, onTokenChange }: Props) => {
     const hasToken = isNotEmptyString(token.trim());
     const isTokenLikely = isLikelyMonoToken(token);
     const tokenCheckIcon = isTokenLikely ? UserIconNameEnum.CircleCheck : UserIconNameEnum.CircleAlert;
-    const tokenCheckClassName = isTokenLikely ? 'text-positive-foreground' : 'text-warning-foreground';
+    const tokenCheckClassName = isTokenLikely ? 'text-positive-foreground' : 'text-secondary-foreground';
     const tokenCheckLabel = isTokenLikely ? t`Looks right` : t`This doesn't look like a Monobank token yet`;
 
     return (
