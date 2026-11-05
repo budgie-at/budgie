@@ -34,7 +34,7 @@ export class PinAttemptService extends Context.Service<PinAttemptService>()('@bu
 
             yield* Effect.tryPromise({
                 try: () => SecureStore.setItemAsync(PIN_ATTEMPTS_KEY, value, PIN_SECURE_STORE_OPTIONS),
-                catch: cause => new PinAttemptStorageError({ cause })
+                catch: cause => PinAttemptStorageError.make({ cause })
             });
         });
 

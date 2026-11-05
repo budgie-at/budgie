@@ -88,23 +88,23 @@ export class MonobankClient implements SyncProviderClientInterface {
         const message = getErrorMessage(error);
 
         if (error instanceof MonobankResponseValidationError) {
-            return new SyncInvalidResponseError({ provider, message });
+            return SyncInvalidResponseError.make({ provider, message });
         }
 
         if (!(error instanceof MonobankApiError)) {
-            return new SyncNetworkError({ provider, message });
+            return SyncNetworkError.make({ provider, message });
         }
 
         switch (error.status) {
             case HTTP_STATUS_UNAUTHORIZED:
             case HTTP_STATUS_FORBIDDEN:
-                return new SyncUnauthorizedError({ provider, message });
+                return SyncUnauthorizedError.make({ provider, message });
             case HTTP_STATUS_TOO_MANY_REQUESTS:
-                return new SyncRateLimitedError({ provider, message });
+                return SyncRateLimitedError.make({ provider, message });
             case HTTP_STATUS_BAD_REQUEST:
-                return new SyncInvalidResponseError({ provider, message });
+                return SyncInvalidResponseError.make({ provider, message });
             default:
-                return new SyncNetworkError({ provider, message: `HTTP ${String(error.status)}: ${message}` });
+                return SyncNetworkError.make({ provider, message: `HTTP ${String(error.status)}: ${message}` });
         }
     }
 }

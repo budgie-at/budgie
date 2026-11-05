@@ -103,7 +103,7 @@ export class EnableBankingClient extends BaseSyncProviderClient {
                 transactions.push(...page.transactions);
 
                 if (isNotEmptyString(page.continuation_key) && page.continuation_key === continuationKey) {
-                    return yield* new SyncInvalidResponseError({ provider, message: 'Enable Banking repeated a transactions page' });
+                    return yield* SyncInvalidResponseError.make({ provider, message: 'Enable Banking repeated a transactions page' });
                 }
                 continuationKey = isNotEmptyString(page.continuation_key) ? page.continuation_key : null;
             } while (isDefined(continuationKey));
@@ -121,11 +121,11 @@ export class EnableBankingClient extends BaseSyncProviderClient {
         const { provider } = this;
 
         if (EnableBankingClient.CONSENT_ERROR_CODES.has(apiCode)) {
-            return new SyncConsentExpiredError({ provider, message: 'The bank consent has expired or was revoked' });
+            return SyncConsentExpiredError.make({ provider, message: 'The bank consent has expired or was revoked' });
         }
 
         if (apiCode === EnableBankingErrorCodeEnum.ASPSP_RATE_LIMIT_EXCEEDED) {
-            return new SyncInvalidResponseError({ provider, message: 'The bank fetch allowance is used up', apiCode });
+            return SyncInvalidResponseError.make({ provider, message: 'The bank fetch allowance is used up', apiCode });
         }
 
         return this.classifyStatus(status, apiCode, headers);
@@ -137,7 +137,7 @@ export class EnableBankingClient extends BaseSyncProviderClient {
         if (status === HTTP_STATUS_TOO_MANY_REQUESTS) {
             const retryAfterSeconds = Number(headers['retry-after']);
 
-            return new SyncRateLimitedError({
+            return SyncRateLimitedError.make({
                 provider,
                 message: 'Enable Banking is limiting requests',
                 retryAfterMs: isPositiveNumber(retryAfterSeconds)
@@ -147,14 +147,14 @@ export class EnableBankingClient extends BaseSyncProviderClient {
         }
 
         if (status === HTTP_STATUS_UNAUTHORIZED || status === HTTP_STATUS_FORBIDDEN) {
-            return new SyncUnauthorizedError({ provider, message: 'Enable Banking rejected the application key' });
+            return SyncUnauthorizedError.make({ provider, message: 'Enable Banking rejected the application key' });
         }
 
         if (status >= EnableBankingClient.SERVER_ERROR_STATUS) {
-            return new SyncNetworkError({ provider, message: 'Enable Banking is unavailable' });
+            return SyncNetworkError.make({ provider, message: 'Enable Banking is unavailable' });
         }
 
-        return new SyncInvalidResponseError({ provider, message: 'Enable Banking rejected the request', apiCode });
+        return SyncInvalidResponseError.make({ provider, message: 'Enable Banking rejected the request', apiCode });
     }
 
     private fetchSanitized<S extends Schema.ConstraintDecoder<unknown>>(
@@ -168,7 +168,7 @@ export class EnableBankingClient extends BaseSyncProviderClient {
         return this.fetchJson(schema, endpoint, method, body).pipe(
             Effect.mapError(error =>
                 Schema.is(SyncInvalidResponseError)(error) && !isDefined(error.apiCode)
-                    ? new SyncInvalidResponseError({ provider, message: 'Enable Banking returned an unexpected response' })
+                    ? SyncInvalidResponseError.make({ provider, message: 'Enable Banking returned an unexpected response' })
                     : error
             )
         );

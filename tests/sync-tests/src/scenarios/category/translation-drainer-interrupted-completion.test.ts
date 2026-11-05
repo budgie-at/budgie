@@ -35,7 +35,7 @@ describe('category/translation-drainer-interrupted-completion', () => {
             const chatService = yield* ChatService;
             const category = yield* createPendingCategory();
             vi.spyOn(chatService, 'generate').mockReturnValue(
-                Effect.fail(new AiInvokeError({ cause: new Error('completionInterrupted') }))
+                Effect.fail(AiInvokeError.make({ cause: new Error('completionInterrupted') }))
             );
 
             const translation = yield* takePendingTranslation;

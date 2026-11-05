@@ -117,7 +117,8 @@
         "effecttsgo/effect-try-without-catch": "error",
         "effecttsgo/global-json-in-effect": "error",
         "effecttsgo/instance-of-schema": "error",
-        "effecttsgo/strict-effect-provide": "error"
+        "effecttsgo/strict-effect-provide": "error",
+        "effecttsgo/new-schema-class": "error"
     },
     "overrides": [
         {
@@ -809,6 +810,7 @@
                             "Context.Service",
                             "Context.Reference",
                             "Schema.TaggedError",
+                            "DatabaseOpenError.make",
                             "getLogger",
                             "logger.log",
                             "logger.error",

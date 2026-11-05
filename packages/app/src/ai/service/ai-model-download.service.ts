@@ -220,7 +220,7 @@ export class AiModelDownloadService extends Context.Service<AiModelDownloadServi
 
             return yield* Effect.tryPromise({
                 try: () => (isDefined(resumeData) ? task.resumeAsync() : task.downloadAsync()),
-                catch: cause => new AiModelDownloadError({ cause })
+                catch: cause => AiModelDownloadError.make({ cause })
             }).pipe(
                 Effect.ensuring(
                     Effect.sync(() => {
@@ -270,7 +270,7 @@ export class AiModelDownloadService extends Context.Service<AiModelDownloadServi
             if (!isDefined(download) || !isTaskInState(download.task, 'active')) {
                 return;
             }
-            yield* Effect.tryPromise({ try: () => download.task.pauseAsync(), catch: cause => new AiModelDownloadError({ cause }) }).pipe(
+            yield* Effect.tryPromise({ try: () => download.task.pauseAsync(), catch: cause => AiModelDownloadError.make({ cause }) }).pipe(
                 Effect.ignore
             );
             if (isTaskInState(download.task, 'paused')) {
@@ -432,7 +432,7 @@ export class AiModelDownloadService extends Context.Service<AiModelDownloadServi
                         status: resolveInitialStatus()
                     });
                 },
-                catch: cause => new AiModelDownloadError({ cause })
+                catch: cause => AiModelDownloadError.make({ cause })
             })
         );
         yield* Effect.forkScoped(

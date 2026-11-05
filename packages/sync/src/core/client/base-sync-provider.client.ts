@@ -73,7 +73,7 @@ export abstract class BaseSyncProviderClient {
         const { provider } = this;
 
         if (Cause.isTimeoutError(error) || !isDefined(error.response)) {
-            return yield* new SyncNetworkError({ provider, message: 'Network error' });
+            return yield* SyncNetworkError.make({ provider, message: 'Network error' });
         }
 
         const { response } = error;
@@ -98,8 +98,8 @@ export abstract class BaseSyncProviderClient {
         return this.execute(endpoint, method, body).pipe(
             Effect.flatMap(HttpClientResponse.schemaBodyJson(schema)),
             Effect.catchTags({
-                SchemaError: error => Effect.fail(new SyncInvalidResponseError({ provider: this.provider, message: error.message })),
-                HttpClientError: () => Effect.fail(new SyncNetworkError({ provider: this.provider, message: 'Network error' }))
+                SchemaError: error => Effect.fail(SyncInvalidResponseError.make({ provider: this.provider, message: error.message })),
+                HttpClientError: () => Effect.fail(SyncNetworkError.make({ provider: this.provider, message: 'Network error' }))
             })
         );
     }
@@ -119,13 +119,13 @@ export abstract class BaseSyncProviderClient {
         switch (status) {
             case HTTP_STATUS_UNAUTHORIZED:
             case HTTP_STATUS_FORBIDDEN:
-                return new SyncUnauthorizedError({ provider, message });
+                return SyncUnauthorizedError.make({ provider, message });
             case HTTP_STATUS_TOO_MANY_REQUESTS:
-                return new SyncRateLimitedError({ provider, message });
+                return SyncRateLimitedError.make({ provider, message });
             case HTTP_STATUS_BAD_REQUEST:
-                return new SyncInvalidResponseError({ provider, message, apiCode });
+                return SyncInvalidResponseError.make({ provider, message, apiCode });
             default:
-                return new SyncNetworkError({ provider, message });
+                return SyncNetworkError.make({ provider, message });
         }
     }
 }

@@ -232,13 +232,13 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         const restrictions = yield* this.signedRequest(BinanceApiRestrictionsApiSchema, API_RESTRICTIONS_ENDPOINT, 'GET').pipe(
             Effect.catchTag('SyncInvalidResponseError', () =>
                 Effect.fail(
-                    new BinanceKeyPermissionsError({ permissions: [], message: 'Could not verify the Binance API key permissions' })
+                    BinanceKeyPermissionsError.make({ permissions: [], message: 'Could not verify the Binance API key permissions' })
                 )
             )
         );
         const permissions = BinanceSignedClient.FORBIDDEN_KEY_PERMISSIONS.filter(permission => restrictions[permission] === true);
         if (isNotEmptyArray(permissions)) {
-            return yield* new BinanceKeyPermissionsError({
+            return yield* BinanceKeyPermissionsError.make({
                 permissions,
                 message: `Binance API key must be read-only, but has: ${permissions.join(', ')}`
             });
@@ -673,19 +673,19 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         const { provider } = this;
 
         if (BINANCE_AUTH_ERROR_CODES.has(Number(apiCode))) {
-            return new SyncUnauthorizedError({ provider, message });
+            return SyncUnauthorizedError.make({ provider, message });
         }
 
         switch (status) {
             case HTTP_STATUS_UNAVAILABLE_FOR_LEGAL_REASONS:
-                return new SyncRegionUnavailableError({ provider, message });
+                return SyncRegionUnavailableError.make({ provider, message });
             case HTTP_STATUS_FORBIDDEN:
             case HTTP_STATUS_IM_A_TEAPOT:
                 return this.buildRateLimitedError(message, headers, BINANCE_BLOCK_BACKOFF_MS);
             case HTTP_STATUS_TOO_MANY_REQUESTS:
                 return this.buildRateLimitedError(message, headers, null);
             case HTTP_STATUS_NOT_FOUND:
-                return new SyncInvalidResponseError({ provider, message, apiCode: status });
+                return SyncInvalidResponseError.make({ provider, message, apiCode: status });
             default:
                 return super.classifyApiError(status, message, apiCode, headers);
         }
@@ -722,7 +722,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         const retryAfterSeconds = Number.parseInt(headers[RETRY_AFTER_HEADER] ?? '', 10);
         const retryAfterMs = Number.isNaN(retryAfterSeconds) ? fallbackRetryAfterMs : retryAfterSeconds * MILLISECONDS_PER_SECOND;
 
-        return new SyncRateLimitedError({ provider: this.provider, message, ...(isDefined(retryAfterMs) && { retryAfterMs }) });
+        return SyncRateLimitedError.make({ provider: this.provider, message, ...(isDefined(retryAfterMs) && { retryAfterMs }) });
     }
 
     private fetchWindowOrDefer<T>(
@@ -888,12 +888,11 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     ): Effect.Effect<S['Type'], SyncError, HttpClient.HttpClient> {
         return Effect.gen({ self: this }, function* () {
             if ((yield* Clock.currentTimeMillis) >= this.deadlineAtMs) {
-                return yield* new SyncDeferredError({ provider: this.provider, message: 'Sync deadline reached' });
+                return yield* SyncDeferredError.make({ provider: this.provider, message: 'Sync deadline reached' });
             }
 
-            const credentials = yield* Effect.fromOption(
-                this.credentials,
-                () => new SyncUnauthorizedError({ provider: this.provider, message: 'Invalid Binance credentials' })
+            const credentials = yield* Effect.fromOption(this.credentials, () =>
+                SyncUnauthorizedError.make({ provider: this.provider, message: 'Invalid Binance credentials' })
             );
 
             yield* this.throttle.waitIfNeeded(endpoint);
@@ -1198,7 +1197,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
 
         return isDefined(decoded)
             ? Effect.succeed(decoded)
-            : Effect.fail(new SyncInvalidResponseError({ provider: this.provider, message: `Invalid Binance account id "${accountId}"` }));
+            : Effect.fail(SyncInvalidResponseError.make({ provider: this.provider, message: `Invalid Binance account id "${accountId}"` }));
     }
 
     private emptySources(overrides: Partial<BinanceTransactionSourcesInterface>): BinanceTransactionSourcesInterface {

@@ -156,7 +156,7 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
             const account = yield* Cache.get(context.accounts, accountId);
 
             if (!isDefined(account)) {
-                return yield* new AccountNotFoundError({ id: accountId });
+                return yield* AccountNotFoundError.make({ id: accountId });
             }
 
             if (!isDefined(baseInstrument) || !isPositiveNumber(baseInstrument.id)) {

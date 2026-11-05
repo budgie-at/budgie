@@ -423,7 +423,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
                     .map(account => account.externalId)
                     .filter(isNotEmptyString);
                 if (isNotEmptyArray(groupExternalIds) && !groupExternalIds.some(externalId => bankAccountIds.has(externalId))) {
-                    return yield* new SyncTokenClientMismatchError({
+                    return yield* SyncTokenClientMismatchError.make({
                         provider: SyncProviderEnum.MONOBANK,
                         integrationId,
                         message: 'This Monobank token belongs to a different client'

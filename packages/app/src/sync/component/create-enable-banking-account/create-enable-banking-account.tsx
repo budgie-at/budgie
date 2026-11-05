@@ -110,7 +110,7 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
                     yield* Effect.flatMap(EnableBankingSyncService, service => service.listBanks(parsedApplicationId)).pipe(
                         Effect.mapError(error =>
                             Schema.is(SyncUnauthorizedError)(error)
-                                ? new EnableBankingSetupError({ reason: EnableBankingSetupErrorReasonEnum.INACTIVE_APPLICATION })
+                                ? EnableBankingSetupError.make({ reason: EnableBankingSetupErrorReasonEnum.INACTIVE_APPLICATION })
                                 : error
                         )
                     )

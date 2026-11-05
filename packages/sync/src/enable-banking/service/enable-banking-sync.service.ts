@@ -134,7 +134,7 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
         });
 
         const resolveCode = Effect.fnUntraced(function* (pending: EnableBankingPendingAuthorizationInterface, callbackUrl: string) {
-            const fail = (failure: EnableBankingCallbackFailureEnum) => new EnableBankingCallbackError({ failure });
+            const fail = (failure: EnableBankingCallbackFailureEnum) => EnableBankingCallbackError.make({ failure });
             const [baseUrl, query, ...extraParts] = callbackUrl.split('?');
             if (baseUrl !== pending.callbackUrl || !isNotEmptyString(query) || isNotEmptyArray(extraParts) || callbackUrl.includes('#')) {
                 return yield* fail(EnableBankingCallbackFailureEnum.MALFORMED);
@@ -189,7 +189,7 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
             const linkedAccounts = yield* accountRepository.findByIntegrationId(integrationId);
             const authorizedIds = new Set(accounts.map(account => account.id));
             if (isNotEmptyArray(linkedAccounts) && !linkedAccounts.some(account => authorizedIds.has(account.externalId ?? ''))) {
-                return yield* new SyncTokenClientMismatchError({
+                return yield* SyncTokenClientMismatchError.make({
                     provider: SyncProviderEnum.ENABLE_BANKING,
                     integrationId,
                     message: 'This bank authorization does not cover the connected accounts'

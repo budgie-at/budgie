@@ -41,7 +41,7 @@ export class DatabaseMigrationService extends Context.Service<DatabaseMigrationS
             }
 
             if (!isSupportedMigrationCreatedAt(lastCreatedAt)) {
-                return yield* new DatabaseOpenError({ cause: 'The database predates the migration baseline' });
+                return yield* DatabaseOpenError.make({ cause: 'The database predates the migration baseline' });
             }
 
             const migrationsTable = client('__drizzle_migrations');

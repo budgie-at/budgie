@@ -19,7 +19,7 @@ export class EnableBankingSecureStore extends Context.Service<EnableBankingSecur
         const keyName = (applicationId: string) => `enable-banking.key.${applicationId}`;
         const decodePending = Schema.decodeUnknownEffect(Schema.fromJsonString(EnableBankingPendingAuthorizationSchema));
 
-        const storageError = () => new EnableBankingSetupError({ reason: EnableBankingSetupErrorReasonEnum.STORAGE_FAILED });
+        const storageError = () => EnableBankingSetupError.make({ reason: EnableBankingSetupErrorReasonEnum.STORAGE_FAILED });
         const read = (name: string) =>
             Effect.tryPromise({ try: () => SecureStore.getItemAsync(name, PIN_SECURE_STORE_OPTIONS), catch: storageError });
         const write = (name: string, value: string) =>

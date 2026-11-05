@@ -21,7 +21,7 @@ i18n.load(LanguageEnum.EN, enMessages);
 i18n.activate(LanguageEnum.EN);
 
 export const i18nLoadLanguageMessages = (language: LanguageEnum) =>
-    Effect.tryPromise({ try: languageCatalogLoaders[language], catch: cause => new NativeCallError({ cause }) }).pipe(
+    Effect.tryPromise({ try: languageCatalogLoaders[language], catch: cause => NativeCallError.make({ cause }) }).pipe(
         Effect.map(catalogModule => catalogModule.messages)
     );
 

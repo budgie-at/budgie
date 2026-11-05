@@ -426,7 +426,7 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
                     }
 
                     if (depositInput.instrumentId === sourceAccount.instrumentId && receivingMicroUnits !== sourceEntry.amount) {
-                        return yield* new DepositReceivingAmountMismatchError();
+                        return yield* DepositReceivingAmountMismatchError.make();
                     }
                     const depositAccount = yield* accountService.createDeposit({
                         ...depositInput,
@@ -452,7 +452,7 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
                     const depositBalanceMicroUnits = depositBalanceRows.at(0)?.balance ?? 0;
 
                     if (depositBalanceMicroUnits < 0) {
-                        return yield* new DepositNegativeBalanceError();
+                        return yield* DepositNegativeBalanceError.make();
                     }
 
                     if (isPositiveNumber(depositBalanceMicroUnits)) {

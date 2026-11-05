@@ -90,7 +90,7 @@ export class LlamaModelService implements AiSubsystemServiceInterface {
         const { context } = this;
 
         return isDefined(context)
-            ? Effect.tryPromise({ try: () => context.release(), catch: cause => new NativeCallError({ cause }) }).pipe(
+            ? Effect.tryPromise({ try: () => context.release(), catch: cause => NativeCallError.make({ cause }) }).pipe(
                   Effect.tap(() =>
                       Effect.sync(() => {
                           this.context = null;

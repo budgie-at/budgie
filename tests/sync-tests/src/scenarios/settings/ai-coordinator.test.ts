@@ -192,7 +192,7 @@ describe('AI shutdown recovery', () => {
             if (failure === 'timeout') {
                 setIdle(Effect.asVoid(Deferred.await(settled)));
             } else {
-                setShutdown(Effect.fail(new NativeCallError({ cause: 'release failed' })));
+                setShutdown(Effect.fail(NativeCallError.make({ cause: 'release failed' })));
             }
             const restarting = yield* Effect.forkChild(Effect.exit(coordinator.restart()));
             if (failure === 'timeout') {
@@ -216,12 +216,12 @@ describe('AI shutdown recovery', () => {
         Effect.gen(function* () {
             const { coordinator, started, stopping, setShutdown } = yield* makeLifecycle();
             const listener = appState.addEventListener.mock.calls.at(-1)?.[1];
-            setShutdown(Effect.fail(new NativeCallError({ cause: 'release failed' })));
+            setShutdown(Effect.fail(NativeCallError.make({ cause: 'release failed' })));
             listener?.('background');
             yield* TestClock.adjust(60_000);
             yield* Deferred.await(stopping);
             const retrying = yield* Deferred.make<boolean>();
-            setShutdown(Effect.andThen(Deferred.succeed(retrying, true), Effect.fail(new NativeCallError({ cause: 'release failed' }))));
+            setShutdown(Effect.andThen(Deferred.succeed(retrying, true), Effect.fail(NativeCallError.make({ cause: 'release failed' }))));
             listener?.('active');
             const transition = yield* Effect.race(Effect.as(Deferred.await(retrying), 'retry'), Effect.as(Queue.take(started), 'restart'));
             setShutdown(Effect.void);

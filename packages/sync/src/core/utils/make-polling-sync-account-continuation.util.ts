@@ -186,7 +186,7 @@ export const makePollingSyncAccountContinuation = Effect.fnUntraced(function* (p
         connect: Effect.fnUntraced(function* (accountId: number, token: string, bankAccount: SyncAccountInterface) {
             const refusal = (yield* findChoices(accountId, [bankAccount])).refusals.get(bankAccount.id);
             if (isDefined(refusal)) {
-                return yield* new SyncAccountContinuationRefusedError({
+                return yield* SyncAccountContinuationRefusedError.make({
                     accountId,
                     reason: refusal,
                     message: 'This bank account cannot continue this Budgie account'

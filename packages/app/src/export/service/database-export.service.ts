@@ -59,7 +59,7 @@ export class DatabaseExportService extends Context.Service<DatabaseExportService
             saveBackup: Effect.fn('DatabaseExportService.saveBackup')(function* () {
                 const directory = yield* Effect.tryPromise({
                     try: () => Directory.pickDirectoryAsync(),
-                    catch: cause => new BackupDirectoryPickerError({ cause })
+                    catch: cause => BackupDirectoryPickerError.make({ cause })
                 }).pipe(
                     Effect.catchTags({
                         BackupDirectoryPickerError: error =>

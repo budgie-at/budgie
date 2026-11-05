@@ -56,7 +56,7 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
             }
 
             if (!isSupportedMigrationCreatedAt(yield* readLastMigrationCreatedAt(probeClient))) {
-                return yield* new UnsupportedBackupError();
+                return yield* UnsupportedBackupError.make();
             }
 
             return true;

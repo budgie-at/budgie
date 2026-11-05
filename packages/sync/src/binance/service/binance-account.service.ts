@@ -164,7 +164,7 @@ export class BinanceAccountService extends Context.Service<BinanceAccountService
             assertSameClient: Effect.fn('BinanceAccountService.assertSameClient')(function* (integrationId: number, clientId: string) {
                 const storedClientId = yield* syncIntegrationTokenService.findIntegrationClientId(integrationId);
                 if (isNotEmptyString(storedClientId) && storedClientId !== clientId) {
-                    return yield* new SyncTokenClientMismatchError({
+                    return yield* SyncTokenClientMismatchError.make({
                         provider: SyncProviderEnum.BINANCE,
                         integrationId,
                         message: 'This Binance API key belongs to a different account'

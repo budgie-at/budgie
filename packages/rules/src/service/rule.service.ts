@@ -174,7 +174,7 @@ export class RuleService extends Context.Service<RuleService>()('@budgie/rules/R
             );
 
             if (isDefined(duplicateRule)) {
-                return yield* new RuleSuggestionDuplicateError({ ruleId: duplicateRule.id });
+                return yield* RuleSuggestionDuplicateError.make({ ruleId: duplicateRule.id });
             }
 
             return yield* create(ruleInput);

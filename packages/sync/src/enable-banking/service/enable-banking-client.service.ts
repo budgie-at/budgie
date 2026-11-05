@@ -65,7 +65,7 @@ export class EnableBankingClientService extends Context.Service<EnableBankingCli
             );
 
         const failConsentExpired = () =>
-            new SyncConsentExpiredError({
+            SyncConsentExpiredError.make({
                 provider: SyncProviderEnum.ENABLE_BANKING,
                 message: 'The bank consent has expired or was revoked'
             });
@@ -90,12 +90,11 @@ export class EnableBankingClientService extends Context.Service<EnableBankingCli
             }),
             decodeCredentials: (token: string) =>
                 decodeToken(token).pipe(
-                    Effect.mapError(
-                        () =>
-                            new SyncInvalidResponseError({
-                                provider: SyncProviderEnum.ENABLE_BANKING,
-                                message: 'The stored bank authorization is not readable'
-                            })
+                    Effect.mapError(() =>
+                        SyncInvalidResponseError.make({
+                            provider: SyncProviderEnum.ENABLE_BANKING,
+                            message: 'The stored bank authorization is not readable'
+                        })
                     )
                 ),
             forgetJwt: (applicationId: string) =>

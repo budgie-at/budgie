@@ -29,7 +29,7 @@ const verifyProbe = Effect.fn('restoreDatabaseFromPickedBackup.verifyProbe')(fun
     const lastCreatedAt = yield* readLastMigrationCreatedAt(yield* openSqliteClient(probeDatabaseName, yield* readDatabaseKey));
 
     if (!isSupportedMigrationCreatedAt(lastCreatedAt)) {
-        return yield* new UnsupportedBackupError();
+        return yield* UnsupportedBackupError.make();
     }
 }, Effect.scoped);
 

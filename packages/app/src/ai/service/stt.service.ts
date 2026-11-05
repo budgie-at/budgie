@@ -40,7 +40,7 @@ export class SttService extends Context.Service<SttService>()('@budgie/app/SttSe
                 return '';
             }
             if (!isDefined(whisperContext)) {
-                return yield* new AiNotReadyError({ subsystem: AiSubsystemNameEnum.STT });
+                return yield* AiNotReadyError.make({ subsystem: AiSubsystemNameEnum.STT });
             }
             const audioBuffer = new ArrayBuffer(audioData.byteLength);
             new Uint8Array(audioBuffer).set(audioData);
@@ -55,7 +55,7 @@ export class SttService extends Context.Service<SttService>()('@budgie/app/SttSe
                         maxLen: STT_MAX_TRANSCRIPTION_LEN,
                         beamSize: STT_BEAM_SIZE
                     }).promise,
-                catch: cause => new NativeCallError({ cause })
+                catch: cause => NativeCallError.make({ cause })
             });
 
             return result.result.trim();
@@ -93,7 +93,7 @@ export class SttService extends Context.Service<SttService>()('@budgie/app/SttSe
             if (isDefined(whisperModule)) {
                 yield* Effect.tryPromise({
                     try: () => whisperModule.releaseAllWhisper(),
-                    catch: cause => new NativeCallError({ cause })
+                    catch: cause => NativeCallError.make({ cause })
                 }).pipe(
                     Effect.tapError(error =>
                         Effect.sync(() => {
@@ -160,7 +160,7 @@ export class SttService extends Context.Service<SttService>()('@budgie/app/SttSe
             streamStart: Effect.fn('SttService.streamStart')(
                 function* (language: string | null) {
                     if (!isReady() || !isDefined(context)) {
-                        return yield* new AiNotReadyError({ subsystem: AiSubsystemNameEnum.STT });
+                        return yield* AiNotReadyError.make({ subsystem: AiSubsystemNameEnum.STT });
                     }
                     beginStream(language);
                 },

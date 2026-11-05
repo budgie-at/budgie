@@ -59,18 +59,18 @@ export const resolveBackupFile = Effect.fn('resolveBackupFile')(function* (sourc
     const { availableDiskSpace } = Paths;
 
     if (!isDefined(databaseEntry)) {
-        return yield* new BackupArchiveMissingDatabaseError();
+        return yield* BackupArchiveMissingDatabaseError.make();
     }
 
     const hasAmbiguousEntries =
         entries.filter(entry => entry.path === databaseEntry.path || entry.path.startsWith(`${databaseEntry.path}/`)).length > 1;
 
     if (hasAmbiguousEntries) {
-        return yield* new UnsupportedBackupError();
+        return yield* UnsupportedBackupError.make();
     }
 
     if (isPositiveNumber(availableDiskSpace) && databaseEntry.size > availableDiskSpace) {
-        return yield* new InsufficientStorageError();
+        return yield* InsufficientStorageError.make();
     }
 
     yield* Effect.promise(() => unzip(toNativePath(sourceUri), toNativePath(extractDirectory.uri), [databaseEntry.path]));

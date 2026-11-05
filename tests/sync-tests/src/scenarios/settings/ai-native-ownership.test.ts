@@ -103,7 +103,7 @@ layer(aiModelDownloadStub)('AI native ownership', it => {
             yield* chat.model.start();
             const cause = new Error('stop failed');
             native.context.stopCompletion.mockRejectedValueOnce(cause);
-            expect(yield* Effect.flip(chat.interrupt)).toEqual(new NativeCallError({ cause }));
+            expect(yield* Effect.flip(chat.interrupt)).toEqual(NativeCallError.make({ cause }));
             yield* chat.model.stop();
         })
     );

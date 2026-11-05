@@ -36,7 +36,7 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
             const bankIntegrationRepository = yield* BankIntegrationRepository;
             const decodeToken = Schema.decodeUnknownEffect(Schema.fromJsonString(EnableBankingTokenSchema));
 
-            const fail = (reason: EnableBankingSetupErrorReasonEnum) => new EnableBankingSetupError({ reason });
+            const fail = (reason: EnableBankingSetupErrorReasonEnum) => EnableBankingSetupError.make({ reason });
 
             const begin = Effect.fn('EnableBankingConnectionService.begin')(function* (
                 applicationId: string,
@@ -156,7 +156,7 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
                 finish: Effect.fn('EnableBankingConnectionService.finish')(function* (callbackUrl: string) {
                     const pending = yield* secureStore.readPending();
                     if (!isDefined(pending)) {
-                        return yield* new EnableBankingCallbackError({ failure: EnableBankingCallbackFailureEnum.STATE_MISMATCH });
+                        return yield* EnableBankingCallbackError.make({ failure: EnableBankingCallbackFailureEnum.STATE_MISMATCH });
                     }
 
                     yield* enableBankingSyncService

@@ -16,7 +16,7 @@ export class Db extends Context.Service<Db, DB>()('@budgie/contracts/Db') {
     });
 
     static query<A, E>(run: (db: DB) => Effect.Effect<A, E>): Effect.Effect<A, DbError, Db> {
-        return Db.use(db => run(db).pipe(Effect.mapError(cause => new DbError({ cause }))));
+        return Db.use(db => run(db).pipe(Effect.mapError(cause => DbError.make({ cause }))));
     }
 
     static mutation<A, E, R>(mutation: DbMutationInterface, effect: Effect.Effect<A, E, R>): Effect.Effect<A, E, R | Db> {
@@ -39,7 +39,7 @@ export class Db extends Context.Service<Db, DB>()('@budgie/contracts/Db') {
             return yield* transactionBoundary(
                 db.$client
                     .withTransaction(Effect.provideService(effect, Db, withReplicas(db.$primary, [db.$primary])))
-                    .pipe(Effect.catchTag('SqlError', cause => Effect.fail(new DbError({ cause }))))
+                    .pipe(Effect.catchTag('SqlError', cause => Effect.fail(DbError.make({ cause }))))
             );
         });
     }

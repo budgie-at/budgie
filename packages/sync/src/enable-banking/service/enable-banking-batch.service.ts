@@ -55,10 +55,10 @@ export class EnableBankingBatchService extends Context.Service<EnableBankingBatc
         const isoDateLength = 10;
         let mccCategoryLookupMap = new Map<string, MccCategoryLookupInterface>();
 
-        const failInvalid = (message: string) => new SyncInvalidResponseError({ provider: syncProvider, message });
+        const failInvalid = (message: string) => SyncInvalidResponseError.make({ provider: syncProvider, message });
 
         const failAccountNotLinked = () =>
-            new SyncInvalidResponseError({
+            SyncInvalidResponseError.make({
                 provider: syncProvider,
                 message: 'The account is not linked to this bank authorization',
                 apiCode: EnableBankingErrorCodeEnum.ACCOUNT_NOT_LINKED
@@ -195,7 +195,7 @@ export class EnableBankingBatchService extends Context.Service<EnableBankingBatc
                 isLongest: !isDefined(limitAt)
             }).pipe(
                 Effect.catchIf(isBankRateLimited, () =>
-                    Effect.fail(new SyncDeferredError({ provider: syncProvider, message: 'The bank fetch allowance is used up' }))
+                    Effect.fail(SyncDeferredError.make({ provider: syncProvider, message: 'The bank fetch allowance is used up' }))
                 )
             );
 

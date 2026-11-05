@@ -175,7 +175,7 @@ describe('Wallet capture import creation', () => {
 
             walletCaptureNativeStub.seed([failingCapture, safeCapture]);
             vi.spyOn(transactionRepository, 'bulkCreate').mockReturnValueOnce(
-                Effect.fail(new DbError({ cause: new Error('database unavailable') }))
+                Effect.fail(DbError.make({ cause: new Error('database unavailable') }))
             );
 
             expect(Exit.isFailure(yield* Effect.exit(walletCaptureImportService.drain()))).toBe(true);
