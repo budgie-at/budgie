@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.156.0](https://github.com/budgie-at/budgie/compare/v6.155.0...v6.156.0) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** keep transaction suggestions visible ([e5642d2](https://github.com/budgie-at/budgie/commit/e5642d23e47e213062ca4feacbe7655fc056c214))
+
+### Features
+
+* **app:** redesign transaction forms ([7e9c7ab](https://github.com/budgie-at/budgie/commit/7e9c7abb612fe1b8b83a418ffd66edd73dc1ac31))
+
+
 # [6.155.0](https://github.com/budgie-at/budgie/compare/v6.154.0...v6.155.0) (2026-11-05)
 
 ### Features
