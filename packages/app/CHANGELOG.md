@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.163.1](https://github.com/budgie-at/budgie/compare/v6.163.0...v6.163.1) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** ship bank logos in OTA updates ([#1954](https://github.com/budgie-at/budgie/issues/1954)) ([d55848c](https://github.com/budgie-at/budgie/commit/d55848c08d48ac00a196fc15406960c348b6d14b))
+
+
 # [6.163.0](https://github.com/budgie-at/budgie/compare/v6.162.1...v6.163.0) (2026-11-05)
 
 ### Features
