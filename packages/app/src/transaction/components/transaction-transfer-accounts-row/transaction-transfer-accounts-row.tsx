@@ -1,6 +1,6 @@
 import { AccountTypeEnum, TransactionCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { RefObject, useImperativeHandle, useState } from 'react';
+import { ReactNode, RefObject, useImperativeHandle, useState } from 'react';
 import { useFormContext, useFormState } from 'react-hook-form';
 import { LayoutChangeEvent, View } from 'react-native';
 
@@ -24,12 +24,13 @@ export interface TransactionTransferAccountsRowRef {
 
 interface Props {
     readonly ref?: RefObject<TransactionTransferAccountsRowRef | null>;
+    readonly children?: ReactNode;
 }
 
 const TRANSFER_ACCOUNT_FIELDS = ['fromAccountId', 'toAccountId'] as const;
 
 // eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
-export const TransactionTransferAccountsRow = ({ ref }: Props) => {
+export const TransactionTransferAccountsRow = ({ ref, children }: Props) => {
     const { t } = useLingui();
     const [fromRowHeight, setFromRowHeight] = useState(0);
     const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
@@ -112,6 +113,7 @@ export const TransactionTransferAccountsRow = ({ ref }: Props) => {
                     selectedTestID={toAccountSelectedTestID}
                     onPress={handleToPress}
                 />
+                {children}
             </GroupedListSection>
             <TransferSwapButton dividerOffset={fromRowHeight} isEnabled={canSwap} onPress={handleSwap} />
         </View>

@@ -77,8 +77,6 @@ export const SimpleQuickFormControls = ({
             <TransactionFieldIcons>
                 <TransactionDateTagsRow onDatePress={handleDatePress} />
                 <TransactionNoteFieldIcon onPress={handleCommentPress} />
-            </TransactionFieldIcons>
-            <TransactionFieldIcons>
                 {fee}
                 <TransactionSplitFieldIcon
                     splitEntryCount={formState.splitEntryCount}

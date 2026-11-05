@@ -6,9 +6,9 @@ import Animated, { AnimatedStyle } from 'react-native-reanimated';
 
 import { isDefined, isString } from '@rnw-community/shared';
 
-import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { AccountInactiveIcon } from '../../../account/component/account-inactive-icon/account-inactive-icon';
+import { TransactionFormIcon } from '../transaction-form-icon/transaction-form-icon';
 import { TransactionFormRow } from '../transaction-form-row/transaction-form-row';
 
 interface Props {
@@ -32,8 +32,8 @@ export const TransferAccountPicker = ({ label, placeholder, account, animatedSty
         <Animated.View style={animatedStyle}>
             <TransactionFormRow
                 left={
-                    <AccountInactiveIcon isInactive={isInactiveAccount} size={36}>
-                        <GroupedListIcon icon={icon} />
+                    <AccountInactiveIcon isInactive={isInactiveAccount} size={30}>
+                        <TransactionFormIcon icon={icon} />
                     </AccountInactiveIcon>
                 }
                 label={label}

@@ -6,13 +6,13 @@ import Animated from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { AccountInactiveIcon } from '../../../account/component/account-inactive-icon/account-inactive-icon';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
+import { TransactionFormIcon } from '../transaction-form-icon/transaction-form-icon';
 import { TransactionFormRow } from '../transaction-form-row/transaction-form-row';
 
 export interface TransactionAccountRowRef {
@@ -64,8 +64,8 @@ export const TransactionAccountRow = ({ ref, fieldName, label, testID }: Props) 
         <Animated.View style={shakeStyle}>
             <TransactionFormRow
                 left={
-                    <AccountInactiveIcon isInactive={isInactiveAccount} size={36}>
-                        <GroupedListIcon icon={account?.icon ?? UserIconNameEnum.Wallet} />
+                    <AccountInactiveIcon isInactive={isInactiveAccount} size={30}>
+                        <TransactionFormIcon icon={account?.icon ?? UserIconNameEnum.Wallet} />
                     </AccountInactiveIcon>
                 }
                 label={displayLabel}

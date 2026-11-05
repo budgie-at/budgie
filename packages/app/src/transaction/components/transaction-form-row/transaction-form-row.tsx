@@ -39,6 +39,7 @@ export const TransactionFormRow = (props: Props) => {
             value={value}
             placeholder={placeholder}
             isStacked={isStacked}
+            isLargeText={isLargeText}
             testID={valueTestID}
             onOverflow={setOverflowingValue}
         />
