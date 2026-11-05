@@ -10,7 +10,6 @@ import { FormsheetHeader } from '../../../@generic/component/formsheet-header/fo
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
-import { useSheetFooterLayout } from '../../hook/use-sheet-footer-layout.hook';
 import { useGetConsolidationSourcesQuery } from '../../query/use-get-consolidation-sources.query';
 import { getTransactionListRowPosition } from '../../utils/get-transaction-list-row-position.util';
 import { ConsolidationSourceRow } from '../consolidation-source-row/consolidation-source-row';
@@ -26,11 +25,11 @@ interface Props {
 export const ConsolidationSourceModalContent = ({ transactionId, onClose, onRevertSuccess }: Props) => {
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
     const { sources, consolidationType, hasError, isLoading, retry } = useGetConsolidationSourcesQuery(transactionId);
-    const { contentContainerStyle, handleFooterLayout } = useSheetFooterLayout();
     const revertConsolidation = useRevertConsolidation(transactionId, onRevertSuccess);
 
     const showEmptyState = isEmptyArray(sources) && !hasError;
     const showRevert = isDefined(consolidationType);
+    const isRevertDisabled = isLoading || hasError || isEmptyArray(sources);
     const footerClassName = isAccessibilityTextSize ? 'flex-col gap-y-md' : 'flex-row gap-x-md';
     const buttonClassName = isAccessibilityTextSize ? '' : 'flex-1';
     const sourceRows = sources.map((source, index) => (
@@ -47,13 +46,12 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
         <View className="flex-1">
             <ScrollView
                 className="flex-1"
-                contentContainerClassName="grow"
-                contentContainerStyle={contentContainerStyle}
+                contentContainerClassName="grow pb-md"
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >
                 <FormsheetHeader size="md" title={t`Sources`} description={t`Each source becomes a separate transaction.`} />
-                <LoadingContent isLoading={isLoading} containerClassName="flex-1" className="flex-1">
+                <LoadingContent isLoading={isLoading} containerClassName="grow shrink-0">
                     {hasError ? (
                         <View className="gap-y-md px-xl py-xl">
                             <Text className="text-sm text-destructive-foreground">{t`Could not load sources. Please try again.`}</Text>
@@ -76,10 +74,7 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
                 </LoadingContent>
             </ScrollView>
 
-            <View
-                className="absolute bottom-0 left-0 right-0 bg-grouped-surface px-xl pt-md pb-safe-or-[16px]"
-                onLayout={handleFooterLayout}
-            >
+            <View className="shrink-0 bg-grouped-surface px-xl pt-md pb-safe-or-[16px]">
                 <View className={footerClassName}>
                     <Button
                         content={t`Done`}
@@ -96,6 +91,7 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
                             variant="primary"
                             size="md"
                             onPress={revertConsolidation}
+                            disabled={isRevertDisabled}
                             testID={ConsolidationSourceModalSelector.RevertButton}
                             className={buttonClassName}
                         />
