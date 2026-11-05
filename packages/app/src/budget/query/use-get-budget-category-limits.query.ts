@@ -12,6 +12,7 @@ import type { BudgetCategoryLimitEntityInterface } from '@budgie/contracts';
 interface UseGetBudgetCategoryLimitsResult {
     readonly categoryLimits: readonly BudgetCategoryLimitEntityInterface[];
     readonly isLoading: boolean;
+    readonly isError: boolean;
 }
 
 const EMPTY_LIMITS: readonly BudgetCategoryLimitEntityInterface[] = [];
@@ -26,8 +27,8 @@ export const useGetBudgetCategoryLimitsQuery = (budgetId: number | null): UseGet
     const result = useLiveAtomValue(budgetCategoryLimitsAtom(budgetId ?? 0));
 
     if (!isDefined(budgetId) || AsyncResult.isInitial(result)) {
-        return { categoryLimits: EMPTY_LIMITS, isLoading: true };
+        return { categoryLimits: EMPTY_LIMITS, isLoading: true, isError: false };
     }
 
-    return { categoryLimits: AsyncResult.getOrElse(result, () => EMPTY_LIMITS), isLoading: false };
+    return { categoryLimits: AsyncResult.getOrElse(result, () => EMPTY_LIMITS), isLoading: false, isError: AsyncResult.isFailure(result) };
 };

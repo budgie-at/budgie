@@ -1806,7 +1806,9 @@ msgstr "Se esperaba una cuenta de deuda tomada prestada"
 msgid "Browse icons"
 msgstr "Explorar iconos"
 
+#: src/app/(main)/budget/index.tsx
 #: src/app/(tabs)/settings/index.tsx
+#: src/budget/components/budget-data-state/budget-data-state.tsx
 #: src/budget/hooks/use-budget-form.hook.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Budget"
@@ -1827,6 +1829,10 @@ msgstr "Presupuesto bloqueado, {formattedDaysLeft}. Desbloquea para verlo."
 #: src/budget/components/budget-setup-form/budget-setup-form.tsx
 msgid "Budget name"
 msgstr "Nombre del presupuesto"
+
+#: src/budget/components/budget-data-state/budget-data-state.tsx
+msgid "Budget unavailable"
+msgstr "Presupuesto no disponible"
 
 #: src/import/components/import-preset-options/import-preset-options.tsx
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
@@ -2348,6 +2354,7 @@ msgid "Clipboard is empty"
 msgstr "El portapapeles está vacío"
 
 #: src/@generic/component/sheet-title-row/sheet-title-row.tsx
+#: src/budget/components/budget-sheet-state/budget-sheet-state.tsx
 #: src/sync/component/get-token-card/get-token-card.tsx
 msgid "Close"
 msgstr "Cerrar"
@@ -2691,6 +2698,10 @@ msgstr "No se pudo cargar"
 #: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
 msgid "Could not load accounts"
 msgstr "No se pudieron cargar las cuentas"
+
+#: src/budget/components/budget-data-state/budget-data-state.tsx
+msgid "Could not load budget"
+msgstr "No se pudo cargar el presupuesto"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Could not load sources. Please try again."
@@ -4647,7 +4658,7 @@ msgstr "Sale de Inicio, los totales y los presupuestos. Restáurala desde Ajuste
 msgid "Leaves your income"
 msgstr "Sale de tus ingresos"
 
-#: src/budget/components/budget-setup-progress/budget-setup-progress.tsx
+#: src/budget/components/budget-setup-progress-content/budget-setup-progress-content.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
 msgid "Left"
 msgstr "Restante"
@@ -4688,6 +4699,7 @@ msgstr "Límite {limitAmount}"
 msgid "Limit {limitAmount} · above chart"
 msgstr "Límite {limitAmount} · por encima del gráfico"
 
+#: src/app/budget-limit-changes.tsx
 #: src/budget/components/budget-limit-changes-row/budget-limit-changes-row.tsx
 #: src/budget/components/budget-limit-changes-sheet/budget-limit-changes-sheet.tsx
 msgid "Limit changes"
@@ -5845,7 +5857,7 @@ msgstr "de más"
 msgid "Over"
 msgstr "Excedido"
 
-#: src/budget/components/budget-setup-progress/budget-setup-progress.tsx
+#: src/budget/components/budget-setup-progress-content/budget-setup-progress-content.tsx
 #: src/budget/constant/budget-pace-status-label.constant.ts
 msgid "Over budget"
 msgstr "Por encima del presupuesto"
@@ -6027,6 +6039,10 @@ msgstr "Porcentaje del total del plan antes de la comisión"
 #: src/budget/components/budget-setup-form/budget-setup-form.tsx
 msgid "Period"
 msgstr "Periodo"
+
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
+msgid "Period summary"
+msgstr "Resumen del período"
 
 #: src/@generic/hook/use-contacts.hook.ts
 msgid "Permission to access contacts was denied."
@@ -6689,6 +6705,7 @@ msgstr "Autonomía"
 msgid "Runway needs 3 complete months of transactions to forecast your balance."
 msgstr "La autonomía necesita 3 meses completos de transacciones para prever tu saldo."
 
+#: src/app/budget-safe-to-spend.tsx
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 msgid "Safe to spend"
 msgstr "Seguro para gastar"
@@ -6996,6 +7013,7 @@ msgstr "Asigna Importe y Comercio a la entrada del atajo."
 msgid "Set an amount to continue"
 msgstr "Introduce un importe para continuar"
 
+#: src/app/(main)/budget/fund.tsx
 #: src/budget/components/budget-funds-section/budget-funds-section.tsx
 msgid "Set aside"
 msgstr "Reservado"
@@ -7311,6 +7329,10 @@ msgstr "Almacenamiento"
 #: src/categorize-inbox/components/categorize-inbox-group-learned-transfer-option/categorize-inbox-group-learned-transfer-option.tsx
 msgid "Suggested"
 msgstr "Sugerido"
+
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
+msgid "Summary unavailable"
+msgstr "Resumen no disponible"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Support"
@@ -7646,6 +7668,14 @@ msgstr "Esta copia de seguridad se creó con una versión anterior de Budgie y n
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 msgid "This backup was made by an older Budgie version and cannot be restored."
 msgstr "Esta copia de seguridad se creó con una versión anterior de Budgie y no se puede restaurar."
+
+#: src/budget/components/budget-sheet-state/budget-sheet-state.tsx
+msgid "This budget may have been deleted."
+msgstr "Puede que este presupuesto se haya eliminado."
+
+#: src/budget/components/budget-data-state/budget-data-state.tsx
+msgid "This budget may have been deleted. Go back to see your current budget."
+msgstr "Puede que este presupuesto se haya eliminado. Vuelve atrás para ver tu presupuesto actual."
 
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "This capture looks similar to an existing transaction."
@@ -8663,6 +8693,12 @@ msgstr "Tu clave actual fue rechazada. Pega una nueva para reanudar la sincroniz
 msgid "Your data"
 msgstr "Tus datos"
 
+#: src/budget/components/budget-data-state/budget-data-state.tsx
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
+#: src/budget/components/budget-sheet-state/budget-sheet-state.tsx
+msgid "Your data could not be loaded. Close this screen and try again."
+msgstr "No se pudieron cargar tus datos. Cierra esta pantalla e inténtalo de nuevo."
+
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
 msgid "Your data is safe. Reading it failed this time."
 msgstr "Tus datos están a salvo. Solo falló la lectura esta vez."
@@ -8732,6 +8768,10 @@ msgstr "Tus etiquetas"
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Your transaction file is ready to share."
 msgstr "Tu archivo de transacciones está listo para compartir."
+
+#: src/budget/components/budget-data-state/budget-data-state.tsx
+msgid "Your transactions are not affected."
+msgstr "Tus transacciones no se ven afectadas."
 
 #: src/sync/service/background-sync-session.service.ts
 msgid "Your transactions keep importing in the background"

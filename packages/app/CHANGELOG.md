@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.154.0](https://github.com/budgie-at/budgie/compare/v6.153.0...v6.154.0) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** bound budget sheets independently of modal insets ([4cd66e1](https://github.com/budgie-at/budgie/commit/4cd66e1449c663a7fb168f6254c2a89415d63b7a))
+* **app:** clarify unavailable budget sheet recovery ([ee88251](https://github.com/budgie-at/budgie/commit/ee882513ded3fc59d62f5ce8d70d3841a80adde6))
+* **app:** hydrate warm budget edits from resolved defaults ([a7c168c](https://github.com/budgie-at/budgie/commit/a7c168c4c22e8b1b984cbf161e434aae82e0e59d))
+* **app:** keep budget readiness and hydration reactive ([5f831aa](https://github.com/budgie-at/budgie/commit/5f831aaf577f59a6b630f7f77ebc592d215965d8))
+* **app:** keep failed budget limits out of edit defaults ([0f5a6ff](https://github.com/budgie-at/budgie/commit/0f5a6ffa03a20114b22807c01adc3cd2f09d0b6b))
+* **app:** let unavailable budget sheets scroll at large text sizes ([cc565dc](https://github.com/budgie-at/budgie/commit/cc565dc70698a77d5edb333f93c8e5782b932a14))
+* **app:** preserve the sheet header through cold budget reads ([30032e2](https://github.com/budgie-at/budgie/commit/30032e2bbd94496649660d29e2000eceb23e3a8e))
+* **app:** register budget recovery selector ([25c474f](https://github.com/budgie-at/budgie/commit/25c474f8b673be21d82c916ab262427459c5e5ae))
+* **app:** reject stale active-budget edit links ([7031142](https://github.com/budgie-at/budgie/commit/7031142abc4c436dacffb51c8795857b4d1a5c50))
+* **app:** resolve stale budget links before form hydration ([2a0d6cb](https://github.com/budgie-at/budgie/commit/2a0d6cba35b53f2c23de74b927ea6e48248dec5b))
+* **app:** return home after deleting the active budget ([a27686f](https://github.com/budgie-at/budgie/commit/a27686f58c39b131236a43aa25d8a8ca42fbfe9b))
+* **app:** stabilize unavailable sheet content sizing ([71b1196](https://github.com/budgie-at/budgie/commit/71b119633fa06dc0e6ff82305aaee783ceb6f706))
+
+### Features
+
+* **app:** finish budget loading and missing-data states ([443d594](https://github.com/budgie-at/budgie/commit/443d59445234ad2a8e3ad57b8a46ea8023b7a3c7))
+
+
 # [6.153.0](https://github.com/budgie-at/budgie/compare/v6.152.1...v6.153.0) (2026-11-05)
 
 ### Bug Fixes

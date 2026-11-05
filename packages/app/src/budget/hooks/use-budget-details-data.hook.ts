@@ -14,13 +14,14 @@ import type { BudgetEntityInterface } from '@budgie/contracts';
 export const useBudgetDetailsData = (budget: BudgetEntityInterface) => {
     const today = useToday();
     const { formatMonthAndDay } = useFormatDate();
-    const { projection, isLoading } = useGetBudgetProjectionQuery(budget);
+    const { projection, isLoading, isError } = useGetBudgetProjectionQuery(budget);
     const { instrument } = useGetInstrumentByIdQuery(budget.instrumentId);
     const { periodStart, nextPeriodStart } = resolveBudgetWindow(budget, today);
 
     return {
         projection,
         isLoading,
+        isError,
         periodStart,
         periodEnd: getInclusiveEnd(nextPeriodStart),
         currencySymbol: isDefined(instrument) ? instrument.symbol : '',
