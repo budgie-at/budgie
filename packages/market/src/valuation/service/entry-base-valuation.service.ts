@@ -238,8 +238,9 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
             ) {
                 const context = yield* createContext();
 
-                return yield* Effect.all(
-                    transactions.map(transaction => valueEntriesInContext(transaction.entries, transaction.operatedAt, context)),
+                return yield* Effect.forEach(
+                    transactions,
+                    transaction => valueEntriesInContext(transaction.entries, transaction.operatedAt, context),
                     { concurrency: 'unbounded' }
                 );
             })

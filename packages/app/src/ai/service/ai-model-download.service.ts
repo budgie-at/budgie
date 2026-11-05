@@ -406,9 +406,7 @@ export class AiModelDownloadService extends Context.Service<AiModelDownloadServi
         };
 
         const readState = (): typeof StateSchema.Type =>
-            stateFile.exists
-                ? Option.getOrElse(Schema.decodeUnknownOption(StateSchema)(stateFile.textSync()), () => emptyState)
-                : emptyState;
+            stateFile.exists ? Option.getOrElse(Schema.decodeOption(StateSchema)(stateFile.textSync()), () => emptyState) : emptyState;
 
         const resolveInitialStatus = (): AiModelDownloadStatusEnum => {
             if (state.hold === AiModelDownloadHoldEnum.PAUSED) {

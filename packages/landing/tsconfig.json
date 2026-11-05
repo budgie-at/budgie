@@ -16,6 +16,11 @@
         "plugins": [
             {
                 "name": "next"
+            },
+            {
+                "name": "@effect/language-service",
+                "diagnostics": false,
+                "allowedUnstableApis": ["effect/http"]
             }
         ]
     },

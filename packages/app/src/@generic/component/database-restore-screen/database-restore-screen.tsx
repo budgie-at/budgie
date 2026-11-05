@@ -43,7 +43,7 @@ export const DatabaseRestoreScreen = () => {
                     InsufficientStorageError: () => Effect.succeed(t`Not enough free storage to extract this backup.`),
                     UnsupportedBackupError: () => Effect.succeed(t`This backup was made by an older Budgie version and cannot be restored.`)
                 }),
-                Effect.catch(() => Effect.succeed(t`This backup could not be opened with your current PIN.`)),
+                Effect.orElseSucceed(() => t`This backup could not be opened with your current PIN.`),
                 Effect.tap(nextBackupError => Effect.sync(() => void setBackupError(nextBackupError))),
                 Effect.provide(Layer.mergeAll(makeLoggerLayer(isLoggingEnabled()), Reactivity.layer)),
                 Effect.ensuring(Effect.sync(() => void setIsLoading(false)))

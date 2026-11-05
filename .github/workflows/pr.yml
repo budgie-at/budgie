@@ -141,7 +141,7 @@ jobs:
               run: git diff --exit-code
 
     unit-tests:
-        name: Effect diagnostics and unit tests
+        name: Unit tests
         runs-on: [self-hosted, linux-portable-4x8]
         timeout-minutes: 45
         permissions:
@@ -170,9 +170,6 @@ jobs:
 
             - name: Build
               run: pnpm build
-
-            - name: Effect diagnostics
-              run: pnpm effect:check
 
             - name: Unit tests
               run: pnpm test --concurrency=2

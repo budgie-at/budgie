@@ -97,10 +97,9 @@ export class AccountService extends Context.Service<AccountService>()('@budgie/l
                     batch.map((input, index) => ({ ...input, order: count + index + 1, nature: AccountNatureEnum.LIABILITY }))
                 );
 
-                yield* Effect.all(
-                    accounts.map((account, index) => adjustBalanceTo(account.id, batch[index].currentBalance)),
-                    { concurrency: 'unbounded' }
-                );
+                yield* Effect.forEach(accounts, (account, index) => adjustBalanceTo(account.id, batch[index].currentBalance), {
+                    concurrency: 'unbounded'
+                });
 
                 return accounts;
             },

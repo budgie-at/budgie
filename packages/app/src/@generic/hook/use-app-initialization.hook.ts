@@ -54,7 +54,7 @@ const registerBackgroundTasks = Effect.gen(function* () {
     const budgetAlertMonitorService = yield* BudgetAlertMonitorService;
     const widgetSnapshotService = yield* WidgetSnapshotService;
 
-    yield* Effect.all(
+    yield* Effect.forEach(
         [
             authService.ensurePinBackgroundAccessibility(),
             exchangeRateBackgroundService.registerBackgroundTask(),
@@ -65,7 +65,8 @@ const registerBackgroundTasks = Effect.gen(function* () {
             reregisterTask(ENABLE_BANKING_SYNC_TASK, PROVIDER_SYNC_TASK_MINIMUM_INTERVAL_MINUTES),
             budgetAlertMonitorService.registerBackgroundTask(),
             widgetSnapshotService.registerBackgroundTask()
-        ].map(logAndContinue),
+        ],
+        logAndContinue,
         { concurrency: 'unbounded', discard: true }
     );
 });

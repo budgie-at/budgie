@@ -36,7 +36,7 @@ it.effect('accepts a fixed budget whose allocation fits the limit', () =>
 
 it.effect('rejects a fixed budget whose allocation exceeds the limit', () =>
     Effect.sync(() => {
-        const exit = Schema.decodeUnknownExit(BudgetFormSchema)({ ...FORM, overallLimit: 350 });
+        const exit = Schema.decodeExit(BudgetFormSchema)({ ...FORM, overallLimit: 350 });
 
         expect(exit._tag).toBe('Failure');
     })
@@ -46,7 +46,7 @@ it.effect('does not require a fixed amount or a fitting allocation when the limi
     Effect.sync(() => {
         const incomeForm = { ...FORM, limitSource: BudgetLimitSourceEnum.INCOME_RECEIVED, overallLimit: 0, otherLimit: 5000 };
 
-        expect(Schema.decodeUnknownExit(BudgetFormSchema)(incomeForm)._tag).toBe('Success');
+        expect(Schema.decodeExit(BudgetFormSchema)(incomeForm)._tag).toBe('Success');
     })
 );
 
@@ -61,8 +61,8 @@ it.effect('requires an anchor date for non-monthly periods', () =>
 );
 
 it.effect('forces the start day to 1 when the last day of the month is used', () =>
-    Effect.sync(() => {
-        const decoded = Schema.decodeUnknownSync(BudgetFormSchema)({ ...FORM, useLastDayOfMonth: true });
+    Effect.gen(function* () {
+        const decoded = yield* Schema.decodeEffect(BudgetFormSchema)({ ...FORM, useLastDayOfMonth: true });
 
         expect(decoded.periodStartDay).toBe(1);
     })
@@ -99,9 +99,9 @@ it.effect('validates the event form dates, tag and allocation', () =>
             instrumentId: 2
         };
 
-        expect(Schema.decodeUnknownExit(BudgetEventFormSchema)(event)._tag).toBe('Success');
-        expect(Schema.decodeUnknownExit(BudgetEventFormSchema)({ ...event, endsAtMs: 4 * DAY_MS })._tag).toBe('Failure');
-        expect(Schema.decodeUnknownExit(BudgetEventFormSchema)({ ...event, tagId: 0 })._tag).toBe('Failure');
-        expect(Schema.decodeUnknownExit(BudgetEventFormSchema)({ ...event, overallLimit: 1000 })._tag).toBe('Failure');
+        expect(Schema.decodeExit(BudgetEventFormSchema)(event)._tag).toBe('Success');
+        expect(Schema.decodeExit(BudgetEventFormSchema)({ ...event, endsAtMs: 4 * DAY_MS })._tag).toBe('Failure');
+        expect(Schema.decodeExit(BudgetEventFormSchema)({ ...event, tagId: 0 })._tag).toBe('Failure');
+        expect(Schema.decodeExit(BudgetEventFormSchema)({ ...event, overallLimit: 1000 })._tag).toBe('Failure');
     })
 );

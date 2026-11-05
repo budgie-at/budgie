@@ -623,10 +623,9 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
 
     isolateSourceFailure<E, R>(effect: Effect.Effect<number, E, R>) {
         return effect.pipe(
-            Effect.catch(error =>
-                error instanceof SyncNetworkError || error instanceof SyncInvalidResponseError
-                    ? this.recordSourceFailure(error)
-                    : Effect.fail(error)
+            Effect.catchIf(
+                error => error instanceof SyncNetworkError || error instanceof SyncInvalidResponseError,
+                error => this.recordSourceFailure(error)
             )
         );
     }
@@ -752,7 +751,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private fetchConvertTransfers(startTimeMs: number, endTimeMs: number) {
         return Effect.map(
             this.walkWindowsBackward(CONVERT_MAX_PERIOD_MS, startTimeMs, endTimeMs, (windowStartMs, windowEndMs) =>
-                Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
+                Effect.gen({ self: this }, function* () {
                     const convertFlows = yield* this.fetchSplittingWindow(
                         (chunkStartMs, chunkEndMs) =>
                             this.signedRequest(BinanceConvertTradeFlowApiSchema, CONVERT_TRADE_FLOW_ENDPOINT, 'GET', {
@@ -787,7 +786,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         eligibleSoldOffBaseAssets: readonly string[],
         initialSymbolTradeCursors: BinanceTradeCursorMapInterface
     ) {
-        return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
+        return Effect.gen({ self: this }, function* () {
             const symbols = yield* this.deriveTradeSymbols(eligibleSoldOffBaseAssets);
             const symbolFetches = yield* Effect.forEach(
                 symbols,
@@ -813,7 +812,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     }
 
     private deriveTradeSymbols(eligibleSoldOffBaseAssets: readonly string[]) {
-        return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
+        return Effect.gen({ self: this }, function* () {
             const balances = yield* this.signedRequest(BinanceAssetBalanceListApiSchema, SPOT_BALANCE_ENDPOINT, 'POST');
             this.noteTouchedAssets(this.collectTouchedAssets(balances));
             const exchangeSymbols = yield* this.resolveExchangeSymbols();
@@ -823,7 +822,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     }
 
     private fetchSymbolTrades(symbol: BinanceTradeSymbolInterface, startTimeMs: number, endTimeMs: number, initialFromId: number | null) {
-        return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
+        return Effect.gen({ self: this }, function* () {
             const transfers: BinanceTransferInterface[] = [];
             let fromId = initialFromId;
             let lastWindowTradeId: number | null = null;
@@ -887,15 +886,15 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         method: HttpMethod,
         params: Record<string, string | number>
     ): Effect.Effect<S['Type'], SyncError, HttpClient.HttpClient> {
-        return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
+        return Effect.gen({ self: this }, function* () {
             if ((yield* Clock.currentTimeMillis) >= this.deadlineAtMs) {
                 return yield* new SyncDeferredError({ provider: this.provider, message: 'Sync deadline reached' });
             }
 
-            const credentials = yield* Option.match(this.credentials, {
-                onNone: () => Effect.fail(new SyncUnauthorizedError({ provider: this.provider, message: 'Invalid Binance credentials' })),
-                onSome: Effect.succeed
-            });
+            const credentials = yield* Effect.fromOption(
+                this.credentials,
+                () => new SyncUnauthorizedError({ provider: this.provider, message: 'Invalid Binance credentials' })
+            );
 
             yield* this.throttle.waitIfNeeded(endpoint);
             const query = Object.entries({ ...params, recvWindow: SIGNATURE_RECV_WINDOW_MS, timestamp: yield* this.resolveTimestamp() })
@@ -1043,14 +1042,14 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             this.unavailableSources.has(source)
                 ? Effect.succeed(fallback)
                 : effect.pipe(
-                      Effect.catch(error =>
-                          this.isSourceUnavailable(source, error)
-                              ? Effect.sync(() => {
-                                    this.unavailableSources.add(source);
+                      Effect.catchIf(
+                          error => this.isSourceUnavailable(source, error),
+                          () =>
+                              Effect.sync(() => {
+                                  this.unavailableSources.add(source);
 
-                                    return fallback;
-                                })
-                              : Effect.fail(error)
+                                  return fallback;
+                              })
                       )
                   )
         );

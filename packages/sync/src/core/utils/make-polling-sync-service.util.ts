@@ -3,6 +3,7 @@ import * as Cause from 'effect/Cause';
 import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+import * as Predicate from 'effect/Predicate';
 import * as Semaphore from 'effect/Semaphore';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -176,7 +177,8 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         return enabledSyncs.filter(sync => integrationIdByAccountId.get(sync.accountId) === credentialGroupIntegrationId);
     });
 
-    const handleError = Effect.fnUntraced(function* (error: unknown) {
+    const handleError = Effect.fnUntraced(function* (cause: Cause.Cause<unknown>) {
+        const error = Cause.squash(cause);
         if (error instanceof SyncRateLimitedError) {
             return (yield* shouldYieldAfterBatch(error.retryAfterMs)) ? true : null;
         }
@@ -221,9 +223,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
 
         let result: boolean | null = null;
         while (!isDefined(result)) {
-            result = yield* runSyncPass().pipe(
-                Effect.catchCause(cause => (Cause.hasInterruptsOnly(cause) ? Effect.failCause(cause) : handleError(Cause.squash(cause))))
-            );
+            result = yield* Effect.catchCauseIf(runSyncPass(), Predicate.not(Cause.hasInterruptsOnly), handleError);
         }
 
         return result && exhaustedSyncIds.size === 0;

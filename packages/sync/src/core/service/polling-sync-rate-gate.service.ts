@@ -34,10 +34,10 @@ export class PollingSyncRateGate extends Context.Service<PollingSyncRateGate>()(
                     return nextRequestAtMs;
                 }
 
-                const shouldYield = yield* Effect.raceFirst(
-                    Effect.as(Effect.sleep(nextRequestAtMs - nowMs), false),
-                    Effect.as(syncWorkload.awaitQueuedUserWork, true)
-                );
+                const shouldYield = yield* Effect.timeoutOrElse(Effect.as(syncWorkload.awaitQueuedUserWork, true), {
+                    duration: nextRequestAtMs - nowMs,
+                    orElse: () => Effect.succeed(false)
+                });
 
                 return shouldYield ? nextRequestAtMs : null;
             }),
@@ -62,10 +62,10 @@ export class PollingSyncRateGate extends Context.Service<PollingSyncRateGate>()(
                     return true;
                 }
 
-                return yield* Effect.raceFirst(
-                    Effect.as(Effect.sleep(rateLimitMs), false),
-                    Effect.as(syncWorkload.awaitQueuedUserWork, true)
-                );
+                return yield* Effect.timeoutOrElse(Effect.as(syncWorkload.awaitQueuedUserWork, true), {
+                    duration: rateLimitMs,
+                    orElse: () => Effect.succeed(false)
+                });
             }),
             lastRequestReadyAtMs: Effect.sync(() => lastRequestReadyAtMs),
             isBackedOff: (nowMs: number) => nowMs < backOffUntilMs

@@ -97,12 +97,10 @@ export abstract class BaseSyncProviderClient {
     ) {
         return this.execute(endpoint, method, body).pipe(
             Effect.flatMap(HttpClientResponse.schemaBodyJson(schema)),
-            Effect.catchTag('SchemaError', error =>
-                Effect.fail(new SyncInvalidResponseError({ provider: this.provider, message: error.message }))
-            ),
-            Effect.catchTag('HttpClientError', () =>
-                Effect.fail(new SyncNetworkError({ provider: this.provider, message: 'Network error' }))
-            )
+            Effect.catchTags({
+                SchemaError: error => Effect.fail(new SyncInvalidResponseError({ provider: this.provider, message: error.message })),
+                HttpClientError: () => Effect.fail(new SyncNetworkError({ provider: this.provider, message: 'Network error' }))
+            })
         );
     }
 

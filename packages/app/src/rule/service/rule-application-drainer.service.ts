@@ -30,10 +30,8 @@ export class RuleApplicationDrainerService extends Context.Service<RuleApplicati
                 workload
                     .run(effect)
                     .pipe(
-                        Effect.catchCause(cause =>
-                            Cause.hasInterruptsOnly(cause)
-                                ? Effect.andThen(workload.awaitBackgroundAllowed, runUntilSettled(effect))
-                                : Effect.failCause(cause)
+                        Effect.catchCauseIf(Cause.hasInterruptsOnly, () =>
+                            Effect.andThen(workload.awaitBackgroundAllowed, runUntilSettled(effect))
                         )
                     );
 

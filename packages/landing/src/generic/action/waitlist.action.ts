@@ -95,7 +95,9 @@ const connectRedisClient = Effect.fn('connectRedisClient')(function* (redisUrl: 
         commandOptions: { timeout: 2000 }
     });
 
-    client.on('error', () => void Effect.runFork(Effect.logError('client_error')));
+    const context = yield* Effect.context();
+
+    client.on('error', () => void Effect.runForkWith(context)(Effect.logError('client_error')));
 
     yield* runRedisCommand(client, async () => await client.connect(), REDIS_CONNECTION_DEADLINE_MS);
 

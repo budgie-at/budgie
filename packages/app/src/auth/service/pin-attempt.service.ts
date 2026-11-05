@@ -45,7 +45,7 @@ export class PinAttemptService extends Context.Service<PinAttemptService>()('@bu
                 return noAttempts;
             }
 
-            return yield* Schema.decodeUnknownEffect(PinAttemptsSchema)(value).pipe(
+            return yield* Schema.decodeEffect(PinAttemptsSchema)(value).pipe(
                 Effect.catch(
                     Effect.fnUntraced(function* () {
                         const now = yield* Clock.currentTimeMillis;
@@ -88,7 +88,7 @@ export class PinAttemptService extends Context.Service<PinAttemptService>()('@bu
                 lockoutEndsAt: now + getLockoutMillis(failedAttempts)
             }).pipe(
                 Effect.as(true),
-                Effect.catch(() => Effect.succeed(false))
+                Effect.orElseSucceed(() => false)
             );
         });
 

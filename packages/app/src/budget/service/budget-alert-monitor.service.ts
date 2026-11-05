@@ -106,7 +106,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
                 return [];
             }
 
-            return Option.getOrElse(Schema.decodeUnknownOption(firedTriggersSchema)(raw), () => []);
+            return Option.getOrElse(Schema.decodeOption(firedTriggersSchema)(raw), () => []);
         });
 
         const postOverallAlert = Effect.fn('BudgetAlertMonitorService.postOverallAlert')(function* (

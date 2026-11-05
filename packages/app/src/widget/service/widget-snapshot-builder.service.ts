@@ -214,10 +214,9 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                     .sort((first, second) => second.progressRatio - first.progressRatio || second.spent - first.spent)
                     .slice(0, topCategoryCount);
 
-                return yield* Effect.all(
-                    ranked.map(entry => buildBudgetCategory(entry.categoryId, entry.progressRatio, context)),
-                    { concurrency: 'unbounded' }
-                );
+                return yield* Effect.forEach(ranked, entry => buildBudgetCategory(entry.categoryId, entry.progressRatio, context), {
+                    concurrency: 'unbounded'
+                });
             });
 
             const formatPeriod = (start: Date, end: Date, context: WidgetSnapshotContextInterface): string => {
