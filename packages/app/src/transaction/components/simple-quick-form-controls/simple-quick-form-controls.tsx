@@ -25,6 +25,7 @@ interface Props {
     readonly formState: ReturnType<typeof useSimpleQuickFormState>;
     readonly amountDisplayRef: RefObject<TransactionAmountDisplayRef | null>;
     readonly onSubmit: () => void;
+    readonly fee: ReactNode;
     readonly children: (fields: ReactNode, onConfirm: () => void) => ReactNode;
 }
 
@@ -35,6 +36,7 @@ export const SimpleQuickFormControls = ({
     formState,
     amountDisplayRef,
     onSubmit,
+    fee,
     children
 }: Props) => {
     const isExpense = transactionType === TransactionTypeEnum.EXPENSE;
@@ -73,6 +75,9 @@ export const SimpleQuickFormControls = ({
             <TransactionFieldIcons>
                 <TransactionDateTagsRow onDatePress={handleDatePress} />
                 <TransactionNoteFieldIcon onPress={handleCommentPress} />
+            </TransactionFieldIcons>
+            <TransactionFieldIcons>
+                {fee}
                 <TransactionSplitFieldIcon
                     splitEntryCount={formState.splitEntryCount}
                     isAmountPositive={formState.isAmountPositive}

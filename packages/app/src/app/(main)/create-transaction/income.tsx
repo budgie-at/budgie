@@ -47,7 +47,6 @@ export default function CreateIncomeTransactionPage() {
                     transactionType={TransactionTypeEnum.INCOME}
                     isNewTransaction
                     onSubmit={handleSubmit}
-                    onCancel={handleGoBack}
                 />
             </TransactionFormScreen>
         </FormProvider>

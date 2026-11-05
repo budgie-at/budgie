@@ -3939,12 +3939,12 @@ msgid "Features"
 msgstr "Funciones"
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+#: src/transaction/components/transaction-fee-field-icon/transaction-fee-field-icon.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Fee"
 msgstr "Comisión"
 
-#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
 #: src/transaction/hook/use-transaction-fee-label.hook.ts
 msgid "Fee {formattedAmount}"
 msgstr "Comisión {formattedAmount}"
@@ -4080,9 +4080,13 @@ msgid "French"
 msgstr "Francés"
 
 #: src/app/transaction-amount-filter.tsx
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "From"
 msgstr "De"
+
+#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
+msgctxt "transfer account"
+msgid "From"
+msgstr "Desde"
 
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead.tsx
 msgid "From {counterparty}"
@@ -5519,9 +5523,7 @@ msgstr "No está en ninguna transacción. Esto no se puede deshacer."
 msgid "Not saved yet"
 msgstr "Aún no se ha guardado"
 
-#: src/transaction/components/transaction-field-caption/transaction-field-caption.tsx
 #: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx
-#: src/transaction/components/transaction-metadata-field/transaction-metadata-field.tsx
 msgid "not set"
 msgstr "no establecido"
 
@@ -7070,10 +7072,6 @@ msgstr "Crear presupuesto"
 msgid "Set every category limit to continue"
 msgstr "Define todos los límites de categoría para continuar"
 
-#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
-msgid "Set fee"
-msgstr "Establecer comisión"
-
 #: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
 msgid "Set Maturity Date"
 msgstr "Establecer fecha de vencimiento"
@@ -7864,7 +7862,11 @@ msgid "Title"
 msgstr "Título"
 
 #: src/app/transaction-amount-filter.tsx
+msgid "To"
+msgstr "A"
+
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
+msgctxt "transfer account"
 msgid "To"
 msgstr "A"
 

@@ -3939,12 +3939,12 @@ msgid "Features"
 msgstr "Fonctionnalités"
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+#: src/transaction/components/transaction-fee-field-icon/transaction-fee-field-icon.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Fee"
 msgstr "Frais"
 
-#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
 #: src/transaction/hook/use-transaction-fee-label.hook.ts
 msgid "Fee {formattedAmount}"
 msgstr "Frais {formattedAmount}"
@@ -4080,7 +4080,11 @@ msgid "French"
 msgstr "Français"
 
 #: src/app/transaction-amount-filter.tsx
+msgid "From"
+msgstr "De"
+
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
+msgctxt "transfer account"
 msgid "From"
 msgstr "De"
 
@@ -5519,9 +5523,7 @@ msgstr "Utilisé dans aucune transaction. Cette action est irréversible."
 msgid "Not saved yet"
 msgstr "Pas encore enregistrée"
 
-#: src/transaction/components/transaction-field-caption/transaction-field-caption.tsx
 #: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx
-#: src/transaction/components/transaction-metadata-field/transaction-metadata-field.tsx
 msgid "not set"
 msgstr "non défini"
 
@@ -7070,10 +7072,6 @@ msgstr "Définir un budget"
 msgid "Set every category limit to continue"
 msgstr "Définissez chaque limite de catégorie pour continuer"
 
-#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
-msgid "Set fee"
-msgstr "Définir les frais"
-
 #: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
 msgid "Set Maturity Date"
 msgstr "Définir la date d'échéance"
@@ -7864,7 +7862,11 @@ msgid "Title"
 msgstr "Titre"
 
 #: src/app/transaction-amount-filter.tsx
+msgid "To"
+msgstr "Vers"
+
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
+msgctxt "transfer account"
 msgid "To"
 msgstr "Vers"
 

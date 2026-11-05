@@ -3940,12 +3940,12 @@ msgid "Features"
 msgstr "Features"
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+#: src/transaction/components/transaction-fee-field-icon/transaction-fee-field-icon.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Fee"
 msgstr "Fee"
 
-#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
 #: src/transaction/hook/use-transaction-fee-label.hook.ts
 msgid "Fee {formattedAmount}"
 msgstr "Fee {formattedAmount}"
@@ -4081,7 +4081,11 @@ msgid "French"
 msgstr "French"
 
 #: src/app/transaction-amount-filter.tsx
+msgid "From"
+msgstr "From"
+
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
+msgctxt "transfer account"
 msgid "From"
 msgstr "From"
 
@@ -5520,9 +5524,7 @@ msgstr "Not on any transactions. This can’t be undone."
 msgid "Not saved yet"
 msgstr "Not saved yet"
 
-#: src/transaction/components/transaction-field-caption/transaction-field-caption.tsx
 #: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx
-#: src/transaction/components/transaction-metadata-field/transaction-metadata-field.tsx
 msgid "not set"
 msgstr "not set"
 
@@ -7071,10 +7073,6 @@ msgstr "Set budget"
 msgid "Set every category limit to continue"
 msgstr "Set every category limit to continue"
 
-#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
-msgid "Set fee"
-msgstr "Set fee"
-
 #: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
 msgid "Set Maturity Date"
 msgstr "Set Maturity Date"
@@ -7865,7 +7863,11 @@ msgid "Title"
 msgstr "Title"
 
 #: src/app/transaction-amount-filter.tsx
+msgid "To"
+msgstr "To"
+
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
+msgctxt "transfer account"
 msgid "To"
 msgstr "To"
 

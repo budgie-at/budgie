@@ -3,23 +3,18 @@ import { LayoutChangeEvent, useWindowDimensions } from 'react-native';
 
 import { getTransactionKeypadLayout } from '../utils/get-transaction-keypad-layout.util';
 
-export const useQuickFormLayout = (footerHeight?: number) => {
+export const useQuickFormLayout = () => {
     const { fontScale } = useWindowDimensions();
     const [height, setHeight] = useState(0);
     const [amountHeight, setAmountHeight] = useState(0);
-    const { keypadStyle, requiresScrolling } = getTransactionKeypadLayout(
-        fontScale,
-        height === 0 ? Infinity : height - amountHeight - 24,
-        footerHeight
-    );
+    const { requiresScrolling } = getTransactionKeypadLayout(fontScale, height === 0 ? Infinity : height - amountHeight);
     const handleLayout = (event: LayoutChangeEvent) => void setHeight(event.nativeEvent.layout.height);
     const handleAmountLayout = (event: LayoutChangeEvent) => void setAmountHeight(event.nativeEvent.layout.height);
 
     return {
-        requiresScrolling,
+        isScrollingLayout: requiresScrolling,
         handleLayout,
         handleAmountLayout,
-        isLoading: height === 0 || amountHeight === 0,
-        keypadContainerStyle: { height: keypadStyle.maxHeight }
+        isLoading: height === 0 || amountHeight === 0
     };
 };

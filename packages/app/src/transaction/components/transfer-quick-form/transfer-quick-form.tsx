@@ -28,7 +28,7 @@ import { QuickFormValidationSlot } from '../quick-form-validation-slot/quick-for
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 import { TransactionDateFieldIcon } from '../transaction-date-field-icon/transaction-date-field-icon';
-import { TransactionFeePill } from '../transaction-fee-pill/transaction-fee-pill';
+import { TransactionFeeFieldIcon } from '../transaction-fee-field-icon/transaction-fee-field-icon';
 import { TransactionFieldIcons } from '../transaction-field-icons/transaction-field-icons';
 import { TransactionFormActions } from '../transaction-form-actions/transaction-form-actions';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
@@ -48,8 +48,8 @@ interface Props {
     readonly isSubmitting?: boolean;
     readonly isNewTransaction?: boolean;
     readonly onSubmit: () => void;
-    readonly onCancel: () => void;
     readonly onConsolidationPress?: () => void;
+    readonly onCancel?: () => void;
 }
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Transfer form orchestrates multiple hooks and display computations
@@ -63,7 +63,7 @@ export const TransferQuickForm = (props: Props) => {
     const { handleCommentPress, handleDatePress } = useQuickFormModals();
     const { fromAccountId, toAccountId, fromAccount, toAccount } = useTransferAccounts();
 
-    const { isEditingAmount, toggleKeypad, startEditingAmount, footerHeight, amountAccessoryIcon, amountAccessibilityHint } =
+    const { isEditingAmount, toggleKeypad, startEditingAmount, amountAccessoryIcon, amountAccessibilityHint } =
         useTransactionKeypadEditing(isNewTransaction);
 
     const [isEditingDestination, setIsEditingDestination] = useState(false);
@@ -226,9 +226,10 @@ export const TransferQuickForm = (props: Props) => {
         props.onSubmit();
     };
 
+    const keypad = isEditingAmount ? <TransactionKeypad keypad={activeKeypad.handlers} /> : null;
+
     return (
         <QuickFormLayout
-            footerHeight={footerHeight}
             amount={
                 <TransactionAmountDisplay
                     ref={amountDisplayRef}
@@ -252,27 +253,19 @@ export const TransferQuickForm = (props: Props) => {
                                 onPress={handleConversionRowPress}
                             />
                         ) : null}
-                        <TransactionFeePill
-                            amount={feeAmount}
-                            currencySymbol={feeCurrencySymbol}
-                            instrumentType={feeInstrumentType}
-                            showEmptyState={isNewTransaction}
-                            onPress={handleFeePress}
-                        />
                     </QuickFormSecondaryLine>
                     <QuickFormValidationSlot />
                 </View>
             }
-            footer={
+            keypad={keypad}
+            actions={
                 <TransactionFormActions
                     label={confirmLabel}
                     isDisabled={isConfirmDisabled}
                     onConfirm={handleConfirm}
                     onCancel={props.onCancel}
                     testID={SimpleQuickFormSelector.SubmitButton}
-                >
-                    {isEditingAmount ? <TransactionKeypad keypad={activeKeypad.handlers} /> : null}
-                </TransactionFormActions>
+                />
             }
         >
             <View className="gap-[12px]">
@@ -288,6 +281,13 @@ export const TransferQuickForm = (props: Props) => {
                 <TransactionFieldIcons>
                     <TransactionDateFieldIcon onPress={handleDatePress} />
                     <TransactionNoteFieldIcon onPress={handleCommentPress} />
+                    <TransactionFeeFieldIcon
+                        amount={feeAmount}
+                        currencySymbol={feeCurrencySymbol}
+                        instrumentType={feeInstrumentType}
+                        showEmptyState={isNewTransaction}
+                        onPress={handleFeePress}
+                    />
                     {isDefined(props.onConsolidationPress) ? <TransactionSourcesFieldIcon onPress={props.onConsolidationPress} /> : null}
                 </TransactionFieldIcons>
             </View>

@@ -6,7 +6,7 @@ import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
@@ -74,10 +74,10 @@ export const TransactionTransferAccountsRow = ({ ref }: Props) => {
     };
 
     return (
-        <View className="flex-row items-center gap-x-[8px] rounded-3xl bg-grouped-surface-row pr-[8px]">
-            <View className="flex-1 gap-y-[8px]">
+        <View className="flex-row items-center overflow-hidden rounded-3xl bg-grouped-surface-row pr-[4px]">
+            <View className="-mt-px flex-1">
                 <TransferAccountPicker
-                    label={t`From`}
+                    label={t({ message: 'From', context: 'transfer account' })}
                     account={fromAccount}
                     placeholder={t`Select account`}
                     animatedStyle={fromAnimatedStyle}
@@ -87,7 +87,7 @@ export const TransactionTransferAccountsRow = ({ ref }: Props) => {
                 />
 
                 <TransferAccountPicker
-                    label={t`To`}
+                    label={t({ message: 'To', context: 'transfer account' })}
                     account={toAccount}
                     placeholder={t`Select account`}
                     animatedStyle={toAnimatedStyle}
@@ -103,7 +103,7 @@ export const TransactionTransferAccountsRow = ({ ref }: Props) => {
                 accessibilityLabel={t`Swap accounts`}
                 accessibilityRole="button"
             >
-                <CircleIcon icon={UserIconNameEnum.ArrowLeftRight} variant="ghost" size={44} iconSize={20} />
+                <GroupedListIcon icon={UserIconNameEnum.ArrowUpDown} />
             </HapticPressable>
         </View>
     );

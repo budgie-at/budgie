@@ -3939,12 +3939,12 @@ msgid "Features"
 msgstr "Funktionen"
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+#: src/transaction/components/transaction-fee-field-icon/transaction-fee-field-icon.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Fee"
 msgstr "Gebühr"
 
-#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
 #: src/transaction/hook/use-transaction-fee-label.hook.ts
 msgid "Fee {formattedAmount}"
 msgstr "Gebühr {formattedAmount}"
@@ -4080,7 +4080,11 @@ msgid "French"
 msgstr "Französisch"
 
 #: src/app/transaction-amount-filter.tsx
+msgid "From"
+msgstr "Von"
+
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
+msgctxt "transfer account"
 msgid "From"
 msgstr "Von"
 
@@ -5519,9 +5523,7 @@ msgstr "Bei keiner Transaktion verwendet. Dies kann nicht rückgängig gemacht w
 msgid "Not saved yet"
 msgstr "Noch nicht gespeichert"
 
-#: src/transaction/components/transaction-field-caption/transaction-field-caption.tsx
 #: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx
-#: src/transaction/components/transaction-metadata-field/transaction-metadata-field.tsx
 msgid "not set"
 msgstr "nicht gesetzt"
 
@@ -7070,10 +7072,6 @@ msgstr "Budget festlegen"
 msgid "Set every category limit to continue"
 msgstr "Alle Kategorielimits festlegen, um fortzufahren"
 
-#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
-msgid "Set fee"
-msgstr "Gebühr festlegen"
-
 #: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
 msgid "Set Maturity Date"
 msgstr "Fälligkeitsdatum festlegen"
@@ -7864,9 +7862,13 @@ msgid "Title"
 msgstr "Titel"
 
 #: src/app/transaction-amount-filter.tsx
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "To"
 msgstr "Nach"
+
+#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
+msgctxt "transfer account"
+msgid "To"
+msgstr "An"
 
 #: src/categorize-inbox/components/categorize-inbox-transfer-undo/categorize-inbox-transfer-undo.tsx
 msgid "To {accountTitle}"
