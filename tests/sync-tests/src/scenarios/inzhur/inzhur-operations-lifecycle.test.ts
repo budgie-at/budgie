@@ -1,5 +1,11 @@
 import { ExternalSourceEnum, PRECISION, TransactionEntityTable, TransactionTypeEnum } from '@budgie/contracts';
-import { InzhurGainService, InzhurImportOutcomeEnum, InzhurSetupService } from '@budgie/sync';
+import {
+    InzhurGainRangeEnum,
+    InzhurGainService,
+    InzhurImportOutcomeEnum,
+    InzhurSetupService,
+    TransferConsolidationService
+} from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -11,6 +17,7 @@ import { buildInzhurStatementItems } from '../../harness/inzhur/build-inzhur-sta
 import { fetchBeforeTrackingCorrections } from '../../harness/inzhur/fetch-before-tracking-corrections';
 import { fetchInzhurLedger } from '../../harness/inzhur/fetch-inzhur-ledger';
 import { fetchSourceLedger } from '../../harness/inzhur/fetch-source-ledger';
+import { importInzhurBankTransaction } from '../../harness/inzhur/import-inzhur-bank-transaction';
 import { importInzhurOperations } from '../../harness/inzhur/import-inzhur-operations';
 import { importInzhurStatement } from '../../harness/inzhur/import-inzhur-statement';
 import { INZHUR_REIT_LAYOUT } from '../../harness/inzhur/inzhur-fund-layouts';
@@ -20,13 +27,15 @@ import {
     DIVIDEND_TYPE,
     FULL_HISTORY_ROWS,
     OCEAN,
-    REIT
+    REIT,
+    TOP_UP_TYPE
 } from '../../harness/inzhur/inzhur-operation-rows.constant';
 import { FIRST_URI, SECOND_URI, SECOND_DATE } from '../../harness/inzhur/inzhur-statement-fixtures.constant';
 import { makeInzhurOperationsLayer } from '../../harness/inzhur/make-inzhur-operations-layer';
 import { requireInzhurFundAccount } from '../../harness/inzhur/require-inzhur-fund-account';
 import { requireInzhurFundByName } from '../../harness/inzhur/require-inzhur-fund-by-name';
 import { requireInzhurSetup } from '../../harness/inzhur/require-inzhur-setup';
+import { seedInzhurBankAccount } from '../../harness/inzhur/seed-inzhur-bank-account';
 import { seedInzhurFundInstrument } from '../../harness/inzhur/seed-inzhur-fund-instrument';
 import { seedInzhurPrice } from '../../harness/inzhur/seed-inzhur-price';
 import { setUpInzhurWithBaseline } from '../../harness/inzhur/set-up-inzhur-with-baseline';
@@ -35,6 +44,7 @@ const URI = 'operations.xlsx';
 const OLDER_URI = 'older.xlsx';
 const NEWER_URI = 'newer.xlsx';
 const PARTIAL_URI = 'partial.xlsx';
+const FRESH_URI = 'fresh.xlsx';
 const REIT_CODE = 'INZHUR:REIT';
 const ENERGY_NAME = 'Inzhur Energy';
 const PARTIAL_ROWS = [
@@ -46,7 +56,8 @@ const bytesByUri = {
     [URI]: buildInzhurOperationsWorkbook(FULL_HISTORY_ROWS),
     [OLDER_URI]: buildInzhurOperationsWorkbook(FULL_HISTORY_ROWS.slice(0, 4)),
     [NEWER_URI]: buildInzhurOperationsWorkbook(FULL_HISTORY_ROWS.slice(4)),
-    [PARTIAL_URI]: buildInzhurOperationsWorkbook(PARTIAL_ROWS)
+    [PARTIAL_URI]: buildInzhurOperationsWorkbook(PARTIAL_ROWS),
+    [FRESH_URI]: buildInzhurOperationsWorkbook([...FULL_HISTORY_ROWS, { at: '2026-06-10T10:00:00', type: TOP_UP_TYPE, debit: 50 }])
 };
 const statementItems = {
     [FIRST_URI]: buildInzhurBaselineItems(470, 2),
@@ -57,6 +68,7 @@ const layer = makeInzhurOperationsLayer(bytesByUri, statementItems);
 const seedReit = Effect.gen(function* () {
     yield* seedInzhurFundInstrument(REIT_CODE, REIT);
     yield* seedInzhurPrice(REIT_CODE, CONVERSION_AT.slice(0, 10), 10);
+    yield* seedInzhurPrice(REIT_CODE, '2026-01-10', 10);
 });
 
 const setUp = (enteredCash: number) => Effect.flatMap(InzhurSetupService, service => service.setup(enteredCash));
@@ -206,6 +218,53 @@ describe('inzhur/operations-lifecycle', () => {
                 returnAmount: 0,
                 percent: 0
             });
+        }).pipe(Effect.provide(layer))
+    );
+
+    it.effect('values a holdings correction at that day price and keeps it out of gain and cost', () =>
+        Effect.gen(function* () {
+            yield* setUp(0);
+            yield* seedReit;
+            yield* importInzhurOperations(URI);
+            yield* importInzhurStatement(FIRST_URI);
+
+            const gain = yield* InzhurGainService;
+            const reit = yield* requireInzhurFundByName(REIT);
+            const report = yield* gain.getFundReport(reit.id, '2026-10-15');
+            const costReturn = yield* gain.getFundCostReturn(reit.id, '2026-10-15');
+
+            expect(yield* fetchAccountBalance(reit.id)).toBe(470 * PRECISION);
+            expect(report?.gains.find(item => item.range === InzhurGainRangeEnum.ALL)?.gain).toBe(0);
+            expect(costReturn).toMatchObject({ invested: 4800, value: 4700, returnAmount: 0 });
+        }).pipe(Effect.provide(layer))
+    );
+
+    it.effect('clears the statement reminder when a fresh operations export is imported', () =>
+        Effect.gen(function* () {
+            yield* setUp(0);
+            yield* seedReit;
+            yield* importInzhurOperations(URI);
+
+            const bankAccount = yield* seedInzhurBankAccount;
+            const setupService = yield* InzhurSetupService;
+
+            yield* importInzhurBankTransaction(
+                bankAccount.id,
+                'later-top-up',
+                'ТОВ "Інжур Кепітал"',
+                -700,
+                new Date('2026-05-01T08:00:00.000Z')
+            );
+            yield* Effect.flatMap(TransferConsolidationService, service => service.consolidate(null));
+
+            expect(yield* setupService.findStatementReminder(new Date('2026-03-25T00:00:00.000Z'))).toBeNull();
+            expect(yield* setupService.findStatementReminder(new Date('2026-06-15T00:00:00.000Z'))).toMatchObject({
+                lastStatementDate: '2026-03-20'
+            });
+
+            yield* importInzhurOperations(FRESH_URI);
+
+            expect(yield* setupService.findStatementReminder(new Date('2026-06-15T00:00:00.000Z'))).toBeNull();
         }).pipe(Effect.provide(layer))
     );
 });

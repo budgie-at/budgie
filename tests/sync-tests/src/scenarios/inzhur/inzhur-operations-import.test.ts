@@ -188,4 +188,26 @@ describe('inzhur/operations-import', () => {
             )
         )
     );
+
+    it.effect('classifies an export as full when cash only dips within a day', () =>
+        Effect.gen(function* () {
+            const inzhurSetupService = yield* InzhurSetupService;
+
+            yield* inzhurSetupService.setup(0);
+
+            const summary = yield* importInzhurOperations('dip.xlsx');
+
+            expect(summary).toMatchObject({ isFullHistory: true, cashBalance: 20 });
+        }).pipe(
+            Effect.provide(
+                makeInzhurOperationsLayer({
+                    'dip.xlsx': buildInzhurOperationsWorkbook([
+                        { at: '2026-02-01T09:00:00', type: TOP_UP_TYPE, debit: 100 },
+                        { at: '2026-02-02T10:00:00', type: 'Купівля 13 сертифікатів', fund: REIT, credit: 130 },
+                        { at: '2026-02-02T10:05:00', type: TOP_UP_TYPE, debit: 50 }
+                    ])
+                })
+            )
+        )
+    );
 });
