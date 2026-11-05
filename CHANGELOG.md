@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.157.0](https://github.com/budgie-at/budgie/compare/v6.156.0...v6.157.0) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** adapt voice review to accessibility text ([2441ffc](https://github.com/budgie-at/budgie/commit/2441ffcbd6b5fbc57288d4dc97459466d045b37c))
+* **app:** balance voice review accessibility typography ([df99dba](https://github.com/budgie-at/budgie/commit/df99dba51a58a10caec67a0b49ca83f79bc8a695))
+
+### Features
+
+* **app:** emphasize voice recovery in compact empty sheet ([6163c64](https://github.com/budgie-at/budgie/commit/6163c64ec1348f34d9de32e7ebb9977b8e26bdff))
+* **app:** finish voice review sheet ([b15f694](https://github.com/budgie-at/budgie/commit/b15f694e9383bac04e9c32142f86a2078426b9ea))
+
+
 # [6.156.0](https://github.com/budgie-at/budgie/compare/v6.155.0...v6.156.0) (2026-11-05)
 
 ### Bug Fixes
