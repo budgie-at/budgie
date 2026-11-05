@@ -14,13 +14,17 @@ export const OnboardingWelcome = () => {
     const { goToStep } = useOnboardingNavigation();
 
     const handleStartPress = () => void goToStep(OnboardingStepEnum.KEY);
+    const contentContainerStyle = {
+        flexGrow: 1,
+        justifyContent: 'center',
+        paddingHorizontal: 24,
+        paddingVertical: 32,
+        rowGap: 48
+    } as const;
 
     return (
         <GroupedSurface testID={OnboardingWelcomeSelector.Root}>
-            <ScrollView
-                className="flex-1 pt-safe pb-safe"
-                contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingHorizontal: 24, paddingVertical: 32, rowGap: 48 }}
-            >
+            <ScrollView className="flex-1 pt-safe pb-safe" contentContainerStyle={contentContainerStyle}>
                 <View className="items-center gap-y-lg">
                     <BudgieLogo size={72} />
 
