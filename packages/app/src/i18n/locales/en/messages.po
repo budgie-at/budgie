@@ -5840,7 +5840,6 @@ msgid "Organize"
 msgstr "Organize"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 msgid "Original expense"
 msgstr "Original expense"
 

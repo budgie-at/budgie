@@ -5,6 +5,7 @@ import { Text } from 'react-native';
 import { EmptyFn, isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
 import { useGetConsolidationSourcesQuery } from '../../query/use-get-consolidation-sources.query';
 import { getTransactionListRowPosition } from '../../utils/get-transaction-list-row-position.util';
@@ -13,6 +14,7 @@ import { TransactionPickerAction } from '../transaction-picker-action/transactio
 import { TransactionPickerContext } from '../transaction-picker-context/transaction-picker-context';
 import { TransactionPickerEmpty } from '../transaction-picker-empty/transaction-picker-empty';
 import { TransactionPickerFailure } from '../transaction-picker-failure/transaction-picker-failure';
+import { TransactionPickerSheetHeader } from '../transaction-picker-sheet-header/transaction-picker-sheet-header';
 import { TransactionPickerSheet } from '../transaction-picker-sheet/transaction-picker-sheet';
 
 import { ConsolidationSourceModalSelector } from './consolidation-source-modal-content.selector';
@@ -25,6 +27,7 @@ interface Props {
 
 export const ConsolidationSourceModalContent = ({ transactionId, onClose, onRevertSuccess }: Props) => {
     const { t } = useLingui();
+    const largeText = useIsAccessibilityTextSize();
     const { sources, consolidationType, hasError, isLoading, retry } = useGetConsolidationSourcesQuery(transactionId);
     const revertConsolidation = useRevertConsolidation(transactionId, onRevertSuccess);
     const contextLabel = consolidationType === TransactionConsolidationTypeEnum.REFUND ? t`Original expense` : t`Original transaction`;
@@ -33,10 +36,14 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
 
     return (
         <TransactionPickerSheet
-            title={t`Sources`}
-            closeLabel={t`Done`}
-            onClose={onClose}
-            closeTestID={ConsolidationSourceModalSelector.DoneButton}
+            header={
+                <TransactionPickerSheetHeader
+                    title={t`Sources`}
+                    closeLabel={t`Done`}
+                    onClose={onClose}
+                    closeTestID={ConsolidationSourceModalSelector.DoneButton}
+                />
+            }
             footer={
                 <TransactionPickerAction
                     label={t`Separate all`}
@@ -46,6 +53,11 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
                 />
             }
         >
+            {largeText ? (
+                <Text dynamicTypeRamp="title2" accessibilityRole="header" className="pt-xl text-[20px] font-semibold text-primary">
+                    <Trans>Sources</Trans>
+                </Text>
+            ) : null}
             <TransactionPickerContext transactionId={transactionId} label={contextLabel} />
             <LoadingContent isLoading={isLoading} containerClassName="grow shrink-0">
                 {hasError ? <TransactionPickerFailure onRetry={retry} /> : null}

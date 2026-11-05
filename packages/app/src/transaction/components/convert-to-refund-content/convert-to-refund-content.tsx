@@ -18,6 +18,7 @@ import { TransactionPickerContext } from '../transaction-picker-context/transact
 import { TransactionPickerEmpty } from '../transaction-picker-empty/transaction-picker-empty';
 import { TransactionPickerFailure } from '../transaction-picker-failure/transaction-picker-failure';
 import { TransactionPickerRow } from '../transaction-picker-row/transaction-picker-row';
+import { TransactionPickerSheetHeader } from '../transaction-picker-sheet-header/transaction-picker-sheet-header';
 import { TransactionPickerSheet } from '../transaction-picker-sheet/transaction-picker-sheet';
 
 import type { ConvertToRefundModalResolveType } from '../../interface/convert-to-refund-modal-resolve.type';
@@ -56,10 +57,9 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
 
     return (
         <TransactionPickerSheet
-            title={t`Refund`}
-            closeLabel={t`Cancel`}
-            onClose={handleResolve}
-            disabled={isConverting}
+            header={
+                <TransactionPickerSheetHeader title={t`Refund`} closeLabel={t`Cancel`} onClose={handleResolve} disabled={isConverting} />
+            }
             testID={ConvertToRefundModalSelector.Picker}
             footer={
                 <ConvertToRefundFooter
@@ -71,8 +71,12 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
                 />
             }
         >
-            <TransactionPickerContext transactionId={refundIncomeTransactionId} label={t`Refund`} />
-            <Text dynamicTypeRamp="footnote" className="pb-xl text-[15px] text-secondary-foreground">
+            <TransactionPickerContext
+                transactionId={refundIncomeTransactionId}
+                label={t`Refund`}
+                labelClassName="text-[17px] font-semibold text-primary"
+            />
+            <Text dynamicTypeRamp="footnote" accessibilityRole="header" className="pb-xl text-[15px] text-secondary-foreground">
                 <Trans>Choose the original expense.</Trans>
             </Text>
             <SearchInput
@@ -83,14 +87,7 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
                 onChangeText={handleSearchChange}
                 testID={ConvertToRefundModalSelector.SearchInput}
             />
-            <Text
-                dynamicTypeRamp="footnote"
-                accessibilityRole="header"
-                className="pt-xl pb-md text-[13px] font-semibold text-secondary-foreground"
-            >
-                <Trans>Original expense</Trans>
-            </Text>
-            <LoadingContent isLoading={isLoading} containerClassName="grow shrink-0">
+            <LoadingContent isLoading={isLoading} containerClassName="grow shrink-0 pt-xl">
                 {isNotEmptyString(errorMessage) ? <TransactionPickerFailure onRetry={retry} /> : null}
                 {showEmpty ? (
                     <TransactionPickerEmpty
