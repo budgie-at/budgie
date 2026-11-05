@@ -4,7 +4,7 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { Stack } from 'expo-router';
 import { useEffect, useEffectEvent } from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, useWindowDimensions } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { isDefined, isEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
@@ -19,6 +19,7 @@ import { useGetAccountByIdQuery } from '../account/query/use-get-account-by-id.q
 import { VoiceReviewFooter } from '../ai/component/voice-review-footer/voice-review-footer';
 import { VoiceReviewItem } from '../ai/component/voice-review-item/voice-review-item';
 import { VoiceReviewSaveButton } from '../ai/component/voice-review-save-button/voice-review-save-button';
+import { VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE } from '../ai/constant/voice-review-accessibility-font-scale.constant';
 import { useVoiceReviewModal, useVoiceReviewModalParams } from '../ai/context/voice-review-modal.context';
 import { useVoiceReview } from '../ai/hook/use-voice-review.hook';
 import { VoiceReviewRowInterface } from '../ai/interface/voice-review-row.interface';
@@ -58,6 +59,7 @@ const mapExtractedToReviewRows = (transactions: AITransactionInterface[]): Voice
 // eslint-disable-next-line max-statements, max-lines-per-function -- Form-sheet route orchestrates per-row category, save, and re-record
 export default function VoiceReviewModal() {
     const { t } = useLingui();
+    const { fontScale } = useWindowDimensions();
     const defaultAccount = useAtomValue(defaultAccountAtom);
     const [, resolveVoiceReview, dismissVoiceReview] = useVoiceReviewModal();
     useModalDismiss(dismissVoiceReview);
@@ -75,7 +77,7 @@ export default function VoiceReviewModal() {
     const currencySymbol = accountWithInstrument?.instrument.symbol ?? '';
     const screenOptions = formSheetOptions(
         isEmptyArray(rows) ? [EMPTY_SHEET_DETENT, EXPANDED_SHEET_DETENT] : [0.65, EXPANDED_SHEET_DETENT],
-        0
+        fontScale >= VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE ? 1 : 0
     );
     const canDelete = rows.length > 1;
     const canSaveToAccount = canSave && isPositiveNumber(accountId);

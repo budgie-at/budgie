@@ -1,12 +1,14 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { ReactNode } from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, useWindowDimensions } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
+import { cn } from '../../../@generic/utils/cn.util';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE } from '../../constant/voice-review-accessibility-font-scale.constant';
 
 import { VoiceReviewFooterSelector } from './voice-review-footer.selector';
 
@@ -25,8 +27,11 @@ interface Props {
 export const VoiceReviewFooter = (props: Props) => {
     const { count, isSaving, totalAmount, currencySymbol, onCancel, onReRecord, children } = props;
     const { t } = useLingui();
+    const { fontScale } = useWindowDimensions();
     const formatDigits = useDisplayFormatDigits();
     const reRecordVariant = isPositiveNumber(count) ? 'secondary' : 'cta';
+    const actionLayoutClassName = fontScale >= VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE ? 'flex-col gap-y-md' : 'flex-row gap-x-md';
+    const actionClassName = cn('min-h-[44px] px-md', fontScale < VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE && 'flex-1');
     const totalLabel = formatDigits(totalAmount, `${currencySymbol} `);
 
     return (
@@ -40,13 +45,13 @@ export const VoiceReviewFooter = (props: Props) => {
                 </View>
             ) : null}
 
-            <View className="flex-row gap-x-md">
+            <View className={actionLayoutClassName}>
                 <Button
                     variant="ghost"
                     content={t`Cancel`}
                     onPress={onCancel}
                     disabled={isSaving}
-                    className="flex-1 min-h-[44px] px-md border-transparent bg-transparent"
+                    className={cn(actionClassName, 'border-transparent bg-transparent')}
                     testID={VoiceReviewFooterSelector.CancelButton}
                 />
                 <Button
@@ -55,7 +60,7 @@ export const VoiceReviewFooter = (props: Props) => {
                     content={t`Re-record`}
                     onPress={onReRecord}
                     disabled={isSaving}
-                    className="flex-1 min-h-[44px] px-md"
+                    className={actionClassName}
                     testID={VoiceReviewFooterSelector.ReRecordButton}
                 />
             </View>
