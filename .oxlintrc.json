@@ -91,7 +91,7 @@
         "effecttsgo/lazy-effect": "off",
         "effecttsgo/unnecessary-effect-gen": "off",
         "effecttsgo/schema-number": "off",
-        "effecttsgo/schema-class-missing-brand": "off",
+        "effecttsgo/schema-class-missing-brand": "error",
         "effecttsgo/crypto-random-uuid": "error",
         "effecttsgo/crypto-random-uuid-in-effect": "error",
         "effecttsgo/effect-do-notation": "error",
