@@ -1,4 +1,4 @@
 export enum QuickFormHeroAlignmentEnum {
-    START = 'START',
+    CENTER = 'CENTER',
     END = 'END'
 }

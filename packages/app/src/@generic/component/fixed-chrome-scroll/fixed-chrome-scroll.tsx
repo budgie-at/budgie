@@ -23,7 +23,7 @@ export const FixedChromeScroll = ({ children, testID }: Props) => {
             keyboardShouldPersistTaps="handled"
             testID={testID}
         >
-            <View className="gap-y-7xl px-5xl pt-xl">{children}</View>
+            <View className="gap-y-[32px] px-5xl pt-xl">{children}</View>
         </ScreenChromeScrollView>
     );
 };

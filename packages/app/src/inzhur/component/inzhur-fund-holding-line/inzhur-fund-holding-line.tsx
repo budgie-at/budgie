@@ -1,4 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
+import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -27,11 +28,16 @@ export const InzhurFundHoldingLine = ({ account, balance }: Props) => {
     const quantityLabel = formatFundQuantity(balance);
     const priceLabel = isDefined(latestPrice) ? formatAmount(latestPrice.price, symbol) : '';
     const priceDate = isDefined(latestPrice) ? formatMonthAndDayAndOptionalYear(latestPrice.priceDate) : '';
-    const holdingLabel = isDefined(latestPrice) ? t`${quantityLabel} · ${priceLabel} each · ${priceDate}` : quantityLabel;
+    const holdingLabel = isDefined(latestPrice) ? t`${quantityLabel} · ${priceLabel} each` : quantityLabel;
 
     return (
-        <ProtectedText className="px-5xl text-center text-[15px] leading-[20px] text-secondary-foreground tabular-nums">
-            {holdingLabel}
-        </ProtectedText>
+        <View className="items-center px-5xl">
+            <ProtectedText className="text-center text-[15px] leading-[20px] text-secondary-foreground tabular-nums">
+                {holdingLabel}
+            </ProtectedText>
+            {isDefined(latestPrice) ? (
+                <Text className="text-center text-[15px] leading-[20px] text-secondary-foreground tabular-nums">{t`Price as of ${priceDate}`}</Text>
+            ) : null}
+        </View>
     );
 };

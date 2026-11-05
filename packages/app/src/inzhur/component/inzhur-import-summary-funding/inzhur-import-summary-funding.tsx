@@ -30,11 +30,17 @@ export const InzhurImportSummaryFunding = ({ summary, symbol }: Props) => {
     return (
         <GroupedListSection title={title}>
             <View className="gap-y-lg px-3xl py-[12px]">
-                <InzhurMoneyRow label={cashLabel} amount={cashAmount} instrumentSymbol={symbol} icon={UserIconNameEnum.Banknote} />
+                <InzhurMoneyRow
+                    label={cashLabel}
+                    caption={t`Available balance`}
+                    amount={cashAmount}
+                    instrumentSymbol={symbol}
+                    icon={UserIconNameEnum.Banknote}
+                />
                 {isPositiveNumber(uncoveredCashAmount) ? (
                     <InzhurMoneyRow
                         label={t`From a bank top-up`}
-                        caption={t`Waiting for the bank transfer`}
+                        caption={t`Bank transaction not matched yet`}
                         amount={uncoveredCashAmount}
                         instrumentSymbol={symbol}
                         icon={UserIconNameEnum.Clock}

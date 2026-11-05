@@ -1,4 +1,4 @@
-import { convertFromMicroUnits } from '@budgie/contracts';
+import { UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
@@ -31,20 +31,22 @@ export const InzhurFundReturnsCard = ({ account }: Props) => {
 
     return (
         <View
-            className="gap-y-md self-stretch rounded-3xl bg-surface-row px-3xl py-md"
+            className="gap-y-lg self-stretch rounded-3xl bg-surface-row px-3xl py-[12px]"
             style={CONTINUOUS_CORNERS}
             testID={InzhurSelector.FundReturns}
         >
             <InzhurMoneyRow
-                label={t`Estimated dividends to date`}
+                label={t`Estimated dividends`}
                 caption={reinvestedCaption}
                 amount={reinvested}
                 instrumentSymbol={symbol}
+                icon={UserIconNameEnum.RefreshCw}
             />
             {isPositiveNumber(bank) ? (
                 <InzhurMoneyRow
                     label={t`Bank dividends`}
                     caption={t`From your bank transactions`}
+                    icon={UserIconNameEnum.Landmark}
                     amount={bank}
                     instrumentSymbol={symbol}
                 />

@@ -14,7 +14,7 @@ export const InzhurCashAccountCard = ({ account, balance }: Props) => {
     const { t } = useLingui();
 
     return (
-        <AccountCardBase account={account} balance={balance} convertedBalance={null} subtitle={t`Available to invest`}>
+        <AccountCardBase account={account} balance={balance} convertedBalance={null} subtitle={t`Not yet invested`}>
             <AccountCardBalance title={account.title} balance={balance} instrumentSymbol={account.instrument.symbol} />
         </AccountCardBase>
     );

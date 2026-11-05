@@ -5,6 +5,7 @@ import { Text, View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
+import { ListRowDetail } from '../../../@generic/component/list-row-detail/list-row-detail';
 import { ListRow } from '../../../@generic/component/list-row/list-row';
 import { MoneyText } from '../../../@generic/component/money-text/money-text';
 import { NeutralIconTile } from '../../../@generic/component/neutral-icon-tile/neutral-icon-tile';
@@ -28,16 +29,16 @@ export const InzhurImportSummaryFundRow = ({ fund, symbol }: Props) => {
     const { isin, name, deltaQuantity, exchangedAmount, dividendAmount } = fund;
 
     const fundIcon = INZHUR_CANONICAL_FUNDS.find(canonicalFund => canonicalFund.name === name)?.icon ?? UserIconNameEnum.ChartLine;
-    const quantityLabel = `${deltaQuantity > 0 ? '+' : '−'}${formatFundQuantity(Math.abs(deltaQuantity)).replaceAll(' ', '\u00A0')}`;
+    const quantityLabel = `${deltaQuantity > 0 ? '+' : '−'}${formatFundQuantity(Math.abs(deltaQuantity))}`;
     const hasPurchase = isPositiveNumber(Math.max(exchangedAmount - dividendAmount, 0));
-    const purchaseLabel = isPositiveNumber(dividendAmount) ? t`Bought with dividends · estimated` : t`Bought`;
-    const buyRoleLabel = hasPurchase ? purchaseLabel : t`Reinvested dividends · estimated`;
-    const detailLabel = `${deltaQuantity > 0 ? buyRoleLabel : t`Sold`} · ${quantityLabel}`;
+    const purchaseSegments = isPositiveNumber(dividendAmount) ? [t`Bought with dividends`, t`estimated`] : [t`Bought`];
+    const buySegments = hasPurchase ? purchaseSegments : [t`Reinvested`, t`estimated`];
+    const detailSegments = [...(deltaQuantity > 0 ? buySegments : [t`Sold`]), quantityLabel];
 
     return (
         <View
             accessible
-            accessibilityLabel={[name, formatAmount(exchangedAmount, symbol), detailLabel].join(', ')}
+            accessibilityLabel={[name, formatAmount(exchangedAmount, symbol), ...detailSegments].join(', ')}
             className="px-3xl py-[12px]"
             testID={InzhurSelector.SummaryFund(isin)}
         >
@@ -45,7 +46,7 @@ export const InzhurImportSummaryFundRow = ({ fund, symbol }: Props) => {
                 leading={<NeutralIconTile icon={fundIcon} />}
                 title={<Text className="text-[17px] font-semibold text-primary">{getInzhurShortTitle(name)}</Text>}
                 trailing={<MoneyText amount={exchangedAmount} instrumentSymbol={symbol} variant={MoneyTextVariantEnum.ROW} />}
-                detail={<Text className="text-[13px] leading-[18px] text-secondary-foreground tabular-nums">{detailLabel}</Text>}
+                detail={<ListRowDetail segments={detailSegments} />}
             />
         </View>
     );

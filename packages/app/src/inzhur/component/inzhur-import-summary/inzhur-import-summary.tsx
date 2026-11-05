@@ -25,7 +25,7 @@ export const InzhurImportSummary = ({ summary }: Props) => {
     const footnote = {
         [InzhurImportOutcomeEnum.BASELINE]: t`Your holdings were taken as the starting point. Cash was not changed.`,
         [InzhurImportOutcomeEnum.APPLIED]: isPositiveNumber(uncoveredCashAmount)
-            ? t`Recorded automatically. Budgie matches the top-up when it reaches your bank.`
+            ? t`Recorded automatically. Budgie will match this top-up to the transfer from your bank.`
             : t`Recorded automatically. You can edit any entry like a normal transaction.`,
         [InzhurImportOutcomeEnum.UNCHANGED]: t`This statement is not newer than the last one you imported, so nothing changed.`
     }[outcome];

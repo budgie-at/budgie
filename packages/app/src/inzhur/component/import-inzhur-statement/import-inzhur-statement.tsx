@@ -52,7 +52,7 @@ export const ImportInzhurStatement = () => {
                 footer={
                     <View className="bg-surface">
                         <Text
-                            className="mx-5xl px-3xl pt-md text-[13px] leading-[18px] text-secondary-foreground"
+                            className="mx-5xl px-3xl pt-md text-center text-[13px] leading-[18px] text-secondary-foreground"
                             testID={InzhurSelector.LastImported}
                         >
                             {privacyCaption}
@@ -66,9 +66,9 @@ export const ImportInzhurStatement = () => {
                     </View>
                 }
             >
-                <View className="items-start gap-y-lg px-3xl">
+                <View className="items-center gap-y-lg px-3xl">
                     <InstitutionMark provider={ExternalSourceEnum.INZHUR} title={brandTitle} />
-                    <Text className="text-[15px] leading-[20px] text-secondary-foreground">
+                    <Text className="text-center text-[16px] leading-[22px] text-primary">
                         <Trans>Budgie reads your Inzhur statement and updates certificates, cash, buys and dividends.</Trans>
                     </Text>
                 </View>

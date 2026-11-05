@@ -2,9 +2,9 @@ import { UserIconType } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
 import { cn } from '../../utils/cn.util';
+import { GroupedListIcon } from '../grouped-list-icon/grouped-list-icon';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { LoadingContent } from '../loading-content/loading-content';
-import { NeutralIconTile } from '../neutral-icon-tile/neutral-icon-tile';
 
 import type { ReactNode } from 'react';
 
@@ -41,7 +41,7 @@ export const GroupedListActionRow = ({ label, icon, onPress, isDisabled, isLoadi
         >
             <LoadingContent isLoading={isLoading}>
                 <View className="flex-row items-center gap-x-xl">
-                    <NeutralIconTile icon={icon} iconClassName={labelClassName} />
+                    <GroupedListIcon icon={icon} />
                     <Text className={cn('flex-1 text-[17px]', labelClassName)}>{label}</Text>
                     {trailing}
                 </View>

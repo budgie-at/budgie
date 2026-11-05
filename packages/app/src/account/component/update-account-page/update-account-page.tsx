@@ -96,7 +96,7 @@ export const UpdateAccountPage = ({ account, fields, hero, detailsFooter, footer
                         />
                     </GroupedListSection>
 
-                    <GroupedListSection footer={t`Leaves Home, totals and budgets. Restore it from Settings → Archived accounts.`}>
+                    <GroupedListSection footer={t`Hidden from Home, totals and budgets until restored.`}>
                         <ArchiveAccount accountId={account.id} />
                     </GroupedListSection>
                 </FormLayoutGroup>

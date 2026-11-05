@@ -17,7 +17,7 @@ interface Props {
 const heroContainerVariants = cva('grow pb-[28px]', {
     variants: {
         heroAlignment: {
-            [QuickFormHeroAlignmentEnum.START]: 'justify-start pt-[28px]',
+            [QuickFormHeroAlignmentEnum.CENTER]: 'justify-center pt-[16px]',
             [QuickFormHeroAlignmentEnum.END]: 'justify-end pt-[16px]'
         }
     }

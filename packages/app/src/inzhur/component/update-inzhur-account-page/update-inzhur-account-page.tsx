@@ -34,7 +34,7 @@ export const UpdateInzhurAccountPage = ({ account, balance, fields, instrumentSy
             ? t`+${differenceLabel} will be recorded as dividends kept in Inzhur`
             : t`−${differenceLabel} will be recorded as an adjustment`;
     const quantityLabel = formatFundQuantity(balance);
-    const holdingsFootnote = isCash ? null : t`${quantityLabel}, updated from statements`;
+    const holdingsFootnote = isCash ? null : t`${quantityLabel} · updated from statements`;
     const footerCaption = isDifferent ? outcomeCaption : null;
 
     const hero = isCash ? (

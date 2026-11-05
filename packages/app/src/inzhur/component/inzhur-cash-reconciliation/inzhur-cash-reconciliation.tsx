@@ -19,7 +19,7 @@ export const InzhurCashReconciliation = ({ value, onChange, instrumentSymbol }: 
     const { t } = useLingui();
 
     return (
-        <View className="pb-3xl">
+        <View>
             <GroupedListSectionTitle title={t`Set actual balance`} />
             <FormAmountInput testID={CreateAccountSelector.Amount} value={value} instrumentSymbol={instrumentSymbol} onChange={onChange}>
                 <View className="flex-1">
@@ -28,7 +28,7 @@ export const InzhurCashReconciliation = ({ value, onChange, instrumentSymbol }: 
                 <Icon icon={UserIconNameEnum.Pencil} size={20} className="text-secondary-foreground" />
             </FormAmountInput>
             <Text className="px-3xl pt-md text-[13px] leading-[18px] text-secondary-foreground">
-                {t`An increase is recorded as estimated dividends kept in Inzhur. A decrease is recorded as a balance correction.`}
+                {t`An increase is recorded as estimated dividends. A decrease is recorded as a correction.`}
             </Text>
         </View>
     );

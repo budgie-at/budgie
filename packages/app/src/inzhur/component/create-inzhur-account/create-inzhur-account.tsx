@@ -5,6 +5,7 @@ import * as Effect from 'effect/Effect';
 import { Text, View } from 'react-native';
 
 import { ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
+import { isPositiveNumber } from '@rnw-community/shared';
 
 import { FixedChromeHeader } from '../../../@generic/component/fixed-chrome-header/fixed-chrome-header';
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
@@ -27,6 +28,7 @@ export const CreateInzhurAccount = () => {
     const { isLoading, run } = useSingleFlight();
     const { displayValue, numericValue, handlers } = useKeypadInput();
     const hryvnia = useHryvniaInstrumentQuery();
+    const amountVariant = isPositiveNumber(numericValue) ? 'primary' : 'secondary';
 
     const handleGoBack = () => void goBackOrReplace('/');
     const handleAdd = () =>
@@ -40,12 +42,12 @@ export const CreateInzhurAccount = () => {
         <TransactionAmountDisplay
             amount={displayValue}
             currencySymbol={hryvnia?.symbol ?? ''}
-            variant="primary"
+            variant={amountVariant}
             topContent={
                 <View className="items-center gap-y-lg">
                     <InstitutionMark provider={ExternalSourceEnum.INZHUR} title={t`Inzhur`} />
                     <Text className="text-[15px] font-medium text-secondary-foreground">
-                        <Trans>Uninvested cash in Inzhur</Trans>
+                        <Trans>Inzhur cash</Trans>
                     </Text>
                 </View>
             }
@@ -55,7 +57,7 @@ export const CreateInzhurAccount = () => {
                 className="mt-lg max-w-[300px] text-center text-sm leading-[20px] text-secondary-foreground"
                 lineBreakStrategyIOS="standard"
             >
-                <Trans>Enter your available cash. Certificates are added with your first statement.</Trans>
+                <Trans>Money not yet invested in a fund. Certificates are added from your first statement.</Trans>
             </Text>
         </TransactionAmountDisplay>
     );
@@ -76,7 +78,7 @@ export const CreateInzhurAccount = () => {
                 <ScreenChromeFrame>
                     <FixedChromeHeader title={t`Add Inzhur`} leading={<HeaderBackButton />} inFlow />
                     <View className="flex-1 px-5xl pb-safe">
-                        <QuickFormLayout hero={hero} footer={keypad} heroAlignment={QuickFormHeroAlignmentEnum.START} />
+                        <QuickFormLayout hero={hero} footer={keypad} heroAlignment={QuickFormHeroAlignmentEnum.CENTER} />
                     </View>
                 </ScreenChromeFrame>
             </ScreenChromeThemeProvider>

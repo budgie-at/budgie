@@ -701,12 +701,12 @@ msgid "{providerName} sync"
 msgstr "Synchronisation {providerName}"
 
 #: src/inzhur/component/inzhur-fund-holding-line/inzhur-fund-holding-line.tsx
-msgid "{quantityLabel} · {priceLabel} each · {priceDate}"
-msgstr "{quantityLabel} · {priceLabel} l’unité · {priceDate}"
+msgid "{quantityLabel} · {priceLabel} each"
+msgstr "{quantityLabel} · {priceLabel} l’unité"
 
 #: src/inzhur/component/update-inzhur-account-page/update-inzhur-account-page.tsx
-msgid "{quantityLabel}, updated from statements"
-msgstr "{quantityLabel}, mis à jour depuis les relevés"
+msgid "{quantityLabel} · updated from statements"
+msgstr "{quantityLabel} · mis à jour depuis les relevés"
 
 #: src/account/component/fund-account-card/fund-account-card.tsx
 msgid "{quantityLabel}, worth {valueLabel}"
@@ -1493,8 +1493,8 @@ msgid "an account"
 msgstr "un compte"
 
 #: src/inzhur/component/inzhur-cash-reconciliation/inzhur-cash-reconciliation.tsx
-msgid "An increase is recorded as estimated dividends kept in Inzhur. A decrease is recorded as a balance correction."
-msgstr "Une hausse est enregistrée comme dividendes estimés conservés dans Inzhur. Une baisse est enregistrée comme correction du solde."
+msgid "An increase is recorded as estimated dividends. A decrease is recorded as a correction."
+msgstr "Une hausse est enregistrée comme dividendes estimés. Une baisse est enregistrée comme correction."
 
 #: src/app/(tabs)/analytics.tsx
 msgid "Analytics"
@@ -1680,13 +1680,13 @@ msgstr "L'ajustement automatique est désactivé"
 msgid "Automation"
 msgstr "Automatisation"
 
+#: src/inzhur/component/inzhur-import-summary-funding/inzhur-import-summary-funding.tsx
+msgid "Available balance"
+msgstr "Solde disponible"
+
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Available once the import finishes"
 msgstr "Disponible une fois l'importation terminée"
-
-#: src/inzhur/component/inzhur-cash-account-card/inzhur-cash-account-card.tsx
-msgid "Available to invest"
-msgstr "Disponible à investir"
 
 #: src/app/(tabs)/settings/ai.tsx
 msgid "Available when on-device AI is on."
@@ -1794,6 +1794,10 @@ msgstr "Synchronisation bancaire"
 msgid "Bank sync reset"
 msgstr "Synchronisation bancaire réinitialisée"
 
+#: src/inzhur/component/inzhur-import-summary-funding/inzhur-import-summary-funding.tsx
+msgid "Bank transaction not matched yet"
+msgstr "Opération bancaire pas encore rapprochée"
+
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "Bank, import or manual entry"
 msgstr "Banque, import ou saisie manuelle"
@@ -1895,8 +1899,8 @@ msgid "Bought"
 msgstr "Acheté"
 
 #: src/inzhur/component/inzhur-import-summary-fund-row/inzhur-import-summary-fund-row.tsx
-msgid "Bought with dividends · estimated"
-msgstr "Acheté avec des dividendes · estimé"
+msgid "Bought with dividends"
+msgstr "Acheté avec des dividendes"
 
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 msgid "Browse icons"
@@ -3834,10 +3838,6 @@ msgstr "Saisis le code PIN de la sauvegarde"
 msgid "Enter the same PIN again."
 msgstr "Saisis à nouveau le même code PIN."
 
-#: src/inzhur/component/create-inzhur-account/create-inzhur-account.tsx
-msgid "Enter your available cash. Certificates are added with your first statement."
-msgstr "Saisis tes espèces disponibles. Les certificats sont ajoutés avec ton premier relevé."
-
 #: src/sync/component/binance-sync-token-inputs/binance-sync-token-inputs.tsx
 msgid "Enter your Binance API key"
 msgstr "Saisissez votre clé API Binance"
@@ -3899,13 +3899,17 @@ msgstr "Erste Bank"
 msgid "Erste Bank (PDF)"
 msgstr "Erste Bank (PDF)"
 
+#: src/inzhur/component/inzhur-import-summary-fund-row/inzhur-import-summary-fund-row.tsx
+msgid "estimated"
+msgstr "estimé"
+
 #: src/transaction/hook/use-dividend-role-label.hook.ts
 msgid "Estimated"
 msgstr "Estimé"
 
 #: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
-msgid "Estimated dividends to date"
-msgstr "Dividendes estimés à ce jour"
+msgid "Estimated dividends"
+msgstr "Dividendes estimés"
 
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
 msgid "Estimated from your past transactions using your current limits."
@@ -4353,6 +4357,10 @@ msgstr "Les comptes masqués n’apparaissent pas sur l’accueil. Leurs réglag
 msgid "Hidden from Home"
 msgstr "Masqué de l'Accueil"
 
+#: src/account/component/update-account-page/update-account-page.tsx
+msgid "Hidden from Home, totals and budgets until restored."
+msgstr "Masqué de l’accueil, des totaux et des budgets jusqu’à sa restauration."
+
 #: src/transaction/components/statistics-share-bar/statistics-share-bar.tsx
 msgid "Hide breakdown"
 msgstr "Masquer la répartition"
@@ -4641,13 +4649,17 @@ msgstr "Inzhur"
 msgid "Inzhur buys more certificates"
 msgstr "Inzhur achète plus de certificats"
 
+#: src/inzhur/component/create-inzhur-account/create-inzhur-account.tsx
+msgid "Inzhur cash"
+msgstr "Espèces Inzhur"
+
 #: src/inzhur/hook/use-inzhur-statement-import.hook.ts
 msgid "Inzhur is not set up"
 msgstr "Inzhur n'est pas configuré"
 
 #: src/inzhur/component/inzhur-dividend-payout-option/inzhur-dividend-payout-option.tsx
-msgid "Inzhur sends them to your card"
-msgstr "Inzhur les verse sur ta carte"
+msgid "Inzhur pays them to your bank account"
+msgstr "Inzhur les verse sur ton compte bancaire"
 
 #: src/inzhur/component/inzhur-import-summary-hero/inzhur-import-summary-hero.tsx
 msgid "Inzhur value now"
@@ -4850,10 +4862,6 @@ msgstr "Apprentissage à jour"
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Leave it empty for now"
 msgstr "Le laisser vide pour l'instant"
-
-#: src/account/component/update-account-page/update-account-page.tsx
-msgid "Leaves Home, totals and budgets. Restore it from Settings → Archived accounts."
-msgstr "Retiré de l’accueil, des totaux et des budgets. Restaurez-le depuis Réglages → Comptes archivés."
 
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
 msgid "Leaves your income"
@@ -5167,6 +5175,10 @@ msgstr "Modèles et téléchargements"
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
 msgid "Models download once, best on Wi-Fi"
 msgstr "Les modèles se téléchargent une fois, idéalement en Wi-Fi"
+
+#: src/inzhur/component/create-inzhur-account/create-inzhur-account.tsx
+msgid "Money not yet invested in a fund. Certificates are added from your first statement."
+msgstr "Argent pas encore investi dans un fonds. Les certificats sont ajoutés depuis ton premier relevé."
 
 #: src/app/(main)/create-account/index.tsx
 msgid "Money you lent or borrowed"
@@ -5711,6 +5723,10 @@ msgstr "Pas encore synchronisé"
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Not synced: Auto-Invest, Binance Pay, Binance Card, gift cards, sub-account transfers, margin and futures."
 msgstr "Non synchronisés : Auto-Invest, Binance Pay, Binance Card, cartes cadeaux, transferts entre sous-comptes, marge et contrats à terme."
+
+#: src/inzhur/component/inzhur-cash-account-card/inzhur-cash-account-card.tsx
+msgid "Not yet invested"
+msgstr "Pas encore investi"
 
 #: src/app/note-input.tsx
 #: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
@@ -6409,6 +6425,10 @@ msgstr "Période précédente"
 msgid "Price {ageLabel} · {date}"
 msgstr "Prix {ageLabel} · {date}"
 
+#: src/inzhur/component/inzhur-fund-holding-line/inzhur-fund-holding-line.tsx
+msgid "Price as of {priceDate}"
+msgstr "Prix au {priceDate}"
+
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Price changed"
 msgstr "Prix modifié"
@@ -6622,8 +6642,8 @@ msgid "Record expense"
 msgstr "Ajouter une dépense"
 
 #: src/inzhur/component/inzhur-import-summary/inzhur-import-summary.tsx
-msgid "Recorded automatically. Budgie matches the top-up when it reaches your bank."
-msgstr "Enregistré automatiquement. Budgie rapproche le versement dès qu’il arrive à ta banque."
+msgid "Recorded automatically. Budgie will match this top-up to the transfer from your bank."
+msgstr "Enregistré automatiquement. Budgie rapprochera ce versement du virement de ta banque."
 
 #: src/inzhur/component/inzhur-import-summary/inzhur-import-summary.tsx
 msgid "Recorded automatically. You can edit any entry like a normal transaction."
@@ -6664,6 +6684,7 @@ msgstr "Remboursements reçus"
 
 #: src/inzhur/component/inzhur-dividend-payout-option/inzhur-dividend-payout-option.tsx
 #: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
+#: src/inzhur/component/inzhur-import-summary-fund-row/inzhur-import-summary-fund-row.tsx
 msgid "Reinvested"
 msgstr "Réinvestis"
 
@@ -6671,7 +6692,6 @@ msgstr "Réinvestis"
 msgid "Reinvested dividends"
 msgstr "Dividendes réinvestis"
 
-#: src/inzhur/component/inzhur-import-summary-fund-row/inzhur-import-summary-fund-row.tsx
 #: src/transaction/hook/use-dividend-role-label.hook.ts
 msgid "Reinvested dividends · estimated"
 msgstr "Dividendes réinvestis · estimé"
@@ -8486,10 +8506,6 @@ msgstr "Afficher"
 msgid "Unhide {accountTitle}"
 msgstr "Afficher {accountTitle}"
 
-#: src/inzhur/component/create-inzhur-account/create-inzhur-account.tsx
-msgid "Uninvested cash in Inzhur"
-msgstr "Espèces non investies dans Inzhur"
-
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Unknown card"
 msgstr "Carte inconnue"
@@ -8705,10 +8721,6 @@ msgstr "En attente de connexion"
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Waiting for a key"
 msgstr "En attente d'une clé"
-
-#: src/inzhur/component/inzhur-import-summary-funding/inzhur-import-summary-funding.tsx
-msgid "Waiting for the bank transfer"
-msgstr "En attente du virement bancaire"
 
 #: src/market-data/component/currency-market-price-hero/currency-market-price-hero.tsx
 msgid "Waiting for the first market quote"

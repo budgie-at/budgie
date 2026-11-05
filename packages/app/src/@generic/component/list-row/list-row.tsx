@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { useIsAccessibilityTextSize } from '../../hook/use-is-accessibility-text-size.hook';
+import { cn } from '../../utils/cn.util';
 
 import type { ReactNode } from 'react';
 
@@ -15,6 +16,7 @@ interface Props {
 
 export const ListRow = ({ leading, title, trailing, detail }: Props) => {
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
+    const alignmentClassName = isDefined(detail) ? 'items-start' : 'items-center';
 
     if (isAccessibilityTextSize) {
         return (
@@ -30,7 +32,7 @@ export const ListRow = ({ leading, title, trailing, detail }: Props) => {
     }
 
     return (
-        <View className="min-h-11 flex-row items-center gap-x-xl">
+        <View className={cn('min-h-11 flex-row gap-x-xl', alignmentClassName)}>
             {leading}
             <View className="min-w-0 flex-1 gap-y-xxs">
                 <View className="flex-row items-baseline gap-x-md">
