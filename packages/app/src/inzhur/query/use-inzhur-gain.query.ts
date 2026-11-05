@@ -42,6 +42,12 @@ const gainSinceAtom = databaseQueryFamily(GAIN_TABLES, InzhurGainService, (inzhu
     return isDefined(startDate) && isDefined(today) ? inzhurGainService.getInstitutionGainSince(startDate, today) : Effect.succeed(null);
 });
 
+const fundCostReturnAtom = databaseQueryFamily(GAIN_TABLES, InzhurGainService, (inzhurGainService, key: string) => {
+    const [accountId, today] = key.split('|');
+
+    return inzhurGainService.getFundCostReturn(Number(accountId), today);
+});
+
 const getToday = () => new Date().toISOString().slice(0, 10);
 
 export const useInzhurInstitutionGainQuery = () => AsyncResult.getOrElse(useLiveAtomValue(institutionReportAtom(getToday())), () => null);
@@ -51,3 +57,6 @@ export const useInzhurFundGainQuery = (fundAccountId: number) =>
 
 export const useInzhurGainSinceQuery = (startDate: string) =>
     AsyncResult.getOrElse(useLiveAtomValue(gainSinceAtom(`${startDate}|${getToday()}`)), () => null);
+
+export const useInzhurFundCostReturnQuery = (fundAccountId: number) =>
+    AsyncResult.getOrElse(useLiveAtomValue(fundCostReturnAtom(`${fundAccountId}|${getToday()}`)), () => null);

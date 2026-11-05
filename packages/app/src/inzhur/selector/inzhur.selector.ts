@@ -9,6 +9,7 @@ export const InzhurSelector = {
     LastImported: 'Inzhur.LastImported',
     LinkedPayments: 'Inzhur.LinkedPayments',
     Summary: 'Inzhur.Summary',
+    OperationsSummary: 'Inzhur.OperationsSummary',
     GainLine: 'Inzhur.GainLine',
     ValueChart: 'Inzhur.ValueChart',
     PriceChart: 'Inzhur.PriceChart',
