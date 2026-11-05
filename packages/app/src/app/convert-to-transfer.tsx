@@ -12,8 +12,9 @@ import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-di
 import { useSingleFlight } from '../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../@generic/utils/toast-on-failure.util';
 import { ConvertToTransferHeader } from '../transaction/components/convert-to-transfer-header/convert-to-transfer-header';
-import { TransferQuickForm } from '../transaction/components/transfer-quick-form/transfer-quick-form';
-import { useConvertToTransferModal, useConvertToTransferModalParams } from '../transaction/context/convert-to-transfer-modal.context';
+import { ConvertTransferForm } from '../transaction/components/convert-transfer-form/convert-transfer-form';
+import { useConvertToTransferModal } from '../transaction/context/convert-to-transfer-modal.context';
+import { useConvertToTransferModalParams } from '../transaction/hook/use-convert-to-transfer-modal-params.hook';
 
 import { ConvertToTransferModalSelector } from './convert-to-transfer-modal.selector';
 
@@ -98,7 +99,7 @@ export default function ConvertToTransferModal() {
                 testID={ConvertToTransferModalSelector.Page}
                 header={<ConvertToTransferHeader isLoading={isLoading} />}
             >
-                <TransferQuickForm variant="default" isSubmitting={isLoading} onSubmit={handleSubmit} onCancel={handleCancel} />
+                <ConvertTransferForm isSubmitting={isLoading} onSubmit={handleSubmit} onCancel={handleCancel} />
             </ModalPage>
         </FormProvider>
     );
