@@ -12,11 +12,8 @@ test('44 voice review empty sheet', { tags: ['transactions'] }, async ({ budgie 
     await expect(ctx.screen.getByText('No items to save', { exact: true }).first()).toBeVisible();
     await expect(ctx.screen.getByText('Tap re-record to try again', { exact: true }).first()).toBeVisible();
     await b.expectNoId(ctx, 'VoiceReview.SaveButton');
-    await b.tapId(ctx, 'VoiceReview.CancelButton');
-    await b.expectNoId(ctx, 'VoiceReview.Page');
-
-    await b.openLink(ctx, 'budgie://voice-review');
-    await b.expectId(ctx, 'VoiceReview.Page');
-    await b.tapId(ctx, 'VoiceReview.ReRecordButton');
+    await b.expectId(ctx, 'VoiceReview.CancelButton');
+    await b.expectId(ctx, 'VoiceReview.ReRecordButton');
+    await b.byId(ctx.screen, 'PopoverDismissRegion').tap({ position: { x: 200, y: 120 } });
     await b.expectNoId(ctx, 'VoiceReview.Page');
 });
