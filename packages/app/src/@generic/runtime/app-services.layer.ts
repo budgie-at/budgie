@@ -126,6 +126,8 @@ import { BudgetAlertMonitorService } from '../../budget/service/budget-alert-mon
 import { BudgetFundSuggestionService } from '../../budget/service/budget-fund-suggestion.service';
 import { BudgetProjectionService } from '../../budget/service/budget-projection.service';
 import { CategoryIconBackfillService } from '../../category/service/category-icon-backfill.service';
+import { cloudBackupLayer } from '../../cloud-backup/layer/cloud-backup.layer';
+import { InstallIdService } from '../../cloud-backup/service/install-id.service';
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
 import { DatabaseExportService } from '../../export/service/database-export.service';
 import { DatabaseImportService } from '../../import/service/database-import.service';
@@ -305,7 +307,9 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     TransactionService.layer,
     WalletCaptureNativeService.layer,
     WalletCaptureTransactionService.layer,
-    WalletCaptureImportService.layer
+    WalletCaptureImportService.layer,
+    InstallIdService.layer,
+    cloudBackupLayer
 ).pipe(Layer.provideMerge(Layer.mergeAll(syncWorkloadLayer, syncFileReaderLayer)), Layer.provide(ledgerPortsLayer));
 export const appServicesLayer = appServicesWithoutDrainerLayer.pipe(
     Layer.provideMerge(transferConsolidationDrainerLayer.pipe(Layer.provide(ledgerPortsLayer)))

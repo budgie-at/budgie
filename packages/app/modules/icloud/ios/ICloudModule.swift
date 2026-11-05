@@ -3,8 +3,123 @@ import ExpoModulesCore
 import Foundation
 
 public final class ICloudModule: Module {
+  private let hostsLock = NSLock()
+  private var hosts: [ICloudSyncScope: ICloudSyncEngineHost] = [:]
+
+  private func host(_ rawScope: String) throws -> ICloudSyncEngineHost {
+    let scope = try ICloudDatabase.scope(rawScope)
+    guard let host = hostsLock.withLock({ hosts[scope] }) else {
+      throw ICloudDatabase.error("SYNC_NOT_STARTED", "Sync engine for \(rawScope) is not started")
+    }
+    return host
+  }
+
   public func definition() -> ModuleDefinition {
     Name("ICloud")
+
+    Events(
+      "onStateSerialization",
+      "onFetchedChanges",
+      "onSentChanges",
+      "onAccountChange",
+      "onZoneChange",
+      "onWillFetchChanges",
+      "onDidFetchChanges",
+      "onShareAccepted",
+      "onShareChanged"
+    )
+
+    OnStartObserving("onShareAccepted") { [weak self] in
+      ICloudShareInbox.shared.attach { body in self?.sendEvent("onShareAccepted", body) }
+    }
+
+    OnStopObserving("onShareAccepted") {
+      ICloudShareInbox.shared.detach()
+    }
+
+    AsyncFunction("startSync") { [weak self] (rawScope: String, stateSerialization: String?) throws in
+      guard let self else { return }
+      let scope = try ICloudDatabase.scope(rawScope)
+      let host = ICloudSyncEngineHost(scope: scope) { [weak self] name, body in self?.sendEvent(name, body) }
+      try host.start(stateSerialization: stateSerialization)
+      let previous = hostsLock.withLock { () -> ICloudSyncEngineHost? in
+        let existing = hosts[scope]
+        hosts[scope] = host
+        return existing
+      }
+      previous?.stop()
+    }
+
+    AsyncFunction("stopSync") { [weak self] (rawScope: String) throws in
+      guard let self else { return }
+      let scope = try ICloudDatabase.scope(rawScope)
+      hostsLock.withLock { hosts.removeValue(forKey: scope) }?.stop()
+    }
+
+    AsyncFunction("syncNow") { [weak self] (rawScope: String) async throws in
+      guard let self else { return }
+      do {
+        try await host(rawScope).syncNow()
+      } catch {
+        throw ICloudDatabase.syncError(error)
+      }
+    }
+
+    AsyncFunction("addPendingSaves") { [weak self] (rawScope: String, records: [ICloudRecordPayload]) throws in
+      try self?.host(rawScope).addPendingSaves(records)
+    }
+
+    AsyncFunction("addPendingDeletes") { [weak self] (rawScope: String, recordIds: [ICloudRecordId]) throws in
+      try self?.host(rawScope).addPendingDeletes(recordIds.map(\.recordID))
+    }
+
+    AsyncFunction("confirmFetchedBatch") { [weak self] (rawScope: String, batchId: String) throws in
+      try self?.host(rawScope).confirm(batchId: batchId)
+    }
+
+    AsyncFunction("ensureZone") { (rawScope: String, zoneName: String) async throws in
+      let scope = try ICloudDatabase.scope(rawScope)
+      guard scope == .privateScope else {
+        throw ICloudDatabase.error("PERMISSION_FAILURE", "Zones can only be created in the private database")
+      }
+      do {
+        _ = try await ICloudDatabase.database.save(CKRecordZone(zoneName: zoneName))
+      } catch {
+        throw ICloudDatabase.syncError(error)
+      }
+    }
+
+    AsyncFunction("deleteZone") { (rawScope: String, zoneName: String) async throws in
+      let scope = try ICloudDatabase.scope(rawScope)
+      guard scope == .privateScope else {
+        throw ICloudDatabase.error("PERMISSION_FAILURE", "Zones can only be deleted from the private database; use leaveShare for shared zones")
+      }
+      do {
+        _ = try await ICloudDatabase.database.deleteRecordZone(withID: ICloudDatabase.zoneID(zoneName: zoneName, ownerName: ICloudDatabase.defaultOwnerName))
+      } catch {
+        throw ICloudDatabase.syncError(error)
+      }
+    }
+
+    AsyncFunction("createHouseholdShare") { [weak self] (zoneName: String) async throws in
+      try await ICloudSharing.present(zoneName: zoneName) { body in self?.sendEvent("onShareChanged", body) }
+    }
+
+    AsyncFunction("getShareParticipants") { (zoneName: String) async throws -> [[String: Any]] in
+      try await ICloudSharing.participants(zoneName: zoneName)
+    }
+
+    AsyncFunction("stopSharing") { (zoneName: String) async throws in
+      try await ICloudSharing.stopSharing(zoneName: zoneName)
+    }
+
+    AsyncFunction("leaveShare") { (zoneName: String) async throws in
+      try await ICloudSharing.leave(zoneName: zoneName)
+    }
+
+    AsyncFunction("removeParticipant") { (zoneName: String, participantId: String) async throws in
+      try await ICloudSharing.removeParticipant(zoneName: zoneName, participantId: participantId)
+    }
 
     AsyncFunction("getAccountStatus") { () async -> [String: Any] in
       let status = await ICloudDatabase.container.accountStatus()
@@ -15,7 +130,16 @@ public final class ICloudModule: Module {
     AsyncFunction("saveBackup") { (fileUri: String, fields: [String: Any], encryptedFields: [String: Any]) async throws -> String in
       let url = URL(string: fileUri) ?? URL(fileURLWithPath: fileUri)
       let record = CKRecord(recordType: "Backup")
-      fields.forEach { record[$0.key] = $0.value as? CKRecordValue }
+      for (key, value) in fields {
+        if key == "createdAt" {
+          guard let createdAt = ICloudDatabase.date(from: value) else {
+            throw ICloudDatabase.error("UNKNOWN", "Backup createdAt is not a valid date")
+          }
+          record[key] = createdAt as NSDate
+        } else {
+          record[key] = value as? CKRecordValue
+        }
+      }
       encryptedFields.forEach { record.encryptedValues[$0.key] = $0.value as? CKRecordValue }
       record["archive"] = CKAsset(fileURL: url)
       let operation = CKModifyRecordsOperation(recordsToSave: [record])

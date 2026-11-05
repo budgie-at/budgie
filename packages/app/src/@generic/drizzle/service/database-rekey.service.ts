@@ -1,12 +1,12 @@
 /* oxlint-disable lingui/no-unlocalized-strings */
-import { Db, makeEffectSqliteClientDatabase, SettingsRepository } from '@budgie/contracts';
+import { Db, makeEffectSqliteClientDatabase, SettingsCreateEntityInterface, SettingsRepository } from '@budgie/contracts';
 import { withReplicas } from 'drizzle-orm/sqlite-core/effect';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import { identity } from 'effect/Function';
 import * as Layer from 'effect/Layer';
-import * as Schema from 'effect/Schema';
 import * as Reactivity from 'effect/reactivity/Reactivity';
+import * as Schema from 'effect/Schema';
 import { File } from 'expo-file-system';
 
 import { DATABASE_DIRECTORY } from '../constant/database-directory.constant';
@@ -55,7 +55,8 @@ export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>(
             const { $client: client } = yield* Db;
 
             yield* client.unsafe('PRAGMA wal_checkpoint(FULL)').raw;
-            yield* client.unsafe(`ATTACH DATABASE '${escapeSqlString(destinationPath)}' AS migrated KEY '${escapeSqlString(key ?? '')}'`).raw;
+            yield* client.unsafe(`ATTACH DATABASE '${escapeSqlString(destinationPath)}' AS migrated KEY '${escapeSqlString(key ?? '')}'`)
+                .raw;
             yield* client
                 .unsafe('PRAGMA migrated.journal_mode = DELETE')
                 .raw.pipe(
@@ -74,12 +75,11 @@ export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>(
         });
 
         const updateMigratedDatabaseSettings = Effect.fn('DatabaseRekeyService.updateMigratedDatabaseSettings')(function* (
+            databaseName: string,
             nextKey: string | null,
-            nextSettings: NonNullable<RekeyParamsInterface['nextSettings']>
+            nextSettings: Partial<SettingsCreateEntityInterface>
         ) {
-            const client = yield* openSqliteClient(tempDatabaseName, nextKey).pipe(
-                Effect.provideService(Reactivity.Reactivity, reactivity)
-            );
+            const client = yield* openSqliteClient(databaseName, nextKey).pipe(Effect.provideService(Reactivity.Reactivity, reactivity));
             const database = yield* makeEffectSqliteClientDatabase(client, { runQuery: identity });
 
             yield* settingsRepository.update(nextSettings).pipe(Effect.provideService(Db, withReplicas(database, [database])));
@@ -91,7 +91,7 @@ export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>(
             yield* exportEncryptedCopy(`${DATABASE_LOCATION}/${tempDatabaseName}`, params.nextKey);
 
             if (params.nextSettings) {
-                yield* updateMigratedDatabaseSettings(params.nextKey, params.nextSettings);
+                yield* updateMigratedDatabaseSettings(tempDatabaseName, params.nextKey, params.nextSettings);
             }
         });
 
@@ -116,9 +116,36 @@ export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>(
             yield* moveFile(backupUri, destinationUri);
         });
 
+        const exportFromDatabaseFile = Effect.fn('DatabaseRekeyService.exportFromDatabaseFile')(function* (
+            sourceName: string,
+            sourceKey: string,
+            targetName: string,
+            targetKey: string | null
+        ) {
+            const sourceClient = yield* openSqliteClient(sourceName, sourceKey).pipe(
+                Effect.provideService(Reactivity.Reactivity, reactivity)
+            );
+            const sourceDatabase = yield* makeEffectSqliteClientDatabase(sourceClient, { runQuery: identity });
+
+            yield* exportEncryptedCopy(`${DATABASE_LOCATION}/${targetName}`, targetKey).pipe(
+                Effect.provideService(Db, withReplicas(sourceDatabase, [sourceDatabase]))
+            );
+        }, Effect.scoped);
+
         return {
             exportEncryptedCopy,
             generateKey,
+            transcodeDatabaseFile: Effect.fn('DatabaseRekeyService.transcodeDatabaseFile')(function* (
+                sourceName: string,
+                sourceKey: string,
+                targetName: string,
+                targetKey: string | null,
+                targetSettings: Partial<SettingsCreateEntityInterface>
+            ) {
+                deleteDatabaseFiles(new File(DATABASE_DIRECTORY, targetName).uri);
+                yield* exportFromDatabaseFile(sourceName, sourceKey, targetName, targetKey);
+                yield* updateMigratedDatabaseSettings(targetName, targetKey, targetSettings);
+            }),
             rekey: Effect.fn('DatabaseRekeyService.rekey')(function* (params: RekeyParamsInterface, onCommit: Effect.Effect<void>) {
                 yield* prepare(params).pipe(
                     Effect.andThen(commit(onCommit).pipe(Effect.onError(() => restoreBackupDatabase()))),

@@ -15,6 +15,10 @@ export const useOnboardingNavigation = () => {
         router.push(ONBOARDING_STEP_ROUTE[step]);
     };
 
+    const goToICloudRestore = (): void => {
+        router.push('/onboarding/icloud');
+    };
+
     const replaceWithStep = (step: OnboardingStepEnum): void => {
         router.replace(ONBOARDING_STEP_ROUTE[step]);
     };
@@ -29,5 +33,5 @@ export const useOnboardingNavigation = () => {
         appRuntime.runFork(logAndContinue(completion));
     };
 
-    return { goToStep, replaceWithStep, goBack, completion, completeOnboarding };
+    return { goToStep, goToICloudRestore, replaceWithStep, goBack, completion, completeOnboarding };
 };

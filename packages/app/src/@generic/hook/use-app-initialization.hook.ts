@@ -1,6 +1,7 @@
 import { BudgetPeriodCloseService } from '@budgie/budget';
 import { SyncIdentityRepository } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
+import * as Option from 'effect/Option';
 import * as BackgroundTask from 'expo-background-task';
 import * as SplashScreen from 'expo-splash-screen';
 import * as TaskManager from 'expo-task-manager';
@@ -12,6 +13,7 @@ import { ACCOUNT_BALANCE_INCREMENTAL_TASK } from '../../account/constant/account
 import { AuthService } from '../../auth/service/auth.service';
 import { BudgetAlertMonitorService } from '../../budget/service/budget-alert-monitor.service';
 import { CategoryIconBackfillService } from '../../category/service/category-icon-backfill.service';
+import { CloudBackupTriggerService } from '../../cloud-backup/service/cloud-backup-trigger.service';
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
 import { HistoricalMarketDataDrainerService } from '../../market-data/service/historical-market-data-drainer.service';
 import { OnboardingService } from '../../onboarding/service/onboarding.service';
@@ -83,6 +85,12 @@ const initializeAppServices = Effect.gen(function* () {
     yield* registerBackgroundTasks;
     yield* widgetSnapshotService.start();
     yield* backgroundSyncSessionService.start();
+    const cloudBackupTriggerService = yield* Effect.serviceOption(CloudBackupTriggerService);
+
+    if (Option.isSome(cloudBackupTriggerService)) {
+        yield* logAndContinue(cloudBackupTriggerService.value.start());
+    }
+
     yield* logAndContinue(workload.run(appDataSyncService.sync()));
     yield* logAndContinue(workload.run((yield* BudgetPeriodCloseService).closeDuePeriods(new Date())));
     yield* logAndContinue(onboardingService.initializeLocale());

@@ -1,0 +1,1 @@
+export const SYNC_RECORD_MAX_BYTES = 900_000;

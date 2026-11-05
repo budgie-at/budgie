@@ -1,11 +1,14 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
+import { isNotEmptyArray } from '@rnw-community/shared';
+
 import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { useCloudBackups } from '../../../cloud-backup/hook/use-cloud-backups.hook';
 import { useRestoreBackup } from '../../../import/hook/use-restore-backup.hook';
 import { OnboardingFileLockEnum } from '../../enum/onboarding-file-lock.enum';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
@@ -17,12 +20,22 @@ import { OnboardingKeySelector } from './onboarding-key.selector';
 
 export const OnboardingKey = () => {
     const { t } = useLingui();
-    const { goToStep } = useOnboardingNavigation();
+    const { goToStep, goToICloudRestore } = useOnboardingNavigation();
     const { selectAndRestore, isLoading } = useRestoreBackup();
+    const { groups } = useCloudBackups();
 
     const handlePinPress = () => void goToStep(OnboardingStepEnum.PIN);
     const handlePhoneLockPress = () => void goToStep(OnboardingStepEnum.PHONE_LOCK);
 
+    const iCloudRestoreRow = isNotEmptyArray(groups) ? (
+        <GroupedListRow
+            testID={OnboardingKeySelector.ICloudRestoreButton}
+            left={<GroupedListIcon icon={UserIconNameEnum.CloudDownload} />}
+            title={t`Restore from iCloud`}
+            subtitle={t`Backups from your devices on this Apple ID`}
+            onPress={goToICloudRestore}
+        />
+    ) : null;
     const restoreAccessory = (
         <LoadingContent isLoading={isLoading}>
             <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
@@ -55,6 +68,7 @@ export const OnboardingKey = () => {
             </GroupedListSection>
 
             <GroupedListSection title={t`Already use Budgie?`}>
+                {iCloudRestoreRow}
                 <GroupedListRow
                     testID={OnboardingKeySelector.RestoreButton}
                     left={<GroupedListIcon icon={UserIconNameEnum.ArchiveRestore} />}

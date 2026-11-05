@@ -1,0 +1,4 @@
+export enum CloudRestoreFailureEnum {
+    KEYCHAIN_UNAVAILABLE = 'KEYCHAIN_UNAVAILABLE',
+    UNREADABLE = 'UNREADABLE'
+}

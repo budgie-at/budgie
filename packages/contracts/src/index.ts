@@ -433,3 +433,62 @@ export { SyncPendingRepository } from './cloud-sync/repository/sync-pending.repo
 export { SyncApplyStateRepository } from './cloud-sync/repository/sync-apply-state.repository';
 export { SyncZoneRegistryRepository } from './cloud-sync/repository/sync-zone-registry.repository';
 export { SyncIdentityRepository } from './cloud-sync/repository/sync-identity.repository';
+
+export { SYNC_RECORD_SCHEMA_VERSION } from './cloud-sync/mapping/constant/sync-record-schema-version.constant';
+export { SYNC_RECORD_MAX_BYTES } from './cloud-sync/mapping/constant/sync-record-max-bytes.constant';
+export { SYNC_RECORD_DEFINITIONS } from './cloud-sync/mapping/constant/sync-record-definitions.constant';
+
+export { SyncRecordTypeEnum } from './cloud-sync/mapping/enum/sync-record-type.enum';
+export { SyncReferenceKindEnum } from './cloud-sync/mapping/enum/sync-reference-kind.enum';
+export { SyncLinkRoleEnum } from './cloud-sync/mapping/enum/sync-link-role.enum';
+
+export { SyncIdentityUnresolvedError } from './cloud-sync/mapping/error/sync-identity-unresolved.error';
+export { SyncRecordTooLargeError } from './cloud-sync/mapping/error/sync-record-too-large.error';
+export { SyncSchemaVersionUnsupportedError } from './cloud-sync/mapping/error/sync-schema-version-unsupported.error';
+export { SyncRecordInvalidError } from './cloud-sync/mapping/error/sync-record-invalid.error';
+
+export { encodeSyncAggregate } from './cloud-sync/mapping/utils/encode-sync-aggregate.util';
+export { decodeSyncRecord } from './cloud-sync/mapping/utils/decode-sync-record.util';
+export { joinSplitTransactions } from './cloud-sync/mapping/utils/join-split-transactions.util';
+
+export type { SyncRecordInterface } from './cloud-sync/mapping/interface/sync-record.interface';
+export type { SyncAggregateInterface } from './cloud-sync/mapping/interface/sync-aggregate.interface';
+export type { SyncIdentityInterface } from './cloud-sync/mapping/interface/sync-identity.interface';
+export type { SyncReferenceResolverInterface } from './cloud-sync/mapping/interface/sync-reference-resolver.interface';
+export type { SyncRecordDefinitionInterface } from './cloud-sync/mapping/interface/sync-record-definition.interface';
+export type { SyncTableDescriptorInterface } from './cloud-sync/mapping/interface/sync-table-descriptor.interface';
+export type { SyncColumnDescriptorInterface } from './cloud-sync/mapping/interface/sync-column-descriptor.interface';
+export type { SyncRowInterface } from './cloud-sync/mapping/interface/sync-row.interface';
+export type { SyncRowReferenceInterface } from './cloud-sync/mapping/interface/sync-row-reference.interface';
+export type { DecodedSyncRecordInterface } from './cloud-sync/mapping/interface/decoded-sync-record.interface';
+export type { JoinedSyncRecordsInterface } from './cloud-sync/mapping/interface/joined-sync-records.interface';
+export type { SyncRowInputType } from './cloud-sync/mapping/type/sync-row-input.type';
+export type { SyncRowValueType } from './cloud-sync/mapping/type/sync-row-value.type';
+export type { SyncWireValueType } from './cloud-sync/mapping/type/sync-wire-value.type';
+export type { SyncAggregateRecordType } from './cloud-sync/mapping/type/sync-aggregate-record-type.type';
+
+export { SyncUploadService } from './cloud-sync/upload/service/sync-upload.service';
+export type { SyncRecordTargetInterface } from './cloud-sync/upload/interface/sync-record-target.interface';
+export type { SyncUploadSaveInterface } from './cloud-sync/upload/interface/sync-upload-save.interface';
+export type { SyncUploadDeletionInterface } from './cloud-sync/upload/interface/sync-upload-deletion.interface';
+export type { SyncUploadRejectionInterface } from './cloud-sync/upload/interface/sync-upload-rejection.interface';
+export type { SyncUploadBatchInterface } from './cloud-sync/upload/interface/sync-upload-batch.interface';
+export type { SentSyncRecordInterface } from './cloud-sync/upload/interface/sent-sync-record.interface';
+export type { SyncUploadAcknowledgementInterface } from './cloud-sync/upload/interface/sync-upload-acknowledgement.interface';
+
+export { SyncApplyService } from './cloud-sync/apply/service/sync-apply.service';
+export { SyncAccountBalanceRefresher } from './cloud-sync/apply/service/sync-account-balance-refresher.service';
+export { SyncApplyRepository } from './cloud-sync/apply/repository/sync-apply.repository';
+export { SyncUpdateRequiredError } from './cloud-sync/apply/error/sync-update-required.error';
+export { mergeSyncRow } from './cloud-sync/apply/utils/merge-sync-row.util';
+export { SYNC_AUTHORSHIP_COLUMNS } from './cloud-sync/apply/constant/sync-authorship-columns.constant';
+export type { SyncApplyBatchInterface } from './cloud-sync/apply/interface/sync-apply-batch.interface';
+export type { SyncApplyResultInterface } from './cloud-sync/apply/interface/sync-apply-result.interface';
+export type { SyncIncomingRecordInterface } from './cloud-sync/apply/interface/sync-incoming-record.interface';
+export type { SyncIncomingDeletionInterface } from './cloud-sync/apply/interface/sync-incoming-deletion.interface';
+export type { SyncPausedZoneInterface } from './cloud-sync/apply/interface/sync-paused-zone.interface';
+export type { SyncRejectedRecordInterface } from './cloud-sync/apply/interface/sync-rejected-record.interface';
+export type { SyncReenqueuedRecordInterface } from './cloud-sync/apply/interface/sync-reenqueued-record.interface';
+export type { SyncMergeInputInterface } from './cloud-sync/apply/interface/sync-merge-input.interface';
+export type { SyncMergeResultInterface } from './cloud-sync/apply/interface/sync-merge-result.interface';
+export type { SyncCellType } from './cloud-sync/apply/type/sync-cell.type';

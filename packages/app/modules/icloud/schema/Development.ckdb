@@ -12,6 +12,207 @@
         "archive": { "type": "ASSET" },
         "backupKey": { "type": "STRING", "encrypted": true }
       }
+    },
+    {
+      "recordType": "Account",
+      "fields": {
+        "schemaVersion": { "type": "INT64" },
+        "__booleanFields": { "type": "STRING", "encrypted": true },
+        "createdAt": { "type": "DOUBLE", "encrypted": true },
+        "updatedAt": { "type": "DOUBLE", "encrypted": true },
+        "deletedAt": { "type": "DOUBLE", "encrypted": true },
+        "icon": { "type": "STRING", "encrypted": true },
+        "parentSyncId": { "type": "STRING", "encrypted": true },
+        "order": { "type": "DOUBLE", "encrypted": true },
+        "title": { "type": "STRING", "encrypted": true },
+        "type": { "type": "STRING", "encrypted": true },
+        "nature": { "type": "STRING", "encrypted": true },
+        "debtType": { "type": "STRING", "encrypted": true },
+        "instrumentCode": { "type": "STRING", "encrypted": true },
+        "externalId": { "type": "STRING", "encrypted": true },
+        "deadline": { "type": "DOUBLE", "encrypted": true },
+        "targetBalance": { "type": "DOUBLE", "encrypted": true },
+        "targetBaseInstrumentCode": { "type": "STRING", "encrypted": true },
+        "targetBaseExchangeRate": { "type": "DOUBLE", "encrypted": true },
+        "targetBaseAmount": { "type": "DOUBLE", "encrypted": true },
+        "interestRate": { "type": "DOUBLE", "encrypted": true },
+        "installmentCount": { "type": "DOUBLE", "encrypted": true },
+        "externalSource": { "type": "STRING", "encrypted": true },
+        "integrationSyncId": { "type": "STRING", "encrypted": true },
+        "iban": { "type": "STRING", "encrypted": true },
+        "includeInNetWorth": { "type": "INT64", "encrypted": true },
+        "isActive": { "type": "INT64", "encrypted": true },
+        "isExternal": { "type": "INT64", "encrypted": true },
+        "externalIds": { "type": "STRING", "encrypted": true }
+      }
+    },
+    {
+      "recordType": "BankIntegration",
+      "fields": {
+        "schemaVersion": { "type": "INT64" },
+        "__booleanFields": { "type": "STRING", "encrypted": true },
+        "createdAt": { "type": "DOUBLE", "encrypted": true },
+        "updatedAt": { "type": "DOUBLE", "encrypted": true },
+        "deletedAt": { "type": "DOUBLE", "encrypted": true },
+        "provider": { "type": "STRING", "encrypted": true },
+        "label": { "type": "STRING", "encrypted": true },
+        "externalClientId": { "type": "STRING", "encrypted": true },
+        "ownerInstallId": { "type": "STRING", "encrypted": true }
+      }
+    },
+    {
+      "recordType": "Budget",
+      "fields": {
+        "schemaVersion": { "type": "INT64" },
+        "__booleanFields": { "type": "STRING", "encrypted": true },
+        "createdAt": { "type": "DOUBLE", "encrypted": true },
+        "updatedAt": { "type": "DOUBLE", "encrypted": true },
+        "deletedAt": { "type": "DOUBLE", "encrypted": true },
+        "name": { "type": "STRING", "encrypted": true },
+        "kind": { "type": "STRING", "encrypted": true },
+        "period": { "type": "STRING", "encrypted": true },
+        "periodStartDay": { "type": "DOUBLE", "encrypted": true },
+        "useLastDayOfMonth": { "type": "INT64", "encrypted": true },
+        "periodAnchorDate": { "type": "DOUBLE", "encrypted": true },
+        "overallLimit": { "type": "DOUBLE", "encrypted": true },
+        "otherLimit": { "type": "DOUBLE", "encrypted": true },
+        "otherLimitUserEditedAt": { "type": "DOUBLE", "encrypted": true },
+        "limitSource": { "type": "STRING", "encrypted": true },
+        "isAutoTuneEnabled": { "type": "INT64", "encrypted": true },
+        "otherRolloverMode": { "type": "STRING", "encrypted": true },
+        "tagSyncId": { "type": "STRING", "encrypted": true },
+        "startsAt": { "type": "DOUBLE", "encrypted": true },
+        "endsAt": { "type": "DOUBLE", "encrypted": true },
+        "instrumentCode": { "type": "STRING", "encrypted": true },
+        "categoryLimits": { "type": "STRING", "encrypted": true },
+        "sinkingFunds": { "type": "STRING", "encrypted": true },
+        "limitChanges": { "type": "STRING", "encrypted": true }
+      }
+    },
+    {
+      "recordType": "Category",
+      "fields": {
+        "schemaVersion": { "type": "INT64" },
+        "__booleanFields": { "type": "STRING", "encrypted": true },
+        "createdAt": { "type": "DOUBLE", "encrypted": true },
+        "updatedAt": { "type": "DOUBLE", "encrypted": true },
+        "deletedAt": { "type": "DOUBLE", "encrypted": true },
+        "title": { "type": "STRING", "encrypted": true },
+        "icon": { "type": "STRING", "encrypted": true },
+        "iconSource": { "type": "STRING", "encrypted": true },
+        "parentSyncId": { "type": "STRING", "encrypted": true },
+        "isDefault": { "type": "INT64", "encrypted": true },
+        "isSystemCategory": { "type": "INT64", "encrypted": true }
+      }
+    },
+    {
+      "recordType": "DebtEvent",
+      "fields": {
+        "schemaVersion": { "type": "INT64" },
+        "__booleanFields": { "type": "STRING", "encrypted": true },
+        "createdAt": { "type": "DOUBLE", "encrypted": true },
+        "updatedAt": { "type": "DOUBLE", "encrypted": true },
+        "deletedAt": { "type": "DOUBLE", "encrypted": true },
+        "debtAccountSyncId": { "type": "STRING", "encrypted": true },
+        "transactionSyncId": { "type": "STRING", "encrypted": true },
+        "transactionEntrySyncId": { "type": "STRING", "encrypted": true },
+        "direction": { "type": "STRING", "encrypted": true },
+        "source": { "type": "STRING", "encrypted": true },
+        "operatedAt": { "type": "DOUBLE", "encrypted": true },
+        "amount": { "type": "DOUBLE", "encrypted": true },
+        "baseAmount": { "type": "DOUBLE", "encrypted": true },
+        "baseExchangeRate": { "type": "DOUBLE", "encrypted": true },
+        "baseInstrumentCode": { "type": "STRING", "encrypted": true }
+      }
+    },
+    {
+      "recordType": "RecurringSeries",
+      "fields": {
+        "schemaVersion": { "type": "INT64" },
+        "__booleanFields": { "type": "STRING", "encrypted": true },
+        "createdAt": { "type": "DOUBLE", "encrypted": true },
+        "updatedAt": { "type": "DOUBLE", "encrypted": true },
+        "deletedAt": { "type": "DOUBLE", "encrypted": true },
+        "merchantKey": { "type": "STRING", "encrypted": true },
+        "kind": { "type": "STRING", "encrypted": true },
+        "periodDays": { "type": "DOUBLE", "encrypted": true },
+        "amount": { "type": "DOUBLE", "encrypted": true },
+        "status": { "type": "STRING", "encrypted": true },
+        "userState": { "type": "STRING", "encrypted": true },
+        "title": { "type": "STRING", "encrypted": true },
+        "categorySyncId": { "type": "STRING", "encrypted": true },
+        "lastSeenAt": { "type": "DOUBLE", "encrypted": true }
+      }
+    },
+    {
+      "recordType": "Rule",
+      "fields": {
+        "schemaVersion": { "type": "INT64" },
+        "__booleanFields": { "type": "STRING", "encrypted": true },
+        "createdAt": { "type": "DOUBLE", "encrypted": true },
+        "updatedAt": { "type": "DOUBLE", "encrypted": true },
+        "deletedAt": { "type": "DOUBLE", "encrypted": true },
+        "enabled": { "type": "INT64", "encrypted": true },
+        "conditionMatchType": { "type": "STRING", "encrypted": true },
+        "conditions": { "type": "STRING", "encrypted": true },
+        "actions": { "type": "STRING", "encrypted": true }
+      }
+    },
+    {
+      "recordType": "Tag",
+      "fields": {
+        "schemaVersion": { "type": "INT64" },
+        "__booleanFields": { "type": "STRING", "encrypted": true },
+        "createdAt": { "type": "DOUBLE", "encrypted": true },
+        "updatedAt": { "type": "DOUBLE", "encrypted": true },
+        "deletedAt": { "type": "DOUBLE", "encrypted": true },
+        "title": { "type": "STRING", "encrypted": true }
+      }
+    },
+    {
+      "recordType": "Transaction",
+      "fields": {
+        "schemaVersion": { "type": "INT64" },
+        "__booleanFields": { "type": "STRING", "encrypted": true },
+        "createdAt": { "type": "DOUBLE", "encrypted": true },
+        "updatedAt": { "type": "DOUBLE", "encrypted": true },
+        "deletedAt": { "type": "DOUBLE", "encrypted": true },
+        "type": { "type": "STRING", "encrypted": true },
+        "title": { "type": "STRING", "encrypted": true },
+        "externalId": { "type": "STRING", "encrypted": true },
+        "operatedAt": { "type": "DOUBLE", "encrypted": true },
+        "comment": { "type": "STRING", "encrypted": true },
+        "toAccountSyncId": { "type": "STRING", "encrypted": true },
+        "fromAccountSyncId": { "type": "STRING", "encrypted": true },
+        "exchangeRate": { "type": "DOUBLE", "encrypted": true },
+        "externalSource": { "type": "STRING", "encrypted": true },
+        "updatedBy": { "type": "STRING", "encrypted": true },
+        "importFingerprint": { "type": "STRING", "encrypted": true },
+        "consolidationParentTransactionSyncId": { "type": "STRING", "encrypted": true },
+        "consolidationType": { "type": "STRING", "encrypted": true },
+        "entries": { "type": "STRING", "encrypted": true },
+        "tags": { "type": "STRING", "encrypted": true },
+        "receipts": { "type": "STRING", "encrypted": true },
+        "legEntryPrivate": { "type": "STRING", "encrypted": true },
+        "linkId": { "type": "STRING", "encrypted": true },
+        "legCount": { "type": "DOUBLE", "encrypted": true }
+      }
+    },
+    {
+      "recordType": "TransactionLeg",
+      "fields": {
+        "schemaVersion": { "type": "INT64" },
+        "__booleanFields": { "type": "STRING", "encrypted": true },
+        "createdAt": { "type": "DOUBLE", "encrypted": true },
+        "updatedAt": { "type": "DOUBLE", "encrypted": true },
+        "deletedAt": { "type": "DOUBLE", "encrypted": true },
+        "type": { "type": "STRING", "encrypted": true },
+        "operatedAt": { "type": "DOUBLE", "encrypted": true },
+        "toAccountSyncId": { "type": "STRING", "encrypted": true },
+        "fromAccountSyncId": { "type": "STRING", "encrypted": true },
+        "entries": { "type": "STRING", "encrypted": true },
+        "linkId": { "type": "STRING", "encrypted": true }
+      }
     }
   ]
 }

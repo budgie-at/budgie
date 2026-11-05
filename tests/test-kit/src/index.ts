@@ -7,3 +7,5 @@ export { makeNodeRsaSigner } from './crypto/make-node-rsa-signer';
 export { TestQueryService } from './query/service/test-query.service';
 export { TestSeedService } from './seed/service/test-seed.service';
 export { createTestInlineShimPlugin, createTestVitestConfig } from './vitest/create-test-inline-shim-plugin';
+export { FakeCloudTransport } from './cloud/fake-cloud-transport';
+export type { FakeCloudDeliveryOptionsInterface } from './cloud/fake-cloud-delivery-options.interface';

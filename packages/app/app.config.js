@@ -110,7 +110,8 @@ const getExpoConfig = ({ config }) => ({
             BGTaskSchedulerPermittedIdentifiers: ['$(PRODUCT_BUNDLE_IDENTIFIER).sync.*'],
             UIBackgroundModes: IS_E2E ? ['processing'] : ['processing', 'remote-notification'],
             NSCameraUsageDescription: CAMERA_USAGE,
-            LSApplicationQueriesSchemes: ['shortcuts']
+            LSApplicationQueriesSchemes: ['shortcuts'],
+            ...(!IS_E2E && { CKSharingSupported: true })
         },
         associatedDomains: ['applinks:budgie.at'],
         entitlements: {
@@ -200,6 +201,7 @@ const getExpoConfig = ({ config }) => ({
             }
         ],
         'expo-app-intents',
+        ...(!IS_E2E ? ['./plugins/with-icloud-share-acceptance'] : []),
         [
             'expo-widgets',
             {
