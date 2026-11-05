@@ -31,7 +31,7 @@ export const OnboardingFooterAction = ({ label, testID, onPress, isDisabled = fa
             accessibilityState={accessibilityState}
             className={cn('min-h-[44px] items-center justify-center active:opacity-60', isDisabled && 'opacity-40')}
         >
-            <Text className="text-secondary-foreground text-center text-[15px] font-medium">{label}</Text>
+            <Text className="text-primary/80 text-center text-[15px] font-semibold">{label}</Text>
         </HapticPressable>
     );
 };
