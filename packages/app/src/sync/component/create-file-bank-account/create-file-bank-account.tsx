@@ -29,6 +29,8 @@ interface CreateFileBankAccountProps {
     readonly config: CreateFileBankAccountConfigInterface;
 }
 
+const goBackHome = () => void goBackOrReplace('/');
+
 // eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) => {
     const { t } = useLingui();
@@ -39,8 +41,6 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
     const accountSelection = useAccountSelection();
     const { selectedAccounts, setPreviews } = accountSelection;
     const onboardingHref = useOnboardingRedirect();
-
-    const handleGoBack = () => void goBackOrReplace('/');
 
     const handleSelectFile = () =>
         run(
@@ -116,7 +116,7 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
         <SyncSetupPage
             title={config.title}
             description={config.description}
-            onGoBack={handleGoBack}
+            onGoBack={goBackHome}
             footerButton={footer}
             testID={CreateFileBankAccountSelector.ScrollView}
         >

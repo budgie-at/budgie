@@ -32,7 +32,7 @@ export const SyncHistoryStep = ({ selectedDepth, description, hintByDepth, onSel
         [SyncHistoryDepthEnum.NEW_ONLY]: t`Nothing from the past is imported`
     };
     const hints = hintByDepth ?? defaultHintByDepth;
-    const footer = description ?? t`Choose how far back to import. Your bank sends it in one go, and it may keep less than you choose.`;
+    const footer = description ?? t`Choose how far back to import. Your bank sends it in one go, and it may keep less than you ask for.`;
 
     return (
         <GroupedListSection footer={footer}>

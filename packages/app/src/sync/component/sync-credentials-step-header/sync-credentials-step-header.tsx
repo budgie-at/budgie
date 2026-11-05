@@ -21,7 +21,7 @@ export const SyncCredentialsStepHeader = ({ provider }: Props) => {
     }
 
     const steps = config.steps.map(step => t(step));
-    const footer = isDefined(config.warningTitle) ? t(config.warningTitle) : undefined;
+    const { warningTitle } = config;
 
     return (
         <>
@@ -35,7 +35,7 @@ export const SyncCredentialsStepHeader = ({ provider }: Props) => {
                 />
             </GroupedListSection>
 
-            <SyncGuideSteps title={t`How to configure`} steps={steps} footer={footer} />
+            <SyncGuideSteps title={t`How to configure`} steps={steps} {...(isDefined(warningTitle) && { footer: t(warningTitle) })} />
         </>
     );
 };

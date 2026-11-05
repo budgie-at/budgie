@@ -466,10 +466,6 @@ msgstr "{formattedSpentAmount} spent"
 msgid "{found, plural, one {# high-confidence match} other {# high-confidence matches}}"
 msgstr "{found, plural, one {# high-confidence match} other {# high-confidence matches}}"
 
-#: src/sync/component/account-selection-step/account-selection-step.tsx
-msgid "{foundAccountCount, plural, one {Found # account} other {Found # accounts}}"
-msgstr "{foundAccountCount, plural, one {Found # account} other {Found # accounts}}"
-
 #: src/ai/component/ai-download-preflight-note/ai-download-preflight-note.tsx
 msgid "{free} GB free on this phone."
 msgstr "{free} GB free on this phone."
@@ -1108,7 +1104,7 @@ msgid "Accounts · {accountCount}"
 msgstr "Accounts · {accountCount}"
 
 #: src/account/component/institution-accounts/institution-accounts.tsx
-#: src/sync/component/enable-banking-accounts-step/enable-banking-accounts-step.tsx
+#: src/sync/component/sync-accounts-step/sync-accounts-step.tsx
 msgid "Accounts · {accountsCount}"
 msgstr "Accounts · {accountsCount}"
 
@@ -1393,8 +1389,7 @@ msgstr "Already returned"
 msgid "Already scanned"
 msgstr "Already scanned"
 
-#: src/sync/component/bank-account-preview-card/bank-account-preview-card.tsx
-#: src/sync/component/enable-banking-account-row/enable-banking-account-row.tsx
+#: src/sync/component/sync-account-row/sync-account-row.tsx
 msgid "Already syncing"
 msgstr "Already syncing"
 
@@ -1491,8 +1486,17 @@ msgstr "Anything except this value"
 
 #: src/sync/component/bank-integration-key-card/bank-integration-key-card.tsx
 #: src/sync/component/bank-integration-key-field/bank-integration-key-field.tsx
+#: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
 msgid "API key"
 msgstr "API key"
+
+#: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
+msgid "API secret"
+msgstr "API secret"
+
+#: src/sync/component/token-input-step/token-input-step.tsx
+msgid "API token"
+msgstr "API token"
 
 #: src/settings/components/app-lock-row/app-lock-row.tsx
 msgid "App lock"
@@ -1586,7 +1590,7 @@ msgstr "Are you sure you want to delete all your data? This action cannot be und
 msgid "Are you sure?"
 msgstr "Are you sure?"
 
-#: src/sync/component/enable-banking-history-step/enable-banking-history-step.tsx
+#: src/sync/component/sync-history-step/sync-history-step.tsx
 msgid "As far back as your bank allows"
 msgstr "As far back as your bank allows"
 
@@ -1740,7 +1744,7 @@ msgstr "Balance sign"
 msgid "Balance: {formattedBalance}"
 msgstr "Balance: {formattedBalance}"
 
-#: src/sync/component/enable-banking-accounts-step/enable-banking-accounts-step.tsx
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
 msgid "Balances and history come from your bank through Enable Banking."
 msgstr "Balances and history come from your bank through Enable Banking."
 
@@ -1843,7 +1847,7 @@ msgstr "Between {lowestCount} and {MAX_INSTALLMENT_COUNT} months"
 msgid "Binance"
 msgstr "Binance"
 
-#: src/sync/component/binance-parked-assets-notice/binance-parked-assets-notice.tsx
+#: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Binance has no market price for these assets, so they are not added as accounts and are skipped from your balance."
 msgstr "Binance has no market price for these assets, so they are not added as accounts and are skipped from your balance."
 
@@ -2025,7 +2029,7 @@ msgstr "By tag"
 msgid "bytes"
 msgstr "bytes"
 
-#: src/sync/component/sync-history-duration-notice/sync-history-duration-notice.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Can run for hours on old accounts, and much slower while the app is closed."
 msgstr "Can run for hours on old accounts, and much slower while the app is closed."
 
@@ -2077,7 +2081,7 @@ msgstr "Cancel"
 msgid "Cancel and delete"
 msgstr "Cancel and delete"
 
-#: src/sync/component/enable-banking-accounts-step/enable-banking-accounts-step.tsx
+#: src/sync/component/sync-parked-accounts-section/sync-parked-accounts-section.tsx
 msgid "Cannot connect"
 msgstr "Cannot connect"
 
@@ -2394,7 +2398,7 @@ msgstr "Choose file"
 msgid "Choose from Photos"
 msgstr "Choose from Photos"
 
-#: src/sync/component/enable-banking-history-step/enable-banking-history-step.tsx
+#: src/sync/component/sync-history-step/sync-history-step.tsx
 msgid "Choose how far back to import. Your bank sends it in one go, and it may keep less than you ask for."
 msgstr "Choose how far back to import. Your bank sends it in one go, and it may keep less than you ask for."
 
@@ -2431,7 +2435,11 @@ msgstr "Choose the other account"
 msgid "Choose what goes inside"
 msgstr "Choose what goes inside"
 
-#: src/sync/component/account-selection-step/account-selection-step.tsx
+#: src/sync/component/create-binance-account/create-binance-account.tsx
+msgid "Choose what to track. Balances and history come straight from Binance."
+msgstr "Choose what to track. Balances and history come straight from Binance."
+
+#: src/sync/component/sync-accounts-step/sync-accounts-step.tsx
 msgid "Choose what to track. Balances and history come straight from the bank."
 msgstr "Choose what to track. Balances and history come straight from the bank."
 
@@ -3506,8 +3514,7 @@ msgid "Description"
 msgstr "Description"
 
 #: src/categorize-inbox/components/categorize-inbox-payments-select-all/categorize-inbox-payments-select-all.tsx
-#: src/sync/component/account-selection-step/account-selection-step.tsx
-#: src/sync/component/enable-banking-accounts-step/enable-banking-accounts-step.tsx
+#: src/sync/component/sync-accounts-step/sync-accounts-step.tsx
 msgid "Deselect all"
 msgstr "Deselect all"
 
@@ -3584,7 +3591,7 @@ msgstr "Dismiss Wallet capture?"
 msgid "Display"
 msgstr "Display"
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+#: src/sync/component/sync-history-step/sync-history-step.tsx
 msgid "Do not sync history"
 msgstr "Do not sync history"
 
@@ -3944,10 +3951,12 @@ msgid "Enter the values below and your own email for data protection. Every fiel
 msgstr "Enter the values below and your own email for data protection. Every field is required."
 
 #: src/sync/component/binance-sync-token-inputs/binance-sync-token-inputs.tsx
+#: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
 msgid "Enter your Binance API key"
 msgstr "Enter your Binance API key"
 
 #: src/sync/component/binance-sync-token-inputs/binance-sync-token-inputs.tsx
+#: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
 msgid "Enter your Binance API secret"
 msgstr "Enter your Binance API secret"
 
@@ -4044,19 +4053,19 @@ msgstr "every two weeks"
 msgid "Every year"
 msgstr "Every year"
 
-#: src/sync/component/enable-banking-history-step/enable-banking-history-step.tsx
+#: src/sync/component/sync-history-step/sync-history-step.tsx
 msgid "Everything from the last 3 months"
 msgstr "Everything from the last 3 months"
 
-#: src/sync/component/enable-banking-history-step/enable-banking-history-step.tsx
+#: src/sync/component/sync-history-step/sync-history-step.tsx
 msgid "Everything from the last 6 months"
 msgstr "Everything from the last 6 months"
 
-#: src/sync/component/enable-banking-history-step/enable-banking-history-step.tsx
+#: src/sync/component/sync-history-step/sync-history-step.tsx
 msgid "Everything from the last month"
 msgstr "Everything from the last month"
 
-#: src/sync/component/enable-banking-history-step/enable-banking-history-step.tsx
+#: src/sync/component/sync-history-step/sync-history-step.tsx
 msgid "Everything from the last year"
 msgstr "Everything from the last year"
 
@@ -4184,8 +4193,8 @@ msgid "Fee, percent"
 msgstr "Fee, percent"
 
 #: src/sync/component/create-binance-account/create-binance-account.tsx
-msgid "Fetch Accounts"
-msgstr "Fetch Accounts"
+msgid "Fetch accounts"
+msgstr "Fetch accounts"
 
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Fetching new..."
@@ -4780,7 +4789,7 @@ msgstr "Its accounts stop syncing and are removed from your active accounts."
 msgid "Its transactions go too. Transfers stay in the other account as “Transfer (account deleted)”. This can’t be undone."
 msgstr "Its transactions go too. Transfers stay in the other account as “Transfer (account deleted)”. This can’t be undone."
 
-#: src/sync/component/account-selection-step/account-selection-step.tsx
+#: src/sync/component/sync-accounts-step/sync-accounts-step.tsx
 msgid "Jars"
 msgstr "Jars"
 
@@ -4846,11 +4855,11 @@ msgstr "Label matching payments with a tag"
 msgid "Language"
 msgstr "Language"
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+#: src/sync/component/sync-history-step/sync-history-step.tsx
 msgid "Last 1 month"
 msgstr "Last 1 month"
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+#: src/sync/component/sync-history-step/sync-history-step.tsx
 msgid "Last 3 months"
 msgstr "Last 3 months"
 
@@ -4858,7 +4867,7 @@ msgstr "Last 3 months"
 msgid "Last 30 days"
 msgstr "Last 30 days"
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+#: src/sync/component/sync-history-step/sync-history-step.tsx
 msgid "Last 6 months"
 msgstr "Last 6 months"
 
@@ -4902,7 +4911,7 @@ msgstr "Last synced {relative}"
 msgid "Last Week"
 msgstr "Last Week"
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+#: src/sync/component/sync-history-step/sync-history-step.tsx
 msgid "Last year"
 msgstr "Last year"
 
@@ -5232,7 +5241,7 @@ msgstr "Merged {consolidated} of {foundPairsText}."
 msgid "Minimum amount"
 msgstr "Minimum amount"
 
-#: src/sync/component/enable-banking-accounts-step/enable-banking-accounts-step.tsx
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
 msgid "Missing an account? Link it to your application in Enable Banking, then connect this bank again."
 msgstr "Missing an account? Link it to your application in Enable Banking, then connect this bank again."
 
@@ -5523,7 +5532,7 @@ msgstr "No account to sign up for. Never synced or uploaded. Works with no conne
 msgid "No accounts found"
 msgstr "No accounts found"
 
-#: src/sync/component/enable-banking-accounts-step/enable-banking-accounts-step.tsx
+#: src/sync/component/sync-accounts-step/sync-accounts-step.tsx
 msgid "No accounts to connect"
 msgstr "No accounts to connect"
 
@@ -5811,7 +5820,7 @@ msgid "Note"
 msgstr "Note"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
-#: src/sync/component/enable-banking-history-step/enable-banking-history-step.tsx
+#: src/sync/component/sync-history-step/sync-history-step.tsx
 msgid "Nothing from the past is imported"
 msgstr "Nothing from the past is imported"
 
@@ -6274,10 +6283,6 @@ msgstr "Paste API key"
 #: src/app/bank-integration-key.tsx
 msgid "Paste the key from api.monobank.ua."
 msgstr "Paste the key from api.monobank.ua."
-
-#: src/sync/component/token-input-step/token-input-step.tsx
-msgid "Paste your API token below:"
-msgstr "Paste your API token below:"
 
 #: src/sync/component/binance-sync-token-inputs/binance-sync-token-inputs.tsx
 #: src/sync/component/binance-sync-token-summary/binance-sync-token-summary.tsx
@@ -7014,7 +7019,7 @@ msgstr "Rules"
 msgid "Rules work on imported transactions"
 msgstr "Rules work on imported transactions"
 
-#: src/sync/component/sync-history-duration-notice/sync-history-duration-notice.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Runs in the background, and much slower while the app is closed."
 msgstr "Runs in the background, and much slower while the app is closed."
 
@@ -7284,8 +7289,7 @@ msgid "Select account"
 msgstr "Select account"
 
 #: src/categorize-inbox/components/categorize-inbox-payments-select-all/categorize-inbox-payments-select-all.tsx
-#: src/sync/component/account-selection-step/account-selection-step.tsx
-#: src/sync/component/enable-banking-accounts-step/enable-banking-accounts-step.tsx
+#: src/sync/component/sync-accounts-step/sync-accounts-step.tsx
 msgid "Select all"
 msgstr "Select all"
 
@@ -7610,14 +7614,11 @@ msgstr "Start fresh instead"
 msgid "Start from scratch and set every limit yourself"
 msgstr "Start from scratch and set every limit yourself"
 
+#: src/sync/component/create-binance-account/create-binance-account.tsx
 #: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Start sync"
 msgstr "Start sync"
-
-#: src/sync/component/create-binance-account/create-binance-account.tsx
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx
-msgid "Start Sync"
-msgstr "Start Sync"
 
 #: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
@@ -8032,7 +8033,7 @@ msgstr "Then"
 msgid "There is no “forgot PIN”."
 msgstr "There is no “forgot PIN”."
 
-#: src/sync/component/enable-banking-accounts-step/enable-banking-accounts-step.tsx
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
 msgid "These accounts already exist in Budgie or use a currency Budgie does not support. To continue an existing account, open it and tap Connect to bank."
 msgstr "These accounts already exist in Budgie or use a currency Budgie does not support. To continue an existing account, open it and tap Connect to bank."
 
@@ -8103,6 +8104,10 @@ msgstr "This budget may have been deleted. Go back to see your current budget."
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "This capture looks similar to an existing transaction."
 msgstr "This capture looks similar to an existing transaction."
+
+#: src/sync/component/sync-accounts-step/sync-accounts-step.tsx
+msgid "This connection returned no accounts Budgie can add."
+msgstr "This connection returned no accounts Budgie can add."
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "This consolidated transfer has no moved source entries."
@@ -8849,10 +8854,6 @@ msgstr "Used for totals and reports"
 msgid "Uses a regular expression of up to 200 characters, ignoring letter case."
 msgstr "Uses a regular expression of up to 200 characters, ignoring letter case."
 
-#: src/sync/component/binance-parked-assets-notice/binance-parked-assets-notice.tsx
-msgid "Valuation unavailable"
-msgstr "Valuation unavailable"
-
 #: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
 msgid "Value"
 msgstr "Value"
@@ -8988,7 +8989,7 @@ msgstr "Who holds the key?"
 msgid "Who owes you?"
 msgstr "Who owes you?"
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+#: src/sync/component/sync-history-step/sync-history-step.tsx
 msgid "Whole period"
 msgstr "Whole period"
 

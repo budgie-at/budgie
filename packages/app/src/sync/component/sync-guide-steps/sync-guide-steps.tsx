@@ -9,10 +9,14 @@ interface Props {
 
 export const SyncGuideSteps = ({ title, steps, footer }: Props) => (
     <GroupedListSection title={title} footer={footer}>
-        {steps.map((step, index) => (
-            <SyncGuideStep key={step} number={index + 1}>
-                {step}
-            </SyncGuideStep>
-        ))}
+        {steps.map((step, index) => {
+            const number = index + 1;
+
+            return (
+                <SyncGuideStep key={step} number={number}>
+                    {step}
+                </SyncGuideStep>
+            );
+        })}
     </GroupedListSection>
 );

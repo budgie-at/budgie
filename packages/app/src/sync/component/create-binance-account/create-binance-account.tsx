@@ -21,15 +21,12 @@ import { SyncSetupPage } from '../sync-setup-page/sync-setup-page';
 
 import { CreateBinanceAccountSelector } from './create-binance-account.selector';
 
+const INITIAL_STATE = { step: SetupStepEnum.TOKEN, apiKey: '', apiSecret: '', parkedPreviews: [] };
+
 export const CreateBinanceAccount = () => {
     const { t } = useLingui();
 
-    const [{ step, apiKey, apiSecret, parkedPreviews }, dispatch] = useReducer(createBinanceAccountReducer, {
-        step: SetupStepEnum.TOKEN,
-        apiKey: '',
-        apiSecret: '',
-        parkedPreviews: []
-    });
+    const [{ step, apiKey, apiSecret, parkedPreviews }, dispatch] = useReducer(createBinanceAccountReducer, INITIAL_STATE);
 
     const handleApiKeyChange = (value: string) => {
         dispatch({ type: CreateBinanceAccountActionTypeEnum.API_KEY_CHANGED, apiKey: value });

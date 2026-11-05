@@ -14,6 +14,7 @@ import { SyncAccountRow } from '../sync-account-row/sync-account-row';
 import { SyncAccountsStepSelector } from './sync-accounts-step.selector';
 
 import type { AccountSelectionInterface } from '../../interface/account-selection.interface';
+import type { SyncAccountPreviewInterface } from '@budgie/sync';
 import type { ReactNode } from 'react';
 
 interface Props extends Omit<AccountSelectionInterface, 'setPreviews'> {
@@ -42,6 +43,16 @@ export const SyncAccountsStep = ({
     const toggleAllLabel = areAllSelected ? t`Deselect all` : t`Select all`;
     const handleToggleAll = areAllSelected ? onDeselectAll : onSelectAll;
 
+    const renderRow = (preview: SyncAccountPreviewInterface) => (
+        <SyncAccountRow
+            key={preview.externalId}
+            preview={preview}
+            logo={logo}
+            isSelected={selectedAccounts.has(preview.externalId)}
+            onToggle={onToggle}
+        />
+    );
+
     if (isEmptyArray(accountPreviews)) {
         return <SearchablePageEmptyState icon={UserIconNameEnum.Landmark} title={t`No accounts to connect`} description={description} />;
     }
@@ -60,32 +71,10 @@ export const SyncAccountsStep = ({
                         <Text className="text-primary text-[15px] font-semibold">{toggleAllLabel}</Text>
                     </HapticPressable>
                 </View>
-                <GroupedListSection footer={sectionFooter}>
-                    {accountRows.map(preview => (
-                        <SyncAccountRow
-                            key={preview.externalId}
-                            preview={preview}
-                            logo={logo}
-                            isSelected={selectedAccounts.has(preview.externalId)}
-                            onToggle={onToggle}
-                        />
-                    ))}
-                </GroupedListSection>
+                <GroupedListSection footer={sectionFooter}>{accountRows.map(renderRow)}</GroupedListSection>
             </View>
 
-            {isNotEmptyArray(jarRows) ? (
-                <GroupedListSection title={t`Jars`}>
-                    {jarRows.map(preview => (
-                        <SyncAccountRow
-                            key={preview.externalId}
-                            preview={preview}
-                            logo={logo}
-                            isSelected={selectedAccounts.has(preview.externalId)}
-                            onToggle={onToggle}
-                        />
-                    ))}
-                </GroupedListSection>
-            ) : null}
+            {isNotEmptyArray(jarRows) ? <GroupedListSection title={t`Jars`}>{jarRows.map(renderRow)}</GroupedListSection> : null}
         </>
     );
 };
