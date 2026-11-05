@@ -633,4 +633,103 @@ describe('installment plan', () => {
             expect(yield* fetchManualDebtEventDates(accountId)).toEqual(datesBefore);
         }).pipe(Effect.provide(TestLayer))
     );
+
+    describe('flexible non-Monobank parts', () => {
+        const seedLaptop = (accountId: number, amount: number, operatedAt: Date, title = 'Laptop') =>
+            seed.manualExpense({ accountId, title, amount: toMicroUnits(amount), operatedAt });
+
+        it.effect('converts the third of six parts and attaches the parts before and after it', () =>
+            Effect.gen(function* () {
+                const cash = yield* seedBankSyncAccount('Cash', null, 'UA-flex-middle');
+                const parts = yield* Effect.forEach([0, 1, 2, 3, 4, 5], month => seedLaptop(cash.id, 1_000, new Date(2026, month, 12, 10)));
+                const { accountId } = yield* convert(parts[2].id, 6, 6_000);
+                const installmentPlanRepository = yield* InstallmentPlanRepository;
+                const schedule = yield* installmentPlanRepository.getSchedule(accountId);
+
+                expect((yield* fetchAttachedTransactionIds(accountId)).toSorted((left, right) => left - right)).toEqual(
+                    parts.map(part => part.id)
+                );
+                expect(schedule?.paidCount).toBe(6);
+                expect(schedule?.remainingAmount).toBe(0);
+            }).pipe(Effect.provide(TestLayer))
+        );
+
+        it.effect('attaches two payments in the same month and keeps the next due date monthly', () =>
+            Effect.gen(function* () {
+                const cash = yield* seedBankSyncAccount('Cash', null, 'UA-flex-twice');
+                const first = yield* seedLaptop(cash.id, 1_000, new Date(2026, 0, 12, 10));
+                const second = yield* seedLaptop(cash.id, 1_000, new Date(2026, 1, 12, 10));
+                const third = yield* seedLaptop(cash.id, 1_000, new Date(2026, 1, 20, 10));
+                const { accountId } = yield* convert(first.id, 6, 6_000);
+                const installmentPlanRepository = yield* InstallmentPlanRepository;
+                const schedule = yield* installmentPlanRepository.getSchedule(accountId);
+
+                expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id, second.id, third.id]);
+                expect(schedule?.paidCount).toBe(3);
+                expect(schedule?.nextDueAt?.getMonth()).toBe(2);
+                expect(schedule?.nextDueAt?.getDate()).toBe(12);
+            }).pipe(Effect.provide(TestLayer))
+        );
+
+        it.effect('counts a double payment as two paid parts', () =>
+            Effect.gen(function* () {
+                const cash = yield* seedBankSyncAccount('Cash', null, 'UA-flex-double');
+                const first = yield* seedLaptop(cash.id, 1_000, new Date(2026, 0, 12, 10));
+                const double = yield* seedLaptop(cash.id, 2_000, new Date(2026, 1, 12, 10));
+                const { accountId } = yield* convert(first.id, 6, 6_000);
+                const installmentPlanRepository = yield* InstallmentPlanRepository;
+                const schedule = yield* installmentPlanRepository.getSchedule(accountId);
+
+                expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id, double.id]);
+                expect(schedule?.paidCount).toBe(3);
+                expect(schedule?.nextAmount).toBe(toMicroUnits(1_000));
+            }).pipe(Effect.provide(TestLayer))
+        );
+
+        it.effect('does not stop the walk back at a month without a payment', () =>
+            Effect.gen(function* () {
+                const cash = yield* seedBankSyncAccount('Cash', null, 'UA-flex-gap');
+                const first = yield* seedLaptop(cash.id, 1_000, new Date(2026, 0, 12, 10));
+                const third = yield* seedLaptop(cash.id, 1_000, new Date(2026, 2, 12, 10));
+                const { accountId } = yield* convert(third.id, 6, 6_000);
+
+                expect((yield* fetchAttachedTransactionIds(accountId)).toSorted((left, right) => left - right)).toEqual([
+                    first.id,
+                    third.id
+                ]);
+            }).pipe(Effect.provide(TestLayer))
+        );
+
+        it.effect('ignores odd amounts and expenses with a different title', () =>
+            Effect.gen(function* () {
+                const cash = yield* seedBankSyncAccount('Cash', null, 'UA-flex-ignored');
+                const first = yield* seedLaptop(cash.id, 1_000, new Date(2026, 0, 12, 10));
+
+                yield* seedLaptop(cash.id, 350, new Date(2026, 1, 12, 10));
+                yield* seedLaptop(cash.id, 1_000, new Date(2026, 1, 12, 11), 'Groceries');
+
+                const { accountId } = yield* convert(first.id, 6, 6_000);
+
+                yield* runPostSync();
+
+                expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id]);
+            }).pipe(Effect.provide(TestLayer))
+        );
+
+        it.effect('never attaches a payment that would exceed the total', () =>
+            Effect.gen(function* () {
+                const cash = yield* seedBankSyncAccount('Cash', null, 'UA-flex-cap');
+                const first = yield* seedLaptop(cash.id, 1_000, new Date(2026, 0, 12, 10));
+                const middle = yield* Effect.forEach([1, 2, 3, 4], month => seedLaptop(cash.id, 1_000, new Date(2026, month, 12, 10)));
+
+                yield* seedLaptop(cash.id, 2_000, new Date(2026, 5, 12, 10));
+
+                const exact = yield* seedLaptop(cash.id, 1_000, new Date(2026, 5, 14, 10));
+                const { accountId } = yield* convert(first.id, 6, 6_000);
+
+                expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id, ...middle.map(part => part.id), exact.id]);
+                expect((yield* fetchDebtProgress(accountId)).outstandingAmount).toBe(0);
+            }).pipe(Effect.provide(TestLayer))
+        );
+    });
 });
