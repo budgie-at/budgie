@@ -25,6 +25,7 @@ import { DatabaseMigrationStatusEnum } from '../@generic/drizzle/enum/database-m
 import { useDatabaseMigration } from '../@generic/drizzle/hook/use-database-migration.hook';
 import { useAppInitialization } from '../@generic/hook/use-app-initialization.hook';
 import { useAppState } from '../@generic/hook/use-app-state.hook';
+import { useIsAccessibilityTextSize } from '../@generic/hook/use-is-accessibility-text-size.hook';
 import { CreateActionProvider } from '../@generic/provider/create-action.provider';
 import { ModalProvider } from '../@generic/provider/modal.provider';
 import { ScreenChromeThemeProvider } from '../@generic/provider/screen-chrome-theme.provider';
@@ -124,6 +125,8 @@ export const RootLayoutContent = () => {
     const databaseMigrationStatus = useDatabaseMigration();
     const [sheetSurface, groupedSheetSurface] = useCSSVariable(['--color-sheet-surface', '--color-grouped-surface']);
     const sheetOptions = fitToContentsSheetOptions(sheetSurface);
+    const isAccessibilityTextSize = useIsAccessibilityTextSize();
+    const contactSelectorOptions = formSheetOptions([DETENT_55, DETENT_90], isAccessibilityTextSize ? 1 : 0);
 
     useAppInitialization(databaseMigrationStatus === DatabaseMigrationStatusEnum.MIGRATED);
     useAppState(handleAppStateChange);
@@ -193,7 +196,7 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="resync-window-picker" options={sheetOptions} />
                                                                     <Stack.Screen
                                                                         name="contact-selector"
-                                                                        options={COMPACT_SELECTOR_OPTIONS}
+                                                                        options={contactSelectorOptions}
                                                                     />
                                                                     <Stack.Screen name="tags-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen
