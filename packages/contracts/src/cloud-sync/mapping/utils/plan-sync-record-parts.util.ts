@@ -9,6 +9,8 @@ import { SYNC_RECORD_DEFINITIONS } from '../constant/sync-record-definitions.con
 import { SyncIdentityUnresolvedError } from '../error/sync-identity-unresolved.error';
 import { SyncRecordTypeEnum } from '../enum/sync-record-type.enum';
 
+import { resolveHomeZone } from './resolve-home-zone.util';
+
 import type { SyncAggregateInterface } from '../interface/sync-aggregate.interface';
 import type { SyncRecordPartInterface } from '../interface/sync-record-part.interface';
 import type { SyncReferenceResolverInterface } from '../interface/sync-reference-resolver.interface';
@@ -19,14 +21,6 @@ const TRANSACTION_LINK_NAMESPACE = '5d7e0a3c-2f6b-4b1e-9c84-0e1a6f3d7b92';
 const ACCOUNTS_TABLE = 'accounts';
 const ENTRIES_TABLE = 'transaction_entries';
 const LEG_ACCOUNT_PROPERTIES = ['fromAccountId', 'toAccountId'];
-
-const resolveHomeZone = (entryZones: readonly string[], parentZone: string): string => {
-    if (entryZones.includes(PERSONAL_SYNC_ZONE)) {
-        return PERSONAL_SYNC_ZONE;
-    }
-
-    return entryZones.includes(parentZone) ? parentZone : entryZones[0];
-};
 
 export const planSyncRecordParts = (
     aggregate: SyncAggregateInterface,

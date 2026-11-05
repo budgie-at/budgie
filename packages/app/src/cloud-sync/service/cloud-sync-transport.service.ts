@@ -54,6 +54,12 @@ export class CloudSyncTransport extends Context.Service<CloudSyncTransport>()('@
                         }),
                         icloud.addListener('onDidFetchChanges', event => {
                             offer({ kind: CloudSyncEventKindEnum.DID_FETCH, event });
+                        }),
+                        icloud.addListener('onShareAccepted', event => {
+                            offer({ kind: CloudSyncEventKindEnum.SHARE_ACCEPTED, event });
+                        }),
+                        icloud.addListener('onShareChanged', event => {
+                            offer({ kind: CloudSyncEventKindEnum.SHARE_CHANGED, event });
                         })
                     ];
                 }),
@@ -80,7 +86,12 @@ export class CloudSyncTransport extends Context.Service<CloudSyncTransport>()('@
                 call(() => icloud.addPendingSaves(scope, records)),
             addPendingDeletes: (scope: ICloudSyncScope, recordIds: readonly ICloudRecordId[]) =>
                 call(() => icloud.addPendingDeletes(scope, recordIds)),
-            confirmFetchedBatch: (scope: ICloudSyncScope, batchId: string) => call(() => icloud.confirmFetchedBatch(scope, batchId))
+            confirmFetchedBatch: (scope: ICloudSyncScope, batchId: string) => call(() => icloud.confirmFetchedBatch(scope, batchId)),
+            createHouseholdShare: (zoneName: string) => call(() => icloud.createHouseholdShare(zoneName)),
+            getShareParticipants: (zoneName: string) => call(() => icloud.getShareParticipants(zoneName)),
+            stopSharing: (zoneName: string) => call(() => icloud.stopSharing(zoneName)),
+            leaveShare: (zoneName: string) => call(() => icloud.leaveShare(zoneName)),
+            removeParticipant: (zoneName: string, participantId: string) => call(() => icloud.removeParticipant(zoneName, participantId))
         };
     })
 }) {

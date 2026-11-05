@@ -20,7 +20,8 @@ const BUDGET: BudgetProjectionSourceInterface = {
     instrumentId: 2,
     overallLimit: 100,
     otherLimit: 10,
-    tagId: null
+    tagId: null,
+    syncZone: 'personal'
 };
 
 it.effect('round-trips dates through epoch milliseconds', () =>

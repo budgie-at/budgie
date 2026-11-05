@@ -9,6 +9,7 @@ import * as Schema from 'effect/Schema';
 import { isDefined, isNotEmptyString, isNumber } from '@rnw-community/shared';
 
 import { Db } from '../../../@generic/service/db.service';
+import { PERSONAL_SYNC_ZONE } from '../../constant/personal-sync-zone.constant';
 import { SYNC_NATURAL_KEY_PROPERTIES } from '../../mapping/constant/sync-natural-key-properties.constant';
 import { SYNC_RECORD_DEFINITIONS } from '../../mapping/constant/sync-record-definitions.constant';
 import { SyncOutboxOperationEnum } from '../../enum/sync-outbox-operation.enum';
@@ -17,6 +18,10 @@ import { SyncReferenceKindEnum } from '../../mapping/enum/sync-reference-kind.en
 import { encodeSyncAggregate } from '../../mapping/utils/encode-sync-aggregate.util';
 import { SyncOutboxRepository } from '../../repository/sync-outbox.repository';
 import { SyncRecordRepository } from '../../repository/sync-record.repository';
+import { SyncZoneRegistryRepository } from '../../repository/sync-zone-registry.repository';
+import { SYNC_MOVED_FROM_MARKER_PREFIX, SYNC_MOVED_TO_MARKER_PREFIX } from '../../share/constant/sync-move-markers.constant';
+import { readSyncMoveMarker } from '../../share/utils/read-sync-move-marker.util';
+import { withSyncRecordFields } from '../../share/utils/with-sync-record-fields.util';
 import { SyncRecordEntityTable } from '../../table/sync-record-entity.table';
 import { isSyncAggregateRecordType } from '../type-guard/is-sync-aggregate-record-type.type-guard';
 
@@ -25,6 +30,7 @@ import type { SyncIdentityInterface } from '../../mapping/interface/sync-identit
 import type { SyncRecordInterface } from '../../mapping/interface/sync-record.interface';
 import type { SyncRecordDefinitionInterface } from '../../mapping/interface/sync-record-definition.interface';
 import type { SyncReferenceResolverInterface } from '../../mapping/interface/sync-reference-resolver.interface';
+import type { SyncAggregateRecordType } from '../../mapping/type/sync-aggregate-record-type.type';
 import type { SyncRowInputType } from '../../mapping/type/sync-row-input.type';
 import type { SyncReferenceIdentityRowInterface } from '../interface/sync-reference-identity-row.interface';
 import type { SyncRecordTargetInterface } from '../interface/sync-record-target.interface';
@@ -34,10 +40,13 @@ import type { SyncUploadDeletionInterface } from '../interface/sync-upload-delet
 import type { SyncUploadRejectionInterface } from '../interface/sync-upload-rejection.interface';
 import type { SyncUploadSaveInterface } from '../interface/sync-upload-save.interface';
 
+const SPLIT_FIELDS: ReadonlySet<string> = new Set(['linkId', 'legCount', 'legEntryPrivate']);
+
 export class SyncUploadService extends Context.Service<SyncUploadService>()('@budgie/contracts/SyncUploadService', {
     make: Effect.gen(function* () {
         const syncOutboxRepository = yield* SyncOutboxRepository;
         const syncRecordRepository = yield* SyncRecordRepository;
+        const zoneRegistryRepository = yield* SyncZoneRegistryRepository;
         const changedColumnsSchema = Schema.fromJsonString(Schema.Array(Schema.String));
         const linkedRecordSchema = Schema.fromJsonString(Schema.Struct({ encryptedFields: Schema.Struct({ linkId: Schema.String }) }));
 
@@ -187,43 +196,100 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
                 .map((leg): SyncRecordTargetInterface => ({ recordName: leg.syncId, zone: leg.syncZone }));
         });
 
-        const buildSave = Effect.fnUntraced(function* (row: SyncOutboxEntityInterface) {
-            if (!isSyncAggregateRecordType(row.recordType)) {
-                return rejected(row, `Unknown record type ${row.recordType}`);
-            }
-
-            const recordType = row.recordType;
+        const encodeRowRecords = Effect.fnUntraced(function* (recordType: SyncAggregateRecordType, syncZone: string, syncId: string) {
             const definition = SYNC_RECORD_DEFINITIONS[recordType];
             const parentColumns = getTableColumns(definition.parent.table);
             const parentRows: readonly SyncRowInputType[] = yield* Db.query(db =>
                 db
                     .select()
                     .from(definition.parent.table)
-                    .where(and(eq(parentColumns['syncZone'], row.syncZone), eq(parentColumns['syncId'], row.syncId)))
+                    .where(and(eq(parentColumns['syncZone'], syncZone), eq(parentColumns['syncId'], syncId)))
                     .limit(1)
             );
             const [parent] = parentRows;
             const parentId = parent?.['id'];
 
             if (!isNumber(parentId)) {
-                return rejected(row, `Parent row missing for ${row.recordType}`);
+                return Result.fail(`Parent row missing for ${recordType}`);
             }
 
             const children = yield* loadChildren(definition, parentId);
             const resolver = yield* buildResolver(definition, parent, children);
             const encoded = encodeSyncAggregate({ recordType, parent, children }, resolver);
 
-            if (Result.isFailure(encoded)) {
-                return rejected(row, `${encoded.failure._tag}: ${encoded.failure.message}`);
+            return Result.isFailure(encoded) ? Result.fail(`${encoded.failure._tag}: ${encoded.failure.message}`) : Result.succeed(encoded.success);
+        });
+
+        const annotateRecords = Effect.fnUntraced(function* (records: readonly SyncRecordInterface[], row: SyncOutboxEntityInterface, movedFrom: string | null) {
+            const legOwnerName = records.some(record => record.recordType === SyncRecordTypeEnum.TRANSACTION_LEG)
+                ? (yield* zoneRegistryRepository.findByLabel(PERSONAL_SYNC_ZONE))?.ownerName
+                : undefined;
+
+            return records.map(record => {
+                if (record.recordType === SyncRecordTypeEnum.TRANSACTION_LEG && isNotEmptyString(legOwnerName)) {
+                    return withSyncRecordFields(record, record.zone, { privateOwnerName: legOwnerName });
+                }
+
+                return isNotEmptyString(movedFrom) && record.recordName === row.syncId && record.zone === row.syncZone
+                    ? withSyncRecordFields(record, record.zone, { movedFrom })
+                    : record;
+            });
+        });
+
+        const buildSave = Effect.fnUntraced(function* (row: SyncOutboxEntityInterface) {
+            if (!isSyncAggregateRecordType(row.recordType)) {
+                return rejected(row, `Unknown record type ${row.recordType}`);
             }
+
+            const encoded = yield* encodeRowRecords(row.recordType, row.syncZone, row.syncId);
+
+            if (Result.isFailure(encoded)) {
+                return rejected(row, encoded.failure);
+            }
+
+            const changedColumns = parseChangedColumns(row.changedColumns);
+            const records = yield* annotateRecords(encoded.success, row, readSyncMoveMarker(changedColumns, SYNC_MOVED_FROM_MARKER_PREFIX));
 
             return {
                 syncZone: row.syncZone,
                 syncId: row.syncId,
                 syncRevision: row.syncRevision,
-                records: encoded.success,
-                changedFields: mapChangedFields(definition, parseChangedColumns(row.changedColumns)),
-                staleTargets: yield* findStaleLegTargets(encoded.success)
+                records,
+                changedFields: mapChangedFields(SYNC_RECORD_DEFINITIONS[row.recordType], changedColumns),
+                staleTargets: yield* findStaleLegTargets(records)
+            } satisfies SyncUploadSaveInterface;
+        });
+
+        const buildTombstone = Effect.fnUntraced(function* (row: SyncOutboxEntityInterface, movedTo: string) {
+            if (!isSyncAggregateRecordType(row.recordType)) {
+                return null;
+            }
+
+            const encoded = yield* encodeRowRecords(row.recordType, movedTo, row.syncId);
+
+            if (Result.isFailure(encoded)) {
+                return null;
+            }
+
+            const target = encoded.success.find(record => record.recordName === row.syncId && record.zone === movedTo);
+
+            if (!isDefined(target)) {
+                return null;
+            }
+
+            const fields = Object.fromEntries(
+                Object.entries(target.encryptedFields).filter(([field]) => !SPLIT_FIELDS.has(field))
+            );
+
+            return {
+                syncZone: row.syncZone,
+                syncId: row.syncId,
+                syncRevision: row.syncRevision,
+                records: [
+                    withSyncRecordFields({ ...target, encryptedFields: fields }, row.syncZone, { deletedAt: Date.now(), movedTo })
+                ],
+                changedFields: ['deletedAt', 'movedTo'],
+                staleTargets: []
             } satisfies SyncUploadSaveInterface;
         });
 
@@ -264,7 +330,14 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
 
                 for (const row of rows) {
                     if (row.operation === SyncOutboxOperationEnum.DELETE) {
-                        deletions.push(yield* buildDeletion(row));
+                        const movedTo = readSyncMoveMarker(parseChangedColumns(row.changedColumns), SYNC_MOVED_TO_MARKER_PREFIX);
+                        const tombstone = isNotEmptyString(movedTo) ? yield* buildTombstone(row, movedTo) : null;
+
+                        if (isDefined(tombstone)) {
+                            saves.push(tombstone);
+                        } else {
+                            deletions.push(yield* buildDeletion(row));
+                        }
                     } else {
                         const save = yield* buildSave(row);
 
@@ -309,6 +382,6 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
     })
 }) {
     static readonly layer = Layer.effect(SyncUploadService, SyncUploadService.make).pipe(
-        Layer.provide([SyncOutboxRepository.layer, SyncRecordRepository.layer])
+        Layer.provide([SyncOutboxRepository.layer, SyncRecordRepository.layer, SyncZoneRegistryRepository.layer])
     );
 }

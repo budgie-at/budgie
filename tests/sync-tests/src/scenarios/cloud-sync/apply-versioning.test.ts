@@ -110,7 +110,7 @@ describe('cloud-sync/apply-versioning', () => {
                 const afterTombstone = yield* pullDevice(deviceB, cloud, DEVICE_B);
 
                 expect(afterTombstone[0].heldBack).toBe(0);
-                expect(yield* countWhere(deviceB, LIVE_WALLETS)).toBe(2);
+                expect(yield* countWhere(deviceB, LIVE_WALLETS)).toBe(1);
                 yield* expectBalancesMatchLedger(deviceB);
                 yield* expectBalancesMatchLedger(testDb);
             })
@@ -134,7 +134,7 @@ describe('cloud-sync/apply-versioning', () => {
                 const afterTarget = yield* pullDevice(deviceB, cloud, DEVICE_B);
 
                 expect(afterTarget[0].heldBack).toBe(0);
-                expect(yield* countWhere(deviceB, LIVE_WALLETS)).toBe(2);
+                expect(yield* countWhere(deviceB, LIVE_WALLETS)).toBe(1);
                 expect(yield* countWhere(deviceB, `sync_pending`)).toBe(0);
                 yield* expectBalancesMatchLedger(deviceB);
                 yield* expectBalancesMatchLedger(testDb);

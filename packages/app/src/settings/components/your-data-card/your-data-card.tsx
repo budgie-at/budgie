@@ -8,6 +8,7 @@ import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page
 import { IS_CLOUD_BACKUP_SUPPORTED } from '../../../cloud-backup/constant/is-cloud-backup-supported.constant';
 import { CloudSyncRow } from '../../../cloud-sync/component/cloud-sync-row/cloud-sync-row';
 import { CloudSyncUpdateBanner } from '../../../cloud-sync/component/cloud-sync-update-banner/cloud-sync-update-banner';
+import { FamilyRow } from '../../../household/component/family-row/family-row';
 import { ImportDatabase } from '../../../import/components/import-database/import-database';
 import { BackupRow } from '../backup-row/backup-row';
 import { ICloudRestoreRow } from '../icloud-restore-row/icloud-restore-row';
@@ -35,6 +36,7 @@ export const YourDataCard = () => {
                 <>
                     <CloudSyncRow />
                     <CloudSyncUpdateBanner />
+                    <FamilyRow />
                 </>
             ) : null}
             {IS_CLOUD_BACKUP_SUPPORTED ? <ICloudRestoreRow /> : null}

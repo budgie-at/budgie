@@ -14,8 +14,9 @@ import { makeTranslatableRepository } from '../../@generic/utils/make-translatab
 import { DefaultCategoryTranslationEntityTable } from '../../category-translation/table/default-category-translation-entity.table';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
-import { BORROWING_CATEGORY_ID } from '../constant/borrowing-category-id.constant';
-import { LENDING_CATEGORY_ID } from '../constant/lending-category-id.constant';
+import { deriveSeedSyncId } from '../../cloud-sync/utils/derive-seed-sync-id.util';
+import { BORROWING_CATEGORY_SEED_KEY } from '../constant/borrowing-category-seed-key.constant';
+import { LENDING_CATEGORY_SEED_KEY } from '../constant/lending-category-seed-key.constant';
 import { CategoryCreateEntityInterface } from '../entity/category-create-entity.interface';
 import { CategoryUpdateEntityInterface } from '../entity/category-update-entity.interface';
 import { CategoryEntityTable } from '../table/category-entity.table';
@@ -84,6 +85,20 @@ export class CategoryRepository extends Context.Service<CategoryRepository>()('@
                         .where(and(eq(CategoryEntityTable.id, id), isNull(CategoryEntityTable.deletedAt)))
                         .limit(1)
                 ).pipe(Effect.map(categories => categories.at(0))),
+            findActiveBySeedKey: (seedKey: string, syncZone: string) =>
+                Db.query(db =>
+                    db
+                        .select()
+                        .from(CategoryEntityTable)
+                        .where(
+                            and(
+                                eq(CategoryEntityTable.syncZone, syncZone),
+                                eq(CategoryEntityTable.syncId, deriveSeedSyncId(seedKey)),
+                                isNull(CategoryEntityTable.deletedAt)
+                            )
+                        )
+                        .limit(1)
+                ).pipe(Effect.map(categories => categories.at(0))),
             deleteById: (id: number) => Db.query(db => db.delete(CategoryEntityTable).where(eq(CategoryEntityTable.id, id))),
             countTransactionEntries: (categoryId: number) =>
                 Db.query(db =>
@@ -130,7 +145,10 @@ export class CategoryRepository extends Context.Service<CategoryRepository>()('@
                 const trimmed = search.trim();
                 const selectableFilter = or(
                     eq(CategoryEntityTable.isSystemCategory, false),
-                    inArray(CategoryEntityTable.id, [LENDING_CATEGORY_ID, BORROWING_CATEGORY_ID])
+                    inArray(CategoryEntityTable.syncId, [
+                        deriveSeedSyncId(LENDING_CATEGORY_SEED_KEY),
+                        deriveSeedSyncId(BORROWING_CATEGORY_SEED_KEY)
+                    ])
                 );
                 const baseFilter = includeDefault ? selectableFilter : and(eq(CategoryEntityTable.isDefault, false), selectableFilter);
                 const pattern = `%${trimmed.toLowerCase()}%`;

@@ -12,6 +12,7 @@ import { InstallIdService } from '@app/cloud-backup/service/install-id.service';
 import {
     BankIntegrationRepository,
     Db,
+    HouseholdMembershipService,
     SettingsRepository,
     SyncApplyService,
     SyncIdentityRepository,
@@ -33,13 +34,14 @@ import { ICloudSyncScope } from '../../../../../packages/app/modules/icloud';
 import { testDb } from '../../harness';
 
 import type { CloudSyncStateInterface } from '@app/cloud-sync/interface/cloud-sync-state.interface';
-import type { SyncApplyResultInterface } from '@budgie/contracts';
+import type { DB, SyncApplyResultInterface } from '@budgie/contracts';
 import type {
     ICloudAccountStatusResult,
     ICloudFetchedRecord,
     ICloudRecordId,
     ICloudRecordPayload,
     ICloudSentChangesEvent,
+    ICloudShareParticipant,
     ICloudZoneInventoryRecord
 } from '../../../../../packages/app/modules/icloud';
 
@@ -55,6 +57,14 @@ interface FakeTransportCallsInterface {
     readonly ensuredZones: string[];
     readonly confirmProbe: number[];
     inventoryRequests: number;
+    readonly sharedStarted: (string | null)[];
+    sharedStopped: number;
+    readonly sharedSavedBatches: ICloudRecordPayload[][];
+    readonly sharedDeletedBatches: ICloudRecordId[][];
+    readonly createdShares: string[];
+    readonly stoppedShares: string[];
+    readonly leftShares: string[];
+    readonly removedParticipants: string[];
 }
 
 interface FakeTransportBehaviorInterface {
@@ -63,9 +73,10 @@ interface FakeTransportBehaviorInterface {
     zoneInventory: readonly ICloudZoneInventoryRecord[];
     isInventoryFailing: boolean;
     confirmProbeSql: string;
+    participants: readonly ICloudShareParticipant[];
 }
 
-export const makeFakeTransport = () => {
+export const makeFakeTransport = (database: DB = testDb) => {
     const calls: FakeTransportCallsInterface = {
         started: [],
         stopped: 0,
@@ -75,26 +86,43 @@ export const makeFakeTransport = () => {
         deletedZones: [],
         ensuredZones: [],
         confirmProbe: [],
-        inventoryRequests: 0
+        inventoryRequests: 0,
+        sharedStarted: [],
+        sharedStopped: 0,
+        sharedSavedBatches: [],
+        sharedDeletedBatches: [],
+        createdShares: [],
+        stoppedShares: [],
+        leftShares: [],
+        removedParticipants: []
     };
     const behavior: FakeTransportBehaviorInterface = {
         accountStatus: { status: 'available', userRecordName: 'user-a' },
         zoneMeta: null,
         zoneInventory: [],
         isInventoryFailing: false,
-        confirmProbeSql: 'SELECT COUNT(*) AS total FROM accounts'
+        confirmProbeSql: 'SELECT COUNT(*) AS total FROM accounts',
+        participants: []
     };
 
     const layer = Layer.succeed(CloudSyncTransport, {
         events: Stream.empty,
         getAccountStatus: () => Effect.sync(() => behavior.accountStatus),
-        startSync: (_scope: ICloudSyncScope, state: string | null) =>
+        startSync: (startScope: ICloudSyncScope, state: string | null) =>
             Effect.sync(() => {
-                calls.started.push(state);
+                if (startScope === ICloudSyncScope.SHARED) {
+                    calls.sharedStarted.push(state);
+                } else {
+                    calls.started.push(state);
+                }
             }),
-        stopSync: () =>
+        stopSync: (stopScope: ICloudSyncScope) =>
             Effect.sync(() => {
-                calls.stopped += 1;
+                if (stopScope === ICloudSyncScope.SHARED) {
+                    calls.sharedStopped += 1;
+                } else {
+                    calls.stopped += 1;
+                }
             }),
         syncNow: () => Effect.void,
         ensureZone: (_scope: ICloudSyncScope, zoneName: string) =>
@@ -115,22 +143,39 @@ export const makeFakeTransport = () => {
                     ? Effect.fail(new CloudSyncTransportError({ code: 'NETWORK_UNAVAILABLE', message: 'inventory failed' }))
                     : Effect.succeed(behavior.zoneInventory);
             }),
-        addPendingSaves: (_scope: ICloudSyncScope, records: readonly ICloudRecordPayload[]) =>
+        addPendingSaves: (saveScope: ICloudSyncScope, records: readonly ICloudRecordPayload[]) =>
             Effect.sync(() => {
-                calls.savedBatches.push([...records]);
+                (saveScope === ICloudSyncScope.SHARED ? calls.sharedSavedBatches : calls.savedBatches).push([...records]);
             }),
-        addPendingDeletes: (_scope: ICloudSyncScope, recordIds: readonly ICloudRecordId[]) =>
+        addPendingDeletes: (deleteScope: ICloudSyncScope, recordIds: readonly ICloudRecordId[]) =>
             Effect.sync(() => {
-                calls.deletedBatches.push([...recordIds]);
+                (deleteScope === ICloudSyncScope.SHARED ? calls.sharedDeletedBatches : calls.deletedBatches).push([...recordIds]);
             }),
         confirmFetchedBatch: (_scope: ICloudSyncScope, batchId: string) =>
-            testDb.$client.unsafe<{ readonly total: number }>(behavior.confirmProbeSql).pipe(
+            database.$client.unsafe<{ readonly total: number }>(behavior.confirmProbeSql).pipe(
                 Effect.orDie,
                 Effect.map(([row]) => {
                     calls.confirmProbe.push(row.total);
                     calls.confirmed.push(batchId);
                 })
-            )
+            ),
+        createHouseholdShare: (zoneName: string) =>
+            Effect.sync(() => {
+                calls.createdShares.push(zoneName);
+            }),
+        getShareParticipants: () => Effect.sync(() => behavior.participants),
+        stopSharing: (zoneName: string) =>
+            Effect.sync(() => {
+                calls.stoppedShares.push(zoneName);
+            }),
+        leaveShare: (zoneName: string) =>
+            Effect.sync(() => {
+                calls.leftShares.push(zoneName);
+            }),
+        removeParticipant: (_zoneName: string, participantId: string) =>
+            Effect.sync(() => {
+                calls.removedParticipants.push(participantId);
+            })
     });
 
     return { calls, behavior, layer };
@@ -139,6 +184,7 @@ export const makeFakeTransport = () => {
 const EMPTY_STATE: CloudSyncStateInterface = {
     boundUserRecordName: null,
     stateSerialization: null,
+    sharedStateSerialization: null,
     resolvedLineageId: null,
     restorePhase: CloudSyncRestorePhaseEnum.NONE
 };
@@ -189,8 +235,8 @@ export const makeFakeSafetyCopy = () => {
 
 export const installIdLayer = Layer.succeed(InstallIdService, { get: Effect.succeed(INSTALL_ID) });
 
-export const makeSyncServiceContext = () => {
-    const transport = makeFakeTransport();
+export const makeSyncServiceContext = (database: DB = testDb) => {
+    const transport = makeFakeTransport(database);
     const store = makeFakeStateStore();
     const safetyCopy = makeFakeSafetyCopy();
     const automation = makeFakeAutomation();
@@ -205,6 +251,7 @@ export const makeSyncServiceContext = () => {
         SyncUploadService.layer,
         applyLayer,
         SyncRestoreReconciliationService.layer.pipe(Layer.provide(applyLayer)),
+        HouseholdMembershipService.layer.pipe(Layer.provide(syncAccountBalanceRefresherLayer)),
         SyncOutboxRepository.layer,
         SyncRecordRepository.layer,
         SyncZoneRegistryRepository.layer,
@@ -220,9 +267,9 @@ export const makeSyncServiceContext = () => {
     const layer = Layer.effect(CloudSyncService, CloudSyncService.make).pipe(Layer.provideMerge(dependencies));
 
     const run = <A, E>(effect: Effect.Effect<A, E, Layer.Success<typeof layer> | Db>) =>
-        Effect.andThen(testDb.$client.unsafe('UPDATE settings SET lineage_id = NULL'), effect).pipe(
+        Effect.andThen(database.$client.unsafe('UPDATE settings SET lineage_id = NULL'), effect).pipe(
             Effect.provide(layer),
-            Effect.provideService(Db, testDb)
+            Effect.provideService(Db, database)
         );
 
     return { transport, store, safetyCopy, automation, run };

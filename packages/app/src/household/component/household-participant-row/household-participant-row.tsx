@@ -1,0 +1,39 @@
+import { UserIconNameEnum } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
+import { Text } from 'react-native';
+
+import { isNotEmptyString } from '@rnw-community/shared';
+
+import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
+import { ICloudParticipantAcceptanceStatus, ICloudParticipantRole } from '../../../../modules/icloud';
+
+import { HouseholdParticipantRowSelector } from './household-participant-row.selector';
+
+import type { ReactNode } from 'react';
+import type { ICloudShareParticipant } from '../../../../modules/icloud';
+
+interface Props {
+    readonly participant: ICloudShareParticipant;
+    readonly children?: ReactNode;
+}
+
+export const HouseholdParticipantRow = ({ participant, children }: Props) => {
+    const { t } = useLingui();
+    const isOwner = participant.role === ICloudParticipantRole.OWNER;
+    const isPending = participant.acceptanceStatus === ICloudParticipantAcceptanceStatus.PENDING;
+    const fallbackName = participant.isCurrentUser ? t`You` : t`Family member`;
+    const title = isNotEmptyString(participant.displayName) ? participant.displayName : fallbackName;
+    const roleLabel = isOwner ? t`Owner` : isPending ? t`Invitation pending` : t`Member`;
+    const icon = isOwner ? UserIconNameEnum.Crown : UserIconNameEnum.UserRound;
+
+    return (
+        <SettingsRow
+            icon={icon}
+            variant="ghost"
+            title={title}
+            testID={HouseholdParticipantRowSelector.Card}
+            right={children}
+            subtitle={<Text className="text-secondary-foreground text-[13px] leading-[18px]">{roleLabel}</Text>}
+        />
+    );
+};

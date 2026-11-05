@@ -50,7 +50,8 @@ export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>(
 
         const exportEncryptedCopy = Effect.fn('DatabaseRekeyService.exportEncryptedCopy')(function* (
             destinationPath: string,
-            key: string | null
+            key: string | null,
+            scrubStatements: readonly string[] = []
         ) {
             const { $client: client } = yield* Db;
 
@@ -61,6 +62,7 @@ export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>(
                 .unsafe('PRAGMA migrated.journal_mode = DELETE')
                 .raw.pipe(
                     Effect.andThen(client.unsafe(`SELECT sqlcipher_export('migrated')`).raw),
+                    Effect.andThen(Effect.forEach(scrubStatements, statement => client.unsafe(statement).raw, { discard: true })),
                     Effect.ensuring(Effect.ignore(client.unsafe('DETACH DATABASE migrated').raw))
                 );
         });

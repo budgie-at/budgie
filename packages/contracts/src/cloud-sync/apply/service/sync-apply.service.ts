@@ -24,7 +24,7 @@ import { SyncRecordRepository } from '../../repository/sync-record.repository';
 import { SYNC_AUTHORSHIP_COLUMNS } from '../constant/sync-authorship-columns.constant';
 import { SYNC_CHILD_NATURAL_KEYS } from '../constant/sync-child-natural-keys.constant';
 import { SYNC_INSERT_PLACEHOLDERS } from '../constant/sync-insert-placeholders.constant';
-import { SYNC_MOVED_TO_FIELD } from '../constant/sync-moved-fields.constant';
+import { SYNC_MOVED_FROM_FIELD, SYNC_MOVED_TO_FIELD } from '../constant/sync-moved-fields.constant';
 import { SYNC_SCHEMA_PAUSED_MISSING_RECORD_TYPE } from '../constant/sync-schema-paused.constant';
 import { SyncApplyRepository } from '../repository/sync-apply.repository';
 import { mergeSyncRow } from '../utils/merge-sync-row.util';
@@ -76,6 +76,7 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
         );
         const searchTitleTables = new Set(['accounts', 'categories', 'tags']);
         const jsonUnknown = Schema.fromJsonString(Schema.Unknown);
+        const jsonRecord = Schema.fromJsonString(Schema.Record(Schema.String, Schema.Unknown));
         const systemFieldsSchema = Schema.fromJsonString(Schema.Struct({ modifiedAt: Schema.optionalKey(Schema.Finite) }));
         const columnListSchema = Schema.fromJsonString(Schema.Array(Schema.String));
 
@@ -93,11 +94,11 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
                 : null;
         const readChangedColumns = (changedColumns: string): readonly string[] =>
             Option.getOrElse(Schema.decodeUnknownOption(columnListSchema)(changedColumns), () => []);
-        const readMovedTo = (raw: unknown): string | null => {
+        const readMovedField = (raw: unknown, field: string): string | null => {
             const fields = isRecord(raw) ? raw['encryptedFields'] : null;
-            const movedTo = isRecord(fields) ? fields[SYNC_MOVED_TO_FIELD] : null;
+            const moved = isRecord(fields) ? fields[field] : null;
 
-            return isNotEmptyString(movedTo) ? movedTo : null;
+            return isNotEmptyString(moved) ? moved : null;
         };
         const readZone = (raw: unknown): string => (isRecord(raw) && isString(raw['zone']) ? raw['zone'] : '');
         const linkMissing = (item: SyncApplyItemInterface): SyncRowReferenceInterface => ({
@@ -107,10 +108,25 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
             key: item.decoded.linkId ?? item.decoded.recordName
         });
 
+        const readStoredMovedTo = (payload: string | null): string | null =>
+            isString(payload) ? readMovedField(Option.getOrNull(Schema.decodeUnknownOption(jsonUnknown)(payload)), SYNC_MOVED_TO_FIELD) : null;
+
+        const redirectToZone = (item: SyncApplyItemInterface, zone: string): SyncApplyItemInterface => ({
+            ...item,
+            decoded: { ...item.decoded, zone, rows: item.decoded.rows.map(row => ({ ...row, syncZone: zone })) },
+            envelopeJson: JSON.stringify({ ...Option.getOrElse(Schema.decodeUnknownOption(jsonRecord)(item.envelopeJson), () => ({})), zone })
+        });
+
         const toItem = Effect.fnUntraced(function* (raw: unknown, systemFields: string | null) {
             const decoded = yield* decodeSyncRecord(raw);
 
-            return { decoded, envelopeJson: JSON.stringify(raw), systemFields, movedTo: readMovedTo(raw) } satisfies SyncApplyItemInterface;
+            return {
+                decoded,
+                envelopeJson: JSON.stringify(raw),
+                systemFields,
+                movedTo: readMovedField(raw, SYNC_MOVED_TO_FIELD),
+                movedFrom: readMovedField(raw, SYNC_MOVED_FROM_FIELD)
+            } satisfies SyncApplyItemInterface;
         });
 
         const toStoredItem = Effect.fnUntraced(function* (payload: string, systemFields: string | null) {
@@ -394,6 +410,82 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
             return { isWritten, keptColumns };
         });
 
+        const rezoneMovedRow = Effect.fnUntraced(function* (unit: SyncApplyUnitInterface) {
+            const { decoded, movedFrom } = unit;
+
+            if (!isNotEmptyString(movedFrom)) {
+                return;
+            }
+
+            const parentTable = SYNC_RECORD_DEFINITIONS[decoded.recordType].parent.tableName;
+            const existing = yield* repository.findRow(parentTable, decoded.zone, decoded.recordName);
+            const source = isDefined(existing) ? null : yield* repository.findRow(parentTable, movedFrom, decoded.recordName);
+
+            if (!isDefined(source)) {
+                return;
+            }
+
+            yield* repository.updateRow(parentTable, source.__localId, { sync_zone: decoded.zone });
+
+            for (const tableName of new Set(SYNC_RECORD_DEFINITIONS[decoded.recordType].children.map(child => child.descriptor.tableName))) {
+                const descriptor = descriptors[tableName];
+                const incomingIds = new Set(decoded.rows.filter(row => row.tableName === tableName).map(row => row.syncId));
+                const localRows = yield* repository.findChildren(tableName, columnNameOf(descriptor, descriptor.parentLink?.property ?? ''), source.__localId);
+
+                for (const localRow of localRows.filter(candidate => incomingIds.has(`${candidate['sync_id']}`))) {
+                    yield* repository.updateRow(tableName, localRow.__localId, { sync_zone: decoded.zone });
+                }
+            }
+        });
+
+        const absorbStandaloneLegs = Effect.fnUntraced(function* (unit: SyncApplyUnitInterface) {
+            const accountIds: number[] = [];
+            const legs = unit.decoded.linkId === null ? [] : unit.sources.filter(({ decoded }) => decoded.recordType === SyncRecordTypeEnum.TRANSACTION_LEG);
+
+            for (const source of legs) {
+                const standalone = yield* repository.findRow('transactions', source.decoded.zone, source.decoded.recordName);
+
+                if (isDefined(standalone)) {
+                    accountIds.push(...(yield* repository.findEntryAccountIds(standalone.__localId)));
+                    yield* repository.deleteRow('transactions', standalone.__localId);
+                }
+            }
+
+            return accountIds;
+        });
+
+        const redirectMovedUnit = Effect.fnUntraced(function* (unit: SyncApplyUnitInterface) {
+            const [source] = unit.sources;
+            const { decoded } = unit;
+
+            if (
+                isNotEmptyString(unit.movedTo) ||
+                isNotEmptyString(unit.movedFrom) ||
+                unit.sources.length !== 1 ||
+                decoded.recordType === SyncRecordTypeEnum.TRANSACTION_LEG ||
+                isDefined(decoded.linkId)
+            ) {
+                return unit;
+            }
+
+            const parentTable = SYNC_RECORD_DEFINITIONS[decoded.recordType].parent.tableName;
+
+            if (isDefined(yield* repository.findRow(parentTable, decoded.zone, decoded.recordName))) {
+                return unit;
+            }
+
+            const stored = yield* recordRepository.find(decoded.zone, decoded.recordName);
+            const movedTo = readStoredMovedTo(stored?.payload ?? null);
+
+            if (!isNotEmptyString(movedTo) || !isDefined(yield* repository.findRow(parentTable, movedTo, decoded.recordName))) {
+                return unit;
+            }
+
+            const redirected = redirectToZone(source, movedTo);
+
+            return { ...unit, incoming: [redirected], sources: [redirected], decoded: redirected.decoded } satisfies SyncApplyUnitInterface;
+        });
+
         const applyUnit = Effect.fnUntraced(function* (unit: SyncApplyUnitInterface) {
             const { decoded } = unit;
             const definition = SYNC_RECORD_DEFINITIONS[decoded.recordType];
@@ -425,9 +517,11 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
                 return held(missing);
             }
 
+            yield* rezoneMovedRow(unit);
+
             const localParent = yield* repository.findRow(parentTable, decoded.zone, decoded.recordName);
             const unitIds = new Map<string, number>();
-            const accountIds: number[] = [];
+            const accountIds: number[] = [...(yield* absorbStandaloneLegs(unit))];
             const touchedRows: Array<readonly [string, string]> = [];
             let isWritten = false;
             let keptColumns: string[] | null = null;
@@ -552,7 +646,7 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
                 item.decoded.recordType === SyncRecordTypeEnum.TRANSACTION_LEG || isDefined(item.decoded.linkId);
             const units: SyncApplyUnitInterface[] = items
                 .filter(item => !isSplit(item))
-                .map(item => ({ incoming: [item], sources: [item], decoded: item.decoded, movedTo: item.movedTo }));
+                .map(item => ({ incoming: [item], sources: [item], decoded: item.decoded, movedTo: item.movedTo, movedFrom: item.movedFrom }));
             const incomplete: SyncApplyItemInterface[] = [];
             const linkIds = new Set(items.filter(isSplit).map(({ decoded }) => decoded.linkId).filter(isDefined));
 
@@ -562,9 +656,19 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
                 const [home] = joinSplitTransactions(family.map(({ decoded }) => decoded)).joined;
 
                 if (isDefined(home)) {
-                    units.push({ incoming, sources: family, decoded: home, movedTo: null });
-                } else {
+                    units.push({ incoming, sources: family, decoded: home, movedTo: null, movedFrom: null });
+                } else if (family.some(({ decoded }) => decoded.recordType === SyncRecordTypeEnum.TRANSACTION)) {
                     incomplete.push(...incoming);
+                } else {
+                    for (const item of incoming) {
+                        units.push({
+                            incoming: [item],
+                            sources: [item],
+                            decoded: { ...item.decoded, recordType: SyncRecordTypeEnum.TRANSACTION, linkId: null, legCount: 0 },
+                            movedTo: null,
+                            movedFrom: null
+                        });
+                    }
                 }
             }
 
@@ -615,7 +719,8 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
                     held.set(itemKey(item), { item, missing: linkMissing(item) });
                 }
 
-                for (const unit of units) {
+                for (const rawUnit of units) {
+                    const unit = yield* redirectMovedUnit(rawUnit);
                     const attempt = yield* inSavepoint(applyUnit(unit));
 
                     if (Result.isFailure(attempt)) {
@@ -705,7 +810,8 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
 
             const pending = yield* repository.findPending(zone, recordName);
             const stored = yield* recordRepository.find(zone, recordName);
-            const latest = isDefined(pending) ? pending : stored;
+            const isStoredTombstone = isDefined(stored) && isNotEmptyString(readStoredMovedTo(stored.payload));
+            const latest = isDefined(pending) ? pending : isStoredTombstone ? undefined : stored;
 
             if (isDefined(latest)) {
                 const incomingAt = readModifiedAt(item.systemFields);
@@ -745,15 +851,16 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
 
             const definition = definitions.find(candidate => candidate.recordType === recordType);
 
-            if (isDefined(definition) && definition.recordType !== SyncRecordTypeEnum.TRANSACTION_LEG) {
-                const row = yield* repository.findRow(definition.parent.tableName, zone, recordName);
+            if (isDefined(definition)) {
+                const tableName = definition.recordType === SyncRecordTypeEnum.TRANSACTION_LEG ? 'transactions' : definition.parent.tableName;
+                const row = yield* repository.findRow(tableName, zone, recordName);
 
                 if (isDefined(row)) {
-                    if (definition.recordType === SyncRecordTypeEnum.TRANSACTION) {
+                    if (tableName === 'transactions') {
                         tracker.addAccountIds(yield* repository.findEntryAccountIds(row.__localId));
                     }
 
-                    yield* repository.deleteRow(definition.parent.tableName, row.__localId);
+                    yield* repository.deleteRow(tableName, row.__localId);
                     tracker.addDeleted(recordType, recordName);
                 }
 

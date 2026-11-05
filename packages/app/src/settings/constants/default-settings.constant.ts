@@ -31,5 +31,6 @@ export const DEFAULT_SETTINGS = {
     cloudBackupEnabled: true,
     lastCloudBackupAt: null,
     cloudSyncEnabled: true,
-    lineageId: null
+    lineageId: null,
+    householdShareEverything: false
 } satisfies SettingsEntityInterface;

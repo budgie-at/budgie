@@ -2,6 +2,7 @@ import type { CloudSyncStatusEnum } from '../enum/cloud-sync-status.enum';
 
 export interface CloudSyncSessionInterface {
     readonly isEngineRunning: boolean;
+    readonly isSharedEngineRunning: boolean;
     readonly isAwaitingMeta: boolean;
     readonly isReconciling: boolean;
     readonly isQuotaExceeded: boolean;

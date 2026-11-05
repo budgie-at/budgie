@@ -39,7 +39,7 @@ import type {
     BudgetProjectionScopeInterface,
     BudgetSpentInterface
 } from '@budgie/budget';
-import type { BudgetPeriodEnum } from '@budgie/contracts';
+import type { BudgetEntityInterface, BudgetPeriodEnum } from '@budgie/contracts';
 
 export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonitorService>()('@budgie/app/BudgetAlertMonitorService', {
     make: Effect.gen(function* () {
@@ -231,45 +231,50 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
             return yield* Effect.void;
         });
 
+        const alertBudget = Effect.fnUntraced(function* (budget: BudgetEntityInterface) {
+            const now = new Date();
+            const periodStartMs = resolveBudgetWindow(budget, now).periodStart.getTime();
+            const spent = yield* budgetProjectionService.spent(budget, now);
+            const categoryLimits = yield* budgetCategoryLimitRepository.getByBudget(budget.id);
+            const projection = yield* budgetProjectionService.project(budget, now);
+            const [latestSnapshot] = yield* budgetPeriodSnapshotRepository.findRecent(budget.id, 1);
+            const effectiveLimits = {
+                ...computeEffectiveLimits(latestSnapshot, budget, categoryLimits),
+                overallLimit: projection.overall.limit
+            };
+            const triggers = [
+                ...computeBudgetAlertTriggers(effectiveLimits, spent, effectiveLimits.categoryLimits),
+                ...computeBudgetPaceTriggers(projection)
+            ];
+            const storageKey = buildStorageKey(budget.id, periodStartMs);
+            const deliveredKeys = yield* loadDeliveredTriggerKeys(storageKey);
+            const newTriggers = selectTriggersToPost(triggers, deliveredKeys);
+            const postedKeys = EffectArray.getSomes(
+                yield* Effect.forEach(newTriggers, trigger =>
+                    (trigger.kind === BudgetAlertKindEnum.PACE
+                        ? postPaceAlert(trigger, projection, budget.instrumentId)
+                        : postTrigger(trigger, effectiveLimits.overallLimit, spent, budget.period)
+                    ).pipe(Effect.as(buildTriggerKey(trigger)), Effect.option)
+                )
+            );
+
+            if (isNotEmptyArray(postedKeys)) {
+                yield* Effect.promise(() => storage.setItem(storageKey, JSON.stringify([...deliveredKeys, ...postedKeys])));
+            }
+        });
+
         return {
             run: Effect.fn('BudgetAlertMonitorService.run')(function* () {
-                const [budget, settings] = yield* Effect.all([budgetRepository.findMain(), settingsRepository.findSettings()], {
+                const [budgets, settings] = yield* Effect.all([budgetRepository.findAllMain(), settingsRepository.findSettings()], {
                     concurrency: 'unbounded'
                 });
-                const isBudgetPushEnabled = isDefined(settings) ? settings.isBudgetPushEnabled : false;
 
-                if (!isDefined(budget) || !isBudgetPushEnabled || !isPositiveNumber(budget.instrumentId)) {
-                    return;
-                }
-
-                const now = new Date();
-                const periodStartMs = resolveBudgetWindow(budget, now).periodStart.getTime();
-                const spent = yield* budgetProjectionService.spent(budget, now);
-                const categoryLimits = yield* budgetCategoryLimitRepository.getByBudget(budget.id);
-                const projection = yield* budgetProjectionService.project(budget, now);
-                const [latestSnapshot] = yield* budgetPeriodSnapshotRepository.findRecent(budget.id, 1);
-                const effectiveLimits = {
-                    ...computeEffectiveLimits(latestSnapshot, budget, categoryLimits),
-                    overallLimit: projection.overall.limit
-                };
-                const triggers = [
-                    ...computeBudgetAlertTriggers(effectiveLimits, spent, effectiveLimits.categoryLimits),
-                    ...computeBudgetPaceTriggers(projection)
-                ];
-                const storageKey = buildStorageKey(budget.id, periodStartMs);
-                const deliveredKeys = yield* loadDeliveredTriggerKeys(storageKey);
-                const newTriggers = selectTriggersToPost(triggers, deliveredKeys);
-                const postedKeys = EffectArray.getSomes(
-                    yield* Effect.forEach(newTriggers, trigger =>
-                        (trigger.kind === BudgetAlertKindEnum.PACE
-                            ? postPaceAlert(trigger, projection, budget.instrumentId)
-                            : postTrigger(trigger, effectiveLimits.overallLimit, spent, budget.period)
-                        ).pipe(Effect.as(buildTriggerKey(trigger)), Effect.option)
-                    )
-                );
-
-                if (isNotEmptyArray(postedKeys)) {
-                    yield* Effect.promise(() => storage.setItem(storageKey, JSON.stringify([...deliveredKeys, ...postedKeys])));
+                if (isDefined(settings) && settings.isBudgetPushEnabled) {
+                    yield* Effect.forEach(
+                        budgets.filter(budget => isPositiveNumber(budget.instrumentId)),
+                        alertBudget,
+                        { discard: true }
+                    );
                 }
             }),
             registerBackgroundTask: Effect.fn('BudgetAlertMonitorService.registerBackgroundTask')(function* () {

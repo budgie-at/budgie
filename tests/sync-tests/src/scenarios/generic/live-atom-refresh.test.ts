@@ -114,6 +114,7 @@ const BUDGET_KEY = {
     overallLimit: 100_000_000,
     otherLimit: 0,
     tagId: null,
+    syncZone: 'personal',
     periodAnchorMs: null,
     startsAtMs: null,
     endsAtMs: null,

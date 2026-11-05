@@ -28,6 +28,7 @@ import m0024 from './20261105193703_account_external_ids_zone_scope/migration.sq
 import m0025 from './20261105193722_cloud_sync_seed_identity/migration.sql';
 import m0026 from './20261105200520_cloud_sync_outbox_triggers/migration.sql';
 import m0027 from './20261105201521_cloud_sync_last_local_change/migration.sql';
+import m0028 from './20261105214526_household_share_everything/migration.sql';
 
   export default {
     migrations: {
@@ -58,7 +59,8 @@ import m0027 from './20261105201521_cloud_sync_last_local_change/migration.sql';
 "20261105193703_account_external_ids_zone_scope": m0024,
 "20261105193722_cloud_sync_seed_identity": m0025,
 "20261105200520_cloud_sync_outbox_triggers": m0026,
-"20261105201521_cloud_sync_last_local_change": m0027
+"20261105201521_cloud_sync_last_local_change": m0027,
+"20261105214526_household_share_everything": m0028
 }
   }
   

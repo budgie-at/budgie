@@ -6,4 +6,5 @@ export interface SyncApplyUnitInterface {
     readonly sources: readonly SyncApplyItemInterface[];
     readonly decoded: DecodedSyncRecordInterface;
     readonly movedTo: string | null;
+    readonly movedFrom: string | null;
 }

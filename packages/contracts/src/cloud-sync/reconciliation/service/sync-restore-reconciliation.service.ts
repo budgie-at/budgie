@@ -35,7 +35,7 @@ export class SyncRestoreReconciliationService extends Context.Service<SyncRestor
                     syncZone: string,
                     zoneInventory: ReadonlySet<string>
                 ) {
-                    const unconfirmed = yield* recordRepository.findUnconfirmed();
+                    const unconfirmed = (yield* recordRepository.findUnconfirmed()).filter(record => record.syncZone === syncZone);
                     const deletions: SyncIncomingDeletionInterface[] = [];
                     const results: SyncApplyResultInterface[] = [];
 

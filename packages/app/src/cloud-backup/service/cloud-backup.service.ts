@@ -1,4 +1,12 @@
-import { Db, SettingsRepository, SYNC_IDENTITY_TABLES } from '@budgie/contracts';
+import {
+    buildHouseholdRemovalStatements,
+    Db,
+    HOUSEHOLD_SYNC_ZONE,
+    SettingsRepository,
+    SYNC_IDENTITY_TABLES,
+    SyncZoneRegistryRepository,
+    SyncZoneRoleEnum
+} from '@budgie/contracts';
 import * as schema from '@budgie/contracts/schema';
 import { getTableConfig } from 'drizzle-orm/sqlite-core';
 import * as Context from 'effect/Context';
@@ -31,6 +39,7 @@ import type { ICloudBackupMetadata } from '../../../modules/icloud';
 export class CloudBackupService extends Context.Service<CloudBackupService>()('@budgie/app/CloudBackupService', {
     make: Effect.gen(function* () {
         const settingsRepository = yield* SettingsRepository;
+        const zoneRegistryRepository = yield* SyncZoneRegistryRepository;
         const cloudTransport = yield* CloudTransport;
         const databaseRekeyService = yield* DatabaseRekeyService;
         const installIdService = yield* InstallIdService;
@@ -111,6 +120,8 @@ export class CloudBackupService extends Context.Service<CloudBackupService>()('@
             const schemaVersion = (yield* Db.query(db => readLastMigrationCreatedAt(db.$client))) ?? 0;
             const temporaryFile = new File(Paths.cache, `cloud-backup-${startedAt.getTime()}.db`);
             const temporaryPath = decodeURIComponent(temporaryFile.uri.replace(/^file:\/\//u, ''));
+            const household = yield* zoneRegistryRepository.findByLabel(HOUSEHOLD_SYNC_ZONE);
+            const scrubStatements = household?.role === SyncZoneRoleEnum.PARTICIPANT ? buildHouseholdRemovalStatements('migrated.') : [];
 
             yield* Effect.acquireUseRelease(
                 Effect.sync(() => {
@@ -118,7 +129,7 @@ export class CloudBackupService extends Context.Service<CloudBackupService>()('@
                 }),
                 () =>
                     databaseRekeyService
-                        .exportEncryptedCopy(temporaryPath, backupKey)
+                        .exportEncryptedCopy(temporaryPath, backupKey, scrubStatements)
                         .pipe(
                             Effect.andThen(
                                 cloudTransport.saveBackup(
@@ -200,6 +211,12 @@ export class CloudBackupService extends Context.Service<CloudBackupService>()('@
     })
 }) {
     static readonly layer = Layer.effect(CloudBackupService, CloudBackupService.make).pipe(
-        Layer.provide([CloudTransport.layer, DatabaseRekeyService.layer, SettingsRepository.layer, InstallIdService.layer])
+        Layer.provide([
+            CloudTransport.layer,
+            DatabaseRekeyService.layer,
+            SettingsRepository.layer,
+            SyncZoneRegistryRepository.layer,
+            InstallIdService.layer
+        ])
     );
 }

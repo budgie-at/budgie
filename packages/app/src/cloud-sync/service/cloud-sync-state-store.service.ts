@@ -16,6 +16,7 @@ export class CloudSyncStateStore extends Context.Service<CloudSyncStateStore>()(
             Schema.Struct({
                 boundUserRecordName: Schema.NullOr(Schema.String),
                 stateSerialization: Schema.NullOr(Schema.String),
+                sharedStateSerialization: Schema.optionalKey(Schema.NullOr(Schema.String)),
                 resolvedLineageId: Schema.NullOr(Schema.String),
                 restorePhase: Schema.Enum(CloudSyncRestorePhaseEnum)
             })
@@ -23,12 +24,18 @@ export class CloudSyncStateStore extends Context.Service<CloudSyncStateStore>()(
         const emptyState: CloudSyncStateInterface = {
             boundUserRecordName: null,
             stateSerialization: null,
+            sharedStateSerialization: null,
             resolvedLineageId: null,
             restorePhase: CloudSyncRestorePhaseEnum.NONE
         };
 
         const read = Effect.sync(() =>
-            stateFile.exists ? Option.getOrElse(Schema.decodeUnknownOption(StateSchema)(stateFile.textSync()), () => emptyState) : emptyState
+            stateFile.exists
+                ? Option.match(Schema.decodeUnknownOption(StateSchema)(stateFile.textSync()), {
+                      onNone: () => emptyState,
+                      onSome: state => ({ ...state, sharedStateSerialization: state.sharedStateSerialization ?? null })
+                  })
+                : emptyState
         );
         const write = (state: CloudSyncStateInterface) =>
             Effect.sync(() => {

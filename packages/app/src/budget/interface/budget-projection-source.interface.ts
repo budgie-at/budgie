@@ -4,4 +4,4 @@ import type { BudgetEntityInterface } from '@budgie/contracts';
 export interface BudgetProjectionSourceInterface
     extends
         BudgetWindowSourceInterface,
-        Pick<BudgetEntityInterface, 'id' | 'limitSource' | 'instrumentId' | 'overallLimit' | 'otherLimit' | 'tagId'> {}
+        Pick<BudgetEntityInterface, 'id' | 'limitSource' | 'instrumentId' | 'overallLimit' | 'otherLimit' | 'tagId' | 'syncZone'> {}

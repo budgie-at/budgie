@@ -1,4 +1,4 @@
-import { and, asc, eq, exists, inArray, isNotNull, isNull, or } from 'drizzle-orm';
+import { and, asc, eq, exists, inArray, isNotNull, isNull, or, sql } from 'drizzle-orm';
 import { QueryBuilder } from 'drizzle-orm/sqlite-core';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -10,6 +10,7 @@ import { transactionFilters } from '../../@generic/repository/base-transaction-f
 import { Db } from '../../@generic/service/db.service';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
+import { deriveSeedSyncId } from '../../cloud-sync/utils/derive-seed-sync-id.util';
 import { DebtEventSourceEnum } from '../../debt-event/enum/debt-event-source.enum';
 import { DebtEventEntityTable } from '../../debt-event/table/debt-event-entity.table';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
@@ -193,11 +194,14 @@ export class TransactionEntryRepository extends Context.Service<TransactionEntry
                             )
                             .returning()
                     ).pipe(Effect.map(transactionEntries => transactionEntries.at(0))),
-                assignDebtPaymentCategory: (categoryId: number, debtType: AccountDebtTypeEnum) =>
-                    Db.query(db =>
+                assignDebtPaymentCategory: (seedKey: string, debtType: AccountDebtTypeEnum) => {
+                    const seedSyncId = deriveSeedSyncId(seedKey);
+                    const zoneCategoryId = sql<number>`(SELECT ${CategoryEntityTable.id} FROM ${CategoryEntityTable} WHERE ${CategoryEntityTable.syncZone} = ${TransactionEntryEntityTable.syncZone} AND ${CategoryEntityTable.syncId} = ${seedSyncId} AND ${CategoryEntityTable.deletedAt} IS NULL)`;
+
+                    return Db.query(db =>
                         db
                             .update(TransactionEntryEntityTable)
-                            .set({ categoryId, categorySource: CategorySourceEnum.DEBT_SETTLEMENT })
+                            .set({ categoryId: zoneCategoryId, categorySource: CategorySourceEnum.DEBT_SETTLEMENT })
                             .where(
                                 and(
                                     inArray(
@@ -225,7 +229,13 @@ export class TransactionEntryRepository extends Context.Service<TransactionEntry
                                         queryBuilder
                                             .select({ id: CategoryEntityTable.id })
                                             .from(CategoryEntityTable)
-                                            .where(and(eq(CategoryEntityTable.id, categoryId), isNull(CategoryEntityTable.deletedAt)))
+                                            .where(
+                                                and(
+                                                    eq(CategoryEntityTable.syncZone, TransactionEntryEntityTable.syncZone),
+                                                    eq(CategoryEntityTable.syncId, seedSyncId),
+                                                    isNull(CategoryEntityTable.deletedAt)
+                                                )
+                                            )
                                     ),
                                     or(
                                         isNull(TransactionEntryEntityTable.categoryId),
@@ -236,7 +246,8 @@ export class TransactionEntryRepository extends Context.Service<TransactionEntry
                                     )
                                 )
                             )
-                    ),
+                    );
+                },
                 deleteByTransactionId: (transactionId: number) =>
                     Db.query(db =>
                         db.delete(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.transactionId, transactionId))

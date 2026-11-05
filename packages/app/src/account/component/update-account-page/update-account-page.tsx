@@ -18,6 +18,7 @@ import { AccountSwitchFieldKindEnum } from '../../enum/account-switch-field-kind
 import { AccountFormBindingsInterface } from '../../interface/account-form-bindings.interface';
 import { AccountSwitchField } from '../account-switch-field/account-switch-field';
 import { ArchiveAccount } from '../archive-account/archive-account';
+import { HouseholdShareAccountSection } from '../household-share-account-section/household-share-account-section';
 import { CreateAccountScreenSelector } from '../create-account-screen/create-account-screen.selector';
 
 interface Props {
@@ -80,6 +81,8 @@ export const UpdateAccountPage = ({ account, fields, hero, children, onSubmit, i
                         onChange={fields.isActive.field.onChange}
                     />
                 </GroupedListSection>
+
+                <HouseholdShareAccountSection accountId={account.id} isBankSynced={isDefined(account.integrationId)} />
 
                 <GroupedListSection footer={t`Leaves Home, totals and budgets. Restore it from Settings → Archived accounts.`}>
                     <ArchiveAccount accountId={account.id} />

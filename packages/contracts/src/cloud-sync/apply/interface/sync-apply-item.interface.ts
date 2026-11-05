@@ -5,4 +5,5 @@ export interface SyncApplyItemInterface {
     readonly envelopeJson: string;
     readonly systemFields: string | null;
     readonly movedTo: string | null;
+    readonly movedFrom: string | null;
 }

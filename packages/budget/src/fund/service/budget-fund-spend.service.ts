@@ -20,7 +20,7 @@ export class BudgetFundSpendService extends Context.Service<BudgetFundSpendServi
         const budgetSinkingFundRepository = yield* BudgetSinkingFundRepository;
 
         const findSpentWithDrawsAgainst = Effect.fn('BudgetFundSpendService.findSpentWithDrawsAgainst')(function* (
-            budget: Pick<BudgetEntityInterface, 'instrumentId'>,
+            budget: Pick<BudgetEntityInterface, 'instrumentId' | 'syncZone'>,
             funds: readonly BudgetFundMatchInterface[],
             periodStart: Date,
             nextPeriodStart: Date
@@ -28,7 +28,7 @@ export class BudgetFundSpendService extends Context.Service<BudgetFundSpendServi
             const dueWindows = funds.map(fund => computeFundDueWindow(fund.dueAt));
             const rangeStart = Math.min(periodStart.getTime(), ...dueWindows.map(dueWindow => dueWindow.periodStart.getTime()));
             const rangeEnd = Math.max(nextPeriodStart.getTime(), ...dueWindows.map(dueWindow => dueWindow.nextPeriodStart.getTime()));
-            const rangeRows = yield* budgetRepository.findBudgetSpentEntries(new Date(rangeStart), new Date(rangeEnd), budget.instrumentId);
+            const rangeRows = yield* budgetRepository.findBudgetSpentEntries(new Date(rangeStart), new Date(rangeEnd), budget.instrumentId, budget.syncZone);
             const rangeEntries = toBudgetCurrencyEntries(rangeRows, budget.instrumentId);
             const entries = rangeEntries.filter(
                 entry => entry.operatedAt.getTime() >= periodStart.getTime() && entry.operatedAt.getTime() < nextPeriodStart.getTime()
@@ -44,7 +44,7 @@ export class BudgetFundSpendService extends Context.Service<BudgetFundSpendServi
         });
 
         const findSpentWithDraws = Effect.fn('BudgetFundSpendService.findSpentWithDraws')(function* (
-            budget: Pick<BudgetEntityInterface, 'id' | 'instrumentId'>,
+            budget: Pick<BudgetEntityInterface, 'id' | 'instrumentId' | 'syncZone'>,
             periodStart: Date,
             nextPeriodStart: Date
         ) {
@@ -57,7 +57,7 @@ export class BudgetFundSpendService extends Context.Service<BudgetFundSpendServi
             findSpentWithDraws,
             findSpentWithDrawsAgainst,
             findSpentEntries: Effect.fn('BudgetFundSpendService.findSpentEntries')(function* (
-                budget: Pick<BudgetEntityInterface, 'id' | 'instrumentId'>,
+                budget: Pick<BudgetEntityInterface, 'id' | 'instrumentId' | 'syncZone'>,
                 periodStart: Date,
                 nextPeriodStart: Date
             ) {

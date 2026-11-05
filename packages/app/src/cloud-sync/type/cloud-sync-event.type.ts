@@ -3,6 +3,8 @@ import type {
     ICloudFetchedChangesEvent,
     ICloudScopedEvent,
     ICloudSentChangesEvent,
+    ICloudShareAcceptedEvent,
+    ICloudShareChangedEvent,
     ICloudStateSerializationEvent,
     ICloudZoneChangeEvent
 } from '../../../modules/icloud';
@@ -15,4 +17,6 @@ export type CloudSyncEventType =
     | { readonly kind: CloudSyncEventKindEnum.ACCOUNT_CHANGE; readonly event: ICloudAccountChangeEvent }
     | { readonly kind: CloudSyncEventKindEnum.ZONE_CHANGE; readonly event: ICloudZoneChangeEvent }
     | { readonly kind: CloudSyncEventKindEnum.WILL_FETCH; readonly event: ICloudScopedEvent }
-    | { readonly kind: CloudSyncEventKindEnum.DID_FETCH; readonly event: ICloudScopedEvent };
+    | { readonly kind: CloudSyncEventKindEnum.DID_FETCH; readonly event: ICloudScopedEvent }
+    | { readonly kind: CloudSyncEventKindEnum.SHARE_ACCEPTED; readonly event: ICloudShareAcceptedEvent }
+    | { readonly kind: CloudSyncEventKindEnum.SHARE_CHANGED; readonly event: ICloudShareChangedEvent };

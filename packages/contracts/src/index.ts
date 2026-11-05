@@ -148,6 +148,8 @@ export { InstrumentRepository } from './instrument/repository/instrument.reposit
 export { BANK_FEE_CATEGORY_ID } from './category/constant/bank-fee-category-id.constant';
 export { LENDING_CATEGORY_ID } from './category/constant/lending-category-id.constant';
 export { BORROWING_CATEGORY_ID } from './category/constant/borrowing-category-id.constant';
+export { LENDING_CATEGORY_SEED_KEY } from './category/constant/lending-category-seed-key.constant';
+export { BORROWING_CATEGORY_SEED_KEY } from './category/constant/borrowing-category-seed-key.constant';
 export { ACCOUNT_DELETED_TRANSFER_CATEGORY_ID } from './category/constant/account-deleted-transfer-category-id.constant';
 export { CASH_WITHDRAWAL_TRACKED_CATEGORY_ID } from './category/constant/cash-withdrawal-tracked-category-id.constant';
 export { CATEGORY_TITLE_MAX_LENGTH } from './category/constant/category-title-max-length.constant';
@@ -478,6 +480,12 @@ export type { SyncUploadBatchInterface } from './cloud-sync/upload/interface/syn
 export type { SentSyncRecordInterface } from './cloud-sync/upload/interface/sent-sync-record.interface';
 export type { SyncUploadAcknowledgementInterface } from './cloud-sync/upload/interface/sync-upload-acknowledgement.interface';
 
+export { HouseholdShareService } from './cloud-sync/share/service/household-share.service';
+export { HouseholdShareRepository } from './cloud-sync/share/repository/household-share.repository';
+export { HouseholdUnavailableError } from './cloud-sync/share/error/household-unavailable.error';
+export { HouseholdShareStateEnum } from './cloud-sync/share/enum/household-share-state.enum';
+export type { HouseholdShareStatusInterface } from './cloud-sync/share/interface/household-share-status.interface';
+export type { HouseholdShareEverythingStateInterface } from './cloud-sync/share/interface/household-share-everything-state.interface';
 export { SyncRestoreReconciliationService } from './cloud-sync/reconciliation/service/sync-restore-reconciliation.service';
 export { SyncApplyService } from './cloud-sync/apply/service/sync-apply.service';
 export { SyncAccountBalanceRefresher } from './cloud-sync/apply/service/sync-account-balance-refresher.service';
@@ -500,3 +508,5 @@ export { isSyncAggregateRecordType } from './cloud-sync/upload/type-guard/is-syn
 export { listClearedSyncFields } from './cloud-sync/mapping/utils/list-cleared-sync-fields.util';
 export { SyncResetRepository } from './cloud-sync/repository/sync-reset.repository';
 export { BankSyncInstallId } from './cloud-sync/constant/bank-sync-install-id.constant';
+export { HouseholdMembershipService } from './cloud-sync/household/service/household-membership.service';
+export { buildHouseholdRemovalStatements } from './cloud-sync/household/utils/build-household-removal-statements.util';
