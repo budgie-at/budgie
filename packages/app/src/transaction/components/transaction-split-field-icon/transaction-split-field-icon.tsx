@@ -2,6 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { TransactionFieldIcon } from '../transaction-field-icon/transaction-field-icon';
 import { TransactionFieldIconsSelector } from '../transaction-field-icons/transaction-field-icons.selector';
 
@@ -29,13 +30,15 @@ export const TransactionSplitFieldIcon = ({ splitEntryCount, isAmountPositive, o
     const disabledHint = splitEnabled ? void 0 : t`Enter an amount to split it`;
 
     return (
-        <TransactionFieldIcon
-            icon={UserIconNameEnum.Split}
-            label={t`Split`}
-            value={splitValue}
-            onPress={onPress}
-            disabledHint={disabledHint}
-            testID={TransactionFieldIconsSelector.Split}
-        />
+        <GroupedListSection footer={disabledHint}>
+            <TransactionFieldIcon
+                icon={UserIconNameEnum.Split}
+                label={t`Split`}
+                value={splitValue}
+                onPress={onPress}
+                disabledHint={disabledHint}
+                testID={TransactionFieldIconsSelector.Split}
+            />
+        </GroupedListSection>
     );
 };

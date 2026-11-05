@@ -13,12 +13,13 @@ interface Props {
 
 const SWAP_SIZE = 30;
 const SWAP_HIT_SLOP = 7;
+const DISABLED_OPACITY = 0.3;
 
 export const TransferSwapButton = ({ dividerOffset, isEnabled, onPress }: Props) => {
     const { t } = useLingui();
-    const style = { top: dividerOffset - SWAP_SIZE / 2, opacity: dividerOffset > 0 ? 1 : 0 };
+    const enabledOpacity = isEnabled ? 1 : DISABLED_OPACITY;
+    const style = { top: dividerOffset - SWAP_SIZE / 2, opacity: dividerOffset > 0 ? enabledOpacity : 0 };
     const accessibilityState = { disabled: !isEnabled };
-    const iconClassName = isEnabled ? 'text-primary' : 'text-primary opacity-30';
 
     return (
         <HapticPressable
@@ -32,7 +33,7 @@ export const TransferSwapButton = ({ dividerOffset, isEnabled, onPress }: Props)
             accessibilityLabel={t`Swap accounts`}
             accessibilityRole="button"
         >
-            <Icon icon={UserIconNameEnum.ArrowUpDown} size={15} className={iconClassName} />
+            <Icon icon={UserIconNameEnum.ArrowUpDown} size={15} className="text-primary" />
         </HapticPressable>
     );
 };

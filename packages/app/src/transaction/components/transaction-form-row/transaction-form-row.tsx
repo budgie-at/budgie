@@ -25,7 +25,7 @@ interface Props {
 }
 
 const LABEL_MAX_FONT_SCALE = 2;
-const STACKED_LABEL_MAX_FONT_SCALE = 1.3;
+const STACKED_LABEL_MAX_FONT_SCALE = 1.6;
 const CHEVRON_MAX_SCALE = 1.5;
 
 const labelVariants = cva('shrink-0', {
@@ -42,7 +42,7 @@ export const TransactionFormRow = (props: Props) => {
     const isLargeText = fontScale >= TRANSACTION_LARGE_TEXT_SCALE;
     const isStacked = isLargeText || isStackedByLayout;
     const isAction = !isNotEmptyString(value) && !isDefined(placeholder);
-    const labelMaxFontScale = isLargeText ? STACKED_LABEL_MAX_FONT_SCALE : LABEL_MAX_FONT_SCALE;
+    const labelMaxFontScale = isLargeText && !isAction ? STACKED_LABEL_MAX_FONT_SCALE : LABEL_MAX_FONT_SCALE;
     const stackedLeading = isLargeText ? null : <View className="self-start pt-[2px]">{left}</View>;
     const leading = isStacked ? stackedLeading : left;
     const chevronSize = 16 * Math.min(fontScale, CHEVRON_MAX_SCALE);
@@ -53,7 +53,10 @@ export const TransactionFormRow = (props: Props) => {
             left={leading}
             title={
                 <View className={titleClassName}>
-                    <Text className={labelVariants({ isStacked, isAction })} maxFontSizeMultiplier={labelMaxFontScale}>
+                    <Text
+                        className={labelVariants({ isStacked: isStacked && !isAction, isAction })}
+                        maxFontSizeMultiplier={labelMaxFontScale}
+                    >
                         {label}
                     </Text>
                     <TransactionFormRowValue
