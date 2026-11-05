@@ -26,7 +26,10 @@ const TABS: readonly TabConfigInterface<TransactionsTabType>[] = [
 export const TransactionsPageHeader = ({ activeTab, onChangeTab }: Props) => {
     const { t } = useLingui();
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
-    const headerStyle = useResolveClassNames('bg-surface border-b-hairline border-surface-separator');
+    const backgroundStyle = useResolveClassNames('bg-surface');
+    const borderWidthStyle = useResolveClassNames('border-b-hairline');
+    const borderColorStyle = useResolveClassNames('border-surface-separator');
+    const headerStyle = [backgroundStyle, borderWidthStyle, borderColorStyle];
     const rowStyle = useResolveClassNames('px-0');
     const segments: readonly SegmentedControlSegmentInterface<TransactionsTabType>[] = [
         { value: 'transactions', label: t`Transactions`, testID: TransactionsPageSelector.TransactionsTab },
