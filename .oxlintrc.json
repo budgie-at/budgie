@@ -113,7 +113,8 @@
         "effecttsgo/unsafe-effect-type-assertion": "error",
         "effecttsgo/provide-merge-all-to-array": "error",
         "effecttsgo/nested-effect-gen-yield": "error",
-        "effecttsgo/global-random-in-effect": "error"
+        "effecttsgo/global-random-in-effect": "error",
+        "effecttsgo/process-env-in-effect": "error"
     },
     "overrides": [
         {

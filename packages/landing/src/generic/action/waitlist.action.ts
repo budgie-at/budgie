@@ -1,6 +1,7 @@
 /* oxlint-disable lingui/no-unlocalized-strings -- Server action with error codes, not user-facing text */
 'use server';
 
+import * as Config from 'effect/Config';
 import * as Effect from 'effect/Effect';
 import * as Option from 'effect/Option';
 import * as Schema from 'effect/Schema';
@@ -121,7 +122,7 @@ const getRedisClient = Effect.fn('getRedisClient')(function* () {
         destroyRedisClient(redisClient);
     }
 
-    const redisUrl = process.env.REDIS_URL;
+    const redisUrl = yield* Config.String('REDIS_URL').pipe(Config.withDefault(''));
 
     if (!isNotEmptyString(redisUrl)) {
         yield* Effect.logError('configuration_missing');

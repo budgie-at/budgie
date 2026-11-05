@@ -1,9 +1,7 @@
 import { SyncModeEnum } from '@budgie/contracts';
 import { BinanceSyncService } from '@budgie/sync';
-import { describe, expect, it } from '@effect/vitest';
+import { describe, expect, it, vi } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
-
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { binanceStub, buildBinance, fetchBinanceTransactions, setupBinanceFixture, TestLayer } from '../../harness';
 
@@ -13,21 +11,9 @@ const NON_UTC_TIMEZONES = ['Pacific/Auckland', 'America/Los_Angeles'];
 
 const withTimezone = <A, E, R>(timezone: string, effect: Effect.Effect<A, E, R>) =>
     Effect.acquireUseRelease(
-        Effect.sync(() => {
-            const previousTimezone = isNotEmptyString(process.env['TZ']) ? process.env['TZ'] : null;
-            process.env['TZ'] = timezone;
-
-            return previousTimezone;
-        }),
+        Effect.sync(() => vi.stubEnv('TZ', timezone)),
         () => effect,
-        previousTimezone =>
-            Effect.sync(() => {
-                if (isDefined(previousTimezone)) {
-                    process.env['TZ'] = previousTimezone;
-                } else {
-                    delete process.env['TZ'];
-                }
-            })
+        () => Effect.sync(() => vi.unstubAllEnvs())
     );
 
 describe('binance/withdrawal-time', () => {
