@@ -156,8 +156,8 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
             const amountMicroUnits = transaction.entries.find(
                 entry => entry.kind === TransactionEntryKindEnum.PRIMARY && entry.type !== TransactionEntryTypeEnum.FEE
             )?.amount;
-            const placeholderId = isDefined(amountMicroUnits)
-                ? yield* inzhurCashPairingService.findPlaceholderId(
+            const placeholder = isDefined(amountMicroUnits)
+                ? yield* inzhurCashPairingService.findPlaceholder(
                       setup.cashAccount.id,
                       transaction.type === TransactionTypeEnum.EXPENSE
                           ? InzhurOperationKindEnum.TOP_UP
@@ -168,11 +168,12 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
                 : null;
             const outcome = yield* convertToCash(transaction, setup);
 
-            if (!isDefined(outcome) || !isDefined(placeholderId)) {
+            if (!isDefined(outcome) || !isDefined(placeholder)) {
                 return outcome;
             }
 
-            yield* inzhurCashPairingService.release(placeholderId);
+            yield* inzhurCashPairingService.release(placeholder.id);
+            yield* inzhurCashPairingService.stamp(transaction.id, setup.cashAccount.id, placeholder.externalId);
 
             return { ...outcome, preSetupCashDelta: 0 };
         });

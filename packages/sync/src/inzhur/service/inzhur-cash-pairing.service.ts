@@ -1,4 +1,4 @@
-import { ExternalSourceEnum } from '@budgie/contracts';
+import { ExternalSourceEnum, TransactionEntryRepository, TransactionRepository } from '@budgie/contracts';
 import { TransactionService } from '@budgie/ledger';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -13,10 +13,12 @@ import type { InzhurOperationKindEnum } from '../enum/inzhur-operation-kind.enum
 
 export class InzhurCashPairingService extends Context.Service<InzhurCashPairingService>()('@budgie/sync/InzhurCashPairingService', {
     make: Effect.gen(function* () {
+        const transactionEntryRepository = yield* TransactionEntryRepository;
+        const transactionRepository = yield* TransactionRepository;
         const transactionService = yield* TransactionService;
 
         return {
-            findPlaceholderId: Effect.fn('InzhurCashPairingService.findPlaceholderId')(function* (
+            findPlaceholder: Effect.fn('InzhurCashPairingService.findPlaceholder')(function* (
                 cashAccountId: number,
                 kind: InzhurOperationKindEnum,
                 amountMicroUnits: number,
@@ -24,22 +26,36 @@ export class InzhurCashPairingService extends Context.Service<InzhurCashPairingS
             ) {
                 const idByExternalId = yield* transactionService.findIdMapByExternalSource(ExternalSourceEnum.INZHUR, [cashAccountId]);
                 const candidates = [...idByExternalId]
-                    .map(([externalId, id]) => ({ id, parsed: parseInzhurOperationExternalId(externalId) }))
-                    .flatMap(({ id, parsed }) =>
+                    .map(([externalId, id]) => ({ id, externalId, parsed: parseInzhurOperationExternalId(externalId) }))
+                    .flatMap(({ id, externalId, parsed }) =>
                         isDefined(parsed) && parsed.kind === kind && parsed.amountMicroUnits === amountMicroUnits
-                            ? [{ id, distance: Math.abs(parsed.occurredAt.getTime() - operatedAt.getTime()) }]
+                            ? [{ id, externalId, distance: Math.abs(parsed.occurredAt.getTime() - operatedAt.getTime()) }]
                             : []
                     )
                     .filter(({ distance }) => distance <= INZHUR_PAIRING_WINDOW_MILLISECONDS)
                     .sort((left, right) => left.distance - right.distance);
 
-                return candidates.at(0)?.id ?? null;
+                const nearest = candidates.at(0);
+
+                return isDefined(nearest) ? { id: nearest.id, externalId: nearest.externalId } : null;
             }),
-            release: (placeholderId: number) => transactionService.deleteById(placeholderId)
+            release: (placeholderId: number) => transactionService.deleteById(placeholderId),
+            stamp: Effect.fn('InzhurCashPairingService.stamp')(function* (
+                transactionId: number,
+                cashAccountId: number,
+                operationExternalId: string
+            ) {
+                const transaction = yield* transactionRepository.getByIdWithEntries(transactionId);
+                const cashEntry = transaction?.entries.find(entry => entry.accountId === cashAccountId);
+
+                if (isDefined(cashEntry)) {
+                    yield* transactionEntryRepository.updateById(cashEntry.id, { externalId: operationExternalId });
+                }
+            })
         };
     })
 }) {
     static readonly layer = Layer.effect(InzhurCashPairingService, InzhurCashPairingService.make).pipe(
-        Layer.provide([TransactionService.layer])
+        Layer.provide([TransactionEntryRepository.layer, TransactionRepository.layer, TransactionService.layer])
     );
 }

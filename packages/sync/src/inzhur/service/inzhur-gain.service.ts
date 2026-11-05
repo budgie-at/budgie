@@ -173,7 +173,9 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
             const isReinvestedDividend =
                 item.movement.transactionType === TransactionTypeEnum.INCOME && item.movement.fundAccountId === accountId;
 
-            return isTrade || isReinvestedDividend ? -item.amount : 0;
+            const isLinkedTax = item.movement.transactionType === TransactionTypeEnum.EXPENSE && item.movement.fundAccountId === accountId;
+
+            return isTrade || isReinvestedDividend || isLinkedTax ? -item.amount : 0;
         };
 
         const buildGain = (
@@ -284,7 +286,7 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
                     return null;
                 }
 
-                const cashItems = ledger.dated.filter(item => item.movement.accountId === ledger.cashAccountId);
+                const cashItems = ledger.dated.filter(item => item.movement.accountId === ledger.cashAccountId && item.day <= today);
                 const trades = cashItems.filter(
                     item =>
                         item.movement.transactionType === TransactionTypeEnum.TRANSFER &&
@@ -300,7 +302,7 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
                     .filter(item => item.movement.transactionType === TransactionTypeEnum.EXPENSE)
                     .reduce((total, item) => total - item.amount, 0);
                 const reconciled = ledger.dated
-                    .filter(item => item.movement.accountId === fundAccountId && isReconcile(item.movement))
+                    .filter(item => item.movement.accountId === fundAccountId && isReconcile(item.movement) && item.day <= today)
                     .reduce((total, item) => total + reconcileValueOf(ledger, item), 0);
                 const returnAmount = value + proceeds + dividends - tax - invested - reconciled;
 

@@ -8,6 +8,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { INZHUR_OPERATION_EXTERNAL_ID_PREFIX } from '../constant/inzhur-operation-external-id-prefix.constant';
 import { INZHUR_RECONCILE_EXTERNAL_ID_PREFIX } from '../constant/inzhur-reconcile-external-id-prefix.constant';
+import { getKyivDayStart } from '../utils/get-kyiv-day-start.util';
 import { sumSignedAccountEntries } from '../utils/sum-signed-account-entries.util';
 
 import type { InzhurReconciliationInterface } from '../interface/inzhur-reconciliation.interface';
@@ -21,7 +22,6 @@ export class InzhurQuantityReconcileService extends Context.Service<InzhurQuanti
             const transactionRepository = yield* TransactionRepository;
             const transactionService = yield* TransactionService;
             const noonSuffix = 'T12:00:00.000Z';
-            const endOfDaySuffix = 'T23:59:59.999Z';
             const adjustmentTitle = 'Holdings correction';
 
             return {
@@ -35,7 +35,7 @@ export class InzhurQuantityReconcileService extends Context.Service<InzhurQuanti
                     targetQuantityByAccountId: ReadonlyMap<number, number>
                 ) {
                     const accountIds = [...targetQuantityByAccountId.keys()];
-                    const endOfDay = new Date(`${statementDate}${endOfDaySuffix}`);
+                    const cutoff = getKyivDayStart(statementDate, 1);
                     const idByExternalId = yield* transactionService.findIdMapByExternalSource(ExternalSourceEnum.INZHUR, accountIds);
                     const reconciliations: InzhurReconciliationInterface[] = [];
 
@@ -49,7 +49,7 @@ export class InzhurQuantityReconcileService extends Context.Service<InzhurQuanti
 
                         const transactions = yield* transactionRepository.findByAccountIdsWithEntries([accountId]);
                         const quantity = transactions
-                            .filter(transaction => transaction.operatedAt <= endOfDay)
+                            .filter(transaction => transaction.operatedAt < cutoff)
                             .reduce((sum, transaction) => sum + sumSignedAccountEntries(transaction.entries, accountId), 0);
                         const differenceMicroUnits = convertToMicroUnits(targetQuantity) - quantity;
 

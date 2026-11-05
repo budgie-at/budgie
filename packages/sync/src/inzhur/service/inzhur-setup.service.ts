@@ -28,7 +28,6 @@ import { INZHUR_CASH_EXTERNAL_ID } from '../constant/inzhur-cash-external-id.con
 import { INZHUR_BALANCE_CORRECTION_TITLE } from '../constant/inzhur-estimate-titles.constant';
 import { InzhurNotSetUpError } from '../error/inzhur-not-set-up.error';
 import { buildInzhurTransactionInput } from '../utils/build-inzhur-transaction-input.util';
-import { parseInzhurOperationExternalId } from '../utils/parse-inzhur-operation-external-id.util';
 
 import { InzhurBankFlowService } from './inzhur-bank-flow.service';
 import { InzhurBeforeTrackingService } from './inzhur-before-tracking.service';
@@ -171,15 +170,6 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
             effect => Db.transaction(effect)
         );
 
-        const findLastOperationAt = Effect.fnUntraced(function* (cashAccountId: number) {
-            const idByExternalId = yield* transactionService.findIdMapByExternalSource(provider, [cashAccountId]);
-            const times = [...idByExternalId.keys()]
-                .map(externalId => parseInzhurOperationExternalId(externalId)?.occurredAt.getTime())
-                .filter(isDefined);
-
-            return isNotEmptyArray(times) ? new Date(Math.max(...times)) : null;
-        });
-
         const findStatementReminder = Effect.fn('InzhurSetupService.findStatementReminder')(function* (now: Date) {
             const setup = yield* inzhurSetupLookupService.findSetup();
 
@@ -188,7 +178,7 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
             }
 
             const { cashSync, cashAccount } = setup;
-            const importDates = [cashSync.forwardSyncedAt, yield* findLastOperationAt(cashAccount.id)].filter(isDefined);
+            const importDates = [cashSync.forwardSyncedAt, cashSync.backwardSyncedAt].filter(isDefined);
 
             if (!isNotEmptyArray(importDates)) {
                 return null;

@@ -85,7 +85,7 @@ class InzhurQuantityResolver {
     ): Map<string, number> {
         const known = new Map(baseMicroUnitsByFund);
 
-        for (const action of trades.filter(trade => trade.occurredAt <= cutoff)) {
+        for (const action of trades.filter(trade => trade.occurredAt < cutoff)) {
             const fundName = action.fundName ?? '';
             const held = known.get(fundName) ?? 0;
 
@@ -116,7 +116,12 @@ class InzhurQuantityResolver {
         const known = this.knownAtCutoff(trades, input.baseMicroUnitsByFund, statementCutoff);
 
         for (const fundName of new Set(unknownBuys.flatMap(action => (isDefined(action.fundName) ? [action.fundName] : [])))) {
-            const unknown = unknownBuys.filter(action => action.fundName === fundName && action.occurredAt <= statementCutoff);
+            const lastSellAllAt = trades
+                .filter(trade => trade.fundName === fundName && trade.isSellAll && trade.occurredAt < statementCutoff)
+                .reduce((latest, trade) => Math.max(latest, trade.occurredAt.getTime()), Number.NEGATIVE_INFINITY);
+            const unknown = unknownBuys.filter(
+                action => action.fundName === fundName && action.occurredAt < statementCutoff && action.occurredAt.getTime() > lastSellAllAt
+            );
             const remaining = (statementMicroUnitsByFund.get(fundName) ?? Number.NaN) - (known.get(fundName) ?? 0);
 
             if (isPositiveNumber(remaining) && isNotEmptyArray(unknown)) {
