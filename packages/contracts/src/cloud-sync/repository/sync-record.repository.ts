@@ -6,6 +6,7 @@ import * as Layer from 'effect/Layer';
 import { Db } from '../../@generic/service/db.service';
 import { SyncRecordEntityTable } from '../table/sync-record-entity.table';
 
+import type { SyncRecordEntityInterface } from '../entity/sync-record-entity.interface';
 import type { SyncRecordCreateEntityInterface } from '../entity/sync-record-create-entity.interface';
 
 export class SyncRecordRepository extends Context.Service<SyncRecordRepository>()('@budgie/contracts/SyncRecordRepository', {
@@ -29,6 +30,16 @@ export class SyncRecordRepository extends Context.Service<SyncRecordRepository>(
                             updatedAt: new Date()
                         }
                     })
+            ),
+        invalidateAll: () =>
+            Db.query(db => db.update(SyncRecordEntityTable).set({ systemFields: null, payload: null, updatedAt: new Date(0) })),
+        findUnconfirmed: () =>
+            Db.query(db =>
+                db.$client.unsafe<Pick<SyncRecordEntityInterface, 'syncZone' | 'syncId' | 'recordType'>>(
+                    `SELECT sync_zone AS syncZone, sync_id AS syncId, record_type AS recordType FROM sync_record
+                    WHERE updated_at = 0
+                    AND NOT EXISTS (SELECT 1 FROM sync_pending WHERE sync_pending.sync_zone = sync_record.sync_zone AND sync_pending.sync_id = sync_record.sync_id)`
+                )
             ),
         remove: (syncZone: string, syncId: string) =>
             Db.query(db =>

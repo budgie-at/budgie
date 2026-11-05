@@ -53,6 +53,14 @@ export class SyncResetRepository extends Context.Service<SyncResetRepository>()(
                     })
                 );
             }),
+            clearPendingWork: Effect.fn('SyncResetRepository.clearPendingWork')(function* () {
+                yield* Db.mutation(
+                    { type: 'delete', tables: ['sync_outbox', 'sync_pending'] },
+                    Effect.forEach(['sync_outbox', 'sync_pending'], tableName => Db.query(db => db.$client.unsafe(`DELETE FROM ${tableName}`)), {
+                        discard: true
+                    })
+                );
+            }),
             clearSyncState: Effect.fn('SyncResetRepository.clearSyncState')(function* () {
                 yield* Db.mutation(
                     { type: 'delete', tables: ['sync_record', 'sync_outbox', 'sync_pending'] },

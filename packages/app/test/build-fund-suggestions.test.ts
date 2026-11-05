@@ -1,4 +1,4 @@
-import { RecurringSeriesKindEnum, RecurringSeriesStatusEnum, RecurringSeriesUserStateEnum } from '@budgie/contracts';
+import { PERSONAL_SYNC_ZONE, RecurringSeriesKindEnum, RecurringSeriesStatusEnum, RecurringSeriesUserStateEnum } from '@budgie/contracts';
 import { expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -13,6 +13,8 @@ const seriesOf = (overrides: Partial<RecurringSeriesEntityInterface>): Recurring
     createdAt: NOW,
     updatedAt: NOW,
     deletedAt: null,
+    syncId: null,
+    syncZone: PERSONAL_SYNC_ZONE,
     merchantKey: 'insurance',
     kind: RecurringSeriesKindEnum.EXPENSE,
     periodDays: 365,

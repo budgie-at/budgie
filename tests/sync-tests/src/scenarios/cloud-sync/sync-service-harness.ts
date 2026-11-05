@@ -1,3 +1,5 @@
+import { CloudSyncRestorePhaseEnum } from '@app/cloud-sync/enum/cloud-sync-restore-phase.enum';
+import { SyncAutomationService } from '@app/cloud-sync-automation/service/sync-automation.service';
 import { BankOwnershipService } from '@app/cloud-sync/service/bank-ownership.service';
 import { CloudSyncSafetyCopyService } from '@app/cloud-sync/service/cloud-sync-safety-copy.service';
 import { CloudSyncStateStore } from '@app/cloud-sync/service/cloud-sync-state-store.service';
@@ -16,6 +18,7 @@ import {
     SyncRecordRepository,
     SyncRepository,
     SyncResetRepository,
+    SyncRestoreReconciliationService,
     SyncUploadService,
     SyncZoneRegistryRepository
 } from '@budgie/contracts';
@@ -29,6 +32,7 @@ import { ICloudSyncScope } from '../../../../../packages/app/modules/icloud';
 import { testDb } from '../../harness';
 
 import type { CloudSyncStateInterface } from '@app/cloud-sync/interface/cloud-sync-state.interface';
+import type { SyncApplyResultInterface } from '@budgie/contracts';
 import type {
     ICloudAccountStatusResult,
     ICloudFetchedRecord,
@@ -116,9 +120,30 @@ export const makeFakeTransport = () => {
     return { calls, behavior, layer };
 };
 
+const EMPTY_STATE: CloudSyncStateInterface = {
+    boundUserRecordName: null,
+    stateSerialization: null,
+    resolvedLineageId: null,
+    restorePhase: CloudSyncRestorePhaseEnum.NONE
+};
+
+export const makeFakeAutomation = () => {
+    const holder: { readonly results: SyncApplyResultInterface[] } = { results: [] };
+    const layer = Layer.succeed(SyncAutomationService, {
+        afterApply: (result: SyncApplyResultInterface) =>
+            Effect.sync(() => {
+                holder.results.push(result);
+
+                return { consolidated: 0, ruleTransactionCount: 0, embeddingQueuedCount: 0, isRecurringDetected: false };
+            })
+    });
+
+    return { holder, layer };
+};
+
 export const makeFakeStateStore = () => {
     const holder: { state: CloudSyncStateInterface } = {
-        state: { boundUserRecordName: null, stateSerialization: null, resolvedLineageId: null }
+        state: { ...EMPTY_STATE }
     };
     const layer = Layer.succeed(CloudSyncStateStore, {
         read: Effect.sync(() => holder.state),
@@ -127,7 +152,7 @@ export const makeFakeStateStore = () => {
                 holder.state = { ...holder.state, ...patch };
             }),
         clear: Effect.sync(() => {
-            holder.state = { boundUserRecordName: null, stateSerialization: null, resolvedLineageId: null };
+            holder.state = { ...EMPTY_STATE };
         })
     });
 
@@ -152,14 +177,18 @@ export const makeSyncServiceContext = () => {
     const transport = makeFakeTransport();
     const store = makeFakeStateStore();
     const safetyCopy = makeFakeSafetyCopy();
+    const automation = makeFakeAutomation();
+    const applyLayer = SyncApplyService.layer.pipe(Layer.provide(syncAccountBalanceRefresherLayer));
     const dependencies = Layer.mergeAll(
         transport.layer,
         store.layer,
         safetyCopy.layer,
+        automation.layer,
         installIdLayer,
         SettingsRepository.layer,
         SyncUploadService.layer,
-        SyncApplyService.layer.pipe(Layer.provide(syncAccountBalanceRefresherLayer)),
+        applyLayer,
+        SyncRestoreReconciliationService.layer.pipe(Layer.provide(applyLayer)),
         SyncOutboxRepository.layer,
         SyncRecordRepository.layer,
         SyncZoneRegistryRepository.layer,
@@ -180,7 +209,7 @@ export const makeSyncServiceContext = () => {
             Effect.provideService(Db, testDb)
         );
 
-    return { transport, store, safetyCopy, run };
+    return { transport, store, safetyCopy, automation, run };
 };
 
 export const sentEvent = (patch: Partial<ICloudSentChangesEvent> = {}): ICloudSentChangesEvent => ({

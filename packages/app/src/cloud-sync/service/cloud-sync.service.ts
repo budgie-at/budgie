@@ -9,6 +9,7 @@ import {
     SyncOutboxRepository,
     SyncRecordRepository,
     SyncResetRepository,
+    SyncRestoreReconciliationService,
     SyncUploadService,
     SyncZoneRoleEnum,
     SyncZoneRegistryRepository,
@@ -36,17 +37,20 @@ import {
     ICloudZoneChangeReason
 } from '../../../modules/icloud';
 import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
+import { appStateChanges } from '../../@generic/constant/app-state-changes.constant';
 import { DatabaseChangeService } from '../../@generic/drizzle/service/database-change.service';
 import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { InstallIdService } from '../../cloud-backup/service/install-id.service';
+import { syncAutomationEmbeddingBoostLayer } from '../../cloud-sync-automation/layer/sync-automation-embedding-boost.layer';
+import { SyncAutomationService } from '../../cloud-sync-automation/service/sync-automation.service';
 import { CloudSyncDeviceRecordSchema } from '../constant/cloud-sync-device-record-schema.constant';
 import { CLOUD_SYNC_RECORDS } from '../constant/cloud-sync-records.constant';
 import { cloudSyncStatusAtom } from '../constant/cloud-sync-status-atom.constant';
-import { appStateChanges } from '../constant/app-state-changes.constant';
 import { syncAccountBalanceRefresherLayer } from '../layer/sync-account-balance-refresher.layer';
 import { CloudSyncEventKindEnum } from '../enum/cloud-sync-event-kind.enum';
 import { CloudSyncLineageChoiceEnum } from '../enum/cloud-sync-lineage-choice.enum';
 import { CloudSyncLineageDecisionEnum } from '../enum/cloud-sync-lineage-decision.enum';
+import { CloudSyncRestorePhaseEnum } from '../enum/cloud-sync-restore-phase.enum';
 import { CloudSyncStatusEnum } from '../enum/cloud-sync-status.enum';
 
 import { BankOwnershipService } from './bank-ownership.service';
@@ -70,7 +74,7 @@ import type { CloudSyncEventType } from '../type/cloud-sync-event.type';
 import type { CloudSyncEnvelopeInterface } from '../interface/cloud-sync-envelope.interface';
 import type { CloudSyncPushedItemInterface } from '../interface/cloud-sync-pushed-item.interface';
 import type { CloudSyncSessionInterface } from '../interface/cloud-sync-session.interface';
-import type { SyncIncomingDeletionInterface, SyncIncomingRecordInterface } from '@budgie/contracts';
+import type { SyncApplyResultInterface, SyncIncomingDeletionInterface, SyncIncomingRecordInterface } from '@budgie/contracts';
 
 export class CloudSyncService extends Context.Service<CloudSyncService>()('@budgie/app/CloudSyncService', {
     make: Effect.gen(function* () {
@@ -88,11 +92,15 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
         const bankOwnershipService = yield* BankOwnershipService;
         const databaseChangeService = yield* DatabaseChangeService;
         const safetyCopyService = yield* CloudSyncSafetyCopyService;
+        const reconciliationService = yield* SyncRestoreReconciliationService;
+        const automationService = yield* SyncAutomationService;
         const lock = yield* Semaphore.make(1);
         const locked = lock.withPermits(1);
         const session = yield* Ref.make<CloudSyncSessionInterface>({
             isEngineRunning: false,
             isAwaitingMeta: false,
+            isReconciling: false,
+            isQuotaExceeded: false,
             isFetching: false,
             blocked: null,
             lastSyncedAt: null,
@@ -114,6 +122,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
         const sidePending = new Map<string, CloudSyncEnvelopeInterface>();
         const heldKeys = new Set<string>();
         const failedKeys = new Set<string>();
+        const quotaKeys = new Set<string>();
 
         const keyOf = (zone: string, name: string): string => `${zone}|${name}`;
 
@@ -123,7 +132,8 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
                     status: current.blocked ?? (current.isFetching || pushed.size > 0 ? CloudSyncStatusEnum.SYNCING : CloudSyncStatusEnum.IDLE),
                     lastSyncedAt: current.lastSyncedAt,
                     fetchedRecordCount: current.fetchedRecordCount,
-                    isInitialFetchComplete: current.isInitialFetchComplete
+                    isInitialFetchComplete: current.isInitialFetchComplete,
+                    isQuotaExceeded: current.isQuotaExceeded
                 });
             })
         );
@@ -242,7 +252,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
         const drainUnlocked = Effect.fnUntraced(function* () {
             const current = yield* Ref.get(session);
 
-            if (!current.isEngineRunning || current.isAwaitingMeta) {
+            if (!current.isEngineRunning || current.isAwaitingMeta || current.isReconciling) {
                 return;
             }
 
@@ -345,7 +355,8 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             sidePending.clear();
             heldKeys.clear();
             failedKeys.clear();
-            yield* patch({ isEngineRunning: false, isAwaitingMeta: false, isFetching: false });
+            quotaKeys.clear();
+            yield* patch({ isEngineRunning: false, isAwaitingMeta: false, isReconciling: false, isFetching: false });
         });
 
         const readZoneLineage = Effect.fnUntraced(function* () {
@@ -413,16 +424,31 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
                 return;
             }
 
+            const isRestoring = stored.restorePhase !== CloudSyncRestorePhaseEnum.NONE;
+            const isReconciling = isRestoring && decision === CloudSyncLineageDecisionEnum.JOIN;
+            const stateSerialization = isRestoring ? null : stored.stateSerialization;
+
             if (decision === CloudSyncLineageDecisionEnum.WRITE_META) {
+                if (isRestoring) {
+                    yield* resetRepository.clearSyncState();
+                    yield* stateStore.update({ stateSerialization: null, restorePhase: CloudSyncRestorePhaseEnum.NONE });
+                }
+
                 yield* outboxRepository.enqueueAll(PERSONAL_SYNC_ZONE);
             }
 
-            yield* transport.startSync(scope, stored.stateSerialization);
+            if (isReconciling) {
+                yield* reconciliationService.prepare(stored.restorePhase === CloudSyncRestorePhaseEnum.PENDING);
+                yield* stateStore.update({ stateSerialization: null, restorePhase: CloudSyncRestorePhaseEnum.FETCHING });
+            }
+
+            yield* transport.startSync(scope, stateSerialization);
             yield* patch({
                 isEngineRunning: true,
                 isAwaitingMeta: decision === CloudSyncLineageDecisionEnum.WRITE_META,
+                isReconciling,
                 blocked: null,
-                isInitialFetchComplete: isDefined(stored.stateSerialization)
+                isInitialFetchComplete: isDefined(stateSerialization)
             });
 
             if (decision === CloudSyncLineageDecisionEnum.WRITE_META) {
@@ -475,7 +501,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
 
         const recoverZoneUnlocked = Effect.fnUntraced(function* () {
             yield* stopEngineUnlocked();
-            yield* stateStore.update({ stateSerialization: null, resolvedLineageId: null });
+            yield* stateStore.update({ stateSerialization: null, resolvedLineageId: null, restorePhase: CloudSyncRestorePhaseEnum.NONE });
             yield* resetRepository.clearSyncState();
             yield* outboxRepository.enqueueAll(PERSONAL_SYNC_ZONE);
             yield* reconfigureUnlocked();
@@ -553,7 +579,11 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             if (isDefined(itemKey)) {
                 dropItem(itemKey);
 
-                if (failure.code !== ICloudErrorCode.SERVER_RECORD_CHANGED) {
+                if (failure.code === ICloudErrorCode.QUOTA_EXCEEDED) {
+                    failedKeys.add(itemKey);
+                    quotaKeys.add(itemKey);
+                    yield* patch({ isQuotaExceeded: true });
+                } else if (failure.code !== ICloudErrorCode.SERVER_RECORD_CHANGED) {
                     failedKeys.add(itemKey);
                     yield* patch({ blocked: CloudSyncStatusEnum.ERROR });
                 }
@@ -613,12 +643,18 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             yield* acknowledgeComplete(touched);
             yield* confirm(event);
 
+            if (isNotEmptyArray(event.savedRecords) && quotaKeys.size === 0) {
+                yield* patch({ isQuotaExceeded: false });
+            }
+
             if (pushed.size <= uploadLowWaterMark) {
                 yield* drainUnlocked();
             }
 
             yield* publish;
         }, effect => locked(effect));
+
+        const automate = (result: SyncApplyResultInterface) => logAndContinue(automationService.afterApply(result));
 
         const handleFetchedChanges = Effect.fn('CloudSyncService.handleFetchedChanges')(function* (event: ICloudFetchedChangesEvent) {
             const records: SyncIncomingRecordInterface[] = [];
@@ -658,6 +694,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
                       : current.blocked
             }));
             yield* confirm(event);
+            yield* automate(result);
 
             if (isNotEmptyArray(result.reenqueued)) {
                 yield* drainUnlocked();
@@ -671,12 +708,40 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
 
         const handleWillFetch = (_event: ICloudScopedEvent) => patch({ isFetching: true });
 
+        const completeReconciliation = Effect.fnUntraced(function* () {
+            const meta = yield* recordRepository.find(PERSONAL_SYNC_ZONE, CLOUD_SYNC_RECORDS.metaRecordName);
+            const isInventoryFetched = isDefined(meta) && isDefined(meta.systemFields);
+
+            if (!isInventoryFetched || isNotEmptyArray(yield* applyService.findPausedZones())) {
+                return;
+            }
+
+            const results = yield* reconciliationService.complete(PERSONAL_SYNC_ZONE);
+
+            yield* stateStore.update({ restorePhase: CloudSyncRestorePhaseEnum.NONE });
+            yield* patch({ isReconciling: false });
+
+            for (const result of results) {
+                yield* automate(result);
+            }
+        });
+
         const handleDidFetch = Effect.fn('CloudSyncService.handleDidFetch')(function* (_event: ICloudScopedEvent) {
             yield* patch({
                 isFetching: false,
                 isInitialFetchComplete: true,
                 lastSyncedAt: yield* Clock.currentTimeMillis
             });
+
+            if ((yield* Ref.get(session)).isReconciling) {
+                yield* completeReconciliation();
+            }
+
+            for (const quotaKey of quotaKeys) {
+                failedKeys.delete(quotaKey);
+            }
+
+            quotaKeys.clear();
             yield* bankOwnershipService.evaluate();
             yield* drainUnlocked();
         }, effect => locked(effect));
@@ -719,6 +784,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
 
             if (current.isEngineRunning) {
                 failedKeys.clear();
+                quotaKeys.clear();
                 yield* drainUnlocked();
                 yield* Effect.forkDetach(logAndContinue(transport.syncNow(scope)));
             } else {
@@ -738,7 +804,11 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
 
             yield* resetRepository.clearSyncedData();
             yield* identityRepository.adoptLineageId(zoneLineageId.value);
-            yield* stateStore.update({ stateSerialization: null, resolvedLineageId: zoneLineageId.value });
+            yield* stateStore.update({
+                stateSerialization: null,
+                resolvedLineageId: zoneLineageId.value,
+                restorePhase: CloudSyncRestorePhaseEnum.NONE
+            });
             yield* patch({ blocked: null, fetchedRecordCount: 0, isInitialFetchComplete: false });
             yield* reconfigureUnlocked();
         });
@@ -747,7 +817,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             yield* safetyCopyService.create();
             yield* stopEngineUnlocked();
             yield* transport.deleteZone(scope, CLOUD_SYNC_RECORDS.personalZoneName);
-            yield* stateStore.update({ stateSerialization: null, resolvedLineageId: null });
+            yield* stateStore.update({ stateSerialization: null, resolvedLineageId: null, restorePhase: CloudSyncRestorePhaseEnum.NONE });
             yield* resetRepository.clearSyncState();
             yield* outboxRepository.enqueueAll(PERSONAL_SYNC_ZONE);
             yield* patch({ blocked: null, fetchedRecordCount: 0, isInitialFetchComplete: false });
@@ -831,7 +901,11 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             SyncResetRepository.layer,
             BankOwnershipService.layer,
             DatabaseChangeService.layer,
-            CloudSyncSafetyCopyService.layer
+            CloudSyncSafetyCopyService.layer,
+            SyncRestoreReconciliationService.layer.pipe(
+                Layer.provide(SyncApplyService.layer.pipe(Layer.provide(syncAccountBalanceRefresherLayer)))
+            ),
+            SyncAutomationService.layer.pipe(Layer.provide(syncAutomationEmbeddingBoostLayer))
         ])
     );
 }

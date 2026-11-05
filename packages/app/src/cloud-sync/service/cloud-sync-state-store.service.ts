@@ -5,6 +5,8 @@ import * as Option from 'effect/Option';
 import * as Schema from 'effect/Schema';
 import { File, Paths } from 'expo-file-system';
 
+import { CloudSyncRestorePhaseEnum } from '../enum/cloud-sync-restore-phase.enum';
+
 import type { CloudSyncStateInterface } from '../interface/cloud-sync-state.interface';
 
 export class CloudSyncStateStore extends Context.Service<CloudSyncStateStore>()('@budgie/app/CloudSyncStateStore', {
@@ -14,10 +16,16 @@ export class CloudSyncStateStore extends Context.Service<CloudSyncStateStore>()(
             Schema.Struct({
                 boundUserRecordName: Schema.NullOr(Schema.String),
                 stateSerialization: Schema.NullOr(Schema.String),
-                resolvedLineageId: Schema.NullOr(Schema.String)
+                resolvedLineageId: Schema.NullOr(Schema.String),
+                restorePhase: Schema.Enum(CloudSyncRestorePhaseEnum)
             })
         );
-        const emptyState: CloudSyncStateInterface = { boundUserRecordName: null, stateSerialization: null, resolvedLineageId: null };
+        const emptyState: CloudSyncStateInterface = {
+            boundUserRecordName: null,
+            stateSerialization: null,
+            resolvedLineageId: null,
+            restorePhase: CloudSyncRestorePhaseEnum.NONE
+        };
 
         const read = Effect.sync(() =>
             stateFile.exists ? Option.getOrElse(Schema.decodeUnknownOption(StateSchema)(stateFile.textSync()), () => emptyState) : emptyState

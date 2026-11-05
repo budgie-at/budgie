@@ -477,6 +477,7 @@ export type { SyncUploadBatchInterface } from './cloud-sync/upload/interface/syn
 export type { SentSyncRecordInterface } from './cloud-sync/upload/interface/sent-sync-record.interface';
 export type { SyncUploadAcknowledgementInterface } from './cloud-sync/upload/interface/sync-upload-acknowledgement.interface';
 
+export { SyncRestoreReconciliationService } from './cloud-sync/reconciliation/service/sync-restore-reconciliation.service';
 export { SyncApplyService } from './cloud-sync/apply/service/sync-apply.service';
 export { SyncAccountBalanceRefresher } from './cloud-sync/apply/service/sync-account-balance-refresher.service';
 export { SyncApplyRepository } from './cloud-sync/apply/repository/sync-apply.repository';

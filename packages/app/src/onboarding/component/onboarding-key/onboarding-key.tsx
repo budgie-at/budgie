@@ -9,6 +9,8 @@ import { GroupedListSection } from '../../../@generic/component/grouped-list-sec
 import { Icon } from '../../../@generic/component/icon/icon';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { useCloudBackups } from '../../../cloud-backup/hook/use-cloud-backups.hook';
+import { CloudSyncInitialFetchRow } from '../../../cloud-sync/component/cloud-sync-initial-fetch-row/cloud-sync-initial-fetch-row';
+import { useCloudSyncInitialFetch } from '../../../cloud-sync/hook/use-cloud-sync-initial-fetch.hook';
 import { useRestoreBackup } from '../../../import/hook/use-restore-backup.hook';
 import { OnboardingFileLockEnum } from '../../enum/onboarding-file-lock.enum';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
@@ -23,19 +25,21 @@ export const OnboardingKey = () => {
     const { goToStep, goToICloudRestore } = useOnboardingNavigation();
     const { selectAndRestore, isLoading } = useRestoreBackup();
     const { groups } = useCloudBackups();
+    const { isFetching } = useCloudSyncInitialFetch();
 
     const handlePinPress = () => void goToStep(OnboardingStepEnum.PIN);
     const handlePhoneLockPress = () => void goToStep(OnboardingStepEnum.PHONE_LOCK);
 
-    const iCloudRestoreRow = isNotEmptyArray(groups) ? (
-        <GroupedListRow
-            testID={OnboardingKeySelector.ICloudRestoreButton}
-            left={<GroupedListIcon icon={UserIconNameEnum.CloudDownload} />}
-            title={t`Restore from iCloud`}
-            subtitle={t`Backups from your devices on this Apple ID`}
-            onPress={goToICloudRestore}
-        />
-    ) : null;
+    const iCloudRestoreRow =
+        isNotEmptyArray(groups) && !isFetching ? (
+            <GroupedListRow
+                testID={OnboardingKeySelector.ICloudRestoreButton}
+                left={<GroupedListIcon icon={UserIconNameEnum.CloudDownload} />}
+                title={t`Restore from iCloud`}
+                subtitle={t`Backups from your devices on this Apple ID`}
+                onPress={goToICloudRestore}
+            />
+        ) : null;
     const restoreAccessory = (
         <LoadingContent isLoading={isLoading}>
             <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
@@ -68,6 +72,7 @@ export const OnboardingKey = () => {
             </GroupedListSection>
 
             <GroupedListSection title={t`Already use Budgie?`}>
+                {isFetching ? <CloudSyncInitialFetchRow /> : null}
                 {iCloudRestoreRow}
                 <GroupedListRow
                     testID={OnboardingKeySelector.RestoreButton}

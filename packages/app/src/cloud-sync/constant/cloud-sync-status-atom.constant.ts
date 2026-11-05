@@ -8,7 +8,8 @@ export const INITIAL_CLOUD_SYNC_STATUS: CloudSyncStatusInterface = {
     status: CloudSyncStatusEnum.IDLE,
     lastSyncedAt: null,
     fetchedRecordCount: 0,
-    isInitialFetchComplete: false
+    isInitialFetchComplete: false,
+    isQuotaExceeded: false
 };
 
 export const cloudSyncStatusAtom = Atom.keepAlive(Atom.make(INITIAL_CLOUD_SYNC_STATUS));

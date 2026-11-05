@@ -5,4 +5,5 @@ export interface CloudSyncStatusInterface {
     readonly lastSyncedAt: number | null;
     readonly fetchedRecordCount: number;
     readonly isInitialFetchComplete: boolean;
+    readonly isQuotaExceeded: boolean;
 }

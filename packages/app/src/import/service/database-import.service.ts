@@ -1,3 +1,4 @@
+import { SyncResetRepository } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -18,6 +19,8 @@ import { reloadApp } from '../../@generic/utils/reload-app.util';
 import { AiEmbeddingStatusService } from '../../ai/service/ai-embedding-status.service';
 import { AiStorageReplacementService } from '../../ai/service/ai-storage-replacement.service';
 import { AuthService } from '../../auth/service/auth.service';
+import { CloudSyncRestorePhaseEnum } from '../../cloud-sync/enum/cloud-sync-restore-phase.enum';
+import { CloudSyncStateStore } from '../../cloud-sync/service/cloud-sync-state-store.service';
 
 export class DatabaseImportService extends Context.Service<DatabaseImportService>()('@budgie/app/DatabaseImportService', {
     make: Effect.gen(function* () {
@@ -25,6 +28,8 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
         const aiStorageReplacementService = yield* AiStorageReplacementService;
         const aiEmbeddingStatusService = yield* AiEmbeddingStatusService;
         const authService = yield* AuthService;
+        const cloudSyncStateStore = yield* CloudSyncStateStore;
+        const syncResetRepository = yield* SyncResetRepository;
         const probeDatabaseName = 'import-probe.db';
 
         const deleteFileIfExists = (path: string): void => {
@@ -111,6 +116,12 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
             const sourceUri = yield* resolveBackupFile(pickedUri);
             const previousPin = yield* authService.getPin();
 
+            yield* cloudSyncStateStore.update({
+                stateSerialization: null,
+                resolvedLineageId: null,
+                restorePhase: CloudSyncRestorePhaseEnum.PENDING
+            });
+            yield* syncResetRepository.clearSyncState();
             yield* authService.persistPin(backupPin);
             yield* replaceFromUri(sourceUri).pipe(Effect.onError(() => authService.persistPin(previousPin).pipe(Effect.orDie)));
         }, Effect.scoped);
@@ -147,7 +158,9 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
             DatabaseLifecycleService.layer,
             AiStorageReplacementService.layer,
             AiEmbeddingStatusService.layer,
-            AuthService.layer
+            AuthService.layer,
+            CloudSyncStateStore.layer,
+            SyncResetRepository.layer
         ])
     );
 }
