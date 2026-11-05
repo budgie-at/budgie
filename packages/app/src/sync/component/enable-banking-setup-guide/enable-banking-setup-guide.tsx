@@ -4,7 +4,7 @@ import { Linking, Text } from 'react-native';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { ENABLE_BANKING_RELAY_URL } from '../../constant/enable-banking-relay-url.constant';
 import { EnableBankingCopyValueRow } from '../enable-banking-copy-value-row/enable-banking-copy-value-row';
-import { EnableBankingGuideStep } from '../enable-banking-guide-step/enable-banking-guide-step';
+import { SyncGuideStep } from '../sync-guide-step/sync-guide-step';
 
 const SIGN_IN_URL = 'https://enablebanking.com/sign-in/';
 const PRIVACY_URL = 'https://budgie.at/en/legal/privacy-policy';
@@ -23,29 +23,29 @@ export const EnableBankingSetupGuide = () => {
             </Text>
 
             <GroupedListSection title={t`Set up once, about 5 minutes`}>
-                <EnableBankingGuideStep number={1} onPress={handleOpenSignIn}>
+                <SyncGuideStep number={1} onPress={handleOpenSignIn}>
                     <Trans>
                         Open <Text className={LABEL_CLASS_NAME}>Enable Banking</Text> and sign in with the link sent to your email.
                     </Trans>
-                </EnableBankingGuideStep>
-                <EnableBankingGuideStep number={2}>
+                </SyncGuideStep>
+                <SyncGuideStep number={2}>
                     <Trans>
                         Open <Text className={LABEL_CLASS_NAME}>API applications</Text>, then{' '}
                         <Text className={LABEL_CLASS_NAME}>Add a new application</Text>.
                     </Trans>
-                </EnableBankingGuideStep>
-                <EnableBankingGuideStep number={3}>
+                </SyncGuideStep>
+                <SyncGuideStep number={3}>
                     <Trans>
                         Set <Text className={LABEL_CLASS_NAME}>Environment</Text> to <Text className={LABEL_CLASS_NAME}>Production</Text>,
                         not Sandbox. Keep the key option on <Text className={LABEL_CLASS_NAME}>Generate in the browser</Text>.
                     </Trans>
-                </EnableBankingGuideStep>
+                </SyncGuideStep>
             </GroupedListSection>
 
             <GroupedListSection footer={t`Tap a value to copy it.`}>
-                <EnableBankingGuideStep number={4}>
+                <SyncGuideStep number={4}>
                     <Trans>Enter the values below and your own email for data protection. Every field is required.</Trans>
-                </EnableBankingGuideStep>
+                </SyncGuideStep>
                 <EnableBankingCopyValueRow label={t`Application name`} value={t`Budgie`} />
                 <EnableBankingCopyValueRow label={t`Allowed redirect URL`} value={ENABLE_BANKING_RELAY_URL} />
                 <EnableBankingCopyValueRow label={t`Description`} value={t`Personal finance tracking`} />
@@ -54,18 +54,18 @@ export const EnableBankingSetupGuide = () => {
             </GroupedListSection>
 
             <GroupedListSection>
-                <EnableBankingGuideStep number={5}>
+                <SyncGuideStep number={5}>
                     <Trans>
                         Tap <Text className={LABEL_CLASS_NAME}>Register</Text>. The key file downloads to Files, in Downloads. Keep it
                         secret.
                     </Trans>
-                </EnableBankingGuideStep>
-                <EnableBankingGuideStep number={6}>
+                </SyncGuideStep>
+                <SyncGuideStep number={6}>
                     <Trans>
                         On the new application tap <Text className={LABEL_CLASS_NAME}>Activate by linking accounts</Text> and log in to your
                         bank. Use <Text className={LABEL_CLASS_NAME}>Link accounts</Text> for each further bank.
                     </Trans>
-                </EnableBankingGuideStep>
+                </SyncGuideStep>
             </GroupedListSection>
         </>
     );

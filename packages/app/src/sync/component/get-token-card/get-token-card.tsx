@@ -6,7 +6,7 @@ import WebView from 'react-native-webview';
 
 import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { Button } from '../../../@generic/component/button/button';
-import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 
 interface Props {
     readonly provider: ExternalSourceEnum;
@@ -33,12 +33,11 @@ export const GetTokenCard = ({ provider, url, title, description, modalTitle }: 
 
     return (
         <>
-            <SimpleHorizontalCell
-                size="lg"
+            <GroupedListRow
+                left={<BankLogo bankProvider={provider} size={36} />}
                 title={title}
+                subtitle={description}
                 onPress={handleOpenWebView}
-                description={description}
-                left={<BankLogo bankProvider={provider} />}
             />
 
             <Modal animationType="slide" visible={isWebViewVisible} onRequestClose={handleCloseWebView}>

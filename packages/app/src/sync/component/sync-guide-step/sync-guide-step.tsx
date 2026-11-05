@@ -10,7 +10,7 @@ interface Props {
     readonly onPress?: () => void;
 }
 
-export const EnableBankingGuideStep = ({ number, children, onPress }: Props) => (
+export const SyncGuideStep = ({ number, children, onPress }: Props) => (
     <GroupedListRow
         left={
             <View className="size-[36px] items-center justify-center self-start rounded-full bg-surface-disc">

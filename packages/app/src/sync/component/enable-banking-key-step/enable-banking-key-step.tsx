@@ -5,8 +5,8 @@ import { Linking, Text } from 'react-native';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { Input } from '../../../@generic/component/input/input';
 import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
+import { SyncCredentialRow } from '../sync-credential-row/sync-credential-row';
 
 import { EnableBankingKeyStepSelector } from './enable-banking-key-step.selector';
 
@@ -39,22 +39,12 @@ export const EnableBankingKeyStep = ({ applicationId, isKeyPicked, onApplication
                     onPress={onPickKey}
                     testID={EnableBankingKeyStepSelector.ChooseKeyFile}
                 />
-                <SettingsRow
+                <SyncCredentialRow
                     icon={UserIconNameEnum.Hash}
-                    variant="secondary"
                     title={t`Application ID`}
-                    subtitle={
-                        <Input
-                            value={applicationId}
-                            onChangeText={onApplicationIdChange}
-                            placeholder={t`Filled in from the key file name`}
-                            accessibilityLabel={t`Application ID`}
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            borderless
-                            className="-my-[13px] h-auto min-h-[44px] px-0 text-[13px]"
-                        />
-                    }
+                    value={applicationId}
+                    onChangeText={onApplicationIdChange}
+                    placeholder={t`Filled in from the key file name`}
                 />
             </GroupedListSection>
 
