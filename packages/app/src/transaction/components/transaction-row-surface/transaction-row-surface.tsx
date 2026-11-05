@@ -1,5 +1,5 @@
 import { cva } from 'class-variance-authority';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { TransactionListRowPositionEnum } from '../../enum/transaction-list-row-position.enum';
 
@@ -22,12 +22,13 @@ const rowVariants = cva('bg-grouped-surface-row overflow-hidden', {
 });
 const SEPARATED_POSITIONS = new Set([TransactionListRowPositionEnum.MIDDLE, TransactionListRowPositionEnum.LAST]);
 const continuousCorners = { borderCurve: 'continuous' as const };
+const separatorStyle = { height: StyleSheet.hairlineWidth };
 
 export const TransactionRowSurface = ({ position = TransactionListRowPositionEnum.SINGLE, children }: Props) => (
     <View className={rowVariants({ position })} style={continuousCorners}>
         {children}
         {SEPARATED_POSITIONS.has(position) ? (
-            <View className="absolute top-0 right-0 left-[64px] h-hairline bg-surface-separator" pointerEvents="none" />
+            <View className="absolute top-0 right-0 left-[64px] bg-surface-separator" style={separatorStyle} pointerEvents="none" />
         ) : null}
     </View>
 );

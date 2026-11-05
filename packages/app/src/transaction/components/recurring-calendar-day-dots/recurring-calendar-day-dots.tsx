@@ -1,35 +1,33 @@
 import { cva } from 'class-variance-authority';
 import { View } from 'react-native';
-import Animated, { FadeIn } from 'react-native-reanimated';
 
-const DOT_STAGGER_MS = 4;
-const DOT_FADE_MS = 200;
+import { cn } from '../../../@generic/utils/cn.util';
 
-const dotVariants = cva('h-1 w-1 rounded-full', {
+const dotVariants = cva('rounded-full', {
     variants: {
         kind: {
-            actual: 'bg-default-foreground',
-            actualSelected: 'bg-primary-reverse',
-            forecasted: 'border border-default-foreground',
-            forecastedSelected: 'border border-primary-reverse'
+            actual: 'h-[5px] w-[5px] bg-primary',
+            actualSelected: 'h-[5px] w-[5px] bg-primary-reverse',
+            forecasted: 'h-[6px] w-[6px] border-[1.5px] border-primary',
+            forecastedSelected: 'h-[6px] w-[6px] border-[1.5px] border-primary-reverse'
         }
     }
 });
 
 interface Props {
-    readonly dayOfMonth: number;
     readonly actualDots: number;
     readonly forecastedDots: number;
     readonly isSelected: boolean;
+    readonly className?: string;
 }
 
-export const RecurringCalendarDayDots = ({ dayOfMonth, actualDots, forecastedDots, isSelected }: Props) => (
-    <Animated.View entering={FadeIn.delay(dayOfMonth * DOT_STAGGER_MS).duration(DOT_FADE_MS)} className="flex-row gap-x-0.5 -mt-0.5">
+export const RecurringCalendarDayDots = ({ actualDots, forecastedDots, isSelected, className }: Props) => (
+    <View className={cn('absolute bottom-[5px] flex-row items-center gap-x-[3px]', className)}>
         {Array.from({ length: actualDots }, (_, index) => (
             <View key={`a-${index}`} className={dotVariants({ kind: isSelected ? 'actualSelected' : 'actual' })} />
         ))}
         {Array.from({ length: forecastedDots }, (_, index) => (
             <View key={`f-${index}`} className={dotVariants({ kind: isSelected ? 'forecastedSelected' : 'forecasted' })} />
         ))}
-    </Animated.View>
+    </View>
 );
