@@ -1,6 +1,6 @@
 import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { useRouter } from 'expo-router';
-import { ComponentType, ReactElement, RefCallback, useEffect, useRef } from 'react';
+import { ComponentType, ReactElement, RefCallback, useEffect, useEffectEvent, useRef } from 'react';
 import { View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -105,7 +105,9 @@ export const TransactionSectionsList = ({
         ...(isEmptyArray(flatData) && !isDefined(listHeader) && { justifyContent: 'center' as const })
     };
 
-    useEffect(publishHeaderOffsets, [publishHeaderOffsets]);
+    const handleSectionsChange = useEffectEvent(publishHeaderOffsets);
+
+    useEffect(() => void handleSectionsChange(), [sections]);
 
     return (
         <>
