@@ -221,18 +221,16 @@ layer(aiModelDownloadStub)('AI native ownership in-flight work', it => {
     it.effect('awaits residency resume and serializes its native initialization with suspension', () =>
         Effect.gen(function* () {
             const residency = yield* AiModelResidencyService.make.pipe(
-                Effect.provide(
-                    Layer.mergeAll(
-                        Layer.succeed(ChatService, yield* ChatService.make),
-                        Layer.succeed(LocalEmbeddingService, yield* LocalEmbeddingService.make),
-                        Layer.mock(SttService, {
-                            snapshot: sttSnapshotAtom,
-                            streamInsert: emptyFn,
-                            start: () => Effect.void,
-                            stop: () => Effect.void
-                        })
-                    )
-                )
+                Effect.provide([
+                    Layer.succeed(ChatService, yield* ChatService.make),
+                    Layer.succeed(LocalEmbeddingService, yield* LocalEmbeddingService.make),
+                    Layer.mock(SttService, {
+                        snapshot: sttSnapshotAtom,
+                        streamInsert: emptyFn,
+                        start: () => Effect.void,
+                        stop: () => Effect.void
+                    })
+                ])
             );
             yield* residency.acquire(AiSubsystemNameEnum.CHAT);
             const initialization = yield* holdNativeCall(native.context);

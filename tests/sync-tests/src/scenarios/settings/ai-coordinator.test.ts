@@ -70,41 +70,39 @@ const makeLifecycle = Effect.fnUntraced(function* (
     let idle: Effect.Effect<void> = Effect.void;
     const chat = yield* ChatService.make;
     const coordinator = yield* AiCoordinatorService.make.pipe(
-        Effect.provide(
-            Layer.mergeAll(
-                Layer.mock(Workload, { foregroundCount: yield* SubscriptionRef.make(0) }),
-                Layer.mock(AiModelResidencyService, {
-                    resume: enabled =>
-                        Effect.sync(() => {
-                            resumes.push([...enabled]);
-                        }),
-                    suspend: () =>
-                        Effect.andThen(
-                            Deferred.succeed(stopping, true),
-                            Effect.suspend(() => shutdown)
-                        )
-                }),
-                Layer.succeed(ChatService, chat),
-                Layer.mock(EmbeddingDrainerService, { drainers: [], start: recordStart('embedding') }),
-                Layer.mock(AiEmbeddingStatusService, { migrateModel: () => Effect.void }),
-                Layer.mock(TranslationDrainerService, {
-                    snapshot: translationDrainerSnapshotAtom,
-                    cancelBoost: emptyFn,
-                    start: recordStart('translation'),
-                    stop: () => Effect.void,
-                    halt: () => Effect.void,
-                    schedule: () => Effect.void,
-                    whenIdle: () => Effect.suspend(() => idle),
-                    setForegroundBusy: () => Effect.void
-                }),
-                Layer.mock(TranslationProgressStore, { snapshot: translationProgressSnapshotAtom, refresh: () => Effect.void }),
-                Layer.mock(EmbeddingProgressStore, {
-                    snapshot: embeddingProgressSnapshotAtom,
-                    refresh: () => Effect.asVoid(Queue.offer(started, true))
-                }),
-                Layer.succeed(SettingsRepository, repository)
-            )
-        )
+        Effect.provide([
+            Layer.mock(Workload, { foregroundCount: yield* SubscriptionRef.make(0) }),
+            Layer.mock(AiModelResidencyService, {
+                resume: enabled =>
+                    Effect.sync(() => {
+                        resumes.push([...enabled]);
+                    }),
+                suspend: () =>
+                    Effect.andThen(
+                        Deferred.succeed(stopping, true),
+                        Effect.suspend(() => shutdown)
+                    )
+            }),
+            Layer.succeed(ChatService, chat),
+            Layer.mock(EmbeddingDrainerService, { drainers: [], start: recordStart('embedding') }),
+            Layer.mock(AiEmbeddingStatusService, { migrateModel: () => Effect.void }),
+            Layer.mock(TranslationDrainerService, {
+                snapshot: translationDrainerSnapshotAtom,
+                cancelBoost: emptyFn,
+                start: recordStart('translation'),
+                stop: () => Effect.void,
+                halt: () => Effect.void,
+                schedule: () => Effect.void,
+                whenIdle: () => Effect.suspend(() => idle),
+                setForegroundBusy: () => Effect.void
+            }),
+            Layer.mock(TranslationProgressStore, { snapshot: translationProgressSnapshotAtom, refresh: () => Effect.void }),
+            Layer.mock(EmbeddingProgressStore, {
+                snapshot: embeddingProgressSnapshotAtom,
+                refresh: () => Effect.asVoid(Queue.offer(started, true))
+            }),
+            Layer.succeed(SettingsRepository, repository)
+        ])
     );
     yield* coordinator.start();
     yield* Queue.take(started);

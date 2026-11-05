@@ -111,7 +111,8 @@
         "effecttsgo/schema-union-of-literals": "error",
         "effecttsgo/type-union-to-schema-union": "error",
         "effecttsgo/unnecessary-arrow-block": "error",
-        "effecttsgo/unsafe-effect-type-assertion": "error"
+        "effecttsgo/unsafe-effect-type-assertion": "error",
+        "effecttsgo/provide-merge-all-to-array": "error"
     },
     "overrides": [
         {

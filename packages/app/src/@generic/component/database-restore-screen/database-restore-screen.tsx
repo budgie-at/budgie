@@ -1,7 +1,6 @@
 import { UserIconNameEnum, makeLoggerLayer } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import * as Layer from 'effect/Layer';
 import * as Reactivity from 'effect/reactivity/Reactivity';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
@@ -45,7 +44,7 @@ export const DatabaseRestoreScreen = () => {
                 }),
                 Effect.orElseSucceed(() => t`This backup could not be opened with your current PIN.`),
                 Effect.tap(nextBackupError => Effect.sync(() => void setBackupError(nextBackupError))),
-                Effect.provide(Layer.mergeAll(makeLoggerLayer(isLoggingEnabled()), Reactivity.layer)),
+                Effect.provide([makeLoggerLayer(isLoggingEnabled()), Reactivity.layer]),
                 Effect.ensuring(Effect.sync(() => void setIsLoading(false)))
             )
         );

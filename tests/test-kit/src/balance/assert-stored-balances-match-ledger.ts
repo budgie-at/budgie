@@ -1,6 +1,5 @@
 import { AccountBalanceRepository, AccountRepository, AccountTypeEnum, Db } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
-import * as Layer from 'effect/Layer';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -19,10 +18,7 @@ export const assertStoredBalancesMatchLedger = (database: DB) =>
             return storedBalances
                 .filter(({ accountId, amount }) => amount !== (ledgerBalances.get(accountId) ?? 0))
                 .map(({ accountId, amount }) => `account=${accountId} stored=${amount} ledger=${ledgerBalances.get(accountId) ?? 0}`);
-        }).pipe(
-            Effect.provide(Layer.mergeAll(AccountRepository.layer, AccountBalanceRepository.layer)),
-            Effect.provideService(Db, database)
-        );
+        }).pipe(Effect.provide([AccountRepository.layer, AccountBalanceRepository.layer]), Effect.provideService(Db, database));
 
         if (isNotEmptyArray(mismatches)) {
             return yield* Effect.die(new Error(`Stored balances drifted from the ledger: ${mismatches.join('; ')}`));
