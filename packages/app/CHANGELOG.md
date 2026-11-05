@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.159.0](https://github.com/budgie-at/budgie/compare/v6.158.0...v6.159.0) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** keep compact source empty copy above footer ([e5f3ee3](https://github.com/budgie-at/budgie/commit/e5f3ee33d0f03b2075e989a39440711f8fb740f4))
+* **app:** keep refund choices clear and support large text ([9d16f42](https://github.com/budgie-at/budgie/commit/9d16f42bd8c5fec747c730c58ffcea6d9d410e8a))
+* **app:** pin measured sheet footers above the safe area ([943bd2a](https://github.com/budgie-at/budgie/commit/943bd2a6ec06ed90cd19a85a5dd15e4b0af34f6c))
+
+### Features
+
+* **app:** refine refund sheet density and keyboard states ([88eaa2c](https://github.com/budgie-at/budgie/commit/88eaa2ca9ee23f05ca48525a5c31f71ea2657637))
+* **app:** stabilize refund and source sheet states ([e5ac080](https://github.com/budgie-at/budgie/commit/e5ac0800d0f4a738af90669b7d19b1abd86f9c19))
+
+
 # [6.158.0](https://github.com/budgie-at/budgie/compare/v6.157.0...v6.158.0) (2026-11-05)
 
 ### Bug Fixes
