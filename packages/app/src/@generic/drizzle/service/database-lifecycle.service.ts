@@ -40,7 +40,7 @@ export class DatabaseLifecycleService extends Context.Service<DatabaseLifecycleS
             yield* Ref.set(isClosed, true);
         });
 
-        const runExclusively = Effect.fn('DatabaseLifecycleService.runExclusively')(function* (work: Effect.Effect<void, unknown, Db>) {
+        const runExclusively = Effect.fn('DatabaseLifecycleService.runExclusively')(function* <E>(work: Effect.Effect<void, E, Db>) {
             yield* workload.block;
             yield* transferConsolidationDrainerService.cancelPending();
             yield* ruleApplicationDrainerService.cancelPending();
@@ -52,14 +52,14 @@ export class DatabaseLifecycleService extends Context.Service<DatabaseLifecycleS
         });
 
         return {
-            run: Effect.fn('DatabaseLifecycleService.run')(function* (
+            run: Effect.fn('DatabaseLifecycleService.run')(function* <E>(
                 operation: DatabaseLifecycleOperationEnum,
-                work: Effect.Effect<void, unknown, Db>
+                work: Effect.Effect<void, E, Db>
             ) {
                 const inFlightOperation = inFlightOperations.get(operation);
 
                 if (isDefined(inFlightOperation)) {
-                    return yield* Fiber.join(inFlightOperation);
+                    return yield* Fiber.join(inFlightOperation).pipe(Effect.orDie);
                 }
 
                 const queuedOperation = yield* semaphore

@@ -55,7 +55,7 @@ const resolveLabel = (error: unknown): MessageDescriptor | null => {
 export const useExplainEnableBankingError = () => {
     const { t } = useLingui();
 
-    return (error: unknown) => {
+    return <E>(error: E) => {
         const label = resolveLabel(error);
 
         return isDefined(label) ? new Error(t(label)) : error;

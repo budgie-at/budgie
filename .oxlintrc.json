@@ -86,7 +86,7 @@
         "effecttsgo/global-fetch-in-effect": "error",
         "effecttsgo/layer-merge-all-with-dependencies": "error",
         "effecttsgo/service-not-as-class": "error",
-        "effecttsgo/any-unknown-in-error-context": "off",
+        "effecttsgo/any-unknown-in-error-context": "error",
         "effecttsgo/lazy-effect": "error",
         "effecttsgo/unnecessary-effect-gen": "error",
         "effecttsgo/schema-number": "error",

@@ -25,7 +25,7 @@ interface UseLlmCategorizationReturnInterface {
     readonly status: VoiceInputStateEnum;
     readonly transactions: AITransactionInterface[];
     readonly error: string | null;
-    readonly categorize: (text: string) => Effect.Effect<AITransactionInterface[], unknown, AppServices>;
+    readonly categorize: (text: string) => Effect.Effect<AITransactionInterface[], Cause.YieldableError, AppServices>;
     readonly reset: () => void;
 }
 

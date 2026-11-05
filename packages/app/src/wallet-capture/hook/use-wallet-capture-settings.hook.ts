@@ -67,7 +67,7 @@ export const useWalletCaptureSettings = () => {
         );
     }, [refreshAtom]);
 
-    const runCaptureMutation = (captureId: string, mutation: Effect.Effect<unknown, unknown, AppServices>) => {
+    const runCaptureMutation = (captureId: string, mutation: Effect.Effect<unknown, Cause.YieldableError, AppServices>) => {
         setMutatingCaptureIds(previous => ({ ...previous, [captureId]: true }));
         setMutationError(null);
         appRuntime.runFork(

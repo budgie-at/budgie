@@ -15,11 +15,12 @@ import { useAccountSelection } from './use-account-selection.hook';
 
 import type { AppServices } from '../../@generic/runtime/app.runtime';
 import type { SyncAccountPreviewInterface } from '@budgie/sync';
+import type * as Cause from 'effect/Cause';
 import type * as Context from 'effect/Context';
 
 export const useSyncAccountSetupFlow = <Identifier extends AppServices, Shape>(
     service: Context.Key<Identifier, Shape>,
-    setupSync: (syncService: Shape, selectedAccountIds: string[]) => Effect.Effect<unknown, unknown, AppServices>
+    setupSync: (syncService: Shape, selectedAccountIds: string[]) => Effect.Effect<unknown, Cause.YieldableError, AppServices>
 ) => {
     const { t } = useLingui();
     const { isLoading, run } = useSingleFlight();
@@ -28,7 +29,7 @@ export const useSyncAccountSetupFlow = <Identifier extends AppServices, Shape>(
 
     const exitHref = onboardingHref ?? '/';
 
-    const explainError = (error: unknown) => {
+    const explainError = <E>(error: E) => {
         const errorCode = resolveSyncErrorCode(error);
 
         return isDefined(errorCode) ? new Error(t(SYNC_ERROR_LABEL[errorCode])) : error;
@@ -46,7 +47,7 @@ export const useSyncAccountSetupFlow = <Identifier extends AppServices, Shape>(
         );
 
     const fetchAccountPreviews = (
-        loadPreviews: (syncService: Shape) => Effect.Effect<SyncAccountPreviewInterface[] | null, unknown, AppServices>,
+        loadPreviews: (syncService: Shape) => Effect.Effect<SyncAccountPreviewInterface[] | null, Cause.YieldableError, AppServices>,
         onLoaded: (previews: SyncAccountPreviewInterface[]) => void
     ) =>
         run(
