@@ -8,13 +8,20 @@ import { useEffect, useEffectEvent } from 'react';
 import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import { useAuthContext } from '../../../auth/context/auth.context';
+import { RecurringNotificationKindEnum } from '../../../recurring/enum/recurring-notification-kind.enum';
 
-const decodePaceNotificationData = Schema.decodeUnknownOption(
-    Schema.Struct({
-        kind: Schema.Literal(BudgetAlertKindEnum.PACE),
-        scope: Schema.Enum(BudgetAlertScopeEnum),
-        categoryId: Schema.NullOr(Schema.Number)
-    })
+const decodeNotificationData = Schema.decodeUnknownOption(
+    Schema.Union([
+        Schema.Struct({
+            kind: Schema.Literal(RecurringNotificationKindEnum.RECURRING),
+            seriesId: Schema.Number
+        }),
+        Schema.Struct({
+            kind: Schema.Literal(BudgetAlertKindEnum.PACE),
+            scope: Schema.Enum(BudgetAlertScopeEnum),
+            categoryId: Schema.NullOr(Schema.Number)
+        })
+    ])
 );
 
 export const BudgetNotificationLaunchHandler = () => {
@@ -22,13 +29,20 @@ export const BudgetNotificationLaunchHandler = () => {
     const lastResponse = Notifications.useLastNotificationResponse();
 
     const handleResponse = useEffectEvent((data: unknown) => {
-        Option.match(decodePaceNotificationData(data), {
+        Option.match(decodeNotificationData(data), {
             onNone: emptyFn,
-            onSome: ({ scope, categoryId }) => {
+            onSome: payload => {
                 Notifications.clearLastNotificationResponse();
+
+                if (payload.kind === RecurringNotificationKindEnum.RECURRING) {
+                    router.push({ pathname: '/recurring/[id]', params: { id: String(payload.seriesId) } });
+
+                    return;
+                }
+
                 router.push({
                     pathname: '/budget',
-                    params: { scope, ...(isDefined(categoryId) && { categoryId: String(categoryId) }) }
+                    params: { scope: payload.scope, ...(isDefined(payload.categoryId) && { categoryId: String(payload.categoryId) }) }
                 });
             }
         });

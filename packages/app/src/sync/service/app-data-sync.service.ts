@@ -10,6 +10,7 @@ import { Workload } from '../../@generic/service/workload.service';
 import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
 import { RecurringRefreshModeEnum } from '../../recurring/enum/recurring-refresh-mode.enum';
+import { RecurringReminderService } from '../../recurring/service/recurring-reminder.service';
 import { scheduleRecurringRefresh } from '../../recurring/utils/schedule-recurring-refresh.util';
 import { WalletCaptureImportService } from '../../wallet-capture/service/wallet-capture-import.service';
 import { WalletCaptureNativeService } from '../../wallet-capture/service/wallet-capture-native.service';
@@ -18,6 +19,7 @@ export class AppDataSyncService extends Context.Service<AppDataSyncService>()('@
     make: Effect.gen(function* () {
         const workload = yield* Workload;
         const recurringRefreshService = yield* RecurringRefreshService;
+        const recurringReminderService = yield* RecurringReminderService;
         const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
         const exchangeRateBackgroundService = yield* ExchangeRateBackgroundService;
         const monobankSyncService = yield* MonobankSyncService;
@@ -54,7 +56,8 @@ export class AppDataSyncService extends Context.Service<AppDataSyncService>()('@
                 Effect.tap(() =>
                     logAndContinue(
                         scheduleRecurringRefresh(RecurringRefreshModeEnum.FULL).pipe(
-                            Effect.provideService(RecurringRefreshService, recurringRefreshService)
+                            Effect.provideService(RecurringRefreshService, recurringRefreshService),
+                            Effect.provideService(RecurringReminderService, recurringReminderService)
                         )
                     )
                 )
@@ -75,7 +78,8 @@ export class AppDataSyncService extends Context.Service<AppDataSyncService>()('@
             EnableBankingSyncService.layer,
             WalletCaptureImportService.layer,
             WalletCaptureNativeService.layer,
-            RecurringRefreshService.layer
+            RecurringRefreshService.layer,
+            RecurringReminderService.layer
         ])
     );
 }

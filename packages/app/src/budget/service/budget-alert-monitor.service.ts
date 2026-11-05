@@ -33,6 +33,7 @@ import { resolveBudgetWindow } from '../utils/resolve-budget-window.util';
 
 import { BudgetProjectionService } from './budget-projection.service';
 
+import type { LocalNotificationChannelInterface } from '../../@generic/interface/local-notification-channel.interface';
 import type {
     BudgetAlertTriggerInterface,
     BudgetProjectionInterface,
@@ -51,6 +52,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
         const instrumentRepository = yield* InstrumentRepository;
         const settingsRepository = yield* SettingsRepository;
 
+        const budgetAlertChannel: LocalNotificationChannelInterface = { id: 'budget-alerts', name: i18n._(msg`Budget alerts`) };
         const backgroundTaskMinimumIntervalMinutes = 15;
         const storageKeyPrefix = '@budgie:budget-alerts-fired';
         const firedTriggersSchema = Schema.fromJsonString(Schema.Array(Schema.String));
@@ -120,7 +122,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
             const title = threshold >= 100 ? i18n._(msg`Budget limit reached`) : i18n._(msg`Overall budget: ${threshold}% spent`);
             const body = i18n._(msg`You have used ${spentPercent}% of your overall budget ${thisPeriod}.`);
 
-            yield* postLocalNotification(title, body);
+            yield* postLocalNotification(budgetAlertChannel, title, body);
         });
 
         const postOtherAlert = Effect.fn('BudgetAlertMonitorService.postOtherAlert')(function* (
@@ -131,7 +133,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
             const title = threshold >= 100 ? i18n._(msg`Other budget: limit reached`) : i18n._(msg`Other budget: ${threshold}% spent`);
             const body = i18n._(msg`You have used ${threshold}% of your budget for spending outside category limits ${thisPeriod}.`);
 
-            yield* postLocalNotification(title, body);
+            yield* postLocalNotification(budgetAlertChannel, title, body);
         });
 
         const postCategoryAlert = Effect.fn('BudgetAlertMonitorService.postCategoryAlert')(function* (
@@ -148,7 +150,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
                 threshold >= 100 ? i18n._(msg`${categoryName}: limit reached`) : i18n._(msg`${categoryName}: ${threshold}% spent`);
             const body = i18n._(msg`You have used ${threshold}% of the limit for ${categoryName} ${thisPeriod}.`);
 
-            yield* postLocalNotification(title, body);
+            yield* postLocalNotification(budgetAlertChannel, title, body);
         });
 
         const resolveProjectionScope = (
@@ -203,7 +205,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
                     : i18n._(msg`${title} is ahead of pace`);
             const body = i18n._(msg`On pace to run out by ${runOutDate}. Keeping under ${perDayAmount}/day keeps it on track.`);
 
-            yield* postLocalNotification(notificationTitle, body, {
+            yield* postLocalNotification(budgetAlertChannel, notificationTitle, body, {
                 kind: trigger.kind,
                 scope: trigger.scope,
                 categoryId: trigger.categoryId

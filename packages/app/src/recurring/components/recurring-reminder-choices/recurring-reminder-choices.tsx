@@ -6,10 +6,12 @@ import { View } from 'react-native';
 
 import { SegmentedControl } from '../../../@generic/component/segmented-control/segmented-control';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
+import { Workload } from '../../../@generic/service/workload.service';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { RECURRING_REMINDER_DAYS } from '../../constant/recurring-reminder-days.constant';
 import { RecurringReminderChoiceEnum } from '../../enum/recurring-reminder-choice.enum';
 import { useNotificationPermission } from '../../hook/use-notification-permission.hook';
+import { RecurringReminderService } from '../../service/recurring-reminder.service';
 import { getRecurringReminderChoice } from '../../utils/get-recurring-reminder-choice.util';
 import { RecurringDetailSelector } from '../recurring-detail-content/recurring-detail.selector';
 
@@ -61,8 +63,11 @@ export const RecurringReminderChoices = ({ seriesId, reminderDaysBefore }: Props
                 }
 
                 const recurringService = yield* RecurringService;
+                const recurringReminderService = yield* RecurringReminderService;
+                const workload = yield* Workload;
 
                 yield* recurringService.update(seriesId, { reminderDaysBefore: RECURRING_REMINDER_DAYS[choice] });
+                yield* workload.schedule('recurring-reminders', recurringReminderService.reschedule(new Date()), { replace: true });
             }).pipe(toastOnFailure(t`Could not update reminder.`))
         );
     };
