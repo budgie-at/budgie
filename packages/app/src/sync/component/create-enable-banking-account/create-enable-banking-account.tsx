@@ -23,11 +23,11 @@ import { useSyncAccountSetupFlow } from '../../hook/use-sync-account-setup-flow.
 import { EnableBankingConnectionService } from '../../service/enable-banking-connection.service';
 import { EnableBankingBankStep } from '../enable-banking-bank-step/enable-banking-bank-step';
 import { EnableBankingConnectAccountStep } from '../enable-banking-connect-account-step/enable-banking-connect-account-step';
-import { EnableBankingHistoryStep } from '../enable-banking-history-step/enable-banking-history-step';
 import { EnableBankingKeyStep } from '../enable-banking-key-step/enable-banking-key-step';
 import { EnableBankingSetupGuide } from '../enable-banking-setup-guide/enable-banking-setup-guide';
 import { EnableBankingWaitingStep } from '../enable-banking-waiting-step/enable-banking-waiting-step';
 import { SyncAccountsStep } from '../sync-accounts-step/sync-accounts-step';
+import { SyncHistoryStep } from '../sync-history-step/sync-history-step';
 import { SyncParkedAccountsSection } from '../sync-parked-accounts-section/sync-parked-accounts-section';
 import { SyncSetupPage } from '../sync-setup-page/sync-setup-page';
 
@@ -263,7 +263,7 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
             break;
         case EnableBankingSetupStepEnum.HISTORY:
             title = t`History depth`;
-            stepContent = <EnableBankingHistoryStep selectedDepth={historyDepth} onSelect={setHistoryDepth} />;
+            stepContent = <SyncHistoryStep selectedDepth={historyDepth} onSelect={setHistoryDepth} />;
             footerButton = (
                 <PillButton
                     label={t`Start sync`}
@@ -281,14 +281,7 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
     }
 
     if (step === EnableBankingSetupStepEnum.ACCOUNTS && isDefined(authorization?.connectChoices)) {
-        return (
-            <EnableBankingConnectAccountStep
-                accounts={authorization.accounts}
-                choices={authorization.connectChoices}
-                previews={authorization.previews}
-                token={authorization.token}
-            />
-        );
+        return <EnableBankingConnectAccountStep authorization={authorization} choices={authorization.connectChoices} />;
     }
 
     if (step === EnableBankingSetupStepEnum.BANK) {

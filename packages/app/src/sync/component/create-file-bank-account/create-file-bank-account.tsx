@@ -96,12 +96,7 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
             />
         ),
         [FileImportStepEnum.ACCOUNTS]: (
-            <SyncAccountsStep
-                {...accountSelection}
-                logo={<BankLogo bankProvider={config.provider} size={36} />}
-                footer={t`Choose what to track. Balances and history come straight from the bank.`}
-                emptyDescription={t`This file has no accounts Budgie can import.`}
-            />
+            <SyncAccountsStep {...accountSelection} logo={<BankLogo bankProvider={config.provider} size={36} />} />
         ),
         [FileImportStepEnum.REVIEW]: isDefined(review) ? <FileImportReviewStep review={review} fileName={fileName} /> : null
     };

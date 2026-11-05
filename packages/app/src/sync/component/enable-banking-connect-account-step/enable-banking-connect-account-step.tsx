@@ -18,17 +18,17 @@ import { SyncSetupPage } from '../sync-setup-page/sync-setup-page';
 
 import { EnableBankingConnectAccountStepSelector } from './enable-banking-connect-account-step.selector';
 
-import type { SyncAccountContinuationChoicesInterface, SyncAccountInterface, SyncAccountPreviewInterface } from '@budgie/sync';
+import type { EnableBankingAuthorizationInterface } from '../../interface/enable-banking-authorization.interface';
+import type { SyncAccountContinuationChoicesInterface } from '@budgie/sync';
 
 interface Props {
-    readonly token: string;
-    readonly accounts: readonly SyncAccountInterface[];
-    readonly previews: readonly SyncAccountPreviewInterface[];
+    readonly authorization: Pick<EnableBankingAuthorizationInterface, 'token' | 'accounts' | 'previews'>;
     readonly choices: SyncAccountContinuationChoicesInterface;
 }
 
-export const EnableBankingConnectAccountStep = ({ token, accounts, previews, choices }: Props) => {
+export const EnableBankingConnectAccountStep = ({ authorization, choices }: Props) => {
     const { t } = useLingui();
+    const { token, accounts, previews } = authorization;
     const { formatMonthAndDay } = useFormatDate();
     const { isLoading, run } = useSingleFlight();
     const [selectedExternalId, setSelectedExternalId] = useState(choices.suggestedExternalId);

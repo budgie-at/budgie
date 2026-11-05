@@ -7,7 +7,7 @@ import { router } from 'expo-router';
 import { useReducer } from 'react';
 import Toast from 'react-native-toast-message';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { Button } from '../../../@generic/component/button/button';
@@ -21,8 +21,7 @@ import { SetupStepEnum } from '../../enum/setup-step.enum';
 import { useSyncAccountSetupFlow } from '../../hook/use-sync-account-setup-flow.hook';
 import { createMonobankAccountReducer } from '../../utils/create-monobank-account-reducer.util';
 import { SyncAccountsStep } from '../sync-accounts-step/sync-accounts-step';
-import { SyncHistoryDepthStep } from '../sync-history-depth-step/sync-history-depth-step';
-import { SyncHistoryDurationNotice } from '../sync-history-duration-notice/sync-history-duration-notice';
+import { SyncHistoryStep } from '../sync-history-step/sync-history-step';
 import { SyncSetupPage } from '../sync-setup-page/sync-setup-page';
 import { TokenInputStep } from '../token-input-step/token-input-step';
 
@@ -152,6 +151,12 @@ export const CreateMonobankAccount = () => {
         />
     );
 
+    const historyPace = t`Monobank sends about one month of history per minute, for each account you selected.`;
+    const historyDurationByDepth: Partial<Record<SyncHistoryDepthEnum, string>> = {
+        [SyncHistoryDepthEnum.YEAR_1]: t`Runs in the background, and much slower while the app is closed.`,
+        [SyncHistoryDepthEnum.FULL]: t`Can run for hours on old accounts, and much slower while the app is closed.`
+    };
+    const historyDescription = [historyPace, historyDurationByDepth[historyDepth]].filter(isDefined).join(' ');
     const historyHintByDepth = {
         [SyncHistoryDepthEnum.MONTH_1]: t`About a minute`,
         [SyncHistoryDepthEnum.MONTHS_3]: t`About 3 minutes`,
@@ -165,12 +170,7 @@ export const CreateMonobankAccount = () => {
         case SetupStepEnum.ACCOUNTS:
             stepContent = (
                 <>
-                    <SyncAccountsStep
-                        {...accountSelection}
-                        logo={<BankLogo bankProvider={ExternalSourceEnum.MONOBANK} size={36} />}
-                        footer={t`Choose what to track. Balances and history come straight from the bank.`}
-                        emptyDescription={t`Monobank returned no accounts for this token.`}
-                    />
+                    <SyncAccountsStep {...accountSelection} logo={<BankLogo bankProvider={ExternalSourceEnum.MONOBANK} size={36} />} />
                     {onboardingHistoryNote}
                 </>
             );
@@ -178,15 +178,12 @@ export const CreateMonobankAccount = () => {
             break;
         case SetupStepEnum.HISTORY:
             stepContent = (
-                <>
-                    <SyncHistoryDepthStep
-                        selectedDepth={historyDepth}
-                        description={t`Monobank sends about one month of history per minute, for each account you selected.`}
-                        hintByDepth={historyHintByDepth}
-                        onSelect={handleHistoryDepthSelect}
-                    />
-                    <SyncHistoryDurationNotice depth={historyDepth} />
-                </>
+                <SyncHistoryStep
+                    selectedDepth={historyDepth}
+                    description={historyDescription}
+                    hintByDepth={historyHintByDepth}
+                    onSelect={handleHistoryDepthSelect}
+                />
             );
             footer = (
                 <PillButton

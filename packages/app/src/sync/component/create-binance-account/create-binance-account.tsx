@@ -70,60 +70,51 @@ export const CreateBinanceAccount = () => {
         );
     };
 
-    let pageContent = (
-        <>
-            <SyncAccountsStep
-                {...accountSelection}
-                logo={<BankLogo bankProvider={ExternalSourceEnum.BINANCE} size={36} />}
-                footer={t`Choose what to track. Balances and history come straight from Binance.`}
-                emptyDescription={t`Binance returned no assets for this key.`}
-            />
-            <SyncParkedAccountsSection
-                previews={parkedPreviews}
-                footer={t`Binance has no market price for these assets, so they are not added as accounts and are skipped from your balance.`}
-            />
-        </>
-    );
-    let footer = (
-        <PillButton
-            label={t`Start sync`}
-            onPress={handleSetupSync}
-            isDisabled={isStartSyncDisabled}
-            testID={CreateBinanceAccountSelector.StartSyncButton}
-        />
-    );
-    let description = '';
-
-    if (step === SetupStepEnum.TOKEN) {
-        pageContent = (
-            <KeySecretInputStep
-                apiKey={apiKey}
-                apiSecret={apiSecret}
-                onApiKeyChange={handleApiKeyChange}
-                onApiSecretChange={handleApiSecretChange}
-            />
-        );
-        footer = (
-            <PillButton
-                label={t`Fetch accounts`}
-                onPress={handleFetchAccounts}
-                isDisabled={isLoading}
-                isLoading={isLoading}
-                testID={CreateBinanceAccountSelector.FetchAccountsButton}
-            />
-        );
-        description = t`Sync your Binance balances and transactions`;
-    }
+    const isCredentialsStep = step === SetupStepEnum.TOKEN;
+    const footerLabel = isCredentialsStep ? t`Fetch accounts` : t`Start sync`;
+    const handleFooterPress = isCredentialsStep ? handleFetchAccounts : handleSetupSync;
+    const isFooterDisabled = isCredentialsStep ? isLoading : isStartSyncDisabled;
+    const footerTestID = isCredentialsStep
+        ? CreateBinanceAccountSelector.FetchAccountsButton
+        : CreateBinanceAccountSelector.StartSyncButton;
+    const description = isCredentialsStep ? t`Sync your Binance balances and transactions` : '';
 
     return (
         <SyncSetupPage
             title={t`Connect Binance`}
             description={description}
             onGoBack={handleGoBack}
-            footerButton={footer}
+            footerButton={
+                <PillButton
+                    label={footerLabel}
+                    onPress={handleFooterPress}
+                    isDisabled={isFooterDisabled}
+                    isLoading={isLoading}
+                    testID={footerTestID}
+                />
+            }
             testID={CreateBinanceAccountSelector.ScrollView}
         >
-            {pageContent}
+            {isCredentialsStep ? (
+                <KeySecretInputStep
+                    apiKey={apiKey}
+                    apiSecret={apiSecret}
+                    onApiKeyChange={handleApiKeyChange}
+                    onApiSecretChange={handleApiSecretChange}
+                />
+            ) : (
+                <>
+                    <SyncAccountsStep
+                        {...accountSelection}
+                        logo={<BankLogo bankProvider={ExternalSourceEnum.BINANCE} size={36} />}
+                        footer={t`Choose what to track. Balances and history come straight from Binance.`}
+                    />
+                    <SyncParkedAccountsSection
+                        previews={parkedPreviews}
+                        footer={t`Binance has no market price for these assets, so they are not added as accounts and are skipped from your balance.`}
+                    />
+                </>
+            )}
         </SyncSetupPage>
     );
 };

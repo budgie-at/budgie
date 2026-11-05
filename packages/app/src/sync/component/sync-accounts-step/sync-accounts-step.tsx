@@ -18,8 +18,8 @@ import type { ReactNode } from 'react';
 
 interface Props extends Omit<AccountSelectionInterface, 'setPreviews'> {
     readonly logo: ReactNode;
-    readonly footer: string;
-    readonly emptyDescription: string;
+    readonly footer?: string;
+    readonly emptyDescription?: string;
 }
 
 export const SyncAccountsStep = ({
@@ -36,14 +36,14 @@ export const SyncAccountsStep = ({
     const accountRows = accountPreviews.filter(preview => preview.type !== SyncAccountTypeEnum.JAR);
     const jarRows = accountPreviews.filter(preview => preview.type === SyncAccountTypeEnum.JAR);
     const accountsCount = accountRows.length;
+    const description = emptyDescription ?? t`This connection returned no accounts Budgie can add.`;
+    const sectionFooter = footer ?? t`Choose what to track. Balances and history come straight from the bank.`;
     const areAllSelected = selectedAccounts.size === accountPreviews.length;
     const toggleAllLabel = areAllSelected ? t`Deselect all` : t`Select all`;
     const handleToggleAll = areAllSelected ? onDeselectAll : onSelectAll;
 
     if (isEmptyArray(accountPreviews)) {
-        return (
-            <SearchablePageEmptyState icon={UserIconNameEnum.Landmark} title={t`No accounts to connect`} description={emptyDescription} />
-        );
+        return <SearchablePageEmptyState icon={UserIconNameEnum.Landmark} title={t`No accounts to connect`} description={description} />;
     }
 
     return (
@@ -60,7 +60,7 @@ export const SyncAccountsStep = ({
                         <Text className="text-primary text-[15px] font-semibold">{toggleAllLabel}</Text>
                     </HapticPressable>
                 </View>
-                <GroupedListSection footer={footer}>
+                <GroupedListSection footer={sectionFooter}>
                     {accountRows.map(preview => (
                         <SyncAccountRow
                             key={preview.externalId}
