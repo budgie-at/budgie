@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.163.2](https://github.com/budgie-at/budgie/compare/v6.163.1...v6.163.2) (2026-11-05)
+
+### Bug Fixes
+
+* let users undo a pay-in-parts conversion ([8d212b3](https://github.com/budgie-at/budgie/commit/8d212b33517f77ec19a1362cf5d0484a8dfd764d))
+
+
 # [6.163.0](https://github.com/budgie-at/budgie/compare/v6.162.1...v6.163.0) (2026-11-05)
 
 ### Features
