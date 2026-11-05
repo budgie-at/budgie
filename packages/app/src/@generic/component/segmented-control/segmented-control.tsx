@@ -1,6 +1,7 @@
 import { View } from 'react-native';
 import Animated, { useAnimatedStyle, useDerivedValue, useSharedValue, withSpring } from 'react-native-reanimated';
 
+import { MAX_FONT_SIZE_MULTIPLIER } from '../../constant/max-font-size-multiplier.constant';
 import { useReducedMotion } from '../../hook/use-reduced-motion.hook';
 import { cn } from '../../utils/cn.util';
 import { SegmentedControlItem } from '../segmented-control-item/segmented-control-item';
@@ -14,13 +15,15 @@ interface Props<T extends string> {
     readonly onChange: (value: T) => void;
     readonly disabled?: boolean;
     readonly className?: string;
+    readonly maxFontSizeMultiplier?: number;
 }
 
 const TRACK_PADDING = 2;
 const THUMB_SPRING = { damping: 30, stiffness: 420, mass: 0.8 };
 const continuousCorners = { borderCurve: 'continuous' as const };
 
-export const SegmentedControl = <T extends string>({ segments, value, onChange, disabled = false, className }: Props<T>) => {
+export const SegmentedControl = <T extends string>(props: Props<T>) => {
+    const { segments, value, onChange, disabled = false, className, maxFontSizeMultiplier = MAX_FONT_SIZE_MULTIPLIER } = props;
     const reducedMotion = useReducedMotion();
     const segmentWidth = useSharedValue(0);
     const activeIndex = Math.max(
@@ -63,6 +66,7 @@ export const SegmentedControl = <T extends string>({ segments, value, onChange, 
                     isActive={segment.value === value}
                     disabled={disabled}
                     onPress={onChange}
+                    maxFontSizeMultiplier={maxFontSizeMultiplier}
                 />
             ))}
         </View>

@@ -1411,6 +1411,10 @@ msgstr "Сума"
 msgid "Amount borrowed"
 msgstr "Позичена сума"
 
+#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
+msgid "Amount changed"
+msgstr "Сума змінилася"
+
 #: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/account/component/update-debt-account/update-debt-account.tsx
 msgid "Amount lent"
@@ -3874,6 +3878,7 @@ msgstr "Курс обміну: {rateLabel}"
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 #: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 #: src/transaction/components/recurring-calendar-legend/recurring-calendar-legend.tsx
+#: src/transaction/components/recurring-calendar-summary/recurring-calendar-summary.tsx
 msgid "Expected"
 msgstr "Очікується"
 
@@ -5353,8 +5358,8 @@ msgid "No icons found"
 msgstr "Іконки не знайдено"
 
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
-msgid "No income"
-msgstr "Немає доходів"
+msgid "No income in this view"
+msgstr "У цьому поданні немає доходів"
 
 #: src/app/voice-review.tsx
 msgid "No items to save"
@@ -5436,14 +5441,14 @@ msgstr "Немає доступних контактів"
 msgid "No source transactions"
 msgstr "Немає вихідних транзакцій"
 
-#: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
-msgid "No spending"
-msgstr "Немає витрат"
-
 #: src/category/components/categories-feature-intro/categories-feature-intro.tsx
 #: src/transaction/components/statistics-spending-hero/statistics-spending-hero.tsx
 msgid "No spending in this period"
 msgstr "Немає витрат за цей період"
+
+#: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
+msgid "No spending in this view"
+msgstr "У цьому поданні немає витрат"
 
 #: src/runway/component/runway-drivers/runway-drivers.tsx
 msgid "No spending in this window."
@@ -6264,10 +6269,6 @@ msgstr "Попередній період"
 msgid "Price {ageLabel} · {date}"
 msgstr "Ціна {ageLabel} · {date}"
 
-#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
-msgid "Price changed"
-msgstr "Ціна змінилася"
-
 #: src/market-data/hook/use-market-chart-accessibility.hook.ts
 msgid "Price chart, {rangeLabel}, from {fromLabel} to {toLabel}, high {highLabel}, low {lowLabel}"
 msgstr "Графік цін, {rangeLabel}, від {fromLabel} до {toLabel}, максимум {highLabel}, мінімум {lowLabel}"
@@ -6471,6 +6472,7 @@ msgstr "Записати витрату"
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 #: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 #: src/transaction/components/recurring-calendar-legend/recurring-calendar-legend.tsx
+#: src/transaction/components/recurring-calendar-summary/recurring-calendar-summary.tsx
 msgid "Recorded"
 msgstr "Зафіксовано"
 
@@ -7333,10 +7335,6 @@ msgstr "Почніть з нуля та задайте кожен ліміт с�
 msgid "Start Sync"
 msgstr "Розпочати синхронізацію"
 
-#: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
-msgid "Start tracking your spending by using the mic button or adding transactions manually"
-msgstr "Почніть відстежувати свої витрати, використовуючи кнопку мікрофона або додаючи транзакції вручну"
-
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Starter budget"
 msgstr "Стартовий бюджет"
@@ -7579,6 +7577,10 @@ msgstr "Натисніть \"Отримати API-ключ\" вгорі та у�
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Tap \"Get API Token\" above to open api.monobank.ua"
 msgstr "Торкніться «Get API Token» вище, щоб відкрити api.monobank.ua"
+
+#: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
+msgid "Tap + to add your first transaction"
+msgstr "Натисніть +, щоб додати першу транзакцію"
 
 #: src/app/(tabs)/settings/category-icons.tsx
 msgid "Tap a suggestion to use it for that category."
