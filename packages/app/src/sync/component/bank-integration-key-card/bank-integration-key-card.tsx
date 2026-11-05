@@ -24,7 +24,7 @@ export const BankIntegrationKeyCard = () => {
         <GroupedListSection title={t`Connection`} footer={footer}>
             <SettingsRow
                 icon={UserIconNameEnum.KeyRound}
-                variant="primary"
+                variant="secondary"
                 title={t`API key`}
                 subtitle={
                     <Text className={keyLabelClassName} numberOfLines={1}>
