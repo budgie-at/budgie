@@ -101,6 +101,12 @@ export { ErsteSyncService } from './erste/service/erste-sync.service';
 
 export { InzhurImportService } from './inzhur/service/inzhur-import.service';
 export { InzhurSetupService } from './inzhur/service/inzhur-setup.service';
+export { InzhurGainService } from './inzhur/service/inzhur-gain.service';
+export { InzhurGainRangeEnum } from './inzhur/enum/inzhur-gain-range.enum';
+export type { InzhurGainInterface } from './inzhur/interface/inzhur-gain.interface';
+export type { InzhurGainReportInterface } from './inzhur/interface/inzhur-gain-report.interface';
+export type { InzhurRangedGainInterface } from './inzhur/interface/inzhur-ranged-gain.interface';
+export type { InzhurValuePointInterface } from './inzhur/interface/inzhur-value-point.interface';
 export { InzhurBankFlowService } from './inzhur/service/inzhur-bank-flow.service';
 export { InzhurImportOutcomeEnum } from './inzhur/enum/inzhur-import-outcome.enum';
 export { InzhurNotSetUpError } from './inzhur/error/inzhur-not-set-up.error';

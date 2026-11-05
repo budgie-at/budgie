@@ -315,6 +315,7 @@ export { SettingsRepository } from './settings/repository/settings.repository';
 
 export { StatisticsRepository } from './statistics/repository/statistics.repository';
 export { InvestmentReturnRepository } from './investment-return/repository/investment-return.repository';
+export type { LedgerMovementInterface } from './investment-return/interface/ledger-movement.interface';
 
 export type { StatisticsFilterInterface } from './statistics/interface/statistics-filter.interface';
 

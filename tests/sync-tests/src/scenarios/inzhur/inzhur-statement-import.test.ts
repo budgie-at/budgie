@@ -128,6 +128,7 @@ describe('inzhur/statement-import', () => {
             const ledger = yield* fetchInzhurLedger();
 
             expect(summary.estimatedDividendAmount).toBe(4900);
+            expect(summary.previousStatementDate).toBe('2026-09-30');
             expect(summary.cashMoved).toBe(-100);
             expect(summary.funds.map(fund => fund.dividendAmount)).toEqual([980, 3920]);
             expect(summary.uncoveredCashAmount).toBe(0);

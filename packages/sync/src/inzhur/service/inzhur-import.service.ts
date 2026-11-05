@@ -345,6 +345,7 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
                 return {
                     outcome: InzhurImportOutcomeEnum.UNCHANGED,
                     statementDate,
+                    previousStatementDate: lastStatementDate,
                     cashMoved: 0,
                     estimatedDividendAmount: 0,
                     uncoveredCashAmount: 0,
@@ -358,7 +359,7 @@ export class InzhurImportService extends Context.Service<InzhurImportService>()(
                   )
                 : yield* Db.transaction(applyBaseline(statement, setup));
 
-            return { ...result, statementDate } satisfies InzhurImportSummaryInterface;
+            return { ...result, statementDate, previousStatementDate: lastStatementDate } satisfies InzhurImportSummaryInterface;
         });
 
         return {

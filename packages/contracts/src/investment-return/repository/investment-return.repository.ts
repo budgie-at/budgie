@@ -1,4 +1,4 @@
-import { SQL, and, eq, gt, isNotNull, isNull, ne, or, sql } from 'drizzle-orm';
+import { SQL, and, asc, eq, gt, inArray, isNotNull, isNull, ne, or, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -66,6 +66,31 @@ export class InvestmentReturnRepository extends Context.Service<InvestmentReturn
                                 )
                             )
                     ).pipe(Effect.map(rows => rows.at(0)?.operatedAt ?? null)),
+
+                findLedgerMovements: (accountIds: readonly number[]) =>
+                    Db.query(db =>
+                        db
+                            .select({
+                                accountId: TransactionEntryEntityTable.accountId,
+                                entryType: TransactionEntryEntityTable.type,
+                                amount: TransactionEntryEntityTable.amount,
+                                operatedAt: TransactionEntityTable.operatedAt,
+                                transactionType: TransactionEntityTable.type,
+                                fromAccountId: TransactionEntityTable.fromAccountId,
+                                toAccountId: TransactionEntityTable.toAccountId,
+                                fundAccountId: TransactionEntityTable.fundAccountId
+                            })
+                            .from(TransactionEntryEntityTable)
+                            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                            .where(
+                                and(
+                                    transactionFilters.buildVisibleTransactionCondition(),
+                                    transactionFilters.buildLedgerEntryCondition(),
+                                    inArray(TransactionEntryEntityTable.accountId, [...accountIds])
+                                )
+                            )
+                            .orderBy(asc(TransactionEntityTable.operatedAt), asc(TransactionEntryEntityTable.id))
+                    ),
 
                 countTransfersSince: (accountId: number, since: Date) =>
                     Db.query(db =>
