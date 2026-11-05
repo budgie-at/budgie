@@ -5,7 +5,7 @@ import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 import { RECURRING_READ_TABLES } from '../constant/recurring-read-tables.constant';
 
-export const recurringSeriesForTransactionAtom = databaseQueryFamily(
+const recurringSeriesForTransactionAtom = databaseQueryFamily(
     RECURRING_READ_TABLES,
     RecurringService,
     (recurringService, transactionId: number) => recurringService.seriesForTransaction(transactionId)

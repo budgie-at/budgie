@@ -12,7 +12,7 @@ interface Props {
     readonly section: RecurringSectionEnum;
     readonly count: number;
     readonly isCollapsed: boolean;
-    readonly onToggle: () => void;
+    readonly onToggle: (section: RecurringSectionEnum) => void;
 }
 
 export const RecurringListSectionHeader = ({ section, count, isCollapsed, onToggle }: Props) => {
@@ -20,11 +20,14 @@ export const RecurringListSectionHeader = ({ section, count, isCollapsed, onTogg
     const titles: Record<RecurringSectionEnum, string> = {
         [RecurringSectionEnum.EXPENSES]: t`Expenses`,
         [RecurringSectionEnum.INCOME]: t`Income`,
-        [RecurringSectionEnum.POSSIBLE]: t`Possible`
+        [RecurringSectionEnum.POSSIBLE]: t`Possible`,
+        [RecurringSectionEnum.ENDED]: t`Ended`
     };
-    const isPossible = section === RecurringSectionEnum.POSSIBLE;
+    const isCollapsible = section === RecurringSectionEnum.POSSIBLE || section === RecurringSectionEnum.ENDED;
     const chevron = isCollapsed ? UserIconNameEnum.ChevronRight : UserIconNameEnum.ChevronDown;
     const accessibilityState = { expanded: !isCollapsed };
+
+    const handlePress = () => void onToggle(section);
 
     const content = (
         <View className="min-h-[36px] flex-row items-center gap-x-md bg-surface px-3xl py-xs">
@@ -41,11 +44,11 @@ export const RecurringListSectionHeader = ({ section, count, isCollapsed, onTogg
             >
                 {count}
             </Text>
-            {isPossible ? <Icon icon={chevron} size={16} className="text-secondary-foreground" /> : null}
+            {isCollapsible ? <Icon icon={chevron} size={16} className="text-secondary-foreground" /> : null}
         </View>
     );
 
-    if (!isPossible) {
+    if (!isCollapsible) {
         return content;
     }
 
@@ -54,8 +57,8 @@ export const RecurringListSectionHeader = ({ section, count, isCollapsed, onTogg
             accessibilityRole="button"
             accessibilityState={accessibilityState}
             className="active:scale-100 active:opacity-70"
-            onPress={onToggle}
-            testID={RecurringPaneSelector.PossibleHeader}
+            onPress={handlePress}
+            testID={RecurringPaneSelector.SectionHeader(section)}
         >
             {content}
         </HapticPressable>

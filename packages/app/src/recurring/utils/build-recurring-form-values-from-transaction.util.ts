@@ -3,6 +3,7 @@ import { getTransactionCategoryEntries } from '@budgie/ledger';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { getTransactionDisplayTitle } from '../../transaction/utils/get-transaction-display-title.util';
 import { getTransactionInfoPrimaryEntry } from '../../transaction/utils/get-transaction-info-primary-entry.util';
 import { sumEntryAmounts } from '../../transaction/utils/sum-entry-amounts.util';
 
@@ -19,7 +20,7 @@ export const buildRecurringFormValuesFromTransaction = (
     const primaryEntry = getTransactionInfoPrimaryEntry(transaction);
 
     if (!isDefined(primaryEntry)) {
-        return { ...defaults, title: transaction.title };
+        return { ...defaults, title: getTransactionDisplayTitle(transaction) };
     }
 
     const amountInMicroUnits = sumEntryAmounts(
@@ -29,7 +30,7 @@ export const buildRecurringFormValuesFromTransaction = (
     return {
         ...defaults,
         kind: transaction.type === TransactionTypeEnum.INCOME ? RecurringSeriesKindEnum.INCOME : RecurringSeriesKindEnum.EXPENSE,
-        title: transaction.title,
+        title: getTransactionDisplayTitle(transaction),
         amount: Math.abs(convertFromMicroUnits(amountInMicroUnits)),
         instrumentId: primaryEntry.account.instrument.id,
         categoryId: primaryEntry.categoryId,

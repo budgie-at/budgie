@@ -17,6 +17,7 @@ import { RecurringListSectionHeader } from '../recurring-list-section-header/rec
 import { RecurringPaneSelector } from '../recurring-pane/recurring-pane.selector';
 import { RecurringSummaryCard } from '../recurring-summary-card/recurring-summary-card';
 
+import type { RecurringSectionEnum } from '../../enum/recurring-section.enum';
 import type { RecurringListItemType } from '../../type/recurring-list-item.type';
 import type { RecurringSeriesListItemInterface } from '@budgie/recurring';
 
@@ -29,15 +30,16 @@ const getItemType = (item: RecurringListItemType) => item.type;
 export const RecurringListContent = () => {
     const { bottom } = useSafeAreaInsets();
     const { now, series } = useRecurringSeriesList();
-    const [isPossibleExpanded, setIsPossibleExpanded] = useState(false);
+    const [expandedSections, setExpandedSections] = useState<readonly RecurringSectionEnum[]>([]);
     const isLoading = !isDefined(series);
     const loadedSeries = series ?? EMPTY_SERIES;
-    const { items, headerIndices } = buildRecurringListItems(loadedSeries, isPossibleExpanded);
+    const { items, headerIndices } = buildRecurringListItems(loadedSeries, expandedSections);
     const summary = buildRecurringSummary(loadedSeries, now);
     const contentContainerStyle = { paddingBottom: FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottom };
     const emptyState = isLoading ? null : <RecurringListEmptyState />;
 
-    const handleTogglePossible = () => void setIsPossibleExpanded(current => !current);
+    const handleToggleSection = (section: RecurringSectionEnum) =>
+        void setExpandedSections(current => (current.includes(section) ? current.filter(item => item !== section) : [...current, section]));
 
     const renderItem = ({ item }: { item: RecurringListItemType }) =>
         item.type === RecurringListItemKindEnum.HEADER ? (
@@ -45,7 +47,7 @@ export const RecurringListContent = () => {
                 section={item.section}
                 count={item.count}
                 isCollapsed={item.isCollapsed}
-                onToggle={handleTogglePossible}
+                onToggle={handleToggleSection}
             />
         ) : (
             <RecurringListRow series={item.series} position={item.position} isPossible={item.isPossible} />

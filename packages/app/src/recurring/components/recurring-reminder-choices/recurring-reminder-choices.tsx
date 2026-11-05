@@ -7,6 +7,7 @@ import { View } from 'react-native';
 import { SegmentedControl } from '../../../@generic/component/segmented-control/segmented-control';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { Workload } from '../../../@generic/service/workload.service';
+import { toNativeCallError } from '../../../@generic/utils/to-native-call-error.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { RECURRING_REMINDER_DAYS } from '../../constant/recurring-reminder-days.constant';
 import { RecurringReminderChoiceEnum } from '../../enum/recurring-reminder-choice.enum';
@@ -53,7 +54,10 @@ export const RecurringReminderChoices = ({ seriesId, reminderDaysBefore }: Props
         void run(
             Effect.gen(function* () {
                 if (choice !== RecurringReminderChoiceEnum.OFF) {
-                    const { status } = yield* Effect.promise(() => Notifications.requestPermissionsAsync());
+                    const { status } = yield* Effect.tryPromise({
+                        try: () => Notifications.requestPermissionsAsync(),
+                        catch: toNativeCallError
+                    });
 
                     refresh();
 

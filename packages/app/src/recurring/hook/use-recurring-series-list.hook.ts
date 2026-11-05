@@ -9,7 +9,7 @@ import { useRecurringNow } from './use-recurring-now.hook';
 
 import type { RecurringSeriesListItemInterface } from '@budgie/recurring';
 
-export const recurringSeriesListAtom = databaseQueryFamily(RECURRING_READ_TABLES, RecurringService, (recurringService, nowTime: number) =>
+const recurringSeriesListAtom = databaseQueryFamily(RECURRING_READ_TABLES, RecurringService, (recurringService, nowTime: number) =>
     recurringService.listSeries(new Date(nowTime))
 );
 

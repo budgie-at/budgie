@@ -7,18 +7,14 @@ import { RECURRING_READ_TABLES } from '../constant/recurring-read-tables.constan
 
 import { useRecurringNow } from './use-recurring-now.hook';
 
-import type { RecurringSeriesListItemInterface } from '@budgie/recurring';
-
-export const recurringFittingSeriesAtom = databaseQueryFamily(
+const recurringFittingSeriesAtom = databaseQueryFamily(
     RECURRING_READ_TABLES,
     RecurringService,
     (recurringService, [transactionId, nowTime]: readonly [number, number]) =>
         recurringService.fittingSeries(transactionId, new Date(nowTime))
 );
 
-export const useRecurringFittingSeries = (
-    transactionId: number
-): { readonly fittingSeries: readonly RecurringSeriesListItemInterface[]; readonly isLoading: boolean } => {
+export const useRecurringFittingSeries = (transactionId: number) => {
     const now = useRecurringNow();
     const result = useLiveAtomValue(recurringFittingSeriesAtom([transactionId, now.getTime()]));
 

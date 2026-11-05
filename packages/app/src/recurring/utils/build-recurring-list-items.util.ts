@@ -12,6 +12,8 @@ import type { RecurringListItemsInterface } from '../interface/recurring-list-it
 import type { RecurringListItemType } from '../type/recurring-list-item.type';
 import type { RecurringSeriesListItemInterface } from '@budgie/recurring';
 
+const COLLAPSIBLE_SECTIONS: ReadonlySet<RecurringSectionEnum> = new Set([RecurringSectionEnum.POSSIBLE, RecurringSectionEnum.ENDED]);
+
 const compareByNextDate = (left: RecurringSeriesListItemInterface, right: RecurringSeriesListItemInterface): number => {
     if (!isDefined(left.nextDate) || !isDefined(right.nextDate)) {
         return Number(!isDefined(left.nextDate)) - Number(!isDefined(right.nextDate));
@@ -25,9 +27,10 @@ const compareByConfidence = (left: RecurringSeriesListItemInterface, right: Recu
 
 export const buildRecurringListItems = (
     series: readonly RecurringSeriesListItemInterface[],
-    isPossibleExpanded: boolean
+    expandedSections: readonly RecurringSectionEnum[]
 ): RecurringListItemsInterface => {
     const tracked = series.filter(item => item.isActive && !isPossibleRecurringSeries(item));
+    const ended = series.filter(item => !item.isActive && !isPossibleRecurringSeries(item));
     const sections = [
         {
             section: RecurringSectionEnum.EXPENSES,
@@ -37,13 +40,14 @@ export const buildRecurringListItems = (
             section: RecurringSectionEnum.INCOME,
             entries: tracked.filter(item => item.kind === RecurringSeriesKindEnum.INCOME).sort(compareByNextDate)
         },
-        { section: RecurringSectionEnum.POSSIBLE, entries: series.filter(isPossibleRecurringSeries).sort(compareByConfidence) }
+        { section: RecurringSectionEnum.POSSIBLE, entries: series.filter(isPossibleRecurringSeries).sort(compareByConfidence) },
+        { section: RecurringSectionEnum.ENDED, entries: ended.sort(compareByNextDate) }
     ];
     const items: RecurringListItemType[] = [];
     const headerIndices: number[] = [];
 
     for (const { section, entries } of sections.filter(({ entries: sectionEntries }) => isNotEmptyArray(sectionEntries))) {
-        const isCollapsed = section === RecurringSectionEnum.POSSIBLE && !isPossibleExpanded;
+        const isCollapsed = COLLAPSIBLE_SECTIONS.has(section) && !expandedSections.includes(section);
 
         headerIndices.push(items.length);
         items.push({

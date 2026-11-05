@@ -1,9 +1,14 @@
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
+import * as Notifications from 'expo-notifications';
 import { useController, useFormContext } from 'react-hook-form';
 import { View } from 'react-native';
 
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { SegmentedControl } from '../../../@generic/component/segmented-control/segmented-control';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
+import { toNativeCallError } from '../../../@generic/utils/to-native-call-error.util';
 import { RecurringReminderChoiceEnum } from '../../enum/recurring-reminder-choice.enum';
 import { RecurringSeriesFormSelector } from '../recurring-series-form-screen/recurring-series-form.selector';
 
@@ -39,10 +44,20 @@ export const RecurringFormReminderSection = () => {
         }
     ];
 
+    const handleChange = (choice: RecurringReminderChoiceEnum) => {
+        onChange(choice);
+
+        if (choice !== RecurringReminderChoiceEnum.OFF) {
+            appRuntime.runFork(
+                logAndContinue(Effect.tryPromise({ try: () => Notifications.requestPermissionsAsync(), catch: toNativeCallError }))
+            );
+        }
+    };
+
     return (
         <GroupedListSection title={t`Reminder`} footer={t`Notify before the payment is due.`}>
             <View className="p-md">
-                <SegmentedControl segments={segments} value={value} onChange={onChange} className="min-h-[44px]" />
+                <SegmentedControl segments={segments} value={value} onChange={handleChange} className="min-h-[44px]" />
             </View>
         </GroupedListSection>
     );

@@ -8,7 +8,7 @@ import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { showActionToast } from '../../@generic/utils/show-action-toast/show-action-toast';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 
-import type { RecurringSeriesListItemInterface } from '@budgie/recurring';
+import type { RecurringRemovalInterface, RecurringSeriesListItemInterface } from '@budgie/recurring';
 import type { EmptyFn } from '@rnw-community/shared';
 
 export const useRemoveRecurringSeries = () => {
@@ -16,12 +16,12 @@ export const useRemoveRecurringSeries = () => {
 
     return (series: Pick<RecurringSeriesListItemInterface, 'id' | 'title'>, onRemoved?: EmptyFn) => {
         const { id: seriesId, title } = series;
-        const undoRemoval = (source: RecurringSeriesSourceEnum) =>
+        const undoRemoval = (removal: Pick<RecurringRemovalInterface, 'source' | 'previousUserState'>) =>
             appRuntime.runFork(
                 logAndContinue(
                     Effect.flatMap(RecurringService, recurringService =>
-                        source === RecurringSeriesSourceEnum.DETECTED
-                            ? recurringService.undismiss(seriesId)
+                        removal.source === RecurringSeriesSourceEnum.DETECTED
+                            ? recurringService.restoreUserState(seriesId, removal.previousUserState)
                             : recurringService.restore(seriesId)
                     ).pipe(toastOnFailure(t`Could not restore recurring payment.`))
                 )
@@ -31,11 +31,12 @@ export const useRemoveRecurringSeries = () => {
             logAndContinue(
                 Effect.gen(function* () {
                     const recurringService = yield* RecurringService;
-                    const { source } = yield* recurringService.remove(seriesId);
-                    const message = source === RecurringSeriesSourceEnum.DETECTED ? t`${title} is no longer tracked` : t`${title} deleted`;
+                    const removal = yield* recurringService.remove(seriesId);
+                    const message =
+                        removal.source === RecurringSeriesSourceEnum.DETECTED ? t`${title} is no longer tracked` : t`${title} deleted`;
 
                     onRemoved?.();
-                    showActionToast(message, { label: t`Undo`, onPress: () => void undoRemoval(source) });
+                    showActionToast(message, { label: t`Undo`, onPress: () => void undoRemoval(removal) });
                 }).pipe(toastOnFailure(t`Could not update recurring payment.`))
             )
         );

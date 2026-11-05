@@ -4024,6 +4024,10 @@ msgstr "Chiffrement de tes données"
 msgid "End date"
 msgstr "Date de fin"
 
+#: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
+msgid "Ended"
+msgstr "Terminés"
+
 #: src/recurring/components/recurring-alert-badge/recurring-alert-badge.tsx
 #: src/recurring/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 #: src/recurring/hook/use-recurring-alert-message.hook.ts

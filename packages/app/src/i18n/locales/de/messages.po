@@ -4024,6 +4024,10 @@ msgstr "Deine Daten werden verschlüsselt"
 msgid "End date"
 msgstr "Enddatum"
 
+#: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
+msgid "Ended"
+msgstr "Beendet"
+
 #: src/recurring/components/recurring-alert-badge/recurring-alert-badge.tsx
 #: src/recurring/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 #: src/recurring/hook/use-recurring-alert-message.hook.ts
