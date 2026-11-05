@@ -5,6 +5,7 @@ import Animated from 'react-native-reanimated';
 import { useScreenChrome, useScreenChromeScrollProps } from '@rnw-community/react-native-screen-chrome';
 
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@generic/constant/floating-tab-bar.constant';
+import { useCollapsibleChromeScroll } from '../../../@generic/hook/use-collapsible-chrome-scroll.hook';
 import { decimalPlacesAtom, defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
 import { TransactionRowSurface } from '../../../transaction/components/transaction-row-surface/transaction-row-surface';
 import { COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT } from '../../constant/collapsible-net-worth-header-scroll-spacer.constant';
@@ -43,6 +44,7 @@ export const HomeSectionsList = ({
     const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
     const { config } = useScreenChrome();
+    const { onScroll } = useCollapsibleChromeScroll();
     const bottomPadding = FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottomInset;
     const scrollProps = useScreenChromeScrollProps({
         contentInsetTop: config.headerHeight,
@@ -86,6 +88,7 @@ export const HomeSectionsList = ({
             ListFooterComponent={listFooterComponent}
             ListEmptyComponent={listEmptyComponent}
             {...scrollProps}
+            onScroll={onScroll}
         />
     );
 };

@@ -114,7 +114,6 @@ export const CollapsibleChromeHeader = ({ expandedTitle, collapsedTitle, leading
             <CollapsibleHeader
                 testID={testID}
                 pointerEvents="box-none"
-                snap={config.snapToCollapse}
                 expandedHeight={config.headerHeight}
                 collapsedHeight={config.headerHeight}
                 collapseStart={config.collapseStart}
