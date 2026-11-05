@@ -7,7 +7,6 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { useTagsSelectorModal } from '../../../tag/context/tags-selector-modal.context';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
 import { useTransactionDateLabel } from '../../hook/use-transaction-date-label.hook';
-import { getTagsDisplayValue } from '../../utils/get-tags-display-value.util';
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 import { TransactionFieldIcon } from '../transaction-field-icon/transaction-field-icon';
 
@@ -22,8 +21,7 @@ export const TransactionDateTagsRow = ({ onDatePress }: Props) => {
     const tagIds = useWatch({ control, name: 'tagIds' });
     const { tags } = useGetTagByIdsQuery(tagIds);
     const dateLabel = useTransactionDateLabel();
-    const tagsValue = getTagsDisplayValue(tags);
-    const tagsAccessibilityValue = isNotEmptyArray(tags) ? tags.map(tag => tag.title).join(', ') : void 0;
+    const tagsValue = isNotEmptyArray(tags) ? tags.map(tag => tag.title).join(', ') : void 0;
 
     const handleTagsPress = () => {
         openTagsSelector({ initialTagIds: tagIds, enablePrimarySelection: true }, selectedTagIds => {
@@ -46,7 +44,7 @@ export const TransactionDateTagsRow = ({ onDatePress }: Props) => {
                 icon={UserIconNameEnum.Tag}
                 label={t`Tags`}
                 value={tagsValue}
-                accessibilityValue={tagsAccessibilityValue}
+                placeholder={t`Add`}
                 onPress={handleTagsPress}
                 testID={SimpleQuickFormSelector.TagsSelector}
             />

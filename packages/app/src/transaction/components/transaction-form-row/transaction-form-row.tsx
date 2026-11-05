@@ -27,12 +27,18 @@ export const TransactionFormRow = (props: Props) => {
     const { left, label, value, placeholder, valueTestID, onPress, testID, pressableProps } = props;
     const { fontScale } = useWindowDimensions();
     const isStacked = fontScale >= TRANSACTION_LARGE_TEXT_SCALE;
-    const displayValue = isNotEmptyString(value) ? value : placeholder;
+    const hasValue = isNotEmptyString(value);
+    const displayValue = hasValue ? value : placeholder;
     const valueLineCount = isStacked ? 3 : 1;
     const chevron = <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />;
     const valueText = isNotEmptyString(displayValue) ? (
         <Text
-            className={cn('text-[17px] leading-[22px] text-secondary-foreground', !isStacked && 'min-w-0 flex-1 text-right')}
+            className={cn(
+                'text-[17px] leading-[22px]',
+                hasValue && 'text-primary',
+                !hasValue && 'text-secondary-foreground',
+                !isStacked && 'min-w-0 flex-1 text-right'
+            )}
             maxFontSizeMultiplier={MAX_FONT_SCALE}
             numberOfLines={valueLineCount}
             testID={valueTestID}
@@ -41,7 +47,7 @@ export const TransactionFormRow = (props: Props) => {
         </Text>
     ) : null;
     const labelText = (
-        <Text className="shrink-0 text-[17px] leading-[22px] text-primary" maxFontSizeMultiplier={MAX_FONT_SCALE}>
+        <Text className="shrink-0 text-[17px] leading-[22px] text-secondary-foreground" maxFontSizeMultiplier={MAX_FONT_SCALE}>
             {label}
         </Text>
     );

@@ -14,19 +14,14 @@ interface Props {
     readonly amount: number;
     readonly currencySymbol: string;
     readonly instrumentType?: InstrumentTypeEnum;
-    readonly showEmptyState?: boolean;
     readonly onPress: () => void;
 }
 
-export const TransactionFeeFieldIcon = ({ amount, currencySymbol, instrumentType, showEmptyState = false, onPress }: Props) => {
+export const TransactionFeeFieldIcon = ({ amount, currencySymbol, instrumentType, onPress }: Props) => {
     const { t } = useLingui();
     const isAmountProtected = useIsAmountProtected();
     const formatInstrumentAmount = useFormatInstrumentAmount();
     const hasFee = isPositiveNumber(amount);
-
-    if (!hasFee && !showEmptyState) {
-        return null;
-    }
 
     const protectedAmount = isAmountProtected
         ? PROTECTED_AMOUNT_PLACEHOLDER
@@ -38,6 +33,7 @@ export const TransactionFeeFieldIcon = ({ amount, currencySymbol, instrumentType
             icon={UserIconNameEnum.Receipt}
             label={t`Fee`}
             value={value}
+            placeholder={t`Add`}
             onPress={onPress}
             testID={TransactionFeeFieldIconSelector.Row}
         />

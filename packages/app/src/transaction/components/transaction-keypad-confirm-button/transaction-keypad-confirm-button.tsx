@@ -16,7 +16,7 @@ interface Props {
 
 export const TransactionKeypadConfirmButton = ({ label, isDisabled, onPress, testID }: Props) => {
     const backgroundClassName = isDisabled ? 'bg-cta-disabled-background' : 'bg-cta-background active:opacity-80';
-    const contentClassName = isDisabled ? 'text-cta-disabled-foreground' : 'text-cta-foreground';
+    const contentClassName = isDisabled ? 'text-cta-disabled-foreground opacity-60' : 'text-cta-foreground';
     const accessibilityState = { disabled: isDisabled };
     const style = { ...getTransactionKeypadLayout(useWindowDimensions().fontScale).confirmRowStyle, borderCurve: 'continuous' } as const;
 
@@ -32,7 +32,7 @@ export const TransactionKeypadConfirmButton = ({ label, isDisabled, onPress, tes
             testID={testID}
         >
             <View className="max-w-full flex-row items-center justify-center gap-x-sm px-lg">
-                <Icon className={contentClassName} icon={UserIconNameEnum.Check} size={20} />
+                {isDisabled ? null : <Icon className={contentClassName} icon={UserIconNameEnum.Check} size={20} />}
                 <Text
                     className={cn('min-w-0 shrink text-[17px] font-semibold', contentClassName)}
                     numberOfLines={1}

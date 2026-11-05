@@ -43,11 +43,7 @@ export default function CreateIncomeTransactionPage() {
     return (
         <FormProvider {...form}>
             <TransactionFormScreen title={t`New Income`} onGoBack={handleGoBack}>
-                <SimpleQuickForm
-                    transactionType={TransactionTypeEnum.INCOME}
-                    isNewTransaction
-                    onSubmit={handleSubmit}
-                />
+                <SimpleQuickForm transactionType={TransactionTypeEnum.INCOME} isNewTransaction onSubmit={handleSubmit} />
             </TransactionFormScreen>
         </FormProvider>
     );

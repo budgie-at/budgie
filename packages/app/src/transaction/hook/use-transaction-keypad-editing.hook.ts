@@ -12,7 +12,7 @@ export const useTransactionKeypadEditing = (initiallyEditing: boolean) => {
         isEditingAmount,
         toggleKeypad,
         startEditingAmount,
-        amountAccessoryIcon: isEditingAmount ? UserIconNameEnum.ChevronDown : UserIconNameEnum.Pencil,
+        amountAccessoryIcon: isEditingAmount ? UserIconNameEnum.KeyboardOff : UserIconNameEnum.Pencil,
         amountAccessibilityHint: isEditingAmount ? t`Done` : t`Enter an amount`
     };
 };

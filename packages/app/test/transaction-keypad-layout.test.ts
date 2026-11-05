@@ -3,12 +3,13 @@ import { describe, expect, it } from '@effect/vitest';
 import { getTransactionKeypadLayout } from '../src/transaction/utils/get-transaction-keypad-layout.util';
 
 describe('transaction keypad viewport accessibility', () => {
-    it('scrolls the amount, keypad and form together at accessibility text sizes', () => {
-        expect(getTransactionKeypadLayout(1.35, 2000).requiresScrolling).toBe(true);
+    it('keeps the keypad pinned at the largest text size while a form row still fits above it', () => {
+        expect(getTransactionKeypadLayout(3, 460).requiresScrolling).toBe(false);
     });
 
-    it('scrolls when the pinned keypad leaves no room for the form', () => {
+    it('scrolls the amount, keypad and form together when no form row fits above the keypad', () => {
         expect(getTransactionKeypadLayout(1, 400).requiresScrolling).toBe(true);
+        expect(getTransactionKeypadLayout(3, 400).requiresScrolling).toBe(true);
     });
 
     it('keeps the keypad pinned when the viewport has room for the form', () => {

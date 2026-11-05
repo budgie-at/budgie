@@ -2,6 +2,7 @@ import { ReactNode, useRef } from 'react';
 import { ScrollView, useWindowDimensions, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
+import { SUGGESTION_MAX_FONT_SCALE } from '../../constant/suggestion-max-font-scale.constant';
 import { SUGGESTION_ROW_HEIGHT } from '../../constant/suggestion-row-height.constant';
 import { SuggestionLoadingIndicator } from '../suggestion-loading-indicator/suggestion-loading-indicator';
 
@@ -17,7 +18,7 @@ const ENTER_DELAY = 400;
 export const SuggestionRowLayout = (props: Props) => {
     const { showContent, showLoading, children } = props;
     const scrollRef = useRef<ScrollView | null>(null);
-    const rowStyle = { height: SUGGESTION_ROW_HEIGHT * useWindowDimensions().fontScale };
+    const rowStyle = { height: SUGGESTION_ROW_HEIGHT * Math.min(useWindowDimensions().fontScale, SUGGESTION_MAX_FONT_SCALE) };
 
     const showPills = showContent && !showLoading;
 

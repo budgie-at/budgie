@@ -21,14 +21,14 @@ interface Props {
     readonly icon: UserIconType;
     readonly label: string;
     readonly value?: string;
+    readonly placeholder?: string;
     readonly onPress: () => void;
-    readonly accessibilityValue?: string;
     readonly disabledHint?: string;
     readonly testID?: string;
 }
 
 export const TransactionFieldIcon = (props: Props) => {
-    const { ref, icon, label, value, onPress, accessibilityValue, disabledHint, testID } = props;
+    const { ref, icon, label, value, placeholder, onPress, disabledHint, testID } = props;
 
     const { shake, animatedStyle: shakeStyle } = useShakeAnimation();
 
@@ -37,7 +37,7 @@ export const TransactionFieldIcon = (props: Props) => {
     const isDisabled = isNotEmptyString(disabledHint);
     const pressableProps = {
         disabled: isDisabled,
-        accessibilityLabel: `${label}: ${accessibilityValue ?? value ?? t`not set`}`,
+        accessibilityLabel: `${label}: ${value ?? t`not set`}`,
         accessibilityHint: disabledHint,
         accessibilityState: { disabled: isDisabled }
     };
@@ -48,6 +48,7 @@ export const TransactionFieldIcon = (props: Props) => {
                 left={<GroupedListIcon icon={icon} />}
                 label={label}
                 value={value}
+                placeholder={placeholder}
                 valueTestID={testIDProps(testID, TestIDPartEnum.TITLE).testID}
                 onPress={onPress}
                 testID={testID}

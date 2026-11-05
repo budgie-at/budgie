@@ -51,6 +51,7 @@ export const TransactionCategoryFieldIcon = ({ ref, variant, isSplitActive }: Pr
             icon={categoryIcon}
             label={t`Category`}
             value={category?.title}
+            placeholder={t`Choose`}
             onPress={handlePress}
             disabledHint={disabledHint}
             testID={SimpleQuickFormSelector.CategorySelector}

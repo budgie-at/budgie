@@ -51,7 +51,6 @@ export const SimpleQuickForm = (props: Props) => {
                     amount={form.feeAmount}
                     currencySymbol={form.currencySymbol}
                     instrumentType={form.instrumentType}
-                    showEmptyState={isNewTransaction}
                     onPress={form.handleFeePress}
                 />
             }

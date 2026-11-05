@@ -285,7 +285,6 @@ export const TransferQuickForm = (props: Props) => {
                         amount={feeAmount}
                         currencySymbol={feeCurrencySymbol}
                         instrumentType={feeInstrumentType}
-                        showEmptyState={isNewTransaction}
                         onPress={handleFeePress}
                     />
                     {isDefined(props.onConsolidationPress) ? <TransactionSourcesFieldIcon onPress={props.onConsolidationPress} /> : null}

@@ -1,13 +1,14 @@
 import { AccountTypeEnum, TransactionCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { RefObject, useImperativeHandle } from 'react';
+import { RefObject, useImperativeHandle, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { View } from 'react-native';
+import { LayoutChangeEvent, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
@@ -23,8 +24,13 @@ interface Props {
     readonly ref?: RefObject<TransactionTransferAccountsRowRef | null>;
 }
 
+const SWAP_SIZE = 36;
+const SWAP_HIT_SLOP = 4;
+
+// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const TransactionTransferAccountsRow = ({ ref }: Props) => {
     const { t } = useLingui();
+    const [fromRowHeight, setFromRowHeight] = useState(0);
     const { setValue } = useFormContext<TransactionCreateInputInterface>();
     const [openAccountSelector] = useAccountSelectorModal();
     const { shake: shakeFrom, animatedStyle: fromAnimatedStyle } = useShakeAnimation();
@@ -73,37 +79,43 @@ export const TransactionTransferAccountsRow = ({ ref }: Props) => {
         setValue('toAccountId', fromAccountId);
     };
 
-    return (
-        <View className="flex-row items-center overflow-hidden rounded-3xl bg-grouped-surface-row pr-[4px]">
-            <View className="-mt-px flex-1">
-                <TransferAccountPicker
-                    label={t({ message: 'From', context: 'transfer account' })}
-                    account={fromAccount}
-                    placeholder={t`Select account`}
-                    animatedStyle={fromAnimatedStyle}
-                    testID={TransferQuickFormSelector.FromAccount}
-                    selectedTestID={fromAccountSelectedTestID}
-                    onPress={handleFromPress}
-                />
+    const handleFromLayout = (event: LayoutChangeEvent) => void setFromRowHeight(event.nativeEvent.layout.height);
+    const swapStyle = { top: fromRowHeight - SWAP_SIZE / 2, opacity: fromRowHeight > 0 ? 1 : 0 };
 
+    return (
+        <View>
+            <GroupedListSection>
+                <View onLayout={handleFromLayout}>
+                    <TransferAccountPicker
+                        label={t({ message: 'From', context: 'transfer account' })}
+                        account={fromAccount}
+                        placeholder={t`Choose`}
+                        animatedStyle={fromAnimatedStyle}
+                        testID={TransferQuickFormSelector.FromAccount}
+                        selectedTestID={fromAccountSelectedTestID}
+                        onPress={handleFromPress}
+                    />
+                </View>
                 <TransferAccountPicker
                     label={t({ message: 'To', context: 'transfer account' })}
                     account={toAccount}
-                    placeholder={t`Select account`}
+                    placeholder={t`Choose`}
                     animatedStyle={toAnimatedStyle}
                     testID={TransferQuickFormSelector.ToAccount}
                     selectedTestID={toAccountSelectedTestID}
                     onPress={handleToPress}
                 />
-            </View>
+            </GroupedListSection>
             <HapticPressable
-                className="h-[44px] w-[44px] items-center justify-center self-center"
+                className="absolute left-[16px] h-[36px] w-[36px] items-center justify-center rounded-full border-[3px] border-grouped-surface-row bg-surface-disc"
+                style={swapStyle}
+                hitSlop={SWAP_HIT_SLOP}
                 onPress={handleSwap}
                 testID={TransferQuickFormSelector.SwapAccounts}
                 accessibilityLabel={t`Swap accounts`}
                 accessibilityRole="button"
             >
-                <GroupedListIcon icon={UserIconNameEnum.ArrowUpDown} />
+                <Icon icon={UserIconNameEnum.ArrowUpDown} size={16} className="text-primary" />
             </HapticPressable>
         </View>
     );
