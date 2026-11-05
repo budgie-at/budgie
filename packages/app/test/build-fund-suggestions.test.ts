@@ -1,42 +1,23 @@
-import {
-    RecurringCadenceUnitEnum,
-    RecurringSeriesKindEnum,
-    RecurringSeriesSourceEnum,
-    RecurringSeriesStatusEnum,
-    RecurringSeriesUserStateEnum
-} from '@budgie/contracts';
+import { RecurringSeriesKindEnum, RecurringSeriesStatusEnum } from '@budgie/contracts';
 import { expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import { buildFundSuggestions } from '../src/budget/utils/build-fund-suggestions.util';
 
-import type { RecurringSeriesEntityInterface } from '@budgie/contracts';
+import type { BudgetFundSuggestionSeriesInterface } from '../src/budget/interface/budget-fund-suggestion-series.interface';
 
 const NOW = new Date(2026, 9, 29, 12);
 
-const seriesOf = (overrides: Partial<RecurringSeriesEntityInterface>): RecurringSeriesEntityInterface => ({
+const seriesOf = (overrides: Partial<BudgetFundSuggestionSeriesInterface>): BudgetFundSuggestionSeriesInterface => ({
     id: 1,
-    createdAt: NOW,
-    updatedAt: NOW,
-    deletedAt: null,
-    merchantKey: 'insurance',
     kind: RecurringSeriesKindEnum.EXPENSE,
     periodDays: 365,
-    amount: 900,
+    defaultAmount: 900,
     status: RecurringSeriesStatusEnum.ACTIVE,
-    userState: RecurringSeriesUserStateEnum.CONFIRMED,
     title: 'Car insurance',
     categoryId: 7,
     lastSeenAt: new Date(2026, 2, 14),
-    source: RecurringSeriesSourceEnum.DETECTED,
-    accountId: null,
-    cadenceUnit: RecurringCadenceUnitEnum.YEAR,
-    cadenceInterval: 1,
-    anchorDate: new Date(2026, 2, 14),
-    instrumentId: null,
     endsAt: null,
-    reminderDaysBefore: null,
-    confidence: 60,
     ...overrides
 });
 
@@ -64,11 +45,11 @@ it.effect('suggests a half-yearly series with a 6 month repeat', () =>
     })
 );
 
-it.effect('skips monthly series, dismissed series, uncategorised series, income and already linked series', () =>
+it.effect('skips monthly series, uncategorised series, income and already linked series', () =>
     Effect.sync(() => {
         const skipped = [
             seriesOf({ id: 2, periodDays: 30 }),
-            seriesOf({ id: 3, userState: RecurringSeriesUserStateEnum.DISMISSED }),
+            seriesOf({ id: 3, endsAt: new Date(2026, 8, 1) }),
             seriesOf({ id: 4, categoryId: null }),
             seriesOf({ id: 5, kind: RecurringSeriesKindEnum.INCOME }),
             seriesOf({ id: 6, status: RecurringSeriesStatusEnum.ENDED }),
@@ -89,5 +70,13 @@ it.effect('sorts suggestions by the nearest due date', () =>
         );
 
         expect(suggestions.map(suggestion => suggestion.recurringSeriesId)).toEqual([2, 1]);
+    })
+);
+
+it.effect('converts the default-currency amount of a non-default-currency series with the budget rate', () =>
+    Effect.sync(() => {
+        const [suggestion] = buildFundSuggestions([seriesOf({ defaultAmount: 1080 })], [], 0.5, NOW);
+
+        expect(suggestion.targetAmount).toBe(540);
     })
 );

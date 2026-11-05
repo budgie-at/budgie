@@ -2,6 +2,7 @@ import {
     ExchangeRateEntityTable,
     HistoricalExchangeRateEntityTable,
     RecurringSeriesEntityTable,
+    RecurringSeriesTransactionEntityTable,
     SettingsEntityTable
 } from '@budgie/contracts';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
@@ -21,7 +22,8 @@ const budgetExpectedIncomeAtom = databaseQueryFamily(
         ExchangeRateEntityTable,
         HistoricalExchangeRateEntityTable,
         SettingsEntityTable,
-        RecurringSeriesEntityTable
+        RecurringSeriesEntityTable,
+        RecurringSeriesTransactionEntityTable
     ],
     BudgetProjectionService,
     (budgetProjectionService, key: BudgetProjectionKeyInterface) =>

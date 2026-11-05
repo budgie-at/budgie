@@ -1,4 +1,10 @@
-import { BudgetSinkingFundEntityTable, ExchangeRateEntityTable, RecurringSeriesEntityTable, SettingsEntityTable } from '@budgie/contracts';
+import {
+    BudgetSinkingFundEntityTable,
+    ExchangeRateEntityTable,
+    RecurringSeriesEntityTable,
+    RecurringSeriesTransactionEntityTable,
+    SettingsEntityTable
+} from '@budgie/contracts';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
@@ -11,7 +17,13 @@ import type { BudgetFundSuggestionInterface } from '../interface/budget-fund-sug
 const EMPTY_SUGGESTIONS: readonly BudgetFundSuggestionInterface[] = [];
 
 const budgetFundSuggestionsAtom = databaseQueryFamily(
-    [RecurringSeriesEntityTable, BudgetSinkingFundEntityTable, ExchangeRateEntityTable, SettingsEntityTable],
+    [
+        RecurringSeriesEntityTable,
+        RecurringSeriesTransactionEntityTable,
+        BudgetSinkingFundEntityTable,
+        ExchangeRateEntityTable,
+        SettingsEntityTable
+    ],
     BudgetFundSuggestionService,
     (budgetFundSuggestionService, key: readonly [number, number, number]) =>
         budgetFundSuggestionService.findSuggestions(key[0], key[1], new Date(key[2]))

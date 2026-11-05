@@ -1,12 +1,12 @@
-import { RecurringSeriesKindEnum, RecurringSeriesStatusEnum, RecurringSeriesUserStateEnum } from '@budgie/contracts';
+import { RecurringSeriesKindEnum, RecurringSeriesStatusEnum } from '@budgie/contracts';
 import { addDays } from 'date-fns/addDays';
 import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
 import { startOfDay } from 'date-fns/startOfDay';
 
 import { isDefined } from '@rnw-community/shared';
 
+import type { BudgetFundSuggestionSeriesInterface } from '../interface/budget-fund-suggestion-series.interface';
 import type { BudgetFundSuggestionInterface } from '../interface/budget-fund-suggestion.interface';
-import type { RecurringSeriesEntityInterface } from '@budgie/contracts';
 
 const MIN_PERIOD_DAYS = 150;
 const MAX_PERIOD_DAYS = 400;
@@ -21,7 +21,7 @@ const computeNextDueAt = (lastSeenAt: Date, periodDays: number, now: Date): Date
 };
 
 export const buildFundSuggestions = (
-    series: readonly RecurringSeriesEntityInterface[],
+    series: readonly BudgetFundSuggestionSeriesInterface[],
     linkedSeriesIds: readonly number[],
     rate: number,
     now: Date
@@ -31,7 +31,7 @@ export const buildFundSuggestions = (
             row =>
                 row.kind === RecurringSeriesKindEnum.EXPENSE &&
                 row.status === RecurringSeriesStatusEnum.ACTIVE &&
-                row.userState !== RecurringSeriesUserStateEnum.DISMISSED &&
+                (!isDefined(row.endsAt) || row.endsAt.getTime() >= now.getTime()) &&
                 isDefined(row.categoryId) &&
                 row.periodDays >= MIN_PERIOD_DAYS &&
                 row.periodDays <= MAX_PERIOD_DAYS &&
@@ -44,7 +44,7 @@ export const buildFundSuggestions = (
                           recurringSeriesId: row.id,
                           name: row.title,
                           categoryId: row.categoryId,
-                          targetAmount: Math.round(row.amount * rate),
+                          targetAmount: Math.round(row.defaultAmount * rate),
                           dueAt: computeNextDueAt(row.lastSeenAt, row.periodDays, now),
                           repeatEveryMonths: Math.round(row.periodDays / DAYS_PER_MONTH)
                       }
