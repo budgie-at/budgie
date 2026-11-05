@@ -26,6 +26,7 @@ export const VoiceReviewFooter = (props: Props) => {
     const { count, isSaving, totalAmount, currencySymbol, onCancel, onReRecord, children } = props;
     const { t } = useLingui();
     const formatDigits = useDisplayFormatDigits();
+    const reRecordVariant = isPositiveNumber(count) ? 'secondary' : 'cta';
     const totalLabel = formatDigits(totalAmount, `${currencySymbol} `);
 
     return (
@@ -45,11 +46,11 @@ export const VoiceReviewFooter = (props: Props) => {
                     content={t`Cancel`}
                     onPress={onCancel}
                     disabled={isSaving}
-                    className="flex-1 min-h-[44px] px-md"
+                    className="flex-1 min-h-[44px] px-md border-transparent bg-transparent"
                     testID={VoiceReviewFooterSelector.CancelButton}
                 />
                 <Button
-                    variant="secondary"
+                    variant={reRecordVariant}
                     leftIcon={UserIconNameEnum.RefreshCw}
                     content={t`Re-record`}
                     onPress={onReRecord}

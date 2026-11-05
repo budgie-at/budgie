@@ -2,6 +2,7 @@ import { AITransactionInterface } from '@budgie/ai';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
+import { Stack } from 'expo-router';
 import { useEffect, useEffectEvent } from 'react';
 import { Text, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
@@ -13,6 +14,7 @@ import { SheetSurface } from '../@generic/component/sheet-surface/sheet-surface'
 import { SheetTitle } from '../@generic/component/sheet-title/sheet-title';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { appRuntime } from '../@generic/runtime/app.runtime';
+import { formSheetOptions } from '../@generic/utils/form-sheet-options.util';
 import { useGetAccountByIdQuery } from '../account/query/use-get-account-by-id.query';
 import { VoiceReviewFooter } from '../ai/component/voice-review-footer/voice-review-footer';
 import { VoiceReviewItem } from '../ai/component/voice-review-item/voice-review-item';
@@ -69,6 +71,7 @@ export default function VoiceReviewModal() {
     const accountId = defaultAccount?.id ?? null;
     const { account: accountWithInstrument } = useGetAccountByIdQuery(accountId ?? 0);
     const currencySymbol = accountWithInstrument?.instrument.symbol ?? '';
+    const screenOptions = formSheetOptions(isEmptyArray(rows) ? [0.45, 0.95] : [0.65, 0.95], 0);
     const canDelete = rows.length > 1;
     const canSaveToAccount = canSave && isPositiveNumber(accountId);
 
@@ -120,6 +123,7 @@ export default function VoiceReviewModal() {
 
     return (
         <SheetSurface>
+            <Stack.Screen options={screenOptions} />
             <View className="flex-1" testID={VoiceReviewSelector.Page} collapsable={false}>
                 <SheetTitle title={t`Voice notes`} />
                 <KeyboardAwareScrollView
