@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.158.0](https://github.com/budgie-at/budgie/compare/v6.157.0...v6.158.0) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** expand contact recovery for accessibility text ([f7b1203](https://github.com/budgie-at/budgie/commit/f7b120300023cd28922309caa8da15aa8ce105e2))
+* **app:** let contact search grow with text size ([d963916](https://github.com/budgie-at/budgie/commit/d963916423b6e3ff558c75bc2cc600d650fecbb7))
+* **app:** render the contact error glyph ([37454b5](https://github.com/budgie-at/budgie/commit/37454b5c75f55e7d12d003af11f6ed429b9bd436))
+* **app:** restore Expo contact reads and limited recovery ([c8e98ab](https://github.com/budgie-at/budgie/commit/c8e98abe3a6273b00abcd41a8c0b140ec45887d1))
+
+### Features
+
+* **app:** finish contact selector states ([3906a9d](https://github.com/budgie-at/budgie/commit/3906a9da0d4817bc163cc4dc3e15e02937b26940))
+* **app:** refine contact recovery spacing ([3526922](https://github.com/budgie-at/budgie/commit/3526922017a5a5edc5e74d72ce683f5063d3db9a))
+
+
 # [6.157.0](https://github.com/budgie-at/budgie/compare/v6.156.0...v6.157.0) (2026-11-05)
 
 ### Bug Fixes
