@@ -13,6 +13,8 @@ interface Props<T extends string> {
     readonly onPress: (value: T) => void;
 }
 
+const SEGMENT_HIT_SLOP = { top: 6, bottom: 6 } as const;
+
 const labelVariants = cva('text-[13px]', {
     variants: {
         isActive: { true: 'font-semibold', false: 'font-medium' },
@@ -31,7 +33,7 @@ export const SegmentedControlItem = <T extends string>({ segment, isActive, disa
             accessibilityRole="tab"
             accessibilityState={accessibilityState}
             className="flex-1 items-center justify-center px-md py-sm active:scale-100"
-            hitSlop={0}
+            hitSlop={SEGMENT_HIT_SLOP}
             disabled={disabled}
             testID={segment.testID}
             onPress={handlePress}
