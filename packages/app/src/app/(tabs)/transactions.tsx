@@ -13,7 +13,7 @@ import { TransactionsPageSelector } from './transactions-page.selector';
 
 import type { TransactionsTabType } from '../../@generic/type/transactions-tab.type';
 
-const TRANSACTIONS_CHROME_CONFIG = { ...SCREEN_CHROME_CONFIG, headerHeight: 44 };
+const TRANSACTIONS_CHROME_CONFIG = { ...SCREEN_CHROME_CONFIG, headerHeight: 44, collapsedHeaderHeight: 32 };
 
 const TABS: readonly TransactionsTabType[] = ['transactions', 'recurring'];
 

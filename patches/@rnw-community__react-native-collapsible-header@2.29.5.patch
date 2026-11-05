@@ -1,0 +1,263 @@
+diff --git a/dist/commonjs/provider/collapsible-header-provider/collapsible-header-provider.js b/dist/commonjs/provider/collapsible-header-provider/collapsible-header-provider.js
+index db22c24fc0305048af2e36300a35006c0e8e07bc..deb99d43619ac6a5c14495fbc34896835dcf9aac 100644
+--- a/dist/commonjs/provider/collapsible-header-provider/collapsible-header-provider.js
++++ b/dist/commonjs/provider/collapsible-header-provider/collapsible-header-provider.js
+@@ -26,13 +26,15 @@ const CollapsibleHeaderProvider = t0 => {
+   const scrollRef = (0, _reactNativeReanimated.useAnimatedRef)();
+   const snapConfig = (0, _reactNativeReanimated.useSharedValue)(null);
+   const snapOwnerCount = (0, _react.useRef)(0);
+-  const snapSettleGeneration = (0, _reactNativeReanimated.useSharedValue)(0);
++  const scrollDirection = (0, _reactNativeReanimated.useSharedValue)(0);
++  const lastDragOffset = (0, _reactNativeReanimated.useSharedValue)(0);
+   const snapAnimated = !(0, _reactNativeReanimated.useReducedMotion)();
+   const onScroll = (0, _reactNativeReanimated.useAnimatedScrollHandler)((0, _createCollapsibleHeaderScrollWorklets.createCollapsibleHeaderScrollWorklets)({
+     scrollY,
+     scrollRef,
+     snapConfig,
+-    snapSettleGeneration,
++    scrollDirection,
++    lastDragOffset,
+     snapAnimated
+   }));
+   (0, _reactNativeReanimated.useScrollOffset)(syncNativeScrollOffset ? scrollRef : null, scrollY);
+diff --git a/dist/commonjs/util/create-collapsible-header-scroll-worklets/create-collapsible-header-scroll-worklets.js b/dist/commonjs/util/create-collapsible-header-scroll-worklets/create-collapsible-header-scroll-worklets.js
+index b4fc4bda014fb7b002972ff374c113b275878724..1e4e3c025c191f4da94145220cbe52c841bbbabe 100644
+--- a/dist/commonjs/util/create-collapsible-header-scroll-worklets/create-collapsible-header-scroll-worklets.js
++++ b/dist/commonjs/util/create-collapsible-header-scroll-worklets/create-collapsible-header-scroll-worklets.js
+@@ -5,66 +5,32 @@ Object.defineProperty(exports, "__esModule", {
+ });
+ exports.createCollapsibleHeaderScrollWorklets = void 0;
+ var _reactNativeReanimated = require("react-native-reanimated");
+-var _getCollapsibleHeaderSnapOffset = require("../get-collapsible-header-snap-offset/get-collapsible-header-snap-offset.js");
+-const SNAP_SETTLE_FRAME_COUNT = 3;
+-const createCollapsibleHeaderScrollWorklets = ({
+-  scrollY,
+-  scrollRef,
+-  snapConfig,
+-  snapSettleGeneration,
+-  snapAnimated
+-}) => {
+-  const snapToNearestEndpoint = offsetY => {
++const MAX_SNAP_RELEASE_VELOCITY = 0.1;
++const createCollapsibleHeaderScrollWorklets = ({ scrollY, scrollRef, snapConfig, scrollDirection, lastDragOffset, snapAnimated }) => ({
++  onScroll: event => {
+     'worklet';
+-
+-    const snapOffset = (0, _getCollapsibleHeaderSnapOffset.getCollapsibleHeaderSnapOffset)(offsetY, snapConfig.get());
+-    if (snapOffset !== null) {
+-      (0, _reactNativeReanimated.scrollTo)(scrollRef, 0, snapOffset, snapAnimated);
++    const delta = event.contentOffset.y - lastDragOffset.get();
++    if (delta !== 0) {
++      scrollDirection.set(Math.sign(delta));
+     }
+-  };
+-  const watchForSettledScroll = (generation, releaseOffsetY) => {
++    lastDragOffset.set(event.contentOffset.y);
++    scrollY.set(event.contentOffset.y);
++  },
++  onBeginDrag: () => {
+     'worklet';
+-
+-    let settledOffsetY = releaseOffsetY;
+-    let stableFrameCount = 0;
+-    const checkFrame = () => {
+-      if (snapSettleGeneration.get() !== generation) {
+-        return;
+-      }
+-      if (scrollY.get() !== settledOffsetY) {
+-        settledOffsetY = scrollY.get();
+-        stableFrameCount = 0;
+-        requestAnimationFrame(checkFrame);
+-        return;
+-      }
+-      stableFrameCount += 1;
+-      if (stableFrameCount < SNAP_SETTLE_FRAME_COUNT) {
+-        requestAnimationFrame(checkFrame);
+-        return;
+-      }
+-      snapToNearestEndpoint(settledOffsetY);
+-    };
+-    requestAnimationFrame(checkFrame);
+-  };
+-  return {
+-    onScroll: event => {
+-      'worklet';
+-
+-      scrollY.set(event.contentOffset.y);
+-    },
+-    onBeginDrag: () => {
+-      'worklet';
+-
+-      snapSettleGeneration.set(snapSettleGeneration.get() + 1);
+-    },
+-    onEndDrag: event => {
+-      'worklet';
+-
+-      const generation = snapSettleGeneration.get() + 1;
+-      snapSettleGeneration.set(generation);
+-      watchForSettledScroll(generation, event.contentOffset.y);
++    scrollDirection.set(0);
++    lastDragOffset.set(scrollY.get());
++  },
++  onEndDrag: event => {
++    'worklet';
++    const config = snapConfig.get();
++    const offset = event.contentOffset.y;
++    const velocity = event.velocity?.y;
++    if (config === null || typeof velocity !== 'number' || Math.abs(velocity) > MAX_SNAP_RELEASE_VELOCITY || offset <= config.snapStart || offset >= config.snapEnd || scrollDirection.get() === 0) {
++      return;
+     }
+-  };
+-};
++    (0, _reactNativeReanimated.scrollTo)(scrollRef, 0, scrollDirection.get() > 0 ? config.snapEnd : config.snapStart, snapAnimated);
++  }
++});
++
+ exports.createCollapsibleHeaderScrollWorklets = createCollapsibleHeaderScrollWorklets;
+-//# sourceMappingURL=create-collapsible-header-scroll-worklets.js.map
+\ No newline at end of file
+diff --git a/dist/module/provider/collapsible-header-provider/collapsible-header-provider.js b/dist/module/provider/collapsible-header-provider/collapsible-header-provider.js
+index fd51f0c44c16e7a34af707a29b21cc07e9fca934..de8f23f0a28deef3c0b073c889fceea9e004dad5 100644
+--- a/dist/module/provider/collapsible-header-provider/collapsible-header-provider.js
++++ b/dist/module/provider/collapsible-header-provider/collapsible-header-provider.js
+@@ -21,13 +21,15 @@ export const CollapsibleHeaderProvider = t0 => {
+   const scrollRef = useAnimatedRef();
+   const snapConfig = useSharedValue(null);
+   const snapOwnerCount = useRef(0);
+-  const snapSettleGeneration = useSharedValue(0);
++  const scrollDirection = useSharedValue(0);
++  const lastDragOffset = useSharedValue(0);
+   const snapAnimated = !useReducedMotion();
+   const onScroll = useAnimatedScrollHandler(createCollapsibleHeaderScrollWorklets({
+     scrollY,
+     scrollRef,
+     snapConfig,
+-    snapSettleGeneration,
++    scrollDirection,
++    lastDragOffset,
+     snapAnimated
+   }));
+   useScrollOffset(syncNativeScrollOffset ? scrollRef : null, scrollY);
+diff --git a/dist/module/util/create-collapsible-header-scroll-worklets/create-collapsible-header-scroll-worklets.js b/dist/module/util/create-collapsible-header-scroll-worklets/create-collapsible-header-scroll-worklets.js
+index a5a1fbd354a7eebb7b4adba6538034598fa7f2b9..78acf125f930aed95cf1cc3dcb5f45498d5f2ec0 100644
+--- a/dist/module/util/create-collapsible-header-scroll-worklets/create-collapsible-header-scroll-worklets.js
++++ b/dist/module/util/create-collapsible-header-scroll-worklets/create-collapsible-header-scroll-worklets.js
+@@ -1,65 +1,30 @@
+ "use strict";
+
+ import { scrollTo } from 'react-native-reanimated';
+-import { getCollapsibleHeaderSnapOffset } from "../get-collapsible-header-snap-offset/get-collapsible-header-snap-offset.js";
+-const SNAP_SETTLE_FRAME_COUNT = 3;
+-export const createCollapsibleHeaderScrollWorklets = ({
+-  scrollY,
+-  scrollRef,
+-  snapConfig,
+-  snapSettleGeneration,
+-  snapAnimated
+-}) => {
+-  const snapToNearestEndpoint = offsetY => {
++const MAX_SNAP_RELEASE_VELOCITY = 0.1;
++export const createCollapsibleHeaderScrollWorklets = ({ scrollY, scrollRef, snapConfig, scrollDirection, lastDragOffset, snapAnimated }) => ({
++  onScroll: event => {
+     'worklet';
+-
+-    const snapOffset = getCollapsibleHeaderSnapOffset(offsetY, snapConfig.get());
+-    if (snapOffset !== null) {
+-      scrollTo(scrollRef, 0, snapOffset, snapAnimated);
++    const delta = event.contentOffset.y - lastDragOffset.get();
++    if (delta !== 0) {
++      scrollDirection.set(Math.sign(delta));
+     }
+-  };
+-  const watchForSettledScroll = (generation, releaseOffsetY) => {
++    lastDragOffset.set(event.contentOffset.y);
++    scrollY.set(event.contentOffset.y);
++  },
++  onBeginDrag: () => {
+     'worklet';
+-
+-    let settledOffsetY = releaseOffsetY;
+-    let stableFrameCount = 0;
+-    const checkFrame = () => {
+-      if (snapSettleGeneration.get() !== generation) {
+-        return;
+-      }
+-      if (scrollY.get() !== settledOffsetY) {
+-        settledOffsetY = scrollY.get();
+-        stableFrameCount = 0;
+-        requestAnimationFrame(checkFrame);
+-        return;
+-      }
+-      stableFrameCount += 1;
+-      if (stableFrameCount < SNAP_SETTLE_FRAME_COUNT) {
+-        requestAnimationFrame(checkFrame);
+-        return;
+-      }
+-      snapToNearestEndpoint(settledOffsetY);
+-    };
+-    requestAnimationFrame(checkFrame);
+-  };
+-  return {
+-    onScroll: event => {
+-      'worklet';
+-
+-      scrollY.set(event.contentOffset.y);
+-    },
+-    onBeginDrag: () => {
+-      'worklet';
+-
+-      snapSettleGeneration.set(snapSettleGeneration.get() + 1);
+-    },
+-    onEndDrag: event => {
+-      'worklet';
+-
+-      const generation = snapSettleGeneration.get() + 1;
+-      snapSettleGeneration.set(generation);
+-      watchForSettledScroll(generation, event.contentOffset.y);
++    scrollDirection.set(0);
++    lastDragOffset.set(scrollY.get());
++  },
++  onEndDrag: event => {
++    'worklet';
++    const config = snapConfig.get();
++    const offset = event.contentOffset.y;
++    const velocity = event.velocity?.y;
++    if (config === null || typeof velocity !== 'number' || Math.abs(velocity) > MAX_SNAP_RELEASE_VELOCITY || offset <= config.snapStart || offset >= config.snapEnd || scrollDirection.get() === 0) {
++      return;
+     }
+-  };
+-};
+-//# sourceMappingURL=create-collapsible-header-scroll-worklets.js.map
+\ No newline at end of file
++    scrollTo(scrollRef, 0, scrollDirection.get() > 0 ? config.snapEnd : config.snapStart, snapAnimated);
++  }
++});
+diff --git a/dist/typescript/commonjs/interface/collapsible-header-scroll-worklets-config.interface.d.ts b/dist/typescript/commonjs/interface/collapsible-header-scroll-worklets-config.interface.d.ts
+index de0b430013082ac593b91be033e13d16c4faf208..1186b2ed50d0b8bfd5e21f9575dc0d89a1bbc51b 100644
+--- a/dist/typescript/commonjs/interface/collapsible-header-scroll-worklets-config.interface.d.ts
++++ b/dist/typescript/commonjs/interface/collapsible-header-scroll-worklets-config.interface.d.ts
+@@ -6,7 +6,8 @@ export interface CollapsibleHeaderScrollWorkletsConfig {
+     readonly scrollY: SharedValue<number>;
+     readonly scrollRef: CollapsibleHeaderScrollRef;
+     readonly snapConfig: SharedValue<Maybe<CollapsibleHeaderSnapConfig>>;
+-    readonly snapSettleGeneration: SharedValue<number>;
++    readonly lastDragOffset: SharedValue<number>;
++    readonly scrollDirection: SharedValue<number>;
+     readonly snapAnimated: boolean;
+ }
+ //# sourceMappingURL=collapsible-header-scroll-worklets-config.interface.d.ts.map
+\ No newline at end of file
+diff --git a/dist/typescript/module/interface/collapsible-header-scroll-worklets-config.interface.d.ts b/dist/typescript/module/interface/collapsible-header-scroll-worklets-config.interface.d.ts
+index d36a3ffa26b3d1be21411722285e25c7a302f11a..3a0f7ab03b43eb09ec03c0511b57245bb61c31a3 100644
+--- a/dist/typescript/module/interface/collapsible-header-scroll-worklets-config.interface.d.ts
++++ b/dist/typescript/module/interface/collapsible-header-scroll-worklets-config.interface.d.ts
+@@ -6,7 +6,8 @@ export interface CollapsibleHeaderScrollWorkletsConfig {
+     readonly scrollY: SharedValue<number>;
+     readonly scrollRef: CollapsibleHeaderScrollRef;
+     readonly snapConfig: SharedValue<Maybe<CollapsibleHeaderSnapConfig>>;
+-    readonly snapSettleGeneration: SharedValue<number>;
++    readonly lastDragOffset: SharedValue<number>;
++    readonly scrollDirection: SharedValue<number>;
+     readonly snapAnimated: boolean;
+ }
+ //# sourceMappingURL=collapsible-header-scroll-worklets-config.interface.d.ts.map

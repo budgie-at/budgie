@@ -42,6 +42,7 @@ allowBuilds:
   node-llama-cpp: false
 
 patchedDependencies:
+  '@rnw-community/react-native-collapsible-header@2.29.5': patches/@rnw-community__react-native-collapsible-header@2.29.5.patch
   drizzle-orm@1.0.0-rc.4: patches/drizzle-orm@1.0.0-rc.4.patch
   expo-pdf-text-extract@1.1.0: patches/expo-pdf-text-extract@1.1.0.patch
 

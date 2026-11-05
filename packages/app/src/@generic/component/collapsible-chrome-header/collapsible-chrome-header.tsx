@@ -54,6 +54,7 @@ const collapsibleChromeHeaderStyles = StyleSheet.create({
         justifyContent: 'center'
     },
     expandedTitleLayerContent: {
+        flex: 1,
         alignSelf: 'stretch',
         justifyContent: 'center'
     }
@@ -63,6 +64,13 @@ export const CollapsibleChromeHeader = ({ expandedTitle, collapsedTitle, leading
     const { config } = useScreenChrome();
 
     const collapseDistance = config.collapseEnd - config.collapseStart;
+    const titleHorizontalPadding = isDefined(leading) || isDefined(trailing) ? TITLE_LAYER_HORIZONTAL_PADDING : HEADER_HORIZONTAL_PADDING;
+    const collapsedHeaderStyle = { height: config.collapsedHeaderHeight ?? config.headerHeight, bottom: 'auto' as const };
+    const collapsedContentContainerStyle = [
+        collapsibleChromeHeaderStyles.titleLayer,
+        collapsedHeaderStyle,
+        { paddingHorizontal: titleHorizontalPadding }
+    ];
     const motion = {
         expandedOpacityEndProgress: (config.largeTitleEnd - config.collapseStart) / collapseDistance,
         collapsedOpacityStartProgress: (config.smallTitleStart - config.collapseStart) / collapseDistance,
@@ -91,7 +99,7 @@ export const CollapsibleChromeHeader = ({ expandedTitle, collapsedTitle, leading
         </View>
     );
     const expandedContent = (
-        <View style={collapsibleChromeHeaderStyles.expandedTitleLayerContent} pointerEvents="none">
+        <View style={collapsibleChromeHeaderStyles.expandedTitleLayerContent} pointerEvents="box-none">
             {expandedTitle}
         </View>
     );
@@ -108,15 +116,16 @@ export const CollapsibleChromeHeader = ({ expandedTitle, collapsedTitle, leading
                 pointerEvents="box-none"
                 snap={config.snapToCollapse}
                 expandedHeight={config.headerHeight}
-                collapsedHeight={config.collapsedHeaderHeight ?? config.headerHeight}
+                collapsedHeight={config.headerHeight}
                 collapseStart={config.collapseStart}
                 collapseDistance={collapseDistance}
                 expandedContent={expandedContent}
                 collapsedContent={collapsedContent}
                 persistentContent={persistentContent}
+                persistentContentContainerStyle={collapsedHeaderStyle}
                 motion={motion}
                 expandedContentContainerStyle={expandedContentContainerStyle}
-                collapsedContentContainerStyle={collapsibleChromeHeaderStyles.titleLayer}
+                collapsedContentContainerStyle={collapsedContentContainerStyle}
             />
         </View>
     );
