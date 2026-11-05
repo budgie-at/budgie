@@ -21,6 +21,8 @@ interface Props {
     readonly pressableProps?: ComponentProps<typeof GroupedListRow>['pressableProps'];
 }
 
+const MAX_FONT_SCALE = 2;
+
 export const TransactionFormRow = (props: Props) => {
     const { left, label, value, placeholder, valueTestID, onPress, testID, pressableProps } = props;
     const { fontScale } = useWindowDimensions();
@@ -30,49 +32,30 @@ export const TransactionFormRow = (props: Props) => {
     const chevron = <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />;
     const valueText = isNotEmptyString(displayValue) ? (
         <Text
-            className={cn('shrink text-[17px] leading-[22px] text-secondary-foreground', !isStacked && 'text-right')}
+            className={cn('text-[17px] leading-[22px] text-secondary-foreground', !isStacked && 'min-w-0 flex-1 text-right')}
+            maxFontSizeMultiplier={MAX_FONT_SCALE}
             numberOfLines={valueLineCount}
             testID={valueTestID}
         >
             {displayValue}
         </Text>
     ) : null;
-
-    if (isStacked) {
-        return (
-            <GroupedListRow
-                left={left}
-                title={
-                    <View className="min-w-0 items-start gap-y-xxs">
-                        <Text className="text-[17px] leading-[22px] text-primary">{label}</Text>
-                        {valueText}
-                    </View>
-                }
-                right={chevron}
-                onPress={onPress}
-                testID={testID}
-                pressableProps={pressableProps}
-            />
-        );
-    }
-
-    return (
-        <GroupedListRow
-            left={left}
-            title={
-                <Text className="text-[17px] leading-[22px] text-primary" numberOfLines={1}>
-                    {label}
-                </Text>
-            }
-            right={
-                <View className="max-w-[64%] flex-row items-center gap-x-xs">
-                    {valueText}
-                    {chevron}
-                </View>
-            }
-            onPress={onPress}
-            testID={testID}
-            pressableProps={pressableProps}
-        />
+    const labelText = (
+        <Text className="shrink-0 text-[17px] leading-[22px] text-primary" maxFontSizeMultiplier={MAX_FONT_SCALE}>
+            {label}
+        </Text>
     );
+    const title = isStacked ? (
+        <View className="min-w-0 items-start gap-y-xxs">
+            {labelText}
+            {valueText}
+        </View>
+    ) : (
+        <View className="min-w-0 flex-row items-center gap-x-lg">
+            {labelText}
+            {valueText}
+        </View>
+    );
+
+    return <GroupedListRow left={left} title={title} right={chevron} onPress={onPress} testID={testID} pressableProps={pressableProps} />;
 };
