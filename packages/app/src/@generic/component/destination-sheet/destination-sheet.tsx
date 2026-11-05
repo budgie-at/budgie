@@ -3,6 +3,8 @@ import { Text, View } from 'react-native';
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { SelectorSearchRow } from '../selector-search-row/selector-search-row';
+import { SheetSurface } from '../sheet-surface/sheet-surface';
+import { SheetTitleRow } from '../sheet-title-row/sheet-title-row';
 
 import type { ReactNode } from 'react';
 
@@ -21,13 +23,11 @@ export const DestinationSheet = (props: Props) => {
     const { title, description, search, onSearchChange, placeholder, searchTestID, action, children } = props;
 
     return (
-        <View className="flex-1 bg-primary-reverse" collapsable={false}>
-            <View className="gap-y-xs px-3xl pt-4xl pb-xl">
-                <Text className="text-primary text-[20px] font-semibold leading-[25px]" accessibilityRole="header">
-                    {title}
-                </Text>
+        <SheetSurface>
+            <View className="gap-y-md px-3xl pt-7xl pb-xl">
+                <SheetTitleRow title={title} />
                 {isNotEmptyString(description) ? (
-                    <Text className="text-secondary-foreground text-[15px] leading-[20px]">{description}</Text>
+                    <Text className="text-secondary-foreground px-3xl text-center text-[15px] leading-[20px]">{description}</Text>
                 ) : null}
             </View>
             <View className="px-xl pb-lg">
@@ -36,6 +36,6 @@ export const DestinationSheet = (props: Props) => {
                 </SelectorSearchRow>
             </View>
             {children}
-        </View>
+        </SheetSurface>
     );
 };

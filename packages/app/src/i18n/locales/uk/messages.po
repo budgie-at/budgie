@@ -429,6 +429,10 @@ msgstr "{formattedAveragePerDay} на день"
 msgid "{formattedBalance} will be transferred to {destinationAccountTitle} and this deposit will be archived. You can restore it anytime from Settings → Archived Accounts."
 msgstr "{formattedBalance} буде переведено на {destinationAccountTitle}, а цей депозит буде архівовано. Ви можете відновити його в будь-який час у Налаштуваннях → Архівовані рахунки."
 
+#: src/transaction/components/recurring-calendar-day/recurring-calendar-day.tsx
+msgid "{formattedDate}. Recorded: {entryCount}. Expected: {forecastedCount}."
+msgstr "{formattedDate}. Зафіксовано: {entryCount}. Очікується: {forecastedCount}."
+
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "{formattedDifference} over limit"
 msgstr "{formattedDifference} понад ліміт"
@@ -1334,10 +1338,6 @@ msgstr "Усі умови"
 msgid "All past amounts are converted"
 msgstr "Усі минулі суми конвертовано"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-msgid "All Recurring"
-msgstr "Усі регулярні"
-
 #: src/import/utils/get-import-required-footer.util.ts
 msgid "All required fields matched. Tap a field to change it."
 msgstr "Усі обов’язкові поля зіставлено. Торкніться поля, щоб змінити його."
@@ -1695,12 +1695,12 @@ msgid "Back up regularly and after imports."
 msgstr "Створюйте копію регулярно й після імпорту."
 
 #: src/settings/components/backup-row/backup-row.tsx
-msgid "Backup file"
-msgstr "Файл резервної копії"
+msgid "Backup"
+msgstr "Резервна копія"
 
-#: src/settings/components/backup-row/backup-row.tsx
-msgid "Backup file ready"
-msgstr "Файл резервної копії готовий"
+#: src/export/hook/use-backup-actions.hook.ts
+msgid "Backup saved"
+msgstr "Резервну копію збережено"
 
 #: src/market-data/component/currency-market-position/currency-market-position.tsx
 msgid "Balance"
@@ -1828,10 +1828,6 @@ msgstr "Між"
 msgid "Between {lowestCount} and {MAX_INSTALLMENT_COUNT} months"
 msgstr "Від {lowestCount} до {MAX_INSTALLMENT_COUNT} місяців"
 
-#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
-msgid "Billing Dates"
-msgstr "Дати списання"
-
 #: src/account/constant/bank-provider-title.constant.ts
 #: src/app/(main)/create-account/index.tsx
 #: src/rule/constant/external-source.constant.ts
@@ -1872,7 +1868,9 @@ msgstr "Очікувався рахунок позиченого боргу"
 msgid "Browse icons"
 msgstr "Переглянути значки"
 
+#: src/app/(main)/budget/index.tsx
 #: src/app/(tabs)/settings/index.tsx
+#: src/budget/components/budget-data-state/budget-data-state.tsx
 #: src/budget/hooks/use-budget-form.hook.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Budget"
@@ -1893,6 +1891,10 @@ msgstr "Бюджет заблоковано, {formattedDaysLeft}. Розблок
 #: src/budget/components/budget-setup-form/budget-setup-form.tsx
 msgid "Budget name"
 msgstr "Назва бюджету"
+
+#: src/budget/components/budget-data-state/budget-data-state.tsx
+msgid "Budget unavailable"
+msgstr "Бюджет недоступний"
 
 #: src/import/components/import-preset-options/import-preset-options.tsx
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
@@ -2228,6 +2230,10 @@ msgstr "Перевірте написання або створіть його �
 msgid "Check the spelling or search by another name."
 msgstr "Перевірте написання або пошукайте за іншою назвою."
 
+#: src/app/rule-mcc-selector.tsx
+msgid "Check the spelling or try a code like 5812."
+msgstr "Перевірте написання або спробуйте код, наприклад 5812."
+
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Check the spelling or try a code like EUR."
 msgstr "Перевірте написання або спробуйте код, як-от EUR."
@@ -2453,6 +2459,7 @@ msgid "Clipboard is empty"
 msgstr "Буфер обміну порожній"
 
 #: src/@generic/component/sheet-title-row/sheet-title-row.tsx
+#: src/budget/components/budget-sheet-state/budget-sheet-state.tsx
 #: src/sync/component/get-token-card/get-token-card.tsx
 msgid "Close"
 msgstr "Закрити"
@@ -2496,10 +2503,6 @@ msgstr "коментар"
 msgid "Comment"
 msgstr "Коментар"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-msgid "Committed {committedExpense} per month"
-msgstr "Регулярні витрати на місяць: {committedExpense}"
-
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Common"
 msgstr "Поширені"
@@ -2512,13 +2515,13 @@ msgstr "Порівняння: {label}"
 msgid "Complete every split entry"
 msgstr "Заповніть кожен запис розподілу"
 
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
-msgid "Confirm"
-msgstr "Підтвердити"
-
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Confirm it's you before choosing a new one."
 msgstr "Підтвердьте, що це ви, перш ніж вибрати новий."
+
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Confirm recurring"
+msgstr "Підтвердити регулярний платіж"
 
 #: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx
 msgid "Confirm tag selection"
@@ -2726,7 +2729,7 @@ msgstr "Не вдалося перетворити на повернення"
 msgid "Could not convert to transfers"
 msgstr "Не вдалося перетворити на перекази"
 
-#: src/settings/components/backup-row/backup-row.tsx
+#: src/export/hook/use-backup-actions.hook.ts
 msgid "Could not create a backup"
 msgstr "Не вдалося створити резервну копію"
 
@@ -2835,6 +2838,10 @@ msgstr "Не вдалося завантажити"
 #: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
 msgid "Could not load accounts"
 msgstr "Не вдалося завантажити рахунки"
+
+#: src/budget/components/budget-data-state/budget-data-state.tsx
+msgid "Could not load budget"
+msgstr "Не вдалося завантажити бюджет"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Could not load sources. Please try again."
@@ -3300,10 +3307,6 @@ msgstr "День {elapsedDays} з {totalDays}. {overLabel}."
 msgid "Day {periodStartDay} of each month"
 msgstr "{periodStartDay}-й день кожного місяця"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-msgid "Day {selectedDay}"
-msgstr "День {selectedDay}"
-
 #: src/account/component/deposit-details-card/deposit-details-card.tsx
 msgid "Days Remaining"
 msgstr "Залишилось днів"
@@ -3555,10 +3558,6 @@ msgstr "Відключено на цьому телефоні"
 #: src/wallet-capture/hook/use-wallet-capture-settings.hook.ts
 msgid "Dismiss"
 msgstr "Приховати"
-
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
-msgid "Dismiss recurring payment?"
-msgstr "Приховати регулярний платіж?"
 
 #: src/wallet-capture/hook/use-wallet-capture-settings.hook.ts
 msgid "Dismiss Wallet capture?"
@@ -4062,6 +4061,12 @@ msgstr "Курс обміну не знайдено"
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "Exchange rate: {rateLabel}"
 msgstr "Курс обміну: {rateLabel}"
+
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
+#: src/transaction/components/recurring-calendar-legend/recurring-calendar-legend.tsx
+msgid "Expected"
+msgstr "Очікується"
 
 #: src/budget/components/budget-limit-source-field/budget-limit-source-field.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
@@ -4748,10 +4753,6 @@ msgstr "Не дорівнює"
 msgid "It encrypts everything in Budgie. Pick one you'll remember but others won't guess."
 msgstr "Він шифрує все в Budgie. Виберіть такий, який ви запам'ятаєте, а інші не вгадають."
 
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
-msgid "It will no longer appear in the calendar."
-msgstr "Він більше не з’являтиметься в календарі."
-
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "It's the only key to your file. There's no account and no copy on a server, so there's nothing to reset it from."
 msgstr "Це єдиний ключ до вашого файлу. Немає ні акаунта, ні копії на сервері, тож нема звідки його скинути."
@@ -4854,10 +4855,6 @@ msgstr "Останні 7 днів"
 msgid "Last 90 days"
 msgstr "Останні 90 днів"
 
-#: src/settings/components/backup-row/backup-row.tsx
-msgid "Last created {lastBackupDate}"
-msgstr "Востаннє створено {lastBackupDate}"
-
 #: src/budget/components/budget-month-day-start-field/budget-month-day-start-field.tsx
 msgid "Last day of each month"
 msgstr "Останній день кожного місяця"
@@ -4873,6 +4870,10 @@ msgstr "Минулий місяць"
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
 msgid "last payment {formattedLast}"
 msgstr "останній платіж {formattedLast}"
+
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Last saved {lastBackupDate}"
+msgstr "Востаннє збережено: {lastBackupDate}"
 
 #: src/account/component/institution-connection-row/institution-connection-row.tsx
 msgid "Last successful sync · {lastSyncedTime}"
@@ -4918,7 +4919,7 @@ msgstr "Зникає з головної, підсумків і бюджетів
 msgid "Leaves your income"
 msgstr "Зникне з ваших доходів"
 
-#: src/budget/components/budget-setup-progress/budget-setup-progress.tsx
+#: src/budget/components/budget-setup-progress-content/budget-setup-progress-content.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
 msgid "Left"
 msgstr "Залишилось"
@@ -4959,6 +4960,7 @@ msgstr "Ліміт {limitAmount}"
 msgid "Limit {limitAmount} · above chart"
 msgstr "Ліміт {limitAmount} · вище графіка"
 
+#: src/app/budget-limit-changes.tsx
 #: src/budget/components/budget-limit-changes-row/budget-limit-changes-row.tsx
 #: src/budget/components/budget-limit-changes-sheet/budget-limit-changes-sheet.tsx
 msgid "Limit changes"
@@ -5282,15 +5284,11 @@ msgstr "Щомісяця"
 msgid "Monthly budget"
 msgstr "Місячний бюджет"
 
-#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
-msgid "Monthly Costs"
-msgstr "Місячні витрати"
-
 #: src/runway/component/runway-history-chart/runway-history-chart.tsx
 msgid "Monthly history"
 msgstr "Місячна історія"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/transaction/components/recurring-calendar-summary/recurring-calendar-summary.tsx
 msgid "Monthly total"
 msgstr "Місячний підсумок"
 
@@ -5474,6 +5472,10 @@ msgstr "Наступне поле"
 msgid "next month"
 msgstr "наступного місяця"
 
+#: src/transaction/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
+msgid "Next month"
+msgstr "Наступний місяць"
+
 #: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
 msgid "Next payment"
 msgstr "Наступний платіж"
@@ -5609,10 +5611,6 @@ msgstr "Немає відповідних транзакцій"
 msgid "No MCC codes available"
 msgstr "Немає доступних MCC-кодів"
 
-#: src/app/rule-mcc-selector.tsx
-msgid "No MCC codes found"
-msgstr "MCC-кодів не знайдено"
-
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No new transactions"
 msgstr "Нових транзакцій немає"
@@ -5638,9 +5636,12 @@ msgid "No receipt found"
 msgstr "Чек не знайдено"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
-msgid "No recurring payments detected"
-msgstr "Повторювані платежі не виявлено"
+msgid "No recurring payments in {displayMonthLabel}"
+msgstr "Немає регулярних платежів ({displayMonthLabel})"
+
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+msgid "No recurring payments on this day"
+msgstr "Цього дня немає регулярних платежів"
 
 #: src/@generic/component/selector-search-empty-state/selector-search-empty-state.tsx
 msgid "No results for “{query}”"
@@ -5728,7 +5729,6 @@ msgid "Not counted in net worth"
 msgstr "Не враховується в чистих активах"
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
-#: src/settings/components/backup-row/backup-row.tsx
 msgid "Not created yet"
 msgstr "Ще не створено"
 
@@ -5758,6 +5758,10 @@ msgstr "Не зараз"
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Not on any transactions. This can’t be undone."
 msgstr "Не використовується в жодній транзакції. Це неможливо скасувати."
+
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Not saved yet"
+msgstr "Ще не збережено"
 
 #: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx
 msgid "not set"
@@ -6143,7 +6147,7 @@ msgstr "перевитрата"
 msgid "Over"
 msgstr "Перевищено"
 
-#: src/budget/components/budget-setup-progress/budget-setup-progress.tsx
+#: src/budget/components/budget-setup-progress-content/budget-setup-progress-content.tsx
 #: src/budget/constant/budget-pace-status-label.constant.ts
 msgid "Over budget"
 msgstr "Понад бюджет"
@@ -6172,7 +6176,7 @@ msgstr "Загальний бюджет: {threshold}% витрачено"
 msgid "Overdrawn"
 msgstr "У мінусі"
 
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 msgid "Overdue"
 msgstr "Прострочено"
 
@@ -6326,6 +6330,10 @@ msgstr "Відсоток від суми плану без комісії"
 msgid "Period"
 msgstr "Період"
 
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
+msgid "Period summary"
+msgstr "Підсумок періоду"
+
 #: src/@generic/hook/use-contacts.hook.ts
 msgid "Permission to access contacts was denied."
 msgstr "Відмовлено в доступі до контактів."
@@ -6477,6 +6485,10 @@ msgstr "Натисніть і утримуйте, щоб запечатати"
 msgid "Previous field"
 msgstr "Попереднє поле"
 
+#: src/transaction/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
+msgid "Previous month"
+msgstr "Попередній місяць"
+
 #: src/transaction/components/statistics-change-label/statistics-change-label.tsx
 msgid "previous period"
 msgstr "попереднього періоду"
@@ -6489,7 +6501,7 @@ msgstr "Попередній період"
 msgid "Price {ageLabel} · {date}"
 msgstr "Ціна {ageLabel} · {date}"
 
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 msgid "Price changed"
 msgstr "Ціна змінилася"
 
@@ -6697,14 +6709,24 @@ msgstr "Записувати оплати карткою через Швидкі
 msgid "Record expense"
 msgstr "Записати витрату"
 
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
+#: src/transaction/components/recurring-calendar-legend/recurring-calendar-legend.tsx
+msgid "Recorded"
+msgstr "Зафіксовано"
+
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx
 #: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
 msgid "Recurring"
 msgstr "Регулярні"
 
-#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
-msgid "Recurring payments will appear here once patterns are detected from your transactions"
-msgstr "Повторювані платежі з’являться тут, щойно в ваших транзакціях буде виявлено закономірності"
+#: src/transaction/components/recurring-series-title-input/recurring-series-title-input.tsx
+msgid "Recurring payment name"
+msgstr "Назва регулярного платежу"
+
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+msgid "Recurring payments are detected automatically from your transactions."
+msgstr "Регулярні платежі визначаються автоматично на основі ваших транзакцій."
 
 #: src/categorize-inbox/components/categorize-inbox-group-refine-options/categorize-inbox-group-refine-options.tsx
 msgid "Refine"
@@ -6997,6 +7019,7 @@ msgstr "Запас"
 msgid "Runway needs 3 complete months of transactions to forecast your balance."
 msgstr "Для розрахунку запасу потрібно 3 повні місяці транзакцій."
 
+#: src/app/budget-safe-to-spend.tsx
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 msgid "Safe to spend"
 msgstr "Безпечно витрачати"
@@ -7041,10 +7064,6 @@ msgstr "Зберегти комісію"
 msgid "Save it"
 msgstr "Збережіть її"
 
-#: src/settings/components/backup-row/backup-row.tsx
-msgid "Save it to Files or another app."
-msgstr "Збережіть його у Файлах або іншому застосунку."
-
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 msgid "Save rule"
 msgstr "Зберегти правило"
@@ -7060,6 +7079,10 @@ msgstr "Збережіть автоматизацію. Budgie зіставить
 #: src/budget/components/budget-funds-section/budget-funds-section.tsx
 msgid "Save up for yearly bills a little each period so they never surprise you"
 msgstr "Відкладайте потроху кожен період на річні рахунки, щоб вони не стали сюрпризом"
+
+#: src/export/hook/use-backup-actions.hook.ts
+msgid "Saved to your chosen folder."
+msgstr "Збережено у вибраній папці."
 
 #: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
@@ -7256,6 +7279,10 @@ msgstr "Оберіть експортований XLSX-файл"
 msgid "Selected"
 msgstr "Вибрано"
 
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Send a copy"
+msgstr "Надіслати копію"
+
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Sending {fromCode}"
 msgstr "Відправлення {fromCode}"
@@ -7305,6 +7332,7 @@ msgstr "Передайте Суму і Продавця у вхідні дані
 msgid "Set an amount to continue"
 msgstr "Вкажіть суму, щоб продовжити"
 
+#: src/app/(main)/budget/fund.tsx
 #: src/budget/components/budget-funds-section/budget-funds-section.tsx
 msgid "Set aside"
 msgstr "Відкладено"
@@ -7620,14 +7648,14 @@ msgstr "Акції"
 msgid "Storage"
 msgstr "Сховище"
 
-#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
-msgid "Subscriptions"
-msgstr "Підписки"
-
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-learned-transfer-option/categorize-inbox-group-learned-transfer-option.tsx
 msgid "Suggested"
 msgstr "Запропоновані"
+
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
+msgid "Summary unavailable"
+msgstr "Підсумок недоступний"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Support"
@@ -7636,10 +7664,6 @@ msgstr "Підтримка"
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "Swap accounts"
 msgstr "Поміняти рахунки"
-
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
-msgid "Swipe left to dismiss this recurring payment."
-msgstr "Проведіть ліворуч, щоб приховати цей регулярний платіж."
 
 #: src/budget/components/budget-category-limit-deletable-row/budget-category-limit-deletable-row.tsx
 msgid "Swipe to remove this per-category cap from your budget."
@@ -8033,6 +8057,14 @@ msgstr "Цю резервну копію створено старішою ве�
 msgid "This backup was made by an older Budgie version and cannot be restored."
 msgstr "Цю резервну копію створено старішою версією Budgie, її не можна відновити."
 
+#: src/budget/components/budget-sheet-state/budget-sheet-state.tsx
+msgid "This budget may have been deleted."
+msgstr "Можливо, цей бюджет видалено."
+
+#: src/budget/components/budget-data-state/budget-data-state.tsx
+msgid "This budget may have been deleted. Go back to see your current budget."
+msgstr "Можливо, цей бюджет видалено. Поверніться, щоб переглянути поточний бюджет."
+
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "This capture looks similar to an existing transaction."
 msgstr "Цей запис схожий на наявну транзакцію."
@@ -8261,6 +8293,7 @@ msgstr "Відкласти в цьому періоді"
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 #: src/budget/components/budget-day-strip-key/budget-day-strip-key.tsx
 #: src/market-data/hook/use-market-chart-timeline.hook.ts
+#: src/transaction/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
 #: src/transaction/query/use-get-transaction-sections.query.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -8464,7 +8497,6 @@ msgid "Try a different merchant, amount, or date."
 msgstr "Спробуйте іншого продавця, суму або дату."
 
 #: src/app/contact-selector.tsx
-#: src/app/rule-mcc-selector.tsx
 msgid "Try a different search term"
 msgstr "Спробуйте інший пошуковий запит"
 
@@ -8693,10 +8725,6 @@ msgstr "Актуальний"
 msgid "Up to date · {lastSyncedLabel}"
 msgstr "Актуально · {lastSyncedLabel}"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-msgid "Upcoming"
-msgstr "Незабаром"
-
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Upcoming this period"
@@ -8800,6 +8828,10 @@ msgstr "Вартість"
 #: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
 msgid "View source transactions"
 msgstr "Переглянути вихідні транзакції"
+
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+msgid "View your payments in another month."
+msgstr "Перегляньте платежі в іншому місяці."
 
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
 msgid "Voice notes"
@@ -9075,6 +9107,12 @@ msgstr "Ваш поточний ключ відхилено. Вставте но
 msgid "Your data"
 msgstr "Ваші дані"
 
+#: src/budget/components/budget-data-state/budget-data-state.tsx
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
+#: src/budget/components/budget-sheet-state/budget-sheet-state.tsx
+msgid "Your data could not be loaded. Close this screen and try again."
+msgstr "Не вдалося завантажити дані. Закрийте цей екран і спробуйте ще раз."
+
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
 msgid "Your data is safe. Reading it failed this time."
 msgstr "Ваші дані в безпеці. Цього разу не вдалося їх прочитати."
@@ -9148,6 +9186,10 @@ msgstr "Ваші теги"
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Your transaction file is ready to share."
 msgstr "Ваш файл транзакцій готовий до поширення."
+
+#: src/budget/components/budget-data-state/budget-data-state.tsx
+msgid "Your transactions are not affected."
+msgstr "Це не впливає на ваші транзакції."
 
 #: src/sync/service/background-sync-session.service.ts
 msgid "Your transactions keep importing in the background"

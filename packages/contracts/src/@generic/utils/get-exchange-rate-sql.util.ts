@@ -36,7 +36,6 @@ export const getHistoricalExchangeRateSql = (defaultInstrumentId: number, instru
             FROM ${HistoricalExchangeRateEntityTable}
             WHERE ${HistoricalExchangeRateEntityTable.sourceInstrumentId} = ${instrumentIdRef}
               AND ${HistoricalExchangeRateEntityTable.targetInstrumentId} = ${defaultInstrumentId}
-              AND ${HistoricalExchangeRateEntityTable.deletedAt} IS NULL
             ORDER BY ${HistoricalExchangeRateEntityTable.rateDate} DESC
             LIMIT 1
         )
@@ -49,7 +48,6 @@ export const getInverseHistoricalExchangeRateSql = (defaultInstrumentId: number,
             FROM ${HistoricalExchangeRateEntityTable}
             WHERE ${HistoricalExchangeRateEntityTable.sourceInstrumentId} = ${defaultInstrumentId}
               AND ${HistoricalExchangeRateEntityTable.targetInstrumentId} = ${instrumentIdRef}
-              AND ${HistoricalExchangeRateEntityTable.deletedAt} IS NULL
             ORDER BY ${HistoricalExchangeRateEntityTable.rateDate} DESC
             LIMIT 1
         )

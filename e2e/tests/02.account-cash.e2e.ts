@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/02.account-cash.flow.yaml.
 import { expect } from 'e2e';
 
 import * as a from '../support/budgie/accounts.ts';

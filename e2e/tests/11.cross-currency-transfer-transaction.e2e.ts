@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/11.cross-currency-transfer-transaction.flow.yaml.
 import * as b from '../support/budgie/core.ts';
 import { test } from '../support/budgie/test.ts';
 import * as t from '../support/budgie/transactions.ts';

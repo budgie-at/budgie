@@ -76,7 +76,7 @@ account/
 
 ### Base Entity Columns
 
-All tables use `withBaseEntityTableColumns()` for standard columns:
+Entity tables use `withBaseEntityTableColumns()` for standard columns. Join and storage-only tables keep a natural primary key instead: `historical_exchange_rates` is `WITHOUT ROWID`, which exists only in its hand-written migration, so a generated rebuild of that table must keep it by hand.
 
 ```typescript
 import { withBaseEntityTableColumns } from '../@generic/utils/with-base-entity-table-columns.util';

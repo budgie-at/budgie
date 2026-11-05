@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/38.onboarding-first-run.flow.yaml.
 import * as b from '../support/budgie/core.ts';
 import { test } from '../support/budgie/test.ts';
 

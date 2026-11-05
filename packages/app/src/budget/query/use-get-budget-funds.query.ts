@@ -10,6 +10,7 @@ import type { BudgetSinkingFundEntityInterface } from '@budgie/contracts';
 interface UseGetBudgetFundsResult {
     readonly funds: readonly BudgetSinkingFundEntityInterface[];
     readonly isLoading: boolean;
+    readonly isError: boolean;
 }
 
 const EMPTY_FUNDS: readonly BudgetSinkingFundEntityInterface[] = [];
@@ -24,8 +25,8 @@ export const useGetBudgetFundsQuery = (budgetId: number): UseGetBudgetFundsResul
     const result = useLiveAtomValue(budgetFundsAtom(budgetId));
 
     if (AsyncResult.isInitial(result)) {
-        return { funds: EMPTY_FUNDS, isLoading: true };
+        return { funds: EMPTY_FUNDS, isLoading: true, isError: false };
     }
 
-    return { funds: AsyncResult.getOrElse(result, () => EMPTY_FUNDS), isLoading: false };
+    return { funds: AsyncResult.getOrElse(result, () => EMPTY_FUNDS), isLoading: false, isError: AsyncResult.isFailure(result) };
 };

@@ -31,7 +31,7 @@ export { byId, done, retry };
 /** iPhone 17 Pro, the one device the suite leases, in the points `boundingBox()` reports. */
 const VIEWPORT_HEIGHT = 874;
 
-/** Maestro's text selectors are case-insensitive regexes matching the whole string; this is the exact-text form most flows mean. */
+/** Text selectors are case-insensitive regexes matching the whole string; this is the exact-text form most tests mean. */
 export const byText = (screen: Screen, text: string | RegExp): Locator => screen.getByText(text).first();
 
 /** Times a named phase; the timings land in the run log. */
@@ -68,22 +68,22 @@ export async function expectText(ctx: Ctx, text: string | RegExp, timeout?: numb
     await expect(byText(ctx.screen, text)).toBeVisible(timeout === undefined ? undefined : { timeout });
 }
 
-/** Maestro's `scrollUntilVisible` on a testID (direction is where the content goes: `down` reveals what is below). A visible node does not scroll. */
+/** Scrolls until a testID is visible (direction is where the content goes: `down` reveals what is below). A visible node does not scroll. */
 export async function scrollTo(ctx: Ctx, testId: string, direction: 'up' | 'down' = 'down'): Promise<void> {
     await scrollToLocator(ctx.screen, byId(ctx.screen, testId), direction);
 }
 
-/** Maestro's `retryTapIfNoChange` on a testID. */
+/** Taps a testID until `next` holds. */
 export async function tapUntil(ctx: Ctx, testId: string, next: () => Promise<void>): Promise<void> {
     await tapLocatorUntil(byId(ctx.screen, testId), next);
 }
 
-/** Maestro's `centerElement`: drags `testId` out of the bottom band where the floating action button and tab bar cover it, along a column clear of the settings switches. */
+/** Drags `testId` out of the bottom band where the floating action button and tab bar cover it, along a column clear of the settings switches. */
 export async function scrollToCentered(ctx: Ctx, testId: string): Promise<void> {
     await scrollToCenteredId(ctx, testId, { viewportHeight: VIEWPORT_HEIGHT, bottomBandPx: 314, dragX: 200 });
 }
 
-/** Maestro's `scrollUntilVisible … centerElement: true`: brings `testId` near the middle, clear of the floating tab bar and header. 200 lets the last row of a list rest at 621 without its bounce reading as movement. */
+/** Brings `testId` near the middle, clear of the floating tab bar and header. 200 lets the last row of a list rest at 621 without its bounce reading as movement. */
 export async function scrollToCentre(ctx: Ctx, testId: string, direction: 'up' | 'down' = 'down'): Promise<void> {
     await scrollToMiddle(ctx, testId, { viewportHeight: VIEWPORT_HEIGHT, direction, tolerancePx: 200, dragX: 201 });
 }
@@ -126,9 +126,8 @@ export interface StartOptions {
 const primed = new Set<string>();
 
 /**
- * Per-test device state, the Maestro shard's `pre-flow-command` and
- * `prime-deep-links` folded together: fixtures staged in the app container,
- * the flow's database seeded, the app launched fresh on it.
+ * Per-test device state: fixtures staged in the app container, the test's
+ * database seeded, the app launched fresh on it.
  */
 export class Budgie {
     readonly api: SimlockApi = simlockApiFromEnv();

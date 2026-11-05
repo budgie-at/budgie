@@ -143,6 +143,7 @@ import { WalletCaptureTransactionService } from '../../wallet-capture/service/wa
 import { WidgetSnapshotBuilderService } from '../../widget/service/widget-snapshot-builder.service';
 import { WidgetSnapshotService } from '../../widget/service/widget-snapshot.service';
 import { DatabaseLifecycleService } from '../drizzle/service/database-lifecycle.service';
+import { DatabaseMaintenanceService } from '../drizzle/service/database-maintenance.service';
 import { DatabaseMigrationService } from '../drizzle/service/database-migration.service';
 import { DatabaseRekeyService } from '../drizzle/service/database-rekey.service';
 import { AppResetService } from '../service/app-reset.service';
@@ -180,6 +181,7 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     Workload.layer,
     DatabaseLifecycleService.layer,
     DatabaseMigrationService.layer,
+    DatabaseMaintenanceService.layer,
     DatabaseRekeyService.layer,
     WidgetSnapshotBuilderService.layer,
     WidgetSnapshotService.layer,
@@ -294,7 +296,6 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     WalletCaptureTransactionService.layer,
     WalletCaptureImportService.layer
 ).pipe(Layer.provideMerge(Layer.mergeAll(syncWorkloadLayer, syncFileReaderLayer)), Layer.provide(ledgerPortsLayer));
-
 export const appServicesLayer = appServicesWithoutDrainerLayer.pipe(
     Layer.provideMerge(transferConsolidationDrainerLayer.pipe(Layer.provide(ledgerPortsLayer)))
 );

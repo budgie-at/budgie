@@ -1,20 +1,17 @@
-import { Redirect } from 'expo-router';
+import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { LoadingScreen } from '../../../@generic/component/loading-screen/loading-screen';
 import { BudgetDetails } from '../../../budget/components/budget-details/budget-details';
+import { BudgetPageState } from '../../../budget/components/budget-page-state/budget-page-state';
 import { useGetActiveBudgetQuery } from '../../../budget/query/use-get-active-budget.query';
 
 export default function BudgetEntryScreen() {
-    const { budget, isLoading } = useGetActiveBudgetQuery();
-
-    if (isLoading) {
-        return <LoadingScreen />;
-    }
+    const { t } = useLingui();
+    const { budget, isLoading, isError } = useGetActiveBudgetQuery();
 
     if (!isDefined(budget)) {
-        return <Redirect href="/" />;
+        return <BudgetPageState title={t`Budget`} isLoading={isLoading} isError={isError} />;
     }
 
     return <BudgetDetails budget={budget} />;

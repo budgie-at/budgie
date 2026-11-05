@@ -8,9 +8,16 @@ interface Props {
     readonly isLoading: boolean;
     readonly className?: string;
     readonly containerClassName?: string;
+    readonly loadingIndicator?: ReactNode;
 }
 
-export const LoadingContent = ({ children, isLoading, className, containerClassName }: Props) => {
+export const LoadingContent = ({
+    children,
+    isLoading,
+    className,
+    containerClassName,
+    loadingIndicator = <ActivityIndicator size="small" style={StyleSheet.absoluteFill} />
+}: Props) => {
     const contentPointerEvents = isLoading ? 'none' : 'auto';
     const contentImportantForAccessibility = isLoading ? 'no-hide-descendants' : 'auto';
     const accessibilityState = { busy: isLoading };
@@ -25,7 +32,7 @@ export const LoadingContent = ({ children, isLoading, className, containerClassN
             >
                 {children}
             </View>
-            {isLoading ? <ActivityIndicator size="small" style={StyleSheet.absoluteFill} /> : null}
+            {isLoading ? loadingIndicator : null}
         </View>
     );
 };

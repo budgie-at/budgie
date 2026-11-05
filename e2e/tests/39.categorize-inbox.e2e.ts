@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/39.categorize-inbox.flow.yaml.
 import { expect } from 'e2e';
 
 import * as b from '../support/budgie/core.ts';

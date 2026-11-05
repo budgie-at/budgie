@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/12.account-archive-and-expense-convert-to-transfer.flow.yaml.
 import { expect } from 'e2e';
 
 import * as a from '../support/budgie/accounts.ts';

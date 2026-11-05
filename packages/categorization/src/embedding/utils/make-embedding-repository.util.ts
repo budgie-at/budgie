@@ -1,5 +1,5 @@
 import { transactionFilters, Db, MccCategoryEntityTable, TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
-import { and, eq, getTableName, inArray, isNull, sql } from 'drizzle-orm';
+import { and, eq, inArray, isNull, sql } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import { isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
@@ -36,7 +36,7 @@ const selectStaleIds = <TUpsert>(config: EmbeddingQueryConfigInterface<TUpsert>,
             )
     );
 
-export const makeEmbeddingRepository = <TUpsert extends { readonly dimensions: number }>(
+export const makeEmbeddingRepository = <TUpsert extends { readonly dimensions: number; readonly embedding: Uint8Array }>(
     config: EmbeddingQueryConfigInterface<TUpsert>
 ) => ({
     findSimilarTags: (queryEmbedding: Uint8Array, { vecLimit, distanceThreshold, categoryId, tagLimit }: SimilarTagsParamsInterface) =>
@@ -64,15 +64,21 @@ export const makeEmbeddingRepository = <TUpsert extends { readonly dimensions: n
             return null;
         }
 
-        const [row] = yield* Db.query(db => config.upsertRow(db, params));
+        const row = yield* Db.transaction(
+            Effect.gen(function* () {
+                const [upserted] = yield* Db.query(db => config.upsertRow(db, params));
 
-        yield* Db.query(db => db.$client.unsafe(`DELETE FROM ${config.vecTableName} WHERE rowid = ?`, [row.id]).raw);
-        yield* Db.query(
-            db =>
-                db.$client.unsafe(
-                    `INSERT INTO ${config.vecTableName}(rowid, embedding) SELECT id, embedding FROM ${getTableName(config.embeddingTable)} WHERE id = ?`,
-                    [row.id]
-                ).raw
+                yield* Db.query(db => db.$client.unsafe(`DELETE FROM ${config.vecTableName} WHERE rowid = ?`, [upserted.id]).raw);
+                yield* Db.query(
+                    db =>
+                        db.$client.unsafe(`INSERT INTO ${config.vecTableName}(rowid, embedding) VALUES (?, ?)`, [
+                            upserted.id,
+                            convertEmbeddingToJson(params.embedding)
+                        ]).raw
+                );
+
+                return upserted;
+            })
         );
 
         return row.id;

@@ -1,5 +1,5 @@
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 import Animated, { FadeInUp, FadeOutDown } from 'react-native-reanimated';
 
 import { EmptyFn, isDefined } from '@rnw-community/shared';
@@ -22,9 +22,10 @@ export const TagsSelectorDoneButton = ({ count, onPress, hint, testID }: Props) 
         <Animated.View
             entering={FadeInUp.springify()}
             exiting={FadeOutDown.duration(EXIT_DURATION_MS)}
-            className="absolute inset-x-0 bottom-0 items-center bg-linear-to-b from-surface/0 via-surface via-40% to-surface pt-3xl pb-safe-offset-[4px]"
+            className="absolute inset-x-0 bottom-0 items-center bg-surface pt-md pb-safe-offset-[4px]"
             pointerEvents="box-none"
         >
+            <View pointerEvents="none" className="absolute inset-x-0 bottom-full h-[24px] bg-linear-to-b from-surface/0 to-surface" />
             {isDefined(hint) ? <Text className="text-secondary-foreground pb-md text-[13px]">{hint}</Text> : null}
             <HapticPressable
                 onPress={onPress}

@@ -1,4 +1,3 @@
-// Port of tests/app-tests/flows/05.category.flow.yaml.
 import * as a from '../support/budgie/accounts.ts';
 import * as c from '../support/budgie/categories.ts';
 import * as b from '../support/budgie/core.ts';
