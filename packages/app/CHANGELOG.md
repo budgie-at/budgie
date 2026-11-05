@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.158.0](https://github.com/budgie-at/budgie/compare/v6.157.0...v6.158.0) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** expand contact recovery for accessibility text ([f7b1203](https://github.com/budgie-at/budgie/commit/f7b120300023cd28922309caa8da15aa8ce105e2))
+* **app:** let contact search grow with text size ([d963916](https://github.com/budgie-at/budgie/commit/d963916423b6e3ff558c75bc2cc600d650fecbb7))
+* **app:** render the contact error glyph ([37454b5](https://github.com/budgie-at/budgie/commit/37454b5c75f55e7d12d003af11f6ed429b9bd436))
+* **app:** restore Expo contact reads and limited recovery ([c8e98ab](https://github.com/budgie-at/budgie/commit/c8e98abe3a6273b00abcd41a8c0b140ec45887d1))
+
+### Features
+
+* **app:** finish contact selector states ([3906a9d](https://github.com/budgie-at/budgie/commit/3906a9da0d4817bc163cc4dc3e15e02937b26940))
+* **app:** refine contact recovery spacing ([3526922](https://github.com/budgie-at/budgie/commit/3526922017a5a5edc5e74d72ce683f5063d3db9a))
+
+
+# [6.157.0](https://github.com/budgie-at/budgie/compare/v6.156.0...v6.157.0) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** adapt voice review to accessibility text ([2441ffc](https://github.com/budgie-at/budgie/commit/2441ffcbd6b5fbc57288d4dc97459466d045b37c))
+* **app:** balance voice review accessibility typography ([df99dba](https://github.com/budgie-at/budgie/commit/df99dba51a58a10caec67a0b49ca83f79bc8a695))
+
+### Features
+
+* **app:** emphasize voice recovery in compact empty sheet ([6163c64](https://github.com/budgie-at/budgie/commit/6163c64ec1348f34d9de32e7ebb9977b8e26bdff))
+* **app:** finish voice review sheet ([b15f694](https://github.com/budgie-at/budgie/commit/b15f694e9383bac04e9c32142f86a2078426b9ea))
+
+
 # [6.156.0](https://github.com/budgie-at/budgie/compare/v6.155.0...v6.156.0) (2026-11-05)
 
 ### Bug Fixes
