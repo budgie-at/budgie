@@ -15,6 +15,7 @@ interface Props {
 }
 
 const VISIBLE_TAG_COUNT = 2;
+const NO_BREAK_SPACE = '\u00A0';
 
 export const TransactionDateTagsRow = ({ onDatePress }: Props) => {
     const { t } = useLingui();
@@ -23,10 +24,10 @@ export const TransactionDateTagsRow = ({ onDatePress }: Props) => {
     const tagIds = useWatch({ control, name: 'tagIds' });
     const { tags } = useGetTagByIdsQuery(tagIds);
     const dateLabel = useTransactionDateLabel();
-    const tagTitles = (tags ?? []).map(tag => tag.title);
+    const tagTitles = (tags ?? []).map(tag => tag.title.replaceAll(' ', NO_BREAK_SPACE));
     const hiddenTagCount = tagTitles.length - VISIBLE_TAG_COUNT;
     const visibleTags = tagTitles.slice(0, VISIBLE_TAG_COUNT).join(', ');
-    const tagsValue = isPositiveNumber(hiddenTagCount) ? `${visibleTags} +${hiddenTagCount}` : visibleTags;
+    const tagsValue = isPositiveNumber(hiddenTagCount) ? `${visibleTags}${NO_BREAK_SPACE}+${hiddenTagCount}` : visibleTags;
 
     const handleTagsPress = () => {
         openTagsSelector({ initialTagIds: tagIds, enablePrimarySelection: true }, selectedTagIds => {

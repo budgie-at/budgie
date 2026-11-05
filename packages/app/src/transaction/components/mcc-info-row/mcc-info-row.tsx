@@ -1,10 +1,9 @@
-import { Text, useWindowDimensions, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-size-multiplier.constant';
 import { useGetMccCategoryByIdQuery } from '../../../mcc-category/query/use-get-mcc-category-by-id.query';
-import { TRANSACTION_LARGE_TEXT_SCALE } from '../../constant/transaction-large-text-scale.constant';
 
 import type { ReactNode } from 'react';
 
@@ -18,14 +17,13 @@ const MERCHANT_MAX_FONT_SCALE = 1.6;
 
 export const MccInfoRow = ({ transactionTitle, mccCategoryId, children }: Props) => {
     const { mccCategory } = useGetMccCategoryByIdQuery(mccCategoryId);
-    const titleLineCount = useWindowDimensions().fontScale >= TRANSACTION_LARGE_TEXT_SCALE ? 3 : 2;
 
     return (
         <View className="items-center gap-y-[8px] self-stretch">
             {isNotEmptyString(transactionTitle) ? (
                 <Text
                     className="px-[16px] text-center text-[17px] leading-[22px] font-medium text-primary"
-                    numberOfLines={titleLineCount}
+                    numberOfLines={2}
                     maxFontSizeMultiplier={MERCHANT_MAX_FONT_SCALE}
                 >
                     {transactionTitle}

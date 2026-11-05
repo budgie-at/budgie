@@ -29,7 +29,7 @@ export const TransactionKeypad = (props: Props) => {
     const { rowStyle, digitsStyle } = getTransactionKeypadLayout(fontScale);
 
     return (
-        <View className="flex-1 gap-[8px]" style={digitsStyle}>
+        <View className="flex-1 gap-[6px]" style={digitsStyle}>
             {DIGIT_ROWS.map(row => (
                 <View key={row.join('')} className="flex-1 flex-row gap-md" style={rowStyle}>
                     {row.map(digit => (
