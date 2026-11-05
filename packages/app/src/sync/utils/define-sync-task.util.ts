@@ -1,3 +1,4 @@
+import { RecurringRefreshService } from '@budgie/recurring';
 import * as Effect from 'effect/Effect';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
@@ -20,8 +21,11 @@ export const defineSyncTask = <Identifier extends AppServices>(
             Effect.gen(function* () {
                 const workload = yield* Workload;
                 const service = yield* serviceTag;
+                const recurringRefreshService = yield* RecurringRefreshService;
 
                 const isSuccess = yield* workload.run(service.sync(Date.now() + BACKGROUND_SYNC_RUN_BUDGET_MS));
+
+                yield* Effect.ignore(workload.run(recurringRefreshService.matchRecent(new Date())));
 
                 return isSuccess ? BackgroundTask.BackgroundTaskResult.Success : BackgroundTask.BackgroundTaskResult.Failed;
             })

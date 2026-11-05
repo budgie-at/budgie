@@ -2,6 +2,7 @@ import {
     ExchangeRateEntityTable,
     HistoricalExchangeRateEntityTable,
     RecurringSeriesEntityTable,
+    RecurringSeriesTransactionEntityTable,
     SettingsEntityTable
 } from '@budgie/contracts';
 import { RecurringService } from '@budgie/recurring';
@@ -22,7 +23,8 @@ export const recurringCalendarAtom = databaseQueryFamily(
         ExchangeRateEntityTable,
         HistoricalExchangeRateEntityTable,
         SettingsEntityTable,
-        RecurringSeriesEntityTable
+        RecurringSeriesEntityTable,
+        RecurringSeriesTransactionEntityTable
     ],
     RecurringService,
     (recurringService, [year, month, nowTime]: readonly [number, number, number]) =>

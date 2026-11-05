@@ -77,7 +77,7 @@ import {
     InstrumentDailyMarketPriceRepository,
     InstrumentMarketDataJobRepository
 } from '@budgie/market';
-import { RecurringService } from '@budgie/recurring';
+import { RecurringRefreshService, RecurringService } from '@budgie/recurring';
 import { RuleEngineService, RuleMatcherService, RuleRepository, RuleService, TransactionRuleRepository } from '@budgie/rules';
 import {
     AtmCashMoveService,
@@ -169,7 +169,7 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     BudgetSinkingFundRepository.layer,
     BudgetLimitChangeRepository.layer,
     BudgetFundSpendService.layer,
-    RecurringService.layer,
+    Layer.mergeAll(RecurringService.layer, RecurringRefreshService.layer),
     AccountBalanceIncrementalService.layer,
     AccountTransferConversionService.layer,
     AccountService.layer,
