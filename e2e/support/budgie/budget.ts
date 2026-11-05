@@ -17,9 +17,8 @@ import {
     type Ctx
 } from './core.ts';
 
-/** `openLink: budgie://budget` + the empty budget widget the flows tap to start a budget; a tap Home swallows while it settles is repeated. */
 export async function openEmptyBudget(ctx: Ctx): Promise<void> {
-    await openLink(ctx, 'budgie://budget');
+    await openLink(ctx, 'budgie:///');
     await expectId(ctx, 'BudgetWidget.EmptyState', 3_000);
     await tapUntil(ctx, 'BudgetWidget.EmptyState', () => expectId(ctx, 'BudgetCreate.Template.Empty', 5_000));
 }

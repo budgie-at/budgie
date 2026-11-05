@@ -9,10 +9,10 @@ export const resolveBudgetQueryResult = <E>(
     result: AsyncResult.AsyncResult<BudgetEntityInterface | null | undefined, E>
 ): BudgetQueryResultInterface => {
     if (AsyncResult.isInitial(result)) {
-        return { budget: null, isLoading: true };
+        return { budget: null, isLoading: true, isError: false };
     }
 
     const budget = AsyncResult.getOrElse(result, () => null);
 
-    return { budget: isDefined(budget) ? budget : null, isLoading: false };
+    return { budget: isDefined(budget) ? budget : null, isLoading: false, isError: AsyncResult.isFailure(result) };
 };
