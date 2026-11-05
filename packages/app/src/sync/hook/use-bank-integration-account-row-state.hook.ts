@@ -37,9 +37,7 @@ export const useBankIntegrationAccountRowState = (
     const liveSyncLabel = capabilities.supportsLiveSync && isDefined(syncState) ? (syncIssueLabels[syncState] ?? '') : '';
     const stateLabel = capabilities.supportsFileImport && sync?.enabled === false ? t`Imports off` : liveSyncLabel;
 
-    const stateLabels = [hasFailed ? t`Sync failed` : '', stateLabel, account.isActive ? '' : t`Hidden from Home`]
-        .filter(isNotEmptyString)
-        .join(' · ');
+    const stateLabels = [stateLabel, account.isActive ? '' : t`Hidden from Home`].filter(isNotEmptyString).join(' · ');
     const identityLabel =
         integration.provider === ExternalSourceEnum.BINANCE ? '' : getAccountIdentityLabel(account.instrument.code, account.iban);
 

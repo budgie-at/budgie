@@ -1,4 +1,4 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
 import { PrivatbankSyncService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -12,6 +12,7 @@ export const CreatePrivatbankAccount = () => {
     const { t } = useLingui();
 
     const config: CreateFileBankAccountConfigInterface = {
+        provider: ExternalSourceEnum.PRIVATBANK,
         mimeType: XLSX_MIME_TYPE,
         title: t`Import Privatbank`,
         description: t`One-time import from a Privat24 statement — this is not a live sync, and each export covers a single card or account`,

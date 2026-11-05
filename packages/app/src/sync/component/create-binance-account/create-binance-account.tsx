@@ -1,3 +1,4 @@
+import { ExternalSourceEnum } from '@budgie/contracts';
 import { BinanceSyncService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -5,29 +6,27 @@ import { useReducer } from 'react';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/component/button/button';
+import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
+import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { CreateBinanceAccountActionTypeEnum } from '../../enum/create-binance-account-action-type.enum';
 import { SetupStepEnum } from '../../enum/setup-step.enum';
 import { useSyncAccountSetupFlow } from '../../hook/use-sync-account-setup-flow.hook';
 import { createBinanceAccountReducer } from '../../utils/create-binance-account-reducer.util';
 import { toastBinanceKeyPermissionsError } from '../../utils/toast-binance-key-permissions-error.util';
-import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
-import { BinanceParkedAssetsNotice } from '../binance-parked-assets-notice/binance-parked-assets-notice';
 import { KeySecretInputStep } from '../key-secret-input-step/key-secret-input-step';
-import { SyncAccountSetupPage } from '../sync-account-setup-page/sync-account-setup-page';
+import { SyncAccountsStep } from '../sync-accounts-step/sync-accounts-step';
+import { SyncParkedAccountsSection } from '../sync-parked-accounts-section/sync-parked-accounts-section';
+import { SyncSetupPage } from '../sync-setup-page/sync-setup-page';
 
 import { CreateBinanceAccountSelector } from './create-binance-account.selector';
+
+const INITIAL_STATE = { step: SetupStepEnum.TOKEN, apiKey: '', apiSecret: '', parkedPreviews: [] };
 
 export const CreateBinanceAccount = () => {
     const { t } = useLingui();
 
-    const [{ step, apiKey, apiSecret, parkedPreviews }, dispatch] = useReducer(createBinanceAccountReducer, {
-        step: SetupStepEnum.TOKEN,
-        apiKey: '',
-        apiSecret: '',
-        parkedPreviews: []
-    });
+    const [{ step, apiKey, apiSecret, parkedPreviews }, dispatch] = useReducer(createBinanceAccountReducer, INITIAL_STATE);
 
     const handleApiKeyChange = (value: string) => {
         dispatch({ type: CreateBinanceAccountActionTypeEnum.API_KEY_CHANGED, apiKey: value });
@@ -68,35 +67,51 @@ export const CreateBinanceAccount = () => {
         );
     };
 
-    let pageContent = (
-        <>
-            <AccountSelectionStep {...accountSelection} />
-            <BinanceParkedAssetsNotice parkedPreviews={parkedPreviews} />
-        </>
-    );
-    let footer = <Button onPress={handleSetupSync} disabled={isStartSyncDisabled} content={t`Start Sync`} />;
-
-    if (step === SetupStepEnum.TOKEN) {
-        pageContent = (
-            <KeySecretInputStep
-                apiKey={apiKey}
-                apiSecret={apiSecret}
-                onApiKeyChange={handleApiKeyChange}
-                onApiSecretChange={handleApiSecretChange}
-            />
-        );
-        footer = <Button onPress={handleFetchAccounts} disabled={isLoading} content={t`Fetch Accounts`} />;
-    }
+    const isCredentialsStep = step === SetupStepEnum.TOKEN;
+    const footerLabel = isCredentialsStep ? t`Fetch accounts` : t`Start sync`;
+    const handleFooterPress = isCredentialsStep ? handleFetchAccounts : handleSetupSync;
+    const isFooterDisabled = isCredentialsStep ? isLoading : isStartSyncDisabled;
+    const footerTestID = isCredentialsStep
+        ? CreateBinanceAccountSelector.FetchAccountsButton
+        : CreateBinanceAccountSelector.StartSyncButton;
+    const description = isCredentialsStep ? t`Sync your Binance balances and transactions` : '';
 
     return (
-        <SyncAccountSetupPage
+        <SyncSetupPage
             title={t`Connect Binance`}
-            description={t`Sync your Binance balances and transactions`}
+            description={description}
             onGoBack={handleGoBack}
-            footer={footer}
-            scrollViewTestID={CreateBinanceAccountSelector.ScrollView}
+            footerButton={
+                <PillButton
+                    label={footerLabel}
+                    onPress={handleFooterPress}
+                    isDisabled={isFooterDisabled}
+                    isLoading={isLoading}
+                    testID={footerTestID}
+                />
+            }
+            testID={CreateBinanceAccountSelector.ScrollView}
         >
-            {pageContent}
-        </SyncAccountSetupPage>
+            {isCredentialsStep ? (
+                <KeySecretInputStep
+                    apiKey={apiKey}
+                    apiSecret={apiSecret}
+                    onApiKeyChange={handleApiKeyChange}
+                    onApiSecretChange={handleApiSecretChange}
+                />
+            ) : (
+                <>
+                    <SyncAccountsStep
+                        {...accountSelection}
+                        logo={<BankLogo bankProvider={ExternalSourceEnum.BINANCE} size={36} />}
+                        footer={t`Choose what to track. Balances and history come straight from Binance.`}
+                    />
+                    <SyncParkedAccountsSection
+                        previews={parkedPreviews}
+                        footer={t`Binance has no market price for these assets, so they are not added as accounts and are skipped from your balance.`}
+                    />
+                </>
+            )}
+        </SyncSetupPage>
     );
 };

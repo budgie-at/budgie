@@ -1017,6 +1017,7 @@
                 "**/*.repository.ts",
                 "**/*.layer.ts",
                 "packages/sync/src/core/utils/make-*sync-service.util.ts",
+                "packages/sync/src/core/utils/make-polling-sync-account-continuation.util.ts",
                 "packages/consolidation/src/auto/utils/make-consolidation-family-strategy.util.ts"
             ],
             "rules": {

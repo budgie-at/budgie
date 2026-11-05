@@ -6,6 +6,8 @@ import type * as HttpClient from 'effect/http/HttpClient';
 
 export interface PollingSyncServiceDefinitionInterface extends SyncServiceDefinitionInterface {
     readonly rateLimitMs: number;
+    readonly forwardSyncStaleThresholdMs?: number;
+    readonly isBackwardForegroundOnly?: boolean;
     readonly shouldRequestSyncWhenEnabled?: boolean;
     readonly executeSyncBatch: (
         sync: SyncEntityInterface,

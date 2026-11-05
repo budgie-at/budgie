@@ -63,6 +63,8 @@ vi.mock('expo-app-intents', async () => {
     return walletCaptureNativeStub;
 });
 
+import { enableBankingStub } from '../enable-banking/enable-banking-stub';
+import { testSigner } from '../enable-banking/test-sync-request-signer';
 import { walletCaptureNativeStub } from '../wallet-capture/wallet-capture-app-intents.stub';
 
 import { mockServer } from './mock-server';
@@ -73,6 +75,8 @@ beforeAll(() => {
 
 beforeEach(() => {
     walletCaptureNativeStub.reset();
+    testSigner.reset();
+    enableBankingStub.reset();
     if (!isDefined(backupDatabasePath)) {
         return Effect.runPromise(resetTestDb(testDb));
     }

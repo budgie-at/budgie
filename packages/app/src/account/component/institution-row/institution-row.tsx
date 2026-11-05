@@ -8,6 +8,7 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
@@ -15,7 +16,6 @@ import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-am
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { BANK_PROVIDER_TITLE } from '../../constant/bank-provider-title.constant';
 import { getBankIntegrationTitle } from '../../utils/get-bank-integration-title.util';
-import { InstitutionMark } from '../institution-mark/institution-mark';
 import { InstitutionRowDetail } from '../institution-row-detail/institution-row-detail';
 import { InstitutionRowTotal } from '../institution-row-total/institution-row-total';
 
@@ -47,6 +47,7 @@ export const InstitutionRow = ({ institution }: Props) => {
     const accountsCountLabel = accounts.every(account => account.type === AccountTypeEnum.CRYPTO_SYNC)
         ? t({ message: plural(accountsCount, { one: '# asset', other: '# assets' }) })
         : t({ message: plural(accountsCount, { one: '# account', other: '# accounts' }) });
+    const bankName = label ?? title;
     const accessibilityLabel = [title, protectAmount(total, defaultInstrument.symbol), accountsCountLabel].join(', ');
 
     return (
@@ -57,7 +58,7 @@ export const InstitutionRow = ({ institution }: Props) => {
             className={rowVariants({ isStacked })}
             testID={InstitutionRowSelector.Row(integrationId)}
         >
-            <InstitutionMark provider={provider} title={title} />
+            <BankLogo bankProvider={provider} bankName={bankName} size={44} />
 
             <View className="min-w-0 flex-1 gap-y-xxs">
                 <Text

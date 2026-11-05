@@ -1,7 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { ReactElement } from 'react';
-import { View } from 'react-native';
 
 import { EmptyFn } from '@rnw-community/shared';
 
@@ -63,5 +62,5 @@ export const CreateFileBankAccountFooter = ({
         )
     };
 
-    return <View className="gap-md pt-xl px-7xl">{footerButtons[step]}</View>;
+    return footerButtons[step];
 };

@@ -133,6 +133,7 @@ import { syncWorkloadLayer } from '../../sync/layer/sync-workload.layer';
 import { transferConsolidationDrainerLayer } from '../../sync/layer/transfer-consolidation-drainer.layer';
 import { AppDataSyncService } from '../../sync/service/app-data-sync.service';
 import { BackgroundSyncSessionService } from '../../sync/service/background-sync-session.service';
+import { EnableBankingConnectionService } from '../../sync/service/enable-banking-connection.service';
 import { TagService } from '../../tag/service/tag.service';
 import { PatternCacheService } from '../../transaction/service/pattern-cache/pattern-cache.service';
 import { RepeatedTransactionService } from '../../transaction/service/repeated-transaction.service';
@@ -153,9 +154,7 @@ const ledgerWorkloadLayer = Layer.effect(
     LedgerWorkload,
     Effect.map(Workload, workload => LedgerWorkload.of({ runForeground: workload.runForeground }))
 ).pipe(Layer.provide(Workload.layer));
-
 const ledgerPortsLayer = Layer.mergeAll(ledgerWorkloadLayer, p2pTransferTitleResolverLayer);
-
 export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     AccountRepository.layer,
     AccountBalanceRepository.layer,
@@ -252,6 +251,7 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     PrivatbankCategoryMatcherService.layer,
     MonobankSyncService.layer,
     BinanceSyncService.layer,
+    EnableBankingConnectionService.layer,
     ErsteSyncService.layer,
     PrivatbankSyncService.layer,
     SyncProviderRegistryService.layer,

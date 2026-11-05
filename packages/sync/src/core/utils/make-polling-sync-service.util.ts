@@ -28,7 +28,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
     const syncIntegrationTokenService = yield* SyncIntegrationTokenService;
     const rateGate = yield* Effect.provide(PollingSyncRateGate, Layer.fresh(PollingSyncRateGate.layer));
     const attemptSemaphore = yield* Semaphore.make(1);
-    const forwardSyncStaleThresholdMs = 2 * 60 * 1000;
+    const forwardSyncStaleThresholdMs = definition.forwardSyncStaleThresholdMs ?? 2 * 60 * 1000;
     const syncErrorThreshold = 3;
     const processedForwardSyncIds = new Set<number>();
     const exhaustedSyncIds = new Set<number>();
@@ -54,7 +54,8 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         syncIntegrationTokenService.resolveAccountToken(definition.provider, sync.accountId);
 
     const getNextPendingSync = Effect.fnUntraced(function* () {
-        const backwardSyncs = yield* syncRepository.getPendingBackwardSync(definition.provider);
+        const isBackwardSkipped = definition.isBackwardForegroundOnly === true && Number.isFinite(runDeadlineAtMs);
+        const backwardSyncs = isBackwardSkipped ? [] : yield* syncRepository.getPendingBackwardSync(definition.provider);
         const forwardSyncs = yield* syncRepository.getPendingForwardSync(definition.provider, forwardSyncStaleThresholdMs);
         const nowMs = yield* Clock.currentTimeMillis;
         let pendingSync: SyncEntityInterface | null = null;

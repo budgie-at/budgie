@@ -1,4 +1,4 @@
-import { and, count, eq, getTableColumns, inArray, isNull, notInArray } from 'drizzle-orm';
+import { and, count, eq, getTableColumns, inArray, isNull, ne, notInArray, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -118,6 +118,22 @@ export class AccountRepository extends Context.Service<AccountRepository>()('@bu
                         .values({ externalId, accountId })
                         .onConflictDoUpdate({ target: AccountExternalIdEntityTable.externalId, set: { accountId } })
                 ),
+            removeExternalIdAlias: (externalId: string) =>
+                Db.query(db => db.delete(AccountExternalIdEntityTable).where(eq(AccountExternalIdEntityTable.externalId, externalId))),
+            findLatestExternalIdAlias: (accountId: number, excludedExternalId: string | null) =>
+                Db.query(db =>
+                    db
+                        .select({ externalId: AccountExternalIdEntityTable.externalId })
+                        .from(AccountExternalIdEntityTable)
+                        .where(
+                            and(
+                                eq(AccountExternalIdEntityTable.accountId, accountId),
+                                ...(isDefined(excludedExternalId) ? [ne(AccountExternalIdEntityTable.externalId, excludedExternalId)] : [])
+                            )
+                        )
+                        .orderBy(sql`rowid DESC`)
+                        .limit(1)
+                ).pipe(Effect.map(aliases => aliases.at(0)?.externalId ?? null)),
             updateById: (id: number, input: AccountUpdateEntityInterface) =>
                 Db.query(db =>
                     db

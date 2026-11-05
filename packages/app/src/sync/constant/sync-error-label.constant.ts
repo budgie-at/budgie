@@ -9,5 +9,7 @@ export const SYNC_ERROR_LABEL: Record<SyncErrorCodeEnum, MessageDescriptor> = {
     [SyncErrorCodeEnum.RATE_LIMITED]: msg`The service is limiting requests. Sync will retry automatically in a few minutes.`,
     [SyncErrorCodeEnum.REGION_UNAVAILABLE]: msg`Binance is not available in your region, so this account cannot sync.`,
     [SyncErrorCodeEnum.CLOCK_SKEW]: msg`Your device clock is out of sync. Enable automatic date and time, then try again.`,
-    [SyncErrorCodeEnum.NETWORK]: msg`Could not reach the server. Check your connection; sync will retry automatically.`
+    [SyncErrorCodeEnum.NETWORK]: msg`Could not reach the server. Check your connection; sync will retry automatically.`,
+    [SyncErrorCodeEnum.CONSENT_EXPIRED]: msg`Your bank consent has expired. Authorize this bank again to keep syncing.`,
+    [SyncErrorCodeEnum.ACCOUNT_NOT_LINKED]: msg`This account is not linked to the bank authorization. Link it in Enable Banking, then authorize again.`
 };

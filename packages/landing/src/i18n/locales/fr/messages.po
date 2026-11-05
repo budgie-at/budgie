@@ -6427,6 +6427,10 @@ msgstr "Contient du code malveillant ou des composants nuisibles"
 msgid "Context-aware menu — actions adapt to the transaction so you never see an option that does not apply"
 msgstr "Menu contextuel : les actions s'adaptent à la transaction, vous ne voyez donc jamais une option qui ne s'applique pas"
 
+#: src/generic/component/enable-banking-relay/enable-banking-relay.tsx
+msgid "Continue in the Budgie app"
+msgstr "Continuez dans l'app Budgie"
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Continue using YNAB for one month"
 msgstr "Continuez à utiliser YNAB pendant un mois"
@@ -15087,6 +15091,10 @@ msgstr "Rétablit les frais de virement manquants et retransforme les virements 
 #: src/app/[lang]/changelog/page.tsx
 msgid "Restoring a PIN-protected backup asks for that backup’s PIN, and that PIN becomes your app PIN, so the restored data stays readable."
 msgstr "La restauration d’une sauvegarde protégée par code PIN demande le code PIN de cette sauvegarde, qui devient le code PIN de votre application : les données restaurées restent ainsi lisibles."
+
+#: src/generic/component/enable-banking-relay/enable-banking-relay.tsx
+msgid "Return to Budgie"
+msgstr "Retourner à Budgie"
 
 #: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "Returned it? The plan closes too"

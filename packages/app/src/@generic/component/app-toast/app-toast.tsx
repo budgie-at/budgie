@@ -55,7 +55,7 @@ export const AppToast = ({ text1, text2, type, children, action }: Props) => {
     };
 
     return (
-        <View className="w-[92%] flex-row items-center gap-x-lg rounded-5xl border border-secondary-corner bg-primary-reverse p-lg shadow-lg">
+        <View className="w-full flex-row items-center gap-x-lg rounded-5xl border border-secondary-corner bg-primary-reverse p-lg shadow-lg">
             {children ?? <CircleIcon icon={icon} variant={variant} border={false} size={36} iconSize={20} />}
 
             <View className="flex-1">
