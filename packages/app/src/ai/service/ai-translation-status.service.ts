@@ -19,7 +19,7 @@ export class AiTranslationStatusService extends Context.Service<AiTranslationSta
                 function* () {
                     yield* translationDrainerService.pause();
                     yield* Effect.ensuring(
-                        Effect.all([categoryRepository.resetAllTranslations(), tagRepository.resetAllTranslations()]),
+                        Effect.all([categoryRepository.resetAllTranslations, tagRepository.resetAllTranslations]),
                         translationDrainerService.resume()
                     );
                     yield* translationProgressStore.refresh();

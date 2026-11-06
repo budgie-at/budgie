@@ -21,12 +21,13 @@ i18n.load(LanguageEnum.EN, enMessages);
 i18n.activate(LanguageEnum.EN);
 
 export const i18nLoadLanguageMessages = (language: LanguageEnum) =>
-    Effect.tryPromise({ try: languageCatalogLoaders[language], catch: cause => new NativeCallError({ cause }) }).pipe(
+    Effect.tryPromise({ try: languageCatalogLoaders[language], catch: cause => NativeCallError.make({ cause }) }).pipe(
         Effect.map(catalogModule => catalogModule.messages)
     );
 
 export const i18nEnsureLanguageActivated = Effect.fn('i18n.ensureLanguageActivated')(function* (language: LanguageEnum) {
-    i18n.load(language, yield* i18nLoadLanguageMessages(language));
+    const languageMessages = yield* i18nLoadLanguageMessages(language);
+    i18n.load(language, languageMessages);
     i18n.activate(language);
 });
 

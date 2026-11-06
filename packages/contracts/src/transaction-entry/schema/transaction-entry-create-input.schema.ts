@@ -14,7 +14,7 @@ export const TransactionEntryCreateInputSchema = Schema.Struct({
     type: Schema.Enum(TransactionEntryTypeEnum),
     kind: Schema.optional(Schema.Enum(TransactionEntryKindEnum)),
     amount: PositiveNumberSchema,
-    externalId: Schema.optional(Schema.NullOr(Schema.String)),
+    externalId: Schema.String.pipe(Schema.NullOr, Schema.optional),
     exchangeRate: Schema.optional(PositiveNumberSchema),
     baseInstrumentId: OptionalNullablePositiveNumberSchema,
     baseExchangeRate: OptionalNullablePositiveNumberSchema,
@@ -24,7 +24,7 @@ export const TransactionEntryCreateInputSchema = Schema.Struct({
     quotedUnitPrice: OptionalNullablePositiveNumberSchema,
     operationInstrumentId: OptionalNullablePositiveNumberSchema,
     operationAmount: OptionalNullablePositiveNumberSchema,
-    providerBalance: Schema.optional(Schema.NullOr(Schema.Number)),
-    toIban: Schema.optional(Schema.NullOr(Schema.String.check(Schema.isMaxLength(34)))),
+    providerBalance: Schema.Finite.pipe(Schema.NullOr, Schema.optional),
+    toIban: Schema.String.check(Schema.isMaxLength(34)).pipe(Schema.NullOr, Schema.optional),
     originalTransactionId: OptionalNullablePositiveNumberSchema
 });

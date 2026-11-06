@@ -44,7 +44,7 @@ describe('binance/convert-order-id', () => {
 
             yield* binanceSyncService.sync();
 
-            expect(yield* fetchSortedBinanceExternalIds()).toStrictEqual(['binance:convert:quote-a', 'binance:convert:quote-b']);
+            expect(yield* fetchSortedBinanceExternalIds).toStrictEqual(['binance:convert:quote-a', 'binance:convert:quote-b']);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -70,7 +70,7 @@ describe('binance/convert-order-id', () => {
 
             yield* binanceSyncService.sync();
 
-            expect(yield* fetchBinanceTransactions()).toHaveLength(1);
+            expect(yield* fetchBinanceTransactions).toHaveLength(1);
         }).pipe(Effect.provide(TestLayer))
     );
 });

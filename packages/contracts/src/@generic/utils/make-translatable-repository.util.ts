@@ -21,15 +21,13 @@ export const makeTranslatableRepository = (table: TranslatableTableInterface) =>
 
         return rows.map(row => ({ id: Number(row.id), title: String(row.title) }));
     }),
-    countUntranslated: () =>
-        Db.query(db => db.select({ value: count() }).from(table).where(untranslatedWhere(table.titleEn, table.deletedAt))).pipe(
-            Effect.map(([row]) => row.value)
-        ),
-    countAll: () =>
-        Db.query(db => db.select({ value: count() }).from(table).where(activeWhere(table.deletedAt))).pipe(
-            Effect.map(([row]) => row.value)
-        ),
-    resetAllTranslations: () => Db.query(db => db.update(table).set(TRANSLATION_RESET).where(activeWhere(table.deletedAt))),
+    countUntranslated: Db.query(db =>
+        db.select({ value: count() }).from(table).where(untranslatedWhere(table.titleEn, table.deletedAt))
+    ).pipe(Effect.map(([row]) => row.value)),
+    countAll: Db.query(db => db.select({ value: count() }).from(table).where(activeWhere(table.deletedAt))).pipe(
+        Effect.map(([row]) => row.value)
+    ),
+    resetAllTranslations: Db.query(db => db.update(table).set(TRANSLATION_RESET).where(activeWhere(table.deletedAt))),
     updateTranslation: (id: number, titleEn: string, titleTags: string) =>
         Db.query(db => db.update(table).set({ titleEn, titleTags, tagsGeneratedAt: new Date() }).where(eq(table.id, id))).pipe(
             Effect.asVoid

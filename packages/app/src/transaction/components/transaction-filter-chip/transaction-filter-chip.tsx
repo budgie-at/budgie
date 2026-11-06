@@ -5,6 +5,7 @@ import { EmptyFn } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { FILTER_CHIP_CLASS_NAME } from '../../constant/filter-chip-class-name.constant';
+import { FILTER_CHIP_HIT_SLOP } from '../../constant/filter-chip-hit-slop.constant';
 
 interface Props {
     readonly label: string;
@@ -32,7 +33,9 @@ const textVariants = cva('text-[13px] font-medium', {
 });
 
 export const TransactionFilterChip = ({ label, onPress, isActive, testID }: Props) => (
-    <HapticPressable className={chipVariants({ isActive })} onPress={onPress} testID={testID}>
-        <Text className={textVariants({ isActive })}>{label}</Text>
+    <HapticPressable className={chipVariants({ isActive })} hitSlop={FILTER_CHIP_HIT_SLOP} onPress={onPress} testID={testID}>
+        <Text maxFontSizeMultiplier={2} dynamicTypeRamp="body" className={textVariants({ isActive })}>
+            {label}
+        </Text>
     </HapticPressable>
 );

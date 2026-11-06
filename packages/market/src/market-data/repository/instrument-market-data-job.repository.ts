@@ -1,6 +1,7 @@
 import { Db, InstrumentMarketDataJobEntityTable, InstrumentMarketDataJobStatusEnum } from '@budgie/contracts';
 import { and, asc, desc, eq, inArray, isNotNull, isNull, lte, or, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
@@ -73,7 +74,7 @@ export class InstrumentMarketDataJobRepository extends Context.Service<Instrumen
                     maxAttempts: number,
                     staleLockedBefore: Date
                 ) {
-                    const now = new Date();
+                    const now = yield* DateTime.nowAsDate;
                     const jobs = yield* Db.query(db => {
                         const nextJobQuery = db
                             .select({ id: InstrumentMarketDataJobEntityTable.id })

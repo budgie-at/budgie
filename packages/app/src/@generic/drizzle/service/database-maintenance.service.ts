@@ -11,11 +11,12 @@ export class DatabaseMaintenanceService extends Context.Service<DatabaseMaintena
         const vectorChunkSize = 1024;
         const minFreelistPages = 1024;
         const minFreelistRatio = 10;
-        const CountRowsSchema = Schema.Array(Schema.Struct({ count: Schema.Number }));
+        const CountRowsSchema = Schema.Array(Schema.Struct({ count: Schema.Finite }));
 
         const readCount = Effect.fnUntraced(function* (query: string) {
             const { $primary } = yield* Db;
-            const [first] = yield* Schema.decodeUnknownEffect(CountRowsSchema)(yield* $primary.$client.unsafe(query));
+            const rows = yield* $primary.$client.unsafe(query);
+            const [first] = yield* Schema.decodeUnknownEffect(CountRowsSchema)(rows);
 
             return first.count;
         });
@@ -65,8 +66,9 @@ export class DatabaseMaintenanceService extends Context.Service<DatabaseMaintena
 
         return {
             compact: Effect.fn('DatabaseMaintenanceService.compact')(function* () {
-                const vectorExit = yield* Effect.exit(
-                    withFileTempStore(Effect.forEach(vectorTableNames, compactVectorTable, { discard: true }))
+                const vectorExit = yield* Effect.forEach(vectorTableNames, compactVectorTable, { discard: true }).pipe(
+                    withFileTempStore,
+                    Effect.exit
                 );
 
                 yield* withFileTempStore(vacuumWhenFragmented());

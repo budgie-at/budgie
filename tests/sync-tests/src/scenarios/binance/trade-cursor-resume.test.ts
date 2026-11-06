@@ -13,11 +13,7 @@ const runAdaUsdtSyncWithCursor = Effect.fnUntraced(function* (mode: SyncModeEnum
     const binanceSyncService = yield* BinanceSyncService;
 
     yield* seedCryptoInstrument('ADA');
-    const { sync } = yield* setupAdaUsdtFixture(
-        mode,
-        new Date(Date.now() - RECURRING_SYNC_AGE_MS),
-        JSON.stringify({ ADAUSDT: RESUME_TRADE_ID })
-    );
+    const { sync } = yield* setupAdaUsdtFixture(mode, new Date(Date.now() - RECURRING_SYNC_AGE_MS), `{"ADAUSDT":${RESUME_TRADE_ID}}`);
     const requestedUrls: URL[] = [];
 
     binanceStub.myTrades({}, new Set<string>(), requestedUrls);
@@ -35,7 +31,7 @@ describe('binance/trade-cursor-resume', () => {
             expect(requestedUrls[0].searchParams.get('fromId')).toBe(String(RESUME_TRADE_ID + 1));
             expect(requestedUrls[0].searchParams.has('startTime')).toBe(false);
             expect((yield* testDb.select().from(SyncEntityTable).where(eq(SyncEntityTable.id, syncId)))[0]?.binanceTradeCursor).toBe(
-                JSON.stringify({ ADAUSDT: RESUME_TRADE_ID })
+                `{"ADAUSDT":${RESUME_TRADE_ID}}`
             );
         }).pipe(Effect.provide(TestLayer))
     );

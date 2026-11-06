@@ -34,10 +34,10 @@ export class AiEmbeddingStatusService extends Context.Service<AiEmbeddingStatusS
         );
 
         const reset = Effect.all([
-            merchantEmbeddingRepository.truncate(),
-            commentEmbeddingRepository.truncate(),
-            transactionEmbeddingRepository.markAllForEmbedding(),
-            transactionEmbeddingRepository.clearNonIndexableFlags()
+            merchantEmbeddingRepository.truncate,
+            commentEmbeddingRepository.truncate,
+            transactionEmbeddingRepository.markAllForEmbedding,
+            transactionEmbeddingRepository.clearNonIndexableFlags
         ]);
 
         return {
@@ -55,7 +55,7 @@ export class AiEmbeddingStatusService extends Context.Service<AiEmbeddingStatusS
                     }
                 });
             }),
-            forgetModel: () => Effect.promise(() => storage.removeItem(embeddingModelStorageKey)),
+            forgetModel: Effect.promise(() => storage.removeItem(embeddingModelStorageKey)),
             rebuild: Effect.fn('AiEmbeddingStatusService.rebuild')(
                 function* () {
                     yield* embeddingDrainerService.pause();

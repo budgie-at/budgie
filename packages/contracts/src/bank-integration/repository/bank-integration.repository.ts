@@ -57,16 +57,16 @@ export class BankIntegrationRepository extends Context.Service<BankIntegrationRe
                             )
                         )
                 ),
+            deleteById: (id: number) => Db.query(db => db.delete(BankIntegrationEntityTable).where(eq(BankIntegrationEntityTable.id, id))),
             findById: (id: number) =>
                 Db.query(db =>
                     db.query.BankIntegrationEntityTable.findFirst({
                         where: { id, deletedAt: { isNull: true } }
                     })
                 ),
-            count: () =>
-                Db.query(db =>
-                    db.select({ count: count() }).from(BankIntegrationEntityTable).where(isNull(BankIntegrationEntityTable.deletedAt))
-                )
+            count: Db.query(db =>
+                db.select({ count: count() }).from(BankIntegrationEntityTable).where(isNull(BankIntegrationEntityTable.deletedAt))
+            )
         };
     })
 }) {

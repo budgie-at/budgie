@@ -8,7 +8,7 @@ export const loadMccCategoryLookupMap = Effect.fnUntraced(function* (
     mccCategoryRepository: Context.Service.Shape<typeof MccCategoryRepository>,
     settingsRepository: Context.Service.Shape<typeof SettingsRepository>
 ) {
-    const [mccCategories, settings] = yield* Effect.all([mccCategoryRepository.findAll(), settingsRepository.getSettings()]);
+    const [mccCategories, settings] = yield* Effect.all([mccCategoryRepository.findAll, settingsRepository.getSettings()]);
     const applyMccDefault = settings.applyMccDefaultCategory;
 
     return new Map(

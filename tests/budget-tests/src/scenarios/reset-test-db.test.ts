@@ -24,7 +24,7 @@ layer(TestLayer)('resetTestDb', it => {
             });
             yield* resetTestDb(testDb);
 
-            expect(yield* budgetRepository.findMain()).toBeFalsy();
+            expect(yield* budgetRepository.findMain).toBeFalsy();
         })
     );
 });

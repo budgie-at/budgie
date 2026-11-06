@@ -58,7 +58,7 @@ describe('binance/wallet-routing', () => {
 
             yield* binanceSyncService.sync();
 
-            expect(yield* fetchBinanceTransactions()).toHaveLength(3);
+            expect(yield* fetchBinanceTransactions).toHaveLength(3);
             expect(yield* fetchLedgerBalanceByExternalId(USDT_FUNDING_ID)).toBe(0);
             expect(yield* fetchLedgerBalanceByExternalId(USDT_SPOT_ID)).toBe(0);
         }).pipe(Effect.provide(TestLayer))

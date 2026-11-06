@@ -4,7 +4,7 @@ import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import { requireInstrument, seedExchangeRate, TestLayer } from '../../harness';
-import { testDb } from '../../harness/scenario/setup';
+import { testDb } from '../../harness/scenario/test-db';
 
 describe('bridged currency conversion', () => {
     it.effect('returns a composed rate such that amount equals source divided by rate', () =>

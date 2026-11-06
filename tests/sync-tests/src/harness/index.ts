@@ -1,4 +1,4 @@
-export { testDb } from './scenario/setup';
+export { testDb } from './scenario/test-db';
 export { setupMonobankFixture } from './monobank/setup-monobank-fixture';
 export { setupBackwardSweepFixture } from './monobank/setup-backward-sweep-fixture';
 export { setupTransientFailureFixture } from './monobank/setup-transient-failure-fixture';
@@ -29,6 +29,23 @@ export { buildMonobank } from './monobank/build-monobank';
 export { stubEmptyStatements } from './monobank/stub-empty-statements';
 export { subtractMonths } from './scenario/subtract-months';
 export { binanceStub } from './binance/binance-stub';
+export {
+    enableBankingStub,
+    buildEnableBankingTransaction,
+    enableBankingDaysAgo,
+    ENABLE_BANKING_APPLICATION_ID
+} from './enable-banking/enable-banking-stub';
+export {
+    buildEnableBankingToken,
+    fetchEnableBankingTransactions,
+    fetchSortedEnableBankingExternalIds,
+    findOrSeedEur,
+    makeEnableBankingSyncStale,
+    seedEnableBankingAccount,
+    seedLinkedEnableBankingAccount,
+    stubLongestFallbackRows
+} from './enable-banking/enable-banking-scenario';
+export { testSigner } from './enable-banking/test-sync-request-signer';
 export type { TimeWindow } from './binance/binance-stub';
 export { buildBinance } from './binance/build-binance';
 export { binanceErrorResponse } from './binance/binance-error-response';

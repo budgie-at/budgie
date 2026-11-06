@@ -39,7 +39,7 @@ describe('binance/convert', () => {
             yield* binanceSyncService.sync();
 
             yield* expectSingleBinanceTransaction(TransactionTypeEnum.TRANSFER, 'binance:convert:7001');
-            expect((yield* fetchBinanceTransactions())[0].exchangeRate).toBe(1);
+            expect((yield* fetchBinanceTransactions)[0].exchangeRate).toBe(1);
             expect(yield* fetchBinanceEntriesByExternalId('binance:convert:7001')).toHaveLength(2);
         }).pipe(Effect.provide(TestLayer))
     );
@@ -78,7 +78,7 @@ describe('binance/convert', () => {
 
             yield* binanceSyncService.sync();
 
-            const externalIds = (yield* fetchBinanceTransactions()).map(transaction => transaction.externalId);
+            const externalIds = (yield* fetchBinanceTransactions).map(transaction => transaction.externalId);
             expect(externalIds).toEqual(['binance:convert:7101']);
         }).pipe(Effect.provide(TestLayer))
     );
@@ -105,7 +105,7 @@ describe('binance/convert', () => {
 
             yield* binanceSyncService.sync();
 
-            const externalIds = yield* fetchSortedBinanceExternalIds();
+            const externalIds = yield* fetchSortedBinanceExternalIds;
             expect(externalIds).toEqual(['binance:convert:7003', 'binance:trade:BTCUSDT:7003']);
         }).pipe(Effect.provide(TestLayer))
     );

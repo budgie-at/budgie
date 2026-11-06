@@ -1,5 +1,7 @@
 import { BudgetLimitSourceEnum, BudgetRolloverModeEnum, Db } from '@budgie/contracts';
+import { addMilliseconds } from 'date-fns/addMilliseconds';
 import { addMonths } from 'date-fns/addMonths';
+import { min } from 'date-fns/min';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -153,7 +155,7 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
         ) {
             const entries = yield* budgetRepository.findBudgetSpentEntries(
                 snapshot.periodStart,
-                new Date(snapshot.periodEnd.getTime() + 1),
+                addMilliseconds(snapshot.periodEnd, 1),
                 budget.instrumentId
             );
             const spent = computeSpent(entries, budget.instrumentId);
@@ -224,7 +226,7 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
 
             const rows = yield* budgetRepository.findBudgetSpentEntries(
                 dueWindow.periodStart,
-                new Date(Math.min(dueWindow.nextPeriodStart.getTime(), firstWindow.periodStart.getTime())),
+                min([dueWindow.nextPeriodStart, firstWindow.periodStart]),
                 budget.instrumentId
             );
 
@@ -331,7 +333,7 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
 
             const recentChanges = yield* budgetLimitChangeRepository.findSince(
                 budget.id,
-                new Date(Math.min(...history.map(snapshot => snapshot.periodStart.getTime())))
+                min(history.map(snapshot => snapshot.periodStart))
             );
             const proposals = proposeLimitChanges(
                 history,
@@ -379,7 +381,7 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
         return {
             closeDuePeriods: Effect.fn('BudgetPeriodCloseService.closeDuePeriods')(
                 function* (now: Date) {
-                    const budget = yield* budgetRepository.findMain();
+                    const budget = yield* budgetRepository.findMain;
 
                     if (!isDefined(budget) || !isPositiveNumber(budget.instrumentId)) {
                         return;
@@ -387,7 +389,7 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
 
                     const [latestSnapshot] = yield* budgetPeriodSnapshotRepository.findRecent(budget.id, 1);
                     const latestPeriodStart = isDefined(latestSnapshot) ? latestSnapshot.periodStart : null;
-                    const earliestOperatedAt = yield* budgetRepository.findEarliestOperatedAt();
+                    const earliestOperatedAt = yield* budgetRepository.findEarliestOperatedAt;
                     const windows = computeClosedPeriods(budget, now, latestPeriodStart, earliestOperatedAt);
                     const categoryLimits = yield* budgetCategoryLimitRepository.getByBudget(budget.id);
 

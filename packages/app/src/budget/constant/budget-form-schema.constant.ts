@@ -26,7 +26,7 @@ const budgetFormFields = {
     overallLimit: Schema.Finite.check(Schema.isGreaterThanOrEqualTo(0)),
     otherLimit: Schema.Finite.check(Schema.isGreaterThanOrEqualTo(0)),
     otherRolloverMode: Schema.Enum(BudgetRolloverModeEnum),
-    categoryLimits: Schema.mutable(Schema.Array(BudgetCategoryLimitFormSchema)),
+    categoryLimits: BudgetCategoryLimitFormSchema.pipe(Schema.Array, Schema.mutable),
     instrumentId: Schema.Finite.check(Schema.isInt(), Schema.isGreaterThan(0))
 };
 

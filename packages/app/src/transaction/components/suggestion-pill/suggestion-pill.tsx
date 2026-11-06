@@ -14,6 +14,8 @@ interface Props {
     readonly testID?: string;
 }
 
+const PILL_HIT_SLOP = 6;
+
 export const SuggestionPill = (props: Props) => {
     const { index, animationDuration, staggerDelay, maxWidth = 'max-w-44', children, onPress, testID } = props;
 
@@ -24,6 +26,7 @@ export const SuggestionPill = (props: Props) => {
         >
             <HapticPressable
                 className={cn('h-[32px] flex-row items-center gap-xs rounded-full bg-transaction-detail-row pl-xs pr-md', maxWidth)}
+                hitSlop={PILL_HIT_SLOP}
                 onPress={onPress}
                 testID={testID}
             >

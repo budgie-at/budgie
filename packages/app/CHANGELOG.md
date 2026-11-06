@@ -3,6 +3,176 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.164.2](https://github.com/budgie-at/budgie/compare/v6.164.1...v6.164.2) (2026-11-06)
+
+### Bug Fixes
+
+* **app:** keep chrome snapping in the app runtime ([f7300b4](https://github.com/budgie-at/budgie/commit/f7300b4f58e206feed90e1f083a2f5b6f33803c2))
+* **app:** keep runway pill available in compact home header ([88ff4ba](https://github.com/budgie-at/budgie/commit/88ff4ba38b7d9c1faa1054092997d36ef0eac4cf))
+* **app:** preserve sticky headers and title scroll gestures ([03a9b26](https://github.com/budgie-at/budgie/commit/03a9b26a0c81d259c101dac1a5cd70ae3121ce9d))
+* **app:** restore the fade and blur screen header ([6c75499](https://github.com/budgie-at/budgie/commit/6c754990c7035a6977f9aa4aca45fe1b7c73afa9))
+
+
+## [6.164.1](https://github.com/budgie-at/budgie/compare/v6.164.0...v6.164.1) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** base the edit title exception on the persisted title ([30a0d6a](https://github.com/budgie-at/budgie/commit/30a0d6ab42a5caced1faf5a2c6562df8da6b8d66))
+* **app:** preserve imported titles when editing transactions ([84a1152](https://github.com/budgie-at/budgie/commit/84a1152ebe0bfc11cb29bd54cd08f9ccf809aade))
+
+
+# [6.164.0](https://github.com/budgie-at/budgie/compare/v6.163.2...v6.164.0) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** address council findings on polish round 2 ([88c2bb9](https://github.com/budgie-at/budgie/commit/88c2bb9a92ac10913f7b4c96022bd6d0e83983c7))
+* **app:** address transaction form QA findings ([9fb0768](https://github.com/budgie-at/budgie/commit/9fb0768701eb9200402d14b00d67375e414ae696))
+* **app:** balance transaction metadata and recurring summary ([a201f43](https://github.com/budgie-at/budgie/commit/a201f4315d6918d02c199c3dbb8fb1075b9b050d))
+* **app:** cap stacked transaction form values at three lines ([ad3449e](https://github.com/budgie-at/budgie/commit/ad3449ee4bb778a2f6ce9613c1db13c44eb5876e))
+* **app:** clarify refund linking and identify source scrolling ([5b3e72f](https://github.com/budgie-at/budgie/commit/5b3e72f0bb3dd512aa0a506e7e40b982e63868a0))
+* **app:** dim the empty transaction amount with the secondary colour ([dc418e2](https://github.com/budgie-at/budgie/commit/dc418e22b96d92042a938195f1c35a466a7badf0))
+* **app:** draw transactions scrim beneath floating navigation ([091cc02](https://github.com/budgie-at/budgie/commit/091cc02490cfa4aa61c701d186a9cf4b67b0e129))
+* **app:** guard conversion rate edits and fee currency ([b953440](https://github.com/budgie-at/budgie/commit/b9534406eebfbc0372c340b5dd073480c71b3d13))
+* **app:** improve transaction helper contrast and list refresh ([1cba550](https://github.com/budgie-at/budgie/commit/1cba55064362758796e26c1f450c2c7f1bec7ef3))
+* **app:** keep consolidation sources clear of sheet actions ([08dc046](https://github.com/budgie-at/budgie/commit/08dc0464783d46584c35fe1ad60d9598a1f4ed49))
+* **app:** keep conversion values stable while dismissing ([9d54a64](https://github.com/budgie-at/budgie/commit/9d54a64fb63d0080a530de42ab218e91e6520ceb))
+* **app:** keep refund candidates reachable at largest text size ([610cd77](https://github.com/budgie-at/budgie/commit/610cd77d3f0316100ea7e10dd7cc5f366912f1d2))
+* **app:** keep transaction conversion actions reachable at large text ([a4f3c61](https://github.com/budgie-at/budgie/commit/a4f3c613724e40b9f5a1287a3eb29cf7908ce7a7))
+* **app:** keep transaction form labels whole and cap row text scale ([5d278b9](https://github.com/budgie-at/budgie/commit/5d278b92678d9f2ec148f0520d130b8fec2deada))
+* **app:** keep transactions readable at accessibility sizes ([bd52cb3](https://github.com/budgie-at/budgie/commit/bd52cb34b833426b9685ec328edfe15f1f1ea8c6))
+* **app:** polish PIN recovery presentation ([5f3f279](https://github.com/budgie-at/budgie/commit/5f3f2796ab05257cc3f5f138bc6c2af09c460277)), closes [#1953](https://github.com/budgie-at/budgie/issues/1953)
+* **app:** preserve conversion context at large text sizes ([ba45967](https://github.com/budgie-at/budgie/commit/ba45967f856236082d24926d707dfe5979ba0d3c))
+* **app:** preserve hierarchy at accessibility text sizes ([f7458aa](https://github.com/budgie-at/budgie/commit/f7458aac58bbb3d157a1ba8505be79ee3ac4e341))
+* **app:** preserve imported titles when editing transactions ([ddfb1d5](https://github.com/budgie-at/budgie/commit/ddfb1d5f8e8635b15b9b62aaf89b158f67bf8984))
+* **app:** preserve large text totals and empty-state recovery ([ea59568](https://github.com/budgie-at/budgie/commit/ea59568a6298fc13f7f9006f8ad7265bf0bccf26))
+* **app:** preserve picker metadata at accessibility sizes ([52a8149](https://github.com/budgie-at/budgie/commit/52a81495b9acef827860720a671b7d348348683b))
+* **app:** preserve refund in-flight dismissal protection ([5adf93b](https://github.com/budgie-at/budgie/commit/5adf93bc2f7ca58a72f5eedfeff4e694dfa18c7b))
+* **app:** preserve transfer context in consolidation sheets ([a3d45e2](https://github.com/budgie-at/budgie/commit/a3d45e264c32a16f50f3eeb22ae84408f2735a25))
+* **app:** publish day header offsets only when sections change ([00a18f6](https://github.com/budgie-at/budgie/commit/00a18f642654b33459c5aea63f166e2b43d78c00))
+* **app:** scale transactions tabs and preserve split assertions ([f969bb2](https://github.com/budgie-at/budgie/commit/f969bb2d548532d6ea685a099a86a3e097ea7d96))
+* **app:** scroll source sheet actions with accessibility content ([d0bbbd8](https://github.com/budgie-at/budgie/commit/d0bbbd8d7db689490002400a0f470ed3959d3485))
+
+### Features
+
+* **app:** align transfer rows, stack overflowing values and tighten the keypad ([59cce91](https://github.com/budgie-at/budgie/commit/59cce91cf324b6aff1a86b1aee765949c2a77c98))
+* **app:** apply raised sheet surfaces and complete action wiring ([7a301a2](https://github.com/budgie-at/budgie/commit/7a301a204bf2af156df300392ad6b50c2b033999))
+* **app:** clarify original transaction context in picker sheets ([a69562f](https://github.com/budgie-at/budgie/commit/a69562f9a44c8c1dc2d6879889105df070e3144c))
+* **app:** clarify source sheet action hierarchy ([6e5b705](https://github.com/budgie-at/budgie/commit/6e5b705fe3a16c4ce900fec134cfa44b6802b3cf))
+* **app:** compact transaction form rows and fold the conversion into the transfer card ([287ccf0](https://github.com/budgie-at/budgie/commit/287ccf0ad3efa5a1c4fcf494326293118387310d))
+* **app:** compose conversion fields into a cohesive group ([1c80460](https://github.com/budgie-at/budgie/commit/1c804601f1847dc87fe7809cda4d6990318fd65a))
+* **app:** distinguish refund choice from source inspection ([741d69a](https://github.com/budgie-at/budgie/commit/741d69a425501a1aa8df770b7210b8105a067bf6))
+* **app:** enlarge transaction form chip targets and separate Save from the keypad ([3008cd3](https://github.com/budgie-at/budgie/commit/3008cd3eda2325dd52f4c063b00c64fec42e6fe3))
+* **app:** focus conversion on the other transfer account ([d70c458](https://github.com/budgie-at/budgie/commit/d70c4585bf3a3080c8ecfc62e01b3c66b2c4f5fb))
+* **app:** focus transfer conversion on account selection ([128263e](https://github.com/budgie-at/budgie/commit/128263e27561b98554da8036778c716fd28d0252))
+* **app:** give conversion sheet title accessible side margins ([203c73f](https://github.com/budgie-at/budgie/commit/203c73f6ea5c3c9325789dd4a0c666cad63fdf6d))
+* **app:** give the split action its own section and scale action rows at large text ([7048c74](https://github.com/budgie-at/budgie/commit/7048c74fba7a8e9a0da8692e3da1fff3c10bcc13))
+* **app:** improve large text picker reading order ([2085873](https://github.com/budgie-at/budgie/commit/20858735b4964844979a65afd278a976fd22726c))
+* **app:** inline transfer validation, stack overflowing rows and refine the swap badge ([67a5c46](https://github.com/budgie-at/budgie/commit/67a5c4673b26a1d12765fc1fa8f6855d7379a1d4))
+* **app:** let accessibility sheets scroll their title and action ([3ad0fc1](https://github.com/budgie-at/budgie/commit/3ad0fc195a689234fa5d65c078836981b83c5b95))
+* **app:** let large conversion titles wrap naturally ([ca65ea3](https://github.com/budgie-at/budgie/commit/ca65ea3eda923e02c8ad495bccd02886d6aab06d))
+* **app:** make refund selection and large text hierarchy clearer ([11e7490](https://github.com/budgie-at/budgie/commit/11e74907c5e507d8b74a236066d231163156dc5f))
+* **app:** move transaction suggestions above the keypad and refine form rows ([392d82e](https://github.com/budgie-at/budgie/commit/392d82e6667002c2afaa1fcdd2af66370bfabe0a))
+* **app:** one row grammar for transaction forms and a swap control on the icon track ([63db32e](https://github.com/budgie-at/budgie/commit/63db32edd4a70da76a126efd95d753db283e1642))
+* **app:** pin the keypad at large text and unify transaction form rows ([15ec4e8](https://github.com/budgie-at/budgie/commit/15ec4e8e27dca39584306386e7eec5390d37d2d7))
+* **app:** prioritize recurring totals and readable transaction rows ([c6d7cb6](https://github.com/budgie-at/budgie/commit/c6d7cb6fcadedbf4545643983d3508f133e6c9d9))
+* **app:** rebuild transaction forms as grouped value rows ([a10af66](https://github.com/budgie-at/budgie/commit/a10af66a06fcfa6fa3df8c68c21edc65b0a8a875))
+* **app:** redesign refund sheets around persistent task chrome ([d6ae78f](https://github.com/budgie-at/budgie/commit/d6ae78fc5d3a29165df5fd7f848640367dd0b939))
+* **app:** refine transactions calendar and contrast ([8f29a54](https://github.com/budgie-at/budgie/commit/8f29a54587700bff85cdb9c25c8ff59f289435b6))
+* **app:** replace transaction form fades with scroll hairlines and tidy rows ([630e8a3](https://github.com/budgie-at/budgie/commit/630e8a363322e18ee9a27995a3302c9ee96e1e7a))
+* **app:** show the transfer conversion as a grouped row with a rate footnote ([e21c7c8](https://github.com/budgie-at/budgie/commit/e21c7c83c452b69ab83dc667b01500bff9f35db7))
+* **app:** stack overflowing transaction rows, clear the swap control and gate transfer Save on accounts ([9c4ea58](https://github.com/budgie-at/budgie/commit/9c4ea585838c920ea757ece3d6b429fa3522e200))
+* **app:** standard-height transfer rows with a label-column swap and hide split until an amount exists ([15b0f55](https://github.com/budgie-at/budgie/commit/15b0f552c82229e11070e3b8f041958705945e57))
+* **app:** wrap long transaction form values before stacking and centre the amount ([5e8bf82](https://github.com/budgie-at/budgie/commit/5e8bf82b186c337c9414e1d5dad78ead0a70de7a))
+
+
+## [6.163.2](https://github.com/budgie-at/budgie/compare/v6.163.1...v6.163.2) (2026-11-05)
+
+### Bug Fixes
+
+* let users undo a pay-in-parts conversion ([8d212b3](https://github.com/budgie-at/budgie/commit/8d212b33517f77ec19a1362cf5d0484a8dfd764d))
+
+
+## [6.163.1](https://github.com/budgie-at/budgie/compare/v6.163.0...v6.163.1) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** ship bank logos in OTA updates ([#1954](https://github.com/budgie-at/budgie/issues/1954)) ([d55848c](https://github.com/budgie-at/budgie/commit/d55848c08d48ac00a196fc15406960c348b6d14b))
+
+
+# [6.163.0](https://github.com/budgie-at/budgie/compare/v6.162.1...v6.163.0) (2026-11-05)
+
+### Features
+
+* **sync:** add on-device Enable Banking sync for EU banks ([#1949](https://github.com/budgie-at/budgie/issues/1949)) ([e507c18](https://github.com/budgie-at/budgie/commit/e507c181af8761113dd8acf76d116c047b0d39e6)), closes [#1910](https://github.com/budgie-at/budgie/issues/1910) [#1914](https://github.com/budgie-at/budgie/issues/1914)
+
+
+## [6.162.1](https://github.com/budgie-at/budgie/compare/v6.162.0...v6.162.1) (2026-11-05)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+# [6.162.0](https://github.com/budgie-at/budgie/compare/v6.161.0...v6.162.0) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** give transaction filter chips a 44pt touch target ([70aa6a0](https://github.com/budgie-at/budgie/commit/70aa6a097df70ebaa3f305db3e135e6b0dfb7008))
+* **app:** keep the transactions header compact under shared chrome ([14b7d58](https://github.com/budgie-at/budgie/commit/14b7d586e5780720a59078a3258392f8c8381282))
+* **app:** satisfy lint for the transactions header style ([7f26792](https://github.com/budgie-at/budgie/commit/7f267928fe14dc370d807cdeaa27b5930915f09a))
+
+### Features
+
+* **app:** fixed shared chrome and stable loading for the Transactions tab ([771d978](https://github.com/budgie-at/budgie/commit/771d978df56f01a51f4b2a496b4976e88da77771))
+
+
+# [6.161.0](https://github.com/budgie-at/budgie/compare/v6.160.1...v6.161.0) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** keep PIN setup readable with large text ([f420180](https://github.com/budgie-at/budgie/commit/f420180b73d9685d9ae8e7011cd5b1ee4c1659aa))
+* **app:** verify onboarding keyboard dismissal ([f41251a](https://github.com/budgie-at/budgie/commit/f41251a46470c512975d61de6d44c14925fb5ae7))
+
+### Features
+
+* **app:** bring onboarding welcome content together ([d142b8a](https://github.com/budgie-at/budgie/commit/d142b8a82fbf8dc2e8c08c531315a6ac3852506f))
+* **app:** clarify onboarding actions and PIN warning ([7878a45](https://github.com/budgie-at/budgie/commit/7878a45d5e442645b9af2d11e9699e07ac577852))
+
+
+## [6.160.1](https://github.com/budgie-at/budgie/compare/v6.160.0...v6.160.1) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** give SegmentedControl 44pt touch targets ([39e9b6c](https://github.com/budgie-at/budgie/commit/39e9b6c20b5628749e2460522e12ac80c2c1ff15))
+
+
+# [6.160.0](https://github.com/budgie-at/budgie/compare/v6.159.0...v6.160.0) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** match the rule option sheet background to its grouped surface ([1029312](https://github.com/budgie-at/budgie/commit/10293123c42a4d344d3ca82315098ceb5e6e017c))
+* **app:** match the rule selector sheet background in dark mode ([984f56b](https://github.com/budgie-at/budgie/commit/984f56b2cf0f936e3edbb62dcd316b4f957d9b50))
+
+### Features
+
+* **app:** scroll the rule option sheet when options exceed the viewport ([5958ebd](https://github.com/budgie-at/budgie/commit/5958ebd18ca8008c1a3a8f67b55dd0950e8b5b1d))
+
+
+# [6.159.0](https://github.com/budgie-at/budgie/compare/v6.158.0...v6.159.0) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** keep compact source empty copy above footer ([e5f3ee3](https://github.com/budgie-at/budgie/commit/e5f3ee33d0f03b2075e989a39440711f8fb740f4))
+* **app:** keep refund choices clear and support large text ([9d16f42](https://github.com/budgie-at/budgie/commit/9d16f42bd8c5fec747c730c58ffcea6d9d410e8a))
+* **app:** pin measured sheet footers above the safe area ([943bd2a](https://github.com/budgie-at/budgie/commit/943bd2a6ec06ed90cd19a85a5dd15e4b0af34f6c))
+
+### Features
+
+* **app:** refine refund sheet density and keyboard states ([88eaa2c](https://github.com/budgie-at/budgie/commit/88eaa2ca9ee23f05ca48525a5c31f71ea2657637))
+* **app:** stabilize refund and source sheet states ([e5ac080](https://github.com/budgie-at/budgie/commit/e5ac0800d0f4a738af90669b7d19b1abd86f9c19))
+
+
 # [6.158.0](https://github.com/budgie-at/budgie/compare/v6.157.0...v6.158.0) (2026-11-05)
 
 ### Bug Fixes

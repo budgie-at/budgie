@@ -15,7 +15,7 @@ export class EmbeddingProgressStore extends Context.Service<EmbeddingProgressSto
 
         return new ProgressStore(
             embeddingProgressSnapshotAtom,
-            Effect.all([transactionRepository.countAllActive(), transactionEmbeddingRepository.countPending()]),
+            Effect.all([transactionRepository.countAllActive, transactionEmbeddingRepository.countPending]),
             1000
         );
     })

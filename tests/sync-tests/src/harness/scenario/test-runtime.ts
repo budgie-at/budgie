@@ -15,10 +15,11 @@ import { vi } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { testSyncRequestSignerLayer } from '../enable-banking/test-sync-request-signer';
 import { fakeTransferConsolidationDrainerLayer } from '../fake/fake-transfer-consolidation-drainer.layer';
 
-import { testDb } from './setup';
 import { sleepMode } from './sleep-mode';
+import { testDb } from './test-db';
 
 import type * as Context from 'effect/Context';
 
@@ -47,7 +48,7 @@ const withInstantRateLimit = (clock: Clock.Clock): Clock.Clock => {
     };
 };
 
-const platformLayer = Layer.merge(makeTestPlatformLayer(testDb), Layer.succeed(BinanceRateLimitMs, 0));
+const platformLayer = Layer.mergeAll(makeTestPlatformLayer(testDb), Layer.succeed(BinanceRateLimitMs, 0), testSyncRequestSignerLayer);
 
 const servicesLayer = appServicesWithoutDrainerLayer.pipe(
     Layer.provideMerge(Layer.merge(fakeTransferConsolidationDrainerLayer, platformLayer))
@@ -71,6 +72,7 @@ const livePlatformLayer = Layer.mergeAll(
         Effect.map(DatabaseChangeService, databaseChangeService => databaseChangeService.transactionBoundary)
     ),
     FetchHttpClient.layer,
+    testSyncRequestSignerLayer,
     Logger.layer([])
 ).pipe(Layer.provideMerge(DatabaseChangeService.layer), Layer.provideMerge(Reactivity.layer));
 

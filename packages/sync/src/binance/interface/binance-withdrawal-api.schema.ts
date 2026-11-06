@@ -7,8 +7,8 @@ const BinanceWithdrawalApiSchema = Schema.Struct({
     transactionFee: Schema.String,
     coin: Schema.String,
     applyTime: Schema.String,
-    status: Schema.optional(Schema.Number),
-    walletType: Schema.optional(Schema.Number)
+    status: Schema.optional(Schema.Finite),
+    walletType: Schema.optional(Schema.Finite)
 });
 
 export const BinanceWithdrawalListApiSchema = Schema.Array(BinanceWithdrawalApiSchema);

@@ -117,7 +117,7 @@ export const OnboardingBalances = () => {
         : t`Erste (PDF) or Privatbank (XLSX), read on this phone.`;
     const isSaveDisabled = hasAccounts && !isNotEmptyArray(enteredBalances) && !isMonobankConnected && !isStatementImported;
     const balancesLabel = isSaveDisabled ? t`Enter a balance to save` : t`Save balances`;
-    const saveLabel = hasAccounts ? balancesLabel : t`Continue`;
+    const saveLabel = hasAccounts ? balancesLabel : t`Continue without accounts`;
     const handleContinuePress = hasAccounts ? handleSavePress : handleLaterPress;
     const title = hasAccounts ? t`What’s in them today?` : t`No accounts yet`;
     const description = hasAccounts ? t`A rough number is fine. Fix it any time.` : t`Import accounts now, or add them later in Budgie.`;

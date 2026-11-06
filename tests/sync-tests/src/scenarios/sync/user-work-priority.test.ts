@@ -68,18 +68,16 @@ describe('sync/user-work-priority', () => {
                 )
             );
             yield* gatedWork.awaitStarted;
-            const backgroundWork = yield* Effect.forkChild(
-                inWorkload(
+            const backgroundWork = yield* Effect.sync(() => {
+                events.push('background');
+            }).pipe(
+                inWorkload,
+                Effect.catchCause(() =>
                     Effect.sync(() => {
-                        events.push('background');
+                        events.push('background:cancelled');
                     })
-                ).pipe(
-                    Effect.catchCause(() =>
-                        Effect.sync(() => {
-                            events.push('background:cancelled');
-                        })
-                    )
-                )
+                ),
+                Effect.forkChild
             );
             const fileImportWork = yield* Effect.forkChild(
                 workload.runUser(
@@ -110,18 +108,12 @@ describe('sync/user-work-priority', () => {
             const events: string[] = [];
             const gatedWork = yield* makeGatedWork(events);
 
-            const runningWork = yield* Effect.forkChild(Effect.exit(gatedWork.work));
+            const runningWork = yield* gatedWork.work.pipe(Effect.exit, Effect.forkChild);
             yield* gatedWork.awaitStarted;
 
-            const queuedWorkRejected = yield* Effect.forkChild(
-                Effect.exit(
-                    inWorkload(
-                        Effect.sync(() => {
-                            events.push('background');
-                        })
-                    )
-                ).pipe(Effect.map(Exit.isFailure))
-            );
+            const queuedWorkRejected = yield* Effect.sync(() => {
+                events.push('background');
+            }).pipe(inWorkload, Effect.exit, Effect.map(Exit.isFailure), Effect.forkChild);
 
             yield* workload.block;
 

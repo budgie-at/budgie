@@ -45,6 +45,7 @@ export const InstitutionAccounts = ({ institution, balancesByAccountId }: Props)
                             key={account.id}
                             account={account}
                             provider={institution.provider}
+                            bankName={institution.label}
                             balancesByAccountId={balancesByAccountId}
                             position={getTransactionListRowPosition(index, rowCount)}
                         />

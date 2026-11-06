@@ -45,7 +45,7 @@ interface Props {
     readonly errorMessage: ReactNode;
     readonly cardTestID?: string;
     readonly buttonTestID?: string;
-    readonly onYes: Effect.Effect<boolean, unknown, AppServices>;
+    readonly onYes: Effect.Effect<boolean, Cause.YieldableError, AppServices>;
     readonly onComplete: () => void;
     readonly onDismiss: () => void;
 }

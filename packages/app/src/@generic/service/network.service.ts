@@ -45,7 +45,7 @@ export class NetworkService extends Context.Service<NetworkService>()('@budgie/a
         yield* Effect.forkScoped(
             Effect.tryPromise({
                 try: () => getNetworkStateAsync(),
-                catch: cause => new NativeCallError({ cause })
+                catch: cause => NativeCallError.make({ cause })
             }).pipe(
                 Effect.flatMap(publishNetworkState),
                 Effect.timeout(Duration.seconds(1)),

@@ -14,6 +14,7 @@ import { useLongPressHold } from '../../hook/use-long-press-hold.hook';
 import { AiSubsystemStatusSnapshotInterface } from '../../interface/ai-subsystem-status-snapshot.interface';
 
 import type { AppServices } from '../../../@generic/runtime/app.runtime';
+import type * as Cause from 'effect/Cause';
 
 interface Props {
     readonly snapshot: AiSubsystemStatusSnapshotInterface;
@@ -22,7 +23,7 @@ interface Props {
     readonly rebuildAlertTitle: string;
     readonly rebuildAlertMessage: string;
     readonly rebuildLogKey: string;
-    readonly onRebuild: Effect.Effect<void, unknown, AppServices>;
+    readonly onRebuild: Effect.Effect<void, Cause.YieldableError, AppServices>;
 }
 
 export const AiSubsystemStatusCardLayout = (props: Props) => {

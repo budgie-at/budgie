@@ -10,8 +10,11 @@ interface Props<T extends string> {
     readonly segment: SegmentedControlSegmentInterface<T>;
     readonly isActive: boolean;
     readonly disabled: boolean;
+    readonly maxFontSizeMultiplier?: number;
     readonly onPress: (value: T) => void;
 }
+
+const SEGMENT_HIT_SLOP = { top: 6, bottom: 6 } as const;
 
 const labelVariants = cva('text-[13px]', {
     variants: {
@@ -20,7 +23,8 @@ const labelVariants = cva('text-[13px]', {
     }
 });
 
-export const SegmentedControlItem = <T extends string>({ segment, isActive, disabled, onPress }: Props<T>) => {
+export const SegmentedControlItem = <T extends string>(props: Props<T>) => {
+    const { segment, isActive, disabled, onPress, maxFontSizeMultiplier = MAX_FONT_SIZE_MULTIPLIER } = props;
     const handlePress = () => void onPress(segment.value);
 
     const isSelected = isActive && !disabled;
@@ -31,7 +35,7 @@ export const SegmentedControlItem = <T extends string>({ segment, isActive, disa
             accessibilityRole="tab"
             accessibilityState={accessibilityState}
             className="flex-1 items-center justify-center px-md py-sm active:scale-100"
-            hitSlop={0}
+            hitSlop={SEGMENT_HIT_SLOP}
             disabled={disabled}
             testID={segment.testID}
             onPress={handlePress}
@@ -40,7 +44,7 @@ export const SegmentedControlItem = <T extends string>({ segment, isActive, disa
                 numberOfLines={1}
                 adjustsFontSizeToFit
                 minimumFontScale={0.6}
-                maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+                maxFontSizeMultiplier={maxFontSizeMultiplier}
                 className={labelVariants({ isActive: isSelected, disabled })}
             >
                 {segment.label}

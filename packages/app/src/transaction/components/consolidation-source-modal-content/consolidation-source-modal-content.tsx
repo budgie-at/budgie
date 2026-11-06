@@ -1,15 +1,21 @@
-import { UserIconNameEnum } from '@budgie/contracts';
-import { t } from '@lingui/core/macro';
-import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
+import { TransactionConsolidationTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { Trans, useLingui } from '@lingui/react/macro';
+import { Text } from 'react-native';
 
-import { EmptyFn, isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
+import { EmptyFn, isDefined, isEmptyArray } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/component/button/button';
-import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
+import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
 import { useGetConsolidationSourcesQuery } from '../../query/use-get-consolidation-sources.query';
 import { getTransactionListRowPosition } from '../../utils/get-transaction-list-row-position.util';
 import { ConsolidationSourceRow } from '../consolidation-source-row/consolidation-source-row';
+import { TransactionPickerAction } from '../transaction-picker-action/transaction-picker-action';
+import { TransactionPickerContext } from '../transaction-picker-context/transaction-picker-context';
+import { TransactionPickerEmpty } from '../transaction-picker-empty/transaction-picker-empty';
+import { TransactionPickerFailure } from '../transaction-picker-failure/transaction-picker-failure';
+import { TransactionPickerSheetHeader } from '../transaction-picker-sheet-header/transaction-picker-sheet-header';
+import { TransactionPickerSheet } from '../transaction-picker-sheet/transaction-picker-sheet';
 
 import { ConsolidationSourceModalSelector } from './consolidation-source-modal-content.selector';
 
@@ -19,89 +25,66 @@ interface Props {
     readonly onRevertSuccess: EmptyFn;
 }
 
-const COMPACT_SOURCE_LIST_LIMIT = 2;
-
 export const ConsolidationSourceModalContent = ({ transactionId, onClose, onRevertSuccess }: Props) => {
-    const { sources, consolidationType, hasError, isLoading } = useGetConsolidationSourcesQuery(transactionId);
+    const { t } = useLingui();
+    const largeText = useIsAccessibilityTextSize();
+    const { sources, consolidationType, hasError, isLoading, retry } = useGetConsolidationSourcesQuery(transactionId);
     const revertConsolidation = useRevertConsolidation(transactionId, onRevertSuccess);
+    const sourceTitle = consolidationType === TransactionConsolidationTypeEnum.REFUND ? t`Refunds` : t`Sources`;
+    const contextLabel = consolidationType === TransactionConsolidationTypeEnum.REFUND ? t`Original expense` : t`Original transaction`;
+    const showEmptyState = isEmptyArray(sources) && !hasError;
+    const isRevertDisabled = isLoading || hasError || isEmptyArray(sources) || !isDefined(consolidationType);
 
-    const hasSources = isNotEmptyArray(sources);
-    const showEmptyState = isEmptyArray(sources) && !isLoading && !hasError;
-    const showRevert = isDefined(consolidationType);
-    const useCompactSourceList = sources.length <= COMPACT_SOURCE_LIST_LIMIT;
-    const useFlexibleContainer = isLoading || showEmptyState || (hasSources && !useCompactSourceList);
-    const containerClassName = useFlexibleContainer ? 'flex-1' : '';
-    const footerClassName = showRevert ? 'flex-row gap-x-md' : '';
-    const sourceRows = sources.map((source, index) => (
-        <ConsolidationSourceRow
-            key={source.entryId}
-            source={source}
-            position={getTransactionListRowPosition(index, sources.length)}
-            consolidationType={consolidationType}
-            testID={ConsolidationSourceModalSelector.Row(index)}
+    const separationAction = (
+        <TransactionPickerAction
+            label={t`Separate all`}
+            onPress={revertConsolidation}
+            disabled={isRevertDisabled}
+            testID={ConsolidationSourceModalSelector.RevertButton}
         />
-    ));
+    );
+    const pinnedFooter = largeText ? null : separationAction;
+    const scrollFooter = largeText ? separationAction : null;
 
     return (
-        <View className={containerClassName}>
-            {hasError ? (
-                <Text className="px-xl pb-md pt-xl text-sm text-destructive-foreground">
-                    {t`Could not load sources. Please try again.`}
-                </Text>
-            ) : null}
-
-            {isLoading ? (
-                <View className="flex-1 items-center justify-center">
-                    <ActivityIndicator />
-                </View>
-            ) : null}
-
-            {showEmptyState ? (
-                <EmptyState
-                    circleIcon={UserIconNameEnum.GitMerge}
-                    title={t`No source transactions`}
-                    description={t`This consolidated transfer has no moved source entries.`}
-                    className="flex-1 px-xl"
+        <TransactionPickerSheet
+            testID={ConsolidationSourceModalSelector.Picker}
+            header={
+                <TransactionPickerSheetHeader
+                    title={sourceTitle}
+                    closeLabel={t`Done`}
+                    onClose={onClose}
+                    closeTestID={ConsolidationSourceModalSelector.DoneButton}
                 />
-            ) : null}
-
-            {hasSources && useCompactSourceList ? <View className="px-xl pt-3xl pb-2xl">{sourceRows}</View> : null}
-
-            {hasSources && !useCompactSourceList ? (
-                <ScrollView
-                    className="flex-1"
-                    contentContainerClassName="px-xl pt-3xl pb-2xl"
-                    keyboardShouldPersistTaps="handled"
-                    showsVerticalScrollIndicator={false}
-                >
-                    {sourceRows}
-                </ScrollView>
-            ) : null}
-
-            <View className="px-xl pb-xl">
-                <View className={footerClassName}>
-                    <Button
-                        content={t`Done`}
-                        variant="secondary"
-                        size="md"
-                        onPress={onClose}
-                        testID={ConsolidationSourceModalSelector.DoneButton}
-                        className="flex-1"
+            }
+            pinnedFooter={pinnedFooter}
+            scrollFooter={scrollFooter}
+        >
+            <TransactionPickerContext transactionId={transactionId} label={contextLabel} />
+            <LoadingContent isLoading={isLoading} containerClassName="grow shrink-0">
+                {hasError ? <TransactionPickerFailure onRetry={retry} /> : null}
+                {showEmptyState ? (
+                    <TransactionPickerEmpty
+                        icon={UserIconNameEnum.GitMerge}
+                        title={t`No source transactions`}
+                        description={t`There are no linked transactions to show.`}
                     />
-
-                    {showRevert ? (
-                        <Button
-                            content={t`Separate`}
-                            variant="destructive"
-                            size="md"
-                            leftIcon={UserIconNameEnum.Undo2}
-                            onPress={revertConsolidation}
-                            testID={ConsolidationSourceModalSelector.RevertButton}
-                            className="flex-1"
-                        />
-                    ) : null}
-                </View>
-            </View>
-        </View>
+                ) : null}
+                {sources.map((source, index) => (
+                    <ConsolidationSourceRow
+                        key={source.entryId}
+                        source={source}
+                        position={getTransactionListRowPosition(index, sources.length)}
+                        consolidationType={consolidationType}
+                        testID={ConsolidationSourceModalSelector.Row(index)}
+                    />
+                ))}
+            </LoadingContent>
+            {isRevertDisabled ? null : (
+                <Text dynamicTypeRamp="footnote" className="pt-md text-[13px] text-secondary-foreground">
+                    <Trans>Each source becomes a separate transaction.</Trans>
+                </Text>
+            )}
+        </TransactionPickerSheet>
     );
 };

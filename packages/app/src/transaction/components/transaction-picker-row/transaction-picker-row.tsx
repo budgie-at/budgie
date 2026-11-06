@@ -1,16 +1,17 @@
 import { TransactionTypeEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
-import { Text, View } from 'react-native';
+import { cva } from 'class-variance-authority';
+import { View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { TransactionListRowPositionEnum } from '../../enum/transaction-list-row-position.enum';
-import { TransactionRowLayout } from '../transaction-row-layout/transaction-row-layout';
+import { TransactionPickerRowContent } from '../transaction-picker-row-content/transaction-picker-row-content';
 import { TransactionRowSurface } from '../transaction-row-surface/transaction-row-surface';
 
 import type { TransactionPickerItemInterface } from '../../interface/transaction-picker-item.interface';
@@ -23,43 +24,36 @@ interface Props {
     readonly testID?: string;
 }
 
-export const TransactionPickerRow = ({ item, position, isSelected = false, onPress, testID }: Props) => {
-    const { formatMonthAndDay } = useFormatDate();
-    const protectAmount = useProtectedAmountLabel();
+const NORMAL_TEXT_INSET = 52;
 
-    const isIncome = item.type === TransactionTypeEnum.INCOME;
-    const signedAmount = `${isIncome ? '+' : ''}${protectAmount(convertFromMicroUnits(item.amount), item.currencySymbol)}`;
-    const description = isNotEmptyString(item.categoryTitle)
-        ? `${formatMonthAndDay(item.operatedAt)} · ${item.accountTitle} · ${item.categoryTitle}`
-        : `${formatMonthAndDay(item.operatedAt)} · ${item.accountTitle}`;
-    const icon = item.categoryIcon ?? (isIncome ? UserIconNameEnum.BanknoteArrowDown : UserIconNameEnum.BanknoteArrowUp);
-    const iconVariant = isIncome ? 'positive' : 'secondary';
-    const amountClassName = isIncome
-        ? 'text-[15px] font-semibold tabular-nums text-positive-foreground'
-        : 'text-[15px] font-semibold tabular-nums text-primary';
+const pressableVariants = cva('px-xl py-xl active:scale-100 active:opacity-70', {
+    variants: { selected: { true: 'bg-surface-fill' } }
+});
+
+export const TransactionPickerRow = ({ item, position, isSelected = false, onPress, testID }: Props) => {
+    const { formatMonthAndDayWithTime } = useFormatDate();
+    const protectAmount = useProtectedAmountLabel();
+    const largeText = useIsAccessibilityTextSize();
+    const separatorInset = largeText ? 12 : NORMAL_TEXT_INSET;
+    const selectionSize = largeText ? 32 : 24;
+    const signedAmount = `${item.type === TransactionTypeEnum.INCOME ? '+' : ''}${protectAmount(convertFromMicroUnits(item.amount), item.currencySymbol)}`;
+    const title = isNotEmptyString(item.title) ? item.title : t`No title`;
+    const selectionIcon = isSelected ? UserIconNameEnum.CircleCheck : UserIconNameEnum.Circle;
+    const selection = isDefined(onPress) ? <Icon icon={selectionIcon} size={selectionSize} className="text-primary" /> : null;
     const content = (
-        <TransactionRowLayout
-            icon={<CircleIcon size={36} iconSize={18} radius={18} border={false} icon={icon} variant={iconVariant} />}
-            amount={
-                <View className="shrink-0 items-end gap-y-xxs">
-                    <Text className={amountClassName}>{signedAmount}</Text>
-                    {isSelected ? <Icon icon={UserIconNameEnum.Check} size={16} className="text-positive-foreground" /> : null}
-                </View>
-            }
-        >
-            <Text className="text-[15px] font-semibold text-primary" numberOfLines={1}>
-                {isNotEmptyString(item.title) ? item.title : t`No title`}
-            </Text>
-            <Text className="text-[13px] text-secondary-foreground" numberOfLines={1}>
-                {description}
-            </Text>
-        </TransactionRowLayout>
+        <TransactionPickerRowContent
+            item={item}
+            title={title}
+            date={formatMonthAndDayWithTime(item.operatedAt)}
+            amount={signedAmount}
+            selection={selection}
+        />
     );
 
     if (!isDefined(onPress)) {
         return (
-            <TransactionRowSurface position={position}>
-                <View accessible className="px-3xl py-xl" testID={testID}>
+            <TransactionRowSurface position={position} separatorInset={separatorInset} className="bg-surface-row">
+                <View accessible className="px-xl py-xl" testID={testID}>
                     {content}
                 </View>
             </TransactionRowSurface>
@@ -70,9 +64,9 @@ export const TransactionPickerRow = ({ item, position, isSelected = false, onPre
     const accessibilityState = { selected: isSelected };
 
     return (
-        <TransactionRowSurface position={position}>
+        <TransactionRowSurface position={position} separatorInset={separatorInset} className="bg-surface-row">
             <HapticPressable
-                className="px-3xl py-xl active:scale-100 active:opacity-70"
+                className={pressableVariants({ selected: isSelected })}
                 onPress={handlePress}
                 testID={testID}
                 accessibilityRole="radio"

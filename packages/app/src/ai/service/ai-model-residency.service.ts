@@ -54,13 +54,13 @@ export class AiModelResidencyService extends Context.Service<AiModelResidencySer
                 return;
             }
             if (getStatus(subsystem) !== AiSubsystemStatusEnum.ERROR) {
-                yield* subsystems[subsystem].start();
+                yield* subsystems[subsystem].start;
             }
         });
 
         const unloadWhileUnleased = Effect.fn('AiModelResidencyService.unloadWhileUnleased')(function* (subsystem: AiSubsystemNameEnum) {
             if (!isPositiveNumber(getLeaseCount(subsystem))) {
-                yield* subsystems[subsystem].stop();
+                yield* subsystems[subsystem].stop;
             }
         });
 
@@ -68,7 +68,7 @@ export class AiModelResidencyService extends Context.Service<AiModelResidencySer
             subsystem: AiSubsystemNameEnum
         ) {
             if (isAiEnabled() && !isSuspended && isPositiveNumber(getLeaseCount(subsystem))) {
-                yield* subsystems[subsystem].start();
+                yield* subsystems[subsystem].start;
             }
         });
 
@@ -99,13 +99,11 @@ export class AiModelResidencyService extends Context.Service<AiModelResidencySer
                     return;
                 }
                 clearIdleTimer(subsystem);
-                idleTimers.set(
-                    subsystem,
-                    yield* Effect.forkIn(
-                        Effect.delay(Effect.uninterruptible(lock.withPermit(unloadWhileUnleased(subsystem))), MODEL_IDLE_RELEASE_DELAY_MS),
-                        layerScope
-                    )
+                const idleReleaseFiber = yield* Effect.forkIn(
+                    Effect.delay(Effect.uninterruptible(lock.withPermit(unloadWhileUnleased(subsystem))), MODEL_IDLE_RELEASE_DELAY_MS),
+                    layerScope
                 );
+                idleTimers.set(subsystem, idleReleaseFiber);
             }),
             releaseNow: Effect.fn('AiModelResidencyService.releaseNow')(function* (subsystem: AiSubsystemNameEnum) {
                 leases.set(subsystem, Math.max(0, getLeaseCount(subsystem) - 1));
@@ -118,7 +116,7 @@ export class AiModelResidencyService extends Context.Service<AiModelResidencySer
                     clearIdleTimer(subsystem);
                 });
                 yield* lock.withPermit(
-                    Effect.forEach(Object.values(subsystems), service => service.stop(), {
+                    Effect.forEach(Object.values(subsystems), service => service.stop, {
                         concurrency: 'unbounded',
                         discard: true
                     })
@@ -130,7 +128,7 @@ export class AiModelResidencyService extends Context.Service<AiModelResidencySer
                 yield* lock.withPermit(
                     Effect.forEach(
                         Object.values(AiSubsystemNameEnum),
-                        subsystem => (enabledSubsystems.has(subsystem) ? loadWhileLeased(subsystem) : subsystems[subsystem].stop()),
+                        subsystem => (enabledSubsystems.has(subsystem) ? loadWhileLeased(subsystem) : subsystems[subsystem].stop),
                         { discard: true }
                     )
                 );

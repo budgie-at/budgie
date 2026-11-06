@@ -1,52 +1,26 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/component/button/button';
 import { ConvertToRefundModalSelector } from '../../../app/convert-to-refund-modal.selector';
+import { TransactionPickerAction } from '../transaction-picker-action/transaction-picker-action';
 
 import type { TransactionPickerItemInterface } from '../../interface/transaction-picker-item.interface';
 
 interface Props {
     readonly selectedCandidate: TransactionPickerItemInterface | null;
     readonly showRevert: boolean;
-    readonly onClose: () => void;
     readonly onConvert: () => void;
+    readonly isConverting: boolean;
     readonly onRevert: () => void;
 }
 
-export const ConvertToRefundFooter = ({ selectedCandidate, showRevert, onClose, onConvert, onRevert }: Props) => {
+export const ConvertToRefundFooter = ({ selectedCandidate, showRevert, onConvert, onRevert, isConverting }: Props) => {
     const { t } = useLingui();
-    const isConvertDisabled = !isDefined(selectedCandidate);
-    const leftAction = showRevert ? t`Done` : t`Cancel`;
+    const label = showRevert ? t`Undo Refund` : t`Link refund`;
+    const onPress = showRevert ? onRevert : onConvert;
+    const disabled = !showRevert && !isDefined(selectedCandidate);
+    const testID = showRevert ? ConvertToRefundModalSelector.RevertButton : ConvertToRefundModalSelector.ConvertButton;
 
-    return (
-        <View className="flex-row gap-x-md">
-            <Button content={leftAction} variant="secondary" size="md" onPress={onClose} className="flex-1" />
-            {showRevert ? (
-                <Button
-                    content={t`Undo Refund`}
-                    variant="destructive"
-                    size="md"
-                    leftIcon={UserIconNameEnum.Undo2}
-                    onPress={onRevert}
-                    testID={ConvertToRefundModalSelector.RevertButton}
-                    className="flex-1"
-                />
-            ) : (
-                <Button
-                    content={t`Convert`}
-                    variant="positive"
-                    size="md"
-                    leftIcon={UserIconNameEnum.ReceiptText}
-                    onPress={onConvert}
-                    disabled={isConvertDisabled}
-                    testID={ConvertToRefundModalSelector.ConvertButton}
-                    className="flex-1"
-                />
-            )}
-        </View>
-    );
+    return <TransactionPickerAction label={label} onPress={onPress} disabled={disabled} isLoading={isConverting} testID={testID} />;
 };

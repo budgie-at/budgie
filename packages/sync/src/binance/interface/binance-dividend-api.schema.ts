@@ -1,12 +1,12 @@
 import * as Schema from 'effect/Schema';
 
 const BinanceDividendApiSchema = Schema.Struct({
-    id: Schema.Number,
-    tranId: Schema.Number,
+    id: Schema.Finite,
+    tranId: Schema.Finite,
     asset: Schema.String,
     amount: Schema.String,
-    divTime: Schema.Number,
-    direction: Schema.optionalKey(Schema.Number),
+    divTime: Schema.Finite,
+    direction: Schema.optionalKey(Schema.Finite),
     enInfo: Schema.optionalKey(Schema.String)
 });
 

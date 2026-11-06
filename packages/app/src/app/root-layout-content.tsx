@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-max-depth */
 import { BudgetPeriodCloseService } from '@budgie/budget';
 import { I18nProvider as LinguiProvider } from '@lingui/react';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import { Stack, type NativeStackNavigationOptions } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -110,12 +111,13 @@ const handleAppStateChange = (isActive: boolean): void => {
                 workload.run(
                     Effect.gen(function* () {
                         if (yield* appDataSyncService.sync()) {
-                            yield* Effect.forkDetach(logAndContinue(historicalMarketDataDrainerService.enqueueActiveAccounts()));
+                            yield* historicalMarketDataDrainerService.enqueueActiveAccounts().pipe(logAndContinue, Effect.forkDetach);
                         }
                     })
                 )
             );
-            yield* logAndContinue(workload.run(budgetPeriodCloseService.closeDuePeriods(new Date())));
+            const now = yield* DateTime.nowAsDate;
+            yield* logAndContinue(workload.run(budgetPeriodCloseService.closeDuePeriods(now)));
         })
     );
 };
@@ -123,7 +125,11 @@ const handleAppStateChange = (isActive: boolean): void => {
 // eslint-disable-next-line max-lines-per-function -- Layout component requires many lines
 export const RootLayoutContent = () => {
     const databaseMigrationStatus = useDatabaseMigration();
-    const [sheetSurface, groupedSheetSurface] = useCSSVariable(['--color-sheet-surface', '--color-grouped-surface']);
+    const [sheetSurface, groupedSheetSurface, sheetGroupedSurface] = useCSSVariable([
+        '--color-sheet-surface',
+        '--color-grouped-surface',
+        '--color-sheet-grouped-surface'
+    ]);
     const sheetOptions = fitToContentsSheetOptions(sheetSurface);
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
     const contactSelectorOptions = formSheetOptions([DETENT_55, DETENT_90], isAccessibilityTextSize ? 1 : 0);
@@ -267,7 +273,10 @@ export const RootLayoutContent = () => {
                                                                     />
                                                                     <Stack.Screen name="budget-period-summary" options={sheetOptions} />
                                                                     <Stack.Screen name="rule-form" />
-                                                                    <Stack.Screen name="rule-selector" options={sheetOptions} />
+                                                                    <Stack.Screen
+                                                                        name="rule-selector"
+                                                                        options={fitToContentsSheetOptions(sheetGroupedSurface)}
+                                                                    />
                                                                     <Stack.Screen name="rule-mcc-selector" options={SELECTOR_OPTIONS} />
                                                                 </Stack>
                                                             </VoiceInputProvider>

@@ -1,5 +1,5 @@
 import { RefundConsolidationService } from '@budgie/consolidation';
-import { useAtomValue } from '@effect/atom-react/Hooks';
+import { useAtomRefresh, useAtomValue } from '@effect/atom-react/Hooks';
 import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
@@ -23,9 +23,11 @@ const refundableExpenseCandidatesAtom = Atom.family(
 
 export const useRefundableExpenseCandidatesQuery = (refundIncomeTransactionId: number, search: string) => {
     const language = useSetting('language');
-    const result = useAtomValue(refundableExpenseCandidatesAtom([refundIncomeTransactionId, search, language]));
+    const atom = refundableExpenseCandidatesAtom([refundIncomeTransactionId, search, language]);
+    const retry = useAtomRefresh(atom);
+    const result = useAtomValue(atom);
     const candidates = AsyncResult.isSuccess(result) ? result.value : [];
-    const errorMessage = AsyncResult.isFailure(result) ? getErrorMessage(Cause.squash(result.cause)) : null;
+    const errorMessage = AsyncResult.isFailure(result) ? result.cause.pipe(Cause.squash, getErrorMessage) : null;
 
-    return { candidates, errorMessage, isLoading: result.waiting };
+    return { candidates, errorMessage, retry, isLoading: result.waiting };
 };

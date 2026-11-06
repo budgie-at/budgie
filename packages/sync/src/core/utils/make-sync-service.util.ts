@@ -2,30 +2,16 @@ import { AccountRepository, Db, InstrumentRepository, SyncRepository } from '@bu
 import { AccountService } from '@budgie/ledger';
 import * as Effect from 'effect/Effect';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { mapSyncAccountToCreateInput } from './map-sync-account-to-create-input.util';
+import { resolveMatchableIban } from './resolve-matchable-iban.util';
 
 import type { SyncAccountPreviewInterface } from '../interface/sync-account-preview.interface';
 import type { SyncAccountInterface } from '../interface/sync-account.interface';
 import type { SyncServiceDefinitionInterface } from '../interface/sync-service-definition.interface';
 import type { AccountEntityInterface } from '@budgie/contracts';
 import type * as HttpClient from 'effect/http/HttpClient';
-
-const IBAN_CHECK_DIGITS_START = 2;
-const IBAN_CHECK_DIGITS_END = 4;
-const IBAN_MIN_VALID_CHECK_DIGITS = 2;
-const IBAN_MAX_VALID_CHECK_DIGITS = 98;
-
-const resolveMatchableIban = (account: SyncAccountInterface): string | null => {
-    if (!isNotEmptyString(account.iban)) {
-        return null;
-    }
-
-    const checkDigits = Number(account.iban.slice(IBAN_CHECK_DIGITS_START, IBAN_CHECK_DIGITS_END));
-
-    return checkDigits >= IBAN_MIN_VALID_CHECK_DIGITS && checkDigits <= IBAN_MAX_VALID_CHECK_DIGITS ? account.iban : null;
-};
 
 export const makeSyncService = Effect.fnUntraced(function* (
     definition: SyncServiceDefinitionInterface,
@@ -58,7 +44,9 @@ export const makeSyncService = Effect.fnUntraced(function* (
             ...matchedExternalIds
         ]);
 
-        return accounts.filter(account => ![account.id, resolveMatchableIban(account)].some(key => isDefined(key) && matchedKeys.has(key)));
+        return accounts.filter(
+            account => ![account.id, resolveMatchableIban(account.iban)].some(key => isDefined(key) && matchedKeys.has(key))
+        );
     };
 
     const findExistingSyncAccount = Effect.fnUntraced(function* (account: SyncAccountInterface) {
@@ -67,7 +55,7 @@ export const makeSyncService = Effect.fnUntraced(function* (
             return existingByExternalId;
         }
 
-        const matchableIban = resolveMatchableIban(account);
+        const matchableIban = resolveMatchableIban(account.iban);
 
         if (isDefined(matchableIban)) {
             const existingByIban = yield* accountRepository.findByIbans([matchableIban]);
@@ -82,7 +70,7 @@ export const makeSyncService = Effect.fnUntraced(function* (
     return {
         findAccountsByExternalId,
         excludeExternalAccounts: Effect.fn('AbstractSyncService.excludeExternalAccounts')(function* (accounts: SyncAccountInterface[]) {
-            const externalAccounts = yield* accountRepository.findExternal();
+            const externalAccounts = yield* accountRepository.findExternal;
             const aliases = yield* accountRepository.findExternalIdAliases(accounts.map(account => account.id));
 
             return excludeMatchingAccounts(
@@ -93,7 +81,7 @@ export const makeSyncService = Effect.fnUntraced(function* (
         }),
         excludeKnownAccounts: Effect.fn('AbstractSyncService.excludeKnownAccounts')(function* (accounts: SyncAccountInterface[]) {
             const knownAccounts = yield* accountRepository.findIncludingArchivedByExternalKeys(
-                accounts.flatMap(account => [account.id, resolveMatchableIban(account)]).filter(isDefined)
+                accounts.flatMap(account => [account.id, resolveMatchableIban(account.iban)]).filter(isDefined)
             );
             const aliases = yield* accountRepository.findExternalIdAliases(accounts.map(account => account.id));
 
@@ -113,15 +101,14 @@ export const makeSyncService = Effect.fnUntraced(function* (
                 return existingAccount;
             }
 
-            const instruments = yield* instrumentRepository.getAll();
+            const instruments = yield* instrumentRepository.getAll;
             const instrument = instruments.find(item => item.code === account.currencyCode);
             if (!isDefined(instrument)) {
                 return yield* Effect.die(new Error(`Instrument not found for currency: ${account.currencyCode}`));
             }
 
-            const [createdAccount] = Object.values(
-                yield* accountService.bulkCreate([mapSyncAccountToCreateInput(definition, account, instrument.id)])
-            );
+            const createdAccounts = yield* accountService.bulkCreate([mapSyncAccountToCreateInput(definition, account, instrument.id)]);
+            const [createdAccount] = Object.values(createdAccounts);
             if (!isDefined(createdAccount)) {
                 return yield* Effect.die(new Error('Failed to create sync account'));
             }
@@ -133,13 +120,15 @@ export const makeSyncService = Effect.fnUntraced(function* (
             isParked: (account: SyncAccountInterface) => boolean = () => false
         ) {
             const existingByExternalIdMap = yield* findAccountsByExternalId(accounts.map(account => account.id));
-            const existingByIban = yield* accountRepository.findByIbans(accounts.map(resolveMatchableIban).filter(isDefined));
+            const existingByIban = yield* accountRepository.findByIbans(
+                accounts.map(account => resolveMatchableIban(account.iban)).filter(isDefined)
+            );
             const existingByIbanMap = new Map(existingByIban.map(account => [account.iban, account]));
             const existingSyncs = yield* syncRepository.getByProvider(definition.provider);
             const syncedAccountIds = new Set(existingSyncs.map(sync => sync.accountId));
 
             return accounts.map((account): SyncAccountPreviewInterface => {
-                const matchableIban = resolveMatchableIban(account);
+                const matchableIban = resolveMatchableIban(account.iban);
                 const existingAccount =
                     existingByExternalIdMap.get(account.id) ?? (isDefined(matchableIban) ? existingByIbanMap.get(matchableIban) : null);
 

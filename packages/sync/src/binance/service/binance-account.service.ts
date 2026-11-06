@@ -94,18 +94,17 @@ export class BinanceAccountService extends Context.Service<BinanceAccountService
         });
 
         const createAccount = Effect.fnUntraced(function* (resolvableAccount: BinanceResolvableAccountInterface, integrationId: number) {
-            const createdAccount = Object.values(
-                yield* accountService.bulkCreate([
-                    {
-                        ...mapSyncAccountToCreateInput(
-                            BINANCE_ACCOUNT_DEFINITION,
-                            resolvableAccount.exchangeAccount,
-                            resolvableAccount.instrumentId
-                        ),
-                        integrationId
-                    }
-                ])
-            ).at(0);
+            const createdAccounts = yield* accountService.bulkCreate([
+                {
+                    ...mapSyncAccountToCreateInput(
+                        BINANCE_ACCOUNT_DEFINITION,
+                        resolvableAccount.exchangeAccount,
+                        resolvableAccount.instrumentId
+                    ),
+                    integrationId
+                }
+            ]);
+            const createdAccount = Object.values(createdAccounts).at(0);
             if (!isDefined(createdAccount)) {
                 return yield* Effect.die(new Error('Failed to create Binance account'));
             }
@@ -133,7 +132,7 @@ export class BinanceAccountService extends Context.Service<BinanceAccountService
             findResolvableAccounts: Effect.fn('BinanceAccountService.findResolvableAccounts')(function* (
                 exchangeAccounts: SyncAccountInterface[]
             ) {
-                const instruments = yield* instrumentRepository.getAll();
+                const instruments = yield* instrumentRepository.getAll;
 
                 return exchangeAccounts.map(exchangeAccount => toResolvableAccount(exchangeAccount, instruments)).filter(isDefined);
             }),
@@ -142,7 +141,7 @@ export class BinanceAccountService extends Context.Service<BinanceAccountService
                 integrationId: number
             ) {
                 const exchangeAccountById = new Map(exchangeAccounts.map(account => [account.id, account]));
-                const instruments = yield* instrumentRepository.getAll();
+                const instruments = yield* instrumentRepository.getAll;
 
                 return (codecAccountId: string) => {
                     const canonicalAccountId = canonicalizeAccountId(codecAccountId);
@@ -164,7 +163,7 @@ export class BinanceAccountService extends Context.Service<BinanceAccountService
             assertSameClient: Effect.fn('BinanceAccountService.assertSameClient')(function* (integrationId: number, clientId: string) {
                 const storedClientId = yield* syncIntegrationTokenService.findIntegrationClientId(integrationId);
                 if (isNotEmptyString(storedClientId) && storedClientId !== clientId) {
-                    return yield* new SyncTokenClientMismatchError({
+                    return yield* SyncTokenClientMismatchError.make({
                         provider: SyncProviderEnum.BINANCE,
                         integrationId,
                         message: 'This Binance API key belongs to a different account'

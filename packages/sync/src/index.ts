@@ -5,6 +5,8 @@ export { SyncRateLimitedError } from './core/error/sync-rate-limited.error';
 export { SyncUnauthorizedError } from './core/error/sync-unauthorized.error';
 export { SyncRegionUnavailableError } from './core/error/sync-region-unavailable.error';
 export { SyncDeferredError } from './core/error/sync-deferred.error';
+export { SyncNetworkError } from './core/error/sync-network.error';
+export { SyncConsentExpiredError } from './core/error/sync-consent-expired.error';
 export { SyncInvalidResponseError } from './core/error/sync-invalid-response.error';
 export { SyncTokenAlreadyConnectedError } from './core/error/sync-token-already-connected.error';
 export { SyncTokenClientMismatchError } from './core/error/sync-token-client-mismatch.error';
@@ -56,6 +58,16 @@ export type { BinanceStakingRewardApiInterface } from './binance/interface/binan
 export type { BinanceDividendApiInterface } from './binance/interface/binance-dividend-api.schema';
 export type { BinanceDustLogApiInterface } from './binance/interface/binance-dust-api.schema';
 
+export { EnableBankingSyncService } from './enable-banking/service/enable-banking-sync.service';
+export { EnableBankingCallbackError } from './enable-banking/error/enable-banking-callback.error';
+export { EnableBankingCallbackFailureEnum } from './enable-banking/enum/enable-banking-callback-failure.enum';
+export { EnableBankingErrorCodeEnum } from './enable-banking/enum/enable-banking-error-code.enum';
+export { EnableBankingTokenSchema } from './enable-banking/constant/enable-banking-token.schema';
+export { EnableBankingPendingAuthorizationSchema } from './enable-banking/constant/enable-banking-pending-authorization.schema';
+export type { EnableBankingPendingAuthorizationInterface } from './enable-banking/constant/enable-banking-pending-authorization.schema';
+export type { EnableBankingAuthorizationResultInterface } from './enable-banking/interface/enable-banking-authorization-result.interface';
+export type { EnableBankingBankInterface } from './enable-banking/interface/enable-banking-bank.interface';
+
 export { mapErsteTransaction } from './erste/mapper/erste.mapper';
 
 export type { ErsteRowInterface } from './erste/interface/erste-row.interface';
@@ -64,6 +76,7 @@ export type { PdfTextItemInterface } from './erste/interface/pdf-text-item.inter
 export { SyncWorkload } from './core/port/sync-workload.port';
 export { TransferConsolidationWorkload } from './core/port/transfer-consolidation-workload.port';
 export { SyncFileReader } from './core/port/sync-file-reader.port';
+export { SyncRequestSigner } from './core/port/sync-request-signer.port';
 export { SYNC_PROVIDER_CAPABILITIES } from './core/constant/sync-provider-capabilities.constant';
 export { resolveSyncErrorCode } from './core/utils/resolve-sync-error-code.util';
 export { resolveInitialSyncProgress } from './core/utils/resolve-initial-sync-progress.util';
@@ -105,3 +118,7 @@ export { UnpairedOwnCardTransferRepairService } from './privatbank/service/unpai
 export { PRIVATBANK_DUPLICATE_CANDIDATE_SQL } from './privatbank/constant/privatbank-duplicate-candidate-sql.constant';
 export type { SyncError } from './core/interface/sync-error.type';
 export type { SyncDuplicateRepairPreviewInterface } from './core/interface/sync-duplicate-repair-preview.interface';
+export { SyncAccountContinuationRefusalEnum } from './core/enum/sync-account-continuation-refusal.enum';
+export { SyncAccountContinuationRefusedError } from './core/error/sync-account-continuation-refused.error';
+export { isLiveSync } from './core/utils/is-live-sync.util';
+export type { SyncAccountContinuationChoicesInterface } from './core/interface/sync-account-continuation-choices.interface';

@@ -28,26 +28,22 @@ const copyUniqueSourceDatabase = (sourceDirectoryPath: string, label: string): s
     return sourceDatabasePath;
 };
 
-const buildScoped = (sourceDatabasePath: string) => Effect.scoped(Layer.build(makeTestDbLayer(sourceDatabasePath)));
+const buildScoped = (sourceDatabasePath: string) => makeTestDbLayer(sourceDatabasePath).pipe(Layer.build, Effect.scoped);
 
 describe('test database lifecycle', () => {
     it.effect('removes the temporary database after a post-build assertion fails', () =>
         Effect.gen(function* () {
             const sourceDirectoryPath = mkdtempSync(join(tmpdir(), 'budgie-assertion-source-'));
             const sourceDatabasePath = copyUniqueSourceDatabase(sourceDirectoryPath, 'assertion');
-            const exit = yield* Effect.exit(
-                Effect.scoped(
-                    Effect.gen(function* () {
-                        yield* Layer.build(makeTestDbLayer(sourceDatabasePath));
+            const exit = yield* Effect.gen(function* () {
+                yield* Layer.build(makeTestDbLayer(sourceDatabasePath));
 
-                        return yield* Effect.die(new Error(syntheticAssertionErrorMessage));
-                    })
-                )
-            );
+                return yield* Effect.die(new Error(syntheticAssertionErrorMessage));
+            }).pipe(Effect.scoped, Effect.exit);
 
             rmSync(sourceDirectoryPath, { recursive: true, force: true });
 
-            expect(Exit.isFailure(exit) ? getErrorMessage(Cause.squash(exit.cause)) : '').toBe(syntheticAssertionErrorMessage);
+            expect(Exit.isFailure(exit) ? exit.cause.pipe(Cause.squash, getErrorMessage) : '').toBe(syntheticAssertionErrorMessage);
             expect(getTemporaryDatabaseDirectories(sourceDatabasePath)).toHaveLength(0);
         })
     );
@@ -62,7 +58,7 @@ describe('test database lifecycle', () => {
             rmSync(sourceDirectoryPath, { recursive: true, force: true });
 
             expect(Exit.isFailure(exit)).toBe(true);
-            expect(JSON.stringify(Exit.isFailure(exit) ? Cause.pretty(exit.cause) : '')).toContain('file is not a database');
+            expect(Exit.isFailure(exit) ? Cause.pretty(exit.cause) : '').toContain('file is not a database');
             expect(getTemporaryDatabaseDirectories(sourceDatabasePath)).toHaveLength(0);
         })
     );
@@ -76,7 +72,7 @@ describe('test database lifecycle', () => {
 
             rmSync(sourceDirectoryPath, { recursive: true, force: true });
 
-            expect(Exit.isFailure(exit) ? getErrorMessage(Cause.squash(exit.cause)) : '').toBe(
+            expect(Exit.isFailure(exit) ? exit.cause.pipe(Cause.squash, getErrorMessage) : '').toBe(
                 `Source database cannot be migrated while ${sourceDatabasePath}${sidecarSuffix} exists`
             );
             expect(getTemporaryDatabaseDirectories(sourceDatabasePath)).toHaveLength(0);

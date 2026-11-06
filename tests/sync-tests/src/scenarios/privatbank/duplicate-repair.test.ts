@@ -75,26 +75,24 @@ const seedPrivatbankIncome = ({
     });
 
 const seedCanonicalTransfer = (accountId: number) =>
-    Effect.gen(function* () {
-        return yield* insertOne(TransactionEntityTable, {
-            type: TransactionTypeEnum.TRANSFER,
-            title: 'Canonical transfer',
-            externalId: null,
-            externalSource: null,
-            operatedAt: PRIVATBANK_DUPLICATE_OPERATED_AT,
-            exchangeRate: 1,
-            fromAccountId: accountId,
-            toAccountId: accountId,
-            comment: '',
-            updatedBy: null,
-            consolidationParentTransactionId: null,
-            consolidationType: TransactionConsolidationTypeEnum.TRANSFER_PAIR
-        } satisfies TransactionCreateEntityInterface);
-    });
+    insertOne(TransactionEntityTable, {
+        type: TransactionTypeEnum.TRANSFER,
+        title: 'Canonical transfer',
+        externalId: null,
+        externalSource: null,
+        operatedAt: PRIVATBANK_DUPLICATE_OPERATED_AT,
+        exchangeRate: 1,
+        fromAccountId: accountId,
+        toAccountId: accountId,
+        comment: '',
+        updatedBy: null,
+        consolidationParentTransactionId: null,
+        consolidationType: TransactionConsolidationTypeEnum.TRANSFER_PAIR
+    } satisfies TransactionCreateEntityInterface);
 
 const seedMovedEntry = (canonicalTransactionId: number, sourceTransactionId: number, accountId: number, externalId: string) =>
-    Effect.gen(function* () {
-        yield* insertOne(TransactionEntryEntityTable, {
+    Effect.asVoid(
+        insertOne(TransactionEntryEntityTable, {
             transactionId: canonicalTransactionId,
             accountId,
             type: TransactionEntryTypeEnum.DEBIT,
@@ -104,8 +102,8 @@ const seedMovedEntry = (canonicalTransactionId: number, sourceTransactionId: num
             categoryId: null,
             mccCategoryId: null,
             originalTransactionId: sourceTransactionId
-        } satisfies TransactionEntryCreateEntityInterface);
-    });
+        } satisfies TransactionEntryCreateEntityInterface)
+    );
 
 const seedPrivatbankDebtPayment = (accountId: number, debtAccountId: number) =>
     Effect.gen(function* () {

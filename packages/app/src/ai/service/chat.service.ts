@@ -46,7 +46,7 @@ export class ChatService extends Context.Service<ChatService>()('@budgie/app/Cha
 
                         return model.isReady && isDefined(context)
                             ? runCompletion(context, systemPrompt, userMessage, options)
-                            : Effect.fail(new AiInvokeError({ cause: new AiNotReadyError({ subsystem: AiSubsystemNameEnum.CHAT }) }));
+                            : Effect.fail(AiInvokeError.make({ cause: AiNotReadyError.make({ subsystem: AiSubsystemNameEnum.CHAT }) }));
                     })
                 ),
             interrupt: Effect.gen(function* () {
@@ -54,7 +54,7 @@ export class ChatService extends Context.Service<ChatService>()('@budgie/app/Cha
                 if (isDefined(context)) {
                     yield* Effect.tryPromise({
                         try: () => Promise.resolve(context.stopCompletion()),
-                        catch: cause => new NativeCallError({ cause })
+                        catch: cause => NativeCallError.make({ cause })
                     });
                 }
                 yield* model.contextLock.withPermit(Effect.void);

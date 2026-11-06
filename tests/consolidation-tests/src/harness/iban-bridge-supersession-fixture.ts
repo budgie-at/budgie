@@ -170,7 +170,7 @@ export const seedIbanBridgeSupersessionCompleteRoute = Effect.fnUntraced(functio
 });
 
 export const seedManualSupersessionCandidate = Effect.fnUntraced(function* () {
-    const topology = yield* seedIbanBridgeTopology();
+    const topology = yield* seedIbanBridgeTopology;
     const supersededCanonical = yield* seedIbanBridgeCanonicalTransfer(
         topology.sourceAccount.id,
         topology.bridgeAccount.id,

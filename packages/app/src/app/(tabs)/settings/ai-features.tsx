@@ -20,7 +20,6 @@ export default function AiFeaturesPage() {
     return (
         <GroupedSurface>
             <CollapsibleChromePage
-                scrimClassName="bg-surface"
                 title={t`AI features`}
                 leading={<GoBackButton onPress={goBackToSettings} />}
                 testID={AiFeaturesPageSelector.Container}

@@ -49,7 +49,7 @@ describe('binance/stub-fidelity', () => {
 
             yield* binanceSyncService.sync();
 
-            expect(yield* fetchBinanceTransactions()).toHaveLength(FIAT_ORDER_COUNT);
+            expect(yield* fetchBinanceTransactions).toHaveLength(FIAT_ORDER_COUNT);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -68,7 +68,7 @@ describe('binance/stub-fidelity', () => {
                 yield* binanceSyncService.sync();
 
                 const adaRequests = requestedUrls.filter(url => url.searchParams.get('symbol') === 'ADAUSDT');
-                const tradeIds = (yield* fetchSortedBinanceExternalIds()).filter(externalId =>
+                const tradeIds = (yield* fetchSortedBinanceExternalIds).filter(externalId =>
                     externalId?.startsWith('binance:trade:ADAUSDT:')
                 );
                 expect(adaRequests.map(url => url.searchParams.get('fromId'))).toStrictEqual([null, String(TRADE_BATCH_SIZE + 1)]);

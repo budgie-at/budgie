@@ -1,6 +1,6 @@
 import { NotificationFeedbackType } from 'expo-haptics';
 import { ReactNode, useEffect, useEffectEvent, useRef } from 'react';
-import { AccessibilityInfo, ActivityIndicator, View } from 'react-native';
+import { AccessibilityInfo, ActivityIndicator, ScrollView, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { EmptyFn, isNotEmptyString } from '@rnw-community/shared';
@@ -36,6 +36,8 @@ const DIGIT_ROWS = [
     ['7', '8', '9']
 ] as const;
 
+const CONTENT_CONTAINER_STYLE = { flexGrow: 1 };
+
 export const PinForm = ({
     header,
     currentInput,
@@ -58,7 +60,7 @@ export const PinForm = ({
     const isErrorVisible = hasError && !isBusy;
     const filledDotsCount = hasError || isAccepted ? PIN_LENGTH : currentInput.length;
     const keypadRowGapClassName = isCompact ? 'gap-y-xl' : 'gap-y-3xl';
-    const footerClassName = isCompact ? 'h-[48px] mb-md' : 'h-[56px] mb-3xl';
+    const footerClassName = isCompact ? 'min-h-[48px] mb-md' : 'min-h-[56px] mb-3xl';
 
     const signalRejection = useEffectEvent(() => {
         hapticNotification(NotificationFeedbackType.Error);
@@ -74,8 +76,13 @@ export const PinForm = ({
     }, [hasError]);
 
     return (
-        <View className="flex-1" testID={PinFormSelector.Container}>
-            <View className="flex-1 items-center justify-end">
+        <ScrollView
+            className="flex-1"
+            contentContainerStyle={CONTENT_CONTAINER_STYLE}
+            contentInsetAdjustmentBehavior="never"
+            testID={PinFormSelector.Container}
+        >
+            <View className="grow items-center justify-end">
                 {header}
 
                 <View className="mt-xl">
@@ -119,6 +126,6 @@ export const PinForm = ({
             </View>
 
             <View className={cn('justify-center', footerClassName)}>{footer}</View>
-        </View>
+        </ScrollView>
     );
 };

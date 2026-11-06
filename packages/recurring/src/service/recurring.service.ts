@@ -26,6 +26,7 @@ import type { RecurringTrackedSeriesInterface } from '../interface/recurring-tra
 import type { RecurringSeriesCreateEntityInterface, RecurringSeriesEntityInterface } from '@budgie/contracts';
 
 const HISTORY_MONTHS = 24;
+const startOfHistory = (now: Date): Date => new Date(now.getFullYear(), now.getMonth() - HISTORY_MONTHS, now.getDate());
 const TRACKED_KINDS = [RecurringSeriesKindEnum.EXPENSE, RecurringSeriesKindEnum.INCOME] as const;
 
 export class RecurringService extends Context.Service<RecurringService>()('@budgie/recurring/RecurringService', {
@@ -265,7 +266,7 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
 
         const syncSeries = Effect.fnUntraced(function* (now: Date, isLegacyAdoption: boolean) {
             const { defaultInstrumentId, language } = yield* settingsRepository.getSettings();
-            const since = new Date(now.getFullYear(), now.getMonth() - HISTORY_MONTHS, now.getDate());
+            const since = startOfHistory(now);
             const charges = (yield* Effect.forEach(TRACKED_KINDS, kind =>
                 recurringRepository.findCharges(defaultInstrumentId, language, since, kind)
             )).flat();
@@ -284,20 +285,26 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
         const syncSeriesAdoptingLegacyOnce = (now: Date) =>
             Effect.flatMap(Ref.get(isLegacyAdoptionPending), isPending =>
                 isPending
-                    ? legacyAdoptionLock.withPermits(1)(
-                          Effect.flatMap(Ref.get(isLegacyAdoptionPending), isStillPending =>
+                    ? isLegacyAdoptionPending.pipe(
+                          Ref.get,
+                          Effect.flatMap(isStillPending =>
                               Effect.tap(syncSeries(now, isStillPending), () => Ref.set(isLegacyAdoptionPending, false))
-                          )
+                          ),
+                          legacyAdoptionLock.withPermits(1)
                       )
                     : syncSeries(now, false)
             );
 
         return {
             calendar: Effect.fn('RecurringService.calendar')(function* (year: number, month: number, now: Date) {
-                return projectRecurringMonth(yield* syncSeriesAdoptingLegacyOnce(now), year, month, now, RecurringSeriesKindEnum.EXPENSE);
+                const recurringSeries = yield* syncSeriesAdoptingLegacyOnce(now);
+
+                return projectRecurringMonth(recurringSeries, year, month, now, RecurringSeriesKindEnum.EXPENSE);
             }),
             incomeCalendar: Effect.fn('RecurringService.incomeCalendar')(function* (year: number, month: number, now: Date) {
-                return projectRecurringMonth(yield* syncSeriesAdoptingLegacyOnce(now), year, month, now, RecurringSeriesKindEnum.INCOME);
+                const recurringSeries = yield* syncSeriesAdoptingLegacyOnce(now);
+
+                return projectRecurringMonth(recurringSeries, year, month, now, RecurringSeriesKindEnum.INCOME);
             }),
             setUserState: (seriesId: number, userState: RecurringSeriesUserStateEnum) =>
                 recurringRepository.updateSeries(seriesId, { userState }),

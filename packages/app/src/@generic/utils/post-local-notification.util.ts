@@ -4,7 +4,7 @@ import { Platform } from 'react-native';
 
 import { NativeCallError } from '../error/native-call.error';
 
-const toNativeCallError = (cause: unknown) => new NativeCallError({ cause });
+const toNativeCallError = (cause: unknown) => NativeCallError.make({ cause });
 
 export const postLocalNotification = Effect.fnUntraced(function* (title: string, body: string, data: Record<string, unknown> = {}) {
     if (Platform.OS === 'android') {

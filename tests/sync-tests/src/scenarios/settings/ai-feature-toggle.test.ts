@@ -3,7 +3,7 @@ import { Db, SettingsRepository } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { testDb } from '../../harness/scenario/setup';
+import { testDb } from '../../harness/scenario/test-db';
 
 describe('AI feature mutation', () => {
     it.effect('serializes selected flags with a fresh aggregate and preserves unrelated settings', () =>

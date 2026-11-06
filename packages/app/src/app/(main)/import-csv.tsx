@@ -151,7 +151,7 @@ export default function ImportScreen() {
             }
 
             if (AsyncResult.isFailure(result)) {
-                showErrorToast(t`Could not read CSV file`, getErrorMessage(Cause.squash(result.cause)));
+                showErrorToast(t`Could not read CSV file`, result.cause.pipe(Cause.squash, getErrorMessage));
                 router.back();
             }
         },

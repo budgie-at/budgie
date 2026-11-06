@@ -20,6 +20,10 @@
 These `ExternalSourceEnum` members exist but have no service yet:
 `REVOLUT`, `WISE`, `COINBASE`, `CSV`, `MANUAL`
 
+### Setup screens
+
+A new sync provider composes `SyncSetupPage`, `SyncAccountsStep`, `SyncParkedAccountsSection`, `SyncHistoryStep`, `SyncGuideSteps` and `SyncCredentialRow`, and adds only its own credential step and copy.
+
 ### Composition
 
 The sync services, family factories (`makeSyncService`, `makePollingSyncService`, `makeFileSyncService`),

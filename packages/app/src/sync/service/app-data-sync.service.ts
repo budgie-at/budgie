@@ -1,5 +1,5 @@
 import { AccountBalanceIncrementalService } from '@budgie/ledger';
-import { BinanceSyncService, MonobankSyncService } from '@budgie/sync';
+import { BinanceSyncService, EnableBankingSyncService, MonobankSyncService } from '@budgie/sync';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -18,6 +18,7 @@ export class AppDataSyncService extends Context.Service<AppDataSyncService>()('@
         const exchangeRateBackgroundService = yield* ExchangeRateBackgroundService;
         const monobankSyncService = yield* MonobankSyncService;
         const binanceSyncService = yield* BinanceSyncService;
+        const enableBankingSyncService = yield* EnableBankingSyncService;
         const walletCaptureNativeService = yield* WalletCaptureNativeService;
         const walletCaptureImportService = yield* WalletCaptureImportService;
 
@@ -26,7 +27,7 @@ export class AppDataSyncService extends Context.Service<AppDataSyncService>()('@
                 yield* logAndContinue(accountBalanceIncrementalService.updateAllBalances(false));
                 yield* logAndContinue(walletCaptureNativeService.refreshAccounts());
                 yield* logAndContinue(walletCaptureImportService.drain());
-                yield* logAndContinue(exchangeRateBackgroundService.sync());
+                yield* logAndContinue(exchangeRateBackgroundService.sync);
                 if (yield* workload.hasQueuedUserWork) {
                     return false;
                 }
@@ -37,6 +38,11 @@ export class AppDataSyncService extends Context.Service<AppDataSyncService>()('@
                 }
 
                 yield* logAndContinue(binanceSyncService.sync());
+                if (yield* workload.hasQueuedUserWork) {
+                    return false;
+                }
+
+                yield* logAndContinue(enableBankingSyncService.sync());
 
                 return true;
             }),
@@ -53,6 +59,7 @@ export class AppDataSyncService extends Context.Service<AppDataSyncService>()('@
             ExchangeRateBackgroundService.layer,
             MonobankSyncService.layer,
             BinanceSyncService.layer,
+            EnableBankingSyncService.layer,
             WalletCaptureImportService.layer,
             WalletCaptureNativeService.layer
         ])

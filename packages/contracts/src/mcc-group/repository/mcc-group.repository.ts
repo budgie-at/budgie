@@ -31,8 +31,8 @@ export class MccGroupRepository extends Context.Service<MccGroupRepository>()('@
                         })
                         .returning()
                 ).pipe(Effect.map(([mccGroup]) => mccGroup)),
-            truncate: () => Db.query(db => db.delete(MccGroupEntityTable)),
-            findAll: () => Db.query(db => db.query.MccGroupEntityTable.findMany()),
+            truncate: Db.query(db => db.delete(MccGroupEntityTable)),
+            findAll: Db.query(db => db.query.MccGroupEntityTable.findMany()),
             findByType: (type: string) => Db.query(db => db.query.MccGroupEntityTable.findFirst({ where: { type } }))
         };
     })

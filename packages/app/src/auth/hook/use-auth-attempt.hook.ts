@@ -7,6 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { AuthService } from '../service/auth.service';
 
+import type * as Cause from 'effect/Cause';
 import type * as Fiber from 'effect/Fiber';
 
 interface Attempt {
@@ -37,7 +38,7 @@ export const useAuthAttempt = () => {
     const isInFlight = () => isDefined(attemptRef.current) && !isDefined(attemptRef.current.fiber.pollUnsafe());
 
     const start = (
-        verification: Effect.Effect<boolean, unknown, AuthService>,
+        verification: Effect.Effect<boolean, Cause.YieldableError, AuthService>,
         isPinAttempt: boolean,
         accept: (success: boolean) => void
     ) => {

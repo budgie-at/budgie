@@ -72,9 +72,7 @@ describe('exchange rates', () => {
             const conversion = yield* exchangeRatesService.convertStrict(base.id, quote.id, 10 * PRECISION);
 
             expect(conversion).toStrictEqual({ amount: 25 * PRECISION, exchangeRate: 2.5 });
-        }).pipe(
-            Effect.provide(Layer.mergeAll(TestLayer, makeFakeHttpClientLayer({ base: 'TA6', date: '2026-01-01', rates: { TB6: 2.5 } })))
-        )
+        }).pipe(Effect.provide([TestLayer, makeFakeHttpClientLayer({ base: 'TA6', date: '2026-01-01', rates: { TB6: 2.5 } })]))
     );
 });
 
@@ -254,6 +252,6 @@ describe('base valuation', () => {
             }
 
             expect(rows.find(homeRow => homeRow.account.id === etherAccount.id)?.convertedBalance).toBeGreaterThan(0);
-        }).pipe(Effect.provide(Layer.mergeAll(TestLayer, AccountBalanceRepository.layer.pipe(Layer.provide(TestLayer)))))
+        }).pipe(Effect.provide([TestLayer, AccountBalanceRepository.layer.pipe(Layer.provide(TestLayer))]))
     );
 });

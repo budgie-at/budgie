@@ -19,7 +19,7 @@ import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
 
-import { testDb } from '../../harness/scenario/setup';
+import { testDb } from '../../harness/scenario/test-db';
 import { TestLayer } from '../../harness/scenario/test-runtime';
 import { seed } from '../../harness/seed/seed';
 import { walletCaptureNativeStub } from '../../harness/wallet-capture/wallet-capture-app-intents.stub';
@@ -175,7 +175,7 @@ describe('Wallet capture import creation', () => {
 
             walletCaptureNativeStub.seed([failingCapture, safeCapture]);
             vi.spyOn(transactionRepository, 'bulkCreate').mockReturnValueOnce(
-                Effect.fail(new DbError({ cause: new Error('database unavailable') }))
+                Effect.fail(DbError.make({ cause: new Error('database unavailable') }))
             );
 
             expect(Exit.isFailure(yield* Effect.exit(walletCaptureImportService.drain()))).toBe(true);

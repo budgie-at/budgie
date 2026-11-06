@@ -11,6 +11,7 @@ import { CreateAccountCurrencyField } from '../../../@generic/component/create-a
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
+import { AccountConnectBankRow } from '../../../sync/component/account-connect-bank-row/account-connect-bank-row';
 import { AccountSyncCard } from '../../../sync/component/account-sync-card/account-sync-card';
 import { useAccountUpdateBindings } from '../../hooks/use-account-update-bindings.hook';
 import { useLiabilityAccountForm } from '../../hooks/use-liability-account-form.hook';
@@ -72,6 +73,9 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         >
             {currencyField}
             {isSyncedAccount ? <AccountSyncCard accountId={account.id} /> : null}
+            {account.type === AccountTypeEnum.BANK || account.type === AccountTypeEnum.BANK_SYNC ? (
+                <AccountConnectBankRow accountId={account.id} />
+            ) : null}
         </UpdateAccountScreen>
     );
 };

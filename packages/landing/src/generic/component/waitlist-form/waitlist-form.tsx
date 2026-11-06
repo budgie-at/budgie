@@ -8,7 +8,7 @@ import * as Option from 'effect/Option';
 import { useId, useReducer } from 'react';
 import { ArrowRight, Loader } from 'reicon-react';
 
-import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { emptyFn, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../ui/button';
 import { joinWaitlist } from '../../action/waitlist.action';
@@ -121,7 +121,10 @@ export const WaitlistForm = ({ variant = WaitlistVariantEnum.HERO, showCount = t
         dispatch({ type: WaitlistFormActionTypeEnum.SUBMIT_STARTED });
 
         const outcome = await Effect.runPromise(
-            Effect.tryPromise(async () => await joinWaitlist(email)).pipe(Effect.timeout(WAITLIST_CONFIRMATION_DEADLINE_MS), Effect.option)
+            Effect.tryPromise({ try: async () => await joinWaitlist(email), catch: emptyFn }).pipe(
+                Effect.timeout(WAITLIST_CONFIRMATION_DEADLINE_MS),
+                Effect.option
+            )
         );
 
         if (Option.isNone(outcome)) {

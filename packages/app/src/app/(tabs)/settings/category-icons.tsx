@@ -60,7 +60,6 @@ export default function CategoryIconsPage() {
     return (
         <GroupedSurface>
             <CollapsibleChromePage
-                scrimClassName="bg-surface"
                 title={t`Category icons`}
                 leading={<GoBackButton onPress={handleGoBack} />}
                 testID={CategoryIconsPageSelector.Container}

@@ -67,7 +67,7 @@ const useAutomaticBiometric = (canStart: boolean, attempt: () => boolean) => {
             return emptyFn;
         }
 
-        const automaticBiometricFiber = appRuntime.runFork(Effect.sleep(0).pipe(Effect.andThen(Effect.sync(handleStart))));
+        const automaticBiometricFiber = appRuntime.runFork(Effect.yieldNow.pipe(Effect.andThen(Effect.sync(handleStart))));
 
         return () => void automaticBiometricFiber.interruptUnsafe();
     }, [canStartAutomatically]);

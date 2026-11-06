@@ -9,6 +9,7 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { Icon } from '../../../@generic/component/icon/icon';
 import { cn } from '../../../@generic/utils/cn.util';
 import { FILTER_CHIP_CLASS_NAME } from '../../constant/filter-chip-class-name.constant';
+import { FILTER_CHIP_HIT_SLOP } from '../../constant/filter-chip-hit-slop.constant';
 import { useTransactionAccountFilterModal } from '../../context/transaction-account-filter-modal.context';
 import { useTransactionCategoryFilterModal } from '../../context/transaction-category-filter-modal.context';
 import { useTransactionTagFilterModal } from '../../context/transaction-tag-filter-modal.context';
@@ -62,6 +63,7 @@ export const TransactionFilters = (props: Props) => {
             >
                 {isClearAllVisible ? (
                     <HapticPressable
+                        hitSlop={FILTER_CHIP_HIT_SLOP}
                         onPress={handleClear}
                         className={cn(FILTER_CHIP_CLASS_NAME, 'bg-surface-fill')}
                         testID={TransactionFiltersSelector.ClearAllButton}
