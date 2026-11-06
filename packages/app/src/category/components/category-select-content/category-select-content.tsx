@@ -64,6 +64,7 @@ export const CategorySelectContent = (props: Props) => {
         contentContainerStyle,
         ListEmptyComponent: listEmptyComponent
     };
+    const initialScrollIndex = visibleData.findIndex(item => !item.isEmpty && selectedCategoryIds.includes(item.id));
 
     return (
         <SelectorList
@@ -73,6 +74,7 @@ export const CategorySelectContent = (props: Props) => {
             keyExtractor={keyExtractor}
             renderItem={renderItem}
             options={listOptions}
+            initialScrollIndex={initialScrollIndex}
         />
     );
 };

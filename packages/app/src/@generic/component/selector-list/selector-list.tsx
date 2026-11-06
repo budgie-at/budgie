@@ -1,5 +1,7 @@
 import { useSharedValue } from 'react-native-reanimated';
 
+import { isPositiveNumber } from '@rnw-community/shared';
+
 import { LEGEND_LIST_STYLE } from '../../constant/legend-list.constant';
 import { BudgieLegendList } from '../budgie-legend-list/budgie-legend-list';
 import { LoadingContent } from '../loading-content/loading-content';
@@ -27,10 +29,21 @@ interface Props<Item> {
     readonly listRef?: Ref<LegendListRef>;
     readonly children?: ReactNode;
     readonly isLoading?: boolean;
+    readonly initialScrollIndex?: number;
 }
 
-export const SelectorList = <Item,>({ data, renderItem, keyExtractor, options, listRef, children, isLoading = false }: Props<Item>) => {
+export const SelectorList = <Item,>({
+    data,
+    renderItem,
+    keyExtractor,
+    options,
+    listRef,
+    children,
+    isLoading = false,
+    initialScrollIndex
+}: Props<Item>) => {
     const scrollOffset = useSharedValue(0);
+    const initialScrollProps = isPositiveNumber(initialScrollIndex) ? { initialScrollIndex } : {};
 
     const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
         scrollOffset.set(event.nativeEvent.contentOffset.y);
@@ -40,6 +53,7 @@ export const SelectorList = <Item,>({ data, renderItem, keyExtractor, options, l
         <LoadingContent isLoading={isLoading} containerClassName="flex-1" className="flex-1">
             <BudgieLegendList
                 {...options}
+                {...initialScrollProps}
                 ref={listRef}
                 data={data}
                 renderItem={renderItem}
