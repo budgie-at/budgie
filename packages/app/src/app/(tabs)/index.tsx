@@ -7,7 +7,6 @@ import { isDefined } from '@rnw-community/shared';
 import { GroupedSurface } from '../../@generic/component/grouped-surface/grouped-surface';
 import { SCREEN_CHROME_CONFIG } from '../../@generic/constant/screen-chrome-config.constant';
 import { ScreenChromeThemeProvider } from '../../@generic/provider/screen-chrome-theme.provider';
-import { CashCard } from '../../account/component/cash-card/cash-card';
 import { HomeSectionsList } from '../../account/component/home-sections-list/home-sections-list';
 import { NetWorthCollapsibleHeader } from '../../account/component/net-worth-collapsible-header/net-worth-collapsible-header';
 import { NetWorthComposition } from '../../account/component/net-worth-composition/net-worth-composition';
@@ -27,7 +26,7 @@ const HOME_SCREEN_CHROME_CONFIG = {
 };
 
 export default function HomePage() {
-    const { activeAccountCount, balanceSummary, cashAccounts, cashTotal, isLoading, sections } = useHomePageDataQuery();
+    const { activeAccountCount, balanceSummary, isLoading, sections } = useHomePageDataQuery();
     const { bottom } = useSafeAreaInsets();
     const onboardingHref = useOnboardingRedirect();
     const isOnboardingPending = useIsOnboardingPending();
@@ -43,11 +42,10 @@ export default function HomePage() {
     const listHeaderComponent = (
         <View className="mb-lg gap-y-xl pt-xs">
             <View className="px-3xl">
-                <NetWorthComposition sections={sections} cashTotal={cashTotal} />
+                <NetWorthComposition sections={sections} />
             </View>
             <AiDownloadHomeStatus />
             <BudgetWidget />
-            <CashCard accounts={cashAccounts} total={cashTotal} balancesByAccountId={balanceSummary.balancesByAccountId} />
         </View>
     );
 
