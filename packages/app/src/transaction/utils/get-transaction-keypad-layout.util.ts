@@ -28,7 +28,7 @@ export const getTransactionKeypadLayout = (fontScale: number, availableHeight = 
 
     return {
         requiresScrolling: footerHeight + MIN_FORM_VIEWPORT_HEIGHT > availableHeight,
-        rowStyle: { minHeight: rowHeight, maxHeight: rowHeight, columnGap: rowGap },
+        rowStyle: { minHeight: rowHeight, maxHeight: rowHeight, ...(isCompact && { columnGap: rowGap }) },
         confirmRowStyle: { minHeight: actionHeight },
         digitsStyle: { minHeight: digitsHeight, maxHeight: digitsHeight, gap: rowGap }
     };
