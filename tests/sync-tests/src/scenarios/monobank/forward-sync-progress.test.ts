@@ -1,3 +1,4 @@
+import { SyncStatusEnum } from '@budgie/contracts';
 import { MonobankSyncService } from '@budgie/sync';
 import { describe, expect, it, vi } from '@effect/vitest';
 import * as Deferred from 'effect/Deferred';
@@ -120,12 +121,16 @@ describe('monobank/forward-sync-progress', () => {
 
             yield* inWorkload(monobankSyncService.sync());
             yield* Deferred.await(userWorkDone);
-            yield* Effect.forEach(syncIds, syncId =>
+            const syncs = yield* Effect.forEach(syncIds, syncId =>
                 fetchSyncById(syncId).pipe(
-                    Effect.repeat({ until: sync => isDefined(sync.forwardSyncedAt), schedule: Schedule.spaced(RESPONSE_DELAY_MS) })
+                    Effect.repeat({
+                        until: sync => isDefined(sync.forwardSyncedAt) || sync.status === SyncStatusEnum.FAILED,
+                        schedule: Schedule.spaced(RESPONSE_DELAY_MS)
+                    })
                 )
             );
 
+            expect(syncs.map(sync => sync.status)).not.toContain(SyncStatusEnum.FAILED);
             expect([...requestedAccounts].sort()).toEqual(accountExternalIds);
         }).pipe(withAutoAdvanceClock, Effect.provide(TestLayer))
     );
