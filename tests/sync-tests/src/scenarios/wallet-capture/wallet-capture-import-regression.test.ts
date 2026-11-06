@@ -7,7 +7,7 @@ import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
 
-import { testDb } from '../../harness/scenario/setup';
+import { testDb } from '../../harness/scenario/test-db';
 import { TestLayer } from '../../harness/scenario/test-runtime';
 import { seed } from '../../harness/seed/seed';
 import { walletCaptureNativeStub } from '../../harness/wallet-capture/wallet-capture-app-intents.stub';

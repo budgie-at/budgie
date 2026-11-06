@@ -355,7 +355,7 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
                 ),
                 inheritInstallmentCategory,
                 repairDebtPaymentCategories: Effect.fn('TransactionDebtSettlementService.repairDebtPaymentCategories')(function* () {
-                    yield* debtEventRepository.relinkAttachmentEntries();
+                    yield* debtEventRepository.relinkAttachmentEntries;
                     yield* transactionEntryRepository.assignDebtPaymentCategory(BORROWING_CATEGORY_ID, AccountDebtTypeEnum.BORROW);
                     yield* transactionEntryRepository.assignDebtPaymentCategory(LENDING_CATEGORY_ID, AccountDebtTypeEnum.LENT);
                 }),

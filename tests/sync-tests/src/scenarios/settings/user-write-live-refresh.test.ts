@@ -42,7 +42,7 @@ describe('settings/user-write-live-refresh', () => {
             });
 
             expect(yield* countSettledTransactionBoundaries(budgetService.deleteBudget(budget.id))).toBe(1);
-            expect(yield* budgetRepository.findMain()).toBeUndefined();
+            expect(yield* budgetRepository.findMain).toBeUndefined();
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -51,7 +51,7 @@ describe('settings/user-write-live-refresh', () => {
             const onboardingService = yield* OnboardingService;
             const settingsRepository = yield* SettingsRepository;
 
-            expect(yield* countSettledTransactionBoundaries(onboardingService.complete())).toBe(1);
+            expect(yield* countSettledTransactionBoundaries(onboardingService.complete)).toBe(1);
             expect((yield* settingsRepository.getSettings()).isOnboardingCompleted).toBe(true);
 
             expect(yield* countSettledTransactionBoundaries(updateSettingsMutation({ isBudgetWidgetEnabled: false }))).toBe(1);

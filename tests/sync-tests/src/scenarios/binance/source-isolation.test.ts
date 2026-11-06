@@ -38,7 +38,7 @@ describe('binance/source-isolation', () => {
 
             yield* binanceSyncService.sync();
 
-            expect(yield* fetchBinanceTransactions()).toHaveLength(2);
+            expect(yield* fetchBinanceTransactions).toHaveLength(2);
             expect((yield* fetchSyncById(sync.id)).status).not.toBe(SyncStatusEnum.FAILED);
         }).pipe(Effect.provide(TestLayer))
     );
@@ -51,7 +51,7 @@ describe('binance/source-isolation', () => {
 
             yield* binanceSyncService.sync();
 
-            expect(yield* fetchBinanceTransactions()).toHaveLength(2);
+            expect(yield* fetchBinanceTransactions).toHaveLength(2);
             expect((yield* fetchHistoryProgress(token))['EARN']).toBeUndefined();
             const failedSync = yield* fetchSyncById(sync.id);
             expect(failedSync.status).toBe(SyncStatusEnum.FAILED);

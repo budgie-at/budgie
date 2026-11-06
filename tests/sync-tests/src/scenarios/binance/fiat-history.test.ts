@@ -46,7 +46,7 @@ describe('binance/fiat-history', () => {
 
             yield* binanceSyncService.sync();
 
-            expect(yield* fetchSortedBinanceExternalIds()).toEqual(['fiat-old']);
+            expect(yield* fetchSortedBinanceExternalIds).toEqual(['fiat-old']);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -64,7 +64,7 @@ describe('binance/fiat-history', () => {
 
             yield* binanceSyncService.sync();
 
-            expect(yield* fetchSortedBinanceExternalIds()).toHaveLength(isImported ? 1 : 0);
+            expect(yield* fetchSortedBinanceExternalIds).toHaveLength(isImported ? 1 : 0);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -111,7 +111,7 @@ describe('binance/fiat-history', () => {
             );
             yield* binanceSyncService.sync();
 
-            expect(yield* fetchSortedBinanceExternalIds()).toEqual(['fiat-deep']);
+            expect(yield* fetchSortedBinanceExternalIds).toEqual(['fiat-deep']);
             expect(fiatWindows.map(window => window.startMs)).toEqual([HISTORY_START_MS, HISTORY_START_MS]);
         }).pipe(Effect.provide(TestLayer))
     );

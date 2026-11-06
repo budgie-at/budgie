@@ -4,9 +4,7 @@ import { RuleEngineService, RuleMatcherService, RuleService } from '@budgie/rule
 import * as Clock from 'effect/Clock';
 import * as Layer from 'effect/Layer';
 
-export const testDbHandle = await buildTestDb();
-
-export const testDb = testDbHandle.database;
+export const testDb = await buildTestDb();
 
 export const RuleServicesLayer = Layer.mergeAll(RuleEngineService.layer, RuleMatcherService.layer, RuleService.layer).pipe(
     Layer.provideMerge(makeTestPlatformLayer(testDb)),

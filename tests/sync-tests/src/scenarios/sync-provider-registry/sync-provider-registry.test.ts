@@ -2,12 +2,13 @@ import { ExternalSourceEnum } from '@budgie/contracts';
 import { ErsteSyncService, MonobankSyncService, SyncProviderRegistryService, SYNC_PROVIDER_CAPABILITIES } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
+import * as Random from 'effect/Random';
 
 import { seed, TestLayer } from '../../harness';
 
 const seedAccount = () =>
     Effect.gen(function* () {
-        return yield* seed.account({ externalId: `test-${Math.random()}`, instrumentId: 1 });
+        return yield* seed.account({ externalId: `test-${yield* Random.next}`, instrumentId: 1 });
     });
 
 const resolveServiceForProvider = Effect.fnUntraced(function* (provider: ExternalSourceEnum) {

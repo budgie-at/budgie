@@ -91,7 +91,7 @@ describe('binance/simple-earn', () => {
 
             yield* binanceSyncService.sync();
 
-            const externalIds = yield* fetchSortedBinanceExternalIds();
+            const externalIds = yield* fetchSortedBinanceExternalIds;
             expect(externalIds).toStrictEqual(
                 [`binance:earn:USDT:${buildEarnDayKey(firstReward)}`, `binance:earn:USDT:${buildEarnDayKey(lastReward)}`].sort()
             );
@@ -113,7 +113,7 @@ describe('binance/simple-earn', () => {
 
             yield* binanceSyncService.sync();
 
-            const externalIds = yield* fetchSortedBinanceExternalIds();
+            const externalIds = yield* fetchSortedBinanceExternalIds;
             expect(externalIds).toStrictEqual(
                 [
                     `binance:earn:USDT:${buildEarnDayKey(previousMonth)}`,
@@ -133,13 +133,13 @@ describe('binance/simple-earn', () => {
             binanceStub.earnRewards([buildBinance.earnReward({ asset: 'USDT', rewards: '0.5', time: rewardTime })]);
 
             yield* binanceSyncService.sync();
-            expect(yield* fetchBinanceTransactions()).toHaveLength(1);
+            expect(yield* fetchBinanceTransactions).toHaveLength(1);
 
             resetBinanceSyncForResync();
             binanceStub.earnRewards([buildBinance.earnReward({ asset: 'USDT', rewards: '0.5', time: rewardTime })]);
             yield* binanceSyncService.sync();
 
-            expect(yield* fetchBinanceTransactions()).toHaveLength(1);
+            expect(yield* fetchBinanceTransactions).toHaveLength(1);
         }).pipe(Effect.provide(TestLayer))
     );
 });

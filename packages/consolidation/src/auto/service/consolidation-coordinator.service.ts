@@ -281,7 +281,7 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
             ];
 
             const bridgeClaimRepairFamily = makeConsolidationFamilyStrategy({
-                findCandidates: () => consolidationCandidateRepository.findBridgeClaimedRepairCandidates(),
+                findCandidates: () => consolidationCandidateRepository.findBridgeClaimedRepairCandidates,
                 consolidateCandidate: candidate => consolidationRepairExecutorService.unconsolidateBridgeClaimedTransferPair(candidate),
                 getSourceTransactionIds: candidate => [candidate.canonicalTransferId, candidate.claimedIncomeTransactionId]
             });
@@ -316,7 +316,7 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                 new Set(movedFeeEntries.map(feeEntry => feeEntry.transactionId)).size;
 
             const repairMissingTransferFees = Effect.fn('ConsolidationCoordinatorService.repairMissingTransferFees')(function* () {
-                const movedFeeEntries = yield* consolidationCandidateRepository.findMissingTransferFeeEntries();
+                const movedFeeEntries = yield* consolidationCandidateRepository.findMissingTransferFeeEntries;
 
                 yield* consolidationMutationService.restoreMovedFeeEntries(movedFeeEntries);
 
@@ -325,7 +325,7 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
 
             const findBridgeClaimedRepairCandidates = Effect.fn('ConsolidationCoordinatorService.findBridgeClaimedRepairCandidates')(
                 function* () {
-                    const candidates = yield* consolidationCandidateRepository.findBridgeClaimedRepairCandidates();
+                    const candidates = yield* consolidationCandidateRepository.findBridgeClaimedRepairCandidates;
                     yield* CONSOLIDATION_YIELD;
 
                     return candidates;
@@ -395,7 +395,7 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                 countManualReviewCandidates: Effect.fn('ConsolidationCoordinatorService.countManualReviewCandidates')(function* () {
                     const [manualReviewCandidateCount, refundReviewCandidates] = yield* Effect.all(
                         [
-                            consolidationCandidateRepository.countTransferPairManualReviewCandidates(),
+                            consolidationCandidateRepository.countTransferPairManualReviewCandidates,
                             refundPairRepository.findReviewCandidates()
                         ],
                         { concurrency: 'unbounded' }
@@ -438,7 +438,9 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                 countMissingTransferFeeRepairCandidates: Effect.fn(
                     'ConsolidationCoordinatorService.countMissingTransferFeeRepairCandidates'
                 )(function* () {
-                    return countCanonicals(yield* consolidationCandidateRepository.findMissingTransferFeeEntries());
+                    const missingFeeEntries = yield* consolidationCandidateRepository.findMissingTransferFeeEntries;
+
+                    return countCanonicals(missingFeeEntries);
                 }),
                 repairMissingTransferFees,
                 repairBridgeClaimedTransferPairs: Effect.fn('ConsolidationCoordinatorService.repairBridgeClaimedTransferPairs')(

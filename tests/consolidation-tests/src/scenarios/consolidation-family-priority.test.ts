@@ -73,7 +73,7 @@ layer(TestLayer)('consolidation/family-priority', it => {
     it.effect('lets the IBAN bridge chain family claim overlapping legs before the plain IBAN bridge family', () =>
         Effect.gen(function* () {
             const transferConsolidationService = yield* TransferConsolidationService;
-            const topology = yield* seedIbanBridgeTopology();
+            const topology = yield* seedIbanBridgeTopology;
             const legs = yield* seedIbanBridgeLegs(topology.bridgeAccount.id, topology.transferMccId);
 
             yield* seedIbanBridgeSourceExpense(topology.sourceAccount.id, topology.transferMccId);

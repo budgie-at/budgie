@@ -76,9 +76,9 @@ describe('monobank/backfill-interruption', () => {
                 expect(requests[1].signal.aborted).toBe(true);
                 expect((yield* fetchSyncById(sync.id)).backwardSyncFromAt).toEqual(savedSync.backwardSyncFromAt);
                 yield* TestClock.adjust(MONOBANK_RATE_LIMIT_MS);
-                const resumedSyncRun = yield* Effect.forkChild(
-                    inWorkload(monobankSyncService.sync((yield* Clock.currentTimeMillis) + 25_000))
-                );
+                const resumedSyncRun = yield* monobankSyncService
+                    .sync((yield* Clock.currentTimeMillis) + 25000)
+                    .pipe(inWorkload, Effect.forkChild);
                 yield* Deferred.await(resumedRequestStarted);
                 expect(requests).toHaveLength(3);
                 expect(requests[2].from).toBe(requests[1].from);
@@ -123,7 +123,7 @@ describe('monobank/backfill-interruption', () => {
                 )
             );
 
-            const initialSyncRun = yield* Effect.forkChild(inWorkload(monobankSyncService.sync()));
+            const initialSyncRun = yield* monobankSyncService.sync().pipe(inWorkload, Effect.forkChild);
             yield* Deferred.await(requestStarted);
             runFork(workload.runUser(Deferred.succeed(userFinished, undefined)));
             yield* TestClock.withLive(Effect.sleep(10));
@@ -136,7 +136,9 @@ describe('monobank/backfill-interruption', () => {
             yield* TestClock.adjust(MONOBANK_RATE_LIMIT_MS);
             yield* TestClock.withLive(Effect.sleep(20));
             expect(requests).toBe(1);
-            const resumedSyncRun = yield* Effect.forkChild(inWorkload(monobankSyncService.sync((yield* Clock.currentTimeMillis) + 25_000)));
+            const resumedSyncRun = yield* monobankSyncService
+                .sync((yield* Clock.currentTimeMillis) + 25000)
+                .pipe(inWorkload, Effect.forkChild);
             yield* Fiber.join(resumedSyncRun);
             expect(requests).toBe(2);
             expect((yield* fetchSyncById(sync.id)).backwardSyncFromAt?.getTime()).toBeLessThan(

@@ -164,7 +164,7 @@ describe('binance/extra-sources', () => {
 
             yield* binanceSyncService.sync();
 
-            expect(yield* fetchSortedBinanceExternalIds()).toEqual([`binance:dust:${DUST_LOG_ID}:ADA`, `binance:dust:${DUST_LOG_ID}:USDT`]);
+            expect(yield* fetchSortedBinanceExternalIds).toEqual([`binance:dust:${DUST_LOG_ID}:ADA`, `binance:dust:${DUST_LOG_ID}:USDT`]);
             const adaFee = yield* fetchBinanceEntriesByExternalId(`binance:dust:${DUST_LOG_ID}:ADA:fee`);
             const usdtFee = yield* fetchBinanceEntriesByExternalId(`binance:dust:${DUST_LOG_ID}:USDT:fee`);
             expect(adaFee.map(entry => entry.amount)).toEqual([200]);

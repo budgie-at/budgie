@@ -11,7 +11,7 @@ const EMPTY_MCC_CATEGORIES: MccCategoryEntityInterface[] = [];
 
 export const allMccCategoriesAtom = databaseQueryAtom(
     [MccCategoryEntityTable],
-    Effect.flatMap(MccCategoryRepository, mccCategoryRepository => mccCategoryRepository.findAll())
+    Effect.flatMap(MccCategoryRepository, mccCategoryRepository => mccCategoryRepository.findAll)
 );
 
 export const useGetAllMccCategoriesQuery = () => {

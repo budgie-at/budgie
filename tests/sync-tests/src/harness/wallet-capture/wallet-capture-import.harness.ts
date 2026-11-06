@@ -23,7 +23,7 @@ import { expect, vi } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { testDb } from '../scenario/setup';
+import { testDb } from '../scenario/test-db';
 import { seed } from '../seed/seed';
 
 import type { WalletCaptureRecordInterface } from '@app/wallet-capture/interface/wallet-capture-record.interface';

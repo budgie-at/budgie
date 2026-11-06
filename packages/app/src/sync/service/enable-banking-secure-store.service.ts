@@ -19,7 +19,7 @@ export class EnableBankingSecureStore extends Context.Service<EnableBankingSecur
         const keyName = (applicationId: string) => `enable-banking.key.${applicationId}`;
         const decodePending = Schema.decodeUnknownEffect(Schema.fromJsonString(EnableBankingPendingAuthorizationSchema));
 
-        const storageError = () => new EnableBankingSetupError({ reason: EnableBankingSetupErrorReasonEnum.STORAGE_FAILED });
+        const storageError = () => EnableBankingSetupError.make({ reason: EnableBankingSetupErrorReasonEnum.STORAGE_FAILED });
         const read = (name: string) =>
             Effect.tryPromise({ try: () => SecureStore.getItemAsync(name, PIN_SECURE_STORE_OPTIONS), catch: storageError });
         const write = (name: string, value: string) =>
@@ -32,7 +32,7 @@ export class EnableBankingSecureStore extends Context.Service<EnableBankingSecur
             removeKey: (applicationId: string) => remove(keyName(applicationId)),
             saveKey: (applicationId: string, pem: string) => write(keyName(applicationId), pem),
             savePending: (pending: EnableBankingPendingAuthorizationInterface) => write(pendingName, JSON.stringify(pending)),
-            removePending: () => remove(pendingName),
+            removePending: remove(pendingName),
             readPending: Effect.fn('EnableBankingSecureStore.readPending')(function* () {
                 const stored = yield* read(pendingName);
 

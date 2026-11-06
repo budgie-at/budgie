@@ -16,7 +16,7 @@ import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import { expect } from 'vitest';
 
-import { testDb } from '../scenario/setup';
+import { testDb } from '../scenario/test-db';
 import { seed } from '../seed/seed';
 
 import { RUN_DEADLINE_MS, STALE_SYNC_AGE_MS } from './binance-clock';
@@ -30,7 +30,7 @@ const EARN_DAY_KEY_LENGTH = 10;
 const DEFAULT_RECENT_DAY_OF_MONTH = 15;
 const SPOT_QUOTE_FREE = '100';
 const decodeHistoryProgress = Schema.decodeUnknownSync(
-    Schema.fromJsonString(Schema.Record(Schema.String, Schema.Struct({ headAt: Schema.Number, tailAt: Schema.Number })))
+    Schema.fromJsonString(Schema.Record(Schema.String, Schema.Struct({ headAt: Schema.Finite, tailAt: Schema.Finite })))
 );
 
 export const fetchHistoryProgress = (token: string) =>
@@ -40,28 +40,18 @@ export const fetchHistoryProgress = (token: string) =>
         return decodeHistoryProgress(integration.historyProgress ?? '{}');
     });
 
-export const fetchBinanceTransactions = () =>
-    Effect.gen(function* () {
-        return yield* testDb
-            .select()
-            .from(TransactionEntityTable)
-            .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.BINANCE));
-    });
+export const fetchBinanceTransactions = Effect.suspend(() =>
+    testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.BINANCE))
+);
 
-export const fetchSortedBinanceExternalIds = () =>
-    Effect.map(fetchBinanceTransactions(), transactions =>
-        transactions.map(transaction => transaction.externalId).sort((left, right) => (left ?? '').localeCompare(right ?? ''))
-    );
+export const fetchSortedBinanceExternalIds = Effect.map(fetchBinanceTransactions, transactions =>
+    transactions.map(transaction => transaction.externalId).sort((left, right) => (left ?? '').localeCompare(right ?? ''))
+);
 
 export const fetchBinanceEntriesByExternalId = (externalId: string) =>
-    Effect.gen(function* () {
-        return yield* testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.externalId, externalId));
-    });
+    testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.externalId, externalId));
 
-export const seedCryptoInstrument = (code: string) =>
-    Effect.gen(function* () {
-        return yield* seed.instrument({ code, name: code, symbol: code, type: InstrumentTypeEnum.CRYPTO });
-    });
+export const seedCryptoInstrument = (code: string) => seed.instrument({ code, name: code, symbol: code, type: InstrumentTypeEnum.CRYPTO });
 
 export const setupAdaUsdtFixture = (
     mode: SyncModeEnum,
@@ -101,7 +91,7 @@ export const setupUsdtSpotFixtureWithBalances = (baseAsset: string, baseFree: st
 
 export const expectSingleBinanceTransaction = (transactionType: TransactionTypeEnum, externalId: string) =>
     Effect.gen(function* () {
-        const transactions = yield* fetchBinanceTransactions();
+        const transactions = yield* fetchBinanceTransactions;
 
         expect(transactions).toHaveLength(1);
         expect(transactions[0].type).toBe(transactionType);
@@ -137,13 +127,13 @@ export const resetBinanceSyncForResync = (): void => {
 export const expectNoDuplicateAfterResync = Effect.fnUntraced(function* (restubForResync: () => void) {
     const binanceSyncService = yield* BinanceSyncService;
 
-    expect(yield* fetchBinanceTransactions()).toHaveLength(1);
+    expect(yield* fetchBinanceTransactions).toHaveLength(1);
 
     resetBinanceSyncForResync();
     restubForResync();
     yield* binanceSyncService.sync();
 
-    expect(yield* fetchBinanceTransactions()).toHaveLength(1);
+    expect(yield* fetchBinanceTransactions).toHaveLength(1);
 });
 
 export const setupFiatScenario = (mode = SyncModeEnum.FORWARD) =>

@@ -197,9 +197,8 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private static readonly decodeCredentials = Schema.decodeUnknownOption(Schema.fromJsonString(BinanceCredentialsSchema));
 
     readonly getAccounts = Effect.fn('BinanceSignedClient.getAccounts')(function* (this: BinanceSignedClient) {
-        const balanceByAsset = this.buildSpotBalanceMap(
-            yield* this.signedRequest(BinanceAssetBalanceListApiSchema, SPOT_BALANCE_ENDPOINT, 'POST')
-        );
+        const spotBalances = yield* this.signedRequest(BinanceAssetBalanceListApiSchema, SPOT_BALANCE_ENDPOINT, 'POST');
+        const balanceByAsset = this.buildSpotBalanceMap(spotBalances);
         const earnPositions = yield* this.collectPages(current =>
             this.fetchEarnPage(BinanceEarnPositionListApiSchema, EARN_POSITION_ENDPOINT, { current, size: EARN_PAGE_SIZE })
         );
@@ -232,13 +231,13 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         const restrictions = yield* this.signedRequest(BinanceApiRestrictionsApiSchema, API_RESTRICTIONS_ENDPOINT, 'GET').pipe(
             Effect.catchTag('SyncInvalidResponseError', () =>
                 Effect.fail(
-                    new BinanceKeyPermissionsError({ permissions: [], message: 'Could not verify the Binance API key permissions' })
+                    BinanceKeyPermissionsError.make({ permissions: [], message: 'Could not verify the Binance API key permissions' })
                 )
             )
         );
         const permissions = BinanceSignedClient.FORBIDDEN_KEY_PERMISSIONS.filter(permission => restrictions[permission] === true);
         if (isNotEmptyArray(permissions)) {
-            return yield* new BinanceKeyPermissionsError({
+            return yield* BinanceKeyPermissionsError.make({
                 permissions,
                 message: `Binance API key must be read-only, but has: ${permissions.join(', ')}`
             });
@@ -623,10 +622,9 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
 
     isolateSourceFailure<E, R>(effect: Effect.Effect<number, E, R>) {
         return effect.pipe(
-            Effect.catch(error =>
-                error instanceof SyncNetworkError || error instanceof SyncInvalidResponseError
-                    ? this.recordSourceFailure(error)
-                    : Effect.fail(error)
+            Effect.catchIf(
+                error => Schema.is(SyncNetworkError)(error) || Schema.is(SyncInvalidResponseError)(error),
+                error => this.recordSourceFailure(error)
             )
         );
     }
@@ -643,8 +641,8 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return this.deferredFrontierMsBySource.get(source) ?? null;
     }
 
-    getCapitalPendingFromMs(): number | null {
-        return this.capitalPendingFromMs;
+    getCapitalPendingFromAt(): Date | null {
+        return isDefined(this.capitalPendingFromMs) ? new Date(this.capitalPendingFromMs) : null;
     }
 
     getRejectedCapitalExternalIds(): ReadonlySet<string> {
@@ -674,19 +672,19 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         const { provider } = this;
 
         if (BINANCE_AUTH_ERROR_CODES.has(Number(apiCode))) {
-            return new SyncUnauthorizedError({ provider, message });
+            return SyncUnauthorizedError.make({ provider, message });
         }
 
         switch (status) {
             case HTTP_STATUS_UNAVAILABLE_FOR_LEGAL_REASONS:
-                return new SyncRegionUnavailableError({ provider, message });
+                return SyncRegionUnavailableError.make({ provider, message });
             case HTTP_STATUS_FORBIDDEN:
             case HTTP_STATUS_IM_A_TEAPOT:
                 return this.buildRateLimitedError(message, headers, BINANCE_BLOCK_BACKOFF_MS);
             case HTTP_STATUS_TOO_MANY_REQUESTS:
                 return this.buildRateLimitedError(message, headers, null);
             case HTTP_STATUS_NOT_FOUND:
-                return new SyncInvalidResponseError({ provider, message, apiCode: status });
+                return SyncInvalidResponseError.make({ provider, message, apiCode: status });
             default:
                 return super.classifyApiError(status, message, apiCode, headers);
         }
@@ -723,7 +721,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         const retryAfterSeconds = Number.parseInt(headers[RETRY_AFTER_HEADER] ?? '', 10);
         const retryAfterMs = Number.isNaN(retryAfterSeconds) ? fallbackRetryAfterMs : retryAfterSeconds * MILLISECONDS_PER_SECOND;
 
-        return new SyncRateLimitedError({ provider: this.provider, message, ...(isDefined(retryAfterMs) && { retryAfterMs }) });
+        return SyncRateLimitedError.make({ provider: this.provider, message, ...(isDefined(retryAfterMs) && { retryAfterMs }) });
     }
 
     private fetchWindowOrDefer<T>(
@@ -752,7 +750,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private fetchConvertTransfers(startTimeMs: number, endTimeMs: number) {
         return Effect.map(
             this.walkWindowsBackward(CONVERT_MAX_PERIOD_MS, startTimeMs, endTimeMs, (windowStartMs, windowEndMs) =>
-                Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
+                Effect.gen({ self: this }, function* () {
                     const convertFlows = yield* this.fetchSplittingWindow(
                         (chunkStartMs, chunkEndMs) =>
                             this.signedRequest(BinanceConvertTradeFlowApiSchema, CONVERT_TRADE_FLOW_ENDPOINT, 'GET', {
@@ -787,7 +785,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         eligibleSoldOffBaseAssets: readonly string[],
         initialSymbolTradeCursors: BinanceTradeCursorMapInterface
     ) {
-        return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
+        return Effect.gen({ self: this }, function* () {
             const symbols = yield* this.deriveTradeSymbols(eligibleSoldOffBaseAssets);
             const symbolFetches = yield* Effect.forEach(
                 symbols,
@@ -813,7 +811,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     }
 
     private deriveTradeSymbols(eligibleSoldOffBaseAssets: readonly string[]) {
-        return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
+        return Effect.gen({ self: this }, function* () {
             const balances = yield* this.signedRequest(BinanceAssetBalanceListApiSchema, SPOT_BALANCE_ENDPOINT, 'POST');
             this.noteTouchedAssets(this.collectTouchedAssets(balances));
             const exchangeSymbols = yield* this.resolveExchangeSymbols();
@@ -823,7 +821,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     }
 
     private fetchSymbolTrades(symbol: BinanceTradeSymbolInterface, startTimeMs: number, endTimeMs: number, initialFromId: number | null) {
-        return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
+        return Effect.gen({ self: this }, function* () {
             const transfers: BinanceTransferInterface[] = [];
             let fromId = initialFromId;
             let lastWindowTradeId: number | null = null;
@@ -887,15 +885,14 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         method: HttpMethod,
         params: Record<string, string | number>
     ): Effect.Effect<S['Type'], SyncError, HttpClient.HttpClient> {
-        return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
+        return Effect.gen({ self: this }, function* () {
             if ((yield* Clock.currentTimeMillis) >= this.deadlineAtMs) {
-                return yield* new SyncDeferredError({ provider: this.provider, message: 'Sync deadline reached' });
+                return yield* SyncDeferredError.make({ provider: this.provider, message: 'Sync deadline reached' });
             }
 
-            const credentials = yield* Option.match(this.credentials, {
-                onNone: () => Effect.fail(new SyncUnauthorizedError({ provider: this.provider, message: 'Invalid Binance credentials' })),
-                onSome: Effect.succeed
-            });
+            const credentials = yield* Effect.fromOption(this.credentials, () =>
+                SyncUnauthorizedError.make({ provider: this.provider, message: 'Invalid Binance credentials' })
+            );
 
             yield* this.throttle.waitIfNeeded(endpoint);
             const query = Object.entries({ ...params, recvWindow: SIGNATURE_RECV_WINDOW_MS, timestamp: yield* this.resolveTimestamp() })
@@ -1043,29 +1040,29 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             this.unavailableSources.has(source)
                 ? Effect.succeed(fallback)
                 : effect.pipe(
-                      Effect.catch(error =>
-                          this.isSourceUnavailable(source, error)
-                              ? Effect.sync(() => {
-                                    this.unavailableSources.add(source);
+                      Effect.catchIf(
+                          error => this.isSourceUnavailable(source, error),
+                          () =>
+                              Effect.sync(() => {
+                                  this.unavailableSources.add(source);
 
-                                    return fallback;
-                                })
-                              : Effect.fail(error)
+                                  return fallback;
+                              })
                       )
                   )
         );
     }
 
     private isSourceUnavailable(source: BinanceHistorySourceEnum, error: SyncError): boolean {
-        if (error instanceof SyncRegionUnavailableError) {
+        if (Schema.is(SyncRegionUnavailableError)(error)) {
             return true;
         }
 
-        if (error instanceof SyncInvalidResponseError) {
+        if (Schema.is(SyncInvalidResponseError)(error)) {
             return isDefined(error.apiCode);
         }
 
-        return error instanceof SyncUnauthorizedError && source === BinanceHistorySourceEnum.C2C;
+        return Schema.is(SyncUnauthorizedError)(error) && source === BinanceHistorySourceEnum.C2C;
     }
 
     private defineRewardSource<T>({
@@ -1199,7 +1196,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
 
         return isDefined(decoded)
             ? Effect.succeed(decoded)
-            : Effect.fail(new SyncInvalidResponseError({ provider: this.provider, message: `Invalid Binance account id "${accountId}"` }));
+            : Effect.fail(SyncInvalidResponseError.make({ provider: this.provider, message: `Invalid Binance account id "${accountId}"` }));
     }
 
     private emptySources(overrides: Partial<BinanceTransactionSourcesInterface>): BinanceTransactionSourcesInterface {

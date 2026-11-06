@@ -61,7 +61,9 @@ export class BinanceSourceCommitService extends Context.Service<BinanceSourceCom
         const findDeletedExternalIds = Effect.fnUntraced(function* (token: string) {
             const accountIds = (yield* findIntegrationAccounts(token)).map(account => account.id);
 
-            return new Set(yield* transactionRepository.findDeletedExternalIdsByExternalSource(provider, accountIds));
+            const deletedExternalIds = yield* transactionRepository.findDeletedExternalIdsByExternalSource(provider, accountIds);
+
+            return new Set(deletedExternalIds);
         });
 
         const buildRunAccountResolver = Effect.fnUntraced(function* (token: string, exchangeAccounts: SyncAccountInterface[]) {
@@ -82,7 +84,8 @@ export class BinanceSourceCommitService extends Context.Service<BinanceSourceCom
                 return;
             }
 
-            const consolidationScope = buildConsolidationScopeFromTransactions(yield* transactionRepository.findByIds(transactionIds));
+            const loadedTransactions = yield* transactionRepository.findByIds(transactionIds);
+            const consolidationScope = buildConsolidationScopeFromTransactions(loadedTransactions);
             if (isDefined(consolidationScope)) {
                 yield* syncWorkload.enqueueTransferConsolidation(consolidationScope);
             }
@@ -124,12 +127,11 @@ export class BinanceSourceCommitService extends Context.Service<BinanceSourceCom
                 }
                 const account = yield* resolveAccount(transaction.accountId);
                 if (isDefined(account)) {
-                    inputs.push(
-                        yield* binanceSourceQuoteService.applyToInput(
-                            mapBankTransactionToCreateInput(transaction, account.id, null, provider),
-                            transaction
-                        )
+                    const quotedInput = yield* binanceSourceQuoteService.applyToInput(
+                        mapBankTransactionToCreateInput(transaction, account.id, null, provider),
+                        transaction
                     );
+                    inputs.push(quotedInput);
                 }
             }
 
@@ -141,7 +143,8 @@ export class BinanceSourceCommitService extends Context.Service<BinanceSourceCom
             token: string,
             exchangeAccounts: SyncAccountInterface[]
         ) {
-            const inputs = yield* mapBinanceTransfersToInputs(transfers, yield* buildRunAccountResolver(token, exchangeAccounts));
+            const runAccountResolver = yield* buildRunAccountResolver(token, exchangeAccounts);
+            const inputs = yield* mapBinanceTransfersToInputs(transfers, runAccountResolver);
 
             let createdCount = 0;
             for (let index = 0; index < inputs.length; index += transferChunkSize) {

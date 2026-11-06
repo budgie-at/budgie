@@ -143,12 +143,7 @@ const fetchImportedErsteTransactionCount = () =>
     });
 
 const fetchImportedErsteTransactions = () =>
-    Effect.gen(function* () {
-        return yield* testDb
-            .select()
-            .from(TransactionEntityTable)
-            .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.ERSTE));
-    });
+    testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.ERSTE));
 
 describe('erste/file-import-idempotency', () => {
     beforeEach(() => {

@@ -11,7 +11,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import type { BinanceHistorySourceEnum } from '../enum/binance-history-source.enum';
 
-const BinanceHistoryProgressSchema = Schema.Struct({ headAt: Schema.Number, tailAt: Schema.Number });
+const BinanceHistoryProgressSchema = Schema.Struct({ headAt: Schema.Finite, tailAt: Schema.Finite });
 const BinanceHistoryProgressMapSchema = Schema.Record(Schema.String, BinanceHistoryProgressSchema);
 
 export class BinanceHistoryProgressService extends Context.Service<BinanceHistoryProgressService>()(
@@ -19,6 +19,7 @@ export class BinanceHistoryProgressService extends Context.Service<BinanceHistor
     {
         make: Effect.gen(function* () {
             const bankIntegrationRepository = yield* BankIntegrationRepository;
+            const encodeProgressMap = Schema.encodeEffect(Schema.fromJsonString(BinanceHistoryProgressMapSchema));
             const decodeProgressMap = Schema.decodeUnknownResult(Schema.fromJsonString(BinanceHistoryProgressMapSchema));
 
             const load = Effect.fnUntraced(function* (integrationId: number) {
@@ -31,7 +32,9 @@ export class BinanceHistoryProgressService extends Context.Service<BinanceHistor
 
             return {
                 find: Effect.fn('BinanceHistoryProgressService.find')(function* (integrationId: number, source: BinanceHistorySourceEnum) {
-                    return Option.getOrNull(Record.get(yield* load(integrationId), source));
+                    const historyProgress = yield* load(integrationId);
+
+                    return Option.getOrNull(Record.get(historyProgress, source));
                 }),
                 save: Effect.fn('BinanceHistoryProgressService.save')(function* (
                     integrationId: number,
@@ -39,7 +42,9 @@ export class BinanceHistoryProgressService extends Context.Service<BinanceHistor
                     progress: typeof BinanceHistoryProgressSchema.Type
                 ) {
                     yield* bankIntegrationRepository.updateById(integrationId, {
-                        historyProgress: JSON.stringify({ ...(yield* load(integrationId)), [source]: progress })
+                        historyProgress: yield* encodeProgressMap({ ...(yield* load(integrationId)), [source]: progress }).pipe(
+                            Effect.orDie
+                        )
                     });
                 })
             };

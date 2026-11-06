@@ -139,7 +139,7 @@ describe('rule/rule-application-drainer', () => {
         Effect.gen(function* () {
             const ruleApplicationDrainerService = yield* RuleApplicationDrainerService;
             const { applyRule, onSettled } = yield* arrange;
-            const error = new DbError({ cause: new Error('boom') });
+            const error = DbError.make({ cause: new Error('boom') });
             applyRule.mockReturnValueOnce(Effect.fail(error)).mockReturnValueOnce(Effect.succeed({ applied: 1, failed: 0, total: 1 }));
 
             yield* ruleApplicationDrainerService.enqueueRuleApplication(1, onSettled);

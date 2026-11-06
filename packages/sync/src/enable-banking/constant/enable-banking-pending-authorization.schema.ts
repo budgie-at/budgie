@@ -5,10 +5,10 @@ export const EnableBankingPendingAuthorizationSchema = Schema.Struct({
     applicationId: Schema.String,
     aspspName: Schema.String,
     aspspCountry: Schema.String,
-    integrationId: Schema.NullOr(Schema.Number),
-    connectAccountId: Schema.NullOr(Schema.Number),
+    integrationId: Schema.NullOr(Schema.Finite),
+    connectAccountId: Schema.NullOr(Schema.Finite),
     callbackUrl: Schema.String,
-    expiresAtMs: Schema.Number
+    expiresAtMs: Schema.Finite
 });
 
 export type EnableBankingPendingAuthorizationInterface = typeof EnableBankingPendingAuthorizationSchema.Type;

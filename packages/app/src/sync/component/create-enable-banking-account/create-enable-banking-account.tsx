@@ -1,6 +1,7 @@
 import { EnableBankingSyncService, SyncHistoryDepthEnum, SyncUnauthorizedError } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
+import * as Schema from 'effect/Schema';
 import { router } from 'expo-router';
 import { useEffect, useEffectEvent, useState } from 'react';
 import Toast from 'react-native-toast-message';
@@ -105,15 +106,14 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
         void run(
             Effect.gen(function* () {
                 yield* savePickedKey(parsedApplicationId);
-                setBanks(
-                    yield* Effect.flatMap(EnableBankingSyncService, service => service.listBanks(parsedApplicationId)).pipe(
-                        Effect.mapError(error =>
-                            error instanceof SyncUnauthorizedError
-                                ? new EnableBankingSetupError({ reason: EnableBankingSetupErrorReasonEnum.INACTIVE_APPLICATION })
-                                : error
-                        )
+                const banks = yield* Effect.flatMap(EnableBankingSyncService, service => service.listBanks(parsedApplicationId)).pipe(
+                    Effect.mapError(error =>
+                        Schema.is(SyncUnauthorizedError)(error)
+                            ? EnableBankingSetupError.make({ reason: EnableBankingSetupErrorReasonEnum.INACTIVE_APPLICATION })
+                            : error
                     )
                 );
+                setBanks(banks);
                 setStep(EnableBankingSetupStepEnum.BANK);
             }).pipe(
                 Effect.tapError(() =>
@@ -164,7 +164,7 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
         }
 
         setStep(isNotEmptyArray(banks) ? EnableBankingSetupStepEnum.BANK : EnableBankingSetupStepEnum.KEY);
-        void run(Effect.flatMap(EnableBankingConnectionService, connection => connection.discardPending()));
+        void run(Effect.flatMap(EnableBankingConnectionService, connection => connection.discardPending));
     };
 
     const handleStepAwareGoBack = () => {

@@ -42,7 +42,7 @@ describe('monobank/pagination-cursor-advances', () => {
 
             yield* monobankSyncService.sync();
 
-            expect(yield* fetchPersistedMonobankTransactions()).toHaveLength(PAGE_SIZE);
+            expect(yield* fetchPersistedMonobankTransactions).toHaveLength(PAGE_SIZE);
 
             const finalSync = yield* fetchSyncById(sync.id);
             expect(finalSync.forwardSyncedAt).not.toBeNull();

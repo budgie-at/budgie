@@ -22,7 +22,7 @@ export class BinanceAssetCodeService extends Context.Service<BinanceAssetCodeSer
                     (yield* accountRepository.findByExternalSource(provider)).map(account => account.instrumentId)
                 );
 
-                for (const instrument of yield* instrumentRepository.getAll()) {
+                for (const instrument of yield* instrumentRepository.getAll) {
                     if (!isDefined(instrument.providerInstrumentId) || accountInstrumentIds.has(instrument.id)) {
                         assetCodes.add(instrument.code);
                     }

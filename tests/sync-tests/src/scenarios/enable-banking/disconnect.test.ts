@@ -56,7 +56,7 @@ describe('enable-banking/disconnect', () => {
 
             yield* service.sync();
 
-            expect(yield* fetchSortedEnableBankingExternalIds()).toEqual(['hash-first:reference-1', 'hash-second:reference-1']);
+            expect(yield* fetchSortedEnableBankingExternalIds).toEqual(['hash-first:reference-1', 'hash-second:reference-1']);
         }).pipe(Effect.provide(TestLayer))
     );
 

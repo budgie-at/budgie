@@ -63,13 +63,13 @@ const buildPrivatbankSyncService = (transactions: SyncTransactionInterface[]) =>
     makeStubFileBankSyncService(ExternalSourceEnum.PRIVATBANK, new StubPrivatbankFileClient(transactions));
 
 const seedPrivatbankAccount = () =>
-    Effect.gen(function* () {
-        yield* seed.account({
+    Effect.asVoid(
+        seed.account({
             title: 'Privatbank Card',
             externalId: PRIVATBANK_CARD_ID,
             externalSource: ExternalSourceEnum.PRIVATBANK
-        });
-    });
+        })
+    );
 
 describe('consolidation/privatbank-file-import-triggers-consolidation', () => {
     it.effect('enqueues consolidation after a Privatbank file import introduces new transactions', () =>

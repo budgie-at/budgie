@@ -30,10 +30,8 @@ export class RuleApplicationDrainerService extends Context.Service<RuleApplicati
                 workload
                     .run(effect)
                     .pipe(
-                        Effect.catchCause(cause =>
-                            Cause.hasInterruptsOnly(cause)
-                                ? Effect.andThen(workload.awaitBackgroundAllowed, runUntilSettled(effect))
-                                : Effect.failCause(cause)
+                        Effect.catchCauseIf(Cause.hasInterruptsOnly, () =>
+                            Effect.andThen(workload.awaitBackgroundAllowed, runUntilSettled(effect))
                         )
                     );
 
@@ -50,7 +48,7 @@ export class RuleApplicationDrainerService extends Context.Service<RuleApplicati
                         Effect.logError('processPendingTransactionBatch:throw', {
                             queuedTransactionIds: transactionIds.join(','),
                             queuedInputCount: transactionInputs.length,
-                            errorMessage: getErrorMessage(Cause.squash(cause))
+                            errorMessage: cause.pipe(Cause.squash, getErrorMessage)
                         })
                     ),
                     Effect.ignoreCause

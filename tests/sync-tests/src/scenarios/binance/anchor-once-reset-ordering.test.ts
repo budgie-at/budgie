@@ -39,7 +39,7 @@ describe('binance/anchor-once-reset-ordering', () => {
             });
             yield* seed.sync({
                 accountId: ethAccount.id,
-                token: JSON.stringify({ apiKey: 'test-api-key', apiSecret: 'test-api-secret' }),
+                token: '{"apiKey":"test-api-key","apiSecret":"test-api-secret"}',
                 provider: ExternalSourceEnum.BINANCE,
                 mode: SyncModeEnum.BACKWARD,
                 status: SyncStatusEnum.SYNCING
