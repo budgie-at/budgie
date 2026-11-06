@@ -65,6 +65,6 @@ test('04 account debt borrowed', { tags: ['accounts'] }, async ({ budgie }) => {
         await b.expectId(ctx, 'DebtAccountBalance.OutstandingAmount.200');
         await b.expectId(ctx, 'DebtAccountBalance.PaidAmount.0');
         await b.expectId(ctx, 'DebtAccountBalance.TotalAmount.200');
-        await expect(b.byId(screen, 'TransactionCard.Label.E2E_Borrowed_To_Cash')).toHaveText(/, To E2E Borrowed Funding,/);
+        await expect(b.byId(screen, 'TransactionCard.Label.E2E_Borrowed_To_Cash')).toHaveText(/, To E2E Borrowed Funding$/);
     });
 });

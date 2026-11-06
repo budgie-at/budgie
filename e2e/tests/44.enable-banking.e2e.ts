@@ -149,9 +149,9 @@ test('44 enable banking', { tags: ['sync'] }, async ({ budgie }) => {
         await b.scrollTo(ctx, `AccountCard.${CONNECT_ACCOUNT}`);
         await expect(id(`AccountCard.${CONNECT_ACCOUNT}`)).toHaveText(/€1,235, Up to date$/, { timeout: 90_000 });
         await b.openLink(ctx, 'budgie://transactions');
-        await expect(screen.getByRole('button', { name: /^E2E Manual Purchase, €7,.*E2E Statement Account$/ }).first()).toBeVisible({
-            timeout: 15_000
-        });
+        const manualPurchase = screen.getByRole('button', { name: /^E2E Manual Purchase, €7,.*E2E Statement Account$/ }).first();
+        await screen.scrollUntilVisible(manualPurchase, { direction: 'down', timeout: 15_000 });
+        await expect(manualPurchase).toBeVisible();
         await expect(screen.getByRole('button', { name: /^E2E Coffee, €12,.*E2E Statement Account$/ }).first()).toBeVisible();
     });
 

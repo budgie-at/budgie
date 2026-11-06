@@ -31,7 +31,7 @@ test('44 inzhur operations import', { tags: ['import'] }, async ({ budgie }) => 
         await core.tapId(ctx, 'InstitutionRow.1');
         await core.expectId(ctx, 'Institution.Page', 10_000);
         await core.expectId(ctx, 'AccountCard.Balance.Cash.5_164', 10_000);
-        await expect(core.byId(screen, 'AccountCard.Inzhur REIT')).toHaveText(/^Inzhur REIT, 300 certificates/, { timeout: 10_000 });
-        await expect(core.byId(screen, 'AccountCard.Inzhur Energy')).toHaveText(/^Inzhur Energy, 2 certificates/, { timeout: 10_000 });
+        await expect(core.byId(screen, 'AccountCard.REIT')).toHaveText(/^REIT, 300 certificates/, { timeout: 10_000 });
+        await expect(core.byId(screen, 'AccountCard.Energy')).toHaveText(/^Energy, 2 certificates/, { timeout: 10_000 });
     });
 });

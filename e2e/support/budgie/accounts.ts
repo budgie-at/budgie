@@ -43,7 +43,12 @@ export async function navigateToSettings(ctx: Ctx): Promise<void> {
 }
 
 /** subflows/navigation/open-settings-card: scroll the settings page to `cardId` (down, else up), tap it, wait for `destinationId`. */
-export async function openSettingsCard(ctx: Ctx, cardId: string | RegExp, destinationId: string): Promise<void> {
+export async function openSettingsCard(
+    ctx: Ctx,
+    cardId: string | RegExp,
+    destinationId: string,
+    centreOn: string | undefined = typeof cardId === 'string' ? cardId : undefined
+): Promise<void> {
     const card = loc(ctx, cardId);
     if (!(await card.isVisible())) {
         try {
@@ -53,8 +58,9 @@ export async function openSettingsCard(ctx: Ctx, cardId: string | RegExp, destin
         }
     }
     await expect(card).toBeVisible({ timeout: 3_000 });
-    if (typeof cardId === 'string') {
-        await scrollToCentre(ctx, cardId);
+    if (centreOn !== undefined) {
+        await scrollToCentre(ctx, centreOn);
+        await sleep(600);
     }
     await card.tap();
     await expectId(ctx, destinationId, 8_000);
@@ -166,7 +172,12 @@ async function setMainCurrency(ctx: Ctx, currency: string): Promise<void> {
     for (let attempt = 1; ; attempt++) {
         try {
             if (!(await search.isVisible())) {
-                await openSettingsCard(ctx, /^SettingsPage\.MainCurrencyCard\..+$/, 'CurrencySelector.SearchInput');
+                await openSettingsCard(
+                    ctx,
+                    /^SettingsPage\.MainCurrencyCard\..+$/,
+                    'CurrencySelector.SearchInput',
+                    'SettingsPage.LanguageCard.en'
+                );
             }
             await expect(search).toBeVisible({ timeout: 3_000 });
             break;
