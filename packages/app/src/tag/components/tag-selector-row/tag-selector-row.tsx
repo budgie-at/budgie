@@ -25,7 +25,7 @@ export const TagSelectorRow = ({ tag, isSelected, isPrimary, onSelect, onPrimary
     const primaryContent = (
         <View className="flex-row items-center gap-x-xs">
             <Icon icon={UserIconNameEnum.Star} size={14} className="text-positive-action" />
-            <Text className="text-[13px] text-secondary-foreground">
+            <Text className="text-[13px] text-secondary-foreground" maxFontSizeMultiplier={1.6}>
                 <Trans>Primary</Trans>
             </Text>
         </View>
@@ -38,7 +38,7 @@ export const TagSelectorRow = ({ tag, isSelected, isPrimary, onSelect, onPrimary
                 accessibilityLabel={t`Make primary`}
                 className="min-h-[44px] justify-center pl-[64px] pr-xl pb-sm"
             >
-                <Text className="text-[13px] font-semibold text-positive-action">
+                <Text className="text-[13px] font-semibold text-positive-action" maxFontSizeMultiplier={1.6}>
                     <Trans>Make primary</Trans>
                 </Text>
             </HapticPressable>

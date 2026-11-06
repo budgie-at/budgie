@@ -74,7 +74,7 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
                 ))}
             </LoadingContent>
             {isRevertDisabled ? null : (
-                <Text dynamicTypeRamp="footnote" className="pt-md text-[13px] text-secondary-foreground">
+                <Text dynamicTypeRamp="footnote" className="pt-md text-[13px] text-secondary-foreground" maxFontSizeMultiplier={1.3}>
                     <Trans>Each source becomes a separate transaction.</Trans>
                 </Text>
             )}
