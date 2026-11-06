@@ -1,10 +1,11 @@
 import { AccountAssociationEnum, AccountTypeEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { Text } from 'react-native';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { SelectorRow } from '../../../@generic/component/selector-row/selector-row';
+import { cn } from '../../../@generic/utils/cn.util';
 import { AccountSelectorModalSelector } from '../../../app/account-selector-modal.selector';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
@@ -40,21 +41,15 @@ export const AccountSelectorCard = (props: Props) => {
             title={title}
         />
     ) : (
-        <View className="flex-row items-center">
-            <Text className="text-secondary-foreground text-[13px] leading-[18px] flex-shrink" numberOfLines={1}>
-                {t(ACCOUNT_TYPE[type])} ·{' '}
-            </Text>
-            <ProtectedText className="text-secondary-foreground text-[13px] leading-[18px] tabular-nums" numberOfLines={1}>
-                {formatDigits(balance, instrument.symbol)}
-            </ProtectedText>
-        </View>
+        <Text className="text-secondary-foreground text-[13px] leading-[18px]" maxFontSizeMultiplier={2}>
+            {t(ACCOUNT_TYPE[type])} · <ProtectedText>{formatDigits(balance, instrument.symbol)}</ProtectedText>
+        </Text>
     );
 
     return (
         <SelectorRow
             isSelected={isSelected}
             onPress={handleSelect}
-            titleTestID={AccountSelectorModalSelector.Option(title)}
             left={
                 <AccountInactiveIcon isInactive={!isActive} size={36}>
                     <CircleIcon
@@ -68,7 +63,15 @@ export const AccountSelectorCard = (props: Props) => {
                     />
                 </AccountInactiveIcon>
             }
-            title={title}
+            title={
+                <Text
+                    className={cn('text-primary text-[17px] leading-[22px]', isSelected && 'font-semibold')}
+                    maxFontSizeMultiplier={2}
+                    testID={AccountSelectorModalSelector.Option(title)}
+                >
+                    {title}
+                </Text>
+            }
             subtitle={subtitle}
         />
     );

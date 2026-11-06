@@ -5,6 +5,7 @@ export const AccountDetailsSelector = {
     MarketLink: 'AccountDetails.MarketLink',
     ActionsButton: 'AccountDetails.ActionsButton',
     EditButton: 'AccountDetails.EditButton',
+    RevertInstallmentPlanButton: 'AccountDetails.RevertInstallmentPlanButton',
     ArchiveMenuButton: 'AccountDetails.ArchiveMenuButton',
     CloseDepositButton: 'AccountDetails.CloseDepositButton',
     ArchiveButton: 'AccountDetails.ArchiveButton'

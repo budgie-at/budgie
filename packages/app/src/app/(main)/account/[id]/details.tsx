@@ -51,9 +51,7 @@ export default function AccountDetails() {
     }
 
     const instrumentSymbol = account.instrument.symbol;
-    const headerTrailing = (
-        <AccountActionsMenu accountId={id} accountType={account.type} balance={balance} instrumentSymbol={instrumentSymbol} />
-    );
+    const headerTrailing = <AccountActionsMenu account={account} balance={balance} instrumentSymbol={instrumentSymbol} />;
 
     const accountSummary =
         account.type === AccountTypeEnum.DEBT ? (

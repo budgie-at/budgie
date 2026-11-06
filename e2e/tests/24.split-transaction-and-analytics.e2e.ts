@@ -5,7 +5,7 @@ import { test } from '../support/budgie/test.ts';
 import * as t from '../support/budgie/transactions.ts';
 
 const LABEL = 'TransactionCard.Label.E2E_Split_Expense';
-const SPLIT_SUBTITLE = /, Groceries, Restaurants & Cafes, E2E Txn Account$/;
+const SPLIT_SUBTITLE = /, Groceries, Restaurants & Cafes, E2E Txn Account,/;
 
 test('24 split transaction and analytics', { tags: ['transactions'] }, async ({ budgie }) => {
     const ctx = budgie.ctx;
@@ -49,6 +49,8 @@ test('24 split transaction and analytics', { tags: ['transactions'] }, async ({ 
         await t.typeDigits(ctx, '45');
         await t.selectAccount(ctx, 'E2E Txn Account');
         await t.enterComment(ctx, 'E2E Split Expense');
+        await b.tapId(ctx, 'TransactionForm.AmountInput');
+        await b.expectNoId(ctx, 'TransactionKeypad.Digit.1');
         await b.tapId(ctx, 'TransactionFieldIcon.Split');
         await b.expectId(ctx, 'SplitEntryRow.Amount.0');
         await amount(0, '20');

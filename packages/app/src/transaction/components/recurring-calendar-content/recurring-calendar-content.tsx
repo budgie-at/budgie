@@ -24,6 +24,8 @@ import { RecurringCalendarSelector } from './recurring-calendar.selector';
 
 import type { RecurringCalendarEntryInterface } from '@budgie/recurring';
 
+const scrollStyle = { flex: 1 };
+
 const scrollContentStyle = { paddingTop: 4, paddingBottom: 20, rowGap: 8 };
 
 const EMPTY_ENTRIES_BY_DAY: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]> = new Map();
@@ -81,6 +83,7 @@ export const RecurringCalendarContent = () => {
 
     return (
         <KeyboardAwareScrollView
+            style={scrollStyle}
             testID={RecurringCalendarSelector.Container}
             contentContainerStyle={scrollContentStyle}
             bottomOffset={40}
@@ -88,6 +91,13 @@ export const RecurringCalendarContent = () => {
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="on-drag"
         >
+            <RecurringCalendarSummary
+                isLoading={isLoading}
+                formattedTotal={formatDigits(displayedTotal, defaultInstrument.symbol)}
+                formattedExpected={formattedForecastedTotal}
+                formattedRecorded={formatDigits(totalAmount, defaultInstrument.symbol)}
+            />
+
             <RecurringCalendarGrid
                 isLoading={isLoading}
                 entriesByDay={entriesByDay}
@@ -98,8 +108,6 @@ export const RecurringCalendarContent = () => {
                 displayYear={displayYear}
                 onChangeMonth={handleChangeMonth}
             />
-
-            <RecurringCalendarSummary isLoading={isLoading} formattedTotal={formatDigits(displayedTotal, defaultInstrument.symbol)} />
 
             <LoadingContent isLoading={isLoading} className="gap-y-sm" loadingIndicator={null}>
                 {hasSelectedDay ? (

@@ -1,6 +1,9 @@
 import { cva } from 'class-variance-authority';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
+import { cn } from '../../../@generic/utils/cn.util';
 import { TransactionListRowPositionEnum } from '../../enum/transaction-list-row-position.enum';
 
 import type { ReactNode } from 'react';
@@ -8,6 +11,8 @@ import type { ReactNode } from 'react';
 interface Props {
     readonly position?: TransactionListRowPositionEnum;
     readonly children: ReactNode;
+    readonly separatorInset?: number;
+    readonly className?: string;
 }
 
 const rowVariants = cva('bg-grouped-surface-row overflow-hidden', {
@@ -20,10 +25,18 @@ const rowVariants = cva('bg-grouped-surface-row overflow-hidden', {
         }
     }
 });
+const SEPARATED_POSITIONS = new Set([TransactionListRowPositionEnum.MIDDLE, TransactionListRowPositionEnum.LAST]);
 const continuousCorners = { borderCurve: 'continuous' as const };
 
-export const TransactionRowSurface = ({ position = TransactionListRowPositionEnum.SINGLE, children }: Props) => (
-    <View className={rowVariants({ position })} style={continuousCorners}>
-        {children}
-    </View>
-);
+export const TransactionRowSurface = ({ position = TransactionListRowPositionEnum.SINGLE, children, separatorInset, className }: Props) => {
+    const separatorStyle = { height: StyleSheet.hairlineWidth, left: separatorInset };
+
+    return (
+        <View className={cn(rowVariants({ position }), className)} style={continuousCorners}>
+            {children}
+            {isDefined(separatorInset) && SEPARATED_POSITIONS.has(position) ? (
+                <View className="absolute top-0 right-0 bg-surface-separator" style={separatorStyle} pointerEvents="none" />
+            ) : null}
+        </View>
+    );
+};

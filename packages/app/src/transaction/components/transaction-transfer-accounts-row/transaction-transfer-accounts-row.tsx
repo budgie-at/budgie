@@ -1,18 +1,20 @@
-import { AccountTypeEnum, TransactionCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { RefObject, useImperativeHandle } from 'react';
-import { useFormContext } from 'react-hook-form';
-import { View } from 'react-native';
+import { ReactNode, RefObject, useImperativeHandle, useState } from 'react';
+import { useFormState } from 'react-hook-form';
+import { LayoutChangeEvent, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
-import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
-import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
+import { TRANSFER_ACCOUNT_FIELDS } from '../../constant/transfer-account-fields.constant';
+import { TransactionFormRowPlaceholderToneEnum } from '../../enum/transaction-form-row-placeholder-tone.enum';
+import { useTransferAccountSelection } from '../../hook/use-transfer-account-selection.hook';
+import { QuickFormFieldError } from '../quick-form-field-error/quick-form-field-error';
+import { TransactionFormRowPlaceholder } from '../transaction-form-row-placeholder/transaction-form-row-placeholder';
 import { TransferAccountPicker } from '../transfer-account-picker/transfer-account-picker';
 import { TransferQuickFormSelector } from '../transfer-quick-form/transfer-quick-form.selector';
+import { TransferSwapButton } from '../transfer-swap-button/transfer-swap-button';
 
 export interface TransactionTransferAccountsRowRef {
     shakeFrom: () => void;
@@ -21,90 +23,55 @@ export interface TransactionTransferAccountsRowRef {
 
 interface Props {
     readonly ref?: RefObject<TransactionTransferAccountsRowRef | null>;
+    readonly children?: ReactNode;
 }
 
-export const TransactionTransferAccountsRow = ({ ref }: Props) => {
+export const TransactionTransferAccountsRow = ({ ref, children }: Props) => {
     const { t } = useLingui();
-    const { setValue } = useFormContext<TransactionCreateInputInterface>();
-    const [openAccountSelector] = useAccountSelectorModal();
+    const [fromRowHeight, setFromRowHeight] = useState(0);
+    const { errors } = useFormState();
     const { shake: shakeFrom, animatedStyle: fromAnimatedStyle } = useShakeAnimation();
     const { shake: shakeTo, animatedStyle: toAnimatedStyle } = useShakeAnimation();
-    const { fromAccountId, toAccountId, fromAccount, toAccount } = useTransferAccounts();
+    const { fromAccount, toAccount, handleFromPress, handleToPress, handleSwap, canSwap, hasAnyAccount } = useTransferAccountSelection();
 
     useImperativeHandle(ref, () => ({ shakeFrom, shakeTo }));
 
     const fromAccountSelectedTestID = isDefined(fromAccount) ? TransferQuickFormSelector.SelectedFromAccount(fromAccount.title) : void 0;
     const toAccountSelectedTestID = isDefined(toAccount) ? TransferQuickFormSelector.SelectedToAccount(toAccount.title) : void 0;
 
-    const handleFromPress = () => {
-        openAccountSelector(
-            {
-                initialAccountId: fromAccountId,
-                excludeAccountId: toAccountId,
-                excludeAccountTypes: [AccountTypeEnum.DEBT],
-                onlyActive: false
-            },
-            selectedAccountId => {
-                if (isDefined(selectedAccountId)) {
-                    setValue('fromAccountId', selectedAccountId);
-                }
-            }
-        );
-    };
-
-    const handleToPress = () => {
-        openAccountSelector(
-            {
-                initialAccountId: toAccountId,
-                excludeAccountId: fromAccountId,
-                excludeAccountTypes: [AccountTypeEnum.DEBT],
-                onlyActive: false
-            },
-            selectedAccountId => {
-                if (isDefined(selectedAccountId)) {
-                    setValue('toAccountId', selectedAccountId);
-                }
-            }
-        );
-    };
-
-    const handleSwap = () => {
-        setValue('fromAccountId', toAccountId);
-        setValue('toAccountId', fromAccountId);
-    };
+    const handleFromLayout = (event: LayoutChangeEvent) => void setFromRowHeight(event.nativeEvent.layout.height);
+    const missingPlaceholder = (
+        <TransactionFormRowPlaceholder tone={TransactionFormRowPlaceholderToneEnum.DESTRUCTIVE}>{t`Choose`}</TransactionFormRowPlaceholder>
+    );
+    const fromPlaceholder = isDefined(errors.root?.['fromAccountId']) ? missingPlaceholder : t`Choose`;
+    const toPlaceholder = isDefined(errors.root?.['toAccountId']) ? missingPlaceholder : t`Choose`;
 
     return (
-        <View className="flex-row items-center gap-x-[8px] rounded-3xl bg-grouped-surface-row pr-[8px]">
-            <View className="flex-1 gap-y-[8px]">
+        <View>
+            <GroupedListSection footer={<QuickFormFieldError fields={TRANSFER_ACCOUNT_FIELDS} />}>
+                <View onLayout={handleFromLayout}>
+                    <TransferAccountPicker
+                        label={t({ message: 'From', context: 'transfer account' })}
+                        account={fromAccount}
+                        placeholder={fromPlaceholder}
+                        animatedStyle={fromAnimatedStyle}
+                        testID={TransferQuickFormSelector.FromAccount}
+                        selectedTestID={fromAccountSelectedTestID}
+                        onPress={handleFromPress}
+                    />
+                </View>
                 <TransferAccountPicker
-                    label={t`From`}
-                    account={fromAccount}
-                    placeholder={t`Select account`}
-                    animatedStyle={fromAnimatedStyle}
-                    testID={TransferQuickFormSelector.FromAccount}
-                    selectedTestID={fromAccountSelectedTestID}
-                    onPress={handleFromPress}
-                />
-
-                <TransferAccountPicker
-                    label={t`To`}
+                    label={t({ message: 'To', context: 'transfer account' })}
                     account={toAccount}
-                    placeholder={t`Select account`}
+                    placeholder={toPlaceholder}
                     animatedStyle={toAnimatedStyle}
                     testID={TransferQuickFormSelector.ToAccount}
                     selectedTestID={toAccountSelectedTestID}
                     onPress={handleToPress}
                 />
-            </View>
-            <HapticPressable
-                className="h-[44px] w-[44px] items-center justify-center self-center"
-                onPress={handleSwap}
-                testID={TransferQuickFormSelector.SwapAccounts}
-                accessibilityLabel={t`Swap accounts`}
-                accessibilityRole="button"
-            >
-                <CircleIcon icon={UserIconNameEnum.ArrowLeftRight} variant="ghost" size={44} iconSize={20} />
-            </HapticPressable>
+                {children}
+            </GroupedListSection>
+            {hasAnyAccount ? <TransferSwapButton dividerOffset={fromRowHeight} isEnabled={canSwap} onPress={handleSwap} /> : null}
         </View>
     );
 };

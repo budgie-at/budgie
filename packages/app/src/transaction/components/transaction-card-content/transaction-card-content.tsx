@@ -13,6 +13,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ListRow } from '../../../@generic/component/list-row/list-row';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
+import { cn } from '../../../@generic/utils/cn.util';
 import { useTransactionRowTitle } from '../../hook/use-transaction-row-title.hook';
 import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
@@ -38,9 +39,12 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
     const iconVariant = isEarnedIncomeTransaction(transaction) && !isUncategorized ? 'positive' : neutralIconVariant;
     const iconClassName = iconVariant === 'secondary' ? 'bg-secondary-foreground/15' : '';
     const icon = isUncategorized ? UserIconNameEnum.CircleDashed : getTransactionIcon(transaction);
-    const iconForegroundClassName = isUncategorized ? 'text-attention-foreground' : '';
+    const iconForegroundClassName = cn(
+        isUncategorized && 'text-attention-foreground',
+        iconVariant === 'positive' && 'text-positive-strong'
+    );
     const { t } = useLingui();
-    const titleLineCount = isAccessibilityTextSize ? 4 : 1;
+    const titleLineCount = isAccessibilityTextSize ? 0 : 1;
     const adjustmentTitle = isNotEmptyString(transaction.title) ? transaction.title : t`Balance Adjustment`;
 
     const titleNode = isAdjustment ? (

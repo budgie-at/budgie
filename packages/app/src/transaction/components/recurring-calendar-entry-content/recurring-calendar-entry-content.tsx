@@ -11,6 +11,7 @@ import { ListRow } from '../../../@generic/component/list-row/list-row';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { TRANSACTION_SECONDARY_MAX_FONT_SIZE_MULTIPLIER } from '../../constant/transaction-secondary-max-font-size-multiplier.constant';
 
 import type { RecurringCalendarEntryInterface } from '@budgie/recurring';
 
@@ -32,7 +33,7 @@ export const RecurringCalendarEntryContent = ({ entry, dayLabel }: Props) => {
     const metadataLabel = isNotEmptyString(dayLabel) ? dayLabel : statusLabel;
     const alertLabels = {
         [RecurringAlertEnum.OVERDUE]: t`Overdue`,
-        [RecurringAlertEnum.PRICE_CHANGE]: t`Price changed`
+        [RecurringAlertEnum.PRICE_CHANGE]: t`Amount changed`
     };
     const detail = isDefined(entry.alert) ? alertLabels[entry.alert] : (entry.categoryTitle ?? entry.title);
     const description = `${metadataLabel} · ${detail}`;
@@ -47,13 +48,14 @@ export const RecurringCalendarEntryContent = ({ entry, dayLabel }: Props) => {
                 </Text>
             }
             trailing={
-                <Text dynamicTypeRamp="headline" className="text-[16px] font-semibold text-primary tabular-nums">
+                <Text dynamicTypeRamp="headline" className="shrink-0 text-[16px] font-semibold text-primary tabular-nums">
                     {protectAmount(convertFromMicroUnits(entry.latestAmount), defaultInstrument.symbol)}
                 </Text>
             }
             detail={
                 <Text
                     dynamicTypeRamp="footnote"
+                    maxFontSizeMultiplier={TRANSACTION_SECONDARY_MAX_FONT_SIZE_MULTIPLIER}
                     className="text-[12px] text-secondary-foreground"
                     numberOfLines={labelLineLimit}
                     ellipsizeMode="tail"
