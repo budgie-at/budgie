@@ -7,6 +7,7 @@ import UniformTypeIdentifiers
 @available(iOS 17.0, *)
 enum BudgieAnswerKey: String {
   case monthKey = "MONTH_KEY"
+  case asOf = "AS_OF"
   case isLocked = "IS_LOCKED"
   case thisMonth = "THIS_MONTH"
   case lastMonth = "LAST_MONTH"
@@ -43,7 +44,10 @@ enum BudgieCatalog {
       IntentDialog(stringLiteral: summary?.metadata[fallbackKey.rawValue] ?? english)
     }
 
-    guard let record, record.metadata[BudgieAnswerKey.monthKey.rawValue] == currentMonthKey() else {
+    guard let record,
+      record.metadata[BudgieAnswerKey.monthKey.rawValue] == today(format: "yyyy-MM"),
+      key != .upcoming || record.metadata[BudgieAnswerKey.asOf.rawValue] == today(format: "yyyy-MM-dd")
+    else {
       return fallback(.refresh, "Open Budgie to refresh.")
     }
 
@@ -52,15 +56,18 @@ enum BudgieCatalog {
     }
 
     guard let answer = record.metadata[key.rawValue] else {
-      return fallback(.unavailable, "This isn't available in Budgie yet.")
+      return fallback(.unavailable, "This isn’t available in Budgie yet.")
     }
 
     return IntentDialog(stringLiteral: answer)
   }
 
-  private static func currentMonthKey() -> String {
-    let components = Calendar(identifier: .gregorian).dateComponents([.year, .month], from: Date())
-    return String(format: "%04d-%02d", components.year ?? 0, components.month ?? 0)
+  private static func today(format: String) -> String {
+    let formatter = DateFormatter()
+    formatter.calendar = Calendar(identifier: .gregorian)
+    formatter.locale = Locale(identifier: "en_US_POSIX")
+    formatter.dateFormat = format
+    return formatter.string(from: Date())
   }
 }
 
@@ -114,6 +121,32 @@ struct BudgieCategoryQuery: EntityStringQuery {
       .map(BudgieCategoryEntity.init(record:))
   }
 }
+
+@available(iOS 18.0, *)
+extension BudgieCategoryQuery: EnumerableEntityQuery {
+  func allEntities() async throws -> [BudgieCategoryEntity] {
+    return try await suggestedEntities()
+  }
+}
+
+#if compiler(>=6.4)
+@available(iOS 27.0, *)
+extension BudgieCategoryQuery: IndexedEntityQuery {
+  func reindexEntities(
+    for identifiers: [BudgieCategoryEntity.ID],
+    indexDescription: CSSearchableIndexDescription
+  ) async throws {
+    try await AppEntityIdentifierRegistry.shared.updateIndexFromCatalog(
+      kind: BudgieCategoryEntity.catalogKind,
+      matching: identifiers
+    )
+  }
+
+  func reindexAllEntities(indexDescription: CSSearchableIndexDescription) async throws {
+    try await AppEntityIdentifierRegistry.shared.replaceIndexFromCatalog(kind: BudgieCategoryEntity.catalogKind)
+  }
+}
+#endif
 
 @available(iOS 17.0, *)
 enum BudgieSpendingPeriod: String, AppEnum {

@@ -159,7 +159,12 @@ export class WidgetSnapshotService extends Context.Service<WidgetSnapshotService
                 yield* debouncePublish();
             }),
             unlock: (): void => {
-                runFork(Ref.set(isLocked, false).pipe(Effect.andThen(siriCatalogService.unlock()), Effect.andThen(debouncePublish())));
+                runFork(
+                    Ref.set(isLocked, false).pipe(
+                        Effect.andThen(workload.run(logAndContinue(siriCatalogService.unlock()))),
+                        Effect.andThen(debouncePublish())
+                    )
+                );
             }
         };
     })

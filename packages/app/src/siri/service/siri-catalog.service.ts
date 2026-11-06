@@ -387,7 +387,7 @@ export class SiriCatalogService extends Context.Service<SiriCatalogService>()('@
                 );
             }),
             unlock: Effect.fn('SiriCatalogService.unlock')(function* () {
-                yield* Ref.set(isLockForced, false);
+                yield* publishSemaphore.withPermits(1)(Effect.andThen(Ref.set(isLockForced, false), publishCatalogs()));
             })
         };
     })
