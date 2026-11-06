@@ -39,6 +39,7 @@ export const QuickFormLayout = (props: Props) => {
     const fieldsClassName = isCompact ? 'gap-y-[8px] pt-[4px]' : 'gap-y-[12px] pt-[8px]';
     const fadeClassName = isCompact ? 'bottom-auto top-[-16px] h-[16px]' : 'bottom-auto top-[-28px]';
     const isExpanded = isDefined(keypad);
+    const actionPlateStyle = { ...ACTION_PLATE_STYLE, rowGap: isCompact ? 6 : 8 };
     const rowColors = {
         ...(isDefined(rowColor) && { '--color-grouped-surface-row': rowColor, '--color-surface-row': rowColor }),
         ...surfaceVariables
@@ -58,7 +59,7 @@ export const QuickFormLayout = (props: Props) => {
                     </QuickFormScroll>
                     <KeyboardStickyView style={StyleSheet.absoluteFill} pointerEvents="box-none">
                         <ScreenChromeFooter contentStyle={FOOTER_STYLE} includeBottomSafeArea={false}>
-                            <View style={ACTION_PLATE_STYLE} className="gap-y-[8px] bg-surface pt-[8px] pb-safe-or-[8px]">
+                            <View style={actionPlateStyle} className="bg-surface pt-[8px] pb-safe-or-[8px]">
                                 <SheetBottomFade className={fadeClassName} />
                                 {isExpanded ? (
                                     <Animated.View entering={ENTERING} exiting={EXITING}>

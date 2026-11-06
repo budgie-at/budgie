@@ -1,5 +1,6 @@
 import { expect } from 'e2e';
 
+import { SheetBottomFadeSelector } from '../../packages/app/src/@generic/component/sheet-bottom-fade/sheet-bottom-fade.selector.ts';
 import * as b from '../support/budgie/core.ts';
 import { test } from '../support/budgie/test.ts';
 
@@ -142,6 +143,13 @@ test('46 edit form layout stability', { tags: ['transactions'] }, async ({ budgi
         await b.tapId(ctx, 'TransactionForm.AmountInput');
         await b.expectId(ctx, 'TransactionKeypad.Digit.1');
         await measure('keypad expanded');
+        const tagsLabelBox = await b.byId(screen, 'TransactionForm.TagsSelector.Label').boundingBox();
+        const fadeBox = await b.byId(screen, SheetBottomFadeSelector.Root).boundingBox();
+        if (tagsLabelBox === null || fadeBox === null || tagsLabelBox.y + tagsLabelBox.height > fadeBox.y) {
+            throw new Error(
+                `the expanded keypad fade obscures Tags: label=${JSON.stringify(tagsLabelBox)}, fade=${JSON.stringify(fadeBox)}`
+            );
+        }
         await b.tapId(ctx, 'TransactionForm.CategorySelector');
         await b.expectId(ctx, 'CategoryPickerBottomSheet.Input');
         await b.expectNoId(ctx, 'TransactionKeypad.Digit.1');
