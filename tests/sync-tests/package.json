@@ -29,7 +29,6 @@
         "vitest": "5.1.0"
     },
     "devDependencies": {
-        "@budgie-at/app": "workspace:*",
         "@lingui/core": "6.12.0",
         "@types/node": "26.6.5",
         "effect": "4.1.2",

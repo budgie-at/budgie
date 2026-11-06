@@ -1103,9 +1103,6 @@ importers:
         specifier: 5.1.0
         version: 5.1.0(@opentelemetry/api@1.9.1)(@types/node@26.6.5)(msw@3.0.3(@types/node@26.6.5)(graphql@16.13.2)(supports-color@8.1.1)(vite@8.0.16(@types/node@26.6.5)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1)))(vite@8.0.16(@types/node@26.6.5)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
     devDependencies:
-      '@budgie-at/app':
-        specifier: workspace:*
-        version: link:../../packages/app
       '@types/node':
         specifier: 26.6.5
         version: 26.6.5
@@ -1149,9 +1146,6 @@ importers:
         specifier: 5.1.0
         version: 5.1.0(@opentelemetry/api@1.9.1)(@types/node@26.6.5)(msw@3.0.3(@types/node@26.6.5)(graphql@16.13.2)(supports-color@8.1.1)(vite@8.0.16(@types/node@26.6.5)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1)))(vite@8.0.16(@types/node@26.6.5)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
     devDependencies:
-      '@budgie-at/app':
-        specifier: workspace:*
-        version: link:../../packages/app
       '@types/node':
         specifier: 26.6.5
         version: 26.6.5
@@ -1216,9 +1210,6 @@ importers:
         specifier: 5.1.0
         version: 5.1.0(@opentelemetry/api@1.9.1)(@types/node@26.6.5)(msw@3.0.3(@types/node@26.6.5)(graphql@16.13.2)(supports-color@8.1.1)(vite@8.0.16(@types/node@26.6.5)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1)))(vite@8.0.16(@types/node@26.6.5)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
     devDependencies:
-      '@budgie-at/app':
-        specifier: workspace:*
-        version: link:../../packages/app
       '@lingui/core':
         specifier: 6.12.0
         version: 6.12.0(@babel/core@7.29.7(supports-color@8.1.1))(babel-plugin-macros@3.1.0)

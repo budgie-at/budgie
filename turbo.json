@@ -47,10 +47,25 @@
             "dependsOn": ["^ts:native", "^build"],
             "outputs": ["node_modules/.cache/typecheck-native-*.json"]
         },
+        "@budgie-at/sync-tests#ts": {
+            "dependsOn": ["^ts", "^build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"],
+            "outputs": []
+        },
+        "@budgie-at/consolidation-tests#ts": {
+            "dependsOn": ["^ts", "^build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"],
+            "outputs": []
+        },
+        "@budgie-at/budget-tests#ts": {
+            "dependsOn": ["^ts", "^build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"],
+            "outputs": []
+        },
         "@budgie-at/test-kit#ts": {
             "dependsOn": ["^ts", "^build"],
-            "outputs": [],
-            "cache": false
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"],
+            "outputs": []
         }
     },
     "agentGuidance": false
