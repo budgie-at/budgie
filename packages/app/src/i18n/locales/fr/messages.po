@@ -1356,7 +1356,7 @@ msgstr "Après {reservedAmount} prévus pour les réserves"
 msgid "After {upcomingAmount} for upcoming bills"
 msgstr "Après {upcomingAmount} pour les factures à venir"
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-footer/forgot-pin-footer.tsx
 msgid "After 5 wrong tries, Budgie waits a little longer between attempts."
 msgstr "Après 5 essais erronés, Budgie attend un peu plus longtemps entre les tentatives."
 
@@ -1993,7 +1993,7 @@ msgstr "Budget indisponible"
 
 #: src/import/components/import-preset-options/import-preset-options.tsx
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
-#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+#: src/onboarding/component/onboarding-welcome-hero/onboarding-welcome-hero.tsx
 #: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "Budgie"
@@ -4632,7 +4632,7 @@ msgstr "Obtenir le jeton API"
 msgid "Get category, tag, and note suggestions from your history."
 msgstr "Recevez des suggestions de catégories, d’étiquettes et de notes à partir de votre historique."
 
-#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+#: src/onboarding/component/onboarding-welcome-actions/onboarding-welcome-actions.tsx
 msgid "Get started"
 msgstr "Commencer"
 
@@ -5795,7 +5795,7 @@ msgstr "Prochain paiement {nextPaymentLabel}"
 msgid "Next period"
 msgstr "Période suivante"
 
-#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+#: src/onboarding/component/onboarding-welcome-actions/onboarding-welcome-actions.tsx
 msgid "No account needed · Takes about a minute"
 msgstr "Aucun compte requis · Environ une minute"
 
@@ -6299,7 +6299,7 @@ msgstr "Seuls les revenus à écriture unique peuvent être convertis"
 msgid "Only when a category is missing"
 msgstr "Seulement si la catégorie manque"
 
-#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+#: src/onboarding/component/onboarding-welcome-hero/onboarding-welcome-hero.tsx
 msgid "Only you hold the key."
 msgstr "Vous seul en avez la clé."
 
@@ -8979,7 +8979,7 @@ msgstr "Essayez d'ajuster vos filtres pour voir plus de résultats"
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 #: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-footer/forgot-pin-footer.tsx
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
 #: src/transaction/components/transaction-picker-failure/transaction-picker-failure.tsx
@@ -9664,7 +9664,7 @@ msgstr "Votre clé reste dans le stockage sécurisé de ce téléphone."
 msgid "Your limit grows as income arrives this period"
 msgstr "Votre limite augmente à mesure que les revenus arrivent sur cette période"
 
-#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+#: src/onboarding/component/onboarding-welcome-hero/onboarding-welcome-hero.tsx
 msgid "Your money in one file."
 msgstr "Votre argent dans un seul fichier."
 
