@@ -80,6 +80,7 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
             <SearchInput
                 value={search}
                 allowFontScaling
+                maxFontSizeMultiplier={1.3}
                 containerClassName="h-auto min-h-[50px] py-sm"
                 placeholder={t`Search expenses`}
                 onChangeText={handleSearchChange}
@@ -87,6 +88,7 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
             />
             <Text
                 dynamicTypeRamp="footnote"
+                maxFontSizeMultiplier={1.3}
                 accessibilityRole="header"
                 className="pt-xl text-[13px] font-semibold text-secondary-foreground"
             >

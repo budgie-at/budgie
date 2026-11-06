@@ -4,13 +4,13 @@ import { Text } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { GroupedListRow } from '../@generic/component/grouped-list-row/grouped-list-row';
 import { SelectorModalDescription } from '../@generic/component/selector-modal-description/selector-modal-description';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { SelectorNoResultsState } from '../@generic/component/selector-no-results-state/selector-no-results-state';
 import { SheetHeaderAction } from '../@generic/component/sheet-header-action/sheet-header-action';
 import { SheetSurface } from '../@generic/component/sheet-surface/sheet-surface';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
+import { TagCreateRow } from '../tag/components/tag-create-row/tag-create-row';
 import { TagsSelectContent } from '../tag/components/tags-select-content/tags-select-content';
 import { useTagFormModal } from '../tag/context/tag-form-modal.context';
 import { useTagsSelectorModal, useTagsSelectorModalParams } from '../tag/context/tags-selector-modal.context';
@@ -118,9 +118,7 @@ export default function TagsSelectorModal() {
 
             <SelectorModalDescription title={title} description={description}>
                 <TagsSelectContent
-                    header={
-                        <GroupedListRow title={t`Create tag`} onPress={handleCreatePress} testID={TagsSelectorModalSelector.CreateButton} />
-                    }
+                    header={<TagCreateRow onPress={handleCreatePress} />}
                     listEmptyComponent={listEmptyComponent}
                     data={data}
                     selectedTagIds={selected}

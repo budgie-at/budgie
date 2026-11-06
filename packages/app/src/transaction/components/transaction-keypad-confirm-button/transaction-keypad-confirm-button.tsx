@@ -37,8 +37,9 @@ export const TransactionKeypadConfirmButton = ({ label, isDisabled, onPress, tes
                 <Icon className={contentClassName} icon={UserIconNameEnum.Check} size={iconSize} />
                 <Text
                     className={cn('min-w-0 shrink text-[17px] font-semibold', contentClassName)}
-                    maxFontSizeMultiplier={2}
-                    numberOfLines={2}
+                    maxFontSizeMultiplier={1.3}
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
                 >
                     {label}
                 </Text>

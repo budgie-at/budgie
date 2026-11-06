@@ -18,7 +18,7 @@ export const ConvertToTransferHeader = ({ isLoading, onCancel, onConfirm, disabl
     const action = <SheetHeaderAction label={t`Done`} onPress={onConfirm} disabled={disabled} />;
 
     return (
-        <View className="px-xl">
+        <View className="px-xl pt-[24px]">
             <LoadingContent isLoading={isLoading}>
                 <SheetTitleRow title={t`Convert to Transfer`} onClose={onCancel} closeLabel={t`Cancel`} trailing={action} />
             </LoadingContent>

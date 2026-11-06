@@ -36,17 +36,17 @@ export const SheetTitleRow = ({
     const action = trailing ?? <SheetHeaderAction label={t`Done`} onPress={handleClose} testID={doneTestID} />;
 
     return (
-        <View className="h-[56px] flex-row items-center justify-between">
+        <View className="min-h-[56px] flex-row items-center gap-x-[12px] py-[6px]">
             <HapticPressable
                 onPress={handleClose}
                 disabled={disabled}
                 accessibilityRole="button"
                 accessibilityLabel={closeLabel ?? t`Close`}
-                className="h-[44px] w-[44px] items-center justify-center rounded-full bg-surface-fill active:opacity-70"
+                className="h-[44px] w-[44px] shrink-0 items-center justify-center rounded-full bg-surface-fill active:opacity-70"
             >
                 <Icon icon={UserIconNameEnum.X} size={20} className="text-primary" />
             </HapticPressable>
-            <View pointerEvents="none" className="absolute left-[64px] right-[64px] items-center justify-center">
+            <View pointerEvents="none" className="min-w-0 flex-1 items-center justify-center">
                 <Text
                     className="text-primary text-center text-[17px] font-semibold leading-[22px]"
                     accessibilityRole="header"
@@ -56,7 +56,7 @@ export const SheetTitleRow = ({
                     {title}
                 </Text>
             </View>
-            <View className="min-h-[44px] min-w-[44px] items-center justify-center">{action}</View>
+            <View className="min-h-[44px] min-w-[44px] shrink-0 items-center justify-center">{action}</View>
         </View>
     );
 };
