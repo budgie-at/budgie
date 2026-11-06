@@ -51,7 +51,7 @@ export const RecurringCalendarContent = ({ header }: Props) => {
     });
     const data = useRecurringCalendar(displayYear, displayMonth);
     const displayedMonthName = formatFullMonth(new Date(displayYear, displayMonth, 1));
-    const summaryTitle = t`${displayedMonthName} total`;
+    const summaryTitle = t`${displayedMonthName} bills`;
     const isLoading = !isDefined(data);
 
     const entriesByDay = data?.entriesByDay ?? EMPTY_ENTRIES_BY_DAY;

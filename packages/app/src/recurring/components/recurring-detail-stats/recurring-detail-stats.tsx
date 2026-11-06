@@ -36,7 +36,7 @@ export const RecurringDetailStats = ({ history }: Props) => {
     const stats = [
         { label: t`Payments`, value: String(paid.length) },
         { label: t`Total paid`, value: total },
-        { label: t`Since`, value: since }
+        { label: t`First paid`, value: since }
     ];
 
     return (

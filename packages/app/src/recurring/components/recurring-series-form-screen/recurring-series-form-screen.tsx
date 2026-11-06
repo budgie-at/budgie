@@ -41,7 +41,7 @@ interface Props {
 }
 
 const FOOTER_STYLE = { position: 'relative' } as const;
-const CONTENT_STYLE = { paddingBottom: 32 };
+const CONTENT_STYLE = { paddingBottom: 96 };
 
 export const RecurringSeriesFormScreen = ({ target, initialValues }: Props) => {
     const { t } = useLingui();

@@ -53,7 +53,7 @@ export const RecurringFormRepeatSection = () => {
     ];
     const isCustom = value === RecurringRepeatChoiceEnum.CUSTOM;
     const isQuarterly = value === RecurringRepeatChoiceEnum.QUARTERLY;
-    const customValue = isQuarterly ? getCadenceLabel(RecurringCadenceUnitEnum.MONTH, QUARTER_MONTHS) : t`Off`;
+    const customValue = isQuarterly ? getCadenceLabel(RecurringCadenceUnitEnum.MONTH, QUARTER_MONTHS) : '';
     const customLabel = isCustom ? getCadenceLabel(customUnit, customInterval) : customValue;
     const previewRow = isNotEmptyString(preview) ? <Text className="px-3xl pt-sm pb-sm text-[15px] text-primary/65">{preview}</Text> : null;
 
@@ -74,7 +74,7 @@ export const RecurringFormRepeatSection = () => {
             <GroupedListSection footer={previewRow}>
                 <GroupedListValueRow
                     icon={UserIconNameEnum.Repeat}
-                    title={t`Custom`}
+                    title={t`Custom schedule…`}
                     value={customLabel}
                     testID={RecurringSeriesFormSelector.Repeat(RecurringRepeatChoiceEnum.CUSTOM)}
                     onPress={handleCustom}

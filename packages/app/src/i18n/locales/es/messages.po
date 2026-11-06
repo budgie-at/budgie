@@ -330,8 +330,8 @@ msgid "{daysRemaining, plural, one {# day left} other {# days left}}"
 msgstr "{daysRemaining, plural, one {Queda # día} other {Quedan # días}}"
 
 #: src/recurring/components/recurring-calendar-content/recurring-calendar-content.tsx
-msgid "{displayedMonthName} total"
-msgstr "Total de {displayedMonthName}"
+msgid "{displayedMonthName} bills"
+msgstr "Facturas de {displayedMonthName}"
 
 #: src/account/component/debt-account-card/debt-account-card.tsx
 msgid "{displayPercentage}%"
@@ -3412,7 +3412,6 @@ msgstr "Saldo actual"
 #: src/budget/components/budget-fund-repeat-field/budget-fund-repeat-field.tsx
 #: src/import/components/import-preset-options/import-preset-options.tsx
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
-#: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 msgid "Custom"
 msgstr "Personalizado"
 
@@ -3420,6 +3419,10 @@ msgstr "Personalizado"
 #: src/category/components/category-list-header/category-list-header.tsx
 msgid "Custom categories"
 msgstr "Categorías personalizadas"
+
+#: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
+msgid "Custom schedule…"
+msgstr "Calendario personalizado…"
 
 #: src/settings/components/theme-switch/theme-switch.tsx
 msgid "Dark"
@@ -4470,6 +4473,10 @@ msgstr "Primer pago de {formattedPaid} ya realizado"
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
 msgid "First {formattedPaid} already paid · last payment {formattedLast}"
 msgstr "Primer pago de {formattedPaid} ya pagado · último pago {formattedLast}"
+
+#: src/recurring/components/recurring-detail-stats/recurring-detail-stats.tsx
+msgid "First paid"
+msgstr "Primer pago"
 
 #: src/rule/utils/get-rule-form-issue.util.ts
 msgid "Fix the pattern to continue"
@@ -6148,7 +6155,6 @@ msgstr "de {total} GB"
 #: src/ai/component/ai-download-card-frame/ai-download-card-frame.tsx
 #: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
 #: src/recurring/components/recurring-form-reminder-section/recurring-form-reminder-section.tsx
-#: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 #: src/recurring/components/recurring-reminder-choices/recurring-reminder-choices.tsx
 #: src/recurring/components/recurring-reminder-denied-row/recurring-reminder-denied-row.tsx
 #: src/rule/hooks/use-rule-row-summary.hook.ts
@@ -7878,10 +7884,6 @@ msgstr "Muestra lo que falta"
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Similar transactions"
 msgstr "Transacciones similares"
-
-#: src/recurring/components/recurring-detail-stats/recurring-detail-stats.tsx
-msgid "Since"
-msgstr "Desde"
 
 #: src/i18n/hook/use-format-date-range.hook.ts
 msgid "Since {fromLabel}"
