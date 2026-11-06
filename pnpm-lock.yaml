@@ -1083,7 +1083,11 @@ importers:
         specifier: ^0.18.5
         version: 0.18.5
 
-  tests/app-tests: {}
+  tests/app-tests:
+    devDependencies:
+      xlsx:
+        specifier: ^0.18.5
+        version: 0.18.5
 
   tests/budget-tests:
     dependencies:

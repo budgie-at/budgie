@@ -73,8 +73,8 @@ test('21 transfer consolidation', { tags: ['transactions'] }, async ({ budgie })
         await b.tapId(ctx, 'TransactionInfo.Row.Consolidation');
         await b.expectId(ctx, 'ConsolidationSourceModal.Row.0', 10_000);
         await b.expectId(ctx, 'ConsolidationSourceModal.Row.1');
-        await expect(id('ConsolidationSourceModal.Row.0')).toHaveText(/^E2E Consolidation P1 Out, .*, ₴200$/i);
-        await expect(id('ConsolidationSourceModal.Row.1')).toHaveText(/^E2E Consolidation P1 In, .*, \+₴200$/i);
+        await expect(id('ConsolidationSourceModal.Row.0')).toHaveText(/^E2E Consolidation P1 Out, ₴200,/i);
+        await expect(id('ConsolidationSourceModal.Row.1')).toHaveText(/^E2E Consolidation P1 In, \+₴200,/i);
         await b.expectId(ctx, 'ConsolidationSourceModal.RevertButton');
         await b.tapId(ctx, 'ConsolidationSourceModal.RevertButton');
         await t.confirmRevertConsolidation(ctx);

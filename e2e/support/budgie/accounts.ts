@@ -53,6 +53,9 @@ export async function openSettingsCard(ctx: Ctx, cardId: string | RegExp, destin
         }
     }
     await expect(card).toBeVisible({ timeout: 3_000 });
+    if (typeof cardId === 'string') {
+        await scrollToCentre(ctx, cardId);
+    }
     await card.tap();
     await expectId(ctx, destinationId, 8_000);
 }
@@ -131,7 +134,7 @@ async function renameAccount(ctx: Ctx, newName: string): Promise<void> {
 
 /** subflows/accounts/set-debt-return-date: on the edit form. */
 async function setDebtReturnDate(ctx: Ctx, day: string, label: string | RegExp): Promise<void> {
-    await scrollTo(ctx, 'AccountForm.ReturnDate');
+    await scrollToCentre(ctx, 'AccountForm.ReturnDate');
     await tapId(ctx, 'AccountForm.ReturnDate');
     await expectId(ctx, `DatePicker.Day.${day}`, 10_000);
     await tapId(ctx, `DatePicker.Day.${day}`);
@@ -239,7 +242,7 @@ export async function createDebtAccount(ctx: Ctx, debt: DebtAccount): Promise<vo
     if (debt.debtType === 'LENT') {
         await scrollTo(ctx, 'AccountForm.DebtType.LENT.Selected');
     } else {
-        await scrollTo(ctx, 'AccountForm.DebtType.BORROW');
+        await scrollToCentre(ctx, 'AccountForm.DebtType.BORROW');
         await tapUntil(byId(screen, 'AccountForm.DebtType.BORROW'), () => expectId(ctx, 'AccountForm.DebtType.BORROW.Selected', 2_000));
     }
 

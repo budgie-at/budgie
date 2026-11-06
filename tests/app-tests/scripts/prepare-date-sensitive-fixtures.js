@@ -1478,10 +1478,34 @@ const generateEnableBankingFixture = () => {
             validUntil
         });
     const integrations = [
-        { id: 91, label: 'E2E Valid Bank', token: token('e2e-session-valid', isoInDays(60)), errorCode: null, accounts: ['Current', 'Savings'] },
-        { id: 92, label: 'E2E Expired Bank', token: token('e2e-session-expired', isoInDays(-3)), errorCode: 'CONSENT_EXPIRED', accounts: ['Current'] },
-        { id: 93, label: 'E2E Unlinked Bank', token: token('e2e-session-unlinked', isoInDays(60)), errorCode: 'ACCOUNT_NOT_LINKED', accounts: ['Current'] },
-        { id: 94, label: 'E2E Keyless Bank', token: token('e2e-session-keyless', isoInDays(60)), errorCode: 'UNAUTHORIZED', accounts: ['Current'] }
+        {
+            id: 91,
+            label: 'E2E Valid Bank',
+            token: token('e2e-session-valid', isoInDays(60)),
+            errorCode: null,
+            accounts: ['Current', 'Savings']
+        },
+        {
+            id: 92,
+            label: 'E2E Expired Bank',
+            token: token('e2e-session-expired', isoInDays(-3)),
+            errorCode: 'CONSENT_EXPIRED',
+            accounts: ['Current']
+        },
+        {
+            id: 93,
+            label: 'E2E Unlinked Bank',
+            token: token('e2e-session-unlinked', isoInDays(60)),
+            errorCode: 'ACCOUNT_NOT_LINKED',
+            accounts: ['Current']
+        },
+        {
+            id: 94,
+            label: 'E2E Keyless Bank',
+            token: token('e2e-session-keyless', isoInDays(60)),
+            errorCode: 'UNAUTHORIZED',
+            accounts: ['Current']
+        }
     ];
     const accounts = integrations.flatMap(integration =>
         integration.accounts.map((name, index) => ({ id: integration.id * 10 + index, integration, title: `${integration.label} ${name}` }))

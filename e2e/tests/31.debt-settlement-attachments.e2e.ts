@@ -79,7 +79,7 @@ test('31 debt settlement attachments', { tags: ['debt'] }, async ({ budgie }) =>
     await b.phase('attach expense to lent debt from the list', async () => {
         await attachFromList('E2E_Debt_Attach_Expense', 'E2E Lent Expense Debt', false);
         await b.expectId(ctx, card('E2E_Debt_Attach_Expense'), 5_000);
-        await expect(id(card('E2E_Debt_Attach_Expense'))).toHaveText(/, From E2E Txn Account to E2E Lent Expense Debt,/, {
+        await expect(id(card('E2E_Debt_Attach_Expense'))).toHaveText(/, From E2E Txn Account to E2E Lent Expense Debt$/, {
             timeout: 10_000
         });
         await home();
