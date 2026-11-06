@@ -3704,7 +3704,7 @@ msgstr "Синхронізація Binance — ключі лише для чит
 
 #: src/app/[lang]/changelog/page.tsx
 msgid "Binance: several API keys can coexist, Spot and Funding transfers are synced, and balances match the exchange. See <0>Binance sync</0>."
-msgstr "Binance: може співіснувати кілька API-ключів, синхронізуються переказки між Spot і Funding, а баланси збігаються з біржею. Див. <0>синхронізація з Binance</0>."
+msgstr "Binance: може співіснувати кілька API-ключів, синхронізуються перекази між Spot і Funding, а баланси збігаються з біржею. Див. <0>синхронізація з Binance</0>."
 
 #: src/app/[lang]/features/biometric-authentication/opengraph-image.tsx
 msgid "biometric"

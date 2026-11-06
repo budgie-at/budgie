@@ -3554,7 +3554,7 @@ msgstr "Bank, Bargeld, Einlagen, Krypto und Schulden, alles auf einem Startbilds
 
 #: src/app/[lang]/changelog/page.tsx
 msgid "Banks across the EU, such as Trade Republic and N26, sync on the device through your own Enable Banking application. There is no Budgie server in between and Budgie holds no credential. Connecting to a bank can continue an existing account, keeping its history and syncing forward from its last transaction. Banks now show their logos."
-msgstr "Banken in der gesamten EU, etwa Trade Republic und N26, synchronisieren direkt auf dem Gerät über Ihre eigene Enable-Banking-Anwendung. Es gibt keinen Budgie-Server dazwischen, und Budgie speichert keine Zugangsdaten. Beim Verbinden mit einer Bank lässt sich ein bestehendes Konto fortführen: Der Verlauf bleibt erhalten, und es wird ab der letzten Transaktion weiter synchronisiert. Banken zeigen jetzt ihre Logos."
+msgstr "Banken in der gesamten EU, etwa Trade Republic und N26, synchronisieren direkt auf dem Gerät über deine eigene Enable-Banking-Anwendung. Es gibt keinen Budgie-Server dazwischen, und Budgie speichert keine Zugangsdaten. Beim Verbinden mit einer Bank lässt sich ein bestehendes Konto fortführen: Der Verlauf bleibt erhalten, und es wird ab der letzten Transaktion weiter synchronisiert. Banken zeigen jetzt ihre Logos."
 
 #: src/app/[lang]/features/bank-fee-tracking/page.tsx
 msgid "Banks charge for moving your own money. Budgie keeps that charge attached to the transfer instead of inventing a second expense."
@@ -3954,7 +3954,7 @@ msgstr "Budgetieren ohne Abo"
 
 #: src/app/[lang]/changelog/page.tsx
 msgid "Budgets are no longer a single fixed monthly limit. A budget can run weekly, biweekly, monthly or yearly, and existing budgets stay monthly. Under “Limit from” you can choose a fixed amount, the income received this period, or the income you expect, which comes from your recurring income. An allocation block shows money that is unassigned or over-assigned."
-msgstr "Budgets sind nicht mehr auf ein einziges festes Monatslimit beschränkt. Ein Budget kann wöchentlich, zweiwöchentlich, monatlich oder jährlich laufen, und bestehende Budgets bleiben monatlich. Unter „Limit basierend auf“ wählen Sie einen festen Betrag, die in diesem Zeitraum erhaltenen Einnahmen oder die erwarteten Einnahmen, die aus Ihren wiederkehrenden Einnahmen stammen. Ein Zuteilungsblock zeigt Geld, das nicht oder zu viel zugeteilt ist."
+msgstr "Budgets sind nicht mehr auf ein einziges festes Monatslimit beschränkt. Ein Budget kann wöchentlich, zweiwöchentlich, monatlich oder jährlich laufen, und bestehende Budgets bleiben monatlich. Unter „Limit basierend auf“ wählst du einen festen Betrag, die in diesem Zeitraum erhaltenen Einnahmen oder die erwarteten Einnahmen, die aus deinen wiederkehrenden Einnahmen stammen. Ein Zuteilungsblock zeigt Geld, das nicht oder zu viel zugeteilt ist."
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Budgets are often the paid tier"
@@ -5881,7 +5881,7 @@ msgstr "Kategorievorschläge, die aus Ihren eigenen Entscheidungen lernen"
 
 #: src/app/[lang]/changelog/page.tsx
 msgid "Category suggestions use a new on-device embeddings model. After the update, Budgie re-embeds your history once and removes the old model download."
-msgstr "Kategorievorschläge nutzen ein neues Embedding-Modell auf dem Gerät. Nach dem Update erstellt Budgie Ihren Verlauf einmalig neu und entfernt den Download des alten Modells."
+msgstr "Kategorievorschläge nutzen ein neues Embedding-Modell auf dem Gerät. Nach dem Update erstellt Budgie deinen Verlauf einmalig neu und entfernt den Download des alten Modells."
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Category suggestions, tag suggestions, category and tag translation, and voice entry all run on your phone, on both iOS and Android — nothing leaves the device."
@@ -7696,7 +7696,7 @@ msgstr "Jedes Krypto-Instrument hat seinen eigenen Marktbildschirm: den aktuelle
 
 #: src/app/[lang]/changelog/page.tsx
 msgid "Each debt is its own card with a progress ring, red when you owe and green when you are owed. A debt that is fully paid off is hidden from Home and shows a paid-off screen. Deposits opened from a synced expense start in the currency of the original operation. See <0>debt & loan tracking</0> and <1>deposit tracking</1>."
-msgstr "Jede Schuld ist eine eigene Karte mit Fortschrittsring, rot, wenn Sie schulden, und grün, wenn Ihnen geschuldet wird. Eine vollständig getilgte Schuld wird auf der Startseite ausgeblendet und zeigt einen Bildschirm für „abbezahlt“. Einlagen, die aus einer synchronisierten Ausgabe eröffnet werden, starten in der Währung der ursprünglichen Operation. Siehe <0>Schulden- und Kredit-Tracking</0> und <1>Einlagen-Tracking</1>."
+msgstr "Jede Schuld ist eine eigene Karte mit Fortschrittsring, rot, wenn du schuldest, und grün, wenn dir geschuldet wird. Eine vollständig getilgte Schuld wird auf der Startseite ausgeblendet und zeigt einen Bildschirm für „abbezahlt“. Einlagen, die aus einer synchronisierten Ausgabe eröffnet werden, starten in der Währung der ursprünglichen Operation. Siehe <0>Schulden- und Kredit-Tracking</0> und <1>Einlagen-Tracking</1>."
 
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Each field gets its own selector listing the headers found in your file, so nothing depends on the order your bank chose. To Account, Category, Date, Amount and To Currency have to be mapped; the badge in the corner counts the rows Budgie found."
@@ -9370,7 +9370,7 @@ msgstr "Auch Widgets auf dem Home-Bildschirm verbergen Beträge, solange die PIN
 
 #: src/app/[lang]/changelog/page.tsx
 msgid "Home, Settings, account forms, rules, categories and tags, budgets, recurring payments, transaction forms and the categorize inbox were rebuilt as grouped lists with a consistent look. Home shows your net worth with an asset mix bar and a card for cash, and linked banks appear as one card with their own logo. Settings moves data tools onto their own screen. The Runway tab reads as one screen with labelled charts, and its monthly burn trims one-off spikes."
-msgstr "Startseite, Einstellungen, Kontoformulare, Regeln, Kategorien und Tags, Budgets, wiederkehrende Zahlungen, Transaktionsformulare und der Kategorisierungs-Eingang wurden als gruppierte Listen mit einheitlicher Optik neu aufgebaut. Die Startseite zeigt Ihr Nettovermögen mit einem Balken zur Vermögensverteilung und eine Karte für Bargeld, und verknüpfte Banken erscheinen als eine Karte mit eigenem Logo. Die Einstellungen legen Datenwerkzeuge auf einen eigenen Bildschirm. Der Runway-Tab ist ein einziger Bildschirm mit beschrifteten Diagrammen, und sein monatlicher Verbrauch blendet einmalige Ausreißer aus."
+msgstr "Startseite, Einstellungen, Kontoformulare, Regeln, Kategorien und Tags, Budgets, wiederkehrende Zahlungen, Transaktionsformulare und der Kategorisierungs-Eingang wurden als gruppierte Listen mit einheitlicher Optik neu aufgebaut. Die Startseite zeigt dein Nettovermögen mit einem Balken zur Vermögensverteilung und eine Karte für Bargeld, und verknüpfte Banken erscheinen als eine Karte mit eigenem Logo. Die Einstellungen legen Datenwerkzeuge auf einen eigenen Bildschirm. Der Runway-Tab ist ein einziger Bildschirm mit beschrifteten Diagrammen, und sein monatlicher Verbrauch blendet einmalige Ausreißer aus."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Hope they comply"
@@ -12811,7 +12811,7 @@ msgstr "Unter iOS läuft der Verlaufsimport im Hintergrund weiter, und der Berei
 
 #: src/app/[lang]/changelog/page.tsx
 msgid "On iOS you can scan a receipt with the camera, choose photos or PDFs from Photos or Files, or share them into Budgie. Reading happens on the device and nothing leaves it. Every scan ends in a prefilled form that you confirm: it either attaches the receipt to the transaction it matches, or creates a new expense, and a receipt you have already scanned is recognised as a duplicate."
-msgstr "Unter iOS können Sie einen Beleg mit der Kamera scannen, Fotos oder PDFs aus Fotos oder Dateien auswählen oder sie in Budgie teilen. Das Lesen geschieht auf dem Gerät, und nichts verlässt es. Jeder Scan endet in einem vorausgefüllten Formular, das Sie bestätigen: Es hängt den Beleg entweder an die passende Transaktion an oder legt eine neue Ausgabe an, und ein bereits gescannter Beleg wird als Duplikat erkannt."
+msgstr "Unter iOS kannst du einen Beleg mit der Kamera scannen, Fotos oder PDFs aus Fotos oder Dateien auswählen oder sie in Budgie teilen. Das Lesen geschieht auf dem Gerät, und nichts verlässt es. Jeder Scan endet in einem vorausgefüllten Formular, das du bestätigst: Es hängt den Beleg entweder an die passende Transaktion an oder legt eine neue Ausgabe an, und ein bereits gescannter Beleg wird als Duplikat erkannt."
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "On iPhone, a long history import keeps running in the background with a progress notice"
@@ -12929,7 +12929,7 @@ msgstr "KI auf dem Gerät"
 
 #: src/app/[lang]/changelog/page.tsx
 msgid "Onboarding is rebuilt around choosing your key: a PIN or the phone lock only, or restoring a backup. Forgot PIN and add PIN later are sheets, and Settings shows your database file and when it was last backed up."
-msgstr "Das Onboarding ist rund um die Wahl Ihres Schlüssels neu aufgebaut: eine PIN, nur die Telefonsperre oder die Wiederherstellung aus einer Sicherung. „PIN vergessen“ und „PIN später festlegen“ sind Blätter, und die Einstellungen zeigen Ihre Datenbankdatei und wann zuletzt gesichert wurde."
+msgstr "Das Onboarding ist rund um die Wahl deines Schlüssels neu aufgebaut: eine PIN, nur die Telefonsperre oder die Wiederherstellung aus einer Sicherung. „PIN vergessen“ und „PIN später festlegen“ sind Blätter, und die Einstellungen zeigen deine Datenbankdatei und wann zuletzt gesichert wurde."
 
 #: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
 msgid "Once Monobank is connected to Budgie, most of the bookkeeping does itself: purchases arrive on their own and land in categories, transfers between your own cards stop looking like spending, and your monthly budget fills in as you pay. Here is what happens at each step, and where you still have the last word."
@@ -16930,7 +16930,7 @@ msgstr "Synchronisiere das Konto, von dem das Geld wegging, und das, auf dem es 
 
 #: src/app/[lang]/changelog/page.tsx
 msgid "Synced copies of expenses you had added by hand are merged with them, so the overlap is not counted twice, and more refunds are matched automatically, including foreign-currency ones."
-msgstr "Synchronisierte Kopien von Ausgaben, die Sie von Hand erfasst hatten, werden mit diesen zusammengeführt, sodass die Überschneidung nicht doppelt zählt, und mehr Erstattungen werden automatisch zugeordnet, auch in Fremdwährung."
+msgstr "Synchronisierte Kopien von Ausgaben, die du von Hand erfasst hattest, werden mit diesen zusammengeführt, sodass die Überschneidung nicht doppelt zählt, und mehr Erstattungen werden automatisch zugeordnet, auch in Fremdwährung."
 
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "Tag a transaction more than once and the list still shows one chip — bordered, with a count for the rest."
@@ -17688,7 +17688,7 @@ msgstr "Die Ink & Switch-Arbeit hat diese Ideen nicht erfunden. Forscher verteil
 
 #: src/app/[lang]/changelog/page.tsx
 msgid "The Inzhur operations export (XLSX) can be imported as the full ledger of your Inzhur cash account, including buys, sells, dividends and tax, so fund pages can show return on what you paid. The holdings PDF stays optional."
-msgstr "Der Inzhur-Operationsexport (XLSX) kann als vollständiges Kassenbuch Ihres Inzhur-Barkontos importiert werden, einschließlich Käufen, Verkäufen, Dividenden und Steuern, sodass Fondsseiten die Rendite auf das Eingezahlte zeigen können. Das Bestands-PDF bleibt optional."
+msgstr "Der Inzhur-Operationsexport (XLSX) kann als vollständiges Kassenbuch deines Inzhur-Barkontos importiert werden, einschließlich Käufen, Verkäufen, Dividenden und Steuern, sodass Fondsseiten die Rendite auf das Eingezahlte zeigen können. Das Bestands-PDF bleibt optional."
 
 #: src/beta/component/beta-empty-state/beta-empty-state.tsx
 msgid "The iOS development build hasn't been published yet. Check back after the next build run."
@@ -18302,7 +18302,7 @@ msgstr "Die Überweisung bleibt eine Überweisung"
 
 #: src/app/[lang]/changelog/page.tsx
 msgid "The uncategorized pill opens a Categorize inbox that groups every uncategorized transaction by merchant, so a whole group can be categorized at once. Suggestions come from your own history on the device, and groups with no history ask you to pick a category instead of guessing. A tag inbox does the same for untagged transactions, and creating a rule from the inbox no longer freezes the app. ATM withdrawals form their own cash group. See <0>bulk categorize transactions</0>."
-msgstr "Die Pille für nicht kategorisierte Transaktionen öffnet einen Kategorisierungs-Eingang, der alle nicht kategorisierten Transaktionen nach Händler gruppiert, sodass eine ganze Gruppe auf einmal kategorisiert werden kann. Vorschläge stammen aus Ihrem eigenen Verlauf auf dem Gerät, und Gruppen ohne Verlauf bitten Sie, eine Kategorie zu wählen, statt zu raten. Ein Tag-Eingang tut dasselbe für Transaktionen ohne Tags, und das Erstellen einer Regel aus dem Eingang friert die App nicht mehr ein. Geldautomatenabhebungen bilden eine eigene Bargeldgruppe. Siehe <0>Transaktionen gesammelt kategorisieren</0>."
+msgstr "Die Pille für nicht kategorisierte Transaktionen öffnet einen Kategorisierungs-Eingang, der alle nicht kategorisierten Transaktionen nach Händler gruppiert, sodass eine ganze Gruppe auf einmal kategorisiert werden kann. Vorschläge stammen aus deinem eigenen Verlauf auf dem Gerät, und Gruppen ohne Verlauf bitten dich, eine Kategorie zu wählen, statt zu raten. Ein Tag-Eingang tut dasselbe für Transaktionen ohne Tags, und das Erstellen einer Regel aus dem Eingang friert die App nicht mehr ein. Geldautomatenabhebungen bilden eine eigene Bargeldgruppe. Siehe <0>Transaktionen gesammelt kategorisieren</0>."
 
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "The Untagged row is the gap"
@@ -20882,7 +20882,7 @@ msgstr "Mit Ihrer ausdrücklichen Einwilligung können wir die folgenden minimal
 
 #: src/app/[lang]/changelog/page.tsx
 msgid "Withdrawals at an ATM are moved to your cash account automatically, for any bank, when there is a single active cash account in the same currency. Transfers tagged as money transfers are no longer filed as bank fees."
-msgstr "Abhebungen am Geldautomaten werden für jede Bank automatisch auf Ihr Bargeldkonto verschoben, wenn es genau ein aktives Bargeldkonto in derselben Währung gibt. Als Geldtransfer gekennzeichnete Überweisungen werden nicht mehr als Bankgebühren eingeordnet."
+msgstr "Abhebungen am Geldautomaten werden für jede Bank automatisch auf dein Bargeldkonto verschoben, wenn es genau ein aktives Bargeldkonto in derselben Währung gibt. Als Geldtransfer gekennzeichnete Überweisungen werden nicht mehr als Bankgebühren eingeordnet."
 
 #: src/app/[lang]/privacy/page.tsx
 msgid "Without a backup file your data is gone, because Budgie has no copy to restore. That is the price of keeping everything on your device, so save backups to storage you control."
@@ -21422,7 +21422,7 @@ msgstr "Du bist bei Monobank, willst deine Ausgaben in einem Ausgaben-Tracker se
 
 #: src/app/[lang]/changelog/page.tsx
 msgid "You can also create a recurring payment yourself, with amount, category, cadence, next date, an end condition and an optional reminder, or turn an existing expense or income into one with “Make recurring”. Manual series are plans: Budgie forecasts and matches them against real transactions but never posts transactions for you. The Recurring pane has a list and a calendar view, a summary of what is committed per month, and a detail screen per series. Reminders are off by default and ask for notification permission only when you turn one on. See <0>recurring payments</0>."
-msgstr "Sie können auch selbst eine wiederkehrende Zahlung anlegen, mit Betrag, Kategorie, Rhythmus, nächstem Datum, einer Endbedingung und einer optionalen Erinnerung, oder eine bestehende Ausgabe oder Einnahme mit „Als wiederkehrend festlegen“ dazu machen. Manuelle Serien sind Pläne: Budgie prognostiziert sie und gleicht sie mit echten Transaktionen ab, bucht aber nie selbst Transaktionen. Der Bereich „Wiederkehrend“ hat eine Listen- und eine Kalenderansicht, eine Übersicht der monatlich gebundenen Beträge und einen Detailbildschirm pro Serie. Erinnerungen sind standardmäßig aus und fragen erst dann nach der Benachrichtigungsberechtigung, wenn Sie eine einschalten. Siehe <0>wiederkehrende Zahlungen</0>."
+msgstr "Du kannst auch selbst eine wiederkehrende Zahlung anlegen, mit Betrag, Kategorie, Rhythmus, nächstem Datum, einer Endbedingung und einer optionalen Erinnerung, oder eine bestehende Ausgabe oder Einnahme mit „Als wiederkehrend festlegen“ dazu machen. Manuelle Serien sind Pläne: Budgie prognostiziert sie und gleicht sie mit echten Transaktionen ab, bucht aber nie selbst Transaktionen. Der Bereich „Wiederkehrend“ hat eine Listen- und eine Kalenderansicht, eine Übersicht der monatlich gebundenen Beträge und einen Detailbildschirm pro Serie. Erinnerungen sind standardmäßig aus und fragen erst dann nach der Benachrichtigungsberechtigung, wenn du eine einschaltest. Siehe <0>wiederkehrende Zahlungen</0>."
 
 #: src/app/[lang]/offline-first/page.tsx
 msgid "You can log an expense at 30,000 feet, walk through a Tube tunnel, or work a week off-grid — Budgie just keeps working. When you are back online, optional bank sync fills in the gaps you missed; manual edits are never blocked."
