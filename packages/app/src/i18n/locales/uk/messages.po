@@ -2555,6 +2555,10 @@ msgstr "Виберіть свій банк"
 msgid "Clear"
 msgstr "Очистити"
 
+#: src/@generic/component/grouped-list-value-row/grouped-list-value-row.tsx
+msgid "Clear {title}"
+msgstr ""
+
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Clear All"
@@ -4558,6 +4562,10 @@ msgstr "Валюта джерела"
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "From one amount to another"
 msgstr "Від однієї суми до іншої"
+
+#: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
+msgid "From transaction"
+msgstr ""
 
 #: src/budget/components/budget-fund-suggestion-banner/budget-fund-suggestion-banner.tsx
 msgid "From your recurring charges: {name}, {amountLabel} per cycle"
@@ -7183,10 +7191,6 @@ msgstr "Видалити дію {position}"
 msgid "Remove all duplicates"
 msgstr "Видалити всі дублікати"
 
-#: src/recurring/components/recurring-form-category-field/recurring-form-category-field.tsx
-msgid "Remove category"
-msgstr "Прибрати категорію"
-
 #: src/budget/components/budget-category-limit-deletable-row/budget-category-limit-deletable-row.tsx
 msgid "Remove category limit?"
 msgstr "Видалити ліміт категорії?"
@@ -9253,10 +9257,6 @@ msgstr "Використайте від 1 до {CATEGORY_TITLE_MAX_LENGTH} си�
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Use 1 to {TAG_TITLE_MAX_LENGTH} characters"
 msgstr "Використайте від 1 до {TAG_TITLE_MAX_LENGTH} символів"
-
-#: src/recurring/components/recurring-form-account-field/recurring-form-account-field.tsx
-msgid "Use any account"
-msgstr "Використовувати будь-який рахунок"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx

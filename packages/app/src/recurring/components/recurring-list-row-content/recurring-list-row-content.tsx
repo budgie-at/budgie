@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -28,11 +28,18 @@ export const RecurringListRowContent = ({ series, isPossible, now }: Props) => {
     const nextDateLabel = isDefined(series.nextDate) ? formatMonthAndDayAndOptionalYear(series.nextDate) : t`No upcoming payment`;
     const subtitleLineLimit = isAccessibilityTextSize ? 0 : 1;
     const seenCount = series.linkedCount;
+    const tile = isPossible ? (
+        <View className="opacity-50">
+            <RecurringMerchantTile title={series.title} size={40} />
+        </View>
+    ) : (
+        <RecurringMerchantTile title={series.title} size={40} />
+    );
     const subtitle = isPossible ? t`Seen ${seenCount}× · ${cadence}` : `${cadence} · ${nextDateLabel}`;
 
     return (
         <TransactionCardLayout
-            icon={<RecurringMerchantTile title={series.title} size={40} />}
+            icon={tile}
             title={
                 <Text
                     dynamicTypeRamp="headline"

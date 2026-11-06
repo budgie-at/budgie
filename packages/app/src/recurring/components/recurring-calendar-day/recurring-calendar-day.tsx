@@ -20,22 +20,25 @@ const MAX_DOTS = 3;
 
 const circleVariants = cva('items-center justify-center rounded-full', {
     variants: {
-        isSelected: { true: 'bg-primary', false: '' },
+        isSelected: { true: '', false: '' },
         isToday: { true: '', false: '' },
         hasEntries: { true: '', false: '' },
         isAccessibilityTextSize: { true: 'w-[44px] h-[44px]', false: 'w-[36px] h-[36px]' }
     },
-    compoundVariants: [{ isToday: true, isSelected: true, className: 'bg-destructive-strong' }]
+    compoundVariants: [
+        { isToday: true, className: 'bg-primary' },
+        { isToday: false, isSelected: true, className: 'border-2 border-primary' }
+    ]
 });
 
 const textVariants = cva('text-[15px] leading-[20px] tabular-nums pb-[8px]', {
     variants: {
         isCurrentMonth: { true: 'text-primary', false: 'text-secondary-foreground' },
-        isSelected: { true: 'text-primary-reverse font-semibold', false: '' },
+        isSelected: { true: 'font-semibold', false: '' },
         isToday: { true: 'font-semibold', false: '' },
         hasEntries: { true: 'font-semibold', false: '' }
     },
-    compoundVariants: [{ isToday: true, isSelected: false, className: 'text-destructive-strong' }]
+    compoundVariants: [{ isToday: true, className: 'text-primary-reverse' }]
 });
 
 interface Props {
@@ -86,7 +89,7 @@ export const RecurringCalendarDay = (props: Props) => {
                     <RecurringCalendarDayDots
                         actualDots={actualDots}
                         forecastedDots={Math.min(forecastedCount, MAX_DOTS - actualDots)}
-                        isSelected={isSelected}
+                        isSelected={isToday}
                     />
                 ) : null}
             </View>

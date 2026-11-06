@@ -14,12 +14,12 @@ interface Props {
 
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
-const chipVariants = cva('min-h-[36px] justify-center rounded-full px-xl active:opacity-70', {
-    variants: { isSelected: { true: 'border border-primary/40 bg-primary/10', false: 'border border-surface-separator bg-surface-fill' } }
+const chipVariants = cva('min-h-[40px] grow basis-[30%] items-center justify-center rounded-full px-md active:opacity-70', {
+    variants: { isSelected: { true: 'bg-cta-background', false: 'bg-segmented-track' } }
 });
 
 const labelVariants = cva('text-[15px] font-medium', {
-    variants: { isSelected: { true: 'font-semibold text-primary', false: 'text-primary' } }
+    variants: { isSelected: { true: 'font-semibold text-cta-foreground', false: 'text-primary' } }
 });
 
 export const RecurringFormRepeatChip = ({ choice, isSelected, onSelect }: Props) => {
@@ -45,7 +45,9 @@ export const RecurringFormRepeatChip = ({ choice, isSelected, onSelect }: Props)
             testID={RecurringSeriesFormSelector.Repeat(choice)}
             onPress={handlePress}
         >
-            <Text className={labelVariants({ isSelected })}>{labels[choice]}</Text>
+            <Text className={labelVariants({ isSelected })} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8}>
+                {labels[choice]}
+            </Text>
         </HapticPressable>
     );
 };

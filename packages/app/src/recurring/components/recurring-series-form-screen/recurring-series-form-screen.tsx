@@ -8,7 +8,7 @@ import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { Text, View } from 'react-native';
 
 import { BottomChromeInsetProvider, ScreenChromeFooter, ScreenChromeScrollView } from '@rnw-community/react-native-screen-chrome';
-import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { PillButton } from '../../../@generic/component/pill-button/pill-button';
@@ -18,6 +18,7 @@ import { TransactionFormScreen } from '../../../transaction/components/transacti
 import { RecurringSeriesFormSchema } from '../../constant/recurring-series-form-schema.constant';
 import { RecurringFormModeEnum } from '../../enum/recurring-form-mode.enum';
 import { submitRecurringSeries } from '../../utils/submit-recurring-series.util';
+import { MakeRecurringSourceRow } from '../make-recurring-source-row/make-recurring-source-row';
 import { RecurringFormAccountField } from '../recurring-form-account-field/recurring-form-account-field';
 import { RecurringFormAmountField } from '../recurring-form-amount-field/recurring-form-amount-field';
 import { RecurringFormCategoryField } from '../recurring-form-category-field/recurring-form-category-field';
@@ -54,10 +55,19 @@ export const RecurringSeriesFormScreen = ({ target, initialValues }: Props) => {
     const isEditing = target.mode === RecurringFormModeEnum.EDIT;
     const title = isEditing ? t`Edit recurring payment` : t`New recurring payment`;
     const kindField = isEditing ? null : <RecurringFormKindField />;
+    const sourceTransactionId = target.mode === RecurringFormModeEnum.CREATE ? target.transactionId : null;
+    const sourceSection = isDefined(sourceTransactionId) ? (
+        <View className="gap-y-sm">
+            <Text className="px-3xl text-[13px] font-medium text-secondary-foreground">
+                <Trans>From transaction</Trans>
+            </Text>
+            <MakeRecurringSourceRow transactionId={sourceTransactionId} />
+        </View>
+    ) : null;
     const [amount, seriesTitle] = useWatch({ control: form.control, name: ['amount', 'title'] });
     const isSaveDisabled = !isPositiveNumber(amount) || !isNotEmptyString(seriesTitle.trim());
     const saveHint = isSaveDisabled ? (
-        <Text className="px-3xl pb-sm text-center text-[13px] text-secondary-foreground">
+        <Text className="pb-md text-center text-[13px] text-secondary-foreground">
             <Trans>Add an amount and a name to save</Trans>
         </Text>
     ) : null;
@@ -95,6 +105,7 @@ export const RecurringSeriesFormScreen = ({ target, initialValues }: Props) => {
                             showsVerticalScrollIndicator={false}
                         >
                             <View className="gap-y-5xl pt-md">
+                                {sourceSection}
                                 {kindField}
                                 <RecurringFormAmountField label={t`Amount`} />
                                 <RecurringFormTitleField />
@@ -109,8 +120,8 @@ export const RecurringSeriesFormScreen = ({ target, initialValues }: Props) => {
                             </View>
                         </ScreenChromeScrollView>
                         <View className="pt-lg pb-md">
-                            {saveHint}
                             <ScreenChromeFooter includeBottomSafeArea={false} style={FOOTER_STYLE}>
+                                {saveHint}
                                 <PillButton
                                     label={t`Save`}
                                     onPress={handleSave}

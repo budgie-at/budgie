@@ -1,6 +1,5 @@
 import { Text, View } from 'react-native';
 
-import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
 import { RECURRING_CALENDAR_CELL_STYLE } from '../../constant/recurring-calendar-cell-style.constant';
 
@@ -9,11 +8,9 @@ interface Props {
 }
 
 export const RecurringCalendarWeekday = ({ date }: Props) => {
-    const isAccessibilityTextSize = useIsAccessibilityTextSize();
     const { languageTag } = useLocaleInfo();
     const fullLabel = new Intl.DateTimeFormat(languageTag, { weekday: 'long' }).format(date);
-    const shortLabel = new Intl.DateTimeFormat(languageTag, { weekday: 'short' }).format(date).slice(0, 2);
-    const label = isAccessibilityTextSize ? shortLabel.slice(0, 1) : shortLabel;
+    const label = new Intl.DateTimeFormat(languageTag, { weekday: 'narrow' }).format(date);
 
     return (
         <View className="h-[25px] items-center justify-center" style={RECURRING_CALENDAR_CELL_STYLE}>

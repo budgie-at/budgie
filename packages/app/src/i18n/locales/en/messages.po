@@ -2556,6 +2556,10 @@ msgstr "Choose your bank"
 msgid "Clear"
 msgstr "Clear"
 
+#: src/@generic/component/grouped-list-value-row/grouped-list-value-row.tsx
+msgid "Clear {title}"
+msgstr "Clear {title}"
+
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Clear All"
@@ -4559,6 +4563,10 @@ msgstr "From currency"
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "From one amount to another"
 msgstr "From one amount to another"
+
+#: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
+msgid "From transaction"
+msgstr "From transaction"
 
 #: src/budget/components/budget-fund-suggestion-banner/budget-fund-suggestion-banner.tsx
 msgid "From your recurring charges: {name}, {amountLabel} per cycle"
@@ -7184,10 +7192,6 @@ msgstr "Remove action {position}"
 msgid "Remove all duplicates"
 msgstr "Remove all duplicates"
 
-#: src/recurring/components/recurring-form-category-field/recurring-form-category-field.tsx
-msgid "Remove category"
-msgstr "Remove category"
-
 #: src/budget/components/budget-category-limit-deletable-row/budget-category-limit-deletable-row.tsx
 msgid "Remove category limit?"
 msgstr "Remove category limit?"
@@ -9254,10 +9258,6 @@ msgstr "Use 1 to {CATEGORY_TITLE_MAX_LENGTH} characters"
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Use 1 to {TAG_TITLE_MAX_LENGTH} characters"
 msgstr "Use 1 to {TAG_TITLE_MAX_LENGTH} characters"
-
-#: src/recurring/components/recurring-form-account-field/recurring-form-account-field.tsx
-msgid "Use any account"
-msgstr "Use any account"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
