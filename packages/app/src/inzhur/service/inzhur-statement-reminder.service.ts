@@ -52,6 +52,7 @@ export class InzhurStatementReminderService extends Context.Service<InzhurStatem
                 const { daysOld } = reminder;
 
                 yield* postLocalNotification(
+                    { id: 'budget-alerts', name: i18n._(msg`Budget alerts`) },
                     i18n._(msg`Time for a fresh Inzhur export`),
                     plural(daysOld, {
                         one: 'Your last Inzhur export is # day old and money has moved since. Import a new one to keep your balances accurate.',

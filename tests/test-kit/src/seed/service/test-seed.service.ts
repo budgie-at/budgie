@@ -424,6 +424,7 @@ export class TestSeedService {
     }
 
     manualExpense(input: {
+        readonly entries?: readonly Pick<TransactionEntryCreateEntityInterface, 'amount' | 'categoryId'>[];
         readonly accountId: number;
         readonly amount: number;
         readonly operatedAt: Date;
@@ -454,21 +455,26 @@ export class TestSeedService {
             const transaction = TestSeedService.requireInserted(transactionRows, 'transactions');
             const entryRows = yield* this.database
                 .insert(TransactionEntryEntityTable)
-                .values({
-                    transactionId: transaction.id,
-                    accountId: input.accountId,
-                    type: isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT,
-                    amount: input.amount,
-                    externalId: null,
-                    exchangeRate: 1,
-                    baseInstrumentId: TestSeedService.DEFAULT_BASE_INSTRUMENT_ID,
-                    baseExchangeRate: 1,
-                    baseAmount: input.amount,
-                    toIban: null,
-                    categoryId: input.categoryId ?? null,
-                    mccCategoryId: null,
-                    originalTransactionId: null
-                } satisfies TransactionEntryCreateEntityInterface)
+                .values(
+                    (input.entries ?? [{ amount: input.amount, categoryId: input.categoryId ?? null }]).map(
+                        entry =>
+                            ({
+                                transactionId: transaction.id,
+                                accountId: input.accountId,
+                                type: isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT,
+                                amount: entry.amount,
+                                externalId: null,
+                                exchangeRate: 1,
+                                baseInstrumentId: TestSeedService.DEFAULT_BASE_INSTRUMENT_ID,
+                                baseExchangeRate: 1,
+                                baseAmount: entry.amount,
+                                toIban: null,
+                                categoryId: entry.categoryId,
+                                mccCategoryId: null,
+                                originalTransactionId: null
+                            }) satisfies TransactionEntryCreateEntityInterface
+                    )
+                )
                 .returning();
 
             TestSeedService.requireInserted(entryRows, 'transaction_entries');

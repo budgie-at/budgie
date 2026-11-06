@@ -40,6 +40,8 @@ import { detectImportPreset } from '../../import/utils/detect-import-preset.util
 import { getImportMatchDescription } from '../../import/utils/get-import-match-description.util';
 import { getImportRequiredFooter } from '../../import/utils/get-import-required-footer.util';
 import { matchImportColumns } from '../../import/utils/match-import-columns.util';
+import { RecurringRefreshModeEnum } from '../../recurring/enum/recurring-refresh-mode.enum';
+import { scheduleRecurringRefresh } from '../../recurring/utils/schedule-recurring-refresh.util';
 import { RuleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 
 const IMPORT_COLUMN_FIELDS = [
@@ -125,6 +127,7 @@ export default function ImportScreen() {
                 yield* YIELD_TO_UI;
                 const { transactionIds, transactions, rowErrors } = yield* importerService.replaceAll(columnMap, csvText);
                 yield* ruleApplicationDrainerService.enqueueTransactions(transactionIds, transactions);
+                yield* scheduleRecurringRefresh(RecurringRefreshModeEnum.FULL);
 
                 if (isNotEmptyArray(rowErrors)) {
                     const importedCount = transactionIds.length;

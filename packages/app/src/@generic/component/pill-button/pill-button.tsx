@@ -18,14 +18,14 @@ interface Props {
 
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
-const containerVariants = cva('min-h-[52px] items-center justify-center rounded-xl px-5xl py-md active:opacity-80', {
+const containerVariants = cva('min-h-[52px] items-center justify-center rounded-full px-5xl py-md active:opacity-80', {
     variants: {
         variant: { primary: '', destructive: '' },
         isDisabled: { true: '', false: '' }
     },
     compoundVariants: [
         { variant: 'primary', isDisabled: false, className: 'bg-cta-background' },
-        { variant: 'primary', isDisabled: true, className: 'bg-cta-background opacity-40' },
+        { variant: 'primary', isDisabled: true, className: 'bg-cta-background/30' },
         { variant: 'destructive', isDisabled: false, className: 'bg-destructive-action' },
         { variant: 'destructive', isDisabled: true, className: 'bg-destructive-action/40' }
     ]
@@ -33,12 +33,10 @@ const containerVariants = cva('min-h-[52px] items-center justify-center rounded-
 
 const labelVariants = cva('text-center text-[17px] font-semibold', {
     variants: {
-        variant: { primary: '', destructive: '' },
+        variant: { primary: 'text-cta-foreground', destructive: '' },
         isDisabled: { true: '', false: '' }
     },
     compoundVariants: [
-        { variant: 'primary', isDisabled: false, className: 'text-cta-foreground' },
-        { variant: 'primary', isDisabled: true, className: 'text-cta-foreground' },
         { variant: 'destructive', isDisabled: false, className: 'text-white' },
         { variant: 'destructive', isDisabled: true, className: 'text-primary/70' }
     ]

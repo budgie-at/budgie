@@ -11,6 +11,8 @@ import { dismissAllOrReplace } from '../../@generic/utils/dismiss-all-or-replace
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { attachReceipt } from '../../receipt/utils/attach-receipt.util';
+import { RecurringRefreshModeEnum } from '../../recurring/enum/recurring-refresh-mode.enum';
+import { scheduleRecurringRefresh } from '../../recurring/utils/schedule-recurring-refresh.util';
 
 import { useDeleteTransaction } from './use-delete-transaction.hook';
 
@@ -53,6 +55,7 @@ export const useUpdateTransactionForm = ({
                 const transactionService = yield* TransactionService;
 
                 yield* Db.transaction(Effect.andThen(transactionService.updateById(id, data), attachReceipt(receipt, id)));
+                yield* scheduleRecurringRefresh(RecurringRefreshModeEnum.RECENT);
                 onAfterSubmit?.(data);
                 goBackOrReplace('/');
             }).pipe(toastOnFailure(t`Could not update transaction.`))

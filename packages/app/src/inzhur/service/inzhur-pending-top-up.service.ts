@@ -91,6 +91,7 @@ export class InzhurPendingTopUpService extends Context.Service<InzhurPendingTopU
                         const date = dateFormat.format(topUp.operatedAt);
 
                         yield* postLocalNotification(
+                            { id: 'budget-alerts', name: i18n._(msg`Budget alerts`) },
                             i18n._(msg`Inzhur top-up waiting`),
                             i18n._(msg`${amount} topped up ${date}. What did you buy?`)
                         );

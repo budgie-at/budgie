@@ -383,11 +383,17 @@ export type { BudgetSinkingFundCreateEntityInterface } from './budget-sinking-fu
 export type { BudgetSinkingFundUpdateEntityInterface } from './budget-sinking-fund/entity/budget-sinking-fund-update-entity.interface';
 
 export { RecurringSeriesKindEnum } from './recurring-series/enum/recurring-series-kind.enum';
+export { RecurringSeriesSourceEnum } from './recurring-series/enum/recurring-series-source.enum';
+export { RecurringCadenceUnitEnum } from './recurring-series/enum/recurring-cadence-unit.enum';
 export { RecurringSeriesStatusEnum } from './recurring-series/enum/recurring-series-status.enum';
 export { RecurringSeriesUserStateEnum } from './recurring-series/enum/recurring-series-user-state.enum';
 export { RecurringSeriesEntityTable } from './recurring-series/table/recurring-series-entity.table';
 export type { RecurringSeriesEntityInterface } from './recurring-series/entity/recurring-series-entity.interface';
 export type { RecurringSeriesCreateEntityInterface } from './recurring-series/entity/recurring-series-create-entity.interface';
+export { RecurringMatchSourceEnum } from './recurring-series-transaction/enum/recurring-match-source.enum';
+export { RecurringSeriesTransactionEntityTable } from './recurring-series-transaction/table/recurring-series-transaction-entity.table';
+export type { RecurringSeriesTransactionEntityInterface } from './recurring-series-transaction/entity/recurring-series-transaction-entity.interface';
+export type { RecurringSeriesTransactionCreateEntityInterface } from './recurring-series-transaction/entity/recurring-series-transaction-create-entity.interface';
 
 export { RUNWAY_MAX_MONTHS } from './runway/constant/runway.constant';
 export { RUNWAY_DRIVER_MIN_BURN_SHARE } from './runway/constant/runway.constant';
