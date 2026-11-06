@@ -43,7 +43,7 @@ export const buildReadModels = (
             endsAt: null,
             reminderDaysBefore: null,
             confidence: scoreDetectedSeries(series),
-            defaultAmount: series.predictedAmount,
+            defaultAmount: series.nativeAmount,
             categoryTitle: series.categoryTitle,
             categoryIcon: series.categoryIcon
         },

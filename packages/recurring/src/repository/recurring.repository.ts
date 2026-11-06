@@ -27,6 +27,7 @@ import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { RECURRING_TRACKED_KINDS } from '../constant/recurring-tracked-kinds.constant';
 
+import type { RecurringChargeInterface } from '../interface/recurring-charge.interface';
 import type { RecurringSeriesRowInterface } from '../interface/recurring-series-row.interface';
 import type {
     RecurringSeriesCreateEntityInterface,
@@ -55,6 +56,23 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
                 )
             ]
         } as const;
+
+        const mergeChargeEntries = (charges: readonly RecurringChargeInterface[]): RecurringChargeInterface[] => {
+            const grouped = new Map<string, RecurringChargeInterface[]>();
+
+            for (const charge of charges) {
+                const key = `${charge.transactionId}|${charge.accountId}`;
+                const entries = grouped.get(key) ?? [];
+                entries.push(charge);
+                grouped.set(key, entries);
+            }
+
+            return [...grouped.values()].map(entries => ({
+                ...entries.reduce((largest, entry) => (entry.nativeAmount > largest.nativeAmount ? entry : largest)),
+                nativeAmount: entries.reduce((total, entry) => total + entry.nativeAmount, 0),
+                defaultAmount: entries.reduce((total, entry) => total + entry.defaultAmount, 0)
+            }));
+        };
 
         const queryCharges =
             (historical: boolean, defaultInstrumentId: number | null, language: LanguageEnum, kind: RecurringSeriesKindEnum) =>
@@ -98,7 +116,7 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
                                 filter
                             )
                         );
-                });
+                }).pipe(Effect.map(mergeChargeEntries));
 
         const liveLinkedTransactions = sql`${TransactionEntityTable.id} IN (
             SELECT ${RecurringSeriesTransactionEntityTable.transactionId} FROM ${RecurringSeriesTransactionEntityTable}

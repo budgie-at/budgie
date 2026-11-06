@@ -75,7 +75,6 @@ const toEvents = (charges: readonly RecurringChargeInterface[]): RecurringSeries
             events.push({
                 timestamp,
                 nativeAmount: charge.nativeAmount,
-                amount: charge.defaultAmount,
                 transactionId: charge.transactionId
             });
         }
@@ -225,7 +224,6 @@ const buildSeries = (charges: readonly RecurringChargeInterface[], variable = fa
         accountId: latest.accountId,
         ...cadence,
         anchorTimestamp: latestEvent.timestamp,
-        predictedAmount: Math.round((nativeAmount * latestEvent.amount) / latestEvent.nativeAmount),
         priceChangedAt: priceChangeIndex > 0 ? events[priceChangeIndex].timestamp : null,
         events
     };

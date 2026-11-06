@@ -14,7 +14,6 @@ export interface RecurringSeriesInterface extends RecurringCadenceInterface {
     readonly categoryIcon: UserIconType | null;
     readonly accountId: number;
     readonly anchorTimestamp: number;
-    readonly predictedAmount: number;
     readonly priceChangedAt: number | null;
     readonly events: readonly RecurringSeriesEventInterface[];
 }

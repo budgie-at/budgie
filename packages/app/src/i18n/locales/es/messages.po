@@ -5302,7 +5302,6 @@ msgstr "Hacer principal"
 #: src/recurring/components/make-recurring-sheet/make-recurring-sheet.tsx
 #: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
 #: src/transaction/components/transaction-info-make-recurring-row/transaction-info-make-recurring-row.tsx
-#: src/transaction/components/transaction-info-recurring-row/transaction-info-recurring-row.tsx
 msgid "Make recurring"
 msgstr "Hacer recurrente"
 

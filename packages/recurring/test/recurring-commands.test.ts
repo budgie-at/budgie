@@ -1,6 +1,7 @@
 import { resetTestDb } from '@budgie-at/test-kit';
 import {
     ExchangeRateEntityTable,
+    LanguageEnum,
     PRECISION,
     RecurringCadenceUnitEnum,
     RecurringMatchSourceEnum,
@@ -376,6 +377,45 @@ layer(TestLayer)('recurringService commands', it => {
             expect(created).toMatchObject({ source: RecurringSeriesSourceEnum.MANUAL, merchantKey: 'EXPENSE|1|GYM' });
             expect(links).toHaveLength(1);
             expect(links[0]).toMatchObject({ seriesId: created.id, transactionId, matchedBy: RecurringMatchSourceEnum.USER });
+        })
+    );
+
+    it.effect('uses the whole split charge in history, alerts and the calendar', () =>
+        Effect.gen(function* () {
+            const account = yield* testSeedService.account({ instrumentId: DEFAULT_INSTRUMENT_ID });
+            const category = yield* testSeedService.category('Subscriptions');
+            const transaction = yield* testSeedService.manualExpense({
+                accountId: account.id,
+                amount: 100 * PRECISION,
+                title: 'Netflix',
+                operatedAt: new Date(2026, 5, 5),
+                entries: [
+                    { amount: 30 * PRECISION, categoryId: null },
+                    { amount: 70 * PRECISION, categoryId: category.id }
+                ]
+            });
+            const service = yield* recurringService;
+            const created = yield* service.makeRecurringFromTransaction(transaction.id, manualInput({ amount: 100 * PRECISION }));
+            const detail = yield* service.getSeriesDetail(created.id, NOW);
+            const series = yield* service.listSeries(NOW);
+            const calendar = yield* service.calendar(2026, 5, NOW);
+
+            expect(detail.history).toHaveLength(1);
+            expect(detail.history[0]).toMatchObject({ transactionId: transaction.id, amount: 100 * PRECISION });
+            expect(series.find(item => item.id === created.id)?.alert).not.toBe(RecurringAlertEnum.PRICE_CHANGE);
+            expect(calendar.totalAmount).toBe(100);
+            expect(
+                yield* (yield* repository).findChargeByTransactionId(
+                    DEFAULT_INSTRUMENT_ID,
+                    LanguageEnum.EN,
+                    RecurringSeriesKindEnum.EXPENSE,
+                    transaction.id
+                )
+            ).toMatchObject({
+                nativeAmount: 100 * PRECISION,
+                defaultAmount: 100 * PRECISION,
+                categoryId: category.id
+            });
         })
     );
 

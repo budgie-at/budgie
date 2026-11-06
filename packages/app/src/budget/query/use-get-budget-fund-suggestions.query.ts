@@ -5,7 +5,6 @@ import {
     CategoryEntityTable,
     DefaultCategoryTranslationEntityTable,
     RecurringSeriesEntityTable,
-    RecurringSeriesTransactionEntityTable,
     SettingsEntityTable
 } from '@budgie/contracts';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
@@ -22,7 +21,6 @@ const EMPTY_SUGGESTIONS: readonly BudgetFundSuggestionInterface[] = [];
 const budgetFundSuggestionsAtom = databaseQueryFamily(
     [
         RecurringSeriesEntityTable,
-        RecurringSeriesTransactionEntityTable,
         BudgetSinkingFundEntityTable,
         ExchangeRateEntityTable,
         HistoricalExchangeRateEntityTable,
