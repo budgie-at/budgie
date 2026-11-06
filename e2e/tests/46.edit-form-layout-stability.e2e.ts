@@ -141,10 +141,12 @@ test('46 edit form layout stability', { tags: ['transactions'] }, async ({ budgi
         await openForm(LONG_TITLE_TRANSACTION);
         await b.tapId(ctx, 'TransactionForm.AmountInput');
         await b.expectId(ctx, 'TransactionKeypad.Digit.1');
+        await measure('keypad expanded');
         await b.tapId(ctx, 'TransactionForm.CategorySelector');
         await b.expectId(ctx, 'CategoryPickerBottomSheet.Input');
         await b.expectNoId(ctx, 'TransactionKeypad.Digit.1');
         await b.selectCategoryBySearch(ctx, 'Groceries');
+        await measure('keypad collapsed after field interaction');
         await b.tapId(ctx, 'TransactionForm.AmountInput');
         await b.expectId(ctx, 'TransactionKeypad.Digit.1');
         await ctx.screen.swipe({ from: { x: 75, y: 240 }, to: { x: 75, y: 160 }, duration: 800 });
