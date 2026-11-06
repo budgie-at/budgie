@@ -47,8 +47,7 @@ test('44 inzhur operations import', { tags: ['import'] }, async ({ budgie }) => 
         await core.fillId(ctx, 'Inzhur.PurchaseAmountInput', '1000');
         await core.done(ctx);
         await core.tapId(ctx, 'Inzhur.PurchaseSaveButton');
-        await core.scrollTo(ctx, 'InstitutionRow.1');
-        await core.tapId(ctx, 'InstitutionRow.1');
+        await core.scrollTo(ctx, 'AccountCard.MilTech');
         await expect(core.byId(screen, 'AccountCard.MilTech')).toHaveText(/^MilTech, 1 certificate/, { timeout: 10_000 });
     });
 });

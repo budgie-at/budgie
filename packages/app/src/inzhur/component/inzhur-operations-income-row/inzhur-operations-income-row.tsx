@@ -1,6 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
@@ -23,14 +22,12 @@ export const InzhurOperationsIncomeRow = ({ fund, symbol }: Props) => {
     const captionSegments = isPositiveNumber(fund.tax) ? [t`Tax ${taxLabel}`] : [];
 
     return (
-        <View className="min-h-[64px] justify-center px-3xl py-[12px]">
-            <InzhurMoneyRow
-                label={getInzhurShortTitle(fund.name)}
-                captionSegments={captionSegments}
-                amount={fund.dividends}
-                instrumentSymbol={symbol}
-                icon={UserIconNameEnum.RefreshCw}
-            />
-        </View>
+        <InzhurMoneyRow
+            label={getInzhurShortTitle(fund.name)}
+            captionSegments={captionSegments}
+            amount={fund.dividends}
+            instrumentSymbol={symbol}
+            icon={UserIconNameEnum.RefreshCw}
+        />
     );
 };

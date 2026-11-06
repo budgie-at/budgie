@@ -107,16 +107,21 @@ describe('inzhur/operations-review', () => {
     );
     it.effect('creates one fund account for aliases in one export', () =>
         Effect.gen(function* () {
-            yield* importInzhurOperations('aliases.xlsx');
-
-            expect((yield* requireInzhurSetup()).fundAccounts).toHaveLength(1);
+            yield* seedInzhurReitPrices;
+            const summary = yield* importInzhurOperations('aliases.xlsx');
+            const ocean = yield* requireInzhurFundByName(OCEAN);
+            expect(yield* fetchAccountBalance(ocean.id)).toBe(0);
+            expect(summary.funds.filter(fund => fund.accountId === ocean.id)).toHaveLength(1);
+            expect(summary.funds.find(fund => fund.accountId === ocean.id)).toMatchObject({ boughtQuantity: 2, convertedOutQuantity: 2 });
         }).pipe(
             Effect.provide(
                 makeInzhurOperationsLayer({
                     'aliases.xlsx': buildInzhurOperationsWorkbook([
                         { at: '2026-01-10T10:00:00', type: TOP_UP_TYPE, debit: 100 },
                         { at: '2026-01-10T10:05:00', type: 'Купівля 1 сертифікату', fund: 'ОКЕАН', credit: 40 },
-                        { at: '2026-01-10T10:06:00', type: 'Купівля 1 сертифікату', fund: OCEAN, credit: 40 }
+                        { at: '2026-01-10T10:06:00', type: 'Купівля 1 сертифікату', fund: OCEAN, credit: 40 },
+                        { at: '2026-03-05T09:00:00', type: 'Конвертація', fund: OCEAN, debit: 80 },
+                        { at: '2026-03-05T09:00:03', type: 'Конвертація', fund: REIT, credit: 80 }
                     ])
                 })
             )

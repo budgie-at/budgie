@@ -17,6 +17,7 @@ import * as Layer from 'effect/Layer';
 import { isDefined } from '@rnw-community/shared';
 
 import { INZHUR_CANONICAL_FUNDS } from '../constant/inzhur-canonical-funds.constant';
+import { toInzhurCanonicalFundName } from '../utils/to-inzhur-canonical-fund-name.util';
 import { toInzhurShortName } from '../utils/to-inzhur-short-name.util';
 
 import type { InzhurSetupInterface } from '../interface/inzhur-setup.interface';
@@ -30,11 +31,8 @@ export class InzhurFundAccountService extends Context.Service<InzhurFundAccountS
         const syncRepository = yield* SyncRepository;
         const provider = ExternalSourceEnum.INZHUR;
 
-        const toCanonicalName = (rawName: string) =>
-            INZHUR_CANONICAL_FUNDS.find(fund => rawName.toUpperCase().includes(fund.keyword))?.name ?? rawName;
-
         const resolveInstrument = Effect.fnUntraced(function* (code: string, rawName: string) {
-            const name = toCanonicalName(rawName);
+            const name = toInzhurCanonicalFundName(rawName);
             const existingInstrument =
                 (yield* instrumentRepository.findByCode(code)) ??
                 (yield* instrumentRepository.findByTypeAndPriceProviderWithProviderInstrumentId(
@@ -102,7 +100,7 @@ export class InzhurFundAccountService extends Context.Service<InzhurFundAccountS
         return {
             create,
             ensureByName: Effect.fn('InzhurFundAccountService.ensureByName')(function* (setup: InzhurSetupInterface, fundName: string) {
-                const name = toCanonicalName(fundName);
+                const name = toInzhurCanonicalFundName(fundName);
                 const existing = (yield* findByCanonicalName(setup, name)).at(0);
 
                 if (isDefined(existing)) {

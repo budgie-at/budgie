@@ -1,4 +1,3 @@
-import { roundToMinorUnitSql } from '../../@generic/utils/round-to-minor-unit-sql.util';
 /* eslint-disable max-lines -- File owns the single multi-stage statistics SQL aggregation pipeline that must stay together */
 import { SQL, and, desc, eq, getTableColumns, gte, inArray, isNotNull, isNull, lte, ne, notInArray, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
@@ -18,6 +17,7 @@ import {
     getInverseExchangeRateSql,
     getInverseHistoricalExchangeRateSql
 } from '../../@generic/utils/get-exchange-rate-sql.util';
+import { roundToMinorUnitSql } from '../../@generic/utils/round-to-minor-unit-sql.util';
 import { CRYPTO_ACCOUNT_TYPES } from '../../account/constant/crypto-account-types.constant';
 import { LIQUID_ACCOUNT_TYPES } from '../../account/constant/liquid-account-types.constant';
 import { AccountEntityTable } from '../../account/table/account-entity.table';

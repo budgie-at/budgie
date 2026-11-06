@@ -1,7 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { INZHUR_CANONICAL_FUNDS } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
-import { View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -41,14 +40,12 @@ export const InzhurOperationsFundRow = ({ fund, symbol }: Props) => {
     ];
 
     return (
-        <View className="min-h-[64px] justify-center px-3xl py-[12px]">
-            <InzhurMoneyRow
-                label={getInzhurShortTitle(name)}
-                captionSegments={captionSegments}
-                amount={investedAmount}
-                instrumentSymbol={symbol}
-                icon={fundIcon}
-            />
-        </View>
+        <InzhurMoneyRow
+            label={getInzhurShortTitle(name)}
+            captionSegments={captionSegments}
+            amount={investedAmount}
+            instrumentSymbol={symbol}
+            icon={fundIcon}
+        />
     );
 };

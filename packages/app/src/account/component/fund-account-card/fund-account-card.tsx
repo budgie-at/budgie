@@ -5,7 +5,9 @@ import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { PROTECTED_AMOUNT_PLACEHOLDER } from '../../../@generic/constant/protected-amount-placeholder.constant';
 import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
+import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { useFormatFundQuantity } from '../../../i18n/hook/use-format-fund-quantity.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
@@ -24,7 +26,8 @@ export const FundAccountCard = ({ account, balance, convertedBalance }: Props) =
     const protectAmount = useProtectedAmountLabel();
     const formatFundQuantity = useFormatFundQuantity();
 
-    const quantityLabel = formatFundQuantity(balance);
+    const isAmountProtected = useIsAmountProtected();
+    const quantityLabel = isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : formatFundQuantity(balance);
     const valueLabel = isDefined(convertedBalance) ? protectAmount(convertedBalance, defaultInstrument.symbol) : t`value unavailable`;
     const value = isDefined(convertedBalance) ? (
         <AccountCardBalance title={account.title} balance={convertedBalance} instrumentSymbol={defaultInstrument.symbol} />

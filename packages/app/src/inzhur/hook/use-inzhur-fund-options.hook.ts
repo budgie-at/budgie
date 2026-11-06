@@ -19,7 +19,10 @@ export const useInzhurFundOptions = (): { readonly fundOptions: readonly InzhurF
     const rows = AsyncResult.getOrElse(rowsResult, () => []);
 
     const fundRows = rows.filter(
-        row => row.account.integrationId === setup?.integration.id && row.instrument.type === InstrumentTypeEnum.FUND
+        row =>
+            row.account.integrationId === setup?.integration.id &&
+            row.instrument.type === InstrumentTypeEnum.FUND &&
+            !INZHUR_CANONICAL_FUNDS.some(fund => fund.isClosed && fund.name === row.instrument.name)
     );
     const recentRank = (title: string) => {
         const index = recentTitles.indexOf(title);
@@ -33,7 +36,7 @@ export const useInzhurFundOptions = (): { readonly fundOptions: readonly InzhurF
             icon: row.account.icon,
             balance: row.convertedBalance
         })),
-        ...INZHUR_CANONICAL_FUNDS.filter(fund => !fundRows.some(row => row.instrument.name === fund.name)).map(fund => ({
+        ...INZHUR_CANONICAL_FUNDS.filter(fund => !fund.isClosed && !fundRows.some(row => row.instrument.name === fund.name)).map(fund => ({
             name: fund.name,
             title: fund.name,
             icon: fund.icon,

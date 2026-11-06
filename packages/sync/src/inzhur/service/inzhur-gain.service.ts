@@ -38,8 +38,8 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
         const priceHistoryLimit = 1000;
         const rangeDays = { [InzhurGainRangeEnum.MONTH]: 30, [InzhurGainRangeEnum.THREE_MONTHS]: 90 };
 
-        const toDay = toKyivDay;
-        const shiftDay = (day: string, days: number) => toDay(new Date(Date.parse(`${day}T00:00:00.000Z`) + days * dayMilliseconds));
+        const shiftDay = (day: string, days: number) =>
+            new Date(Date.parse(`${day}T00:00:00.000Z`) + days * dayMilliseconds).toISOString().slice(0, 10);
         const roundMoney = (value: number) => Math.round(value * 100) / 100;
         const signedAmount = (movement: LedgerMovementInterface) =>
             convertFromMicroUnits(movement.entryType === TransactionEntryTypeEnum.DEBIT ? movement.amount : -movement.amount);
@@ -73,7 +73,7 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
                 return null;
             }
 
-            const firstDay = toDay(firstFundMovement.operatedAt);
+            const firstDay = toKyivDay(firstFundMovement.operatedAt);
             const openings = new Set(
                 [cashAccountId, ...fundAccountIds]
                     .map(accountId =>
@@ -85,7 +85,7 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
             );
             const dated = movements.map(movement => ({
                 movement,
-                day: openings.has(movement) ? firstDay : toDay(movement.operatedAt),
+                day: openings.has(movement) ? firstDay : toKyivDay(movement.operatedAt),
                 amount: signedAmount(movement)
             }));
             const hryvnia = yield* instrumentRepository.findByCode(CurrencyEnum.UAH);
@@ -183,9 +183,9 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
         const buildRangedGains = (
             ledger: InzhurGainLedgerInterface,
             measure: InzhurGainMeasureInterface,
-            today: string
+            today: string,
+            startDay: string
         ): InzhurRangedGainInterface[] => {
-            const startDay = listDays(ledger.firstDay, today).find(day => isDefined(measure.valueOn(day))) ?? ledger.firstDay;
             const ranged = ([InzhurGainRangeEnum.MONTH, InzhurGainRangeEnum.THREE_MONTHS] as const)
                 .map(range => ({ range, startDate: shiftDay(today, -rangeDays[range]) }))
                 .filter(({ startDate }) => startDate > startDay);
@@ -202,12 +202,19 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
                 .filter((point): point is InzhurValuePointInterface => isDefined(point.value))
                 .map(point => ({ date: point.date, value: roundMoney(point.value) }));
 
-        const buildGainSeries = (ledger: InzhurGainLedgerInterface, measure: InzhurGainMeasureInterface, today: string) => {
-            const startDay = listDays(ledger.firstDay, today).find(day => isDefined(measure.valueOn(day))) ?? ledger.firstDay;
-
-            return listDays(startDay, today)
+        const buildGainSeries = (ledger: InzhurGainLedgerInterface, measure: InzhurGainMeasureInterface, today: string, startDay: string) =>
+            listDays(startDay, today)
                 .map(date => ({ date, value: buildGain(ledger, measure, startDay, date).gain }))
                 .filter((point): point is InzhurValuePointInterface => isDefined(point.value));
+
+        const buildReport = (ledger: InzhurGainLedgerInterface, measure: InzhurGainMeasureInterface, today: string) => {
+            const startDay = listDays(ledger.firstDay, today).find(day => isDefined(measure.valueOn(day))) ?? ledger.firstDay;
+
+            return {
+                series: buildSeries(ledger, today, measure.valueOn),
+                gainSeries: buildGainSeries(ledger, measure, today, startDay),
+                gains: buildRangedGains(ledger, measure, today, startDay)
+            };
         };
 
         return {
@@ -224,10 +231,8 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
                 };
 
                 return {
-                    series: buildSeries(ledger, today, measure.valueOn),
-                    gainSeries: buildGainSeries(ledger, measure, today),
-                    prices: [],
-                    gains: buildRangedGains(ledger, measure, today)
+                    ...buildReport(ledger, measure, today),
+                    prices: []
                 } satisfies InzhurGainReportInterface;
             }),
             getFundReport: Effect.fn('InzhurGainService.getFundReport')(function* (fundAccountId: number, today: string) {
@@ -243,12 +248,10 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
                 };
 
                 return {
-                    series: buildSeries(ledger, today, measure.valueOn),
-                    gainSeries: buildGainSeries(ledger, measure, today),
+                    ...buildReport(ledger, measure, today),
                     prices: (ledger.pricesByAccountId.get(fundAccountId) ?? []).filter(
                         price => price.date >= ledger.firstDay && price.date <= today
-                    ),
-                    gains: buildRangedGains(ledger, measure, today)
+                    )
                 } satisfies InzhurGainReportInterface;
             }),
             getFundCostReturn: Effect.fn('InzhurGainService.getFundCostReturn')(function* (fundAccountId: number, today: string) {

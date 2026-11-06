@@ -41,7 +41,7 @@ export const InzhurPurchaseForm = ({ topUp, defaultFundName }: Props) => {
                     testID={InzhurSelector.PurchasePage}
                     footer={<InzhurPurchaseFooter topUp={topUp} />}
                 >
-                    <FormLayoutGroup>
+                    <FormLayoutGroup className="gap-y-[32px]">
                         <InzhurPurchaseFundField />
                         <InzhurPurchaseCertificatesField />
                         <InzhurPurchaseAmountField />

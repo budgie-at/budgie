@@ -43,26 +43,22 @@ export const InzhurOperationsImportSummary = ({ summary }: Props) => {
             {hasCashOperations ? (
                 <GroupedListSection title={t`Cash`}>
                     {isPositiveNumber(topUps.count) ? (
-                        <View className="min-h-[64px] justify-center px-3xl py-[12px]">
-                            <InzhurMoneyRow
-                                label={t`Top-ups`}
-                                captionSegments={topUpsSegments}
-                                amount={topUps.amount}
-                                instrumentSymbol={symbol}
-                                icon={UserIconNameEnum.Banknote}
-                            />
-                        </View>
+                        <InzhurMoneyRow
+                            label={t`Top-ups`}
+                            captionSegments={topUpsSegments}
+                            amount={topUps.amount}
+                            instrumentSymbol={symbol}
+                            icon={UserIconNameEnum.Banknote}
+                        />
                     ) : null}
                     {isPositiveNumber(withdrawals.count) ? (
-                        <View className="min-h-[64px] justify-center px-3xl py-[12px]">
-                            <InzhurMoneyRow
-                                label={t`Withdrawals`}
-                                captionSegments={withdrawalsSegments}
-                                amount={withdrawals.amount}
-                                instrumentSymbol={symbol}
-                                icon={UserIconNameEnum.Landmark}
-                            />
-                        </View>
+                        <InzhurMoneyRow
+                            label={t`Withdrawals`}
+                            captionSegments={withdrawalsSegments}
+                            amount={withdrawals.amount}
+                            instrumentSymbol={symbol}
+                            icon={UserIconNameEnum.Landmark}
+                        />
                     ) : null}
                 </GroupedListSection>
             ) : null}

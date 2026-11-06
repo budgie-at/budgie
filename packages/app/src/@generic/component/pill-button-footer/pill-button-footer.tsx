@@ -4,13 +4,14 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { PillButton } from '../pill-button/pill-button';
 
-import type { ComponentProps } from 'react';
+import type { ReactNode, ComponentProps } from 'react';
 
 interface Props extends ComponentProps<typeof PillButton> {
+    readonly children?: ReactNode;
     readonly caption?: string | null;
 }
 
-export const PillButtonFooter = ({ caption, ...props }: Props) => (
+export const PillButtonFooter = ({ caption, children, ...props }: Props) => (
     <View className="gap-y-md bg-surface px-5xl pt-lg">
         <View className="absolute inset-x-0 top-full h-[64px] bg-surface" pointerEvents="none" />
         {isNotEmptyString(caption) ? (
@@ -19,5 +20,6 @@ export const PillButtonFooter = ({ caption, ...props }: Props) => (
             </Text>
         ) : null}
         <PillButton {...props} />
+        {children}
     </View>
 );

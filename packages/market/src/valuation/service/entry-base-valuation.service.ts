@@ -152,17 +152,18 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
 
                 const hryvniaInstrument = yield* instrumentRepository.findByCode(CurrencyEnum.UAH);
 
-                if (!isDefined(hryvniaInstrument)) {
+                if (
+                    !isDefined(hryvniaInstrument) ||
+                    sourceInstrumentId === hryvniaInstrument.id ||
+                    targetInstrumentId === hryvniaInstrument.id
+                ) {
                     return null;
                 }
 
-                const fundToHryvniaRate = yield* resolveDirectHistoricalRateOrNull(sourceInstrumentId, hryvniaInstrument.id, operatedAt);
-                const hryvniaToTargetRate =
-                    targetInstrumentId === hryvniaInstrument.id
-                        ? 1
-                        : yield* resolveDirectHistoricalRateOrNull(hryvniaInstrument.id, targetInstrumentId, operatedAt);
+                const sourceToHryvniaRate = yield* resolveDirectHistoricalRateOrNull(sourceInstrumentId, hryvniaInstrument.id, operatedAt);
+                const hryvniaToTargetRate = yield* resolveDirectHistoricalRateOrNull(hryvniaInstrument.id, targetInstrumentId, operatedAt);
 
-                return isDefined(fundToHryvniaRate) && isDefined(hryvniaToTargetRate) ? fundToHryvniaRate * hryvniaToTargetRate : null;
+                return isDefined(sourceToHryvniaRate) && isDefined(hryvniaToTargetRate) ? sourceToHryvniaRate * hryvniaToTargetRate : null;
             }
         );
 

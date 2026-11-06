@@ -63,19 +63,22 @@ const getStoredExchangeRateSql = (defaultInstrumentId: number, instrumentIdRef: 
     )`;
 
 const getMarketPriceExchangeRateSql = (defaultInstrumentId: number, instrumentIdRef: SQL | SQLWrapper | number): SQL => {
-    const quoteInstrumentIdSql = sql`${InstrumentDailyMarketPriceEntityTable.quoteInstrumentId}`;
+    const quoteInstrumentIdSql = sql`latest.quote_instrument_id`;
 
     return sql`
         (
-            SELECT ${InstrumentDailyMarketPriceEntityTable.price} * (
+            SELECT latest.price * (
                 CASE WHEN ${quoteInstrumentIdSql} = ${defaultInstrumentId} THEN 1.0
                 ELSE ${getStoredExchangeRateSql(defaultInstrumentId, quoteInstrumentIdSql)} END
             )
-            FROM ${InstrumentDailyMarketPriceEntityTable}
-            WHERE ${InstrumentDailyMarketPriceEntityTable.instrumentId} = ${instrumentIdRef}
-              AND ${InstrumentDailyMarketPriceEntityTable.deletedAt} IS NULL
-            ORDER BY ${InstrumentDailyMarketPriceEntityTable.priceDate} DESC
-            LIMIT 1
+            FROM (
+                SELECT ${InstrumentDailyMarketPriceEntityTable.price} AS price, ${InstrumentDailyMarketPriceEntityTable.quoteInstrumentId} AS quote_instrument_id
+                FROM ${InstrumentDailyMarketPriceEntityTable}
+                WHERE ${InstrumentDailyMarketPriceEntityTable.instrumentId} = ${instrumentIdRef}
+                  AND ${InstrumentDailyMarketPriceEntityTable.deletedAt} IS NULL
+                ORDER BY ${InstrumentDailyMarketPriceEntityTable.priceDate} DESC
+                LIMIT 1
+            ) AS latest
         )
     `;
 };

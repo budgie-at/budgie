@@ -68,6 +68,7 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
 
             return refreshedAccounts.filter(isDefined).map(account => ({
                 account,
+                name: instruments.find(instrument => instrument.id === account.instrumentId)?.name.toLowerCase() ?? '',
                 isin: instruments.find(instrument => instrument.id === account.instrumentId)?.code.toLowerCase() ?? ''
             }));
         });
@@ -75,8 +76,8 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
         const attributeDividend = Effect.fnUntraced(function* (description: string, setup: InzhurSetupInterface) {
             const funds = yield* findFunds(setup);
             const named = funds.filter(
-                ({ account, isin }) =>
-                    description.includes(account.title.toLowerCase()) || (isNotEmptyString(isin) && description.includes(isin))
+                ({ name, isin }) =>
+                    (isNotEmptyString(name) && description.includes(name)) || (isNotEmptyString(isin) && description.includes(isin))
             );
 
             return named.length === 1 ? (named.at(0)?.account ?? null) : null;

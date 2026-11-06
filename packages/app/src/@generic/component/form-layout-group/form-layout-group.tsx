@@ -14,7 +14,7 @@ const groupVariants = cva('', {
     variants: {
         variant: {
             horizontal: 'flex-row gap-7xl',
-            vertical: 'gap-[32px]'
+            vertical: 'gap-7xl'
         }
     }
 });

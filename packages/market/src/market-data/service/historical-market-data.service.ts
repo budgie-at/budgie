@@ -98,13 +98,12 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
             const getCandidateInstrumentIds = (
                 accounts: AccountEntityInterface[],
                 instrumentById: Map<number, InstrumentEntityInterface>,
-                isCandidateAccount: (account: AccountEntityInterface) => boolean,
                 isSupported: (instrument: InstrumentEntityInterface | undefined) => boolean
             ): number[] => {
                 const uniqueInstrumentIds = new Set<number>();
 
                 for (const account of accounts) {
-                    const isCandidate = isCandidateAccount(account) && !uniqueInstrumentIds.has(account.instrumentId);
+                    const isCandidate = !uniqueInstrumentIds.has(account.instrumentId);
 
                     if (isCandidate && isSupported(instrumentById.get(account.instrumentId))) {
                         uniqueInstrumentIds.add(account.instrumentId);
@@ -436,9 +435,8 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                 const hryvniaInstrument = yield* instrumentRepository.findByCode(CurrencyEnum.UAH);
                 const cryptoInputs = yield* Effect.forEach(
                     getCandidateInstrumentIds(
-                        accounts,
+                        accounts.filter(account => account.type === AccountTypeEnum.CRYPTO),
                         instrumentById,
-                        account => account.type === AccountTypeEnum.CRYPTO,
                         isSupportedInstrument
                     ),
                     instrumentId => buildAccountJobInput(instrumentId, baseInstrument.id),
@@ -446,7 +444,7 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                 );
                 const fundInputs = isDefined(hryvniaInstrument)
                     ? yield* Effect.forEach(
-                          getCandidateInstrumentIds(accounts, instrumentById, () => true, isInzhurInstrument),
+                          getCandidateInstrumentIds(accounts, instrumentById, isInzhurInstrument),
                           instrumentId => buildAccountJobInput(instrumentId, hryvniaInstrument.id),
                           { concurrency: 'unbounded' }
                       )

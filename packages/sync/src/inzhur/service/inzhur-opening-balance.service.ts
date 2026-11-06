@@ -7,6 +7,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { INZHUR_OPENING_BALANCE_EXTERNAL_ID } from '../constant/inzhur-opening-balance-external-id.constant';
 import { sumSignedAccountEntries } from '../utils/sum-signed-account-entries.util';
 
 export class InzhurOpeningBalanceService extends Context.Service<InzhurOpeningBalanceService>()(
@@ -17,11 +18,12 @@ export class InzhurOpeningBalanceService extends Context.Service<InzhurOpeningBa
             const balanceAdjustmentService = yield* BalanceAdjustmentService;
             const transactionRepository = yield* TransactionRepository;
             const transactionService = yield* TransactionService;
-            const externalId = 'inzhur:before-export';
             const title = 'Balance before export';
 
             const findExisting = Effect.fnUntraced(function* (accountId: number) {
-                const id = (yield* transactionService.findIdMapByExternalSource(ExternalSourceEnum.INZHUR, [accountId])).get(externalId);
+                const id = (yield* transactionService.findIdMapByExternalSource(ExternalSourceEnum.INZHUR, [accountId])).get(
+                    INZHUR_OPENING_BALANCE_EXTERNAL_ID
+                );
                 const transaction = isDefined(id) ? yield* transactionRepository.getByIdWithEntries(id) : null;
 
                 return isDefined(transaction)
@@ -40,7 +42,7 @@ export class InzhurOpeningBalanceService extends Context.Service<InzhurOpeningBa
             ) {
                 const existing = yield* findExisting(accountId);
 
-                if (existing?.amount === amount) {
+                if (existing?.amount === amount && existing.operatedAt.getTime() === createdAt.getTime()) {
                     return;
                 }
 
@@ -52,9 +54,12 @@ export class InzhurOpeningBalanceService extends Context.Service<InzhurOpeningBa
                     return;
                 }
 
-                const id = yield* balanceAdjustmentService.create(accountId, amount, existing?.operatedAt ?? createdAt, title);
+                const id = yield* balanceAdjustmentService.create(accountId, amount, createdAt, title);
 
-                yield* transactionRepository.updateById(id, { externalId, externalSource: ExternalSourceEnum.INZHUR });
+                yield* transactionRepository.updateById(id, {
+                    externalId: INZHUR_OPENING_BALANCE_EXTERNAL_ID,
+                    externalSource: ExternalSourceEnum.INZHUR
+                });
                 yield* accountBalanceIncrementalService.updateBalancesByAccountIds([accountId]);
             });
 
@@ -74,7 +79,7 @@ export class InzhurOpeningBalanceService extends Context.Service<InzhurOpeningBa
                         ? DateTime.toDateUtc(DateTime.makeUnsafe(Math.min(...openingTimes.map(time => time.getTime()))))
                         : now;
 
-                    yield* replace(accountId, (existing?.amount ?? 0) + delta, openingAt);
+                    yield* replace(accountId, (existing?.amount ?? 0) + delta, existing?.operatedAt ?? openingAt);
                 })
             };
         })

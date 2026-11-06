@@ -7,10 +7,10 @@ import { read, utils } from 'xlsx';
 
 import { isPositiveNumber, getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isNumber, isString } from '@rnw-community/shared';
 
-import { INZHUR_CANONICAL_FUNDS } from '../constant/inzhur-canonical-funds.constant';
 import { INZHUR_OPERATION_EXTERNAL_ID_PREFIX } from '../constant/inzhur-operation-external-id-prefix.constant';
 import { InzhurOperationKindEnum } from '../enum/inzhur-operation-kind.enum';
 import { InzhurStatementInvalidError } from '../error/inzhur-statement-invalid.error';
+import { toInzhurCanonicalFundName } from '../utils/to-inzhur-canonical-fund-name.util';
 
 import type { InzhurOperationPatternInterface } from '../interface/inzhur-operation-pattern.interface';
 import type { InzhurOperationRowInterface } from '../interface/inzhur-operation-row.interface';
@@ -160,7 +160,7 @@ class InzhurOperationsParser {
             return null;
         }
 
-        return INZHUR_CANONICAL_FUNDS.find(fund => fund.name.toLowerCase() === name.toLowerCase())?.name ?? name;
+        return toInzhurCanonicalFundName(name);
     }
 
     private parseAmount(value: unknown): number {

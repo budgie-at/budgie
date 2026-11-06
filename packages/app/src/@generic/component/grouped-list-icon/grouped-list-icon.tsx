@@ -11,9 +11,9 @@ export const GroupedListIcon = ({ icon, iconClassName }: Props) => (
     <CircleIcon
         icon={icon}
         variant="secondary"
-        size={40}
-        iconSize={20}
-        radius={10}
+        size={36}
+        iconSize={18}
+        radius={18}
         border={false}
         className="bg-surface-disc"
         iconClassName={iconClassName}

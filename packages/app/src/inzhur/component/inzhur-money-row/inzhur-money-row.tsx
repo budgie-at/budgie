@@ -20,7 +20,7 @@ interface Props {
 }
 
 export const InzhurMoneyRow = ({ label, captionSegments, amount, instrumentSymbol, icon, iconClassName }: Props) => (
-    <View accessible>
+    <View accessible className="min-h-[64px] justify-center px-3xl py-[12px]">
         <ListRow
             {...(isDefined(icon) && { leading: <NeutralIconTile icon={icon} iconClassName={iconClassName} /> })}
             title={<Text className="text-[17px] font-semibold text-primary">{label}</Text>}

@@ -69,7 +69,7 @@ export const HeroFigure = ({ amount, currencySymbol, variant, unit = '', prefix 
             </Text>
             <Text
                 maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
-                className="ml-[2px] text-[36px] font-semibold tabular-nums text-secondary-foreground"
+                className="ml-[2px] text-2xl font-semibold tabular-nums text-secondary-foreground"
             >
                 {fraction}
             </Text>

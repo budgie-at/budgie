@@ -1,4 +1,4 @@
-import { InvestmentReturnRepository, TransactionTypeEnum } from '@budgie/contracts';
+import { AccountRepository, PRECISION, InvestmentReturnRepository, TransactionTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -10,6 +10,7 @@ import { ENERGY_ISIN, REIT_ISIN } from '../../harness/inzhur/inzhur-fund-isins.c
 import { BASE_ROWS, DIVIDEND_TYPE, REIT } from '../../harness/inzhur/inzhur-operation-rows.constant';
 import { makeInzhurOperationsLayer } from '../../harness/inzhur/make-inzhur-operations-layer';
 import { requireInzhurFundAccount } from '../../harness/inzhur/require-inzhur-fund-account';
+import { requireInzhurSetup } from '../../harness/inzhur/require-inzhur-setup';
 import { seedInzhurBankAccount } from '../../harness/inzhur/seed-inzhur-bank-account';
 
 const URI = 'returns.xlsx';
@@ -30,13 +31,31 @@ describe('inzhur/fund-returns', () => {
             const bankAccount = yield* seedInzhurBankAccount;
 
             yield* importInzhurOperations(URI);
+            const reit = yield* requireInzhurFundAccount(REIT_ISIN);
+            yield* (yield* AccountRepository).updateById(reit.id, { title: 'Retirement' });
             yield* importInzhurBankFlow(bankAccount.id, 'dividend', REIT_DIVIDEND_DESCRIPTION, 120, new Date('2026-05-05T12:00:00.000Z'));
 
-            const reit = yield* requireInzhurFundAccount(REIT_ISIN);
             const energy = yield* requireInzhurFundAccount(ENERGY_ISIN);
-            const movements = yield* investmentReturnRepository.findLedgerMovements([reit.id, energy.id]);
+            const movements = yield* investmentReturnRepository.findLedgerMovements([
+                reit.id,
+                energy.id,
+                bankAccount.id,
+                (yield* requireInzhurSetup()).cashAccount.id
+            ]);
 
-            expect(movements.filter(movement => movement.transactionType === TransactionTypeEnum.TRANSFER)).toHaveLength(2);
+            const dividends = movements.filter(movement => movement.transactionType === TransactionTypeEnum.INCOME);
+            expect(
+                dividends.filter(movement => movement.fundAccountId === reit.id).reduce((sum, movement) => sum + movement.amount, 0)
+            ).toBe(220 * PRECISION);
+            expect(
+                dividends.filter(movement => movement.fundAccountId === energy.id).reduce((sum, movement) => sum + movement.amount, 0)
+            ).toBe(40 * PRECISION);
+            expect(
+                movements.filter(
+                    movement =>
+                        movement.transactionType === TransactionTypeEnum.TRANSFER && [reit.id, energy.id].includes(movement.accountId)
+                )
+            ).toHaveLength(2);
         }).pipe(Effect.provide(layer))
     );
 });

@@ -54,20 +54,13 @@ export const ImportInzhurStatement = () => {
                 leading={<HeaderBackButton />}
                 testID={InzhurSelector.ImportPage}
                 footer={
-                    <View className="bg-surface">
-                        <Text
-                            className="mx-5xl px-3xl pt-md text-center text-[13px] leading-[18px] text-secondary-foreground"
-                            testID={InzhurSelector.LastImported}
-                        >
-                            {privacyCaption}
-                        </Text>
-                        <PillButtonFooter
-                            label={t`Choose file`}
-                            isLoading={isLoading}
-                            testID={InzhurSelector.SelectFileButton}
-                            onPress={handleSelectFile}
-                        />
-                    </View>
+                    <PillButtonFooter
+                        caption={privacyCaption}
+                        label={t`Choose file`}
+                        isLoading={isLoading}
+                        testID={InzhurSelector.SelectFileButton}
+                        onPress={handleSelectFile}
+                    />
                 }
             >
                 <View className="items-center gap-y-lg px-3xl">

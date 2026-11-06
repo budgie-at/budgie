@@ -6,6 +6,7 @@ import { fetchAccountBalance } from '../../harness';
 import { buildInzhurOperationsWorkbook } from '../../harness/inzhur/build-inzhur-operations-workbook';
 import { fetchBeforeExportAdjustments } from '../../harness/inzhur/fetch-before-export-adjustments';
 import { importInzhurBankFlow } from '../../harness/inzhur/import-inzhur-bank-flow';
+import { importInzhurBankTransaction } from '../../harness/inzhur/import-inzhur-bank-transaction';
 import { importInzhurOperations } from '../../harness/inzhur/import-inzhur-operations';
 import { TOP_UP_DESCRIPTION } from '../../harness/inzhur/inzhur-bank-descriptions.constant';
 import { DIVIDEND_TYPE, REIT, TOP_UP_TYPE } from '../../harness/inzhur/inzhur-operation-rows.constant';
@@ -27,6 +28,14 @@ const layer = makeInzhurOperationsLayer({
         { at: '2026-03-01T10:00:00', type: TOP_UP_TYPE, debit: 500 },
         { at: '2026-03-01T10:05:00', type: 'Купівля 50 сертифікатів', fund: REIT, credit: 500 }
     ]),
+    'forward-buy.xlsx': buildInzhurOperationsWorkbook([
+        { at: '2026-03-01T10:00:00', type: 'Купівля 20 сертифікатів', fund: REIT, credit: 200 }
+    ]),
+    'late-settlement.xlsx': buildInzhurOperationsWorkbook([
+        { at: '2026-02-01T23:50:00', type: TOP_UP_TYPE, debit: 1000 },
+        { at: '2026-02-01T23:55:00', type: 'Купівля 100 сертифікатів', fund: REIT, credit: 1000 }
+    ]),
+    'older.xlsx': buildInzhurOperationsWorkbook([{ at: '2026-01-20T10:00:00', type: TOP_UP_TYPE, debit: 200 }]),
     [PARTIAL_URI]: buildInzhurOperationsWorkbook(PARTIAL_ROWS),
     [EARLIER_URI]: buildInzhurOperationsWorkbook([
         { at: '2026-01-20T10:00:00', type: 'Купівля 20 сертифікатів', fund: REIT, credit: 200 },
@@ -36,6 +45,48 @@ const layer = makeInzhurOperationsLayer({
 });
 
 describe('inzhur/partial-export', () => {
+    it.effect('raises the existing floor for a later purchase without moving its start', () =>
+        Effect.gen(function* () {
+            yield* importInzhurOperations(PARTIAL_URI);
+            yield* importInzhurOperations('forward-buy.xlsx');
+            const { cashAccount } = yield* requireInzhurSetup();
+            expect(yield* fetchAccountBalance(cashAccount.id)).toBe(0);
+            expect(yield* fetchBeforeExportAdjustments).toMatchObject([
+                {
+                    operatedAt: new Date('2026-02-01T07:59:59.000Z'),
+                    entries: [{ amount: 250 * PRECISION }]
+                }
+            ]);
+        }).pipe(Effect.provide(layer))
+    );
+    it.effect('keeps previously stamped settlements on their export day during an older import', () =>
+        Effect.gen(function* () {
+            const bankAccount = yield* seedInzhurBankAccount;
+            yield* importInzhurBankFlow(bankAccount.id, 'late-top-up', TOP_UP_DESCRIPTION, -1000, new Date('2026-02-01T22:10:00.000Z'));
+            yield* importInzhurOperations('late-settlement.xlsx');
+            yield* importInzhurOperations('older.xlsx');
+            const { cashAccount } = yield* requireInzhurSetup();
+            expect(yield* fetchAccountBalance(cashAccount.id)).toBe(200 * PRECISION);
+            expect(yield* fetchBeforeExportAdjustments).toEqual([]);
+        }).pipe(Effect.provide(layer))
+    );
+    it.effect('offsets an unconsolidated pre-coverage bank top-up during a forward reimport', () =>
+        Effect.gen(function* () {
+            const bankAccount = yield* seedInzhurBankAccount;
+            yield* importInzhurOperations(PARTIAL_URI);
+            yield* importInzhurOperations(LATER_URI);
+            yield* importInzhurBankTransaction(
+                bankAccount.id,
+                'unconsolidated',
+                TOP_UP_DESCRIPTION,
+                -1000,
+                new Date('2026-01-05T08:00:00.000Z')
+            );
+            yield* importInzhurOperations(LATER_URI);
+            const { cashAccount } = yield* requireInzhurSetup();
+            expect(yield* fetchAccountBalance(cashAccount.id)).toBe(50 * PRECISION);
+        }).pipe(Effect.provide(layer))
+    );
     it.effect('lifts the cash before a partial export just enough to keep every day end non-negative', () =>
         Effect.gen(function* () {
             const summary = yield* importInzhurOperations(PARTIAL_URI);

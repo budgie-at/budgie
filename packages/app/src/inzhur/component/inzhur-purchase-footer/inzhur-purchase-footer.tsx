@@ -1,11 +1,10 @@
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
-import { PillButton } from '../../../@generic/component/pill-button/pill-button';
+import { PillButtonFooter } from '../../../@generic/component/pill-button-footer/pill-button-footer';
 import { useInzhurPurchaseSubmit } from '../../hook/use-inzhur-purchase-submit.hook';
 import { InzhurSelector } from '../../selector/inzhur.selector';
 
@@ -27,15 +26,13 @@ export const InzhurPurchaseFooter = ({ topUp }: Props) => {
     const hasRemainingAfterSave = isPositiveNumber(topUp.remainingAmount - amount);
 
     return (
-        <View className="gap-y-md bg-surface px-5xl pt-lg">
-            <View className="absolute inset-x-0 top-full h-[64px] bg-surface" pointerEvents="none" />
-            <PillButton
-                label={t`Save`}
-                onPress={handleSave}
-                isLoading={isLoading}
-                isDisabled={isSaveDisabled}
-                testID={InzhurSelector.PurchaseSaveButton}
-            />
+        <PillButtonFooter
+            label={t`Save`}
+            onPress={handleSave}
+            isLoading={isLoading}
+            isDisabled={isSaveDisabled}
+            testID={InzhurSelector.PurchaseSaveButton}
+        >
             {hasRemainingAfterSave ? (
                 <Button
                     variant="ghost"
@@ -45,6 +42,6 @@ export const InzhurPurchaseFooter = ({ topUp }: Props) => {
                     testID={InzhurSelector.PurchaseSaveAndAddButton}
                 />
             ) : null}
-        </View>
+        </PillButtonFooter>
     );
 };
