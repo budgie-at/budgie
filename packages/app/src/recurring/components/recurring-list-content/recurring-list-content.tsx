@@ -39,6 +39,7 @@ export const RecurringListContent = ({ header }: Props) => {
     const isLoading = !isDefined(series);
     const loadedSeries = series ?? EMPTY_SERIES;
     const items = buildRecurringListItems(loadedSeries, expandedSections, now);
+    const stickyHeaderIndices = items.flatMap((item, index) => (item.type === RecurringListItemKindEnum.HEADER ? [index] : []));
     const summary = buildRecurringSummary(loadedSeries, now);
     const contentContainerStyle = { paddingBottom: FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottom };
     const emptyState = isLoading ? null : <RecurringListEmptyState />;
@@ -64,6 +65,7 @@ export const RecurringListContent = ({ header }: Props) => {
                 <View className="flex-1" testID={RecurringPaneSelector.List}>
                     <StaticChromeLegendList
                         data={items}
+                        stickyHeaderIndices={stickyHeaderIndices}
                         keyExtractor={keyExtractor}
                         getItemType={getItemType}
                         renderItem={renderItem}
