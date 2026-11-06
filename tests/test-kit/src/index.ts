@@ -1,5 +1,6 @@
 export { assertStoredBalancesMatchLedger } from './balance/assert-stored-balances-match-ledger';
 export { buildTestDb, makeTestDbLayer } from './db/build-test-db';
+export type { TestDatabaseHandleInterface } from './db/interface/test-database-handle.interface';
 export { makeTestDatabase } from './db/make-test-database';
 export { resetTestDb } from './db/reset-test-db';
 export { makeTestPlatformLayer } from './layer/make-test-platform-layer';

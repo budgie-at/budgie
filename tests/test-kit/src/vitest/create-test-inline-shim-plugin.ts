@@ -165,7 +165,11 @@ export const createTestVitestConfig = (rootDir: string, setupFile: string) => {
         test: {
             server: { deps: { inline: [/@effect\/sql-sqlite-react-native/u] } },
             environment: 'node',
-            setupFiles: [here(setupFile)],
+            setupFiles: [here(setupFile), resolve(import.meta.dirname, 'setup-test-databases.ts')],
+            sequence: { setupFiles: 'list' as const },
+            isolate: false,
+            clearMocks: true,
+            restoreMocks: true,
             include: ['src/scenarios/**/*.test.ts'],
             pool: 'forks',
             maxWorkers: 4,
