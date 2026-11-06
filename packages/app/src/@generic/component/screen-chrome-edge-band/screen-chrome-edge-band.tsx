@@ -1,11 +1,12 @@
 import { useId } from 'react';
-import { StyleSheet, View, useWindowDimensions } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 
 import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 
-import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../constant/floating-tab-bar.constant';
+import { FLOATING_TAB_BAR_HEIGHT } from '../../constant/floating-tab-bar.constant';
+import { SCREEN_CHROME_TITLE_CLEARANCE } from '../../constant/screen-chrome-config.constant';
 
 import type { EdgeFadeBandRenderPropsInterface } from '@rnw-community/react-native-screen-chrome';
 
@@ -16,12 +17,11 @@ export const ScreenChromeEdgeBand = ({ blur, position, height, colorScheme }: Pr
     const gradientID = useId();
     const gradientFill = `url(#${gradientID})`;
     const { top, bottom } = useSafeAreaInsets();
-    const { fontScale } = useWindowDimensions();
     const protectedHeight =
         position === 'top'
-            ? top + Math.max(config.collapsedHeaderHeight ?? config.headerHeight, 48 * fontScale) + 16
-            : bottom + FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN;
-    const plateau = Math.min(0.8, protectedHeight / height);
+            ? top + (config.collapsedHeaderHeight ?? config.headerHeight) + SCREEN_CHROME_TITLE_CLEARANCE
+            : bottom + FLOATING_TAB_BAR_HEIGHT;
+    const plateau = Math.min(1, protectedHeight / height);
     const gradientEnd = position === 'top' ? 1 : 0;
     const gradientStart = position === 'top' ? 0 : 1;
     const { solid } = config.colors[colorScheme];
