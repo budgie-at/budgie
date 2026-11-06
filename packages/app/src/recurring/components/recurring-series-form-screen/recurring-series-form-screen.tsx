@@ -10,6 +10,7 @@ import { Text, View } from 'react-native';
 import { BottomChromeInsetProvider, ScreenChromeFooter, ScreenChromeScrollView } from '@rnw-community/react-native-screen-chrome';
 import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
+import { GroupedListSectionTitle } from '../../../@generic/component/grouped-list-section-title/grouped-list-section-title';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
@@ -59,10 +60,8 @@ export const RecurringSeriesFormScreen = ({ target, initialValues }: Props) => {
     const sourceTransactionId = target.mode === RecurringFormModeEnum.CREATE ? target.transactionId : null;
     const kindField = isEditing || isDefined(sourceTransactionId) ? null : <RecurringFormKindField />;
     const sourceSection = isDefined(sourceTransactionId) ? (
-        <View className="gap-y-sm">
-            <Text className="px-3xl text-[13px] font-medium text-primary/65">
-                <Trans>From transaction</Trans>
-            </Text>
+        <View>
+            <GroupedListSectionTitle title={t`From transaction`} />
             <MakeRecurringSourceRow transactionId={sourceTransactionId} />
         </View>
     ) : null;

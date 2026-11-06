@@ -1,6 +1,7 @@
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
+import { GroupedListSectionTitle } from '../../../@generic/component/grouped-list-section-title/grouped-list-section-title';
 import { useNotificationPermission } from '../../hook/use-notification-permission.hook';
 import { RecurringDetailSection } from '../recurring-detail-section/recurring-detail-section';
 import { RecurringReminderChoices } from '../recurring-reminder-choices/recurring-reminder-choices';
@@ -25,10 +26,8 @@ export const RecurringDetailReminderRow = ({ series }: Props) => {
     }
 
     return (
-        <View className="gap-y-sm">
-            <Text accessibilityRole="header" className="px-3xl text-[13px] font-medium text-secondary-foreground">
-                <Trans>Reminder</Trans>
-            </Text>
+        <View>
+            <GroupedListSectionTitle title={t`Reminder`} />
             <RecurringReminderChoices seriesId={series.id} reminderDaysBefore={series.reminderDaysBefore} />
             <Text className="px-3xl pt-xs text-[13px] text-primary/65">
                 <Trans>Notify before the payment is due.</Trans>

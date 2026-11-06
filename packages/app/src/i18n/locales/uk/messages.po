@@ -2364,7 +2364,6 @@ msgstr "Перевіряємо історію транзакцій"
 #: src/budget/components/budget-fund-category-field/budget-fund-category-field.tsx
 #: src/import/components/import-column-map-field/import-column-map-field.tsx
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
-#: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 #: src/transaction/components/transfer-account-picker/transfer-account-picker.tsx
@@ -6149,6 +6148,7 @@ msgstr "з {total} ГБ"
 #: src/ai/component/ai-download-card-frame/ai-download-card-frame.tsx
 #: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
 #: src/recurring/components/recurring-form-reminder-section/recurring-form-reminder-section.tsx
+#: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 #: src/recurring/components/recurring-reminder-choices/recurring-reminder-choices.tsx
 #: src/recurring/components/recurring-reminder-denied-row/recurring-reminder-denied-row.tsx
 #: src/rule/hooks/use-rule-row-summary.hook.ts
