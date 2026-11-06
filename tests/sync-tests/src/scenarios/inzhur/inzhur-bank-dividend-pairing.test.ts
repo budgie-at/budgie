@@ -2,14 +2,16 @@ import { PRECISION, TransactionTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { fetchAccountBalance } from '../../harness';
-import { buildInzhurOperationsWorkbook } from '../../harness/inzhur/build-inzhur-operations-workbook';
-import { consolidateInzhur } from '../../harness/inzhur/consolidate-inzhur';
-import { fetchBankTransactions } from '../../harness/inzhur/fetch-bank-transactions';
-import { fetchInzhurOperationsLedger } from '../../harness/inzhur/fetch-inzhur-operations-ledger';
-import { importInzhurBankFlow } from '../../harness/inzhur/import-inzhur-bank-flow';
-import { importInzhurBankTransaction } from '../../harness/inzhur/import-inzhur-bank-transaction';
-import { importInzhurOperations } from '../../harness/inzhur/import-inzhur-operations';
+import {
+    buildInzhurOperationsWorkbook,
+    consolidateInzhur,
+    fetchAccountBalance,
+    fetchBankTransactions,
+    fetchInzhurOperationsLedger,
+    importInzhurBankFlow,
+    importInzhurBankTransaction,
+    importInzhurOperations
+} from '../../harness';
 import {
     REIT_DIVIDEND_DESCRIPTION,
     WITHDRAWAL_COMMENT,
