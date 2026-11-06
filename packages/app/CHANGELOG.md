@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.165.6](https://github.com/budgie-at/budgie/compare/v6.165.5...v6.165.6) (2026-11-06)
+
+### Bug Fixes
+
+* **app:** render the home section footer as an element ([#2011](https://github.com/budgie-at/budgie/issues/2011)) ([e3e08c3](https://github.com/budgie-at/budgie/commit/e3e08c362b018ccae05f95aafaa69e789c02b9f9))
+
+
+## [6.165.5](https://github.com/budgie-at/budgie/compare/v6.165.4...v6.165.5) (2026-11-06)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.165.3](https://github.com/budgie-at/budgie/compare/v6.165.2...v6.165.3) (2026-11-06)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
 ## [6.165.2](https://github.com/budgie-at/budgie/compare/v6.165.1...v6.165.2) (2026-11-06)
 
 **Note:** Version bump only for package @budgie-at/app

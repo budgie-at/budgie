@@ -22,10 +22,16 @@ import { HomeSectionHeader } from '../home-section-header/home-section-header';
 import { HomeSectionItem } from '../home-section-item/home-section-item';
 
 import type { ReactElement } from 'react';
-import type { SectionListRenderItem } from 'react-native';
+import type { SectionListProps, SectionListRenderItem } from 'react-native';
 
 const AnimatedSectionList = Animated.createAnimatedComponent(SectionList<HomeSectionInterface['data'][number], HomeSectionInterface>);
 const LIST_HORIZONTAL_PADDING = 16;
+const renderSectionHeader: SectionListProps<HomeSectionInterface['data'][number], HomeSectionInterface>['renderSectionHeader'] = ({
+    section
+}) => <HomeSectionHeader section={section} />;
+const renderSectionFooter: SectionListProps<HomeSectionInterface['data'][number], HomeSectionInterface>['renderSectionFooter'] = ({
+    section
+}) => <HomeSectionFooter section={section} />;
 
 interface Props {
     readonly sections: HomeSectionInterface[];
@@ -89,9 +95,9 @@ export const HomeSectionsList = ({
         <AnimatedSectionList
             key={listFormatKey}
             sections={sections}
-            renderSectionHeader={HomeSectionHeader}
+            renderSectionHeader={renderSectionHeader}
             renderItem={renderItem}
-            renderSectionFooter={HomeSectionFooter}
+            renderSectionFooter={renderSectionFooter}
             keyExtractor={getHomeSectionItemKey}
             extraData={balancesByAccountId}
             refScrollView={refScrollView}
