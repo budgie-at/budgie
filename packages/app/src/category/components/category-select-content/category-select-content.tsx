@@ -24,6 +24,7 @@ interface Props {
 }
 
 const COLUMN_WRAPPER_STYLE = { rowGap: 8, columnGap: 8 };
+const ACCESSIBILITY_ESTIMATED_ITEM_SIZE = 120;
 
 const keyExtractor = (item: FlatListDataItem<CategoryEntityInterface>, index: number) =>
     item.isEmpty ? `empty-${index}` : item.id.toString();
@@ -59,12 +60,12 @@ export const CategorySelectContent = (props: Props) => {
 
     const listOptions = {
         numColumns: columns,
-        estimatedItemSize: 100,
+        estimatedItemSize: largeText ? ACCESSIBILITY_ESTIMATED_ITEM_SIZE : 100,
         ...(!largeText && { columnWrapperStyle: COLUMN_WRAPPER_STYLE }),
         contentContainerStyle,
         ListEmptyComponent: listEmptyComponent
     };
-    const initialScrollIndex = visibleData.findIndex(item => !item.isEmpty && selectedCategoryIds.includes(item.id));
+    const selectedIndex = visibleData.findIndex(item => !item.isEmpty && selectedCategoryIds.includes(item.id));
 
     return (
         <SelectorList
@@ -74,7 +75,7 @@ export const CategorySelectContent = (props: Props) => {
             keyExtractor={keyExtractor}
             renderItem={renderItem}
             options={listOptions}
-            initialScrollIndex={initialScrollIndex}
+            selectedIndex={selectedIndex}
         />
     );
 };

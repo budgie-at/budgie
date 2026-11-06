@@ -55,7 +55,7 @@ export const TagsSelectContent = (props: Props) => {
         ListHeaderComponent: props.header,
         ListFooterComponent: hint
     };
-    const initialScrollIndex = data.findIndex(tag => selectedTagIds.includes(tag.id));
+    const selectedIndex = data.findIndex(tag => selectedTagIds.includes(tag.id));
 
     return (
         <SelectorList
@@ -64,7 +64,7 @@ export const TagsSelectContent = (props: Props) => {
             keyExtractor={keyExtractor}
             renderItem={renderItem}
             options={listOptions}
-            initialScrollIndex={initialScrollIndex}
+            selectedIndex={selectedIndex}
         />
     );
 };

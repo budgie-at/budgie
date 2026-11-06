@@ -65,15 +65,9 @@ export const AccountSelectContent = (props: Props) => {
         ListHeaderComponent: listHeaderComponent,
         ListEmptyComponent: listEmptyComponent
     };
-    const initialScrollIndex = data.findIndex(account => account.id === initialAccountId);
+    const selectedIndex = data.findIndex(account => account.id === initialAccountId);
 
     return (
-        <SelectorList
-            data={data}
-            keyExtractor={keyExtractor}
-            renderItem={renderItem}
-            options={listOptions}
-            initialScrollIndex={initialScrollIndex}
-        />
+        <SelectorList data={data} keyExtractor={keyExtractor} renderItem={renderItem} options={listOptions} selectedIndex={selectedIndex} />
     );
 };

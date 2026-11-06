@@ -1,6 +1,5 @@
+import { useWindowDimensions } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
-
-import { isPositiveNumber } from '@rnw-community/shared';
 
 import { LEGEND_LIST_STYLE } from '../../constant/legend-list.constant';
 import { BudgieLegendList } from '../budgie-legend-list/budgie-legend-list';
@@ -25,11 +24,12 @@ interface Props<Item> {
         | 'keyboardShouldPersistTaps'
         | 'onScroll'
         | 'scrollEventThrottle'
+        | 'initialScrollIndex'
     >;
     readonly listRef?: Ref<LegendListRef>;
     readonly children?: ReactNode;
     readonly isLoading?: boolean;
-    readonly initialScrollIndex?: number;
+    readonly selectedIndex?: number;
 }
 
 export const SelectorList = <Item,>({
@@ -40,10 +40,13 @@ export const SelectorList = <Item,>({
     listRef,
     children,
     isLoading = false,
-    initialScrollIndex
+    selectedIndex = 0
 }: Props<Item>) => {
+    const { fontScale } = useWindowDimensions();
     const scrollOffset = useSharedValue(0);
-    const initialScrollProps = isPositiveNumber(initialScrollIndex) ? { initialScrollIndex } : {};
+    const columns = options.numColumns ?? 1;
+    const initialScrollIndex = Math.max(0, Math.floor(selectedIndex / columns) - 2) * columns;
+    const estimatedItemSize = options.estimatedItemSize ?? 60 * Math.min(fontScale, 2);
 
     const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
         scrollOffset.set(event.nativeEvent.contentOffset.y);
@@ -53,7 +56,8 @@ export const SelectorList = <Item,>({
         <LoadingContent isLoading={isLoading} containerClassName="flex-1" className="flex-1">
             <BudgieLegendList
                 {...options}
-                {...initialScrollProps}
+                initialScrollIndex={initialScrollIndex}
+                estimatedItemSize={estimatedItemSize}
                 ref={listRef}
                 data={data}
                 renderItem={renderItem}
