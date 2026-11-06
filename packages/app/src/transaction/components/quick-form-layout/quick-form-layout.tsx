@@ -1,5 +1,5 @@
 import { ComponentProps, ReactNode } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import { KeyboardStickyView } from 'react-native-keyboard-controller';
 import Animated, { FadeInDown, FadeOutDown, ReduceMotion } from 'react-native-reanimated';
 import { ScopedVariables, useCSSVariable } from 'uniwind';
@@ -9,6 +9,7 @@ import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import { SheetBottomFade } from '../../../@generic/component/sheet-bottom-fade/sheet-bottom-fade';
 import { TransactionKeypadContext } from '../../context/transaction-keypad.context';
+import { isCompactTransactionForm } from '../../utils/is-compact-transaction-form.util';
 import { QuickFormScroll } from '../quick-form-scroll/quick-form-scroll';
 
 interface Props {
@@ -32,6 +33,11 @@ const EXITING = FadeOutDown.springify().duration(EXIT_DURATION).dampingRatio(1).
 export const QuickFormLayout = (props: Props) => {
     const { amount, context, children, keypad, actions, surfaceVariables, onDismissKeypad = emptyFn, topInset = DEFAULT_TOP_INSET } = props;
     const rowColor = useCSSVariable('--color-transaction-form-row');
+    const { fontScale, height } = useWindowDimensions();
+    const isCompact = isCompactTransactionForm(fontScale, height);
+    const amountClassName = isCompact ? 'pt-[4px] pb-[4px]' : 'pt-[4px] pb-[8px]';
+    const fieldsClassName = isCompact ? 'gap-y-[8px] pt-[4px]' : 'gap-y-[12px] pt-[8px]';
+    const fadeClassName = isCompact ? 'bottom-auto top-[-16px] h-[16px]' : 'bottom-auto top-[-28px]';
     const isExpanded = isDefined(keypad);
     const rowColors = {
         ...(isDefined(rowColor) && { '--color-grouped-surface-row': rowColor, '--color-surface-row': rowColor }),
@@ -44,16 +50,16 @@ export const QuickFormLayout = (props: Props) => {
             <TransactionKeypadContext value={keypadContext}>
                 <BottomChromeInsetProvider>
                     <QuickFormScroll topInset={topInset}>
-                        <View className="pt-[4px] pb-[8px]">{amount}</View>
+                        <View className={amountClassName}>{amount}</View>
                         {context}
-                        <View className="gap-y-[12px] pt-[8px]" onTouchStart={onDismissKeypad}>
+                        <View className={fieldsClassName} onTouchStart={onDismissKeypad}>
                             {children}
                         </View>
                     </QuickFormScroll>
                     <KeyboardStickyView style={StyleSheet.absoluteFill} pointerEvents="box-none">
                         <ScreenChromeFooter contentStyle={FOOTER_STYLE} includeBottomSafeArea={false}>
                             <View style={ACTION_PLATE_STYLE} className="gap-y-[8px] bg-surface pt-[8px] pb-safe-or-[8px]">
-                                <SheetBottomFade className="bottom-auto top-[-28px]" />
+                                <SheetBottomFade className={fadeClassName} />
                                 {isExpanded ? (
                                     <Animated.View entering={ENTERING} exiting={EXITING}>
                                         {keypad}

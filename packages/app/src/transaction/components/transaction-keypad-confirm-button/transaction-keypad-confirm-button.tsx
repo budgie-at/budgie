@@ -18,9 +18,9 @@ export const TransactionKeypadConfirmButton = ({ label, isDisabled, onPress, tes
     const backgroundClassName = isDisabled ? 'bg-cta-disabled-background' : 'bg-positive-action active:opacity-80';
     const contentClassName = isDisabled ? 'text-secondary-foreground' : 'text-positive-action-foreground';
     const accessibilityState = { disabled: isDisabled };
-    const { fontScale } = useWindowDimensions();
+    const { fontScale, height } = useWindowDimensions();
     const iconSize = 20 * Math.min(fontScale, TRANSACTION_KEYPAD_MAX_FONT_SCALE);
-    const style = { ...getTransactionKeypadLayout(fontScale).confirmRowStyle, borderCurve: 'continuous' } as const;
+    const style = { ...getTransactionKeypadLayout(fontScale, height).confirmRowStyle, borderCurve: 'continuous' } as const;
 
     return (
         <HapticPressable

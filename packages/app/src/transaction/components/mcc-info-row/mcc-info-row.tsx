@@ -25,8 +25,8 @@ export const MccInfoRow = ({ transactionTitle, mccCategoryId, children, suggesti
 
     return (
         <QuickFormContext>
-            <Animated.View layout={LAYOUT} className="items-center self-stretch">
-                <View className="h-[60px] items-center justify-center self-stretch">
+            <Animated.View layout={LAYOUT} className="shrink items-center self-stretch">
+                <View className="h-[60px] min-h-[44px] shrink items-center justify-center self-stretch">
                     {isNotEmptyString(transactionTitle) ? (
                         <Text
                             className="px-[16px] text-center text-[17px] leading-[22px] font-medium text-primary"
@@ -39,7 +39,7 @@ export const MccInfoRow = ({ transactionTitle, mccCategoryId, children, suggesti
                         transactionTitle
                     )}
                 </View>
-                <View className="max-h-[44px] self-stretch flex-row items-center justify-center gap-x-[8px] overflow-hidden">
+                <View className="max-h-[44px] min-h-[32px] shrink self-stretch flex-row items-center justify-center gap-x-[8px] overflow-hidden">
                     {isDefined(mccCategory) ? (
                         <Text
                             className="shrink text-[13px] leading-[18px] text-secondary-foreground"
