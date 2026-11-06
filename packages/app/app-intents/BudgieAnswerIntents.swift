@@ -129,25 +129,6 @@ extension BudgieCategoryQuery: EnumerableEntityQuery {
   }
 }
 
-#if compiler(>=6.4)
-@available(iOS 27.0, *)
-extension BudgieCategoryQuery: IndexedEntityQuery {
-  func reindexEntities(
-    for identifiers: [BudgieCategoryEntity.ID],
-    indexDescription: CSSearchableIndexDescription
-  ) async throws {
-    try await AppEntityIdentifierRegistry.shared.updateIndexFromCatalog(
-      kind: BudgieCategoryEntity.catalogKind,
-      matching: identifiers
-    )
-  }
-
-  func reindexAllEntities(indexDescription: CSSearchableIndexDescription) async throws {
-    try await AppEntityIdentifierRegistry.shared.replaceIndexFromCatalog(kind: BudgieCategoryEntity.catalogKind)
-  }
-}
-#endif
-
 @available(iOS 17.0, *)
 enum BudgieSpendingPeriod: String, AppEnum {
   case thisMonth
