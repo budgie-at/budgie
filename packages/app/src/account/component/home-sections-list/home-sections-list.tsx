@@ -48,11 +48,10 @@ export const HomeSectionsList = ({
     const { top } = useSafeAreaInsets();
     const { config } = useScreenChrome();
     const { onScroll } = useCollapsibleChromeScroll();
-    const collapsedHeaderHeight = config.collapsedHeaderHeight ?? config.headerHeight;
-    const listStyle = { marginTop: top + collapsedHeaderHeight };
+    const listStyle = { marginTop: top + (config.collapsedHeaderHeight ?? config.headerHeight) };
     const scrollProps = useScreenChromeScrollProps({
         includeTopSafeArea: false,
-        contentInsetTop: config.headerHeight - collapsedHeaderHeight,
+        contentInsetTop: config.headerHeight - (config.collapsedHeaderHeight ?? config.headerHeight),
         contentContainerStyle: {
             paddingBottom: FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottomInset,
             paddingHorizontal: LIST_HORIZONTAL_PADDING,
@@ -66,6 +65,8 @@ export const HomeSectionsList = ({
         ) : null;
 
     const listEmptyComponent = isLoading || activeAccountCount > 0 ? null : AccountsEmptyState;
+
+    const renderSectionFooter = ({ section }: { section: HomeSectionInterface }) => <HomeSectionFooter section={section} />;
 
     const renderSectionHeader = ({ section }: { section: HomeSectionInterface }) => <HomeSectionHeader section={section} />;
 
@@ -89,7 +90,7 @@ export const HomeSectionsList = ({
             sections={sections}
             renderSectionHeader={renderSectionHeader}
             renderItem={renderItem}
-            renderSectionFooter={HomeSectionFooter}
+            renderSectionFooter={renderSectionFooter}
             keyExtractor={keyExtractor}
             extraData={listFormatKey}
             showsVerticalScrollIndicator={false}

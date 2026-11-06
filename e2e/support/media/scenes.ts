@@ -278,7 +278,7 @@ export const SCENES: Readonly<Record<string, Scene>> = {
     },
     'ai-transaction-suggestions-1': {
         run: async ctx => {
-            await open(ctx, 'budgie://create-transaction/expense', 'TransactionForm.CommentInput');
+            await open(ctx, 'budgie://create-transaction/expense', 'TransactionForm.AmountInput');
             await b.expectId(ctx, 'SuggestionPill.PatternCategory.0', 15_000);
         }
     },
