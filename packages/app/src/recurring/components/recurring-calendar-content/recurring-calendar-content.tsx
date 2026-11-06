@@ -10,6 +10,7 @@ import { LoadingContent } from '../../../@generic/component/loading-content/load
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { useToday } from '../../../@generic/hook/use-today.hook';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { RecurringCalendarActionTypeEnum } from '../../enum/recurring-calendar-action-type.enum';
@@ -23,6 +24,7 @@ import { RecurringCalendarSummary } from '../recurring-calendar-summary/recurrin
 import { RecurringCalendarSelector } from './recurring-calendar.selector';
 
 import type { RecurringCalendarEntryInterface } from '@budgie/recurring';
+import type { ReactNode } from 'react';
 
 const scrollStyle = { flex: 1 };
 
@@ -31,8 +33,13 @@ const scrollContentStyle = { paddingTop: 4, paddingBottom: 20, rowGap: 8 };
 const EMPTY_ENTRIES_BY_DAY: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]> = new Map();
 
 // eslint-disable-next-line max-statements, max-lines-per-function -- Page orchestration component with multiple hooks, state, and forecast logic
-export const RecurringCalendarContent = () => {
+interface Props {
+    readonly header: ReactNode;
+}
+
+export const RecurringCalendarContent = ({ header }: Props) => {
     const { t } = useLingui();
+    const { formatFullMonth } = useFormatDate();
     const { languageTag } = useLocaleInfo();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatDigits = useDisplayFormatDigits();
@@ -43,6 +50,8 @@ export const RecurringCalendarContent = () => {
         displayYear: now.getFullYear()
     });
     const data = useRecurringCalendar(displayYear, displayMonth);
+    const displayedMonthName = formatFullMonth(new Date(displayYear, displayMonth, 1));
+    const summaryTitle = t`${displayedMonthName} bills`;
     const isLoading = !isDefined(data);
 
     const entriesByDay = data?.entriesByDay ?? EMPTY_ENTRIES_BY_DAY;
@@ -91,7 +100,9 @@ export const RecurringCalendarContent = () => {
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="on-drag"
         >
+            {header}
             <RecurringCalendarSummary
+                title={summaryTitle}
                 isLoading={isLoading}
                 formattedTotal={formatDigits(displayedTotal, defaultInstrument.symbol)}
                 formattedExpected={formattedForecastedTotal}
@@ -130,8 +141,8 @@ export const RecurringCalendarContent = () => {
                 {showExpectedList ? (
                     <RecurringCalendarEntryList
                         headerTestID={RecurringCalendarSelector.ExpectedHeader}
-                        title={<Trans>Expected</Trans>}
-                        formattedTotal={formattedForecastedTotal}
+                        title={<Trans>Still to pay</Trans>}
+                        formattedTotal=""
                         entries={allForecastedEntries}
                         displayMonth={displayMonth}
                         displayYear={displayYear}
@@ -141,8 +152,8 @@ export const RecurringCalendarContent = () => {
                 {showRecordedList ? (
                     <RecurringCalendarEntryList
                         headerTestID={RecurringCalendarSelector.RecordedHeader}
-                        title={<Trans>Recorded</Trans>}
-                        formattedTotal={formatDigits(totalAmount, defaultInstrument.symbol)}
+                        title={<Trans>Paid</Trans>}
+                        formattedTotal=""
                         entries={allRecordedEntries}
                         displayMonth={displayMonth}
                         displayYear={displayYear}

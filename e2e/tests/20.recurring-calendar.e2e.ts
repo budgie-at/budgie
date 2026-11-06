@@ -18,7 +18,7 @@ test('20 recurring calendar', { tags: ['recurring'] }, async ({ budgie }) => {
         await t.navigateToTransactions(ctx);
         await b.tapId(ctx, 'TransactionsPage.Tab.Recurring');
         await b.expectId(ctx, 'RecurringPane.List', 5_000);
-        await b.tapId(ctx, 'RecurringPane.ViewToggleButton');
+        await b.tapId(ctx, 'RecurringPane.CalendarModeButton');
         await b.expectId(ctx, 'RecurringCalendar.Container', 5_000);
         await expectExpectedAndRecordedRows();
     });
@@ -60,7 +60,7 @@ test('20 recurring calendar', { tags: ['recurring'] }, async ({ budgie }) => {
         await b.expectId(ctx, 'RecurringCalendar.Row.E2E_Recurring_Rent');
     });
     await b.phase('list view rows and series detail', async () => {
-        await b.tapId(ctx, 'RecurringPane.ViewToggleButton');
+        await b.tapId(ctx, 'RecurringPane.ListModeButton');
         await b.expectId(ctx, 'RecurringPane.List', 5_000);
         await b.expectId(ctx, 'RecurringPane.Row.E2E_Recurring_Rent');
         await b.expectId(ctx, 'RecurringPane.Row.E2E_Recurring_Gym');

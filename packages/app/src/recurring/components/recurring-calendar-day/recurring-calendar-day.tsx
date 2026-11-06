@@ -20,24 +20,25 @@ const MAX_DOTS = 3;
 
 const circleVariants = cva('items-center justify-center rounded-full', {
     variants: {
-        isSelected: { true: 'bg-primary', false: '' },
+        isSelected: { true: '', false: '' },
         isToday: { true: '', false: '' },
         hasEntries: { true: '', false: '' },
         isAccessibilityTextSize: { true: 'w-[44px] h-[44px]', false: 'w-[36px] h-[36px]' }
     },
     compoundVariants: [
-        { isToday: true, isSelected: false, className: 'border border-primary' },
-        { hasEntries: true, isSelected: false, className: 'bg-primary/6 dark:bg-primary/18' }
+        { isSelected: true, className: 'bg-primary' },
+        { isToday: true, isSelected: false, className: 'border-2 border-primary' }
     ]
 });
 
 const textVariants = cva('text-[15px] leading-[20px] tabular-nums pb-[8px]', {
     variants: {
         isCurrentMonth: { true: 'text-primary', false: 'text-secondary-foreground' },
-        isSelected: { true: 'text-primary-reverse font-semibold', false: '' },
+        isSelected: { true: 'font-semibold', false: '' },
         isToday: { true: 'font-semibold', false: '' },
         hasEntries: { true: 'font-semibold', false: '' }
-    }
+    },
+    compoundVariants: [{ isSelected: true, className: 'text-primary-reverse' }]
 });
 
 interface Props {

@@ -2,7 +2,6 @@ import { RecurringService } from '@budgie/recurring';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Notifications from 'expo-notifications';
-import { View } from 'react-native';
 
 import { SegmentedControl } from '../../../@generic/component/segmented-control/segmented-control';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
@@ -77,13 +76,11 @@ export const RecurringReminderChoices = ({ seriesId, reminderDaysBefore }: Props
     };
 
     return (
-        <View className="p-md">
-            <SegmentedControl
-                segments={segments}
-                value={getRecurringReminderChoice(reminderDaysBefore)}
-                onChange={handleChange}
-                className="min-h-[44px]"
-            />
-        </View>
+        <SegmentedControl
+            segments={segments}
+            value={getRecurringReminderChoice(reminderDaysBefore)}
+            onChange={handleChange}
+            className="min-h-[44px]"
+        />
     );
 };

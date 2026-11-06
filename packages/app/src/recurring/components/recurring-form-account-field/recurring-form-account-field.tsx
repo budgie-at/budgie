@@ -4,11 +4,9 @@ import { useFormContext, useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { GroupedListValueRow } from '../../../@generic/component/grouped-list-value-row/grouped-list-value-row';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
-import { RecurringFormClearRow } from '../recurring-form-clear-row/recurring-form-clear-row';
 import { RecurringSeriesFormSelector } from '../recurring-series-form-screen/recurring-series-form.selector';
 
 import type { RecurringSeriesFormValues } from '../../constant/recurring-series-form-schema.constant';
@@ -34,17 +32,13 @@ export const RecurringFormAccountField = () => {
     };
 
     return (
-        <GroupedListSection>
-            <GroupedListValueRow
-                icon={account?.icon ?? UserIconNameEnum.Wallet}
-                title={t`Account`}
-                value={account?.title ?? t`Any account`}
-                testID={RecurringSeriesFormSelector.Account}
-                onPress={handlePress}
-            />
-            {hasAccount ? (
-                <RecurringFormClearRow label={t`Use any account`} testID={RecurringSeriesFormSelector.ClearAccount} onPress={handleClear} />
-            ) : null}
-        </GroupedListSection>
+        <GroupedListValueRow
+            icon={account?.icon ?? UserIconNameEnum.Wallet}
+            title={t`Account`}
+            value={account?.title ?? t`Any account`}
+            testID={RecurringSeriesFormSelector.Account}
+            onPress={handlePress}
+            {...(hasAccount && { onClear: handleClear })}
+        />
     );
 };

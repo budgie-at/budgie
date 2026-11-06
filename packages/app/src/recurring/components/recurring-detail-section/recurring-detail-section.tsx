@@ -1,5 +1,6 @@
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
+import { GroupedListSectionTitle } from '../../../@generic/component/grouped-list-section-title/grouped-list-section-title';
 import { TransactionInfoGroup } from '../../../transaction/components/transaction-info-group/transaction-info-group';
 
 import type { ReactNode } from 'react';
@@ -11,9 +12,7 @@ interface Props {
 
 export const RecurringDetailSection = ({ title, children }: Props) => (
     <View className="gap-y-sm">
-        <Text accessibilityRole="header" className="px-3xl text-[13px] font-medium text-secondary-foreground">
-            {title}
-        </Text>
+        <GroupedListSectionTitle title={title} />
         <TransactionInfoGroup>{children}</TransactionInfoGroup>
     </View>
 );

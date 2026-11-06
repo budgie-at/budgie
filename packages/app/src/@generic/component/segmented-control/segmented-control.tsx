@@ -26,10 +26,7 @@ export const SegmentedControl = <T extends string>(props: Props<T>) => {
     const { segments, value, onChange, disabled = false, className, maxFontSizeMultiplier = MAX_FONT_SIZE_MULTIPLIER } = props;
     const reducedMotion = useReducedMotion();
     const segmentWidth = useSharedValue(0);
-    const activeIndex = Math.max(
-        segments.findIndex(segment => segment.value === value),
-        0
-    );
+    const activeIndex = segments.findIndex(segment => segment.value === value);
     const thumbOffset = useDerivedValue(() => {
         const target = activeIndex * segmentWidth.get();
 
@@ -48,13 +45,13 @@ export const SegmentedControl = <T extends string>(props: Props<T>) => {
         <View
             accessibilityRole="tablist"
             accessibilityState={accessibilityState}
-            className={cn('min-h-[36px] flex-row rounded-[10px] bg-surface-fill p-[2px]', className)}
+            className={cn('min-h-[36px] flex-row rounded-[10px] bg-segmented-track p-[2px]', className)}
             style={continuousCorners}
             onLayout={handleLayout}
         >
-            {disabled ? null : (
+            {disabled || activeIndex < 0 ? null : (
                 <Animated.View
-                    className="absolute top-[2px] bottom-[2px] left-[2px] rounded-[8px] bg-white shadow-sm dark:bg-[rgb(99,99,102)]"
+                    className="absolute top-[2px] bottom-[2px] left-[2px] rounded-[8px] border-[0.5px] border-black/[0.06] bg-white shadow-md dark:border-transparent dark:bg-white/20"
                     style={thumbStyle}
                 />
             )}

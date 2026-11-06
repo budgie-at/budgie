@@ -381,7 +381,13 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
                             : isNotEmptyString(title) && normalizedDescription.includes(title);
                         const gap = Math.abs(model.series.defaultAmount - charge.defaultAmount);
 
-                        return { model, isMerchant, gap, isCloseAmount: gap <= model.series.defaultAmount * FITTING_AMOUNT_RATIO };
+                        return {
+                            model,
+                            isMerchant,
+                            gap,
+                            isCloseAmount:
+                                model.series.categoryId === charge.categoryId && gap <= model.series.defaultAmount * FITTING_AMOUNT_RATIO
+                        };
                     })
                     .filter(({ isMerchant, isCloseAmount }) => isMerchant || isCloseAmount)
                     .sort((first, second) => Number(second.isMerchant) - Number(first.isMerchant) || first.gap - second.gap)

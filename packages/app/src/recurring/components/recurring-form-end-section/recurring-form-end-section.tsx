@@ -2,6 +2,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useController, useFormContext } from 'react-hook-form';
 import { View } from 'react-native';
 
+import { GroupedListSectionTitle } from '../../../@generic/component/grouped-list-section-title/grouped-list-section-title';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { SegmentedControl } from '../../../@generic/component/segmented-control/segmented-control';
 import { RecurringEndModeEnum } from '../../enum/recurring-end-mode.enum';
@@ -29,16 +30,21 @@ export const RecurringFormEndSection = () => {
     ];
 
     return (
-        <GroupedListSection title={t`Ends`}>
-            <View className="p-md">
+        <View className="gap-y-md">
+            <View>
+                <GroupedListSectionTitle title={t`Ends`} />
                 <SegmentedControl segments={segments} value={value} onChange={onChange} className="min-h-[44px]" />
             </View>
             {value === RecurringEndModeEnum.ON_DATE ? (
-                <RecurringFormDateRow name="endsOn" title={t`End date`} testID={RecurringSeriesFormSelector.EndDate} />
+                <GroupedListSection>
+                    <RecurringFormDateRow name="endsOn" title={t`End date`} testID={RecurringSeriesFormSelector.EndDate} />
+                </GroupedListSection>
             ) : null}
             {value === RecurringEndModeEnum.AFTER_COUNT ? (
-                <RecurringFormNumberRow name="endsAfterCount" label={t`Payments`} testID={RecurringSeriesFormSelector.EndCount} />
+                <GroupedListSection>
+                    <RecurringFormNumberRow name="endsAfterCount" label={t`Payments`} testID={RecurringSeriesFormSelector.EndCount} />
+                </GroupedListSection>
             ) : null}
-        </GroupedListSection>
+        </View>
     );
 };

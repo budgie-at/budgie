@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import { ScreenChromeFrame, ScreenChromeScrollView, useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 
 import { TRANSACTION_INFO_SCROLL_BOTTOM_INSET } from '../../../transaction/constant/transaction-info-scroll-bottom-inset.constant';
+import { useRecurringNow } from '../../hook/use-recurring-now.hook';
 import { useRemoveRecurringSeries } from '../../hook/use-remove-recurring-series.hook';
 import { RecurringDetailAlertBanner } from '../recurring-detail-alert-banner/recurring-detail-alert-banner';
 import { RecurringDetailDestructiveRow } from '../recurring-detail-destructive-row/recurring-detail-destructive-row';
@@ -12,6 +13,7 @@ import { RecurringDetailHero } from '../recurring-detail-hero/recurring-detail-h
 import { RecurringDetailHistory } from '../recurring-detail-history/recurring-detail-history';
 import { RecurringDetailNextPayments } from '../recurring-detail-next-payments/recurring-detail-next-payments';
 import { RecurringDetailReminderRow } from '../recurring-detail-reminder-row/recurring-detail-reminder-row';
+import { RecurringDetailStats } from '../recurring-detail-stats/recurring-detail-stats';
 
 import { RecurringDetailSelector } from './recurring-detail.selector';
 
@@ -25,6 +27,7 @@ export const RecurringDetailContent = ({ detail }: Props) => {
     const router = useRouter();
     const { config } = useScreenChrome();
     const removeSeries = useRemoveRecurringSeries();
+    const now = useRecurringNow();
     const { series, nextDates, history } = detail;
 
     const handleGoBack = () => void router.back();
@@ -38,9 +41,10 @@ export const RecurringDetailContent = ({ detail }: Props) => {
                 showsVerticalScrollIndicator={false}
             >
                 <View className="gap-y-5xl px-3xl">
-                    <RecurringDetailHero series={series} />
+                    <RecurringDetailHero series={series} now={now} />
+                    <RecurringDetailStats history={history} />
                     <RecurringDetailAlertBanner series={series} />
-                    <RecurringDetailNextPayments dates={nextDates} />
+                    <RecurringDetailNextPayments dates={nextDates} amount={series.amount} now={now} />
                     <RecurringDetailHistory seriesId={series.id} kind={series.kind} history={history} />
                     <RecurringDetailReminderRow series={series} />
                     <RecurringDetailDestructiveRow source={series.source} onRemove={handleRemove} />

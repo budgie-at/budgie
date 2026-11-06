@@ -1,10 +1,10 @@
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Notifications from 'expo-notifications';
 import { useController, useFormContext } from 'react-hook-form';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
-import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { GroupedListSectionTitle } from '../../../@generic/component/grouped-list-section-title/grouped-list-section-title';
 import { SegmentedControl } from '../../../@generic/component/segmented-control/segmented-control';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
@@ -55,10 +55,12 @@ export const RecurringFormReminderSection = () => {
     };
 
     return (
-        <GroupedListSection title={t`Reminder`} footer={t`Notify before the payment is due.`}>
-            <View className="p-md">
-                <SegmentedControl segments={segments} value={value} onChange={handleChange} className="min-h-[44px]" />
-            </View>
-        </GroupedListSection>
+        <View>
+            <GroupedListSectionTitle title={t`Reminder`} />
+            <SegmentedControl segments={segments} value={value} onChange={handleChange} className="min-h-[44px]" />
+            <Text className="px-3xl pt-md text-[13px] leading-[18px] text-primary/65">
+                <Trans>Notify before the payment is due.</Trans>
+            </Text>
+        </View>
     );
 };

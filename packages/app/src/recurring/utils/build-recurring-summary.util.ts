@@ -1,11 +1,8 @@
-import { RecurringSeriesKindEnum } from '@budgie/contracts';
-import { addDays } from 'date-fns/addDays';
+import { RecurringCadenceUnitEnum, RecurringSeriesKindEnum } from '@budgie/contracts';
 import { isBefore } from 'date-fns/isBefore';
 import { startOfDay } from 'date-fns/startOfDay';
 
 import { isDefined } from '@rnw-community/shared';
-
-import { RECURRING_DUE_SOON_DAYS } from '../constant/recurring-due-soon-days.constant';
 
 import type { RecurringSummaryInterface } from '../interface/recurring-summary.interface';
 import type { RecurringSeriesListItemInterface } from '@budgie/recurring';
@@ -16,13 +13,15 @@ export const buildRecurringSummary = (series: readonly RecurringSeriesListItemIn
     const active = series.filter(item => item.isActive);
     const expenses = active.filter(item => item.kind === RecurringSeriesKindEnum.EXPENSE);
     const income = active.filter(item => item.kind === RecurringSeriesKindEnum.INCOME);
-    const horizon = addDays(startOfDay(now), RECURRING_DUE_SOON_DAYS);
-    const dueSoon = expenses.filter(item => isDefined(item.nextDate) && isBefore(item.nextDate, horizon));
+    const [nextPayment] = expenses
+        .filter(item => isDefined(item.nextDate) && !isBefore(item.nextDate, startOfDay(now)))
+        .sort((left, right) => (left.nextDate?.getTime() ?? 0) - (right.nextDate?.getTime() ?? 0));
 
     return {
         committedMonthly: sum(expenses.map(item => item.monthlyEquivalent)),
-        dueSoonTotal: sum(dueSoon.map(item => item.amount)),
-        dueSoonCount: dueSoon.length,
+        committedCount: expenses.length,
+        hasAveragedBills: expenses.some(item => item.cadenceUnit !== RecurringCadenceUnitEnum.MONTH || item.cadenceInterval !== 1),
+        nextPayment: nextPayment ?? null,
         incomeMonthly: sum(income.map(item => item.monthlyEquivalent))
     };
 };

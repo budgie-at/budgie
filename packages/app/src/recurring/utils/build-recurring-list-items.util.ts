@@ -1,8 +1,13 @@
 import { RecurringSeriesKindEnum } from '@budgie/contracts';
+import { addDays } from 'date-fns/addDays';
+import { isBefore } from 'date-fns/isBefore';
+import { isSameMonth } from 'date-fns/isSameMonth';
+import { startOfDay } from 'date-fns/startOfDay';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { getTransactionListRowPosition } from '../../transaction/utils/get-transaction-list-row-position.util';
+import { RECURRING_DUE_SOON_DAYS } from '../constant/recurring-due-soon-days.constant';
 import { RecurringListItemKindEnum } from '../enum/recurring-list-item-kind.enum';
 import { RecurringSectionEnum } from '../enum/recurring-section.enum';
 
@@ -22,20 +27,30 @@ const compareByNextDate = (left: RecurringSeriesListItemInterface, right: Recurr
     return left.nextDate.getTime() - right.nextDate.getTime();
 };
 
+const resolveExpenseSection = (item: RecurringSeriesListItemInterface, now: Date): RecurringSectionEnum => {
+    if (!isDefined(item.nextDate) || isBefore(item.nextDate, addDays(startOfDay(now), RECURRING_DUE_SOON_DAYS))) {
+        return RecurringSectionEnum.DUE_SOON;
+    }
+
+    return isSameMonth(item.nextDate, now) ? RecurringSectionEnum.THIS_MONTH : RecurringSectionEnum.LATER;
+};
+
 const compareByConfidence = (left: RecurringSeriesListItemInterface, right: RecurringSeriesListItemInterface): number =>
     right.confidence - left.confidence;
 
 export const buildRecurringListItems = (
     series: readonly RecurringSeriesListItemInterface[],
-    expandedSections: readonly RecurringSectionEnum[]
+    expandedSections: readonly RecurringSectionEnum[],
+    now: Date
 ): RecurringListItemsInterface => {
     const tracked = series.filter(item => item.isActive && !isPossibleRecurringSeries(item));
     const ended = series.filter(item => !item.isActive && !isPossibleRecurringSeries(item));
+    const expenses = tracked.filter(item => item.kind === RecurringSeriesKindEnum.EXPENSE).sort(compareByNextDate);
     const sections = [
-        {
-            section: RecurringSectionEnum.EXPENSES,
-            entries: tracked.filter(item => item.kind === RecurringSeriesKindEnum.EXPENSE).sort(compareByNextDate)
-        },
+        ...[RecurringSectionEnum.DUE_SOON, RecurringSectionEnum.THIS_MONTH, RecurringSectionEnum.LATER].map(section => ({
+            section,
+            entries: expenses.filter(item => resolveExpenseSection(item, now) === section)
+        })),
         {
             section: RecurringSectionEnum.INCOME,
             entries: tracked.filter(item => item.kind === RecurringSeriesKindEnum.INCOME).sort(compareByNextDate)
@@ -44,12 +59,10 @@ export const buildRecurringListItems = (
         { section: RecurringSectionEnum.ENDED, entries: ended.sort(compareByNextDate) }
     ];
     const items: RecurringListItemType[] = [];
-    const headerIndices: number[] = [];
 
     for (const { section, entries } of sections.filter(({ entries: sectionEntries }) => isNotEmptyArray(sectionEntries))) {
         const isCollapsed = COLLAPSIBLE_SECTIONS.has(section) && !expandedSections.includes(section);
 
-        headerIndices.push(items.length);
         items.push({
             type: RecurringListItemKindEnum.HEADER,
             id: `header-${section}`,
@@ -71,5 +84,5 @@ export const buildRecurringListItems = (
         }
     }
 
-    return { items, headerIndices };
+    return { items };
 };

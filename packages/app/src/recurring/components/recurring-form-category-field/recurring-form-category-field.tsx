@@ -4,11 +4,9 @@ import { useFormContext, useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { GroupedListValueRow } from '../../../@generic/component/grouped-list-value-row/grouped-list-value-row';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
-import { RecurringFormClearRow } from '../recurring-form-clear-row/recurring-form-clear-row';
 import { RecurringSeriesFormSelector } from '../recurring-series-form-screen/recurring-series-form.selector';
 
 import type { RecurringSeriesFormValues } from '../../constant/recurring-series-form-schema.constant';
@@ -35,21 +33,13 @@ export const RecurringFormCategoryField = () => {
     };
 
     return (
-        <GroupedListSection>
-            <GroupedListValueRow
-                icon={category?.icon ?? UserIconNameEnum.Folder}
-                title={t`Category`}
-                value={category?.title ?? t`None`}
-                testID={RecurringSeriesFormSelector.Category}
-                onPress={handlePress}
-            />
-            {hasCategory ? (
-                <RecurringFormClearRow
-                    label={t`Remove category`}
-                    testID={RecurringSeriesFormSelector.ClearCategory}
-                    onPress={handleClear}
-                />
-            ) : null}
-        </GroupedListSection>
+        <GroupedListValueRow
+            icon={category?.icon ?? UserIconNameEnum.Folder}
+            title={t`Category`}
+            value={category?.title ?? t`None`}
+            testID={RecurringSeriesFormSelector.Category}
+            onPress={handlePress}
+            {...(hasCategory && { onClear: handleClear })}
+        />
     );
 };

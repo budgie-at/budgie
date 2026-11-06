@@ -5,51 +5,41 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
-import { TRANSACTION_SECONDARY_MAX_FONT_SIZE_MULTIPLIER } from '../../../transaction/constant/transaction-secondary-max-font-size-multiplier.constant';
 import { RecurringCalendarSummaryAmount } from '../recurring-calendar-summary-amount/recurring-calendar-summary-amount';
 
 interface Props {
+    readonly title: string;
     readonly isLoading: boolean;
     readonly formattedTotal: string;
     readonly formattedExpected: string;
     readonly formattedRecorded: string;
 }
 
-const totalVariants = cva('gap-y-xs', {
-    variants: { isAccessibilityTextSize: { true: '', false: 'flex-row flex-wrap items-center justify-between gap-x-xl' } }
-});
-const breakdownVariants = cva('gap-y-md', { variants: { isAccessibilityTextSize: { true: '', false: 'flex-row gap-x-3xl' } } });
-
 const continuousCorners = { borderCurve: 'continuous' as const };
 
-export const RecurringCalendarSummary = ({ isLoading, formattedTotal, formattedExpected, formattedRecorded }: Props) => {
+const breakdownVariants = cva('', { variants: { isAccessibilityTextSize: { true: 'gap-y-md', false: 'flex-row' } } });
+
+export const RecurringCalendarSummary = ({ title, isLoading, formattedTotal, formattedExpected, formattedRecorded }: Props) => {
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
 
     return (
-        <View className="gap-y-md rounded-3xl bg-grouped-surface-row p-3xl" style={continuousCorners}>
-            <View className={totalVariants({ isAccessibilityTextSize })}>
-                <Text
-                    dynamicTypeRamp="footnote"
-                    maxFontSizeMultiplier={TRANSACTION_SECONDARY_MAX_FONT_SIZE_MULTIPLIER}
-                    className="text-[13px] text-secondary-foreground"
-                >
-                    <Trans>Monthly total</Trans>
-                </Text>
-                <LoadingContent
-                    isLoading={isLoading}
-                    loadingIndicator={<ActivityIndicator size="small" colorClassName="accent-primary" style={StyleSheet.absoluteFill} />}
-                >
-                    <ProtectedText dynamicTypeRamp="headline" className="text-[17px] font-semibold text-primary tabular-nums">
+        <View className="rounded-3xl bg-grouped-surface-row px-xl py-xl" style={continuousCorners}>
+            <LoadingContent
+                isLoading={isLoading}
+                loadingIndicator={<ActivityIndicator size="small" colorClassName="accent-primary" style={StyleSheet.absoluteFill} />}
+                className={breakdownVariants({ isAccessibilityTextSize })}
+            >
+                <View className="flex-[1.3] items-center gap-y-xxs">
+                    <ProtectedText className="text-[22px] font-bold text-primary tabular-nums" numberOfLines={1} adjustsFontSizeToFit>
                         {formattedTotal}
                     </ProtectedText>
-                </LoadingContent>
-            </View>
-            <LoadingContent isLoading={isLoading} loadingIndicator={null} className={breakdownVariants({ isAccessibilityTextSize })}>
+                    <Text className="text-[13px] font-medium text-secondary-foreground">{title}</Text>
+                </View>
                 <RecurringCalendarSummaryAmount formattedAmount={formattedExpected}>
-                    <Trans>Expected</Trans>
+                    <Trans>Still to pay</Trans>
                 </RecurringCalendarSummaryAmount>
                 <RecurringCalendarSummaryAmount formattedAmount={formattedRecorded}>
-                    <Trans>Recorded</Trans>
+                    <Trans>Paid</Trans>
                 </RecurringCalendarSummaryAmount>
             </LoadingContent>
         </View>

@@ -16,9 +16,10 @@ interface Props {
     readonly series: RecurringSeriesListItemInterface;
     readonly position: TransactionListRowPositionEnum;
     readonly isPossible: boolean;
+    readonly now: Date;
 }
 
-export const RecurringListRow = ({ series, position, isPossible }: Props) => {
+export const RecurringListRow = ({ series, position, isPossible, now }: Props) => {
     const { t } = useLingui();
     const router = useRouter();
     const removeSeries = useRemoveRecurringSeries();
@@ -36,7 +37,7 @@ export const RecurringListRow = ({ series, position, isPossible }: Props) => {
                     onPress={handleOpen}
                     testID={RecurringPaneSelector.Row(series.title)}
                 >
-                    <RecurringListRowContent series={series} isPossible={isPossible} />
+                    <RecurringListRowContent series={series} isPossible={isPossible} now={now} />
                 </HapticPressable>
             </DeletableRow>
         </TransactionRowSurface>

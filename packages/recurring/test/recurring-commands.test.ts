@@ -216,6 +216,20 @@ layer(TestLayer)('recurringService commands', it => {
         })
     );
 
+    it.effect('does not suggest a similar amount from another category', () =>
+        Effect.gen(function* () {
+            const transactionId = yield* seedNetflixCharge();
+            const service = yield* recurringService;
+            yield* openReads;
+            const sameCategory = yield* service.createManual(manualInput({ title: 'Spotify', amount: 12.5 * PRECISION }));
+            yield* service.createManual(manualInput({ title: 'Barber', amount: 12.5 * PRECISION, categoryId: 1 }));
+
+            const fitting = yield* service.fittingSeries(transactionId, NOW);
+
+            expect(fitting.map(item => item.id)).toEqual([sameCategory.id]);
+        })
+    );
+
     it.effect('revives a dismissed detected series with the same counterparty instead of duplicating it', () =>
         Effect.gen(function* () {
             const seed = yield* seedCharges();

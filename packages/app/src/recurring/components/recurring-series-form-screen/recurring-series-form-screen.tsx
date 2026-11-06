@@ -1,14 +1,17 @@
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
-import { View } from 'react-native';
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
+import { Text, View } from 'react-native';
 
 import { BottomChromeInsetProvider, ScreenChromeFooter, ScreenChromeScrollView } from '@rnw-community/react-native-screen-chrome';
+import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
+import { GroupedListSectionTitle } from '../../../@generic/component/grouped-list-section-title/grouped-list-section-title';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
@@ -16,6 +19,7 @@ import { TransactionFormScreen } from '../../../transaction/components/transacti
 import { RecurringSeriesFormSchema } from '../../constant/recurring-series-form-schema.constant';
 import { RecurringFormModeEnum } from '../../enum/recurring-form-mode.enum';
 import { submitRecurringSeries } from '../../utils/submit-recurring-series.util';
+import { MakeRecurringSourceRow } from '../make-recurring-source-row/make-recurring-source-row';
 import { RecurringFormAccountField } from '../recurring-form-account-field/recurring-form-account-field';
 import { RecurringFormAmountField } from '../recurring-form-amount-field/recurring-form-amount-field';
 import { RecurringFormCategoryField } from '../recurring-form-category-field/recurring-form-category-field';
@@ -37,7 +41,7 @@ interface Props {
 }
 
 const FOOTER_STYLE = { position: 'relative' } as const;
-const CONTENT_STYLE = { paddingBottom: 16 };
+const CONTENT_STYLE = { paddingBottom: 96 };
 
 export const RecurringSeriesFormScreen = ({ target, initialValues }: Props) => {
     const { t } = useLingui();
@@ -50,8 +54,24 @@ export const RecurringSeriesFormScreen = ({ target, initialValues }: Props) => {
         mode: 'onSubmit'
     });
     const isEditing = target.mode === RecurringFormModeEnum.EDIT;
-    const title = isEditing ? t`Edit recurring payment` : t`New recurring payment`;
-    const kindField = isEditing ? null : <RecurringFormKindField />;
+    const createTitle =
+        target.mode === RecurringFormModeEnum.CREATE && isDefined(target.transactionId) ? t`Make recurring` : t`New recurring payment`;
+    const title = isEditing ? t`Edit recurring payment` : createTitle;
+    const sourceTransactionId = target.mode === RecurringFormModeEnum.CREATE ? target.transactionId : null;
+    const kindField = isEditing || isDefined(sourceTransactionId) ? null : <RecurringFormKindField />;
+    const sourceSection = isDefined(sourceTransactionId) ? (
+        <View>
+            <GroupedListSectionTitle title={t`From transaction`} />
+            <MakeRecurringSourceRow transactionId={sourceTransactionId} />
+        </View>
+    ) : null;
+    const [amount, seriesTitle] = useWatch({ control: form.control, name: ['amount', 'title'] });
+    const isSaveDisabled = !isPositiveNumber(amount) || !isNotEmptyString(seriesTitle.trim());
+    const saveHint = isSaveDisabled ? (
+        <Text className="pb-md text-center text-[13px] text-primary/65">
+            <Trans>Add an amount and a name to save</Trans>
+        </Text>
+    ) : null;
 
     const handleGoBack = () => void router.back();
 
@@ -85,24 +105,30 @@ export const RecurringSeriesFormScreen = ({ target, initialValues }: Props) => {
                             automaticallyAdjustKeyboardInsets
                             showsVerticalScrollIndicator={false}
                         >
-                            <View className="gap-y-5xl pt-md">
+                            <View className="gap-y-3xl pt-md">
+                                {sourceSection}
                                 {kindField}
                                 <RecurringFormAmountField label={t`Amount`} />
                                 <RecurringFormTitleField />
-                                <RecurringFormCurrencyField />
-                                <RecurringFormCategoryField />
-                                <RecurringFormAccountField />
+
                                 <RecurringFormRepeatSection />
+                                <GroupedListSection title={t`Details`}>
+                                    <RecurringFormCurrencyField />
+                                    <RecurringFormCategoryField />
+                                    <RecurringFormAccountField />
+                                </GroupedListSection>
                                 <RecurringFormEndSection />
                                 <RecurringFormReminderSection />
                             </View>
                         </ScreenChromeScrollView>
                         <View className="pt-lg pb-md">
                             <ScreenChromeFooter includeBottomSafeArea={false} style={FOOTER_STYLE}>
+                                {saveHint}
                                 <PillButton
                                     label={t`Save`}
                                     onPress={handleSave}
                                     isLoading={saveFlight.isLoading}
+                                    isDisabled={isSaveDisabled}
                                     testID={RecurringSeriesFormSelector.Save}
                                 />
                             </ScreenChromeFooter>

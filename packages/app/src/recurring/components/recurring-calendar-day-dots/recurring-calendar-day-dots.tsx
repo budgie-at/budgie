@@ -6,8 +6,8 @@ import { cn } from '../../../@generic/utils/cn.util';
 const dotVariants = cva('rounded-full', {
     variants: {
         kind: {
-            actual: 'h-[5px] w-[5px] bg-primary',
-            actualSelected: 'h-[5px] w-[5px] bg-primary-reverse',
+            actual: 'h-[6px] w-[6px] bg-positive-strong',
+            actualSelected: 'h-[6px] w-[6px] bg-primary-reverse',
             forecasted: 'h-[6px] w-[6px] border-[1.5px] border-primary',
             forecastedSelected: 'h-[6px] w-[6px] border-[1.5px] border-primary-reverse'
         }

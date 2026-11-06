@@ -24,8 +24,6 @@ test('46 recurring make recurring from a transaction', { tags: ['recurring'] }, 
         await t.openTransaction(ctx, 'E2E_One_Off_Expense');
         await b.scrollTo(ctx, 'TransactionActionsMenu.MakeRecurringButton');
         await b.tapId(ctx, 'TransactionActionsMenu.MakeRecurringButton');
-        await b.expectId(ctx, 'MakeRecurring.Page', 10_000);
-        await b.tapId(ctx, 'MakeRecurring.CreateRow');
         await b.expectId(ctx, 'RecurringForm.Page', 10_000);
         await b.tapId(ctx, 'RecurringForm.Save');
         await b.expectId(ctx, 'RecurringDetail.Page', 10_000);

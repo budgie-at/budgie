@@ -1,7 +1,7 @@
 export const RecurringPaneSelector = {
     Container: 'RecurringPane.Container',
-    ViewToggleButton: 'RecurringPane.ViewToggleButton',
-    AddButton: 'RecurringPane.AddButton',
+    ListModeButton: 'RecurringPane.ListModeButton',
+    CalendarModeButton: 'RecurringPane.CalendarModeButton',
     List: 'RecurringPane.List',
     EmptyState: 'RecurringPane.EmptyState',
     Summary: 'RecurringPane.Summary',

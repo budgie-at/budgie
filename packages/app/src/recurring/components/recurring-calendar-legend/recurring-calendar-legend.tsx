@@ -29,16 +29,16 @@ export const RecurringCalendarLegend = ({ hasRecordedEntries, hasExpectedEntries
             {showExpectedLegend ? (
                 <View className="flex-row items-center gap-x-sm">
                     <RecurringCalendarDayDots actualDots={0} forecastedDots={1} isSelected={false} className="static" />
-                    <Text maxFontSizeMultiplier={1.5} className="text-[12px] text-secondary-foreground">
-                        <Trans>Expected</Trans>
+                    <Text maxFontSizeMultiplier={1.5} className="text-[13px] text-secondary-foreground">
+                        <Trans>Still to pay</Trans>
                     </Text>
                 </View>
             ) : null}
             {showRecordedLegend ? (
                 <View className="flex-row items-center gap-x-sm">
                     <RecurringCalendarDayDots actualDots={1} forecastedDots={0} isSelected={false} className="static" />
-                    <Text maxFontSizeMultiplier={1.5} className="text-[12px] text-secondary-foreground">
-                        <Trans>Recorded</Trans>
+                    <Text maxFontSizeMultiplier={1.5} className="text-[13px] text-secondary-foreground">
+                        <Trans>Paid</Trans>
                     </Text>
                 </View>
             ) : null}

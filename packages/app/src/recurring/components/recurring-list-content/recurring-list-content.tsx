@@ -20,6 +20,7 @@ import { RecurringSummaryCard } from '../recurring-summary-card/recurring-summar
 import type { RecurringSectionEnum } from '../../enum/recurring-section.enum';
 import type { RecurringListItemType } from '../../type/recurring-list-item.type';
 import type { RecurringSeriesListItemInterface } from '@budgie/recurring';
+import type { ReactNode } from 'react';
 
 const EMPTY_SERIES: readonly RecurringSeriesListItemInterface[] = [];
 
@@ -27,16 +28,26 @@ const keyExtractor = (item: RecurringListItemType) => item.id;
 
 const getItemType = (item: RecurringListItemType) => item.type;
 
-export const RecurringListContent = () => {
+interface Props {
+    readonly header: ReactNode;
+}
+
+export const RecurringListContent = ({ header }: Props) => {
     const { bottom } = useSafeAreaInsets();
     const { now, series } = useRecurringSeriesList();
     const [expandedSections, setExpandedSections] = useState<readonly RecurringSectionEnum[]>([]);
     const isLoading = !isDefined(series);
     const loadedSeries = series ?? EMPTY_SERIES;
-    const { items, headerIndices } = buildRecurringListItems(loadedSeries, expandedSections);
+    const { items } = buildRecurringListItems(loadedSeries, expandedSections, now);
     const summary = buildRecurringSummary(loadedSeries, now);
     const contentContainerStyle = { paddingBottom: FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottom };
     const emptyState = isLoading ? null : <RecurringListEmptyState />;
+    const listHeader = (
+        <>
+            {header}
+            <RecurringSummaryCard summary={summary} now={now} />
+        </>
+    );
 
     const handleToggleSection = (section: RecurringSectionEnum) =>
         void setExpandedSections(current => (current.includes(section) ? current.filter(item => item !== section) : [...current, section]));
@@ -50,7 +61,7 @@ export const RecurringListContent = () => {
                 onToggle={handleToggleSection}
             />
         ) : (
-            <RecurringListRow series={item.series} position={item.position} isPossible={item.isPossible} />
+            <RecurringListRow series={item.series} position={item.position} isPossible={item.isPossible} now={now} />
         );
 
     return (
@@ -62,9 +73,8 @@ export const RecurringListContent = () => {
                     getItemType={getItemType}
                     renderItem={renderItem}
                     estimatedItemSize={64}
-                    stickyHeaderIndices={headerIndices}
                     contentContainerStyle={contentContainerStyle}
-                    ListHeaderComponent={<RecurringSummaryCard summary={summary} />}
+                    ListHeaderComponent={listHeader}
                     ListEmptyComponent={emptyState}
                 />
             </View>
