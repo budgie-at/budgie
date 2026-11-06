@@ -20,6 +20,7 @@ export const snapshotTestDb = (client: Client) =>
     Effect.gen(function* () {
         yield* client.unsafe(`ATTACH ':memory:' AS baseline`);
         yield* client.unsafe('CREATE TABLE baseline.sequence AS SELECT * FROM main.sqlite_sequence');
+        yield* client.unsafe('CREATE TABLE baseline.stat1 AS SELECT * FROM main.sqlite_stat1');
         yield* Effect.forEach(SEEDED_TABLES, name => client.unsafe(`CREATE TABLE baseline."${name}" AS SELECT * FROM main."${name}"`), {
             discard: true
         });
@@ -52,5 +53,8 @@ export const resetTestDb = (database: DB) =>
         yield* client.unsafe('INSERT INTO main.sqlite_sequence SELECT * FROM baseline.sequence');
         yield* client.unsafe('DELETE FROM main.sync_outbox');
         yield* client.unsafe('DELETE FROM main.sync_apply_state');
+        yield* client.unsafe('DELETE FROM main.sqlite_stat1');
+        yield* client.unsafe('INSERT INTO main.sqlite_stat1 SELECT * FROM baseline.stat1');
+        yield* client.unsafe('ANALYZE sqlite_schema');
         yield* client.unsafe('PRAGMA foreign_keys = ON');
     });
