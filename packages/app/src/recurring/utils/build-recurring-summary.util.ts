@@ -21,6 +21,7 @@ export const buildRecurringSummary = (series: readonly RecurringSeriesListItemIn
 
     return {
         committedMonthly: sum(expenses.map(item => item.monthlyEquivalent)),
+        committedCount: expenses.length,
         dueSoonTotal: sum(dueSoon.map(item => item.amount)),
         dueSoonCount: dueSoon.length,
         incomeMonthly: sum(income.map(item => item.monthlyEquivalent))

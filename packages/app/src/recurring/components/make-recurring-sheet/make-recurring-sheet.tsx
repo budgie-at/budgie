@@ -19,6 +19,7 @@ import { useRecurringFittingSeries } from '../../hook/use-recurring-fitting-seri
 import { scheduleRecurringRefresh } from '../../utils/schedule-recurring-refresh.util';
 import { MakeRecurringCreateRow } from '../make-recurring-create-row/make-recurring-create-row';
 import { MakeRecurringFittingRow } from '../make-recurring-fitting-row/make-recurring-fitting-row';
+import { MakeRecurringSourceRow } from '../make-recurring-source-row/make-recurring-source-row';
 
 import { MakeRecurringSheetSelector } from './make-recurring-sheet.selector';
 
@@ -30,7 +31,7 @@ interface Props {
 
 export const MakeRecurringSheet = ({ transactionId }: Props) => {
     const { t } = useLingui();
-    const { fittingSeries, isLoading } = useRecurringFittingSeries(transactionId);
+    const { now, fittingSeries, isLoading } = useRecurringFittingSeries(transactionId);
     const addFlight = useSingleFlight();
 
     const handleCreate = () => void router.replace({ pathname: '/recurring/create', params: { transactionId: String(transactionId) } });
@@ -56,7 +57,7 @@ export const MakeRecurringSheet = ({ transactionId }: Props) => {
     const existingSection = isNotEmptyArray(fittingSeries) ? (
         <GroupedListSection title={t`Add to an existing payment`}>
             {fittingSeries.map(series => (
-                <MakeRecurringFittingRow key={series.id} series={series} onSelect={handleSelect} />
+                <MakeRecurringFittingRow key={series.id} series={series} onSelect={handleSelect} now={now} />
             ))}
         </GroupedListSection>
     ) : null;
@@ -68,6 +69,7 @@ export const MakeRecurringSheet = ({ transactionId }: Props) => {
                     <SheetTitleRow title={t`Make recurring`} />
                 </View>
                 <LoadingContent isLoading={isBusy} containerClassName="min-h-[120px]" className="gap-y-5xl px-3xl pt-xl pb-7xl">
+                    <MakeRecurringSourceRow transactionId={transactionId} />
                     {existingSection}
                     <GroupedListSection>
                         <MakeRecurringCreateRow onPress={handleCreate} />

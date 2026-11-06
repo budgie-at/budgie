@@ -2,6 +2,8 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title-max-font-size-multiplier.constant';
@@ -15,52 +17,67 @@ interface Props {
     readonly onToggle: (section: RecurringSectionEnum) => void;
 }
 
+const continuousCorners = { borderCurve: 'continuous' as const };
+
 export const RecurringListSectionHeader = ({ section, count, isCollapsed, onToggle }: Props) => {
     const { t } = useLingui();
     const titles: Record<RecurringSectionEnum, string> = {
-        [RecurringSectionEnum.EXPENSES]: t`Expenses`,
+        [RecurringSectionEnum.DUE_SOON]: t`Next 7 days`,
+        [RecurringSectionEnum.THIS_MONTH]: t`Later this month`,
+        [RecurringSectionEnum.LATER]: t`Coming up`,
         [RecurringSectionEnum.INCOME]: t`Income`,
         [RecurringSectionEnum.POSSIBLE]: t`Possible`,
         [RecurringSectionEnum.ENDED]: t`Ended`
     };
-    const isCollapsible = section === RecurringSectionEnum.POSSIBLE || section === RecurringSectionEnum.ENDED;
-    const chevron = isCollapsed ? UserIconNameEnum.ChevronRight : UserIconNameEnum.ChevronDown;
+    const captions: Partial<Record<RecurringSectionEnum, string>> = {
+        [RecurringSectionEnum.POSSIBLE]: t`Not counted in totals yet`,
+        [RecurringSectionEnum.ENDED]: t`No upcoming payments`
+    };
+    const caption = captions[section];
+    const chevron = isCollapsed ? UserIconNameEnum.ChevronDown : UserIconNameEnum.ChevronUp;
     const accessibilityState = { expanded: !isCollapsed };
 
     const handlePress = () => void onToggle(section);
 
-    const content = (
-        <View className="min-h-[36px] flex-row items-center gap-x-md bg-surface px-3xl py-xs">
-            <Text
-                accessibilityRole="header"
-                maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
-                className="text-[13px] font-semibold text-primary"
-            >
-                {titles[section]}
-            </Text>
-            <Text
-                maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
-                className="flex-1 text-[13px] text-secondary-foreground tabular-nums"
-            >
-                {count}
-            </Text>
-            {isCollapsible ? <Icon icon={chevron} size={16} className="text-secondary-foreground" /> : null}
-        </View>
-    );
-
-    if (!isCollapsible) {
-        return content;
+    if (!isDefined(caption)) {
+        return (
+            <View className="min-h-[40px] flex-row items-end gap-x-sm bg-surface px-3xl pt-xl pb-sm">
+                <Text
+                    accessibilityRole="header"
+                    maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
+                    className="text-[15px] font-semibold text-primary"
+                >
+                    {titles[section]}
+                </Text>
+                <Text maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER} className="text-[15px] text-secondary-foreground tabular-nums">
+                    {count}
+                </Text>
+            </View>
+        );
     }
 
     return (
-        <HapticPressable
-            accessibilityRole="button"
-            accessibilityState={accessibilityState}
-            className="active:scale-100 active:opacity-70"
-            onPress={handlePress}
-            testID={RecurringPaneSelector.SectionHeader(section)}
-        >
-            {content}
-        </HapticPressable>
+        <View className="bg-surface px-3xl pt-xl pb-sm">
+            <HapticPressable
+                accessibilityRole="button"
+                accessibilityState={accessibilityState}
+                accessibilityHint={caption}
+                className="min-h-[56px] flex-row items-center gap-x-xl rounded-3xl bg-grouped-surface-row px-3xl py-md active:scale-100 active:opacity-70"
+                style={continuousCorners}
+                onPress={handlePress}
+                testID={RecurringPaneSelector.SectionHeader(section)}
+            >
+                <View className="min-w-0 flex-1 gap-y-xxs">
+                    <Text maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER} className="text-[16px] font-semibold text-primary">
+                        {titles[section]}
+                        <Text className="font-normal text-secondary-foreground tabular-nums">{` · ${count}`}</Text>
+                    </Text>
+                    <Text maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER} className="text-[13px] text-secondary-foreground">
+                        {caption}
+                    </Text>
+                </View>
+                <Icon icon={chevron} size={18} className="text-secondary-foreground" />
+            </HapticPressable>
+        </View>
     );
 };

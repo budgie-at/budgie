@@ -15,7 +15,7 @@ interface Props {
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 const chipVariants = cva('min-h-[36px] justify-center rounded-full px-xl active:opacity-70', {
-    variants: { isSelected: { true: 'bg-cta-background', false: 'bg-surface-fill' } }
+    variants: { isSelected: { true: 'bg-cta-background', false: 'border border-surface-separator bg-surface-fill' } }
 });
 
 const labelVariants = cva('text-[15px] font-medium', {

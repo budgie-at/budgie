@@ -12,12 +12,9 @@ export const RecurringPane = () => {
     const [viewMode, setViewMode] = useState(RecurringViewModeEnum.LIST);
     const isListMode = viewMode === RecurringViewModeEnum.LIST;
 
-    const handleToggleViewMode = () =>
-        void setViewMode(current => (current === RecurringViewModeEnum.LIST ? RecurringViewModeEnum.CALENDAR : RecurringViewModeEnum.LIST));
-
     return (
         <View className="flex-1" testID={RecurringPaneSelector.Container}>
-            <RecurringPaneToolbar viewMode={viewMode} onToggleViewMode={handleToggleViewMode} />
+            <RecurringPaneToolbar viewMode={viewMode} onChangeViewMode={setViewMode} />
             {isListMode ? <RecurringListContent /> : <RecurringCalendarContent />}
         </View>
     );

@@ -7,14 +7,15 @@ import type { RecurringSeriesListItemInterface } from '@budgie/recurring';
 interface Props {
     readonly series: RecurringSeriesListItemInterface;
     readonly onSelect: (series: RecurringSeriesListItemInterface) => void;
+    readonly now: Date;
 }
 
-export const MakeRecurringFittingRow = ({ series, onSelect }: Props) => {
+export const MakeRecurringFittingRow = ({ series, onSelect, now }: Props) => {
     const handlePress = () => void onSelect(series);
 
     return (
         <GroupedListRow
-            title={<RecurringListRowContent series={series} isPossible={false} />}
+            title={<RecurringListRowContent series={series} isPossible={false} now={now} />}
             onPress={handlePress}
             testID={MakeRecurringSheetSelector.FittingRow(series.title)}
         />

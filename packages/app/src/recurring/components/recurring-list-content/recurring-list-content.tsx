@@ -33,7 +33,7 @@ export const RecurringListContent = () => {
     const [expandedSections, setExpandedSections] = useState<readonly RecurringSectionEnum[]>([]);
     const isLoading = !isDefined(series);
     const loadedSeries = series ?? EMPTY_SERIES;
-    const { items, headerIndices } = buildRecurringListItems(loadedSeries, expandedSections);
+    const { items, headerIndices } = buildRecurringListItems(loadedSeries, expandedSections, now);
     const summary = buildRecurringSummary(loadedSeries, now);
     const contentContainerStyle = { paddingBottom: FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottom };
     const emptyState = isLoading ? null : <RecurringListEmptyState />;
@@ -50,7 +50,7 @@ export const RecurringListContent = () => {
                 onToggle={handleToggleSection}
             />
         ) : (
-            <RecurringListRow series={item.series} position={item.position} isPossible={item.isPossible} />
+            <RecurringListRow series={item.series} position={item.position} isPossible={item.isPossible} now={now} />
         );
 
     return (

@@ -1,5 +1,7 @@
 export enum RecurringSectionEnum {
-    EXPENSES = 'EXPENSES',
+    DUE_SOON = 'DUE_SOON',
+    THIS_MONTH = 'THIS_MONTH',
+    LATER = 'LATER',
     INCOME = 'INCOME',
     POSSIBLE = 'POSSIBLE',
     ENDED = 'ENDED'

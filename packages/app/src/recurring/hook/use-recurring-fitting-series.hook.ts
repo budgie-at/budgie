@@ -18,5 +18,5 @@ export const useRecurringFittingSeries = (transactionId: number) => {
     const now = useRecurringNow();
     const result = useLiveAtomValue(recurringFittingSeriesAtom([transactionId, now.getTime()]));
 
-    return { fittingSeries: AsyncResult.isSuccess(result) ? result.value : [], isLoading: AsyncResult.isInitial(result) };
+    return { now, fittingSeries: AsyncResult.isSuccess(result) ? result.value : [], isLoading: AsyncResult.isInitial(result) };
 };

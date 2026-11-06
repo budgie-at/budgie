@@ -4,10 +4,11 @@ import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
 import { BottomChromeInsetProvider, ScreenChromeFooter, ScreenChromeScrollView } from '@rnw-community/react-native-screen-chrome';
+import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
@@ -37,7 +38,7 @@ interface Props {
 }
 
 const FOOTER_STYLE = { position: 'relative' } as const;
-const CONTENT_STYLE = { paddingBottom: 16 };
+const CONTENT_STYLE = { paddingBottom: 32 };
 
 export const RecurringSeriesFormScreen = ({ target, initialValues }: Props) => {
     const { t } = useLingui();
@@ -52,6 +53,8 @@ export const RecurringSeriesFormScreen = ({ target, initialValues }: Props) => {
     const isEditing = target.mode === RecurringFormModeEnum.EDIT;
     const title = isEditing ? t`Edit recurring payment` : t`New recurring payment`;
     const kindField = isEditing ? null : <RecurringFormKindField />;
+    const [amount, seriesTitle] = useWatch({ control: form.control, name: ['amount', 'title'] });
+    const isSaveDisabled = !isPositiveNumber(amount) || !isNotEmptyString(seriesTitle.trim());
 
     const handleGoBack = () => void router.back();
 
@@ -103,6 +106,7 @@ export const RecurringSeriesFormScreen = ({ target, initialValues }: Props) => {
                                     label={t`Save`}
                                     onPress={handleSave}
                                     isLoading={saveFlight.isLoading}
+                                    isDisabled={isSaveDisabled}
                                     testID={RecurringSeriesFormSelector.Save}
                                 />
                             </ScreenChromeFooter>

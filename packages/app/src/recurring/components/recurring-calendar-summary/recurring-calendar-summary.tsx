@@ -33,7 +33,7 @@ export const RecurringCalendarSummary = ({ isLoading, formattedTotal, formattedE
                     maxFontSizeMultiplier={TRANSACTION_SECONDARY_MAX_FONT_SIZE_MULTIPLIER}
                     className="text-[13px] text-secondary-foreground"
                 >
-                    <Trans>Monthly total</Trans>
+                    <Trans>This month</Trans>
                 </Text>
                 <LoadingContent
                     isLoading={isLoading}

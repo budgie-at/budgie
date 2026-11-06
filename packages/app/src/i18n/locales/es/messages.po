@@ -211,6 +211,10 @@ msgstr "{code} · 1 {code} ≈ {convertedAmount} {defaultCode}"
 msgid "{code} · Base currency"
 msgstr "{code} · Moneda base"
 
+#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
+msgid "{committedCount, plural, one {# bill or subscription} other {# bills and subscriptions}}"
+msgstr ""
+
 #: src/tag/hooks/use-merge-tag.hook.ts
 msgid "{count, plural, =0 {“{sourceTitle}” is not on any transactions. It is removed after the merge.} one {Pick the tag that replaces it on # transaction.} other {Pick the tag that replaces it on # transactions.}}"
 msgstr "{count, plural, =0 {“{sourceTitle}” no está en ninguna transacción. Se eliminará tras la fusión.} one {Elige la etiqueta que la sustituye en # transacción.} other {Elige la etiqueta que la sustituye en # transacciones.}}"
@@ -300,6 +304,7 @@ msgid "{dateLabel}, {priceLabel}"
 msgstr "{dateLabel}, {priceLabel}"
 
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
+#: src/recurring/hook/use-recurring-due-label.hook.ts
 msgid "{days, plural, one {In # day} other {In # days}}"
 msgstr "{days, plural, one {En # día} other {En # días}}"
 
@@ -338,8 +343,8 @@ msgid "{downloaded} of {total} GB is kept. It carries on when you're back online
 msgstr "Se conservan {downloaded} de {total} GB. Continuará cuando vuelvas a tener conexión."
 
 #: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
-msgid "{dueSoonCount, plural, one {# payment} other {# payments}}"
-msgstr "{dueSoonCount, plural, one {# pago} other {# pagos}}"
+msgid "{dueSoonAmount} due this week"
+msgstr ""
 
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "{duplicateTransactionCount, plural, one {# skipped} other {# skipped}}"
@@ -909,6 +914,7 @@ msgid "/ day"
 msgstr "/ día"
 
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
+#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
 msgid "/ month"
 msgstr "/ mes"
 
@@ -936,10 +942,6 @@ msgstr "−{carriedLabel} arrastrados"
 #: src/transaction/components/statistics-change-label/statistics-change-label.tsx
 msgid "−{changePercent} vs {shortPreviousLabel}"
 msgstr "−{changePercent} vs. {shortPreviousLabel}"
-
-#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
-msgid "≈ {committedAmount} / month"
-msgstr "≈ {committedAmount} / mes"
 
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -1259,10 +1261,6 @@ msgstr "Añadir comisión"
 #: src/transaction/components/split-entries-add-item-footer/split-entries-add-item-footer.tsx
 msgid "Add item"
 msgstr "Agregar elemento"
-
-#: src/recurring/components/recurring-pane-toolbar/recurring-pane-toolbar.tsx
-msgid "Add recurring payment"
-msgstr "Añadir pago recurrente"
 
 #: src/rule/constant/rule-action-type.constant.ts
 msgid "add tag"
@@ -2104,6 +2102,10 @@ msgstr "Por etiqueta"
 msgid "bytes"
 msgstr "bytes"
 
+#: src/recurring/components/recurring-pane-toolbar/recurring-pane-toolbar.tsx
+msgid "Calendar"
+msgstr ""
+
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Can run for hours on old accounts, and much slower while the app is closed."
 msgstr "Puede tardar horas en cuentas antiguas y es mucho más lento con la app cerrada."
@@ -2605,6 +2607,10 @@ msgstr "Coinbase"
 msgid "Collapse condition {position}"
 msgstr "Contraer condición {position}"
 
+#: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
+msgid "Coming up"
+msgstr ""
+
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "comment"
 msgstr "comentario"
@@ -2613,10 +2619,6 @@ msgstr "comentario"
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "Comment"
 msgstr "Comentario"
-
-#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
-msgid "Committed"
-msgstr "Comprometido"
 
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Common"
@@ -3823,10 +3825,6 @@ msgstr "Vence el {dueDate}"
 msgid "Due date"
 msgstr "Fecha de vencimiento"
 
-#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
-msgid "Due next 7 days"
-msgstr "Vence en los próximos 7 días"
-
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "Duplicate rule"
 msgstr "Duplicar regla"
@@ -4313,7 +4311,6 @@ msgstr "Gasto"
 msgid "Expense, income or transfer"
 msgstr "Gasto, ingreso o transferencia"
 
-#: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
 #: src/transaction/hook/use-transaction-filter-page-title.hook.ts
@@ -5117,6 +5114,10 @@ msgstr "Semana pasada"
 msgid "Last year"
 msgstr "Último año"
 
+#: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
+msgid "Later this month"
+msgstr ""
+
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Later, next time I’m on Wi-Fi"
 msgstr "Más tarde, la próxima vez que tenga Wi-Fi"
@@ -5207,6 +5208,10 @@ msgstr "Los límites se ajustan automáticamente tras 3 periodos estables"
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 msgid "Link refund"
 msgstr "Vincular reembolso"
+
+#: src/recurring/components/recurring-pane-toolbar/recurring-pane-toolbar.tsx
+msgid "List"
+msgstr ""
 
 #: src/account/component/account-switch-field/account-switch-field.tsx
 msgid "List it on the Home screen"
@@ -5537,10 +5542,6 @@ msgstr "Presupuesto mensual"
 msgid "Monthly history"
 msgstr "Historial mensual"
 
-#: src/recurring/components/recurring-calendar-summary/recurring-calendar-summary.tsx
-msgid "Monthly total"
-msgstr "Total mensual"
-
 #: src/recurring/components/recurring-form-custom-cadence/recurring-form-custom-cadence.tsx
 msgid "Months"
 msgstr "Meses"
@@ -5727,9 +5728,9 @@ msgstr "Nueva transferencia"
 msgid "Next {formattedNextAmount} · {nextDate}"
 msgstr "Próxima {formattedNextAmount} · {nextDate}"
 
-#: src/recurring/components/recurring-list-row-content/recurring-list-row-content.tsx
-msgid "next {nextDateLabel}"
-msgstr "próximo {nextDateLabel}"
+#: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
+msgid "Next 7 days"
+msgstr ""
 
 #: src/onboarding/component/onboarding-keyboard-controls/onboarding-keyboard-controls.tsx
 msgid "Next field"
@@ -5748,21 +5749,17 @@ msgstr "Mes siguiente"
 msgid "Next payment"
 msgstr "Próximo pago"
 
+#: src/recurring/components/recurring-detail-hero/recurring-detail-hero.tsx
+msgid "Next payment · {nextDateLabel}"
+msgstr ""
+
 #: src/installment-plan/component/installment-timeline/installment-timeline.tsx
 msgid "Next payment {nextPaymentLabel}"
 msgstr "Próximo pago {nextPaymentLabel}"
 
-#: src/recurring/components/recurring-detail-next-payments/recurring-detail-next-payments.tsx
-msgid "Next payments"
-msgstr "Próximos pagos"
-
 #: src/transaction/components/statistics-period-control/statistics-period-control.tsx
 msgid "Next period"
 msgstr "Periodo siguiente"
-
-#: src/recurring/components/recurring-detail-hero/recurring-detail-hero.tsx
-msgid "Next: {nextDateLabel}"
-msgstr "Próximo: {nextDateLabel}"
 
 #: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
 msgid "No account needed · Takes about a minute"
@@ -5984,9 +5981,14 @@ msgstr "Ninguna transacción coincidió"
 msgid "No transactions yet"
 msgstr "Aún no hay transacciones"
 
+#: src/recurring/components/recurring-detail-hero/recurring-detail-hero.tsx
 #: src/recurring/components/recurring-list-row-content/recurring-list-row-content.tsx
-msgid "no upcoming payment"
-msgstr "sin próximo pago"
+msgid "No upcoming payment"
+msgstr ""
+
+#: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
+msgid "No upcoming payments"
+msgstr ""
 
 #: src/app/import-column-mapper.tsx
 #: src/import/components/import-column-map-field/import-column-map-field.tsx
@@ -6012,6 +6014,10 @@ msgstr "No cuenta como gasto"
 #: src/account/component/inactive-account-card/inactive-account-card.tsx
 msgid "Not counted in net worth"
 msgstr "No cuenta en el patrimonio neto"
+
+#: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
+msgid "Not counted in totals yet"
+msgstr ""
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "Not created yet"
@@ -6078,6 +6084,10 @@ msgstr "No se sincronizan: Auto-Invest, Binance Pay, Binance Card, tarjetas de r
 #: src/transaction/components/transaction-note-field-icon/transaction-note-field-icon.tsx
 msgid "Note"
 msgstr "Nota"
+
+#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
+msgid "Nothing due this week"
+msgstr ""
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 #: src/sync/component/sync-history-step/sync-history-step.tsx
@@ -6502,6 +6512,7 @@ msgstr "En descubierto"
 
 #: src/recurring/components/recurring-alert-badge/recurring-alert-badge.tsx
 #: src/recurring/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
+#: src/recurring/hook/use-recurring-due-label.hook.ts
 msgid "Overdue"
 msgstr "Vencido"
 
@@ -6619,6 +6630,7 @@ msgid "Payment size in its account currency"
 msgstr "Importe del pago en la moneda de su cuenta"
 
 #: src/installment-plan/component/installment-plan-count-field/installment-plan-count-field.tsx
+#: src/recurring/components/recurring-detail-stats/recurring-detail-stats.tsx
 #: src/recurring/components/recurring-form-end-section/recurring-form-end-section.tsx
 msgid "Payments"
 msgstr "Pagos"
@@ -7062,6 +7074,7 @@ msgstr "Registrado"
 
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx
 #: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 msgid "Recurring"
 msgstr "Recurrentes"
 
@@ -7080,6 +7093,10 @@ msgstr "Los pagos recurrentes se detectan automáticamente a partir de tus trans
 #: src/recurring/service/recurring-reminder.service.ts
 msgid "Recurring reminders"
 msgstr "Recordatorios de pagos recurrentes"
+
+#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
+msgid "Recurring spending"
+msgstr ""
 
 #: src/categorize-inbox/components/categorize-inbox-group-refine-options/categorize-inbox-group-refine-options.tsx
 msgid "Refine"
@@ -7791,10 +7808,6 @@ msgstr "Mostrar presupuesto"
 msgid "Show budget on Home screen"
 msgstr "Mostrar presupuesto en la pantalla de inicio"
 
-#: src/recurring/components/recurring-pane-toolbar/recurring-pane-toolbar.tsx
-msgid "Show calendar"
-msgstr "Mostrar calendario"
-
 #: src/settings/components/show-cents-row/show-cents-row.tsx
 msgid "Show cents"
 msgstr "Mostrar céntimos"
@@ -7804,7 +7817,6 @@ msgid "Show less"
 msgstr "Mostrar menos"
 
 #: src/categorize-inbox/components/categorize-inbox-show-list-button/categorize-inbox-show-list-button.tsx
-#: src/recurring/components/recurring-pane-toolbar/recurring-pane-toolbar.tsx
 msgid "Show list"
 msgstr "Mostrar lista"
 
@@ -7844,6 +7856,10 @@ msgstr "Muestra lo que falta"
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Similar transactions"
 msgstr "Transacciones similares"
+
+#: src/recurring/components/recurring-detail-stats/recurring-detail-stats.tsx
+msgid "Since"
+msgstr ""
 
 #: src/i18n/hook/use-format-date-range.hook.ts
 msgid "Since {fromLabel}"
@@ -8515,6 +8531,7 @@ msgid "this month"
 msgstr "este mes"
 
 #: src/account/component/account-details-month-chips/account-details-month-chips.tsx
+#: src/recurring/components/recurring-calendar-summary/recurring-calendar-summary.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "This month"
 msgstr "Este mes"
@@ -8701,6 +8718,7 @@ msgstr "Por reservar este periodo"
 #: src/budget/components/budget-day-strip-key/budget-day-strip-key.tsx
 #: src/market-data/hook/use-market-chart-timeline.hook.ts
 #: src/recurring/components/recurring-calendar-toolbar/recurring-calendar-toolbar.tsx
+#: src/recurring/hook/use-recurring-due-label.hook.ts
 #: src/transaction/hook/use-transaction-date-label.hook.ts
 #: src/transaction/query/use-get-transaction-sections.query.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -8726,6 +8744,10 @@ msgstr "El token se queda en este teléfono y solo se envía a Monobank."
 #: src/app/(main)/create-account/index.tsx
 msgid "Tokens and statements stay on this device."
 msgstr "Los tokens y extractos se quedan en este dispositivo."
+
+#: src/recurring/hook/use-recurring-due-label.hook.ts
+msgid "Tomorrow"
+msgstr ""
 
 #: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
 msgid "Too early to forecast"
@@ -8765,6 +8787,10 @@ msgstr "Total pedido prestado"
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 msgid "Total lent"
 msgstr "Total prestado"
+
+#: src/recurring/components/recurring-detail-stats/recurring-detail-stats.tsx
+msgid "Total paid"
+msgstr ""
 
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Touch ID"
@@ -9150,6 +9176,10 @@ msgstr "Actualizado"
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Up to date · {lastSyncedLabel}"
 msgstr "Al día · {lastSyncedLabel}"
+
+#: src/recurring/components/recurring-detail-next-payments/recurring-detail-next-payments.tsx
+msgid "Upcoming"
+msgstr ""
 
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx

@@ -54,7 +54,7 @@ export const SegmentedControl = <T extends string>(props: Props<T>) => {
         >
             {disabled ? null : (
                 <Animated.View
-                    className="absolute top-[2px] bottom-[2px] left-[2px] rounded-[8px] bg-white shadow-sm dark:bg-[rgb(99,99,102)]"
+                    className="absolute top-[2px] bottom-[2px] left-[2px] rounded-[8px] bg-white shadow-md dark:bg-[rgb(118,118,124)]"
                     style={thumbStyle}
                 />
             )}

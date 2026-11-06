@@ -78,6 +78,11 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
         router.push({ pathname: '/create-transaction/transfer', params: transferParams });
     };
 
+    const handleCreateRecurring = () => {
+        onClose();
+        router.push('/recurring/create');
+    };
+
     const handleCreateAccount = () => {
         onClose();
         router.push('/create-account');
@@ -122,6 +127,13 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
             testID: CreateTransactionMenuSelector.Transfer,
             variant: 'warning',
             onPress: handleCreateTransfer
+        },
+        {
+            icon: UserIconNameEnum.Repeat,
+            label: t`Recurring`,
+            testID: CreateTransactionMenuSelector.Recurring,
+            variant: 'violet',
+            onPress: handleCreateRecurring
         },
         {
             icon: UserIconNameEnum.Wallet,
