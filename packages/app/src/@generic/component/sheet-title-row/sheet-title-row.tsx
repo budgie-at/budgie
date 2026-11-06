@@ -20,7 +20,7 @@ interface Props {
     readonly doneTestID?: string;
 }
 
-const MAX_HEADER_FONT_SCALE = 1.35;
+const MAX_HEADER_FONT_SCALE = 2;
 
 export const SheetTitleRow = ({
     title,

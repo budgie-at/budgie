@@ -18,9 +18,7 @@ interface Props {
 export const TransactionPickerSheet = ({ header, pinnedFooter, scrollFooter, children, testID }: Props) => {
     const largeText = useIsAccessibilityTextSize();
     const frameClassName = largeText ? 'flex-1 pt-sm' : 'flex-1 pt-xl';
-    const headerClassName = largeText
-        ? 'shrink-0 border-b border-surface-separator px-xl'
-        : 'shrink-0 border-b border-surface-separator px-xl pb-md';
+    const headerClassName = largeText ? 'shrink-0 px-xl' : 'shrink-0 px-xl pb-md';
     const contentClassName = largeText ? 'grow px-xl pb-safe-or-[16px]' : 'grow px-xl pb-xl';
 
     return (

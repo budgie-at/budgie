@@ -1089,7 +1089,7 @@ msgstr "Above this amount"
 msgid "account"
 msgstr "account"
 
-#: src/account/component/account-selector-header/account-selector-header.tsx
+#: src/app/account-selector.tsx
 #: src/recurring/components/recurring-form-account-field/recurring-form-account-field.tsx
 #: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
@@ -7564,7 +7564,7 @@ msgstr "Sealed. Only your PIN opens this file."
 msgid "Search accounts..."
 msgstr "Search accounts..."
 
-#: src/account/component/account-selector-header/account-selector-header.tsx
+#: src/app/account-selector.tsx
 msgid "Search accounts…"
 msgstr "Search accounts…"
 

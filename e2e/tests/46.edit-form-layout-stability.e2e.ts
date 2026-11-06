@@ -102,7 +102,22 @@ test('46 edit form layout stability', { tags: ['transactions'] }, async ({ budgi
     await b.phase('rule created', async () => {
         await b.tapId(ctx, 'SuggestRule.CreateRuleButton');
         await b.expectText(ctx, 'Rule created', 15_000);
+        await b.expectText(ctx, 'Rule applied', 5_000);
         await measure('rule created', 400);
+        const toastBox = await b.byId(screen, 'toastAnimatedContainer').boundingBox();
+        const saveBox = await b.byId(screen, 'TransactionForm.SubmitButton').boundingBox();
+        const amountBox = await b.byId(screen, 'TransactionForm.AmountInput').boundingBox();
+        if (
+            toastBox === null ||
+            saveBox === null ||
+            amountBox === null ||
+            toastBox.y + toastBox.height > saveBox.y ||
+            toastBox.y < amountBox.y + amountBox.height
+        ) {
+            throw new Error(
+                `the rule toast overlaps the amount or Save: toast=${JSON.stringify(toastBox)}, amount=${JSON.stringify(amountBox)}, save=${JSON.stringify(saveBox)}`
+            );
+        }
         await b.expectNoId(ctx, 'SuggestRule.Card', 15_000);
         await b.expectId(ctx, 'MatchingRules.Pill', 15_000);
         await measure('matching rule after creation');

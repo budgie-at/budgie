@@ -49,7 +49,6 @@ export const TagsSelectContent = (props: Props) => {
         </Text>
     ) : null;
     const listOptions = {
-        estimatedItemSize: 60,
         contentContainerStyle: listContentStyle,
         ListEmptyComponent: emptyState,
         ListHeaderComponent: props.header,
