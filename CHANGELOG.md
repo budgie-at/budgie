@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.164.3](https://github.com/budgie-at/budgie/compare/v6.164.2...v6.164.3) (2026-11-06)
+
+### Performance Improvements
+
+* run Effect rules in oxlint on tsrs, enable them all, parallelize tests ([#1956](https://github.com/budgie-at/budgie/issues/1956)) ([53a5170](https://github.com/budgie-at/budgie/commit/53a5170978e14a31cb6fc22da657851a42b592ad)), closes [#1883](https://github.com/budgie-at/budgie/issues/1883)
+
+
 ## [6.164.2](https://github.com/budgie-at/budgie/compare/v6.164.1...v6.164.2) (2026-11-06)
 
 ### Bug Fixes
