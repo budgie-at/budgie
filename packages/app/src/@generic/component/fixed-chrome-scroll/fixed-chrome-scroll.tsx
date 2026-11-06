@@ -12,7 +12,7 @@ interface Props {
     readonly testID?: string;
 }
 
-const CONTENT_BOTTOM_CLEARANCE = 24;
+const CONTENT_BOTTOM_CLEARANCE = 16;
 
 export const FixedChromeScroll = ({ children, footerHeight = 0, testID }: Props) => {
     const { chromeHeight } = useBottomChromeInset();

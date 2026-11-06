@@ -998,6 +998,14 @@ msgstr "+{carriedLabel} rolled over"
 msgid "+{changePercent} vs {shortPreviousLabel}"
 msgstr "+{changePercent} vs {shortPreviousLabel}"
 
+#: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
+msgid "+{convertedInLabel} from {convertedInSource}"
+msgstr "+{convertedInLabel} from {convertedInSource}"
+
+#: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
+msgid "+{convertedInLabel} from {convertedInSource} (estimated)"
+msgstr "+{convertedInLabel} from {convertedInSource} (estimated)"
+
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "+{formattedNet} / mo"
@@ -2009,8 +2017,8 @@ msgid "Borrowed debt account expected"
 msgstr "Borrowed debt account expected"
 
 #: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
-msgid "Bought {boughtQuantityLabel}"
-msgstr "Bought {boughtQuantityLabel}"
+msgid "Bought {boughtLabel}"
+msgstr "Bought {boughtLabel}"
 
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 msgid "Browse icons"
@@ -2861,6 +2869,10 @@ msgstr "Convert to Refund?"
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Convert to Transfer"
 msgstr "Convert to Transfer"
+
+#: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
+msgid "Converted {convertedOutLabel} → {convertedOutTarget}"
+msgstr "Converted {convertedOutLabel} → {convertedOutTarget}"
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Converting {processedEntryCount} of {totalEntryCount} transactions"
@@ -3777,12 +3789,9 @@ msgid "Display"
 msgstr "Display"
 
 #: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
+#: src/inzhur/component/inzhur-operations-import-summary/inzhur-operations-import-summary.tsx
 msgid "Dividends"
 msgstr "Dividends"
-
-#: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
-msgid "Dividends {dividendsLabel}"
-msgstr "Dividends {dividendsLabel}"
 
 #: src/sync/component/sync-history-step/sync-history-step.tsx
 msgid "Do not sync history"
@@ -6942,10 +6951,6 @@ msgstr "Purchases"
 msgid "Push notifications are disabled"
 msgstr "Push notifications are disabled"
 
-#: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
-msgid "quantity estimated"
-msgstr "quantity estimated"
-
 #: src/installment-plan/component/installment-count-chips/installment-count-chips.tsx
 msgid "Quick picks"
 msgstr "Quick picks"
@@ -7913,8 +7918,8 @@ msgid "SmartBudget"
 msgstr "SmartBudget"
 
 #: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
-msgid "Sold {soldQuantityLabel}"
-msgstr "Sold {soldQuantityLabel}"
+msgid "Sold {soldLabel}"
+msgstr "Sold {soldLabel}"
 
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
 msgid "Some transactions may be hidden by the account or amount filter."
@@ -8333,7 +8338,7 @@ msgstr "Tap to retry"
 msgid "Tap to select"
 msgstr "Tap to select"
 
-#: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
+#: src/inzhur/component/inzhur-operations-income-row/inzhur-operations-income-row.tsx
 msgid "Tax {taxLabel}"
 msgstr "Tax {taxLabel}"
 

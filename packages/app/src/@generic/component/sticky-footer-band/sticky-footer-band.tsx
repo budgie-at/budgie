@@ -18,7 +18,7 @@ const STICKY_FOOTER_STYLE = { position: 'absolute', right: 0, bottom: 0, left: 0
 export const StickyFooterBand = ({ children, onLayout, fadeHeight }: Props): ReactNode => (
     <KeyboardStickyView style={STICKY_FOOTER_STYLE}>
         <EdgeFade position="bottom" {...(isDefined(fadeHeight) && { height: fadeHeight })} />
-        <View className="z-3 pb-safe" onLayout={onLayout}>
+        <View className="z-3 bg-surface pb-safe" onLayout={onLayout}>
             {children}
         </View>
     </KeyboardStickyView>

@@ -3,10 +3,8 @@ import { INZHUR_CANONICAL_FUNDS } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
-import { isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { joinWithMiddot } from '../../../@generic/utils/join-with-middot.util';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useFormatFundQuantity } from '../../../i18n/hook/use-format-fund-quantity.hook';
 import { getInzhurShortTitle } from '../../utils/get-inzhur-short-title.util';
 import { InzhurMoneyRow } from '../inzhur-money-row/inzhur-money-row';
@@ -20,29 +18,34 @@ interface Props {
 
 export const InzhurOperationsFundRow = ({ fund, symbol }: Props) => {
     const { t } = useLingui();
-    const formatAmount = useFormatDigits(2);
     const formatFundQuantity = useFormatFundQuantity();
-    const { name, boughtQuantity, boughtAmount, soldQuantity, dividends, tax, isQuantityEstimated } = fund;
+    const { name, boughtQuantity, boughtAmount, soldQuantity, convertedInQuantity, convertedInAmount, convertedInFrom } = fund;
+    const { convertedOutQuantity, convertedOutTo, isConvertedInEstimated } = fund;
 
     const fundIcon = INZHUR_CANONICAL_FUNDS.find(canonicalFund => canonicalFund.name === name)?.icon ?? UserIconNameEnum.ChartLine;
-    const boughtQuantityLabel = formatFundQuantity(boughtQuantity);
-    const soldQuantityLabel = formatFundQuantity(soldQuantity);
-    const dividendsLabel = formatAmount(dividends, symbol);
-    const taxLabel = formatAmount(tax, symbol);
-    const caption = joinWithMiddot([
-        ...(isPositiveNumber(boughtQuantity) ? [t`Bought ${boughtQuantityLabel}`] : []),
-        ...(isQuantityEstimated ? [t`quantity estimated`] : []),
-        ...(isPositiveNumber(soldQuantity) ? [t`Sold ${soldQuantityLabel}`] : []),
-        ...(isPositiveNumber(dividends) ? [t`Dividends ${dividendsLabel}`] : []),
-        ...(isPositiveNumber(tax) ? [t`Tax ${taxLabel}`] : [])
-    ]);
+    const boughtLabel = formatFundQuantity(boughtQuantity);
+    const soldLabel = formatFundQuantity(soldQuantity);
+    const convertedInLabel = formatFundQuantity(convertedInQuantity);
+    const convertedOutLabel = formatFundQuantity(convertedOutQuantity);
+    const convertedInSource = isDefined(convertedInFrom) ? getInzhurShortTitle(convertedInFrom) : '';
+    const convertedOutTarget = isDefined(convertedOutTo) ? getInzhurShortTitle(convertedOutTo) : '';
+    const convertedInSegment = isConvertedInEstimated
+        ? t`+${convertedInLabel} from ${convertedInSource} (estimated)`
+        : t`+${convertedInLabel} from ${convertedInSource}`;
+    const investedAmount = boughtAmount + convertedInAmount;
+    const captionSegments = [
+        ...(isPositiveNumber(boughtQuantity) ? [t`Bought ${boughtLabel}`] : []),
+        ...(isPositiveNumber(soldQuantity) ? [t`Sold ${soldLabel}`] : []),
+        ...(isPositiveNumber(convertedInQuantity) ? [convertedInSegment] : []),
+        ...(isPositiveNumber(convertedOutQuantity) ? [t`Converted ${convertedOutLabel} → ${convertedOutTarget}`] : [])
+    ];
 
     return (
         <View className="min-h-[64px] justify-center px-3xl py-[12px]">
             <InzhurMoneyRow
                 label={getInzhurShortTitle(name)}
-                caption={caption}
-                amount={boughtAmount}
+                captionSegments={captionSegments}
+                amount={investedAmount}
                 instrumentSymbol={symbol}
                 icon={fundIcon}
             />

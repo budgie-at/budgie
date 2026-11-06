@@ -123,17 +123,18 @@ describe('inzhur/operations-import', () => {
             const summary = yield* importInzhurOperations(URI);
 
             expect(summary.funds.find(fund => fund.name === REIT)).toMatchObject({
-                boughtQuantity: 550,
-                boughtAmount: 4800,
-                isQuantityEstimated: true
+                boughtQuantity: 50,
+                convertedInQuantity: 500,
+                convertedInFrom: OCEAN,
+                isConvertedInEstimated: true
             });
             expect(summary.funds.find(fund => fund.name === OCEAN)).toMatchObject({
                 boughtQuantity: 100,
-                soldQuantity: 100,
-                soldAmount: 4300,
+                soldQuantity: 0,
+                convertedOutQuantity: 100,
+                convertedOutTo: REIT,
                 dividends: 200,
-                tax: 36,
-                isQuantityEstimated: false
+                tax: 36
             });
         }).pipe(Effect.provide(layer))
     );

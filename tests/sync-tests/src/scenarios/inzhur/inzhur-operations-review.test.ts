@@ -37,7 +37,7 @@ describe('inzhur/operations-review', () => {
             const summary = yield* importInzhurOperations(FULL_URI);
             const reit = yield* requireInzhurFundByName(REIT);
 
-            expect(summary.funds.find(fund => fund.name === REIT)).toMatchObject({ boughtQuantity: 480, isQuantityEstimated: true });
+            expect(summary.funds.find(fund => fund.name === REIT)).toMatchObject({ isConvertedInEstimated: true });
             expect(yield* fetchAccountBalance(reit.id)).toBe(480 * PRECISION);
         }).pipe(Effect.provide(Layer.merge(layer, inzhurHomeClientLayer({ [REIT]: 10 }))))
     );

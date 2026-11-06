@@ -88,28 +88,47 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
             ): InzhurOperationsFundSummaryInterface[] =>
                 [...accountByFund].map(([name, account]) => {
                     const fundActions = actions.filter(action => action.fundName === name);
-                    const total = (kind: InzhurOperationKindEnum, select: (action: InzhurPlannedActionInterface) => number) =>
-                        fundActions.filter(action => action.kind === kind).reduce((sum, action) => sum + select(action), 0);
+                    const select = (kind: InzhurOperationKindEnum, isConversion: boolean) =>
+                        fundActions.filter(action => action.kind === kind && action.isConversion === isConversion);
+                    const sum = (
+                        selected: readonly InzhurPlannedActionInterface[],
+                        pick: (action: InzhurPlannedActionInterface) => number
+                    ) => convertFromMicroUnits(selected.reduce((total, action) => total + pick(action), 0));
                     const quantityOf = (action: InzhurPlannedActionInterface) => quantityMicroUnits(action).microUnits;
+                    const cashOf = (action: InzhurPlannedActionInterface) => convertToMicroUnits(action.cashAmount);
+                    const counterpartOf = (conversion: InzhurPlannedActionInterface) =>
+                        actions
+                            .filter(
+                                action =>
+                                    action.isConversion &&
+                                    action.kind !== conversion.kind &&
+                                    isDefined(action.fundName) &&
+                                    action.fundName !== name
+                            )
+                            .sort(
+                                (left, right) =>
+                                    Math.abs(left.occurredAt.getTime() - conversion.occurredAt.getTime()) -
+                                    Math.abs(right.occurredAt.getTime() - conversion.occurredAt.getTime())
+                            )
+                            .at(0)?.fundName ?? null;
+                    const conversionsIn = select(InzhurOperationKindEnum.BUY, true);
+                    const conversionsOut = select(InzhurOperationKindEnum.SELL, true);
 
                     return {
                         accountId: account.id,
                         name,
-                        boughtQuantity: convertFromMicroUnits(total(InzhurOperationKindEnum.BUY, quantityOf)),
-                        boughtAmount: convertFromMicroUnits(
-                            total(InzhurOperationKindEnum.BUY, action => convertToMicroUnits(action.cashAmount))
-                        ),
-                        soldQuantity: convertFromMicroUnits(total(InzhurOperationKindEnum.SELL, quantityOf)),
-                        soldAmount: convertFromMicroUnits(
-                            total(InzhurOperationKindEnum.SELL, action => convertToMicroUnits(action.cashAmount))
-                        ),
-                        dividends: convertFromMicroUnits(
-                            total(InzhurOperationKindEnum.DIVIDEND, action => convertToMicroUnits(action.cashAmount))
-                        ),
-                        tax: convertFromMicroUnits(total(InzhurOperationKindEnum.TAX, action => convertToMicroUnits(action.cashAmount))),
-                        isQuantityEstimated: fundActions.some(
-                            action => action.kind === InzhurOperationKindEnum.BUY && quantityMicroUnits(action).isEstimated
-                        )
+                        boughtQuantity: sum(select(InzhurOperationKindEnum.BUY, false), quantityOf),
+                        boughtAmount: sum(select(InzhurOperationKindEnum.BUY, false), cashOf),
+                        soldQuantity: sum(select(InzhurOperationKindEnum.SELL, false), quantityOf),
+                        soldAmount: sum(select(InzhurOperationKindEnum.SELL, false), cashOf),
+                        convertedInQuantity: sum(conversionsIn, quantityOf),
+                        convertedInAmount: sum(conversionsIn, cashOf),
+                        convertedInFrom: isNotEmptyArray(conversionsIn) ? counterpartOf(conversionsIn[0]) : null,
+                        isConvertedInEstimated: conversionsIn.some(action => quantityMicroUnits(action).isEstimated),
+                        convertedOutQuantity: sum(conversionsOut, quantityOf),
+                        convertedOutTo: isNotEmptyArray(conversionsOut) ? counterpartOf(conversionsOut[0]) : null,
+                        dividends: sum(select(InzhurOperationKindEnum.DIVIDEND, false), cashOf),
+                        tax: sum(select(InzhurOperationKindEnum.TAX, false), cashOf)
                     };
                 });
 

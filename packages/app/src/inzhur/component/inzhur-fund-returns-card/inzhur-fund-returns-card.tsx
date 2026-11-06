@@ -30,6 +30,8 @@ export const InzhurFundReturnsCard = ({ account }: Props) => {
 
     const netLabel = formatAmount(costReturn.dividends - costReturn.tax, symbol);
 
+    const captionSegments = [t`Gross, ${netLabel} after tax`];
+
     return (
         <View
             className="gap-y-lg self-stretch rounded-3xl bg-surface-row px-3xl py-[12px]"
@@ -38,7 +40,7 @@ export const InzhurFundReturnsCard = ({ account }: Props) => {
         >
             <InzhurMoneyRow
                 label={t`Dividends`}
-                caption={t`Gross, ${netLabel} after tax`}
+                captionSegments={captionSegments}
                 amount={costReturn.dividends}
                 instrumentSymbol={symbol}
                 icon={UserIconNameEnum.RefreshCw}

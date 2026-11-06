@@ -997,6 +997,14 @@ msgstr "+{carriedLabel} перенесено"
 msgid "+{changePercent} vs {shortPreviousLabel}"
 msgstr "+{changePercent} до {shortPreviousLabel}"
 
+#: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
+msgid "+{convertedInLabel} from {convertedInSource}"
+msgstr "+{convertedInLabel} з {convertedInSource}"
+
+#: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
+msgid "+{convertedInLabel} from {convertedInSource} (estimated)"
+msgstr "+{convertedInLabel} з {convertedInSource} (приблизно)"
+
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "+{formattedNet} / mo"
@@ -2008,8 +2016,8 @@ msgid "Borrowed debt account expected"
 msgstr "Очікувався рахунок позиченого боргу"
 
 #: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
-msgid "Bought {boughtQuantityLabel}"
-msgstr "Куплено: {boughtQuantityLabel}"
+msgid "Bought {boughtLabel}"
+msgstr "Куплено {boughtLabel}"
 
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 msgid "Browse icons"
@@ -2860,6 +2868,10 @@ msgstr "Перетворити на повернення?"
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Convert to Transfer"
 msgstr "Перетворити на переказ"
+
+#: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
+msgid "Converted {convertedOutLabel} → {convertedOutTarget}"
+msgstr "Конвертовано {convertedOutLabel} → {convertedOutTarget}"
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Converting {processedEntryCount} of {totalEntryCount} transactions"
@@ -3776,12 +3788,9 @@ msgid "Display"
 msgstr "Відображення"
 
 #: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
+#: src/inzhur/component/inzhur-operations-import-summary/inzhur-operations-import-summary.tsx
 msgid "Dividends"
 msgstr "Дивіденди"
-
-#: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
-msgid "Dividends {dividendsLabel}"
-msgstr "Дивіденди {dividendsLabel}"
 
 #: src/sync/component/sync-history-step/sync-history-step.tsx
 msgid "Do not sync history"
@@ -6941,10 +6950,6 @@ msgstr "Покупки"
 msgid "Push notifications are disabled"
 msgstr "Push-сповіщення вимкнено"
 
-#: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
-msgid "quantity estimated"
-msgstr "кількість оцінено"
-
 #: src/installment-plan/component/installment-count-chips/installment-count-chips.tsx
 msgid "Quick picks"
 msgstr "Швидкий вибір"
@@ -7912,8 +7917,8 @@ msgid "SmartBudget"
 msgstr "SmartBudget"
 
 #: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
-msgid "Sold {soldQuantityLabel}"
-msgstr "Продано: {soldQuantityLabel}"
+msgid "Sold {soldLabel}"
+msgstr "Продано {soldLabel}"
 
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
 msgid "Some transactions may be hidden by the account or amount filter."
@@ -8332,7 +8337,7 @@ msgstr "Торкніться, щоб повторити"
 msgid "Tap to select"
 msgstr "Торкніться для вибору"
 
-#: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
+#: src/inzhur/component/inzhur-operations-income-row/inzhur-operations-income-row.tsx
 msgid "Tax {taxLabel}"
 msgstr "Податок {taxLabel}"
 
