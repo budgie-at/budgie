@@ -1193,7 +1193,6 @@ msgstr "Додати ліміт категорії"
 msgid "Add a name to continue"
 msgstr "Додайте назву, щоб продовжити"
 
-#: src/app/note-input.tsx
 #: src/transaction/components/transaction-note-field-icon/transaction-note-field-icon.tsx
 msgid "Add a note..."
 msgstr "Додати нотатку..."
@@ -1610,7 +1609,6 @@ msgstr "Назва застосунку"
 msgid "Applies to new payments as they arrive from your bank or an import."
 msgstr "Діє для нових платежів, щойно вони надходять із банку чи імпорту."
 
-#: src/app/note-input.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Apply"
 msgstr "Застосувати"
@@ -2011,10 +2009,6 @@ msgstr "Дія Budgie відсутня"
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Budgie brings in the last month of history, then asks Monobank for new transactions when you open the app."
 msgstr "Budgie завантажить історію за останній місяць, а потім питатиме Monobank про нові транзакції, коли ви відкриваєте застосунок."
-
-#: src/app/note-input.tsx
-msgid "Budgie can sort notes on this phone"
-msgstr "Budgie може сортувати нотатки на цьому телефоні"
 
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "Budgie can't reset your PIN"
@@ -3739,7 +3733,6 @@ msgstr "Не містить"
 #: src/@generic/component/keyboard-done-accessory/keyboard-done-accessory.tsx
 #: src/@generic/component/sheet-title-row/sheet-title-row.tsx
 #: src/app/date-picker.tsx
-#: src/app/note-input.tsx
 #: src/app/tags-selector.tsx
 #: src/categorize-inbox/components/categorize-inbox-done-button/categorize-inbox-done-button.tsx
 #: src/onboarding/component/onboarding-keyboard-controls/onboarding-keyboard-controls.tsx
@@ -6114,7 +6107,6 @@ msgstr "Ще не синхронізовано"
 msgid "Not synced: Auto-Invest, Binance Pay, Binance Card, gift cards, sub-account transfers, margin and futures."
 msgstr "Не синхронізуються: Auto-Invest, Binance Pay, Binance Card, подарункові картки, перекази між субрахунками, маржа та ф'ючерси."
 
-#: src/app/note-input.tsx
 #: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
 #: src/transaction/components/transaction-note-field-icon/transaction-note-field-icon.tsx
 msgid "Note"
@@ -7986,6 +7978,10 @@ msgstr "Витрачено досі"
 msgid "Split"
 msgstr "Розділити"
 
+#: src/transaction/hook/use-quick-form-submit.hook.ts
+msgid "Split amounts must match the total"
+msgstr "Сума частин має відповідати загальній сумі"
+
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 msgid "Splits your total into the purchase and a fee"
 msgstr "Ділить вашу суму на покупку та комісію"
@@ -9024,10 +9020,6 @@ msgstr "Вимкнути блокування застосунку"
 #: src/app/(tabs)/settings/inactive.tsx
 msgid "Turn off Show on Home in an account’s edit screen to tuck it away here."
 msgstr "Вимкніть «Показувати на головній» на екрані редагування рахунку, щоб прибрати його сюди."
-
-#: src/app/note-input.tsx
-msgid "Turn on On-device AI in Settings. Tap to see what it downloads."
-msgstr "Увімкніть ШІ на пристрої в Налаштуваннях. Торкніться, щоб побачити, що завантажується."
 
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "Turn on on-device AI to download the models."

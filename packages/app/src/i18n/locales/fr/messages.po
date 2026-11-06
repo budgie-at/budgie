@@ -1193,7 +1193,6 @@ msgstr "Ajouter une limite de catégorie"
 msgid "Add a name to continue"
 msgstr "Ajoutez un nom pour continuer"
 
-#: src/app/note-input.tsx
 #: src/transaction/components/transaction-note-field-icon/transaction-note-field-icon.tsx
 msgid "Add a note..."
 msgstr "Ajouter une note..."
@@ -1610,7 +1609,6 @@ msgstr "Nom de l'application"
 msgid "Applies to new payments as they arrive from your bank or an import."
 msgstr "S’applique aux nouveaux paiements dès qu’ils arrivent de ta banque ou d’un import."
 
-#: src/app/note-input.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Apply"
 msgstr "Appliquer"
@@ -2011,10 +2009,6 @@ msgstr "L’action Budgie est manquante"
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Budgie brings in the last month of history, then asks Monobank for new transactions when you open the app."
 msgstr "Budgie récupère le dernier mois d'historique, puis demande les nouvelles transactions à Monobank quand tu ouvres l'app."
-
-#: src/app/note-input.tsx
-msgid "Budgie can sort notes on this phone"
-msgstr "Budgie peut trier les notes sur ce téléphone"
 
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "Budgie can't reset your PIN"
@@ -3739,7 +3733,6 @@ msgstr "Ne contient pas"
 #: src/@generic/component/keyboard-done-accessory/keyboard-done-accessory.tsx
 #: src/@generic/component/sheet-title-row/sheet-title-row.tsx
 #: src/app/date-picker.tsx
-#: src/app/note-input.tsx
 #: src/app/tags-selector.tsx
 #: src/categorize-inbox/components/categorize-inbox-done-button/categorize-inbox-done-button.tsx
 #: src/onboarding/component/onboarding-keyboard-controls/onboarding-keyboard-controls.tsx
@@ -6114,7 +6107,6 @@ msgstr "Pas encore synchronisé"
 msgid "Not synced: Auto-Invest, Binance Pay, Binance Card, gift cards, sub-account transfers, margin and futures."
 msgstr "Non synchronisés : Auto-Invest, Binance Pay, Binance Card, cartes cadeaux, transferts entre sous-comptes, marge et contrats à terme."
 
-#: src/app/note-input.tsx
 #: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
 #: src/transaction/components/transaction-note-field-icon/transaction-note-field-icon.tsx
 msgid "Note"
@@ -7986,6 +7978,10 @@ msgstr "Dépensé jusqu'ici"
 msgid "Split"
 msgstr "Diviser"
 
+#: src/transaction/hook/use-quick-form-submit.hook.ts
+msgid "Split amounts must match the total"
+msgstr "Les montants ventilés doivent correspondre au total"
+
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 msgid "Splits your total into the purchase and a fee"
 msgstr "Répartit votre total entre l’achat et des frais"
@@ -9024,10 +9020,6 @@ msgstr "Désactiver le verrouillage"
 #: src/app/(tabs)/settings/inactive.tsx
 msgid "Turn off Show on Home in an account’s edit screen to tuck it away here."
 msgstr "Désactivez « Afficher sur l’accueil » dans l’écran de modification d’un compte pour le ranger ici."
-
-#: src/app/note-input.tsx
-msgid "Turn on On-device AI in Settings. Tap to see what it downloads."
-msgstr "Active l'IA sur l'appareil dans les Réglages. Touche pour voir ce qu'elle télécharge."
 
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "Turn on on-device AI to download the models."

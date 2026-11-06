@@ -8,6 +8,7 @@ import { useGetMccCategoryByIdQuery } from '../../../mcc-category/query/use-get-
 import { isCompactTransactionForm } from '../../utils/is-compact-transaction-form.util';
 import { QuickFormContext } from '../quick-form-context/quick-form-context';
 import { QuickFormValidationSlot } from '../quick-form-validation-slot/quick-form-validation-slot';
+import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 
 import type { ReactElement, ReactNode } from 'react';
 
@@ -48,20 +49,21 @@ export const MccInfoRow = ({ transactionTitle, mccCategoryId, children, suggesti
                         transactionTitle
                     )}
                 </View>
-                <View className={accessoryClassName}>
-                    {isDefined(mccCategory) ? (
-                        <Text
-                            className="shrink text-[13px] leading-[18px] text-secondary-foreground"
-                            maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
-                            numberOfLines={1}
-                        >
-                            {mccCategory.shortDescription}
-                        </Text>
-                    ) : null}
-                    {children}
-                    {suggestions}
+                <View className={accessoryClassName} testID={SimpleQuickFormSelector.Accessory}>
+                    <QuickFormValidationSlot>
+                        {isDefined(mccCategory) ? (
+                            <Text
+                                className="shrink text-[13px] leading-[18px] text-secondary-foreground"
+                                maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+                                numberOfLines={1}
+                            >
+                                {mccCategory.shortDescription}
+                            </Text>
+                        ) : null}
+                        {children}
+                        {suggestions}
+                    </QuickFormValidationSlot>
                 </View>
-                <QuickFormValidationSlot />
             </Animated.View>
         </QuickFormContext>
     );

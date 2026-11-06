@@ -6,7 +6,6 @@ import { GroupedListSection } from '../../../@generic/component/grouped-list-sec
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormSplit } from '../../hook/use-quick-form-split.hook';
 import { useQuickFormSubmit } from '../../hook/use-quick-form-submit.hook';
-import { QuickFormFieldError } from '../quick-form-field-error/quick-form-field-error';
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 import { TransactionAccountRow, TransactionAccountRowRef } from '../transaction-account-row/transaction-account-row';
 import { TransactionCategoryFieldIcon } from '../transaction-category-field-icon/transaction-category-field-icon';
@@ -43,7 +42,6 @@ export const SimpleQuickFormControls = ({
     const isExpense = transactionType === TransactionTypeEnum.EXPENSE;
     const variant = isExpense ? 'destructive' : 'positive';
     const accountFieldName = isExpense ? 'fromAccountId' : 'toAccountId';
-    const accountErrorFields = [accountFieldName] as const;
     const { handleDatePress } = useQuickFormModals();
     const entryType = isExpense ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
     const { handleSplitIconPress } = useQuickFormSplit({
@@ -70,7 +68,7 @@ export const SimpleQuickFormControls = ({
 
     return children(
         <View className="gap-y-[12px]">
-            <GroupedListSection footer={<QuickFormFieldError fields={accountErrorFields} />}>
+            <GroupedListSection>
                 <TransactionAccountRow ref={accountRowRef} fieldName={accountFieldName} testID={SimpleQuickFormSelector.AccountSelector} />
                 <TransactionCategoryFieldIcon ref={categoryIconRef} variant={variant} isSplitActive={formState.isSplitActive} />
             </GroupedListSection>

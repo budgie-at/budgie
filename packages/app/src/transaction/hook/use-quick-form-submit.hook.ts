@@ -1,4 +1,4 @@
-import { TransactionCreateInputInterface, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionCreateInputInterface, TransactionEntryTypeEnum, TransactionTypeEnum, convertToMicroUnits } from '@budgie/contracts';
 import { getTransactionCategoryEntries, getTransactionFeeEntries } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject } from 'react';
@@ -46,6 +46,7 @@ export const useQuickFormSubmit = ({
     onSubmit
 }: UseQuickFormSubmitConfig): UseQuickFormSubmitResult => {
     const { t } = useLingui();
+    const isExpense = transactionType === TransactionTypeEnum.EXPENSE;
     const { setValue, getValues } = useFormContext<TransactionCreateInputInterface>();
     const { validateAndShake } = useQuickFormValidation();
 
@@ -77,7 +78,7 @@ export const useQuickFormSubmit = ({
         const feeEntries = getTransactionFeeEntries(currentEntries).map(entry => ({ ...entry, accountId }));
         const feeTotal = sumEntryAmounts(feeEntries);
         const formCategoryId = categoryEntry?.categoryId ?? 0;
-        const categoryAmount = transactionType === TransactionTypeEnum.EXPENSE ? sumTransactionAmounts(amount, -feeTotal) : amount;
+        const categoryAmount = isExpense ? sumTransactionAmounts(amount, -feeTotal) : amount;
 
         const isValid = validateAndShake([
             buildAmountCheck(isPositiveNumber(amount), t`Enter an amount`),
@@ -109,13 +110,14 @@ export const useQuickFormSubmit = ({
         const feeEntries = getTransactionFeeEntries(currentEntries).map(entry => ({ ...entry, accountId }));
         const allEntriesValid = categoryEntries.every(entry => isPositiveNumber(entry.amount) && isPositiveNumber(entry.categoryId));
         const categoryTotalAmount = sumTransactionAmounts(...categoryEntries.map(entry => entry.amount));
-        const totalAmount =
-            transactionType === TransactionTypeEnum.EXPENSE
-                ? sumTransactionAmounts(categoryTotalAmount, sumEntryAmounts(feeEntries))
-                : categoryTotalAmount;
+        const totalAmount = isExpense ? sumTransactionAmounts(categoryTotalAmount, sumEntryAmounts(feeEntries)) : categoryTotalAmount;
 
         const isValid = validateAndShake([
             buildAmountCheck(isPositiveNumber(categoryTotalAmount), t`Enter an amount`),
+            buildAmountCheck(
+                convertToMicroUnits(getValues('amount')) === convertToMicroUnits(totalAmount),
+                t`Split amounts must match the total`
+            ),
             { isValid: allEntriesValid, field: 'entries', message: t`Complete every split entry` },
             buildAccountCheck(accountId)
         ]);

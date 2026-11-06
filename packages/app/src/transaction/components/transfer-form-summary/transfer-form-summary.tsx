@@ -4,15 +4,15 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
+import { CurrencyModePill } from '../currency-mode-pill/currency-mode-pill';
 import { MccInfoRow } from '../mcc-info-row/mcc-info-row';
 
-import type { ReactNode } from 'react';
-
 interface Props {
-    readonly children?: ReactNode;
+    readonly currencyLabel: string | null;
+    readonly onCurrencyPress: () => void;
 }
 
-export const TransferFormSummary = ({ children }: Props) => {
+export const TransferFormSummary = ({ currencyLabel, onCurrencyPress }: Props) => {
     const { control } = useFormContext<TransactionCreateInputInterface>();
     const title = useWatch({ control, name: 'title' });
     const { fromAccount, toAccount } = useTransferAccounts();
@@ -22,7 +22,7 @@ export const TransferFormSummary = ({ children }: Props) => {
 
     return (
         <MccInfoRow transactionTitle={summary} mccCategoryId={null}>
-            {children}
+            {isNotEmptyString(currencyLabel) ? <CurrencyModePill label={currencyLabel} isFlipped onPress={onCurrencyPress} /> : null}
         </MccInfoRow>
     );
 };

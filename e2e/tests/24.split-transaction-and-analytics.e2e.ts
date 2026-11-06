@@ -66,6 +66,21 @@ test('24 split transaction and analytics', { tags: ['transactions'] }, async ({ 
         await home('55');
     });
 
+    await b.phase('reject a split total mismatch', async () => {
+        await t.navigateToTransactions(ctx);
+        await t.openTransaction(ctx, 'E2E_Split_Expense');
+        await b.tapId(ctx, 'TransactionInfo.EditButton.Label');
+        await t.clearAmount(ctx);
+        await t.typeDigits(ctx, '46');
+        await b.tapId(ctx, 'TransactionForm.SubmitButton');
+        await expect(id('TransactionForm.ValidationMessage')).toHaveText('Split amounts must match the total');
+        await t.clearAmount(ctx);
+        await t.typeDigits(ctx, '45');
+        await b.tapId(ctx, 'TransactionForm.SubmitButton');
+        await b.expectId(ctx, 'TransactionInfo.Page', 15_000);
+        await b.tapId(ctx, 'PageHeader.BackButton');
+    });
+
     await b.phase('category analytics and drilldown', async () => {
         await analytics();
         await b.expectId(ctx, 'StatisticsSpendingHero.Spent.45');

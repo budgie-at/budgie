@@ -7,7 +7,6 @@ import { Keyboard, TextInput, View } from 'react-native';
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { SheetHeaderAction } from '../../../@generic/component/sheet-header-action/sheet-header-action';
-import { NoteInputModalSelector } from '../../../app/note-input-modal.selector';
 import { TRANSACTION_NOTE_INPUT_MIN_HEIGHT } from '../../constant/transaction-note-input-min-height.constant';
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 import { TransactionFieldIcon } from '../transaction-field-icon/transaction-field-icon';
@@ -39,7 +38,7 @@ export const TransactionNoteFieldIcon = () => {
             {editing ? (
                 <View className="gap-md px-xl pb-xl">
                     <View className="items-end">
-                        <SheetHeaderAction label={t`Done`} testID={NoteInputModalSelector.SubmitButton} onPress={handleDone} />
+                        <SheetHeaderAction label={t`Done`} testID={SimpleQuickFormSelector.NoteSubmitButton} onPress={handleDone} />
                     </View>
                     <TextInput
                         value={comment}
@@ -53,7 +52,7 @@ export const TransactionNoteFieldIcon = () => {
                         placeholderTextColorClassName="accent-secondary-foreground"
                         style={inputStyle}
                         className="rounded-xl bg-surface-fill p-xl text-[17px] text-primary"
-                        testID={NoteInputModalSelector.Input}
+                        testID={SimpleQuickFormSelector.NoteInput}
                     />
                 </View>
             ) : null}

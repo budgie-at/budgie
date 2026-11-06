@@ -44,7 +44,7 @@ export const QuickFormLayout = (props: Props) => {
         ...(isDefined(rowColor) && { '--color-grouped-surface-row': rowColor, '--color-surface-row': rowColor }),
         ...surfaceVariables
     };
-    const keypadContext = { isExpanded, dismiss: onDismissKeypad };
+    const keypadContext = { dismiss: onDismissKeypad };
 
     return (
         <ScopedVariables variables={rowColors}>

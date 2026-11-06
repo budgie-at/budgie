@@ -34,7 +34,7 @@ export const SimpleQuickForm = (props: Props) => {
     const { formState, amountDisplayRef } = form;
     const { isEditingAmount, toggleKeypad, dismissKeypad, amountAccessibilityHint } = useTransactionKeypadEditing(isNewTransaction);
     const displayAmount = isEditingAmount ? form.displayValue : formatKeypadAmount(form.displayValue, '.', '', 2);
-    const isConfirmDisabled = !formState.isAmountPositive || (!isNewTransaction && !formState.isDirty);
+    const isConfirmDisabled = formState.isSubmitting;
     const keypad = isEditingAmount ? <TransactionKeypad keypad={form.keypadHandlers} /> : null;
 
     const merchant = isNewTransaction ? <TransactionMerchantInput /> : formState.title;

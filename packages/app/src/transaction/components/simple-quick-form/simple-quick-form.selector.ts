@@ -15,5 +15,10 @@ export const SimpleQuickFormSelector = {
     SelectedAccount: (title: string) => `TransactionForm.SelectedAccount.${normalizePart(title)}` as const,
     AccountSearchInput: 'TransactionForm.AccountSearchInput',
     CommentInput: 'TransactionForm.CommentInput',
+    NoteInput: 'NoteInput.Input',
+    NoteSubmitButton: 'NoteInput.SubmitButton',
+    ValidationMessage: 'TransactionForm.ValidationMessage',
+    Accessory: 'TransactionForm.Accessory',
+    SecondaryLine: 'TransactionForm.SecondaryLine',
     SubmitButton: 'TransactionForm.SubmitButton'
 } as const;

@@ -222,7 +222,6 @@ export const RootLayoutContent = () => {
                                                                         name="date-picker"
                                                                         options={fitToContentsSheetOptions(groupedSheetSurface)}
                                                                     />
-                                                                    <Stack.Screen name="note-input" options={sheetOptions} />
                                                                     <Stack.Screen name="bank-integration-key" options={sheetOptions} />
                                                                     <Stack.Screen
                                                                         name="convert-to-transfer"

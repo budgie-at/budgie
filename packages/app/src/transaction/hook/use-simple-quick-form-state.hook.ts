@@ -16,7 +16,7 @@ export const useSimpleQuickFormState = ({
     readonly setFromNumeric: (value: number) => void;
 }) => {
     const { control, getValues, setValue } = useFormContext<TransactionCreateInputInterface>();
-    const { isDirty } = useFormState({ control });
+    const { isSubmitting } = useFormState({ control });
 
     const title = useWatch({ control, name: 'title' });
     const comment = useWatch({ control, name: 'comment' });
@@ -59,7 +59,7 @@ export const useSimpleQuickFormState = ({
     };
 
     return {
-        isDirty,
+        isSubmitting,
         accountId: watchedAccountId ?? 0,
         categoryId: categoryEntry?.categoryId ?? null,
         mccCategoryId: categoryEntry?.mccCategoryId ?? null,

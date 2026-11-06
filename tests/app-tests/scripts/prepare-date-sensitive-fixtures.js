@@ -1501,6 +1501,7 @@ const generateReceiptScanFixture = () => {
     const expenseSourceAccountId = 1;
     const receiptTransactionId = 4242;
     const receiptAmount = 62_100_000;
+    const receiptCategoryId = 15;
 
     copyFixture(sourcePath, targetPath);
     runSqlite(
@@ -1512,7 +1513,7 @@ const generateReceiptScanFixture = () => {
         VALUES (${receiptTransactionId}, ${operatedAt}, ${operatedAt}, 'EXPENSE', '', ${operatedAt}, 'E2E Receipt Target', ${expenseSourceAccountId}, 1.0);
 
         INSERT INTO transaction_entries (created_at, updated_at, type, account_id, category_id, transaction_id, amount)
-        VALUES (${operatedAt}, ${operatedAt}, 'CREDIT', ${expenseSourceAccountId}, NULL, ${receiptTransactionId}, ${receiptAmount});
+        VALUES (${operatedAt}, ${operatedAt}, 'CREDIT', ${expenseSourceAccountId}, ${receiptCategoryId}, ${receiptTransactionId}, ${receiptAmount});
 
         UPDATE account_balances
         SET amount = amount - ${receiptAmount}, updated_at = ${now}
