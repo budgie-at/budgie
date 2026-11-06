@@ -36,7 +36,7 @@ export const OnboardingKey = () => {
                 testID={OnboardingKeySelector.ICloudRestoreButton}
                 left={<GroupedListIcon icon={UserIconNameEnum.CloudDownload} />}
                 title={t`Restore from iCloud`}
-                subtitle={t`Backups from your devices on this Apple ID`}
+                subtitle={t`Backups from your devices on this Apple Account`}
                 onPress={goToICloudRestore}
             />
         ) : null;

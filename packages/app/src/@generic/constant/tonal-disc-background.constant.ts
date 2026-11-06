@@ -7,7 +7,7 @@ export const TONAL_DISC_BACKGROUND: Record<ColorPaletteVariant, string> = {
     pink: 'bg-pink-foreground/25',
     violet: 'bg-violet-foreground/25',
     cyan: 'bg-cyan-foreground/25',
-    warning: 'bg-warning-foreground/25',
+    warning: 'bg-warning-foreground/25 dark:bg-warning-foreground/40',
     'dark-warning': 'bg-dark-warning-foreground/25',
     ghost: 'bg-surface-disc',
     secondary: 'bg-surface-disc',

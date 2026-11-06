@@ -15,7 +15,7 @@ export const OnboardingICloudRestore = () => {
             <OnboardingStepIntro
                 icon={UserIconNameEnum.CloudDownload}
                 title={t`Restore from iCloud`}
-                description={t`Choose a backup from any device signed in to this Apple ID. Pick the most recent one to continue where you left off.`}
+                description={t`Choose a backup from any device signed in to this Apple Account. Pick the most recent one to continue where you left off.`}
             />
 
             <CloudBackupList />

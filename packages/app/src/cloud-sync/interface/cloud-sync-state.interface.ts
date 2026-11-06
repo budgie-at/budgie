@@ -6,4 +6,5 @@ export interface CloudSyncStateInterface {
     readonly sharedStateSerialization: string | null;
     readonly resolvedLineageId: string | null;
     readonly restorePhase: CloudSyncRestorePhaseEnum;
+    readonly isHouseholdCleanupPending: boolean;
 }

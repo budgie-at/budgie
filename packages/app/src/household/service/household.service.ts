@@ -20,6 +20,7 @@ export class HouseholdService extends Context.Service<HouseholdService>()('@budg
             }),
             removeParticipant: (participantId: string) => transport.removeParticipant(zoneName, participantId),
             stopSharing: () => cloudSyncService.stopHouseholdSharing(),
+            removeEmptyGroup: () => cloudSyncService.removeEmptyHousehold(),
             leave: () => cloudSyncService.leaveHousehold()
         };
     })

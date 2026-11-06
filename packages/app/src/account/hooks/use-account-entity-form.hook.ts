@@ -1,14 +1,16 @@
-import { AccountEntityInterface } from '@budgie/contracts';
+import { AccountEntityInterface, HouseholdShareService } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import * as Effect from 'effect/Effect';
 import { router } from 'expo-router';
 import { useForm } from 'react-hook-form';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { useShowError } from '../../@generic/hook/use-show-error.hook';
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
+import { householdAccountShareDraftAtom } from '../constant/household-account-share-draft-atom.constant';
 
 import type { AppServices } from '../../@generic/runtime/app.runtime';
 import type { FieldErrors, FieldValues, Resolver, UseFormHandleSubmit, UseFormReturn } from 'react-hook-form';
@@ -34,6 +36,15 @@ export const useAccountEntityForm = <T extends FieldValues>(
     const handleSubmit = (submittedValues: T) =>
         run(
             onSubmit(submittedValues).pipe(
+                Effect.tap(account => {
+                    const isShared = appAtomRegistry.get(householdAccountShareDraftAtom(account.id));
+
+                    return isDefined(isShared)
+                        ? Effect.flatMap(HouseholdShareService, householdShareService =>
+                              isShared ? householdShareService.shareAccount(account.id) : householdShareService.unshareAccount(account.id)
+                          )
+                        : Effect.void;
+                }),
                 Effect.tap(() => Effect.sync(() => void router.replace('/'))),
                 toastOnFailure(t`Something went wrong`)
             )

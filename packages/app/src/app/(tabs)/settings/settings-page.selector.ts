@@ -36,6 +36,7 @@ export const SettingsPageSelector = {
     ICloudBackupCard: 'SettingsPage.ICloudBackupCard',
     ICloudBackupSwitch: 'SettingsPage.ICloudBackupSwitch',
     ICloudRestoreCard: 'SettingsPage.ICloudRestoreCard',
+    ICloudSignInCard: 'SettingsPage.ICloudSignInCard',
     ClearDataCard: 'SettingsPage.ClearDataCard',
     ManageRulesCard: 'SettingsPage.ManageRulesCard',
     BudgetManagementCard: 'SettingsPage.BudgetManagementCard',

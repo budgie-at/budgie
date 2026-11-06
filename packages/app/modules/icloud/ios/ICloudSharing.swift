@@ -9,7 +9,7 @@ private struct ICloudLocatedShare {
 }
 
 enum ICloudSharing {
-  private static let shareTitle = "Budgie household"
+  private static let shareTitle = "Budgie family"
   @MainActor private static var activeDelegate: ICloudSharingDelegate?
 
   static func present(zoneName: String, notify: @escaping @Sendable ([String: Any]) -> Void) async throws {
@@ -197,7 +197,7 @@ final class ICloudSharingDelegate: NSObject, UICloudSharingControllerDelegate {
   }
 
   func itemTitle(for csc: UICloudSharingController) -> String? {
-    "Budgie household"
+    "Budgie family"
   }
 
   func cloudSharingControllerDidSaveShare(_ csc: UICloudSharingController) {

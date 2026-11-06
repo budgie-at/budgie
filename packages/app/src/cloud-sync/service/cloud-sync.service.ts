@@ -47,6 +47,7 @@ import { appStateChanges } from '../../@generic/constant/app-state-changes.const
 import { DatabaseChangeService } from '../../@generic/drizzle/service/database-change.service';
 import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
+import { iCloudAccountRefreshAtom } from '../../cloud-backup/constant/icloud-account-refresh-atom.constant';
 import { InstallIdService } from '../../cloud-backup/service/install-id.service';
 import { householdRefreshAtom } from '../../household/constant/household-refresh-atom.constant';
 import { householdStateAtom } from '../../household/constant/household-state-atom.constant';
@@ -634,14 +635,14 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
 
             const account = yield* transport.getAccountStatus();
 
-            if (account.status === 'noAccount' || account.status === 'restricted') {
+            if (account.status !== 'available') {
                 yield* stopEngineUnlocked();
                 yield* patch({ blocked: CloudSyncStatusEnum.PAUSED_SIGNED_OUT });
 
                 return;
             }
 
-            if (account.status !== 'available' || !isString(account.userRecordName)) {
+            if (!isString(account.userRecordName)) {
                 yield* patch({ blocked: CloudSyncStatusEnum.ERROR });
 
                 return;
@@ -979,6 +980,10 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
                 return;
             }
 
+            yield* Effect.sync(() => {
+                appAtomRegistry.update(iCloudAccountRefreshAtom, count => count + 1);
+            });
+
             const stored = yield* stateStore.read;
             const current = yield* Ref.get(session);
 
@@ -1129,6 +1134,25 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             }
         };
         const reconfigure = () => locked(reconfigureUnlocked());
+        const deleteHouseholdZone = transport.stopSharing(CLOUD_SYNC_RECORDS.householdZoneName).pipe(
+            Effect.catchTag('CloudSyncTransportError', () => Effect.void),
+            Effect.andThen(transport.deleteZone(scope, CLOUD_SYNC_RECORDS.householdZoneName)),
+            Effect.as(true),
+            Effect.catchTag('CloudSyncTransportError', error => Effect.succeed(error.code === ICloudErrorCode.ZONE_NOT_FOUND))
+        );
+        const finishHouseholdCleanupUnlocked = Effect.fnUntraced(function* () {
+            if (!(yield* stateStore.read).isHouseholdCleanupPending) {
+                return;
+            }
+
+            if ((yield* transport.getAccountStatus()).status !== 'available') {
+                return;
+            }
+
+            if (yield* deleteHouseholdZone) {
+                yield* stateStore.update({ isHouseholdCleanupPending: false });
+            }
+        }, Effect.catchTag('CloudSyncTransportError', () => Effect.void));
         const drain = () => locked(drainUnlocked());
 
         const forkConsumer = <A, E, R, R2>(stream: Stream.Stream<A, E, R>, handle: (event: A) => Effect.Effect<unknown, unknown, R2>) =>
@@ -1153,6 +1177,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
                     return;
                 }
 
+                yield* finishHouseholdCleanupUnlocked();
                 yield* transport.ensureZone(scope, CLOUD_SYNC_RECORDS.householdZoneName);
                 yield* zoneRegistryRepository.upsert({
                     zoneLabel: HOUSEHOLD_SYNC_ZONE,
@@ -1166,6 +1191,13 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             stopHouseholdSharing: Effect.fn('CloudSyncService.stopHouseholdSharing')(function* () {
                 yield* transport.stopSharing(CLOUD_SYNC_RECORDS.householdZoneName);
                 yield* transport.deleteZone(scope, CLOUD_SYNC_RECORDS.householdZoneName);
+                yield* endHouseholdUnlocked(HouseholdEndModeEnum.KEEP_PERSONAL_COPY);
+            }, locked),
+            removeEmptyHousehold: Effect.fn('CloudSyncService.removeEmptyHousehold')(function* () {
+                if (!(yield* deleteHouseholdZone)) {
+                    yield* stateStore.update({ isHouseholdCleanupPending: true });
+                }
+
                 yield* endHouseholdUnlocked(HouseholdEndModeEnum.KEEP_PERSONAL_COPY);
             }, locked),
             leaveHousehold: Effect.fn('CloudSyncService.leaveHousehold')(function* () {
@@ -1195,6 +1227,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
                     ),
                     reconfigure
                 );
+                yield* locked(finishHouseholdCleanupUnlocked());
                 yield* reconfigure();
             })
         };

@@ -18,7 +18,8 @@ export class CloudSyncStateStore extends Context.Service<CloudSyncStateStore>()(
                 stateSerialization: Schema.NullOr(Schema.String),
                 sharedStateSerialization: Schema.optionalKey(Schema.NullOr(Schema.String)),
                 resolvedLineageId: Schema.NullOr(Schema.String),
-                restorePhase: Schema.Enum(CloudSyncRestorePhaseEnum)
+                restorePhase: Schema.Enum(CloudSyncRestorePhaseEnum),
+                isHouseholdCleanupPending: Schema.optionalKey(Schema.Boolean)
             })
         );
         const emptyState: CloudSyncStateInterface = {
@@ -26,14 +27,19 @@ export class CloudSyncStateStore extends Context.Service<CloudSyncStateStore>()(
             stateSerialization: null,
             sharedStateSerialization: null,
             resolvedLineageId: null,
-            restorePhase: CloudSyncRestorePhaseEnum.NONE
+            restorePhase: CloudSyncRestorePhaseEnum.NONE,
+            isHouseholdCleanupPending: false
         };
 
         const read = Effect.sync(() =>
             stateFile.exists
                 ? Option.match(Schema.decodeUnknownOption(StateSchema)(stateFile.textSync()), {
                       onNone: () => emptyState,
-                      onSome: state => ({ ...state, sharedStateSerialization: state.sharedStateSerialization ?? null })
+                      onSome: state => ({
+                          ...state,
+                          sharedStateSerialization: state.sharedStateSerialization ?? null,
+                          isHouseholdCleanupPending: state.isHouseholdCleanupPending ?? false
+                      })
                   })
                 : emptyState
         );

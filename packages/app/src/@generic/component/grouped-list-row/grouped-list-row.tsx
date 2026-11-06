@@ -3,6 +3,8 @@ import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString, isString } from '@rnw-community/shared';
 
+import { GROUPED_LIST_SUBTITLE_CLASS_NAME } from '../../constant/grouped-list-subtitle-class-name.constant';
+import { GROUPED_LIST_TITLE_CLASS_NAME } from '../../constant/grouped-list-title-class-name.constant';
 import { cn } from '../../utils/cn.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
@@ -21,6 +23,8 @@ interface Props {
     readonly pressableProps?: Pick<
         ComponentProps<typeof HapticPressable>,
         | 'style'
+        | 'accessible'
+        | 'accessibilityRole'
         | 'onLongPress'
         | 'disabled'
         | 'accessibilityLabel'
@@ -40,7 +44,7 @@ export const GroupedListRow = (props: Props) => {
     const accessory = right ?? chevron;
     const separatorClassName = isDefined(left) ? 'left-[64px]' : 'left-[16px]';
     const subtitleNode = isNotEmptyString(subtitle) ? (
-        <Text className="text-secondary-foreground text-[13px] leading-[18px]" numberOfLines={3}>
+        <Text className={cn('text-secondary-foreground', GROUPED_LIST_SUBTITLE_CLASS_NAME)} numberOfLines={3}>
             {subtitle}
         </Text>
     ) : (
@@ -50,16 +54,16 @@ export const GroupedListRow = (props: Props) => {
     return (
         <Container
             onPress={onPress}
+            {...(isPressable && { accessibilityRole: 'button' as const })}
             {...pressableProps}
             className="min-h-[50px] flex-row items-center gap-x-xl px-3xl py-lg active:opacity-70"
-            {...(isPressable && { accessibilityRole: 'button' as const })}
             testID={testID}
         >
             <View className={cn('absolute top-0 right-0 h-hairline bg-surface-separator', separatorClassName)} pointerEvents="none" />
             {left}
             <View className="min-w-0 flex-1 gap-y-xxs">
                 {isString(title) ? (
-                    <Text className="text-primary text-[17px]" numberOfLines={2} testID={titleTestID}>
+                    <Text className={cn('text-primary', GROUPED_LIST_TITLE_CLASS_NAME)} numberOfLines={2} testID={titleTestID}>
                         {title}
                     </Text>
                 ) : (

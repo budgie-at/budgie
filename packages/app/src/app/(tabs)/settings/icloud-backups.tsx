@@ -14,7 +14,7 @@ export default function ICloudBackupsPage() {
 
     return (
         <CollapsibleChromePage
-            title={t`iCloud backups`}
+            title={t`Restore from iCloud`}
             leading={<GoBackButton onPress={goBackToSettings} />}
             testID={ICloudBackupsPageSelector.Container}
         >

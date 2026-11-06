@@ -1,9 +1,11 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { Text } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 import { Icon } from '../../../@generic/component/icon/icon';
+import { PRESENCE_ENTERING, PRESENCE_EXITING } from '../../../@generic/constant/presence-motion.constant';
 import { cloudSyncStatusAtom } from '../../constant/cloud-sync-status-atom.constant';
 import { CloudSyncStatusEnum } from '../../enum/cloud-sync-status.enum';
 
@@ -15,11 +17,16 @@ export const CloudSyncUpdateBanner = () => {
     }
 
     return (
-        <View className="mx-3xl mb-md flex-row items-center gap-x-md rounded-xl bg-warning/10 p-md" accessibilityRole="alert">
-            <Icon icon={UserIconNameEnum.CloudAlert} size={18} className="text-warning-foreground" />
-            <Text className="text-warning-foreground flex-1 text-[13px] leading-[18px]">
+        <Animated.View
+            className="mx-3xl mb-md flex-row items-center gap-x-md rounded-xl bg-warning/10 p-md"
+            accessibilityRole="alert"
+            entering={PRESENCE_ENTERING}
+            exiting={PRESENCE_EXITING}
+        >
+            <Icon icon={UserIconNameEnum.CloudAlert} size={18} className="text-warning-strong" />
+            <Text className="text-warning-strong flex-1 text-[13px] leading-[18px]">
                 <Trans>Update Budgie to keep syncing</Trans>
             </Text>
-        </View>
+        </Animated.View>
     );
 };

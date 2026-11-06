@@ -26,7 +26,7 @@ export const HouseholdRemoveButton = ({ participant }: Props) => {
         void run(
             confirmAlert({
                 title: t`Remove ${name}?`,
-                message: t`They lose access to the household. Their shared data is deleted from their device the next time it syncs, so it may stay there until they are online.`,
+                message: t`They lose access to your family group. Their shared data is deleted from their device the next time it syncs, so it may stay there until they are online.`,
                 confirmText: t`Remove`,
                 cancelText: t`Cancel`,
                 isDestructive: true

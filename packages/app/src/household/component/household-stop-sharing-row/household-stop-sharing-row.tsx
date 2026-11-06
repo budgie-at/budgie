@@ -1,52 +1,65 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { Text } from 'react-native';
 
-import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
+import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
+import { showSuccessToast } from '../../../@generic/utils/show-success-toast/show-success-toast';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
-import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
+import { SettingsDestructiveRow } from '../../../settings/components/settings-destructive-row/settings-destructive-row';
 import { HouseholdService } from '../../service/household.service';
 
 import { HouseholdStopSharingRowSelector } from './household-stop-sharing-row.selector';
 
-export const HouseholdStopSharingRow = () => {
+interface Props {
+    readonly isEmptyGroup: boolean;
+}
+
+export const HouseholdStopSharingRow = ({ isEmptyGroup }: Props) => {
     const { t } = useLingui();
     const { run, isLoading } = useSingleFlight();
+    const [hapticNotification] = useVibration();
 
-    const handlePress = () => {
-        void run(
-            confirmAlert({
-                title: t`Stop sharing with everyone?`,
-                message: t`Everyone is removed from the household. Their shared data is deleted from their devices the next time they sync, so a device that is offline may keep it until then. You keep your data.`,
-                confirmText: t`Stop sharing`,
-                cancelText: t`Cancel`,
-                isDestructive: true
-            }).pipe(
-                Effect.flatMap(isConfirmed =>
-                    isConfirmed ? Effect.flatMap(HouseholdService, householdService => householdService.stopSharing()) : Effect.void
-                ),
-                toastOnFailure(t`Could not stop sharing`)
-            )
-        );
-    };
+    const removeEmptyGroup = Effect.flatMap(HouseholdService, householdService => householdService.removeEmptyGroup()).pipe(
+        Effect.tap(() =>
+            Effect.sync(() => {
+                hapticNotification();
+                showSuccessToast(t`Family group removed`);
+            })
+        ),
+        toastOnFailure(t`Could not remove the family group`)
+    );
+    const stopSharing = confirmAlert({
+        title: t`Stop sharing with your family?`,
+        message: t`Everyone is removed from your family group. Their shared data is deleted from their devices the next time they sync, so a device that is offline may keep it until then. You keep your data.`,
+        confirmText: t`Stop sharing`,
+        cancelText: t`Cancel`,
+        isDestructive: true
+    }).pipe(
+        Effect.flatMap(isConfirmed =>
+            isConfirmed
+                ? Effect.flatMap(HouseholdService, householdService => householdService.stopSharing()).pipe(
+                      Effect.tap(() => Effect.sync(() => hapticNotification()))
+                  )
+                : Effect.void
+        ),
+        toastOnFailure(t`Could not stop sharing`)
+    );
+
+    const handlePress = () => void (isEmptyGroup ? run(removeEmptyGroup) : run(stopSharing));
+
+    const title = isEmptyGroup ? t`Remove family group` : t`Stop sharing`;
+    const subtitle = isEmptyGroup ? t`Turns off sharing. You keep your data.` : t`Removes everyone from your family group`;
 
     return (
-        <SettingsRow
+        <SettingsDestructiveRow
             icon={UserIconNameEnum.UserX}
-            variant="destructive"
-            title={t`Stop sharing`}
+            title={title}
             testID={HouseholdStopSharingRowSelector.Card}
             onPress={handlePress}
-            subtitle={
-                <LoadingContent isLoading={isLoading}>
-                    <Text className="text-secondary-foreground text-[13px] leading-[18px]" numberOfLines={3}>
-                        {t`Removing is best effort: devices that are offline keep the data until they sync.`}
-                    </Text>
-                </LoadingContent>
-            }
+            subtitle={subtitle}
+            isLoading={isLoading}
         />
     );
 };

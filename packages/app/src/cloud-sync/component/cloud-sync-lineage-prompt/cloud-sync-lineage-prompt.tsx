@@ -25,8 +25,8 @@ export const CloudSyncLineagePrompt = () => {
             );
 
         Alert.alert(
-            t`Different data on this iPhone and iCloud`,
-            t`This iPhone and iCloud hold different Budgie data. Choose which one to continue with. A safety copy of this iPhone's data is kept either way.`,
+            t`Different data on this device and iCloud`,
+            t`This device and iCloud hold different Budgie data. Choose which one to continue with. A safety copy of this device's data is kept either way.`,
             [
                 { text: t`Use iCloud data`, onPress: resolve(CloudSyncLineageChoiceEnum.USE_ICLOUD_DATA) },
                 { text: t`Keep this device's data`, onPress: resolve(CloudSyncLineageChoiceEnum.KEEP_THIS_DEVICE) }

@@ -1,27 +1,42 @@
-import { Trans, useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { UserIconNameEnum } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
+import { View } from 'react-native';
 
-import { SettingsGroup } from '../../../settings/components/settings-group/settings-group';
+import { isEmptyArray } from '@rnw-community/shared';
+
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useHouseholdParticipants } from '../../hook/use-household-participants.hook';
+import { ICloudParticipantRole } from '../../../../modules/icloud';
 import { HouseholdLeaveRow } from '../household-leave-row/household-leave-row';
 import { HouseholdParticipantRow } from '../household-participant-row/household-participant-row';
+import { HouseholdParticipantsGroup } from '../household-participants-group/household-participants-group';
+import { HouseholdShareEverythingSection } from '../household-share-everything-section/household-share-everything-section';
+import { HouseholdYouRow } from '../household-you-row/household-you-row';
 
 export const HouseholdMemberContent = () => {
     const { t } = useLingui();
-    const { participants, ownerName } = useHouseholdParticipants();
-    const owner = ownerName ?? t`the owner`;
+    const { otherParticipants, isLoading } = useHouseholdParticipants();
+    const owners = otherParticipants.filter(participant => participant.role === ICloudParticipantRole.OWNER);
+    const members = otherParticipants.filter(participant => participant.role !== ICloudParticipantRole.OWNER);
+    const peopleFooter = isEmptyArray(otherParticipants) ? null : t`Family members can see and edit what you share.`;
 
     return (
-        <View className="gap-y-7xl">
-            <Text className="text-secondary-foreground px-3xl text-[13px] leading-[18px]">
-                <Trans>You are in the household of {owner}. Shared accounts appear next to your own and everyone in the household can edit them.</Trans>
-            </Text>
-            <SettingsGroup title={t`People in the household`}>
-                {participants.map(participant => (
+        <View className="gap-y-5xl">
+            <GroupedListSection title={t`People`} footer={peopleFooter}>
+                <HouseholdParticipantsGroup isLoading={isLoading} isEmpty={isEmptyArray(owners)}>
+                    {owners.map(participant => (
+                        <HouseholdParticipantRow key={participant.participantId} participant={participant} />
+                    ))}
+                </HouseholdParticipantsGroup>
+                <HouseholdYouRow icon={UserIconNameEnum.UserRound} subtitle={t`Member`} />
+                {members.map(participant => (
                     <HouseholdParticipantRow key={participant.participantId} participant={participant} />
                 ))}
-            </SettingsGroup>
-            <HouseholdLeaveRow />
+            </GroupedListSection>
+            <HouseholdShareEverythingSection />
+            <GroupedListSection>
+                <HouseholdLeaveRow />
+            </GroupedListSection>
         </View>
     );
 };

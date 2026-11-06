@@ -10,7 +10,7 @@ export const FamilyPageContent = () => {
     const { isOwner, isMember } = useHousehold();
 
     return (
-        <View className="gap-y-7xl pb-5xl">
+        <View className="gap-y-5xl pb-5xl">
             <HouseholdSyncRequiredNotice />
             {isOwner ? <HouseholdOwnerContent /> : null}
             {isMember ? <HouseholdMemberContent /> : null}

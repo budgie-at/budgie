@@ -1,6 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { Text } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
@@ -23,7 +22,7 @@ export const HouseholdParticipantRow = ({ participant, children }: Props) => {
     const isPending = participant.acceptanceStatus === ICloudParticipantAcceptanceStatus.PENDING;
     const fallbackName = participant.isCurrentUser ? t`You` : t`Family member`;
     const title = isNotEmptyString(participant.displayName) ? participant.displayName : fallbackName;
-    const roleLabel = isOwner ? t`Owner` : isPending ? t`Invitation pending` : t`Member`;
+    const roleLabel = isOwner ? t`Organizer` : isPending ? t`Invitation pending` : t`Member`;
     const icon = isOwner ? UserIconNameEnum.Crown : UserIconNameEnum.UserRound;
 
     return (
@@ -33,7 +32,7 @@ export const HouseholdParticipantRow = ({ participant, children }: Props) => {
             title={title}
             testID={HouseholdParticipantRowSelector.Card}
             right={children}
-            subtitle={<Text className="text-secondary-foreground text-[13px] leading-[18px]">{roleLabel}</Text>}
+            subtitle={roleLabel}
         />
     );
 };
