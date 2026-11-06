@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.164.2](https://github.com/budgie-at/budgie/compare/v6.164.1...v6.164.2) (2026-11-06)
+
+### Bug Fixes
+
+* **app:** keep chrome snapping in the app runtime ([f7300b4](https://github.com/budgie-at/budgie/commit/f7300b4f58e206feed90e1f083a2f5b6f33803c2))
+* **app:** keep runway pill available in compact home header ([88ff4ba](https://github.com/budgie-at/budgie/commit/88ff4ba38b7d9c1faa1054092997d36ef0eac4cf))
+* **app:** preserve sticky headers and title scroll gestures ([03a9b26](https://github.com/budgie-at/budgie/commit/03a9b26a0c81d259c101dac1a5cd70ae3121ce9d))
+* **app:** restore the fade and blur screen header ([6c75499](https://github.com/budgie-at/budgie/commit/6c754990c7035a6977f9aa4aca45fe1b7c73afa9))
+
+
 ## [6.164.1](https://github.com/budgie-at/budgie/compare/v6.164.0...v6.164.1) (2026-11-05)
 
 ### Bug Fixes
