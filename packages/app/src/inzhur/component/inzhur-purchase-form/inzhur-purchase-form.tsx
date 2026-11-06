@@ -26,11 +26,11 @@ interface Props {
 
 export const InzhurPurchaseForm = ({ topUp }: Props) => {
     const { t } = useLingui();
-    const [defaultFund] = useInzhurFundOptions();
+    const defaultFundName = useInzhurFundOptions().at(0)?.name ?? '';
     const form = useForm<InzhurPurchaseFormValues>({
         mode: 'onChange',
         resolver: standardSchemaResolver(Schema.toStandardSchemaV1(InzhurPurchaseFormSchema)),
-        defaultValues: buildInzhurPurchaseDefaults(topUp, defaultFund?.name ?? '')
+        defaultValues: buildInzhurPurchaseDefaults(topUp, defaultFundName)
     });
 
     return (

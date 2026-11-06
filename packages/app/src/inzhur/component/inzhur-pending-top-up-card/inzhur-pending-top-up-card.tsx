@@ -27,6 +27,7 @@ export const InzhurPendingTopUpCard = ({ topUp }: Props) => {
     const formatPendingTopUp = useFormatInzhurPendingTopUp();
     const { transactionId, externalId } = topUp;
     const { summary, prompt } = formatPendingTopUp(topUp);
+    const promptSegments = [prompt];
 
     const handleEnterPurchase = () => void router.push({ pathname: '/inzhur/purchase', params: { topUpId: String(transactionId) } });
     const handleDismiss = () =>
@@ -41,7 +42,7 @@ export const InzhurPendingTopUpCard = ({ topUp }: Props) => {
             <ListRow
                 leading={<NeutralIconTile icon={UserIconNameEnum.ArrowDown} iconClassName="text-warning-strong" />}
                 title={<Text className="text-[17px] font-semibold text-primary">{summary}</Text>}
-                detail={<ListRowDetail segments={[prompt]} />}
+                detail={<ListRowDetail segments={promptSegments} />}
             />
             <View className="flex-row gap-x-md">
                 <Button

@@ -32,6 +32,7 @@ export const InzhurInstitutionRowDetail = () => {
     const cashLabel = isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : formatCashDigits(value?.cash ?? 0, defaultInstrument.symbol);
     const fundsLabel = t({ message: plural(value?.fundCount ?? 0, { one: '# fund', other: '# funds' }) });
     const pendingTopUp = isDefined(newestTopUp) ? formatPendingTopUp(newestTopUp) : null;
+    const pendingSegments = isDefined(pendingTopUp) ? [pendingTopUp.summary, pendingTopUp.prompt] : null;
     const cashSummary = t`${cashLabel} cash · ${fundsLabel}`;
     const staleLabel = isDefined(reminder)
         ? t({ message: plural(reminder.daysOld, { one: 'Statement # day ago', other: 'Statement # days ago' }) })
@@ -39,8 +40,8 @@ export const InzhurInstitutionRowDetail = () => {
 
     return (
         <View className="gap-y-xxs" testID={InzhurSelector.InstitutionDetail}>
-            {isDefined(pendingTopUp) ? (
-                <ListRowDetail segments={[pendingTopUp.summary, pendingTopUp.prompt]} />
+            {isDefined(pendingSegments) ? (
+                <ListRowDetail segments={pendingSegments} />
             ) : (
                 <Text
                     className="text-[13px] text-secondary-foreground tabular-nums"
