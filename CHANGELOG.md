@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.164.1](https://github.com/budgie-at/budgie/compare/v6.164.0...v6.164.1) (2026-11-05)
+
+### Bug Fixes
+
+* **app:** base the edit title exception on the persisted title ([30a0d6a](https://github.com/budgie-at/budgie/commit/30a0d6ab42a5caced1faf5a2c6562df8da6b8d66))
+* **app:** preserve imported titles when editing transactions ([84a1152](https://github.com/budgie-at/budgie/commit/84a1152ebe0bfc11cb29bd54cd08f9ccf809aade))
+
+
 # [6.164.0](https://github.com/budgie-at/budgie/compare/v6.163.2...v6.164.0) (2026-11-05)
 
 ### Bug Fixes
