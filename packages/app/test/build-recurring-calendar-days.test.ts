@@ -1,7 +1,7 @@
 import { expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { buildRecurringCalendarDays } from '../src/transaction/utils/build-recurring-calendar-days.util';
+import { buildRecurringCalendarDays } from '../src/recurring/utils/build-recurring-calendar-days.util';
 
 it.effect('keeps five Sunday-first weeks even for a four-week February', () =>
     Effect.sync(() => {

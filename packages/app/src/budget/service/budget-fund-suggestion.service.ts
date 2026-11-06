@@ -1,6 +1,7 @@
 import { BudgetSinkingFundRepository } from '@budgie/budget';
-import { Db, SettingsRepository } from '@budgie/contracts';
+import { SettingsRepository } from '@budgie/contracts';
 import { ExchangeRateRepository } from '@budgie/market';
+import { buildRecurringActiveCondition, RecurringRepository } from '@budgie/recurring';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -13,6 +14,7 @@ export class BudgetFundSuggestionService extends Context.Service<BudgetFundSugge
     make: Effect.gen(function* () {
         const budgetSinkingFundRepository = yield* BudgetSinkingFundRepository;
         const exchangeRateRepository = yield* ExchangeRateRepository;
+        const recurringRepository = yield* RecurringRepository;
         const settingsRepository = yield* SettingsRepository;
 
         return {
@@ -21,14 +23,12 @@ export class BudgetFundSuggestionService extends Context.Service<BudgetFundSugge
                 budgetInstrumentId: number,
                 now: Date
             ) {
-                const { defaultInstrumentId } = yield* settingsRepository.getSettings();
+                const { defaultInstrumentId, language } = yield* settingsRepository.getSettings();
                 const exchangeRate =
                     isDefined(defaultInstrumentId) && defaultInstrumentId !== budgetInstrumentId
                         ? yield* exchangeRateRepository.findByBaseAndQuoteIds(defaultInstrumentId, budgetInstrumentId)
                         : null;
-                const series = yield* Db.query(db =>
-                    db.query.RecurringSeriesEntityTable.findMany({ where: { deletedAt: { isNull: true } } })
-                );
+                const series = yield* recurringRepository.findSeriesRows(defaultInstrumentId, language, buildRecurringActiveCondition());
                 const funds = yield* budgetSinkingFundRepository.getByBudget(budgetId);
 
                 return buildFundSuggestions(
@@ -42,6 +42,11 @@ export class BudgetFundSuggestionService extends Context.Service<BudgetFundSugge
     })
 }) {
     static readonly layer = Layer.effect(BudgetFundSuggestionService, BudgetFundSuggestionService.make).pipe(
-        Layer.provide([BudgetSinkingFundRepository.layer, ExchangeRateRepository.layer, SettingsRepository.layer])
+        Layer.provide([
+            BudgetSinkingFundRepository.layer,
+            ExchangeRateRepository.layer,
+            RecurringRepository.layer,
+            SettingsRepository.layer
+        ])
     );
 }

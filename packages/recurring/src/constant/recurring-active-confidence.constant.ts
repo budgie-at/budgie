@@ -1,0 +1,1 @@
+export const RECURRING_ACTIVE_CONFIDENCE = 60;

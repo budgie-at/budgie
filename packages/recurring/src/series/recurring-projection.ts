@@ -1,110 +1,83 @@
-import { PRECISION, RecurringSeriesKindEnum, RecurringSeriesUserStateEnum } from '@budgie/contracts';
-import { addDays } from 'date-fns/addDays';
+import { convertFromMicroUnits, RecurringSeriesKindEnum } from '@budgie/contracts';
 import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
-import { getDaysInMonth } from 'date-fns/getDaysInMonth';
+import { startOfDay } from 'date-fns/startOfDay';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { RecurringAlertEnum } from '../enum/recurring-alert.enum';
 
-import { DAY_MS, DAYS_PER_MONTH, isSeriesActive, monthIndex } from './recurring-series';
+import { findPriceChange, hasPriceChange, isCycleCovered, resolveRecurringAlert } from './recurring-alert';
+import { cadencePeriodDays, cadenceToleranceDays, monthlyEquivalent, occurrencesInRange } from './recurring-schedule';
+import { countsInForecasts, isSeriesEnded } from './recurring-state';
 
 import type { RecurringCalendarDataInterface } from '../interface/recurring-calendar-data.interface';
 import type { RecurringCalendarEntryInterface } from '../interface/recurring-calendar-entry.interface';
-import type { RecurringSeriesEventInterface } from '../interface/recurring-series-event.interface';
-import type { RecurringTrackedSeriesInterface } from '../interface/recurring-tracked-series.interface';
-
-const PROJECTION_SUPPRESSION_RATIO = 0.4;
-const PRICE_CHANGE_ALERT_DAYS = 183;
-const OVERDUE_GRACE_DAYS = 2;
-
-const billingDay = (series: RecurringTrackedSeriesInterface): number => {
-    let day = new Date(series.anchorTimestamp).getDate();
-    for (const event of [...series.events].reverse()) {
-        const date = new Date(event.timestamp);
-        day = Math.max(day, date.getDate());
-        if (date.getDate() < getDaysInMonth(date)) {
-            break;
-        }
-    }
-
-    return day;
-};
-
-const expectedDays = (series: RecurringTrackedSeriesInterface, year: number, month: number): number[] => {
-    if (isDefined(series.periodMonths)) {
-        const monthsFromAnchor = monthIndex(new Date(year, month, 1).getTime()) - monthIndex(series.anchorTimestamp);
-
-        return monthsFromAnchor < 0 || monthsFromAnchor % series.periodMonths !== 0
-            ? []
-            : [Math.min(billingDay(series), getDaysInMonth(new Date(year, month, 1)))];
-    }
-
-    const anchor = new Date(series.anchorTimestamp);
-    const firstStep = Math.max(Math.ceil(differenceInCalendarDays(new Date(year, month, 1), anchor) / series.periodDays), 1);
-    const lastStep = Math.floor(differenceInCalendarDays(new Date(year, month + 1, 0), anchor) / series.periodDays);
-
-    return Array.from({ length: Math.max(lastStep - firstStep + 1, 0) }, (_, index) =>
-        addDays(anchor, (firstStep + index) * series.periodDays).getDate()
-    );
-};
+import type { RecurringChargeInterface } from '../interface/recurring-charge.interface';
+import type { RecurringReadModelInterface } from '../interface/recurring-read-model.interface';
 
 const toEntry = (
-    series: RecurringTrackedSeriesInterface,
+    model: RecurringReadModelInterface,
     dayOfMonth: number,
-    event: RecurringSeriesEventInterface | null,
+    charge: RecurringChargeInterface | null,
     alert: RecurringAlertEnum | null
 ): RecurringCalendarEntryInterface => {
-    const latestAmount = event?.amount ?? series.predictedAmount;
-    const isForecast = !isDefined(event);
+    const latestAmount = charge?.defaultAmount ?? model.series.defaultAmount;
+    const isForecast = !isDefined(charge);
 
     return {
-        key: `${series.seriesId}-${latestAmount}-${isForecast ? 'f' : 'a'}-${dayOfMonth}`,
-        seriesId: series.seriesId,
-        userState: series.userState,
+        key: `${model.series.id}-${latestAmount}-${isForecast ? 'f' : 'a'}-${dayOfMonth}`,
+        seriesId: model.series.id,
         alert,
-        title: series.title,
-        categoryId: series.categoryId,
-        categoryTitle: series.categoryTitle,
-        categoryIcon: series.categoryIcon,
-        accountId: series.accountId,
+        title: model.series.title,
+        categoryId: model.series.categoryId,
+        categoryTitle: model.series.categoryTitle,
+        categoryIcon: model.series.categoryIcon,
         latestAmount,
-        latestTransactionId: event?.transactionId ?? null,
+        latestTransactionId: charge?.transactionId ?? null,
         dayOfMonth,
-        periodDays: series.periodDays,
+        periodDays: Math.round(cadencePeriodDays(model.series)),
         isForecast
     };
 };
 
-const projectSeries = (
-    series: RecurringTrackedSeriesInterface,
-    year: number,
-    month: number,
-    now: Date
-): RecurringCalendarEntryInterface[] => {
-    const monthStart = new Date(year, month, 1).getTime();
-    const monthEnd = new Date(year, month + 1, 1).getTime();
-    const monthsFromNow = monthIndex(monthStart) - monthIndex(now.getTime());
-    const priceAlert =
-        isDefined(series.priceChangedAt) && now.getTime() - series.priceChangedAt <= PRICE_CHANGE_ALERT_DAYS * DAY_MS
-            ? RecurringAlertEnum.PRICE_CHANGE
-            : null;
-    const actuals = series.events
-        .filter(event => event.timestamp >= monthStart && event.timestamp < monthEnd)
-        .map(event =>
-            toEntry(series, new Date(event.timestamp).getDate(), event, event.timestamp === series.priceChangedAt ? priceAlert : null)
+const projectSeries = (model: RecurringReadModelInterface, year: number, month: number, now: Date): RecurringCalendarEntryInterface[] => {
+    const monthStart = new Date(year, month, 1);
+    const monthEnd = new Date(year, month + 1, 1);
+    const today = startOfDay(now);
+    const alert = resolveRecurringAlert(model, now);
+    const linked = model.links
+        .filter(({ link }) => !link.isExcluded)
+        .sort((first, second) => first.charge.operatedAt.getTime() - second.charge.operatedAt.getTime());
+    const latestLinkedAt = linked[linked.length - 1]?.charge.operatedAt.getTime() ?? Number.NEGATIVE_INFINITY;
+    const priceChangeTransactionId = findPriceChange(model, now)?.transactionId;
+    const actuals = linked
+        .filter(({ charge }) => charge.operatedAt.getTime() >= monthStart.getTime() && charge.operatedAt.getTime() < monthEnd.getTime())
+        .map(({ charge }) =>
+            toEntry(
+                model,
+                charge.operatedAt.getDate(),
+                charge,
+                charge.transactionId === priceChangeTransactionId ? RecurringAlertEnum.PRICE_CHANGE : null
+            )
         );
-    const forecasts =
-        monthsFromNow >= 0 && isSeriesActive(series, now)
-            ? expectedDays(series, year, month)
-                  .filter(day =>
-                      actuals.every(actual => Math.abs(actual.dayOfMonth - day) > series.periodDays * PROJECTION_SUPPRESSION_RATIO)
-                  )
-                  .map(day => {
-                      const isOverdue = now.getTime() - new Date(year, month, day).getTime() > OVERDUE_GRACE_DAYS * DAY_MS;
+    const monthsFromNow = (year - now.getFullYear()) * 12 + month - now.getMonth();
+    const tolerance = cadenceToleranceDays(model.series);
+    const forecastAlert = (date: Date): RecurringAlertEnum | null => {
+        if (differenceInCalendarDays(today, date) > tolerance) {
+            return RecurringAlertEnum.OVERDUE;
+        }
 
-                      return toEntry(series, day, null, isOverdue ? RecurringAlertEnum.OVERDUE : priceAlert);
-                  })
+        if (hasPriceChange(model, now)) {
+            return RecurringAlertEnum.PRICE_CHANGE;
+        }
+
+        return alert === RecurringAlertEnum.ENDING ? alert : null;
+    };
+    const forecasts =
+        monthsFromNow >= 0 && !isSeriesEnded(model.series, now)
+            ? occurrencesInRange(model.series, monthStart, monthEnd)
+                  .filter(date => date.getTime() > latestLinkedAt && !isCycleCovered(model, date))
+                  .map(date => toEntry(model, date.getDate(), null, forecastAlert(date)))
             : [];
 
     return [...actuals, ...forecasts];
@@ -116,32 +89,31 @@ const groupByDay = (entries: readonly RecurringCalendarEntryInterface[]): Map<nu
         new Map<number, RecurringCalendarEntryInterface[]>()
     );
 
-const sumCommitted = (series: readonly RecurringTrackedSeriesInterface[], now: Date): number =>
-    series
-        .filter(item => isSeriesActive(item, now))
-        .reduce((total, item) => total + item.predictedAmount / (item.periodMonths ?? item.periodDays / DAYS_PER_MONTH), 0) / PRECISION;
+const sumCommitted = (models: readonly RecurringReadModelInterface[], now: Date): number =>
+    convertFromMicroUnits(
+        models
+            .filter(({ series }) => !isSeriesEnded(series, now))
+            .reduce((total, { series }) => total + monthlyEquivalent({ ...series, amount: series.defaultAmount }), 0)
+    );
 
 // eslint-disable-next-line @typescript-eslint/max-params -- Existing public API intentionally keeps positional arguments; kind is appended
 export const projectRecurringMonth = (
-    series: readonly RecurringTrackedSeriesInterface[],
+    models: readonly RecurringReadModelInterface[],
     year: number,
     month: number,
     now: Date,
     kind: RecurringSeriesKindEnum
 ): RecurringCalendarDataInterface => {
-    const eligible = series.filter(item => item.kind === kind && item.userState !== RecurringSeriesUserStateEnum.DISMISSED);
-    const entries = eligible.flatMap(item => projectSeries(item, year, month, now));
+    const eligible = models.filter(({ series }) => series.kind === kind && countsInForecasts(series));
+    const entries = eligible.flatMap(model => projectSeries(model, year, month, now));
     const actuals = entries.filter(entry => !entry.isForecast);
     const forecasts = entries.filter(entry => entry.isForecast);
 
     return {
         entriesByDay: groupByDay(actuals),
         forecastedEntriesByDay: groupByDay(forecasts),
-        totalAmount: actuals.reduce((total, entry) => total + entry.latestAmount, 0) / PRECISION,
-        forecastedTotalAmount:
-            forecasts
-                .filter(entry => new Date(year, month, entry.dayOfMonth + 1).getTime() > now.getTime())
-                .reduce((total, entry) => total + entry.latestAmount, 0) / PRECISION,
+        totalAmount: convertFromMicroUnits(actuals.reduce((total, entry) => total + entry.latestAmount, 0)),
+        forecastedTotalAmount: convertFromMicroUnits(forecasts.reduce((total, entry) => total + entry.latestAmount, 0)),
         committedMonthlyExpense: sumCommitted(eligible, now)
     };
 };
