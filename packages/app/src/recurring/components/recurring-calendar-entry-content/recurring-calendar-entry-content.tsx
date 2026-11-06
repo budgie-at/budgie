@@ -41,7 +41,7 @@ export const RecurringCalendarEntryContent = ({ entry, dayLabel }: Props) => {
 
     return (
         <TransactionCardLayout
-            icon={<RecurringMerchantTile categoryIcon={entry.categoryIcon} title={entry.title} size={40} />}
+            icon={<RecurringMerchantTile title={entry.title} size={40} />}
             title={
                 <Text dynamicTypeRamp="headline" className="text-[16px] font-semibold text-primary" lineBreakStrategyIOS="standard">
                     {entry.title}

@@ -16,7 +16,7 @@ export const RecurringDetailReminderRow = ({ series }: Props) => {
     const { isDenied } = useNotificationPermission();
 
     return (
-        <RecurringDetailSection title={t`Reminder`}>
+        <RecurringDetailSection title={t`Reminder`} footer={t`Notify before the payment is due.`}>
             {isDenied ? (
                 <RecurringReminderDeniedRow />
             ) : (

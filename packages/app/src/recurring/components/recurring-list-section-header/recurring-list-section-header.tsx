@@ -57,7 +57,7 @@ export const RecurringListSectionHeader = ({ section, count, isCollapsed, onTogg
     }
 
     return (
-        <View className="bg-surface px-3xl pt-xl pb-sm">
+        <View className="bg-surface pt-xl pb-sm">
             <HapticPressable
                 accessibilityRole="button"
                 accessibilityState={accessibilityState}

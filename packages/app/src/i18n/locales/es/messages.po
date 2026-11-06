@@ -914,7 +914,6 @@ msgid "/ day"
 msgstr "/ día"
 
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
-#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
 msgid "/ month"
 msgstr "/ mes"
 
@@ -1228,6 +1227,10 @@ msgstr "Añadir acción"
 #: src/rule/utils/get-rule-form-issue.util.ts
 msgid "Add an action to continue"
 msgstr "Añade una acción para continuar"
+
+#: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
+msgid "Add an amount and a name to save"
+msgstr ""
 
 #: src/account/component/account-list-item/account-list-item.tsx
 msgid "Add balance"
@@ -1759,7 +1762,6 @@ msgstr "Promedio"
 msgid "Average payment"
 msgstr "Pago medio"
 
-#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
 #: src/runway/component/runway-drivers/runway-drivers.tsx
 msgid "Average per month"
 msgstr "Promedio mensual"
@@ -5540,6 +5542,10 @@ msgstr "Mes"
 msgid "Monthly"
 msgstr "Mensualmente"
 
+#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
+msgid "Monthly average"
+msgstr ""
+
 #: src/budget/constant/budget-period-title-label.constant.ts
 msgid "Monthly budget"
 msgstr "Presupuesto mensual"
@@ -5996,6 +6002,10 @@ msgstr ""
 msgid "No upcoming payments"
 msgstr ""
 
+#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
+msgid "Non-monthly bills are averaged per month."
+msgstr ""
+
 #: src/app/import-column-mapper.tsx
 #: src/import/components/import-column-map-field/import-column-map-field.tsx
 #: src/recurring/components/recurring-form-category-field/recurring-form-category-field.tsx
@@ -6104,6 +6114,7 @@ msgstr "No se importa nada del pasado"
 msgid "Notifications are off · Open Settings"
 msgstr "Las notificaciones están desactivadas · Abrir Ajustes"
 
+#: src/recurring/components/recurring-detail-reminder-row/recurring-detail-reminder-row.tsx
 #: src/recurring/components/recurring-form-reminder-section/recurring-form-reminder-section.tsx
 msgid "Notify before the payment is due."
 msgstr "Avisar antes de que venza el pago."
@@ -9368,10 +9379,6 @@ msgstr "Semanal"
 #: src/budget/constant/budget-period-title-label.constant.ts
 msgid "Weekly budget"
 msgstr "Presupuesto semanal"
-
-#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
-msgid "Weekly, quarterly and yearly bills are shown as a monthly average."
-msgstr ""
 
 #: src/recurring/components/recurring-form-custom-cadence/recurring-form-custom-cadence.tsx
 msgid "Weeks"

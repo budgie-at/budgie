@@ -24,6 +24,7 @@ import { RecurringCalendarSummary } from '../recurring-calendar-summary/recurrin
 import { RecurringCalendarSelector } from './recurring-calendar.selector';
 
 import type { RecurringCalendarEntryInterface } from '@budgie/recurring';
+import type { ReactNode } from 'react';
 
 const scrollStyle = { flex: 1 };
 
@@ -32,7 +33,11 @@ const scrollContentStyle = { paddingTop: 4, paddingBottom: 20, rowGap: 8 };
 const EMPTY_ENTRIES_BY_DAY: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]> = new Map();
 
 // eslint-disable-next-line max-statements, max-lines-per-function -- Page orchestration component with multiple hooks, state, and forecast logic
-export const RecurringCalendarContent = () => {
+interface Props {
+    readonly header: ReactNode;
+}
+
+export const RecurringCalendarContent = ({ header }: Props) => {
     const { t } = useLingui();
     const { formatFullMonth } = useFormatDate();
     const { languageTag } = useLocaleInfo();
@@ -95,6 +100,7 @@ export const RecurringCalendarContent = () => {
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="on-drag"
         >
+            {header}
             <RecurringCalendarSummary
                 title={summaryTitle}
                 isLoading={isLoading}

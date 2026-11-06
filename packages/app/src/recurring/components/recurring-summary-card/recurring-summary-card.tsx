@@ -44,22 +44,19 @@ export const RecurringSummaryCard = ({ summary }: Props) => {
             testID={RecurringPaneSelector.Summary}
         >
             <Text dynamicTypeRamp="footnote" className="text-[13px] font-medium text-secondary-foreground">
-                <Trans>Average per month</Trans>
+                <Trans>Monthly average</Trans>
             </Text>
             <View className="flex-row flex-wrap items-baseline gap-x-xs">
                 <ProtectedText dynamicTypeRamp="largeTitle" className="text-[34px] font-bold text-primary tabular-nums">
                     {committedAmount}
                 </ProtectedText>
-                <Text dynamicTypeRamp="title3" className="text-[17px] font-medium text-secondary-foreground">
-                    <Trans>/ month</Trans>
-                </Text>
             </View>
             <Text dynamicTypeRamp="subheadline" className="text-[15px] text-secondary-foreground">
                 {`${countLabel} · ${dueSoonLabel}`}
             </Text>
             {hasAveragedBills ? (
                 <Text dynamicTypeRamp="footnote" className="text-[13px] text-secondary-foreground">
-                    <Trans>Weekly, quarterly and yearly bills are shown as a monthly average.</Trans>
+                    <Trans>Non-monthly bills are averaged per month.</Trans>
                 </Text>
             ) : null}
             {hasIncome ? (

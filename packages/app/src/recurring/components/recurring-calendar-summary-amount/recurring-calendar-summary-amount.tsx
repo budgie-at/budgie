@@ -13,7 +13,9 @@ interface Props {
 }
 
 const amountVariants = cva('min-w-0 gap-y-xxs', {
-    variants: { isAccessibilityTextSize: { true: 'flex-row flex-wrap items-center justify-between gap-x-md', false: 'flex-1' } }
+    variants: {
+        isAccessibilityTextSize: { true: 'flex-row flex-wrap items-center justify-between gap-x-md', false: 'flex-1 items-center' }
+    }
 });
 
 export const RecurringCalendarSummaryAmount = ({ formattedAmount, children }: Props) => {
@@ -21,20 +23,22 @@ export const RecurringCalendarSummaryAmount = ({ formattedAmount, children }: Pr
 
     return (
         <View className={amountVariants({ isAccessibilityTextSize })}>
-            <Text
-                dynamicTypeRamp="footnote"
-                maxFontSizeMultiplier={TRANSACTION_SECONDARY_MAX_FONT_SIZE_MULTIPLIER}
-                className="text-[12px] text-secondary-foreground"
-            >
-                {children}
-            </Text>
             <ProtectedText
-                dynamicTypeRamp="footnote"
+                dynamicTypeRamp="headline"
                 maxFontSizeMultiplier={TRANSACTION_SECONDARY_MAX_FONT_SIZE_MULTIPLIER}
-                className="text-[13px] font-medium text-primary tabular-nums"
+                className="text-[17px] font-semibold text-primary tabular-nums"
+                numberOfLines={1}
+                adjustsFontSizeToFit
             >
                 {formattedAmount}
             </ProtectedText>
+            <Text
+                dynamicTypeRamp="footnote"
+                maxFontSizeMultiplier={TRANSACTION_SECONDARY_MAX_FONT_SIZE_MULTIPLIER}
+                className="text-[13px] text-secondary-foreground"
+            >
+                {children}
+            </Text>
         </View>
     );
 };

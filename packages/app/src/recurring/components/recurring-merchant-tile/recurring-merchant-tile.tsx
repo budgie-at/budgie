@@ -1,57 +1,55 @@
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
-
-import { Icon } from '../../../@generic/component/icon/icon';
-import { BACKGROUND_COLOR_PALETTE } from '../../../@generic/constant/background-color-palette.constant';
-import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { getRecurringTileVariant } from '../../utils/get-recurring-tile-variant.util';
 
-import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import type { UserIconType } from '@budgie/contracts';
-import type { ClassValue } from 'cn';
+import type { RecurringTileVariantEnum } from '../../enum/recurring-tile-variant.enum';
 
 interface Props {
-    readonly categoryIcon: UserIconType | null;
     readonly title: string;
     readonly size: number;
 }
 
-const tileVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('items-center justify-center', {
-    variants: { variant: BACKGROUND_COLOR_PALETTE }
-});
+const TILE_CLASS_NAMES: Record<RecurringTileVariantEnum, string> = {
+    VIOLET: 'bg-violet-foreground/16',
+    CYAN: 'bg-cyan-foreground/16',
+    PINK: 'bg-pink-foreground/16',
+    POSITIVE: 'bg-positive-foreground/16',
+    WARNING: 'bg-warning-foreground/16',
+    DEFAULT: 'bg-default-foreground/16'
+};
 
-const letterVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('font-bold', {
-    variants: { variant: FOREGROUND_COLOR_PALETTE }
-});
+const LETTER_CLASS_NAMES: Record<RecurringTileVariantEnum, string> = {
+    VIOLET: 'text-violet-foreground',
+    CYAN: 'text-cyan-foreground',
+    PINK: 'text-pink-foreground',
+    POSITIVE: 'text-positive-foreground',
+    WARNING: 'text-warning-foreground',
+    DEFAULT: 'text-default-foreground'
+};
+
+const tileVariants = cva('items-center justify-center', { variants: { variant: TILE_CLASS_NAMES } });
+
+const letterVariants = cva('font-bold', { variants: { variant: LETTER_CLASS_NAMES } });
 
 const continuousCorners = { borderCurve: 'continuous' as const };
 
-export const RecurringMerchantTile = ({ categoryIcon, title, size }: Props) => {
+export const RecurringMerchantTile = ({ title, size }: Props) => {
     const variant = getRecurringTileVariant(title);
     const letter = Array.from(title.trim())[0]?.toUpperCase() ?? '';
-    const badgeSize = Math.round(size * 0.42);
     const tileStyle = [continuousCorners, { width: size, height: size, borderRadius: Math.round(size * 0.28) }];
     const letterStyle = { fontSize: Math.round(size * 0.46), lineHeight: Math.round(size * 0.56) };
-    const frameStyle = { width: size, height: size };
-    const badgeStyle = { width: badgeSize, height: badgeSize, borderRadius: badgeSize / 2, right: -3, bottom: -3 };
 
     return (
-        <View style={frameStyle} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
-            <View className={tileVariants({ variant })} style={tileStyle}>
-                <Text allowFontScaling={false} className={letterVariants({ variant })} style={letterStyle}>
-                    {letter}
-                </Text>
-            </View>
-            {isDefined(categoryIcon) ? (
-                <View
-                    className="absolute items-center justify-center border-2 border-grouped-surface-row bg-grouped-surface-row"
-                    style={badgeStyle}
-                >
-                    <Icon icon={categoryIcon} size={Math.round(badgeSize * 0.6)} className="text-secondary-foreground" />
-                </View>
-            ) : null}
+        <View
+            className={tileVariants({ variant })}
+            style={tileStyle}
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+        >
+            <Text allowFontScaling={false} className={letterVariants({ variant })} style={letterStyle}>
+                {letter}
+            </Text>
         </View>
     );
 };

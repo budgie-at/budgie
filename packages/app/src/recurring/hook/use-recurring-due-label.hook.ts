@@ -2,7 +2,7 @@ import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
 
-const RELATIVE_DAYS_LIMIT = 30;
+const RELATIVE_DAYS_LIMIT = 120;
 
 export const useRecurringDueLabel = () => {
     const { t } = useLingui();

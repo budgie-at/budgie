@@ -48,13 +48,13 @@ export const SegmentedControl = <T extends string>(props: Props<T>) => {
         <View
             accessibilityRole="tablist"
             accessibilityState={accessibilityState}
-            className={cn('min-h-[36px] flex-row rounded-[10px] bg-surface-fill p-[2px]', className)}
+            className={cn('min-h-[36px] flex-row rounded-[10px] bg-segmented-track p-[2px]', className)}
             style={continuousCorners}
             onLayout={handleLayout}
         >
             {disabled ? null : (
                 <Animated.View
-                    className="absolute top-[2px] bottom-[2px] left-[2px] rounded-[8px] border-[0.5px] border-black/[0.06] bg-white shadow-md dark:border-transparent dark:bg-[rgb(118,118,124)]"
+                    className="absolute top-[2px] bottom-[2px] left-[2px] rounded-[8px] border-[0.5px] border-black/[0.06] bg-white shadow-md dark:border-transparent dark:bg-[rgb(84,84,88)]"
                     style={thumbStyle}
                 />
             )}

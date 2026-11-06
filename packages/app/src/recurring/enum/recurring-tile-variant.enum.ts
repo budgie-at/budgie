@@ -1,0 +1,8 @@
+export enum RecurringTileVariantEnum {
+    VIOLET = 'VIOLET',
+    CYAN = 'CYAN',
+    PINK = 'PINK',
+    POSITIVE = 'POSITIVE',
+    WARNING = 'WARNING',
+    DEFAULT = 'DEFAULT'
+}

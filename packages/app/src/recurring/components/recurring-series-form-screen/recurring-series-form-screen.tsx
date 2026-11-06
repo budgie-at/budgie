@@ -1,11 +1,11 @@
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { BottomChromeInsetProvider, ScreenChromeFooter, ScreenChromeScrollView } from '@rnw-community/react-native-screen-chrome';
 import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
@@ -56,6 +56,11 @@ export const RecurringSeriesFormScreen = ({ target, initialValues }: Props) => {
     const kindField = isEditing ? null : <RecurringFormKindField />;
     const [amount, seriesTitle] = useWatch({ control: form.control, name: ['amount', 'title'] });
     const isSaveDisabled = !isPositiveNumber(amount) || !isNotEmptyString(seriesTitle.trim());
+    const saveHint = isSaveDisabled ? (
+        <Text className="px-3xl pb-sm text-center text-[13px] text-secondary-foreground">
+            <Trans>Add an amount and a name to save</Trans>
+        </Text>
+    ) : null;
 
     const handleGoBack = () => void router.back();
 
@@ -104,6 +109,7 @@ export const RecurringSeriesFormScreen = ({ target, initialValues }: Props) => {
                             </View>
                         </ScreenChromeScrollView>
                         <View className="pt-lg pb-md">
+                            {saveHint}
                             <ScreenChromeFooter includeBottomSafeArea={false} style={FOOTER_STYLE}>
                                 <PillButton
                                     label={t`Save`}
