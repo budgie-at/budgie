@@ -6,8 +6,8 @@ import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import { router } from 'expo-router';
 import { FormProvider, useForm } from 'react-hook-form';
+import { View } from 'react-native';
 
-import { ModalPage } from '../@generic/component/page/modal-page';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { useSingleFlight } from '../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../@generic/utils/toast-on-failure.util';
@@ -93,9 +93,9 @@ export default function ConvertToTransferModal() {
 
     return (
         <FormProvider {...form}>
-            <ModalPage className="bg-grouped-surface" testID={ConvertToTransferModalSelector.Page} contentClassName="px-0">
+            <View collapsable={false} testID={ConvertToTransferModalSelector.Page}>
                 <ConvertTransferForm isSubmitting={isLoading} onSubmit={handleSubmit} onCancel={handleCancel} />
-            </ModalPage>
+            </View>
         </FormProvider>
     );
 }

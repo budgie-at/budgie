@@ -14,7 +14,7 @@ interface Props {
     readonly config?: ScreenChromeConfigOverridesInterface;
 }
 
-const FADE_SOLID_CLASSNAME = 'bg-surface/70 dark:bg-surface/65';
+const FADE_SOLID_CLASSNAME = 'bg-surface/92 dark:bg-surface/90';
 const FADE_WASH_CLASSNAME = 'bg-surface/5';
 
 export const ScreenChromeThemeProvider = ({ children, syncNativeScrollOffset, config = SCREEN_CHROME_CONFIG }: Props) => {

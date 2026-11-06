@@ -3210,7 +3210,7 @@ msgstr "Créer quand même"
 msgid "Create budget"
 msgstr "Créer un budget"
 
-#: src/app/category-selector.tsx
+#: src/category/components/category-create-row/category-create-row.tsx
 #: src/category/components/category-destination-sheet/category-destination-sheet.tsx
 #: src/category/components/category-form/category-form.tsx
 msgid "Create category"
@@ -3874,10 +3874,6 @@ msgstr "Modifier l'étiquette"
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "Edit the amount"
 msgstr "Modifier le montant"
-
-#: src/transaction/components/transaction-info-edit-button/transaction-info-edit-button.tsx
-msgid "Edit transaction"
-msgstr "Modifier la transaction"
 
 #: src/transaction/components/transaction-list-edit-menu-item/transaction-list-edit-menu-item.tsx
 msgid "Edit Transaction"
@@ -5249,6 +5245,7 @@ msgid "Merchant code"
 msgstr "Code marchand"
 
 #: src/rule/constant/rule-condition-field.constant.ts
+#: src/transaction/components/transaction-merchant-input/transaction-merchant-input.tsx
 msgid "Merchant or payment description"
 msgstr "Commerçant ou libellé du paiement"
 

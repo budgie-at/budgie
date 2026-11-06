@@ -22,6 +22,7 @@ import { computeTransferDisplay } from '../../utils/compute-transfer-display.uti
 import { formatKeypadAmount } from '../../utils/format-keypad-amount.util';
 import { ConversionRow } from '../conversion-row/conversion-row';
 import { CurrencyModePill } from '../currency-mode-pill/currency-mode-pill';
+import { QuickFormContext } from '../quick-form-context/quick-form-context';
 import { QuickFormLayout } from '../quick-form-layout/quick-form-layout';
 import { QuickFormSecondaryLine } from '../quick-form-secondary-line/quick-form-secondary-line';
 import { QuickFormValidationSlot } from '../quick-form-validation-slot/quick-form-validation-slot';
@@ -227,6 +228,23 @@ export const TransferQuickForm = (props: Props) => {
 
     const keypad = isEditingAmount ? <TransactionKeypad keypad={activeKeypad.handlers} /> : null;
 
+    const contextContent = (
+        <View className="items-center gap-y-[4px]">
+            <QuickFormSecondaryLine>
+                {isDefined(display.amountCode) && isEditingDestination ? (
+                    <CurrencyModePill
+                        label={currencyPillLabel}
+                        accessibilityLabel={display.amountLabel}
+                        isFlipped={isEditingDestination}
+                        onPress={handleConversionRowPress}
+                    />
+                ) : null}
+            </QuickFormSecondaryLine>
+            <QuickFormValidationSlot />
+        </View>
+    );
+    const context = isNewTransaction ? contextContent : <QuickFormContext>{contextContent}</QuickFormContext>;
+
     return (
         <QuickFormLayout
             onDismissKeypad={dismissKeypad}
@@ -242,21 +260,7 @@ export const TransferQuickForm = (props: Props) => {
                     testID={SimpleQuickFormSelector.AmountInput}
                 />
             }
-            context={
-                <View className="items-center gap-y-[4px]">
-                    <QuickFormSecondaryLine>
-                        {isDefined(display.amountCode) && isEditingDestination ? (
-                            <CurrencyModePill
-                                label={currencyPillLabel}
-                                accessibilityLabel={display.amountLabel}
-                                isFlipped={isEditingDestination}
-                                onPress={handleConversionRowPress}
-                            />
-                        ) : null}
-                    </QuickFormSecondaryLine>
-                    <QuickFormValidationSlot />
-                </View>
-            }
+            context={context}
             keypad={keypad}
             actions={
                 <TransactionFormActions

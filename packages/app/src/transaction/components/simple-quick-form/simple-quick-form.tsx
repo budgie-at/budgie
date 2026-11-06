@@ -1,7 +1,6 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { ReactNode, Ref } from 'react';
-import { View } from 'react-native';
 
 import { useSimpleQuickForm } from '../../hook/use-simple-quick-form.hook';
 import { useTransactionKeypadEditing } from '../../hook/use-transaction-keypad-editing.hook';
@@ -14,6 +13,7 @@ import { TransactionAmountDisplay } from '../transaction-amount-display/transact
 import { TransactionFeeFieldIcon } from '../transaction-fee-field-icon/transaction-fee-field-icon';
 import { TransactionFormActions } from '../transaction-form-actions/transaction-form-actions';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
+import { TransactionMerchantInput } from '../transaction-merchant-input/transaction-merchant-input';
 
 import { SimpleQuickFormSelector } from './simple-quick-form.selector';
 
@@ -37,6 +37,7 @@ export const SimpleQuickForm = (props: Props) => {
     const isConfirmDisabled = !formState.isAmountPositive || (!isNewTransaction && !formState.isDirty);
     const keypad = isEditingAmount ? <TransactionKeypad keypad={form.keypadHandlers} /> : null;
 
+    const merchant = isNewTransaction ? <TransactionMerchantInput /> : formState.title;
     const suggestions = (
         <SuggestionsContainer
             isNewTransaction={isNewTransaction}
@@ -91,7 +92,7 @@ export const SimpleQuickForm = (props: Props) => {
                         />
                     }
                     context={
-                        <MccInfoRow transactionTitle={formState.title} mccCategoryId={formState.mccCategoryId} suggestions={suggestions}>
+                        <MccInfoRow transactionTitle={merchant} mccCategoryId={formState.mccCategoryId} suggestions={suggestions}>
                             {children}
                         </MccInfoRow>
                     }
@@ -105,7 +106,7 @@ export const SimpleQuickForm = (props: Props) => {
                         />
                     }
                 >
-                    <View className="gap-y-[12px]">{fields}</View>
+                    {fields}
                 </QuickFormLayout>
             )}
         </SimpleQuickFormControls>

@@ -23,6 +23,7 @@ export const QuickFormScroll = ({ children, topInset }: Props) => {
     const { dismiss } = use(TransactionKeypadContext);
 
     const includeTopSafeArea = isPositiveNumber(topInset);
+    const bottomInset = chromeHeight + 12;
     const keyboardOffset = inset + TRANSACTION_NOTE_INPUT_MIN_HEIGHT;
 
     return (
@@ -31,7 +32,7 @@ export const QuickFormScroll = ({ children, topInset }: Props) => {
             contentContainerStyle={CONTENT_STYLE}
             contentInsetTop={topInset}
             includeTopSafeArea={includeTopSafeArea}
-            contentInsetBottom={chromeHeight}
+            contentInsetBottom={bottomInset}
             bottomOffset={keyboardOffset}
             disableScrollOnKeyboardHide
             alwaysBounceVertical

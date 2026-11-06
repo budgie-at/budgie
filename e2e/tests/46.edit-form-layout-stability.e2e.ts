@@ -152,6 +152,7 @@ test('46 edit form layout stability', { tags: ['transactions'] }, async ({ budgi
     });
 
     await b.phase('preserve a pending zero fraction while entering an amount', async () => {
+        await openForm(LONG_TITLE_TRANSACTION);
         await b.tapId(ctx, 'TransactionForm.AmountInput');
         await b.byId(screen, 'TransactionKeypad.Backspace').longPress();
         await b.tapId(ctx, 'TransactionKeypad.Decimal');

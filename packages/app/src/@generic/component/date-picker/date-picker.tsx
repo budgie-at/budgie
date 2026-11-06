@@ -6,6 +6,8 @@ import { useResolveClassNames } from 'uniwind';
 
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
 import { cn } from '../../utils/cn.util';
+import { DatePickerGridLabel } from '../date-picker-grid-label/date-picker-grid-label';
+import { DatePickerHeaderButton } from '../date-picker-header-button/date-picker-header-button';
 import { Icon } from '../icon/icon';
 
 import { DatePickerSelector } from './date-picker.selector';
@@ -13,8 +15,11 @@ import { DatePickerSelector } from './date-picker.selector';
 const renderDay = (day: CalendarDay, shouldShowTodayIndicator: boolean) => (
     <Text
         testID={DatePickerSelector.Day(day.number)}
+        maxFontSizeMultiplier={1.3}
+        numberOfLines={1}
+        adjustsFontSizeToFit
         className={cn(
-            'text-primary font-medium',
+            'text-[17px] text-primary font-medium',
             !day.isCurrentMonth && 'text-secondary-foreground/40',
             shouldShowTodayIndicator && day.isToday && 'font-bold',
             (day.isSelected || day.rangeStart || day.rangeEnd) && 'text-primary-reverse font-bold'
@@ -27,7 +32,7 @@ const renderDay = (day: CalendarDay, shouldShowTodayIndicator: boolean) => (
 const RANGE_FILL_CLASSNAME = 'bg-primary/6 dark:bg-primary/8';
 const HEADER_CLASSNAME = 'py-md px-xl';
 const DAY_PILL_RADIUS = 9999;
-const DAY_PILL_SIZE = 40;
+const DAY_PILL_SIZE = 44;
 const TODAY_BORDER_WIDTH = 1;
 
 const buildStyles = (
@@ -61,6 +66,8 @@ const buildStyles = (
 
     return {
         header,
+        button_prev: { minHeight: 44, minWidth: 44 },
+        button_next: { minHeight: 44, minWidth: 44 },
         today,
         selected: pill,
         range_start: pill,
@@ -82,7 +89,22 @@ export const DatePicker = (props: ComponentProps<typeof DateTimePicker>) => {
     const defaultComponents: CalendarComponents = {
         IconNext: <Icon icon={UserIconNameEnum.ChevronRight} className="text-primary" size={20} />,
         IconPrev: <Icon icon={UserIconNameEnum.ChevronLeft} className="text-primary" size={20} />,
-        Day: day => renderDay(day, shouldShowTodayIndicator)
+        Day: day => renderDay(day, shouldShowTodayIndicator),
+        Weekday: weekday => (
+            <Text className="text-[11px] text-secondary-foreground font-semibold" maxFontSizeMultiplier={1.3} numberOfLines={1}>
+                {weekday.name[props.weekdaysFormat ?? 'min']}
+            </Text>
+        ),
+        Month: month => <DatePickerGridLabel isSelected={month.isSelected}>{month.name[props.monthsFormat ?? 'full']}</DatePickerGridLabel>,
+        Year: year => <DatePickerGridLabel isSelected={year.isSelected}>{year.text}</DatePickerGridLabel>,
+        MonthSelector: month => (
+            <DatePickerHeaderButton label={month.text} onPress={month.onPress} disabled={props.disableMonthPicker} testID="btn-month" />
+        ),
+        YearSelector: year => {
+            const label = year.isOpen ? year.yearRange : year.year;
+
+            return <DatePickerHeaderButton label={label} onPress={year.onPress} disabled={props.disableYearPicker} testID="btn-year" />;
+        }
     };
     const mergedComponents = { ...defaultComponents, ...props.components };
     const themedStyles = buildStyles(primary, rangeFill, header, shouldShowTodayIndicator);
@@ -112,5 +134,15 @@ export const DatePicker = (props: ComponentProps<typeof DateTimePicker>) => {
     };
     /* oxlint-enable lingui/no-unlocalized-strings */
 
-    return <DateTimePicker {...props} classNames={classNames} styles={themedStyles} locale={languageTag} components={mergedComponents} />;
+    return (
+        <DateTimePicker
+            containerHeight={320}
+            weekdaysHeight={32}
+            {...props}
+            classNames={classNames}
+            styles={themedStyles}
+            locale={languageTag}
+            components={mergedComponents}
+        />
+    );
 };

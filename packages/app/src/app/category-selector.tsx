@@ -3,13 +3,13 @@ import { useState } from 'react';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { GroupedListRow } from '../@generic/component/grouped-list-row/grouped-list-row';
 import { SelectorModalDescription } from '../@generic/component/selector-modal-description/selector-modal-description';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { SelectorNoResultsState } from '../@generic/component/selector-no-results-state/selector-no-results-state';
 import { SheetSurface } from '../@generic/component/sheet-surface/sheet-surface';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { prepareSelectorGridData } from '../@generic/utils/prepare-selector-grid-data.util';
+import { CategoryCreateRow } from '../category/components/category-create-row/category-create-row';
 import { CategorySelectContent } from '../category/components/category-select-content/category-select-content';
 import { useCategoryFormModal } from '../category/context/category-form-modal.context';
 import { useCategorySelectorModal, useCategorySelectorModalParams } from '../category/context/category-selector-modal.context';
@@ -55,7 +55,7 @@ export default function CategorySelectorModal() {
                 testID={CategorySelectorModalSelector.Input}
             />
 
-            <GroupedListRow title={t`Create category`} onPress={handleCreatePress} testID={CategorySelectorModalSelector.CreateButton} />
+            <CategoryCreateRow onPress={handleCreatePress} />
             <SelectorModalDescription title={title} description={description}>
                 <CategorySelectContent
                     listEmptyComponent={listEmptyComponent}

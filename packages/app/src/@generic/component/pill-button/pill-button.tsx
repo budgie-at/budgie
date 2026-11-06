@@ -25,7 +25,7 @@ const containerVariants = cva('min-h-[52px] items-center justify-center rounded-
     },
     compoundVariants: [
         { variant: 'primary', isDisabled: false, className: 'bg-positive-action' },
-        { variant: 'primary', isDisabled: true, className: 'bg-positive-action/25' },
+        { variant: 'primary', isDisabled: true, className: 'bg-cta-disabled-background' },
         { variant: 'destructive', isDisabled: false, className: 'bg-destructive-action' },
         { variant: 'destructive', isDisabled: true, className: 'bg-destructive-action/40' }
     ]
@@ -37,7 +37,7 @@ const labelVariants = cva('text-center text-[17px] font-semibold', {
         isDisabled: { true: '', false: '' }
     },
     compoundVariants: [
-        { variant: 'primary', isDisabled: false, className: 'text-white' },
+        { variant: 'primary', isDisabled: false, className: 'text-positive-action-foreground' },
         { variant: 'primary', isDisabled: true, className: 'text-secondary-foreground' },
         { variant: 'destructive', isDisabled: false, className: 'text-white' },
         { variant: 'destructive', isDisabled: true, className: 'text-primary/70' }

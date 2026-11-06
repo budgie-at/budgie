@@ -22,6 +22,12 @@ test('08 expense transaction', { tags: ['transactions'] }, async ({ budgie }) =>
         await t.openTransactionForm(ctx, 'ActionItem.Expense', 'New Expense');
         await b.expectId(ctx, 'TransactionForm.SelectedAccount.E2E_Txn_Account');
         await expect(b.byId(ctx.screen, 'TransactionForm.SubmitButton')).toBeDisabled();
+        const merchantInput = screen.getByRole('textbox', { name: 'Merchant or payment description' }).first();
+        await merchantInput.fill('Lunch');
+        await b.expectNoId(ctx, 'TransactionKeypad.Digit.1');
+        await merchantInput.fill('');
+        await b.tapId(ctx, 'TransactionForm.AmountInput');
+        await b.expectId(ctx, 'TransactionKeypad.Digit.1');
         await t.typeDigits(ctx, '42');
         await t.selectAccount(ctx, 'E2E Txn Account');
         await c.createCategoryFromTransaction(ctx, 'E2E Txn Category');
@@ -66,7 +72,7 @@ test('08 expense transaction', { tags: ['transactions'] }, async ({ budgie }) =>
         await b.expectId(ctx, 'TransactionActionsMenu.StartDepositButton');
         await b.expectNoId(ctx, 'TransactionActionsMenu.ConvertToRefundButton');
         await b.expectNoId(ctx, 'TransactionActionsMenu.RevertButton');
-        await b.tapId(ctx, 'TransactionActionsMenu.TriggerButton');
+        await t.closeMenu(ctx);
 
         await t.clearAmount(ctx);
         await t.typeDigits(ctx, '33');

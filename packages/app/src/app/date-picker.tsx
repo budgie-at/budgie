@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { ScrollView } from 'react-native';
+import { View } from 'react-native';
 
 import { SingleDatePicker } from '../@generic/component/date-picker/single-date-picker';
 import { SheetHeaderAction } from '../@generic/component/sheet-header-action/sheet-header-action';
@@ -23,18 +23,22 @@ export default function DatePickerModal() {
     const handleClose = () => void resolveDatePicker(null);
 
     return (
-        <SheetSurface
-            header={
-                <SheetTitleRow
-                    title={t`Date`}
-                    onClose={handleClose}
-                    trailing={<SheetHeaderAction label={t`Done`} onPress={handleDone} testID={DatePickerModalSelector.Done} />}
-                />
-            }
-        >
-            <ScrollView contentContainerClassName="pb-safe-or-[16px]" showsVerticalScrollIndicator={false}>
-                <SingleDatePicker date={selectedDate} onChange={setSelectedDate} />
-            </ScrollView>
-        </SheetSurface>
+        <View collapsable={false}>
+            <SheetSurface
+                className="flex-none"
+                contentClassName="flex-none"
+                header={
+                    <SheetTitleRow
+                        title={t`Date`}
+                        onClose={handleClose}
+                        trailing={<SheetHeaderAction label={t`Done`} onPress={handleDone} testID={DatePickerModalSelector.Done} />}
+                    />
+                }
+            >
+                <View className="pb-safe-or-[48px]">
+                    <SingleDatePicker date={selectedDate} onChange={setSelectedDate} />
+                </View>
+            </SheetSurface>
+        </View>
     );
 }

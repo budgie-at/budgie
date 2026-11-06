@@ -4,12 +4,13 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-size-multiplier.constant';
 import { useGetMccCategoryByIdQuery } from '../../../mcc-category/query/use-get-mcc-category-by-id.query';
+import { QuickFormContext } from '../quick-form-context/quick-form-context';
 import { QuickFormValidationSlot } from '../quick-form-validation-slot/quick-form-validation-slot';
 
-import type { ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 
 interface Props {
-    readonly transactionTitle: string;
+    readonly transactionTitle: string | ReactElement;
     readonly mccCategoryId: number | null;
     readonly children?: ReactNode;
     readonly suggestions?: ReactNode;
@@ -21,32 +22,36 @@ export const MccInfoRow = ({ transactionTitle, mccCategoryId, children, suggesti
     const { mccCategory } = useGetMccCategoryByIdQuery(mccCategoryId);
 
     return (
-        <View className="items-center self-stretch">
-            <View className="h-[60px] items-center justify-center self-stretch">
-                {isNotEmptyString(transactionTitle) ? (
-                    <Text
-                        className="px-[16px] text-center text-[17px] leading-[22px] font-medium text-primary"
-                        numberOfLines={2}
-                        maxFontSizeMultiplier={MERCHANT_MAX_FONT_SCALE}
-                    >
-                        {transactionTitle}
-                    </Text>
-                ) : null}
+        <QuickFormContext>
+            <View className="items-center self-stretch">
+                <View className="h-[60px] items-center justify-center self-stretch">
+                    {isNotEmptyString(transactionTitle) ? (
+                        <Text
+                            className="px-[16px] text-center text-[17px] leading-[22px] font-medium text-primary"
+                            numberOfLines={2}
+                            maxFontSizeMultiplier={MERCHANT_MAX_FONT_SCALE}
+                        >
+                            {transactionTitle}
+                        </Text>
+                    ) : (
+                        transactionTitle
+                    )}
+                </View>
+                <View className="h-[44px] max-w-full flex-row items-center justify-center gap-x-[8px] overflow-hidden">
+                    {isDefined(mccCategory) ? (
+                        <Text
+                            className="shrink text-[13px] leading-[18px] text-secondary-foreground"
+                            maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+                            numberOfLines={1}
+                        >
+                            {mccCategory.shortDescription}
+                        </Text>
+                    ) : null}
+                    {children}
+                    {suggestions}
+                </View>
+                <QuickFormValidationSlot />
             </View>
-            <View className="h-[44px] max-w-full flex-row items-center justify-center gap-x-[8px] overflow-hidden">
-                {isDefined(mccCategory) ? (
-                    <Text
-                        className="shrink text-[13px] leading-[18px] text-secondary-foreground"
-                        maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
-                        numberOfLines={1}
-                    >
-                        {mccCategory.shortDescription}
-                    </Text>
-                ) : null}
-                {children}
-                {suggestions}
-            </View>
-            <QuickFormValidationSlot />
-        </View>
+        </QuickFormContext>
     );
 };

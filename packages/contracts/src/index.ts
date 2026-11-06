@@ -200,6 +200,7 @@ export type { TransactionWithRelationsEntityInterface } from './transaction/enti
 export type { TransactionWithEntriesEntityInterface } from './transaction/entity/transaction-with-entries-entity.interface';
 export type { TransactionWithEntriesMccCategoryEntityInterface } from './transaction/entity/transaction-with-entries-mcc-category-entity.interface';
 
+export { TRANSACTION_TITLE_MAX_LENGTH } from './transaction/constant/transaction-title-max-length.constant';
 export { TRANSACTION_COMMENT_MAX_LENGTH } from './transaction/constant/transaction-comment-max-length.constant';
 
 export { TransactionCreateInputSchema } from './transaction/schema/transaction-create-input.schema';
