@@ -371,7 +371,10 @@ export class SiriCatalogService extends Context.Service<SiriCatalogService>()('@
             }),
             clear: Effect.fn('SiriCatalogService.clear')(function* () {
                 yield* publishSemaphore.withPermits(1)(
-                    Effect.forEach(Object.values(SiriCatalogKindEnum), kind => logAndContinue(publishCatalog(kind, [])), { discard: true })
+                    Effect.all(
+                        Object.values(SiriCatalogKindEnum).map(kind => publishCatalog(kind, [])),
+                        { mode: 'result' }
+                    ).pipe(Effect.flatMap(results => Effect.forEach(results, Effect.fromResult, { discard: true })))
                 );
             })
         };
