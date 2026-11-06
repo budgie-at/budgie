@@ -50,7 +50,7 @@
         "ts:native": "node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.json && node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.build.json"
     },
     "dependencies": {
-        "@rnw-community/shared": "^2.28.0",
+        "@rnw-community/shared": "^3.0.5",
         "react-compiler-runtime": "^1.0.0"
     },
     "devDependencies": {
