@@ -88,7 +88,7 @@ if [ "$(jq -r '."capture-mode" // "flows"' "$CONFIG_PATH")" != 'direct' ]; then
     fail "$CONFIG_PATH is not in capture-mode 'direct'; the e2e capture takes a capture-scenes manifest"
 fi
 flow_scenes=$(jq -r '[."capture-scenes"[] | select(has("flow")) | .name] | join(", ")' "$CONFIG_PATH")
-[ -z "$flow_scenes" ] || fail "scenes $flow_scenes declare a Maestro flow; name their e2e scene with 'test' (e2e/support/media/scenes.ts)"
+[ -z "$flow_scenes" ] || fail "scenes $flow_scenes declare a flow, which nothing here runs; name their e2e scene with 'test' (e2e/support/media/scenes.ts)"
 
 if [ -n "$STATUS_BAR_MODE" ]; then
     case "$STATUS_BAR_MODE" in
