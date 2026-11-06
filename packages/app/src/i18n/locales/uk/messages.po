@@ -213,7 +213,7 @@ msgstr "{code} · Базова валюта"
 
 #: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
 msgid "{committedCount, plural, one {# bill} other {# bills}}"
-msgstr ""
+msgstr "{committedCount, plural, one {# рахунок} few {# рахунки} many {# рахунків} other {# рахунку}}"
 
 #: src/tag/hooks/use-merge-tag.hook.ts
 msgid "{count, plural, =0 {“{sourceTitle}” is not on any transactions. It is removed after the merge.} one {Pick the tag that replaces it on # transaction.} other {Pick the tag that replaces it on # transactions.}}"
@@ -289,7 +289,7 @@ msgstr "Вибрано {count} з {rowCount}"
 
 #: src/recurring/components/recurring-summary-subline/recurring-summary-subline.tsx
 msgid "{countLabel} · Next: {nextTitle} {nextAmount} · {nextDue}"
-msgstr ""
+msgstr "{countLabel} · Наступний: {nextTitle} {nextAmount} · {nextDue}"
 
 #: src/sync/component/enable-banking-bank-row/enable-banking-bank-row.tsx
 msgid "{country} · Beta"
@@ -331,7 +331,7 @@ msgstr "{daysRemaining, plural, one {Залишився # день} few {Зал�
 
 #: src/recurring/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "{displayedMonthName} total"
-msgstr ""
+msgstr "Разом за {displayedMonthName}"
 
 #: src/account/component/debt-account-card/debt-account-card.tsx
 msgid "{displayPercentage}%"
@@ -936,7 +936,7 @@ msgstr "+{hiddenCategoryCount} ще"
 
 #: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
 msgid "+{incomeAmount} / month"
-msgstr ""
+msgstr "+{incomeAmount} / міс."
 
 #: src/budget/components/budget-limit-row/budget-limit-row.tsx
 msgid "−{carriedLabel} carried"
@@ -1230,7 +1230,7 @@ msgstr "Додайте дію, щоб продовжити"
 
 #: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
 msgid "Add an amount and a name to save"
-msgstr ""
+msgstr "Додайте суму й назву, щоб зберегти"
 
 #: src/account/component/account-list-item/account-list-item.tsx
 msgid "Add balance"
@@ -1944,7 +1944,7 @@ msgstr "Біометричні дані ніколи не залишають ц�
 
 #: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 msgid "Biweekly"
-msgstr ""
+msgstr "Раз на 2 тижні"
 
 #: src/settings/components/screenshot-protection-row/screenshot-protection-row.tsx
 msgid "Blank screenshots and recordings"
@@ -2115,7 +2115,7 @@ msgstr "байт"
 
 #: src/recurring/components/recurring-pane-toolbar/recurring-pane-toolbar.tsx
 msgid "Calendar"
-msgstr ""
+msgstr "Календар"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Can run for hours on old accounts, and much slower while the app is closed."
@@ -2561,7 +2561,7 @@ msgstr "Очистити"
 
 #: src/@generic/component/grouped-list-value-row/grouped-list-value-row.tsx
 msgid "Clear {title}"
-msgstr ""
+msgstr "Очистити {title}"
 
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
@@ -4558,7 +4558,7 @@ msgstr "Від однієї суми до іншої"
 
 #: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
 msgid "From transaction"
-msgstr ""
+msgstr "З транзакції"
 
 #: src/budget/components/budget-fund-suggestion-banner/budget-fund-suggestion-banner.tsx
 msgid "From your recurring charges: {name}, {amountLabel} per cycle"
@@ -5125,11 +5125,11 @@ msgstr "Останній рік"
 
 #: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
 msgid "Later"
-msgstr ""
+msgstr "Пізніше"
 
 #: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
 msgid "Later this month"
-msgstr ""
+msgstr "Пізніше цього місяця"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Later, next time I’m on Wi-Fi"
@@ -5224,7 +5224,7 @@ msgstr "Пов’язати повернення"
 
 #: src/recurring/components/recurring-pane-toolbar/recurring-pane-toolbar.tsx
 msgid "List"
-msgstr ""
+msgstr "Список"
 
 #: src/account/component/account-switch-field/account-switch-field.tsx
 msgid "List it on the Home screen"
@@ -5550,7 +5550,7 @@ msgstr "Щомісяця"
 
 #: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
 msgid "Monthly average"
-msgstr ""
+msgstr "У середньому на місяць"
 
 #: src/budget/constant/budget-period-title-label.constant.ts
 msgid "Monthly budget"
@@ -5748,7 +5748,7 @@ msgstr "Наступний {formattedNextAmount} · {nextDate}"
 
 #: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
 msgid "Next 7 days"
-msgstr ""
+msgstr "Найближчі 7 днів"
 
 #: src/onboarding/component/onboarding-keyboard-controls/onboarding-keyboard-controls.tsx
 msgid "Next field"
@@ -5769,7 +5769,7 @@ msgstr "Наступний платіж"
 
 #: src/recurring/components/recurring-detail-hero/recurring-detail-hero.tsx
 msgid "Next payment · {nextDateLabel}"
-msgstr ""
+msgstr "Наступний платіж · {nextDateLabel}"
 
 #: src/installment-plan/component/installment-timeline/installment-timeline.tsx
 msgid "Next payment {nextPaymentLabel}"
@@ -6002,15 +6002,15 @@ msgstr "Поки немає транзакцій"
 #: src/recurring/components/recurring-detail-hero/recurring-detail-hero.tsx
 #: src/recurring/components/recurring-list-row-content/recurring-list-row-content.tsx
 msgid "No upcoming payment"
-msgstr ""
+msgstr "Немає наступного платежу"
 
 #: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
 msgid "No upcoming payments"
-msgstr ""
+msgstr "Немає майбутніх платежів"
 
 #: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
 msgid "Non-monthly bills are averaged per month."
-msgstr ""
+msgstr "Немісячні рахунки враховано як середнє за місяць."
 
 #: src/app/import-column-mapper.tsx
 #: src/import/components/import-column-map-field/import-column-map-field.tsx
@@ -6039,7 +6039,7 @@ msgstr "Не враховується в чистих активах"
 
 #: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
 msgid "Not counted in totals yet"
-msgstr ""
+msgstr "Поки не враховано в підсумках"
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "Not created yet"
@@ -6553,7 +6553,7 @@ msgstr "Винен вам"
 #: src/recurring/components/recurring-calendar-legend/recurring-calendar-legend.tsx
 #: src/recurring/components/recurring-calendar-summary/recurring-calendar-summary.tsx
 msgid "Paid"
-msgstr ""
+msgstr "Сплачено"
 
 #: src/installment-plan/component/installment-plan-paid-summary/installment-plan-paid-summary.tsx
 msgid "Paid {paidAmount} · {paidCount} of {installmentCount}"
@@ -6581,11 +6581,11 @@ msgstr "Попередні місяці"
 
 #: src/recurring/components/recurring-detail-destructive-row/recurring-detail-destructive-row.tsx
 msgid "Past payments stay in your transactions."
-msgstr ""
+msgstr "Минулі платежі залишаться у ваших транзакціях."
 
 #: src/recurring/components/recurring-detail-destructive-row/recurring-detail-destructive-row.tsx
 msgid "Past payments stay in your transactions. Budgie stops expecting new ones."
-msgstr ""
+msgstr "Минулі платежі залишаться у ваших транзакціях. Budgie більше не чекатиме нових."
 
 #: src/budget/constant/budget-period-past-label.constant.ts
 msgid "Past two-week periods"
@@ -7881,7 +7881,7 @@ msgstr "Схожі транзакції"
 
 #: src/recurring/components/recurring-detail-stats/recurring-detail-stats.tsx
 msgid "Since"
-msgstr ""
+msgstr "З"
 
 #: src/i18n/hook/use-format-date-range.hook.ts
 msgid "Since {fromLabel}"
@@ -8065,7 +8065,7 @@ msgstr "Покрокова інструкція"
 #: src/recurring/components/recurring-calendar-legend/recurring-calendar-legend.tsx
 #: src/recurring/components/recurring-calendar-summary/recurring-calendar-summary.tsx
 msgid "Still to pay"
-msgstr ""
+msgstr "Ще сплатити"
 
 #: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
@@ -8774,7 +8774,7 @@ msgstr "Токени та виписки залишаються на цьому 
 
 #: src/recurring/hook/use-recurring-due-label.hook.ts
 msgid "Tomorrow"
-msgstr ""
+msgstr "Завтра"
 
 #: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
 msgid "Too early to forecast"
@@ -8817,7 +8817,7 @@ msgstr "Усього надано в борг"
 
 #: src/recurring/components/recurring-detail-stats/recurring-detail-stats.tsx
 msgid "Total paid"
-msgstr ""
+msgstr "Усього сплачено"
 
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Touch ID"
@@ -9206,7 +9206,7 @@ msgstr "Актуально · {lastSyncedLabel}"
 
 #: src/recurring/components/recurring-detail-next-payments/recurring-detail-next-payments.tsx
 msgid "Upcoming"
-msgstr ""
+msgstr "Найближчі"
 
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx

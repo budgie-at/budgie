@@ -213,7 +213,7 @@ msgstr "{code} · Devise de base"
 
 #: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
 msgid "{committedCount, plural, one {# bill} other {# bills}}"
-msgstr ""
+msgstr "{committedCount, plural, one {# facture} other {# factures}}"
 
 #: src/tag/hooks/use-merge-tag.hook.ts
 msgid "{count, plural, =0 {“{sourceTitle}” is not on any transactions. It is removed after the merge.} one {Pick the tag that replaces it on # transaction.} other {Pick the tag that replaces it on # transactions.}}"
@@ -289,7 +289,7 @@ msgstr "{count} sur {rowCount} sélectionnés"
 
 #: src/recurring/components/recurring-summary-subline/recurring-summary-subline.tsx
 msgid "{countLabel} · Next: {nextTitle} {nextAmount} · {nextDue}"
-msgstr ""
+msgstr "{countLabel} · Prochain : {nextTitle} {nextAmount} · {nextDue}"
 
 #: src/sync/component/enable-banking-bank-row/enable-banking-bank-row.tsx
 msgid "{country} · Beta"
@@ -331,7 +331,7 @@ msgstr "{daysRemaining, plural, one {# jour restant} other {# jours restants}}"
 
 #: src/recurring/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "{displayedMonthName} total"
-msgstr ""
+msgstr "Total de {displayedMonthName}"
 
 #: src/account/component/debt-account-card/debt-account-card.tsx
 msgid "{displayPercentage}%"
@@ -936,7 +936,7 @@ msgstr "+{hiddenCategoryCount} de plus"
 
 #: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
 msgid "+{incomeAmount} / month"
-msgstr ""
+msgstr "+{incomeAmount} / mois"
 
 #: src/budget/components/budget-limit-row/budget-limit-row.tsx
 msgid "−{carriedLabel} carried"
@@ -1230,7 +1230,7 @@ msgstr "Ajoutez une action pour continuer"
 
 #: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
 msgid "Add an amount and a name to save"
-msgstr ""
+msgstr "Ajoutez un montant et un nom pour enregistrer"
 
 #: src/account/component/account-list-item/account-list-item.tsx
 msgid "Add balance"
@@ -1944,7 +1944,7 @@ msgstr "Les données biométriques ne quittent jamais ce téléphone"
 
 #: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 msgid "Biweekly"
-msgstr ""
+msgstr "Bimensuel"
 
 #: src/settings/components/screenshot-protection-row/screenshot-protection-row.tsx
 msgid "Blank screenshots and recordings"
@@ -2115,7 +2115,7 @@ msgstr "octets"
 
 #: src/recurring/components/recurring-pane-toolbar/recurring-pane-toolbar.tsx
 msgid "Calendar"
-msgstr ""
+msgstr "Calendrier"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Can run for hours on old accounts, and much slower while the app is closed."
@@ -2561,7 +2561,7 @@ msgstr "Effacer"
 
 #: src/@generic/component/grouped-list-value-row/grouped-list-value-row.tsx
 msgid "Clear {title}"
-msgstr ""
+msgstr "Effacer {title}"
 
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
@@ -4558,7 +4558,7 @@ msgstr "D’un montant à un autre"
 
 #: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
 msgid "From transaction"
-msgstr ""
+msgstr "Depuis la transaction"
 
 #: src/budget/components/budget-fund-suggestion-banner/budget-fund-suggestion-banner.tsx
 msgid "From your recurring charges: {name}, {amountLabel} per cycle"
@@ -5125,11 +5125,11 @@ msgstr "L'année dernière"
 
 #: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
 msgid "Later"
-msgstr ""
+msgstr "Plus tard"
 
 #: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
 msgid "Later this month"
-msgstr ""
+msgstr "Plus tard ce mois-ci"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Later, next time I’m on Wi-Fi"
@@ -5224,7 +5224,7 @@ msgstr "Associer le remboursement"
 
 #: src/recurring/components/recurring-pane-toolbar/recurring-pane-toolbar.tsx
 msgid "List"
-msgstr ""
+msgstr "Liste"
 
 #: src/account/component/account-switch-field/account-switch-field.tsx
 msgid "List it on the Home screen"
@@ -5550,7 +5550,7 @@ msgstr "Chaque mois"
 
 #: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
 msgid "Monthly average"
-msgstr ""
+msgstr "Moyenne mensuelle"
 
 #: src/budget/constant/budget-period-title-label.constant.ts
 msgid "Monthly budget"
@@ -5748,7 +5748,7 @@ msgstr "Prochain paiement : {formattedNextAmount} · {nextDate}"
 
 #: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
 msgid "Next 7 days"
-msgstr ""
+msgstr "7 prochains jours"
 
 #: src/onboarding/component/onboarding-keyboard-controls/onboarding-keyboard-controls.tsx
 msgid "Next field"
@@ -5769,7 +5769,7 @@ msgstr "Prochain paiement"
 
 #: src/recurring/components/recurring-detail-hero/recurring-detail-hero.tsx
 msgid "Next payment · {nextDateLabel}"
-msgstr ""
+msgstr "Prochain paiement · {nextDateLabel}"
 
 #: src/installment-plan/component/installment-timeline/installment-timeline.tsx
 msgid "Next payment {nextPaymentLabel}"
@@ -6002,15 +6002,15 @@ msgstr "Aucune transaction pour le moment"
 #: src/recurring/components/recurring-detail-hero/recurring-detail-hero.tsx
 #: src/recurring/components/recurring-list-row-content/recurring-list-row-content.tsx
 msgid "No upcoming payment"
-msgstr ""
+msgstr "Aucun paiement à venir"
 
 #: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
 msgid "No upcoming payments"
-msgstr ""
+msgstr "Aucun paiement à venir"
 
 #: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
 msgid "Non-monthly bills are averaged per month."
-msgstr ""
+msgstr "Les factures non mensuelles sont lissées par mois."
 
 #: src/app/import-column-mapper.tsx
 #: src/import/components/import-column-map-field/import-column-map-field.tsx
@@ -6039,7 +6039,7 @@ msgstr "Non compté dans le patrimoine net"
 
 #: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
 msgid "Not counted in totals yet"
-msgstr ""
+msgstr "Pas encore compté dans les totaux"
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "Not created yet"
@@ -6553,7 +6553,7 @@ msgstr "Vous doit"
 #: src/recurring/components/recurring-calendar-legend/recurring-calendar-legend.tsx
 #: src/recurring/components/recurring-calendar-summary/recurring-calendar-summary.tsx
 msgid "Paid"
-msgstr ""
+msgstr "Payé"
 
 #: src/installment-plan/component/installment-plan-paid-summary/installment-plan-paid-summary.tsx
 msgid "Paid {paidAmount} · {paidCount} of {installmentCount}"
@@ -6581,11 +6581,11 @@ msgstr "Mois précédents"
 
 #: src/recurring/components/recurring-detail-destructive-row/recurring-detail-destructive-row.tsx
 msgid "Past payments stay in your transactions."
-msgstr ""
+msgstr "Les paiements passés restent dans vos transactions."
 
 #: src/recurring/components/recurring-detail-destructive-row/recurring-detail-destructive-row.tsx
 msgid "Past payments stay in your transactions. Budgie stops expecting new ones."
-msgstr ""
+msgstr "Les paiements passés restent dans vos transactions. Budgie n’en attend plus de nouveaux."
 
 #: src/budget/constant/budget-period-past-label.constant.ts
 msgid "Past two-week periods"
@@ -7881,7 +7881,7 @@ msgstr "Transactions similaires"
 
 #: src/recurring/components/recurring-detail-stats/recurring-detail-stats.tsx
 msgid "Since"
-msgstr ""
+msgstr "Depuis"
 
 #: src/i18n/hook/use-format-date-range.hook.ts
 msgid "Since {fromLabel}"
@@ -8065,7 +8065,7 @@ msgstr "Instructions pas à pas"
 #: src/recurring/components/recurring-calendar-legend/recurring-calendar-legend.tsx
 #: src/recurring/components/recurring-calendar-summary/recurring-calendar-summary.tsx
 msgid "Still to pay"
-msgstr ""
+msgstr "Reste à payer"
 
 #: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
@@ -8774,7 +8774,7 @@ msgstr "Les jetons et relevés restent sur cet appareil."
 
 #: src/recurring/hook/use-recurring-due-label.hook.ts
 msgid "Tomorrow"
-msgstr ""
+msgstr "Demain"
 
 #: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
 msgid "Too early to forecast"
@@ -8817,7 +8817,7 @@ msgstr "Total prêté"
 
 #: src/recurring/components/recurring-detail-stats/recurring-detail-stats.tsx
 msgid "Total paid"
-msgstr ""
+msgstr "Total payé"
 
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Touch ID"
@@ -9206,7 +9206,7 @@ msgstr "À jour · {lastSyncedLabel}"
 
 #: src/recurring/components/recurring-detail-next-payments/recurring-detail-next-payments.tsx
 msgid "Upcoming"
-msgstr ""
+msgstr "À venir"
 
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
