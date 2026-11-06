@@ -13,6 +13,7 @@ import {
     BankIntegrationRepository,
     Db,
     HouseholdMembershipService,
+    HouseholdShareService,
     SettingsRepository,
     SyncApplyService,
     SyncIdentityRepository,
@@ -37,6 +38,7 @@ import type { CloudSyncStateInterface } from '@app/cloud-sync/interface/cloud-sy
 import type { DB, SyncApplyResultInterface } from '@budgie/contracts';
 import type {
     ICloudAccountStatusResult,
+    ICloudFetchedChangesEvent,
     ICloudFetchedRecord,
     ICloudRecordId,
     ICloudRecordPayload,
@@ -71,6 +73,7 @@ interface FakeTransportBehaviorInterface {
     accountStatus: ICloudAccountStatusResult;
     zoneMeta: ICloudFetchedRecord | null;
     zoneInventory: readonly ICloudZoneInventoryRecord[];
+    sharedZoneInventory: readonly ICloudZoneInventoryRecord[] | null;
     isInventoryFailing: boolean;
     confirmProbeSql: string;
     participants: readonly ICloudShareParticipant[];
@@ -100,6 +103,7 @@ export const makeFakeTransport = (database: DB = testDb) => {
         accountStatus: { status: 'available', userRecordName: 'user-a' },
         zoneMeta: null,
         zoneInventory: [],
+        sharedZoneInventory: null,
         isInventoryFailing: false,
         confirmProbeSql: 'SELECT COUNT(*) AS total FROM accounts',
         participants: []
@@ -135,13 +139,13 @@ export const makeFakeTransport = (database: DB = testDb) => {
                 behavior.zoneMeta = null;
             }),
         fetchRecord: () => Effect.sync(() => behavior.zoneMeta),
-        fetchZoneInventory: () =>
+        fetchZoneInventory: (inventoryScope: ICloudSyncScope) =>
             Effect.suspend(() => {
                 calls.inventoryRequests += 1;
 
                 return behavior.isInventoryFailing
                     ? Effect.fail(new CloudSyncTransportError({ code: 'NETWORK_UNAVAILABLE', message: 'inventory failed' }))
-                    : Effect.succeed(behavior.zoneInventory);
+                    : Effect.succeed(inventoryScope === ICloudSyncScope.SHARED ? (behavior.sharedZoneInventory ?? behavior.zoneInventory) : behavior.zoneInventory);
             }),
         addPendingSaves: (saveScope: ICloudSyncScope, records: readonly ICloudRecordPayload[]) =>
             Effect.sync(() => {
@@ -252,6 +256,7 @@ export const makeSyncServiceContext = (database: DB = testDb) => {
         applyLayer,
         SyncRestoreReconciliationService.layer.pipe(Layer.provide(applyLayer)),
         HouseholdMembershipService.layer.pipe(Layer.provide(syncAccountBalanceRefresherLayer)),
+        HouseholdShareService.layer,
         SyncOutboxRepository.layer,
         SyncRecordRepository.layer,
         SyncZoneRegistryRepository.layer,
@@ -291,3 +296,21 @@ export const sentEvent = (patch: Partial<ICloudSentChangesEvent> = {}): ICloudSe
 
 export const savedFrom = (payloads: readonly ICloudRecordPayload[], systemFields: string): ICloudSentChangesEvent['savedRecords'] =>
     payloads.map(({ zoneName, ownerName, recordName, recordType }) => ({ zoneName, ownerName, recordName, recordType, systemFields }));
+
+export const metaWith = (lineageId: string): ICloudFetchedRecord => ({
+    zoneName: 'Personal',
+    ownerName: '__defaultOwner__',
+    recordName: 'sync-meta',
+    recordType: 'SyncMeta',
+    systemFields: 'system-meta',
+    schemaVersion: 1,
+    encryptedFields: { lineageId }
+});
+
+export const fetchedEvent = (records: readonly ICloudFetchedRecord[] = []): ICloudFetchedChangesEvent => ({
+    scope: ICloudSyncScope.PRIVATE,
+    batchId: `fetched-${Math.random()}`,
+    records,
+    deletions: [],
+    changedShares: []
+});

@@ -80,7 +80,8 @@ export class CloudSyncTransport extends Context.Service<CloudSyncTransport>()('@
             syncNow: (scope: ICloudSyncScope) => call(() => icloud.syncNow(scope)),
             ensureZone: (scope: ICloudSyncScope, zoneName: string) => call(() => icloud.ensureZone(scope, zoneName)),
             deleteZone: (scope: ICloudSyncScope, zoneName: string) => call(() => icloud.deleteZone(scope, zoneName)),
-            fetchRecord: (zoneName: string, recordName: string) => call(() => icloud.fetchRecord(zoneName, recordName)),
+            fetchRecord: (scope: ICloudSyncScope, zoneName: string, recordName: string) =>
+                call(() => icloud.fetchRecord(scope, zoneName, recordName)),
             fetchZoneInventory: (scope: ICloudSyncScope, zoneName: string) => call(() => icloud.fetchZoneInventory(scope, zoneName)),
             addPendingSaves: (scope: ICloudSyncScope, records: readonly ICloudRecordPayload[]) =>
                 call(() => icloud.addPendingSaves(scope, records)),

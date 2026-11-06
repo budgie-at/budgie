@@ -30,6 +30,7 @@ import { ColorPaletteVariant } from '../../../@generic/type/color-palette-varian
 import { cn } from '../../../@generic/utils/cn.util';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
+import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { DEFAULT_DECIMAL_PLACES } from '../../../i18n/constant/default-decimal-places.constant';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -85,6 +86,7 @@ export const SplitEntriesModalContent = (props: Props) => {
     const formattedRemaining = formatDigits(Math.abs(remainingAmount), currencySymbol);
     const canRemoveSplit = initialEntries.length > 1 || entries.length > 1;
     const accountId = entries[0]?.accountId ?? 0;
+    const { account } = useGetAccountByIdQuery(accountId);
     const allEntriesValid = entries.every(entry => isPositiveNumber(entry.categoryId) && isPositiveNumber(entry.amount));
     const allEntriesHaveAmount = entries.every(entry => isPositiveNumber(entry.amount));
     const hasMissingCategories = isFullySplit && !allEntriesValid;
@@ -112,15 +114,18 @@ export const SplitEntriesModalContent = (props: Props) => {
             .map(entry => entry.categoryId)
             .filter(isPositiveNumber);
 
-        openCategorySelector({ initialCategoryId: currentCategoryId, excludeCategoryIds, variant }, selectedCategoryId => {
-            if (isDefined(selectedCategoryId)) {
-                setEntries(previous =>
-                    previous.map((entry, entryIndex) =>
-                        entryIndex === index ? { ...entry, categoryId: selectedCategoryId, categorySource: CategorySourceEnum.USER } : entry
-                    )
-                );
+        openCategorySelector(
+            { initialCategoryId: currentCategoryId, excludeCategoryIds, variant, ...(isDefined(account) && { syncZone: account.syncZone }) },
+            selectedCategoryId => {
+                if (isDefined(selectedCategoryId)) {
+                    setEntries(previous =>
+                        previous.map((entry, entryIndex) =>
+                            entryIndex === index ? { ...entry, categoryId: selectedCategoryId, categorySource: CategorySourceEnum.USER } : entry
+                        )
+                    );
+                }
             }
-        });
+        );
     };
 
     const handleAddEntry = () => {

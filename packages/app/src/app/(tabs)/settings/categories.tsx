@@ -12,6 +12,7 @@ import { GROUPED_LIST_SIZING } from '../../../@generic/constant/grouped-list-siz
 import { useCreateAction } from '../../../@generic/hook/use-create-action.hook';
 import { CategoryCard } from '../../../category/components/category-card/category-card';
 import { CategoryEmptyState } from '../../../category/components/category-empty-state/category-empty-state';
+import { CategoryFamilySection } from '../../../category/components/category-family-section/category-family-section';
 import { CategoryListHeader } from '../../../category/components/category-list-header/category-list-header';
 import { useCategoryFormModal } from '../../../category/context/category-form-modal.context';
 import { useCategoriesWithUsageQuery } from '../../../category/query/use-categories-with-usage.query';
@@ -80,6 +81,7 @@ export default function Categories() {
                 emptyState={emptyState}
                 renderCard={renderCard}
                 listHeader={<CategoryListHeader>{isUsageFailure ? <UsageFailureRow onRetry={retryUsage} /> : null}</CategoryListHeader>}
+                listFooter={<CategoryFamilySection search={search} onOpen={handleOpenCategory} />}
                 sizing={GROUPED_LIST_SIZING}
             />
         </SearchablePage>

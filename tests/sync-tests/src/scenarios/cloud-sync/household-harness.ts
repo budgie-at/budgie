@@ -1,4 +1,4 @@
-import { TestSeedService } from '@budgie-at/test-kit';
+import { TestSeedService, resetTestDb } from '@budgie-at/test-kit';
 import { HOUSEHOLD_SYNC_ZONE, SYNC_RECORD_SCHEMA_VERSION, SyncRecordRepository } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
@@ -11,7 +11,9 @@ import {
     ICloudZoneChangeReason
 } from '../../../../../packages/app/modules/icloud';
 
-import { onDevice, refreshAllBalances } from './apply-harness';
+import { testDb } from '../../harness';
+
+import { onDevice, pullDevice, refreshAllBalances } from './apply-harness';
 import { encodeAllRecords, loadSyncState } from './record-mapping-harness';
 
 import type { FakeCloudTransport } from '@budgie-at/test-kit';
@@ -125,3 +127,14 @@ export const readSyncIds = (database: DB, tableName: string, zone: string) =>
     database.$client
         .unsafe<{ readonly syncId: string }>(`SELECT sync_id AS syncId FROM ${tableName} WHERE sync_zone = ? ORDER BY sync_id`, [zone])
         .pipe(Effect.map(rows => rows.map(({ syncId }) => syncId)));
+
+export const joinMember = (memberDb: DB, cloud: FakeCloudTransport) =>
+    Effect.gen(function* () {
+        yield* resetTestDb(memberDb);
+        yield* seedHouseholdLedger(testDb);
+        yield* seedPersonalLedger(memberDb, 'Member card', 4_000_000);
+        yield* pushHouseholdZone(testDb, cloud);
+        cloud.shareZone(HOUSEHOLD_SYNC_ZONE, [OWNER_ACCOUNT]);
+        cloud.acceptShare(HOUSEHOLD_SYNC_ZONE, MEMBER_ACCOUNT);
+        yield* pullDevice(memberDb, cloud, MEMBER_DEVICE, { accountId: MEMBER_ACCOUNT });
+    });

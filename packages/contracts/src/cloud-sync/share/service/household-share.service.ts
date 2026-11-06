@@ -415,6 +415,19 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
             unshareBudget: Effect.fn('HouseholdShareService.unshareBudget')(function* (budgetId: number) {
                 yield* moveBudget(budgetId, HOUSEHOLD_SYNC_ZONE, PERSONAL_SYNC_ZONE, new Set(yield* findSharedBudgetIds()));
             }),
+            moveLabelsToPersonal: Effect.fn('HouseholdShareService.moveLabelsToPersonal')(function* () {
+                const memo: LabeledMemoType = new Map();
+
+                for (const tableName of ['categories', 'tags'] as const) {
+                    for (const id of yield* repository.findLabeledIdsInZone(tableName, HOUSEHOLD_SYNC_ZONE)) {
+                        const targetId = yield* ensureLabeled(tableName, id, PERSONAL_SYNC_ZONE, memo);
+
+                        if (targetId !== id) {
+                            yield* repository.repointLabelReferences(tableName, id, targetId);
+                        }
+                    }
+                }
+            }),
             alignZones,
             reconcile: Effect.fn('HouseholdShareService.reconcile')(function* () {
                 yield* applyShareEverything();

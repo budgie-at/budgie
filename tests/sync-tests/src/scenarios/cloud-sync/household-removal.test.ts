@@ -3,7 +3,7 @@ import { HouseholdRoleEnum } from '@app/household/enum/household-role.enum';
 import { CloudSyncRestorePhaseEnum } from '@app/cloud-sync/enum/cloud-sync-restore-phase.enum';
 import { CloudSyncService } from '@app/cloud-sync/service/cloud-sync.service';
 import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
-import { FakeCloudTransport, makeTestDbLayer, resetTestDb } from '@budgie-at/test-kit';
+import { FakeCloudTransport, makeTestDbLayer } from '@budgie-at/test-kit';
 import {
     Db,
     HOUSEHOLD_SYNC_ZONE,
@@ -15,38 +15,22 @@ import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import { ICloudParticipantRole } from '../../../../../packages/app/modules/icloud';
-import { testDb } from '../../harness';
 
-import { expectBalancesMatchLedger, pullDevice } from './apply-harness';
+import { expectBalancesMatchLedger } from './apply-harness';
 import {
     accessLostEvent,
     countRows,
     HOUSEHOLD_CLOUD_ZONE,
+    joinMember,
     MEMBER_ACCOUNT,
-    MEMBER_DEVICE,
-    OWNER_ACCOUNT,
     OWNER_RECORD_NAME,
     participantsFor,
-    pushHouseholdZone,
     readPersonalBalances,
-    seedHouseholdLedger,
-    seedPersonalLedger,
     shareAcceptedEvent
 } from './household-harness';
 import { makeSyncServiceContext } from './sync-service-harness';
 
 import type { DB } from '@budgie/contracts';
-
-const joinMember = (memberDb: DB, cloud: FakeCloudTransport) =>
-    Effect.gen(function* () {
-        yield* resetTestDb(memberDb);
-        yield* seedHouseholdLedger(testDb);
-        yield* seedPersonalLedger(memberDb, 'Member card', 4_000_000);
-        yield* pushHouseholdZone(testDb, cloud);
-        cloud.shareZone(HOUSEHOLD_SYNC_ZONE, [OWNER_ACCOUNT]);
-        cloud.acceptShare(HOUSEHOLD_SYNC_ZONE, MEMBER_ACCOUNT);
-        yield* pullDevice(memberDb, cloud, MEMBER_DEVICE, { accountId: MEMBER_ACCOUNT });
-    });
 
 const countHouseholdRows = (database: DB) =>
     Effect.forEach(

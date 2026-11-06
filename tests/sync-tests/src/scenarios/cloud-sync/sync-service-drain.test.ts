@@ -2,7 +2,14 @@ import { cloudSyncStatusAtom } from '@app/cloud-sync/constant/cloud-sync-status-
 import { CloudSyncStatusEnum } from '@app/cloud-sync/enum/cloud-sync-status.enum';
 import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { CloudSyncService } from '@app/cloud-sync/service/cloud-sync.service';
-import { SyncIdentityRepository } from '@budgie/contracts';
+import {
+    HOUSEHOLD_SYNC_ZONE,
+    HouseholdShareService,
+    SyncDatabaseScopeEnum,
+    SyncIdentityRepository,
+    SyncZoneRegistryRepository,
+    SyncZoneRoleEnum
+} from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as TestClock from 'effect/testing/TestClock';
@@ -59,6 +66,47 @@ describe('cloud-sync/sync-service drain', () => {
                 expect(appAtomRegistry.get(cloudSyncStatusAtom).status).toBe(CloudSyncStatusEnum.IDLE);
                 expect(context.store.holder.state.resolvedLineageId).toBe(yield* (yield* SyncIdentityRepository).ensureLineageId());
                 expect(context.transport.calls.confirmed).toHaveLength(2);
+            })
+        );
+    });
+
+    it.live('moves new data on shared accounts to the household zone before every drain', () => {
+        const context = makeSyncServiceContext();
+
+        return context.run(
+            Effect.gen(function* () {
+                const service = yield* CloudSyncService;
+                const registry = yield* SyncZoneRegistryRepository;
+                const householdShareService = yield* HouseholdShareService;
+
+                yield* registry.upsert({
+                    zoneLabel: HOUSEHOLD_SYNC_ZONE,
+                    zoneName: 'Household',
+                    ownerName: '__defaultOwner__',
+                    databaseScope: SyncDatabaseScopeEnum.PRIVATE,
+                    role: SyncZoneRoleEnum.OWNER
+                });
+                yield* householdShareService.setShareEverything(true);
+
+                const account = yield* seed.account({ title: 'Joint' });
+
+                yield* seed.manualExpense({ accountId: account.id, amount: 5_000_000, operatedAt: new Date('2026-10-02T10:00:00Z'), title: 'Cafe' });
+                yield* service.reconfigure();
+                yield* service.handleSentChanges(sentEvent({ savedRecords: savedFrom(context.transport.calls.savedBatches[0], 'system-meta') }));
+
+                const uploaded = flatten(context.transport.calls.savedBatches.slice(1));
+                const [zoneRow] = yield* testDb.$client.unsafe<{ readonly syncZone: string }>('SELECT sync_zone AS syncZone FROM accounts WHERE id = ?', [
+                    account.id
+                ]);
+
+                expect(zoneRow.syncZone).toBe(HOUSEHOLD_SYNC_ZONE);
+                expect(uploaded.some(({ recordName, zoneName }) => recordName === account.syncId && zoneName === 'Household')).toBe(true);
+                const [transactionRow] = yield* testDb.$client.unsafe<{ readonly syncId: string }>(
+                    'SELECT sync_id AS syncId FROM transactions WHERE sync_zone = ?',
+                    [HOUSEHOLD_SYNC_ZONE]
+                );
+
+                expect(uploaded.some(({ recordName, zoneName }) => recordName === transactionRow.syncId && zoneName === 'Household')).toBe(true);
             })
         );
     });

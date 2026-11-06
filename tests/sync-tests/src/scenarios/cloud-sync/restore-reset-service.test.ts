@@ -9,27 +9,9 @@ import * as Effect from 'effect/Effect';
 import { ICloudErrorCode, ICloudSyncScope } from '../../../../../packages/app/modules/icloud';
 import { seed, testDb } from '../../harness';
 
-import { makeSyncServiceContext, savedFrom, sentEvent } from './sync-service-harness';
+import { fetchedEvent, makeSyncServiceContext, metaWith, savedFrom, sentEvent } from './sync-service-harness';
 
-import type { ICloudFetchedChangesEvent, ICloudFetchedRecord, ICloudRecordPayload } from '../../../../../packages/app/modules/icloud';
-
-const metaWith = (lineageId: string): ICloudFetchedRecord => ({
-    zoneName: 'Personal',
-    ownerName: '__defaultOwner__',
-    recordName: 'sync-meta',
-    recordType: 'SyncMeta',
-    systemFields: 'system-meta',
-    schemaVersion: 1,
-    encryptedFields: { lineageId }
-});
-
-const fetchedEvent = (records: readonly ICloudFetchedRecord[] = []): ICloudFetchedChangesEvent => ({
-    scope: ICloudSyncScope.PRIVATE,
-    batchId: `fetched-${Math.random()}`,
-    records,
-    deletions: [],
-    changedShares: []
-});
+import type { ICloudRecordPayload } from '../../../../../packages/app/modules/icloud';
 
 const readOutboxCount = testDb.$client
     .unsafe<{ readonly total: number }>('SELECT COUNT(*) AS total FROM sync_outbox')

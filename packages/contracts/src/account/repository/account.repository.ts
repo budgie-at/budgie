@@ -116,7 +116,7 @@ export class AccountRepository extends Context.Service<AccountRepository>()('@bu
                     db
                         .insert(AccountExternalIdEntityTable)
                         .values({ externalId, accountId })
-                        .onConflictDoUpdate({ target: AccountExternalIdEntityTable.externalId, set: { accountId } })
+                        .onConflictDoUpdate({ target: [AccountExternalIdEntityTable.syncZone, AccountExternalIdEntityTable.externalId], set: { accountId } })
                 ),
             removeExternalIdAlias: (externalId: string) =>
                 Db.query(db => db.delete(AccountExternalIdEntityTable).where(eq(AccountExternalIdEntityTable.externalId, externalId))),

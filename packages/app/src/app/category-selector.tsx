@@ -23,9 +23,8 @@ export default function CategorySelectorModal() {
     useModalDismiss(dismissCategorySelector);
     const currentParams = useCategorySelectorModalParams();
     const [search, setSearch] = useState('');
-    const { categories, isLoading } = useSearchCategoriesQuery(search, true);
-
-    const { variant = 'primary', initialCategoryId = null, title, description, excludeCategoryIds = [] } = currentParams ?? {};
+    const { variant = 'primary', initialCategoryId = null, title, description, excludeCategoryIds = [], syncZone } = currentParams ?? {};
+    const { categories, isLoading } = useSearchCategoriesQuery(search, true, syncZone);
     const selectedCategoryIds = isDefined(initialCategoryId) ? [initialCategoryId] : [];
     const data = prepareSelectorGridData(categories, excludeCategoryIds);
     const query = search.trim();

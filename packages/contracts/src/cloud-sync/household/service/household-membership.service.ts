@@ -12,6 +12,7 @@ import { SYNC_IDENTITY_TABLES } from '../../constant/sync-identity-tables.consta
 import { SYNC_RECORD_DEFINITIONS } from '../../mapping/constant/sync-record-definitions.constant';
 import { SyncRecordTypeEnum } from '../../mapping/enum/sync-record-type.enum';
 import { SyncApplyStateRepository } from '../../repository/sync-apply-state.repository';
+import { HouseholdShareService } from '../../share/service/household-share.service';
 import { buildHouseholdRemovalStatements } from '../utils/build-household-removal-statements.util';
 
 export class HouseholdMembershipService extends Context.Service<HouseholdMembershipService>()(
@@ -19,8 +20,10 @@ export class HouseholdMembershipService extends Context.Service<HouseholdMembers
     {
         make: Effect.gen(function* () {
             const applyStateRepository = yield* SyncApplyStateRepository;
+            const householdShareService = yield* HouseholdShareService;
             const balanceRefresher = yield* SyncAccountBalanceRefresher;
             const identityTableNames = SYNC_IDENTITY_TABLES.map(table => table.name);
+            const movedTableNames = identityTableNames.filter(tableName => tableName !== 'categories' && tableName !== 'tags');
             const touchedTables = [
                 ...identityTableNames,
                 'settings',
@@ -81,9 +84,10 @@ export class HouseholdMembershipService extends Context.Service<HouseholdMembers
                             const accountIds = yield* findHouseholdAccountIds;
 
                             yield* applyStateRepository.setApplying(true);
+                            yield* householdShareService.moveLabelsToPersonal();
                             yield* Db.mutation(
-                                { type: 'update', tables: identityTableNames },
-                                Effect.forEach(identityTableNames, moveTableToPersonal, { discard: true })
+                                { type: 'update', tables: movedTableNames },
+                                Effect.forEach(movedTableNames, moveTableToPersonal, { discard: true })
                             );
                             yield* removeHouseholdRows;
                             yield* applyStateRepository.setApplying(false);
@@ -109,6 +113,6 @@ export class HouseholdMembershipService extends Context.Service<HouseholdMembers
     }
 ) {
     static readonly layer = Layer.effect(HouseholdMembershipService, HouseholdMembershipService.make).pipe(
-        Layer.provide(SyncApplyStateRepository.layer)
+        Layer.provide([SyncApplyStateRepository.layer, HouseholdShareService.layer])
     );
 }

@@ -5,6 +5,7 @@ import { useFormContext, useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { setPrimaryCategory } from '../../utils/set-primary-category.util';
@@ -27,9 +28,10 @@ export const TransactionCategoryFieldIcon = ({ ref, variant, isSplitActive }: Pr
     const entries = useWatch({ control, name: 'entries' });
     const categoryId = getTransactionCategoryEntries(entries).at(0)?.categoryId ?? null;
     const { category } = useGetCategoryByIdQuery(categoryId ?? 0);
+    const { account } = useGetAccountByIdQuery(entries.at(0)?.accountId ?? 0);
 
     const handlePress = () => {
-        openCategorySelector({ initialCategoryId: categoryId, variant }, selectedCategoryId => {
+        openCategorySelector({ initialCategoryId: categoryId, variant, ...(isDefined(account) && { syncZone: account.syncZone }) }, selectedCategoryId => {
             if (!isDefined(selectedCategoryId)) {
                 return;
             }

@@ -15,6 +15,7 @@ import { SheetTitle } from '../../../@generic/component/sheet-title/sheet-title'
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
+import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { SplitEntryRow } from '../split-entry-row/split-entry-row';
 import { TransactionFeeSaveButton } from '../transaction-fee-save-button/transaction-fee-save-button';
@@ -43,6 +44,7 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
     const sheetStyle = useAnimatedStyle(() => ({ maxHeight: windowHeight - top - Math.abs(height.value) - 24 }));
     const bottomPaddingStyle = useAnimatedStyle(() => ({ paddingBottom: interpolate(progress.value, [0, 1], [Math.max(bottom, 16), 16]) }));
     const [openCategorySelector] = useCategorySelectorModal();
+    const { account } = useGetAccountByIdQuery(accountId);
     const [feeEntry, setFeeEntry] = useState<TransactionEntryCreateInputInterface>(
         entry ?? {
             accountId,
@@ -62,7 +64,7 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
     };
 
     const handleCategoryPress = () => {
-        openCategorySelector({ initialCategoryId: feeEntry.categoryId, variant }, selectedCategoryId => {
+        openCategorySelector({ initialCategoryId: feeEntry.categoryId, variant, ...(isDefined(account) && { syncZone: account.syncZone }) }, selectedCategoryId => {
             if (isDefined(selectedCategoryId)) {
                 const categorySource = selectedCategoryId === BANK_FEE_CATEGORY_ID ? CategorySourceEnum.FEE : CategorySourceEnum.USER;
 

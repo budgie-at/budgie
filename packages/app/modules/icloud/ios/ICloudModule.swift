@@ -79,13 +79,15 @@ public final class ICloudModule: Module {
       try self?.host(rawScope).confirm(batchId: batchId)
     }
 
-    AsyncFunction("fetchRecord") { (zoneName: String, recordName: String) async throws -> [String: Any]? in
-      let recordID = CKRecord.ID(recordName: recordName, zoneID: ICloudDatabase.zoneID(zoneName: zoneName, ownerName: ICloudDatabase.defaultOwnerName))
+    AsyncFunction("fetchRecord") { (rawScope: String, zoneName: String, recordName: String) async throws -> [String: Any]? in
+      let scope = try ICloudDatabase.scope(rawScope)
+      let database = ICloudDatabase.database(for: scope)
       do {
-        return ICloudRecordCodec.dictionary(from: try await ICloudDatabase.database.record(for: recordID))
+        let zoneID = try await ICloudInventory.resolveZoneID(database: database, scope: scope, zoneName: zoneName)
+        return ICloudRecordCodec.dictionary(from: try await database.record(for: CKRecord.ID(recordName: recordName, zoneID: zoneID)))
       } catch {
-        let code = (error as NSError).code
-        if code == CKError.Code.unknownItem.rawValue || code == CKError.Code.zoneNotFound.rawValue {
+        let code = ICloudDatabase.syncErrorCode(error)
+        if code == "UNKNOWN_ITEM" || code == "ZONE_NOT_FOUND" {
           return nil
         }
         throw ICloudDatabase.syncError(error)

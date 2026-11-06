@@ -1,6 +1,7 @@
 import {
     HOUSEHOLD_SYNC_ZONE,
     HouseholdMembershipService,
+    HouseholdShareService,
     PERSONAL_SYNC_ZONE,
     SYNC_IDENTITY_TABLES,
     SYNC_RECORD_SCHEMA_VERSION,
@@ -17,6 +18,7 @@ import {
     SyncZoneRegistryRepository,
     listClearedSyncFields
 } from '@budgie/contracts';
+import { t } from '@lingui/core/macro';
 import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
 import * as Duration from 'effect/Duration';
@@ -44,6 +46,7 @@ import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.const
 import { appStateChanges } from '../../@generic/constant/app-state-changes.constant';
 import { DatabaseChangeService } from '../../@generic/drizzle/service/database-change.service';
 import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
+import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
 import { InstallIdService } from '../../cloud-backup/service/install-id.service';
 import { householdRefreshAtom } from '../../household/constant/household-refresh-atom.constant';
 import { householdStateAtom } from '../../household/constant/household-state-atom.constant';
@@ -109,6 +112,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
         const safetyCopyService = yield* CloudSyncSafetyCopyService;
         const reconciliationService = yield* SyncRestoreReconciliationService;
         const householdMembershipService = yield* HouseholdMembershipService;
+        const householdShareService = yield* HouseholdShareService;
         const automationService = yield* SyncAutomationService;
         const lock = yield* Semaphore.make(1);
         const locked = lock.withPermits(1);
@@ -117,6 +121,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             isSharedEngineRunning: false,
             isAwaitingMeta: false,
             isReconciling: false,
+            isSharedReconciling: false,
             isQuotaExceeded: false,
             isFetching: false,
             blocked: null,
@@ -304,6 +309,8 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             const canSendTo = (label: string): boolean =>
                 scopeOf(label) === ICloudSyncScope.SHARED ? current.isSharedEngineRunning : isPrivateReady;
             const pausedZones = new Set((yield* applyService.findPausedZones()).map(({ syncZone }) => syncZone));
+            yield* householdShareService.reconcile();
+
             const batch = yield* uploadService.pending(pushed.size + heldKeys.size + failedKeys.size + uploadBatchSize);
             const payloadsByScope = new Map<ICloudSyncScope, ICloudRecordPayload[]>();
             const deleteIdsByScope = new Map<ICloudSyncScope, ICloudRecordId[]>();
@@ -428,9 +435,16 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
                 isSharedEngineRunning: false,
                 isAwaitingMeta: false,
                 isReconciling: false,
+                isSharedReconciling: false,
                 isFetching: false
             });
         });
+
+        const isHouseholdLossCode = (code: ICloudErrorCode): boolean =>
+            code === ICloudErrorCode.ZONE_NOT_FOUND ||
+            code === ICloudErrorCode.USER_DELETED_ZONE ||
+            code === ICloudErrorCode.PERMISSION_FAILURE ||
+            code === ICloudErrorCode.ENCRYPTED_DATA_RESET;
 
         const endHouseholdUnlocked = Effect.fnUntraced(function* (mode: HouseholdEndModeEnum) {
             if ((yield* Ref.get(session)).isSharedEngineRunning) {
@@ -455,7 +469,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
                 ? householdMembershipService.keepPersonalCopy()
                 : householdMembershipService.dropHouseholdData();
             yield* stateStore.update({ sharedStateSerialization: null });
-            yield* patch({ isSharedEngineRunning: false });
+            yield* patch({ isSharedEngineRunning: false, isSharedReconciling: false });
             yield* refreshZones();
             yield* bumpHouseholdRefresh;
 
@@ -464,10 +478,12 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             }
         });
 
-        const isHouseholdShareAccepted = (zoneName: string) =>
+        const isHouseholdShareActive = (zoneName: string) =>
             transport.getShareParticipants(zoneName).pipe(
                 Effect.map(isNotEmptyArray),
-                Effect.catchTag('CloudSyncTransportError', () => Effect.succeed(true))
+                Effect.catchTag('CloudSyncTransportError', error =>
+                    Effect.succeed(error.code !== ICloudErrorCode.ZONE_NOT_FOUND && error.code !== ICloudErrorCode.USER_DELETED_ZONE)
+                )
             );
 
         const startSharedEngineUnlocked = Effect.fnUntraced(function* (isRestoring: boolean) {
@@ -477,7 +493,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
                 return;
             }
 
-            if (isRestoring && !(yield* isHouseholdShareAccepted(household.zoneName))) {
+            if (isRestoring && !(yield* isHouseholdShareActive(household.zoneName))) {
                 yield* endHouseholdUnlocked(HouseholdEndModeEnum.DROP);
 
                 return;
@@ -487,13 +503,13 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
 
             yield* stateStore.update({ sharedStateSerialization });
             yield* transport.startSync(ICloudSyncScope.SHARED, sharedStateSerialization);
-            yield* patch({ isSharedEngineRunning: true });
+            yield* patch({ isSharedEngineRunning: true, isSharedReconciling: isRestoring && (yield* Ref.get(session)).isReconciling });
             yield* drainUnlocked();
             yield* Effect.forkDetach(logAndContinue(transport.syncNow(ICloudSyncScope.SHARED)));
         });
 
         const readZoneLineage = Effect.fnUntraced(function* () {
-            const meta = yield* transport.fetchRecord(CLOUD_SYNC_RECORDS.personalZoneName, CLOUD_SYNC_RECORDS.metaRecordName);
+            const meta = yield* transport.fetchRecord(scope, CLOUD_SYNC_RECORDS.personalZoneName, CLOUD_SYNC_RECORDS.metaRecordName);
 
             return isDefined(meta)
                 ? Option.map(Schema.decodeUnknownOption(MetaFieldsSchema)(meta.encryptedFields), ({ lineageId }) => lineageId)
@@ -680,12 +696,6 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             }
         });
 
-        const isHouseholdLossCode = (code: ICloudErrorCode): boolean =>
-            code === ICloudErrorCode.ZONE_NOT_FOUND ||
-            code === ICloudErrorCode.USER_DELETED_ZONE ||
-            code === ICloudErrorCode.PERMISSION_FAILURE ||
-            code === ICloudErrorCode.ENCRYPTED_DATA_RESET;
-
         const handleFailedSave = Effect.fnUntraced(function* (failure: ICloudFailedSave) {
             const label = labelOf(failure);
 
@@ -868,6 +878,25 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
         const handleWillFetch = (event: ICloudScopedEvent) =>
             event.scope === ICloudSyncScope.SHARED ? Effect.void : patch({ isFetching: true });
 
+        const reconcileHouseholdZone = Effect.fnUntraced(function* (inventoryScope: ICloudSyncScope, zoneName: string) {
+            const inventory = yield* transport.fetchZoneInventory(inventoryScope, zoneName).pipe(Effect.option);
+
+            if (Option.isNone(inventory)) {
+                return false;
+            }
+
+            const results = yield* reconciliationService.complete(
+                HOUSEHOLD_SYNC_ZONE,
+                new Set(inventory.value.map(({ recordName }) => recordName))
+            );
+
+            for (const result of results) {
+                yield* automate(result);
+            }
+
+            return true;
+        });
+
         const completeReconciliation = Effect.fnUntraced(function* () {
             const meta = yield* recordRepository.find(PERSONAL_SYNC_ZONE, CLOUD_SYNC_RECORDS.metaRecordName);
             const isInventoryFetched = isDefined(meta) && isDefined(meta.systemFields);
@@ -894,23 +923,31 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             const household = zones.get(HOUSEHOLD_SYNC_ZONE);
 
             if (household?.role === SyncZoneRoleEnum.OWNER) {
-                const householdInventory = yield* transport.fetchZoneInventory(scope, household.zoneName).pipe(Effect.option);
+                if (!(yield* isHouseholdShareActive(household.zoneName))) {
+                    yield* transport.deleteZone(scope, household.zoneName).pipe(Effect.catchTag('CloudSyncTransportError', () => Effect.void));
+                    yield* endHouseholdUnlocked(HouseholdEndModeEnum.KEEP_PERSONAL_COPY);
 
-                if (Option.isSome(householdInventory)) {
-                    const householdResults = yield* reconciliationService.complete(
-                        HOUSEHOLD_SYNC_ZONE,
-                        new Set(householdInventory.value.map(({ recordName }) => recordName))
-                    );
-
-                    for (const result of householdResults) {
-                        yield* automate(result);
-                    }
+                    return;
                 }
+
+                yield* reconcileHouseholdZone(scope, household.zoneName);
+            }
+        });
+
+        const completeSharedReconciliation = Effect.fnUntraced(function* () {
+            const household = zones.get(HOUSEHOLD_SYNC_ZONE);
+
+            if (household?.databaseScope === SyncDatabaseScopeEnum.SHARED && (yield* reconcileHouseholdZone(ICloudSyncScope.SHARED, household.zoneName))) {
+                yield* patch({ isSharedReconciling: false });
             }
         });
 
         const handleDidFetch = Effect.fn('CloudSyncService.handleDidFetch')(function* (event: ICloudScopedEvent) {
             if (event.scope === ICloudSyncScope.SHARED) {
+                if ((yield* Ref.get(session)).isSharedReconciling) {
+                    yield* completeSharedReconciliation();
+                }
+
                 yield* drainUnlocked();
 
                 return;
@@ -1030,6 +1067,9 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
 
         const handleShareAccepted = Effect.fn('CloudSyncService.handleShareAccepted')(function* (event: ICloudShareAcceptedEvent) {
             if (event.outcome !== ICloudShareOutcome.ACCEPTED) {
+                yield* Effect.sync(() => {
+                    showErrorToast(t`Could not join the family`, t`The invitation could not be accepted. Open the invitation link again to retry.`);
+                });
                 yield* bumpHouseholdRefresh;
 
                 return;
@@ -1180,6 +1220,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
                 Layer.provide(SyncApplyService.layer.pipe(Layer.provide(syncAccountBalanceRefresherLayer)))
             ),
             HouseholdMembershipService.layer.pipe(Layer.provide(syncAccountBalanceRefresherLayer)),
+            HouseholdShareService.layer,
             SyncAutomationService.layer.pipe(Layer.provide(syncAutomationEmbeddingBoostLayer))
         ])
     );

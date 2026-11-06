@@ -5,6 +5,7 @@ export interface CloudSyncSessionInterface {
     readonly isSharedEngineRunning: boolean;
     readonly isAwaitingMeta: boolean;
     readonly isReconciling: boolean;
+    readonly isSharedReconciling: boolean;
     readonly isQuotaExceeded: boolean;
     readonly isFetching: boolean;
     readonly blocked: CloudSyncStatusEnum | null;

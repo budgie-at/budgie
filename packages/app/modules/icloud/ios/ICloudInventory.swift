@@ -29,7 +29,7 @@ enum ICloudInventory {
     return entries.map { ["recordName": $0.key, "recordType": $0.value] }
   }
 
-  private static func resolveZoneID(database: CKDatabase, scope: ICloudSyncScope, zoneName: String) async throws -> CKRecordZone.ID {
+  static func resolveZoneID(database: CKDatabase, scope: ICloudSyncScope, zoneName: String) async throws -> CKRecordZone.ID {
     switch scope {
     case .privateScope:
       return ICloudDatabase.zoneID(zoneName: zoneName, ownerName: ICloudDatabase.defaultOwnerName)

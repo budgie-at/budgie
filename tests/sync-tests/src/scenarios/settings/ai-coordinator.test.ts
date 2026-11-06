@@ -43,7 +43,10 @@ const native = vi.hoisted(() => ({
 
 vi.mock('llama.rn', () => ({ initLlama: () => Promise.resolve(native.context) }));
 
-vi.mock('react-native', () => ({ AppState: { currentState: 'active', addEventListener: appState.addEventListener } }));
+vi.mock('react-native', () => ({
+    AppState: { currentState: 'active', addEventListener: appState.addEventListener },
+    Platform: { OS: 'android' }
+}));
 
 const provideTestServices = <A, E, R>(effect: Effect.Effect<A, E, R>) =>
     effect.pipe(Effect.provide([SettingsRepository.layer, aiModelDownloadStub]), Effect.provideService(Db, testDb));
