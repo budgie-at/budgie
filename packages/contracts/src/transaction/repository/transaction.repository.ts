@@ -481,6 +481,44 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                     })
                 ),
 
+            findTransfersIntoAccountSince: (accountId: number, since: Date, externalSources: readonly ExternalSourceEnum[]) =>
+                Db.query(db =>
+                    db.query.TransactionEntityTable.findMany({
+                        where: {
+                            type: TransactionTypeEnum.TRANSFER,
+                            deletedAt: { isNull: true },
+                            consolidationParentTransactionId: { isNull: true },
+                            toAccountId: accountId,
+                            operatedAt: { gte: since },
+                            externalSource: { in: [...externalSources] }
+                        },
+                        with: {
+                            [TransactionAssociationEnum.ENTRIES]: {
+                                where: transactionFilters.ledgerEntryFilter
+                            }
+                        },
+                        orderBy: { operatedAt: 'asc', id: 'asc' }
+                    })
+                ),
+
+            findTransfersFromAccountByExternalIdPrefix: (accountId: number, externalIdPrefix: string) =>
+                Db.query(db =>
+                    db.query.TransactionEntityTable.findMany({
+                        where: {
+                            type: TransactionTypeEnum.TRANSFER,
+                            deletedAt: { isNull: true },
+                            consolidationParentTransactionId: { isNull: true },
+                            fromAccountId: accountId,
+                            externalId: { like: `${externalIdPrefix}%` }
+                        },
+                        with: {
+                            [TransactionAssociationEnum.ENTRIES]: {
+                                where: transactionFilters.ledgerEntryFilter
+                            }
+                        }
+                    })
+                ),
+
             findTransfersForConversion: (accountId: number) =>
                 Db.query(db =>
                     db.query.TransactionEntityTable.findMany({

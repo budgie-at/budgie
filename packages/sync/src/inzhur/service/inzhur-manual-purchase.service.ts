@@ -1,4 +1,4 @@
-import { Db, TransactionEntryTypeEnum, TransactionRepository, TransactionTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { Db, TransactionEntryTypeEnum, TransactionRepository, convertFromMicroUnits, convertToMicroUnits } from '@budgie/contracts';
 import { TransferCreationService } from '@budgie/ledger';
 import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
@@ -11,9 +11,15 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 import { INZHUR_BANK_DESCRIPTION_PATTERNS } from '../constant/inzhur-bank-description-patterns.constant';
 import { INZHUR_MANUAL_EXTERNAL_ID_PREFIX } from '../constant/inzhur-manual-external-id-prefix.constant';
 import { INZHUR_OPERATION_EXTERNAL_ID_PREFIX } from '../constant/inzhur-operation-external-id-prefix.constant';
+import { InzhurNotSetUpError } from '../error/inzhur-not-set-up.error';
+import { InzhurPurchaseBeforeTopUpError } from '../error/inzhur-purchase-before-top-up.error';
+import { InzhurPurchaseExceedsTopUpError } from '../error/inzhur-purchase-exceeds-top-up.error';
+import { InzhurPurchaseInvalidError } from '../error/inzhur-purchase-invalid.error';
+import { InzhurTopUpNotFoundError } from '../error/inzhur-top-up-not-found.error';
 import { buildInzhurTradeEntries } from '../utils/build-inzhur-trade-entries.util';
 import { buildInzhurTransactionInput } from '../utils/build-inzhur-transaction-input.util';
 import { getKyivDayStart } from '../utils/get-kyiv-day-start.util';
+import { toKyivDay } from '../utils/to-kyiv-day.util';
 
 import { InzhurFundAccountService } from './inzhur-fund-account.service';
 import { InzhurSetupLookupService } from './inzhur-setup-lookup.service';
@@ -30,29 +36,37 @@ export class InzhurManualPurchaseService extends Context.Service<InzhurManualPur
             const inzhurFundAccountService = yield* InzhurFundAccountService;
             const inzhurSetupLookupService = yield* InzhurSetupLookupService;
 
+            const noonOffsetMilliseconds = 12 * 60 * 60 * 1000;
+
             const toShortName = (name: string) => name.replace(/^Inzhur\s+/iu, '');
 
             const findTopUps = Effect.fnUntraced(function* () {
                 const setup = yield* inzhurSetupLookupService.findSetup();
+                const lastOperationAt = setup?.cashSync.forwardSyncedAt;
 
-                if (!isDefined(setup) || !isDefined(setup.lastStatementDate)) {
+                if (!isDefined(setup) || !isDefined(lastOperationAt)) {
                     return [];
                 }
 
                 const cashAccountId = setup.cashAccount.id;
-                const coverageEnd = getKyivDayStart(setup.lastStatementDate, 1);
-                const ledger = yield* transactionRepository.findByAccountIdsWithEntries([cashAccountId]);
-                const purchases = ledger.filter(transaction => transaction.externalId?.startsWith(INZHUR_MANUAL_EXTERNAL_ID_PREFIX));
+                const bankTransfers = yield* transactionRepository.findTransfersIntoAccountSince(
+                    cashAccountId,
+                    lastOperationAt,
+                    INZHUR_BANK_DESCRIPTION_PATTERNS.externalSources
+                );
+                const purchases = yield* transactionRepository.findTransfersFromAccountByExternalIdPrefix(
+                    cashAccountId,
+                    INZHUR_MANUAL_EXTERNAL_ID_PREFIX
+                );
 
-                return ledger.flatMap((transaction): InzhurPendingTopUpInterface[] => {
+                return bankTransfers.flatMap((transaction): InzhurPendingTopUpInterface[] => {
                     const cashEntry = transaction.entries.find(entry => entry.accountId === cashAccountId);
-                    const isBankTopUp =
-                        transaction.type === TransactionTypeEnum.TRANSFER &&
-                        INZHUR_BANK_DESCRIPTION_PATTERNS.externalSources.some(source => source === transaction.externalSource) &&
-                        cashEntry?.type === TransactionEntryTypeEnum.DEBIT &&
-                        !cashEntry.externalId?.startsWith(INZHUR_OPERATION_EXTERNAL_ID_PREFIX);
 
-                    if (!isBankTopUp || transaction.operatedAt < coverageEnd) {
+                    if (
+                        !isDefined(transaction.externalId) ||
+                        cashEntry?.type !== TransactionEntryTypeEnum.DEBIT ||
+                        cashEntry.externalId?.startsWith(INZHUR_OPERATION_EXTERNAL_ID_PREFIX)
+                    ) {
                         return [];
                     }
 
@@ -70,6 +84,7 @@ export class InzhurManualPurchaseService extends Context.Service<InzhurManualPur
                     return [
                         {
                             transactionId: transaction.id,
+                            externalId: transaction.externalId,
                             operatedAt: transaction.operatedAt,
                             amount: convertFromMicroUnits(cashEntry.amount),
                             spentAmount: convertFromMicroUnits(spent),
@@ -91,7 +106,7 @@ export class InzhurManualPurchaseService extends Context.Service<InzhurManualPur
                         const setup = yield* inzhurSetupLookupService.findSetup();
 
                         if (!isDefined(setup)) {
-                            return yield* Effect.die(new Error('Inzhur is not set up'));
+                            return yield* new InzhurNotSetUpError();
                         }
 
                         if (
@@ -99,9 +114,26 @@ export class InzhurManualPurchaseService extends Context.Service<InzhurManualPur
                             !isPositiveNumber(input.certificates) ||
                             !isPositiveNumber(input.amount)
                         ) {
-                            return yield* Effect.die(new Error('A purchase needs a whole number of certificates and a positive amount'));
+                            return yield* new InzhurPurchaseInvalidError();
                         }
 
+                        const topUp = (yield* findTopUps()).find(item => item.transactionId === input.topUpTransactionId);
+
+                        if (!isDefined(topUp)) {
+                            return yield* new InzhurTopUpNotFoundError({ topUpTransactionId: input.topUpTransactionId });
+                        }
+
+                        const purchaseDay = toKyivDay(input.operatedAt);
+
+                        if (purchaseDay < toKyivDay(topUp.operatedAt)) {
+                            return yield* new InzhurPurchaseBeforeTopUpError();
+                        }
+
+                        if (convertToMicroUnits(input.amount) > convertToMicroUnits(topUp.remainingAmount)) {
+                            return yield* new InzhurPurchaseExceedsTopUpError({ remainingAmount: topUp.remainingAmount });
+                        }
+
+                        const operatedAt = new Date(getKyivDayStart(purchaseDay).getTime() + noonOffsetMilliseconds);
                         const account = yield* inzhurFundAccountService.ensureByName(setup, input.fundName);
                         const createdAt = yield* Clock.currentTimeMillis;
                         const nonce = (yield* Random.nextInt).toString(36);
@@ -111,7 +143,7 @@ export class InzhurManualPurchaseService extends Context.Service<InzhurManualPur
                             buildInzhurTransactionInput(
                                 `Bought ${toShortName(account.title)}`,
                                 externalId,
-                                input.operatedAt,
+                                operatedAt,
                                 buildInzhurTradeEntries({
                                     isSell: false,
                                     externalId,

@@ -131,6 +131,10 @@ export type { InzhurRangedGainInterface } from './inzhur/interface/inzhur-ranged
 export type { InzhurValuePointInterface } from './inzhur/interface/inzhur-value-point.interface';
 export { InzhurBankFlowService } from './inzhur/service/inzhur-bank-flow.service';
 export { InzhurNotSetUpError } from './inzhur/error/inzhur-not-set-up.error';
+export { InzhurTopUpNotFoundError } from './inzhur/error/inzhur-top-up-not-found.error';
+export { InzhurPurchaseInvalidError } from './inzhur/error/inzhur-purchase-invalid.error';
+export { InzhurPurchaseBeforeTopUpError } from './inzhur/error/inzhur-purchase-before-top-up.error';
+export { InzhurPurchaseExceedsTopUpError } from './inzhur/error/inzhur-purchase-exceeds-top-up.error';
 export { InzhurPriceMissingError } from './inzhur/error/inzhur-price-missing.error';
 export { InzhurStatementInvalidError } from './inzhur/error/inzhur-statement-invalid.error';
 export type { InzhurSetupInterface } from './inzhur/interface/inzhur-setup.interface';

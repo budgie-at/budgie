@@ -18,6 +18,5 @@ export interface InzhurOperationsImportSummaryInterface {
     readonly bankMatches: InzhurBankMatchesInterface;
     readonly replacedPurchaseCount: number;
     readonly unmatchedBankCount: number;
-    readonly removedEstimateCount: number;
     readonly cashBalance: number;
 }

@@ -1,5 +1,12 @@
 import { PRECISION, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
-import { InzhurGainService, InzhurManualPurchaseService } from '@budgie/sync';
+import {
+    InzhurGainService,
+    InzhurManualPurchaseService,
+    InzhurPurchaseBeforeTopUpError,
+    InzhurPurchaseExceedsTopUpError,
+    InzhurPurchaseInvalidError,
+    InzhurTopUpNotFoundError
+} from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -59,7 +66,7 @@ describe('inzhur/pending-top-ups', () => {
             const bankAccount = yield* prepare;
 
             yield* topUp(bankAccount.id, 'before-coverage', 500, '2026-01-05T08:00:00.000Z');
-            yield* topUp(bankAccount.id, 'inside-coverage', 400, '2026-01-10T12:00:00.000Z');
+            yield* topUp(bankAccount.id, 'inside-coverage', 400, '2026-01-10T07:00:00.000Z');
             expect(yield* findPendingTopUps).toEqual([]);
 
             yield* topUp(bankAccount.id, 'after-coverage', 300, '2026-01-20T08:00:00.000Z');
@@ -70,6 +77,16 @@ describe('inzhur/pending-top-ups', () => {
                 spentAmount: 0,
                 remainingAmount: 300
             });
+        }).pipe(Effect.provide(layer))
+    );
+
+    it.effect('lists a top-up made on the last export day after its last operation', () =>
+        Effect.gen(function* () {
+            const bankAccount = yield* prepare;
+
+            yield* topUp(bankAccount.id, 'same-day-later', 250, '2026-01-10T12:00:00.000Z');
+
+            expect(yield* findSinglePending()).toMatchObject({ externalId: 'same-day-later', amount: 250 });
         }).pipe(Effect.provide(layer))
     );
 
@@ -251,6 +268,59 @@ describe('inzhur/manual-purchase', () => {
             expect(yield* fetchAccountBalance(reit.id)).toBe(230 * PRECISION);
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(200 * PRECISION);
             expect(costReturn).toMatchObject({ invested: 2300 });
+        }).pipe(Effect.provide(layer))
+    );
+
+    it.effect('rejects purchases that are invalid, unknown, before the top-up or above what remains', () =>
+        Effect.gen(function* () {
+            const bankAccount = yield* prepare;
+
+            yield* topUp(bankAccount.id, 'february', 1000, '2026-02-01T08:00:00.000Z');
+
+            const { transactionId } = yield* findSinglePending();
+            const purchase = {
+                topUpTransactionId: transactionId,
+                fundName: REIT,
+                certificates: 10,
+                amount: 100,
+                operatedAt: FEBRUARY_PURCHASE_AT
+            };
+
+            expect(yield* Effect.flip(recordManualPurchase({ ...purchase, certificates: 0 }))).toBeInstanceOf(InzhurPurchaseInvalidError);
+            expect(yield* Effect.flip(recordManualPurchase({ ...purchase, topUpTransactionId: 0 }))).toBeInstanceOf(
+                InzhurTopUpNotFoundError
+            );
+            expect(
+                yield* Effect.flip(recordManualPurchase({ ...purchase, operatedAt: new Date('2026-01-31T09:00:00.000Z') }))
+            ).toBeInstanceOf(InzhurPurchaseBeforeTopUpError);
+
+            yield* recordManualPurchase({ ...purchase, amount: 900 });
+
+            expect(yield* Effect.flip(recordManualPurchase({ ...purchase, amount: 101 }))).toEqual(
+                new InzhurPurchaseExceedsTopUpError({ remainingAmount: 100 })
+            );
+        }).pipe(Effect.provide(layer))
+    );
+
+    it.effect('stores the purchase at noon of its Kyiv day', () =>
+        Effect.gen(function* () {
+            const bankAccount = yield* prepare;
+
+            yield* topUp(bankAccount.id, 'february', 1000, '2026-02-01T08:00:00.000Z');
+
+            const { transactionId } = yield* findSinglePending();
+
+            yield* recordManualPurchase({
+                topUpTransactionId: transactionId,
+                fundName: REIT,
+                certificates: 10,
+                amount: 100,
+                operatedAt: new Date('2026-02-02T22:30:00.000Z')
+            });
+
+            expect((yield* fetchInzhurLedger()).find(({ externalId }) => externalId?.startsWith('inzhur:manual:'))).toMatchObject({
+                operatedAt: new Date('2026-02-03T10:00:00.000Z')
+            });
         }).pipe(Effect.provide(layer))
     );
 });

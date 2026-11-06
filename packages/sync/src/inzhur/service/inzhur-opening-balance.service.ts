@@ -59,13 +59,6 @@ export class InzhurOpeningBalanceService extends Context.Service<InzhurOpeningBa
 
             return {
                 replace,
-                moveTo: Effect.fn('InzhurOpeningBalanceService.moveTo')(function* (accountId: number, operatedAt: Date) {
-                    const existing = yield* findExisting(accountId);
-
-                    if (isDefined(existing) && existing.operatedAt.getTime() !== operatedAt.getTime()) {
-                        yield* transactionRepository.updateById(existing.id, { operatedAt });
-                    }
-                }),
                 shift: Effect.fn('InzhurOpeningBalanceService.shift')(function* (
                     accountId: number,
                     delta: number,

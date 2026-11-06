@@ -22,17 +22,12 @@ const URI = 'operations.xlsx';
 const OLDER_URI = 'older.xlsx';
 const NEWER_URI = 'newer.xlsx';
 const FRESH_URI = 'fresh.xlsx';
-const FUTURE_URI = 'future.xlsx';
 
 const layer = makeInzhurOperationsLayer({
     [URI]: buildInzhurOperationsWorkbook(FULL_HISTORY_ROWS),
     [OLDER_URI]: buildInzhurOperationsWorkbook(FULL_HISTORY_ROWS.slice(0, 4)),
     [NEWER_URI]: buildInzhurOperationsWorkbook(FULL_HISTORY_ROWS.slice(4)),
-    [FRESH_URI]: buildInzhurOperationsWorkbook([...FULL_HISTORY_ROWS, { at: '2026-06-10T10:00:00', type: TOP_UP_TYPE, debit: 50 }]),
-    [FUTURE_URI]: buildInzhurOperationsWorkbook([
-        ...FULL_HISTORY_ROWS.slice(0, 4),
-        { at: '2099-01-01T10:00:00', type: TOP_UP_TYPE, debit: 1 }
-    ])
+    [FRESH_URI]: buildInzhurOperationsWorkbook([...FULL_HISTORY_ROWS, { at: '2026-06-10T10:00:00', type: TOP_UP_TYPE, debit: 50 }])
 });
 
 const snapshotLedger = Effect.map(fetchSourceLedger(ExternalSourceEnum.INZHUR), ledger =>
@@ -70,25 +65,6 @@ describe('inzhur/operations-lifecycle', () => {
             expect(new Set(externalIds).size).toBe(externalIds.length);
             expect(yield* fetchAccountBalance((yield* requireInzhurFundByName(OCEAN)).id)).toBe(0);
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(CASH_AFTER_HISTORY * PRECISION);
-        }).pipe(Effect.provide(layer))
-    );
-
-    it.effect('replaces an estimated balance correction with the exact entries of an export covering its day', () =>
-        Effect.gen(function* () {
-            yield* importInzhurOperations(OLDER_URI);
-
-            const inzhurSetupService = yield* InzhurSetupService;
-            const { cashAccount } = yield* requireInzhurSetup();
-
-            yield* inzhurSetupService.setActualBalance(6000);
-
-            expect((yield* fetchInzhurLedger()).some(({ externalId }) => externalId?.startsWith('inzhur:actual-balance:'))).toBe(true);
-
-            const summary = yield* importInzhurOperations(FUTURE_URI);
-
-            expect(summary.removedEstimateCount).toBe(1);
-            expect((yield* fetchInzhurLedger()).some(({ externalId }) => externalId?.startsWith('inzhur:actual-balance:'))).toBe(false);
-            expect(yield* fetchAccountBalance(cashAccount.id)).toBe(5501 * PRECISION);
         }).pipe(Effect.provide(layer))
     );
 

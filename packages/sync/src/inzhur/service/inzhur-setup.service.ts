@@ -1,21 +1,16 @@
 import {
-    AccountBalanceRepository,
     AccountTypeEnum,
     BankIntegrationRepository,
     CurrencyEnum,
     Db,
     ExternalSourceEnum,
     InstrumentRepository,
-    INVESTMENTS_CATEGORY_ID,
     InvestmentReturnRepository,
     SyncModeEnum,
     SyncRepository,
-    TransactionEntryTypeEnum,
-    UserIconNameEnum,
-    convertFromMicroUnits,
-    convertToMicroUnits
+    UserIconNameEnum
 } from '@budgie/contracts';
-import { AccountService, TransactionService } from '@budgie/ledger';
+import { AccountService } from '@budgie/ledger';
 import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -23,11 +18,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { buildPrimaryEntry } from '../../core/utils/build-primary-entry.util';
 import { INZHUR_CASH_EXTERNAL_ID } from '../constant/inzhur-cash-external-id.constant';
-import { INZHUR_BALANCE_CORRECTION_TITLE } from '../constant/inzhur-estimate-titles.constant';
-import { InzhurNotSetUpError } from '../error/inzhur-not-set-up.error';
-import { buildInzhurTransactionInput } from '../utils/build-inzhur-transaction-input.util';
 import { toKyivDay } from '../utils/to-kyiv-day.util';
 
 import { InzhurSetupLookupService } from './inzhur-setup-lookup.service';
@@ -37,17 +28,14 @@ import type { InzhurStatementReminderInterface } from '../interface/inzhur-state
 
 export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@budgie/sync/InzhurSetupService', {
     make: Effect.gen(function* () {
-        const accountBalanceRepository = yield* AccountBalanceRepository;
         const accountService = yield* AccountService;
         const bankIntegrationRepository = yield* BankIntegrationRepository;
         const instrumentRepository = yield* InstrumentRepository;
         const investmentReturnRepository = yield* InvestmentReturnRepository;
         const syncRepository = yield* SyncRepository;
         const inzhurSetupLookupService = yield* InzhurSetupLookupService;
-        const transactionService = yield* TransactionService;
         const provider = ExternalSourceEnum.INZHUR;
         const staleStatementDays = 30;
-        const estimatedDividendTitle = 'Inzhur dividends (estimated)';
 
         const setup = Effect.fn('InzhurSetupService.setup')(
             function* () {
@@ -103,63 +91,6 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
             effect => Db.transaction(effect)
         );
 
-        const setActualBalance = Effect.fn('InzhurSetupService.setActualBalance')(
-            function* (actualBalance: number) {
-                const setup = yield* inzhurSetupLookupService.findSetup();
-
-                if (!isDefined(setup)) {
-                    return yield* new InzhurNotSetUpError();
-                }
-
-                const { cashAccount } = setup;
-                const currentMicroUnits = (yield* accountBalanceRepository.getByAccountId(cashAccount.id)).at(0)?.balance ?? 0;
-                const differenceMicroUnits = convertToMicroUnits(actualBalance) - currentMicroUnits;
-
-                const operatedAt = new Date();
-
-                if (differenceMicroUnits < 0) {
-                    yield* accountService.adjustBalanceTo(cashAccount.id, actualBalance, operatedAt, INZHUR_BALANCE_CORRECTION_TITLE);
-                }
-
-                if (differenceMicroUnits > 0) {
-                    const externalId = `inzhur:actual-balance:${cashAccount.id}:${actualBalance}`;
-                    const entry = {
-                        ...buildPrimaryEntry(
-                            cashAccount.id,
-                            TransactionEntryTypeEnum.DEBIT,
-                            convertFromMicroUnits(differenceMicroUnits),
-                            externalId
-                        ),
-                        categoryId: INVESTMENTS_CATEGORY_ID
-                    };
-
-                    yield* transactionService.bulkCreate([
-                        buildInzhurTransactionInput(estimatedDividendTitle, externalId, operatedAt, [entry])
-                    ]);
-                }
-
-                return convertFromMicroUnits(differenceMicroUnits);
-            },
-            effect => Db.transaction(effect)
-        );
-
-        const updateCashAccount = Effect.fn('InzhurSetupService.updateCashAccount')(
-            function* (update: Parameters<typeof accountService.updateById>[1], actualBalance: number) {
-                const existingSetup = yield* inzhurSetupLookupService.findSetup();
-
-                if (!isDefined(existingSetup)) {
-                    return yield* new InzhurNotSetUpError();
-                }
-
-                const updatedAccount = yield* accountService.updateById(existingSetup.cashAccount.id, update);
-
-                yield* setActualBalance(actualBalance);
-
-                return updatedAccount;
-            },
-            effect => Db.transaction(effect)
-        );
-
         const findStatementReminder = Effect.fn('InzhurSetupService.findStatementReminder')(function* (now: Date) {
             const setup = yield* inzhurSetupLookupService.findSetup();
 
@@ -187,19 +118,17 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
                 : null;
         });
 
-        return { findSetup: () => inzhurSetupLookupService.findSetup(), setup, setActualBalance, updateCashAccount, findStatementReminder };
+        return { findSetup: () => inzhurSetupLookupService.findSetup(), setup, findStatementReminder };
     })
 }) {
     static readonly layer = Layer.effect(InzhurSetupService, InzhurSetupService.make).pipe(
         Layer.provide([
-            AccountBalanceRepository.layer,
             AccountService.layer,
             BankIntegrationRepository.layer,
             InzhurSetupLookupService.layer,
             InstrumentRepository.layer,
             InvestmentReturnRepository.layer,
-            SyncRepository.layer,
-            TransactionService.layer
+            SyncRepository.layer
         ])
     );
 }

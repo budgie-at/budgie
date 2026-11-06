@@ -194,6 +194,16 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
             return includesAny(toDescription(transaction), counterparties) || isCompanyIban;
         };
 
+        const isDividendCandidate = (transaction: TransactionWithEntriesEntityInterface) => {
+            const description = toDescription(transaction);
+
+            return (
+                transaction.type === TransactionTypeEnum.INCOME &&
+                !includesAny(description, withdrawalPhrases) &&
+                includesAny(description, dividendKeywords)
+            );
+        };
+
         const processTransaction = Effect.fnUntraced(function* (
             transaction: TransactionWithEntriesEntityInterface,
             setup: InzhurSetupInterface
@@ -202,17 +212,11 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
                 return null;
             }
 
-            const description = toDescription(transaction);
-            const isExpense = transaction.type === TransactionTypeEnum.EXPENSE;
-            const isWithdrawalPhrase = !isExpense && includesAny(description, withdrawalPhrases);
-
-            const isDividendCandidate =
-                transaction.type === TransactionTypeEnum.INCOME && !isWithdrawalPhrase && includesAny(description, dividendKeywords);
-
-            if (!isDividendCandidate || isDefined(yield* findPlaceholder(transaction, setup))) {
+            if (!isDividendCandidate(transaction) || isDefined(yield* findPlaceholder(transaction, setup))) {
                 return yield* convertAndPair(transaction, setup);
             }
 
+            const description = toDescription(transaction);
             const isUnprocessed = isUnprocessedDividend(transaction);
             const fundAccountId = isUnprocessed ? yield* recordDividend(transaction, description, setup) : transaction.fundAccountId;
 
@@ -229,7 +233,10 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
                 externalSources,
                 scope?.transactionIds ?? null
             );
-            const outcomes = (yield* Effect.forEach(transactions, transaction => processTransaction(transaction, setup))).filter(isDefined);
+            const genuineFirst = [...transactions].sort(
+                (left, right) => Number(isDividendCandidate(left)) - Number(isDividendCandidate(right))
+            );
+            const outcomes = (yield* Effect.forEach(genuineFirst, transaction => processTransaction(transaction, setup))).filter(isDefined);
 
             yield* transactionRepository.retitleExternalTransfers(externalSources, setup.cashAccount.id, topUpTitle, withdrawalTitle);
 
