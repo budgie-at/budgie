@@ -21,7 +21,7 @@ export const ContactSelectorHeader = ({ search, onSearchChange, isLimited, canSe
 
     return (
         <View>
-            <View collapsable={false} className="px-3xl pb-md pt-7xl bg-sheet-surface">
+            <View collapsable={false} className="px-3xl pb-md pt-safe-or-[24px] bg-sheet-surface">
                 <View className="pb-[14px]">
                     <SheetTitleRow title={t`Contacts`} />
                 </View>
