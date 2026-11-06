@@ -50,5 +50,7 @@ export const resetTestDb = (database: DB) =>
         );
         yield* client.unsafe('DELETE FROM main.sqlite_sequence');
         yield* client.unsafe('INSERT INTO main.sqlite_sequence SELECT * FROM baseline.sequence');
+        yield* client.unsafe('DELETE FROM main.sync_outbox');
+        yield* client.unsafe('DELETE FROM main.sync_apply_state');
         yield* client.unsafe('PRAGMA foreign_keys = ON');
     });
