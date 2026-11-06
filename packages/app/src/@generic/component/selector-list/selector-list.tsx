@@ -43,7 +43,7 @@ export const SelectorList = <Item,>({
     initialScrollIndex
 }: Props<Item>) => {
     const scrollOffset = useSharedValue(0);
-    const initialScrollTarget = { index: isPositiveNumber(initialScrollIndex) ? initialScrollIndex : 0, viewPosition: 0.5 };
+    const initialScrollProps = isPositiveNumber(initialScrollIndex) ? { initialScrollIndex } : {};
 
     const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
         scrollOffset.set(event.nativeEvent.contentOffset.y);
@@ -53,7 +53,7 @@ export const SelectorList = <Item,>({
         <LoadingContent isLoading={isLoading} containerClassName="flex-1" className="flex-1">
             <BudgieLegendList
                 {...options}
-                initialScrollIndex={initialScrollTarget}
+                {...initialScrollProps}
                 ref={listRef}
                 data={data}
                 renderItem={renderItem}
