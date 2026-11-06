@@ -7439,7 +7439,7 @@ msgstr "Записувати покупки Apple Pay"
 msgid "Record card taps with Shortcuts"
 msgstr "Записувати оплати карткою через Швидкі команди"
 
-#: src/account/component/cash-card/cash-card.tsx
+#: src/account/component/cash-record-expense-row/cash-record-expense-row.tsx
 msgid "Record expense"
 msgstr "Записати витрату"
 

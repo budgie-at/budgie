@@ -1,7 +1,12 @@
+import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+
 import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { ACCOUNT_TYPE_SWATCH } from '../../constant/account-type-swatch.constant';
 import { AccountRowLeadingContext } from '../../context/account-row-leading.context';
 import { HomeAccountBalanceInterface } from '../../interface/home-account-balance.interface';
 import { HomeSectionInterface } from '../../interface/home-section.interface';
+import { isCashSection } from '../../type-guard/is-cash-section.type-guard';
 import { isDebtSection } from '../../type-guard/is-debt-section.type-guard';
 import { isInstitutionGroup } from '../../type-guard/is-institution-group.type-guard';
 import { AccountListItem } from '../account-list-item/account-list-item';
@@ -35,6 +40,29 @@ export const HomeSectionItem = ({ item, section, balancesByAccountId }: Props) =
         const balance = item.accounts.reduce((total, account) => total + (balancesByAccountId.get(account.id)?.balance ?? 0), 0);
 
         return <CryptoCurrencyGroupCard group={item} balance={balance} balancesByAccountId={balancesByAccountId} />;
+    }
+
+    if (isCashSection(section) && section.data.length === 1) {
+        const cashSwatch = ACCOUNT_TYPE_SWATCH[AccountTypeEnum.CASH];
+
+        return (
+            <AccountRowLeadingContext
+                value={
+                    <CircleIcon
+                        icon={UserIconNameEnum.Banknote}
+                        size={44}
+                        iconSize={22}
+                        radius={11}
+                        variant="ghost"
+                        border={false}
+                        className={cashSwatch.soft}
+                        iconClassName={cashSwatch.text}
+                    />
+                }
+            >
+                <AccountListItem account={item} balancesByAccountId={balancesByAccountId} />
+            </AccountRowLeadingContext>
+        );
     }
 
     if (isDebtSection(section)) {
