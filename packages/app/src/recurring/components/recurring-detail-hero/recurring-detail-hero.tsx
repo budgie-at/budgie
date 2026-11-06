@@ -58,7 +58,7 @@ export const RecurringDetailHero = ({ series, now }: Props) => {
                 {amount}
             </Text>
             <Text className="mt-xs text-center text-[15px] text-secondary-foreground">{meta}</Text>
-            <View className="mt-xl rounded-full bg-grouped-surface-row px-xl py-sm" style={continuousCorners}>
+            <View className="mt-xl mb-sm rounded-full bg-grouped-surface-row px-xl py-sm" style={continuousCorners}>
                 <Text className="text-[14px] font-semibold text-primary">{statusLabel}</Text>
             </View>
         </View>

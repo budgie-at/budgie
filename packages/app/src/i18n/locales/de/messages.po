@@ -287,6 +287,10 @@ msgstr "{count, plural, one {# Zahlung verwenden} other {# Zahlungen verwenden}}
 msgid "{count} of {rowCount} selected"
 msgstr "{count} von {rowCount} ausgewählt"
 
+#: src/recurring/components/recurring-summary-subline/recurring-summary-subline.tsx
+msgid "{countLabel} · Next: {nextTitle} {nextAmount} · {nextDue}"
+msgstr ""
+
 #: src/sync/component/enable-banking-bank-row/enable-banking-bank-row.tsx
 msgid "{country} · Beta"
 msgstr "{country} · Beta"
@@ -345,10 +349,6 @@ msgstr "{downloaded} von {total} GB bleiben erhalten. Es geht weiter, sobald du 
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 msgid "{downloaded} of {total} GB is kept. It carries on when you're back online."
 msgstr "{downloaded} von {total} GB bleiben erhalten. Es geht weiter, sobald du wieder online bist."
-
-#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
-msgid "{dueSoonAmount} in the next 7 days"
-msgstr ""
 
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "{duplicateTransactionCount, plural, one {# skipped} other {# skipped}}"
@@ -6112,10 +6112,6 @@ msgstr "Notiz"
 #: src/sync/component/sync-history-step/sync-history-step.tsx
 msgid "Nothing from the past is imported"
 msgstr "Nichts aus der Vergangenheit wird importiert"
-
-#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
-msgid "Nothing in the next 7 days"
-msgstr ""
 
 #: src/recurring/components/recurring-reminder-denied-row/recurring-reminder-denied-row.tsx
 msgid "Notifications are off · Open Settings"

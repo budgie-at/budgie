@@ -288,6 +288,10 @@ msgstr "{count, plural, one {Use # payment} other {Use # payments}}"
 msgid "{count} of {rowCount} selected"
 msgstr "{count} of {rowCount} selected"
 
+#: src/recurring/components/recurring-summary-subline/recurring-summary-subline.tsx
+msgid "{countLabel} · Next: {nextTitle} {nextAmount} · {nextDue}"
+msgstr "{countLabel} · Next: {nextTitle} {nextAmount} · {nextDue}"
+
 #: src/sync/component/enable-banking-bank-row/enable-banking-bank-row.tsx
 msgid "{country} · Beta"
 msgstr "{country} · Beta"
@@ -346,10 +350,6 @@ msgstr "{downloaded} of {total} GB is kept. It carries on when you're back on Wi
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 msgid "{downloaded} of {total} GB is kept. It carries on when you're back online."
 msgstr "{downloaded} of {total} GB is kept. It carries on when you're back online."
-
-#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
-msgid "{dueSoonAmount} in the next 7 days"
-msgstr "{dueSoonAmount} in the next 7 days"
 
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "{duplicateTransactionCount, plural, one {# skipped} other {# skipped}}"
@@ -6113,10 +6113,6 @@ msgstr "Note"
 #: src/sync/component/sync-history-step/sync-history-step.tsx
 msgid "Nothing from the past is imported"
 msgstr "Nothing from the past is imported"
-
-#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
-msgid "Nothing in the next 7 days"
-msgstr "Nothing in the next 7 days"
 
 #: src/recurring/components/recurring-reminder-denied-row/recurring-reminder-denied-row.tsx
 msgid "Notifications are off · Open Settings"

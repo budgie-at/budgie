@@ -35,7 +35,7 @@ export const RecurringDetailNextPayments = ({ dates, amount, now }: Props) => {
             {dates.map((date, index) => (
                 <TransactionInfoRow
                     key={date.getTime()}
-                    icon={UserIconNameEnum.Calendar}
+                    icon={UserIconNameEnum.Clock}
                     value={formatWeekdayAndDay(date)}
                     description={getDueLabel(date, now)}
                     trailing={formattedAmount}

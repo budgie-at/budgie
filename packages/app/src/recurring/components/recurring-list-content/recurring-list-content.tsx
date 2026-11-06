@@ -45,7 +45,7 @@ export const RecurringListContent = ({ header }: Props) => {
     const listHeader = (
         <>
             {header}
-            <RecurringSummaryCard summary={summary} />
+            <RecurringSummaryCard summary={summary} now={now} />
         </>
     );
 

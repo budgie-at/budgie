@@ -31,7 +31,7 @@ export const RecurringListRowContent = ({ series, isPossible, now }: Props) => {
     const subtitleLineLimit = isAccessibilityTextSize ? 0 : 1;
     const seenCount = series.linkedCount;
     const tileVariant = isPossible ? RecurringTileVariantEnum.NEUTRAL : getRecurringTileVariant(series.title);
-    const subtitle = isPossible ? t`Seen ${seenCount}× · ${cadence}` : `${cadence} · ${nextDateLabel}`;
+    const subtitle = isPossible ? t`Seen ${seenCount}× · ${cadence}` : `${nextDateLabel} · ${cadence}`;
 
     return (
         <TransactionCardLayout

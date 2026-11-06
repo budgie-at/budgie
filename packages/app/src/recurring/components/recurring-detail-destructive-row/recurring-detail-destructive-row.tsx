@@ -32,7 +32,7 @@ export const RecurringDetailDestructiveRow = ({ source, onRemove }: Props) => {
                     colorClassName="text-destructive-strong"
                 />
             </TransactionInfoGroup>
-            <Text className="px-3xl text-[13px] text-secondary-foreground">{footnote}</Text>
+            <Text className="px-3xl text-[13px] text-primary/65">{footnote}</Text>
         </View>
     );
 };

@@ -10,28 +10,28 @@ import { ProtectedText } from '../../../@generic/component/protected-text/protec
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { RecurringPaneSelector } from '../recurring-pane/recurring-pane.selector';
+import { RecurringSummarySubline } from '../recurring-summary-subline/recurring-summary-subline';
 
 import type { RecurringSummaryInterface } from '../../interface/recurring-summary.interface';
 
 interface Props {
     readonly summary: RecurringSummaryInterface;
+    readonly now: Date;
 }
 
 const continuousCorners = { borderCurve: 'continuous' as const };
 
-export const RecurringSummaryCard = ({ summary }: Props) => {
+export const RecurringSummaryCard = ({ summary, now }: Props) => {
     const { t } = useLingui();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const protectAmount = useProtectedAmountLabel();
-    const { committedMonthly, committedCount, hasAveragedBills, dueSoonTotal, dueSoonCount, incomeMonthly } = summary;
+    const { committedMonthly, committedCount, hasAveragedBills, nextPayment, incomeMonthly } = summary;
+
     const hasCommitted = isPositiveNumber(committedMonthly);
-    const hasDueSoon = isPositiveNumber(dueSoonCount);
     const hasIncome = isPositiveNumber(incomeMonthly);
     const committedAmount = protectAmount(convertFromMicroUnits(committedMonthly), defaultInstrument.symbol);
-    const dueSoonAmount = protectAmount(convertFromMicroUnits(dueSoonTotal), defaultInstrument.symbol);
     const incomeAmount = protectAmount(convertFromMicroUnits(incomeMonthly), defaultInstrument.symbol);
     const countLabel = t({ message: plural(committedCount, { one: '# bill', other: '# bills' }) });
-    const dueSoonLabel = hasDueSoon ? t`${dueSoonAmount} in the next 7 days` : t`Nothing in the next 7 days`;
 
     if (!hasCommitted && !hasIncome) {
         return null;
@@ -44,7 +44,7 @@ export const RecurringSummaryCard = ({ summary }: Props) => {
                 style={continuousCorners}
                 testID={RecurringPaneSelector.Summary}
             >
-                <Text dynamicTypeRamp="footnote" className="text-[13px] font-medium text-secondary-foreground">
+                <Text dynamicTypeRamp="footnote" className="text-[13px] font-medium text-primary/65">
                     <Trans>Monthly average</Trans>
                 </Text>
                 <View className="flex-row flex-wrap items-baseline gap-x-xs">
@@ -52,9 +52,7 @@ export const RecurringSummaryCard = ({ summary }: Props) => {
                         {committedAmount}
                     </ProtectedText>
                 </View>
-                <Text dynamicTypeRamp="subheadline" className="text-[15px] text-secondary-foreground">
-                    {`${countLabel} · ${dueSoonLabel}`}
-                </Text>
+                <RecurringSummarySubline countLabel={countLabel} nextPayment={nextPayment} now={now} />
                 {hasIncome ? (
                     <View className="flex-row items-center justify-between border-t border-surface-separator pt-md">
                         <Text dynamicTypeRamp="subheadline" className="text-[15px] text-primary">
@@ -67,7 +65,7 @@ export const RecurringSummaryCard = ({ summary }: Props) => {
                 ) : null}
             </View>
             {hasAveragedBills ? (
-                <Text dynamicTypeRamp="footnote" className="px-3xl pt-sm text-[13px] text-secondary-foreground">
+                <Text dynamicTypeRamp="footnote" className="px-3xl pt-sm text-[13px] text-primary/65">
                     <Trans>Non-monthly bills are averaged per month.</Trans>
                 </Text>
             ) : null}

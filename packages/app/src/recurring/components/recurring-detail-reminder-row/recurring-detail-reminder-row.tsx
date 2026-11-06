@@ -30,7 +30,7 @@ export const RecurringDetailReminderRow = ({ series }: Props) => {
                 <Trans>Reminder</Trans>
             </Text>
             <RecurringReminderChoices seriesId={series.id} reminderDaysBefore={series.reminderDaysBefore} />
-            <Text className="px-3xl pt-xs text-[13px] text-secondary-foreground">
+            <Text className="px-3xl pt-xs text-[13px] text-primary/65">
                 <Trans>Notify before the payment is due.</Trans>
             </Text>
         </View>

@@ -56,11 +56,11 @@ export const RecurringSeriesFormScreen = ({ target, initialValues }: Props) => {
     const createTitle =
         target.mode === RecurringFormModeEnum.CREATE && isDefined(target.transactionId) ? t`Make recurring` : t`New recurring payment`;
     const title = isEditing ? t`Edit recurring payment` : createTitle;
-    const kindField = isEditing ? null : <RecurringFormKindField />;
     const sourceTransactionId = target.mode === RecurringFormModeEnum.CREATE ? target.transactionId : null;
+    const kindField = isEditing || isDefined(sourceTransactionId) ? null : <RecurringFormKindField />;
     const sourceSection = isDefined(sourceTransactionId) ? (
         <View className="gap-y-sm">
-            <Text className="px-3xl text-[13px] font-medium text-secondary-foreground">
+            <Text className="px-3xl text-[13px] font-medium text-primary/65">
                 <Trans>From transaction</Trans>
             </Text>
             <MakeRecurringSourceRow transactionId={sourceTransactionId} />
@@ -69,7 +69,7 @@ export const RecurringSeriesFormScreen = ({ target, initialValues }: Props) => {
     const [amount, seriesTitle] = useWatch({ control: form.control, name: ['amount', 'title'] });
     const isSaveDisabled = !isPositiveNumber(amount) || !isNotEmptyString(seriesTitle.trim());
     const saveHint = isSaveDisabled ? (
-        <Text className="pb-md text-center text-[13px] text-secondary-foreground">
+        <Text className="pb-md text-center text-[13px] text-primary/65">
             <Trans>Add an amount and a name to save</Trans>
         </Text>
     ) : null;

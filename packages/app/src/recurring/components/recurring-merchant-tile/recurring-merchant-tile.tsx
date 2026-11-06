@@ -24,7 +24,7 @@ const TILE_CLASS_NAMES: Record<RecurringTileVariantEnum, string> = {
     AMBER: 'bg-chart-4/16 dark:bg-chart-4/30',
     ROSE: 'bg-chart-5/16 dark:bg-chart-5/30',
     INDIGO: 'bg-chart-6/16 dark:bg-chart-6/30',
-    NEUTRAL: 'bg-surface-fill'
+    NEUTRAL: 'bg-segmented-track'
 };
 
 const LETTER_CLASS_NAMES: Record<RecurringTileVariantEnum, string> = {
