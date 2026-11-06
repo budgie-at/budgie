@@ -2,6 +2,7 @@ import { EnableBankingCallbackError, EnableBankingCallbackFailureEnum } from '@b
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
+import * as Schema from 'effect/Schema';
 import { useEffect, useEffectEvent } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
@@ -36,7 +37,7 @@ export const useEnableBankingCallback = (
                 Effect.tapError(error =>
                     Effect.sync(() => {
                         const isForeignCallback =
-                            error instanceof EnableBankingCallbackError &&
+                            Schema.is(EnableBankingCallbackError)(error) &&
                             (error.failure === EnableBankingCallbackFailureEnum.STATE_MISMATCH ||
                                 error.failure === EnableBankingCallbackFailureEnum.MALFORMED);
 

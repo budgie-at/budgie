@@ -26,9 +26,7 @@ layer(TestLayer)('consolidation/erste-atm-cash-withdrawal', it => {
             const transferConsolidationService = yield* TransferConsolidationService;
             const { bankAccount, cashAccount } = yield* seedErsteAndCashAccounts();
             const seedErsteTransaction = (title: string, transaction: TransactionEntityInterface) =>
-                Effect.gen(function* () {
-                    return yield* testSeedService.updateTransaction(transaction.id, { title, externalSource: ExternalSourceEnum.ERSTE });
-                });
+                testSeedService.updateTransaction(transaction.id, { title, externalSource: ExternalSourceEnum.ERSTE });
             const atmWithdrawal = yield* seedErsteTransaction(
                 'AUTOMAT 12210014 K1 26.11. 14:51',
                 yield* testSeedService.bankPairExpense(

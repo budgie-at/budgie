@@ -3,7 +3,7 @@ import * as Schema from 'effect/Schema';
 const BinanceStakingRewardApiSchema = Schema.Struct({
     asset: Schema.optionalKey(Schema.String),
     amount: Schema.String,
-    time: Schema.Number
+    time: Schema.Finite
 });
 
 export const BinanceStakingRewardListApiSchema = Schema.Struct({

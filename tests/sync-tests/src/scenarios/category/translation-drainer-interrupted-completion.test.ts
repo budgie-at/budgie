@@ -1,12 +1,12 @@
 import { ChatService } from '@app/ai/service/chat.service';
 import { TranslationDrainerService } from '@app/ai/service/translation-drainer.service';
+import { AiInvokeError } from '@budgie/ai';
 import { CategoryRepository, LanguageEnum, UserIconNameEnum } from '@budgie/contracts';
 import { describe, expect, it, vi } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import { getDefined } from '@rnw-community/shared';
 
-import { AiInvokeError } from '../../../../../packages/ai/src/@generic/error/ai-invoke.error';
 import { TestLayer } from '../../harness';
 
 const createPendingCategory = Effect.fnUntraced(function* () {
@@ -35,7 +35,7 @@ describe('category/translation-drainer-interrupted-completion', () => {
             const chatService = yield* ChatService;
             const category = yield* createPendingCategory();
             vi.spyOn(chatService, 'generate').mockReturnValue(
-                Effect.fail(new AiInvokeError({ cause: new Error('completionInterrupted') }))
+                Effect.fail(AiInvokeError.make({ cause: new Error('completionInterrupted') }))
             );
 
             const translation = yield* takePendingTranslation;

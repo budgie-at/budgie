@@ -45,7 +45,6 @@ export const BankIntegrationPage = ({ integration }: Props) => {
                 title={title}
                 leading={<HeaderBackButton />}
                 contentClassName="gap-y-3xl"
-                scrimClassName="bg-surface"
             >
                 <BankIntegrationContext.Provider value={contextValue}>
                     <BankIntegrationOverview />

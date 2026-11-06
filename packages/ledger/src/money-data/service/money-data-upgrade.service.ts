@@ -147,7 +147,7 @@ export class MoneyDataUpgradeService extends Context.Service<MoneyDataUpgradeSer
                             ...snapshot,
                             isRunning: false,
                             isUpdatingBalances: false,
-                            lastError: getErrorMessage(Cause.squash(cause))
+                            lastError: cause.pipe(Cause.squash, getErrorMessage)
                         }))
                     )
                 );

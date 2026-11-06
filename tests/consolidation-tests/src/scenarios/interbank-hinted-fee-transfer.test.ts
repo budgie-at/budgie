@@ -16,9 +16,7 @@ const INCOME_AMOUNT = 29_999 * PRECISION;
 const COMPETING_INCOME_AMOUNT = 29_998 * PRECISION;
 
 const seedAccount = (title: string, externalSource: ExternalSourceEnum | null, iban: string) =>
-    Effect.gen(function* () {
-        return yield* testSeedService.bankSyncAccount(title, externalSource, iban);
-    });
+    testSeedService.bankSyncAccount(title, externalSource, iban);
 
 const seedInterbankFeeTransfer = (
     sourceAccountExternalSource: ExternalSourceEnum | null = ExternalSourceEnum.MONOBANK,
@@ -99,15 +97,11 @@ const expectSeededInterbankFeeTransferConsolidates = Effect.fnUntraced(function*
 
 layer(TestLayer)('consolidation/interbank-hinted-fee-transfer', it => {
     it.effect('auto-consolidates a first interbank transfer when transfer MCC, time, and fee delta make the pair unambiguous', () =>
-        Effect.gen(function* () {
-            yield* expectSeededInterbankFeeTransferConsolidates(ExternalSourceEnum.MONOBANK, ExternalSourceEnum.PRIVATBANK);
-        })
+        expectSeededInterbankFeeTransferConsolidates(ExternalSourceEnum.MONOBANK, ExternalSourceEnum.PRIVATBANK)
     );
 
     it.effect('uses transaction bank sources when imported accounts do not carry bank sources', () =>
-        Effect.gen(function* () {
-            yield* expectSeededInterbankFeeTransferConsolidates(null, null);
-        })
+        expectSeededInterbankFeeTransferConsolidates(null, null)
     );
 
     it.effect('leaves an interbank transfer unconsolidated when another fee-sized income competes for the same expense', () =>

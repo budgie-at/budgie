@@ -12,6 +12,7 @@ import { TransactionService } from '@budgie/ledger';
 import { TransferConsolidationDrainerService } from '@budgie/sync';
 import * as Cause from 'effect/Cause';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
 import * as Layer from 'effect/Layer';
@@ -72,7 +73,7 @@ export class WalletCaptureImportService extends Context.Service<WalletCaptureImp
                 return isDefined(account) && account.isActive ? { ...record, accountId: account.id } : null;
             }
 
-            const candidates = (yield* accountRepository.getAllActiveAccounts()).filter(account => account.type !== AccountTypeEnum.DEBT);
+            const candidates = (yield* accountRepository.getAllActiveAccounts).filter(account => account.type !== AccountTypeEnum.DEBT);
             const { defaultAccountId } = yield* settingsRepository.getSettings();
             const accountId =
                 findAccountIdByCardName(record.cardName, candidates) ??
@@ -95,7 +96,7 @@ export class WalletCaptureImportService extends Context.Service<WalletCaptureImp
                 accountId: record.accountId,
                 amountInMicroUnits: convertToMicroUnits(accountAmount.amount),
                 normalizedTitle: record.merchant.trim().toLocaleLowerCase(),
-                operatedAt: new Date(record.capturedAt),
+                operatedAt: DateTime.toDateUtc(DateTime.makeUnsafe(record.capturedAt)),
                 timeWindowSeconds: duplicateWindowSeconds
             });
 
@@ -131,7 +132,7 @@ export class WalletCaptureImportService extends Context.Service<WalletCaptureImp
                 : yield* captureTransactionService.createCaptureTransaction(record);
             yield* nativeService.acknowledgeCaptures([record.captureId]);
 
-            return { id: transactionId, operatedAt: new Date(record.capturedAt) };
+            return { id: transactionId, operatedAt: DateTime.toDateUtc(DateTime.makeUnsafe(record.capturedAt)) };
         });
 
         const enqueueConsolidation = (importedCaptures: readonly Pick<TransactionEntityInterface, 'id' | 'operatedAt'>[]) => {
@@ -166,7 +167,8 @@ export class WalletCaptureImportService extends Context.Service<WalletCaptureImp
                 }
             }
 
-            importedCaptures.push(yield* importAndAcknowledgeCapture(record, importedTransactionId));
+            const importedCapture = yield* importAndAcknowledgeCapture(record, importedTransactionId);
+            importedCaptures.push(importedCapture);
 
             return null;
         });

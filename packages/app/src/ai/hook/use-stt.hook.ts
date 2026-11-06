@@ -21,6 +21,7 @@ import { sumAiModelDownloadBytes } from '../utils/sum-ai-model-download-bytes.ut
 import { useSttResidency } from './use-stt-residency.hook';
 
 import type { AppServices } from '../../@generic/runtime/app.runtime';
+import type * as Cause from 'effect/Cause';
 
 type SttStatus = 'idle' | 'streaming' | 'processing';
 
@@ -30,7 +31,7 @@ interface UseSttReturn {
     readonly partialTranscription: string;
     readonly isReady: boolean;
     readonly downloadProgress: number;
-    readonly startStream: () => Effect.Effect<boolean, unknown, AppServices>;
+    readonly startStream: () => Effect.Effect<boolean, Cause.YieldableError, AppServices>;
     readonly insertAudio: (samples: Float32Array) => void;
     readonly stopStream: () => Effect.Effect<string, never, AppServices>;
     readonly cancelStream: () => void;

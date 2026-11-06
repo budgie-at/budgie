@@ -9,13 +9,14 @@ import type { DbMutationInterface } from '../interface/db-mutation.interface';
 import type { DB } from '../type/db.type';
 import type { TransactionBoundaryType } from '../type/transaction-boundary.type';
 
+/** @effect-leakable-service */
 export class Db extends Context.Service<Db, DB>()('@budgie/contracts/Db') {
     static readonly TransactionBoundary = Context.Reference<TransactionBoundaryType>('@budgie/contracts/Db/TransactionBoundary', {
         defaultValue: () => effect => effect
     });
 
     static query<A, E>(run: (db: DB) => Effect.Effect<A, E>): Effect.Effect<A, DbError, Db> {
-        return Db.use(db => run(db).pipe(Effect.mapError(cause => new DbError({ cause }))));
+        return Db.use(db => run(db).pipe(Effect.mapError(cause => DbError.make({ cause }))));
     }
 
     static mutation<A, E, R>(mutation: DbMutationInterface, effect: Effect.Effect<A, E, R>): Effect.Effect<A, E, R | Db> {
@@ -29,7 +30,8 @@ export class Db extends Context.Service<Db, DB>()('@budgie/contracts/Db') {
         return Effect.gen(function* () {
             const db = yield* Db;
 
-            if (Option.isSome(yield* Effect.serviceOption(db.$client.transactionService))) {
+            const transactionServiceOption = yield* Effect.serviceOption(db.$client.transactionService);
+            if (Option.isSome(transactionServiceOption)) {
                 return yield* effect;
             }
 
@@ -38,7 +40,7 @@ export class Db extends Context.Service<Db, DB>()('@budgie/contracts/Db') {
             return yield* transactionBoundary(
                 db.$client
                     .withTransaction(Effect.provideService(effect, Db, withReplicas(db.$primary, [db.$primary])))
-                    .pipe(Effect.catchTag('SqlError', cause => Effect.fail(new DbError({ cause }))))
+                    .pipe(Effect.catchTag('SqlError', cause => Effect.fail(DbError.make({ cause }))))
             );
         });
     }

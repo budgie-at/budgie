@@ -9,7 +9,7 @@ import {
     RecurringSeriesUserStateEnum,
     TransactionEntityTable
 } from '@budgie/contracts';
-import { afterAll, beforeEach, expect, layer } from '@effect/vitest';
+import { beforeEach, expect, layer } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -18,7 +18,7 @@ import { RecurringRefreshService, RecurringService } from '../src/index';
 import { RecurringRepository } from '../src/repository/recurring.repository';
 
 import { DEFAULT_INSTRUMENT_ID, JUNE, NOW, seedCharges, seedDetectedSeries, seedMonthlyCharges } from './recurring-seed';
-import { TestLayer, detectAt, setUserState, testDb, testDbHandle } from './test-context';
+import { TestLayer, detectAt, setUserState, testDb } from './test-context';
 
 const SIX_MONTHS = [6, 5, 4, 3, 2, 1] as const;
 
@@ -41,8 +41,6 @@ const expectReadWithoutDetection = Effect.gen(function* () {
 });
 
 beforeEach(() => Effect.runPromise(resetTestDb(testDb)));
-
-afterAll(() => testDbHandle.dispose());
 
 layer(TestLayer)('recurringRefreshService', it => {
     it.effect('writes nothing on the second run', () =>

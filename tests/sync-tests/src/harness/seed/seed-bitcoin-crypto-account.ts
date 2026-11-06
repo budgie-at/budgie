@@ -4,7 +4,7 @@ import * as Effect from 'effect/Effect';
 import { isDefined } from '@rnw-community/shared';
 
 import { requireInstrument } from '../db/require-instrument';
-import { testDb } from '../scenario/setup';
+import { testDb } from '../scenario/test-db';
 
 import { seed } from './seed';
 import { seedLedgerBalance } from './seed-ledger-balance';

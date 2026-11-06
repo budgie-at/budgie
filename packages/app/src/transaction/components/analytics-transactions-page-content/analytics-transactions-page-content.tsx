@@ -2,7 +2,6 @@ import { Text, View } from 'react-native';
 
 import { CollapsibleHeaderBackdrop, ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 
-import { CollapsibleChromeHeaderScrim } from '../../../@generic/component/collapsible-chrome-header-scrim/collapsible-chrome-header-scrim';
 import { CollapsibleChromeHeader } from '../../../@generic/component/collapsible-chrome-header/collapsible-chrome-header';
 import { CollapsibleChromeLegendList } from '../../../@generic/component/collapsible-chrome-legend-list/collapsible-chrome-legend-list';
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
@@ -68,8 +67,6 @@ export const AnalyticsTransactionsPageContent = ({ headerProps, summary, emptySt
                     </View>
 
                     <CollapsibleHeaderBackdrop />
-
-                    <CollapsibleChromeHeaderScrim />
 
                     <CollapsibleChromeHeader leading={<HeaderBackButton />} expandedTitle={expandedTitle} collapsedTitle={collapsedTitle} />
                 </ScreenChromeFrame>

@@ -46,7 +46,7 @@ describe('LEGACY_REICON_ICONS', () => {
 
     it.effect('preservesSavedBikeIdWhileResolvingToBicycle', () =>
         Effect.gen(function* () {
-            const category = yield* Schema.decodeUnknownEffect(CategoryCreateEntitySchema)({
+            const category = yield* Schema.decodeEffect(CategoryCreateEntitySchema)({
                 title: 'legacyCategory',
                 icon: UserIconNameEnum.Bike,
                 parentId: null
@@ -62,7 +62,7 @@ describe('canonicalSavedIcons', () => {
     it.effect('validatesNamespacedSelectionsWithoutChangingPersistedIds', () =>
         Effect.gen(function* () {
             for (const icon of [ReiconIconNameEnum.BICYCLE, ReiconIconNameEnum.HOME, ReiconIconNameEnum.HEART]) {
-                const category = yield* Schema.decodeUnknownEffect(CategoryCreateEntitySchema)({
+                const category = yield* Schema.decodeEffect(CategoryCreateEntitySchema)({
                     title: 'e2eCategory',
                     icon,
                     parentId: null

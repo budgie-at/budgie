@@ -42,12 +42,12 @@ export const untaggedRowsAtom = databaseQueryFamily(
 
 export const categoryEvidenceAtom = databaseQueryAtom(
     [TransactionEntityTable, TransactionEntryEntityTable, CategoryEntityTable],
-    Effect.flatMap(TransactionCategorizeInboxRepository, repository => repository.findCategoryEvidence())
+    Effect.flatMap(TransactionCategorizeInboxRepository, repository => repository.findCategoryEvidence)
 );
 
 export const tagEvidenceAtom = databaseQueryAtom(
     [TransactionEntityTable, TransactionEntryEntityTable, TransactionTagsEntityTable],
-    Effect.flatMap(TransactionCategorizeInboxRepository, repository => repository.findTagEvidence())
+    Effect.flatMap(TransactionCategorizeInboxRepository, repository => repository.findTagEvidence)
 );
 
 export const atmCashWithdrawalTransactionIdsAtom = databaseQueryFamily(

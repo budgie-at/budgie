@@ -9,11 +9,12 @@ import { DepositAccountFormValues } from '../interface/deposit-account-form-valu
 import { useAccountEntityForm } from './use-account-entity-form.hook';
 
 import type { AppServices } from '../../@generic/runtime/app.runtime';
+import type * as Cause from 'effect/Cause';
 import type * as Effect from 'effect/Effect';
 
 export const useDepositAccountForm = (
     initialValues: DepositAccountFormValues,
-    onSubmit: (values: DepositAccountFormValues) => Effect.Effect<AccountEntityInterface, unknown, AppServices>
+    onSubmit: (values: DepositAccountFormValues) => Effect.Effect<AccountEntityInterface, Cause.YieldableError, AppServices>
 ): ReturnType<typeof useAccountEntityForm<DepositAccountFormValues>> & {
     readonly instrument: ReturnType<typeof useGetInstrumentByIdQuery>['instrument'];
 } => {

@@ -61,7 +61,8 @@ export const useQuickImport = (config: QuickImportConfigInterface | null): Quick
                 }
 
                 Toast.show({ type: 'info', text1: t`Import started`, text2: t`Budgie will notify you when it finishes` });
-                showImportDoneToast(yield* config.importHandler(uri));
+                const importResult = yield* config.importHandler(uri);
+                showImportDoneToast(importResult);
             }).pipe(toastOnFailure(t`Import failed`))
         );
     };

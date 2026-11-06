@@ -13,7 +13,7 @@ import type { PrivatbankRowInterface } from '../interface/privatbank-row.interfa
 const DATA_START_ROW_INDEX = 2;
 
 const createParseError = (message: string): SyncInvalidResponseError =>
-    new SyncInvalidResponseError({ provider: SyncProviderEnum.PRIVATBANK, message });
+    SyncInvalidResponseError.make({ provider: SyncProviderEnum.PRIVATBANK, message });
 
 const parsePrivatbankDates = (
     dateString: string

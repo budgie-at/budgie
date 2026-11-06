@@ -16,12 +16,7 @@ export default function Index() {
 
     return (
         <GroupedSurface>
-            <CollapsibleChromePage
-                title={t`New Account`}
-                leading={<HeaderBackButton />}
-                contentClassName="gap-y-7xl pb-5xl"
-                scrimClassName="bg-surface"
-            >
+            <CollapsibleChromePage title={t`New Account`} leading={<HeaderBackButton />} contentClassName="gap-y-7xl pb-5xl">
                 <GroupedListSection title={t`Track manually`}>
                     <CreateAccountCard
                         description={t`Cards and everyday spending`}

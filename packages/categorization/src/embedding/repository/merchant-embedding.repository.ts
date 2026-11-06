@@ -159,10 +159,9 @@ export class MerchantEmbeddingRepository extends Context.Service<MerchantEmbeddi
                     ...parsePendingContextBaseFields(row)
                 }));
             }),
-            countPendingMerchantContexts: () =>
-                Db.query(db =>
-                    db.$client.unsafe<{ count: number }>(`SELECT COUNT(*) AS count FROM (${PENDING_MERCHANT_CONTEXTS_BASE})`, [])
-                ).pipe(Effect.map(([row]) => row.count))
+            countPendingMerchantContexts: Db.query(db =>
+                db.$client.unsafe<{ count: number }>(`SELECT COUNT(*) AS count FROM (${PENDING_MERCHANT_CONTEXTS_BASE})`, [])
+            ).pipe(Effect.map(([row]) => row.count))
         })
     }
 ) {

@@ -22,9 +22,12 @@ import { scheduleRecurringRefresh } from '../../recurring/utils/schedule-recurri
 import { buildPrimaryEntry } from '../utils/build-primary-entry.util';
 
 import type { AppServices } from '../../@generic/runtime/app.runtime';
+import type * as Cause from 'effect/Cause';
 
 interface UseTransactionFormConfig {
-    readonly onSubmit: (data: TransactionCreateInputInterface) => Effect.Effect<TransactionEntityInterface, unknown, AppServices>;
+    readonly onSubmit: (
+        data: TransactionCreateInputInterface
+    ) => Effect.Effect<TransactionEntityInterface, Cause.YieldableError, AppServices>;
     readonly fromAccountId: number | null;
     readonly toAccountId: number | null;
     readonly type: TransactionTypeEnum;

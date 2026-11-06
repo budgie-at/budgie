@@ -27,7 +27,7 @@ import { rebuildStoredBalances, testQueryService, testSeedService, TestLayer } f
 const SOURCE_FEE_AMOUNT = 5 * PRECISION;
 
 const seedBridgeWithSourceExpense = Effect.fnUntraced(function* () {
-    const topology = yield* seedIbanBridgeTopology();
+    const topology = yield* seedIbanBridgeTopology;
     const legs = yield* seedIbanBridgeLegs(topology.bridgeAccount.id, topology.transferMccId);
     const sourceExpense = yield* seedIbanBridgeSourceExpense(
         topology.sourceAccount.id,
@@ -49,7 +49,7 @@ layer(TestLayer)('consolidation/iban-bridge-end-leg-absorption', it => {
             const fixture = yield* seedBridgeWithSourceExpense();
 
             yield* runConsolidation();
-            const canonicalId = yield* fetchBridgeCanonicalId();
+            const canonicalId = yield* fetchBridgeCanonicalId;
 
             yield* expectConsolidationParent(fixture.sourceExpense.id, canonicalId);
             yield* expectIbanBridgeBalances(fixture.accountIds, -IBAN_BRIDGE_EUR_AMOUNT, IBAN_BRIDGE_UAH_AMOUNT);
@@ -67,11 +67,11 @@ layer(TestLayer)('consolidation/iban-bridge-end-leg-absorption', it => {
 
     it.effect('merges a transfer pair that already re-counted the bridge end legs', () =>
         Effect.gen(function* () {
-            const topology = yield* seedIbanBridgeTopology();
+            const topology = yield* seedIbanBridgeTopology;
             const accountIds: [number, number, number] = [topology.sourceAccount.id, topology.bridgeAccount.id, topology.targetAccount.id];
             yield* seedIbanBridgeLegs(topology.bridgeAccount.id, topology.transferMccId);
             yield* runConsolidation();
-            const canonicalId = yield* fetchBridgeCanonicalId();
+            const canonicalId = yield* fetchBridgeCanonicalId;
             const sourceExpense = yield* seedIbanBridgeSourceExpense(
                 topology.sourceAccount.id,
                 topology.transferMccId,
@@ -115,7 +115,7 @@ layer(TestLayer)('consolidation/iban-bridge-end-leg-absorption', it => {
 
             yield* runConsolidation();
 
-            yield* expectConsolidationParent(fixture.sourceExpense.id, yield* fetchBridgeCanonicalId());
+            yield* expectConsolidationParent(fixture.sourceExpense.id, yield* fetchBridgeCanonicalId);
             yield* expectIbanBridgeBalances(fixture.accountIds, -IBAN_BRIDGE_EUR_AMOUNT - SOURCE_FEE_AMOUNT, IBAN_BRIDGE_UAH_AMOUNT);
         })
     );

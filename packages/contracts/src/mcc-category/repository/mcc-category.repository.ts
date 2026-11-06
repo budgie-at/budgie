@@ -18,8 +18,8 @@ export class MccCategoryRepository extends Context.Service<MccCategoryRepository
 
                 return mccCategory;
             }),
-            truncate: () => Db.query(db => db.delete(MccCategoryEntityTable)),
-            findAll: () => Db.query(db => db.query.MccCategoryEntityTable.findMany()),
+            truncate: Db.query(db => db.delete(MccCategoryEntityTable)),
+            findAll: Db.query(db => db.query.MccCategoryEntityTable.findMany()),
             findById: (id: number) => Db.query(db => db.query.MccCategoryEntityTable.findFirst({ where: { id } }))
         };
     })

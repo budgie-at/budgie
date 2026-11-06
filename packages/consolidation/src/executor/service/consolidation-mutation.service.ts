@@ -9,6 +9,7 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
@@ -94,7 +95,7 @@ export class ConsolidationMutationService extends Context.Service<ConsolidationM
                         type: TransactionTypeEnum.TRANSFER,
                         title: input.title,
                         externalId: null,
-                        operatedAt: new Date(input.operatedAt * 1000),
+                        operatedAt: DateTime.toDateUtc(DateTime.makeUnsafe(input.operatedAt * 1000)),
                         comment: '',
                         toAccountId: input.toAccountId,
                         fromAccountId: input.fromAccountId,

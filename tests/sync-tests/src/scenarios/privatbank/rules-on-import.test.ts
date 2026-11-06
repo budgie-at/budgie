@@ -42,7 +42,7 @@ describe('privatbank/rules-on-import', () => {
             yield* testDb
                 .insert(RuleActionEntityTable)
                 .values({ ruleId: rule.id, type: RuleActionTypeEnum.ADD_TAG, categoryId: null, tagId: tag.id, accountId: null });
-            yield* seedPrivatbankAccount();
+            yield* seedPrivatbankAccount;
 
             const client = new StubPrivatbankFileClient();
             const syncService = yield* makeStubFileBankSyncService(

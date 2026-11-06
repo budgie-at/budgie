@@ -14,6 +14,7 @@ import { RuleEngineService } from '@budgie/rules';
 import { i18n } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
@@ -62,7 +63,7 @@ export class WalletCaptureTransactionService extends Context.Service<WalletCaptu
                 const exchangeRate = yield* entryBaseValuationService.resolveHistoricalBaseExchangeRateOrNull(
                     operationInstrument.id,
                     account.instrumentId,
-                    new Date(record.capturedAt)
+                    DateTime.toDateUtc(DateTime.makeUnsafe(record.capturedAt))
                 );
 
                 if (!isPositiveNumber(exchangeRate)) {
@@ -84,7 +85,7 @@ export class WalletCaptureTransactionService extends Context.Service<WalletCaptu
                 comment: '',
                 type: TransactionTypeEnum.EXPENSE,
                 exchangeRate: accountAmount.exchangeRate,
-                operatedAt: new Date(record.capturedAt),
+                operatedAt: DateTime.toDateUtc(DateTime.makeUnsafe(record.capturedAt)),
                 externalId: record.captureId,
                 updatedBy: null,
                 externalSource: ExternalSourceEnum.APPLE_PAY_AUTOMATION,

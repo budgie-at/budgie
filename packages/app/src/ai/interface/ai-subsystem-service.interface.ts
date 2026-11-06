@@ -6,6 +6,6 @@ import type * as Atom from 'effect/reactivity/Atom';
 
 export interface AiSubsystemServiceInterface {
     readonly snapshot: Atom.Atom<SnapshotWithStatusInterface>;
-    readonly start: () => Effect.Effect<void>;
-    readonly stop: () => Effect.Effect<void, NativeCallError>;
+    readonly start: Effect.Effect<void>;
+    readonly stop: Effect.Effect<void, NativeCallError>;
 }

@@ -26,7 +26,7 @@ import { isBankIntegrationSyncStale } from '../../utils/is-bank-integration-sync
 import { BankIntegrationImportStatus } from '../bank-integration-import-status/bank-integration-import-status';
 
 const bankIntegrationStatusNowAtom = Atom.make(
-    Stream.fromEffect(Clock.currentTimeMillis).pipe(Stream.repeat(Schedule.spaced(Duration.minutes(1))))
+    Clock.currentTimeMillis.pipe(Stream.fromEffect, Stream.repeat(Schedule.spaced(Duration.minutes(1))))
 );
 
 interface Props {

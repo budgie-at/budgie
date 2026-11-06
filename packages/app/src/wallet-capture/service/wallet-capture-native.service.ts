@@ -19,11 +19,11 @@ export class WalletCaptureNativeService extends Context.Service<WalletCaptureNat
         const captureInvocationName = 'captureApplePayTransaction';
         const accountCatalogKind = 'walletAccount';
 
-        const callNative = <A>(call: () => Promise<A>) => Effect.tryPromise({ try: call, catch: cause => new NativeCallError({ cause }) });
+        const callNative = <A>(call: () => Promise<A>) => Effect.tryPromise({ try: call, catch: cause => NativeCallError.make({ cause }) });
 
         return {
             refreshAccounts: Effect.fn('WalletCaptureNativeService.refreshAccounts')(function* () {
-                const accounts = yield* accountRepository.getAllActiveAccounts();
+                const accounts = yield* accountRepository.getAllActiveAccounts;
 
                 yield* callNative(() =>
                     AppIntents.setEntityCatalogAsync(

@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { isDefined } from '@rnw-community/shared';
 
 import { GroupedSurface } from '../../@generic/component/grouped-surface/grouped-surface';
+import { SCREEN_CHROME_CONFIG } from '../../@generic/constant/screen-chrome-config.constant';
 import { ScreenChromeThemeProvider } from '../../@generic/provider/screen-chrome-theme.provider';
 import { CashCard } from '../../account/component/cash-card/cash-card';
 import { HomeSectionsList } from '../../account/component/home-sections-list/home-sections-list';
@@ -15,6 +16,15 @@ import { AiDownloadHomeStatus } from '../../ai/component/ai-download-home-status
 import { BudgetWidget } from '../../budget/components/budget-widget/budget-widget';
 import { useIsOnboardingPending } from '../../onboarding/hook/use-is-onboarding-active.hook';
 import { useOnboardingRedirect } from '../../onboarding/hook/use-onboarding-redirect.hook';
+
+const HOME_SCREEN_CHROME_CONFIG = {
+    ...SCREEN_CHROME_CONFIG,
+    headerHeight: 156,
+    collapsedHeaderHeight: 44,
+    collapseEnd: 112,
+    smallTitleStart: 56,
+    largeTitleEnd: 67.2
+};
 
 export default function HomePage() {
     const { activeAccountCount, balanceSummary, cashAccounts, cashTotal, isLoading, sections } = useHomePageDataQuery();
@@ -42,7 +52,7 @@ export default function HomePage() {
     );
 
     return (
-        <ScreenChromeThemeProvider>
+        <ScreenChromeThemeProvider config={HOME_SCREEN_CHROME_CONFIG}>
             <GroupedSurface>
                 <NetWorthCollapsibleHeader netWorth={balanceSummary.netWorth} isLoading={isLoading} />
 

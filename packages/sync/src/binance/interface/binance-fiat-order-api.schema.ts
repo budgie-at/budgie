@@ -7,14 +7,14 @@ const BinanceFiatOrderApiSchema = Schema.Struct({
     amount: Schema.String,
     totalFee: Schema.String,
     status: Schema.String,
-    createTime: Schema.Number
+    createTime: Schema.Finite
 });
 
 export const BinanceFiatOrderListApiSchema = Schema.Struct({
     code: Schema.String,
     message: Schema.String,
     data: Schema.Array(BinanceFiatOrderApiSchema).pipe(Schema.withDecodingDefaultKey(Effect.succeed([]))),
-    total: Schema.Number,
+    total: Schema.Finite,
     success: Schema.Boolean
 });
 

@@ -88,7 +88,7 @@ const seedImportedExpense = (accountId: number) =>
 
 const expectDepositExpenseRejected = Effect.fnUntraced(function* (prepared: ImportedBatchPreparationInterface) {
     const transactionImportService = yield* TransactionImportService;
-    const cause = yield* Effect.flip(Effect.sandbox(transactionImportService.bulkUpsertPreparedImported(prepared)));
+    const cause = yield* transactionImportService.bulkUpsertPreparedImported(prepared).pipe(Effect.sandbox, Effect.flip);
 
     expect(String(Cause.squash(cause))).toContain(DEPOSIT_EXPENSE_ERROR);
 });

@@ -20,7 +20,8 @@ export class DatabaseChangeService extends Context.Service<DatabaseChangeService
         const changedTableNames = new Set<string>();
         const deletedTableNames = new Set<string>();
         let openTransactionCount = 0;
-        const runFlush = yield* FiberHandle.runtime(yield* FiberHandle.make())();
+        const fiberHandle = yield* FiberHandle.make();
+        const runFlush = yield* FiberHandle.runtime(fiberHandle)();
         const deleteDependents = new Map<string, string[]>();
 
         Object.values(schema).forEach(table => {

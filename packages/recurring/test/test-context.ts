@@ -9,9 +9,7 @@ import { RecurringRepository } from '../src/repository/recurring.repository';
 
 import type { RecurringSeriesUserStateEnum } from '@budgie/contracts';
 
-export const testDbHandle = await buildTestDb();
-
-export const testDb = testDbHandle.database;
+export const testDb = await buildTestDb();
 
 export const testSeedService = new TestSeedService(testDb);
 

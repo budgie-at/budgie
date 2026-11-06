@@ -13,7 +13,7 @@ import {
     RecurringSeriesKindEnum,
     RecurringSeriesUserStateEnum
 } from '@budgie/contracts';
-import { afterAll, beforeEach, expect, layer } from '@effect/vitest';
+import { beforeEach, expect, layer } from '@effect/vitest';
 import { between, eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -24,7 +24,7 @@ import { RecurringAlertEnum, RecurringRefreshService, RecurringService } from '.
 import { RecurringRepository } from '../src/repository/recurring.repository';
 
 import { ACTIVE_CONFIDENCE, DEFAULT_INSTRUMENT_ID, JUNE, NOW, seedCharges, seedSavedSeries } from './recurring-seed';
-import { TestLayer, detectAt, findSeries, renameSeries, setUserState, testDb, testDbHandle, testSeedService } from './test-context';
+import { TestLayer, detectAt, findSeries, renameSeries, setUserState, testDb, testSeedService } from './test-context';
 
 import type { RecurringCalendarDataInterface } from '../src/index';
 
@@ -160,8 +160,6 @@ const expectSuggestedEntries = (entries: ReturnType<typeof allEntries>) => {
 };
 
 beforeEach(() => Effect.runPromise(resetTestDb(testDb)));
-
-afterAll(() => testDbHandle.dispose());
 
 layer(TestLayer)('recurringService', it => {
     for (const title of ['Office365', 'GmbH', 'GUIDE MICHELIN', 'Liquid Web']) {

@@ -54,12 +54,10 @@ const seedAtmCashWithdrawalFixture = () =>
     });
 
 const fetchGeneratedAtmFeeTransactions = (canonicalTransactionId: number) =>
-    Effect.gen(function* () {
-        return yield* testDb
-            .select()
-            .from(TransactionEntityTable)
-            .where(eq(TransactionEntityTable.externalId, `atm-fee:${canonicalTransactionId}`));
-    });
+    testDb
+        .select()
+        .from(TransactionEntityTable)
+        .where(eq(TransactionEntityTable.externalId, `atm-fee:${canonicalTransactionId}`));
 
 const expectBankFeeEntry = (feeEntry: TransactionEntryEntityInterface, feeAmount: number) => {
     expect(feeEntry.amount).toBe(feeAmount * PRECISION);

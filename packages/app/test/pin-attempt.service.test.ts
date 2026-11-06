@@ -18,7 +18,7 @@ vi.mock('expo-secure-store', () => ({
         deleteFailure.isEnabled ? Promise.reject(new Error('delete failed')) : Promise.resolve(void secureStore.delete(key))
 }));
 
-const remainingMillis = Effect.flatMap(PinAttemptService, pinAttemptService => pinAttemptService.getRemainingLockoutMillis());
+const remainingMillis = Effect.flatMap(PinAttemptService, pinAttemptService => pinAttemptService.getRemainingLockoutMillis);
 
 const failAttempts = (count: number) =>
     Effect.flatMap(PinAttemptService, pinAttemptService =>
@@ -100,7 +100,7 @@ describe('PinAttemptService', () => {
             const pinAttemptService = yield* PinAttemptService;
 
             yield* failAttempts(5);
-            yield* pinAttemptService.reset();
+            yield* pinAttemptService.reset;
 
             expect(yield* remainingMillis).toBe(0);
         }).pipe(Effect.provide(PinAttemptService.layer))

@@ -54,7 +54,7 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
                     return;
                 }
 
-                setPreviews(yield* config.importPreview(asset.uri));
+                yield* Effect.map(config.importPreview(asset.uri), setPreviews);
                 setSelectedFile(asset);
                 setStep(FileImportStepEnum.ACCOUNTS);
             }).pipe(toastOnFailure(t`Invalid file`))
@@ -64,7 +64,7 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
         run(
             Effect.gen(function* () {
                 if (isDefined(selectedFile)) {
-                    setReview(yield* config.reviewImport(selectedFile.uri, [...selectedAccounts]));
+                    yield* Effect.map(config.reviewImport(selectedFile.uri, [...selectedAccounts]), setReview);
                     setStep(FileImportStepEnum.REVIEW);
                 }
             }).pipe(toastOnFailure(t`Invalid file`))

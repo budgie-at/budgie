@@ -5,10 +5,13 @@ import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 import { isDefined } from '@rnw-community/shared';
 
 import type { ReactNode } from 'react';
+import type { ViewProps } from 'react-native';
 
 interface Props {
     readonly expandedTitle: ReactNode;
+    readonly expandedTitlePointerEvents?: ViewProps['pointerEvents'];
     readonly collapsedTitle: ReactNode;
+    readonly collapsedTitlePointerEvents?: ViewProps['pointerEvents'];
     readonly leading?: ReactNode;
     readonly trailing?: ReactNode;
     readonly testID?: string;
@@ -54,15 +57,31 @@ const collapsibleChromeHeaderStyles = StyleSheet.create({
         justifyContent: 'center'
     },
     expandedTitleLayerContent: {
+        flex: 1,
         alignSelf: 'stretch',
         justifyContent: 'center'
     }
 });
 
-export const CollapsibleChromeHeader = ({ expandedTitle, collapsedTitle, leading, trailing, testID }: Props): ReactNode => {
+export const CollapsibleChromeHeader = ({
+    expandedTitle,
+    expandedTitlePointerEvents = 'none',
+    collapsedTitle,
+    collapsedTitlePointerEvents = 'none',
+    leading,
+    trailing,
+    testID
+}: Props): ReactNode => {
     const { config } = useScreenChrome();
 
     const collapseDistance = config.collapseEnd - config.collapseStart;
+    const titleHorizontalPadding = isDefined(leading) || isDefined(trailing) ? TITLE_LAYER_HORIZONTAL_PADDING : HEADER_HORIZONTAL_PADDING;
+    const collapsedHeaderStyle = { height: config.collapsedHeaderHeight ?? config.headerHeight, bottom: 'auto' as const };
+    const collapsedContentContainerStyle = [
+        collapsibleChromeHeaderStyles.titleLayer,
+        collapsedHeaderStyle,
+        { paddingHorizontal: titleHorizontalPadding }
+    ];
     const motion = {
         expandedOpacityEndProgress: (config.largeTitleEnd - config.collapseStart) / collapseDistance,
         collapsedOpacityStartProgress: (config.smallTitleStart - config.collapseStart) / collapseDistance,
@@ -91,12 +110,12 @@ export const CollapsibleChromeHeader = ({ expandedTitle, collapsedTitle, leading
         </View>
     );
     const expandedContent = (
-        <View style={collapsibleChromeHeaderStyles.expandedTitleLayerContent} pointerEvents="none">
+        <View style={collapsibleChromeHeaderStyles.expandedTitleLayerContent} pointerEvents={expandedTitlePointerEvents}>
             {expandedTitle}
         </View>
     );
     const collapsedContent = (
-        <View style={collapsibleChromeHeaderStyles.titleLayerContent} pointerEvents="none">
+        <View style={collapsibleChromeHeaderStyles.titleLayerContent} pointerEvents={collapsedTitlePointerEvents}>
             {collapsedTitle}
         </View>
     );
@@ -106,17 +125,17 @@ export const CollapsibleChromeHeader = ({ expandedTitle, collapsedTitle, leading
             <CollapsibleHeader
                 testID={testID}
                 pointerEvents="box-none"
-                snap={config.snapToCollapse}
                 expandedHeight={config.headerHeight}
-                collapsedHeight={config.collapsedHeaderHeight ?? config.headerHeight}
+                collapsedHeight={config.headerHeight}
                 collapseStart={config.collapseStart}
                 collapseDistance={collapseDistance}
                 expandedContent={expandedContent}
                 collapsedContent={collapsedContent}
                 persistentContent={persistentContent}
+                persistentContentContainerStyle={collapsedHeaderStyle}
                 motion={motion}
                 expandedContentContainerStyle={expandedContentContainerStyle}
-                collapsedContentContainerStyle={collapsibleChromeHeaderStyles.titleLayer}
+                collapsedContentContainerStyle={collapsedContentContainerStyle}
             />
         </View>
     );

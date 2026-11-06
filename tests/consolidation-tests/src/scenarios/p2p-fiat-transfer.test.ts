@@ -33,8 +33,8 @@ import type { TransactionEntryCreateEntityInterface, TransactionEntryEntityInter
 const BANK_FEE_AMOUNT = 50 * PRECISION;
 
 const seedFeeEntry = (transactionId: number, accountId: number) =>
-    Effect.gen(function* () {
-        yield* testDb.insert(TransactionEntryEntityTable).values({
+    Effect.asVoid(
+        testDb.insert(TransactionEntryEntityTable).values({
             transactionId,
             accountId,
             type: TransactionEntryTypeEnum.FEE,
@@ -48,8 +48,8 @@ const seedFeeEntry = (transactionId: number, accountId: number) =>
             categoryId: null,
             mccCategoryId: null,
             originalTransactionId: null
-        } satisfies TransactionEntryCreateEntityInterface);
-    });
+        } satisfies TransactionEntryCreateEntityInterface)
+    );
 
 const fetchBankBalance = Effect.fnUntraced(function* (accountId: number) {
     const accountBalanceRepository = yield* AccountBalanceRepository;

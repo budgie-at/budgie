@@ -31,7 +31,7 @@ const CENT_OFF_UAH_TO_EUR_RATE = CENT_OFF_PAIR_UAH_AMOUNT / BRIDGE_IMPLIED_EUR_A
 
 const seedIbanBridgeTransferFixture = () =>
     Effect.gen(function* () {
-        const topology = yield* seedIbanBridgeTopology();
+        const topology = yield* seedIbanBridgeTopology;
 
         return { ...topology, ...(yield* seedIbanBridgeLegs(topology.bridgeAccount.id, topology.transferMccId)) };
     });
@@ -83,7 +83,7 @@ layer(TestLayer)('consolidation/iban-bridge-transfer', it => {
 
     it.effect('stands down when a same-pair canonical already records the same physical transfer within a cent', () =>
         Effect.gen(function* () {
-            const { bridgeAccount, sourceAccount, targetAccount, transferMccId } = yield* seedIbanBridgeTopology();
+            const { bridgeAccount, sourceAccount, targetAccount, transferMccId } = yield* seedIbanBridgeTopology;
             const directCanonical = yield* testSeedService.directTransfer({
                 consolidationType: TransactionConsolidationTypeEnum.TRANSFER_PAIR,
                 exchangeRate: CENT_OFF_PAIR_UAH_AMOUNT / DIRECT_CENT_OFF_EUR_AMOUNT,

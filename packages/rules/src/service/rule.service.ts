@@ -38,10 +38,9 @@ export class RuleService extends Context.Service<RuleService>()('@budgie/rules/R
                 .filter(action => action.type === RuleActionTypeEnum.CONVERT_TO_TRANSFER)
                 .map(action => action.accountId)
                 .filter(isDefined);
-            const accounts = yield* Effect.all(
-                accountIds.map(accountId => accountRepository.findById(accountId)),
-                { concurrency: 'unbounded' }
-            );
+            const accounts = yield* Effect.forEach(accountIds, accountId => accountRepository.findById(accountId), {
+                concurrency: 'unbounded'
+            });
 
             yield* assertTransferAccountsAreNotDebt(accounts.filter(isDefined));
         });
@@ -161,12 +160,14 @@ export class RuleService extends Context.Service<RuleService>()('@budgie/rules/R
         const createFromSuggestionAllowingDuplicate = Effect.fn('RuleService.createFromSuggestionAllowingDuplicate')(function* (
             suggestRuleData: SuggestRuleDataInterface
         ) {
-            return yield* create(yield* buildSuggestionInput(suggestRuleData));
+            const suggestionInput = yield* buildSuggestionInput(suggestRuleData);
+
+            return yield* create(suggestionInput);
         });
 
         const createFromSuggestion = Effect.fn('RuleService.createFromSuggestion')(function* (suggestRuleData: SuggestRuleDataInterface) {
             const ruleInput = yield* buildSuggestionInput(suggestRuleData);
-            const existingRules = yield* ruleRepository.findAllWithConditions();
+            const existingRules = yield* ruleRepository.findAllWithConditions;
             const duplicateRule = existingRules.find(
                 rule =>
                     rule.conditionMatchType === ruleInput.conditionMatchType &&
@@ -175,7 +176,7 @@ export class RuleService extends Context.Service<RuleService>()('@budgie/rules/R
             );
 
             if (isDefined(duplicateRule)) {
-                return yield* new RuleSuggestionDuplicateError({ ruleId: duplicateRule.id });
+                return yield* RuleSuggestionDuplicateError.make({ ruleId: duplicateRule.id });
             }
 
             return yield* create(ruleInput);

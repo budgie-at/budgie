@@ -43,7 +43,7 @@ const fetchSingleTransferPairCanonical = () =>
 layer(TestLayer)('consolidation/transfer-pair-bridge-claim-veto', it => {
     it.effect('does not pair a same-currency interbank expense with a foreign-currency bridge income by title declaration', () =>
         Effect.gen(function* () {
-            const { fxExpense, fxBridgeIncome, interbankExpense, sourceEurAccountId, bridgeUahAccountId } = yield* seedBridgeTheftFixture();
+            const { fxExpense, fxBridgeIncome, interbankExpense, sourceEurAccountId, bridgeUahAccountId } = yield* seedBridgeTheftFixture;
 
             const result = yield* runConsolidation();
 
@@ -92,7 +92,7 @@ layer(TestLayer)('consolidation/transfer-pair-bridge-claim-veto', it => {
 
     it.effect('keeps results stable when consolidation runs twice', () =>
         Effect.gen(function* () {
-            const { fxExpense, fxBridgeIncome, interbankExpense } = yield* seedBridgeTheftFixture();
+            const { fxExpense, fxBridgeIncome, interbankExpense } = yield* seedBridgeTheftFixture;
 
             yield* runConsolidation();
             yield* expectSecondConsolidationRunStable();

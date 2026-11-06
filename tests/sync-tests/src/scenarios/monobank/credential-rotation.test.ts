@@ -21,29 +21,25 @@ interface ExpectedForwardSyncInterface {
 }
 
 const seedMonobankAccount = (externalId: string) =>
-    Effect.gen(function* () {
-        return yield* seed.account({
-            externalId,
-            externalSource: ExternalSourceEnum.MONOBANK,
-            type: AccountTypeEnum.BANK_SYNC
-        });
+    seed.account({
+        externalId,
+        externalSource: ExternalSourceEnum.MONOBANK,
+        type: AccountTypeEnum.BANK_SYNC
     });
 
 const seedFailedForwardSync = (accountId: number, token: string, errorCount: number, forwardSyncFromAt: Date, lastError: string) =>
-    Effect.gen(function* () {
-        return yield* seed.sync({
-            accountId,
-            token,
-            provider: ExternalSourceEnum.MONOBANK,
-            mode: SyncModeEnum.FORWARD,
-            status: SyncStatusEnum.FAILED,
-            forwardSyncFromAt,
-            forwardSyncedAt: null,
-            backwardSyncFromAt: null,
-            backwardSyncedAt: null,
-            errorCount,
-            lastError
-        });
+    seed.sync({
+        accountId,
+        token,
+        provider: ExternalSourceEnum.MONOBANK,
+        mode: SyncModeEnum.FORWARD,
+        status: SyncStatusEnum.FAILED,
+        forwardSyncFromAt,
+        forwardSyncedAt: null,
+        backwardSyncFromAt: null,
+        backwardSyncedAt: null,
+        errorCount,
+        lastError
     });
 
 const seedMonobankCredentialRotationScenario = () =>

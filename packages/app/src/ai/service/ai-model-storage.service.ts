@@ -77,7 +77,7 @@ export class AiModelStorageService extends Context.Service<AiModelStorageService
                             }),
                             { totalBytes: 0, unusedBytes: 0 }
                         ),
-                    catch: cause => new NativeCallError({ cause })
+                    catch: cause => NativeCallError.make({ cause })
                 });
             }),
             deleteUnused: Effect.fn('AiModelStorageService.deleteUnused')(function* () {
@@ -93,7 +93,7 @@ export class AiModelStorageService extends Context.Service<AiModelStorageService
                                     }
                                 }
                             },
-                            catch: cause => new NativeCallError({ cause })
+                            catch: cause => NativeCallError.make({ cause })
                         });
                     })
                 );

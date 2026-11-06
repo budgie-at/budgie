@@ -144,7 +144,7 @@ describe('categorization/suggestion', () => {
             yield* seedExpense(account.id, 'history-2', 'Blue Bottle', coffee.id);
             yield* seedExpense(account.id, 'pending', 'Blue Bottle', null);
 
-            const evidence = yield* inboxRepository.findCategoryEvidence();
+            const evidence = yield* inboxRepository.findCategoryEvidence;
             const rows = yield* inboxRepository.findUncategorizedRows(DEFAULT_TRANSACTION_FILTER);
             const [cluster] = categorizeInboxEngineService.buildClusters(
                 rows,

@@ -106,7 +106,7 @@ describe('monobank/backfill-continuation', () => {
                 })
             );
 
-            const startupSync = yield* Effect.forkChild(inWorkload(monobankSyncService.sync()));
+            const startupSync = yield* monobankSyncService.sync().pipe(inWorkload, Effect.forkChild);
             yield* Deferred.await(firstRequestFinished);
             yield* TestClock.withLive(Effect.sleep(10));
             const userWork = yield* Effect.forkChild(workload.runUser(Deferred.succeed(userWorkFinished, undefined)));
@@ -203,7 +203,7 @@ describe('monobank/backfill-continuation', () => {
                 )
             );
 
-            const firstSync = yield* Effect.forkChild(inWorkload(monobankSyncService.sync()));
+            const firstSync = yield* monobankSyncService.sync().pipe(inWorkload, Effect.forkChild);
             yield* Deferred.await(firstRequestStarted);
             const secondSync = yield* Effect.forkChild(monobankSyncService.sync());
             const userWork = yield* Effect.forkChild(workload.runUser(Effect.void));
@@ -276,7 +276,7 @@ describe('monobank/backfill-continuation', () => {
                     })
                 );
 
-                const initialRun = yield* Effect.forkChild(inWorkload(monobankSyncService.sync()));
+                const initialRun = yield* monobankSyncService.sync().pipe(inWorkload, Effect.forkChild);
                 yield* Deferred.await(firstLookupStarted);
                 yield* TestClock.adjust(10_000);
                 yield* Deferred.await(userWorkFinished);
@@ -323,7 +323,7 @@ describe('monobank/backfill-continuation', () => {
             yield* TestClock.withLive(Effect.sleep(10));
             expect(requestedFrom).toHaveLength(1);
 
-            const nextRun = yield* Effect.forkChild(inWorkload(monobankSyncService.sync()));
+            const nextRun = yield* monobankSyncService.sync().pipe(inWorkload, Effect.forkChild);
             yield* advanceWindows(5);
             yield* Fiber.join(nextRun);
 
@@ -426,7 +426,7 @@ describe('monobank/backfill-continuation', () => {
                 })
             );
 
-            const initialRun = yield* Effect.forkChild(inWorkload(monobankSyncService.sync()));
+            const initialRun = yield* monobankSyncService.sync().pipe(inWorkload, Effect.forkChild);
             for (let attempt = 0; attempt < 100; attempt += 1) {
                 if (requestCount > 0) {
                     break;
@@ -448,7 +448,7 @@ describe('monobank/backfill-continuation', () => {
             expect(requestCount).toBeGreaterThanOrEqual(4);
             expect((yield* fetchSyncById(sync.id)).mode).toBe(SyncModeEnum.FORWARD);
             expect(
-                (yield* fetchPersistedMonobankTransactions()).find(transaction => transaction.externalId === 'real-rule-first')?.type
+                (yield* fetchPersistedMonobankTransactions).find(transaction => transaction.externalId === 'real-rule-first')?.type
             ).toBe(TransactionTypeEnum.TRANSFER);
         }).pipe(Effect.provide(TestClockLayer))
     );

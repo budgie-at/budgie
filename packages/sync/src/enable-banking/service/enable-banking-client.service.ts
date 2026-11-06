@@ -57,7 +57,7 @@ export class EnableBankingClientService extends Context.Service<EnableBankingCli
                 Effect.flatMap(use),
                 Effect.tapError(error =>
                     Effect.sync(() => {
-                        if (error instanceof SyncUnauthorizedError) {
+                        if (Schema.is(SyncUnauthorizedError)(error)) {
                             jwtByApplicationId.delete(applicationId);
                         }
                     })
@@ -65,17 +65,16 @@ export class EnableBankingClientService extends Context.Service<EnableBankingCli
             );
 
         const failConsentExpired = () =>
-            new SyncConsentExpiredError({
+            SyncConsentExpiredError.make({
                 provider: SyncProviderEnum.ENABLE_BANKING,
                 message: 'The bank consent has expired or was revoked'
             });
 
         return {
             withClient,
-            clearSessions: () =>
-                Effect.sync(() => {
-                    sessionByToken.clear();
-                }),
+            clearSessions: Effect.sync(() => {
+                sessionByToken.clear();
+            }),
             resolveAuthorizedSession: Effect.fnUntraced(function* (token: string, credentials: EnableBankingTokenInterface) {
                 if (Date.parse(credentials.validUntil) <= (yield* Clock.currentTimeMillis)) {
                     return yield* failConsentExpired();
@@ -90,12 +89,11 @@ export class EnableBankingClientService extends Context.Service<EnableBankingCli
             }),
             decodeCredentials: (token: string) =>
                 decodeToken(token).pipe(
-                    Effect.mapError(
-                        () =>
-                            new SyncInvalidResponseError({
-                                provider: SyncProviderEnum.ENABLE_BANKING,
-                                message: 'The stored bank authorization is not readable'
-                            })
+                    Effect.mapError(() =>
+                        SyncInvalidResponseError.make({
+                            provider: SyncProviderEnum.ENABLE_BANKING,
+                            message: 'The stored bank authorization is not readable'
+                        })
                     )
                 ),
             forgetJwt: (applicationId: string) =>

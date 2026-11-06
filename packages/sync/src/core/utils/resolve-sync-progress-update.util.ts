@@ -5,8 +5,11 @@ import { isPositiveNumber } from '@rnw-community/shared';
 import type { SyncBatchResultInterface } from '../interface/sync-batch-result.interface';
 import type { SyncEntityInterface, SyncUpdateEntityInterface } from '@budgie/contracts';
 
-export const resolveSyncProgressUpdate = (sync: SyncEntityInterface, result: SyncBatchResultInterface): SyncUpdateEntityInterface => {
-    const now = new Date();
+export const resolveSyncProgressUpdate = (
+    sync: SyncEntityInterface,
+    result: SyncBatchResultInterface,
+    now: Date
+): SyncUpdateEntityInterface => {
     const transactionCount = result.transactionCount ?? result.transactions.length;
     const baseUpdate = { transactionCount: sync.transactionCount + transactionCount, errorCount: 0, lastError: null };
 

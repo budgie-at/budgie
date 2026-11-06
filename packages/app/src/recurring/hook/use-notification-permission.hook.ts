@@ -12,7 +12,7 @@ import { appAtomRuntime } from '../../@generic/runtime/app.runtime';
 const notificationPermissionAtom = appAtomRuntime.atom(
     Effect.tryPromise({
         try: () => Notifications.getPermissionsAsync(),
-        catch: cause => new NativeCallError({ cause })
+        catch: cause => NativeCallError.make({ cause })
     }).pipe(Effect.tapError(Effect.logError))
 );
 

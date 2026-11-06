@@ -4,16 +4,14 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { testDb } from '../scenario/setup';
 import { subtractMonths } from '../scenario/subtract-months';
+import { testDb } from '../scenario/test-db';
 
 import { setupMonobankFixture } from './setup-monobank-fixture';
 
-const FIXTURE_FORWARD_FROM = new Date('2026-01-01T00:00:00Z');
-
 export const setupBackwardSweepFixture = (sweepStart: Date, historyMonths?: number) =>
     Effect.gen(function* () {
-        const { sync } = yield* setupMonobankFixture('mono-acc-1', SyncModeEnum.BACKWARD, FIXTURE_FORWARD_FROM);
+        const { sync } = yield* setupMonobankFixture('mono-acc-1', SyncModeEnum.BACKWARD, sweepStart);
         yield* testDb
             .update(SyncEntityTable)
             .set({

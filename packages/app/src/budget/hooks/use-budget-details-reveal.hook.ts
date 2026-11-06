@@ -14,7 +14,7 @@ import type { KeyboardAwareScrollViewRef } from 'react-native-keyboard-controlle
 
 const REVEAL_TOP_MARGIN = 16;
 const decodeHighlightParams = Schema.decodeUnknownOption(
-    Schema.Struct({ scope: Schema.Enum(BudgetAlertScopeEnum), categoryId: Schema.optionalKey(Schema.NumberFromString) })
+    Schema.Struct({ scope: Schema.Enum(BudgetAlertScopeEnum), categoryId: Schema.optionalKey(Schema.FiniteFromString) })
 );
 
 export const useBudgetDetailsReveal = (isLoading: boolean, hint: BudgetHighlightTargetInterface | null) => {

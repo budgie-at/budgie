@@ -67,7 +67,8 @@ export class TransactionDepositSafetyService extends Context.Service<Transaction
                             return;
                         }
 
-                        yield* assertNoDepositExpenseInputs(yield* findTransactionsByEntries(existingEntries));
+                        const depositTransactions = yield* findTransactionsByEntries(existingEntries);
+                        yield* assertNoDepositExpenseInputs(depositTransactions);
                     }
                 )
             };

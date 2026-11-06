@@ -46,7 +46,7 @@ const stubMarketDataApis = () => {
 
 const drainJobs = Effect.gen(function* () {
     const historicalMarketDataService = yield* HistoricalMarketDataService;
-    const job = yield* historicalMarketDataService.claimNextJob();
+    const job = yield* historicalMarketDataService.claimNextJob;
 
     if (!isDefined(job)) {
         return false;

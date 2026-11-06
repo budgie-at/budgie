@@ -68,19 +68,18 @@ export class TagRepository extends Context.Service<TagRepository>()('@budgie/con
             Db.query(db =>
                 db.select({ count: count() }).from(TransactionTagsEntityTable).where(eq(TransactionTagsEntityTable.tagId, tagId))
             ).pipe(Effect.map(([result]) => result.count)),
-        findUsage: () =>
-            Db.query(db =>
-                db
-                    .select({
-                        id: TransactionTagsEntityTable.tagId,
-                        transactionCount: count(),
-                        lastUsedAt: max(TransactionEntityTable.operatedAt)
-                    })
-                    .from(TransactionTagsEntityTable)
-                    .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionTagsEntityTable.transactionId))
-                    .where(transactionFilters.buildVisibleTransactionCondition())
-                    .groupBy(TransactionTagsEntityTable.tagId)
-            ),
+        findUsage: Db.query(db =>
+            db
+                .select({
+                    id: TransactionTagsEntityTable.tagId,
+                    transactionCount: count(),
+                    lastUsedAt: max(TransactionEntityTable.operatedAt)
+                })
+                .from(TransactionTagsEntityTable)
+                .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionTagsEntityTable.transactionId))
+                .where(transactionFilters.buildVisibleTransactionCondition())
+                .groupBy(TransactionTagsEntityTable.tagId)
+        ),
         findByIds: (ids: number[]) => Db.query(db => db.query.TagEntityTable.findMany({ where: { id: { in: ids } } })),
         findBySearchQuery: (search: string) => {
             const pattern = `%${search.trim().toLowerCase()}%`;

@@ -9,9 +9,9 @@ import { AccountIbanSchema } from './account-iban.schema';
 export const LiabilityAccountCreateInputSchema = Schema.Struct({
     ...AccountBaseFieldsSchema,
     currentBalance: Schema.Finite,
-    externalSource: Schema.optional(Schema.NullOr(Schema.Enum(ExternalSourceEnum))),
-    externalId: Schema.optional(Schema.NullOr(Schema.String)),
+    externalSource: Schema.Enum(ExternalSourceEnum).pipe(Schema.NullOr, Schema.optional),
+    externalId: Schema.String.pipe(Schema.NullOr, Schema.optional),
     parentId: OptionalNullablePositiveNumberSchema,
-    iban: Schema.optional(Schema.NullOr(AccountIbanSchema)),
+    iban: AccountIbanSchema.pipe(Schema.NullOr, Schema.optional),
     integrationId: OptionalNullablePositiveNumberSchema
 });

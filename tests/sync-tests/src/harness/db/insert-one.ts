@@ -4,7 +4,7 @@ import * as Effect from 'effect/Effect';
 
 import { isArray } from '@rnw-community/shared';
 
-import { testDb } from '../scenario/setup';
+import { testDb } from '../scenario/test-db';
 
 const isRowArray = <Row>(rows: unknown): rows is Row[] => isArray(rows);
 

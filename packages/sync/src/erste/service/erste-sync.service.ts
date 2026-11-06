@@ -33,7 +33,7 @@ export class ErsteSyncService extends Context.Service<ErsteSyncService>()('@budg
             parseFile: Effect.fn('ErsteSyncService.parseFile')(function* (uri: string) {
                 const items = yield* syncFileReader.readPdfTextItems(uri);
                 const { account, transactions } = yield* Effect.fromResult(parseErste(items)).pipe(
-                    Effect.mapError(message => new SyncInvalidResponseError({ provider: SyncProviderEnum.ERSTE, message }))
+                    Effect.mapError(message => SyncInvalidResponseError.make({ provider: SyncProviderEnum.ERSTE, message }))
                 );
                 const bankAccounts = [mapErsteAccount(account)];
 

@@ -14,7 +14,6 @@ import {
 import { createTransactionInput, ReceiptMatchResultKindEnum, ReceiptMatchService, TransactionService } from '@budgie/ledger';
 import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
-import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -141,7 +140,7 @@ layer(TestLayer)('consolidation/receipt-expense-duplicate', it => {
             expect(yield* fetchLedgerBalances([account.id])).toEqual([[account.id, -convertToMicroUnits(AMOUNT)]]);
             expect((yield* transactionReceiptRepository.findByFingerprint(FINGERPRINT))?.transactionId).toBe(bankExpense.id);
             yield* expectSecondConsolidationRunStable();
-        }).pipe(Effect.provide(Layer.mergeAll(ReceiptMatchService.layer, TransactionReceiptRepository.layer)))
+        }).pipe(Effect.provide([ReceiptMatchService.layer, TransactionReceiptRepository.layer]))
     );
 
     it.effect('merges a second same-amount receipt only with the bank row that carries no receipt yet', () =>
@@ -161,6 +160,6 @@ layer(TestLayer)('consolidation/receipt-expense-duplicate', it => {
             expect(yield* fetchLedgerBalances([account.id])).toEqual([[account.id, -2 * convertToMicroUnits(AMOUNT)]]);
             expect((yield* transactionReceiptRepository.findByFingerprint('second-receipt'))?.transactionId).toBe(secondBankExpense.id);
             yield* expectSecondConsolidationRunStable();
-        }).pipe(Effect.provide(Layer.mergeAll(ReceiptMatchService.layer, TransactionReceiptRepository.layer)))
+        }).pipe(Effect.provide([ReceiptMatchService.layer, TransactionReceiptRepository.layer]))
     );
 });
