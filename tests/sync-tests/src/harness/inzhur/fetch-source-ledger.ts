@@ -4,7 +4,7 @@ import * as Effect from 'effect/Effect';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { testDb } from '../scenario/setup';
+import { testDb } from '../scenario/test-db';
 
 export const fetchSourceLedger = Effect.fnUntraced(function* (source: ExternalSourceEnum) {
     const transactions = yield* testDb

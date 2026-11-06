@@ -122,7 +122,9 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
             transaction: TransactionWithEntriesEntityInterface,
             setup: InzhurSetupInterface
         ) {
-            const isConverted = yield* transactionTransferService.convertToTransferAccount(transaction.id, setup.cashAccount.id);
+            const isConverted = yield* transactionTransferService
+                .convertToTransferAccount(transaction.id, setup.cashAccount.id)
+                .pipe(Effect.catchTag('DebtTransferNotAllowedError', Effect.die));
 
             if (!isConverted) {
                 return null;

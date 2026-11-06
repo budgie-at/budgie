@@ -44,9 +44,9 @@ const drainFundJob = Effect.fnUntraced(function* (instrumentId: number) {
     const historicalMarketDataService = yield* HistoricalMarketDataService;
     const accountRepository = yield* AccountRepository;
 
-    yield* historicalMarketDataService.enqueueAccounts(yield* accountRepository.getAllActiveAccounts());
+    yield* historicalMarketDataService.enqueueAccounts(yield* accountRepository.getAllActiveAccounts);
 
-    const job = yield* historicalMarketDataService.claimNextJob();
+    const job = yield* historicalMarketDataService.claimNextJob;
 
     if (!isDefined(job) || job.instrumentId !== instrumentId) {
         return null;
