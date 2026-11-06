@@ -5,6 +5,7 @@ import { useScreenChrome, useScreenChromeScrollProps } from '@rnw-community/reac
 import { isDefined, isNumber } from '@rnw-community/shared';
 
 import { useScreenChromeStickyList } from '../../hook/use-screen-chrome-sticky-list.hook';
+import { StickyHeaderRow } from '../sticky-header-row/sticky-header-row';
 
 import type { LegendListPositionSourceInterface } from '../../interface/legend-list-position-source.interface';
 import type { LegendListMetrics, LegendListProps, LegendListRef } from '@legendapp/list/react-native';
@@ -17,7 +18,7 @@ export const StaticChromeLegendList = <TItem,>({
     contentContainerStyle,
     ListHeaderComponent,
     data,
-    renderItem: Row,
+    renderItem,
     ref,
     ...props
 }: LegendListProps<TItem> & { readonly ref?: RefCallback<LegendListPositionSourceInterface> }) => {
@@ -28,11 +29,20 @@ export const StaticChromeLegendList = <TItem,>({
     const headers = (props.stickyHeaderIndices ?? []).flatMap(index => {
         const item = data?.[index];
 
-        return isDefined(item) && isDefined(data) && isDefined(Row)
+        return isDefined(item) && isDefined(data) && isDefined(renderItem)
             ? [
                   {
                       index,
-                      content: <Row item={item} index={index} data={data} extraData={extraData} type={props.getItemType?.(item, index)} />
+                      content: (
+                          <StickyHeaderRow
+                              renderItem={renderItem}
+                              item={item}
+                              index={index}
+                              data={data}
+                              extraData={extraData}
+                              type={props.getItemType?.(item, index)}
+                          />
+                      )
                   }
               ]
             : [];
@@ -70,13 +80,13 @@ export const StaticChromeLegendList = <TItem,>({
             {...props}
             {...scrollProps}
             data={data}
-            renderItem={Row}
+            renderItem={renderItem}
             stickyHeaderConfig={stickyHeaderConfig}
             onMetricsChange={handleMetricsChange}
             onItemSizeChanged={handleItemSizeChanged}
             onViewableItemsChanged={handleViewableItemsChanged}
             ListHeaderComponent={ListHeaderComponent}
-            extraData={extraData ?? Row}
+            extraData={extraData ?? renderItem}
             ref={handleListRef}
             refScrollView={refScrollView}
             maintainVisibleContentPosition={MAINTAIN_VISIBLE_CONTENT_POSITION}
