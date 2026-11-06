@@ -12,30 +12,12 @@ import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { testDb, TestLayer } from '../../harness';
+import { restoreSyncTriggers, suspendSyncTriggers, testDb, TestLayer } from '../../harness';
 
 const MIGRATION_NAME = '20261031231028_category_icon_source';
 const MIGRATION_SQL = readFileSync(resolve(process.cwd(), '../../packages/app/drizzle', MIGRATION_NAME, 'migration.sql'), 'utf8');
 const CREATED_AT = 1_780_000_000;
 const NO_TRANSLATION = { titleEn: null, titleTags: null };
-
-const OUTBOX_TRIGGERS_MIGRATION = '20261105200520_cloud_sync_outbox_triggers';
-
-const dropOutboxTriggers = testDb.$client
-    .unsafe<{ readonly name: string }>(`SELECT name FROM sqlite_master WHERE type = 'trigger' AND name LIKE '%_sync_outbox_%'`)
-    .pipe(
-        Effect.flatMap(triggers =>
-            Effect.forEach(triggers, ({ name }) => testDb.$client.unsafe(`DROP TRIGGER ${name}`).raw, { discard: true })
-        )
-    );
-
-const recreateOutboxTriggers = Effect.forEach(
-    readFileSync(resolve(process.cwd(), '../../packages/app/drizzle', OUTBOX_TRIGGERS_MIGRATION, 'migration.sql'), 'utf8').split(
-        '--> statement-breakpoint'
-    ),
-    statement => testDb.$client.unsafe(statement).raw,
-    { discard: true }
-);
 
 const insertLegacyCategory = (title: string, icon: string, isUpdated: boolean) =>
     testDb.$client.unsafe(
@@ -64,13 +46,13 @@ describe('category/icon-source', () => {
             yield* insertLegacyCategory('Side project', UserIconNameEnum.Home, false);
             yield* insertLegacyCategory('Apartment', UserIconNameEnum.Home, true);
             yield* insertLegacyCategory('Coffee runs', UserIconNameEnum.Coffee, false);
-            yield* dropOutboxTriggers;
+            const syncTriggers = yield* suspendSyncTriggers;
             yield* testDb.$client.unsafe('ALTER TABLE categories DROP COLUMN icon_source').raw;
 
             yield* Effect.forEach(MIGRATION_SQL.split('--> statement-breakpoint'), statement => testDb.$client.unsafe(statement).raw, {
                 discard: true
             });
-            yield* recreateOutboxTriggers;
+            yield* restoreSyncTriggers(syncTriggers);
 
             expect(yield* findIconSource('Side project')).toBe(CategoryIconSourceEnum.AUTO);
             expect(yield* findIconSource('Apartment')).toBe(CategoryIconSourceEnum.USER);

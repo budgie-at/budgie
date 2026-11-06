@@ -112,3 +112,4 @@ export * as Clock from 'effect/Clock';
 export * as Fiber from 'effect/Fiber';
 export { DEBT_OPENING_MESSAGES } from './debt/debt-opening-messages';
 export { aiModelDownloadStub } from './ai/ai-model-download-stub';
+export { suspendSyncTriggers, restoreSyncTriggers } from './db/suspend-sync-triggers';
