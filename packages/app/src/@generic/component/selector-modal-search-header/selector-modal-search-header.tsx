@@ -23,7 +23,7 @@ export const SelectorModalSearchHeader = (props: Props) => {
 
     return (
         <View collapsable={false} className="px-3xl pb-md pt-md bg-surface">
-            <View className="pb-[14px]">
+            <View className="pb-[10px]">
                 <SheetTitleRow title={title} trailing={trailing} />
             </View>
             <SelectorSearchRow search={search} onSearchChange={onSearchChange} placeholder={resolvedPlaceholder} testID={testID} />
