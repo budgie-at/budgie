@@ -10,5 +10,6 @@ export enum RecurringTileVariantEnum {
     TEAL = 'TEAL',
     AMBER = 'AMBER',
     ROSE = 'ROSE',
-    INDIGO = 'INDIGO'
+    INDIGO = 'INDIGO',
+    NEUTRAL = 'NEUTRAL'
 }

@@ -142,7 +142,7 @@ export const RecurringCalendarContent = ({ header }: Props) => {
                     <RecurringCalendarEntryList
                         headerTestID={RecurringCalendarSelector.ExpectedHeader}
                         title={<Trans>Still to pay</Trans>}
-                        formattedTotal={formattedForecastedTotal}
+                        formattedTotal=""
                         entries={allForecastedEntries}
                         displayMonth={displayMonth}
                         displayYear={displayYear}
@@ -153,7 +153,7 @@ export const RecurringCalendarContent = ({ header }: Props) => {
                     <RecurringCalendarEntryList
                         headerTestID={RecurringCalendarSelector.RecordedHeader}
                         title={<Trans>Paid</Trans>}
-                        formattedTotal={formatDigits(totalAmount, defaultInstrument.symbol)}
+                        formattedTotal=""
                         entries={allRecordedEntries}
                         displayMonth={displayMonth}
                         displayYear={displayYear}

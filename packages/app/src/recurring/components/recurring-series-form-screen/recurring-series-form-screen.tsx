@@ -53,7 +53,9 @@ export const RecurringSeriesFormScreen = ({ target, initialValues }: Props) => {
         mode: 'onSubmit'
     });
     const isEditing = target.mode === RecurringFormModeEnum.EDIT;
-    const title = isEditing ? t`Edit recurring payment` : t`New recurring payment`;
+    const createTitle =
+        target.mode === RecurringFormModeEnum.CREATE && isDefined(target.transactionId) ? t`Make recurring` : t`New recurring payment`;
+    const title = isEditing ? t`Edit recurring payment` : createTitle;
     const kindField = isEditing ? null : <RecurringFormKindField />;
     const sourceTransactionId = target.mode === RecurringFormModeEnum.CREATE ? target.transactionId : null;
     const sourceSection = isDefined(sourceTransactionId) ? (
@@ -104,7 +106,7 @@ export const RecurringSeriesFormScreen = ({ target, initialValues }: Props) => {
                             automaticallyAdjustKeyboardInsets
                             showsVerticalScrollIndicator={false}
                         >
-                            <View className="gap-y-5xl pt-md">
+                            <View className="gap-y-3xl pt-md">
                                 {sourceSection}
                                 {kindField}
                                 <RecurringFormAmountField label={t`Amount`} />

@@ -1942,7 +1942,7 @@ msgstr "Ордери Binance P2P недоступні: API-ключу браку
 msgid "Biometric data never leaves this phone"
 msgstr "Біометричні дані ніколи не залишають цей телефон"
 
-#: src/recurring/components/recurring-form-repeat-chip/recurring-form-repeat-chip.tsx
+#: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 msgid "Biweekly"
 msgstr ""
 
@@ -2364,6 +2364,7 @@ msgstr "Перевіряємо історію транзакцій"
 #: src/budget/components/budget-fund-category-field/budget-fund-category-field.tsx
 #: src/import/components/import-column-map-field/import-column-map-field.tsx
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
+#: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 #: src/transaction/components/transfer-account-picker/transfer-account-picker.tsx
@@ -2621,10 +2622,6 @@ msgstr "Coinbase"
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
 msgid "Collapse condition {position}"
 msgstr "Згорнути умову {position}"
-
-#: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
-msgid "Coming up"
-msgstr ""
 
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "comment"
@@ -3416,7 +3413,7 @@ msgstr "Поточний баланс"
 #: src/budget/components/budget-fund-repeat-field/budget-fund-repeat-field.tsx
 #: src/import/components/import-preset-options/import-preset-options.tsx
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
-#: src/recurring/components/recurring-form-repeat-chip/recurring-form-repeat-chip.tsx
+#: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 msgid "Custom"
 msgstr "Власний"
 
@@ -5128,6 +5125,10 @@ msgid "Last year"
 msgstr "Останній рік"
 
 #: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
+msgid "Later"
+msgstr ""
+
+#: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
 msgid "Later this month"
 msgstr ""
 
@@ -5287,6 +5288,7 @@ msgid "Make primary"
 msgstr "Зробити основним"
 
 #: src/recurring/components/make-recurring-sheet/make-recurring-sheet.tsx
+#: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
 #: src/transaction/components/transaction-info-recurring-row/transaction-info-recurring-row.tsx
 msgid "Make recurring"
 msgstr "Зробити регулярним"
@@ -5541,7 +5543,7 @@ msgstr "Monobank надсилає близько одного місяця іс�
 msgid "Month"
 msgstr "Місяць"
 
-#: src/recurring/components/recurring-form-repeat-chip/recurring-form-repeat-chip.tsx
+#: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 #: src/recurring/hook/use-recurring-cadence-label.hook.ts
 #: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
 msgid "Monthly"
@@ -6933,7 +6935,6 @@ msgstr "Прогноз витрат"
 msgid "Push notifications are disabled"
 msgstr "Push-сповіщення вимкнено"
 
-#: src/recurring/components/recurring-form-repeat-chip/recurring-form-repeat-chip.tsx
 #: src/recurring/hook/use-recurring-cadence-label.hook.ts
 msgid "Quarterly"
 msgstr "Щокварталу"
@@ -9377,7 +9378,7 @@ msgstr "Тиждень"
 msgid "Week {currentWeek} of {totalWeeks}. {overLabel}."
 msgstr "Тиждень {currentWeek} з {totalWeeks}. {overLabel}."
 
-#: src/recurring/components/recurring-form-repeat-chip/recurring-form-repeat-chip.tsx
+#: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 #: src/recurring/hook/use-recurring-cadence-label.hook.ts
 msgid "Weekly"
 msgstr "Щотижня"
@@ -9496,7 +9497,7 @@ msgstr "XLSX-експорт"
 msgid "Year"
 msgstr "Рік"
 
-#: src/recurring/components/recurring-form-repeat-chip/recurring-form-repeat-chip.tsx
+#: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 #: src/recurring/hook/use-recurring-cadence-label.hook.ts
 msgid "Yearly"
 msgstr "Щороку"

@@ -1943,7 +1943,7 @@ msgstr "Binance P2P orders are unavailable: the API key is missing P2P read perm
 msgid "Biometric data never leaves this phone"
 msgstr "Biometric data never leaves this phone"
 
-#: src/recurring/components/recurring-form-repeat-chip/recurring-form-repeat-chip.tsx
+#: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 msgid "Biweekly"
 msgstr "Biweekly"
 
@@ -2365,6 +2365,7 @@ msgstr "Checking transaction history"
 #: src/budget/components/budget-fund-category-field/budget-fund-category-field.tsx
 #: src/import/components/import-column-map-field/import-column-map-field.tsx
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
+#: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 #: src/transaction/components/transfer-account-picker/transfer-account-picker.tsx
@@ -2622,10 +2623,6 @@ msgstr "Coinbase"
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
 msgid "Collapse condition {position}"
 msgstr "Collapse condition {position}"
-
-#: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
-msgid "Coming up"
-msgstr "Coming up"
 
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "comment"
@@ -3417,7 +3414,7 @@ msgstr "Current balance"
 #: src/budget/components/budget-fund-repeat-field/budget-fund-repeat-field.tsx
 #: src/import/components/import-preset-options/import-preset-options.tsx
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
-#: src/recurring/components/recurring-form-repeat-chip/recurring-form-repeat-chip.tsx
+#: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 msgid "Custom"
 msgstr "Custom"
 
@@ -5129,6 +5126,10 @@ msgid "Last year"
 msgstr "Last year"
 
 #: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
+msgid "Later"
+msgstr "Later"
+
+#: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
 msgid "Later this month"
 msgstr "Later this month"
 
@@ -5288,6 +5289,7 @@ msgid "Make primary"
 msgstr "Make primary"
 
 #: src/recurring/components/make-recurring-sheet/make-recurring-sheet.tsx
+#: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
 #: src/transaction/components/transaction-info-recurring-row/transaction-info-recurring-row.tsx
 msgid "Make recurring"
 msgstr "Make recurring"
@@ -5542,7 +5544,7 @@ msgstr "Monobank sends about one month of history per minute, for each account y
 msgid "Month"
 msgstr "Month"
 
-#: src/recurring/components/recurring-form-repeat-chip/recurring-form-repeat-chip.tsx
+#: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 #: src/recurring/hook/use-recurring-cadence-label.hook.ts
 #: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
 msgid "Monthly"
@@ -6934,7 +6936,6 @@ msgstr "Projected spend"
 msgid "Push notifications are disabled"
 msgstr "Push notifications are disabled"
 
-#: src/recurring/components/recurring-form-repeat-chip/recurring-form-repeat-chip.tsx
 #: src/recurring/hook/use-recurring-cadence-label.hook.ts
 msgid "Quarterly"
 msgstr "Quarterly"
@@ -9378,7 +9379,7 @@ msgstr "Week"
 msgid "Week {currentWeek} of {totalWeeks}. {overLabel}."
 msgstr "Week {currentWeek} of {totalWeeks}. {overLabel}."
 
-#: src/recurring/components/recurring-form-repeat-chip/recurring-form-repeat-chip.tsx
+#: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 #: src/recurring/hook/use-recurring-cadence-label.hook.ts
 msgid "Weekly"
 msgstr "Weekly"
@@ -9497,7 +9498,7 @@ msgstr "XLSX export"
 msgid "Year"
 msgstr "Year"
 
-#: src/recurring/components/recurring-form-repeat-chip/recurring-form-repeat-chip.tsx
+#: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 #: src/recurring/hook/use-recurring-cadence-label.hook.ts
 msgid "Yearly"
 msgstr "Yearly"

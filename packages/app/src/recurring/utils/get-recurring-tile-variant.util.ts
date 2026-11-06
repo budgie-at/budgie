@@ -1,6 +1,6 @@
 import { RecurringTileVariantEnum } from '../enum/recurring-tile-variant.enum';
 
-const TILE_VARIANTS = Object.values(RecurringTileVariantEnum);
+const TILE_VARIANTS = Object.values(RecurringTileVariantEnum).filter(variant => variant !== RecurringTileVariantEnum.NEUTRAL);
 const HASH_MULTIPLIER = 31;
 const HASH_MODULUS = 2_147_483_647;
 

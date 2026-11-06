@@ -8,6 +8,7 @@ import type { RecurringTileVariantEnum } from '../../enum/recurring-tile-variant
 interface Props {
     readonly title: string;
     readonly size: number;
+    readonly variant?: RecurringTileVariantEnum;
 }
 
 const TILE_CLASS_NAMES: Record<RecurringTileVariantEnum, string> = {
@@ -22,7 +23,8 @@ const TILE_CLASS_NAMES: Record<RecurringTileVariantEnum, string> = {
     TEAL: 'bg-chart-3/16 dark:bg-chart-3/30',
     AMBER: 'bg-chart-4/16 dark:bg-chart-4/30',
     ROSE: 'bg-chart-5/16 dark:bg-chart-5/30',
-    INDIGO: 'bg-chart-6/16 dark:bg-chart-6/30'
+    INDIGO: 'bg-chart-6/16 dark:bg-chart-6/30',
+    NEUTRAL: 'bg-surface-fill'
 };
 
 const LETTER_CLASS_NAMES: Record<RecurringTileVariantEnum, string> = {
@@ -37,7 +39,8 @@ const LETTER_CLASS_NAMES: Record<RecurringTileVariantEnum, string> = {
     TEAL: 'text-chart-3',
     AMBER: 'text-chart-4',
     ROSE: 'text-chart-5',
-    INDIGO: 'text-chart-6'
+    INDIGO: 'text-chart-6',
+    NEUTRAL: 'text-secondary-foreground'
 };
 
 const tileVariants = cva('items-center justify-center', { variants: { variant: TILE_CLASS_NAMES } });
@@ -46,8 +49,7 @@ const letterVariants = cva('font-bold', { variants: { variant: LETTER_CLASS_NAME
 
 const continuousCorners = { borderCurve: 'continuous' as const };
 
-export const RecurringMerchantTile = ({ title, size }: Props) => {
-    const variant = getRecurringTileVariant(title);
+export const RecurringMerchantTile = ({ title, size, variant = getRecurringTileVariant(title) }: Props) => {
     const letter = Array.from(title.trim())[0]?.toUpperCase() ?? '';
     const tileStyle = [continuousCorners, { width: size, height: size, borderRadius: Math.round(size * 0.28) }];
     const letterStyle = { fontSize: Math.round(size * 0.46), lineHeight: Math.round(size * 0.56) };
