@@ -4,7 +4,7 @@ const path = require('node:path');
 
 const SCENE_DELEGATE_CLASS = 'class SceneDelegate: ExpoAppSceneDelegate {';
 const INSTALLED_MARKER = 'ICloudShareInbox';
-const IMPORTS = 'import CloudKit\nimport ICloud\nimport UIKit\n';
+const IMPORTS = 'import CloudKit\ninternal import ICloud\nimport UIKit\n';
 const OVERRIDES = `
   override func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
     super.scene(scene, willConnectTo: session, options: connectionOptions)

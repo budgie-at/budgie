@@ -147,7 +147,7 @@ public final class ICloudModule: Module {
     }
 
     AsyncFunction("getAccountStatus") { () async -> [String: Any] in
-      let status = await ICloudDatabase.container.accountStatus()
+      let status = (try? await ICloudDatabase.container.accountStatus()) ?? .couldNotDetermine
       let name = try? await ICloudDatabase.container.userRecordID().recordName
       return ["status": ICloudDatabase.accountStatusName(status), "userRecordName": name as Any? ?? NSNull()]
     }
