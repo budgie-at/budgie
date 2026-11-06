@@ -21,7 +21,9 @@ test('08 expense transaction', { tags: ['transactions'] }, async ({ budgie }) =>
         await t.navigateToTransactions(ctx);
         await t.openTransactionForm(ctx, 'ActionItem.Expense', 'New Expense');
         await b.expectId(ctx, 'TransactionForm.SelectedAccount.E2E_Txn_Account');
-        await expect(b.byId(ctx.screen, 'TransactionForm.SubmitButton')).toBeDisabled();
+        await expect(b.byId(ctx.screen, 'TransactionForm.SubmitButton')).toBeEnabled();
+        await b.tapId(ctx, 'TransactionForm.SubmitButton');
+        await expect(b.byId(ctx.screen, 'TransactionForm.ValidationMessage')).toHaveText('Enter an amount');
         const merchantInput = screen.getByRole('textbox', { name: 'Merchant or payment description' }).first();
         await merchantInput.fill('Lunch');
         await b.expectNoId(ctx, 'TransactionKeypad.Digit.1');

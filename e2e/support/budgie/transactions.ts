@@ -21,6 +21,13 @@ async function focusAmount(ctx: Ctx): Promise<void> {
     }
 }
 
+async function dismissKeypad(ctx: Ctx): Promise<void> {
+    if (await byId(ctx.screen, 'TransactionKeypad.Digit.1').isVisible()) {
+        await tapId(ctx, 'TransactionKeypad.Dismiss');
+        await expectNoId(ctx, 'TransactionKeypad.Digit.1');
+    }
+}
+
 /** Taps keypad digits in order (`'42'` taps 4 then 2). */
 export async function typeDigits(ctx: Ctx, digits: string): Promise<void> {
     await focusAmount(ctx);
@@ -87,6 +94,7 @@ export async function selectAccount(ctx: Ctx, name: string): Promise<void> {
 
 /** subflows/transactions/enter-comment */
 export async function enterComment(ctx: Ctx, comment: string): Promise<void> {
+    await dismissKeypad(ctx);
     await scrollTo(ctx, 'TransactionForm.CommentInput');
     await tapUntilId(ctx, 'TransactionForm.CommentInput', 'NoteInput.Input', 1, 5_000);
     await byId(ctx.screen, 'NoteInput.Input').fill(comment);
@@ -96,6 +104,8 @@ export async function enterComment(ctx: Ctx, comment: string): Promise<void> {
 
 /** subflows/transactions/edit-comment */
 export async function editComment(ctx: Ctx, comment: string): Promise<void> {
+    await dismissKeypad(ctx);
+    await scrollTo(ctx, 'TransactionForm.CommentInput');
     await tapUntilId(ctx, 'TransactionForm.CommentInput', 'NoteInput.Input', 1, 5_000);
     const input = byId(ctx.screen, 'NoteInput.Input');
     await input.clear();
@@ -225,7 +235,7 @@ export async function createExpense(
     await tapUntilId(ctx, 'TransactionForm.CategorySelector', 'CategoryPickerBottomSheet.Input');
     await selectCategoryBySearch(ctx, options.category);
     await enterComment(ctx, options.comment);
-    await expectId(ctx, 'TransactionKeypad.Digit.1');
+    await expectNoId(ctx, 'TransactionKeypad.Digit.1');
     await retry(3, async () => {
         await clearAmount(ctx);
         await typeDigits(ctx, options.amount);
