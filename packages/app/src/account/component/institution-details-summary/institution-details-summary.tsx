@@ -9,6 +9,7 @@ import { InzhurFreshnessLine } from '../../../inzhur/component/inzhur-freshness-
 import { InzhurImportStatementAction } from '../../../inzhur/component/inzhur-import-statement-action/inzhur-import-statement-action';
 import { InzhurInstitutionChart } from '../../../inzhur/component/inzhur-institution-chart/inzhur-institution-chart';
 import { InzhurInstitutionGainLine } from '../../../inzhur/component/inzhur-institution-gain-line/inzhur-institution-gain-line';
+import { InzhurPendingTopUps } from '../../../inzhur/component/inzhur-pending-top-ups/inzhur-pending-top-ups';
 import { BankIntegrationStatusPill } from '../../../sync/component/bank-integration-status-pill/bank-integration-status-pill';
 import { SyncImportProgress } from '../../../sync/component/sync-import-progress/sync-import-progress';
 import { ACCOUNT_DETAILS_HERO_BALANCE_HEIGHT } from '../../constant/account-details-hero-balance-height.constant';
@@ -41,6 +42,7 @@ export const InstitutionDetailsSummary = ({ institution, balancesByAccountId }: 
             {isInzhur ? <InzhurInstitutionChart /> : null}
             <InstitutionConnectionRow syncs={syncs} />
             {isDefined(progress) ? <SyncImportProgress progress={progress} /> : null}
+            {isInzhur ? <InzhurPendingTopUps /> : null}
             {isInzhur ? <InzhurImportStatementAction /> : null}
             <InstitutionAccounts institution={institution} balancesByAccountId={balancesByAccountId} />
         </View>

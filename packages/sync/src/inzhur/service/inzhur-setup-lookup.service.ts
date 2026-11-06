@@ -6,6 +6,7 @@ import * as Layer from 'effect/Layer';
 import { isDefined } from '@rnw-community/shared';
 
 import { INZHUR_CASH_EXTERNAL_ID } from '../constant/inzhur-cash-external-id.constant';
+import { toKyivDay } from '../utils/to-kyiv-day.util';
 
 import type { InzhurSetupInterface } from '../interface/inzhur-setup.interface';
 
@@ -39,7 +40,7 @@ export class InzhurSetupLookupService extends Context.Service<InzhurSetupLookupS
                     cashAccount,
                     cashSync,
                     fundAccounts: accounts.filter(account => account.id !== cashAccount.id),
-                    lastStatementDate: cashSync.forwardSyncedAt?.toISOString().slice(0, 10) ?? null
+                    lastStatementDate: isDefined(cashSync.forwardSyncedAt) ? toKyivDay(cashSync.forwardSyncedAt) : null
                 } satisfies InzhurSetupInterface;
             })
         };

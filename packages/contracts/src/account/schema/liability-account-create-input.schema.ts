@@ -1,7 +1,6 @@
 import * as Schema from 'effect/Schema';
 
 import { OptionalNullablePositiveNumberSchema } from '../../@generic/schema/optional-nullable-positive-number.schema';
-import { DividendPayoutEnum } from '../enum/dividend-payout.enum';
 import { ExternalSourceEnum } from '../enum/external-source.enum';
 
 import { AccountBaseFieldsSchema } from './account-base-fields.schema';
@@ -13,7 +12,6 @@ export const LiabilityAccountCreateInputSchema = Schema.Struct({
     externalSource: Schema.optional(Schema.NullOr(Schema.Enum(ExternalSourceEnum))),
     externalId: Schema.optional(Schema.NullOr(Schema.String)),
     parentId: OptionalNullablePositiveNumberSchema,
-    dividendPayout: Schema.optional(Schema.NullOr(Schema.Enum(DividendPayoutEnum))),
     iban: Schema.optional(Schema.NullOr(AccountIbanSchema)),
     integrationId: OptionalNullablePositiveNumberSchema
 });

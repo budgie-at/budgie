@@ -9,7 +9,6 @@ import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.
 import { AccountDebtTypeEnum } from '../enum/account-debt-type.enum';
 import { AccountNatureEnum } from '../enum/account-nature.enum';
 import { AccountTypeEnum } from '../enum/account-type.enum';
-import { DividendPayoutEnum } from '../enum/dividend-payout.enum';
 import { ExternalSourceEnum } from '../enum/external-source.enum';
 
 import type { UserIconType } from '../../@generic/type/user-icon.type';
@@ -49,7 +48,6 @@ export const AccountEntityTable = sqliteTable(
         interestRate: real('interest_rate'),
         installmentCount: int('installment_count', { mode: 'number' }),
         externalSource: text('external_source', { enum: convertEnumToDrizzleEnum(ExternalSourceEnum) }).$type<ExternalSourceEnum>(),
-        dividendPayout: text('dividend_payout', { enum: convertEnumToDrizzleEnum(DividendPayoutEnum) }).$type<DividendPayoutEnum>(),
         integrationId: int('integration_id', { mode: 'number' }).references(() => BankIntegrationEntityTable.id, { onDelete: 'set null' }),
         iban: text('iban'),
         includeInNetWorth: int('include_in_net_worth', { mode: 'boolean' }).default(true).notNull(),

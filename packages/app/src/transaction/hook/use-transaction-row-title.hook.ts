@@ -6,6 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { TransactionAccountTitlePrefixContext } from '../context/transaction-account-title-prefix.context';
 import { getTransactionDisplayTitle } from '../utils/get-transaction-display-title.util';
+import { isInzhurExactDividend } from '../utils/is-inzhur-exact-dividend.util';
 import { stripTransactionAccountTitlePrefix } from '../utils/strip-transaction-account-title-prefix.util';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
@@ -18,8 +19,9 @@ export const useTransactionRowTitle = (transaction: TransactionWithRelationsEnti
         isDefined(accountId) &&
         transaction.type === TransactionTypeEnum.INCOME &&
         transaction.externalSource === ExternalSourceEnum.INZHUR &&
-        transaction.fundAccountId === accountId;
+        transaction.fundAccountId === accountId &&
+        !isInzhurExactDividend(transaction);
     const title = getTransactionDisplayTitle(transaction);
 
-    return isOwnFundEstimatedDividend ? t`Reinvested dividends` : (stripTransactionAccountTitlePrefix(title, accountTitlePrefix) ?? title);
+    return isOwnFundEstimatedDividend ? t`Estimated dividends` : (stripTransactionAccountTitlePrefix(title, accountTitlePrefix) ?? title);
 };

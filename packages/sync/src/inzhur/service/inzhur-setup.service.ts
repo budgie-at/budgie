@@ -21,19 +21,17 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { buildPrimaryEntry } from '../../core/utils/build-primary-entry.util';
 import { INZHUR_CASH_EXTERNAL_ID } from '../constant/inzhur-cash-external-id.constant';
 import { INZHUR_BALANCE_CORRECTION_TITLE } from '../constant/inzhur-estimate-titles.constant';
 import { InzhurNotSetUpError } from '../error/inzhur-not-set-up.error';
 import { buildInzhurTransactionInput } from '../utils/build-inzhur-transaction-input.util';
+import { toKyivDay } from '../utils/to-kyiv-day.util';
 
-import { InzhurBankFlowService } from './inzhur-bank-flow.service';
-import { InzhurBeforeTrackingService } from './inzhur-before-tracking.service';
 import { InzhurSetupLookupService } from './inzhur-setup-lookup.service';
 
-import type { InzhurSetupResultInterface } from '../interface/inzhur-setup-result.interface';
 import type { InzhurSetupInterface } from '../interface/inzhur-setup.interface';
 import type { InzhurStatementReminderInterface } from '../interface/inzhur-statement-reminder.interface';
 
@@ -45,8 +43,6 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
         const instrumentRepository = yield* InstrumentRepository;
         const investmentReturnRepository = yield* InvestmentReturnRepository;
         const syncRepository = yield* SyncRepository;
-        const inzhurBankFlowService = yield* InzhurBankFlowService;
-        const inzhurBeforeTrackingService = yield* InzhurBeforeTrackingService;
         const inzhurSetupLookupService = yield* InzhurSetupLookupService;
         const transactionService = yield* TransactionService;
         const provider = ExternalSourceEnum.INZHUR;
@@ -54,11 +50,11 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
         const estimatedDividendTitle = 'Inzhur dividends (estimated)';
 
         const setup = Effect.fn('InzhurSetupService.setup')(
-            function* (enteredCashBalance: number) {
+            function* () {
                 const existingSetup = yield* inzhurSetupLookupService.findSetup();
 
                 if (isDefined(existingSetup)) {
-                    return { ...existingSetup, linked: { topUps: 0, withdrawals: 0, dividends: 0 } } satisfies InzhurSetupResultInterface;
+                    return existingSetup;
                 }
 
                 const hryvnia = yield* instrumentRepository.findByCode(CurrencyEnum.UAH);
@@ -96,19 +92,13 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
                     mode: SyncModeEnum.FORWARD
                 });
 
-                const created = {
+                return {
                     integration,
                     cashAccount,
                     cashSync,
                     fundAccounts: [],
                     lastStatementDate: null
                 } satisfies InzhurSetupInterface;
-                const { topUps, withdrawals, dividends } = yield* inzhurBankFlowService.convert(created, null);
-                const cashMicroUnits = (yield* accountBalanceRepository.getByAccountId(cashAccount.id)).at(0)?.balance ?? 0;
-
-                yield* inzhurBeforeTrackingService.replace(cashAccount.id, convertToMicroUnits(enteredCashBalance) - cashMicroUnits);
-
-                return { ...created, linked: { topUps, withdrawals, dividends } } satisfies InzhurSetupResultInterface;
             },
             effect => Db.transaction(effect)
         );
@@ -178,13 +168,12 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
             }
 
             const { cashSync, cashAccount } = setup;
-            const importDates = [cashSync.forwardSyncedAt, cashSync.backwardSyncedAt].filter(isDefined);
+            const lastImportAt = cashSync.forwardSyncedAt;
 
-            if (!isNotEmptyArray(importDates)) {
+            if (!isDefined(lastImportAt)) {
                 return null;
             }
 
-            const lastImportAt = new Date(Math.max(...importDates.map(date => date.getTime())));
             const daysOld = differenceInCalendarDays(now, lastImportAt);
 
             if (daysOld <= staleStatementDays) {
@@ -194,7 +183,7 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
             const activityCount = yield* investmentReturnRepository.countTransfersSince(cashAccount.id, lastImportAt);
 
             return activityCount > 0
-                ? ({ daysOld, lastStatementDate: lastImportAt.toISOString().slice(0, 10) } satisfies InzhurStatementReminderInterface)
+                ? ({ daysOld, lastStatementDate: toKyivDay(lastImportAt) } satisfies InzhurStatementReminderInterface)
                 : null;
         });
 
@@ -206,8 +195,6 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
             AccountBalanceRepository.layer,
             AccountService.layer,
             BankIntegrationRepository.layer,
-            InzhurBankFlowService.layer,
-            InzhurBeforeTrackingService.layer,
             InzhurSetupLookupService.layer,
             InstrumentRepository.layer,
             InvestmentReturnRepository.layer,

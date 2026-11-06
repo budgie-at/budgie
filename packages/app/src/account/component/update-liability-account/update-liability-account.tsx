@@ -31,17 +31,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
     const { balance } = useAccountBalanceQuery(account.id);
 
     const formValues = {
-        ...Struct.pick(account, [
-            'externalId',
-            'iban',
-            'type',
-            'icon',
-            'title',
-            'instrumentId',
-            'includeInNetWorth',
-            'isActive',
-            'dividendPayout'
-        ]),
+        ...Struct.pick(account, ['externalId', 'iban', 'type', 'icon', 'title', 'instrumentId', 'includeInNetWorth', 'isActive']),
         currentBalance: balance
     };
 
@@ -69,8 +59,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
             isActive: 'isActive',
             includeInNetWorth: 'includeInNetWorth'
         }),
-        instrumentId: useController({ control, name: 'instrumentId' }),
-        dividendPayout: useController({ control, name: 'dividendPayout' })
+        instrumentId: useController({ control, name: 'instrumentId' })
     };
     const stickyInstrument = useStickyDefinedValue(instrument);
     const isSyncedAccount = account.type === AccountTypeEnum.BANK_SYNC || account.type === AccountTypeEnum.CRYPTO_SYNC;

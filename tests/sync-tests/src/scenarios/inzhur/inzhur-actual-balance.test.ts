@@ -1,6 +1,4 @@
 import {
-    AccountTypeEnum,
-    ExternalSourceEnum,
     INVESTMENTS_CATEGORY_ID,
     PRECISION,
     TransactionEntityTable,
@@ -8,26 +6,25 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { InzhurNotSetUpError, InzhurSetupService, TransferConsolidationService } from '@budgie/sync';
+import { InzhurNotSetUpError, InzhurSetupService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { and, asc, eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { fetchAccountBalance, seed, testDb } from '../../harness';
-import { buildInzhurBaselineItems } from '../../harness/inzhur/build-inzhur-baseline-items';
+import { fetchAccountBalance, testDb } from '../../harness';
+import { buildInzhurOperationsWorkbook } from '../../harness/inzhur/build-inzhur-operations-workbook';
 import { fetchInzhurLedger } from '../../harness/inzhur/fetch-inzhur-ledger';
-import { importInzhurBankTransaction } from '../../harness/inzhur/import-inzhur-bank-transaction';
-import { FIRST_URI } from '../../harness/inzhur/inzhur-statement-fixtures.constant';
-import { makeInzhurLayer } from '../../harness/inzhur/make-inzhur-layer';
-import { setUpInzhurWithBaseline } from '../../harness/inzhur/set-up-inzhur-with-baseline';
+import { importInzhurBankFlow } from '../../harness/inzhur/import-inzhur-bank-flow';
+import { importInzhurOperations } from '../../harness/inzhur/import-inzhur-operations';
+import { TOP_UP_DESCRIPTION } from '../../harness/inzhur/inzhur-bank-descriptions.constant';
+import { BASE_ROWS } from '../../harness/inzhur/inzhur-operation-rows.constant';
+import { makeInzhurOperationsLayer } from '../../harness/inzhur/make-inzhur-operations-layer';
+import { requireInzhurSetup } from '../../harness/inzhur/require-inzhur-setup';
+import { seedInzhurBankAccount } from '../../harness/inzhur/seed-inzhur-bank-account';
 
-const UAH_INSTRUMENT_ID = 1;
-const TOP_UP_DESCRIPTION = 'Оплата ТОВ "ІНЖУР КЕПІТАЛ" поповнення рахунку';
-const TOP_UP_AT = new Date(Date.now() + 86_400_000);
-const ESTIMATED_DIVIDEND_TITLE = 'Inzhur dividends (estimated)';
-const BALANCE_CORRECTION_TITLE = 'Inzhur balance correction';
+const URI = 'base.xlsx';
 
-const layer = makeInzhurLayer({ [FIRST_URI]: buildInzhurBaselineItems(1000, 2) });
+const layer = makeInzhurOperationsLayer({ [URI]: buildInzhurOperationsWorkbook(BASE_ROWS) });
 
 const setActualBalance = (actualBalance: number) =>
     Effect.flatMap(InzhurSetupService, inzhurSetupService => inzhurSetupService.setActualBalance(actualBalance));
@@ -35,33 +32,30 @@ const setActualBalance = (actualBalance: number) =>
 const findStatementReminder = (now: Date) =>
     Effect.flatMap(InzhurSetupService, inzhurSetupService => inzhurSetupService.findStatementReminder(now));
 
-const seedTopUp = Effect.gen(function* () {
-    const bankAccount = yield* seed.account({
-        title: 'Monobank Card',
-        externalId: 'inzhur-actual-balance-card',
-        externalSource: ExternalSourceEnum.MONOBANK,
-        type: AccountTypeEnum.BANK_SYNC,
-        instrumentId: UAH_INSTRUMENT_ID
-    });
+const prepare = Effect.gen(function* () {
+    yield* importInzhurOperations(URI);
 
-    yield* importInzhurBankTransaction(bankAccount.id, 'top-up', TOP_UP_DESCRIPTION, -1000, TOP_UP_AT);
-    yield* Effect.flatMap(TransferConsolidationService, service => service.consolidate(null));
+    return (yield* requireInzhurSetup()).cashAccount;
 });
+
+const fetchCorrections = Effect.map(fetchInzhurLedger(), ledger =>
+    ledger.filter(({ externalId }) => !externalId?.startsWith('inzhur:op:'))
+);
 
 describe('inzhur/actual-balance', () => {
     it.effect('books a higher actual balance as estimated dividend income in the investments category', () =>
         Effect.gen(function* () {
-            const { cashAccount } = yield* setUpInzhurWithBaseline(1000, 1000, 2);
+            const cashAccount = yield* prepare;
 
-            expect(yield* setActualBalance(1250)).toBe(250);
-            expect(yield* setActualBalance(1250)).toBe(0);
+            expect(yield* setActualBalance(450)).toBe(250);
+            expect(yield* setActualBalance(450)).toBe(0);
 
-            expect(yield* fetchAccountBalance(cashAccount.id)).toBe(1250 * PRECISION);
-            expect(yield* fetchInzhurLedger()).toMatchObject([
+            expect(yield* fetchAccountBalance(cashAccount.id)).toBe(450 * PRECISION);
+            expect(yield* fetchCorrections).toMatchObject([
                 {
                     type: TransactionTypeEnum.INCOME,
-                    title: ESTIMATED_DIVIDEND_TITLE,
-                    externalId: `inzhur:actual-balance:${cashAccount.id}:1250`,
+                    title: 'Inzhur dividends (estimated)',
+                    externalId: `inzhur:actual-balance:${cashAccount.id}:450`,
                     entries: [
                         {
                             accountId: cashAccount.id,
@@ -77,10 +71,10 @@ describe('inzhur/actual-balance', () => {
 
     it.effect('records a lower actual balance as a titled adjustment once', () =>
         Effect.gen(function* () {
-            const { cashAccount } = yield* setUpInzhurWithBaseline(1000, 1000, 2);
+            const cashAccount = yield* prepare;
 
-            expect(yield* setActualBalance(900)).toBe(-100);
-            expect(yield* setActualBalance(900)).toBe(0);
+            expect(yield* setActualBalance(100)).toBe(-100);
+            expect(yield* setActualBalance(100)).toBe(0);
 
             const adjustments = yield* testDb
                 .select({ title: TransactionEntityTable.title, amount: TransactionEntryEntityTable.amount })
@@ -94,61 +88,62 @@ describe('inzhur/actual-balance', () => {
                 )
                 .orderBy(asc(TransactionEntityTable.id));
 
-            expect(yield* fetchAccountBalance(cashAccount.id)).toBe(900 * PRECISION);
-            expect(adjustments).toEqual([
-                { title: 'Balance before tracking', amount: 1000 * PRECISION },
-                { title: BALANCE_CORRECTION_TITLE, amount: 100 * PRECISION }
-            ]);
-            expect(yield* fetchInzhurLedger()).toEqual([]);
+            expect(yield* fetchAccountBalance(cashAccount.id)).toBe(100 * PRECISION);
+            expect(adjustments).toEqual([{ title: 'Inzhur balance correction', amount: 100 * PRECISION }]);
+            expect(yield* fetchCorrections).toEqual([]);
         }).pipe(Effect.provide(layer))
     );
 
     it.effect('leaves the books untouched when the actual balance matches', () =>
         Effect.gen(function* () {
-            const { cashAccount } = yield* setUpInzhurWithBaseline(1000, 1000, 2);
+            const cashAccount = yield* prepare;
 
-            expect(yield* setActualBalance(1000)).toBe(0);
+            expect(yield* setActualBalance(200)).toBe(0);
 
-            expect(yield* fetchAccountBalance(cashAccount.id)).toBe(1000 * PRECISION);
-            expect(yield* fetchInzhurLedger()).toEqual([]);
+            expect(yield* fetchAccountBalance(cashAccount.id)).toBe(200 * PRECISION);
+            expect(yield* fetchCorrections).toEqual([]);
         }).pipe(Effect.provide(layer))
     );
 
     it.effect('fails with a not-set-up error before Inzhur is created', () =>
         Effect.gen(function* () {
-            const error = yield* setActualBalance(10).pipe(Effect.flip);
-
-            expect(error).toBeInstanceOf(InzhurNotSetUpError);
+            expect(yield* setActualBalance(10).pipe(Effect.flip)).toBeInstanceOf(InzhurNotSetUpError);
         }).pipe(Effect.provide(layer))
     );
 });
 
+const prepareWithTopUp = Effect.gen(function* () {
+    yield* prepare;
+
+    const bankAccount = yield* seedInzhurBankAccount;
+
+    yield* importInzhurBankFlow(bankAccount.id, 'top-up', TOP_UP_DESCRIPTION, -1000, new Date('2026-01-20T08:00:00.000Z'));
+});
+
 describe('inzhur/statement-reminder', () => {
-    it.effect('stays quiet when nothing happened since the last statement', () =>
+    it.effect('stays quiet when nothing happened since the last export', () =>
         Effect.gen(function* () {
-            yield* setUpInzhurWithBaseline(0, 1000, 2);
+            yield* prepare;
 
             expect(yield* findStatementReminder(new Date('2026-12-15T09:00:00.000Z'))).toBeNull();
         }).pipe(Effect.provide(layer))
     );
 
-    it.effect('stays quiet while the statement is under a month old even after a top-up', () =>
+    it.effect('stays quiet while the export is under a month old even after a top-up', () =>
         Effect.gen(function* () {
-            yield* setUpInzhurWithBaseline(0, 1000, 2);
-            yield* seedTopUp;
+            yield* prepareWithTopUp;
 
-            expect(yield* findStatementReminder(new Date('2026-10-20T09:00:00.000Z'))).toBeNull();
+            expect(yield* findStatementReminder(new Date('2026-02-05T09:00:00.000Z'))).toBeNull();
         }).pipe(Effect.provide(layer))
     );
 
-    it.effect('reminds once the statement is stale and a top-up happened after it', () =>
+    it.effect('reminds once the export is stale and a top-up happened after it', () =>
         Effect.gen(function* () {
-            yield* setUpInzhurWithBaseline(0, 1000, 2);
-            yield* seedTopUp;
+            yield* prepareWithTopUp;
 
             expect(yield* findStatementReminder(new Date('2026-12-15T09:00:00.000Z'))).toEqual({
-                daysOld: 76,
-                lastStatementDate: '2026-09-30'
+                daysOld: 339,
+                lastStatementDate: '2026-01-10'
             });
         }).pipe(Effect.provide(layer))
     );

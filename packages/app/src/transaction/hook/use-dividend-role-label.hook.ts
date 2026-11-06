@@ -4,6 +4,8 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { isInzhurExactDividend } from '../utils/is-inzhur-exact-dividend.util';
+
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
 export const useDividendRoleLabel = (transaction: TransactionWithRelationsEntityInterface, accountId: number | null) => {
@@ -14,7 +16,13 @@ export const useDividendRoleLabel = (transaction: TransactionWithRelationsEntity
     }
 
     if (transaction.externalSource === ExternalSourceEnum.INZHUR && isDefined(transaction.fundAccountId)) {
-        return transaction.fundAccountId === accountId ? t`Estimated` : t`Reinvested dividends · estimated`;
+        const isOwnFund = transaction.fundAccountId === accountId;
+
+        if (isInzhurExactDividend(transaction)) {
+            return isOwnFund ? t`Dividends` : null;
+        }
+
+        return isOwnFund ? t`Estimated` : t`Dividends · estimated`;
     }
 
     const bankTitle = transaction.entries.find(entry => entry.account.instrument.type !== InstrumentTypeEnum.FUND)?.account.title;

@@ -1,16 +1,16 @@
 import { INVESTMENTS_CATEGORY_ID, PRECISION, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
-import { InzhurNotSetUpError, InzhurSetupService, InzhurStatementInvalidError } from '@budgie/sync';
+import { InzhurGainService, InzhurSetupService, InzhurStatementInvalidError } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import { fetchAccountBalance } from '../../harness';
 import { buildInzhurOperationsWorkbook } from '../../harness/inzhur/build-inzhur-operations-workbook';
-import { fetchBeforeTrackingCorrections } from '../../harness/inzhur/fetch-before-tracking-corrections';
+import { fetchBeforeExportAdjustments } from '../../harness/inzhur/fetch-before-export-adjustments';
 import { fetchInzhurOperationsLedger } from '../../harness/inzhur/fetch-inzhur-operations-ledger';
 import { importInzhurOperations } from '../../harness/inzhur/import-inzhur-operations';
+import { REIT_ISIN } from '../../harness/inzhur/inzhur-fund-isins.constant';
 import {
     CASH_AFTER_HISTORY,
-    CONVERSION_AT,
     FULL_HISTORY_ROWS,
     OCEAN,
     REIT,
@@ -18,36 +18,32 @@ import {
     UNKNOWN_TYPE
 } from '../../harness/inzhur/inzhur-operation-rows.constant';
 import { makeInzhurOperationsLayer } from '../../harness/inzhur/make-inzhur-operations-layer';
+import { requireInzhurFundAccount } from '../../harness/inzhur/require-inzhur-fund-account';
 import { requireInzhurFundByName } from '../../harness/inzhur/require-inzhur-fund-by-name';
 import { requireInzhurSetup } from '../../harness/inzhur/require-inzhur-setup';
-import { seedInzhurFundInstrument } from '../../harness/inzhur/seed-inzhur-fund-instrument';
 import { seedInzhurPrice } from '../../harness/inzhur/seed-inzhur-price';
+import { seedInzhurReitPrices } from '../../harness/inzhur/seed-inzhur-reit-prices';
 
 const URI = 'operations.xlsx';
-const REIT_CODE = 'INZHUR:REIT';
-const REIT_PRICE = 10;
 
 const layer = makeInzhurOperationsLayer({
     [URI]: buildInzhurOperationsWorkbook([...FULL_HISTORY_ROWS, { at: '2026-03-21T10:00:00', type: UNKNOWN_TYPE, credit: 1 }])
 });
 
-const setUpWithReitPrice = Effect.fnUntraced(function* (enteredCash: number) {
-    const inzhurSetupService = yield* InzhurSetupService;
-
-    yield* inzhurSetupService.setup(enteredCash);
-    yield* seedInzhurFundInstrument(REIT_CODE, REIT);
-    yield* seedInzhurPrice(REIT_CODE, CONVERSION_AT.slice(0, 10), REIT_PRICE);
-});
-
 describe('inzhur/operations-import', () => {
-    it.effect('rebuilds the whole cash ledger from a full-history export', () =>
+    it.effect('sets Inzhur up from the first full-history export and rebuilds cash, holdings and cost basis', () =>
         Effect.gen(function* () {
-            yield* setUpWithReitPrice(777);
+            const inzhurSetupService = yield* InzhurSetupService;
+
+            expect(yield* inzhurSetupService.findSetup()).toBeNull();
+
+            yield* seedInzhurReitPrices;
 
             const summary = yield* importInzhurOperations(URI);
-            const { cashAccount } = yield* requireInzhurSetup();
+            const { cashAccount, cashSync, lastStatementDate } = yield* requireInzhurSetup();
             const ocean = yield* requireInzhurFundByName(OCEAN);
-            const reit = yield* requireInzhurFundByName(REIT);
+            const reit = yield* requireInzhurFundAccount(REIT_ISIN);
+            const costReturn = yield* (yield* InzhurGainService).getFundCostReturn(reit.id, '2026-04-01');
 
             expect(summary).toMatchObject({
                 isFullHistory: true,
@@ -64,22 +60,25 @@ describe('inzhur/operations-import', () => {
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(CASH_AFTER_HISTORY * PRECISION);
             expect(yield* fetchAccountBalance(ocean.id)).toBe(0);
             expect(yield* fetchAccountBalance(reit.id)).toBe(480 * PRECISION);
-            expect(yield* fetchBeforeTrackingCorrections).toEqual([]);
+            expect(costReturn).toMatchObject({ invested: 4800, value: 4800 });
+            expect(lastStatementDate).toBe('2026-03-20');
+            expect(cashSync.forwardSyncedAt).toEqual(new Date('2026-03-20T13:30:00.000Z'));
+            expect(cashSync.backwardSyncedAt).toEqual(new Date('2026-01-10T08:00:00.000Z'));
+            expect(yield* fetchBeforeExportAdjustments).toEqual([]);
         }).pipe(Effect.provide(layer))
     );
 
     it.effect('records every operation type with the exact cost basis', () =>
         Effect.gen(function* () {
-            yield* setUpWithReitPrice(0);
+            yield* seedInzhurReitPrices;
             yield* importInzhurOperations(URI);
 
             const { cashAccount } = yield* requireInzhurSetup();
             const ocean = yield* requireInzhurFundByName(OCEAN);
-            const reit = yield* requireInzhurFundByName(REIT);
             const ledger = yield* fetchInzhurOperationsLedger;
             const titled = (title: string) => ledger.filter(transaction => transaction.title === title);
 
-            expect(ledger.map(({ type }) => type).filter(type => type === TransactionTypeEnum.TRANSFER)).toHaveLength(7);
+            expect(ledger.filter(({ type }) => type === TransactionTypeEnum.TRANSFER)).toHaveLength(7);
             expect(titled('Bought Ocean')[0].entries).toEqual([
                 { accountId: cashAccount.id, type: TransactionEntryTypeEnum.CREDIT, amount: 4000 * PRECISION, categoryId: null },
                 { accountId: ocean.id, type: TransactionEntryTypeEnum.DEBIT, amount: 100 * PRECISION, categoryId: null }
@@ -113,18 +112,18 @@ describe('inzhur/operations-import', () => {
                 fromAccountId: cashAccount.id,
                 toAccountId: null
             });
-            expect(reit.id).not.toBe(ocean.id);
         }).pipe(Effect.provide(layer))
     );
 
-    it.effect('estimates the converted quantity from the price and says so, folding the surcharge into the cost', () =>
+    it.effect('estimates the converted quantity from the nearest cached price and says so, folding the surcharge into the cost', () =>
         Effect.gen(function* () {
-            yield* setUpWithReitPrice(0);
+            yield* seedInzhurPrice(REIT_ISIN, '2026-03-01', 8.6);
+            yield* seedInzhurPrice(REIT_ISIN, '2026-01-10', 10);
 
             const summary = yield* importInzhurOperations(URI);
 
             expect(summary.funds.find(fund => fund.name === REIT)).toMatchObject({
-                boughtQuantity: 480,
+                boughtQuantity: 550,
                 boughtAmount: 4800,
                 isQuantityEstimated: true
             });
@@ -139,32 +138,17 @@ describe('inzhur/operations-import', () => {
         }).pipe(Effect.provide(layer))
     );
 
-    it.effect('fails with a typed error for a non-Inzhur file and when Inzhur is not set up', () =>
+    it.effect('fails with a typed error for a non-Inzhur file and sets nothing up', () =>
         Effect.gen(function* () {
-            const notSetUp = yield* Effect.flip(importInzhurOperations(URI));
-
-            expect(notSetUp).toBeInstanceOf(InzhurNotSetUpError);
-
             const inzhurSetupService = yield* InzhurSetupService;
 
-            yield* inzhurSetupService.setup(0);
-
             expect(yield* Effect.flip(importInzhurOperations('garbage.xlsx'))).toBeInstanceOf(InzhurStatementInvalidError);
-        }).pipe(
-            Effect.provide(
-                makeInzhurOperationsLayer({
-                    [URI]: buildInzhurOperationsWorkbook(FULL_HISTORY_ROWS),
-                    'garbage.xlsx': new Uint8Array([1, 2, 3])
-                })
-            )
-        )
+            expect(yield* inzhurSetupService.findSetup()).toBeNull();
+        }).pipe(Effect.provide(makeInzhurOperationsLayer({ 'garbage.xlsx': new Uint8Array([1, 2, 3]) })))
     );
 
     it.effect('reads Kyiv summer time and records sells by their quantity', () =>
         Effect.gen(function* () {
-            const inzhurSetupService = yield* InzhurSetupService;
-
-            yield* inzhurSetupService.setup(0);
             yield* importInzhurOperations('summer.xlsx');
 
             const reit = yield* requireInzhurFundByName(REIT);
@@ -191,10 +175,6 @@ describe('inzhur/operations-import', () => {
 
     it.effect('classifies an export as full when cash only dips within a day', () =>
         Effect.gen(function* () {
-            const inzhurSetupService = yield* InzhurSetupService;
-
-            yield* inzhurSetupService.setup(0);
-
             const summary = yield* importInzhurOperations('dip.xlsx');
 
             expect(summary).toMatchObject({ isFullHistory: true, cashBalance: 20 });

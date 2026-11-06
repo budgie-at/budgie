@@ -1,7 +1,5 @@
 import {
-    AccountRepository,
     AccountTypeEnum,
-    DividendPayoutEnum,
     ExternalSourceEnum,
     InstrumentPriceProviderEnum,
     InstrumentRepository,
@@ -24,7 +22,6 @@ import type { InzhurSetupInterface } from '../interface/inzhur-setup.interface';
 
 export class InzhurFundAccountService extends Context.Service<InzhurFundAccountService>()('@budgie/sync/InzhurFundAccountService', {
     make: Effect.gen(function* () {
-        const accountRepository = yield* AccountRepository;
         const accountService = yield* AccountService;
         const instrumentRepository = yield* InstrumentRepository;
         const syncRepository = yield* SyncRepository;
@@ -34,13 +31,17 @@ export class InzhurFundAccountService extends Context.Service<InzhurFundAccountS
             INZHUR_CANONICAL_FUNDS.find(fund => rawName.toUpperCase().includes(fund.keyword))?.name ?? rawName;
 
         const resolveInstrument = Effect.fnUntraced(function* (code: string, rawName: string) {
-            const existingInstrument = yield* instrumentRepository.findByCode(code);
+            const name = toCanonicalName(rawName);
+            const existingInstrument =
+                (yield* instrumentRepository.findByCode(code)) ??
+                (yield* instrumentRepository.findByTypeAndPriceProviderWithProviderInstrumentId(
+                    InstrumentTypeEnum.FUND,
+                    InstrumentPriceProviderEnum.INZHUR
+                )).find(candidate => candidate.name.toLowerCase() === name.toLowerCase());
 
             if (isDefined(existingInstrument)) {
                 return existingInstrument;
             }
-
-            const name = toCanonicalName(rawName);
 
             return yield* instrumentRepository.create({
                 type: InstrumentTypeEnum.FUND,
@@ -62,9 +63,8 @@ export class InzhurFundAccountService extends Context.Service<InzhurFundAccountS
                         icon: INZHUR_CANONICAL_FUNDS.find(fund => fund.name === instrument.name)?.icon ?? UserIconNameEnum.ChartLine,
                         instrumentId: instrument.id,
                         currentBalance: 0,
-                        externalId: `inzhur:${code}`,
+                        externalId: `inzhur:${instrument.code}`,
                         externalSource: provider,
-                        dividendPayout: DividendPayoutEnum.REINVEST,
                         integrationId
                     }
                 ])
@@ -105,29 +105,11 @@ export class InzhurFundAccountService extends Context.Service<InzhurFundAccountS
                     .replaceAll(/\s+/gu, '-');
 
                 return yield* create(`${INZHUR_SYNTHETIC_FUND_CODE_PREFIX}${suffix}`, name, setup.integration.id);
-            }),
-            adoptIsin: Effect.fn('InzhurFundAccountService.adoptIsin')(function* (
-                setup: InzhurSetupInterface,
-                isin: string,
-                rawName: string
-            ) {
-                const synthetic = (yield* findByCanonicalName(setup, toCanonicalName(rawName))).find(({ instrument }) =>
-                    instrument.code.startsWith(INZHUR_SYNTHETIC_FUND_CODE_PREFIX)
-                );
-
-                if (!isDefined(synthetic)) {
-                    return null;
-                }
-
-                yield* instrumentRepository.updateById(synthetic.instrument.id, { code: isin, providerInstrumentId: isin });
-                yield* accountRepository.updateById(synthetic.account.id, { externalId: `inzhur:${isin}` });
-
-                return synthetic.account;
             })
         };
     })
 }) {
     static readonly layer = Layer.effect(InzhurFundAccountService, InzhurFundAccountService.make).pipe(
-        Layer.provide([AccountRepository.layer, AccountService.layer, InstrumentRepository.layer, SyncRepository.layer])
+        Layer.provide([AccountService.layer, InstrumentRepository.layer, SyncRepository.layer])
     );
 }

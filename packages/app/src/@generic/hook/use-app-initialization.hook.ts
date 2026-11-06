@@ -12,6 +12,7 @@ import { AuthService } from '../../auth/service/auth.service';
 import { BudgetAlertMonitorService } from '../../budget/service/budget-alert-monitor.service';
 import { CategoryIconBackfillService } from '../../category/service/category-icon-backfill.service';
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
+import { InzhurPendingTopUpService } from '../../inzhur/service/inzhur-pending-top-up.service';
 import { InzhurStatementReminderService } from '../../inzhur/service/inzhur-statement-reminder.service';
 import { HistoricalMarketDataDrainerService } from '../../market-data/service/historical-market-data-drainer.service';
 import { OnboardingService } from '../../onboarding/service/onboarding.service';
@@ -55,6 +56,7 @@ const registerBackgroundTasks = Effect.gen(function* () {
     const budgetAlertMonitorService = yield* BudgetAlertMonitorService;
     const widgetSnapshotService = yield* WidgetSnapshotService;
     const inzhurStatementReminderService = yield* InzhurStatementReminderService;
+    const inzhurPendingTopUpService = yield* InzhurPendingTopUpService;
 
     yield* Effect.all(
         [
@@ -67,7 +69,8 @@ const registerBackgroundTasks = Effect.gen(function* () {
             reregisterTask(ENABLE_BANKING_SYNC_TASK, PROVIDER_SYNC_TASK_MINIMUM_INTERVAL_MINUTES),
             budgetAlertMonitorService.registerBackgroundTask(),
             widgetSnapshotService.registerBackgroundTask(),
-            inzhurStatementReminderService.start
+            inzhurStatementReminderService.start,
+            inzhurPendingTopUpService.start
         ].map(logAndContinue),
         { concurrency: 'unbounded', discard: true }
     );

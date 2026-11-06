@@ -1,5 +1,6 @@
-import type { InzhurLinkedPaymentsInterface } from './inzhur-linked-payments.interface';
-
-export interface InzhurBankFlowSummaryInterface extends InzhurLinkedPaymentsInterface {
-    readonly preSetupCashDelta: number;
+export interface InzhurBankFlowSummaryInterface {
+    readonly topUps: number;
+    readonly withdrawals: number;
+    readonly dividends: number;
+    readonly preExportCashDelta: number;
 }

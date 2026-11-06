@@ -22,7 +22,7 @@ export const useFundTradeLabel = (transaction: TransactionWithRelationsEntityInt
     const quantity = formatFundQuantity(convertFromMicroUnits(fundEntry.amount));
 
     if (transaction.type === TransactionTypeEnum.ADJUSTMENT) {
-        return t`From first statement · ${quantity}`;
+        return t`Adjustment · ${quantity}`;
     }
 
     const cashTitle = transaction.entries.find(entry => entry.account.instrument.type !== InstrumentTypeEnum.FUND)?.account.title;

@@ -10,12 +10,12 @@ import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useFormatFundQuantity } from '../../../i18n/hook/use-format-fund-quantity.hook';
 import { inzhurChartScrubAtom } from '../../constant/inzhur-chart-scrub-atom.constant';
 import { useHryvniaInstrumentQuery } from '../../query/use-hryvnia-instrument.query';
-import { useInzhurFundReturnsQuery } from '../../query/use-inzhur-fund-returns.query';
+import { useInzhurFundLatestPriceQuery } from '../../query/use-inzhur-fund-returns.query';
 
 import type { AccountEntityInterface } from '@budgie/contracts';
 
 interface Props {
-    readonly account: Pick<AccountEntityInterface, 'id' | 'instrumentId'>;
+    readonly account: Pick<AccountEntityInterface, 'instrumentId'>;
     readonly balance: number;
 }
 
@@ -23,7 +23,7 @@ const UNIT_PRICE_DECIMALS = 3;
 
 export const InzhurFundHoldingLine = ({ account, balance }: Props) => {
     const { formatMonthAndDayAndOptionalYear } = useFormatDate();
-    const { latestPrice } = useInzhurFundReturnsQuery(account.id, account.instrumentId);
+    const latestPrice = useInzhurFundLatestPriceQuery(account.instrumentId);
     const symbol = useHryvniaInstrumentQuery()?.symbol ?? '';
     const formatAmount = useFormatDigits(UNIT_PRICE_DECIMALS, UNIT_PRICE_DECIMALS);
     const formatFundQuantity = useFormatFundQuantity();

@@ -30,7 +30,7 @@ export const useInzhurValueQuery = (): InzhurValueInterface | null => {
     const cash = sumRows(false);
     const funds = sumRows(true);
 
-    const fundCount = inzhurRows.filter(row => row.instrument.type === InstrumentTypeEnum.FUND).length;
+    const fundCount = inzhurRows.filter(row => row.instrument.type === InstrumentTypeEnum.FUND && row.balance !== 0).length;
 
     return { cash, funds, fundCount, total: cash + funds };
 };

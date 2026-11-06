@@ -1,57 +1,48 @@
-import { AccountTypeEnum, ExternalSourceEnum, InvestmentReturnRepository, PRECISION } from '@budgie/contracts';
-import { TransferConsolidationService } from '@budgie/sync';
+import { InvestmentReturnRepository, PRECISION } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { seed } from '../../harness';
-import { buildInzhurBaselineItems, buildInzhurHoldings } from '../../harness/inzhur/build-inzhur-baseline-items';
-import { buildInzhurStatementItems } from '../../harness/inzhur/build-inzhur-statement-items';
-import { importInzhurBankTransaction } from '../../harness/inzhur/import-inzhur-bank-transaction';
-import { importInzhurStatement } from '../../harness/inzhur/import-inzhur-statement';
-import { INZHUR_REIT_LAYOUT } from '../../harness/inzhur/inzhur-fund-layouts';
-import { FIRST_URI, SECOND_DATE, SECOND_URI } from '../../harness/inzhur/inzhur-statement-fixtures.constant';
-import { makeInzhurLayer } from '../../harness/inzhur/make-inzhur-layer';
-import { setUpInzhurWithBaseline } from '../../harness/inzhur/set-up-inzhur-with-baseline';
+import { buildInzhurOperationsWorkbook } from '../../harness/inzhur/build-inzhur-operations-workbook';
+import { importInzhurBankFlow } from '../../harness/inzhur/import-inzhur-bank-flow';
+import { importInzhurOperations } from '../../harness/inzhur/import-inzhur-operations';
+import { REIT_DIVIDEND_DESCRIPTION } from '../../harness/inzhur/inzhur-bank-descriptions.constant';
+import { ENERGY_ISIN, REIT_ISIN } from '../../harness/inzhur/inzhur-fund-isins.constant';
+import { BASE_ROWS, DIVIDEND_TYPE, REIT } from '../../harness/inzhur/inzhur-operation-rows.constant';
+import { makeInzhurOperationsLayer } from '../../harness/inzhur/make-inzhur-operations-layer';
+import { requireInzhurFundAccount } from '../../harness/inzhur/require-inzhur-fund-account';
+import { seedInzhurBankAccount } from '../../harness/inzhur/seed-inzhur-bank-account';
 
-const layer = makeInzhurLayer({
-    [FIRST_URI]: buildInzhurBaselineItems(1000, 2),
-    [SECOND_URI]: buildInzhurStatementItems(SECOND_DATE, buildInzhurHoldings(1100, 3))
+const URI = 'returns.xlsx';
+
+const layer = makeInzhurOperationsLayer({
+    [URI]: buildInzhurOperationsWorkbook([
+        ...BASE_ROWS,
+        { at: '2026-01-10T10:06:00', type: 'Купівля 2 сертифікати', fund: 'Inzhur Energy', credit: 20 },
+        { at: '2026-02-01T10:00:00', type: DIVIDEND_TYPE, fund: REIT, debit: 100 },
+        { at: '2026-02-01T10:01:00', type: DIVIDEND_TYPE, fund: 'Inzhur Energy', debit: 40 }
+    ])
 });
 
 describe('inzhur/fund-returns', () => {
-    it.effect('groups bank and reinvested dividends by the linked fund account', () =>
+    it.effect('groups bank and export dividends by the linked fund account', () =>
         Effect.gen(function* () {
             const investmentReturnRepository = yield* InvestmentReturnRepository;
-            const { reitAccount, energyAccount } = yield* setUpInzhurWithBaseline(100, 1000, 2);
-            const bankAccount = yield* seed.account({
-                title: 'Monobank Card',
-                externalId: 'inzhur-fund-returns-card',
-                externalSource: ExternalSourceEnum.MONOBANK,
-                type: AccountTypeEnum.BANK_SYNC,
-                instrumentId: 1
-            });
+            const bankAccount = yield* seedInzhurBankAccount;
 
-            yield* importInzhurStatement(SECOND_URI);
-            yield* importInzhurBankTransaction(
-                bankAccount.id,
-                'dividend',
-                `ІНЖУР КЕПІТАЛ дивіденд ${INZHUR_REIT_LAYOUT.isin}`,
-                120,
-                new Date('2026-11-05T12:00:00.000Z')
-            );
-            yield* Effect.flatMap(TransferConsolidationService, service => service.consolidate(null));
+            yield* importInzhurOperations(URI);
+            yield* importInzhurBankFlow(bankAccount.id, 'dividend', REIT_DIVIDEND_DESCRIPTION, 120, new Date('2026-05-05T12:00:00.000Z'));
 
+            const reit = yield* requireInzhurFundAccount(REIT_ISIN);
+            const energy = yield* requireInzhurFundAccount(ENERGY_ISIN);
             const totals = (yield* investmentReturnRepository.getFundDividendTotals()).toSorted(
                 (left, right) => left.fundAccountId - right.fundAccountId
             );
 
             expect(totals).toEqual([
-                { fundAccountId: reitAccount.id, bank: 120 * PRECISION, reinvested: 980 * PRECISION },
-                { fundAccountId: energyAccount.id, bank: 0, reinvested: 3920 * PRECISION }
+                { fundAccountId: reit.id, bank: 120 * PRECISION, reinvested: 100 * PRECISION },
+                { fundAccountId: energy.id, bank: 0, reinvested: 40 * PRECISION }
             ]);
-            expect(yield* investmentReturnRepository.findFirstEntryOperatedAt(reitAccount.id)).toEqual(
-                new Date('2026-09-30T12:00:00.000Z')
-            );
+            expect(yield* investmentReturnRepository.findFirstEntryOperatedAt(reit.id)).toEqual(new Date('2026-01-10T08:05:00.000Z'));
         }).pipe(Effect.provide(layer))
     );
 });

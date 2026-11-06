@@ -2,7 +2,6 @@ import {
     AccountBalanceRepository,
     Db,
     INVESTMENTS_CATEGORY_ID,
-    InstrumentRepository,
     SyncRepository,
     TransactionEntryTypeEnum,
     TransactionRepository,
@@ -21,13 +20,11 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { SyncFileReader } from '../../core/port/sync-file-reader.port';
 import { SyncWorkload } from '../../core/port/sync-workload.port';
 import { buildPrimaryEntry } from '../../core/utils/build-primary-entry.util';
-import { INZHUR_BANK_DESCRIPTION_PATTERNS } from '../constant/inzhur-bank-description-patterns.constant';
-import { INZHUR_BALANCE_CORRECTION_TITLE, INZHUR_OPENING_HOLDINGS_TITLE } from '../constant/inzhur-estimate-titles.constant';
+import { INZHUR_BALANCE_CORRECTION_TITLE } from '../constant/inzhur-estimate-titles.constant';
+import { INZHUR_MANUAL_EXTERNAL_ID_PREFIX } from '../constant/inzhur-manual-external-id-prefix.constant';
 import { INZHUR_OPERATION_EXTERNAL_ID_PREFIX } from '../constant/inzhur-operation-external-id-prefix.constant';
-import { INZHUR_PAIRING_WINDOW_MILLISECONDS } from '../constant/inzhur-pairing-window.constant';
 import { INZHUR_TAXES_CATEGORY_ID } from '../constant/inzhur-taxes-category-id.constant';
 import { InzhurOperationKindEnum } from '../enum/inzhur-operation-kind.enum';
-import { InzhurNotSetUpError } from '../error/inzhur-not-set-up.error';
 import { InzhurPriceMissingError } from '../error/inzhur-price-missing.error';
 import { inzhurOperationsParser } from '../parser/inzhur-operations.parser';
 import { inzhurOperationsPlanner } from '../planner/inzhur-operations.planner';
@@ -40,10 +37,9 @@ import { sumSignedAccountEntries } from '../utils/sum-signed-account-entries.uti
 import { toKyivDay } from '../utils/to-kyiv-day.util';
 
 import { InzhurBankFlowService } from './inzhur-bank-flow.service';
-import { InzhurBeforeTrackingService } from './inzhur-before-tracking.service';
-import { InzhurCashPairingService } from './inzhur-cash-pairing.service';
 import { InzhurFundAccountService } from './inzhur-fund-account.service';
-import { InzhurQuantityReconcileService } from './inzhur-quantity-reconcile.service';
+import { InzhurOpeningBalanceService } from './inzhur-opening-balance.service';
+import { InzhurOperationsBankPairingService } from './inzhur-operations-bank-pairing.service';
 import { InzhurSetupService } from './inzhur-setup.service';
 
 import type { InzhurOperationsExportInterface } from '../interface/inzhur-operations-export.interface';
@@ -58,76 +54,43 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
     {
         make: Effect.gen(function* () {
             const accountBalanceRepository = yield* AccountBalanceRepository;
-            const instrumentRepository = yield* InstrumentRepository;
             const syncRepository = yield* SyncRepository;
             const transactionRepository = yield* TransactionRepository;
             const transactionService = yield* TransactionService;
             const transferCreationService = yield* TransferCreationService;
             const inzhurPriceService = yield* InzhurPriceService;
             const inzhurBankFlowService = yield* InzhurBankFlowService;
-            const inzhurBeforeTrackingService = yield* InzhurBeforeTrackingService;
+            const inzhurOpeningBalanceService = yield* InzhurOpeningBalanceService;
             const inzhurFundAccountService = yield* InzhurFundAccountService;
-            const inzhurCashPairingService = yield* InzhurCashPairingService;
-            const inzhurQuantityReconcileService = yield* InzhurQuantityReconcileService;
+            const inzhurOperationsBankPairingService = yield* InzhurOperationsBankPairingService;
             const inzhurSetupService = yield* InzhurSetupService;
             const syncFileReader = yield* SyncFileReader;
             const syncWorkload = yield* SyncWorkload;
-            const estimateIdPattern = /^inzhur:\d{4}-\d{2}-\d{2}:.+:(?:buy|sell|dividend)$/u;
             const actualBalanceIdPrefix = 'inzhur:actual-balance:';
             const millisecondsPerSecond = 1000;
-            const topUpTitle = 'Top-up to Inzhur';
-            const withdrawalTitle = 'Withdrawal from Inzhur';
 
             const toShortName = (name: string) => name.replace(/^Inzhur\s+/iu, '');
 
-            const isSupersededEstimate = (transaction: TransactionWithEntriesEntityInterface, from: Date, until: Date) => {
-                const { externalId, type, title, operatedAt } = transaction;
-                const isEstimate =
-                    (isDefined(externalId) && (estimateIdPattern.test(externalId) || externalId.startsWith(actualBalanceIdPrefix))) ||
-                    (type === TransactionTypeEnum.ADJUSTMENT &&
-                        (title === INZHUR_OPENING_HOLDINGS_TITLE || title === INZHUR_BALANCE_CORRECTION_TITLE));
+            const isInPeriod = (transaction: TransactionWithEntriesEntityInterface, from: Date, until: Date) =>
+                transaction.operatedAt >= from && transaction.operatedAt < until;
 
-                return isEstimate && operatedAt >= from && operatedAt < until;
+            const isSupersededEstimate = (transaction: TransactionWithEntriesEntityInterface) => {
+                const { externalId, type, title } = transaction;
+
+                return (
+                    (isDefined(externalId) && externalId.startsWith(actualBalanceIdPrefix)) ||
+                    (type === TransactionTypeEnum.ADJUSTMENT && title === INZHUR_BALANCE_CORRECTION_TITLE)
+                );
             };
+
+            const isManualPurchase = (transaction: TransactionWithEntriesEntityInterface) =>
+                isDefined(transaction.externalId) && transaction.externalId.startsWith(INZHUR_MANUAL_EXTERNAL_ID_PREFIX);
 
             const sumQuantity = (
                 ledger: readonly TransactionWithEntriesEntityInterface[],
                 accountId: number,
                 isIncluded: (transaction: TransactionWithEntriesEntityInterface) => boolean
             ) => ledger.filter(isIncluded).reduce((sum, transaction) => sum + sumSignedAccountEntries(transaction.entries, accountId), 0);
-
-            const findBankTransfer = (
-                ledger: readonly TransactionWithEntriesEntityInterface[],
-                action: InzhurPlannedActionInterface,
-                cashAccountId: number,
-                claimedIds: ReadonlySet<number>
-            ) => {
-                const entryType =
-                    action.kind === InzhurOperationKindEnum.TOP_UP ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT;
-                const amountMicroUnits = convertToMicroUnits(action.cashAmount);
-
-                return (
-                    [...ledger]
-                        .filter(
-                            transaction =>
-                                transaction.type === TransactionTypeEnum.TRANSFER &&
-                                !claimedIds.has(transaction.id) &&
-                                INZHUR_BANK_DESCRIPTION_PATTERNS.externalSources.some(source => source === transaction.externalSource) &&
-                                Math.abs(transaction.operatedAt.getTime() - action.occurredAt.getTime()) <=
-                                    INZHUR_PAIRING_WINDOW_MILLISECONDS &&
-                                transaction.entries.some(
-                                    entry =>
-                                        entry.accountId === cashAccountId && entry.type === entryType && entry.amount === amountMicroUnits
-                                )
-                        )
-                        .sort(
-                            (left, right) =>
-                                Math.abs(left.operatedAt.getTime() - action.occurredAt.getTime()) -
-                                Math.abs(right.operatedAt.getTime() - action.occurredAt.getTime())
-                        )
-                        .at(0) ?? null
-                );
-            };
 
             const buildSummaryFunds = (
                 actions: readonly InzhurPlannedActionInterface[],
@@ -184,21 +147,6 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                 };
             };
 
-            const buildFlowInput = (action: InzhurPlannedActionInterface, cashAccountId: number) => {
-                const isTopUp = action.kind === InzhurOperationKindEnum.TOP_UP;
-                const entry = buildPrimaryEntry(
-                    cashAccountId,
-                    isTopUp ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT,
-                    action.cashAmount,
-                    action.externalId
-                );
-
-                return {
-                    ...buildInzhurTransactionInput(isTopUp ? topUpTitle : withdrawalTitle, action.externalId, action.occurredAt, [entry]),
-                    type: TransactionTypeEnum.TRANSFER
-                };
-            };
-
             const readPriceMap = Effect.fnUntraced(function* (
                 actions: readonly InzhurPlannedActionInterface[],
                 accountByFund: ReadonlyMap<string, AccountEntityInterface>,
@@ -250,7 +198,7 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                 const cashAccountId = setup.cashAccount.id;
                 const openingAt = new Date(firstAt.getTime() - millisecondsPerSecond);
 
-                yield* inzhurBeforeTrackingService.moveTo(cashAccountId, openingAt);
+                yield* inzhurOpeningBalanceService.moveTo(cashAccountId, openingAt);
 
                 const cashLedger = yield* transactionRepository.findByAccountIdsWithEntries([cashAccountId]);
                 const minimum = findLowestDayEndBalance(
@@ -261,14 +209,16 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                 );
 
                 if (minimum < 0) {
-                    yield* inzhurBeforeTrackingService.shift(cashAccountId, -minimum, fundAccountIds);
-                    yield* inzhurBeforeTrackingService.moveTo(cashAccountId, openingAt);
+                    yield* inzhurOpeningBalanceService.shift(cashAccountId, -minimum, fundAccountIds);
+                    yield* inzhurOpeningBalanceService.moveTo(cashAccountId, openingAt);
                 }
             });
 
             const run = Effect.fnUntraced(function* (setup: InzhurSetupInterface, exported: InzhurOperationsExportInterface) {
                 const plan = inzhurOperationsPlanner.plan(exported.operations);
                 const cashAccountId = setup.cashAccount.id;
+                const periodStart = getKyivDayStart(toKyivDay(plan.firstAt));
+                const periodEnd = getKyivDayStart(toKyivDay(plan.lastAt), 1);
 
                 yield* inzhurBankFlowService.convert(setup, null);
 
@@ -288,24 +238,18 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                 const hasPriorOperations = before.some(transaction =>
                     transaction.externalId?.startsWith(INZHUR_OPERATION_EXTERNAL_ID_PREFIX)
                 );
-                const statementCutoff = isDefined(setup.lastStatementDate) ? getKyivDayStart(setup.lastStatementDate, 1) : null;
-                const statementMicroUnitsByAccountId = new Map(
-                    isDefined(statementCutoff)
-                        ? fundAccountIds.map(accountId => [
-                              accountId,
-                              sumQuantity(before, accountId, transaction => transaction.operatedAt < statementCutoff)
-                          ])
-                        : []
+                const estimates = before.filter(
+                    transaction => isInPeriod(transaction, periodStart, periodEnd) && isSupersededEstimate(transaction)
                 );
-                const estimates = before.filter(transaction =>
-                    isSupersededEstimate(transaction, getKyivDayStart(toKyivDay(plan.firstAt)), getKyivDayStart(toKyivDay(plan.lastAt), 1))
+                const replacedPurchases = before.filter(
+                    transaction => isInPeriod(transaction, periodStart, periodEnd) && isManualPurchase(transaction)
                 );
 
-                for (const estimate of estimates) {
-                    yield* transactionService.deleteById(estimate.id);
+                for (const superseded of [...estimates, ...replacedPurchases]) {
+                    yield* transactionService.deleteById(superseded.id);
                 }
 
-                const ledger = isNotEmptyArray(estimates)
+                const ledger = isNotEmptyArray([...estimates, ...replacedPurchases])
                     ? yield* transactionRepository.findByAccountIdsWithEntries([cashAccountId, ...fundAccountIds])
                     : before;
                 const existingIds = new Set(
@@ -320,14 +264,6 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                             sumQuantity(ledger, account.id, transaction => transaction.operatedAt < plan.firstAt)
                         ])
                     ),
-                    statementMicroUnitsByFund: new Map(
-                        [...accountByFund].flatMap(([name, account]) => {
-                            const quantity = statementMicroUnitsByAccountId.get(account.id);
-
-                            return isDefined(quantity) ? [[name, quantity] as const] : [];
-                        })
-                    ),
-                    statementCutoff,
                     priceByExternalId: yield* readPriceMap(
                         plan.actions,
                         accountByFund,
@@ -344,47 +280,11 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                     return yield* new InzhurPriceMissingError({ fundNames: [...new Set(unresolvedFundNames)] });
                 }
 
-                const stampedBankByOperationId = new Map<string, TransactionWithEntriesEntityInterface>(
-                    ledger.flatMap(transaction =>
-                        INZHUR_BANK_DESCRIPTION_PATTERNS.externalSources.some(source => source === transaction.externalSource)
-                            ? transaction.entries
-                                  .filter(
-                                      entry =>
-                                          entry.accountId === cashAccountId &&
-                                          entry.externalId?.startsWith(INZHUR_OPERATION_EXTERNAL_ID_PREFIX)
-                                  )
-                                  .flatMap(entry => (isDefined(entry.externalId) ? [[entry.externalId, transaction] as const] : []))
-                            : []
-                    )
-                );
-                const claimedBankIds = new Set([...stampedBankByOperationId.values()].map(transaction => transaction.id));
-                const stampInputs: { readonly transactionId: number; readonly externalId: string }[] = [];
-                let paired = 0;
-                let unpaired = 0;
-                const placeholderInputs = [];
-
-                for (const action of plan.actions.filter(
-                    item => item.kind === InzhurOperationKindEnum.TOP_UP || item.kind === InzhurOperationKindEnum.WITHDRAWAL
-                )) {
-                    const bankTransfer =
-                        stampedBankByOperationId.has(action.externalId) || existingIds.has(action.externalId)
-                            ? null
-                            : findBankTransfer(ledger, action, cashAccountId, claimedBankIds);
-
-                    if (stampedBankByOperationId.has(action.externalId)) {
-                        paired += 1;
-                    } else if (isDefined(bankTransfer)) {
-                        claimedBankIds.add(bankTransfer.id);
-                        stampInputs.push({ transactionId: bankTransfer.id, externalId: action.externalId });
-                        paired += 1;
-                    } else {
-                        unpaired += 1;
-
-                        if (!existingIds.has(action.externalId)) {
-                            placeholderInputs.push(buildFlowInput(action, cashAccountId));
-                        }
-                    }
-                }
+                const pairing = yield* inzhurOperationsBankPairingService.plan(setup, plan.actions, ledger, {
+                    from: periodStart,
+                    until: periodEnd
+                });
+                const { placeholderInputs } = pairing;
 
                 const buildTradeInput = (action: InzhurPlannedActionInterface, account: AccountEntityInterface, microUnits: number) => {
                     const isSell = action.kind === InzhurOperationKindEnum.SELL;
@@ -440,9 +340,7 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                     yield* transactionService.deleteById(stored.id);
                 }
 
-                for (const { transactionId, externalId } of stampInputs) {
-                    yield* inzhurCashPairingService.stamp(transactionId, cashAccountId, externalId);
-                }
+                yield* inzhurOperationsBankPairingService.apply(setup, pairing);
 
                 yield* transactionService.bulkCreate([...placeholderInputs, ...incomeInputs]);
 
@@ -451,33 +349,18 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                 }
 
                 if (plan.isFullHistory) {
-                    yield* inzhurBeforeTrackingService.replace(cashAccountId, 0);
+                    yield* inzhurOpeningBalanceService.replace(cashAccountId, 0);
                 } else if (!hasPriorOperations) {
                     yield* adjustOpeningCash(setup, plan.firstAt, fundAccountIds);
                 }
 
                 yield* syncRepository.update(setup.cashSync.id, {
-                    backwardSyncedAt: new Date(Math.max(setup.cashSync.backwardSyncedAt?.getTime() ?? 0, plan.lastAt.getTime()))
+                    backwardSyncedAt: new Date(
+                        Math.min(setup.cashSync.backwardSyncedAt?.getTime() ?? plan.firstAt.getTime(), plan.firstAt.getTime())
+                    ),
+                    forwardSyncedAt: new Date(Math.max(setup.cashSync.forwardSyncedAt?.getTime() ?? 0, plan.lastAt.getTime()))
                 });
 
-                const reconciliations = isDefined(setup.lastStatementDate)
-                    ? yield* inzhurQuantityReconcileService.reconcile(
-                          setup.lastStatementDate,
-                          new Map(
-                              [...statementMicroUnitsByAccountId].map(([accountId, microUnits]) => [
-                                  accountId,
-                                  convertFromMicroUnits(microUnits)
-                              ])
-                          )
-                      )
-                    : [];
-                const instruments = yield* instrumentRepository.getAll();
-                const nameByAccountId = new Map(
-                    [...setup.fundAccounts, ...accountByFund.values()].map(account => [
-                        account.id,
-                        instruments.find(instrument => instrument.id === account.instrumentId)?.name ?? account.title
-                    ])
-                );
                 const quantityOf = (action: InzhurPlannedActionInterface) =>
                     quantities.get(action.externalId) ?? { microUnits: 0, isEstimated: false };
                 const sumFlow = (kind: InzhurOperationKindEnum) => {
@@ -507,11 +390,9 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                             ? [{ operation: InzhurOperationKindEnum.SURCHARGE, count: plan.orphanSurcharges.length }]
                             : [])
                     ],
-                    bankMatches: { paired, unpaired },
-                    reconciliations: reconciliations.map(({ accountId, difference }) => ({
-                        fundName: nameByAccountId.get(accountId) ?? '',
-                        difference
-                    })),
+                    bankMatches: { paired: pairing.paired, unpaired: pairing.unpaired },
+                    replacedPurchaseCount: replacedPurchases.length,
+                    unmatchedBankCount: pairing.unmatchedBankCount,
                     removedEstimateCount: estimates.length,
                     cashBalance: convertFromMicroUnits((yield* accountBalanceRepository.getByAccountId(cashAccountId)).at(0)?.balance ?? 0)
                 } satisfies InzhurOperationsImportSummaryInterface;
@@ -521,13 +402,10 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                 importOperations: Effect.fn('InzhurOperationsImportService.importOperations')(function* (uri: string) {
                     const bytes = yield* syncFileReader.readBytes(uri);
                     const exported = yield* inzhurOperationsParser.parse(bytes);
-                    const setup = yield* inzhurSetupService.findSetup();
 
-                    if (!isDefined(setup)) {
-                        return yield* new InzhurNotSetUpError();
-                    }
-
-                    return yield* syncWorkload.runUser(Db.transaction(run(setup, exported)));
+                    return yield* syncWorkload.runUser(
+                        Db.transaction(Effect.flatMap(inzhurSetupService.setup(), setup => run(setup, exported)))
+                    );
                 })
             };
         })
@@ -536,17 +414,15 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
     static readonly layer = Layer.effect(InzhurOperationsImportService, InzhurOperationsImportService.make).pipe(
         Layer.provide([
             AccountBalanceRepository.layer,
-            InstrumentRepository.layer,
             SyncRepository.layer,
             TransactionRepository.layer,
             TransactionService.layer,
             TransferCreationService.layer,
             InzhurPriceService.layer,
             InzhurBankFlowService.layer,
-            InzhurBeforeTrackingService.layer,
-            InzhurCashPairingService.layer,
+            InzhurOpeningBalanceService.layer,
+            InzhurOperationsBankPairingService.layer,
             InzhurFundAccountService.layer,
-            InzhurQuantityReconcileService.layer,
             InzhurSetupService.layer
         ])
     );

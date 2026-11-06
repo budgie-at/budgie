@@ -1,40 +1,44 @@
-import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
-import { InzhurGainRangeEnum, InzhurGainService, TransferConsolidationService } from '@budgie/sync';
+import { InzhurGainRangeEnum, InzhurGainService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { seed } from '../../harness';
-import { importInzhurBankTransaction } from '../../harness/inzhur/import-inzhur-bank-transaction';
-import { importInzhurStatement } from '../../harness/inzhur/import-inzhur-statement';
-import { INZHUR_ENERGY_LAYOUT, INZHUR_REIT_LAYOUT } from '../../harness/inzhur/inzhur-fund-layouts';
-import { ENERGY_PRICE, REIT_PRICE, SECOND_URI } from '../../harness/inzhur/inzhur-statement-fixtures.constant';
-import { makeInzhurGainLayer } from '../../harness/inzhur/make-inzhur-gain-layer';
+import { buildInzhurOperationsWorkbook } from '../../harness/inzhur/build-inzhur-operations-workbook';
+import { findPendingTopUps } from '../../harness/inzhur/find-pending-top-ups';
+import { importInzhurBankFlow } from '../../harness/inzhur/import-inzhur-bank-flow';
+import { importInzhurOperations } from '../../harness/inzhur/import-inzhur-operations';
+import { TOP_UP_DESCRIPTION } from '../../harness/inzhur/inzhur-bank-descriptions.constant';
+import { REIT_ISIN } from '../../harness/inzhur/inzhur-fund-isins.constant';
+import {
+    DIVIDEND_TYPE,
+    FULL_HISTORY_ROWS,
+    OCEAN,
+    REIT,
+    TAX_TYPE,
+    TOP_UP_AT,
+    TOP_UP_TYPE
+} from '../../harness/inzhur/inzhur-operation-rows.constant';
+import { makeInzhurOperationsLayer } from '../../harness/inzhur/make-inzhur-operations-layer';
+import { recordManualPurchase } from '../../harness/inzhur/record-manual-purchase';
+import { requireInzhurFundByName } from '../../harness/inzhur/require-inzhur-fund-by-name';
+import { seedInzhurBankAccount } from '../../harness/inzhur/seed-inzhur-bank-account';
 import { seedInzhurPrice } from '../../harness/inzhur/seed-inzhur-price';
-import { setUpInzhurWithBaseline } from '../../harness/inzhur/set-up-inzhur-with-baseline';
+import { REIT_PRICE, seedInzhurReitPrices } from '../../harness/inzhur/seed-inzhur-reit-prices';
 
-const FIRST_DAY = '2026-09-30';
-const MILLISECONDS_PER_DAY = 86_400_000;
-const TOP_UP_AT = new Date(Date.now() + MILLISECONDS_PER_DAY);
-const TODAY = new Date(Date.now() + 2 * MILLISECONDS_PER_DAY).toISOString().slice(0, 10);
-const UAH_INSTRUMENT_ID = 1;
+const FIRST_DAY = '2026-01-10';
+const TODAY = '2026-03-01';
+const HELD_ROWS = [
+    { at: TOP_UP_AT, type: TOP_UP_TYPE, debit: 1000 },
+    { at: '2026-01-10T10:05:00', type: 'Купівля 100 сертифікатів', fund: REIT, credit: 1000 }
+];
 
-const seedBaselinePrices = (reitPrice: number) =>
-    Effect.all([
-        seedInzhurPrice(INZHUR_REIT_LAYOUT.isin, FIRST_DAY, reitPrice),
-        seedInzhurPrice(INZHUR_ENERGY_LAYOUT.isin, FIRST_DAY, ENERGY_PRICE)
-    ]);
-
-const topUpFromBank = Effect.fnUntraced(function* (externalId: string) {
-    const bankAccount = yield* seed.account({
-        title: 'Monobank Card',
-        externalId,
-        externalSource: ExternalSourceEnum.MONOBANK,
-        type: AccountTypeEnum.BANK_SYNC,
-        instrumentId: UAH_INSTRUMENT_ID
-    });
-
-    yield* importInzhurBankTransaction(bankAccount.id, 'top-up', 'ТОВ "Інжур Кепітал"', -1000, TOP_UP_AT);
-    yield* Effect.flatMap(TransferConsolidationService, service => service.consolidate(null));
+const layer = makeInzhurOperationsLayer({
+    'held.xlsx': buildInzhurOperationsWorkbook(HELD_ROWS),
+    'dividend.xlsx': buildInzhurOperationsWorkbook([
+        ...HELD_ROWS,
+        { at: '2026-02-01T10:00:00', type: DIVIDEND_TYPE, fund: REIT, debit: 20 },
+        { at: '2026-02-01T10:00:05', type: TAX_TYPE, fund: REIT, credit: 4 }
+    ]),
+    'full.xlsx': buildInzhurOperationsWorkbook(FULL_HISTORY_ROWS)
 });
 
 const findAllTimeGain = Effect.fnUntraced(function* () {
@@ -49,127 +53,155 @@ const findFundAllTimeGain = Effect.fnUntraced(function* (fundAccountId: number) 
     return report?.gains.find(gain => gain.range === InzhurGainRangeEnum.ALL) ?? null;
 });
 
+const importHeld = Effect.gen(function* () {
+    yield* importInzhurOperations('held.xlsx');
+
+    return yield* requireInzhurFundByName(REIT);
+});
+
+const topUpFromBank = Effect.gen(function* () {
+    const bankAccount = yield* seedInzhurBankAccount;
+
+    yield* importInzhurBankFlow(bankAccount.id, 'top-up', TOP_UP_DESCRIPTION, -500, new Date('2026-02-10T08:00:00.000Z'));
+});
+
 describe('inzhur/gain', () => {
-    it.effect('reports no gain when nothing changed since the first statement', () =>
+    it.effect('reports no gain when the price did not move', () =>
         Effect.gen(function* () {
-            yield* setUpInzhurWithBaseline(100, 1000, 2);
-            yield* seedBaselinePrices(REIT_PRICE);
+            yield* seedInzhurPrice(REIT_ISIN, FIRST_DAY, REIT_PRICE);
+            yield* importHeld;
 
             expect(yield* findAllTimeGain()).toMatchObject({
                 startDate: FIRST_DAY,
-                startValue: 100 + 1000 * REIT_PRICE + 2 * ENERGY_PRICE,
-                endValue: 100 + 1000 * REIT_PRICE + 2 * ENERGY_PRICE,
+                startValue: 1000,
+                endValue: 1000,
                 contributions: 0,
                 gain: 0,
                 percent: 0
             });
-        }).pipe(Effect.provide(makeInzhurGainLayer(1000, 2)))
+        }).pipe(Effect.provide(layer))
     );
 
     it.effect('counts a price rise as gain for the institution and the fund', () =>
         Effect.gen(function* () {
-            const { reitAccount } = yield* setUpInzhurWithBaseline(100, 1000, 2);
+            yield* seedInzhurPrice(REIT_ISIN, FIRST_DAY, REIT_PRICE);
+            yield* seedInzhurPrice(REIT_ISIN, '2026-02-01', REIT_PRICE + 2);
 
-            yield* seedBaselinePrices(REIT_PRICE - 1);
-
-            const startValue = 100 + 1000 * (REIT_PRICE - 1) + 2 * ENERGY_PRICE;
-
-            expect(yield* findAllTimeGain()).toMatchObject({ startValue, gain: 1000, percent: 1000 / startValue });
+            const reit = yield* importHeld;
             const report = yield* Effect.flatMap(InzhurGainService, service => service.getInstitutionReport(TODAY));
 
+            expect(yield* findAllTimeGain()).toMatchObject({ startValue: 1000, gain: 200, percent: 0.2 });
             expect(report?.gainSeries.at(0)).toEqual({ date: FIRST_DAY, value: 0 });
-            expect(report?.gainSeries.at(-1)?.value).toBe(1000);
-            expect(yield* findFundAllTimeGain(reitAccount.id)).toMatchObject({ gain: 1000 });
-        }).pipe(Effect.provide(makeInzhurGainLayer(1000, 2)))
+            expect(report?.gainSeries.at(-1)?.value).toBe(200);
+            expect(yield* findFundAllTimeGain(reit.id)).toMatchObject({ gain: 200 });
+        }).pipe(Effect.provide(layer))
     );
 
     it.effect('treats a bank top-up as a contribution, not gain', () =>
         Effect.gen(function* () {
-            yield* setUpInzhurWithBaseline(0, 1000, 2);
-            yield* seedBaselinePrices(REIT_PRICE);
-            yield* topUpFromBank('inzhur-gain-card');
+            yield* seedInzhurPrice(REIT_ISIN, FIRST_DAY, REIT_PRICE);
+            yield* importHeld;
+            yield* topUpFromBank;
 
-            expect(yield* findAllTimeGain()).toMatchObject({ contributions: 1000, gain: 0 });
-            const report = yield* Effect.flatMap(InzhurGainService, service => service.getInstitutionReport(TODAY));
+            const gainService = yield* InzhurGainService;
+            const report = yield* gainService.getInstitutionReport(TODAY);
 
+            expect(yield* findAllTimeGain()).toMatchObject({ contributions: 500, gain: 0 });
+            expect(yield* gainService.getInstitutionGainSince(FIRST_DAY, TODAY)).toMatchObject({ contributions: 500, gain: 0 });
             expect(report?.gainSeries.every(point => point.value === 0)).toBe(true);
-            expect(report?.series.at(-1)?.value).toBe((report?.series.at(0)?.value ?? 0) + 1000);
-        }).pipe(Effect.provide(makeInzhurGainLayer(1000, 2)))
+            expect(report?.series.at(-1)?.value).toBe((report?.series.at(0)?.value ?? 0) + 500);
+        }).pipe(Effect.provide(layer))
     );
 
-    it.effect('keeps a top-up between statements out of the gain since the previous statement', () =>
+    it.effect('treats a purchase paid from cash as no gain for the institution or the fund', () =>
         Effect.gen(function* () {
-            yield* setUpInzhurWithBaseline(0, 1000, 2);
-            yield* seedBaselinePrices(REIT_PRICE);
-            yield* topUpFromBank('inzhur-gain-since-card');
+            yield* seedInzhurPrice(REIT_ISIN, FIRST_DAY, REIT_PRICE);
 
-            expect(yield* Effect.flatMap(InzhurGainService, service => service.getInstitutionGainSince(FIRST_DAY, TODAY))).toMatchObject({
-                contributions: 1000,
-                gain: 0
+            const reit = yield* importHeld;
+
+            yield* topUpFromBank;
+            yield* recordManualPurchase({
+                topUpTransactionId: (yield* findPendingTopUps)[0].transactionId,
+                fundName: REIT,
+                certificates: 50,
+                amount: 500,
+                operatedAt: new Date('2026-02-11T09:00:00.000Z')
             });
-        }).pipe(Effect.provide(makeInzhurGainLayer(1000, 2)))
+
+            expect(yield* findAllTimeGain()).toMatchObject({ contributions: 500, gain: 0 });
+            expect(yield* findFundAllTimeGain(reit.id)).toMatchObject({ contributions: 500, gain: 0 });
+        }).pipe(Effect.provide(layer))
     );
 
-    it.effect('treats a buy paid from cash as no gain for the institution or the fund', () =>
+    it.effect('includes dividend and tax in the fund gain so it matches the return on cost', () =>
         Effect.gen(function* () {
-            const { reitAccount } = yield* setUpInzhurWithBaseline(1000, 1000, 2);
+            yield* seedInzhurPrice(REIT_ISIN, FIRST_DAY, REIT_PRICE);
+            yield* importInzhurOperations('dividend.xlsx');
 
-            yield* seedBaselinePrices(REIT_PRICE);
-            yield* importInzhurStatement(SECOND_URI);
+            const gainService = yield* InzhurGainService;
+            const reit = yield* requireInzhurFundByName(REIT);
 
-            expect(yield* findAllTimeGain()).toMatchObject({ contributions: 0, gain: 0 });
-            expect(yield* findFundAllTimeGain(reitAccount.id)).toMatchObject({ contributions: 500, gain: 0 });
-        }).pipe(Effect.provide(makeInzhurGainLayer(1050, 2)))
+            expect((yield* findFundAllTimeGain(reit.id))?.gain).toBe(16);
+            expect((yield* gainService.getFundCostReturn(reit.id, TODAY))?.returnAmount).toBe(16);
+            expect((yield* findAllTimeGain())?.gain).toBe(16);
+        }).pipe(Effect.provide(layer))
     );
 
-    it.effect('counts reinvested dividends as gain for the institution and the fund', () =>
+    it.effect('returns a null gain instead of failing when a price is missing', () =>
         Effect.gen(function* () {
-            const { reitAccount } = yield* setUpInzhurWithBaseline(0, 1000, 2);
-
-            yield* seedBaselinePrices(REIT_PRICE);
-            yield* importInzhurStatement(SECOND_URI);
-
-            expect(yield* findAllTimeGain()).toMatchObject({ contributions: 0, gain: 1000 });
-            expect(yield* findFundAllTimeGain(reitAccount.id)).toMatchObject({ contributions: 0, gain: 1000 });
-        }).pipe(Effect.provide(makeInzhurGainLayer(1100, 2)))
-    );
-
-    it.effect('treats a sell into cash as no gain', () =>
-        Effect.gen(function* () {
-            const { energyAccount } = yield* setUpInzhurWithBaseline(0, 1000, 2);
-
-            yield* seedBaselinePrices(REIT_PRICE);
-            yield* importInzhurStatement(SECOND_URI);
-
-            expect(yield* findAllTimeGain()).toMatchObject({ contributions: 0, gain: 0 });
-            expect(yield* findFundAllTimeGain(energyAccount.id)).toMatchObject({ contributions: -ENERGY_PRICE, gain: 0 });
-        }).pipe(Effect.provide(makeInzhurGainLayer(1000, 1)))
-    );
-
-    it.effect('returns a null gain instead of failing when a price is missing at the start', () =>
-        Effect.gen(function* () {
-            const { reitAccount } = yield* setUpInzhurWithBaseline(100, 1000, 2);
+            const reit = yield* importHeld;
 
             expect(yield* findAllTimeGain()).toMatchObject({ startValue: null, gain: null, percent: null });
-            expect(yield* findFundAllTimeGain(reitAccount.id)).toMatchObject({ startValue: null, gain: null });
-        }).pipe(Effect.provide(makeInzhurGainLayer(1000, 2)))
+            expect(yield* findFundAllTimeGain(reit.id)).toMatchObject({ startValue: null, gain: null });
+            expect(yield* (yield* InzhurGainService).getFundCostReturn(reit.id, TODAY)).toBeNull();
+        }).pipe(Effect.provide(layer))
     );
 
     it.effect('builds a daily value series and offers only the ranges that have data', () =>
         Effect.gen(function* () {
-            const { reitAccount } = yield* setUpInzhurWithBaseline(100, 1000, 2);
+            yield* seedInzhurPrice(REIT_ISIN, FIRST_DAY, REIT_PRICE);
 
-            yield* seedBaselinePrices(REIT_PRICE);
-            const report = yield* Effect.flatMap(InzhurGainService, service => service.getInstitutionReport(TODAY));
-            const fundReport = yield* Effect.flatMap(InzhurGainService, service => service.getFundReport(reitAccount.id, TODAY));
-            const sinceSecond = yield* Effect.flatMap(InzhurGainService, service => service.getInstitutionGainSince('2026-10-31', TODAY));
+            const reit = yield* importHeld;
+            const gainService = yield* InzhurGainService;
+            const report = yield* gainService.getInstitutionReport(TODAY);
+            const fundReport = yield* gainService.getFundReport(reit.id, TODAY);
 
-            expect(report?.series.at(0)).toEqual({ date: FIRST_DAY, value: 100 + 1000 * REIT_PRICE + 2 * ENERGY_PRICE });
+            expect(report?.series.at(0)).toEqual({ date: FIRST_DAY, value: 1000 });
             expect(report?.series.at(-1)?.date).toBe(TODAY);
-            expect(report?.gains.map(gain => gain.range)).toContain(InzhurGainRangeEnum.MONTH);
-            expect(report?.gains.at(-1)?.range).toBe(InzhurGainRangeEnum.ALL);
-            expect(fundReport?.prices.map(price => price.date)).toEqual([FIRST_DAY, '2026-10-31']);
-            expect(sinceSecond).toMatchObject({ startDate: '2026-10-31', gain: 0 });
-        }).pipe(Effect.provide(makeInzhurGainLayer(1000, 2)))
+            expect(report?.gains.map(gain => gain.range)).toEqual([InzhurGainRangeEnum.MONTH, InzhurGainRangeEnum.ALL]);
+            expect(fundReport?.prices.map(price => price.date)).toEqual([FIRST_DAY]);
+            expect(yield* gainService.getInstitutionGainSince('2026-02-01', TODAY)).toMatchObject({ startDate: '2026-02-01', gain: 0 });
+        }).pipe(Effect.provide(layer))
+    );
+
+    it.effect('reports the return on cost per fund including dividends and tax', () =>
+        Effect.gen(function* () {
+            yield* seedInzhurReitPrices;
+            yield* importInzhurOperations('full.xlsx');
+
+            const gainService = yield* InzhurGainService;
+            const ocean = yield* requireInzhurFundByName(OCEAN);
+            const reit = yield* requireInzhurFundByName(REIT);
+
+            expect(yield* gainService.getFundCostReturn(ocean.id, '2026-04-01')).toMatchObject({
+                invested: 4000,
+                proceeds: 4300,
+                dividends: 200,
+                tax: 36,
+                value: 0,
+                returnAmount: 464
+            });
+            expect(yield* gainService.getFundCostReturn(reit.id, '2026-04-01')).toMatchObject({
+                invested: 4800,
+                value: 4800,
+                returnAmount: 0,
+                percent: 0
+            });
+            expect(yield* gainService.getFundCostReturn(reit.id, '2026-02-15')).toMatchObject({
+                invested: 500,
+                value: 500,
+                returnAmount: 0
+            });
+        }).pipe(Effect.provide(layer))
     );
 });

@@ -7,15 +7,14 @@ import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-di
 import { useFormatFundQuantity } from '../../../i18n/hook/use-format-fund-quantity.hook';
 import { isInzhurCashAccount } from '../../utils/is-inzhur-cash-account.util';
 import { InzhurCashReconciliation } from '../inzhur-cash-reconciliation/inzhur-cash-reconciliation';
-import { InzhurDividendPayoutField } from '../inzhur-dividend-payout-field/inzhur-dividend-payout-field';
 
-import type { InzhurAccountFormBindingsInterface } from '../../interface/inzhur-account-form-bindings.interface';
+import type { AccountFormBindingsInterface } from '../../../account/interface/account-form-bindings.interface';
 import type { AccountEntityInterface } from '@budgie/contracts';
 
 interface Props {
     readonly account: AccountEntityInterface;
     readonly balance: number;
-    readonly fields: InzhurAccountFormBindingsInterface;
+    readonly fields: Pick<AccountFormBindingsInterface, 'title' | 'icon' | 'currentBalance' | 'isActive' | 'includeInNetWorth'>;
     readonly instrumentSymbol: string;
     readonly isSubmitting: boolean;
     readonly onSubmit: EmptyFn;
@@ -34,7 +33,7 @@ export const UpdateInzhurAccountPage = ({ account, balance, fields, instrumentSy
             ? t`+${differenceLabel} will be recorded as dividends kept in Inzhur`
             : t`−${differenceLabel} will be recorded as an adjustment`;
     const quantityLabel = formatFundQuantity(balance);
-    const holdingsFootnote = isCash ? null : t`${quantityLabel} · updated from statements`;
+    const holdingsFootnote = isCash ? null : t`${quantityLabel} · updated from imports`;
     const footerCaption = isDifferent ? outcomeCaption : null;
 
     const hero = isCash ? (
@@ -54,10 +53,6 @@ export const UpdateInzhurAccountPage = ({ account, balance, fields, instrumentSy
             hero={hero}
             isSubmitting={isSubmitting}
             onSubmit={onSubmit}
-        >
-            {isCash ? null : (
-                <InzhurDividendPayoutField value={fields.dividendPayout.field.value} onChange={fields.dividendPayout.field.onChange} />
-            )}
-        </UpdateAccountPage>
+        />
     );
 };

@@ -1,13 +1,4 @@
-import {
-    AccountEntityTable,
-    InstrumentEntityTable,
-    InstrumentRepository,
-    CurrencyEnum,
-    InvestmentReturnRepository,
-    TransactionEntityTable,
-    TransactionEntryEntityTable,
-    InstrumentDailyMarketPriceEntityTable
-} from '@budgie/contracts';
+import { CurrencyEnum, InstrumentDailyMarketPriceEntityTable, InstrumentEntityTable, InstrumentRepository } from '@budgie/contracts';
 import { InstrumentDailyMarketPriceRepository } from '@budgie/market';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
@@ -16,16 +7,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
-
-const fundDividendTotalsAtom = databaseQueryFamily(
-    [TransactionEntityTable, TransactionEntryEntityTable, AccountEntityTable],
-    InvestmentReturnRepository,
-    (investmentReturnRepository, fundAccountId: number) =>
-        Effect.map(
-            investmentReturnRepository.getFundDividendTotals(),
-            totals => totals.find(row => row.fundAccountId === fundAccountId) ?? null
-        )
-);
 
 const fundLatestPriceAtom = databaseQueryFamily(
     [InstrumentDailyMarketPriceEntityTable, InstrumentEntityTable],
@@ -38,14 +19,5 @@ const fundLatestPriceAtom = databaseQueryFamily(
         )
 );
 
-const fundFirstEntryAtom = databaseQueryFamily(
-    [TransactionEntityTable, TransactionEntryEntityTable],
-    InvestmentReturnRepository,
-    (investmentReturnRepository, fundAccountId: number) => investmentReturnRepository.findFirstEntryOperatedAt(fundAccountId)
-);
-
-export const useInzhurFundReturnsQuery = (fundAccountId: number, instrumentId: number) => ({
-    dividendTotals: AsyncResult.getOrElse(useLiveAtomValue(fundDividendTotalsAtom(fundAccountId)), () => null),
-    latestPrice: AsyncResult.getOrElse(useLiveAtomValue(fundLatestPriceAtom(instrumentId)), () => null),
-    firstEntryAt: AsyncResult.getOrElse(useLiveAtomValue(fundFirstEntryAtom(fundAccountId)), () => null)
-});
+export const useInzhurFundLatestPriceQuery = (instrumentId: number) =>
+    AsyncResult.getOrElse(useLiveAtomValue(fundLatestPriceAtom(instrumentId)), () => null);

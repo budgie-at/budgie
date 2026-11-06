@@ -15,23 +15,18 @@ import { useInzhurStatementImport } from '../../hook/use-inzhur-statement-import
 import { useInzhurSetupQuery } from '../../query/use-inzhur-setup.query';
 import { InzhurSelector } from '../../selector/inzhur.selector';
 import { InzhurImportSummaryFooter } from '../inzhur-import-summary-footer/inzhur-import-summary-footer';
-import { InzhurImportSummary } from '../inzhur-import-summary/inzhur-import-summary';
-import { InzhurLinkedPaymentsLine } from '../inzhur-linked-payments-line/inzhur-linked-payments-line';
 import { InzhurOperationsImportSummary } from '../inzhur-operations-import-summary/inzhur-operations-import-summary';
 
 export const ImportInzhurStatement = () => {
     const { t } = useLingui();
-    const { isLoading, summary, operationsSummary, handleSelectFile } = useInzhurStatementImport();
+    const { isLoading, summary, handleSelectFile } = useInzhurStatementImport();
     const { setup } = useInzhurSetupQuery();
     const { formatMonthAndDayAndOptionalYear } = useFormatDate();
 
     const exportSteps = [
         { title: t`Open the Inzhur app`, caption: t`Sign in to your account` },
-        {
-            title: t`Operations (XLSX), recommended`,
-            caption: t`Download «Виписка по операціям». Budgie rebuilds your cash, buys and dividends from it.`
-        },
-        { title: t`Holdings (PDF), optional`, caption: t`Download «Виписка про стан рахунку». It confirms how many certificates you hold.` }
+        { title: t`Export the operations statement as XLSX`, caption: t`Download «Виписка по операціям»` },
+        { title: t`Choose that file here`, caption: t`Budgie rebuilds your cash, buys and dividends from it` }
     ];
     const lastStatementDate = isDefined(setup?.lastStatementDate) ? formatMonthAndDayAndOptionalYear(setup.lastStatementDate) : null;
     const brandTitle = t`Inzhur`;
@@ -39,21 +34,11 @@ export const ImportInzhurStatement = () => {
         ? t`Stays on your device · Last import ${lastStatementDate}`
         : t`Read on your device. Nothing is uploaded.`;
 
-    if (isDefined(operationsSummary)) {
-        return (
-            <GroupedSurface>
-                <FixedChromePage title={t`Statement imported`} testID={InzhurSelector.ImportPage} footer={<InzhurImportSummaryFooter />}>
-                    <InzhurOperationsImportSummary summary={operationsSummary} />
-                </FixedChromePage>
-            </GroupedSurface>
-        );
-    }
-
     if (isDefined(summary)) {
         return (
             <GroupedSurface>
-                <FixedChromePage title={t`Statement imported`} testID={InzhurSelector.ImportPage} footer={<InzhurImportSummaryFooter />}>
-                    <InzhurImportSummary summary={summary} />
+                <FixedChromePage title={t`Import complete`} testID={InzhurSelector.ImportPage} footer={<InzhurImportSummaryFooter />}>
+                    <InzhurOperationsImportSummary summary={summary} />
                 </FixedChromePage>
             </GroupedSurface>
         );
@@ -62,7 +47,7 @@ export const ImportInzhurStatement = () => {
     return (
         <GroupedSurface>
             <FixedChromePage
-                title={t`Import statement`}
+                title={t`Import from Inzhur`}
                 leading={<HeaderBackButton />}
                 testID={InzhurSelector.ImportPage}
                 footer={
@@ -74,7 +59,7 @@ export const ImportInzhurStatement = () => {
                             {privacyCaption}
                         </Text>
                         <PillButtonFooter
-                            label={t`Choose statement`}
+                            label={t`Choose file`}
                             isLoading={isLoading}
                             testID={InzhurSelector.SelectFileButton}
                             onPress={handleSelectFile}
@@ -85,11 +70,10 @@ export const ImportInzhurStatement = () => {
                 <View className="items-center gap-y-lg px-3xl">
                     <BankLogo bankProvider={ExternalSourceEnum.INZHUR} bankName={brandTitle} size={44} />
                     <Text className="text-center text-[16px] leading-[22px] text-primary">
-                        <Trans>Budgie reads your Inzhur statement and updates certificates, cash, buys and dividends.</Trans>
+                        <Trans>Budgie reads your Inzhur operations export and records cash, buys and dividends.</Trans>
                     </Text>
                 </View>
                 <NumberedSteps title={t`How to export`} steps={exportSteps} />
-                <InzhurLinkedPaymentsLine />
             </FixedChromePage>
         </GroupedSurface>
     );

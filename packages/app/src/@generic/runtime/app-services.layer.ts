@@ -90,7 +90,7 @@ import {
     AccountReissueMergeService,
     InzhurBankFlowService,
     InzhurGainService,
-    InzhurImportService,
+    InzhurManualPurchaseService,
     InzhurOperationsImportService,
     InzhurSetupService,
     MonobankSyncService,
@@ -131,6 +131,7 @@ import { CategoryIconBackfillService } from '../../category/service/category-ico
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
 import { DatabaseExportService } from '../../export/service/database-export.service';
 import { DatabaseImportService } from '../../import/service/database-import.service';
+import { InzhurPendingTopUpService } from '../../inzhur/service/inzhur-pending-top-up.service';
 import { InzhurStatementReminderService } from '../../inzhur/service/inzhur-statement-reminder.service';
 import { HistoricalMarketDataDrainerService } from '../../market-data/service/historical-market-data-drainer.service';
 import { OnboardingService } from '../../onboarding/service/onboarding.service';
@@ -194,6 +195,7 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     WidgetSnapshotBuilderService.layer,
     WidgetSnapshotService.layer,
     InzhurStatementReminderService.layer,
+    InzhurPendingTopUpService.layer,
     AppResetService.layer,
     DatabaseExportService.layer,
     DatabaseImportService.layer,
@@ -267,8 +269,8 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     SyncProviderRegistryService.layer,
     InzhurPriceService.layer,
     InzhurSetupService.layer,
-    InzhurImportService.layer,
     InzhurOperationsImportService.layer,
+    InzhurManualPurchaseService.layer,
     InzhurGainService.layer,
     InzhurBankFlowService.layer,
     InvestmentReturnRepository.layer,

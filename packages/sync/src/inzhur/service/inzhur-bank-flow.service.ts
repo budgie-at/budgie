@@ -2,7 +2,6 @@ import {
     AccountRepository,
     CategorySourceEnum,
     Db,
-    DividendPayoutEnum,
     INVESTMENTS_CATEGORY_ID,
     InstrumentRepository,
     TransactionEntryKindEnum,
@@ -25,8 +24,8 @@ import { InzhurBankFlowKindEnum } from '../enum/inzhur-bank-flow-kind.enum';
 import { InzhurOperationKindEnum } from '../enum/inzhur-operation-kind.enum';
 import { sumSignedAccountEntries } from '../utils/sum-signed-account-entries.util';
 
-import { InzhurBeforeTrackingService } from './inzhur-before-tracking.service';
 import { InzhurCashPairingService } from './inzhur-cash-pairing.service';
+import { InzhurOpeningBalanceService } from './inzhur-opening-balance.service';
 import { InzhurSetupLookupService } from './inzhur-setup-lookup.service';
 
 import type { InzhurBankFlowSummaryInterface } from '../interface/inzhur-bank-flow-summary.interface';
@@ -41,7 +40,7 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
         const transactionRuleRepository = yield* TransactionRuleRepository;
         const transactionTransferService = yield* TransactionTransferService;
         const inzhurSetupLookupService = yield* InzhurSetupLookupService;
-        const inzhurBeforeTrackingService = yield* InzhurBeforeTrackingService;
+        const inzhurOpeningBalanceService = yield* InzhurOpeningBalanceService;
         const inzhurCashPairingService = yield* InzhurCashPairingService;
         const { counterparties, companyIbans, dividendKeywords, externalSources, withdrawalPhrases } = INZHUR_BANK_DESCRIPTION_PATTERNS;
         const topUpTitle = 'Top-up to Inzhur';
@@ -79,19 +78,8 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
                 ({ account, isin }) =>
                     description.includes(account.title.toLowerCase()) || (isNotEmptyString(isin) && description.includes(isin))
             );
-            const namedFund = named.length === 1 ? named.at(0) : null;
 
-            if (isDefined(namedFund)) {
-                if (namedFund.account.dividendPayout !== DividendPayoutEnum.BANK) {
-                    yield* accountRepository.updateById(namedFund.account.id, { dividendPayout: DividendPayoutEnum.BANK });
-                }
-
-                return namedFund.account;
-            }
-
-            const bankFunds = funds.filter(({ account }) => account.dividendPayout === DividendPayoutEnum.BANK);
-
-            return bankFunds.length === 1 ? (bankFunds.at(0)?.account ?? null) : null;
+            return named.length === 1 ? (named.at(0)?.account ?? null) : null;
         });
 
         const recordDividend = Effect.fnUntraced(function* (
@@ -141,22 +129,25 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
             }
 
             const converted = yield* transactionRepository.getByIdWithEntries(transaction.id);
-            const isPreSetup = transaction.operatedAt < setup.cashAccount.createdAt;
+            const exportStart = setup.cashSync.backwardSyncedAt;
+            const isPreExport = isDefined(exportStart) && transaction.operatedAt < exportStart;
 
             return {
                 kind: transaction.type === TransactionTypeEnum.EXPENSE ? InzhurBankFlowKindEnum.TOP_UP : InzhurBankFlowKindEnum.WITHDRAWAL,
-                preSetupCashDelta: isPreSetup && isDefined(converted) ? sumSignedAccountEntries(converted.entries, setup.cashAccount.id) : 0
+                preExportCashDelta:
+                    isPreExport && isDefined(converted) ? sumSignedAccountEntries(converted.entries, setup.cashAccount.id) : 0
             };
         });
 
-        const convertAndPair = Effect.fnUntraced(function* (
+        const findPlaceholder = Effect.fnUntraced(function* (
             transaction: TransactionWithEntriesEntityInterface,
             setup: InzhurSetupInterface
         ) {
             const amountMicroUnits = transaction.entries.find(
                 entry => entry.kind === TransactionEntryKindEnum.PRIMARY && entry.type !== TransactionEntryTypeEnum.FEE
             )?.amount;
-            const placeholder = isDefined(amountMicroUnits)
+
+            return isDefined(amountMicroUnits)
                 ? yield* inzhurCashPairingService.findPlaceholder(
                       setup.cashAccount.id,
                       transaction.type === TransactionTypeEnum.EXPENSE
@@ -166,6 +157,13 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
                       transaction.operatedAt
                   )
                 : null;
+        });
+
+        const convertAndPair = Effect.fnUntraced(function* (
+            transaction: TransactionWithEntriesEntityInterface,
+            setup: InzhurSetupInterface
+        ) {
+            const placeholder = yield* findPlaceholder(transaction, setup);
             const outcome = yield* convertToCash(transaction, setup);
 
             if (!isDefined(outcome) || !isDefined(placeholder)) {
@@ -175,33 +173,43 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
             yield* inzhurCashPairingService.release(placeholder.id);
             yield* inzhurCashPairingService.stamp(transaction.id, setup.cashAccount.id, placeholder.externalId);
 
-            return { ...outcome, preSetupCashDelta: 0 };
+            return { ...outcome, preExportCashDelta: 0 };
         });
 
-        const processTransaction = Effect.fnUntraced(function* (
-            transaction: TransactionWithEntriesEntityInterface,
-            setup: InzhurSetupInterface
-        ) {
-            const description = `${transaction.title} ${transaction.comment}`
+        const toDescription = (transaction: TransactionWithEntriesEntityInterface) =>
+            `${transaction.title} ${transaction.comment}`
                 .toLowerCase()
                 .replaceAll(/[«»"'”“]/gu, '')
                 .replaceAll(/\s+/gu, ' ');
-            const isExpense = transaction.type === TransactionTypeEnum.EXPENSE;
+
+        const isInzhurPayment = (transaction: TransactionWithEntriesEntityInterface) => {
             const entryIbans = new Set(
                 transaction.entries
                     .map(entry => entry.toIban)
                     .filter(isNotEmptyString)
                     .map(normalizeIban)
             );
-            const isCompanyIban = isExpense && companyIbans.some(iban => entryIbans.has(iban));
+            const isCompanyIban = transaction.type === TransactionTypeEnum.EXPENSE && companyIbans.some(iban => entryIbans.has(iban));
 
-            if (!includesAny(description, counterparties) && !isCompanyIban) {
+            return includesAny(toDescription(transaction), counterparties) || isCompanyIban;
+        };
+
+        const processTransaction = Effect.fnUntraced(function* (
+            transaction: TransactionWithEntriesEntityInterface,
+            setup: InzhurSetupInterface
+        ) {
+            if (!isInzhurPayment(transaction)) {
                 return null;
             }
 
+            const description = toDescription(transaction);
+            const isExpense = transaction.type === TransactionTypeEnum.EXPENSE;
             const isWithdrawalPhrase = !isExpense && includesAny(description, withdrawalPhrases);
 
-            if (transaction.type !== TransactionTypeEnum.INCOME || isWithdrawalPhrase || !includesAny(description, dividendKeywords)) {
+            const isDividendCandidate =
+                transaction.type === TransactionTypeEnum.INCOME && !isWithdrawalPhrase && includesAny(description, dividendKeywords);
+
+            if (!isDividendCandidate || isDefined(yield* findPlaceholder(transaction, setup))) {
                 return yield* convertAndPair(transaction, setup);
             }
 
@@ -210,7 +218,7 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
 
             yield* retitleDividend(transaction, fundAccountId, setup);
 
-            return isUnprocessed ? { kind: InzhurBankFlowKindEnum.DIVIDEND, preSetupCashDelta: 0 } : null;
+            return isUnprocessed ? { kind: InzhurBankFlowKindEnum.DIVIDEND, preExportCashDelta: 0 } : null;
         });
 
         const convert = Effect.fn('InzhurBankFlowService.convert')(function* (
@@ -229,12 +237,27 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
                 topUps: outcomes.filter(outcome => outcome.kind === InzhurBankFlowKindEnum.TOP_UP).length,
                 withdrawals: outcomes.filter(outcome => outcome.kind === InzhurBankFlowKindEnum.WITHDRAWAL).length,
                 dividends: outcomes.filter(outcome => outcome.kind === InzhurBankFlowKindEnum.DIVIDEND).length,
-                preSetupCashDelta: outcomes.reduce((sum, outcome) => sum + outcome.preSetupCashDelta, 0)
+                preExportCashDelta: outcomes.reduce((sum, outcome) => sum + outcome.preExportCashDelta, 0)
             } satisfies InzhurBankFlowSummaryInterface;
         });
 
         return {
             convert,
+            isInzhurPayment,
+            claimAsWithdrawal: Effect.fn('InzhurBankFlowService.claimAsWithdrawal')(function* (
+                transaction: TransactionWithEntriesEntityInterface,
+                setup: InzhurSetupInterface
+            ) {
+                const outcome = yield* convertToCash(transaction, setup);
+
+                if (isDefined(outcome) && isDefined(transaction.fundAccountId)) {
+                    yield* transactionRepository.updateById(transaction.id, { fundAccountId: null });
+                }
+
+                yield* transactionRepository.retitleExternalTransfers(externalSources, setup.cashAccount.id, topUpTitle, withdrawalTitle);
+
+                return isDefined(outcome);
+            }),
             apply: Effect.fn('InzhurBankFlowService.apply')(function* (scope: ConsolidationScanScopeInterface | null) {
                 const setup = yield* inzhurSetupLookupService.findSetup();
 
@@ -246,10 +269,10 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
                     Effect.gen(function* () {
                         const summary = yield* convert(setup, scope);
 
-                        if (summary.preSetupCashDelta !== 0) {
-                            yield* inzhurBeforeTrackingService.shift(
+                        if (summary.preExportCashDelta !== 0) {
+                            yield* inzhurOpeningBalanceService.shift(
                                 setup.cashAccount.id,
-                                -summary.preSetupCashDelta,
+                                -summary.preExportCashDelta,
                                 setup.fundAccounts.map(account => account.id)
                             );
                         }
@@ -269,7 +292,7 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
             TransactionRuleRepository.layer,
             TransactionTransferService.layer,
             InzhurSetupLookupService.layer,
-            InzhurBeforeTrackingService.layer,
+            InzhurOpeningBalanceService.layer,
             InzhurCashPairingService.layer
         ])
     );

@@ -17,7 +17,7 @@ export const InzhurOperationsPeriodHeader = ({ summary }: Props) => {
     const periodTo = formatMonthAndDayAndOptionalYear(summary.periodTo);
     const coverageLabel = summary.isFullHistory
         ? t`Full history. Cash now matches your Inzhur account.`
-        : t`Part of your history. The cash you started with was kept.`;
+        : t`Part of your history. Older activity is not included.`;
 
     return (
         <View accessible className="items-stretch gap-y-xs">

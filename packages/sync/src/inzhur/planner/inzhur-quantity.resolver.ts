@@ -1,6 +1,6 @@
 import { convertToMicroUnits } from '@budgie/contracts';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { InzhurOperationKindEnum } from '../enum/inzhur-operation-kind.enum';
 
@@ -12,10 +12,10 @@ class InzhurQuantityResolver {
     resolve(input: InzhurQuantityResolutionInputInterface): ReadonlyMap<string, InzhurResolvedQuantityInterface> {
         const trades = input.actions.filter(action => this.isTrade(action));
         const unknownBuys = trades.filter(action => action.kind === InzhurOperationKindEnum.BUY && !isDefined(action.quantity));
-        const resolved = new Map(this.fillFromStatement(input, trades, unknownBuys));
+        const resolved = new Map<string, InzhurResolvedQuantityInterface>();
 
         for (const action of unknownBuys) {
-            const estimate = resolved.has(action.externalId) ? null : this.estimate(action, input.priceByExternalId);
+            const estimate = this.estimate(action, input.priceByExternalId);
 
             if (isDefined(estimate)) {
                 resolved.set(action.externalId, estimate);
@@ -76,77 +76,6 @@ class InzhurQuantityResolver {
         return isPositiveNumber(price)
             ? { microUnits: convertToMicroUnits(Math.round(action.cashAmount / price)), isEstimated: true }
             : null;
-    }
-
-    private knownAtCutoff(
-        trades: readonly InzhurPlannedActionInterface[],
-        baseMicroUnitsByFund: ReadonlyMap<string, number>,
-        cutoff: Date
-    ): Map<string, number> {
-        const known = new Map(baseMicroUnitsByFund);
-
-        for (const action of trades.filter(trade => trade.occurredAt < cutoff)) {
-            const fundName = action.fundName ?? '';
-            const held = known.get(fundName) ?? 0;
-
-            if (action.isSellAll) {
-                known.set(fundName, 0);
-            } else if (isDefined(action.quantity)) {
-                const delta = convertToMicroUnits(action.quantity);
-
-                known.set(fundName, action.kind === InzhurOperationKindEnum.BUY ? held + delta : held - delta);
-            }
-        }
-
-        return known;
-    }
-
-    private fillFromStatement(
-        input: InzhurQuantityResolutionInputInterface,
-        trades: readonly InzhurPlannedActionInterface[],
-        unknownBuys: readonly InzhurPlannedActionInterface[]
-    ): Map<string, InzhurResolvedQuantityInterface> {
-        const filled = new Map<string, InzhurResolvedQuantityInterface>();
-        const { statementCutoff, statementMicroUnitsByFund } = input;
-
-        if (!isDefined(statementCutoff)) {
-            return filled;
-        }
-
-        const known = this.knownAtCutoff(trades, input.baseMicroUnitsByFund, statementCutoff);
-
-        for (const fundName of new Set(unknownBuys.flatMap(action => (isDefined(action.fundName) ? [action.fundName] : [])))) {
-            const lastSellAllAt = trades
-                .filter(trade => trade.fundName === fundName && trade.isSellAll && trade.occurredAt < statementCutoff)
-                .reduce((latest, trade) => Math.max(latest, trade.occurredAt.getTime()), Number.NEGATIVE_INFINITY);
-            const unknown = unknownBuys.filter(
-                action => action.fundName === fundName && action.occurredAt < statementCutoff && action.occurredAt.getTime() > lastSellAllAt
-            );
-            const remaining = (statementMicroUnitsByFund.get(fundName) ?? Number.NaN) - (known.get(fundName) ?? 0);
-
-            if (isPositiveNumber(remaining) && isNotEmptyArray(unknown)) {
-                this.distribute(filled, unknown, remaining);
-            }
-        }
-
-        return filled;
-    }
-
-    private distribute(
-        filled: Map<string, InzhurResolvedQuantityInterface>,
-        unknown: readonly InzhurPlannedActionInterface[],
-        remainingMicroUnits: number
-    ): void {
-        let remainingTotal = remainingMicroUnits;
-        let remainingWeight = unknown.reduce((sum, action) => sum + action.cashAmount, 0);
-
-        for (const action of unknown) {
-            const share = remainingWeight > 0 ? Math.round((remainingTotal * action.cashAmount) / remainingWeight) : 0;
-
-            filled.set(action.externalId, { microUnits: share, isEstimated: false });
-            remainingTotal -= share;
-            remainingWeight -= action.cashAmount;
-        }
     }
 }
 
