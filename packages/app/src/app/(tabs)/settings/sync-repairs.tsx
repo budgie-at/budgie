@@ -40,7 +40,6 @@ export default function SyncRepairsPage() {
     return (
         <GroupedSurface>
             <CollapsibleChromePage
-                scrimClassName="bg-surface"
                 title={t`Sync repairs`}
                 leading={<GoBackButton onPress={goBackToSettings} />}
                 testID={SyncRepairsPageSelector.Container}

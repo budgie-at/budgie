@@ -2,6 +2,7 @@ import { UnconsolidationService } from '@budgie/consolidation';
 import { Db, ExternalSourceEnum, SyncRepository, TransactionConsolidationRepository } from '@budgie/contracts';
 import { TransactionService } from '@budgie/ledger';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
@@ -46,7 +47,8 @@ export class ResyncService extends Context.Service<ResyncService>()('@budgie/syn
         });
 
         const resyncWindowed = Effect.fnUntraced(function* (accountId: number, sinceDays: number) {
-            const since = new Date(Date.now() - sinceDays * millisecondsPerDay);
+            const now = yield* DateTime.now;
+            const since = DateTime.toDateUtc(DateTime.subtractDuration(now, sinceDays * millisecondsPerDay));
             const canonicals = yield* transactionConsolidationRepository.findActiveAutoConsolidatedByAccountIdsSince([accountId], since);
             yield* unconsolidateCanonicals(canonicals);
             yield* syncRepository.resetForWindowedResync(accountId, since);

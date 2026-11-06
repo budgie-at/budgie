@@ -67,7 +67,7 @@ describe('rules engine batch delay', () => {
                 )
             );
 
-            yield* TestClock.withLive(Fiber.join(fiber).pipe(Effect.timeout('2 seconds')));
+            yield* fiber.pipe(Fiber.join, Effect.timeout('2 seconds'), TestClock.withLive);
         }).pipe(Effect.provide(RuleServicesLayer))
     );
 });

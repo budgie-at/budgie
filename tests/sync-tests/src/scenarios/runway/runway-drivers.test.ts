@@ -36,13 +36,11 @@ const UNTAGGED_AMOUNT = 40 * PRECISION;
 const SEEDED_MONTHS = 4;
 
 const seedCategory = (title: string) =>
-    Effect.gen(function* () {
-        return yield* insertOne(CategoryEntityTable, {
-            title,
-            titleSearch: title.toLowerCase(),
-            icon: UserIconNameEnum.Wallet,
-            parentId: null
-        });
+    insertOne(CategoryEntityTable, {
+        title,
+        titleSearch: title.toLowerCase(),
+        icon: UserIconNameEnum.Wallet,
+        parentId: null
     });
 
 const monthOperatedAt = (monthsAgo: number): Date => {

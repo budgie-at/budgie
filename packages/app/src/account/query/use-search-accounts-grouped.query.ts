@@ -18,7 +18,7 @@ export const searchAccountsAtom = databaseQueryFamily(
 
 export const accountCountAtom = databaseQueryAtom(
     [AccountEntityTable],
-    Effect.flatMap(AccountRepository, accountRepository => accountRepository.count())
+    Effect.flatMap(AccountRepository, accountRepository => accountRepository.count)
 );
 
 export const useSearchAccountsGroupedQuery = (search = '', withActive = true) => {

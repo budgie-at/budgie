@@ -9,6 +9,7 @@ import { AiSubsystemIcon } from '../ai-subsystem-icon/ai-subsystem-icon';
 import { AiSubsystemStatusCardLayout } from '../ai-subsystem-status-card-layout/ai-subsystem-status-card-layout';
 
 import type { AppServices } from '../../../@generic/runtime/app.runtime';
+import type * as Cause from 'effect/Cause';
 
 const ICON_SIZE = 20;
 const CIRCLE_SIZE = 36;
@@ -20,7 +21,7 @@ interface Props {
     readonly rebuildAlertTitle: string;
     readonly rebuildAlertMessage: string;
     readonly rebuildLogKey: string;
-    readonly onRebuild: Effect.Effect<void, unknown, AppServices>;
+    readonly onRebuild: Effect.Effect<void, Cause.YieldableError, AppServices>;
 }
 
 export const AiSubsystemCard = ({ snapshot, icon, title, rebuildAlertTitle, rebuildAlertMessage, rebuildLogKey, onRebuild }: Props) => {

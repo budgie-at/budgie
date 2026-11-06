@@ -7,7 +7,7 @@ import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util
 
 export const bankIntegrationCountAtom = databaseQueryAtom(
     [BankIntegrationEntityTable],
-    Effect.flatMap(BankIntegrationRepository, bankIntegrationRepository => bankIntegrationRepository.count())
+    Effect.flatMap(BankIntegrationRepository, bankIntegrationRepository => bankIntegrationRepository.count)
 );
 
 export const useGetBankIntegrationCountQuery = (): number =>

@@ -63,7 +63,7 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
         };
 
         const findFunds = Effect.fnUntraced(function* (setup: InzhurSetupInterface) {
-            const instruments = yield* instrumentRepository.getAll();
+            const instruments = yield* instrumentRepository.getAll;
             const refreshedAccounts = yield* Effect.forEach(setup.fundAccounts, account => accountRepository.findById(account.id));
 
             return refreshedAccounts.filter(isDefined).map(account => ({

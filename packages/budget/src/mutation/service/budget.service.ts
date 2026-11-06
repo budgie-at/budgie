@@ -1,5 +1,6 @@
 import { Db } from '@budgie/contracts';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
@@ -88,7 +89,7 @@ export class BudgetService extends Context.Service<BudgetService>()('@budgie/bud
             createBudget: Effect.fn('BudgetService.createBudget')(
                 function* (input: BudgetCreateInputInterface) {
                     const { categoryLimits, ...budgetFields } = input;
-                    const editedAt = new Date();
+                    const editedAt = yield* DateTime.nowAsDate;
                     const periodAnchorDate = budgetFields.periodAnchorDate ?? defaultPeriodAnchorDate(budgetFields.period, editedAt);
                     const createdBudget = yield* budgetRepository.create({
                         ...budgetFields,
@@ -105,7 +106,7 @@ export class BudgetService extends Context.Service<BudgetService>()('@budgie/bud
             updateBudget: Effect.fn('BudgetService.updateBudget')(
                 function* (id: number, input: BudgetUpdateInputInterface) {
                     const { categoryLimits, ...budgetFields } = input;
-                    const editedAt = new Date();
+                    const editedAt = yield* DateTime.nowAsDate;
                     const existingBudget = yield* budgetRepository.findById(id);
                     const periodAnchorDate =
                         isDefined(budgetFields.period) &&

@@ -17,7 +17,7 @@ import {
 
 const fetchBinanceTransfers = () =>
     Effect.gen(function* () {
-        return (yield* fetchBinanceTransactions()).filter(transaction => transaction.type === TransactionTypeEnum.TRANSFER);
+        return (yield* fetchBinanceTransactions).filter(transaction => transaction.type === TransactionTypeEnum.TRANSFER);
     });
 
 describe('binance/consolidation-exemption', () => {

@@ -38,7 +38,7 @@ export class LocalEmbeddingService extends Context.Service<LocalEmbeddingService
 
                         return Effect.tryPromise({
                             try: () => context.embedding(text),
-                            catch: cause => new AiInvokeError({ cause })
+                            catch: cause => AiInvokeError.make({ cause })
                         }).pipe(
                             Effect.map(result => result.embedding),
                             Effect.uninterruptible

@@ -19,6 +19,7 @@ import * as Arr from 'effect/Array';
 import * as Cause from 'effect/Cause';
 import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Order from 'effect/Order';
@@ -65,7 +66,7 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                 Schema.Struct({
                     date: Schema.String.check(Schema.isPattern(/^\d{4}-\d{2}-\d{2}$/u)),
                     quote: Schema.String,
-                    rate: Schema.Number
+                    rate: Schema.Finite
                 })
             );
             const coinGeckoCoinsApiUrl = 'https://api.coingecko.com/api/v3/coins';
@@ -75,7 +76,7 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
             const inzhurSource = 'inzhur.reit';
             const rateDateFormat = 'yyyy-MM-dd';
             const staleLockMs = 5 * 60 * 1000;
-            const coinGeckoTimedValueSchema = Schema.Tuple([Schema.Number, Schema.Number]);
+            const coinGeckoTimedValueSchema = Schema.Tuple([Schema.Finite, Schema.Finite]);
             const coinGeckoMarketChartResponseSchema = Schema.Struct({
                 prices: Schema.Array(coinGeckoTimedValueSchema),
                 market_caps: Schema.Array(coinGeckoTimedValueSchema),
@@ -154,14 +155,17 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                     return format(addDays(parseISO(latestPrice.priceDate), 1), rateDateFormat);
                 }
 
-                return format(subDays(yield* Clock.currentTimeMillis, dataWindowDays - 1), rateDateFormat);
+                const now = yield* DateTime.nowAsDate;
+
+                return format(subDays(now, dataWindowDays - 1), rateDateFormat);
             });
 
             const buildAccountJobInput = Effect.fn('HistoricalMarketDataService.buildAccountJobInput')(function* (
                 instrumentId: number,
                 quoteInstrumentId: number
             ) {
-                const toDate = yield* getToday;
+                const now = yield* DateTime.nowAsDate;
+                const toDate = format(now, rateDateFormat);
                 const hasOpenJob = yield* instrumentMarketDataJobRepository.hasOpen(instrumentId, quoteInstrumentId);
 
                 if (hasOpenJob) {
@@ -269,11 +273,10 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                     return null;
                 }
 
-                const accounts = yield* accountRepository.getAllActiveAccounts();
+                const accounts = yield* accountRepository.getAllActiveAccounts;
                 const heldInstrumentIds = new Set([baseInstrument.id, ...accounts.map(account => account.instrumentId)]);
-                const unsupportedInstrumentIds = new Set(
-                    yield* instrumentMarketDataJobRepository.findUnsupportedInstrumentIds(euroInstrument.id)
-                );
+                const unsupportedIds = yield* instrumentMarketDataJobRepository.findUnsupportedInstrumentIds(euroInstrument.id);
+                const unsupportedInstrumentIds = new Set(unsupportedIds);
                 const fiatInstruments = yield* instrumentRepository.findByType(InstrumentTypeEnum.FIAT);
 
                 return {
@@ -427,7 +430,7 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                     return;
                 }
 
-                const instruments = yield* instrumentRepository.getAll();
+                const instruments = yield* instrumentRepository.getAll;
                 const instrumentById = new Map(instruments.map(instrument => [instrument.id, instrument]));
                 const hryvniaInstrument = yield* instrumentRepository.findByCode(CurrencyEnum.UAH);
                 const cryptoInputs = yield* Effect.forEach(
@@ -454,7 +457,12 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
 
             return {
                 enqueueAccounts,
-                claimNextJob: () => instrumentMarketDataJobRepository.claimNext(maxAttempts, new Date(Date.now() - staleLockMs)),
+                claimNextJob: Effect.gen(function* () {
+                    const now = yield* DateTime.now;
+                    const staleLockedBefore = DateTime.toDateUtc(DateTime.subtractDuration(now, staleLockMs));
+
+                    return yield* instrumentMarketDataJobRepository.claimNext(maxAttempts, staleLockedBefore);
+                }),
                 fetchJobData: Effect.fn('HistoricalMarketDataService.fetchJobData')(function* (
                     job: InstrumentMarketDataJobEntityInterface
                 ) {
@@ -507,7 +515,7 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                     );
                 }),
                 failJob: (job: InstrumentMarketDataJobEntityInterface, cause: Cause.Cause<unknown>) =>
-                    instrumentMarketDataJobRepository.markFailed(job.id, getErrorMessage(Cause.squash(cause)))
+                    instrumentMarketDataJobRepository.markFailed(job.id, cause.pipe(Cause.squash, getErrorMessage))
             };
         })
     }

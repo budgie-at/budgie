@@ -8,4 +8,4 @@ import type { AccountEntityInterface } from '@budgie/contracts';
 export const assertTransferAccountsAreNotDebt = (
     accounts: readonly Pick<AccountEntityInterface, 'type'>[]
 ): Effect.Effect<void, DebtTransferNotAllowedError> =>
-    accounts.some(account => account.type === AccountTypeEnum.DEBT) ? Effect.fail(new DebtTransferNotAllowedError()) : Effect.void;
+    accounts.some(account => account.type === AccountTypeEnum.DEBT) ? Effect.fail(DebtTransferNotAllowedError.make()) : Effect.void;

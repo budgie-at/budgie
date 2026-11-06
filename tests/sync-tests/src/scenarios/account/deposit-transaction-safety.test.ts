@@ -99,13 +99,13 @@ const buildImportedExpenseInput = (accountId: number) => {
 };
 
 const seedBalance = (accountId: number, amount: number) =>
-    Effect.gen(function* () {
-        yield* insertOne(AccountBalanceEntityTable, {
+    Effect.asVoid(
+        insertOne(AccountBalanceEntityTable, {
             accountId,
             amount,
             updatedAt: OPERATED_AT
-        });
-    });
+        })
+    );
 
 const seedExpenseLedgerTransaction = (
     accountId: number,

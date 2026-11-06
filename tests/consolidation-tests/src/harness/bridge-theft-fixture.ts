@@ -81,19 +81,18 @@ export const expectFxPairCanonicalChildren = (canonicalId: number, fixture: Brid
         expect(childIds).not.toContain(fixture.interbankExpenseId);
     });
 
-export const seedBridgeTheftFixture = () =>
-    Effect.gen(function* () {
-        const { eurInstrumentId, uahInstrumentId } = yield* seedBridgeTheftInstruments();
-        const accounts = yield* seedBridgeTheftAccounts(eurInstrumentId, uahInstrumentId);
-        const { fxExpense, fxBridgeIncome } = yield* seedBridgeTheftFxLegs(accounts.sourceEurAccountId, accounts.bridgeUahAccountId);
-        const interbankExpense = yield* seedBridgeTheftInterbankExpense(accounts.blackUahAccountId);
+export const seedBridgeTheftFixture = Effect.gen(function* () {
+    const { eurInstrumentId, uahInstrumentId } = yield* seedBridgeTheftInstruments();
+    const accounts = yield* seedBridgeTheftAccounts(eurInstrumentId, uahInstrumentId);
+    const { fxExpense, fxBridgeIncome } = yield* seedBridgeTheftFxLegs(accounts.sourceEurAccountId, accounts.bridgeUahAccountId);
+    const interbankExpense = yield* seedBridgeTheftInterbankExpense(accounts.blackUahAccountId);
 
-        return {
-            bridgeUahAccountId: accounts.bridgeUahAccountId,
-            fxExpense,
-            fxBridgeIncome,
-            interbankExpense,
-            interbankExpenseAccountId: accounts.blackUahAccountId,
-            sourceEurAccountId: accounts.sourceEurAccountId
-        };
-    });
+    return {
+        bridgeUahAccountId: accounts.bridgeUahAccountId,
+        fxExpense,
+        fxBridgeIncome,
+        interbankExpense,
+        interbankExpenseAccountId: accounts.blackUahAccountId,
+        sourceEurAccountId: accounts.sourceEurAccountId
+    };
+});

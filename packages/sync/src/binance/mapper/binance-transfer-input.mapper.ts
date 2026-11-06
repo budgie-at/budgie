@@ -5,6 +5,7 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
@@ -51,7 +52,7 @@ export const mapBinanceTransfersToInputs = <E, R>(
                     comment: '',
                     type: TransactionTypeEnum.TRANSFER,
                     exchangeRate: 1,
-                    operatedAt: new Date(transfer.time * MILLISECONDS_PER_SECOND),
+                    operatedAt: DateTime.toDateUtc(DateTime.makeUnsafe(transfer.time * MILLISECONDS_PER_SECOND)),
                     externalId: transfer.externalId,
                     updatedBy: null,
                     externalSource: ExternalSourceEnum.BINANCE,

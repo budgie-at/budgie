@@ -114,7 +114,7 @@ describe('binance/spot-trades/mapping', () => {
             stubAdaUsdtTrade(10, '200', '100', true);
             yield* binanceSyncService.sync();
             yield* expectSingleBinanceTransaction(TransactionTypeEnum.TRANSFER, 'binance:trade:ADAUSDT:10');
-            expect((yield* fetchBinanceTransactions())[0].exchangeRate).toBe(1);
+            expect((yield* fetchBinanceTransactions)[0].exchangeRate).toBe(1);
             const entries = yield* fetchBinanceEntriesByExternalId('binance:trade:ADAUSDT:10');
             expect(entries).toHaveLength(2);
             const creditEntry = entries.find(entry => entry.type === TransactionEntryTypeEnum.CREDIT);
@@ -176,7 +176,7 @@ describe('binance/spot-trades/mapping', () => {
             const adaCodecId = encodeBinanceAccountId({ wallet: BinanceWalletEnum.SPOT, asset: 'ADA' });
             expect(yield* testDb.select().from(AccountEntityTable).where(eq(AccountEntityTable.externalId, adaCodecId))).toHaveLength(0);
             yield* binanceSyncService.sync();
-            const transactions = yield* fetchBinanceTransactions();
+            const transactions = yield* fetchBinanceTransactions;
             expect(transactions).toHaveLength(1);
             expect(transactions[0].type).toBe(TransactionTypeEnum.TRANSFER);
             expect(yield* testDb.select().from(AccountEntityTable).where(eq(AccountEntityTable.externalId, adaCodecId))).toHaveLength(1);
@@ -192,7 +192,7 @@ describe('binance/spot-trades/mapping', () => {
                 NOPEUSDT: [buildBinance.trade({ symbol: 'NOPEUSDT', id: 14, qty: '5', quoteQty: '100', commission: '0', isBuyer: true })]
             });
             yield* binanceSyncService.sync();
-            expect(yield* fetchBinanceTransactions()).toHaveLength(0);
+            expect(yield* fetchBinanceTransactions).toHaveLength(0);
         }).pipe(Effect.provide(TestLayer))
     );
 });
@@ -216,7 +216,7 @@ describe('binance/spot-trades/symbols', () => {
                 requestedSymbols
             );
             yield* binanceSyncService.sync();
-            const externalIds = yield* fetchSortedBinanceExternalIds();
+            const externalIds = yield* fetchSortedBinanceExternalIds;
             expect([...requestedSymbols]).toEqual(['ADAUSDT']);
             expect(externalIds).toEqual(['binance:trade:ADAUSDT:18', 'binance:trade:ADAUSDT:19']);
         }).pipe(Effect.provide(TestLayer))
@@ -233,7 +233,7 @@ describe('binance/spot-trades/symbols', () => {
                 BNBUSDT: [buildBinance.trade({ symbol: 'BNBUSDT', id: 21, qty: '5', quoteQty: '50', commission: '0', isBuyer: true })]
             });
             yield* binanceSyncService.sync();
-            const transactions = yield* fetchBinanceTransactions();
+            const transactions = yield* fetchBinanceTransactions;
             const externalIds = transactions.map(transaction => transaction.externalId);
             expect(externalIds).toContain('binance:trade:ADAUSDT:20');
             expect(externalIds).toContain('binance:trade:BNBUSDT:21');
@@ -263,7 +263,7 @@ describe('binance/spot-trades/symbols', () => {
             expect([...requestedSymbols]).toEqual(['ADAUSDT']);
             expect(requestedSymbols.has('ADABTC')).toBe(false);
             expect(requestedSymbols.has('ADABNB')).toBe(false);
-            expect(yield* fetchBinanceTransactions()).toHaveLength(1);
+            expect(yield* fetchBinanceTransactions).toHaveLength(1);
         }).pipe(Effect.provide(TestLayer))
     );
     it.effect('treats Simple Earn-looking asset codes as authoritative spot assets', () =>

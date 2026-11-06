@@ -41,6 +41,6 @@ const appLayer = appServicesLayer.pipe(Layer.provideMerge(platformLayer));
 
 export const appRuntime = ManagedRuntime.make(appLayer, { memoMap: appMemoMap });
 
-export const appAtomRuntime = Atom.context({ memoMap: appMemoMap })(Layer.effectContext(appRuntime.contextEffect));
+export const appAtomRuntime = appRuntime.contextEffect.pipe(Layer.effectContext, Atom.context({ memoMap: appMemoMap }));
 
 export type AppServices = ManagedRuntime.ManagedRuntime.Services<typeof appRuntime>;

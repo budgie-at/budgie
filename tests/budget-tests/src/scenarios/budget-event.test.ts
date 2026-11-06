@@ -66,7 +66,7 @@ layer(TestLayer)('event budgets', it => {
             const main = yield* createTestBudget();
             const event = yield* createTripBudget(tag.id);
 
-            expect((yield* budgetRepository.findMain())?.id).toBe(main.id);
+            expect((yield* budgetRepository.findMain)?.id).toBe(main.id);
             expect((yield* budgetRepository.findActiveEvents(new Date(2026, 5, 12))).map(budget => budget.id)).toEqual([event.id]);
             expect((yield* budgetRepository.findActiveEvents(new Date(2026, 5, 14, 23))).map(budget => budget.id)).toEqual([event.id]);
             expect(yield* budgetRepository.findActiveEvents(new Date(2026, 5, 20))).toEqual([]);

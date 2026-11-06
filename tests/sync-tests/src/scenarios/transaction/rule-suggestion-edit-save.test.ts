@@ -20,9 +20,7 @@ const title = 'Fixture bank merchant and payment reference '.repeat(4);
 
 const readTransaction = (id: number) =>
     Effect.flatMap(TransactionViewRepository, repository => repository.getById(id, LanguageEnum.EN)).pipe(
-        Effect.flatMap(transaction =>
-            isDefined(transaction) ? Effect.succeed(transaction) : Effect.die(new Error('Fixture transaction missing'))
-        )
+        Effect.filterOrElse(isDefined, () => Effect.die(new Error('Fixture transaction missing')))
     );
 
 describe('transaction/rule-suggestion-edit-save', () => {

@@ -190,7 +190,7 @@ describe('consolidation/binance-p2p-fiat-transfer ranked heuristic ownership', (
 
             expect((yield* transferConsolidationService.consolidate(null)).consolidated).toBe(1);
 
-            const canonicalId = (yield* fetchP2pCanonical()).id;
+            const canonicalId = (yield* fetchP2pCanonical).id;
             expect((yield* testQueryService.findTransactionById(expense.id)).consolidationParentTransactionId).toBe(canonicalId);
             expect((yield* testQueryService.findTransactionById(closerIncome.id)).consolidationParentTransactionId).toBe(canonicalId);
             expect((yield* testQueryService.findTransactionById(fartherIncome.id)).consolidationParentTransactionId).toBeNull();

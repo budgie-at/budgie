@@ -4,7 +4,7 @@ import * as Effect from 'effect/Effect';
 import * as HttpClient from 'effect/http/HttpClient';
 import * as HttpClientResponse from 'effect/http/HttpClientResponse';
 import * as Layer from 'effect/Layer';
-import { afterAll, beforeEach } from 'vitest';
+import { beforeEach } from 'vitest';
 
 import { ExchangeRateRepository } from '../src/exchange-rate/repository/exchange-rate.repository';
 import { ExchangeRatesSyncService } from '../src/exchange-rate/service/exchange-rates-sync.service';
@@ -12,15 +12,11 @@ import { ExchangeRatesService } from '../src/exchange-rate/service/exchange-rate
 import { HistoricalExchangeRateRepository } from '../src/historical-exchange-rate/repository/historical-exchange-rate.repository';
 import { EntryBaseValuationService } from '../src/valuation/service/entry-base-valuation.service';
 
-export const testDbHandle = await buildTestDb();
-
-export const testDb = testDbHandle.database;
+export const testDb = await buildTestDb();
 
 export const testSeedService = new TestSeedService(testDb);
 
 beforeEach(() => Effect.runPromise(resetTestDb(testDb)));
-
-afterAll(() => testDbHandle.dispose());
 
 export const setDefaultInstrument = (defaultInstrumentId: number) => testDb.update(SettingsEntityTable).set({ defaultInstrumentId });
 

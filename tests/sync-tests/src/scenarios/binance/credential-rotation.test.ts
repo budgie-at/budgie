@@ -78,56 +78,50 @@ const seedBinanceAccount = (asset: string) =>
     });
 
 const seedMonobankAccount = (externalId: string) =>
-    Effect.gen(function* () {
-        return yield* seed.account({
-            externalId,
-            externalSource: ExternalSourceEnum.MONOBANK,
-            type: AccountTypeEnum.BANK_SYNC
-        });
+    seed.account({
+        externalId,
+        externalSource: ExternalSourceEnum.MONOBANK,
+        type: AccountTypeEnum.BANK_SYNC
     });
 
 const seedFailedForwardSync = (input: SeedFailedForwardSyncInputInterface) =>
-    Effect.gen(function* () {
-        return yield* seed.sync({
-            accountId: input.accountId,
-            token: input.token,
-            provider: input.provider,
-            mode: SyncModeEnum.FORWARD,
-            status: SyncStatusEnum.FAILED,
-            enabled: input.enabled ?? true,
-            forwardSyncFromAt: input.forwardSyncFromAt,
-            forwardSyncedAt: input.forwardSyncedAt ?? null,
-            backwardSyncFromAt: null,
-            backwardSyncedAt: null,
-            errorCount: input.errorCount,
-            lastError: input.lastError
-        });
+    seed.sync({
+        accountId: input.accountId,
+        token: input.token,
+        provider: input.provider,
+        mode: SyncModeEnum.FORWARD,
+        status: SyncStatusEnum.FAILED,
+        enabled: input.enabled ?? true,
+        forwardSyncFromAt: input.forwardSyncFromAt,
+        forwardSyncedAt: input.forwardSyncedAt ?? null,
+        backwardSyncFromAt: null,
+        backwardSyncedAt: null,
+        errorCount: input.errorCount,
+        lastError: input.lastError
     });
 
 const seedFailedBackwardSync = (accountId: number) =>
-    Effect.gen(function* () {
-        return yield* seed.sync({
-            accountId,
-            token: SHARED_OLD_TOKEN,
-            provider: ExternalSourceEnum.BINANCE,
-            mode: SyncModeEnum.BACKWARD,
-            status: SyncStatusEnum.FAILED,
-            forwardSyncFromAt: SHARED_FORWARD_SYNC_FROM_AT,
-            forwardSyncedAt: SHARED_FORWARD_SYNCED_AT,
-            backwardSyncFromAt: SHARED_BACKWARD_SYNC_FROM_AT,
-            backwardSyncedAt: SHARED_BACKWARD_SYNCED_AT,
-            errorCount: 4,
-            lastError: 'shared failure'
-        });
+    seed.sync({
+        accountId,
+        token: SHARED_OLD_TOKEN,
+        provider: ExternalSourceEnum.BINANCE,
+        mode: SyncModeEnum.BACKWARD,
+        status: SyncStatusEnum.FAILED,
+        forwardSyncFromAt: SHARED_FORWARD_SYNC_FROM_AT,
+        forwardSyncedAt: SHARED_FORWARD_SYNCED_AT,
+        backwardSyncFromAt: SHARED_BACKWARD_SYNC_FROM_AT,
+        backwardSyncedAt: SHARED_BACKWARD_SYNCED_AT,
+        errorCount: 4,
+        lastError: 'shared failure'
     });
 
 const markSyncDeleted = (syncId: number) =>
-    Effect.gen(function* () {
-        yield* testDb
+    Effect.asVoid(
+        testDb
             .update(SyncEntityTable)
             .set({ deletedAt: new Date('2026-03-04T10:00:00.000Z') })
-            .where(eq(SyncEntityTable.id, syncId));
-    });
+            .where(eq(SyncEntityTable.id, syncId))
+    );
 
 const seedBinanceAccounts = () =>
     Effect.gen(function* () {

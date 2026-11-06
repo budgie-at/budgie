@@ -20,7 +20,7 @@ import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import { fetchAccountBalance, TestLayer, upsertCurrencyRate, DEBT_OPENING_MESSAGES } from '../../harness';
-import { testDb } from '../../harness/scenario/setup';
+import { testDb } from '../../harness/scenario/test-db';
 import { seed } from '../../harness/seed/seed';
 
 import type { AccountEntityInterface } from '@budgie/contracts';
@@ -53,14 +53,10 @@ const openDebt = Effect.fnUntraced(function* (
 });
 
 const readEntries = (accountId: number) =>
-    Effect.gen(function* () {
-        return yield* testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.accountId, accountId));
-    });
+    testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.accountId, accountId));
 
 const readDebtEvents = (debtAccountId: number) =>
-    Effect.gen(function* () {
-        return yield* testDb.select().from(DebtEventEntityTable).where(eq(DebtEventEntityTable.debtAccountId, debtAccountId));
-    });
+    testDb.select().from(DebtEventEntityTable).where(eq(DebtEventEntityTable.debtAccountId, debtAccountId));
 
 describe('opening a debt from a funding account', () => {
     it.effect.each([

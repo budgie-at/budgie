@@ -170,21 +170,20 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
         upsert: (balance: Pick<AccountBalanceCreateEntityInterface, 'accountId' | 'amount'>) => bulkUpsert([balance]),
         getByAccountIds: (accountIds: number[]) =>
             Db.query(db => db.select().from(AccountBalanceEntityTable).where(inArray(AccountBalanceEntityTable.accountId, accountIds))),
-        truncate: () => Db.query(db => db.delete(AccountBalanceEntityTable)),
-        truncateExceptBankAuthoritative: () =>
-            Db.query(db =>
-                db
-                    .delete(AccountBalanceEntityTable)
-                    .where(
-                        notInArray(
-                            AccountBalanceEntityTable.accountId,
-                            db
-                                .select({ id: AccountEntityTable.id })
-                                .from(AccountEntityTable)
-                                .where(inArray(AccountEntityTable.type, BANK_AUTHORITATIVE_ACCOUNT_TYPES))
-                        )
+        truncate: Db.query(db => db.delete(AccountBalanceEntityTable)),
+        truncateExceptBankAuthoritative: Db.query(db =>
+            db
+                .delete(AccountBalanceEntityTable)
+                .where(
+                    notInArray(
+                        AccountBalanceEntityTable.accountId,
+                        db
+                            .select({ id: AccountEntityTable.id })
+                            .from(AccountEntityTable)
+                            .where(inArray(AccountEntityTable.type, BANK_AUTHORITATIVE_ACCOUNT_TYPES))
                     )
-            ),
+                )
+        ),
         getAssetClassTotals: (defaultInstrumentId: number) => {
             const fiatExchangeRateSql = buildNetWorthExchangeRateConversionSql(defaultInstrumentId);
             const cryptoExchangeRateSql = buildStrictExchangeRateConversionSql(defaultInstrumentId);
@@ -257,13 +256,12 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                     .where(isNull(AccountEntityTable.deletedAt))
             );
         },
-        getLatestUpdatedAt: () =>
-            Db.query(db =>
-                db
-                    .select({ updatedAt: sql<Date | null>`MAX(${AccountBalanceEntityTable.updatedAt})` })
-                    .from(AccountBalanceEntityTable)
-                    .where(isNull(AccountBalanceEntityTable.deletedAt))
-            ),
+        getLatestUpdatedAt: Db.query(db =>
+            db
+                .select({ updatedAt: sql<Date | null>`MAX(${AccountBalanceEntityTable.updatedAt})` })
+                .from(AccountBalanceEntityTable)
+                .where(isNull(AccountBalanceEntityTable.deletedAt))
+        ),
         getByAccountId: (accountId: number) =>
             Db.query(db =>
                 db

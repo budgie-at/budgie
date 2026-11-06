@@ -271,24 +271,24 @@ export class ImporterService extends Context.Service<ImporterService>()('@budgie
         };
 
         const toRowError = (reason: string, row: Record<string, string>): ImportRowError =>
-            new ImportRowError({ reason, rowColumns: Object.keys(row).join(',') });
+            ImportRowError.make({ reason, rowColumns: Object.keys(row).join(',') });
 
         const parseCsv = Effect.fnUntraced(function* (csvText: string) {
             const { data, errors, meta } = yield* Effect.try({
                 try: () => Papa.parse<Record<string, string>>(csvText, { header: true, skipEmptyLines: true }),
-                catch: error => new ImportRowError({ reason: getErrorMessage(error), rowColumns: '' })
+                catch: error => ImportRowError.make({ reason: getErrorMessage(error), rowColumns: '' })
             });
             const structuralError = errors.find(error => error.type !== 'FieldMismatch' && error.code !== 'InvalidQuotes');
 
             if (isDefined(structuralError)) {
-                return yield* new ImportRowError({ reason: structuralError.message, rowColumns: (meta.fields ?? []).join(',') });
+                return yield* ImportRowError.make({ reason: structuralError.message, rowColumns: (meta.fields ?? []).join(',') });
             }
 
             return data;
         });
 
         const initializeInstruments = Effect.fn('ImporterService.initializeInstruments')(function* () {
-            const instruments = yield* instrumentRepository.getAll();
+            const instruments = yield* instrumentRepository.getAll;
 
             return instruments.reduce<Record<string, InstrumentEntityInterface>>((acc, instrument) => {
                 acc[instrument.code] = instrument;
@@ -342,12 +342,12 @@ export class ImporterService extends Context.Service<ImporterService>()('@budgie
 
                 yield* Effect.all(
                     [
-                        accountRepository.truncate(),
+                        accountRepository.truncate,
                         categoryRepository.truncate(false),
-                        transactionTagsRepository.truncate(),
-                        transactionEntryRepository.truncate(),
-                        transactionRepository.truncate(),
-                        accountBalanceRepository.truncate()
+                        transactionTagsRepository.truncate,
+                        transactionEntryRepository.truncate,
+                        transactionRepository.truncate,
+                        accountBalanceRepository.truncate
                     ],
                     { discard: true }
                 );

@@ -3,8 +3,9 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
 import { addScrollContentInset, mergeRefs, useScreenChrome } from '@rnw-community/react-native-screen-chrome';
+
+import { useCollapsibleChromeScroll } from '../../hook/use-collapsible-chrome-scroll.hook';
 
 import type { ComponentProps, ReactNode, Ref } from 'react';
 import type { KeyboardAwareScrollViewRef } from 'react-native-keyboard-controller';
@@ -26,7 +27,7 @@ export const ChromeKeyboardScrollView = ({
     ...scrollViewProps
 }: Props): ReactNode => {
     const { config } = useScreenChrome();
-    const { onScroll, scrollRef } = useCollapsibleHeaderScroll();
+    const { onScroll, scrollRef } = useCollapsibleChromeScroll();
     const insets = useSafeAreaInsets();
     const mergedRef = mergeRefs(scrollRef, ref);
     const { height } = useWindowDimensions();

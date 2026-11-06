@@ -12,7 +12,7 @@ import type { InstrumentTypeEnum } from '../enum/instrument-type.enum';
 
 export class InstrumentRepository extends Context.Service<InstrumentRepository>()('@budgie/contracts/InstrumentRepository', {
     make: Effect.succeed({
-        getAll: () => Db.query(db => db.query.InstrumentEntityTable.findMany()),
+        getAll: Db.query(db => db.query.InstrumentEntityTable.findMany()),
         create: (input: InstrumentCreateEntityInterface) =>
             Db.query(db => db.insert(InstrumentEntityTable).values([input]).returning()).pipe(Effect.map(([instrument]) => instrument)),
         updateById: (id: number, input: Partial<Pick<InstrumentCreateEntityInterface, 'code' | 'providerInstrumentId'>>) =>

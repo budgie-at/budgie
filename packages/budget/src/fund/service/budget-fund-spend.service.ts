@@ -1,3 +1,5 @@
+import { max } from 'date-fns/max';
+import { min } from 'date-fns/min';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -26,9 +28,9 @@ export class BudgetFundSpendService extends Context.Service<BudgetFundSpendServi
             nextPeriodStart: Date
         ) {
             const dueWindows = funds.map(fund => computeFundDueWindow(fund.dueAt));
-            const rangeStart = Math.min(periodStart.getTime(), ...dueWindows.map(dueWindow => dueWindow.periodStart.getTime()));
-            const rangeEnd = Math.max(nextPeriodStart.getTime(), ...dueWindows.map(dueWindow => dueWindow.nextPeriodStart.getTime()));
-            const rangeRows = yield* budgetRepository.findBudgetSpentEntries(new Date(rangeStart), new Date(rangeEnd), budget.instrumentId);
+            const rangeStart = min([periodStart, ...dueWindows.map(dueWindow => dueWindow.periodStart)]);
+            const rangeEnd = max([nextPeriodStart, ...dueWindows.map(dueWindow => dueWindow.nextPeriodStart)]);
+            const rangeRows = yield* budgetRepository.findBudgetSpentEntries(rangeStart, rangeEnd, budget.instrumentId);
             const rangeEntries = toBudgetCurrencyEntries(rangeRows, budget.instrumentId);
             const entries = rangeEntries.filter(
                 entry => entry.operatedAt.getTime() >= periodStart.getTime() && entry.operatedAt.getTime() < nextPeriodStart.getTime()

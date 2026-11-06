@@ -3,7 +3,7 @@ import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 import { expect } from 'vitest';
 
-import { testDb } from './setup';
+import { testDb } from './test-db';
 
 export const SYNC_ERROR_THRESHOLD = 3;
 

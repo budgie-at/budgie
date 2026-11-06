@@ -113,13 +113,12 @@ export class TransactionEmbeddingRepository extends Context.Service<TransactionE
             });
 
             return {
-                countPending: () =>
-                    Db.query(db =>
-                        db
-                            .select({ value: count() })
-                            .from(TransactionEntityTable)
-                            .where(and(sql`${TransactionEntityTable.needsEmbedding} = 1`, isNull(TransactionEntityTable.deletedAt)))
-                    ).pipe(Effect.map(([row]) => row.value)),
+                countPending: Db.query(db =>
+                    db
+                        .select({ value: count() })
+                        .from(TransactionEntityTable)
+                        .where(and(sql`${TransactionEntityTable.needsEmbedding} = 1`, isNull(TransactionEntityTable.deletedAt)))
+                ).pipe(Effect.map(([row]) => row.value)),
 
                 touchAndMarkForEmbeddingByIds: (ids: number[]) =>
                     updateInChunks(ids, chunk =>
@@ -164,16 +163,15 @@ export class TransactionEmbeddingRepository extends Context.Service<TransactionE
                         )
                     ),
 
-                clearNonIndexableFlags: () => clearFlagsWhere(or(NON_INDEXABLE_CONDITION, UNCATEGORIZED_CONDITION)),
+                clearNonIndexableFlags: clearFlagsWhere(or(NON_INDEXABLE_CONDITION, UNCATEGORIZED_CONDITION)),
 
-                clearStaleFlags: () =>
-                    clearFlagsWhere(
-                        or(
-                            NON_INDEXABLE_CONDITION,
-                            and(UNCATEGORIZED_CONDITION, sql`NOT (${AUTO_CATEGORIZABLE_TRANSACTION_CONDITION})`),
-                            ALREADY_INDEXED_CONDITION
-                        )
-                    ),
+                clearStaleFlags: clearFlagsWhere(
+                    or(
+                        NON_INDEXABLE_CONDITION,
+                        and(UNCATEGORIZED_CONDITION, sql`NOT (${AUTO_CATEGORIZABLE_TRANSACTION_CONDITION})`),
+                        ALREADY_INDEXED_CONDITION
+                    )
+                ),
 
                 findAwaitingAutoCategory: (limit: number) =>
                     Db.query(db =>
@@ -196,23 +194,18 @@ export class TransactionEmbeddingRepository extends Context.Service<TransactionE
                             .limit(limit)
                     ),
 
-                countAwaitingAutoCategory: () =>
-                    Db.query(db =>
-                        db
-                            .select({ value: count() })
-                            .from(TransactionEntityTable)
-                            .innerJoin(
-                                TransactionEntryEntityTable,
-                                eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id)
-                            )
-                            .innerJoin(AccountEntityTable, eq(AccountEntityTable.id, TransactionEntryEntityTable.accountId))
-                            .where(AWAITING_AUTO_CATEGORY_WHERE)
-                    ).pipe(Effect.map(([row]) => row.value)),
+                countAwaitingAutoCategory: Db.query(db =>
+                    db
+                        .select({ value: count() })
+                        .from(TransactionEntityTable)
+                        .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                        .innerJoin(AccountEntityTable, eq(AccountEntityTable.id, TransactionEntryEntityTable.accountId))
+                        .where(AWAITING_AUTO_CATEGORY_WHERE)
+                ).pipe(Effect.map(([row]) => row.value)),
 
-                markAllForEmbedding: () =>
-                    Db.query(db =>
-                        db.update(TransactionEntityTable).set({ needsEmbedding: true }).where(isNull(TransactionEntityTable.deletedAt))
-                    )
+                markAllForEmbedding: Db.query(db =>
+                    db.update(TransactionEntityTable).set({ needsEmbedding: true }).where(isNull(TransactionEntityTable.deletedAt))
+                )
             };
         })
     }

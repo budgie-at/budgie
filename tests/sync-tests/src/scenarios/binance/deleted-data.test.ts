@@ -57,7 +57,7 @@ describe('binance/deleted-data', () => {
             stubAdaTrades(TRADE_ID);
             yield* resyncBinance(sync.id);
 
-            expect(yield* fetchBinanceTransactions()).toHaveLength(1);
+            expect(yield* fetchBinanceTransactions).toHaveLength(1);
             expect(yield* fetchActiveBinanceTransactions()).toHaveLength(0);
         }).pipe(Effect.provide(TestLayer))
     );

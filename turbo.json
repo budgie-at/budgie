@@ -1,53 +1,28 @@
 {
     "$schema": "https://turborepo.com/schema.json",
-    "globalDependencies": [
-        "tsconfig*.json",
-        ".env*",
-        "scripts/typecheck.cjs"
-    ],
+    "globalDependencies": ["tsconfig*.json", ".env*", "scripts/typecheck.cjs"],
     "tasks": {
         "release": {
-            "dependsOn": [
-                "^release"
-            ],
-            "outputs": [
-                "dist/**",
-                "build/**"
-            ]
+            "dependsOn": ["^release"],
+            "outputs": ["dist/**", "build/**"]
         },
         "ts": {
-            "dependsOn": [
-                "^ts",
-                "^build"
-            ],
-            "outputs": [],
-            "cache": false
+            "dependsOn": ["^ts", "^build"],
+            "outputs": []
         },
         "@budgie/categorization#ts": {
-            "dependsOn": [
-                "^ts",
-                "^build",
-                "build"
-            ],
-            "outputs": [],
-            "cache": false
+            "dependsOn": ["^ts", "^build", "build"],
+            "outputs": []
         },
         "@budgie/rules#ts": {
-            "dependsOn": [
-                "^ts",
-                "^build",
-                "build"
-            ],
-            "outputs": [],
-            "cache": false
+            "dependsOn": ["^ts", "^build", "build"],
+            "outputs": []
         },
         "clear": {
             "outputs": []
         },
         "build": {
-            "dependsOn": [
-                "^build"
-            ],
+            "dependsOn": ["^build"],
             "env": [
                 "ADMIN_SECRET",
                 "INDEXNOW_KEY",
@@ -57,33 +32,40 @@
                 "KV_URL",
                 "REDIS_URL"
             ],
-            "outputs": [
-                "dist/**",
-                ".next/**",
-                "node_modules/.cache/tsbuildinfo.json"
-            ]
+            "outputs": ["dist/**", ".next/**", "node_modules/.cache/tsbuildinfo.json"]
         },
         "test": {
-            "dependsOn": [
-                "^build"
-            ]
+            "dependsOn": ["^build"]
         },
         "//#cpd": {
-            "outputs": [
-                "report/jscpd/**"
-            ]
+            "outputs": ["report/jscpd/**"]
         },
         "//#deadcode": {
             "outputs": []
         },
         "ts:native": {
-            "dependsOn": [
-                "^ts:native",
-                "^build"
-            ],
-            "outputs": [
-                "node_modules/.cache/typecheck-native-*.json"
-            ]
+            "dependsOn": ["^ts:native", "^build"],
+            "outputs": ["node_modules/.cache/typecheck-native-*.json"]
+        },
+        "@budgie-at/sync-tests#ts": {
+            "dependsOn": ["^ts", "^build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"],
+            "outputs": []
+        },
+        "@budgie-at/consolidation-tests#ts": {
+            "dependsOn": ["^ts", "^build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"],
+            "outputs": []
+        },
+        "@budgie-at/budget-tests#ts": {
+            "dependsOn": ["^ts", "^build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"],
+            "outputs": []
+        },
+        "@budgie-at/test-kit#ts": {
+            "dependsOn": ["^ts", "^build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"],
+            "outputs": []
         }
     },
     "agentGuidance": false

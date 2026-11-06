@@ -222,7 +222,7 @@ describe.skipIf(!isDefined(backupDatabasePath))('categorization/categorization-e
                 const settingsRepository = yield* SettingsRepository;
                 const defaultInstrumentId = (yield* settingsRepository.getSettings()).defaultInstrumentId ?? 0;
                 const entries = yield* fetchCategorizationEvalEntries();
-                const rules = yield* ruleRepository.findEnabledWithRelations();
+                const rules = yield* ruleRepository.findEnabledWithRelations;
                 const ruleMatches = yield* Effect.forEach(rules, rule =>
                     Effect.map(ruleMatcherService.collectMatchingTransactionIds(rule), transactionIds => new Set(transactionIds))
                 );

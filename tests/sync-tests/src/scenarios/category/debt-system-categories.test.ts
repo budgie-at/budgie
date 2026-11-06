@@ -12,22 +12,17 @@ import { inArray } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import { TestLayer } from '../../harness';
-import { testDb } from '../../harness/scenario/setup';
+import { testDb } from '../../harness/scenario/test-db';
 
 const DEBT_CATEGORY_IDS = [LENDING_CATEGORY_ID, BORROWING_CATEGORY_ID];
 
-const fetchDebtSystemCategories = () =>
-    Effect.gen(function* () {
-        return yield* testDb.select().from(CategoryEntityTable).where(inArray(CategoryEntityTable.id, DEBT_CATEGORY_IDS));
-    });
+const fetchDebtSystemCategories = () => testDb.select().from(CategoryEntityTable).where(inArray(CategoryEntityTable.id, DEBT_CATEGORY_IDS));
 
 const fetchDebtSystemTranslations = () =>
-    Effect.gen(function* () {
-        return yield* testDb
-            .select()
-            .from(DefaultCategoryTranslationEntityTable)
-            .where(inArray(DefaultCategoryTranslationEntityTable.categoryId, DEBT_CATEGORY_IDS));
-    });
+    testDb
+        .select()
+        .from(DefaultCategoryTranslationEntityTable)
+        .where(inArray(DefaultCategoryTranslationEntityTable.categoryId, DEBT_CATEGORY_IDS));
 
 describe('category/debt-system-categories', () => {
     it.effect('seeds Lending and Borrowing as default system categories with a title per language', () =>

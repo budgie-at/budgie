@@ -1,10 +1,10 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans } from '@lingui/react/macro';
-import { StyleSheet, Text, View } from 'react-native';
-import { useCSSVariable } from 'uniwind';
+import { Text, View } from 'react-native';
 
-import { CollapsibleHeader } from '@rnw-community/react-native-collapsible-header';
+import { CollapsibleHeaderBackdrop } from '@rnw-community/react-native-screen-chrome';
 
+import { CollapsibleChromeHeader } from '../../../@generic/component/collapsible-chrome-header/collapsible-chrome-header';
 import { HeroFigure } from '../../../@generic/component/hero-figure/hero-figure';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
@@ -22,28 +22,17 @@ interface Props {
     readonly isLoading: boolean;
 }
 
-const HEADER_COLLAPSED_HEIGHT = 44;
-const HEADER_EXPANDED_HEIGHT = 156;
-const SCROLL_THRESHOLD = 112;
-
 export const NetWorthCollapsibleHeader = (props: Props) => {
     const { netWorth, isLoading } = props;
 
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const isRunwayPillEnabled = useSetting('isRunwayPillEnabled');
     const formatDigits = useDisplayFormatDigits();
-    const [surfaceColor, separatorColor] = useCSSVariable(['--color-grouped-surface', '--color-surface-separator']);
 
     const formattedNetWorth = toTrueMinus(formatDigits(netWorth, defaultInstrument.symbol));
     const formattedNetWorthValue = formatDigits(netWorth);
-    const backgroundStyle = {
-        backgroundColor: String(surfaceColor),
-        borderBottomColor: String(separatorColor),
-        borderBottomWidth: StyleSheet.hairlineWidth
-    };
-
     const expandedContent = (
-        <View className="flex-1 justify-end gap-y-sm pt-sm pr-[28px] pb-lg pl-[32px]">
+        <View className="flex-1 justify-end gap-y-sm pt-sm pr-[12px] pb-lg pl-[16px]" pointerEvents="box-none">
             <View className="flex-row items-center justify-between">
                 <Text maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER} className="text-[15px] font-medium text-secondary-foreground">
                     <Trans>Total Balance</Trans>
@@ -67,7 +56,7 @@ export const NetWorthCollapsibleHeader = (props: Props) => {
     );
 
     const collapsedContent = (
-        <View className="flex-1 flex-row items-center justify-between gap-x-md pr-[28px] pl-[32px]">
+        <View className="self-stretch flex-row items-center justify-between gap-x-md pr-[12px] pl-[16px]" pointerEvents="box-none">
             <Text
                 maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
                 numberOfLines={1}
@@ -75,6 +64,7 @@ export const NetWorthCollapsibleHeader = (props: Props) => {
             >
                 <Trans>Total Balance</Trans>
             </Text>
+            {isRunwayPillEnabled ? <RunwayPill /> : null}
             <ProtectedText
                 maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
                 numberOfLines={1}
@@ -87,16 +77,15 @@ export const NetWorthCollapsibleHeader = (props: Props) => {
     );
 
     return (
-        <View className="pt-safe">
-            <CollapsibleHeader
+        <>
+            <CollapsibleHeaderBackdrop />
+            <CollapsibleChromeHeader
                 testID={HomePageSelector.TotalBalance}
-                expandedHeight={HEADER_EXPANDED_HEIGHT}
-                collapsedHeight={HEADER_COLLAPSED_HEIGHT}
-                collapseDistance={SCROLL_THRESHOLD}
-                backgroundStyle={backgroundStyle}
-                expandedContent={expandedContent}
-                collapsedContent={collapsedContent}
+                expandedTitle={expandedContent}
+                expandedTitlePointerEvents="box-none"
+                collapsedTitle={collapsedContent}
+                collapsedTitlePointerEvents="box-none"
             />
-        </View>
+        </>
     );
 };

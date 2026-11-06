@@ -27,7 +27,7 @@ export class AppDataSyncService extends Context.Service<AppDataSyncService>()('@
                 yield* logAndContinue(accountBalanceIncrementalService.updateAllBalances(false));
                 yield* logAndContinue(walletCaptureNativeService.refreshAccounts());
                 yield* logAndContinue(walletCaptureImportService.drain());
-                yield* logAndContinue(exchangeRateBackgroundService.sync());
+                yield* logAndContinue(exchangeRateBackgroundService.sync);
                 if (yield* workload.hasQueuedUserWork) {
                     return false;
                 }

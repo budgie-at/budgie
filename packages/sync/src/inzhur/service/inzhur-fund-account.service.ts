@@ -80,7 +80,7 @@ export class InzhurFundAccountService extends Context.Service<InzhurFundAccountS
         });
 
         const findByCanonicalName = Effect.fnUntraced(function* (setup: InzhurSetupInterface, name: string) {
-            const instruments = yield* instrumentRepository.getAll();
+            const instruments = yield* instrumentRepository.getAll;
 
             return setup.fundAccounts.flatMap(account => {
                 const instrument = instruments.find(candidate => candidate.id === account.instrumentId);

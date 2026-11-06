@@ -76,7 +76,7 @@ describe('categorization/inbox-evidence', () => {
                 followUpExpense.id,
                 ruleExpense.id
             ]);
-            const evidence = yield* inboxRepository.findTagEvidence();
+            const evidence = yield* inboxRepository.findTagEvidence;
 
             expect(storedSources.map(row => [row.transactionId, row.source])).toEqual(
                 expect.arrayContaining([
@@ -113,7 +113,7 @@ describe('categorization/inbox-evidence', () => {
                 .select({ categoryId: TransactionEntryEntityTable.categoryId, categorySource: TransactionEntryEntityTable.categorySource })
                 .from(TransactionEntryEntityTable)
                 .where(inArray(TransactionEntryEntityTable.transactionId, [inboxExpense.id]));
-            const evidence = yield* inboxRepository.findCategoryEvidence();
+            const evidence = yield* inboxRepository.findCategoryEvidence;
 
             expect(inboxEntries).toContainEqual({ categoryId: category.id, categorySource: CategorySourceEnum.INBOX });
             expect(evidence.filter(row => row.labelId === category.id).map(row => row.title)).toEqual(['Evidence User Market']);

@@ -1,8 +1,8 @@
 import { Db, SettingsRepository } from '@budgie/contracts';
 import { format } from 'date-fns/format';
 import * as Cause from 'effect/Cause';
-import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Schema from 'effect/Schema';
@@ -30,7 +30,7 @@ export class DatabaseExportService extends Context.Service<DatabaseExportService
                 }
             });
         const completedCheckpoint = Schema.Tuple([
-            Schema.Struct({ busy: Schema.Literals([0]), log: Schema.Number, checkpointed: Schema.Number }).check(
+            Schema.Struct({ busy: Schema.Literals([0]), log: Schema.Finite, checkpointed: Schema.Finite }).check(
                 Schema.makeFilter(checkpoint => checkpoint.log === checkpoint.checkpointed)
             )
         ]);
@@ -44,9 +44,9 @@ export class DatabaseExportService extends Context.Service<DatabaseExportService
                         yield* Effect.gen(function* () {
                             const connection = yield* client.reserve;
 
-                            yield* Schema.decodeUnknownEffect(completedCheckpoint)(
-                                yield* connection.executeRaw(...client`PRAGMA wal_checkpoint(FULL)`.compile())
-                            ).pipe(Effect.orDie);
+                            const checkpointRows = yield* connection.executeRaw(...client`PRAGMA wal_checkpoint(FULL)`.compile());
+
+                            yield* Schema.decodeUnknownEffect(completedCheckpoint)(checkpointRows).pipe(Effect.orDie);
                             yield* Effect.promise(() => new File(DATABASE_DIRECTORY, DB_NAME).copy(databaseCopy));
                         }).pipe(Effect.scoped);
                         yield* Effect.promise(() => zip([toNativePath(databaseCopy.uri)], toNativePath(archive.uri)));
@@ -59,7 +59,7 @@ export class DatabaseExportService extends Context.Service<DatabaseExportService
             saveBackup: Effect.fn('DatabaseExportService.saveBackup')(function* () {
                 const directory = yield* Effect.tryPromise({
                     try: () => Directory.pickDirectoryAsync(),
-                    catch: cause => new BackupDirectoryPickerError({ cause })
+                    catch: cause => BackupDirectoryPickerError.make({ cause })
                 }).pipe(
                     Effect.catchTags({
                         BackupDirectoryPickerError: error =>
@@ -71,10 +71,10 @@ export class DatabaseExportService extends Context.Service<DatabaseExportService
                     return false;
                 }
 
-                const timestamp = yield* Clock.currentTimeMillis;
+                const startedAt = yield* DateTime.nowAsDate;
 
                 yield* Effect.acquireUseRelease(
-                    Effect.sync(() => new File(Paths.cache, `budgie-backup-${format(new Date(timestamp), 'yyyy-MM-dd-HHmmssSSS')}.db.zip`)),
+                    Effect.sync(() => new File(Paths.cache, `budgie-backup-${format(startedAt, 'yyyy-MM-dd-HHmmssSSS')}.db.zip`)),
                     archive =>
                         writeArchive(archive).pipe(
                             Effect.andThen(
@@ -86,7 +86,8 @@ export class DatabaseExportService extends Context.Service<DatabaseExportService
                         ),
                     removeCacheFile
                 );
-                yield* settingsRepository.update({ lastBackupAt: new Date(yield* Clock.currentTimeMillis) });
+                const backedUpAt = yield* DateTime.nowAsDate;
+                yield* settingsRepository.update({ lastBackupAt: backedUpAt });
 
                 return true;
             }),

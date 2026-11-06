@@ -1,3 +1,4 @@
+import type { PollingSyncError } from './polling-sync-error.type';
 import type { SyncBatchResultInterface } from './sync-batch-result.interface';
 import type { SyncServiceDefinitionInterface } from './sync-service-definition.interface';
 import type { Db, SyncEntityInterface } from '@budgie/contracts';
@@ -12,13 +13,13 @@ export interface PollingSyncServiceDefinitionInterface extends SyncServiceDefini
     readonly executeSyncBatch: (
         sync: SyncEntityInterface,
         token: string
-    ) => Effect.Effect<SyncBatchResultInterface, unknown, Db | HttpClient.HttpClient>;
-    readonly beforeSyncRun: (deadlineAtMs: number) => Effect.Effect<void, unknown, Db>;
-    readonly beforeProcessRun?: (tokens: readonly string[]) => Effect.Effect<void, unknown, Db | HttpClient.HttpClient>;
+    ) => Effect.Effect<SyncBatchResultInterface, PollingSyncError, Db | HttpClient.HttpClient>;
+    readonly beforeSyncRun: (deadlineAtMs: number) => Effect.Effect<void, PollingSyncError, Db>;
+    readonly beforeProcessRun?: (tokens: readonly string[]) => Effect.Effect<void, PollingSyncError, Db | HttpClient.HttpClient>;
     readonly applyProgressUpdate?: (
         sync: SyncEntityInterface,
         result: SyncBatchResultInterface
-    ) => Effect.Effect<void, unknown, Db | HttpClient.HttpClient>;
+    ) => Effect.Effect<void, PollingSyncError, Db | HttpClient.HttpClient>;
     readonly afterSyncRun?: () => void;
     readonly isRunWorkComplete?: () => boolean;
     readonly isRunDeferred?: () => boolean;

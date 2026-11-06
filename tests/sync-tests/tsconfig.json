@@ -5,6 +5,8 @@
         "moduleResolution": "bundler",
         "customConditions": ["react-native-legacy-deep-imports"],
         "noEmit": true,
+        "declaration": false,
+        "declarationMap": false,
         "allowJs": true,
         "types": ["node"],
         "paths": {

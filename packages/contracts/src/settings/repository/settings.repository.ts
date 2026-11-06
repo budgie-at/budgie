@@ -23,24 +23,21 @@ export class SettingsRepository extends Context.Service<SettingsRepository>()('@
         }),
         update: (input: Partial<SettingsCreateEntityInterface>) =>
             Db.query(db => db.update(SettingsEntityTable).set(input).returning()).pipe(Effect.map(([settings]) => settings)),
-        find: () => Db.query(db => db.query.SettingsEntityTable.findFirst()),
-        findDefaultInstrument: () =>
-            Db.query(db =>
-                db.query.SettingsEntityTable.findFirst({
-                    columns: { id: true },
-                    with: { [SettingsAssociationEnum.DEFAULT_INSTRUMENT]: true }
-                })
-            ).pipe(Effect.map(settings => settings?.defaultInstrument ?? null)),
-        findDefaultAccount: () =>
-            Db.query(db =>
-                db.query.SettingsEntityTable.findFirst({ columns: { id: true }, with: { [SettingsAssociationEnum.DEFAULT_ACCOUNT]: true } })
-            ).pipe(Effect.map(settings => settings?.defaultAccount ?? null)),
-        findSettings: () =>
-            Db.query(db =>
-                db.query.SettingsEntityTable.findFirst({
-                    with: { [SettingsAssociationEnum.DEFAULT_INSTRUMENT]: true, [SettingsAssociationEnum.DEFAULT_ACCOUNT]: true }
-                })
-            )
+        find: Db.query(db => db.query.SettingsEntityTable.findFirst()),
+        findDefaultInstrument: Db.query(db =>
+            db.query.SettingsEntityTable.findFirst({
+                columns: { id: true },
+                with: { [SettingsAssociationEnum.DEFAULT_INSTRUMENT]: true }
+            })
+        ).pipe(Effect.map(settings => settings?.defaultInstrument ?? null)),
+        findDefaultAccount: Db.query(db =>
+            db.query.SettingsEntityTable.findFirst({ columns: { id: true }, with: { [SettingsAssociationEnum.DEFAULT_ACCOUNT]: true } })
+        ).pipe(Effect.map(settings => settings?.defaultAccount ?? null)),
+        findSettings: Db.query(db =>
+            db.query.SettingsEntityTable.findFirst({
+                with: { [SettingsAssociationEnum.DEFAULT_INSTRUMENT]: true, [SettingsAssociationEnum.DEFAULT_ACCOUNT]: true }
+            })
+        )
     })
 }) {
     static readonly layer = Layer.effect(SettingsRepository, SettingsRepository.make);

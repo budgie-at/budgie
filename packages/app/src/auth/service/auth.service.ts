@@ -1,3 +1,4 @@
+import * as Clock from 'effect/Clock';
 /* oxlint-disable lingui/no-unlocalized-strings */
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -61,8 +62,10 @@ export class AuthService extends Context.Service<AuthService>()('@budgie/app/Aut
             yield* databaseLifecycleService.run(DatabaseLifecycleOperationEnum.REKEY, runRekey(params, afterCommit));
         });
 
-        const grantSealUnlock = Effect.promise(() =>
-            SecureStore.setItemAsync(SEAL_UNLOCK_GRANT_KEY, String(Date.now()), PIN_SECURE_STORE_OPTIONS)
+        const grantSealUnlock = Clock.currentTimeMillis.pipe(
+            Effect.flatMap(now =>
+                Effect.promise(() => SecureStore.setItemAsync(SEAL_UNLOCK_GRANT_KEY, String(now), PIN_SECURE_STORE_OPTIONS))
+            )
         );
 
         return {
@@ -110,7 +113,7 @@ export class AuthService extends Context.Service<AuthService>()('@budgie/app/Aut
                     );
 
                     if (result.success) {
-                        yield* pinAttemptService.reset();
+                        yield* pinAttemptService.reset;
                     }
 
                     return result.success;

@@ -53,28 +53,28 @@ export const useWalletCaptureSettings = () => {
     const [mutatingCaptureIds, setMutatingCaptureIds] = useState<Record<string, boolean>>({});
     const reviewItems = AsyncResult.isSuccess(result) ? result.value.reviewItems : [];
     const accountDetails = AsyncResult.isSuccess(result) ? result.value.accountDetails : [];
-    const errorMessage = mutationError ?? (AsyncResult.isFailure(result) ? getErrorMessage(Cause.squash(result.cause)) : null);
+    const errorMessage = mutationError ?? (AsyncResult.isFailure(result) ? result.cause.pipe(Cause.squash, getErrorMessage) : null);
 
     const refresh = useCallback(() => {
         appRuntime.runFork(
             Effect.flatMap(WalletCaptureNativeService, service => service.refreshAccounts()).pipe(
                 Effect.tapCause(Effect.logError),
                 Effect.matchCause({
-                    onFailure: cause => void setMutationError(getErrorMessage(Cause.squash(cause))),
+                    onFailure: cause => void setMutationError(cause.pipe(Cause.squash, getErrorMessage)),
                     onSuccess: refreshAtom
                 })
             )
         );
     }, [refreshAtom]);
 
-    const runCaptureMutation = (captureId: string, mutation: Effect.Effect<unknown, unknown, AppServices>) => {
+    const runCaptureMutation = (captureId: string, mutation: Effect.Effect<unknown, Cause.YieldableError, AppServices>) => {
         setMutatingCaptureIds(previous => ({ ...previous, [captureId]: true }));
         setMutationError(null);
         appRuntime.runFork(
             mutation.pipe(
                 Effect.tapCause(Effect.logError),
                 Effect.matchCause({
-                    onFailure: cause => void setMutationError(getErrorMessage(Cause.squash(cause))),
+                    onFailure: cause => void setMutationError(cause.pipe(Cause.squash, getErrorMessage)),
                     onSuccess: refreshAtom
                 }),
                 Effect.ensuring(Effect.sync(() => void setMutatingCaptureIds(previous => ({ ...previous, [captureId]: false }))))

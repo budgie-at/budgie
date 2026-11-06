@@ -8,6 +8,7 @@ import * as ManagedRuntime from 'effect/ManagedRuntime';
 import * as Reactivity from 'effect/reactivity/Reactivity';
 
 import { makeTestDatabase } from './make-test-database';
+import { snapshotTestDb } from './reset-test-db';
 import { acquireTestDatabasePath } from './test-database-file';
 
 export const makeTestDbLayer = (sourceDatabasePath: string | null) =>
@@ -23,13 +24,11 @@ export const makeTestDbLayer = (sourceDatabasePath: string | null) =>
             const migrationService = yield* DatabaseMigrationService.make;
 
             yield* migrationService.migrate().pipe(Effect.provideService(Db, database));
+            yield* snapshotTestDb(client);
 
             return database;
         }).pipe(Effect.orDie)
     ).pipe(Layer.provide(Reactivity.layer));
 
-export const buildTestDb = (sourceDatabasePath: string | null = null) => {
-    const runtime = ManagedRuntime.make(makeTestDbLayer(sourceDatabasePath));
-
-    return runtime.runPromise(Db).then(database => ({ database, dispose: () => runtime.dispose() }));
-};
+export const buildTestDb = (sourceDatabasePath: string | null = null) =>
+    ManagedRuntime.make(makeTestDbLayer(sourceDatabasePath)).runPromise(Db);

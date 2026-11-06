@@ -12,7 +12,6 @@ import { ScreenChromeThemeProvider } from '../../provider/screen-chrome-theme.pr
 import { cn } from '../../utils/cn.util';
 import { testID as testIDProps } from '../../utils/test-id.util';
 import { ChromeKeyboardScrollView } from '../chrome-keyboard-scroll-view/chrome-keyboard-scroll-view';
-import { CollapsibleChromeHeaderScrim } from '../collapsible-chrome-header-scrim/collapsible-chrome-header-scrim';
 import { CollapsibleChromeHeader } from '../collapsible-chrome-header/collapsible-chrome-header';
 import { StickyFooterBand } from '../sticky-footer-band/sticky-footer-band';
 
@@ -31,7 +30,6 @@ type Props = TitleProps & {
     readonly footer?: ReactNode;
     readonly scrollViewProps?: Pick<ComponentProps<typeof ChromeKeyboardScrollView>, 'ref' | 'onLayout' | 'bottomOffset'>;
     readonly contentClassName?: string;
-    readonly scrimClassName?: string;
     readonly testID?: string;
     readonly chromeConfig?: ScreenChromeConfigOverridesInterface;
 };
@@ -51,7 +49,6 @@ export const CollapsibleChromePage = ({
     footer,
     scrollViewProps,
     contentClassName,
-    scrimClassName,
     testID,
     chromeConfig
 }: Props): ReactNode => {
@@ -110,8 +107,6 @@ export const CollapsibleChromePage = ({
                 </ChromeKeyboardScrollView>
 
                 <CollapsibleHeaderBackdrop />
-
-                <CollapsibleChromeHeaderScrim className={scrimClassName} />
 
                 <CollapsibleChromeHeader
                     {...testIDProps(testID, TestIDPartEnum.HEADER)}

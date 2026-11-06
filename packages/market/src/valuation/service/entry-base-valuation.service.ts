@@ -201,7 +201,7 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
             const account = yield* Cache.get(context.accounts, accountId);
 
             if (!isDefined(account)) {
-                return yield* new AccountNotFoundError({ id: accountId });
+                return yield* AccountNotFoundError.make({ id: accountId });
             }
 
             if (!isDefined(baseInstrument) || !isPositiveNumber(baseInstrument.id)) {
@@ -271,21 +271,26 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
             valueMicroUnitEntry: Effect.fn('EntryBaseValuationService.valueMicroUnitEntry')(function* (
                 input: EntryBaseValuationInputInterface
             ) {
-                return yield* valueAccountAmount(input, yield* createContext());
+                const valuationContext = yield* createContext();
+
+                return yield* valueAccountAmount(input, valuationContext);
             }),
             valueEntries: Effect.fn('EntryBaseValuationService.valueEntries')(function* (
                 entries: TransactionEntryCreateInputInterface[],
                 operatedAt: Date
             ) {
-                return yield* valueEntriesInContext(entries, operatedAt, yield* createContext());
+                const valuationContext = yield* createContext();
+
+                return yield* valueEntriesInContext(entries, operatedAt, valuationContext);
             }),
             valueTransactionsEntries: Effect.fn('EntryBaseValuationService.valueTransactionsEntries')(function* (
                 transactions: readonly Pick<TransactionCreateInputInterface, 'entries' | 'operatedAt'>[]
             ) {
                 const context = yield* createContext();
 
-                return yield* Effect.all(
-                    transactions.map(transaction => valueEntriesInContext(transaction.entries, transaction.operatedAt, context)),
+                return yield* Effect.forEach(
+                    transactions,
+                    transaction => valueEntriesInContext(transaction.entries, transaction.operatedAt, context),
                     { concurrency: 'unbounded' }
                 );
             })

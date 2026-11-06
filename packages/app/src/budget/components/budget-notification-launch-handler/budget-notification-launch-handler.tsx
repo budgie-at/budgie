@@ -13,7 +13,7 @@ const decodePaceNotificationData = Schema.decodeUnknownOption(
     Schema.Struct({
         kind: Schema.Literal(BudgetAlertKindEnum.PACE),
         scope: Schema.Enum(BudgetAlertScopeEnum),
-        categoryId: Schema.NullOr(Schema.Number)
+        categoryId: Schema.NullOr(Schema.Finite)
     })
 );
 

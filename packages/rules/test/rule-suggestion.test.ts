@@ -2,6 +2,7 @@ import { RuleActionTypeEnum } from '@budgie/contracts';
 import { RuleService, RuleSuggestionDuplicateError, buildCategoryTagActions, detectRuleChanges } from '@budgie/rules';
 import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
+import * as Schema from 'effect/Schema';
 
 import { TestLayer, testSeedService } from './context';
 
@@ -39,7 +40,7 @@ layer(TestLayer)('rule suggestion', it => {
             const created = yield* ruleService.createFromSuggestion({ ...suggestion, tagIds: [tag.id] });
             const duplicateRuleId = yield* ruleService.createFromSuggestion(suggestion).pipe(
                 Effect.flip,
-                Effect.map(error => (error instanceof RuleSuggestionDuplicateError ? error.ruleId : null))
+                Effect.map(error => (Schema.is(RuleSuggestionDuplicateError)(error) ? error.ruleId : null))
             );
 
             expect(duplicateRuleId).toBe(created.id);

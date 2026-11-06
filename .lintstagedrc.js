@@ -5,7 +5,7 @@ module.exports = {
     '*.{ts,tsx}': filenames => {
         const files = filenames.filter(file => !isLocaleCatalogFile(file) && !isE2eFile(file));
 
-        return files.length === 0 ? [] : [`oxlint --type-aware --fix ${files.join(' ')}`];
+        return files.length === 0 ? [] : [`effect-tsgo --tsrs-lint oxlint --type-aware --fix ${files.join(' ')}`];
     },
     '*.{ts,tsx,md,json,js}': filenames => {
         const files = filenames.filter(file => !isLocaleCatalogFile(file));

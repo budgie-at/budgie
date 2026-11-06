@@ -3,6 +3,7 @@ import * as Effect from 'effect/Effect';
 import * as FiberSet from 'effect/FiberSet';
 import * as Layer from 'effect/Layer';
 import * as Ref from 'effect/Ref';
+import * as Schema from 'effect/Schema';
 import * as Semaphore from 'effect/Semaphore';
 import * as Stream from 'effect/Stream';
 import * as BackgroundTask from 'expo-background-task';
@@ -74,7 +75,9 @@ export class WidgetSnapshotService extends Context.Service<WidgetSnapshotService
         const writeSemaphore = yield* Semaphore.make(1);
         const isLocked = yield* Ref.make(false);
         const publishedSnapshotKey = yield* Ref.make('');
-        const runFork = yield* FiberSet.runtime(yield* FiberSet.make())();
+        const encodeJson = Schema.encodeUnknownEffect(Schema.fromJsonString(Schema.Unknown));
+        const forkFiberSet = yield* FiberSet.make();
+        const runFork = yield* FiberSet.runtime(forkFiberSet)();
 
         const pushToWidgets = (snapshot: WidgetSnapshotInterface): void => {
             NetWorthWidget.updateSnapshot({
@@ -100,7 +103,7 @@ export class WidgetSnapshotService extends Context.Service<WidgetSnapshotService
 
         const write = Effect.fn('WidgetSnapshotService.write')(function* (isMaskForced: boolean) {
             const snapshot = yield* widgetSnapshotBuilderService.buildSnapshot(isMaskForced);
-            const snapshotKey = JSON.stringify(snapshot);
+            const snapshotKey = yield* encodeJson(snapshot).pipe(Effect.orDie);
 
             if (snapshotKey === (yield* Ref.get(publishedSnapshotKey))) {
                 return false;

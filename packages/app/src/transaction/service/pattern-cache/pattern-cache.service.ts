@@ -1,3 +1,4 @@
+import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -35,7 +36,7 @@ export class PatternCacheService extends Context.Service<PatternCacheService>()(
             invalidate,
             memoize: Effect.fn('PatternCacheService.memoize')(function* (key: string, compute: PatternComputeType) {
                 const existing = entries.get(key);
-                const now = Date.now();
+                const now = yield* Clock.currentTimeMillis;
 
                 if (isDefined(existing) && now - existing.storedAt < ttlMs) {
                     entries.delete(key);

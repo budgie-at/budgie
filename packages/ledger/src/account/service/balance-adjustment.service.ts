@@ -7,6 +7,8 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { EntryBaseValuationService } from '@budgie/market';
+import { min } from 'date-fns/min';
+import { subMilliseconds } from 'date-fns/subMilliseconds';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -96,9 +98,7 @@ export class BalanceAdjustmentService extends Context.Service<BalanceAdjustmentS
             }
 
             const oldestAt = yield* transactionRepository.getTransactionTimeByAccountId(accountId, 'earliest');
-            const operatedAt = new Date(
-                Math.min(reconciledAt.getTime(), (oldestAt ?? reconciledAt).getTime() - millisecondsBeforeOldestEntry)
-            );
+            const operatedAt = min([reconciledAt, subMilliseconds(oldestAt ?? reconciledAt, millisecondsBeforeOldestEntry)]);
             const nextTransactionId = targetAmount === 0 ? null : yield* create(accountId, targetAmount, operatedAt);
 
             yield* syncRepository.update(sync.id, { reconciliationTransactionId: nextTransactionId });
@@ -107,7 +107,8 @@ export class BalanceAdjustmentService extends Context.Service<BalanceAdjustmentS
         return {
             create,
             rebaseReconciliations: Effect.fn('BalanceAdjustmentService.rebaseReconciliations')(function* (accountIds: number[]) {
-                yield* Effect.forEach(yield* syncRepository.findReconciledByAccountIds(accountIds), rebase, { discard: true });
+                const reconciledSyncs = yield* syncRepository.findReconciledByAccountIds(accountIds);
+                yield* Effect.forEach(reconciledSyncs, rebase, { discard: true });
             })
         };
     })

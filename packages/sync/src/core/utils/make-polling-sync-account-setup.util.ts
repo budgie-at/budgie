@@ -1,6 +1,7 @@
 import { AccountRepository, SyncModeEnum, SyncRepository, SyncStatusEnum } from '@budgie/contracts';
 import { TransactionService } from '@budgie/ledger';
 import { subMonths } from 'date-fns/subMonths';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
@@ -30,7 +31,7 @@ export const makePollingSyncAccountSetup = Effect.fnUntraced(function* (provider
         historyDepth: SyncHistoryDepthEnum = SyncHistoryDepthEnum.FULL,
         setupBalance: number | null = null
     ) {
-        const now = new Date();
+        const now = yield* DateTime.nowAsDate;
         const months = backwardSyncLimitMonths[historyDepth];
         const backwardSyncLimitAt = isDefined(months) ? subMonths(now, months) : null;
         const integration = yield* syncIntegrationTokenService.getOrCreateIntegration(provider, token);

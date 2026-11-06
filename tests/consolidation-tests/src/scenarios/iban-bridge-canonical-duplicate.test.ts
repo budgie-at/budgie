@@ -42,7 +42,7 @@ const seedBridgeAddressedDuplicateAfterCanonical = Effect.fnUntraced(function* (
     yield* rebuildStoredBalances;
     expect(yield* countCanonicalDuplicateCandidates()).toBe(1);
 
-    return { ...fixture, canonicalId: yield* fetchBridgeCanonicalId() };
+    return { ...fixture, canonicalId: yield* fetchBridgeCanonicalId };
 });
 
 layer(TestLayer)('consolidation/iban-bridge-canonical-duplicate absorption', it => {
@@ -66,14 +66,14 @@ layer(TestLayer)('consolidation/iban-bridge-canonical-duplicate absorption', it 
                     .update(TransactionEntityTable)
                     .set({ operatedAt: new Date(IBAN_BRIDGE_OPERATED_AT.getTime() + timeGapSeconds * 1000) })
                     .where(inArray(TransactionEntityTable.id, [sourceExpense.id, targetIncome.id]));
-                const canonicalId = yield* fetchBridgeCanonicalId();
+                const canonicalId = yield* fetchBridgeCanonicalId;
                 const accountIds: [number, number, number] = [sourceAccount.id, bridgeAccount.id, targetAccount.id];
                 const balancesBeforeAbsorb = yield* fetchLedgerBalances(accountIds);
 
                 const result = yield* runConsolidation();
 
                 expect(result.consolidated).toBe(1);
-                expect(yield* fetchBridgeCanonicalId()).toBe(canonicalId);
+                expect(yield* fetchBridgeCanonicalId).toBe(canonicalId);
                 yield* expectConsolidationParent(sourceExpense.id, canonicalId);
                 yield* expectConsolidationParent(targetIncome.id, canonicalId);
                 expect(yield* fetchMovedSourceIds(canonicalId)).toEqual(
@@ -103,7 +103,7 @@ layer(TestLayer)('consolidation/iban-bridge-canonical-duplicate absorption', it 
             const balancesBeforeConsolidation = yield* fetchLedgerBalances(accountIds);
 
             const result = yield* runConsolidation();
-            const canonicalId = yield* fetchBridgeCanonicalId();
+            const canonicalId = yield* fetchBridgeCanonicalId;
 
             expect(result.consolidated).toBe(3);
             expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(0);
@@ -273,7 +273,7 @@ layer(TestLayer)('consolidation/iban-bridge-canonical-duplicate revert', it => {
                 targetIncome
             } = yield* seedIbanBridgeCanonicalDuplicateFixture();
             yield* runConsolidation();
-            const canonicalId = yield* fetchBridgeCanonicalId();
+            const canonicalId = yield* fetchBridgeCanonicalId;
             yield* unconsolidateById(canonicalId);
 
             yield* expectRevertRemovedCanonical(canonicalId, [
