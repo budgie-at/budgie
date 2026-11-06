@@ -19,10 +19,12 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { INZHUR_BANK_DESCRIPTION_PATTERNS } from '../constant/inzhur-bank-description-patterns.constant';
+import { INZHUR_BANK_FLOW_TITLES } from '../constant/inzhur-bank-flow-titles.constant';
 import { INZHUR_UNATTRIBUTED_DIVIDEND_TITLE } from '../constant/inzhur-unattributed-dividend-title.constant';
 import { InzhurBankFlowKindEnum } from '../enum/inzhur-bank-flow-kind.enum';
 import { InzhurOperationKindEnum } from '../enum/inzhur-operation-kind.enum';
 import { sumSignedAccountEntries } from '../utils/sum-signed-account-entries.util';
+import { toInzhurShortName } from '../utils/to-inzhur-short-name.util';
 
 import { InzhurCashPairingService } from './inzhur-cash-pairing.service';
 import { InzhurOpeningBalanceService } from './inzhur-opening-balance.service';
@@ -43,8 +45,6 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
         const inzhurOpeningBalanceService = yield* InzhurOpeningBalanceService;
         const inzhurCashPairingService = yield* InzhurCashPairingService;
         const { counterparties, companyIbans, dividendKeywords, externalSources, withdrawalPhrases } = INZHUR_BANK_DESCRIPTION_PATTERNS;
-        const topUpTitle = 'Top-up to Inzhur';
-        const withdrawalTitle = 'Withdrawal from Inzhur';
 
         const normalizeIban = (iban: string) => iban.replaceAll(/\s+/gu, '').toUpperCase();
 
@@ -105,7 +105,7 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
             setup: InzhurSetupInterface
         ) {
             const fund = setup.fundAccounts.find(account => account.id === fundAccountId);
-            const title = isDefined(fund) ? `${fund.title.replace(/^Inzhur\s+/u, '')} dividends` : INZHUR_UNATTRIBUTED_DIVIDEND_TITLE;
+            const title = isDefined(fund) ? `${toInzhurShortName(fund.title)} dividends` : INZHUR_UNATTRIBUTED_DIVIDEND_TITLE;
 
             if (transaction.title === title || transaction.updatedBy === TransactionUpdatedByEnum.USER) {
                 return;
@@ -163,9 +163,9 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
 
         const convertAndPair = Effect.fnUntraced(function* (
             transaction: TransactionWithEntriesEntityInterface,
-            setup: InzhurSetupInterface
+            setup: InzhurSetupInterface,
+            placeholder: { readonly id: number; readonly externalId: string } | null
         ) {
-            const placeholder = yield* findPlaceholder(transaction, setup);
             const outcome = yield* convertToCash(transaction, setup);
 
             if (!isDefined(outcome) || !isDefined(placeholder)) {
@@ -217,7 +217,7 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
             const placeholder = yield* findPlaceholder(transaction, setup);
 
             if (!isDividendCandidate(transaction) || isDefined(placeholder)) {
-                return yield* convertAndPair(transaction, setup);
+                return yield* convertAndPair(transaction, setup, placeholder);
             }
 
             const description = toDescription(transaction);
@@ -242,7 +242,12 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
             );
             const outcomes = (yield* Effect.forEach(genuineFirst, transaction => processTransaction(transaction, setup))).filter(isDefined);
 
-            yield* transactionRepository.retitleExternalTransfers(externalSources, setup.cashAccount.id, topUpTitle, withdrawalTitle);
+            yield* transactionRepository.retitleExternalTransfers(
+                externalSources,
+                setup.cashAccount.id,
+                INZHUR_BANK_FLOW_TITLES.topUp,
+                INZHUR_BANK_FLOW_TITLES.withdrawal
+            );
 
             return {
                 topUps: outcomes.filter(outcome => outcome.kind === InzhurBankFlowKindEnum.TOP_UP).length,
@@ -265,7 +270,12 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
                     yield* transactionRepository.updateById(transaction.id, { fundAccountId: null });
                 }
 
-                yield* transactionRepository.retitleExternalTransfers(externalSources, setup.cashAccount.id, topUpTitle, withdrawalTitle);
+                yield* transactionRepository.retitleExternalTransfers(
+                    externalSources,
+                    setup.cashAccount.id,
+                    INZHUR_BANK_FLOW_TITLES.topUp,
+                    INZHUR_BANK_FLOW_TITLES.withdrawal
+                );
 
                 return isDefined(outcome);
             }),

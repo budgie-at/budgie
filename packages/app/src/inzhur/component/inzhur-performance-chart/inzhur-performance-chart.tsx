@@ -3,10 +3,12 @@ import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
 
+import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { CurrencyMarketChart } from '../../../market-data/component/currency-market-chart/currency-market-chart';
 import { useMarketChartTimeline } from '../../../market-data/hook/use-market-chart-timeline.hook';
 import { useInzhurChartScrub } from '../../hook/use-inzhur-chart-scrub.hook';
 import { useInzhurChartSummary } from '../../hook/use-inzhur-chart-summary.hook';
+import { InzhurSelector } from '../../selector/inzhur.selector';
 import { InzhurRangeControl } from '../inzhur-range-control/inzhur-range-control';
 
 import type { InzhurRangedGainInterface, InzhurValuePointInterface } from '@budgie/sync';
@@ -36,7 +38,11 @@ export const InzhurPerformanceChart = ({ points, gains, subject, caption, testID
         [InzhurGainRangeEnum.THREE_MONTHS]: t`3M`,
         [InzhurGainRangeEnum.ALL]: t`All`
     };
-    const segments = gains.map(gain => ({ value: gain.range, label: rangeLabels[gain.range], testID: `${testID}.Range.${gain.range}` }));
+    const segments = gains.map(gain => ({
+        value: gain.range,
+        label: rangeLabels[gain.range],
+        ...testIDProps(testID, InzhurSelector.ChartRange, gain.range)
+    }));
 
     const handleRangeChange = (nextRange: InzhurGainRangeEnum) => {
         handleScrub(null);

@@ -1,5 +1,7 @@
 import { convertFromMicroUnits, convertToMicroUnits } from '@budgie/contracts';
 
+import { isPositiveNumber } from '@rnw-community/shared';
+
 import { InzhurOperationKindEnum } from '../enum/inzhur-operation-kind.enum';
 import { findLowestDayEndBalance } from '../utils/find-lowest-day-end-balance.util';
 import { toKyivDay } from '../utils/to-kyiv-day.util';
@@ -28,8 +30,7 @@ class InzhurOperationsPlanner {
             surchargeAmount,
             firstAt: first?.occurredAt ?? new Date(0),
             lastAt: last?.occurredAt ?? new Date(0),
-            isFullHistory: first?.kind === InzhurOperationKindEnum.TOP_UP && !this.dipsBelowZero(operations),
-            cashTotal: convertFromMicroUnits(operations.reduce((sum, operation) => sum + this.cashDelta(operation), 0))
+            isFullHistory: first?.kind === InzhurOperationKindEnum.TOP_UP && !this.dipsBelowZero(operations)
         };
     }
 
@@ -39,10 +40,6 @@ class InzhurOperationsPlanner {
 
     private dipsBelowZero(operations: readonly InzhurOperationInterface[]): boolean {
         return findLowestDayEndBalance(operations.map(operation => ({ at: operation.occurredAt, delta: this.cashDelta(operation) }))) < 0;
-    }
-
-    private toDay(date: Date): string {
-        return toKyivDay(date);
     }
 
     private toAction(
@@ -71,13 +68,13 @@ class InzhurOperationsPlanner {
     ): InzhurPlannedActionInterface {
         const { occurredAt, fundName, debit, credit } = operation;
 
-        if (debit > 0) {
+        if (isPositiveNumber(debit)) {
             return { ...base, kind: InzhurOperationKindEnum.SELL, cashAmount: debit, isSellAll: true, isConversion: true };
         }
 
-        const day = this.toDay(occurredAt);
+        const day = toKyivDay(occurredAt);
         const attached = surcharges.filter(
-            surcharge => surcharge.fundName === fundName && !claimedSurcharges.has(surcharge) && this.toDay(surcharge.occurredAt) === day
+            surcharge => surcharge.fundName === fundName && !claimedSurcharges.has(surcharge) && toKyivDay(surcharge.occurredAt) === day
         );
 
         for (const surcharge of attached) {

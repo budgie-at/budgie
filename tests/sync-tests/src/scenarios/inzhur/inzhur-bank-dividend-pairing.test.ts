@@ -1,5 +1,13 @@
-import { PRECISION, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    PRECISION,
+    TransactionTypeEnum,
+    TransactionEntryEntityTable,
+    TransactionEntryTypeEnum,
+    CategoryEntityTable,
+    TransactionEntryKindEnum
+} from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
+import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import {
@@ -23,6 +31,7 @@ import { makeInzhurOperationsLayer } from '../../harness/inzhur/make-inzhur-oper
 import { requireInzhurFundAccount } from '../../harness/inzhur/require-inzhur-fund-account';
 import { requireInzhurSetup } from '../../harness/inzhur/require-inzhur-setup';
 import { seedInzhurBankAccount } from '../../harness/inzhur/seed-inzhur-bank-account';
+import { testDb } from '../../harness/scenario/test-db';
 
 const BASE_URI = 'base.xlsx';
 const WITHDRAWAL_URI = 'withdrawal.xlsx';
@@ -102,6 +111,41 @@ describe('inzhur/bank-dividend-pairing', () => {
             expect(byExternalId.get('dividend')).toMatchObject({ type: TransactionTypeEnum.INCOME });
             expect((yield* fetchInzhurOperationsLedger).filter(({ title }) => title === 'Withdrawal from Inzhur')).toEqual([]);
             expect(yield* fetchAccountBalance((yield* requireInzhurSetup()).cashAccount.id)).toBe(80 * PRECISION);
+        }).pipe(Effect.provide(layer))
+    );
+    it.effect('records the withdrawal when a split bank income cannot become a transfer', () =>
+        Effect.gen(function* () {
+            const bankAccount = yield* seedInzhurBankAccount;
+
+            yield* importInzhurOperations(BASE_URI);
+            yield* importInzhurBankTransaction(bankAccount.id, 'split-dividend', REIT_DIVIDEND_DESCRIPTION, 180, DIVIDEND_AT);
+
+            const [bankTransaction] = yield* fetchBankTransactions;
+            const categories = yield* testDb.select().from(CategoryEntityTable).limit(2);
+
+            yield* testDb
+                .update(TransactionEntryEntityTable)
+                .set({ amount: 120 * PRECISION, categoryId: categories[0].id })
+                .where(eq(TransactionEntryEntityTable.transactionId, bankTransaction.id));
+            yield* testDb.insert(TransactionEntryEntityTable).values({
+                transactionId: bankTransaction.id,
+                accountId: bankAccount.id,
+                type: TransactionEntryTypeEnum.DEBIT,
+                kind: TransactionEntryKindEnum.PRIMARY,
+                amount: 60 * PRECISION,
+                categoryId: categories[1].id,
+                exchangeRate: 1
+            });
+            yield* importInzhurOperations(WITHDRAWAL_URI);
+            yield* importInzhurOperations(WITHDRAWAL_URI);
+
+            const { cashAccount } = yield* requireInzhurSetup();
+
+            expect(yield* fetchAccountBalance(cashAccount.id)).toBe(80 * PRECISION);
+            expect((yield* fetchInzhurOperationsLedger).filter(transaction => transaction.title === 'Withdrawal from Inzhur')).toHaveLength(
+                1
+            );
+            expect(yield* fetchBankTransactions).toMatchObject([{ type: TransactionTypeEnum.INCOME }]);
         }).pipe(Effect.provide(layer))
     );
 });

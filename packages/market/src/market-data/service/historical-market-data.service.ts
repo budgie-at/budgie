@@ -245,17 +245,18 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                 instrument: InstrumentEntityInterface,
                 job: InstrumentMarketDataJobEntityInterface
             ) {
-                const fundPrices = yield* inzhurPriceService.fetchPrices();
+                const fundPrices = yield* inzhurPriceService.fetchPrices;
                 const fundPrice = fundPrices.find(({ fundName }) => fundName.toLowerCase() === instrument.name.toLowerCase());
 
                 if (!isDefined(fundPrice)) {
                     return [];
                 }
 
+                const sampledAt = yield* DateTime.nowAsDate;
                 const price: InstrumentDailyMarketPriceCreateEntityInterface = {
                     instrumentId: job.instrumentId,
                     quoteInstrumentId: job.quoteInstrumentId,
-                    priceDate: job.toDate,
+                    priceDate: format(sampledAt, rateDateFormat),
                     price: fundPrice.price,
                     marketCap: null,
                     volume: null,

@@ -8,5 +8,4 @@ export interface InzhurOperationsPlanInterface {
     readonly firstAt: Date;
     readonly lastAt: Date;
     readonly isFullHistory: boolean;
-    readonly cashTotal: number;
 }

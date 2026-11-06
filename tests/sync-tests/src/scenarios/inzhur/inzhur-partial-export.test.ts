@@ -14,6 +14,7 @@ import { requireInzhurSetup } from '../../harness/inzhur/require-inzhur-setup';
 import { seedInzhurBankAccount } from '../../harness/inzhur/seed-inzhur-bank-account';
 
 const PARTIAL_URI = 'partial.xlsx';
+const LATER_URI = 'later.xlsx';
 const FULL_URI = 'full.xlsx';
 const EARLIER_URI = 'earlier.xlsx';
 const PARTIAL_ROWS = [
@@ -22,6 +23,10 @@ const PARTIAL_ROWS = [
 ];
 
 const layer = makeInzhurOperationsLayer({
+    [LATER_URI]: buildInzhurOperationsWorkbook([
+        { at: '2026-03-01T10:00:00', type: TOP_UP_TYPE, debit: 500 },
+        { at: '2026-03-01T10:05:00', type: 'Купівля 50 сертифікатів', fund: REIT, credit: 500 }
+    ]),
     [PARTIAL_URI]: buildInzhurOperationsWorkbook(PARTIAL_ROWS),
     [EARLIER_URI]: buildInzhurOperationsWorkbook([
         { at: '2026-01-20T10:00:00', type: 'Купівля 20 сертифікатів', fund: REIT, credit: 200 },
@@ -78,16 +83,31 @@ describe('inzhur/partial-export', () => {
         }).pipe(Effect.provide(layer))
     );
 
-    it.effect('does not let a bank top-up from before the first partial export inflate the cash', () =>
+    it.effect('keeps an existing cash floor when a later file starts with a top-up', () =>
         Effect.gen(function* () {
-            const bankAccount = yield* seedInzhurBankAccount;
-
-            yield* importInzhurBankFlow(bankAccount.id, 'early-top-up', TOP_UP_DESCRIPTION, -1000, new Date('2026-01-05T08:00:00.000Z'));
+            yield* importInzhurOperations(PARTIAL_URI);
+            yield* importInzhurOperations(LATER_URI);
             yield* importInzhurOperations(PARTIAL_URI);
 
             const { cashAccount } = yield* requireInzhurSetup();
 
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(50 * PRECISION);
+        }).pipe(Effect.provide(layer))
+    );
+
+    it.effect.each([
+        { uri: PARTIAL_URI, balance: 50 },
+        { uri: LATER_URI, balance: 0 }
+    ])('offsets pre-export bank cash for $uri', ({ uri, balance }) =>
+        Effect.gen(function* () {
+            const bankAccount = yield* seedInzhurBankAccount;
+
+            yield* importInzhurBankFlow(bankAccount.id, 'early-top-up', TOP_UP_DESCRIPTION, -1000, new Date('2026-01-05T08:00:00.000Z'));
+            yield* importInzhurOperations(uri);
+
+            const { cashAccount } = yield* requireInzhurSetup();
+
+            expect(yield* fetchAccountBalance(cashAccount.id)).toBe(balance * PRECISION);
         }).pipe(Effect.provide(layer))
     );
 });

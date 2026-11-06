@@ -64,7 +64,9 @@ class InzhurQuantityResolver {
             return resolved.get(action.externalId) ?? null;
         }
 
-        return heldMicroUnits > 0 ? { microUnits: heldMicroUnits, isEstimated: false } : this.estimate(action, priceByExternalId);
+        return isPositiveNumber(heldMicroUnits)
+            ? { microUnits: heldMicroUnits, isEstimated: false }
+            : this.estimate(action, priceByExternalId);
     }
 
     private estimate(

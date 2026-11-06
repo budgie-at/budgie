@@ -1,5 +1,7 @@
+const path = require('node:path');
+
 const isLocaleCatalogFile = file => file.includes('/i18n/locales/');
-const isE2eFile = file => file.includes('/e2e/');
+const isE2eFile = file => path.relative(process.cwd(), file).startsWith('e2e/');
 
 module.exports = {
     '*.{ts,tsx}': filenames => {

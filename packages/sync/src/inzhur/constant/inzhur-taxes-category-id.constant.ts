@@ -1,1 +1,0 @@
-export const INZHUR_TAXES_CATEGORY_ID = 31;

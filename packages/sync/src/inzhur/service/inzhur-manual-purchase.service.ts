@@ -20,6 +20,7 @@ import { InzhurTopUpNotFoundError } from '../error/inzhur-top-up-not-found.error
 import { buildInzhurTradeEntries } from '../utils/build-inzhur-trade-entries.util';
 import { buildInzhurTransactionInput } from '../utils/build-inzhur-transaction-input.util';
 import { getKyivDayStart } from '../utils/get-kyiv-day-start.util';
+import { toInzhurShortName } from '../utils/to-inzhur-short-name.util';
 import { toKyivDay } from '../utils/to-kyiv-day.util';
 
 import { InzhurFundAccountService } from './inzhur-fund-account.service';
@@ -38,8 +39,6 @@ export class InzhurManualPurchaseService extends Context.Service<InzhurManualPur
             const inzhurSetupLookupService = yield* InzhurSetupLookupService;
 
             const noonOffsetMilliseconds = 12 * 60 * 60 * 1000;
-
-            const toShortName = (name: string) => name.replace(/^Inzhur\s+/iu, '');
 
             const findTopUps = Effect.fnUntraced(function* () {
                 const setup = yield* inzhurSetupLookupService.findSetup();
@@ -163,7 +162,7 @@ export class InzhurManualPurchaseService extends Context.Service<InzhurManualPur
 
                         yield* transferCreationService.createSyncedTransfers([
                             buildInzhurTransactionInput(
-                                `Bought ${toShortName(account.title)}`,
+                                `Bought ${toInzhurShortName(account.title)}`,
                                 externalId,
                                 operatedAt,
                                 buildInzhurTradeEntries({

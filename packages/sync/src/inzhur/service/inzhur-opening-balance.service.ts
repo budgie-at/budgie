@@ -36,7 +36,7 @@ export class InzhurOpeningBalanceService extends Context.Service<InzhurOpeningBa
             const replace = Effect.fn('InzhurOpeningBalanceService.replace')(function* (
                 accountId: number,
                 amount: number,
-                createdAt: Date = new Date()
+                createdAt: Date
             ) {
                 const existing = yield* findExisting(accountId);
 

@@ -13,10 +13,12 @@ import { isDefined } from '@rnw-community/shared';
 
 import { buildPrimaryEntry } from '../../core/utils/build-primary-entry.util';
 import { INZHUR_BANK_DESCRIPTION_PATTERNS } from '../constant/inzhur-bank-description-patterns.constant';
+import { INZHUR_BANK_FLOW_TITLES } from '../constant/inzhur-bank-flow-titles.constant';
 import { INZHUR_OPERATION_EXTERNAL_ID_PREFIX } from '../constant/inzhur-operation-external-id-prefix.constant';
 import { INZHUR_PAIRING_WINDOW_MILLISECONDS } from '../constant/inzhur-pairing-window.constant';
 import { InzhurOperationKindEnum } from '../enum/inzhur-operation-kind.enum';
 import { buildInzhurTransactionInput } from '../utils/build-inzhur-transaction-input.util';
+import { isInzhurPeriod } from '../utils/is-inzhur-period.util';
 
 import { InzhurBankFlowService } from './inzhur-bank-flow.service';
 import { InzhurCashPairingService } from './inzhur-cash-pairing.service';
@@ -34,8 +36,6 @@ export class InzhurOperationsBankPairingService extends Context.Service<InzhurOp
             const transactionRepository = yield* TransactionRepository;
             const inzhurBankFlowService = yield* InzhurBankFlowService;
             const inzhurCashPairingService = yield* InzhurCashPairingService;
-            const topUpTitle = 'Top-up to Inzhur';
-            const withdrawalTitle = 'Withdrawal from Inzhur';
 
             const pickNearest = (
                 candidates: readonly TransactionWithEntriesEntityInterface[],
@@ -109,13 +109,15 @@ export class InzhurOperationsBankPairingService extends Context.Service<InzhurOp
                 );
 
                 return {
-                    ...buildInzhurTransactionInput(isTopUp ? topUpTitle : withdrawalTitle, action.externalId, action.occurredAt, [entry]),
+                    ...buildInzhurTransactionInput(
+                        isTopUp ? INZHUR_BANK_FLOW_TITLES.topUp : INZHUR_BANK_FLOW_TITLES.withdrawal,
+                        action.externalId,
+                        action.occurredAt,
+                        [entry]
+                    ),
                     type: TransactionTypeEnum.TRANSFER
                 };
             };
-
-            const isInPeriod = (transaction: TransactionWithEntriesEntityInterface, period: InzhurPairingPeriodInterface) =>
-                transaction.operatedAt >= period.from && transaction.operatedAt < period.until;
 
             const plan = Effect.fn('InzhurOperationsBankPairingService.plan')(function* (
                 setup: InzhurSetupInterface,
@@ -150,7 +152,7 @@ export class InzhurOperationsBankPairingService extends Context.Service<InzhurOp
                 );
                 const claimedBankIds = new Set([...stampedBankByOperationId.values()].map(transaction => transaction.id));
                 const stampInputs: { readonly transactionId: number; readonly externalId: string }[] = [];
-                const incomeClaims: { readonly transaction: TransactionWithEntriesEntityInterface; readonly externalId: string }[] = [];
+                const incomeClaims: InzhurBankPairingInterface['incomeClaims'][number][] = [];
                 let paired = 0;
                 let unpaired = 0;
                 const placeholderInputs = [];
@@ -173,7 +175,11 @@ export class InzhurOperationsBankPairingService extends Context.Service<InzhurOp
                         paired += 1;
                     } else if (isDefined(bankDividend)) {
                         claimedBankIds.add(bankDividend.id);
-                        incomeClaims.push({ transaction: bankDividend, externalId: action.externalId });
+                        incomeClaims.push({
+                            transaction: bankDividend,
+                            externalId: action.externalId,
+                            fallback: buildFlowInput(action, setup.cashAccount.id)
+                        });
                         paired += 1;
                     } else {
                         unpaired += 1;
@@ -188,7 +194,7 @@ export class InzhurOperationsBankPairingService extends Context.Service<InzhurOp
                     transaction =>
                         isBankTransfer(transaction) &&
                         !claimedBankIds.has(transaction.id) &&
-                        isInPeriod(transaction, period) &&
+                        isInzhurPeriod(transaction, period) &&
                         transaction.entries.some(entry => entry.accountId === setup.cashAccount.id)
                 ).length;
 
@@ -212,11 +218,17 @@ export class InzhurOperationsBankPairingService extends Context.Service<InzhurOp
                         yield* inzhurCashPairingService.stamp(transactionId, setup.cashAccount.id, externalId);
                     }
 
-                    for (const { transaction, externalId } of pairing.incomeClaims) {
+                    const failedClaimFallbacks: InzhurBankPairingInterface['placeholderInputs'][number][] = [];
+
+                    for (const { transaction, externalId, fallback } of pairing.incomeClaims) {
                         if (yield* inzhurBankFlowService.claimAsWithdrawal(transaction, setup)) {
                             yield* inzhurCashPairingService.stamp(transaction.id, setup.cashAccount.id, externalId);
+                        } else {
+                            failedClaimFallbacks.push(fallback);
                         }
                     }
+
+                    return failedClaimFallbacks;
                 })
             };
         })

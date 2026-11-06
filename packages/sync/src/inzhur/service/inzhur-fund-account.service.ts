@@ -1,5 +1,6 @@
 import {
     AccountTypeEnum,
+    AccountRepository,
     ExternalSourceEnum,
     InstrumentPriceProviderEnum,
     InstrumentRepository,
@@ -16,13 +17,15 @@ import * as Layer from 'effect/Layer';
 import { isDefined } from '@rnw-community/shared';
 
 import { INZHUR_CANONICAL_FUNDS } from '../constant/inzhur-canonical-funds.constant';
-import { INZHUR_SYNTHETIC_FUND_CODE_PREFIX } from '../constant/inzhur-synthetic-fund-code-prefix.constant';
+import { toInzhurShortName } from '../utils/to-inzhur-short-name.util';
 
 import type { InzhurSetupInterface } from '../interface/inzhur-setup.interface';
 
 export class InzhurFundAccountService extends Context.Service<InzhurFundAccountService>()('@budgie/sync/InzhurFundAccountService', {
     make: Effect.gen(function* () {
+        const INZHUR_SYNTHETIC_FUND_CODE_PREFIX = 'INZHUR:';
         const accountService = yield* AccountService;
+        const accountRepository = yield* AccountRepository;
         const instrumentRepository = yield* InstrumentRepository;
         const syncRepository = yield* SyncRepository;
         const provider = ExternalSourceEnum.INZHUR;
@@ -55,6 +58,14 @@ export class InzhurFundAccountService extends Context.Service<InzhurFundAccountS
 
         const create = Effect.fn('InzhurFundAccountService.create')(function* (code: string, rawName: string, integrationId: number) {
             const instrument = yield* resolveInstrument(code, rawName);
+            const existingAccount = (yield* accountRepository.findByIntegrationId(integrationId)).find(
+                account => account.externalId === `inzhur:${instrument.code}`
+            );
+
+            if (isDefined(existingAccount)) {
+                return existingAccount;
+            }
+
             const createdAccounts = yield* accountService.bulkCreate([
                 {
                     title: instrument.name,
@@ -98,10 +109,7 @@ export class InzhurFundAccountService extends Context.Service<InzhurFundAccountS
                     return existing.account;
                 }
 
-                const suffix = name
-                    .replace(/^Inzhur\s+/iu, '')
-                    .toUpperCase()
-                    .replaceAll(/\s+/gu, '-');
+                const suffix = toInzhurShortName(name).toUpperCase().replaceAll(/\s+/gu, '-');
 
                 return yield* create(`${INZHUR_SYNTHETIC_FUND_CODE_PREFIX}${suffix}`, name, setup.integration.id);
             })
@@ -109,6 +117,6 @@ export class InzhurFundAccountService extends Context.Service<InzhurFundAccountS
     })
 }) {
     static readonly layer = Layer.effect(InzhurFundAccountService, InzhurFundAccountService.make).pipe(
-        Layer.provide([AccountService.layer, InstrumentRepository.layer, SyncRepository.layer])
+        Layer.provide([AccountRepository.layer, AccountService.layer, InstrumentRepository.layer, SyncRepository.layer])
     );
 }

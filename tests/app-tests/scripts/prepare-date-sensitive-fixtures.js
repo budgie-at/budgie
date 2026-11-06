@@ -1565,6 +1565,24 @@ const generateEnableBankingKey = () => {
     writeFileSync(path.join(outputDirectoryPath, 'e2e00000-0000-4000-8000-0000000000e1.pem.txt'), privateKey);
 };
 
+const generateInzhurFixture = () => {
+    const targetPath = path.join(outputDirectoryPath, '44-inzhur.db');
+
+    copyFixture(path.join(fixturesDirectoryPath, '01.db'), targetPath);
+    runSqlite(targetPath, `
+        BEGIN;
+        INSERT INTO accounts (id, title, type, instrument_id, external_source, external_id)
+        SELECT 1, 'Inzhur Test Card', 'BANK_SYNC', id, 'MONOBANK', 'inzhur-e2e-card' FROM instruments WHERE code = 'UAH';
+        INSERT INTO transactions (id, type, title, operated_at, from_account_id, exchange_rate, external_source, external_id)
+        VALUES (1, 'EXPENSE', 'ТОВ ІНЖУР КЕПІТАЛ', unixepoch('2026-11-01T12:00:00Z'), 1, 1, 'MONOBANK', 'inzhur-e2e-topup');
+        INSERT INTO transaction_entries (transaction_id, account_id, type, amount, external_id)
+        VALUES (1, 1, 'CREDIT', 2000000000, 'inzhur-e2e-topup');
+        INSERT INTO account_balances (account_id, amount) VALUES (1, -2000000000);
+        COMMIT;
+    `);
+};
+
+generateInzhurFixture();
 generateRunwayCryptoFixture();
 generateBudgetMultiCurrencyFixture();
 generateRecurringFixture();

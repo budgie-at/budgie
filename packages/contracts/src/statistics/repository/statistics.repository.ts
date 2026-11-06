@@ -1,3 +1,4 @@
+import { roundToMinorUnitSql } from '../../@generic/utils/round-to-minor-unit-sql.util';
 /* eslint-disable max-lines -- File owns the single multi-stage statistics SQL aggregation pipeline that must stay together */
 import { SQL, and, desc, eq, getTableColumns, gte, inArray, isNotNull, isNull, lte, ne, notInArray, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
@@ -7,7 +8,6 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { PRECISION } from '../../@generic/constant/precision.constant';
 import { LanguageEnum } from '../../@generic/enum/language.enum';
 import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
@@ -86,11 +86,6 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
             ${getHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
             ${getInverseHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)}
         )`;
-
-        const minorUnitMicroUnits = PRECISION / 100;
-
-        const roundToMinorUnitSql = (value: SQL) =>
-            sql<number>`(CAST(ROUND((${value}) * 1.0 / ${minorUnitMicroUnits}) AS INTEGER) * ${minorUnitMicroUnits})`;
 
         const buildEntryBaseValueSql = (defaultInstrumentId: number) =>
             roundToMinorUnitSql(sql`CASE

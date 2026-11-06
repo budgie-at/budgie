@@ -6,16 +6,28 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { INZHUR_OPERATION_EXTERNAL_ID_PREFIX } from '../constant/inzhur-operation-external-id-prefix.constant';
 import { INZHUR_PAIRING_WINDOW_MILLISECONDS } from '../constant/inzhur-pairing-window.constant';
-import { parseInzhurOperationExternalId } from '../utils/parse-inzhur-operation-external-id.util';
-
-import type { InzhurOperationKindEnum } from '../enum/inzhur-operation-kind.enum';
+import { InzhurOperationKindEnum } from '../enum/inzhur-operation-kind.enum';
 
 export class InzhurCashPairingService extends Context.Service<InzhurCashPairingService>()('@budgie/sync/InzhurCashPairingService', {
     make: Effect.gen(function* () {
         const transactionEntryRepository = yield* TransactionEntryRepository;
         const transactionRepository = yield* TransactionRepository;
         const transactionService = yield* TransactionService;
+
+        const parseInzhurOperationExternalId = (externalId: string) => {
+            if (!externalId.startsWith(INZHUR_OPERATION_EXTERNAL_ID_PREFIX)) {
+                return null;
+            }
+
+            const [seconds, rawKind, , amountMicroUnits] = externalId.slice(INZHUR_OPERATION_EXTERNAL_ID_PREFIX.length).split(':');
+            const kind = Object.entries(InzhurOperationKindEnum).find(([name]) => name === rawKind)?.[1];
+
+            return isDefined(kind)
+                ? { occurredAt: new Date(Number(seconds) * 1000), kind, amountMicroUnits: Number(amountMicroUnits) }
+                : null;
+        };
 
         return {
             findPlaceholder: Effect.fn('InzhurCashPairingService.findPlaceholder')(function* (

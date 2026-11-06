@@ -1,5 +1,6 @@
 import { ExternalSourceEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
+import { parseISO } from 'date-fns/parseISO';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -28,7 +29,9 @@ export const ImportInzhurStatement = () => {
         { title: t`Export the operations statement as XLSX`, caption: t`Download «Виписка по операціям»` },
         { title: t`Choose that file here`, caption: t`Budgie rebuilds your cash, buys and dividends from it` }
     ];
-    const lastStatementDate = isDefined(setup?.lastStatementDate) ? formatMonthAndDayAndOptionalYear(setup.lastStatementDate) : null;
+    const lastStatementDate = isDefined(setup?.lastStatementDate)
+        ? formatMonthAndDayAndOptionalYear(parseISO(setup.lastStatementDate))
+        : null;
     const brandTitle = t`Inzhur`;
     const privacyCaption = isDefined(lastStatementDate)
         ? t`Stays on your device · Last import ${lastStatementDate}`

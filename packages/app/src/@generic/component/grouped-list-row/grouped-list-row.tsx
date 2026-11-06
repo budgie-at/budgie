@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString, isString } from '@rnw-community/shared';
 
+import { cn } from '../../utils/cn.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 
@@ -37,6 +38,7 @@ export const GroupedListRow = (props: Props) => {
 
     const chevron = isPressable ? <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" /> : null;
     const accessory = right ?? chevron;
+    const separatorClassName = isDefined(left) ? 'left-[64px]' : 'left-[16px]';
     const subtitleNode = isNotEmptyString(subtitle) ? (
         <Text className="text-secondary-foreground text-[13px] leading-[18px]" numberOfLines={3}>
             {subtitle}
@@ -53,6 +55,7 @@ export const GroupedListRow = (props: Props) => {
             {...(isPressable && { accessibilityRole: 'button' as const })}
             testID={testID}
         >
+            <View className={cn('absolute top-0 right-0 h-hairline bg-surface-separator', separatorClassName)} pointerEvents="none" />
             {left}
             <View className="min-w-0 flex-1 gap-y-xxs">
                 {isString(title) ? (

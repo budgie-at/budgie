@@ -5,3 +5,5 @@ WHERE NOT EXISTS (SELECT 1 FROM `instruments` WHERE `code` = 'UA5000014044');-->
 INSERT INTO `instruments` (`type`, `code`, `name`, `symbol`, `price_provider`, `provider_instrument_id`)
 SELECT 'FUND', 'UA5000012246', 'Inzhur Energy', 'ENERGY', 'INZHUR', 'UA5000012246'
 WHERE NOT EXISTS (SELECT 1 FROM `instruments` WHERE `code` = 'UA5000012246');
+--> statement-breakpoint
+CREATE INDEX `transactions_fund_account_idx` ON `transactions` (`fund_account_id`) WHERE "transactions"."fund_account_id" IS NOT NULL;

@@ -30,8 +30,25 @@ test('44 inzhur operations import', { tags: ['import'] }, async ({ budgie }) => 
         await core.sleep(600);
         await core.tapId(ctx, 'InstitutionRow.1');
         await core.expectId(ctx, 'Institution.Page', 10_000);
-        await core.expectId(ctx, 'AccountCard.Balance.Cash.5_164', 10_000);
+        await core.expectId(ctx, 'AccountCard.Balance.Cash.7_164', 10_000);
         await expect(core.byId(screen, 'AccountCard.REIT')).toHaveText(/^REIT, 300 certificates/, { timeout: 10_000 });
         await expect(core.byId(screen, 'AccountCard.Energy')).toHaveText(/^Energy, 2 certificates/, { timeout: 10_000 });
+    });
+    await core.phase('record a first purchase of an unheld fund', async () => {
+        await core.scrollTo(ctx, 'Inzhur.PendingTopUp.1.EnterButton', 'up');
+        await core.tapId(ctx, 'Inzhur.PendingTopUp.1.EnterButton');
+        await core.expectId(ctx, 'Inzhur.PurchasePage');
+        await core.scrollTo(ctx, 'Inzhur.PurchaseFund.Inzhur MilTech');
+        await core.tapId(ctx, 'Inzhur.PurchaseFund.Inzhur MilTech');
+        await core.scrollTo(ctx, 'Inzhur.PurchaseCertificatesInput');
+        await core.fillId(ctx, 'Inzhur.PurchaseCertificatesInput', '1');
+        await core.done(ctx);
+        await core.scrollTo(ctx, 'Inzhur.PurchaseAmountInput');
+        await core.fillId(ctx, 'Inzhur.PurchaseAmountInput', '1000');
+        await core.done(ctx);
+        await core.tapId(ctx, 'Inzhur.PurchaseSaveButton');
+        await core.scrollTo(ctx, 'InstitutionRow.1');
+        await core.tapId(ctx, 'InstitutionRow.1');
+        await expect(core.byId(screen, 'AccountCard.MilTech')).toHaveText(/^MilTech, 1 certificate/, { timeout: 10_000 });
     });
 });

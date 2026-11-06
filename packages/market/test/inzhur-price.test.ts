@@ -87,7 +87,7 @@ describe('inzhur certificate prices', () => {
         Effect.gen(function* () {
             const inzhurPriceService = yield* InzhurPriceService;
 
-            expect(yield* inzhurPriceService.fetchPrices()).toStrictEqual([
+            expect(yield* inzhurPriceService.fetchPrices).toStrictEqual([
                 { fundName: 'Inzhur MilTech', price: 1053.7456 },
                 { fundName: 'Inzhur REIT', price: 11.675 },
                 { fundName: 'Inzhur Energy', price: 6742.3637 }
@@ -98,7 +98,7 @@ describe('inzhur certificate prices', () => {
     it.effect('fails with a typed parse error when the page layout changes', () =>
         Effect.gen(function* () {
             const inzhurPriceService = yield* InzhurPriceService;
-            const error = yield* Effect.flip(inzhurPriceService.fetchPrices());
+            const error = yield* Effect.flip(inzhurPriceService.fetchPrices);
 
             expect(error).toBeInstanceOf(InzhurPriceParseError);
             expect(error._tag).toBe('InzhurPriceParseError');
@@ -108,7 +108,7 @@ describe('inzhur certificate prices', () => {
     it.effect('rejects a non-positive certificate price', () =>
         Effect.gen(function* () {
             const inzhurPriceService = yield* InzhurPriceService;
-            const error = yield* Effect.flip(inzhurPriceService.fetchPrices());
+            const error = yield* Effect.flip(inzhurPriceService.fetchPrices);
 
             expect(error._tag).toBe('InzhurPriceParseError');
         }).pipe(Effect.provide(InzhurLayer(fixtureHtml.replace('&quot;11.675&quot;', '&quot;0&quot;'))))
@@ -187,6 +187,27 @@ describe('inzhur certificate prices', () => {
             });
 
             expect(valuation).toStrictEqual({ baseInstrumentId: null, baseExchangeRate: null, baseAmount: null });
+        }).pipe(Effect.provide(InzhurLayer(fixtureHtml)))
+    );
+    it.effect('dates a delayed scraped sample by the fetch day rather than the enqueue day', () =>
+        Effect.gen(function* () {
+            const { fund } = yield* prepareFundAccount(realEstateIsin);
+            const historicalMarketDataService = yield* HistoricalMarketDataService;
+            const accountRepository = yield* AccountRepository;
+
+            yield* historicalMarketDataService.enqueueAccounts(yield* accountRepository.getAllActiveAccounts);
+
+            const job = yield* Effect.flatMap(historicalMarketDataService.claimNextJob, Effect.fromNullishOr);
+
+            yield* TestClock.setTime(new Date('2026-06-05T12:00:00.000Z').getTime());
+            yield* historicalMarketDataService.storeJobData(job, yield* historicalMarketDataService.fetchJobData(job));
+
+            const prices = yield* testDb
+                .select()
+                .from(InstrumentDailyMarketPriceEntityTable)
+                .where(eq(InstrumentDailyMarketPriceEntityTable.instrumentId, fund.id));
+
+            expect(prices.map(price => price.priceDate)).toEqual(['2026-06-05']);
         }).pipe(Effect.provide(InzhurLayer(fixtureHtml)))
     );
 });

@@ -1,7 +1,11 @@
+import { HistoricalExchangeRateEntityTable, CurrencyEnum, SettingsEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
+import { MoneyDataUpgradeService } from '@budgie/ledger';
 import { InzhurGainRangeEnum, InzhurGainService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
+import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
+import { requireInstrument, testDb } from '../../harness';
 import { buildInzhurOperationsWorkbook } from '../../harness/inzhur/build-inzhur-operations-workbook';
 import { findPendingTopUps } from '../../harness/inzhur/find-pending-top-ups';
 import { importInzhurBankFlow } from '../../harness/inzhur/import-inzhur-bank-flow';
@@ -107,7 +111,7 @@ describe('inzhur/gain', () => {
             const report = yield* gainService.getInstitutionReport(TODAY);
 
             expect(yield* findAllTimeGain()).toMatchObject({ contributions: 500, gain: 0 });
-            expect(yield* gainService.getInstitutionGainSince(FIRST_DAY, TODAY)).toMatchObject({ contributions: 500, gain: 0 });
+            expect(report?.gains.find(gain => gain.range === InzhurGainRangeEnum.ALL)).toMatchObject({ contributions: 500, gain: 0 });
             expect(report?.gainSeries.every(point => point.value === 0)).toBe(true);
             expect(report?.series.at(-1)?.value).toBe((report?.series.at(0)?.value ?? 0) + 500);
         }).pipe(Effect.provide(layer))
@@ -170,7 +174,10 @@ describe('inzhur/gain', () => {
             expect(report?.series.at(-1)?.date).toBe(TODAY);
             expect(report?.gains.map(gain => gain.range)).toEqual([InzhurGainRangeEnum.MONTH, InzhurGainRangeEnum.ALL]);
             expect(fundReport?.prices.map(price => price.date)).toEqual([FIRST_DAY]);
-            expect(yield* gainService.getInstitutionGainSince('2026-02-01', TODAY)).toMatchObject({ startDate: '2026-02-01', gain: 0 });
+            expect(report?.gains.find(gain => gain.range === InzhurGainRangeEnum.MONTH)).toMatchObject({
+                startDate: '2026-01-30',
+                gain: 0
+            });
         }).pipe(Effect.provide(layer))
     );
 
@@ -202,6 +209,45 @@ describe('inzhur/gain', () => {
                 value: 500,
                 returnAmount: 0
             });
+        }).pipe(Effect.provide(layer))
+    );
+    it.effect('starts gains at the first valued day when prices begin after the history', () =>
+        Effect.gen(function* () {
+            yield* seedInzhurPrice(REIT_ISIN, '2026-03-05', REIT_PRICE);
+            yield* importHeld;
+
+            const report = yield* (yield* InzhurGainService).getInstitutionReport('2026-03-06');
+
+            expect(report?.gains.find(gain => gain.range === InzhurGainRangeEnum.ALL)).toMatchObject({ startDate: '2026-03-05', gain: 0 });
+            expect(report?.gainSeries).toEqual([
+                { date: '2026-03-05', value: 0 },
+                { date: '2026-03-06', value: 0 }
+            ]);
+        }).pipe(Effect.provide(layer))
+    );
+    it.effect('revalues fund entries through UAH when upgrading to a EUR base', () =>
+        Effect.gen(function* () {
+            const reit = yield* importHeld;
+            const euro = yield* requireInstrument(CurrencyEnum.EUR);
+
+            const hryvnia = yield* requireInstrument(CurrencyEnum.UAH);
+
+            yield* testDb
+                .insert(HistoricalExchangeRateEntityTable)
+                .values({ sourceInstrumentId: reit.instrumentId, targetInstrumentId: hryvnia.id, rateDate: FIRST_DAY, rate: REIT_PRICE });
+            yield* testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id });
+            yield* testDb.update(TransactionEntryEntityTable).set({ baseInstrumentId: null, baseExchangeRate: null, baseAmount: null });
+            yield* (yield* MoneyDataUpgradeService).run('Missing base instrument');
+
+            const entries = yield* testDb
+                .select()
+                .from(TransactionEntryEntityTable)
+                .where(eq(TransactionEntryEntityTable.accountId, reit.id));
+
+            expect(entries).toHaveLength(1);
+            expect(entries[0].baseInstrumentId).toBe(euro.id);
+            expect(entries[0].baseExchangeRate).toBeGreaterThan(0);
+            expect(entries[0].baseAmount).toBeGreaterThan(0);
         }).pipe(Effect.provide(layer))
     );
 });

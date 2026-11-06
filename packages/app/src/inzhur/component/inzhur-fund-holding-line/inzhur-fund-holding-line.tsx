@@ -1,5 +1,6 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
+import { parseISO } from 'date-fns/parseISO';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -33,7 +34,7 @@ export const InzhurFundHoldingLine = ({ account, balance }: Props) => {
     const shownPrice = scrubbedPoint ?? (isDefined(latestPrice) ? { value: latestPrice.price, date: latestPrice.priceDate } : null);
     const unitPrice = isDefined(shownPrice) ? formatAmount(shownPrice.value, symbol) : null;
     const priceLabel = isDefined(unitPrice) ? t`${unitPrice} each` : null;
-    const priceDate = isDefined(shownPrice) ? formatMonthAndDayAndOptionalYear(shownPrice.date) : null;
+    const priceDate = isDefined(shownPrice) ? formatMonthAndDayAndOptionalYear(parseISO(shownPrice.date)) : null;
 
     return (
         <ProtectedText className="px-5xl text-center text-[15px] leading-[20px] text-secondary-foreground tabular-nums">

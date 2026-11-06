@@ -2,6 +2,8 @@ import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
+import { isPositiveNumber } from '@rnw-community/shared';
+
 import { Button } from '../../../@generic/component/button/button';
 import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { useInzhurPurchaseSubmit } from '../../hook/use-inzhur-purchase-submit.hook';
@@ -22,7 +24,7 @@ export const InzhurPurchaseFooter = ({ topUp }: Props) => {
 
     const isSaveDisabled = !formState.isValid;
     const isAddAnotherDisabled = isSaveDisabled || isLoading;
-    const hasRemainingAfterSave = topUp.remainingAmount - amount > 0;
+    const hasRemainingAfterSave = isPositiveNumber(topUp.remainingAmount - amount);
 
     return (
         <View className="gap-y-md bg-surface px-5xl pt-lg">

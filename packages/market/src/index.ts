@@ -11,3 +11,5 @@ export { EntryBaseValuationService } from './valuation/service/entry-base-valuat
 export { InzhurPriceParseError } from './market-data/error/inzhur-price-parse.error';
 export type { EntryBaseValuationInterface } from './valuation/interface/entry-base-valuation.interface';
 export type { CryptoPositionInterface } from './market-data/interface/crypto-position.interface';
+
+export type { InzhurFundPriceInterface } from './market-data/interface/inzhur-fund-price.interface';

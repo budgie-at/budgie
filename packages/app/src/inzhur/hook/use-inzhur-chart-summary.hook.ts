@@ -1,6 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
+import { parseISO } from 'date-fns/parseISO';
 
-import { useDisplayFormatDigits } from '../../i18n/hook/use-display-format-digits.hook';
+import { useProtectedAmountLabel } from '../../@generic/hook/use-protected-amount-label.hook';
 import { useFormatDate } from '../../i18n/hook/use-format-date.hook';
 import { useHryvniaInstrumentQuery } from '../query/use-hryvnia-instrument.query';
 
@@ -8,7 +9,7 @@ import type { InzhurValuePointInterface } from '@budgie/sync';
 
 export const useInzhurChartSummary = (points: readonly InzhurValuePointInterface[], startDate: string, subject: string) => {
     const { t } = useLingui();
-    const formatDigits = useDisplayFormatDigits();
+    const formatDigits = useProtectedAmountLabel();
     const { formatMonthAndDayAndOptionalYear } = useFormatDate();
     const symbol = useHryvniaInstrumentQuery()?.symbol ?? '';
 
@@ -16,7 +17,7 @@ export const useInzhurChartSummary = (points: readonly InzhurValuePointInterface
     const lastValue = points.at(-1)?.value ?? 0;
     const fromLabel = formatDigits(firstValue, symbol);
     const toLabel = formatDigits(lastValue, symbol);
-    const sinceLabel = formatMonthAndDayAndOptionalYear(startDate);
+    const sinceLabel = formatMonthAndDayAndOptionalYear(parseISO(startDate));
 
     return lastValue >= firstValue
         ? t`${subject} rose from ${fromLabel} to ${toLabel} since ${sinceLabel}`

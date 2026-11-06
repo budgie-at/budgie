@@ -17,7 +17,7 @@ export const InzhurOperationsDetails = ({ summary }: Props) => {
     const { bankMatches, unrecognised, conversionCount, isFullHistory, replacedPurchaseCount, unmatchedBankCount } = summary;
 
     const conversionLabel = t({ message: plural(conversionCount, { one: '# operation', other: '# operations' }) });
-    const conversionDetail = summary.surchargeAmount > 0 ? t`${conversionLabel} · with a surcharge` : conversionLabel;
+    const conversionDetail = isPositiveNumber(summary.surchargeAmount) ? t`${conversionLabel} · with a surcharge` : conversionLabel;
     const pairedLabel = t({
         message: plural(bankMatches.paired, {
             one: 'Linked # past Inzhur payment from your bank',
@@ -44,7 +44,7 @@ export const InzhurOperationsDetails = ({ summary }: Props) => {
                     detail={t`The balance before the export was estimated. Export the full history for exact numbers.`}
                 />
             )}
-            {conversionCount > 0 ? <InzhurOperationsNoteRow label={t`Conversions`} detail={conversionDetail} /> : null}
+            {isPositiveNumber(conversionCount) ? <InzhurOperationsNoteRow label={t`Conversions`} detail={conversionDetail} /> : null}
             {isPositiveNumber(replacedPurchaseCount) ? <InzhurOperationsNoteRow label={t`Purchases`} detail={replacedLabel} /> : null}
             {isPositiveNumber(bankMatches.paired) ? <InzhurOperationsNoteRow label={t`Matched to your bank`} detail={pairedLabel} /> : null}
             {isPositiveNumber(bankMatches.unpaired) ? (

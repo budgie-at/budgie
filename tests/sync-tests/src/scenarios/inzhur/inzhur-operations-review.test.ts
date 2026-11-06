@@ -1,5 +1,5 @@
 import { PRECISION, TransactionEntryTypeEnum } from '@budgie/contracts';
-import { InzhurPriceMissingError, InzhurSetupService } from '@budgie/sync';
+import { InzhurStatementInvalidError, InzhurPriceMissingError, InzhurSetupService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -11,7 +11,7 @@ import { importInzhurBankFlow } from '../../harness/inzhur/import-inzhur-bank-fl
 import { importInzhurOperations } from '../../harness/inzhur/import-inzhur-operations';
 import { TOP_UP_DESCRIPTION } from '../../harness/inzhur/inzhur-bank-descriptions.constant';
 import { inzhurHomeClientLayer } from '../../harness/inzhur/inzhur-home-client.layer';
-import { CASH_AFTER_HISTORY, FULL_HISTORY_ROWS, REIT, TOP_UP_TYPE } from '../../harness/inzhur/inzhur-operation-rows.constant';
+import { CASH_AFTER_HISTORY, FULL_HISTORY_ROWS, REIT, OCEAN, TOP_UP_TYPE } from '../../harness/inzhur/inzhur-operation-rows.constant';
 import { makeInzhurOperationsLayer } from '../../harness/inzhur/make-inzhur-operations-layer';
 import { requireInzhurFundByName } from '../../harness/inzhur/require-inzhur-fund-by-name';
 import { requireInzhurSetup } from '../../harness/inzhur/require-inzhur-setup';
@@ -24,12 +24,20 @@ const NO_SURCHARGE_URI = 'no-surcharge.xlsx';
 const SECOND_TOP_UP_URI = 'second-top-up.xlsx';
 
 const bytesByUri = {
+    'empty.xlsx': buildInzhurOperationsWorkbook([]),
     [FULL_URI]: buildInzhurOperationsWorkbook(FULL_HISTORY_ROWS),
     [NO_SURCHARGE_URI]: buildInzhurOperationsWorkbook(FULL_HISTORY_ROWS.filter(row => row.type !== 'Доплата')),
     [OLDER_TOP_UP_URI]: buildInzhurOperationsWorkbook([{ at: '2026-01-10T10:00:00', type: TOP_UP_TYPE, debit: 1000 }]),
     [SECOND_TOP_UP_URI]: buildInzhurOperationsWorkbook([{ at: '2026-01-11T10:00:00', type: TOP_UP_TYPE, debit: 1000 }])
 };
 const layer = makeInzhurOperationsLayer(bytesByUri);
+
+const expectSurchargePreserved = Effect.fnUntraced(function* (cashAccountId: number) {
+    const conversionBuy = (yield* fetchInzhurOperationsLedger).filter(({ title }) => title === 'Bought REIT').at(-1);
+
+    expect(yield* fetchAccountBalance(cashAccountId)).toBe(CASH_AFTER_HISTORY * PRECISION);
+    expect(conversionBuy?.entries[0]).toMatchObject({ type: TransactionEntryTypeEnum.CREDIT, amount: 4300 * PRECISION });
+});
 
 describe('inzhur/operations-review', () => {
     it.effect('estimates a first-import conversion from the live Inzhur price when nothing is cached', () =>
@@ -77,10 +85,52 @@ describe('inzhur/operations-review', () => {
 
             yield* importInzhurOperations(FULL_URI);
 
-            const conversionBuy = (yield* fetchInzhurOperationsLedger).filter(({ title }) => title === 'Bought REIT').at(-1);
-
-            expect(yield* fetchAccountBalance(cashAccount.id)).toBe(CASH_AFTER_HISTORY * PRECISION);
-            expect(conversionBuy?.entries[0]).toMatchObject({ type: TransactionEntryTypeEnum.CREDIT, amount: 4300 * PRECISION });
+            yield* expectSurchargePreserved(cashAccount.id);
         }).pipe(Effect.provide(layer))
+    );
+    it.effect('rejects a header-only export before creating setup', () =>
+        Effect.gen(function* () {
+            expect(yield* Effect.flip(importInzhurOperations('empty.xlsx'))).toBeInstanceOf(InzhurStatementInvalidError);
+            expect(yield* (yield* InzhurSetupService).findSetup()).toBeNull();
+        }).pipe(Effect.provide(layer))
+    );
+
+    it.effect('preserves a surcharge when an older export is imported again', () =>
+        Effect.gen(function* () {
+            yield* seedInzhurReitPrices;
+            yield* importInzhurOperations(FULL_URI);
+            yield* importInzhurOperations(NO_SURCHARGE_URI);
+
+            const { cashAccount } = yield* requireInzhurSetup();
+            yield* expectSurchargePreserved(cashAccount.id);
+        }).pipe(Effect.provide(layer))
+    );
+    it.effect('creates one fund account for aliases in one export', () =>
+        Effect.gen(function* () {
+            yield* importInzhurOperations('aliases.xlsx');
+
+            expect((yield* requireInzhurSetup()).fundAccounts).toHaveLength(1);
+        }).pipe(
+            Effect.provide(
+                makeInzhurOperationsLayer({
+                    'aliases.xlsx': buildInzhurOperationsWorkbook([
+                        { at: '2026-01-10T10:00:00', type: TOP_UP_TYPE, debit: 100 },
+                        { at: '2026-01-10T10:05:00', type: 'Купівля 1 сертифікату', fund: 'ОКЕАН', credit: 40 },
+                        { at: '2026-01-10T10:06:00', type: 'Купівля 1 сертифікату', fund: OCEAN, credit: 40 }
+                    ])
+                })
+            )
+        )
+    );
+    it.effect('keeps an operation just after Kyiv midnight on its statement day', () =>
+        Effect.gen(function* () {
+            expect(yield* importInzhurOperations('midnight.xlsx')).toMatchObject({ periodFrom: '2026-02-01', periodTo: '2026-02-01' });
+        }).pipe(
+            Effect.provide(
+                makeInzhurOperationsLayer({
+                    'midnight.xlsx': buildInzhurOperationsWorkbook([{ at: '2026-02-01T00:30:00', type: TOP_UP_TYPE, debit: 100 }])
+                })
+            )
+        )
     );
 });

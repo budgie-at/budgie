@@ -4,7 +4,7 @@ import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { useHryvniaInstrumentQuery } from '../../query/use-hryvnia-instrument.query';
 import { useInzhurFundCostReturnQuery } from '../../query/use-inzhur-gain.query';
 import { InzhurSelector } from '../../selector/inzhur.selector';
@@ -21,7 +21,7 @@ const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 export const InzhurFundReturnsCard = ({ account }: Props) => {
     const { t } = useLingui();
     const costReturn = useInzhurFundCostReturnQuery(account.id);
-    const formatAmount = useFormatDigits(2);
+    const formatAmount = useProtectedAmountLabel();
     const symbol = useHryvniaInstrumentQuery()?.symbol ?? '';
 
     if (!isDefined(costReturn)) {

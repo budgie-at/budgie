@@ -1,5 +1,6 @@
 import { InzhurGainRangeEnum } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
+import { parseISO } from 'date-fns/parseISO';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -18,7 +19,7 @@ export const InzhurInstitutionChart = () => {
         return null;
     }
 
-    const startLabel = formatMonthAndDayAndOptionalYear(startDate);
+    const startLabel = formatMonthAndDayAndOptionalYear(parseISO(startDate));
 
     return (
         <InzhurPerformanceChart

@@ -1,4 +1,5 @@
 export const InzhurSelector = {
+    ChartRange: 'Range',
     ImportPage: 'Inzhur.ImportPage',
     SelectFileButton: 'Inzhur.SelectFileButton',
     DoneButton: 'Inzhur.DoneButton',

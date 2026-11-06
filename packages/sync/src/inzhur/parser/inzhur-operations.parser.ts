@@ -5,13 +5,14 @@ import * as Option from 'effect/Option';
 import * as Result from 'effect/Result';
 import { read, utils } from 'xlsx';
 
-import { getErrorMessage, isDefined, isNotEmptyString, isNumber, isString } from '@rnw-community/shared';
+import { isPositiveNumber, getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isNumber, isString } from '@rnw-community/shared';
 
 import { INZHUR_CANONICAL_FUNDS } from '../constant/inzhur-canonical-funds.constant';
-import { INZHUR_OPERATION_PATTERNS } from '../constant/inzhur-operation-patterns.constant';
+import { INZHUR_OPERATION_EXTERNAL_ID_PREFIX } from '../constant/inzhur-operation-external-id-prefix.constant';
+import { InzhurOperationKindEnum } from '../enum/inzhur-operation-kind.enum';
 import { InzhurStatementInvalidError } from '../error/inzhur-statement-invalid.error';
-import { buildInzhurOperationExternalId } from '../utils/build-inzhur-operation-external-id.util';
 
+import type { InzhurOperationPatternInterface } from '../interface/inzhur-operation-pattern.interface';
 import type { InzhurOperationRowInterface } from '../interface/inzhur-operation-row.interface';
 import type { InzhurOperationInterface } from '../interface/inzhur-operation.interface';
 import type { InzhurOperationsExportInterface } from '../interface/inzhur-operations-export.interface';
@@ -19,6 +20,22 @@ import type { InzhurRawOperationInterface } from '../interface/inzhur-raw-operat
 import type { WorkBook, WorkSheet } from 'xlsx';
 
 class InzhurOperationsParser {
+    private static readonly OPERATION_PATTERNS: readonly InzhurOperationPatternInterface[] = [
+        { kind: InzhurOperationKindEnum.TOP_UP, pattern: /^поповнення\s+брокерського\s+рахунку/iu, isIncoming: true, needsFund: false },
+        {
+            kind: InzhurOperationKindEnum.WITHDRAWAL,
+            pattern: /^виведення\s+з\s+брокерського\s+рахунку/iu,
+            isIncoming: false,
+            needsFund: false
+        },
+        { kind: InzhurOperationKindEnum.BUY, pattern: /^купівля\s+(\d+(?:[.,]\d+)?)\s+сертифікат/iu, isIncoming: false, needsFund: true },
+        { kind: InzhurOperationKindEnum.SELL, pattern: /^продаж\s+(\d+(?:[.,]\d+)?)\s+сертифікат/iu, isIncoming: true, needsFund: true },
+        { kind: InzhurOperationKindEnum.DIVIDEND, pattern: /^нарахування\s+дивіденд/iu, isIncoming: true, needsFund: true },
+        { kind: InzhurOperationKindEnum.TAX, pattern: /^сплата\s+податку/iu, isIncoming: false, needsFund: true },
+        { kind: InzhurOperationKindEnum.CONVERSION, pattern: /^конвертація/iu, isIncoming: null, needsFund: true },
+        { kind: InzhurOperationKindEnum.SURCHARGE, pattern: /^доплата/iu, isIncoming: false, needsFund: true }
+    ];
+
     private static readonly SHEET_NAME = 'Виписка по операціям';
     private static readonly HEADER = ['дата', 'тип операції', 'вид цінного паперу', 'дебет', 'кредит'];
     private static readonly TIME_ZONE = 'Europe/Kyiv';
@@ -50,12 +67,18 @@ class InzhurOperationsParser {
             return Result.fail('The document is not an Inzhur operations statement');
         }
 
-        return Result.map(this.parseRows(rows), parsed => ({
-            operations: this.assignExternalIds(parsed.map(operation => operation.recognised)),
-            unrecognised: this.countUnrecognised(
-                parsed.filter(operation => !isDefined(operation.recognised)).map(operation => operation.type)
-            )
-        }));
+        return Result.flatMap(this.parseRows(rows), parsed => {
+            const operations = this.assignExternalIds(parsed.map(operation => operation.recognised));
+
+            return isNotEmptyArray(operations)
+                ? Result.succeed({
+                      operations,
+                      unrecognised: this.countUnrecognised(
+                          parsed.filter(operation => !isDefined(operation.recognised)).map(operation => operation.type)
+                      )
+                  })
+                : Result.fail('The statement contains no recognised operations');
+        });
     }
 
     private findSheet(workbook: WorkBook): WorkSheet | null {
@@ -103,7 +126,7 @@ class InzhurOperationsParser {
 
     private classify(entry: InzhurOperationRowInterface): InzhurRawOperationInterface | null {
         const fundName = this.normalizeFundName(entry.fund);
-        const matched = INZHUR_OPERATION_PATTERNS.find(candidate => candidate.pattern.test(entry.type));
+        const matched = InzhurOperationsParser.OPERATION_PATTERNS.find(candidate => candidate.pattern.test(entry.type));
 
         if (!isDefined(matched) || !this.isSideValid(matched.isIncoming, entry) || (matched.needsFund && !isDefined(fundName))) {
             return null;
@@ -124,10 +147,10 @@ class InzhurOperationsParser {
 
     private isSideValid(isIncoming: boolean | null, { debit, credit }: Pick<InzhurOperationRowInterface, 'debit' | 'credit'>): boolean {
         if (!isDefined(isIncoming)) {
-            return debit > 0 !== credit > 0;
+            return isPositiveNumber(debit) !== isPositiveNumber(credit);
         }
 
-        return isIncoming ? debit > 0 && credit === 0 : credit > 0 && debit === 0;
+        return isIncoming ? isPositiveNumber(debit) && credit === 0 : isPositiveNumber(credit) && debit === 0;
     }
 
     private normalizeFundName(rawFund: string): string | null {
@@ -191,14 +214,14 @@ class InzhurOperationsParser {
             .sort((left, right) => left.seconds - right.seconds || right.index - left.index)
             .map(({ seconds, kind, fundName, quantity, debit, credit }) => {
                 const fundKey = fundName?.toUpperCase().replaceAll(/\s+/gu, '-') ?? InzhurOperationsParser.NO_FUND_MARKER;
-                const amountMicroUnits = convertToMicroUnits(debit > 0 ? debit : credit);
-                const key = [seconds, kind, fundKey, amountMicroUnits, debit > 0].join('|');
+                const amountMicroUnits = convertToMicroUnits(isPositiveNumber(debit) ? debit : credit);
+                const key = [seconds, kind, fundKey, amountMicroUnits, isPositiveNumber(debit)].join('|');
                 const ordinal = ordinals.get(key) ?? 0;
 
                 ordinals.set(key, ordinal + 1);
 
                 return {
-                    externalId: buildInzhurOperationExternalId({ seconds, kind, fundKey, amountMicroUnits, ordinal }),
+                    externalId: `${INZHUR_OPERATION_EXTERNAL_ID_PREFIX}${seconds}:${kind}:${fundKey}:${amountMicroUnits}:${ordinal}`,
                     kind,
                     occurredAt: new Date(seconds * millisecondsPerSecond),
                     fundName,

@@ -14,6 +14,7 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { InzhurGainRangeEnum } from '../enum/inzhur-gain-range.enum';
+import { toKyivDay } from '../utils/to-kyiv-day.util';
 
 import { InzhurSetupService } from './inzhur-setup.service';
 
@@ -37,7 +38,7 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
         const priceHistoryLimit = 1000;
         const rangeDays = { [InzhurGainRangeEnum.MONTH]: 30, [InzhurGainRangeEnum.THREE_MONTHS]: 90 };
 
-        const toDay = (date: Date) => date.toISOString().slice(0, 10);
+        const toDay = toKyivDay;
         const shiftDay = (day: string, days: number) => toDay(new Date(Date.parse(`${day}T00:00:00.000Z`) + days * dayMilliseconds));
         const roundMoney = (value: number) => Math.round(value * 100) / 100;
         const signedAmount = (movement: LedgerMovementInterface) =>
@@ -184,11 +185,12 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
             measure: InzhurGainMeasureInterface,
             today: string
         ): InzhurRangedGainInterface[] => {
+            const startDay = listDays(ledger.firstDay, today).find(day => isDefined(measure.valueOn(day))) ?? ledger.firstDay;
             const ranged = ([InzhurGainRangeEnum.MONTH, InzhurGainRangeEnum.THREE_MONTHS] as const)
                 .map(range => ({ range, startDate: shiftDay(today, -rangeDays[range]) }))
-                .filter(({ startDate }) => startDate > ledger.firstDay);
+                .filter(({ startDate }) => startDate > startDay);
 
-            return [...ranged, { range: InzhurGainRangeEnum.ALL, startDate: ledger.firstDay }].map(({ range, startDate }) => ({
+            return [...ranged, { range: InzhurGainRangeEnum.ALL, startDate: startDay }].map(({ range, startDate }) => ({
                 range,
                 ...buildGain(ledger, measure, startDate, today)
             }));
@@ -200,10 +202,13 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
                 .filter((point): point is InzhurValuePointInterface => isDefined(point.value))
                 .map(point => ({ date: point.date, value: roundMoney(point.value) }));
 
-        const buildGainSeries = (ledger: InzhurGainLedgerInterface, measure: InzhurGainMeasureInterface, today: string) =>
-            listDays(ledger.firstDay, today)
-                .map(date => ({ date, value: buildGain(ledger, measure, ledger.firstDay, date).gain }))
+        const buildGainSeries = (ledger: InzhurGainLedgerInterface, measure: InzhurGainMeasureInterface, today: string) => {
+            const startDay = listDays(ledger.firstDay, today).find(day => isDefined(measure.valueOn(day))) ?? ledger.firstDay;
+
+            return listDays(startDay, today)
+                .map(date => ({ date, value: buildGain(ledger, measure, startDay, date).gain }))
                 .filter((point): point is InzhurValuePointInterface => isDefined(point.value));
+        };
 
         return {
             getInstitutionReport: Effect.fn('InzhurGainService.getInstitutionReport')(function* (today: string) {
@@ -267,7 +272,7 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
                 );
                 const fundItems = cashItems.filter(item => item.movement.fundAccountId === fundAccountId);
                 const invested = trades.filter(item => item.amount < 0).reduce((total, item) => total - item.amount, 0);
-                const proceeds = trades.filter(item => item.amount > 0).reduce((total, item) => total + item.amount, 0);
+                const proceeds = trades.filter(item => isPositiveNumber(item.amount)).reduce((total, item) => total + item.amount, 0);
                 const dividends = fundItems
                     .filter(item => item.movement.transactionType === TransactionTypeEnum.INCOME)
                     .reduce((total, item) => total + item.amount, 0);
@@ -285,20 +290,6 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
                     returnAmount: roundMoney(returnAmount),
                     percent: isPositiveNumber(invested) ? returnAmount / invested : null
                 } satisfies InzhurCostReturnInterface;
-            }),
-            getInstitutionGainSince: Effect.fn('InzhurGainService.getInstitutionGainSince')(function* (startDate: string, today: string) {
-                const ledger = yield* loadLedger();
-
-                if (!isDefined(ledger)) {
-                    return null;
-                }
-
-                return buildGain(
-                    ledger,
-                    { valueOn: day => institutionValueOn(ledger, day), flowOf: item => institutionFlowOf(ledger, item) },
-                    startDate,
-                    today
-                );
             })
         };
     })

@@ -1,8 +1,9 @@
-import { InstrumentPriceProviderEnum, InstrumentRepository, InstrumentTypeEnum } from '@budgie/contracts';
+import { Db, InstrumentPriceProviderEnum, InstrumentRepository, TransactionEntityTable, InstrumentTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
+import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { TestLayer } from '../../harness';
+import { explainQueryPlan, seed, TestLayer } from '../../harness';
 
 const SEEDED_FUNDS = [
     { code: 'UA5000014044', name: 'Inzhur REIT' },
@@ -34,6 +35,18 @@ describe('database/inzhur-fund-instruments', () => {
             );
 
             expect(funds.map(fund => fund.code).sort()).toEqual(SEEDED_FUNDS.map(fund => fund.code).sort());
+        }).pipe(Effect.provide(TestLayer))
+    );
+    it.effect('uses the fund-account index for a linked-fund transaction lookup', () =>
+        Effect.gen(function* () {
+            const account = yield* seed.account();
+            const plan = yield* explainQueryPlan(
+                Db.query(database =>
+                    database.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.fundAccountId, account.id))
+                )
+            );
+
+            expect(plan.join('\n')).toContain('transactions_fund_account_idx');
         }).pipe(Effect.provide(TestLayer))
     );
 });

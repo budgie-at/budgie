@@ -1,6 +1,7 @@
 import { ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
+import { parseISO } from 'date-fns/parseISO';
 import { router } from 'expo-router';
 import { Text } from 'react-native';
 
@@ -22,7 +23,7 @@ export const InzhurImportStatementAction = () => {
     const reminder = useInzhurStatementReminderQuery();
     const freshness = useInzhurFreshnessQuery();
     const { formatMonthAndDayAndOptionalYear } = useFormatDate();
-    const statementDate = isDefined(freshness?.statementDate) ? formatMonthAndDayAndOptionalYear(freshness.statementDate) : '';
+    const statementDate = isDefined(freshness?.statementDate) ? formatMonthAndDayAndOptionalYear(parseISO(freshness.statementDate)) : '';
 
     const handleImport = () => void router.push({ pathname: '/create-account/[type]', params: { type: ExternalSourceEnum.INZHUR } });
 

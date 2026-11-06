@@ -4,6 +4,7 @@ import * as Layer from 'effect/Layer';
 import { TestLayer } from '../scenario/test-runtime';
 
 import { inzhurBytesReaderLayer } from './inzhur-bytes-reader.layer';
+import { inzhurHomeClientLayer } from './inzhur-home-client.layer';
 import { inzhurLedgerWorkloadLayer } from './inzhur-ledger-workload.layer';
 
 export const makeInzhurOperationsLayer = (bytesByUri: Readonly<Record<string, Uint8Array>>) =>
@@ -11,5 +12,6 @@ export const makeInzhurOperationsLayer = (bytesByUri: Readonly<Record<string, Ui
         Layer.fresh,
         Layer.provide(inzhurBytesReaderLayer(bytesByUri)),
         Layer.provide(inzhurLedgerWorkloadLayer),
+        Layer.provide(inzhurHomeClientLayer({})),
         Layer.provideMerge(TestLayer)
     );

@@ -1,4 +1,3 @@
-import { eq } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -15,8 +14,6 @@ export class InstrumentRepository extends Context.Service<InstrumentRepository>(
         getAll: Db.query(db => db.query.InstrumentEntityTable.findMany()),
         create: (input: InstrumentCreateEntityInterface) =>
             Db.query(db => db.insert(InstrumentEntityTable).values([input]).returning()).pipe(Effect.map(([instrument]) => instrument)),
-        updateById: (id: number, input: Partial<Pick<InstrumentCreateEntityInterface, 'code' | 'providerInstrumentId'>>) =>
-            Db.query(db => db.update(InstrumentEntityTable).set(input).where(eq(InstrumentEntityTable.id, id))),
         findById: (id: number) => Db.query(db => db.query.InstrumentEntityTable.findFirst({ where: { id } })),
         findByCode: (code: string) => Db.query(db => db.query.InstrumentEntityTable.findFirst({ where: { code } })),
         findByType: (type: InstrumentTypeEnum) => Db.query(db => db.query.InstrumentEntityTable.findMany({ where: { type } })),

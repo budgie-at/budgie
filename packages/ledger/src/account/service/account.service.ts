@@ -34,8 +34,7 @@ export class AccountService extends Context.Service<AccountService>()('@budgie/l
         const adjustBalanceTo = Effect.fn('AccountService.adjustBalanceTo')(function* (
             accountId: number,
             targetBalance: number,
-            operatedAt: Date = new Date(),
-            title: string = ''
+            operatedAt: Date = new Date()
         ) {
             const result = yield* accountBalanceRepository.getByAccountId(accountId);
             const targetBalanceMicro = convertToMicroUnits(targetBalance);
@@ -45,7 +44,7 @@ export class AccountService extends Context.Service<AccountService>()('@budgie/l
                 return;
             }
 
-            yield* balanceAdjustmentService.create(accountId, delta, operatedAt, title);
+            yield* balanceAdjustmentService.create(accountId, delta, operatedAt);
 
             yield* accountBalanceRepository.upsert({ accountId, amount: targetBalanceMicro });
         });
@@ -106,7 +105,6 @@ export class AccountService extends Context.Service<AccountService>()('@budgie/l
         );
 
         return {
-            adjustBalanceTo,
             create: Effect.fn('AccountService.create')(
                 function* (input: LiabilityAccountCreateInputInterface) {
                     const createdAccount = yield* createWithBalance(input, AccountNatureEnum.LIABILITY);

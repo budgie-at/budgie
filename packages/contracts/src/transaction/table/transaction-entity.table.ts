@@ -70,6 +70,9 @@ export const TransactionEntityTable = sqliteTable(
             .where(
                 sql`${table.deletedAt} IS NULL AND ${table.consolidationParentTransactionId} IS NULL AND ${table.toAccountId} IS NOT NULL`
             ),
+        index('transactions_fund_account_idx')
+            .on(table.fundAccountId)
+            .where(sql`${table.fundAccountId} IS NOT NULL`),
         index('transactions_from_account_idx')
             .on(table.fromAccountId)
             .where(sql`${table.fromAccountId} IS NOT NULL`),

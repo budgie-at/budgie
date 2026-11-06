@@ -7,7 +7,7 @@ import {
     TransactionEntityTable,
     TransactionEntryEntityTable
 } from '@budgie/contracts';
-import { InzhurGainService } from '@budgie/sync';
+import { InzhurGainService, toKyivDay } from '@budgie/sync';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
@@ -39,7 +39,7 @@ const fundCostReturnAtom = databaseQueryFamily(GAIN_TABLES, InzhurGainService, (
     return inzhurGainService.getFundCostReturn(Number(accountId), today);
 });
 
-const getToday = () => new Date().toISOString().slice(0, 10);
+const getToday = () => toKyivDay(new Date());
 
 export const useInzhurInstitutionGainQuery = () => AsyncResult.getOrElse(useLiveAtomValue(institutionReportAtom(getToday())), () => null);
 

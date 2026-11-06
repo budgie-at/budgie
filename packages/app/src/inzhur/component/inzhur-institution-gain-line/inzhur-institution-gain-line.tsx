@@ -1,6 +1,7 @@
 import { InzhurGainRangeEnum } from '@budgie/sync';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
+import { parseISO } from 'date-fns/parseISO';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -23,7 +24,7 @@ export const InzhurInstitutionGainLine = () => {
     }
 
     if (isDefined(scrubbedPoint) && isDefined(startDate)) {
-        const startLabel = formatMonthAndDayAndOptionalYear(startDate);
+        const startLabel = formatMonthAndDayAndOptionalYear(parseISO(startDate));
 
         return (
             <InzhurGainLine gain={scrubbedPoint.value} percent={null} suffix={t`since ${startLabel}`} testID={InzhurSelector.GainLine} />

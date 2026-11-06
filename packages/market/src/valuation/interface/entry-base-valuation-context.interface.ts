@@ -5,7 +5,7 @@ export interface EntryBaseValuationContextInterface {
     readonly baseInstrument: InstrumentEntityInterface | undefined;
     readonly accounts: Cache.Cache<number, AccountWithInstrumentEntityInterface | undefined, DbError>;
     readonly rates: Cache.Cache<
-        readonly [sourceInstrumentId: number, targetInstrumentId: number, rateDayStart: number, isFund: boolean],
+        readonly [sourceInstrumentId: number, targetInstrumentId: number, rateDayStart: number],
         number | null,
         DbError
     >;

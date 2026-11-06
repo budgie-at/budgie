@@ -1,5 +1,6 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
+import { parseISO } from 'date-fns/parseISO';
 import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -19,7 +20,7 @@ export const InzhurFreshnessLine = () => {
         return null;
     }
 
-    const priceDate = formatMonthAndDayAndOptionalYear(scrubbedPoint?.date ?? freshness.priceDate);
+    const priceDate = formatMonthAndDayAndOptionalYear(parseISO(scrubbedPoint?.date ?? freshness.priceDate));
 
     return (
         <Text

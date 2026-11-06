@@ -10,6 +10,7 @@ import { CURRENT_TIMESTAMP } from '../../@generic/constant/current-timestamp.con
 import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
 import { getExchangeRateWithHistoricalFallbackSql } from '../../@generic/utils/get-exchange-rate-sql.util';
+import { roundToMinorUnitSql } from '../../@generic/utils/round-to-minor-unit-sql.util';
 import { BANK_AUTHORITATIVE_ACCOUNT_TYPES } from '../../account/constant/bank-authoritative-account-types.constant';
 import { CRYPTO_ACCOUNT_TYPES } from '../../account/constant/crypto-account-types.constant';
 import { LIQUID_ACCOUNT_TYPES } from '../../account/constant/liquid-account-types.constant';
@@ -46,10 +47,7 @@ const isUnitAccountSql = sql`(${inArray(AccountEntityTable.type, CRYPTO_ACCOUNT_
 const buildNetWorthExchangeRateConversionSql = (defaultInstrumentId: number) =>
     sql`CASE WHEN ${isUnitAccountSql} THEN ${buildStrictExchangeRateConversionSql(defaultInstrumentId)} ELSE ${buildFiatExchangeRateConversionSql(defaultInstrumentId)} END`;
 
-const MINOR_UNIT_MICRO_UNITS_SQL = sql.raw('10000.0');
-
-const getConvertedBalanceSql = (balanceSql: SQL, exchangeRateSql: SQL) =>
-    sql<number>`ROUND((${balanceSql}) * ${exchangeRateSql} / ${MINOR_UNIT_MICRO_UNITS_SQL}) * ${MINOR_UNIT_MICRO_UNITS_SQL}`;
+const getConvertedBalanceSql = (balanceSql: SQL, exchangeRateSql: SQL) => roundToMinorUnitSql(sql`(${balanceSql}) * ${exchangeRateSql}`);
 
 const getActiveAccountWhereSql = (...conditions: SQL[]) =>
     and(...conditions, eq(AccountEntityTable.isActive, true), isNull(AccountEntityTable.deletedAt));

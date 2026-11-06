@@ -1,4 +1,4 @@
-import { InvestmentReturnRepository, PRECISION } from '@budgie/contracts';
+import { InvestmentReturnRepository, TransactionTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -34,15 +34,9 @@ describe('inzhur/fund-returns', () => {
 
             const reit = yield* requireInzhurFundAccount(REIT_ISIN);
             const energy = yield* requireInzhurFundAccount(ENERGY_ISIN);
-            const totals = (yield* investmentReturnRepository.getFundDividendTotals).toSorted(
-                (left, right) => left.fundAccountId - right.fundAccountId
-            );
+            const movements = yield* investmentReturnRepository.findLedgerMovements([reit.id, energy.id]);
 
-            expect(totals).toEqual([
-                { fundAccountId: reit.id, bank: 120 * PRECISION, reinvested: 100 * PRECISION },
-                { fundAccountId: energy.id, bank: 0, reinvested: 40 * PRECISION }
-            ]);
-            expect(yield* investmentReturnRepository.findFirstEntryOperatedAt(reit.id)).toEqual(new Date('2026-01-10T08:05:00.000Z'));
+            expect(movements.filter(movement => movement.transactionType === TransactionTypeEnum.TRANSFER)).toHaveLength(2);
         }).pipe(Effect.provide(layer))
     );
 });

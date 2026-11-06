@@ -1,5 +1,6 @@
 import { InzhurGainRangeEnum } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
+import { parseISO } from 'date-fns/parseISO';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -22,7 +23,7 @@ export const InzhurAllTimeGainLine = ({ gains }: Props) => {
         return null;
     }
 
-    const startLabel = formatMonthAndDayAndOptionalYear(allTime.startDate);
+    const startLabel = formatMonthAndDayAndOptionalYear(parseISO(allTime.startDate));
 
     return (
         <InzhurGainLine gain={allTime.gain} percent={allTime.percent} suffix={t`since ${startLabel}`} testID={InzhurSelector.GainLine} />

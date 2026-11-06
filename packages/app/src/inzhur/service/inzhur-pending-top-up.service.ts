@@ -6,6 +6,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Schema from 'effect/Schema';
+import * as Semaphore from 'effect/Semaphore';
 
 import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
@@ -19,6 +20,7 @@ import { inzhurDismissedTopUpsAtom } from '../constant/inzhur-dismissed-top-ups-
 export class InzhurPendingTopUpService extends Context.Service<InzhurPendingTopUpService>()('@budgie/app/InzhurPendingTopUpService', {
     make: Effect.gen(function* () {
         const inzhurManualPurchaseService = yield* InzhurManualPurchaseService;
+        const permit = yield* Semaphore.make(1);
         const dismissedKey = '@budgie:inzhur-dismissed-top-ups';
         const notifiedKey = '@budgie:inzhur-notified-top-ups';
         const ExternalIdsSchema = Schema.String.pipe(Schema.Array, Schema.fromJsonString);
@@ -57,45 +59,48 @@ export class InzhurPendingTopUpService extends Context.Service<InzhurPendingTopU
 
         appAtomRegistry.set(inzhurDismissedTopUpsAtom, initialDismissed);
 
-        const remind = Effect.fn('InzhurPendingTopUpService.remind')(function* () {
-            const pendingTopUps = yield* inzhurManualPurchaseService.findPendingTopUps();
-            const dismissed = yield* findDismissed;
-            const notified = yield* readIds(notifiedKey);
-            const unnotifiedTopUps = pendingTopUps.filter(
-                topUp => !dismissed.includes(topUp.externalId) && !notified.includes(topUp.externalId)
-            );
+        const remind = Effect.fn('InzhurPendingTopUpService.remind')(
+            function* () {
+                const pendingTopUps = yield* inzhurManualPurchaseService.findPendingTopUps();
+                const dismissed = yield* findDismissed;
+                const notified = yield* readIds(notifiedKey);
+                const unnotifiedTopUps = pendingTopUps.filter(
+                    topUp => !dismissed.includes(topUp.externalId) && !notified.includes(topUp.externalId)
+                );
 
-            if (!isNotEmptyArray(unnotifiedTopUps)) {
-                return;
-            }
+                if (!isNotEmptyArray(unnotifiedTopUps)) {
+                    return;
+                }
 
-            if (!(yield* isNotificationPermissionGranted)) {
-                return;
-            }
+                if (!(yield* isNotificationPermissionGranted)) {
+                    return;
+                }
 
-            const amountFormat = new Intl.NumberFormat(i18n.locale, {
-                style: 'currency',
-                currency: 'UAH',
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 2
-            });
-            const dateFormat = new Intl.DateTimeFormat(i18n.locale, { month: 'short', day: 'numeric' });
+                const amountFormat = new Intl.NumberFormat(i18n.locale, {
+                    style: 'currency',
+                    currency: 'UAH',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2
+                });
+                const dateFormat = new Intl.DateTimeFormat(i18n.locale, { month: 'short', day: 'numeric' });
 
-            yield* Effect.forEach(
-                unnotifiedTopUps,
-                Effect.fnUntraced(function* (topUp) {
-                    const amount = amountFormat.format(topUp.amount);
-                    const date = dateFormat.format(topUp.operatedAt);
+                yield* Effect.forEach(
+                    unnotifiedTopUps,
+                    Effect.fnUntraced(function* (topUp) {
+                        const amount = amountFormat.format(topUp.amount);
+                        const date = dateFormat.format(topUp.operatedAt);
 
-                    yield* postLocalNotification(
-                        i18n._(msg`Inzhur top-up waiting`),
-                        i18n._(msg`${amount} topped up ${date}. What did you buy?`)
-                    );
-                    yield* writeIds(notifiedKey, [...(yield* readIds(notifiedKey)), topUp.externalId]);
-                }),
-                { discard: true }
-            );
-        });
+                        yield* postLocalNotification(
+                            i18n._(msg`Inzhur top-up waiting`),
+                            i18n._(msg`${amount} topped up ${date}. What did you buy?`)
+                        );
+                        yield* writeIds(notifiedKey, [...(yield* readIds(notifiedKey)), topUp.externalId]);
+                    }),
+                    { discard: true }
+                );
+            },
+            effect => permit.withPermit(effect)
+        );
 
         return {
             findDismissed,

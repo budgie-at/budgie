@@ -5922,6 +5922,20 @@
             "name": "rule_condition_between_requires_secondary_value",
             "entityType": "checks",
             "table": "rule_conditions"
+        },
+        {
+            "columns": [
+                {
+                    "value": "fund_account_id",
+                    "isExpression": false
+                }
+            ],
+            "isUnique": false,
+            "where": "\"transactions\".\"fund_account_id\" IS NOT NULL",
+            "origin": "manual",
+            "name": "transactions_fund_account_idx",
+            "entityType": "indexes",
+            "table": "transactions"
         }
     ],
     "renames": []

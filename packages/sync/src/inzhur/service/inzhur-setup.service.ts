@@ -16,7 +16,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined } from '@rnw-community/shared';
+import { isPositiveNumber, isDefined } from '@rnw-community/shared';
 
 import { INZHUR_CASH_EXTERNAL_ID } from '../constant/inzhur-cash-external-id.constant';
 import { toKyivDay } from '../utils/to-kyiv-day.util';
@@ -112,7 +112,7 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
 
             const activityCount = yield* investmentReturnRepository.countTransfersSince(cashAccount.id, lastImportAt);
 
-            return activityCount > 0
+            return isPositiveNumber(activityCount)
                 ? ({ daysOld, lastStatementDate: toKyivDay(lastImportAt) } satisfies InzhurStatementReminderInterface)
                 : null;
         });

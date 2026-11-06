@@ -155,3 +155,5 @@ export { SyncAccountContinuationRefusalEnum } from './core/enum/sync-account-con
 export { SyncAccountContinuationRefusedError } from './core/error/sync-account-continuation-refused.error';
 export { isLiveSync } from './core/utils/is-live-sync.util';
 export type { SyncAccountContinuationChoicesInterface } from './core/interface/sync-account-continuation-choices.interface';
+
+export { toKyivDay } from './inzhur/utils/to-kyiv-day.util';

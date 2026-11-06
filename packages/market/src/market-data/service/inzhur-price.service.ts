@@ -42,8 +42,8 @@ export class InzhurPriceService extends Context.Service<InzhurPriceService>()('@
             return prices;
         });
 
-        return {
-            fetchPrices: Effect.fn('InzhurPriceService.fetchPrices')(function* () {
+        const fetchPrices = yield* Effect.cachedWithTTL(
+            Effect.gen(function* () {
                 const client = (yield* HttpClient.HttpClient).pipe(
                     HttpClient.filterStatusOk,
                     HttpClient.transformResponse(Effect.timeout(fetchTimeoutMs)),
@@ -54,7 +54,12 @@ export class InzhurPriceService extends Context.Service<InzhurPriceService>()('@
                 const html = yield* response.text;
 
                 return yield* parsePrices(html);
-            }),
+            }).pipe(Effect.withSpan('InzhurPriceService.fetchPrices')),
+            '1 minute'
+        );
+
+        return {
+            fetchPrices,
             findNearestPrice: Effect.fn('InzhurPriceService.findNearestPrice')(function* (instrumentId: number, priceDate: string) {
                 const hryvnia = yield* instrumentRepository.findByCode(CurrencyEnum.UAH);
 

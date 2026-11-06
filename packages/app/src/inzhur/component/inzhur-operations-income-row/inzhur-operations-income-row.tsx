@@ -4,7 +4,7 @@ import { View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { getInzhurShortTitle } from '../../utils/get-inzhur-short-title.util';
 import { InzhurMoneyRow } from '../inzhur-money-row/inzhur-money-row';
 
@@ -17,7 +17,7 @@ interface Props {
 
 export const InzhurOperationsIncomeRow = ({ fund, symbol }: Props) => {
     const { t } = useLingui();
-    const formatAmount = useFormatDigits(2);
+    const formatAmount = useProtectedAmountLabel();
 
     const taxLabel = formatAmount(fund.tax, symbol);
     const captionSegments = isPositiveNumber(fund.tax) ? [t`Tax ${taxLabel}`] : [];

@@ -1,4 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
+import { parseISO } from 'date-fns/parseISO';
 import { Text, View } from 'react-native';
 
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
@@ -13,8 +14,8 @@ export const InzhurOperationsPeriodHeader = ({ summary }: Props) => {
     const { t } = useLingui();
     const { formatMonthAndDayAndOptionalYear } = useFormatDate();
 
-    const periodFrom = formatMonthAndDayAndOptionalYear(summary.periodFrom);
-    const periodTo = formatMonthAndDayAndOptionalYear(summary.periodTo);
+    const periodFrom = formatMonthAndDayAndOptionalYear(parseISO(summary.periodFrom));
+    const periodTo = formatMonthAndDayAndOptionalYear(parseISO(summary.periodTo));
     const coverageLabel = summary.isFullHistory
         ? t`Full history. Cash now matches your Inzhur account.`
         : t`Part of your history. Older activity is not included.`;
