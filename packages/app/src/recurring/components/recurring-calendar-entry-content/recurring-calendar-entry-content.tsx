@@ -1,0 +1,73 @@
+import { convertFromMicroUnits } from '@budgie/contracts';
+import { RecurringAlertEnum } from '@budgie/recurring';
+import { useAtomValue } from '@effect/atom-react/Hooks';
+import { useLingui } from '@lingui/react/macro';
+import { Text } from 'react-native';
+
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
+import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { TransactionCardLayout } from '../../../transaction/components/transaction-card-layout/transaction-card-layout';
+import { TRANSACTION_SECONDARY_MAX_FONT_SIZE_MULTIPLIER } from '../../../transaction/constant/transaction-secondary-max-font-size-multiplier.constant';
+import { RecurringMerchantTile } from '../recurring-merchant-tile/recurring-merchant-tile';
+
+import type { RecurringCalendarEntryInterface } from '@budgie/recurring';
+
+interface Props {
+    readonly entry: Pick<RecurringCalendarEntryInterface, 'latestAmount' | 'isForecast' | 'title' | 'alert' | 'categoryTitle'>;
+    readonly dayLabel?: string;
+}
+
+export const RecurringCalendarEntryContent = ({ entry, dayLabel }: Props) => {
+    const { t } = useLingui();
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
+    const protectAmount = useProtectedAmountLabel();
+    const isAccessibilityTextSize = useIsAccessibilityTextSize();
+    const labelLineLimit = isAccessibilityTextSize ? 0 : 2;
+    const statusLabel = entry.isForecast ? t`Still to pay` : t`Paid`;
+    const metadataLabel = isNotEmptyString(dayLabel) ? dayLabel : statusLabel;
+    const alertLabels = {
+        [RecurringAlertEnum.OVERDUE]: t`Overdue`,
+        [RecurringAlertEnum.PRICE_CHANGE]: t`Amount changed`,
+        [RecurringAlertEnum.ENDING]: t`Ending soon`
+    };
+    const detail = isDefined(entry.alert) ? alertLabels[entry.alert] : (entry.categoryTitle ?? entry.title);
+    const description = isAccessibilityTextSize ? detail : `${metadataLabel} · ${detail}`;
+
+    return (
+        <TransactionCardLayout
+            icon={<RecurringMerchantTile title={entry.title} size={40} />}
+            title={
+                <Text dynamicTypeRamp="headline" className="text-[16px] font-semibold text-primary" lineBreakStrategyIOS="standard">
+                    {entry.title}
+                </Text>
+            }
+            amount={
+                <Text dynamicTypeRamp="headline" className="shrink-0 text-[16px] font-semibold text-primary tabular-nums">
+                    {protectAmount(convertFromMicroUnits(entry.latestAmount), defaultInstrument.symbol)}
+                </Text>
+            }
+        >
+            {isAccessibilityTextSize ? (
+                <Text
+                    dynamicTypeRamp="footnote"
+                    maxFontSizeMultiplier={TRANSACTION_SECONDARY_MAX_FONT_SIZE_MULTIPLIER}
+                    className="text-[12px] text-secondary-foreground"
+                >
+                    {metadataLabel}
+                </Text>
+            ) : null}
+            <Text
+                dynamicTypeRamp="footnote"
+                maxFontSizeMultiplier={TRANSACTION_SECONDARY_MAX_FONT_SIZE_MULTIPLIER}
+                className="text-[12px] text-secondary-foreground"
+                numberOfLines={labelLineLimit}
+                ellipsizeMode="tail"
+            >
+                {description}
+            </Text>
+        </TransactionCardLayout>
+    );
+};

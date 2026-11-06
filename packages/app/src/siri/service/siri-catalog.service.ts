@@ -21,7 +21,6 @@ import { format } from 'date-fns/format';
 import { isSameMonth } from 'date-fns/isSameMonth';
 import { startOfDay } from 'date-fns/startOfDay';
 import { startOfMonth } from 'date-fns/startOfMonth';
-import { subMonths } from 'date-fns/subMonths';
 import * as Context from 'effect/Context';
 import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
@@ -240,7 +239,7 @@ export class SiriCatalogService extends Context.Service<SiriCatalogService>()('@
 
         const publishCategories = Effect.fn('SiriCatalogService.publishCategories')(function* (context: SiriAnswerContextInterface) {
             const monthStart = startOfMonth(context.now);
-            const lastMonthStart = subMonths(monthStart, 1);
+            const lastMonthStart = startOfMonth(addDays(monthStart, -1));
             const expenseByCategory = (date: TransactionFilterInterface['date']) =>
                 statisticsRepository.getExpenseByCategoryQuery(
                     { ...DEFAULT_TRANSACTION_FILTER, date },

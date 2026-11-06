@@ -12,6 +12,7 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 import { seed, seedBankPair, testDb, TestLayer, DEBT_OPENING_MESSAGES } from '../../harness';
 
 const COMPACT_MIGRATION = '20261104170422_compact_rates_and_embeddings';
+const RECURRING_SMART_MIGRATION = '20261105192451_recurring_smart_series';
 
 const PRE_MIGRATION_SCHEMA: Readonly<Record<string, readonly string[]>> = {
     [COMPACT_MIGRATION]: [
@@ -36,7 +37,8 @@ const PRE_MIGRATION_SCHEMA: Readonly<Record<string, readonly string[]>> = {
         'ALTER TABLE merchant_embeddings ADD dimensions integer NOT NULL DEFAULT 0',
         'CREATE INDEX idx_transaction_entries_transaction_id ON transaction_entries (transaction_id)',
         'CREATE INDEX idx_transaction_entries_account_id ON transaction_entries (account_id)'
-    ]
+    ],
+    [RECURRING_SMART_MIGRATION]: ['DROP TABLE recurring_series_transaction']
 };
 
 const restorePreMigrationSchema = (migrationName: string) =>

@@ -7,6 +7,7 @@ import {
     ExchangeRateEntityTable,
     HistoricalExchangeRateEntityTable,
     RecurringSeriesEntityTable,
+    RecurringSeriesTransactionEntityTable,
     SettingsEntityTable
 } from '@budgie/contracts';
 
@@ -22,5 +23,6 @@ export const BUDGET_PROJECTION_TABLES = [
     ExchangeRateEntityTable,
     HistoricalExchangeRateEntityTable,
     RecurringSeriesEntityTable,
+    RecurringSeriesTransactionEntityTable,
     SettingsEntityTable
 ];

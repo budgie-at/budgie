@@ -4,7 +4,6 @@ import * as t from '../support/budgie/transactions.ts';
 
 test('20 recurring calendar', { tags: ['recurring'] }, async ({ budgie }) => {
     const ctx = budgie.ctx;
-    const id = (testId: string) => b.byId(ctx.screen, testId);
     const expectExpectedAndRecordedRows = async () => {
         await b.expectId(ctx, 'RecurringCalendar.ExpectedHeader', 5_000);
         await b.expectId(ctx, 'RecurringCalendar.Row.E2E_Recurring_Gym');
@@ -18,6 +17,8 @@ test('20 recurring calendar', { tags: ['recurring'] }, async ({ budgie }) => {
     await b.phase('open recurring calendar', async () => {
         await t.navigateToTransactions(ctx);
         await b.tapId(ctx, 'TransactionsPage.Tab.Recurring');
+        await b.expectId(ctx, 'RecurringPane.List', 5_000);
+        await b.tapId(ctx, 'RecurringPane.CalendarModeButton');
         await b.expectId(ctx, 'RecurringCalendar.Container', 5_000);
         await expectExpectedAndRecordedRows();
     });
@@ -45,27 +46,26 @@ test('20 recurring calendar', { tags: ['recurring'] }, async ({ budgie }) => {
         await b.expectId(ctx, 'RecurringCalendar.Row.E2E_Recurring_Gym');
     });
     await b.phase('empty month retains navigation', async () => {
-        for (let month = 0; month < 3; month += 1) {
+        for (let month = 0; month < 4; month += 1) {
             await b.tapId(ctx, 'RecurringCalendar.PreviousMonthButton');
         }
         await b.scrollTo(ctx, 'RecurringCalendar.EmptyMonth');
         await b.expectId(ctx, 'RecurringCalendar.EmptyMonth');
         await b.scrollTo(ctx, 'RecurringCalendar.MonthLabel', 'up');
         await b.expectId(ctx, 'RecurringCalendar.NextMonthButton');
-        for (let month = 0; month < 3; month += 1) {
+        for (let month = 0; month < 4; month += 1) {
             await b.tapId(ctx, 'RecurringCalendar.NextMonthButton');
         }
         await b.scrollTo(ctx, 'RecurringCalendar.Row.E2E_Recurring_Rent');
         await b.expectId(ctx, 'RecurringCalendar.Row.E2E_Recurring_Rent');
     });
-    await b.phase('rename recurring series', async () => {
-        await b.scrollTo(ctx, 'RecurringCalendar.Row.E2E_Recurring_Rent');
-        await id('RecurringCalendar.Row.E2E_Recurring_Rent').longPress();
-        await b.tapText(ctx, 'Rename');
-        await b.expectId(ctx, 'RecurringCalendar.SeriesTitleInput');
-        await b.fillId(ctx, 'RecurringCalendar.SeriesTitleInput', 'E2E Renamed Rent');
-        await b.done(ctx);
-        await b.expectNoId(ctx, 'RecurringCalendar.SeriesTitleInput');
-        await b.expectId(ctx, 'RecurringCalendar.Row.E2E_Renamed_Rent');
+    await b.phase('list view rows and series detail', async () => {
+        await b.scrollTo(ctx, 'RecurringPane.ListModeButton', 'up');
+        await b.tapId(ctx, 'RecurringPane.ListModeButton');
+        await b.expectId(ctx, 'RecurringPane.List', 5_000);
+        await b.expectId(ctx, 'RecurringPane.Row.E2E_Recurring_Rent');
+        await b.expectId(ctx, 'RecurringPane.Row.E2E_Recurring_Gym');
+        await b.tapId(ctx, 'RecurringPane.Row.E2E_Recurring_Rent');
+        await b.expectId(ctx, 'RecurringDetail.Page', 5_000);
     });
 });

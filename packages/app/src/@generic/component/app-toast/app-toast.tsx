@@ -8,6 +8,8 @@ import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 
+import { AppToastSelector } from './app-toast.selector';
+
 import type { ToastActionInterface } from '../../interface/toast-action.interface';
 import type { ReactNode } from 'react';
 import type { ToastType } from 'react-native-toast-message';
@@ -69,6 +71,7 @@ export const AppToast = ({ text1, text2, type, children, action }: Props) => {
                     hitSlop={ACTION_HIT_SLOP}
                     accessibilityRole="button"
                     accessibilityLabel={action.label}
+                    testID={AppToastSelector.ActionButton}
                     className="rounded-full bg-surface-fill px-xl py-xs active:opacity-70"
                 >
                     <Text className="text-[15px] font-semibold text-primary">{action.label}</Text>

@@ -16,9 +16,9 @@ interface Props<T extends string> {
 
 const SEGMENT_HIT_SLOP = { top: 6, bottom: 6 } as const;
 
-const labelVariants = cva('text-[13px]', {
+const labelVariants = cva('text-[15px]', {
     variants: {
-        isActive: { true: 'font-semibold', false: 'font-medium' },
+        isActive: { true: 'font-semibold', false: 'font-medium dark:opacity-70' },
         disabled: { true: 'text-secondary-foreground/50', false: 'text-primary' }
     }
 });

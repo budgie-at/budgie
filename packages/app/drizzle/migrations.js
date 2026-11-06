@@ -23,6 +23,7 @@ import m0019 from './20261030001632_binance_multi_account_and_sync_error_code/mi
 import m0020 from './20261031052517_budget_v3/migration.sql';
 import m0021 from './20261031231028_category_icon_source/migration.sql';
 import m0022 from './20261104170422_compact_rates_and_embeddings/migration.sql';
+import m0023 from './20261105192451_recurring_smart_series/migration.sql';
 
 export default {
     migrations: {
@@ -48,6 +49,7 @@ export default {
         '20261030001632_binance_multi_account_and_sync_error_code': m0019,
         '20261031052517_budget_v3': m0020,
         '20261031231028_category_icon_source': m0021,
-        '20261104170422_compact_rates_and_embeddings': m0022
+        '20261104170422_compact_rates_and_embeddings': m0022,
+        '20261105192451_recurring_smart_series': m0023
     }
 };
