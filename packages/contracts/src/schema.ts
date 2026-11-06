@@ -38,3 +38,4 @@ export { SyncOutboxEntityTable } from './cloud-sync/table/sync-outbox-entity.tab
 export { SyncPendingEntityTable } from './cloud-sync/table/sync-pending-entity.table';
 export { SyncApplyStateEntityTable } from './cloud-sync/table/sync-apply-state-entity.table';
 export { SyncZoneRegistryEntityTable } from './cloud-sync/table/sync-zone-registry-entity.table';
+export { RecurringSeriesTransactionEntityTable } from './recurring-series-transaction/table/recurring-series-transaction-entity.table';

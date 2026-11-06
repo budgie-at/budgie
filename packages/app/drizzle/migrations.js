@@ -1,5 +1,3 @@
-// This file is required for Expo/React Native SQLite migrations - https://orm.drizzle.team/quick-sqlite/expo
-
 import m0000 from './20261001084501_baseline/migration.sql';
 import m0001 from './20261002214604_recurring_series/migration.sql';
 import m0002 from './20261004064254_transaction_import_fingerprint/migration.sql';
@@ -23,12 +21,14 @@ import m0019 from './20261030001632_binance_multi_account_and_sync_error_code/mi
 import m0020 from './20261031052517_budget_v3/migration.sql';
 import m0021 from './20261031231028_category_icon_source/migration.sql';
 import m0022 from './20261104170422_compact_rates_and_embeddings/migration.sql';
-import m0023 from './20261105193657_cloud_sync_identity/migration.sql';
-import m0024 from './20261105193703_account_external_ids_zone_scope/migration.sql';
-import m0025 from './20261105193722_cloud_sync_seed_identity/migration.sql';
-import m0026 from './20261105200520_cloud_sync_outbox_triggers/migration.sql';
-import m0027 from './20261105201521_cloud_sync_last_local_change/migration.sql';
-import m0028 from './20261105214526_household_share_everything/migration.sql';
+import m0023 from './20261105192451_recurring_smart_series/migration.sql';
+import m0024 from './20261105193657_cloud_sync_identity/migration.sql';
+import m0025 from './20261105193703_account_external_ids_zone_scope/migration.sql';
+import m0026 from './20261105193722_cloud_sync_seed_identity/migration.sql';
+import m0027 from './20261105200520_cloud_sync_outbox_triggers/migration.sql';
+import m0028 from './20261105201521_cloud_sync_last_local_change/migration.sql';
+import m0029 from './20261105214526_household_share_everything/migration.sql';
+import m0030 from './20261106125735_recurring_series_smart_sync_triggers/migration.sql';
 
   export default {
     migrations: {
@@ -55,12 +55,14 @@ import m0028 from './20261105214526_household_share_everything/migration.sql';
 "20261031052517_budget_v3": m0020,
 "20261031231028_category_icon_source": m0021,
 "20261104170422_compact_rates_and_embeddings": m0022,
-"20261105193657_cloud_sync_identity": m0023,
-"20261105193703_account_external_ids_zone_scope": m0024,
-"20261105193722_cloud_sync_seed_identity": m0025,
-"20261105200520_cloud_sync_outbox_triggers": m0026,
-"20261105201521_cloud_sync_last_local_change": m0027,
-"20261105214526_household_share_everything": m0028
+"20261105192451_recurring_smart_series": m0023,
+"20261105193657_cloud_sync_identity": m0024,
+"20261105193703_account_external_ids_zone_scope": m0025,
+"20261105193722_cloud_sync_seed_identity": m0026,
+"20261105200520_cloud_sync_outbox_triggers": m0027,
+"20261105201521_cloud_sync_last_local_change": m0028,
+"20261105214526_household_share_everything": m0029,
+"20261106125735_recurring_series_smart_sync_triggers": m0030
 }
   }
   

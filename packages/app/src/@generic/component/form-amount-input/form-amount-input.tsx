@@ -31,13 +31,14 @@ export const FormAmountInput = (props: Props) => {
     const isZero = absoluteValue === 0;
     const prefix = isNegativeAmount ? `−${instrumentSymbol}` : instrumentSymbol;
     const textAlign = showInstrumentAfterAmount ? 'right' : 'left';
+    const symbolClassName = isZero ? 'text-secondary-foreground' : 'text-primary';
 
     return (
         <View className="px-4">
             <View className="h-[104px] flex-row items-center">
                 <AmountField fontSize={64} className="flex-1">
                     {showInstrumentAfterAmount ? null : (
-                        <AmountFieldPrefix scale={0.6} className="text-primary">
+                        <AmountFieldPrefix scale={0.6} className={symbolClassName}>
                             {prefix}
                         </AmountFieldPrefix>
                     )}
@@ -48,14 +49,14 @@ export const FormAmountInput = (props: Props) => {
                         format={format}
                         onChangeValue={changeAbsoluteValue}
                         className="text-primary tabular-nums"
-                        placeholderTextColorClassName="accent-primary"
+                        placeholderTextColorClassName="accent-secondary-foreground"
                         placeholder={format.format(0)}
                         textAlign={textAlign}
                         selectTextOnFocus
                     />
 
                     {showInstrumentAfterAmount ? (
-                        <AmountFieldSuffix scale={0.4} minimumFontSize={22} className="text-primary">
+                        <AmountFieldSuffix scale={0.4} minimumFontSize={22} className={symbolClassName}>
                             {instrumentSymbol}
                         </AmountFieldSuffix>
                     ) : null}

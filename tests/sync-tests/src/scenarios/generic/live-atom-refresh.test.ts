@@ -38,6 +38,7 @@ import { recentMarketPricesAtom } from '@app/market-data/query/use-instrument-ma
 import { allMccCategoriesAtom } from '@app/mcc-category/query/use-get-all-mcc-categories.query';
 import { mccCategoryByIdAtom } from '@app/mcc-category/query/use-get-mcc-category-by-id.query';
 import { accountCountAtom as onboardingAccountCountAtom } from '@app/onboarding/hook/use-is-onboarding-active.hook';
+import { recurringCalendarAtom } from '@app/recurring/hook/use-recurring-calendar.hook';
 import { enabledRulesAtom } from '@app/rule/constant/enabled-rules-atom.constant';
 import { allRulesAtom } from '@app/rule/query/use-get-all-rules.query';
 import { ruleByIdAtom } from '@app/rule/query/use-get-rule-by-id.query';
@@ -54,7 +55,6 @@ import { searchTagsAtom } from '@app/tag/query/use-search-tags.query';
 import { tagUsageAtom } from '@app/tag/query/use-tags-with-usage.query';
 import { TagService } from '@app/tag/service/tag.service';
 import { refundsTotalAtom } from '@app/transaction/constant/refunds-total-atom.constant';
-import { recurringCalendarAtom } from '@app/transaction/hook/use-recurring-calendar.hook';
 import { consolidationSourcesAtom } from '@app/transaction/query/use-get-consolidation-sources.query';
 import { statisticsByCategoryAtom } from '@app/transaction/query/use-get-statistics-by-category.query';
 import { statisticsByTagAtom } from '@app/transaction/query/use-get-statistics-by-tag.query';

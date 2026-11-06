@@ -6,7 +6,10 @@ import { Input } from '../input/input';
 import type { UserIconType } from '@budgie/contracts';
 import type { ComponentProps } from 'react';
 
-type InputProps = Pick<ComponentProps<typeof Input>, 'value' | 'onChangeText' | 'onBlur' | 'placeholder' | 'testID'>;
+type InputProps = Pick<
+    ComponentProps<typeof Input>,
+    'value' | 'onChangeText' | 'onBlur' | 'placeholder' | 'testID' | 'keyboardType' | 'maxLength'
+>;
 
 type Props = InputProps & {
     readonly icon: UserIconType;

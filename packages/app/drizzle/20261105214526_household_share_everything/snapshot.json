@@ -7491,6 +7491,291 @@
       "name": "sync_apply_state_single_row",
       "entityType": "checks",
       "table": "sync_apply_state"
+    },
+    {
+      "name": "recurring_series_transaction",
+      "entityType": "tables"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'DETECTED'",
+      "generated": null,
+      "name": "source",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "account_id",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'MONTH'",
+      "generated": null,
+      "name": "cadence_unit",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "1",
+      "generated": null,
+      "name": "cadence_interval",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "0",
+      "generated": null,
+      "name": "anchor_date",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "instrument_id",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "ends_at",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "reminder_days_before",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "0",
+      "generated": null,
+      "name": "confidence",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "recurring_series_transaction"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "recurring_series_transaction"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "recurring_series_transaction"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "recurring_series_transaction"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "series_id",
+      "entityType": "columns",
+      "table": "recurring_series_transaction"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "transaction_id",
+      "entityType": "columns",
+      "table": "recurring_series_transaction"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "cycle_date",
+      "entityType": "columns",
+      "table": "recurring_series_transaction"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "matched_by",
+      "entityType": "columns",
+      "table": "recurring_series_transaction"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "false",
+      "generated": null,
+      "name": "is_excluded",
+      "entityType": "columns",
+      "table": "recurring_series_transaction"
+    },
+    {
+      "columns": [
+        "account_id"
+      ],
+      "tableTo": "accounts",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "SET NULL",
+      "nameExplicit": false,
+      "name": "fk_recurring_series_account_id_accounts_id_fk",
+      "entityType": "fks",
+      "table": "recurring_series"
+    },
+    {
+      "columns": [
+        "instrument_id"
+      ],
+      "tableTo": "instruments",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_recurring_series_instrument_id_instruments_id_fk",
+      "entityType": "fks",
+      "table": "recurring_series"
+    },
+    {
+      "columns": [
+        "series_id"
+      ],
+      "tableTo": "recurring_series",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_recurring_series_transaction_series_id_recurring_series_id_fk",
+      "entityType": "fks",
+      "table": "recurring_series_transaction"
+    },
+    {
+      "columns": [
+        "transaction_id"
+      ],
+      "tableTo": "transactions",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_recurring_series_transaction_transaction_id_transactions_id_fk",
+      "entityType": "fks",
+      "table": "recurring_series_transaction"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "recurring_series_transaction_pk",
+      "table": "recurring_series_transaction",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        {
+          "value": "series_id",
+          "isExpression": false
+        },
+        {
+          "value": "transaction_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "recurring_series_transaction_series_transaction_unq",
+      "entityType": "indexes",
+      "table": "recurring_series_transaction"
+    },
+    {
+      "columns": [
+        {
+          "value": "transaction_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": "\"recurring_series_transaction\".\"is_excluded\" = 0 AND \"recurring_series_transaction\".\"deleted_at\" IS NULL",
+      "origin": "manual",
+      "name": "recurring_series_transaction_live_transaction_unq",
+      "entityType": "indexes",
+      "table": "recurring_series_transaction"
     }
   ],
   "renames": []

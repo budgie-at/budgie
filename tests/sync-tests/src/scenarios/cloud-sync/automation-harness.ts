@@ -1,7 +1,7 @@
 import { SyncAutomationEmbeddingBoost } from '@app/cloud-sync-automation/service/sync-automation-embedding-boost.service';
 import { SyncAutomationService } from '@app/cloud-sync-automation/service/sync-automation.service';
 import { P2pTransferTitleResolver } from '@budgie/consolidation';
-import { Db, RecurringSeriesUserStateEnum, SyncApplyService } from '@budgie/contracts';
+import { Db, SyncApplyService } from '@budgie/contracts';
 import { LedgerWorkload } from '@budgie/ledger';
 import { RecurringService } from '@budgie/recurring';
 import * as Effect from 'effect/Effect';
@@ -123,7 +123,7 @@ export const dismissSeries = (database: DB) =>
             );
 
             for (const { id } of rows) {
-                yield* recurringService.setUserState(id, RecurringSeriesUserStateEnum.DISMISSED);
+                yield* recurringService.remove(id);
             }
         })
     );

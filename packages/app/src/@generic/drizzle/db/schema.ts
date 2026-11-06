@@ -38,5 +38,6 @@ export {
     SyncOutboxEntityTable,
     SyncPendingEntityTable,
     SyncApplyStateEntityTable,
-    SyncZoneRegistryEntityTable
+    SyncZoneRegistryEntityTable,
+    RecurringSeriesTransactionEntityTable
 } from '@budgie/contracts/schema';

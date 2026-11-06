@@ -1,0 +1,1 @@
+export const RECURRING_HISTORY_MONTHS = 24;
