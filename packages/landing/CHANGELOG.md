@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.165.4](https://github.com/budgie-at/budgie/compare/v6.165.3...v6.165.4) (2026-11-06)
+
+**Note:** Version bump only for package @budgie-at/landing
+
+
+
+
+
+## [6.165.2](https://github.com/budgie-at/budgie/compare/v6.165.1...v6.165.2) (2026-11-06)
+
+**Note:** Version bump only for package @budgie-at/landing
+
+
+
+
+
 ## [6.164.3](https://github.com/budgie-at/budgie/compare/v6.164.2...v6.164.3) (2026-11-06)
 
 ### Performance Improvements

@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.165.2](https://github.com/budgie-at/budgie/compare/v6.165.1...v6.165.2) (2026-11-06)
+
+**Note:** Version bump only for package @budgie/contracts
+
+
+
+
+
+# [6.165.0](https://github.com/budgie-at/budgie/compare/v6.164.3...v6.165.0) (2026-11-06)
+
+### Features
+
+* smart recurring payments with manual creation and quiet corrections ([#1976](https://github.com/budgie-at/budgie/issues/1976)) ([ea67f9a](https://github.com/budgie-at/budgie/commit/ea67f9a51c5f5a7bff2774291e1e60605732b970)), closes [#1960](https://github.com/budgie-at/budgie/issues/1960) [#1961](https://github.com/budgie-at/budgie/issues/1961) [#1962](https://github.com/budgie-at/budgie/issues/1962) [#1962](https://github.com/budgie-at/budgie/issues/1962) [#1963](https://github.com/budgie-at/budgie/issues/1963) [#1966](https://github.com/budgie-at/budgie/issues/1966) [#1970](https://github.com/budgie-at/budgie/issues/1970) [#1967](https://github.com/budgie-at/budgie/issues/1967) [#1968](https://github.com/budgie-at/budgie/issues/1968) [#1959](https://github.com/budgie-at/budgie/issues/1959) [#1973](https://github.com/budgie-at/budgie/issues/1973) [#1967](https://github.com/budgie-at/budgie/issues/1967) [#1968](https://github.com/budgie-at/budgie/issues/1968)
+
+
 ## [6.164.3](https://github.com/budgie-at/budgie/compare/v6.164.2...v6.164.3) (2026-11-06)
 
 ### Performance Improvements

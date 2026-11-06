@@ -1,6 +1,7 @@
 import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { assertStoredBalancesMatchLedger, resetTestDb } from '@budgie-at/test-kit';
 import * as Effect from 'effect/Effect';
+import { Agent, getGlobalDispatcher, setGlobalDispatcher } from 'undici';
 import { vi, afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
@@ -114,8 +115,12 @@ beforeEach(() => {
 
 afterEach(() => {
     mockServer.resetHandlers();
+    const previousDispatcher = getGlobalDispatcher();
+    setGlobalDispatcher(new Agent());
 
-    return Effect.runPromise(assertStoredBalancesMatchLedger(testDb));
+    return Effect.runPromise(
+        Effect.promise(() => previousDispatcher.destroy()).pipe(Effect.andThen(assertStoredBalancesMatchLedger(testDb)))
+    );
 });
 
 afterAll(() => {

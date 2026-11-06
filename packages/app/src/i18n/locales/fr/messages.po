@@ -7132,7 +7132,7 @@ msgstr "Enregistrer les achats Apple Pay"
 msgid "Record card taps with Shortcuts"
 msgstr "Enregistrer les paiements par carte avec Raccourcis"
 
-#: src/account/component/cash-card/cash-card.tsx
+#: src/account/component/cash-record-expense-row/cash-record-expense-row.tsx
 msgid "Record expense"
 msgstr "Ajouter une dépense"
 
