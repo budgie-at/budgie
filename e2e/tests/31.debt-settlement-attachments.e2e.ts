@@ -37,8 +37,8 @@ test('31 debt settlement attachments', { tags: ['debt'] }, async ({ budgie }) =>
     const attachFromList = async (label: string, account: string, scroll = true) => {
         await navigateToTransactions(ctx);
         if (scroll) {
-            await b.scrollTo(ctx, card(label));
-            await b.sleep(400);
+            await b.scrollToCentre(ctx, card(label));
+            await b.sleep(600);
         } else {
             await b.expectId(ctx, card(label), 5_000);
         }
