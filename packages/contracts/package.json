@@ -1,6 +1,6 @@
 {
     "name": "@budgie/contracts",
-    "version": "6.165.0",
+    "version": "6.165.2",
     "private": true,
     "description": "Contracts",
     "sideEffects": false,
@@ -35,7 +35,7 @@
     },
     "devDependencies": {
         "@effect/vitest": "4.1.2",
-        "@types/node": "26.6.5",
+        "@types/node": "26.6.6",
         "vitest": "5.1.0"
     }
 }

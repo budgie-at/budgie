@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.165.2](https://github.com/budgie-at/budgie/compare/v6.165.1...v6.165.2) (2026-11-06)
+
+**Note:** Version bump only for package @budgie-at/root
+
+
+
+
+
+## [6.165.1](https://github.com/budgie-at/budgie/compare/v6.165.0...v6.165.1) (2026-11-06)
+
+### Bug Fixes
+
+* **app:** keep the cash section header sticky on home ([#2007](https://github.com/budgie-at/budgie/issues/2007)) ([575b66c](https://github.com/budgie-at/budgie/commit/575b66c4d34aeec2b45fbfc8afe1089310130d45))
+
+
 # [6.165.0](https://github.com/budgie-at/budgie/compare/v6.164.3...v6.165.0) (2026-11-06)
 
 ### Features

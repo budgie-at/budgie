@@ -1,4 +1,3 @@
-export const CashCardSelector = {
-    Card: 'CashCard',
+export const CashRecordExpenseRowSelector = {
     RecordExpense: 'CashCard.RecordExpense'
 } as const;
