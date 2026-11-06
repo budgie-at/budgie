@@ -46,7 +46,7 @@ describe('consolidation/binance-p2p-fiat-transfer grouped expenses', () => {
 
             expect(yield* transferConsolidationService.consolidate(null)).toEqual({ found: 1, consolidated: 1 });
 
-            const canonical = yield* fetchP2pCanonical();
+            const canonical = yield* fetchP2pCanonical;
             expect(canonical.fromAccountId).toBe(bankAccount.id);
             expect(canonical.toAccountId).toBe(binanceAccount.id);
             expect(canonical.exchangeRate).toBeCloseTo(SPLIT_TOTAL_AMOUNT / SPLIT_USDT_AMOUNT);
@@ -75,7 +75,7 @@ describe('consolidation/binance-p2p-fiat-transfer grouped expenses', () => {
 
             expect(yield* transferConsolidationService.consolidate(null)).toEqual({ found: 1, consolidated: 1 });
 
-            const canonicalId = (yield* fetchP2pCanonical()).id;
+            const canonicalId = (yield* fetchP2pCanonical).id;
             expect(
                 (yield* Effect.forEach([...expenses, income], item => testQueryService.findTransactionById(item.id))).map(
                     transaction => transaction.consolidationParentTransactionId

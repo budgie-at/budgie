@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
 
 import { tabSwipeGesture } from '../../../@generic/utils/tab-swipe-gesture.util';
-import { RecurringCalendarContent } from '../recurring-calendar-content/recurring-calendar-content';
+import { RecurringPane } from '../../../recurring/components/recurring-pane/recurring-pane';
 import { TransactionList } from '../transaction-list/transaction-list';
 
 import type { TransactionsTabType } from '../../../@generic/type/transactions-tab.type';
@@ -29,7 +29,7 @@ export const TransactionsPageContent = ({ activeTab, tabs, onChangeTab }: Props)
                 </Activity>
 
                 <Activity mode={recurringActivityMode}>
-                    <RecurringCalendarContent />
+                    <RecurringPane />
                 </Activity>
             </View>
         </GestureDetector>

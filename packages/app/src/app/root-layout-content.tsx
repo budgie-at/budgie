@@ -1,6 +1,8 @@
+// eslint-disable max-lines -- Root layout owns every root stack screen; approved by Vitalii
 /* eslint-disable react/jsx-max-depth */
 import { BudgetPeriodCloseService } from '@budgie/budget';
 import { I18nProvider as LinguiProvider } from '@lingui/react';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import { Stack, type NativeStackNavigationOptions } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -17,6 +19,7 @@ import { AppToastHost } from '../@generic/component/app-toast-host/app-toast-hos
 import { DatabaseRestoreScreen } from '../@generic/component/database-restore-screen/database-restore-screen';
 import { DevMenuController } from '../@generic/component/dev-menu-controller/dev-menu-controller';
 import { ErrorBoundary } from '../@generic/component/error-boundary/error-boundary';
+import { NotificationLaunchHandler } from '../@generic/component/notification-launch-handler/notification-launch-handler';
 import { ScreenLayout } from '../@generic/component/screen-layout/screen-layout';
 import { ScreenshotProtectionController } from '../@generic/component/screenshot-protection-controller/screenshot-protection-controller';
 import { DATABASE_RESTORE_I18N } from '../@generic/constant/database-restore-i18n.constant';
@@ -38,7 +41,6 @@ import { AiProvider } from '../ai/provider/ai.provider';
 import { VoiceInputProvider } from '../ai/provider/voice-input.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';
 import { AuthProvider } from '../auth/provider/auth.provider';
-import { BudgetNotificationLaunchHandler } from '../budget/components/budget-notification-launch-handler/budget-notification-launch-handler';
 import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { HistoricalMarketDataDrainerService } from '../market-data/service/historical-market-data-drainer.service';
 import { ReceiptLaunchHandler } from '../receipt/components/receipt-launch-handler/receipt-launch-handler';
@@ -109,12 +111,13 @@ const handleAppStateChange = (isActive: boolean): void => {
                 workload.run(
                     Effect.gen(function* () {
                         if (yield* appDataSyncService.sync()) {
-                            yield* Effect.forkDetach(logAndContinue(historicalMarketDataDrainerService.enqueueActiveAccounts()));
+                            yield* historicalMarketDataDrainerService.enqueueActiveAccounts().pipe(logAndContinue, Effect.forkDetach);
                         }
                     })
                 )
             );
-            yield* logAndContinue(workload.run(budgetPeriodCloseService.closeDuePeriods(new Date())));
+            const now = yield* DateTime.nowAsDate;
+            yield* logAndContinue(workload.run(budgetPeriodCloseService.closeDuePeriods(now)));
         })
     );
 };
@@ -241,6 +244,10 @@ export const RootLayoutContent = () => {
                                                                         options={fitToContentsSheetOptions(groupedSheetSurface)}
                                                                     />
                                                                     <Stack.Screen
+                                                                        name="make-recurring"
+                                                                        options={fitToContentsSheetOptions(groupedSheetSurface)}
+                                                                    />
+                                                                    <Stack.Screen
                                                                         name="import-column-mapper"
                                                                         options={formSheetOptions([0.75, DETENT_95])}
                                                                     />
@@ -283,7 +290,7 @@ export const RootLayoutContent = () => {
                                                         </ModalProvider>
                                                         <AppToastHost />
                                                         <ReceiptLaunchHandler />
-                                                        <BudgetNotificationLaunchHandler />
+                                                        <NotificationLaunchHandler />
                                                     </AiProvider>
                                                 </CreateActionProvider>
                                             </AuthGuard>

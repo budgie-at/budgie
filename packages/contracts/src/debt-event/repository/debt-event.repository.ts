@@ -146,38 +146,37 @@ export class DebtEventRepository extends Context.Service<DebtEventRepository>()(
                     )
             );
         }),
-        relinkAttachmentEntries: () =>
-            Db.query(db =>
-                db
-                    .update(DebtEventEntityTable)
-                    .set({
-                        transactionEntryId: sql`${queryBuilder
-                            .select({ id: min(TransactionEntryEntityTable.id) })
-                            .from(TransactionEntryEntityTable)
-                            .where(buildAttachmentPrimaryEntryCondition())}`,
-                        updatedAt: new Date()
-                    })
-                    .where(
-                        and(
-                            eq(DebtEventEntityTable.source, DebtEventSourceEnum.INCOME_ATTACHMENT),
-                            isNotNull(DebtEventEntityTable.transactionId),
-                            isNull(DebtEventEntityTable.transactionEntryId),
-                            isNull(DebtEventEntityTable.deletedAt),
-                            eq(
-                                queryBuilder
-                                    .select({ count: count() })
-                                    .from(TransactionEntryEntityTable)
-                                    .where(buildAttachmentPrimaryEntryCondition()),
-                                1
-                            )
+        relinkAttachmentEntries: Db.query(db =>
+            db
+                .update(DebtEventEntityTable)
+                .set({
+                    transactionEntryId: sql`${queryBuilder
+                        .select({ id: min(TransactionEntryEntityTable.id) })
+                        .from(TransactionEntryEntityTable)
+                        .where(buildAttachmentPrimaryEntryCondition())}`,
+                    updatedAt: new Date()
+                })
+                .where(
+                    and(
+                        eq(DebtEventEntityTable.source, DebtEventSourceEnum.INCOME_ATTACHMENT),
+                        isNotNull(DebtEventEntityTable.transactionId),
+                        isNull(DebtEventEntityTable.transactionEntryId),
+                        isNull(DebtEventEntityTable.deletedAt),
+                        eq(
+                            queryBuilder
+                                .select({ count: count() })
+                                .from(TransactionEntryEntityTable)
+                                .where(buildAttachmentPrimaryEntryCondition()),
+                            1
                         )
                     )
-            ),
+                )
+        ),
         deleteByTransactionId: (transactionId: number) =>
             Db.query(db => db.delete(DebtEventEntityTable).where(eq(DebtEventEntityTable.transactionId, transactionId))),
         deleteByAccountId: (accountId: number) =>
             Db.query(db => db.delete(DebtEventEntityTable).where(eq(DebtEventEntityTable.debtAccountId, accountId))),
-        truncate: () => Db.query(db => db.delete(DebtEventEntityTable)),
+        truncate: Db.query(db => db.delete(DebtEventEntityTable)),
         getManualSettledAmountByAccountId: (accountId: number) =>
             Db.query(db =>
                 db

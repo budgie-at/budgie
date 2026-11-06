@@ -14,7 +14,7 @@ describe('logAndContinue', () => {
 
     it.effect('turns a failure into a successful effect', () =>
         Effect.gen(function* () {
-            const exit = yield* Effect.exit(logAndContinue(Effect.fail('boom')));
+            const exit = yield* Effect.fail('boom').pipe(logAndContinue, Effect.exit);
 
             expect(exit._tag).toBe('Success');
         })

@@ -48,7 +48,7 @@ const authServiceLayer = Layer.effect(AuthService, AuthService.make).pipe(
         Layer.mock(DatabaseLifecycleService)({}),
         Layer.mock(DatabaseRekeyService)({}),
         Layer.mock(WidgetSnapshotService)({ unlock: emptyFn }),
-        Layer.mock(PinAttemptService)({ reset: () => Effect.sync(() => void (biometrics.resetCount += 1)) })
+        Layer.mock(PinAttemptService)({ reset: Effect.sync(() => void (biometrics.resetCount += 1)) })
     ])
 );
 

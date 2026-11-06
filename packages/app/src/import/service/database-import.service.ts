@@ -51,12 +51,16 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
         const readProbeDatabase = Effect.fn('DatabaseImportService.readProbeDatabase')(function* (backupPin: string | null) {
             const probeClient = yield* openSqliteClient(probeDatabaseName, backupPin);
 
-            if (!isNotEmptyArray(yield* probeClient`SELECT name FROM sqlite_master`)) {
+            const tables = yield* probeClient`SELECT name FROM sqlite_master`;
+
+            if (!isNotEmptyArray(tables)) {
                 return false;
             }
 
-            if (!isSupportedMigrationCreatedAt(yield* readLastMigrationCreatedAt(probeClient))) {
-                return yield* new UnsupportedBackupError();
+            const lastCreatedAt = yield* readLastMigrationCreatedAt(probeClient);
+
+            if (!isSupportedMigrationCreatedAt(lastCreatedAt)) {
+                return yield* UnsupportedBackupError.make();
             }
 
             return true;
@@ -119,7 +123,7 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
             importFromUri: Effect.fn('DatabaseImportService.importFromUri')(function* (sourceUri: string, backupPin: string | null) {
                 yield* databaseLifecycleService.run(
                     DatabaseLifecycleOperationEnum.IMPORT,
-                    runImport(sourceUri, backupPin).pipe(Effect.andThen(aiEmbeddingStatusService.forgetModel()), Effect.andThen(reloadApp))
+                    runImport(sourceUri, backupPin).pipe(Effect.andThen(aiEmbeddingStatusService.forgetModel), Effect.andThen(reloadApp))
                 );
             }),
             canOpenBackup: Effect.fn('DatabaseImportService.canOpenBackup')(function* (sourceUri: string, backupPin: string | null) {

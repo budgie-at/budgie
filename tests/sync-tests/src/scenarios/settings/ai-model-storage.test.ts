@@ -18,42 +18,38 @@ import { beforeEach, vi } from 'vitest';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
 
-import { testDb } from '../../harness/scenario/setup';
+import { expoConstantsStub, expoFileSystemStub } from '../../harness/native/native-module.stub';
+import { testDb } from '../../harness/scenario/test-db';
 
-const files = vi.hoisted(() => new Map<string, number>());
-const native = vi.hoisted(() => ({ aiEnabled: true, deleteFile: vi.fn<(path: string) => void>(), readFile: vi.fn<() => void>() }));
+const files = new Map<string, number>();
+const native = { deleteFile: vi.fn<(path: string) => void>(), readFile: vi.fn<() => void>() };
 
-vi.mock('expo-constants', () => ({ default: { expoConfig: { extra: native } } }));
-vi.mock('expo-file-system', () => {
-    class File {
-        readonly path: string;
-        readonly uri = '/tmp';
+class InMemoryFile {
+    readonly path: string;
+    readonly uri = '/tmp';
 
-        constructor(...path: string[]) {
-            this.path = path.slice(1).join('/');
-        }
-
-        get exists() {
-            native.readFile();
-
-            return files.has(this.path);
-        }
-
-        get size() {
-            return files.get(this.path) ?? 0;
-        }
-
-        delete() {
-            native.deleteFile(this.path);
-            files.delete(this.path);
-        }
+    constructor(...path: string[]) {
+        this.path = path.slice(1).join('/');
     }
 
-    return { Paths: { document: '/tmp' }, File, Directory: File };
-});
+    get exists() {
+        native.readFile();
+
+        return files.has(this.path);
+    }
+
+    get size() {
+        return files.get(this.path) ?? 0;
+    }
+
+    delete() {
+        native.deleteFile(this.path);
+        files.delete(this.path);
+    }
+}
 
 beforeEach(() => {
-    native.aiEnabled = true;
+    expoFileSystemStub.File.mockImplementation(InMemoryFile);
     native.deleteFile.mockReset();
     native.readFile.mockReset();
     files.clear();
@@ -121,23 +117,19 @@ describe('AI model storage ownership', () => {
     it.effect('holds the real SQLite writer lock from the final settings read through deletion', () =>
         provideStorage(
             Effect.gen(function* () {
-                const { storage, repository, reading, finishReading } = yield* Effect.gen(function* () {
-                    yield* makeStorage;
-                    const repository = yield* SettingsRepository;
-                    const reading = yield* Deferred.make<boolean>();
-                    const finishReading = yield* Deferred.make<boolean>();
-                    const storage = yield* AiModelStorageService.make.pipe(
-                        Effect.provideService(SettingsRepository, {
-                            ...repository,
-                            getSettings: () =>
-                                repository
-                                    .getSettings()
-                                    .pipe(Effect.tap(() => Effect.andThen(Deferred.succeed(reading, true), Deferred.await(finishReading))))
-                        })
-                    );
-
-                    return { storage, repository, reading, finishReading };
-                });
+                yield* makeStorage;
+                const repository = yield* SettingsRepository;
+                const reading = yield* Deferred.make<boolean>();
+                const finishReading = yield* Deferred.make<boolean>();
+                const storage = yield* AiModelStorageService.make.pipe(
+                    Effect.provideService(SettingsRepository, {
+                        ...repository,
+                        getSettings: () =>
+                            repository
+                                .getSettings()
+                                .pipe(Effect.tap(() => Effect.andThen(Deferred.succeed(reading, true), Deferred.await(finishReading))))
+                    })
+                );
                 files.set(CHAT_MODEL_FILENAME, 1_000);
                 const deletion = yield* Effect.forkChild(storage.deleteUnused());
                 yield* Deferred.await(reading);
@@ -196,7 +188,7 @@ describe('AI concurrent settings', () => {
                     isAiTranslationsEnabled: true
                 });
                 const before = yield* repository.getSettings();
-                native.aiEnabled = false;
+                expoConstantsStub.expoConfig.extra.aiEnabled = false;
                 files.set(CHAT_MODEL_FILENAME, 1_000);
                 files.set(EMBEDDING_MODEL_FILENAME, 2_000);
                 expect((yield* storage.getUsage()).unusedBytes).toBe(3_000);
@@ -257,28 +249,22 @@ describe('AI inventory reactivity', () => {
                 yield* Effect.yieldNow;
                 const ready = yield* AtomRegistry.getResult(appAtomRegistry, aiModelStorageAtom);
                 expect(ready.unusedBytes).toBe(0);
-                yield* Effect.gen(function* () {
-                    const previous = appAtomRegistry.get(aiModelStorageAtom);
-                    patchAtom(chatModelSnapshotAtom, { errorMessage: null });
-                    yield* Effect.yieldNow;
-                    expect(appAtomRegistry.get(aiModelStorageAtom)).toBe(previous);
-                });
-                yield* Effect.gen(function* () {
-                    patchAtom(chatModelSnapshotAtom, { status: AiSubsystemStatusEnum.SUSPENDED });
-                    yield* Effect.yieldNow;
-                    expect((yield* AtomRegistry.getResult(appAtomRegistry, aiModelStorageAtom)).unusedBytes).toBe(1_000);
-                    expect(AsyncResult.isSuccess(appAtomRegistry.get(aiModelStorageAtom))).toBe(true);
-                });
-                yield* Effect.gen(function* () {
-                    patchAtom(chatModelSnapshotAtom, { status: AiSubsystemStatusEnum.DOWNLOADING });
-                    yield* AtomRegistry.getResult(appAtomRegistry, aiModelStorageAtom, { suspendOnWaiting: true });
-                    files.set(CHAT_MODEL_FILENAME, 2_000);
-                    patchAtom(chatModelSnapshotAtom, { status: AiSubsystemStatusEnum.READY });
-                    yield* Effect.yieldNow;
-                    expect(
-                        (yield* AtomRegistry.getResult(appAtomRegistry, aiModelStorageAtom, { suspendOnWaiting: true })).totalBytes
-                    ).toBe(2_000);
-                });
+                const previous = appAtomRegistry.get(aiModelStorageAtom);
+                patchAtom(chatModelSnapshotAtom, { errorMessage: null });
+                yield* Effect.yieldNow;
+                expect(appAtomRegistry.get(aiModelStorageAtom)).toBe(previous);
+                patchAtom(chatModelSnapshotAtom, { status: AiSubsystemStatusEnum.SUSPENDED });
+                yield* Effect.yieldNow;
+                expect((yield* AtomRegistry.getResult(appAtomRegistry, aiModelStorageAtom)).unusedBytes).toBe(1_000);
+                expect(AsyncResult.isSuccess(appAtomRegistry.get(aiModelStorageAtom))).toBe(true);
+                patchAtom(chatModelSnapshotAtom, { status: AiSubsystemStatusEnum.DOWNLOADING });
+                yield* AtomRegistry.getResult(appAtomRegistry, aiModelStorageAtom, { suspendOnWaiting: true });
+                files.set(CHAT_MODEL_FILENAME, 2_000);
+                patchAtom(chatModelSnapshotAtom, { status: AiSubsystemStatusEnum.READY });
+                yield* Effect.yieldNow;
+                expect((yield* AtomRegistry.getResult(appAtomRegistry, aiModelStorageAtom, { suspendOnWaiting: true })).totalBytes).toBe(
+                    2_000
+                );
             })
         )
     );

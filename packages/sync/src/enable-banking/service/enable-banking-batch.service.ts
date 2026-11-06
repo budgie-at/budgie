@@ -13,8 +13,10 @@ import { TransactionService } from '@budgie/ledger';
 import { RuleEngineService } from '@budgie/rules';
 import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+import * as Schema from 'effect/Schema';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
@@ -54,10 +56,10 @@ export class EnableBankingBatchService extends Context.Service<EnableBankingBatc
         const isoDateLength = 10;
         let mccCategoryLookupMap = new Map<string, MccCategoryLookupInterface>();
 
-        const failInvalid = (message: string) => new SyncInvalidResponseError({ provider: syncProvider, message });
+        const failInvalid = (message: string) => SyncInvalidResponseError.make({ provider: syncProvider, message });
 
         const failAccountNotLinked = () =>
-            new SyncInvalidResponseError({
+            SyncInvalidResponseError.make({
                 provider: syncProvider,
                 message: 'The account is not linked to this bank authorization',
                 apiCode: EnableBankingErrorCodeEnum.ACCOUNT_NOT_LINKED
@@ -66,7 +68,7 @@ export class EnableBankingBatchService extends Context.Service<EnableBankingBatc
         const hasApiCode =
             (apiCode: EnableBankingErrorCodeEnum) =>
             (error: unknown): boolean =>
-                error instanceof SyncInvalidResponseError && error.apiCode === apiCode;
+                Schema.is(SyncInvalidResponseError)(error) && error.apiCode === apiCode;
 
         const isBankRateLimited = hasApiCode(EnableBankingErrorCodeEnum.ASPSP_RATE_LIMIT_EXCEEDED);
         const isWrongTransactionsPeriod = hasApiCode(EnableBankingErrorCodeEnum.WRONG_TRANSACTIONS_PERIOD);
@@ -109,7 +111,8 @@ export class EnableBankingBatchService extends Context.Service<EnableBankingBatc
             }
 
             const existingIds = yield* transactionRepository.findIdMapByExternalSource(provider, [accountId]);
-            const deletedIds = new Set(yield* transactionRepository.findDeletedExternalIdsByExternalSource(provider, [accountId]));
+            const deletedExternalIds = yield* transactionRepository.findDeletedExternalIdsByExternalSource(provider, [accountId]);
+            const deletedIds = new Set(deletedExternalIds);
             const newTransactions = transactions.filter(transaction => !existingIds.has(transaction.id) && !deletedIds.has(transaction.id));
             if (!isNotEmptyArray(newTransactions)) {
                 return 0;
@@ -194,7 +197,7 @@ export class EnableBankingBatchService extends Context.Service<EnableBankingBatc
                 isLongest: !isDefined(limitAt)
             }).pipe(
                 Effect.catchIf(isBankRateLimited, () =>
-                    Effect.fail(new SyncDeferredError({ provider: syncProvider, message: 'The bank fetch allowance is used up' }))
+                    Effect.fail(SyncDeferredError.make({ provider: syncProvider, message: 'The bank fetch allowance is used up' }))
                 )
             );
 
@@ -203,12 +206,14 @@ export class EnableBankingBatchService extends Context.Service<EnableBankingBatc
 
         return {
             beforeRun: Effect.fn('EnableBankingBatchService.beforeRun')(function* () {
-                yield* clientService.clearSessions();
+                yield* clientService.clearSessions;
                 mccCategoryLookupMap = yield* loadMccCategoryLookupMap(mccCategoryRepository, settingsRepository);
             }),
             execute: Effect.fn('EnableBankingBatchService.execute')(function* (sync: SyncEntityInterface, token: string) {
                 const nowMs = yield* Clock.currentTimeMillis;
-                const fetchStartedAt = new Date(Math.floor(nowMs / millisecondsPerSecond) * millisecondsPerSecond);
+                const fetchStartedAt = DateTime.toDateUtc(
+                    DateTime.makeUnsafe(Math.floor(nowMs / millisecondsPerSecond) * millisecondsPerSecond)
+                );
                 const isBackward = sync.mode === SyncModeEnum.BACKWARD;
                 const limitAt = sync.backwardSyncLimitAt;
                 if (isBackward && isDefined(limitAt) && limitAt >= (sync.backwardSyncFromAt ?? fetchStartedAt)) {

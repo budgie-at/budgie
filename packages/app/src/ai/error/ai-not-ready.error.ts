@@ -2,7 +2,7 @@ import * as Schema from 'effect/Schema';
 
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 
-export class AiNotReadyError extends Schema.TaggedError<AiNotReadyError>()('AiNotReadyError', {
+export class AiNotReadyError extends Schema.TaggedError<AiNotReadyError, { readonly brand: unique symbol }>()('AiNotReadyError', {
     subsystem: Schema.Enum(AiSubsystemNameEnum)
 }) {
     override get message(): string {

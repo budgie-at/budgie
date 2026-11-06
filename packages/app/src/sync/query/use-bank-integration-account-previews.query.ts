@@ -5,6 +5,7 @@ import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import * as Atom from 'effect/reactivity/Atom';
+import * as Schema from 'effect/Schema';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -34,7 +35,7 @@ export const useBankIntegrationAccountPreviewsQuery = (integrationId: number) =>
     return {
         previews: AsyncResult.getOrElse(result, () => []),
         isLoading: AsyncResult.isInitial(result) || result.waiting,
-        isKeyRejected: error instanceof SyncUnauthorizedError,
+        isKeyRejected: Schema.is(SyncUnauthorizedError)(error),
         hasError: isDefined(error),
         refresh
     };

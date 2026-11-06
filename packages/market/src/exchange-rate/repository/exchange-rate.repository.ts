@@ -26,13 +26,12 @@ export class ExchangeRateRepository extends Context.Service<ExchangeRateReposito
                     inputs,
                     ['rate', 'source']
                 ),
-            getLatestUpdatedAt: () =>
-                Db.query(db =>
-                    db
-                        .select({ updatedAt: sql<Date | null>`MAX(${ExchangeRateEntityTable.updatedAt})` })
-                        .from(ExchangeRateEntityTable)
-                        .where(isNull(ExchangeRateEntityTable.deletedAt))
-                ),
+            getLatestUpdatedAt: Db.query(db =>
+                db
+                    .select({ updatedAt: sql<Date | null>`MAX(${ExchangeRateEntityTable.updatedAt})` })
+                    .from(ExchangeRateEntityTable)
+                    .where(isNull(ExchangeRateEntityTable.deletedAt))
+            ),
             findByBaseAndQuoteIds: (baseInstrumentId: number, quoteInstrumentId: number) =>
                 Db.query(db =>
                     db.query.ExchangeRateEntityTable.findFirst({

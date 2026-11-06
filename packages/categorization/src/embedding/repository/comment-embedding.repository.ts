@@ -112,10 +112,9 @@ export class CommentEmbeddingRepository extends Context.Service<CommentEmbedding
                     ...parsePendingContextBaseFields(row)
                 }));
             }),
-            countPendingCommentContexts: () =>
-                Db.query(db =>
-                    db.$client.unsafe<{ count: number }>(`SELECT COUNT(*) AS count FROM (${PENDING_COMMENT_CONTEXTS_BASE})`, [])
-                ).pipe(Effect.map(([row]) => row.count))
+            countPendingCommentContexts: Db.query(db =>
+                db.$client.unsafe<{ count: number }>(`SELECT COUNT(*) AS count FROM (${PENDING_COMMENT_CONTEXTS_BASE})`, [])
+            ).pipe(Effect.map(([row]) => row.count))
         })
     }
 ) {

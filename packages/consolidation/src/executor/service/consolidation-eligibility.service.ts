@@ -45,7 +45,12 @@ export class ConsolidationEligibilityService extends Context.Service<Consolidati
                 sourceTransactionIds: number[],
                 allowedMovedSourceTransactionIds: number[] = []
             ) {
-                return isDefined(yield* findEligibleSourceTransactions(sourceTransactionIds, allowedMovedSourceTransactionIds));
+                const eligibleSourceTransactions = yield* findEligibleSourceTransactions(
+                    sourceTransactionIds,
+                    allowedMovedSourceTransactionIds
+                );
+
+                return isDefined(eligibleSourceTransactions);
             });
 
             return {

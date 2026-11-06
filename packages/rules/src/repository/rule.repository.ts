@@ -8,16 +8,15 @@ import type { LanguageEnum, RuleCreateEntityInterface, RuleUpdateEntityInterface
 
 export class RuleRepository extends Context.Service<RuleRepository>()('@budgie/rules/RuleRepository', {
     make: Effect.succeed({
-        findAllWithConditions: () =>
-            Db.query(db =>
-                db.query.RuleEntityTable.findMany({
-                    where: { deletedAt: { isNull: true } },
-                    orderBy: { id: 'asc' },
-                    with: {
-                        conditions: true
-                    }
-                })
-            ),
+        findAllWithConditions: Db.query(db =>
+            db.query.RuleEntityTable.findMany({
+                where: { deletedAt: { isNull: true } },
+                orderBy: { id: 'asc' },
+                with: {
+                    conditions: true
+                }
+            })
+        ),
         create: (input: RuleCreateEntityInterface) =>
             Db.query(db => db.insert(RuleEntityTable).values([input]).returning()).pipe(Effect.map(([rule]) => rule)),
         updateById: (id: number, input: RuleUpdateEntityInterface) =>
@@ -26,17 +25,16 @@ export class RuleRepository extends Context.Service<RuleRepository>()('@budgie/r
             ),
         archiveById: (id: number) =>
             Db.query(db => db.update(RuleEntityTable).set({ deletedAt: new Date() }).where(eq(RuleEntityTable.id, id))),
-        findEnabledWithRelations: () =>
-            Db.query(db =>
-                db.query.RuleEntityTable.findMany({
-                    where: { enabled: true, deletedAt: { isNull: true } },
-                    orderBy: { id: 'asc' },
-                    with: {
-                        conditions: true,
-                        actions: true
-                    }
-                })
-            ),
+        findEnabledWithRelations: Db.query(db =>
+            db.query.RuleEntityTable.findMany({
+                where: { enabled: true, deletedAt: { isNull: true } },
+                orderBy: { id: 'asc' },
+                with: {
+                    conditions: true,
+                    actions: true
+                }
+            })
+        ),
         findByIdWithRelations: (id: number) =>
             Db.query(db =>
                 db.query.RuleEntityTable.findFirst({

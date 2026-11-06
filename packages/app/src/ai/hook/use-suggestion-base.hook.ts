@@ -13,12 +13,13 @@ import { EMBEDDING_COMPLETENESS_THRESHOLD } from '../constant/embedding-complete
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 
 import type { AppServices } from '../../@generic/runtime/app.runtime';
+import type * as Cause from 'effect/Cause';
 
 interface UseSuggestionBaseParams<T> {
     readonly enabled: boolean;
     readonly readyChecks: readonly boolean[];
     readonly requestKeyParts: readonly unknown[];
-    readonly fetchSuggestions: () => Effect.Effect<T[], unknown, AppServices>;
+    readonly fetchSuggestions: () => Effect.Effect<T[], Cause.YieldableError, AppServices>;
 }
 
 interface UseSuggestionBaseReturn<T> extends UseSuggestionReturnInterface<T> {

@@ -5,11 +5,12 @@ import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.u
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 
 import type { AppServices } from '../../@generic/runtime/app.runtime';
+import type * as Cause from 'effect/Cause';
 
 export const useConfirmedSettingsAction = (confirmOptions: Parameters<typeof confirmAlert>[0], errorTitle: string) => {
     const { isLoading, run: runSingleFlight } = useSingleFlight();
 
-    const run = (action: Effect.Effect<unknown, unknown, AppServices>) =>
+    const run = (action: Effect.Effect<unknown, Cause.YieldableError, AppServices>) =>
         runSingleFlight(
             Effect.gen(function* () {
                 if (!(yield* confirmAlert(confirmOptions))) {

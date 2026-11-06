@@ -16,13 +16,13 @@ const contactsAtom = appAtomRuntime.atom(
     Effect.gen(function* () {
         const currentPermission = yield* Effect.tryPromise({
             try: () => Contacts.getPermissionsAsync(),
-            catch: cause => new NativeCallError({ cause })
+            catch: cause => NativeCallError.make({ cause })
         });
         const permission =
             currentPermission.status === Contacts.PermissionStatus.UNDETERMINED
                 ? yield* Effect.tryPromise({
                       try: () => Contacts.requestPermissionsAsync(),
-                      catch: cause => new NativeCallError({ cause })
+                      catch: cause => NativeCallError.make({ cause })
                   })
                 : currentPermission;
 
@@ -35,7 +35,7 @@ const contactsAtom = appAtomRuntime.atom(
                 Contacts.getContactsAsync({
                     fields: [Contacts.Fields.Name, Contacts.Fields.PhoneNumbers, Contacts.Fields.Emails, Contacts.Fields.Image]
                 }),
-            catch: cause => new NativeCallError({ cause })
+            catch: cause => NativeCallError.make({ cause })
         });
 
         return { contacts: data, permission };

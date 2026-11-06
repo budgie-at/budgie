@@ -20,7 +20,7 @@ import * as Effect from 'effect/Effect';
 import { isDefined } from '@rnw-community/shared';
 
 import { makeStubFileBankSyncService } from '../file-sync/make-stub-file-bank-sync-service';
-import { testDb } from '../scenario/setup';
+import { testDb } from '../scenario/test-db';
 import { seed } from '../seed/seed';
 import { skipRequestedSync } from '../sync-workload/skip-requested-sync';
 
@@ -109,7 +109,7 @@ interface SeedAccountOptions {
 
 export const seedConnectableAccount = (options: SeedAccountOptions = {}) =>
     Effect.gen(function* () {
-        const instrumentId = options.instrumentId ?? (yield* findOrSeedEur()).id;
+        const instrumentId = options.instrumentId ?? (yield* findOrSeedEur).id;
         const provider = options.provider ?? ExternalSourceEnum.ERSTE;
         const externalSource = options.externalSource === undefined ? provider : options.externalSource;
         const account = yield* seed.account({
@@ -191,12 +191,11 @@ export const connectSyncedReadyToDisconnect = (accountId: number) =>
         enableBankingStub.deleteSession(SESSION);
     });
 
-export const seedConnectedReadyToDisconnect = () =>
-    Effect.gen(function* () {
-        const { account } = yield* seedConnectableAccount();
-        stubBank();
-        yield* connect(account.id);
-        enableBankingStub.deleteSession(SESSION);
+export const seedConnectedReadyToDisconnect = Effect.gen(function* () {
+    const { account } = yield* seedConnectableAccount();
+    stubBank();
+    yield* connect(account.id);
+    enableBankingStub.deleteSession(SESSION);
 
-        return account;
-    });
+    return account;
+});

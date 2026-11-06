@@ -14,7 +14,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import { File } from 'expo-file-system';
 import { Linking } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import { ENABLE_BANKING_CALLBACK_URL } from '../constant/enable-banking-callback-url.constant';
 import { ENABLE_BANKING_RELAY_URL } from '../constant/enable-banking-relay-url.constant';
@@ -36,7 +36,7 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
             const bankIntegrationRepository = yield* BankIntegrationRepository;
             const decodeToken = Schema.decodeUnknownEffect(Schema.fromJsonString(EnableBankingTokenSchema));
 
-            const fail = (reason: EnableBankingSetupErrorReasonEnum) => new EnableBankingSetupError({ reason });
+            const fail = (reason: EnableBankingSetupErrorReasonEnum) => EnableBankingSetupError.make({ reason });
 
             const begin = Effect.fn('EnableBankingConnectionService.begin')(function* (
                 applicationId: string,
@@ -63,10 +63,11 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
 
             return {
                 begin,
-                discardPending: () => secureStore.removePending(),
+                discardPending: secureStore.removePending,
                 findSavedApplicationId: Effect.fn('EnableBankingConnectionService.findSavedApplicationId')(function* () {
-                    for (const applicationId of yield* enableBankingSyncService.listApplicationIds()) {
-                        if (isDefined(yield* secureStore.readKey(applicationId))) {
+                    for (const applicationId of yield* enableBankingSyncService.listApplicationIds) {
+                        const storedKey = yield* secureStore.readKey(applicationId);
+                        if (isDefined(storedKey)) {
                             return applicationId;
                         }
                     }
@@ -95,10 +96,13 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
                         },
                         result =>
                             Effect.ignore(
-                                Effect.try(() => {
-                                    for (const asset of result.assets ?? []) {
-                                        new File(asset.uri).delete();
-                                    }
+                                Effect.try({
+                                    try: () => {
+                                        for (const asset of result.assets ?? []) {
+                                            new File(asset.uri).delete();
+                                        }
+                                    },
+                                    catch: emptyFn
                                 })
                             )
                     );
@@ -127,7 +131,7 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
                     const pending = yield* secureStore.readPending();
                     if (
                         pending?.applicationId === applicationId ||
-                        (yield* enableBankingSyncService.listApplicationIds()).includes(applicationId)
+                        (yield* enableBankingSyncService.listApplicationIds).includes(applicationId)
                     ) {
                         return;
                     }
@@ -153,7 +157,7 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
                 finish: Effect.fn('EnableBankingConnectionService.finish')(function* (callbackUrl: string) {
                     const pending = yield* secureStore.readPending();
                     if (!isDefined(pending)) {
-                        return yield* new EnableBankingCallbackError({ failure: EnableBankingCallbackFailureEnum.STATE_MISMATCH });
+                        return yield* EnableBankingCallbackError.make({ failure: EnableBankingCallbackFailureEnum.STATE_MISMATCH });
                     }
 
                     yield* enableBankingSyncService
@@ -162,11 +166,11 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
                             Effect.tapError(error =>
                                 error.failure === EnableBankingCallbackFailureEnum.EXPIRED ||
                                 error.failure === EnableBankingCallbackFailureEnum.CANCELLED
-                                    ? secureStore.removePending()
+                                    ? secureStore.removePending
                                     : Effect.void
                             )
                         );
-                    yield* secureStore.removePending();
+                    yield* secureStore.removePending;
 
                     const authorization = yield* enableBankingSyncService.completeAuthorization(pending, callbackUrl);
 

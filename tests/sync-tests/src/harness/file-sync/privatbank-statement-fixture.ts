@@ -47,13 +47,12 @@ export class StubPrivatbankFileClient implements FileBasedSyncClientInterface {
     }
 }
 
-export const seedPrivatbankAccount = () =>
-    Effect.gen(function* () {
-        const account = yield* seed.account({
-            title: 'Privatbank Card',
-            externalId: PRIVATBANK_CARD_ID,
-            externalSource: ExternalSourceEnum.PRIVATBANK
-        });
-
-        return account.id;
+export const seedPrivatbankAccount = Effect.gen(function* () {
+    const account = yield* seed.account({
+        title: 'Privatbank Card',
+        externalId: PRIVATBANK_CARD_ID,
+        externalSource: ExternalSourceEnum.PRIVATBANK
     });
+
+    return account.id;
+});

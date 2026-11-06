@@ -151,7 +151,7 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
         );
 
         return {
-            countCandidates: () => Effect.map(findUnambiguousCandidates(), candidates => candidates.length),
+            countCandidates: Effect.map(findUnambiguousCandidates(), candidates => candidates.length),
             mergeReissuedAccounts: Effect.fn('AccountReissueMergeService.mergeReissuedAccounts')(function* () {
                 let mergedCount = 0;
                 let [candidate] = yield* findUnambiguousCandidates();

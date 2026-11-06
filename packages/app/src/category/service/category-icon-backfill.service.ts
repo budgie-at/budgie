@@ -16,7 +16,7 @@ export class CategoryIconBackfillService extends Context.Service<CategoryIconBac
 
         return {
             applyConfidentIcons: Effect.fn('CategoryIconBackfillService.applyConfidentIcons')(function* () {
-                const categories = (yield* categoryRepository.findAllNonSystem()).filter(
+                const categories = (yield* categoryRepository.findAllNonSystem).filter(
                     category => !category.isDefault && category.iconSource === CategoryIconSourceEnum.AUTO
                 );
 

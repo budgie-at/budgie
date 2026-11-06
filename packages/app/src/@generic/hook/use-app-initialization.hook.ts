@@ -1,4 +1,5 @@
 import { BudgetPeriodCloseService } from '@budgie/budget';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as BackgroundTask from 'expo-background-task';
 import * as SplashScreen from 'expo-splash-screen';
@@ -54,7 +55,7 @@ const registerBackgroundTasks = Effect.gen(function* () {
     const budgetAlertMonitorService = yield* BudgetAlertMonitorService;
     const widgetSnapshotService = yield* WidgetSnapshotService;
 
-    yield* Effect.all(
+    yield* Effect.forEach(
         [
             authService.ensurePinBackgroundAccessibility(),
             exchangeRateBackgroundService.registerBackgroundTask(),
@@ -65,7 +66,8 @@ const registerBackgroundTasks = Effect.gen(function* () {
             reregisterTask(ENABLE_BANKING_SYNC_TASK, PROVIDER_SYNC_TASK_MINIMUM_INTERVAL_MINUTES),
             budgetAlertMonitorService.registerBackgroundTask(),
             widgetSnapshotService.registerBackgroundTask()
-        ].map(logAndContinue),
+        ],
+        logAndContinue,
         { concurrency: 'unbounded', discard: true }
     );
 });
@@ -83,7 +85,11 @@ const initializeAppServices = Effect.gen(function* () {
     yield* widgetSnapshotService.start();
     yield* backgroundSyncSessionService.start();
     yield* logAndContinue(workload.run(appDataSyncService.sync()));
-    yield* logAndContinue(workload.run((yield* BudgetPeriodCloseService).closeDuePeriods(new Date())));
+    yield* logAndContinue(
+        Effect.flatMap(BudgetPeriodCloseService, service =>
+            Effect.flatMap(DateTime.nowAsDate, now => workload.run(service.closeDuePeriods(now)))
+        )
+    );
     yield* logAndContinue(onboardingService.initializeLocale());
     yield* logAndContinue(historicalMarketDataDrainerService.enqueueActiveAccounts());
     yield* logAndContinue((yield* CategoryIconBackfillService).applyConfidentIcons());
@@ -91,7 +97,7 @@ const initializeAppServices = Effect.gen(function* () {
 
 const scheduleAppServicesInitialization = Effect.sleep(STARTUP_SERVICE_DELAY_MS).pipe(
     Effect.andThen(waitForIdle),
-    Effect.andThen(Effect.forkDetach(logAndContinue(initializeAppServices)))
+    Effect.andThen(initializeAppServices.pipe(logAndContinue, Effect.forkDetach))
 );
 
 const hideSplashScreen = Effect.sleep(SPLASH_HIDE_DELAY_MS).pipe(Effect.andThen(Effect.promise(() => SplashScreen.hideAsync())));

@@ -47,10 +47,7 @@ const seedAtmCashWithdrawalFixture = () =>
         return { bankAccount, cashAccount, expense };
     });
 
-const fetchAtmCanonicalId = () =>
-    Effect.gen(function* () {
-        return yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
-    });
+const fetchAtmCanonicalId = () => fetchSingleCanonicalId(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
 
 layer(TestLayer)('consolidation/atm-cash-withdrawal', it => {
     it.effect('moves only the selected ATM expense to cash with its fee entry and ignores a repeated move', () =>

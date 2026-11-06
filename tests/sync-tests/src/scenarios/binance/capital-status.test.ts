@@ -76,7 +76,7 @@ const importedCountsAfterEachStatus = (stubHistory: typeof stubDeposit, ageMs: n
         for (const [index, status] of statuses.entries()) {
             stubHistory(status, timeMs);
             yield* index === 0 ? binanceSyncService.sync() : syncAgain(sync.id);
-            counts.push((yield* fetchBinanceTransactions()).length);
+            counts.push((yield* fetchBinanceTransactions).length);
         }
 
         return counts;
@@ -170,7 +170,7 @@ describe('binance/capital-status', () => {
 
             stubWithdrawal(6, timeMs);
             yield* binanceSyncService.sync();
-            const [withdrawal] = yield* fetchBinanceTransactions();
+            const [withdrawal] = yield* fetchBinanceTransactions;
             const cashWithdrawalMcc = yield* testQueryService.findMccByCode('6011');
             yield* testDb
                 .update(TransactionEntryEntityTable)
@@ -182,7 +182,7 @@ describe('binance/capital-status', () => {
             stubWithdrawal(3, timeMs);
             yield* syncAgain(sync.id);
 
-            expect(yield* fetchBinanceTransactions()).toHaveLength(0);
+            expect(yield* fetchBinanceTransactions).toHaveLength(0);
             expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toHaveLength(0);
             expect((yield* accountBalanceRepository.getLedgerBalances([cashAccount.id])).get(cashAccount.id) ?? 0).toBe(0);
         }).pipe(Effect.provide(TestLayer))

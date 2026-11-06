@@ -16,9 +16,7 @@ const TARGET_CARD_SUFFIX = '5524';
 const PRIVATBANK_FAKE_IBAN_PREFIX = 'UA1111111';
 
 const seedPrivatbankAccount = (suffix: string, externalSource: ExternalSourceEnum | null = ExternalSourceEnum.PRIVATBANK) =>
-    Effect.gen(function* () {
-        return yield* testSeedService.bankSyncAccount(`Privatbank •${suffix}`, externalSource, `${PRIVATBANK_FAKE_IBAN_PREFIX}${suffix}`);
-    });
+    testSeedService.bankSyncAccount(`Privatbank •${suffix}`, externalSource, `${PRIVATBANK_FAKE_IBAN_PREFIX}${suffix}`);
 
 const seedPrivatbankFeeTransfer = (
     incomeTitle: string = `Зі своєї картки *${SOURCE_CARD_SUFFIX}`,
@@ -93,16 +91,11 @@ const expectPrivatbankFeeTransferConsolidated = Effect.fnUntraced(function* (
 layer(TestLayer)('consolidation/same-bank-hinted-fee-transfer', it => {
     it.effect(
         'auto-consolidates a same-bank own-card transfer when titles point at both account suffixes and the amount delta is fee-sized',
-        () =>
-            Effect.gen(function* () {
-                yield* expectPrivatbankFeeTransferConsolidated();
-            })
+        () => expectPrivatbankFeeTransferConsolidated()
     );
 
     it.effect('auto-consolidates legacy same-bank own-card transfers when account source is missing but IBAN bank prefix matches', () =>
-        Effect.gen(function* () {
-            yield* expectPrivatbankFeeTransferConsolidated(null);
-        })
+        expectPrivatbankFeeTransferConsolidated(null)
     );
 
     it.effect('restores both hinted fee transfer sides and account balances when the canonical is reverted', () =>

@@ -5,6 +5,7 @@ export const CreateTransactionMenuSelector = {
     Expense: 'ActionItem.Expense',
     Income: 'ActionItem.Income',
     Transfer: 'ActionItem.Transfer',
+    Recurring: 'ActionItem.Recurring',
     AddAccount: 'ActionItem.AddAccount',
     ScanReceipt: 'ActionItem.ScanReceipt',
     item: (index: number) => `ActionItem.${index}` as const

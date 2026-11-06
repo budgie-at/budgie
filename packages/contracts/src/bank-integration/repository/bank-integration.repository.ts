@@ -64,10 +64,9 @@ export class BankIntegrationRepository extends Context.Service<BankIntegrationRe
                         where: { id, deletedAt: { isNull: true } }
                     })
                 ),
-            count: () =>
-                Db.query(db =>
-                    db.select({ count: count() }).from(BankIntegrationEntityTable).where(isNull(BankIntegrationEntityTable.deletedAt))
-                )
+            count: Db.query(db =>
+                db.select({ count: count() }).from(BankIntegrationEntityTable).where(isNull(BankIntegrationEntityTable.deletedAt))
+            )
         };
     })
 }) {

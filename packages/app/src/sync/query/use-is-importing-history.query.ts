@@ -10,7 +10,7 @@ import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util
 
 const isImportingHistoryAtom = databaseQueryAtom(
     [SyncEntityTable, AccountEntityTable],
-    Effect.flatMap(SyncRepository, syncRepository => syncRepository.getAllPendingBackwardSyncs()).pipe(
+    Effect.flatMap(SyncRepository, syncRepository => syncRepository.getAllPendingBackwardSyncs).pipe(
         Effect.map(syncs => isDefined(resolveInitialSyncProgress(syncs)))
     )
 );

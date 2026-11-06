@@ -17,12 +17,17 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
+import { RecurringRefreshModeEnum } from '../../recurring/enum/recurring-refresh-mode.enum';
+import { scheduleRecurringRefresh } from '../../recurring/utils/schedule-recurring-refresh.util';
 import { buildPrimaryEntry } from '../utils/build-primary-entry.util';
 
 import type { AppServices } from '../../@generic/runtime/app.runtime';
+import type * as Cause from 'effect/Cause';
 
 interface UseTransactionFormConfig {
-    readonly onSubmit: (data: TransactionCreateInputInterface) => Effect.Effect<TransactionEntityInterface, unknown, AppServices>;
+    readonly onSubmit: (
+        data: TransactionCreateInputInterface
+    ) => Effect.Effect<TransactionEntityInterface, Cause.YieldableError, AppServices>;
     readonly fromAccountId: number | null;
     readonly toAccountId: number | null;
     readonly type: TransactionTypeEnum;
@@ -70,6 +75,7 @@ export const useCreateTransactionForm = ({
     const handleSubmit = (data: TransactionCreateInputInterface) =>
         run(
             onSubmit(data).pipe(
+                Effect.tap(() => scheduleRecurringRefresh(RecurringRefreshModeEnum.RECENT)),
                 Effect.tap(() =>
                     Effect.sync(() => {
                         router.back();

@@ -9,7 +9,7 @@ import type { InstrumentTypeEnum } from '../enum/instrument-type.enum';
 
 export class InstrumentRepository extends Context.Service<InstrumentRepository>()('@budgie/contracts/InstrumentRepository', {
     make: Effect.succeed({
-        getAll: () => Db.query(db => db.query.InstrumentEntityTable.findMany()),
+        getAll: Db.query(db => db.query.InstrumentEntityTable.findMany()),
         findById: (id: number) => Db.query(db => db.query.InstrumentEntityTable.findFirst({ where: { id } })),
         findByCode: (code: string) => Db.query(db => db.query.InstrumentEntityTable.findFirst({ where: { code } })),
         findByType: (type: InstrumentTypeEnum) => Db.query(db => db.query.InstrumentEntityTable.findMany({ where: { type } })),

@@ -19,7 +19,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { testDb, TestLayer } from '../../harness';
 import { snapshotMissingTransferFeeDeltas } from '../../harness/backup-replay/snapshot-missing-transfer-fee-deltas';
-import { backupDatabasePath } from '../../harness/scenario/setup';
+import { backupDatabasePath } from '../../harness/scenario/test-db';
 
 import type { SQL } from 'drizzle-orm';
 

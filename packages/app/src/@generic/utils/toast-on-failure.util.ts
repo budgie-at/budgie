@@ -11,5 +11,5 @@ export const toastOnFailure =
         Effect.tapCause(effect, cause =>
             Cause.hasInterruptsOnly(cause)
                 ? Effect.void
-                : Effect.sync(() => void showErrorToast(title, message ?? getErrorMessage(Cause.squash(cause))))
+                : Effect.sync(() => void showErrorToast(title, message ?? cause.pipe(Cause.squash, getErrorMessage)))
         );

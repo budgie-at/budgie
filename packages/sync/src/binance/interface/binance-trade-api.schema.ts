@@ -2,14 +2,14 @@ import * as Schema from 'effect/Schema';
 
 const BinanceTradeApiSchema = Schema.Struct({
     symbol: Schema.String,
-    id: Schema.Number,
-    orderId: Schema.Number,
+    id: Schema.Finite,
+    orderId: Schema.Finite,
     price: Schema.String,
     qty: Schema.String,
     quoteQty: Schema.String,
     commission: Schema.String,
     commissionAsset: Schema.String,
-    time: Schema.Number,
+    time: Schema.Finite,
     isBuyer: Schema.Boolean,
     isMaker: Schema.Boolean
 });

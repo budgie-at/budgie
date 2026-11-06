@@ -13,9 +13,10 @@ import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { AiModelResidencyService } from '../service/ai-model-residency.service';
 
 import type { AppServices } from '../../@generic/runtime/app.runtime';
+import type * as Cause from 'effect/Cause';
 
 interface UseSttResidencyReturn {
-    readonly acquireSttResidency: () => Effect.Effect<boolean, unknown, AppServices>;
+    readonly acquireSttResidency: () => Effect.Effect<boolean, Cause.YieldableError, AppServices>;
     readonly releaseSttResidency: () => void;
 }
 

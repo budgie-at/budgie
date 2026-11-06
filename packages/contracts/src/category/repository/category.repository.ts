@@ -92,25 +92,24 @@ export class CategoryRepository extends Context.Service<CategoryRepository>()('@
                         .from(TransactionEntryEntityTable)
                         .where(eq(TransactionEntryEntityTable.categoryId, categoryId))
                 ).pipe(Effect.map(([result]) => result.count)),
-            findUsage: () =>
-                Db.query(db =>
-                    db
-                        .select({
-                            id: sql<number>`${TransactionEntryEntityTable.categoryId}`,
-                            transactionCount: countDistinct(TransactionEntryEntityTable.transactionId),
-                            lastUsedAt: max(TransactionEntityTable.operatedAt)
-                        })
-                        .from(TransactionEntryEntityTable)
-                        .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionEntryEntityTable.transactionId))
-                        .where(
-                            and(
-                                isNotNull(TransactionEntryEntityTable.categoryId),
-                                transactionFilters.buildPrimaryLedgerEntryCondition(),
-                                transactionFilters.buildVisibleTransactionCondition()
-                            )
+            findUsage: Db.query(db =>
+                db
+                    .select({
+                        id: sql<number>`${TransactionEntryEntityTable.categoryId}`,
+                        transactionCount: countDistinct(TransactionEntryEntityTable.transactionId),
+                        lastUsedAt: max(TransactionEntityTable.operatedAt)
+                    })
+                    .from(TransactionEntryEntityTable)
+                    .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionEntryEntityTable.transactionId))
+                    .where(
+                        and(
+                            isNotNull(TransactionEntryEntityTable.categoryId),
+                            transactionFilters.buildPrimaryLedgerEntryCondition(),
+                            transactionFilters.buildVisibleTransactionCondition()
                         )
-                        .groupBy(TransactionEntryEntityTable.categoryId)
-                ),
+                    )
+                    .groupBy(TransactionEntryEntityTable.categoryId)
+            ),
             reassignTransactionEntries: (fromCategoryId: number, toCategoryId: number) =>
                 Db.query(db =>
                     db
@@ -164,12 +163,11 @@ export class CategoryRepository extends Context.Service<CategoryRepository>()('@
                 ),
             findById: (id: number, language: LanguageEnum) =>
                 Db.query(db => buildLocalizedCategoryBaseQuery(db, language).where(eq(CategoryEntityTable.id, id)).limit(1)),
-            findAllNonSystem: () =>
-                Db.query(db =>
-                    db.query.CategoryEntityTable.findMany({
-                        where: { isSystemCategory: false }
-                    })
-                )
+            findAllNonSystem: Db.query(db =>
+                db.query.CategoryEntityTable.findMany({
+                    where: { isSystemCategory: false }
+                })
+            )
         };
     })
 }) {

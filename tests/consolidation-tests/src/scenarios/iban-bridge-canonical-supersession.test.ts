@@ -36,7 +36,7 @@ const seedIncrementalBridgeArrival = Effect.fnUntraced(function* ({
     readonly scopeArrivalToSyncedTransactions?: boolean;
     readonly withCompetingPrefix?: boolean;
 } = {}) {
-    const topology = yield* seedIbanBridgeTopology();
+    const topology = yield* seedIbanBridgeTopology;
     const technicalBridgeAccount = yield* testSeedService.bankSyncAccount('Supersession Technical UAH', null, TECHNICAL_BRIDGE_IBAN);
 
     const prefixSourceTransactionIds = yield* seedIbanBridgePrefixArrival({

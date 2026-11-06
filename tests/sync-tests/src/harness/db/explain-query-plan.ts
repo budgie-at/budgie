@@ -2,7 +2,7 @@ import { makeTestDatabase } from '@budgie-at/test-kit';
 import { Db } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
-import { testDb } from '../scenario/setup';
+import { testDb } from '../scenario/test-db';
 
 interface QueryPlanStepInterface {
     readonly detail: string;

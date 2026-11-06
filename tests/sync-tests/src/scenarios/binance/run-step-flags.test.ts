@@ -39,7 +39,7 @@ describe('binance/run-step-flags', () => {
 
                 yield* binanceSyncService.sync();
 
-                expect(yield* fetchSortedBinanceExternalIds()).toEqual(['binance:trade:ADAUSDT:10']);
+                expect(yield* fetchSortedBinanceExternalIds).toEqual(['binance:trade:ADAUSDT:10']);
                 expect((yield* fetchSyncById(sync.id)).forwardSyncedAt?.getTime()).toBeGreaterThan(Date.now() - STALE_SYNC_AGE_MS);
             }).pipe(Effect.provide(TestLayer)),
         RETRY_BACKOFF_TIMEOUT_MS

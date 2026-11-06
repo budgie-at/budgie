@@ -29,7 +29,7 @@ export const useCategorizeInboxCommitTransfer = (
 
                     if (isRuleEnabled && isNotEmptyArray(convertedIds)) {
                         const ruleRepository = yield* RuleRepository;
-                        const existingRules = yield* ruleRepository.findEnabledWithRelations();
+                        const existingRules = yield* ruleRepository.findEnabledWithRelations;
                         const normalizedValue = ruleConditionValue.toLowerCase();
                         const hasDuplicateRule = existingRules.some(
                             rule =>

@@ -15,15 +15,14 @@ pnpm build:force                          # Build without cache
 # Validation (run in this order before committing)
 pnpm format                               # Oxfmt (run first - may modify files)
 pnpm ts                                   # TypeScript check
-pnpm lint                                 # Oxlint (incl. local `lint-rules/` plugin) (skip during debug sessions)
+pnpm lint                                 # Oxlint on tsrs with the Effect rules (@effect/tsgo) and local `lint-rules/` plugin (skip during debug sessions)
 pnpm deadcode                             # Knip dead code detection
 pnpm cpd                                  # Code duplication check
-pnpm effect:check                         # Effect language-service diagnostics (errors fail)
 
 # IMPORTANT: After completing any task, ALWAYS run:
 # During debug sessions (when user says "skip lint"), only run: pnpm ts
 # Otherwise run full validation:
-pnpm format && pnpm ts && pnpm lint && pnpm deadcode && pnpm cpd && pnpm effect:check
+pnpm format && pnpm ts && pnpm lint && pnpm deadcode && pnpm cpd
 
 # Utilities
 pnpm deps:check                           # Check dependency versions
@@ -582,7 +581,7 @@ export class RefundService extends Context.Service<RefundService>()('@budgie/app
 }
 ```
 
-- **Lint guards.** `zod`, `ky` and `drizzle-zod` imports are banned repo-wide. In effectful non-UI code (contracts, sync, consolidation, budget, ai, and app `service` and `.task.ts` files) `try`, `throw` and `new Promise` are lint errors: use Effect. `max-lines-per-function` and `max-statements` are off for `*.service.ts`, `*.repository.ts`, `*.layer.ts` and the `make-*` service factories, because they would measure the whole `make` recipe; `complexity`, `max-depth` and `max-nested-callbacks` still apply. Split a service only along a cohesive seam (reads vs writes, import vs sync), never to shrink line counts.
+- **Lint guards.** `zod`, `ky` and `drizzle-zod` imports are banned repo-wide. In effectful non-UI code (contracts, sync, consolidation, budget, ai, and app `service` and `.task.ts` files) `try`, `throw` and `new Promise` are lint errors: use Effect. `max-lines-per-function` and `max-statements` are off for `*.service.ts`, `*.repository.ts`, `*.layer.ts` and the `make-*` service factories, because they would measure the whole `make` recipe; `complexity`, `max-depth` and `max-nested-callbacks` still apply. Split a service only along a cohesive seam (reads vs writes, import vs sync), never to shrink line counts. Effect diagnostics run inside `pnpm lint`: `.oxlintrc.json` extends the `@effect/tsgo` `strict` preset, and the root `tsconfig.json` plugin block lists the `unstable` Effect modules the repo uses on purpose (`allowedUnstableApis`).
 - **Import by subpath.** `import * as Effect from 'effect/Effect'`, never the `effect` barrel (lint-enforced). Metro does not tree-shake, and the barrel adds about 1.1 MB of Hermes bytecode.
 - **Keep the code minimal.** Pure code stays plain. Do not wrap a pure function in `Effect.sync`, give pure code a tag, or add a service interface file; the object returned by `make` is the contract. Layers are static values (never getters), so each service is built once per runtime. Register every layer in `appServicesLayer`.
 - **Database.** `Db.query(db => builder)` for executed queries, `Db.transaction(effect)` for atomic work. Nested `Db.transaction` calls reuse the outer transaction.
@@ -602,14 +601,14 @@ export class RefundService extends Context.Service<RefundService>()('@budgie/app
 | **contracts** | Drizzle ORM, Effect, `makeLoggerLayer`                                                                                                                                                                          |
 | **landing**   | Next.js 16, React 19, Tailwind CSS 4, Lingui 6.5                                                                                                                                                                |
 | **sync**      | @liaugust/monobank-sdk, date-fns, Effect                                                                                                                                                                        |
-| **Build**     | pnpm 11.24.0, Node >= 22.22.1, Lerna 9.0.7, TurboRepo 2.11.5, native TypeScript 7 + TypeScript 6 API, Oxlint 1.86 + local `lint-rules/` JS plugin (no ESLint), `@effect/language-service` 0.87 diagnostics gate |
+| **Build**     | pnpm 12.16.1, Node >= 22.22.2, Lerna 10.1.1, TurboRepo 2.11.10, tsrs 0.21 + TypeScript 6 API, Oxlint 1.91 on tsrs via `effect-tsgo --tsrs-lint` (Effect rules from `@effect/tsgo` 0.67) + local `lint-rules/` JS plugin (no ESLint) |
 
 ## Workflow
 
 1. **Fresh clone:** `pnpm install`
 2. **After contracts changes:** `pnpm build`
 3. **Before commit:** Husky runs `pnpm ts`, then lint-staged applies Oxlint, Oxfmt, and package sorting before commitlint validates the message
-4. **Before PR:** Run all validation commands, including `pnpm effect:check`
+4. **Before PR:** Run all validation commands
 5. **Commit after every accepted change.** During interactive/live-tweak sessions, each user-approved fix or feature increment gets its own focused conventional commit immediately (validated via ts + lint first) — do not batch unrelated accepted changes into one commit or leave approved work uncommitted.
 6. **Do not commit new Markdown notes from agent work unless explicitly requested.** If a local instruction, scratch note, report, or generated Markdown file is needed only for the working session, keep it untracked and add the local pattern to `.gitignore` instead of committing it.
 

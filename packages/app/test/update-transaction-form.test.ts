@@ -25,6 +25,7 @@ vi.mock('../src/@generic/hook/use-single-flight.hook', () => ({ useSingleFlight:
 vi.mock('../src/transaction/hook/use-delete-transaction.hook', () => ({ useDeleteTransaction: vi.fn() }));
 vi.mock('../src/@generic/utils/go-back-or-replace.util', () => ({ goBackOrReplace: vi.fn() }));
 vi.mock('../src/@generic/utils/dismiss-all-or-replace.util', () => ({ dismissAllOrReplace: vi.fn() }));
+vi.mock('../src/recurring/utils/schedule-recurring-refresh.util', () => ({ scheduleRecurringRefresh: () => Effect.void }));
 vi.mock('../src/@generic/utils/toast-on-failure.util', () => ({ toastOnFailure: () => (effect: unknown) => effect }));
 vi.mock('react-hook-form', async importOriginal => {
     const original = await importOriginal<typeof import('react-hook-form')>();

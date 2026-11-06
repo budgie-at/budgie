@@ -21,7 +21,7 @@ describe('monobank/live-payload-account-variants', () => {
             monobankStub.clientInfo(clientInfo);
 
             const previews = yield* monobankSyncService.fetchAccountsPreview('test-token');
-            const accounts = yield* new MonobankClient('test-token').getAccounts();
+            const accounts = yield* new MonobankClient('test-token').getAccounts;
 
             expect(previews.find(preview => preview.externalId === 'mono-miu')?.type).toBe(SyncAccountTypeEnum.MADE_IN_UKRAINE);
             expect(previews.find(preview => preview.externalId === 'mono-fop')?.type).toBe(SyncAccountTypeEnum.FOP);

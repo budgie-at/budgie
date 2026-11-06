@@ -51,7 +51,7 @@ describe('binance/earn-rewards', () => {
             binanceStub.earnRewards([morningReward, earnReward('0.25', dayStartMs + 8 * HOUR_MS)]);
             yield* resyncBinance(sync.id);
 
-            expect(yield* fetchBinanceTransactions()).toHaveLength(1);
+            expect(yield* fetchBinanceTransactions).toHaveLength(1);
             yield* expectEarnEntryMicroUnits(dayStartMs, (MICRO_UNITS * 3) / 4);
         }).pipe(Effect.provide(TestLayer))
     );
@@ -69,7 +69,7 @@ describe('binance/earn-rewards', () => {
 
             yield* binanceSyncService.sync();
 
-            expect(yield* fetchBinanceTransactions()).toHaveLength(1);
+            expect(yield* fetchBinanceTransactions).toHaveLength(1);
             yield* expectEarnEntryMicroUnits(dayStartMs, (MICRO_UNITS * 3) / 4);
         }).pipe(Effect.provide(TestLayer))
     );
@@ -103,7 +103,7 @@ describe('binance/earn-rewards', () => {
 
             yield* binanceSyncService.sync();
 
-            const transactions = yield* fetchBinanceTransactions();
+            const transactions = yield* fetchBinanceTransactions;
             expect(transactions).toHaveLength(2);
             expect(new Set(transactions.map(transaction => transaction.toAccountId)).size).toBe(2);
             expect(new Set(transactions.map(transaction => transaction.externalId)).size).toBe(1);

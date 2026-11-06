@@ -27,7 +27,7 @@ describe('binance/parallel-sources', () => {
             binanceStub.lockedEarnRewards([buildBinance.lockedEarnReward({ asset: 'EUR', amount: '0.25', time: dayStartMs })]);
 
             yield* binanceSyncService.sync();
-            const firstIds = yield* fetchSortedBinanceExternalIds();
+            const firstIds = yield* fetchSortedBinanceExternalIds;
             yield* resyncBinance(sync.id);
 
             expect(firstIds).toEqual(
@@ -37,7 +37,7 @@ describe('binance/parallel-sources', () => {
                     `binance:earn-locked:EUR:${buildEarnDayKey(dayStartMs)}`
                 ])
             );
-            expect(yield* fetchSortedBinanceExternalIds()).toEqual(firstIds);
+            expect(yield* fetchSortedBinanceExternalIds).toEqual(firstIds);
         }).pipe(Effect.provide(TestLayer))
     );
 });

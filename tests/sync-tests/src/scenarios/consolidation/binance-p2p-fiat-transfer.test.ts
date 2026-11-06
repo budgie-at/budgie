@@ -32,7 +32,7 @@ describe('consolidation/binance-p2p-fiat-transfer basic directions', () => {
 
             yield* consolidateExpectingSingleResult();
             yield* expectConsolidatedToP2pCanonical(expense, income, bankAccount.id, binanceAccount.id);
-            expect((yield* fetchP2pCanonical()).title).toBe('Binance P2P buy USDT');
+            expect((yield* fetchP2pCanonical).title).toBe('Binance P2P buy USDT');
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -46,7 +46,7 @@ describe('consolidation/binance-p2p-fiat-transfer basic directions', () => {
 
             yield* consolidateExpectingSingleResult();
             yield* expectConsolidatedToP2pCanonical(expense, income, binanceAccount.id, bankAccount.id);
-            expect((yield* fetchP2pCanonical()).title).toBe('Binance P2P sell USDT');
+            expect((yield* fetchP2pCanonical).title).toBe('Binance P2P sell USDT');
         }).pipe(Effect.provide(TestLayer))
     );
 });
