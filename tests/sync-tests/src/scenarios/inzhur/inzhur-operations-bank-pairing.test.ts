@@ -47,7 +47,7 @@ describe('inzhur/operations-bank-pairing', () => {
             yield* importBankWithdrawal(bankAccount.id);
             yield* consolidateInzhur;
 
-            expect(yield* fetchBankTransactions()).toMatchObject([
+            expect(yield* fetchBankTransactions).toMatchObject([
                 { type: TransactionTypeEnum.EXPENSE },
                 { type: TransactionTypeEnum.INCOME }
             ]);
@@ -57,7 +57,7 @@ describe('inzhur/operations-bank-pairing', () => {
 
             expect(summary).toMatchObject({ bankMatches: { paired: 2, unpaired: 0 }, unmatchedBankCount: 0 });
             expect((yield* fetchInzhurOperationsLedger).filter(({ title }) => title.endsWith('Inzhur'))).toEqual([]);
-            expect(yield* fetchBankTransactions()).toMatchObject([
+            expect(yield* fetchBankTransactions).toMatchObject([
                 { type: TransactionTypeEnum.TRANSFER, fromAccountId: bankAccount.id, toAccountId: cashAccount.id },
                 { type: TransactionTypeEnum.TRANSFER, fromAccountId: cashAccount.id, toAccountId: bankAccount.id }
             ]);
@@ -99,7 +99,7 @@ describe('inzhur/operations-bank-pairing', () => {
             yield* consolidateInzhur;
 
             expect((yield* fetchInzhurOperationsLedger).filter(({ title }) => title === 'Top-up to Inzhur')).toEqual([]);
-            expect(yield* fetchBankTransactions()).toMatchObject([
+            expect(yield* fetchBankTransactions).toMatchObject([
                 { type: TransactionTypeEnum.TRANSFER, fromAccountId: bankAccount.id, toAccountId: cashAccount.id }
             ]);
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(CASH_AFTER_HISTORY * PRECISION);
@@ -123,7 +123,7 @@ describe('inzhur/operations-bank-pairing', () => {
             yield* consolidateInzhur;
 
             expect((yield* fetchInzhurOperationsLedger).filter(({ title }) => title === 'Withdrawal from Inzhur')).toEqual([]);
-            expect(yield* fetchBankTransactions()).toMatchObject([
+            expect(yield* fetchBankTransactions).toMatchObject([
                 { type: TransactionTypeEnum.TRANSFER, fromAccountId: cashAccount.id, toAccountId: bankAccount.id }
             ]);
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(CASH_AFTER_HISTORY * PRECISION);
@@ -147,7 +147,7 @@ describe('inzhur/operations-bank-pairing', () => {
             );
 
             expect((yield* fetchInzhurOperationsLedger).filter(({ title }) => title === 'Top-up to Inzhur')).toHaveLength(1);
-            expect(yield* fetchBankTransactions()).toMatchObject([{ type: TransactionTypeEnum.TRANSFER, toAccountId: cashAccount.id }]);
+            expect(yield* fetchBankTransactions).toMatchObject([{ type: TransactionTypeEnum.TRANSFER, toAccountId: cashAccount.id }]);
         }).pipe(
             Effect.provide(
                 makeInzhurOperationsLayer({

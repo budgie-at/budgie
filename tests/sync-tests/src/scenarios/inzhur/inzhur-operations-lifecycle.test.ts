@@ -60,7 +60,7 @@ describe('inzhur/operations-lifecycle', () => {
             yield* importInzhurOperations(URI);
 
             const { cashAccount } = yield* requireInzhurSetup();
-            const externalIds = (yield* fetchInzhurLedger()).map(({ externalId }) => externalId);
+            const externalIds = (yield* fetchInzhurLedger).map(({ externalId }) => externalId);
 
             expect(new Set(externalIds).size).toBe(externalIds.length);
             expect(yield* fetchAccountBalance((yield* requireInzhurFundByName(OCEAN)).id)).toBe(0);

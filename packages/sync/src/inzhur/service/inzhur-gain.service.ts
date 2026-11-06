@@ -88,16 +88,15 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
                 amount: signedAmount(movement)
             }));
             const hryvnia = yield* instrumentRepository.findByCode(CurrencyEnum.UAH);
-            const pricesByAccountId = new Map(
-                yield* Effect.forEach(setup.fundAccounts, account =>
-                    Effect.map(
-                        isDefined(hryvnia)
-                            ? instrumentDailyMarketPriceRepository.findRecent(account.instrumentId, hryvnia.id, priceHistoryLimit)
-                            : Effect.succeed([]),
-                        rows => [account.id, rows.map(row => ({ date: row.priceDate, value: row.price })).toReversed()] as const
-                    )
+            const priceEntries = yield* Effect.forEach(setup.fundAccounts, account =>
+                Effect.map(
+                    isDefined(hryvnia)
+                        ? instrumentDailyMarketPriceRepository.findRecent(account.instrumentId, hryvnia.id, priceHistoryLimit)
+                        : Effect.succeed([]),
+                    rows => [account.id, rows.map(row => ({ date: row.priceDate, value: row.price })).toReversed()] as const
                 )
             );
+            const pricesByAccountId = new Map(priceEntries);
 
             return { cashAccountId, fundAccountIds, firstDay, dated, pricesByAccountId };
         });

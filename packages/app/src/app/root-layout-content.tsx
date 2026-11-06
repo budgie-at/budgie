@@ -133,7 +133,6 @@ export const RootLayoutContent = () => {
     const sheetOptions = fitToContentsSheetOptions(sheetSurface);
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
     const contactSelectorOptions = formSheetOptions([DETENT_55, DETENT_90], isAccessibilityTextSize ? 1 : 0);
-
     useAppInitialization(databaseMigrationStatus === DatabaseMigrationStatusEnum.MIGRATED);
     useAppState(handleAppStateChange);
 

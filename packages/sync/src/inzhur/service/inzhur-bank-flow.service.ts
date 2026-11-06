@@ -214,7 +214,9 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
                 return null;
             }
 
-            if (!isDividendCandidate(transaction) || isDefined(yield* findPlaceholder(transaction, setup))) {
+            const placeholder = yield* findPlaceholder(transaction, setup);
+
+            if (!isDividendCandidate(transaction) || isDefined(placeholder)) {
                 return yield* convertAndPair(transaction, setup);
             }
 

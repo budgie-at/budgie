@@ -292,6 +292,6 @@ describe('base valuation', () => {
             const rowsTotal = hryvniaRows.reduce((total, row) => total + row.convertedBalance, 0);
 
             expect(netWorth).toBe(rowsTotal);
-        }).pipe(Effect.provide(Layer.mergeAll(TestLayer, AccountBalanceRepository.layer.pipe(Layer.provide(TestLayer)))))
+        }).pipe(Effect.provide([TestLayer, AccountBalanceRepository.layer.pipe(Layer.provide(TestLayer))]))
     );
 });

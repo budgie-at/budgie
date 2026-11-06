@@ -54,20 +54,19 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
                 const integration =
                     (yield* bankIntegrationRepository.findFileImportIntegration(provider)) ??
                     (yield* bankIntegrationRepository.create({ provider, token: '' }));
-                const cashAccount = Object.values(
-                    yield* accountService.bulkCreate([
-                        {
-                            title: 'Inzhur cash',
-                            type: AccountTypeEnum.BANK_SYNC,
-                            icon: UserIconNameEnum.Banknote,
-                            instrumentId: hryvnia.id,
-                            currentBalance: 0,
-                            externalId: INZHUR_CASH_EXTERNAL_ID,
-                            externalSource: provider,
-                            integrationId: integration.id
-                        }
-                    ])
-                ).at(0);
+                const cashAccounts = yield* accountService.bulkCreate([
+                    {
+                        title: 'Inzhur cash',
+                        type: AccountTypeEnum.BANK_SYNC,
+                        icon: UserIconNameEnum.Banknote,
+                        instrumentId: hryvnia.id,
+                        currentBalance: 0,
+                        externalId: INZHUR_CASH_EXTERNAL_ID,
+                        externalSource: provider,
+                        integrationId: integration.id
+                    }
+                ]);
+                const cashAccount = Object.values(cashAccounts).at(0);
 
                 if (!isDefined(cashAccount)) {
                     return yield* Effect.die(new Error('Failed to create Inzhur cash account'));
@@ -118,7 +117,7 @@ export class InzhurSetupService extends Context.Service<InzhurSetupService>()('@
                 : null;
         });
 
-        return { findSetup: () => inzhurSetupLookupService.findSetup(), setup, findStatementReminder };
+        return { findSetup: inzhurSetupLookupService.findSetup, setup, findStatementReminder };
     })
 }) {
     static readonly layer = Layer.effect(InzhurSetupService, InzhurSetupService.make).pipe(

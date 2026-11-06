@@ -3,6 +3,7 @@ import { i18n } from '@lingui/core';
 import { msg, plural } from '@lingui/core/macro';
 import { Storage } from '@op-engineering/op-sqlite';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
@@ -28,7 +29,8 @@ export class InzhurStatementReminderService extends Context.Service<InzhurStatem
             );
 
             const remind = Effect.fn('InzhurStatementReminderService.remind')(function* () {
-                const reminder = yield* inzhurSetupService.findStatementReminder(new Date());
+                const now = yield* DateTime.nowAsDate;
+                const reminder = yield* inzhurSetupService.findStatementReminder(now);
 
                 if (!isDefined(reminder)) {
                     return;
@@ -36,7 +38,7 @@ export class InzhurStatementReminderService extends Context.Service<InzhurStatem
 
                 const remindedStatementDate = yield* Effect.tryPromise({
                     try: () => storage.getItem(storageKey),
-                    catch: cause => new NativeCallError({ cause })
+                    catch: cause => NativeCallError.make({ cause })
                 });
 
                 if (remindedStatementDate === reminder.lastStatementDate) {
@@ -58,12 +60,12 @@ export class InzhurStatementReminderService extends Context.Service<InzhurStatem
                 );
                 yield* Effect.tryPromise({
                     try: () => storage.setItem(storageKey, reminder.lastStatementDate),
-                    catch: cause => new NativeCallError({ cause })
+                    catch: cause => NativeCallError.make({ cause })
                 });
             });
 
             return {
-                start: Effect.forkDetach(logAndContinue(remind())).pipe(Effect.asVoid)
+                start: remind().pipe(logAndContinue, Effect.forkDetach, Effect.asVoid)
             };
         })
     }

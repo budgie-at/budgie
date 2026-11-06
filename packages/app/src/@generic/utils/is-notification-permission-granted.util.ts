@@ -5,5 +5,5 @@ import { NativeCallError } from '../error/native-call.error';
 
 export const isNotificationPermissionGranted = Effect.tryPromise({
     try: () => Notifications.getPermissionsAsync(),
-    catch: cause => new NativeCallError({ cause })
+    catch: cause => NativeCallError.make({ cause })
 }).pipe(Effect.map(({ status }) => status === Notifications.PermissionStatus.GRANTED));

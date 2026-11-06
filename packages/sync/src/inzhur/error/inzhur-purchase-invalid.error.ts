@@ -1,3 +1,6 @@
 import * as Schema from 'effect/Schema';
 
-export class InzhurPurchaseInvalidError extends Schema.TaggedError<InzhurPurchaseInvalidError>()('InzhurPurchaseInvalidError', {}) {}
+export class InzhurPurchaseInvalidError extends Schema.TaggedError<InzhurPurchaseInvalidError, { readonly brand: unique symbol }>()(
+    'InzhurPurchaseInvalidError',
+    {}
+) {}

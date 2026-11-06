@@ -22,18 +22,20 @@ export class InzhurPriceService extends Context.Service<InzhurPriceService>()('@
         const fetchTimeoutMs = 15_000;
         const certificatePricePattern =
             /&quot;value&quot;:\[0,&quot;([^&]+)&quot;\],&quot;dynamicValue&quot;:\[0,&quot;initialInvestment&quot;\],&quot;hint&quot;:\[0,&quot;(?:(?!&quot;).)*?фонду (Inzhur [A-Za-z]+)/gu;
-        const certificatePriceSchema = Schema.NumberFromString.check(Schema.isGreaterThan(0));
+        const certificatePriceSchema = Schema.FiniteFromString.check(Schema.isGreaterThan(0));
         const parsePrices = Effect.fn('InzhurPriceService.parsePrices')(function* (html: string) {
             const matches = [...html.matchAll(certificatePricePattern)];
 
             if (!isNotEmptyArray(matches)) {
-                return yield* new InzhurPriceParseError({ reason: 'certificate price markers not found' });
+                return yield* InzhurPriceParseError.make({ reason: 'certificate price markers not found' });
             }
 
             const prices = yield* Effect.forEach(matches, ([, rawPrice = '', fundName = '']) =>
-                Schema.decodeUnknownEffect(certificatePriceSchema)(rawPrice).pipe(
-                    Effect.mapError(() => new InzhurPriceParseError({ reason: `invalid price "${rawPrice}" for ${fundName}` })),
-                    Effect.map((price): InzhurFundPriceInterface => ({ fundName, price }))
+                Schema.decodeEffect(certificatePriceSchema)(rawPrice).pipe(
+                    Effect.mapBoth({
+                        onFailure: () => InzhurPriceParseError.make({ reason: `invalid price "${rawPrice}" for ${fundName}` }),
+                        onSuccess: (price): InzhurFundPriceInterface => ({ fundName, price })
+                    })
                 )
             );
 
@@ -49,7 +51,9 @@ export class InzhurPriceService extends Context.Service<InzhurPriceService>()('@
                 );
                 const response = yield* client.get(pageUrl);
 
-                return yield* parsePrices(yield* response.text);
+                const html = yield* response.text;
+
+                return yield* parsePrices(html);
             }),
             findNearestPrice: Effect.fn('InzhurPriceService.findNearestPrice')(function* (instrumentId: number, priceDate: string) {
                 const hryvnia = yield* instrumentRepository.findByCode(CurrencyEnum.UAH);

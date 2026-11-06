@@ -11,6 +11,7 @@ import {
 import { TransactionService, TransferCreationService } from '@budgie/ledger';
 import { InzhurPriceService } from '@budgie/market';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
@@ -185,7 +186,7 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                     return priceByExternalId;
                 }
 
-                const currentPrices = yield* inzhurPriceService.fetchPrices().pipe(Effect.catch(() => Effect.succeed([])));
+                const currentPrices = yield* inzhurPriceService.fetchPrices().pipe(Effect.orElseSucceed(() => []));
 
                 for (const action of missing) {
                     const current = currentPrices.find(item => item.fundName.toLowerCase() === action.fundName?.toLowerCase());
@@ -200,7 +201,7 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
 
             const adjustOpeningCash = Effect.fnUntraced(function* (setup: InzhurSetupInterface, firstAt: Date) {
                 const cashAccountId = setup.cashAccount.id;
-                const openingAt = new Date(firstAt.getTime() - millisecondsPerSecond);
+                const openingAt = DateTime.toDateUtc(DateTime.makeUnsafe(firstAt.getTime() - millisecondsPerSecond));
 
                 yield* inzhurOpeningBalanceService.replace(cashAccountId, 0);
 
@@ -233,7 +234,9 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                 const accountByFund = new Map<string, AccountEntityInterface>();
 
                 for (const name of new Set(plan.actions.flatMap(action => (isDefined(action.fundName) ? [action.fundName] : [])))) {
-                    accountByFund.set(name, yield* inzhurFundAccountService.ensureByName(setup, name));
+                    const fundAccount = yield* inzhurFundAccountService.ensureByName(setup, name);
+
+                    accountByFund.set(name, fundAccount);
                 }
 
                 const fundAccountIds = [
@@ -282,7 +285,7 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                     .flatMap(action => (isDefined(action.fundName) ? [action.fundName] : []));
 
                 if (isNotEmptyArray(unresolvedFundNames)) {
-                    return yield* new InzhurPriceMissingError({ fundNames: [...new Set(unresolvedFundNames)] });
+                    return yield* InzhurPriceMissingError.make({ fundNames: [...new Set(unresolvedFundNames)] });
                 }
 
                 const pairing = yield* inzhurOperationsBankPairingService.plan(setup, plan.actions, ledger, {
@@ -360,10 +363,14 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                 }
 
                 yield* syncRepository.update(setup.cashSync.id, {
-                    backwardSyncedAt: new Date(
-                        Math.min(setup.cashSync.backwardSyncedAt?.getTime() ?? plan.firstAt.getTime(), plan.firstAt.getTime())
+                    backwardSyncedAt: DateTime.toDateUtc(
+                        DateTime.makeUnsafe(
+                            Math.min(setup.cashSync.backwardSyncedAt?.getTime() ?? plan.firstAt.getTime(), plan.firstAt.getTime())
+                        )
                     ),
-                    forwardSyncedAt: new Date(Math.max(setup.cashSync.forwardSyncedAt?.getTime() ?? 0, plan.lastAt.getTime()))
+                    forwardSyncedAt: DateTime.toDateUtc(
+                        DateTime.makeUnsafe(Math.max(setup.cashSync.forwardSyncedAt?.getTime() ?? 0, plan.lastAt.getTime()))
+                    )
                 });
 
                 const quantityOf = (action: InzhurPlannedActionInterface) =>

@@ -21,7 +21,7 @@ export class InzhurPendingTopUpService extends Context.Service<InzhurPendingTopU
         const inzhurManualPurchaseService = yield* InzhurManualPurchaseService;
         const dismissedKey = '@budgie:inzhur-dismissed-top-ups';
         const notifiedKey = '@budgie:inzhur-notified-top-ups';
-        const ExternalIdsSchema = Schema.fromJsonString(Schema.Array(Schema.String));
+        const ExternalIdsSchema = Schema.String.pipe(Schema.Array, Schema.fromJsonString);
         const storage = yield* Effect.acquireRelease(
             Effect.sync(() => new Storage({ name: 'inzhur-pending-top-ups.sqlite' })),
             topUpStorage =>
@@ -33,16 +33,14 @@ export class InzhurPendingTopUpService extends Context.Service<InzhurPendingTopU
         const readIds = Effect.fnUntraced(function* (key: string) {
             const stored = yield* Effect.tryPromise({
                 try: () => storage.getItem(key),
-                catch: cause => new NativeCallError({ cause })
+                catch: cause => NativeCallError.make({ cause })
             });
 
             if (!isNotEmptyString(stored)) {
                 return [];
             }
 
-            return yield* Schema.decodeUnknownEffect(ExternalIdsSchema)(stored).pipe(
-                Effect.catch(() => Effect.succeed<readonly string[]>([]))
-            );
+            return yield* Schema.decodeEffect(ExternalIdsSchema)(stored).pipe(Effect.orElseSucceed((): readonly string[] => []));
         });
 
         const writeIds = Effect.fnUntraced(function* (key: string, ids: readonly string[]) {
@@ -50,20 +48,18 @@ export class InzhurPendingTopUpService extends Context.Service<InzhurPendingTopU
 
             yield* Effect.tryPromise({
                 try: () => storage.setItem(key, stored),
-                catch: cause => new NativeCallError({ cause })
+                catch: cause => NativeCallError.make({ cause })
             });
         });
 
-        const findDismissed = () => readIds(dismissedKey);
+        const findDismissed = readIds(dismissedKey);
+        const initialDismissed = yield* findDismissed.pipe(Effect.orElseSucceed((): readonly string[] => []));
 
-        appAtomRegistry.set(
-            inzhurDismissedTopUpsAtom,
-            yield* findDismissed().pipe(Effect.catch(() => Effect.succeed<readonly string[]>([])))
-        );
+        appAtomRegistry.set(inzhurDismissedTopUpsAtom, initialDismissed);
 
         const remind = Effect.fn('InzhurPendingTopUpService.remind')(function* () {
             const pendingTopUps = yield* inzhurManualPurchaseService.findPendingTopUps();
-            const dismissed = yield* findDismissed();
+            const dismissed = yield* findDismissed;
             const notified = yield* readIds(notifiedKey);
             const unnotifiedTopUps = pendingTopUps.filter(
                 topUp => !dismissed.includes(topUp.externalId) && !notified.includes(topUp.externalId)
@@ -105,7 +101,7 @@ export class InzhurPendingTopUpService extends Context.Service<InzhurPendingTopU
             findDismissed,
             remind,
             dismiss: Effect.fn('InzhurPendingTopUpService.dismiss')(function* (topUpExternalId: string) {
-                const dismissed = yield* findDismissed();
+                const dismissed = yield* findDismissed;
 
                 if (dismissed.includes(topUpExternalId)) {
                     return;
@@ -116,7 +112,7 @@ export class InzhurPendingTopUpService extends Context.Service<InzhurPendingTopU
                 yield* writeIds(dismissedKey, nextDismissed);
                 appAtomRegistry.set(inzhurDismissedTopUpsAtom, nextDismissed);
             }),
-            start: Effect.forkDetach(logAndContinue(remind())).pipe(Effect.asVoid)
+            start: remind().pipe(logAndContinue, Effect.forkDetach, Effect.asVoid)
         };
     })
 }) {

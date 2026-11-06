@@ -24,7 +24,7 @@ export const useInzhurStatementImport = () => {
             Effect.gen(function* () {
                 const result = yield* Effect.tryPromise({
                     try: () => DocumentPicker.getDocumentAsync({ type: XLSX_MIME_TYPE, copyToCacheDirectory: true }),
-                    catch: cause => new NativeCallError({ cause })
+                    catch: cause => NativeCallError.make({ cause })
                 });
                 const uri = result.assets?.at(0)?.uri;
 
@@ -32,11 +32,11 @@ export const useInzhurStatementImport = () => {
                     return;
                 }
 
-                setSummary(
-                    yield* Effect.flatMap(InzhurOperationsImportService, inzhurOperationsImportService =>
-                        inzhurOperationsImportService.importOperations(uri)
-                    )
+                const importSummary = yield* Effect.flatMap(InzhurOperationsImportService, inzhurOperationsImportService =>
+                    inzhurOperationsImportService.importOperations(uri)
                 );
+
+                setSummary(importSummary);
             }).pipe(
                 Effect.catchTags({
                     InzhurStatementInvalidError: () =>

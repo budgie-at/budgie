@@ -24,29 +24,28 @@ export class InvestmentReturnRepository extends Context.Service<InvestmentReturn
             const reinvestedTotalSql = buildTotalSql(sql`${AccountEntityTable.externalSource} IS ${ExternalSourceEnum.INZHUR}`);
 
             return {
-                getFundDividendTotals: () =>
-                    Db.query(db =>
-                        db
-                            .select({
-                                fundAccountId: sql<number>`${TransactionEntityTable.fundAccountId}`,
-                                bank: bankTotalSql,
-                                reinvested: reinvestedTotalSql
-                            })
-                            .from(TransactionEntryEntityTable)
-                            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-                            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-                            .where(
-                                and(
-                                    transactionFilters.buildVisibleTransactionCondition(),
-                                    transactionFilters.buildCategorizableEntryCondition(),
-                                    eq(TransactionEntityTable.type, TransactionTypeEnum.INCOME),
-                                    eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.DEBIT),
-                                    eq(TransactionEntryEntityTable.categoryId, INVESTMENTS_CATEGORY_ID),
-                                    isNotNull(TransactionEntityTable.fundAccountId)
-                                )
+                getFundDividendTotals: Db.query(db =>
+                    db
+                        .select({
+                            fundAccountId: sql<number>`${TransactionEntityTable.fundAccountId}`,
+                            bank: bankTotalSql,
+                            reinvested: reinvestedTotalSql
+                        })
+                        .from(TransactionEntryEntityTable)
+                        .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                        .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+                        .where(
+                            and(
+                                transactionFilters.buildVisibleTransactionCondition(),
+                                transactionFilters.buildCategorizableEntryCondition(),
+                                eq(TransactionEntityTable.type, TransactionTypeEnum.INCOME),
+                                eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.DEBIT),
+                                eq(TransactionEntryEntityTable.categoryId, INVESTMENTS_CATEGORY_ID),
+                                isNotNull(TransactionEntityTable.fundAccountId)
                             )
-                            .groupBy(TransactionEntityTable.fundAccountId)
-                    ),
+                        )
+                        .groupBy(TransactionEntityTable.fundAccountId)
+                ),
 
                 findFirstEntryOperatedAt: (accountId: number) =>
                     Db.query(db =>

@@ -34,7 +34,7 @@ const layer = makeInzhurOperationsLayer({
 });
 
 const expectPaidOutAsTransfer = Effect.fnUntraced(function* (bankAccountId: number, cashAccountId: number) {
-    expect(yield* fetchBankTransactions()).toMatchObject([
+    expect(yield* fetchBankTransactions).toMatchObject([
         { type: TransactionTypeEnum.TRANSFER, fromAccountId: cashAccountId, toAccountId: bankAccountId, fundAccountId: null }
     ]);
     expect((yield* fetchInzhurOperationsLedger).filter(({ title }) => title === 'Withdrawal from Inzhur')).toEqual([]);
@@ -63,7 +63,7 @@ describe('inzhur/bank-dividend-pairing', () => {
 
             const reitAccount = yield* requireInzhurFundAccount(REIT_ISIN);
 
-            expect(yield* fetchBankTransactions()).toMatchObject([{ type: TransactionTypeEnum.INCOME, fundAccountId: reitAccount.id }]);
+            expect(yield* fetchBankTransactions).toMatchObject([{ type: TransactionTypeEnum.INCOME, fundAccountId: reitAccount.id }]);
 
             const summary = yield* importInzhurOperations(WITHDRAWAL_URI);
 
@@ -96,7 +96,7 @@ describe('inzhur/bank-dividend-pairing', () => {
             );
             yield* consolidateInzhur;
 
-            const byExternalId = new Map((yield* fetchBankTransactions()).map(transaction => [transaction.externalId, transaction]));
+            const byExternalId = new Map((yield* fetchBankTransactions).map(transaction => [transaction.externalId, transaction]));
 
             expect(byExternalId.get('withdrawal')).toMatchObject({ type: TransactionTypeEnum.TRANSFER });
             expect(byExternalId.get('dividend')).toMatchObject({ type: TransactionTypeEnum.INCOME });

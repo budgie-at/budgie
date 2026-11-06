@@ -48,7 +48,7 @@ const prepare = Effect.gen(function* () {
 });
 
 const fetchSingleBankTransaction = Effect.fnUntraced(function* () {
-    const [transaction, ...rest] = yield* fetchBankTransactions();
+    const [transaction, ...rest] = yield* fetchBankTransactions;
 
     expect(rest).toEqual([]);
 
@@ -171,7 +171,7 @@ describe('inzhur/bank-flows', () => {
             });
             yield* consolidateInzhur;
 
-            expect(yield* fetchBankTransactions()).toMatchObject([
+            expect(yield* fetchBankTransactions).toMatchObject([
                 { externalId: 'real-shaped', type: TransactionTypeEnum.TRANSFER, toAccountId: cashAccount.id }
             ]);
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(1200 * PRECISION);
@@ -186,7 +186,7 @@ describe('inzhur/bank-flows', () => {
             yield* importInzhurBankTransaction(bankAccount.id, 'p2p', 'Іван Інжур', -300, OPERATED_AT, { mccCategoryId: transferMcc.id });
             yield* consolidateInzhur;
 
-            expect(yield* fetchBankTransactions()).toMatchObject([{ externalId: 'p2p', type: TransactionTypeEnum.EXPENSE }]);
+            expect(yield* fetchBankTransactions).toMatchObject([{ externalId: 'p2p', type: TransactionTypeEnum.EXPENSE }]);
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(200 * PRECISION);
         }).pipe(Effect.provide(layer))
     );
@@ -199,7 +199,7 @@ describe('inzhur/bank-flows', () => {
             yield* importInzhurBankTransaction(bankAccount.id, 'dividend', UNNAMED_DIVIDEND_DESCRIPTION, 80, OPERATED_AT);
             yield* consolidateInzhur;
 
-            expect(yield* fetchBankTransactions()).toMatchObject([
+            expect(yield* fetchBankTransactions).toMatchObject([
                 { type: TransactionTypeEnum.EXPENSE, entries: [{ categoryId: null }] },
                 { type: TransactionTypeEnum.INCOME, title: UNNAMED_DIVIDEND_DESCRIPTION, entries: [{ categoryId: null }] }
             ]);
@@ -219,13 +219,13 @@ describe('inzhur/bank-flows', () => {
 
             yield* importBoth;
 
-            const firstPass = yield* fetchBankTransactions();
+            const firstPass = yield* fetchBankTransactions;
 
             yield* importBoth;
             yield* consolidateInzhur;
 
             expect(firstPass).toHaveLength(2);
-            expect(yield* fetchBankTransactions()).toEqual(firstPass);
+            expect(yield* fetchBankTransactions).toEqual(firstPass);
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(1200 * PRECISION);
             expect(yield* fetchAccountBalance(bankAccount.id)).toBe(-920 * PRECISION);
         }).pipe(Effect.provide(layer))

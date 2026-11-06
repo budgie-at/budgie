@@ -27,10 +27,12 @@ class InzhurOperationsParser {
     parse(bytes: Uint8Array): Effect.Effect<InzhurOperationsExportInterface, InzhurStatementInvalidError> {
         return Effect.try({
             try: () => read(bytes, { type: 'buffer' }),
-            catch: error => new InzhurStatementInvalidError({ reason: getErrorMessage(error) })
+            catch: error => InzhurStatementInvalidError.make({ reason: getErrorMessage(error) })
         }).pipe(
             Effect.flatMap(workbook =>
-                Effect.fromResult(this.parseWorkbook(workbook)).pipe(Effect.mapError(reason => new InzhurStatementInvalidError({ reason })))
+                Effect.fromResult(this.parseWorkbook(workbook)).pipe(
+                    Effect.mapError(reason => InzhurStatementInvalidError.make({ reason }))
+                )
             )
         );
     }

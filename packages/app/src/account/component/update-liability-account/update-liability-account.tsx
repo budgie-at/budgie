@@ -34,11 +34,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
     };
 
     const { control, handleSubmit, instrument, isSubmitting } = useLiabilityAccountForm(formValues, values =>
-        Effect.gen(function* () {
-            return yield* Effect.flatMap(AccountService, accountService =>
-                accountService.updateById(account.id, Struct.omit(values, ['type']))
-            );
-        })
+        Effect.flatMap(AccountService, accountService => accountService.updateById(account.id, Struct.omit(values, ['type'])))
     );
 
     const fields = {

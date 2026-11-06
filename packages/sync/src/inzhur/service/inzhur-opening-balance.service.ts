@@ -1,6 +1,7 @@
 import { ExternalSourceEnum, TransactionRepository } from '@budgie/contracts';
 import { AccountBalanceIncrementalService, BalanceAdjustmentService, TransactionService } from '@budgie/ledger';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
@@ -68,9 +69,10 @@ export class InzhurOpeningBalanceService extends Context.Service<InzhurOpeningBa
                     const openingTimes = (yield* Effect.forEach(fundAccountIds, fundAccountId =>
                         transactionService.getEarliestTransactionTimeByAccountId(fundAccountId)
                     )).filter(isDefined);
+                    const now = yield* DateTime.nowAsDate;
                     const openingAt = isNotEmptyArray(openingTimes)
-                        ? new Date(Math.min(...openingTimes.map(time => time.getTime())))
-                        : new Date();
+                        ? DateTime.toDateUtc(DateTime.makeUnsafe(Math.min(...openingTimes.map(time => time.getTime()))))
+                        : now;
 
                     yield* replace(accountId, (existing?.amount ?? 0) + delta, openingAt);
                 })

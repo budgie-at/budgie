@@ -148,9 +148,7 @@ describe('inzhur/manual-purchase', () => {
                 amount: 400,
                 operatedAt: FEBRUARY_PURCHASE_AT
             });
-            const purchase = (yield* fetchInzhurLedger()).find(({ externalId }) =>
-                externalId?.startsWith(`inzhur:manual:${transactionId}:`)
-            );
+            const purchase = (yield* fetchInzhurLedger).find(({ externalId }) => externalId?.startsWith(`inzhur:manual:${transactionId}:`));
             const costReturn = yield* (yield* InzhurGainService).getFundCostReturn(reitId, TODAY);
 
             expect(reitId).toBe((yield* requireInzhurFundAccount(REIT_ISIN)).id);
@@ -197,7 +195,7 @@ describe('inzhur/manual-purchase', () => {
                 spentAmount: 550,
                 remainingAmount: 450
             });
-            expect((yield* fetchInzhurLedger()).filter(({ externalId }) => externalId?.startsWith('inzhur:manual:'))).toHaveLength(2);
+            expect((yield* fetchInzhurLedger).filter(({ externalId }) => externalId?.startsWith('inzhur:manual:'))).toHaveLength(2);
         }).pipe(Effect.provide(layer))
     );
 
@@ -260,7 +258,7 @@ describe('inzhur/manual-purchase', () => {
             const summary = yield* importInzhurOperations(COVERING_URI);
             const reit = yield* requireInzhurFundByName(REIT);
             const { cashAccount } = yield* requireInzhurSetup();
-            const manual = (yield* fetchInzhurLedger()).filter(({ externalId }) => externalId?.startsWith('inzhur:manual:'));
+            const manual = (yield* fetchInzhurLedger).filter(({ externalId }) => externalId?.startsWith('inzhur:manual:'));
             const costReturn = yield* (yield* InzhurGainService).getFundCostReturn(reit.id, TODAY);
 
             expect(summary.replacedPurchaseCount).toBe(1);
@@ -297,7 +295,7 @@ describe('inzhur/manual-purchase', () => {
             yield* recordManualPurchase({ ...purchase, amount: 900 });
 
             expect(yield* Effect.flip(recordManualPurchase({ ...purchase, amount: 101 }))).toEqual(
-                new InzhurPurchaseExceedsTopUpError({ remainingAmount: 100 })
+                InzhurPurchaseExceedsTopUpError.make({ remainingAmount: 100 })
             );
         }).pipe(Effect.provide(layer))
     );
@@ -318,7 +316,7 @@ describe('inzhur/manual-purchase', () => {
                 operatedAt: new Date('2026-02-02T22:30:00.000Z')
             });
 
-            expect((yield* fetchInzhurLedger()).find(({ externalId }) => externalId?.startsWith('inzhur:manual:'))).toMatchObject({
+            expect((yield* fetchInzhurLedger).find(({ externalId }) => externalId?.startsWith('inzhur:manual:'))).toMatchObject({
                 operatedAt: new Date('2026-02-03T10:00:00.000Z')
             });
         }).pipe(Effect.provide(layer))

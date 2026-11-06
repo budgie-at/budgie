@@ -55,20 +55,19 @@ export class InzhurFundAccountService extends Context.Service<InzhurFundAccountS
 
         const create = Effect.fn('InzhurFundAccountService.create')(function* (code: string, rawName: string, integrationId: number) {
             const instrument = yield* resolveInstrument(code, rawName);
-            const createdAccount = Object.values(
-                yield* accountService.bulkCreate([
-                    {
-                        title: instrument.name,
-                        type: AccountTypeEnum.STOCKS,
-                        icon: INZHUR_CANONICAL_FUNDS.find(fund => fund.name === instrument.name)?.icon ?? UserIconNameEnum.ChartLine,
-                        instrumentId: instrument.id,
-                        currentBalance: 0,
-                        externalId: `inzhur:${instrument.code}`,
-                        externalSource: provider,
-                        integrationId
-                    }
-                ])
-            ).at(0);
+            const createdAccounts = yield* accountService.bulkCreate([
+                {
+                    title: instrument.name,
+                    type: AccountTypeEnum.STOCKS,
+                    icon: INZHUR_CANONICAL_FUNDS.find(fund => fund.name === instrument.name)?.icon ?? UserIconNameEnum.ChartLine,
+                    instrumentId: instrument.id,
+                    currentBalance: 0,
+                    externalId: `inzhur:${instrument.code}`,
+                    externalSource: provider,
+                    integrationId
+                }
+            ]);
+            const createdAccount = Object.values(createdAccounts).at(0);
 
             if (!isDefined(createdAccount)) {
                 return yield* Effect.die(new Error('Failed to create Inzhur fund account'));

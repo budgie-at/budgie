@@ -34,7 +34,7 @@ describe('inzhur/fund-returns', () => {
 
             const reit = yield* requireInzhurFundAccount(REIT_ISIN);
             const energy = yield* requireInzhurFundAccount(ENERGY_ISIN);
-            const totals = (yield* investmentReturnRepository.getFundDividendTotals()).toSorted(
+            const totals = (yield* investmentReturnRepository.getFundDividendTotals).toSorted(
                 (left, right) => left.fundAccountId - right.fundAccountId
             );
 
