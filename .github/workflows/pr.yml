@@ -148,9 +148,11 @@ jobs:
             matrix:
                 include:
                     - suite: packages
-                      filter: '!@budgie-at/sync-tests'
+                      filters: --filter=!@budgie-at/sync-tests --filter=!@budgie-at/consolidation-tests
                     - suite: sync
-                      filter: '@budgie-at/sync-tests'
+                      filters: --filter=@budgie-at/sync-tests
+                    - suite: consolidation
+                      filters: --filter=@budgie-at/consolidation-tests
         timeout-minutes: 45
         permissions:
             contents: read
@@ -180,7 +182,7 @@ jobs:
               run: pnpm build
 
             - name: Unit tests
-              run: pnpm test --concurrency=2 --filter='${{ matrix.filter }}'
+              run: pnpm test --concurrency=2 ${{ matrix.filters }}
 
     e2e-script-tests:
         name: E2E script self-tests
