@@ -3,9 +3,9 @@ import * as Schema from 'effect/Schema';
 import { EnableBankingAccountIdentificationApiSchema } from './enable-banking-account-api.schema';
 import { EnableBankingAmountApiSchema } from './enable-banking-amount-api.schema';
 
-const OptionalText = Schema.optional(Schema.NullOr(Schema.String));
-const PartySchema = Schema.optional(Schema.NullOr(Schema.Struct({ name: OptionalText })));
-const PartyAccountSchema = Schema.optional(Schema.NullOr(EnableBankingAccountIdentificationApiSchema));
+const OptionalText = Schema.String.pipe(Schema.NullOr, Schema.optional);
+const PartySchema = Schema.Struct({ name: OptionalText }).pipe(Schema.NullOr, Schema.optional);
+const PartyAccountSchema = EnableBankingAccountIdentificationApiSchema.pipe(Schema.NullOr, Schema.optional);
 
 const EnableBankingTransactionApiSchema = Schema.Struct({
     entry_reference: OptionalText,
@@ -19,7 +19,7 @@ const EnableBankingTransactionApiSchema = Schema.Struct({
     status: Schema.String,
     booking_date: OptionalText,
     value_date: OptionalText,
-    remittance_information: Schema.optional(Schema.NullOr(Schema.Array(Schema.String)))
+    remittance_information: Schema.String.pipe(Schema.Array, Schema.NullOr, Schema.optional)
 });
 
 export const EnableBankingTransactionPageApiSchema = Schema.Struct({

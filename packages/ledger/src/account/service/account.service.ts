@@ -54,7 +54,7 @@ export class AccountService extends Context.Service<AccountService>()('@budgie/l
                 { currentBalance, ...input }: LiabilityAccountCreateInputInterface | DepositAccountCreateInputInterface,
                 nature: AccountNatureEnum
             ) {
-                const [{ count }] = yield* accountRepository.count();
+                const [{ count }] = yield* accountRepository.count;
                 const createdAccount = yield* accountRepository.create({ ...input, order: count + 1, nature });
 
                 yield* adjustBalanceTo(createdAccount.id, currentBalance);
@@ -65,9 +65,7 @@ export class AccountService extends Context.Service<AccountService>()('@budgie/l
         );
 
         const orFail = <A>(id: number, findAccount: Effect.Effect<A | undefined, DbError, Db>) =>
-            Effect.flatMap(findAccount, account =>
-                isDefined(account) ? Effect.succeed(account) : Effect.fail(new AccountNotFoundError({ id }))
-            );
+            Effect.filterOrFail(findAccount, isDefined<A>, () => AccountNotFoundError.make({ id }));
 
         const updateWithBalance = Effect.fn('AccountService.updateWithBalance')(
             function* (
@@ -92,15 +90,14 @@ export class AccountService extends Context.Service<AccountService>()('@budgie/l
 
         const processBatch = Effect.fn('AccountService.processBatch')(
             function* (batch: LiabilityAccountCreateInputInterface[]) {
-                const [{ count }] = yield* accountRepository.count();
+                const [{ count }] = yield* accountRepository.count;
                 const accounts = yield* accountRepository.bulkCreate(
                     batch.map((input, index) => ({ ...input, order: count + index + 1, nature: AccountNatureEnum.LIABILITY }))
                 );
 
-                yield* Effect.all(
-                    accounts.map((account, index) => adjustBalanceTo(account.id, batch[index].currentBalance)),
-                    { concurrency: 'unbounded' }
-                );
+                yield* Effect.forEach(accounts, (account, index) => adjustBalanceTo(account.id, batch[index].currentBalance), {
+                    concurrency: 'unbounded'
+                });
 
                 return accounts;
             },

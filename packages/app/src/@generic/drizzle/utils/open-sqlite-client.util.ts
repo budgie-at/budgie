@@ -10,6 +10,6 @@ export const openSqliteClient = (filename: string, encryptionKey: string | null)
     SqliteClient.make({ filename, location: DATABASE_LOCATION, ...(isNotEmptyString(encryptionKey) && { encryptionKey }) }).pipe(
         Effect.tap(client => client`PRAGMA busy_timeout = 5000`.raw),
         Effect.tap(client => SqliteClient.withAsyncQuery(client`SELECT count(*) FROM sqlite_master`)),
-        Effect.mapError(cause => new DatabaseOpenError({ cause })),
-        Effect.catchDefect(cause => Effect.fail(new DatabaseOpenError({ cause })))
+        Effect.mapError(cause => DatabaseOpenError.make({ cause })),
+        Effect.catchDefect(cause => Effect.fail(DatabaseOpenError.make({ cause })))
     );

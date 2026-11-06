@@ -22,7 +22,7 @@ const byTransactionId = (left: number, right: number): number => left - right;
 
 const seedIbanBridgeChainFixture = () =>
     Effect.gen(function* () {
-        const topology = yield* seedIbanBridgeTopology();
+        const topology = yield* seedIbanBridgeTopology;
 
         return {
             ...topology,
@@ -32,10 +32,7 @@ const seedIbanBridgeChainFixture = () =>
         };
     });
 
-const fetchChainCanonicalId = () =>
-    Effect.gen(function* () {
-        return yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER);
-    });
+const fetchChainCanonicalId = () => fetchSingleCanonicalId(TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER);
 
 const revertChainCanonical = () => revertSingleCanonical(TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER);
 

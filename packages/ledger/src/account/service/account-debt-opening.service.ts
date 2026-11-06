@@ -17,6 +17,7 @@ import {
 } from '@budgie/contracts';
 import { EntryBaseValuationService, ExchangeRatesService } from '@budgie/market';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
@@ -54,13 +55,15 @@ export class AccountDebtOpeningService extends Context.Service<AccountDebtOpenin
         ) {
             const isLentDebt = input.debtType === AccountDebtTypeEnum.LENT;
 
+            const operatedAt = yield* DateTime.nowAsDate;
+
             return yield* transactionRepository.create({
                 type: isLentDebt ? TransactionTypeEnum.EXPENSE : TransactionTypeEnum.INCOME,
                 title: input.title,
                 comment: '',
                 externalId: null,
                 externalSource: null,
-                operatedAt: new Date(),
+                operatedAt,
                 exchangeRate: 1,
                 fromAccountId: isLentDebt ? fundingAccountId : null,
                 toAccountId: isLentDebt ? null : fundingAccountId,

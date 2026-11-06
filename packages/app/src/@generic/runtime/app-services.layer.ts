@@ -77,7 +77,7 @@ import {
     InstrumentDailyMarketPriceRepository,
     InstrumentMarketDataJobRepository
 } from '@budgie/market';
-import { RecurringService } from '@budgie/recurring';
+import { RecurringRefreshService, RecurringService } from '@budgie/recurring';
 import { RuleEngineService, RuleMatcherService, RuleRepository, RuleService, TransactionRuleRepository } from '@budgie/rules';
 import {
     AtmCashMoveService,
@@ -126,6 +126,7 @@ import { DatabaseImportService } from '../../import/service/database-import.serv
 import { HistoricalMarketDataDrainerService } from '../../market-data/service/historical-market-data-drainer.service';
 import { OnboardingService } from '../../onboarding/service/onboarding.service';
 import { ReceiptScanService } from '../../receipt/service/receipt-scan.service';
+import { RecurringReminderService } from '../../recurring/service/recurring-reminder.service';
 import { RuleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 import { p2pTransferTitleResolverLayer } from '../../sync/layer/p2p-transfer-title-resolver.layer';
 import { syncFileReaderLayer } from '../../sync/layer/sync-file-reader.layer';
@@ -149,7 +150,6 @@ import { DatabaseRekeyService } from '../drizzle/service/database-rekey.service'
 import { AppResetService } from '../service/app-reset.service';
 import { NetworkService } from '../service/network.service';
 import { Workload } from '../service/workload.service';
-
 const ledgerWorkloadLayer = Layer.effect(
     LedgerWorkload,
     Effect.map(Workload, workload => LedgerWorkload.of({ runForeground: workload.runForeground }))
@@ -169,7 +169,7 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     BudgetSinkingFundRepository.layer,
     BudgetLimitChangeRepository.layer,
     BudgetFundSpendService.layer,
-    RecurringService.layer,
+    Layer.mergeAll(RecurringService.layer, RecurringRefreshService.layer, RecurringReminderService.layer),
     AccountBalanceIncrementalService.layer,
     AccountTransferConversionService.layer,
     AccountService.layer,

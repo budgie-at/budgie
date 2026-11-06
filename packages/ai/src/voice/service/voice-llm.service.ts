@@ -68,8 +68,8 @@ export class VoiceLlmService extends Context.Service<VoiceLlmService>()('@budgie
 
         const EXTRACTED_ITEM_SCHEMA = Schema.Struct({
             description: Schema.String,
-            amount: Schema.Number,
-            currency: Schema.optional(Schema.NullOr(Schema.String))
+            amount: Schema.Finite,
+            currency: Schema.String.pipe(Schema.NullOr, Schema.optional)
         });
 
         const decodeJson = Schema.decodeUnknownOption(Schema.fromJsonString(Schema.Unknown));

@@ -96,7 +96,7 @@ describe('enable-banking/connect refusals', () => {
 
     it.effect('refuses a bank account linked to another account by id, alias or IBAN', () =>
         Effect.gen(function* () {
-            const eur = yield* findOrSeedEur();
+            const eur = yield* findOrSeedEur;
             const { account } = yield* seedConnectableAccount({ instrumentId: eur.id });
             yield* seed.account({ instrumentId: eur.id, externalId: 'hash-by-id' });
             const byAlias = yield* seed.account({ instrumentId: eur.id, externalId: 'current' });
@@ -140,7 +140,7 @@ describe('enable-banking/connect refusals', () => {
 
     it.effect('keeps the old integration while another account still references it', () =>
         Effect.gen(function* () {
-            const eur = yield* findOrSeedEur();
+            const eur = yield* findOrSeedEur;
             const { account } = yield* seedConnectableAccount({ instrumentId: eur.id });
             yield* seedConnectableAccount({ instrumentId: eur.id, externalId: 'second-erste', rowDaysAgo: [] });
             stubBank();
@@ -247,7 +247,7 @@ describe('enable-banking/connect switch', () => {
                 yield* service.sync();
 
                 expect(enableBankingStub.requests.some(request => request.includes('strategy=longest'))).toBe(false);
-                expect(yield* fetchSortedEnableBankingExternalIds()).toEqual([`${HASH}:after-start`, `${HASH}:recent`]);
+                expect(yield* fetchSortedEnableBankingExternalIds).toEqual([`${HASH}:after-start`, `${HASH}:recent`]);
                 const rowsAfter = yield* fetchAccountRows(account.id);
                 expect(rowsAfter.filter(row => rowsBefore.some(before => before.id === row.id))).toEqual(rowsBefore);
                 expect(yield* fetchAccountBalance(account.id)).toBe(90 * PRECISION);
@@ -316,7 +316,7 @@ describe('enable-banking/connect switch', () => {
 
             yield* service.sync();
 
-            expect(yield* fetchSortedEnableBankingExternalIds()).toEqual([`${HASH}:gap`]);
+            expect(yield* fetchSortedEnableBankingExternalIds).toEqual([`${HASH}:gap`]);
             expect(yield* fetchAccountBalance(account.id)).toBe(90 * PRECISION);
         }).pipe(Effect.provide(TestLayer))
     );
@@ -326,7 +326,7 @@ describe('enable-banking/connect switch', () => {
             const service = yield* EnableBankingSyncService;
             const balanceAdjustmentService = yield* BalanceAdjustmentService;
             const balances = yield* AccountBalanceIncrementalService;
-            const { id: instrumentId } = yield* findOrSeedEur();
+            const { id: instrumentId } = yield* findOrSeedEur;
             const account = yield* seed.account({ instrumentId, type: AccountTypeEnum.BANK, externalId: null, externalSource: null });
             yield* balanceAdjustmentService.create(account.id, 30 * PRECISION, new Date());
             yield* balances.updateBalancesByAccountIds([account.id]);
@@ -337,7 +337,7 @@ describe('enable-banking/connect switch', () => {
             yield* service.sync();
 
             expect(enableBankingStub.requests.some(request => request.includes('strategy=longest'))).toBe(true);
-            expect(yield* fetchSortedEnableBankingExternalIds()).toEqual([`${HASH}:old`]);
+            expect(yield* fetchSortedEnableBankingExternalIds).toEqual([`${HASH}:old`]);
             expect(yield* fetchAccountBalance(account.id)).toBe(50 * PRECISION);
         }).pipe(Effect.provide(TestLayer))
     );
@@ -551,7 +551,7 @@ describe('enable-banking/connect disconnect', () => {
     it.effect('returns a manual account to its type and removes the sync row', () =>
         Effect.gen(function* () {
             const service = yield* EnableBankingSyncService;
-            const eur = yield* findOrSeedEur();
+            const eur = yield* findOrSeedEur;
             const account = yield* seed.account({ instrumentId: eur.id, type: AccountTypeEnum.BANK });
             const manual = yield* seed.manualExpense({ accountId: account.id, amount: 5 * PRECISION, operatedAt: noonDaysAgo(9) });
             const balances = yield* AccountBalanceIncrementalService;
@@ -609,7 +609,7 @@ describe('enable-banking/connect disconnect', () => {
     it.effect('a failed key deletion keeps a continued account connected', () =>
         Effect.gen(function* () {
             const service = yield* EnableBankingSyncService;
-            const account = yield* seedConnectedReadyToDisconnect();
+            const account = yield* seedConnectedReadyToDisconnect;
             testSigner.markUndeletable(ENABLE_BANKING_APPLICATION_ID);
 
             const error = yield* Effect.flip(service.disconnect(yield* requireIntegrationId(TOKEN)));
@@ -623,7 +623,7 @@ describe('enable-banking/connect disconnect', () => {
     it.effect('parks the released bank account in the create flow and lets it reconnect through Connect', () =>
         Effect.gen(function* () {
             const service = yield* EnableBankingSyncService;
-            const account = yield* seedConnectedReadyToDisconnect();
+            const account = yield* seedConnectedReadyToDisconnect;
             yield* service.disconnect(yield* requireIntegrationId(TOKEN));
             enableBankingStub.authorizeSession(
                 'session-again',

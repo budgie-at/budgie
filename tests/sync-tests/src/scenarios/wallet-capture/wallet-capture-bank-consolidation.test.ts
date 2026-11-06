@@ -15,7 +15,7 @@ import * as Effect from 'effect/Effect';
 import { requireInstrument } from '../../harness/db/require-instrument';
 import { buildMonobank } from '../../harness/monobank/build-monobank';
 import { monobankStub } from '../../harness/monobank/monobank-stub';
-import { testDb } from '../../harness/scenario/setup';
+import { testDb } from '../../harness/scenario/test-db';
 import { TestLayer } from '../../harness/scenario/test-runtime';
 import { walletCaptureNativeStub } from '../../harness/wallet-capture/wallet-capture-app-intents.stub';
 import { walletCaptureSeedMonobankAccount } from '../../harness/wallet-capture/wallet-capture-bank-account.harness';

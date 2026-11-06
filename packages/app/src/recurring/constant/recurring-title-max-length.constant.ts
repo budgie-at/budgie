@@ -1,0 +1,1 @@
+export const RECURRING_TITLE_MAX_LENGTH = 80;

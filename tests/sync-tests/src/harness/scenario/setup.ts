@@ -1,8 +1,9 @@
-import { assertStoredBalancesMatchLedger, buildTestDb, resetTestDb } from '@budgie-at/test-kit';
+import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
+import { assertStoredBalancesMatchLedger, resetTestDb } from '@budgie-at/test-kit';
 import * as Effect from 'effect/Effect';
 import { vi, afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
 
-import { emptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { emptyFn, isDefined } from '@rnw-community/shared';
 
 vi.mock('@app/@generic/drizzle/service/database-connection.service', async () => {
     const { FakeDatabaseConnectionService } = await import('../fake/fake-database-connection.service');
@@ -45,11 +46,32 @@ vi.mock('@lingui/core', () => ({
     }
 }));
 
-export const backupDatabasePath = isNotEmptyString(process.env['BUDGIE_BACKUP_DB']) ? process.env['BUDGIE_BACKUP_DB'] : null;
+vi.mock('react-native', async importOriginal => ({
+    ...(await importOriginal<object>()),
+    AppState: (await import('../native/native-module.stub')).appStateStub
+}));
 
-const testDbHandle = await buildTestDb(backupDatabasePath);
+vi.mock('expo-constants', async () => ({ default: (await import('../native/native-module.stub')).expoConstantsStub }));
 
-export const testDb = testDbHandle.database;
+vi.mock('expo-file-system', async importOriginal => ({
+    ...(await importOriginal<object>()),
+    ...(await import('../native/native-module.stub')).expoFileSystemStub
+}));
+
+vi.mock('expo-notifications', async importOriginal => ({
+    ...(await importOriginal<object>()),
+    ...(await import('../native/native-module.stub')).expoNotificationsStub
+}));
+
+vi.mock('expo-secure-store', async importOriginal => ({
+    ...(await importOriginal<object>()),
+    AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY: 0,
+    ...(await import('../native/native-module.stub')).expoSecureStoreStub
+}));
+
+vi.mock('llama.rn', async () => (await import('../native/native-module.stub')).llamaStub);
+
+vi.mock('whisper.rn', async () => (await import('../native/native-module.stub')).whisperStub);
 
 vi.mock('@app/@generic/runtime/app.runtime', async () => {
     const { testAtomRuntime, testRuntime } = await import('./test-runtime');
@@ -65,11 +87,14 @@ vi.mock('expo-app-intents', async () => {
 
 import { enableBankingStub } from '../enable-banking/enable-banking-stub';
 import { testSigner } from '../enable-banking/test-sync-request-signer';
+import { expoConstantsStub } from '../native/native-module.stub';
 import { walletCaptureNativeStub } from '../wallet-capture/wallet-capture-app-intents.stub';
 
 import { mockServer } from './mock-server';
+import { backupDatabasePath, testDb } from './test-db';
 
 beforeAll(() => {
+    appAtomRegistry.reset();
     mockServer.listen({ onUnhandledFrame: 'error' });
 });
 
@@ -77,6 +102,7 @@ beforeEach(() => {
     walletCaptureNativeStub.reset();
     testSigner.reset();
     enableBankingStub.reset();
+    expoConstantsStub.expoConfig.extra.aiEnabled = true;
     if (!isDefined(backupDatabasePath)) {
         return Effect.runPromise(resetTestDb(testDb));
     }
@@ -92,6 +118,4 @@ afterEach(() => {
 
 afterAll(() => {
     mockServer.close();
-
-    return testDbHandle.dispose();
 });

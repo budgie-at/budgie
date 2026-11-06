@@ -1,4 +1,5 @@
 import { SyncErrorCodeEnum } from '@budgie/contracts';
+import * as Schema from 'effect/Schema';
 
 import { BinanceKeyPermissionsError } from '../../binance/error/binance-key-permissions.error';
 import { EnableBankingErrorCodeEnum } from '../../enable-banking/enum/enable-banking-error-code.enum';
@@ -12,35 +13,35 @@ import { SyncUnauthorizedError } from '../error/sync-unauthorized.error';
 const TIMESTAMP_OUTSIDE_WINDOW_API_CODE = -1021;
 
 export const resolveSyncErrorCode = (error: unknown): SyncErrorCodeEnum | null => {
-    if (error instanceof SyncUnauthorizedError) {
+    if (Schema.is(SyncUnauthorizedError)(error)) {
         return SyncErrorCodeEnum.UNAUTHORIZED;
     }
 
-    if (error instanceof SyncConsentExpiredError) {
+    if (Schema.is(SyncConsentExpiredError)(error)) {
         return SyncErrorCodeEnum.CONSENT_EXPIRED;
     }
 
-    if (error instanceof SyncInvalidResponseError && error.apiCode === EnableBankingErrorCodeEnum.ACCOUNT_NOT_LINKED) {
+    if (Schema.is(SyncInvalidResponseError)(error) && error.apiCode === EnableBankingErrorCodeEnum.ACCOUNT_NOT_LINKED) {
         return SyncErrorCodeEnum.ACCOUNT_NOT_LINKED;
     }
 
-    if (error instanceof BinanceKeyPermissionsError) {
+    if (Schema.is(BinanceKeyPermissionsError)(error)) {
         return SyncErrorCodeEnum.KEY_PERMISSIONS;
     }
 
-    if (error instanceof SyncRateLimitedError) {
+    if (Schema.is(SyncRateLimitedError)(error)) {
         return SyncErrorCodeEnum.RATE_LIMITED;
     }
 
-    if (error instanceof SyncRegionUnavailableError) {
+    if (Schema.is(SyncRegionUnavailableError)(error)) {
         return SyncErrorCodeEnum.REGION_UNAVAILABLE;
     }
 
-    if (error instanceof SyncNetworkError) {
+    if (Schema.is(SyncNetworkError)(error)) {
         return SyncErrorCodeEnum.NETWORK;
     }
 
-    if (error instanceof SyncInvalidResponseError && Number(error.apiCode) === TIMESTAMP_OUTSIDE_WINDOW_API_CODE) {
+    if (Schema.is(SyncInvalidResponseError)(error) && Number(error.apiCode) === TIMESTAMP_OUTSIDE_WINDOW_API_CODE) {
         return SyncErrorCodeEnum.CLOCK_SKEW;
     }
 

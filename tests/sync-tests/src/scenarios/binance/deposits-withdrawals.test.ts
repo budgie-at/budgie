@@ -34,7 +34,7 @@ const stubCapitalHistory = (deposits: BinanceDepositApiInterface[], withdrawals:
 
 const expectFeeBearingWithdrawalEntries = () =>
     Effect.gen(function* () {
-        const transactions = yield* fetchBinanceTransactions();
+        const transactions = yield* fetchBinanceTransactions;
         expect(transactions).toHaveLength(1);
         expect(transactions[0].type).toBe(TransactionTypeEnum.EXPENSE);
         const mainEntry = yield* fetchBinanceEntriesByExternalId('wd-1');
@@ -148,14 +148,14 @@ describe('binance/deposits-withdrawals', () => {
             stubDuplicateDeposit();
 
             yield* binanceSyncService.sync();
-            expect(yield* fetchBinanceTransactions()).toHaveLength(1);
+            expect(yield* fetchBinanceTransactions).toHaveLength(1);
 
             resetBinanceSyncForResync();
             yield* testDb.update(SyncEntityTable).set({ forwardSyncFromAt: staleForwardFrom }).where(eq(SyncEntityTable.id, sync.id));
             stubDuplicateDeposit();
             yield* binanceSyncService.sync();
 
-            expect(yield* fetchBinanceTransactions()).toHaveLength(1);
+            expect(yield* fetchBinanceTransactions).toHaveLength(1);
         }).pipe(Effect.provide(TestLayer))
     );
 });

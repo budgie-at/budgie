@@ -13,5 +13,5 @@ export const waitForIdle: Effect.Effect<void> = Effect.suspend(() =>
                   globalThis.cancelIdleCallback(idleHandle);
               });
           })
-        : Effect.sleep(0)
+        : Effect.yieldNow
 );

@@ -1,8 +1,10 @@
 import { AccountRepository, SyncErrorCodeEnum, SyncModeEnum, SyncRepository, SyncStatusEnum, SyncWarningEnum } from '@budgie/contracts';
 import * as Cause from 'effect/Cause';
 import * as Clock from 'effect/Clock';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
-import * as Layer from 'effect/Layer';
+import * as Predicate from 'effect/Predicate';
+import * as Schema from 'effect/Schema';
 import * as Semaphore from 'effect/Semaphore';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -26,17 +28,16 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
     const syncRepository = yield* SyncRepository;
     const accountRepository = yield* AccountRepository;
     const syncIntegrationTokenService = yield* SyncIntegrationTokenService;
-    const rateGate = yield* Effect.provide(PollingSyncRateGate, Layer.fresh(PollingSyncRateGate.layer));
+    const rateGate = yield* PollingSyncRateGate.make;
     const attemptSemaphore = yield* Semaphore.make(1);
     const forwardSyncStaleThresholdMs = definition.forwardSyncStaleThresholdMs ?? 2 * 60 * 1000;
-    const syncErrorThreshold = 3;
     const processedForwardSyncIds = new Set<number>();
     const exhaustedSyncIds = new Set<number>();
     const isNotExhausted = (sync: SyncEntityInterface) => !exhaustedSyncIds.has(sync.id);
     const applyProgressUpdate =
         definition.applyProgressUpdate ??
         ((sync: SyncEntityInterface, result: SyncBatchResultInterface) =>
-            Effect.asVoid(syncRepository.update(sync.id, resolveSyncProgressUpdate(sync, result))));
+            Effect.flatMap(DateTime.nowAsDate, now => syncRepository.update(sync.id, resolveSyncProgressUpdate(sync, result, now))));
     let runDeadlineAtMs = Number.POSITIVE_INFINITY;
     let failedSyncId: number | null = null;
     let nextContinuationAtMs: number | null = null;
@@ -62,7 +63,8 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         let earliestRequestAtMs = Number.POSITIVE_INFINITY;
         const candidates = [...backwardSyncs, ...forwardSyncs.filter(sync => !processedForwardSyncIds.has(sync.id))].filter(isNotExhausted);
         for (const sync of candidates) {
-            const requestAtMs = Math.max(nowMs, yield* rateGate.requestReadyAtMs(yield* resolveSyncToken(sync)));
+            const requestReadyAtMs = yield* Effect.flatMap(resolveSyncToken(sync), syncToken => rateGate.requestReadyAtMs(syncToken));
+            const requestAtMs = Math.max(nowMs, requestReadyAtMs);
             if (requestAtMs < earliestRequestAtMs) {
                 pendingSync = sync;
                 earliestRequestAtMs = requestAtMs;
@@ -124,7 +126,8 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         }
 
         if (isDefined(definition.beforeProcessRun)) {
-            yield* definition.beforeProcessRun([...new Set(yield* Effect.forEach(enabledSyncs, resolveSyncToken))]);
+            const syncTokens = yield* Effect.forEach(enabledSyncs, resolveSyncToken);
+            yield* definition.beforeProcessRun([...new Set(syncTokens)]);
             if (yield* shouldStopProcessing) {
                 return true;
             }
@@ -146,7 +149,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
 
     const retryAfterError = Effect.fnUntraced(function* (enabledSyncs: SyncEntityInterface[], errorMessage: string) {
         const syncToRetry = enabledSyncs.find(sync => sync.id === failedSyncId) ?? enabledSyncs[0];
-        if (!isDefined(syncToRetry) || syncToRetry.errorCount >= syncErrorThreshold) {
+        if (!isDefined(syncToRetry) || syncToRetry.errorCount >= 3) {
             return false;
         }
 
@@ -176,8 +179,9 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         return enabledSyncs.filter(sync => integrationIdByAccountId.get(sync.accountId) === credentialGroupIntegrationId);
     });
 
-    const handleError = Effect.fnUntraced(function* (error: unknown) {
-        if (error instanceof SyncRateLimitedError) {
+    const handleError = Effect.fnUntraced(function* (cause: Cause.Cause<unknown>) {
+        const error = Cause.squash(cause);
+        if (Schema.is(SyncRateLimitedError)(error)) {
             return (yield* shouldYieldAfterBatch(error.retryAfterMs)) ? true : null;
         }
 
@@ -221,9 +225,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
 
         let result: boolean | null = null;
         while (!isDefined(result)) {
-            result = yield* runSyncPass().pipe(
-                Effect.catchCause(cause => (Cause.hasInterruptsOnly(cause) ? Effect.failCause(cause) : handleError(Cause.squash(cause))))
-            );
+            result = yield* Effect.catchCauseIf(runSyncPass(), Predicate.not(Cause.hasInterruptsOnly), handleError);
         }
 
         return result && exhaustedSyncIds.size === 0;
@@ -255,7 +257,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         let continuationAtMs: number | null = firstContinuationAtMs;
         while (isDefined(continuationAtMs)) {
             yield* Effect.sleep(Math.max(0, continuationAtMs - (yield* Clock.currentTimeMillis)));
-            const outcome = yield* syncWorkload.runScheduled(
+            ({ continuationAtMs } = yield* syncWorkload.runScheduled(
                 Effect.gen(function* () {
                     if (yield* syncWorkload.hasQueuedUserWork) {
                         return { continuationAtMs: yield* Clock.currentTimeMillis };
@@ -263,14 +265,12 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
 
                     return yield* attemptSemaphore.withPermit(runSyncAttempt(Number.POSITIVE_INFINITY));
                 })
-            );
-            ({ continuationAtMs } = outcome);
+            ));
         }
     });
 
     const sync = Effect.fn('AbstractPollingSyncService.sync')(function* (deadlineAtMs: number = Number.POSITIVE_INFINITY) {
-        const outcome = yield* attemptSemaphore.withPermit(runSyncAttempt(deadlineAtMs));
-        const { continuationAtMs } = outcome;
+        const { result, continuationAtMs } = yield* attemptSemaphore.withPermit(runSyncAttempt(deadlineAtMs));
         if (isDefined<number>(continuationAtMs)) {
             yield* syncWorkload.schedule(
                 `sync:${definition.provider}`,
@@ -278,7 +278,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
             );
         }
 
-        return outcome.result;
+        return result;
     });
 
     const requestSync = Effect.fnUntraced(function* () {

@@ -198,7 +198,7 @@ export class DrainerService<E> {
 
             return;
         }
-        const message = getRootErrorMessage(Cause.squash(exit.cause));
+        const message = exit.cause.pipe(Cause.squash, getRootErrorMessage);
         if (DrainerService.SQLITE_BUSY_PATTERN.test(message)) {
             return;
         }

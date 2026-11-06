@@ -56,7 +56,8 @@ export class Workload extends Context.Service<
                 SubscriptionRef.make<ReadonlySet<Fiber.Fiber<unknown, unknown>>>(new Set()),
                 SubscriptionRef.make(0)
             ]);
-            const runBackground = yield* FiberSet.runtime(yield* FiberSet.make())<Db | HttpClient.HttpClient>();
+            const backgroundFiberSet = yield* FiberSet.make();
+            const runBackground = yield* FiberSet.runtime(backgroundFiberSet)<Db | HttpClient.HttpClient>();
             const scheduled = yield* FiberMap.make<string>();
             const scheduledBackground = yield* FiberMap.make<string>();
             const backgroundSchedulingAllowed = yield* Latch.make(true);
@@ -72,8 +73,10 @@ export class Workload extends Context.Service<
                     interruptTokens(tokens)
                 )
             );
-            const awaitUserLaneClaimed = Stream.runDrain(
-                Stream.takeUntil(SubscriptionRef.changes(queuedUser), fibers => fibers.size === 0)
+            const awaitUserLaneClaimed = queuedUser.pipe(
+                SubscriptionRef.changes,
+                Stream.takeUntil(fibers => fibers.size === 0),
+                Stream.runDrain
             );
             const interruptBackground = Effect.andThen(
                 backgroundSchedulingAllowed.close,
@@ -144,13 +147,21 @@ export class Workload extends Context.Service<
                 runScheduled: effect => runInLane(Effect.provideService(effect, Workload, workload), Effect.void),
                 hasQueuedWork: Effect.map(Ref.get(laneCount), count => count > 1),
                 hasQueuedUserWork: Effect.map(SubscriptionRef.get(queuedUser), fibers => fibers.size > 0),
-                awaitQueuedUserWork: Stream.runDrain(Stream.takeUntil(SubscriptionRef.changes(queuedUser), fibers => fibers.size > 0)),
+                awaitQueuedUserWork: queuedUser.pipe(
+                    SubscriptionRef.changes,
+                    Stream.takeUntil(fibers => fibers.size > 0),
+                    Stream.runDrain
+                ),
                 interruptBackground,
                 awaitBackgroundAllowed: backgroundSchedulingAllowed.await,
                 block: Effect.andThen(Ref.set(isBlocked, true), interruptBackground),
                 unblock: Ref.set(isBlocked, false),
                 foregroundCount,
-                awaitForegroundIdle: Stream.runDrain(Stream.takeUntil(SubscriptionRef.changes(foregroundCount), count => count === 0)),
+                awaitForegroundIdle: foregroundCount.pipe(
+                    SubscriptionRef.changes,
+                    Stream.takeUntil(count => count === 0),
+                    Stream.runDrain
+                ),
                 schedule: (key, effect, options) =>
                     Effect.sync(() => {
                         runScheduled(key, Effect.provideService(effect, Workload, workload), { onlyIfMissing: options?.replace !== true });

@@ -12,4 +12,4 @@ const eventBudgetAtom = databaseQueryFamily([BudgetEntityTable], BudgetRepositor
 );
 
 export const useGetEventBudgetQuery = (id: number): BudgetQueryResultInterface =>
-    resolveBudgetQueryResult(useLiveAtomValue(eventBudgetAtom(id)));
+    eventBudgetAtom(id).pipe(useLiveAtomValue, resolveBudgetQueryResult);

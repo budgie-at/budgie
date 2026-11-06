@@ -31,7 +31,7 @@ describe('enable-banking/pagination', () => {
 
             yield* service.sync();
 
-            expect(yield* fetchSortedEnableBankingExternalIds()).toEqual([`${HASH}:first`, `${HASH}:second`]);
+            expect(yield* fetchSortedEnableBankingExternalIds).toEqual([`${HASH}:first`, `${HASH}:second`]);
             expect(enableBankingStub.expectSignedJwts()).toBe(true);
         }).pipe(Effect.provide(TestLayer))
     );

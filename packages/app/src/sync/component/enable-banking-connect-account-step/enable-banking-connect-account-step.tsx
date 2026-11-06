@@ -45,18 +45,19 @@ export const EnableBankingConnectAccountStep = ({ authorization, choices }: Prop
 
         void run(
             Effect.flatMap(EnableBankingSyncService, service => service.connectAccount(choices.accountId, token, bankAccount)).pipe(
-                Effect.tap(startAt =>
-                    Effect.sync(() => {
-                        const startDay = isDefined(startAt)
-                            ? formatMonthAndDay(new Date(startAt.getUTCFullYear(), startAt.getUTCMonth(), startAt.getUTCDate()))
-                            : null;
+                Effect.tap(startAt => {
+                    const startDay = isDefined(startAt)
+                        ? formatMonthAndDay(new Date(startAt.getUTCFullYear(), startAt.getUTCMonth(), startAt.getUTCDate()))
+                        : null;
+
+                    return Effect.sync(() => {
                         Toast.show({
                             type: 'success',
                             text1: isDefined(startDay) ? t`Syncing from ${startDay}` : t`Importing your bank history`
                         });
                         router.dismissTo(accountHref);
-                    })
-                ),
+                    });
+                }),
                 toastOnFailure(t`Could not connect the bank`)
             )
         );

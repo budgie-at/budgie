@@ -107,42 +107,6 @@ const MONTH_NAMES: Record<LanguageEnum, readonly string[]> = {
         'DEC'
     ],
     [LanguageEnum.UK]: [
-        'СІЧЕНЬ',
-        'СІЧНЯ',
-        'СІЧ',
-        'ЛЮТИЙ',
-        'ЛЮТОГО',
-        'ЛЮТ',
-        'БЕРЕЗЕНЬ',
-        'БЕРЕЗНЯ',
-        'БЕР',
-        'КВІТЕНЬ',
-        'КВІТНЯ',
-        'КВІТ',
-        'ТРАВЕНЬ',
-        'ТРАВНЯ',
-        'ТРАВ',
-        'ЧЕРВЕНЬ',
-        'ЧЕРВНЯ',
-        'ЧЕРВ',
-        'ЛИПЕНЬ',
-        'ЛИПНЯ',
-        'ЛИП',
-        'СЕРПЕНЬ',
-        'СЕРПНЯ',
-        'СЕРП',
-        'ВЕРЕСЕНЬ',
-        'ВЕРЕСНЯ',
-        'ВЕР',
-        'ЖОВТЕНЬ',
-        'ЖОВТНЯ',
-        'ЖОВТ',
-        'ЛИСТОПАД',
-        'ЛИСТОПАДА',
-        'ЛИСТ',
-        'ГРУДЕНЬ',
-        'ГРУДНЯ',
-        'ГРУД',
         'SICHEN',
         'SICHNIA',
         'SICHNYA',
@@ -178,7 +142,16 @@ const MONTH_NAMES: Record<LanguageEnum, readonly string[]> = {
         'LYSTOPADA',
         'HRUDEN',
         'HRUDNIA',
-        'HRUDNYA'
+        'HRUDNYA',
+        'SICH',
+        'LIUT',
+        'KVIT',
+        'TRAV',
+        'CHERV',
+        'SERP',
+        'ZHOVT',
+        'LYST',
+        'HRUD'
     ]
 };
 const MONTH_TOKENS = new Set(
@@ -186,12 +159,55 @@ const MONTH_TOKENS = new Set(
         .flat()
         .map(name => name.normalize('NFKD').replaceAll(/\p{M}/gu, '').toUpperCase())
 );
+const PAYMENT_PROCESSOR_PREFIX_PATTERN = /^\s*(?:PAYPAL\s*\*|PP\s*\*|SQ\s*\*|SQU\s*\*|GOOGLE\s*\*|SUMUP\s*\*|ZETTLE_\s*\*?|IZ\s*\*)\s*/iu;
+const CYRILLIC_LETTER_PATTERN = /[А-ЯЁЇІЄҐ]/gu;
+const CYRILLIC_TO_LATIN: ReadonlyMap<string, string> = new Map([
+    ['А', 'A'],
+    ['Б', 'B'],
+    ['В', 'V'],
+    ['Г', 'H'],
+    ['Ґ', 'G'],
+    ['Д', 'D'],
+    ['Е', 'E'],
+    ['Ё', 'IO'],
+    ['Є', 'IE'],
+    ['Ж', 'ZH'],
+    ['З', 'Z'],
+    ['И', 'Y'],
+    ['І', 'I'],
+    ['Ї', 'I'],
+    ['Й', 'I'],
+    ['К', 'K'],
+    ['Л', 'L'],
+    ['М', 'M'],
+    ['Н', 'N'],
+    ['О', 'O'],
+    ['П', 'P'],
+    ['Р', 'R'],
+    ['С', 'S'],
+    ['Т', 'T'],
+    ['У', 'U'],
+    ['Ф', 'F'],
+    ['Х', 'KH'],
+    ['Ц', 'TS'],
+    ['Ч', 'CH'],
+    ['Ш', 'SH'],
+    ['Щ', 'SHCH'],
+    ['Ъ', ''],
+    ['Ы', 'Y'],
+    ['Ь', ''],
+    ['Э', 'E'],
+    ['Ю', 'IU'],
+    ['Я', 'IA']
+]);
 
 export const normalizeRecurringDescription = (description: string): string =>
     description
+        .replace(PAYMENT_PROCESSOR_PREFIX_PATTERN, '')
+        .toUpperCase()
+        .replaceAll(CYRILLIC_LETTER_PATTERN, letter => CYRILLIC_TO_LATIN.get(letter) ?? letter)
         .normalize('NFKD')
         .replaceAll(/\p{M}/gu, '')
-        .toUpperCase()
         .replace(/\b(?:MDID|UID|MREF|MLREF|IBAN|RECHNUNGSNR|BRUTTO)\b.*$/u, '')
         .replaceAll(/[\p{N}]+/gu, ' ')
         .split(/[^\p{L}]+/u)

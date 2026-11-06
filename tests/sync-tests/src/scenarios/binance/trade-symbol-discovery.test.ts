@@ -30,7 +30,7 @@ describe('binance/trade-symbol-discovery', () => {
 
             yield* binanceSyncService.sync();
 
-            expect(yield* fetchSortedBinanceExternalIds()).toEqual(['binance:trade:BTCEUR:31', 'fiat-dep-eur']);
+            expect(yield* fetchSortedBinanceExternalIds).toEqual(['binance:trade:BTCEUR:31', 'fiat-dep-eur']);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -46,7 +46,7 @@ describe('binance/trade-symbol-discovery', () => {
 
             yield* binanceSyncService.sync();
 
-            expect(yield* fetchSortedBinanceExternalIds()).toEqual(['binance:trade:BTCBUSD:32']);
+            expect(yield* fetchSortedBinanceExternalIds).toEqual(['binance:trade:BTCBUSD:32']);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -65,7 +65,7 @@ describe('binance/trade-symbol-discovery', () => {
 
             yield* binanceSyncService.sync();
 
-            expect(yield* fetchSortedBinanceExternalIds()).toEqual(['binance:trade:ETHUSDC:33']);
+            expect(yield* fetchSortedBinanceExternalIds).toEqual(['binance:trade:ETHUSDC:33']);
         }).pipe(Effect.provide(TestLayer))
     );
 

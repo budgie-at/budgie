@@ -2,7 +2,7 @@
 
 Budgie checks TypeScript with exactly pinned `tsrs@0.18.0-ts7.1.0-dev.20260929` on supported hosts. This matches ToolSense/frontend migration `d57e4fc864d6658aad0872ec6a9497eef1402ede` (PR 28697). Both the npm registry and upstream release notes still identify 0.18 as the published latest; 0.19 is a source candidate.
 
-The installed binary reports TypeScript `7.1.0-dev.20260930.4`, upstream commit `b85298b6a81f`. Native declaration builds remain on `@typescript/native` (`npm:typescript@7.0.2`). These compiler/library versions intentionally differ; passing Budgie diagnostics does not establish universal compiler conformance. TypeScript 6.0.2 and `@effect/language-service@0.87.5` retain the separate `effect:check` gate and all 21 configured Effect error rules. Promise lint rules cannot detect discarded lazy Effects.
+The installed binary reports TypeScript `7.1.0-dev.20260930.4`, upstream commit `b85298b6a81f`. Native declaration builds remain on `@typescript/native` (`npm:typescript@7.0.2`). These compiler/library versions intentionally differ; passing Budgie diagnostics does not establish universal compiler conformance. Effect diagnostics have since moved into `pnpm lint`: `@effect/tsgo` runs the Effect rules inside Oxlint on tsrs, replacing the former `effect:check` gate. Promise lint rules cannot detect discarded lazy Effects.
 
 ## Coverage, builds, and CI
 

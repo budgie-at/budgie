@@ -56,7 +56,7 @@ export class OnboardingService extends Context.Service<OnboardingService>()('@bu
         return {
             initializeLocale: Effect.fn('OnboardingService.initializeLocale')(function* () {
                 const { onboardingStep, isOnboardingCompleted } = yield* settingsRepository.getSettings();
-                const [{ count }] = yield* accountRepository.count();
+                const [{ count }] = yield* accountRepository.count;
 
                 if (isOnboardingCompleted || isPositiveNumber(onboardingStep) || isPositiveNumber(count)) {
                     return;
@@ -72,7 +72,7 @@ export class OnboardingService extends Context.Service<OnboardingService>()('@bu
             ) {
                 const { defaultInstrumentId } = yield* settingsRepository.getSettings();
                 const instrumentId = defaultInstrumentId ?? DEFAULT_INSTRUMENT.id;
-                const existingAccounts = yield* accountRepository.getAllActiveAccounts();
+                const existingAccounts = yield* accountRepository.getAllActiveAccounts;
                 const existingTypes = new Set(existingAccounts.map(existingAccount => existingAccount.type));
                 const accountsToCreate = accounts.filter(account => !existingTypes.has(account.type));
 
@@ -88,7 +88,7 @@ export class OnboardingService extends Context.Service<OnboardingService>()('@bu
                         }
                     )
                 ),
-            complete: () => Db.transaction(settingsRepository.update({ isOnboardingCompleted: true }))
+            complete: Db.transaction(settingsRepository.update({ isOnboardingCompleted: true }))
         };
     })
 }) {

@@ -1,0 +1,51 @@
+import { convertFromMicroUnits } from '@budgie/contracts';
+import { Text, View } from 'react-native';
+
+import { isDefined } from '@rnw-community/shared';
+
+import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
+import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
+import { useGetTransactionByIdQuery } from '../../../transaction/query/use-get-transaction-by-id.query';
+import { getTransactionDisplayTitle } from '../../../transaction/utils/get-transaction-display-title.util';
+import { getTransactionInfoPrimaryEntry } from '../../../transaction/utils/get-transaction-info-primary-entry.util';
+import { getTransactionPrimaryAmount } from '../../../transaction/utils/get-transaction-primary-amount.util';
+import { RecurringMerchantTile } from '../recurring-merchant-tile/recurring-merchant-tile';
+
+interface Props {
+    readonly transactionId: number;
+}
+
+const continuousCorners = { borderCurve: 'continuous' as const };
+
+export const MakeRecurringSourceRow = ({ transactionId }: Props) => {
+    const { transaction } = useGetTransactionByIdQuery(transactionId);
+    const protectAmount = useProtectedAmountLabel();
+    const { formatMonthAndDayAndOptionalYear } = useFormatDate();
+    const primaryEntry = isDefined(transaction) ? getTransactionInfoPrimaryEntry(transaction) : null;
+
+    if (!isDefined(transaction) || !isDefined(primaryEntry)) {
+        return null;
+    }
+
+    const title = getTransactionDisplayTitle(transaction);
+    const amountInMicroUnits = getTransactionPrimaryAmount(transaction);
+    const amount = protectAmount(Math.abs(convertFromMicroUnits(amountInMicroUnits)), primaryEntry.account.instrument.symbol);
+    const subtitle = `${formatMonthAndDayAndOptionalYear(transaction.operatedAt)} · ${primaryEntry.account.title}`;
+
+    return (
+        <View className="flex-row items-center gap-x-xl rounded-3xl bg-surface-row px-3xl py-xl" style={continuousCorners}>
+            <RecurringMerchantTile title={title} size={40} />
+            <View className="min-w-0 flex-1 gap-y-xxs">
+                <Text dynamicTypeRamp="headline" className="text-[16px] font-semibold text-primary" numberOfLines={1}>
+                    {title}
+                </Text>
+                <Text dynamicTypeRamp="footnote" className="text-[13px] text-secondary-foreground" numberOfLines={1}>
+                    {subtitle}
+                </Text>
+            </View>
+            <Text dynamicTypeRamp="headline" className="shrink-0 text-[16px] font-semibold text-primary tabular-nums">
+                {amount}
+            </Text>
+        </View>
+    );
+};

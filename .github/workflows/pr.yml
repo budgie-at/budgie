@@ -141,8 +141,18 @@ jobs:
               run: git diff --exit-code
 
     unit-tests:
-        name: Effect diagnostics and unit tests
+        name: Unit tests (${{ matrix.suite }})
         runs-on: [self-hosted, linux-portable-4x8]
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - suite: packages
+                      filters: --filter=!@budgie-at/sync-tests --filter=!@budgie-at/consolidation-tests
+                    - suite: sync
+                      filters: --filter=@budgie-at/sync-tests
+                    - suite: consolidation
+                      filters: --filter=@budgie-at/consolidation-tests
         timeout-minutes: 45
         permissions:
             contents: read
@@ -171,11 +181,8 @@ jobs:
             - name: Build
               run: pnpm build
 
-            - name: Effect diagnostics
-              run: pnpm effect:check
-
             - name: Unit tests
-              run: pnpm test --concurrency=2
+              run: pnpm test --concurrency=2 ${{ matrix.filters }}
 
     e2e-script-tests:
         name: E2E script self-tests

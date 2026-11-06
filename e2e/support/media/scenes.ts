@@ -152,6 +152,7 @@ async function openDateFilter(ctx: Ctx): Promise<void> {
 async function openRecurringCalendar(ctx: Ctx): Promise<void> {
     await t.navigateToTransactions(ctx);
     await b.tapId(ctx, 'TransactionsPage.Tab.Recurring');
+    await b.tapId(ctx, 'RecurringPane.CalendarModeButton');
     await b.expectId(ctx, 'RecurringCalendar.Container', 15_000);
 }
 

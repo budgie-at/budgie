@@ -6,6 +6,8 @@ import { RecurringAlertEnum } from '../src/enum/recurring-alert.enum';
 import { projectRecurringMonth } from '../src/series/recurring-projection';
 import { detectRecurringSeries } from '../src/series/recurring-series';
 
+import { buildReadModels } from './test-models';
+
 import type { RecurringChargeInterface } from '../src/interface/recurring-charge.interface';
 
 const charge = (day: number, title = 'NETFLIX', nativeAmount = 12, kind = RecurringSeriesKindEnum.EXPENSE): RecurringChargeInterface => ({
@@ -24,13 +26,13 @@ const charge = (day: number, title = 'NETFLIX', nativeAmount = 12, kind = Recurr
     categoryIcon: null
 });
 
-const calendarFromCharges = (charges: readonly RecurringChargeInterface[], now: Date) =>
+const calendarFromCharges = (
+    charges: readonly RecurringChargeInterface[],
+    now: Date,
+    userState: RecurringSeriesUserStateEnum = RecurringSeriesUserStateEnum.SUGGESTED
+) =>
     projectRecurringMonth(
-        detectRecurringSeries(charges).map((item, index) => ({
-            ...item,
-            seriesId: index + 1,
-            userState: RecurringSeriesUserStateEnum.SUGGESTED
-        })),
+        buildReadModels(detectRecurringSeries(charges), charges, userState),
         now.getFullYear(),
         now.getMonth(),
         now,
@@ -51,11 +53,20 @@ it.effect('omits income from a mixed recurring day and expense totals', () =>
 
 it.effect('omits a previously tracked income series from projection', () =>
     Effect.sync(() => {
-        const [expense] = detectRecurringSeries([5, 36, 64, 95].map(day => charge(day)));
+        const charges = [5, 36, 64, 95].map(day => charge(day));
+        const [expense] = buildReadModels(detectRecurringSeries(charges), charges);
         const data = projectRecurringMonth(
             [
-                { ...expense, seriesId: 1, userState: RecurringSeriesUserStateEnum.SUGGESTED },
-                { ...expense, kind: RecurringSeriesKindEnum.INCOME, seriesId: 2, userState: RecurringSeriesUserStateEnum.CONFIRMED }
+                expense,
+                {
+                    ...expense,
+                    series: {
+                        ...expense.series,
+                        id: 2,
+                        kind: RecurringSeriesKindEnum.INCOME,
+                        userState: RecurringSeriesUserStateEnum.CONFIRMED
+                    }
+                }
             ],
             2026,
             4,
@@ -67,24 +78,24 @@ it.effect('omits a previously tracked income series from projection', () =>
     })
 );
 
-it.effect('excludes overdue expense forecasts from the monthly headline', () =>
+it.effect('includes overdue expense forecasts from the monthly headline', () =>
     Effect.sync(() => {
         const data = calendarFromCharges(
             [5, 36, 64, 95].map(day => charge(day)),
             new Date(2026, 4, 12)
         );
         expect(data.forecastedEntriesByDay.get(5)?.[0].alert).toBe(RecurringAlertEnum.OVERDUE);
-        expect(data.forecastedTotalAmount).toBe(0);
+        expect(data.forecastedTotalAmount).toBe(12);
     })
 );
 
-it.effect('counts a due-today forecast and excludes yesterday during the overdue grace', () =>
+it.effect("counts a due-today forecast and keeps yesterday's in-grace forecast in the total", () =>
     Effect.sync(() => {
         const charges = [5, 36, 64, 95].map(day => charge(day));
         const today = calendarFromCharges(charges, new Date(2026, 4, 5, 12));
         const yesterday = calendarFromCharges(charges, new Date(2026, 4, 6, 12));
         expect(today.forecastedTotalAmount).toBe(12);
-        expect(yesterday.forecastedTotalAmount).toBe(0);
+        expect(yesterday.forecastedTotalAmount).toBe(12);
         expect(yesterday.forecastedEntriesByDay.get(5)?.[0].alert).toBeNull();
     })
 );
@@ -147,7 +158,8 @@ it.effect('preserves a genuine monthly day28 anchor', () =>
     Effect.sync(() => {
         const data = calendarFromCharges(
             [0, 1, 2].map(month => ({ ...charge(28), operatedAt: new Date(2025, month, month === 0 ? 31 : 28) })),
-            new Date(2025, 3, 1)
+            new Date(2025, 3, 1),
+            RecurringSeriesUserStateEnum.CONFIRMED
         );
         expect([...data.forecastedEntriesByDay.keys()]).toEqual([28]);
     })
@@ -155,11 +167,12 @@ it.effect('preserves a genuine monthly day28 anchor', () =>
 
 it.effect('preserves an annual leap-day anchor', () =>
     Effect.sync(() => {
-        const series = detectRecurringSeries(
-            [2023, 2024, 2025].map(year => ({ ...charge(28), operatedAt: new Date(year, 1, year === 2024 ? 29 : 28) }))
-        );
+        const charges = [2023, 2024, 2025].map(year => ({
+            ...charge(year),
+            operatedAt: new Date(year, 1, year === 2024 ? 29 : 28)
+        }));
         const data = projectRecurringMonth(
-            series.map(item => ({ ...item, seriesId: 1, userState: RecurringSeriesUserStateEnum.CONFIRMED })),
+            buildReadModels(detectRecurringSeries(charges), charges, RecurringSeriesUserStateEnum.CONFIRMED),
             2028,
             1,
             new Date(2025, 1, 28),
@@ -189,11 +202,9 @@ it.effect('projects weekly and biweekly dates across Vienna daylight saving time
                 [2, 9, 16, 23, 30]
             ]
         ] as const) {
-            const series = detectRecurringSeries(
-                dates.map(([year, month, day]) => ({ ...charge(day), operatedAt: new Date(year, month, day) }))
-            );
+            const charges = dates.map(([year, month, day]) => ({ ...charge(day), operatedAt: new Date(year, month, day) }));
             const data = projectRecurringMonth(
-                series.map(item => ({ ...item, seriesId: 1, userState: RecurringSeriesUserStateEnum.CONFIRMED })),
+                buildReadModels(detectRecurringSeries(charges), charges, RecurringSeriesUserStateEnum.CONFIRMED),
                 2025,
                 10,
                 new Date(2025, 9, 19),

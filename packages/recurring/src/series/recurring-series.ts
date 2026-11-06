@@ -1,33 +1,35 @@
 import { addDays } from 'date-fns/addDays';
 import { addMonths } from 'date-fns/addMonths';
 import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
+import * as Arr from 'effect/Array';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { RECURRING_AMOUNT_RATIO } from '../constant/recurring-amount-ratio.constant';
+import { CADENCES } from '../constant/recurring-cadences.constant';
 import { normalizeRecurringDescription } from '../utils/normalize-recurring-description.util';
+
+import { continueRecurringSeries } from './recurring-continuation';
 
 import type { RecurringCadenceInterface } from '../interface/recurring-cadence.interface';
 import type { RecurringChargeInterface } from '../interface/recurring-charge.interface';
 import type { RecurringSeriesEventInterface } from '../interface/recurring-series-event.interface';
 import type { RecurringSeriesInterface } from '../interface/recurring-series.interface';
 
-export const DAY_MS = 86_400_000;
-export const DAYS_PER_MONTH = 30.44;
+const LEGACY_STOP_TOKENS = new Set('GMBH AG KG CO INC LTD LLC OG ФОП ТОВ ПП ПАТ АТ ВІД'.split(' '));
+const IDENTITY_TOKEN_SEPARATOR = /[^\p{L}\p{N}]+/u;
+const DISPLAY_TOKEN_SEPARATOR = /(?:[^\p{L}\p{N}'’]|(?<![\p{L}\p{N}])['’]|['’](?![\p{L}\p{N}]))+/u;
+
+const cleanDescriptionTokens = (text: string, referenceTail: RegExp, numericToken: RegExp, separator: RegExp): string[] =>
+    text
+        .replace(referenceTail, '')
+        .replaceAll(/\bGES\.?\s*M\.?\s*B\.?\s*H\.?/giu, ' ')
+        .split(separator)
+        .filter(token => isNotEmptyString(token) && !numericToken.test(token) && !LEGACY_STOP_TOKENS.has(token.toUpperCase()));
 const RECENT_INTERVAL_COUNT = 4;
 const RECENT_AMOUNT_COUNT = 3;
-const PRICE_CHANGE_RATIO = 0.05;
-const ACTIVE_PERIOD_RATIO = 1.5;
-const CADENCES: readonly RecurringCadenceInterface[] = [
-    { periodMonths: null, periodDays: 7, toleranceDays: 1 },
-    { periodMonths: null, periodDays: 14, toleranceDays: 2 },
-    { periodMonths: 1, periodDays: DAYS_PER_MONTH, toleranceDays: 4 },
-    { periodMonths: 2, periodDays: DAYS_PER_MONTH * 2, toleranceDays: 7 },
-    { periodMonths: 3, periodDays: DAYS_PER_MONTH * 3, toleranceDays: 8 },
-    { periodMonths: 6, periodDays: DAYS_PER_MONTH * 6, toleranceDays: 10 },
-    { periodMonths: 12, periodDays: DAYS_PER_MONTH * 12, toleranceDays: 10 }
-];
-const LEGACY_STOP_TOKENS = new Set('GMBH AG KG CO INC LTD LLC OG ФОП ТОВ ПП ПАТ АТ ВІД'.split(' '));
+export const PRICE_CHANGE_RATIO = 0.05;
+export const ACTIVE_PERIOD_RATIO = 1.5;
 
 const median = (values: readonly number[]): number => {
     const sorted = [...values].sort((first, second) => first - second);
@@ -36,31 +38,29 @@ const median = (values: readonly number[]): number => {
     return sorted.length % 2 === 1 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
 };
 
-export const monthIndex = (timestamp: number): number => {
+const monthIndex = (timestamp: number): number => {
     const date = new Date(timestamp);
 
     return date.getFullYear() * 12 + date.getMonth();
 };
 
-const description = (charge: RecurringChargeInterface): string => (isNotEmptyString(charge.title) ? charge.title : charge.comment);
+export const description = (charge: RecurringChargeInterface): string => (isNotEmptyString(charge.title) ? charge.title : charge.comment);
 
-const counterpartyKey = (charge: RecurringChargeInterface): string =>
+export const counterpartyKey = (charge: RecurringChargeInterface): string =>
     isNotEmptyString(charge.counterpartyIban)
         ? charge.counterpartyIban.replaceAll(/\s/gu, '').toUpperCase()
         : normalizeRecurringDescription(description(charge));
 
-const identity = (charge: RecurringChargeInterface): string =>
+export const identity = (charge: RecurringChargeInterface): string =>
     isNotEmptyString(counterpartyKey(charge)) ? `${charge.kind}|${charge.instrumentId}|${counterpartyKey(charge)}` : '';
 
-const cleanTokens = (charge: RecurringChargeInterface, referenceTail: RegExp, numericToken: RegExp): string[] =>
-    description(charge)
-        .replace(referenceTail, '')
-        .replaceAll(/\bGES\.?\s*M\.?\s*B\.?\s*H\.?/giu, ' ')
-        .split(/[^\p{L}\p{N}]+/u)
-        .filter(token => isNotEmptyString(token) && !numericToken.test(token) && !LEGACY_STOP_TOKENS.has(token.toUpperCase()));
-
 export const legacyLabel = (charge: RecurringChargeInterface): string =>
-    cleanTokens(charge, /(MDID|UID|MREF|MLREF|IBAN|RECHNUNGSNR|BRUTTO).*$/iu, /^\d+$|\d{3,}/u)
+    cleanDescriptionTokens(
+        description(charge),
+        /(MDID|UID|MREF|MLREF|IBAN|RECHNUNGSNR|BRUTTO).*$/iu,
+        /^\d+$|\d{3,}/u,
+        IDENTITY_TOKEN_SEPARATOR
+    )
         .join(' ')
         .toUpperCase();
 
@@ -75,7 +75,6 @@ const toEvents = (charges: readonly RecurringChargeInterface[]): RecurringSeries
             events.push({
                 timestamp,
                 nativeAmount: charge.nativeAmount,
-                amount: charge.defaultAmount,
                 transactionId: charge.transactionId
             });
         }
@@ -205,7 +204,12 @@ const buildSeries = (charges: readonly RecurringChargeInterface[], variable = fa
             (priceChangeIndex > 0 ? events.slice(priceChangeIndex) : events.slice(-RECENT_AMOUNT_COUNT)).map(event => event.nativeAmount)
         )
     );
-    const displayTokens = cleanTokens(latest, /\b(?:MDID|UID|MREF|MLREF|IBAN|RECHNUNGSNR|BRUTTO)\b.*$/iu, /^\d+$|\d{6,}/u).slice(0, 3);
+    const displayTokens = cleanDescriptionTokens(
+        description(latest),
+        /\b(?:MDID|UID|MREF|MLREF|IBAN|RECHNUNGSNR|BRUTTO)\b.*$/iu,
+        /^\d+$|\d{6,}/u,
+        DISPLAY_TOKEN_SEPARATOR
+    ).slice(0, 3);
 
     return {
         kind: latest.kind,
@@ -215,13 +219,8 @@ const buildSeries = (charges: readonly RecurringChargeInterface[], variable = fa
         labels: [...new Set([identity(latest), normalizeRecurringDescription(description(latest)), ...charges.map(legacyLabel)])],
         title: isNotEmptyArray(displayTokens) ? displayTokens.join(' ') : description(latest).trim().split(/\s+/u).slice(0, 3).join(' '),
         categoryId: latest.categoryId,
-        categoryTitle: latest.categoryTitle,
-        categoryIcon: latest.categoryIcon,
-        accountId: latest.accountId,
         ...cadence,
         anchorTimestamp: latestEvent.timestamp,
-        predictedAmount: Math.round((nativeAmount * latestEvent.amount) / latestEvent.nativeAmount),
-        priceChangedAt: priceChangeIndex > 0 ? events[priceChangeIndex].timestamp : null,
         events
     };
 };
@@ -247,21 +246,7 @@ const detectMerchantSeries = (charges: readonly RecurringChargeInterface[]): Rec
         })
         .filter(isDefined);
     const latestTimestamp = Math.max(...charges.map(charge => charge.operatedAt.getTime()));
-    const currentFixed = fixed
-        .filter(series => isSeriesActive(series, new Date(latestTimestamp)))
-        .map(series => {
-            const previous = fixed.find(
-                candidate =>
-                    candidate.anchorTimestamp < series.events[0].timestamp &&
-                    candidate.periodMonths === series.periodMonths &&
-                    candidate.periodDays === series.periodDays &&
-                    Math.abs(candidate.nativeAmount - series.nativeAmount) > candidate.nativeAmount * PRICE_CHANGE_RATIO &&
-                    differenceInCalendarDays(new Date(series.events[0].timestamp), new Date(candidate.anchorTimestamp)) <=
-                        series.periodDays * ACTIVE_PERIOD_RATIO
-            );
-
-            return isDefined(previous) ? { ...series, priceChangedAt: series.events[0].timestamp } : series;
-        });
+    const currentFixed = fixed.filter(series => isSeriesActive(series, new Date(latestTimestamp)));
 
     return isNotEmptyArray(currentFixed) || isStableAmount(toEvents(charges))
         ? currentFixed
@@ -269,17 +254,11 @@ const detectMerchantSeries = (charges: readonly RecurringChargeInterface[]): Rec
 };
 
 export const detectRecurringSeries = (charges: readonly RecurringChargeInterface[]): RecurringSeriesInterface[] => {
-    const groups = new Map<string, RecurringChargeInterface[]>();
-    for (const charge of charges) {
-        const key = identity(charge);
-        if (isNotEmptyString(key)) {
-            const group = groups.get(key) ?? [];
-            group.push(charge);
-            groups.set(key, group);
-        }
-    }
-
-    return [...groups.values()].flatMap(group => {
+    const groups = Arr.groupBy(
+        charges.filter(charge => isNotEmptyString(identity(charge))),
+        identity
+    );
+    const detected = Object.values(groups).flatMap(group => {
         const series = detectMerchantSeries(group);
 
         return series.filter(
@@ -296,4 +275,6 @@ export const detectRecurringSeries = (charges: readonly RecurringChargeInterface
                     ))
         );
     });
+
+    return continueRecurringSeries(detected);
 };

@@ -114,7 +114,7 @@ const setupBackfillFixture = (needsBtcAccount: boolean) =>
         return fixture;
     });
 
-const countTransactions = () => Effect.map(fetchBinanceTransactions(), transactions => transactions.length);
+const countTransactions = () => Effect.map(fetchBinanceTransactions, transactions => transactions.length);
 
 describe('binance/history-backfill', () => {
     it.effect.each(SOURCES)('completes a $name backfill split across several deferred runs', source =>

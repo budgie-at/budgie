@@ -1,311 +1,446 @@
 import {
     Db,
+    RecurringMatchSourceEnum,
     RecurringSeriesKindEnum,
+    RecurringSeriesSourceEnum,
     RecurringSeriesStatusEnum,
     RecurringSeriesUserStateEnum,
     SettingsRepository
 } from '@budgie/contracts';
-import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
 import { startOfDay } from 'date-fns/startOfDay';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
-import * as Ref from 'effect/Ref';
-import * as Semaphore from 'effect/Semaphore';
+import * as Option from 'effect/Option';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { RECURRING_TRACKED_KINDS } from '../constant/recurring-tracked-kinds.constant';
+import { RecurringSeriesNotFoundError } from '../error/recurring-series-not-found.error';
+import { RecurringTransactionNotFoundError } from '../error/recurring-transaction-not-found.error';
 import { RecurringRepository } from '../repository/recurring.repository';
+import { isCycleCovered, resolveRecurringAlert, resolveRecurringPriceChange } from '../series/recurring-alert';
+import { merchantIdentityOf } from '../series/recurring-matcher';
 import { projectRecurringMonth } from '../series/recurring-projection';
-import { detectRecurringSeries, isSeriesActive, legacyLabel, nearestCycle } from '../series/recurring-series';
+import { cadencePeriodDays, monthlyEquivalent, nearestCycleDate, nextOccurrences } from '../series/recurring-schedule';
+import { counterpartyKey, description, identity } from '../series/recurring-series';
+import { isSeriesActiveNow } from '../series/recurring-state';
+import { chargeKey } from '../utils/charge-key.util';
+import { matchesRecurringTitle } from '../utils/matches-recurring-title.util';
 import { normalizeRecurringDescription } from '../utils/normalize-recurring-description.util';
 
-import type { RecurringChargeInterface } from '../interface/recurring-charge.interface';
-import type { RecurringSeriesInterface } from '../interface/recurring-series.interface';
-import type { RecurringTrackedSeriesInterface } from '../interface/recurring-tracked-series.interface';
-import type { RecurringSeriesCreateEntityInterface, RecurringSeriesEntityInterface } from '@budgie/contracts';
+import { RecurringRefreshService } from './recurring-refresh.service';
 
-const HISTORY_MONTHS = 24;
-const TRACKED_KINDS = [RecurringSeriesKindEnum.EXPENSE, RecurringSeriesKindEnum.INCOME] as const;
+import type { RecurringChargeInterface } from '../interface/recurring-charge.interface';
+import type { RecurringManualInputInterface } from '../interface/recurring-manual-input.interface';
+import type { RecurringReadModelInterface } from '../interface/recurring-read-model.interface';
+import type { RecurringRemovalInterface } from '../interface/recurring-removal.interface';
+import type { RecurringSeriesDetailInterface } from '../interface/recurring-series-detail.interface';
+import type { RecurringSeriesListItemInterface } from '../interface/recurring-series-list-item.interface';
+import type { RecurringUpdateInputInterface } from '../interface/recurring-update-input.interface';
+import type { RecurringSeriesEntityInterface } from '@budgie/contracts';
+
+const NEXT_DATES_COUNT = 3;
+const NEXT_DATES_LOOKAHEAD = 24;
+const FITTING_AMOUNT_RATIO = 0.1;
 
 export class RecurringService extends Context.Service<RecurringService>()('@budgie/recurring/RecurringService', {
     make: Effect.gen(function* () {
         const recurringRepository = yield* RecurringRepository;
         const settingsRepository = yield* SettingsRepository;
+        const refreshService = yield* RecurringRefreshService;
 
-        const toFacts = (series: RecurringSeriesInterface, now: Date) => ({
-            kind: series.kind,
-            merchantKey: series.merchantKey,
-            periodDays: Math.round(series.periodDays),
-            amount: series.predictedAmount,
-            status: isSeriesActive(series, now) ? RecurringSeriesStatusEnum.ACTIVE : RecurringSeriesStatusEnum.ENDED,
-            categoryId: series.categoryId,
-            lastSeenAt: new Date(series.anchorTimestamp)
-        });
-
-        const isUnchanged = (row: RecurringSeriesEntityInterface, facts: ReturnType<typeof toFacts>): boolean =>
-            row.kind === facts.kind &&
-            row.merchantKey === facts.merchantKey &&
-            row.periodDays === facts.periodDays &&
-            row.amount === facts.amount &&
-            row.status === facts.status &&
-            row.categoryId === facts.categoryId &&
-            row.lastSeenAt.getTime() === facts.lastSeenAt.getTime();
-
-        const store = (
-            series: RecurringSeriesInterface,
-            row: RecurringSeriesEntityInterface | null | undefined,
-            facts: ReturnType<typeof toFacts>
-        ) => {
-            if (!isDefined(row)) {
-                const input: RecurringSeriesCreateEntityInterface = {
-                    ...facts,
-                    title: series.title,
-                    userState: RecurringSeriesUserStateEnum.SUGGESTED
-                };
-
-                return recurringRepository.createSeries(input);
-            }
-
-            return isUnchanged(row, facts) ? Effect.succeed(row) : recurringRepository.updateSeries(row.id, facts);
-        };
-
-        const isQualifiedIdentity = (key: string): boolean => {
-            const segments = key.split('|');
-
-            return segments.length >= 4 && (/^\d+$/u.test(segments[2]) || /^\d+$/u.test(segments[3]));
-        };
-
-        const indexHistoricalCharges = (charges: readonly RecurringChargeInterface[]) => {
-            const history = new Map<string, (readonly [number, number])[]>();
-            for (const charge of charges) {
-                const indexedCharge = [charge.transactionId, startOfDay(charge.operatedAt).getTime()] as const;
-                for (const label of new Set([
-                    legacyLabel(charge),
-                    normalizeRecurringDescription(isNotEmptyString(charge.title) ? charge.title : charge.comment)
-                ])) {
-                    const key = `${charge.kind}|${label}`;
-                    const matching = history.get(key) ?? [];
-                    matching.push(indexedCharge);
-                    history.set(key, matching);
-                }
-            }
-
-            return history;
-        };
-
-        const matchesHistoricalCadence = (
-            series: RecurringSeriesInterface,
-            row: RecurringSeriesEntityInterface,
-            charges: readonly (readonly [number, number])[]
-        ): boolean => {
-            if (!isDefined(series.periodMonths) || isQualifiedIdentity(row.merchantKey)) {
-                return false;
-            }
-            const events = series.events.filter(event => differenceInCalendarDays(new Date(event.timestamp), row.lastSeenAt) <= 0);
-            const savedDay = startOfDay(row.lastSeenAt).getTime();
-            const history = charges.filter(([, day]) => day <= savedDay);
-            const eventIds = new Set(events.map(event => event.transactionId));
-            if (
-                events.length < (series.periodMonths === 12 ? 2 : 3) ||
-                history.length !== events.length ||
-                !history.every(([transactionId]) => eventIds.has(transactionId)) ||
-                differenceInCalendarDays(new Date(events[events.length - 1].timestamp), row.lastSeenAt) !== 0
-            ) {
-                return false;
-            }
-            const gaps = events
-                .slice(1)
-                .map((event, index) => differenceInCalendarDays(new Date(event.timestamp), new Date(events[index].timestamp)))
-                .sort((first, second) => first - second);
-            const middle = Math.floor(gaps.length / 2);
-
-            return (
-                row.periodDays === Math.round(gaps.length % 2 === 1 ? gaps[middle] : (gaps[middle - 1] + gaps[middle]) / 2) &&
-                events.slice(1).every((event, index) => {
-                    const cycle = nearestCycle(new Date(event.timestamp), new Date(events[index].timestamp), series);
-
-                    return cycle.cycle === 1 && cycle.deviation <= series.toleranceDays;
-                })
-            );
-        };
-
-        const createCycleMatcher = (charges: readonly RecurringChargeInterface[]) => {
-            let historicalIndex: ReturnType<typeof indexHistoricalCharges> | undefined;
-            const matchingHistory = new Map<RecurringSeriesInterface, (readonly [number, number])[]>();
-            const cycleMatches = new Map<RecurringSeriesInterface, Map<number, boolean>>();
-            const getHistory = (series: RecurringSeriesInterface) => {
-                let history = matchingHistory.get(series);
-                if (!isDefined(history)) {
-                    historicalIndex ??= indexHistoricalCharges(charges);
-                    history = [...new Set(series.labels.flatMap(label => historicalIndex?.get(`${series.kind}|${label}`) ?? []))];
-                    matchingHistory.set(series, history);
-                }
-
-                return history;
-            };
-
-            return (series: RecurringSeriesInterface, row: RecurringSeriesEntityInterface): boolean => {
-                const matches = cycleMatches.get(series) ?? new Map<number, boolean>();
-                const cached = matches.get(row.id);
-                if (isDefined(cached)) {
-                    return cached;
-                }
-                const result =
-                    row.kind === series.kind &&
-                    (row.periodDays === Math.round(series.periodDays) ||
-                        (!isQualifiedIdentity(row.merchantKey) &&
-                            isDefined(series.periodMonths) &&
-                            matchesHistoricalCadence(series, row, getHistory(series)))) &&
-                    nearestCycle(new Date(series.anchorTimestamp), row.lastSeenAt, series).deviation <= series.toleranceDays;
-                matches.set(row.id, result);
-                cycleMatches.set(series, matches);
-
-                return result;
-            };
-        };
-
-        const canonicalFamily = (key: string): string => {
-            const segments = key.split('|');
-
-            return /^\d*$/u.test(segments[2] ?? '') && segments.length >= 4
-                ? [segments[0], segments[1], segments[3]].join('|')
-                : segments.slice(0, 3).join('|');
-        };
-
-        const matchesUnbandedIdentity = (series: RecurringSeriesInterface, row: RecurringSeriesEntityInterface): boolean =>
-            !isQualifiedIdentity(row.merchantKey) &&
-            series.kind === row.kind &&
-            (row.merchantKey.includes('|')
-                ? canonicalFamily(row.merchantKey) === canonicalFamily(series.merchantKey)
-                : series.labels.includes(row.merchantKey) || series.labels.includes(normalizeRecurringDescription(row.merchantKey)));
-
-        const amountGap = (series: RecurringSeriesInterface, row: RecurringSeriesEntityInterface): number =>
-            Math.abs(row.amount - series.predictedAmount);
-
-        const track = Effect.fn('RecurringService.track')(function* (
-            detected: readonly RecurringSeriesInterface[],
-            charges: readonly RecurringChargeInterface[],
-            isLegacyAdoption: boolean,
-            now: Date
-        ) {
-            const rows = (yield* Effect.forEach(TRACKED_KINDS, kind => recurringRepository.findSeries(kind))).flat();
-            const exactRows = detected.map(series =>
-                rows.find(
-                    item =>
-                        item.kind === series.kind &&
-                        item.merchantKey === series.merchantKey &&
-                        item.periodDays === Math.round(series.periodDays)
-                )
-            );
-            const claimed = new Set(exactRows.filter(isDefined).map(item => item.id));
-            const matchesCycle = createCycleMatcher(charges);
-
-            const qualifiedCandidates = detected.map((series, index) =>
-                isDefined(exactRows[index])
-                    ? []
-                    : rows
-                          .filter(
-                              item =>
-                                  !claimed.has(item.id) &&
-                                  isQualifiedIdentity(item.merchantKey) &&
-                                  canonicalFamily(item.merchantKey) === canonicalFamily(series.merchantKey) &&
-                                  matchesCycle(series, item)
-                          )
-                          .sort((first, second) => amountGap(series, first) - amountGap(series, second))
-            );
-            const qualifiedRows = qualifiedCandidates.map(([best, runnerUp], index) => {
-                if (
-                    !isDefined(best) ||
-                    (isDefined(runnerUp) && amountGap(detected[index], runnerUp) === amountGap(detected[index], best)) ||
-                    qualifiedCandidates.some(
-                        (candidates, candidateIndex) =>
-                            candidateIndex !== index &&
-                            candidates.includes(best) &&
-                            amountGap(detected[candidateIndex], best) <= amountGap(detected[index], best)
-                    )
-                ) {
-                    return null;
-                }
-
-                return best;
-            });
-            for (const row of qualifiedRows.filter(isDefined)) {
-                claimed.add(row.id);
-            }
-
-            return yield* Effect.forEach(detected, (series, index) => {
-                const facts = toFacts(series, now);
-                const qualifiedRow = exactRows[index] ?? qualifiedRows[index];
-                const unbandedRows =
-                    isDefined(qualifiedRow) || !isLegacyAdoption
-                        ? []
-                        : rows.filter(item => !claimed.has(item.id) && matchesUnbandedIdentity(series, item) && matchesCycle(series, item));
-                const row =
-                    qualifiedRow ??
-                    unbandedRows.find(
-                        item =>
-                            unbandedRows.length === 1 &&
-                            detected.filter(candidate => matchesUnbandedIdentity(candidate, item) && matchesCycle(candidate, item))
-                                .length === 1
-                    ) ??
-                    null;
-                if (isDefined(row)) {
-                    claimed.add(row.id);
-                }
-
-                return Effect.map(store(series, row, facts), ({ id, userState, title }): RecurringTrackedSeriesInterface => ({
-                    ...series,
-                    seriesId: id,
-                    userState,
-                    title
-                }));
-            });
-        });
-
-        const syncSeries = Effect.fnUntraced(function* (now: Date, isLegacyAdoption: boolean) {
+        const loadModels = Effect.fnUntraced(function* () {
             const { defaultInstrumentId, language } = yield* settingsRepository.getSettings();
-            const since = new Date(now.getFullYear(), now.getMonth() - HISTORY_MONTHS, now.getDate());
-            const charges = (yield* Effect.forEach(TRACKED_KINDS, kind =>
-                recurringRepository.findCharges(defaultInstrumentId, language, since, kind)
-            )).flat();
-            const historicalCharges = isLegacyAdoption
-                ? (yield* Effect.forEach(TRACKED_KINDS, kind =>
-                      recurringRepository.findHistoricalCharges(defaultInstrumentId, language, since, kind)
-                  )).flat()
-                : [];
+            const rows = yield* recurringRepository.findSeriesRows(defaultInstrumentId, language);
+            const links = yield* recurringRepository.findLinks;
+            const charges = yield* recurringRepository.findLinkedCharges(defaultInstrumentId, language);
+            const chargeByKey = new Map(charges.map(charge => [chargeKey(charge.kind, charge.transactionId), charge]));
+            const models: RecurringReadModelInterface[] = rows.map(series => ({
+                series: { ...series, defaultAmount: Math.round(series.defaultAmount) },
+                links: links
+                    .filter(link => link.seriesId === series.id)
+                    .flatMap(link => {
+                        const charge = chargeByKey.get(chargeKey(series.kind, link.transactionId));
 
-            return yield* Db.transaction(track(detectRecurringSeries(charges), historicalCharges, isLegacyAdoption, now));
+                        return isDefined(charge) ? [{ link, charge }] : [];
+                    })
+            }));
+
+            return { models, defaultInstrumentId, language };
         });
 
-        const legacyAdoptionLock = yield* Semaphore.make(1);
-        const isLegacyAdoptionPending = yield* Ref.make(true);
+        const loadReadyModels = Effect.fnUntraced(function* (now: Date) {
+            yield* refreshService.ensureInitial(now);
 
-        const syncSeriesAdoptingLegacyOnce = (now: Date) =>
-            Effect.flatMap(Ref.get(isLegacyAdoptionPending), isPending =>
-                isPending
-                    ? legacyAdoptionLock.withPermits(1)(
-                          Effect.flatMap(Ref.get(isLegacyAdoptionPending), isStillPending =>
-                              Effect.tap(syncSeries(now, isStillPending), () => Ref.set(isLegacyAdoptionPending, false))
-                          )
-                      )
-                    : syncSeries(now, false)
+            return yield* loadModels();
+        });
+
+        const upcomingDates = (model: RecurringReadModelInterface, now: Date, count: number): Date[] =>
+            nextOccurrences(model.series, now, NEXT_DATES_LOOKAHEAD)
+                .filter(date => !isCycleCovered(model, date))
+                .slice(0, count);
+
+        const toListItem = (
+            model: RecurringReadModelInterface,
+            defaultInstrumentId: number | null,
+            now: Date
+        ): RecurringSeriesListItemInterface => {
+            const { series } = model;
+            const isActive = isSeriesActiveNow(series, now);
+
+            return {
+                id: series.id,
+                title: series.title,
+                kind: series.kind,
+                source: series.source,
+                userState: series.userState,
+                isActive,
+                confidence: series.confidence,
+                cadenceUnit: series.cadenceUnit,
+                cadenceInterval: series.cadenceInterval,
+                nextDate: isActive ? (upcomingDates(model, now, 1)[0] ?? null) : null,
+                amount: series.defaultAmount,
+                nativeAmount: series.amount,
+                monthlyEquivalent: Math.round(monthlyEquivalent({ ...series, amount: series.defaultAmount })),
+                alert: resolveRecurringAlert(model, now),
+                priceChange: resolveRecurringPriceChange(model, now),
+                categoryId: series.categoryId,
+                categoryTitle: series.categoryTitle,
+                categoryIcon: series.categoryIcon,
+                accountId: series.accountId,
+                instrumentId: series.instrumentId ?? defaultInstrumentId,
+                endsAt: series.endsAt,
+                reminderDaysBefore: series.reminderDaysBefore,
+                linkedCount: model.links.filter(({ link }) => !link.isExcluded).length
+            };
+        };
+
+        const requireSeries = Effect.fnUntraced(function* (seriesId: number) {
+            const series = yield* recurringRepository.findSeriesById(seriesId);
+
+            return isDefined(series) ? series : yield* RecurringSeriesNotFoundError.make({ seriesId });
+        });
+
+        const findCharge = Effect.fnUntraced(function* (transactionId: number, kinds: readonly RecurringSeriesKindEnum[]) {
+            const { defaultInstrumentId, language } = yield* settingsRepository.getSettings();
+            const charges = yield* Effect.forEach(kinds, kind =>
+                recurringRepository.findChargeByTransactionId(defaultInstrumentId, language, kind, transactionId)
             );
+            const charge = charges.find(isDefined);
+
+            return isDefined(charge) ? charge : yield* RecurringTransactionNotFoundError.make({ transactionId });
+        });
+
+        const attachTransaction = Effect.fnUntraced(function* (series: RecurringSeriesEntityInterface, charge: RecurringChargeInterface) {
+            const liveLinks = yield* recurringRepository.findLinksByTransactionId(charge.transactionId);
+            yield* Effect.forEach(
+                liveLinks.filter(link => link.seriesId !== series.id && !link.isExcluded),
+                link => recurringRepository.updateLink(link.id, { isExcluded: true, matchedBy: RecurringMatchSourceEnum.USER }),
+                { discard: true }
+            );
+            const { cycleDate } = nearestCycleDate(series, startOfDay(charge.operatedAt));
+            const existing = yield* recurringRepository.findLinkByPair(series.id, charge.transactionId);
+            const link = isDefined(existing)
+                ? yield* recurringRepository.updateLink(existing.id, {
+                      isExcluded: false,
+                      matchedBy: RecurringMatchSourceEnum.USER,
+                      deletedAt: null,
+                      cycleDate
+                  })
+                : yield* recurringRepository.insertLink({
+                      seriesId: series.id,
+                      transactionId: charge.transactionId,
+                      cycleDate,
+                      matchedBy: RecurringMatchSourceEnum.USER
+                  });
+            const chargeIdentity = identity(charge);
+            const isSeenLater =
+                series.source === RecurringSeriesSourceEnum.DETECTED && charge.operatedAt.getTime() > series.lastSeenAt.getTime();
+            const needsMerchantKey = !isNotEmptyString(series.merchantKey) && isNotEmptyString(chargeIdentity);
+            if (needsMerchantKey || isSeenLater) {
+                yield* recurringRepository.updateSeries(series.id, {
+                    ...(needsMerchantKey && { merchantKey: chargeIdentity }),
+                    ...(isSeenLater && { lastSeenAt: charge.operatedAt })
+                });
+            }
+
+            return link;
+        });
+
+        const createManualSeries = (input: RecurringManualInputInterface, merchantKey: string) =>
+            recurringRepository.createSeries({
+                merchantKey,
+                kind: input.kind,
+                periodDays: Math.round(cadencePeriodDays(input)),
+                amount: input.amount,
+                status: RecurringSeriesStatusEnum.ACTIVE,
+                userState: RecurringSeriesUserStateEnum.CONFIRMED,
+                title: input.title,
+                categoryId: input.categoryId ?? null,
+                lastSeenAt: input.anchorDate,
+                source: RecurringSeriesSourceEnum.MANUAL,
+                accountId: input.accountId ?? null,
+                cadenceUnit: input.cadenceUnit,
+                cadenceInterval: input.cadenceInterval,
+                anchorDate: input.anchorDate,
+                instrumentId: input.instrumentId,
+                endsAt: input.endsAt ?? null,
+                reminderDaysBefore: input.reminderDaysBefore ?? null,
+                confidence: 100
+            });
 
         return {
             calendar: Effect.fn('RecurringService.calendar')(function* (year: number, month: number, now: Date) {
-                return projectRecurringMonth(yield* syncSeriesAdoptingLegacyOnce(now), year, month, now, RecurringSeriesKindEnum.EXPENSE);
+                const { models } = yield* loadReadyModels(now);
+
+                return projectRecurringMonth(models, year, month, now, RecurringSeriesKindEnum.EXPENSE);
             }),
             incomeCalendar: Effect.fn('RecurringService.incomeCalendar')(function* (year: number, month: number, now: Date) {
-                return projectRecurringMonth(yield* syncSeriesAdoptingLegacyOnce(now), year, month, now, RecurringSeriesKindEnum.INCOME);
+                const { models } = yield* loadReadyModels(now);
+
+                return projectRecurringMonth(models, year, month, now, RecurringSeriesKindEnum.INCOME);
             }),
-            setUserState: (seriesId: number, userState: RecurringSeriesUserStateEnum) =>
-                recurringRepository.updateSeries(seriesId, { userState }),
-            rename: (seriesId: number, title: string) => recurringRepository.updateSeries(seriesId, { title })
+            listSeries: Effect.fn('RecurringService.listSeries')(function* (now: Date) {
+                const { models, defaultInstrumentId } = yield* loadReadyModels(now);
+
+                return models
+                    .filter(({ series }) => series.userState !== RecurringSeriesUserStateEnum.DISMISSED)
+                    .map(model => toListItem(model, defaultInstrumentId, now));
+            }),
+            getSeriesDetail: Effect.fn('RecurringService.getSeriesDetail')(function* (seriesId: number, now: Date) {
+                const { models, defaultInstrumentId } = yield* loadReadyModels(now);
+                const model = models.find(({ series }) => series.id === seriesId);
+
+                if (!isDefined(model)) {
+                    return yield* RecurringSeriesNotFoundError.make({ seriesId });
+                }
+                const detail: RecurringSeriesDetailInterface = {
+                    series: toListItem(model, defaultInstrumentId, now),
+                    anchorDate: model.series.anchorDate,
+                    nextDates: upcomingDates(model, now, NEXT_DATES_COUNT),
+                    history: [...model.links]
+                        .sort((first, second) => second.charge.operatedAt.getTime() - first.charge.operatedAt.getTime())
+                        .map(({ link, charge }) => ({
+                            transactionId: charge.transactionId,
+                            operatedAt: charge.operatedAt,
+                            amount: Math.round(charge.defaultAmount),
+                            nativeAmount: charge.nativeAmount,
+                            instrumentId: charge.instrumentId,
+                            isExcluded: link.isExcluded,
+                            matchedBy: link.matchedBy
+                        }))
+                };
+
+                return detail;
+            }),
+            createManual: (input: RecurringManualInputInterface) => createManualSeries(input, ''),
+            update: Effect.fn('RecurringService.update')(function* (seriesId: number, patch: RecurringUpdateInputInterface) {
+                const series = yield* requireSeries(seriesId);
+                const hasCadencePatch = isDefined(patch.cadenceUnit) || isDefined(patch.cadenceInterval);
+                const isOwnedFieldPatch = Object.keys(patch).some(key => key !== 'reminderDaysBefore');
+
+                return yield* recurringRepository.updateSeries(seriesId, {
+                    ...patch,
+                    ...(hasCadencePatch && {
+                        periodDays: Math.round(
+                            cadencePeriodDays({
+                                cadenceUnit: patch.cadenceUnit ?? series.cadenceUnit,
+                                cadenceInterval: patch.cadenceInterval ?? series.cadenceInterval
+                            })
+                        )
+                    }),
+                    ...(series.source === RecurringSeriesSourceEnum.DETECTED &&
+                        isOwnedFieldPatch && { userState: RecurringSeriesUserStateEnum.CONFIRMED })
+                });
+            }),
+            confirm: Effect.fn('RecurringService.confirm')(function* (seriesId: number) {
+                yield* requireSeries(seriesId);
+
+                return yield* recurringRepository.updateSeries(seriesId, { userState: RecurringSeriesUserStateEnum.CONFIRMED });
+            }),
+            restoreUserState: Effect.fn('RecurringService.restoreUserState')(function* (
+                seriesId: number,
+                userState: RecurringSeriesUserStateEnum
+            ) {
+                yield* requireSeries(seriesId);
+
+                return yield* recurringRepository.updateSeries(seriesId, { userState });
+            }),
+            remove: Effect.fn('RecurringService.remove')(function* (seriesId: number) {
+                const series = yield* requireSeries(seriesId);
+                const removal: RecurringRemovalInterface = {
+                    seriesId,
+                    source: series.source,
+                    previousUserState: series.userState
+                };
+
+                if (series.source === RecurringSeriesSourceEnum.DETECTED) {
+                    yield* recurringRepository.updateSeries(seriesId, { userState: RecurringSeriesUserStateEnum.DISMISSED });
+
+                    return removal;
+                }
+                const deletedAt = yield* DateTime.nowAsDate;
+                yield* Db.transaction(
+                    Effect.gen(function* () {
+                        const links = (yield* recurringRepository.findLinks).filter(link => link.seriesId === seriesId);
+                        yield* recurringRepository.setLinksDeletedAt(
+                            links.map(link => link.id),
+                            deletedAt
+                        );
+                        yield* recurringRepository.setSeriesDeletedAt(seriesId, deletedAt);
+                    })
+                );
+
+                return removal;
+            }),
+            restore: Effect.fn('RecurringService.restore')(function* (seriesId: number) {
+                const series = yield* requireSeries(seriesId);
+
+                if (!isDefined(series.deletedAt)) {
+                    return series;
+                }
+                const { deletedAt } = series;
+
+                return yield* Db.transaction(
+                    Effect.gen(function* () {
+                        const liveTransactions = new Set(
+                            (yield* recurringRepository.findLinks).filter(link => !link.isExcluded).map(link => link.transactionId)
+                        );
+                        const links = yield* recurringRepository.findLinksDeletedAt(seriesId, deletedAt);
+                        yield* recurringRepository.setLinksDeletedAt(
+                            links.filter(link => link.isExcluded || !liveTransactions.has(link.transactionId)).map(link => link.id),
+                            null
+                        );
+
+                        return yield* recurringRepository.setSeriesDeletedAt(seriesId, null);
+                    })
+                );
+            }),
+            excludeTransaction: Effect.fn('RecurringService.excludeTransaction')(function* (seriesId: number, transactionId: number) {
+                const series = yield* requireSeries(seriesId);
+                const existing = yield* recurringRepository.findLinkByPair(seriesId, transactionId);
+
+                if (isDefined(existing)) {
+                    return yield* recurringRepository.updateLink(existing.id, {
+                        isExcluded: true,
+                        matchedBy: RecurringMatchSourceEnum.USER,
+                        deletedAt: null
+                    });
+                }
+                const charge = yield* Effect.option(findCharge(transactionId, [series.kind]));
+                const cycleDate = Option.isSome(charge) ? startOfDay(charge.value.operatedAt) : series.anchorDate;
+
+                return yield* recurringRepository.insertLink({
+                    seriesId,
+                    transactionId,
+                    cycleDate,
+                    matchedBy: RecurringMatchSourceEnum.USER,
+                    isExcluded: true
+                });
+            }),
+            addTransaction: Effect.fn('RecurringService.addTransaction')(function* (seriesId: number, transactionId: number) {
+                const series = yield* requireSeries(seriesId);
+                const charge = yield* findCharge(transactionId, [series.kind]);
+
+                return yield* Db.transaction(attachTransaction(series, charge));
+            }),
+            seriesForTransaction: Effect.fn('RecurringService.seriesForTransaction')(function* (transactionId: number) {
+                const links = yield* recurringRepository.findLinksByTransactionId(transactionId);
+                const link = links.find(item => !item.isExcluded);
+
+                if (!isDefined(link)) {
+                    return null;
+                }
+                const series = yield* recurringRepository.findSeriesById(link.seriesId);
+
+                return isDefined(series) && !isDefined(series.deletedAt) && series.userState !== RecurringSeriesUserStateEnum.DISMISSED
+                    ? series
+                    : null;
+            }),
+            fittingSeries: Effect.fn('RecurringService.fittingSeries')(function* (transactionId: number, now: Date) {
+                const charge = yield* findCharge(transactionId, RECURRING_TRACKED_KINDS);
+                const { models, defaultInstrumentId } = yield* loadModels();
+                const chargeIdentity = identity(charge);
+                const normalizedDescription = normalizeRecurringDescription(description(charge));
+
+                return models
+                    .filter(
+                        ({ series, links }) =>
+                            series.kind === charge.kind &&
+                            series.userState !== RecurringSeriesUserStateEnum.DISMISSED &&
+                            !links.some(({ link }) => !link.isExcluded && link.transactionId === transactionId)
+                    )
+                    .map(model => {
+                        const title = normalizeRecurringDescription(model.series.title);
+                        const isMerchant = isNotEmptyString(model.series.merchantKey)
+                            ? isNotEmptyString(chargeIdentity) && merchantIdentityOf(model.series.merchantKey) === chargeIdentity
+                            : matchesRecurringTitle(title, normalizedDescription);
+                        const gap = Math.abs(model.series.defaultAmount - charge.defaultAmount);
+
+                        return {
+                            model,
+                            isMerchant,
+                            gap,
+                            isCloseAmount:
+                                isDefined(charge.categoryId) &&
+                                model.series.categoryId === charge.categoryId &&
+                                gap <= model.series.defaultAmount * FITTING_AMOUNT_RATIO
+                        };
+                    })
+                    .filter(({ isMerchant, isCloseAmount }) => isMerchant || isCloseAmount)
+                    .sort((first, second) => Number(second.isMerchant) - Number(first.isMerchant) || first.gap - second.gap)
+                    .map(({ model }) => toListItem(model, defaultInstrumentId, now));
+            }),
+            makeRecurringFromTransaction: Effect.fn('RecurringService.makeRecurringFromTransaction')(function* (
+                transactionId: number,
+                input: RecurringManualInputInterface
+            ) {
+                const charge = yield* findCharge(transactionId, [input.kind]);
+
+                return yield* Db.transaction(
+                    Effect.gen(function* () {
+                        const links = yield* recurringRepository.findLinks;
+                        const dismissed = (yield* recurringRepository.findAllSeries).filter(
+                            series =>
+                                series.source === RecurringSeriesSourceEnum.DETECTED &&
+                                series.userState === RecurringSeriesUserStateEnum.DISMISSED &&
+                                series.kind === input.kind
+                        );
+                        const counterparty = counterpartyKey(charge);
+                        const revivable = dismissed.find(
+                            series =>
+                                links.some(link => link.seriesId === series.id && link.transactionId === transactionId) ||
+                                (isNotEmptyString(counterparty) && series.merchantKey.split('|')[2] === counterparty)
+                        );
+                        const series = isDefined(revivable)
+                            ? yield* recurringRepository.updateSeries(revivable.id, {
+                                  userState: RecurringSeriesUserStateEnum.CONFIRMED,
+                                  status: RecurringSeriesStatusEnum.ACTIVE,
+                                  title: input.title,
+                                  amount: input.amount,
+                                  instrumentId: input.instrumentId,
+                                  categoryId: input.categoryId ?? null,
+                                  accountId: input.accountId ?? null,
+                                  cadenceUnit: input.cadenceUnit,
+                                  cadenceInterval: input.cadenceInterval,
+                                  anchorDate: input.anchorDate,
+                                  periodDays: Math.round(cadencePeriodDays(input)),
+                                  endsAt: input.endsAt ?? null,
+                                  reminderDaysBefore: input.reminderDaysBefore ?? null
+                              })
+                            : yield* createManualSeries(input, identity(charge));
+                        yield* attachTransaction(series, charge);
+
+                        return yield* requireSeries(series.id);
+                    })
+                );
+            })
         };
     })
 }) {
     static readonly layer = Layer.effect(RecurringService, RecurringService.make).pipe(
-        Layer.provide([RecurringRepository.layer, SettingsRepository.layer])
+        Layer.provide([RecurringRepository.layer, SettingsRepository.layer, RecurringRefreshService.layer])
     );
 }

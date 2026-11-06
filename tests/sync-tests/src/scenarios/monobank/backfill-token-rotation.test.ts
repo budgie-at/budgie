@@ -82,12 +82,12 @@ describe('monobank/backfill-token-rotation', () => {
                 })
             );
             yield* Effect.gen(function* () {
-                const initialSyncRun = yield* Effect.forkChild(inWorkload(monobankSyncService.sync()));
+                const initialSyncRun = yield* monobankSyncService.sync().pipe(inWorkload, Effect.forkChild);
                 yield* Deferred.await(batchLookupStarted);
                 yield* monobankSyncService.updateAccountToken(sync.accountId, 'quota-token-b');
-                const nextSyncRun = yield* Effect.forkChild(
-                    inWorkload(monobankSyncService.sync((yield* Clock.currentTimeMillis) + 25_000))
-                );
+                const nextSyncRun = yield* monobankSyncService
+                    .sync((yield* Clock.currentTimeMillis) + 25000)
+                    .pipe(inWorkload, Effect.forkChild);
                 yield* TestClock.withLive(Effect.sleep(10));
                 expect(yield* workload.hasQueuedWork).toBe(true);
                 yield* Deferred.succeed(releaseBatchLookup, undefined);

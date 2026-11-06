@@ -83,7 +83,7 @@ describe('binance/optional-source-unavailable', () => {
 
                 yield* binanceSyncService.sync();
 
-                expect((yield* fetchBinanceTransactions()).map(transaction => transaction.externalId)).toStrictEqual(['dep-survives']);
+                expect((yield* fetchBinanceTransactions).map(transaction => transaction.externalId)).toStrictEqual(['dep-survives']);
             }).pipe(Effect.provide(TestLayer))
         );
     }
@@ -109,13 +109,13 @@ describe('binance/optional-source-unavailable', () => {
 
             yield* binanceSyncService.sync();
 
-            expect(yield* fetchBinanceTransactions()).toHaveLength(0);
+            expect(yield* fetchBinanceTransactions).toHaveLength(0);
             expect((yield* fetchHistoryProgress(token))[source.key].tailAt).toBeGreaterThan(oldRowTimeMs + 50 * DAY_MS);
 
             source.stub(oldRowTimeMs);
             yield* resyncBinance(sync.id);
 
-            expect(yield* fetchBinanceTransactions()).toHaveLength(1);
+            expect(yield* fetchBinanceTransactions).toHaveLength(1);
         }).pipe(Effect.provide(TestLayer))
     );
 });

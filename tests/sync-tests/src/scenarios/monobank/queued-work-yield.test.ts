@@ -34,13 +34,9 @@ describe('monobank/queued-work-yield', () => {
 
                     if (!hasQueuedImport) {
                         hasQueuedImport = true;
-                        runFork(
-                            inWorkload(
-                                Effect.sync(() => {
-                                    events.push('file-import');
-                                })
-                            ).pipe(Deferred.into(queuedImport))
-                        );
+                        Effect.sync(() => {
+                            events.push('file-import');
+                        }).pipe(inWorkload, Deferred.into(queuedImport), runFork);
                     }
 
                     return HttpResponse.json([]);
@@ -72,17 +68,15 @@ describe('monobank/queued-work-yield', () => {
                 })
             );
 
-            const startupSync = yield* Effect.forkChild(
-                inWorkload(
-                    monobankSyncService.sync().pipe(
-                        Effect.provideService(
-                            Clock.Clock,
-                            Object.assign(Object.create(clock), {
-                                sleep: () => Effect.andThen(Deferred.succeed(rateLimitReached, undefined), Effect.never)
-                            })
-                        )
-                    )
-                )
+            const startupSync = yield* monobankSyncService.sync().pipe(
+                Effect.provideService(
+                    Clock.Clock,
+                    Object.assign(Object.create(clock), {
+                        sleep: () => Effect.andThen(Deferred.succeed(rateLimitReached, undefined), Effect.never)
+                    })
+                ),
+                inWorkload,
+                Effect.forkChild
             );
             yield* Deferred.await(rateLimitReached);
             const queuedImport = yield* Effect.forkChild(

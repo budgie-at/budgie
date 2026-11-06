@@ -97,7 +97,7 @@ export const useVoiceInput = (): UseVoiceInputReturnInterface => {
 
     const runPipelineOnce = () => {
         appRuntime.runFork(
-            logAndContinue(runPipeline().pipe(Effect.tapCause(cause => Effect.sync(() => void handleError(Cause.squash(cause))))))
+            logAndContinue(runPipeline().pipe(Effect.tapCause(cause => Effect.sync(() => void cause.pipe(Cause.squash, handleError)))))
         );
     };
 

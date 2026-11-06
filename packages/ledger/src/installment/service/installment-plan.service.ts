@@ -33,6 +33,8 @@ import { TransactionDebtSettlementService } from '../../transaction/service/tran
 import type { InstallmentPlanConvertInputInterface } from '../interface/installment-plan-convert-input.interface';
 import type { TransactionEntityInterface, TransactionEntryEntityInterface } from '@budgie/contracts';
 
+const UNIX_EPOCH = new Date(0);
+
 export class InstallmentPlanService extends Context.Service<InstallmentPlanService>()('@budgie/ledger/InstallmentPlanService', {
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
@@ -85,7 +87,7 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                 return false;
             }
 
-            const purchases = yield* installmentPlanRepository.findCandidates(accountId, new Date(0), candidate.operatedAt);
+            const purchases = yield* installmentPlanRepository.findCandidates(accountId, UNIX_EPOCH, candidate.operatedAt);
 
             return purchases.some(purchase => {
                 const monthOffset = differenceInCalendarMonths(candidate.operatedAt, purchase.operatedAt);
@@ -374,7 +376,7 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
 
                     const earlierParts = yield* findEarlierParts(transaction, primaryEntry, input.installmentCount, input.totalAmount);
                     const planStartedAt = earlierParts.at(0)?.operatedAt ?? transaction.operatedAt;
-                    const [{ count }] = yield* accountRepository.count();
+                    const [{ count }] = yield* accountRepository.count;
                     const account = yield* accountRepository.create({
                         title: input.title,
                         icon: UserIconNameEnum.CalendarClock,
@@ -414,7 +416,8 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                         transactionId => transactionDebtSettlementService.attach({ debtAccountId: account.id, transactionId }),
                         { discard: true }
                     );
-                    yield* attachPlanDueParts(account.id, yield* findActivePlanIds());
+                    const activePlanIds = yield* findActivePlanIds();
+                    yield* attachPlanDueParts(account.id, activePlanIds);
 
                     return { accountId: account.id };
                 },

@@ -2,18 +2,18 @@ import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 
 const BinanceDustDetailApiSchema = Schema.Struct({
-    transId: Schema.Number,
+    transId: Schema.Finite,
     fromAsset: Schema.String,
     targetAsset: Schema.optionalKey(Schema.String),
     amount: Schema.String,
     transferedAmount: Schema.String,
     serviceChargeAmount: Schema.String,
-    operateTime: Schema.Number
+    operateTime: Schema.Finite
 });
 
 const BinanceDustLogApiSchema = Schema.Struct({
-    transId: Schema.Number,
-    operateTime: Schema.Number,
+    transId: Schema.Finite,
+    operateTime: Schema.Finite,
     totalTransferedAmount: Schema.String,
     totalServiceChargeAmount: Schema.String,
     userAssetDribbletDetails: Schema.Array(BinanceDustDetailApiSchema)

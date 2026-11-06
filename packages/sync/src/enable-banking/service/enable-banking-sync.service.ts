@@ -14,8 +14,11 @@ import { AccountArchiveService } from '@budgie/ledger';
 import { sql } from 'drizzle-orm';
 import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+import * as Predicate from 'effect/Predicate';
+import * as Schema from 'effect/Schema';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
@@ -32,6 +35,7 @@ import { makePollingSyncAccountContinuation } from '../../core/utils/make-pollin
 import { makePollingSyncAccountSetup } from '../../core/utils/make-polling-sync-account-setup.util';
 import { makePollingSyncService } from '../../core/utils/make-polling-sync-service.util';
 import { resolveSyncProgressUpdate } from '../../core/utils/resolve-sync-progress-update.util';
+import { EnableBankingTokenSchema } from '../constant/enable-banking-token.schema';
 import { EnableBankingCallbackFailureEnum } from '../enum/enable-banking-callback-failure.enum';
 import { EnableBankingCallbackError } from '../error/enable-banking-callback.error';
 import { enableBankingMapper } from '../mapper/enable-banking.mapper';
@@ -43,7 +47,6 @@ import type { SyncHistoryDepthEnum } from '../../core/enum/sync-history-depth.en
 import type { SyncAccountInterface } from '../../core/interface/sync-account.interface';
 import type { SyncBatchResultInterface } from '../../core/interface/sync-batch-result.interface';
 import type { EnableBankingPendingAuthorizationInterface } from '../constant/enable-banking-pending-authorization.schema';
-import type { EnableBankingTokenInterface } from '../constant/enable-banking-token.schema';
 import type { EnableBankingAuthorizationResultInterface } from '../interface/enable-banking-authorization-result.interface';
 import type { EnableBankingBankInterface } from '../interface/enable-banking-bank.interface';
 import type { EnableBankingStartAuthorizationInputInterface } from '../interface/enable-banking-start-authorization-input.interface';
@@ -52,6 +55,7 @@ import type { SyncEntityInterface } from '@budgie/contracts';
 export class EnableBankingSyncService extends Context.Service<EnableBankingSyncService>()('@budgie/sync/EnableBankingSyncService', {
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
+        const encodeToken = Schema.encodeEffect(Schema.fromJsonString(EnableBankingTokenSchema));
         const bankIntegrationRepository = yield* BankIntegrationRepository;
         const instrumentRepository = yield* InstrumentRepository;
         const syncRepository = yield* SyncRepository;
@@ -71,9 +75,10 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
 
         const applyProgressUpdate = Effect.fnUntraced(function* (sync: SyncEntityInterface, result: SyncBatchResultInterface) {
             const isFetchedHistory = sync.mode === SyncModeEnum.BACKWARD && isDefined(result.balanceSnapshot);
+            const now = yield* DateTime.nowAsDate;
             yield* syncRepository.update(sync.id, {
-                ...resolveSyncProgressUpdate(sync, result),
-                ...(isFetchedHistory && { forwardSyncedAt: new Date(), forwardSyncFromAt: result.nextFrom })
+                ...resolveSyncProgressUpdate(sync, result, now),
+                ...(isFetchedHistory && { forwardSyncedAt: now, forwardSyncFromAt: result.nextFrom })
             });
             if (result.completed && isDefined(result.balanceSnapshot)) {
                 yield* syncBalanceReconciliationService.reconcile(sync.accountId, result.balanceSnapshot);
@@ -93,12 +98,12 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
             applyProgressUpdate,
             beforeSyncRun: () => batchService.beforeRun(),
             isRetryableError: () => false,
-            isCredentialWideError: error => error instanceof SyncUnauthorizedError || error instanceof SyncConsentExpiredError,
+            isCredentialWideError: Predicate.or(Schema.is(SyncUnauthorizedError), Schema.is(SyncConsentExpiredError)),
             shouldKeepFailedSyncEnabledAfterError: () => true
         });
 
         const findUnconnectableExternalIds = Effect.fnUntraced(function* (accounts: readonly SyncAccountInterface[]) {
-            const instrumentCodes = new Set((yield* instrumentRepository.getAll()).map(instrument => instrument.code));
+            const instrumentCodes = new Set((yield* instrumentRepository.getAll).map(instrument => instrument.code));
             const accountsWithIban = yield* accountRepository.findByIbans(accounts.map(account => account.iban).filter(isNotEmptyString));
             const aliases = yield* accountRepository.findExternalIdAliases(accounts.map(account => account.id));
 
@@ -131,7 +136,7 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
         });
 
         const resolveCode = Effect.fnUntraced(function* (pending: EnableBankingPendingAuthorizationInterface, callbackUrl: string) {
-            const fail = (failure: EnableBankingCallbackFailureEnum) => new EnableBankingCallbackError({ failure });
+            const fail = (failure: EnableBankingCallbackFailureEnum) => EnableBankingCallbackError.make({ failure });
             const [baseUrl, query, ...extraParts] = callbackUrl.split('?');
             if (baseUrl !== pending.callbackUrl || !isNotEmptyString(query) || isNotEmptyArray(extraParts) || callbackUrl.includes('#')) {
                 return yield* fail(EnableBankingCallbackFailureEnum.MALFORMED);
@@ -186,7 +191,7 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
             const linkedAccounts = yield* accountRepository.findByIntegrationId(integrationId);
             const authorizedIds = new Set(accounts.map(account => account.id));
             if (isNotEmptyArray(linkedAccounts) && !linkedAccounts.some(account => authorizedIds.has(account.externalId ?? ''))) {
-                return yield* new SyncTokenClientMismatchError({
+                return yield* SyncTokenClientMismatchError.make({
                     provider: SyncProviderEnum.ENABLE_BANKING,
                     integrationId,
                     message: 'This bank authorization does not cover the connected accounts'
@@ -252,7 +257,7 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
                     isSupported: !isNotEmptyArray(aspsp.required_psu_headers ?? [])
                 }));
             }),
-            listApplicationIds: () => listApplicationIds(null),
+            listApplicationIds: listApplicationIds(null),
             forgetCredentials: (applicationId: string) => clientService.forgetJwt(applicationId),
             validateCredentials: Effect.fn('EnableBankingSyncService.validateCredentials')(function* (applicationId: string) {
                 yield* clientService.forgetJwt(applicationId);
@@ -299,13 +304,13 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
             ) {
                 const code = yield* resolveCode(pending, callbackUrl);
                 const session = yield* clientService.withClient(pending.applicationId, client => client.authorizeSession(code));
-                const token = JSON.stringify({
+                const token = yield* encodeToken({
                     applicationId: pending.applicationId,
                     sessionId: session.session_id,
                     aspspName: session.aspsp.name,
                     aspspCountry: session.aspsp.country,
                     validUntil: session.access.valid_until
-                } satisfies EnableBankingTokenInterface);
+                }).pipe(Effect.orDie);
                 const accounts = session.accounts.map(account => enableBankingMapper.mapAccount(session.aspsp.name, account));
                 const reconsentIntegrationId = pending.integrationId ?? (yield* findIntegrationIdByAccounts(accounts));
                 if (isDefined(reconsentIntegrationId)) {

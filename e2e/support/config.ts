@@ -47,7 +47,7 @@ export function iosTarget(device: string, sessionPrefix: string): E2EConfig['tar
         }),
         app: {
             bundleId: BUNDLE_ID,
-            // E2E_APP_PATH: set by mobile-ci's ios-maestro e2e job (and by the local runner scripts).
+            // E2E_APP_PATH: set by mobile-ci's e2e job (and by the local runner scripts).
             appPath: process.env.E2E_APP_PATH ?? env('BUDGIE_APP_PATH'),
             permissions: { contacts: 'grant', microphone: 'grant' }
         }

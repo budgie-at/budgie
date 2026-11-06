@@ -28,11 +28,12 @@ import { SEARCH_LIST_BOTTOM_CLEARANCE } from '../searchable-page/searchable-page
 import type { LegendListSizingInterface } from '../../interface/legend-list-sizing.interface';
 import type { AppServices } from '../../runtime/app.runtime';
 import type { DeleteConfirmation } from '../deletable-row/deletable-row';
+import type * as Cause from 'effect/Cause';
 
 interface Props<T extends IdInterface> {
     data: T[] | null;
     emptyState: ReactNode;
-    onDelete?: (id: number) => Effect.Effect<unknown, unknown, AppServices>;
+    onDelete?: (id: number) => Effect.Effect<unknown, Cause.YieldableError, AppServices>;
     renderCard: (item: T, index: number, isLast: boolean) => ReactNode;
     getDeleteConfirmation?: (item: T) => DeleteConfirmation | undefined;
     listHeader?: ReactElement | null;
