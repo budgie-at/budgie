@@ -15,6 +15,7 @@ import { NativeCallError } from '../../@generic/error/native-call.error';
 import { isNotificationPermissionGranted } from '../../@generic/utils/is-notification-permission-granted.util';
 import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { postLocalNotification } from '../../@generic/utils/post-local-notification.util';
+import { BUDGET_ALERT_CHANNEL_ID } from '../../budget/constant/budget-alert-channel-id.constant';
 import { inzhurDismissedTopUpsAtom } from '../constant/inzhur-dismissed-top-ups-atom.constant';
 
 export class InzhurPendingTopUpService extends Context.Service<InzhurPendingTopUpService>()('@budgie/app/InzhurPendingTopUpService', {
@@ -91,7 +92,7 @@ export class InzhurPendingTopUpService extends Context.Service<InzhurPendingTopU
                         const date = dateFormat.format(topUp.operatedAt);
 
                         yield* postLocalNotification(
-                            { id: 'budget-alerts', name: i18n._(msg`Budget alerts`) },
+                            { id: BUDGET_ALERT_CHANNEL_ID, name: i18n._(msg`Budget alerts`) },
                             i18n._(msg`Inzhur top-up waiting`),
                             i18n._(msg`${amount} topped up ${date}. What did you buy?`)
                         );

@@ -13,6 +13,7 @@ import { NativeCallError } from '../../@generic/error/native-call.error';
 import { isNotificationPermissionGranted } from '../../@generic/utils/is-notification-permission-granted.util';
 import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { postLocalNotification } from '../../@generic/utils/post-local-notification.util';
+import { BUDGET_ALERT_CHANNEL_ID } from '../../budget/constant/budget-alert-channel-id.constant';
 
 export class InzhurStatementReminderService extends Context.Service<InzhurStatementReminderService>()(
     '@budgie/app/InzhurStatementReminderService',
@@ -52,7 +53,7 @@ export class InzhurStatementReminderService extends Context.Service<InzhurStatem
                 const { daysOld } = reminder;
 
                 yield* postLocalNotification(
-                    { id: 'budget-alerts', name: i18n._(msg`Budget alerts`) },
+                    { id: BUDGET_ALERT_CHANNEL_ID, name: i18n._(msg`Budget alerts`) },
                     i18n._(msg`Time for a fresh Inzhur export`),
                     plural(daysOld, {
                         one: 'Your last Inzhur export is # day old and money has moved since. Import a new one to keep your balances accurate.',
