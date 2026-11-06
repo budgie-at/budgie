@@ -23,6 +23,8 @@ enum BudgieAnswerKey: String {
 @available(iOS 17.0, *)
 enum BudgieCatalog {
   static let summaryKind = "SUMMARY"
+  static let categoryAnswerKind = "CATEGORY_ANSWER"
+  static let accountAnswerKind = "ACCOUNT_ANSWER"
   static let summaryId = "summary"
 
   static func records(ofKind kind: String, matching string: String) async throws -> [AppIntentEntityRecord] {
@@ -165,7 +167,7 @@ struct SpendingIntent: AppIntent {
   init() {}
 
   func perform() async throws -> some IntentResult & ProvidesDialog {
-    return .result(dialog: await BudgieCatalog.answer(kind: BudgieCategoryEntity.catalogKind, id: category.id, key: period.answerKey))
+    return .result(dialog: await BudgieCatalog.answer(kind: BudgieCatalog.categoryAnswerKind, id: category.id, key: period.answerKey))
   }
 }
 
@@ -204,7 +206,7 @@ struct BalanceIntent: AppIntent {
       return .result(dialog: await BudgieCatalog.answer(kind: BudgieCatalog.summaryKind, id: BudgieCatalog.summaryId, key: .netWorth))
     }
 
-    return .result(dialog: await BudgieCatalog.answer(kind: BudgieWalletAccountEntity.catalogKind, id: String(account.id), key: .balance))
+    return .result(dialog: await BudgieCatalog.answer(kind: BudgieCatalog.accountAnswerKind, id: String(account.id), key: .balance))
   }
 }
 

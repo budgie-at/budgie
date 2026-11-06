@@ -25,19 +25,20 @@ describe('Wallet capture account mirror', () => {
 
             yield* siriCatalogService.publish();
 
-            const [unlockedAccount] = walletCaptureNativeStub.getCatalog(SiriCatalogKindEnum.WALLET_ACCOUNT);
+            const [answer] = walletCaptureNativeStub.getCatalog(SiriCatalogKindEnum.ACCOUNT_ANSWER);
 
-            expect(walletCaptureNativeStub.getCatalog(SiriCatalogKindEnum.WALLET_ACCOUNT)).toHaveLength(1);
-            expect(unlockedAccount).toMatchObject({ id: String(activeAccount.id), title: activeAccount.title });
-            expect(unlockedAccount.metadata).toHaveProperty(SiriMetadataKeyEnum.BALANCE);
+            expect(walletCaptureNativeStub.getCatalog(SiriCatalogKindEnum.WALLET_ACCOUNT)).toEqual([
+                { id: String(activeAccount.id), title: activeAccount.title }
+            ]);
+            expect(answer.metadata).toHaveProperty(SiriMetadataKeyEnum.BALANCE);
 
             yield* siriCatalogService.mask();
 
-            const [lockedAccount] = walletCaptureNativeStub.getCatalog(SiriCatalogKindEnum.WALLET_ACCOUNT);
+            const [lockedAnswer] = walletCaptureNativeStub.getCatalog(SiriCatalogKindEnum.ACCOUNT_ANSWER);
 
-            expect(lockedAccount).toMatchObject({ id: String(activeAccount.id), title: activeAccount.title });
-            expect(lockedAccount.metadata).toHaveProperty(SiriMetadataKeyEnum.IS_LOCKED, 'true');
-            expect(lockedAccount.metadata).not.toHaveProperty(SiriMetadataKeyEnum.BALANCE);
+            expect(walletCaptureNativeStub.getCatalog(SiriCatalogKindEnum.WALLET_ACCOUNT)).toHaveLength(1);
+            expect(lockedAnswer.metadata).toHaveProperty(SiriMetadataKeyEnum.IS_LOCKED, 'true');
+            expect(lockedAnswer.metadata).not.toHaveProperty(SiriMetadataKeyEnum.BALANCE);
         }).pipe(Effect.provide(TestLayer))
     );
 });

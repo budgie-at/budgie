@@ -2,9 +2,11 @@ import { BudgetRepository } from '@budgie/budget';
 import {
     AccountBalanceRepository,
     AccountRepository,
+    AccountTypeEnum,
     CategoryRepository,
     DEFAULT_TRANSACTION_FILTER,
     InstrumentRepository,
+    InstrumentTypeEnum,
     LanguageEnum,
     SettingsRepository,
     StatisticsRepository,
@@ -45,7 +47,7 @@ import { SiriMetadataKeyEnum } from '../enum/siri-metadata-key.enum';
 
 import type { SiriAnswerContextInterface } from '../interface/siri-answer-context.interface';
 import type { BudgetProjectionScopeInterface } from '@budgie/budget';
-import type { TransactionFilterInterface } from '@budgie/contracts';
+import type { AccountEntityInterface, TransactionFilterInterface } from '@budgie/contracts';
 import type { AppIntentEntity } from 'expo-app-intents';
 
 export class SiriCatalogService extends Context.Service<SiriCatalogService>()('@budgie/app/SiriCatalogService', {
@@ -61,6 +63,7 @@ export class SiriCatalogService extends Context.Service<SiriCatalogService>()('@
         const recurringService = yield* RecurringService;
         const upcomingDays = 7;
         const summaryId = 'summary';
+        const answerKinds = [SiriCatalogKindEnum.ACCOUNT_ANSWER, SiriCatalogKindEnum.CATEGORY_ANSWER, SiriCatalogKindEnum.SUMMARY];
         const lockedMetadataKeys = new Set<string>([
             SiriMetadataKeyEnum.MONTH_KEY,
             SiriMetadataKeyEnum.AS_OF,
@@ -172,13 +175,7 @@ export class SiriCatalogService extends Context.Service<SiriCatalogService>()('@
             const locale = languageToLocale(language);
             const decimalPlaces = (settings?.showCents ?? true) ? DEFAULT_DECIMAL_PLACES : 0;
             const now = yield* DateTime.nowAsDate;
-            const isPinEnabled = settings?.isPinEnabled ?? false;
-
-            if (isPinEnabled) {
-                yield* Ref.set(isLockForced, false);
-            }
-
-            const isLocked = isPinEnabled || (yield* Ref.get(isLockForced));
+            const isLocked = (settings?.isPinEnabled ?? false) || (yield* Ref.get(isLockForced));
             const context: SiriAnswerContextInterface = {
                 i18n: setupI18n({ locale: language, messages: { [language]: messages } }),
                 language,
@@ -202,33 +199,33 @@ export class SiriCatalogService extends Context.Service<SiriCatalogService>()('@
         const publishCatalog = (kind: SiriCatalogKindEnum, records: readonly AppIntentEntity[]) =>
             callNative(() => AppIntents.setEntityCatalogAsync(kind, [...records]));
 
-        const orLogged =
-            <B>(fallback: B) =>
-            <A, E, R>(effect: Effect.Effect<A, E, R>): Effect.Effect<A | B, never, R> =>
-                Effect.catchCause(effect, cause => Effect.as(Effect.logError(cause), fallback));
+        const toTitleRecord = ({ id, title }: Pick<AccountEntityInterface, 'id' | 'title'>) => ({ id: String(id), title });
 
-        const publishWalletAccounts = Effect.fn('SiriCatalogService.publishWalletAccounts')(function* (
+        const publishWalletAccounts = Effect.fn('SiriCatalogService.publishWalletAccounts')(function* () {
+            const accounts = yield* accountRepository.getAllActiveAccounts;
+
+            yield* publishCatalog(SiriCatalogKindEnum.WALLET_ACCOUNT, accounts.filter(account => account.isActive).map(toTitleRecord));
+        });
+
+        const publishAccountAnswers = Effect.fn('SiriCatalogService.publishAccountAnswers')(function* (
             context: SiriAnswerContextInterface
         ) {
-            const accounts = yield* accountRepository.getAllActiveAccounts;
-            const balances = yield* accountBalanceRepository.getHomeAccountRows(context.instrument.id).pipe(
-                Effect.map(rows => new Map(rows.map(row => [row.account.id, formatAmount(row.balance, row.instrument.symbol, context)]))),
-                orLogged(new Map<number, string>())
-            );
+            const rows = yield* accountBalanceRepository.getHomeAccountRows(context.instrument.id);
 
             yield* publishCatalog(
-                SiriCatalogKindEnum.WALLET_ACCOUNT,
-                accounts
-                    .filter(account => account.isActive)
-                    .map(({ id, title: accountTitle }) => {
-                        const formattedBalance = balances.get(id);
+                SiriCatalogKindEnum.ACCOUNT_ANSWER,
+                rows
+                    .filter(({ account }) => account.isActive)
+                    .map(({ account, balance, instrument }) => {
+                        const accountTitle = account.title;
+                        const formattedBalance = formatAmount(balance, instrument.symbol, context);
+                        const hasBalanceAnswer = account.type !== AccountTypeEnum.DEBT && instrument.type !== InstrumentTypeEnum.CRYPTO;
 
                         return {
-                            id: String(id),
-                            title: accountTitle,
+                            ...toTitleRecord(account),
                             metadata: buildMetadata(
                                 {
-                                    ...(isDefined(formattedBalance) && {
+                                    ...(hasBalanceAnswer && {
                                         [SiriMetadataKeyEnum.BALANCE]: context.i18n._(
                                             msg`Your ${accountTitle} balance is ${formattedBalance}.`
                                         )
@@ -241,10 +238,7 @@ export class SiriCatalogService extends Context.Service<SiriCatalogService>()('@
             );
         });
 
-        const publishCategories = Effect.fn('SiriCatalogService.publishCategories')(function* (
-            context: SiriAnswerContextInterface,
-            budget: Effect.Success<ReturnType<typeof loadBudget>>
-        ) {
+        const publishCategories = Effect.fn('SiriCatalogService.publishCategories')(function* (context: SiriAnswerContextInterface) {
             const monthStart = startOfMonth(context.now);
             const lastMonthStart = subMonths(monthStart, 1);
             const expenseByCategory = (date: TransactionFilterInterface['date']) =>
@@ -253,7 +247,7 @@ export class SiriCatalogService extends Context.Service<SiriCatalogService>()('@
                     context.instrument.id,
                     context.language
                 );
-            const [categories, thisMonthRows, lastMonthRows] = yield* Effect.all(
+            const [allCategories, thisMonthRows, lastMonthRows] = yield* Effect.all(
                 [
                     categoryRepository.findAllNonSystemLocalized(context.language),
                     expenseByCategory({ from: monthStart, to: null }),
@@ -261,58 +255,43 @@ export class SiriCatalogService extends Context.Service<SiriCatalogService>()('@
                 ],
                 { concurrency: 'unbounded' }
             );
+            const categories = allCategories.filter(category => isNotEmptyString(category.title.trim()));
             const thisMonthSpent = sumByCategory(thisMonthRows);
             const lastMonthSpent = sumByCategory(lastMonthRows);
-            const categoryBudgets = new Map(
-                (budget?.projection.categories ?? [])
-                    .filter(category => isPositiveNumber(category.limit))
-                    .map(category => [category.categoryId, category] as const)
-            );
 
+            yield* publishCatalog(SiriCatalogKindEnum.CATEGORY, categories.map(toTitleRecord));
             yield* publishCatalog(
-                SiriCatalogKindEnum.CATEGORY,
-                categories
-                    .filter(category => isNotEmptyString(category.title.trim()))
-                    .map(({ id, title }) => {
-                        const formattedThisMonth = formatAmount(thisMonthSpent.get(id) ?? 0, context.instrument.symbol, context);
-                        const formattedLastMonth = formatAmount(lastMonthSpent.get(id) ?? 0, context.instrument.symbol, context);
-                        const categoryBudget = categoryBudgets.get(id);
+                SiriCatalogKindEnum.CATEGORY_ANSWER,
+                categories.map(category => {
+                    const { id, title } = category;
+                    const formattedThisMonth = formatAmount(thisMonthSpent.get(id) ?? 0, context.instrument.symbol, context);
+                    const formattedLastMonth = formatAmount(lastMonthSpent.get(id) ?? 0, context.instrument.symbol, context);
 
-                        return {
-                            id: String(id),
-                            title,
-                            metadata: buildMetadata(
-                                {
-                                    [SiriMetadataKeyEnum.THIS_MONTH]: context.i18n._(
-                                        msg`You spent ${formattedThisMonth} on ${title} this month.`
-                                    ),
-                                    [SiriMetadataKeyEnum.LAST_MONTH]: context.i18n._(
-                                        msg`You spent ${formattedLastMonth} on ${title} last month.`
-                                    ),
-                                    ...(isDefined(budget) &&
-                                        isDefined(categoryBudget) && {
-                                            [SiriMetadataKeyEnum.BUDGET]: buildBudgetAnswer(title, categoryBudget, budget.symbol, context)
-                                        })
-                                },
-                                context
-                            )
-                        };
-                    })
+                    return {
+                        ...toTitleRecord(category),
+                        metadata: buildMetadata(
+                            {
+                                [SiriMetadataKeyEnum.THIS_MONTH]: context.i18n._(
+                                    msg`You spent ${formattedThisMonth} on ${title} this month.`
+                                ),
+                                [SiriMetadataKeyEnum.LAST_MONTH]: context.i18n._(
+                                    msg`You spent ${formattedLastMonth} on ${title} last month.`
+                                )
+                            },
+                            context
+                        )
+                    };
+                })
             );
         });
 
-        const publishSummary = Effect.fn('SiriCatalogService.publishSummary')(function* (
-            context: SiriAnswerContextInterface,
-            budget: Effect.Success<ReturnType<typeof loadBudget>>
-        ) {
-            const [accounts, netWorthRows, upcomingAnswer] = yield* Effect.all(
-                [
-                    accountRepository.getAllActiveAccounts,
-                    accountBalanceRepository.getNetWorth(context.instrument.id),
-                    loadUpcomingAnswer(context).pipe(orLogged(null))
-                ],
+        const publishSummary = Effect.fn('SiriCatalogService.publishSummary')(function* (context: SiriAnswerContextInterface) {
+            const [accounts, netWorthRows] = yield* Effect.all(
+                [accountRepository.getAllActiveAccounts, accountBalanceRepository.getNetWorth(context.instrument.id)],
                 { concurrency: 'unbounded' }
             );
+            const budget = (yield* logAndContinue(loadBudget(context))) ?? null;
+            const upcomingAnswer = (yield* logAndContinue(loadUpcomingAnswer(context))) ?? null;
             const formattedNetWorth = formatAmount(netWorthRows.at(0)?.netWorth ?? 0, context.instrument.symbol, context);
 
             yield* publishCatalog(SiriCatalogKindEnum.SUMMARY, [
@@ -334,7 +313,7 @@ export class SiriCatalogService extends Context.Service<SiriCatalogService>()('@
                                             context
                                         )
                                     }),
-                                ...(isDefined(upcomingAnswer) && { [SiriMetadataKeyEnum.UPCOMING]: upcomingAnswer })
+                                ...(isNotEmptyString(upcomingAnswer) && { [SiriMetadataKeyEnum.UPCOMING]: upcomingAnswer })
                             },
                             context
                         ),
@@ -366,28 +345,35 @@ export class SiriCatalogService extends Context.Service<SiriCatalogService>()('@
                 return;
             }
 
+            yield* logAndContinue(publishWalletAccounts());
+
             const context = yield* buildContext();
 
-            yield* logAndContinue(publishWalletAccounts(context));
-
-            const budget = yield* loadBudget(context).pipe(orLogged(null));
-
-            yield* logAndContinue(publishCategories(context, budget));
-            yield* logAndContinue(publishSummary(context, budget));
+            yield* logAndContinue(publishAccountAnswers(context));
+            yield* logAndContinue(publishCategories(context));
+            yield* logAndContinue(publishSummary(context));
         });
 
         return {
             publish: Effect.fn('SiriCatalogService.publish')(function* () {
                 yield* publishSemaphore.withPermits(1)(publishCatalogs());
             }),
+            refreshWalletAccounts: Effect.fn('SiriCatalogService.refreshWalletAccounts')(function* () {
+                yield* publishSemaphore.withPermits(1)(publishWalletAccounts());
+            }),
             mask: Effect.fn('SiriCatalogService.mask')(function* () {
                 yield* Ref.set(isLockForced, true);
                 yield* publishSemaphore.withPermits(1)(
-                    Effect.forEach(Object.values(SiriCatalogKindEnum), kind => logAndContinue(sanitizeCatalog(kind)), { discard: true })
+                    Effect.forEach(answerKinds, kind => logAndContinue(sanitizeCatalog(kind)), { discard: true })
                 );
             }),
             unlock: Effect.fn('SiriCatalogService.unlock')(function* () {
                 yield* publishSemaphore.withPermits(1)(Effect.andThen(Ref.set(isLockForced, false), publishCatalogs()));
+            }),
+            clear: Effect.fn('SiriCatalogService.clear')(function* () {
+                yield* publishSemaphore.withPermits(1)(
+                    Effect.forEach(Object.values(SiriCatalogKindEnum), kind => logAndContinue(publishCatalog(kind, [])), { discard: true })
+                );
             })
         };
     })

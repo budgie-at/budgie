@@ -24,29 +24,36 @@ export class AppDataSyncService extends Context.Service<AppDataSyncService>()('@
         const walletCaptureImportService = yield* WalletCaptureImportService;
         const siriCatalogService = yield* SiriCatalogService;
 
+        const syncSources = Effect.fnUntraced(function* () {
+            yield* logAndContinue(accountBalanceIncrementalService.updateAllBalances(false));
+            yield* logAndContinue(walletCaptureImportService.drain());
+            yield* logAndContinue(exchangeRateBackgroundService.sync);
+            if (yield* workload.hasQueuedUserWork) {
+                return false;
+            }
+
+            yield* logAndContinue(monobankSyncService.sync());
+            if (yield* workload.hasQueuedUserWork) {
+                return false;
+            }
+
+            yield* logAndContinue(binanceSyncService.sync());
+            if (yield* workload.hasQueuedUserWork) {
+                return false;
+            }
+
+            yield* logAndContinue(enableBankingSyncService.sync());
+
+            return true;
+        });
+
         return {
             sync: Effect.fn('AppDataSyncService.sync')(function* () {
-                yield* logAndContinue(accountBalanceIncrementalService.updateAllBalances(false));
-                yield* logAndContinue(walletCaptureImportService.drain());
-                yield* logAndContinue(exchangeRateBackgroundService.sync);
+                const isComplete = yield* syncSources();
+
                 yield* logAndContinue(siriCatalogService.publish());
-                if (yield* workload.hasQueuedUserWork) {
-                    return false;
-                }
 
-                yield* logAndContinue(monobankSyncService.sync());
-                if (yield* workload.hasQueuedUserWork) {
-                    return false;
-                }
-
-                yield* logAndContinue(binanceSyncService.sync());
-                if (yield* workload.hasQueuedUserWork) {
-                    return false;
-                }
-
-                yield* logAndContinue(enableBankingSyncService.sync());
-
-                return true;
+                return isComplete;
             }),
             drainWalletCapturesOnInvocation: Stream.runForEach(walletCaptureNativeService.captureInvocations, () =>
                 logAndContinue(walletCaptureImportService.drain())
