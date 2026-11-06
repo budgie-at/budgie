@@ -81,6 +81,8 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs
                         WHEN ibanMatch = 1
                             AND (sameCurrencyAmountMatch = 1 OR operationAmountMatch = 1)
                         THEN 'AUTO_IBAN_AMOUNT'
+                        WHEN isHouseholdPair = 1
+                        THEN NULL
                         WHEN hasTransferMcc = 1
                             AND sameCurrencyAmountMatch = 1
                             AND isBridgeClaimedIncome = 0

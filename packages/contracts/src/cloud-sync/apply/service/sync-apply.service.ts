@@ -48,6 +48,8 @@ import type { SyncPreResolutionInterface } from '../interface/sync-pre-resolutio
 import type { SyncUnitOutcomeInterface } from '../interface/sync-unit-outcome.interface';
 import type { SyncCellType } from '../type/sync-cell.type';
 
+const TRANSACTIONS_TABLE = 'transactions';
+
 type ResolutionsType = ReadonlyMap<SyncRowInterface, ReadonlyMap<string, number>>;
 
 interface ChildSyncContextInterface {
@@ -151,6 +153,19 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
                 payload
             });
 
+        const findSplitHomeLocalId = Effect.fnUntraced(function* (linkId: string) {
+            for (const record of yield* repository.findFamilyRecords(linkId)) {
+                const localId =
+                    record.syncId === linkId ? null : yield* repository.findLocalId(TRANSACTIONS_TABLE, record.syncZone, record.syncId);
+
+                if (isDefined(localId)) {
+                    return localId;
+                }
+            }
+
+            return null;
+        });
+
         const resolveReference = Effect.fnUntraced(function* (
             reference: SyncRowReferenceInterface,
             zone: string,
@@ -164,10 +179,11 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
                 );
             }
 
-            return (
+            const localId =
                 unitIds.get(rowKey(reference.tableName, reference.key)) ??
-                (yield* repository.findLocalId(reference.tableName, zone, reference.key))
-            );
+                (yield* repository.findLocalId(reference.tableName, zone, reference.key));
+
+            return localId ?? (reference.tableName === TRANSACTIONS_TABLE ? yield* findSplitHomeLocalId(reference.key) : null);
         });
 
         const preResolve = Effect.fnUntraced(function* (rows: readonly SyncRowInterface[], unitKeys: ReadonlySet<string>) {
@@ -291,7 +307,17 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
             unitIds: Map<string, number>
         ) {
             const descriptor = descriptors[row.tableName];
-            const localId = yield* repository.insertRow(row.tableName, buildInsertColumns(descriptor, row, resolutions, unitIds));
+            const columns = buildInsertColumns(descriptor, row, resolutions, unitIds);
+            const movedChild = isDefined(descriptor.parentLink) ? yield* repository.findRow(row.tableName, row.syncZone, row.syncId) : null;
+
+            if (isDefined(movedChild)) {
+                yield* repository.updateRow(row.tableName, movedChild.__localId, columns);
+                unitIds.set(rowKey(row.tableName, row.syncId), movedChild.__localId);
+
+                return movedChild.__localId;
+            }
+
+            const localId = yield* repository.insertRow(row.tableName, columns);
 
             unitIds.set(rowKey(row.tableName, row.syncId), localId);
 
@@ -774,6 +800,10 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
                         isProgressed = true;
                         unit.decoded.rows.forEach(row => arrivals.add(row.syncId));
                         arrivals.add(unit.decoded.recordName);
+
+                        if (isDefined(unit.decoded.linkId)) {
+                            arrivals.add(unit.decoded.linkId);
+                        }
 
                         if (outcome.isWritten) {
                             tracker.addTouched(unit.decoded.recordType, unit.decoded.recordName, outcome.touchedRows);

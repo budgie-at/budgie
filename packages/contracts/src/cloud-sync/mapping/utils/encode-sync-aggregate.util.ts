@@ -11,6 +11,7 @@ import { SyncReferenceKindEnum } from '../enum/sync-reference-kind.enum';
 import { SyncIdentityUnresolvedError } from '../error/sync-identity-unresolved.error';
 import { SyncRecordTooLargeError } from '../error/sync-record-too-large.error';
 
+import { deriveTransactionLinkId } from './derive-transaction-link-id.util';
 import { planSyncRecordParts } from './plan-sync-record-parts.util';
 
 import type { SyncAggregateInterface } from '../interface/sync-aggregate.interface';
@@ -24,6 +25,7 @@ import type { SyncRowInputType } from '../type/sync-row-input.type';
 import type { SyncWireValueType } from '../type/sync-wire-value.type';
 
 const SEQUENCE_FIELD = 'sequence';
+const CONSOLIDATION_PARENT_PROPERTY = 'consolidationParentTransactionId';
 
 const encodePlainValue = (kind: SyncColumnKindEnum, value: unknown): SyncWireValueType | null => {
     switch (kind) {
@@ -43,13 +45,15 @@ const encodeReference = (
     descriptor: SyncTableDescriptorInterface,
     column: SyncColumnDescriptorInterface,
     localId: number,
-    resolver: SyncReferenceResolverInterface
+    resolver: SyncReferenceResolverInterface,
+    zone: string
 ): Result.Result<string, SyncIdentityUnresolvedError> => {
     const reference = column.reference;
-    const key =
-        reference?.kind === SyncReferenceKindEnum.NATURAL_KEY
-            ? resolver.findNaturalKey(reference.tableName, localId)
-            : resolver.findSyncIdentity(reference?.tableName ?? '', localId)?.syncId;
+    const identity =
+        reference?.kind === SyncReferenceKindEnum.NATURAL_KEY ? null : resolver.findSyncIdentity(reference?.tableName ?? '', localId);
+    const isCrossZoneParent = column.property === CONSOLIDATION_PARENT_PROPERTY && isDefined(identity) && identity.syncZone !== zone;
+    const syncIdKey = isCrossZoneParent ? deriveTransactionLinkId(identity.syncId) : identity?.syncId;
+    const key = reference?.kind === SyncReferenceKindEnum.NATURAL_KEY ? resolver.findNaturalKey(reference.tableName, localId) : syncIdKey;
 
     return isNotEmptyString(key)
         ? Result.succeed(key)
@@ -61,7 +65,8 @@ const encodeReference = (
 const encodeRow = (
     descriptor: SyncTableDescriptorInterface,
     row: SyncRowInputType,
-    resolver: SyncReferenceResolverInterface
+    resolver: SyncReferenceResolverInterface,
+    zone: string
 ): Result.Result<EncodedSyncFieldsType, SyncIdentityUnresolvedError> =>
     Result.gen(function* () {
         const fields: Record<string, SyncWireValueType> = {};
@@ -71,7 +76,7 @@ const encodeRow = (
 
             if (isDefined(column.reference)) {
                 if (isNumber(value)) {
-                    fields[column.field] = yield* encodeReference(descriptor, column, value, resolver);
+                    fields[column.field] = yield* encodeReference(descriptor, column, value, resolver, zone);
                 }
             } else {
                 const encoded = encodePlainValue(column.kind, value);
@@ -124,7 +129,7 @@ const encodeChildren = (
             const encodedRows: EncodedSyncFieldsType[] = [];
 
             for (const row of part.children[child.descriptor.tableName] ?? []) {
-                encodedRows.push(yield* encodeRow(child.descriptor, row, resolver));
+                encodedRows.push(yield* encodeRow(child.descriptor, row, resolver, part.zone));
             }
 
             if (isNotEmptyArray(encodedRows)) {
@@ -138,7 +143,7 @@ const encodeChildren = (
             const privateRows: EncodedSyncFieldsType[] = [];
 
             for (const row of part.legPrivateRows) {
-                privateRows.push(yield* encodeRow(legPrivateEntries.descriptor, row, resolver));
+                privateRows.push(yield* encodeRow(legPrivateEntries.descriptor, row, resolver, part.zone));
             }
 
             fields[legPrivateEntries.field] = JSON.stringify([...privateRows].sort(compareEncodedRows));
@@ -152,7 +157,7 @@ const encodePart = (
     resolver: SyncReferenceResolverInterface
 ): Result.Result<SyncRecordInterface, SyncIdentityUnresolvedError | SyncRecordTooLargeError> =>
     Result.gen(function* () {
-        const parentFields = yield* encodeRow(part.definition.parent, part.parent, resolver);
+        const parentFields = yield* encodeRow(part.definition.parent, part.parent, resolver, part.zone);
         const childFields = yield* encodeChildren(part, resolver);
         const encryptedFields = { ...parentFields, ...childFields, ...part.extraFields };
         const bytes = utf8ToBytes(JSON.stringify(encryptedFields)).length;

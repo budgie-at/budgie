@@ -3,12 +3,12 @@ import * as Result from 'effect/Result';
 import { isDefined, isNotEmptyString, isNumber } from '@rnw-community/shared';
 
 import { PERSONAL_SYNC_ZONE } from '../../constant/personal-sync-zone.constant';
-import { deriveSyncId } from '../../utils/derive-sync-id.util';
 import { SYNC_ID_PROPERTY, SYNC_ZONE_PROPERTY } from '../constant/sync-identity-properties.constant';
 import { SYNC_RECORD_DEFINITIONS } from '../constant/sync-record-definitions.constant';
 import { SyncRecordTypeEnum } from '../enum/sync-record-type.enum';
 import { SyncIdentityUnresolvedError } from '../error/sync-identity-unresolved.error';
 
+import { deriveTransactionLinkId } from './derive-transaction-link-id.util';
 import { resolveHomeZone } from './resolve-home-zone.util';
 
 import type { SyncAggregateInterface } from '../interface/sync-aggregate.interface';
@@ -17,7 +17,6 @@ import type { SyncReferenceResolverInterface } from '../interface/sync-reference
 import type { ZonedSyncEntryInterface } from '../interface/zoned-sync-entry.interface';
 import type { SyncRowInputType } from '../type/sync-row-input.type';
 
-const TRANSACTION_LINK_NAMESPACE = '5d7e0a3c-2f6b-4b1e-9c84-0e1a6f3d7b92';
 const ACCOUNTS_TABLE = 'accounts';
 const ENTRIES_TABLE = 'transaction_entries';
 const LEG_ACCOUNT_PROPERTIES = ['fromAccountId', 'toAccountId'];
@@ -84,7 +83,7 @@ export const planSyncRecordParts = (
 
         const homeZone = resolveHomeZone(entryZones, parentZone);
         const legZones = entryZones.filter(zone => zone !== homeZone);
-        const linkId = deriveSyncId(TRANSACTION_LINK_NAMESPACE, parentSyncId);
+        const linkId = deriveTransactionLinkId(parentSyncId);
         const entriesIn = (zone: string): readonly SyncRowInputType[] =>
             zonedEntries.filter(zonedEntry => zonedEntry.zone === zone).map(({ entry }) => entry);
         const isAccountIn = (accountId: unknown, zone: string): boolean =>
