@@ -3,9 +3,10 @@ import { useResolveClassNames, useUniwind } from 'uniwind';
 import { ScreenChromeProvider } from '@rnw-community/react-native-screen-chrome';
 import { isDefined, isString } from '@rnw-community/shared';
 
+import { ScreenChromeEdgeBand } from '../component/screen-chrome-edge-band/screen-chrome-edge-band';
 import { SCREEN_CHROME_CONFIG } from '../constant/screen-chrome-config.constant';
 
-import type { ScreenChromeConfigOverridesInterface } from '@rnw-community/react-native-screen-chrome';
+import type { EdgeFadeBandRenderPropsInterface, ScreenChromeConfigOverridesInterface } from '@rnw-community/react-native-screen-chrome';
 import type { ReactNode } from 'react';
 
 interface Props {
@@ -14,8 +15,12 @@ interface Props {
     readonly config?: ScreenChromeConfigOverridesInterface;
 }
 
-const FADE_SOLID_CLASSNAME = 'bg-surface/70 dark:bg-surface/65';
+const FADE_SOLID_CLASSNAME = 'bg-surface';
 const FADE_WASH_CLASSNAME = 'bg-surface/5';
+
+const renderEdgeFadeBand = ({ blur, position, height, colorScheme }: EdgeFadeBandRenderPropsInterface) => (
+    <ScreenChromeEdgeBand blur={blur} position={position} height={height} colorScheme={colorScheme} />
+);
 
 export const ScreenChromeThemeProvider = ({ children, syncNativeScrollOffset, config = SCREEN_CHROME_CONFIG }: Props) => {
     const { theme } = useUniwind();
@@ -25,7 +30,12 @@ export const ScreenChromeThemeProvider = ({ children, syncNativeScrollOffset, co
     const surfaceConfig = isDefined(surfaceColors) ? { ...config, colors: { light: surfaceColors, dark: surfaceColors } } : config;
 
     return (
-        <ScreenChromeProvider colorScheme={theme} config={surfaceConfig} syncNativeScrollOffset={syncNativeScrollOffset}>
+        <ScreenChromeProvider
+            colorScheme={theme}
+            config={surfaceConfig}
+            syncNativeScrollOffset={syncNativeScrollOffset}
+            renderEdgeFadeBand={renderEdgeFadeBand}
+        >
             {children}
         </ScreenChromeProvider>
     );
