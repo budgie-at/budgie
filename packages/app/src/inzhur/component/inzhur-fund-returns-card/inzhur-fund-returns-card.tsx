@@ -33,11 +33,7 @@ export const InzhurFundReturnsCard = ({ account }: Props) => {
     const captionSegments = [t`Gross, ${netLabel} after tax`];
 
     return (
-        <View
-            className="gap-y-lg self-stretch rounded-3xl bg-surface-row px-3xl py-[12px]"
-            style={CONTINUOUS_CORNERS}
-            testID={InzhurSelector.FundReturns}
-        >
+        <View className="self-stretch rounded-3xl bg-surface-row" style={CONTINUOUS_CORNERS} testID={InzhurSelector.FundReturns}>
             <InzhurMoneyRow
                 label={t`Dividends`}
                 captionSegments={captionSegments}

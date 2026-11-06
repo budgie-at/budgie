@@ -1,4 +1,5 @@
-import { AccountRepository, PRECISION, InvestmentReturnRepository, TransactionTypeEnum } from '@budgie/contracts';
+import { AccountRepository, TransactionRepository, PRECISION, InvestmentReturnRepository, TransactionTypeEnum } from '@budgie/contracts';
+import { InzhurGainService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -12,6 +13,7 @@ import { makeInzhurOperationsLayer } from '../../harness/inzhur/make-inzhur-oper
 import { requireInzhurFundAccount } from '../../harness/inzhur/require-inzhur-fund-account';
 import { requireInzhurSetup } from '../../harness/inzhur/require-inzhur-setup';
 import { seedInzhurBankAccount } from '../../harness/inzhur/seed-inzhur-bank-account';
+import { seedInzhurReitPrices } from '../../harness/inzhur/seed-inzhur-reit-prices';
 
 const URI = 'returns.xlsx';
 
@@ -25,9 +27,30 @@ const layer = makeInzhurOperationsLayer({
 });
 
 describe('inzhur/fund-returns', () => {
+    it.effect('attributes an uncovered bank dividend when funds are first created by an export', () =>
+        Effect.gen(function* () {
+            const bankAccount = yield* seedInzhurBankAccount;
+            yield* importInzhurBankFlow(
+                bankAccount.id,
+                'early-dividend',
+                REIT_DIVIDEND_DESCRIPTION,
+                120,
+                new Date('2026-05-05T12:00:00.000Z')
+            );
+            yield* importInzhurOperations(URI);
+            const reit = yield* requireInzhurFundAccount(REIT_ISIN);
+            const transactions = yield* (yield* TransactionRepository).findByAccountIdsWithEntries([bankAccount.id]);
+            expect(transactions.find(transaction => transaction.externalId === 'early-dividend')).toMatchObject({
+                fundAccountId: reit.id,
+                title: 'REIT dividends'
+            });
+        }).pipe(Effect.provide(layer))
+    );
+
     it.effect('groups bank and export dividends by the linked fund account', () =>
         Effect.gen(function* () {
-            const investmentReturnRepository = yield* InvestmentReturnRepository;
+            const gainService = yield* InzhurGainService;
+            yield* seedInzhurReitPrices;
             const bankAccount = yield* seedInzhurBankAccount;
 
             yield* importInzhurOperations(URI);
@@ -35,11 +58,12 @@ describe('inzhur/fund-returns', () => {
             yield* (yield* AccountRepository).updateById(reit.id, { title: 'Retirement' });
             yield* importInzhurBankFlow(bankAccount.id, 'dividend', REIT_DIVIDEND_DESCRIPTION, 120, new Date('2026-05-05T12:00:00.000Z'));
 
+            expect(yield* gainService.getFundCostReturn(reit.id, '2026-05-05')).toMatchObject({ dividends: 220 });
+            const investmentReturnRepository = yield* InvestmentReturnRepository;
             const energy = yield* requireInzhurFundAccount(ENERGY_ISIN);
             const movements = yield* investmentReturnRepository.findLedgerMovements([
                 reit.id,
                 energy.id,
-                bankAccount.id,
                 (yield* requireInzhurSetup()).cashAccount.id
             ]);
 

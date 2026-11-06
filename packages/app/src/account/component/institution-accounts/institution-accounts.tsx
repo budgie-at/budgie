@@ -4,17 +4,18 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 
-import { GroupedListSectionTitle } from '../../../@generic/component/grouped-list-section-title/grouped-list-section-title';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { InstitutionSelector } from '../../../app/(main)/institution/institution.selector';
+import { SettingsGroup } from '../../../settings/components/settings-group/settings-group';
 import { SettingsRowAccessory } from '../../../settings/components/settings-row-accessory/settings-row-accessory';
 import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
+import { TransactionRowSurface } from '../../../transaction/components/transaction-row-surface/transaction-row-surface';
+import { TransactionListRowPositionEnum } from '../../../transaction/enum/transaction-list-row-position.enum';
+import { getTransactionListRowPosition } from '../../../transaction/utils/get-transaction-list-row-position.util';
 import { InstitutionAccountRow } from '../institution-account-row/institution-account-row';
 
 import type { HomeAccountBalanceInterface } from '../../interface/home-account-balance.interface';
 import type { InstitutionGroupInterface } from '../../interface/institution-group.interface';
-
-const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 interface Props {
     readonly institution: InstitutionGroupInterface;
@@ -26,36 +27,43 @@ export const InstitutionAccounts = ({ institution, balancesByAccountId }: Props)
     const [showAll, setShowAll] = useState(false);
     const reducedMotion = useReducedMotion();
     const accountsCount = institution.accounts.length;
-    const visibleAccounts = showAll || accountsCount <= 4 ? institution.accounts : institution.accounts.slice(0, 3);
+    const visibleAccounts = showAll ? institution.accounts : institution.accounts.slice(0, 3);
     const hasMore = visibleAccounts.length < accountsCount;
-    const title = institution.accounts.every(account => account.type === AccountTypeEnum.CRYPTO_SYNC) ? t`Assets` : t`Accounts`;
+    const rowCount = visibleAccounts.length + Number(hasMore);
+    const title = institution.accounts.every(account => account.type === AccountTypeEnum.CRYPTO_SYNC)
+        ? t`Assets · ${accountsCount}`
+        : t`Accounts · ${accountsCount}`;
     const layoutProps = reducedMotion ? {} : { layout: LinearTransition.duration(200) };
     const handleShowAll = () => void setShowAll(true);
 
     return (
         <Animated.View {...layoutProps} testID={InstitutionSelector.Accounts}>
-            <GroupedListSectionTitle title={title} />
-            <View className="overflow-hidden rounded-3xl bg-grouped-surface-row py-xs" style={CONTINUOUS_CORNERS}>
-                {visibleAccounts.map(account => (
-                    <InstitutionAccountRow
-                        key={account.id}
-                        account={account}
-                        provider={institution.provider}
-                        bankName={institution.label}
-                        balancesByAccountId={balancesByAccountId}
-                    />
-                ))}
-                {hasMore ? (
-                    <SettingsRow
-                        title={t`Show all ${accountsCount} accounts`}
-                        icon={UserIconNameEnum.List}
-                        variant="ghost"
-                        onPress={handleShowAll}
-                        right={<SettingsRowAccessory />}
-                        testID={InstitutionSelector.ShowAllAccounts}
-                    />
-                ) : null}
-            </View>
+            <SettingsGroup title={title}>
+                <View>
+                    {visibleAccounts.map((account, index) => (
+                        <InstitutionAccountRow
+                            key={account.id}
+                            account={account}
+                            provider={institution.provider}
+                            bankName={institution.label}
+                            balancesByAccountId={balancesByAccountId}
+                            position={getTransactionListRowPosition(index, rowCount)}
+                        />
+                    ))}
+                    {hasMore ? (
+                        <TransactionRowSurface separatorInset={64} position={TransactionListRowPositionEnum.LAST}>
+                            <SettingsRow
+                                title={t`Show all ${accountsCount} accounts`}
+                                icon={UserIconNameEnum.List}
+                                variant="ghost"
+                                onPress={handleShowAll}
+                                right={<SettingsRowAccessory />}
+                                testID={InstitutionSelector.ShowAllAccounts}
+                            />
+                        </TransactionRowSurface>
+                    ) : null}
+                </View>
+            </SettingsGroup>
         </Animated.View>
     );
 };

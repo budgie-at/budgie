@@ -2,22 +2,23 @@ import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
+import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { ListRow } from '../../../@generic/component/list-row/list-row';
 import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { InzhurInstitutionRowDetail } from '../../../inzhur/component/inzhur-institution-row-detail/inzhur-institution-row-detail';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { BANK_PROVIDER_TITLE } from '../../constant/bank-provider-title.constant';
 import { getBankIntegrationTitle } from '../../utils/get-bank-integration-title.util';
-import { AccountCardBalance } from '../account-card-balance/account-card-balance';
 import { InstitutionRowDetail } from '../institution-row-detail/institution-row-detail';
+import { InstitutionRowTotal } from '../institution-row-total/institution-row-total';
 
 import { InstitutionRowSelector } from './institution-row.selector';
 
@@ -27,10 +28,15 @@ interface Props {
     readonly institution: InstitutionGroupInterface;
 }
 
+const rowVariants = cva('min-h-[64px] gap-x-xl py-lg pr-lg pl-3xl active:scale-100 active:bg-surface-fill', {
+    variants: { isStacked: { true: 'gap-y-sm', false: 'flex-row items-center' } }
+});
+
 export const InstitutionRow = ({ institution }: Props) => {
     const { integrationId, provider, label, groupNumber, accounts, total } = institution;
 
     const { t } = useLingui();
+    const isStacked = useIsAccessibilityTextSize();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const protectAmount = useProtectedAmountLabel();
 
@@ -45,42 +51,32 @@ export const InstitutionRow = ({ institution }: Props) => {
     const bankName = label ?? title;
     const accessibilityLabel = [title, protectAmount(total, defaultInstrument.symbol), accountsCountLabel].join(', ');
 
-    const detail =
-        provider === ExternalSourceEnum.INZHUR ? (
-            <InzhurInstitutionRowDetail />
-        ) : (
-            <InstitutionRowDetail accounts={accounts} accountsCountLabel={accountsCountLabel} />
-        );
-
     return (
         <HapticPressable
             accessibilityRole="button"
             accessibilityLabel={accessibilityLabel}
             onPress={handlePress}
-            className="min-h-[64px] px-3xl py-lg active:scale-100 active:bg-surface-fill"
+            className={rowVariants({ isStacked })}
             testID={InstitutionRowSelector.Row(integrationId)}
         >
-            <ListRow
-                leading={<BankLogo bankProvider={provider} bankName={bankName} size={44} />}
-                title={
-                    <Text
-                        className="text-[17px] font-semibold text-primary"
-                        maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
-                        numberOfLines={2}
-                    >
-                        {title}
-                    </Text>
-                }
-                trailing={
-                    <AccountCardBalance
-                        title={title}
-                        balance={total}
-                        instrumentSymbol={defaultInstrument.symbol}
-                        testID={InstitutionRowSelector.Total(integrationId)}
-                    />
-                }
-                detail={detail}
-            />
+            <BankLogo bankProvider={provider} bankName={bankName} size={44} />
+
+            <View className="min-w-0 flex-1 gap-y-xxs">
+                <Text
+                    className="text-[17px] font-semibold text-primary"
+                    maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+                    numberOfLines={2}
+                >
+                    {title}
+                </Text>
+                {provider === ExternalSourceEnum.INZHUR ? (
+                    <InzhurInstitutionRowDetail />
+                ) : (
+                    <InstitutionRowDetail accounts={accounts} accountsCountLabel={accountsCountLabel} />
+                )}
+            </View>
+
+            <InstitutionRowTotal integrationId={integrationId} total={total} />
         </HapticPressable>
     );
 };

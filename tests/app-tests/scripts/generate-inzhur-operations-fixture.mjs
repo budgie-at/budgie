@@ -1,8 +1,5 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
-import { createRequire } from 'node:module';
-
-const require = createRequire(new URL('../../sync-tests/package.json', import.meta.url));
-const { utils, write } = require('xlsx');
+import { utils, write } from 'xlsx';
 
 const SHEET_NAME = 'Виписка по операціям';
 const HEADER = ['Дата', 'Тип операції', 'Вид цінного паперу', 'Дебет', 'Кредит'];

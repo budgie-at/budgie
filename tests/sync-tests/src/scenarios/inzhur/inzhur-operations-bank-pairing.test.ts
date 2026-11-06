@@ -106,7 +106,11 @@ describe('inzhur/operations-bank-pairing', () => {
 
             const summary = yield* importInzhurOperations(URI);
 
-            expect(summary).toMatchObject({ recordedCount: 0, bankMatches: { paired: 1, unpaired: 1 } });
+            expect(summary).toMatchObject({
+                recordedCount: 0,
+                alreadyImportedCount: 9,
+                bankMatches: { paired: 1, unpaired: 1 }
+            });
             expect(yield* fetchAccountBalance(cashAccount.id)).toBe(CASH_AFTER_HISTORY * PRECISION);
         }).pipe(Effect.provide(layer))
     );

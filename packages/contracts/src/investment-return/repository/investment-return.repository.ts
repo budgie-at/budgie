@@ -34,7 +34,10 @@ export class InvestmentReturnRepository extends Context.Service<InvestmentReturn
                             and(
                                 transactionFilters.buildVisibleTransactionCondition(),
                                 transactionFilters.buildLedgerEntryCondition(),
-                                inArray(TransactionEntryEntityTable.accountId, [...accountIds])
+                                or(
+                                    inArray(TransactionEntryEntityTable.accountId, [...accountIds]),
+                                    inArray(TransactionEntityTable.fundAccountId, [...accountIds])
+                                )
                             )
                         )
                         .orderBy(asc(TransactionEntityTable.operatedAt), asc(TransactionEntryEntityTable.id))

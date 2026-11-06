@@ -146,6 +146,7 @@ export type { InstrumentMarketDataJobCreateEntityInterface } from './instrument-
 export { InstrumentRepository } from './instrument/repository/instrument.repository';
 
 export { BANK_FEE_CATEGORY_ID } from './category/constant/bank-fee-category-id.constant';
+export { TAXES_CATEGORY_ID } from './category/constant/taxes-category-id.constant';
 export { INVESTMENTS_CATEGORY_ID } from './category/constant/investments-category-id.constant';
 export { LENDING_CATEGORY_ID } from './category/constant/lending-category-id.constant';
 export { BORROWING_CATEGORY_ID } from './category/constant/borrowing-category-id.constant';

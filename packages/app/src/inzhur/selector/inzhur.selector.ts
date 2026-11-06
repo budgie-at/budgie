@@ -4,7 +4,6 @@ export const InzhurSelector = {
     SelectFileButton: 'Inzhur.SelectFileButton',
     DoneButton: 'Inzhur.DoneButton',
     ViewTransactionsButton: 'Inzhur.ViewTransactionsButton',
-    LastImported: 'Inzhur.LastImported',
     OperationsSummary: 'Inzhur.OperationsSummary',
     GainLine: 'Inzhur.GainLine',
     ValueChart: 'Inzhur.ValueChart',

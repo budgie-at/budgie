@@ -2,6 +2,8 @@ import { useLingui } from '@lingui/react/macro';
 
 import { EmptyFn } from '@rnw-community/shared';
 
+import { PROTECTED_AMOUNT_PLACEHOLDER } from '../../../@generic/constant/protected-amount-placeholder.constant';
+import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { UpdateAccountPage } from '../../../account/component/update-account-page/update-account-page';
 import { useFormatFundQuantity } from '../../../i18n/hook/use-format-fund-quantity.hook';
 
@@ -19,7 +21,8 @@ interface Props {
 export const UpdateInzhurAccountPage = ({ account, balance, fields, isSubmitting, onSubmit }: Props) => {
     const { t } = useLingui();
     const formatFundQuantity = useFormatFundQuantity();
-    const quantityLabel = formatFundQuantity(balance);
+    const isAmountProtected = useIsAmountProtected();
+    const quantityLabel = isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : formatFundQuantity(balance);
 
     return (
         <UpdateAccountPage

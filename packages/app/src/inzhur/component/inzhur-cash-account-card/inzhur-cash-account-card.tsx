@@ -8,13 +8,14 @@ import type { AccountWithSyncEntityInterface } from '@budgie/contracts';
 interface Props {
     readonly account: AccountWithSyncEntityInterface;
     readonly balance: number;
+    readonly convertedBalance: number | null;
 }
 
-export const InzhurCashAccountCard = ({ account, balance }: Props) => {
+export const InzhurCashAccountCard = ({ account, balance, convertedBalance }: Props) => {
     const { t } = useLingui();
 
     return (
-        <AccountCardBase account={account} balance={balance} convertedBalance={null} subtitle={t`Not yet invested`}>
+        <AccountCardBase account={account} balance={balance} convertedBalance={convertedBalance} subtitle={t`Not yet invested`}>
             <AccountCardBalance title={account.title} balance={balance} instrumentSymbol={account.instrument.symbol} />
         </AccountCardBase>
     );

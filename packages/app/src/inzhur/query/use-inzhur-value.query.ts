@@ -23,14 +23,11 @@ export const useInzhurValueQuery = (): InzhurValueInterface | null => {
 
     const integrationId = setup.integration.id;
     const inzhurRows = rows.filter(row => row.account.integrationId === integrationId && row.account.isActive);
-    const sumRows = (isFund: boolean) =>
-        inzhurRows
-            .filter(row => (row.instrument.type === InstrumentTypeEnum.FUND) === isFund)
-            .reduce((total, row) => total + convertFromMicroUnits(row.convertedBalance), 0);
-    const cash = sumRows(false);
-    const funds = sumRows(true);
+    const cash = inzhurRows
+        .filter(row => row.instrument.type !== InstrumentTypeEnum.FUND)
+        .reduce((total, row) => total + convertFromMicroUnits(row.convertedBalance), 0);
 
     const fundCount = inzhurRows.filter(row => row.instrument.type === InstrumentTypeEnum.FUND && row.balance !== 0).length;
 
-    return { cash, funds, fundCount, total: cash + funds };
+    return { cash, fundCount };
 };

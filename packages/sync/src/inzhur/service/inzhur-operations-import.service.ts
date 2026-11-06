@@ -2,6 +2,7 @@ import {
     AccountBalanceRepository,
     Db,
     INVESTMENTS_CATEGORY_ID,
+    TAXES_CATEGORY_ID,
     SyncRepository,
     TransactionEntryTypeEnum,
     TransactionRepository,
@@ -15,7 +16,7 @@ import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { SyncFileReader } from '../../core/port/sync-file-reader.port';
 import { SyncWorkload } from '../../core/port/sync-workload.port';
@@ -43,7 +44,6 @@ import { InzhurBankFlowService } from './inzhur-bank-flow.service';
 import { InzhurFundAccountService } from './inzhur-fund-account.service';
 import { InzhurOpeningBalanceService } from './inzhur-opening-balance.service';
 import { InzhurOperationsBankPairingService } from './inzhur-operations-bank-pairing.service';
-import { InzhurSetupLookupService } from './inzhur-setup-lookup.service';
 import { InzhurSetupService } from './inzhur-setup.service';
 
 import type { InzhurOperationsExportInterface } from '../interface/inzhur-operations-export.interface';
@@ -58,7 +58,6 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
     '@budgie/sync/InzhurOperationsImportService',
     {
         make: Effect.gen(function* () {
-            const INZHUR_TAXES_CATEGORY_ID = 31;
             const accountBalanceRepository = yield* AccountBalanceRepository;
             const syncRepository = yield* SyncRepository;
             const transactionRepository = yield* TransactionRepository;
@@ -69,7 +68,6 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
             const inzhurOpeningBalanceService = yield* InzhurOpeningBalanceService;
             const inzhurFundAccountService = yield* InzhurFundAccountService;
             const inzhurOperationsBankPairingService = yield* InzhurOperationsBankPairingService;
-            const inzhurSetupLookupService = yield* InzhurSetupLookupService;
             const inzhurSetupService = yield* InzhurSetupService;
             const syncFileReader = yield* SyncFileReader;
             const syncWorkload = yield* SyncWorkload;
@@ -148,7 +146,7 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                         action.cashAmount,
                         action.externalId
                     ),
-                    categoryId: isDividend ? INVESTMENTS_CATEGORY_ID : INZHUR_TAXES_CATEGORY_ID
+                    categoryId: isDividend ? INVESTMENTS_CATEGORY_ID : TAXES_CATEGORY_ID
                 };
                 const title = `${toInzhurShortName(fundAccount.title)} ${isDividend ? 'dividends' : 'dividend tax'}`;
 
@@ -244,8 +242,6 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                 const periodStart = getKyivDayStart(toKyivDay(plan.firstAt));
                 const periodEnd = getKyivDayStart(toKyivDay(plan.lastAt), 1);
 
-                yield* inzhurBankFlowService.convert(setup, null);
-
                 const accountByFund = new Map<string, AccountEntityInterface>();
 
                 for (const name of new Set(plan.actions.flatMap(action => (isDefined(action.fundName) ? [action.fundName] : [])))) {
@@ -253,6 +249,19 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
 
                     accountByFund.set(name, fundAccount);
                 }
+
+                yield* inzhurBankFlowService.convert(
+                    {
+                        ...setup,
+                        fundAccounts: [
+                            ...setup.fundAccounts,
+                            ...[...accountByFund.values()].filter(
+                                account => !setup.fundAccounts.some(existing => existing.id === account.id)
+                            )
+                        ]
+                    },
+                    null
+                );
 
                 const fundAccountIds = [
                     ...new Set([
@@ -273,7 +282,9 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                     ? yield* transactionRepository.findByAccountIdsWithEntries([cashAccountId, ...fundAccountIds])
                     : before;
                 const existingIds = new Set(
-                    ledger.flatMap(transaction => (isDefined(transaction.externalId) ? [transaction.externalId] : []))
+                    ledger.flatMap(transaction =>
+                        [transaction.externalId, ...transaction.entries.map(entry => entry.externalId)].filter(isNotEmptyString)
+                    )
                 );
                 const newActions = plan.actions.filter(action => !existingIds.has(action.externalId));
                 const quantities = inzhurQuantityResolver.resolve({
@@ -332,16 +343,21 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                         const storedCash = stored?.entries.find(entry => entry.accountId === cashAccountId)?.amount;
                         const storedQuantity = stored?.entries.find(entry => entry.accountId === account?.id)?.amount;
 
+                        const quantity = action.isSellAll
+                            ? (quantities.get(action.externalId)?.microUnits ?? storedQuantity)
+                            : storedQuantity;
+
                         return isDefined(stored) &&
                             isDefined(account) &&
                             isDefined(storedCash) &&
                             isDefined(storedQuantity) &&
-                            convertToMicroUnits(action.cashAmount) > storedCash
-                            ? [{ stored, action, account, storedQuantity }]
+                            isDefined(quantity) &&
+                            (convertToMicroUnits(action.cashAmount) > storedCash || quantity !== storedQuantity)
+                            ? [{ stored, action, account, quantity }]
                             : [];
                     });
                 const tradeInputs = [
-                    ...amendedTrades.map(({ action, account, storedQuantity }) => buildTradeInput(action, account, storedQuantity)),
+                    ...amendedTrades.map(({ action, account, quantity }) => buildTradeInput(action, account, quantity)),
                     ...newActions.filter(isTrade).flatMap(action => {
                         const account = accountByFund.get(action.fundName ?? '');
                         const quantity = quantities.get(action.externalId);
@@ -374,17 +390,14 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                         Math.min(setup.cashSync.backwardSyncedAt?.getTime() ?? plan.firstAt.getTime(), plan.firstAt.getTime())
                     )
                 );
-                yield* adjustOpeningCash(
-                    setup,
-                    coverageStart,
-                    DateTime.toDateUtc(DateTime.makeUnsafe(Math.max(setup.cashSync.forwardSyncedAt?.getTime() ?? 0, plan.lastAt.getTime())))
+                const coverageEnd = DateTime.toDateUtc(
+                    DateTime.makeUnsafe(Math.max(setup.cashSync.forwardSyncedAt?.getTime() ?? 0, plan.lastAt.getTime()))
                 );
+                yield* adjustOpeningCash(setup, coverageStart, coverageEnd);
 
                 yield* syncRepository.update(setup.cashSync.id, {
                     backwardSyncedAt: coverageStart,
-                    forwardSyncedAt: DateTime.toDateUtc(
-                        DateTime.makeUnsafe(Math.max(setup.cashSync.forwardSyncedAt?.getTime() ?? 0, plan.lastAt.getTime()))
-                    )
+                    forwardSyncedAt: coverageEnd
                 });
 
                 const quantityOf = (action: InzhurPlannedActionInterface) =>
@@ -431,23 +444,18 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                     const bytes = yield* syncFileReader.readBytes(uri);
                     const exported = yield* inzhurOperationsParser.parse(bytes);
 
-                    return yield* syncWorkload.runUser(
-                        Effect.gen(function* () {
-                            const existingSetup = yield* inzhurSetupLookupService.findSetup();
-                            const latestConversion = exported.operations
-                                .filter(operation => operation.kind === InzhurOperationKindEnum.CONVERSION)
-                                .at(-1);
-                            const currentPrices =
-                                isDefined(latestConversion) &&
-                                (!isDefined(existingSetup?.cashSync.forwardSyncedAt) ||
-                                    latestConversion.occurredAt > existingSetup.cashSync.forwardSyncedAt)
-                                    ? yield* inzhurPriceService.fetchPrices.pipe(Effect.orElseSucceed(() => []))
-                                    : [];
+                    const importWith = (prices: readonly InzhurFundPriceInterface[]) =>
+                        Db.transaction(Effect.flatMap(inzhurSetupService.setup(), setup => run(setup, exported, prices)));
 
-                            return yield* Db.transaction(
-                                Effect.flatMap(inzhurSetupService.setup(), setup => run(setup, exported, currentPrices))
-                            );
-                        })
+                    return yield* syncWorkload.runUser(
+                        importWith([]).pipe(
+                            Effect.catchTag('InzhurPriceMissingError', () =>
+                                inzhurPriceService.fetchPrices.pipe(
+                                    Effect.orElseSucceed(() => []),
+                                    Effect.flatMap(importWith)
+                                )
+                            )
+                        )
                     );
                 })
             };
@@ -466,7 +474,6 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
             InzhurOpeningBalanceService.layer,
             InzhurOperationsBankPairingService.layer,
             InzhurFundAccountService.layer,
-            InzhurSetupLookupService.layer,
             InzhurSetupService.layer
         ])
     );

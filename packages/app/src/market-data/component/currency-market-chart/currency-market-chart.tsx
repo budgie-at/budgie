@@ -83,7 +83,7 @@ export const CurrencyMarketChart = ({ prices, selectedIndex, rangeLabel, startLa
     const handleLayout = (event: LayoutChangeEvent) => void setWidth(event.nativeEvent.layout.width);
 
     return (
-        <View {...accessibilityProps} className="w-full px-[4px]" testID={testID}>
+        <View {...accessibilityProps} className="h-[184px] w-full" testID={testID}>
             <GestureDetector gesture={panGesture}>
                 <View className="h-[164px] w-full" onLayout={handleLayout}>
                     <Svg width={width} height={MARKET_CHART_PLOT_HEIGHT}>

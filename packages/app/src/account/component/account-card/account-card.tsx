@@ -20,7 +20,7 @@ export const AccountCard = ({ account, balance, convertedBalance }: Props) => {
     }
 
     if (isInzhurCashAccount(account)) {
-        return <InzhurCashAccountCard account={account} balance={balance} />;
+        return <InzhurCashAccountCard account={account} balance={balance} convertedBalance={convertedBalance} />;
     }
 
     if (account.type === AccountTypeEnum.BANK_SYNC) {

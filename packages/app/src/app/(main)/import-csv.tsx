@@ -23,7 +23,6 @@ import { BottomChromeInsetProvider, ScreenChromeFrame } from '@rnw-community/rea
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { FixedChromeHeader } from '../../@generic/component/fixed-chrome-header/fixed-chrome-header';
-import { FixedChromeScroll } from '../../@generic/component/fixed-chrome-scroll/fixed-chrome-scroll';
 import { GoBackButton } from '../../@generic/component/go-back-button/go-back-button';
 import { GroupedListSection } from '../../@generic/component/grouped-list-section/grouped-list-section';
 import { GroupedSurface } from '../../@generic/component/grouped-surface/grouped-surface';
@@ -34,6 +33,7 @@ import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { ImportColumnMapField } from '../../import/components/import-column-map-field/import-column-map-field';
 import { ImportPresetPicker } from '../../import/components/import-preset-picker/import-preset-picker';
 import { ImportScreenFooter } from '../../import/components/import-screen-footer/import-screen-footer';
+import { ImportScreenScroll } from '../../import/components/import-screen-scroll/import-screen-scroll';
 import { EMPTY_IMPORT_CSV } from '../../import/constant/empty-import-csv.constant';
 import { importCsvAtom } from '../../import/constant/import-csv-atom.constant';
 import { detectImportPreset } from '../../import/utils/detect-import-preset.util';
@@ -177,7 +177,7 @@ export default function ImportScreen() {
             <ScreenChromeThemeProvider>
                 <BottomChromeInsetProvider>
                     <ScreenChromeFrame>
-                        <FixedChromeScroll>
+                        <ImportScreenScroll>
                             <ImportPresetPicker
                                 key={fileUri}
                                 detectedPreset={detectedPreset}
@@ -206,7 +206,7 @@ export default function ImportScreen() {
                                     </GroupedListSection>
                                 );
                             })}
-                        </FixedChromeScroll>
+                        </ImportScreenScroll>
                         <FixedChromeHeader title={t`Map CSV columns`} leading={<GoBackButton onPress={handleGoBack} />} />
                         <ImportScreenFooter
                             buttonContent={buttonContent}

@@ -1,4 +1,4 @@
-import { INVESTMENTS_CATEGORY_ID, PRECISION, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { INVESTMENTS_CATEGORY_ID, TAXES_CATEGORY_ID, PRECISION, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { InzhurGainService, InzhurSetupService, InzhurStatementInvalidError } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
@@ -100,7 +100,14 @@ describe('inzhur/operations-import', () => {
             expect(titled('Ocean dividend tax')[0]).toMatchObject({
                 type: TransactionTypeEnum.EXPENSE,
                 fundAccountId: ocean.id,
-                entries: [{ accountId: cashAccount.id, type: TransactionEntryTypeEnum.CREDIT, amount: 36 * PRECISION, categoryId: 31 }]
+                entries: [
+                    {
+                        accountId: cashAccount.id,
+                        type: TransactionEntryTypeEnum.CREDIT,
+                        amount: 36 * PRECISION,
+                        categoryId: TAXES_CATEGORY_ID
+                    }
+                ]
             });
             expect(titled('Top-up to Inzhur')[0]).toMatchObject({
                 type: TransactionTypeEnum.TRANSFER,

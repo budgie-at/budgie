@@ -142,12 +142,10 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
         };
 
         const fundFlowOf = (ledger: InzhurGainLedgerInterface, accountId: number, item: InzhurDatedMovementInterface) => {
-            if (item.movement.accountId !== ledger.cashAccountId) {
-                return 0;
-            }
-
             const isTrade =
-                item.movement.transactionType === TransactionTypeEnum.TRANSFER && findCounterpartId(ledger, item.movement) === accountId;
+                item.movement.accountId === ledger.cashAccountId &&
+                item.movement.transactionType === TransactionTypeEnum.TRANSFER &&
+                findCounterpartId(ledger, item.movement) === accountId;
             const isReinvestedDividend =
                 item.movement.transactionType === TransactionTypeEnum.INCOME && item.movement.fundAccountId === accountId;
 
@@ -273,7 +271,7 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
                         item.movement.transactionType === TransactionTypeEnum.TRANSFER &&
                         findCounterpartId(ledger, item.movement) === fundAccountId
                 );
-                const fundItems = cashItems.filter(item => item.movement.fundAccountId === fundAccountId);
+                const fundItems = ledger.dated.filter(item => item.day <= today && item.movement.fundAccountId === fundAccountId);
                 const invested = trades.filter(item => item.amount < 0).reduce((total, item) => total - item.amount, 0);
                 const proceeds = trades.filter(item => isPositiveNumber(item.amount)).reduce((total, item) => total + item.amount, 0);
                 const dividends = fundItems

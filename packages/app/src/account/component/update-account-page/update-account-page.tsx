@@ -28,13 +28,12 @@ interface Props {
     readonly fields: Pick<AccountFormBindingsInterface, 'title' | 'icon' | 'isActive' | 'includeInNetWorth'>;
     readonly hero: ReactNode;
     readonly detailsFooter?: string | null;
-    readonly footerCaption?: string | null;
     readonly children?: ReactNode;
     readonly onSubmit: EmptyFn;
     readonly isSubmitting?: boolean;
 }
 
-export const UpdateAccountPage = ({ account, fields, hero, detailsFooter, footerCaption, children, onSubmit, isSubmitting }: Props) => {
+export const UpdateAccountPage = ({ account, fields, hero, detailsFooter, children, onSubmit, isSubmitting }: Props) => {
     const { t } = useLingui();
     const { instrument } = useGetInstrumentByIdQuery(account.instrumentId);
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
@@ -59,7 +58,6 @@ export const UpdateAccountPage = ({ account, fields, hero, detailsFooter, footer
                 testID={CreateAccountScreenSelector.ScrollView}
                 footer={
                     <PillButtonFooter
-                        caption={footerCaption}
                         label={t`Save changes`}
                         isLoading={isSubmitting}
                         testID={CreateAccountScreenSelector.SubmitButton}

@@ -11,7 +11,7 @@ import { fetchSourceLedger } from '../../harness/inzhur/fetch-source-ledger';
 import { importInzhurBankFlow } from '../../harness/inzhur/import-inzhur-bank-flow';
 import { importInzhurOperations } from '../../harness/inzhur/import-inzhur-operations';
 import { TOP_UP_DESCRIPTION } from '../../harness/inzhur/inzhur-bank-descriptions.constant';
-import { CASH_AFTER_HISTORY, FULL_HISTORY_ROWS, OCEAN, TOP_UP_TYPE } from '../../harness/inzhur/inzhur-operation-rows.constant';
+import { CASH_AFTER_HISTORY, FULL_HISTORY_ROWS, OCEAN, REIT, TOP_UP_TYPE } from '../../harness/inzhur/inzhur-operation-rows.constant';
 import { makeInzhurOperationsLayer } from '../../harness/inzhur/make-inzhur-operations-layer';
 import { requireInzhurFundByName } from '../../harness/inzhur/require-inzhur-fund-by-name';
 import { requireInzhurSetup } from '../../harness/inzhur/require-inzhur-setup';
@@ -24,6 +24,11 @@ const NEWER_URI = 'newer.xlsx';
 const FRESH_URI = 'fresh.xlsx';
 
 const layer = makeInzhurOperationsLayer({
+    'extended.xlsx': buildInzhurOperationsWorkbook([
+        { at: '2026-01-05T09:00:00', type: TOP_UP_TYPE, debit: 800 },
+        { at: '2026-01-05T10:00:00', type: 'Купівля 20 сертифікатів', fund: OCEAN, credit: 800 },
+        ...FULL_HISTORY_ROWS
+    ]),
     [URI]: buildInzhurOperationsWorkbook(FULL_HISTORY_ROWS),
     [OLDER_URI]: buildInzhurOperationsWorkbook(FULL_HISTORY_ROWS.slice(0, 4)),
     [NEWER_URI]: buildInzhurOperationsWorkbook(FULL_HISTORY_ROWS.slice(4)),
@@ -35,6 +40,31 @@ const snapshotLedger = Effect.map(fetchSourceLedger(ExternalSourceEnum.INZHUR), 
 );
 
 describe('inzhur/operations-lifecycle', () => {
+    it.effect('reconciles sell-all quantities when earlier holdings arrive and preserves ids on re-import', () =>
+        Effect.gen(function* () {
+            yield* seedInzhurReitPrices;
+            yield* importInzhurOperations(URI);
+            const { cashAccount } = yield* requireInzhurSetup();
+            const reit = yield* requireInzhurFundByName(REIT);
+            const cashBefore = yield* fetchAccountBalance(cashAccount.id);
+            const reitBefore = yield* fetchAccountBalance(reit.id);
+            const summary = yield* importInzhurOperations('extended.xlsx');
+            const ocean = yield* requireInzhurFundByName(OCEAN);
+            expect(summary.funds.find(fund => fund.name === OCEAN)?.convertedOutQuantity).toBe(120);
+            expect(yield* fetchAccountBalance(ocean.id)).toBe(0);
+            expect(
+                (yield* fetchInzhurLedger)
+                    .find(transaction => transaction.title === 'Sold Ocean')
+                    ?.entries.find(entry => entry.accountId === ocean.id)?.amount
+            ).toBe(120 * PRECISION);
+            expect(yield* fetchAccountBalance(cashAccount.id)).toBe(cashBefore);
+            expect(yield* fetchAccountBalance(reit.id)).toBe(reitBefore);
+            const snapshot = yield* snapshotLedger;
+            yield* importInzhurOperations('extended.xlsx');
+            expect(yield* snapshotLedger).toEqual(snapshot);
+        }).pipe(Effect.provide(layer))
+    );
+
     it.effect('is idempotent for the same export, an overlapping export and an older export', () =>
         Effect.gen(function* () {
             yield* seedInzhurReitPrices;

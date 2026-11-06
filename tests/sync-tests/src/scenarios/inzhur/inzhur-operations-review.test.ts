@@ -24,6 +24,7 @@ const NO_SURCHARGE_URI = 'no-surcharge.xlsx';
 const SECOND_TOP_UP_URI = 'second-top-up.xlsx';
 
 const bytesByUri = {
+    'late.xlsx': buildInzhurOperationsWorkbook([{ at: '2026-06-10T10:00:00', type: TOP_UP_TYPE, debit: 50 }]),
     'empty.xlsx': buildInzhurOperationsWorkbook([]),
     [FULL_URI]: buildInzhurOperationsWorkbook(FULL_HISTORY_ROWS),
     [NO_SURCHARGE_URI]: buildInzhurOperationsWorkbook(FULL_HISTORY_ROWS.filter(row => row.type !== 'Доплата')),
@@ -40,6 +41,15 @@ const expectSurchargePreserved = Effect.fnUntraced(function* (cashAccountId: num
 });
 
 describe('inzhur/operations-review', () => {
+    it.effect('fetches missing conversion prices after a newer top-up-only import', () =>
+        Effect.gen(function* () {
+            yield* importInzhurOperations('late.xlsx');
+            const summary = yield* importInzhurOperations(FULL_URI);
+            expect(summary.funds.find(fund => fund.name === REIT)).toMatchObject({ isConvertedInEstimated: true });
+            expect(yield* fetchAccountBalance((yield* requireInzhurFundByName(REIT)).id)).toBe(480 * PRECISION);
+        }).pipe(Effect.provide(Layer.merge(layer, inzhurHomeClientLayer({ [REIT]: 10 }))))
+    );
+
     it.effect('estimates a first-import conversion from the live Inzhur price when nothing is cached', () =>
         Effect.gen(function* () {
             const summary = yield* importInzhurOperations(FULL_URI);
