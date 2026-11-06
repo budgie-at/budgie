@@ -21,10 +21,13 @@ import { HomeSectionHeader } from '../home-section-header/home-section-header';
 import { HomeSectionItem } from '../home-section-item/home-section-item';
 
 import type { ReactElement } from 'react';
-import type { SectionListRenderItem } from 'react-native';
+import type { SectionListProps, SectionListRenderItem } from 'react-native';
 
 const AnimatedSectionList = Animated.createAnimatedComponent(SectionList<HomeSectionInterface['data'][number], HomeSectionInterface>);
 const LIST_HORIZONTAL_PADDING = 16;
+const renderSectionFooter: SectionListProps<HomeSectionInterface['data'][number], HomeSectionInterface>['renderSectionFooter'] = ({
+    section
+}) => <HomeSectionFooter section={section} />;
 
 interface Props {
     readonly sections: HomeSectionInterface[];
@@ -48,10 +51,11 @@ export const HomeSectionsList = ({
     const { top } = useSafeAreaInsets();
     const { config } = useScreenChrome();
     const { onScroll } = useCollapsibleChromeScroll();
-    const listStyle = { marginTop: top + (config.collapsedHeaderHeight ?? config.headerHeight) };
+    const collapsedHeaderHeight = config.collapsedHeaderHeight ?? config.headerHeight;
+    const listStyle = { marginTop: top + collapsedHeaderHeight };
     const scrollProps = useScreenChromeScrollProps({
         includeTopSafeArea: false,
-        contentInsetTop: config.headerHeight - (config.collapsedHeaderHeight ?? config.headerHeight),
+        contentInsetTop: config.headerHeight - collapsedHeaderHeight,
         contentContainerStyle: {
             paddingBottom: FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottomInset,
             paddingHorizontal: LIST_HORIZONTAL_PADDING,
@@ -65,8 +69,6 @@ export const HomeSectionsList = ({
         ) : null;
 
     const listEmptyComponent = isLoading || activeAccountCount > 0 ? null : AccountsEmptyState;
-
-    const renderSectionFooter = ({ section }: { section: HomeSectionInterface }) => <HomeSectionFooter section={section} />;
 
     const renderSectionHeader = ({ section }: { section: HomeSectionInterface }) => <HomeSectionHeader section={section} />;
 
