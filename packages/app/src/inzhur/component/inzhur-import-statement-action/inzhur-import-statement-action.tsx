@@ -23,7 +23,12 @@ export const InzhurImportStatementAction = () => {
     const reminder = useInzhurStatementReminderQuery();
     const freshness = useInzhurFreshnessQuery();
     const { formatMonthAndDayAndOptionalYear } = useFormatDate();
-    const statementDate = isDefined(freshness?.statementDate) ? formatMonthAndDayAndOptionalYear(parseISO(freshness.statementDate)) : '';
+    const lastStatementDate = reminder?.lastStatementDate ?? freshness?.statementDate;
+    const statementDate = isDefined(lastStatementDate) ? formatMonthAndDayAndOptionalYear(parseISO(lastStatementDate)) : null;
+
+    const trailing = isDefined(statementDate) ? (
+        <Text className="text-[15px] text-secondary-foreground tabular-nums">{t`Last ${statementDate}`}</Text>
+    ) : null;
 
     const handleImport = () => void router.push({ pathname: '/create-account/[type]', params: { type: ExternalSourceEnum.INZHUR } });
 
@@ -36,7 +41,7 @@ export const InzhurImportStatementAction = () => {
                 isDisabled={false}
                 isLoading={false}
                 labelClassName="text-primary"
-                trailing={<Text className="text-[15px] text-secondary-foreground tabular-nums">{t`Last ${statementDate}`}</Text>}
+                trailing={trailing}
                 testID={InzhurSelector.ImportStatementButton}
             />
         );

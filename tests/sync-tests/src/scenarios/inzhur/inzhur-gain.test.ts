@@ -10,7 +10,7 @@ import { buildInzhurOperationsWorkbook } from '../../harness/inzhur/build-inzhur
 import { findPendingTopUps } from '../../harness/inzhur/find-pending-top-ups';
 import { importInzhurBankFlow } from '../../harness/inzhur/import-inzhur-bank-flow';
 import { importInzhurOperations } from '../../harness/inzhur/import-inzhur-operations';
-import { TOP_UP_DESCRIPTION } from '../../harness/inzhur/inzhur-bank-descriptions.constant';
+import { REIT_DIVIDEND_DESCRIPTION, TOP_UP_DESCRIPTION } from '../../harness/inzhur/inzhur-bank-descriptions.constant';
 import { REIT_ISIN } from '../../harness/inzhur/inzhur-fund-isins.constant';
 import {
     DIVIDEND_TYPE,
@@ -19,7 +19,8 @@ import {
     REIT,
     TAX_TYPE,
     TOP_UP_AT,
-    TOP_UP_TYPE
+    TOP_UP_TYPE,
+    WITHDRAWAL_TYPE
 } from '../../harness/inzhur/inzhur-operation-rows.constant';
 import { makeInzhurOperationsLayer } from '../../harness/inzhur/make-inzhur-operations-layer';
 import { recordManualPurchase } from '../../harness/inzhur/record-manual-purchase';
@@ -41,6 +42,11 @@ const layer = makeInzhurOperationsLayer({
         ...HELD_ROWS,
         { at: '2026-02-01T10:00:00', type: DIVIDEND_TYPE, fund: REIT, debit: 20 },
         { at: '2026-02-01T10:00:05', type: TAX_TYPE, fund: REIT, credit: 4 }
+    ]),
+    'bank-dividend.xlsx': buildInzhurOperationsWorkbook([
+        ...HELD_ROWS,
+        { at: '2026-02-01T10:00:00', type: DIVIDEND_TYPE, fund: REIT, debit: 120 },
+        { at: '2026-02-01T10:01:00', type: WITHDRAWAL_TYPE, credit: 120 }
     ]),
     'full.xlsx': buildInzhurOperationsWorkbook(FULL_HISTORY_ROWS)
 });
@@ -70,6 +76,26 @@ const topUpFromBank = Effect.gen(function* () {
 });
 
 describe('inzhur/gain', () => {
+    it.effect('includes bank-paid dividends in institution gain before and after export pairing', () =>
+        Effect.gen(function* () {
+            yield* seedInzhurPrice(REIT_ISIN, FIRST_DAY, REIT_PRICE);
+            const reit = yield* importHeld;
+            const bankAccount = yield* seedInzhurBankAccount;
+            yield* importInzhurBankFlow(
+                bankAccount.id,
+                'bank-dividend',
+                REIT_DIVIDEND_DESCRIPTION,
+                120,
+                new Date('2026-02-01T10:01:00.000Z')
+            );
+            expect(yield* findFundAllTimeGain(reit.id)).toMatchObject({ gain: 120 });
+            expect(yield* findAllTimeGain()).toMatchObject({ gain: 120 });
+            yield* importInzhurOperations('bank-dividend.xlsx');
+            expect(yield* findFundAllTimeGain(reit.id)).toMatchObject({ gain: 120 });
+            expect(yield* findAllTimeGain()).toMatchObject({ gain: 120 });
+        }).pipe(Effect.provide(layer))
+    );
+
     it.effect('reports no gain when the price did not move', () =>
         Effect.gen(function* () {
             yield* seedInzhurPrice(REIT_ISIN, FIRST_DAY, REIT_PRICE);

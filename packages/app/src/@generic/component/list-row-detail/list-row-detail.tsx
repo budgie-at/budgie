@@ -2,6 +2,8 @@ import { cva } from 'class-variance-authority';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../constant/row-max-font-size-multiplier.constant';
 import { cn } from '../../utils/cn.util';
 import { joinWithMiddot } from '../../utils/join-with-middot.util';
@@ -30,7 +32,7 @@ export const ListRowDetail = ({ segments, className, testID }: Props) => {
     const handleTextLayout = (event: NativeSyntheticEvent<TextLayoutEventData>) => {
         const lines = event.nativeEvent.lines.map(line => line.text.replace(TRAILING_SEPARATOR, '').trim());
 
-        if (layout?.text !== text || layout.lines.join('\n') !== lines.join('\n')) {
+        if ((lines.length > 1 || isDefined(brokenLines)) && (layout?.text !== text || layout.lines.join('\n') !== lines.join('\n'))) {
             setLayout({ text, lines });
         }
     };

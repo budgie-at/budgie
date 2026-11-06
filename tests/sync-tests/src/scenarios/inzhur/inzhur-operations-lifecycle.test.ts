@@ -71,6 +71,7 @@ describe('inzhur/operations-lifecycle', () => {
             const cashBefore = yield* fetchAccountBalance(cashAccount.id);
             const reitBefore = yield* fetchAccountBalance(reit.id);
             const summary = yield* importInzhurOperations('extended.xlsx');
+            expect(summary).toMatchObject({ recordedCount: 3, alreadyImportedCount: 8 });
             const ocean = yield* requireInzhurFundByName(OCEAN);
             expect(summary.funds.find(fund => fund.name === OCEAN)?.convertedOutQuantity).toBe(120);
             expect(yield* fetchAccountBalance(ocean.id)).toBe(0);

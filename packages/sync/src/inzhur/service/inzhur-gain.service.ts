@@ -133,6 +133,13 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
             movement.fromAccountId === ledger.cashAccountId ? movement.toAccountId : movement.fromAccountId;
 
         const institutionFlowOf = (ledger: InzhurGainLedgerInterface, item: InzhurDatedMovementInterface) => {
+            const { accountId, fundAccountId } = item.movement;
+            const isInstitutionAccount = accountId === ledger.cashAccountId || ledger.fundAccountIds.includes(accountId);
+
+            if (!isInstitutionAccount) {
+                return isDefined(fundAccountId) ? -item.amount : 0;
+            }
+
             const counterpartId = findCounterpartId(ledger, item.movement);
             const isExternalTransfer =
                 item.movement.transactionType === TransactionTypeEnum.TRANSFER &&

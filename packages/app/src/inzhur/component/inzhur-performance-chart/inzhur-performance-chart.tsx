@@ -27,7 +27,8 @@ export const InzhurPerformanceChart = ({ points, gains, subject, caption, testID
     const { t } = useLingui();
     const [range, setRange] = useState(InzhurGainRangeEnum.ALL);
 
-    const rangeStart = gains.find(gain => gain.range === range)?.startDate ?? points.at(0)?.date ?? '';
+    const offeredGains = gains.filter(gain => points.filter(point => point.date >= gain.startDate).length >= MIN_CHART_POINTS);
+    const rangeStart = offeredGains.find(gain => gain.range === range)?.startDate ?? points.at(0)?.date ?? '';
     const rangePoints = points.filter(point => point.date >= rangeStart);
     const prices = rangePoints.map(point => ({ price: point.value, priceDate: point.date }));
     const { startLabel, endLabel } = useMarketChartTimeline(prices.at(0), prices.at(-1));
@@ -38,7 +39,7 @@ export const InzhurPerformanceChart = ({ points, gains, subject, caption, testID
         [InzhurGainRangeEnum.THREE_MONTHS]: t`3M`,
         [InzhurGainRangeEnum.ALL]: t`All`
     };
-    const segments = gains.map(gain => ({
+    const segments = offeredGains.map(gain => ({
         value: gain.range,
         label: rangeLabels[gain.range],
         ...testIDProps(testID, InzhurSelector.ChartRange, gain.range)

@@ -417,7 +417,7 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                     periodTo: toKyivDay(plan.lastAt),
                     isFullHistory: plan.isFullHistory,
                     recordedCount: placeholderInputs.length + failedClaimFallbacks.length + incomeInputs.length + tradeInputs.length,
-                    alreadyImportedCount: plan.actions.length - newActions.length,
+                    alreadyImportedCount: plan.actions.length - newActions.length - amendedTrades.length,
                     topUps: sumFlow(InzhurOperationKindEnum.TOP_UP),
                     withdrawals: sumFlow(InzhurOperationKindEnum.WITHDRAWAL),
                     funds: buildSummaryFunds(plan.actions, accountByFund, quantityOf),

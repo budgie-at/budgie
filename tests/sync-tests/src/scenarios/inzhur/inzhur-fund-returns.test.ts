@@ -1,8 +1,22 @@
-import { AccountRepository, TransactionRepository, PRECISION, InvestmentReturnRepository, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    AccountRepository,
+    TransactionRepository,
+    PRECISION,
+    InvestmentReturnRepository,
+    TransactionTypeEnum,
+    CategoryEntityTable,
+    CategorySourceEnum,
+    convertFromMicroUnits,
+    INVESTMENTS_CATEGORY_ID
+} from '@budgie/contracts';
+import { TransactionService } from '@budgie/ledger';
 import { InzhurGainService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
+import { isDefined } from '@rnw-community/shared';
+
+import { testDb } from '../../harness';
 import { buildInzhurOperationsWorkbook } from '../../harness/inzhur/build-inzhur-operations-workbook';
 import { consolidateInzhur } from '../../harness/inzhur/consolidate-inzhur';
 import { importInzhurBankFlow } from '../../harness/inzhur/import-inzhur-bank-flow';
@@ -66,6 +80,7 @@ describe('inzhur/fund-returns', () => {
 
     it.effect('attributes an uncovered bank dividend when funds are first created by an export', () =>
         Effect.gen(function* () {
+            yield* seedInzhurReitPrices;
             const bankAccount = yield* seedInzhurBankAccount;
             yield* importInzhurBankFlow(
                 bankAccount.id,
@@ -74,13 +89,56 @@ describe('inzhur/fund-returns', () => {
                 120,
                 new Date('2026-05-05T12:00:00.000Z')
             );
+            const repository = yield* TransactionRepository;
+            const dividend = (yield* repository.findByAccountIdsWithEntries([bankAccount.id])).find(
+                transaction => transaction.externalId === 'early-dividend'
+            );
+            expect(dividend).toBeDefined();
+            if (!isDefined(dividend)) {
+                return;
+            }
+            yield* (yield* TransactionService).updateById(dividend.id, {
+                comment: 'My payout note',
+                entries: dividend.entries.map(entry => ({ ...entry, amount: convertFromMicroUnits(entry.amount) })),
+                tagIds: []
+            });
+            yield* importInzhurBankFlow(
+                bankAccount.id,
+                'recategorized-dividend',
+                REIT_DIVIDEND_DESCRIPTION,
+                30,
+                new Date('2026-05-06T12:00:00.000Z')
+            );
+            const recategorized = (yield* repository.findByAccountIdsWithEntries([bankAccount.id])).find(
+                transaction => transaction.externalId === 'recategorized-dividend'
+            );
+            const category = (yield* testDb.select().from(CategoryEntityTable)).find(item => item.id !== INVESTMENTS_CATEGORY_ID);
+            expect(recategorized).toBeDefined();
+            expect(category).toBeDefined();
+            if (!isDefined(recategorized) || !isDefined(category)) {
+                return;
+            }
+            yield* (yield* TransactionService).updateById(recategorized.id, {
+                entries: recategorized.entries.map(entry => ({
+                    ...entry,
+                    amount: convertFromMicroUnits(entry.amount),
+                    categoryId: category.id,
+                    categorySource: CategorySourceEnum.USER
+                })),
+                tagIds: []
+            });
             yield* importInzhurOperations(URI);
             const reit = yield* requireInzhurFundAccount(REIT_ISIN);
             const transactions = yield* (yield* TransactionRepository).findByAccountIdsWithEntries([bankAccount.id]);
+            expect(transactions.find(transaction => transaction.externalId === 'recategorized-dividend')).toMatchObject({
+                fundAccountId: null
+            });
             expect(transactions.find(transaction => transaction.externalId === 'early-dividend')).toMatchObject({
                 fundAccountId: reit.id,
-                title: 'REIT dividends'
+                title: REIT_DIVIDEND_DESCRIPTION,
+                comment: 'My payout note'
             });
+            expect(yield* (yield* InzhurGainService).getFundCostReturn(reit.id, '2026-05-05')).toMatchObject({ dividends: 220 });
         }).pipe(Effect.provide(layer))
     );
 
