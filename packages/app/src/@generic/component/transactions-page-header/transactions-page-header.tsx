@@ -29,9 +29,9 @@ const TABS: readonly TabConfigInterface<TransactionsTabType>[] = [
 export const TransactionsPageHeader = ({ activeTab, onChangeTab }: Props) => {
     const { t } = useLingui();
     const stickyContext = use(ScreenChromeStickyHeadersContext);
-    const handleHeaderLayout = (event: LayoutChangeEvent) => stickyContext?.headerBottom.set(event.nativeEvent.layout.height);
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
     const rowStyle = useResolveClassNames('px-0');
+    const handleHeaderLayout = (event: LayoutChangeEvent) => stickyContext?.headerBottom.set(event.nativeEvent.layout.height);
     const segments: readonly SegmentedControlSegmentInterface<TransactionsTabType>[] = [
         { value: 'transactions', label: t`Transactions`, testID: TransactionsPageSelector.TransactionsTab },
         { value: 'recurring', label: t`Recurring`, testID: TransactionsPageSelector.RecurringTab }
