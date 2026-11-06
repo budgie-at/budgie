@@ -41,7 +41,7 @@ export const RecurringDetailContent = ({ detail }: Props) => {
                 showsVerticalScrollIndicator={false}
             >
                 <View className="gap-y-5xl px-3xl">
-                    <RecurringDetailHero series={series} now={now} />
+                    <RecurringDetailHero series={series} now={now} anchorDate={detail.anchorDate} />
                     <RecurringDetailStats kind={series.kind} history={history} />
                     <RecurringDetailAlertBanner series={series} />
                     {series.isActive ? <RecurringDetailNextPayments dates={nextDates} amount={series.amount} now={now} /> : null}

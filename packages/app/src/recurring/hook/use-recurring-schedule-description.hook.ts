@@ -14,16 +14,16 @@ export const useRecurringScheduleDescription = () => {
     const { formatWeekday, formatMonthAndDay } = useFormatDate();
     const getCadenceLabel = useRecurringCadenceLabel();
 
-    return (series: Pick<RecurringSeriesListItemInterface, 'cadenceUnit' | 'cadenceInterval' | 'nextDate'>): string => {
+    return (series: Pick<RecurringSeriesListItemInterface, 'cadenceUnit' | 'cadenceInterval' | 'nextDate'>, anchorDate: Date): string => {
         const { cadenceUnit, cadenceInterval, nextDate } = series;
 
         if (!isDefined(nextDate) || cadenceInterval !== 1) {
             return getCadenceLabel(cadenceUnit, cadenceInterval);
         }
 
-        const weekday = formatWeekday(nextDate);
-        const dayOfMonth = nextDate.getDate();
-        const monthAndDay = formatMonthAndDay(nextDate);
+        const weekday = formatWeekday(anchorDate);
+        const dayOfMonth = anchorDate.getDate();
+        const monthAndDay = formatMonthAndDay(anchorDate);
 
         if (cadenceUnit === RecurringCadenceUnitEnum.WEEK) {
             return t`Every ${weekday}`;

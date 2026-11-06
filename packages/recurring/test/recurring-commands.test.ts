@@ -63,6 +63,16 @@ const seedSubscription = Effect.fnUntraced(function* () {
     return { categoryId, transactionId, service };
 });
 
+const seedRevivableSeries = Effect.fnUntraced(function* () {
+    const seed = yield* seedCharges();
+    const ids = yield* seedMonthlyCharges(seed, 'NETFLIX', [5, 4, 3, 2, 1, 0], 5, 12);
+    const service = yield* recurringService;
+    yield* detectAt(NOW);
+    const [detected] = yield* findSeries();
+
+    return { ids, service, detected };
+});
+
 beforeEach(() => Effect.runPromise(resetTestDb(testDb)));
 
 layer(TestLayer)('recurringService commands', it => {
@@ -309,11 +319,7 @@ layer(TestLayer)('recurringService commands', it => {
 
     it.effect('revives a dismissed detected series with the same counterparty instead of duplicating it', () =>
         Effect.gen(function* () {
-            const seed = yield* seedCharges();
-            const ids = yield* seedMonthlyCharges(seed, 'NETFLIX', [5, 4, 3, 2, 1, 0], 5, 12);
-            const service = yield* recurringService;
-            yield* detectAt(NOW);
-            const [detected] = yield* (yield* repository).findAllSeries;
+            const { ids, service, detected } = yield* seedRevivableSeries();
             yield* setUserState(detected.id, RecurringSeriesUserStateEnum.DISMISSED);
             yield* (yield* repository).updateSeries(detected.id, { merchantKey: 'EXPENSE|2|NETFLIX|12000000' });
 
@@ -326,10 +332,10 @@ layer(TestLayer)('recurringService commands', it => {
             const links = yield* allLinks;
 
             expect(rows).toHaveLength(1);
-            expect(rows[0].amount).toBe(13 * PRECISION);
+            expect(rows[0].amount).toBe(12 * PRECISION);
             expect(revived).toMatchObject({
                 id: detected.id,
-                source: RecurringSeriesSourceEnum.MANUAL,
+                source: RecurringSeriesSourceEnum.DETECTED,
                 userState: RecurringSeriesUserStateEnum.CONFIRMED,
                 title: 'Netflix HD',
                 amount: 13 * PRECISION
@@ -338,6 +344,20 @@ layer(TestLayer)('recurringService commands', it => {
                 matchedBy: RecurringMatchSourceEnum.USER,
                 isExcluded: false
             });
+        })
+    );
+
+    it.effect('keeps a revived detected series dismissed after removal and full detection', () =>
+        Effect.gen(function* () {
+            const { ids, service, detected } = yield* seedRevivableSeries();
+            yield* service.remove(detected.id);
+            const revived = yield* service.makeRecurringFromTransaction(ids[5], manualInput());
+            yield* service.remove(revived.id);
+            yield* detectAt(NOW);
+
+            expect(yield* findSeries()).toMatchObject([{ id: detected.id, userState: RecurringSeriesUserStateEnum.DISMISSED }]);
+            expect(yield* findSeries()).toHaveLength(1);
+            expect(yield* service.listSeries(NOW)).toEqual([]);
         })
     );
 

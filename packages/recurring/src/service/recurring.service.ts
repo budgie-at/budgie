@@ -416,7 +416,6 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
                         );
                         const series = isDefined(revivable)
                             ? yield* recurringRepository.updateSeries(revivable.id, {
-                                  source: RecurringSeriesSourceEnum.MANUAL,
                                   userState: RecurringSeriesUserStateEnum.CONFIRMED,
                                   status: RecurringSeriesStatusEnum.ACTIVE,
                                   title: input.title,

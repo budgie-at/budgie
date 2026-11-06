@@ -19,6 +19,7 @@ import type { RecurringSeriesListItemInterface } from '@budgie/recurring';
 interface Props {
     readonly series: RecurringSeriesListItemInterface;
     readonly now: Date;
+    readonly anchorDate: Date;
 }
 
 const amountVariants = cva('mt-2xl text-center text-[44px] font-bold leading-[52px] tracking-[-1px] tabular-nums', {
@@ -27,7 +28,7 @@ const amountVariants = cva('mt-2xl text-center text-[44px] font-bold leading-[52
 
 const continuousCorners = { borderCurve: 'continuous' as const };
 
-export const RecurringDetailHero = ({ series, now }: Props) => {
+export const RecurringDetailHero = ({ series, now, anchorDate }: Props) => {
     const { t } = useLingui();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const protectAmount = useProtectedAmountLabel();
@@ -39,7 +40,7 @@ export const RecurringDetailHero = ({ series, now }: Props) => {
         ? (getDueLabel(series.nextDate, now) ?? formatMonthAndDayAndOptionalYear(series.nextDate))
         : null;
     const statusLabel = isDefined(nextDateLabel) ? t`Next payment · ${nextDateLabel}` : t`No upcoming payment`;
-    const meta = [series.categoryTitle, getScheduleDescription(series)].filter(isDefined).join(' · ');
+    const meta = [series.categoryTitle, getScheduleDescription(series, anchorDate)].filter(isDefined).join(' · ');
 
     return (
         <View className="items-center pt-3xl">
