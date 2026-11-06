@@ -14,7 +14,7 @@ export const AccountSelectorHeader = ({ search, onSearchChange }: Props) => {
     const { t } = useLingui();
 
     return (
-        <View collapsable={false} className="px-3xl pb-md pt-7xl bg-surface">
+        <View collapsable={false} className="px-3xl pb-md pt-md bg-surface">
             <View className="pb-[14px]">
                 <SheetTitleRow title={t`Account`} maxFontSizeMultiplier={2} closeButtonSize={44} />
             </View>

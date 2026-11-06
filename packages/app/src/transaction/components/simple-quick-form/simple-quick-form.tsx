@@ -8,7 +8,6 @@ import { useTransactionKeypadEditing } from '../../hook/use-transaction-keypad-e
 import { formatKeypadAmount } from '../../utils/format-keypad-amount.util';
 import { MccInfoRow } from '../mcc-info-row/mcc-info-row';
 import { QuickFormLayout } from '../quick-form-layout/quick-form-layout';
-import { QuickFormValidationSlot } from '../quick-form-validation-slot/quick-form-validation-slot';
 import { SimpleQuickFormControls } from '../simple-quick-form-controls/simple-quick-form-controls';
 import { SuggestionsContainer } from '../suggestions-container/suggestions-container';
 import { TransactionAmountDisplay } from '../transaction-amount-display/transaction-amount-display';
@@ -33,10 +32,31 @@ export const SimpleQuickForm = (props: Props) => {
     const { ref, transactionType, aiContext = '', isNewTransaction = false, children, onSubmit } = props;
     const form = useSimpleQuickForm(transactionType, ref);
     const { formState, amountDisplayRef } = form;
-    const { isEditingAmount, toggleKeypad, amountAccessibilityHint } = useTransactionKeypadEditing(isNewTransaction);
+    const { isEditingAmount, toggleKeypad, dismissKeypad, amountAccessibilityHint } = useTransactionKeypadEditing(isNewTransaction);
     const displayAmount = isEditingAmount ? form.displayValue : formatKeypadAmount(form.displayValue, '.', '', 2);
-    const isConfirmDisabled = !formState.isAmountPositive;
+    const isConfirmDisabled = !formState.isAmountPositive || (!isNewTransaction && !formState.isDirty);
     const keypad = isEditingAmount ? <TransactionKeypad keypad={form.keypadHandlers} /> : null;
+
+    const suggestions = (
+        <SuggestionsContainer
+            isNewTransaction={isNewTransaction}
+            isSplitActive={formState.isSplitActive}
+            transactionType={transactionType}
+            transactionTitle={formState.title}
+            categoryId={formState.categoryId}
+            isCategoryUserConfirmed={formState.isCategoryUserConfirmed}
+            mccCategoryId={formState.mccCategoryId}
+            comment={formState.comment}
+            aiContext={aiContext}
+            accountId={formState.accountId}
+            amount={formState.amount}
+            hasTagsSelected={formState.hasTagsSelected}
+            onSelectCategory={formState.handleSelectCategory}
+            onSelectTag={formState.handleSelectTag}
+            onSelectComment={formState.handleSelectComment}
+            onFillPatternAmount={formState.handleFillPatternAmount}
+        />
+    );
 
     return (
         <SimpleQuickFormControls
@@ -57,26 +77,7 @@ export const SimpleQuickForm = (props: Props) => {
         >
             {(fields, onConfirm) => (
                 <QuickFormLayout
-                    suggestions={
-                        <SuggestionsContainer
-                            isNewTransaction={isNewTransaction}
-                            isSplitActive={formState.isSplitActive}
-                            transactionType={transactionType}
-                            transactionTitle={formState.title}
-                            categoryId={formState.categoryId}
-                            isCategoryUserConfirmed={formState.isCategoryUserConfirmed}
-                            mccCategoryId={formState.mccCategoryId}
-                            comment={formState.comment}
-                            aiContext={aiContext}
-                            accountId={formState.accountId}
-                            amount={formState.amount}
-                            hasTagsSelected={formState.hasTagsSelected}
-                            onSelectCategory={formState.handleSelectCategory}
-                            onSelectTag={formState.handleSelectTag}
-                            onSelectComment={formState.handleSelectComment}
-                            onFillPatternAmount={formState.handleFillPatternAmount}
-                        />
-                    }
+                    onDismissKeypad={dismissKeypad}
                     amount={
                         <TransactionAmountDisplay
                             ref={amountDisplayRef}
@@ -90,12 +91,9 @@ export const SimpleQuickForm = (props: Props) => {
                         />
                     }
                     context={
-                        <View className="items-center gap-y-[8px]">
-                            <MccInfoRow transactionTitle={formState.title} mccCategoryId={formState.mccCategoryId}>
-                                {children}
-                            </MccInfoRow>
-                            <QuickFormValidationSlot />
-                        </View>
+                        <MccInfoRow transactionTitle={formState.title} mccCategoryId={formState.mccCategoryId} suggestions={suggestions}>
+                            {children}
+                        </MccInfoRow>
                     }
                     keypad={keypad}
                     actions={

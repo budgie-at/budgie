@@ -1,6 +1,7 @@
 const normalizePart = (value: string) => value.replaceAll(/[^a-zA-Z0-9]+/gu, '_');
 
 export const SimpleQuickFormSelector = {
+    Scroll: 'TransactionForm.Scroll',
     Page: 'TransactionForm.Page',
     DatePicker: 'TransactionForm.DatePicker',
     AmountInput: 'TransactionForm.AmountInput',

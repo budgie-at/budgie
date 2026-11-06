@@ -271,6 +271,10 @@ msgstr "{count, plural, one {Utiliser # paiement} other {Utiliser # paiements}}"
 msgid "{count} of {rowCount} selected"
 msgstr "{count} sur {rowCount} sélectionnés"
 
+#: src/app/tags-selector.tsx
+msgid "{count} selected"
+msgstr "{count} sélectionnés"
+
 #: src/sync/component/enable-banking-bank-row/enable-banking-bank-row.tsx
 msgid "{country} · Beta"
 msgstr "{country} · Bêta"
@@ -914,10 +918,6 @@ msgstr "−{changePercent} vs {shortPreviousLabel}"
 msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} mois"
 
-#: src/app/tags-selector.tsx
-msgid "★ Primary · hold another tag to change it"
-msgstr "★ Principale · maintenez une autre étiquette pour la changer"
-
 #: src/account/component/crypto-currency-group-market-link/crypto-currency-group-market-link.tsx
 msgid "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 msgstr "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
@@ -1144,6 +1144,7 @@ msgid "Add a name to continue"
 msgstr "Ajoutez un nom pour continuer"
 
 #: src/app/note-input.tsx
+#: src/transaction/components/transaction-note-field-icon/transaction-note-field-icon.tsx
 msgid "Add a note..."
 msgstr "Ajouter une note..."
 
@@ -2072,7 +2073,8 @@ msgstr "Ne pourra pas être modifiée"
 #: src/sync/component/enable-banking-disconnect-row/enable-banking-disconnect-row.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 #: src/tag/hooks/use-delete-tag.hook.ts
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
+#: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
+#: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
@@ -2564,10 +2566,6 @@ msgstr "Confirme que c'est bien toi avant d'en choisir un nouveau."
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Confirm recurring"
 msgstr "Confirmer la récurrence"
-
-#: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx
-msgid "Confirm tag selection"
-msgstr "Confirmer la sélection des tags"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Confirm your new PIN"
@@ -3631,20 +3629,21 @@ msgid "Does not contain"
 msgstr "Ne contient pas"
 
 #: src/@generic/component/keyboard-done-accessory/keyboard-done-accessory.tsx
+#: src/@generic/component/sheet-title-row/sheet-title-row.tsx
+#: src/app/date-picker.tsx
 #: src/app/note-input.tsx
+#: src/app/tags-selector.tsx
 #: src/categorize-inbox/components/categorize-inbox-done-button/categorize-inbox-done-button.tsx
 #: src/onboarding/component/onboarding-keyboard-controls/onboarding-keyboard-controls.tsx
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+#: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
+#: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
 #: src/transaction/components/convert-transfer-form/convert-transfer-form.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+#: src/transaction/components/transaction-note-field-icon/transaction-note-field-icon.tsx
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 #: src/transaction/hook/use-transaction-keypad-editing.hook.ts
 msgid "Done"
 msgstr "Terminé"
-
-#: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx
-msgid "Done ({count})"
-msgstr "Terminé ({count})"
 
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 msgid "Double-tap to seal"
@@ -4493,6 +4492,10 @@ msgstr "Masqué de l'Accueil"
 #: src/transaction/components/statistics-share-bar/statistics-share-bar.tsx
 msgid "Hide breakdown"
 msgstr "Masquer la répartition"
+
+#: src/transaction/components/transaction-keypad/transaction-keypad.tsx
+msgid "Hide keypad"
+msgstr "Masquer le pavé numérique"
 
 #: src/settings/components/screenshot-protection-row/screenshot-protection-row.tsx
 msgid "Hide screen captures"
@@ -6814,7 +6817,7 @@ msgstr "Les paiements récurrents sont détectés automatiquement à partir de v
 msgid "Refine"
 msgstr "Affiner"
 
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
+#: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
 msgid "Refund"
 msgstr "Remboursement"
 
@@ -8053,6 +8056,10 @@ msgstr "La note d’un paiement"
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "The PIN becomes the encryption key"
 msgstr "Le code PIN devient la clé de chiffrement"
+
+#: src/tag/components/tags-select-content/tags-select-content.tsx
+msgid "The primary tag is used in summaries. Choose Make primary on another selected tag to change it."
+msgstr "Le tag principal est utilisé dans les récapitulatifs. Choisissez Définir comme principal sur un autre tag sélectionné pour le changer."
 
 #: src/transaction/hook/use-revert-consolidation.hook.ts
 msgid "The refund and the purchase become separate entries again."

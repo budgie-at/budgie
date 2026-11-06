@@ -343,7 +343,7 @@ export const SCENES: Readonly<Record<string, Scene>> = {
         run: async ctx => {
             await st.openConvertToRefundPicker(ctx, 2200, 'ConvertToRefund.CandidateRow.157');
             await b.tapId(ctx, 'ConvertToRefund.CandidateRow.157');
-            await expect(b.byId(ctx.screen, 'ConvertToRefund.ConvertButton')).toBeEnabled({ timeout: 5_000 });
+            await expect(b.byId(ctx.screen, 'ConvertToRefund.DoneButton')).toBeEnabled({ timeout: 5_000 });
         }
     },
     'convert-to-transfer-1': {

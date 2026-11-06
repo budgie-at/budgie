@@ -1,6 +1,6 @@
 import { CategorySourceEnum, TransactionCreateInputInterface } from '@budgie/contracts';
 import { getTransactionCategoryEntries } from '@budgie/ledger';
-import { useFormContext, useWatch } from 'react-hook-form';
+import { useFormContext, useFormState, useWatch } from 'react-hook-form';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
@@ -16,6 +16,7 @@ export const useSimpleQuickFormState = ({
     readonly setFromNumeric: (value: number) => void;
 }) => {
     const { control, getValues, setValue } = useFormContext<TransactionCreateInputInterface>();
+    const { isDirty } = useFormState({ control });
 
     const title = useWatch({ control, name: 'title' });
     const comment = useWatch({ control, name: 'comment' });
@@ -30,7 +31,7 @@ export const useSimpleQuickFormState = ({
         const updatedEntries = setPrimaryCategory(getValues('entries'), selectedCategoryId);
 
         if (isDefined(updatedEntries)) {
-            setValue('entries', updatedEntries, { shouldValidate: false });
+            setValue('entries', updatedEntries, { shouldValidate: false, shouldDirty: true });
         }
     };
 
@@ -41,11 +42,11 @@ export const useSimpleQuickFormState = ({
             return;
         }
 
-        setValue('tagIds', [...currentTagIds, selectedTagId]);
+        setValue('tagIds', [...currentTagIds, selectedTagId], { shouldDirty: true });
     };
 
     const handleSelectComment = (selectedComment: string) => {
-        setValue('comment', selectedComment);
+        setValue('comment', selectedComment, { shouldDirty: true });
     };
 
     const handleFillPatternAmount = (patternAmount: number) => {
@@ -53,11 +54,12 @@ export const useSimpleQuickFormState = ({
             return;
         }
 
-        setValue('amount', patternAmount);
+        setValue('amount', patternAmount, { shouldDirty: true });
         setFromNumeric(patternAmount);
     };
 
     return {
+        isDirty,
         accountId: watchedAccountId ?? 0,
         categoryId: categoryEntry?.categoryId ?? null,
         mccCategoryId: categoryEntry?.mccCategoryId ?? null,

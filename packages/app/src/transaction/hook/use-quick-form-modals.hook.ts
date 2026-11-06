@@ -21,7 +21,7 @@ export const useQuickFormModals = (): UseQuickFormModalsResult => {
     const handleCommentPress = () => {
         openNoteInput({ initialValue: comment }, noteText => {
             if (isDefined(noteText)) {
-                setValue('comment', noteText);
+                setValue('comment', noteText, { shouldDirty: true });
             }
         });
     };
@@ -29,7 +29,7 @@ export const useQuickFormModals = (): UseQuickFormModalsResult => {
     const handleDatePress = () => {
         openDatePicker({ initialDate: operatedAt }, selectedDate => {
             if (isDefined(selectedDate)) {
-                setValue('operatedAt', selectedDate);
+                setValue('operatedAt', selectedDate, { shouldDirty: true });
             }
         });
     };

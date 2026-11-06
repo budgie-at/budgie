@@ -5,6 +5,7 @@ import { View } from 'react-native';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { SelectorList } from '../../../@generic/component/selector-list/selector-list';
 import { useFormsheetListContentStyle } from '../../../@generic/hook/use-formsheet-list-content-style/use-formsheet-list-content-style.hook';
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { FlatListDataItem } from '../../../@generic/utils/map-to-flatlist-data.util';
 import { CategorySelectorCard } from '../category-selector-card/category-selector-card';
@@ -30,6 +31,9 @@ const keyExtractor = (item: FlatListDataItem<CategoryEntityInterface>, index: nu
 export const CategorySelectContent = (props: Props) => {
     const { data, variant, selectedCategoryIds, additionalBottomPadding = 0, isLoading = false, onSelect, cardTestID } = props;
     const { t } = useLingui();
+    const largeText = useIsAccessibilityTextSize();
+    const columns = largeText ? 1 : 3;
+    const visibleData = largeText ? data.filter(item => !item.isEmpty) : data;
     const contentContainerStyle = useFormsheetListContentStyle(additionalBottomPadding);
 
     const renderItem = ({ item }: { item: FlatListDataItem<CategoryEntityInterface> }) =>
@@ -54,12 +58,21 @@ export const CategorySelectContent = (props: Props) => {
     );
 
     const listOptions = {
-        numColumns: 3,
+        numColumns: columns,
         estimatedItemSize: 100,
-        columnWrapperStyle: COLUMN_WRAPPER_STYLE,
+        ...(!largeText && { columnWrapperStyle: COLUMN_WRAPPER_STYLE }),
         contentContainerStyle,
         ListEmptyComponent: listEmptyComponent
     };
 
-    return <SelectorList isLoading={isLoading} data={data} keyExtractor={keyExtractor} renderItem={renderItem} options={listOptions} />;
+    return (
+        <SelectorList
+            key={columns}
+            isLoading={isLoading}
+            data={visibleData}
+            keyExtractor={keyExtractor}
+            renderItem={renderItem}
+            options={listOptions}
+        />
+    );
 };

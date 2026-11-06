@@ -135,6 +135,7 @@ async function setDebtReturnDate(ctx: Ctx, day: string, label: string | RegExp):
     await tapId(ctx, 'AccountForm.ReturnDate');
     await expectId(ctx, `DatePicker.Day.${day}`, 10_000);
     await tapId(ctx, `DatePicker.Day.${day}`);
+    await tapId(ctx, 'DatePicker.Done');
     await expect(byText(ctx.screen, label)).toBeVisible();
 }
 
@@ -491,6 +492,7 @@ export async function setDepositTerms(ctx: Ctx, rate: string, maturityDay: strin
     await tapId(ctx, 'AccountForm.MaturityDate');
     await expectId(ctx, `DatePicker.Day.${maturityDay}`, 10_000);
     await tapId(ctx, `DatePicker.Day.${maturityDay}`);
+    await tapId(ctx, 'DatePicker.Done');
 }
 
 /** Taps the account form's submit button once it is enabled, retrying a tap that does not take, until `waitId` shows. */

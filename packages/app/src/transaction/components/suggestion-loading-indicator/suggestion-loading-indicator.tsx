@@ -36,7 +36,12 @@ export const SuggestionLoadingIndicator = () => {
                 onPress={handleBrainPress}
                 hitSlop={HIT_SLOP}
             >
-                <Text className="text-[13px] font-medium text-secondary-foreground" numberOfLines={1}>
+                <Text
+                    className="text-[13px] font-medium text-secondary-foreground"
+                    dynamicTypeRamp="caption2"
+                    maxFontSizeMultiplier={1.35}
+                    numberOfLines={1}
+                >
                     {statusLabel}
                 </Text>
                 {isWorking ? (

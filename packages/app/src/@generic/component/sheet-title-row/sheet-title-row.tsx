@@ -5,38 +5,58 @@ import { Text, View } from 'react-native';
 
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
+import { SheetHeaderAction } from '../sheet-header-action/sheet-header-action';
+
+import type { ReactNode } from 'react';
 
 interface Props {
     readonly title: string;
     readonly maxFontSizeMultiplier?: number;
     readonly closeButtonSize?: number;
+    readonly trailing?: ReactNode;
+    readonly onClose?: () => void;
+    readonly closeLabel?: string;
+    readonly disabled?: boolean;
+    readonly doneTestID?: string;
 }
 
-export const SheetTitleRow = ({ title, maxFontSizeMultiplier, closeButtonSize = 36 }: Props) => {
+const MAX_HEADER_FONT_SCALE = 1.35;
+
+export const SheetTitleRow = ({
+    title,
+    trailing,
+    onClose,
+    closeLabel,
+    disabled,
+    doneTestID,
+    maxFontSizeMultiplier = MAX_HEADER_FONT_SCALE
+}: Props) => {
     const { t } = useLingui();
-    const closeButtonStyle = { width: closeButtonSize, height: closeButtonSize };
-    const handleClose = () => void router.back();
+    const handleClose = onClose ?? (() => void router.back());
+    const action = trailing ?? <SheetHeaderAction label={t`Done`} onPress={handleClose} testID={doneTestID} />;
 
     return (
-        <View className="flex-row items-center">
+        <View className="h-[56px] flex-row items-center justify-between">
             <HapticPressable
                 onPress={handleClose}
+                disabled={disabled}
                 accessibilityRole="button"
-                accessibilityLabel={t`Close`}
-                hitSlop={8}
-                className="items-center justify-center rounded-full bg-surface-fill active:opacity-70"
-                style={closeButtonStyle}
+                accessibilityLabel={closeLabel ?? t`Close`}
+                className="h-[44px] w-[44px] items-center justify-center rounded-full bg-surface-fill active:opacity-70"
             >
-                <Icon icon={UserIconNameEnum.X} size={16} className="text-primary/80" />
+                <Icon icon={UserIconNameEnum.X} size={20} className="text-primary" />
             </HapticPressable>
-            <Text
-                className="text-primary flex-1 text-center text-[17px] font-semibold leading-[22px]"
-                accessibilityRole="header"
-                maxFontSizeMultiplier={maxFontSizeMultiplier}
-            >
-                {title}
-            </Text>
-            <View style={closeButtonStyle} />
+            <View pointerEvents="none" className="absolute left-[64px] right-[64px] items-center justify-center">
+                <Text
+                    className="text-primary text-center text-[17px] font-semibold leading-[22px]"
+                    accessibilityRole="header"
+                    numberOfLines={2}
+                    maxFontSizeMultiplier={maxFontSizeMultiplier}
+                >
+                    {title}
+                </Text>
+            </View>
+            <View className="min-h-[44px] min-w-[44px] items-center justify-center">{action}</View>
         </View>
     );
 };

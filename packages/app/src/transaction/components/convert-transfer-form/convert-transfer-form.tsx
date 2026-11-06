@@ -11,6 +11,7 @@ import { TRANSFER_ACCOUNT_FIELDS } from '../../constant/transfer-account-fields.
 import { useConvertTransferForm } from '../../hook/use-convert-transfer-form.hook';
 import { useQuickFormFee } from '../../hook/use-quick-form-fee.hook';
 import { ConversionRow } from '../conversion-row/conversion-row';
+import { ConvertToTransferHeader } from '../convert-to-transfer-header/convert-to-transfer-header';
 import { ConvertTransferAccounts } from '../convert-transfer-accounts/convert-transfer-accounts';
 import { ConvertTransferSummary } from '../convert-transfer-summary/convert-transfer-summary';
 import { QuickFormFieldError } from '../quick-form-field-error/quick-form-field-error';
@@ -66,44 +67,47 @@ export const ConvertTransferForm = ({ isSubmitting, onSubmit, onCancel }: Props)
     );
 
     return (
-        <QuickFormLayout
-            surfaceVariables={rowColors}
-            amount={amount}
-            keypad={keypad}
-            actions={
-                <TransactionFormActions
-                    label={confirmLabel}
-                    isDisabled={isDisabled}
-                    onConfirm={form.handleConfirm}
-                    onCancel={onCancel}
-                    testID={SimpleQuickFormSelector.SubmitButton}
-                />
-            }
-        >
-            <GroupedListSection footer={<QuickFormFieldError fields={TRANSFER_ACCOUNT_FIELDS} />}>
-                <ConvertTransferAccounts />
-                {form.conversion.isCrossCurrency ? (
-                    <LoadingContent isLoading={form.conversion.isPending}>
-                        <ConversionRow
-                            label={form.conversionLabel}
-                            destinationAmount={form.conversion.destinationAmount}
-                            destinationSymbol={form.counterAccount?.instrument.symbol ?? ''}
-                            destinationInstrumentType={form.counterAccount?.instrument.type}
-                            rate={rate}
-                            isManualRate={form.conversion.isManualRate}
-                            onPress={form.handleEdit}
-                        />
-                    </LoadingContent>
-                ) : null}
-                {isDefined(form.fromAccount) ? (
-                    <TransactionFeeFieldIcon
-                        amount={feeAmount}
-                        currencySymbol={form.fromAccount.instrument.symbol}
-                        instrumentType={form.fromAccount.instrument.type}
-                        onPress={handleFeePress}
+        <>
+            <ConvertToTransferHeader isLoading={isSubmitting} onCancel={onCancel} onConfirm={form.handleConfirm} disabled={isDisabled} />
+            <QuickFormLayout
+                topInset={0}
+                surfaceVariables={rowColors}
+                amount={amount}
+                keypad={keypad}
+                actions={
+                    <TransactionFormActions
+                        label={confirmLabel}
+                        isDisabled={isDisabled}
+                        onConfirm={form.handleConfirm}
+                        testID={SimpleQuickFormSelector.SubmitButton}
                     />
-                ) : null}
-            </GroupedListSection>
-        </QuickFormLayout>
+                }
+            >
+                <GroupedListSection footer={<QuickFormFieldError fields={TRANSFER_ACCOUNT_FIELDS} />}>
+                    <ConvertTransferAccounts />
+                    {form.conversion.isCrossCurrency ? (
+                        <LoadingContent isLoading={form.conversion.isPending}>
+                            <ConversionRow
+                                label={form.conversionLabel}
+                                destinationAmount={form.conversion.destinationAmount}
+                                destinationSymbol={form.counterAccount?.instrument.symbol ?? ''}
+                                destinationInstrumentType={form.counterAccount?.instrument.type}
+                                rate={rate}
+                                isManualRate={form.conversion.isManualRate}
+                                onPress={form.handleEdit}
+                            />
+                        </LoadingContent>
+                    ) : null}
+                    {isDefined(form.fromAccount) ? (
+                        <TransactionFeeFieldIcon
+                            amount={feeAmount}
+                            currencySymbol={form.fromAccount.instrument.symbol}
+                            instrumentType={form.fromAccount.instrument.type}
+                            onPress={handleFeePress}
+                        />
+                    ) : null}
+                </GroupedListSection>
+            </QuickFormLayout>
+        </>
     );
 };

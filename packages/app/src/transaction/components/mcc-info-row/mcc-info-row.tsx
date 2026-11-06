@@ -4,6 +4,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-size-multiplier.constant';
 import { useGetMccCategoryByIdQuery } from '../../../mcc-category/query/use-get-mcc-category-by-id.query';
+import { QuickFormValidationSlot } from '../quick-form-validation-slot/quick-form-validation-slot';
 
 import type { ReactNode } from 'react';
 
@@ -11,26 +12,28 @@ interface Props {
     readonly transactionTitle: string;
     readonly mccCategoryId: number | null;
     readonly children?: ReactNode;
+    readonly suggestions?: ReactNode;
 }
 
 const MERCHANT_MAX_FONT_SCALE = 1.35;
 
-export const MccInfoRow = ({ transactionTitle, mccCategoryId, children }: Props) => {
+export const MccInfoRow = ({ transactionTitle, mccCategoryId, children, suggestions }: Props) => {
     const { mccCategory } = useGetMccCategoryByIdQuery(mccCategoryId);
 
     return (
-        <View className="items-center gap-y-[8px] self-stretch">
-            {isNotEmptyString(transactionTitle) ? (
-                <Text
-                    className="px-[16px] text-center text-[17px] leading-[22px] font-medium text-primary"
-                    numberOfLines={2}
-                    maxFontSizeMultiplier={MERCHANT_MAX_FONT_SCALE}
-                >
-                    {transactionTitle}
-                </Text>
-            ) : null}
-
-            <View className="max-w-full flex-row flex-wrap items-center justify-center gap-x-[8px] gap-y-[8px]">
+        <View className="items-center self-stretch">
+            <View className="h-[60px] items-center justify-center self-stretch">
+                {isNotEmptyString(transactionTitle) ? (
+                    <Text
+                        className="px-[16px] text-center text-[17px] leading-[22px] font-medium text-primary"
+                        numberOfLines={2}
+                        maxFontSizeMultiplier={MERCHANT_MAX_FONT_SCALE}
+                    >
+                        {transactionTitle}
+                    </Text>
+                ) : null}
+            </View>
+            <View className="h-[44px] max-w-full flex-row items-center justify-center gap-x-[8px] overflow-hidden">
                 {isDefined(mccCategory) ? (
                     <Text
                         className="shrink text-[13px] leading-[18px] text-secondary-foreground"
@@ -41,7 +44,9 @@ export const MccInfoRow = ({ transactionTitle, mccCategoryId, children }: Props)
                     </Text>
                 ) : null}
                 {children}
+                {suggestions}
             </View>
+            <QuickFormValidationSlot />
         </View>
     );
 };

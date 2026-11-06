@@ -1173,7 +1173,7 @@ const generateEditFormLayoutFixture = () => {
     const matchedTwiceTitle = 'E2E Layout Matched Twice';
     const transactions = [
         { id: 101, title: 'E2E Layout Short', amount: 1_000_000 },
-        { id: 102, title: 'E2E Layout Long Merchant Title That Wraps Onto A Second Line', amount: 1_100_000 },
+        { id: 102, title: 'E2E Layout Long Merchant Title That Wraps Onto A Second Line — Imported bank merchant description exceeding the create form title limit', amount: 1_100_000 },
         { id: 103, title: matchedOnceTitle, amount: 1_200_000 },
         { id: 104, title: matchedTwiceTitle, amount: 1_300_000 }
     ];

@@ -11,7 +11,6 @@ import { ModalPage } from '../@generic/component/page/modal-page';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { useSingleFlight } from '../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../@generic/utils/toast-on-failure.util';
-import { ConvertToTransferHeader } from '../transaction/components/convert-to-transfer-header/convert-to-transfer-header';
 import { ConvertTransferForm } from '../transaction/components/convert-transfer-form/convert-transfer-form';
 import { useConvertToTransferModal } from '../transaction/context/convert-to-transfer-modal.context';
 import { useConvertToTransferModalParams } from '../transaction/hook/use-convert-to-transfer-modal-params.hook';
@@ -94,11 +93,7 @@ export default function ConvertToTransferModal() {
 
     return (
         <FormProvider {...form}>
-            <ModalPage
-                className="bg-grouped-surface"
-                testID={ConvertToTransferModalSelector.Page}
-                header={<ConvertToTransferHeader isLoading={isLoading} />}
-            >
+            <ModalPage className="bg-grouped-surface" testID={ConvertToTransferModalSelector.Page} contentClassName="px-0">
                 <ConvertTransferForm isSubmitting={isLoading} onSubmit={handleSubmit} onCancel={handleCancel} />
             </ModalPage>
         </FormProvider>

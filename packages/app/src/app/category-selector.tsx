@@ -3,6 +3,7 @@ import { useState } from 'react';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { GroupedListRow } from '../@generic/component/grouped-list-row/grouped-list-row';
 import { SelectorModalDescription } from '../@generic/component/selector-modal-description/selector-modal-description';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { SelectorNoResultsState } from '../@generic/component/selector-no-results-state/selector-no-results-state';
@@ -51,12 +52,10 @@ export default function CategorySelectorModal() {
                 onSearchChange={setSearch}
                 title={t`Category`}
                 placeholder={t`Search categories…`}
-                createLabel={t`Create category`}
-                onCreate={handleCreatePress}
-                createTestID={CategorySelectorModalSelector.CreateButton}
                 testID={CategorySelectorModalSelector.Input}
             />
 
+            <GroupedListRow title={t`Create category`} onPress={handleCreatePress} testID={CategorySelectorModalSelector.CreateButton} />
             <SelectorModalDescription title={title} description={description}>
                 <CategorySelectContent
                     listEmptyComponent={listEmptyComponent}

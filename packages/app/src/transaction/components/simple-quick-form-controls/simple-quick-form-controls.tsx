@@ -14,6 +14,7 @@ import { TransactionDateTagsRow } from '../transaction-date-tags-row/transaction
 import { TransactionFieldIconRef } from '../transaction-field-icon/transaction-field-icon';
 import { TransactionFieldIcons } from '../transaction-field-icons/transaction-field-icons';
 import { TransactionNoteFieldIcon } from '../transaction-note-field-icon/transaction-note-field-icon';
+import { TransactionSecondaryFields } from '../transaction-secondary-fields/transaction-secondary-fields';
 import { TransactionSplitFieldIcon } from '../transaction-split-field-icon/transaction-split-field-icon';
 
 import type { useSimpleQuickFormState } from '../../hook/use-simple-quick-form-state.hook';
@@ -44,7 +45,7 @@ export const SimpleQuickFormControls = ({
     const variant = isExpense ? 'destructive' : 'positive';
     const accountFieldName = isExpense ? 'fromAccountId' : 'toAccountId';
     const accountErrorFields = [accountFieldName] as const;
-    const { handleCommentPress, handleDatePress } = useQuickFormModals();
+    const { handleDatePress } = useQuickFormModals();
     const entryType = isExpense ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
     const { handleSplitIconPress } = useQuickFormSplit({
         accountFieldName,
@@ -76,14 +77,18 @@ export const SimpleQuickFormControls = ({
             </GroupedListSection>
             <TransactionFieldIcons>
                 <TransactionDateTagsRow onDatePress={handleDatePress} />
-                {fee}
-                <TransactionNoteFieldIcon onPress={handleCommentPress} />
+                <TransactionSecondaryFields>
+                    {fee}
+                    <TransactionNoteFieldIcon />
+                </TransactionSecondaryFields>
             </TransactionFieldIcons>
-            <TransactionSplitFieldIcon
-                splitEntryCount={formState.splitEntryCount}
-                isAmountPositive={formState.isAmountPositive}
-                onPress={handleSplitIconPress}
-            />
+            <TransactionSecondaryFields>
+                <TransactionSplitFieldIcon
+                    splitEntryCount={formState.splitEntryCount}
+                    isAmountPositive={formState.isAmountPositive}
+                    onPress={handleSplitIconPress}
+                />
+            </TransactionSecondaryFields>
         </View>,
         handleConfirm
     );

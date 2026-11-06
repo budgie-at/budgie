@@ -19,6 +19,8 @@ export const showRuleApplicationToast = (result: ApplyRuleResultInterface | null
     if (total === 0) {
         Toast.show({
             type: 'info',
+            position: 'bottom',
+            bottomOffset: 110,
             text1: t`No transactions matched`,
             text2: t`The rule was saved but no existing transactions needed updating.`
         });
@@ -29,6 +31,8 @@ export const showRuleApplicationToast = (result: ApplyRuleResultInterface | null
     if (failed > 0) {
         Toast.show({
             type: 'error',
+            position: 'bottom',
+            bottomOffset: 110,
             text1: t`Rule partially applied`,
             text2: t`Updated ${applied} of ${total} transactions.`
         });
@@ -38,6 +42,8 @@ export const showRuleApplicationToast = (result: ApplyRuleResultInterface | null
 
     Toast.show({
         type: 'success',
+        position: 'bottom',
+        bottomOffset: 110,
         text1: t`Rule applied`,
         text2: plural(applied, {
             one: '# matching transaction updated',

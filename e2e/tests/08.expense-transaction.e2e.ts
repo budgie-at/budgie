@@ -29,7 +29,8 @@ test('08 expense transaction', { tags: ['transactions'] }, async ({ budgie }) =>
         await g.openTagPicker(ctx);
         await g.createTagInPicker(ctx, 'E2E Txn Tag');
         await g.createTagInPicker(ctx, 'E2E Txn Primary Tag');
-        await id('TagPickerBottomSheet.Card.E2E Txn Primary Tag').longPress();
+        await screen.getByRole('button', { name: 'Make primary' }).first().tap();
+        await expect(id('TagPickerBottomSheet.Card.E2E Txn Primary Tag')).toHaveAccessibleName('E2E Txn Primary Tag, primary');
         await g.closeTagPicker(ctx);
 
         await t.enterComment(ctx, 'E2E Test Expense');

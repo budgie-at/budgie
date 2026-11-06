@@ -10,7 +10,8 @@ const SHORT_TITLE_TRANSACTION = 101;
 const LONG_TITLE_TRANSACTION = 102;
 const MATCHED_ONCE_TRANSACTION = 103;
 const MATCHED_TWICE_TRANSACTION = 104;
-const LONG_TITLE = 'E2E Layout Long Merchant Title That Wraps Onto A Second Line';
+const LONG_TITLE =
+    'E2E Layout Long Merchant Title That Wraps Onto A Second Line — Imported bank merchant description exceeding the create form title limit';
 const TAG = 'Rules Test Tag';
 
 test('46 edit form layout stability', { tags: ['transactions'] }, async ({ budgie }) => {
@@ -104,6 +105,59 @@ test('46 edit form layout stability', { tags: ['transactions'] }, async ({ budgi
         await b.expectNoId(ctx, 'SuggestRule.Card', 15_000);
         await b.expectId(ctx, 'MatchingRules.Pill', 15_000);
         await measure('matching rule after creation');
+    });
+
+    await b.phase('edit category with the keypad collapsed and save the long imported title', async () => {
+        await openForm(LONG_TITLE_TRANSACTION);
+        await b.expectNoId(ctx, 'TransactionKeypad.Digit.1');
+        await b.tapId(ctx, 'TransactionForm.CategorySelector');
+        await b.selectCategoryBySearch(ctx, 'Groceries');
+        await expect(b.byId(screen, 'TransactionForm.SubmitButton')).toBeEnabled();
+        await b.tapId(ctx, 'TransactionForm.SubmitButton');
+        await b.expectNoId(ctx, 'TransactionForm.SubmitButton', 10_000);
+        await b.openLink(ctx, `budgie://transactions/${LONG_TITLE_TRANSACTION}/expense`);
+        await b.expectId(ctx, 'TransactionInfo.Page', 10_000);
+        await expect(b.byId(screen, 'TransactionInfo.Row.Category')).toHaveAccessibleName('Category, Groceries');
+        await b.expectText(ctx, LONG_TITLE);
+    });
+
+    await b.phase('keep the note and Save above the keyboard', async () => {
+        await openForm(LONG_TITLE_TRANSACTION);
+        await b.scrollTo(ctx, 'TransactionForm.CommentInput');
+        await b.tapId(ctx, 'TransactionForm.CommentInput');
+        await b.fillId(ctx, 'NoteInput.Input', 'Lunch with the team');
+        await b.sleep(500);
+        const noteBox = await b.byId(screen, 'NoteInput.Input').boundingBox();
+        const saveBox = await b.byId(screen, 'TransactionForm.SubmitButton').boundingBox();
+        if (noteBox === null || saveBox === null || noteBox.y + noteBox.height > saveBox.y) {
+            throw new Error(`the note overlaps Save: note=${JSON.stringify(noteBox)}, save=${JSON.stringify(saveBox)}`);
+        }
+        await b.tapId(ctx, 'NoteInput.SubmitButton');
+        await b.expectNoId(ctx, 'NoteInput.Input');
+        await expect(b.byId(screen, 'TransactionForm.SubmitButton')).toBeEnabled();
+    });
+
+    await b.phase('dismiss the keypad on field interaction and page drag', async () => {
+        await openForm(LONG_TITLE_TRANSACTION);
+        await b.tapId(ctx, 'TransactionForm.AmountInput');
+        await b.expectId(ctx, 'TransactionKeypad.Digit.1');
+        await b.tapId(ctx, 'TransactionForm.CategorySelector');
+        await b.expectId(ctx, 'CategoryPickerBottomSheet.Input');
+        await b.expectNoId(ctx, 'TransactionKeypad.Digit.1');
+        await b.selectCategoryBySearch(ctx, 'Groceries');
+        await b.tapId(ctx, 'TransactionForm.AmountInput');
+        await b.expectId(ctx, 'TransactionKeypad.Digit.1');
+        await ctx.screen.swipe({ from: { x: 75, y: 240 }, to: { x: 75, y: 160 }, duration: 800 });
+        await b.expectNoId(ctx, 'TransactionKeypad.Digit.1');
+    });
+
+    await b.phase('preserve a pending zero fraction while entering an amount', async () => {
+        await b.tapId(ctx, 'TransactionForm.AmountInput');
+        await b.byId(screen, 'TransactionKeypad.Backspace').longPress();
+        await b.tapId(ctx, 'TransactionKeypad.Decimal');
+        await expect(b.byId(screen, 'TransactionForm.AmountInput')).toHaveAccessibleName('€0.');
+        await b.tapId(ctx, 'TransactionKeypad.Digit.0');
+        await expect(b.byId(screen, 'TransactionForm.AmountInput')).toHaveAccessibleName('€0.0');
     });
 
     const [referenceState, referenceY] = measurements[0];

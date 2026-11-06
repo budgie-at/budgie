@@ -1,6 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
-import { useState } from 'react';
 import { Text, useWindowDimensions, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
@@ -37,9 +36,8 @@ const labelVariants = cva('shrink-0', {
 export const TransactionFormRow = (props: Props) => {
     const { left, label, value, placeholder, valueTestID, onPress, testID, pressableProps } = props;
     const { fontScale } = useWindowDimensions();
-    const [overflowingValue, setOverflowingValue] = useState<string | null>(null);
     const isLargeText = fontScale >= TRANSACTION_LARGE_TEXT_SCALE;
-    const isStacked = isLargeText || (isNotEmptyString(value) && overflowingValue === value);
+    const isStacked = isLargeText;
     const isAction = !isNotEmptyString(value) && !isDefined(placeholder);
     const labelMaxFontScale = isLargeText && !isAction ? STACKED_LABEL_MAX_FONT_SCALE : LABEL_MAX_FONT_SCALE;
     const stackedLeading = isLargeText ? null : <View className="self-start pt-[17px]">{left}</View>;
@@ -64,7 +62,6 @@ export const TransactionFormRow = (props: Props) => {
                         isStacked={isStacked}
                         isLargeText={isLargeText}
                         testID={valueTestID}
-                        onOverflow={setOverflowingValue}
                     />
                 </View>
             }
