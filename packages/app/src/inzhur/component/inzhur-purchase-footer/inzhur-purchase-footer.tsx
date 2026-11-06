@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
-import { useFormContext, useWatch } from 'react-hook-form';
+import { useFormContext, useFormState, useWatch } from 'react-hook-form';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
@@ -17,11 +17,12 @@ interface Props {
 
 export const InzhurPurchaseFooter = ({ topUp }: Props) => {
     const { t } = useLingui();
-    const { control, formState } = useFormContext<InzhurPurchaseFormValues>();
+    const { control } = useFormContext<InzhurPurchaseFormValues>();
+    const { isValid } = useFormState({ control });
     const amount = useWatch({ control, name: 'amount' });
     const { isLoading, handleSave, handleSaveAndAddAnother } = useInzhurPurchaseSubmit(topUp.transactionId);
 
-    const isSaveDisabled = !formState.isValid;
+    const isSaveDisabled = !isValid;
     const isAddAnotherDisabled = isSaveDisabled || isLoading;
     const hasRemainingAfterSave = isPositiveNumber(topUp.remainingAmount - amount);
 

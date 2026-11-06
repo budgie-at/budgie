@@ -46,7 +46,9 @@ test('44 inzhur operations import', { tags: ['import'] }, async ({ budgie }) => 
         await core.scrollTo(ctx, 'Inzhur.PurchaseAmountInput');
         await core.fillId(ctx, 'Inzhur.PurchaseAmountInput', '1000');
         await core.done(ctx);
+        await expect(core.byId(screen, 'Inzhur.PurchaseSaveButton')).toBeEnabled({ timeout: 3_000 });
         await core.tapId(ctx, 'Inzhur.PurchaseSaveButton');
+        await core.expectId(ctx, 'Institution.Page', 10_000);
         await core.scrollTo(ctx, 'Institution.ShowAllAccounts');
         await core.tapId(ctx, 'Institution.ShowAllAccounts');
         await core.scrollTo(ctx, 'AccountCard.MilTech');
