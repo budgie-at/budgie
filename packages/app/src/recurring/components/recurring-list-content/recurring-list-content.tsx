@@ -42,7 +42,11 @@ export const RecurringListContent = ({ header }: Props) => {
     const stickyHeaderIndices = items.flatMap((item, index) => (item.type === RecurringListItemKindEnum.HEADER ? [index] : []));
     const summary = buildRecurringSummary(loadedSeries, now);
     const contentContainerStyle = { paddingBottom: FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottom };
-    const emptyState = isLoading ? null : <RecurringListEmptyState />;
+    const emptyState = (
+        <LoadingContent isLoading={isLoading}>
+            <RecurringListEmptyState />
+        </LoadingContent>
+    );
 
     const handleToggleSection = (section: RecurringSectionEnum) =>
         void setExpandedSections(current => (current.includes(section) ? current.filter(item => item !== section) : [...current, section]));
@@ -61,26 +65,26 @@ export const RecurringListContent = ({ header }: Props) => {
 
     return (
         <View className="flex-1">
-            <LoadingContent isLoading={isLoading} className="flex-1" containerClassName="flex-1">
-                <View className="flex-1" testID={RecurringPaneSelector.List}>
-                    <StaticChromeLegendList
-                        data={items}
-                        stickyHeaderIndices={stickyHeaderIndices}
-                        keyExtractor={keyExtractor}
-                        getItemType={getItemType}
-                        renderItem={renderItem}
-                        estimatedItemSize={64}
-                        contentContainerStyle={contentContainerStyle}
-                        ListHeaderComponent={
-                            <View>
-                                {header}
+            <View className="flex-1" testID={RecurringPaneSelector.List}>
+                <StaticChromeLegendList
+                    data={items}
+                    stickyHeaderIndices={stickyHeaderIndices}
+                    keyExtractor={keyExtractor}
+                    getItemType={getItemType}
+                    renderItem={renderItem}
+                    estimatedItemSize={64}
+                    contentContainerStyle={contentContainerStyle}
+                    ListHeaderComponent={
+                        <View>
+                            {header}
+                            <LoadingContent isLoading={isLoading}>
                                 <RecurringSummaryCard summary={summary} now={now} />
-                            </View>
-                        }
-                        ListEmptyComponent={emptyState}
-                    />
-                </View>
-            </LoadingContent>
+                            </LoadingContent>
+                        </View>
+                    }
+                    ListEmptyComponent={emptyState}
+                />
+            </View>
         </View>
     );
 };

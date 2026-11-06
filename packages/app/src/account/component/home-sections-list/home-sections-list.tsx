@@ -7,13 +7,13 @@ import { useScreenChrome, useScreenChromeScrollProps } from '@rnw-community/reac
 
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@generic/constant/floating-tab-bar.constant';
 import { useCollapsibleChromeScroll } from '../../../@generic/hook/use-collapsible-chrome-scroll.hook';
-import { getScreenChromeStickyHeaderConfig } from '../../../@generic/utils/get-screen-chrome-sticky-header-config.util';
+import { useScreenChromeStickyList } from '../../../@generic/hook/use-screen-chrome-sticky-list.hook';
 import { decimalPlacesAtom, defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
 import { TransactionRowSurface } from '../../../transaction/components/transaction-row-surface/transaction-row-surface';
 import { COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT } from '../../constant/collapsible-net-worth-header-scroll-spacer.constant';
 import { HomeAccountBalanceInterface } from '../../interface/home-account-balance.interface';
 import { HomeSectionInterface } from '../../interface/home-section.interface';
-import { isInstitutionGroup } from '../../type-guard/is-institution-group.type-guard';
+import { getHomeSectionItemKey } from '../../utils/get-home-section-item-key.util';
 import { getHomeSectionItemPosition } from '../../utils/get-home-section-item-position.util';
 import { AccountsEmptyState } from '../accounts-empty-state/accounts-empty-state';
 import { CollapsibleNetWorthHeaderScrollSpacer } from '../collapsible-net-worth-header-scroll-spacer/collapsible-net-worth-header-scroll-spacer';
@@ -68,19 +68,20 @@ export const HomeSectionsList = ({
 
     const listEmptyComponent = isLoading || activeAccountCount > 0 ? null : AccountsEmptyState;
 
-    const renderSectionHeader = ({ section }: { section: HomeSectionInterface }) => <HomeSectionHeader section={section} />;
-
-    const keyExtractor = (item: HomeSectionInterface['data'][number]) => {
-        if (isInstitutionGroup(item)) {
-            return `institution-${item.integrationId}`;
-        }
-
-        return 'accounts' in item ? `crypto-${item.instrument.id}` : String(item.id);
-    };
+    const headers = sections.map((section, index) => ({
+        index: sections.slice(0, index).reduce((count, previous) => count + previous.data.length + 2, 0),
+        content: <HomeSectionHeader section={section} />
+    }));
+    const { handleListRef, onMetricsChange, publish, stickyHeaderConfig } = useScreenChromeStickyList(
+        headers,
+        config.headerHeight - collapsedHeaderHeight,
+        collapsedHeaderHeight,
+        LIST_HORIZONTAL_PADDING
+    );
 
     const renderItem: SectionListRenderItem<HomeSectionInterface['data'][number], HomeSectionInterface> = ({ item, index, section }) => (
         <TransactionRowSurface position={getHomeSectionItemPosition(section, index)}>
-            <HomeSectionItem key={keyExtractor(item)} item={item} section={section} balancesByAccountId={balancesByAccountId} />
+            <HomeSectionItem key={getHomeSectionItemKey(item)} item={item} section={section} balancesByAccountId={balancesByAccountId} />
         </TransactionRowSurface>
     );
 
@@ -88,13 +89,17 @@ export const HomeSectionsList = ({
         <AnimatedSectionList
             key={listFormatKey}
             sections={sections}
-            renderSectionHeader={renderSectionHeader}
+            renderSectionHeader={HomeSectionHeader}
             renderItem={renderItem}
             renderSectionFooter={HomeSectionFooter}
-            keyExtractor={keyExtractor}
+            keyExtractor={getHomeSectionItemKey}
             extraData={balancesByAccountId}
             refScrollView={refScrollView}
-            stickyHeaderConfig={getScreenChromeStickyHeaderConfig(config, collapsedHeaderHeight)}
+            ref={handleListRef}
+            onMetricsChange={onMetricsChange}
+            onItemSizeChanged={publish}
+            onViewableItemsChanged={publish}
+            stickyHeaderConfig={stickyHeaderConfig}
             showsVerticalScrollIndicator={false}
             stickySectionHeadersEnabled
             recycleItems
