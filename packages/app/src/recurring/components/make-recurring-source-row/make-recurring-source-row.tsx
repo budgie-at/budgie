@@ -1,5 +1,4 @@
 import { convertFromMicroUnits } from '@budgie/contracts';
-import { getTransactionCategoryEntries } from '@budgie/ledger';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -9,7 +8,7 @@ import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useGetTransactionByIdQuery } from '../../../transaction/query/use-get-transaction-by-id.query';
 import { getTransactionDisplayTitle } from '../../../transaction/utils/get-transaction-display-title.util';
 import { getTransactionInfoPrimaryEntry } from '../../../transaction/utils/get-transaction-info-primary-entry.util';
-import { sumEntryAmounts } from '../../../transaction/utils/sum-entry-amounts.util';
+import { getTransactionPrimaryAmount } from '../../../transaction/utils/get-transaction-primary-amount.util';
 import { RecurringMerchantTile } from '../recurring-merchant-tile/recurring-merchant-tile';
 
 interface Props {
@@ -29,14 +28,12 @@ export const MakeRecurringSourceRow = ({ transactionId }: Props) => {
     }
 
     const title = getTransactionDisplayTitle(transaction);
-    const amountInMicroUnits = sumEntryAmounts(
-        getTransactionCategoryEntries(transaction.entries).filter(entry => entry.accountId === primaryEntry.accountId)
-    );
+    const amountInMicroUnits = getTransactionPrimaryAmount(transaction);
     const amount = protectAmount(Math.abs(convertFromMicroUnits(amountInMicroUnits)), primaryEntry.account.instrument.symbol);
     const subtitle = `${formatMonthAndDayAndOptionalYear(transaction.operatedAt)} · ${primaryEntry.account.title}`;
 
     return (
-        <View className="flex-row items-center gap-x-xl rounded-3xl bg-sheet-grouped-row px-3xl py-xl" style={continuousCorners}>
+        <View className="flex-row items-center gap-x-xl rounded-3xl bg-surface-row px-3xl py-xl" style={continuousCorners}>
             <RecurringMerchantTile title={title} size={40} />
             <View className="min-w-0 flex-1 gap-y-xxs">
                 <Text dynamicTypeRamp="headline" className="text-[16px] font-semibold text-primary" numberOfLines={1}>

@@ -24,7 +24,7 @@ const decodeNotificationData = Schema.decodeUnknownOption(
     ])
 );
 
-export const BudgetNotificationLaunchHandler = () => {
+export const NotificationLaunchHandler = () => {
     const { isUnlocked } = useAuthContext();
     const lastResponse = Notifications.useLastNotificationResponse();
 

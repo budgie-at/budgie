@@ -10,9 +10,9 @@ import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { toNativeCallError } from '../../../@generic/utils/to-native-call-error.util';
 import { RecurringReminderChoiceEnum } from '../../enum/recurring-reminder-choice.enum';
+import { buildRecurringReminderSegments } from '../../utils/build-recurring-reminder-segments.util';
 import { RecurringSeriesFormSelector } from '../recurring-series-form-screen/recurring-series-form.selector';
 
-import type { SegmentedControlSegmentInterface } from '../../../@generic/interface/segmented-control-segment.interface';
 import type { RecurringSeriesFormValues } from '../../constant/recurring-series-form-schema.constant';
 
 export const RecurringFormReminderSection = () => {
@@ -21,28 +21,7 @@ export const RecurringFormReminderSection = () => {
     const {
         field: { value, onChange }
     } = useController({ control, name: 'reminder' });
-    const segments: readonly SegmentedControlSegmentInterface<RecurringReminderChoiceEnum>[] = [
-        {
-            value: RecurringReminderChoiceEnum.OFF,
-            label: t`Off`,
-            testID: RecurringSeriesFormSelector.Reminder(RecurringReminderChoiceEnum.OFF)
-        },
-        {
-            value: RecurringReminderChoiceEnum.SAME_DAY,
-            label: t`Same day`,
-            testID: RecurringSeriesFormSelector.Reminder(RecurringReminderChoiceEnum.SAME_DAY)
-        },
-        {
-            value: RecurringReminderChoiceEnum.ONE_DAY,
-            label: t`1 day`,
-            testID: RecurringSeriesFormSelector.Reminder(RecurringReminderChoiceEnum.ONE_DAY)
-        },
-        {
-            value: RecurringReminderChoiceEnum.THREE_DAYS,
-            label: t`3 days`,
-            testID: RecurringSeriesFormSelector.Reminder(RecurringReminderChoiceEnum.THREE_DAYS)
-        }
-    ];
+    const segments = buildRecurringReminderSegments(RecurringSeriesFormSelector.Reminder);
 
     const handleChange = (choice: RecurringReminderChoiceEnum) => {
         onChange(choice);

@@ -1,12 +1,10 @@
 import { RecurringSeriesKindEnum, TransactionTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
-import { getTransactionCategoryEntries } from '@budgie/ledger';
-import { addMonths } from 'date-fns/addMonths';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { getTransactionDisplayTitle } from '../../transaction/utils/get-transaction-display-title.util';
 import { getTransactionInfoPrimaryEntry } from '../../transaction/utils/get-transaction-info-primary-entry.util';
-import { sumEntryAmounts } from '../../transaction/utils/sum-entry-amounts.util';
+import { getTransactionPrimaryAmount } from '../../transaction/utils/get-transaction-primary-amount.util';
 
 import { buildDefaultRecurringFormValues } from './build-default-recurring-form-values.util';
 
@@ -17,16 +15,14 @@ export const buildRecurringFormValuesFromTransaction = (
     transaction: TransactionWithRelationsEntityInterface,
     defaultInstrumentId: number
 ): RecurringSeriesFormValues => {
-    const defaults = buildDefaultRecurringFormValues(defaultInstrumentId, addMonths(transaction.operatedAt, 1));
+    const defaults = buildDefaultRecurringFormValues(defaultInstrumentId, transaction.operatedAt);
     const primaryEntry = getTransactionInfoPrimaryEntry(transaction);
 
     if (!isDefined(primaryEntry)) {
         return { ...defaults, title: getTransactionDisplayTitle(transaction) };
     }
 
-    const amountInMicroUnits = sumEntryAmounts(
-        getTransactionCategoryEntries(transaction.entries).filter(entry => entry.accountId === primaryEntry.accountId)
-    );
+    const amountInMicroUnits = getTransactionPrimaryAmount(transaction);
 
     return {
         ...defaults,

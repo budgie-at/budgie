@@ -7,487 +7,786 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Performance Improvements
 
-- run Effect rules in oxlint on tsrs, enable them all, parallelize tests ([#1956](https://github.com/budgie-at/budgie/issues/1956)) ([53a5170](https://github.com/budgie-at/budgie/commit/53a5170978e14a31cb6fc22da657851a42b592ad)), closes [#1883](https://github.com/budgie-at/budgie/issues/1883)
+* run Effect rules in oxlint on tsrs, enable them all, parallelize tests ([#1956](https://github.com/budgie-at/budgie/issues/1956)) ([53a5170](https://github.com/budgie-at/budgie/commit/53a5170978e14a31cb6fc22da657851a42b592ad)), closes [#1883](https://github.com/budgie-at/budgie/issues/1883)
+
 
 ## [6.163.2](https://github.com/budgie-at/budgie/compare/v6.163.1...v6.163.2) (2026-11-05)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 # [6.163.0](https://github.com/budgie-at/budgie/compare/v6.162.1...v6.163.0) (2026-11-05)
 
 ### Features
 
-- **sync:** add on-device Enable Banking sync for EU banks ([#1949](https://github.com/budgie-at/budgie/issues/1949)) ([e507c18](https://github.com/budgie-at/budgie/commit/e507c181af8761113dd8acf76d116c047b0d39e6)), closes [#1910](https://github.com/budgie-at/budgie/issues/1910) [#1914](https://github.com/budgie-at/budgie/issues/1914)
+* **sync:** add on-device Enable Banking sync for EU banks ([#1949](https://github.com/budgie-at/budgie/issues/1949)) ([e507c18](https://github.com/budgie-at/budgie/commit/e507c181af8761113dd8acf76d116c047b0d39e6)), closes [#1910](https://github.com/budgie-at/budgie/issues/1910) [#1914](https://github.com/budgie-at/budgie/issues/1914)
+
 
 ## [6.162.1](https://github.com/budgie-at/budgie/compare/v6.162.0...v6.162.1) (2026-11-05)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 ## [6.152.1](https://github.com/budgie-at/budgie/compare/v6.152.0...v6.152.1) (2026-11-04)
 
 **Note:** Version bump only for package @budgie/sync
+
+
+
+
 
 ## [6.151.5](https://github.com/budgie-at/budgie/compare/v6.151.4...v6.151.5) (2026-11-04)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 ## [6.151.4](https://github.com/budgie-at/budgie/compare/v6.151.3...v6.151.4) (2026-11-04)
 
 ### Bug Fixes
 
-- **sync:** preserve own-card transfers and user edits ([4bc1f09](https://github.com/budgie-at/budgie/commit/4bc1f09f00d66b21fc5c579c85d8be601b395a6a))
+* **sync:** preserve own-card transfers and user edits ([4bc1f09](https://github.com/budgie-at/budgie/commit/4bc1f09f00d66b21fc5c579c85d8be601b395a6a))
+
 
 ## [6.151.3](https://github.com/budgie-at/budgie/compare/v6.151.2...v6.151.3) (2026-11-04)
 
 ### Bug Fixes
 
-- **sync:** apply account rules after card reissue merges ([7c7b450](https://github.com/budgie-at/budgie/commit/7c7b450e7cb0d1f2fc0c0243e95864dae8486c9f))
-- **sync:** preserve Binance P2P commission fields ([8bd085a](https://github.com/budgie-at/budgie/commit/8bd085a37431cc79b0109e8e65e57f19d484cb8e))
+* **sync:** apply account rules after card reissue merges ([7c7b450](https://github.com/budgie-at/budgie/commit/7c7b450e7cb0d1f2fc0c0243e95864dae8486c9f))
+* **sync:** preserve Binance P2P commission fields ([8bd085a](https://github.com/budgie-at/budgie/commit/8bd085a37431cc79b0109e8e65e57f19d484cb8e))
+
 
 ## [6.150.4](https://github.com/budgie-at/budgie/compare/v6.150.3...v6.150.4) (2026-11-04)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 # [6.148.0](https://github.com/budgie-at/budgie/compare/v6.147.1...v6.148.0) (2026-11-02)
 
 **Note:** Version bump only for package @budgie/sync
+
+
+
+
 
 ## [6.147.1](https://github.com/budgie-at/budgie/compare/v6.147.0...v6.147.1) (2026-11-02)
 
 ### Bug Fixes
 
-- **ledger:** self-heal debt payment categories after sync and consolidation ([#1866](https://github.com/budgie-at/budgie/issues/1866)) ([ebc501b](https://github.com/budgie-at/budgie/commit/ebc501bdcd68f76f7dc6f25a808fe453b2b5cdee))
+* **ledger:** self-heal debt payment categories after sync and consolidation ([#1866](https://github.com/budgie-at/budgie/issues/1866)) ([ebc501b](https://github.com/budgie-at/budgie/commit/ebc501bdcd68f76f7dc6f25a808fe453b2b5cdee))
+
 
 # [6.147.0](https://github.com/budgie-at/budgie/compare/v6.146.1...v6.147.0) (2026-11-02)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 # [6.145.0](https://github.com/budgie-at/budgie/compare/v6.144.1...v6.145.0) (2026-11-02)
 
 **Note:** Version bump only for package @budgie/sync
+
+
+
+
 
 ## [6.144.1](https://github.com/budgie-at/budgie/compare/v6.144.0...v6.144.1) (2026-11-01)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 # [6.141.0](https://github.com/budgie-at/budgie/compare/v6.140.1...v6.141.0) (2026-11-01)
 
 **Note:** Version bump only for package @budgie/sync
+
+
+
+
 
 ## [6.140.1](https://github.com/budgie-at/budgie/compare/v6.140.0...v6.140.1) (2026-11-01)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 # [6.140.0](https://github.com/budgie-at/budgie/compare/v6.139.2...v6.140.0) (2026-11-01)
 
 **Note:** Version bump only for package @budgie/sync
+
+
+
+
 
 # [6.138.0](https://github.com/budgie-at/budgie/compare/v6.137.1...v6.138.0) (2026-10-31)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 # [6.134.0](https://github.com/budgie-at/budgie/compare/v6.133.0...v6.134.0) (2026-10-31)
 
 **Note:** Version bump only for package @budgie/sync
+
+
+
+
 
 # [6.133.0](https://github.com/budgie-at/budgie/compare/v6.132.0...v6.133.0) (2026-10-31)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 # [6.132.0](https://github.com/budgie-at/budgie/compare/v6.131.0...v6.132.0) (2026-10-30)
 
 **Note:** Version bump only for package @budgie/sync
+
+
+
+
 
 # [6.130.0](https://github.com/budgie-at/budgie/compare/v6.129.0...v6.130.0) (2026-10-30)
 
 ### Bug Fixes
 
-- **sync:** accept Binance's empty fiat and P2P responses ([40c3710](https://github.com/budgie-at/budgie/commit/40c37105bbf38749cfedd4e6c1a90e65d1c2241f))
-- **sync:** backfill Binance history from the start of the API ([f8a15ee](https://github.com/budgie-at/budgie/commit/f8a15ee0f621ae743c666c6f17c99a9a1b624509))
-- **sync:** correct Binance accounts that only exist in history ([b78d0f0](https://github.com/budgie-at/budgie/commit/b78d0f0b18a75b485a5c5c5c249d0040cd61f79e))
-- **sync:** fetch Binance fiat history after the parallel sources ([2ee96e7](https://github.com/budgie-at/budgie/commit/2ee96e7fb66a69ffed5f2a5c2797dd871c7b1582))
-- **sync:** fetch the full Binance P2P history ([fe899e4](https://github.com/budgie-at/budgie/commit/fe899e4d6d824cc257254e86324021b235cab4a1))
-- **sync:** stop booking Binance earn rewards twice through dividends ([2d690c8](https://github.com/budgie-at/budgie/commit/2d690c8b7844b6b62b706867b50fb31e1d67e697))
+* **sync:** accept Binance's empty fiat and P2P responses ([40c3710](https://github.com/budgie-at/budgie/commit/40c37105bbf38749cfedd4e6c1a90e65d1c2241f))
+* **sync:** backfill Binance history from the start of the API ([f8a15ee](https://github.com/budgie-at/budgie/commit/f8a15ee0f621ae743c666c6f17c99a9a1b624509))
+* **sync:** correct Binance accounts that only exist in history ([b78d0f0](https://github.com/budgie-at/budgie/commit/b78d0f0b18a75b485a5c5c5c249d0040cd61f79e))
+* **sync:** fetch Binance fiat history after the parallel sources ([2ee96e7](https://github.com/budgie-at/budgie/commit/2ee96e7fb66a69ffed5f2a5c2797dd871c7b1582))
+* **sync:** fetch the full Binance P2P history ([fe899e4](https://github.com/budgie-at/budgie/commit/fe899e4d6d824cc257254e86324021b235cab4a1))
+* **sync:** stop booking Binance earn rewards twice through dividends ([2d690c8](https://github.com/budgie-at/budgie/commit/2d690c8b7844b6b62b706867b50fb31e1d67e697))
 
 ### Features
 
-- **sync:** correct Binance balances that history cannot explain ([6ec205d](https://github.com/budgie-at/budgie/commit/6ec205d3ff8a7494eeeac23afbe658f72253b65c))
-- **sync:** sync Binance fiat card purchases ([d20a70f](https://github.com/budgie-at/budgie/commit/d20a70fb8ff385993cce27a6728ab62a4447bf82))
+* **sync:** correct Binance balances that history cannot explain ([6ec205d](https://github.com/budgie-at/budgie/commit/6ec205d3ff8a7494eeeac23afbe658f72253b65c))
+* **sync:** sync Binance fiat card purchases ([d20a70f](https://github.com/budgie-at/budgie/commit/d20a70fb8ff385993cce27a6728ab62a4447bf82))
 
 ### Performance Improvements
 
-- **sync:** fetch Binance fiat history in one paged request ([e49e320](https://github.com/budgie-at/budgie/commit/e49e32084af71659f3220dab6d2f822a096a9168))
-- **sync:** fetch independent Binance history sources in parallel ([3fe663e](https://github.com/budgie-at/budgie/commit/3fe663e147d91b50eed68fc67456051b8f6b1fce))
+* **sync:** fetch Binance fiat history in one paged request ([e49e320](https://github.com/budgie-at/budgie/commit/e49e32084af71659f3220dab6d2f822a096a9168))
+* **sync:** fetch independent Binance history sources in parallel ([3fe663e](https://github.com/budgie-at/budgie/commit/3fe663e147d91b50eed68fc67456051b8f6b1fce))
+
 
 # [6.128.0](https://github.com/budgie-at/budgie/compare/v6.127.0...v6.128.0) (2026-10-30)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 # [6.127.0](https://github.com/budgie-at/budgie/compare/v6.126.5...v6.127.0) (2026-10-30)
 
 ### Bug Fixes
 
-- **sync:** accept Binance's empty dust and transfer history responses ([441d134](https://github.com/budgie-at/budgie/commit/441d13412debfddcef4170986720e35db562e8a4))
-- **sync:** anchor every enabled Binance key once per run before any batch is due ([9a664d2](https://github.com/budgie-at/budgie/commit/9a664d2bad7d70bf30fcaec34d64e13275c4b916))
-- **sync:** backfill newly added Binance sources once for integrations that already synced ([7d68f23](https://github.com/budgie-at/budgie/commit/7d68f2384da41f09040888ea986c0c281d30a41c))
-- **sync:** book Binance Spot-Funding transfers, honour walletType and count frozen funds ([fedeec3](https://github.com/budgie-at/budgie/commit/fedeec3a2cbd17b49a0d37244f9ac7740d7b94e7))
-- **sync:** cap the polling rate-gate wait at one interval when the clock moves back ([911060d](https://github.com/budgie-at/budgie/commit/911060d4e035be36ce2ac8ccfc138fb5a3db8f50))
-- **sync:** fix Binance sync CI failures ([732fd76](https://github.com/budgie-at/budgie/commit/732fd7654c1aabb5e831b8f4645221471aafcf98))
-- **sync:** harden Binance mapper parsing, windows, earn totals and per-integration dedupe ([f19dbea](https://github.com/budgie-at/budgie/commit/f19dbea549ae7f455ffed56779214b465c799c59))
-- **sync:** keep deleted Binance data deleted and resolve renamed assets to one canonical account ([111f19c](https://github.com/budgie-at/budgie/commit/111f19c6e3b7226f874e7673e668f3173129d8aa))
-- **sync:** keep one failing Binance source from blocking the rest ([b46784a](https://github.com/budgie-at/budgie/commit/b46784a79cc5e3f391334df37f0693ebede32040)), closes [#1765](https://github.com/budgie-at/budgie/issues/1765)
-- **sync:** keep the history progress of a skipped Binance source unchanged so its backfill resumes later ([804eadd](https://github.com/budgie-at/budgie/commit/804eadd68447fa4d4abe8edeca781765ed7a6f66))
-- **sync:** resolve lint errors ([9c4aae5](https://github.com/budgie-at/budgie/commit/9c4aae5beaedbc90de811f23d02ab8a54b5ff49a))
-- **sync:** resolve run tokens only for providers with a pre-run hook ([8df3960](https://github.com/budgie-at/budgie/commit/8df39603326980ca19824117589f1aa53c314cf5))
-- **sync:** resume every Binance history backfill across deferred runs ([e25ada6](https://github.com/budgie-at/budgie/commit/e25ada6f7568de03b4719b30eae9320ff457c0c9))
-- **sync:** skip a Binance product for the run when the account lacks it instead of failing the whole sync ([7f553ee](https://github.com/budgie-at/budgie/commit/7f553ee80586de64df92a5978a13c2b5a97aa958))
-- **sync:** strip the query string without a regular expression ([4ca446e](https://github.com/budgie-at/budgie/commit/4ca446e4307f0918fad3db9e3cb7bdc90a2f3407))
-- **sync:** support multiple Binance keys and verify the account on key rotation ([403c474](https://github.com/budgie-at/budgie/commit/403c4742e5535d7c36242ea2398f81d984cb9cb8))
-- **sync:** type Binance history progress lookups as possibly missing ([45703c8](https://github.com/budgie-at/budgie/commit/45703c87da2afd5ab29656c82de18aadb32908b6))
-- **sync:** walk Binance fiat history to the lookback in resumable chunks and repair imported fiat amounts once ([e39cc9a](https://github.com/budgie-at/budgie/commit/e39cc9ac6e6625a9b6421ab0c78cf7937accd814))
+* **sync:** accept Binance's empty dust and transfer history responses ([441d134](https://github.com/budgie-at/budgie/commit/441d13412debfddcef4170986720e35db562e8a4))
+* **sync:** anchor every enabled Binance key once per run before any batch is due ([9a664d2](https://github.com/budgie-at/budgie/commit/9a664d2bad7d70bf30fcaec34d64e13275c4b916))
+* **sync:** backfill newly added Binance sources once for integrations that already synced ([7d68f23](https://github.com/budgie-at/budgie/commit/7d68f2384da41f09040888ea986c0c281d30a41c))
+* **sync:** book Binance Spot-Funding transfers, honour walletType and count frozen funds ([fedeec3](https://github.com/budgie-at/budgie/commit/fedeec3a2cbd17b49a0d37244f9ac7740d7b94e7))
+* **sync:** cap the polling rate-gate wait at one interval when the clock moves back ([911060d](https://github.com/budgie-at/budgie/commit/911060d4e035be36ce2ac8ccfc138fb5a3db8f50))
+* **sync:** fix Binance sync CI failures ([732fd76](https://github.com/budgie-at/budgie/commit/732fd7654c1aabb5e831b8f4645221471aafcf98))
+* **sync:** harden Binance mapper parsing, windows, earn totals and per-integration dedupe ([f19dbea](https://github.com/budgie-at/budgie/commit/f19dbea549ae7f455ffed56779214b465c799c59))
+* **sync:** keep deleted Binance data deleted and resolve renamed assets to one canonical account ([111f19c](https://github.com/budgie-at/budgie/commit/111f19c6e3b7226f874e7673e668f3173129d8aa))
+* **sync:** keep one failing Binance source from blocking the rest ([b46784a](https://github.com/budgie-at/budgie/commit/b46784a79cc5e3f391334df37f0693ebede32040)), closes [#1765](https://github.com/budgie-at/budgie/issues/1765)
+* **sync:** keep the history progress of a skipped Binance source unchanged so its backfill resumes later ([804eadd](https://github.com/budgie-at/budgie/commit/804eadd68447fa4d4abe8edeca781765ed7a6f66))
+* **sync:** resolve lint errors ([9c4aae5](https://github.com/budgie-at/budgie/commit/9c4aae5beaedbc90de811f23d02ab8a54b5ff49a))
+* **sync:** resolve run tokens only for providers with a pre-run hook ([8df3960](https://github.com/budgie-at/budgie/commit/8df39603326980ca19824117589f1aa53c314cf5))
+* **sync:** resume every Binance history backfill across deferred runs ([e25ada6](https://github.com/budgie-at/budgie/commit/e25ada6f7568de03b4719b30eae9320ff457c0c9))
+* **sync:** skip a Binance product for the run when the account lacks it instead of failing the whole sync ([7f553ee](https://github.com/budgie-at/budgie/commit/7f553ee80586de64df92a5978a13c2b5a97aa958))
+* **sync:** strip the query string without a regular expression ([4ca446e](https://github.com/budgie-at/budgie/commit/4ca446e4307f0918fad3db9e3cb7bdc90a2f3407))
+* **sync:** support multiple Binance keys and verify the account on key rotation ([403c474](https://github.com/budgie-at/budgie/commit/403c4742e5535d7c36242ea2398f81d984cb9cb8))
+* **sync:** type Binance history progress lookups as possibly missing ([45703c8](https://github.com/budgie-at/budgie/commit/45703c87da2afd5ab29656c82de18aadb32908b6))
+* **sync:** walk Binance fiat history to the lookback in resumable chunks and repair imported fiat amounts once ([e39cc9a](https://github.com/budgie-at/budgie/commit/e39cc9ac6e6625a9b6421ab0c78cf7937accd814))
 
 ### Features
 
-- **app:** explain Binance sync failures with translated messages ([51e58e0](https://github.com/budgie-at/budgie/commit/51e58e09c179891d20760cea15086671c099b73f))
-- **sync:** store a stable error code with the last sync failure ([fdb9305](https://github.com/budgie-at/budgie/commit/fdb930568472c3f4f56df40d2f4a4ca0e1862d84))
-- **sync:** sync Binance locked earn rewards, dust conversions, dividends and ETH/SOL staking rewards ([7e8c03b](https://github.com/budgie-at/budgie/commit/7e8c03b1ba360bdba88703fe1bca50fac22c5a98))
+* **app:** explain Binance sync failures with translated messages ([51e58e0](https://github.com/budgie-at/budgie/commit/51e58e09c179891d20760cea15086671c099b73f))
+* **sync:** store a stable error code with the last sync failure ([fdb9305](https://github.com/budgie-at/budgie/commit/fdb930568472c3f4f56df40d2f4a4ca0e1862d84))
+* **sync:** sync Binance locked earn rewards, dust conversions, dividends and ETH/SOL staking rewards ([7e8c03b](https://github.com/budgie-at/budgie/commit/7e8c03b1ba360bdba88703fe1bca50fac22c5a98))
 
 ### Performance Improvements
 
-- **sync:** backfill all Binance accounts of a key in one pass ([fd7f67b](https://github.com/budgie-at/budgie/commit/fd7f67b03081a0eacc02d3d4930f5ad9f7e462ca)), closes [#1824](https://github.com/budgie-at/budgie/issues/1824)
-- **sync:** pace Binance requests on real per-endpoint weight limits ([4ed2566](https://github.com/budgie-at/budgie/commit/4ed2566d7a7de95167daaaa5bd288c77d5bef111)), closes [#1824](https://github.com/budgie-at/budgie/issues/1824)
+* **sync:** backfill all Binance accounts of a key in one pass ([fd7f67b](https://github.com/budgie-at/budgie/commit/fd7f67b03081a0eacc02d3d4930f5ad9f7e462ca)), closes [#1824](https://github.com/budgie-at/budgie/issues/1824)
+* **sync:** pace Binance requests on real per-endpoint weight limits ([4ed2566](https://github.com/budgie-at/budgie/commit/4ed2566d7a7de95167daaaa5bd288c77d5bef111)), closes [#1824](https://github.com/budgie-at/budgie/issues/1824)
+
 
 ## [6.126.5](https://github.com/budgie-at/budgie/compare/v6.126.4...v6.126.5) (2026-10-29)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 # [6.126.0](https://github.com/budgie-at/budgie/compare/v6.125.3...v6.126.0) (2026-10-29)
 
 **Note:** Version bump only for package @budgie/sync
+
+
+
+
 
 ## [6.125.2](https://github.com/budgie-at/budgie/compare/v6.125.1...v6.125.2) (2026-10-28)
 
 ### Bug Fixes
 
-- **sync:** harden binance sync correctness, error handling and key security ([#1769](https://github.com/budgie-at/budgie/issues/1769)) ([dd07510](https://github.com/budgie-at/budgie/commit/dd0751057393fb013ad6d25b681b137d60733056))
+* **sync:** harden binance sync correctness, error handling and key security ([#1769](https://github.com/budgie-at/budgie/issues/1769)) ([dd07510](https://github.com/budgie-at/budgie/commit/dd0751057393fb013ad6d25b681b137d60733056))
+
 
 # [6.124.0](https://github.com/budgie-at/budgie/compare/v6.123.1...v6.124.0) (2026-10-28)
 
 ### Performance Improvements
 
-- memoize layer composition by upgrading effect to 4.0.6 ([02a76c6](https://github.com/budgie-at/budgie/commit/02a76c64e302ab39db47954f8e6cad612736691d))
+* memoize layer composition by upgrading effect to 4.0.6 ([02a76c6](https://github.com/budgie-at/budgie/commit/02a76c64e302ab39db47954f8e6cad612736691d))
+
 
 # [6.123.0](https://github.com/budgie-at/budgie/compare/v6.122.0...v6.123.0) (2026-10-28)
 
 ### Bug Fixes
 
-- **contracts:** cover RECEIPT external source ([977241a](https://github.com/budgie-at/budgie/commit/977241a5e4884f24e037057b24ccda9a1e74a64c))
+* **contracts:** cover RECEIPT external source ([977241a](https://github.com/budgie-at/budgie/commit/977241a5e4884f24e037057b24ccda9a1e74a64c))
+
 
 ## [6.121.2](https://github.com/budgie-at/budgie/compare/v6.121.1...v6.121.2) (2026-10-27)
 
 ### Bug Fixes
 
-- **app:** prevent analytics from showing incomplete history ([#1689](https://github.com/budgie-at/budgie/issues/1689)) ([6514cc9](https://github.com/budgie-at/budgie/commit/6514cc9fb9a4606adddf7cb73204a77a1b200443))
+* **app:** prevent analytics from showing incomplete history ([#1689](https://github.com/budgie-at/budgie/issues/1689)) ([6514cc9](https://github.com/budgie-at/budgie/commit/6514cc9fb9a4606adddf7cb73204a77a1b200443))
+
 
 ## [6.121.1](https://github.com/budgie-at/budgie/compare/v6.121.0...v6.121.1) (2026-10-27)
 
 ### Bug Fixes
 
-- **sync:** stop Binance scenario tests sleeping on the real clock ([c9d2265](https://github.com/budgie-at/budgie/commit/c9d226565d2117f5ab9a130512e5557ef774513d))
+* **sync:** stop Binance scenario tests sleeping on the real clock ([c9d2265](https://github.com/budgie-at/budgie/commit/c9d226565d2117f5ab9a130512e5557ef774513d))
+
 
 # [6.121.0](https://github.com/budgie-at/budgie/compare/v6.120.0...v6.121.0) (2026-10-27)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 # [6.120.0](https://github.com/budgie-at/budgie/compare/v6.119.1...v6.120.0) (2026-10-27)
 
 ### Bug Fixes
 
-- resolve lint errors in Monobank group key and status UI ([02804da](https://github.com/budgie-at/budgie/commit/02804da65ff75d6113bf52a8b4067ac2964cc41b))
+* resolve lint errors in Monobank group key and status UI ([02804da](https://github.com/budgie-at/budgie/commit/02804da65ff75d6113bf52a8b4067ac2964cc41b))
 
 ### Features
 
-- one Monobank API key per account group ([f8efe33](https://github.com/budgie-at/budgie/commit/f8efe33d9fcc4bd7a2cba4cd9e628b3a69ed29f1)), closes [#1632](https://github.com/budgie-at/budgie/issues/1632)
+* one Monobank API key per account group ([f8efe33](https://github.com/budgie-at/budgie/commit/f8efe33d9fcc4bd7a2cba4cd9e628b3a69ed29f1)), closes [#1632](https://github.com/budgie-at/budgie/issues/1632)
+
 
 # [6.117.0](https://github.com/budgie-at/budgie/compare/v6.116.4...v6.117.0) (2026-10-26)
 
 ### Features
 
-- show initial history import progress inline per bank ([356ef48](https://github.com/budgie-at/budgie/commit/356ef48a389d1d854607632892118dee79c2c1f3))
+* show initial history import progress inline per bank ([356ef48](https://github.com/budgie-at/budgie/commit/356ef48a389d1d854607632892118dee79c2c1f3))
+
 
 ## [6.116.2](https://github.com/budgie-at/budgie/compare/v6.116.1...v6.116.2) (2026-10-26)
 
 ### Bug Fixes
 
-- **sync:** let paused Monobank accounts recover after failures ([c805058](https://github.com/budgie-at/budgie/commit/c805058afd339f5141b6151ebaee74a64d5116b3))
+* **sync:** let paused Monobank accounts recover after failures ([c805058](https://github.com/budgie-at/budgie/commit/c805058afd339f5141b6151ebaee74a64d5116b3))
+
 
 ## [6.116.1](https://github.com/budgie-at/budgie/compare/v6.116.0...v6.116.1) (2026-10-26)
 
 ### Bug Fixes
 
-- **sync:** use a 24-hour duration for the binance forward sync overlap ([8e41f1d](https://github.com/budgie-at/budgie/commit/8e41f1da574c3242f5b90a5e9a13ddd2caabcfee))
+* **sync:** use a 24-hour duration for the binance forward sync overlap ([8e41f1d](https://github.com/budgie-at/budgie/commit/8e41f1da574c3242f5b90a5e9a13ddd2caabcfee))
+
 
 # [6.116.0](https://github.com/budgie-at/budgie/compare/v6.115.10...v6.116.0) (2026-10-26)
 
 ### Features
 
-- external accounts, automatic card discovery and reissue merge ([#1672](https://github.com/budgie-at/budgie/issues/1672)) ([176b4ed](https://github.com/budgie-at/budgie/commit/176b4ed78e84d6f5eb52ddab517c867b0387e5cb)), closes [#1664](https://github.com/budgie-at/budgie/issues/1664) [#1666](https://github.com/budgie-at/budgie/issues/1666) [#1667](https://github.com/budgie-at/budgie/issues/1667)
+* external accounts, automatic card discovery and reissue merge ([#1672](https://github.com/budgie-at/budgie/issues/1672)) ([176b4ed](https://github.com/budgie-at/budgie/commit/176b4ed78e84d6f5eb52ddab517c867b0387e5cb)), closes [#1664](https://github.com/budgie-at/budgie/issues/1664) [#1666](https://github.com/budgie-at/budgie/issues/1666) [#1667](https://github.com/budgie-at/budgie/issues/1667)
+
 
 ## [6.115.9](https://github.com/budgie-at/budgie/compare/v6.115.8...v6.115.9) (2026-10-25)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 ## [6.115.8](https://github.com/budgie-at/budgie/compare/v6.115.7...v6.115.8) (2026-10-25)
 
 **Note:** Version bump only for package @budgie/sync
+
+
+
+
 
 ## [6.115.5](https://github.com/budgie-at/budgie/compare/v6.115.4...v6.115.5) (2026-10-25)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 ## [6.115.4](https://github.com/budgie-at/budgie/compare/v6.115.3...v6.115.4) (2026-10-24)
 
 **Note:** Version bump only for package @budgie/sync
+
+
+
+
 
 ## [6.114.8](https://github.com/budgie-at/budgie/compare/v6.114.7...v6.114.8) (2026-10-24)
 
 ### Bug Fixes
 
-- apply rules on file import and rerun preempted background work ([f2530a3](https://github.com/budgie-at/budgie/commit/f2530a344d81d331090d36e48a7ad5b7cc288300))
+* apply rules on file import and rerun preempted background work ([f2530a3](https://github.com/budgie-at/budgie/commit/f2530a344d81d331090d36e48a7ad5b7cc288300))
+
 
 # [6.110.0](https://github.com/budgie-at/budgie/compare/v6.109.2...v6.110.0) (2026-10-21)
 
 ### Bug Fixes
 
-- **sync:** drop the reconciliation anchor when a full resync starts ([4f53094](https://github.com/budgie-at/budgie/commit/4f53094b20be8a4e896ad70cae1f2844e2cfb791))
+* **sync:** drop the reconciliation anchor when a full resync starts ([4f53094](https://github.com/budgie-at/budgie/commit/4f53094b20be8a4e896ad70cae1f2844e2cfb791))
 
 ### Features
 
-- **sync:** apply bank balance corrections automatically ([c12031a](https://github.com/budgie-at/budgie/commit/c12031af32d1b2ef12d0dc66c28a4acf4d5cb4ac))
-- **sync:** reconcile Monobank balances against the bank after forward sync ([54df93d](https://github.com/budgie-at/budgie/commit/54df93d82d7cef2e3db6bf1e5607ca4218e2d5a7))
+* **sync:** apply bank balance corrections automatically ([c12031a](https://github.com/budgie-at/budgie/commit/c12031af32d1b2ef12d0dc66c28a4acf4d5cb4ac))
+* **sync:** reconcile Monobank balances against the bank after forward sync ([54df93d](https://github.com/budgie-at/budgie/commit/54df93d82d7cef2e3db6bf1e5607ca4218e2d5a7))
+
 
 ## [6.109.1](https://github.com/budgie-at/budgie/compare/v6.109.0...v6.109.1) (2026-10-20)
 
 ### Bug Fixes
 
-- **sync:** never skip Monobank forward windows ([4e3cbaa](https://github.com/budgie-at/budgie/commit/4e3cbaa23ad1afe84705d172ca25740bc3194542))
+* **sync:** never skip Monobank forward windows ([4e3cbaa](https://github.com/budgie-at/budgie/commit/4e3cbaa23ad1afe84705d172ca25740bc3194542))
+
 
 # [6.109.0](https://github.com/budgie-at/budgie/compare/v6.108.0...v6.109.0) (2026-10-20)
 
 ### Features
 
-- review bank statements before import and simplify Monobank setup ([4690df0](https://github.com/budgie-at/budgie/commit/4690df015d97986f5c9b346669dd6806922497fd))
+* review bank statements before import and simplify Monobank setup ([4690df0](https://github.com/budgie-at/budgie/commit/4690df015d97986f5c9b346669dd6806922497fd))
+
 
 ## [6.106.1](https://github.com/budgie-at/budgie/compare/v6.106.0...v6.106.1) (2026-10-18)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 # [6.106.0](https://github.com/budgie-at/budgie/compare/v6.105.0...v6.106.0) (2026-10-16)
 
 **Note:** Version bump only for package @budgie/sync
+
+
+
+
 
 # [6.105.0](https://github.com/budgie-at/budgie/compare/v6.104.1...v6.105.0) (2026-10-16)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 # [6.104.0](https://github.com/budgie-at/budgie/compare/v6.103.13...v6.104.0) (2026-10-15)
 
 **Note:** Version bump only for package @budgie/sync
+
+
+
+
 
 ## [6.103.4](https://github.com/budgie-at/budgie/compare/v6.103.3...v6.103.4) (2026-10-14)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 ## [6.103.3](https://github.com/budgie-at/budgie/compare/v6.103.2...v6.103.3) (2026-10-13)
+
 
 ### Bug Fixes
 
-- **sync:** undo only ATM cash moves ([eb696b3](https://github.com/budgie-at/budgie/commit/eb696b3153713626fb69dc327cd3240babc3cdbb))
+* **sync:** undo only ATM cash moves ([eb696b3](https://github.com/budgie-at/budgie/commit/eb696b3153713626fb69dc327cd3240babc3cdbb))
+
+
+
+
 
 ## [6.103.1](https://github.com/budgie-at/budgie/compare/v6.103.0...v6.103.1) (2026-10-13)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 # [6.103.0](https://github.com/budgie-at/budgie/compare/v6.102.0...v6.103.0) (2026-10-13)
+
 
 ### Bug Fixes
 
-- **sync:** restart only the resynced account's own provider sync ([cd63b6c](https://github.com/budgie-at/budgie/commit/cd63b6c47da55e5229af56b2a6948b1b3e5544c0))
+* **sync:** restart only the resynced account's own provider sync ([cd63b6c](https://github.com/budgie-at/budgie/commit/cd63b6c47da55e5229af56b2a6948b1b3e5544c0))
+
+
+
+
 
 # [6.101.0](https://github.com/budgie-at/budgie/compare/v6.100.9...v6.101.0) (2026-10-12)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 ## [6.100.7](https://github.com/budgie-at/budgie/compare/v6.100.6...v6.100.7) (2026-10-12)
 
 **Note:** Version bump only for package @budgie/sync
+
+
+
+
 
 ## [6.100.6](https://github.com/budgie-at/budgie/compare/v6.100.5...v6.100.6) (2026-10-11)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 ## [6.100.5](https://github.com/budgie-at/budgie/compare/v6.100.4...v6.100.5) (2026-10-11)
 
 **Note:** Version bump only for package @budgie/sync
+
+
+
+
 
 ## [6.100.2](https://github.com/budgie-at/budgie/compare/v6.100.1...v6.100.2) (2026-10-11)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 ## [6.99.2](https://github.com/budgie-at/budgie/compare/v6.99.1...v6.99.2) (2026-10-10)
+
 
 ### Bug Fixes
 
-- **sync:** resume yielded Monobank backfill until history completes ([5689e1e](https://github.com/budgie-at/budgie/commit/5689e1e97977e59268b20166b16807f10f73ae5a))
-- **sync:** stop unsafe backfill continuations ([09837f3](https://github.com/budgie-at/budgie/commit/09837f363deab6b90bfdf961a5f154c17e013072))
+* **sync:** resume yielded Monobank backfill until history completes ([5689e1e](https://github.com/budgie-at/budgie/commit/5689e1e97977e59268b20166b16807f10f73ae5a))
+* **sync:** stop unsafe backfill continuations ([09837f3](https://github.com/budgie-at/budgie/commit/09837f363deab6b90bfdf961a5f154c17e013072))
+
+
+
+
 
 # [6.99.0](https://github.com/budgie-at/budgie/compare/v6.98.0...v6.99.0) (2026-10-09)
 
+
 ### Bug Fixes
 
-- clear unresolved imported operation metadata ([3ff5d29](https://github.com/budgie-at/budgie/commit/3ff5d29e963a54724ffd6dabb1006ea9ca403c05))
-- **sync:** persist operation metadata only for providers reporting a currency ([e85b7f2](https://github.com/budgie-at/budgie/commit/e85b7f2cf5d8b151a05f421431efec42b2ea0fe8))
+* clear unresolved imported operation metadata ([3ff5d29](https://github.com/budgie-at/budgie/commit/3ff5d29e963a54724ffd6dabb1006ea9ca403c05))
+* **sync:** persist operation metadata only for providers reporting a currency ([e85b7f2](https://github.com/budgie-at/budgie/commit/e85b7f2cf5d8b151a05f421431efec42b2ea0fe8))
+
 
 ### Features
 
-- start deposits in the synced operation currency ([4eff7d5](https://github.com/budgie-at/budgie/commit/4eff7d5e8a48cc735dc82bd4d183831695833146))
+* start deposits in the synced operation currency ([4eff7d5](https://github.com/budgie-at/budgie/commit/4eff7d5e8a48cc735dc82bd4d183831695833146))
+
+
+
+
 
 ## [6.96.1](https://github.com/budgie-at/budgie/compare/v6.96.0...v6.96.1) (2026-10-08)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 # [6.95.0](https://github.com/budgie-at/budgie/compare/v6.94.3...v6.95.0) (2026-10-07)
+
 
 ### Features
 
-- keep bank sync running in the background on iOS ([45fbc6d](https://github.com/budgie-at/budgie/commit/45fbc6db6c0310dc0b0a9ab76c7208838bd9baeb))
+* keep bank sync running in the background on iOS ([45fbc6d](https://github.com/budgie-at/budgie/commit/45fbc6db6c0310dc0b0a9ab76c7208838bd9baeb))
+
+
+
+
 
 ## [6.94.3](https://github.com/budgie-at/budgie/compare/v6.94.2...v6.94.3) (2026-10-07)
 
+
 ### Bug Fixes
 
-- restore fees dropped by legacy transfer pairs and heal post-archive own-card transfers ([683d308](https://github.com/budgie-at/budgie/commit/683d308828879fdf8eea9a5464d08098cdb5bd9b)), closes [#1390](https://github.com/budgie-at/budgie/issues/1390)
+* restore fees dropped by legacy transfer pairs and heal post-archive own-card transfers ([683d308](https://github.com/budgie-at/budgie/commit/683d308828879fdf8eea9a5464d08098cdb5bd9b)), closes [#1390](https://github.com/budgie-at/budgie/issues/1390)
+
+
+
+
 
 ## [6.94.2](https://github.com/budgie-at/budgie/compare/v6.94.1...v6.94.2) (2026-10-07)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 ## [6.94.1](https://github.com/budgie-at/budgie/compare/v6.94.0...v6.94.1) (2026-10-06)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 # [6.94.0](https://github.com/budgie-at/budgie/compare/v6.93.2...v6.94.0) (2026-10-06)
+
 
 ### Features
 
-- convert an expense into an installment plan ([3d67479](https://github.com/budgie-at/budgie/commit/3d67479b1137528cffef6679c39e3a0bbd9cc516))
+* convert an expense into an installment plan ([3d67479](https://github.com/budgie-at/budgie/commit/3d67479b1137528cffef6679c39e3a0bbd9cc516))
+
+
+
+
 
 # [6.93.0](https://github.com/budgie-at/budgie/compare/v6.92.2...v6.93.0) (2026-10-05)
 
+
 ### Bug Fixes
 
-- **sync:** count only cards archived after the transfer when checking repair uniqueness ([b256cc5](https://github.com/budgie-at/budgie/commit/b256cc5cf292db99c9403ebd1ff4faa20fc98636))
-- **sync:** ignore placeholder IBANs when matching sync accounts ([360c15b](https://github.com/budgie-at/budgie/commit/360c15b827c0c8fc67ea481fcc250562bc7460f6))
-- **sync:** read PrivatBank statement times as Kyiv time ([1b51c45](https://github.com/budgie-at/budgie/commit/1b51c45169247fc0cd8f47dce519d934d76a3361))
-- **sync:** stop repairing own-card transfers into cards archived before them ([1a1d296](https://github.com/budgie-at/budgie/commit/1a1d296020b9e66136d01265a60edc2ced65afe0))
+* **sync:** count only cards archived after the transfer when checking repair uniqueness ([b256cc5](https://github.com/budgie-at/budgie/commit/b256cc5cf292db99c9403ebd1ff4faa20fc98636))
+* **sync:** ignore placeholder IBANs when matching sync accounts ([360c15b](https://github.com/budgie-at/budgie/commit/360c15b827c0c8fc67ea481fcc250562bc7460f6))
+* **sync:** read PrivatBank statement times as Kyiv time ([1b51c45](https://github.com/budgie-at/budgie/commit/1b51c45169247fc0cd8f47dce519d934d76a3361))
+* **sync:** stop repairing own-card transfers into cards archived before them ([1a1d296](https://github.com/budgie-at/budgie/commit/1a1d296020b9e66136d01265a60edc2ced65afe0))
+
+
+
+
 
 ## [6.92.2](https://github.com/budgie-at/budgie/compare/v6.92.1...v6.92.2) (2026-10-04)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 ## [6.92.1](https://github.com/budgie-at/budgie/compare/v6.92.0...v6.92.1) (2026-10-04)
 
 **Note:** Version bump only for package @budgie/sync
+
+
+
+
 
 # [6.92.0](https://github.com/budgie-at/budgie/compare/v6.91.2...v6.92.0) (2026-10-04)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 ## [6.91.2](https://github.com/budgie-at/budgie/compare/v6.91.1...v6.91.2) (2026-10-04)
 
 **Note:** Version bump only for package @budgie/sync
+
+
+
+
 
 ## [6.91.1](https://github.com/budgie-at/budgie/compare/v6.91.0...v6.91.1) (2026-10-04)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 # [6.91.0](https://github.com/budgie-at/budgie/compare/v6.90.0...v6.91.0) (2026-10-04)
+
 
 ### Bug Fixes
 
-- **ledger:** pair refilled transactions with their own inputs before rule application ([d91159c](https://github.com/budgie-at/budgie/commit/d91159c8126ece52dd3a4cd925c394cd9d07b46c))
+* **ledger:** pair refilled transactions with their own inputs before rule application ([d91159c](https://github.com/budgie-at/budgie/commit/d91159c8126ece52dd3a4cd925c394cd9d07b46c))
+
 
 ### Features
 
-- **ledger:** heal re-imported transactions with a bank-row fingerprint ([6838526](https://github.com/budgie-at/budgie/commit/6838526af4adf8c7d0f9a10674a42c27175080db))
+* **ledger:** heal re-imported transactions with a bank-row fingerprint ([6838526](https://github.com/budgie-at/budgie/commit/6838526af4adf8c7d0f9a10674a42c27175080db))
+
+
+
+
 
 # [6.90.0](https://github.com/budgie-at/budgie/compare/v6.89.0...v6.90.0) (2026-10-04)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 ## [6.88.5](https://github.com/budgie-at/budgie/compare/v6.88.4-rewrite...v6.88.5) (2026-10-03)
 
 **Note:** Version bump only for package @budgie/sync
+
+
+
+
 
 ## [6.86.1](https://github.com/budgie-at/budgie/compare/v6.86.0...v6.86.1) (2026-10-01)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 # [6.86.0](https://github.com/budgie-at/budgie/compare/v6.85.14...v6.86.0) (2026-09-30)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 ## [6.85.4](https://github.com/budgie-at/budgie/compare/v6.85.3...v6.85.4) (2026-09-28)
+
 
 ### Bug Fixes
 
-- **sync:** mark Erste ATM withdrawals with the ATM MCC at import ([dbb3aff](https://github.com/budgie-at/budgie/commit/dbb3aff91cf0647f876e84211e405d31db209e0e))
+* **sync:** mark Erste ATM withdrawals with the ATM MCC at import ([dbb3aff](https://github.com/budgie-at/budgie/commit/dbb3aff91cf0647f876e84211e405d31db209e0e))
+
+
+
+
 
 ## [6.67.16](https://github.com/budgie-at/budgie/compare/v6.67.15...v6.67.16) (2026-09-16)
 
+
 ### Bug Fixes
 
-- **bank-sync:** persist the Binance cursor, surface C2C availability and tighten P2P pairing ([0efbd02](https://github.com/budgie-at/budgie/commit/0efbd02701fa8a8febf935e38402f42f483e9104)), closes [#562](https://github.com/budgie-at/budgie/issues/562) [#561](https://github.com/budgie-at/budgie/issues/561) [#540](https://github.com/budgie-at/budgie/issues/540) [#1088](https://github.com/budgie-at/budgie/issues/1088)
+* **bank-sync:** persist the Binance cursor, surface C2C availability and tighten P2P pairing ([0efbd02](https://github.com/budgie-at/budgie/commit/0efbd02701fa8a8febf935e38402f42f483e9104)), closes [#562](https://github.com/budgie-at/budgie/issues/562) [#561](https://github.com/budgie-at/budgie/issues/561) [#540](https://github.com/budgie-at/budgie/issues/540) [#1088](https://github.com/budgie-at/budgie/issues/1088)
+
+
+
+
 
 ## [6.67.3](https://github.com/budgie-at/budgie/compare/v6.67.2...v6.67.3) (2026-09-16)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 # [6.51.0](https://github.com/budgie-at/budgie/compare/v6.50.1...v6.51.0) (2026-09-12)
+
 
 ### Features
 
-- let users pick monobank sync history period ([3b5bc1e](https://github.com/budgie-at/budgie/commit/3b5bc1e0c9b5873f42508fe02cb287c43b7843c5))
+* let users pick monobank sync history period ([3b5bc1e](https://github.com/budgie-at/budgie/commit/3b5bc1e0c9b5873f42508fe02cb287c43b7843c5))
+
+
+
+
 
 ## [6.10.2](https://github.com/budgie-at/budgie/compare/v6.10.1...v6.10.2) (2026-09-04)
 
+
 ### Performance Improvements
 
-- convert date-fns barrel imports to deep subpaths ([f8ffe99](https://github.com/budgie-at/budgie/commit/f8ffe99c0b58dfcfb39b887020adc5a2ca88dafc))
+* convert date-fns barrel imports to deep subpaths ([f8ffe99](https://github.com/budgie-at/budgie/commit/f8ffe99c0b58dfcfb39b887020adc5a2ca88dafc))
+
+
+
+
 
 ## [6.5.2](https://github.com/budgie-at/budgie/compare/v6.5.1...v6.5.2) (2026-09-01)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 # [6.5.0](https://github.com/budgie-at/budgie/compare/v6.4.2...v6.5.0) (2026-08-29)
+
 
 ### Features
 
-- **sync:** upgrade Monobank SDK to 0.7.0 for live client-info payloads ([#688](https://github.com/budgie-at/budgie/issues/688)) ([97d1732](https://github.com/budgie-at/budgie/commit/97d1732a80f2031dfb8088320059661149d85e4d))
+* **sync:** upgrade Monobank SDK to 0.7.0 for live client-info payloads ([#688](https://github.com/budgie-at/budgie/issues/688)) ([97d1732](https://github.com/budgie-at/budgie/commit/97d1732a80f2031dfb8088320059661149d85e4d))
+
+
+
+
 
 ## [6.4.2](https://github.com/budgie-at/budgie/compare/v6.4.1...v6.4.2) (2026-08-29)
 
 **Note:** Version bump only for package @budgie/sync
 
+
+
+
+
 # [6.4.0](https://github.com/budgie-at/budgie/compare/v6.3.0...v6.4.0) (2026-08-28)
+
 
 ### Bug Fixes
 
-- **sync:** restore 5xx retries for Monobank on SDK 0.4.0 ([#674](https://github.com/budgie-at/budgie/issues/674)) ([02dcf06](https://github.com/budgie-at/budgie/commit/02dcf061a8984615a83e4e26cf7207ea7013e26a))
+* **sync:** restore 5xx retries for Monobank on SDK 0.4.0 ([#674](https://github.com/budgie-at/budgie/issues/674)) ([02dcf06](https://github.com/budgie-at/budgie/commit/02dcf061a8984615a83e4e26cf7207ea7013e26a))
+
 
 ### Features
 
-- add Binance account sync with bank↔P2P consolidation ([#561](https://github.com/budgie-at/budgie/issues/561)) ([92fea35](https://github.com/budgie-at/budgie/commit/92fea35f9073011caebda427451de54ccff0cad1))
+* add Binance account sync with bank↔P2P consolidation ([#561](https://github.com/budgie-at/budgie/issues/561)) ([92fea35](https://github.com/budgie-at/budgie/commit/92fea35f9073011caebda427451de54ccff0cad1))
+
+
+
+
 
 # [6.3.0](https://github.com/budgie-at/budgie/compare/v6.2.1...v6.3.0) (2026-08-26)
 

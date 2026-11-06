@@ -38,13 +38,12 @@ export const RecurringListContent = ({ header }: Props) => {
     const [expandedSections, setExpandedSections] = useState<readonly RecurringSectionEnum[]>([]);
     const isLoading = !isDefined(series);
     const loadedSeries = series ?? EMPTY_SERIES;
-    const { items } = buildRecurringListItems(loadedSeries, expandedSections, now);
+    const items = buildRecurringListItems(loadedSeries, expandedSections, now);
     const summary = buildRecurringSummary(loadedSeries, now);
     const contentContainerStyle = { paddingBottom: FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottom };
     const emptyState = isLoading ? null : <RecurringListEmptyState />;
     const listHeader = (
         <>
-            {header}
             <RecurringSummaryCard summary={summary} now={now} />
         </>
     );
@@ -65,19 +64,22 @@ export const RecurringListContent = ({ header }: Props) => {
         );
 
     return (
-        <LoadingContent isLoading={isLoading} className="flex-1" containerClassName="flex-1">
-            <View className="flex-1" testID={RecurringPaneSelector.List}>
-                <BudgieLegendList
-                    data={items}
-                    keyExtractor={keyExtractor}
-                    getItemType={getItemType}
-                    renderItem={renderItem}
-                    estimatedItemSize={64}
-                    contentContainerStyle={contentContainerStyle}
-                    ListHeaderComponent={listHeader}
-                    ListEmptyComponent={emptyState}
-                />
-            </View>
-        </LoadingContent>
+        <View className="flex-1">
+            {header}
+            <LoadingContent isLoading={isLoading} className="flex-1" containerClassName="flex-1">
+                <View className="flex-1" testID={RecurringPaneSelector.List}>
+                    <BudgieLegendList
+                        data={items}
+                        keyExtractor={keyExtractor}
+                        getItemType={getItemType}
+                        renderItem={renderItem}
+                        estimatedItemSize={64}
+                        contentContainerStyle={contentContainerStyle}
+                        ListHeaderComponent={listHeader}
+                        ListEmptyComponent={emptyState}
+                    />
+                </View>
+            </LoadingContent>
+        </View>
     );
 };

@@ -13,7 +13,7 @@ import type { ReactNode } from 'react';
 
 interface Props {
     readonly title: ReactNode;
-    readonly formattedTotal: string;
+    readonly formattedTotal?: string;
     readonly entries: readonly RecurringCalendarEntryInterface[];
     readonly displayMonth?: number;
     readonly displayYear?: number;

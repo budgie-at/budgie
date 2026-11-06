@@ -1,4 +1,5 @@
 export interface RecurringConfidenceInputInterface {
+    readonly periodDays?: number;
     readonly cycleCount: number;
     readonly meanDeviationDays: number;
     readonly toleranceDays: number;

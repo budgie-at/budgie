@@ -9,7 +9,6 @@ import { TransactionCardLayout } from '../../../transaction/components/transacti
 import { TRANSACTION_SECONDARY_MAX_FONT_SIZE_MULTIPLIER } from '../../../transaction/constant/transaction-secondary-max-font-size-multiplier.constant';
 import { RecurringTileVariantEnum } from '../../enum/recurring-tile-variant.enum';
 import { useRecurringCadenceLabel } from '../../hook/use-recurring-cadence-label.hook';
-import { getRecurringTileVariant } from '../../utils/get-recurring-tile-variant.util';
 import { RecurringListRowTrailing } from '../recurring-list-row-trailing/recurring-list-row-trailing';
 import { RecurringMerchantTile } from '../recurring-merchant-tile/recurring-merchant-tile';
 
@@ -30,12 +29,12 @@ export const RecurringListRowContent = ({ series, isPossible, now }: Props) => {
     const nextDateLabel = isDefined(series.nextDate) ? formatMonthAndDayAndOptionalYear(series.nextDate) : t`No upcoming payment`;
     const subtitleLineLimit = isAccessibilityTextSize ? 0 : 1;
     const seenCount = series.linkedCount;
-    const tileVariant = isPossible ? RecurringTileVariantEnum.NEUTRAL : getRecurringTileVariant(series.title);
+    const tileProps = isPossible ? { variant: RecurringTileVariantEnum.NEUTRAL } : {};
     const subtitle = isPossible ? t`Seen ${seenCount}× · ${cadence}` : `${nextDateLabel} · ${cadence}`;
 
     return (
         <TransactionCardLayout
-            icon={<RecurringMerchantTile title={series.title} size={40} variant={tileVariant} />}
+            icon={<RecurringMerchantTile title={series.title} size={40} {...tileProps} />}
             title={
                 <Text
                     dynamicTypeRamp="headline"

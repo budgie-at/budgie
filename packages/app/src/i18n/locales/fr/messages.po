@@ -455,8 +455,8 @@ msgid "{formattedBalance} will be transferred to {destinationAccountTitle} and t
 msgstr "{formattedBalance} sera transféré vers {destinationAccountTitle} et ce dépôt sera archivé. Vous pouvez le restaurer à tout moment depuis Paramètres → Comptes archivés."
 
 #: src/recurring/components/recurring-calendar-day/recurring-calendar-day.tsx
-msgid "{formattedDate}. Recorded: {entryCount}. Expected: {forecastedCount}."
-msgstr "{formattedDate}. Enregistrés : {entryCount}. Prévus : {forecastedCount}."
+msgid "{formattedDate}. Paid: {entryCount}. Still to pay: {forecastedCount}."
+msgstr "{formattedDate}. Payés : {entryCount}. Restant à payer : {forecastedCount}."
 
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "{formattedDifference} over limit"
@@ -963,8 +963,7 @@ msgstr "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 
-#: src/recurring/components/recurring-form-reminder-section/recurring-form-reminder-section.tsx
-#: src/recurring/components/recurring-reminder-choices/recurring-reminder-choices.tsx
+#: src/recurring/utils/build-recurring-reminder-segments.util.ts
 msgid "1 day"
 msgstr "1 jour"
 
@@ -996,8 +995,7 @@ msgstr "Variation sur 24 h"
 msgid "24h change · {staleDate}"
 msgstr "Variation sur 24 h · {staleDate}"
 
-#: src/recurring/components/recurring-form-reminder-section/recurring-form-reminder-section.tsx
-#: src/recurring/components/recurring-reminder-choices/recurring-reminder-choices.tsx
+#: src/recurring/utils/build-recurring-reminder-segments.util.ts
 msgid "3 days"
 msgstr "3 jours"
 
@@ -1483,7 +1481,7 @@ msgstr "montant"
 
 #: src/app/(main)/import-csv.tsx
 #: src/import/utils/get-import-match-description.util.ts
-#: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
+#: src/recurring/components/recurring-series-form-fields/recurring-series-form-fields.tsx
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
@@ -1944,7 +1942,7 @@ msgstr "Les données biométriques ne quittent jamais ce téléphone"
 
 #: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 msgid "Biweekly"
-msgstr "Bimensuel"
+msgstr "Toutes les 2 semaines"
 
 #: src/settings/components/screenshot-protection-row/screenshot-protection-row.tsx
 msgid "Blank screenshots and recordings"
@@ -2312,6 +2310,10 @@ msgstr "Maximum du graphique {scaleAmount}"
 #: src/budget/constant/budget-save-blocker-label.constant.ts
 msgid "Check the form to continue"
 msgstr "Vérifiez le formulaire pour continuer"
+
+#: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
+msgid "Check the highlighted fields."
+msgstr "Vérifiez les champs en surbrillance."
 
 #: src/sync/utils/toast-binance-key-permissions-error.util.ts
 msgid "Check the key and secret, then try again."
@@ -3664,7 +3666,7 @@ msgstr "La détache de « {debtTitle} »"
 #: src/budget/components/budget-event-form/budget-event-form.tsx
 #: src/budget/components/budget-setup-form/budget-setup-form.tsx
 #: src/category/components/category-form/category-form.tsx
-#: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
+#: src/recurring/components/recurring-series-form-fields/recurring-series-form-fields.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Details"
@@ -4283,10 +4285,6 @@ msgstr "Taux de change introuvable"
 msgid "Exchange rate: {rateLabel}"
 msgstr "Taux de change : {rateLabel}"
 
-#: src/recurring/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
-msgid "Expected"
-msgstr "Prévu"
-
 #: src/budget/components/budget-limit-source-field/budget-limit-source-field.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
 msgid "Expected income"
@@ -4478,6 +4476,14 @@ msgstr "Premier paiement de {formattedPaid} déjà réglé · dernier paiement {
 msgid "First paid"
 msgstr "Premier paiement"
 
+#: src/recurring/components/recurring-series-form-fields/recurring-series-form-fields.tsx
+msgid "First payment"
+msgstr "Premier paiement"
+
+#: src/recurring/components/recurring-detail-stats/recurring-detail-stats.tsx
+msgid "First received"
+msgstr "Premier encaissement"
+
 #: src/rule/utils/get-rule-form-issue.util.ts
 msgid "Fix the pattern to continue"
 msgstr "Corrigez le motif pour continuer"
@@ -4563,7 +4569,7 @@ msgstr "Devise d’origine"
 msgid "From one amount to another"
 msgstr "D’un montant à un autre"
 
-#: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
+#: src/recurring/components/recurring-series-form-fields/recurring-series-form-fields.tsx
 msgid "From transaction"
 msgstr "Depuis la transaction"
 
@@ -5295,7 +5301,7 @@ msgstr "Définir comme principale"
 
 #: src/recurring/components/make-recurring-sheet/make-recurring-sheet.tsx
 #: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
-#: src/transaction/components/transaction-info-recurring-row/transaction-info-recurring-row.tsx
+#: src/transaction/components/transaction-info-make-recurring-row/transaction-info-make-recurring-row.tsx
 msgid "Make recurring"
 msgstr "Rendre récurrent"
 
@@ -5769,7 +5775,7 @@ msgstr "le mois prochain"
 msgid "Next month"
 msgstr "Mois suivant"
 
-#: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
+#: src/recurring/components/recurring-series-form-fields/recurring-series-form-fields.tsx
 #: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
 msgid "Next payment"
 msgstr "Prochain paiement"
@@ -5930,8 +5936,8 @@ msgid "No receipt found"
 msgstr "Aucun reçu trouvé"
 
 #: src/recurring/components/recurring-calendar-content/recurring-calendar-content.tsx
-msgid "No recurring payments in {displayMonthLabel}"
-msgstr "Aucun paiement récurrent en {displayMonthLabel}"
+msgid "No recurring payments in {displayedMonthName}"
+msgstr "Aucun paiement récurrent en {displayedMonthName}"
 
 #: src/recurring/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "No recurring payments on this day"
@@ -6154,9 +6160,8 @@ msgstr "sur {total} Go"
 
 #: src/ai/component/ai-download-card-frame/ai-download-card-frame.tsx
 #: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
-#: src/recurring/components/recurring-form-reminder-section/recurring-form-reminder-section.tsx
-#: src/recurring/components/recurring-reminder-choices/recurring-reminder-choices.tsx
 #: src/recurring/components/recurring-reminder-denied-row/recurring-reminder-denied-row.tsx
+#: src/recurring/utils/build-recurring-reminder-segments.util.ts
 #: src/rule/hooks/use-rule-row-summary.hook.ts
 #: src/settings/components/app-lock-row/app-lock-row.tsx
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
@@ -6556,6 +6561,7 @@ msgid "Owes you"
 msgstr "Vous doit"
 
 #: src/recurring/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/recurring/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 #: src/recurring/components/recurring-calendar-legend/recurring-calendar-legend.tsx
 #: src/recurring/components/recurring-calendar-summary/recurring-calendar-summary.tsx
 msgid "Paid"
@@ -7104,10 +7110,6 @@ msgstr "Enregistrer les paiements par carte avec Raccourcis"
 msgid "Record expense"
 msgstr "Ajouter une dépense"
 
-#: src/recurring/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
-msgid "Recorded"
-msgstr "Enregistré"
-
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx
 #: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
@@ -7444,8 +7446,7 @@ msgstr "Sûr à dépenser"
 msgid "Safe to spend today"
 msgstr "Dépensable aujourd’hui"
 
-#: src/recurring/components/recurring-form-reminder-section/recurring-form-reminder-section.tsx
-#: src/recurring/components/recurring-reminder-choices/recurring-reminder-choices.tsx
+#: src/recurring/utils/build-recurring-reminder-segments.util.ts
 msgid "Same day"
 msgstr "Le jour même"
 
@@ -8064,6 +8065,7 @@ msgid "Step-by-step instructions"
 msgstr "Instructions pas à pas"
 
 #: src/recurring/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/recurring/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 #: src/recurring/components/recurring-calendar-legend/recurring-calendar-legend.tsx
 #: src/recurring/components/recurring-calendar-summary/recurring-calendar-summary.tsx
 msgid "Still to pay"
@@ -8820,6 +8822,10 @@ msgstr "Total prêté"
 #: src/recurring/components/recurring-detail-stats/recurring-detail-stats.tsx
 msgid "Total paid"
 msgstr "Total payé"
+
+#: src/recurring/components/recurring-detail-stats/recurring-detail-stats.tsx
+msgid "Total received"
+msgstr "Total reçu"
 
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Touch ID"

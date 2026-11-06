@@ -1,4 +1,4 @@
-import { convertFromMicroUnits } from '@budgie/contracts';
+import { RecurringSeriesKindEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
@@ -12,12 +12,13 @@ import { defaultInstrumentAtom } from '../../../settings/constants/settings-atom
 import type { RecurringHistoryItemInterface } from '@budgie/recurring';
 
 interface Props {
+    readonly kind: RecurringSeriesKindEnum;
     readonly history: readonly RecurringHistoryItemInterface[];
 }
 
 const continuousCorners = { borderCurve: 'continuous' as const };
 
-export const RecurringDetailStats = ({ history }: Props) => {
+export const RecurringDetailStats = ({ history, kind }: Props) => {
     const { t } = useLingui();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const protectAmount = useProtectedAmountLabel();
@@ -33,10 +34,12 @@ export const RecurringDetailStats = ({ history }: Props) => {
         defaultInstrument.symbol
     );
     const since = formatMonthAndYear(new Date(Math.min(...paid.map(item => item.operatedAt.getTime()))));
+    const totalLabels: Record<RecurringSeriesKindEnum, string> = { EXPENSE: t`Total paid`, INCOME: t`Total received` };
+    const firstLabels: Record<RecurringSeriesKindEnum, string> = { EXPENSE: t`First paid`, INCOME: t`First received` };
     const stats = [
         { label: t`Payments`, value: String(paid.length) },
-        { label: t`Total paid`, value: total },
-        { label: t`First paid`, value: since }
+        { label: totalLabels[kind], value: total },
+        { label: firstLabels[kind], value: since }
     ];
 
     return (

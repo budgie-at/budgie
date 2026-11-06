@@ -1,11 +1,15 @@
 {
-    "packages": ["packages/*"],
-    "command": {
-        "publish": {
-            "conventionalCommits": true,
-            "allowBranch": ["main"]
-        }
-    },
-    "npmClient": "pnpm",
-    "version": "6.164.3"
+  "packages": [
+    "packages/*"
+  ],
+  "command": {
+    "publish": {
+      "conventionalCommits": true,
+      "allowBranch": [
+        "main"
+      ]
+    }
+  },
+  "npmClient": "pnpm",
+  "version": "6.164.3"
 }

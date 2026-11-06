@@ -22,7 +22,6 @@ const circleVariants = cva('items-center justify-center rounded-full', {
     variants: {
         isSelected: { true: '', false: '' },
         isToday: { true: '', false: '' },
-        hasEntries: { true: '', false: '' },
         isAccessibilityTextSize: { true: 'w-[44px] h-[44px]', false: 'w-[36px] h-[36px]' }
     },
     compoundVariants: [
@@ -62,7 +61,7 @@ export const RecurringCalendarDay = (props: Props) => {
     const dayTestID = isCurrentMonth ? RecurringCalendarSelector.CurrentMonthDay(dayOfMonth) : null;
 
     const formattedDate = new Intl.DateTimeFormat(languageTag, { dateStyle: 'full' }).format(day.date);
-    const accessibilityLabel = isLoading ? formattedDate : t`${formattedDate}. Recorded: ${entryCount}. Expected: ${forecastedCount}.`;
+    const accessibilityLabel = isLoading ? formattedDate : t`${formattedDate}. Paid: ${entryCount}. Still to pay: ${forecastedCount}.`;
     const accessibilityState = { selected: isSelected, disabled: day.isDisabled, busy: isLoading };
     const handlePress = () => {
         onSelectDay(dayOfMonth);
@@ -81,7 +80,7 @@ export const RecurringCalendarDay = (props: Props) => {
             accessibilityState={accessibilityState}
             {...testIDProps(dayTestID)}
         >
-            <View className={circleVariants({ isSelected, isToday, hasEntries, isAccessibilityTextSize })}>
+            <View className={circleVariants({ isSelected, isToday, isAccessibilityTextSize })}>
                 <Text maxFontSizeMultiplier={1.5} className={cn(textVariants({ isCurrentMonth, isSelected, isToday, hasEntries }))}>
                     {dayOfMonth}
                 </Text>

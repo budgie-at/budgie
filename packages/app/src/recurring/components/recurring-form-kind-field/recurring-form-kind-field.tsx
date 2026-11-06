@@ -10,14 +10,27 @@ import type { RecurringSeriesFormValues } from '../../constant/recurring-series-
 
 export const RecurringFormKindField = () => {
     const { t } = useLingui();
-    const { control } = useFormContext<RecurringSeriesFormValues>();
+    const { control, setValue } = useFormContext<RecurringSeriesFormValues>();
     const {
         field: { value, onChange }
     } = useController({ control, name: 'kind' });
     const segments: readonly SegmentedControlSegmentInterface<RecurringSeriesKindEnum>[] = [
-        { value: RecurringSeriesKindEnum.EXPENSE, label: t`Expense`, testID: `${RecurringSeriesFormSelector.Kind}.EXPENSE` },
-        { value: RecurringSeriesKindEnum.INCOME, label: t`Income`, testID: `${RecurringSeriesFormSelector.Kind}.INCOME` }
+        {
+            value: RecurringSeriesKindEnum.EXPENSE,
+            label: t`Expense`,
+            testID: RecurringSeriesFormSelector.Kind(RecurringSeriesKindEnum.EXPENSE)
+        },
+        {
+            value: RecurringSeriesKindEnum.INCOME,
+            label: t`Income`,
+            testID: RecurringSeriesFormSelector.Kind(RecurringSeriesKindEnum.INCOME)
+        }
     ];
 
-    return <SegmentedControl segments={segments} value={value} onChange={onChange} className="min-h-[44px]" />;
+    const handleChange = (kind: RecurringSeriesKindEnum) => {
+        setValue('categoryId', null);
+        onChange(kind);
+    };
+
+    return <SegmentedControl segments={segments} value={value} onChange={handleChange} className="min-h-[44px]" />;
 };

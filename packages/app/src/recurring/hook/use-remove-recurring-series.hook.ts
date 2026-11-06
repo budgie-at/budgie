@@ -7,6 +7,8 @@ import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { showActionToast } from '../../@generic/utils/show-action-toast/show-action-toast';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
+import { RecurringRefreshModeEnum } from '../enum/recurring-refresh-mode.enum';
+import { scheduleRecurringRefresh } from '../utils/schedule-recurring-refresh.util';
 
 import type { RecurringRemovalInterface, RecurringSeriesListItemInterface } from '@budgie/recurring';
 import type { EmptyFn } from '@rnw-community/shared';
@@ -23,7 +25,10 @@ export const useRemoveRecurringSeries = () => {
                         removal.source === RecurringSeriesSourceEnum.DETECTED
                             ? recurringService.restoreUserState(seriesId, removal.previousUserState)
                             : recurringService.restore(seriesId)
-                    ).pipe(toastOnFailure(t`Could not restore recurring payment.`))
+                    ).pipe(
+                        Effect.andThen(scheduleRecurringRefresh(RecurringRefreshModeEnum.RECENT)),
+                        toastOnFailure(t`Could not restore recurring payment.`)
+                    )
                 )
             );
 
@@ -32,6 +37,7 @@ export const useRemoveRecurringSeries = () => {
                 Effect.gen(function* () {
                     const recurringService = yield* RecurringService;
                     const removal = yield* recurringService.remove(seriesId);
+                    yield* scheduleRecurringRefresh(RecurringRefreshModeEnum.RECENT);
                     const message =
                         removal.source === RecurringSeriesSourceEnum.DETECTED ? t`${title} is no longer tracked` : t`${title} deleted`;
 

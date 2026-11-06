@@ -5,16 +5,12 @@ import { RECURRING_REPEAT_CADENCE } from '../constant/recurring-repeat-cadence.c
 import { RecurringEndModeEnum } from '../enum/recurring-end-mode.enum';
 import { RecurringRepeatChoiceEnum } from '../enum/recurring-repeat-choice.enum';
 
-import type { RecurringSeriesFormValues } from '../constant/recurring-series-form-schema.constant';
+import type { ScheduleFormValues } from '../type/schedule-form-values.type';
 import type { RecurringSeriesEntityInterface } from '@budgie/contracts';
 
-type ScheduleFormValues = Pick<
-    RecurringSeriesFormValues,
-    'repeat' | 'customInterval' | 'customUnit' | 'anchorDate' | 'endMode' | 'endsOn' | 'endsAfterCount'
->;
-
 export const resolveRecurringSchedule = (
-    values: ScheduleFormValues
+    values: ScheduleFormValues,
+    from: Date = values.anchorDate
 ): Pick<RecurringSeriesEntityInterface, 'cadenceUnit' | 'cadenceInterval' | 'anchorDate' | 'endsAt'> => {
     const cadence =
         values.repeat === RecurringRepeatChoiceEnum.CUSTOM
@@ -27,7 +23,7 @@ export const resolveRecurringSchedule = (
     }
 
     if (values.endMode === RecurringEndModeEnum.AFTER_COUNT) {
-        const endsAt = nextOccurrences({ ...cadence, anchorDate, endsAt: null }, anchorDate, values.endsAfterCount).at(-1) ?? null;
+        const endsAt = nextOccurrences({ ...cadence, anchorDate, endsAt: null }, startOfDay(from), values.endsAfterCount).at(-1) ?? null;
 
         return { ...cadence, anchorDate, endsAt };
     }

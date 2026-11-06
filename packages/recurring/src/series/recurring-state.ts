@@ -9,12 +9,7 @@ import { RECURRING_ACTIVE_CONFIDENCE } from '../constant/recurring-active-confid
 import { cadencePeriodDays } from './recurring-schedule';
 import { ACTIVE_PERIOD_RATIO } from './recurring-series';
 
-import type { RecurringSeriesEntityInterface } from '@budgie/contracts';
-
-type StateSeriesType = Pick<
-    RecurringSeriesEntityInterface,
-    'source' | 'userState' | 'confidence' | 'deletedAt' | 'endsAt' | 'lastSeenAt' | 'cadenceUnit' | 'cadenceInterval'
->;
+import type { StateSeriesType } from '../type/state-series.type';
 
 export const countsInForecasts = (series: Pick<StateSeriesType, 'source' | 'userState' | 'confidence' | 'deletedAt'>): boolean =>
     !isDefined(series.deletedAt) &&

@@ -1,5 +1,6 @@
 import { RecurringSeriesSourceEnum } from '@budgie/contracts';
 import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
+import { isSameDay } from 'date-fns/isSameDay';
 import { startOfDay } from 'date-fns/startOfDay';
 
 import { isDefined } from '@rnw-community/shared';
@@ -23,7 +24,9 @@ export const isCycleCovered = (model: RecurringReadModelInterface, cycleDate: Da
     const tolerance = cadenceToleranceDays(model.series);
 
     return model.links.some(
-        ({ link, charge }) => !link.isExcluded && Math.abs(differenceInCalendarDays(charge.operatedAt, cycleDate)) <= tolerance
+        ({ link, charge }) =>
+            !link.isExcluded &&
+            (isSameDay(link.cycleDate, cycleDate) || Math.abs(differenceInCalendarDays(charge.operatedAt, cycleDate)) <= tolerance)
     );
 };
 

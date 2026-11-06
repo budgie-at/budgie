@@ -74,11 +74,11 @@ it.effect('activates a variable amount series with four regular cycles and demot
     })
 );
 
-it.effect('keeps two yearly charges possible', () =>
+it.effect('activates two stable on-time yearly charges', () =>
     Effect.sync(() => {
         const yearly = [charge(new Date(2025, 0, 5, 12), 99), charge(new Date(2026, 0, 5, 12), 99)];
 
-        expect(confidenceOf(yearly)).toBeLessThan(RECURRING_ACTIVE_CONFIDENCE);
+        expect(confidenceOf(yearly)).toBeGreaterThanOrEqual(RECURRING_ACTIVE_CONFIDENCE);
     })
 );
 
@@ -90,5 +90,23 @@ it.effect('lowers confidence for jittery timing and uneven amounts', () =>
 
         expect(jittery).toBeLessThan(regular);
         expect(uneven).toBeLessThan(regular);
+    })
+);
+
+it.effect('keeps irregular yearly observations possible', () =>
+    Effect.sync(() => {
+        expect(
+            scoreRecurringConfidence({
+                periodDays: 365,
+                cycleCount: 2,
+                meanDeviationDays: 10,
+                toleranceDays: 10,
+                minimumAmount: 99,
+                maximumAmount: 120,
+                hasIban: false,
+                isVariable: false,
+                missedCycles: 0
+            })
+        ).toBeLessThan(RECURRING_ACTIVE_CONFIDENCE);
     })
 );

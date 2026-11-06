@@ -17,9 +17,21 @@ export const RecurringFormCustomCadence = () => {
         field: { value, onChange }
     } = useController({ control, name: 'customUnit' });
     const segments: readonly SegmentedControlSegmentInterface<RecurringCadenceUnitEnum>[] = [
-        { value: RecurringCadenceUnitEnum.WEEK, label: t`Weeks`, testID: `${RecurringSeriesFormSelector.CustomUnit}.WEEK` },
-        { value: RecurringCadenceUnitEnum.MONTH, label: t`Months`, testID: `${RecurringSeriesFormSelector.CustomUnit}.MONTH` },
-        { value: RecurringCadenceUnitEnum.YEAR, label: t`Years`, testID: `${RecurringSeriesFormSelector.CustomUnit}.YEAR` }
+        {
+            value: RecurringCadenceUnitEnum.WEEK,
+            label: t`Weeks`,
+            testID: RecurringSeriesFormSelector.CustomUnit(RecurringCadenceUnitEnum.WEEK)
+        },
+        {
+            value: RecurringCadenceUnitEnum.MONTH,
+            label: t`Months`,
+            testID: RecurringSeriesFormSelector.CustomUnit(RecurringCadenceUnitEnum.MONTH)
+        },
+        {
+            value: RecurringCadenceUnitEnum.YEAR,
+            label: t`Years`,
+            testID: RecurringSeriesFormSelector.CustomUnit(RecurringCadenceUnitEnum.YEAR)
+        }
     ];
 
     return (

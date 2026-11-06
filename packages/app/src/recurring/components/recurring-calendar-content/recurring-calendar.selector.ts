@@ -5,7 +5,6 @@ export const RecurringCalendarSelector = {
     PreviousMonthButton: 'RecurringCalendar.PreviousMonthButton',
     NextMonthButton: 'RecurringCalendar.NextMonthButton',
     MonthLabel: 'RecurringCalendar.MonthLabel',
-    Today: 'RecurringCalendar.Day.Today',
     CurrentMonthDay: (day: number) => `RecurringCalendar.Day.CurrentMonth.${day}` as const,
     SelectedDayHeader: (day: number) => `RecurringCalendar.SelectedDayHeader.${normalizePart(day)}` as const,
     SelectedDayEmptyState: 'RecurringCalendar.SelectedDayEmptyState',

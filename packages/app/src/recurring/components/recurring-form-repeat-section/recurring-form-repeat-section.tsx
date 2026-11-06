@@ -1,4 +1,4 @@
-import { RecurringCadenceUnitEnum, UserIconNameEnum } from '@budgie/contracts';
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useController, useFormContext, useWatch } from 'react-hook-form';
 import { Text, View } from 'react-native';
@@ -18,11 +18,13 @@ import { RecurringSeriesFormSelector } from '../recurring-series-form-screen/rec
 
 import type { RecurringSeriesFormValues } from '../../constant/recurring-series-form-schema.constant';
 
-const QUARTER_MONTHS = 3;
+interface Props {
+    readonly dateTitle: string;
+}
 
-export const RecurringFormRepeatSection = () => {
+export const RecurringFormRepeatSection = ({ dateTitle }: Props) => {
     const { t } = useLingui();
-    const { control, setValue } = useFormContext<RecurringSeriesFormValues>();
+    const { control } = useFormContext<RecurringSeriesFormValues>();
     const {
         field: { value, onChange }
     } = useController({ control, name: 'repeat' });
@@ -52,16 +54,10 @@ export const RecurringFormRepeatSection = () => {
         }
     ];
     const isCustom = value === RecurringRepeatChoiceEnum.CUSTOM;
-    const isQuarterly = value === RecurringRepeatChoiceEnum.QUARTERLY;
-    const customValue = isQuarterly ? getCadenceLabel(RecurringCadenceUnitEnum.MONTH, QUARTER_MONTHS) : '';
-    const customLabel = isCustom ? getCadenceLabel(customUnit, customInterval) : customValue;
+    const customLabel = isCustom ? getCadenceLabel(customUnit, customInterval) : '';
     const previewRow = isNotEmptyString(preview) ? <Text className="px-3xl pt-sm pb-sm text-[15px] text-primary/65">{preview}</Text> : null;
 
     const handleCustom = () => {
-        if (isQuarterly) {
-            setValue('customInterval', QUARTER_MONTHS);
-            setValue('customUnit', RecurringCadenceUnitEnum.MONTH);
-        }
         onChange(RecurringRepeatChoiceEnum.CUSTOM);
     };
 
@@ -80,7 +76,7 @@ export const RecurringFormRepeatSection = () => {
                     onPress={handleCustom}
                 />
                 {isCustom ? <RecurringFormCustomCadence /> : null}
-                <RecurringFormDateRow name="anchorDate" title={t`Next payment`} testID={RecurringSeriesFormSelector.NextDate} />
+                <RecurringFormDateRow name="anchorDate" title={dateTitle} testID={RecurringSeriesFormSelector.NextDate} />
             </GroupedListSection>
         </View>
     );

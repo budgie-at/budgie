@@ -4,8 +4,13 @@
         "target": "ESNext",
         "module": "ESNext",
         "moduleResolution": "bundler",
-        "lib": ["ESNext", "DOM"],
-        "types": ["node"],
+        "lib": [
+            "ESNext",
+            "DOM"
+        ],
+        "types": [
+            "node"
+        ],
         "jsx": "react-jsx",
         "skipLibCheck": true,
         "declaration": true,

@@ -2,7 +2,7 @@ import { RecurringService } from '@budgie/recurring';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { router } from 'expo-router';
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -64,7 +64,7 @@ export const MakeRecurringSheet = ({ transactionId }: Props) => {
 
     return (
         <GroupedSurface palette={GroupedSurfacePaletteEnum.SHEET} className="flex-none" testID={MakeRecurringSheetSelector.Page}>
-            <View>
+            <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
                 <View className="px-3xl pt-7xl pb-md">
                     <SheetTitleRow title={t`Make recurring`} />
                 </View>
@@ -75,7 +75,7 @@ export const MakeRecurringSheet = ({ transactionId }: Props) => {
                         <MakeRecurringCreateRow onPress={handleCreate} />
                     </GroupedListSection>
                 </LoadingContent>
-            </View>
+            </ScrollView>
         </GroupedSurface>
     );
 };

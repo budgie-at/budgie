@@ -1,5 +1,6 @@
 import { RecurringService } from '@budgie/recurring';
 import { useLingui } from '@lingui/react/macro';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Notifications from 'expo-notifications';
 
@@ -12,10 +13,9 @@ import { RECURRING_REMINDER_DAYS } from '../../constant/recurring-reminder-days.
 import { RecurringReminderChoiceEnum } from '../../enum/recurring-reminder-choice.enum';
 import { useNotificationPermission } from '../../hook/use-notification-permission.hook';
 import { RecurringReminderService } from '../../service/recurring-reminder.service';
+import { buildRecurringReminderSegments } from '../../utils/build-recurring-reminder-segments.util';
 import { getRecurringReminderChoice } from '../../utils/get-recurring-reminder-choice.util';
 import { RecurringDetailSelector } from '../recurring-detail-content/recurring-detail.selector';
-
-import type { SegmentedControlSegmentInterface } from '../../../@generic/interface/segmented-control-segment.interface';
 
 interface Props {
     readonly seriesId: number;
@@ -26,28 +26,7 @@ export const RecurringReminderChoices = ({ seriesId, reminderDaysBefore }: Props
     const { t } = useLingui();
     const { run } = useSingleFlight();
     const { refresh } = useNotificationPermission();
-    const segments: readonly SegmentedControlSegmentInterface<RecurringReminderChoiceEnum>[] = [
-        {
-            value: RecurringReminderChoiceEnum.OFF,
-            label: t`Off`,
-            testID: RecurringDetailSelector.ReminderChoice(RecurringReminderChoiceEnum.OFF)
-        },
-        {
-            value: RecurringReminderChoiceEnum.SAME_DAY,
-            label: t`Same day`,
-            testID: RecurringDetailSelector.ReminderChoice(RecurringReminderChoiceEnum.SAME_DAY)
-        },
-        {
-            value: RecurringReminderChoiceEnum.ONE_DAY,
-            label: t`1 day`,
-            testID: RecurringDetailSelector.ReminderChoice(RecurringReminderChoiceEnum.ONE_DAY)
-        },
-        {
-            value: RecurringReminderChoiceEnum.THREE_DAYS,
-            label: t`3 days`,
-            testID: RecurringDetailSelector.ReminderChoice(RecurringReminderChoiceEnum.THREE_DAYS)
-        }
-    ];
+    const segments = buildRecurringReminderSegments(RecurringDetailSelector.ReminderChoice);
 
     const handleChange = (choice: RecurringReminderChoiceEnum) => {
         void run(
@@ -70,7 +49,8 @@ export const RecurringReminderChoices = ({ seriesId, reminderDaysBefore }: Props
                 const workload = yield* Workload;
 
                 yield* recurringService.update(seriesId, { reminderDaysBefore: RECURRING_REMINDER_DAYS[choice] });
-                yield* workload.schedule('recurring-reminders', recurringReminderService.reschedule(new Date()), { replace: true });
+                const now = yield* DateTime.nowAsDate;
+                yield* workload.schedule('recurring-reminders', recurringReminderService.reschedule(now), { replace: true });
             }).pipe(toastOnFailure(t`Could not update reminder.`))
         );
     };

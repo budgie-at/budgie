@@ -14,5 +14,5 @@ const recurringSeriesForTransactionAtom = databaseQueryFamily(
 export const useRecurringSeriesForTransaction = (transactionId: number) => {
     const result = useLiveAtomValue(recurringSeriesForTransactionAtom(transactionId));
 
-    return { seriesId: AsyncResult.isSuccess(result) ? (result.value?.id ?? null) : null, isLoading: !AsyncResult.isSuccess(result) };
+    return { seriesId: AsyncResult.isSuccess(result) ? (result.value?.id ?? null) : null, isLoading: AsyncResult.isInitial(result) };
 };

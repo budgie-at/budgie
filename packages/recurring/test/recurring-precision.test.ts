@@ -78,14 +78,14 @@ it.effect('omits a previously tracked income series from projection', () =>
     })
 );
 
-it.effect('excludes overdue expense forecasts from the monthly headline', () =>
+it.effect('includes overdue expense forecasts from the monthly headline', () =>
     Effect.sync(() => {
         const data = calendarFromCharges(
             [5, 36, 64, 95].map(day => charge(day)),
             new Date(2026, 4, 12)
         );
         expect(data.forecastedEntriesByDay.get(5)?.[0].alert).toBe(RecurringAlertEnum.OVERDUE);
-        expect(data.forecastedTotalAmount).toBe(0);
+        expect(data.forecastedTotalAmount).toBe(12);
     })
 );
 
@@ -95,7 +95,7 @@ it.effect('counts a due-today forecast and excludes yesterday during the overdue
         const today = calendarFromCharges(charges, new Date(2026, 4, 5, 12));
         const yesterday = calendarFromCharges(charges, new Date(2026, 4, 6, 12));
         expect(today.forecastedTotalAmount).toBe(12);
-        expect(yesterday.forecastedTotalAmount).toBe(0);
+        expect(yesterday.forecastedTotalAmount).toBe(12);
         expect(yesterday.forecastedEntriesByDay.get(5)?.[0].alert).toBeNull();
     })
 );

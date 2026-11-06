@@ -13,15 +13,17 @@ export const buildRecurringSummary = (series: readonly RecurringSeriesListItemIn
     const active = series.filter(item => item.isActive);
     const expenses = active.filter(item => item.kind === RecurringSeriesKindEnum.EXPENSE);
     const income = active.filter(item => item.kind === RecurringSeriesKindEnum.INCOME);
-    const [nextPayment] = expenses
-        .filter(item => isDefined(item.nextDate) && !isBefore(item.nextDate, startOfDay(now)))
-        .sort((left, right) => (left.nextDate?.getTime() ?? 0) - (right.nextDate?.getTime() ?? 0));
+    const nextPayment =
+        expenses
+            .filter(item => isDefined(item.nextDate) && !isBefore(item.nextDate, startOfDay(now)))
+            .sort((left, right) => (left.nextDate?.getTime() ?? 0) - (right.nextDate?.getTime() ?? 0))
+            .at(0) ?? null;
 
     return {
         committedMonthly: sum(expenses.map(item => item.monthlyEquivalent)),
         committedCount: expenses.length,
         hasAveragedBills: expenses.some(item => item.cadenceUnit !== RecurringCadenceUnitEnum.MONTH || item.cadenceInterval !== 1),
-        nextPayment: nextPayment ?? null,
+        nextPayment,
         incomeMonthly: sum(income.map(item => item.monthlyEquivalent))
     };
 };

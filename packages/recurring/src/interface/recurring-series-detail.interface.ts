@@ -3,6 +3,7 @@ import type { RecurringSeriesListItemInterface } from './recurring-series-list-i
 
 export interface RecurringSeriesDetailInterface {
     readonly series: RecurringSeriesListItemInterface;
+    readonly anchorDate: Date;
     readonly nextDates: readonly Date[];
     readonly history: readonly RecurringHistoryItemInterface[];
 }

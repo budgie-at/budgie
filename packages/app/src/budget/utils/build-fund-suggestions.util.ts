@@ -14,7 +14,7 @@ const DAYS_PER_MONTH = 30.4375;
 
 const computeNextDueAt = (lastSeenAt: Date, periodDays: number, now: Date): Date => {
     const today = startOfDay(now);
-    const cycles = Math.max(1, Math.ceil(differenceInCalendarDays(today, startOfDay(lastSeenAt)) / periodDays));
+    const cycles = Math.max(0, Math.ceil(differenceInCalendarDays(today, startOfDay(lastSeenAt)) / periodDays));
     const dueAt = addDays(startOfDay(lastSeenAt), periodDays * cycles);
 
     return dueAt.getTime() <= today.getTime() ? addDays(dueAt, periodDays) : dueAt;

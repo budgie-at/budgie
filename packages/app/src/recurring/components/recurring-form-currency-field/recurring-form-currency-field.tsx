@@ -12,9 +12,5 @@ export const RecurringFormCurrencyField = () => {
     } = useController({ control, name: 'instrumentId' });
     const { instrument } = useGetInstrumentByIdQuery(value);
 
-    return (
-        <>
-            <CreateAccountCurrencyField value={value} onChange={onChange} instrumentType={instrument?.type} />
-        </>
-    );
+    return <CreateAccountCurrencyField value={value} onChange={onChange} instrumentType={instrument?.type} />;
 };

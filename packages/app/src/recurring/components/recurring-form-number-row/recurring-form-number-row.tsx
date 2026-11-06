@@ -14,10 +14,12 @@ interface Props {
 }
 
 const MAX_DIGITS = 3;
+const INTERVAL_DIGITS = 2;
 
 export const RecurringFormNumberRow = ({ name, label, testID }: Props) => {
     const { control, setValue } = useFormContext<RecurringSeriesFormValues>();
     const value = useWatch({ control, name });
+    const maxLength = name === 'customInterval' ? INTERVAL_DIGITS : MAX_DIGITS;
     const text = isPositiveNumber(value) ? String(value) : '';
 
     const handleChangeText = (nextText: string) => {
@@ -31,7 +33,7 @@ export const RecurringFormNumberRow = ({ name, label, testID }: Props) => {
             value={text}
             onChangeText={handleChangeText}
             keyboardType="number-pad"
-            maxLength={MAX_DIGITS}
+            maxLength={maxLength}
             placeholder="0"
             testID={testID}
         />

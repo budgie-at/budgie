@@ -17,8 +17,18 @@ import * as Layer from 'effect/Layer';
 import { RecurringRefreshService, RecurringService } from '../src/index';
 import { RecurringRepository } from '../src/repository/recurring.repository';
 
-import { DEFAULT_INSTRUMENT_ID, JUNE, NOW, seedCharges, seedDetectedSeries, seedMonthlyCharges } from './recurring-seed';
-import { TestLayer, detectAt, setUserState, testDb } from './test-context';
+import {
+    DEFAULT_INSTRUMENT_ID,
+    JUNE,
+    NOW,
+    TestLayer,
+    detectAt,
+    seedCharges,
+    seedDetectedSeries,
+    seedMonthlyCharges,
+    setUserState,
+    testDb
+} from './test-context';
 
 const SIX_MONTHS = [6, 5, 4, 3, 2, 1] as const;
 
@@ -28,7 +38,7 @@ const refreshService = Effect.service(RecurringRefreshService);
 
 const repository = Effect.service(RecurringRepository);
 
-const liveLinks = Effect.flatMap(repository, items => items.findLinks());
+const liveLinks = Effect.flatMap(repository, items => items.findLinks);
 
 const expectReadWithoutDetection = Effect.gen(function* () {
     const seed = yield* seedCharges();
@@ -37,7 +47,7 @@ const expectReadWithoutDetection = Effect.gen(function* () {
     const data = yield* Effect.flatMap(RecurringService, service => service.calendar(2026, JUNE + 1, NOW));
 
     expect(data.forecastedEntriesByDay.size).toBe(0);
-    expect(yield* (yield* repository).findAllSeries()).toEqual([]);
+    expect(yield* (yield* repository).findAllSeries).toEqual([]);
 });
 
 beforeEach(() => Effect.runPromise(resetTestDb(testDb)));
@@ -49,14 +59,15 @@ layer(TestLayer)('recurringRefreshService', it => {
             yield* seedMonthlyCharges(seed, 'NETFLIX', SIX_MONTHS, 5, 12);
             const refresh = yield* refreshService;
 
-            const first = yield* detectAt(NOW);
-            const second = yield* detectAt(NOW);
-            const third = yield* refresh.refresh(NOW);
-            const rows = yield* (yield* repository).findAllSeries();
+            yield* detectAt(NOW);
+            const firstRows = yield* (yield* repository).findAllSeries;
+            const firstLinks = yield* liveLinks;
+            yield* detectAt(NOW);
+            yield* refresh.refresh(NOW);
+            const rows = yield* (yield* repository).findAllSeries;
 
-            expect(first).toEqual({ seriesWritten: 1, linksWritten: 6, linksDropped: 0 });
-            expect(second).toEqual({ seriesWritten: 0, linksWritten: 0, linksDropped: 0 });
-            expect(third).toEqual({ seriesWritten: 0, linksWritten: 0, linksDropped: 0 });
+            expect(rows).toEqual(firstRows);
+            expect(yield* liveLinks).toEqual(firstLinks);
             expect(rows).toHaveLength(1);
             expect(rows[0]).toMatchObject({
                 source: RecurringSeriesSourceEnum.DETECTED,
@@ -77,12 +88,11 @@ layer(TestLayer)('recurringRefreshService', it => {
 
             yield* refresh.refresh(NOW);
             yield* seedMonthlyCharges(seed, 'GYM', SIX_MONTHS, 9, 30);
-            const sameDay = yield* refresh.refresh(new Date(NOW.getTime() + 3_600_000));
-            const nextDay = yield* refresh.refresh(new Date(NOW.getTime() + 25 * 3_600_000));
-            const titles = (yield* (yield* repository).findAllSeries()).map(row => row.title);
+            yield* refresh.refresh(new Date(NOW.getTime() + 3_600_000));
+            expect((yield* (yield* repository).findAllSeries).map(row => row.title)).toEqual(['NETFLIX']);
+            yield* refresh.refresh(new Date(NOW.getTime() + 25 * 3_600_000));
+            const titles = (yield* (yield* repository).findAllSeries).map(row => row.title);
 
-            expect(sameDay.seriesWritten).toBe(0);
-            expect(nextDay.seriesWritten).toBe(1);
             expect(titles).toEqual(['NETFLIX', 'GYM']);
         }).pipe(withFreshLaunch)
     );
@@ -93,13 +103,11 @@ layer(TestLayer)('recurringRefreshService', it => {
             yield* seedMonthlyCharges(seed, 'NETFLIX', SIX_MONTHS, 5, 12);
             const refresh = yield* refreshService;
 
-            const summaries = yield* Effect.all([refresh.refresh(NOW), refresh.refresh(NOW), refresh.refresh(NOW)], {
+            yield* Effect.all([refresh.refresh(NOW), refresh.refresh(NOW), refresh.refresh(NOW)], {
                 concurrency: 'unbounded'
             });
 
-            expect(summaries.reduce((total, summary) => total + summary.seriesWritten, 0)).toBe(1);
-            expect(summaries.reduce((total, summary) => total + summary.linksWritten, 0)).toBe(6);
-            expect(yield* (yield* repository).findAllSeries()).toHaveLength(1);
+            expect(yield* (yield* repository).findAllSeries).toHaveLength(1);
         }).pipe(withFreshLaunch)
     );
 
@@ -148,7 +156,7 @@ layer(TestLayer)('recurringRefreshService', it => {
             const oldIds = yield* seedMonthlyCharges(seed, 'NETFLIX', [5, 4, 3, 2], 5, 12);
             const service = yield* RecurringService;
             yield* detectAt(NOW);
-            const [series] = yield* (yield* repository).findAllSeries();
+            const [series] = yield* (yield* repository).findAllSeries;
             const anchorDate = new Date(2026, 0, 1);
             yield* service.update(series.id, { anchorDate });
             yield* Effect.forEach(oldIds, id =>
@@ -159,7 +167,7 @@ layer(TestLayer)('recurringRefreshService', it => {
             yield* seedMonthlyCharges(seed, 'NETFLIX', [3, 2, 1, 0], 9, 12);
 
             yield* detectAt(NOW);
-            const rows = yield* (yield* repository).findAllSeries();
+            const rows = yield* (yield* repository).findAllSeries;
 
             expect(rows).toHaveLength(1);
             expect(rows[0]).toMatchObject({ id: series.id, anchorDate, merchantKey: series.merchantKey, periodDays: series.periodDays });
@@ -172,12 +180,12 @@ layer(TestLayer)('recurringRefreshService', it => {
             const ids = yield* seedMonthlyCharges(seed, 'NETFLIX', [5, 4, 3, 2], 5, 12);
             const service = yield* RecurringService;
             yield* detectAt(NOW);
-            const [series] = yield* (yield* repository).findAllSeries();
+            const [series] = yield* (yield* repository).findAllSeries;
             const lastSeenBefore = series.lastSeenAt.getTime();
 
             yield* service.excludeTransaction(series.id, ids[3]);
             yield* detectAt(NOW);
-            const [after] = yield* (yield* repository).findAllSeries();
+            const [after] = yield* (yield* repository).findAllSeries;
             const links = yield* liveLinks;
 
             expect(after.lastSeenAt.getTime()).toBeLessThan(lastSeenBefore);
@@ -201,10 +209,10 @@ layer(TestLayer)('recurringRefreshService', it => {
                     .set({ operatedAt: new Date(2026, 3, 25, 12) })
                     .where(eq(TransactionEntityTable.id, ids[2]))
             );
-            const summary = yield* detectAt(NOW);
+            yield* detectAt(NOW);
             const links = yield* liveLinks;
 
-            expect(summary.linksDropped).toBe(2);
+            expect(links).toHaveLength(4);
             expect(links.map(link => link.transactionId).sort((first, second) => first - second)).toEqual(
                 [ids[1], ids[3], ids[4], ids[5]].sort((first, second) => first - second)
             );
@@ -260,7 +268,7 @@ layer(TestLayer)('recurringRefreshService', it => {
 
             yield* seedMonthlyCharges(seed, 'NETFLIX', [1, 0], 5, 14);
             yield* detectAt(NOW);
-            const [after] = yield* (yield* repository).findAllSeries();
+            const [after] = yield* (yield* repository).findAllSeries;
 
             expect(edited.userState).toBe(RecurringSeriesUserStateEnum.CONFIRMED);
             expect(after).toMatchObject({
@@ -283,7 +291,7 @@ layer(TestLayer)('recurringRefreshService', it => {
 
             yield* seedMonthlyCharges(seed, 'NETFLIX', [1, 0], 5, 12);
             yield* detectAt(NOW);
-            const rows = yield* (yield* repository).findAllSeries();
+            const rows = yield* (yield* repository).findAllSeries;
             const items = yield* service.listSeries(NOW);
 
             expect(rows).toHaveLength(1);
@@ -300,7 +308,7 @@ layer(TestLayer)('recurringRefreshService', it => {
             const refresh = yield* refreshService;
             const service = yield* RecurringService;
             yield* detectAt(NOW);
-            const [series] = yield* (yield* repository).findAllSeries();
+            const [series] = yield* (yield* repository).findAllSeries;
             yield* service.excludeTransaction(series.id, ids[0]);
             yield* service.addTransaction(series.id, ids[1]);
 

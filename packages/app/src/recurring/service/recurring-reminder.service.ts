@@ -9,8 +9,7 @@ import * as Notifications from 'expo-notifications';
 
 import { isEmptyArray, isDefined } from '@rnw-community/shared';
 
-import { cancelScheduledLocalNotifications } from '../../@generic/utils/cancel-scheduled-local-notifications.util';
-import { scheduleLocalNotification } from '../../@generic/utils/schedule-local-notification.util';
+import { ensureNotificationChannel } from '../../@generic/utils/ensure-notification-channel.util';
 import { toNativeCallError } from '../../@generic/utils/to-native-call-error.util';
 import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
 import { formatSymbolAmount } from '../../i18n/utils/format-symbol-amount.util';
@@ -18,6 +17,7 @@ import { languageToLocale } from '../../i18n/utils/language-to-locale.util';
 import { RecurringNotificationKindEnum } from '../enum/recurring-notification-kind.enum';
 import { selectRecurringReminderPlans } from '../utils/select-recurring-reminder-plans.util';
 
+import type { ScheduledLocalNotificationInterface } from '../../@generic/interface/scheduled-local-notification.interface';
 import type { RecurringReminderPlanInterface } from '../interface/recurring-reminder-plan.interface';
 import type { RecurringSeriesListItemInterface } from '@budgie/recurring';
 
@@ -26,6 +26,42 @@ export class RecurringReminderService extends Context.Service<RecurringReminderS
         const recurringService = yield* RecurringService;
         const settingsRepository = yield* SettingsRepository;
         const instrumentRepository = yield* InstrumentRepository;
+
+        const scheduleLocalNotification = Effect.fnUntraced(function* (notification: ScheduledLocalNotificationInterface) {
+            yield* ensureNotificationChannel(notification.channel);
+
+            yield* Effect.tryPromise({
+                try: () =>
+                    Notifications.scheduleNotificationAsync({
+                        identifier: notification.identifier,
+                        content: { title: notification.title, body: notification.body, data: notification.data },
+                        trigger: {
+                            type: Notifications.SchedulableTriggerInputTypes.DATE,
+                            date: notification.date,
+                            channelId: notification.channel.id
+                        }
+                    }),
+                catch: toNativeCallError
+            });
+        });
+
+        const cancelScheduledLocalNotifications = Effect.fnUntraced(function* (kind: string) {
+            const scheduled = yield* Effect.tryPromise({
+                try: () => Notifications.getAllScheduledNotificationsAsync(),
+                catch: toNativeCallError
+            });
+            const matching = scheduled.filter(request => request.content.data?.['kind'] === kind);
+
+            yield* Effect.forEach(
+                matching,
+                request =>
+                    Effect.tryPromise({
+                        try: () => Notifications.cancelScheduledNotificationAsync(request.identifier),
+                        catch: toNativeCallError
+                    }),
+                { discard: true }
+            );
+        });
 
         const buildDueBody = (daysUntilDue: number, amount: string): string => {
             if (daysUntilDue <= 0) {

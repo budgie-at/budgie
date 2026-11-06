@@ -1,13 +1,14 @@
-import { RecurringSeriesUserStateEnum } from '@budgie/contracts';
+import { RecurringSeriesSourceEnum, RecurringSeriesUserStateEnum } from '@budgie/contracts';
 import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
 import { startOfDay } from 'date-fns/startOfDay';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { RECURRING_AMOUNT_RATIO } from '../constant/recurring-amount-ratio.constant';
 import { normalizeRecurringDescription } from '../utils/normalize-recurring-description.util';
 
 import { cadenceToleranceDays, nearestCycleDate } from './recurring-schedule';
-import { description, identity } from './recurring-series';
+import { PRICE_CHANGE_RATIO, description, identity } from './recurring-series';
 
 import type { RecurringChargeInterface } from '../interface/recurring-charge.interface';
 import type { RecurringMatchSeriesInterface } from '../interface/recurring-match-series.interface';
@@ -31,7 +32,7 @@ const matchesMerchant = (
     }
     const title = normalizeRecurringDescription(entry.series.title);
 
-    return isNotEmptyString(title) && normalizeRecurringDescription(description(charge)).includes(title);
+    return isNotEmptyString(title) && ` ${normalizeRecurringDescription(description(charge))} `.includes(` ${title} `);
 };
 
 const rankCandidates = (
@@ -45,6 +46,12 @@ const rankCandidates = (
     return entries
         .filter(
             entry =>
+                (entry.isVariable === true ||
+                    Math.max(entry.series.defaultAmount, charge.defaultAmount) <=
+                        Math.min(entry.series.defaultAmount, charge.defaultAmount) *
+                            (entry.series.source === RecurringSeriesSourceEnum.MANUAL
+                                ? RECURRING_AMOUNT_RATIO + PRICE_CHANGE_RATIO
+                                : RECURRING_AMOUNT_RATIO)) &&
                 entry.series.kind === charge.kind &&
                 !entry.excludedTransactionIds.has(charge.transactionId) &&
                 (!isDefined(entry.series.accountId) || entry.series.accountId === charge.accountId) &&
@@ -77,7 +84,7 @@ export const matchRecurringTransactions = (
             const seriesId = best.entry.series.id;
             const groupKey = `${seriesId}:${best.cycle.cycleDate.getTime()}`;
 
-            if (!occupied.get(seriesId)?.has(best.cycle.cycleDate.getTime())) {
+            if (occupied.get(seriesId)?.has(best.cycle.cycleDate.getTime()) !== true) {
                 groups.set(groupKey, [
                     ...(groups.get(groupKey) ?? []),
                     { charge, seriesId, cycleDate: best.cycle.cycleDate, gap: best.gap }

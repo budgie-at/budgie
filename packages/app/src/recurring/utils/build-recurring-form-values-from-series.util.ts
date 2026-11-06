@@ -16,7 +16,6 @@ const PRESET_CHOICES = [
     RecurringRepeatChoiceEnum.WEEKLY,
     RecurringRepeatChoiceEnum.BIWEEKLY,
     RecurringRepeatChoiceEnum.MONTHLY,
-    RecurringRepeatChoiceEnum.QUARTERLY,
     RecurringRepeatChoiceEnum.YEARLY
 ] as const;
 

@@ -33,6 +33,10 @@ export const RecurringSummaryCard = ({ summary, now }: Props) => {
     const incomeAmount = protectAmount(convertFromMicroUnits(incomeMonthly), defaultInstrument.symbol);
     const countLabel = t({ message: plural(committedCount, { one: '# bill', other: '# bills' }) });
 
+    const incomeClassName = hasCommitted
+        ? 'flex-row items-center justify-between border-t border-surface-separator pt-md'
+        : 'flex-row items-center justify-between';
+
     if (!hasCommitted && !hasIncome) {
         return null;
     }
@@ -44,17 +48,21 @@ export const RecurringSummaryCard = ({ summary, now }: Props) => {
                 style={continuousCorners}
                 testID={RecurringPaneSelector.Summary}
             >
-                <Text dynamicTypeRamp="footnote" className="text-[13px] font-medium text-primary/65">
-                    <Trans>Monthly average</Trans>
-                </Text>
-                <View className="flex-row flex-wrap items-baseline gap-x-xs">
-                    <ProtectedText dynamicTypeRamp="largeTitle" className="text-[34px] font-bold text-primary tabular-nums">
-                        {committedAmount}
-                    </ProtectedText>
-                </View>
-                <RecurringSummarySubline countLabel={countLabel} nextPayment={nextPayment} now={now} />
+                {hasCommitted ? (
+                    <>
+                        <Text dynamicTypeRamp="footnote" className="text-[13px] font-medium text-primary/65">
+                            <Trans>Monthly average</Trans>
+                        </Text>
+                        <View className="flex-row flex-wrap items-baseline gap-x-xs">
+                            <ProtectedText dynamicTypeRamp="largeTitle" className="text-[34px] font-bold text-primary tabular-nums">
+                                {committedAmount}
+                            </ProtectedText>
+                        </View>
+                        <RecurringSummarySubline countLabel={countLabel} nextPayment={nextPayment} now={now} />
+                    </>
+                ) : null}
                 {hasIncome ? (
-                    <View className="flex-row items-center justify-between border-t border-surface-separator pt-md">
+                    <View className={incomeClassName}>
                         <Text dynamicTypeRamp="subheadline" className="text-[15px] text-primary">
                             <Trans>Recurring income</Trans>
                         </Text>

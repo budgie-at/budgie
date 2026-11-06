@@ -1,13 +1,15 @@
+import { convertToMicroUnits, RecurringSeriesSourceEnum } from '@budgie/contracts';
 import { RecurringService } from '@budgie/recurring';
 import { isSameDay } from 'date-fns/isSameDay';
 import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { RECURRING_REMINDER_DAYS } from '../constant/recurring-reminder-days.constant';
 import { RecurringFormModeEnum } from '../enum/recurring-form-mode.enum';
 import { RecurringRefreshModeEnum } from '../enum/recurring-refresh-mode.enum';
 
-import { buildRecurringSeriesInput } from './build-recurring-series-input.util';
+import { resolveRecurringSchedule } from './resolve-recurring-schedule.util';
 import { scheduleRecurringRefresh } from './schedule-recurring-refresh.util';
 
 import type { RecurringSeriesFormValues } from '../constant/recurring-series-form-schema.constant';
@@ -19,18 +21,30 @@ export const submitRecurringSeries = Effect.fn('submitRecurringSeries')(function
     initialValues: RecurringSeriesFormValues
 ) {
     const recurringService = yield* RecurringService;
-    const { anchorDate, ...input } = buildRecurringSeriesInput(values);
-
+    const schedule = resolveRecurringSchedule(values);
+    const initialSchedule = resolveRecurringSchedule(initialValues);
     const isScheduleChanged =
         !isSameDay(values.anchorDate, initialValues.anchorDate) ||
-        values.repeat !== initialValues.repeat ||
-        values.customInterval !== initialValues.customInterval ||
-        values.customUnit !== initialValues.customUnit;
-    const manualInput = { ...input, anchorDate, kind: values.kind };
+        schedule.cadenceUnit !== initialSchedule.cadenceUnit ||
+        schedule.cadenceInterval !== initialSchedule.cadenceInterval;
+    const { anchorDate, ...resolvedSchedule } =
+        target.mode === RecurringFormModeEnum.EDIT && !isScheduleChanged
+            ? resolveRecurringSchedule({ ...values, anchorDate: target.anchorDate }, values.anchorDate)
+            : schedule;
+    const input = {
+        ...resolvedSchedule,
+        title: values.title,
+        categoryId: values.categoryId,
+        accountId: values.accountId,
+        reminderDaysBefore: RECURRING_REMINDER_DAYS[values.reminder]
+    };
+    const price = { amount: convertToMicroUnits(values.amount), instrumentId: values.instrumentId };
+    const manualInput = { ...input, ...price, anchorDate, kind: values.kind };
     const save = () => {
         if (target.mode === RecurringFormModeEnum.EDIT) {
             return recurringService.update(target.seriesId, {
                 ...input,
+                ...(target.source === RecurringSeriesSourceEnum.MANUAL && price),
                 ...(isScheduleChanged && { anchorDate })
             });
         }

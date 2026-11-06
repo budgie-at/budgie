@@ -15,8 +15,20 @@ import * as Effect from 'effect/Effect';
 import { RecurringAlertEnum, RecurringRefreshService, RecurringSeriesNotFoundError, RecurringService } from '../src/index';
 import { RecurringRepository } from '../src/repository/recurring.repository';
 
-import { DEFAULT_INSTRUMENT_ID, NOW, seedCharges, seedDetectedSeries, seedMonthlyCharges, seedNetflixCharge } from './recurring-seed';
-import { TestLayer, detectAt, findSeries, setUserState, testDb } from './test-context';
+import {
+    DEFAULT_INSTRUMENT_ID,
+    NOW,
+    TestLayer,
+    detectAt,
+    findSeries,
+    seedCharges,
+    seedDetectedSeries,
+    seedMonthlyCharges,
+    seedNetflixCharge,
+    setUserState,
+    testDb,
+    testSeedService
+} from './test-context';
 
 import type { RecurringManualInputInterface } from '../src/index';
 
@@ -39,11 +51,42 @@ const repository = Effect.service(RecurringRepository);
 
 const openReads = Effect.flatMap(refreshService, refresh => refresh.refresh(NOW));
 
-const allLinks = Effect.flatMap(repository, items => items.findLinks());
+const allLinks = Effect.flatMap(repository, items => items.findLinks);
+
+const seedSubscription = Effect.fnUntraced(function* () {
+    const { id: categoryId } = yield* testSeedService.category('Subscriptions');
+    const transactionId = yield* seedNetflixCharge(categoryId);
+    const service = yield* recurringService;
+    yield* openReads;
+
+    return { categoryId, transactionId, service };
+});
 
 beforeEach(() => Effect.runPromise(resetTestDb(testDb)));
 
 layer(TestLayer)('recurringService commands', it => {
+    it.effect('covers a manually linked late payment cycle', () =>
+        Effect.gen(function* () {
+            const service = yield* recurringService;
+            yield* openReads;
+            const series = yield* service.createManual(manualInput());
+            const seed = yield* seedCharges();
+            const transactionId = yield* seed('NETFLIX', 0, 12, 12);
+            yield* service.addTransaction(series.id, transactionId);
+            const [item] = yield* service.listSeries(NOW);
+            expect(item.alert).not.toBe(RecurringAlertEnum.OVERDUE);
+            expect(item.nextDate).toEqual(new Date(2026, 6, 5));
+        })
+    );
+    it.effect('keeps a monthly detection attached after a yearly correction', () =>
+        Effect.gen(function* () {
+            const { detected } = yield* seedDetectedSeries();
+            const service = yield* recurringService;
+            yield* service.update(detected.id, { cadenceUnit: RecurringCadenceUnitEnum.YEAR, cadenceInterval: 1 });
+            yield* detectAt(NOW);
+            expect(yield* findSeries()).toHaveLength(1);
+        })
+    );
     it.effect('creates manual series that count immediately and appear in the calendar and list', () =>
         Effect.gen(function* () {
             const service = yield* recurringService;
@@ -116,9 +159,9 @@ layer(TestLayer)('recurringService commands', it => {
             yield* refresh.matchRecent(NOW);
 
             const removal = yield* service.remove(created.id);
-            const afterRemove = yield* repository.pipe(Effect.flatMap(items => Effect.all([items.findAllSeries(), items.findLinks()])));
+            const afterRemove = yield* repository.pipe(Effect.flatMap(items => Effect.all([items.findAllSeries, items.findLinks])));
             yield* service.restore(created.id);
-            const afterRestore = yield* repository.pipe(Effect.flatMap(items => Effect.all([items.findAllSeries(), items.findLinks()])));
+            const afterRestore = yield* repository.pipe(Effect.flatMap(items => Effect.all([items.findAllSeries, items.findLinks])));
 
             expect(removal).toEqual({
                 seriesId: created.id,
@@ -139,7 +182,7 @@ layer(TestLayer)('recurringService commands', it => {
             const { detected } = yield* seedDetectedSeries();
 
             const removal = yield* service.remove(detected.id);
-            const [dismissed] = yield* (yield* repository).findAllSeries();
+            const [dismissed] = yield* (yield* repository).findAllSeries;
             const restored = yield* setUserState(detected.id, RecurringSeriesUserStateEnum.SUGGESTED);
             const confirmed = yield* service.confirm(detected.id);
 
@@ -164,7 +207,7 @@ layer(TestLayer)('recurringService commands', it => {
             const excluded = yield* allLinks;
             yield* service.addTransaction(created.id, transactionId);
             const linked = yield* allLinks;
-            const [series] = yield* (yield* repository).findAllSeries();
+            const [series] = yield* (yield* repository).findAllSeries;
             const owner = yield* service.seriesForTransaction(transactionId);
 
             expect(excluded).toHaveLength(1);
@@ -202,10 +245,8 @@ layer(TestLayer)('recurringService commands', it => {
 
     it.effect('suggests fitting series by merchant first and amount second', () =>
         Effect.gen(function* () {
-            const transactionId = yield* seedNetflixCharge();
-            const service = yield* recurringService;
-            yield* openReads;
-            const byAmount = yield* service.createManual(manualInput({ title: 'Spotify', amount: 12.5 * PRECISION }));
+            const { categoryId, transactionId, service } = yield* seedSubscription();
+            const byAmount = yield* service.createManual(manualInput({ title: 'Spotify', categoryId, amount: 12.5 * PRECISION }));
             const byMerchant = yield* service.createManual(manualInput({ title: 'Netflix', amount: 40 * PRECISION }));
             yield* service.createManual(manualInput({ title: 'Rent', amount: 900 * PRECISION }));
             yield* service.createManual(manualInput({ title: 'Salary', kind: RecurringSeriesKindEnum.INCOME }));
@@ -218,11 +259,9 @@ layer(TestLayer)('recurringService commands', it => {
 
     it.effect('does not suggest a similar amount from another category', () =>
         Effect.gen(function* () {
-            const transactionId = yield* seedNetflixCharge();
-            const service = yield* recurringService;
-            yield* openReads;
-            const sameCategory = yield* service.createManual(manualInput({ title: 'Spotify', amount: 12.5 * PRECISION }));
-            yield* service.createManual(manualInput({ title: 'Barber', amount: 12.5 * PRECISION, categoryId: 1 }));
+            const { categoryId, transactionId, service } = yield* seedSubscription();
+            const sameCategory = yield* service.createManual(manualInput({ title: 'Spotify', categoryId, amount: 12.5 * PRECISION }));
+            yield* service.createManual(manualInput({ title: 'Barber', amount: 12.5 * PRECISION, categoryId: null }));
 
             const fitting = yield* service.fittingSeries(transactionId, NOW);
 
@@ -236,7 +275,7 @@ layer(TestLayer)('recurringService commands', it => {
             const ids = yield* seedMonthlyCharges(seed, 'NETFLIX', [5, 4, 3, 2, 1, 0], 5, 12);
             const service = yield* recurringService;
             yield* detectAt(NOW);
-            const [detected] = yield* (yield* repository).findAllSeries();
+            const [detected] = yield* (yield* repository).findAllSeries;
             yield* setUserState(detected.id, RecurringSeriesUserStateEnum.DISMISSED);
             yield* (yield* repository).updateSeries(detected.id, { merchantKey: 'EXPENSE|2|NETFLIX|12000000' });
 
@@ -244,7 +283,7 @@ layer(TestLayer)('recurringService commands', it => {
                 ids[5],
                 manualInput({ title: 'Netflix HD', amount: 13 * PRECISION })
             );
-            const rows = yield* (yield* repository).findAllSeries();
+            const rows = yield* (yield* repository).findAllSeries;
             const links = yield* allLinks;
 
             expect(rows).toHaveLength(1);

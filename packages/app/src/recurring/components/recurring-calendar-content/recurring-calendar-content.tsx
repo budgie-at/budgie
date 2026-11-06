@@ -32,11 +32,11 @@ const scrollContentStyle = { paddingTop: 4, paddingBottom: 20, rowGap: 8 };
 
 const EMPTY_ENTRIES_BY_DAY: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]> = new Map();
 
-// eslint-disable-next-line max-statements, max-lines-per-function -- Page orchestration component with multiple hooks, state, and forecast logic
 interface Props {
     readonly header: ReactNode;
 }
 
+// eslint-disable-next-line max-statements, max-lines-per-function -- Page orchestration component with multiple hooks, state, and forecast logic
 export const RecurringCalendarContent = ({ header }: Props) => {
     const { t } = useLingui();
     const { formatFullMonth } = useFormatDate();
@@ -84,7 +84,6 @@ export const RecurringCalendarContent = ({ header }: Props) => {
         convertFromMicroUnits(selectedEntries.reduce((total, entry) => total + entry.latestAmount, 0)),
         defaultInstrument.symbol
     );
-    const displayMonthLabel = new Intl.DateTimeFormat(languageTag, { month: 'long' }).format(new Date(displayYear, displayMonth, 1));
     const hasDetectedPayments = isPositiveNumber(data?.committedMonthlyExpense);
     const selectedDayTotal = isNotEmptyArray(selectedEntries) ? formattedDayExpense : '';
     const formattedForecastedTotal = formatDigits(forecastedTotalAmount, defaultInstrument.symbol);
@@ -142,7 +141,6 @@ export const RecurringCalendarContent = ({ header }: Props) => {
                     <RecurringCalendarEntryList
                         headerTestID={RecurringCalendarSelector.ExpectedHeader}
                         title={<Trans>Still to pay</Trans>}
-                        formattedTotal=""
                         entries={allForecastedEntries}
                         displayMonth={displayMonth}
                         displayYear={displayYear}
@@ -153,7 +151,6 @@ export const RecurringCalendarContent = ({ header }: Props) => {
                     <RecurringCalendarEntryList
                         headerTestID={RecurringCalendarSelector.RecordedHeader}
                         title={<Trans>Paid</Trans>}
-                        formattedTotal=""
                         entries={allRecordedEntries}
                         displayMonth={displayMonth}
                         displayYear={displayYear}
@@ -161,7 +158,7 @@ export const RecurringCalendarContent = ({ header }: Props) => {
                 ) : null}
 
                 {!hasEntries && !hasSelectedDay ? (
-                    <RecurringCalendarEmptyState title={t`No recurring payments in ${displayMonthLabel}`}>
+                    <RecurringCalendarEmptyState title={t`No recurring payments in ${displayedMonthName}`}>
                         {hasDetectedPayments ? (
                             <Trans>View your payments in another month.</Trans>
                         ) : (

@@ -80,3 +80,10 @@ it.effect('converts the default-currency amount of a non-default-currency series
         expect(suggestion.targetAmount).toBe(540);
     })
 );
+
+it.effect('keeps a future manual yearly anchor as the next due date', () =>
+    Effect.sync(() => {
+        const [suggestion] = buildFundSuggestions([seriesOf({ lastSeenAt: new Date(2026, 11, 1) })], [], 1, new Date(2026, 10, 6));
+        expect(suggestion.dueAt).toEqual(new Date(2026, 11, 1));
+    })
+);

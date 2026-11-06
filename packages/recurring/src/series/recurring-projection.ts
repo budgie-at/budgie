@@ -113,10 +113,7 @@ export const projectRecurringMonth = (
         entriesByDay: groupByDay(actuals),
         forecastedEntriesByDay: groupByDay(forecasts),
         totalAmount: actuals.reduce((total, entry) => total + entry.latestAmount, 0) / PRECISION,
-        forecastedTotalAmount:
-            forecasts
-                .filter(entry => new Date(year, month, entry.dayOfMonth + 1).getTime() > now.getTime())
-                .reduce((total, entry) => total + entry.latestAmount, 0) / PRECISION,
+        forecastedTotalAmount: forecasts.reduce((total, entry) => total + entry.latestAmount, 0) / PRECISION,
         committedMonthlyExpense: sumCommitted(eligible, now)
     };
 };

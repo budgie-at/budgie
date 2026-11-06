@@ -12,8 +12,17 @@ import * as Effect from 'effect/Effect';
 import { RecurringService } from '../src/index';
 import { RecurringRepository } from '../src/repository/recurring.repository';
 
-import { DEFAULT_INSTRUMENT_ID, NOW, seedCharges, seedMonthlyCharges, seedSavedSeries } from './recurring-seed';
-import { TestLayer, detectAt, findSeries, testDb } from './test-context';
+import {
+    DEFAULT_INSTRUMENT_ID,
+    NOW,
+    TestLayer,
+    detectAt,
+    findSeries,
+    seedCharges,
+    seedMonthlyCharges,
+    seedSavedSeries,
+    testDb
+} from './test-context';
 
 const SIX_MONTHS = [6, 5, 4, 3, 2, 1] as const;
 
@@ -122,7 +131,7 @@ layer(TestLayer)('recurring identity', it => {
 
             yield* detectAt(NOW);
             const rows = yield* findSeries();
-            const links = yield* (yield* RecurringRepository).findLinks();
+            const links = yield* (yield* RecurringRepository).findLinks;
 
             expect(rows.map(row => row.id)).toEqual([manual.id]);
             expect(links.every(link => link.seriesId === manual.id && link.matchedBy === RecurringMatchSourceEnum.USER)).toBe(true);

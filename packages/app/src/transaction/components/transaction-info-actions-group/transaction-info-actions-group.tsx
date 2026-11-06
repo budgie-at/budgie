@@ -1,3 +1,5 @@
+import { TransactionTypeEnum } from '@budgie/contracts';
+
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { TransactionInfoActionRow } from '../transaction-info-action-row/transaction-info-action-row';
@@ -17,6 +19,7 @@ interface Props {
 }
 
 export const TransactionInfoActionsGroup = ({ transaction, items, onDelete }: Props) => {
+    const isRecurringEligible = transaction.type === TransactionTypeEnum.EXPENSE || transaction.type === TransactionTypeEnum.INCOME;
     const moreItems = items.filter(item => !item.isPrimary);
     const primaryItems = items.filter(item => item.isPrimary);
 
@@ -24,7 +27,7 @@ export const TransactionInfoActionsGroup = ({ transaction, items, onDelete }: Pr
         <>
             <TransactionInfoGroup>
                 <TransactionInfoCreateRuleRow transaction={transaction} />
-                <TransactionInfoRecurringRow transactionId={transaction.id} />
+                {isRecurringEligible ? <TransactionInfoRecurringRow transactionId={transaction.id} /> : null}
                 {primaryItems.map(item => (
                     <TransactionInfoActionRow
                         key={item.key}

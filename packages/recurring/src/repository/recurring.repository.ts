@@ -1,4 +1,5 @@
 import {
+    getExchangeRateWithHistoricalFallbackSql,
     buildCategoryTranslationJoinCondition,
     buildSpendingEntryCondition,
     RecurringSeriesKindEnum,
@@ -22,9 +23,9 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isEmptyArray } from '@rnw-community/shared';
+import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
-import { buildRateToDefault } from '../utils/build-rate-to-default.util';
+import { RECURRING_TRACKED_KINDS } from '../constant/recurring-tracked-kinds.constant';
 
 import type { RecurringSeriesRowInterface } from '../interface/recurring-series-row.interface';
 import type {
@@ -32,10 +33,14 @@ import type {
     RecurringSeriesTransactionCreateEntityInterface,
     RecurringSeriesTransactionEntityInterface
 } from '@budgie/contracts';
-import type { SQL } from 'drizzle-orm';
+import type { SQLWrapper, SQL } from 'drizzle-orm';
 
 export class RecurringRepository extends Context.Service<RecurringRepository>()('@budgie/recurring/RecurringRepository', {
-    make: Effect.sync(() => {
+    make: Effect.suspend(() => {
+        const buildRateToDefault = (instrumentId: SQLWrapper, defaultInstrumentId: number | null) =>
+            isDefined(defaultInstrumentId)
+                ? sql<number>`COALESCE(${getExchangeRateWithHistoricalFallbackSql(defaultInstrumentId, instrumentId)}, 1.0)`
+                : sql<number>`1.0`;
         const kindConditions = {
             [RecurringSeriesKindEnum.EXPENSE]: [
                 eq(TransactionEntityTable.type, TransactionTypeEnum.EXPENSE),
@@ -100,7 +105,7 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
             WHERE ${RecurringSeriesTransactionEntityTable.deletedAt} IS NULL
         )`;
 
-        return {
+        return Effect.succeed({
             findCharges: (
                 defaultInstrumentId: number | null,
                 language: LanguageEnum,
@@ -113,8 +118,10 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
                 since: Date,
                 kind: RecurringSeriesKindEnum = RecurringSeriesKindEnum.EXPENSE
             ) => queryCharges(true, defaultInstrumentId, language, kind)(gte(TransactionEntityTable.operatedAt, since)),
-            findLinkedCharges: (defaultInstrumentId: number | null, language: LanguageEnum, kind: RecurringSeriesKindEnum) =>
-                queryCharges(true, defaultInstrumentId, language, kind)(liveLinkedTransactions),
+            findLinkedCharges: (defaultInstrumentId: number | null, language: LanguageEnum) =>
+                Effect.forEach(RECURRING_TRACKED_KINDS, kind =>
+                    queryCharges(true, defaultInstrumentId, language, kind)(liveLinkedTransactions)
+                ).pipe(Effect.map(charges => charges.flat())),
             findChargeByTransactionId: (
                 defaultInstrumentId: number | null,
                 language: LanguageEnum,
@@ -127,14 +134,13 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
                     language,
                     kind
                 )(eq(TransactionEntityTable.id, transactionId)).pipe(Effect.map(([charge]) => charge)),
-            findAllSeries: () =>
-                Db.query(db =>
-                    db
-                        .select()
-                        .from(RecurringSeriesEntityTable)
-                        .where(isNull(RecurringSeriesEntityTable.deletedAt))
-                        .orderBy(RecurringSeriesEntityTable.id)
-                ),
+            findAllSeries: Db.query(db =>
+                db
+                    .select()
+                    .from(RecurringSeriesEntityTable)
+                    .where(isNull(RecurringSeriesEntityTable.deletedAt))
+                    .orderBy(RecurringSeriesEntityTable.id)
+            ),
             findSeriesById: (id: number) =>
                 Db.query(db => db.select().from(RecurringSeriesEntityTable).where(eq(RecurringSeriesEntityTable.id, id)).limit(1)).pipe(
                     Effect.map(([series]) => series)
@@ -179,10 +185,9 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
                         .where(eq(RecurringSeriesEntityTable.id, id))
                         .returning()
                 ).pipe(Effect.map(([series]) => series)),
-            findLinks: () =>
-                Db.query(db =>
-                    db.select().from(RecurringSeriesTransactionEntityTable).where(isNull(RecurringSeriesTransactionEntityTable.deletedAt))
-                ),
+            findLinks: Db.query(db =>
+                db.select().from(RecurringSeriesTransactionEntityTable).where(isNull(RecurringSeriesTransactionEntityTable.deletedAt))
+            ),
             findLinksByTransactionId: (transactionId: number) =>
                 Db.query(db =>
                     db
@@ -195,12 +200,9 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
                             )
                         )
                 ),
-            findEverLinkedSeriesIds: () =>
-                Db.query(db =>
-                    db
-                        .selectDistinct({ seriesId: RecurringSeriesTransactionEntityTable.seriesId })
-                        .from(RecurringSeriesTransactionEntityTable)
-                ).pipe(Effect.map(rows => new Set(rows.map(row => row.seriesId)))),
+            findEverLinkedSeriesIds: Db.query(db =>
+                db.selectDistinct({ seriesId: RecurringSeriesTransactionEntityTable.seriesId }).from(RecurringSeriesTransactionEntityTable)
+            ).pipe(Effect.map(rows => new Set(rows.map(row => row.seriesId)))),
             findLinkByPair: (seriesId: number, transactionId: number) =>
                 Db.query(db =>
                     db
@@ -271,7 +273,7 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
                               .set({ deletedAt, updatedAt: new Date() })
                               .where(inArray(RecurringSeriesTransactionEntityTable.id, [...ids]))
                       ).pipe(Effect.asVoid)
-        };
+        });
     })
 }) {
     static readonly layer = Layer.effect(RecurringRepository, RecurringRepository.make);

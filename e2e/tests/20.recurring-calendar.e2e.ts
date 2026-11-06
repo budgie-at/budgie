@@ -60,6 +60,7 @@ test('20 recurring calendar', { tags: ['recurring'] }, async ({ budgie }) => {
         await b.expectId(ctx, 'RecurringCalendar.Row.E2E_Recurring_Rent');
     });
     await b.phase('list view rows and series detail', async () => {
+        await b.scrollTo(ctx, 'RecurringPane.ListModeButton', 'up');
         await b.tapId(ctx, 'RecurringPane.ListModeButton');
         await b.expectId(ctx, 'RecurringPane.List', 5_000);
         await b.expectId(ctx, 'RecurringPane.Row.E2E_Recurring_Rent');

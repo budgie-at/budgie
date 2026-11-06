@@ -7,405 +7,787 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Performance Improvements
 
-- run Effect rules in oxlint on tsrs, enable them all, parallelize tests ([#1956](https://github.com/budgie-at/budgie/issues/1956)) ([53a5170](https://github.com/budgie-at/budgie/commit/53a5170978e14a31cb6fc22da657851a42b592ad)), closes [#1883](https://github.com/budgie-at/budgie/issues/1883)
+* run Effect rules in oxlint on tsrs, enable them all, parallelize tests ([#1956](https://github.com/budgie-at/budgie/issues/1956)) ([53a5170](https://github.com/budgie-at/budgie/commit/53a5170978e14a31cb6fc22da657851a42b592ad)), closes [#1883](https://github.com/budgie-at/budgie/issues/1883)
+
 
 # [6.163.0](https://github.com/budgie-at/budgie/compare/v6.162.1...v6.163.0) (2026-11-05)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.162.1](https://github.com/budgie-at/budgie/compare/v6.162.0...v6.162.1) (2026-11-05)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 ## [6.152.1](https://github.com/budgie-at/budgie/compare/v6.152.0...v6.152.1) (2026-11-04)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 # [6.148.0](https://github.com/budgie-at/budgie/compare/v6.147.1...v6.148.0) (2026-11-02)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 ## [6.147.1](https://github.com/budgie-at/budgie/compare/v6.147.0...v6.147.1) (2026-11-02)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 # [6.147.0](https://github.com/budgie-at/budgie/compare/v6.146.1...v6.147.0) (2026-11-02)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 # [6.145.0](https://github.com/budgie-at/budgie/compare/v6.144.1...v6.145.0) (2026-11-02)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.144.1](https://github.com/budgie-at/budgie/compare/v6.144.0...v6.144.1) (2026-11-01)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 # [6.141.0](https://github.com/budgie-at/budgie/compare/v6.140.1...v6.141.0) (2026-11-01)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.140.1](https://github.com/budgie-at/budgie/compare/v6.140.0...v6.140.1) (2026-11-01)
 
 ### Bug Fixes
 
-- **app:** derive receipt merchant from receipt evidence and category from merchant memory ([02f9e44](https://github.com/budgie-at/budgie/commit/02f9e445c20ece025e44c9e30e0cb7d51a7ce5ec))
+* **app:** derive receipt merchant from receipt evidence and category from merchant memory ([02f9e44](https://github.com/budgie-at/budgie/commit/02f9e445c20ece025e44c9e30e0cb7d51a7ce5ec))
+
 
 # [6.140.0](https://github.com/budgie-at/budgie/compare/v6.139.2...v6.140.0) (2026-11-01)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 # [6.138.0](https://github.com/budgie-at/budgie/compare/v6.137.1...v6.138.0) (2026-10-31)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 # [6.134.0](https://github.com/budgie-at/budgie/compare/v6.133.0...v6.134.0) (2026-10-31)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 # [6.128.0](https://github.com/budgie-at/budgie/compare/v6.127.0...v6.128.0) (2026-10-30)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 # [6.127.0](https://github.com/budgie-at/budgie/compare/v6.126.5...v6.127.0) (2026-10-30)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.126.5](https://github.com/budgie-at/budgie/compare/v6.126.4...v6.126.5) (2026-10-29)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 # [6.126.0](https://github.com/budgie-at/budgie/compare/v6.125.3...v6.126.0) (2026-10-29)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.125.2](https://github.com/budgie-at/budgie/compare/v6.125.1...v6.125.2) (2026-10-28)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 # [6.124.0](https://github.com/budgie-at/budgie/compare/v6.123.1...v6.124.0) (2026-10-28)
 
 ### Performance Improvements
 
-- memoize layer composition by upgrading effect to 4.0.6 ([02a76c6](https://github.com/budgie-at/budgie/commit/02a76c64e302ab39db47954f8e6cad612736691d))
+* memoize layer composition by upgrading effect to 4.0.6 ([02a76c6](https://github.com/budgie-at/budgie/commit/02a76c64e302ab39db47954f8e6cad612736691d))
+
 
 # [6.123.0](https://github.com/budgie-at/budgie/compare/v6.122.0...v6.123.0) (2026-10-28)
 
 ### Features
 
-- **ai:** name receipt merchants on device ([0346d6a](https://github.com/budgie-at/budgie/commit/0346d6a432eb13f4d7b0453c8b68616844c882a4))
+* **ai:** name receipt merchants on device ([0346d6a](https://github.com/budgie-at/budgie/commit/0346d6a432eb13f4d7b0453c8b68616844c882a4))
+
 
 ## [6.121.2](https://github.com/budgie-at/budgie/compare/v6.121.1...v6.121.2) (2026-10-27)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 # [6.121.0](https://github.com/budgie-at/budgie/compare/v6.120.0...v6.121.0) (2026-10-27)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 # [6.120.0](https://github.com/budgie-at/budgie/compare/v6.119.1...v6.120.0) (2026-10-27)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 # [6.117.0](https://github.com/budgie-at/budgie/compare/v6.116.4...v6.117.0) (2026-10-26)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 ## [6.116.2](https://github.com/budgie-at/budgie/compare/v6.116.1...v6.116.2) (2026-10-26)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 # [6.116.0](https://github.com/budgie-at/budgie/compare/v6.115.10...v6.116.0) (2026-10-26)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 ## [6.115.9](https://github.com/budgie-at/budgie/compare/v6.115.8...v6.115.9) (2026-10-25)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.115.8](https://github.com/budgie-at/budgie/compare/v6.115.7...v6.115.8) (2026-10-25)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 ## [6.115.5](https://github.com/budgie-at/budgie/compare/v6.115.4...v6.115.5) (2026-10-25)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.115.4](https://github.com/budgie-at/budgie/compare/v6.115.3...v6.115.4) (2026-10-24)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 # [6.110.0](https://github.com/budgie-at/budgie/compare/v6.109.2...v6.110.0) (2026-10-21)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 # [6.109.0](https://github.com/budgie-at/budgie/compare/v6.108.0...v6.109.0) (2026-10-20)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 ## [6.106.1](https://github.com/budgie-at/budgie/compare/v6.106.0...v6.106.1) (2026-10-18)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 # [6.106.0](https://github.com/budgie-at/budgie/compare/v6.105.0...v6.106.0) (2026-10-16)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 # [6.105.0](https://github.com/budgie-at/budgie/compare/v6.104.1...v6.105.0) (2026-10-16)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 # [6.104.0](https://github.com/budgie-at/budgie/compare/v6.103.13...v6.104.0) (2026-10-15)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 ## [6.103.4](https://github.com/budgie-at/budgie/compare/v6.103.3...v6.103.4) (2026-10-14)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.103.3](https://github.com/budgie-at/budgie/compare/v6.103.2...v6.103.3) (2026-10-13)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 ## [6.103.1](https://github.com/budgie-at/budgie/compare/v6.103.0...v6.103.1) (2026-10-13)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 # [6.103.0](https://github.com/budgie-at/budgie/compare/v6.102.0...v6.103.0) (2026-10-13)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 ## [6.100.7](https://github.com/budgie-at/budgie/compare/v6.100.6...v6.100.7) (2026-10-12)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.100.2](https://github.com/budgie-at/budgie/compare/v6.100.1...v6.100.2) (2026-10-11)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 # [6.99.0](https://github.com/budgie-at/budgie/compare/v6.98.0...v6.99.0) (2026-10-09)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.96.1](https://github.com/budgie-at/budgie/compare/v6.96.0...v6.96.1) (2026-10-08)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 ## [6.94.3](https://github.com/budgie-at/budgie/compare/v6.94.2...v6.94.3) (2026-10-07)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.94.2](https://github.com/budgie-at/budgie/compare/v6.94.1...v6.94.2) (2026-10-07)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 ## [6.94.1](https://github.com/budgie-at/budgie/compare/v6.94.0...v6.94.1) (2026-10-06)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 # [6.94.0](https://github.com/budgie-at/budgie/compare/v6.93.2...v6.94.0) (2026-10-06)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 # [6.93.0](https://github.com/budgie-at/budgie/compare/v6.92.2...v6.93.0) (2026-10-05)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.92.2](https://github.com/budgie-at/budgie/compare/v6.92.1...v6.92.2) (2026-10-04)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 # [6.92.0](https://github.com/budgie-at/budgie/compare/v6.91.2...v6.92.0) (2026-10-04)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.91.2](https://github.com/budgie-at/budgie/compare/v6.91.1...v6.91.2) (2026-10-04)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 ## [6.91.1](https://github.com/budgie-at/budgie/compare/v6.91.0...v6.91.1) (2026-10-04)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 # [6.91.0](https://github.com/budgie-at/budgie/compare/v6.90.0...v6.91.0) (2026-10-04)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 # [6.90.0](https://github.com/budgie-at/budgie/compare/v6.89.0...v6.90.0) (2026-10-04)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.88.5](https://github.com/budgie-at/budgie/compare/v6.88.4-rewrite...v6.88.5) (2026-10-03)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 ## [6.88.2](https://github.com/budgie-at/budgie/compare/v6.88.1...v6.88.2) (2026-10-02)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.87.2](https://github.com/budgie-at/budgie/compare/v6.87.1...v6.87.2) (2026-10-01)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 ## [6.86.1](https://github.com/budgie-at/budgie/compare/v6.86.0...v6.86.1) (2026-10-01)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 # [6.86.0](https://github.com/budgie-at/budgie/compare/v6.85.14...v6.86.0) (2026-09-30)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 ## [6.85.13](https://github.com/budgie-at/budgie/compare/v6.85.12...v6.85.13) (2026-09-29)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.85.11](https://github.com/budgie-at/budgie/compare/v6.85.10...v6.85.11) (2026-09-29)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 ## [6.85.10](https://github.com/budgie-at/budgie/compare/v6.85.9...v6.85.10) (2026-09-29)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.85.6](https://github.com/budgie-at/budgie/compare/v6.85.5...v6.85.6) (2026-09-28)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 ## [6.85.2](https://github.com/budgie-at/budgie/compare/v6.85.1...v6.85.2) (2026-09-28)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.85.1](https://github.com/budgie-at/budgie/compare/v6.85.0...v6.85.1) (2026-09-28)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 # [6.85.0](https://github.com/budgie-at/budgie/compare/v6.84.3...v6.85.0) (2026-09-28)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.84.3](https://github.com/budgie-at/budgie/compare/v6.84.2...v6.84.3) (2026-09-27)
+
 
 ### Bug Fixes
 
-- **app:** do not persist a translation from an interrupted completion ([4196f8a](https://github.com/budgie-at/budgie/commit/4196f8a9f0ab3dff20cf6ab8f6c0e5b4b0a4ed43))
+* **app:** do not persist a translation from an interrupted completion ([4196f8a](https://github.com/budgie-at/budgie/commit/4196f8a9f0ab3dff20cf6ab8f6c0e5b4b0a4ed43))
+
+
+
+
 
 # [6.79.0](https://github.com/budgie-at/budgie/compare/v6.78.2...v6.79.0) (2026-09-26)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.78.1](https://github.com/budgie-at/budgie/compare/v6.78.0...v6.78.1) (2026-09-25)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 # [6.78.0](https://github.com/budgie-at/budgie/compare/v6.77.0...v6.78.0) (2026-09-24)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.75.2](https://github.com/budgie-at/budgie/compare/v6.75.1...v6.75.2) (2026-09-23)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 # [6.74.0](https://github.com/budgie-at/budgie/compare/v6.73.1...v6.74.0) (2026-09-22)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 # [6.72.0](https://github.com/budgie-at/budgie/compare/v6.71.2...v6.72.0) (2026-09-21)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 # [6.71.0](https://github.com/budgie-at/budgie/compare/v6.70.0...v6.71.0) (2026-09-17)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.67.16](https://github.com/budgie-at/budgie/compare/v6.67.15...v6.67.16) (2026-09-16)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 ## [6.67.6](https://github.com/budgie-at/budgie/compare/v6.67.5...v6.67.6) (2026-09-16)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.67.3](https://github.com/budgie-at/budgie/compare/v6.67.2...v6.67.3) (2026-09-16)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 # [6.65.0](https://github.com/budgie-at/budgie/compare/v6.64.4...v6.65.0) (2026-09-15)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.64.2](https://github.com/budgie-at/budgie/compare/v6.64.1...v6.64.2) (2026-09-15)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 # [6.64.0](https://github.com/budgie-at/budgie/compare/v6.63.2...v6.64.0) (2026-09-15)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.63.1](https://github.com/budgie-at/budgie/compare/v6.63.0...v6.63.1) (2026-09-14)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 # [6.60.0](https://github.com/budgie-at/budgie/compare/v6.59.1...v6.60.0) (2026-09-14)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.54.1](https://github.com/budgie-at/budgie/compare/v6.54.0...v6.54.1) (2026-09-13)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 ## [6.53.2](https://github.com/budgie-at/budgie/compare/v6.53.1...v6.53.2) (2026-09-13)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 # [6.53.0](https://github.com/budgie-at/budgie/compare/v6.52.0...v6.53.0) (2026-09-12)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 # [6.52.0](https://github.com/budgie-at/budgie/compare/v6.51.1...v6.52.0) (2026-09-12)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 # [6.51.0](https://github.com/budgie-at/budgie/compare/v6.50.1...v6.51.0) (2026-09-12)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 ## [6.41.4](https://github.com/budgie-at/budgie/compare/v6.41.3...v6.41.4) (2026-09-10)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.41.1](https://github.com/budgie-at/budgie/compare/v6.41.0...v6.41.1) (2026-09-08)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 ## [6.22.1](https://github.com/budgie-at/budgie/compare/v6.22.0...v6.22.1) (2026-09-07)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.21.5](https://github.com/budgie-at/budgie/compare/v6.21.4...v6.21.5) (2026-09-07)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 ## [6.10.2](https://github.com/budgie-at/budgie/compare/v6.10.1...v6.10.2) (2026-09-04)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.5.2](https://github.com/budgie-at/budgie/compare/v6.5.1...v6.5.2) (2026-09-01)
 
 **Note:** Version bump only for package @budgie/ai
+
+
+
+
 
 ## [6.5.1](https://github.com/budgie-at/budgie/compare/v6.5.0...v6.5.1) (2026-08-30)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 ## [6.4.2](https://github.com/budgie-at/budgie/compare/v6.4.1...v6.4.2) (2026-08-29)
 
 **Note:** Version bump only for package @budgie/ai
 
+
+
+
+
 # [6.4.0](https://github.com/budgie-at/budgie/compare/v6.3.0...v6.4.0) (2026-08-28)
+
 
 ### Features
 
-- add Binance account sync with bank↔P2P consolidation ([#561](https://github.com/budgie-at/budgie/issues/561)) ([92fea35](https://github.com/budgie-at/budgie/commit/92fea35f9073011caebda427451de54ccff0cad1))
+* add Binance account sync with bank↔P2P consolidation ([#561](https://github.com/budgie-at/budgie/issues/561)) ([92fea35](https://github.com/budgie-at/budgie/commit/92fea35f9073011caebda427451de54ccff0cad1))
+
+
+
+
 
 # [6.3.0](https://github.com/budgie-at/budgie/compare/v6.2.1...v6.3.0) (2026-08-26)
 

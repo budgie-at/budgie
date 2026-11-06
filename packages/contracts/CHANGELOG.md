@@ -7,655 +7,1004 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Performance Improvements
 
-- run Effect rules in oxlint on tsrs, enable them all, parallelize tests ([#1956](https://github.com/budgie-at/budgie/issues/1956)) ([53a5170](https://github.com/budgie-at/budgie/commit/53a5170978e14a31cb6fc22da657851a42b592ad)), closes [#1883](https://github.com/budgie-at/budgie/issues/1883)
+* run Effect rules in oxlint on tsrs, enable them all, parallelize tests ([#1956](https://github.com/budgie-at/budgie/issues/1956)) ([53a5170](https://github.com/budgie-at/budgie/commit/53a5170978e14a31cb6fc22da657851a42b592ad)), closes [#1883](https://github.com/budgie-at/budgie/issues/1883)
+
 
 # [6.163.0](https://github.com/budgie-at/budgie/compare/v6.162.1...v6.163.0) (2026-11-05)
 
 ### Features
 
-- **sync:** add on-device Enable Banking sync for EU banks ([#1949](https://github.com/budgie-at/budgie/issues/1949)) ([e507c18](https://github.com/budgie-at/budgie/commit/e507c181af8761113dd8acf76d116c047b0d39e6)), closes [#1910](https://github.com/budgie-at/budgie/issues/1910) [#1914](https://github.com/budgie-at/budgie/issues/1914)
+* **sync:** add on-device Enable Banking sync for EU banks ([#1949](https://github.com/budgie-at/budgie/issues/1949)) ([e507c18](https://github.com/budgie-at/budgie/commit/e507c181af8761113dd8acf76d116c047b0d39e6)), closes [#1910](https://github.com/budgie-at/budgie/issues/1910) [#1914](https://github.com/budgie-at/budgie/issues/1914)
+
 
 ## [6.162.1](https://github.com/budgie-at/budgie/compare/v6.162.0...v6.162.1) (2026-11-05)
 
 ### Bug Fixes
 
-- **ledger:** match installment parts paid early, twice or in multiples ([d76a9dd](https://github.com/budgie-at/budgie/commit/d76a9dd0d4617f71a367e5fb2b7f34e1f53eec1a))
+* **ledger:** match installment parts paid early, twice or in multiples ([d76a9dd](https://github.com/budgie-at/budgie/commit/d76a9dd0d4617f71a367e5fb2b7f34e1f53eec1a))
+
 
 ## [6.152.1](https://github.com/budgie-at/budgie/compare/v6.152.0...v6.152.1) (2026-11-04)
 
 ### Bug Fixes
 
-- shrink backups by compacting rates and embeddings ([#1935](https://github.com/budgie-at/budgie/issues/1935)) ([635b32b](https://github.com/budgie-at/budgie/commit/635b32bc1b4c22bb9e02fd4eac348ee4522d0a0b))
+* shrink backups by compacting rates and embeddings ([#1935](https://github.com/budgie-at/budgie/issues/1935)) ([635b32b](https://github.com/budgie-at/budgie/commit/635b32bc1b4c22bb9e02fd4eac348ee4522d0a0b))
+
 
 # [6.148.0](https://github.com/budgie-at/budgie/compare/v6.147.1...v6.148.0) (2026-11-02)
 
 ### Features
 
-- **app:** polish the institution page status, crypto amounts and labels ([b2f07f9](https://github.com/budgie-at/budgie/commit/b2f07f996ce6d9d3beee95fdd198ed30cdb1d62e))
+* **app:** polish the institution page status, crypto amounts and labels ([b2f07f9](https://github.com/budgie-at/budgie/commit/b2f07f996ce6d9d3beee95fdd198ed30cdb1d62e))
+
 
 ## [6.147.1](https://github.com/budgie-at/budgie/compare/v6.147.0...v6.147.1) (2026-11-02)
 
 ### Bug Fixes
 
-- **ledger:** self-heal debt payment categories after sync and consolidation ([#1866](https://github.com/budgie-at/budgie/issues/1866)) ([ebc501b](https://github.com/budgie-at/budgie/commit/ebc501bdcd68f76f7dc6f25a808fe453b2b5cdee))
+* **ledger:** self-heal debt payment categories after sync and consolidation ([#1866](https://github.com/budgie-at/budgie/issues/1866)) ([ebc501b](https://github.com/budgie-at/budgie/commit/ebc501bdcd68f76f7dc6f25a808fe453b2b5cdee))
+
 
 # [6.147.0](https://github.com/budgie-at/budgie/compare/v6.146.1...v6.147.0) (2026-11-02)
 
 ### Bug Fixes
 
-- **market:** value crypto rows with the net-worth exchange rate ([c74b1d0](https://github.com/budgie-at/budgie/commit/c74b1d02dc2f1e46d83bbe9458a470678ef17438))
+* **market:** value crypto rows with the net-worth exchange rate ([c74b1d0](https://github.com/budgie-at/budgie/commit/c74b1d02dc2f1e46d83bbe9458a470678ef17438))
+
 
 # [6.145.0](https://github.com/budgie-at/budgie/compare/v6.144.1...v6.145.0) (2026-11-02)
 
 ### Features
 
-- **app:** polish archived and hidden accounts screens ([#1853](https://github.com/budgie-at/budgie/issues/1853)) ([8c0aea4](https://github.com/budgie-at/budgie/commit/8c0aea4b78043510999bc7d084e7315327c5fa5d))
+* **app:** polish archived and hidden accounts screens ([#1853](https://github.com/budgie-at/budgie/issues/1853)) ([8c0aea4](https://github.com/budgie-at/budgie/commit/8c0aea4b78043510999bc7d084e7315327c5fa5d))
+
 
 ## [6.144.1](https://github.com/budgie-at/budgie/compare/v6.144.0...v6.144.1) (2026-11-01)
 
 ### Bug Fixes
 
-- **app:** compute runway burn with robust one-off trimming ([#1856](https://github.com/budgie-at/budgie/issues/1856)) ([c7d9f33](https://github.com/budgie-at/budgie/commit/c7d9f33fd4e87496deacda3d992ced8e0b55e403))
+* **app:** compute runway burn with robust one-off trimming ([#1856](https://github.com/budgie-at/budgie/issues/1856)) ([c7d9f33](https://github.com/budgie-at/budgie/commit/c7d9f33fd4e87496deacda3d992ced8e0b55e403))
+
 
 # [6.141.0](https://github.com/budgie-at/budgie/compare/v6.140.1...v6.141.0) (2026-11-01)
 
 ### Features
 
-- **app:** polish categories and tags to match the settings and account flows ([#1849](https://github.com/budgie-at/budgie/issues/1849)) ([338b53f](https://github.com/budgie-at/budgie/commit/338b53f7ebfa2c62e7de3d41f319a7934c8fee10))
+* **app:** polish categories and tags to match the settings and account flows ([#1849](https://github.com/budgie-at/budgie/issues/1849)) ([338b53f](https://github.com/budgie-at/budgie/commit/338b53f7ebfa2c62e7de3d41f319a7934c8fee10))
+
 
 ## [6.140.1](https://github.com/budgie-at/budgie/compare/v6.140.0...v6.140.1) (2026-11-01)
 
 ### Bug Fixes
 
-- address receipt merchant review findings ([2210793](https://github.com/budgie-at/budgie/commit/221079378a32253c4e129c5f2fcf7d4f805adfcf))
-- **app:** derive receipt merchant from receipt evidence and category from merchant memory ([02f9e44](https://github.com/budgie-at/budgie/commit/02f9e445c20ece025e44c9e30e0cb7d51a7ce5ec))
+* address receipt merchant review findings ([2210793](https://github.com/budgie-at/budgie/commit/221079378a32253c4e129c5f2fcf7d4f805adfcf))
+* **app:** derive receipt merchant from receipt evidence and category from merchant memory ([02f9e44](https://github.com/budgie-at/budgie/commit/02f9e445c20ece025e44c9e30e0cb7d51a7ce5ec))
+
 
 # [6.140.0](https://github.com/budgie-at/budgie/compare/v6.139.2...v6.140.0) (2026-11-01)
 
 ### Features
 
-- **contracts:** add budget kind, limit source, cadences, auto-tune and fund-covered columns ([d52b494](https://github.com/budgie-at/budgie/commit/d52b494734270586a1bd4453d52184a419ecc45b))
-- **contracts:** add sinking fund and limit change tables ([9093d2a](https://github.com/budgie-at/budgie/commit/9093d2aa5f31330099f9e49e62db7bcbc0f4f860))
+* **contracts:** add budget kind, limit source, cadences, auto-tune and fund-covered columns ([d52b494](https://github.com/budgie-at/budgie/commit/d52b494734270586a1bd4453d52184a419ecc45b))
+* **contracts:** add sinking fund and limit change tables ([9093d2a](https://github.com/budgie-at/budgie/commit/9093d2aa5f31330099f9e49e62db7bcbc0f4f860))
+
 
 # [6.138.0](https://github.com/budgie-at/budgie/compare/v6.137.1...v6.138.0) (2026-10-31)
 
 ### Bug Fixes
 
-- **contracts:** allocate statistics refunds in cents per entry and category ([b0e5078](https://github.com/budgie-at/budgie/commit/b0e50780c1b359470e4a0490660f9468668d830c))
-- **contracts:** book converted statistics entries at cents ([eb0113a](https://github.com/budgie-at/budgie/commit/eb0113a107179a190f904a7224f2b93f7a35cb7f))
-- **contracts:** drop zero-net rows from statistics rankings ([abcf36b](https://github.com/budgie-at/budgie/commit/abcf36b2ec64317e75f77a2c44de2b7041cf5801))
-- explain refunds netted inside the period ([805ad75](https://github.com/budgie-at/budgie/commit/805ad75c5fd0edaf90484a6ab3115d41b86787c1))
+* **contracts:** allocate statistics refunds in cents per entry and category ([b0e5078](https://github.com/budgie-at/budgie/commit/b0e50780c1b359470e4a0490660f9468668d830c))
+* **contracts:** book converted statistics entries at cents ([eb0113a](https://github.com/budgie-at/budgie/commit/eb0113a107179a190f904a7224f2b93f7a35cb7f))
+* **contracts:** drop zero-net rows from statistics rankings ([abcf36b](https://github.com/budgie-at/budgie/commit/abcf36b2ec64317e75f77a2c44de2b7041cf5801))
+* explain refunds netted inside the period ([805ad75](https://github.com/budgie-at/budgie/commit/805ad75c5fd0edaf90484a6ab3115d41b86787c1))
 
 ### Features
 
-- **app:** polish category and tag statistics ([d3196fb](https://github.com/budgie-at/budgie/commit/d3196fbddf42d1fa9a8f4877753cb3ed04fc2a66))
-- **contracts:** report refunds netted against purchases outside the period ([57bc264](https://github.com/budgie-at/budgie/commit/57bc2641a33ba49aea3c03092f91c452eccdd1a6))
+* **app:** polish category and tag statistics ([d3196fb](https://github.com/budgie-at/budgie/commit/d3196fbddf42d1fa9a8f4877753cb3ed04fc2a66))
+* **contracts:** report refunds netted against purchases outside the period ([57bc264](https://github.com/budgie-at/budgie/commit/57bc2641a33ba49aea3c03092f91c452eccdd1a6))
+
 
 # [6.134.0](https://github.com/budgie-at/budgie/compare/v6.133.0...v6.134.0) (2026-10-31)
 
 ### Bug Fixes
 
-- **app:** restore similar-transaction stats query to main ([3e143f0](https://github.com/budgie-at/budgie/commit/3e143f02e7f3bbaca071a1649c247c76982d5dca))
-- **contracts:** include current transaction and anchor unpaid plans ([228633b](https://github.com/budgie-at/budgie/commit/228633b9022f1bc2f2494876f89147185cedcd6a))
+* **app:** restore similar-transaction stats query to main ([3e143f0](https://github.com/budgie-at/budgie/commit/3e143f02e7f3bbaca071a1649c247c76982d5dca))
+* **contracts:** include current transaction and anchor unpaid plans ([228633b](https://github.com/budgie-at/budgie/commit/228633b9022f1bc2f2494876f89147185cedcd6a))
+
 
 # [6.128.0](https://github.com/budgie-at/budgie/compare/v6.127.0...v6.128.0) (2026-10-30)
 
 ### Bug Fixes
 
-- **app:** ledger-accurate daily totals ([874e89e](https://github.com/budgie-at/budgie/commit/874e89eb186b533c0b2d79e757d404481b7b8237))
+* **app:** ledger-accurate daily totals ([874e89e](https://github.com/budgie-at/budgie/commit/874e89eb186b533c0b2d79e757d404481b7b8237))
+
 
 # [6.127.0](https://github.com/budgie-at/budgie/compare/v6.126.5...v6.127.0) (2026-10-30)
 
 ### Bug Fixes
 
-- **sync:** harden Binance mapper parsing, windows, earn totals and per-integration dedupe ([f19dbea](https://github.com/budgie-at/budgie/commit/f19dbea549ae7f455ffed56779214b465c799c59))
-- **sync:** keep deleted Binance data deleted and resolve renamed assets to one canonical account ([111f19c](https://github.com/budgie-at/budgie/commit/111f19c6e3b7226f874e7673e668f3173129d8aa))
-- **sync:** resume every Binance history backfill across deferred runs ([e25ada6](https://github.com/budgie-at/budgie/commit/e25ada6f7568de03b4719b30eae9320ff457c0c9))
-- **sync:** support multiple Binance keys and verify the account on key rotation ([403c474](https://github.com/budgie-at/budgie/commit/403c4742e5535d7c36242ea2398f81d984cb9cb8))
-- **sync:** walk Binance fiat history to the lookback in resumable chunks and repair imported fiat amounts once ([e39cc9a](https://github.com/budgie-at/budgie/commit/e39cc9ac6e6625a9b6421ab0c78cf7937accd814))
+* **sync:** harden Binance mapper parsing, windows, earn totals and per-integration dedupe ([f19dbea](https://github.com/budgie-at/budgie/commit/f19dbea549ae7f455ffed56779214b465c799c59))
+* **sync:** keep deleted Binance data deleted and resolve renamed assets to one canonical account ([111f19c](https://github.com/budgie-at/budgie/commit/111f19c6e3b7226f874e7673e668f3173129d8aa))
+* **sync:** resume every Binance history backfill across deferred runs ([e25ada6](https://github.com/budgie-at/budgie/commit/e25ada6f7568de03b4719b30eae9320ff457c0c9))
+* **sync:** support multiple Binance keys and verify the account on key rotation ([403c474](https://github.com/budgie-at/budgie/commit/403c4742e5535d7c36242ea2398f81d984cb9cb8))
+* **sync:** walk Binance fiat history to the lookback in resumable chunks and repair imported fiat amounts once ([e39cc9a](https://github.com/budgie-at/budgie/commit/e39cc9ac6e6625a9b6421ab0c78cf7937accd814))
 
 ### Features
 
-- **app:** explain Binance sync failures with translated messages ([51e58e0](https://github.com/budgie-at/budgie/commit/51e58e09c179891d20760cea15086671c099b73f))
-- **sync:** store a stable error code with the last sync failure ([fdb9305](https://github.com/budgie-at/budgie/commit/fdb930568472c3f4f56df40d2f4a4ca0e1862d84))
+* **app:** explain Binance sync failures with translated messages ([51e58e0](https://github.com/budgie-at/budgie/commit/51e58e09c179891d20760cea15086671c099b73f))
+* **sync:** store a stable error code with the last sync failure ([fdb9305](https://github.com/budgie-at/budgie/commit/fdb930568472c3f4f56df40d2f4a4ca0e1862d84))
+
 
 ## [6.126.5](https://github.com/budgie-at/budgie/compare/v6.126.4...v6.126.5) (2026-10-29)
 
 ### Bug Fixes
 
-- keep debt-linked payments out of the categorize inbox ([8e9a0a6](https://github.com/budgie-at/budgie/commit/8e9a0a6fe2188a14250dc827be4f99870444a1ec))
+* keep debt-linked payments out of the categorize inbox ([8e9a0a6](https://github.com/budgie-at/budgie/commit/8e9a0a6fe2188a14250dc827be4f99870444a1ec))
+
 
 # [6.126.0](https://github.com/budgie-at/budgie/compare/v6.125.3...v6.126.0) (2026-10-29)
 
 ### Features
 
-- **budget:** carry leftover budget into the next period per category ([3f20c92](https://github.com/budgie-at/budgie/commit/3f20c9220881d7733ff52cdbb4b2f0d7e2dcc63b)), closes [#1720](https://github.com/budgie-at/budgie/issues/1720)
-- **budget:** record closed-period history with past months chart ([04ea9a9](https://github.com/budgie-at/budgie/commit/04ea9a9cd1025bbea2afac73ef9180e28c6f7a96)), closes [#1719](https://github.com/budgie-at/budgie/issues/1719)
+* **budget:** carry leftover budget into the next period per category ([3f20c92](https://github.com/budgie-at/budgie/commit/3f20c9220881d7733ff52cdbb4b2f0d7e2dcc63b)), closes [#1720](https://github.com/budgie-at/budgie/issues/1720)
+* **budget:** record closed-period history with past months chart ([04ea9a9](https://github.com/budgie-at/budgie/commit/04ea9a9cd1025bbea2afac73ef9180e28c6f7a96)), closes [#1719](https://github.com/budgie-at/budgie/issues/1719)
+
 
 ## [6.125.2](https://github.com/budgie-at/budgie/compare/v6.125.1...v6.125.2) (2026-10-28)
 
 ### Bug Fixes
 
-- **sync:** harden binance sync correctness, error handling and key security ([#1769](https://github.com/budgie-at/budgie/issues/1769)) ([dd07510](https://github.com/budgie-at/budgie/commit/dd0751057393fb013ad6d25b681b137d60733056))
+* **sync:** harden binance sync correctness, error handling and key security ([#1769](https://github.com/budgie-at/budgie/issues/1769)) ([dd07510](https://github.com/budgie-at/budgie/commit/dd0751057393fb013ad6d25b681b137d60733056))
+
 
 # [6.124.0](https://github.com/budgie-at/budgie/compare/v6.123.1...v6.124.0) (2026-10-28)
 
 ### Bug Fixes
 
-- **contracts:** add id tiebreak to statistics transactions ordering ([c717359](https://github.com/budgie-at/budgie/commit/c7173595daede82fac7e6ea13c1d2d1056d67d69))
+* **contracts:** add id tiebreak to statistics transactions ordering ([c717359](https://github.com/budgie-at/budgie/commit/c7173595daede82fac7e6ea13c1d2d1056d67d69))
 
 ### Features
 
-- **contracts:** add narrow settings reads for default instrument and account ([b0e5893](https://github.com/budgie-at/budgie/commit/b0e58931453f8f7acf362eb7cc6ab9bb2f207c3a))
+* **contracts:** add narrow settings reads for default instrument and account ([b0e5893](https://github.com/budgie-at/budgie/commit/b0e58931453f8f7acf362eb7cc6ab9bb2f207c3a))
 
 ### Performance Improvements
 
-- memoize layer composition by upgrading effect to 4.0.6 ([02a76c6](https://github.com/budgie-at/budgie/commit/02a76c64e302ab39db47954f8e6cad612736691d))
+* memoize layer composition by upgrading effect to 4.0.6 ([02a76c6](https://github.com/budgie-at/budgie/commit/02a76c64e302ab39db47954f8e6cad612736691d))
+
 
 # [6.123.0](https://github.com/budgie-at/budgie/compare/v6.122.0...v6.123.0) (2026-10-28)
 
 ### Bug Fixes
 
-- **consolidation:** keep receipt on surviving transaction ([a554e4a](https://github.com/budgie-at/budgie/commit/a554e4a1cb900d42066358ea640e35420924a200))
-- **ledger:** never create a receipt expense on an archived account ([9a82850](https://github.com/budgie-at/budgie/commit/9a828509c8cbe076033be6b3372e2a05a684e5b9))
-- **ledger:** rescan a receipt whose transaction was deleted ([51cbe58](https://github.com/budgie-at/budgie/commit/51cbe583a316d07d48de39a5bcfd54576fa823a0))
+* **consolidation:** keep receipt on surviving transaction ([a554e4a](https://github.com/budgie-at/budgie/commit/a554e4a1cb900d42066358ea640e35420924a200))
+* **ledger:** never create a receipt expense on an archived account ([9a82850](https://github.com/budgie-at/budgie/commit/9a828509c8cbe076033be6b3372e2a05a684e5b9))
+* **ledger:** rescan a receipt whose transaction was deleted ([51cbe58](https://github.com/budgie-at/budgie/commit/51cbe583a316d07d48de39a5bcfd54576fa823a0))
 
 ### Features
 
-- **contracts:** add RECEIPT external source ([dae6908](https://github.com/budgie-at/budgie/commit/dae6908303230e0fda9ecad124503994d9b3a23a))
-- **contracts:** add transaction_receipts table ([f769024](https://github.com/budgie-at/budgie/commit/f76902402a1c0f015047d80da72e7ef38782f2fe))
-- **contracts:** add TransactionReceiptRepository ([deb9299](https://github.com/budgie-at/budgie/commit/deb9299410bd88982b39d2b3c5ae7676a6d59a51))
-- **contracts:** expose transaction receipt relation ([a829b5b](https://github.com/budgie-at/budgie/commit/a829b5b2d68918a8e22718ba26dabd938720730e))
-- **ledger:** match scanned receipts to transactions ([22ee1c2](https://github.com/budgie-at/budgie/commit/22ee1c23fc9e9df91c217971e440d1c8a728e340))
+* **contracts:** add RECEIPT external source ([dae6908](https://github.com/budgie-at/budgie/commit/dae6908303230e0fda9ecad124503994d9b3a23a))
+* **contracts:** add transaction_receipts table ([f769024](https://github.com/budgie-at/budgie/commit/f76902402a1c0f015047d80da72e7ef38782f2fe))
+* **contracts:** add TransactionReceiptRepository ([deb9299](https://github.com/budgie-at/budgie/commit/deb9299410bd88982b39d2b3c5ae7676a6d59a51))
+* **contracts:** expose transaction receipt relation ([a829b5b](https://github.com/budgie-at/budgie/commit/a829b5b2d68918a8e22718ba26dabd938720730e))
+* **ledger:** match scanned receipts to transactions ([22ee1c2](https://github.com/budgie-at/budgie/commit/22ee1c23fc9e9df91c217971e440d1c8a728e340))
+
 
 ## [6.121.2](https://github.com/budgie-at/budgie/compare/v6.121.1...v6.121.2) (2026-10-27)
 
 ### Bug Fixes
 
-- **app:** prevent analytics from showing incomplete history ([#1689](https://github.com/budgie-at/budgie/issues/1689)) ([6514cc9](https://github.com/budgie-at/budgie/commit/6514cc9fb9a4606adddf7cb73204a77a1b200443))
+* **app:** prevent analytics from showing incomplete history ([#1689](https://github.com/budgie-at/budgie/issues/1689)) ([6514cc9](https://github.com/budgie-at/budgie/commit/6514cc9fb9a4606adddf7cb73204a77a1b200443))
+
 
 # [6.121.0](https://github.com/budgie-at/budgie/compare/v6.120.0...v6.121.0) (2026-10-27)
 
 ### Bug Fixes
 
-- **app:** adapt Wallet shortcuts to main ([308d906](https://github.com/budgie-at/budgie/commit/308d9066308fadec72bc29e6f11e31928c0b4661))
-- **app:** keep Wallet duplicates parked after the first capture merges ([8d4fdd8](https://github.com/budgie-at/budgie/commit/8d4fdd8cdbb1e5c3157299ae0501efdeef0d2109))
-- **contracts:** ignore moved duplicate entries ([d95e945](https://github.com/budgie-at/budgie/commit/d95e945a0f4ea822ced2c79e0f27905a15d74abf))
+* **app:** adapt Wallet shortcuts to main ([308d906](https://github.com/budgie-at/budgie/commit/308d9066308fadec72bc29e6f11e31928c0b4661))
+* **app:** keep Wallet duplicates parked after the first capture merges ([8d4fdd8](https://github.com/budgie-at/budgie/commit/8d4fdd8cdbb1e5c3157299ae0501efdeef0d2109))
+* **contracts:** ignore moved duplicate entries ([d95e945](https://github.com/budgie-at/budgie/commit/d95e945a0f4ea822ced2c79e0f27905a15d74abf))
 
 ### Features
 
-- **consolidation:** let bank rows replace Apple Pay captures ([e7e2d24](https://github.com/budgie-at/budgie/commit/e7e2d240129e33f2fddf8937b20d9159315b05d7))
-- **contracts:** identify Apple Pay automation captures ([e6377d7](https://github.com/budgie-at/budgie/commit/e6377d788749d973a6ca9bb97e0ec5d5d6e60b1a))
+* **consolidation:** let bank rows replace Apple Pay captures ([e7e2d24](https://github.com/budgie-at/budgie/commit/e7e2d240129e33f2fddf8937b20d9159315b05d7))
+* **contracts:** identify Apple Pay automation captures ([e6377d7](https://github.com/budgie-at/budgie/commit/e6377d788749d973a6ca9bb97e0ec5d5d6e60b1a))
+
 
 # [6.120.0](https://github.com/budgie-at/budgie/compare/v6.119.1...v6.120.0) (2026-10-27)
 
 ### Features
 
-- one Monobank API key per account group ([f8efe33](https://github.com/budgie-at/budgie/commit/f8efe33d9fcc4bd7a2cba4cd9e628b3a69ed29f1)), closes [#1632](https://github.com/budgie-at/budgie/issues/1632)
+* one Monobank API key per account group ([f8efe33](https://github.com/budgie-at/budgie/commit/f8efe33d9fcc4bd7a2cba4cd9e628b3a69ed29f1)), closes [#1632](https://github.com/budgie-at/budgie/issues/1632)
+
 
 # [6.117.0](https://github.com/budgie-at/budgie/compare/v6.116.4...v6.117.0) (2026-10-26)
 
 ### Bug Fixes
 
-- treat fee entries as outflows wherever entry direction is displayed ([26dddc0](https://github.com/budgie-at/budgie/commit/26dddc0f0d100a5b01b230bf9968cbe26566ee5e))
+* treat fee entries as outflows wherever entry direction is displayed ([26dddc0](https://github.com/budgie-at/budgie/commit/26dddc0f0d100a5b01b230bf9968cbe26566ee5e))
 
 ### Features
 
-- show initial history import progress inline per bank ([356ef48](https://github.com/budgie-at/budgie/commit/356ef48a389d1d854607632892118dee79c2c1f3))
+* show initial history import progress inline per bank ([356ef48](https://github.com/budgie-at/budgie/commit/356ef48a389d1d854607632892118dee79c2c1f3))
+
 
 ## [6.116.2](https://github.com/budgie-at/budgie/compare/v6.116.1...v6.116.2) (2026-10-26)
 
 **Note:** Version bump only for package @budgie/contracts
 
+
+
+
+
 # [6.116.0](https://github.com/budgie-at/budgie/compare/v6.115.10...v6.116.0) (2026-10-26)
 
 ### Features
 
-- external accounts, automatic card discovery and reissue merge ([#1672](https://github.com/budgie-at/budgie/issues/1672)) ([176b4ed](https://github.com/budgie-at/budgie/commit/176b4ed78e84d6f5eb52ddab517c867b0387e5cb)), closes [#1664](https://github.com/budgie-at/budgie/issues/1664) [#1666](https://github.com/budgie-at/budgie/issues/1666) [#1667](https://github.com/budgie-at/budgie/issues/1667)
+* external accounts, automatic card discovery and reissue merge ([#1672](https://github.com/budgie-at/budgie/issues/1672)) ([176b4ed](https://github.com/budgie-at/budgie/commit/176b4ed78e84d6f5eb52ddab517c867b0387e5cb)), closes [#1664](https://github.com/budgie-at/budgie/issues/1664) [#1666](https://github.com/budgie-at/budgie/issues/1666) [#1667](https://github.com/budgie-at/budgie/issues/1667)
+
 
 ## [6.115.9](https://github.com/budgie-at/budgie/compare/v6.115.8...v6.115.9) (2026-10-25)
 
 **Note:** Version bump only for package @budgie/contracts
 
+
+
+
+
 ## [6.115.5](https://github.com/budgie-at/budgie/compare/v6.115.4...v6.115.5) (2026-10-25)
 
 ### Bug Fixes
 
-- correct bank-fee categorization and auto-move ATM withdrawals to cash ([#1659](https://github.com/budgie-at/budgie/issues/1659)) ([f0c5964](https://github.com/budgie-at/budgie/commit/f0c5964c98b369377d25429a90f40afdeb92ee6a))
+* correct bank-fee categorization and auto-move ATM withdrawals to cash ([#1659](https://github.com/budgie-at/budgie/issues/1659)) ([f0c5964](https://github.com/budgie-at/budgie/commit/f0c5964c98b369377d25429a90f40afdeb92ee6a))
+
 
 ## [6.115.4](https://github.com/budgie-at/budgie/compare/v6.115.3...v6.115.4) (2026-10-24)
 
 ### Bug Fixes
 
-- correct runway cash-flow maths and merge manual bank duplicates ([#1662](https://github.com/budgie-at/budgie/issues/1662)) ([45bd478](https://github.com/budgie-at/budgie/commit/45bd4785f10c3f37a2b3643625ab2dcf42732f8d))
+* correct runway cash-flow maths and merge manual bank duplicates ([#1662](https://github.com/budgie-at/budgie/issues/1662)) ([45bd478](https://github.com/budgie-at/budgie/commit/45bd4785f10c3f37a2b3643625ab2dcf42732f8d))
+
 
 # [6.110.0](https://github.com/budgie-at/budgie/compare/v6.109.2...v6.110.0) (2026-10-21)
 
 ### Bug Fixes
 
-- **sync:** drop the reconciliation anchor when a full resync starts ([4f53094](https://github.com/budgie-at/budgie/commit/4f53094b20be8a4e896ad70cae1f2844e2cfb791))
+* **sync:** drop the reconciliation anchor when a full resync starts ([4f53094](https://github.com/budgie-at/budgie/commit/4f53094b20be8a4e896ad70cae1f2844e2cfb791))
 
 ### Features
 
-- store provider balances and bank reconciliation anchors ([5e98dc4](https://github.com/budgie-at/budgie/commit/5e98dc45f481e5cff567994434c3cd2fbce490db))
-- **sync:** apply bank balance corrections automatically ([c12031a](https://github.com/budgie-at/budgie/commit/c12031af32d1b2ef12d0dc66c28a4acf4d5cb4ac))
-- **sync:** reconcile Monobank balances against the bank after forward sync ([54df93d](https://github.com/budgie-at/budgie/commit/54df93d82d7cef2e3db6bf1e5607ca4218e2d5a7))
+* store provider balances and bank reconciliation anchors ([5e98dc4](https://github.com/budgie-at/budgie/commit/5e98dc45f481e5cff567994434c3cd2fbce490db))
+* **sync:** apply bank balance corrections automatically ([c12031a](https://github.com/budgie-at/budgie/commit/c12031af32d1b2ef12d0dc66c28a4acf4d5cb4ac))
+* **sync:** reconcile Monobank balances against the bank after forward sync ([54df93d](https://github.com/budgie-at/budgie/commit/54df93d82d7cef2e3db6bf1e5607ca4218e2d5a7))
+
 
 # [6.109.0](https://github.com/budgie-at/budgie/compare/v6.108.0...v6.109.0) (2026-10-20)
 
 ### Features
 
-- **app:** add controllable on-device AI downloads ([86ab4da](https://github.com/budgie-at/budgie/commit/86ab4daa1125a89339bacaadaf3c5d55d82e7422))
-- **app:** add your data screen, forgot PIN and add PIN later ([d375d3f](https://github.com/budgie-at/budgie/commit/d375d3f00807d2c5f121e06a951170f76ce8ef4e))
+* **app:** add controllable on-device AI downloads ([86ab4da](https://github.com/budgie-at/budgie/commit/86ab4daa1125a89339bacaadaf3c5d55d82e7422))
+* **app:** add your data screen, forgot PIN and add PIN later ([d375d3f](https://github.com/budgie-at/budgie/commit/d375d3f00807d2c5f121e06a951170f76ce8ef4e))
+
 
 ## [6.106.1](https://github.com/budgie-at/budgie/compare/v6.106.0...v6.106.1) (2026-10-18)
 
 **Note:** Version bump only for package @budgie/contracts
 
+
+
+
+
 # [6.106.0](https://github.com/budgie-at/budgie/compare/v6.105.0...v6.106.0) (2026-10-16)
+
 
 ### Bug Fixes
 
-- **market:** backfill historical fiat rates from ECB and revalue affected entries ([daf3146](https://github.com/budgie-at/budgie/commit/daf31464fc762c7862867207e00aece24dcc111b))
-- **market:** stop refetching a year of fiat rates for currencies the rate source does not cover ([66465f5](https://github.com/budgie-at/budgie/commit/66465f521c96ebcf2be071e0d16f9022620703b9))
+* **market:** backfill historical fiat rates from ECB and revalue affected entries ([daf3146](https://github.com/budgie-at/budgie/commit/daf31464fc762c7862867207e00aece24dcc111b))
+* **market:** stop refetching a year of fiat rates for currencies the rate source does not cover ([66465f5](https://github.com/budgie-at/budgie/commit/66465f521c96ebcf2be071e0d16f9022620703b9))
+
+
+
+
 
 # [6.105.0](https://github.com/budgie-at/budgie/compare/v6.104.1...v6.105.0) (2026-10-16)
 
+
 ### Features
 
-- **app:** manage AI features and unused downloads ([8e1f0be](https://github.com/budgie-at/budgie/commit/8e1f0bede72ff567a1d46a9a66a38af62d9e9be5))
+* **app:** manage AI features and unused downloads ([8e1f0be](https://github.com/budgie-at/budgie/commit/8e1f0bede72ff567a1d46a9a66a38af62d9e9be5))
+
+
+
+
 
 # [6.104.0](https://github.com/budgie-at/budgie/compare/v6.103.13...v6.104.0) (2026-10-15)
 
+
 ### Features
 
-- **app:** make the full Reicon catalog selectable without losing saved icons ([56aecff](https://github.com/budgie-at/budgie/commit/56aecff80ff1c2129862fb0c3174180b1bac722e))
+* **app:** make the full Reicon catalog selectable without losing saved icons ([56aecff](https://github.com/budgie-at/budgie/commit/56aecff80ff1c2129862fb0c3174180b1bac722e))
+
+
+
+
 
 ## [6.103.4](https://github.com/budgie-at/budgie/compare/v6.103.3...v6.103.4) (2026-10-14)
 
 **Note:** Version bump only for package @budgie/contracts
 
+
+
+
+
 ## [6.103.3](https://github.com/budgie-at/budgie/compare/v6.103.2...v6.103.3) (2026-10-13)
+
 
 ### Bug Fixes
 
-- **sync:** undo only ATM cash moves ([eb696b3](https://github.com/budgie-at/budgie/commit/eb696b3153713626fb69dc327cd3240babc3cdbb))
+* **sync:** undo only ATM cash moves ([eb696b3](https://github.com/budgie-at/budgie/commit/eb696b3153713626fb69dc327cd3240babc3cdbb))
+
+
+
+
 
 ## [6.103.1](https://github.com/budgie-at/budgie/compare/v6.103.0...v6.103.1) (2026-10-13)
 
 **Note:** Version bump only for package @budgie/contracts
 
+
+
+
+
 # [6.103.0](https://github.com/budgie-at/budgie/compare/v6.102.0...v6.103.0) (2026-10-13)
 
 **Note:** Version bump only for package @budgie/contracts
+
+
+
+
 
 ## [6.100.7](https://github.com/budgie-at/budgie/compare/v6.100.6...v6.100.7) (2026-10-12)
 
 **Note:** Version bump only for package @budgie/contracts
 
+
+
+
+
 ## [6.100.2](https://github.com/budgie-at/budgie/compare/v6.100.1...v6.100.2) (2026-10-11)
+
 
 ### Bug Fixes
 
-- **ledger:** link monobank installment payoffs ([3b06cea](https://github.com/budgie-at/budgie/commit/3b06cea9b7cdfed59b0b99de1f13cb6a3dad102a))
+* **ledger:** link monobank installment payoffs ([3b06cea](https://github.com/budgie-at/budgie/commit/3b06cea9b7cdfed59b0b99de1f13cb6a3dad102a))
+
+
+
+
 
 # [6.99.0](https://github.com/budgie-at/budgie/compare/v6.98.0...v6.99.0) (2026-10-09)
 
+
 ### Features
 
-- start deposits in the synced operation currency ([4eff7d5](https://github.com/budgie-at/budgie/commit/4eff7d5e8a48cc735dc82bd4d183831695833146))
+* start deposits in the synced operation currency ([4eff7d5](https://github.com/budgie-at/budgie/commit/4eff7d5e8a48cc735dc82bd4d183831695833146))
+
+
+
+
 
 ## [6.96.1](https://github.com/budgie-at/budgie/compare/v6.96.0...v6.96.1) (2026-10-08)
 
 **Note:** Version bump only for package @budgie/contracts
 
+
+
+
+
 ## [6.94.3](https://github.com/budgie-at/budgie/compare/v6.94.2...v6.94.3) (2026-10-07)
+
 
 ### Bug Fixes
 
-- restore fees dropped by legacy transfer pairs and heal post-archive own-card transfers ([683d308](https://github.com/budgie-at/budgie/commit/683d308828879fdf8eea9a5464d08098cdb5bd9b)), closes [#1390](https://github.com/budgie-at/budgie/issues/1390)
+* restore fees dropped by legacy transfer pairs and heal post-archive own-card transfers ([683d308](https://github.com/budgie-at/budgie/commit/683d308828879fdf8eea9a5464d08098cdb5bd9b)), closes [#1390](https://github.com/budgie-at/budgie/issues/1390)
+
+
+
+
 
 ## [6.94.2](https://github.com/budgie-at/budgie/compare/v6.94.1...v6.94.2) (2026-10-07)
 
+
 ### Bug Fixes
 
-- **consolidation:** keep nested consolidations intact when archiving or resyncing an account ([9bc4669](https://github.com/budgie-at/budgie/commit/9bc4669b43227bc2d36ee6ac6ca2449737e0fc9f)), closes [#1385](https://github.com/budgie-at/budgie/issues/1385)
+* **consolidation:** keep nested consolidations intact when archiving or resyncing an account ([9bc4669](https://github.com/budgie-at/budgie/commit/9bc4669b43227bc2d36ee6ac6ca2449737e0fc9f)), closes [#1385](https://github.com/budgie-at/budgie/issues/1385)
+
+
+
+
 
 ## [6.94.1](https://github.com/budgie-at/budgie/compare/v6.94.0...v6.94.1) (2026-10-06)
 
+
 ### Bug Fixes
 
-- give installment plans their own edit form and find earlier parts on convert ([2bc56a1](https://github.com/budgie-at/budgie/commit/2bc56a1a19cea3795382d1d53d70e17094a3e051))
+* give installment plans their own edit form and find earlier parts on convert ([2bc56a1](https://github.com/budgie-at/budgie/commit/2bc56a1a19cea3795382d1d53d70e17094a3e051))
+
+
+
+
 
 # [6.94.0](https://github.com/budgie-at/budgie/compare/v6.93.2...v6.94.0) (2026-10-06)
 
+
 ### Features
 
-- convert an expense into an installment plan ([3d67479](https://github.com/budgie-at/budgie/commit/3d67479b1137528cffef6679c39e3a0bbd9cc516))
+* convert an expense into an installment plan ([3d67479](https://github.com/budgie-at/budgie/commit/3d67479b1137528cffef6679c39e3a0bbd9cc516))
+
+
+
+
 
 # [6.93.0](https://github.com/budgie-at/budgie/compare/v6.92.2...v6.93.0) (2026-10-05)
 
+
 ### Features
 
-- **consolidation:** pair cross-currency transfers by the bank-stored rate ([53753df](https://github.com/budgie-at/budgie/commit/53753dfa653a4d2b3d0b8f576a6b31b45a1da6cc))
+* **consolidation:** pair cross-currency transfers by the bank-stored rate ([53753df](https://github.com/budgie-at/budgie/commit/53753dfa653a4d2b3d0b8f576a6b31b45a1da6cc))
+
+
+
+
 
 ## [6.92.2](https://github.com/budgie-at/budgie/compare/v6.92.1...v6.92.2) (2026-10-04)
 
+
 ### Bug Fixes
 
-- **categorization:** keep user tag provenance on merges and rule tags ([62344bb](https://github.com/budgie-at/budgie/commit/62344bbb40264ee922c0ad1ca848b9f114cfc0cf))
-- **categorization:** learn tag suggestions only from user-picked tags ([d86fab6](https://github.com/budgie-at/budgie/commit/d86fab646f9b84db78f8b4dab1de7c80b69e7504))
-- **categorization:** promote existing tags to USER on user picks ([02a6910](https://github.com/budgie-at/budgie/commit/02a69104fd35dfd2768472f9832ca2a5f95c2ff4))
-- **categorization:** treat inbox category accepts as non-evidence ([089c379](https://github.com/budgie-at/budgie/commit/089c3796058ce6a1b7b9cc603d7658026dab2c02))
+* **categorization:** keep user tag provenance on merges and rule tags ([62344bb](https://github.com/budgie-at/budgie/commit/62344bbb40264ee922c0ad1ca848b9f114cfc0cf))
+* **categorization:** learn tag suggestions only from user-picked tags ([d86fab6](https://github.com/budgie-at/budgie/commit/d86fab646f9b84db78f8b4dab1de7c80b69e7504))
+* **categorization:** promote existing tags to USER on user picks ([02a6910](https://github.com/budgie-at/budgie/commit/02a69104fd35dfd2768472f9832ca2a5f95c2ff4))
+* **categorization:** treat inbox category accepts as non-evidence ([089c379](https://github.com/budgie-at/budgie/commit/089c3796058ce6a1b7b9cc603d7658026dab2c02))
+
+
+
+
 
 # [6.92.0](https://github.com/budgie-at/budgie/compare/v6.91.2...v6.92.0) (2026-10-04)
 
+
 ### Bug Fixes
 
-- **ledger:** convert only visible transfers when permanently deleting an account ([58e0b66](https://github.com/budgie-at/budgie/commit/58e0b6614cc8d87fd76711e3ac04e97a433a7326))
-- **ledger:** keep archived counterpart entries when deleting an account ([7adc280](https://github.com/budgie-at/budgie/commit/7adc28084f5dd003728c541571ddf8aaa42f441c))
+* **ledger:** convert only visible transfers when permanently deleting an account ([58e0b66](https://github.com/budgie-at/budgie/commit/58e0b6614cc8d87fd76711e3ac04e97a433a7326))
+* **ledger:** keep archived counterpart entries when deleting an account ([7adc280](https://github.com/budgie-at/budgie/commit/7adc28084f5dd003728c541571ddf8aaa42f441c))
+
 
 ### Features
 
-- **consolidation:** merge synced expenses into transfers from archived accounts ([9f8aef4](https://github.com/budgie-at/budgie/commit/9f8aef4adcad98e181dcb47f846798a9c4a54fbb))
-- **contracts:** add Transfer (account deleted) system category excluded from statistics ([17eab43](https://github.com/budgie-at/budgie/commit/17eab439fb16e2f60f1df346e51c3c7da136020f))
+* **consolidation:** merge synced expenses into transfers from archived accounts ([9f8aef4](https://github.com/budgie-at/budgie/commit/9f8aef4adcad98e181dcb47f846798a9c4a54fbb))
+* **contracts:** add Transfer (account deleted) system category excluded from statistics ([17eab43](https://github.com/budgie-at/budgie/commit/17eab439fb16e2f60f1df346e51c3c7da136020f))
+
+
+
+
 
 ## [6.91.2](https://github.com/budgie-at/budgie/compare/v6.91.1...v6.91.2) (2026-10-04)
 
+
 ### Bug Fixes
 
-- **consolidation:** match more refunds automatically ([dff5884](https://github.com/budgie-at/budgie/commit/dff58843850b4c912cdac5f6c32eb41999950181))
+* **consolidation:** match more refunds automatically ([dff5884](https://github.com/budgie-at/budgie/commit/dff58843850b4c912cdac5f6c32eb41999950181))
+
+
+
+
 
 ## [6.91.1](https://github.com/budgie-at/budgie/compare/v6.91.0...v6.91.1) (2026-10-04)
 
 **Note:** Version bump only for package @budgie/contracts
 
+
+
+
+
 # [6.91.0](https://github.com/budgie-at/budgie/compare/v6.90.0...v6.91.0) (2026-10-04)
+
 
 ### Features
 
-- **contracts:** add transaction import fingerprint column and heal queries ([1984b0e](https://github.com/budgie-at/budgie/commit/1984b0e3fb14ab91808406742b751974bd075653))
+* **contracts:** add transaction import fingerprint column and heal queries ([1984b0e](https://github.com/budgie-at/budgie/commit/1984b0e3fb14ab91808406742b751974bd075653))
+
+
+
+
 
 # [6.90.0](https://github.com/budgie-at/budgie/compare/v6.89.0...v6.90.0) (2026-10-04)
 
+
 ### Features
 
-- **consolidation:** consolidate synced duplicates of manual expenses ([5994732](https://github.com/budgie-at/budgie/commit/59947327f8f73b196c363f91e62eaa301133c551))
+* **consolidation:** consolidate synced duplicates of manual expenses ([5994732](https://github.com/budgie-at/budgie/commit/59947327f8f73b196c363f91e62eaa301133c551))
+
+
+
+
 
 ## [6.88.5](https://github.com/budgie-at/budgie/compare/v6.88.4-rewrite...v6.88.5) (2026-10-03)
 
 **Note:** Version bump only for package @budgie/contracts
 
+
+
+
+
 ## [6.88.2](https://github.com/budgie-at/budgie/compare/v6.88.1...v6.88.2) (2026-10-02)
+
 
 ### Bug Fixes
 
-- **app:** forecast only active recurring series and include income ([40fcfbb](https://github.com/budgie-at/budgie/commit/40fcfbbf93fe10f28b3c48f2938ff61f1cec674b)), closes [#1357](https://github.com/budgie-at/budgie/issues/1357)
+* **app:** forecast only active recurring series and include income ([40fcfbb](https://github.com/budgie-at/budgie/commit/40fcfbbf93fe10f28b3c48f2938ff61f1cec674b)), closes [#1357](https://github.com/budgie-at/budgie/issues/1357)
+
+
+
+
 
 ## [6.87.2](https://github.com/budgie-at/budgie/compare/v6.87.1...v6.87.2) (2026-10-01)
 
+
 ### Bug Fixes
 
-- **contracts:** compute runway month window in local time ([1092f84](https://github.com/budgie-at/budgie/commit/1092f84aea1ac7506eb0e3e37587ef9d8a34e2b7)), closes [#1333](https://github.com/budgie-at/budgie/issues/1333)
-- **contracts:** truncate to month start before the runway lookback shift ([f076452](https://github.com/budgie-at/budgie/commit/f07645297d526f69cbe30bbed0c9328a6dadf1b0))
+* **contracts:** compute runway month window in local time ([1092f84](https://github.com/budgie-at/budgie/commit/1092f84aea1ac7506eb0e3e37587ef9d8a34e2b7)), closes [#1333](https://github.com/budgie-at/budgie/issues/1333)
+* **contracts:** truncate to month start before the runway lookback shift ([f076452](https://github.com/budgie-at/budgie/commit/f07645297d526f69cbe30bbed0c9328a6dadf1b0))
+
+
+
+
 
 ## [6.86.1](https://github.com/budgie-at/budgie/compare/v6.86.0...v6.86.1) (2026-10-01)
 
 **Note:** Version bump only for package @budgie/contracts
 
+
+
+
+
 # [6.86.0](https://github.com/budgie-at/budgie/compare/v6.85.14...v6.86.0) (2026-09-30)
+
 
 ### Bug Fixes
 
-- **app:** retry icon index load and validate whole emoji icons ([86d5e14](https://github.com/budgie-at/budgie/commit/86d5e14f808e9ff07970648851ba16b1899419bc))
-- **budget:** reuse canonical transaction predicates for spent ([911fc17](https://github.com/budgie-at/budgie/commit/911fc1776c5587fe6ba5b478e7ad6280f6ca566c)), closes [#1298](https://github.com/budgie-at/budgie/issues/1298)
-- **contracts:** repair orphaned consolidation children and entry-less transfers ([2af13e6](https://github.com/budgie-at/budgie/commit/2af13e6bcccfd71303e2e50f33920f27af8f4499))
+* **app:** retry icon index load and validate whole emoji icons ([86d5e14](https://github.com/budgie-at/budgie/commit/86d5e14f808e9ff07970648851ba16b1899419bc))
+* **budget:** reuse canonical transaction predicates for spent ([911fc17](https://github.com/budgie-at/budgie/commit/911fc1776c5587fe6ba5b478e7ad6280f6ca566c)), closes [#1298](https://github.com/budgie-at/budgie/issues/1298)
+* **contracts:** repair orphaned consolidation children and entry-less transfers ([2af13e6](https://github.com/budgie-at/budgie/commit/2af13e6bcccfd71303e2e50f33920f27af8f4499))
+
 
 ### Features
 
-- **app:** mark ATM withdrawals as already tracked cash outside spending ([22c331c](https://github.com/budgie-at/budgie/commit/22c331c3613657b182ae88a64e9f900b5f0910c5))
-- **app:** move ATM withdrawals to cash from the inbox and never auto-convert them ([a0853a2](https://github.com/budgie-at/budgie/commit/a0853a2799a17da900576f3a151928af070c9e2a))
-- **app:** multilingual icon search, emoji icons and icon suggestions ([11da1a2](https://github.com/budgie-at/budgie/commit/11da1a263ade255b7031dd679185035f3f832604))
+* **app:** mark ATM withdrawals as already tracked cash outside spending ([22c331c](https://github.com/budgie-at/budgie/commit/22c331c3613657b182ae88a64e9f900b5f0910c5))
+* **app:** move ATM withdrawals to cash from the inbox and never auto-convert them ([a0853a2](https://github.com/budgie-at/budgie/commit/a0853a2799a17da900576f3a151928af070c9e2a))
+* **app:** multilingual icon search, emoji icons and icon suggestions ([11da1a2](https://github.com/budgie-at/budgie/commit/11da1a263ade255b7031dd679185035f3f832604))
+
 
 ### Performance Improvements
 
-- **app:** resync existing Monobank rows in one transaction per page ([79e1340](https://github.com/budgie-at/budgie/commit/79e13408357af9ca59796485e3b4a358fa93185e))
-- **contracts:** count pending embeddings with a literal partial-index predicate ([73e0f9c](https://github.com/budgie-at/budgie/commit/73e0f9c275c829526935eaeb8350f997fae4aa03))
-- **contracts:** make home account rows and net worth index-friendly ([6d34a16](https://github.com/budgie-at/budgie/commit/6d34a162e8b4cb864e055fa84b2cfffb8ce9e82a))
-- **contracts:** replace the needs_embedding index that hijacks list plans ([bc65f4e](https://github.com/budgie-at/budgie/commit/bc65f4e1cc357c34264af19385b3b7d7871f3542)), closes [#1255](https://github.com/budgie-at/budgie/issues/1255) [#1241](https://github.com/budgie-at/budgie/issues/1241)
+* **app:** resync existing Monobank rows in one transaction per page ([79e1340](https://github.com/budgie-at/budgie/commit/79e13408357af9ca59796485e3b4a358fa93185e))
+* **contracts:** count pending embeddings with a literal partial-index predicate ([73e0f9c](https://github.com/budgie-at/budgie/commit/73e0f9c275c829526935eaeb8350f997fae4aa03))
+* **contracts:** make home account rows and net worth index-friendly ([6d34a16](https://github.com/budgie-at/budgie/commit/6d34a162e8b4cb864e055fa84b2cfffb8ce9e82a))
+* **contracts:** replace the needs_embedding index that hijacks list plans ([bc65f4e](https://github.com/budgie-at/budgie/commit/bc65f4e1cc357c34264af19385b3b7d7871f3542)), closes [#1255](https://github.com/budgie-at/budgie/issues/1255) [#1241](https://github.com/budgie-at/budgie/issues/1241)
+
+
+
+
 
 ## [6.85.13](https://github.com/budgie-at/budgie/compare/v6.85.12...v6.85.13) (2026-09-29)
 
+
 ### Bug Fixes
 
-- **app:** compute stored balances from the full ledger and undo backfilled ATM transfers ([9922ce8](https://github.com/budgie-at/budgie/commit/9922ce824c7a4112ef1d0d518cecde5e403caa2b))
+* **app:** compute stored balances from the full ledger and undo backfilled ATM transfers ([9922ce8](https://github.com/budgie-at/budgie/commit/9922ce824c7a4112ef1d0d518cecde5e403caa2b))
+
+
+
+
 
 ## [6.85.11](https://github.com/budgie-at/budgie/compare/v6.85.10...v6.85.11) (2026-09-29)
 
 **Note:** Version bump only for package @budgie/contracts
 
+
+
+
+
 ## [6.85.10](https://github.com/budgie-at/budgie/compare/v6.85.9...v6.85.10) (2026-09-29)
+
 
 ### Performance Improvements
 
-- **app:** trim the categorize-inbox row query to its rendered columns ([36e608b](https://github.com/budgie-at/budgie/commit/36e608b47a4f4d08bd4f69490f7c0e9095e222a3)), closes [#1258](https://github.com/budgie-at/budgie/issues/1258) [#1241](https://github.com/budgie-at/budgie/issues/1241) [#1258](https://github.com/budgie-at/budgie/issues/1258)
+* **app:** trim the categorize-inbox row query to its rendered columns ([36e608b](https://github.com/budgie-at/budgie/commit/36e608b47a4f4d08bd4f69490f7c0e9095e222a3)), closes [#1258](https://github.com/budgie-at/budgie/issues/1258) [#1241](https://github.com/budgie-at/budgie/issues/1241) [#1258](https://github.com/budgie-at/budgie/issues/1258)
+
+
+
+
 
 ## [6.85.6](https://github.com/budgie-at/budgie/compare/v6.85.5...v6.85.6) (2026-09-28)
 
+
 ### Bug Fixes
 
-- **app:** exclude adjustment transactions from SQL rule matching ([6f862a0](https://github.com/budgie-at/budgie/commit/6f862a0c4462f3b8d85ba22a96bbfe3f9e30a755))
+* **app:** exclude adjustment transactions from SQL rule matching ([6f862a0](https://github.com/budgie-at/budgie/commit/6f862a0c4462f3b8d85ba22a96bbfe3f9e30a755))
+
+
+
+
 
 ## [6.85.2](https://github.com/budgie-at/budgie/compare/v6.85.1...v6.85.2) (2026-09-28)
 
+
 ### Bug Fixes
 
-- **consolidation:** pair synced expenses duplicating legacy transfer legs ([e88e626](https://github.com/budgie-at/budgie/commit/e88e626f40ed18fbe209756e749e11782bc0d73d))
+* **consolidation:** pair synced expenses duplicating legacy transfer legs ([e88e626](https://github.com/budgie-at/budgie/commit/e88e626f40ed18fbe209756e749e11782bc0d73d))
+
+
+
+
 
 ## [6.85.1](https://github.com/budgie-at/budgie/compare/v6.85.0...v6.85.1) (2026-09-28)
 
 **Note:** Version bump only for package @budgie/contracts
 
+
+
+
+
 # [6.85.0](https://github.com/budgie-at/budgie/compare/v6.84.3...v6.85.0) (2026-09-28)
+
 
 ### Bug Fixes
 
-- **app:** apply rules with set-based chunked writes ([149b47f](https://github.com/budgie-at/budgie/commit/149b47f7410c1516045c3c94786142581c192af0))
-- **app:** harden inbox v2 counts, undo and background cost ([d9d57f8](https://github.com/budgie-at/budgie/commit/d9d57f822e670870e68f442c6ac2eeee36eca4c0))
+* **app:** apply rules with set-based chunked writes ([149b47f](https://github.com/budgie-at/budgie/commit/149b47f7410c1516045c3c94786142581c192af0))
+* **app:** harden inbox v2 counts, undo and background cost ([d9d57f8](https://github.com/budgie-at/budgie/commit/d9d57f822e670870e68f442c6ac2eeee36eca4c0))
+
 
 ### Features
 
-- **app:** add a tag inbox and open both inboxes from statistics ([904d1d2](https://github.com/budgie-at/budgie/commit/904d1d2c357b4768d5956d77e8ff1f2e850b6ded))
+* **app:** add a tag inbox and open both inboxes from statistics ([904d1d2](https://github.com/budgie-at/budgie/commit/904d1d2c357b4768d5956d77e8ff1f2e850b6ded))
+
+
+
+
 
 # [6.79.0](https://github.com/budgie-at/budgie/compare/v6.78.2...v6.79.0) (2026-09-26)
 
+
 ### Bug Fixes
 
-- **app:** coalesce per-row database change events in live queries ([85ef12b](https://github.com/budgie-at/budgie/commit/85ef12b499f88b3a32a8ba8f927bc499d3140a95))
-- **app:** make categorize inbox assignMany atomic and align inbox account filter ([eea011c](https://github.com/budgie-at/budgie/commit/eea011cd695c4957582ed94af5e137fc0dfcc734))
+* **app:** coalesce per-row database change events in live queries ([85ef12b](https://github.com/budgie-at/budgie/commit/85ef12b499f88b3a32a8ba8f927bc499d3140a95))
+* **app:** make categorize inbox assignMany atomic and align inbox account filter ([eea011c](https://github.com/budgie-at/budgie/commit/eea011cd695c4957582ed94af5e137fc0dfcc734))
+
 
 ### Features
 
-- **app:** add categorize inbox with hybrid on-device suggestions ([8f5a856](https://github.com/budgie-at/budgie/commit/8f5a856ef81d0b2aabfa20ae2a3528b3b1ba9241))
+* **app:** add categorize inbox with hybrid on-device suggestions ([8f5a856](https://github.com/budgie-at/budgie/commit/8f5a856ef81d0b2aabfa20ae2a3528b3b1ba9241))
+
+
+
+
 
 ## [6.78.1](https://github.com/budgie-at/budgie/compare/v6.78.0...v6.78.1) (2026-09-25)
 
+
 ### Bug Fixes
 
-- **contracts:** project balance upsert input to accountId and amount ([9f6fb79](https://github.com/budgie-at/budgie/commit/9f6fb792b948359ac70129890d32e7943ff68987))
+* **contracts:** project balance upsert input to accountId and amount ([9f6fb79](https://github.com/budgie-at/budgie/commit/9f6fb792b948359ac70129890d32e7943ff68987))
+
+
+
+
 
 # [6.78.0](https://github.com/budgie-at/budgie/compare/v6.77.0...v6.78.0) (2026-09-24)
 
+
 ### Bug Fixes
 
-- **app:** capture a setup balance only for Monobank full resyncs ([17bd76c](https://github.com/budgie-at/budgie/commit/17bd76cd335356426cfe61deb19f473c033c0241))
-- **sync:** release provider balance authority and simplify reconciliation ([b4356f3](https://github.com/budgie-at/budgie/commit/b4356f3acf6f34377fe95d5d6f28430640033ef5)), closes [#1159](https://github.com/budgie-at/budgie/issues/1159) [#1167](https://github.com/budgie-at/budgie/issues/1167) [#1167](https://github.com/budgie-at/budgie/issues/1167)
+* **app:** capture a setup balance only for Monobank full resyncs ([17bd76c](https://github.com/budgie-at/budgie/commit/17bd76cd335356426cfe61deb19f473c033c0241))
+* **sync:** release provider balance authority and simplify reconciliation ([b4356f3](https://github.com/budgie-at/budgie/commit/b4356f3acf6f34377fe95d5d6f28430640033ef5)), closes [#1159](https://github.com/budgie-at/budgie/issues/1159) [#1167](https://github.com/budgie-at/budgie/issues/1167) [#1167](https://github.com/budgie-at/budgie/issues/1167)
+
 
 ### Features
 
-- **app:** anchor Monobank balances during setup ([ff0d361](https://github.com/budgie-at/budgie/commit/ff0d361a977a62637f3d2519ea5bfa93587225af))
-- **app:** preserve provider-authoritative balances ([a3a33b7](https://github.com/budgie-at/budgie/commit/a3a33b734b4f19b2ace8dc437a7e1e2f4a958193))
-- **app:** reconcile Monobank balances atomically ([bb24ae0](https://github.com/budgie-at/budgie/commit/bb24ae013602cffdf39b3d65d3c888ed3a797992))
-- **app:** replace Monobank corrections on full resync ([cf33fa3](https://github.com/budgie-at/budgie/commit/cf33fa3ae82bd2ada0d27b91c27a41163e600887))
-- **app:** rotate Monobank backward batches fairly ([927eaf8](https://github.com/budgie-at/budgie/commit/927eaf808c85a1afe2944d6a2e1878554b674f20))
-- **contracts:** persist sync balance authority ([e756009](https://github.com/budgie-at/budgie/commit/e7560094f7e8d456a565c872bc31280169d19762))
+* **app:** anchor Monobank balances during setup ([ff0d361](https://github.com/budgie-at/budgie/commit/ff0d361a977a62637f3d2519ea5bfa93587225af))
+* **app:** preserve provider-authoritative balances ([a3a33b7](https://github.com/budgie-at/budgie/commit/a3a33b734b4f19b2ace8dc437a7e1e2f4a958193))
+* **app:** reconcile Monobank balances atomically ([bb24ae0](https://github.com/budgie-at/budgie/commit/bb24ae013602cffdf39b3d65d3c888ed3a797992))
+* **app:** replace Monobank corrections on full resync ([cf33fa3](https://github.com/budgie-at/budgie/commit/cf33fa3ae82bd2ada0d27b91c27a41163e600887))
+* **app:** rotate Monobank backward batches fairly ([927eaf8](https://github.com/budgie-at/budgie/commit/927eaf808c85a1afe2944d6a2e1878554b674f20))
+* **contracts:** persist sync balance authority ([e756009](https://github.com/budgie-at/budgie/commit/e7560094f7e8d456a565c872bc31280169d19762))
+
+
+
+
 
 ## [6.75.2](https://github.com/budgie-at/budgie/compare/v6.75.1...v6.75.2) (2026-09-23)
 
+
 ### Bug Fixes
 
-- **contracts:** stop double counting balance entries written in the snapshot millisecond ([dca8bc7](https://github.com/budgie-at/budgie/commit/dca8bc741cb493b83ce5d4f484d2759f30fee433))
+* **contracts:** stop double counting balance entries written in the snapshot millisecond ([dca8bc7](https://github.com/budgie-at/budgie/commit/dca8bc741cb493b83ce5d4f484d2759f30fee433))
+
+
+
+
 
 # [6.74.0](https://github.com/budgie-at/budgie/compare/v6.73.1...v6.74.0) (2026-09-22)
 
+
 ### Bug Fixes
 
-- **consolidation:** scope and tighten stale bridge canonical supersession ([41eb80f](https://github.com/budgie-at/budgie/commit/41eb80f91810fcb927f8dca282d63624b548c50e))
-- **consolidation:** supersede stale bridge canonicals ([85420c0](https://github.com/budgie-at/budgie/commit/85420c0289f6731c2622d923041edfd84d4c9475))
+* **consolidation:** scope and tighten stale bridge canonical supersession ([41eb80f](https://github.com/budgie-at/budgie/commit/41eb80f91810fcb927f8dca282d63624b548c50e))
+* **consolidation:** supersede stale bridge canonicals ([85420c0](https://github.com/budgie-at/budgie/commit/85420c0289f6731c2622d923041edfd84d4c9475))
+
+
+
+
 
 # [6.72.0](https://github.com/budgie-at/budgie/compare/v6.71.2...v6.72.0) (2026-09-21)
 
+
 ### Features
 
-- **contracts:** add an opening debt event source and a live debt ledger query ([2de77b0](https://github.com/budgie-at/budgie/commit/2de77b09488d145055e186ac885a4bb351072c8c))
+* **contracts:** add an opening debt event source and a live debt ledger query ([2de77b0](https://github.com/budgie-at/budgie/commit/2de77b09488d145055e186ac885a4bb351072c8c))
+
+
+
+
 
 # [6.71.0](https://github.com/budgie-at/budgie/compare/v6.70.0...v6.71.0) (2026-09-17)
 
+
 ### Features
 
-- **contracts:** add Lending and Borrowing system categories ([825efc4](https://github.com/budgie-at/budgie/commit/825efc4005af14f77c51a0e1728d0ea40bb7318a))
+* **contracts:** add Lending and Borrowing system categories ([825efc4](https://github.com/budgie-at/budgie/commit/825efc4005af14f77c51a0e1728d0ea40bb7318a))
+
+
+
+
 
 ## [6.67.16](https://github.com/budgie-at/budgie/compare/v6.67.15...v6.67.16) (2026-09-16)
 
+
 ### Bug Fixes
 
-- **app:** keep own-card repair conversions consistent when an archived card is restored ([86be10e](https://github.com/budgie-at/budgie/commit/86be10ef284a40ee8ec21e4e4fd31707faab0926)), closes [#1077](https://github.com/budgie-at/budgie/issues/1077)
-- **app:** store the Binance C2C warning as an enum and localize it ([83a9f56](https://github.com/budgie-at/budgie/commit/83a9f56b6dc0b45b151294b5fc60df6c3f9e0615))
-- **bank-sync:** persist the Binance cursor, surface C2C availability and tighten P2P pairing ([0efbd02](https://github.com/budgie-at/budgie/commit/0efbd02701fa8a8febf935e38402f42f483e9104)), closes [#562](https://github.com/budgie-at/budgie/issues/562) [#561](https://github.com/budgie-at/budgie/issues/561) [#540](https://github.com/budgie-at/budgie/issues/540) [#1088](https://github.com/budgie-at/budgie/issues/1088)
+* **app:** keep own-card repair conversions consistent when an archived card is restored ([86be10e](https://github.com/budgie-at/budgie/commit/86be10ef284a40ee8ec21e4e4fd31707faab0926)), closes [#1077](https://github.com/budgie-at/budgie/issues/1077)
+* **app:** store the Binance C2C warning as an enum and localize it ([83a9f56](https://github.com/budgie-at/budgie/commit/83a9f56b6dc0b45b151294b5fc60df6c3f9e0615))
+* **bank-sync:** persist the Binance cursor, surface C2C availability and tighten P2P pairing ([0efbd02](https://github.com/budgie-at/budgie/commit/0efbd02701fa8a8febf935e38402f42f483e9104)), closes [#562](https://github.com/budgie-at/budgie/issues/562) [#561](https://github.com/budgie-at/budgie/issues/561) [#540](https://github.com/budgie-at/budgie/issues/540) [#1088](https://github.com/budgie-at/budgie/issues/1088)
+
+
+
+
 
 ## [6.67.6](https://github.com/budgie-at/budgie/compare/v6.67.5...v6.67.6) (2026-09-16)
 
+
 ### Performance Improvements
 
-- **app:** archive large accounts without locking the database ([04967ec](https://github.com/budgie-at/budgie/commit/04967eccf00342ee8d5d7612a98d71fe96fd9f03)), closes [#831](https://github.com/budgie-at/budgie/issues/831)
+* **app:** archive large accounts without locking the database ([04967ec](https://github.com/budgie-at/budgie/commit/04967eccf00342ee8d5d7612a98d71fe96fd9f03)), closes [#831](https://github.com/budgie-at/budgie/issues/831)
+
+
+
+
 
 ## [6.67.3](https://github.com/budgie-at/budgie/compare/v6.67.2...v6.67.3) (2026-09-16)
 
 **Note:** Version bump only for package @budgie/contracts
 
+
+
+
+
 # [6.65.0](https://github.com/budgie-at/budgie/compare/v6.64.4...v6.65.0) (2026-09-15)
+
 
 ### Features
 
-- **app:** runway settings with show-on-home and include-crypto switches ([cb24d3c](https://github.com/budgie-at/budgie/commit/cb24d3ca8c4009023ab86eed758b1e4abc141450)), closes [#1069](https://github.com/budgie-at/budgie/issues/1069)
+* **app:** runway settings with show-on-home and include-crypto switches ([cb24d3c](https://github.com/budgie-at/budgie/commit/cb24d3ca8c4009023ab86eed758b1e4abc141450)), closes [#1069](https://github.com/budgie-at/budgie/issues/1069)
+
+
+
+
 
 ## [6.64.2](https://github.com/budgie-at/budgie/compare/v6.64.1...v6.64.2) (2026-09-15)
 
+
 ### Performance Improvements
 
-- **contracts:** make the Runway month window predicate index-usable ([db669bb](https://github.com/budgie-at/budgie/commit/db669bb1fbf9c29d21e08680656e14e46fda9517)), closes [#1058](https://github.com/budgie-at/budgie/issues/1058)
+* **contracts:** make the Runway month window predicate index-usable ([db669bb](https://github.com/budgie-at/budgie/commit/db669bb1fbf9c29d21e08680656e14e46fda9517)), closes [#1058](https://github.com/budgie-at/budgie/issues/1058)
+
+
+
+
 
 # [6.64.0](https://github.com/budgie-at/budgie/compare/v6.63.2...v6.64.0) (2026-09-15)
 
+
 ### Bug Fixes
 
-- **app:** correct Runway driver math, One-off flag, tag coverage and long tail ([bc7cd90](https://github.com/budgie-at/budgie/commit/bc7cd90b5feeb83980e2337358ed4d8f539ed633))
+* **app:** correct Runway driver math, One-off flag, tag coverage and long tail ([bc7cd90](https://github.com/budgie-at/budgie/commit/bc7cd90b5feeb83980e2337358ed4d8f539ed633))
+
 
 ### Features
 
-- **app:** Runway home pill next to the balance pills ([a3f5130](https://github.com/budgie-at/budgie/commit/a3f5130934d6ea1493f787f4f8b06372ac4991db))
+* **app:** Runway home pill next to the balance pills ([a3f5130](https://github.com/budgie-at/budgie/commit/a3f5130934d6ea1493f787f4f8b06372ac4991db))
+
+
+
+
 
 ## [6.63.1](https://github.com/budgie-at/budgie/compare/v6.63.0...v6.63.1) (2026-09-14)
 
 **Note:** Version bump only for package @budgie/contracts
 
+
+
+
+
 # [6.60.0](https://github.com/budgie-at/budgie/compare/v6.59.1...v6.60.0) (2026-09-14)
+
 
 ### Bug Fixes
 
-- **app:** localize default category titles in the refund and consolidation pickers ([167af58](https://github.com/budgie-at/budgie/commit/167af5811dd22ee3ba21ca6a9ee16cbe947b7b86))
+* **app:** localize default category titles in the refund and consolidation pickers ([167af58](https://github.com/budgie-at/budgie/commit/167af5811dd22ee3ba21ca6a9ee16cbe947b7b86))
+
+
+
+
 
 ## [6.54.1](https://github.com/budgie-at/budgie/compare/v6.54.0...v6.54.1) (2026-09-13)
 
 **Note:** Version bump only for package @budgie/contracts
 
+
+
+
+
 ## [6.53.2](https://github.com/budgie-at/budgie/compare/v6.53.1...v6.53.2) (2026-09-13)
+
 
 ### Bug Fixes
 
-- **app:** convert unpaired own-card transfers from archived accounts ([a17c21e](https://github.com/budgie-at/budgie/commit/a17c21ed7905555ccf9013857782f1b1af5e2786))
+* **app:** convert unpaired own-card transfers from archived accounts ([a17c21e](https://github.com/budgie-at/budgie/commit/a17c21ed7905555ccf9013857782f1b1af5e2786))
+
+
+
+
 
 # [6.53.0](https://github.com/budgie-at/budgie/compare/v6.52.0...v6.53.0) (2026-09-12)
 
+
 ### Bug Fixes
 
-- **contracts:** attribute runway tag drivers to the primary tag only ([62f4494](https://github.com/budgie-at/budgie/commit/62f4494f3b51f1c8068101fea2f1fa6a4054d806))
+* **contracts:** attribute runway tag drivers to the primary tag only ([62f4494](https://github.com/budgie-at/budgie/commit/62f4494f3b51f1c8068101fea2f1fa6a4054d806))
+
 
 ### Features
 
-- **app:** add runway cash-flow forecast ([ac5d996](https://github.com/budgie-at/budgie/commit/ac5d9960e54fb114e4448fed5f40f9b3fa3d29c7))
+* **app:** add runway cash-flow forecast ([ac5d996](https://github.com/budgie-at/budgie/commit/ac5d9960e54fb114e4448fed5f40f9b3fa3d29c7))
+
+
+
+
 
 # [6.52.0](https://github.com/budgie-at/budgie/compare/v6.51.1...v6.52.0) (2026-09-12)
 
+
 ### Features
 
-- **app:** branch the rules empty state on bank integration presence ([480932d](https://github.com/budgie-at/budgie/commit/480932dd0d943a9b99c247d704d9361a218b12c2))
-- **contracts:** add isOnboardingCompleted setting ([9ebb099](https://github.com/budgie-at/budgie/commit/9ebb099ff946c4391c9585d17e24400857cbe335))
-- **contracts:** add onboardingStep and isAiEnabled settings ([e241ea8](https://github.com/budgie-at/budgie/commit/e241ea8fa5f7351b92577019008617580941bfb0))
+* **app:** branch the rules empty state on bank integration presence ([480932d](https://github.com/budgie-at/budgie/commit/480932dd0d943a9b99c247d704d9361a218b12c2))
+* **contracts:** add isOnboardingCompleted setting ([9ebb099](https://github.com/budgie-at/budgie/commit/9ebb099ff946c4391c9585d17e24400857cbe335))
+* **contracts:** add onboardingStep and isAiEnabled settings ([e241ea8](https://github.com/budgie-at/budgie/commit/e241ea8fa5f7351b92577019008617580941bfb0))
+
+
+
+
 
 # [6.51.0](https://github.com/budgie-at/budgie/compare/v6.50.1...v6.51.0) (2026-09-12)
 
+
 ### Features
 
-- let users pick monobank sync history period ([3b5bc1e](https://github.com/budgie-at/budgie/commit/3b5bc1e0c9b5873f42508fe02cb287c43b7843c5))
+* let users pick monobank sync history period ([3b5bc1e](https://github.com/budgie-at/budgie/commit/3b5bc1e0c9b5873f42508fe02cb287c43b7843c5))
+
+
+
+
 
 ## [6.41.4](https://github.com/budgie-at/budgie/compare/v6.41.3...v6.41.4) (2026-09-10)
 
+
 ### Bug Fixes
 
-- **consolidation:** repair bridge-claimed transfer pairs via settings fix ([9689929](https://github.com/budgie-at/budgie/commit/96899297cd7d98dd554a685f7d441bab8fce2f51))
+* **consolidation:** repair bridge-claimed transfer pairs via settings fix ([9689929](https://github.com/budgie-at/budgie/commit/96899297cd7d98dd554a685f7d441bab8fce2f51))
+
+
+
+
 
 ## [6.41.1](https://github.com/budgie-at/budgie/compare/v6.41.0...v6.41.1) (2026-09-08)
 
+
 ### Bug Fixes
 
-- **app:** make debt progress idempotent and direction-correct for lent and borrowed debts ([d91789c](https://github.com/budgie-at/budgie/commit/d91789ceb8a3434def01a7065df370348d613636)), closes [#938](https://github.com/budgie-at/budgie/issues/938)
+* **app:** make debt progress idempotent and direction-correct for lent and borrowed debts ([d91789c](https://github.com/budgie-at/budgie/commit/d91789ceb8a3434def01a7065df370348d613636)), closes [#938](https://github.com/budgie-at/budgie/issues/938)
+
+
+
+
 
 ## [6.22.1](https://github.com/budgie-at/budgie/compare/v6.22.0...v6.22.1) (2026-09-07)
 
+
 ### Bug Fixes
 
-- **app:** attach fee-bearing synced expenses to debts and resync debt events on edit ([1b7a4fa](https://github.com/budgie-at/budgie/commit/1b7a4faa4ab2eba446e00a2514f98627752aba4e))
+* **app:** attach fee-bearing synced expenses to debts and resync debt events on edit ([1b7a4fa](https://github.com/budgie-at/budgie/commit/1b7a4faa4ab2eba446e00a2514f98627752aba4e))
+
+
+
+
 
 ## [6.21.5](https://github.com/budgie-at/budgie/compare/v6.21.4...v6.21.5) (2026-09-07)
 
 **Note:** Version bump only for package @budgie/contracts
 
+
+
+
+
 ## [6.10.2](https://github.com/budgie-at/budgie/compare/v6.10.1...v6.10.2) (2026-09-04)
+
 
 ### Performance Improvements
 
-- convert date-fns barrel imports to deep subpaths ([f8ffe99](https://github.com/budgie-at/budgie/commit/f8ffe99c0b58dfcfb39b887020adc5a2ca88dafc))
+* convert date-fns barrel imports to deep subpaths ([f8ffe99](https://github.com/budgie-at/budgie/commit/f8ffe99c0b58dfcfb39b887020adc5a2ca88dafc))
+
+
+
+
 
 ## [6.5.2](https://github.com/budgie-at/budgie/compare/v6.5.1...v6.5.2) (2026-09-01)
 
 **Note:** Version bump only for package @budgie/contracts
 
+
+
+
+
 ## [6.5.1](https://github.com/budgie-at/budgie/compare/v6.5.0...v6.5.1) (2026-08-30)
+
 
 ### Bug Fixes
 
-- **app:** unify debt balance semantics and rework debt tile rendering ([#689](https://github.com/budgie-at/budgie/issues/689)) ([7b0f95a](https://github.com/budgie-at/budgie/commit/7b0f95a97fa86b68d24c423ee2f139a0fdb279b9))
+* **app:** unify debt balance semantics and rework debt tile rendering ([#689](https://github.com/budgie-at/budgie/issues/689)) ([7b0f95a](https://github.com/budgie-at/budgie/commit/7b0f95a97fa86b68d24c423ee2f139a0fdb279b9))
+
+
+
+
 
 ## [6.4.2](https://github.com/budgie-at/budgie/compare/v6.4.1...v6.4.2) (2026-08-29)
 
 **Note:** Version bump only for package @budgie/contracts
 
+
+
+
+
 # [6.4.0](https://github.com/budgie-at/budgie/compare/v6.3.0...v6.4.0) (2026-08-28)
+
 
 ### Features
 
-- add Binance account sync with bank↔P2P consolidation ([#561](https://github.com/budgie-at/budgie/issues/561)) ([92fea35](https://github.com/budgie-at/budgie/commit/92fea35f9073011caebda427451de54ccff0cad1))
+* add Binance account sync with bank↔P2P consolidation ([#561](https://github.com/budgie-at/budgie/issues/561)) ([92fea35](https://github.com/budgie-at/budgie/commit/92fea35f9073011caebda427451de54ccff0cad1))
+
+
+
+
 
 # [6.3.0](https://github.com/budgie-at/budgie/compare/v6.2.1...v6.3.0) (2026-08-26)
 

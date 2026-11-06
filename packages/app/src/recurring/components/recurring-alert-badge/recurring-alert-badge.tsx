@@ -5,7 +5,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { MetaPill } from '../../../@generic/component/meta-pill/meta-pill';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { getRecurringPriceChangePercent } from '../../utils/get-recurring-price-change-percent.util';
 
 import type { MetaPillVariant } from '../../../@generic/type/meta-pill-variant.type';
 import type { RecurringSeriesListItemInterface } from '@budgie/recurring';
@@ -26,7 +25,9 @@ export const RecurringAlertBadge = ({ alert, priceChange, endsAt }: Props) => {
         return null;
     }
 
-    const percent = isDefined(priceChange) ? getRecurringPriceChangePercent(priceChange) : 0;
+    const percent = isDefined(priceChange)
+        ? Math.round(((priceChange.toAmount - priceChange.fromAmount) / priceChange.fromAmount) * 100)
+        : 0;
     const arrow = percent < 0 ? '↓' : '↑';
     const absolutePercent = Math.abs(percent);
     const priceLabel = isDefined(priceChange) ? `${arrow}${absolutePercent}%` : t`Price changed`;

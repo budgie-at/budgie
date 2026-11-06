@@ -42,11 +42,11 @@ export const RecurringDetailContent = ({ detail }: Props) => {
             >
                 <View className="gap-y-5xl px-3xl">
                     <RecurringDetailHero series={series} now={now} />
-                    <RecurringDetailStats history={history} />
+                    <RecurringDetailStats kind={series.kind} history={history} />
                     <RecurringDetailAlertBanner series={series} />
                     <RecurringDetailNextPayments dates={nextDates} amount={series.amount} now={now} />
                     <RecurringDetailHistory seriesId={series.id} kind={series.kind} history={history} />
-                    <RecurringDetailReminderRow series={series} />
+                    {series.isActive ? <RecurringDetailReminderRow series={series} /> : null}
                     <RecurringDetailDestructiveRow source={series.source} onRemove={handleRemove} />
                 </View>
             </ScreenChromeScrollView>

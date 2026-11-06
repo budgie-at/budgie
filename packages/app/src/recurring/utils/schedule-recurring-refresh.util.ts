@@ -1,4 +1,5 @@
 import { RecurringRefreshService } from '@budgie/recurring';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 
 import { Workload } from '../../@generic/service/workload.service';
@@ -9,7 +10,7 @@ export const scheduleRecurringRefresh = Effect.fn('scheduleRecurringRefresh')(fu
     const workload = yield* Workload;
     const recurringRefreshService = yield* RecurringRefreshService;
     const recurringReminderService = yield* RecurringReminderService;
-    const now = new Date();
+    const now = yield* DateTime.nowAsDate;
 
     yield* workload.schedule(
         `recurring-refresh-${mode}`,

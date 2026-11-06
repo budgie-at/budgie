@@ -27,6 +27,6 @@ export const buildDefaultRecurringFormValues = (instrumentId: number, today: Dat
         endMode: RecurringEndModeEnum.NEVER,
         endsOn: addYears(anchorDate, 1),
         endsAfterCount: DEFAULT_END_COUNT,
-        reminder: RecurringReminderChoiceEnum.ONE_DAY
+        reminder: RecurringReminderChoiceEnum.OFF
     };
 };

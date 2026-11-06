@@ -35,4 +35,22 @@ test('46 recurring make recurring from a transaction', { tags: ['recurring'] }, 
         await b.expectText(ctx, 'Payment history');
         await expect(historyRow).toBeVisible({ timeout: 5_000 });
     });
+    await b.phase('attach another payment to the existing series', async () => {
+        await t.navigateToTransactions(ctx);
+        await t.createExpense(ctx, {
+            amount: '10',
+            account: 'E2E Recurring Account',
+            category: 'Groceries',
+            comment: 'E2E Follow Up Expense'
+        });
+        await t.openTransaction(ctx, 'E2E_Follow_Up_Expense');
+        await b.scrollTo(ctx, 'TransactionActionsMenu.MakeRecurringButton');
+        await b.tapId(ctx, 'TransactionActionsMenu.MakeRecurringButton');
+        await b.expectId(ctx, 'MakeRecurring.Page', 10_000);
+        await b.tapId(ctx, 'MakeRecurring.FittingRow.E2E_One_Off_Expense');
+        await b.expectNoId(ctx, 'MakeRecurring.Page', 10_000);
+        await b.scrollTo(ctx, 'TransactionActionsMenu.ViewRecurringButton');
+        await b.tapId(ctx, 'TransactionActionsMenu.ViewRecurringButton');
+        await b.expectId(ctx, 'RecurringDetail.Page', 10_000);
+    });
 });

@@ -1,4 +1,10 @@
-import { PRECISION, RecurringCadenceUnitEnum, RecurringSeriesKindEnum, RecurringSeriesUserStateEnum } from '@budgie/contracts';
+import {
+    RecurringSeriesSourceEnum,
+    PRECISION,
+    RecurringCadenceUnitEnum,
+    RecurringSeriesKindEnum,
+    RecurringSeriesUserStateEnum
+} from '@budgie/contracts';
 import { expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -29,6 +35,7 @@ const entry = (
     extras: Partial<Omit<RecurringMatchSeriesInterface, 'series'>> = {}
 ): RecurringMatchSeriesInterface => ({
     series: {
+        source: RecurringSeriesSourceEnum.MANUAL,
         id,
         kind: RecurringSeriesKindEnum.EXPENSE,
         merchantKey: 'EXPENSE|1|NETFLIX',
@@ -162,5 +169,15 @@ it.effect('applies custom cadence tolerance for every 5 weeks and every 4 months
         expect(fiveWeeksFar).toEqual([]);
         expect(fourMonthsNear).toHaveLength(1);
         expect(fourMonthsFar).toEqual([]);
+    })
+);
+
+it.effect('rejects unrelated large purchases and substring titles', () =>
+    Effect.sync(() => {
+        expect(matchRecurringTransactions([charge(1, June(5), 200)], [entry(1)])).toEqual([]);
+        expect(matchRecurringTransactions([charge(1, June(5), 12, 'PARENTS')], [entry(1, { title: 'RENT', merchantKey: '' })])).toEqual([]);
+        expect(
+            matchRecurringTransactions([charge(1, June(5), 12, 'RENT PAYMENT')], [entry(1, { title: 'RENT', merchantKey: '' })])
+        ).toHaveLength(1);
     })
 );

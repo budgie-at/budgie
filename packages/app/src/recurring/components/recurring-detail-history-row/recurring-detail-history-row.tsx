@@ -14,6 +14,8 @@ import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { TransactionInfoRow } from '../../../transaction/components/transaction-info-row/transaction-info-row';
+import { RecurringRefreshModeEnum } from '../../enum/recurring-refresh-mode.enum';
+import { scheduleRecurringRefresh } from '../../utils/schedule-recurring-refresh.util';
 import { RecurringDetailSelector } from '../recurring-detail-content/recurring-detail.selector';
 
 import type { RecurringHistoryItemInterface } from '@budgie/recurring';
@@ -41,12 +43,14 @@ export const RecurringDetailHistoryRow = ({ seriesId, kind, item }: Props) => {
                 Effect.gen(function* () {
                     const recurringService = yield* RecurringService;
                     yield* recurringService.excludeTransaction(seriesId, transactionId);
+                    yield* scheduleRecurringRefresh(RecurringRefreshModeEnum.RECENT);
                     showActionToast(t`Removed from this series`, {
                         label: t`Undo`,
                         onPress: () =>
                             void appRuntime.runFork(
                                 logAndContinue(
                                     Effect.flatMap(RecurringService, service => service.addTransaction(seriesId, transactionId)).pipe(
+                                        Effect.andThen(scheduleRecurringRefresh(RecurringRefreshModeEnum.RECENT)),
                                         toastOnFailure(t`Could not update recurring payment.`)
                                     )
                                 )

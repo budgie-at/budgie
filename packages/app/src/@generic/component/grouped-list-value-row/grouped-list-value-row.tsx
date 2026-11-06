@@ -10,6 +10,7 @@ import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 
 import type { UserIconType } from '@budgie/contracts';
+import type { AccessibilityActionEvent } from 'react-native';
 
 interface Props {
     readonly icon: UserIconType;
@@ -24,6 +25,13 @@ const CLEAR_HIT_SLOP = { top: 12, bottom: 12, left: 12, right: 12 };
 
 export const GroupedListValueRow = ({ icon, title, value, testID, onPress, onClear }: Props) => {
     const { t } = useLingui();
+    const accessibilityActions = isDefined(onClear) ? [{ name: 'clear', label: t`Clear ${title}` }] : [];
+    const onAccessibilityAction = (event: AccessibilityActionEvent) => {
+        if (event.nativeEvent.actionName === 'clear') {
+            onClear?.();
+        }
+    };
+    const pressableProps = { accessibilityActions, onAccessibilityAction };
     const accessory = isDefined(onClear) ? (
         <HapticPressable
             accessibilityRole="button"
@@ -44,6 +52,7 @@ export const GroupedListValueRow = ({ icon, title, value, testID, onPress, onCle
             title={title}
             testID={testID}
             onPress={onPress}
+            pressableProps={pressableProps}
             right={
                 <View className="max-w-[60%] flex-row items-center gap-x-sm">
                     <Text className="shrink text-[17px] text-secondary-foreground" numberOfLines={1}>

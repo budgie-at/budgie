@@ -7,7 +7,8 @@ import { startOfDay } from 'date-fns/startOfDay';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { CADENCES, DAYS_PER_MONTH } from './recurring-series';
+import { CADENCES } from '../constant/recurring-cadences.constant';
+import { DAYS_PER_MONTH } from '../constant/recurring-days-per-month.constant';
 
 import type { RecurringScheduleInterface } from '../interface/recurring-schedule.interface';
 

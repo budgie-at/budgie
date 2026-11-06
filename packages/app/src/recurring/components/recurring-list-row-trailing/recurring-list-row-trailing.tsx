@@ -30,9 +30,7 @@ export const RecurringListRowTrailing = ({ series, isPossible, now }: Props) => 
     const formattedAmount = protectAmount(convertFromMicroUnits(series.amount), defaultInstrument.symbol);
     const amount = series.kind === RecurringSeriesKindEnum.INCOME ? `+${formattedAmount}` : formattedAmount;
     const dueLabel = isDefined(series.nextDate) && !isPossible ? getDueLabel(series.nextDate, now) : null;
-    const detail = isDefined(series.alert) ? (
-        <RecurringAlertBadge alert={series.alert} priceChange={series.priceChange} endsAt={series.endsAt} />
-    ) : (
+    const dueText = isDefined(dueLabel) ? (
         <Text
             dynamicTypeRamp="footnote"
             maxFontSizeMultiplier={TRANSACTION_SECONDARY_MAX_FONT_SIZE_MULTIPLIER}
@@ -40,6 +38,11 @@ export const RecurringListRowTrailing = ({ series, isPossible, now }: Props) => 
         >
             {dueLabel}
         </Text>
+    ) : null;
+    const detail = isDefined(series.alert) ? (
+        <RecurringAlertBadge alert={series.alert} priceChange={series.priceChange} endsAt={series.endsAt} />
+    ) : (
+        dueText
     );
 
     return (

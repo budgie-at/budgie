@@ -16,10 +16,7 @@ import { RecurringMerchantTile } from '../recurring-merchant-tile/recurring-merc
 import type { RecurringCalendarEntryInterface } from '@budgie/recurring';
 
 interface Props {
-    readonly entry: Pick<
-        RecurringCalendarEntryInterface,
-        'latestAmount' | 'isForecast' | 'title' | 'alert' | 'categoryId' | 'categoryTitle' | 'categoryIcon'
-    >;
+    readonly entry: Pick<RecurringCalendarEntryInterface, 'latestAmount' | 'isForecast' | 'title' | 'alert' | 'categoryTitle'>;
     readonly dayLabel?: string;
 }
 
@@ -29,7 +26,7 @@ export const RecurringCalendarEntryContent = ({ entry, dayLabel }: Props) => {
     const protectAmount = useProtectedAmountLabel();
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
     const labelLineLimit = isAccessibilityTextSize ? 0 : 2;
-    const statusLabel = entry.isForecast ? t`Expected` : t`Recorded`;
+    const statusLabel = entry.isForecast ? t`Still to pay` : t`Paid`;
     const metadataLabel = isNotEmptyString(dayLabel) ? dayLabel : statusLabel;
     const alertLabels = {
         [RecurringAlertEnum.OVERDUE]: t`Overdue`,

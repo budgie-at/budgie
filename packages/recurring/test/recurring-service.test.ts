@@ -23,8 +23,21 @@ import { isDefined } from '@rnw-community/shared';
 import { RecurringAlertEnum, RecurringRefreshService, RecurringService } from '../src/index';
 import { RecurringRepository } from '../src/repository/recurring.repository';
 
-import { ACTIVE_CONFIDENCE, DEFAULT_INSTRUMENT_ID, JUNE, NOW, seedCharges, seedSavedSeries } from './recurring-seed';
-import { TestLayer, detectAt, findSeries, renameSeries, setUserState, testDb, testSeedService } from './test-context';
+import {
+    ACTIVE_CONFIDENCE,
+    DEFAULT_INSTRUMENT_ID,
+    JUNE,
+    NOW,
+    TestLayer,
+    detectAt,
+    findSeries,
+    renameSeries,
+    seedCharges,
+    seedSavedSeries,
+    setUserState,
+    testDb,
+    testSeedService
+} from './test-context';
 
 import type { RecurringCalendarDataInterface } from '../src/index';
 
@@ -150,7 +163,7 @@ const seedTransitTickets = (seed: Effect.Success<ReturnType<typeof seedCharges>>
 
 const trackedEntries = (data: RecurringCalendarDataInterface) =>
     Effect.map(
-        Effect.flatMap(RecurringRepository, repository => repository.findLinks()),
+        Effect.flatMap(RecurringRepository, repository => repository.findLinks),
         links => allEntries(data).filter(entry => links.some(link => link.seriesId === entry.seriesId))
     );
 

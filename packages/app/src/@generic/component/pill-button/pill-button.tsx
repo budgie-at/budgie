@@ -33,12 +33,10 @@ const containerVariants = cva('min-h-[52px] items-center justify-center rounded-
 
 const labelVariants = cva('text-center text-[17px] font-semibold', {
     variants: {
-        variant: { primary: '', destructive: '' },
+        variant: { primary: 'text-cta-foreground', destructive: '' },
         isDisabled: { true: '', false: '' }
     },
     compoundVariants: [
-        { variant: 'primary', isDisabled: false, className: 'text-cta-foreground' },
-        { variant: 'primary', isDisabled: true, className: 'text-cta-foreground' },
         { variant: 'destructive', isDisabled: false, className: 'text-white' },
         { variant: 'destructive', isDisabled: true, className: 'text-primary/70' }
     ]

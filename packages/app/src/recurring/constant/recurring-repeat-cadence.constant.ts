@@ -4,10 +4,8 @@ import { RecurringRepeatChoiceEnum } from '../enum/recurring-repeat-choice.enum'
 
 import type { RecurringSeriesEntityInterface } from '@budgie/contracts';
 
-type PresetRepeatChoice = Exclude<RecurringRepeatChoiceEnum, RecurringRepeatChoiceEnum.CUSTOM>;
-
 export const RECURRING_REPEAT_CADENCE: Record<
-    PresetRepeatChoice,
+    Exclude<RecurringRepeatChoiceEnum, RecurringRepeatChoiceEnum.CUSTOM>,
     Pick<RecurringSeriesEntityInterface, 'cadenceUnit' | 'cadenceInterval'>
 > = {
     [RecurringRepeatChoiceEnum.WEEKLY]: { cadenceUnit: RecurringCadenceUnitEnum.WEEK, cadenceInterval: 1 },

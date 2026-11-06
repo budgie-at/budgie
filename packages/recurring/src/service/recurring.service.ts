@@ -9,12 +9,14 @@ import {
 } from '@budgie/contracts';
 import { startOfDay } from 'date-fns/startOfDay';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Option from 'effect/Option';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { RECURRING_TRACKED_KINDS } from '../constant/recurring-tracked-kinds.constant';
 import { RecurringSeriesNotFoundError } from '../error/recurring-series-not-found.error';
 import { RecurringTransactionNotFoundError } from '../error/recurring-transaction-not-found.error';
 import { RecurringRepository } from '../repository/recurring.repository';
@@ -24,6 +26,7 @@ import { projectRecurringMonth } from '../series/recurring-projection';
 import { cadencePeriodDays, monthlyEquivalent, nearestCycleDate, nextOccurrences } from '../series/recurring-schedule';
 import { counterpartyKey, description, identity } from '../series/recurring-series';
 import { isSeriesActiveNow } from '../series/recurring-state';
+import { chargeKey } from '../utils/charge-key.util';
 import { normalizeRecurringDescription } from '../utils/normalize-recurring-description.util';
 
 import { RecurringRefreshService } from './recurring-refresh.service';
@@ -37,12 +40,9 @@ import type { RecurringSeriesListItemInterface } from '../interface/recurring-se
 import type { RecurringUpdateInputInterface } from '../interface/recurring-update-input.interface';
 import type { RecurringSeriesEntityInterface } from '@budgie/contracts';
 
-const TRACKED_KINDS = [RecurringSeriesKindEnum.EXPENSE, RecurringSeriesKindEnum.INCOME] as const;
 const NEXT_DATES_COUNT = 3;
 const NEXT_DATES_LOOKAHEAD = 24;
 const FITTING_AMOUNT_RATIO = 0.1;
-
-const chargeKey = (kind: RecurringSeriesKindEnum, transactionId: number): string => `${kind}:${transactionId}`;
 
 export class RecurringService extends Context.Service<RecurringService>()('@budgie/recurring/RecurringService', {
     make: Effect.gen(function* () {
@@ -53,10 +53,8 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
         const loadModels = Effect.fnUntraced(function* () {
             const { defaultInstrumentId, language } = yield* settingsRepository.getSettings();
             const rows = yield* recurringRepository.findSeriesRows(defaultInstrumentId, language);
-            const links = yield* recurringRepository.findLinks();
-            const charges = (yield* Effect.forEach(TRACKED_KINDS, kind =>
-                recurringRepository.findLinkedCharges(defaultInstrumentId, language, kind)
-            )).flat();
+            const links = yield* recurringRepository.findLinks;
+            const charges = yield* recurringRepository.findLinkedCharges(defaultInstrumentId, language);
             const chargeByKey = new Map(charges.map(charge => [chargeKey(charge.kind, charge.transactionId), charge]));
             const models: RecurringReadModelInterface[] = rows.map(series => ({
                 series: { ...series, defaultAmount: Math.round(series.defaultAmount) },
@@ -121,7 +119,7 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
         const requireSeries = Effect.fnUntraced(function* (seriesId: number) {
             const series = yield* recurringRepository.findSeriesById(seriesId);
 
-            return isDefined(series) ? series : yield* new RecurringSeriesNotFoundError({ seriesId });
+            return isDefined(series) ? series : yield* RecurringSeriesNotFoundError.make({ seriesId });
         });
 
         const findCharge = Effect.fnUntraced(function* (transactionId: number, kinds: readonly RecurringSeriesKindEnum[]) {
@@ -131,7 +129,7 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
             );
             const charge = charges.find(isDefined);
 
-            return isDefined(charge) ? charge : yield* new RecurringTransactionNotFoundError({ transactionId });
+            return isDefined(charge) ? charge : yield* RecurringTransactionNotFoundError.make({ transactionId });
         });
 
         const attachTransaction = Effect.fnUntraced(function* (series: RecurringSeriesEntityInterface, charge: RecurringChargeInterface) {
@@ -215,10 +213,11 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
                 const model = models.find(({ series }) => series.id === seriesId);
 
                 if (!isDefined(model)) {
-                    return yield* new RecurringSeriesNotFoundError({ seriesId });
+                    return yield* RecurringSeriesNotFoundError.make({ seriesId });
                 }
                 const detail: RecurringSeriesDetailInterface = {
                     series: toListItem(model, defaultInstrumentId, now),
+                    anchorDate: model.series.anchorDate,
                     nextDates: upcomingDates(model, now, NEXT_DATES_COUNT),
                     history: [...model.links]
                         .sort((first, second) => second.charge.operatedAt.getTime() - first.charge.operatedAt.getTime())
@@ -235,9 +234,7 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
 
                 return detail;
             }),
-            createManual: Effect.fn('RecurringService.createManual')(function* (input: RecurringManualInputInterface) {
-                return yield* createManualSeries(input, '');
-            }),
+            createManual: (input: RecurringManualInputInterface) => createManualSeries(input, ''),
             update: Effect.fn('RecurringService.update')(function* (seriesId: number, patch: RecurringUpdateInputInterface) {
                 const series = yield* requireSeries(seriesId);
                 const hasCadencePatch = isDefined(patch.cadenceUnit) || isDefined(patch.cadenceInterval);
@@ -283,10 +280,10 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
 
                     return removal;
                 }
-                const deletedAt = new Date();
+                const deletedAt = yield* DateTime.nowAsDate;
                 yield* Db.transaction(
                     Effect.gen(function* () {
-                        const links = (yield* recurringRepository.findLinks()).filter(link => link.seriesId === seriesId);
+                        const links = (yield* recurringRepository.findLinks).filter(link => link.seriesId === seriesId);
                         yield* recurringRepository.setLinksDeletedAt(
                             links.map(link => link.id),
                             deletedAt
@@ -308,7 +305,7 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
                 return yield* Db.transaction(
                     Effect.gen(function* () {
                         const liveTransactions = new Set(
-                            (yield* recurringRepository.findLinks()).filter(link => !link.isExcluded).map(link => link.transactionId)
+                            (yield* recurringRepository.findLinks).filter(link => !link.isExcluded).map(link => link.transactionId)
                         );
                         const links = yield* recurringRepository.findLinksDeletedAt(seriesId, deletedAt);
                         yield* recurringRepository.setLinksDeletedAt(
@@ -362,7 +359,7 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
                     : null;
             }),
             fittingSeries: Effect.fn('RecurringService.fittingSeries')(function* (transactionId: number, now: Date) {
-                const charge = yield* findCharge(transactionId, TRACKED_KINDS);
+                const charge = yield* findCharge(transactionId, RECURRING_TRACKED_KINDS);
                 const { models, defaultInstrumentId } = yield* loadModels();
                 const chargeIdentity = identity(charge);
                 const normalizedDescription = normalizeRecurringDescription(description(charge));
@@ -386,7 +383,9 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
                             isMerchant,
                             gap,
                             isCloseAmount:
-                                model.series.categoryId === charge.categoryId && gap <= model.series.defaultAmount * FITTING_AMOUNT_RATIO
+                                isDefined(charge.categoryId) &&
+                                model.series.categoryId === charge.categoryId &&
+                                gap <= model.series.defaultAmount * FITTING_AMOUNT_RATIO
                         };
                     })
                     .filter(({ isMerchant, isCloseAmount }) => isMerchant || isCloseAmount)
@@ -401,8 +400,8 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
 
                 return yield* Db.transaction(
                     Effect.gen(function* () {
-                        const links = yield* recurringRepository.findLinks();
-                        const dismissed = (yield* recurringRepository.findAllSeries()).filter(
+                        const links = yield* recurringRepository.findLinks;
+                        const dismissed = (yield* recurringRepository.findAllSeries).filter(
                             series =>
                                 series.source === RecurringSeriesSourceEnum.DETECTED &&
                                 series.userState === RecurringSeriesUserStateEnum.DISMISSED &&

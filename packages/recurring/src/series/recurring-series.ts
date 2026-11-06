@@ -6,30 +6,30 @@ import * as Arr from 'effect/Array';
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { RECURRING_AMOUNT_RATIO } from '../constant/recurring-amount-ratio.constant';
+import { CADENCES } from '../constant/recurring-cadences.constant';
 import { normalizeRecurringDescription } from '../utils/normalize-recurring-description.util';
 
 import { continueRecurringSeries } from './recurring-continuation';
-import { DISPLAY_TOKEN_SEPARATOR, IDENTITY_TOKEN_SEPARATOR, cleanDescriptionTokens } from './recurring-tokens';
 
 import type { RecurringCadenceInterface } from '../interface/recurring-cadence.interface';
 import type { RecurringChargeInterface } from '../interface/recurring-charge.interface';
 import type { RecurringSeriesEventInterface } from '../interface/recurring-series-event.interface';
 import type { RecurringSeriesInterface } from '../interface/recurring-series.interface';
 
-export const DAYS_PER_MONTH = 30.44;
+const LEGACY_STOP_TOKENS = new Set('GMBH AG KG CO INC LTD LLC OG ФОП ТОВ ПП ПАТ АТ ВІД'.split(' '));
+const IDENTITY_TOKEN_SEPARATOR = /[^\p{L}\p{N}]+/u;
+const DISPLAY_TOKEN_SEPARATOR = /(?:[^\p{L}\p{N}'’]|(?<![\p{L}\p{N}])['’]|['’](?![\p{L}\p{N}]))+/u;
+
+const cleanDescriptionTokens = (text: string, referenceTail: RegExp, numericToken: RegExp, separator: RegExp): string[] =>
+    text
+        .replace(referenceTail, '')
+        .replaceAll(/\bGES\.?\s*M\.?\s*B\.?\s*H\.?/giu, ' ')
+        .split(separator)
+        .filter(token => isNotEmptyString(token) && !numericToken.test(token) && !LEGACY_STOP_TOKENS.has(token.toUpperCase()));
 const RECENT_INTERVAL_COUNT = 4;
 const RECENT_AMOUNT_COUNT = 3;
 export const PRICE_CHANGE_RATIO = 0.05;
 export const ACTIVE_PERIOD_RATIO = 1.5;
-export const CADENCES: readonly RecurringCadenceInterface[] = [
-    { periodMonths: null, periodDays: 7, toleranceDays: 1 },
-    { periodMonths: null, periodDays: 14, toleranceDays: 2 },
-    { periodMonths: 1, periodDays: DAYS_PER_MONTH, toleranceDays: 4 },
-    { periodMonths: 2, periodDays: DAYS_PER_MONTH * 2, toleranceDays: 7 },
-    { periodMonths: 3, periodDays: DAYS_PER_MONTH * 3, toleranceDays: 8 },
-    { periodMonths: 6, periodDays: DAYS_PER_MONTH * 6, toleranceDays: 10 },
-    { periodMonths: 12, periodDays: DAYS_PER_MONTH * 12, toleranceDays: 10 }
-];
 
 const median = (values: readonly number[]): number => {
     const sorted = [...values].sort((first, second) => first - second);

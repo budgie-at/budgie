@@ -16,4 +16,3 @@ export type { RecurringHistoryItemInterface } from './interface/recurring-histor
 export type { RecurringManualInputInterface } from './interface/recurring-manual-input.interface';
 export type { RecurringUpdateInputInterface } from './interface/recurring-update-input.interface';
 export type { RecurringRemovalInterface } from './interface/recurring-removal.interface';
-export type { RecurringRefreshSummaryInterface } from './interface/recurring-refresh-summary.interface';
