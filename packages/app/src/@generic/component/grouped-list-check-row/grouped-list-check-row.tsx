@@ -1,7 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
-
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { GroupedListRow } from '../grouped-list-row/grouped-list-row';
