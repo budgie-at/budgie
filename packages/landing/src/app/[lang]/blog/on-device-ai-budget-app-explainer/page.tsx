@@ -94,15 +94,15 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
                     <BlogArticleProse>
                         <Trans>
                             Budgie takes a different approach. Every AI feature — category suggestions, tag suggestions, merchant name
-                            clean-up, and voice transaction entry — runs entirely on your device. Your spending data is never sent to a remote
-                            service to be processed.
+                            clean-up, and voice transaction entry — runs entirely on your device. Your spending data is never sent to a
+                            remote service to be processed.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            This article explains what that actually means: what happens on the phone, what is never sent to a provider, what
-                            it costs in storage and battery, what the AI can and cannot do, and how your corrections make it better.
+                            This article explains what that actually means: what happens on the phone, what is never sent to a provider,
+                            what it costs in storage and battery, what the AI can and cannot do, and how your corrections make it better.
                         </Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
@@ -435,7 +435,8 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
                         <BlogArticleListItem>
                             <Trans>
                                 <strong>The learned index lives with your data</strong> — What Budgie learns from your history is stored on
-                                the device alongside your transactions, encrypted the moment you set a PIN, and synced only through your own iCloud.
+                                the device alongside your transactions, encrypted the moment you set a PIN, and synced only through your own
+                                iCloud.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>

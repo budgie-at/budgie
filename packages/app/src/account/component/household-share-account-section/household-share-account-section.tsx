@@ -33,7 +33,7 @@ export const HouseholdShareAccountSection = ({ accountId, isBankSynced }: Props)
 
     const isSharedByOther = status.state === HouseholdShareStateEnum.SHARED_BY_OTHER;
     const isSharedByEverything = !isSharedByOther && isDefined(everything) && everything.isEnabled;
-    const isShared = draft ?? (status.state === HouseholdShareStateEnum.SHARED_BY_ME);
+    const isShared = draft ?? status.state === HouseholdShareStateEnum.SHARED_BY_ME;
     const isToggleable = !isSharedByOther && !isSharedByEverything;
     const isSyncedByOther = isBankSynced && isSharedByOther && isDefined(status.ownerName);
     const sharedFooter = isShared ? t`Turn off to remove it from family devices.` : null;

@@ -22,6 +22,10 @@ export const GroupedListSection = ({ title, footer, children }: Props) => (
             <View className="-mt-px">{children}</View>
         </View>
 
-        {isString(footer) ? <Text className="text-secondary-foreground px-3xl pt-md pb-md text-[13px] leading-[18px]">{footer}</Text> : footer}
+        {isString(footer) ? (
+            <Text className="text-secondary-foreground px-3xl pt-md pb-md text-[13px] leading-[18px]">{footer}</Text>
+        ) : (
+            footer
+        )}
     </View>
 );

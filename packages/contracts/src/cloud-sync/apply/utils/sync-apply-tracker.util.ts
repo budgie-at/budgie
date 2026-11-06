@@ -3,8 +3,8 @@ import { isDefined, isEmptyArray } from '@rnw-community/shared';
 import type { SyncApplyResultInterface } from '../interface/sync-apply-result.interface';
 import type { SyncDerivedMergeInterface } from '../interface/sync-derived-merge.interface';
 import type { SyncPausedZoneInterface } from '../interface/sync-paused-zone.interface';
-import type { SyncRejectedRecordInterface } from '../interface/sync-rejected-record.interface';
 import type { SyncReenqueuedRecordInterface } from '../interface/sync-reenqueued-record.interface';
+import type { SyncRejectedRecordInterface } from '../interface/sync-rejected-record.interface';
 
 export class SyncApplyTracker {
     private readonly touchedByType = new Map<string, Set<string>>();

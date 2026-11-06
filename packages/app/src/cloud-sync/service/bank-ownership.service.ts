@@ -7,10 +7,9 @@ import * as Layer from 'effect/Layer';
 import * as Option from 'effect/Option';
 import * as Schema from 'effect/Schema';
 
+import { InstallIdService } from '../../cloud-backup/service/install-id.service';
 import { CloudSyncDeviceRecordSchema } from '../constant/cloud-sync-device-record-schema.constant';
 import { CLOUD_SYNC_RECORDS } from '../constant/cloud-sync-records.constant';
-
-import { InstallIdService } from '../../cloud-backup/service/install-id.service';
 
 export class BankOwnershipService extends Context.Service<BankOwnershipService>()('@budgie/app/BankOwnershipService', {
     make: Effect.gen(function* () {

@@ -16,9 +16,7 @@ export const ICloudDataSection = () => {
     const { t } = useLingui();
     const { isAvailable, isLoading } = useICloudAccount();
 
-    const footer = isAvailable
-        ? null
-        : t`iCloud backup, sync and family sharing need an Apple Account. Sign in from the Settings app.`;
+    const footer = isAvailable ? null : t`iCloud backup, sync and family sharing need an Apple Account. Sign in from the Settings app.`;
 
     return (
         <LayoutAnimationConfig skipEntering>
@@ -34,7 +32,12 @@ export const ICloudDataSection = () => {
                                 <ICloudRestoreRow />
                             </Animated.View>
                         ) : (
-                            <Animated.View key="signed-out" entering={PRESENCE_ENTERING} exiting={PRESENCE_EXITING} layout={PRESENCE_LAYOUT}>
+                            <Animated.View
+                                key="signed-out"
+                                entering={PRESENCE_ENTERING}
+                                exiting={PRESENCE_EXITING}
+                                layout={PRESENCE_LAYOUT}
+                            >
                                 <ICloudSignInRow />
                                 <FamilyRow />
                             </Animated.View>

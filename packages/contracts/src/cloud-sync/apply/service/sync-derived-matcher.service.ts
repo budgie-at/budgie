@@ -92,7 +92,10 @@ export class SyncDerivedMatcherService extends Context.Service<SyncDerivedMatche
             yield* Db.mutation(
                 { type: 'update', tables: ['recurring_series'] },
                 Db.query(db =>
-                    db.$client.unsafe(`UPDATE recurring_series SET deleted_at = ? WHERE rowid IN (${loserPlaceholders})`, [mergedAt, ...loserIds])
+                    db.$client.unsafe(`UPDATE recurring_series SET deleted_at = ? WHERE rowid IN (${loserPlaceholders})`, [
+                        mergedAt,
+                        ...loserIds
+                    ])
                 )
             );
 
@@ -104,7 +107,9 @@ export class SyncDerivedMatcherService extends Context.Service<SyncDerivedMatche
         });
 
         return {
-            mergeRecurringSeries: Effect.fn('SyncDerivedMatcherService.mergeRecurringSeries')(function* (touchedSyncIds: readonly string[]) {
+            mergeRecurringSeries: Effect.fn('SyncDerivedMatcherService.mergeRecurringSeries')(function* (
+                touchedSyncIds: readonly string[]
+            ) {
                 if (isEmptyArray(touchedSyncIds)) {
                     return [];
                 }

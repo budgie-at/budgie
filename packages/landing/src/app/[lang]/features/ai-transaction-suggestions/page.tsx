@@ -181,8 +181,8 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
                     </p>
                     <p>
                         <Trans>
-                            Suggestions are made on your device. Your transaction history is never sent anywhere to generate them, and
-                            the suggestions improve as you add more entries.
+                            Suggestions are made on your device. Your transaction history is never sent anywhere to generate them, and the
+                            suggestions improve as you add more entries.
                         </Trans>
                     </p>
                 </FeatureDetails.Item>

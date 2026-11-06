@@ -5,7 +5,7 @@ import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util
 
 export const householdRegistryRoleAtom = databaseQueryAtom(
     [SyncZoneRegistryEntityTable],
-    Effect.flatMap(SyncZoneRegistryRepository, syncZoneRegistryRepository => syncZoneRegistryRepository.findByLabel(HOUSEHOLD_SYNC_ZONE)).pipe(
-        Effect.map(household => household?.role ?? null)
-    )
+    Effect.flatMap(SyncZoneRegistryRepository, syncZoneRegistryRepository =>
+        syncZoneRegistryRepository.findByLabel(HOUSEHOLD_SYNC_ZONE)
+    ).pipe(Effect.map(household => household?.role ?? null))
 );

@@ -158,8 +158,8 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                     </p>
                     <p>
                         <Trans>
-                            Everything runs on your device. No network call, no vendor profiling. Nothing about your tags is sent
-                            anywhere to make them — every suggestion comes from the tags you already use in Budgie.
+                            Everything runs on your device. No network call, no vendor profiling. Nothing about your tags is sent anywhere
+                            to make them — every suggestion comes from the tags you already use in Budgie.
                         </Trans>
                     </p>
                 </FeatureDetails.Item>

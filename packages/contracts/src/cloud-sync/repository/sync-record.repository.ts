@@ -6,15 +6,14 @@ import * as Layer from 'effect/Layer';
 import { Db } from '../../@generic/service/db.service';
 import { SyncRecordEntityTable } from '../table/sync-record-entity.table';
 
-import type { SyncRecordEntityInterface } from '../entity/sync-record-entity.interface';
 import type { SyncRecordCreateEntityInterface } from '../entity/sync-record-create-entity.interface';
+import type { SyncRecordEntityInterface } from '../entity/sync-record-entity.interface';
 
 export class SyncRecordRepository extends Context.Service<SyncRecordRepository>()('@budgie/contracts/SyncRecordRepository', {
     make: Effect.succeed({
         find: (syncZone: string, syncId: string) =>
             Db.query(db => db.query.SyncRecordEntityTable.findFirst({ where: { syncZone, syncId } })),
-        findByRecordType: (recordType: string) =>
-            Db.query(db => db.query.SyncRecordEntityTable.findMany({ where: { recordType } })),
+        findByRecordType: (recordType: string) => Db.query(db => db.query.SyncRecordEntityTable.findMany({ where: { recordType } })),
         upsert: (input: SyncRecordCreateEntityInterface) =>
             Db.query(db =>
                 db

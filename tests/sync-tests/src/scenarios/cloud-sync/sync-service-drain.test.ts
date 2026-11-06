@@ -1,6 +1,6 @@
+import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { cloudSyncStatusAtom } from '@app/cloud-sync/constant/cloud-sync-status-atom.constant';
 import { CloudSyncStatusEnum } from '@app/cloud-sync/enum/cloud-sync-status.enum';
-import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { CloudSyncService } from '@app/cloud-sync/service/cloud-sync.service';
 import {
     HOUSEHOLD_SYNC_ZONE,
@@ -27,7 +27,9 @@ const readOutboxCount = testDb.$client
 
 const readSystemFields = (recordName: string) =>
     testDb.$client
-        .unsafe<{ readonly systemFields: string | null }>('SELECT system_fields AS systemFields FROM sync_record WHERE sync_id = ?', [recordName])
+        .unsafe<{ readonly systemFields: string | null }>('SELECT system_fields AS systemFields FROM sync_record WHERE sync_id = ?', [
+            recordName
+        ])
         .pipe(Effect.map(([row]) => row?.systemFields ?? null));
 
 const flatten = (batches: readonly (readonly ICloudRecordPayload[])[]) => batches.flat();
@@ -41,7 +43,12 @@ describe('cloud-sync/sync-service drain', () => {
                 const service = yield* CloudSyncService;
                 const account = yield* seed.account({ title: 'Cash' });
 
-                yield* seed.manualExpense({ accountId: account.id, amount: 5_000_000, operatedAt: new Date('2026-10-02T10:00:00Z'), title: 'Cafe' });
+                yield* seed.manualExpense({
+                    accountId: account.id,
+                    amount: 5_000_000,
+                    operatedAt: new Date('2026-10-02T10:00:00Z'),
+                    title: 'Cafe'
+                });
                 yield* service.reconfigure();
 
                 expect(context.transport.calls.ensuredZones).toEqual(['Personal']);
@@ -90,14 +97,22 @@ describe('cloud-sync/sync-service drain', () => {
 
                 const account = yield* seed.account({ title: 'Joint' });
 
-                yield* seed.manualExpense({ accountId: account.id, amount: 5_000_000, operatedAt: new Date('2026-10-02T10:00:00Z'), title: 'Cafe' });
+                yield* seed.manualExpense({
+                    accountId: account.id,
+                    amount: 5_000_000,
+                    operatedAt: new Date('2026-10-02T10:00:00Z'),
+                    title: 'Cafe'
+                });
                 yield* service.reconfigure();
-                yield* service.handleSentChanges(sentEvent({ savedRecords: savedFrom(context.transport.calls.savedBatches[0], 'system-meta') }));
+                yield* service.handleSentChanges(
+                    sentEvent({ savedRecords: savedFrom(context.transport.calls.savedBatches[0], 'system-meta') })
+                );
 
                 const uploaded = flatten(context.transport.calls.savedBatches.slice(1));
-                const [zoneRow] = yield* testDb.$client.unsafe<{ readonly syncZone: string }>('SELECT sync_zone AS syncZone FROM accounts WHERE id = ?', [
-                    account.id
-                ]);
+                const [zoneRow] = yield* testDb.$client.unsafe<{ readonly syncZone: string }>(
+                    'SELECT sync_zone AS syncZone FROM accounts WHERE id = ?',
+                    [account.id]
+                );
 
                 expect(zoneRow.syncZone).toBe(HOUSEHOLD_SYNC_ZONE);
                 expect(uploaded.some(({ recordName, zoneName }) => recordName === account.syncId && zoneName === 'Household')).toBe(true);
@@ -106,7 +121,9 @@ describe('cloud-sync/sync-service drain', () => {
                     [HOUSEHOLD_SYNC_ZONE]
                 );
 
-                expect(uploaded.some(({ recordName, zoneName }) => recordName === transactionRow.syncId && zoneName === 'Household')).toBe(true);
+                expect(uploaded.some(({ recordName, zoneName }) => recordName === transactionRow.syncId && zoneName === 'Household')).toBe(
+                    true
+                );
             })
         );
     });
@@ -121,7 +138,9 @@ describe('cloud-sync/sync-service drain', () => {
 
                 yield* testDb.$client.unsafe('UPDATE accounts SET title = ? WHERE id = ?', ['Mine', account.id]);
                 yield* service.reconfigure();
-                yield* service.handleSentChanges(sentEvent({ savedRecords: savedFrom(context.transport.calls.savedBatches[0], 'system-meta') }));
+                yield* service.handleSentChanges(
+                    sentEvent({ savedRecords: savedFrom(context.transport.calls.savedBatches[0], 'system-meta') })
+                );
 
                 const firstPush = flatten(context.transport.calls.savedBatches.slice(1)).find(({ recordType }) => recordType === 'Account');
 
@@ -178,9 +197,13 @@ describe('cloud-sync/sync-service drain', () => {
 
                 yield* testDb.$client.unsafe('UPDATE accounts SET iban = ? WHERE id = ?', ['DE00', account.id]);
                 yield* service.reconfigure();
-                yield* service.handleSentChanges(sentEvent({ savedRecords: savedFrom(context.transport.calls.savedBatches[0], 'system-meta') }));
+                yield* service.handleSentChanges(
+                    sentEvent({ savedRecords: savedFrom(context.transport.calls.savedBatches[0], 'system-meta') })
+                );
 
-                const firstPush = flatten(context.transport.calls.savedBatches.slice(1)).filter(({ recordType }) => recordType === 'Account');
+                const firstPush = flatten(context.transport.calls.savedBatches.slice(1)).filter(
+                    ({ recordType }) => recordType === 'Account'
+                );
 
                 expect(firstPush[0].encryptedFields['iban']).toBe('DE00');
                 expect('iban' in firstPush[0].encryptedFields && firstPush[0].encryptedFields['iban'] === null).toBe(false);
@@ -224,7 +247,15 @@ describe('cloud-sync/sync-service drain', () => {
                             recordType: 'Account',
                             systemFields: JSON.stringify({ modifiedAt: 10 }),
                             schemaVersion: 1,
-                            encryptedFields: { title: 'From cloud', type: 'CASH', nature: 'ASSET', instrumentCode: 'USD', createdAt: 1_760_000_000_000, updatedAt: 1_760_000_000_000, order: 1 }
+                            encryptedFields: {
+                                title: 'From cloud',
+                                type: 'CASH',
+                                nature: 'ASSET',
+                                instrumentCode: 'USD',
+                                createdAt: 1_760_000_000_000,
+                                updatedAt: 1_760_000_000_000,
+                                order: 1
+                            }
                         }
                     ],
                     deletions: [],
@@ -250,17 +281,23 @@ describe('cloud-sync/sync-service drain', () => {
 
                 yield* TestClock.setTime(Date.now());
                 yield* service.reconfigure();
-                yield* service.handleSentChanges(sentEvent({ savedRecords: savedFrom(context.transport.calls.savedBatches[0], 'system-meta') }));
+                yield* service.handleSentChanges(
+                    sentEvent({ savedRecords: savedFrom(context.transport.calls.savedBatches[0], 'system-meta') })
+                );
 
                 const heartbeat = flatten(context.transport.calls.savedBatches).find(({ recordType }) => recordType === 'SyncDevice');
 
                 expect(heartbeat?.recordName).toBe('install-a');
                 expect(heartbeat?.encryptedFields['installId']).toBe('install-a');
 
-                yield* service.handleSentChanges(sentEvent({ savedRecords: savedFrom(heartbeat === undefined ? [] : [heartbeat], 'system-device') }));
+                yield* service.handleSentChanges(
+                    sentEvent({ savedRecords: savedFrom(heartbeat === undefined ? [] : [heartbeat], 'system-device') })
+                );
                 yield* service.drain();
 
-                expect(flatten(context.transport.calls.savedBatches).filter(({ recordType }) => recordType === 'SyncDevice')).toHaveLength(1);
+                expect(flatten(context.transport.calls.savedBatches).filter(({ recordType }) => recordType === 'SyncDevice')).toHaveLength(
+                    1
+                );
             })
         );
     });

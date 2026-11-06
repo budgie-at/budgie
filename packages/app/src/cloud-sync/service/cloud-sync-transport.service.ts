@@ -75,7 +75,8 @@ export class CloudSyncTransport extends Context.Service<CloudSyncTransport>()('@
         return {
             events,
             getAccountStatus: () => call(() => icloud.getAccountStatus()),
-            startSync: (scope: ICloudSyncScope, stateSerialization: string | null) => call(() => icloud.startSync(scope, stateSerialization)),
+            startSync: (scope: ICloudSyncScope, stateSerialization: string | null) =>
+                call(() => icloud.startSync(scope, stateSerialization)),
             stopSync: (scope: ICloudSyncScope) => call(() => icloud.stopSync(scope)),
             syncNow: (scope: ICloudSyncScope) => call(() => icloud.syncNow(scope)),
             ensureZone: (scope: ICloudSyncScope, zoneName: string) => call(() => icloud.ensureZone(scope, zoneName)),
@@ -98,4 +99,3 @@ export class CloudSyncTransport extends Context.Service<CloudSyncTransport>()('@
 }) {
     static readonly layer = Layer.effect(CloudSyncTransport, CloudSyncTransport.make);
 }
-

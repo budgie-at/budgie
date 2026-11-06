@@ -4,11 +4,11 @@ import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 
+import { isRecord } from '@rnw-community/shared';
+
 import { testDb } from '../../harness';
 
 import { expectBalancesMatchLedger, onDevice, pullDevice, pushDevice, readOutboxRows, refreshAllBalances } from './apply-harness';
-
-import { isRecord } from '@rnw-community/shared';
 
 import type { DB } from '@budgie/contracts';
 
@@ -19,7 +19,10 @@ const jsonRecord = Schema.fromJsonString(Schema.Record(Schema.String, Schema.Unk
 const readEnvelope = (database: DB, recordType: string) =>
     database.$client
         .unsafe<{ readonly payload: string }>(`SELECT payload FROM sync_record WHERE record_type = ? LIMIT 1`, [recordType])
-        .pipe(Effect.flatMap(([row]) => Schema.decodeUnknownEffect(jsonRecord)(row.payload)), Effect.orDie);
+        .pipe(
+            Effect.flatMap(([row]) => Schema.decodeUnknownEffect(jsonRecord)(row.payload)),
+            Effect.orDie
+        );
 
 const withFields = (envelope: Record<string, unknown>, patch: Record<string, unknown>, overrides: Record<string, unknown> = {}) => {
     const fields = envelope['encryptedFields'];
@@ -72,7 +75,13 @@ describe('cloud-sync/apply-versioning', () => {
                 yield* deviceB.$client.unsafe(`UPDATE transactions SET title = 'Edited on B'`);
                 yield* testDb.$client.unsafe(`UPDATE transactions SET title = 'Remote' WHERE id = ?`, [transaction.id]);
                 yield* pushDevice(testDb, cloud);
-                cloud.upload([withFields(tagEnvelope, { unknownField: 'kept', title: 'Fresh' }, { schemaVersion: 2, recordName: '0192a000-0000-7000-8000-00000000f00d' })]);
+                cloud.upload([
+                    withFields(
+                        tagEnvelope,
+                        { unknownField: 'kept', title: 'Fresh' },
+                        { schemaVersion: 2, recordName: '0192a000-0000-7000-8000-00000000f00d' }
+                    )
+                ]);
 
                 const results = yield* pullDevice(deviceB, cloud, DEVICE_B);
                 const last = results[results.length - 1];
@@ -82,12 +91,22 @@ describe('cloud-sync/apply-versioning', () => {
                 expect(yield* countWhere(deviceB, `tags WHERE title = 'Fresh'`)).toBe(0);
                 expect(yield* countWhere(deviceB, `transactions WHERE title = 'Edited on B'`)).toBe(1);
                 expect((yield* readOutboxRows(deviceB)).length).toBeGreaterThan(0);
-                expect(yield* countWhere(deviceB, `sync_pending WHERE json_extract(payload, '$.encryptedFields.unknownField') = 'kept'`)).toBe(1);
-                expect(yield* onDevice(deviceB, Effect.flatMap(SyncApplyService, service => service.findPausedZones()))).toHaveLength(1);
+                expect(
+                    yield* countWhere(deviceB, `sync_pending WHERE json_extract(payload, '$.encryptedFields.unknownField') = 'kept'`)
+                ).toBe(1);
+                expect(
+                    yield* onDevice(
+                        deviceB,
+                        Effect.flatMap(SyncApplyService, service => service.findPausedZones())
+                    )
+                ).toHaveLength(1);
 
                 yield* deviceB.$client.unsafe(`UPDATE sync_pending SET payload = json_set(payload, '$.schemaVersion', 1)`);
 
-                const resumed = yield* onDevice(deviceB, Effect.flatMap(SyncApplyService, service => service.resume()));
+                const resumed = yield* onDevice(
+                    deviceB,
+                    Effect.flatMap(SyncApplyService, service => service.resume())
+                );
 
                 expect(resumed.pausedZones).toEqual([]);
                 expect(resumed.rejected).toEqual([]);

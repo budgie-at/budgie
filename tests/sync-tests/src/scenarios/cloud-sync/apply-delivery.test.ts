@@ -23,9 +23,12 @@ const seedExpense = Effect.gen(function* () {
 });
 
 const countRows = (database: DB, tableName: string) =>
-    database.$client.unsafe<{ readonly total: number }>(`SELECT COUNT(*) AS total FROM ${tableName}`).pipe(Effect.map(([row]) => row.total));
+    database.$client
+        .unsafe<{ readonly total: number }>(`SELECT COUNT(*) AS total FROM ${tableName}`)
+        .pipe(Effect.map(([row]) => row.total));
 
-const withoutZone = (rows: readonly Record<string, unknown>[]) => rows
+const withoutZone = (rows: readonly Record<string, unknown>[]) =>
+    rows
         .map(row => Object.fromEntries(Object.entries(row).filter(([column]) => column !== 'sync_zone')))
         .sort((left, right) => `${left['sync_id']}`.localeCompare(`${right['sync_id']}`));
 

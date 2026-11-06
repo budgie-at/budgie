@@ -1,5 +1,5 @@
-import { SyncAutomationService } from '@app/cloud-sync-automation/service/sync-automation.service';
 import { SyncAutomationEmbeddingBoost } from '@app/cloud-sync-automation/service/sync-automation-embedding-boost.service';
+import { SyncAutomationService } from '@app/cloud-sync-automation/service/sync-automation.service';
 import { P2pTransferTitleResolver } from '@budgie/consolidation';
 import { Db, RecurringSeriesUserStateEnum, SyncApplyService } from '@budgie/contracts';
 import { LedgerWorkload } from '@budgie/ledger';
@@ -38,7 +38,12 @@ export const onAutomatedDevice = <A, E>(
     effect: Effect.Effect<A, E, Db | SyncApplyService | SyncAutomationService | RecurringService>
 ) => effect.pipe(Effect.provide(automationLayer), Effect.provideService(Db, database));
 
-export const pullWithAutomation = (database: DB, cloud: FakeCloudTransport, deviceId: string, options: FakeCloudDeliveryOptionsInterface = {}) =>
+export const pullWithAutomation = (
+    database: DB,
+    cloud: FakeCloudTransport,
+    deviceId: string,
+    options: FakeCloudDeliveryOptionsInterface = {}
+) =>
     onAutomatedDevice(
         database,
         Effect.gen(function* () {
@@ -113,7 +118,9 @@ export const dismissSeries = (database: DB) =>
         database,
         Effect.gen(function* () {
             const recurringService = yield* RecurringService;
-            const rows = yield* database.$client.unsafe<{ readonly id: number }>(`SELECT id FROM recurring_series WHERE deleted_at IS NULL`);
+            const rows = yield* database.$client.unsafe<{ readonly id: number }>(
+                `SELECT id FROM recurring_series WHERE deleted_at IS NULL`
+            );
 
             for (const { id } of rows) {
                 yield* recurringService.setUserState(id, RecurringSeriesUserStateEnum.DISMISSED);

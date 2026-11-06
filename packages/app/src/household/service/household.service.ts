@@ -3,8 +3,8 @@ import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { CLOUD_SYNC_RECORDS } from '../../cloud-sync/constant/cloud-sync-records.constant';
-import { CloudSyncService } from '../../cloud-sync/service/cloud-sync.service';
 import { CloudSyncTransport } from '../../cloud-sync/service/cloud-sync-transport.service';
+import { CloudSyncService } from '../../cloud-sync/service/cloud-sync.service';
 
 export class HouseholdService extends Context.Service<HouseholdService>()('@budgie/app/HouseholdService', {
     make: Effect.gen(function* () {

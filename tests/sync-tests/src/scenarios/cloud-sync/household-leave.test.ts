@@ -1,7 +1,7 @@
+import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
+import { CloudSyncService } from '@app/cloud-sync/service/cloud-sync.service';
 import { householdStateAtom } from '@app/household/constant/household-state-atom.constant';
 import { HouseholdRoleEnum } from '@app/household/enum/household-role.enum';
-import { CloudSyncService } from '@app/cloud-sync/service/cloud-sync.service';
-import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { FakeCloudTransport, makeTestDbLayer, resetTestDb, TestSeedService } from '@budgie-at/test-kit';
 import { Db, HOUSEHOLD_SYNC_ZONE, PERSONAL_SYNC_ZONE, SyncZoneRegistryRepository } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
@@ -103,7 +103,10 @@ describe('cloud-sync/household leave', () => {
                 });
 
                 yield* testDb.$client.unsafe('UPDATE transactions SET sync_zone = ? WHERE id = ?', [HOUSEHOLD_SYNC_ZONE, later.id]);
-                yield* testDb.$client.unsafe('UPDATE transaction_entries SET sync_zone = ? WHERE transaction_id = ?', [HOUSEHOLD_SYNC_ZONE, later.id]);
+                yield* testDb.$client.unsafe('UPDATE transaction_entries SET sync_zone = ? WHERE transaction_id = ?', [
+                    HOUSEHOLD_SYNC_ZONE,
+                    later.id
+                ]);
                 yield* refreshAllBalances(testDb);
                 yield* pushHouseholdZone(testDb, cloud);
 

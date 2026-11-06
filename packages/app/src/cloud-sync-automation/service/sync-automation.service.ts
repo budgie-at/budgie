@@ -32,7 +32,9 @@ export class SyncAutomationService extends Context.Service<SyncAutomationService
         const embeddingBoost = yield* SyncAutomationEmbeddingBoost;
 
         const settle = <A, E>(effect: Effect.Effect<A, E, Db>, fallback: A) =>
-            Effect.catchCause(effect, cause => (Cause.hasInterruptsOnly(cause) ? Effect.interrupt : Effect.as(Effect.logError(cause), fallback)));
+            Effect.catchCause(effect, cause =>
+                Cause.hasInterruptsOnly(cause) ? Effect.interrupt : Effect.as(Effect.logError(cause), fallback)
+            );
 
         const findLiveTransactions = Effect.fnUntraced(function* (syncIds: readonly string[]) {
             const chunks: string[][] = [];

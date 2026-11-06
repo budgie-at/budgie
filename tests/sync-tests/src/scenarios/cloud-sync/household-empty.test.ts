@@ -1,7 +1,7 @@
+import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { cloudSyncStatusAtom } from '@app/cloud-sync/constant/cloud-sync-status-atom.constant';
 import { CloudSyncStatusEnum } from '@app/cloud-sync/enum/cloud-sync-status.enum';
 import { CloudSyncService } from '@app/cloud-sync/service/cloud-sync.service';
-import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { householdStateAtom } from '@app/household/constant/household-state-atom.constant';
 import { HouseholdRoleEnum } from '@app/household/enum/household-role.enum';
 import { makeTestDbLayer, resetTestDb } from '@budgie-at/test-kit';
@@ -34,7 +34,9 @@ describe('cloud-sync/household empty zone', () => {
 
                     yield* service.prepareHouseholdOwnerZone();
                     yield* service.reconfigure();
-                    yield* service.handleSentChanges(sentEvent({ savedRecords: savedFrom(owner.transport.calls.savedBatches[0], 'system-meta') }));
+                    yield* service.handleSentChanges(
+                        sentEvent({ savedRecords: savedFrom(owner.transport.calls.savedBatches[0], 'system-meta') })
+                    );
                     yield* service.drain();
 
                     const household = yield* registry.findByLabel(HOUSEHOLD_SYNC_ZONE);
@@ -45,7 +47,9 @@ describe('cloud-sync/household empty zone', () => {
                         role: SyncZoneRoleEnum.OWNER
                     });
                     expect(owner.transport.calls.ensuredZones).toContain(HOUSEHOLD_CLOUD_ZONE);
-                    expect(owner.transport.calls.savedBatches.flat().filter(({ zoneName }) => zoneName === HOUSEHOLD_CLOUD_ZONE)).toEqual([]);
+                    expect(owner.transport.calls.savedBatches.flat().filter(({ zoneName }) => zoneName === HOUSEHOLD_CLOUD_ZONE)).toEqual(
+                        []
+                    );
                     expect(owner.transport.calls.sharedStarted).toEqual([]);
                     expect(appAtomRegistry.get(cloudSyncStatusAtom).status).not.toBe(CloudSyncStatusEnum.ERROR);
                     expect(appAtomRegistry.get(householdStateAtom)).toEqual({ role: HouseholdRoleEnum.OWNER, isReady: true });

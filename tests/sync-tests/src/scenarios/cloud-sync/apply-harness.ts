@@ -1,5 +1,4 @@
 import { assertStoredBalancesMatchLedger } from '@budgie-at/test-kit';
-import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import {
     Db,
     SYNC_RECORD_SCHEMA_VERSION,
@@ -8,6 +7,7 @@ import {
     SyncOutboxRepository,
     SyncRecordRepository
 } from '@budgie/contracts';
+import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
@@ -45,8 +45,10 @@ export const deviceLayer = Layer.mergeAll(
     AccountBalanceIncrementalService.layer
 );
 
-export const onDevice = <A, E>(database: DB, effect: Effect.Effect<A, E, Db | SyncApplyService | SyncRecordRepository | SyncOutboxRepository | AccountBalanceIncrementalService>) =>
-    effect.pipe(Effect.provide(deviceLayer), Effect.provideService(Db, database));
+export const onDevice = <A, E>(
+    database: DB,
+    effect: Effect.Effect<A, E, Db | SyncApplyService | SyncRecordRepository | SyncOutboxRepository | AccountBalanceIncrementalService>
+) => effect.pipe(Effect.provide(deviceLayer), Effect.provideService(Db, database));
 
 export const refreshAllBalances = (database: DB) =>
     onDevice(
@@ -119,8 +121,11 @@ export const pullDevice = (database: DB, cloud: FakeCloudTransport, deviceId: st
     );
 
 export const readOutboxRows = (database: DB) =>
-    database.$client.unsafe<{ readonly recordType: string; readonly syncId: string; readonly operation: string; readonly changedColumns: string }>(
-        `SELECT record_type AS recordType, sync_id AS syncId, operation, changed_columns AS changedColumns FROM sync_outbox ORDER BY id`
-    );
+    database.$client.unsafe<{
+        readonly recordType: string;
+        readonly syncId: string;
+        readonly operation: string;
+        readonly changedColumns: string;
+    }>(`SELECT record_type AS recordType, sync_id AS syncId, operation, changed_columns AS changedColumns FROM sync_outbox ORDER BY id`);
 
 export const stateSnapshot = (database: DB) => hydratedSnapshot(database);

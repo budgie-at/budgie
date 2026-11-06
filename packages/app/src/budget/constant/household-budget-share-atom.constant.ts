@@ -1,4 +1,10 @@
-import { BudgetEntityTable, HouseholdShareService, SyncOutboxEntityTable, SyncRecordEntityTable, SyncZoneRegistryEntityTable } from '@budgie/contracts';
+import {
+    BudgetEntityTable,
+    HouseholdShareService,
+    SyncOutboxEntityTable,
+    SyncRecordEntityTable,
+    SyncZoneRegistryEntityTable
+} from '@budgie/contracts';
 
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 

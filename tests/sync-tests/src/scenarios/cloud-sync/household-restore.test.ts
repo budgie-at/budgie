@@ -51,10 +51,12 @@ const startRestore = (database: DB, role: SyncZoneRoleEnum) => {
             });
             context.transport.behavior.zoneMeta = metaWith(yield* identity.ensureLineageId());
             yield* service.reconfigure();
-            context.transport.behavior.zoneInventory = (yield* database.$client.unsafe<{ readonly recordName: string; readonly recordType: string }>(
-                `SELECT sync_id AS recordName, record_type AS recordType FROM sync_record WHERE sync_zone = ?`,
-                [PERSONAL_SYNC_ZONE]
-            )).map(({ recordName, recordType }) => ({ recordName, recordType }));
+            context.transport.behavior.zoneInventory = (yield* database.$client.unsafe<{
+                readonly recordName: string;
+                readonly recordType: string;
+            }>(`SELECT sync_id AS recordName, record_type AS recordType FROM sync_record WHERE sync_zone = ?`, [PERSONAL_SYNC_ZONE])).map(
+                ({ recordName, recordType }) => ({ recordName, recordType })
+            );
             yield* service.handleFetchedChanges(fetchedEvent([metaWith(yield* identity.ensureLineageId())]));
             yield* service.handleDidFetch({ scope: ICloudSyncScope.PRIVATE });
 
@@ -73,7 +75,10 @@ describe('cloud-sync/household restore', () => {
 
                 const restore = startRestore(memberDb, SyncZoneRoleEnum.PARTICIPANT);
 
-                restore.context.transport.behavior.participants = participantsFor(ICloudParticipantRole.OWNER, ICloudParticipantRole.PRIVATE_USER);
+                restore.context.transport.behavior.participants = participantsFor(
+                    ICloudParticipantRole.OWNER,
+                    ICloudParticipantRole.PRIVATE_USER
+                );
                 restore.context.transport.behavior.sharedZoneInventory = [];
 
                 yield* restore.context.run(

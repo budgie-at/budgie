@@ -23,10 +23,16 @@ const OUTBOX_TRIGGERS_MIGRATION = '20261105200520_cloud_sync_outbox_triggers';
 
 const dropOutboxTriggers = testDb.$client
     .unsafe<{ readonly name: string }>(`SELECT name FROM sqlite_master WHERE type = 'trigger' AND name LIKE '%_sync_outbox_%'`)
-    .pipe(Effect.flatMap(triggers => Effect.forEach(triggers, ({ name }) => testDb.$client.unsafe(`DROP TRIGGER ${name}`).raw, { discard: true })));
+    .pipe(
+        Effect.flatMap(triggers =>
+            Effect.forEach(triggers, ({ name }) => testDb.$client.unsafe(`DROP TRIGGER ${name}`).raw, { discard: true })
+        )
+    );
 
 const recreateOutboxTriggers = Effect.forEach(
-    readFileSync(resolve(process.cwd(), '../../packages/app/drizzle', OUTBOX_TRIGGERS_MIGRATION, 'migration.sql'), 'utf8').split('--> statement-breakpoint'),
+    readFileSync(resolve(process.cwd(), '../../packages/app/drizzle', OUTBOX_TRIGGERS_MIGRATION, 'migration.sql'), 'utf8').split(
+        '--> statement-breakpoint'
+    ),
     statement => testDb.$client.unsafe(statement).raw,
     { discard: true }
 );

@@ -19,7 +19,8 @@ export const HouseholdShareAccountRow = ({ value, onChange }: Props) => {
     const { otherParticipants, isKnown } = useHouseholdParticipants();
     const { isAvailable } = useICloudAccount();
 
-    const subtitle = isAvailable && isKnown && isNotEmptyArray(otherParticipants) ? t`Family can edit it` : t`Family you invite can edit it`;
+    const subtitle =
+        isAvailable && isKnown && isNotEmptyArray(otherParticipants) ? t`Family can edit it` : t`Family you invite can edit it`;
 
     return (
         <GroupedListSwitchRow

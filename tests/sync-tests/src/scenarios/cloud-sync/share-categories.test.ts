@@ -6,7 +6,16 @@ import * as Effect from 'effect/Effect';
 import { testDb } from '../../harness';
 
 import { expectBalancesMatchLedger, refreshAllBalances } from './apply-harness';
-import { HOUSEHOLD_ZONE, PERSONAL_ZONE, countRows, onShareDevice, prepareHousehold, pullZones, queryRows, uploadDevice } from './share-harness';
+import {
+    HOUSEHOLD_ZONE,
+    PERSONAL_ZONE,
+    countRows,
+    onShareDevice,
+    prepareHousehold,
+    pullZones,
+    queryRows,
+    uploadDevice
+} from './share-harness';
 
 import type { ShareCloudsInterface } from './share-harness';
 import type { DB } from '@budgie/contracts';
@@ -24,14 +33,23 @@ const shareGroceriesAccount = Effect.gen(function* () {
     const seed = new TestSeedService(testDb);
     const joint = yield* seed.account({ title: 'Joint' });
 
-    yield* seed.manualExpense({ accountId: joint.id, amount: 5_000_000, operatedAt: OPERATED_AT, title: 'Lunch', categoryId: GROCERIES_ID });
+    yield* seed.manualExpense({
+        accountId: joint.id,
+        amount: 5_000_000,
+        operatedAt: OPERATED_AT,
+        title: 'Lunch',
+        categoryId: GROCERIES_ID
+    });
     yield* refreshAllBalances(testDb);
 
     return joint;
 });
 
 const shareAccount = (database: DB, accountId: number) =>
-    onShareDevice(database, Effect.flatMap(HouseholdShareService, service => service.shareAccount(accountId)));
+    onShareDevice(
+        database,
+        Effect.flatMap(HouseholdShareService, service => service.shareAccount(accountId))
+    );
 
 describe('cloud-sync/share-categories', () => {
     it.layer(makeTestDbLayer(null), { excludeTestServices: true })('two devices', it => {
@@ -81,7 +99,9 @@ describe('cloud-sync/share-categories', () => {
                 const clouds: ShareCloudsInterface = { personal: new FakeCloudTransport(), household: new FakeCloudTransport() };
 
                 yield* prepareHousehold(deviceB, SyncZoneRoleEnum.PARTICIPANT);
-                yield* testDb.$client.unsafe(`UPDATE categories SET title = 'Supermarket', title_search = 'supermarket' WHERE id = ?`, [GROCERIES_ID]);
+                yield* testDb.$client.unsafe(`UPDATE categories SET title = 'Supermarket', title_search = 'supermarket' WHERE id = ?`, [
+                    GROCERIES_ID
+                ]);
 
                 const joint = yield* shareGroceriesAccount;
 
@@ -102,7 +122,10 @@ describe('cloud-sync/share-categories', () => {
                     { title: 'Supermarket', zone: PERSONAL_ZONE }
                 ]);
                 expect(
-                    yield* queryRows(deviceB, `SELECT c.title AS title FROM transaction_entries e INNER JOIN categories c ON c.id = e.category_id`)
+                    yield* queryRows(
+                        deviceB,
+                        `SELECT c.title AS title FROM transaction_entries e INNER JOIN categories c ON c.id = e.category_id`
+                    )
                 ).toEqual([{ title: 'Supermarket XL' }]);
                 yield* expectBalancesMatchLedger(deviceB);
             })

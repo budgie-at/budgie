@@ -6,7 +6,16 @@ import * as Effect from 'effect/Effect';
 import { testDb } from '../../harness';
 
 import { expectBalancesMatchLedger, refreshAllBalances } from './apply-harness';
-import { HOUSEHOLD_ZONE, PERSONAL_ZONE, countRows, onShareDevice, prepareHousehold, pullZones, queryRows, uploadDevice } from './share-harness';
+import {
+    HOUSEHOLD_ZONE,
+    PERSONAL_ZONE,
+    countRows,
+    onShareDevice,
+    prepareHousehold,
+    pullZones,
+    queryRows,
+    uploadDevice
+} from './share-harness';
 
 import type { ShareCloudsInterface } from './share-harness';
 import type { DB } from '@budgie/contracts';
@@ -44,7 +53,10 @@ const seedSharedToPrivateTransfer = Effect.gen(function* () {
 });
 
 const shareAccount = (database: DB, accountId: number) =>
-    onShareDevice(database, Effect.flatMap(HouseholdShareService, service => service.shareAccount(accountId)));
+    onShareDevice(
+        database,
+        Effect.flatMap(HouseholdShareService, service => service.shareAccount(accountId))
+    );
 
 describe('cloud-sync/share-split-transfer', () => {
     it.layer(makeTestDbLayer(null), { excludeTestServices: true })('two devices', it => {
@@ -64,7 +76,9 @@ describe('cloud-sync/share-split-transfer', () => {
                 const results = yield* pullZones(deviceB, clouds.household, 'member-device', [HOUSEHOLD_ZONE]);
 
                 expect(results.flatMap(result => result.rejected)).toEqual([]);
-                expect(yield* queryRows(deviceB, `SELECT title, sync_zone FROM accounts`)).toEqual([{ title: 'Joint', sync_zone: HOUSEHOLD_ZONE }]);
+                expect(yield* queryRows(deviceB, `SELECT title, sync_zone FROM accounts`)).toEqual([
+                    { title: 'Joint', sync_zone: HOUSEHOLD_ZONE }
+                ]);
                 expect(yield* countRows(deviceB, `transactions`)).toBe(1);
                 expect(yield* queryRows(deviceB, `SELECT amount FROM transaction_entries`)).toEqual([{ amount: SHARED_AMOUNT }]);
                 expect(yield* countRows(deviceB, `tags`)).toBe(0);
@@ -90,7 +104,12 @@ describe('cloud-sync/share-split-transfer', () => {
                 const afterPrivateEdit = yield* pullZones(deviceB, clouds.household, 'member-device', [HOUSEHOLD_ZONE]);
 
                 expect(afterPrivateEdit.flatMap(result => Object.keys(result.touched))).toEqual([]);
-                expect(yield* countRows(testDb, `transaction_entries e INNER JOIN accounts a ON a.id = e.account_id WHERE e.sync_zone <> a.sync_zone`)).toBe(0);
+                expect(
+                    yield* countRows(
+                        testDb,
+                        `transaction_entries e INNER JOIN accounts a ON a.id = e.account_id WHERE e.sync_zone <> a.sync_zone`
+                    )
+                ).toBe(0);
                 yield* expectBalancesMatchLedger(deviceB);
                 yield* expectBalancesMatchLedger(testDb);
             })
@@ -119,7 +138,12 @@ describe('cloud-sync/share-split-transfer', () => {
                 expect(home.flatMap(result => result.rejected)).toEqual([]);
                 expect(yield* countRows(deviceB, `transactions WHERE title = 'Top up savings'`)).toBe(1);
                 expect(yield* countRows(deviceB, `transactions WHERE sync_zone = '${HOUSEHOLD_ZONE}'`)).toBe(0);
-                expect(yield* queryRows(deviceB, `SELECT e.sync_zone AS zone, e.amount AS amount FROM transaction_entries e INNER JOIN transactions t ON t.id = e.transaction_id WHERE t.title = 'Top up savings' ORDER BY e.amount`)).toEqual([
+                expect(
+                    yield* queryRows(
+                        deviceB,
+                        `SELECT e.sync_zone AS zone, e.amount AS amount FROM transaction_entries e INNER JOIN transactions t ON t.id = e.transaction_id WHERE t.title = 'Top up savings' ORDER BY e.amount`
+                    )
+                ).toEqual([
                     { zone: PERSONAL_ZONE, amount: PRIVATE_AMOUNT },
                     { zone: HOUSEHOLD_ZONE, amount: SHARED_AMOUNT }
                 ]);

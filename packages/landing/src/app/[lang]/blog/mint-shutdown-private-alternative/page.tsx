@@ -217,9 +217,9 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Your-cloud backup and sync</strong> — Backup and sync stored in your own cloud storage (iCloud, Google
-                                Drive, Dropbox) or locally, never on the developer&apos;s servers — encrypted in your own iCloud, and locked with
-                                your PIN when you export a file and have one set.
+                                <strong>Your-cloud backup and sync</strong> — Backup and sync stored in your own cloud storage (iCloud,
+                                Google Drive, Dropbox) or locally, never on the developer&apos;s servers — encrypted in your own iCloud, and
+                                locked with your PIN when you export a file and have one set.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -287,7 +287,8 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                             <Trans>
                                 <strong>Local backup</strong> — Create a backup of your entire database at any time and save it to iCloud, a
                                 USB drive, or anywhere you choose. On iOS Budgie also backs up and syncs to your own iCloud automatically,
-                                encrypted in iCloud. If you have set a PIN, an exported file is encrypted too. Budgie does not hold your backup.
+                                encrypted in iCloud. If you have set a PIN, an exported file is encrypted too. Budgie does not hold your
+                                backup.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -421,8 +422,8 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                         <BlogFaqItem question={<Trans>Does Budgie work without an internet connection?</Trans>}>
                             <Trans>
                                 Yes. All core functionality — adding transactions, viewing reports, managing budgets, and reviewing your
-                                history — works completely offline. Internet access is used only for bank sync, exchange rates, and iCloud backup
-                                or sync on iOS.
+                                history — works completely offline. Internet access is used only for bank sync, exchange rates, and iCloud
+                                backup or sync on iOS.
                             </Trans>
                         </BlogFaqItem>
 

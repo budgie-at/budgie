@@ -4,9 +4,9 @@ import { View } from 'react-native';
 
 import { isEmptyArray } from '@rnw-community/shared';
 
+import { ICloudParticipantRole } from '../../../../modules/icloud';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useHouseholdParticipants } from '../../hook/use-household-participants.hook';
-import { ICloudParticipantRole } from '../../../../modules/icloud';
 import { HouseholdLeaveRow } from '../household-leave-row/household-leave-row';
 import { HouseholdParticipantRow } from '../household-participant-row/household-participant-row';
 import { HouseholdParticipantsGroup } from '../household-participants-group/household-participants-group';

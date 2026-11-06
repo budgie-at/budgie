@@ -32,7 +32,11 @@ export class SyncResetRepository extends Context.Service<SyncResetRepository>()(
             'default_category_translations',
             'comment_embeddings',
             'merchant_embeddings',
-            'account_balances', 'sync_record', 'sync_outbox', 'sync_pending'];
+            'account_balances',
+            'sync_record',
+            'sync_outbox',
+            'sync_pending'
+        ];
 
         return {
             clearSyncedData: Effect.fn('SyncResetRepository.clearSyncedData')(function* () {
@@ -56,23 +60,29 @@ export class SyncResetRepository extends Context.Service<SyncResetRepository>()(
             clearPendingWork: Effect.fn('SyncResetRepository.clearPendingWork')(function* () {
                 yield* Db.mutation(
                     { type: 'delete', tables: ['sync_outbox', 'sync_pending'] },
-                    Effect.forEach(['sync_outbox', 'sync_pending'], tableName => Db.query(db => db.$client.unsafe(`DELETE FROM ${tableName}`)), {
-                        discard: true
-                    })
+                    Effect.forEach(
+                        ['sync_outbox', 'sync_pending'],
+                        tableName => Db.query(db => db.$client.unsafe(`DELETE FROM ${tableName}`)),
+                        {
+                            discard: true
+                        }
+                    )
                 );
             }),
             clearSyncState: Effect.fn('SyncResetRepository.clearSyncState')(function* () {
                 yield* Db.mutation(
                     { type: 'delete', tables: ['sync_record', 'sync_outbox', 'sync_pending'] },
-                    Effect.forEach(['sync_record', 'sync_outbox', 'sync_pending'], tableName => Db.query(db => db.$client.unsafe(`DELETE FROM ${tableName}`)), {
-                        discard: true
-                    })
+                    Effect.forEach(
+                        ['sync_record', 'sync_outbox', 'sync_pending'],
+                        tableName => Db.query(db => db.$client.unsafe(`DELETE FROM ${tableName}`)),
+                        {
+                            discard: true
+                        }
+                    )
                 );
             })
         };
     })
 }) {
-    static readonly layer = Layer.effect(SyncResetRepository, SyncResetRepository.make).pipe(
-        Layer.provide(SyncApplyStateRepository.layer)
-    );
+    static readonly layer = Layer.effect(SyncResetRepository, SyncResetRepository.make).pipe(Layer.provide(SyncApplyStateRepository.layer));
 }

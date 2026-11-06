@@ -115,12 +115,19 @@ export const SplitEntriesModalContent = (props: Props) => {
             .filter(isPositiveNumber);
 
         openCategorySelector(
-            { initialCategoryId: currentCategoryId, excludeCategoryIds, variant, ...(isDefined(account) && { syncZone: account.syncZone }) },
+            {
+                initialCategoryId: currentCategoryId,
+                excludeCategoryIds,
+                variant,
+                ...(isDefined(account) && { syncZone: account.syncZone })
+            },
             selectedCategoryId => {
                 if (isDefined(selectedCategoryId)) {
                     setEntries(previous =>
                         previous.map((entry, entryIndex) =>
-                            entryIndex === index ? { ...entry, categoryId: selectedCategoryId, categorySource: CategorySourceEnum.USER } : entry
+                            entryIndex === index
+                                ? { ...entry, categoryId: selectedCategoryId, categorySource: CategorySourceEnum.USER }
+                                : entry
                         )
                     );
                 }

@@ -33,7 +33,9 @@ export const HouseholdRemoveButton = ({ participant }: Props) => {
             }).pipe(
                 Effect.flatMap(isConfirmed =>
                     isConfirmed
-                        ? Effect.flatMap(HouseholdService, householdService => householdService.removeParticipant(participant.participantId)).pipe(
+                        ? Effect.flatMap(HouseholdService, householdService =>
+                              householdService.removeParticipant(participant.participantId)
+                          ).pipe(
                               Effect.tap(
                                   Effect.sync(() => {
                                       appAtomRegistry.update(householdRefreshAtom, count => count + 1);

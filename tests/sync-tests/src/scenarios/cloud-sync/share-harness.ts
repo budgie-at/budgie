@@ -1,3 +1,4 @@
+import { resetTestDb } from '@budgie-at/test-kit';
 import {
     HouseholdShareService,
     SyncApplyService,
@@ -11,8 +12,6 @@ import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { isRecord, isString } from '@rnw-community/shared';
-
-import { resetTestDb } from '@budgie-at/test-kit';
 
 import { testDb } from '../../harness';
 
@@ -65,9 +64,11 @@ export const uploadDevice = (database: DB, clouds: ShareCloudsInterface) =>
         database,
         Effect.gen(function* () {
             const uploadService = yield* SyncUploadService;
-            const outbox = yield* database.$client.unsafe<{ readonly recordType: string; readonly syncZone: string; readonly syncId: string }>(
-                `SELECT record_type AS recordType, sync_zone AS syncZone, sync_id AS syncId FROM sync_outbox`
-            );
+            const outbox = yield* database.$client.unsafe<{
+                readonly recordType: string;
+                readonly syncZone: string;
+                readonly syncId: string;
+            }>(`SELECT record_type AS recordType, sync_zone AS syncZone, sync_id AS syncId FROM sync_outbox`);
             const recordTypes = new Map(outbox.map(row => [`${row.syncZone}|${row.syncId}`, row.recordType]));
             const batch = yield* uploadService.pending(UPLOAD_LIMIT);
 
@@ -119,7 +120,8 @@ export const uploadDevice = (database: DB, clouds: ShareCloudsInterface) =>
         })
     );
 
-const isInZones = (record: unknown, zones: readonly string[]): boolean => isRecord(record) && isString(record['zone']) && zones.includes(record['zone']);
+const isInZones = (record: unknown, zones: readonly string[]): boolean =>
+    isRecord(record) && isString(record['zone']) && zones.includes(record['zone']);
 
 export const pullZones = (
     database: DB,
@@ -151,7 +153,9 @@ export const queryRows = <T extends object>(database: DB, sqlText: string, param
     database.$client.unsafe<T>(sqlText, [...params]);
 
 export const countRows = (database: DB, sqlFrom: string, params: readonly (string | number)[] = []) =>
-    queryRows<{ readonly total: number }>(database, `SELECT COUNT(*) AS total FROM ${sqlFrom}`, params).pipe(Effect.map(([row]) => row.total));
+    queryRows<{ readonly total: number }>(database, `SELECT COUNT(*) AS total FROM ${sqlFrom}`, params).pipe(
+        Effect.map(([row]) => row.total)
+    );
 
 export const resetDevice = (database: DB) =>
     Effect.gen(function* () {
@@ -173,4 +177,8 @@ export const prepareHousehold = (deviceB: DB, memberRole: SyncZoneRoleEnum) =>
         yield* joinHousehold(deviceB, memberRole, memberRole === SyncZoneRoleEnum.OWNER ? 'Alice' : 'Bob');
     });
 
-export const reconcileDevice = (database: DB) => onShareDevice(database, Effect.flatMap(HouseholdShareService, service => service.reconcile()));
+export const reconcileDevice = (database: DB) =>
+    onShareDevice(
+        database,
+        Effect.flatMap(HouseholdShareService, service => service.reconcile())
+    );

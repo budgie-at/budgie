@@ -48,7 +48,9 @@ describe('cloud-sync/automation-rules', () => {
                 yield* pullDevice(deviceB, cloud, 'device-b');
                 yield* pullDevice(testDb, cloud, 'device-a');
 
-                const [accountOnB] = yield* deviceB.$client.unsafe<{ readonly id: number }>(`SELECT id FROM accounts WHERE id IS NOT NULL LIMIT 1`);
+                const [accountOnB] = yield* deviceB.$client.unsafe<{ readonly id: number }>(
+                    `SELECT id FROM accounts WHERE id IS NOT NULL LIMIT 1`
+                );
 
                 yield* seedB.manualExpense({
                     accountId: accountOnB.id,
@@ -107,7 +109,9 @@ describe('cloud-sync/automation-rules', () => {
 
                 const needsEmbedding = () =>
                     testDb.$client
-                        .unsafe<{ readonly needsEmbedding: number }>(`SELECT needs_embedding AS needsEmbedding FROM transactions WHERE title = 'Bakery'`)
+                        .unsafe<{ readonly needsEmbedding: number }>(
+                            `SELECT needs_embedding AS needsEmbedding FROM transactions WHERE title = 'Bakery'`
+                        )
                         .pipe(Effect.map(([row]) => row.needsEmbedding));
 
                 yield* testDb.$client.unsafe(`UPDATE settings SET is_ai_suggestions_enabled = 0`);

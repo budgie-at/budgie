@@ -24,7 +24,10 @@ export class CloudSyncSafetyCopyService extends Context.Service<CloudSyncSafetyC
                     safetyFile.delete();
                 }
 
-                yield* databaseRekeyService.exportEncryptedCopy(`${DATABASE_LOCATION}/${safetyCopyName}`, isNotEmptyString(key) ? key : null);
+                yield* databaseRekeyService.exportEncryptedCopy(
+                    `${DATABASE_LOCATION}/${safetyCopyName}`,
+                    isNotEmptyString(key) ? key : null
+                );
             })
         };
     })

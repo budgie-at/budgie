@@ -1,8 +1,8 @@
+import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { cloudSyncStatusAtom } from '@app/cloud-sync/constant/cloud-sync-status-atom.constant';
 import { CloudSyncLineageChoiceEnum } from '@app/cloud-sync/enum/cloud-sync-lineage-choice.enum';
 import { CloudSyncStatusEnum } from '@app/cloud-sync/enum/cloud-sync-status.enum';
 import { CloudSyncService } from '@app/cloud-sync/service/cloud-sync.service';
-import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { SyncIdentityRepository } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
@@ -23,7 +23,9 @@ const metaWith = (lineageId: string): ICloudFetchedRecord => ({
     encryptedFields: { lineageId }
 });
 
-const countAccounts = testDb.$client.unsafe<{ readonly total: number }>('SELECT COUNT(*) AS total FROM accounts').pipe(Effect.map(([row]) => row.total));
+const countAccounts = testDb.$client
+    .unsafe<{ readonly total: number }>('SELECT COUNT(*) AS total FROM accounts')
+    .pipe(Effect.map(([row]) => row.total));
 
 describe('cloud-sync/sync-service lineage', () => {
     it.effect('joins automatically when the zone has the same lineage and uploads only the outbox', () => {

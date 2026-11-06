@@ -155,7 +155,9 @@ describe('account/card-reissue-merge', () => {
             yield* quickImport(chainRows);
 
             const [account, ...rest] = yield* fetchLiveAccounts();
-            const aliases = yield* testDb.select({ externalId: AccountExternalIdEntityTable.externalId, accountId: AccountExternalIdEntityTable.accountId }).from(AccountExternalIdEntityTable);
+            const aliases = yield* testDb
+                .select({ externalId: AccountExternalIdEntityTable.externalId, accountId: AccountExternalIdEntityTable.accountId })
+                .from(AccountExternalIdEntityTable);
             const visible = yield* fetchVisibleTransactions();
 
             expect(rest).toEqual([]);
@@ -192,7 +194,11 @@ describe('account/card-reissue-merge', () => {
             ]);
 
             expect(yield* fetchLiveAccounts()).toHaveLength(4);
-            expect(yield* testDb.select({ externalId: AccountExternalIdEntityTable.externalId, accountId: AccountExternalIdEntityTable.accountId }).from(AccountExternalIdEntityTable)).toEqual([]);
+            expect(
+                yield* testDb
+                    .select({ externalId: AccountExternalIdEntityTable.externalId, accountId: AccountExternalIdEntityTable.accountId })
+                    .from(AccountExternalIdEntityTable)
+            ).toEqual([]);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -242,7 +248,11 @@ describe('account/card-reissue-merge', () => {
 
             expect(rest).toEqual([]);
             expect(account).toMatchObject({ id: oldAccount.id, externalId: 'AT-NEW', iban });
-            expect(yield* testDb.select({ externalId: AccountExternalIdEntityTable.externalId, accountId: AccountExternalIdEntityTable.accountId }).from(AccountExternalIdEntityTable)).toEqual([{ externalId: 'AT-OLD', accountId: oldAccount.id }]);
+            expect(
+                yield* testDb
+                    .select({ externalId: AccountExternalIdEntityTable.externalId, accountId: AccountExternalIdEntityTable.accountId })
+                    .from(AccountExternalIdEntityTable)
+            ).toEqual([{ externalId: 'AT-OLD', accountId: oldAccount.id }]);
             expect(yield* fetchAccountBalance(oldAccount.id)).toBe(-30);
         }).pipe(Effect.provide(TestLayer))
     );

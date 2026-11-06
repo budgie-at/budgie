@@ -33,17 +33,20 @@ export const TransactionCategoryFieldIcon = ({ ref, variant, isSplitActive }: Pr
     const { account } = useGetAccountByIdQuery(entries.at(0)?.accountId ?? 0);
 
     const handlePress = () => {
-        openCategorySelector({ initialCategoryId: categoryId, variant, ...(isDefined(account) && { syncZone: account.syncZone }) }, selectedCategoryId => {
-            if (!isDefined(selectedCategoryId)) {
-                return;
-            }
+        openCategorySelector(
+            { initialCategoryId: categoryId, variant, ...(isDefined(account) && { syncZone: account.syncZone }) },
+            selectedCategoryId => {
+                if (!isDefined(selectedCategoryId)) {
+                    return;
+                }
 
-            const updatedEntries = setPrimaryCategory(entries, selectedCategoryId);
+                const updatedEntries = setPrimaryCategory(entries, selectedCategoryId);
 
-            if (isDefined(updatedEntries)) {
-                setValue('entries', updatedEntries, { shouldValidate: false });
+                if (isDefined(updatedEntries)) {
+                    setValue('entries', updatedEntries, { shouldValidate: false });
+                }
             }
-        });
+        );
     };
 
     const categoryIcon = category?.icon ?? UserIconNameEnum.Folder;

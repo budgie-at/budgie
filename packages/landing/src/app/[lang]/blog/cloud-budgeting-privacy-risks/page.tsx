@@ -939,7 +939,8 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Multi-device sync</strong>: Your own devices stay in sync through your iCloud; there is no vendor sync service
+                                <strong>Multi-device sync</strong>: Your own devices stay in sync through your iCloud; there is no vendor
+                                sync service
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -949,7 +950,8 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Shared budgets</strong>: You can share chosen accounts with family through iCloud; there is no vendor collaboration server
+                                <strong>Shared budgets</strong>: You can share chosen accounts with family through iCloud; there is no
+                                vendor collaboration server
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -1172,11 +1174,11 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
 
                         <BlogFaqItem question={<Trans>What happens to my data if Budgie shuts down?</Trans>}>
                             <Trans>
-                                Nothing happens to your data because Budgie does not have your data. Everything is stored on your device and,
-                                on iOS with iCloud backup or sync on, in your own iCloud. If Budgie as a company ceased to exist, your app would
-                                continue to function with all your data intact. You can export data at any time in standard formats. There is no
-                                server to shut down, no migration to worry about, no acquisition that could change data handling. Your data
-                                remains yours permanently.
+                                Nothing happens to your data because Budgie does not have your data. Everything is stored on your device
+                                and, on iOS with iCloud backup or sync on, in your own iCloud. If Budgie as a company ceased to exist, your
+                                app would continue to function with all your data intact. You can export data at any time in standard
+                                formats. There is no server to shut down, no migration to worry about, no acquisition that could change data
+                                handling. Your data remains yours permanently.
                             </Trans>
                         </BlogFaqItem>
                     </BlogFaqSection>

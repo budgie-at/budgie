@@ -1,5 +1,13 @@
 import { FakeCloudTransport, TestSeedService, makeTestDbLayer } from '@budgie-at/test-kit';
-import { CategoryRepository, Db, HOUSEHOLD_SYNC_ZONE, HouseholdShareService, LanguageEnum, PERSONAL_SYNC_ZONE, SyncZoneRoleEnum } from '@budgie/contracts';
+import {
+    CategoryRepository,
+    Db,
+    HOUSEHOLD_SYNC_ZONE,
+    HouseholdShareService,
+    LanguageEnum,
+    PERSONAL_SYNC_ZONE,
+    SyncZoneRoleEnum
+} from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -27,10 +35,19 @@ describe('cloud-sync/household categories by zone', () => {
                 const seed = new TestSeedService(testDb);
                 const joint = yield* seed.account({ title: 'Joint' });
 
-                yield* seed.manualExpense({ accountId: joint.id, amount: 5_000_000, operatedAt: OPERATED_AT, title: 'Lunch', categoryId: GROCERIES_ID });
+                yield* seed.manualExpense({
+                    accountId: joint.id,
+                    amount: 5_000_000,
+                    operatedAt: OPERATED_AT,
+                    title: 'Lunch',
+                    categoryId: GROCERIES_ID
+                });
                 yield* refreshAllBalances(testDb);
                 yield* uploadDevice(testDb, clouds);
-                yield* onShareDevice(testDb, Effect.flatMap(HouseholdShareService, service => service.shareAccount(joint.id)));
+                yield* onShareDevice(
+                    testDb,
+                    Effect.flatMap(HouseholdShareService, service => service.shareAccount(joint.id))
+                );
                 yield* uploadDevice(testDb, clouds);
                 yield* pullZones(deviceB, clouds.household, 'member', [HOUSEHOLD_ZONE]);
 

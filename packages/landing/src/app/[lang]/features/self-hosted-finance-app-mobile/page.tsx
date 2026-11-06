@@ -170,10 +170,10 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                     question={<Trans>Can I use Budgie on a phone and a tablet at once?</Trans>}
                     answer={
                         <Trans>
-                            Yes. On iOS Budgie syncs between your own devices through your iCloud automatically. You can also move your
-                            data by copying a backup file through your own iCloud Drive, Google Drive, or Dropbox and restoring it on the
-                            second device — but a restore replaces everything on that device. If the backup was PIN-locked, enter that PIN
-                            when you restore.
+                            Yes. On iOS Budgie syncs between your own devices through your iCloud automatically. You can also move your data
+                            by copying a backup file through your own iCloud Drive, Google Drive, or Dropbox and restoring it on the second
+                            device — but a restore replaces everything on that device. If the backup was PIN-locked, enter that PIN when you
+                            restore.
                         </Trans>
                     }
                 />

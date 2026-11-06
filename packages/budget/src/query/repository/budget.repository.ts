@@ -90,7 +90,12 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
         const buildBudgetScopeCondition = (budgetSyncZone: string) =>
             budgetSyncZone === HOUSEHOLD_SYNC_ZONE ? eq(AccountEntityTable.syncZone, HOUSEHOLD_SYNC_ZONE) : undefined;
 
-        const findEntries = (amountSql: SQL<number>, where: SQL | undefined, baseInstrumentId: number, budgetSyncZone = PERSONAL_SYNC_ZONE) =>
+        const findEntries = (
+            amountSql: SQL<number>,
+            where: SQL | undefined,
+            baseInstrumentId: number,
+            budgetSyncZone = PERSONAL_SYNC_ZONE
+        ) =>
             Db.query(db =>
                 db
                     .select({
@@ -169,9 +174,24 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
                     .from(TransactionEntityTable)
                     .where(isNull(TransactionEntityTable.deletedAt))
             ).pipe(Effect.map(([row]) => row.earliest ?? null)),
-            findBudgetSpentEntries: (periodStart: Date, nextPeriodStart: Date, baseInstrumentId: number, budgetSyncZone = PERSONAL_SYNC_ZONE) =>
-                findEntries(buildRefundAdjustedAmountSql(), buildSpentWhere(periodStart, nextPeriodStart), baseInstrumentId, budgetSyncZone),
-            findIncomeReceivedEntries: (periodStart: Date, nextPeriodStart: Date, baseInstrumentId: number, budgetSyncZone = PERSONAL_SYNC_ZONE) =>
+            findBudgetSpentEntries: (
+                periodStart: Date,
+                nextPeriodStart: Date,
+                baseInstrumentId: number,
+                budgetSyncZone = PERSONAL_SYNC_ZONE
+            ) =>
+                findEntries(
+                    buildRefundAdjustedAmountSql(),
+                    buildSpentWhere(periodStart, nextPeriodStart),
+                    baseInstrumentId,
+                    budgetSyncZone
+                ),
+            findIncomeReceivedEntries: (
+                periodStart: Date,
+                nextPeriodStart: Date,
+                baseInstrumentId: number,
+                budgetSyncZone = PERSONAL_SYNC_ZONE
+            ) =>
                 findEntries(
                     sql<number>`${TransactionEntryEntityTable.amount}`,
                     buildIncomeWhere(periodStart, nextPeriodStart),

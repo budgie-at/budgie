@@ -5,14 +5,14 @@ import { View } from 'react-native';
 import { isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { CloudRestoreContext } from '../../context/cloud-restore.context';
 import { useCloudBackups } from '../../hook/use-cloud-backups.hook';
 import { useICloudAccount } from '../../hook/use-icloud-account.hook';
 import { useRestoreCloudBackup } from '../../hook/use-restore-cloud-backup.hook';
-import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { CloudBackupEmptyStateCard } from '../cloud-backup-empty-state-card/cloud-backup-empty-state-card';
-import { CloudBackupRestoreFileLink } from '../cloud-backup-restore-file-link/cloud-backup-restore-file-link';
 import { CloudBackupGroup } from '../cloud-backup-group/cloud-backup-group';
+import { CloudBackupRestoreFileLink } from '../cloud-backup-restore-file-link/cloud-backup-restore-file-link';
 import { CloudBackupRestoreNotice } from '../cloud-backup-restore-notice/cloud-backup-restore-notice';
 
 import { CloudBackupListSelector } from './cloud-backup-list.selector';

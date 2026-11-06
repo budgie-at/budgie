@@ -5,10 +5,10 @@ import * as Effect from 'effect/Effect';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useICloudAccount } from '../../../cloud-backup/hook/use-icloud-account.hook';
-import { SettingsRowAccessoryKindEnum } from '../../../settings/enum/settings-row-accessory-kind.enum';
 import { SettingsDisabledRow } from '../../../settings/components/settings-disabled-row/settings-disabled-row';
 import { SettingsRowAccessory } from '../../../settings/components/settings-row-accessory/settings-row-accessory';
 import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
+import { SettingsRowAccessoryKindEnum } from '../../../settings/enum/settings-row-accessory-kind.enum';
 import { HouseholdService } from '../../service/household.service';
 
 import { HouseholdInviteRowSelector } from './household-invite-row.selector';

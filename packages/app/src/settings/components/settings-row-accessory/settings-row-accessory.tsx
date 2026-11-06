@@ -25,7 +25,11 @@ export const SettingsRowAccessory = ({ value, kind = SettingsRowAccessoryKindEnu
     const icon = KIND_ICON[kind];
 
     return (
-        <LoadingContent isLoading={isLoading} containerClassName="max-w-[50%] shrink" className="min-h-[20px] min-w-[20px] items-end justify-center">
+        <LoadingContent
+            isLoading={isLoading}
+            containerClassName="max-w-[50%] shrink"
+            className="min-h-[20px] min-w-[20px] items-end justify-center"
+        >
             <View className="flex-row items-center gap-x-xs">
                 {isNotEmptyString(value) ? (
                     <Text className="shrink text-secondary-foreground text-right text-[17px]" testID={testID}>

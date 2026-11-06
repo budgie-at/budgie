@@ -12,12 +12,12 @@ import { SyncReferenceKindEnum } from '../enum/sync-reference-kind.enum';
 
 import { deriveSyncReferenceField } from './derive-sync-reference-field.util';
 
-import type { Column } from 'drizzle-orm';
-import type { SQLiteTable } from 'drizzle-orm/sqlite-core';
 import type { SyncColumnDescriptorInterface } from '../interface/sync-column-descriptor.interface';
 import type { SyncColumnReferenceInterface } from '../interface/sync-column-reference.interface';
-import type { SyncTableDescriptorInterface } from '../interface/sync-table-descriptor.interface';
 import type { SyncTableDescriptorOptionsInterface } from '../interface/sync-table-descriptor-options.interface';
+import type { SyncTableDescriptorInterface } from '../interface/sync-table-descriptor.interface';
+import type { Column } from 'drizzle-orm';
+import type { SQLiteTable } from 'drizzle-orm/sqlite-core';
 
 const LOCAL_ID_PROPERTY = 'id';
 
@@ -110,6 +110,7 @@ export const buildSyncTableDescriptor = (
         table,
         tableName,
         columns,
-        parentLink: isDefined(parentProperty) && isDefined(parentTableName) ? { property: parentProperty, tableName: parentTableName } : null
+        parentLink:
+            isDefined(parentProperty) && isDefined(parentTableName) ? { property: parentProperty, tableName: parentTableName } : null
     };
 };

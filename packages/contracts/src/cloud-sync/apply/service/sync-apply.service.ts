@@ -109,12 +109,17 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
         });
 
         const readStoredMovedTo = (payload: string | null): string | null =>
-            isString(payload) ? readMovedField(Option.getOrNull(Schema.decodeUnknownOption(jsonUnknown)(payload)), SYNC_MOVED_TO_FIELD) : null;
+            isString(payload)
+                ? readMovedField(Option.getOrNull(Schema.decodeUnknownOption(jsonUnknown)(payload)), SYNC_MOVED_TO_FIELD)
+                : null;
 
         const redirectToZone = (item: SyncApplyItemInterface, zone: string): SyncApplyItemInterface => ({
             ...item,
             decoded: { ...item.decoded, zone, rows: item.decoded.rows.map(row => ({ ...row, syncZone: zone })) },
-            envelopeJson: JSON.stringify({ ...Option.getOrElse(Schema.decodeUnknownOption(jsonRecord)(item.envelopeJson), () => ({})), zone })
+            envelopeJson: JSON.stringify({
+                ...Option.getOrElse(Schema.decodeUnknownOption(jsonRecord)(item.envelopeJson), () => ({})),
+                zone
+            })
         });
 
         const toItem = Effect.fnUntraced(function* (raw: unknown, systemFields: string | null) {
@@ -280,7 +285,11 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
                     .map(property => [columnNameOf(descriptor, property), merged[property]])
             );
 
-        const insertRowFor = Effect.fnUntraced(function* (row: SyncRowInterface, resolutions: ResolutionsType, unitIds: Map<string, number>) {
+        const insertRowFor = Effect.fnUntraced(function* (
+            row: SyncRowInterface,
+            resolutions: ResolutionsType,
+            unitIds: Map<string, number>
+        ) {
             const descriptor = descriptors[row.tableName];
             const localId = yield* repository.insertRow(row.tableName, buildInsertColumns(descriptor, row, resolutions, unitIds));
 
@@ -396,7 +405,8 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
                     const baseRow = baseRows.get(rowKey(tableName, `${localRow['sync_id']}`));
                     const localCells = toLocalCells(descriptor, localRow);
                     const baseCells = isDefined(baseRow) ? yield* toBaseCells(descriptor, baseRow, unitIds) : null;
-                    const isUnchanged = isDefined(baseCells) && Object.entries(baseCells).every(([property, cell]) => localCells[property] === cell);
+                    const isUnchanged =
+                        isDefined(baseCells) && Object.entries(baseCells).every(([property, cell]) => localCells[property] === cell);
 
                     if (!isGated || isUnchanged) {
                         yield* repository.deleteRow(tableName, localRow.__localId);
@@ -427,10 +437,16 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
 
             yield* repository.updateRow(parentTable, source.__localId, { sync_zone: decoded.zone });
 
-            for (const tableName of new Set(SYNC_RECORD_DEFINITIONS[decoded.recordType].children.map(child => child.descriptor.tableName))) {
+            for (const tableName of new Set(
+                SYNC_RECORD_DEFINITIONS[decoded.recordType].children.map(child => child.descriptor.tableName)
+            )) {
                 const descriptor = descriptors[tableName];
                 const incomingIds = new Set(decoded.rows.filter(row => row.tableName === tableName).map(row => row.syncId));
-                const localRows = yield* repository.findChildren(tableName, columnNameOf(descriptor, descriptor.parentLink?.property ?? ''), source.__localId);
+                const localRows = yield* repository.findChildren(
+                    tableName,
+                    columnNameOf(descriptor, descriptor.parentLink?.property ?? ''),
+                    source.__localId
+                );
 
                 for (const localRow of localRows.filter(candidate => incomingIds.has(`${candidate['sync_id']}`))) {
                     yield* repository.updateRow(tableName, localRow.__localId, { sync_zone: decoded.zone });
@@ -440,7 +456,10 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
 
         const absorbStandaloneLegs = Effect.fnUntraced(function* (unit: SyncApplyUnitInterface) {
             const accountIds: number[] = [];
-            const legs = unit.decoded.linkId === null ? [] : unit.sources.filter(({ decoded }) => decoded.recordType === SyncRecordTypeEnum.TRANSACTION_LEG);
+            const legs =
+                unit.decoded.linkId === null
+                    ? []
+                    : unit.sources.filter(({ decoded }) => decoded.recordType === SyncRecordTypeEnum.TRANSACTION_LEG);
 
             for (const source of legs) {
                 const standalone = yield* repository.findRow('transactions', source.decoded.zone, source.decoded.recordName);
@@ -582,7 +601,9 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
                     isWritten = isWritten || childResult.isWritten;
 
                     if (childResult.isWritten) {
-                        touchedRows.push(...decoded.rows.filter(row => row.tableName === tableName).map(row => [tableName, row.syncId] as const));
+                        touchedRows.push(
+                            ...decoded.rows.filter(row => row.tableName === tableName).map(row => [tableName, row.syncId] as const)
+                        );
                     }
                 }
 
@@ -646,9 +667,20 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
                 item.decoded.recordType === SyncRecordTypeEnum.TRANSACTION_LEG || isDefined(item.decoded.linkId);
             const units: SyncApplyUnitInterface[] = items
                 .filter(item => !isSplit(item))
-                .map(item => ({ incoming: [item], sources: [item], decoded: item.decoded, movedTo: item.movedTo, movedFrom: item.movedFrom }));
+                .map(item => ({
+                    incoming: [item],
+                    sources: [item],
+                    decoded: item.decoded,
+                    movedTo: item.movedTo,
+                    movedFrom: item.movedFrom
+                }));
             const incomplete: SyncApplyItemInterface[] = [];
-            const linkIds = new Set(items.filter(isSplit).map(({ decoded }) => decoded.linkId).filter(isDefined));
+            const linkIds = new Set(
+                items
+                    .filter(isSplit)
+                    .map(({ decoded }) => decoded.linkId)
+                    .filter(isDefined)
+            );
 
             for (const linkId of linkIds) {
                 const incoming = items.filter(({ decoded }) => decoded.linkId === linkId);
@@ -852,7 +884,8 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
             const definition = definitions.find(candidate => candidate.recordType === recordType);
 
             if (isDefined(definition)) {
-                const tableName = definition.recordType === SyncRecordTypeEnum.TRANSACTION_LEG ? 'transactions' : definition.parent.tableName;
+                const tableName =
+                    definition.recordType === SyncRecordTypeEnum.TRANSACTION_LEG ? 'transactions' : definition.parent.tableName;
                 const row = yield* repository.findRow(tableName, zone, recordName);
 
                 if (isDefined(row)) {

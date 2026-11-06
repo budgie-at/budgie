@@ -10,9 +10,9 @@ import { isDefined, isNotEmptyString, isNumber } from '@rnw-community/shared';
 
 import { Db } from '../../../@generic/service/db.service';
 import { PERSONAL_SYNC_ZONE } from '../../constant/personal-sync-zone.constant';
+import { SyncOutboxOperationEnum } from '../../enum/sync-outbox-operation.enum';
 import { SYNC_NATURAL_KEY_PROPERTIES } from '../../mapping/constant/sync-natural-key-properties.constant';
 import { SYNC_RECORD_DEFINITIONS } from '../../mapping/constant/sync-record-definitions.constant';
-import { SyncOutboxOperationEnum } from '../../enum/sync-outbox-operation.enum';
 import { SyncRecordTypeEnum } from '../../mapping/enum/sync-record-type.enum';
 import { SyncReferenceKindEnum } from '../../mapping/enum/sync-reference-kind.enum';
 import { encodeSyncAggregate } from '../../mapping/utils/encode-sync-aggregate.util';
@@ -27,13 +27,13 @@ import { isSyncAggregateRecordType } from '../type-guard/is-sync-aggregate-recor
 
 import type { SyncOutboxEntityInterface } from '../../entity/sync-outbox-entity.interface';
 import type { SyncIdentityInterface } from '../../mapping/interface/sync-identity.interface';
-import type { SyncRecordInterface } from '../../mapping/interface/sync-record.interface';
 import type { SyncRecordDefinitionInterface } from '../../mapping/interface/sync-record-definition.interface';
+import type { SyncRecordInterface } from '../../mapping/interface/sync-record.interface';
 import type { SyncReferenceResolverInterface } from '../../mapping/interface/sync-reference-resolver.interface';
 import type { SyncAggregateRecordType } from '../../mapping/type/sync-aggregate-record-type.type';
 import type { SyncRowInputType } from '../../mapping/type/sync-row-input.type';
-import type { SyncReferenceIdentityRowInterface } from '../interface/sync-reference-identity-row.interface';
 import type { SyncRecordTargetInterface } from '../interface/sync-record-target.interface';
+import type { SyncReferenceIdentityRowInterface } from '../interface/sync-reference-identity-row.interface';
 import type { SyncUploadAcknowledgementInterface } from '../interface/sync-upload-acknowledgement.interface';
 import type { SyncUploadBatchInterface } from '../interface/sync-upload-batch.interface';
 import type { SyncUploadDeletionInterface } from '../interface/sync-upload-deletion.interface';
@@ -217,10 +217,16 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
             const resolver = yield* buildResolver(definition, parent, children);
             const encoded = encodeSyncAggregate({ recordType, parent, children }, resolver);
 
-            return Result.isFailure(encoded) ? Result.fail(`${encoded.failure._tag}: ${encoded.failure.message}`) : Result.succeed(encoded.success);
+            return Result.isFailure(encoded)
+                ? Result.fail(`${encoded.failure._tag}: ${encoded.failure.message}`)
+                : Result.succeed(encoded.success);
         });
 
-        const annotateRecords = Effect.fnUntraced(function* (records: readonly SyncRecordInterface[], row: SyncOutboxEntityInterface, movedFrom: string | null) {
+        const annotateRecords = Effect.fnUntraced(function* (
+            records: readonly SyncRecordInterface[],
+            row: SyncOutboxEntityInterface,
+            movedFrom: string | null
+        ) {
             const legOwnerName = records.some(record => record.recordType === SyncRecordTypeEnum.TRANSACTION_LEG)
                 ? (yield* zoneRegistryRepository.findByLabel(PERSONAL_SYNC_ZONE))?.ownerName
                 : undefined;
@@ -277,17 +283,13 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
                 return null;
             }
 
-            const fields = Object.fromEntries(
-                Object.entries(target.encryptedFields).filter(([field]) => !SPLIT_FIELDS.has(field))
-            );
+            const fields = Object.fromEntries(Object.entries(target.encryptedFields).filter(([field]) => !SPLIT_FIELDS.has(field)));
 
             return {
                 syncZone: row.syncZone,
                 syncId: row.syncId,
                 syncRevision: row.syncRevision,
-                records: [
-                    withSyncRecordFields({ ...target, encryptedFields: fields }, row.syncZone, { deletedAt: Date.now(), movedTo })
-                ],
+                records: [withSyncRecordFields({ ...target, encryptedFields: fields }, row.syncZone, { deletedAt: Date.now(), movedTo })],
                 changedFields: ['deletedAt', 'movedTo'],
                 staleTargets: []
             } satisfies SyncUploadSaveInterface;

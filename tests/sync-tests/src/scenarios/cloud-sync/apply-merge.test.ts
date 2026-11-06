@@ -88,7 +88,9 @@ describe('cloud-sync/apply-merge', () => {
                 yield* pullDevice(testDb, cloud, DEVICE_A);
 
                 expect(account.id).toBeGreaterThan(0);
-                expect(outboxAfterMerge.some(row => row.recordType === 'Transaction' && row.changedColumns.includes('transaction_tags'))).toBe(true);
+                expect(
+                    outboxAfterMerge.some(row => row.recordType === 'Transaction' && row.changedColumns.includes('transaction_tags'))
+                ).toBe(true);
                 expect((yield* entryOf(deviceB, 'Cafe')).amount).toBe(7_000_000);
                 expect((yield* entryOf(testDb, 'Cafe')).amount).toBe(7_000_000);
                 expect(yield* tagTitlesOf(deviceB)).toEqual(['Coffee']);
@@ -130,7 +132,10 @@ describe('cloud-sync/apply-merge', () => {
                 const cloud = new FakeCloudTransport();
                 const { transaction } = yield* seedBaseline(deviceB, cloud);
                 const [ruleCategory, userCategory] = yield* categoryIds(testDb);
-                const [entry] = yield* testDb.$client.unsafe<{ readonly id: number }>(`SELECT id FROM transaction_entries WHERE transaction_id = ?`, [transaction.id]);
+                const [entry] = yield* testDb.$client.unsafe<{ readonly id: number }>(
+                    `SELECT id FROM transaction_entries WHERE transaction_id = ?`,
+                    [transaction.id]
+                );
 
                 yield* new TestSeedService(testDb).entryCategory(entry.id, ruleCategory, CategorySourceEnum.RULE);
                 yield* deviceB.$client.unsafe(`UPDATE transaction_entries SET category_id = ?, category_source = 'USER'`, [userCategory]);
@@ -152,7 +157,10 @@ describe('cloud-sync/apply-merge', () => {
                 const cloud = new FakeCloudTransport();
                 const { transaction } = yield* seedBaseline(deviceB, cloud);
                 const [ruleCategory, userCategory] = yield* categoryIds(testDb);
-                const [entry] = yield* testDb.$client.unsafe<{ readonly id: number }>(`SELECT id FROM transaction_entries WHERE transaction_id = ?`, [transaction.id]);
+                const [entry] = yield* testDb.$client.unsafe<{ readonly id: number }>(
+                    `SELECT id FROM transaction_entries WHERE transaction_id = ?`,
+                    [transaction.id]
+                );
 
                 yield* new TestSeedService(testDb).entryCategory(entry.id, ruleCategory, CategorySourceEnum.RULE);
                 yield* pushDevice(testDb, cloud);
@@ -191,7 +199,9 @@ describe('cloud-sync/apply-merge', () => {
 
                 const countAfter = yield* deviceB.$client.unsafe<{ readonly total: number }>(`SELECT COUNT(*) AS total FROM categories`);
                 const titleOn = (database: DB) =>
-                    database.$client.unsafe<{ readonly title: string }>(`SELECT title FROM categories WHERE id = ?`, [categoryId]).pipe(Effect.map(([row]) => row.title));
+                    database.$client
+                        .unsafe<{ readonly title: string }>(`SELECT title FROM categories WHERE id = ?`, [categoryId])
+                        .pipe(Effect.map(([row]) => row.title));
 
                 expect(countAfter[0].total).toBe(countBefore[0].total);
                 expect(yield* titleOn(deviceB)).toBe('Edited on B');

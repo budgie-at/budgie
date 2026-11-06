@@ -1,8 +1,8 @@
 import * as Context from 'effect/Context';
 
-import type * as Effect from 'effect/Effect';
-import type { Db } from '../../../@generic/service/db.service';
 import type { DbError } from '../../../@generic/error/db.error';
+import type { Db } from '../../../@generic/service/db.service';
+import type * as Effect from 'effect/Effect';
 
 export class SyncAccountBalanceRefresher extends Context.Service<
     SyncAccountBalanceRefresher,

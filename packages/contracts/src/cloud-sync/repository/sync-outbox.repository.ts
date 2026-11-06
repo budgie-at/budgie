@@ -13,7 +13,9 @@ import type { SyncOutboxCreateEntityInterface } from '../entity/sync-outbox-crea
 export class SyncOutboxRepository extends Context.Service<SyncOutboxRepository>()('@budgie/contracts/SyncOutboxRepository', {
     make: Effect.sync(() => {
         const enqueueRows = Effect.fnUntraced(function* (syncZone: string, isUnrecordedOnly: boolean) {
-            const definitions = Object.values(SYNC_RECORD_DEFINITIONS).filter(({ recordType }) => recordType !== SyncRecordTypeEnum.TRANSACTION_LEG);
+            const definitions = Object.values(SYNC_RECORD_DEFINITIONS).filter(
+                ({ recordType }) => recordType !== SyncRecordTypeEnum.TRANSACTION_LEG
+            );
 
             yield* Db.mutation(
                 { type: 'insert', tables: ['sync_outbox'] },
@@ -41,36 +43,39 @@ export class SyncOutboxRepository extends Context.Service<SyncOutboxRepository>(
         });
 
         return {
-        enqueue: (input: Pick<SyncOutboxCreateEntityInterface, 'recordType' | 'syncZone' | 'syncId' | 'operation' | 'changedColumns'>) =>
-            Db.query(db =>
-                db
-                    .insert(SyncOutboxEntityTable)
-                    .values(input)
-                    .onConflictDoUpdate({
-                        target: [SyncOutboxEntityTable.syncZone, SyncOutboxEntityTable.syncId],
-                        set: {
-                            operation: input.operation,
-                            changedColumns: input.changedColumns,
-                            syncRevision: sql`${SyncOutboxEntityTable.syncRevision} + 1`
-                        }
-                    })
-            ),
-        findPending: (limit: number) => Db.query(db => db.query.SyncOutboxEntityTable.findMany({ orderBy: { id: 'asc' }, limit })),
-        acknowledge: (syncZone: string, syncId: string, syncRevision: number) =>
-            Db.query(db =>
-                db
-                    .delete(SyncOutboxEntityTable)
-                    .where(
-                        and(
-                            eq(SyncOutboxEntityTable.syncZone, syncZone),
-                            eq(SyncOutboxEntityTable.syncId, syncId),
-                            eq(SyncOutboxEntityTable.syncRevision, syncRevision)
+            enqueue: (
+                input: Pick<SyncOutboxCreateEntityInterface, 'recordType' | 'syncZone' | 'syncId' | 'operation' | 'changedColumns'>
+            ) =>
+                Db.query(db =>
+                    db
+                        .insert(SyncOutboxEntityTable)
+                        .values(input)
+                        .onConflictDoUpdate({
+                            target: [SyncOutboxEntityTable.syncZone, SyncOutboxEntityTable.syncId],
+                            set: {
+                                operation: input.operation,
+                                changedColumns: input.changedColumns,
+                                syncRevision: sql`${SyncOutboxEntityTable.syncRevision} + 1`
+                            }
+                        })
+                ),
+            findPending: (limit: number) => Db.query(db => db.query.SyncOutboxEntityTable.findMany({ orderBy: { id: 'asc' }, limit })),
+            acknowledge: (syncZone: string, syncId: string, syncRevision: number) =>
+                Db.query(db =>
+                    db
+                        .delete(SyncOutboxEntityTable)
+                        .where(
+                            and(
+                                eq(SyncOutboxEntityTable.syncZone, syncZone),
+                                eq(SyncOutboxEntityTable.syncId, syncId),
+                                eq(SyncOutboxEntityTable.syncRevision, syncRevision)
+                            )
                         )
-                    )
-            ),
-        enqueueAll: (syncZone: string) => enqueueRows(syncZone, false),
-        enqueueUnrecorded: (syncZone: string) => enqueueRows(syncZone, true),
-        countPending: () => Db.query(db => db.select({ total: count() }).from(SyncOutboxEntityTable)).pipe(Effect.map(([row]) => row.total))
+                ),
+            enqueueAll: (syncZone: string) => enqueueRows(syncZone, false),
+            enqueueUnrecorded: (syncZone: string) => enqueueRows(syncZone, true),
+            countPending: () =>
+                Db.query(db => db.select({ total: count() }).from(SyncOutboxEntityTable)).pipe(Effect.map(([row]) => row.total))
         };
     })
 }) {

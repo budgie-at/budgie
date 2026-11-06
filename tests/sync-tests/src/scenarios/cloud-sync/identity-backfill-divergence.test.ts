@@ -18,8 +18,16 @@ const stamp = (database: DB, tableName: string, id: number, createdAt: number) =
 
 const seedTransaction = (database: DB, accountId: number, title: string, createdAt: number) =>
     Effect.gen(function* () {
-        const transaction = yield* new TestSeedService(database).manualExpense({ accountId, amount: 1_000_000, operatedAt: OPERATED_AT, title });
-        const [entry] = yield* database.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.transactionId, transaction.id));
+        const transaction = yield* new TestSeedService(database).manualExpense({
+            accountId,
+            amount: 1_000_000,
+            operatedAt: OPERATED_AT,
+            title
+        });
+        const [entry] = yield* database
+            .select()
+            .from(TransactionEntryEntityTable)
+            .where(eq(TransactionEntryEntityTable.transactionId, transaction.id));
 
         yield* stamp(database, 'transactions', transaction.id, createdAt);
         yield* stamp(database, 'transaction_entries', entry.id, createdAt);
@@ -62,7 +70,9 @@ const divergeHistory = (database: DB, accountId: number, title: string, createdA
 
 const backfillIdentities = (database: DB) =>
     Effect.gen(function* () {
-        yield* Effect.forEach(SYNC_IDENTITY_TABLES, ({ name }) => database.$client.unsafe(`UPDATE ${name} SET sync_id = NULL`), { discard: true });
+        yield* Effect.forEach(SYNC_IDENTITY_TABLES, ({ name }) => database.$client.unsafe(`UPDATE ${name} SET sync_id = NULL`), {
+            discard: true
+        });
 
         const syncIdentityRepository = yield* SyncIdentityRepository;
 

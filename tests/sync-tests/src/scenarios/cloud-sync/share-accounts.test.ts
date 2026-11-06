@@ -6,7 +6,17 @@ import * as Effect from 'effect/Effect';
 import { testDb } from '../../harness';
 
 import { expectBalancesMatchLedger, refreshAllBalances } from './apply-harness';
-import { HOUSEHOLD_ZONE, PERSONAL_ZONE, countRows, onShareDevice, prepareHousehold, pullZones, reconcileDevice, queryRows, uploadDevice } from './share-harness';
+import {
+    HOUSEHOLD_ZONE,
+    PERSONAL_ZONE,
+    countRows,
+    onShareDevice,
+    prepareHousehold,
+    pullZones,
+    reconcileDevice,
+    queryRows,
+    uploadDevice
+} from './share-harness';
 
 import type { ShareCloudsInterface } from './share-harness';
 import type { DB } from '@budgie/contracts';
@@ -19,12 +29,19 @@ const GROCERIES_ID = 11;
 const makeClouds = (): ShareCloudsInterface => ({ personal: new FakeCloudTransport(), household: new FakeCloudTransport() });
 
 const shareAccount = (database: DB, accountId: number) =>
-    onShareDevice(database, Effect.flatMap(HouseholdShareService, service => service.shareAccount(accountId)));
+    onShareDevice(
+        database,
+        Effect.flatMap(HouseholdShareService, service => service.shareAccount(accountId))
+    );
 
 const unshareAccount = (database: DB, accountId: number) =>
-    onShareDevice(database, Effect.flatMap(HouseholdShareService, service => service.unshareAccount(accountId)));
+    onShareDevice(
+        database,
+        Effect.flatMap(HouseholdShareService, service => service.unshareAccount(accountId))
+    );
 
-const expectBothLedgers = (...databases: readonly DB[]) => Effect.forEach(databases, database => expectBalancesMatchLedger(database), { discard: true });
+const expectBothLedgers = (...databases: readonly DB[]) =>
+    Effect.forEach(databases, database => expectBalancesMatchLedger(database), { discard: true });
 
 const seedJointHistory = Effect.gen(function* () {
     const seed = new TestSeedService(testDb);
@@ -32,8 +49,20 @@ const seedJointHistory = Effect.gen(function* () {
     const wallet = yield* seed.account({ title: 'Wallet' });
     const pizza = yield* seed.category('Pizza night');
     const trip = yield* seed.tag('trip');
-    const lunch = yield* seed.manualExpense({ accountId: joint.id, amount: 5_000_000, operatedAt: OPERATED_AT, title: 'Lunch', categoryId: GROCERIES_ID });
-    const dinner = yield* seed.manualExpense({ accountId: joint.id, amount: 7_000_000, operatedAt: OPERATED_AT, title: 'Dinner', categoryId: pizza.id });
+    const lunch = yield* seed.manualExpense({
+        accountId: joint.id,
+        amount: 5_000_000,
+        operatedAt: OPERATED_AT,
+        title: 'Lunch',
+        categoryId: GROCERIES_ID
+    });
+    const dinner = yield* seed.manualExpense({
+        accountId: joint.id,
+        amount: 7_000_000,
+        operatedAt: OPERATED_AT,
+        title: 'Dinner',
+        categoryId: pizza.id
+    });
 
     yield* seed.transactionTag(dinner.id, trip.id);
 
@@ -85,9 +114,12 @@ describe('cloud-sync/share-accounts', () => {
                     { title: 'Dinner', category: 'Pizza night', categoryZone: HOUSEHOLD_ZONE },
                     { title: 'Lunch', category: 'Groceries', categoryZone: HOUSEHOLD_ZONE }
                 ]);
-                expect(yield* queryRows(deviceB, `SELECT g.title AS title, g.sync_zone AS zone FROM transaction_tags tt INNER JOIN tags g ON g.id = tt.tag_id`)).toEqual([
-                    { title: 'trip', zone: HOUSEHOLD_ZONE }
-                ]);
+                expect(
+                    yield* queryRows(
+                        deviceB,
+                        `SELECT g.title AS title, g.sync_zone AS zone FROM transaction_tags tt INNER JOIN tags g ON g.id = tt.tag_id`
+                    )
+                ).toEqual([{ title: 'trip', zone: HOUSEHOLD_ZONE }]);
                 expect(yield* countRows(deviceB, `categories WHERE title = 'Groceries'`)).toBe(2);
                 expect(yield* countRows(deviceB, `categories WHERE title = 'Pizza night'`)).toBe(1);
                 expect(yield* countRows(deviceB, `sync_pending`)).toBe(0);
@@ -103,7 +135,12 @@ describe('cloud-sync/share-accounts', () => {
                 ]);
                 expect(yield* countRows(testDb, `categories WHERE title = 'Pizza night'`)).toBe(2);
                 expect(yield* countRows(testDb, `sync_outbox`)).toBe(0);
-                expect(yield* onShareDevice(testDb, Effect.flatMap(HouseholdShareService, service => service.findSharedAccountIds()))).toEqual([joint.id]);
+                expect(
+                    yield* onShareDevice(
+                        testDb,
+                        Effect.flatMap(HouseholdShareService, service => service.findSharedAccountIds())
+                    )
+                ).toEqual([joint.id]);
                 yield* expectBothLedgers(testDb, deviceB);
             })
         );
@@ -133,7 +170,12 @@ describe('cloud-sync/share-accounts', () => {
                 expect(yield* countRows(testDb, `accounts WHERE sync_zone = '${PERSONAL_ZONE}'`)).toBe(2);
                 expect(yield* countRows(testDb, `transactions WHERE sync_zone = '${PERSONAL_ZONE}'`)).toBe(3);
                 expect(yield* countRows(testDb, `transaction_entries WHERE sync_zone <> '${PERSONAL_ZONE}'`)).toBe(0);
-                expect(yield* countRows(testDb, `transaction_tags tt INNER JOIN tags g ON g.id = tt.tag_id WHERE g.sync_zone <> '${PERSONAL_ZONE}'`)).toBe(0);
+                expect(
+                    yield* countRows(
+                        testDb,
+                        `transaction_tags tt INNER JOIN tags g ON g.id = tt.tag_id WHERE g.sync_zone <> '${PERSONAL_ZONE}'`
+                    )
+                ).toBe(0);
                 expect(
                     yield* countRows(
                         testDb,
@@ -194,11 +236,19 @@ describe('cloud-sync/share-accounts', () => {
                 yield* prepareHousehold(deviceB, SyncZoneRoleEnum.PARTICIPANT);
                 yield* seedJointHistory;
                 yield* uploadDevice(testDb, clouds);
-                yield* onShareDevice(testDb, Effect.flatMap(HouseholdShareService, service => service.setShareEverything(true)));
+                yield* onShareDevice(
+                    testDb,
+                    Effect.flatMap(HouseholdShareService, service => service.setShareEverything(true))
+                );
 
                 const fresh = yield* new TestSeedService(testDb).account({ title: 'Fresh' });
 
-                yield* new TestSeedService(testDb).manualExpense({ accountId: fresh.id, amount: 3_000_000, operatedAt: OPERATED_AT, title: 'Fresh spend' });
+                yield* new TestSeedService(testDb).manualExpense({
+                    accountId: fresh.id,
+                    amount: 3_000_000,
+                    operatedAt: OPERATED_AT,
+                    title: 'Fresh spend'
+                });
                 yield* refreshAllBalances(testDb);
                 yield* reconcileDevice(testDb);
                 yield* uploadDevice(testDb, clouds);
@@ -232,7 +282,10 @@ describe('cloud-sync/share-accounts', () => {
                 yield* shareAccount(testDb, joint.id);
                 yield* uploadDevice(testDb, clouds);
 
-                const [secondDeviceJoint] = yield* queryRows<{ readonly id: number }>(deviceB, `SELECT id FROM accounts WHERE title = 'Joint'`);
+                const [secondDeviceJoint] = yield* queryRows<{ readonly id: number }>(
+                    deviceB,
+                    `SELECT id FROM accounts WHERE title = 'Joint'`
+                );
 
                 yield* new TestSeedService(deviceB).manualExpense({
                     accountId: secondDeviceJoint.id,
@@ -255,12 +308,22 @@ describe('cloud-sync/share-accounts', () => {
                 }
 
                 for (const database of [testDb, deviceB]) {
-                    expect(yield* queryRows(database, `SELECT title, sync_zone FROM transactions WHERE title <> 'Private snack' ORDER BY title`)).toEqual([
+                    expect(
+                        yield* queryRows(
+                            database,
+                            `SELECT title, sync_zone FROM transactions WHERE title <> 'Private snack' ORDER BY title`
+                        )
+                    ).toEqual([
                         { title: 'Dinner', sync_zone: HOUSEHOLD_ZONE },
                         { title: 'Late lunch', sync_zone: HOUSEHOLD_ZONE },
                         { title: 'Lunch', sync_zone: HOUSEHOLD_ZONE }
                     ]);
-                    expect(yield* countRows(database, `transaction_entries WHERE account_id IN (SELECT id FROM accounts WHERE title = 'Joint') AND sync_zone <> '${HOUSEHOLD_ZONE}'`)).toBe(0);
+                    expect(
+                        yield* countRows(
+                            database,
+                            `transaction_entries WHERE account_id IN (SELECT id FROM accounts WHERE title = 'Joint') AND sync_zone <> '${HOUSEHOLD_ZONE}'`
+                        )
+                    ).toBe(0);
                     expect(yield* countRows(database, `transactions WHERE title = 'Late lunch'`)).toBe(1);
                     expect(yield* queryRows(database, `SELECT title, sync_zone FROM accounts ORDER BY title`)).toEqual([
                         { title: 'Joint', sync_zone: HOUSEHOLD_ZONE },

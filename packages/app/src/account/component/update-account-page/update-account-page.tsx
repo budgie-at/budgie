@@ -18,8 +18,8 @@ import { AccountSwitchFieldKindEnum } from '../../enum/account-switch-field-kind
 import { AccountFormBindingsInterface } from '../../interface/account-form-bindings.interface';
 import { AccountSwitchField } from '../account-switch-field/account-switch-field';
 import { ArchiveAccount } from '../archive-account/archive-account';
-import { HouseholdShareAccountSection } from '../household-share-account-section/household-share-account-section';
 import { CreateAccountScreenSelector } from '../create-account-screen/create-account-screen.selector';
+import { HouseholdShareAccountSection } from '../household-share-account-section/household-share-account-section';
 
 interface Props {
     readonly account: AccountEntityInterface;

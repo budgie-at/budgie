@@ -9,11 +9,7 @@ import type { SyncRowInterface } from '../interface/sync-row.interface';
 const ENTRIES_TABLE = 'transaction_entries';
 const TRANSACTIONS_TABLE = 'transactions';
 
-const moveEntryToHome = (
-    row: SyncRowInterface,
-    legRecordName: string,
-    home: DecodedSyncRecordInterface
-): SyncRowInterface => ({
+const moveEntryToHome = (row: SyncRowInterface, legRecordName: string, home: DecodedSyncRecordInterface): SyncRowInterface => ({
     ...row,
     values: { ...row.values, ...home.legPrivateRows.find(privateRow => privateRow.syncId === row.syncId)?.values },
     references: row.references.map(reference =>
@@ -21,10 +17,7 @@ const moveEntryToHome = (
     )
 });
 
-const mergeHomeWithLegs = (
-    home: DecodedSyncRecordInterface,
-    legs: readonly DecodedSyncRecordInterface[]
-): DecodedSyncRecordInterface => ({
+const mergeHomeWithLegs = (home: DecodedSyncRecordInterface, legs: readonly DecodedSyncRecordInterface[]): DecodedSyncRecordInterface => ({
     ...home,
     rows: [
         ...home.rows,

@@ -216,9 +216,8 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                     answer={
                         <Trans>
                             Biometric unlock is your phone&apos;s Face ID, Touch ID or Android fingerprint or face check standing in for
-                            typing the PIN. The PIN stays on the device and remains what protects your data on that device — biometrics
-                            are a faster path to the same lock, not a second one. A successful scan also clears any wait caused by wrong
-                            PINs.
+                            typing the PIN. The PIN stays on the device and remains what protects your data on that device — biometrics are
+                            a faster path to the same lock, not a second one. A successful scan also clears any wait caused by wrong PINs.
                         </Trans>
                     }
                 />

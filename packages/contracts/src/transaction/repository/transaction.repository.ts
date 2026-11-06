@@ -111,7 +111,9 @@ export class TransactionRepository extends Context.Service<TransactionRepository
 
         return {
             bulkCreate,
-            findClaimedPersonalSyncIds: Effect.fn('TransactionRepository.findClaimedPersonalSyncIds')(function* (syncIds: readonly string[]) {
+            findClaimedPersonalSyncIds: Effect.fn('TransactionRepository.findClaimedPersonalSyncIds')(function* (
+                syncIds: readonly string[]
+            ) {
                 if (isEmptyArray(syncIds)) {
                     return new Set<string>();
                 }
@@ -120,7 +122,12 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                     db
                         .select({ syncId: TransactionEntityTable.syncId })
                         .from(TransactionEntityTable)
-                        .where(and(eq(TransactionEntityTable.syncZone, PERSONAL_SYNC_ZONE), inArray(TransactionEntityTable.syncId, [...syncIds])))
+                        .where(
+                            and(
+                                eq(TransactionEntityTable.syncZone, PERSONAL_SYNC_ZONE),
+                                inArray(TransactionEntityTable.syncId, [...syncIds])
+                            )
+                        )
                 );
 
                 return new Set(rows.map(row => row.syncId).filter(isDefined));

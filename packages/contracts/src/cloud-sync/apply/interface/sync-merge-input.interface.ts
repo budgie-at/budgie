@@ -1,5 +1,5 @@
-import type { SyncAuthorshipColumnInterface } from './sync-authorship-column.interface';
 import type { SyncCellType } from '../type/sync-cell.type';
+import type { SyncAuthorshipColumnInterface } from './sync-authorship-column.interface';
 
 export interface SyncMergeInputInterface {
     readonly local: Readonly<Record<string, SyncCellType>>;

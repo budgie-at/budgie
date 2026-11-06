@@ -179,8 +179,8 @@ export default async function OfflineFirstPillarHubPage(props: PageLangParam) {
                     <Trans>
                         Most budgeting apps push every swipe and balance to a remote server. That makes them fragile when the internet
                         drops, and risky when those servers leak. Budgie inverts the model: your database lives on your phone, encrypted
-                        with your PIN once you set one, and the copies that leave it go only to your own iCloud. There is no backend
-                        reading your statements.
+                        with your PIN once you set one, and the copies that leave it go only to your own iCloud. There is no backend reading
+                        your statements.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
@@ -296,8 +296,8 @@ export default async function OfflineFirstPillarHubPage(props: PageLangParam) {
                     answer={
                         <Trans>
                             Yes, fully. Every core feature — logging expenses, viewing analytics, managing categories — runs entirely on
-                            your device. Internet is used only for bank sync, AI model downloads, exchange-rate updates, and iCloud backup or
-                            sync on iOS.
+                            your device. Internet is used only for bank sync, AI model downloads, exchange-rate updates, and iCloud backup
+                            or sync on iOS.
                         </Trans>
                     }
                 />

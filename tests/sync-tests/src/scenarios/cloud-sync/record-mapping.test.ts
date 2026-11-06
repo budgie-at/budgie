@@ -40,7 +40,9 @@ const LOCAL_ONLY_PROPERTIES = new Set([
     'needsEmbedding'
 ]);
 const NATURAL_KEY_TABLES = new Set(['instruments', 'mcc_categories']);
-const aggregateDefinitions = Object.values(SYNC_RECORD_DEFINITIONS).filter(({ recordType }) => recordType !== SyncRecordTypeEnum.TRANSACTION_LEG);
+const aggregateDefinitions = Object.values(SYNC_RECORD_DEFINITIONS).filter(
+    ({ recordType }) => recordType !== SyncRecordTypeEnum.TRANSACTION_LEG
+);
 
 const seedEverything = Effect.gen(function* () {
     const fixture = yield* seedFullLedger(testDb);
@@ -82,7 +84,9 @@ describe('cloud-sync/record-mapping', () => {
                     .filter(([, rows]) => rows.length === 0)
                     .map(([tableName]) => tableName);
                 const sourceCash = yield* testDb.$client.unsafe<{ readonly id: number }>(`SELECT id FROM accounts WHERE title = 'Cash'`);
-                const targetCash = yield* targetDatabase.$client.unsafe<{ readonly id: number }>(`SELECT id FROM accounts WHERE title = 'Cash'`);
+                const targetCash = yield* targetDatabase.$client.unsafe<{ readonly id: number }>(
+                    `SELECT id FROM accounts WHERE title = 'Cash'`
+                );
                 const refundLinks = yield* targetDatabase.$client.unsafe<{ readonly total: number }>(
                     `SELECT COUNT(*) AS total FROM transaction_entries WHERE original_transaction_id IS NOT NULL`
                 );
@@ -90,7 +94,9 @@ describe('cloud-sync/record-mapping', () => {
                     `SELECT COUNT(*) AS total FROM transactions WHERE consolidation_parent_transaction_id IS NOT NULL`
                 );
 
-                expect(new Set(records.map(record => record.recordType))).toEqual(new Set(aggregateDefinitions.map(({ recordType }) => recordType)));
+                expect(new Set(records.map(record => record.recordType))).toEqual(
+                    new Set(aggregateDefinitions.map(({ recordType }) => recordType))
+                );
                 expect(unmatched).toEqual([]);
                 expect(unresolved).toEqual([]);
                 expect(emptySourceTables).toEqual([]);
@@ -168,7 +174,9 @@ describe('cloud-sync/record-mapping', () => {
             const walletSyncId = yield* testDb.$client.unsafe<{ readonly syncId: string }>(
                 `SELECT sync_id AS syncId FROM accounts WHERE id = ${fixture.wallet.id}`
             );
-            const cashRecord = records.find(record => record.recordType === SyncRecordTypeEnum.ACCOUNT && record.encryptedFields['title'] === 'Cash');
+            const cashRecord = records.find(
+                record => record.recordType === SyncRecordTypeEnum.ACCOUNT && record.encryptedFields['title'] === 'Cash'
+            );
             const expenseRecord = records.find(
                 record => record.recordType === SyncRecordTypeEnum.TRANSACTION && record.encryptedFields['title'] === 'Cafe'
             );
@@ -202,7 +210,10 @@ describe('cloud-sync/record-mapping', () => {
     it.effect('accounts for every column of every synced table', () =>
         Effect.sync(() => {
             const syncedTables = new Set(
-                aggregateDefinitions.flatMap(definition => [definition.parent.tableName, ...definition.children.map(child => child.descriptor.tableName)])
+                aggregateDefinitions.flatMap(definition => [
+                    definition.parent.tableName,
+                    ...definition.children.map(child => child.descriptor.tableName)
+                ])
             );
 
             for (const definition of aggregateDefinitions) {
@@ -255,9 +266,11 @@ describe('cloud-sync/record-mapping', () => {
             const missingField = yield* decodeSyncRecord({ ...tag, encryptedFields: {} }).pipe(Effect.flip);
             const wrongType = yield* decodeSyncRecord({ ...tag, encryptedFields: { ...tag.encryptedFields, title: 5 } }).pipe(Effect.flip);
             const garbage = yield* decodeSyncRecord(null).pipe(Effect.flip);
-            const newerUnknownType = yield* decodeSyncRecord({ ...tag, recordType: 'Spaceship', schemaVersion: SYNC_RECORD_SCHEMA_VERSION + 1 }).pipe(
-                Effect.flip
-            );
+            const newerUnknownType = yield* decodeSyncRecord({
+                ...tag,
+                recordType: 'Spaceship',
+                schemaVersion: SYNC_RECORD_SCHEMA_VERSION + 1
+            }).pipe(Effect.flip);
 
             expect(newer._tag).toBe('SyncSchemaVersionUnsupportedError');
             expect(zero._tag).toBe('SyncSchemaVersionUnsupportedError');
@@ -283,7 +296,9 @@ describe('cloud-sync/record-mapping', () => {
                 return yield* Effect.die('expected an account aggregate');
             }
 
-            const error = yield* Effect.fromResult(encodeSyncAggregate(account, { ...state.resolver, findNaturalKey: () => null })).pipe(Effect.flip);
+            const error = yield* Effect.fromResult(encodeSyncAggregate(account, { ...state.resolver, findNaturalKey: () => null })).pipe(
+                Effect.flip
+            );
 
             expect(error._tag).toBe('SyncIdentityUnresolvedError');
 
@@ -297,7 +312,8 @@ describe('cloud-sync/record-mapping', () => {
 
             const state = yield* loadSyncState(testDb);
             const transaction = state.aggregates.find(
-                aggregate => aggregate.recordType === SyncRecordTypeEnum.TRANSACTION && (aggregate.children['transaction_entries'] ?? []).length > 0
+                aggregate =>
+                    aggregate.recordType === SyncRecordTypeEnum.TRANSACTION && (aggregate.children['transaction_entries'] ?? []).length > 0
             );
 
             if (!isDefined(transaction)) {
@@ -309,7 +325,11 @@ describe('cloud-sync/record-mapping', () => {
                 ...transaction,
                 children: {
                     ...transaction.children,
-                    transaction_entries: Array.from({ length: count }, (_, index) => ({ ...entry, syncId: `entry-${index}`, sequence: index }))
+                    transaction_entries: Array.from({ length: count }, (_, index) => ({
+                        ...entry,
+                        syncId: `entry-${index}`,
+                        sequence: index
+                    }))
                 }
             });
             const fits = yield* Effect.fromResult(encodeSyncAggregate(withEntries(100), state.resolver));

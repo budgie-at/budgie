@@ -26,7 +26,11 @@ export const FamilyRow = () => {
         message: plural(otherParticipants.length, { one: 'Shared with # person', other: 'Shared with # people' })
     });
     const roleSubtitle = isMember ? t`Shared with your family` : sharedSubtitle;
-    const participantsSubtitle = isAvailable ? roleSubtitle : <SettingsWarningSubtitle>{t`Paused: sign in to iCloud`}</SettingsWarningSubtitle>;
+    const participantsSubtitle = isAvailable ? (
+        roleSubtitle
+    ) : (
+        <SettingsWarningSubtitle>{t`Paused: sign in to iCloud`}</SettingsWarningSubtitle>
+    );
     const groupSubtitle = hasParticipants ? participantsSubtitle : t`Not shared yet`;
     const subtitle = isShared ? groupSubtitle : t`Share accounts with family`;
 

@@ -225,8 +225,12 @@ export const materializeRecords = (database: DB, records: readonly DecodedSyncRe
         const client = database.$client;
         const localIds = new Map<string, number>();
         const anyZoneIds = new Map<string, number>();
-        const deferred: { readonly tableName: string; readonly localId: number; readonly reference: SyncRowReferenceInterface; readonly zone: string }[] =
-            [];
+        const deferred: {
+            readonly tableName: string;
+            readonly localId: number;
+            readonly reference: SyncRowReferenceInterface;
+            readonly zone: string;
+        }[] = [];
         const naturalKeyIds = new Map<string, number | null>();
         const columnName = (tableName: string, property: string): string => {
             const table = tablesByName.get(tableName);
@@ -257,7 +261,9 @@ export const materializeRecords = (database: DB, records: readonly DecodedSyncRe
             reference.kind === SyncReferenceKindEnum.NATURAL_KEY
                 ? findNaturalKeyId(reference)
                 : Effect.succeed(
-                      localIds.get(`${reference.tableName}|${zone}|${reference.key}`) ?? anyZoneIds.get(`${reference.tableName}|${reference.key}`) ?? null
+                      localIds.get(`${reference.tableName}|${zone}|${reference.key}`) ??
+                          anyZoneIds.get(`${reference.tableName}|${reference.key}`) ??
+                          null
                   );
         const rows = records
             .flatMap(record => record.rows)
@@ -318,10 +324,10 @@ export const materializeRecords = (database: DB, records: readonly DecodedSyncRe
             const targetId = yield* findLocalId(pending.reference, pending.zone);
 
             if (isDefined(targetId)) {
-                yield* client.unsafe(`UPDATE "${pending.tableName}" SET "${columnName(pending.tableName, pending.reference.column)}" = ? WHERE rowid = ?`, [
-                    targetId,
-                    pending.localId
-                ]);
+                yield* client.unsafe(
+                    `UPDATE "${pending.tableName}" SET "${columnName(pending.tableName, pending.reference.column)}" = ? WHERE rowid = ?`,
+                    [targetId, pending.localId]
+                );
             } else {
                 stillUnresolved.push(`${pending.tableName}.${pending.reference.column}`);
             }
@@ -346,12 +352,12 @@ export const hydratedSnapshot = (database: DB) =>
         }
 
         const naturalRows = [
-            ...(yield* client.unsafe<{ readonly id: number; readonly label: string }>(`SELECT id, 'instruments:' || code AS label FROM instruments`)).map(
-                row => [`instruments|${row.id}`, row.label] as const
-            ),
-            ...(yield* client.unsafe<{ readonly id: number; readonly label: string }>(`SELECT id, 'mcc_categories:' || mcc AS label FROM mcc_categories`)).map(
-                row => [`mcc_categories|${row.id}`, row.label] as const
-            )
+            ...(yield* client.unsafe<{ readonly id: number; readonly label: string }>(
+                `SELECT id, 'instruments:' || code AS label FROM instruments`
+            )).map(row => [`instruments|${row.id}`, row.label] as const),
+            ...(yield* client.unsafe<{ readonly id: number; readonly label: string }>(
+                `SELECT id, 'mcc_categories:' || mcc AS label FROM mcc_categories`
+            )).map(row => [`mcc_categories|${row.id}`, row.label] as const)
         ];
 
         for (const [key, label] of naturalRows) {
@@ -361,7 +367,9 @@ export const hydratedSnapshot = (database: DB) =>
         const snapshot: Record<string, readonly Record<string, unknown>[]> = {};
 
         for (const tableName of TABLE_ORDER) {
-            const foreignKeys = yield* client.unsafe<{ readonly from: string; readonly table: string }>(`PRAGMA foreign_key_list("${tableName}")`);
+            const foreignKeys = yield* client.unsafe<{ readonly from: string; readonly table: string }>(
+                `PRAGMA foreign_key_list("${tableName}")`
+            );
             const targetByColumn = new Map<string, string>([
                 ...Object.entries(UNDECLARED_FOREIGN_KEYS[tableName] ?? {}),
                 ...foreignKeys.map(foreignKey => [foreignKey.from, foreignKey.table] as const)
@@ -374,7 +382,12 @@ export const hydratedSnapshot = (database: DB) =>
                         .map(([column, value]) => {
                             const target = targetByColumn.get(column);
 
-                            return [column, isDefined(target) && isNumber(value) ? (labels.get(`${target}|${value}`) ?? `missing:${target}|${value}`) : value];
+                            return [
+                                column,
+                                isDefined(target) && isNumber(value)
+                                    ? (labels.get(`${target}|${value}`) ?? `missing:${target}|${value}`)
+                                    : value
+                            ];
                         })
                 )
             );
@@ -395,7 +408,10 @@ const FIXTURE_OPERATED_AT = new Date('2026-10-02T10:00:00Z');
 export const seedFullLedger = (database: DB) =>
     Effect.gen(function* () {
         const seed = new TestSeedService(database);
-        const [primaryInstrument, secondaryInstrument] = yield* database.select().from(InstrumentEntityTable).orderBy(InstrumentEntityTable.id);
+        const [primaryInstrument, secondaryInstrument] = yield* database
+            .select()
+            .from(InstrumentEntityTable)
+            .orderBy(InstrumentEntityTable.id);
         const [mccCategory] = yield* database.select().from(MccCategoryEntityTable).orderBy(MccCategoryEntityTable.id);
         const [seededCategory] = yield* database.select().from(CategoryEntityTable).where(eq(CategoryEntityTable.isDefault, true));
         const integration = yield* seed.bankIntegration({ provider: ExternalSourceEnum.MONOBANK, token: 'secret-token', label: 'Mono' });
@@ -495,7 +511,9 @@ export const seedFullLedger = (database: DB) =>
             })
             .returning();
 
-        yield* database.insert(BudgetCategoryLimitEntityTable).values({ budgetId: budget.id, categoryId: coffee.id, limitAmount: 5_000_000 });
+        yield* database
+            .insert(BudgetCategoryLimitEntityTable)
+            .values({ budgetId: budget.id, categoryId: coffee.id, limitAmount: 5_000_000 });
         yield* database.insert(BudgetSinkingFundEntityTable).values({
             budgetId: budget.id,
             name: 'Fund',
@@ -554,7 +572,20 @@ export const seedFullLedger = (database: DB) =>
             type: TransactionTypeEnum.INCOME
         });
 
-        return { primaryInstrument, secondaryInstrument, mccCategory, wallet, cash, bank, friend, coffee, trip, expense, expenseEntry, seed };
+        return {
+            primaryInstrument,
+            secondaryInstrument,
+            mccCategory,
+            wallet,
+            cash,
+            bank,
+            friend,
+            coffee,
+            trip,
+            expense,
+            expenseEntry,
+            seed
+        };
     });
 
 export const seedTransferRefundAndConsolidation = (database: DB, fixture: Effect.Success<ReturnType<typeof seedFullLedger>>) =>
@@ -573,7 +604,12 @@ export const seedTransferRefundAndConsolidation = (database: DB, fixture: Effect
             title: 'Move'
         });
 
-        const refunded = yield* seed.refundedExpense({ accountId: cash.id, expenseAmount: 20_000_000, refundAmounts: [5_000_000], title: 'Shop' });
+        const refunded = yield* seed.refundedExpense({
+            accountId: cash.id,
+            expenseAmount: 20_000_000,
+            refundAmounts: [5_000_000],
+            title: 'Shop'
+        });
         const [refund] = refunded.refunds;
 
         yield* database

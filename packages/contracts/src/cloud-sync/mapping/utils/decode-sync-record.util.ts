@@ -13,9 +13,9 @@ import { SyncSchemaVersionUnsupportedError } from '../error/sync-schema-version-
 
 import type { DecodedSyncColumnInterface } from '../interface/decoded-sync-column.interface';
 import type { DecodedSyncRecordInterface } from '../interface/decoded-sync-record.interface';
-import type { SyncIdentityInterface } from '../interface/sync-identity.interface';
 import type { SyncChildDefinitionInterface } from '../interface/sync-child-definition.interface';
 import type { SyncColumnDescriptorInterface } from '../interface/sync-column-descriptor.interface';
+import type { SyncIdentityInterface } from '../interface/sync-identity.interface';
 import type { SyncParentLinkInterface } from '../interface/sync-parent-link.interface';
 import type { SyncRowReferenceInterface } from '../interface/sync-row-reference.interface';
 import type { SyncRowInterface } from '../interface/sync-row.interface';
@@ -44,10 +44,7 @@ const decodeRowValue = (kind: SyncColumnKindEnum, value: unknown): SyncRowValueT
     }
 };
 
-const decodeColumn = (
-    column: SyncColumnDescriptorInterface,
-    source: Readonly<Record<string, unknown>>
-): DecodedSyncColumnInterface => {
+const decodeColumn = (column: SyncColumnDescriptorInterface, source: Readonly<Record<string, unknown>>): DecodedSyncColumnInterface => {
     const wire = source[column.field];
 
     if (isDefined(column.reference)) {
@@ -151,7 +148,9 @@ export const decodeSyncRecord = Effect.fnUntraced(function* (input: unknown) {
     const { definition } = decoder;
     const parentRow = decodeRow(definition.parent, payload, { syncId: recordName, syncZone: zone }, null, definition.parentDefaults);
     const childRows = definition.children.flatMap(child => decodeChildRows(child, payload, zone, recordName));
-    const legPrivateRows = isDefined(definition.legPrivateEntries) ? decodeChildRows(definition.legPrivateEntries, payload, zone, recordName) : [];
+    const legPrivateRows = isDefined(definition.legPrivateEntries)
+        ? decodeChildRows(definition.legPrivateEntries, payload, zone, recordName)
+        : [];
 
     const decoded: DecodedSyncRecordInterface = {
         recordType: definition.recordType,

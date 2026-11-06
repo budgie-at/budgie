@@ -49,21 +49,21 @@ import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
 import { iCloudAccountRefreshAtom } from '../../cloud-backup/constant/icloud-account-refresh-atom.constant';
 import { InstallIdService } from '../../cloud-backup/service/install-id.service';
+import { syncAutomationEmbeddingBoostLayer } from '../../cloud-sync-automation/layer/sync-automation-embedding-boost.layer';
+import { SyncAutomationService } from '../../cloud-sync-automation/service/sync-automation.service';
 import { householdRefreshAtom } from '../../household/constant/household-refresh-atom.constant';
 import { householdStateAtom } from '../../household/constant/household-state-atom.constant';
 import { HouseholdEndModeEnum } from '../../household/enum/household-end-mode.enum';
 import { HouseholdRoleEnum } from '../../household/enum/household-role.enum';
-import { syncAutomationEmbeddingBoostLayer } from '../../cloud-sync-automation/layer/sync-automation-embedding-boost.layer';
-import { SyncAutomationService } from '../../cloud-sync-automation/service/sync-automation.service';
 import { CloudSyncDeviceRecordSchema } from '../constant/cloud-sync-device-record-schema.constant';
 import { CLOUD_SYNC_RECORDS } from '../constant/cloud-sync-records.constant';
 import { cloudSyncStatusAtom } from '../constant/cloud-sync-status-atom.constant';
-import { syncAccountBalanceRefresherLayer } from '../layer/sync-account-balance-refresher.layer';
 import { CloudSyncEventKindEnum } from '../enum/cloud-sync-event-kind.enum';
 import { CloudSyncLineageChoiceEnum } from '../enum/cloud-sync-lineage-choice.enum';
 import { CloudSyncLineageDecisionEnum } from '../enum/cloud-sync-lineage-decision.enum';
 import { CloudSyncRestorePhaseEnum } from '../enum/cloud-sync-restore-phase.enum';
 import { CloudSyncStatusEnum } from '../enum/cloud-sync-status.enum';
+import { syncAccountBalanceRefresherLayer } from '../layer/sync-account-balance-refresher.layer';
 
 import { BankOwnershipService } from './bank-ownership.service';
 import { CloudSyncSafetyCopyService } from './cloud-sync-safety-copy.service';
@@ -84,10 +84,10 @@ import type {
     ICloudStateSerializationEvent,
     ICloudZoneChangeEvent
 } from '../../../modules/icloud';
-import type { CloudSyncEventType } from '../type/cloud-sync-event.type';
 import type { CloudSyncEnvelopeInterface } from '../interface/cloud-sync-envelope.interface';
 import type { CloudSyncPushedItemInterface } from '../interface/cloud-sync-pushed-item.interface';
 import type { CloudSyncSessionInterface } from '../interface/cloud-sync-session.interface';
+import type { CloudSyncEventType } from '../type/cloud-sync-event.type';
 import type {
     SyncApplyResultInterface,
     SyncIncomingDeletionInterface,
@@ -164,7 +164,8 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
         const publish = Effect.flatMap(Ref.get(session), current =>
             Effect.sync(() => {
                 appAtomRegistry.set(cloudSyncStatusAtom, {
-                    status: current.blocked ?? (current.isFetching || pushed.size > 0 ? CloudSyncStatusEnum.SYNCING : CloudSyncStatusEnum.IDLE),
+                    status:
+                        current.blocked ?? (current.isFetching || pushed.size > 0 ? CloudSyncStatusEnum.SYNCING : CloudSyncStatusEnum.IDLE),
                     lastSyncedAt: current.lastSyncedAt,
                     fetchedRecordCount: current.fetchedRecordCount,
                     isInitialFetchComplete: current.isInitialFetchComplete,
@@ -213,7 +214,10 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
         const labelOf = (id: Pick<ICloudRecordId, 'ownerName' | 'zoneName'>): string | undefined =>
             labelByZone.get(keyOf(id.ownerName, id.zoneName));
 
-        const toEnvelope = (record: Pick<ICloudFetchedRecord, 'encryptedFields' | 'recordName' | 'recordType' | 'schemaVersion'>, zone: string) => ({
+        const toEnvelope = (
+            record: Pick<ICloudFetchedRecord, 'encryptedFields' | 'recordName' | 'recordType' | 'schemaVersion'>,
+            zone: string
+        ) => ({
             recordType: record.recordType,
             recordName: record.recordName,
             zone,
@@ -257,7 +261,11 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             } satisfies ICloudRecordPayload;
         });
 
-        const pushSideRecord = Effect.fnUntraced(function* (recordType: string, recordName: string, encryptedFields: Readonly<Record<string, string | number>>) {
+        const pushSideRecord = Effect.fnUntraced(function* (
+            recordType: string,
+            recordName: string,
+            encryptedFields: Readonly<Record<string, string | number>>
+        ) {
             const envelope: CloudSyncEnvelopeInterface = {
                 recordType,
                 recordName,
@@ -619,42 +627,48 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             yield* startSharedEngineUnlocked(isRestoring);
         });
 
-        const reconfigureUnlocked = Effect.fnUntraced(function* () {
-            const settings = yield* settingsRepository.getSettings();
+        const reconfigureUnlocked = Effect.fnUntraced(
+            function* () {
+                const settings = yield* settingsRepository.getSettings();
 
-            if (!settings.cloudSyncEnabled) {
-                yield* stopEngineUnlocked();
-                yield* patch({ blocked: null });
+                if (!settings.cloudSyncEnabled) {
+                    yield* stopEngineUnlocked();
+                    yield* patch({ blocked: null });
 
-                return;
-            }
+                    return;
+                }
 
-            if ((yield* identityRepository.countMissing()) > 0) {
-                return;
-            }
+                if ((yield* identityRepository.countMissing()) > 0) {
+                    return;
+                }
 
-            const account = yield* transport.getAccountStatus();
+                const account = yield* transport.getAccountStatus();
 
-            if (account.status !== 'available') {
-                yield* stopEngineUnlocked();
-                yield* patch({ blocked: CloudSyncStatusEnum.PAUSED_SIGNED_OUT });
+                if (account.status !== 'available') {
+                    yield* stopEngineUnlocked();
+                    yield* patch({ blocked: CloudSyncStatusEnum.PAUSED_SIGNED_OUT });
 
-                return;
-            }
+                    return;
+                }
 
-            if (!isString(account.userRecordName)) {
-                yield* patch({ blocked: CloudSyncStatusEnum.ERROR });
+                if (!isString(account.userRecordName)) {
+                    yield* patch({ blocked: CloudSyncStatusEnum.ERROR });
 
-                return;
-            }
+                    return;
+                }
 
-            yield* startEngineUnlocked(account.userRecordName);
-        }, Effect.catchTag('CloudSyncTransportError', error =>
-            patch({
-                isEngineRunning: false,
-                blocked: error.code === ICloudErrorCode.ACCOUNT_UNAVAILABLE ? CloudSyncStatusEnum.PAUSED_SIGNED_OUT : CloudSyncStatusEnum.ERROR
-            })
-        ));
+                yield* startEngineUnlocked(account.userRecordName);
+            },
+            Effect.catchTag('CloudSyncTransportError', error =>
+                patch({
+                    isEngineRunning: false,
+                    blocked:
+                        error.code === ICloudErrorCode.ACCOUNT_UNAVAILABLE
+                            ? CloudSyncStatusEnum.PAUSED_SIGNED_OUT
+                            : CloudSyncStatusEnum.ERROR
+                })
+            )
+        );
 
         const recoverZoneUnlocked = Effect.fnUntraced(function* () {
             yield* stopEngineUnlocked();
@@ -754,122 +768,131 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             }
         });
 
-        const handleSentChanges = Effect.fn('CloudSyncService.handleSentChanges')(function* (event: ICloudSentChangesEvent) {
-            const touched = new Set<string>();
+        const handleSentChanges = Effect.fn('CloudSyncService.handleSentChanges')(
+            function* (event: ICloudSentChangesEvent) {
+                const touched = new Set<string>();
 
-            for (const saved of event.savedRecords) {
-                const label = labelOf(saved);
+                for (const saved of event.savedRecords) {
+                    const label = labelOf(saved);
 
-                if (!isDefined(label)) {
-                    continue;
-                }
-
-                const recordKey = keyOf(label, saved.recordName);
-                const sideEnvelope = sidePending.get(recordKey);
-
-                if (isDefined(sideEnvelope)) {
-                    sidePending.delete(recordKey);
-                    yield* storeSideRecord(sideEnvelope, saved.systemFields);
-
-                    if (saved.recordType === CLOUD_SYNC_RECORDS.metaRecordType) {
-                        yield* stateStore.update({ resolvedLineageId: yield* identityRepository.ensureLineageId() });
-                        yield* patch({ isAwaitingMeta: false });
+                    if (!isDefined(label)) {
+                        continue;
                     }
 
-                    continue;
+                    const recordKey = keyOf(label, saved.recordName);
+                    const sideEnvelope = sidePending.get(recordKey);
+
+                    if (isDefined(sideEnvelope)) {
+                        sidePending.delete(recordKey);
+                        yield* storeSideRecord(sideEnvelope, saved.systemFields);
+
+                        if (saved.recordType === CLOUD_SYNC_RECORDS.metaRecordType) {
+                            yield* stateStore.update({ resolvedLineageId: yield* identityRepository.ensureLineageId() });
+                            yield* patch({ isAwaitingMeta: false });
+                        }
+
+                        continue;
+                    }
+
+                    const itemKey = itemKeyByRecordKey.get(recordKey);
+
+                    if (isDefined(itemKey)) {
+                        pushed.get(itemKey)?.savedSystemFields.set(recordKey, saved.systemFields);
+                        touched.add(itemKey);
+                    }
                 }
 
-                const itemKey = itemKeyByRecordKey.get(recordKey);
+                const deletedIds = [
+                    ...event.deletedRecords,
+                    ...event.failedDeletes.filter(failed => failed.code === ICloudErrorCode.UNKNOWN_ITEM)
+                ];
 
-                if (isDefined(itemKey)) {
-                    pushed.get(itemKey)?.savedSystemFields.set(recordKey, saved.systemFields);
-                    touched.add(itemKey);
+                for (const deleted of deletedIds) {
+                    const label = labelOf(deleted);
+                    const recordKey = isDefined(label) ? keyOf(label, deleted.recordName) : null;
+                    const itemKey = isDefined(recordKey) ? itemKeyByRecordKey.get(recordKey) : undefined;
+
+                    if (isDefined(recordKey) && isDefined(itemKey)) {
+                        pushed.get(itemKey)?.deletedKeys.add(recordKey);
+                        touched.add(itemKey);
+                    }
                 }
-            }
 
-            const deletedIds = [...event.deletedRecords, ...event.failedDeletes.filter(failed => failed.code === ICloudErrorCode.UNKNOWN_ITEM)];
-
-            for (const deleted of deletedIds) {
-                const label = labelOf(deleted);
-                const recordKey = isDefined(label) ? keyOf(label, deleted.recordName) : null;
-                const itemKey = isDefined(recordKey) ? itemKeyByRecordKey.get(recordKey) : undefined;
-
-                if (isDefined(recordKey) && isDefined(itemKey)) {
-                    pushed.get(itemKey)?.deletedKeys.add(recordKey);
-                    touched.add(itemKey);
+                for (const failure of event.failedSaves) {
+                    yield* handleFailedSave(failure);
                 }
-            }
 
-            for (const failure of event.failedSaves) {
-                yield* handleFailedSave(failure);
-            }
+                yield* acknowledgeComplete(touched);
+                yield* confirm(event);
 
-            yield* acknowledgeComplete(touched);
-            yield* confirm(event);
+                if (isNotEmptyArray(event.savedRecords) && quotaKeys.size === 0) {
+                    yield* patch({ isQuotaExceeded: false });
+                }
 
-            if (isNotEmptyArray(event.savedRecords) && quotaKeys.size === 0) {
-                yield* patch({ isQuotaExceeded: false });
-            }
+                if (pushed.size <= uploadLowWaterMark) {
+                    yield* drainUnlocked();
+                }
 
-            if (pushed.size <= uploadLowWaterMark) {
-                yield* drainUnlocked();
-            }
-
-            yield* publish;
-        }, effect => locked(effect));
+                yield* publish;
+            },
+            effect => locked(effect)
+        );
 
         const automate = (result: SyncApplyResultInterface) => logAndContinue(automationService.afterApply(result));
 
-        const handleFetchedChanges = Effect.fn('CloudSyncService.handleFetchedChanges')(function* (event: ICloudFetchedChangesEvent) {
-            const records: SyncIncomingRecordInterface[] = [];
-            const deletions: SyncIncomingDeletionInterface[] = [];
+        const handleFetchedChanges = Effect.fn('CloudSyncService.handleFetchedChanges')(
+            function* (event: ICloudFetchedChangesEvent) {
+                const records: SyncIncomingRecordInterface[] = [];
+                const deletions: SyncIncomingDeletionInterface[] = [];
 
-            for (const record of event.records) {
-                const label = labelOf(record);
+                for (const record of event.records) {
+                    const label = labelOf(record);
 
-                if (!isDefined(label)) {
-                    continue;
+                    if (!isDefined(label)) {
+                        continue;
+                    }
+
+                    if (isSideRecordType(record.recordType)) {
+                        yield* storeSideRecord(toEnvelope(record, label), record.systemFields);
+                    } else {
+                        records.push({ record: toEnvelope(record, label), systemFields: record.systemFields });
+                    }
                 }
 
-                if (isSideRecordType(record.recordType)) {
-                    yield* storeSideRecord(toEnvelope(record, label), record.systemFields);
-                } else {
-                    records.push({ record: toEnvelope(record, label), systemFields: record.systemFields });
+                for (const deletion of event.deletions) {
+                    const label = labelOf(deletion);
+
+                    if (isDefined(label) && !isSideRecordType(deletion.recordType)) {
+                        deletions.push({ recordType: deletion.recordType, recordName: deletion.recordName, zone: label });
+                    }
                 }
-            }
 
-            for (const deletion of event.deletions) {
-                const label = labelOf(deletion);
+                const result = yield* applyService.apply({ records, deletions });
 
-                if (isDefined(label) && !isSideRecordType(deletion.recordType)) {
-                    deletions.push({ recordType: deletion.recordType, recordName: deletion.recordName, zone: label });
+                yield* Ref.update(session, current => ({
+                    ...current,
+                    fetchedRecordCount: current.fetchedRecordCount + event.records.length,
+                    blocked: isNotEmptyArray(result.pausedZones)
+                        ? CloudSyncStatusEnum.UPDATE_REQUIRED
+                        : current.blocked === CloudSyncStatusEnum.UPDATE_REQUIRED
+                          ? null
+                          : current.blocked
+                }));
+                yield* confirm(event);
+                yield* automate(result);
+
+                if (isNotEmptyArray(event.changedShares)) {
+                    yield* bumpHouseholdRefresh;
                 }
-            }
 
-            const result = yield* applyService.apply({ records, deletions });
+                if (isNotEmptyArray(result.reenqueued)) {
+                    yield* drainUnlocked();
+                }
 
-            yield* Ref.update(session, current => ({
-                ...current,
-                fetchedRecordCount: current.fetchedRecordCount + event.records.length,
-                blocked: isNotEmptyArray(result.pausedZones)
-                    ? CloudSyncStatusEnum.UPDATE_REQUIRED
-                    : current.blocked === CloudSyncStatusEnum.UPDATE_REQUIRED
-                      ? null
-                      : current.blocked
-            }));
-            yield* confirm(event);
-            yield* automate(result);
-
-            if (isNotEmptyArray(event.changedShares)) {
-                yield* bumpHouseholdRefresh;
-            }
-
-            if (isNotEmptyArray(result.reenqueued)) {
-                yield* drainUnlocked();
-            }
-
-            yield* publish;
-        }, effect => locked(effect));
+                yield* publish;
+            },
+            effect => locked(effect)
+        );
 
         const handleStateSerialization = (event: ICloudStateSerializationEvent) =>
             event.scope === ICloudSyncScope.SHARED
@@ -912,7 +935,10 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
                 return;
             }
 
-            const results = yield* reconciliationService.complete(PERSONAL_SYNC_ZONE, new Set(inventory.value.map(({ recordName }) => recordName)));
+            const results = yield* reconciliationService.complete(
+                PERSONAL_SYNC_ZONE,
+                new Set(inventory.value.map(({ recordName }) => recordName))
+            );
 
             yield* stateStore.update({ restorePhase: CloudSyncRestorePhaseEnum.NONE });
             yield* patch({ isReconciling: false });
@@ -925,7 +951,9 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
 
             if (household?.role === SyncZoneRoleEnum.OWNER) {
                 if (!(yield* isHouseholdShareActive(household.zoneName))) {
-                    yield* transport.deleteZone(scope, household.zoneName).pipe(Effect.catchTag('CloudSyncTransportError', () => Effect.void));
+                    yield* transport
+                        .deleteZone(scope, household.zoneName)
+                        .pipe(Effect.catchTag('CloudSyncTransportError', () => Effect.void));
                     yield* endHouseholdUnlocked(HouseholdEndModeEnum.KEEP_PERSONAL_COPY);
 
                     return;
@@ -938,105 +966,120 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
         const completeSharedReconciliation = Effect.fnUntraced(function* () {
             const household = zones.get(HOUSEHOLD_SYNC_ZONE);
 
-            if (household?.databaseScope === SyncDatabaseScopeEnum.SHARED && (yield* reconcileHouseholdZone(ICloudSyncScope.SHARED, household.zoneName))) {
+            if (
+                household?.databaseScope === SyncDatabaseScopeEnum.SHARED &&
+                (yield* reconcileHouseholdZone(ICloudSyncScope.SHARED, household.zoneName))
+            ) {
                 yield* patch({ isSharedReconciling: false });
             }
         });
 
-        const handleDidFetch = Effect.fn('CloudSyncService.handleDidFetch')(function* (event: ICloudScopedEvent) {
-            if (event.scope === ICloudSyncScope.SHARED) {
-                if ((yield* Ref.get(session)).isSharedReconciling) {
-                    yield* completeSharedReconciliation();
+        const handleDidFetch = Effect.fn('CloudSyncService.handleDidFetch')(
+            function* (event: ICloudScopedEvent) {
+                if (event.scope === ICloudSyncScope.SHARED) {
+                    if ((yield* Ref.get(session)).isSharedReconciling) {
+                        yield* completeSharedReconciliation();
+                    }
+
+                    yield* drainUnlocked();
+
+                    return;
                 }
 
-                yield* drainUnlocked();
+                yield* patch({
+                    isFetching: false,
+                    isInitialFetchComplete: true,
+                    lastSyncedAt: yield* Clock.currentTimeMillis
+                });
 
-                return;
-            }
+                if ((yield* Ref.get(session)).isReconciling) {
+                    yield* completeReconciliation();
+                }
 
-            yield* patch({
-                isFetching: false,
-                isInitialFetchComplete: true,
-                lastSyncedAt: yield* Clock.currentTimeMillis
-            });
+                for (const quotaKey of quotaKeys) {
+                    failedKeys.delete(quotaKey);
+                }
 
-            if ((yield* Ref.get(session)).isReconciling) {
-                yield* completeReconciliation();
-            }
-
-            for (const quotaKey of quotaKeys) {
-                failedKeys.delete(quotaKey);
-            }
-
-            quotaKeys.clear();
-            yield* bankOwnershipService.evaluate();
-            yield* drainUnlocked();
-        }, effect => locked(effect));
-
-        const handleAccountChange = Effect.fn('CloudSyncService.handleAccountChange')(function* (event: ICloudAccountChangeEvent) {
-            if (event.scope === ICloudSyncScope.SHARED) {
-                yield* confirm(event);
-
-                return;
-            }
-
-            yield* Effect.sync(() => {
-                appAtomRegistry.update(iCloudAccountRefreshAtom, count => count + 1);
-            });
-
-            const stored = yield* stateStore.read;
-            const current = yield* Ref.get(session);
-
-            if (event.changeType === ICloudAccountChangeType.SIGN_OUT) {
-                yield* stopEngineUnlocked();
-                yield* patch({ blocked: CloudSyncStatusEnum.PAUSED_SIGNED_OUT });
-            } else if (isDefined(stored.boundUserRecordName) && event.currentUserRecordName !== stored.boundUserRecordName) {
-                yield* stopEngineUnlocked();
-                yield* patch({ blocked: CloudSyncStatusEnum.PAUSED_OTHER_ACCOUNT });
-            } else if (!(current.isEngineRunning && event.changeType === ICloudAccountChangeType.SIGN_IN)) {
-                yield* stopEngineUnlocked();
-                yield* stateStore.update({ stateSerialization: null });
-                yield* patch({ blocked: null });
-                yield* reconfigureUnlocked();
-            }
-
-            yield* confirm(event);
-        }, effect => locked(effect));
-
-        const handleZoneChange = Effect.fn('CloudSyncService.handleZoneChange')(function* (event: ICloudZoneChangeEvent) {
-            const personalDeletions = event.deleted.filter(zone => labelOf(zone) === PERSONAL_SYNC_ZONE);
-            const householdDeletions = event.deleted.filter(zone => labelOf(zone) === HOUSEHOLD_SYNC_ZONE);
-
-            if (personalDeletions.some(zone => zone.reason === ICloudZoneChangeReason.ENCRYPTED_DATA_RESET)) {
-                yield* recoverZoneUnlocked();
-            } else if (isNotEmptyArray(personalDeletions)) {
-                yield* stopEngineUnlocked();
-                yield* settingsRepository.update({ cloudSyncEnabled: false });
-            }
-
-            if (isNotEmptyArray(householdDeletions)) {
-                yield* endHouseholdUnlocked(householdEndMode());
-            }
-
-            yield* confirm(event);
-        }, effect => locked(effect));
-
-        const foreground = Effect.fn('CloudSyncService.foreground')(function* () {
-            const current = yield* Ref.get(session);
-
-            if (current.isEngineRunning) {
-                failedKeys.clear();
                 quotaKeys.clear();
+                yield* bankOwnershipService.evaluate();
                 yield* drainUnlocked();
-                yield* Effect.forkDetach(logAndContinue(transport.syncNow(scope)));
+            },
+            effect => locked(effect)
+        );
 
-                if (current.isSharedEngineRunning) {
-                    yield* Effect.forkDetach(logAndContinue(transport.syncNow(ICloudSyncScope.SHARED)));
+        const handleAccountChange = Effect.fn('CloudSyncService.handleAccountChange')(
+            function* (event: ICloudAccountChangeEvent) {
+                if (event.scope === ICloudSyncScope.SHARED) {
+                    yield* confirm(event);
+
+                    return;
                 }
-            } else {
-                yield* reconfigureUnlocked();
-            }
-        }, effect => locked(effect));
+
+                yield* Effect.sync(() => {
+                    appAtomRegistry.update(iCloudAccountRefreshAtom, count => count + 1);
+                });
+
+                const stored = yield* stateStore.read;
+                const current = yield* Ref.get(session);
+
+                if (event.changeType === ICloudAccountChangeType.SIGN_OUT) {
+                    yield* stopEngineUnlocked();
+                    yield* patch({ blocked: CloudSyncStatusEnum.PAUSED_SIGNED_OUT });
+                } else if (isDefined(stored.boundUserRecordName) && event.currentUserRecordName !== stored.boundUserRecordName) {
+                    yield* stopEngineUnlocked();
+                    yield* patch({ blocked: CloudSyncStatusEnum.PAUSED_OTHER_ACCOUNT });
+                } else if (!(current.isEngineRunning && event.changeType === ICloudAccountChangeType.SIGN_IN)) {
+                    yield* stopEngineUnlocked();
+                    yield* stateStore.update({ stateSerialization: null });
+                    yield* patch({ blocked: null });
+                    yield* reconfigureUnlocked();
+                }
+
+                yield* confirm(event);
+            },
+            effect => locked(effect)
+        );
+
+        const handleZoneChange = Effect.fn('CloudSyncService.handleZoneChange')(
+            function* (event: ICloudZoneChangeEvent) {
+                const personalDeletions = event.deleted.filter(zone => labelOf(zone) === PERSONAL_SYNC_ZONE);
+                const householdDeletions = event.deleted.filter(zone => labelOf(zone) === HOUSEHOLD_SYNC_ZONE);
+
+                if (personalDeletions.some(zone => zone.reason === ICloudZoneChangeReason.ENCRYPTED_DATA_RESET)) {
+                    yield* recoverZoneUnlocked();
+                } else if (isNotEmptyArray(personalDeletions)) {
+                    yield* stopEngineUnlocked();
+                    yield* settingsRepository.update({ cloudSyncEnabled: false });
+                }
+
+                if (isNotEmptyArray(householdDeletions)) {
+                    yield* endHouseholdUnlocked(householdEndMode());
+                }
+
+                yield* confirm(event);
+            },
+            effect => locked(effect)
+        );
+
+        const foreground = Effect.fn('CloudSyncService.foreground')(
+            function* () {
+                const current = yield* Ref.get(session);
+
+                if (current.isEngineRunning) {
+                    failedKeys.clear();
+                    quotaKeys.clear();
+                    yield* drainUnlocked();
+                    yield* Effect.forkDetach(logAndContinue(transport.syncNow(scope)));
+
+                    if (current.isSharedEngineRunning) {
+                        yield* Effect.forkDetach(logAndContinue(transport.syncNow(ICloudSyncScope.SHARED)));
+                    }
+                } else {
+                    yield* reconfigureUnlocked();
+                }
+            },
+            effect => locked(effect)
+        );
 
         const useCloudData = Effect.fnUntraced(function* () {
             yield* safetyCopyService.create();
@@ -1070,46 +1113,55 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             yield* reconfigureUnlocked();
         });
 
-        const handleShareAccepted = Effect.fn('CloudSyncService.handleShareAccepted')(function* (event: ICloudShareAcceptedEvent) {
-            if (event.outcome !== ICloudShareOutcome.ACCEPTED) {
-                yield* Effect.sync(() => {
-                    showErrorToast(t`Could not join the family`, t`The invitation could not be accepted. Open the invitation link again to retry.`);
+        const handleShareAccepted = Effect.fn('CloudSyncService.handleShareAccepted')(
+            function* (event: ICloudShareAcceptedEvent) {
+                if (event.outcome !== ICloudShareOutcome.ACCEPTED) {
+                    yield* Effect.sync(() => {
+                        showErrorToast(
+                            t`Could not join the family`,
+                            t`The invitation could not be accepted. Open the invitation link again to retry.`
+                        );
+                    });
+                    yield* bumpHouseholdRefresh;
+
+                    return;
+                }
+
+                const existing = yield* zoneRegistryRepository.findByLabel(HOUSEHOLD_SYNC_ZONE);
+
+                if (isDefined(existing) && (existing.role === SyncZoneRoleEnum.OWNER || existing.ownerName !== event.ownerName)) {
+                    return;
+                }
+
+                yield* zoneRegistryRepository.upsert({
+                    zoneLabel: HOUSEHOLD_SYNC_ZONE,
+                    zoneName: event.zoneName,
+                    ownerName: event.ownerName,
+                    databaseScope: SyncDatabaseScopeEnum.SHARED,
+                    role: SyncZoneRoleEnum.PARTICIPANT
                 });
+                yield* refreshZones();
+
+                if ((yield* Ref.get(session)).isEngineRunning) {
+                    yield* startSharedEngineUnlocked(false);
+                }
+
                 yield* bumpHouseholdRefresh;
+            },
+            effect => locked(effect)
+        );
 
-                return;
-            }
-
-            const existing = yield* zoneRegistryRepository.findByLabel(HOUSEHOLD_SYNC_ZONE);
-
-            if (isDefined(existing) && (existing.role === SyncZoneRoleEnum.OWNER || existing.ownerName !== event.ownerName)) {
-                return;
-            }
-
-            yield* zoneRegistryRepository.upsert({
-                zoneLabel: HOUSEHOLD_SYNC_ZONE,
-                zoneName: event.zoneName,
-                ownerName: event.ownerName,
-                databaseScope: SyncDatabaseScopeEnum.SHARED,
-                role: SyncZoneRoleEnum.PARTICIPANT
-            });
-            yield* refreshZones();
-
-            if ((yield* Ref.get(session)).isEngineRunning) {
-                yield* startSharedEngineUnlocked(false);
-            }
-
-            yield* bumpHouseholdRefresh;
-        }, effect => locked(effect));
-
-        const handleShareChanged = Effect.fn('CloudSyncService.handleShareChanged')(function* (event: ICloudShareChangedEvent) {
-            if (event.change === ICloudShareChange.STOPPED && zones.get(HOUSEHOLD_SYNC_ZONE)?.role === SyncZoneRoleEnum.OWNER) {
-                yield* transport.deleteZone(scope, CLOUD_SYNC_RECORDS.householdZoneName);
-                yield* endHouseholdUnlocked(HouseholdEndModeEnum.KEEP_PERSONAL_COPY);
-            } else {
-                yield* bumpHouseholdRefresh;
-            }
-        }, effect => locked(effect));
+        const handleShareChanged = Effect.fn('CloudSyncService.handleShareChanged')(
+            function* (event: ICloudShareChangedEvent) {
+                if (event.change === ICloudShareChange.STOPPED && zones.get(HOUSEHOLD_SYNC_ZONE)?.role === SyncZoneRoleEnum.OWNER) {
+                    yield* transport.deleteZone(scope, CLOUD_SYNC_RECORDS.householdZoneName);
+                    yield* endHouseholdUnlocked(HouseholdEndModeEnum.KEEP_PERSONAL_COPY);
+                } else {
+                    yield* bumpHouseholdRefresh;
+                }
+            },
+            effect => locked(effect)
+        );
 
         const dispatchEvent = (item: CloudSyncEventType) => {
             switch (item.kind) {
@@ -1140,19 +1192,22 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             Effect.as(true),
             Effect.catchTag('CloudSyncTransportError', error => Effect.succeed(error.code === ICloudErrorCode.ZONE_NOT_FOUND))
         );
-        const finishHouseholdCleanupUnlocked = Effect.fnUntraced(function* () {
-            if (!(yield* stateStore.read).isHouseholdCleanupPending) {
-                return;
-            }
+        const finishHouseholdCleanupUnlocked = Effect.fnUntraced(
+            function* () {
+                if (!(yield* stateStore.read).isHouseholdCleanupPending) {
+                    return;
+                }
 
-            if ((yield* transport.getAccountStatus()).status !== 'available') {
-                return;
-            }
+                if ((yield* transport.getAccountStatus()).status !== 'available') {
+                    return;
+                }
 
-            if (yield* deleteHouseholdZone) {
-                yield* stateStore.update({ isHouseholdCleanupPending: false });
-            }
-        }, Effect.catchTag('CloudSyncTransportError', () => Effect.void));
+                if (yield* deleteHouseholdZone) {
+                    yield* stateStore.update({ isHouseholdCleanupPending: false });
+                }
+            },
+            Effect.catchTag('CloudSyncTransportError', () => Effect.void)
+        );
         const drain = () => locked(drainUnlocked());
 
         const forkConsumer = <A, E, R, R2>(stream: Stream.Stream<A, E, R>, handle: (event: A) => Effect.Effect<unknown, unknown, R2>) =>

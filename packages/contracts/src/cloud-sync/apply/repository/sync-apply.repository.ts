@@ -10,11 +10,11 @@ import { SyncOutboxEntityTable } from '../../table/sync-outbox-entity.table';
 import { SyncPendingEntityTable } from '../../table/sync-pending-entity.table';
 import { SYNC_SCHEMA_PAUSED_MISSING_RECORD_TYPE } from '../constant/sync-schema-paused.constant';
 
-import type { SyncCellType } from '../type/sync-cell.type';
 import type { SyncFamilyRecordInterface } from '../interface/sync-family-record.interface';
 import type { SyncLocalIdInterface } from '../interface/sync-local-id.interface';
 import type { SyncLocalRowInterface } from '../interface/sync-local-row.interface';
 import type { SyncPausedZoneInterface } from '../interface/sync-paused-zone.interface';
+import type { SyncCellType } from '../type/sync-cell.type';
 
 const SAVEPOINT = 'sync_apply_unit';
 
@@ -35,10 +35,10 @@ export class SyncApplyRepository extends Context.Service<SyncApplyRepository>()(
             ),
         findLocalId: (tableName: string, preferredZone: string, syncId: string) =>
             Db.query(db =>
-                db.$client.unsafe<SyncLocalIdInterface>(`SELECT rowid AS localId FROM "${tableName}" WHERE sync_zone = ? AND sync_id = ? LIMIT 1`, [
-                    preferredZone,
-                    syncId
-                ])
+                db.$client.unsafe<SyncLocalIdInterface>(
+                    `SELECT rowid AS localId FROM "${tableName}" WHERE sync_zone = ? AND sync_id = ? LIMIT 1`,
+                    [preferredZone, syncId]
+                )
             ).pipe(
                 Effect.flatMap(rows =>
                     isNotEmptyArray(rows)
@@ -53,9 +53,10 @@ export class SyncApplyRepository extends Context.Service<SyncApplyRepository>()(
             ),
         findNaturalKeyId: (tableName: string, keyColumn: string, key: string) =>
             Db.query(db =>
-                db.$client.unsafe<SyncLocalIdInterface>(`SELECT rowid AS localId FROM "${tableName}" WHERE "${keyColumn}" = ? ORDER BY rowid LIMIT 1`, [
-                    key
-                ])
+                db.$client.unsafe<SyncLocalIdInterface>(
+                    `SELECT rowid AS localId FROM "${tableName}" WHERE "${keyColumn}" = ? ORDER BY rowid LIMIT 1`,
+                    [key]
+                )
             ).pipe(Effect.map(rows => rows.at(0)?.localId ?? null)),
         findEntryAccountIds: (transactionLocalId: number) =>
             Db.query(db =>
@@ -85,10 +86,10 @@ export class SyncApplyRepository extends Context.Service<SyncApplyRepository>()(
                 : Db.mutation(
                       { type: 'update', tables: [tableName] },
                       Db.query(db =>
-                          db.$client.unsafe(
-                              `UPDATE "${tableName}" SET ${names.map(name => `"${name}" = ?`).join(', ')} WHERE rowid = ?`,
-                              [...names.map(name => columns[name]), localId]
-                          )
+                          db.$client.unsafe(`UPDATE "${tableName}" SET ${names.map(name => `"${name}" = ?`).join(', ')} WHERE rowid = ?`, [
+                              ...names.map(name => columns[name]),
+                              localId
+                          ])
                       )
                   );
         },

@@ -1031,8 +1031,8 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                             <Trans>
                                 One of the key benefits of public-source and offline-first architecture is data sovereignty. Your data is
                                 stored on your device and in storage you control, not locked in some company’s database that might
-                                disappear. If Budgie development stopped tomorrow, your data would still be on your phone, and the public source
-                                code would allow anyone to continue development or create export tools. You’re never locked in.
+                                disappear. If Budgie development stopped tomorrow, your data would still be on your phone, and the public
+                                source code would allow anyone to continue development or create export tools. You’re never locked in.
                             </Trans>
                         </BlogFaqItem>
 

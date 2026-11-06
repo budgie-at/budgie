@@ -64,13 +64,16 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
     };
 
     const handleCategoryPress = () => {
-        openCategorySelector({ initialCategoryId: feeEntry.categoryId, variant, ...(isDefined(account) && { syncZone: account.syncZone }) }, selectedCategoryId => {
-            if (isDefined(selectedCategoryId)) {
-                const categorySource = selectedCategoryId === BANK_FEE_CATEGORY_ID ? CategorySourceEnum.FEE : CategorySourceEnum.USER;
+        openCategorySelector(
+            { initialCategoryId: feeEntry.categoryId, variant, ...(isDefined(account) && { syncZone: account.syncZone }) },
+            selectedCategoryId => {
+                if (isDefined(selectedCategoryId)) {
+                    const categorySource = selectedCategoryId === BANK_FEE_CATEGORY_ID ? CategorySourceEnum.FEE : CategorySourceEnum.USER;
 
-                setFeeEntry(previous => ({ ...previous, categoryId: selectedCategoryId, categorySource }));
+                    setFeeEntry(previous => ({ ...previous, categoryId: selectedCategoryId, categorySource }));
+                }
             }
-        });
+        );
     };
 
     const handleConfirm = () => {

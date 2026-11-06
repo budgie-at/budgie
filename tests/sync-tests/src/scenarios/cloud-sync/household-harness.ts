@@ -10,15 +10,14 @@ import {
     ICloudSyncScope,
     ICloudZoneChangeReason
 } from '../../../../../packages/app/modules/icloud';
-
 import { testDb } from '../../harness';
 
 import { onDevice, pullDevice, refreshAllBalances } from './apply-harness';
 import { encodeAllRecords, loadSyncState } from './record-mapping-harness';
 
+import type { ICloudShareAcceptedEvent, ICloudShareParticipant, ICloudZoneChangeEvent } from '../../../../../packages/app/modules/icloud';
 import type { FakeCloudTransport } from '@budgie-at/test-kit';
 import type { DB } from '@budgie/contracts';
-import type { ICloudShareAcceptedEvent, ICloudShareParticipant, ICloudZoneChangeEvent } from '../../../../../packages/app/modules/icloud';
 
 export const OWNER_RECORD_NAME = 'owner-user-record';
 export const HOUSEHOLD_CLOUD_ZONE = 'Household';
@@ -112,7 +111,9 @@ export const pushHouseholdZone = (database: DB, cloud: FakeCloudTransport) =>
 export const countRows = (database: DB, tableName: string, zone?: string) =>
     database.$client
         .unsafe<{ readonly total: number }>(
-            zone === undefined ? `SELECT COUNT(*) AS total FROM ${tableName}` : `SELECT COUNT(*) AS total FROM ${tableName} WHERE sync_zone = ?`,
+            zone === undefined
+                ? `SELECT COUNT(*) AS total FROM ${tableName}`
+                : `SELECT COUNT(*) AS total FROM ${tableName} WHERE sync_zone = ?`,
             zone === undefined ? [] : [zone]
         )
         .pipe(Effect.map(([row]) => row.total));

@@ -184,7 +184,9 @@ export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/c
             getEnabledByProvider: Effect.fn('SyncRepository.getEnabledByProvider')(function* (provider: ExternalSourceEnum) {
                 const ownership = yield* buildOwnershipCondition();
 
-                return yield* Db.query(db => selectWithActiveAccount(db).where(and(...buildEnabledProviderConditions(provider), ownership)));
+                return yield* Db.query(db =>
+                    selectWithActiveAccount(db).where(and(...buildEnabledProviderConditions(provider), ownership))
+                );
             }),
             getPendingBackwardSync: Effect.fn('SyncRepository.getPendingBackwardSync')(function* (provider: ExternalSourceEnum) {
                 const ownership = yield* buildOwnershipCondition();

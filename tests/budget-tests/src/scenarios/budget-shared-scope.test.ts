@@ -16,15 +16,28 @@ layer(TestLayer)('shared budget spending scope', it => {
             const { bankAccount, counterpartAccount } = yield* seedParityAccounts();
             const budgetRepository = yield* BudgetRepository;
 
-            yield* testDb.update(AccountEntityTable).set({ syncZone: HOUSEHOLD_SYNC_ZONE }).where(eq(AccountEntityTable.id, counterpartAccount.id));
+            yield* testDb
+                .update(AccountEntityTable)
+                .set({ syncZone: HOUSEHOLD_SYNC_ZONE })
+                .where(eq(AccountEntityTable.id, counterpartAccount.id));
             yield* seedParityExpense('private-groceries', bankAccount.id, 30);
             yield* seedParityExpense('shared-groceries', counterpartAccount.id, 50);
             yield* seedParityIncome('private-salary', bankAccount.id, 1000);
             yield* seedParityIncome('shared-salary', counterpartAccount.id, 400);
 
-            const sharedSpent = yield* budgetRepository.findBudgetSpentEntries(PERIOD_START, NEXT_PERIOD_START, INSTRUMENT_ID, HOUSEHOLD_SYNC_ZONE);
+            const sharedSpent = yield* budgetRepository.findBudgetSpentEntries(
+                PERIOD_START,
+                NEXT_PERIOD_START,
+                INSTRUMENT_ID,
+                HOUSEHOLD_SYNC_ZONE
+            );
             const personalSpent = yield* budgetRepository.findBudgetSpentEntries(PERIOD_START, NEXT_PERIOD_START, INSTRUMENT_ID);
-            const sharedIncome = yield* budgetRepository.findIncomeReceivedEntries(PERIOD_START, NEXT_PERIOD_START, INSTRUMENT_ID, HOUSEHOLD_SYNC_ZONE);
+            const sharedIncome = yield* budgetRepository.findIncomeReceivedEntries(
+                PERIOD_START,
+                NEXT_PERIOD_START,
+                INSTRUMENT_ID,
+                HOUSEHOLD_SYNC_ZONE
+            );
             const personalIncome = yield* budgetRepository.findIncomeReceivedEntries(PERIOD_START, NEXT_PERIOD_START, INSTRUMENT_ID);
 
             expect(computeSpent(sharedSpent, INSTRUMENT_ID).spentOverall).toBe(50 * PRECISION);

@@ -17,10 +17,7 @@ interface Props {
 
 export const TransactionPrivateAccountRow = ({ label, syncZone, syncId, testID }: Props) => {
     const { t } = useLingui();
-    const ownerName = AsyncResult.getOrElse(
-        useLiveAtomValue(privateAccountOwnerAtom({ syncZone, syncId })),
-        (): string | null => null
-    );
+    const ownerName = AsyncResult.getOrElse(useLiveAtomValue(privateAccountOwnerAtom({ syncZone, syncId })), (): string | null => null);
     const value = isDefined(ownerName) ? t`Private account of ${ownerName}` : t`Private account`;
 
     return <TransactionInfoRow icon={UserIconNameEnum.Lock} label={label} value={value} testID={testID} />;

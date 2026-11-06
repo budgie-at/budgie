@@ -16,7 +16,17 @@ import * as Effect from 'effect/Effect';
 import { testDb } from '../../harness';
 
 import { expectBalancesMatchLedger, refreshAllBalances } from './apply-harness';
-import { HOUSEHOLD_ZONE, PERSONAL_ZONE, countRows, onShareDevice, prepareHousehold, pullZones, queryRows, reconcileDevice, uploadDevice } from './share-harness';
+import {
+    HOUSEHOLD_ZONE,
+    PERSONAL_ZONE,
+    countRows,
+    onShareDevice,
+    prepareHousehold,
+    pullZones,
+    queryRows,
+    reconcileDevice,
+    uploadDevice
+} from './share-harness';
 
 import type { ShareCloudsInterface } from './share-harness';
 import type { DB } from '@budgie/contracts';
@@ -31,7 +41,9 @@ const PRIVATE_SPENT = 1_000_000;
 const makeClouds = (): ShareCloudsInterface => ({ personal: new FakeCloudTransport(), household: new FakeCloudTransport() });
 
 const readSharedSpent = (database: DB, budgetSyncZone: string) =>
-    Effect.flatMap(BudgetRepository, repository => repository.findBudgetSpentEntries(PERIOD_START, NEXT_PERIOD_START, 1, budgetSyncZone)).pipe(
+    Effect.flatMap(BudgetRepository, repository =>
+        repository.findBudgetSpentEntries(PERIOD_START, NEXT_PERIOD_START, 1, budgetSyncZone)
+    ).pipe(
         Effect.provide(BudgetRepository.layer),
         Effect.provideService(Db, database),
         Effect.map(entries => computeSpent(entries, 1).spentOverall)
@@ -44,8 +56,20 @@ const seedBudgetFixture = Effect.gen(function* () {
     const [instrument] = yield* testDb.select().from(InstrumentEntityTable).orderBy(InstrumentEntityTable.id);
     const trip = yield* seed.tag('family trip');
 
-    yield* seed.manualExpense({ accountId: joint.id, amount: SHARED_SPENT, operatedAt: OPERATED_AT, title: 'Groceries run', categoryId: GROCERIES_ID });
-    yield* seed.manualExpense({ accountId: wallet.id, amount: PRIVATE_SPENT, operatedAt: OPERATED_AT, title: 'Private snack', categoryId: GROCERIES_ID });
+    yield* seed.manualExpense({
+        accountId: joint.id,
+        amount: SHARED_SPENT,
+        operatedAt: OPERATED_AT,
+        title: 'Groceries run',
+        categoryId: GROCERIES_ID
+    });
+    yield* seed.manualExpense({
+        accountId: wallet.id,
+        amount: PRIVATE_SPENT,
+        operatedAt: OPERATED_AT,
+        title: 'Private snack',
+        categoryId: GROCERIES_ID
+    });
     yield* refreshAllBalances(testDb);
 
     const [budget] = yield* testDb
@@ -71,7 +95,9 @@ const seedBudgetFixture = Effect.gen(function* () {
 const shareEverything = (database: DB, accountId: number, budgetId: number) =>
     onShareDevice(
         database,
-        Effect.flatMap(HouseholdShareService, service => service.shareAccount(accountId).pipe(Effect.andThen(service.shareBudget(budgetId))))
+        Effect.flatMap(HouseholdShareService, service =>
+            service.shareAccount(accountId).pipe(Effect.andThen(service.shareBudget(budgetId)))
+        )
     );
 
 describe('cloud-sync/share-budgets', () => {
@@ -101,9 +127,12 @@ describe('cloud-sync/share-budgets', () => {
                         `SELECT c.title AS category, c.sync_zone AS zone, l.limit_amount AS amount FROM budget_category_limits l INNER JOIN categories c ON c.id = l.category_id`
                     )
                 ).toEqual([{ category: 'Groceries', zone: HOUSEHOLD_ZONE, amount: 30_000_000 }]);
-                expect(yield* queryRows(deviceB, `SELECT g.title AS title, g.sync_zone AS zone FROM budgets b INNER JOIN tags g ON g.id = b.tag_id`)).toEqual([
-                    { title: 'family trip', zone: HOUSEHOLD_ZONE }
-                ]);
+                expect(
+                    yield* queryRows(
+                        deviceB,
+                        `SELECT g.title AS title, g.sync_zone AS zone FROM budgets b INNER JOIN tags g ON g.id = b.tag_id`
+                    )
+                ).toEqual([{ title: 'family trip', zone: HOUSEHOLD_ZONE }]);
                 expect(yield* readSharedSpent(testDb, HOUSEHOLD_ZONE)).toBe(SHARED_SPENT);
                 expect(yield* readSharedSpent(deviceB, HOUSEHOLD_ZONE)).toBe(SHARED_SPENT);
                 expect(yield* readSharedSpent(testDb, PERSONAL_ZONE)).toBe(SHARED_SPENT + PRIVATE_SPENT);
@@ -118,7 +147,9 @@ describe('cloud-sync/share-budgets', () => {
                 });
                 yield* refreshAllBalances(deviceB);
                 yield* reconcileDevice(deviceB);
-                yield* testDb.$client.unsafe(`UPDATE budget_category_limits SET limit_amount = 35000000 WHERE sync_zone = ?`, [HOUSEHOLD_ZONE]);
+                yield* testDb.$client.unsafe(`UPDATE budget_category_limits SET limit_amount = 35000000 WHERE sync_zone = ?`, [
+                    HOUSEHOLD_ZONE
+                ]);
                 yield* uploadDevice(deviceB, clouds);
                 yield* pullZones(testDb, clouds.household, 'owner', [HOUSEHOLD_ZONE]);
                 yield* uploadDevice(testDb, clouds);
@@ -129,16 +160,21 @@ describe('cloud-sync/share-budgets', () => {
                     expect(yield* queryRows(database, `SELECT overall_limit FROM budgets WHERE sync_zone = ?`, [HOUSEHOLD_ZONE])).toEqual([
                         { overall_limit: 120_000_000 }
                     ]);
-                    expect(yield* queryRows(database, `SELECT limit_amount FROM budget_category_limits WHERE sync_zone = ?`, [HOUSEHOLD_ZONE])).toEqual([
-                        { limit_amount: 35_000_000 }
-                    ]);
+                    expect(
+                        yield* queryRows(database, `SELECT limit_amount FROM budget_category_limits WHERE sync_zone = ?`, [HOUSEHOLD_ZONE])
+                    ).toEqual([{ limit_amount: 35_000_000 }]);
                     expect(yield* readSharedSpent(database, HOUSEHOLD_ZONE)).toBe(SHARED_SPENT + 2_000_000);
                     expect(yield* countRows(database, `sync_pending`)).toBe(0);
                     yield* expectBalancesMatchLedger(database);
                 }
 
                 expect(yield* countRows(testDb, `sync_outbox`)).toBe(0);
-                expect(yield* onShareDevice(testDb, Effect.flatMap(HouseholdShareService, service => service.findSharedBudgetIds()))).toEqual([budget.id]);
+                expect(
+                    yield* onShareDevice(
+                        testDb,
+                        Effect.flatMap(HouseholdShareService, service => service.findSharedBudgetIds())
+                    )
+                ).toEqual([budget.id]);
             })
         );
 
@@ -155,16 +191,22 @@ describe('cloud-sync/share-budgets', () => {
                 yield* shareEverything(testDb, joint.id, budget.id);
                 yield* uploadDevice(testDb, clouds);
                 yield* pullZones(deviceB, clouds.household, 'member', [HOUSEHOLD_ZONE]);
-                yield* onShareDevice(testDb, Effect.flatMap(HouseholdShareService, service => service.unshareBudget(budget.id)));
+                yield* onShareDevice(
+                    testDb,
+                    Effect.flatMap(HouseholdShareService, service => service.unshareBudget(budget.id))
+                );
                 yield* uploadDevice(testDb, clouds);
                 yield* pullZones(deviceB, clouds.household, 'member', [HOUSEHOLD_ZONE]);
 
                 expect(yield* countRows(deviceB, `budgets`)).toBe(0);
                 expect(yield* countRows(deviceB, `budget_category_limits`)).toBe(0);
                 expect(yield* queryRows(testDb, `SELECT sync_zone FROM budgets`)).toEqual([{ sync_zone: PERSONAL_ZONE }]);
-                expect(yield* queryRows(testDb, `SELECT c.sync_zone AS zone FROM budget_category_limits l INNER JOIN categories c ON c.id = l.category_id`)).toEqual([
-                    { zone: PERSONAL_ZONE }
-                ]);
+                expect(
+                    yield* queryRows(
+                        testDb,
+                        `SELECT c.sync_zone AS zone FROM budget_category_limits l INNER JOIN categories c ON c.id = l.category_id`
+                    )
+                ).toEqual([{ zone: PERSONAL_ZONE }]);
                 yield* expectBalancesMatchLedger(testDb);
             })
         );

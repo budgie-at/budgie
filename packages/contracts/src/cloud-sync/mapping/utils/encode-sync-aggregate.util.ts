@@ -53,7 +53,9 @@ const encodeReference = (
 
     return isNotEmptyString(key)
         ? Result.succeed(key)
-        : Result.fail(new SyncIdentityUnresolvedError({ tableName: descriptor.tableName, column: column.property, localKey: `${localId}` }));
+        : Result.fail(
+              new SyncIdentityUnresolvedError({ tableName: descriptor.tableName, column: column.property, localKey: `${localId}` })
+          );
 };
 
 const encodeRow = (

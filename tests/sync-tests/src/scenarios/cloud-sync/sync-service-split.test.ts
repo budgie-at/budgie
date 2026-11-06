@@ -1,5 +1,11 @@
 import { CloudSyncService } from '@app/cloud-sync/service/cloud-sync.service';
-import { SyncDatabaseScopeEnum, SyncOutboxOperationEnum, SyncOutboxRepository, SyncZoneRegistryRepository, SyncZoneRoleEnum } from '@budgie/contracts';
+import {
+    SyncDatabaseScopeEnum,
+    SyncOutboxOperationEnum,
+    SyncOutboxRepository,
+    SyncZoneRegistryRepository,
+    SyncZoneRoleEnum
+} from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -32,7 +38,9 @@ describe('cloud-sync/sync-service split transactions', () => {
                     role: SyncZoneRoleEnum.OWNER
                 });
                 yield* service.reconfigure();
-                yield* service.handleSentChanges(sentEvent({ savedRecords: savedFrom(context.transport.calls.savedBatches[0], 'system-meta') }));
+                yield* service.handleSentChanges(
+                    sentEvent({ savedRecords: savedFrom(context.transport.calls.savedBatches[0], 'system-meta') })
+                );
 
                 const firstUpload = context.transport.calls.savedBatches.slice(1).flat();
                 const leg = firstUpload.find(({ recordType }) => recordType === 'TransactionLeg');
@@ -44,7 +52,9 @@ describe('cloud-sync/sync-service split transactions', () => {
                 expect(yield* countLegRecords).toBe(1);
 
                 yield* testDb.$client.unsafe("UPDATE accounts SET sync_zone = 'personal' WHERE id = ?", [sharedAccount.id]);
-                yield* testDb.$client.unsafe("UPDATE transaction_entries SET sync_zone = 'personal' WHERE account_id = ?", [sharedAccount.id]);
+                yield* testDb.$client.unsafe("UPDATE transaction_entries SET sync_zone = 'personal' WHERE account_id = ?", [
+                    sharedAccount.id
+                ]);
                 yield* outbox.enqueue({
                     recordType: 'Transaction',
                     syncZone: 'personal',
@@ -60,9 +70,7 @@ describe('cloud-sync/sync-service split transactions', () => {
                 const deleteIds = context.transport.calls.deletedBatches.flat();
                 const resaved = context.transport.calls.savedBatches.slice(batchesBefore).flat();
 
-                expect(deleteIds).toEqual([
-                    { zoneName: 'Household', ownerName: ICLOUD_DEFAULT_OWNER_NAME, recordName: leg?.recordName }
-                ]);
+                expect(deleteIds).toEqual([{ zoneName: 'Household', ownerName: ICLOUD_DEFAULT_OWNER_NAME, recordName: leg?.recordName }]);
                 expect(resaved.some(({ recordType }) => recordType === 'TransactionLeg')).toBe(false);
                 expect(resaved.find(({ recordType }) => recordType === 'Transaction')?.encryptedFields['linkId']).toBeNull();
 

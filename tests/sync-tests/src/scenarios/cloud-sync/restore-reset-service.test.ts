@@ -1,7 +1,7 @@
+import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { cloudSyncStatusAtom } from '@app/cloud-sync/constant/cloud-sync-status-atom.constant';
 import { CloudSyncRestorePhaseEnum } from '@app/cloud-sync/enum/cloud-sync-restore-phase.enum';
 import { CloudSyncService } from '@app/cloud-sync/service/cloud-sync.service';
-import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { SyncIdentityRepository } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
@@ -150,7 +150,10 @@ describe('cloud-sync/restore-reset service', () => {
                     restorePhase: CloudSyncRestorePhaseEnum.FETCHING
                 };
                 context.transport.behavior.zoneMeta = metaWith(yield* identity.ensureLineageId());
-                yield* testDb.$client.unsafe('INSERT INTO sync_outbox (record_type, sync_zone, sync_id) SELECT ?, sync_zone, sync_id FROM accounts LIMIT 1', ['Account']);
+                yield* testDb.$client.unsafe(
+                    'INSERT INTO sync_outbox (record_type, sync_zone, sync_id) SELECT ?, sync_zone, sync_id FROM accounts LIMIT 1',
+                    ['Account']
+                );
                 yield* service.reconfigure();
 
                 expect(context.transport.calls.started).toEqual([null]);
@@ -225,7 +228,9 @@ describe('cloud-sync/restore-reset service', () => {
                 expect(rePush).toBeDefined();
                 expect(appAtomRegistry.get(cloudSyncStatusAtom).isQuotaExceeded).toBe(true);
 
-                yield* service.handleSentChanges(sentEvent({ savedRecords: savedFrom(rePush === undefined ? [] : [rePush], 'system-data') }));
+                yield* service.handleSentChanges(
+                    sentEvent({ savedRecords: savedFrom(rePush === undefined ? [] : [rePush], 'system-data') })
+                );
 
                 expect(appAtomRegistry.get(cloudSyncStatusAtom).isQuotaExceeded).toBe(false);
                 expect(yield* readOutboxCount).toBe(0);

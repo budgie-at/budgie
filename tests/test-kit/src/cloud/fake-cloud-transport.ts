@@ -1,7 +1,7 @@
 import * as Schema from 'effect/Schema';
 
-import type { SyncApplyBatchInterface, SyncIncomingDeletionInterface, SyncIncomingRecordInterface } from '@budgie/contracts';
 import type { FakeCloudDeliveryOptionsInterface } from './fake-cloud-delivery-options.interface';
+import type { SyncApplyBatchInterface, SyncIncomingDeletionInterface, SyncIncomingRecordInterface } from '@budgie/contracts';
 
 interface StoredChangeInterface {
     readonly version: number;
@@ -42,7 +42,9 @@ export class FakeCloudTransport {
     }
 
     inventory(zone: string): ReadonlySet<string> {
-        return new Set([...this.changes.values()].filter(change => change.zone === zone && change.record !== null).map(({ recordName }) => recordName));
+        return new Set(
+            [...this.changes.values()].filter(change => change.zone === zone && change.record !== null).map(({ recordName }) => recordName)
+        );
     }
 
     shareZone(zone: string, accountIds: readonly string[]): void {
@@ -116,7 +118,9 @@ export class FakeCloudTransport {
         }
 
         if (order === 'shuffled') {
-            return [...changes].sort((left, right) => ((left.version * SHUFFLE_MULTIPLIER) % 101) - ((right.version * SHUFFLE_MULTIPLIER) % 101));
+            return [...changes].sort(
+                (left, right) => ((left.version * SHUFFLE_MULTIPLIER) % 101) - ((right.version * SHUFFLE_MULTIPLIER) % 101)
+            );
         }
 
         return changes;

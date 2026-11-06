@@ -16,7 +16,17 @@ interface Props extends Pick<AccessibilityProps, 'accessibilityHint'> {
     readonly onChange: (value: boolean) => void;
 }
 
-export const GroupedListSwitchRow = ({ left, title, subtitle, value, testID, titleTestID, switchTestID, onChange, accessibilityHint }: Props) => {
+export const GroupedListSwitchRow = ({
+    left,
+    title,
+    subtitle,
+    value,
+    testID,
+    titleTestID,
+    switchTestID,
+    onChange,
+    accessibilityHint
+}: Props) => {
     const [, , hapticSelection] = useVibration();
 
     const handleSwitchChange = (next: boolean) => {

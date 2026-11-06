@@ -12,7 +12,11 @@ export default function FamilyPage() {
     const { t } = useLingui();
 
     return (
-        <CollapsibleChromePage title={t`Family`} leading={<GoBackButton onPress={goBackToSettings} />} testID={FamilyPageSelector.Container}>
+        <CollapsibleChromePage
+            title={t`Family`}
+            leading={<GoBackButton onPress={goBackToSettings} />}
+            testID={FamilyPageSelector.Container}
+        >
             <FamilyPageContent />
             <MenuSpacer />
         </CollapsibleChromePage>

@@ -6,16 +6,16 @@ import { PERSONAL_SYNC_ZONE } from '../../constant/personal-sync-zone.constant';
 import { deriveSyncId } from '../../utils/derive-sync-id.util';
 import { SYNC_ID_PROPERTY, SYNC_ZONE_PROPERTY } from '../constant/sync-identity-properties.constant';
 import { SYNC_RECORD_DEFINITIONS } from '../constant/sync-record-definitions.constant';
-import { SyncIdentityUnresolvedError } from '../error/sync-identity-unresolved.error';
 import { SyncRecordTypeEnum } from '../enum/sync-record-type.enum';
+import { SyncIdentityUnresolvedError } from '../error/sync-identity-unresolved.error';
 
 import { resolveHomeZone } from './resolve-home-zone.util';
 
 import type { SyncAggregateInterface } from '../interface/sync-aggregate.interface';
 import type { SyncRecordPartInterface } from '../interface/sync-record-part.interface';
 import type { SyncReferenceResolverInterface } from '../interface/sync-reference-resolver.interface';
-import type { SyncRowInputType } from '../type/sync-row-input.type';
 import type { ZonedSyncEntryInterface } from '../interface/zoned-sync-entry.interface';
+import type { SyncRowInputType } from '../type/sync-row-input.type';
 
 const TRANSACTION_LINK_NAMESPACE = '5d7e0a3c-2f6b-4b1e-9c84-0e1a6f3d7b92';
 const ACCOUNTS_TABLE = 'accounts';
@@ -104,7 +104,9 @@ export const planSyncRecordParts = (
             zone,
             parent: {
                 ...parent,
-                ...Object.fromEntries(LEG_ACCOUNT_PROPERTIES.map(property => [property, isAccountIn(parent[property], zone) ? parent[property] : null]))
+                ...Object.fromEntries(
+                    LEG_ACCOUNT_PROPERTIES.map(property => [property, isAccountIn(parent[property], zone) ? parent[property] : null])
+                )
             },
             children: { [ENTRIES_TABLE]: entriesIn(zone) },
             legPrivateRows: [],

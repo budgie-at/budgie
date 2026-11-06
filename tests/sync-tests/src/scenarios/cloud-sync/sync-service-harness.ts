@@ -1,14 +1,14 @@
-import { CloudSyncRestorePhaseEnum } from '@app/cloud-sync/enum/cloud-sync-restore-phase.enum';
+import { DatabaseChangeService } from '@app/@generic/drizzle/service/database-change.service';
+import { InstallIdService } from '@app/cloud-backup/service/install-id.service';
 import { SyncAutomationService } from '@app/cloud-sync-automation/service/sync-automation.service';
+import { CloudSyncRestorePhaseEnum } from '@app/cloud-sync/enum/cloud-sync-restore-phase.enum';
+import { CloudSyncTransportError } from '@app/cloud-sync/error/cloud-sync-transport.error';
+import { syncAccountBalanceRefresherLayer } from '@app/cloud-sync/layer/sync-account-balance-refresher.layer';
 import { BankOwnershipService } from '@app/cloud-sync/service/bank-ownership.service';
 import { CloudSyncSafetyCopyService } from '@app/cloud-sync/service/cloud-sync-safety-copy.service';
 import { CloudSyncStateStore } from '@app/cloud-sync/service/cloud-sync-state-store.service';
-import { CloudSyncTransportError } from '@app/cloud-sync/error/cloud-sync-transport.error';
 import { CloudSyncTransport } from '@app/cloud-sync/service/cloud-sync-transport.service';
 import { CloudSyncService } from '@app/cloud-sync/service/cloud-sync.service';
-import { syncAccountBalanceRefresherLayer } from '@app/cloud-sync/layer/sync-account-balance-refresher.layer';
-import { DatabaseChangeService } from '@app/@generic/drizzle/service/database-change.service';
-import { InstallIdService } from '@app/cloud-backup/service/install-id.service';
 import {
     BankIntegrationRepository,
     Db,
@@ -31,11 +31,8 @@ import * as Reactivity from 'effect/reactivity/Reactivity';
 import * as Stream from 'effect/Stream';
 
 import { ICloudSyncScope } from '../../../../../packages/app/modules/icloud';
-
 import { testDb } from '../../harness';
 
-import type { CloudSyncStateInterface } from '@app/cloud-sync/interface/cloud-sync-state.interface';
-import type { DB, SyncApplyResultInterface } from '@budgie/contracts';
 import type {
     ICloudAccountStatusResult,
     ICloudFetchedChangesEvent,
@@ -46,6 +43,8 @@ import type {
     ICloudShareParticipant,
     ICloudZoneInventoryRecord
 } from '../../../../../packages/app/modules/icloud';
+import type { CloudSyncStateInterface } from '@app/cloud-sync/interface/cloud-sync-state.interface';
+import type { DB, SyncApplyResultInterface } from '@budgie/contracts';
 
 export const INSTALL_ID = 'install-a';
 
@@ -145,7 +144,11 @@ export const makeFakeTransport = (database: DB = testDb) => {
 
                 return behavior.isInventoryFailing
                     ? Effect.fail(new CloudSyncTransportError({ code: 'NETWORK_UNAVAILABLE', message: 'inventory failed' }))
-                    : Effect.succeed(inventoryScope === ICloudSyncScope.SHARED ? (behavior.sharedZoneInventory ?? behavior.zoneInventory) : behavior.zoneInventory);
+                    : Effect.succeed(
+                          inventoryScope === ICloudSyncScope.SHARED
+                              ? (behavior.sharedZoneInventory ?? behavior.zoneInventory)
+                              : behavior.zoneInventory
+                      );
             }),
         addPendingSaves: (saveScope: ICloudSyncScope, records: readonly ICloudRecordPayload[]) =>
             Effect.sync(() => {

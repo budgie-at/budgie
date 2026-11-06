@@ -14,8 +14,7 @@ const readOwner = testDb.$client
     .unsafe<{ readonly owner: string | null }>('SELECT owner_install_id AS owner FROM bank_integrations')
     .pipe(Effect.map(([row]) => row.owner));
 
-const deviceRecordPayload = (installId: string, lastSyncedAt: number) =>
-    JSON.stringify({ encryptedFields: { installId, lastSyncedAt } });
+const deviceRecordPayload = (installId: string, lastSyncedAt: number) => JSON.stringify({ encryptedFields: { installId, lastSyncedAt } });
 
 describe('cloud-sync/bank ownership', () => {
     it.effect('claims unowned integrations, keeps a fresh foreign owner and takes over after 14 days of silence', () => {
@@ -34,7 +33,10 @@ describe('cloud-sync/bank ownership', () => {
 
                 expect(yield* readOwner).toBe(INSTALL_ID);
 
-                yield* testDb.$client.unsafe('UPDATE bank_integrations SET owner_install_id = ? WHERE id = ?', ['install-b', integration.id]);
+                yield* testDb.$client.unsafe('UPDATE bank_integrations SET owner_install_id = ? WHERE id = ?', [
+                    'install-b',
+                    integration.id
+                ]);
                 yield* records.upsert({
                     syncZone: 'personal',
                     syncId: 'install-b',

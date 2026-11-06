@@ -3,13 +3,13 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
 import { ICloudParticipantAcceptanceStatus, ICloudParticipantRole } from '../../../../modules/icloud';
+import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
 
 import { HouseholdParticipantRowSelector } from './household-participant-row.selector';
 
-import type { ReactNode } from 'react';
 import type { ICloudShareParticipant } from '../../../../modules/icloud';
+import type { ReactNode } from 'react';
 
 interface Props {
     readonly participant: ICloudShareParticipant;

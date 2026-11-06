@@ -52,7 +52,9 @@ export class SyncRestoreReconciliationService extends Context.Service<SyncRestor
                     }
 
                     for (let start = 0; start < deletions.length; start += deletionChunkSize) {
-                        results.push(yield* applyService.apply({ records: [], deletions: deletions.slice(start, start + deletionChunkSize) }));
+                        results.push(
+                            yield* applyService.apply({ records: [], deletions: deletions.slice(start, start + deletionChunkSize) })
+                        );
                         yield* YIELD_TO_UI;
                     }
 

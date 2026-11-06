@@ -67,7 +67,12 @@ describe('cloud-sync/upload-service', () => {
             Effect.gen(function* () {
                 const uploadService = yield* SyncUploadService;
                 const account = yield* seed.account({ title: 'Cash' });
-                const transaction = yield* seed.manualExpense({ accountId: account.id, amount: 5_000_000, operatedAt: OPERATED_AT, title: 'Cafe' });
+                const transaction = yield* seed.manualExpense({
+                    accountId: account.id,
+                    amount: 5_000_000,
+                    operatedAt: OPERATED_AT,
+                    title: 'Cafe'
+                });
                 const firstBatch = yield* uploadService.pending(10);
                 const sent = firstBatch.saves.find(save => save.records[0].recordType === 'Transaction');
 
@@ -125,9 +130,16 @@ describe('cloud-sync/upload-service', () => {
         withUpload(
             Effect.gen(function* () {
                 const uploadService = yield* SyncUploadService;
-                const integration = yield* seed.bankIntegration({ provider: ExternalSourceEnum.MONOBANK, token: 'secret-token', label: 'Mono' });
+                const integration = yield* seed.bankIntegration({
+                    provider: ExternalSourceEnum.MONOBANK,
+                    token: 'secret-token',
+                    label: 'Mono'
+                });
 
-                yield* testDb.$client.unsafe('UPDATE bank_integrations SET owner_install_id = ? WHERE id = ?', ['install-a', integration.id]);
+                yield* testDb.$client.unsafe('UPDATE bank_integrations SET owner_install_id = ? WHERE id = ?', [
+                    'install-a',
+                    integration.id
+                ]);
 
                 const batch = yield* uploadService.pending(50);
                 const save = batch.saves.find(candidate => candidate.records[0].recordType === 'BankIntegration');

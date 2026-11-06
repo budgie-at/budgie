@@ -48,10 +48,9 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
         });
 
         const withoutTriggers = <A, E, R>(effect: Effect.Effect<A, E, R>) =>
-            applyStateRepository.setApplying(true).pipe(
-                Effect.andThen(effect),
-                Effect.ensuring(Effect.orDie(applyStateRepository.setApplying(false)))
-            );
+            applyStateRepository
+                .setApplying(true)
+                .pipe(Effect.andThen(effect), Effect.ensuring(Effect.orDie(applyStateRepository.setApplying(false))));
 
         const enqueueSave = (recordType: SyncRecordTypeEnum, syncZone: string, syncId: string, changedColumns: readonly string[]) =>
             outboxRepository.enqueue({
@@ -108,12 +107,10 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
             }
 
             const syncId = isSeed ? source.syncId : generateSyncId();
-            const clonedId = yield* repository.cloneRow(
-                tableName === 'categories' ? CategoryEntityTable : TagEntityTable,
-                tableName,
-                id,
-                { sync_zone: zone, sync_id: syncId }
-            );
+            const clonedId = yield* repository.cloneRow(tableName === 'categories' ? CategoryEntityTable : TagEntityTable, tableName, id, {
+                sync_zone: zone,
+                sync_id: syncId
+            });
 
             memo.set(memoKey, clonedId);
 
@@ -141,7 +138,8 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
             for (const integrationId of new Set(integrationIds.filter(isDefined))) {
                 const integration = yield* repository.findIntegration(integrationId);
                 const hasRemainingAccounts =
-                    to !== HOUSEHOLD_SYNC_ZONE && (yield* repository.countOtherAccountsOnIntegration(integrationId, movedAccountIds, from)) > 0;
+                    to !== HOUSEHOLD_SYNC_ZONE &&
+                    (yield* repository.countOtherAccountsOnIntegration(integrationId, movedAccountIds, from)) > 0;
 
                 if (isDefined(integration) && integration.syncZone === from && !hasRemainingAccounts) {
                     yield* repository.setZone('bank_integrations', [integration.id], to);
@@ -153,14 +151,20 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
         const moveDebtEvents = Effect.fnUntraced(function* (accountIds: readonly number[], from: string, to: string) {
             const events = yield* repository.findDebtEventsOnAccounts(accountIds, from);
 
-            yield* repository.setZone('debt_events', events.map(({ id }) => id), to);
+            yield* repository.setZone(
+                'debt_events',
+                events.map(({ id }) => id),
+                to
+            );
             yield* Effect.forEach(events, event => enqueueMove(SyncRecordTypeEnum.DEBT_EVENT, event.syncId, from, to), { discard: true });
         });
 
         const moveRules = Effect.fnUntraced(function* (accountIds: readonly number[], from: string, to: string, memo: LabeledMemoType) {
             for (const rule of yield* repository.findRulesOnAccounts(accountIds, from)) {
                 for (const action of yield* repository.findRuleActionReferences(rule.id)) {
-                    const categoryId = isDefined(action.categoryId) ? yield* ensureLabeled('categories', action.categoryId, to, memo) : null;
+                    const categoryId = isDefined(action.categoryId)
+                        ? yield* ensureLabeled('categories', action.categoryId, to, memo)
+                        : null;
                     const tagId = isDefined(action.tagId) ? yield* ensureLabeled('tags', action.tagId, to, memo) : null;
 
                     yield* repository.setRuleActionReferences(action.id, categoryId, tagId);
@@ -200,7 +204,10 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
 
                     for (const entry of recategorized) {
                         if (isDefined(entry.categoryId)) {
-                            yield* repository.setEntryCategory(entry.entryId, yield* ensureLabeled('categories', entry.categoryId, entry.accountZone, memo));
+                            yield* repository.setEntryCategory(
+                                entry.entryId,
+                                yield* ensureLabeled('categories', entry.categoryId, entry.accountZone, memo)
+                            );
                         }
                     }
 
@@ -384,7 +391,10 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
                     state: resolveShareState(budget?.syncZone, budgetId, yield* findSharedBudgetIds())
                 } satisfies HouseholdShareStatusInterface;
             }),
-            findPrivateSideOwnerName: Effect.fn('HouseholdShareService.findPrivateSideOwnerName')(function* (syncZone: string, syncId: string) {
+            findPrivateSideOwnerName: Effect.fn('HouseholdShareService.findPrivateSideOwnerName')(function* (
+                syncZone: string,
+                syncId: string
+            ) {
                 return (
                     (yield* repository.findPrivateSideOwnerName(syncZone, syncId)) ??
                     (yield* zoneRegistryRepository.findByLabel(HOUSEHOLD_SYNC_ZONE))?.ownerName ??

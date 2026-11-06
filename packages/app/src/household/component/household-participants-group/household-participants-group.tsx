@@ -18,7 +18,9 @@ export const HouseholdParticipantsGroup = ({ isLoading, isEmpty, children }: Pro
     return (
         <LoadingContent isLoading={isLoading}>
             {children}
-            {isLoading && isEmpty ? <SettingsRow icon={UserIconNameEnum.UserRound} variant="ghost" title={t`Family member`} subtitle={t`Member`} /> : null}
+            {isLoading && isEmpty ? (
+                <SettingsRow icon={UserIconNameEnum.UserRound} variant="ghost" title={t`Family member`} subtitle={t`Member`} />
+            ) : null}
         </LoadingContent>
     );
 };

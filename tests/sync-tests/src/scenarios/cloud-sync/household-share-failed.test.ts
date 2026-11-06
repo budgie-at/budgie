@@ -1,6 +1,7 @@
 import { CloudSyncService } from '@app/cloud-sync/service/cloud-sync.service';
 import { describe, expect, it, vi } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
+
 import { ICloudShareOutcome } from '../../../../../packages/app/modules/icloud';
 import Toast from '../../../../test-kit/src/vitest/toast-message.shim';
 

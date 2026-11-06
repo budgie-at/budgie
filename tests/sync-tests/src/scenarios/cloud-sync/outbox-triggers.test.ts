@@ -51,7 +51,10 @@ const setApplying = (isApplying: boolean) =>
 const seedExpense = Effect.gen(function* () {
     const account = yield* seed.account({ title: 'Cash' });
     const transaction = yield* seed.manualExpense({ accountId: account.id, amount: 5_000_000, operatedAt: OPERATED_AT, title: 'Cafe' });
-    const [entry] = yield* testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.transactionId, transaction.id));
+    const [entry] = yield* testDb
+        .select()
+        .from(TransactionEntryEntityTable)
+        .where(eq(TransactionEntryEntityTable.transactionId, transaction.id));
     const transactionSyncId = yield* syncIdOf('transactions', transaction.id);
 
     yield* clearOutbox;
@@ -72,7 +75,12 @@ describe('cloud-sync/outbox-triggers', () => {
 
             yield* clearOutbox;
 
-            const transaction = yield* seed.manualExpense({ accountId: account.id, amount: 5_000_000, operatedAt: OPERATED_AT, title: 'Cafe' });
+            const transaction = yield* seed.manualExpense({
+                accountId: account.id,
+                amount: 5_000_000,
+                operatedAt: OPERATED_AT,
+                title: 'Cafe'
+            });
             const rows = yield* readOutbox;
             const transactionSyncId = yield* syncIdOf('transactions', transaction.id);
 
@@ -103,7 +111,10 @@ describe('cloud-sync/outbox-triggers', () => {
         Effect.gen(function* () {
             const { transaction, transactionSyncId } = yield* seedExpense;
 
-            yield* testDb.update(TransactionEntityTable).set({ deletedAt: new Date() }).where(eq(TransactionEntityTable.id, transaction.id));
+            yield* testDb
+                .update(TransactionEntityTable)
+                .set({ deletedAt: new Date() })
+                .where(eq(TransactionEntityTable.id, transaction.id));
 
             const rows = yield* readOutbox;
 
@@ -117,7 +128,10 @@ describe('cloud-sync/outbox-triggers', () => {
         Effect.gen(function* () {
             const { entry, transactionSyncId } = yield* seedExpense;
 
-            yield* testDb.update(TransactionEntryEntityTable).set({ amount: 6_000_000 }).where(eq(TransactionEntryEntityTable.id, entry.id));
+            yield* testDb
+                .update(TransactionEntryEntityTable)
+                .set({ amount: 6_000_000 })
+                .where(eq(TransactionEntryEntityTable.id, entry.id));
 
             expectSingleSave(yield* readOutbox, 'Transaction', transactionSyncId, ['transaction_entries']);
         })
@@ -144,7 +158,9 @@ describe('cloud-sync/outbox-triggers', () => {
         Effect.gen(function* () {
             const { transaction, transactionSyncId } = yield* seedExpense;
 
-            yield* testDb.insert(TransactionReceiptEntityTable).values({ transactionId: transaction.id, fingerprint: 'receipt-fingerprint' });
+            yield* testDb
+                .insert(TransactionReceiptEntityTable)
+                .values({ transactionId: transaction.id, fingerprint: 'receipt-fingerprint' });
             yield* clearOutbox;
             yield* testDb.delete(TransactionReceiptEntityTable).where(eq(TransactionReceiptEntityTable.transactionId, transaction.id));
 
@@ -159,7 +175,10 @@ describe('cloud-sync/outbox-triggers', () => {
             const otherSyncId = yield* syncIdOf('transactions', other.id);
 
             yield* clearOutbox;
-            yield* testDb.update(TransactionEntryEntityTable).set({ transactionId: other.id }).where(eq(TransactionEntryEntityTable.id, entry.id));
+            yield* testDb
+                .update(TransactionEntryEntityTable)
+                .set({ transactionId: other.id })
+                .where(eq(TransactionEntryEntityTable.id, entry.id));
 
             const rows = yield* readOutbox;
 
@@ -180,9 +199,13 @@ describe('cloud-sync/outbox-triggers', () => {
 
             const afterDelete = yield* readOutbox;
 
-            expect(afterDelete).toEqual([{ recordType: 'Tag', syncId: tagSyncId, operation: 'DELETE', changedColumns: [], syncRevision: 1 }]);
+            expect(afterDelete).toEqual([
+                { recordType: 'Tag', syncId: tagSyncId, operation: 'DELETE', changedColumns: [], syncRevision: 1 }
+            ]);
 
-            yield* testDb.$client.unsafe(`INSERT INTO tags (sync_id, title, title_search) VALUES (?, 'Temporary', 'temporary')`, [tagSyncId]);
+            yield* testDb.$client.unsafe(`INSERT INTO tags (sync_id, title, title_search) VALUES (?, 'Temporary', 'temporary')`, [
+                tagSyncId
+            ]);
 
             const afterReinsert = yield* readOutbox;
 
@@ -223,7 +246,9 @@ describe('cloud-sync/outbox-triggers', () => {
 
             expect(yield* readOutbox).toEqual([]);
 
-            yield* testDb.$client.unsafe(`INSERT INTO tags (sync_id, title, title_search) VALUES (lower(hex(randomblob(16))), 'Raw', 'raw')`);
+            yield* testDb.$client.unsafe(
+                `INSERT INTO tags (sync_id, title, title_search) VALUES (lower(hex(randomblob(16))), 'Raw', 'raw')`
+            );
 
             const rows = yield* readOutbox;
 
@@ -253,8 +278,14 @@ describe('cloud-sync/outbox-triggers', () => {
 
             yield* clearOutbox;
             yield* setApplying(true);
-            yield* testDb.update(TransactionEntityTable).set({ title: 'Remote title' }).where(eq(TransactionEntityTable.id, transaction.id));
-            yield* testDb.update(TransactionEntryEntityTable).set({ amount: 7_000_000 }).where(eq(TransactionEntryEntityTable.id, entry.id));
+            yield* testDb
+                .update(TransactionEntityTable)
+                .set({ title: 'Remote title' })
+                .where(eq(TransactionEntityTable.id, transaction.id));
+            yield* testDb
+                .update(TransactionEntryEntityTable)
+                .set({ amount: 7_000_000 })
+                .where(eq(TransactionEntryEntityTable.id, entry.id));
             yield* seed.transactionTag(transaction.id, tag.id, TagSourceEnum.USER);
             yield* seed.manualExpense({ accountId: account.id, amount: 1_000_000, operatedAt: OPERATED_AT, title: 'Remote' });
             yield* testDb.$client.unsafe('DELETE FROM tags WHERE id = ?', [tag.id]);

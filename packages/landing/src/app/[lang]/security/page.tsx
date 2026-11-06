@@ -147,8 +147,8 @@ export default async function SecurityPillarHubPage(props: PageLangParam) {
                     answer={
                         <Trans>
                             No. Budgie runs no server of its own, so there is no Budgie backend to breach. On iOS the encrypted backup and
-                            sync records sit in your own iCloud, protected by Apple&apos;s account security and, with Advanced Data Protection
-                            on, end-to-end encrypted.
+                            sync records sit in your own iCloud, protected by Apple&apos;s account security and, with Advanced Data
+                            Protection on, end-to-end encrypted.
                         </Trans>
                     }
                     question={<Trans>Does Budgie have any server-side security risks?</Trans>}

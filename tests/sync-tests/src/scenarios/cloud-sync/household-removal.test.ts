@@ -1,16 +1,10 @@
-import { householdStateAtom } from '@app/household/constant/household-state-atom.constant';
-import { HouseholdRoleEnum } from '@app/household/enum/household-role.enum';
+import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { CloudSyncRestorePhaseEnum } from '@app/cloud-sync/enum/cloud-sync-restore-phase.enum';
 import { CloudSyncService } from '@app/cloud-sync/service/cloud-sync.service';
-import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
+import { householdStateAtom } from '@app/household/constant/household-state-atom.constant';
+import { HouseholdRoleEnum } from '@app/household/enum/household-role.enum';
 import { FakeCloudTransport, makeTestDbLayer } from '@budgie-at/test-kit';
-import {
-    Db,
-    HOUSEHOLD_SYNC_ZONE,
-    SyncDatabaseScopeEnum,
-    SyncZoneRegistryRepository,
-    SyncZoneRoleEnum
-} from '@budgie/contracts';
+import { Db, HOUSEHOLD_SYNC_ZONE, SyncDatabaseScopeEnum, SyncZoneRegistryRepository, SyncZoneRoleEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 

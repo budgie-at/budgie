@@ -626,8 +626,8 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     <BlogArticleProse>
                         <Trans>
                             Budgie takes a fundamentally different approach to budgeting software. Built from the ground up as an
-                            offline-first application, your financial data stays in storage you control, with encrypted sync and backup rather
-                            than a company database.
+                            offline-first application, your financial data stays in storage you control, with encrypted sync and backup
+                            rather than a company database.
                         </Trans>
                     </BlogArticleProse>
 
@@ -1922,7 +1922,8 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     <BlogArticleProse>
                         <Trans>
                             If privacy matters to you, we built Budgie for exactly that reason. No Budgie servers storing your transactions.
-                            No third parties with access to your spending habits. Just you, your budget, and the encrypted backup you control.
+                            No third parties with access to your spending habits. Just you, your budget, and the encrypted backup you
+                            control.
                         </Trans>
                     </BlogArticleProse>
 

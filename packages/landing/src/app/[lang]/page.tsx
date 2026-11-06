@@ -149,9 +149,7 @@ export default async function LandingPage(props: PageLangParam) {
                     slug="private-budget-app-alternative"
                     title={<Trans>A private budget app alternative</Trans>}
                 >
-                    <Trans>
-                        Your finances stay in storage you control, with app lock, screenshot protection and encrypted sync.
-                    </Trans>
+                    <Trans>Your finances stay in storage you control, with app lock, screenshot protection and encrypted sync.</Trans>
                 </CapabilityBento.Cell>
 
                 <CapabilityBento.Cell
