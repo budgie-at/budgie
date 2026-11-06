@@ -46,6 +46,11 @@
         "ts:native": {
             "dependsOn": ["^ts:native", "^build"],
             "outputs": ["node_modules/.cache/typecheck-native-*.json"]
+        },
+        "@budgie-at/test-kit#ts": {
+            "dependsOn": ["^ts", "^build"],
+            "outputs": [],
+            "cache": false
         }
     },
     "agentGuidance": false
