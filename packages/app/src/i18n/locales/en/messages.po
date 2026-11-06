@@ -2143,7 +2143,6 @@ msgstr "Can't be changed later"
 #: src/installment-plan/hook/use-revert-installment-plan.hook.ts
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
-#: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
@@ -4188,6 +4187,10 @@ msgstr "Estimated from your past transactions using your current limits."
 #: src/app/(main)/create-account/index.tsx
 msgid "EU banks"
 msgstr "EU banks"
+
+#: src/app/(main)/budget/event/[id]/index.tsx
+msgid "Event budget"
+msgstr "Event budget"
 
 #: src/budget/components/budget-event-form/budget-event-form.tsx
 msgid "Event limit"
@@ -7534,10 +7537,6 @@ msgstr "Scan the QR code with the Monobank app"
 #: src/receipt/components/receipt-source-menu/receipt-source-menu.tsx
 msgid "Scan with camera"
 msgstr "Scan with camera"
-
-#: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
-msgid "Seal"
-msgstr "Seal"
 
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 msgid "Seal with this PIN"

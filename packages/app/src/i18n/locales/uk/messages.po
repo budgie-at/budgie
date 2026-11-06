@@ -2142,7 +2142,6 @@ msgstr "Змінити пізніше не можна"
 #: src/installment-plan/hook/use-revert-installment-plan.hook.ts
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
-#: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
@@ -4187,6 +4186,10 @@ msgstr "Оцінено за твоїми минулими транзакціям
 #: src/app/(main)/create-account/index.tsx
 msgid "EU banks"
 msgstr "Банки ЄС"
+
+#: src/app/(main)/budget/event/[id]/index.tsx
+msgid "Event budget"
+msgstr "Бюджет події"
 
 #: src/budget/components/budget-event-form/budget-event-form.tsx
 msgid "Event limit"
@@ -7533,10 +7536,6 @@ msgstr "Відскануйте QR-код у застосунку Monobank"
 #: src/receipt/components/receipt-source-menu/receipt-source-menu.tsx
 msgid "Scan with camera"
 msgstr "Сканувати камерою"
-
-#: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
-msgid "Seal"
-msgstr "Запечатати"
 
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 msgid "Seal with this PIN"

@@ -52,14 +52,10 @@ export const OnboardingFileStrip = ({ state, lock }: Props) => {
                 key={state}
                 entering={stateEntering}
                 exiting={stateExiting}
-                className="min-w-0 flex-1 flex-row items-center justify-end gap-x-xs"
+                className="min-w-0 flex-1 flex-row items-center justify-end gap-x-xs flex-wrap gap-y-xs"
             >
                 <Icon icon={stateIcon} size={14} className={stateColorClassName} />
-                <Text
-                    testID={OnboardingFileStripSelector.State}
-                    numberOfLines={1}
-                    className={cn('shrink text-[13px]', stateColorClassName)}
-                >
+                <Text testID={OnboardingFileStripSelector.State} className={cn('shrink text-right text-[13px]', stateColorClassName)}>
                     {state}
                 </Text>
             </Animated.View>

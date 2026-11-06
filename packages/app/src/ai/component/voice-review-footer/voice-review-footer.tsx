@@ -36,7 +36,7 @@ export const VoiceReviewFooter = (props: Props) => {
     const totalLabel = formatDigits(totalAmount, `${currencySymbol} `);
 
     return (
-        <View className="border-t border-surface-separator bg-surface px-lg pt-lg pb-safe-or-[16px]">
+        <View className="border-t border-surface-separator bg-sheet-surface px-lg pt-lg pb-safe-or-[16px]">
             {isPositiveNumber(count) ? (
                 <View className="mb-lg flex-row flex-wrap gap-x-lg gap-y-xs items-baseline justify-between">
                     <Text className="text-md text-secondary-foreground">{t`Total`}</Text>

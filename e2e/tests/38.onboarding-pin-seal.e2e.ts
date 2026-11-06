@@ -28,8 +28,6 @@ test('38 onboarding PIN seal', { tags: ['onboarding'] }, async ({ budgie }) => {
     await b.phase('seal and review receipt', async () => {
         await b.expectId(ctx, 'OnboardingSeal.HoldButton', 3_000);
         await b.tapId(ctx, 'OnboardingSeal.HoldButton');
-        await b.expectText(ctx, 'Seal', 3_000);
-        await b.tapText(ctx, 'Seal');
         await b.expectId(ctx, 'OnboardingSealedMoment.ContinueButton', 30_000);
         await b.tapUntil(ctx, 'OnboardingSealedMoment.ContinueButton', () => b.expectId(ctx, 'OnboardingReceipt.GoToBudgieButton', 3_000));
         await b.tapId(ctx, 'OnboardingReceipt.GoToBudgieButton');
