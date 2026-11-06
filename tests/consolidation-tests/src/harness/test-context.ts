@@ -26,9 +26,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
 
-export const testDbHandle = await buildTestDb();
-
-export const testDb = testDbHandle.database;
+export const testDb = await buildTestDb();
 
 export const testQueryService = new TestQueryService(testDb);
 

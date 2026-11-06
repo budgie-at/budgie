@@ -16,7 +16,7 @@ import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import { expect } from 'vitest';
 
-import { testDb } from '../scenario/setup';
+import { testDb } from '../scenario/test-db';
 import { seed } from '../seed/seed';
 
 import { RUN_DEADLINE_MS, STALE_SYNC_AGE_MS } from './binance-clock';

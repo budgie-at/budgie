@@ -25,25 +25,20 @@ import * as Layer from 'effect/Layer';
 import * as Queue from 'effect/Queue';
 import * as SubscriptionRef from 'effect/SubscriptionRef';
 import * as TestClock from 'effect/testing/TestClock';
-import { vi } from 'vitest';
+import { beforeEach, vi } from 'vitest';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import { aiModelDownloadStub, Fiber, testDb } from '../../harness';
+import { appStateStub, llamaStub } from '../../harness/native/native-module.stub';
 
 import type { AiFeatureSettingsInterface } from '@app/ai/interface/ai-feature-settings.interface';
 
-const appState = vi.hoisted(() => ({
-    addEventListener: vi.fn((_event: string, _listener: (state: 'active' | 'background') => void) => ({ remove: vi.fn() }))
-}));
+const native = { context: { stopCompletion: vi.fn(() => void 0), release: vi.fn(() => Promise.resolve()) } };
 
-const native = vi.hoisted(() => ({
-    context: { stopCompletion: vi.fn(() => void 0), release: vi.fn(() => Promise.resolve()) }
-}));
-
-vi.mock('llama.rn', () => ({ initLlama: () => Promise.resolve(native.context) }));
-
-vi.mock('react-native', () => ({ AppState: { currentState: 'active', addEventListener: appState.addEventListener } }));
+beforeEach(() => {
+    llamaStub.initLlama.mockResolvedValue(native.context);
+});
 
 const provideTestServices = <A, E, R>(effect: Effect.Effect<A, E, R>) =>
     effect.pipe(Effect.provide([SettingsRepository.layer, aiModelDownloadStub]), Effect.provideService(Db, testDb));
@@ -215,7 +210,7 @@ describe('AI shutdown recovery', () => {
     it.effect('retries a failed background shutdown before foreground replacement', () =>
         Effect.gen(function* () {
             const { coordinator, started, stopping, setShutdown } = yield* makeLifecycle();
-            const listener = appState.addEventListener.mock.calls.at(-1)?.[1];
+            const listener = appStateStub.addEventListener.mock.calls.at(-1)?.[1];
             setShutdown(Effect.fail(NativeCallError.make({ cause: 'release failed' })));
             listener?.('background');
             yield* TestClock.adjust(60_000);
@@ -235,7 +230,7 @@ describe('AI background transitions', () => {
     it.effect('cancels a pending background timer before restarting the foreground scope', () =>
         Effect.gen(function* () {
             const { coordinator, started } = yield* makeLifecycle();
-            const listener = appState.addEventListener.mock.calls.at(-1)?.[1];
+            const listener = appStateStub.addEventListener.mock.calls.at(-1)?.[1];
             listener?.('background');
             yield* TestClock.adjust(100);
             listener?.('active');
@@ -249,7 +244,7 @@ describe('AI background transitions', () => {
         Effect.gen(function* () {
             const { coordinator, resumes, stopping, holdShutdown } = yield* makeLifecycle();
             const { release } = yield* holdShutdown;
-            const listener = appState.addEventListener.mock.calls.at(-1)?.[1];
+            const listener = appStateStub.addEventListener.mock.calls.at(-1)?.[1];
             listener?.('background');
             yield* TestClock.adjust(60_000);
             yield* Deferred.await(stopping);

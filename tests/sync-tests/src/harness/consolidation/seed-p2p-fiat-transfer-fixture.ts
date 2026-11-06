@@ -17,7 +17,7 @@ import { getDefined, isDefined } from '@rnw-community/shared';
 
 import { requireInstrument } from '../db/require-instrument';
 import { testQueryService } from '../db/test-query-service';
-import { testDb } from '../scenario/setup';
+import { testDb } from '../scenario/test-db';
 import { seed } from '../seed/seed';
 import { seedBankPair } from '../seed/seed-bank-pair';
 

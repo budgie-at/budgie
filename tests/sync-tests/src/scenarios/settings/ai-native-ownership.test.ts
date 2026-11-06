@@ -18,27 +18,20 @@ import { beforeEach, vi } from 'vitest';
 import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import { aiModelDownloadStub } from '../../harness';
+import { llamaStub, whisperStub } from '../../harness/native/native-module.stub';
 
-const native = vi.hoisted(() => {
-    const context = {
+const native = {
+    context: {
         release: vi.fn(() => Promise.resolve()),
         stopCompletion: vi.fn((): undefined | Promise<void> => Promise.resolve()),
         completion: vi.fn(() => Promise.resolve({ text: 'done', interrupted: false })),
         embedding: vi.fn(() => Promise.resolve({ embedding: [1] }))
-    };
-    const whisperContext = { transcribeData: vi.fn(() => ({ promise: Promise.resolve({ result: 'done' }) })) };
-
-    return {
-        context,
-        whisperContext,
-        initialize: vi.fn(() => Promise.resolve(context)),
-        initializeWhisper: vi.fn(() => Promise.resolve(whisperContext)),
-        releaseWhisper: vi.fn(() => Promise.resolve())
-    };
-});
-
-vi.mock('llama.rn', () => ({ initLlama: native.initialize }));
-vi.mock('whisper.rn', () => ({ initWhisper: native.initializeWhisper, releaseAllWhisper: native.releaseWhisper }));
+    },
+    whisperContext: { transcribeData: vi.fn(() => ({ promise: Promise.resolve({ result: 'done' }) })) },
+    initialize: llamaStub.initLlama,
+    initializeWhisper: whisperStub.initWhisper,
+    releaseWhisper: whisperStub.releaseAllWhisper
+};
 
 beforeEach(() => {
     native.context.release.mockReset().mockResolvedValue(void 0);

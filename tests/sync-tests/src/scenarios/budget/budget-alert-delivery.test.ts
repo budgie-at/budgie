@@ -7,18 +7,10 @@ import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as TestClock from 'effect/testing/TestClock';
-import { vi } from 'vitest';
 
-import { testDb } from '../../harness/scenario/setup';
+import { expoNotificationsStub } from '../../harness/native/native-module.stub';
+import { testDb } from '../../harness/scenario/test-db';
 import { seed } from '../../harness/seed/seed';
-
-const scheduledNotifications = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
-
-vi.mock('expo-notifications', () => ({
-    AndroidImportance: { DEFAULT: 3 },
-    scheduleNotificationAsync: scheduledNotifications,
-    setNotificationChannelAsync: vi.fn().mockResolvedValue(undefined)
-}));
 
 const BudgetAlertLayer = Layer.mergeAll(BudgetAlertMonitorService.layer, BudgetService.layer, SettingsRepository.layer).pipe(
     Layer.provideMerge(makeTestPlatformLayer(testDb))
@@ -32,7 +24,7 @@ layer(BudgetAlertLayer)('budget/alert-delivery', it => {
     it.effect('delivers every crossed threshold exactly once across consecutive runs', () =>
         Effect.gen(function* () {
             yield* TestClock.setTime(Date.now());
-            scheduledNotifications.mockClear();
+            expoNotificationsStub.scheduleNotificationAsync.mockClear();
             const budgetService = yield* BudgetService;
             const monitor = yield* BudgetAlertMonitorService;
             const account = yield* seed.account({ type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
@@ -56,7 +48,7 @@ layer(BudgetAlertLayer)('budget/alert-delivery', it => {
             yield* monitor.run();
             yield* monitor.run();
 
-            expect(scheduledNotifications).toHaveBeenCalledTimes(FIRED_TRIGGERS);
+            expect(expoNotificationsStub.scheduleNotificationAsync).toHaveBeenCalledTimes(FIRED_TRIGGERS);
         })
     );
 });

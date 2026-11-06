@@ -18,42 +18,38 @@ import { beforeEach, vi } from 'vitest';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
 
-import { testDb } from '../../harness/scenario/setup';
+import { expoConstantsStub, expoFileSystemStub } from '../../harness/native/native-module.stub';
+import { testDb } from '../../harness/scenario/test-db';
 
-const files = vi.hoisted(() => new Map<string, number>());
-const native = vi.hoisted(() => ({ aiEnabled: true, deleteFile: vi.fn<(path: string) => void>(), readFile: vi.fn<() => void>() }));
+const files = new Map<string, number>();
+const native = { deleteFile: vi.fn<(path: string) => void>(), readFile: vi.fn<() => void>() };
 
-vi.mock('expo-constants', () => ({ default: { expoConfig: { extra: native } } }));
-vi.mock('expo-file-system', () => {
-    class File {
-        readonly path: string;
-        readonly uri = '/tmp';
+class InMemoryFile {
+    readonly path: string;
+    readonly uri = '/tmp';
 
-        constructor(...path: string[]) {
-            this.path = path.slice(1).join('/');
-        }
-
-        get exists() {
-            native.readFile();
-
-            return files.has(this.path);
-        }
-
-        get size() {
-            return files.get(this.path) ?? 0;
-        }
-
-        delete() {
-            native.deleteFile(this.path);
-            files.delete(this.path);
-        }
+    constructor(...path: string[]) {
+        this.path = path.slice(1).join('/');
     }
 
-    return { Paths: { document: '/tmp' }, File, Directory: File };
-});
+    get exists() {
+        native.readFile();
+
+        return files.has(this.path);
+    }
+
+    get size() {
+        return files.get(this.path) ?? 0;
+    }
+
+    delete() {
+        native.deleteFile(this.path);
+        files.delete(this.path);
+    }
+}
 
 beforeEach(() => {
-    native.aiEnabled = true;
+    expoFileSystemStub.File.mockImplementation(InMemoryFile);
     native.deleteFile.mockReset();
     native.readFile.mockReset();
     files.clear();
@@ -192,7 +188,7 @@ describe('AI concurrent settings', () => {
                     isAiTranslationsEnabled: true
                 });
                 const before = yield* repository.getSettings();
-                native.aiEnabled = false;
+                expoConstantsStub.expoConfig.extra.aiEnabled = false;
                 files.set(CHAT_MODEL_FILENAME, 1_000);
                 files.set(EMBEDDING_MODEL_FILENAME, 2_000);
                 expect((yield* storage.getUsage()).unusedBytes).toBe(3_000);

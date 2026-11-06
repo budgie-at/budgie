@@ -12,7 +12,7 @@ import { inArray } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import { TestLayer } from '../../harness';
-import { testDb } from '../../harness/scenario/setup';
+import { testDb } from '../../harness/scenario/test-db';
 
 const DEBT_CATEGORY_IDS = [LENDING_CATEGORY_ID, BORROWING_CATEGORY_ID];
 

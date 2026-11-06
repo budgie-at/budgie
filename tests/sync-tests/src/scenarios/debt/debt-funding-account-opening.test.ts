@@ -20,7 +20,7 @@ import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import { fetchAccountBalance, TestLayer, upsertCurrencyRate, DEBT_OPENING_MESSAGES } from '../../harness';
-import { testDb } from '../../harness/scenario/setup';
+import { testDb } from '../../harness/scenario/test-db';
 import { seed } from '../../harness/seed/seed';
 
 import type { AccountEntityInterface } from '@budgie/contracts';

@@ -1,7 +1,7 @@
 import { ExchangeRateCreateEntityInterface, ExchangeRateEntityTable } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
-import { testDb } from '../scenario/setup';
+import { testDb } from '../scenario/test-db';
 
 export const seedExchangeRate = (baseInstrumentId: number, quoteInstrumentId: number, rate: number) =>
     Effect.asVoid(

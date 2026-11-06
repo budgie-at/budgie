@@ -2,7 +2,7 @@ import { SyncEntityTable } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { testDb } from '../scenario/setup';
+import { testDb } from '../scenario/test-db';
 
 export const fetchSyncById = (id: number) =>
     Effect.gen(function* () {

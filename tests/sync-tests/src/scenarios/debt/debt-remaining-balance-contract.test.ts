@@ -25,7 +25,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { fetchDebtProgress, TestLayer, upsertCurrencyRate, DEBT_OPENING_MESSAGES } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
-import { testDb } from '../../harness/scenario/setup';
+import { testDb } from '../../harness/scenario/test-db';
 import { seed } from '../../harness/seed/seed';
 
 import type { DebtProgressContractInterface } from './interface/debt-progress-contract.interface';

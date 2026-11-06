@@ -37,7 +37,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { fetchAccountBalance, requireInstrument, TestLayer, DEBT_OPENING_MESSAGES } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
-import { testDb } from '../../harness/scenario/setup';
+import { testDb } from '../../harness/scenario/test-db';
 import { seed } from '../../harness/seed/seed';
 
 import type {
