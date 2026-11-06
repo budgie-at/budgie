@@ -33,9 +33,12 @@ import {
     seedUsdtFundingAccount,
     setupBinanceFixture,
     stubEmptyBinanceBalances,
-    testDb,
-    TestLayer
+    testDb
 } from '../../harness';
+import { TEST_SCENARIO_TIME } from '../../harness/constant/test-scenario-time.constant';
+import { createScenarioClockLayer } from '../../harness/utils/create-scenario-clock-layer.util';
+
+const TestLayer = createScenarioClockLayer(TEST_SCENARIO_TIME);
 
 const setupForwardUsdtScenario = () =>
     Effect.gen(function* () {
