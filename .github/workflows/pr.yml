@@ -126,7 +126,7 @@ jobs:
               run: pnpm ts
 
             - name: Lint checks
-              run: pnpm lint
+              run: pnpm lint && pnpm test:lint
 
             - name: Deadcode detection
               run: pnpm deadcode
