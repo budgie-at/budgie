@@ -55,7 +55,6 @@ export const CurrencyMarketPage = ({ instrument }: Props) => {
                     }
                     chromeConfig={CURRENCY_MARKET_CHROME_CONFIG}
                     contentClassName="px-3xl gap-y-[28px] pb-8xl"
-                    scrimClassName="bg-surface"
                 >
                     <CurrencyMarketOverview instrument={instrument} prices={prices} priceBottom={priceBottom} />
 

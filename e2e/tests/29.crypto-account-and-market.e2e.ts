@@ -149,7 +149,7 @@ test('29 crypto account and market', { tags: ['crypto'] }, async ({ budgie }) =>
             // optional: true in the flow
         }
         await b.expectId(ctx, 'RunwayPill');
-        await b.openLink(ctx, 'budgie://analytics?tab=runway');
+        await b.tapId(ctx, 'RunwayPill');
         await b.expectId(ctx, 'RunwayVerdict.Figure._3', 10_000);
         await b.expectNoId(ctx, 'RunwayVerdict.CryptoNote');
     });

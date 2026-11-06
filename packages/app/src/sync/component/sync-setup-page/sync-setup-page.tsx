@@ -30,7 +30,6 @@ export const SyncSetupPage = ({ title, description, onGoBack, footerButton, test
             <CollapsibleChromePage
                 title={title}
                 leading={<GoBackButton onPress={onGoBack} />}
-                scrimClassName="bg-surface"
                 contentClassName="gap-y-3xl"
                 footer={footer}
                 testID={testID}

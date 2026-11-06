@@ -53,7 +53,6 @@ export default function AiSettingsPage() {
     return (
         <GroupedSurface>
             <CollapsibleChromePage
-                scrimClassName="bg-surface"
                 title={t`On-device AI`}
                 leading={<GoBackButton onPress={goBackToSettings} />}
                 testID={AiDownloadSelector.Page}
