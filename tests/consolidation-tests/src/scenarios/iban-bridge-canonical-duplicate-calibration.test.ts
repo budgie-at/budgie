@@ -55,7 +55,7 @@ const seedCalibratedDuplicate = Effect.fnUntraced(function* (
 
     const accountIds: [number, number, number] = [fixture.sourceAccount.id, fixture.bridgeAccount.id, fixture.targetAccount.id];
 
-    return { ...fixture, canonicalId: yield* fetchBridgeCanonicalId(), accountIds };
+    return { ...fixture, canonicalId: yield* fetchBridgeCanonicalId, accountIds };
 });
 
 const expectCalibratedDuplicatesUntouched = Effect.fnUntraced(function* ({

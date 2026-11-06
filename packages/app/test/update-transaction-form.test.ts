@@ -71,12 +71,33 @@ describe('update transaction form', () => {
             expect(Object.keys(originalForm.control._formState.errors)).toEqual(['title']);
             expect(save).not.toHaveBeenCalled();
 
-            const { form, handleSubmit } = useUpdateTransactionForm({ id: 1, schema: ExpenseTransactionCreateInputSchema, transaction });
+            const { form, handleSubmit } = useUpdateTransactionForm({
+                id: 1,
+                schema: ExpenseTransactionCreateInputSchema,
+                transaction,
+                persistedTitle: transaction.title
+            });
 
             yield* Effect.promise(() => handleSubmit());
 
             expect(form.control._formState.errors).toEqual({});
             expect(save).toHaveBeenCalledOnce();
+        })
+    );
+
+    it.effect('rejects an overlong receipt-prefilled title that differs from the persisted one', () =>
+        Effect.gen(function* () {
+            save.mockClear();
+            const { handleSubmit } = useUpdateTransactionForm({
+                id: 1,
+                schema: ExpenseTransactionCreateInputSchema,
+                transaction,
+                persistedTitle: 'Fixture bank merchant'
+            });
+
+            yield* Effect.promise(() => handleSubmit());
+
+            expect(save).not.toHaveBeenCalled();
         })
     );
 
@@ -89,7 +110,12 @@ describe('update transaction form', () => {
     ])('still rejects invalid edits: %s', changes =>
         Effect.gen(function* () {
             save.mockClear();
-            const { form, handleSubmit } = useUpdateTransactionForm({ id: 1, schema: ExpenseTransactionCreateInputSchema, transaction });
+            const { form, handleSubmit } = useUpdateTransactionForm({
+                id: 1,
+                schema: ExpenseTransactionCreateInputSchema,
+                transaction,
+                persistedTitle: transaction.title
+            });
 
             form.reset({ ...transaction, ...changes });
             yield* Effect.promise(() => handleSubmit());

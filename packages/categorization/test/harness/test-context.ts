@@ -13,9 +13,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 export const backupDatabasePath = isNotEmptyString(process.env['BUDGIE_BACKUP_DB']) ? process.env['BUDGIE_BACKUP_DB'] : null;
 
-export const testDbHandle = await buildTestDb(backupDatabasePath);
-
-export const testDb = testDbHandle.database;
+export const testDb = await buildTestDb(backupDatabasePath);
 
 export const testSeedService = new TestSeedService(testDb);
 

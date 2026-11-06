@@ -14,6 +14,7 @@ import { msg } from '@lingui/core/macro';
 import { Storage } from '@op-engineering/op-sqlite';
 import * as EffectArray from 'effect/Array';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Option from 'effect/Option';
@@ -55,7 +56,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
         const budgetAlertChannel = (): LocalNotificationChannelInterface => ({ id: 'budget-alerts', name: i18n._(msg`Budget alerts`) });
         const backgroundTaskMinimumIntervalMinutes = 15;
         const storageKeyPrefix = '@budgie:budget-alerts-fired';
-        const firedTriggersSchema = Schema.fromJsonString(Schema.Array(Schema.String));
+        const firedTriggersSchema = Schema.String.pipe(Schema.Array, Schema.fromJsonString);
         const storage = yield* Effect.acquireRelease(
             Effect.sync(() => new Storage({ name: 'budget-alerts.sqlite' })),
             budgetAlertStorage =>
@@ -108,7 +109,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
                 return [];
             }
 
-            return Option.getOrElse(Schema.decodeUnknownOption(firedTriggersSchema)(raw), () => []);
+            return Option.getOrElse(Schema.decodeOption(firedTriggersSchema)(raw), () => []);
         });
 
         const postOverallAlert = Effect.fn('BudgetAlertMonitorService.postOverallAlert')(function* (
@@ -142,7 +143,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
             period: BudgetPeriodEnum
         ) {
             const thisPeriod = i18n._(BUDGET_PERIOD_THIS_LABEL[period]);
-            const settings = yield* settingsRepository.findSettings();
+            const settings = yield* settingsRepository.findSettings;
             const language = isDefined(settings) ? settings.language : LanguageEnum.EN;
             const [category] = yield* categoryRepository.findById(categoryId, language);
             const categoryName = isDefined(category) ? category.title : i18n._(msg`Category`);
@@ -235,7 +236,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
 
         return {
             run: Effect.fn('BudgetAlertMonitorService.run')(function* () {
-                const [budget, settings] = yield* Effect.all([budgetRepository.findMain(), settingsRepository.findSettings()], {
+                const [budget, settings] = yield* Effect.all([budgetRepository.findMain, settingsRepository.findSettings], {
                     concurrency: 'unbounded'
                 });
                 const isBudgetPushEnabled = isDefined(settings) ? settings.isBudgetPushEnabled : false;
@@ -244,7 +245,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
                     return;
                 }
 
-                const now = new Date();
+                const now = yield* DateTime.nowAsDate;
                 const periodStartMs = resolveBudgetWindow(budget, now).periodStart.getTime();
                 const spent = yield* budgetProjectionService.spent(budget, now);
                 const categoryLimits = yield* budgetCategoryLimitRepository.getByBudget(budget.id);
@@ -261,17 +262,19 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
                 const storageKey = buildStorageKey(budget.id, periodStartMs);
                 const deliveredKeys = yield* loadDeliveredTriggerKeys(storageKey);
                 const newTriggers = selectTriggersToPost(triggers, deliveredKeys);
-                const postedKeys = EffectArray.getSomes(
-                    yield* Effect.forEach(newTriggers, trigger =>
-                        (trigger.kind === BudgetAlertKindEnum.PACE
-                            ? postPaceAlert(trigger, projection, budget.instrumentId)
-                            : postTrigger(trigger, effectiveLimits.overallLimit, spent, budget.period)
-                        ).pipe(Effect.as(buildTriggerKey(trigger)), Effect.option)
-                    )
+                const postedAlerts = yield* Effect.forEach(newTriggers, trigger =>
+                    (trigger.kind === BudgetAlertKindEnum.PACE
+                        ? postPaceAlert(trigger, projection, budget.instrumentId)
+                        : postTrigger(trigger, effectiveLimits.overallLimit, spent, budget.period)
+                    ).pipe(Effect.as(buildTriggerKey(trigger)), Effect.option)
                 );
+                const postedKeys = EffectArray.getSomes(postedAlerts);
 
                 if (isNotEmptyArray(postedKeys)) {
-                    yield* Effect.promise(() => storage.setItem(storageKey, JSON.stringify([...deliveredKeys, ...postedKeys])));
+                    const firedTriggers = yield* Schema.encodeEffect(firedTriggersSchema)([...deliveredKeys, ...postedKeys]).pipe(
+                        Effect.orDie
+                    );
+                    yield* Effect.promise(() => storage.setItem(storageKey, firedTriggers));
                 }
             }),
             registerBackgroundTask: Effect.fn('BudgetAlertMonitorService.registerBackgroundTask')(function* () {

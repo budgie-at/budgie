@@ -14,12 +14,12 @@ const decodeNotificationData = Schema.decodeUnknownOption(
     Schema.Union([
         Schema.Struct({
             kind: Schema.Literal(RecurringNotificationKindEnum.RECURRING),
-            seriesId: Schema.Number
+            seriesId: Schema.Finite
         }),
         Schema.Struct({
             kind: Schema.Literal(BudgetAlertKindEnum.PACE),
             scope: Schema.Enum(BudgetAlertScopeEnum),
-            categoryId: Schema.NullOr(Schema.Number)
+            categoryId: Schema.NullOr(Schema.Finite)
         })
     ])
 );

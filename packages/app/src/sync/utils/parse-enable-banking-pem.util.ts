@@ -10,7 +10,7 @@ export const parseEnableBankingPem = (text: string) =>
     Effect.try({
         try: () => pki.privateKeyToPem(pki.privateKeyFromPem(text.trim())),
         catch: () =>
-            new EnableBankingSetupError({
+            EnableBankingSetupError.make({
                 reason: ENCRYPTED_MARKER.test(text)
                     ? EnableBankingSetupErrorReasonEnum.ENCRYPTED
                     : EnableBankingSetupErrorReasonEnum.INVALID_FORMAT

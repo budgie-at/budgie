@@ -36,7 +36,7 @@ export const BinanceSyncTokenSection = ({ accountId }: Props) => {
     const { isLoading: isSaving, run } = useSingleFlight();
 
     const handleEdit = () => {
-        const credentials = Option.getOrNull(Schema.decodeUnknownOption(Schema.fromJsonString(BinanceCredentialsSchema))(token));
+        const credentials = Option.getOrNull(Schema.decodeOption(Schema.fromJsonString(BinanceCredentialsSchema))(token));
 
         dispatch({
             type: BinanceSyncTokenSectionActionTypeEnum.EDIT_STARTED,

@@ -23,10 +23,7 @@ const WRONG_DESTINATION_OPERATED_AT = new Date('2026-01-13T11:42:53');
 
 const byTransactionId = (left: number, right: number): number => left - right;
 
-const fetchIncomeDuplicateCanonicalId = () =>
-    Effect.gen(function* () {
-        return yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
-    });
+const fetchIncomeDuplicateCanonicalId = () => fetchSingleCanonicalId(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
 
 const seedWrongDestinationFixture = () =>
     Effect.gen(function* () {

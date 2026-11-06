@@ -3,1799 +3,1076 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.164.3](https://github.com/budgie-at/budgie/compare/v6.164.2...v6.164.3) (2026-11-06)
+
+### Performance Improvements
+
+- run Effect rules in oxlint on tsrs, enable them all, parallelize tests ([#1956](https://github.com/budgie-at/budgie/issues/1956)) ([53a5170](https://github.com/budgie-at/budgie/commit/53a5170978e14a31cb6fc22da657851a42b592ad)), closes [#1883](https://github.com/budgie-at/budgie/issues/1883)
+
 # [6.163.0](https://github.com/budgie-at/budgie/compare/v6.162.1...v6.163.0) (2026-11-05)
 
 ### Features
 
-* **sync:** add on-device Enable Banking sync for EU banks ([#1949](https://github.com/budgie-at/budgie/issues/1949)) ([e507c18](https://github.com/budgie-at/budgie/commit/e507c181af8761113dd8acf76d116c047b0d39e6)), closes [#1910](https://github.com/budgie-at/budgie/issues/1910) [#1914](https://github.com/budgie-at/budgie/issues/1914)
-
+- **sync:** add on-device Enable Banking sync for EU banks ([#1949](https://github.com/budgie-at/budgie/issues/1949)) ([e507c18](https://github.com/budgie-at/budgie/commit/e507c181af8761113dd8acf76d116c047b0d39e6)), closes [#1910](https://github.com/budgie-at/budgie/issues/1910) [#1914](https://github.com/budgie-at/budgie/issues/1914)
 
 # [6.127.0](https://github.com/budgie-at/budgie/compare/v6.126.5...v6.127.0) (2026-10-30)
 
 ### Features
 
-* **landing:** list unsupported Binance sources and refresh app catalogs ([9aba1c1](https://github.com/budgie-at/budgie/commit/9aba1c1cb1979cacaa17e01dbd3817b40fb7552b))
-
+- **landing:** list unsupported Binance sources and refresh app catalogs ([9aba1c1](https://github.com/budgie-at/budgie/commit/9aba1c1cb1979cacaa17e01dbd3817b40fb7552b))
 
 # [6.126.0](https://github.com/budgie-at/budgie/compare/v6.125.3...v6.126.0) (2026-10-29)
 
 **Note:** Version bump only for package @budgie-at/landing
 
-
-
-
-
 # [6.124.0](https://github.com/budgie-at/budgie/compare/v6.123.1...v6.124.0) (2026-10-28)
 
 ### Performance Improvements
 
-* memoize layer composition by upgrading effect to 4.0.6 ([02a76c6](https://github.com/budgie-at/budgie/commit/02a76c64e302ab39db47954f8e6cad612736691d))
-
+- memoize layer composition by upgrading effect to 4.0.6 ([02a76c6](https://github.com/budgie-at/budgie/commit/02a76c64e302ab39db47954f8e6cad612736691d))
 
 # [6.121.0](https://github.com/budgie-at/budgie/compare/v6.120.0...v6.121.0) (2026-10-27)
 
 ### Bug Fixes
 
-* **app:** adapt Wallet shortcuts to main ([308d906](https://github.com/budgie-at/budgie/commit/308d9066308fadec72bc29e6f11e31928c0b4661))
-* import blog utils from the renamed utils folder ([2b51d65](https://github.com/budgie-at/budgie/commit/2b51d6554b63504278affec83e73bf1aa06ad555))
+- **app:** adapt Wallet shortcuts to main ([308d906](https://github.com/budgie-at/budgie/commit/308d9066308fadec72bc29e6f11e31928c0b4661))
+- import blog utils from the renamed utils folder ([2b51d65](https://github.com/budgie-at/budgie/commit/2b51d6554b63504278affec83e73bf1aa06ad555))
 
 ### Features
 
-* add Apple Pay Shortcuts setup guide ([c3c34a1](https://github.com/budgie-at/budgie/commit/c3c34a11f2616d97e941fffefe39815d6b48af18))
-* **app:** pick the Apple Pay capture account automatically ([d5d26b4](https://github.com/budgie-at/budgie/commit/d5d26b4533d1083b25ee5c0123aa321d14594115))
-* **consolidation:** let bank rows replace Apple Pay captures ([e7e2d24](https://github.com/budgie-at/budgie/commit/e7e2d240129e33f2fddf8937b20d9159315b05d7))
-
+- add Apple Pay Shortcuts setup guide ([c3c34a1](https://github.com/budgie-at/budgie/commit/c3c34a11f2616d97e941fffefe39815d6b48af18))
+- **app:** pick the Apple Pay capture account automatically ([d5d26b4](https://github.com/budgie-at/budgie/commit/d5d26b4533d1083b25ee5c0123aa321d14594115))
+- **consolidation:** let bank rows replace Apple Pay captures ([e7e2d24](https://github.com/budgie-at/budgie/commit/e7e2d240129e33f2fddf8937b20d9159315b05d7))
 
 ## [6.115.9](https://github.com/budgie-at/budgie/compare/v6.115.8...v6.115.9) (2026-10-25)
 
 **Note:** Version bump only for package @budgie-at/landing
 
-
-
-
-
 # [6.111.0](https://github.com/budgie-at/budgie/compare/v6.110.0...v6.111.0) (2026-10-21)
 
 ### Features
 
-* **landing:** align page sections to the header frame and use wide screens ([b93ab97](https://github.com/budgie-at/budgie/commit/b93ab97436fc8defda269b2063f00384931ceebd))
-
+- **landing:** align page sections to the header frame and use wide screens ([b93ab97](https://github.com/budgie-at/budgie/commit/b93ab97436fc8defda269b2063f00384931ceebd))
 
 # [6.107.0](https://github.com/budgie-at/budgie/compare/v6.106.4...v6.107.0) (2026-10-19)
 
 ### Features
 
-* **landing:** leader-line callouts that stay inside the phone screen ([b272333](https://github.com/budgie-at/budgie/commit/b2723333ff106d559d197a3e66248b6cf0f580c4))
-
+- **landing:** leader-line callouts that stay inside the phone screen ([b272333](https://github.com/budgie-at/budgie/commit/b2723333ff106d559d197a3e66248b6cf0f580c4))
 
 ## [6.106.3](https://github.com/budgie-at/budgie/compare/v6.106.2...v6.106.3) (2026-10-19)
 
 **Note:** Version bump only for package @budgie-at/landing
 
-
-
-
-
 ## [6.106.2](https://github.com/budgie-at/budgie/compare/v6.106.1...v6.106.2) (2026-10-18)
 
 ### Bug Fixes
 
-* **landing:** keep scroll stories in sync with viewport ([#1602](https://github.com/budgie-at/budgie/issues/1602)) ([700960e](https://github.com/budgie-at/budgie/commit/700960e709660487aa3509b5852781947a3892c1))
-
+- **landing:** keep scroll stories in sync with viewport ([#1602](https://github.com/budgie-at/budgie/issues/1602)) ([700960e](https://github.com/budgie-at/budgie/commit/700960e709660487aa3509b5852781947a3892c1))
 
 ## [6.106.1](https://github.com/budgie-at/budgie/compare/v6.106.0...v6.106.1) (2026-10-18)
 
 **Note:** Version bump only for package @budgie-at/landing
 
-
-
-
-
 # [6.106.0](https://github.com/budgie-at/budgie/compare/v6.105.0...v6.106.0) (2026-10-16)
-
 
 ### Bug Fixes
 
-* **landing:** address review findings on AI and misc truth pass ([a8914ad](https://github.com/budgie-at/budgie/commit/a8914addc7a2c635964a3420022c1ceb29483274))
-* **landing:** address review findings on the Monobank token guide ([ec8b9ca](https://github.com/budgie-at/budgie/commit/ec8b9ca9c1d2c46c5cbf535ebc4901197c467fad))
-* **landing:** correct Budgie claims in the privacy blog posts ([8d25427](https://github.com/budgie-at/budgie/commit/8d2542744d236250f2f38225a73e069faf66745a))
-* **landing:** drop retired whats-new related slug ([32c1114](https://github.com/budgie-at/budgie/commit/32c1114e39efc9927d0b346d0e11f134b9b3bfa2))
-* **landing:** make voice, translation, dark mode and widget pages truthful ([6bab008](https://github.com/budgie-at/budgie/commit/6bab008409317c4536bb464a9784723ddf39d548))
-* **landing:** qualify capture blocking and present biometrics as the PIN alternative ([ba4a707](https://github.com/budgie-at/budgie/commit/ba4a707f99094ac390017895aec6a90d0c78aced))
-* **landing:** readable story stage with pinned callouts and a mobile layout that fits ([20ef7a7](https://github.com/budgie-at/budgie/commit/20ef7a762a2126395d71a1959d553c312dc6f62f))
-* **landing:** refresh the YNAB alternatives article for 2026 ([7b74fec](https://github.com/budgie-at/budgie/commit/7b74fec1956a7a5fb13cc37f66aa1b33ccc2e83a))
-* **landing:** repoint related slugs away from folded posts ([458f8dc](https://github.com/budgie-at/budgie/commit/458f8dc4a3fe493863a819deeb1169e111e4a89d))
-* **landing:** security pages tell the truth about screenshot protection and PIN lock ([ab79e8a](https://github.com/budgie-at/budgie/commit/ab79e8a1bc70dcedc1be3ea099db083814768480))
-* **landing:** use formal French on the corrected pages ([0037e50](https://github.com/budgie-at/budgie/commit/0037e50ab7025fbdcf5f6d9705401f37aea5133f))
-
+- **landing:** address review findings on AI and misc truth pass ([a8914ad](https://github.com/budgie-at/budgie/commit/a8914addc7a2c635964a3420022c1ceb29483274))
+- **landing:** address review findings on the Monobank token guide ([ec8b9ca](https://github.com/budgie-at/budgie/commit/ec8b9ca9c1d2c46c5cbf535ebc4901197c467fad))
+- **landing:** correct Budgie claims in the privacy blog posts ([8d25427](https://github.com/budgie-at/budgie/commit/8d2542744d236250f2f38225a73e069faf66745a))
+- **landing:** drop retired whats-new related slug ([32c1114](https://github.com/budgie-at/budgie/commit/32c1114e39efc9927d0b346d0e11f134b9b3bfa2))
+- **landing:** make voice, translation, dark mode and widget pages truthful ([6bab008](https://github.com/budgie-at/budgie/commit/6bab008409317c4536bb464a9784723ddf39d548))
+- **landing:** qualify capture blocking and present biometrics as the PIN alternative ([ba4a707](https://github.com/budgie-at/budgie/commit/ba4a707f99094ac390017895aec6a90d0c78aced))
+- **landing:** readable story stage with pinned callouts and a mobile layout that fits ([20ef7a7](https://github.com/budgie-at/budgie/commit/20ef7a762a2126395d71a1959d553c312dc6f62f))
+- **landing:** refresh the YNAB alternatives article for 2026 ([7b74fec](https://github.com/budgie-at/budgie/commit/7b74fec1956a7a5fb13cc37f66aa1b33ccc2e83a))
+- **landing:** repoint related slugs away from folded posts ([458f8dc](https://github.com/budgie-at/budgie/commit/458f8dc4a3fe493863a819deeb1169e111e4a89d))
+- **landing:** security pages tell the truth about screenshot protection and PIN lock ([ab79e8a](https://github.com/budgie-at/budgie/commit/ab79e8a1bc70dcedc1be3ea099db083814768480))
+- **landing:** use formal French on the corrected pages ([0037e50](https://github.com/budgie-at/budgie/commit/0037e50ab7025fbdcf5f6d9705401f37aea5133f))
 
 ### Features
 
-* **landing:** add a bank FAQ to the bank-sync hub ([cea4a3c](https://github.com/budgie-at/budgie/commit/cea4a3ca12d64d57f008811c2ffa35dcb8506c9c))
-* **landing:** add a guide to tracking money you lent and borrowed ([3687ef5](https://github.com/budgie-at/budgie/commit/3687ef5ea1fdb0e250c2698dbc9df234be57eb91))
-* **landing:** add a guide to tracking Monobank spending automatically ([ac77771](https://github.com/budgie-at/budgie/commit/ac7777120e09ca1133687399e4148311b902e0c1))
-* **landing:** add a guide to tracking pay-in-parts purchases ([aa85176](https://github.com/budgie-at/budgie/commit/aa85176056c528529047c1ec6cdc269b4f909543))
-* **landing:** add a Monobank token setup guide ([06e196d](https://github.com/budgie-at/budgie/commit/06e196d77a7f5642db83b5116d96cace2aee71cb))
-* **landing:** add a Privat24 statement import guide ([51a1835](https://github.com/budgie-at/budgie/commit/51a18356e8a1e72821d039f148db01dba474ca4a))
-* **landing:** add a UAH and EUR budgeting guide for Ukrainians in the EU ([a33d7d5](https://github.com/budgie-at/budgie/commit/a33d7d562ba9d5cdde6b0469891b692358659174))
-* **landing:** add an Erste George statement import guide ([738d23e](https://github.com/budgie-at/budgie/commit/738d23e8db95223a3aef04d34d1c3ee04ba50fe5))
-* **landing:** four section layouts so feature pages stop looking identical ([6339fda](https://github.com/budgie-at/budgie/commit/6339fdaa5a8fbd7d024d13c8bcebacdccedb6d4e))
-* **landing:** per-pillar accent colours and black ink buttons ([21fc71a](https://github.com/budgie-at/budgie/commit/21fc71a84265fa576744febecd535756d9c8f99e))
-* **landing:** short outcome H1s separate from SEO titles ([8aa3ff5](https://github.com/budgie-at/budgie/commit/8aa3ff53ec3989f1658b52db9ae29523245b0f66))
-* **landing:** shorter feature page body with an indexed details drawer ([200d274](https://github.com/budgie-at/budgie/commit/200d274df0fe9f2a01a334bf38e0223c7435a90b))
-* **landing:** show-then-tell feature hero with inline signup and trust strip ([5b739d3](https://github.com/budgie-at/budgie/commit/5b739d3a37cebfd0fb3b4db3e34c17e1f917d7ef))
-
+- **landing:** add a bank FAQ to the bank-sync hub ([cea4a3c](https://github.com/budgie-at/budgie/commit/cea4a3ca12d64d57f008811c2ffa35dcb8506c9c))
+- **landing:** add a guide to tracking money you lent and borrowed ([3687ef5](https://github.com/budgie-at/budgie/commit/3687ef5ea1fdb0e250c2698dbc9df234be57eb91))
+- **landing:** add a guide to tracking Monobank spending automatically ([ac77771](https://github.com/budgie-at/budgie/commit/ac7777120e09ca1133687399e4148311b902e0c1))
+- **landing:** add a guide to tracking pay-in-parts purchases ([aa85176](https://github.com/budgie-at/budgie/commit/aa85176056c528529047c1ec6cdc269b4f909543))
+- **landing:** add a Monobank token setup guide ([06e196d](https://github.com/budgie-at/budgie/commit/06e196d77a7f5642db83b5116d96cace2aee71cb))
+- **landing:** add a Privat24 statement import guide ([51a1835](https://github.com/budgie-at/budgie/commit/51a18356e8a1e72821d039f148db01dba474ca4a))
+- **landing:** add a UAH and EUR budgeting guide for Ukrainians in the EU ([a33d7d5](https://github.com/budgie-at/budgie/commit/a33d7d562ba9d5cdde6b0469891b692358659174))
+- **landing:** add an Erste George statement import guide ([738d23e](https://github.com/budgie-at/budgie/commit/738d23e8db95223a3aef04d34d1c3ee04ba50fe5))
+- **landing:** four section layouts so feature pages stop looking identical ([6339fda](https://github.com/budgie-at/budgie/commit/6339fdaa5a8fbd7d024d13c8bcebacdccedb6d4e))
+- **landing:** per-pillar accent colours and black ink buttons ([21fc71a](https://github.com/budgie-at/budgie/commit/21fc71a84265fa576744febecd535756d9c8f99e))
+- **landing:** short outcome H1s separate from SEO titles ([8aa3ff5](https://github.com/budgie-at/budgie/commit/8aa3ff53ec3989f1658b52db9ae29523245b0f66))
+- **landing:** shorter feature page body with an indexed details drawer ([200d274](https://github.com/budgie-at/budgie/commit/200d274df0fe9f2a01a334bf38e0223c7435a90b))
+- **landing:** show-then-tell feature hero with inline signup and trust strip ([5b739d3](https://github.com/budgie-at/budgie/commit/5b739d3a37cebfd0fb3b4db3e34c17e1f917d7ef))
 
 ### Performance Improvements
 
-* **landing:** replace looping clips with static screenshots and trim motion ([a58d749](https://github.com/budgie-at/budgie/commit/a58d74921f11f17c1ce73e451c272b6be9647f3c))
-
-
-
-
+- **landing:** replace looping clips with static screenshots and trim motion ([a58d749](https://github.com/budgie-at/budgie/commit/a58d74921f11f17c1ce73e451c272b6be9647f3c))
 
 ## [6.104.1](https://github.com/budgie-at/budgie/compare/v6.104.0...v6.104.1) (2026-10-15)
 
 **Note:** Version bump only for package @budgie-at/landing
 
-
-
-
-
 # [6.104.0](https://github.com/budgie-at/budgie/compare/v6.103.13...v6.104.0) (2026-10-15)
-
 
 ### Bug Fixes
 
-* address icon review findings ([fffc644](https://github.com/budgie-at/budgie/commit/fffc644acb9cedb2db93131c7a9afd41d924b044))
-
+- address icon review findings ([fffc644](https://github.com/budgie-at/budgie/commit/fffc644acb9cedb2db93131c7a9afd41d924b044))
 
 ### Features
 
-* replace Lucide with Reicon while preserving saved icons ([45180c2](https://github.com/budgie-at/budgie/commit/45180c248fb0a50444c5e75c33daa301cdba8ed1)), closes [#1419](https://github.com/budgie-at/budgie/issues/1419)
-
-
-
-
+- replace Lucide with Reicon while preserving saved icons ([45180c2](https://github.com/budgie-at/budgie/commit/45180c248fb0a50444c5e75c33daa301cdba8ed1)), closes [#1419](https://github.com/budgie-at/budgie/issues/1419)
 
 ## [6.103.13](https://github.com/budgie-at/budgie/compare/v6.103.12...v6.103.13) (2026-10-15)
 
-
 ### Bug Fixes
 
-* **landing:** clean up structured data, sitemap dates and blog headings ([10eba4a](https://github.com/budgie-at/budgie/commit/10eba4ae9495391529117ab0b7c005875afb35fb))
-
-
-
-
+- **landing:** clean up structured data, sitemap dates and blog headings ([10eba4a](https://github.com/budgie-at/budgie/commit/10eba4ae9495391529117ab0b7c005875afb35fb))
 
 ## [6.103.12](https://github.com/budgie-at/budgie/compare/v6.103.11...v6.103.12) (2026-10-15)
 
-
 ### Bug Fixes
 
-* **landing:** describe Budgie as source-available in every locale ([05e3c58](https://github.com/budgie-at/budgie/commit/05e3c582e4e6af0a7b1c057969f32756fc54d007))
-* **landing:** say source-available, not open source ([28f936a](https://github.com/budgie-at/budgie/commit/28f936aba5f03bc2502e11fca332c4549f2fe0fd))
-
-
-
-
+- **landing:** describe Budgie as source-available in every locale ([05e3c58](https://github.com/budgie-at/budgie/commit/05e3c582e4e6af0a7b1c057969f32756fc54d007))
+- **landing:** say source-available, not open source ([28f936a](https://github.com/budgie-at/budgie/commit/28f936aba5f03bc2502e11fca332c4549f2fe0fd))
 
 ## [6.103.11](https://github.com/budgie-at/budgie/compare/v6.103.10...v6.103.11) (2026-10-14)
 
-
 ### Bug Fixes
 
-* **landing:** self canonicals for legal and beta pages ([01e3a55](https://github.com/budgie-at/budgie/commit/01e3a5508d78797e2d874c07ab8356de65509754))
-
-
-
-
+- **landing:** self canonicals for legal and beta pages ([01e3a55](https://github.com/budgie-at/budgie/commit/01e3a5508d78797e2d874c07ab8356de65509754))
 
 ## [6.103.10](https://github.com/budgie-at/budgie/compare/v6.103.9...v6.103.10) (2026-10-14)
 
-
 ### Bug Fixes
 
-* **landing:** temporary language redirect and a localized 404 ([79998d2](https://github.com/budgie-at/budgie/commit/79998d275fc11d9a65182bbc953521a2a8b810a3))
-
-
-
-
+- **landing:** temporary language redirect and a localized 404 ([79998d2](https://github.com/budgie-at/budgie/commit/79998d275fc11d9a65182bbc953521a2a8b810a3))
 
 ## [6.103.9](https://github.com/budgie-at/budgie/compare/v6.103.8...v6.103.9) (2026-10-14)
 
-
 ### Bug Fixes
 
-* **landing:** bank and sync pages tell the truth ([e41f07c](https://github.com/budgie-at/budgie/commit/e41f07c01428c668280213837e811f00b8f05158))
-
-
-
-
+- **landing:** bank and sync pages tell the truth ([e41f07c](https://github.com/budgie-at/budgie/commit/e41f07c01428c668280213837e811f00b8f05158))
 
 ## [6.103.8](https://github.com/budgie-at/budgie/compare/v6.103.7...v6.103.8) (2026-10-14)
 
-
 ### Bug Fixes
 
-* **landing:** money pages tell the truth ([69b71c0](https://github.com/budgie-at/budgie/commit/69b71c0443cea339aa1b299c0b4d2d6b41cd3f8a))
-
-
-
-
+- **landing:** money pages tell the truth ([69b71c0](https://github.com/budgie-at/budgie/commit/69b71c0443cea339aa1b299c0b4d2d6b41cd3f8a))
 
 ## [6.103.7](https://github.com/budgie-at/budgie/compare/v6.103.6...v6.103.7) (2026-10-14)
 
-
 ### Bug Fixes
 
-* **landing:** categorization pages tell the truth ([5652e58](https://github.com/budgie-at/budgie/commit/5652e58bc010c00c0a4b0459e45195ed0c1d5d8c))
-* **landing:** use formal French on the corrected pages ([af8c6ab](https://github.com/budgie-at/budgie/commit/af8c6ab39ee5ffeae39d7f788837fd6233da98b4))
-
-
-
-
+- **landing:** categorization pages tell the truth ([5652e58](https://github.com/budgie-at/budgie/commit/5652e58bc010c00c0a4b0459e45195ed0c1d5d8c))
+- **landing:** use formal French on the corrected pages ([af8c6ab](https://github.com/budgie-at/budgie/commit/af8c6ab39ee5ffeae39d7f788837fd6233da98b4))
 
 ## [6.103.6](https://github.com/budgie-at/budgie/compare/v6.103.5...v6.103.6) (2026-10-14)
 
-
 ### Bug Fixes
 
-* **landing:** make transaction feature pages accurate ([fa37dac](https://github.com/budgie-at/budgie/commit/fa37dac5019c041a5a3f851ff1f4368ce8bfbc9a))
-* **landing:** use formal French on the corrected pages ([d95da3d](https://github.com/budgie-at/budgie/commit/d95da3ddb5ea8901f064bedd9594deef70f7819f))
-
-
-
-
+- **landing:** make transaction feature pages accurate ([fa37dac](https://github.com/budgie-at/budgie/commit/fa37dac5019c041a5a3f851ff1f4368ce8bfbc9a))
+- **landing:** use formal French on the corrected pages ([d95da3d](https://github.com/budgie-at/budgie/commit/d95da3ddb5ea8901f064bedd9594deef70f7819f))
 
 ## [6.103.5](https://github.com/budgie-at/budgie/compare/v6.103.4...v6.103.5) (2026-10-14)
 
 **Note:** Version bump only for package @budgie-at/landing
 
-
-
-
-
 ## [6.103.1](https://github.com/budgie-at/budgie/compare/v6.103.0...v6.103.1) (2026-10-13)
 
 **Note:** Version bump only for package @budgie-at/landing
 
-
-
-
-
 # [6.103.0](https://github.com/budgie-at/budgie/compare/v6.102.0...v6.103.0) (2026-10-13)
-
 
 ### Features
 
-* **landing:** show the real cached waitlist count and hide it when Redis is unavailable ([3287905](https://github.com/budgie-at/budgie/commit/3287905cf3eaa707ed95df8331c5ef8e4d5f3809))
-
+- **landing:** show the real cached waitlist count and hide it when Redis is unavailable ([3287905](https://github.com/budgie-at/budgie/commit/3287905cf3eaa707ed95df8331c5ef8e4d5f3809))
 
 ### Performance Improvements
 
-* **landing:** memoise the Lingui instance per locale ([2999c62](https://github.com/budgie-at/budgie/commit/2999c621c3add5fe340b84d99becc04205ca71cf))
-
-
-
-
+- **landing:** memoise the Lingui instance per locale ([2999c62](https://github.com/budgie-at/budgie/commit/2999c621c3add5fe340b84d99becc04205ca71cf))
 
 # [6.97.0](https://github.com/budgie-at/budgie/compare/v6.96.1...v6.97.0) (2026-10-08)
 
-
 ### Bug Fixes
 
-* **landing:** anchor the voice mic callout on the mic button ([af21e03](https://github.com/budgie-at/budgie/commit/af21e0371ba8c5d00862d227d6b169e7c5779544))
-* **landing:** correct German grammar and MCC wording in story translations ([83cc224](https://github.com/budgie-at/budgie/commit/83cc22473e16c8e58a55106a799ff55e7e9233f3))
-* **landing:** localize on-device AI labels and tighten story copy ([dd876e0](https://github.com/budgie-at/budgie/commit/dd876e0fa0ec8606bd20be52254547abb8d30d50))
-
+- **landing:** anchor the voice mic callout on the mic button ([af21e03](https://github.com/budgie-at/budgie/commit/af21e0371ba8c5d00862d227d6b169e7c5779544))
+- **landing:** correct German grammar and MCC wording in story translations ([83cc224](https://github.com/budgie-at/budgie/commit/83cc22473e16c8e58a55106a799ff55e7e9233f3))
+- **landing:** localize on-device AI labels and tighten story copy ([dd876e0](https://github.com/budgie-at/budgie/commit/dd876e0fa0ec8606bd20be52254547abb8d30d50))
 
 ### Features
 
-* **landing:** story layouts for voice entry and AI categorization pages ([77d7063](https://github.com/budgie-at/budgie/commit/77d7063103089a4324d06b9ee18de1241667700f))
-
-
-
-
+- **landing:** story layouts for voice entry and AI categorization pages ([77d7063](https://github.com/budgie-at/budgie/commit/77d7063103089a4324d06b9ee18de1241667700f))
 
 # [6.96.0](https://github.com/budgie-at/budgie/compare/v6.95.1...v6.96.0) (2026-10-08)
 
-
 ### Bug Fixes
 
-* **landing:** add the ninth bento cell for on-device categorization ([45c86ba](https://github.com/budgie-at/budgie/commit/45c86baac421b2313703a9c575ec63f0d5b874c6))
-* **landing:** clarify the Ukrainian private budget app title ([4ed4aab](https://github.com/budgie-at/budgie/commit/4ed4aabe3fa39ddd971e27ebb6b41a80a9029fbf))
-* **landing:** keep the nine-cell bento text unclipped at 768px ([fb71f08](https://github.com/budgie-at/budgie/commit/fb71f084be237b30f2e1dbcc0ba5eacdc12051bb))
-* **landing:** use formal address in the new bento copy for de and es ([03de9ae](https://github.com/budgie-at/budgie/commit/03de9ae3b07a1228e1b89ed3057f9c12527c5948))
-
+- **landing:** add the ninth bento cell for on-device categorization ([45c86ba](https://github.com/budgie-at/budgie/commit/45c86baac421b2313703a9c575ec63f0d5b874c6))
+- **landing:** clarify the Ukrainian private budget app title ([4ed4aab](https://github.com/budgie-at/budgie/commit/4ed4aabe3fa39ddd971e27ebb6b41a80a9029fbf))
+- **landing:** keep the nine-cell bento text unclipped at 768px ([fb71f08](https://github.com/budgie-at/budgie/commit/fb71f084be237b30f2e1dbcc0ba5eacdc12051bb))
+- **landing:** use formal address in the new bento copy for de and es ([03de9ae](https://github.com/budgie-at/budgie/commit/03de9ae3b07a1228e1b89ed3057f9c12527c5948))
 
 ### Features
 
-* **landing:** complete the home bento to nine screenshot cells ([adaaed6](https://github.com/budgie-at/budgie/commit/adaaed673a9f0285cfdd440ffbccda5480601970))
-
-
-
-
+- **landing:** complete the home bento to nine screenshot cells ([adaaed6](https://github.com/budgie-at/budgie/commit/adaaed673a9f0285cfdd440ffbccda5480601970))
 
 # [6.94.0](https://github.com/budgie-at/budgie/compare/v6.93.2...v6.94.0) (2026-10-06)
 
-
 ### Bug Fixes
 
-* keep the chosen installment total in sync and correct landing fee copy ([d20cbdf](https://github.com/budgie-at/budgie/commit/d20cbdf767751e72545fbcbc9d4403dc5c916f17))
-
+- keep the chosen installment total in sync and correct landing fee copy ([d20cbdf](https://github.com/budgie-at/budgie/commit/d20cbdf767751e72545fbcbc9d4403dc5c916f17))
 
 ### Features
 
-* **landing:** add installment tracking media ([747b4b5](https://github.com/budgie-at/budgie/commit/747b4b5f19106df3c0006338310f0217e6cdd2da))
-* **landing:** add the installment tracking feature page ([9d065be](https://github.com/budgie-at/budgie/commit/9d065beacd82503eca2ff5c2df1171bbe11900ec))
-
-
-
-
+- **landing:** add installment tracking media ([747b4b5](https://github.com/budgie-at/budgie/commit/747b4b5f19106df3c0006338310f0217e6cdd2da))
+- **landing:** add the installment tracking feature page ([9d065be](https://github.com/budgie-at/budgie/commit/9d065beacd82503eca2ff5c2df1171bbe11900ec))
 
 ## [6.93.2](https://github.com/budgie-at/budgie/compare/v6.93.1...v6.93.2) (2026-10-06)
 
-
 ### Bug Fixes
 
-* translate all missing landing strings and fail i18n on missing translations ([d74687e](https://github.com/budgie-at/budgie/commit/d74687e2bc27114c11566ba8affe586c9162a2f6))
-
-
-
-
+- translate all missing landing strings and fail i18n on missing translations ([d74687e](https://github.com/budgie-at/budgie/commit/d74687e2bc27114c11566ba8affe586c9162a2f6))
 
 ## [6.91.1](https://github.com/budgie-at/budgie/compare/v6.91.0...v6.91.1) (2026-10-04)
 
 **Note:** Version bump only for package @budgie-at/landing
 
-
-
-
-
 ## [6.88.5](https://github.com/budgie-at/budgie/compare/v6.88.4-rewrite...v6.88.5) (2026-10-03)
 
 **Note:** Version bump only for package @budgie-at/landing
-
-
-
-
 
 ## [6.86.1](https://github.com/budgie-at/budgie/compare/v6.86.0...v6.86.1) (2026-10-01)
 
 **Note:** Version bump only for package @budgie-at/landing
 
-
-
-
-
 # [6.86.0](https://github.com/budgie-at/budgie/compare/v6.85.14...v6.86.0) (2026-09-30)
-
 
 ### Bug Fixes
 
-* **landing:** unify metadata builders and JSON-LD, trim hub titles ([a747521](https://github.com/budgie-at/budgie/commit/a7475212a975780917d87c487fe330c936fa9d36)), closes [#1312](https://github.com/budgie-at/budgie/issues/1312)
-
+- **landing:** unify metadata builders and JSON-LD, trim hub titles ([a747521](https://github.com/budgie-at/budgie/commit/a7475212a975780917d87c487fe330c936fa9d36)), closes [#1312](https://github.com/budgie-at/budgie/issues/1312)
 
 ### Features
 
-* **landing:** add ai-tag-suggestions basic scroll story ([f9ceb81](https://github.com/budgie-at/budgie/commit/f9ceb816a2731dfe562a86379232386cd7257270)), closes [#779](https://github.com/budgie-at/budgie/issues/779)
-
-
-
-
+- **landing:** add ai-tag-suggestions basic scroll story ([f9ceb81](https://github.com/budgie-at/budgie/commit/f9ceb816a2731dfe562a86379232386cd7257270)), closes [#779](https://github.com/budgie-at/budgie/issues/779)
 
 # [6.85.0](https://github.com/budgie-at/budgie/compare/v6.84.3...v6.85.0) (2026-09-28)
 
-
 ### Features
 
-* **landing:** describe bulk tagging and drop transfer detection claims ([6516a5a](https://github.com/budgie-at/budgie/commit/6516a5a404b6f9d9aec357b91a294c0a5577dec8))
-* **landing:** show the shipped inbox and tag inbox in the bulk categorize story ([07900dc](https://github.com/budgie-at/budgie/commit/07900dc1b6f3594e3c4262de40d7fee2edb4adba))
-
-
-
-
+- **landing:** describe bulk tagging and drop transfer detection claims ([6516a5a](https://github.com/budgie-at/budgie/commit/6516a5a404b6f9d9aec357b91a294c0a5577dec8))
+- **landing:** show the shipped inbox and tag inbox in the bulk categorize story ([07900dc](https://github.com/budgie-at/budgie/commit/07900dc1b6f3594e3c4262de40d7fee2edb4adba))
 
 # [6.84.0](https://github.com/budgie-at/budgie/compare/v6.83.2...v6.84.0) (2026-09-27)
 
-
 ### Bug Fixes
 
-* **landing:** correct home-screen-widgets copy inaccuracies from review ([1368962](https://github.com/budgie-at/budgie/commit/1368962470a01ff4cc910563305f6a127c654561))
-
+- **landing:** correct home-screen-widgets copy inaccuracies from review ([1368962](https://github.com/budgie-at/budgie/commit/1368962470a01ff4cc910563305f6a127c654561))
 
 ### Features
 
-* **landing:** add the home-screen widgets feature page ([03e0546](https://github.com/budgie-at/budgie/commit/03e054637cff8bd0ac11f9f455c17ea22cf7b7e7)), closes [#1167](https://github.com/budgie-at/budgie/issues/1167) [#1227](https://github.com/budgie-at/budgie/issues/1227) [#1216](https://github.com/budgie-at/budgie/issues/1216) [#1212](https://github.com/budgie-at/budgie/issues/1212)
-
-
-
-
+- **landing:** add the home-screen widgets feature page ([03e0546](https://github.com/budgie-at/budgie/commit/03e054637cff8bd0ac11f9f455c17ea22cf7b7e7)), closes [#1167](https://github.com/budgie-at/budgie/issues/1167) [#1227](https://github.com/budgie-at/budgie/issues/1227) [#1216](https://github.com/budgie-at/budgie/issues/1216) [#1212](https://github.com/budgie-at/budgie/issues/1212)
 
 ## [6.83.2](https://github.com/budgie-at/budgie/compare/v6.83.1...v6.83.2) (2026-09-27)
 
-
 ### Bug Fixes
 
-* **landing:** say budgie is free instead of promising a one-time purchase ([39b72b0](https://github.com/budgie-at/budgie/commit/39b72b05abd5df61c7a28e761d52f85da6a8471e))
-
-
-
-
+- **landing:** say budgie is free instead of promising a one-time purchase ([39b72b0](https://github.com/budgie-at/budgie/commit/39b72b05abd5df61c7a28e761d52f85da6a8471e))
 
 # [6.83.0](https://github.com/budgie-at/budgie/compare/v6.82.2...v6.83.0) (2026-09-26)
 
-
 ### Bug Fixes
 
-* **landing:** correct runway translation wording in de, fr, and uk ([22f648f](https://github.com/budgie-at/budgie/commit/22f648fcef4f00a29b06416be234045bf45a100f))
-
+- **landing:** correct runway translation wording in de, fr, and uk ([22f648f](https://github.com/budgie-at/budgie/commit/22f648fcef4f00a29b06416be234045bf45a100f))
 
 ### Features
 
-* **landing:** add the runway feature page ([e0307c9](https://github.com/budgie-at/budgie/commit/e0307c9ff381780fc31d89428563ffcf53955836))
-
-
-
-
+- **landing:** add the runway feature page ([e0307c9](https://github.com/budgie-at/budgie/commit/e0307c9ff381780fc31d89428563ffcf53955836))
 
 ## [6.82.2](https://github.com/budgie-at/budgie/compare/v6.82.1...v6.82.2) (2026-09-26)
 
 **Note:** Version bump only for package @budgie-at/landing
 
-
-
-
-
 ## [6.82.1](https://github.com/budgie-at/budgie/compare/v6.82.0...v6.82.1) (2026-09-26)
-
 
 ### Bug Fixes
 
-* **landing:** correct where the debt return date appears ([6f58981](https://github.com/budgie-at/budgie/commit/6f58981ea211b4d73e14ed61069112a0774a4c55))
-
-
-
-
+- **landing:** correct where the debt return date appears ([6f58981](https://github.com/budgie-at/budgie/commit/6f58981ea211b4d73e14ed61069112a0774a4c55))
 
 # [6.82.0](https://github.com/budgie-at/budgie/compare/v6.81.0...v6.82.0) (2026-09-26)
 
-
 ### Features
 
-* **landing:** add bank sync pillar hub ([73b3f92](https://github.com/budgie-at/budgie/commit/73b3f92dcaf299cbe3d3c17e861df6d22ab954c9))
-
-
-
-
+- **landing:** add bank sync pillar hub ([73b3f92](https://github.com/budgie-at/budgie/commit/73b3f92dcaf299cbe3d3c17e861df6d22ab954c9))
 
 # [6.81.0](https://github.com/budgie-at/budgie/compare/v6.80.0...v6.81.0) (2026-09-26)
 
-
 ### Bug Fixes
 
-* **landing:** correct AI download, offline, and OAuth copy accuracy ([4c510a9](https://github.com/budgie-at/budgie/commit/4c510a96a576150d00d5f59ce44f7ec52f5d8dae))
-
+- **landing:** correct AI download, offline, and OAuth copy accuracy ([4c510a9](https://github.com/budgie-at/budgie/commit/4c510a96a576150d00d5f59ce44f7ec52f5d8dae))
 
 ### Features
 
-* **landing:** merge overlapping feature pages into their hubs ([f2067f0](https://github.com/budgie-at/budgie/commit/f2067f0e7120ab709544cbe87a02d185e0cd0a66)), closes [#1213](https://github.com/budgie-at/budgie/issues/1213)
-
-
-
-
+- **landing:** merge overlapping feature pages into their hubs ([f2067f0](https://github.com/budgie-at/budgie/commit/f2067f0e7120ab709544cbe87a02d185e0cd0a66)), closes [#1213](https://github.com/budgie-at/budgie/issues/1213)
 
 # [6.80.0](https://github.com/budgie-at/budgie/compare/v6.79.0...v6.80.0) (2026-09-26)
 
-
 ### Features
 
-* **landing:** tell the bulk categorize story with real inbox media ([0d8980c](https://github.com/budgie-at/budgie/commit/0d8980cd7e70c0968cf5b336ded1f2494af3c39f))
-
-
-
-
+- **landing:** tell the bulk categorize story with real inbox media ([0d8980c](https://github.com/budgie-at/budgie/commit/0d8980cd7e70c0968cf5b336ded1f2494af3c39f))
 
 # [6.79.0](https://github.com/budgie-at/budgie/compare/v6.78.2...v6.79.0) (2026-09-26)
 
-
 ### Features
 
-* **landing:** add bulk categorize transactions feature page ([12129fe](https://github.com/budgie-at/budgie/commit/12129fe7926e052c1ec355a2cec26aacbf35c6da))
-
-
-
-
+- **landing:** add bulk categorize transactions feature page ([12129fe](https://github.com/budgie-at/budgie/commit/12129fe7926e052c1ec355a2cec26aacbf35c6da))
 
 # [6.74.0](https://github.com/budgie-at/budgie/compare/v6.73.1...v6.74.0) (2026-09-22)
 
 **Note:** Version bump only for package @budgie-at/landing
 
-
-
-
-
 # [6.69.0](https://github.com/budgie-at/budgie/compare/v6.68.0...v6.69.0) (2026-09-16)
-
 
 ### Features
 
-* **app:** app store metadata for all five locales with budget gate ([c876277](https://github.com/budgie-at/budgie/commit/c876277025bb533748d6985fef821df89882c275)), closes [#1145](https://github.com/budgie-at/budgie/issues/1145) [#1141](https://github.com/budgie-at/budgie/issues/1141)
-
-
-
-
+- **app:** app store metadata for all five locales with budget gate ([c876277](https://github.com/budgie-at/budgie/commit/c876277025bb533748d6985fef821df89882c275)), closes [#1145](https://github.com/budgie-at/budgie/issues/1145) [#1141](https://github.com/budgie-at/budgie/issues/1141)
 
 ## [6.67.18](https://github.com/budgie-at/budgie/compare/v6.67.17...v6.67.18) (2026-09-16)
 
-
 ### Bug Fixes
 
-* **landing:** replace fictional device-to-device sync with real backup flow ([80a9c93](https://github.com/budgie-at/budgie/commit/80a9c93639fc73ff101e6aae6c7e2001ed9df801))
-
-
-
-
+- **landing:** replace fictional device-to-device sync with real backup flow ([80a9c93](https://github.com/budgie-at/budgie/commit/80a9c93639fc73ff101e6aae6c7e2001ed9df801))
 
 ## [6.67.17](https://github.com/budgie-at/budgie/compare/v6.67.16...v6.67.17) (2026-09-16)
 
-
 ### Bug Fixes
 
-* **landing:** rescope merchant translation page to category and tag translation ([187ad09](https://github.com/budgie-at/budgie/commit/187ad09137984adf1e810ecf2e89eacb3d64c18a)), closes [#1138](https://github.com/budgie-at/budgie/issues/1138)
-
-
-
-
+- **landing:** rescope merchant translation page to category and tag translation ([187ad09](https://github.com/budgie-at/budgie/commit/187ad09137984adf1e810ecf2e89eacb3d64c18a)), closes [#1138](https://github.com/budgie-at/budgie/issues/1138)
 
 ## [6.67.16](https://github.com/budgie-at/budgie/compare/v6.67.15...v6.67.16) (2026-09-16)
 
-
 ### Bug Fixes
 
-* **landing:** describe budgie by outcome in blog articles and the open-source page ([6ed4621](https://github.com/budgie-at/budgie/commit/6ed46219bbcad9673890f63d370f103ba5b0ede6)), closes [#1119](https://github.com/budgie-at/budgie/issues/1119) [#1121](https://github.com/budgie-at/budgie/issues/1121) [#1121](https://github.com/budgie-at/budgie/issues/1121)
-
-
-
-
+- **landing:** describe budgie by outcome in blog articles and the open-source page ([6ed4621](https://github.com/budgie-at/budgie/commit/6ed46219bbcad9673890f63d370f103ba5b0ede6)), closes [#1119](https://github.com/budgie-at/budgie/issues/1119) [#1121](https://github.com/budgie-at/budgie/issues/1121) [#1121](https://github.com/budgie-at/budgie/issues/1121)
 
 ## [6.67.15](https://github.com/budgie-at/budgie/compare/v6.67.14...v6.67.15) (2026-09-16)
 
-
 ### Bug Fixes
 
-* **landing:** describe ai features by outcome instead of implementation ([c1b136e](https://github.com/budgie-at/budgie/commit/c1b136e1748fd97dfe31c3864e90a5f510226023)), closes [#1121](https://github.com/budgie-at/budgie/issues/1121)
-* **landing:** describe storage and encryption by outcome instead of implementation ([f4f46cc](https://github.com/budgie-at/budgie/commit/f4f46cc541c85b97114df479059c172254811ac9)), closes [#1121](https://github.com/budgie-at/budgie/issues/1121)
-
-
-
-
+- **landing:** describe ai features by outcome instead of implementation ([c1b136e](https://github.com/budgie-at/budgie/commit/c1b136e1748fd97dfe31c3864e90a5f510226023)), closes [#1121](https://github.com/budgie-at/budgie/issues/1121)
+- **landing:** describe storage and encryption by outcome instead of implementation ([f4f46cc](https://github.com/budgie-at/budgie/commit/f4f46cc541c85b97114df479059c172254811ac9)), closes [#1121](https://github.com/budgie-at/budgie/issues/1121)
 
 ## [6.67.14](https://github.com/budgie-at/budgie/compare/v6.67.13...v6.67.14) (2026-09-16)
 
-
 ### Bug Fixes
 
-* **landing:** address CodeRabbit encryption-claim findings on PR 1131 ([f2d9ab6](https://github.com/budgie-at/budgie/commit/f2d9ab6371a3cc9eeddeaeb12d30f13ea548025f))
-* **landing:** correct encryption claims in blog articles and the self-hosted page ([4d086ef](https://github.com/budgie-at/budgie/commit/4d086ef9b11fce6208396b3499a361d7ac275cf1))
-
-
-
-
+- **landing:** address CodeRabbit encryption-claim findings on PR 1131 ([f2d9ab6](https://github.com/budgie-at/budgie/commit/f2d9ab6371a3cc9eeddeaeb12d30f13ea548025f))
+- **landing:** correct encryption claims in blog articles and the self-hosted page ([4d086ef](https://github.com/budgie-at/budgie/commit/4d086ef9b11fce6208396b3499a361d7ac275cf1))
 
 ## [6.67.13](https://github.com/budgie-at/budgie/compare/v6.67.12...v6.67.13) (2026-09-16)
 
-
 ### Bug Fixes
 
-* **landing:** state the real encryption and backup model ([2ed0903](https://github.com/budgie-at/budgie/commit/2ed0903e231b8304d3e6d93d834e2a98297ab19a)), closes [#1107](https://github.com/budgie-at/budgie/issues/1107)
-
-
-
-
+- **landing:** state the real encryption and backup model ([2ed0903](https://github.com/budgie-at/budgie/commit/2ed0903e231b8304d3e6d93d834e2a98297ab19a)), closes [#1107](https://github.com/budgie-at/budgie/issues/1107)
 
 ## [6.67.12](https://github.com/budgie-at/budgie/compare/v6.67.11...v6.67.12) (2026-09-16)
 
-
 ### Bug Fixes
 
-* **landing:** correct sync data repair wording and translations ([4da21eb](https://github.com/budgie-at/budgie/commit/4da21ebdd0da44b357752ec3cce626b39d5750ce)), closes [#1129](https://github.com/budgie-at/budgie/issues/1129)
-* **landing:** describe every sync data repair including own-card transfers ([d41062d](https://github.com/budgie-at/budgie/commit/d41062d2b22bfdb305bb57cb62a88b32b7b92320))
-
-
-
-
+- **landing:** correct sync data repair wording and translations ([4da21eb](https://github.com/budgie-at/budgie/commit/4da21ebdd0da44b357752ec3cce626b39d5750ce)), closes [#1129](https://github.com/budgie-at/budgie/issues/1129)
+- **landing:** describe every sync data repair including own-card transfers ([d41062d](https://github.com/budgie-at/budgie/commit/d41062d2b22bfdb305bb57cb62a88b32b7b92320))
 
 ## [6.67.11](https://github.com/budgie-at/budgie/compare/v6.67.10...v6.67.11) (2026-09-16)
 
-
 ### Bug Fixes
 
-* **landing:** describe lazy ai model loading and the settings switch ([d731298](https://github.com/budgie-at/budgie/commit/d731298d6cae925ba1735332a0e4aa252877fdfd)), closes [#1106](https://github.com/budgie-at/budgie/issues/1106)
-* **landing:** describe the three analytics tabs including runway ([35f318e](https://github.com/budgie-at/budgie/commit/35f318e664e4072656df2e7c65375c7012f0af5f)), closes [#1057](https://github.com/budgie-at/budgie/issues/1057)
-
-
-
-
+- **landing:** describe lazy ai model loading and the settings switch ([d731298](https://github.com/budgie-at/budgie/commit/d731298d6cae925ba1735332a0e4aa252877fdfd)), closes [#1106](https://github.com/budgie-at/budgie/issues/1106)
+- **landing:** describe the three analytics tabs including runway ([35f318e](https://github.com/budgie-at/budgie/commit/35f318e664e4072656df2e7c65375c7012f0af5f)), closes [#1057](https://github.com/budgie-at/budgie/issues/1057)
 
 ## [6.67.10](https://github.com/budgie-at/budgie/compare/v6.67.9...v6.67.10) (2026-09-16)
 
 **Note:** Version bump only for package @budgie-at/landing
 
-
-
-
-
 ## [6.67.9](https://github.com/budgie-at/budgie/compare/v6.67.8...v6.67.9) (2026-09-16)
-
 
 ### Bug Fixes
 
-* **landing:** match the privatbank import page to the current privat24 flow ([dd8ac30](https://github.com/budgie-at/budgie/commit/dd8ac3045d30f7eb718d850c0e7e12a45c7fdd45))
-
-
-
-
+- **landing:** match the privatbank import page to the current privat24 flow ([dd8ac30](https://github.com/budgie-at/budgie/commit/dd8ac3045d30f7eb718d850c0e7e12a45c7fdd45))
 
 ## [6.67.8](https://github.com/budgie-at/budgie/compare/v6.67.7...v6.67.8) (2026-09-16)
 
-
 ### Bug Fixes
 
-* **landing:** describe biometrics for face id and fingerprint ([abdfe18](https://github.com/budgie-at/budgie/commit/abdfe18f60a2466c5c773728510bfa90a62ce716)), closes [#1059](https://github.com/budgie-at/budgie/issues/1059)
-* **landing:** remove runtime names from the ai pages ([95fa358](https://github.com/budgie-at/budgie/commit/95fa3580c86eebc8a760c432a9025a8cd8f9b350)), closes [#1105](https://github.com/budgie-at/budgie/issues/1105)
-
-
-
-
+- **landing:** describe biometrics for face id and fingerprint ([abdfe18](https://github.com/budgie-at/budgie/commit/abdfe18f60a2466c5c773728510bfa90a62ce716)), closes [#1059](https://github.com/budgie-at/budgie/issues/1059)
+- **landing:** remove runtime names from the ai pages ([95fa358](https://github.com/budgie-at/budgie/commit/95fa3580c86eebc8a760c432a9025a8cd8f9b350)), closes [#1105](https://github.com/budgie-at/budgie/issues/1105)
 
 ## [6.67.7](https://github.com/budgie-at/budgie/compare/v6.67.6...v6.67.7) (2026-09-16)
 
-
 ### Bug Fixes
 
-* **landing:** correct iban, split and action-menu copy ([6f5ed84](https://github.com/budgie-at/budgie/commit/6f5ed8402eeb69ef3a4c47c5c6eeeea8acb9c0a4))
-
-
-
-
+- **landing:** correct iban, split and action-menu copy ([6f5ed84](https://github.com/budgie-at/budgie/commit/6f5ed8402eeb69ef3a4c47c5c6eeeea8acb9c0a4))
 
 ## [6.67.6](https://github.com/budgie-at/budgie/compare/v6.67.5...v6.67.6) (2026-09-16)
 
-
 ### Bug Fixes
 
-* **landing:** describe recurring detection as computed and read-only ([c2d8f54](https://github.com/budgie-at/budgie/commit/c2d8f544d9f3fc97995c54b350d155fc28684e6d))
-
-
-
-
+- **landing:** describe recurring detection as computed and read-only ([c2d8f54](https://github.com/budgie-at/budgie/commit/c2d8f544d9f3fc97995c54b350d155fc28684e6d))
 
 ## [6.67.5](https://github.com/budgie-at/budgie/compare/v6.67.4...v6.67.5) (2026-09-16)
 
-
 ### Bug Fixes
 
-* **landing:** use the budgie logo as the og card brand mark ([f6bc7e7](https://github.com/budgie-at/budgie/commit/f6bc7e7bd52cc04ae7a4c8ff48e0d0cf3b9831f3)), closes [#1102](https://github.com/budgie-at/budgie/issues/1102)
-
-
-
-
+- **landing:** use the budgie logo as the og card brand mark ([f6bc7e7](https://github.com/budgie-at/budgie/commit/f6bc7e7bd52cc04ae7a4c8ff48e0d0cf3b9831f3)), closes [#1102](https://github.com/budgie-at/budgie/issues/1102)
 
 # [6.67.0](https://github.com/budgie-at/budgie/compare/v6.66.0...v6.67.0) (2026-09-16)
 
-
 ### Bug Fixes
 
-* **landing:** detect stale og plates and constrain the plate locale ([93fec55](https://github.com/budgie-at/budgie/commit/93fec55984c6bc77c7826c3ee6ec5fb659884b34))
-
+- **landing:** detect stale og plates and constrain the plate locale ([93fec55](https://github.com/budgie-at/budgie/commit/93fec55984c6bc77c7826c3ee6ec5fb659884b34))
 
 ### Features
 
-* **landing:** og images with product imagery for features, hubs and blog ([b0a66e7](https://github.com/budgie-at/budgie/commit/b0a66e74653b44ead05782e636db2f28c0dc1bde))
-
-
-
-
+- **landing:** og images with product imagery for features, hubs and blog ([b0a66e7](https://github.com/budgie-at/budgie/commit/b0a66e74653b44ead05782e636db2f28c0dc1bde))
 
 # [6.66.0](https://github.com/budgie-at/budgie/compare/v6.65.3...v6.66.0) (2026-09-16)
 
-
 ### Features
 
-* **landing:** add on-device-ai-budget-app steps story ([97bd640](https://github.com/budgie-at/budgie/commit/97bd64036c2a1309a2c3bc0f8eed0855ae61e65b))
-
-
-
-
+- **landing:** add on-device-ai-budget-app steps story ([97bd640](https://github.com/budgie-at/budgie/commit/97bd64036c2a1309a2c3bc0f8eed0855ae61e65b))
 
 ## [6.65.3](https://github.com/budgie-at/budgie/compare/v6.65.2...v6.65.3) (2026-09-16)
 
 **Note:** Version bump only for package @budgie-at/landing
 
-
-
-
-
 ## [6.64.1](https://github.com/budgie-at/budgie/compare/v6.64.0...v6.64.1) (2026-09-15)
-
 
 ### Bug Fixes
 
-* **landing:** correct biometric authentication metadata claims ([45b56a4](https://github.com/budgie-at/budgie/commit/45b56a4065b22ba6fca306c69ad65508a4431545)), closes [#1061](https://github.com/budgie-at/budgie/issues/1061) [#1033](https://github.com/budgie-at/budgie/issues/1033)
-
-
-
-
+- **landing:** correct biometric authentication metadata claims ([45b56a4](https://github.com/budgie-at/budgie/commit/45b56a4065b22ba6fca306c69ad65508a4431545)), closes [#1061](https://github.com/budgie-at/budgie/issues/1061) [#1033](https://github.com/budgie-at/budgie/issues/1033)
 
 ## [6.63.2](https://github.com/budgie-at/budgie/compare/v6.63.1...v6.63.2) (2026-09-15)
 
 **Note:** Version bump only for package @budgie-at/landing
 
-
-
-
-
 ## [6.62.2](https://github.com/budgie-at/budgie/compare/v6.62.1...v6.62.2) (2026-09-14)
-
 
 ### Bug Fixes
 
-* **app:** keep the key when restoring a PIN-encrypted backup ([8af92fd](https://github.com/budgie-at/budgie/commit/8af92fd04e3185769e0d6a0d4d6a8ad3877a921b))
-
-
-
-
+- **app:** keep the key when restoring a PIN-encrypted backup ([8af92fd](https://github.com/budgie-at/budgie/commit/8af92fd04e3185769e0d6a0d4d6a8ad3877a921b))
 
 ## [6.62.1](https://github.com/budgie-at/budgie/compare/v6.62.0...v6.62.1) (2026-09-14)
 
-
 ### Performance Improvements
 
-* **landing:** fetch the priority AppShot dark variant at high priority ([e0eecb6](https://github.com/budgie-at/budgie/commit/e0eecb66486417de5a0a065874552f3639618c79))
-
-
-
-
+- **landing:** fetch the priority AppShot dark variant at high priority ([e0eecb6](https://github.com/budgie-at/budgie/commit/e0eecb66486417de5a0a065874552f3639618c79))
 
 # [6.62.0](https://github.com/budgie-at/budgie/compare/v6.61.0...v6.62.0) (2026-09-14)
 
-
 ### Bug Fixes
 
-* **landing:** sharpen de/es/fr/uk biometric story wording per review ([b25290b](https://github.com/budgie-at/budgie/commit/b25290beac9c181e1e2d56b8ce391bf028afb9c1))
-
+- **landing:** sharpen de/es/fr/uk biometric story wording per review ([b25290b](https://github.com/budgie-at/budgie/commit/b25290beac9c181e1e2d56b8ce391bf028afb9c1))
 
 ### Features
 
-* **landing:** add biometric-authentication scroll story ([baa538f](https://github.com/budgie-at/budgie/commit/baa538fa0301a1676b30ad1ef47e07ec968fe29b))
-
-
-
-
+- **landing:** add biometric-authentication scroll story ([baa538f](https://github.com/budgie-at/budgie/commit/baa538fa0301a1676b30ad1ef47e07ec968fe29b))
 
 # [6.61.0](https://github.com/budgie-at/budgie/compare/v6.60.2...v6.61.0) (2026-09-14)
 
-
 ### Features
 
-* **landing:** add bank-integration-management scroll story ([1482173](https://github.com/budgie-at/budgie/commit/14821734202b6a61dfb14a2713b2fab0ba6c148f))
-
-
-
-
+- **landing:** add bank-integration-management scroll story ([1482173](https://github.com/budgie-at/budgie/commit/14821734202b6a61dfb14a2713b2fab0ba6c148f))
 
 ## [6.60.2](https://github.com/budgie-at/budgie/compare/v6.60.1...v6.60.2) (2026-09-14)
 
-
 ### Bug Fixes
 
-* **landing:** reserve caption rail space for three-callout story steps ([a648b34](https://github.com/budgie-at/budgie/commit/a648b3417d6282d334c3e4c8a182af9b7b45f1d3))
-
-
-
-
+- **landing:** reserve caption rail space for three-callout story steps ([a648b34](https://github.com/budgie-at/budgie/commit/a648b3417d6282d334c3e4c8a182af9b7b45f1d3))
 
 ## [6.60.1](https://github.com/budgie-at/budgie/compare/v6.60.0...v6.60.1) (2026-09-14)
 
-
 ### Bug Fixes
 
-* **landing:** correct private-budget-app-alternative tagline overstatement ([9e42061](https://github.com/budgie-at/budgie/commit/9e42061300379fdc7a0749ddaa8b31e896dc815e)), closes [#1024](https://github.com/budgie-at/budgie/issues/1024)
-
-
-
-
+- **landing:** correct private-budget-app-alternative tagline overstatement ([9e42061](https://github.com/budgie-at/budgie/commit/9e42061300379fdc7a0749ddaa8b31e896dc815e)), closes [#1024](https://github.com/budgie-at/budgie/issues/1024)
 
 # [6.60.0](https://github.com/budgie-at/budgie/compare/v6.59.1...v6.60.0) (2026-09-14)
 
-
 ### Bug Fixes
 
-* **landing:** tighten binance-sync sync-window copy and locale wording ([4868933](https://github.com/budgie-at/budgie/commit/48689333a80855b5c277ba2c52d75408fca04692)), closes [#1019](https://github.com/budgie-at/budgie/issues/1019)
-
+- **landing:** tighten binance-sync sync-window copy and locale wording ([4868933](https://github.com/budgie-at/budgie/commit/48689333a80855b5c277ba2c52d75408fca04692)), closes [#1019](https://github.com/budgie-at/budgie/issues/1019)
 
 ### Features
 
-* **landing:** add binance-sync steps story and correct sync claims ([ee299e6](https://github.com/budgie-at/budgie/commit/ee299e609c3bd734b051b8fc86a597467c4c89ae)), closes [#782](https://github.com/budgie-at/budgie/issues/782)
-* **landing:** add private-budget-app-alternative story and fix false claims ([97b393a](https://github.com/budgie-at/budgie/commit/97b393aafda068405acaa33d497de0bfb1c8ed92)), closes [#755](https://github.com/budgie-at/budgie/issues/755)
-
-
-
-
+- **landing:** add binance-sync steps story and correct sync claims ([ee299e6](https://github.com/budgie-at/budgie/commit/ee299e609c3bd734b051b8fc86a597467c4c89ae)), closes [#782](https://github.com/budgie-at/budgie/issues/782)
+- **landing:** add private-budget-app-alternative story and fix false claims ([97b393a](https://github.com/budgie-at/budgie/commit/97b393aafda068405acaa33d497de0bfb1c8ed92)), closes [#755](https://github.com/budgie-at/budgie/issues/755)
 
 ## [6.59.1](https://github.com/budgie-at/budgie/compare/v6.59.0...v6.59.1) (2026-09-14)
 
-
 ### Bug Fixes
 
-* **landing:** align csv-import, database-backup and budget-planning metadata with the app ([80277e8](https://github.com/budgie-at/budgie/commit/80277e894913c3892755c7d293ca4d6ace64f185)), closes [#994](https://github.com/budgie-at/budgie/issues/994) [#1001](https://github.com/budgie-at/budgie/issues/1001) [#1008](https://github.com/budgie-at/budgie/issues/1008) [#993](https://github.com/budgie-at/budgie/issues/993) [#1000](https://github.com/budgie-at/budgie/issues/1000) [#1007](https://github.com/budgie-at/budgie/issues/1007)
-* **landing:** use an imperative Spanish restore clause in database-backup tagline ([7102fe7](https://github.com/budgie-at/budgie/commit/7102fe78ec8b295158211a2264cf530906f13cbd)), closes [#1012](https://github.com/budgie-at/budgie/issues/1012)
-
-
-
-
+- **landing:** align csv-import, database-backup and budget-planning metadata with the app ([80277e8](https://github.com/budgie-at/budgie/commit/80277e894913c3892755c7d293ca4d6ace64f185)), closes [#994](https://github.com/budgie-at/budgie/issues/994) [#1001](https://github.com/budgie-at/budgie/issues/1001) [#1008](https://github.com/budgie-at/budgie/issues/1008) [#993](https://github.com/budgie-at/budgie/issues/993) [#1000](https://github.com/budgie-at/budgie/issues/1000) [#1007](https://github.com/budgie-at/budgie/issues/1007)
+- **landing:** use an imperative Spanish restore clause in database-backup tagline ([7102fe7](https://github.com/budgie-at/budgie/commit/7102fe78ec8b295158211a2264cf530906f13cbd)), closes [#1012](https://github.com/budgie-at/budgie/issues/1012)
 
 # [6.58.0](https://github.com/budgie-at/budgie/compare/v6.57.0...v6.58.0) (2026-09-13)
 
-
 ### Features
 
-* **landing:** budget-planning steps story ([290c75f](https://github.com/budgie-at/budgie/commit/290c75f6eac07ed53a6ecd126704963aee740b3f))
-
-
-
-
+- **landing:** budget-planning steps story ([290c75f](https://github.com/budgie-at/budgie/commit/290c75f6eac07ed53a6ecd126704963aee740b3f))
 
 # [6.57.0](https://github.com/budgie-at/budgie/compare/v6.56.0...v6.57.0) (2026-09-13)
 
-
 ### Features
 
-* **landing:** add bank-resync-window steps story and correct re-sync claims ([54323d6](https://github.com/budgie-at/budgie/commit/54323d6490d7a53a2c7faf434b318a2b1db04969)), closes [#781](https://github.com/budgie-at/budgie/issues/781)
-* **landing:** add statistics-tags-tab steps story and correct tag-analytics claims ([810beea](https://github.com/budgie-at/budgie/commit/810beead818e76b0bbaee4b3ca7e56e47d7a645f)), closes [#791](https://github.com/budgie-at/budgie/issues/791)
-* **landing:** database-backup steps story ([5e2290f](https://github.com/budgie-at/budgie/commit/5e2290ff790612b3d46414671d6063e41b4f8bca))
-
-
-
-
+- **landing:** add bank-resync-window steps story and correct re-sync claims ([54323d6](https://github.com/budgie-at/budgie/commit/54323d6490d7a53a2c7faf434b318a2b1db04969)), closes [#781](https://github.com/budgie-at/budgie/issues/781)
+- **landing:** add statistics-tags-tab steps story and correct tag-analytics claims ([810beea](https://github.com/budgie-at/budgie/commit/810beead818e76b0bbaee4b3ca7e56e47d7a645f)), closes [#791](https://github.com/budgie-at/budgie/issues/791)
+- **landing:** database-backup steps story ([5e2290f](https://github.com/budgie-at/budgie/commit/5e2290ff790612b3d46414671d6063e41b4f8bca))
 
 # [6.56.0](https://github.com/budgie-at/budgie/compare/v6.55.1...v6.56.0) (2026-09-13)
 
-
 ### Features
 
-* **landing:** add multi-currency steps story and correct FX-rate claims ([c949674](https://github.com/budgie-at/budgie/commit/c9496741c91cd65dcecbf5d15eb2b1f470f24ea6)), closes [#787](https://github.com/budgie-at/budgie/issues/787)
-
-
-
-
+- **landing:** add multi-currency steps story and correct FX-rate claims ([c949674](https://github.com/budgie-at/budgie/commit/c9496741c91cd65dcecbf5d15eb2b1f470f24ea6)), closes [#787](https://github.com/budgie-at/budgie/issues/787)
 
 ## [6.55.1](https://github.com/budgie-at/budgie/compare/v6.55.0...v6.55.1) (2026-09-13)
 
-
 ### Bug Fixes
 
-* **landing:** re-tune the first five story pages' callouts and labels ([ff5c196](https://github.com/budgie-at/budgie/commit/ff5c196b35e2dc7ae73dd30de54640c7c18bb2c4)), closes [#823](https://github.com/budgie-at/budgie/issues/823) [#824](https://github.com/budgie-at/budgie/issues/824) [#825](https://github.com/budgie-at/budgie/issues/825) [#826](https://github.com/budgie-at/budgie/issues/826) [#827](https://github.com/budgie-at/budgie/issues/827) [#828](https://github.com/budgie-at/budgie/issues/828) [#829](https://github.com/budgie-at/budgie/issues/829)
-
+- **landing:** re-tune the first five story pages' callouts and labels ([ff5c196](https://github.com/budgie-at/budgie/commit/ff5c196b35e2dc7ae73dd30de54640c7c18bb2c4)), closes [#823](https://github.com/budgie-at/budgie/issues/823) [#824](https://github.com/budgie-at/budgie/issues/824) [#825](https://github.com/budgie-at/budgie/issues/825) [#826](https://github.com/budgie-at/budgie/issues/826) [#827](https://github.com/budgie-at/budgie/issues/827) [#828](https://github.com/budgie-at/budgie/issues/828) [#829](https://github.com/budgie-at/budgie/issues/829)
 
 ### Performance Improvements
 
-* **landing:** stop gating feature-page hero text behind client hydration ([ec1bf2a](https://github.com/budgie-at/budgie/commit/ec1bf2ab81dbdf9cbe1544ec268cecae5ae8219b)), closes [#896](https://github.com/budgie-at/budgie/issues/896)
-
-
-
-
+- **landing:** stop gating feature-page hero text behind client hydration ([ec1bf2a](https://github.com/budgie-at/budgie/commit/ec1bf2ab81dbdf9cbe1544ec268cecae5ae8219b)), closes [#896](https://github.com/budgie-at/budgie/issues/896)
 
 # [6.55.0](https://github.com/budgie-at/budgie/compare/v6.54.1...v6.55.0) (2026-09-13)
 
-
 ### Bug Fixes
 
-* **landing:** resume AppClip playback across live theme changes ([4898926](https://github.com/budgie-at/budgie/commit/4898926cdf20c5037651cda975fdbd86c3864919)), closes [#882](https://github.com/budgie-at/budgie/issues/882) [#883](https://github.com/budgie-at/budgie/issues/883)
-
+- **landing:** resume AppClip playback across live theme changes ([4898926](https://github.com/budgie-at/budgie/commit/4898926cdf20c5037651cda975fdbd86c3864919)), closes [#882](https://github.com/budgie-at/budgie/issues/882) [#883](https://github.com/budgie-at/budgie/issues/883)
 
 ### Features
 
-* **landing:** csv-import steps story ([1cb633c](https://github.com/budgie-at/budgie/commit/1cb633cf5932025c60d07b8c6e4534e2467120a7))
-
-
-
-
+- **landing:** csv-import steps story ([1cb633c](https://github.com/budgie-at/budgie/commit/1cb633cf5932025c60d07b8c6e4534e2467120a7))
 
 ## [6.50.1](https://github.com/budgie-at/budgie/compare/v6.50.0...v6.50.1) (2026-09-12)
 
-
 ### Performance Improvements
 
-* **landing:** defer the non-default AppShot theme variant ([389e0cc](https://github.com/budgie-at/budgie/commit/389e0cc33f8c17f7c4a6793d6088d061afb5e0d5))
-
-
-
-
+- **landing:** defer the non-default AppShot theme variant ([389e0cc](https://github.com/budgie-at/budgie/commit/389e0cc33f8c17f7c4a6793d6088d061afb5e0d5))
 
 # [6.50.0](https://github.com/budgie-at/budgie/compare/v6.49.0...v6.50.0) (2026-09-11)
 
-
 ### Features
 
-* **landing:** add the crypto-price-history feature page ([3beffba](https://github.com/budgie-at/budgie/commit/3beffba5e19162fbf1ab5cfe0bc7d38e73e727c9))
-
-
-
-
+- **landing:** add the crypto-price-history feature page ([3beffba](https://github.com/budgie-at/budgie/commit/3beffba5e19162fbf1ab5cfe0bc7d38e73e727c9))
 
 # [6.49.0](https://github.com/budgie-at/budgie/compare/v6.48.0...v6.49.0) (2026-09-11)
 
-
 ### Bug Fixes
 
-* **landing:** clarify sync-data-repairs copy and French soft-delete wording ([79c2edd](https://github.com/budgie-at/budgie/commit/79c2eddfe1e8f19438e7145dbe2d5fe207b68497))
-
+- **landing:** clarify sync-data-repairs copy and French soft-delete wording ([79c2edd](https://github.com/budgie-at/budgie/commit/79c2eddfe1e8f19438e7145dbe2d5fe207b68497))
 
 ### Features
 
-* **landing:** add the sync-data-repairs feature page ([dd042ea](https://github.com/budgie-at/budgie/commit/dd042ea0a5426ab53fca7823e6786c10e99b317e))
-
-
-
-
+- **landing:** add the sync-data-repairs feature page ([dd042ea](https://github.com/budgie-at/budgie/commit/dd042ea0a5426ab53fca7823e6786c10e99b317e))
 
 # [6.48.0](https://github.com/budgie-at/budgie/compare/v6.47.5...v6.48.0) (2026-09-11)
 
-
 ### Bug Fixes
 
-* **landing:** use Paramètres for Settings in the French balance-adjustment copy ([72632f0](https://github.com/budgie-at/budgie/commit/72632f0e47d2aed71e99973cc1824131da29b595))
-
+- **landing:** use Paramètres for Settings in the French balance-adjustment copy ([72632f0](https://github.com/budgie-at/budgie/commit/72632f0e47d2aed71e99973cc1824131da29b595))
 
 ### Features
 
-* **landing:** add the balance-adjustment feature page ([f1d5dc0](https://github.com/budgie-at/budgie/commit/f1d5dc024ca6262dc51a8730e8185c2ef2e2fca0))
-
-
-
-
+- **landing:** add the balance-adjustment feature page ([f1d5dc0](https://github.com/budgie-at/budgie/commit/f1d5dc024ca6262dc51a8730e8185c2ef2e2fca0))
 
 ## [6.47.5](https://github.com/budgie-at/budgie/compare/v6.47.4...v6.47.5) (2026-09-11)
 
-
 ### Bug Fixes
 
-* **landing:** clear stale crypto-and-investments copy ([2405911](https://github.com/budgie-at/budgie/commit/24059118ecb67add568b31114ab7b9215c221b11))
-* **landing:** drop unsupported stocks and ETF claims ([35adc2c](https://github.com/budgie-at/budgie/commit/35adc2c73c78901a799df71cbb45d3b008d75840))
-
-
-
-
+- **landing:** clear stale crypto-and-investments copy ([2405911](https://github.com/budgie-at/budgie/commit/24059118ecb67add568b31114ab7b9215c221b11))
+- **landing:** drop unsupported stocks and ETF claims ([35adc2c](https://github.com/budgie-at/budgie/commit/35adc2c73c78901a799df71cbb45d3b008d75840))
 
 ## [6.47.4](https://github.com/budgie-at/budgie/compare/v6.47.3...v6.47.4) (2026-09-11)
 
-
 ### Bug Fixes
 
-* **landing:** drop the desktop first-callout margin ([c7d07db](https://github.com/budgie-at/budgie/commit/c7d07db24ab79af1a20838038ca69a2a1bce426d))
-
-
-
-
+- **landing:** drop the desktop first-callout margin ([c7d07db](https://github.com/budgie-at/budgie/commit/c7d07db24ab79af1a20838038ca69a2a1bce426d))
 
 ## [6.47.3](https://github.com/budgie-at/budgie/compare/v6.47.2...v6.47.3) (2026-09-11)
 
-
 ### Bug Fixes
 
-* **landing:** correct stale on-device model sizes ([557281f](https://github.com/budgie-at/budgie/commit/557281fead3864f297df55d8f676863fce3fb45d))
-
-
-
-
+- **landing:** correct stale on-device model sizes ([557281f](https://github.com/budgie-at/budgie/commit/557281fead3864f297df55d8f676863fce3fb45d))
 
 ## [6.47.2](https://github.com/budgie-at/budgie/compare/v6.47.1...v6.47.2) (2026-09-11)
 
-
 ### Bug Fixes
 
-* **landing:** correct token storage in the privacy policy ([e644144](https://github.com/budgie-at/budgie/commit/e644144fa21adb1cdfa834c23a4d7e45736ef846))
-* **landing:** describe real bank-token storage ([32153ba](https://github.com/budgie-at/budgie/commit/32153ba86b5093013efb56c7a9371792adea320e))
-
-
-
-
+- **landing:** correct token storage in the privacy policy ([e644144](https://github.com/budgie-at/budgie/commit/e644144fa21adb1cdfa834c23a4d7e45736ef846))
+- **landing:** describe real bank-token storage ([32153ba](https://github.com/budgie-at/budgie/commit/32153ba86b5093013efb56c7a9371792adea320e))
 
 ## [6.47.1](https://github.com/budgie-at/budgie/compare/v6.47.0...v6.47.1) (2026-09-11)
 
-
 ### Bug Fixes
 
-* **landing:** drop the custom-categories colour claim ([d2a3183](https://github.com/budgie-at/budgie/commit/d2a3183874ea0f360ad40230dfb8c7c3079dffcf))
-* **landing:** reword custom-categories German benefit copy ([5d96ef3](https://github.com/budgie-at/budgie/commit/5d96ef30ad7d262005c0ba69d1d8cec38dc19560))
-
-
-
-
+- **landing:** drop the custom-categories colour claim ([d2a3183](https://github.com/budgie-at/budgie/commit/d2a3183874ea0f360ad40230dfb8c7c3079dffcf))
+- **landing:** reword custom-categories German benefit copy ([5d96ef3](https://github.com/budgie-at/budgie/commit/5d96ef30ad7d262005c0ba69d1d8cec38dc19560))
 
 # [6.47.0](https://github.com/budgie-at/budgie/compare/v6.46.0...v6.47.0) (2026-09-11)
 
-
 ### Bug Fixes
 
-* **landing:** address remaining debt-tracking catalog review ([1a79e7c](https://github.com/budgie-at/budgie/commit/1a79e7cba97b76db8449a1ef92fd85c7377a7da4))
-* **landing:** polish debt-tracking catalog wording ([e77e9c7](https://github.com/budgie-at/budgie/commit/e77e9c76ae40c745f289f40e1bf803b74d8cbcf1))
-
+- **landing:** address remaining debt-tracking catalog review ([1a79e7c](https://github.com/budgie-at/budgie/commit/1a79e7cba97b76db8449a1ef92fd85c7377a7da4))
+- **landing:** polish debt-tracking catalog wording ([e77e9c7](https://github.com/budgie-at/budgie/commit/e77e9c76ae40c745f289f40e1bf803b74d8cbcf1))
 
 ### Features
 
-* **landing:** debt-tracking steps story ([9c7c51a](https://github.com/budgie-at/budgie/commit/9c7c51a3259cc7cce07f3f0d49f80f7ad6bc6863))
-
-
-
-
+- **landing:** debt-tracking steps story ([9c7c51a](https://github.com/budgie-at/budgie/commit/9c7c51a3259cc7cce07f3f0d49f80f7ad6bc6863))
 
 # [6.46.0](https://github.com/budgie-at/budgie/compare/v6.45.1...v6.46.0) (2026-09-11)
 
-
 ### Features
 
-* **landing:** bank-fee-tracking steps story ([a174459](https://github.com/budgie-at/budgie/commit/a1744596d0a5314dc93dd5b2567815813a575acd))
-
-
-
-
+- **landing:** bank-fee-tracking steps story ([a174459](https://github.com/budgie-at/budgie/commit/a1744596d0a5314dc93dd5b2567815813a575acd))
 
 ## [6.45.1](https://github.com/budgie-at/budgie/compare/v6.45.0...v6.45.1) (2026-09-11)
 
 **Note:** Version bump only for package @budgie-at/landing
 
-
-
-
-
 # [6.45.0](https://github.com/budgie-at/budgie/compare/v6.44.0...v6.45.0) (2026-09-10)
-
 
 ### Features
 
-* **landing:** recurring-payments-calendar steps story ([c587724](https://github.com/budgie-at/budgie/commit/c587724c30b8d1af25d79b4f9b22dd8eb357346a))
-
-
-
-
+- **landing:** recurring-payments-calendar steps story ([c587724](https://github.com/budgie-at/budgie/commit/c587724c30b8d1af25d79b4f9b22dd8eb357346a))
 
 # [6.44.0](https://github.com/budgie-at/budgie/compare/v6.43.0...v6.44.0) (2026-09-10)
 
-
 ### Features
 
-* **landing:** mcc-auto-category steps story ([8f03e26](https://github.com/budgie-at/budgie/commit/8f03e2647844d7730857202ec549ba30eede8ab5))
-
-
-
-
+- **landing:** mcc-auto-category steps story ([8f03e26](https://github.com/budgie-at/budgie/commit/8f03e2647844d7730857202ec549ba30eede8ab5))
 
 # [6.43.0](https://github.com/budgie-at/budgie/compare/v6.42.0...v6.43.0) (2026-09-10)
 
-
 ### Bug Fixes
 
-* **landing:** polish deposit-tracking catalog wording ([d432ef7](https://github.com/budgie-at/budgie/commit/d432ef7c8134719d2131a9b8ac589252e82debf2))
-
+- **landing:** polish deposit-tracking catalog wording ([d432ef7](https://github.com/budgie-at/budgie/commit/d432ef7c8134719d2131a9b8ac589252e82debf2))
 
 ### Features
 
-* **landing:** deposit-tracking steps story ([1acb9b9](https://github.com/budgie-at/budgie/commit/1acb9b912456d026e88d640fe5392d8be116bb58))
-
-
-
-
+- **landing:** deposit-tracking steps story ([1acb9b9](https://github.com/budgie-at/budgie/commit/1acb9b912456d026e88d640fe5392d8be116bb58))
 
 # [6.42.0](https://github.com/budgie-at/budgie/compare/v6.41.4...v6.42.0) (2026-09-10)
 
-
 ### Bug Fixes
 
-* **landing:** scope split-transactions story copy to visible UI and polish catalog wording ([08ed740](https://github.com/budgie-at/budgie/commit/08ed740ea7bc0f5c923f255a0b08a8758c8281f2))
-
+- **landing:** scope split-transactions story copy to visible UI and polish catalog wording ([08ed740](https://github.com/budgie-at/budgie/commit/08ed740ea7bc0f5c923f255a0b08a8758c8281f2))
 
 ### Features
 
-* **landing:** split-transactions steps story ([ed89c4d](https://github.com/budgie-at/budgie/commit/ed89c4dcdd5a06fb47131b847fdc0d4d6a0d0c8d))
-
-
-
-
+- **landing:** split-transactions steps story ([ed89c4d](https://github.com/budgie-at/budgie/commit/ed89c4dcdd5a06fb47131b847fdc0d4d6a0d0c8d))
 
 ## [6.41.3](https://github.com/budgie-at/budgie/compare/v6.41.2...v6.41.3) (2026-09-10)
 
-
 ### Bug Fixes
 
-* **landing:** resolve latest iOS dev release via tag refs prefix filter ([41b1a75](https://github.com/budgie-at/budgie/commit/41b1a75663e22db4ad863a1a67661d63c4838925))
-
-
-
-
+- **landing:** resolve latest iOS dev release via tag refs prefix filter ([41b1a75](https://github.com/budgie-at/budgie/commit/41b1a75663e22db4ad863a1a67661d63c4838925))
 
 # [6.41.0](https://github.com/budgie-at/budgie/compare/v6.40.0...v6.41.0) (2026-09-08)
 
-
 ### Features
 
-* **landing:** add multi-language-app steps story ([dbaedfe](https://github.com/budgie-at/budgie/commit/dbaedfe19eec06e3f5b81df81ad03e86c035a645)), closes [#797](https://github.com/budgie-at/budgie/issues/797) [#746](https://github.com/budgie-at/budgie/issues/746) [#797](https://github.com/budgie-at/budgie/issues/797)
-* **landing:** crypto investment tracking steps story ([6c6a9e0](https://github.com/budgie-at/budgie/commit/6c6a9e041cef8a473921cbc5972b29ae100343ca))
-
-
-
-
+- **landing:** add multi-language-app steps story ([dbaedfe](https://github.com/budgie-at/budgie/commit/dbaedfe19eec06e3f5b81df81ad03e86c035a645)), closes [#797](https://github.com/budgie-at/budgie/issues/797) [#746](https://github.com/budgie-at/budgie/issues/746) [#797](https://github.com/budgie-at/budgie/issues/797)
+- **landing:** crypto investment tracking steps story ([6c6a9e0](https://github.com/budgie-at/budgie/commit/6c6a9e041cef8a473921cbc5972b29ae100343ca))
 
 # [6.40.0](https://github.com/budgie-at/budgie/compare/v6.39.0...v6.40.0) (2026-09-08)
 
-
 ### Features
 
-* **landing:** convert-to-refund steps story ([3ec6b25](https://github.com/budgie-at/budgie/commit/3ec6b25f051ee40a46d94583fce26683d4a961cc))
-
-
-
-
+- **landing:** convert-to-refund steps story ([3ec6b25](https://github.com/budgie-at/budgie/commit/3ec6b25f051ee40a46d94583fce26683d4a961cc))
 
 # [6.39.0](https://github.com/budgie-at/budgie/compare/v6.38.6...v6.39.0) (2026-09-08)
 
-
 ### Features
 
-* **landing:** steps story for transfer pair detection ([5525efa](https://github.com/budgie-at/budgie/commit/5525efa40d0965bc02a324d3e5b9eaec0470fcd8))
-
-
-
-
+- **landing:** steps story for transfer pair detection ([5525efa](https://github.com/budgie-at/budgie/commit/5525efa40d0965bc02a324d3e5b9eaec0470fcd8))
 
 ## [6.38.6](https://github.com/budgie-at/budgie/compare/v6.38.5...v6.38.6) (2026-09-08)
 
 **Note:** Version bump only for package @budgie-at/landing
 
-
-
-
-
 ## [6.38.5](https://github.com/budgie-at/budgie/compare/v6.38.4...v6.38.5) (2026-09-07)
 
 **Note:** Version bump only for package @budgie-at/landing
-
-
-
-
 
 ## [6.38.4](https://github.com/budgie-at/budgie/compare/v6.38.3...v6.38.4) (2026-09-07)
 
 **Note:** Version bump only for package @budgie-at/landing
 
-
-
-
-
 ## [6.38.3](https://github.com/budgie-at/budgie/compare/v6.38.2...v6.38.3) (2026-09-07)
 
 **Note:** Version bump only for package @budgie-at/landing
 
-
-
-
-
 ## [6.38.2](https://github.com/budgie-at/budgie/compare/v6.38.1...v6.38.2) (2026-09-07)
-
 
 ### Bug Fixes
 
-* **landing:** resolve voice-transaction-entry hero/translation review findings ([de81c58](https://github.com/budgie-at/budgie/commit/de81c58c168857f68fc24724ed4d06c67d2ceead))
-
-
-
-
+- **landing:** resolve voice-transaction-entry hero/translation review findings ([de81c58](https://github.com/budgie-at/budgie/commit/de81c58c168857f68fc24724ed4d06c67d2ceead))
 
 ## [6.38.1](https://github.com/budgie-at/budgie/compare/v6.38.0...v6.38.1) (2026-09-07)
 
-
 ### Bug Fixes
 
-* **landing:** correct ai-transaction-suggestions disable-AI claim ([5ba4277](https://github.com/budgie-at/budgie/commit/5ba42777509095566c5f98f3cdf2386ba40ef395)), closes [#844](https://github.com/budgie-at/budgie/issues/844)
-
-
-
-
+- **landing:** correct ai-transaction-suggestions disable-AI claim ([5ba4277](https://github.com/budgie-at/budgie/commit/5ba42777509095566c5f98f3cdf2386ba40ef395)), closes [#844](https://github.com/budgie-at/budgie/issues/844)
 
 # [6.38.0](https://github.com/budgie-at/budgie/compare/v6.37.0...v6.38.0) (2026-09-07)
 
-
 ### Bug Fixes
 
-* **landing:** correct date-filter-presets count and week-start claims ([72c3eed](https://github.com/budgie-at/budgie/commit/72c3eed079ea928bf1c0d08ee79747dfd25d2e80)), closes [#843](https://github.com/budgie-at/budgie/issues/843)
-
+- **landing:** correct date-filter-presets count and week-start claims ([72c3eed](https://github.com/budgie-at/budgie/commit/72c3eed079ea928bf1c0d08ee79747dfd25d2e80)), closes [#843](https://github.com/budgie-at/budgie/issues/843)
 
 ### Features
 
-* **landing:** add screenshot-protection basic story with corrected copy ([c9c29e9](https://github.com/budgie-at/budgie/commit/c9c29e92c908529ec4f7304f050c9acecb7de251)), closes [#799](https://github.com/budgie-at/budgie/issues/799) [#746](https://github.com/budgie-at/budgie/issues/746) [#799](https://github.com/budgie-at/budgie/issues/799)
-
-
-
-
+- **landing:** add screenshot-protection basic story with corrected copy ([c9c29e9](https://github.com/budgie-at/budgie/commit/c9c29e92c908529ec4f7304f050c9acecb7de251)), closes [#799](https://github.com/budgie-at/budgie/issues/799) [#746](https://github.com/budgie-at/budgie/issues/746) [#799](https://github.com/budgie-at/budgie/issues/799)
 
 # [6.37.0](https://github.com/budgie-at/budgie/compare/v6.36.0...v6.37.0) (2026-09-07)
 
-
 ### Bug Fixes
 
-* **landing:** correct convert-to-transfer linked-legs and undo claims ([ae1f4a5](https://github.com/budgie-at/budgie/commit/ae1f4a501ce573e067f591e5cded65c8eaf9d55c)), closes [#913](https://github.com/budgie-at/budgie/issues/913)
-* **landing:** correct dark-mode three-way-switch claim ([9cc26d3](https://github.com/budgie-at/budgie/commit/9cc26d3c19ac8c3bb78d7303d5c927cb1a164e63)), closes [#912](https://github.com/budgie-at/budgie/issues/912)
-
+- **landing:** correct convert-to-transfer linked-legs and undo claims ([ae1f4a5](https://github.com/budgie-at/budgie/commit/ae1f4a501ce573e067f591e5cded65c8eaf9d55c)), closes [#913](https://github.com/budgie-at/budgie/issues/913)
+- **landing:** correct dark-mode three-way-switch claim ([9cc26d3](https://github.com/budgie-at/budgie/commit/9cc26d3c19ac8c3bb78d7303d5c927cb1a164e63)), closes [#912](https://github.com/budgie-at/budgie/issues/912)
 
 ### Features
 
-* **landing:** pin-app-lock steps story ([b6437da](https://github.com/budgie-at/budgie/commit/b6437da0a6c3e3f46971372dd7d3e6aae18a2515))
-
-
-
-
+- **landing:** pin-app-lock steps story ([b6437da](https://github.com/budgie-at/budgie/commit/b6437da0a6c3e3f46971372dd7d3e6aae18a2515))
 
 # [6.36.0](https://github.com/budgie-at/budgie/compare/v6.35.0...v6.36.0) (2026-09-07)
 
-
 ### Features
 
-* **landing:** account transfers steps story ([148d5d6](https://github.com/budgie-at/budgie/commit/148d5d6f3280ada80186a9cefa4a2c46a70b317f))
-* **landing:** home-route metadata sidecar, query-shaped headings and JSON-LD ([6135b4e](https://github.com/budgie-at/budgie/commit/6135b4e33bfeab8a338bba5910493696d5e3dcea)), closes [#861](https://github.com/budgie-at/budgie/issues/861) [#862](https://github.com/budgie-at/budgie/issues/862) [#863](https://github.com/budgie-at/budgie/issues/863)
-* **landing:** tell the categorization rules story in three steps ([f9bfb24](https://github.com/budgie-at/budgie/commit/f9bfb24adc77024b1d059507e71ac0bdfcb3bdbe))
-
-
-
-
+- **landing:** account transfers steps story ([148d5d6](https://github.com/budgie-at/budgie/commit/148d5d6f3280ada80186a9cefa4a2c46a70b317f))
+- **landing:** home-route metadata sidecar, query-shaped headings and JSON-LD ([6135b4e](https://github.com/budgie-at/budgie/commit/6135b4e33bfeab8a338bba5910493696d5e3dcea)), closes [#861](https://github.com/budgie-at/budgie/issues/861) [#862](https://github.com/budgie-at/budgie/issues/862) [#863](https://github.com/budgie-at/budgie/issues/863)
+- **landing:** tell the categorization rules story in three steps ([f9bfb24](https://github.com/budgie-at/budgie/commit/f9bfb24adc77024b1d059507e71ac0bdfcb3bdbe))
 
 # [6.35.0](https://github.com/budgie-at/budgie/compare/v6.34.0...v6.35.0) (2026-09-07)
 
-
 ### Features
 
-* **landing:** tell the spending analytics story in three steps ([48c8398](https://github.com/budgie-at/budgie/commit/48c83987d06e2f4526eeb56ac647c2f0dad3e6c9))
-
-
-
-
+- **landing:** tell the spending analytics story in three steps ([48c8398](https://github.com/budgie-at/budgie/commit/48c83987d06e2f4526eeb56ac647c2f0dad3e6c9))
 
 # [6.34.0](https://github.com/budgie-at/budgie/compare/v6.33.0...v6.34.0) (2026-09-07)
 
-
 ### Features
 
-* **landing:** date filter presets steps story ([7528b4a](https://github.com/budgie-at/budgie/commit/7528b4a83a5dbb5bbda89ba3f76c4ad9005b0914))
-
-
-
-
+- **landing:** date filter presets steps story ([7528b4a](https://github.com/budgie-at/budgie/commit/7528b4a83a5dbb5bbda89ba3f76c4ad9005b0914))
 
 # [6.33.0](https://github.com/budgie-at/budgie/compare/v6.32.1...v6.33.0) (2026-09-07)
 
-
 ### Features
 
-* **landing:** rebuild the home page around a scroll-driven product tour ([91516bf](https://github.com/budgie-at/budgie/commit/91516bf396327eeb88ddad8ec27adf7ad6cbe687)), closes [#855](https://github.com/budgie-at/budgie/issues/855) [#856](https://github.com/budgie-at/budgie/issues/856) [#857](https://github.com/budgie-at/budgie/issues/857) [#858](https://github.com/budgie-at/budgie/issues/858) [#859](https://github.com/budgie-at/budgie/issues/859) [#860](https://github.com/budgie-at/budgie/issues/860) [#864](https://github.com/budgie-at/budgie/issues/864)
-
+- **landing:** rebuild the home page around a scroll-driven product tour ([91516bf](https://github.com/budgie-at/budgie/commit/91516bf396327eeb88ddad8ec27adf7ad6cbe687)), closes [#855](https://github.com/budgie-at/budgie/issues/855) [#856](https://github.com/budgie-at/budgie/issues/856) [#857](https://github.com/budgie-at/budgie/issues/857) [#858](https://github.com/budgie-at/budgie/issues/858) [#859](https://github.com/budgie-at/budgie/issues/859) [#860](https://github.com/budgie-at/budgie/issues/860) [#864](https://github.com/budgie-at/budgie/issues/864)
 
 ### Performance Improvements
 
-* **landing:** compact story density and tighter home section rhythm ([1d98751](https://github.com/budgie-at/budgie/commit/1d98751e907ea1f4e4c3bb92424518c2f7d93eeb))
-* **landing:** retire framer-motion and fix contrast on the home tree ([7106a58](https://github.com/budgie-at/budgie/commit/7106a58ae285fd4f4f5709877a9e252337790106))
-
-
-
-
+- **landing:** compact story density and tighter home section rhythm ([1d98751](https://github.com/budgie-at/budgie/commit/1d98751e907ea1f4e4c3bb92424518c2f7d93eeb))
+- **landing:** retire framer-motion and fix contrast on the home tree ([7106a58](https://github.com/budgie-at/budgie/commit/7106a58ae285fd4f4f5709877a9e252337790106))
 
 ## [6.32.1](https://github.com/budgie-at/budgie/compare/v6.32.0...v6.32.1) (2026-09-07)
 
-
 ### Bug Fixes
 
-* **landing:** wrap /beta GitHub fetch in a Suspense boundary ([7eb1967](https://github.com/budgie-at/budgie/commit/7eb1967aae220f9f31389cc3ced0c671f5769906)), closes [#910](https://github.com/budgie-at/budgie/issues/910)
-
-
-
-
+- **landing:** wrap /beta GitHub fetch in a Suspense boundary ([7eb1967](https://github.com/budgie-at/budgie/commit/7eb1967aae220f9f31389cc3ced0c671f5769906)), closes [#910](https://github.com/budgie-at/budgie/issues/910)
 
 # [6.32.0](https://github.com/budgie-at/budgie/compare/v6.31.2...v6.32.0) (2026-09-07)
 
-
 ### Bug Fixes
 
-* **landing:** correct primary-tag UI claims on transaction-tags page ([d55371b](https://github.com/budgie-at/budgie/commit/d55371bdec17ff3847a6fcda073e1668c8ed2455)), closes [#905](https://github.com/budgie-at/budgie/issues/905)
-
+- **landing:** correct primary-tag UI claims on transaction-tags page ([d55371b](https://github.com/budgie-at/budgie/commit/d55371bdec17ff3847a6fcda073e1668c8ed2455)), closes [#905](https://github.com/budgie-at/budgie/issues/905)
 
 ### Features
 
-* **landing:** tell the account-management story in three steps ([6e47f0b](https://github.com/budgie-at/budgie/commit/6e47f0b5debfdb0b2e38fd26d6e14f057e09452a))
-* **landing:** tell the custom categories story in three steps ([38ed722](https://github.com/budgie-at/budgie/commit/38ed7225a49f4f17f538294959b2cb85dd38a98c))
-
-
-
-
+- **landing:** tell the account-management story in three steps ([6e47f0b](https://github.com/budgie-at/budgie/commit/6e47f0b5debfdb0b2e38fd26d6e14f057e09452a))
+- **landing:** tell the custom categories story in three steps ([38ed722](https://github.com/budgie-at/budgie/commit/38ed7225a49f4f17f538294959b2cb85dd38a98c))
 
 ## [6.31.2](https://github.com/budgie-at/budgie/compare/v6.31.1...v6.31.2) (2026-09-07)
 
-
 ### Bug Fixes
 
-* **landing:** render both logo theme variants to avoid hydration mismatch ([92e99c0](https://github.com/budgie-at/budgie/commit/92e99c0293a1771f976f5318c610db2c9ee11940)), closes [#899](https://github.com/budgie-at/budgie/issues/899)
-
-
-
-
+- **landing:** render both logo theme variants to avoid hydration mismatch ([92e99c0](https://github.com/budgie-at/budgie/commit/92e99c0293a1771f976f5318c610db2c9ee11940)), closes [#899](https://github.com/budgie-at/budgie/issues/899)
 
 ## [6.31.1](https://github.com/budgie-at/budgie/compare/v6.31.0...v6.31.1) (2026-09-07)
 
 **Note:** Version bump only for package @budgie-at/landing
 
-
-
-
-
 # [6.31.0](https://github.com/budgie-at/budgie/compare/v6.30.0...v6.31.0) (2026-09-07)
-
 
 ### Features
 
-* **landing:** add self-hosted finance app basic story ([baaf870](https://github.com/budgie-at/budgie/commit/baaf870cf5b8f4828be678a27dccd3f5f027b95a))
-* **landing:** tell the convert-to-transfer story in three steps ([72905ce](https://github.com/budgie-at/budgie/commit/72905ceefeba7f403a6dece00ba468593418f9e9))
-
-
-
-
+- **landing:** add self-hosted finance app basic story ([baaf870](https://github.com/budgie-at/budgie/commit/baaf870cf5b8f4828be678a27dccd3f5f027b95a))
+- **landing:** tell the convert-to-transfer story in three steps ([72905ce](https://github.com/budgie-at/budgie/commit/72905ceefeba7f403a6dece00ba468593418f9e9))
 
 # [6.30.0](https://github.com/budgie-at/budgie/compare/v6.29.0...v6.30.0) (2026-09-07)
 
-
 ### Features
 
-* **landing:** primary-tag basic story — 3 steps ([a8cfd64](https://github.com/budgie-at/budgie/commit/a8cfd640d4a7870834e8e54bba5f34894defa0f6)), closes [#905](https://github.com/budgie-at/budgie/issues/905) [#905](https://github.com/budgie-at/budgie/issues/905) [#798](https://github.com/budgie-at/budgie/issues/798)
-
-
-
-
+- **landing:** primary-tag basic story — 3 steps ([a8cfd64](https://github.com/budgie-at/budgie/commit/a8cfd640d4a7870834e8e54bba5f34894defa0f6)), closes [#905](https://github.com/budgie-at/budgie/issues/905) [#905](https://github.com/budgie-at/budgie/issues/905) [#798](https://github.com/budgie-at/budgie/issues/798)
 
 # [6.29.0](https://github.com/budgie-at/budgie/compare/v6.28.0...v6.29.0) (2026-09-07)
 
-
 ### Features
 
-* **landing:** add dark-mode basic story with real transaction-list shot ([dc8efc2](https://github.com/budgie-at/budgie/commit/dc8efc2313e454ca1f617312214aa016ac8fb397))
-
-
-
-
+- **landing:** add dark-mode basic story with real transaction-list shot ([dc8efc2](https://github.com/budgie-at/budgie/commit/dc8efc2313e454ca1f617312214aa016ac8fb397))
 
 # [6.28.0](https://github.com/budgie-at/budgie/compare/v6.27.1...v6.28.0) (2026-09-07)
 
-
 ### Features
 
-* **landing:** tell the transaction tags page as a three-step story ([3a83d85](https://github.com/budgie-at/budgie/commit/3a83d85ad0f505a268bf2bc4aa692d9a55fddd46))
-* **landing:** tell the uncategorized-transactions story in three steps ([5840a3f](https://github.com/budgie-at/budgie/commit/5840a3fe701457b3e3ec0f4d05c4484d08d5d7eb))
-
-
-
-
+- **landing:** tell the transaction tags page as a three-step story ([3a83d85](https://github.com/budgie-at/budgie/commit/3a83d85ad0f505a268bf2bc4aa692d9a55fddd46))
+- **landing:** tell the uncategorized-transactions story in three steps ([5840a3f](https://github.com/budgie-at/budgie/commit/5840a3fe701457b3e3ec0f4d05c4484d08d5d7eb))
 
 ## [6.27.1](https://github.com/budgie-at/budgie/compare/v6.27.0...v6.27.1) (2026-09-07)
 
-
 ### Performance Improvements
 
-* **landing:** trim Vercel image and ISR usage ([fdb1600](https://github.com/budgie-at/budgie/commit/fdb1600d0546fa8e420ec7ce1281e757257b847d))
-
-
-
-
+- **landing:** trim Vercel image and ISR usage ([fdb1600](https://github.com/budgie-at/budgie/commit/fdb1600d0546fa8e420ec7ce1281e757257b847d))
 
 ## [6.26.1](https://github.com/budgie-at/budgie/compare/v6.26.0...v6.26.1) (2026-09-07)
 
-
 ### Bug Fixes
 
-* **landing:** frame story clips like stills and prefer staged shots ([c017a0e](https://github.com/budgie-at/budgie/commit/c017a0e3f2267132ab16caf628dd6f91a1f7f3c2)), closes [#892](https://github.com/budgie-at/budgie/issues/892)
-
-
-
-
+- **landing:** frame story clips like stills and prefer staged shots ([c017a0e](https://github.com/budgie-at/budgie/commit/c017a0e3f2267132ab16caf628dd6f91a1f7f3c2)), closes [#892](https://github.com/budgie-at/budgie/issues/892)
 
 # [6.26.0](https://github.com/budgie-at/budgie/compare/v6.25.0...v6.26.0) (2026-09-07)
 
-
 ### Bug Fixes
 
-* **landing:** repair blog chrome and ship generated article covers ([3c3327a](https://github.com/budgie-at/budgie/commit/3c3327aefa66cee1602b1af742b1a2797f51b15c)), closes [#888](https://github.com/budgie-at/budgie/issues/888) [#889](https://github.com/budgie-at/budgie/issues/889) [#890](https://github.com/budgie-at/budgie/issues/890)
-
+- **landing:** repair blog chrome and ship generated article covers ([3c3327a](https://github.com/budgie-at/budgie/commit/3c3327aefa66cee1602b1af742b1a2797f51b15c)), closes [#888](https://github.com/budgie-at/budgie/issues/888) [#889](https://github.com/budgie-at/budgie/issues/889) [#890](https://github.com/budgie-at/budgie/issues/890)
 
 ### Features
 
-* **landing:** key blog cover art to article topic ([512a8d7](https://github.com/budgie-at/budgie/commit/512a8d7fcfd56344b1054ab3021e9262f9f2149b)), closes [#889](https://github.com/budgie-at/budgie/issues/889)
-
-
-
-
+- **landing:** key blog cover art to article topic ([512a8d7](https://github.com/budgie-at/budgie/commit/512a8d7fcfd56344b1054ab3021e9262f9f2149b)), closes [#889](https://github.com/budgie-at/budgie/issues/889)
 
 # [6.25.0](https://github.com/budgie-at/budgie/compare/v6.24.0...v6.25.0) (2026-09-07)
 
-
 ### Features
 
-* **landing:** tell the long-press menu story in steps ([0d1fac5](https://github.com/budgie-at/budgie/commit/0d1fac5baa076a09aa79c52742384d19bfadd625))
-
-
-
-
+- **landing:** tell the long-press menu story in steps ([0d1fac5](https://github.com/budgie-at/budgie/commit/0d1fac5baa076a09aa79c52742384d19bfadd625))
 
 # [6.24.0](https://github.com/budgie-at/budgie/compare/v6.23.0...v6.24.0) (2026-09-07)
 
-
 ### Features
 
-* **landing:** tell the no-bank-login story in steps ([9be7887](https://github.com/budgie-at/budgie/commit/9be788751b24b0bcdc74529bd59f701eefb6f0e6))
-
-
-
-
+- **landing:** tell the no-bank-login story in steps ([9be7887](https://github.com/budgie-at/budgie/commit/9be788751b24b0bcdc74529bd59f701eefb6f0e6))
 
 # [6.23.0](https://github.com/budgie-at/budgie/compare/v6.22.1...v6.23.0) (2026-09-07)
 
-
 ### Bug Fixes
 
-* **landing:** break the hero headline at sentence boundaries ([8bb0537](https://github.com/budgie-at/budgie/commit/8bb053777792f76784fe76e2506e1bd9b11a4174))
-* **landing:** stop implying open-source licensing in uk trust banner ([259b597](https://github.com/budgie-at/budgie/commit/259b5976ffd7d250538b1854b09a72feec419cdb))
-
+- **landing:** break the hero headline at sentence boundaries ([8bb0537](https://github.com/budgie-at/budgie/commit/8bb053777792f76784fe76e2506e1bd9b11a4174))
+- **landing:** stop implying open-source licensing in uk trust banner ([259b597](https://github.com/budgie-at/budgie/commit/259b5976ffd7d250538b1854b09a72feec419cdb))
 
 ### Features
 
-* **landing:** put the product on screen in the home hero ([adf0dd2](https://github.com/budgie-at/budgie/commit/adf0dd2f1028e8e4ecb8b8abf45a992f71c0a02e)), closes [#854](https://github.com/budgie-at/budgie/issues/854) [#852](https://github.com/budgie-at/budgie/issues/852)
-* **landing:** tell the data export story in steps ([b3f3e05](https://github.com/budgie-at/budgie/commit/b3f3e0583a21cd3cffccd6bc8a546b03cb4d095e))
-
-
-
-
+- **landing:** put the product on screen in the home hero ([adf0dd2](https://github.com/budgie-at/budgie/commit/adf0dd2f1028e8e4ecb8b8abf45a992f71c0a02e)), closes [#854](https://github.com/budgie-at/budgie/issues/854) [#852](https://github.com/budgie-at/budgie/issues/852)
+- **landing:** tell the data export story in steps ([b3f3e05](https://github.com/budgie-at/budgie/commit/b3f3e0583a21cd3cffccd6bc8a546b03cb4d095e))
 
 ## [6.22.1](https://github.com/budgie-at/budgie/compare/v6.22.0...v6.22.1) (2026-09-07)
 
-
 ### Bug Fixes
 
-* **landing:** drop the phantom per-leg drill-down from multi-currency ([c97a575](https://github.com/budgie-at/budgie/commit/c97a57589995e27761fcbe8dce5a4af85b3718a2))
-
-
-
-
+- **landing:** drop the phantom per-leg drill-down from multi-currency ([c97a575](https://github.com/budgie-at/budgie/commit/c97a57589995e27761fcbe8dce5a4af85b3718a2))
 
 # [6.22.0](https://github.com/budgie-at/budgie/compare/v6.21.5...v6.22.0) (2026-09-07)
 
-
 ### Bug Fixes
 
-* **landing:** ship real brand icons for tabs, pinned tabs, home screens and the manifest ([ee87346](https://github.com/budgie-at/budgie/commit/ee873462ee6ac0fabbf9a1fbe268930dd9d6e65e))
-* **landing:** use an idiomatic German story heading ([8dabe31](https://github.com/budgie-at/budgie/commit/8dabe316d2cfb859bee7c92715523265cb26a6d8))
-
+- **landing:** ship real brand icons for tabs, pinned tabs, home screens and the manifest ([ee87346](https://github.com/budgie-at/budgie/commit/ee873462ee6ac0fabbf9a1fbe268930dd9d6e65e))
+- **landing:** use an idiomatic German story heading ([8dabe31](https://github.com/budgie-at/budgie/commit/8dabe316d2cfb859bee7c92715523265cb26a6d8))
 
 ### Features
 
-* **landing:** tell the Monobank sync story in steps ([6f9b9be](https://github.com/budgie-at/budgie/commit/6f9b9be7d097ed0dc1daf2389d918e1826c68166))
-
-
-
-
+- **landing:** tell the Monobank sync story in steps ([6f9b9be](https://github.com/budgie-at/budgie/commit/6f9b9be7d097ed0dc1daf2389d918e1826c68166))
 
 ## [6.21.4](https://github.com/budgie-at/budgie/compare/v6.21.3...v6.21.4) (2026-09-06)
 
-
 ### Bug Fixes
 
-* **landing:** name the Whisper model the app actually downloads ([1ad4065](https://github.com/budgie-at/budgie/commit/1ad406556a3684c66e49ce2355a41241ab88e408))
-
-
-
-
+- **landing:** name the Whisper model the app actually downloads ([1ad4065](https://github.com/budgie-at/budgie/commit/1ad406556a3684c66e49ce2355a41241ab88e408))
 
 ## [6.21.3](https://github.com/budgie-at/budgie/compare/v6.21.2...v6.21.3) (2026-09-06)
 
-
 ### Performance Improvements
 
-* **landing:** emit only the active theme's media in AppShot and AppClip ([b6c9e1f](https://github.com/budgie-at/budgie/commit/b6c9e1f35eda87d5d0031b46ef0212b39beff367)), closes [#853](https://github.com/budgie-at/budgie/issues/853) [#852](https://github.com/budgie-at/budgie/issues/852) [#818](https://github.com/budgie-at/budgie/issues/818)
-
-
-
-
+- **landing:** emit only the active theme's media in AppShot and AppClip ([b6c9e1f](https://github.com/budgie-at/budgie/commit/b6c9e1f35eda87d5d0031b46ef0212b39beff367)), closes [#853](https://github.com/budgie-at/budgie/issues/853) [#852](https://github.com/budgie-at/budgie/issues/852) [#818](https://github.com/budgie-at/budgie/issues/818)
 
 ## [6.21.2](https://github.com/budgie-at/budgie/compare/v6.21.1...v6.21.2) (2026-09-06)
 
-
 ### Bug Fixes
 
-* **landing:** list the CSV columns the exporter actually writes ([c3c192c](https://github.com/budgie-at/budgie/commit/c3c192cdaa4a18ffc01bd4b4af950e9a214fa652))
-
-
-
-
+- **landing:** list the CSV columns the exporter actually writes ([c3c192c](https://github.com/budgie-at/budgie/commit/c3c192cdaa4a18ffc01bd4b4af950e9a214fa652))
 
 ## [6.21.1](https://github.com/budgie-at/budgie/compare/v6.21.0...v6.21.1) (2026-09-06)
 
-
 ### Bug Fixes
 
-* **landing:** scope crypto page claims to crypto and fiat ([62b66e4](https://github.com/budgie-at/budgie/commit/62b66e40585b20c8bb63d3ca5056891587fef491))
-
-
-
-
+- **landing:** scope crypto page claims to crypto and fiat ([62b66e4](https://github.com/budgie-at/budgie/commit/62b66e40585b20c8bb63d3ca5056891587fef491))
 
 # [6.21.0](https://github.com/budgie-at/budgie/compare/v6.20.0...v6.21.0) (2026-09-06)
 
-
 ### Features
 
-* **landing:** tell the source-available budget app story ([86644f4](https://github.com/budgie-at/budgie/commit/86644f40dbe1698a1b3d667c6626f1344f545eda))
-
+- **landing:** tell the source-available budget app story ([86644f4](https://github.com/budgie-at/budgie/commit/86644f40dbe1698a1b3d667c6626f1344f545eda))
 
 ### Performance Improvements
 
-* **landing:** keep the feature and article registries out of client bundles ([6084e01](https://github.com/budgie-at/budgie/commit/6084e01c911803fe6034a8dfdef68220697da81a))
-
-
-
-
+- **landing:** keep the feature and article registries out of client bundles ([6084e01](https://github.com/budgie-at/budgie/commit/6084e01c911803fe6034a8dfdef68220697da81a))
 
 # [6.20.0](https://github.com/budgie-at/budgie/compare/v6.19.0...v6.20.0) (2026-09-06)
 
-
 ### Bug Fixes
 
-* **landing:** correct expense-tracking story translations ([15f705f](https://github.com/budgie-at/budgie/commit/15f705f6aa090c24f5d75e99784b5d9041221634)), closes [#814](https://github.com/budgie-at/budgie/issues/814)
-
+- **landing:** correct expense-tracking story translations ([15f705f](https://github.com/budgie-at/budgie/commit/15f705f6aa090c24f5d75e99784b5d9041221634)), closes [#814](https://github.com/budgie-at/budgie/issues/814)
 
 ### Features
 
-* **landing:** tell the expense tracking story in steps ([df3c316](https://github.com/budgie-at/budgie/commit/df3c3162995ab3bf158bf98b61cba23bd20601ab))
-
-
-
-
+- **landing:** tell the expense tracking story in steps ([df3c316](https://github.com/budgie-at/budgie/commit/df3c3162995ab3bf158bf98b61cba23bd20601ab))
 
 # [6.19.0](https://github.com/budgie-at/budgie/compare/v6.18.0...v6.19.0) (2026-09-06)
 
-
 ### Features
 
-* **landing:** pin the story stage and move callouts outside the frame on every device ([3205f3d](https://github.com/budgie-at/budgie/commit/3205f3d68601f3da49622c62cc6684240bdf68d0))
-
-
-
-
+- **landing:** pin the story stage and move callouts outside the frame on every device ([3205f3d](https://github.com/budgie-at/budgie/commit/3205f3d68601f3da49622c62cc6684240bdf68d0))
 
 # [6.18.0](https://github.com/budgie-at/budgie/compare/v6.17.1...v6.18.0) (2026-09-06)
 
-
 ### Bug Fixes
 
-* **landing:** address CodeRabbit review on subscription-free story ([94b49c2](https://github.com/budgie-at/budgie/commit/94b49c2628eb99524cdeb63db559b5699cf05b5e))
-
+- **landing:** address CodeRabbit review on subscription-free story ([94b49c2](https://github.com/budgie-at/budgie/commit/94b49c2628eb99524cdeb63db559b5699cf05b5e))
 
 ### Features
 
-* **landing:** tell the subscription-free budget app story ([96dd7b5](https://github.com/budgie-at/budgie/commit/96dd7b58f6e4f6f210741c3da41add4457bec425))
-
-
-
-
+- **landing:** tell the subscription-free budget app story ([96dd7b5](https://github.com/budgie-at/budgie/commit/96dd7b58f6e4f6f210741c3da41add4457bec425))
 
 ## [6.17.1](https://github.com/budgie-at/budgie/compare/v6.17.0...v6.17.1) (2026-09-06)
 
-
 ### Bug Fixes
 
-* **landing:** keep shared chrome inside the viewport and fix its heading order ([aa22516](https://github.com/budgie-at/budgie/commit/aa22516456cafbe9d81a1f54d951efa771fc40e7))
-
+- **landing:** keep shared chrome inside the viewport and fix its heading order ([aa22516](https://github.com/budgie-at/budgie/commit/aa22516456cafbe9d81a1f54d951efa771fc40e7))
 
 ### Performance Improvements
 
-* **landing:** ship a client-only message catalog and drop unused italic fonts ([ac6a582](https://github.com/budgie-at/budgie/commit/ac6a582ae2f871a48487bacd349e9008df971188))
-
-
-
-
+- **landing:** ship a client-only message catalog and drop unused italic fonts ([ac6a582](https://github.com/budgie-at/budgie/commit/ac6a582ae2f871a48487bacd349e9008df971188))
 
 # [6.16.0](https://github.com/budgie-at/budgie/compare/v6.15.0...v6.16.0) (2026-09-06)
 
-
 ### Features
 
-* **landing:** add AI merchant translation media ([1f51979](https://github.com/budgie-at/budgie/commit/1f519796ec67cb26e5bfcb882cedbbbf7545fc14))
-
-
-
-
+- **landing:** add AI merchant translation media ([1f51979](https://github.com/budgie-at/budgie/commit/1f519796ec67cb26e5bfcb882cedbbbf7545fc14))
 
 # [6.15.0](https://github.com/budgie-at/budgie/compare/v6.14.0...v6.15.0) (2026-09-06)
 
-
 ### Features
 
-* **landing:** tell the offline-first expense tracker story in steps ([9997622](https://github.com/budgie-at/budgie/commit/999762257cf4abe7ad1ea957f5eb99a9d73a6499))
-
-
-
-
+- **landing:** tell the offline-first expense tracker story in steps ([9997622](https://github.com/budgie-at/budgie/commit/999762257cf4abe7ad1ea957f5eb99a9d73a6499))
 
 # [6.14.0](https://github.com/budgie-at/budgie/compare/v6.13.0...v6.14.0) (2026-09-06)
 
-
 ### Features
 
-* **landing:** polish the feature story stage, callouts and typography ([b3a0e31](https://github.com/budgie-at/budgie/commit/b3a0e31f423ecbb585cb25515555f5f355a96aac))
-
-
-
-
+- **landing:** polish the feature story stage, callouts and typography ([b3a0e31](https://github.com/budgie-at/budgie/commit/b3a0e31f423ecbb585cb25515555f5f355a96aac))
 
 # [6.13.0](https://github.com/budgie-at/budgie/compare/v6.12.0...v6.13.0) (2026-09-06)
 
-
 ### Features
 
-* **landing:** add P0 captured product media ([e2ef0fd](https://github.com/budgie-at/budgie/commit/e2ef0fdae328d8591ce55db4a868638e27dc634c))
-
-
-
-
+- **landing:** add P0 captured product media ([e2ef0fd](https://github.com/budgie-at/budgie/commit/e2ef0fdae328d8591ce55db4a868638e27dc634c))
 
 # [6.12.0](https://github.com/budgie-at/budgie/compare/v6.11.1...v6.12.0) (2026-09-05)
 
-
 ### Bug Fixes
 
-* **landing:** correct debt-direction and rate translations in feature story copy ([2e9e62c](https://github.com/budgie-at/budgie/commit/2e9e62c5e8f17bd4f83f38cf470e060e4077a3f6))
-* **landing:** stop sections from clipping sticky children ([44c3c14](https://github.com/budgie-at/budgie/commit/44c3c143f604146a14899db691a6dd67452b6d80))
-
+- **landing:** correct debt-direction and rate translations in feature story copy ([2e9e62c](https://github.com/budgie-at/budgie/commit/2e9e62c5e8f17bd4f83f38cf470e060e4077a3f6))
+- **landing:** stop sections from clipping sticky children ([44c3c14](https://github.com/budgie-at/budgie/commit/44c3c143f604146a14899db691a6dd67452b6d80))
 
 ### Features
 
-* **landing:** add scroll-driven feature story components ([27e9775](https://github.com/budgie-at/budgie/commit/27e977553060fe0b6cd8846f66ee9ca0a5cbee95))
-* **landing:** tell the net-worth tracker story in steps ([e9a9263](https://github.com/budgie-at/budgie/commit/e9a9263acd121fddae98266a1da1e9aa4b13d8d8))
-
-
-
-
+- **landing:** add scroll-driven feature story components ([27e9775](https://github.com/budgie-at/budgie/commit/27e977553060fe0b6cd8846f66ee9ca0a5cbee95))
+- **landing:** tell the net-worth tracker story in steps ([e9a9263](https://github.com/budgie-at/budgie/commit/e9a9263acd121fddae98266a1da1e9aa4b13d8d8))
 
 # [6.11.0](https://github.com/budgie-at/budgie/compare/v6.10.2...v6.11.0) (2026-09-04)
 
-
 ### Bug Fixes
 
-* **landing:** align browser chrome and overscroll tint with the page theme ([ad40ff0](https://github.com/budgie-at/budgie/commit/ad40ff0393df71110f6086e04cfa9d077e9e5c24))
-* **landing:** blog hub og image comes from its generated convention ([8db4216](https://github.com/budgie-at/budgie/commit/8db4216dacccf8a0aa987cc62eea5cae989ecf2d))
-* **landing:** exempt next generated icon routes from the locale redirect ([ae53e5b](https://github.com/budgie-at/budgie/commit/ae53e5bbfc21ffef7e8ca2905364bb359c90037d))
-* **landing:** let file conventions own og images on every route ([574c685](https://github.com/budgie-at/budgie/commit/574c6852202c66e64131350c9552f809af1c5e1a))
-* **landing:** vary locale redirects by accept-language and harden security headers ([e5c9929](https://github.com/budgie-at/budgie/commit/e5c992921d0093e0d2c5448dbe05d4b84c7b7958))
-
+- **landing:** align browser chrome and overscroll tint with the page theme ([ad40ff0](https://github.com/budgie-at/budgie/commit/ad40ff0393df71110f6086e04cfa9d077e9e5c24))
+- **landing:** blog hub og image comes from its generated convention ([8db4216](https://github.com/budgie-at/budgie/commit/8db4216dacccf8a0aa987cc62eea5cae989ecf2d))
+- **landing:** exempt next generated icon routes from the locale redirect ([ae53e5b](https://github.com/budgie-at/budgie/commit/ae53e5bbfc21ffef7e8ca2905364bb359c90037d))
+- **landing:** let file conventions own og images on every route ([574c685](https://github.com/budgie-at/budgie/commit/574c6852202c66e64131350c9552f809af1c5e1a))
+- **landing:** vary locale redirects by accept-language and harden security headers ([e5c9929](https://github.com/budgie-at/budgie/commit/e5c992921d0093e0d2c5448dbe05d4b84c7b7958))
 
 ### Features
 
-* **landing:** clamp seo metadata titles and descriptions to search budgets ([6335315](https://github.com/budgie-at/budgie/commit/6335315a33500078eca45d0fcbdd890c7d82a45b))
-* **landing:** generate open graph images and app icons for every seo route ([c4e2163](https://github.com/budgie-at/budgie/commit/c4e216355be670c97030f47440d413f22d2419e2))
-* **landing:** share pages with their own generated og image ([82ae33d](https://github.com/budgie-at/budgie/commit/82ae33d883ebdacb9c69d5874c10b126a80aefec))
-
-
-
-
+- **landing:** clamp seo metadata titles and descriptions to search budgets ([6335315](https://github.com/budgie-at/budgie/commit/6335315a33500078eca45d0fcbdd890c7d82a45b))
+- **landing:** generate open graph images and app icons for every seo route ([c4e2163](https://github.com/budgie-at/budgie/commit/c4e216355be670c97030f47440d413f22d2419e2))
+- **landing:** share pages with their own generated og image ([82ae33d](https://github.com/budgie-at/budgie/commit/82ae33d883ebdacb9c69d5874c10b126a80aefec))
 
 ## [6.10.1](https://github.com/budgie-at/budgie/compare/v6.10.0...v6.10.1) (2026-09-04)
 
-
 ### Bug Fixes
 
-* **landing:** anchor the asset exclusion against the full locale proxy path ([8aaf6e0](https://github.com/budgie-at/budgie/commit/8aaf6e0e8cf42e9c9a1962293f4a8492e2db3e9f))
-* **landing:** let all static asset paths bypass the locale redirect ([c9b9df9](https://github.com/budgie-at/budgie/commit/c9b9df9d1a3dca2df86ab55a2dffa6391acce7b3))
-
-
-
-
+- **landing:** anchor the asset exclusion against the full locale proxy path ([8aaf6e0](https://github.com/budgie-at/budgie/commit/8aaf6e0e8cf42e9c9a1962293f4a8492e2db3e9f))
+- **landing:** let all static asset paths bypass the locale redirect ([c9b9df9](https://github.com/budgie-at/budgie/commit/c9b9df9d1a3dca2df86ab55a2dffa6391acce7b3))
 
 # [6.10.0](https://github.com/budgie-at/budgie/compare/v6.9.1...v6.10.0) (2026-09-03)
 
-
 ### Bug Fixes
 
-* **landing:** unignore committed media mp4 siblings ([d80a187](https://github.com/budgie-at/budgie/commit/d80a18789ba5d3553ca269a61df6f02b80f662cc))
-
+- **landing:** unignore committed media mp4 siblings ([d80a187](https://github.com/budgie-at/budgie/commit/d80a18789ba5d3553ca269a61df6f02b80f662cc))
 
 ### Features
 
-* **landing:** add captured product media for feature pages ([641e42a](https://github.com/budgie-at/budgie/commit/641e42aa370176c958c97fdbcee7aacf794a3af4))
-* **landing:** render product media on home and feature pages ([f13050e](https://github.com/budgie-at/budgie/commit/f13050eaf71a7ca3fe5e6555defa6ea2d770a0c3))
-
-
-
-
+- **landing:** add captured product media for feature pages ([641e42a](https://github.com/budgie-at/budgie/commit/641e42aa370176c958c97fdbcee7aacf794a3af4))
+- **landing:** render product media on home and feature pages ([f13050e](https://github.com/budgie-at/budgie/commit/f13050eaf71a7ca3fe5e6555defa6ea2d770a0c3))
 
 ## [6.9.1](https://github.com/budgie-at/budgie/compare/v6.9.0...v6.9.1) (2026-09-03)
 
 **Note:** Version bump only for package @budgie-at/landing
 
-
-
-
-
 # [6.8.0](https://github.com/budgie-at/budgie/compare/v6.7.0...v6.8.0) (2026-09-02)
-
 
 ### Bug Fixes
 
-* address CodeRabbit review findings on PR 719 ([0564ef4](https://github.com/budgie-at/budgie/commit/0564ef483f8447dd8f253202438a7164ca7cf1bd))
-
-
-
-
+- address CodeRabbit review findings on PR 719 ([0564ef4](https://github.com/budgie-at/budgie/commit/0564ef483f8447dd8f253202438a7164ca7cf1bd))
 
 # [6.7.0](https://github.com/budgie-at/budgie/compare/v6.6.0...v6.7.0) (2026-09-02)
 
-
 ### Bug Fixes
 
-* **landing:** validate AVIF variants and asset slugs in the media manifest builder ([47a8434](https://github.com/budgie-at/budgie/commit/47a84345fca86736d3d97f90c002b1ae1c51b2a2))
-
+- **landing:** validate AVIF variants and asset slugs in the media manifest builder ([47a8434](https://github.com/budgie-at/budgie/commit/47a84345fca86736d3d97f90c002b1ae1c51b2a2))
 
 ### Features
 
-* **landing:** add feature pages for budget planning, rules, Binance, and bank connections ([c706deb](https://github.com/budgie-at/budgie/commit/c706deb2b92a02f45d8b6b880cecf1ebabc8f8dd)), closes [#426](https://github.com/budgie-at/budgie/issues/426) [#322](https://github.com/budgie-at/budgie/issues/322) [#449](https://github.com/budgie-at/budgie/issues/449) [#506](https://github.com/budgie-at/budgie/issues/506) [#520](https://github.com/budgie-at/budgie/issues/520) [#561](https://github.com/budgie-at/budgie/issues/561) [#650](https://github.com/budgie-at/budgie/issues/650)
-* **landing:** add media asset contract and theme-aware media components ([b5e279b](https://github.com/budgie-at/budgie/commit/b5e279bfabd7a479fd345104be064bc3efe104db)), closes [#695](https://github.com/budgie-at/budgie/issues/695)
-* **landing:** refresh feature copy for jar sync, amount filter, debt, crypto, and transaction detail ([af7000e](https://github.com/budgie-at/budgie/commit/af7000e02c3f6d6d24dc8c437337115dad99dec3)), closes [#512](https://github.com/budgie-at/budgie/issues/512) [#531](https://github.com/budgie-at/budgie/issues/531) [#555](https://github.com/budgie-at/budgie/issues/555) [#567](https://github.com/budgie-at/budgie/issues/567) [#543](https://github.com/budgie-at/budgie/issues/543) [#568](https://github.com/budgie-at/budgie/issues/568)
-
-
-
-
+- **landing:** add feature pages for budget planning, rules, Binance, and bank connections ([c706deb](https://github.com/budgie-at/budgie/commit/c706deb2b92a02f45d8b6b880cecf1ebabc8f8dd)), closes [#426](https://github.com/budgie-at/budgie/issues/426) [#322](https://github.com/budgie-at/budgie/issues/322) [#449](https://github.com/budgie-at/budgie/issues/449) [#506](https://github.com/budgie-at/budgie/issues/506) [#520](https://github.com/budgie-at/budgie/issues/520) [#561](https://github.com/budgie-at/budgie/issues/561) [#650](https://github.com/budgie-at/budgie/issues/650)
+- **landing:** add media asset contract and theme-aware media components ([b5e279b](https://github.com/budgie-at/budgie/commit/b5e279bfabd7a479fd345104be064bc3efe104db)), closes [#695](https://github.com/budgie-at/budgie/issues/695)
+- **landing:** refresh feature copy for jar sync, amount filter, debt, crypto, and transaction detail ([af7000e](https://github.com/budgie-at/budgie/commit/af7000e02c3f6d6d24dc8c437337115dad99dec3)), closes [#512](https://github.com/budgie-at/budgie/issues/512) [#531](https://github.com/budgie-at/budgie/issues/531) [#555](https://github.com/budgie-at/budgie/issues/555) [#567](https://github.com/budgie-at/budgie/issues/567) [#543](https://github.com/budgie-at/budgie/issues/543) [#568](https://github.com/budgie-at/budgie/issues/568)
 
 ## [6.5.2](https://github.com/budgie-at/budgie/compare/v6.5.1...v6.5.2) (2026-09-01)
 
 **Note:** Version bump only for package @budgie-at/landing
 
-
-
-
-
 ## [6.4.2](https://github.com/budgie-at/budgie/compare/v6.4.1...v6.4.2) (2026-08-29)
 
 **Note:** Version bump only for package @budgie-at/landing
 
-
-
-
-
 # [6.4.0](https://github.com/budgie-at/budgie/compare/v6.3.0...v6.4.0) (2026-08-28)
-
 
 ### Features
 
-* add Binance account sync with bank↔P2P consolidation ([#561](https://github.com/budgie-at/budgie/issues/561)) ([92fea35](https://github.com/budgie-at/budgie/commit/92fea35f9073011caebda427451de54ccff0cad1))
-
-
-
-
+- add Binance account sync with bank↔P2P consolidation ([#561](https://github.com/budgie-at/budgie/issues/561)) ([92fea35](https://github.com/budgie-at/budgie/commit/92fea35f9073011caebda427451de54ccff0cad1))
 
 # [6.1.0](https://github.com/budgie-at/budgie/compare/v6.0.9...v6.1.0) (2026-08-13)
 
-
 ### Features
 
-* **landing:** explain deposit tracking ([119f119](https://github.com/budgie-at/budgie/commit/119f119c673251cb35b7fd9c0f249e5d538db892))
-
-
-
-
+- **landing:** explain deposit tracking ([119f119](https://github.com/budgie-at/budgie/commit/119f119c673251cb35b7fd9c0f249e5d538db892))
 
 ## [6.0.3](https://github.com/budgie-at/budgie/compare/v6.0.2...v6.0.3) (2026-08-01)
 

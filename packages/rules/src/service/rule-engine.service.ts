@@ -164,7 +164,7 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
                 return emptyMap;
             }
 
-            const mccCategories = yield* mccCategoryRepository.findAll();
+            const mccCategories = yield* mccCategoryRepository.findAll;
 
             return new Map(mccCategories.filter(category => mccCategoryIds.has(category.id)).map(category => [category.id, category.mcc]));
         });
@@ -208,7 +208,7 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
             transactionIds: number[],
             transactionInputs: TransactionCreateInputInterface[]
         ) {
-            const rules = yield* ruleRepository.findEnabledWithRelations();
+            const rules = yield* ruleRepository.findEnabledWithRelations;
             if (!isNotEmptyArray(rules)) {
                 return;
             }
@@ -228,7 +228,7 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
                 return;
             }
 
-            const rules = yield* ruleRepository.findEnabledWithRelations();
+            const rules = yield* ruleRepository.findEnabledWithRelations;
             if (!isNotEmptyArray(rules)) {
                 return;
             }
@@ -287,7 +287,7 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
         const prepareCreateInputsForRules = Effect.fn('RuleEngineService.prepareCreateInputsForRules')(function* (
             transactionInputs: TransactionCreateInputInterface[]
         ) {
-            const rules = yield* ruleRepository.findEnabledWithRelations();
+            const rules = yield* ruleRepository.findEnabledWithRelations;
             if (!isNotEmptyArray(rules)) {
                 return { transactionInputs, postCreateIndexes: [] };
             }

@@ -16,7 +16,7 @@ import { formatPinLockoutTime } from '../utils/format-pin-lockout-time.util';
 const pinLockoutRemainingMillisAtom = appAtomRuntime.atom(
     Stream.unwrap(
         Effect.map(PinAttemptService, pinAttemptService =>
-            Stream.fromEffectSchedule(pinAttemptService.getRemainingLockoutMillis(), Schedule.spaced(Duration.seconds(1))).pipe(
+            Stream.fromEffectSchedule(pinAttemptService.getRemainingLockoutMillis, Schedule.spaced(Duration.seconds(1))).pipe(
                 Stream.takeUntil(remainingMillis => !isPositiveNumber(remainingMillis))
             )
         )

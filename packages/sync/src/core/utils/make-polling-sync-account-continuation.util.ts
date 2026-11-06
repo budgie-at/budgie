@@ -11,6 +11,7 @@ import {
     SyncStatusEnum,
     TransactionRepository
 } from '@budgie/contracts';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -39,9 +40,7 @@ export const makePollingSyncAccountContinuation = Effect.fnUntraced(function* (p
     const clearedSyncProblems = { status: SyncStatusEnum.IDLE, errorCount: 0, lastError: null, lastErrorCode: null, lastWarning: null };
 
     const requireAccount = (accountId: number) =>
-        Effect.flatMap(accountRepository.findById(accountId), account =>
-            isDefined(account) ? Effect.succeed(account) : Effect.die(new Error('Account to connect not found'))
-        );
+        Effect.filterOrElse(accountRepository.findById(accountId), isDefined, () => Effect.die(new Error('Account to connect not found')));
 
     const findKeysLinkedElsewhere = Effect.fnUntraced(function* (accountId: number, externalIds: string[], ibans: string[]) {
         const [byExternalId, aliases, byIban] = yield* Effect.all([
@@ -105,9 +104,9 @@ export const makePollingSyncAccountContinuation = Effect.fnUntraced(function* (p
     });
 
     const moveSyncToProvider = Effect.fnUntraced(function* (accountId: number, lastRowAt: Date | null) {
-        const now = new Date();
+        const now = yield* DateTime.nowAsDate;
         const startAt = isDefined(lastRowAt)
-            ? new Date(lastRowAt.getTime() - (lastRowAt.getTime() % millisecondsPerDay) + millisecondsPerDay)
+            ? DateTime.toDateUtc(DateTime.makeUnsafe(lastRowAt.getTime() - (lastRowAt.getTime() % millisecondsPerDay) + millisecondsPerDay))
             : null;
         const values = {
             ...clearedSyncProblems,
@@ -144,7 +143,9 @@ export const makePollingSyncAccountContinuation = Effect.fnUntraced(function* (p
             yield* bankIntegrationRepository.deleteIfUnreferenced(account.integrationId);
         }
 
-        return yield* moveSyncToProvider(account.id, yield* transactionRepository.getTransactionTimeByAccountId(account.id, 'latest'));
+        const latestTransactionTime = yield* transactionRepository.getTransactionTimeByAccountId(account.id, 'latest');
+
+        return yield* moveSyncToProvider(account.id, latestTransactionTime);
     });
 
     const releaseToProvider = Effect.fnUntraced(function* (account: AccountEntityInterface, previousProvider: ExternalSourceEnum) {
@@ -160,7 +161,7 @@ export const makePollingSyncAccountContinuation = Effect.fnUntraced(function* (p
                 provider: previousProvider,
                 enabled: !LIVE_SYNC_PROVIDERS.has(previousProvider),
                 mode: SyncModeEnum.FORWARD,
-                forwardSyncFromAt: new Date(),
+                forwardSyncFromAt: yield* DateTime.nowAsDate,
                 reconciledAt: null,
                 reconciledBalance: null,
                 reconciliationTransactionId: null
@@ -188,14 +189,16 @@ export const makePollingSyncAccountContinuation = Effect.fnUntraced(function* (p
         connect: Effect.fnUntraced(function* (accountId: number, token: string, bankAccount: SyncAccountInterface) {
             const refusal = (yield* findChoices(accountId, [bankAccount])).refusals.get(bankAccount.id);
             if (isDefined(refusal)) {
-                return yield* new SyncAccountContinuationRefusedError({
+                return yield* SyncAccountContinuationRefusedError.make({
                     accountId,
                     reason: refusal,
                     message: 'This bank account cannot continue this Budgie account'
                 });
             }
 
-            return yield* Db.transaction(connectWork(yield* requireAccount(accountId), token, bankAccount));
+            const syncAccount = yield* requireAccount(accountId);
+
+            return yield* Db.transaction(connectWork(syncAccount, token, bankAccount));
         }),
         release: Effect.fnUntraced(function* (account: AccountEntityInterface) {
             const foreignSources = (yield* transactionRepository.findExternalSourcesByAccountId(account.id)).filter(

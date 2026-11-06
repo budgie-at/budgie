@@ -3,544 +3,298 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.164.3](https://github.com/budgie-at/budgie/compare/v6.164.2...v6.164.3) (2026-11-06)
+
+### Performance Improvements
+
+- run Effect rules in oxlint on tsrs, enable them all, parallelize tests ([#1956](https://github.com/budgie-at/budgie/issues/1956)) ([53a5170](https://github.com/budgie-at/budgie/commit/53a5170978e14a31cb6fc22da657851a42b592ad)), closes [#1883](https://github.com/budgie-at/budgie/issues/1883)
+
 ## [6.163.2](https://github.com/budgie-at/budgie/compare/v6.163.1...v6.163.2) (2026-11-05)
 
 **Note:** Version bump only for package @budgie/rules
-
-
-
-
 
 # [6.163.0](https://github.com/budgie-at/budgie/compare/v6.162.1...v6.163.0) (2026-11-05)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 ## [6.162.1](https://github.com/budgie-at/budgie/compare/v6.162.0...v6.162.1) (2026-11-05)
 
 **Note:** Version bump only for package @budgie/rules
-
-
-
-
 
 ## [6.152.1](https://github.com/budgie-at/budgie/compare/v6.152.0...v6.152.1) (2026-11-04)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 ## [6.151.5](https://github.com/budgie-at/budgie/compare/v6.151.4...v6.151.5) (2026-11-04)
 
 **Note:** Version bump only for package @budgie/rules
-
-
-
-
 
 ## [6.150.4](https://github.com/budgie-at/budgie/compare/v6.150.3...v6.150.4) (2026-11-04)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 # [6.148.0](https://github.com/budgie-at/budgie/compare/v6.147.1...v6.148.0) (2026-11-02)
 
 **Note:** Version bump only for package @budgie/rules
-
-
-
-
 
 ## [6.147.1](https://github.com/budgie-at/budgie/compare/v6.147.0...v6.147.1) (2026-11-02)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 # [6.147.0](https://github.com/budgie-at/budgie/compare/v6.146.1...v6.147.0) (2026-11-02)
 
 **Note:** Version bump only for package @budgie/rules
-
-
-
-
 
 # [6.145.0](https://github.com/budgie-at/budgie/compare/v6.144.1...v6.145.0) (2026-11-02)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 ## [6.144.1](https://github.com/budgie-at/budgie/compare/v6.144.0...v6.144.1) (2026-11-01)
 
 **Note:** Version bump only for package @budgie/rules
-
-
-
-
 
 # [6.141.0](https://github.com/budgie-at/budgie/compare/v6.140.1...v6.141.0) (2026-11-01)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 ## [6.140.1](https://github.com/budgie-at/budgie/compare/v6.140.0...v6.140.1) (2026-11-01)
 
 **Note:** Version bump only for package @budgie/rules
-
-
-
-
 
 # [6.140.0](https://github.com/budgie-at/budgie/compare/v6.139.2...v6.140.0) (2026-11-01)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 # [6.138.0](https://github.com/budgie-at/budgie/compare/v6.137.1...v6.138.0) (2026-10-31)
 
 **Note:** Version bump only for package @budgie/rules
-
-
-
-
 
 # [6.134.0](https://github.com/budgie-at/budgie/compare/v6.133.0...v6.134.0) (2026-10-31)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 # [6.133.0](https://github.com/budgie-at/budgie/compare/v6.132.0...v6.133.0) (2026-10-31)
 
 ### Features
 
-* **app:** confirm every receipt scan in a prefilled transaction form ([41f3ab1](https://github.com/budgie-at/budgie/commit/41f3ab1fcf3e96794db766ee96da74540836f7fa))
-
+- **app:** confirm every receipt scan in a prefilled transaction form ([41f3ab1](https://github.com/budgie-at/budgie/commit/41f3ab1fcf3e96794db766ee96da74540836f7fa))
 
 # [6.132.0](https://github.com/budgie-at/budgie/compare/v6.131.0...v6.132.0) (2026-10-30)
 
 ### Features
 
-* **app:** rebuild categorize inbox as a list-first triage flow ([#1814](https://github.com/budgie-at/budgie/issues/1814)) ([449ff76](https://github.com/budgie-at/budgie/commit/449ff764853d40e0734c2d4bc808a3d336ab7103))
-
+- **app:** rebuild categorize inbox as a list-first triage flow ([#1814](https://github.com/budgie-at/budgie/issues/1814)) ([449ff76](https://github.com/budgie-at/budgie/commit/449ff764853d40e0734c2d4bc808a3d336ab7103))
 
 # [6.128.0](https://github.com/budgie-at/budgie/compare/v6.127.0...v6.128.0) (2026-10-30)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 # [6.127.0](https://github.com/budgie-at/budgie/compare/v6.126.5...v6.127.0) (2026-10-30)
 
 **Note:** Version bump only for package @budgie/rules
-
-
-
-
 
 ## [6.126.5](https://github.com/budgie-at/budgie/compare/v6.126.4...v6.126.5) (2026-10-29)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 # [6.126.0](https://github.com/budgie-at/budgie/compare/v6.125.3...v6.126.0) (2026-10-29)
 
 **Note:** Version bump only for package @budgie/rules
-
-
-
-
 
 ## [6.125.2](https://github.com/budgie-at/budgie/compare/v6.125.1...v6.125.2) (2026-10-28)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 # [6.124.0](https://github.com/budgie-at/budgie/compare/v6.123.1...v6.124.0) (2026-10-28)
 
 ### Performance Improvements
 
-* memoize layer composition by upgrading effect to 4.0.6 ([02a76c6](https://github.com/budgie-at/budgie/commit/02a76c64e302ab39db47954f8e6cad612736691d))
-
+- memoize layer composition by upgrading effect to 4.0.6 ([02a76c6](https://github.com/budgie-at/budgie/commit/02a76c64e302ab39db47954f8e6cad612736691d))
 
 # [6.123.0](https://github.com/budgie-at/budgie/compare/v6.122.0...v6.123.0) (2026-10-28)
 
 ### Bug Fixes
 
-* apply receipt rules after the receipt transaction commits ([d573893](https://github.com/budgie-at/budgie/commit/d573893df132c045e4d1f8ac8f9bbfd8c9425a40))
-* never convert a scanned receipt's transaction to a transfer ([c9b7dfb](https://github.com/budgie-at/budgie/commit/c9b7dfbfef428bf68b270bd921a6b655d217a6a1))
+- apply receipt rules after the receipt transaction commits ([d573893](https://github.com/budgie-at/budgie/commit/d573893df132c045e4d1f8ac8f9bbfd8c9425a40))
+- never convert a scanned receipt's transaction to a transfer ([c9b7dfb](https://github.com/budgie-at/budgie/commit/c9b7dfbfef428bf68b270bd921a6b655d217a6a1))
 
 ### Features
 
-* apply user rules to scanned receipts ([cec3e3b](https://github.com/budgie-at/budgie/commit/cec3e3b6092ee40b3b1ad2ffda475f45a45d7393))
-
+- apply user rules to scanned receipts ([cec3e3b](https://github.com/budgie-at/budgie/commit/cec3e3b6092ee40b3b1ad2ffda475f45a45d7393))
 
 ## [6.121.2](https://github.com/budgie-at/budgie/compare/v6.121.1...v6.121.2) (2026-10-27)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 # [6.121.0](https://github.com/budgie-at/budgie/compare/v6.120.0...v6.121.0) (2026-10-27)
 
 **Note:** Version bump only for package @budgie/rules
-
-
-
-
 
 # [6.120.0](https://github.com/budgie-at/budgie/compare/v6.119.1...v6.120.0) (2026-10-27)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 # [6.117.0](https://github.com/budgie-at/budgie/compare/v6.116.4...v6.117.0) (2026-10-26)
 
 **Note:** Version bump only for package @budgie/rules
-
-
-
-
 
 ## [6.116.2](https://github.com/budgie-at/budgie/compare/v6.116.1...v6.116.2) (2026-10-26)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 # [6.116.0](https://github.com/budgie-at/budgie/compare/v6.115.10...v6.116.0) (2026-10-26)
 
 ### Features
 
-* external accounts, automatic card discovery and reissue merge ([#1672](https://github.com/budgie-at/budgie/issues/1672)) ([176b4ed](https://github.com/budgie-at/budgie/commit/176b4ed78e84d6f5eb52ddab517c867b0387e5cb)), closes [#1664](https://github.com/budgie-at/budgie/issues/1664) [#1666](https://github.com/budgie-at/budgie/issues/1666) [#1667](https://github.com/budgie-at/budgie/issues/1667)
-
+- external accounts, automatic card discovery and reissue merge ([#1672](https://github.com/budgie-at/budgie/issues/1672)) ([176b4ed](https://github.com/budgie-at/budgie/commit/176b4ed78e84d6f5eb52ddab517c867b0387e5cb)), closes [#1664](https://github.com/budgie-at/budgie/issues/1664) [#1666](https://github.com/budgie-at/budgie/issues/1666) [#1667](https://github.com/budgie-at/budgie/issues/1667)
 
 ## [6.115.9](https://github.com/budgie-at/budgie/compare/v6.115.8...v6.115.9) (2026-10-25)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 ## [6.115.8](https://github.com/budgie-at/budgie/compare/v6.115.7...v6.115.8) (2026-10-25)
 
 **Note:** Version bump only for package @budgie/rules
-
-
-
-
 
 ## [6.115.5](https://github.com/budgie-at/budgie/compare/v6.115.4...v6.115.5) (2026-10-25)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 ## [6.115.4](https://github.com/budgie-at/budgie/compare/v6.115.3...v6.115.4) (2026-10-24)
 
 **Note:** Version bump only for package @budgie/rules
-
-
-
-
 
 # [6.110.0](https://github.com/budgie-at/budgie/compare/v6.109.2...v6.110.0) (2026-10-21)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 ## [6.109.1](https://github.com/budgie-at/budgie/compare/v6.109.0...v6.109.1) (2026-10-20)
 
 **Note:** Version bump only for package @budgie/rules
-
-
-
-
 
 # [6.109.0](https://github.com/budgie-at/budgie/compare/v6.108.0...v6.109.0) (2026-10-20)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 ## [6.106.1](https://github.com/budgie-at/budgie/compare/v6.106.0...v6.106.1) (2026-10-18)
 
 **Note:** Version bump only for package @budgie/rules
-
-
-
-
 
 # [6.106.0](https://github.com/budgie-at/budgie/compare/v6.105.0...v6.106.0) (2026-10-16)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 # [6.105.0](https://github.com/budgie-at/budgie/compare/v6.104.1...v6.105.0) (2026-10-16)
 
 **Note:** Version bump only for package @budgie/rules
-
-
-
-
 
 # [6.104.0](https://github.com/budgie-at/budgie/compare/v6.103.13...v6.104.0) (2026-10-15)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 ## [6.103.4](https://github.com/budgie-at/budgie/compare/v6.103.3...v6.103.4) (2026-10-14)
 
 **Note:** Version bump only for package @budgie/rules
-
-
-
-
 
 ## [6.103.3](https://github.com/budgie-at/budgie/compare/v6.103.2...v6.103.3) (2026-10-13)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 ## [6.103.1](https://github.com/budgie-at/budgie/compare/v6.103.0...v6.103.1) (2026-10-13)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 # [6.103.0](https://github.com/budgie-at/budgie/compare/v6.102.0...v6.103.0) (2026-10-13)
-
 
 ### Bug Fixes
 
-* reset every mutable table in test databases and drop vitest globals ([82be5ac](https://github.com/budgie-at/budgie/commit/82be5ac7a9b4a2a8138f1b187ae695907d7d9a74))
-* **rules:** delegate rule transfer conversion to the ledger and skip idle batch delays ([e26568d](https://github.com/budgie-at/budgie/commit/e26568d1fb77d3d939ba2dcb1e8ae9c99d403b23))
-
-
-
-
+- reset every mutable table in test databases and drop vitest globals ([82be5ac](https://github.com/budgie-at/budgie/commit/82be5ac7a9b4a2a8138f1b187ae695907d7d9a74))
+- **rules:** delegate rule transfer conversion to the ledger and skip idle batch delays ([e26568d](https://github.com/budgie-at/budgie/commit/e26568d1fb77d3d939ba2dcb1e8ae9c99d403b23))
 
 # [6.101.0](https://github.com/budgie-at/budgie/compare/v6.100.9...v6.101.0) (2026-10-12)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 ## [6.100.7](https://github.com/budgie-at/budgie/compare/v6.100.6...v6.100.7) (2026-10-12)
 
 **Note:** Version bump only for package @budgie/rules
-
-
-
-
 
 ## [6.100.6](https://github.com/budgie-at/budgie/compare/v6.100.5...v6.100.6) (2026-10-11)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 ## [6.100.5](https://github.com/budgie-at/budgie/compare/v6.100.4...v6.100.5) (2026-10-11)
 
 **Note:** Version bump only for package @budgie/rules
-
-
-
-
 
 ## [6.100.2](https://github.com/budgie-at/budgie/compare/v6.100.1...v6.100.2) (2026-10-11)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 # [6.99.0](https://github.com/budgie-at/budgie/compare/v6.98.0...v6.99.0) (2026-10-09)
 
 **Note:** Version bump only for package @budgie/rules
-
-
-
-
 
 ## [6.96.1](https://github.com/budgie-at/budgie/compare/v6.96.0...v6.96.1) (2026-10-08)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 # [6.95.0](https://github.com/budgie-at/budgie/compare/v6.94.3...v6.95.0) (2026-10-07)
 
 **Note:** Version bump only for package @budgie/rules
-
-
-
-
 
 ## [6.94.3](https://github.com/budgie-at/budgie/compare/v6.94.2...v6.94.3) (2026-10-07)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 ## [6.94.2](https://github.com/budgie-at/budgie/compare/v6.94.1...v6.94.2) (2026-10-07)
 
 **Note:** Version bump only for package @budgie/rules
-
-
-
-
 
 ## [6.94.1](https://github.com/budgie-at/budgie/compare/v6.94.0...v6.94.1) (2026-10-06)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 # [6.94.0](https://github.com/budgie-at/budgie/compare/v6.93.2...v6.94.0) (2026-10-06)
 
 **Note:** Version bump only for package @budgie/rules
-
-
-
-
 
 # [6.93.0](https://github.com/budgie-at/budgie/compare/v6.92.2...v6.93.0) (2026-10-05)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 ## [6.92.2](https://github.com/budgie-at/budgie/compare/v6.92.1...v6.92.2) (2026-10-04)
-
 
 ### Bug Fixes
 
-* **categorization:** keep user tag provenance on merges and rule tags ([62344bb](https://github.com/budgie-at/budgie/commit/62344bbb40264ee922c0ad1ca848b9f114cfc0cf))
-* **categorization:** learn tag suggestions only from user-picked tags ([d86fab6](https://github.com/budgie-at/budgie/commit/d86fab646f9b84db78f8b4dab1de7c80b69e7504))
-
-
-
-
+- **categorization:** keep user tag provenance on merges and rule tags ([62344bb](https://github.com/budgie-at/budgie/commit/62344bbb40264ee922c0ad1ca848b9f114cfc0cf))
+- **categorization:** learn tag suggestions only from user-picked tags ([d86fab6](https://github.com/budgie-at/budgie/commit/d86fab646f9b84db78f8b4dab1de7c80b69e7504))
 
 ## [6.92.1](https://github.com/budgie-at/budgie/compare/v6.92.0...v6.92.1) (2026-10-04)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 # [6.92.0](https://github.com/budgie-at/budgie/compare/v6.91.2...v6.92.0) (2026-10-04)
 
 **Note:** Version bump only for package @budgie/rules
-
-
-
-
 
 ## [6.91.2](https://github.com/budgie-at/budgie/compare/v6.91.1...v6.91.2) (2026-10-04)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 ## [6.91.1](https://github.com/budgie-at/budgie/compare/v6.91.0...v6.91.1) (2026-10-04)
 
 **Note:** Version bump only for package @budgie/rules
-
-
-
-
 
 # [6.91.0](https://github.com/budgie-at/budgie/compare/v6.90.0...v6.91.0) (2026-10-04)
 
 **Note:** Version bump only for package @budgie/rules
 
-
-
-
-
 # [6.90.0](https://github.com/budgie-at/budgie/compare/v6.89.0...v6.90.0) (2026-10-04)
-
 
 ### Bug Fixes
 
-* **rules:** skip consolidated canonicals in transfer conversion ([75a2684](https://github.com/budgie-at/budgie/commit/75a26842caddacee15864980d2e1d03cc00a0948))
-
-
-
-
+- **rules:** skip consolidated canonicals in transfer conversion ([75a2684](https://github.com/budgie-at/budgie/commit/75a26842caddacee15864980d2e1d03cc00a0948))
 
 ## [6.88.5](https://github.com/budgie-at/budgie/compare/v6.88.4-rewrite...v6.88.5) (2026-10-03)
 

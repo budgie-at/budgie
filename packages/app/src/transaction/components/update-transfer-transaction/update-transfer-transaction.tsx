@@ -28,8 +28,11 @@ export const UpdateTransferTransaction = ({ transaction, openFeeOnMount }: Updat
     );
     const isConsolidated = isDefined(transaction.consolidationType);
 
+    const transactionInput = convertTransactionToInput(transaction);
+
     const { form, handleSubmit, handleDelete } = useUpdateTransactionForm({
-        transaction: convertTransactionToInput(transaction),
+        transaction: transactionInput,
+        persistedTitle: transactionInput.title,
         schema: TransferTransactionCreateInputSchema,
         id: transaction.id,
         onAfterSubmit: () => void markForEmbedding(transaction.id)

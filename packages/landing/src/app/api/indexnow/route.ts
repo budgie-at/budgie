@@ -1,6 +1,7 @@
 /* oxlint-disable lingui/no-unlocalized-strings */
 import * as Effect from 'effect/Effect';
 import * as FetchHttpClient from 'effect/http/FetchHttpClient';
+import * as Layer from 'effect/Layer';
 import { NextResponse } from 'next/server';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -22,8 +23,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     const result = await Effect.runPromise(
         Effect.flatMap(IndexnowSubmitter, submitter => submitter.submit()).pipe(
-            Effect.provide(IndexnowSubmitter.layer),
-            Effect.provide(FetchHttpClient.layer)
+            Effect.provide(IndexnowSubmitter.layer.pipe(Layer.provide(FetchHttpClient.layer)))
         )
     );
 

@@ -13,9 +13,7 @@ import { StatisticsRepository } from '@budgie/contracts';
 import * as Clock from 'effect/Clock';
 import * as Layer from 'effect/Layer';
 
-export const testDbHandle = await buildTestDb();
-
-export const testDb = testDbHandle.database;
+export const testDb = await buildTestDb();
 
 export const testSeedService = new TestSeedService(testDb);
 

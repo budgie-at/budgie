@@ -5,6 +5,7 @@ import { VoiceInputStateEnum } from '../enum/voice-input-state.enum';
 import { VoiceInputDataInterface } from './voice-input-data.interface';
 
 import type { AppServices } from '../../@generic/runtime/app.runtime';
+import type * as Cause from 'effect/Cause';
 import type * as Effect from 'effect/Effect';
 
 export interface UseVoiceInputReturnInterface {
@@ -14,7 +15,7 @@ export interface UseVoiceInputReturnInterface {
     readonly downloadProgress: number;
     readonly startAndCollect: (
         onResult: (transactions: AITransactionInterface[], originalText: string) => void
-    ) => Effect.Effect<void, unknown, AppServices>;
+    ) => Effect.Effect<void, Cause.YieldableError, AppServices>;
     readonly stop: () => void;
     readonly cancel: () => void;
 }

@@ -6,14 +6,14 @@ import {
     RecurringSeriesSourceEnum,
     RecurringSeriesUserStateEnum
 } from '@budgie/contracts';
-import { afterAll, beforeEach, expect, layer } from '@effect/vitest';
+import { beforeEach, expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import { RecurringService } from '../src/index';
 import { RecurringRepository } from '../src/repository/recurring.repository';
 
 import { DEFAULT_INSTRUMENT_ID, NOW, seedCharges, seedMonthlyCharges, seedSavedSeries } from './recurring-seed';
-import { TestLayer, detectAt, findSeries, testDb, testDbHandle } from './test-context';
+import { TestLayer, detectAt, findSeries, testDb } from './test-context';
 
 const SIX_MONTHS = [6, 5, 4, 3, 2, 1] as const;
 
@@ -37,8 +37,6 @@ const LEGACY_SCENARIOS = [
 ] as const;
 
 beforeEach(() => Effect.runPromise(resetTestDb(testDb)));
-
-afterAll(() => testDbHandle.dispose());
 
 layer(TestLayer)('recurring identity', it => {
     for (const [scenario, chargeTitle, legacyKey, title, userState, expectedKey] of LEGACY_SCENARIOS) {

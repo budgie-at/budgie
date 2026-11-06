@@ -80,7 +80,7 @@ describe('monobank/forward-sync-window-clamp', () => {
 
                 expect(requestedWindows).toHaveLength(EXPECTED_STALE_CHUNK_COUNT);
                 expectWindowsAreBoundedAndContiguous(requestedWindows);
-                expect(yield* fetchPersistedMonobankTransactions()).toHaveLength(EXPECTED_STALE_CHUNK_COUNT);
+                expect(yield* fetchPersistedMonobankTransactions).toHaveLength(EXPECTED_STALE_CHUNK_COUNT);
                 yield* expectForwardSyncCompleted(bankSync.id, EXPECTED_STALE_CHUNK_COUNT);
             }).pipe(Effect.provide(TestLayer))
     );
@@ -108,7 +108,7 @@ describe('monobank/forward-sync-window-clamp', () => {
             yield* monobankSyncService.sync();
 
             expect(requestCount).toBe(1);
-            expect(yield* fetchPersistedMonobankTransactions()).toHaveLength(1);
+            expect(yield* fetchPersistedMonobankTransactions).toHaveLength(1);
             yield* expectForwardSyncCompleted(bankSync.id, 1);
         }).pipe(Effect.provide(TestLayer))
     );

@@ -11,7 +11,7 @@ export const BudgetEventFormSchema = Schema.Struct({
     startsAtMs: Schema.Finite.check(Schema.isGreaterThan(0)),
     endsAtMs: Schema.Finite.check(Schema.isGreaterThan(0)),
     overallLimit: Schema.Finite.check(Schema.isGreaterThan(0)),
-    categoryLimits: Schema.mutable(Schema.Array(BudgetCategoryLimitFormSchema)),
+    categoryLimits: BudgetCategoryLimitFormSchema.pipe(Schema.Array, Schema.mutable),
     instrumentId: Schema.Finite.check(Schema.isInt(), Schema.isGreaterThan(0))
 }).check(
     Schema.makeFilter(values => startOfDay(values.endsAtMs) >= startOfDay(values.startsAtMs) || { path: ['endsAtMs'], issue: '' }),

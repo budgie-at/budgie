@@ -1,4 +1,5 @@
 import { BudgetPeriodCloseService } from '@budgie/budget';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
@@ -14,7 +15,8 @@ TaskManager.defineTask(BudgetBackgroundTaskNameEnum.ALERT_MONITOR, () =>
             const budgetPeriodCloseService = yield* BudgetPeriodCloseService;
             const budgetAlertMonitorService = yield* BudgetAlertMonitorService;
 
-            yield* logAndContinue(budgetPeriodCloseService.closeDuePeriods(new Date()));
+            const now = yield* DateTime.nowAsDate;
+            yield* logAndContinue(budgetPeriodCloseService.closeDuePeriods(now));
             yield* budgetAlertMonitorService.run();
 
             return BackgroundTask.BackgroundTaskResult.Success;

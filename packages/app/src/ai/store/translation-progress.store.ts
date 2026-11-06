@@ -16,10 +16,10 @@ export class TranslationProgressStore extends Context.Service<TranslationProgres
             translationProgressSnapshotAtom,
             Effect.all(
                 [
-                    categoryRepository.countAll(),
-                    tagRepository.countAll(),
-                    categoryRepository.countUntranslated(),
-                    tagRepository.countUntranslated()
+                    categoryRepository.countAll,
+                    tagRepository.countAll,
+                    categoryRepository.countUntranslated,
+                    tagRepository.countUntranslated
                 ],
                 {
                     concurrency: 'unbounded'

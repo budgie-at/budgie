@@ -12,17 +12,17 @@ import { DEFAULT_SETTINGS } from './default-settings.constant';
 
 export const settingsResultAtom = databaseQueryAtom(
     [SettingsEntityTable],
-    Effect.flatMap(SettingsRepository, settingsRepository => settingsRepository.find())
+    Effect.flatMap(SettingsRepository, settingsRepository => settingsRepository.find)
 );
 
 export const defaultInstrumentResultAtom = databaseQueryAtom(
     [SettingsEntityTable, InstrumentEntityTable],
-    Effect.flatMap(SettingsRepository, settingsRepository => settingsRepository.findDefaultInstrument())
+    Effect.flatMap(SettingsRepository, settingsRepository => settingsRepository.findDefaultInstrument)
 );
 
 export const defaultAccountResultAtom = databaseQueryAtom(
     [SettingsEntityTable, AccountEntityTable],
-    Effect.flatMap(SettingsRepository, settingsRepository => settingsRepository.findDefaultAccount())
+    Effect.flatMap(SettingsRepository, settingsRepository => settingsRepository.findDefaultAccount)
 );
 
 export const isSettingsLoadingAtom = Atom.make(

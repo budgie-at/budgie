@@ -9,7 +9,7 @@ const BinanceFiatPaymentApiSchema = Schema.Struct({
     cryptoCurrency: Schema.String,
     price: Schema.String,
     status: Schema.String,
-    createTime: Schema.Number,
+    createTime: Schema.Finite,
     paymentMethod: Schema.optionalKey(Schema.String)
 });
 
@@ -17,7 +17,7 @@ export const BinanceFiatPaymentListApiSchema = Schema.Struct({
     code: Schema.String,
     message: Schema.String,
     data: Schema.Array(BinanceFiatPaymentApiSchema).pipe(Schema.withDecodingDefaultKey(Effect.succeed([]))),
-    total: Schema.Number,
+    total: Schema.Finite,
     success: Schema.Boolean
 });
 

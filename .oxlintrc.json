@@ -1,14 +1,7 @@
 {
     "$schema": "./node_modules/oxlint/configuration_schema.json",
-    "plugins": [
-        "typescript",
-        "import",
-        "promise",
-        "node",
-        "react",
-        "oxc",
-        "unicorn"
-    ],
+    "extends": ["./node_modules/@effect/tsgo/oxlint-presets/strict.json"],
+    "plugins": ["typescript", "import", "promise", "node", "react", "oxc", "unicorn"],
     "jsPlugins": [
         {
             "name": "lingui",
@@ -78,30 +71,61 @@
         "**/fingerprint.config.js",
         "packages/app/scripts/**"
     ],
+    "rules": {
+        "effecttsgo/global-fetch": "error",
+        "effecttsgo/global-fetch-in-effect": "error",
+        "effecttsgo/layer-merge-all-with-dependencies": "error",
+        "effecttsgo/service-not-as-class": "error",
+        "effecttsgo/any-unknown-in-error-context": "error",
+        "effecttsgo/lazy-effect": "error",
+        "effecttsgo/unnecessary-effect-gen": "error",
+        "effecttsgo/schema-number": "error",
+        "effecttsgo/schema-class-missing-brand": "error",
+        "effecttsgo/crypto-random-uuid": "error",
+        "effecttsgo/crypto-random-uuid-in-effect": "error",
+        "effecttsgo/effect-do-notation": "error",
+        "effecttsgo/extends-native-error": "error",
+        "effecttsgo/global-console": "error",
+        "effecttsgo/global-console-in-effect": "error",
+        "effecttsgo/global-timers": "error",
+        "effecttsgo/global-timers-in-effect": "error",
+        "effecttsgo/map-map-error-to-map-both": "error",
+        "effecttsgo/missing-effect-service-dependency": "error",
+        "effecttsgo/new-promise": "error",
+        "effecttsgo/prefer-barrel-import": "error",
+        "effecttsgo/prefer-namespace-import": "error",
+        "effecttsgo/prefer-schema-tagged-error": "error",
+        "effecttsgo/prefer-schema-type-property": "error",
+        "effecttsgo/schema-union-of-literals": "error",
+        "effecttsgo/type-union-to-schema-union": "error",
+        "effecttsgo/unnecessary-arrow-block": "error",
+        "effecttsgo/unsafe-effect-type-assertion": "error",
+        "effecttsgo/provide-merge-all-to-array": "error",
+        "effecttsgo/nested-effect-gen-yield": "error",
+        "effecttsgo/global-random-in-effect": "error",
+        "effecttsgo/process-env-in-effect": "error",
+        "effecttsgo/effect-try-without-catch": "error",
+        "effecttsgo/global-json-in-effect": "error",
+        "effecttsgo/instance-of-schema": "error",
+        "effecttsgo/strict-effect-provide": "error",
+        "effecttsgo/new-schema-class": "error",
+        "effecttsgo/yield-in-call-argument": "error",
+        "effecttsgo/missed-pipeable-opportunity": "error",
+        "effecttsgo/global-date-in-effect": "error"
+    },
     "overrides": [
         {
-            "files": [
-                "**/*.{ts,tsx}"
-            ],
+            "files": ["**/*.{ts,tsx}"],
             "rules": {
                 "accessor-pairs": "error",
                 "array-callback-return": "error",
-                "arrow-body-style": [
-                    "error",
-                    "as-needed"
-                ],
+                "arrow-body-style": ["error", "as-needed"],
                 "block-scoped-var": "error",
                 "capitalized-comments": "off",
                 "class-methods-use-this": "off",
-                "complexity": [
-                    "error",
-                    25
-                ],
+                "complexity": ["error", 25],
                 "constructor-super": "error",
-                "curly": [
-                    "error",
-                    "all"
-                ],
+                "curly": ["error", "all"],
                 "default-case": "error",
                 "default-case-last": "error",
                 "default-param-last": "error",
@@ -122,19 +146,7 @@
                 "id-length": [
                     "error",
                     {
-                        "exceptions": [
-                            "x",
-                            "y",
-                            "z",
-                            "i",
-                            "j",
-                            "e",
-                            "_",
-                            "w",
-                            "h",
-                            "t",
-                            "X"
-                        ],
+                        "exceptions": ["x", "y", "z", "i", "j", "e", "_", "w", "h", "t", "X"],
                         "checkGeneric": false
                     }
                 ],
@@ -201,9 +213,7 @@
                 "no-empty-function": [
                     "error",
                     {
-                        "allow": [
-                            "constructors"
-                        ]
+                        "allow": ["constructors"]
                     }
                 ],
                 "no-empty-pattern": "error",
@@ -237,144 +247,13 @@
                     "error",
                     {
                         "ignore": [
-                            -20,
-                            -10,
-                            -2,
-                            -4,
-                            -3,
-                            -6,
-                            -5,
-                            -1,
-                            -0.5,
-                            0,
-                            0.0001,
-                            0.01,
-                            0.05,
-                            0.1,
-                            0.2,
-                            0.3,
-                            0.35,
-                            0.5,
-                            0.6,
-                            0.64,
-                            0.65,
-                            0.66,
-                            0.75,
-                            0.76,
-                            0.79,
-                            0.8,
-                            0.81,
-                            0.83,
-                            1,
-                            1.5,
-                            1.8,
-                            1.97,
-                            2,
-                            2.5,
-                            3,
-                            3.2,
-                            3.25,
-                            4,
-                            4.25,
-                            4.5,
-                            5,
-                            5.5,
-                            6,
-                            6.5,
-                            7,
-                            7.5,
-                            8,
-                            9,
-                            10,
-                            11,
-                            12,
-                            13,
-                            14,
-                            15,
-                            16,
-                            17,
-                            19,
-                            18,
-                            20,
-                            21,
-                            22,
-                            23,
-                            24,
-                            25,
-                            26,
-                            27,
-                            28,
-                            29,
-                            30,
-                            31,
-                            31.5,
-                            32,
-                            33,
-                            35,
-                            34,
-                            36,
-                            37,
-                            38,
-                            39,
-                            40,
-                            41,
-                            42,
-                            45,
-                            48,
-                            50,
-                            51,
-                            59,
-                            60,
-                            70,
-                            75,
-                            80,
-                            96,
-                            99,
-                            100,
-                            125,
-                            150,
-                            180,
-                            200,
-                            201,
-                            250,
-                            255,
-                            256,
-                            300,
-                            307,
-                            308,
-                            350,
-                            360,
-                            365,
-                            400,
-                            404,
-                            405,
-                            500,
-                            600,
-                            640,
-                            725,
-                            750,
-                            900,
-                            1000,
-                            1024,
-                            1200,
-                            1600,
-                            2000,
-                            2019,
-                            2500,
-                            3000,
-                            3500,
-                            3600,
-                            5000,
-                            6000,
-                            10000,
-                            10001,
-                            10100,
-                            16000,
-                            30000,
-                            60000,
-                            120000,
-                            1000000000,
-                            999
+                            -20, -10, -2, -4, -3, -6, -5, -1, -0.5, 0, 0.0001, 0.01, 0.05, 0.1, 0.2, 0.3, 0.35, 0.5, 0.6, 0.64, 0.65, 0.66,
+                            0.75, 0.76, 0.79, 0.8, 0.81, 0.83, 1, 1.5, 1.8, 1.97, 2, 2.5, 3, 3.2, 3.25, 4, 4.25, 4.5, 5, 5.5, 6, 6.5, 7,
+                            7.5, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19, 18, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 31.5, 32, 33,
+                            35, 34, 36, 37, 38, 39, 40, 41, 42, 45, 48, 50, 51, 59, 60, 70, 75, 80, 96, 99, 100, 125, 150, 180, 200, 201,
+                            250, 255, 256, 300, 307, 308, 350, 360, 365, 400, 404, 405, 500, 600, 640, 725, 750, 900, 1000, 1024, 1200,
+                            1600, 2000, 2019, 2500, 3000, 3500, 3600, 5000, 6000, 10000, 10001, 10100, 16000, 30000, 60000, 120000,
+                            1000000000, 999
                         ]
                     }
                 ],
@@ -397,10 +276,7 @@
                 "no-prototype-builtins": "error",
                 "no-redeclare": "error",
                 "no-regex-spaces": "error",
-                "no-restricted-exports": [
-                    "error",
-                    {}
-                ],
+                "no-restricted-exports": ["error", {}],
                 "no-restricted-globals": "error",
                 "no-restricted-imports": [
                     "error",
@@ -486,10 +362,7 @@
                 "no-warning-comments": [
                     "error",
                     {
-                        "terms": [
-                            "fixme",
-                            "xxx"
-                        ],
+                        "terms": ["fixme", "xxx"],
                         "location": "start"
                     }
                 ],
@@ -622,10 +495,7 @@
                         "allowNumber": true
                     }
                 ],
-                "typescript/return-await": [
-                    "error",
-                    "error-handling-correctness-only"
-                ],
+                "typescript/return-await": ["error", "error-handling-correctness-only"],
                 "typescript/switch-exhaustiveness-check": [
                     "error",
                     {
@@ -645,16 +515,11 @@
                 ],
                 "typescript/promise-function-async": "off",
                 "typescript/explicit-function-return-type": "off",
-                "@stylistic/nonblock-statement-body-position": [
-                    "error",
-                    "below"
-                ]
+                "@stylistic/nonblock-statement-body-position": ["error", "below"]
             }
         },
         {
-            "files": [
-                "**/*.{ts,tsx}"
-            ],
+            "files": ["**/*.{ts,tsx}"],
             "rules": {
                 "@stylistic/padding-line-between-statements": [
                     "error",
@@ -690,10 +555,7 @@
             }
         },
         {
-            "files": [
-                "packages/app/**/*.{ts,tsx}",
-                "packages/landing/**/*.{ts,tsx}"
-            ],
+            "files": ["packages/app/**/*.{ts,tsx}", "packages/landing/**/*.{ts,tsx}"],
             "rules": {
                 "lingui/t-call-in-function": "error",
                 "lingui/no-single-variables-to-translate": "error",
@@ -703,14 +565,8 @@
             }
         },
         {
-            "files": [
-                "packages/app/**/*.{ts,tsx}",
-                "packages/landing/**/*.{ts,tsx}"
-            ],
-            "excludeFiles": [
-                "packages/app/**/*.selector.ts",
-                "packages/app/src/i18n/constant/languages.constant.ts"
-            ],
+            "files": ["packages/app/**/*.{ts,tsx}", "packages/landing/**/*.{ts,tsx}"],
+            "excludeFiles": ["packages/app/**/*.selector.ts", "packages/app/src/i18n/constant/languages.constant.ts"],
             "rules": {
                 "lingui/no-unlocalized-strings": [
                     "error",
@@ -768,6 +624,7 @@
                             "Context.Service",
                             "Context.Reference",
                             "Schema.TaggedError",
+                            "DatabaseOpenError.make",
                             "getLogger",
                             "logger.log",
                             "logger.error",
@@ -780,9 +637,7 @@
             }
         },
         {
-            "files": [
-                "**/*.service.ts"
-            ],
+            "files": ["**/*.service.ts"],
             "rules": {
                 "max-lines": [
                     "error",
@@ -795,9 +650,7 @@
             }
         },
         {
-            "files": [
-                "**/*.{ts,tsx}"
-            ],
+            "files": ["**/*.{ts,tsx}"],
             "rules": {
                 "import/export": "error",
                 "import/namespace": "off",
@@ -814,9 +667,7 @@
             }
         },
         {
-            "files": [
-                "**/*.ts"
-            ],
+            "files": ["**/*.ts"],
             "rules": {
                 "node/no-exports-assign": "error",
                 "n/hashbang": "error",
@@ -910,9 +761,7 @@
             }
         },
         {
-            "files": [
-                "**/*.{ts,tsx}"
-            ],
+            "files": ["**/*.{ts,tsx}"],
             "rules": {
                 "promise/always-return": "error",
                 "promise/no-return-wrap": "error",
@@ -928,10 +777,7 @@
             }
         },
         {
-            "files": [
-                "**/*.tsx",
-                "**/*.hook.ts"
-            ],
+            "files": ["**/*.tsx", "**/*.hook.ts"],
             "rules": {
                 "react/display-name": "off",
                 "react/jsx-key": "error",
@@ -950,11 +796,7 @@
                 "react/no-unknown-property": [
                     "error",
                     {
-                        "ignore": [
-                            "popover",
-                            "popoverTarget",
-                            "popoverTargetAction"
-                        ]
+                        "ignore": ["popover", "popoverTarget", "popoverTargetAction"]
                     }
                 ],
                 "react/no-unsafe": "off",
@@ -962,10 +804,7 @@
                 "react/require-render-return": "error",
                 "react/rules-of-hooks": "error",
                 "react/exhaustive-deps": "warn",
-                "max-statements": [
-                    "error",
-                    15
-                ],
+                "max-statements": ["error", 15],
                 "@rnw-community/no-complex-jsx-logic": "error",
                 "react/jsx-curly-brace-presence": [
                     "error",
@@ -979,9 +818,7 @@
                 "react/jsx-filename-extension": [
                     "error",
                     {
-                        "extensions": [
-                            ".tsx"
-                        ]
+                        "extensions": [".tsx"]
                     }
                 ],
                 "react/jsx-props-no-spreading": "off",
@@ -1026,31 +863,20 @@
             }
         },
         {
-            "files": [
-                "packages/app/**/*.tsx"
-            ],
+            "files": ["packages/app/**/*.tsx"],
             "rules": {
                 "@react-native/no-deep-imports": "error",
                 "react-native/no-raw-text": [
                     "error",
                     {
-                        "skip": [
-                            "Trans",
-                            "ProtectedText"
-                        ]
+                        "skip": ["Trans", "ProtectedText"]
                     }
                 ]
             }
         },
         {
-            "files": [
-                "packages/*/test/**",
-                "packages/*/src/**/*.spec.ts",
-                "tests/**"
-            ],
-            "plugins": [
-                "vitest"
-            ],
+            "files": ["packages/*/test/**", "packages/*/src/**/*.spec.ts", "tests/**"],
+            "plugins": ["vitest"],
             "rules": {
                 "vitest/consistent-test-it": [
                     "error",
@@ -1064,13 +890,15 @@
                 "vitest/valid-expect": "error",
                 "vitest/no-standalone-expect": "off",
                 "vitest/require-mock-type-parameters": "off",
-                "vitest/expect-expect": "off"
+                "vitest/expect-expect": "off",
+                "effecttsgo/strict-effect-provide": "off",
+                "effecttsgo/global-date-in-effect": "off",
+                "effecttsgo/yield-in-call-argument": "off",
+                "effecttsgo/any-unknown-in-error-context": "off"
             }
         },
         {
-            "files": [
-                "**/*.{ts,tsx}"
-            ],
+            "files": ["**/*.{ts,tsx}"],
             "rules": {
                 "unicorn/prefer-array-flat-map": "error",
                 "unicorn/prefer-array-flat": "error",
@@ -1116,7 +944,13 @@
             ],
             "rules": {
                 "budgie/effect-no-imperative": "error",
-                "budgie/shared-guards": "error"
+                "budgie/shared-guards": "error",
+                "effecttsgo/async-function": "error",
+                "effecttsgo/node-builtin-import": "error",
+                "effecttsgo/process-env": "error",
+                "effecttsgo/schema-sync": "error",
+                "effecttsgo/global-random": "error",
+                "effecttsgo/strict-boolean-expressions": "error"
             }
         },
         {
@@ -1141,43 +975,31 @@
             }
         },
         {
-            "files": [
-                "packages/app/src/**/*.{ts,tsx}"
-            ],
+            "files": ["packages/app/src/**/*.{ts,tsx}"],
             "rules": {
                 "budgie/no-unwrapped-try-promise": "error"
             }
         },
         {
-            "files": [
-                "packages/**/*.tsx"
-            ],
+            "files": ["packages/**/*.tsx"],
             "rules": {
                 "budgie/no-registry-context-provider": "error"
             }
         },
         {
-            "files": [
-                "packages/app/src/app/_layout.tsx"
-            ],
+            "files": ["packages/app/src/app/_layout.tsx"],
             "rules": {
                 "budgie/no-registry-context-provider": "off"
             }
         },
         {
-            "files": [
-                "packages/app/src/widget/widget/**/*.tsx"
-            ],
+            "files": ["packages/app/src/widget/widget/**/*.tsx"],
             "rules": {
                 "budgie/shared-guards": "off"
             }
         },
         {
-            "files": [
-                "packages/*/test/**/*.ts",
-                "packages/*/src/**/*.spec.ts",
-                "tests/*/src/**/*.ts"
-            ],
+            "files": ["packages/*/test/**/*.ts", "packages/*/src/**/*.spec.ts", "tests/*/src/**/*.ts"],
             "rules": {
                 "no-magic-numbers": "off",
                 "max-statements": "off",

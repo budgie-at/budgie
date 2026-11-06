@@ -10,7 +10,7 @@ import { and, isNull } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import { testQueryService } from '../db/test-query-service';
-import { testDb } from '../scenario/setup';
+import { testDb } from '../scenario/test-db';
 import { seed } from '../seed/seed';
 
 import { makeStubFileBankSyncService } from './make-stub-file-bank-sync-service';

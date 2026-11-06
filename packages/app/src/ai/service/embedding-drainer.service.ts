@@ -23,8 +23,9 @@ export class EmbeddingDrainerService extends Context.Service<EmbeddingDrainerSer
         const embeddingIndexService = yield* EmbeddingIndexService;
         const embeddingProgressStore = yield* EmbeddingProgressStore;
         const aiModelResidencyService = yield* AiModelResidencyService;
-        const clearStaleFlagsOnce = yield* Effect.cached(
-            Effect.forkDetach(Effect.ignore(embeddingIndexService.clearStaleFlags, { log: true }))
+        const clearStaleFlagsOnce = yield* Effect.ignore(embeddingIndexService.clearStaleFlags, { log: true }).pipe(
+            Effect.forkDetach,
+            Effect.cached
         );
 
         const createDrainer = (index: typeof embeddingIndexService.merchant, snapshot: Atom.Writable<DrainerSnapshotInterface>) =>

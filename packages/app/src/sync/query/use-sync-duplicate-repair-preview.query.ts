@@ -16,7 +16,7 @@ export const useSyncDuplicateRepairPreviewQuery = () => {
     const result = useAtomValue(syncDuplicateRepairPreviewAtom);
     const refresh = useAtomRefresh(syncDuplicateRepairPreviewAtom);
     const preview = AsyncResult.isSuccess(result) ? result.value : null;
-    const errorMessage = AsyncResult.isFailure(result) ? getErrorMessage(Cause.squash(result.cause)) : null;
+    const errorMessage = AsyncResult.isFailure(result) ? result.cause.pipe(Cause.squash, getErrorMessage) : null;
 
     return { errorMessage, isLoading: result.waiting, preview, refresh };
 };

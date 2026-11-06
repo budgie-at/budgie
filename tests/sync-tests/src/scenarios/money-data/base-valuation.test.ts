@@ -18,7 +18,7 @@ import * as Effect from 'effect/Effect';
 
 import { requireInstrument, seedBitcoinCryptoAccount, TestLayer } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
-import { testDb } from '../../harness/scenario/setup';
+import { testDb } from '../../harness/scenario/test-db';
 import { seed } from '../../harness/seed/seed';
 
 import type { TransactionCreateEntityInterface, TransactionEntryCreateEntityInterface } from '@budgie/contracts';
@@ -36,9 +36,7 @@ const seedEuroBaseUahAccount = Effect.fnUntraced(function* () {
 const HISTORICAL_ANALYTICS_EXPENSE_AMOUNT = 5_420_000;
 
 const setDefaultInstrument = (defaultInstrumentId: number) =>
-    Effect.gen(function* () {
-        yield* testDb.update(SettingsEntityTable).set({ defaultInstrumentId });
-    });
+    Effect.asVoid(testDb.update(SettingsEntityTable).set({ defaultInstrumentId }));
 
 const expectSeededUahValuation = Effect.fnUntraced(function* (operatedAt: Date) {
     const entryBaseValuationService = yield* EntryBaseValuationService;
@@ -53,10 +51,7 @@ const expectSeededUahValuation = Effect.fnUntraced(function* (operatedAt: Date) 
     });
 });
 
-const dbCategories = () =>
-    Effect.gen(function* () {
-        return yield* testDb.select().from(CategoryEntityTable);
-    });
+const dbCategories = () => testDb.select().from(CategoryEntityTable);
 
 const createHistoricalExpense = Effect.fnUntraced(function* (accountId: number, categoryId: number, operatedAt: Date) {
     const entryBaseValuationService = yield* EntryBaseValuationService;

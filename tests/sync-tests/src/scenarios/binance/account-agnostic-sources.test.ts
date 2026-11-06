@@ -34,9 +34,7 @@ import { mockServer } from '../../harness/scenario/mock-server';
 import type { Services } from '../../harness/scenario/test-runtime';
 
 const fetchAccountByExternalId = (externalId: string) =>
-    Effect.gen(function* () {
-        return yield* testDb.select().from(AccountEntityTable).where(eq(AccountEntityTable.externalId, externalId));
-    });
+    testDb.select().from(AccountEntityTable).where(eq(AccountEntityTable.externalId, externalId));
 
 const seedOrphanAccount = (externalId: string, instrumentId: number) =>
     seed.account({ externalId, externalSource: ExternalSourceEnum.BINANCE, type: AccountTypeEnum.CRYPTO_SYNC, instrumentId });
@@ -76,7 +74,7 @@ const stubAccountAgnosticSourceResponses = () => {
 
 const expectAllSourceExternalIds = (previousMonth: number, currentMonth: number) =>
     Effect.gen(function* () {
-        const externalIds = yield* fetchSortedBinanceExternalIds();
+        const externalIds = yield* fetchSortedBinanceExternalIds;
         expect(externalIds).toStrictEqual(
             [
                 'binance:c2c:usdt-p2p-buy',
@@ -211,7 +209,7 @@ describe('binance/account-agnostic-sources', () => {
 
                 yield* expectAllSourceExternalIds(previousMonth, currentMonth);
                 yield* expectSourceAccounts(usdtFundingAccount.id, eurExternalId);
-                const incomeCount = (yield* fetchBinanceTransactions()).filter(
+                const incomeCount = (yield* fetchBinanceTransactions).filter(
                     transaction => transaction.type === TransactionTypeEnum.INCOME
                 ).length;
                 expect(incomeCount).toBe(5);
@@ -233,7 +231,7 @@ describe('binance/account-agnostic-sources', () => {
 
             yield* binanceSyncService.sync();
 
-            const externalIds = yield* fetchSortedBinanceExternalIds();
+            const externalIds = yield* fetchSortedBinanceExternalIds;
             expect(externalIds).toStrictEqual([`binance:c2c:usdt-c2c`, `binance:earn:USDT:${buildEarnDayKey(earnTime)}`].sort());
             expect((yield* fetchBinanceEntriesByExternalId('binance:c2c:usdt-c2c'))[0].accountId).toBe(usdtFundingAccount.id);
         }).pipe(Effect.provide(TestLayer))

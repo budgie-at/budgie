@@ -27,7 +27,7 @@ export const useRefundableExpenseCandidatesQuery = (refundIncomeTransactionId: n
     const retry = useAtomRefresh(atom);
     const result = useAtomValue(atom);
     const candidates = AsyncResult.isSuccess(result) ? result.value : [];
-    const errorMessage = AsyncResult.isFailure(result) ? getErrorMessage(Cause.squash(result.cause)) : null;
+    const errorMessage = AsyncResult.isFailure(result) ? result.cause.pipe(Cause.squash, getErrorMessage) : null;
 
     return { candidates, errorMessage, retry, isLoading: result.waiting };
 };

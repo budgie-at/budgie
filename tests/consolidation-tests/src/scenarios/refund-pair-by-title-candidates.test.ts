@@ -54,14 +54,14 @@ const expectLocalizedAutoCandidate = Effect.fnUntraced(function* (input: {
 
 layer(TestLayer)('consolidation/refund-pair-by-title-candidates', it => {
     it.effect('ranks a localized refund prefix as a single automatic refund candidate', () =>
-        Effect.gen(function* () {
-            yield* expectLocalizedAutoCandidate({
+        Effect.asVoid(
+            expectLocalizedAutoCandidate({
                 accountExternalId: 'mono-card',
                 amount: LIME_AMOUNT,
                 title: 'Lime',
                 refundTitle: 'Скасування. Lime'
-            });
-        })
+            })
+        )
     );
 
     it.effect('ranks a PrivatBank refund prefix as a single automatic refund candidate', () =>
@@ -80,14 +80,14 @@ layer(TestLayer)('consolidation/refund-pair-by-title-candidates', it => {
     );
 
     it.effect('ranks a Monobank payment refund prefix as a single automatic refund candidate', () =>
-        Effect.gen(function* () {
-            yield* expectLocalizedAutoCandidate({
+        Effect.asVoid(
+            expectLocalizedAutoCandidate({
                 accountExternalId: 'mono-card',
                 amount: COMFY_AMOUNT,
                 title: 'Платіж COMFY',
                 refundTitle: 'Повернення платежу COMFY'
-            });
-        })
+            })
+        )
     );
 
     it.effect('auto-consolidates cancellation-prefixed card reversals to the nearest same-amount expense', () =>

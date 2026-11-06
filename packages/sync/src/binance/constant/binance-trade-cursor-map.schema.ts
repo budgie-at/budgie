@@ -1,5 +1,5 @@
 import * as Schema from 'effect/Schema';
 
-export const BinanceTradeCursorMapSchema = Schema.Record(Schema.String, Schema.Number);
+export const BinanceTradeCursorMapSchema = Schema.Record(Schema.String, Schema.Finite);
 
 export type BinanceTradeCursorMapInterface = typeof BinanceTradeCursorMapSchema.Type;

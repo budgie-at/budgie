@@ -1,3 +1,4 @@
+import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
 import { Directory, File, FileMode, Paths } from 'expo-file-system';
 import { listContents, unzip } from 'react-native-zip-archive';
@@ -30,9 +31,10 @@ export const resolveBackupFile = Effect.fn('resolveBackupFile')(function* (sourc
         return sourceUri;
     }
 
+    const extractedAt = yield* Clock.currentTimeMillis;
     const extractDirectory = yield* Effect.acquireRelease(
         Effect.sync(() => {
-            const directory = new Directory(Paths.cache, `backup-extract-${Date.now()}`);
+            const directory = new Directory(Paths.cache, `backup-extract-${extractedAt}`);
 
             directory.create({ idempotent: true, intermediates: true });
 
@@ -59,18 +61,18 @@ export const resolveBackupFile = Effect.fn('resolveBackupFile')(function* (sourc
     const { availableDiskSpace } = Paths;
 
     if (!isDefined(databaseEntry)) {
-        return yield* new BackupArchiveMissingDatabaseError();
+        return yield* BackupArchiveMissingDatabaseError.make();
     }
 
     const hasAmbiguousEntries =
         entries.filter(entry => entry.path === databaseEntry.path || entry.path.startsWith(`${databaseEntry.path}/`)).length > 1;
 
     if (hasAmbiguousEntries) {
-        return yield* new UnsupportedBackupError();
+        return yield* UnsupportedBackupError.make();
     }
 
     if (isPositiveNumber(availableDiskSpace) && databaseEntry.size > availableDiskSpace) {
-        return yield* new InsufficientStorageError();
+        return yield* InsufficientStorageError.make();
     }
 
     yield* Effect.promise(() => unzip(toNativePath(sourceUri), toNativePath(extractDirectory.uri), [databaseEntry.path]));

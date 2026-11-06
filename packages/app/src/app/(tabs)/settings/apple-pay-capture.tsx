@@ -41,7 +41,6 @@ export default function ApplePayCaptureSettingsPage() {
     return (
         <GroupedSurface>
             <CollapsibleChromePage
-                scrimClassName="bg-surface"
                 title={t`Apple Pay capture`}
                 leading={<GoBackButton onPress={goBackToSettings} />}
                 testID={ApplePayCaptureSettingsSelector.Container}

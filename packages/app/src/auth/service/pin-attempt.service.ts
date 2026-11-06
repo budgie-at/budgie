@@ -19,7 +19,7 @@ export class PinAttemptService extends Context.Service<PinAttemptService>()('@bu
         const freeAttempts = 5;
         const lockoutDurations = [Duration.seconds(30), Duration.minutes(1), Duration.minutes(5), Duration.minutes(15), Duration.hours(1)];
         const PinAttemptsSchema = Schema.fromJsonString(
-            Schema.Struct({ failedAttempts: Schema.Number, lockoutStartedAt: Schema.Number, lockoutEndsAt: Schema.Number })
+            Schema.Struct({ failedAttempts: Schema.Finite, lockoutStartedAt: Schema.Finite, lockoutEndsAt: Schema.Finite })
         );
         const noAttempts: typeof PinAttemptsSchema.Type = { failedAttempts: 0, lockoutStartedAt: 0, lockoutEndsAt: 0 };
 
@@ -34,7 +34,7 @@ export class PinAttemptService extends Context.Service<PinAttemptService>()('@bu
 
             yield* Effect.tryPromise({
                 try: () => SecureStore.setItemAsync(PIN_ATTEMPTS_KEY, value, PIN_SECURE_STORE_OPTIONS),
-                catch: cause => new PinAttemptStorageError({ cause })
+                catch: cause => PinAttemptStorageError.make({ cause })
             });
         });
 
@@ -45,7 +45,7 @@ export class PinAttemptService extends Context.Service<PinAttemptService>()('@bu
                 return noAttempts;
             }
 
-            return yield* Schema.decodeUnknownEffect(PinAttemptsSchema)(value).pipe(
+            return yield* Schema.decodeEffect(PinAttemptsSchema)(value).pipe(
                 Effect.catch(
                     Effect.fnUntraced(function* () {
                         const now = yield* Clock.currentTimeMillis;
@@ -88,17 +88,18 @@ export class PinAttemptService extends Context.Service<PinAttemptService>()('@bu
                 lockoutEndsAt: now + getLockoutMillis(failedAttempts)
             }).pipe(
                 Effect.as(true),
-                Effect.catch(() => Effect.succeed(false))
+                Effect.orElseSucceed(() => false)
             );
         });
 
         return {
-            getRemainingLockoutMillis: () => lock.withPermit(readRemainingLockoutMillis()),
+            getRemainingLockoutMillis: lock.withPermit(readRemainingLockoutMillis()),
             verify: Effect.fn('PinAttemptService.verify')(function* <E, R>(check: Effect.Effect<boolean, E, R>) {
                 return yield* lock
                     .withPermit(
                         Effect.gen(function* () {
-                            if (isPositiveNumber(yield* readRemainingLockoutMillis())) {
+                            const remainingLockoutMillis = yield* readRemainingLockoutMillis();
+                            if (isPositiveNumber(remainingLockoutMillis)) {
                                 return false;
                             }
 
@@ -117,7 +118,7 @@ export class PinAttemptService extends Context.Service<PinAttemptService>()('@bu
                     )
                     .pipe(Effect.uninterruptible);
             }),
-            reset: () => lock.withPermit(clearAttempts)
+            reset: lock.withPermit(clearAttempts)
         };
     })
 }) {

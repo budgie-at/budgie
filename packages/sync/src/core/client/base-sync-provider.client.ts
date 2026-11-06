@@ -33,8 +33,8 @@ export abstract class BaseSyncProviderClient {
     private static readonly RETRY_BASE_DELAY = '300 millis';
 
     private static readonly ApiErrorSchema = Schema.Struct({
-        code: Schema.optional(Schema.Union([Schema.String, Schema.Number])),
-        error: Schema.optional(Schema.NullOr(Schema.String)),
+        code: Schema.optional(Schema.Union([Schema.String, Schema.Finite])),
+        error: Schema.String.pipe(Schema.NullOr, Schema.optional),
         message: Schema.optional(Schema.String),
         msg: Schema.optional(Schema.String)
     });
@@ -73,13 +73,14 @@ export abstract class BaseSyncProviderClient {
         const { provider } = this;
 
         if (Cause.isTimeoutError(error) || !isDefined(error.response)) {
-            return yield* new SyncNetworkError({ provider, message: 'Network error' });
+            return yield* SyncNetworkError.make({ provider, message: 'Network error' });
         }
 
         const { response } = error;
-        const apiError = Option.getOrUndefined(
-            yield* HttpClientResponse.schemaBodyJson(BaseSyncProviderClient.ApiErrorSchema)(response).pipe(Effect.option)
+        const apiErrorOption = yield* HttpClientResponse.schemaBodyJson(BaseSyncProviderClient.ApiErrorSchema)(response).pipe(
+            Effect.option
         );
+        const apiError = Option.getOrUndefined(apiErrorOption);
         const message = apiError?.msg ?? apiError?.message ?? `HTTP ${response.status}`;
 
         return yield* this.classifyApiError(response.status, message, apiError?.error ?? apiError?.code, response.headers);
@@ -97,12 +98,10 @@ export abstract class BaseSyncProviderClient {
     ) {
         return this.execute(endpoint, method, body).pipe(
             Effect.flatMap(HttpClientResponse.schemaBodyJson(schema)),
-            Effect.catchTag('SchemaError', error =>
-                Effect.fail(new SyncInvalidResponseError({ provider: this.provider, message: error.message }))
-            ),
-            Effect.catchTag('HttpClientError', () =>
-                Effect.fail(new SyncNetworkError({ provider: this.provider, message: 'Network error' }))
-            )
+            Effect.catchTags({
+                SchemaError: error => Effect.fail(SyncInvalidResponseError.make({ provider: this.provider, message: error.message })),
+                HttpClientError: () => Effect.fail(SyncNetworkError.make({ provider: this.provider, message: 'Network error' }))
+            })
         );
     }
 
@@ -121,13 +120,13 @@ export abstract class BaseSyncProviderClient {
         switch (status) {
             case HTTP_STATUS_UNAUTHORIZED:
             case HTTP_STATUS_FORBIDDEN:
-                return new SyncUnauthorizedError({ provider, message });
+                return SyncUnauthorizedError.make({ provider, message });
             case HTTP_STATUS_TOO_MANY_REQUESTS:
-                return new SyncRateLimitedError({ provider, message });
+                return SyncRateLimitedError.make({ provider, message });
             case HTTP_STATUS_BAD_REQUEST:
-                return new SyncInvalidResponseError({ provider, message, apiCode });
+                return SyncInvalidResponseError.make({ provider, message, apiCode });
             default:
-                return new SyncNetworkError({ provider, message });
+                return SyncNetworkError.make({ provider, message });
         }
     }
 }

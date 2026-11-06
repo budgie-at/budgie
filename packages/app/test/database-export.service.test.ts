@@ -269,8 +269,10 @@ describe('DatabaseExportService', () => {
 
             yield* Effect.gen(function* () {
                 const client = yield* SqlClient.SqlClient;
-                const writer = yield* Effect.forkChild(
-                    Deferred.await(checkpointReached).pipe(Effect.andThen(client`INSERT INTO checkpoint_probe VALUES (2)`.raw))
+                const writer = yield* checkpointReached.pipe(
+                    Deferred.await,
+                    Effect.andThen(client`INSERT INTO checkpoint_probe VALUES (2)`.raw),
+                    Effect.forkChild
                 );
 
                 yield* saveBackup;

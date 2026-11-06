@@ -9,14 +9,14 @@ import {
     RecurringSeriesStatusEnum,
     RecurringSeriesUserStateEnum
 } from '@budgie/contracts';
-import { afterAll, beforeEach, expect, layer } from '@effect/vitest';
+import { beforeEach, expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import { RecurringAlertEnum, RecurringRefreshService, RecurringSeriesNotFoundError, RecurringService } from '../src/index';
 import { RecurringRepository } from '../src/repository/recurring.repository';
 
 import { DEFAULT_INSTRUMENT_ID, NOW, seedCharges, seedDetectedSeries, seedMonthlyCharges, seedNetflixCharge } from './recurring-seed';
-import { TestLayer, detectAt, findSeries, setUserState, testDb, testDbHandle } from './test-context';
+import { TestLayer, detectAt, findSeries, setUserState, testDb } from './test-context';
 
 import type { RecurringManualInputInterface } from '../src/index';
 
@@ -42,8 +42,6 @@ const openReads = Effect.flatMap(refreshService, refresh => refresh.refresh(NOW)
 const allLinks = Effect.flatMap(repository, items => items.findLinks());
 
 beforeEach(() => Effect.runPromise(resetTestDb(testDb)));
-
-afterAll(() => testDbHandle.dispose());
 
 layer(TestLayer)('recurringService commands', it => {
     it.effect('creates manual series that count immediately and appear in the calendar and list', () =>

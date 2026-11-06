@@ -31,15 +31,8 @@ export const Header = ({ lang }: Props) => {
             return emptyFn;
         }
 
-        let isScrolled = false;
-
         const handleScroll = (): void => {
-            const nextScrolled = window.scrollY > HEADER_SCROLL_THRESHOLD;
-
-            if (nextScrolled !== isScrolled) {
-                isScrolled = nextScrolled;
-                header.toggleAttribute('data-scrolled', nextScrolled);
-            }
+            header.toggleAttribute('data-scrolled', window.scrollY > HEADER_SCROLL_THRESHOLD);
         };
 
         window.addEventListener('scroll', handleScroll, { passive: true });

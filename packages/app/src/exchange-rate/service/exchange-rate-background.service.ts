@@ -23,7 +23,7 @@ export class ExchangeRateBackgroundService extends Context.Service<ExchangeRateB
 
                     yield* Effect.promise(() => BackgroundTask.registerTaskAsync(EXCHANGE_RATE_SYNC_TASK, { minimumInterval: 60 }));
                 }),
-                sync: () => (isE2EApp ? Effect.void : exchangeRatesSyncService.sync())
+                sync: isE2EApp ? Effect.void : exchangeRatesSyncService.sync()
             };
         })
     }
