@@ -157,7 +157,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
                     delta === 0 ? null : yield* balanceAdjustmentService.create(sync.accountId, delta, openingBalanceAt);
 
                 yield* syncRepository.update(sync.id, {
-                    ...resolveSyncProgressUpdate(sync, result),
+                    ...resolveSyncProgressUpdate(sync, result, now),
                     setupBalance: null,
                     balanceAdjustmentTransactionId,
                     reconciledAt: null,
@@ -170,7 +170,8 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
         );
 
         const updateProgressAndReconcile = Effect.fnUntraced(function* (sync: SyncEntityInterface, result: SyncBatchResultInterface) {
-            yield* syncRepository.update(sync.id, resolveSyncProgressUpdate(sync, result));
+            const now = yield* DateTime.nowAsDate;
+            yield* syncRepository.update(sync.id, resolveSyncProgressUpdate(sync, result, now));
             if (sync.mode === SyncModeEnum.FORWARD && result.completed && isDefined(result.balanceSnapshot)) {
                 yield* syncBalanceReconciliationService.reconcile(sync.accountId, result.balanceSnapshot);
             }

@@ -120,7 +120,8 @@
         "effecttsgo/strict-effect-provide": "error",
         "effecttsgo/new-schema-class": "error",
         "effecttsgo/yield-in-call-argument": "error",
-        "effecttsgo/missed-pipeable-opportunity": "error"
+        "effecttsgo/missed-pipeable-opportunity": "error",
+        "effecttsgo/global-date-in-effect": "error"
     },
     "overrides": [
         {

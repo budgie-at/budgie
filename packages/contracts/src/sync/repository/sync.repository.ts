@@ -1,6 +1,7 @@
 import { and, asc, eq, getTableColumns, inArray, isNotNull, isNull, lt, or } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as DateTime from 'effect/DateTime';
+import * as Duration from 'effect/Duration';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
@@ -49,7 +50,8 @@ export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/c
                 provider: ExternalSourceEnum,
                 staleThresholdMs: number
             ) {
-                const staleTime = new Date(Date.now() - staleThresholdMs);
+                const now = yield* DateTime.now;
+                const staleTime = DateTime.toDateUtc(DateTime.subtractDuration(now, Duration.millis(staleThresholdMs)));
 
                 return yield* Db.query(db =>
                     selectWithActiveAccount(db)

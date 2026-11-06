@@ -18,12 +18,13 @@ describe('monobank/empty-account-stops-at-dormancy-boundary', () => {
     it.effect('records the first empty `from` then walks 3 more months past it before terminating', () =>
         Effect.gen(function* () {
             const monobankSyncService = yield* MonobankSyncService;
-            const sync = yield* setupBackwardSweepFixture(new Date());
+            const sweepStart = new Date();
+            const sync = yield* setupBackwardSweepFixture(sweepStart);
 
             let monobankRequestCount = 0;
             mockServer.use(
-                http.get('https://api.monobank.ua/personal/statement/:account/:from/:to', () => {
-                    monobankRequestCount += 1;
+                http.get('https://api.monobank.ua/personal/statement/:account/:from/:to', ({ params }) => {
+                    monobankRequestCount += Number(params['to']) * 1000 <= sweepStart.getTime() ? 1 : 0;
 
                     return HttpResponse.json([]);
                 })

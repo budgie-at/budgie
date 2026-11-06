@@ -1,6 +1,7 @@
 import { AccountRepository, SyncErrorCodeEnum, SyncModeEnum, SyncRepository, SyncStatusEnum, SyncWarningEnum } from '@budgie/contracts';
 import * as Cause from 'effect/Cause';
 import * as Clock from 'effect/Clock';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Predicate from 'effect/Predicate';
 import * as Schema from 'effect/Schema';
@@ -36,7 +37,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
     const applyProgressUpdate =
         definition.applyProgressUpdate ??
         ((sync: SyncEntityInterface, result: SyncBatchResultInterface) =>
-            Effect.asVoid(syncRepository.update(sync.id, resolveSyncProgressUpdate(sync, result))));
+            Effect.flatMap(DateTime.nowAsDate, now => syncRepository.update(sync.id, resolveSyncProgressUpdate(sync, result, now))));
     let runDeadlineAtMs = Number.POSITIVE_INFINITY;
     let failedSyncId: number | null = null;
     let nextContinuationAtMs: number | null = null;
@@ -256,7 +257,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         let continuationAtMs: number | null = firstContinuationAtMs;
         while (isDefined(continuationAtMs)) {
             yield* Effect.sleep(Math.max(0, continuationAtMs - (yield* Clock.currentTimeMillis)));
-            const outcome = yield* syncWorkload.runScheduled(
+            ({ continuationAtMs } = yield* syncWorkload.runScheduled(
                 Effect.gen(function* () {
                     if (yield* syncWorkload.hasQueuedUserWork) {
                         return { continuationAtMs: yield* Clock.currentTimeMillis };
@@ -264,8 +265,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
 
                     return yield* attemptSemaphore.withPermit(runSyncAttempt(Number.POSITIVE_INFINITY));
                 })
-            );
-            ({ continuationAtMs } = outcome);
+            ));
         }
     });
 

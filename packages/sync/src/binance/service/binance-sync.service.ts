@@ -411,7 +411,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             for (const backwardSync of yield* syncRepository.getPendingBackwardSync(provider)) {
                 if ((yield* syncIntegrationTokenService.resolveAccountToken(provider, backwardSync.accountId)) === token) {
                     yield* syncRepository.update(backwardSync.id, {
-                        ...resolveSyncProgressUpdate(backwardSync, { transactions: [], nextTo: now, nextFrom: now, completed: true }),
+                        ...resolveSyncProgressUpdate(backwardSync, { transactions: [], nextTo: now, nextFrom: now, completed: true }, now),
                         forwardSyncedAt: now
                     });
                 }

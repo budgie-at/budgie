@@ -77,7 +77,7 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
             const isFetchedHistory = sync.mode === SyncModeEnum.BACKWARD && isDefined(result.balanceSnapshot);
             const now = yield* DateTime.nowAsDate;
             yield* syncRepository.update(sync.id, {
-                ...resolveSyncProgressUpdate(sync, result),
+                ...resolveSyncProgressUpdate(sync, result, now),
                 ...(isFetchedHistory && { forwardSyncedAt: now, forwardSyncFromAt: result.nextFrom })
             });
             if (result.completed && isDefined(result.balanceSnapshot)) {

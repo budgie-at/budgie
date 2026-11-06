@@ -97,6 +97,7 @@ describe('monobank/setup-balance', () => {
             yield* importHistory();
 
             yield* setupMonobankSync({ ...bankAccount, balance: 50_000 });
+            monobankStub.clientInfo(buildMonobank.clientInfo({ accounts: [bankAccount], jars: [] }));
             yield* importHistory();
 
             expect(yield* fetchBalanceAdjustments(account.id)).toStrictEqual([]);
