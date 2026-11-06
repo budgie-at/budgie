@@ -185,8 +185,8 @@ msgid "{ageLabel}. Import statement"
 msgstr "{ageLabel}. Імпортувати виписку"
 
 #: src/inzhur/hook/use-format-inzhur-pending-top-up.hook.ts
-msgid "{amount} topped up {date} — what did you buy?"
-msgstr "{amount} поповнення {date} — що ви купили?"
+msgid "{amount} topped up {date}"
+msgstr "{amount} поповнення {date}"
 
 #: src/inzhur/service/inzhur-pending-top-up.service.ts
 msgid "{amount} topped up {date}. What did you buy?"
@@ -3776,7 +3776,6 @@ msgid "Display"
 msgstr "Відображення"
 
 #: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
-#: src/transaction/hook/use-dividend-role-label.hook.ts
 msgid "Dividends"
 msgstr "Дивіденди"
 
@@ -4864,7 +4863,6 @@ msgid "Import started"
 msgstr "Імпорт розпочато"
 
 #: src/inzhur/component/inzhur-import-statement-action/inzhur-import-statement-action.tsx
-#: src/inzhur/component/inzhur-pending-top-up-card/inzhur-pending-top-up-card.tsx
 #: src/sync/component/bank-integration-statements/bank-integration-statements.tsx
 msgid "Import statement"
 msgstr "Імпортувати виписку"
@@ -6991,10 +6989,6 @@ msgstr "Повторна синхронізація останніх 90 днів
 msgid "Read on this phone"
 msgstr "Прочитано на цьому телефоні"
 
-#: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
-msgid "Read on your device. Nothing is uploaded."
-msgstr "Читається на пристрої. Нічого не завантажується."
-
 #: src/sync/component/enable-banking-key-step/enable-banking-key-step.tsx
 msgid "Read the Enable Banking Terms"
 msgstr "Прочитати умови Enable Banking"
@@ -8060,6 +8054,10 @@ msgstr "Виписки"
 #: src/ai/component/ai-unavailable-section/ai-unavailable-section.tsx
 msgid "Status"
 msgstr "Статус"
+
+#: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
+msgid "Stays on your device"
+msgstr "Залишається на пристрої"
 
 #: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
 msgid "Stays on your device · Last import {lastStatementDate}"
@@ -9387,6 +9385,10 @@ msgstr "Тиждень {currentWeek} з {totalWeeks}. {overLabel}."
 #: src/budget/constant/budget-period-title-label.constant.ts
 msgid "Weekly budget"
 msgstr "Тижневий бюджет"
+
+#: src/inzhur/hook/use-format-inzhur-pending-top-up.hook.ts
+msgid "What did you buy?"
+msgstr "Що ви купили?"
 
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "What goes inside?"

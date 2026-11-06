@@ -10,8 +10,8 @@ export const InzhurPurchaseFundField = () => {
 
     return (
         <GroupedListSection title={t`Fund`}>
-            {fundOptions.map(fundName => (
-                <InzhurPurchaseFundOption key={fundName} fundName={fundName} />
+            {fundOptions.map(fund => (
+                <InzhurPurchaseFundOption key={fund.name} fund={fund} />
             ))}
         </GroupedListSection>
     );

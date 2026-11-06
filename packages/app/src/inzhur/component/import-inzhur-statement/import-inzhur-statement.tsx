@@ -30,9 +30,7 @@ export const ImportInzhurStatement = () => {
     ];
     const lastStatementDate = isDefined(setup?.lastStatementDate) ? formatMonthAndDayAndOptionalYear(setup.lastStatementDate) : null;
     const brandTitle = t`Inzhur`;
-    const privacyCaption = isDefined(lastStatementDate)
-        ? t`Stays on your device · Last import ${lastStatementDate}`
-        : t`Read on your device. Nothing is uploaded.`;
+    const privacyCaption = isDefined(lastStatementDate) ? t`Stays on your device · Last import ${lastStatementDate}` : t`Stays on your device`;
 
     if (isDefined(summary)) {
         return (

@@ -9,10 +9,10 @@ import { useDividendRoleLabel } from './use-dividend-role-label.hook';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
-export const useFundTradeLabel = (transaction: TransactionWithRelationsEntityInterface, accountId: number | null) => {
+export const useFundTradeLabel = (transaction: TransactionWithRelationsEntityInterface) => {
     const { t } = useLingui();
     const formatFundQuantity = useFormatFundQuantity();
-    const dividendRole = useDividendRoleLabel(transaction, accountId);
+    const dividendRole = useDividendRoleLabel(transaction);
     const fundEntry = transaction.entries.find(entry => entry.account.instrument.type === InstrumentTypeEnum.FUND);
 
     if (isDefined(dividendRole) || !isDefined(fundEntry)) {

@@ -14,7 +14,6 @@ export const InzhurSelector = {
     ImportStatementButton: 'Inzhur.ImportStatementButton',
     InstitutionDetail: 'Inzhur.InstitutionDetail',
     PendingTopUp: (topUpId: number) => `Inzhur.PendingTopUp.${topUpId}` as const,
-    PendingTopUpImportButton: (topUpId: number) => `Inzhur.PendingTopUp.${topUpId}.ImportButton` as const,
     PendingTopUpEnterButton: (topUpId: number) => `Inzhur.PendingTopUp.${topUpId}.EnterButton` as const,
     PendingTopUpDismissButton: (topUpId: number) => `Inzhur.PendingTopUp.${topUpId}.DismissButton` as const,
     PurchasePage: 'Inzhur.PurchasePage',

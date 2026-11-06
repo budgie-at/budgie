@@ -1,10 +1,13 @@
-import { ExternalSourceEnum } from '@budgie/contracts';
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
 import { Button } from '../../../@generic/component/button/button';
+import { ListRowDetail } from '../../../@generic/component/list-row-detail/list-row-detail';
+import { ListRow } from '../../../@generic/component/list-row/list-row';
+import { NeutralIconTile } from '../../../@generic/component/neutral-icon-tile/neutral-icon-tile';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { useFormatInzhurPendingTopUp } from '../../hook/use-format-inzhur-pending-top-up.hook';
 import { InzhurSelector } from '../../selector/inzhur.selector';
@@ -23,8 +26,8 @@ export const InzhurPendingTopUpCard = ({ topUp }: Props) => {
     const { run } = useSingleFlight();
     const formatPendingTopUp = useFormatInzhurPendingTopUp();
     const { transactionId, externalId } = topUp;
+    const { summary, prompt } = formatPendingTopUp(topUp);
 
-    const handleImport = () => void router.push({ pathname: '/create-account/[type]', params: { type: ExternalSourceEnum.INZHUR } });
     const handleEnterPurchase = () => void router.push({ pathname: '/inzhur/purchase', params: { topUpId: String(transactionId) } });
     const handleDismiss = () =>
         void run(Effect.flatMap(InzhurPendingTopUpService, inzhurPendingTopUpService => inzhurPendingTopUpService.dismiss(externalId)));
@@ -35,9 +38,14 @@ export const InzhurPendingTopUpCard = ({ topUp }: Props) => {
             style={CONTINUOUS_CORNERS}
             testID={InzhurSelector.PendingTopUp(transactionId)}
         >
-            <Text className="text-[15px] leading-[20px] text-primary">{formatPendingTopUp(topUp)}</Text>
-            <View className="flex-row flex-wrap items-center gap-x-md gap-y-md">
+            <ListRow
+                leading={<NeutralIconTile icon={UserIconNameEnum.ArrowDown} iconClassName="text-warning-strong" />}
+                title={<Text className="text-[17px] font-semibold text-primary">{summary}</Text>}
+                detail={<ListRowDetail segments={[prompt]} />}
+            />
+            <View className="flex-row gap-x-md">
                 <Button
+                    className="min-h-11 flex-1"
                     size="sm"
                     variant="primary"
                     content={t`Enter purchase`}
@@ -45,15 +53,9 @@ export const InzhurPendingTopUpCard = ({ topUp }: Props) => {
                     testID={InzhurSelector.PendingTopUpEnterButton(transactionId)}
                 />
                 <Button
+                    className="min-h-11 flex-1"
                     size="sm"
                     variant="secondary"
-                    content={t`Import statement`}
-                    onPress={handleImport}
-                    testID={InzhurSelector.PendingTopUpImportButton(transactionId)}
-                />
-                <Button
-                    size="sm"
-                    variant="ghost"
                     content={t`Dismiss`}
                     onPress={handleDismiss}
                     testID={InzhurSelector.PendingTopUpDismissButton(transactionId)}

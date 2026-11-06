@@ -7,6 +7,7 @@ import { FixedChromePage } from '../../../@generic/component/fixed-chrome-page/f
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
+import { useInzhurFundOptions } from '../../hook/use-inzhur-fund-options.hook';
 import { InzhurPurchaseFormSchema } from '../../constant/inzhur-purchase-form-schema.constant';
 import { InzhurSelector } from '../../selector/inzhur.selector';
 import { buildInzhurPurchaseDefaults } from '../../utils/build-inzhur-purchase-defaults.util';
@@ -25,16 +26,22 @@ interface Props {
 
 export const InzhurPurchaseForm = ({ topUp }: Props) => {
     const { t } = useLingui();
+    const [defaultFund] = useInzhurFundOptions();
     const form = useForm<InzhurPurchaseFormValues>({
         mode: 'onChange',
         resolver: standardSchemaResolver(Schema.toStandardSchemaV1(InzhurPurchaseFormSchema)),
-        defaultValues: buildInzhurPurchaseDefaults(topUp)
+        defaultValues: buildInzhurPurchaseDefaults(topUp, defaultFund?.name ?? '')
     });
 
     return (
-        <GroupedSurface testID={InzhurSelector.PurchasePage}>
+        <GroupedSurface>
             <FormProvider {...form}>
-                <FixedChromePage title={t`Enter purchase`} leading={<HeaderBackButton />} footer={<InzhurPurchaseFooter topUp={topUp} />}>
+                <FixedChromePage
+                    title={t`Enter purchase`}
+                    leading={<HeaderBackButton />}
+                    testID={InzhurSelector.PurchasePage}
+                    footer={<InzhurPurchaseFooter topUp={topUp} />}
+                >
                     <FormLayoutGroup>
                         <InzhurPurchaseFundField />
                         <InzhurPurchaseCertificatesField />

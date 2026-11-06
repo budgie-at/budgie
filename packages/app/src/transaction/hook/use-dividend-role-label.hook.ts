@@ -6,7 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
-export const useDividendRoleLabel = (transaction: TransactionWithRelationsEntityInterface, accountId: number | null) => {
+export const useDividendRoleLabel = (transaction: TransactionWithRelationsEntityInterface) => {
     const { t } = useLingui();
 
     if (transaction.type !== TransactionTypeEnum.INCOME) {
@@ -14,7 +14,7 @@ export const useDividendRoleLabel = (transaction: TransactionWithRelationsEntity
     }
 
     if (transaction.externalSource === ExternalSourceEnum.INZHUR && isDefined(transaction.fundAccountId)) {
-        return transaction.fundAccountId === accountId ? t`Dividends` : null;
+        return null;
     }
 
     const bankTitle = transaction.entries.find(entry => entry.account.instrument.type !== InstrumentTypeEnum.FUND)?.account.title;

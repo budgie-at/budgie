@@ -55,7 +55,7 @@ export const useInzhurPurchaseSubmit = (topUpTransactionId: number) => {
                 Effect.tap(nextTopUp =>
                     Effect.sync(() => {
                         if (isDefined(nextTopUp)) {
-                            reset(buildInzhurPurchaseDefaults(nextTopUp));
+                            reset(buildInzhurPurchaseDefaults(nextTopUp, values.fundName));
                         }
                     })
                 ),

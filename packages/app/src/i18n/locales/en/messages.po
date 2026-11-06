@@ -186,8 +186,8 @@ msgid "{ageLabel}. Import statement"
 msgstr "{ageLabel}. Import statement"
 
 #: src/inzhur/hook/use-format-inzhur-pending-top-up.hook.ts
-msgid "{amount} topped up {date} — what did you buy?"
-msgstr "{amount} topped up {date} — what did you buy?"
+msgid "{amount} topped up {date}"
+msgstr "{amount} topped up {date}"
 
 #: src/inzhur/service/inzhur-pending-top-up.service.ts
 msgid "{amount} topped up {date}. What did you buy?"
@@ -3777,7 +3777,6 @@ msgid "Display"
 msgstr "Display"
 
 #: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
-#: src/transaction/hook/use-dividend-role-label.hook.ts
 msgid "Dividends"
 msgstr "Dividends"
 
@@ -4865,7 +4864,6 @@ msgid "Import started"
 msgstr "Import started"
 
 #: src/inzhur/component/inzhur-import-statement-action/inzhur-import-statement-action.tsx
-#: src/inzhur/component/inzhur-pending-top-up-card/inzhur-pending-top-up-card.tsx
 #: src/sync/component/bank-integration-statements/bank-integration-statements.tsx
 msgid "Import statement"
 msgstr "Import statement"
@@ -6992,10 +6990,6 @@ msgstr "Re-sync of last 90 days will start on next sync."
 msgid "Read on this phone"
 msgstr "Read on this phone"
 
-#: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
-msgid "Read on your device. Nothing is uploaded."
-msgstr "Read on your device. Nothing is uploaded."
-
 #: src/sync/component/enable-banking-key-step/enable-banking-key-step.tsx
 msgid "Read the Enable Banking Terms"
 msgstr "Read the Enable Banking Terms"
@@ -8061,6 +8055,10 @@ msgstr "Statements"
 #: src/ai/component/ai-unavailable-section/ai-unavailable-section.tsx
 msgid "Status"
 msgstr "Status"
+
+#: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
+msgid "Stays on your device"
+msgstr "Stays on your device"
 
 #: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
 msgid "Stays on your device · Last import {lastStatementDate}"
@@ -9388,6 +9386,10 @@ msgstr "Week {currentWeek} of {totalWeeks}. {overLabel}."
 #: src/budget/constant/budget-period-title-label.constant.ts
 msgid "Weekly budget"
 msgstr "Weekly budget"
+
+#: src/inzhur/hook/use-format-inzhur-pending-top-up.hook.ts
+msgid "What did you buy?"
+msgstr "What did you buy?"
 
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "What goes inside?"

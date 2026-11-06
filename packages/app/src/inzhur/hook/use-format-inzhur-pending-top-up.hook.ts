@@ -19,6 +19,6 @@ export const useFormatInzhurPendingTopUp = () => {
         const amount = isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : formatDigits(topUp.amount, hryvnia?.symbol ?? '');
         const date = formatMonthAndDayAndOptionalYear(topUp.operatedAt);
 
-        return t`${amount} topped up ${date} — what did you buy?`;
+        return { summary: t`${amount} topped up ${date}`, prompt: t`What did you buy?` };
     };
 };
