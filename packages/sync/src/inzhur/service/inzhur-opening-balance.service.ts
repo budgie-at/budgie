@@ -38,11 +38,11 @@ export class InzhurOpeningBalanceService extends Context.Service<InzhurOpeningBa
             const replace = Effect.fn('InzhurOpeningBalanceService.replace')(function* (
                 accountId: number,
                 amount: number,
-                createdAt: Date
+                operatedAt: Date
             ) {
                 const existing = yield* findExisting(accountId);
 
-                if (existing?.amount === amount && existing.operatedAt.getTime() === createdAt.getTime()) {
+                if (existing?.amount === amount && existing.operatedAt.getTime() === operatedAt.getTime()) {
                     return;
                 }
 
@@ -54,7 +54,7 @@ export class InzhurOpeningBalanceService extends Context.Service<InzhurOpeningBa
                     return;
                 }
 
-                const id = yield* balanceAdjustmentService.create(accountId, amount, createdAt, title);
+                const id = yield* balanceAdjustmentService.create(accountId, amount, operatedAt, title);
 
                 yield* transactionRepository.updateById(id, {
                     externalId: INZHUR_OPENING_BALANCE_EXTERNAL_ID,

@@ -28,6 +28,7 @@ import { useAccountBalanceQuery } from '../../../../account/query/use-account-ba
 import { useDebtAccountProgressSummaryQuery } from '../../../../account/query/use-debt-account-progress-summary.query';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
 import { InstallmentPlanScheduleSummary } from '../../../../installment-plan/component/installment-plan-schedule-summary/installment-plan-schedule-summary';
+import { isInzhurFundAccount } from '../../../../inzhur/utils/is-inzhur-fund-account.util';
 import { CollapsibleChromeTransactionList } from '../../../../transaction/components/collapsible-chrome-transaction-list/collapsible-chrome-transaction-list';
 
 import { AccountDetailsSelector } from './account-details.selector';
@@ -125,7 +126,7 @@ export default function AccountDetails() {
                 </ScreenChromeThemeProvider>
             </RevealGate>
 
-            <AccountDetailsMenuControls accountId={id} accountType={account.type} />
+            {isInzhurFundAccount(account) ? null : <AccountDetailsMenuControls accountId={id} accountType={account.type} />}
         </GroupedSurface>
     );
 }

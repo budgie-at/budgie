@@ -9,7 +9,6 @@ import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { inzhurChartScrubAtom } from '../../constant/inzhur-chart-scrub-atom.constant';
 import { useInzhurInstitutionGainQuery } from '../../query/use-inzhur-gain.query';
 import { InzhurSelector } from '../../selector/inzhur.selector';
-import { InzhurAllTimeGainLine } from '../inzhur-all-time-gain-line/inzhur-all-time-gain-line';
 import { InzhurGainLine } from '../inzhur-gain-line/inzhur-gain-line';
 
 export const InzhurInstitutionGainLine = () => {
@@ -17,19 +16,15 @@ export const InzhurInstitutionGainLine = () => {
     const { formatMonthAndDayAndOptionalYear } = useFormatDate();
     const report = useInzhurInstitutionGainQuery();
     const scrubbedPoint = useAtomValue(inzhurChartScrubAtom);
-    const startDate = report?.gains.find(gain => gain.range === InzhurGainRangeEnum.ALL)?.startDate;
+    const allTime = report?.gains.find(gain => gain.range === InzhurGainRangeEnum.ALL);
+    const gain = scrubbedPoint?.value ?? allTime?.gain;
 
-    if (!isDefined(report)) {
+    if (!isDefined(allTime) || !isDefined(gain)) {
         return null;
     }
 
-    if (isDefined(scrubbedPoint) && isDefined(startDate)) {
-        const startLabel = formatMonthAndDayAndOptionalYear(parseISO(startDate));
+    const startLabel = formatMonthAndDayAndOptionalYear(parseISO(allTime.startDate));
+    const percent = isDefined(scrubbedPoint) ? null : allTime.percent;
 
-        return (
-            <InzhurGainLine gain={scrubbedPoint.value} percent={null} suffix={t`since ${startLabel}`} testID={InzhurSelector.GainLine} />
-        );
-    }
-
-    return <InzhurAllTimeGainLine gains={report.gains} />;
+    return <InzhurGainLine gain={gain} percent={percent} suffix={t`since ${startLabel}`} testID={InzhurSelector.GainLine} />;
 };

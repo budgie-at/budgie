@@ -23,7 +23,7 @@ export const InstitutionSettingsButton = ({ integrationId }: Props) => {
             testID={InstitutionSelector.SettingsButton}
             onPress={handleSettings}
         >
-            <Icon icon={UserIconNameEnum.EllipsisVertical} size={24} className="text-primary" />
+            <Icon icon={UserIconNameEnum.Settings} size={24} className="text-primary" />
         </HapticPressable>
     );
 };

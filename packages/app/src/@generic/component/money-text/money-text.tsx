@@ -24,16 +24,11 @@ interface Props {
     readonly testID?: string;
 }
 
-const MUTED_VARIANTS = new Set([MoneyTextVariantEnum.LINE, MoneyTextVariantEnum.CAPTION]);
-
 const wholeVariants = cva('tabular-nums', {
     variants: {
         variant: {
-            [MoneyTextVariantEnum.HERO]: 'text-center text-[44px] leading-[48px] font-semibold tracking-[-1px]',
             [MoneyTextVariantEnum.FIELD]: 'text-[40px] font-semibold tracking-[-1px]',
             [MoneyTextVariantEnum.ROW]: 'text-[17px] font-semibold tracking-tight',
-            [MoneyTextVariantEnum.BODY]: 'text-[15px] font-semibold',
-            [MoneyTextVariantEnum.LINE]: 'text-[15px] leading-[20px] text-secondary-foreground',
             [MoneyTextVariantEnum.CAPTION]: 'text-[13px] text-secondary-foreground'
         }
     }
@@ -42,11 +37,8 @@ const wholeVariants = cva('tabular-nums', {
 const fractionVariants = cva('text-secondary-foreground', {
     variants: {
         variant: {
-            [MoneyTextVariantEnum.HERO]: 'text-[26px] font-semibold',
             [MoneyTextVariantEnum.FIELD]: 'text-[24px] font-semibold',
             [MoneyTextVariantEnum.ROW]: 'text-[13px] font-medium',
-            [MoneyTextVariantEnum.BODY]: 'text-[13px] font-medium',
-            [MoneyTextVariantEnum.LINE]: 'text-[13px]',
             [MoneyTextVariantEnum.CAPTION]: 'text-[11px]'
         }
     }
@@ -60,18 +52,14 @@ export const MoneyText = ({ amount, instrumentSymbol, variant, prefix = '', tone
     const isZero = formatDigits(Math.abs(amount)) === formatDigits(0);
     const formatted = isZero ? formatDigits(0, instrumentSymbol) : toTrueMinus(formatDigits(amount, instrumentSymbol));
     const fractionStart = isPositiveNumber(decimalPlaces) ? formatted.length - decimalPlaces - 1 : formatted.length;
-    const isHero = variant === MoneyTextVariantEnum.HERO;
     const accessibilityLabel = `${prefix}${protectAmount(amount, instrumentSymbol)}`;
-    const isSignTone = !MUTED_VARIANTS.has(variant) && !isDefined(tone);
+    const isSignTone = variant !== MoneyTextVariantEnum.CAPTION && !isDefined(tone);
     const toneClassName = cn(
         isDefined(tone) && FOREGROUND_COLOR_PALETTE[tone],
         isSignTone && isZero && 'text-secondary-foreground',
         isSignTone && !isZero && amount < 0 && 'text-destructive-foreground',
         isSignTone && !isZero && amount > 0 && 'text-primary'
     );
-    const scalingProps = isHero
-        ? { allowFontScaling: false, minimumFontScale: 0.5 }
-        : { maxFontSizeMultiplier: ROW_MAX_FONT_SIZE_MULTIPLIER, minimumFontScale: 0.6 };
 
     return (
         <ProtectedText
@@ -79,7 +67,8 @@ export const MoneyText = ({ amount, instrumentSymbol, variant, prefix = '', tone
             accessibilityLabel={accessibilityLabel}
             numberOfLines={1}
             adjustsFontSizeToFit
-            {...scalingProps}
+            maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+            minimumFontScale={0.6}
             className={cn(wholeVariants({ variant }), toneClassName)}
         >
             {`${prefix}${formatted.slice(0, fractionStart)}`}

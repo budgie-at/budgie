@@ -1211,7 +1211,6 @@ msgstr "Account not found"
 msgid "Account not found"
 msgstr "Account not found"
 
-#: src/account/component/institution-accounts/institution-accounts.tsx
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 #: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
@@ -1223,6 +1222,7 @@ msgstr "Accounts"
 msgid "Accounts · {accountCount}"
 msgstr "Accounts · {accountCount}"
 
+#: src/account/component/institution-accounts/institution-accounts.tsx
 #: src/sync/component/sync-accounts-step/sync-accounts-step.tsx
 msgid "Accounts · {accountsCount}"
 msgstr "Accounts · {accountsCount}"
@@ -1733,13 +1733,13 @@ msgstr "As far back as your bank allows"
 msgid "Asset mix"
 msgstr "Asset mix"
 
-#: src/account/component/institution-accounts/institution-accounts.tsx
-msgid "Assets"
-msgstr "Assets"
-
 #: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
 msgid "Assets · {accountCount}"
 msgstr "Assets · {accountCount}"
+
+#: src/account/component/institution-accounts/institution-accounts.tsx
+msgid "Assets · {accountsCount}"
+msgstr "Assets · {accountsCount}"
 
 #: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
 msgid "At {rateLabel} per {instrumentCode}"
@@ -2365,9 +2365,13 @@ msgstr "Certificates"
 msgid "Change"
 msgstr "Change"
 
-#: src/@generic/component/icon-title-field-trigger/icon-title-field-trigger.tsx
+#: src/@generic/component/account-details-field/account-details-field.tsx
 msgid "Change icon"
 msgstr "Change icon"
+
+#: src/@generic/component/icon-title-field-trigger/icon-title-field-trigger.tsx
+msgid "Change icon, current: {iconName}"
+msgstr "Change icon, current: {iconName}"
 
 #: src/settings/components/pin-management-rows/pin-management-rows.tsx
 msgid "Change PIN"
@@ -3476,7 +3480,7 @@ msgstr "Currency"
 msgid "Current balance"
 msgstr "Current balance"
 
-#: src/@generic/component/icon-title-field-trigger/icon-title-field-trigger.tsx
+#: src/@generic/component/account-details-field/account-details-field.tsx
 msgid "Current icon: {iconName}. Opens the icon picker."
 msgstr "Current icon: {iconName}. Opens the icon picker."
 
@@ -6379,6 +6383,10 @@ msgstr "Open Shortcuts"
 msgid "Open the Inzhur app"
 msgstr "Open the Inzhur app"
 
+#: src/@generic/component/icon-title-field-trigger/icon-title-field-trigger.tsx
+msgid "Opens the icon picker"
+msgstr "Opens the icon picker"
+
 #: src/rule/components/rule-list-row/rule-list-row.tsx
 msgid "Opens the rule editor"
 msgstr "Opens the rule editor"
@@ -7890,7 +7898,6 @@ msgstr "Similar transactions"
 msgid "Since {fromLabel}"
 msgstr "Since {fromLabel}"
 
-#: src/inzhur/component/inzhur-all-time-gain-line/inzhur-all-time-gain-line.tsx
 #: src/inzhur/component/inzhur-institution-gain-line/inzhur-institution-gain-line.tsx
 msgid "since {startLabel}"
 msgstr "since {startLabel}"

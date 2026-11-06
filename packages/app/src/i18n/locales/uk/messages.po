@@ -1210,7 +1210,6 @@ msgstr "Рахунок не знайдено"
 msgid "Account not found"
 msgstr "Рахунок не знайдено"
 
-#: src/account/component/institution-accounts/institution-accounts.tsx
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 #: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
@@ -1222,6 +1221,7 @@ msgstr "Рахунки"
 msgid "Accounts · {accountCount}"
 msgstr "Рахунки · {accountCount}"
 
+#: src/account/component/institution-accounts/institution-accounts.tsx
 #: src/sync/component/sync-accounts-step/sync-accounts-step.tsx
 msgid "Accounts · {accountsCount}"
 msgstr "Рахунки · {accountsCount}"
@@ -1732,13 +1732,13 @@ msgstr "Настільки давно, наскільки дозволяє ба�
 msgid "Asset mix"
 msgstr "Структура активів"
 
-#: src/account/component/institution-accounts/institution-accounts.tsx
-msgid "Assets"
-msgstr "Активи"
-
 #: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
 msgid "Assets · {accountCount}"
 msgstr "Активи · {accountCount}"
+
+#: src/account/component/institution-accounts/institution-accounts.tsx
+msgid "Assets · {accountsCount}"
+msgstr "Активи · {accountsCount}"
 
 #: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
 msgid "At {rateLabel} per {instrumentCode}"
@@ -2364,9 +2364,13 @@ msgstr "Сертифікати"
 msgid "Change"
 msgstr "Змінити"
 
-#: src/@generic/component/icon-title-field-trigger/icon-title-field-trigger.tsx
+#: src/@generic/component/account-details-field/account-details-field.tsx
 msgid "Change icon"
 msgstr "Змінити іконку"
+
+#: src/@generic/component/icon-title-field-trigger/icon-title-field-trigger.tsx
+msgid "Change icon, current: {iconName}"
+msgstr "Змінити іконку, поточна: {iconName}"
 
 #: src/settings/components/pin-management-rows/pin-management-rows.tsx
 msgid "Change PIN"
@@ -3475,7 +3479,7 @@ msgstr "Валюта"
 msgid "Current balance"
 msgstr "Поточний баланс"
 
-#: src/@generic/component/icon-title-field-trigger/icon-title-field-trigger.tsx
+#: src/@generic/component/account-details-field/account-details-field.tsx
 msgid "Current icon: {iconName}. Opens the icon picker."
 msgstr "Поточна іконка: {iconName}. Відкриває вибір іконки."
 
@@ -6378,6 +6382,10 @@ msgstr "Відкрити Shortcuts"
 msgid "Open the Inzhur app"
 msgstr "Відкрийте застосунок Inzhur"
 
+#: src/@generic/component/icon-title-field-trigger/icon-title-field-trigger.tsx
+msgid "Opens the icon picker"
+msgstr "Відкриває вибір іконки"
+
 #: src/rule/components/rule-list-row/rule-list-row.tsx
 msgid "Opens the rule editor"
 msgstr "Відкриває редактор правила"
@@ -7889,7 +7897,6 @@ msgstr "Схожі транзакції"
 msgid "Since {fromLabel}"
 msgstr "З {fromLabel}"
 
-#: src/inzhur/component/inzhur-all-time-gain-line/inzhur-all-time-gain-line.tsx
 #: src/inzhur/component/inzhur-institution-gain-line/inzhur-institution-gain-line.tsx
 msgid "since {startLabel}"
 msgstr "з {startLabel}"

@@ -2,6 +2,7 @@ import { ExternalSourceEnum, PRECISION } from '@budgie/contracts';
 import { InzhurSetupService, ResyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
 import { fetchAccountBalance } from '../../harness';
 import { buildInzhurOperationsWorkbook } from '../../harness/inzhur/build-inzhur-operations-workbook';
@@ -11,11 +12,14 @@ import { fetchSourceLedger } from '../../harness/inzhur/fetch-source-ledger';
 import { importInzhurBankFlow } from '../../harness/inzhur/import-inzhur-bank-flow';
 import { importInzhurOperations } from '../../harness/inzhur/import-inzhur-operations';
 import { TOP_UP_DESCRIPTION } from '../../harness/inzhur/inzhur-bank-descriptions.constant';
+import { REIT_ISIN } from '../../harness/inzhur/inzhur-fund-isins.constant';
+import { inzhurHomeClientLayer } from '../../harness/inzhur/inzhur-home-client.layer';
 import { CASH_AFTER_HISTORY, FULL_HISTORY_ROWS, OCEAN, REIT, TOP_UP_TYPE } from '../../harness/inzhur/inzhur-operation-rows.constant';
 import { makeInzhurOperationsLayer } from '../../harness/inzhur/make-inzhur-operations-layer';
 import { requireInzhurFundByName } from '../../harness/inzhur/require-inzhur-fund-by-name';
 import { requireInzhurSetup } from '../../harness/inzhur/require-inzhur-setup';
 import { seedInzhurBankAccount } from '../../harness/inzhur/seed-inzhur-bank-account';
+import { seedInzhurPrice } from '../../harness/inzhur/seed-inzhur-price';
 import { seedInzhurReitPrices } from '../../harness/inzhur/seed-inzhur-reit-prices';
 
 const URI = 'operations.xlsx';
@@ -24,6 +28,11 @@ const NEWER_URI = 'newer.xlsx';
 const FRESH_URI = 'fresh.xlsx';
 
 const layer = makeInzhurOperationsLayer({
+    'chain.xlsx': buildInzhurOperationsWorkbook([
+        ...FULL_HISTORY_ROWS,
+        { at: '2026-04-05T09:00:00', type: 'Конвертація', fund: REIT, debit: 4800 },
+        { at: '2026-04-05T09:00:03', type: 'Конвертація', fund: 'Inzhur Energy', credit: 4800 }
+    ]),
     'extended.xlsx': buildInzhurOperationsWorkbook([
         { at: '2026-01-05T09:00:00', type: TOP_UP_TYPE, debit: 800 },
         { at: '2026-01-05T10:00:00', type: 'Купівля 20 сертифікатів', fund: OCEAN, credit: 800 },
@@ -40,6 +49,19 @@ const snapshotLedger = Effect.map(fetchSourceLedger(ExternalSourceEnum.INZHUR), 
 );
 
 describe('inzhur/operations-lifecycle', () => {
+    it.effect('keeps stored conversion buys authoritative when prices change before a chained conversion re-import', () =>
+        Effect.gen(function* () {
+            yield* importInzhurOperations('chain.xlsx');
+            const reit = yield* requireInzhurFundByName(REIT);
+            expect(yield* fetchAccountBalance(reit.id)).toBe(0);
+            const snapshot = yield* snapshotLedger;
+            yield* seedInzhurPrice(REIT_ISIN, '2026-03-05', 10.05);
+            yield* importInzhurOperations('chain.xlsx');
+            expect(yield* fetchAccountBalance(reit.id)).toBe(0);
+            expect(yield* snapshotLedger).toEqual(snapshot);
+        }).pipe(Effect.provide(Layer.merge(layer, inzhurHomeClientLayer({ [REIT]: 10, 'Inzhur Energy': 10 }))))
+    );
+
     it.effect('reconciles sell-all quantities when earlier holdings arrive and preserves ids on re-import', () =>
         Effect.gen(function* () {
             yield* seedInzhurReitPrices;

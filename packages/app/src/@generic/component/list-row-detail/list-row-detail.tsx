@@ -25,12 +25,12 @@ export const ListRowDetail = ({ segments, className, testID }: Props) => {
 
     const text = joinWithMiddot(segments.map(segment => segment.replaceAll(' ', NO_BREAK_SPACE))).replaceAll(SEPARATOR, NO_BREAK_SEPARATOR);
     const textClassName = cn(detailVariants(), className);
-    const brokenLines = layout?.text === text ? layout.lines : null;
+    const brokenLines = layout?.text === text && layout.lines.length > 1 ? layout.lines : null;
 
     const handleTextLayout = (event: NativeSyntheticEvent<TextLayoutEventData>) => {
         const lines = event.nativeEvent.lines.map(line => line.text.replace(TRAILING_SEPARATOR, '').trim());
 
-        if (lines.length > 1) {
+        if (layout?.text !== text || layout.lines.join('\n') !== lines.join('\n')) {
             setLayout({ text, lines });
         }
     };
@@ -41,11 +41,15 @@ export const ListRowDetail = ({ segments, className, testID }: Props) => {
                 <Text key={line} className={textClassName} maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}>
                     {line}
                 </Text>
-            )) ?? (
-                <Text className={textClassName} maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER} onTextLayout={handleTextLayout}>
-                    {text}
-                </Text>
-            )}
+            ))}
+            <Text
+                className={cn(textClassName, brokenLines && 'absolute inset-x-0 opacity-0')}
+                accessible={false}
+                maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+                onTextLayout={handleTextLayout}
+            >
+                {text}
+            </Text>
         </View>
     );
 };

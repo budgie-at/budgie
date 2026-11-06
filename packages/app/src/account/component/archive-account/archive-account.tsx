@@ -21,7 +21,7 @@ export const ArchiveAccount = ({ accountId }: Props) => {
             onPress={handleArchive}
             isDisabled={false}
             isLoading={isLoading}
-            labelClassName="text-destructive-foreground"
+            labelClassName="text-primary"
             testID={AccountDetailsSelector.ArchiveButton}
         />
     );

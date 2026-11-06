@@ -11,7 +11,7 @@ import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useFormatFundQuantity } from '../../../i18n/hook/use-format-fund-quantity.hook';
 import { inzhurChartScrubAtom } from '../../constant/inzhur-chart-scrub-atom.constant';
 import { useHryvniaInstrumentQuery } from '../../query/use-hryvnia-instrument.query';
-import { useInzhurFundLatestPriceQuery } from '../../query/use-inzhur-fund-returns.query';
+import { useInzhurFundLatestPriceQuery } from '../../query/use-inzhur-fund-latest-price.query';
 
 import type { AccountEntityInterface } from '@budgie/contracts';
 

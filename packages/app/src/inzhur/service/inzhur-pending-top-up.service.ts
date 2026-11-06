@@ -103,20 +103,22 @@ export class InzhurPendingTopUpService extends Context.Service<InzhurPendingTopU
         );
 
         return {
-            findDismissed,
             remind,
-            dismiss: Effect.fn('InzhurPendingTopUpService.dismiss')(function* (topUpExternalId: string) {
-                const dismissed = yield* findDismissed;
+            dismiss: Effect.fn('InzhurPendingTopUpService.dismiss')(
+                function* (topUpExternalId: string) {
+                    const dismissed = yield* findDismissed;
 
-                if (dismissed.includes(topUpExternalId)) {
-                    return;
-                }
+                    if (dismissed.includes(topUpExternalId)) {
+                        return;
+                    }
 
-                const nextDismissed = [...dismissed, topUpExternalId];
+                    const nextDismissed = [...dismissed, topUpExternalId];
 
-                yield* writeIds(dismissedKey, nextDismissed);
-                appAtomRegistry.set(inzhurDismissedTopUpsAtom, nextDismissed);
-            }),
+                    yield* writeIds(dismissedKey, nextDismissed);
+                    appAtomRegistry.set(inzhurDismissedTopUpsAtom, nextDismissed);
+                },
+                effect => permit.withPermit(effect)
+            ),
             start: remind().pipe(logAndContinue, Effect.forkDetach, Effect.asVoid)
         };
     })

@@ -250,25 +250,14 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                     accountByFund.set(name, fundAccount);
                 }
 
-                yield* inzhurBankFlowService.convert(
-                    {
-                        ...setup,
-                        fundAccounts: [
-                            ...setup.fundAccounts,
-                            ...[...accountByFund.values()].filter(
-                                account => !setup.fundAccounts.some(existing => existing.id === account.id)
-                            )
-                        ]
-                    },
-                    null
-                );
-
-                const fundAccountIds = [
-                    ...new Set([
-                        ...setup.fundAccounts.map(account => account.id),
-                        ...[...accountByFund.values()].map(account => account.id)
-                    ])
+                const fundAccounts = [
+                    ...setup.fundAccounts,
+                    ...[...accountByFund.values()].filter(account => !setup.fundAccounts.some(existing => existing.id === account.id))
                 ];
+
+                yield* inzhurBankFlowService.convert({ ...setup, fundAccounts }, null);
+
+                const fundAccountIds = fundAccounts.map(account => account.id);
                 const before = yield* transactionRepository.findByAccountIdsWithEntries([cashAccountId, ...fundAccountIds]);
                 const replacedPurchases = before.filter(
                     transaction => isInzhurPeriod(transaction, { from: periodStart, until: periodEnd }) && isManualPurchase(transaction)
@@ -286,9 +275,22 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                         [transaction.externalId, ...transaction.entries.map(entry => entry.externalId)].filter(isNotEmptyString)
                     )
                 );
+                const storedTrade = (action: InzhurPlannedActionInterface) => {
+                    const transaction = ledger.find(item => item.externalId === action.externalId);
+                    const fundAccountId = accountByFund.get(action.fundName ?? '')?.id;
+
+                    return { transaction, quantity: transaction?.entries.find(entry => entry.accountId === fundAccountId)?.amount };
+                };
                 const newActions = plan.actions.filter(action => !existingIds.has(action.externalId));
                 const quantities = inzhurQuantityResolver.resolve({
                     actions: plan.actions,
+                    storedMicroUnitsByExternalId: new Map(
+                        plan.actions.flatMap(action => {
+                            const { quantity } = storedTrade(action);
+
+                            return isDefined(quantity) ? [[action.externalId, quantity] as const] : [];
+                        })
+                    ),
                     baseMicroUnitsByFund: new Map(
                         [...accountByFund].map(([name, account]) => [
                             name,
@@ -338,10 +340,9 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                 const amendedTrades = plan.actions
                     .filter(action => isTrade(action) && existingIds.has(action.externalId))
                     .flatMap(action => {
-                        const stored = ledger.find(transaction => transaction.externalId === action.externalId);
+                        const { transaction: stored, quantity: storedQuantity } = storedTrade(action);
                         const account = accountByFund.get(action.fundName ?? '');
                         const storedCash = stored?.entries.find(entry => entry.accountId === cashAccountId)?.amount;
-                        const storedQuantity = stored?.entries.find(entry => entry.accountId === account?.id)?.amount;
 
                         const quantity = action.isSellAll
                             ? (quantities.get(action.externalId)?.microUnits ?? storedQuantity)

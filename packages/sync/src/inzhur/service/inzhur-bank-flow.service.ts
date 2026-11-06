@@ -83,23 +83,6 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
             return named.length === 1 ? (named.at(0)?.account ?? null) : null;
         });
 
-        const recordDividend = Effect.fnUntraced(function* (
-            transaction: TransactionWithEntriesEntityInterface,
-            description: string,
-            setup: InzhurSetupInterface
-        ) {
-            const fund = yield* attributeDividend(description, setup);
-
-            if (isDefined(fund)) {
-                yield* transactionRepository.updateById(transaction.id, { fundAccountId: fund.id });
-            }
-
-            yield* transactionRuleRepository.setCategoryByTransactionIds([transaction.id], INVESTMENTS_CATEGORY_ID);
-            yield* transactionRepository.touchUpdatedAt(transaction.id);
-
-            return fund?.id ?? null;
-        });
-
         const retitleDividend = Effect.fnUntraced(function* (
             transaction: TransactionWithEntriesEntityInterface,
             fundAccountId: number | null,
@@ -223,7 +206,20 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
 
             const description = toDescription(transaction);
             const isUnprocessed = isUnprocessedDividend(transaction);
-            const fundAccountId = isUnprocessed ? yield* recordDividend(transaction, description, setup) : transaction.fundAccountId;
+            const fundAccountId =
+                transaction.fundAccountId ??
+                (transaction.updatedBy === TransactionUpdatedByEnum.USER
+                    ? null
+                    : ((yield* attributeDividend(description, setup))?.id ?? null));
+
+            if (isDefined(fundAccountId) && !isDefined(transaction.fundAccountId)) {
+                yield* transactionRepository.updateById(transaction.id, { fundAccountId });
+            }
+
+            if (isUnprocessed) {
+                yield* transactionRuleRepository.setCategoryByTransactionIds([transaction.id], INVESTMENTS_CATEGORY_ID);
+                yield* transactionRepository.touchUpdatedAt(transaction.id);
+            }
 
             yield* retitleDividend(transaction, fundAccountId, setup);
 

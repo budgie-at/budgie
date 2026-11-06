@@ -1,4 +1,4 @@
-import { CurrencyEnum, InstrumentDailyMarketPriceEntityTable } from '@budgie/contracts';
+import { CurrencyEnum, InstrumentPriceProviderEnum, InstrumentDailyMarketPriceEntityTable } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
 import { requireInstrument } from '../db/require-instrument';
@@ -10,5 +10,5 @@ export const seedInzhurPrice = Effect.fnUntraced(function* (isin: string, priceD
 
     yield* testDb
         .insert(InstrumentDailyMarketPriceEntityTable)
-        .values({ instrumentId: fund.id, quoteInstrumentId: hryvnia.id, priceDate, price, source: 'INZHUR' });
+        .values({ instrumentId: fund.id, quoteInstrumentId: hryvnia.id, priceDate, price, source: InstrumentPriceProviderEnum.INZHUR });
 });

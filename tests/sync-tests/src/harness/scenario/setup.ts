@@ -1,7 +1,5 @@
 import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { assertStoredBalancesMatchLedger, resetTestDb } from '@budgie-at/test-kit';
-import { InstrumentDailyMarketPriceEntityTable } from '@budgie/contracts';
-import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 import { vi, afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
 
@@ -106,13 +104,7 @@ beforeEach(() => {
     enableBankingStub.reset();
     expoConstantsStub.expoConfig.extra.aiEnabled = true;
     if (!isDefined(backupDatabasePath)) {
-        return Effect.runPromise(
-            resetTestDb(testDb).pipe(
-                Effect.andThen(
-                    testDb.delete(InstrumentDailyMarketPriceEntityTable).where(eq(InstrumentDailyMarketPriceEntityTable.source, 'INZHUR'))
-                )
-            )
-        );
+        return Effect.runPromise(resetTestDb(testDb));
     }
 
     return undefined;

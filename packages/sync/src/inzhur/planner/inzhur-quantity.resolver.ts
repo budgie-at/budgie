@@ -15,7 +15,8 @@ class InzhurQuantityResolver {
         const resolved = new Map<string, InzhurResolvedQuantityInterface>();
 
         for (const action of unknownBuys) {
-            const estimate = this.estimate(action, input.priceByExternalId);
+            const stored = input.storedMicroUnitsByExternalId.get(action.externalId);
+            const estimate = isDefined(stored) ? { microUnits: stored, isEstimated: true } : this.estimate(action, input.priceByExternalId);
 
             if (isDefined(estimate)) {
                 resolved.set(action.externalId, estimate);

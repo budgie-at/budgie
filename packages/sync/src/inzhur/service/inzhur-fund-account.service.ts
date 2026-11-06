@@ -56,8 +56,9 @@ export class InzhurFundAccountService extends Context.Service<InzhurFundAccountS
 
         const create = Effect.fn('InzhurFundAccountService.create')(function* (code: string, rawName: string, integrationId: number) {
             const instrument = yield* resolveInstrument(code, rawName);
+            const externalId = `inzhur:${instrument.code}`;
             const existingAccount = (yield* accountRepository.findByIntegrationId(integrationId)).find(
-                account => account.externalId === `inzhur:${instrument.code}`
+                account => account.externalId === externalId
             );
 
             if (isDefined(existingAccount)) {
@@ -71,7 +72,7 @@ export class InzhurFundAccountService extends Context.Service<InzhurFundAccountS
                     icon: INZHUR_CANONICAL_FUNDS.find(fund => fund.name === instrument.name)?.icon ?? UserIconNameEnum.ChartLine,
                     instrumentId: instrument.id,
                     currentBalance: 0,
-                    externalId: `inzhur:${instrument.code}`,
+                    externalId,
                     externalSource: provider,
                     integrationId
                 }
