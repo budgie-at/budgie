@@ -24,6 +24,6 @@ export const useInzhurPendingTopUpsQuery = () => {
     const dismissedIds = useAtomValue(inzhurDismissedTopUpsAtom);
 
     return pendingTopUps
-        .filter(topUp => !dismissedIds.includes(topUp.transactionId))
+        .filter(topUp => !dismissedIds.includes(topUp.externalId))
         .sort((first, second) => second.operatedAt.getTime() - first.operatedAt.getTime());
 };

@@ -8,6 +8,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { NativeCallError } from '../../@generic/error/native-call.error';
 import { isNotificationPermissionGranted } from '../../@generic/utils/is-notification-permission-granted.util';
 import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { postLocalNotification } from '../../@generic/utils/post-local-notification.util';
@@ -33,7 +34,10 @@ export class InzhurStatementReminderService extends Context.Service<InzhurStatem
                     return;
                 }
 
-                const remindedStatementDate = yield* Effect.promise(() => storage.getItem(storageKey));
+                const remindedStatementDate = yield* Effect.tryPromise({
+                    try: () => storage.getItem(storageKey),
+                    catch: cause => new NativeCallError({ cause })
+                });
 
                 if (remindedStatementDate === reminder.lastStatementDate) {
                     return;
@@ -52,7 +56,10 @@ export class InzhurStatementReminderService extends Context.Service<InzhurStatem
                         other: 'Your last Inzhur export is # days old and money has moved since. Import a new one to keep your balances accurate.'
                     })
                 );
-                yield* Effect.promise(() => storage.setItem(storageKey, reminder.lastStatementDate));
+                yield* Effect.tryPromise({
+                    try: () => storage.setItem(storageKey, reminder.lastStatementDate),
+                    catch: cause => new NativeCallError({ cause })
+                });
             });
 
             return {

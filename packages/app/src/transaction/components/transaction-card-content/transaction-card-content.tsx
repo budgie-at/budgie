@@ -31,7 +31,7 @@ interface Props {
 
 export const TransactionCardContent = ({ transaction, accountId = null }: Props) => {
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
-    const displayTitle = useTransactionRowTitle(transaction, accountId);
+    const displayTitle = useTransactionRowTitle(transaction);
 
     const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
     const neutralIconVariant = getTransactionType(transaction) === TransactionTypeEnum.TRANSFER ? 'default' : 'secondary';

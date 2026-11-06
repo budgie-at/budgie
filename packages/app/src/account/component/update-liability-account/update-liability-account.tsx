@@ -1,6 +1,5 @@
 import { AccountTypeEnum, AccountWithInstrumentEntityInterface, InstrumentTypeEnum } from '@budgie/contracts';
 import { AccountService } from '@budgie/ledger';
-import { InzhurSetupService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Struct from 'effect/Struct';
@@ -13,7 +12,6 @@ import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-scre
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
 import { UpdateInzhurAccountPage } from '../../../inzhur/component/update-inzhur-account-page/update-inzhur-account-page';
-import { isInzhurCashAccount } from '../../../inzhur/utils/is-inzhur-cash-account.util';
 import { isInzhurFundAccount } from '../../../inzhur/utils/is-inzhur-fund-account.util';
 import { AccountConnectBankRow } from '../../../sync/component/account-connect-bank-row/account-connect-bank-row';
 import { AccountSyncCard } from '../../../sync/component/account-sync-card/account-sync-card';
@@ -35,16 +33,8 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         currentBalance: balance
     };
 
-    const isInzhurCash = isInzhurCashAccount(account);
-
     const { control, handleSubmit, instrument, isSubmitting } = useLiabilityAccountForm(formValues, values =>
         Effect.gen(function* () {
-            if (isInzhurCash) {
-                return yield* Effect.flatMap(InzhurSetupService, inzhurSetupService =>
-                    inzhurSetupService.updateCashAccount(Struct.omit(values, ['type', 'currentBalance']), values.currentBalance)
-                );
-            }
-
             return yield* Effect.flatMap(AccountService, accountService =>
                 accountService.updateById(account.id, Struct.omit(values, ['type']))
             );
@@ -78,13 +68,12 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         return <EmptyScreen />;
     }
 
-    if (isInzhurCash || isInzhurFundAccount(account)) {
+    if (isInzhurFundAccount(account)) {
         return (
             <UpdateInzhurAccountPage
                 account={account}
                 balance={balance}
                 fields={fields}
-                instrumentSymbol={stickyInstrument.symbol}
                 isSubmitting={isSubmitting}
                 onSubmit={handleSubmit}
             />

@@ -1,4 +1,4 @@
-import { InzhurManualPurchaseService } from '@budgie/sync';
+import { InzhurManualPurchaseService, InzhurPurchaseExceedsTopUpError } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useFormContext } from 'react-hook-form';
@@ -7,6 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
+import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { buildInzhurPurchaseDefaults } from '../utils/build-inzhur-purchase-defaults.util';
 
@@ -17,6 +18,17 @@ export const useInzhurPurchaseSubmit = (topUpTransactionId: number) => {
     const { isLoading, run } = useSingleFlight();
     const { handleSubmit, reset } = useFormContext<InzhurPurchaseFormValues>();
 
+    const title = t`Could not save the purchase`;
+    const toast = (message: string) => Effect.sync(() => void showErrorToast(title, message));
+    const purchaseFailureToasts = {
+        InzhurNotSetUpError: () => toast(t`Inzhur is not set up yet`),
+        InzhurPurchaseInvalidError: () => toast(t`Enter a whole number of certificates and a positive amount`),
+        InzhurTopUpNotFoundError: () => toast(t`This top-up is no longer waiting for a purchase`),
+        InzhurPurchaseBeforeTopUpError: () => toast(t`A purchase cannot be dated before its top-up`),
+        InzhurPurchaseExceedsTopUpError: ({ remainingAmount }: InzhurPurchaseExceedsTopUpError) =>
+            toast(t`Only ${remainingAmount} of this top-up is left to spend`)
+    };
+
     const recordPurchase = (values: InzhurPurchaseFormValues) =>
         Effect.flatMap(InzhurManualPurchaseService, inzhurManualPurchaseService =>
             inzhurManualPurchaseService.recordPurchase({ topUpTransactionId, ...values })
@@ -26,7 +38,8 @@ export const useInzhurPurchaseSubmit = (topUpTransactionId: number) => {
         run(
             recordPurchase(values).pipe(
                 Effect.tap(() => Effect.sync(() => void goBackOrReplace('/'))),
-                toastOnFailure(t`Could not save the purchase`)
+                Effect.catchTags(purchaseFailureToasts),
+                toastOnFailure(title)
             )
         )
     );
@@ -46,7 +59,8 @@ export const useInzhurPurchaseSubmit = (topUpTransactionId: number) => {
                         }
                     })
                 ),
-                toastOnFailure(t`Could not save the purchase`)
+                Effect.catchTags(purchaseFailureToasts),
+                toastOnFailure(title)
             )
         )
     );

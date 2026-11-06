@@ -22,12 +22,12 @@ export const InzhurPendingTopUpCard = ({ topUp }: Props) => {
     const { t } = useLingui();
     const { run } = useSingleFlight();
     const formatPendingTopUp = useFormatInzhurPendingTopUp();
-    const { transactionId } = topUp;
+    const { transactionId, externalId } = topUp;
 
     const handleImport = () => void router.push({ pathname: '/create-account/[type]', params: { type: ExternalSourceEnum.INZHUR } });
     const handleEnterPurchase = () => void router.push({ pathname: '/inzhur/purchase', params: { topUpId: String(transactionId) } });
     const handleDismiss = () =>
-        void run(Effect.flatMap(InzhurPendingTopUpService, inzhurPendingTopUpService => inzhurPendingTopUpService.dismiss(transactionId)));
+        void run(Effect.flatMap(InzhurPendingTopUpService, inzhurPendingTopUpService => inzhurPendingTopUpService.dismiss(externalId)));
 
     return (
         <View

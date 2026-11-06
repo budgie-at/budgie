@@ -998,10 +998,6 @@ msgstr "+{carriedLabel} rolled over"
 msgid "+{changePercent} vs {shortPreviousLabel}"
 msgstr "+{changePercent} vs {shortPreviousLabel}"
 
-#: src/inzhur/component/update-inzhur-account-page/update-inzhur-account-page.tsx
-msgid "+{differenceLabel} will be recorded as dividends kept in Inzhur"
-msgstr "+{differenceLabel} will be recorded as dividends kept in Inzhur"
-
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "+{formattedNet} / mo"
@@ -1018,10 +1014,6 @@ msgstr "−{carriedLabel} carried"
 #: src/transaction/components/statistics-change-label/statistics-change-label.tsx
 msgid "−{changePercent} vs {shortPreviousLabel}"
 msgstr "−{changePercent} vs {shortPreviousLabel}"
-
-#: src/inzhur/component/update-inzhur-account-page/update-inzhur-account-page.tsx
-msgid "−{differenceLabel} will be recorded as an adjustment"
-msgstr "−{differenceLabel} will be recorded as an adjustment"
 
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -1102,6 +1094,10 @@ msgstr "A payment has to match every condition."
 #: src/rule/components/rule-conditions-section/rule-conditions-section.tsx
 msgid "A payment only has to match one condition."
 msgstr "A payment only has to match one condition."
+
+#: src/inzhur/hook/use-inzhur-purchase-submit.hook.ts
+msgid "A purchase cannot be dated before its top-up"
+msgstr "A purchase cannot be dated before its top-up"
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "A rough number is fine. Fix it any time."
@@ -1580,10 +1576,6 @@ msgstr "an account"
 #: src/sync/component/enable-banking-connection-card/enable-banking-connection-card.tsx
 msgid "An account is not linked. Link it in Enable Banking, then authorize."
 msgstr "An account is not linked. Link it in Enable Banking, then authorize."
-
-#: src/inzhur/component/inzhur-cash-reconciliation/inzhur-cash-reconciliation.tsx
-msgid "An increase is recorded as estimated dividends. A decrease is recorded as a correction."
-msgstr "An increase is recorded as estimated dividends. A decrease is recorded as a correction."
 
 #: src/app/(tabs)/analytics.tsx
 msgid "Analytics"
@@ -3789,10 +3781,6 @@ msgstr "Display"
 msgid "Dividends"
 msgstr "Dividends"
 
-#: src/transaction/hook/use-dividend-role-label.hook.ts
-msgid "Dividends · estimated"
-msgstr "Dividends · estimated"
-
 #: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
 msgid "Dividends {dividendsLabel}"
 msgstr "Dividends {dividendsLabel}"
@@ -4133,6 +4121,10 @@ msgstr "English"
 msgid "Enter a balance to save"
 msgstr "Enter a balance to save"
 
+#: src/inzhur/hook/use-inzhur-purchase-submit.hook.ts
+msgid "Enter a whole number of certificates and a positive amount"
+msgstr "Enter a whole number of certificates and a positive amount"
+
 #: src/account/utils/get-debt-opening-messages.util.ts
 #: src/ai/component/voice-review-save-button/voice-review-save-button.tsx
 msgid "Enter all amounts"
@@ -4228,14 +4220,6 @@ msgstr "Erste Bank"
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Erste Bank (PDF)"
 msgstr "Erste Bank (PDF)"
-
-#: src/transaction/hook/use-dividend-role-label.hook.ts
-msgid "Estimated"
-msgstr "Estimated"
-
-#: src/transaction/hook/use-transaction-row-title.hook.ts
-msgid "Estimated dividends"
-msgstr "Estimated dividends"
 
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
 msgid "Estimated from your past transactions using your current limits."
@@ -5033,6 +5017,10 @@ msgstr "Investments"
 #: src/rule/constant/external-source.constant.ts
 msgid "Inzhur"
 msgstr "Inzhur"
+
+#: src/inzhur/hook/use-inzhur-purchase-submit.hook.ts
+msgid "Inzhur is not set up yet"
+msgstr "Inzhur is not set up yet"
 
 #: src/inzhur/service/inzhur-pending-top-up.service.ts
 msgid "Inzhur top-up waiting"
@@ -6269,6 +6257,10 @@ msgstr "One-time import from a Privat24 statement — this is not a live sync, a
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 msgid "One‑off"
 msgstr "One‑off"
+
+#: src/inzhur/hook/use-inzhur-purchase-submit.hook.ts
+msgid "Only {remainingAmount} of this top-up is left to spend"
+msgstr "Only {remainingAmount} of this top-up is left to spend"
 
 #: ../ledger/src/installment/service/installment-plan.service.ts
 msgid "Only an expense can become an installment plan"
@@ -7761,10 +7753,6 @@ msgstr "Set a limit and track your spending"
 msgid "Set a limit to continue"
 msgstr "Set a limit to continue"
 
-#: src/inzhur/component/inzhur-cash-reconciliation/inzhur-cash-reconciliation.tsx
-msgid "Set actual balance"
-msgstr "Set actual balance"
-
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Set Amount and Merchant to Shortcut Input."
 msgstr "Set Amount and Merchant to Shortcut Input."
@@ -8636,6 +8624,10 @@ msgstr "This response does not match an authorization started in Budgie. Start a
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "This token already syncs one of your Monobank sections. Use the gear on its Home section to add accounts."
 msgstr "This token already syncs one of your Monobank sections. Use the gear on its Home section to add accounts."
+
+#: src/inzhur/hook/use-inzhur-purchase-submit.hook.ts
+msgid "This top-up is no longer waiting for a purchase"
+msgstr "This top-up is no longer waiting for a purchase"
 
 #: src/budget/constant/budget-period-this-label.constant.ts
 msgid "this week"

@@ -997,10 +997,6 @@ msgstr "+{carriedLabel} перенесено"
 msgid "+{changePercent} vs {shortPreviousLabel}"
 msgstr "+{changePercent} до {shortPreviousLabel}"
 
-#: src/inzhur/component/update-inzhur-account-page/update-inzhur-account-page.tsx
-msgid "+{differenceLabel} will be recorded as dividends kept in Inzhur"
-msgstr "+{differenceLabel} буде записано як дивіденди, що лишилися в Inzhur"
-
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "+{formattedNet} / mo"
@@ -1017,10 +1013,6 @@ msgstr "−{carriedLabel} перенесено"
 #: src/transaction/components/statistics-change-label/statistics-change-label.tsx
 msgid "−{changePercent} vs {shortPreviousLabel}"
 msgstr "−{changePercent} до {shortPreviousLabel}"
-
-#: src/inzhur/component/update-inzhur-account-page/update-inzhur-account-page.tsx
-msgid "−{differenceLabel} will be recorded as an adjustment"
-msgstr "−{differenceLabel} буде записано як коригування"
 
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -1101,6 +1093,10 @@ msgstr "Платіж має відповідати всім умовам."
 #: src/rule/components/rule-conditions-section/rule-conditions-section.tsx
 msgid "A payment only has to match one condition."
 msgstr "Платежу достатньо відповідати одній умові."
+
+#: src/inzhur/hook/use-inzhur-purchase-submit.hook.ts
+msgid "A purchase cannot be dated before its top-up"
+msgstr "Покупка не може бути датована раніше за поповнення"
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "A rough number is fine. Fix it any time."
@@ -1579,10 +1575,6 @@ msgstr "рахунок"
 #: src/sync/component/enable-banking-connection-card/enable-banking-connection-card.tsx
 msgid "An account is not linked. Link it in Enable Banking, then authorize."
 msgstr "Рахунок не прив'язано. Прив'яжіть його в Enable Banking, а потім авторизуйте."
-
-#: src/inzhur/component/inzhur-cash-reconciliation/inzhur-cash-reconciliation.tsx
-msgid "An increase is recorded as estimated dividends. A decrease is recorded as a correction."
-msgstr "Збільшення записується як оцінені дивіденди. Зменшення записується як коригування."
 
 #: src/app/(tabs)/analytics.tsx
 msgid "Analytics"
@@ -3788,10 +3780,6 @@ msgstr "Відображення"
 msgid "Dividends"
 msgstr "Дивіденди"
 
-#: src/transaction/hook/use-dividend-role-label.hook.ts
-msgid "Dividends · estimated"
-msgstr "Дивіденди · оціночні"
-
 #: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
 msgid "Dividends {dividendsLabel}"
 msgstr "Дивіденди {dividendsLabel}"
@@ -4132,6 +4120,10 @@ msgstr "Англійська"
 msgid "Enter a balance to save"
 msgstr "Введіть баланс, щоб зберегти"
 
+#: src/inzhur/hook/use-inzhur-purchase-submit.hook.ts
+msgid "Enter a whole number of certificates and a positive amount"
+msgstr "Введіть ціле число сертифікатів і додатну суму"
+
 #: src/account/utils/get-debt-opening-messages.util.ts
 #: src/ai/component/voice-review-save-button/voice-review-save-button.tsx
 msgid "Enter all amounts"
@@ -4227,14 +4219,6 @@ msgstr "Erste Bank"
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Erste Bank (PDF)"
 msgstr "Erste Bank (PDF)"
-
-#: src/transaction/hook/use-dividend-role-label.hook.ts
-msgid "Estimated"
-msgstr "Оцінка"
-
-#: src/transaction/hook/use-transaction-row-title.hook.ts
-msgid "Estimated dividends"
-msgstr "Оцінені дивіденди"
 
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
 msgid "Estimated from your past transactions using your current limits."
@@ -5032,6 +5016,10 @@ msgstr "Інвестиції"
 #: src/rule/constant/external-source.constant.ts
 msgid "Inzhur"
 msgstr "Inzhur"
+
+#: src/inzhur/hook/use-inzhur-purchase-submit.hook.ts
+msgid "Inzhur is not set up yet"
+msgstr "Inzhur ще не налаштовано"
 
 #: src/inzhur/service/inzhur-pending-top-up.service.ts
 msgid "Inzhur top-up waiting"
@@ -6268,6 +6256,10 @@ msgstr "Одноразовий імпорт виписки з Приват24 —
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 msgid "One‑off"
 msgstr "Разово"
+
+#: src/inzhur/hook/use-inzhur-purchase-submit.hook.ts
+msgid "Only {remainingAmount} of this top-up is left to spend"
+msgstr "Від цього поповнення залишилось витратити лише {remainingAmount}"
 
 #: ../ledger/src/installment/service/installment-plan.service.ts
 msgid "Only an expense can become an installment plan"
@@ -7760,10 +7752,6 @@ msgstr "Встановіть ліміт і відстежуйте витрати
 msgid "Set a limit to continue"
 msgstr "Встановіть ліміт, щоб продовжити"
 
-#: src/inzhur/component/inzhur-cash-reconciliation/inzhur-cash-reconciliation.tsx
-msgid "Set actual balance"
-msgstr "Вкажіть фактичний баланс"
-
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Set Amount and Merchant to Shortcut Input."
 msgstr "Передайте Суму і Продавця у вхідні дані Команд."
@@ -8635,6 +8623,10 @@ msgstr "Ця відповідь не відповідає авторизації
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "This token already syncs one of your Monobank sections. Use the gear on its Home section to add accounts."
 msgstr "Цей токен уже синхронізує один із ваших розділів Monobank. Щоб додати рахунки, натисніть шестерню в його розділі на головному екрані."
+
+#: src/inzhur/hook/use-inzhur-purchase-submit.hook.ts
+msgid "This top-up is no longer waiting for a purchase"
+msgstr "Це поповнення більше не очікує покупки"
 
 #: src/budget/constant/budget-period-this-label.constant.ts
 msgid "this week"
