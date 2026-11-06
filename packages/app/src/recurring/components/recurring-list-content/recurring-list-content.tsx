@@ -4,8 +4,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { BudgieLegendList } from '../../../@generic/component/budgie-legend-list/budgie-legend-list';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { StaticChromeLegendList } from '../../../@generic/component/static-chrome-legend-list/static-chrome-legend-list';
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@generic/constant/floating-tab-bar.constant';
 import { RecurringListItemKindEnum } from '../../enum/recurring-list-item-kind.enum';
 import { useRecurringSeriesList } from '../../hook/use-recurring-series-list.hook';
@@ -60,17 +60,21 @@ export const RecurringListContent = ({ header }: Props) => {
 
     return (
         <View className="flex-1">
-            {header}
             <LoadingContent isLoading={isLoading} className="flex-1" containerClassName="flex-1">
                 <View className="flex-1" testID={RecurringPaneSelector.List}>
-                    <BudgieLegendList
+                    <StaticChromeLegendList
                         data={items}
                         keyExtractor={keyExtractor}
                         getItemType={getItemType}
                         renderItem={renderItem}
                         estimatedItemSize={64}
                         contentContainerStyle={contentContainerStyle}
-                        ListHeaderComponent={<RecurringSummaryCard summary={summary} now={now} />}
+                        ListHeaderComponent={
+                            <View>
+                                {header}
+                                <RecurringSummaryCard summary={summary} now={now} />
+                            </View>
+                        }
                         ListEmptyComponent={emptyState}
                     />
                 </View>

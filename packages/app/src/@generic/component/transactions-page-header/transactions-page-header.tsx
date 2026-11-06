@@ -26,10 +26,6 @@ const TABS: readonly TabConfigInterface<TransactionsTabType>[] = [
 export const TransactionsPageHeader = ({ activeTab, onChangeTab }: Props) => {
     const { t } = useLingui();
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
-    const backgroundStyle = useResolveClassNames('bg-surface');
-    const borderWidthStyle = useResolveClassNames('border-b-hairline');
-    const borderColorStyle = useResolveClassNames('border-surface-separator');
-    const headerStyle = [backgroundStyle, borderWidthStyle, borderColorStyle];
     const rowStyle = useResolveClassNames('px-0');
     const segments: readonly SegmentedControlSegmentInterface<TransactionsTabType>[] = [
         { value: 'transactions', label: t`Transactions`, testID: TransactionsPageSelector.TransactionsTab },
@@ -37,7 +33,7 @@ export const TransactionsPageHeader = ({ activeTab, onChangeTab }: Props) => {
     ];
 
     return (
-        <ScreenChromeHeader inFlow style={headerStyle} rowStyle={rowStyle}>
+        <ScreenChromeHeader inFlow rowStyle={rowStyle}>
             {isAccessibilityTextSize ? (
                 <View className="flex-1 px-5xl pb-md">
                     <SegmentedControl
