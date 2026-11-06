@@ -25,17 +25,16 @@ export const MccInfoRow = ({ transactionTitle, mccCategoryId, children, suggesti
     const { mccCategory } = useGetMccCategoryByIdQuery(mccCategoryId);
     const { fontScale, height } = useWindowDimensions();
     const isCompact = isCompactTransactionForm(fontScale, height);
-    const containerClassName = isCompact ? 'shrink items-center self-stretch' : 'items-center self-stretch';
     const merchantClassName = isCompact
-        ? 'h-[60px] min-h-[44px] shrink items-center justify-center self-stretch'
+        ? 'h-[44px] items-center justify-center self-stretch'
         : 'h-[60px] items-center justify-center self-stretch';
     const accessoryClassName = isCompact
-        ? 'max-h-[44px] min-h-[32px] shrink self-stretch flex-row items-center justify-center gap-x-[8px] overflow-hidden'
+        ? 'h-[32px] self-stretch flex-row items-center justify-center gap-x-[8px] overflow-hidden'
         : 'max-h-[44px] self-stretch flex-row items-center justify-center gap-x-[8px] overflow-hidden';
 
     return (
         <QuickFormContext>
-            <Animated.View layout={LAYOUT} className={containerClassName}>
+            <Animated.View layout={LAYOUT} className="items-center self-stretch">
                 <View className={merchantClassName}>
                     {isNotEmptyString(transactionTitle) ? (
                         <Text
