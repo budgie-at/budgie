@@ -7,7 +7,7 @@ import { byId, byText, expectId, expectNoId, openLink, retry, scrollTo, selectCa
 import type { Locator } from 'e2e';
 
 /** Taps `testId` until `targetId` shows (each wait `timeout`), up to `1 + retries` taps. */
-export async function tapUntilId(ctx: Ctx, testId: string, targetId: string, retries = 3, timeout = 3_000): Promise<void> {
+async function tapUntilId(ctx: Ctx, testId: string, targetId: string, retries = 3, timeout = 3_000): Promise<void> {
     await retry(retries, async () => {
         await tapId(ctx, testId);
         await expectId(ctx, targetId, timeout);

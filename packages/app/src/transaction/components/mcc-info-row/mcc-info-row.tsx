@@ -39,7 +39,7 @@ export const MccInfoRow = ({ transactionTitle, mccCategoryId, children, suggesti
                         transactionTitle
                     )}
                 </View>
-                <View className="max-h-[44px] max-w-full flex-row items-center justify-center gap-x-[8px] overflow-hidden">
+                <View className="max-h-[44px] self-stretch flex-row items-center justify-center gap-x-[8px] overflow-hidden">
                     {isDefined(mccCategory) ? (
                         <Text
                             className="shrink text-[13px] leading-[18px] text-secondary-foreground"

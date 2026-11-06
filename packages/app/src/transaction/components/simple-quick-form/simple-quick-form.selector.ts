@@ -5,6 +5,7 @@ export const SimpleQuickFormSelector = {
     Page: 'TransactionForm.Page',
     DatePicker: 'TransactionForm.DatePicker',
     AmountInput: 'TransactionForm.AmountInput',
+    MerchantInput: 'TransactionForm.MerchantInput',
     CategorySelector: 'TransactionForm.CategorySelector',
     CategorySelectorTitle: 'TransactionForm.CategorySelector.Title',
     TagsSelector: 'TransactionForm.TagsSelector',

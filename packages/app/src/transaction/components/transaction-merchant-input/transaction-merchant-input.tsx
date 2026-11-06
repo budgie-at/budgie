@@ -5,6 +5,7 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { TextInput } from 'react-native';
 
 import { TransactionKeypadContext } from '../../context/transaction-keypad.context';
+import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 
 export const TransactionMerchantInput = () => {
     const { t } = useLingui();
@@ -15,6 +16,7 @@ export const TransactionMerchantInput = () => {
 
     return (
         <TextInput
+            testID={SimpleQuickFormSelector.MerchantInput}
             value={title}
             onFocus={dismiss}
             maxLength={TRANSACTION_TITLE_MAX_LENGTH}
