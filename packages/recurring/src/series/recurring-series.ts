@@ -9,6 +9,7 @@ import { RECURRING_AMOUNT_RATIO } from '../constant/recurring-amount-ratio.const
 import { normalizeRecurringDescription } from '../utils/normalize-recurring-description.util';
 
 import { continueRecurringSeries } from './recurring-continuation';
+import { DISPLAY_TOKEN_SEPARATOR, IDENTITY_TOKEN_SEPARATOR, cleanDescriptionTokens } from './recurring-tokens';
 
 import type { RecurringCadenceInterface } from '../interface/recurring-cadence.interface';
 import type { RecurringChargeInterface } from '../interface/recurring-charge.interface';
@@ -29,7 +30,6 @@ export const CADENCES: readonly RecurringCadenceInterface[] = [
     { periodMonths: 6, periodDays: DAYS_PER_MONTH * 6, toleranceDays: 10 },
     { periodMonths: 12, periodDays: DAYS_PER_MONTH * 12, toleranceDays: 10 }
 ];
-const LEGACY_STOP_TOKENS = new Set('GMBH AG KG CO INC LTD LLC OG ФОП ТОВ ПП ПАТ АТ ВІД'.split(' '));
 
 const median = (values: readonly number[]): number => {
     const sorted = [...values].sort((first, second) => first - second);
@@ -54,15 +54,13 @@ export const counterpartyKey = (charge: RecurringChargeInterface): string =>
 export const identity = (charge: RecurringChargeInterface): string =>
     isNotEmptyString(counterpartyKey(charge)) ? `${charge.kind}|${charge.instrumentId}|${counterpartyKey(charge)}` : '';
 
-const cleanTokens = (charge: RecurringChargeInterface, referenceTail: RegExp, numericToken: RegExp): string[] =>
-    description(charge)
-        .replace(referenceTail, '')
-        .replaceAll(/\bGES\.?\s*M\.?\s*B\.?\s*H\.?/giu, ' ')
-        .split(/[^\p{L}\p{N}]+/u)
-        .filter(token => isNotEmptyString(token) && !numericToken.test(token) && !LEGACY_STOP_TOKENS.has(token.toUpperCase()));
-
 export const legacyLabel = (charge: RecurringChargeInterface): string =>
-    cleanTokens(charge, /(MDID|UID|MREF|MLREF|IBAN|RECHNUNGSNR|BRUTTO).*$/iu, /^\d+$|\d{3,}/u)
+    cleanDescriptionTokens(
+        description(charge),
+        /(MDID|UID|MREF|MLREF|IBAN|RECHNUNGSNR|BRUTTO).*$/iu,
+        /^\d+$|\d{3,}/u,
+        IDENTITY_TOKEN_SEPARATOR
+    )
         .join(' ')
         .toUpperCase();
 
@@ -207,7 +205,12 @@ const buildSeries = (charges: readonly RecurringChargeInterface[], variable = fa
             (priceChangeIndex > 0 ? events.slice(priceChangeIndex) : events.slice(-RECENT_AMOUNT_COUNT)).map(event => event.nativeAmount)
         )
     );
-    const displayTokens = cleanTokens(latest, /\b(?:MDID|UID|MREF|MLREF|IBAN|RECHNUNGSNR|BRUTTO)\b.*$/iu, /^\d+$|\d{6,}/u).slice(0, 3);
+    const displayTokens = cleanDescriptionTokens(
+        description(latest),
+        /\b(?:MDID|UID|MREF|MLREF|IBAN|RECHNUNGSNR|BRUTTO)\b.*$/iu,
+        /^\d+$|\d{6,}/u,
+        DISPLAY_TOKEN_SEPARATOR
+    ).slice(0, 3);
 
     return {
         kind: latest.kind,
