@@ -4,12 +4,13 @@ import { Text } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { Icon } from '../../../@generic/component/icon/icon';
+import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-chrome-font-size-multiplier.constant';
 import { PIN_STEP_FADE_DURATION_MS } from '../../constant/pin-motion.constant';
 
 export const PinForgottenWarning = () => (
     <Animated.View entering={FadeIn.duration(PIN_STEP_FADE_DURATION_MS)} className="flex-row items-center justify-center gap-x-sm px-5xl">
         <Icon icon={UserIconNameEnum.TriangleAlert} size={16} className="text-warning-strong" />
-        <Text className="text-[15px] font-medium text-primary text-center shrink">
+        <Text maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER} className="text-[15px] font-medium text-primary text-center shrink">
             <Trans>A forgotten PIN can&apos;t be reset.</Trans>
         </Text>
     </Animated.View>

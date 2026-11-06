@@ -50,6 +50,9 @@ export const ContactSelectorCard = (props: Props) => {
         />
     );
 
+    const titleClassName = isSelected ? 'text-primary text-[17px] font-semibold' : 'text-primary text-[17px]';
+    const titleContent = <Text className={titleClassName}>{title}</Text>;
+
     const hasEmails = isNotEmptyArray(emails);
     const hasPhoneNumbers = isNotEmptyArray(phoneNumbers);
 
@@ -59,13 +62,13 @@ export const ContactSelectorCard = (props: Props) => {
                 {emails.map(email => (
                     <View key={email} className="flex-row items-center gap-x-sm">
                         <Icon icon={UserIconNameEnum.Mail} className="text-secondary-foreground" size={12} />
-                        <Text className="text-secondary-foreground text-[13px] leading-[18px]">{email}</Text>
+                        <Text className="flex-1 shrink text-secondary-foreground text-[13px] leading-[18px]">{email}</Text>
                     </View>
                 ))}
                 {phoneNumbers.map(phoneNumber => (
                     <View key={phoneNumber} className="flex-row items-center gap-x-sm">
                         <Icon icon={UserIconNameEnum.Phone} className="text-secondary-foreground" size={12} />
-                        <Text className="text-secondary-foreground text-[13px] leading-[18px]">{phoneNumber}</Text>
+                        <Text className="flex-1 shrink text-secondary-foreground text-[13px] leading-[18px]">{phoneNumber}</Text>
                     </View>
                 ))}
             </View>
@@ -77,7 +80,7 @@ export const ContactSelectorCard = (props: Props) => {
             onPress={handleSelect}
             testID={CreateAccountScreenSelector.ContactOption(title)}
             left={icon}
-            title={title}
+            title={titleContent}
             subtitle={subtitle}
         />
     );

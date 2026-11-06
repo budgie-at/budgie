@@ -1,0 +1,1 @@
+export const MAX_CHROME_FONT_SIZE_MULTIPLIER = 1.6;
