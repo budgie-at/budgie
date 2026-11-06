@@ -8,6 +8,7 @@ import * as Stream from 'effect/Stream';
 import { Workload } from '../../@generic/service/workload.service';
 import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
+import { SiriCatalogService } from '../../siri/service/siri-catalog.service';
 import { WalletCaptureImportService } from '../../wallet-capture/service/wallet-capture-import.service';
 import { WalletCaptureNativeService } from '../../wallet-capture/service/wallet-capture-native.service';
 
@@ -21,11 +22,12 @@ export class AppDataSyncService extends Context.Service<AppDataSyncService>()('@
         const enableBankingSyncService = yield* EnableBankingSyncService;
         const walletCaptureNativeService = yield* WalletCaptureNativeService;
         const walletCaptureImportService = yield* WalletCaptureImportService;
+        const siriCatalogService = yield* SiriCatalogService;
 
         return {
             sync: Effect.fn('AppDataSyncService.sync')(function* () {
                 yield* logAndContinue(accountBalanceIncrementalService.updateAllBalances(false));
-                yield* logAndContinue(walletCaptureNativeService.refreshAccounts());
+                yield* logAndContinue(siriCatalogService.publish);
                 yield* logAndContinue(walletCaptureImportService.drain());
                 yield* logAndContinue(exchangeRateBackgroundService.sync);
                 if (yield* workload.hasQueuedUserWork) {
@@ -61,7 +63,8 @@ export class AppDataSyncService extends Context.Service<AppDataSyncService>()('@
             BinanceSyncService.layer,
             EnableBankingSyncService.layer,
             WalletCaptureImportService.layer,
-            WalletCaptureNativeService.layer
+            WalletCaptureNativeService.layer,
+            SiriCatalogService.layer
         ])
     );
 }

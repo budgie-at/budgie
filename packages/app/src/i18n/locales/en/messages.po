@@ -60,6 +60,11 @@ msgstr "(pick one)"
 msgid "{0, plural, one {# account} other {# accounts}}"
 msgstr "{0, plural, one {# account} other {# accounts}}"
 
+#. placeholder {0}: charges.length
+#: src/siri/service/siri-catalog.service.ts
+msgid "{0, plural, one {# charge is due in the next 7 days, {formattedTotal} in total: {chargeList}.} other {# charges are due in the next 7 days, {formattedTotal} in total: {chargeList}.}}"
+msgstr "{0, plural, one {# charge is due in the next 7 days, {formattedTotal} in total: {chargeList}.} other {# charges are due in the next 7 days, {formattedTotal} in total: {chargeList}.}}"
+
 #. placeholder {0}: installmentCount - 1
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
 msgid "{0, plural, one {# more payment of {formattedLast}} other {# more payments of {formattedLast}}}"
@@ -523,6 +528,14 @@ msgstr "{installmentCount, plural, one {# payment in total} other {# payments in
 msgid "{installmentCount, plural, one {Split into # payment} other {Split into # payments}}"
 msgstr "{installmentCount, plural, one {Split into # payment} other {Split into # payments}}"
 
+#: src/siri/service/siri-catalog.service.ts
+msgid "{label}: {formattedSpent} of {formattedLimit} spent, {formattedLeft} left."
+msgstr "{label}: {formattedSpent} of {formattedLimit} spent, {formattedLeft} left."
+
+#: src/siri/service/siri-catalog.service.ts
+msgid "{label}: {formattedSpent} spent, {formattedOver} over the {formattedLimit} limit."
+msgstr "{label}: {formattedSpent} spent, {formattedOver} over the {formattedLimit} limit."
+
 #: src/market-data/component/currency-market-chart-status/currency-market-chart-status.tsx
 msgid "{loadedDays} of {totalDays} days"
 msgstr "{loadedDays} of {totalDays} days"
@@ -806,6 +819,10 @@ msgstr "{statusLabel}, {daysLeftLabel}."
 #: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 msgstr "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
+
+#: src/siri/service/siri-catalog.service.ts
+msgid "{title} {formattedAmount} on {formattedDate}"
+msgstr "{title} {formattedAmount} on {formattedDate}"
 
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "{title} is ahead of pace"
@@ -5705,6 +5722,10 @@ msgstr "No purchase price is recorded for this balance, so the return can’t be
 msgid "No receipt found"
 msgstr "No receipt found"
 
+#: src/siri/service/siri-catalog.service.ts
+msgid "No recurring charges are due in the next 7 days."
+msgstr "No recurring charges are due in the next 7 days."
+
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "No recurring payments in {displayMonthLabel}"
 msgstr "No recurring payments in {displayMonthLabel}"
@@ -6039,6 +6060,10 @@ msgstr "Open Binance to get your API key"
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Open Budgie once after updating, then return to Shortcuts and search for Budgie again."
 msgstr "Open Budgie once after updating, then return to Shortcuts and search for Budgie again."
+
+#: src/siri/service/siri-catalog.service.ts
+msgid "Open Budgie to refresh."
+msgstr "Open Budgie to refresh."
 
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Open Budgie to see your finances"
@@ -8187,6 +8212,10 @@ msgstr "This file is not an unencrypted RSA private key in PEM format."
 msgid "This is where your data lives and who can read it. You can find it again in Settings › Your data."
 msgstr "This is where your data lives and who can read it. You can find it again in Settings › Your data."
 
+#: src/siri/service/siri-catalog.service.ts
+msgid "This isn’t available in Budgie yet."
+msgstr "This isn’t available in Budgie yet."
+
 #: src/app/bank-integration-key.tsx
 msgid "This key already syncs another of your Monobank sections."
 msgstr "This key already syncs another of your Monobank sections."
@@ -8767,6 +8796,10 @@ msgstr "Unhide {accountTitle}"
 msgid "Unknown card"
 msgstr "Unknown card"
 
+#: src/siri/service/siri-catalog.service.ts
+msgid "Unlock Budgie to see this."
+msgstr "Unlock Budgie to see this."
+
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 msgid "Unlock quickly without typing your PIN"
 msgstr "Unlock quickly without typing your PIN"
@@ -9152,6 +9185,14 @@ msgstr "You pay in parts"
 msgid "You received money"
 msgstr "You received money"
 
+#: src/siri/service/siri-catalog.service.ts
+msgid "You spent {formattedLastMonth} on {title} last month."
+msgstr "You spent {formattedLastMonth} on {title} last month."
+
+#: src/siri/service/siri-catalog.service.ts
+msgid "You spent {formattedThisMonth} on {title} this month."
+msgstr "You spent {formattedThisMonth} on {title} this month."
+
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "You’ll still need the PIN after a restart."
 msgstr "You’ll still need the PIN after a restart."
@@ -9171,6 +9212,10 @@ msgstr "You're on mobile data. It starts when you're back on Wi-Fi."
 #: src/ai/component/ai-download-preflight-note/ai-download-preflight-note.tsx
 msgid "You're on Wi-Fi."
 msgstr "You're on Wi-Fi."
+
+#: src/siri/service/siri-catalog.service.ts
+msgid "Your {accountTitle} balance is {formattedBalance}."
+msgstr "Your {accountTitle} balance is {formattedBalance}."
 
 #: src/categorize-inbox/components/categorize-inbox-transfer-accounts/categorize-inbox-transfer-accounts.tsx
 msgid "Your accounts"
@@ -9268,6 +9313,10 @@ msgstr "Your money in one file."
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "Your money will live in one file on this phone. Choose who can open it."
 msgstr "Your money will live in one file on this phone. Choose who can open it."
+
+#: src/siri/service/siri-catalog.service.ts
+msgid "Your net worth is {formattedNetWorth}."
+msgstr "Your net worth is {formattedNetWorth}."
 
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
 msgid "Your phone’s lock will be the only lock."

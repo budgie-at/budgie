@@ -14,6 +14,8 @@ import { isDefined } from '@rnw-community/shared';
 
 import { DatabaseChangeService } from '../../@generic/drizzle/service/database-change.service';
 import { Workload } from '../../@generic/service/workload.service';
+import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
+import { SiriCatalogService } from '../../siri/service/siri-catalog.service';
 import { WIDGET_SNAPSHOT_TASK } from '../constant/widget-snapshot-task.constant';
 import BudgetWidget from '../widget/budget.widget';
 import NetWorthWidget from '../widget/net-worth.widget';
@@ -31,6 +33,7 @@ export class WidgetSnapshotService extends Context.Service<WidgetSnapshotService
         const workload = yield* Workload;
         const databaseChangeService = yield* DatabaseChangeService;
         const widgetSnapshotBuilderService = yield* WidgetSnapshotBuilderService;
+        const siriCatalogService = yield* SiriCatalogService;
         const backgroundTaskMinimumIntervalMinutes = 60;
         const publishDebounceMs = 2_000;
         const publishKey = 'widget-snapshot-publish';
@@ -120,6 +123,8 @@ export class WidgetSnapshotService extends Context.Service<WidgetSnapshotService
         });
 
         const publish = Effect.fn('WidgetSnapshotService.publish')(function* () {
+            yield* logAndContinue(siriCatalogService.publish);
+
             return yield* writeSemaphore.withPermits(1)(writeIfUnlocked());
         });
 
@@ -143,6 +148,7 @@ export class WidgetSnapshotService extends Context.Service<WidgetSnapshotService
             mask: Effect.fn('WidgetSnapshotService.mask')(function* () {
                 yield* Ref.set(isLocked, true);
                 yield* workload.cancelScheduled(publishKey);
+                yield* logAndContinue(siriCatalogService.mask);
 
                 return yield* writeSemaphore.withPermits(1)(write(true));
             }),
@@ -155,12 +161,12 @@ export class WidgetSnapshotService extends Context.Service<WidgetSnapshotService
                 yield* debouncePublish();
             }),
             unlock: (): void => {
-                runFork(Effect.andThen(Ref.set(isLocked, false), debouncePublish()));
+                runFork(Ref.set(isLocked, false).pipe(Effect.andThen(siriCatalogService.unlock), Effect.andThen(debouncePublish())));
             }
         };
     })
 }) {
     static readonly layer = Layer.effect(WidgetSnapshotService, WidgetSnapshotService.make).pipe(
-        Layer.provide([Workload.layer, DatabaseChangeService.layer, WidgetSnapshotBuilderService.layer])
+        Layer.provide([Workload.layer, DatabaseChangeService.layer, WidgetSnapshotBuilderService.layer, SiriCatalogService.layer])
     );
 }

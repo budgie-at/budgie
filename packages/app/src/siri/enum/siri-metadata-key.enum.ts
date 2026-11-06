@@ -1,0 +1,14 @@
+export enum SiriMetadataKeyEnum {
+    MONTH_KEY = 'MONTH_KEY',
+    AS_OF = 'AS_OF',
+    IS_LOCKED = 'IS_LOCKED',
+    THIS_MONTH = 'THIS_MONTH',
+    LAST_MONTH = 'LAST_MONTH',
+    BUDGET = 'BUDGET',
+    BALANCE = 'BALANCE',
+    NET_WORTH = 'NET_WORTH',
+    UPCOMING = 'UPCOMING',
+    REFRESH = 'REFRESH',
+    LOCKED = 'LOCKED',
+    UNAVAILABLE = 'UNAVAILABLE'
+}
