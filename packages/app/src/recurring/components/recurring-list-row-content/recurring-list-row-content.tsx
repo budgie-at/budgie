@@ -32,9 +32,7 @@ export const RecurringListRowContent = ({ series, isPossible, now }: Props) => {
 
     return (
         <TransactionCardLayout
-            icon={
-                <RecurringMerchantTile categoryId={series.categoryId} categoryIcon={series.categoryIcon} title={series.title} size={40} />
-            }
+            icon={<RecurringMerchantTile categoryIcon={series.categoryIcon} title={series.title} size={40} />}
             title={
                 <Text
                     dynamicTypeRamp="headline"

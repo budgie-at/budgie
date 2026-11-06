@@ -43,7 +43,7 @@ export const RecurringDetailHero = ({ series, now }: Props) => {
 
     return (
         <View className="items-center pt-3xl">
-            <RecurringMerchantTile categoryId={series.categoryId} categoryIcon={series.categoryIcon} title={series.title} size={72} />
+            <RecurringMerchantTile categoryIcon={series.categoryIcon} title={series.title} size={72} />
             <Text className="mt-xl text-center text-[22px] font-semibold leading-[28px] text-primary" selectable>
                 {series.title}
             </Text>

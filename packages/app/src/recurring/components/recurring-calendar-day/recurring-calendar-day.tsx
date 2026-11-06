@@ -25,10 +25,7 @@ const circleVariants = cva('items-center justify-center rounded-full', {
         hasEntries: { true: '', false: '' },
         isAccessibilityTextSize: { true: 'w-[44px] h-[44px]', false: 'w-[36px] h-[36px]' }
     },
-    compoundVariants: [
-        { isToday: true, isSelected: false, className: 'border border-primary' },
-        { hasEntries: true, isSelected: false, className: 'bg-primary/6 dark:bg-primary/18' }
-    ]
+    compoundVariants: [{ isToday: true, isSelected: true, className: 'bg-destructive-strong' }]
 });
 
 const textVariants = cva('text-[15px] leading-[20px] tabular-nums pb-[8px]', {
@@ -37,7 +34,8 @@ const textVariants = cva('text-[15px] leading-[20px] tabular-nums pb-[8px]', {
         isSelected: { true: 'text-primary-reverse font-semibold', false: '' },
         isToday: { true: 'font-semibold', false: '' },
         hasEntries: { true: 'font-semibold', false: '' }
-    }
+    },
+    compoundVariants: [{ isToday: true, isSelected: false, className: 'text-destructive-strong' }]
 });
 
 interface Props {

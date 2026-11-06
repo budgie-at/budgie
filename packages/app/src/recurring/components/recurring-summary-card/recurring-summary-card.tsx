@@ -23,7 +23,7 @@ export const RecurringSummaryCard = ({ summary }: Props) => {
     const { t } = useLingui();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const protectAmount = useProtectedAmountLabel();
-    const { committedMonthly, committedCount, dueSoonTotal, dueSoonCount, incomeMonthly } = summary;
+    const { committedMonthly, committedCount, hasAveragedBills, dueSoonTotal, dueSoonCount, incomeMonthly } = summary;
     const hasCommitted = isPositiveNumber(committedMonthly);
     const hasDueSoon = isPositiveNumber(dueSoonCount);
     const hasIncome = isPositiveNumber(incomeMonthly);
@@ -44,7 +44,7 @@ export const RecurringSummaryCard = ({ summary }: Props) => {
             testID={RecurringPaneSelector.Summary}
         >
             <Text dynamicTypeRamp="footnote" className="text-[13px] font-medium text-secondary-foreground">
-                <Trans>Recurring spending</Trans>
+                <Trans>Average per month</Trans>
             </Text>
             <View className="flex-row flex-wrap items-baseline gap-x-xs">
                 <ProtectedText dynamicTypeRamp="largeTitle" className="text-[34px] font-bold text-primary tabular-nums">
@@ -57,13 +57,18 @@ export const RecurringSummaryCard = ({ summary }: Props) => {
             <Text dynamicTypeRamp="subheadline" className="text-[15px] text-secondary-foreground">
                 {`${countLabel} · ${dueSoonLabel}`}
             </Text>
+            {hasAveragedBills ? (
+                <Text dynamicTypeRamp="footnote" className="text-[13px] text-secondary-foreground">
+                    <Trans>Weekly, quarterly and yearly bills are shown as a monthly average.</Trans>
+                </Text>
+            ) : null}
             {hasIncome ? (
                 <View className="flex-row items-center justify-between border-t border-surface-separator pt-md">
                     <Text dynamicTypeRamp="subheadline" className="text-[15px] text-primary">
                         <Trans>Recurring income</Trans>
                     </Text>
                     <ProtectedText dynamicTypeRamp="headline" className="text-[15px] font-semibold text-positive-strong tabular-nums">
-                        {t`${incomeAmount} / month`}
+                        {t`+${incomeAmount} / month`}
                     </ProtectedText>
                 </View>
             ) : null}

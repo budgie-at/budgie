@@ -325,6 +325,10 @@ msgstr "{daysLeft, plural, one {El consentimiento caduca en # día} other {El co
 msgid "{daysRemaining, plural, one {# day left} other {# days left}}"
 msgstr "{daysRemaining, plural, one {Queda # día} other {Quedan # días}}"
 
+#: src/recurring/components/recurring-calendar-content/recurring-calendar-content.tsx
+msgid "{displayedMonthName} total"
+msgstr ""
+
 #: src/account/component/debt-account-card/debt-account-card.tsx
 msgid "{displayPercentage}%"
 msgstr "{displayPercentage}%"
@@ -530,10 +534,6 @@ msgstr "{importedCount} importadas, {failedCount} fallidas"
 #: src/categorize-inbox/components/categorize-inbox-group-choose-payments-option/categorize-inbox-group-choose-payments-option.tsx
 msgid "{included} of {total}"
 msgstr "{included} de {total}"
-
-#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
-msgid "{incomeAmount} / month"
-msgstr "{incomeAmount} / mes"
 
 #: src/installment-plan/component/installment-timeline/installment-timeline.tsx
 msgid "{installmentCount, plural, one {# monthly payment until {finalPaymentLabel}, the first one is already paid, next on {nextPaymentLabel}} other {# monthly payments until {finalPaymentLabel}, the first one is already paid, next on {nextPaymentLabel}}}"
@@ -934,6 +934,10 @@ msgstr "+{formattedNet} / mes"
 #: src/budget/components/budget-widget-category-list/budget-widget-category-list.tsx
 msgid "+{hiddenCategoryCount} more"
 msgstr "+{hiddenCategoryCount} más"
+
+#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
+msgid "+{incomeAmount} / month"
+msgstr ""
 
 #: src/budget/components/budget-limit-row/budget-limit-row.tsx
 msgid "−{carriedLabel} carried"
@@ -1755,6 +1759,7 @@ msgstr "Promedio"
 msgid "Average payment"
 msgstr "Pago medio"
 
+#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
 #: src/runway/component/runway-drivers/runway-drivers.tsx
 msgid "Average per month"
 msgstr "Promedio mensual"
@@ -3650,6 +3655,7 @@ msgstr "La desvincula de «{debtTitle}»"
 #: src/budget/components/budget-event-form/budget-event-form.tsx
 #: src/budget/components/budget-setup-form/budget-setup-form.tsx
 #: src/category/components/category-form/category-form.tsx
+#: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Details"
@@ -6553,6 +6559,14 @@ msgstr "Último mes"
 msgid "Past months"
 msgstr "Meses anteriores"
 
+#: src/recurring/components/recurring-detail-destructive-row/recurring-detail-destructive-row.tsx
+msgid "Past payments stay in your transactions."
+msgstr ""
+
+#: src/recurring/components/recurring-detail-destructive-row/recurring-detail-destructive-row.tsx
+msgid "Past payments stay in your transactions. Budgie stops expecting new ones."
+msgstr ""
+
 #: src/budget/constant/budget-period-past-label.constant.ts
 msgid "Past two-week periods"
 msgstr "Periodos de dos semanas anteriores"
@@ -7093,10 +7107,6 @@ msgstr "Los pagos recurrentes se detectan automáticamente a partir de tus trans
 #: src/recurring/service/recurring-reminder.service.ts
 msgid "Recurring reminders"
 msgstr "Recordatorios de pagos recurrentes"
-
-#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
-msgid "Recurring spending"
-msgstr ""
 
 #: src/categorize-inbox/components/categorize-inbox-group-refine-options/categorize-inbox-group-refine-options.tsx
 msgid "Refine"
@@ -8531,7 +8541,6 @@ msgid "this month"
 msgstr "este mes"
 
 #: src/account/component/account-details-month-chips/account-details-month-chips.tsx
-#: src/recurring/components/recurring-calendar-summary/recurring-calendar-summary.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "This month"
 msgstr "Este mes"
@@ -9359,6 +9368,10 @@ msgstr "Semanal"
 #: src/budget/constant/budget-period-title-label.constant.ts
 msgid "Weekly budget"
 msgstr "Presupuesto semanal"
+
+#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
+msgid "Weekly, quarterly and yearly bills are shown as a monthly average."
+msgstr ""
 
 #: src/recurring/components/recurring-form-custom-cadence/recurring-form-custom-cadence.tsx
 msgid "Weeks"

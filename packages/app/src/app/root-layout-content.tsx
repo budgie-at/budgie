@@ -239,6 +239,10 @@ export const RootLayoutContent = () => {
                                                                         options={fitToContentsSheetOptions(groupedSheetSurface)}
                                                                     />
                                                                     <Stack.Screen
+                                                                        name="make-recurring"
+                                                                        options={fitToContentsSheetOptions(groupedSheetSurface)}
+                                                                    />
+                                                                    <Stack.Screen
                                                                         name="import-column-mapper"
                                                                         options={formSheetOptions([0.75, DETENT_95])}
                                                                     />

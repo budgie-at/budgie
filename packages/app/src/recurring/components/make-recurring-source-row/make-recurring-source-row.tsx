@@ -38,7 +38,7 @@ export const MakeRecurringSourceRow = ({ transactionId }: Props) => {
 
     return (
         <View className="flex-row items-center gap-x-xl rounded-3xl bg-sheet-grouped-row px-3xl py-xl" style={continuousCorners}>
-            <RecurringMerchantTile categoryId={primaryEntry.categoryId} categoryIcon={categoryIcon} title={title} size={40} />
+            <RecurringMerchantTile categoryIcon={categoryIcon} title={title} size={40} />
             <View className="min-w-0 flex-1 gap-y-xxs">
                 <Text dynamicTypeRamp="headline" className="text-[16px] font-semibold text-primary" numberOfLines={1}>
                     {title}

@@ -22,8 +22,7 @@ export const TransactionInfoRecurringRow = ({ transactionId }: Props) => {
     }
 
     const handleViewRecurring = () => void router.push({ pathname: '/recurring/[id]', params: { id: String(seriesId) } });
-    const handleMakeRecurring = () =>
-        void router.push({ pathname: '/recurring/make-recurring', params: { transactionId: String(transactionId) } });
+    const handleMakeRecurring = () => void router.push({ pathname: '/make-recurring', params: { transactionId: String(transactionId) } });
 
     return isDefined(seriesId) ? (
         <TransactionInfoActionRow

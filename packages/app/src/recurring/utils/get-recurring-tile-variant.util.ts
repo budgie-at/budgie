@@ -7,5 +7,5 @@ const HASH_MODULUS = 2_147_483_647;
 const hashText = (text: string): number =>
     Array.from(text).reduce((hash, character) => (hash * HASH_MULTIPLIER + (character.codePointAt(0) ?? 0)) % HASH_MODULUS, 0);
 
-export const getRecurringTileVariant = (categoryId: number | null, title: string): ColorPaletteVariant =>
-    TILE_VARIANTS[(categoryId ?? hashText(title.toLowerCase())) % TILE_VARIANTS.length];
+export const getRecurringTileVariant = (title: string): ColorPaletteVariant =>
+    TILE_VARIANTS[hashText(title.trim().toLowerCase()) % TILE_VARIANTS.length];

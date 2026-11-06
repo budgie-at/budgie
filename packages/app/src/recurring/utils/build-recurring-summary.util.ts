@@ -1,4 +1,4 @@
-import { RecurringSeriesKindEnum } from '@budgie/contracts';
+import { RecurringCadenceUnitEnum, RecurringSeriesKindEnum } from '@budgie/contracts';
 import { addDays } from 'date-fns/addDays';
 import { isBefore } from 'date-fns/isBefore';
 import { startOfDay } from 'date-fns/startOfDay';
@@ -22,6 +22,7 @@ export const buildRecurringSummary = (series: readonly RecurringSeriesListItemIn
     return {
         committedMonthly: sum(expenses.map(item => item.monthlyEquivalent)),
         committedCount: expenses.length,
+        hasAveragedBills: expenses.some(item => item.cadenceUnit !== RecurringCadenceUnitEnum.MONTH || item.cadenceInterval !== 1),
         dueSoonTotal: sum(dueSoon.map(item => item.amount)),
         dueSoonCount: dueSoon.length,
         incomeMonthly: sum(income.map(item => item.monthlyEquivalent))

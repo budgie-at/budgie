@@ -10,6 +10,7 @@ import { View } from 'react-native';
 import { BottomChromeInsetProvider, ScreenChromeFooter, ScreenChromeScrollView } from '@rnw-community/react-native-screen-chrome';
 import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
@@ -92,9 +93,11 @@ export const RecurringSeriesFormScreen = ({ target, initialValues }: Props) => {
                                 {kindField}
                                 <RecurringFormAmountField label={t`Amount`} />
                                 <RecurringFormTitleField />
-                                <RecurringFormCurrencyField />
-                                <RecurringFormCategoryField />
-                                <RecurringFormAccountField />
+                                <GroupedListSection title={t`Details`}>
+                                    <RecurringFormCurrencyField />
+                                    <RecurringFormCategoryField />
+                                    <RecurringFormAccountField />
+                                </GroupedListSection>
                                 <RecurringFormRepeatSection />
                                 <RecurringFormEndSection />
                                 <RecurringFormReminderSection />

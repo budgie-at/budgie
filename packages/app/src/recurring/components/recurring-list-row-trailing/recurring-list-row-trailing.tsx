@@ -27,7 +27,8 @@ export const RecurringListRowTrailing = ({ series, isPossible, now }: Props) => 
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const protectAmount = useProtectedAmountLabel();
     const getDueLabel = useRecurringDueLabel();
-    const amount = protectAmount(convertFromMicroUnits(series.amount), defaultInstrument.symbol);
+    const formattedAmount = protectAmount(convertFromMicroUnits(series.amount), defaultInstrument.symbol);
+    const amount = series.kind === RecurringSeriesKindEnum.INCOME ? `+${formattedAmount}` : formattedAmount;
     const dueLabel = isDefined(series.nextDate) && !isPossible ? getDueLabel(series.nextDate, now) : null;
     const detail = isDefined(series.alert) ? (
         <RecurringAlertBadge alert={series.alert} priceChange={series.priceChange} endsAt={series.endsAt} />

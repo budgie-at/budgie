@@ -9,6 +9,7 @@ import { TRANSACTION_SECONDARY_MAX_FONT_SIZE_MULTIPLIER } from '../../../transac
 import { RecurringCalendarSummaryAmount } from '../recurring-calendar-summary-amount/recurring-calendar-summary-amount';
 
 interface Props {
+    readonly title: string;
     readonly isLoading: boolean;
     readonly formattedTotal: string;
     readonly formattedExpected: string;
@@ -22,7 +23,7 @@ const breakdownVariants = cva('gap-y-md', { variants: { isAccessibilityTextSize:
 
 const continuousCorners = { borderCurve: 'continuous' as const };
 
-export const RecurringCalendarSummary = ({ isLoading, formattedTotal, formattedExpected, formattedRecorded }: Props) => {
+export const RecurringCalendarSummary = ({ title, isLoading, formattedTotal, formattedExpected, formattedRecorded }: Props) => {
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
 
     return (
@@ -33,7 +34,7 @@ export const RecurringCalendarSummary = ({ isLoading, formattedTotal, formattedE
                     maxFontSizeMultiplier={TRANSACTION_SECONDARY_MAX_FONT_SIZE_MULTIPLIER}
                     className="text-[13px] text-secondary-foreground"
                 >
-                    <Trans>This month</Trans>
+                    {title}
                 </Text>
                 <LoadingContent
                     isLoading={isLoading}

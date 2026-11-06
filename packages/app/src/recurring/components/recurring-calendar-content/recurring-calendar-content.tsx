@@ -10,6 +10,7 @@ import { LoadingContent } from '../../../@generic/component/loading-content/load
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { useToday } from '../../../@generic/hook/use-today.hook';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { RecurringCalendarActionTypeEnum } from '../../enum/recurring-calendar-action-type.enum';
@@ -33,6 +34,7 @@ const EMPTY_ENTRIES_BY_DAY: ReadonlyMap<number, readonly RecurringCalendarEntryI
 // eslint-disable-next-line max-statements, max-lines-per-function -- Page orchestration component with multiple hooks, state, and forecast logic
 export const RecurringCalendarContent = () => {
     const { t } = useLingui();
+    const { formatFullMonth } = useFormatDate();
     const { languageTag } = useLocaleInfo();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatDigits = useDisplayFormatDigits();
@@ -43,6 +45,8 @@ export const RecurringCalendarContent = () => {
         displayYear: now.getFullYear()
     });
     const data = useRecurringCalendar(displayYear, displayMonth);
+    const displayedMonthName = formatFullMonth(new Date(displayYear, displayMonth, 1));
+    const summaryTitle = t`${displayedMonthName} total`;
     const isLoading = !isDefined(data);
 
     const entriesByDay = data?.entriesByDay ?? EMPTY_ENTRIES_BY_DAY;
@@ -92,6 +96,7 @@ export const RecurringCalendarContent = () => {
             keyboardDismissMode="on-drag"
         >
             <RecurringCalendarSummary
+                title={summaryTitle}
                 isLoading={isLoading}
                 formattedTotal={formatDigits(displayedTotal, defaultInstrument.symbol)}
                 formattedExpected={formattedForecastedTotal}

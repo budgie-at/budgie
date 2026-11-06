@@ -4,7 +4,6 @@ import { useFormContext, useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { GroupedListValueRow } from '../../../@generic/component/grouped-list-value-row/grouped-list-value-row';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
@@ -34,7 +33,7 @@ export const RecurringFormAccountField = () => {
     };
 
     return (
-        <GroupedListSection>
+        <>
             <GroupedListValueRow
                 icon={account?.icon ?? UserIconNameEnum.Wallet}
                 title={t`Account`}
@@ -45,6 +44,6 @@ export const RecurringFormAccountField = () => {
             {hasAccount ? (
                 <RecurringFormClearRow label={t`Use any account`} testID={RecurringSeriesFormSelector.ClearAccount} onPress={handleClear} />
             ) : null}
-        </GroupedListSection>
+        </>
     );
 };

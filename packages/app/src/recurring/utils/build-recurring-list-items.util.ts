@@ -59,12 +59,10 @@ export const buildRecurringListItems = (
         { section: RecurringSectionEnum.ENDED, entries: ended.sort(compareByNextDate) }
     ];
     const items: RecurringListItemType[] = [];
-    const headerIndices: number[] = [];
 
     for (const { section, entries } of sections.filter(({ entries: sectionEntries }) => isNotEmptyArray(sectionEntries))) {
         const isCollapsed = COLLAPSIBLE_SECTIONS.has(section) && !expandedSections.includes(section);
 
-        headerIndices.push(items.length);
         items.push({
             type: RecurringListItemKindEnum.HEADER,
             id: `header-${section}`,
@@ -86,5 +84,5 @@ export const buildRecurringListItems = (
         }
     }
 
-    return { items, headerIndices };
+    return { items };
 };

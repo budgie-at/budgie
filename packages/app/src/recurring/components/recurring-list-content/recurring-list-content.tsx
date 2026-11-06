@@ -33,7 +33,7 @@ export const RecurringListContent = () => {
     const [expandedSections, setExpandedSections] = useState<readonly RecurringSectionEnum[]>([]);
     const isLoading = !isDefined(series);
     const loadedSeries = series ?? EMPTY_SERIES;
-    const { items, headerIndices } = buildRecurringListItems(loadedSeries, expandedSections, now);
+    const { items } = buildRecurringListItems(loadedSeries, expandedSections, now);
     const summary = buildRecurringSummary(loadedSeries, now);
     const contentContainerStyle = { paddingBottom: FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottom };
     const emptyState = isLoading ? null : <RecurringListEmptyState />;
@@ -62,7 +62,6 @@ export const RecurringListContent = () => {
                     getItemType={getItemType}
                     renderItem={renderItem}
                     estimatedItemSize={64}
-                    stickyHeaderIndices={headerIndices}
                     contentContainerStyle={contentContainerStyle}
                     ListHeaderComponent={<RecurringSummaryCard summary={summary} />}
                     ListEmptyComponent={emptyState}
