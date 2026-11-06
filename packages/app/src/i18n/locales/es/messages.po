@@ -212,7 +212,7 @@ msgid "{code} · Base currency"
 msgstr "{code} · Moneda base"
 
 #: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
-msgid "{committedCount, plural, one {# bill or subscription} other {# bills and subscriptions}}"
+msgid "{committedCount, plural, one {# bill} other {# bills}}"
 msgstr ""
 
 #: src/tag/hooks/use-merge-tag.hook.ts
@@ -347,7 +347,7 @@ msgid "{downloaded} of {total} GB is kept. It carries on when you're back online
 msgstr "Se conservan {downloaded} de {total} GB. Continuará cuando vuelvas a tener conexión."
 
 #: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
-msgid "{dueSoonAmount} due this week"
+msgid "{dueSoonAmount} in the next 7 days"
 msgstr ""
 
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
@@ -1941,6 +1941,10 @@ msgstr "Las órdenes P2P de Binance no están disponibles: la clave de API no ti
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 msgid "Biometric data never leaves this phone"
 msgstr "Los datos biométricos nunca salen de este teléfono"
+
+#: src/recurring/components/recurring-form-repeat-chip/recurring-form-repeat-chip.tsx
+msgid "Biweekly"
+msgstr ""
 
 #: src/settings/components/screenshot-protection-row/screenshot-protection-row.tsx
 msgid "Blank screenshots and recordings"
@@ -4211,10 +4215,6 @@ msgstr "Cada {cadenceInterval} años"
 msgid "Every {weekday}"
 msgstr "Cada {weekday}"
 
-#: src/recurring/components/recurring-form-repeat-chip/recurring-form-repeat-chip.tsx
-msgid "Every 2 weeks"
-msgstr "Cada 2 semanas"
-
 #: src/recurring/hook/use-recurring-schedule-description.hook.ts
 msgid "Every month on day {dayOfMonth}"
 msgstr "Cada mes el día {dayOfMonth}"
@@ -4284,10 +4284,7 @@ msgstr "Tipo de cambio no encontrado"
 msgid "Exchange rate: {rateLabel}"
 msgstr "Tipo de cambio: {rateLabel}"
 
-#: src/recurring/components/recurring-calendar-content/recurring-calendar-content.tsx
 #: src/recurring/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
-#: src/recurring/components/recurring-calendar-legend/recurring-calendar-legend.tsx
-#: src/recurring/components/recurring-calendar-summary/recurring-calendar-summary.tsx
 msgid "Expected"
 msgstr "Previsto"
 
@@ -6109,14 +6106,14 @@ msgstr "No se sincronizan: Auto-Invest, Binance Pay, Binance Card, tarjetas de r
 msgid "Note"
 msgstr "Nota"
 
-#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
-msgid "Nothing due this week"
-msgstr ""
-
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 #: src/sync/component/sync-history-step/sync-history-step.tsx
 msgid "Nothing from the past is imported"
 msgstr "No se importa nada del pasado"
+
+#: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
+msgid "Nothing in the next 7 days"
+msgstr ""
 
 #: src/recurring/components/recurring-reminder-denied-row/recurring-reminder-denied-row.tsx
 msgid "Notifications are off · Open Settings"
@@ -6553,6 +6550,12 @@ msgstr "Te deben"
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx
 msgid "Owes you"
 msgstr "Te debe"
+
+#: src/recurring/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/recurring/components/recurring-calendar-legend/recurring-calendar-legend.tsx
+#: src/recurring/components/recurring-calendar-summary/recurring-calendar-summary.tsx
+msgid "Paid"
+msgstr ""
 
 #: src/installment-plan/component/installment-plan-paid-summary/installment-plan-paid-summary.tsx
 msgid "Paid {paidAmount} · {paidCount} of {installmentCount}"
@@ -7098,10 +7101,7 @@ msgstr "Registra pagos con tarjeta con Atajos"
 msgid "Record expense"
 msgstr "Registrar gasto"
 
-#: src/recurring/components/recurring-calendar-content/recurring-calendar-content.tsx
 #: src/recurring/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
-#: src/recurring/components/recurring-calendar-legend/recurring-calendar-legend.tsx
-#: src/recurring/components/recurring-calendar-summary/recurring-calendar-summary.tsx
 msgid "Recorded"
 msgstr "Registrado"
 
@@ -8063,6 +8063,12 @@ msgstr "Paso {stepNumber} de {total}"
 #: src/wallet-capture/component/apple-pay-capture-instructions-button/apple-pay-capture-instructions-button.tsx
 msgid "Step-by-step instructions"
 msgstr "Instrucciones paso a paso"
+
+#: src/recurring/components/recurring-calendar-content/recurring-calendar-content.tsx
+#: src/recurring/components/recurring-calendar-legend/recurring-calendar-legend.tsx
+#: src/recurring/components/recurring-calendar-summary/recurring-calendar-summary.tsx
+msgid "Still to pay"
+msgstr ""
 
 #: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts

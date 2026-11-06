@@ -30,7 +30,7 @@ export const RecurringCalendarLegend = ({ hasRecordedEntries, hasExpectedEntries
                 <View className="flex-row items-center gap-x-sm">
                     <RecurringCalendarDayDots actualDots={0} forecastedDots={1} isSelected={false} className="static" />
                     <Text maxFontSizeMultiplier={1.5} className="text-[13px] text-secondary-foreground">
-                        <Trans>Expected</Trans>
+                        <Trans>Still to pay</Trans>
                     </Text>
                 </View>
             ) : null}
@@ -38,7 +38,7 @@ export const RecurringCalendarLegend = ({ hasRecordedEntries, hasExpectedEntries
                 <View className="flex-row items-center gap-x-sm">
                     <RecurringCalendarDayDots actualDots={1} forecastedDots={0} isSelected={false} className="static" />
                     <Text maxFontSizeMultiplier={1.5} className="text-[13px] text-secondary-foreground">
-                        <Trans>Recorded</Trans>
+                        <Trans>Paid</Trans>
                     </Text>
                 </View>
             ) : null}

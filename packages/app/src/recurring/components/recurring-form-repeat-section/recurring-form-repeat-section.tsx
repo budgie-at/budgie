@@ -33,7 +33,7 @@ export const RecurringFormRepeatSection = () => {
 
     return (
         <GroupedListSection title={t`Repeats`} footer={previewRow}>
-            <View className="flex-row flex-wrap gap-sm px-xl py-xl">
+            <View className="m-xl flex-row flex-wrap gap-[3px] rounded-[12px] bg-segmented-track p-[3px]">
                 {Object.values(RecurringRepeatChoiceEnum).map(choice => (
                     <RecurringFormRepeatChip key={choice} choice={choice} isSelected={choice === value} onSelect={onChange} />
                 ))}

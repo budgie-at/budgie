@@ -36,10 +36,10 @@ export const RecurringCalendarSummary = ({ title, isLoading, formattedTotal, for
                     <Text className="text-[13px] font-medium text-secondary-foreground">{title}</Text>
                 </View>
                 <RecurringCalendarSummaryAmount formattedAmount={formattedExpected}>
-                    <Trans>Expected</Trans>
+                    <Trans>Still to pay</Trans>
                 </RecurringCalendarSummaryAmount>
                 <RecurringCalendarSummaryAmount formattedAmount={formattedRecorded}>
-                    <Trans>Recorded</Trans>
+                    <Trans>Paid</Trans>
                 </RecurringCalendarSummaryAmount>
             </LoadingContent>
         </View>

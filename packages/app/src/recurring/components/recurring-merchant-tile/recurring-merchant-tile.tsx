@@ -16,7 +16,13 @@ const TILE_CLASS_NAMES: Record<RecurringTileVariantEnum, string> = {
     PINK: 'bg-pink-foreground/16 dark:bg-pink-foreground/26',
     POSITIVE: 'bg-positive-foreground/16 dark:bg-positive-foreground/26',
     WARNING: 'bg-warning-foreground/16 dark:bg-warning-foreground/26',
-    DEFAULT: 'bg-default-foreground/16 dark:bg-default-foreground/26'
+    DEFAULT: 'bg-default-foreground/16 dark:bg-default-foreground/26',
+    BLUE: 'bg-chart-1/16 dark:bg-chart-1/30',
+    ORANGE: 'bg-chart-2/16 dark:bg-chart-2/30',
+    TEAL: 'bg-chart-3/16 dark:bg-chart-3/30',
+    AMBER: 'bg-chart-4/16 dark:bg-chart-4/30',
+    ROSE: 'bg-chart-5/16 dark:bg-chart-5/30',
+    INDIGO: 'bg-chart-6/16 dark:bg-chart-6/30'
 };
 
 const LETTER_CLASS_NAMES: Record<RecurringTileVariantEnum, string> = {
@@ -25,7 +31,13 @@ const LETTER_CLASS_NAMES: Record<RecurringTileVariantEnum, string> = {
     PINK: 'text-pink-foreground',
     POSITIVE: 'text-positive-foreground',
     WARNING: 'text-warning-foreground',
-    DEFAULT: 'text-default-foreground'
+    DEFAULT: 'text-default-foreground',
+    BLUE: 'text-chart-1',
+    ORANGE: 'text-chart-2',
+    TEAL: 'text-chart-3',
+    AMBER: 'text-chart-4',
+    ROSE: 'text-chart-5',
+    INDIGO: 'text-chart-6'
 };
 
 const tileVariants = cva('items-center justify-center', { variants: { variant: TILE_CLASS_NAMES } });

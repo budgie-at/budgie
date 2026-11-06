@@ -26,8 +26,8 @@ const circleVariants = cva('items-center justify-center rounded-full', {
         isAccessibilityTextSize: { true: 'w-[44px] h-[44px]', false: 'w-[36px] h-[36px]' }
     },
     compoundVariants: [
-        { isToday: true, className: 'bg-primary' },
-        { isToday: false, isSelected: true, className: 'border-2 border-primary' }
+        { isSelected: true, className: 'bg-primary' },
+        { isToday: true, isSelected: false, className: 'border-2 border-primary' }
     ]
 });
 
@@ -38,7 +38,7 @@ const textVariants = cva('text-[15px] leading-[20px] tabular-nums pb-[8px]', {
         isToday: { true: 'font-semibold', false: '' },
         hasEntries: { true: 'font-semibold', false: '' }
     },
-    compoundVariants: [{ isToday: true, className: 'text-primary-reverse' }]
+    compoundVariants: [{ isSelected: true, className: 'text-primary-reverse' }]
 });
 
 interface Props {
@@ -89,7 +89,7 @@ export const RecurringCalendarDay = (props: Props) => {
                     <RecurringCalendarDayDots
                         actualDots={actualDots}
                         forecastedDots={Math.min(forecastedCount, MAX_DOTS - actualDots)}
-                        isSelected={isToday}
+                        isSelected={isSelected}
                     />
                 ) : null}
             </View>

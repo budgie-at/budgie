@@ -14,19 +14,24 @@ interface Props {
 
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
-const chipVariants = cva('min-h-[44px] grow basis-[30%] items-center justify-center rounded-full px-md active:opacity-70', {
-    variants: { isSelected: { true: 'bg-cta-background', false: 'bg-segmented-track' } }
+const chipVariants = cva('min-h-[40px] grow basis-[30%] items-center justify-center rounded-[9px] px-md active:opacity-70', {
+    variants: {
+        isSelected: {
+            true: 'border-[0.5px] border-black/[0.06] bg-white shadow-md dark:border-transparent dark:bg-[rgb(84,84,88)]',
+            false: 'bg-transparent'
+        }
+    }
 });
 
 const labelVariants = cva('text-[15px] font-medium', {
-    variants: { isSelected: { true: 'font-semibold text-cta-foreground', false: 'text-primary' } }
+    variants: { isSelected: { true: 'font-semibold text-primary', false: 'text-primary' } }
 });
 
 export const RecurringFormRepeatChip = ({ choice, isSelected, onSelect }: Props) => {
     const { t } = useLingui();
     const labels: Record<RecurringRepeatChoiceEnum, string> = {
         [RecurringRepeatChoiceEnum.WEEKLY]: t`Weekly`,
-        [RecurringRepeatChoiceEnum.BIWEEKLY]: t`Every 2 weeks`,
+        [RecurringRepeatChoiceEnum.BIWEEKLY]: t`Biweekly`,
         [RecurringRepeatChoiceEnum.MONTHLY]: t`Monthly`,
         [RecurringRepeatChoiceEnum.QUARTERLY]: t`Quarterly`,
         [RecurringRepeatChoiceEnum.YEARLY]: t`Yearly`,
@@ -45,7 +50,7 @@ export const RecurringFormRepeatChip = ({ choice, isSelected, onSelect }: Props)
             testID={RecurringSeriesFormSelector.Repeat(choice)}
             onPress={handlePress}
         >
-            <Text className={labelVariants({ isSelected })} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8}>
+            <Text className={labelVariants({ isSelected })} numberOfLines={1}>
                 {labels[choice]}
             </Text>
         </HapticPressable>

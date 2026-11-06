@@ -30,8 +30,8 @@ export const RecurringSummaryCard = ({ summary }: Props) => {
     const committedAmount = protectAmount(convertFromMicroUnits(committedMonthly), defaultInstrument.symbol);
     const dueSoonAmount = protectAmount(convertFromMicroUnits(dueSoonTotal), defaultInstrument.symbol);
     const incomeAmount = protectAmount(convertFromMicroUnits(incomeMonthly), defaultInstrument.symbol);
-    const countLabel = t({ message: plural(committedCount, { one: '# bill or subscription', other: '# bills and subscriptions' }) });
-    const dueSoonLabel = hasDueSoon ? t`${dueSoonAmount} due this week` : t`Nothing due this week`;
+    const countLabel = t({ message: plural(committedCount, { one: '# bill', other: '# bills' }) });
+    const dueSoonLabel = hasDueSoon ? t`${dueSoonAmount} in the next 7 days` : t`Nothing in the next 7 days`;
 
     if (!hasCommitted && !hasIncome) {
         return null;
