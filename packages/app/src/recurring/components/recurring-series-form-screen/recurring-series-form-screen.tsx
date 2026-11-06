@@ -15,7 +15,7 @@ import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { TransactionFormScreen } from '../../../transaction/components/transaction-form-screen/transaction-form-screen';
-import { RecurringSeriesFormSchema } from '../../constant/recurring-series-form-schema.constant';
+import { makeRecurringSeriesFormSchema } from '../../constant/recurring-series-form-schema.constant';
 import { RecurringFormModeEnum } from '../../enum/recurring-form-mode.enum';
 import { submitRecurringSeries } from '../../utils/submit-recurring-series.util';
 import { RecurringSeriesFormFields } from '../recurring-series-form-fields/recurring-series-form-fields';
@@ -37,12 +37,12 @@ export const RecurringSeriesFormScreen = ({ target, initialValues }: Props) => {
     const router = useRouter();
     const saveFlight = useSingleFlight();
     const [defaultValues] = useState(initialValues);
+    const isEditing = target.mode === RecurringFormModeEnum.EDIT;
     const form = useForm<RecurringSeriesFormValues>({
-        resolver: standardSchemaResolver(Schema.toStandardSchemaV1(RecurringSeriesFormSchema)),
+        resolver: standardSchemaResolver(Schema.toStandardSchemaV1(makeRecurringSeriesFormSchema(isEditing ? target.anchorDate : null))),
         defaultValues,
         mode: 'onSubmit'
     });
-    const isEditing = target.mode === RecurringFormModeEnum.EDIT;
     const createTitle =
         target.mode === RecurringFormModeEnum.CREATE && isDefined(target.transactionId) ? t`Make recurring` : t`New recurring payment`;
     const title = isEditing ? t`Edit recurring payment` : createTitle;

@@ -1,6 +1,6 @@
 import type { RecurringCadenceInterface } from './recurring-cadence.interface';
 import type { RecurringSeriesEventInterface } from './recurring-series-event.interface';
-import type { RecurringSeriesKindEnum, UserIconType } from '@budgie/contracts';
+import type { RecurringSeriesKindEnum } from '@budgie/contracts';
 
 export interface RecurringSeriesInterface extends RecurringCadenceInterface {
     readonly kind: RecurringSeriesKindEnum;
@@ -10,10 +10,6 @@ export interface RecurringSeriesInterface extends RecurringCadenceInterface {
     readonly labels: readonly string[];
     readonly title: string;
     readonly categoryId: number | null;
-    readonly categoryTitle: string | null;
-    readonly categoryIcon: UserIconType | null;
-    readonly accountId: number;
     readonly anchorTimestamp: number;
-    readonly priceChangedAt: number | null;
     readonly events: readonly RecurringSeriesEventInterface[];
 }

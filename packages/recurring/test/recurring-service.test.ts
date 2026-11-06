@@ -104,6 +104,12 @@ const withFirstLaunchService = Effect.provide(Layer.fresh(Layer.merge(RecurringS
 const allEntries = (data: RecurringCalendarDataInterface) =>
     [...data.entriesByDay.values(), ...data.forecastedEntriesByDay.values()].flat();
 
+const readEntryStates = Effect.fnUntraced(function* (entries: ReturnType<typeof allEntries>) {
+    const rows = yield* findSeries();
+
+    return entries.map(entry => ({ ...entry, userState: rows.find(row => row.id === entry.seriesId)?.userState }));
+});
+
 const forecastedAmounts = (data: RecurringCalendarDataInterface, day: number) =>
     (data.forecastedEntriesByDay.get(day) ?? []).map(entry => entry.latestAmount).sort((first, second) => first - second);
 
@@ -147,13 +153,13 @@ const chargeAndRead = Effect.fnUntraced(function* (
     );
     const lastMonth = JUNE - months[months.length - 1];
 
-    return allEntries(yield* calendarAsOf(lastMonth + 1, new Date(2026, lastMonth, 25)));
+    return yield* readEntryStates(allEntries(yield* calendarAsOf(lastMonth + 1, new Date(2026, lastMonth, 25))));
 });
 
 const seedTransitSubscription = Effect.fnUntraced(function* () {
     const seed = yield* seedCharges();
     yield* seedMonthly(seed, 'TRANSIT', 20, 83.4);
-    const [entry] = allEntries(yield* calendar(JULY));
+    const [entry] = yield* readEntryStates(allEntries(yield* calendar(JULY)));
 
     return { seed, entry };
 });
@@ -167,7 +173,7 @@ const trackedEntries = (data: RecurringCalendarDataInterface) =>
         links => allEntries(data).filter(entry => links.some(link => link.seriesId === entry.seriesId))
     );
 
-const expectSuggestedEntries = (entries: ReturnType<typeof allEntries>) => {
+const expectSuggestedEntries = (entries: Effect.Success<ReturnType<typeof readEntryStates>>) => {
     expect(entries).toHaveLength(2);
     expect(entries.every(entry => entry.userState === RecurringSeriesUserStateEnum.SUGGESTED)).toBe(true);
 };
@@ -234,7 +240,7 @@ layer(TestLayer)('recurringService', it => {
             yield* renameSeries(initial.seriesId, 'Gym membership');
             yield* setUserState(initial.seriesId, RecurringSeriesUserStateEnum.CONFIRMED);
             yield* seed('E2E Recurring Gym', 0, 5, 20);
-            const [updated] = allEntries(yield* calendar(JULY));
+            const [updated] = yield* readEntryStates(allEntries(yield* calendar(JULY)));
 
             expect(updated).toMatchObject({
                 seriesId: initial.seriesId,
@@ -595,7 +601,7 @@ layer(TestLayer)('recurringService', it => {
                 const [entry] = allEntries(yield* calendarOn(2025, JULY, new Date(2025, JUNE, 25)));
                 yield* Effect.andThen(setUserState(entry.seriesId, userState), renameSeries(entry.seriesId, 'Old bill'));
                 yield* Effect.forEach(charges, ([monthsAgo, day]) => seed('BILLING', monthsAgo, day, 40), { discard: true });
-                const after = yield* trackedEntries(yield* calendarAsOf(JULY, new Date(2026, JUNE, 29)));
+                const after = yield* readEntryStates(yield* trackedEntries(yield* calendarAsOf(JULY, new Date(2026, JUNE, 29))));
                 expect([...new Set(after.map(item => [item.seriesId === entry.seriesId, item.title, item.userState].join('|')))]).toEqual(
                     expected
                 );
@@ -820,7 +826,7 @@ layer(TestLayer)('recurringService', it => {
         Effect.gen(function* () {
             const seed = yield* seedCharges();
             yield* seedMonthly(seed, 'SPOTIFY AB', 20, 10);
-            const [entry] = allEntries(yield* calendar(JULY));
+            const [entry] = yield* readEntryStates(allEntries(yield* calendar(JULY)));
 
             yield* Effect.andThen(
                 renameSeries(entry.seriesId, 'Music'),
@@ -829,9 +835,9 @@ layer(TestLayer)('recurringService', it => {
             yield* seed('SPOTIFY AB', 0, 20, 10);
 
             expect(entry.userState).toBe(RecurringSeriesUserStateEnum.SUGGESTED);
-            expect(allEntries(yield* calendar(JULY)).map(item => [item.seriesId, item.title, item.userState])).toEqual([
-                [entry.seriesId, 'Music', RecurringSeriesUserStateEnum.CONFIRMED]
-            ]);
+            expect(
+                (yield* readEntryStates(allEntries(yield* calendar(JULY)))).map(item => [item.seriesId, item.title, item.userState])
+            ).toEqual([[entry.seriesId, 'Music', RecurringSeriesUserStateEnum.CONFIRMED]]);
         })
     );
 
@@ -1008,7 +1014,7 @@ layer(TestLayer)('recurringService', it => {
                         userState,
                         lastSeenAt: new Date(2026, JUNE, 5)
                     });
-                    const entries = yield* trackedEntries(yield* calendarAsOf(JULY, new Date(2026, JUNE, 29, 12)));
+                    const entries = yield* readEntryStates(yield* trackedEntries(yield* calendarAsOf(JULY, new Date(2026, JUNE, 29, 12))));
                     expect(entries).toHaveLength(1);
                     expect(entries[0]).toMatchObject({ title: 'BILLING', userState: RecurringSeriesUserStateEnum.SUGGESTED });
                     expect(entries[0].seriesId).not.toBe(saved.id);
@@ -1041,7 +1047,7 @@ layer(TestLayer)('recurringService', it => {
                         userState,
                         lastSeenAt: new Date(2026, 2, lastSeenDay, 12)
                     });
-                    const entries = yield* trackedEntries(yield* calendarAsOf(JULY, new Date(2026, JUNE, 29, 12)));
+                    const entries = yield* readEntryStates(yield* trackedEntries(yield* calendarAsOf(JULY, new Date(2026, JUNE, 29, 12))));
                     expect(entries.map(entry => entry.dayOfMonth)).toEqual(expectedDays);
                     expect(entries.map(entry => [entry.seriesId === saved.id, entry.title, entry.userState])).toEqual(
                         expectedDays.map(() =>
@@ -1074,7 +1080,7 @@ layer(TestLayer)('recurringService', it => {
                         lastSeenAt: new Date(2026, 4, 5, 12)
                     })
                 );
-                const entries = yield* trackedEntries(yield* calendar(JULY));
+                const entries = yield* readEntryStates(yield* trackedEntries(yield* calendar(JULY)));
                 expect(entries.map(entry => [entry.title, entry.userState])).toEqual([['BILLING', RecurringSeriesUserStateEnum.SUGGESTED]]);
             })
         );
@@ -1098,7 +1104,7 @@ layer(TestLayer)('recurringService', it => {
                 userState: RecurringSeriesUserStateEnum.CONFIRMED,
                 lastSeenAt: new Date(2026, 4, 5, 12)
             });
-            const entries = allEntries(yield* calendar(JULY));
+            const entries = yield* readEntryStates(allEntries(yield* calendar(JULY)));
             expect(entries.map(entry => [entry.seriesId, entry.title, entry.userState])).toEqual([
                 [saved.id, 'Confirmed bill', RecurringSeriesUserStateEnum.CONFIRMED]
             ]);
@@ -1133,7 +1139,7 @@ layer(TestLayer)('recurringService', it => {
                             expect(entries.every(entry => entry.seriesId === saved.id && entry.title === saved.title)).toBe(true);
                         }
                     }
-                    const entries = allEntries(yield* calendarOn(2029, 0, new Date(2028, 11, 29, 12)));
+                    const entries = yield* readEntryStates(allEntries(yield* calendarOn(2029, 0, new Date(2028, 11, 29, 12))));
                     const rows = yield* findSeries();
                     expect(rows).toHaveLength(1);
                     expect(rows[0]).toMatchObject({ id: saved.id, title: saved.title, userState, periodDays: 30 });
@@ -1155,17 +1161,16 @@ layer(TestLayer)('recurringService', it => {
                         yield* setUserState(saved.seriesId, userState);
                         yield* renameSeries(saved.seriesId, 'Qualified custom title');
                         yield* Db.query(database =>
-                            database
-                                .update(AccountEntityTable)
-                                .set({ isActive: false })
-                                .where(eq(AccountEntityTable.id, saved.accountId ?? 1))
+                            database.update(AccountEntityTable).set({ isActive: false }).where(eq(AccountEntityTable.id, 1))
                         );
                         const replacement = yield* seedCharges();
                         const nearerAmount = previousAmount === 10 ? 15 : 14;
                         yield* Effect.forEach(reversed ? [nearerAmount, 5] : [5, nearerAmount], amount =>
                             Effect.forEach([2, 1, 0], monthsAgo => replacement('BILLING', monthsAgo, 5, amount))
                         );
-                        const entries = yield* trackedEntries(yield* calendarAsOf(JULY, new Date(2026, JUNE, 29, 12)));
+                        const entries = yield* readEntryStates(
+                            yield* trackedEntries(yield* calendarAsOf(JULY, new Date(2026, JUNE, 29, 12)))
+                        );
                         if (previousAmount === 10) {
                             expectSuggestedEntries(entries);
                             expect(entries.every(entry => entry.seriesId !== saved.seriesId)).toBe(true);
@@ -1215,7 +1220,7 @@ layer(TestLayer)('recurringService', it => {
                             lastSeenAt: new Date(2026, 4, amount === 15 && scenario === 'exact reservation before fallback' ? 20 : 5)
                         })
                     );
-                    const entries = yield* trackedEntries(yield* calendar(JULY));
+                    const entries = yield* readEntryStates(yield* trackedEntries(yield* calendar(JULY)));
                     expect(entries).toHaveLength(2);
                     for (const [index, amount] of detectedAmounts.entries()) {
                         const predecessor = saved.find(row => row.amount === savedAmounts[index] * PRECISION);
@@ -1242,7 +1247,7 @@ layer(TestLayer)('recurringService', it => {
                 userState: RecurringSeriesUserStateEnum.DISMISSED,
                 lastSeenAt: new Date(2026, 4, 20)
             });
-            const entries = allEntries(yield* calendar(JULY));
+            const entries = yield* readEntryStates(allEntries(yield* calendar(JULY)));
             const rows = yield* findSeries();
 
             expect(entries).toEqual([]);
@@ -1270,7 +1275,7 @@ layer(TestLayer)('recurringService', it => {
 
             const reads = yield* Effect.forEach([1, 2, 3], () =>
                 Effect.gen(function* () {
-                    const [entry] = allEntries(yield* calendar(JULY));
+                    const [entry] = yield* readEntryStates(allEntries(yield* calendar(JULY)));
                     const rows = yield* findSeries();
 
                     return { entry, rowIds: rows.map(row => row.id) };
@@ -1313,7 +1318,7 @@ layer(TestLayer)('recurringService', it => {
                             userState,
                             lastSeenAt: new Date(2026, 4, 5)
                         });
-                        expectSuggestedEntries(yield* trackedEntries(yield* calendar(JULY)));
+                        expectSuggestedEntries(yield* readEntryStates(yield* trackedEntries(yield* calendar(JULY))));
                     })
                 );
                 it.effect(`rejects duplicate unbanded ${merchantKey} saved amounts reversed ${reversed} for ${userState}`, () =>
@@ -1329,7 +1334,7 @@ layer(TestLayer)('recurringService', it => {
                                 lastSeenAt: new Date(2026, 4, 5)
                             })
                         );
-                        const entries = yield* trackedEntries(yield* calendar(JULY));
+                        const entries = yield* readEntryStates(yield* trackedEntries(yield* calendar(JULY)));
                         expect(entries).toHaveLength(1);
                         expect(entries[0]).toMatchObject({ title: 'APPLE', userState: RecurringSeriesUserStateEnum.SUGGESTED });
                         expect(saved.some(row => row.id === entries[0].seriesId)).toBe(false);
@@ -1359,7 +1364,7 @@ layer(TestLayer)('recurringService', it => {
             );
             yield* seed('APPLE', 0, 5, 4.9);
             yield* seed('APPLE', 0, 20, 14.9);
-            const entries = allEntries(yield* calendar(JULY));
+            const entries = yield* readEntryStates(allEntries(yield* calendar(JULY)));
             expect(entries).toHaveLength(2);
             expect(entries.find(item => item.dayOfMonth === 20)).toMatchObject({
                 seriesId: entry.seriesId,
@@ -1396,7 +1401,7 @@ layer(TestLayer)('recurringService', it => {
                 renameSeries(entry.seriesId, 'Transit subscription')
             );
             yield* seedTransitTickets(seed);
-            const entries = allEntries(yield* calendar(JULY));
+            const entries = yield* readEntryStates(allEntries(yield* calendar(JULY)));
             expect(entries).toHaveLength(1);
             expect(entries[0]).toMatchObject({
                 seriesId: entry.seriesId,
@@ -1419,7 +1424,7 @@ layer(TestLayer)('recurringService', it => {
         Effect.gen(function* () {
             const { seed } = yield* seedTransitSubscription();
             yield* seedTransitTickets(seed);
-            const [entry] = allEntries(yield* calendar(JULY));
+            const [entry] = yield* readEntryStates(allEntries(yield* calendar(JULY)));
             yield* setUserState(entry.seriesId, RecurringSeriesUserStateEnum.DISMISSED);
             yield* seedSavedSeries({
                 merchantKey: 'EXPENSE|1||TRANSIT',
@@ -1438,7 +1443,7 @@ layer(TestLayer)('recurringService', it => {
     it.effect('stable amount-cluster identities preserve user states across a small price change', () =>
         Effect.gen(function* () {
             const seed = yield* seedConcurrentSubscriptions('SUBSCRIPTIONS');
-            const entries = allEntries(yield* calendar(JULY));
+            const entries = yield* readEntryStates(allEntries(yield* calendar(JULY)));
             yield* Effect.andThen(
                 setUserState(entries[0].seriesId, RecurringSeriesUserStateEnum.DISMISSED),
                 setUserState(entries[1].seriesId, RecurringSeriesUserStateEnum.CONFIRMED)
@@ -1446,7 +1451,7 @@ layer(TestLayer)('recurringService', it => {
             yield* seed('SUBSCRIPTIONS', 0, 5, 5);
             yield* seed('SUBSCRIPTIONS', 0, 20, 16);
             const after = yield* calendarOn(2026, JULY, new Date(2026, JUNE, 25));
-            expect(allEntries(after).map(entry => [entry.seriesId, entry.userState])).toEqual([
+            expect((yield* readEntryStates(allEntries(after))).map(entry => [entry.seriesId, entry.userState])).toEqual([
                 [entries[1].seriesId, RecurringSeriesUserStateEnum.CONFIRMED]
             ]);
         })
@@ -1456,7 +1461,7 @@ layer(TestLayer)('recurringService', it => {
         Effect.gen(function* () {
             const seed = yield* seedCharges();
             yield* seedMonthly(seed, 'TRANSIT', 20, 33);
-            const [entry] = allEntries(yield* calendar(JULY));
+            const [entry] = yield* readEntryStates(allEntries(yield* calendar(JULY)));
             yield* Effect.andThen(
                 setUserState(entry.seriesId, RecurringSeriesUserStateEnum.CONFIRMED),
                 renameSeries(entry.seriesId, 'Transit subscription')
@@ -1464,7 +1469,7 @@ layer(TestLayer)('recurringService', it => {
             yield* Effect.forEach([0, -1, -2], monthsAgo => seed('TRANSIT', monthsAgo, 20, 41.7), { discard: true });
             const data = yield* calendarOn(2026, 9, new Date(2026, 8, 25));
             expect(allEntries(data)).toHaveLength(1);
-            expect(allEntries(data)[0]).toMatchObject({
+            expect((yield* readEntryStates(allEntries(data)))[0]).toMatchObject({
                 seriesId: entry.seriesId,
                 title: 'Transit subscription',
                 userState: RecurringSeriesUserStateEnum.CONFIRMED,
@@ -1499,9 +1504,9 @@ layer(TestLayer)('recurringService', it => {
                 userState: RecurringSeriesUserStateEnum.CONFIRMED,
                 lastSeenAt: new Date(2026, 4, 20)
             });
-            expect(allEntries(yield* calendar(JULY)).map(entry => [entry.seriesId, entry.title, entry.userState])).toEqual([
-                [saved.id, 'Streaming', RecurringSeriesUserStateEnum.CONFIRMED]
-            ]);
+            expect(
+                (yield* readEntryStates(allEntries(yield* calendar(JULY)))).map(entry => [entry.seriesId, entry.title, entry.userState])
+            ).toEqual([[saved.id, 'Streaming', RecurringSeriesUserStateEnum.CONFIRMED]]);
         }).pipe(withFirstLaunchService)
     );
 
@@ -1509,10 +1514,10 @@ layer(TestLayer)('recurringService', it => {
         Effect.gen(function* () {
             const seed = yield* seedCharges();
             yield* seedMonthly(seed, 'BILLING', 5, 5);
-            const [entry] = allEntries(yield* calendar(JULY));
+            const [entry] = yield* readEntryStates(allEntries(yield* calendar(JULY)));
             yield* setUserState(entry.seriesId, RecurringSeriesUserStateEnum.CONFIRMED);
             yield* seedMonthly(seed, 'BILLING', 20, 15);
-            const entries = yield* trackedEntries(yield* calendar(JULY));
+            const entries = yield* readEntryStates(yield* trackedEntries(yield* calendar(JULY)));
             expect(entries).toHaveLength(2);
             expect(entries.find(item => item.seriesId === entry.seriesId)?.userState).toBe(RecurringSeriesUserStateEnum.CONFIRMED);
             expect(entries.find(item => item.seriesId !== entry.seriesId)?.userState).toBe(RecurringSeriesUserStateEnum.SUGGESTED);
@@ -1532,7 +1537,7 @@ layer(TestLayer)('recurringService', it => {
                 userState: RecurringSeriesUserStateEnum.CONFIRMED,
                 lastSeenAt: new Date(2026, 4, 20)
             });
-            const entries = yield* trackedEntries(yield* calendar(JULY));
+            const entries = yield* readEntryStates(yield* trackedEntries(yield* calendar(JULY)));
             expectSuggestedEntries(entries);
         })
     );

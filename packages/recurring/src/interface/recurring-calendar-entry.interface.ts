@@ -1,10 +1,9 @@
 import type { RecurringAlertEnum } from '../enum/recurring-alert.enum';
-import type { RecurringSeriesUserStateEnum, UserIconType } from '@budgie/contracts';
+import type { UserIconType } from '@budgie/contracts';
 
 export interface RecurringCalendarEntryInterface {
     readonly key: string;
     readonly seriesId: number;
-    readonly userState: RecurringSeriesUserStateEnum;
     readonly alert: RecurringAlertEnum | null;
     readonly categoryId: number | null;
     readonly categoryTitle: string | null;
@@ -14,6 +13,5 @@ export interface RecurringCalendarEntryInterface {
     readonly latestTransactionId: number | null;
     readonly dayOfMonth: number;
     readonly periodDays: number;
-    readonly accountId: number | null;
     readonly isForecast: boolean;
 }

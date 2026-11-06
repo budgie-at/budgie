@@ -94,6 +94,8 @@ export class RecurringReminderService extends Context.Service<RecurringReminderS
 
         return {
             reschedule: Effect.fn('RecurringReminderService.reschedule')(function* (now: Date) {
+                yield* cancelScheduledLocalNotifications(RecurringNotificationKindEnum.RECURRING);
+
                 const permission = yield* Effect.tryPromise({
                     try: () => Notifications.getPermissionsAsync(),
                     catch: toNativeCallError
@@ -102,8 +104,6 @@ export class RecurringReminderService extends Context.Service<RecurringReminderS
                 if (permission.status !== Notifications.PermissionStatus.GRANTED) {
                     return;
                 }
-
-                yield* cancelScheduledLocalNotifications(RecurringNotificationKindEnum.RECURRING);
 
                 const series = yield* recurringService.listSeries(now);
                 const plans = selectRecurringReminderPlans(series, now);

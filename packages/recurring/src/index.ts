@@ -4,7 +4,7 @@ export { RecurringRepository } from './repository/recurring.repository';
 export { RecurringAlertEnum } from './enum/recurring-alert.enum';
 export { RECURRING_ACTIVE_CONFIDENCE } from './constant/recurring-active-confidence.constant';
 export { buildRecurringActiveCondition } from './utils/build-recurring-active-condition.util';
-export { nextOccurrences, monthlyEquivalent, cadencePeriodDays, cadenceToleranceDays } from './series/recurring-schedule';
+export { nextOccurrences, monthlyEquivalent } from './series/recurring-schedule';
 export { RecurringSeriesNotFoundError } from './error/recurring-series-not-found.error';
 export { RecurringTransactionNotFoundError } from './error/recurring-transaction-not-found.error';
 export type { RecurringCalendarDataInterface } from './interface/recurring-calendar-data.interface';

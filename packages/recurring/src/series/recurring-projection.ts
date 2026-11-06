@@ -1,4 +1,4 @@
-import { PRECISION, RecurringSeriesKindEnum } from '@budgie/contracts';
+import { convertFromMicroUnits, RecurringSeriesKindEnum } from '@budgie/contracts';
 import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
 import { startOfDay } from 'date-fns/startOfDay';
 
@@ -27,13 +27,11 @@ const toEntry = (
     return {
         key: `${model.series.id}-${latestAmount}-${isForecast ? 'f' : 'a'}-${dayOfMonth}`,
         seriesId: model.series.id,
-        userState: model.series.userState,
         alert,
         title: model.series.title,
         categoryId: model.series.categoryId,
         categoryTitle: model.series.categoryTitle,
         categoryIcon: model.series.categoryIcon,
-        accountId: model.series.accountId ?? charge?.accountId ?? null,
         latestAmount,
         latestTransactionId: charge?.transactionId ?? null,
         dayOfMonth,
@@ -92,9 +90,11 @@ const groupByDay = (entries: readonly RecurringCalendarEntryInterface[]): Map<nu
     );
 
 const sumCommitted = (models: readonly RecurringReadModelInterface[], now: Date): number =>
-    models
-        .filter(({ series }) => !isSeriesEnded(series, now))
-        .reduce((total, { series }) => total + monthlyEquivalent({ ...series, amount: series.defaultAmount }), 0) / PRECISION;
+    convertFromMicroUnits(
+        models
+            .filter(({ series }) => !isSeriesEnded(series, now))
+            .reduce((total, { series }) => total + monthlyEquivalent({ ...series, amount: series.defaultAmount }), 0)
+    );
 
 // eslint-disable-next-line @typescript-eslint/max-params -- Existing public API intentionally keeps positional arguments; kind is appended
 export const projectRecurringMonth = (
@@ -112,8 +112,8 @@ export const projectRecurringMonth = (
     return {
         entriesByDay: groupByDay(actuals),
         forecastedEntriesByDay: groupByDay(forecasts),
-        totalAmount: actuals.reduce((total, entry) => total + entry.latestAmount, 0) / PRECISION,
-        forecastedTotalAmount: forecasts.reduce((total, entry) => total + entry.latestAmount, 0) / PRECISION,
+        totalAmount: convertFromMicroUnits(actuals.reduce((total, entry) => total + entry.latestAmount, 0)),
+        forecastedTotalAmount: convertFromMicroUnits(forecasts.reduce((total, entry) => total + entry.latestAmount, 0)),
         committedMonthlyExpense: sumCommitted(eligible, now)
     };
 };

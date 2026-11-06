@@ -13,43 +13,46 @@ import type { Mutable } from 'effect/Types';
 const MAX_CADENCE_INTERVAL = 99;
 const MAX_END_COUNT = 600;
 
-export const RecurringSeriesFormSchema = Schema.Struct({
-    kind: Schema.Enum(RecurringSeriesKindEnum),
-    title: Schema.Trim.check(Schema.isMinLength(1), Schema.isMaxLength(RECURRING_TITLE_MAX_LENGTH)),
-    amount: Schema.Finite.check(Schema.isGreaterThan(0)),
-    instrumentId: Schema.Finite.check(Schema.isInt(), Schema.isGreaterThan(0)),
-    categoryId: Schema.NullOr(Schema.Finite),
-    accountId: Schema.NullOr(Schema.Finite),
-    repeat: Schema.Enum(RecurringRepeatChoiceEnum),
-    customInterval: Schema.Finite,
-    customUnit: Schema.Enum(RecurringCadenceUnitEnum),
-    anchorDate: Schema.Date,
-    endMode: Schema.Enum(RecurringEndModeEnum),
-    endsOn: Schema.Date,
-    endsAfterCount: Schema.Finite,
-    reminder: Schema.Enum(RecurringReminderChoiceEnum)
-}).check(
-    Schema.makeFilter(
-        values =>
-            values.repeat !== RecurringRepeatChoiceEnum.CUSTOM ||
-            (Number.isInteger(values.customInterval) && values.customInterval >= 1 && values.customInterval <= MAX_CADENCE_INTERVAL) || {
-                path: ['customInterval'],
-                issue: ''
-            }
-    ),
-    Schema.makeFilter(
-        values =>
-            values.endMode !== RecurringEndModeEnum.AFTER_COUNT ||
-            (Number.isInteger(values.endsAfterCount) && values.endsAfterCount >= 1 && values.endsAfterCount <= MAX_END_COUNT) || {
-                path: ['endsAfterCount'],
-                issue: ''
-            }
-    ),
-    Schema.makeFilter(
-        values =>
-            values.endMode !== RecurringEndModeEnum.ON_DATE ||
-            startOfDay(values.endsOn) >= startOfDay(values.anchorDate) || { path: ['endsOn'], issue: '' }
-    )
-);
+export const makeRecurringSeriesFormSchema = (seriesStart: Date | null) =>
+    Schema.Struct({
+        kind: Schema.Enum(RecurringSeriesKindEnum),
+        title: Schema.Trim.check(Schema.isMinLength(1), Schema.isMaxLength(RECURRING_TITLE_MAX_LENGTH)),
+        amount: Schema.Finite.check(Schema.isGreaterThan(0)),
+        instrumentId: Schema.Finite.check(Schema.isInt(), Schema.isGreaterThan(0)),
+        categoryId: Schema.NullOr(Schema.Finite),
+        accountId: Schema.NullOr(Schema.Finite),
+        repeat: Schema.Enum(RecurringRepeatChoiceEnum),
+        customInterval: Schema.Finite,
+        customUnit: Schema.Enum(RecurringCadenceUnitEnum),
+        anchorDate: Schema.Date,
+        endMode: Schema.Enum(RecurringEndModeEnum),
+        endsOn: Schema.Date,
+        endsAfterCount: Schema.Finite,
+        reminder: Schema.Enum(RecurringReminderChoiceEnum)
+    }).check(
+        Schema.makeFilter(
+            values =>
+                values.repeat !== RecurringRepeatChoiceEnum.CUSTOM ||
+                (Number.isInteger(values.customInterval) &&
+                    values.customInterval >= 1 &&
+                    values.customInterval <= MAX_CADENCE_INTERVAL) || {
+                    path: ['customInterval'],
+                    issue: ''
+                }
+        ),
+        Schema.makeFilter(
+            values =>
+                values.endMode !== RecurringEndModeEnum.AFTER_COUNT ||
+                (Number.isInteger(values.endsAfterCount) && values.endsAfterCount >= 1 && values.endsAfterCount <= MAX_END_COUNT) || {
+                    path: ['endsAfterCount'],
+                    issue: ''
+                }
+        ),
+        Schema.makeFilter(
+            values =>
+                values.endMode !== RecurringEndModeEnum.ON_DATE ||
+                startOfDay(values.endsOn) >= startOfDay(seriesStart ?? values.anchorDate) || { path: ['endsOn'], issue: '' }
+        )
+    );
 
-export type RecurringSeriesFormValues = Mutable<typeof RecurringSeriesFormSchema.Encoded>;
+export type RecurringSeriesFormValues = Mutable<ReturnType<typeof makeRecurringSeriesFormSchema>['Encoded']>;

@@ -44,8 +44,8 @@ export const buildReadModels = (
             reminderDaysBefore: null,
             confidence: scoreDetectedSeries(series),
             defaultAmount: series.nativeAmount,
-            categoryTitle: series.categoryTitle,
-            categoryIcon: series.categoryIcon
+            categoryTitle: null,
+            categoryIcon: null
         },
         links: series.events
             .map(event => charges.find(item => item.transactionId === event.transactionId && item.kind === series.kind))

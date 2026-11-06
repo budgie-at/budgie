@@ -219,12 +219,8 @@ const buildSeries = (charges: readonly RecurringChargeInterface[], variable = fa
         labels: [...new Set([identity(latest), normalizeRecurringDescription(description(latest)), ...charges.map(legacyLabel)])],
         title: isNotEmptyArray(displayTokens) ? displayTokens.join(' ') : description(latest).trim().split(/\s+/u).slice(0, 3).join(' '),
         categoryId: latest.categoryId,
-        categoryTitle: latest.categoryTitle,
-        categoryIcon: latest.categoryIcon,
-        accountId: latest.accountId,
         ...cadence,
         anchorTimestamp: latestEvent.timestamp,
-        priceChangedAt: priceChangeIndex > 0 ? events[priceChangeIndex].timestamp : null,
         events
     };
 };
@@ -250,21 +246,7 @@ const detectMerchantSeries = (charges: readonly RecurringChargeInterface[]): Rec
         })
         .filter(isDefined);
     const latestTimestamp = Math.max(...charges.map(charge => charge.operatedAt.getTime()));
-    const currentFixed = fixed
-        .filter(series => isSeriesActive(series, new Date(latestTimestamp)))
-        .map(series => {
-            const previous = fixed.find(
-                candidate =>
-                    candidate.anchorTimestamp < series.events[0].timestamp &&
-                    candidate.periodMonths === series.periodMonths &&
-                    candidate.periodDays === series.periodDays &&
-                    Math.abs(candidate.nativeAmount - series.nativeAmount) > candidate.nativeAmount * PRICE_CHANGE_RATIO &&
-                    differenceInCalendarDays(new Date(series.events[0].timestamp), new Date(candidate.anchorTimestamp)) <=
-                        series.periodDays * ACTIVE_PERIOD_RATIO
-            );
-
-            return isDefined(previous) ? { ...series, priceChangedAt: series.events[0].timestamp } : series;
-        });
+    const currentFixed = fixed.filter(series => isSeriesActive(series, new Date(latestTimestamp)));
 
     return isNotEmptyArray(currentFixed) || isStableAmount(toEvents(charges))
         ? currentFixed
