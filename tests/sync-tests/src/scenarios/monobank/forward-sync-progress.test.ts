@@ -6,8 +6,11 @@ import * as Effect from 'effect/Effect';
 import * as Fiber from 'effect/Fiber';
 import * as FiberSet from 'effect/FiberSet';
 import * as Queue from 'effect/Queue';
+import * as Schedule from 'effect/Schedule';
 import * as TestClock from 'effect/testing/TestClock';
 import { HttpResponse, http } from 'msw';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { fetchPersistedMonobankTransactions, fetchSyncById, inWorkload, Workload } from '../../harness';
 import { TEST_SCENARIO_TIME } from '../../harness/constant/test-scenario-time.constant';
@@ -101,18 +104,12 @@ describe('monobank/forward-sync-progress', () => {
             const userWorkDone = yield* Deferred.make<void>();
             const queueUserWork = yield* FiberSet.makeRuntime<Workload>();
             const requestedAccounts = new Set<string>();
-            const allAccountsRequested = yield* Deferred.make<void>();
-            const notifyAllAccountsRequested = yield* FiberSet.makeRuntime();
-            yield* seedMonobankForwardSyncAccounts(accountExternalIds, forwardSyncFromAt);
+            const syncIds = yield* seedMonobankForwardSyncAccounts(accountExternalIds, forwardSyncFromAt);
             mockServer.use(
                 http.get(statementEndpoint, ({ params }) => {
                     requestedAccounts.add(String(params['account']));
                     if (requestedAccounts.size === 1) {
                         queueUserWork(workload.runUser(Deferred.succeed(userWorkDone, undefined)));
-                    }
-
-                    if (requestedAccounts.size === accountExternalIds.length) {
-                        notifyAllAccountsRequested(Deferred.succeed(allAccountsRequested, undefined));
                     }
 
                     return HttpResponse.json([]);
@@ -123,7 +120,11 @@ describe('monobank/forward-sync-progress', () => {
 
             yield* inWorkload(monobankSyncService.sync());
             yield* Deferred.await(userWorkDone);
-            yield* Deferred.await(allAccountsRequested);
+            yield* Effect.forEach(syncIds, syncId =>
+                fetchSyncById(syncId).pipe(
+                    Effect.repeat({ until: sync => isDefined(sync.forwardSyncedAt), schedule: Schedule.spaced(RESPONSE_DELAY_MS) })
+                )
+            );
 
             expect([...requestedAccounts].sort()).toEqual(accountExternalIds);
         }).pipe(withAutoAdvanceClock, Effect.provide(TestLayer))

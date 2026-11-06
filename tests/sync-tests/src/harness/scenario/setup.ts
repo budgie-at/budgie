@@ -95,12 +95,8 @@ import { mockServer } from './mock-server';
 import { backupDatabasePath, testDb } from './test-db';
 
 beforeAll(() => {
-    const previousDispatcher = getGlobalDispatcher();
-    setGlobalDispatcher(new Agent());
     appAtomRegistry.reset();
     mockServer.listen({ onUnhandledFrame: 'error' });
-
-    return previousDispatcher.destroy();
 });
 
 beforeEach(() => {
@@ -117,8 +113,12 @@ beforeEach(() => {
 
 afterEach(() => {
     mockServer.resetHandlers();
+    const previousDispatcher = getGlobalDispatcher();
+    setGlobalDispatcher(new Agent());
 
-    return Effect.runPromise(assertStoredBalancesMatchLedger(testDb));
+    return Effect.runPromise(
+        Effect.promise(() => previousDispatcher.destroy()).pipe(Effect.andThen(assertStoredBalancesMatchLedger(testDb)))
+    );
 });
 
 afterAll(() => {
