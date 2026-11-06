@@ -6,7 +6,7 @@ import { InzhurPurchaseFundOption } from '../inzhur-purchase-fund-option/inzhur-
 
 export const InzhurPurchaseFundField = () => {
     const { t } = useLingui();
-    const fundOptions = useInzhurFundOptions();
+    const { fundOptions } = useInzhurFundOptions();
 
     return (
         <GroupedListSection title={t`Fund`}>

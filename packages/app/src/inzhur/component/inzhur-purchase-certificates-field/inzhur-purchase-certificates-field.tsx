@@ -23,7 +23,7 @@ export const InzhurPurchaseCertificatesField = () => {
                 value={value}
                 onChangeText={handleChangeText}
                 onBlur={field.onBlur}
-                placeholder="0"
+                placeholder={t`Enter number`}
                 keyboardType="number-pad"
                 testID={InzhurSelector.PurchaseCertificatesInput}
             />

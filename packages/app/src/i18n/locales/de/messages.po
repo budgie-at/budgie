@@ -4138,6 +4138,10 @@ msgstr "Betrag eingeben"
 msgid "Enter current PIN"
 msgstr "Aktuelle PIN eingeben"
 
+#: src/inzhur/component/inzhur-purchase-certificates-field/inzhur-purchase-certificates-field.tsx
+msgid "Enter number"
+msgstr "Anzahl eingeben"
+
 #: src/inzhur/component/inzhur-pending-top-up-card/inzhur-pending-top-up-card.tsx
 #: src/inzhur/component/inzhur-purchase-form/inzhur-purchase-form.tsx
 msgid "Enter purchase"

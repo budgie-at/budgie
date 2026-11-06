@@ -54,9 +54,9 @@ export const InzhurPendingTopUpCard = ({ topUp }: Props) => {
                     testID={InzhurSelector.PendingTopUpEnterButton(transactionId)}
                 />
                 <Button
-                    className="min-h-11 flex-1"
+                    className="min-h-11 flex-1 bg-transparent"
                     size="sm"
-                    variant="secondary"
+                    variant="ghost"
                     content={t`Dismiss`}
                     onPress={handleDismiss}
                     testID={InzhurSelector.PendingTopUpDismissButton(transactionId)}

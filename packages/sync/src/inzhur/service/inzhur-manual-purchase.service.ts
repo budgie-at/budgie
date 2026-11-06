@@ -95,6 +95,25 @@ export class InzhurManualPurchaseService extends Context.Service<InzhurManualPur
             });
 
             return {
+                findFundTitlesByRecentPurchase: Effect.fn('InzhurManualPurchaseService.findFundTitlesByRecentPurchase')(function* () {
+                    const setup = yield* inzhurSetupLookupService.findSetup();
+
+                    if (!isDefined(setup)) {
+                        return [];
+                    }
+
+                    const transfers = yield* transactionRepository.findTransfersFromAccountByExternalIdPrefix(
+                        setup.cashAccount.id,
+                        'inzhur:'
+                    );
+                    const titleByFundAccountId = new Map(setup.fundAccounts.map(account => [account.id, account.title]));
+                    const titles = [...transfers]
+                        .sort((first, second) => second.operatedAt.getTime() - first.operatedAt.getTime() || second.id - first.id)
+                        .map(transfer => (isDefined(transfer.toAccountId) ? titleByFundAccountId.get(transfer.toAccountId) : null))
+                        .filter(isDefined);
+
+                    return [...new Set(titles)];
+                }),
                 findTopUp: Effect.fn('InzhurManualPurchaseService.findTopUp')(function* (topUpTransactionId: number) {
                     return (yield* findTopUps()).find(topUp => topUp.transactionId === topUpTransactionId) ?? null;
                 }),

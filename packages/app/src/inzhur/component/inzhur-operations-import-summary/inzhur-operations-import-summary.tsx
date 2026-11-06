@@ -3,7 +3,7 @@ import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useHryvniaInstrumentQuery } from '../../query/use-hryvnia-instrument.query';
@@ -24,6 +24,7 @@ export const InzhurOperationsImportSummary = ({ summary }: Props) => {
     const symbol = useHryvniaInstrumentQuery()?.symbol ?? '';
     const { topUps, withdrawals, funds } = summary;
 
+    const hasCashOperations = isPositiveNumber(topUps.count) || isPositiveNumber(withdrawals.count);
     const topUpsCaption = t({ message: plural(topUps.count, { one: '# operation', other: '# operations' }) });
     const withdrawalsCaption = t({ message: plural(withdrawals.count, { one: '# operation', other: '# operations' }) });
     const recordedLabel = t({ message: plural(summary.recordedCount, { one: '# entry recorded', other: '# entries recorded' }) });
@@ -35,26 +36,32 @@ export const InzhurOperationsImportSummary = ({ summary }: Props) => {
         <View className="gap-y-md" testID={InzhurSelector.OperationsSummary}>
             <InzhurOperationsPeriodHeader summary={summary} />
 
-            <GroupedListSection title={t`Cash`}>
-                <View className="min-h-[64px] justify-center px-3xl py-[12px]">
-                    <InzhurMoneyRow
-                        label={t`Top-ups`}
-                        caption={topUpsCaption}
-                        amount={topUps.amount}
-                        instrumentSymbol={symbol}
-                        icon={UserIconNameEnum.Banknote}
-                    />
-                </View>
-                <View className="min-h-[64px] justify-center px-3xl py-[12px]">
-                    <InzhurMoneyRow
-                        label={t`Withdrawals`}
-                        caption={withdrawalsCaption}
-                        amount={withdrawals.amount}
-                        instrumentSymbol={symbol}
-                        icon={UserIconNameEnum.Landmark}
-                    />
-                </View>
-            </GroupedListSection>
+            {hasCashOperations ? (
+                <GroupedListSection title={t`Cash`}>
+                    {isPositiveNumber(topUps.count) ? (
+                        <View className="min-h-[64px] justify-center px-3xl py-[12px]">
+                            <InzhurMoneyRow
+                                label={t`Top-ups`}
+                                caption={topUpsCaption}
+                                amount={topUps.amount}
+                                instrumentSymbol={symbol}
+                                icon={UserIconNameEnum.Banknote}
+                            />
+                        </View>
+                    ) : null}
+                    {isPositiveNumber(withdrawals.count) ? (
+                        <View className="min-h-[64px] justify-center px-3xl py-[12px]">
+                            <InzhurMoneyRow
+                                label={t`Withdrawals`}
+                                caption={withdrawalsCaption}
+                                amount={withdrawals.amount}
+                                instrumentSymbol={symbol}
+                                icon={UserIconNameEnum.Landmark}
+                            />
+                        </View>
+                    ) : null}
+                </GroupedListSection>
+            ) : null}
 
             {isNotEmptyArray(funds) ? (
                 <GroupedListSection title={t`Funds`}>

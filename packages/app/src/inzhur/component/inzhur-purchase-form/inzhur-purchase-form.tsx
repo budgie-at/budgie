@@ -8,7 +8,6 @@ import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/f
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { InzhurPurchaseFormSchema } from '../../constant/inzhur-purchase-form-schema.constant';
-import { useInzhurFundOptions } from '../../hook/use-inzhur-fund-options.hook';
 import { InzhurSelector } from '../../selector/inzhur.selector';
 import { buildInzhurPurchaseDefaults } from '../../utils/build-inzhur-purchase-defaults.util';
 import { InzhurPurchaseAmountField } from '../inzhur-purchase-amount-field/inzhur-purchase-amount-field';
@@ -22,11 +21,11 @@ import type { InzhurPendingTopUpInterface } from '@budgie/sync';
 
 interface Props {
     readonly topUp: InzhurPendingTopUpInterface;
+    readonly defaultFundName: string;
 }
 
-export const InzhurPurchaseForm = ({ topUp }: Props) => {
+export const InzhurPurchaseForm = ({ topUp, defaultFundName }: Props) => {
     const { t } = useLingui();
-    const defaultFundName = useInzhurFundOptions().at(0)?.name ?? '';
     const form = useForm<InzhurPurchaseFormValues>({
         mode: 'onChange',
         resolver: standardSchemaResolver(Schema.toStandardSchemaV1(InzhurPurchaseFormSchema)),
