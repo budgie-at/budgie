@@ -1,5 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { Trans } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
 import { EmptyFn } from '@rnw-community/shared';
@@ -13,18 +13,23 @@ interface Props {
     readonly disabled?: boolean;
 }
 
-export const PinRestartButton = ({ onPress, disabled = false }: Props) => (
-    <Button
-        testID={PinFormSelector.RestartNewPinButton}
-        variant="ghost"
-        leftIcon={UserIconNameEnum.RotateCcw}
-        content={
-            <Text maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER} className="text-primary">
-                <Trans>Choose a different PIN</Trans>
-            </Text>
-        }
-        onPress={onPress}
-        disabled={disabled}
-        className="border-0 bg-transparent px-5xl py-md min-h-[44px]"
-    />
-);
+export const PinRestartButton = ({ onPress, disabled = false }: Props) => {
+    const { t } = useLingui();
+
+    return (
+        <Button
+            testID={PinFormSelector.RestartNewPinButton}
+            accessibilityLabel={t`Choose a different PIN`}
+            variant="ghost"
+            leftIcon={UserIconNameEnum.RotateCcw}
+            content={
+                <Text maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER} className="text-primary">
+                    <Trans>Choose a different PIN</Trans>
+                </Text>
+            }
+            onPress={onPress}
+            disabled={disabled}
+            className="border-0 bg-transparent px-5xl py-md min-h-[44px]"
+        />
+    );
+};

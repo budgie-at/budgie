@@ -19,7 +19,7 @@ test('38 onboarding PIN seal', { tags: ['onboarding'] }, async ({ budgie }) => {
         await b.tapId(ctx, 'OnboardingStepLayout.BackButton');
         await b.expectText(ctx, 'Choose a PIN', 3_000);
         await enterPin(ctx, '1234');
-        await b.tapId(ctx, 'PinPage.RestartNewPinButton');
+        await ctx.screen.getByRole('button', { name: 'Choose a different PIN', exact: true }).first().tap();
         await b.expectText(ctx, 'Choose a PIN', 3_000);
         await enterPin(ctx, '1234');
         await enterPin(ctx, '1234');
