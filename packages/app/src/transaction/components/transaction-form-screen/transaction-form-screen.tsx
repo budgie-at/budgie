@@ -1,10 +1,11 @@
 import { Text, View } from 'react-native';
 
-import { CollapsibleHeaderBackdrop, ScreenChromeFrame, ScreenChromeHeader } from '@rnw-community/react-native-screen-chrome';
+import { ScreenChromeFrame, ScreenChromeHeader } from '@rnw-community/react-native-screen-chrome';
 
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { ScreenChromeThemeProvider } from '../../../@generic/provider/screen-chrome-theme.provider';
+import { TransactionFormHeaderBackdrop } from '../transaction-form-header-backdrop/transaction-form-header-backdrop';
 
 import type { ReactNode } from 'react';
 
@@ -22,7 +23,7 @@ export const TransactionFormScreen = ({ title, onGoBack, right, children }: Prop
         <ScreenChromeThemeProvider syncNativeScrollOffset>
             <ScreenChromeFrame>
                 <View className="flex-1">{children}</View>
-                <CollapsibleHeaderBackdrop />
+                <TransactionFormHeaderBackdrop />
                 <ScreenChromeHeader>
                     <GoBackButton className="min-h-[44px] min-w-[44px] items-center justify-center" onPress={onGoBack} />
                     <Text

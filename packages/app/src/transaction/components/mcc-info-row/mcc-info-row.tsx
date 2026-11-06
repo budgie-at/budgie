@@ -1,4 +1,5 @@
 import { Text, View } from 'react-native';
+import Animated, { LinearTransition, ReduceMotion } from 'react-native-reanimated';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -17,13 +18,14 @@ interface Props {
 }
 
 const MERCHANT_MAX_FONT_SCALE = 1.35;
+const LAYOUT = LinearTransition.duration(200).reduceMotion(ReduceMotion.System);
 
 export const MccInfoRow = ({ transactionTitle, mccCategoryId, children, suggestions }: Props) => {
     const { mccCategory } = useGetMccCategoryByIdQuery(mccCategoryId);
 
     return (
         <QuickFormContext>
-            <View className="items-center self-stretch">
+            <Animated.View layout={LAYOUT} className="items-center self-stretch">
                 <View className="h-[60px] items-center justify-center self-stretch">
                     {isNotEmptyString(transactionTitle) ? (
                         <Text
@@ -37,7 +39,7 @@ export const MccInfoRow = ({ transactionTitle, mccCategoryId, children, suggesti
                         transactionTitle
                     )}
                 </View>
-                <View className="h-[44px] max-w-full flex-row items-center justify-center gap-x-[8px] overflow-hidden">
+                <View className="max-h-[44px] max-w-full flex-row items-center justify-center gap-x-[8px] overflow-hidden">
                     {isDefined(mccCategory) ? (
                         <Text
                             className="shrink text-[13px] leading-[18px] text-secondary-foreground"
@@ -51,7 +53,7 @@ export const MccInfoRow = ({ transactionTitle, mccCategoryId, children, suggesti
                     {suggestions}
                 </View>
                 <QuickFormValidationSlot />
-            </View>
+            </Animated.View>
         </QuickFormContext>
     );
 };
