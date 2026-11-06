@@ -27,9 +27,9 @@ export class AppDataSyncService extends Context.Service<AppDataSyncService>()('@
         return {
             sync: Effect.fn('AppDataSyncService.sync')(function* () {
                 yield* logAndContinue(accountBalanceIncrementalService.updateAllBalances(false));
-                yield* logAndContinue(siriCatalogService.publish);
                 yield* logAndContinue(walletCaptureImportService.drain());
                 yield* logAndContinue(exchangeRateBackgroundService.sync);
+                yield* logAndContinue(siriCatalogService.publish());
                 if (yield* workload.hasQueuedUserWork) {
                     return false;
                 }

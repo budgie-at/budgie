@@ -57,7 +57,7 @@ export const useWalletCaptureSettings = () => {
 
     const refresh = useCallback(() => {
         appRuntime.runFork(
-            Effect.flatMap(SiriCatalogService, service => service.publish).pipe(
+            Effect.flatMap(SiriCatalogService, service => service.publish()).pipe(
                 Effect.tapCause(Effect.logError),
                 Effect.matchCause({
                     onFailure: cause => void setMutationError(cause.pipe(Cause.squash, getErrorMessage)),

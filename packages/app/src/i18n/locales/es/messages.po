@@ -1935,6 +1935,7 @@ msgstr "Presupuesto no disponible"
 #: src/import/components/import-preset-options/import-preset-options.tsx
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 #: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+#: src/siri/service/siri-catalog.service.ts
 #: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "Budgie"

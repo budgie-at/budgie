@@ -23,7 +23,7 @@ describe('Wallet capture account mirror', () => {
                 .set({ deletedAt: new Date('2026-08-07T12:00:00.000Z') })
                 .where(eq(AccountEntityTable.id, archivedAccount.id));
 
-            yield* siriCatalogService.publish;
+            yield* siriCatalogService.publish();
 
             const [unlockedAccount] = walletCaptureNativeStub.getCatalog(SiriCatalogKindEnum.WALLET_ACCOUNT);
 
@@ -31,7 +31,7 @@ describe('Wallet capture account mirror', () => {
             expect(unlockedAccount).toMatchObject({ id: String(activeAccount.id), title: activeAccount.title });
             expect(unlockedAccount.metadata).toHaveProperty(SiriMetadataKeyEnum.BALANCE);
 
-            yield* siriCatalogService.mask;
+            yield* siriCatalogService.mask();
 
             const [lockedAccount] = walletCaptureNativeStub.getCatalog(SiriCatalogKindEnum.WALLET_ACCOUNT);
 

@@ -123,8 +123,6 @@ export class WidgetSnapshotService extends Context.Service<WidgetSnapshotService
         });
 
         const publish = Effect.fn('WidgetSnapshotService.publish')(function* () {
-            yield* logAndContinue(siriCatalogService.publish);
-
             return yield* writeSemaphore.withPermits(1)(writeIfUnlocked());
         });
 
@@ -148,7 +146,7 @@ export class WidgetSnapshotService extends Context.Service<WidgetSnapshotService
             mask: Effect.fn('WidgetSnapshotService.mask')(function* () {
                 yield* Ref.set(isLocked, true);
                 yield* workload.cancelScheduled(publishKey);
-                yield* logAndContinue(siriCatalogService.mask);
+                yield* logAndContinue(siriCatalogService.mask());
 
                 return yield* writeSemaphore.withPermits(1)(write(true));
             }),
@@ -161,7 +159,7 @@ export class WidgetSnapshotService extends Context.Service<WidgetSnapshotService
                 yield* debouncePublish();
             }),
             unlock: (): void => {
-                runFork(Ref.set(isLocked, false).pipe(Effect.andThen(siriCatalogService.unlock), Effect.andThen(debouncePublish())));
+                runFork(Ref.set(isLocked, false).pipe(Effect.andThen(siriCatalogService.unlock()), Effect.andThen(debouncePublish())));
             }
         };
     })
