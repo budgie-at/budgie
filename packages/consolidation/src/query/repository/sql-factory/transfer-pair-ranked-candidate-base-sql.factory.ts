@@ -2,7 +2,6 @@ import {
     AccountTypeEnum,
     ExternalSourceEnum,
     InstrumentTypeEnum,
-    PERSONAL_SYNC_ZONE,
     REFUND_TIME_WINDOW_SECONDS,
     REFUND_TITLE_PREFIXES,
     TRANSFER_PAIR_TIME_WINDOW_SECONDS,
@@ -184,11 +183,10 @@ const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                         ELSE 0
                     END as ibanMatch,
                     CASE
-                        WHEN expense_entries.expenseAccountSyncZone != '${PERSONAL_SYNC_ZONE}'
-                            OR income_entries.incomeAccountSyncZone != '${PERSONAL_SYNC_ZONE}'
+                        WHEN expense_entries.expenseAccountSyncZone != income_entries.incomeAccountSyncZone
                         THEN 1
                         ELSE 0
-                    END as isHouseholdPair,
+                    END as isCrossZonePair,
                     CASE
                         WHEN expense_entries.expenseMccGroupId = ${TRANSFER_MCC_GROUP_ID}
                             OR income_entries.incomeMccGroupId = ${TRANSFER_MCC_GROUP_ID}

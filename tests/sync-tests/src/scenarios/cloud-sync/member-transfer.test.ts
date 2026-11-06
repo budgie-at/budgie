@@ -78,11 +78,11 @@ const createBobExpense = (database: DB, accountId: number, toIban: string) =>
         return expense;
     });
 
-const createAliceIncome = (accountId: number) =>
+const createAliceIncome = (accountId: number, toIban: string | null = null) =>
     Effect.gen(function* () {
         const income = yield* new TestSeedService(testDb).bankPairIncome(
             { externalId: 'alice-in', operatedAt: INCOME_AT },
-            { accountId, amount: TRANSFER_AMOUNT }
+            { accountId, amount: TRANSFER_AMOUNT, toIban }
         );
 
         yield* refreshAllBalances(testDb);
@@ -291,6 +291,50 @@ describe('cloud-sync/member-transfer', () => {
                 expect(yield* balanceOf(bobDatabase, 'Bob cash')).toBe(TRANSFER_AMOUNT);
                 expect(yield* balanceOf(testDb, PRIVATE_ACCOUNT_TITLE)).toBe(-TRANSFER_AMOUNT);
                 yield* expectNothingPrivateOnBob(bobDatabase);
+                yield* expectCleanLedgers(bobDatabase);
+            })
+        );
+
+        it.effect('still pairs on a weaker heuristic when both accounts sit in the same zone', () =>
+            Effect.gen(function* () {
+                const bobDatabase = yield* Db;
+                const { clouds, aliceAccount, bobAccount } = yield* setupMemberHousehold(bobDatabase, {
+                    isBobAccountManual: false,
+                    isAliceAccountShared: true
+                });
+
+                yield* createAliceExpense(aliceAccount.id, {
+                    amount: TRANSFER_AMOUNT,
+                    toIban: null,
+                    mccCategoryId: yield* transferMccIdOf(testDb)
+                });
+                yield* createBobIncome(bobDatabase, bobAccount.id, yield* transferMccIdOf(bobDatabase));
+                yield* settleAll(bobDatabase, clouds);
+
+                const { onAlice, onBob } = yield* expectSingleTransferOnBoth(bobDatabase);
+
+                expect(onAlice[0].syncId).toBe(onBob[0].syncId);
+                yield* expectCleanLedgers(bobDatabase);
+            })
+        );
+
+        it.effect('converts my income to a transfer from the member account that has no bank integration', () =>
+            Effect.gen(function* () {
+                const bobDatabase = yield* Db;
+                const { clouds, aliceAccount } = yield* setupMemberHousehold(bobDatabase, {
+                    isBobAccountManual: true,
+                    isAliceAccountShared: false
+                });
+                const income = yield* createAliceIncome(aliceAccount.id, BOB_IBAN);
+
+                yield* reapplyAutomation(testDb, [income.syncId ?? '']);
+                yield* settleAll(bobDatabase, clouds);
+
+                const { onBob } = yield* expectSingleTransferOnBoth(bobDatabase);
+
+                expect(onBob[0].entryCount).toBe(1);
+                expect(yield* balanceOf(bobDatabase, 'Bob cash')).toBe(-TRANSFER_AMOUNT);
+                expect(yield* balanceOf(testDb, PRIVATE_ACCOUNT_TITLE)).toBe(TRANSFER_AMOUNT);
                 yield* expectCleanLedgers(bobDatabase);
             })
         );
