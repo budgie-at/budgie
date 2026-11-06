@@ -6,8 +6,9 @@ import { useModalRouteState } from '../@generic/hook/use-modal-route-state/use-m
 import { ConsolidationSourceModalContent } from '../transaction/components/consolidation-source-modal-content/consolidation-source-modal-content';
 import { useConsolidationSourceModal, useConsolidationSourceModalParams } from '../transaction/context/consolidation-source-modal.context';
 
-const COMPACT_DETENT = 0.45;
+const COMPACT_DETENT = 0.7;
 const EXPANDED_DETENT = 0.9;
+const ACCESSIBILITY_DETENT = 1;
 
 export default function ConsolidationSourceModal() {
     const [, resolveConsolidationSource, dismissConsolidationSource] = useConsolidationSourceModal();
@@ -15,7 +16,7 @@ export default function ConsolidationSourceModal() {
     const currentParams = useConsolidationSourceModalParams();
     const screenOptions = {
         ...useModalRouteState(currentParams, dismissConsolidationSource),
-        sheetAllowedDetents: isAccessibilityTextSize ? [EXPANDED_DETENT] : [COMPACT_DETENT, EXPANDED_DETENT],
+        sheetAllowedDetents: isAccessibilityTextSize ? [ACCESSIBILITY_DETENT] : [COMPACT_DETENT, EXPANDED_DETENT],
         sheetInitialDetentIndex: 0
     };
 

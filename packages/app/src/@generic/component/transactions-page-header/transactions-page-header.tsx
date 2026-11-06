@@ -42,6 +42,7 @@ export const TransactionsPageHeader = ({ activeTab, onChangeTab }: Props) => {
                 <View className="flex-1 px-5xl pb-md">
                     <SegmentedControl
                         segments={segments}
+                        maxFontSizeMultiplier={2}
                         value={activeTab}
                         onChange={onChangeTab}
                         className="min-h-[48px] bg-segmented-track dark:bg-surface-fill"

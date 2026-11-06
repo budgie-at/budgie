@@ -22,7 +22,9 @@ it('maps every provider to an existing logo', () => {
 });
 
 it('keeps logo files and names in step', () => {
-    const files = readdirSync(new URL('../src/@generic/component/bank-logo/logos', import.meta.url)).map(file => file.replace('.webp', ''));
+    const files = readdirSync(new URL('../assets/icons', import.meta.url))
+        .filter(file => file.endsWith('.webp'))
+        .map(file => file.replace('.webp', ''));
 
     expect(files.toSorted()).toStrictEqual(Object.keys(BANK_LOGO_NAMES).toSorted());
 });

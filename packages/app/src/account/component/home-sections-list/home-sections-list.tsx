@@ -1,10 +1,12 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { SectionList } from 'react-native';
 import Animated from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useScreenChromeScrollProps } from '@rnw-community/react-native-screen-chrome';
+import { useScreenChrome, useScreenChromeScrollProps } from '@rnw-community/react-native-screen-chrome';
 
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@generic/constant/floating-tab-bar.constant';
+import { useCollapsibleChromeScroll } from '../../../@generic/hook/use-collapsible-chrome-scroll.hook';
 import { decimalPlacesAtom, defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
 import { TransactionRowSurface } from '../../../transaction/components/transaction-row-surface/transaction-row-surface';
 import { COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT } from '../../constant/collapsible-net-worth-header-scroll-spacer.constant';
@@ -42,10 +44,19 @@ export const HomeSectionsList = ({
 }: Props) => {
     const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
-    const bottomPadding = FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottomInset;
+    const { top } = useSafeAreaInsets();
+    const { config } = useScreenChrome();
+    const { onScroll } = useCollapsibleChromeScroll();
+    const collapsedHeaderHeight = config.collapsedHeaderHeight ?? config.headerHeight;
+    const listStyle = { marginTop: top + collapsedHeaderHeight };
     const scrollProps = useScreenChromeScrollProps({
         includeTopSafeArea: false,
-        contentContainerStyle: { paddingBottom: bottomPadding, paddingHorizontal: LIST_HORIZONTAL_PADDING, flexGrow: 1 }
+        contentInsetTop: config.headerHeight - collapsedHeaderHeight,
+        contentContainerStyle: {
+            paddingBottom: FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottomInset,
+            paddingHorizontal: LIST_HORIZONTAL_PADDING,
+            flexGrow: 1
+        }
     });
     const listFormatKey = `${defaultInstrumentId}-${decimalPlaces}`;
     const listFooterComponent =
@@ -85,6 +96,8 @@ export const HomeSectionsList = ({
             ListFooterComponent={listFooterComponent}
             ListEmptyComponent={listEmptyComponent}
             {...scrollProps}
+            onScroll={onScroll}
+            style={listStyle}
         />
     );
 };

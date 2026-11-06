@@ -4,7 +4,6 @@ import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { SuggestionOrchestratorSharedProps } from '../../interface/suggestion-orchestrator-shared-props.type';
 import { CategorySuggestionRow } from '../category-suggestion-row/category-suggestion-row';
 import { CommentSuggestionRow } from '../comment-suggestion-row/comment-suggestion-row';
-import { SuggestionRowSpacer } from '../suggestion-row-spacer/suggestion-row-spacer';
 import { TagSuggestionRow } from '../tag-suggestion-row/tag-suggestion-row';
 
 const hasEmbeddingContext = (transactionTitle: string, mccCategoryId: number | null, comment: string, aiContext: string): boolean =>
@@ -74,5 +73,5 @@ export const AiSuggestionOrchestrator = (props: SuggestionOrchestratorSharedProp
         );
     }
 
-    return <SuggestionRowSpacer />;
+    return null;
 };

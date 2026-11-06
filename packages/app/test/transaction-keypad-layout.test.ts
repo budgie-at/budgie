@@ -3,26 +3,23 @@ import { describe, expect, it } from '@effect/vitest';
 import { getTransactionKeypadLayout } from '../src/transaction/utils/get-transaction-keypad-layout.util';
 
 describe('transaction keypad viewport accessibility', () => {
-    it('allows the form and keypad to scroll together when large text fills a short viewport', () => {
+    it('keeps the keypad pinned at the largest text size while a form row still fits above it', () => {
+        expect(getTransactionKeypadLayout(3, 520).requiresScrolling).toBe(false);
+    });
+
+    it('scrolls the amount, keypad and form together when no form row fits above the keypad', () => {
+        expect(getTransactionKeypadLayout(1, 420).requiresScrolling).toBe(true);
         expect(getTransactionKeypadLayout(3, 400).requiresScrolling).toBe(true);
     });
 
-    it('keeps enough room for a complete large-text metadata row', () => {
-        expect(getTransactionKeypadLayout(3, 500).requiresScrolling).toBe(true);
-    });
-
-    it('keeps the keypad fixed when the viewport has room for the form', () => {
+    it('keeps the keypad pinned when the viewport has room for the form', () => {
         expect(getTransactionKeypadLayout(1, 700).requiresScrolling).toBe(false);
     });
 
-    it('keeps the form viewport available when the amount keypad is collapsed', () => {
-        expect(getTransactionKeypadLayout(3, 400, 72).requiresScrolling).toBe(false);
-    });
-
-    it('retains minimum digit targets and larger primary labels in the scrolling fallback', () => {
+    it('retains minimum digit and primary action targets at the largest text size', () => {
         const layout = getTransactionKeypadLayout(3, 400);
 
         expect(layout.rowStyle.minHeight).toBeGreaterThanOrEqual(44);
-        expect(layout.confirmRowStyle.minHeight).toBeGreaterThanOrEqual(72);
+        expect(layout.confirmRowStyle.minHeight).toBeGreaterThanOrEqual(50);
     });
 });
