@@ -89,7 +89,7 @@ export class RepeatedTransactionService extends Context.Service<RepeatedTransact
                     ...(isPositiveNumber(categoryId) && { categoryId }),
                     limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
                 };
-                const repeatedCacheKey = `repeated:${language}:${yield* encodeJson(repeatedQuery)}`;
+                const repeatedCacheKey = `repeated:${language}:${yield* encodeJson(repeatedQuery).pipe(Effect.orDie)}`;
                 const timeQuery = patternCacheService.memoize(
                     repeatedCacheKey,
                     transactionPatternRepository.findRepeatedPatterns(repeatedQuery, language)

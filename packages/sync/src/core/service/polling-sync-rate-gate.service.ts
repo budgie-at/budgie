@@ -1,7 +1,6 @@
 import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
-import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -71,6 +70,4 @@ export class PollingSyncRateGate extends Context.Service<PollingSyncRateGate>()(
             isBackedOff: (nowMs: number) => nowMs < backOffUntilMs
         };
     })
-}) {
-    static readonly layer = Layer.effect(PollingSyncRateGate, PollingSyncRateGate.make);
-}
+}) {}
