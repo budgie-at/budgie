@@ -14,7 +14,7 @@ interface Props {
 
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
-const chipVariants = cva('min-h-[40px] grow basis-[30%] items-center justify-center rounded-full px-md active:opacity-70', {
+const chipVariants = cva('min-h-[44px] grow basis-[30%] items-center justify-center rounded-full px-md active:opacity-70', {
     variants: { isSelected: { true: 'bg-cta-background', false: 'bg-segmented-track' } }
 });
 

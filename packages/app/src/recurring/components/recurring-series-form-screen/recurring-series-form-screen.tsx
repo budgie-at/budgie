@@ -109,12 +109,13 @@ export const RecurringSeriesFormScreen = ({ target, initialValues }: Props) => {
                                 {kindField}
                                 <RecurringFormAmountField label={t`Amount`} />
                                 <RecurringFormTitleField />
+
+                                <RecurringFormRepeatSection />
                                 <GroupedListSection title={t`Details`}>
                                     <RecurringFormCurrencyField />
                                     <RecurringFormCategoryField />
                                     <RecurringFormAccountField />
                                 </GroupedListSection>
-                                <RecurringFormRepeatSection />
                                 <RecurringFormEndSection />
                                 <RecurringFormReminderSection />
                             </View>

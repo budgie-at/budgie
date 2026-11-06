@@ -1,8 +1,9 @@
 import { Trans } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { RecurringCalendarSummaryAmount } from '../recurring-calendar-summary-amount/recurring-calendar-summary-amount';
 
@@ -28,7 +29,12 @@ export const RecurringCalendarSummary = ({ title, isLoading, formattedTotal, for
                 loadingIndicator={<ActivityIndicator size="small" colorClassName="accent-primary" style={StyleSheet.absoluteFill} />}
                 className={breakdownVariants({ isAccessibilityTextSize })}
             >
-                <RecurringCalendarSummaryAmount formattedAmount={formattedTotal}>{title}</RecurringCalendarSummaryAmount>
+                <View className="flex-[1.3] items-center gap-y-xxs">
+                    <ProtectedText className="text-[22px] font-bold text-primary tabular-nums" numberOfLines={1} adjustsFontSizeToFit>
+                        {formattedTotal}
+                    </ProtectedText>
+                    <Text className="text-[13px] font-medium text-secondary-foreground">{title}</Text>
+                </View>
                 <RecurringCalendarSummaryAmount formattedAmount={formattedExpected}>
                     <Trans>Expected</Trans>
                 </RecurringCalendarSummaryAmount>

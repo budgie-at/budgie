@@ -1,5 +1,6 @@
 import { RecurringSeriesKindEnum, TransactionTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { getTransactionCategoryEntries } from '@budgie/ledger';
+import { addMonths } from 'date-fns/addMonths';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -16,7 +17,7 @@ export const buildRecurringFormValuesFromTransaction = (
     transaction: TransactionWithRelationsEntityInterface,
     defaultInstrumentId: number
 ): RecurringSeriesFormValues => {
-    const defaults = buildDefaultRecurringFormValues(defaultInstrumentId, transaction.operatedAt);
+    const defaults = buildDefaultRecurringFormValues(defaultInstrumentId, addMonths(transaction.operatedAt, 1));
     const primaryEntry = getTransactionInfoPrimaryEntry(transaction);
 
     if (!isDefined(primaryEntry)) {

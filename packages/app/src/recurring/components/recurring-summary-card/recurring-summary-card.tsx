@@ -38,36 +38,38 @@ export const RecurringSummaryCard = ({ summary }: Props) => {
     }
 
     return (
-        <View
-            className="mb-md gap-y-md rounded-3xl bg-grouped-surface-row px-3xl py-2xl"
-            style={continuousCorners}
-            testID={RecurringPaneSelector.Summary}
-        >
-            <Text dynamicTypeRamp="footnote" className="text-[13px] font-medium text-secondary-foreground">
-                <Trans>Monthly average</Trans>
-            </Text>
-            <View className="flex-row flex-wrap items-baseline gap-x-xs">
-                <ProtectedText dynamicTypeRamp="largeTitle" className="text-[34px] font-bold text-primary tabular-nums">
-                    {committedAmount}
-                </ProtectedText>
-            </View>
-            <Text dynamicTypeRamp="subheadline" className="text-[15px] text-secondary-foreground">
-                {`${countLabel} · ${dueSoonLabel}`}
-            </Text>
-            {hasAveragedBills ? (
-                <Text dynamicTypeRamp="footnote" className="text-[13px] text-secondary-foreground">
-                    <Trans>Non-monthly bills are averaged per month.</Trans>
+        <View className="mb-md">
+            <View
+                className="gap-y-md rounded-3xl bg-grouped-surface-row px-3xl py-2xl"
+                style={continuousCorners}
+                testID={RecurringPaneSelector.Summary}
+            >
+                <Text dynamicTypeRamp="footnote" className="text-[13px] font-medium text-secondary-foreground">
+                    <Trans>Monthly average</Trans>
                 </Text>
-            ) : null}
-            {hasIncome ? (
-                <View className="flex-row items-center justify-between border-t border-surface-separator pt-md">
-                    <Text dynamicTypeRamp="subheadline" className="text-[15px] text-primary">
-                        <Trans>Recurring income</Trans>
-                    </Text>
-                    <ProtectedText dynamicTypeRamp="headline" className="text-[15px] font-semibold text-positive-strong tabular-nums">
-                        {t`+${incomeAmount} / month`}
+                <View className="flex-row flex-wrap items-baseline gap-x-xs">
+                    <ProtectedText dynamicTypeRamp="largeTitle" className="text-[34px] font-bold text-primary tabular-nums">
+                        {committedAmount}
                     </ProtectedText>
                 </View>
+                <Text dynamicTypeRamp="subheadline" className="text-[15px] text-secondary-foreground">
+                    {`${countLabel} · ${dueSoonLabel}`}
+                </Text>
+                {hasIncome ? (
+                    <View className="flex-row items-center justify-between border-t border-surface-separator pt-md">
+                        <Text dynamicTypeRamp="subheadline" className="text-[15px] text-primary">
+                            <Trans>Recurring income</Trans>
+                        </Text>
+                        <ProtectedText dynamicTypeRamp="headline" className="text-[15px] font-semibold text-positive-strong tabular-nums">
+                            {t`+${incomeAmount} / month`}
+                        </ProtectedText>
+                    </View>
+                ) : null}
+            </View>
+            {hasAveragedBills ? (
+                <Text dynamicTypeRamp="footnote" className="px-3xl pt-sm text-[13px] text-secondary-foreground">
+                    <Trans>Non-monthly bills are averaged per month.</Trans>
+                </Text>
             ) : null}
         </View>
     );

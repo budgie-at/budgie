@@ -29,6 +29,9 @@ export const RecurringListRowTrailing = ({ series, isPossible, now }: Props) => 
     const getDueLabel = useRecurringDueLabel();
     const formattedAmount = protectAmount(convertFromMicroUnits(series.amount), defaultInstrument.symbol);
     const amount = series.kind === RecurringSeriesKindEnum.INCOME ? `+${formattedAmount}` : formattedAmount;
+    const amountClassName = isPossible
+        ? 'text-[16px] font-semibold tabular-nums text-secondary-foreground'
+        : amountVariants({ kind: series.kind });
     const dueLabel = isDefined(series.nextDate) && !isPossible ? getDueLabel(series.nextDate, now) : null;
     const detail = isDefined(series.alert) ? (
         <RecurringAlertBadge alert={series.alert} priceChange={series.priceChange} endsAt={series.endsAt} />
@@ -44,7 +47,7 @@ export const RecurringListRowTrailing = ({ series, isPossible, now }: Props) => 
 
     return (
         <View className="shrink-0 items-end gap-y-xxs">
-            <Text dynamicTypeRamp="headline" className={amountVariants({ kind: series.kind })}>
+            <Text dynamicTypeRamp="headline" className={amountClassName}>
                 {amount}
             </Text>
             {detail}

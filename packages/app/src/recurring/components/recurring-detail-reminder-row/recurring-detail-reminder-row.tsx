@@ -1,4 +1,5 @@
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
+import { Text, View } from 'react-native';
 
 import { useNotificationPermission } from '../../hook/use-notification-permission.hook';
 import { RecurringDetailSection } from '../recurring-detail-section/recurring-detail-section';
@@ -15,13 +16,23 @@ export const RecurringDetailReminderRow = ({ series }: Props) => {
     const { t } = useLingui();
     const { isDenied } = useNotificationPermission();
 
-    return (
-        <RecurringDetailSection title={t`Reminder`} footer={t`Notify before the payment is due.`}>
-            {isDenied ? (
+    if (isDenied) {
+        return (
+            <RecurringDetailSection title={t`Reminder`}>
                 <RecurringReminderDeniedRow />
-            ) : (
-                <RecurringReminderChoices seriesId={series.id} reminderDaysBefore={series.reminderDaysBefore} />
-            )}
-        </RecurringDetailSection>
+            </RecurringDetailSection>
+        );
+    }
+
+    return (
+        <View className="gap-y-sm">
+            <Text accessibilityRole="header" className="px-3xl text-[13px] font-medium text-secondary-foreground">
+                <Trans>Reminder</Trans>
+            </Text>
+            <RecurringReminderChoices seriesId={series.id} reminderDaysBefore={series.reminderDaysBefore} />
+            <Text className="px-3xl pt-xs text-[13px] text-secondary-foreground">
+                <Trans>Notify before the payment is due.</Trans>
+            </Text>
+        </View>
     );
 };

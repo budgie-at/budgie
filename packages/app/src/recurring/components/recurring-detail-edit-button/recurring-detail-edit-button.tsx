@@ -30,10 +30,7 @@ export const RecurringDetailEditButton = ({ seriesId }: Props) => {
             onPress={handleEdit}
             testID={RecurringDetailSelector.EditButton}
         >
-            <Text
-                maxFontSizeMultiplier={TRANSACTION_INFO_BAR_BUTTON_MAX_FONT_SCALE}
-                className="text-[17px] font-medium text-default-foreground"
-            >
+            <Text maxFontSizeMultiplier={TRANSACTION_INFO_BAR_BUTTON_MAX_FONT_SCALE} className="text-[17px] font-semibold text-primary">
                 <Trans>Edit</Trans>
             </Text>
         </HapticPressable>

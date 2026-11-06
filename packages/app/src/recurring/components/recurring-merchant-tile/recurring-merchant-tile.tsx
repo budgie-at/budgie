@@ -11,12 +11,12 @@ interface Props {
 }
 
 const TILE_CLASS_NAMES: Record<RecurringTileVariantEnum, string> = {
-    VIOLET: 'bg-violet-foreground/16',
-    CYAN: 'bg-cyan-foreground/16',
-    PINK: 'bg-pink-foreground/16',
-    POSITIVE: 'bg-positive-foreground/16',
-    WARNING: 'bg-warning-foreground/16',
-    DEFAULT: 'bg-default-foreground/16'
+    VIOLET: 'bg-violet-foreground/16 dark:bg-violet-foreground/26',
+    CYAN: 'bg-cyan-foreground/16 dark:bg-cyan-foreground/26',
+    PINK: 'bg-pink-foreground/16 dark:bg-pink-foreground/26',
+    POSITIVE: 'bg-positive-foreground/16 dark:bg-positive-foreground/26',
+    WARNING: 'bg-warning-foreground/16 dark:bg-warning-foreground/26',
+    DEFAULT: 'bg-default-foreground/16 dark:bg-default-foreground/26'
 };
 
 const LETTER_CLASS_NAMES: Record<RecurringTileVariantEnum, string> = {
