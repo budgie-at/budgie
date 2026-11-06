@@ -11,7 +11,7 @@ import type { AccountTypeEnum } from '@budgie/contracts';
 
 const analyticsHistorySyncsAtom = databaseQueryAtom(
     [SyncEntityTable, AccountEntityTable],
-    Effect.flatMap(SyncRepository, syncRepository => syncRepository.getHistorySyncs())
+    Effect.flatMap(SyncRepository, syncRepository => syncRepository.getHistorySyncs)
 );
 
 export const useAnalyticsHistorySyncsQuery = (

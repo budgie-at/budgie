@@ -62,7 +62,8 @@ export const useMergeTag = () => {
             return null;
         }
 
-        const targetIds = yield* pickTarget(sourceId, source.title, yield* tagService.countTransactions(sourceId));
+        const transactionCount = yield* tagService.countTransactions(sourceId);
+        const targetIds = yield* pickTarget(sourceId, source.title, transactionCount);
         const targetId = isNotEmptyArray(targetIds) ? targetIds[0] : null;
 
         if (!isDefined(targetId)) {

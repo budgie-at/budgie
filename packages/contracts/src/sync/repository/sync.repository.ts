@@ -1,5 +1,7 @@
 import { and, asc, eq, getTableColumns, inArray, isNotNull, isNull, lt, or, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
+import * as Duration from 'effect/Duration';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
@@ -64,7 +66,8 @@ export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/c
                 provider: ExternalSourceEnum,
                 staleThresholdMs: number
             ) {
-                const staleTime = new Date(Date.now() - staleThresholdMs);
+                const now = yield* DateTime.now;
+                const staleTime = DateTime.toDateUtc(DateTime.subtractDuration(now, Duration.millis(staleThresholdMs)));
                 const ownership = yield* buildOwnershipCondition();
 
                 return yield* Db.query(db =>
@@ -99,7 +102,7 @@ export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/c
                 }
             }),
             resetForResync: Effect.fn('SyncRepository.resetForResync')(function* (accountId: number, setupBalance: number | null) {
-                const now = new Date();
+                const now = yield* DateTime.nowAsDate;
 
                 yield* Db.query(db =>
                     db
@@ -192,43 +195,42 @@ export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/c
                         .orderBy(asc(SyncEntityTable.backwardBatchAt), asc(SyncEntityTable.id))
                 );
             }),
-            getAllPendingBackwardSyncs: Effect.fn('SyncRepository.getAllPendingBackwardSyncs')(function* () {
+            getAllPendingBackwardSyncs: Effect.gen(function* () {
                 const ownership = yield* buildOwnershipCondition();
 
                 return yield* Db.query(db =>
                     selectWithActiveAccount(db).where(and(...enabledConditions, ownership, eq(SyncEntityTable.mode, SyncModeEnum.BACKWARD)))
                 );
             }),
-            getHistorySyncs: () =>
-                Db.query(db =>
-                    db
-                        .select({
-                            sync: getTableColumns(SyncEntityTable),
-                            account: {
-                                id: AccountEntityTable.id,
-                                title: AccountEntityTable.title,
-                                type: AccountEntityTable.type,
-                                isActive: AccountEntityTable.isActive,
-                                integrationId: AccountEntityTable.integrationId
-                            }
-                        })
-                        .from(SyncEntityTable)
-                        .innerJoin(AccountEntityTable, eq(SyncEntityTable.accountId, AccountEntityTable.id))
-                        .where(
-                            and(
-                                eq(SyncEntityTable.mode, SyncModeEnum.BACKWARD),
-                                isNull(SyncEntityTable.deletedAt),
-                                isNull(AccountEntityTable.deletedAt)
-                            )
+            getHistorySyncs: Db.query(db =>
+                db
+                    .select({
+                        sync: getTableColumns(SyncEntityTable),
+                        account: {
+                            id: AccountEntityTable.id,
+                            title: AccountEntityTable.title,
+                            type: AccountEntityTable.type,
+                            isActive: AccountEntityTable.isActive,
+                            integrationId: AccountEntityTable.integrationId
+                        }
+                    })
+                    .from(SyncEntityTable)
+                    .innerJoin(AccountEntityTable, eq(SyncEntityTable.accountId, AccountEntityTable.id))
+                    .where(
+                        and(
+                            eq(SyncEntityTable.mode, SyncModeEnum.BACKWARD),
+                            isNull(SyncEntityTable.deletedAt),
+                            isNull(AccountEntityTable.deletedAt)
                         )
-                ),
+                    )
+            ),
             setStatus: (id: number, status: SyncStatusEnum) =>
                 Db.query(db => db.update(SyncEntityTable).set({ status }).where(eq(SyncEntityTable.id, id))),
             deleteByAccountId: (accountId: number) =>
                 Db.query(db => db.delete(SyncEntityTable).where(eq(SyncEntityTable.accountId, accountId))),
             setEnabled: (accountId: number, enabled: boolean) =>
                 Db.query(db => db.update(SyncEntityTable).set({ enabled }).where(eq(SyncEntityTable.accountId, accountId))),
-            truncate: () => Db.query(db => db.delete(SyncEntityTable))
+            truncate: Db.query(db => db.delete(SyncEntityTable))
         };
     })
 }) {

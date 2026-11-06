@@ -64,10 +64,7 @@ const restoreAndReconcile = (restored: DB, cloud: FakeCloudTransport) =>
 
 const reconcileWithoutFetch = (restored: DB, inventory: ReadonlySet<string>) => reconcile(restored, inventory, Effect.void);
 
-const acquireRestoredDevice = Effect.acquireRelease(
-    Effect.promise(() => buildTestDb(null)),
-    ({ dispose }) => Effect.promise(dispose)
-).pipe(Effect.map(({ database }) => database));
+const acquireRestoredDevice = Effect.promise(() => buildTestDb(null));
 
 const setupBackup = Effect.gen(function* () {
     const preRestore = yield* Db;

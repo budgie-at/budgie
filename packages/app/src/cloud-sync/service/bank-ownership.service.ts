@@ -33,7 +33,7 @@ export class BankOwnershipService extends Context.Service<BankOwnershipService>(
                 );
 
                 yield* Effect.forEach(
-                    yield* bankIntegrationRepository.findActive(),
+                    yield* bankIntegrationRepository.findActive,
                     integration => {
                         const owner = integration.ownerInstallId;
                         const ownerLastSeenAt = owner === null ? 0 : (lastSyncedAtByInstall.get(owner) ?? integration.updatedAt.getTime());

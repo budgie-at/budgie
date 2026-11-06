@@ -8,7 +8,7 @@ import { useSearchCategoriesQuery } from './use-search-categories.query';
 
 export const categoryUsageAtom = databaseQueryAtom(
     [TransactionEntryEntityTable, TransactionEntityTable],
-    Effect.flatMap(CategoryRepository, categoryRepository => categoryRepository.findUsage())
+    Effect.flatMap(CategoryRepository, categoryRepository => categoryRepository.findUsage)
 );
 
 export const useCategoriesWithUsageQuery = (search: string, includeDefault: boolean, syncZone: string = PERSONAL_SYNC_ZONE) => {

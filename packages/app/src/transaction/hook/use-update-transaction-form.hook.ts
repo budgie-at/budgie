@@ -17,12 +17,20 @@ import { useDeleteTransaction } from './use-delete-transaction.hook';
 interface UseTransactionFormConfig {
     readonly schema: typeof TransactionCreateInputSchema;
     readonly transaction: TransactionCreateInputInterface;
+    readonly persistedTitle: string;
     readonly id: number;
     readonly receipt?: ReceiptMatchInputInterface | null;
     readonly onAfterSubmit?: (data: TransactionCreateInputInterface) => void;
 }
 
-export const useUpdateTransactionForm = ({ id, schema, transaction, receipt = null, onAfterSubmit }: UseTransactionFormConfig) => {
+export const useUpdateTransactionForm = ({
+    id,
+    schema,
+    transaction,
+    persistedTitle,
+    receipt = null,
+    onAfterSubmit
+}: UseTransactionFormConfig) => {
     const { t } = useLingui();
     const deleteTransaction = useDeleteTransaction();
     const { run } = useSingleFlight();
@@ -30,7 +38,13 @@ export const useUpdateTransactionForm = ({ id, schema, transaction, receipt = nu
     const form = useForm({
         mode: 'onSubmit',
         values: transaction,
-        resolver: standardSchemaResolver(Schema.toStandardSchemaV1(schema))
+        resolver: standardSchemaResolver(
+            Schema.toStandardSchemaV1(
+                schema.mapFields(fields => ({ ...fields, title: Schema.Union([fields.title, Schema.Literal(persistedTitle)]) }), {
+                    unsafePreserveChecks: true
+                })
+            )
+        )
     });
 
     const handleSubmit = (data: TransactionCreateInputInterface) =>

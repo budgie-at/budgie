@@ -3,20 +3,20 @@ import { describe, expect, it } from '@effect/vitest';
 import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
-import { vi } from 'vitest';
+import { beforeEach } from 'vitest';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { TestLayer } from '../../harness';
+import { expoSecureStoreStub } from '../../harness/native/native-module.stub';
 
 const KEYCHAIN_LOCKED = 'User interaction is not allowed.';
 
-vi.mock('expo-secure-store', () => ({
-    AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY: 0,
-    getItemAsync: () => Promise.reject(new Error(KEYCHAIN_LOCKED)),
-    setItemAsync: () => Promise.reject(new Error(KEYCHAIN_LOCKED)),
-    deleteItemAsync: () => Promise.reject(new Error(KEYCHAIN_LOCKED))
-}));
+beforeEach(() => {
+    for (const method of Object.values(expoSecureStoreStub)) {
+        method.mockRejectedValue(new Error(KEYCHAIN_LOCKED));
+    }
+});
 
 describe('generic/runtime-edge-error-message', () => {
     it.effect.each([
@@ -27,7 +27,7 @@ describe('generic/runtime-edge-error-message', () => {
         Effect.gen(function* () {
             const exit = yield* Effect.exit(effect);
 
-            expect(Exit.isFailure(exit) ? getErrorMessage(Cause.squash(exit.cause)) : null).toBe(KEYCHAIN_LOCKED);
+            expect(Exit.isFailure(exit) ? exit.cause.pipe(Cause.squash, getErrorMessage) : null).toBe(KEYCHAIN_LOCKED);
         }).pipe(Effect.provide(TestLayer))
     );
 });

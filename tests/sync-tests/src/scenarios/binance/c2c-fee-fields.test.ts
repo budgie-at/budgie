@@ -28,7 +28,7 @@ const COMMISSION_ONLY_RESPONSE = { code: '000000', message: 'success', data: [CO
 describe('binance/c2c-fee-fields', () => {
     it.effect('preserves the documented crypto commission when takerCommission is absent', () =>
         Effect.gen(function* () {
-            const response = yield* Schema.decodeUnknownEffect(BinanceC2cOrderListApiSchema)(COMMISSION_ONLY_RESPONSE);
+            const response = yield* Schema.decodeEffect(BinanceC2cOrderListApiSchema)(COMMISSION_ONLY_RESPONSE);
 
             expect(response.data[0]).toMatchObject({ commission: '0.2' });
             expect(response.data[0]).not.toHaveProperty('takerCommission');

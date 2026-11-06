@@ -31,7 +31,7 @@ export const runCompletion = Effect.fn('runCompletion')(function* (
                 }),
                 ...(isDefined(options?.temperature) ? { temperature: options.temperature } : {})
             }),
-        catch: cause => new AiInvokeError({ cause })
+        catch: cause => AiInvokeError.make({ cause })
     }).pipe(Effect.uninterruptible);
 
     if (result.interrupted && options?.throwOnInterrupt === true) {

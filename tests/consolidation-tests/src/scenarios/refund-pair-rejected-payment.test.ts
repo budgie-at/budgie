@@ -40,18 +40,16 @@ const seedRetryExpense = (accountId: number, externalIdPrefix: string) =>
     });
 
 const seedRejectedPaymentFullCycle = (accountId: number, externalIdPrefix: string) =>
-    Effect.gen(function* () {
-        return yield* testSeedService.refundedExpense({
-            accountId,
-            title: 'FOP TESTOVYI PRODUCTS',
-            expenseAmount: REJECTED_PAYMENT_EXPENSE_AMOUNT,
-            expenseFeeAmount: REJECTED_PAYMENT_FEE_AMOUNT,
-            refundAmounts: [REJECTED_PAYMENT_EXPENSE_AMOUNT, REJECTED_PAYMENT_FEE_AMOUNT],
-            refundTitles: [REJECTED_PAYMENT_PRINCIPAL_TITLE, REJECTED_PAYMENT_FEE_TITLE],
-            expenseOperatedAt: REJECTED_PAYMENT_ORIGINAL_OPERATED_AT,
-            refundDelaySeconds: REJECTED_PAYMENT_FEE_REFUND_DELAY_SECONDS,
-            externalIdPrefix
-        });
+    testSeedService.refundedExpense({
+        accountId,
+        title: 'FOP TESTOVYI PRODUCTS',
+        expenseAmount: REJECTED_PAYMENT_EXPENSE_AMOUNT,
+        expenseFeeAmount: REJECTED_PAYMENT_FEE_AMOUNT,
+        refundAmounts: [REJECTED_PAYMENT_EXPENSE_AMOUNT, REJECTED_PAYMENT_FEE_AMOUNT],
+        refundTitles: [REJECTED_PAYMENT_PRINCIPAL_TITLE, REJECTED_PAYMENT_FEE_TITLE],
+        expenseOperatedAt: REJECTED_PAYMENT_ORIGINAL_OPERATED_AT,
+        refundDelaySeconds: REJECTED_PAYMENT_FEE_REFUND_DELAY_SECONDS,
+        externalIdPrefix
     });
 
 const runConsolidationAndAssertSingleRefund = Effect.fnUntraced(function* (expenseId: number, refundId: number) {
@@ -65,13 +63,11 @@ const runConsolidationAndAssertSingleRefund = Effect.fnUntraced(function* (expen
 });
 
 const expectBothRefundsConsolidatedToExpense = (expenseId: number, refunds: TransactionEntityInterface[]) =>
-    Effect.gen(function* () {
-        yield* expectRefundOutcome(
-            expenseId,
-            refunds.map(refund => refund.id),
-            [expenseId, expenseId]
-        );
-    });
+    expectRefundOutcome(
+        expenseId,
+        refunds.map(refund => refund.id),
+        [expenseId, expenseId]
+    );
 
 const runRejectedPaymentPrincipalRefundScenarioAndAssert = Effect.fnUntraced(function* (refundTitle: string) {
     const { consolidated, expense, refunds } = yield* runRefundScenario({
@@ -88,15 +84,11 @@ const runRejectedPaymentPrincipalRefundScenarioAndAssert = Effect.fnUntraced(fun
 
 layer(TestLayer)('consolidation/refund-pair-rejected-payment', it => {
     it.effect('auto-consolidates a PrivatBank rejected-payment principal refund matched by title prefix', () =>
-        Effect.gen(function* () {
-            yield* runRejectedPaymentPrincipalRefundScenarioAndAssert(REJECTED_PAYMENT_PRINCIPAL_TITLE);
-        })
+        runRejectedPaymentPrincipalRefundScenarioAndAssert(REJECTED_PAYMENT_PRINCIPAL_TITLE)
     );
 
     it.effect('auto-consolidates an ALL-CAPS PrivatBank rejected-payment principal refund matched by title prefix', () =>
-        Effect.gen(function* () {
-            yield* runRejectedPaymentPrincipalRefundScenarioAndAssert(REJECTED_PAYMENT_PRINCIPAL_TITLE_ALL_CAPS);
-        })
+        runRejectedPaymentPrincipalRefundScenarioAndAssert(REJECTED_PAYMENT_PRINCIPAL_TITLE_ALL_CAPS)
     );
 
     it.effect('does not consolidate a same-title retry expense that occurs after the refund income', () =>

@@ -24,7 +24,7 @@ interface Props {
 }
 
 const amountVariants = cva('text-[15px] font-semibold text-right tabular-nums', {
-    variants: { variant: FOREGROUND_COLOR_PALETTE }
+    variants: { variant: { ...FOREGROUND_COLOR_PALETTE, positive: 'text-positive-strong' } }
 });
 
 export const TransactionEntryAmount = ({ debtEvent, entry, variant, sign, testID }: Props) => {

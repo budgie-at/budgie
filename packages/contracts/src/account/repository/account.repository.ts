@@ -152,25 +152,21 @@ export class AccountRepository extends Context.Service<AccountRepository>()('@bu
                         .where(and(eq(AccountEntityTable.id, id), eq(AccountEntityTable.isExternal, false)))
                         .returning({ id: AccountEntityTable.id })
                 ),
-            findExternal: () => Db.query(db => db.query.AccountEntityTable.findMany({ where: { isExternal: true } })),
+            findExternal: Db.query(db => db.query.AccountEntityTable.findMany({ where: { isExternal: true } })),
             deleteById: (id: number) => Db.query(db => db.delete(AccountEntityTable).where(eq(AccountEntityTable.id, id))),
-            getAllActiveAccounts: () => Db.query(db => db.select().from(AccountEntityTable).where(isNull(AccountEntityTable.deletedAt))),
-            getAllActiveAccountsExceptBankAuthoritative: () =>
-                Db.query(db =>
-                    db
-                        .select()
-                        .from(AccountEntityTable)
-                        .where(
-                            and(isNull(AccountEntityTable.deletedAt), notInArray(AccountEntityTable.type, BANK_AUTHORITATIVE_ACCOUNT_TYPES))
-                        )
-                ),
-            getAll: () =>
-                Db.query(db =>
-                    db.query.AccountEntityTable.findMany({
-                        where: { parentId: { isNull: true }, deletedAt: { isNull: true } },
-                        with: { [AccountAssociationEnum.INSTRUMENT]: true }
-                    })
-                ),
+            getAllActiveAccounts: Db.query(db => db.select().from(AccountEntityTable).where(isNull(AccountEntityTable.deletedAt))),
+            getAllActiveAccountsExceptBankAuthoritative: Db.query(db =>
+                db
+                    .select()
+                    .from(AccountEntityTable)
+                    .where(and(isNull(AccountEntityTable.deletedAt), notInArray(AccountEntityTable.type, BANK_AUTHORITATIVE_ACCOUNT_TYPES)))
+            ),
+            getAll: Db.query(db =>
+                db.query.AccountEntityTable.findMany({
+                    where: { parentId: { isNull: true }, deletedAt: { isNull: true } },
+                    with: { [AccountAssociationEnum.INSTRUMENT]: true }
+                })
+            ),
             findByIdIncludingArchived: (id: number) =>
                 Db.query(db =>
                     db.query.AccountEntityTable.findFirst({
@@ -189,8 +185,8 @@ export class AccountRepository extends Context.Service<AccountRepository>()('@bu
                 Db.query(db =>
                     db.update(AccountEntityTable).set({ updatedAt: new Date() }).where(inArray(AccountEntityTable.id, accountIds))
                 ),
-            truncate: () => Db.query(db => db.delete(AccountEntityTable)),
-            count: () => Db.query(db => db.select({ count: count() }).from(AccountEntityTable).where(isNull(AccountEntityTable.deletedAt))),
+            truncate: Db.query(db => db.delete(AccountEntityTable)),
+            count: Db.query(db => db.select({ count: count() }).from(AccountEntityTable).where(isNull(AccountEntityTable.deletedAt))),
             findBySearchQuery: (search: string, filter: AccountFilterInterface = {}) =>
                 Db.query(db =>
                     db.query.AccountEntityTable.findMany({
@@ -209,21 +205,19 @@ export class AccountRepository extends Context.Service<AccountRepository>()('@bu
                         ]
                     })
                 ),
-            getAllInactive: () =>
-                Db.query(db =>
-                    db.query.AccountEntityTable.findMany({
-                        where: { parentId: { isNull: true }, deletedAt: { isNull: true }, isActive: false },
-                        with: { [AccountAssociationEnum.INSTRUMENT]: true }
-                    })
-                ),
-            getAllArchived: () =>
-                Db.query(db =>
-                    db.query.AccountEntityTable.findMany({
-                        where: { parentId: { isNull: true }, deletedAt: { isNotNull: true } },
-                        with: { [AccountAssociationEnum.INSTRUMENT]: true },
-                        orderBy: (table, { desc: descending }) => [descending(table.deletedAt)]
-                    })
-                ),
+            getAllInactive: Db.query(db =>
+                db.query.AccountEntityTable.findMany({
+                    where: { parentId: { isNull: true }, deletedAt: { isNull: true }, isActive: false },
+                    with: { [AccountAssociationEnum.INSTRUMENT]: true }
+                })
+            ),
+            getAllArchived: Db.query(db =>
+                db.query.AccountEntityTable.findMany({
+                    where: { parentId: { isNull: true }, deletedAt: { isNotNull: true } },
+                    with: { [AccountAssociationEnum.INSTRUMENT]: true },
+                    orderBy: (table, { desc: descending }) => [descending(table.deletedAt)]
+                })
+            ),
             findById: (id: number) =>
                 Db.query(db =>
                     db.query.AccountEntityTable.findFirst({

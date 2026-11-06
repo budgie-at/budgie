@@ -64,12 +64,10 @@ export class BankIntegrationRepository extends Context.Service<BankIntegrationRe
                         where: { id, deletedAt: { isNull: true } }
                     })
                 ),
-            findActive: () =>
-                Db.query(db => db.query.BankIntegrationEntityTable.findMany({ where: { deletedAt: { isNull: true } } })),
-            count: () =>
-                Db.query(db =>
-                    db.select({ count: count() }).from(BankIntegrationEntityTable).where(isNull(BankIntegrationEntityTable.deletedAt))
-                )
+            findActive: Db.query(db => db.query.BankIntegrationEntityTable.findMany({ where: { deletedAt: { isNull: true } } })),
+            count: Db.query(db =>
+                db.select({ count: count() }).from(BankIntegrationEntityTable).where(isNull(BankIntegrationEntityTable.deletedAt))
+            )
         };
     })
 }) {

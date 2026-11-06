@@ -259,7 +259,7 @@ export class TransactionEntryRepository extends Context.Service<TransactionEntry
                     ),
                 deleteLedgerByTransactionId: (transactionId: number) =>
                     deleteLiveEntries(eq(TransactionEntryEntityTable.transactionId, transactionId)),
-                truncate: () => Db.query(db => db.delete(TransactionEntryEntityTable)),
+                truncate: Db.query(db => db.delete(TransactionEntryEntityTable)),
                 archiveByAccountIds: (accountIds: number[]) =>
                     Db.query(db =>
                         db

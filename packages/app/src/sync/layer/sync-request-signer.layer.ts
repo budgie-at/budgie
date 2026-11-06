@@ -18,20 +18,20 @@ export const syncRequestSignerLayer = Layer.effect(
             sign: Effect.fn('SyncRequestSigner.sign')(function* (keyId: string, signingInput: string) {
                 const pem = yield* secureStore
                     .readKey(keyId)
-                    .pipe(Effect.mapError(() => new SyncDeferredError({ provider, message: 'secure-storage-unavailable' })));
+                    .pipe(Effect.mapError(() => SyncDeferredError.make({ provider, message: 'secure-storage-unavailable' })));
                 if (!isDefined(pem)) {
-                    return yield* new SyncUnauthorizedError({ provider, message: 'signing-key-missing' });
+                    return yield* SyncUnauthorizedError.make({ provider, message: 'signing-key-missing' });
                 }
 
                 return yield* Effect.try({
                     try: () => signRs256(pem, signingInput),
-                    catch: () => new SyncUnauthorizedError({ provider, message: 'signing-key-unusable' })
+                    catch: () => SyncUnauthorizedError.make({ provider, message: 'signing-key-unusable' })
                 });
             }),
             deleteKey: Effect.fn('SyncRequestSigner.deleteKey')(function* (keyId: string) {
                 yield* secureStore
                     .removeKey(keyId)
-                    .pipe(Effect.mapError(() => new SyncDeferredError({ provider, message: 'secure-storage-unavailable' })));
+                    .pipe(Effect.mapError(() => SyncDeferredError.make({ provider, message: 'secure-storage-unavailable' })));
             })
         });
     })

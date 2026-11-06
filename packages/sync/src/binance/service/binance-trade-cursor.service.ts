@@ -17,6 +17,7 @@ import type { SyncEntityInterface } from '@budgie/contracts';
 export class BinanceTradeCursorService extends Context.Service<BinanceTradeCursorService>()('@budgie/sync/BinanceTradeCursorService', {
     make: Effect.gen(function* () {
         const syncRepository = yield* SyncRepository;
+        const encodeCursorMap = Schema.encodeEffect(Schema.fromJsonString(BinanceTradeCursorMapSchema));
         const decodeCursorMap = Schema.decodeUnknownResult(Schema.fromJsonString(BinanceTradeCursorMapSchema));
 
         const parse = (binanceTradeCursor: string | null): BinanceTradeCursorMapInterface =>
@@ -65,7 +66,7 @@ export class BinanceTradeCursorService extends Context.Service<BinanceTradeCurso
                 }
 
                 yield* syncRepository.update(sync.id, {
-                    binanceTradeCursor: JSON.stringify(merge(parse(sync.binanceTradeCursor), runCursors))
+                    binanceTradeCursor: yield* encodeCursorMap(merge(parse(sync.binanceTradeCursor), runCursors)).pipe(Effect.orDie)
                 });
             }),
             persistRunWarning: Effect.fn('BinanceTradeCursorService.persistRunWarning')(function* (

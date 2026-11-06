@@ -32,10 +32,7 @@ const STALE_DIRECT_TRANSFER = {
     directToIban: IBAN_BRIDGE_SOURCE_IBAN
 };
 
-const fetchRebuiltCanonicalId = () =>
-    Effect.gen(function* () {
-        return yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER);
-    });
+const fetchRebuiltCanonicalId = () => fetchSingleCanonicalId(TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER);
 
 const expectRebuiltCanonicalLedger = (canonicalId: number, sourceAccountId: number, targetAccountId: number) =>
     Effect.gen(function* () {

@@ -65,7 +65,7 @@ describe('enable-banking/booked-rows', () => {
 
             yield* service.sync();
 
-            expect(yield* fetchSortedEnableBankingExternalIds()).toEqual([`${HASH}:booked`]);
+            expect(yield* fetchSortedEnableBankingExternalIds).toEqual([`${HASH}:booked`]);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -92,7 +92,7 @@ describe('enable-banking/booked-rows', () => {
             ]);
 
             yield* service.sync();
-            expect(yield* fetchSortedEnableBankingExternalIds()).toEqual([`${HASH}:shared`, `${HASH}:shared:1`]);
+            expect(yield* fetchSortedEnableBankingExternalIds).toEqual([`${HASH}:shared`, `${HASH}:shared:1`]);
 
             yield* syncAgain(sync.id);
             expect(yield* fetchEnableBankingTransactions()).toHaveLength(2);
@@ -260,13 +260,13 @@ describe('enable-banking/booked-rows', () => {
                 ]);
 
                 const first = yield* syncOnce;
-                const firstIds = yield* fetchSortedEnableBankingExternalIds();
+                const firstIds = yield* fetchSortedEnableBankingExternalIds;
                 yield* makeEnableBankingSyncStale(sync.id);
                 yield* service.sync();
 
                 expect(first.map(transaction => transaction.title)).toEqual(['SYNTHETIC CAFE', 'SYNTHETIC CAFE']);
                 expect(firstIds).toEqual([`${HASH}:3dab0f8c3bcaa28f48386edbe47b28f1`, `${HASH}:94ee593acb11c74d044ae5191a0b62b7`]);
-                expect(yield* fetchSortedEnableBankingExternalIds()).toEqual(firstIds);
+                expect(yield* fetchSortedEnableBankingExternalIds).toEqual(firstIds);
             }).pipe(Effect.provide(TestLayer))
     );
 });

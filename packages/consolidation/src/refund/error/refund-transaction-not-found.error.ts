@@ -1,6 +1,6 @@
 import * as Schema from 'effect/Schema';
 
-export class RefundTransactionNotFoundError extends Schema.TaggedError<RefundTransactionNotFoundError>()(
+export class RefundTransactionNotFoundError extends Schema.TaggedError<RefundTransactionNotFoundError, { readonly brand: unique symbol }>()(
     'RefundTransactionNotFoundError',
     {}
 ) {

@@ -7,7 +7,7 @@ const BinanceLockedEarnPositionApiSchema = Schema.Struct({
 
 export const BinanceLockedEarnPositionListApiSchema = Schema.Struct({
     rows: Schema.Array(BinanceLockedEarnPositionApiSchema),
-    total: Schema.Number
+    total: Schema.Finite
 });
 
 export type BinanceLockedEarnPositionApiInterface = typeof BinanceLockedEarnPositionApiSchema.Type;

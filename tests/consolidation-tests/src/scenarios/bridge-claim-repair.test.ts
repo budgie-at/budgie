@@ -49,7 +49,7 @@ const seedCanonicalPair = (params: {
 
 const seedStolenPairFixture = () =>
     Effect.gen(function* () {
-        const fixture = yield* seedBridgeTheftFixture();
+        const fixture = yield* seedBridgeTheftFixture;
         const canonicalId = yield* seedCanonicalPair({
             firstSourceId: fixture.interbankExpense.id,
             secondSourceId: fixture.fxBridgeIncome.id,
@@ -112,7 +112,7 @@ layer(TestLayer)('consolidation/bridge-claim-repair', it => {
 
     it.effect('does not unpair a legitimate fx bridge pair whose source expense is already consolidated', () =>
         Effect.gen(function* () {
-            const fixture = yield* seedBridgeTheftFixture();
+            const fixture = yield* seedBridgeTheftFixture;
             const canonicalId = yield* seedCanonicalPair({
                 firstSourceId: fixture.fxExpense.id,
                 secondSourceId: fixture.fxBridgeIncome.id,

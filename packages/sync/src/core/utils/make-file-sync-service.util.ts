@@ -178,7 +178,8 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
         const accountImportResults: FileBankSyncAccountImportResultInterface[] = [];
 
         for (const bankAccount of bankAccounts) {
-            accountImportResults.push(yield* importAccountTransactions(client, bankAccount, context));
+            const importResult = yield* importAccountTransactions(client, bankAccount, context);
+            accountImportResults.push(importResult);
             yield* Effect.yieldNow;
         }
 

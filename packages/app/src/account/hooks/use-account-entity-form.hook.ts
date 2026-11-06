@@ -13,12 +13,13 @@ import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { householdAccountShareDraftAtom } from '../constant/household-account-share-draft-atom.constant';
 
 import type { AppServices } from '../../@generic/runtime/app.runtime';
+import type * as Cause from 'effect/Cause';
 import type { FieldErrors, FieldValues, Resolver, UseFormHandleSubmit, UseFormReturn } from 'react-hook-form';
 
 export const useAccountEntityForm = <T extends FieldValues>(
     resolver: Resolver<T>,
     values: T,
-    onSubmit: (values: T) => Effect.Effect<AccountEntityInterface, unknown, AppServices>
+    onSubmit: (values: T) => Effect.Effect<AccountEntityInterface, Cause.YieldableError, AppServices>
 ): Omit<UseFormReturn<T>, 'handleSubmit'> & {
     readonly isSubmitting: boolean;
     readonly handleSubmit: ReturnType<UseFormHandleSubmit<T>>;

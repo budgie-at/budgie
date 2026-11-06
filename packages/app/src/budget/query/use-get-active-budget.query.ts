@@ -10,7 +10,7 @@ import type { BudgetQueryResultInterface } from '../interface/budget-query-resul
 
 export const activeBudgetAtom = databaseQueryAtom(
     [BudgetEntityTable],
-    Effect.flatMap(BudgetRepository, budgetRepository => budgetRepository.findMain())
+    Effect.flatMap(BudgetRepository, budgetRepository => budgetRepository.findMain)
 );
 
-export const useGetActiveBudgetQuery = (): BudgetQueryResultInterface => resolveBudgetQueryResult(useLiveAtomValue(activeBudgetAtom));
+export const useGetActiveBudgetQuery = (): BudgetQueryResultInterface => activeBudgetAtom.pipe(useLiveAtomValue, resolveBudgetQueryResult);

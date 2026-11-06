@@ -8,7 +8,7 @@ import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util
 
 export const exchangeRatesUpdatedAtAtom = databaseQueryAtom(
     [ExchangeRateEntityTable],
-    Effect.flatMap(ExchangeRateRepository, exchangeRateRepository => exchangeRateRepository.getLatestUpdatedAt())
+    Effect.flatMap(ExchangeRateRepository, exchangeRateRepository => exchangeRateRepository.getLatestUpdatedAt)
 );
 
 export const useExchangeRatesUpdatedAtQuery = () =>

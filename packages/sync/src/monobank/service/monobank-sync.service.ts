@@ -26,9 +26,11 @@ import { min } from 'date-fns/min';
 import { subSeconds } from 'date-fns/subSeconds';
 import * as Cache from 'effect/Cache';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
 import * as Layer from 'effect/Layer';
+import * as Schema from 'effect/Schema';
 
 import { isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
@@ -137,7 +139,8 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
 
         const completeBackwardHistory = Effect.fn('MonobankSyncService.completeBackwardHistory')(
             function* (sync: SyncEntityInterface, setupBalance: number, result: SyncBatchResultInterface) {
-                const setupAt = sync.forwardSyncFromAt ?? new Date();
+                const now = yield* DateTime.nowAsDate;
+                const setupAt = sync.forwardSyncFromAt ?? now;
                 const oldestTransactionAt = yield* transactionService.getEarliestTransactionTimeByAccountId(sync.accountId);
                 const openingBalanceAt = isDefined(oldestTransactionAt) ? subSeconds(oldestTransactionAt, 1) : setupAt;
 
@@ -154,7 +157,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
                     delta === 0 ? null : yield* balanceAdjustmentService.create(sync.accountId, delta, openingBalanceAt);
 
                 yield* syncRepository.update(sync.id, {
-                    ...resolveSyncProgressUpdate(sync, result),
+                    ...resolveSyncProgressUpdate(sync, result, now),
                     setupBalance: null,
                     balanceAdjustmentTransactionId,
                     reconciledAt: null,
@@ -167,7 +170,8 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
         );
 
         const updateProgressAndReconcile = Effect.fnUntraced(function* (sync: SyncEntityInterface, result: SyncBatchResultInterface) {
-            yield* syncRepository.update(sync.id, resolveSyncProgressUpdate(sync, result));
+            const now = yield* DateTime.nowAsDate;
+            yield* syncRepository.update(sync.id, resolveSyncProgressUpdate(sync, result, now));
             if (sync.mode === SyncModeEnum.FORWARD && result.completed && isDefined(result.balanceSnapshot)) {
                 yield* syncBalanceReconciliationService.reconcile(sync.accountId, result.balanceSnapshot);
             }
@@ -192,7 +196,8 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
                 return [];
             }
 
-            const prepared = yield* ruleEngineService.prepareCreateInputsForRules(yield* mapBankTransactions(newTransactions, accountId));
+            const mappedTransactions = yield* mapBankTransactions(newTransactions, accountId);
+            const prepared = yield* ruleEngineService.prepareCreateInputsForRules(mappedTransactions);
             const createdTransactions = yield* transactionService.bulkCreate(prepared.transactionInputs);
             const postCreateTransactionIds = prepared.postCreateIndexes.map(index => createdTransactions[index]?.id).filter(isDefined);
             const postCreateTransactionInputs = prepared.postCreateIndexes
@@ -217,7 +222,8 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
 
             const createdTransactions = yield* createNewTransactions(newTransactions, accountId);
             if (isNotEmptyArray(existingTransactions)) {
-                yield* transactionService.bulkUpdateImported(yield* mapBankTransactions(existingTransactions, accountId));
+                const mappedTransactions = yield* mapBankTransactions(existingTransactions, accountId);
+                yield* transactionService.bulkUpdateImported(mappedTransactions);
                 yield* accountBalanceIncrementalService.updateAllBalances(true);
             }
 
@@ -229,10 +235,10 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
 
         const getNextTimeFromTransaction = (transaction: SyncTransactionInterface): Date => addSeconds(fromUnixTime(transaction.time), -1);
 
-        const fetchBalanceSnapshot = (client: MonobankClient, accountId: string) => {
-            const at = fromUnixTime(getUnixTime(new Date()));
+        const fetchBalanceSnapshot = (client: MonobankClient, accountId: string, now: Date) => {
+            const at = fromUnixTime(getUnixTime(now));
 
-            return Effect.all([client.getAccounts(), client.getJars()]).pipe(
+            return Effect.all([client.getAccounts, client.getJars()]).pipe(
                 Effect.map(([accounts, jars]) => {
                     const bankAccount = [...accounts, ...jars].find(item => item.id === accountId);
 
@@ -243,9 +249,9 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
         };
 
         const syncTransactionsForward = Effect.fnUntraced(function* (client: MonobankClient, accountId: string, from: Date) {
+            const now = yield* DateTime.nowAsDate;
             const balanceSnapshot =
-                addSeconds(from, MONOBANK_MAX_PERIOD_SECONDS) >= new Date() ? yield* fetchBalanceSnapshot(client, accountId) : null;
-            const now = new Date();
+                addSeconds(from, MONOBANK_MAX_PERIOD_SECONDS) >= now ? yield* fetchBalanceSnapshot(client, accountId, now) : null;
             const to = min([now, addSeconds(from, MONOBANK_MAX_PERIOD_SECONDS)]);
             const transactions = yield* client.getTransactions(accountId, getUnixTime(from), getUnixTime(to));
             const oldestTransaction = transactions.at(-1);
@@ -262,7 +268,8 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             accountId: string,
             sync: SyncEntityInterface
         ) {
-            const to = sync.backwardSyncFromAt ?? new Date();
+            const now = yield* DateTime.nowAsDate;
+            const to = sync.backwardSyncFromAt ?? now;
             const limitAt = sync.backwardSyncLimitAt;
             const firstEmptyFromInStreak = sync.backwardSyncedAt;
 
@@ -299,7 +306,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             (token: string) => {
                 const client = new MonobankClient(token);
 
-                return Effect.as(client.getAccounts(), client);
+                return Effect.as(client.getAccounts, client);
             },
             { capacity: 16, timeToLive: exit => (Exit.isSuccess(exit) ? MONOBANK_RATE_LIMIT_MS : 0) }
         );
@@ -307,7 +314,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
         const loadClient = (token: string) => Cache.get(loadedClientCache, token);
 
         const fetchBankAccountsAndJars = Effect.fnUntraced(function* (client: MonobankClient) {
-            const accounts = yield* client.getAccounts();
+            const accounts = yield* client.getAccounts;
             const jars = yield* client.getJars();
 
             return [...accounts, ...jars];
@@ -318,21 +325,20 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             accountType: AccountTypeEnum.BANK_SYNC,
             rateLimitMs: MONOBANK_RATE_LIMIT_MS,
             shouldRequestSyncWhenEnabled: true,
-            shouldKeepFailedSyncEnabledAfterError: error => error instanceof SyncNetworkError,
+            shouldKeepFailedSyncEnabledAfterError: error => Schema.is(SyncNetworkError)(error),
             generateAccountTitle,
             accountIcon: account => (account.type === SyncAccountTypeEnum.JAR ? UserIconNameEnum.PiggyBank : UserIconNameEnum.Landmark),
             executeSyncBatch: Effect.fn('MonobankSyncService.executeSyncBatch')(function* (sync: SyncEntityInterface, token: string) {
                 const account = yield* accountRepository.findById(sync.accountId);
+                const now = yield* DateTime.nowAsDate;
                 if (!isDefined(account) || !isNotEmptyString(account.externalId)) {
-                    const now = new Date();
-
                     return { transactions: [], nextTo: now, nextFrom: now, completed: true };
                 }
 
                 const client = new MonobankClient(token);
                 const result =
                     sync.mode === SyncModeEnum.FORWARD
-                        ? yield* syncTransactionsForward(client, account.externalId, sync.forwardSyncFromAt ?? new Date())
+                        ? yield* syncTransactionsForward(client, account.externalId, sync.forwardSyncFromAt ?? now)
                         : yield* syncTransactionsBackward(client, account.externalId, sync);
                 yield* Effect.yieldNow;
                 const changedTransactions = yield* processFetchedTransactions(result.transactions, account.id);
@@ -348,7 +354,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
                 sync.mode === SyncModeEnum.BACKWARD && result.completed && isDefined(sync.setupBalance)
                     ? completeBackwardHistory(sync, sync.setupBalance, result)
                     : updateProgressAndReconcile(sync, result),
-            isCredentialWideError: error => error instanceof SyncUnauthorizedError
+            isCredentialWideError: error => Schema.is(SyncUnauthorizedError)(error)
         });
 
         const rotateIntegrationToken = Effect.fnUntraced(function* (integrationId: number, client: MonobankClient, token: string) {
@@ -357,7 +363,8 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             if (isDefined(previousToken)) {
                 yield* Cache.invalidate(loadedClientCache, previousToken);
             }
-            yield* syncIntegrationTokenService.fillIntegrationLabel(integrationId, yield* client.getClientName());
+            const clientName = yield* client.getClientName();
+            yield* syncIntegrationTokenService.fillIntegrationLabel(integrationId, clientName);
             yield* pollingSyncService.requestSync();
         });
 
@@ -388,7 +395,11 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
                 yield* pollingSyncService.requestSync();
             }),
             fetchAccountsPreview: Effect.fn('MonobankSyncService.fetchAccountsPreview')(function* (token: string) {
-                return yield* mapBankAccountsToPreview(yield* fetchBankAccountsAndJars(yield* loadClient(token)));
+                const client = yield* loadClient(token);
+
+                const bankAccounts = yield* fetchBankAccountsAndJars(client);
+
+                return yield* mapBankAccountsToPreview(bankAccounts);
             }),
             fetchNewConnectionAccountsPreview: Effect.fn('MonobankSyncService.fetchNewConnectionAccountsPreview')(function* (
                 token: string
@@ -422,7 +433,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
                     .map(account => account.externalId)
                     .filter(isNotEmptyString);
                 if (isNotEmptyArray(groupExternalIds) && !groupExternalIds.some(externalId => bankAccountIds.has(externalId))) {
-                    return yield* new SyncTokenClientMismatchError({
+                    return yield* SyncTokenClientMismatchError.make({
                         provider: SyncProviderEnum.MONOBANK,
                         integrationId,
                         message: 'This Monobank token belongs to a different client'
@@ -448,13 +459,15 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
                 }
 
                 const integration = yield* syncIntegrationTokenService.getOrCreateIntegration(provider, token);
-                yield* syncIntegrationTokenService.fillIntegrationLabel(integration.id, yield* client.getClientName());
+                const clientName = yield* client.getClientName();
+                yield* syncIntegrationTokenService.fillIntegrationLabel(integration.id, clientName);
                 yield* pollingSyncService.requestSync();
             }),
             fetchSetupBalance: Effect.fn('MonobankSyncService.fetchSetupBalance')(function* (accountId: number) {
                 const account = yield* accountRepository.findById(accountId);
                 const token = yield* syncIntegrationTokenService.resolveAccountToken(provider, accountId);
-                const bankAccounts = yield* fetchBankAccountsAndJars(yield* loadClient(token));
+                const client = yield* loadClient(token);
+                const bankAccounts = yield* fetchBankAccountsAndJars(client);
                 const bankAccount = bankAccounts.find(item => item.id === account?.externalId);
                 if (!isDefined(bankAccount)) {
                     return yield* Effect.die(new Error(UNKNOWN_SYNC_ERROR));

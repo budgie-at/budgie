@@ -1,5 +1,8 @@
 {
     "$schema": "./node_modules/oxlint/configuration_schema.json",
+    "extends": [
+        "./node_modules/@effect/tsgo/oxlint-presets/strict.json"
+    ],
     "plugins": [
         "typescript",
         "import",
@@ -78,6 +81,48 @@
         "**/fingerprint.config.js",
         "packages/app/scripts/**"
     ],
+    "rules": {
+        "effecttsgo/global-fetch": "error",
+        "effecttsgo/global-fetch-in-effect": "error",
+        "effecttsgo/layer-merge-all-with-dependencies": "error",
+        "effecttsgo/service-not-as-class": "error",
+        "effecttsgo/any-unknown-in-error-context": "error",
+        "effecttsgo/lazy-effect": "error",
+        "effecttsgo/unnecessary-effect-gen": "error",
+        "effecttsgo/schema-number": "error",
+        "effecttsgo/schema-class-missing-brand": "error",
+        "effecttsgo/crypto-random-uuid": "error",
+        "effecttsgo/crypto-random-uuid-in-effect": "error",
+        "effecttsgo/effect-do-notation": "error",
+        "effecttsgo/extends-native-error": "error",
+        "effecttsgo/global-console": "error",
+        "effecttsgo/global-console-in-effect": "error",
+        "effecttsgo/global-timers": "error",
+        "effecttsgo/global-timers-in-effect": "error",
+        "effecttsgo/map-map-error-to-map-both": "error",
+        "effecttsgo/missing-effect-service-dependency": "error",
+        "effecttsgo/new-promise": "error",
+        "effecttsgo/prefer-barrel-import": "error",
+        "effecttsgo/prefer-namespace-import": "error",
+        "effecttsgo/prefer-schema-tagged-error": "error",
+        "effecttsgo/prefer-schema-type-property": "error",
+        "effecttsgo/schema-union-of-literals": "error",
+        "effecttsgo/type-union-to-schema-union": "error",
+        "effecttsgo/unnecessary-arrow-block": "error",
+        "effecttsgo/unsafe-effect-type-assertion": "error",
+        "effecttsgo/provide-merge-all-to-array": "error",
+        "effecttsgo/nested-effect-gen-yield": "error",
+        "effecttsgo/global-random-in-effect": "error",
+        "effecttsgo/process-env-in-effect": "error",
+        "effecttsgo/effect-try-without-catch": "error",
+        "effecttsgo/global-json-in-effect": "error",
+        "effecttsgo/instance-of-schema": "error",
+        "effecttsgo/strict-effect-provide": "error",
+        "effecttsgo/new-schema-class": "error",
+        "effecttsgo/yield-in-call-argument": "error",
+        "effecttsgo/missed-pipeable-opportunity": "error",
+        "effecttsgo/global-date-in-effect": "error"
+    },
     "overrides": [
         {
             "files": [
@@ -768,6 +813,7 @@
                             "Context.Service",
                             "Context.Reference",
                             "Schema.TaggedError",
+                            "DatabaseOpenError.make",
                             "getLogger",
                             "logger.log",
                             "logger.error",
@@ -1064,7 +1110,11 @@
                 "vitest/valid-expect": "error",
                 "vitest/no-standalone-expect": "off",
                 "vitest/require-mock-type-parameters": "off",
-                "vitest/expect-expect": "off"
+                "vitest/expect-expect": "off",
+                "effecttsgo/strict-effect-provide": "off",
+                "effecttsgo/global-date-in-effect": "off",
+                "effecttsgo/yield-in-call-argument": "off",
+                "effecttsgo/any-unknown-in-error-context": "off"
             }
         },
         {
@@ -1116,7 +1166,13 @@
             ],
             "rules": {
                 "budgie/effect-no-imperative": "error",
-                "budgie/shared-guards": "error"
+                "budgie/shared-guards": "error",
+                "effecttsgo/async-function": "error",
+                "effecttsgo/node-builtin-import": "error",
+                "effecttsgo/process-env": "error",
+                "effecttsgo/schema-sync": "error",
+                "effecttsgo/global-random": "error",
+                "effecttsgo/strict-boolean-expressions": "error"
             }
         },
         {

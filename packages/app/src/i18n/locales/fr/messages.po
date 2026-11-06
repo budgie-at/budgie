@@ -1060,7 +1060,7 @@ msgstr "Au-dessus de ce montant"
 msgid "account"
 msgstr "compte"
 
-#: src/app/account-selector.tsx
+#: src/account/component/account-selector-header/account-selector-header.tsx
 #: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
 #: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
@@ -1147,6 +1147,9 @@ msgstr "Budget actif"
 #: src/budget/components/budget-event-category-limits/budget-event-category-limits.tsx
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 #: src/budget/components/budget-list-section/budget-list-section.tsx
+#: src/transaction/components/transaction-date-tags-row/transaction-date-tags-row.tsx
+#: src/transaction/components/transaction-fee-field-icon/transaction-fee-field-icon.tsx
+#: src/transaction/components/transaction-note-field-icon/transaction-note-field-icon.tsx
 msgid "Add"
 msgstr "Ajouter"
 
@@ -1444,6 +1447,10 @@ msgstr "Montant"
 #: src/account/component/update-debt-account/update-debt-account.tsx
 msgid "Amount borrowed"
 msgstr "Montant emprunté"
+
+#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
+msgid "Amount changed"
+msgstr "Montant modifié"
 
 #: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/account/component/update-debt-account/update-debt-account.tsx
@@ -2092,7 +2099,7 @@ msgstr "Illisible : vos données iCloud chiffrées ont été réinitialisées ap
 #: src/account/hooks/use-delete-archived-account.hook.ts
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 #: src/budget/hooks/use-budget-event-form.hook.ts
 #: src/budget/hooks/use-budget-form.hook.ts
 #: src/budget/hooks/use-budget-fund-form.hook.ts
@@ -2102,6 +2109,7 @@ msgstr "Illisible : vos données iCloud chiffrées ont été réinitialisées ap
 #: src/household/component/household-remove-button/household-remove-button.tsx
 #: src/household/component/household-stop-sharing-row/household-stop-sharing-row.tsx
 #: src/import/hook/use-restore-backup.hook.ts
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
@@ -2114,7 +2122,7 @@ msgstr "Illisible : vos données iCloud chiffrées ont été réinitialisées ap
 #: src/sync/component/enable-banking-disconnect-row/enable-banking-disconnect-row.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 #: src/tag/hooks/use-delete-tag.hook.ts
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
@@ -2324,6 +2332,9 @@ msgstr "Vérification de l’historique des transactions"
 #: src/budget/components/budget-fund-category-field/budget-fund-category-field.tsx
 #: src/import/components/import-column-map-field/import-column-map-field.tsx
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
+#: src/transaction/components/transaction-account-row/transaction-account-row.tsx
+#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
+#: src/transaction/components/transfer-account-picker/transfer-account-picker.tsx
 msgid "Choose"
 msgstr "Choisir"
 
@@ -2344,6 +2355,10 @@ msgstr "Choisir une catégorie"
 #: src/rule/utils/get-rule-form-issue.util.ts
 msgid "Choose a category to continue"
 msgstr "Choisissez une catégorie pour continuer"
+
+#: src/transaction/hook/use-convert-transfer-form.hook.ts
+msgid "Choose a destination account"
+msgstr "Choisir un compte destinataire"
 
 #: src/auth/components/pin-restart-button/pin-restart-button.tsx
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
@@ -2376,6 +2391,10 @@ msgstr "Choisis un code PIN"
 msgid "Choose a source"
 msgstr "Choisir une source"
 
+#: src/transaction/hook/use-convert-transfer-form.hook.ts
+msgid "Choose a source account"
+msgstr "Choisir un compte source"
+
 #: src/rule/components/rule-action-tag-selector/rule-action-tag-selector.tsx
 msgid "Choose a tag"
 msgstr "Choisir une étiquette"
@@ -2388,6 +2407,10 @@ msgstr "Choisissez une étiquette pour continuer"
 #: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx
 msgid "Choose a type"
 msgstr "Choisir un type"
+
+#: src/transaction/components/convert-transfer-accounts/convert-transfer-accounts.tsx
+msgid "Choose account"
+msgstr "Choisir un compte"
 
 #: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
@@ -2718,7 +2741,6 @@ msgstr "Échec de la conversion"
 
 #: src/money-data/component/money-data-upgrade-status-card/money-data-upgrade-status-card.tsx
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 msgid "Convert"
 msgstr "Convertir"
@@ -2731,7 +2753,6 @@ msgstr "Convertir les montants passés"
 msgid "Convert past amounts?"
 msgstr "Convertir les montants passés ?"
 
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 #: src/transaction/components/transaction-list-convert-to-refund-menu-item/transaction-list-convert-to-refund-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Convert to Refund"
@@ -2742,6 +2763,7 @@ msgid "Convert to Refund?"
 msgstr "Convertir en remboursement ?"
 
 #: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
+#: src/transaction/components/convert-transfer-form/convert-transfer-form.tsx
 #: src/transaction/components/transaction-list-convert-to-transfer-menu-item/transaction-list-convert-to-transfer-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Convert to Transfer"
@@ -2900,7 +2922,7 @@ msgstr "Impossible de supprimer la transaction."
 msgid "Could not disconnect"
 msgstr "Impossible de déconnecter"
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "Could not erase the data"
 msgstr "Impossible d'effacer les données"
 
@@ -2939,10 +2961,6 @@ msgstr "Impossible de charger le budget"
 #: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
 msgid "Could not load contacts"
 msgstr "Impossible de charger les contacts"
-
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
-msgid "Could not load sources. Please try again."
-msgstr "Impossible de charger les sources. Veuillez réessayer."
 
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Could not mark account as external"
@@ -3110,6 +3128,7 @@ msgid "Could not undo the move to cash"
 msgstr "Impossible d'annuler le déplacement vers les espèces"
 
 #: src/account/hooks/use-shelved-account-action.hook.ts
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
 msgid "Could not undo."
 msgstr "Impossible d’annuler."
 
@@ -3216,6 +3235,7 @@ msgid "Couldn't finish. Try again."
 msgstr "Opération inachevée. Réessayez."
 
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
+#: src/transaction/components/transaction-picker-failure/transaction-picker-failure.tsx
 msgid "Couldn’t load this list"
 msgstr "Impossible de charger la liste"
 
@@ -3596,7 +3616,7 @@ msgstr "Supprimer…"
 msgid "Deleted “{accountTitle}”"
 msgstr "« {accountTitle} » supprimé"
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "Deletes {DB_NAME} from this phone"
 msgstr "Supprime {DB_NAME} de ce téléphone"
 
@@ -3730,7 +3750,7 @@ msgstr "Ne contient pas"
 #: src/categorize-inbox/components/categorize-inbox-done-button/categorize-inbox-done-button.tsx
 #: src/onboarding/component/onboarding-keyboard-controls/onboarding-keyboard-controls.tsx
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
+#: src/transaction/components/convert-transfer-form/convert-transfer-form.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 #: src/transaction/hook/use-transaction-keypad-editing.hook.ts
@@ -4051,10 +4071,6 @@ msgstr "Saisissez tous les montants"
 msgid "Enter an amount"
 msgstr "Saisissez un montant"
 
-#: src/transaction/components/transaction-split-field-icon/transaction-split-field-icon.tsx
-msgid "Enter an amount to split it"
-msgstr "Saisissez un montant pour le répartir"
-
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enter current PIN"
 msgstr "Entrez le code PIN actuel"
@@ -4102,15 +4118,15 @@ msgstr "Tout l’historique disponible"
 msgid "Entire history will be re-synced on next sync."
 msgstr "L'historique complet sera resynchronisé lors de la prochaine synchronisation."
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "Erase"
 msgstr "Effacer"
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "Erase and start fresh"
 msgstr "Effacer et repartir de zéro"
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "Erase and start fresh?"
 msgstr "Effacer et repartir de zéro ?"
 
@@ -4223,6 +4239,7 @@ msgstr "Taux de change : {rateLabel}"
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 #: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 #: src/transaction/components/recurring-calendar-legend/recurring-calendar-legend.tsx
+#: src/transaction/components/recurring-calendar-summary/recurring-calendar-summary.tsx
 msgid "Expected"
 msgstr "Prévu"
 
@@ -4333,12 +4350,12 @@ msgid "Features"
 msgstr "Fonctionnalités"
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+#: src/transaction/components/transaction-fee-field-icon/transaction-fee-field-icon.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Fee"
 msgstr "Frais"
 
-#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
 #: src/transaction/hook/use-transaction-fee-label.hook.ts
 msgid "Fee {formattedAmount}"
 msgstr "Frais {formattedAmount}"
@@ -4482,9 +4499,17 @@ msgid "French"
 msgstr "Français"
 
 #: src/app/transaction-amount-filter.tsx
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "From"
 msgstr "De"
+
+#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
+msgctxt "transfer account"
+msgid "From"
+msgstr "De"
+
+#: src/transaction/components/convert-transfer-summary/convert-transfer-summary.tsx
+msgid "From {accountTitle}"
+msgstr "Depuis {accountTitle}"
 
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead.tsx
 msgid "From {counterparty}"
@@ -4504,6 +4529,7 @@ msgstr "De {source} vers {destination}"
 
 #: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/app/(main)/import-csv.tsx
+#: src/transaction/components/convert-transfer-accounts/convert-transfer-accounts.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "From account"
 msgstr "Compte source"
@@ -4990,6 +5016,10 @@ msgstr "C'est la seule clé de ton fichier. Il n'y a ni compte ni copie sur un s
 msgid "Its accounts stop syncing and are removed from your active accounts."
 msgstr "Ses comptes ne sont plus synchronisés et sont retirés de vos comptes actifs."
 
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
+msgid "Its payments become regular expenses again and the plan disappears. This can't be undone."
+msgstr "Ses paiements redeviennent des dépenses normales et le plan disparaît. Cette action est irréversible."
+
 #: src/account/hooks/use-delete-archived-account.hook.ts
 msgid "Its transactions go too. Transfers stay in the other account as “Transfer (account deleted)”. This can’t be undone."
 msgstr "Ses transactions sont supprimées aussi. Les virements restent dans l’autre compte comme « Virement (compte supprimé) ». Cette action est irréversible."
@@ -5222,6 +5252,10 @@ msgstr "Accès limité · Gérer dans les réglages"
 #: src/budget/components/budget-limit-changes-row/budget-limit-changes-row.tsx
 msgid "Limits are tuned automatically after 3 steady periods"
 msgstr "Les limites sont ajustées automatiquement après 3 périodes stables"
+
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
+msgid "Link refund"
+msgstr "Associer le remboursement"
 
 #: src/account/component/account-switch-field/account-switch-field.tsx
 msgid "List it on the Home screen"
@@ -5839,8 +5873,8 @@ msgid "No icons found"
 msgstr "Aucune icône trouvée"
 
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
-msgid "No income"
-msgstr "Aucun revenu"
+msgid "No income in this view"
+msgstr "Aucun revenu dans cette vue"
 
 #: src/app/voice-review.tsx
 msgid "No items to save"
@@ -5922,14 +5956,14 @@ msgstr "Aucun contact partagé"
 msgid "No source transactions"
 msgstr "Aucune transaction source"
 
-#: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
-msgid "No spending"
-msgstr "Aucune dépense"
-
 #: src/category/components/categories-feature-intro/categories-feature-intro.tsx
 #: src/transaction/components/statistics-spending-hero/statistics-spending-hero.tsx
 msgid "No spending in this period"
 msgstr "Aucune dépense sur cette période"
+
+#: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
+msgid "No spending in this view"
+msgstr "Aucune dépense dans cette vue"
 
 #: src/runway/component/runway-drivers/runway-drivers.tsx
 msgid "No spending in this window."
@@ -6031,9 +6065,7 @@ msgstr "Pas maintenant"
 msgid "Not on any transactions. This can’t be undone."
 msgstr "Utilisé dans aucune transaction. Cette action est irréversible."
 
-#: src/transaction/components/transaction-field-caption/transaction-field-caption.tsx
 #: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx
-#: src/transaction/components/transaction-metadata-field/transaction-metadata-field.tsx
 msgid "not set"
 msgstr "non défini"
 
@@ -6175,7 +6207,7 @@ msgstr "une fois par mois"
 msgid "Once you have 3 months of transactions, Runway shows how long your balance lasts."
 msgstr "Dès que vous aurez 3 mois de transactions, l'autonomie indiquera combien de temps votre solde durera."
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "One you exported with a PIN you remember"
 msgstr "Une sauvegarde exportée avec un code PIN dont tu te souviens"
 
@@ -6379,10 +6411,16 @@ msgstr "Organiser"
 msgid "Organizer"
 msgstr "Organisateur"
 
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
+msgid "Original expense"
+msgstr "Dépense d’origine"
+
 #: src/transaction/components/refund-transaction-info-content/refund-transaction-info-content.tsx
 msgid "Original purchase"
 msgstr "Achat d’origine"
 
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/consolidation-source-row/consolidation-source-row.tsx
 msgid "Original transaction"
 msgstr "Transaction d’origine"
@@ -6722,6 +6760,10 @@ msgstr "Plan créé"
 msgid "Plan name"
 msgstr "Nom du plan"
 
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
+msgid "Plan reverted"
+msgstr "Plan annulé"
+
 #: src/installment-plan/component/convert-to-installment-total-input/convert-to-installment-total-input.tsx
 msgid "Plan total"
 msgstr "Total du plan"
@@ -6754,6 +6796,7 @@ msgstr "Veuillez entrer votre jeton API Monobank"
 
 #: src/app/convert-to-transfer.tsx
 #: src/installment-plan/component/convert-to-installment-create-button/convert-to-installment-create-button.tsx
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
 msgid "Please try again"
 msgstr "Veuillez réessayer"
 
@@ -6802,10 +6845,6 @@ msgstr "Période précédente"
 #: src/market-data/component/currency-market-stale-price/currency-market-stale-price.tsx
 msgid "Price {ageLabel} · {date}"
 msgstr "Prix {ageLabel} · {date}"
-
-#: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
-msgid "Price changed"
-msgstr "Prix modifié"
 
 #: src/market-data/hook/use-market-chart-accessibility.hook.ts
 msgid "Price chart, {rangeLabel}, from {fromLabel} to {toLabel}, high {highLabel}, low {lowLabel}"
@@ -6977,14 +7016,18 @@ msgstr "Recalcul des soldes"
 
 #: src/receipt/hook/use-receipt-scan.hook.ts
 #: src/rule/constant/external-source.constant.ts
-#: src/transaction/components/transaction-card-subtitle/transaction-card-subtitle.tsx
 #: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
+#: src/transaction/components/transaction-receipt-marker/transaction-receipt-marker.tsx
 msgid "Receipt"
 msgstr "Reçu"
 
 #: src/transaction/components/statistics-drill-down-summary/statistics-drill-down-summary.tsx
 msgid "Received"
 msgstr "Reçu"
+
+#: src/transaction/hook/use-convert-transfer-form.hook.ts
+msgid "Receiving"
+msgstr "Réception"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Receiving · {toCode}"
@@ -7022,6 +7065,7 @@ msgstr "Ajouter une dépense"
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 #: src/transaction/components/recurring-calendar-entry-content/recurring-calendar-entry-content.tsx
 #: src/transaction/components/recurring-calendar-legend/recurring-calendar-legend.tsx
+#: src/transaction/components/recurring-calendar-summary/recurring-calendar-summary.tsx
 msgid "Recorded"
 msgstr "Enregistré"
 
@@ -7042,6 +7086,10 @@ msgstr "Les paiements récurrents sont détectés automatiquement à partir de v
 msgid "Refine"
 msgstr "Affiner"
 
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
+msgid "Refund"
+msgstr "Remboursement"
+
 #: src/transaction/components/refund-transaction-info-content/refund-transaction-info-content.tsx
 msgid "Refund from {merchant}"
 msgstr "Remboursement de {merchant}"
@@ -7057,6 +7105,10 @@ msgstr "Remboursé {formattedRefundedAmount}"
 #: src/transaction/components/statistics-drill-down-caption/statistics-drill-down-caption.tsx
 msgid "Refunded in full · {refundLabel}"
 msgstr "Remboursé intégralement · {refundLabel}"
+
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+msgid "Refunds"
+msgstr "Remboursements"
 
 #: src/transaction/components/transaction-info-refund-summary/transaction-info-refund-summary.tsx
 msgid "Refunds received"
@@ -7211,7 +7263,7 @@ msgstr "Restaurer"
 msgid "Restore {accountTitle}"
 msgstr "Restaurer {accountTitle}"
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "Restore a backup"
 msgstr "Restaurer une sauvegarde"
 
@@ -7503,7 +7555,7 @@ msgstr "Scellé. Seul ton code PIN ouvre ce fichier."
 msgid "Search accounts..."
 msgstr "Rechercher des comptes..."
 
-#: src/app/account-selector.tsx
+#: src/account/component/account-selector-header/account-selector-header.tsx
 msgid "Search accounts…"
 msgstr "Rechercher des comptes…"
 
@@ -7602,10 +7654,6 @@ msgstr "Voir les {total}"
 msgid "See spending by context, not just category"
 msgstr "Voir les dépenses par contexte, pas seulement par catégorie"
 
-#: src/transaction/components/transaction-account-row/transaction-account-row.tsx
-msgid "Select"
-msgstr "Sélectionner"
-
 #: src/@generic/component/contact-selector/contact-selector.tsx
 msgid "Select a contact"
 msgstr "Sélectionner un contact"
@@ -7615,8 +7663,6 @@ msgid "Select a valid column"
 msgstr "Sélectionnez une colonne valide"
 
 #: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
-#: src/transaction/components/transaction-account-row/transaction-account-row.tsx
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "Select account"
 msgstr "Sélectionner un compte"
 
@@ -7646,10 +7692,6 @@ msgstr "Sélectionnez le fichier PDF téléchargé"
 msgid "Select the exported XLSX file"
 msgstr "Sélectionnez le fichier XLSX exporté"
 
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
-msgid "Select the original expense for this refund."
-msgstr "Sélectionnez la dépense initiale de ce remboursement."
-
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Selected"
 msgstr "Sélectionné"
@@ -7657,6 +7699,10 @@ msgstr "Sélectionné"
 #: src/household/component/household-invite-row/household-invite-row.tsx
 msgid "Send an invitation with Messages"
 msgstr "Envoyer une invitation avec Messages"
+
+#: src/transaction/hook/use-convert-transfer-form.hook.ts
+msgid "Sending"
+msgstr "Envoi"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Sending {fromCode}"
@@ -7722,10 +7768,6 @@ msgstr "Définir un budget"
 #: src/budget/constant/budget-save-blocker-label.constant.ts
 msgid "Set every category limit to continue"
 msgstr "Définissez chaque limite de catégorie pour continuer"
-
-#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
-msgid "Set fee"
-msgstr "Définir les frais"
 
 #: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
 msgid "Set Maturity Date"
@@ -8014,10 +8056,6 @@ msgstr "Partez de zéro et définissez chaque limite vous-même"
 msgid "Start sync"
 msgstr "Démarrer la synchronisation"
 
-#: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
-msgid "Start tracking your spending by using the mic button or adding transactions manually"
-msgstr "Commencez à suivre vos dépenses en utilisant le bouton micro ou en ajoutant des transactions manuellement"
-
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Starter budget"
 msgstr "Budget de départ"
@@ -8104,7 +8142,7 @@ msgstr "Résumé indisponible"
 msgid "Support"
 msgstr "Assistance"
 
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
+#: src/transaction/components/transfer-swap-button/transfer-swap-button.tsx
 msgid "Swap accounts"
 msgstr "Échanger les comptes"
 
@@ -8297,6 +8335,10 @@ msgstr "Touchez \"Obtenir la clé API\" ci-dessus et connectez-vous à Binance"
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Tap \"Get API Token\" above to open api.monobank.ua"
 msgstr "Touche « Get API Token » ci-dessus pour ouvrir api.monobank.ua"
+
+#: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
+msgid "Tap + to add your first transaction"
+msgstr "Touchez + pour ajouter votre première transaction"
 
 #: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
 msgid "Tap <0>Register</0>. The key file downloads to Files, in Downloads. Keep it secret."
@@ -8539,7 +8581,7 @@ msgstr "Cette capture ressemble à une transaction existante."
 msgid "This connection returned no accounts Budgie can add."
 msgstr "Cette connexion n’a renvoyé aucun compte que Budgie puisse ajouter."
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "This deletes {DB_NAME} and everything in it from this phone. It can't be undone."
 msgstr "Cela supprime {DB_NAME} et tout son contenu de ce téléphone. C'est irréversible."
 
@@ -8701,11 +8743,16 @@ msgid "Title"
 msgstr "Titre"
 
 #: src/app/transaction-amount-filter.tsx
+msgid "To"
+msgstr "Vers"
+
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
+msgctxt "transfer account"
 msgid "To"
 msgstr "Vers"
 
 #: src/categorize-inbox/components/categorize-inbox-transfer-undo/categorize-inbox-transfer-undo.tsx
+#: src/transaction/components/convert-transfer-summary/convert-transfer-summary.tsx
 msgid "To {accountTitle}"
 msgstr "Vers {accountTitle}"
 
@@ -8727,6 +8774,7 @@ msgstr "Jusqu’à {toText}"
 
 #: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/app/(main)/import-csv.tsx
+#: src/transaction/components/convert-transfer-accounts/convert-transfer-accounts.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "To account"
 msgstr "Compte de destination"
@@ -8982,8 +9030,7 @@ msgstr "Essayez d'ajuster vos filtres pour voir plus de résultats"
 #: src/cloud-backup/component/cloud-backup-row/cloud-backup-row.tsx
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
+#: src/transaction/components/transaction-picker-failure/transaction-picker-failure.tsx
 msgid "Try again"
 msgstr "Réessayer"
 
@@ -9113,6 +9160,7 @@ msgstr "Indisponible"
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
 #: src/category/components/stats-by-categories/stats-by-categories.tsx
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
+#: src/transaction/components/transaction-category-field-icon/transaction-category-field-icon.tsx
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 #: src/transaction/components/transaction-info-split-entry-row/transaction-info-split-entry-row.tsx
 #: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
@@ -9125,8 +9173,18 @@ msgstr "Sous la limite"
 
 #: src/account/hooks/use-shelved-account-action.hook.ts
 #: src/categorize-inbox/components/categorize-inbox-undo-layout/categorize-inbox-undo-layout.tsx
+#: src/installment-plan/hook/use-open-convert-to-installment.hook.ts
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
 msgid "Undo"
 msgstr "Annuler"
+
+#: src/account/component/account-actions-menu/account-actions-menu.tsx
+msgid "Undo pay in parts"
+msgstr "Annuler le paiement échelonné"
+
+#: src/installment-plan/hook/use-revert-installment-plan.hook.ts
+msgid "Undo pay in parts?"
+msgstr "Annuler le paiement échelonné ?"
 
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
@@ -9637,6 +9695,7 @@ msgid "Your data could not be loaded. Close this screen and try again."
 msgstr "Vos données n’ont pas pu être chargées. Fermez cet écran et réessayez."
 
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
+#: src/transaction/components/transaction-picker-failure/transaction-picker-failure.tsx
 msgid "Your data is safe. Reading it failed this time."
 msgstr "Vos données sont en sécurité. Seule la lecture a échoué cette fois."
 

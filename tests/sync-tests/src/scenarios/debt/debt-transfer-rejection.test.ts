@@ -30,13 +30,11 @@ const DEBT_TRANSFER_ERROR = 'Debt accounts cannot take part in transfers';
 const FEE_AMOUNT = 3;
 
 const createDebtAccount = () =>
-    Effect.gen(function* () {
-        return yield* seed.account({
-            title: 'Transfer debt account',
-            type: AccountTypeEnum.DEBT,
-            debtType: AccountDebtTypeEnum.LENT,
-            targetBalance: 500 * PRECISION
-        });
+    seed.account({
+        title: 'Transfer debt account',
+        type: AccountTypeEnum.DEBT,
+        debtType: AccountDebtTypeEnum.LENT,
+        targetBalance: 500 * PRECISION
     });
 
 const createExpense = (cashAccountId: number) =>

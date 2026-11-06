@@ -52,6 +52,7 @@ export const useUpdateSimpleTransaction = ({ transaction, transactionType, openF
 
     const { form, handleSubmit, handleDelete } = useUpdateTransactionForm({
         transaction: isDefined(receipt) ? applyReceiptPrefill(transactionInput, receipt) : transactionInput,
+        persistedTitle: transactionInput.title,
         receipt,
         schema: transactionType === TransactionTypeEnum.EXPENSE ? ExpenseTransactionCreateInputSchema : IncomeTransactionCreateInputSchema,
         id: transactionId,

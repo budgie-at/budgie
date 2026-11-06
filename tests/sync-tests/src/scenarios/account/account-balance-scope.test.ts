@@ -50,9 +50,7 @@ const seedExpenseEntry = (accountId: number, amount: number) =>
     });
 
 const fetchBalanceRow = (accountId: number) =>
-    Effect.gen(function* () {
-        return yield* testDb.select().from(AccountBalanceEntityTable).where(eq(AccountBalanceEntityTable.accountId, accountId));
-    });
+    testDb.select().from(AccountBalanceEntityTable).where(eq(AccountBalanceEntityTable.accountId, accountId));
 
 describe('account/account-balance-scope', () => {
     it.effect('rebuilds only requested account balances', () =>

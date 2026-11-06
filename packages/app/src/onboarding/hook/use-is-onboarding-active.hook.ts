@@ -10,7 +10,7 @@ import { useSetting } from '../../settings/hook/use-setting.hook';
 
 export const accountCountAtom = databaseQueryAtom(
     [AccountEntityTable],
-    Effect.flatMap(AccountRepository, accountRepository => accountRepository.count())
+    Effect.flatMap(AccountRepository, accountRepository => accountRepository.count)
 );
 
 export const useIsOnboardingActive = (): boolean => {

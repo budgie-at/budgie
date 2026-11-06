@@ -1,0 +1,1 @@
+export const SUGGESTION_MAX_FONT_SCALE = 1.5;

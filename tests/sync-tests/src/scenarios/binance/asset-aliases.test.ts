@@ -53,7 +53,7 @@ const expectTradeOnCurrentAccount = (retiredAsset: string, currentAsset: string)
             .where(
                 or(eq(AccountEntityTable.externalId, `SPOT:${retiredAsset}`), eq(AccountEntityTable.externalId, `SPOT:${currentAsset}`))
             );
-        const transactions = yield* fetchBinanceTransactions();
+        const transactions = yield* fetchBinanceTransactions;
 
         expect(accounts.map(account => account.id)).toStrictEqual([currentAccount.id]);
         expect(transactions.map(transaction => transaction.externalId)).toStrictEqual([`binance:trade:${retiredAsset}USDT:${TRADE_ID}`]);

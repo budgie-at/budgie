@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import { use, useCallback, useState } from 'react';
 import { View } from 'react-native';
 
 import { ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
@@ -6,6 +7,8 @@ import { ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 import { GroupedSurface } from '../../@generic/component/grouped-surface/grouped-surface';
 import { TransactionsPageHeader } from '../../@generic/component/transactions-page-header/transactions-page-header';
 import { SCREEN_CHROME_CONFIG } from '../../@generic/constant/screen-chrome-config.constant';
+import { TabBarBackdropContext } from '../../@generic/context/tab-bar-backdrop.context';
+import { TabBarBackdropEnum } from '../../@generic/enum/tab-bar-backdrop.enum';
 import { ScreenChromeThemeProvider } from '../../@generic/provider/screen-chrome-theme.provider';
 import { TransactionsPageContent } from '../../transaction/components/transactions-page-content/transactions-page-content';
 
@@ -13,11 +16,21 @@ import { TransactionsPageSelector } from './transactions-page.selector';
 
 import type { TransactionsTabType } from '../../@generic/type/transactions-tab.type';
 
-const TRANSACTIONS_CHROME_CONFIG = { ...SCREEN_CHROME_CONFIG, headerHeight: 44 };
+const TRANSACTIONS_CHROME_CONFIG = { ...SCREEN_CHROME_CONFIG, headerHeight: 44, collapsedHeaderHeight: 32 };
 
 const TABS: readonly TransactionsTabType[] = ['transactions', 'recurring'];
 
 export default function TransactionsPage() {
+    const setTabBarBackdrop = use(TabBarBackdropContext);
+
+    useFocusEffect(
+        useCallback(() => {
+            setTabBarBackdrop(TabBarBackdropEnum.SOLID);
+
+            return () => void setTabBarBackdrop(TabBarBackdropEnum.FADE);
+        }, [setTabBarBackdrop])
+    );
+
     const [activeTab, setActiveTab] = useState<TransactionsTabType>('transactions');
 
     return (

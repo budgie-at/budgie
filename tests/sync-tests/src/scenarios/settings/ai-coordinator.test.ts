@@ -25,28 +25,26 @@ import * as Layer from 'effect/Layer';
 import * as Queue from 'effect/Queue';
 import * as SubscriptionRef from 'effect/SubscriptionRef';
 import * as TestClock from 'effect/testing/TestClock';
-import { vi } from 'vitest';
+import { beforeEach, vi } from 'vitest';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import { aiModelDownloadStub, Fiber, testDb } from '../../harness';
+import { appStateStub, llamaStub } from '../../harness/native/native-module.stub';
 
 import type { AiFeatureSettingsInterface } from '@app/ai/interface/ai-feature-settings.interface';
 
-const appState = vi.hoisted(() => ({
-    addEventListener: vi.fn((_event: string, _listener: (state: 'active' | 'background') => void) => ({ remove: vi.fn() }))
-}));
+const native = { context: { stopCompletion: vi.fn(() => void 0), release: vi.fn(() => Promise.resolve()) } };
 
-const native = vi.hoisted(() => ({
-    context: { stopCompletion: vi.fn(() => void 0), release: vi.fn(() => Promise.resolve()) }
-}));
-
-vi.mock('llama.rn', () => ({ initLlama: () => Promise.resolve(native.context) }));
-
-vi.mock('react-native', () => ({
-    AppState: { currentState: 'active', addEventListener: appState.addEventListener },
+vi.mock('react-native', async importOriginal => ({
+    ...(await importOriginal<object>()),
+    AppState: (await import('../../harness/native/native-module.stub')).appStateStub,
     Platform: { OS: 'android' }
 }));
+
+beforeEach(() => {
+    llamaStub.initLlama.mockResolvedValue(native.context);
+});
 
 const provideTestServices = <A, E, R>(effect: Effect.Effect<A, E, R>) =>
     effect.pipe(Effect.provide([SettingsRepository.layer, aiModelDownloadStub]), Effect.provideService(Db, testDb));
@@ -73,41 +71,39 @@ const makeLifecycle = Effect.fnUntraced(function* (
     let idle: Effect.Effect<void> = Effect.void;
     const chat = yield* ChatService.make;
     const coordinator = yield* AiCoordinatorService.make.pipe(
-        Effect.provide(
-            Layer.mergeAll(
-                Layer.mock(Workload, { foregroundCount: yield* SubscriptionRef.make(0) }),
-                Layer.mock(AiModelResidencyService, {
-                    resume: enabled =>
-                        Effect.sync(() => {
-                            resumes.push([...enabled]);
-                        }),
-                    suspend: () =>
-                        Effect.andThen(
-                            Deferred.succeed(stopping, true),
-                            Effect.suspend(() => shutdown)
-                        )
-                }),
-                Layer.succeed(ChatService, chat),
-                Layer.mock(EmbeddingDrainerService, { drainers: [], start: recordStart('embedding') }),
-                Layer.mock(AiEmbeddingStatusService, { migrateModel: () => Effect.void }),
-                Layer.mock(TranslationDrainerService, {
-                    snapshot: translationDrainerSnapshotAtom,
-                    cancelBoost: emptyFn,
-                    start: recordStart('translation'),
-                    stop: () => Effect.void,
-                    halt: () => Effect.void,
-                    schedule: () => Effect.void,
-                    whenIdle: () => Effect.suspend(() => idle),
-                    setForegroundBusy: () => Effect.void
-                }),
-                Layer.mock(TranslationProgressStore, { snapshot: translationProgressSnapshotAtom, refresh: () => Effect.void }),
-                Layer.mock(EmbeddingProgressStore, {
-                    snapshot: embeddingProgressSnapshotAtom,
-                    refresh: () => Effect.asVoid(Queue.offer(started, true))
-                }),
-                Layer.succeed(SettingsRepository, repository)
-            )
-        )
+        Effect.provide([
+            Layer.mock(Workload, { foregroundCount: yield* SubscriptionRef.make(0) }),
+            Layer.mock(AiModelResidencyService, {
+                resume: enabled =>
+                    Effect.sync(() => {
+                        resumes.push([...enabled]);
+                    }),
+                suspend: () =>
+                    Effect.andThen(
+                        Deferred.succeed(stopping, true),
+                        Effect.suspend(() => shutdown)
+                    )
+            }),
+            Layer.succeed(ChatService, chat),
+            Layer.mock(EmbeddingDrainerService, { drainers: [], start: recordStart('embedding') }),
+            Layer.mock(AiEmbeddingStatusService, { migrateModel: () => Effect.void }),
+            Layer.mock(TranslationDrainerService, {
+                snapshot: translationDrainerSnapshotAtom,
+                cancelBoost: emptyFn,
+                start: recordStart('translation'),
+                stop: () => Effect.void,
+                halt: () => Effect.void,
+                schedule: () => Effect.void,
+                whenIdle: () => Effect.suspend(() => idle),
+                setForegroundBusy: () => Effect.void
+            }),
+            Layer.mock(TranslationProgressStore, { snapshot: translationProgressSnapshotAtom, refresh: () => Effect.void }),
+            Layer.mock(EmbeddingProgressStore, {
+                snapshot: embeddingProgressSnapshotAtom,
+                refresh: () => Effect.asVoid(Queue.offer(started, true))
+            }),
+            Layer.succeed(SettingsRepository, repository)
+        ])
     );
     yield* coordinator.start();
     yield* Queue.take(started);
@@ -122,7 +118,7 @@ const makeLifecycle = Effect.fnUntraced(function* (
         started,
         holdShutdown: Effect.gen(function* () {
             const released = yield* Deferred.make<boolean>();
-            shutdown = Effect.asVoid(Deferred.await(released));
+            shutdown = released.pipe(Deferred.await, Effect.asVoid);
 
             return { release: Deferred.succeed(released, true) };
         }),
@@ -139,7 +135,7 @@ describe('AiCoordinatorService lifecycle', () => {
     it.effect('reaches suspension and replacement after synchronous native chat interruption', () =>
         Effect.gen(function* () {
             const { coordinator, chat, resumes, stopping, started } = yield* makeLifecycle();
-            yield* chat.model.start();
+            yield* chat.model.start;
             expect(chat.model.context).toBe(native.context);
             yield* coordinator.restart();
             expect(Deferred.isDoneUnsafe(stopping)).toBe(true);
@@ -147,7 +143,7 @@ describe('AiCoordinatorService lifecycle', () => {
             expect(native.context.stopCompletion).toHaveReturnedWith(void 0);
             expect(resumes).toEqual([[AiSubsystemNameEnum.CHAT], [AiSubsystemNameEnum.CHAT]]);
             yield* coordinator.stop();
-            yield* chat.model.stop();
+            yield* chat.model.stop;
         }).pipe(provideTestServices)
     );
 
@@ -194,20 +190,18 @@ describe('AI shutdown recovery', () => {
         Effect.gen(function* () {
             const { coordinator, resumes, started, setIdle, setShutdown } = yield* makeLifecycle();
             const settled = yield* Deferred.make<boolean>();
-            const failed = yield* Effect.gen(function* () {
-                if (failure === 'timeout') {
-                    setIdle(Effect.asVoid(Deferred.await(settled)));
-                } else {
-                    setShutdown(Effect.fail(new NativeCallError({ cause: 'release failed' })));
-                }
-                const restarting = yield* Effect.forkChild(Effect.exit(coordinator.restart()));
-                if (failure === 'timeout') {
-                    yield* TestClock.adjust('5001 millis');
-                }
-                yield* Deferred.succeed(settled, true);
+            if (failure === 'timeout') {
+                setIdle(settled.pipe(Deferred.await, Effect.asVoid));
+            } else {
+                setShutdown(Effect.fail(NativeCallError.make({ cause: 'release failed' })));
+            }
+            const restarting = yield* coordinator.restart().pipe(Effect.exit, Effect.forkChild);
+            if (failure === 'timeout') {
+                yield* TestClock.adjust('5001 millis');
+            }
+            yield* Deferred.succeed(settled, true);
 
-                return yield* Fiber.join(restarting);
-            });
+            const failed = yield* Fiber.join(restarting);
             expect(Exit.isFailure(failed)).toBe(true);
             expect(resumes).toHaveLength(1);
             setIdle(Effect.void);
@@ -222,15 +216,13 @@ describe('AI shutdown recovery', () => {
     it.effect('retries a failed background shutdown before foreground replacement', () =>
         Effect.gen(function* () {
             const { coordinator, started, stopping, setShutdown } = yield* makeLifecycle();
-            const listener = appState.addEventListener.mock.calls.at(-1)?.[1];
-            yield* Effect.gen(function* () {
-                setShutdown(Effect.fail(new NativeCallError({ cause: 'release failed' })));
-                listener?.('background');
-                yield* TestClock.adjust(60_000);
-                yield* Deferred.await(stopping);
-            });
+            const listener = appStateStub.addEventListener.mock.calls.at(-1)?.[1];
+            setShutdown(Effect.fail(NativeCallError.make({ cause: 'release failed' })));
+            listener?.('background');
+            yield* TestClock.adjust(60_000);
+            yield* Deferred.await(stopping);
             const retrying = yield* Deferred.make<boolean>();
-            setShutdown(Effect.andThen(Deferred.succeed(retrying, true), Effect.fail(new NativeCallError({ cause: 'release failed' }))));
+            setShutdown(Effect.andThen(Deferred.succeed(retrying, true), Effect.fail(NativeCallError.make({ cause: 'release failed' }))));
             listener?.('active');
             const transition = yield* Effect.race(Effect.as(Deferred.await(retrying), 'retry'), Effect.as(Queue.take(started), 'restart'));
             setShutdown(Effect.void);
@@ -244,7 +236,7 @@ describe('AI background transitions', () => {
     it.effect('cancels a pending background timer before restarting the foreground scope', () =>
         Effect.gen(function* () {
             const { coordinator, started } = yield* makeLifecycle();
-            const listener = appState.addEventListener.mock.calls.at(-1)?.[1];
+            const listener = appStateStub.addEventListener.mock.calls.at(-1)?.[1];
             listener?.('background');
             yield* TestClock.adjust(100);
             listener?.('active');
@@ -258,7 +250,7 @@ describe('AI background transitions', () => {
         Effect.gen(function* () {
             const { coordinator, resumes, stopping, holdShutdown } = yield* makeLifecycle();
             const { release } = yield* holdShutdown;
-            const listener = appState.addEventListener.mock.calls.at(-1)?.[1];
+            const listener = appStateStub.addEventListener.mock.calls.at(-1)?.[1];
             listener?.('background');
             yield* TestClock.adjust(60_000);
             yield* Deferred.await(stopping);

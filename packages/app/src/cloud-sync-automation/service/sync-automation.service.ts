@@ -69,7 +69,7 @@ export class SyncAutomationService extends Context.Service<SyncAutomationService
 
                 yield* settle(ruleEngine.applyCreateSafeRulesToTransactionIds(survivorIds), undefined);
 
-                const settings = yield* settingsRepository.find();
+                const settings = yield* settingsRepository.find;
                 const isAiSuggestionsEnabled = isDefined(settings) && settings.isAiSuggestionsEnabled;
                 const embeddingQueuedCount = isAiSuggestionsEnabled ? survivorIds.length : 0;
 

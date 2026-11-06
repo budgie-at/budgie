@@ -69,14 +69,12 @@ describe('batch entry valuation', () => {
             expect(executedStatements.length).toBeLessThan(DISTINCT_DAY_COUNT + 20);
 
             const entries = yield* testDb.select().from(TransactionEntryEntityTable);
-            const expected = yield* Effect.all(
-                inputs.map(input =>
-                    entryBaseValuationService.valueMicroUnitEntry({
-                        accountId: account.id,
-                        amount: convertToMicroUnits(input.amount),
-                        operatedAt: input.operatedAt
-                    })
-                )
+            const expected = yield* Effect.forEach(inputs, input =>
+                entryBaseValuationService.valueMicroUnitEntry({
+                    accountId: account.id,
+                    amount: convertToMicroUnits(input.amount),
+                    operatedAt: input.operatedAt
+                })
             );
 
             expect(

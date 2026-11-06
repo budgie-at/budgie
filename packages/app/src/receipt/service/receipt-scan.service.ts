@@ -2,8 +2,8 @@ import { CurrencyEnum, SettingsRepository, TransactionReceiptRepository, convert
 import { parseReceipt, toMerchantTitle } from '@budgie/import-export';
 import { ReceiptMatchResultKindEnum, ReceiptMatchService } from '@budgie/ledger';
 import { SyncFileReader } from '@budgie/sync';
-import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Option from 'effect/Option';
@@ -13,7 +13,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import { File } from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { emptyFn, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { ReceiptScannerModule } from '../../../modules/receipt-scanner';
 import { waitForIdle } from '../../@generic/utils/wait-for-idle.util';
@@ -83,9 +83,8 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
                 return { ...failure(ReceiptScanFailureEnum.MANUAL), aiContext };
             }
 
-            const now = yield* Clock.currentTimeMillis;
             const amount = convertFromMicroUnits(draft.total);
-            const occurredAt = draft.occurredAt ?? new Date(now);
+            const occurredAt = draft.occurredAt ?? (yield* DateTime.nowAsDate);
 
             const title = toMerchantTitle(draft.isPaid ? (draft.merchantCandidates.at(0) ?? '') : (draft.merchantLegalName ?? ''));
             const categoryId = draft.isPaid ? yield* transactionReceiptRepository.findMerchantCategoryId(draft.merchantVatId, title) : null;
@@ -129,12 +128,12 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
             capture: (source: ReceiptSourceEnum): Effect.Effect<string | null> => captureBySource[source],
             process: Effect.fn('ReceiptScanService.process')(
                 function* (uri: string) {
-                    const settings = yield* settingsRepository.findSettings();
+                    const settings = yield* settingsRepository.findSettings;
                     const baseCurrency = Option.getOrElse(decodeCurrency(settings?.defaultInstrument?.code), () => CurrencyEnum.EUR);
 
                     return yield* processReceipt(uri, baseCurrency).pipe(
                         Effect.catchCause(cause => Effect.as(Effect.logError(cause), failure(ReceiptScanFailureEnum.FAILED))),
-                        Effect.ensuring(Effect.ignore(Effect.try(() => void new File(uri).delete()))),
+                        Effect.ensuring(Effect.ignore(Effect.try({ try: () => void new File(uri).delete(), catch: emptyFn }))),
                         Effect.tap(() => waitForIdle)
                     );
                 },

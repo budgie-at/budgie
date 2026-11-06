@@ -7,19 +7,17 @@ import { TestLayer, testQueryService } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 
 const seedTransaction = (type: TransactionTypeEnum, needsEmbedding: boolean) =>
-    Effect.gen(function* () {
-        return yield* insertOne(TransactionEntityTable, {
-            type,
-            title: 'Manual transaction',
-            externalId: null,
-            comment: '',
-            toAccountId: null,
-            fromAccountId: null,
-            exchangeRate: 1,
-            externalSource: null,
-            updatedBy: null,
-            needsEmbedding
-        });
+    insertOne(TransactionEntityTable, {
+        type,
+        title: 'Manual transaction',
+        externalId: null,
+        comment: '',
+        toAccountId: null,
+        fromAccountId: null,
+        exchangeRate: 1,
+        externalSource: null,
+        updatedBy: null,
+        needsEmbedding
     });
 
 describe('embedding/mark-for-embedding', () => {

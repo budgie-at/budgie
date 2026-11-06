@@ -141,12 +141,9 @@ export class ImportedTransactionEntryUpdateService extends Context.Service<Impor
                     return;
                 }
 
+                const valuation = yield* resolveValuation(entry, input, context);
                 const createdEntry = yield* transactionEntryRepository.create({
-                    ...transactionMapEntryInputToCreateEntity(
-                        entry,
-                        primaryEntry.transactionId,
-                        yield* resolveValuation(entry, input, context)
-                    ),
+                    ...transactionMapEntryInputToCreateEntity(entry, primaryEntry.transactionId, valuation),
                     originalTransactionId: primaryEntry.originalTransactionId
                 });
 

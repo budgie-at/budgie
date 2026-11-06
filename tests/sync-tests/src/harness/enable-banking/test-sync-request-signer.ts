@@ -36,18 +36,18 @@ export const testSigner = {
 export const testSyncRequestSignerLayer = Layer.succeed(SyncRequestSigner, {
     sign: (keyId: string, signingInput: string) => {
         if (missingKeyIds.has(keyId)) {
-            return Effect.fail(new SyncUnauthorizedError({ provider, message: 'Signing key is missing' }));
+            return Effect.fail(SyncUnauthorizedError.make({ provider, message: 'Signing key is missing' }));
         }
 
         if (unavailableKeyIds.has(keyId)) {
-            return Effect.fail(new SyncDeferredError({ provider, message: 'Secure storage is locked' }));
+            return Effect.fail(SyncDeferredError.make({ provider, message: 'Secure storage is locked' }));
         }
 
         return Effect.succeed(rsaSigner.sign(signingInput));
     },
     deleteKey: (keyId: string) =>
         undeletableKeyIds.has(keyId)
-            ? Effect.fail(new SyncDeferredError({ provider, message: 'secure-storage-unavailable' }))
+            ? Effect.fail(SyncDeferredError.make({ provider, message: 'secure-storage-unavailable' }))
             : Effect.sync(() => {
                   deletedKeyIds.push(keyId);
               })

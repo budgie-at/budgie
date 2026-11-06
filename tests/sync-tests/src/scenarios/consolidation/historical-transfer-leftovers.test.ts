@@ -135,17 +135,12 @@ const seedMovedSourceEntry = (canonicalTransactionId: number, accountId: number)
     });
 
 const archiveAccount = (accountId: number) =>
-    Effect.gen(function* () {
-        yield* testDb
-            .update(AccountEntityTable)
-            .set({ includeInNetWorth: false, isActive: false })
-            .where(eq(AccountEntityTable.id, accountId));
-    });
+    Effect.asVoid(
+        testDb.update(AccountEntityTable).set({ includeInNetWorth: false, isActive: false }).where(eq(AccountEntityTable.id, accountId))
+    );
 
 const setTransactionExternalSource = (transactionId: number, externalSource: ExternalSourceEnum) =>
-    Effect.gen(function* () {
-        yield* testDb.update(TransactionEntityTable).set({ externalSource }).where(eq(TransactionEntityTable.id, transactionId));
-    });
+    Effect.asVoid(testDb.update(TransactionEntityTable).set({ externalSource }).where(eq(TransactionEntityTable.id, transactionId)));
 
 const seedExistingTransferBridgeCandidate = (
     externalIdPrefix: string,
@@ -275,19 +270,17 @@ const fetchMovedSourceIds = (canonicalId: number) =>
     });
 
 const fetchLiveDebitEntry = (transactionId: number) =>
-    Effect.gen(function* () {
-        return yield* testDb
-            .select()
-            .from(TransactionEntryEntityTable)
-            .where(
-                and(
-                    eq(TransactionEntryEntityTable.transactionId, transactionId),
-                    eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.DEBIT),
-                    isNull(TransactionEntryEntityTable.originalTransactionId),
-                    isNull(TransactionEntryEntityTable.deletedAt)
-                )
-            );
-    });
+    testDb
+        .select()
+        .from(TransactionEntryEntityTable)
+        .where(
+            and(
+                eq(TransactionEntryEntityTable.transactionId, transactionId),
+                eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.DEBIT),
+                isNull(TransactionEntryEntityTable.originalTransactionId),
+                isNull(TransactionEntryEntityTable.deletedAt)
+            )
+        );
 
 const expectSingleCanonicalOfType = (consolidationType: TransactionConsolidationTypeEnum, fromAccountId: number, toAccountId: number) =>
     Effect.gen(function* () {
@@ -301,14 +294,10 @@ const expectSingleCanonicalOfType = (consolidationType: TransactionConsolidation
     });
 
 const expectSingleIbanBridgeCanonical = (fromAccountId: number, toAccountId: number) =>
-    Effect.gen(function* () {
-        return yield* expectSingleCanonicalOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER, fromAccountId, toAccountId);
-    });
+    expectSingleCanonicalOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER, fromAccountId, toAccountId);
 
 const expectSingleTransferPairCanonical = (fromAccountId: number, toAccountId: number) =>
-    Effect.gen(function* () {
-        return yield* expectSingleCanonicalOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR, fromAccountId, toAccountId);
-    });
+    expectSingleCanonicalOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR, fromAccountId, toAccountId);
 
 const expectMovedSourceIds = (canonicalId: number, transactionIds: readonly number[]) =>
     Effect.gen(function* () {

@@ -1,6 +1,6 @@
 import * as Schema from 'effect/Schema';
 
-export class ImportRowError extends Schema.TaggedError<ImportRowError>()('ImportRowError', {
+export class ImportRowError extends Schema.TaggedError<ImportRowError, { readonly brand: unique symbol }>()('ImportRowError', {
     reason: Schema.String,
     rowColumns: Schema.String
 }) {

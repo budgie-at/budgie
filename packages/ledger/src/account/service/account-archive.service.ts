@@ -48,7 +48,8 @@ export class AccountArchiveService extends Context.Service<AccountArchiveService
         const unconsolidateActiveAutoByAccountId = Effect.fn('AccountArchiveService.unconsolidateActiveAutoByAccountId')(function* (
             id: number
         ) {
-            yield* unconsolidateAll(yield* transactionConsolidationRepository.findActiveAutoConsolidatedByAccountIds([id]));
+            const autoConsolidations = yield* transactionConsolidationRepository.findActiveAutoConsolidatedByAccountIds([id]);
+            yield* unconsolidateAll(autoConsolidations);
         });
 
         const archiveAccountRows = Effect.fnUntraced(function* (id: number) {
@@ -105,7 +106,9 @@ export class AccountArchiveService extends Context.Service<AccountArchiveService
 
                 yield* Db.transaction(
                     Effect.gen(function* () {
-                        if (!isNotEmptyArray(yield* accountRepository.restoreById(id))) {
+                        const restoredAccounts = yield* accountRepository.restoreById(id);
+
+                        if (!isNotEmptyArray(restoredAccounts)) {
                             return;
                         }
 

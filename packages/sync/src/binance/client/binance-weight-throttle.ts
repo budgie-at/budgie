@@ -69,7 +69,7 @@ export class BinanceWeightThrottle {
 
     private readonly sleepWithinDeadline = Effect.fnUntraced(function* (this: BinanceWeightThrottle, durationMs: number, message: string) {
         if ((yield* Clock.currentTimeMillis) + durationMs >= this.deadlineAtMs) {
-            return yield* new SyncDeferredError({ provider: SyncProviderEnum.BINANCE, message });
+            return yield* SyncDeferredError.make({ provider: SyncProviderEnum.BINANCE, message });
         }
 
         yield* Effect.sleep(durationMs);

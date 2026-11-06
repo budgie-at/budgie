@@ -94,15 +94,15 @@ export class RefundConsolidationService extends Context.Service<RefundConsolidat
                     refundIncomeTransaction.type !== TransactionTypeEnum.INCOME ||
                     expenseTransaction.type !== TransactionTypeEnum.EXPENSE
                 ) {
-                    return yield* new RefundNotFromIncomeError();
+                    return yield* RefundNotFromIncomeError.make();
                 }
 
                 if (isAlreadyConsolidated(refundIncomeTransaction, expenseTransaction)) {
-                    return yield* new RefundAlreadyConsolidatedError();
+                    return yield* RefundAlreadyConsolidatedError.make();
                 }
 
                 if (!isDefined(expenseEntry) || !isDefined(refundIncomeEntry)) {
-                    return yield* new RefundTransactionNotFoundError();
+                    return yield* RefundTransactionNotFoundError.make();
                 }
 
                 const existingRefundAmount = getExistingRefundAmount(expenseTransaction.entries);
@@ -111,7 +111,7 @@ export class RefundConsolidationService extends Context.Service<RefundConsolidat
                     refundIncomeEntry.amount + existingRefundAmount > expenseEntry.amount &&
                     !isPrivatbankForeignCurrencyFullRefund(refundIncomeTransaction, expenseTransaction, refundIncomeEntry, expenseEntry)
                 ) {
-                    return yield* new RefundExceedsExpenseError();
+                    return yield* RefundExceedsExpenseError.make();
                 }
 
                 return yield* Effect.void;
@@ -137,7 +137,7 @@ export class RefundConsolidationService extends Context.Service<RefundConsolidat
                         const expenseTransaction = transactions.find(transaction => transaction.id === params.expenseTransactionId);
 
                         if (!isDefined(refundIncomeTransaction) || !isDefined(expenseTransaction)) {
-                            return yield* new RefundTransactionNotFoundError();
+                            return yield* RefundTransactionNotFoundError.make();
                         }
 
                         yield* validateRefundIncomePair(refundIncomeTransaction, expenseTransaction);

@@ -39,7 +39,7 @@ describe('monobank/old-transactions-after-dormant-month', () => {
 
             yield* monobankSyncService.sync();
 
-            const persisted = yield* fetchPersistedMonobankTransactions();
+            const persisted = yield* fetchPersistedMonobankTransactions;
             expect(persisted).toHaveLength(EXPECTED_PERSISTED_COUNT);
             const [persistedOld] = persisted;
             expect(persistedOld.externalId).toBe('tx-old-80d');

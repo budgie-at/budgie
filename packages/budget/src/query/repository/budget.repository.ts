@@ -131,20 +131,18 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
                         .set({ deletedAt: new Date() })
                         .where(and(eq(BudgetEntityTable.id, id), isNull(BudgetEntityTable.deletedAt)))
                 ),
-            findMain: () =>
-                Db.query(db =>
-                    db.query.BudgetEntityTable.findFirst({
-                        where: { deletedAt: { isNull: true }, kind: BudgetKindEnum.MAIN },
-                        orderBy: { updatedAt: 'desc' }
-                    })
-                ),
-            findAllMain: () =>
-                Db.query(db =>
-                    db.query.BudgetEntityTable.findMany({
-                        where: { deletedAt: { isNull: true }, kind: BudgetKindEnum.MAIN },
-                        orderBy: { updatedAt: 'desc' }
-                    })
-                ),
+            findMain: Db.query(db =>
+                db.query.BudgetEntityTable.findFirst({
+                    where: { deletedAt: { isNull: true }, kind: BudgetKindEnum.MAIN },
+                    orderBy: { updatedAt: 'desc' }
+                })
+            ),
+            findAllMain: Db.query(db =>
+                db.query.BudgetEntityTable.findMany({
+                    where: { deletedAt: { isNull: true }, kind: BudgetKindEnum.MAIN },
+                    orderBy: { updatedAt: 'desc' }
+                })
+            ),
             findActiveEvents: (now: Date) =>
                 Db.query(db =>
                     db
@@ -165,13 +163,12 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
                         where: { id, deletedAt: { isNull: true }, kind: BudgetKindEnum.EVENT }
                     })
                 ),
-            findEarliestOperatedAt: () =>
-                Db.query(db =>
-                    db
-                        .select({ earliest: min(TransactionEntityTable.operatedAt) })
-                        .from(TransactionEntityTable)
-                        .where(isNull(TransactionEntityTable.deletedAt))
-                ).pipe(Effect.map(([row]) => row.earliest ?? null)),
+            findEarliestOperatedAt: Db.query(db =>
+                db
+                    .select({ earliest: min(TransactionEntityTable.operatedAt) })
+                    .from(TransactionEntityTable)
+                    .where(isNull(TransactionEntityTable.deletedAt))
+            ).pipe(Effect.map(([row]) => row.earliest ?? null)),
             findBudgetSpentEntries: (periodStart: Date, nextPeriodStart: Date, baseInstrumentId: number, budgetSyncZone = PERSONAL_SYNC_ZONE) =>
                 findEntries(buildRefundAdjustedAmountSql(), buildSpentWhere(periodStart, nextPeriodStart), baseInstrumentId, budgetSyncZone),
             findIncomeReceivedEntries: (periodStart: Date, nextPeriodStart: Date, baseInstrumentId: number, budgetSyncZone = PERSONAL_SYNC_ZONE) =>

@@ -16,19 +16,17 @@ const normalize = (vector: readonly number[]): Float32Array => {
 export const embedCategorizationEvalTexts = Effect.fnUntraced(function* (documents: readonly string[], queries: readonly string[]) {
     const directory = join(homedir(), '.cache', 'budgie-models');
 
-    const modelPath = yield* Effect.tryPromise(() =>
-        resolveModelFile(EMBEDDING_MODEL_URL, { directory, fileName: EMBEDDING_MODEL_FILENAME })
-    );
+    const modelPath = yield* Effect.promise(() => resolveModelFile(EMBEDDING_MODEL_URL, { directory, fileName: EMBEDDING_MODEL_FILENAME }));
     const llama = yield* Effect.acquireRelease(
-        Effect.tryPromise(() => getLlama()),
+        Effect.promise(() => getLlama()),
         instance => Effect.promise(() => instance.dispose())
     );
-    const model = yield* Effect.tryPromise(() => llama.loadModel({ modelPath }));
-    const context = yield* Effect.tryPromise(() => model.createEmbeddingContext({ contextSize: EMBEDDING_CONTEXT_SIZE }));
+    const model = yield* Effect.promise(() => llama.loadModel({ modelPath }));
+    const context = yield* Effect.promise(() => model.createEmbeddingContext({ contextSize: EMBEDDING_CONTEXT_SIZE }));
     const embedAll = (texts: readonly string[], prefix: string) =>
         Effect.forEach(new Set(texts), text =>
             Effect.map(
-                Effect.tryPromise(() => context.getEmbeddingFor(`${prefix}${text}`)),
+                Effect.promise(() => context.getEmbeddingFor(`${prefix}${text}`)),
                 embedding => [text, normalize(embedding.vector)] as const
             )
         ).pipe(Effect.map(vectors => new Map(vectors)));

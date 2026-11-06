@@ -78,7 +78,7 @@ export class SyncIntegrationTokenService extends Context.Service<SyncIntegration
             ) {
                 const existingIntegration = yield* bankIntegrationRepository.findByProviderAndToken(provider, token);
                 if (isDefined(existingIntegration) && existingIntegration.id !== ownIntegrationId) {
-                    return yield* new SyncTokenAlreadyConnectedError({
+                    return yield* SyncTokenAlreadyConnectedError.make({
                         provider,
                         integrationId: existingIntegration.id,
                         message: `This ${provider} token is already connected`

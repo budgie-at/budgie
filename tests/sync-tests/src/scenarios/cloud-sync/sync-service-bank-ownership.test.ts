@@ -26,7 +26,7 @@ describe('cloud-sync/bank ownership', () => {
                 yield* TestClock.setTime(Date.now());
                 yield* seedMonobankTokenAccount('card-1', 'token-1');
 
-                const [integration] = yield* (yield* BankIntegrationRepository).findActive();
+                const [integration] = yield* (yield* BankIntegrationRepository).findActive;
                 const records = yield* SyncRecordRepository;
                 const ownership = yield* BankOwnershipService;
 

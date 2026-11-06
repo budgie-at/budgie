@@ -1,6 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
+import { NotificationFeedbackType } from 'expo-haptics';
 
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
@@ -24,7 +25,7 @@ export const HouseholdStopSharingRow = ({ isEmptyGroup }: Props) => {
     const removeEmptyGroup = Effect.flatMap(HouseholdService, householdService => householdService.removeEmptyGroup()).pipe(
         Effect.tap(() =>
             Effect.sync(() => {
-                hapticNotification();
+                hapticNotification(NotificationFeedbackType.Success);
                 showSuccessToast(t`Family group removed`);
             })
         ),
@@ -40,7 +41,7 @@ export const HouseholdStopSharingRow = ({ isEmptyGroup }: Props) => {
         Effect.flatMap(isConfirmed =>
             isConfirmed
                 ? Effect.flatMap(HouseholdService, householdService => householdService.stopSharing()).pipe(
-                      Effect.tap(() => Effect.sync(() => hapticNotification()))
+                      Effect.tap(() => Effect.sync(() => hapticNotification(NotificationFeedbackType.Success)))
                   )
                 : Effect.void
         ),

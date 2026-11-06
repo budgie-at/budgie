@@ -23,7 +23,7 @@ export const useCategorizeInboxWriteQueue = (): CategorizeInboxEnqueueWriteType 
                     Effect.sync(() => {
                         rollback();
                         hapticNotification(NotificationFeedbackType.Error);
-                        showErrorToast(failedMessage, getErrorMessage(Cause.squash(cause)));
+                        showErrorToast(failedMessage, cause.pipe(Cause.squash, getErrorMessage));
                     })
                 )
             )

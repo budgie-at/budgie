@@ -26,9 +26,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
 
-export const testDbHandle = await buildTestDb();
-
-export const testDb = testDbHandle.database;
+export const testDb = await buildTestDb();
 
 export const testQueryService = new TestQueryService(testDb);
 
@@ -69,7 +67,7 @@ export const rebuildStoredBalances = Effect.flatMap(AccountBalanceIncrementalSer
 
 export const seedStoredBalancesOnce = Effect.gen(function* () {
     const accountBalanceRepository = yield* AccountBalanceRepository;
-    const [{ updatedAt }] = yield* accountBalanceRepository.getLatestUpdatedAt();
+    const [{ updatedAt }] = yield* accountBalanceRepository.getLatestUpdatedAt;
 
     if (!isDefined(updatedAt)) {
         yield* rebuildStoredBalances;

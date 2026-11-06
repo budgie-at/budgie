@@ -35,10 +35,7 @@ const FEE_ENTRY_AMOUNT = 5 * PRECISION;
 const UPDATED_ENTRY_AMOUNT = 80;
 const OPERATED_AT = new Date('2026-06-05T09:00:00.000Z');
 
-const seedFeeCashAccount = () =>
-    Effect.gen(function* () {
-        return yield* seed.account({ title: 'Fee cash account', type: AccountTypeEnum.BANK_SYNC });
-    });
+const seedFeeCashAccount = () => seed.account({ title: 'Fee cash account', type: AccountTypeEnum.BANK_SYNC });
 
 const seedLentDebtAccount = () =>
     Effect.gen(function* () {
@@ -61,39 +58,35 @@ const seedLentDebtAccount = () =>
     });
 
 const seedSyncedExpenseTransaction = (cashAccountId: number) =>
-    Effect.gen(function* () {
-        return yield* insertOne(TransactionEntityTable, {
-            type: TransactionTypeEnum.EXPENSE,
-            title: 'Coffee shop purchase',
-            externalId: 'privatbank-expense',
-            externalSource: ExternalSourceEnum.PRIVATBANK,
-            operatedAt: OPERATED_AT,
-            comment: '',
-            exchangeRate: 1,
-            updatedBy: null,
-            fromAccountId: cashAccountId,
-            toAccountId: null
-        } satisfies TransactionCreateEntityInterface);
-    });
+    insertOne(TransactionEntityTable, {
+        type: TransactionTypeEnum.EXPENSE,
+        title: 'Coffee shop purchase',
+        externalId: 'privatbank-expense',
+        externalSource: ExternalSourceEnum.PRIVATBANK,
+        operatedAt: OPERATED_AT,
+        comment: '',
+        exchangeRate: 1,
+        updatedBy: null,
+        fromAccountId: cashAccountId,
+        toAccountId: null
+    } satisfies TransactionCreateEntityInterface);
 
 const seedCreditEntry = (transactionId: number, cashAccountId: number, amount: number, externalId: string | null) =>
-    Effect.gen(function* () {
-        return yield* insertOne(TransactionEntryEntityTable, {
-            transactionId,
-            accountId: cashAccountId,
-            type: TransactionEntryTypeEnum.CREDIT,
-            kind: TransactionEntryKindEnum.PRIMARY,
-            amount,
-            categoryId: null,
-            mccCategoryId: null,
-            externalId,
-            exchangeRate: 1,
-            baseInstrumentId: 1,
-            baseExchangeRate: 1,
-            baseAmount: amount,
-            toIban: null,
-            originalTransactionId: null
-        });
+    insertOne(TransactionEntryEntityTable, {
+        transactionId,
+        accountId: cashAccountId,
+        type: TransactionEntryTypeEnum.CREDIT,
+        kind: TransactionEntryKindEnum.PRIMARY,
+        amount,
+        categoryId: null,
+        mccCategoryId: null,
+        externalId,
+        exchangeRate: 1,
+        baseInstrumentId: 1,
+        baseExchangeRate: 1,
+        baseAmount: amount,
+        toIban: null,
+        originalTransactionId: null
     });
 
 const seedFeeBearingEntries = (transactionId: number, cashAccountId: number) =>

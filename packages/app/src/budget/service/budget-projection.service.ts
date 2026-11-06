@@ -93,7 +93,7 @@ export class BudgetProjectionService extends Context.Service<BudgetProjectionSer
         });
 
         const loadInstallmentCharges = Effect.fnUntraced(function* (budgetInstrumentId: number) {
-            const accounts = yield* accountRepository.getAllActiveAccounts();
+            const accounts = yield* accountRepository.getAllActiveAccounts;
             const charges = yield* Effect.forEach(
                 accounts.filter(account => account.debtType === AccountDebtTypeEnum.INSTALLMENT),
                 Effect.fnUntraced(function* (account) {

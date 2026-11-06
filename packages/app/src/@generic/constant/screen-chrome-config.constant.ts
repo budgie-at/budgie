@@ -1,7 +1,6 @@
 import type { ScreenChromeConfigOverridesInterface } from '@rnw-community/react-native-screen-chrome';
 
 export const SCREEN_CHROME_CONFIG: ScreenChromeConfigOverridesInterface = {
-    collapsedHeaderHeight: 32,
     topFadeHeight: 130,
     bottomFadeHeight: 150,
     headerBackdropHeight: 130,

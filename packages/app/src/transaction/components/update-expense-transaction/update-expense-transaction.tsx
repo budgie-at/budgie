@@ -30,12 +30,7 @@ export const UpdateExpenseTransaction = ({ transaction, openFeeOnMount }: Update
             onGoBack={simpleTransaction.handleGoBack}
             right={<UpdateTransactionActionsMenu {...simpleTransaction.actionsMenuProps} />}
         >
-            <SimpleQuickForm
-                ref={formRef}
-                transactionType={TransactionTypeEnum.EXPENSE}
-                onSubmit={simpleTransaction.handleSubmit}
-                onCancel={simpleTransaction.handleGoBack}
-            >
+            <SimpleQuickForm ref={formRef} transactionType={TransactionTypeEnum.EXPENSE} onSubmit={simpleTransaction.handleSubmit}>
                 <DebtSettlementPill account={simpleTransaction.debtSettlementAccount} />
                 <RulePillSlot ruleDetection={simpleTransaction.ruleDetection} />
                 <RefundedPill

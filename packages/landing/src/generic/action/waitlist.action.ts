@@ -1,6 +1,7 @@
 /* oxlint-disable lingui/no-unlocalized-strings -- Server action with error codes, not user-facing text */
 'use server';
 
+import * as Config from 'effect/Config';
 import * as Effect from 'effect/Effect';
 import * as Option from 'effect/Option';
 import * as Schema from 'effect/Schema';
@@ -9,7 +10,7 @@ import * as Semaphore from 'effect/Semaphore';
 import { unstable_cache as cacheServerResult } from 'next/cache';
 import { createClient, type RedisClientType } from 'redis';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { emptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { WaitlistMessageKeyEnum } from '../enum/waitlist-message-key.enum';
 
@@ -79,7 +80,7 @@ const destroyRedisClient = (client: RedisClientType) => {
 };
 
 const runRedisCommand = <Result>(client: RedisClientType, command: () => Promise<Result>, deadlineMs: number) =>
-    Effect.tryPromise(command).pipe(
+    Effect.tryPromise({ try: command, catch: emptyFn }).pipe(
         Effect.timeout(deadlineMs),
         Effect.tapError(() => Effect.sync(() => void destroyRedisClient(client)))
     );
@@ -95,7 +96,9 @@ const connectRedisClient = Effect.fn('connectRedisClient')(function* (redisUrl: 
         commandOptions: { timeout: 2000 }
     });
 
-    client.on('error', () => void Effect.runFork(Effect.logError('client_error')));
+    const context = yield* Effect.context();
+
+    client.on('error', () => void Effect.runForkWith(context)(Effect.logError('client_error')));
 
     yield* runRedisCommand(client, async () => await client.connect(), REDIS_CONNECTION_DEADLINE_MS);
 
@@ -119,7 +122,7 @@ const getRedisClient = Effect.fn('getRedisClient')(function* () {
         destroyRedisClient(redisClient);
     }
 
-    const redisUrl = process.env.REDIS_URL;
+    const redisUrl = yield* Config.String('REDIS_URL').pipe(Config.withDefault(''));
 
     if (!isNotEmptyString(redisUrl)) {
         yield* Effect.logError('configuration_missing');
@@ -184,4 +187,4 @@ const getCachedWaitlistCount = cacheServerResult(async () => await Effect.runPro
 export const joinWaitlist = async (input: unknown) => await Effect.runPromise(joinWaitlistProgram(input));
 
 export const getWaitlistCount = async (): Promise<number | null> =>
-    await Effect.runPromise(Effect.tryPromise(getCachedWaitlistCount).pipe(Effect.orElseSucceed(() => null)));
+    await Effect.runPromise(Effect.tryPromise({ try: getCachedWaitlistCount, catch: emptyFn }).pipe(Effect.orElseSucceed(() => null)));

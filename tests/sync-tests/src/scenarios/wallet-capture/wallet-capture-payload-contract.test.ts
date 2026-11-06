@@ -7,7 +7,7 @@ import * as Exit from 'effect/Exit';
 
 import { seedExchangeRate } from '../../harness/consolidation/seed-exchange-rate';
 import { requireInstrument } from '../../harness/db/require-instrument';
-import { testDb } from '../../harness/scenario/setup';
+import { testDb } from '../../harness/scenario/test-db';
 import { TestLayer } from '../../harness/scenario/test-runtime';
 import { seed } from '../../harness/seed/seed';
 import { walletCaptureNativeStub } from '../../harness/wallet-capture/wallet-capture-app-intents.stub';
