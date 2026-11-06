@@ -13,7 +13,7 @@ import { TransactionRowSurface } from '../../../transaction/components/transacti
 import { COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT } from '../../constant/collapsible-net-worth-header-scroll-spacer.constant';
 import { HomeAccountBalanceInterface } from '../../interface/home-account-balance.interface';
 import { HomeSectionInterface } from '../../interface/home-section.interface';
-import { getHomeSectionItemKey } from '../../utils/get-home-section-item-key.util';
+import { isInstitutionGroup } from '../../type-guard/is-institution-group.type-guard';
 import { getHomeSectionItemPosition } from '../../utils/get-home-section-item-position.util';
 import { AccountsEmptyState } from '../accounts-empty-state/accounts-empty-state';
 import { CollapsibleNetWorthHeaderScrollSpacer } from '../collapsible-net-worth-header-scroll-spacer/collapsible-net-worth-header-scroll-spacer';
@@ -66,7 +66,13 @@ export const HomeSectionsList = ({
             flexGrow: 1
         }
     });
-    const listFormatKey = `${defaultInstrumentId}-${decimalPlaces}`;
+    const keyExtractor = (item: HomeSectionInterface['data'][number]): string => {
+        if (isInstitutionGroup(item)) {
+            return `institution-${item.integrationId}`;
+        }
+
+        return 'accounts' in item ? `crypto-${item.instrument.id}` : String(item.id);
+    };
     const listFooterComponent =
         activeAccountCount > COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT ? (
             <CollapsibleNetWorthHeaderScrollSpacer />
@@ -87,18 +93,18 @@ export const HomeSectionsList = ({
 
     const renderItem: SectionListRenderItem<HomeSectionInterface['data'][number], HomeSectionInterface> = ({ item, index, section }) => (
         <TransactionRowSurface position={getHomeSectionItemPosition(section, index)}>
-            <HomeSectionItem key={getHomeSectionItemKey(item)} item={item} section={section} balancesByAccountId={balancesByAccountId} />
+            <HomeSectionItem item={item} section={section} balancesByAccountId={balancesByAccountId} />
         </TransactionRowSurface>
     );
 
     return (
         <AnimatedSectionList
-            key={listFormatKey}
+            key={`${defaultInstrumentId}-${decimalPlaces}`}
             sections={sections}
             renderSectionHeader={renderSectionHeader}
             renderItem={renderItem}
             renderSectionFooter={renderSectionFooter}
-            keyExtractor={getHomeSectionItemKey}
+            keyExtractor={keyExtractor}
             extraData={balancesByAccountId}
             refScrollView={refScrollView}
             ref={handleListRef}

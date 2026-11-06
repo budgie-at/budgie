@@ -10,8 +10,6 @@ import {
     SCREEN_CHROME_TOP_FADE_LENGTH
 } from '../constant/screen-chrome-config.constant';
 
-import { ScreenChromeStickyHeadersProvider } from './screen-chrome-sticky-headers.provider';
-
 import type { EdgeFadeBandRenderPropsInterface, ScreenChromeConfigOverridesInterface } from '@rnw-community/react-native-screen-chrome';
 import type { ReactNode } from 'react';
 
@@ -51,7 +49,7 @@ export const ScreenChromeThemeProvider = ({ children, syncNativeScrollOffset, co
             syncNativeScrollOffset={syncNativeScrollOffset}
             renderEdgeFadeBand={renderEdgeFadeBand}
         >
-            <ScreenChromeStickyHeadersProvider>{children}</ScreenChromeStickyHeadersProvider>
+            {children}
         </ScreenChromeProvider>
     );
 };

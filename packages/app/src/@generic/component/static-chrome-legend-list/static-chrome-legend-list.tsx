@@ -17,7 +17,7 @@ export const StaticChromeLegendList = <TItem,>({
     contentContainerStyle,
     ListHeaderComponent,
     data,
-    renderItem,
+    renderItem: Row,
     ref,
     ...props
 }: LegendListProps<TItem> & { readonly ref?: RefCallback<LegendListPositionSourceInterface> }) => {
@@ -28,8 +28,13 @@ export const StaticChromeLegendList = <TItem,>({
     const headers = (props.stickyHeaderIndices ?? []).flatMap(index => {
         const item = data?.[index];
 
-        return isDefined(item) && isDefined(data) && isDefined(renderItem)
-            ? [{ index, content: renderItem({ item, index, data, extraData, type: props.getItemType?.(item, index) }) }]
+        return isDefined(item) && isDefined(data) && isDefined(Row)
+            ? [
+                  {
+                      index,
+                      content: <Row item={item} index={index} data={data} extraData={extraData} type={props.getItemType?.(item, index)} />
+                  }
+              ]
             : [];
     });
     const {
@@ -65,13 +70,13 @@ export const StaticChromeLegendList = <TItem,>({
             {...props}
             {...scrollProps}
             data={data}
-            renderItem={renderItem}
+            renderItem={Row}
             stickyHeaderConfig={stickyHeaderConfig}
             onMetricsChange={handleMetricsChange}
             onItemSizeChanged={handleItemSizeChanged}
             onViewableItemsChanged={handleViewableItemsChanged}
             ListHeaderComponent={ListHeaderComponent}
-            extraData={extraData ?? renderItem}
+            extraData={extraData ?? Row}
             ref={handleListRef}
             refScrollView={refScrollView}
             maintainVisibleContentPosition={MAINTAIN_VISIBLE_CONTENT_POSITION}

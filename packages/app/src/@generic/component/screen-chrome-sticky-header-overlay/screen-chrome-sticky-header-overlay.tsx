@@ -1,5 +1,5 @@
-import { use, useState } from 'react';
-import Animated, { runOnJS, useAnimatedReaction, useAnimatedStyle } from 'react-native-reanimated';
+import { use } from 'react';
+import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 
 import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 
@@ -14,20 +14,11 @@ interface Props {
 
 export const ScreenChromeStickyHeaderOverlay = ({ source }: Props) => {
     const context = use(ScreenChromeStickyHeadersContext);
-    const [renderIndex, setRenderIndex] = useState(0);
     const { config, colorScheme } = useScreenChrome();
     const { solid } = config.colors[colorScheme];
     const state = context?.state;
     const anchor = context?.anchor;
 
-    useAnimatedReaction(
-        () => Math.max(0, state?.get().index ?? -1),
-        (index, previous) => {
-            if (index !== previous) {
-                runOnJS(setRenderIndex)(index);
-            }
-        }
-    );
     const style = useAnimatedStyle(() => ({
         position: 'absolute',
         top: anchor?.get() ?? 0,
@@ -38,8 +29,7 @@ export const ScreenChromeStickyHeaderOverlay = ({ source }: Props) => {
         zIndex: 4,
         backgroundColor: solid
     }));
-    const start = Math.max(0, renderIndex - 1);
-    const headers = source?.headers.slice(start, renderIndex + 2).map((header, index) => ({ header, position: start + index })) ?? [];
+    const headers = source?.headers ?? [];
     const horizontalInset = source?.horizontalInset ?? 0;
 
     return (
@@ -50,7 +40,7 @@ export const ScreenChromeStickyHeaderOverlay = ({ source }: Props) => {
             accessibilityElementsHidden
             importantForAccessibility="no-hide-descendants"
         >
-            {headers.map(({ header, position }) => (
+            {headers.map((header, position) => (
                 <ScreenChromeStickyHeaderRow key={header.index} header={header} position={position} horizontalInset={horizontalInset} />
             ))}
         </Animated.View>
