@@ -6270,8 +6270,8 @@ msgid "One‑off"
 msgstr "One‑off"
 
 #: src/inzhur/hook/use-inzhur-purchase-submit.hook.ts
-msgid "Only {remainingAmount} of this top-up is left to spend"
-msgstr "Only {remainingAmount} of this top-up is left to spend"
+msgid "Only {remainingLabel} of this top-up is left to spend"
+msgstr "Only {remainingLabel} of this top-up is left to spend"
 
 #: ../ledger/src/installment/service/installment-plan.service.ts
 msgid "Only an expense can become an installment plan"

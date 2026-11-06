@@ -6269,8 +6269,8 @@ msgid "One‑off"
 msgstr "Einmalig"
 
 #: src/inzhur/hook/use-inzhur-purchase-submit.hook.ts
-msgid "Only {remainingAmount} of this top-up is left to spend"
-msgstr "Von dieser Einzahlung sind nur noch {remainingAmount} übrig"
+msgid "Only {remainingLabel} of this top-up is left to spend"
+msgstr "Von dieser Einzahlung sind nur noch {remainingLabel} übrig"
 
 #: ../ledger/src/installment/service/installment-plan.service.ts
 msgid "Only an expense can become an installment plan"
