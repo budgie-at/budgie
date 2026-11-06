@@ -99,6 +99,7 @@ const buildHomePageSections = (
     const otherAccounts = activeAccounts.filter(account => account.type !== AccountTypeEnum.DEBT);
     const isProviderAccount = (account: AccountWithSyncEntityInterface) =>
         isDefined(resolveBankProviderGroup(account.integrationId, integrationProviders));
+    const cashAccounts = otherAccounts.filter(account => account.type === AccountTypeEnum.CASH && !isProviderAccount(account));
     const typeAccounts = otherAccounts.filter(account => !isProviderAccount(account) && account.type !== AccountTypeEnum.CASH);
     const institutions = buildInstitutionGroups(
         otherAccounts.filter(isProviderAccount),
@@ -149,7 +150,18 @@ const buildHomePageSections = (
         return isNotEmptyArray(data) ? [{ kind, data, total: balanceSummary.debtSectionTotals.get(kind) ?? 0 }] : [];
     });
 
-    return [...typeSections.sort((left, right) => right.total - left.total), ...debtSections];
+    const cashSection = isNotEmptyArray(cashAccounts)
+        ? [
+              {
+                  kind: HomeSectionKindEnum.CASH as const,
+                  type: AccountTypeEnum.CASH as const,
+                  total: sumConvertedBalances(cashAccounts, balanceSummary.balancesByAccountId),
+                  data: cashAccounts
+              }
+          ]
+        : [];
+
+    return [...cashSection, ...typeSections.sort((left, right) => right.total - left.total), ...debtSections];
 };
 
 const addTotal = <Key>(totals: Map<Key, number>, key: Key, amount: number): void => {
@@ -256,17 +268,11 @@ export const useHomePageDataQuery = () => {
         data.flatMap(row => (isDefined(row.account.integrationId) ? [[row.account.integrationId, row.integrationLabel] as const] : []))
     );
     const sections = buildHomePageSections(displayedAccounts, integrationProviders, integrationLabels, balanceSummary);
-    const cashAccounts = displayedAccounts.filter(
-        account =>
-            account.type === AccountTypeEnum.CASH && !isDefined(resolveBankProviderGroup(account.integrationId, integrationProviders))
-    );
 
     return {
         activeAccountCount: displayedAccounts.length,
         accounts,
         balanceSummary,
-        cashAccounts,
-        cashTotal: sumConvertedBalances(cashAccounts, balanceSummary.balancesByAccountId),
         isLoading: AsyncResult.isInitial(result),
         sections
     };

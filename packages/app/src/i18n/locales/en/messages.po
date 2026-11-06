@@ -7107,7 +7107,7 @@ msgstr "Record Apple Pay purchases"
 msgid "Record card taps with Shortcuts"
 msgstr "Record card taps with Shortcuts"
 
-#: src/account/component/cash-card/cash-card.tsx
+#: src/account/component/cash-record-expense-row/cash-record-expense-row.tsx
 msgid "Record expense"
 msgstr "Record expense"
 

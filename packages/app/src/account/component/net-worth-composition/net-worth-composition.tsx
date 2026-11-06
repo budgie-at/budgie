@@ -1,4 +1,3 @@
-import { AccountTypeEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -16,16 +15,12 @@ import type { HomeSectionInterface } from '../../interface/home-section.interfac
 
 interface Props {
     readonly sections: readonly HomeSectionInterface[];
-    readonly cashTotal: number;
 }
 
-export const NetWorthComposition = ({ sections, cashTotal }: Props) => {
+export const NetWorthComposition = ({ sections }: Props) => {
     const { t } = useLingui();
 
-    const groups = [
-        ...sections.flatMap(section => (isDebtSection(section) ? [] : [{ type: section.type, total: section.total }])),
-        { type: AccountTypeEnum.CASH, total: cashTotal }
-    ];
+    const groups = sections.flatMap(section => (isDebtSection(section) ? [] : [{ type: section.type, total: section.total }]));
     const segments = groups
         .filter(group => isPositiveNumber(group.total))
         .sort((left, right) => right.total - left.total)

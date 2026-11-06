@@ -16,6 +16,7 @@ import { isInstitutionGroup } from '../../type-guard/is-institution-group.type-g
 import { getHomeSectionItemPosition } from '../../utils/get-home-section-item-position.util';
 import { AccountsEmptyState } from '../accounts-empty-state/accounts-empty-state';
 import { CollapsibleNetWorthHeaderScrollSpacer } from '../collapsible-net-worth-header-scroll-spacer/collapsible-net-worth-header-scroll-spacer';
+import { HomeSectionFooter } from '../home-section-footer/home-section-footer';
 import { HomeSectionHeader } from '../home-section-header/home-section-header';
 import { HomeSectionItem } from '../home-section-item/home-section-item';
 
@@ -69,7 +70,7 @@ export const HomeSectionsList = ({
     const renderSectionHeader = ({ section }: { section: HomeSectionInterface }) => <HomeSectionHeader section={section} />;
 
     const renderItem: SectionListRenderItem<HomeSectionInterface['data'][number], HomeSectionInterface> = ({ item, index, section }) => (
-        <TransactionRowSurface position={getHomeSectionItemPosition(section.data, index)}>
+        <TransactionRowSurface position={getHomeSectionItemPosition(section, index)}>
             <HomeSectionItem item={item} section={section} balancesByAccountId={balancesByAccountId} />
         </TransactionRowSurface>
     );
@@ -88,6 +89,7 @@ export const HomeSectionsList = ({
             sections={sections}
             renderSectionHeader={renderSectionHeader}
             renderItem={renderItem}
+            renderSectionFooter={HomeSectionFooter}
             keyExtractor={keyExtractor}
             extraData={listFormatKey}
             showsVerticalScrollIndicator={false}
