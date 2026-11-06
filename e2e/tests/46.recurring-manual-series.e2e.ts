@@ -19,6 +19,20 @@ test('46 recurring manual series', { tags: ['recurring'] }, async ({ budgie }) =
         await b.fillId(ctx, 'RecurringForm.Title', 'E2E Manual Netflix');
         await b.done(ctx);
         await b.tapId(ctx, 'RecurringForm.Repeat.MONTHLY');
+        await b.tapId(ctx, 'RecurringForm.Category');
+        await b.expectId(ctx, 'CategoryPickerBottomSheet.Input');
+        await b.selectCategoryBySearch(ctx, 'Groceries');
+        await b.tapId(ctx, 'RecurringForm.Kind.EXPENSE');
+        await expect(b.byId(ctx.screen, 'RecurringForm.Category')).toHaveText(/Groceries/u);
+        await b.scrollTo(ctx, 'RecurringForm.End.AFTER_COUNT');
+        await b.tapId(ctx, 'RecurringForm.End.AFTER_COUNT');
+        await b.fillId(ctx, 'RecurringForm.EndCount', '700');
+        await b.done(ctx);
+        await b.tapId(ctx, 'RecurringForm.Save');
+        await b.expectText(ctx, 'Check the repeat and end settings.');
+        await b.expectId(ctx, 'RecurringForm.Page');
+        await b.scrollTo(ctx, 'RecurringForm.End.NEVER');
+        await b.tapId(ctx, 'RecurringForm.End.NEVER');
         await b.tapId(ctx, 'RecurringForm.Save');
         await b.expectId(ctx, 'RecurringDetail.Page', 10_000);
     });
@@ -27,7 +41,7 @@ test('46 recurring manual series', { tags: ['recurring'] }, async ({ budgie }) =
         await t.navigateToTransactions(ctx);
         await b.tapId(ctx, 'TransactionsPage.Tab.Recurring');
         await b.expectId(ctx, ROW, 10_000);
-        await expect(b.byId(ctx.screen, ROW)).toHaveText(/E2E Manual Netflix[\s\S]*Monthly · next /u);
+        await expect(b.byId(ctx.screen, ROW)).toHaveText(/E2E Manual Netflix[\s\S]*· Monthly/u);
     });
 
     await b.phase('open the series detail', async () => {

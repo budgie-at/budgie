@@ -2,6 +2,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { RECURRING_AMOUNT_RATIO } from '../constant/recurring-amount-ratio.constant';
 import { DAYS_PER_MONTH } from '../constant/recurring-days-per-month.constant';
+import { RECURRING_HISTORY_MONTHS } from '../constant/recurring-history-months.constant';
 
 import { nearestCycle } from './recurring-series';
 
@@ -9,7 +10,7 @@ import type { RecurringConfidenceInputInterface } from '../interface/recurring-c
 import type { RecurringSeriesInterface } from '../interface/recurring-series.interface';
 
 const MAX_CYCLES = 6;
-const HISTORY_DAYS = 24 * DAYS_PER_MONTH;
+const HISTORY_DAYS = RECURRING_HISTORY_MONTHS * DAYS_PER_MONTH;
 const CYCLES_WEIGHT = 40;
 const REGULARITY_WEIGHT = 20;
 const STABILITY_WEIGHT = 20;
@@ -21,7 +22,7 @@ const IBAN_PATTERN = /^[A-Z]{2}\d{2}[A-Z0-9]{10,30}$/u;
 const clampUnit = (value: number): number => Math.min(1, Math.max(0, value));
 
 export const scoreRecurringConfidence = (input: RecurringConfidenceInputInterface): number => {
-    const achievable = Math.min(MAX_CYCLES, Math.floor(HISTORY_DAYS / (input.periodDays ?? 1)));
+    const achievable = Math.min(MAX_CYCLES, Math.floor(HISTORY_DAYS / input.periodDays));
     const cycles = clampUnit((Math.min(input.cycleCount, achievable) - 1) / Math.max(achievable - 1, 1));
     const regularity = clampUnit(1 - input.meanDeviationDays / input.toleranceDays);
     const stability = input.isVariable

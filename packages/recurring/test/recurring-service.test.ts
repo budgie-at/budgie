@@ -175,6 +175,25 @@ const expectSuggestedEntries = (entries: ReturnType<typeof allEntries>) => {
 beforeEach(() => Effect.runPromise(resetTestDb(testDb)));
 
 layer(TestLayer)('recurringService', it => {
+    it.effect('covers the observed legacy charge before detection creates links', () =>
+        Effect.gen(function* () {
+            const saved = yield* seedSavedSeries({
+                merchantKey: 'EXPENSE|1|NETFLIX',
+                title: 'Netflix',
+                amount: 12 * PRECISION,
+                userState: RecurringSeriesUserStateEnum.CONFIRMED,
+                lastSeenAt: new Date(2026, 5, 5)
+            });
+            const service = yield* RecurringService;
+            const [item] = yield* service.listSeries(NOW);
+            const calendar = yield* service.calendar(2026, 5, NOW);
+            expect(item.id).toBe(saved.id);
+            expect(item.alert).not.toBe(RecurringAlertEnum.OVERDUE);
+            expect(item.nextDate).toEqual(new Date(2026, 6, 5));
+            expect(calendar.forecastedEntriesByDay.get(5) ?? []).toEqual([]);
+        })
+    );
+
     for (const title of ['Office365', 'GmbH', 'GUIDE MICHELIN', 'Liquid Web']) {
         it.effect(`stores and projects a visible title for ${title}`, () =>
             Effect.gen(function* () {

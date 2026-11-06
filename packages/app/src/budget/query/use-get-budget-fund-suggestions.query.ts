@@ -1,6 +1,9 @@
 import {
     BudgetSinkingFundEntityTable,
     ExchangeRateEntityTable,
+    HistoricalExchangeRateEntityTable,
+    CategoryEntityTable,
+    DefaultCategoryTranslationEntityTable,
     RecurringSeriesEntityTable,
     RecurringSeriesTransactionEntityTable,
     SettingsEntityTable
@@ -22,6 +25,9 @@ const budgetFundSuggestionsAtom = databaseQueryFamily(
         RecurringSeriesTransactionEntityTable,
         BudgetSinkingFundEntityTable,
         ExchangeRateEntityTable,
+        HistoricalExchangeRateEntityTable,
+        CategoryEntityTable,
+        DefaultCategoryTranslationEntityTable,
         SettingsEntityTable
     ],
     BudgetFundSuggestionService,

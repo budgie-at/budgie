@@ -181,3 +181,12 @@ it.effect('rejects unrelated large purchases and substring titles', () =>
         ).toHaveLength(1);
     })
 );
+
+it.effect('allows manual utility drift while rejecting unrelated purchases even with variable history', () =>
+    Effect.sync(() => {
+        const utility = entry(1, { merchantKey: 'EXPENSE|1|EVN', defaultAmount: 80 * PRECISION });
+        expect(matchRecurringTransactions([charge(1, June(5), 95, 'EVN')], [utility])).toHaveLength(1);
+        expect(matchRecurringTransactions([charge(2, June(5), 150, 'EVN')], [utility])).toHaveLength(1);
+        expect(matchRecurringTransactions([charge(3, June(5), 200, 'EVN')], [{ ...utility, isVariable: true }])).toEqual([]);
+    })
+);

@@ -28,7 +28,9 @@ export const RecurringFormKindField = () => {
     ];
 
     const handleChange = (kind: RecurringSeriesKindEnum) => {
-        setValue('categoryId', null);
+        if (kind !== value) {
+            setValue('categoryId', null);
+        }
         onChange(kind);
     };
 

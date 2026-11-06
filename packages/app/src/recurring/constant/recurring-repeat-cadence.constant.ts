@@ -11,6 +11,5 @@ export const RECURRING_REPEAT_CADENCE: Record<
     [RecurringRepeatChoiceEnum.WEEKLY]: { cadenceUnit: RecurringCadenceUnitEnum.WEEK, cadenceInterval: 1 },
     [RecurringRepeatChoiceEnum.BIWEEKLY]: { cadenceUnit: RecurringCadenceUnitEnum.WEEK, cadenceInterval: 2 },
     [RecurringRepeatChoiceEnum.MONTHLY]: { cadenceUnit: RecurringCadenceUnitEnum.MONTH, cadenceInterval: 1 },
-    [RecurringRepeatChoiceEnum.QUARTERLY]: { cadenceUnit: RecurringCadenceUnitEnum.MONTH, cadenceInterval: 3 },
     [RecurringRepeatChoiceEnum.YEARLY]: { cadenceUnit: RecurringCadenceUnitEnum.YEAR, cadenceInterval: 1 }
 };

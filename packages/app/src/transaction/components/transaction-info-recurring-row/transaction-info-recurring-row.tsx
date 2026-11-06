@@ -4,7 +4,6 @@ import { useRouter } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { useRecurringSeriesForTransaction } from '../../../recurring/hook/use-recurring-series-for-transaction.hook';
 import { TransactionActionsMenuSelector } from '../transaction-actions-menu/transaction-actions-menu.selector';
 import { TransactionInfoActionRow } from '../transaction-info-action-row/transaction-info-action-row';
@@ -20,18 +19,24 @@ export const TransactionInfoRecurringRow = ({ transactionId }: Props) => {
     const { seriesId, isLoading } = useRecurringSeriesForTransaction(transactionId);
     const handleViewRecurring = () => void router.push({ pathname: '/recurring/[id]', params: { id: String(seriesId) } });
 
-    return (
-        <LoadingContent isLoading={isLoading}>
-            {isDefined(seriesId) ? (
-                <TransactionInfoActionRow
-                    icon={UserIconNameEnum.Repeat}
-                    label={t`View recurring`}
-                    onPress={handleViewRecurring}
-                    testID={TransactionActionsMenuSelector.ViewRecurringButton}
-                />
-            ) : (
-                <TransactionInfoMakeRecurringRow transactionId={transactionId} />
-            )}
-        </LoadingContent>
+    if (isLoading) {
+        return (
+            <TransactionInfoActionRow
+                icon={UserIconNameEnum.Repeat}
+                label={t`Make recurring`}
+                testID={TransactionActionsMenuSelector.MakeRecurringButton}
+            />
+        );
+    }
+
+    return isDefined(seriesId) ? (
+        <TransactionInfoActionRow
+            icon={UserIconNameEnum.Repeat}
+            label={t`View recurring`}
+            onPress={handleViewRecurring}
+            testID={TransactionActionsMenuSelector.ViewRecurringButton}
+        />
+    ) : (
+        <TransactionInfoMakeRecurringRow transactionId={transactionId} />
     );
 };

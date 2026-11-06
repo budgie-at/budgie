@@ -2312,13 +2312,13 @@ msgstr "Chart max {scaleAmount}"
 msgid "Check the form to continue"
 msgstr "Check the form to continue"
 
-#: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
-msgid "Check the highlighted fields."
-msgstr "Check the highlighted fields."
-
 #: src/sync/utils/toast-binance-key-permissions-error.util.ts
 msgid "Check the key and secret, then try again."
 msgstr "Check the key and secret, then try again."
+
+#: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
+msgid "Check the repeat and end settings."
+msgstr "Check the repeat and end settings."
 
 #: src/app/category-selector.tsx
 #: src/category/components/category-empty-state/category-empty-state.tsx
@@ -5303,6 +5303,7 @@ msgstr "Make primary"
 #: src/recurring/components/make-recurring-sheet/make-recurring-sheet.tsx
 #: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
 #: src/transaction/components/transaction-info-make-recurring-row/transaction-info-make-recurring-row.tsx
+#: src/transaction/components/transaction-info-recurring-row/transaction-info-recurring-row.tsx
 msgid "Make recurring"
 msgstr "Make recurring"
 

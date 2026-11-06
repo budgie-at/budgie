@@ -2311,13 +2311,13 @@ msgstr "Максимум графіка {scaleAmount}"
 msgid "Check the form to continue"
 msgstr "Перевірте форму, щоб продовжити"
 
-#: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
-msgid "Check the highlighted fields."
-msgstr "Перевірте виділені поля."
-
 #: src/sync/utils/toast-binance-key-permissions-error.util.ts
 msgid "Check the key and secret, then try again."
 msgstr "Перевірте ключ і секрет та спробуйте ще раз."
+
+#: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
+msgid "Check the repeat and end settings."
+msgstr "Перевірте налаштування повторення та завершення."
 
 #: src/app/category-selector.tsx
 #: src/category/components/category-empty-state/category-empty-state.tsx
@@ -5302,6 +5302,7 @@ msgstr "Зробити основним"
 #: src/recurring/components/make-recurring-sheet/make-recurring-sheet.tsx
 #: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
 #: src/transaction/components/transaction-info-make-recurring-row/transaction-info-make-recurring-row.tsx
+#: src/transaction/components/transaction-info-recurring-row/transaction-info-recurring-row.tsx
 msgid "Make recurring"
 msgstr "Зробити регулярним"
 

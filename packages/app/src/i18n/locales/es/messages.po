@@ -2311,13 +2311,13 @@ msgstr "Máximo del gráfico {scaleAmount}"
 msgid "Check the form to continue"
 msgstr "Revisa el formulario para continuar"
 
-#: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
-msgid "Check the highlighted fields."
-msgstr "Revisa los campos resaltados."
-
 #: src/sync/utils/toast-binance-key-permissions-error.util.ts
 msgid "Check the key and secret, then try again."
 msgstr "Comprueba la clave y el secreto e inténtalo de nuevo."
+
+#: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
+msgid "Check the repeat and end settings."
+msgstr "Revisa los ajustes de repetición y finalización."
 
 #: src/app/category-selector.tsx
 #: src/category/components/category-empty-state/category-empty-state.tsx
@@ -5302,6 +5302,7 @@ msgstr "Hacer principal"
 #: src/recurring/components/make-recurring-sheet/make-recurring-sheet.tsx
 #: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
 #: src/transaction/components/transaction-info-make-recurring-row/transaction-info-make-recurring-row.tsx
+#: src/transaction/components/transaction-info-recurring-row/transaction-info-recurring-row.tsx
 msgid "Make recurring"
 msgstr "Hacer recurrente"
 

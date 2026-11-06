@@ -44,7 +44,7 @@ export const RecurringDetailContent = ({ detail }: Props) => {
                     <RecurringDetailHero series={series} now={now} />
                     <RecurringDetailStats kind={series.kind} history={history} />
                     <RecurringDetailAlertBanner series={series} />
-                    <RecurringDetailNextPayments dates={nextDates} amount={series.amount} now={now} />
+                    {series.isActive ? <RecurringDetailNextPayments dates={nextDates} amount={series.amount} now={now} /> : null}
                     <RecurringDetailHistory seriesId={series.id} kind={series.kind} history={history} />
                     {series.isActive ? <RecurringDetailReminderRow series={series} /> : null}
                     <RecurringDetailDestructiveRow source={series.source} onRemove={handleRemove} />

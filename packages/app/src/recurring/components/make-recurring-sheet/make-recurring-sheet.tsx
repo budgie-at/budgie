@@ -2,7 +2,8 @@ import { RecurringService } from '@budgie/recurring';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { router } from 'expo-router';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, View, useWindowDimensions } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -31,6 +32,9 @@ interface Props {
 
 export const MakeRecurringSheet = ({ transactionId }: Props) => {
     const { t } = useLingui();
+    const { height } = useWindowDimensions();
+    const { top } = useSafeAreaInsets();
+    const scrollStyle = { flexGrow: 0, maxHeight: height - top };
     const { now, fittingSeries, isLoading } = useRecurringFittingSeries(transactionId);
     const addFlight = useSingleFlight();
 
@@ -64,7 +68,7 @@ export const MakeRecurringSheet = ({ transactionId }: Props) => {
 
     return (
         <GroupedSurface palette={GroupedSurfacePaletteEnum.SHEET} className="flex-none" testID={MakeRecurringSheetSelector.Page}>
-            <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
+            <ScrollView style={scrollStyle} bounces={false} showsVerticalScrollIndicator={false}>
                 <View className="px-3xl pt-7xl pb-md">
                     <SheetTitleRow title={t`Make recurring`} />
                 </View>

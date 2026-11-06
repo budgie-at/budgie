@@ -5,16 +5,18 @@ import { startOfDay } from 'date-fns/startOfDay';
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { RECURRING_AMOUNT_RATIO } from '../constant/recurring-amount-ratio.constant';
+import { matchesRecurringTitle } from '../utils/matches-recurring-title.util';
 import { normalizeRecurringDescription } from '../utils/normalize-recurring-description.util';
 
 import { cadenceToleranceDays, nearestCycleDate } from './recurring-schedule';
-import { PRICE_CHANGE_RATIO, description, identity } from './recurring-series';
+import { description, identity } from './recurring-series';
 
 import type { RecurringChargeInterface } from '../interface/recurring-charge.interface';
 import type { RecurringMatchSeriesInterface } from '../interface/recurring-match-series.interface';
 import type { RecurringMatchInterface } from '../interface/recurring-match.interface';
 
 const IDENTITY_SEGMENTS = 3;
+const MANUAL_AMOUNT_RATIO = 2;
 
 export const merchantIdentityOf = (merchantKey: string): string => merchantKey.split('|').slice(0, IDENTITY_SEGMENTS).join('|');
 
@@ -32,7 +34,7 @@ const matchesMerchant = (
     }
     const title = normalizeRecurringDescription(entry.series.title);
 
-    return isNotEmptyString(title) && ` ${normalizeRecurringDescription(description(charge))} `.includes(` ${title} `);
+    return matchesRecurringTitle(title, normalizeRecurringDescription(description(charge)));
 };
 
 const rankCandidates = (
@@ -46,12 +48,10 @@ const rankCandidates = (
     return entries
         .filter(
             entry =>
-                (entry.isVariable === true ||
+                ((entry.series.source === RecurringSeriesSourceEnum.DETECTED && entry.isVariable === true) ||
                     Math.max(entry.series.defaultAmount, charge.defaultAmount) <=
                         Math.min(entry.series.defaultAmount, charge.defaultAmount) *
-                            (entry.series.source === RecurringSeriesSourceEnum.MANUAL
-                                ? RECURRING_AMOUNT_RATIO + PRICE_CHANGE_RATIO
-                                : RECURRING_AMOUNT_RATIO)) &&
+                            (entry.series.source === RecurringSeriesSourceEnum.MANUAL ? MANUAL_AMOUNT_RATIO : RECURRING_AMOUNT_RATIO)) &&
                 entry.series.kind === charge.kind &&
                 !entry.excludedTransactionIds.has(charge.transactionId) &&
                 (!isDefined(entry.series.accountId) || entry.series.accountId === charge.accountId) &&

@@ -28,7 +28,7 @@ export const SegmentedControl = <T extends string>(props: Props<T>) => {
     const segmentWidth = useSharedValue(0);
     const activeIndex = segments.findIndex(segment => segment.value === value);
     const thumbOffset = useDerivedValue(() => {
-        const target = activeIndex * segmentWidth.get();
+        const target = Math.max(activeIndex, 0) * segmentWidth.get();
 
         return reducedMotion ? target : withSpring(target, THUMB_SPRING);
     });

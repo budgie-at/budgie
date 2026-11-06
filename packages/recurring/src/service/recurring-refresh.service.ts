@@ -20,6 +20,7 @@ import * as Semaphore from 'effect/Semaphore';
 import { isDefined } from '@rnw-community/shared';
 
 import { RECURRING_AMOUNT_RATIO } from '../constant/recurring-amount-ratio.constant';
+import { RECURRING_HISTORY_MONTHS } from '../constant/recurring-history-months.constant';
 import { RECURRING_TRACKED_KINDS } from '../constant/recurring-tracked-kinds.constant';
 import { RecurringAdoptionEnum } from '../enum/recurring-adoption.enum';
 import { RecurringRepository } from '../repository/recurring.repository';
@@ -45,7 +46,6 @@ import type {
 
 export class RecurringRefreshService extends Context.Service<RecurringRefreshService>()('@budgie/recurring/RecurringRefreshService', {
     make: Effect.gen(function* () {
-        const HISTORY_MONTHS = 24;
         const MATCH_WINDOW_DAYS = 60;
         const FULL_DETECTION_INTERVAL_MS = 86_400_000;
         const valuesEqual = (first: unknown, second: unknown): boolean =>
@@ -55,6 +55,7 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
             row.source === RecurringSeriesSourceEnum.MANUAL || row.userState === RecurringSeriesUserStateEnum.CONFIRMED;
 
         const STREAM_PERIOD_RATIO = 1.25;
+        const VARIABLE_CHARGE_COUNT = 3;
 
         const isSameStream = (owner: RecurringSeriesEntityInterface, series: RecurringSeriesInterface): boolean => {
             if (isUserOwned(owner)) {
@@ -186,7 +187,7 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
                 links.filter(link => link.isExcluded && !liveByTransaction.has(link.transactionId)).map(link => link.transactionId)
             );
             const occupied = new Set(liveLinks.map(link => pairKey(link.seriesId, link.cycleDate.getTime())));
-            const since = subMonths(now, HISTORY_MONTHS);
+            const since = subMonths(now, RECURRING_HISTORY_MONTHS);
             const charges = (yield* Effect.forEach(RECURRING_TRACKED_KINDS, kind =>
                 recurringRepository.findCharges(defaultInstrumentId, language, since, kind)
             ))
@@ -315,8 +316,11 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
 
                     const amounts = rowLinks
                         .filter(link => !link.isExcluded)
-                        .map(link => linkedCharges.get(chargeKey(row.kind, link.transactionId))?.nativeAmount)
-                        .filter(isDefined);
+                        .map(link => linkedCharges.get(chargeKey(row.kind, link.transactionId)))
+                        .filter(isDefined)
+                        .sort((first, second) => second.operatedAt.getTime() - first.operatedAt.getTime())
+                        .slice(0, VARIABLE_CHARGE_COUNT)
+                        .map(charge => charge.nativeAmount);
 
                     return {
                         isVariable: amounts.length > 1 && Math.max(...amounts) > Math.min(...amounts) * RECURRING_AMOUNT_RATIO,
@@ -384,22 +388,20 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
             yield* Ref.set(isInitialDone, true);
         });
 
-        const refreshWithPermit = (now: Date) =>
-            permit.withPermits(1)(
-                Effect.gen(function* () {
-                    yield* matchRecentUnlocked(now);
-                    const lastRun = yield* Ref.get(lastDetectionAt);
-                    const isDue = !isDefined(lastRun) || now.getTime() - lastRun >= FULL_DETECTION_INTERVAL_MS;
-
-                    if (isDue) {
-                        yield* detectUnlocked(now);
-                    }
-                })
-            );
-
         return {
             matchRecent: (now: Date) => permit.withPermits(1)(matchRecentUnlocked(now)),
-            refresh: (now: Date) => refreshWithPermit(now),
+            refresh: (now: Date) =>
+                permit.withPermits(1)(
+                    Effect.gen(function* () {
+                        yield* matchRecentUnlocked(now);
+                        const lastRun = yield* Ref.get(lastDetectionAt);
+                        const isDue = !isDefined(lastRun) || now.getTime() - lastRun >= FULL_DETECTION_INTERVAL_MS;
+
+                        if (isDue) {
+                            yield* detectUnlocked(now);
+                        }
+                    })
+                ),
             ensureInitial: (now: Date) =>
                 isInitialDone.pipe(
                     Ref.get,

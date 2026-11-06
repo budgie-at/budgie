@@ -59,6 +59,7 @@ it.effect('activates a variable amount series with four regular cycles and demot
         expect(confidenceOf(monthlyCharges([80, 95, 110, 120]))).toBeGreaterThanOrEqual(RECURRING_ACTIVE_CONFIDENCE);
         expect(
             scoreRecurringConfidence({
+                periodDays: 30,
                 cycleCount: 4,
                 meanDeviationDays: 0,
                 toleranceDays: 4,

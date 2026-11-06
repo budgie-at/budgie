@@ -27,6 +27,7 @@ import { cadencePeriodDays, monthlyEquivalent, nearestCycleDate, nextOccurrences
 import { counterpartyKey, description, identity } from '../series/recurring-series';
 import { isSeriesActiveNow } from '../series/recurring-state';
 import { chargeKey } from '../utils/charge-key.util';
+import { matchesRecurringTitle } from '../utils/matches-recurring-title.util';
 import { normalizeRecurringDescription } from '../utils/normalize-recurring-description.util';
 
 import { RecurringRefreshService } from './recurring-refresh.service';
@@ -375,7 +376,7 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
                         const title = normalizeRecurringDescription(model.series.title);
                         const isMerchant = isNotEmptyString(model.series.merchantKey)
                             ? isNotEmptyString(chargeIdentity) && merchantIdentityOf(model.series.merchantKey) === chargeIdentity
-                            : isNotEmptyString(title) && normalizedDescription.includes(title);
+                            : matchesRecurringTitle(title, normalizedDescription);
                         const gap = Math.abs(model.series.defaultAmount - charge.defaultAmount);
 
                         return {
@@ -415,6 +416,7 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
                         );
                         const series = isDefined(revivable)
                             ? yield* recurringRepository.updateSeries(revivable.id, {
+                                  source: RecurringSeriesSourceEnum.MANUAL,
                                   userState: RecurringSeriesUserStateEnum.CONFIRMED,
                                   status: RecurringSeriesStatusEnum.ACTIVE,
                                   title: input.title,

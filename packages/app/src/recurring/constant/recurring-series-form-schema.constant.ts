@@ -34,7 +34,7 @@ export const RecurringSeriesFormSchema = Schema.Struct({
             values.repeat !== RecurringRepeatChoiceEnum.CUSTOM ||
             (Number.isInteger(values.customInterval) && values.customInterval >= 1 && values.customInterval <= MAX_CADENCE_INTERVAL) || {
                 path: ['customInterval'],
-                issue: 'Enter an interval from 1 to 99'
+                issue: ''
             }
     ),
     Schema.makeFilter(
@@ -42,7 +42,7 @@ export const RecurringSeriesFormSchema = Schema.Struct({
             values.endMode !== RecurringEndModeEnum.AFTER_COUNT ||
             (Number.isInteger(values.endsAfterCount) && values.endsAfterCount >= 1 && values.endsAfterCount <= MAX_END_COUNT) || {
                 path: ['endsAfterCount'],
-                issue: 'Enter a count from 1 to 600'
+                issue: ''
             }
     ),
     Schema.makeFilter(

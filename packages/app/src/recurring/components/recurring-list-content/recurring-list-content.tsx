@@ -42,11 +42,6 @@ export const RecurringListContent = ({ header }: Props) => {
     const summary = buildRecurringSummary(loadedSeries, now);
     const contentContainerStyle = { paddingBottom: FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottom };
     const emptyState = isLoading ? null : <RecurringListEmptyState />;
-    const listHeader = (
-        <>
-            <RecurringSummaryCard summary={summary} now={now} />
-        </>
-    );
 
     const handleToggleSection = (section: RecurringSectionEnum) =>
         void setExpandedSections(current => (current.includes(section) ? current.filter(item => item !== section) : [...current, section]));
@@ -75,7 +70,7 @@ export const RecurringListContent = ({ header }: Props) => {
                         renderItem={renderItem}
                         estimatedItemSize={64}
                         contentContainerStyle={contentContainerStyle}
-                        ListHeaderComponent={listHeader}
+                        ListHeaderComponent={<RecurringSummaryCard summary={summary} now={now} />}
                         ListEmptyComponent={emptyState}
                     />
                 </View>

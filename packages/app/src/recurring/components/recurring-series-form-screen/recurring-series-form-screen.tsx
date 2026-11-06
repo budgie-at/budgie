@@ -72,7 +72,7 @@ export const RecurringSeriesFormScreen = ({ target, initialValues }: Props) => {
                     toastOnFailure(t`Could not save recurring payment.`)
                 )
             ),
-        () => void showErrorToast(t`Could not save recurring payment.`, t`Check the highlighted fields.`)
+        () => void showErrorToast(t`Could not save recurring payment.`, t`Check the repeat and end settings.`)
     );
 
     return (

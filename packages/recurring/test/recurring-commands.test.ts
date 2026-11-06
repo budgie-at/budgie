@@ -25,6 +25,7 @@ import {
     seedDetectedSeries,
     seedMonthlyCharges,
     seedNetflixCharge,
+    seedSavedSeries,
     setUserState,
     testDb,
     testSeedService
@@ -65,6 +66,43 @@ const seedSubscription = Effect.fnUntraced(function* () {
 beforeEach(() => Effect.runPromise(resetTestDb(testDb)));
 
 layer(TestLayer)('recurringService commands', it => {
+    it.effect('ages a detected price step out of the incremental matching band', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            const ids = yield* Effect.forEach(
+                [
+                    [4, 10],
+                    [3, 13],
+                    [2, 13],
+                    [1, 13]
+                ],
+                ([monthsAgo, amount]) => seed('NETFLIX', monthsAgo, 5, amount)
+            );
+            const saved = yield* seedSavedSeries({
+                merchantKey: 'EXPENSE|1|NETFLIX',
+                title: 'Netflix',
+                amount: 13 * PRECISION,
+                userState: RecurringSeriesUserStateEnum.CONFIRMED,
+                lastSeenAt: new Date(2026, 4, 5)
+            });
+            const service = yield* recurringService;
+            yield* Effect.forEach(ids, transactionId => service.addTransaction(saved.id, transactionId));
+            const purchase = yield* seed('NETFLIX', 0, 5, 200);
+            yield* (yield* refreshService).matchRecent(NOW);
+            expect((yield* allLinks).some(link => link.transactionId === purchase)).toBe(false);
+        })
+    );
+
+    it.effect('does not suggest a manual title embedded in a different word', () =>
+        Effect.gen(function* () {
+            const service = yield* recurringService;
+            yield* service.createManual(manualInput({ title: 'Rent', amount: 100 * PRECISION }));
+            const seed = yield* seedCharges();
+            const transactionId = yield* seed('PARENTS GIFT', 0, 5, 100);
+            expect(yield* service.fittingSeries(transactionId, NOW)).toEqual([]);
+        })
+    );
+
     it.effect('covers a manually linked late payment cycle', () =>
         Effect.gen(function* () {
             const service = yield* recurringService;
@@ -283,13 +321,15 @@ layer(TestLayer)('recurringService commands', it => {
                 ids[5],
                 manualInput({ title: 'Netflix HD', amount: 13 * PRECISION })
             );
+            yield* detectAt(NOW);
             const rows = yield* (yield* repository).findAllSeries;
             const links = yield* allLinks;
 
             expect(rows).toHaveLength(1);
+            expect(rows[0].amount).toBe(13 * PRECISION);
             expect(revived).toMatchObject({
                 id: detected.id,
-                source: RecurringSeriesSourceEnum.DETECTED,
+                source: RecurringSeriesSourceEnum.MANUAL,
                 userState: RecurringSeriesUserStateEnum.CONFIRMED,
                 title: 'Netflix HD',
                 amount: 13 * PRECISION

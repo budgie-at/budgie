@@ -3,7 +3,7 @@ import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
 import { isSameDay } from 'date-fns/isSameDay';
 import { startOfDay } from 'date-fns/startOfDay';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { RECURRING_AMOUNT_RATIO } from '../constant/recurring-amount-ratio.constant';
 import { RecurringAlertEnum } from '../enum/recurring-alert.enum';
@@ -23,10 +23,15 @@ const PREVIOUS_AMOUNT_COUNT = 3;
 export const isCycleCovered = (model: RecurringReadModelInterface, cycleDate: Date): boolean => {
     const tolerance = cadenceToleranceDays(model.series);
 
-    return model.links.some(
-        ({ link, charge }) =>
-            !link.isExcluded &&
-            (isSameDay(link.cycleDate, cycleDate) || Math.abs(differenceInCalendarDays(charge.operatedAt, cycleDate)) <= tolerance)
+    return (
+        (model.series.source === RecurringSeriesSourceEnum.DETECTED &&
+            isEmptyArray(model.links) &&
+            Math.abs(differenceInCalendarDays(model.series.lastSeenAt, cycleDate)) <= tolerance) ||
+        model.links.some(
+            ({ link, charge }) =>
+                !link.isExcluded &&
+                (isSameDay(link.cycleDate, cycleDate) || Math.abs(differenceInCalendarDays(charge.operatedAt, cycleDate)) <= tolerance)
+        )
     );
 };
 

@@ -89,7 +89,7 @@ it.effect('includes overdue expense forecasts from the monthly headline', () =>
     })
 );
 
-it.effect('counts a due-today forecast and excludes yesterday during the overdue grace', () =>
+it.effect("counts a due-today forecast and keeps yesterday's in-grace forecast in the total", () =>
     Effect.sync(() => {
         const charges = [5, 36, 64, 95].map(day => charge(day));
         const today = calendarFromCharges(charges, new Date(2026, 4, 5, 12));

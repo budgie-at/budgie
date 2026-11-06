@@ -53,11 +53,9 @@ export const RecurringSummaryCard = ({ summary, now }: Props) => {
                         <Text dynamicTypeRamp="footnote" className="text-[13px] font-medium text-primary/65">
                             <Trans>Monthly average</Trans>
                         </Text>
-                        <View className="flex-row flex-wrap items-baseline gap-x-xs">
-                            <ProtectedText dynamicTypeRamp="largeTitle" className="text-[34px] font-bold text-primary tabular-nums">
-                                {committedAmount}
-                            </ProtectedText>
-                        </View>
+                        <ProtectedText dynamicTypeRamp="largeTitle" className="text-[34px] font-bold text-primary tabular-nums">
+                            {committedAmount}
+                        </ProtectedText>
                         <RecurringSummarySubline countLabel={countLabel} nextPayment={nextPayment} now={now} />
                     </>
                 ) : null}

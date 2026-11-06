@@ -6,7 +6,7 @@ import type { UserIconType } from '@budgie/contracts';
 interface Props {
     readonly icon: UserIconType;
     readonly label: string;
-    readonly onPress: () => void;
+    readonly onPress?: () => void;
     readonly testID: string;
     readonly colorClassName?: string;
 }
