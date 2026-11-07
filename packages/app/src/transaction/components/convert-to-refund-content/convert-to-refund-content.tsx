@@ -14,11 +14,11 @@ import { useGetTransactionByIdQuery } from '../../query/use-get-transaction-by-i
 import { useRefundableExpenseCandidatesQuery } from '../../query/use-refundable-expense-candidates.query';
 import { getTransactionListRowPosition } from '../../utils/get-transaction-list-row-position.util';
 import { ConvertToRefundFooter } from '../convert-to-refund-footer/convert-to-refund-footer';
+import { ConvertToRefundHeader } from '../convert-to-refund-header/convert-to-refund-header';
 import { TransactionPickerContext } from '../transaction-picker-context/transaction-picker-context';
 import { TransactionPickerEmpty } from '../transaction-picker-empty/transaction-picker-empty';
 import { TransactionPickerFailure } from '../transaction-picker-failure/transaction-picker-failure';
 import { TransactionPickerRow } from '../transaction-picker-row/transaction-picker-row';
-import { TransactionPickerSheetHeader } from '../transaction-picker-sheet-header/transaction-picker-sheet-header';
 import { TransactionPickerSheet } from '../transaction-picker-sheet/transaction-picker-sheet';
 
 import type { ConvertToRefundModalResolveType } from '../../interface/convert-to-refund-modal-resolve.type';
@@ -53,12 +53,14 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
         selectedCandidate,
         resolveConvertToRefund
     );
+    const handleDone = showRevert ? handleResolve : convert;
+    const isDoneDisabled = isConverting || (!showRevert && !isDefined(selectedCandidate));
     const showEmpty = isEmptyArray(candidates) && !isNotEmptyString(errorMessage);
 
     return (
         <TransactionPickerSheet
             header={
-                <TransactionPickerSheetHeader title={t`Refund`} closeLabel={t`Cancel`} onClose={handleResolve} disabled={isConverting} />
+                <ConvertToRefundHeader onClose={handleResolve} onConfirm={handleDone} disabled={isDoneDisabled} isLoading={isConverting} />
             }
             testID={ConvertToRefundModalSelector.Picker}
             pinnedFooter={
@@ -78,6 +80,7 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
             <SearchInput
                 value={search}
                 allowFontScaling
+                maxFontSizeMultiplier={1.3}
                 containerClassName="h-auto min-h-[50px] py-sm"
                 placeholder={t`Search expenses`}
                 onChangeText={handleSearchChange}
@@ -85,6 +88,7 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
             />
             <Text
                 dynamicTypeRamp="footnote"
+                maxFontSizeMultiplier={1.3}
                 accessibilityRole="header"
                 className="pt-xl text-[13px] font-semibold text-secondary-foreground"
             >

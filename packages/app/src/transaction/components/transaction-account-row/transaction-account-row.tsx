@@ -48,7 +48,7 @@ export const TransactionAccountRow = ({ ref, fieldName, label, testID }: Props) 
             },
             selectedAccountId => {
                 if (isDefined(selectedAccountId)) {
-                    setValue(fieldName, selectedAccountId);
+                    setValue(fieldName, selectedAccountId, { shouldDirty: true });
                 }
             }
         );

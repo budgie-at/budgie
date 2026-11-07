@@ -169,10 +169,8 @@ async function openVoiceEntry(ctx: Ctx, modelTimeout: number): Promise<void> {
 }
 
 async function typeMerchant(ctx: Ctx, title: string): Promise<void> {
-    await open(ctx, 'budgie://create-transaction/expense', 'TransactionForm.CommentInput');
-    await t.tapUntilId(ctx, 'TransactionForm.CommentInput', 'NoteInput.Input', 1, 5_000);
-    // Typed key by key: the merchant suggestions react to typing, not to a set value.
-    await b.byId(ctx.screen, 'NoteInput.Input').pressSequentially(title);
+    await open(ctx, 'budgie://create-transaction/expense', 'TransactionForm.MerchantInput');
+    await b.byId(ctx.screen, 'TransactionForm.MerchantInput').pressSequentially(title);
 }
 
 /** The new-account list, scrolled to a statement bank, its picker opened on `file`. */
@@ -260,7 +258,7 @@ export const SCENES: Readonly<Record<string, Scene>> = {
     'ai-auto-categorization-1': {
         run: async ctx => {
             await typeMerchant(ctx, process.env.MERCHANT_TITLE ?? 'Whole Foods Market');
-            await b.tapId(ctx, 'NoteInput.SubmitButton');
+            await b.byId(ctx.screen, 'TransactionForm.MerchantInput').press('Enter');
             await b.expectId(ctx, 'SuggestionPill.PatternCategory.0', 15_000);
         }
     },
@@ -280,7 +278,7 @@ export const SCENES: Readonly<Record<string, Scene>> = {
     },
     'ai-transaction-suggestions-1': {
         run: async ctx => {
-            await open(ctx, 'budgie://create-transaction/expense', 'TransactionForm.CommentInput');
+            await open(ctx, 'budgie://create-transaction/expense', 'TransactionForm.AmountInput');
             await b.expectId(ctx, 'SuggestionPill.PatternCategory.0', 15_000);
         }
     },
@@ -344,7 +342,7 @@ export const SCENES: Readonly<Record<string, Scene>> = {
         run: async ctx => {
             await st.openConvertToRefundPicker(ctx, 2200, 'ConvertToRefund.CandidateRow.157');
             await b.tapId(ctx, 'ConvertToRefund.CandidateRow.157');
-            await expect(b.byId(ctx.screen, 'ConvertToRefund.ConvertButton')).toBeEnabled({ timeout: 5_000 });
+            await expect(b.byId(ctx.screen, 'ConvertToRefund.DoneButton')).toBeEnabled({ timeout: 5_000 });
         }
     },
     'convert-to-transfer-1': {
@@ -594,7 +592,7 @@ export const SCENES: Readonly<Record<string, Scene>> = {
         seed: 'social-showcase-16',
         run: async ctx => {
             await typeMerchant(ctx, process.env.MERCHANT_TITLE ?? 'Whole Foods Market');
-            await b.byId(ctx.screen, 'NoteInput.Input').press('Enter');
+            await b.byId(ctx.screen, 'TransactionForm.MerchantInput').press('Enter');
         }
     },
     'social-voice-entry': { smoke: false, seed: 'social-showcase-15', run: ctx => openVoiceEntry(ctx, 240_000) },

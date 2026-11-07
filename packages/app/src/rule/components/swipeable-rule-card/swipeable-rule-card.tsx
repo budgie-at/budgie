@@ -6,13 +6,16 @@ import { ReactNode, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
+    Easing,
     FadeIn,
     FadeOut,
     LinearTransition,
+    ReduceMotion,
     runOnJS,
     useAnimatedStyle,
     useSharedValue,
-    withSpring
+    withSpring,
+    withTiming
 } from 'react-native-reanimated';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -23,9 +26,8 @@ import { RuleIndicatorPill } from '../rule-indicator-pill/rule-indicator-pill';
 import type { AppServices } from '../../../@generic/runtime/app.runtime';
 import type * as Fiber from 'effect/Fiber';
 
-const ENTRY_SPRING_CONFIG = { damping: 20, stiffness: 80 };
+const ENTRY_FADE_CONFIG = { duration: 150, easing: Easing.out(Easing.cubic), reduceMotion: ReduceMotion.System };
 const SWIPE_THRESHOLD = 80;
-const ENTRY_TRANSLATE_Y = 16;
 const SNAP_BACK_SPRING_CONFIG = { damping: 20, stiffness: 200 };
 const SLIDE_OUT_DISTANCE = 300;
 const SUCCESS_AUTO_DISMISS_MS = 2000;
@@ -59,14 +61,12 @@ export const SwipeableRuleCard = (props: Props) => {
     const fiberRef = useRef<Fiber.Fiber<void> | null>(null);
 
     const translateX = useSharedValue(0);
-    const translateY = useSharedValue(ENTRY_TRANSLATE_Y);
     const opacity = useSharedValue(0);
     const didTriggerThresholdHaptic = useSharedValue(false);
 
     useEffect(() => {
-        translateY.set(withSpring(0, ENTRY_SPRING_CONFIG));
-        opacity.set(withSpring(1, ENTRY_SPRING_CONFIG));
-    }, [opacity, translateY]);
+        opacity.set(withTiming(1, ENTRY_FADE_CONFIG));
+    }, [opacity]);
 
     useEffect(
         () => () => {
@@ -114,7 +114,7 @@ export const SwipeableRuleCard = (props: Props) => {
         });
 
     const animatedStyle = useAnimatedStyle(() => ({
-        transform: [{ translateX: translateX.get() }, { translateY: translateY.get() }],
+        transform: [{ translateX: translateX.get() }],
         opacity: opacity.get()
     }));
 

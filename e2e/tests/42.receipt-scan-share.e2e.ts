@@ -1,7 +1,6 @@
 // The share extension's hand-off of the receipt PDF is done host-side (misc.shareFixtureWithApp).
 import { expect } from 'e2e';
 
-import * as c from '../support/budgie/categories.ts';
 import * as b from '../support/budgie/core.ts';
 import * as m from '../support/budgie/misc.ts';
 import { test } from '../support/budgie/test.ts';
@@ -16,10 +15,11 @@ test('42 receipt scan share', { tags: ['receipt'] }, async ({ budgie }) => {
     await b.phase('share receipt to budgie', async () => {
         await m.shareFixtureWithApp(budgie, 'receipt/receipt-e2e.pdf', 'application/pdf');
         await b.expectId(ctx, 'TransactionForm.SubmitButton', 30_000);
+        await b.expectText(ctx, 'Edit Expense');
+        await expect(b.byId(screen, 'TransactionForm.SubmitButton')).toBeEnabled();
     });
 
     await b.phase('save receipt transaction', async () => {
-        await c.createCategoryFromTransaction(ctx, 'E2E Receipt Category');
         await b.tapUntil(ctx, 'TransactionForm.SubmitButton', () => b.expectNoId(ctx, 'TransactionForm.SubmitButton', 10_000));
         await t.navigateToTransactions(ctx);
         await screen

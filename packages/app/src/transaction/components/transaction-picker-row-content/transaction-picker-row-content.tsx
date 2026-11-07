@@ -29,22 +29,22 @@ export const TransactionPickerRowContent = ({ item, title, amount, date, selecti
         return (
             <View className="gap-y-sm">
                 <View className="flex-row items-center justify-between gap-x-md">
-                    <Text dynamicTypeRamp="body" className={amountClassName}>
+                    <Text maxFontSizeMultiplier={1.3} dynamicTypeRamp="body" className={amountClassName}>
                         {amount}
                     </Text>
                     {selection}
                 </View>
-                <Text dynamicTypeRamp="caption1" className="text-[14px] font-medium text-secondary-foreground">
+                <Text maxFontSizeMultiplier={1.3} dynamicTypeRamp="caption1" className="text-[14px] font-medium text-secondary-foreground">
                     {date}
                 </Text>
-                <Text dynamicTypeRamp="body" className="text-[16px] font-semibold text-primary">
+                <Text maxFontSizeMultiplier={1.3} dynamicTypeRamp="body" className="text-[16px] font-semibold text-primary">
                     {title}
                 </Text>
-                <Text dynamicTypeRamp="caption1" className="text-[13px] text-secondary-foreground">
+                <Text maxFontSizeMultiplier={1.3} dynamicTypeRamp="caption1" className="text-[13px] text-secondary-foreground">
                     {item.accountTitle}
                 </Text>
                 {isNotEmptyString(item.categoryTitle) ? (
-                    <Text dynamicTypeRamp="caption1" className="text-[13px] text-secondary-foreground">
+                    <Text maxFontSizeMultiplier={1.3} dynamicTypeRamp="caption1" className="text-[13px] text-secondary-foreground">
                         {item.categoryTitle}
                     </Text>
                 ) : null}
@@ -59,25 +59,29 @@ export const TransactionPickerRowContent = ({ item, title, amount, date, selecti
             </View>
             <View className="flex-1 min-w-0 gap-y-sm">
                 <View className="flex-row items-start gap-x-md">
-                    <Text dynamicTypeRamp="body" className="flex-1 text-[16px] font-semibold text-primary">
+                    <Text maxFontSizeMultiplier={1.3} dynamicTypeRamp="body" className="flex-1 text-[16px] font-semibold text-primary">
                         {title}
                     </Text>
                     <View className="flex-row items-center gap-x-sm">
-                        <Text dynamicTypeRamp="body" className={amountClassName}>
+                        <Text maxFontSizeMultiplier={1.3} dynamicTypeRamp="body" className={amountClassName}>
                             {amount}
                         </Text>
                         {selection}
                     </View>
                 </View>
                 <View className="gap-y-xs">
-                    <Text dynamicTypeRamp="caption1" className="text-[13px] text-secondary-foreground">
+                    <Text maxFontSizeMultiplier={1.3} dynamicTypeRamp="caption1" className="text-[13px] text-secondary-foreground">
                         {item.accountTitle}
                     </Text>
-                    <Text dynamicTypeRamp="caption1" className="text-[14px] font-medium text-secondary-foreground">
+                    <Text
+                        maxFontSizeMultiplier={1.3}
+                        dynamicTypeRamp="caption1"
+                        className="text-[14px] font-medium text-secondary-foreground"
+                    >
                         {date}
                     </Text>
                     {isNotEmptyString(item.categoryTitle) ? (
-                        <Text dynamicTypeRamp="caption1" className="text-[13px] text-secondary-foreground">
+                        <Text maxFontSizeMultiplier={1.3} dynamicTypeRamp="caption1" className="text-[13px] text-secondary-foreground">
                             {item.categoryTitle}
                         </Text>
                     ) : null}

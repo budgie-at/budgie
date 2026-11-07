@@ -13,7 +13,8 @@ const styles = StyleSheet.create({
 });
 
 export const AmountFieldText = (props: AmountFieldTextPropsInterface) => {
-    const { children, style, className, allowFontScaling, maxFontSizeMultiplier, ...textProps } = props;
+    const { children, prefix = '', prefixStyle, style, className, allowFontScaling, maxFontSizeMultiplier, ...textProps } = props;
+    const prefixLength = children.startsWith(prefix) ? prefix.length : 0;
     const { fontSize, contentOpacity } = useAmountFieldContext();
     const typographyProps = {
         className,
@@ -25,7 +26,8 @@ export const AmountFieldText = (props: AmountFieldTextPropsInterface) => {
     return (
         <>
             <Text {...textProps} {...typographyProps} numberOfLines={1}>
-                {children}
+                <Text style={prefixStyle}>{children.slice(0, prefixLength)}</Text>
+                {children.slice(prefixLength)}
             </Text>
             <AmountFieldMeasure
                 text={children}

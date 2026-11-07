@@ -1,5 +1,6 @@
 import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
+import { Text } from 'react-native';
 
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { GroupedListItem } from '../../../@generic/component/grouped-list-item/grouped-list-item';
@@ -17,16 +18,15 @@ interface Props {
     readonly listEmptyComponent?: ReactElement;
     readonly onSelect: (tagId: number) => void;
     readonly onPrimarySelect?: (tagId: number) => void;
+    readonly header?: ReactElement;
 }
-
-const FLOATING_DONE_BUTTON_BOTTOM_SPACE = 132;
 
 const keyExtractor = (tag: TagEntityInterface) => String(tag.id);
 
 export const TagsSelectContent = (props: Props) => {
     const { data, selectedTagIds, primaryTagId = null, isLoading = false, listEmptyComponent, onSelect, onPrimarySelect } = props;
     const { t } = useLingui();
-    const listContentStyle = useFormsheetListContentStyle(FLOATING_DONE_BUTTON_BOTTOM_SPACE);
+    const listContentStyle = useFormsheetListContentStyle();
 
     const emptyState = listEmptyComponent ?? (
         <EmptyState icon={UserIconNameEnum.Tag} title={t`No tags found`} description={t`Create a new tag to get started.`} />
@@ -43,7 +43,27 @@ export const TagsSelectContent = (props: Props) => {
         </GroupedListItem>
     );
 
-    const listOptions = { estimatedItemSize: 60, contentContainerStyle: listContentStyle, ListEmptyComponent: emptyState };
+    const hint = onPrimarySelect ? (
+        <Text className="px-xl py-lg text-[13px] text-secondary-foreground" maxFontSizeMultiplier={1.6}>
+            <Trans>The primary tag is used in summaries. Choose Make primary on another selected tag to change it.</Trans>
+        </Text>
+    ) : null;
+    const listOptions = {
+        contentContainerStyle: listContentStyle,
+        ListEmptyComponent: emptyState,
+        ListHeaderComponent: props.header,
+        ListFooterComponent: hint
+    };
+    const selectedIndex = data.findIndex(tag => selectedTagIds.includes(tag.id));
 
-    return <SelectorList isLoading={isLoading} data={data} keyExtractor={keyExtractor} renderItem={renderItem} options={listOptions} />;
+    return (
+        <SelectorList
+            isLoading={isLoading}
+            data={data}
+            keyExtractor={keyExtractor}
+            renderItem={renderItem}
+            options={listOptions}
+            selectedIndex={selectedIndex}
+        />
+    );
 };

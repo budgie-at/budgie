@@ -81,7 +81,7 @@ export const RecurringSeriesFormScreen = ({ target, initialValues }: Props) => {
                 <BottomChromeInsetProvider>
                     <View className="flex-1" testID={RecurringSeriesFormSelector.Page}>
                         <RecurringSeriesFormFields target={target} />
-                        <View className="pt-lg pb-md">
+                        <View className="px-5xl pt-lg pb-md">
                             <ScreenChromeFooter includeBottomSafeArea={false} style={FOOTER_STYLE}>
                                 {saveHint}
                                 <PillButton

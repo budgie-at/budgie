@@ -48,7 +48,6 @@ import { AppDataSyncService } from '../sync/service/app-data-sync.service';
 import { ThemeProvider } from '../theme/provider/theme.provider';
 
 const DETENT_95 = 0.95;
-const DETENT_52 = 0.52;
 const DETENT_90 = 0.9;
 const DETENT_70 = 0.7;
 const DETENT_40 = 0.4;
@@ -74,9 +73,9 @@ const LOCK_SCREEN_OPTIONS: NativeStackNavigationOptions = { presentation: 'fullS
 
 const FADE_OPTIONS: NativeStackNavigationOptions = { animation: 'fade' };
 
-const SELECTOR_OPTIONS = formSheetOptions([DETENT_40, DETENT_70], 0);
+const SELECTOR_OPTIONS = formSheetOptions([DETENT_70, DETENT_90], 0);
 const CURRENCY_SELECTOR_OPTIONS = formSheetOptions([DETENT_62, DETENT_90], 0);
-const COMPACT_SELECTOR_OPTIONS = formSheetOptions([DETENT_55, DETENT_90], 0);
+const COMPACT_SELECTOR_OPTIONS = formSheetOptions([DETENT_70, DETENT_90], 0);
 
 const DESTINATION_OPTIONS = formSheetOptions([DETENT_90]);
 
@@ -221,11 +220,13 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="tag-form" options={ENTITY_FORM_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="date-picker"
-                                                                        options={formSheetOptions([DETENT_52])}
+                                                                        options={fitToContentsSheetOptions(groupedSheetSurface)}
                                                                     />
-                                                                    <Stack.Screen name="note-input" options={sheetOptions} />
                                                                     <Stack.Screen name="bank-integration-key" options={sheetOptions} />
-                                                                    <Stack.Screen name="convert-to-transfer" options={MODAL_OPTIONS} />
+                                                                    <Stack.Screen
+                                                                        name="convert-to-transfer"
+                                                                        options={fitToContentsSheetOptions(groupedSheetSurface)}
+                                                                    />
                                                                     <Stack.Screen name="convert-to-installment" options={sheetOptions} />
                                                                     <Stack.Screen
                                                                         name="convert-to-refund"
