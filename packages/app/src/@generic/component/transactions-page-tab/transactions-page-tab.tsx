@@ -1,6 +1,7 @@
 import { cva } from 'class-variance-authority';
 import { Text } from 'react-native';
 
+import { HapticPressFeedbackEnum } from '../../enum/haptic-press-feedback.enum';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 
 import type { TabConfigInterface } from '../../interface/tab-config.interface';
@@ -33,6 +34,7 @@ export const TransactionsPageTab = ({ tab, activeTab, onChangeTab }: Props) => {
             className={tabVariants({ isActive })}
             hitSlop={8}
             onPress={handlePress}
+            pressFeedback={HapticPressFeedbackEnum.SELECTION}
             testID={tab.testID}
         >
             <Text className={titleVariants({ isActive })}>{tab.label}</Text>

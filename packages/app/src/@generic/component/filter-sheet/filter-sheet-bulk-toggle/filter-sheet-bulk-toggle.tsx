@@ -4,6 +4,7 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 import { EmptyFn, isPositiveNumber } from '@rnw-community/shared';
 
 import { EASE_OUT, MOTION_FAST_DURATION } from '../../../constant/motion.constant';
+import { HapticPressFeedbackEnum } from '../../../enum/haptic-press-feedback.enum';
 import { HapticPressable } from '../../haptic-pressable/haptic-pressable';
 
 interface Props {
@@ -33,6 +34,7 @@ export const FilterSheetBulkToggle = (props: Props) => {
     return (
         <HapticPressable
             onPress={handlePress}
+            pressFeedback={HapticPressFeedbackEnum.SELECTION}
             testID={testID}
             style={pressableStyle}
             disabled={disabled}

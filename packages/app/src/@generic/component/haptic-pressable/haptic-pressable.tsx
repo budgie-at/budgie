@@ -3,9 +3,10 @@ import { useRef } from 'react';
 import { GestureResponderEvent, Keyboard, Pressable } from 'react-native';
 import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
-import { isDefined } from '@rnw-community/shared';
+import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import { EASE_OUT } from '../../constant/motion.constant';
+import { HapticPressFeedbackEnum } from '../../enum/haptic-press-feedback.enum';
 import { useVibration } from '../../hook/use-vibration.hook';
 import { AnimatedPressable } from '../animated-pressable/animated-pressable';
 
@@ -19,6 +20,7 @@ const PRESS_OUT_DURATION = 150;
 interface Props extends Omit<PressableProps, 'style'> {
     readonly style?: StyleProp<ViewStyle>;
     readonly pressedScale?: number;
+    readonly pressFeedback?: HapticPressFeedbackEnum;
     readonly ref?: Ref<View>;
 }
 
@@ -30,14 +32,23 @@ export const HapticPressable = ({
     disabled,
     style,
     pressedScale = PRESSED_SCALE,
+    pressFeedback = HapticPressFeedbackEnum.IMPACT,
     ...rest
 }: Props) => {
-    const [, hapticImpact] = useVibration();
+    const [, hapticImpact, hapticSelection] = useVibration();
     const isLongPressActiveRef = useRef(false);
     const scale = useSharedValue(1);
     const isScaleEnabled = pressedScale !== 1;
 
     const animatedStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.get() }] }));
+
+    const feedbackHandlers: Record<HapticPressFeedbackEnum, () => void> = {
+        [HapticPressFeedbackEnum.IMPACT]: () => void hapticImpact(ImpactFeedbackStyle.Light),
+        [HapticPressFeedbackEnum.SELECTION]: hapticSelection,
+        [HapticPressFeedbackEnum.COMMIT]: () => void hapticImpact(ImpactFeedbackStyle.Medium),
+        [HapticPressFeedbackEnum.DESTRUCTIVE]: () => void hapticImpact(ImpactFeedbackStyle.Heavy),
+        [HapticPressFeedbackEnum.NONE]: emptyFn
+    };
 
     const handlePressIn = (event: GestureResponderEvent) => {
         onPressIn?.(event);
@@ -58,7 +69,7 @@ export const HapticPressable = ({
             return;
         }
 
-        hapticImpact(ImpactFeedbackStyle.Light);
+        feedbackHandlers[pressFeedback]();
         Keyboard.dismiss();
         onPress?.(event);
     };

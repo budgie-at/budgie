@@ -1,10 +1,14 @@
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as DocumentPicker from 'expo-document-picker';
+import { ImpactFeedbackStyle } from 'expo-haptics';
+import { useState } from 'react';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { useProcessingHaptic } from '../../@generic/hook/use-processing-haptic.hook';
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
+import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
@@ -14,7 +18,11 @@ import { DatabaseImportService } from '../service/database-import.service';
 export const useRestoreBackup = () => {
     const { t } = useLingui();
     const [openImportBackupPin] = useImportBackupPinModal();
+    const [, hapticImpact] = useVibration();
     const { isLoading, run } = useSingleFlight();
+    const [isRestoring, setIsRestoring] = useState(false);
+
+    useProcessingHaptic(isRestoring);
 
     const importErrorHandlers = {
         UnsupportedBackupError: () =>
@@ -33,12 +41,17 @@ export const useRestoreBackup = () => {
             Effect.sync(() => void showErrorToast(t`Could not select database backup`, t`Not enough free storage to extract this backup.`))
     };
 
+    const restoreFromUri = (uri: string, backupPin: string | null) =>
+        Effect.sync(() => void setIsRestoring(true)).pipe(
+            Effect.andThen(
+                Effect.flatMap(DatabaseImportService, databaseImportService => databaseImportService.importFromUri(uri, backupPin))
+            ),
+            Effect.ensuring(Effect.sync(() => void setIsRestoring(false)))
+        );
+
     const importFromUri = (uri: string, backupPin: string | null) =>
         run(
-            Effect.flatMap(DatabaseImportService, databaseImportService => databaseImportService.importFromUri(uri, backupPin)).pipe(
-                Effect.catchTags(importErrorHandlers),
-                toastOnFailure(t`Could not select database backup`)
-            )
+            restoreFromUri(uri, backupPin).pipe(Effect.catchTags(importErrorHandlers), toastOnFailure(t`Could not select database backup`))
         );
 
     const handleSelectAndConfirm = () =>
@@ -73,8 +86,10 @@ export const useRestoreBackup = () => {
                     return;
                 }
 
+                hapticImpact(ImpactFeedbackStyle.Heavy);
+
                 if (isBackupUnencrypted) {
-                    yield* databaseImportService.importFromUri(uri, null);
+                    yield* restoreFromUri(uri, null);
 
                     return;
                 }

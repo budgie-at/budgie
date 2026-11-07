@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
@@ -48,6 +49,7 @@ export const CategorizeInboxClusterRow = ({ row, displayTitle }: Props) => {
         <HapticPressable
             pressedScale={1}
             onPress={handleTogglePress}
+            pressFeedback={HapticPressFeedbackEnum.SELECTION}
             onLongPress={handleOpenLongPress}
             className="min-h-[52px] flex-row items-center gap-x-xl px-3xl py-xl active:opacity-70"
             accessibilityRole="checkbox"

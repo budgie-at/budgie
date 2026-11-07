@@ -1,11 +1,15 @@
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
+import { ImpactFeedbackStyle } from 'expo-haptics';
 
+import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { runConfirmedTransactionAction } from '../utils/run-confirmed-transaction-action.util';
 
 import type { DeleteTransactionOptionsInterface } from '../interface/delete-transaction-options.interface';
 
 export const useDeleteTransaction = () => {
     const { t } = useLingui();
+    const [, hapticImpact] = useVibration();
 
     const deleteTransaction = (transactionId: number, options?: DeleteTransactionOptionsInterface) => {
         const isConsolidated = options?.isConsolidated === true;
@@ -17,7 +21,10 @@ export const useDeleteTransaction = () => {
         return runConfirmedTransactionAction(
             { title, message, confirmText, cancelText: t`Cancel`, isDestructive: true },
             errorText,
-            transactionService => transactionService.deleteById(transactionId)
+            transactionService =>
+                Effect.sync(() => void hapticImpact(ImpactFeedbackStyle.Heavy)).pipe(
+                    Effect.andThen(transactionService.deleteById(transactionId))
+                )
         );
     };
 

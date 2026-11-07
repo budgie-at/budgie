@@ -3,6 +3,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
@@ -32,6 +33,7 @@ export const CategorizeInboxPaymentsSelectAll = ({ cluster }: Props) => {
             </Text>
             <HapticPressable
                 onPress={handlePress}
+                pressFeedback={HapticPressFeedbackEnum.SELECTION}
                 accessibilityRole="button"
                 className="min-h-[44px] justify-center px-3xl active:opacity-70"
             >

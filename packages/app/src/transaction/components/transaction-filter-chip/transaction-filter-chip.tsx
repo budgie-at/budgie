@@ -4,6 +4,7 @@ import { Text } from 'react-native';
 import { EmptyFn } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { FILTER_CHIP_CLASS_NAME } from '../../constant/filter-chip-class-name.constant';
 import { FILTER_CHIP_HIT_SLOP } from '../../constant/filter-chip-hit-slop.constant';
 
@@ -33,7 +34,13 @@ const textVariants = cva('text-[13px] font-medium', {
 });
 
 export const TransactionFilterChip = ({ label, onPress, isActive, testID }: Props) => (
-    <HapticPressable className={chipVariants({ isActive })} hitSlop={FILTER_CHIP_HIT_SLOP} onPress={onPress} testID={testID}>
+    <HapticPressable
+        className={chipVariants({ isActive })}
+        hitSlop={FILTER_CHIP_HIT_SLOP}
+        onPress={onPress}
+        pressFeedback={HapticPressFeedbackEnum.SELECTION}
+        testID={testID}
+    >
         <Text maxFontSizeMultiplier={2} dynamicTypeRamp="body" className={textVariants({ isActive })}>
             {label}
         </Text>

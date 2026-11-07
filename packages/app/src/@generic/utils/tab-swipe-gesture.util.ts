@@ -5,12 +5,14 @@ interface Params<T extends string> {
     readonly tabs: readonly T[];
     readonly activeTab: T;
     readonly onChangeTab: (tab: T) => void;
+    readonly onSwipeChange: () => void;
 }
 
-export const tabSwipeGesture = <T extends string>({ tabs, activeTab, onChangeTab }: Params<T>) => {
+export const tabSwipeGesture = <T extends string>({ tabs, activeTab, onChangeTab, onSwipeChange }: Params<T>) => {
     const handleSwipeLeft = () => {
         const index = tabs.indexOf(activeTab);
         if (index < tabs.length - 1) {
+            onSwipeChange();
             onChangeTab(tabs[index + 1]);
         }
     };
@@ -18,6 +20,7 @@ export const tabSwipeGesture = <T extends string>({ tabs, activeTab, onChangeTab
     const handleSwipeRight = () => {
         const index = tabs.indexOf(activeTab);
         if (index > 0) {
+            onSwipeChange();
             onChangeTab(tabs[index - 1]);
         }
     };

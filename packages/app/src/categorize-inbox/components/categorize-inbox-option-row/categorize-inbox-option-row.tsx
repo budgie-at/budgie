@@ -1,9 +1,10 @@
 import { Text, View } from 'react-native';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { cn } from '../../../@generic/utils/cn.util';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { CategorizeInboxGroupScreenSelector } from '../categorize-inbox-group-screen/categorize-inbox-group-screen.selector';
@@ -23,6 +24,7 @@ interface Props {
 
 export const CategorizeInboxOptionRow = ({ icon, title, subtitle, accessory, accessibilityState, onPress }: Props) => {
     const titleWeightClassName = accessibilityState?.selected === true ? 'font-semibold' : 'font-normal';
+    const pressFeedback = isDefined(accessibilityState?.selected) ? HapticPressFeedbackEnum.SELECTION : HapticPressFeedbackEnum.IMPACT;
     const subtitleNode = isNotEmptyString(subtitle) ? (
         <Text className="text-secondary-foreground text-[13px]" numberOfLines={1}>
             {subtitle}
@@ -33,6 +35,7 @@ export const CategorizeInboxOptionRow = ({ icon, title, subtitle, accessory, acc
         <HapticPressable
             pressedScale={1}
             onPress={onPress}
+            pressFeedback={pressFeedback}
             className="min-h-[60px] flex-row items-center gap-x-xl px-3xl py-xl active:opacity-70"
             accessibilityRole="button"
             accessibilityState={accessibilityState}

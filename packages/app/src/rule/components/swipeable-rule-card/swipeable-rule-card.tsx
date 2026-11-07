@@ -17,6 +17,7 @@ import {
     MOTION_LAYOUT,
     SPRING_SETTLE
 } from '../../../@generic/constant/motion.constant';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { RuleIndicatorPill } from '../rule-indicator-pill/rule-indicator-pill';
@@ -71,7 +72,7 @@ export const SwipeableRuleCard = (props: Props) => {
     );
 
     const handleSwipeThresholdReached = () => {
-        hapticImpact(ImpactFeedbackStyle.Light);
+        hapticImpact(ImpactFeedbackStyle.Rigid);
     };
 
     const isSuccess = status === 'success';
@@ -140,6 +141,7 @@ export const SwipeableRuleCard = (props: Props) => {
                         : Effect.gen(function* () {
                               yield* Effect.logError(cause);
                               setStatus('error');
+                              hapticNotification(NotificationFeedbackType.Error);
                               yield* Effect.sleep(ERROR_AUTO_DISMISS_MS);
                               onDismiss();
                           })
@@ -161,7 +163,13 @@ export const SwipeableRuleCard = (props: Props) => {
             {statusMessage}
         </RuleIndicatorPill>
     ) : (
-        <HapticPressable testID={buttonTestID} onPress={handleYesButtonPress} disabled={isCreating} className="self-center">
+        <HapticPressable
+            testID={buttonTestID}
+            onPress={handleYesButtonPress}
+            pressFeedback={HapticPressFeedbackEnum.COMMIT}
+            disabled={isCreating}
+            className="self-center"
+        >
             <RuleIndicatorPill
                 icon={UserIconNameEnum.Zap}
                 className="self-center"

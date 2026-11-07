@@ -1,6 +1,7 @@
 import { cva } from 'class-variance-authority';
 import { Text } from 'react-native';
 
+import { HapticPressFeedbackEnum } from '../../enum/haptic-press-feedback.enum';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { LoadingContent } from '../loading-content/loading-content';
 
@@ -44,6 +45,11 @@ const labelVariants = cva('text-center text-[17px] font-semibold', {
     ]
 });
 
+const PRESS_FEEDBACK: Record<PillButtonVariant, HapticPressFeedbackEnum> = {
+    primary: HapticPressFeedbackEnum.COMMIT,
+    destructive: HapticPressFeedbackEnum.DESTRUCTIVE
+};
+
 export const PillButton = ({
     label,
     testID,
@@ -55,11 +61,13 @@ export const PillButton = ({
 }: Props) => {
     const isInactive = isLoading || isDisabled;
     const accessibilityState = { busy: isLoading, disabled: isDisabled };
+    const pressFeedback = PRESS_FEEDBACK[variant];
 
     return (
         <HapticPressable
             onPress={onPress}
             disabled={isInactive}
+            pressFeedback={pressFeedback}
             className={containerVariants({ variant, isDisabled })}
             style={CONTINUOUS_CORNERS}
             accessibilityRole="button"

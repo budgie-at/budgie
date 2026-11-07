@@ -7,6 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { TRANSACTION_KEYPAD_MAX_FONT_SCALE } from '../../constant/transaction-keypad-max-font-scale.constant';
 
 type KeypadButtonVariant = 'digit' | 'action';
@@ -53,6 +54,7 @@ export const TransactionKeypadButton = (props: Props) => {
 
     const resolvedAccessibilityLabel = accessibilityLabel ?? value ?? icon;
     const glyphStyle = value === ',' ? COMMA_GLYPH_STYLE : void 0;
+    const pressFeedback = variant === 'digit' ? HapticPressFeedbackEnum.SELECTION : HapticPressFeedbackEnum.IMPACT;
     const contentClassName = textVariants({ buttonVariant: variant });
 
     return (
@@ -62,6 +64,7 @@ export const TransactionKeypadButton = (props: Props) => {
             className={buttonVariants({ buttonVariant: variant })}
             onLongPress={onLongPress}
             onPress={onPress}
+            pressFeedback={pressFeedback}
             testID={testID}
         >
             <View className="items-center justify-center" collapsable={false}>

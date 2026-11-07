@@ -23,6 +23,7 @@ interface Props {
         | 'style'
         | 'onLongPress'
         | 'disabled'
+        | 'pressFeedback'
         | 'accessibilityLabel'
         | 'accessibilityHint'
         | 'accessibilityState'

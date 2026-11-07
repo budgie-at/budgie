@@ -15,6 +15,7 @@ import Animated, {
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { EASE_OUT } from '../../../@generic/constant/motion.constant';
+import { useProcessingHaptic } from '../../../@generic/hook/use-processing-haptic.hook';
 import { PIN_STEP_FADE_DURATION_MS } from '../../constant/pin-motion.constant';
 import { PinSetupModeEnum } from '../../enum/pin-setup-mode.enum';
 import { PinFormSelector } from '../pin-form/pin-form.selector';
@@ -52,6 +53,8 @@ export const PinSealingState = ({ mode }: Props) => {
     const { title, description, icon, iconVariant } = SEALING_COPY[mode];
     const breath = useSharedValue(1);
     const isReducedMotion = useReducedMotion();
+
+    useProcessingHaptic(true);
 
     const announceTitle = useEffectEvent(() => void AccessibilityInfo.announceForAccessibility(t(title)));
 

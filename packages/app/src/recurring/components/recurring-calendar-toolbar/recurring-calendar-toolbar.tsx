@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { RecurringCalendarSelector } from '../recurring-calendar-content/recurring-calendar.selector';
 
 interface Props {
@@ -24,6 +25,7 @@ export const RecurringCalendarToolbar = (props: Props) => {
         <View className="flex-row items-center justify-between">
             <HapticPressable
                 onPress={onPreviousMonth}
+                pressFeedback={HapticPressFeedbackEnum.SELECTION}
                 accessibilityRole="button"
                 accessibilityLabel={t`Previous month`}
                 hitSlop={12}
@@ -52,6 +54,7 @@ export const RecurringCalendarToolbar = (props: Props) => {
             </HapticPressable>
             <HapticPressable
                 onPress={onNextMonth}
+                pressFeedback={HapticPressFeedbackEnum.SELECTION}
                 accessibilityRole="button"
                 accessibilityLabel={t`Next month`}
                 accessibilityState={nextMonthAccessibilityState}

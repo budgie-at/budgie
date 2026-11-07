@@ -2,12 +2,16 @@ import { InstallmentPlanService } from '@budgie/ledger';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
+import { NotificationFeedbackType } from 'expo-haptics';
 import { useFormContext, useFormState } from 'react-hook-form';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { Button } from '../../../@generic/component/button/button';
 import { ENTRANCE_DURATION, ENTRANCE_REDUCED_DURATION } from '../../../@generic/constant/entrance-motion.constant';
 import { EASE_OUT } from '../../../@generic/constant/motion.constant';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
+import { useProcessingHaptic } from '../../../@generic/hook/use-processing-haptic.hook';
+import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
@@ -29,6 +33,9 @@ export const ConvertToInstallmentCreateButton = ({ params, split, recoveryNote, 
     const { control, handleSubmit } = useFormContext<ConvertToInstallmentFormValues>();
     const { isValid, isSubmitting } = useFormState({ control });
     const { installmentCount, planTotal, isSplittable } = split;
+    const [hapticNotification] = useVibration();
+
+    useProcessingHaptic(isSubmitting);
 
     const handleCreate = () =>
         void handleSubmit(values =>
@@ -42,7 +49,12 @@ export const ConvertToInstallmentCreateButton = ({ params, split, recoveryNote, 
                             title: values.title
                         })
                     ).pipe(
-                        Effect.tap(({ accountId }) => Effect.sync(() => void onResolve(accountId))),
+                        Effect.tap(({ accountId }) =>
+                            Effect.sync(() => {
+                                hapticNotification(NotificationFeedbackType.Success);
+                                onResolve(accountId);
+                            })
+                        ),
                         toastOnFailure(t`Could not create plan`, t`Please try again`)
                     )
                 )
@@ -67,6 +79,7 @@ export const ConvertToInstallmentCreateButton = ({ params, split, recoveryNote, 
                 isLoading={isSubmitting}
                 disabled={isCreateDisabled}
                 onPress={handleCreate}
+                pressFeedback={HapticPressFeedbackEnum.COMMIT}
                 {...(!isSplittable && { accessibilityHint: recoveryNote })}
                 testID={ConvertToInstallmentModalSelector.CreateButton}
             />

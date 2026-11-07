@@ -9,6 +9,7 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { Icon } from '../../../@generic/component/icon/icon';
 import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-size-multiplier.constant';
 import { EASE_IN_OUT, MOTION_FADE_IN, MOTION_FADE_OUT } from '../../../@generic/constant/motion.constant';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 
 interface Props {
     readonly label: string;
@@ -44,6 +45,7 @@ export const CurrencyModePill = ({ label, isFlipped, accessibilityLabel, onPress
                 disabled={!isDefined(onPress)}
                 hitSlop={HIT_SLOP}
                 onPress={onPress}
+                pressFeedback={HapticPressFeedbackEnum.SELECTION}
             >
                 <View className="min-h-[32px] max-w-full flex-row items-center gap-x-xs rounded-full border-hairline border-surface-separator bg-transaction-detail-row px-md py-[4px] dark:border-transparent">
                     {isDefined(onPress) ? (

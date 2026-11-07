@@ -7,6 +7,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
@@ -69,6 +70,7 @@ export const TransactionPickerRow = ({ item, position, isSelected = false, onPre
                 pressedScale={1}
                 className={pressableVariants({ selected: isSelected })}
                 onPress={handlePress}
+                pressFeedback={HapticPressFeedbackEnum.SELECTION}
                 testID={testID}
                 accessibilityRole="radio"
                 accessibilityState={accessibilityState}

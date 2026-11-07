@@ -2,12 +2,14 @@ import { InzhurOperationsImportService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as DocumentPicker from 'expo-document-picker';
+import { NotificationFeedbackType } from 'expo-haptics';
 import { useState } from 'react';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { NativeCallError } from '../../@generic/error/native-call.error';
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
+import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { XLSX_MIME_TYPE } from '../../sync/constant/xlsx-mime-type.constant';
@@ -17,6 +19,7 @@ import type { InzhurOperationsImportSummaryInterface } from '@budgie/sync';
 export const useInzhurStatementImport = () => {
     const { t } = useLingui();
     const { isLoading, run } = useSingleFlight();
+    const [hapticNotification] = useVibration();
     const [summary, setSummary] = useState<InzhurOperationsImportSummaryInterface | null>(null);
 
     const handleSelectFile = () =>
@@ -36,6 +39,7 @@ export const useInzhurStatementImport = () => {
                     inzhurOperationsImportService.importOperations(uri)
                 );
 
+                hapticNotification(NotificationFeedbackType.Success);
                 setSummary(importSummary);
             }).pipe(
                 Effect.catchTags({

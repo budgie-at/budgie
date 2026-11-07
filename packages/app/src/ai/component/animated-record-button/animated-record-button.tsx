@@ -7,6 +7,7 @@ import { ScopedTheme } from 'uniwind';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { MOTION_FAST_DURATION, EASE_OUT } from '../../../@generic/constant/motion.constant';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { AUDIO_LEVEL_TRACK_DURATION, BUTTON_SIZE, RING_SIZE } from '../../constant/animated-record-button.constant';
@@ -41,6 +42,15 @@ const BUTTON_COLOR_CLASS_NAME: Record<RecordButtonStateType, string> = {
     transcribing: 'bg-default-foreground',
     confirm: 'bg-positive-foreground',
     thinking: 'bg-default-foreground'
+};
+
+const PRESS_FEEDBACK: Record<RecordButtonStateType, HapticPressFeedbackEnum> = {
+    idle: HapticPressFeedbackEnum.COMMIT,
+    loading: HapticPressFeedbackEnum.NONE,
+    recording: HapticPressFeedbackEnum.IMPACT,
+    transcribing: HapticPressFeedbackEnum.NONE,
+    confirm: HapticPressFeedbackEnum.COMMIT,
+    thinking: HapticPressFeedbackEnum.NONE
 };
 
 const getIcon = (state: RecordButtonStateType): UserIconNameEnum => {
@@ -110,7 +120,7 @@ export const AnimatedRecordButton = (props: Props) => {
                 {state === 'transcribing' && <SpinnerRing />}
                 {state === 'thinking' && <ThinkingRing />}
 
-                <HapticPressable disabled={isDisabled} onPress={onPress} testID={testID}>
+                <HapticPressable disabled={isDisabled} onPress={onPress} pressFeedback={PRESS_FEEDBACK[state]} testID={testID}>
                     <Animated.View
                         className={cn('items-center justify-center', BUTTON_COLOR_CLASS_NAME[state])}
                         style={buttonAnimatedStyle}

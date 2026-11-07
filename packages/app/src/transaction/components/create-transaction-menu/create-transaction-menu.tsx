@@ -1,7 +1,6 @@
 import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
-import { ImpactFeedbackStyle } from 'expo-haptics';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -15,7 +14,6 @@ import { ReceiptScannerModule } from '../../../../modules/receipt-scanner';
 import { CircularActionButton } from '../../../@generic/component/circular-action-button/circular-action-button';
 import { EASE_OUT, MOTION_BASE_DURATION, MOTION_FAST_DURATION, SPRING_SETTLE } from '../../../@generic/constant/motion.constant';
 import { useCreateActionContext } from '../../../@generic/context/create-action.context';
-import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { CreateActionInterface } from '../../../@generic/interface/create-action.interface';
 import { aiSystemStatusAtom } from '../../../ai/constant/ai-system-status-atom.constant';
 import { useVoiceInputContext } from '../../../ai/context/voice-input.context';
@@ -41,7 +39,6 @@ interface Props {
 // eslint-disable-next-line max-lines-per-function, max-statements
 export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType }: Props) => {
     const { t } = useLingui();
-    const [, hapticImpact] = useVibration();
     const { createAction } = useCreateActionContext();
     const { open: openVoiceInput } = useVoiceInputContext();
     const [isVisible, setIsVisible] = useState(false);
@@ -58,7 +55,6 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
     }
 
     const handleClose = () => {
-        hapticImpact(ImpactFeedbackStyle.Light);
         onClose();
     };
 

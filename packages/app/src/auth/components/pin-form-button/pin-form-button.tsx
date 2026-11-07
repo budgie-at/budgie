@@ -1,5 +1,4 @@
 import { cva } from 'class-variance-authority';
-import { ImpactFeedbackStyle } from 'expo-haptics';
 import { Pressable, Text } from 'react-native';
 
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
@@ -32,10 +31,10 @@ const digitVariants = cva('font-light text-primary', {
 
 export const PinFormButton = ({ digit, onPress, disabled = false }: Props) => {
     const isCompact = useIsCompactPinLayout();
-    const [, hapticImpact] = useVibration();
+    const [, , hapticSelection] = useVibration();
     const accessibilityState = { disabled };
 
-    const handlePressIn = () => void hapticImpact(ImpactFeedbackStyle.Light);
+    const handlePressIn = () => void hapticSelection();
     const handlePress = () => void onPress(digit);
 
     return (

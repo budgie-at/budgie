@@ -4,6 +4,7 @@ import { Directions, Gesture, GestureDetector } from 'react-native-gesture-handl
 import { scheduleOnRN } from 'react-native-worklets';
 
 import { useToday } from '../../../@generic/hook/use-today.hook';
+import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
 import { RecurringCalendarToolbar } from '../recurring-calendar-toolbar/recurring-calendar-toolbar';
 
@@ -16,6 +17,7 @@ interface Props {
 
 export const RecurringCalendarNavigation = ({ displayMonth, displayYear, onChangeMonth, children }: Props) => {
     const { languageTag } = useLocaleInfo();
+    const [, , hapticSelection] = useVibration();
     const now = useToday();
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
@@ -46,17 +48,31 @@ export const RecurringCalendarNavigation = ({ displayMonth, displayYear, onChang
         onChangeMonth(newYear, newMonth);
     };
 
-    const swipeLeft = Gesture.Fling()
-        .direction(Directions.LEFT)
-        .onEnd(() => {
-            scheduleOnRN(handleNextMonth);
-        });
-    const swipeRight = Gesture.Fling()
-        .direction(Directions.RIGHT)
-        .onEnd(() => {
-            scheduleOnRN(handlePrevMonth);
-        });
-    const swipeGesture = Gesture.Race(swipeLeft, swipeRight);
+    const handleSwipeNextMonth = () => {
+        if (!isCurrentMonthDisplayed) {
+            hapticSelection();
+        }
+
+        handleNextMonth();
+    };
+
+    const handleSwipePrevMonth = () => {
+        hapticSelection();
+        handlePrevMonth();
+    };
+
+    const swipeGesture = Gesture.Race(
+        Gesture.Fling()
+            .direction(Directions.LEFT)
+            .onEnd(() => {
+                scheduleOnRN(handleSwipeNextMonth);
+            }),
+        Gesture.Fling()
+            .direction(Directions.RIGHT)
+            .onEnd(() => {
+                scheduleOnRN(handleSwipePrevMonth);
+            })
+    );
 
     return (
         <GestureDetector gesture={swipeGesture}>
