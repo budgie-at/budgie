@@ -9,6 +9,7 @@ import { isDefined } from '@rnw-community/shared';
 import { AiModelResidencyService } from '../../ai/service/ai-model-residency.service';
 import { AiStorageReplacementService } from '../../ai/service/ai-storage-replacement.service';
 import { AuthService } from '../../auth/service/auth.service';
+import { SiriCatalogService } from '../../siri/service/siri-catalog.service';
 import { PatternCacheService } from '../../transaction/service/pattern-cache/pattern-cache.service';
 import { DATABASE_DIRECTORY } from '../drizzle/constant/database-directory.constant';
 import { DB_NAME } from '../drizzle/constant/db-name.constant';
@@ -23,6 +24,7 @@ export class AppResetService extends Context.Service<AppResetService>()('@budgie
         const authService = yield* AuthService;
         const patternCacheService = yield* PatternCacheService;
         const databaseLifecycleService = yield* DatabaseLifecycleService;
+        const siriCatalogService = yield* SiriCatalogService;
         const databasePath = new File(DATABASE_DIRECTORY, DB_NAME).uri;
 
         const deleteFileIfExists = (file: File): void => {
@@ -78,7 +80,8 @@ export class AppResetService extends Context.Service<AppResetService>()('@budgie
                         Effect.sync(() => {
                             patternCacheService.invalidate();
                         }),
-                        authService.persistPin(null)
+                        authService.persistPin(null),
+                        siriCatalogService.clear()
                     ])
                 );
                 yield* reloadApp;
@@ -92,7 +95,8 @@ export class AppResetService extends Context.Service<AppResetService>()('@budgie
             AiModelResidencyService.layer,
             AuthService.layer,
             PatternCacheService.layer,
-            DatabaseLifecycleService.layer
+            DatabaseLifecycleService.layer,
+            SiriCatalogService.layer
         ])
     );
 }
