@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.167.4](https://github.com/budgie-at/budgie/compare/v6.167.3...v6.167.4) (2026-11-07)
+
+### Bug Fixes
+
+* **app:** shorten the shared header and tab bar fades ([#2024](https://github.com/budgie-at/budgie/issues/2024)) ([996ffaf](https://github.com/budgie-at/budgie/commit/996ffaf36e5ddecdd32689c371fd8d73bf466d48))
+
+
 ## [6.167.3](https://github.com/budgie-at/budgie/compare/v6.167.2...v6.167.3) (2026-11-07)
 
 ### Performance Improvements
