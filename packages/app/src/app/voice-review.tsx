@@ -12,6 +12,7 @@ import { isDefined, isEmptyArray, isNotEmptyString, isPositiveNumber } from '@rn
 import { GroupedListSection } from '../@generic/component/grouped-list-section/grouped-list-section';
 import { SheetSurface } from '../@generic/component/sheet-surface/sheet-surface';
 import { SheetTitle } from '../@generic/component/sheet-title/sheet-title';
+import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../@generic/constant/max-chrome-font-size-multiplier.constant';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { appRuntime } from '../@generic/runtime/app.runtime';
 import { formSheetOptions } from '../@generic/utils/form-sheet-options.util';
@@ -132,8 +133,8 @@ export default function VoiceReviewModal() {
     return (
         <SheetSurface>
             <Stack.Screen options={screenOptions} />
-            <View className="flex-1" testID={VoiceReviewSelector.Page} collapsable={false}>
-                <SheetTitle title={t`Voice notes`} className={titleClassName} />
+            <View className="flex-1 pt-safe" testID={VoiceReviewSelector.Page} collapsable={false}>
+                <SheetTitle title={t`Voice notes`} className={titleClassName} maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER} />
                 <KeyboardAwareScrollView
                     className="flex-1"
                     contentContainerStyle={SCROLL_CONTENT_STYLE}
@@ -142,7 +143,7 @@ export default function VoiceReviewModal() {
                     bottomOffset={24}
                 >
                     {isEmptyArray(rows) ? (
-                        <View className="flex-1 justify-center items-center gap-y-md px-xl py-3xl">
+                        <View className="grow justify-center items-center gap-y-md px-xl py-3xl">
                             <Text className="text-xl leading-[24px] font-semibold text-primary text-center">{t`No items to save`}</Text>
                             <Text className="text-md text-secondary-foreground text-center">{t`Tap re-record to try again`}</Text>
                         </View>
