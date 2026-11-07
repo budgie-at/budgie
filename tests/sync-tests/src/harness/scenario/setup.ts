@@ -1,6 +1,7 @@
 import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { assertStoredBalancesMatchLedger, resetTestDb } from '@budgie-at/test-kit';
 import * as Effect from 'effect/Effect';
+import { Agent, getGlobalDispatcher, setGlobalDispatcher } from 'undici';
 import { vi, afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
@@ -29,8 +30,8 @@ const resolveLinguiMessage = (descriptor: unknown): string => {
     return '';
 };
 
-vi.mock('@lingui/core', () => ({
-    i18n: {
+vi.mock('@lingui/core', () => {
+    const i18n = {
         locale: 'en',
         load: emptyFn,
         activate: emptyFn,
@@ -43,8 +44,10 @@ vi.mock('@lingui/core', () => ({
 
             return Object.entries(values).reduce((result, [key, value]) => result.replaceAll(`{${key}}`, value), message);
         }
-    }
-}));
+    };
+
+    return { i18n, setupI18n: () => i18n };
+});
 
 vi.mock('react-native', async importOriginal => ({
     ...(await importOriginal<object>()),
@@ -112,8 +115,12 @@ beforeEach(() => {
 
 afterEach(() => {
     mockServer.resetHandlers();
+    const previousDispatcher = getGlobalDispatcher();
+    setGlobalDispatcher(new Agent());
 
-    return Effect.runPromise(assertStoredBalancesMatchLedger(testDb));
+    return Effect.runPromise(
+        Effect.promise(() => previousDispatcher.destroy()).pipe(Effect.andThen(assertStoredBalancesMatchLedger(testDb)))
+    );
 });
 
 afterAll(() => {

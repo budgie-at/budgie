@@ -3,6 +3,86 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.167.4](https://github.com/budgie-at/budgie/compare/v6.167.3...v6.167.4) (2026-11-07)
+
+### Bug Fixes
+
+* **app:** shorten the shared header and tab bar fades ([#2024](https://github.com/budgie-at/budgie/issues/2024)) ([996ffaf](https://github.com/budgie-at/budgie/commit/996ffaf36e5ddecdd32689c371fd8d73bf466d48))
+
+
+## [6.167.2](https://github.com/budgie-at/budgie/compare/v6.167.1...v6.167.2) (2026-11-07)
+
+### Bug Fixes
+
+* close reachable illegal states in implicit state machines ([#2020](https://github.com/budgie-at/budgie/issues/2020)) ([c1d1ee6](https://github.com/budgie-at/budgie/commit/c1d1ee6f8d0a1182aaab013bddd626163696d094))
+
+
+## [6.167.1](https://github.com/budgie-at/budgie/compare/v6.167.0...v6.167.1) (2026-11-07)
+
+### Bug Fixes
+
+* **app:** finish transaction form polish ([#1992](https://github.com/budgie-at/budgie/issues/1992)) ([52c7f0d](https://github.com/budgie-at/budgie/commit/52c7f0d33d974e57997a2bff631a1a8101906f36))
+
+
+# [6.167.0](https://github.com/budgie-at/budgie/compare/v6.166.0...v6.167.0) (2026-11-07)
+
+### Features
+
+* **app:** answer read-only budget questions through Siri ([#1991](https://github.com/budgie-at/budgie/issues/1991)) ([6d01d4a](https://github.com/budgie-at/budgie/commit/6d01d4a6f7a9c1cf8130522549f81a442d210e44)), closes [#1987](https://github.com/budgie-at/budgie/issues/1987)
+
+
+# [6.166.0](https://github.com/budgie-at/budgie/compare/v6.165.7...v6.166.0) (2026-11-07)
+
+### Features
+
+* track Inzhur fund certificates ([#1928](https://github.com/budgie-at/budgie/issues/1928)) ([67070d4](https://github.com/budgie-at/budgie/commit/67070d4d6fdc2a38c04990dcf367c2d7466c64f8)), closes [#8A5A00](https://github.com/budgie-at/budgie/issues/8A5A00)
+
+
+## [6.165.7](https://github.com/budgie-at/budgie/compare/v6.165.6...v6.165.7) (2026-11-07)
+
+### Bug Fixes
+
+* **app:** restore and strengthen the shared header fade ([#2009](https://github.com/budgie-at/budgie/issues/2009)) ([393958b](https://github.com/budgie-at/budgie/commit/393958bcfaa2ecca61bec36250de67bcda450d6e))
+
+
+## [6.165.6](https://github.com/budgie-at/budgie/compare/v6.165.5...v6.165.6) (2026-11-06)
+
+### Bug Fixes
+
+* **app:** render the home section footer as an element ([#2011](https://github.com/budgie-at/budgie/issues/2011)) ([e3e08c3](https://github.com/budgie-at/budgie/commit/e3e08c362b018ccae05f95aafaa69e789c02b9f9))
+
+
+## [6.165.5](https://github.com/budgie-at/budgie/compare/v6.165.4...v6.165.5) (2026-11-06)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.165.3](https://github.com/budgie-at/budgie/compare/v6.165.2...v6.165.3) (2026-11-06)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.165.2](https://github.com/budgie-at/budgie/compare/v6.165.1...v6.165.2) (2026-11-06)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.165.1](https://github.com/budgie-at/budgie/compare/v6.165.0...v6.165.1) (2026-11-06)
+
+### Bug Fixes
+
+* **app:** keep the cash section header sticky on home ([#2007](https://github.com/budgie-at/budgie/issues/2007)) ([575b66c](https://github.com/budgie-at/budgie/commit/575b66c4d34aeec2b45fbfc8afe1089310130d45))
+
+
 # [6.165.0](https://github.com/budgie-at/budgie/compare/v6.164.3...v6.165.0) (2026-11-06)
 
 ### Features

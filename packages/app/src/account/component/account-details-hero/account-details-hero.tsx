@@ -3,6 +3,8 @@ import { View } from 'react-native';
 import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
 import { CollapsibleChromeScrollFade } from '../../../@generic/component/collapsible-chrome-scroll-fade/collapsible-chrome-scroll-fade';
+import { InzhurFundReturns } from '../../../inzhur/component/inzhur-fund-returns/inzhur-fund-returns';
+import { isInzhurFundAccount } from '../../../inzhur/utils/is-inzhur-fund-account.util';
 import { ACCOUNT_DETAILS_HERO_BALANCE_HEIGHT } from '../../constant/account-details-hero-balance-height.constant';
 import { isCryptoAccountType } from '../../utils/is-crypto-account-type.util';
 import { AccountDetailsConvertedValue } from '../account-details-converted-value/account-details-converted-value';
@@ -14,7 +16,7 @@ import { AccountDetailsStatusLine } from '../account-details-status-line/account
 interface Props {
     readonly account: Pick<
         AccountWithInstrumentEntityInterface,
-        'id' | 'iban' | 'isActive' | 'title' | 'type' | AccountAssociationEnum.INSTRUMENT
+        'id' | 'iban' | 'isActive' | 'title' | 'type' | 'instrumentId' | 'externalSource' | AccountAssociationEnum.INSTRUMENT
     >;
     readonly balance: number;
 }
@@ -35,7 +37,11 @@ export const AccountDetailsHero = ({ account, balance }: Props) => (
             </>
         ) : null}
 
-        <AccountDetailsStatusLine account={account} />
+        {isInzhurFundAccount(account) ? (
+            <InzhurFundReturns account={account} balance={balance} />
+        ) : (
+            <AccountDetailsStatusLine account={account} />
+        )}
 
         {account.isActive ? null : (
             <Animated.View entering={FadeIn} exiting={FadeOut}>
@@ -43,8 +49,10 @@ export const AccountDetailsHero = ({ account, balance }: Props) => (
             </Animated.View>
         )}
 
-        <Animated.View layout={LinearTransition}>
-            <AccountDetailsMonthChips accountId={account.id} />
-        </Animated.View>
+        {isInzhurFundAccount(account) ? null : (
+            <Animated.View layout={LinearTransition}>
+                <AccountDetailsMonthChips accountId={account.id} />
+            </Animated.View>
+        )}
     </View>
 );

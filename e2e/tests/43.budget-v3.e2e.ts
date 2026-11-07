@@ -75,7 +75,7 @@ test('43 budget v3', { tags: ['budget'] }, async ({ budgie }) => {
         await selectTagBySearch(ctx, TAG);
         await b.expectId(ctx, 'BudgetEvent.LimitInput', 3_000);
         await bu.fillAmount(ctx, 'BudgetEvent.LimitInput', '500');
-        await b.tapText(ctx, 'Category limits');
+        await b.tapText(ctx, 'Event limit');
         await b.tapId(ctx, 'BudgetEvent.SaveButton');
         await b.expectId(ctx, 'BudgetDetails.Screen', 3_000);
         const event = screen
@@ -101,6 +101,7 @@ test('43 budget v3', { tags: ['budget'] }, async ({ budgie }) => {
         await b.tapId(ctx, 'BudgetFund.DueField');
         await b.expectId(ctx, 'DatePicker.Day.20', 10_000);
         await b.tapId(ctx, 'DatePicker.Day.20');
+        await b.tapId(ctx, 'DatePicker.Done');
         await expect(id('BudgetFund.SaveButton')).toBeEnabled({ timeout: 3_000 });
         await b.tapId(ctx, 'BudgetFund.SaveButton');
         await b.expectId(ctx, 'BudgetDetails.Screen', 3_000);

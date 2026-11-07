@@ -2,6 +2,7 @@ import { Activity } from 'react';
 import { View } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
 
+import { TransactionsPageChrome } from '../../../@generic/component/transactions-page-chrome/transactions-page-chrome';
 import { tabSwipeGesture } from '../../../@generic/utils/tab-swipe-gesture.util';
 import { RecurringPane } from '../../../recurring/components/recurring-pane/recurring-pane';
 import { TransactionList } from '../transaction-list/transaction-list';
@@ -25,11 +26,15 @@ export const TransactionsPageContent = ({ activeTab, tabs, onChangeTab }: Props)
         <GestureDetector gesture={swipeGesture}>
             <View className="flex-1">
                 <Activity mode={transactionsActivityMode}>
-                    <TransactionList />
+                    <TransactionsPageChrome activeTab={activeTab} onChangeTab={onChangeTab}>
+                        <TransactionList />
+                    </TransactionsPageChrome>
                 </Activity>
 
                 <Activity mode={recurringActivityMode}>
-                    <RecurringPane />
+                    <TransactionsPageChrome activeTab={activeTab} onChangeTab={onChangeTab}>
+                        <RecurringPane />
+                    </TransactionsPageChrome>
                 </Activity>
             </View>
         </GestureDetector>

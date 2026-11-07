@@ -43,7 +43,12 @@ export async function navigateToSettings(ctx: Ctx): Promise<void> {
 }
 
 /** subflows/navigation/open-settings-card: scroll the settings page to `cardId` (down, else up), tap it, wait for `destinationId`. */
-export async function openSettingsCard(ctx: Ctx, cardId: string | RegExp, destinationId: string): Promise<void> {
+export async function openSettingsCard(
+    ctx: Ctx,
+    cardId: string | RegExp,
+    destinationId: string,
+    centreOn: string | undefined = typeof cardId === 'string' ? cardId : undefined
+): Promise<void> {
     const card = loc(ctx, cardId);
     if (!(await card.isVisible())) {
         try {
@@ -53,6 +58,10 @@ export async function openSettingsCard(ctx: Ctx, cardId: string | RegExp, destin
         }
     }
     await expect(card).toBeVisible({ timeout: 3_000 });
+    if (centreOn !== undefined) {
+        await scrollToCentre(ctx, centreOn);
+        await sleep(600);
+    }
     await card.tap();
     await expectId(ctx, destinationId, 8_000);
 }
@@ -86,7 +95,7 @@ export async function openVisibleAccountSettings(ctx: Ctx): Promise<void> {
     await expectId(ctx, 'AccountDetails.ActionsButton', 10_000);
     await tapUntil(byId(ctx.screen, 'AccountDetails.ActionsButton'), () => expectId(ctx, 'AccountDetails.EditButton', 5_000));
     await tapId(ctx, 'AccountDetails.EditButton');
-    await expect(byText(ctx.screen, 'Edit Account')).toBeVisible({ timeout: 10_000 });
+    await expectId(ctx, 'AccountForm.ScrollView', 10_000);
 }
 
 /** subflows/accounts/open-account-settings */
@@ -131,10 +140,11 @@ async function renameAccount(ctx: Ctx, newName: string): Promise<void> {
 
 /** subflows/accounts/set-debt-return-date: on the edit form. */
 async function setDebtReturnDate(ctx: Ctx, day: string, label: string | RegExp): Promise<void> {
-    await scrollTo(ctx, 'AccountForm.ReturnDate');
+    await scrollToCentre(ctx, 'AccountForm.ReturnDate');
     await tapId(ctx, 'AccountForm.ReturnDate');
     await expectId(ctx, `DatePicker.Day.${day}`, 10_000);
     await tapId(ctx, `DatePicker.Day.${day}`);
+    await tapId(ctx, 'DatePicker.Done');
     await expect(byText(ctx.screen, label)).toBeVisible();
 }
 
@@ -163,7 +173,12 @@ async function setMainCurrency(ctx: Ctx, currency: string): Promise<void> {
     for (let attempt = 1; ; attempt++) {
         try {
             if (!(await search.isVisible())) {
-                await openSettingsCard(ctx, /^SettingsPage\.MainCurrencyCard\..+$/, 'CurrencySelector.SearchInput');
+                await openSettingsCard(
+                    ctx,
+                    /^SettingsPage\.MainCurrencyCard\..+$/,
+                    'CurrencySelector.SearchInput',
+                    'SettingsPage.LanguageCard.en'
+                );
             }
             await expect(search).toBeVisible({ timeout: 3_000 });
             break;
@@ -239,7 +254,7 @@ export async function createDebtAccount(ctx: Ctx, debt: DebtAccount): Promise<vo
     if (debt.debtType === 'LENT') {
         await scrollTo(ctx, 'AccountForm.DebtType.LENT.Selected');
     } else {
-        await scrollTo(ctx, 'AccountForm.DebtType.BORROW');
+        await scrollToCentre(ctx, 'AccountForm.DebtType.BORROW');
         await tapUntil(byId(screen, 'AccountForm.DebtType.BORROW'), () => expectId(ctx, 'AccountForm.DebtType.BORROW.Selected', 2_000));
     }
 
@@ -491,6 +506,7 @@ export async function setDepositTerms(ctx: Ctx, rate: string, maturityDay: strin
     await tapId(ctx, 'AccountForm.MaturityDate');
     await expectId(ctx, `DatePicker.Day.${maturityDay}`, 10_000);
     await tapId(ctx, `DatePicker.Day.${maturityDay}`);
+    await tapId(ctx, 'DatePicker.Done');
 }
 
 /** Taps the account form's submit button once it is enabled, retrying a tap that does not take, until `waitId` shows. */

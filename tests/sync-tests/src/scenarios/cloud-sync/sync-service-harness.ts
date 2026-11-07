@@ -202,7 +202,8 @@ const EMPTY_STATE: CloudSyncStateInterface = {
     sharedStateSerialization: null,
     resolvedLineageId: null,
     restorePhase: CloudSyncRestorePhaseEnum.NONE,
-    isHouseholdCleanupPending: false
+    isHouseholdCleanupPending: false,
+    householdOwnerDisplayName: null
 };
 
 export const makeFakeAutomation = () => {

@@ -29,6 +29,8 @@ class WalletCaptureAppIntentsStub {
         this.catalogs.set(kind, [...entities]);
     };
 
+    getEntityCatalogAsync = async (kind: string): Promise<AppIntentEntity[]> => this.getCatalog(kind);
+
     seed(records: readonly WalletCaptureNativeRecordInterface[]): void {
         this.seedInvocations(records.map(walletCaptureInvocation));
     }

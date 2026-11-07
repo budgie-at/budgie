@@ -16,7 +16,7 @@ const countTextVariants = cva('flex items-center gap-2 text-sm', {
     variants: {
         variant: {
             [WaitlistVariantEnum.HERO]: 'text-muted-foreground',
-            [WaitlistVariantEnum.CTA]: 'text-white/90',
+            [WaitlistVariantEnum.CTA]: 'text-primary-foreground/90',
             [WaitlistVariantEnum.FEATURE]: 'text-muted-foreground'
         }
     }

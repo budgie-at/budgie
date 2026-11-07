@@ -202,3 +202,13 @@ export async function settledBounds(ctx: Ctx, testId: string): Promise<{ x: numb
     }
     return box;
 }
+
+/** The on-screen y of `testId` once its layout settled, for comparing a control's position across states. */
+export async function settledY(ctx: Ctx, testId: string, settleMs = 600): Promise<number> {
+    await sleep(settleMs);
+    const box = await byId(ctx.screen, testId).boundingBox();
+    if (box === null) {
+        throw new Error(`${testId} has no bounds`);
+    }
+    return box.y;
+}

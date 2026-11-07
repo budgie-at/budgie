@@ -22,6 +22,8 @@ import { useForm, useWatch } from 'react-hook-form';
 import { BottomChromeInsetProvider, ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
+import { FixedChromeHeader } from '../../@generic/component/fixed-chrome-header/fixed-chrome-header';
+import { GoBackButton } from '../../@generic/component/go-back-button/go-back-button';
 import { GroupedListSection } from '../../@generic/component/grouped-list-section/grouped-list-section';
 import { GroupedSurface } from '../../@generic/component/grouped-surface/grouped-surface';
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
@@ -31,7 +33,6 @@ import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { ImportColumnMapField } from '../../import/components/import-column-map-field/import-column-map-field';
 import { ImportPresetPicker } from '../../import/components/import-preset-picker/import-preset-picker';
 import { ImportScreenFooter } from '../../import/components/import-screen-footer/import-screen-footer';
-import { ImportScreenHeader } from '../../import/components/import-screen-header/import-screen-header';
 import { ImportScreenScroll } from '../../import/components/import-screen-scroll/import-screen-scroll';
 import { EMPTY_IMPORT_CSV } from '../../import/constant/empty-import-csv.constant';
 import { importCsvAtom } from '../../import/constant/import-csv-atom.constant';
@@ -209,7 +210,7 @@ export default function ImportScreen() {
                                 );
                             })}
                         </ImportScreenScroll>
-                        <ImportScreenHeader onGoBack={handleGoBack} />
+                        <FixedChromeHeader title={t`Map CSV columns`} leading={<GoBackButton onPress={handleGoBack} />} />
                         <ImportScreenFooter
                             buttonContent={buttonContent}
                             accessibilityHint={accessibilityHint}

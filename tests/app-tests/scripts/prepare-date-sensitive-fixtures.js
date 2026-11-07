@@ -1162,6 +1162,98 @@ const generateMatchingRulesFixture = () => {
     );
 };
 
+const generateEditFormLayoutFixture = () => {
+    const sourcePath = path.join(fixturesDirectoryPath, '25.db');
+    const targetPath = path.join(outputDirectoryPath, '46-edit-form-layout.db');
+    const now = Math.floor(Date.now() / 1000);
+    const accountId = 3;
+    const categoryId = 42;
+    const groceriesCategoryId = 11;
+    const matchedOnceTitle = 'E2E Layout Matched Once';
+    const matchedTwiceTitle = 'E2E Layout Matched Twice';
+    const transactions = [
+        { id: 101, title: 'E2E Layout Short', amount: 1_000_000 },
+        { id: 102, title: 'E2E Layout Long Merchant Title That Wraps Onto A Second Line — Imported bank merchant description exceeding the create form title limit', amount: 1_100_000 },
+        { id: 103, title: matchedOnceTitle, amount: 1_200_000 },
+        { id: 104, title: matchedTwiceTitle, amount: 1_300_000 }
+    ];
+    const rules = [
+        { id: 901, title: matchedOnceTitle },
+        { id: 902, title: matchedTwiceTitle },
+        { id: 903, title: matchedTwiceTitle }
+    ];
+    const operatedAt = transactionId => now - (105 - transactionId) * 60;
+    const totalAmount = transactions.reduce((total, { amount }) => total + amount, 0);
+    const transactionValues = transactions
+        .map(
+            ({ id, title }) =>
+                `(${id}, ${operatedAt(id)}, ${operatedAt(id)}, 'EXPENSE', '${title}', ${operatedAt(id)}, '${title}', ${accountId}, 1.0, 1)`
+        )
+        .join(',\n            ');
+    const entryValues = transactions
+        .map(
+            ({ id, amount }) =>
+                `(${operatedAt(id)}, ${operatedAt(id)}, 'CREDIT', ${accountId}, ${categoryId}, ${id}, ${amount}, 1.0, 'USER', 1, 1.0, ${amount}, 'PRIMARY')`
+        )
+        .join(',\n            ');
+    const ruleValues = rules.map(({ id }) => `(${id}, ${now}, ${now}, 1, 'ALL')`).join(',\n            ');
+    const conditionValues = rules
+        .map(({ id, title }) => `(${now}, ${now}, ${id}, 'TITLE', 'CONTAINS', '${title}')`)
+        .join(',\n            ');
+    const actionValues = rules
+        .map(({ id }) => `(${now}, ${now}, ${id}, 'SET_CATEGORY', ${groceriesCategoryId}, NULL)`)
+        .join(',\n            ');
+
+    copyFixture(sourcePath, targetPath);
+    runSqlite(
+        targetPath,
+        `
+        BEGIN;
+
+        INSERT INTO transactions (id, created_at, updated_at, type, title, operated_at, comment, from_account_id, exchange_rate, needs_embedding)
+        VALUES
+            ${transactionValues};
+
+        INSERT INTO transaction_entries (
+            created_at,
+            updated_at,
+            type,
+            account_id,
+            category_id,
+            transaction_id,
+            amount,
+            exchange_rate,
+            category_source,
+            base_instrument_id,
+            base_exchange_rate,
+            base_amount,
+            kind
+        )
+        VALUES
+            ${entryValues};
+
+        INSERT INTO rules (id, created_at, updated_at, enabled, condition_match_type)
+        VALUES
+            ${ruleValues};
+
+        INSERT INTO rule_conditions (created_at, updated_at, rule_id, field, operator, value)
+        VALUES
+            ${conditionValues};
+
+        INSERT INTO rule_actions (created_at, updated_at, rule_id, type, category_id, tag_id)
+        VALUES
+            ${actionValues};
+
+        UPDATE account_balances
+        SET amount = amount - ${totalAmount}, updated_at = ${now}
+        WHERE account_id = ${accountId};
+
+        COMMIT;
+        VACUUM;
+        `
+    );
+};
+
 const generateDebtSettlementFixture = () => {
     const sourcePath = path.join(fixturesDirectoryPath, '31-debt.db');
     const targetPath = path.join(outputDirectoryPath, '31-debt.db');
@@ -1409,6 +1501,7 @@ const generateReceiptScanFixture = () => {
     const expenseSourceAccountId = 1;
     const receiptTransactionId = 4242;
     const receiptAmount = 62_100_000;
+    const receiptCategoryId = 15;
 
     copyFixture(sourcePath, targetPath);
     runSqlite(
@@ -1420,7 +1513,7 @@ const generateReceiptScanFixture = () => {
         VALUES (${receiptTransactionId}, ${operatedAt}, ${operatedAt}, 'EXPENSE', '', ${operatedAt}, 'E2E Receipt Target', ${expenseSourceAccountId}, 1.0);
 
         INSERT INTO transaction_entries (created_at, updated_at, type, account_id, category_id, transaction_id, amount)
-        VALUES (${operatedAt}, ${operatedAt}, 'CREDIT', ${expenseSourceAccountId}, NULL, ${receiptTransactionId}, ${receiptAmount});
+        VALUES (${operatedAt}, ${operatedAt}, 'CREDIT', ${expenseSourceAccountId}, ${receiptCategoryId}, ${receiptTransactionId}, ${receiptAmount});
 
         UPDATE account_balances
         SET amount = amount - ${receiptAmount}, updated_at = ${now}
@@ -1478,10 +1571,34 @@ const generateEnableBankingFixture = () => {
             validUntil
         });
     const integrations = [
-        { id: 91, label: 'E2E Valid Bank', token: token('e2e-session-valid', isoInDays(60)), errorCode: null, accounts: ['Current', 'Savings'] },
-        { id: 92, label: 'E2E Expired Bank', token: token('e2e-session-expired', isoInDays(-3)), errorCode: 'CONSENT_EXPIRED', accounts: ['Current'] },
-        { id: 93, label: 'E2E Unlinked Bank', token: token('e2e-session-unlinked', isoInDays(60)), errorCode: 'ACCOUNT_NOT_LINKED', accounts: ['Current'] },
-        { id: 94, label: 'E2E Keyless Bank', token: token('e2e-session-keyless', isoInDays(60)), errorCode: 'UNAUTHORIZED', accounts: ['Current'] }
+        {
+            id: 91,
+            label: 'E2E Valid Bank',
+            token: token('e2e-session-valid', isoInDays(60)),
+            errorCode: null,
+            accounts: ['Current', 'Savings']
+        },
+        {
+            id: 92,
+            label: 'E2E Expired Bank',
+            token: token('e2e-session-expired', isoInDays(-3)),
+            errorCode: 'CONSENT_EXPIRED',
+            accounts: ['Current']
+        },
+        {
+            id: 93,
+            label: 'E2E Unlinked Bank',
+            token: token('e2e-session-unlinked', isoInDays(60)),
+            errorCode: 'ACCOUNT_NOT_LINKED',
+            accounts: ['Current']
+        },
+        {
+            id: 94,
+            label: 'E2E Keyless Bank',
+            token: token('e2e-session-keyless', isoInDays(60)),
+            errorCode: 'UNAUTHORIZED',
+            accounts: ['Current']
+        }
     ];
     const accounts = integrations.flatMap(integration =>
         integration.accounts.map((name, index) => ({ id: integration.id * 10 + index, integration, title: `${integration.label} ${name}` }))
@@ -1541,6 +1658,24 @@ const generateEnableBankingKey = () => {
     writeFileSync(path.join(outputDirectoryPath, 'e2e00000-0000-4000-8000-0000000000e1.pem.txt'), privateKey);
 };
 
+const generateInzhurFixture = () => {
+    const targetPath = path.join(outputDirectoryPath, '44-inzhur.db');
+
+    copyFixture(path.join(fixturesDirectoryPath, '01.db'), targetPath);
+    runSqlite(targetPath, `
+        BEGIN;
+        INSERT INTO accounts (id, title, type, instrument_id, external_source, external_id)
+        SELECT 1, 'Inzhur Test Card', 'BANK_SYNC', id, 'MONOBANK', 'inzhur-e2e-card' FROM instruments WHERE code = 'UAH';
+        INSERT INTO transactions (id, type, title, operated_at, from_account_id, exchange_rate, external_source, external_id)
+        VALUES (1, 'EXPENSE', 'ТОВ ІНЖУР КЕПІТАЛ', unixepoch('2026-11-01T12:00:00Z'), 1, 1, 'MONOBANK', 'inzhur-e2e-topup');
+        INSERT INTO transaction_entries (transaction_id, account_id, type, amount, external_id)
+        VALUES (1, 1, 'CREDIT', 2000000000, 'inzhur-e2e-topup');
+        INSERT INTO account_balances (account_id, amount) VALUES (1, -2000000000);
+        COMMIT;
+    `);
+};
+
+generateInzhurFixture();
 generateRunwayCryptoFixture();
 generateBudgetMultiCurrencyFixture();
 generateRecurringFixture();
@@ -1548,6 +1683,7 @@ generateConsolidationFixture();
 generateRefundConsolidationFixture();
 generateLongPressActionsFixture();
 generateMatchingRulesFixture();
+generateEditFormLayoutFixture();
 generateDebtSettlementFixture();
 generateCategorizeInboxFixture();
 generateReceiptScanFixture();

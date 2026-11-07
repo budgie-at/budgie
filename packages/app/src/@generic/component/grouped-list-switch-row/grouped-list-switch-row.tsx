@@ -8,7 +8,7 @@ import type { AccessibilityProps } from 'react-native';
 interface Props extends Pick<AccessibilityProps, 'accessibilityHint'> {
     readonly left: ReactNode;
     readonly title: string;
-    readonly subtitle: string;
+    readonly subtitle?: string;
     readonly value: boolean | undefined;
     readonly testID?: string;
     readonly titleTestID?: string;

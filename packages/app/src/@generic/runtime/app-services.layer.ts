@@ -1,3 +1,4 @@
+// eslint-disable max-lines -- approved by liaugust: appServicesLayer is the single registration point
 import { TranslationLlmService, VoiceLlmService } from '@budgie/ai';
 import {
     BudgetCategoryLimitRepository,
@@ -27,6 +28,7 @@ import {
     DebtEventRepository,
     InstallmentPlanRepository,
     InstrumentRepository,
+    InvestmentReturnRepository,
     MccCategoryRepository,
     SettingsRepository,
     SyncRepository,
@@ -82,7 +84,8 @@ import {
     ExchangeRatesService,
     HistoricalExchangeRateRepository,
     InstrumentDailyMarketPriceRepository,
-    InstrumentMarketDataJobRepository
+    InstrumentMarketDataJobRepository,
+    InzhurPriceService
 } from '@budgie/market';
 import { RecurringRefreshService, RecurringService } from '@budgie/recurring';
 import { RuleEngineService, RuleMatcherService, RuleRepository, RuleService, TransactionRuleRepository } from '@budgie/rules';
@@ -92,6 +95,11 @@ import {
     ErsteSyncService,
     ExternalAccountService,
     AccountReissueMergeService,
+    InzhurBankFlowService,
+    InzhurGainService,
+    InzhurManualPurchaseService,
+    InzhurOperationsImportService,
+    InzhurSetupService,
     MonobankSyncService,
     PrivatbankCategoryMatcherService,
     PrivatbankSyncService,
@@ -133,11 +141,14 @@ import { cloudSyncLayer } from '../../cloud-sync/layer/cloud-sync.layer';
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
 import { DatabaseExportService } from '../../export/service/database-export.service';
 import { DatabaseImportService } from '../../import/service/database-import.service';
+import { InzhurPendingTopUpService } from '../../inzhur/service/inzhur-pending-top-up.service';
+import { InzhurStatementReminderService } from '../../inzhur/service/inzhur-statement-reminder.service';
 import { HistoricalMarketDataDrainerService } from '../../market-data/service/historical-market-data-drainer.service';
 import { OnboardingService } from '../../onboarding/service/onboarding.service';
 import { ReceiptScanService } from '../../receipt/service/receipt-scan.service';
 import { RecurringReminderService } from '../../recurring/service/recurring-reminder.service';
 import { RuleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
+import { SiriCatalogService } from '../../siri/service/siri-catalog.service';
 import { p2pTransferTitleResolverLayer } from '../../sync/layer/p2p-transfer-title-resolver.layer';
 import { syncFileReaderLayer } from '../../sync/layer/sync-file-reader.layer';
 import { syncWorkloadLayer } from '../../sync/layer/sync-workload.layer';
@@ -151,7 +162,6 @@ import { RepeatedTransactionService } from '../../transaction/service/repeated-t
 import { WalletCaptureImportService } from '../../wallet-capture/service/wallet-capture-import.service';
 import { WalletCaptureNativeService } from '../../wallet-capture/service/wallet-capture-native.service';
 import { WalletCaptureTransactionService } from '../../wallet-capture/service/wallet-capture-transaction.service';
-import { WidgetSnapshotBuilderService } from '../../widget/service/widget-snapshot-builder.service';
 import { WidgetSnapshotService } from '../../widget/service/widget-snapshot.service';
 import { DatabaseLifecycleService } from '../drizzle/service/database-lifecycle.service';
 import { DatabaseMaintenanceService } from '../drizzle/service/database-maintenance.service';
@@ -192,8 +202,10 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     DatabaseMigrationService.layer,
     DatabaseMaintenanceService.layer,
     DatabaseRekeyService.layer,
-    WidgetSnapshotBuilderService.layer,
+    SiriCatalogService.layer,
     WidgetSnapshotService.layer,
+    InzhurStatementReminderService.layer,
+    InzhurPendingTopUpService.layer,
     AppResetService.layer,
     DatabaseExportService.layer,
     DatabaseImportService.layer,
@@ -272,6 +284,13 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     ErsteSyncService.layer,
     PrivatbankSyncService.layer,
     SyncProviderRegistryService.layer,
+    InzhurPriceService.layer,
+    InzhurSetupService.layer,
+    InzhurOperationsImportService.layer,
+    InzhurManualPurchaseService.layer,
+    InzhurGainService.layer,
+    InzhurBankFlowService.layer,
+    InvestmentReturnRepository.layer,
     ResyncService.layer,
     AppDataSyncService.layer,
     BackgroundSyncSessionService.layer,

@@ -20,7 +20,6 @@ import { ConsolidationSourceModalProvider } from '../../transaction/context/cons
 import { ConvertToRefundModalProvider } from '../../transaction/context/convert-to-refund-modal.context';
 import { ConvertToTransferModalProvider } from '../../transaction/context/convert-to-transfer-modal.context';
 import { DatePickerModalProvider } from '../../transaction/context/date-picker-modal.context';
-import { NoteInputModalProvider } from '../../transaction/context/note-input-modal.context';
 import { SplitEntriesModalProvider } from '../../transaction/context/split-entries-modal.context';
 import { TransactionAccountFilterModalProvider } from '../../transaction/context/transaction-account-filter-modal.context';
 import { TransactionAmountFilterModalProvider } from '../../transaction/context/transaction-amount-filter-modal.context';
@@ -42,55 +41,53 @@ export const ModalProvider = ({ children }: PropsWithChildren) => (
                     <TagFormModalProvider>
                         <TagsSelectorModalProvider>
                             <DatePickerModalProvider>
-                                <NoteInputModalProvider>
-                                    <SplitEntriesModalProvider>
-                                        <TransactionFeeModalProvider>
-                                            <ConsolidationSourceModalProvider>
-                                                <ConvertToRefundModalProvider>
-                                                    <ConvertToTransferModalProvider>
-                                                        <CurrencySelectorModalProvider>
-                                                            <LanguageSelectorModalProvider>
-                                                                <ContactSelectorModalProvider>
-                                                                    <ImportBackupPinModalProvider>
-                                                                        <ImportColumnMapperModalProvider>
-                                                                            <ResyncWindowPickerModalProvider>
-                                                                                <TransactionTypeFilterModalProvider>
-                                                                                    <DateFilterModalProvider>
-                                                                                        <TransactionCategoryFilterModalProvider>
-                                                                                            <TransactionAccountFilterModalProvider>
-                                                                                                <TransactionAmountFilterModalProvider>
-                                                                                                    <TransactionTagFilterModalProvider>
-                                                                                                        <VoiceReviewModalProvider>
-                                                                                                            <RuleFormModalProvider>
-                                                                                                                <RuleSelectorModalProvider>
-                                                                                                                    <RuleMccSelectorModalProvider>
-                                                                                                                        <ConvertToInstallmentModalProvider>
-                                                                                                                            <BankIntegrationKeyModalProvider>
-                                                                                                                                {children}
-                                                                                                                            </BankIntegrationKeyModalProvider>
-                                                                                                                        </ConvertToInstallmentModalProvider>
-                                                                                                                    </RuleMccSelectorModalProvider>
-                                                                                                                </RuleSelectorModalProvider>
-                                                                                                            </RuleFormModalProvider>
-                                                                                                        </VoiceReviewModalProvider>
-                                                                                                    </TransactionTagFilterModalProvider>
-                                                                                                </TransactionAmountFilterModalProvider>
-                                                                                            </TransactionAccountFilterModalProvider>
-                                                                                        </TransactionCategoryFilterModalProvider>
-                                                                                    </DateFilterModalProvider>
-                                                                                </TransactionTypeFilterModalProvider>
-                                                                            </ResyncWindowPickerModalProvider>
-                                                                        </ImportColumnMapperModalProvider>
-                                                                    </ImportBackupPinModalProvider>
-                                                                </ContactSelectorModalProvider>
-                                                            </LanguageSelectorModalProvider>
-                                                        </CurrencySelectorModalProvider>
-                                                    </ConvertToTransferModalProvider>
-                                                </ConvertToRefundModalProvider>
-                                            </ConsolidationSourceModalProvider>
-                                        </TransactionFeeModalProvider>
-                                    </SplitEntriesModalProvider>
-                                </NoteInputModalProvider>
+                                <SplitEntriesModalProvider>
+                                    <TransactionFeeModalProvider>
+                                        <ConsolidationSourceModalProvider>
+                                            <ConvertToRefundModalProvider>
+                                                <ConvertToTransferModalProvider>
+                                                    <CurrencySelectorModalProvider>
+                                                        <LanguageSelectorModalProvider>
+                                                            <ContactSelectorModalProvider>
+                                                                <ImportBackupPinModalProvider>
+                                                                    <ImportColumnMapperModalProvider>
+                                                                        <ResyncWindowPickerModalProvider>
+                                                                            <TransactionTypeFilterModalProvider>
+                                                                                <DateFilterModalProvider>
+                                                                                    <TransactionCategoryFilterModalProvider>
+                                                                                        <TransactionAccountFilterModalProvider>
+                                                                                            <TransactionAmountFilterModalProvider>
+                                                                                                <TransactionTagFilterModalProvider>
+                                                                                                    <VoiceReviewModalProvider>
+                                                                                                        <RuleFormModalProvider>
+                                                                                                            <RuleSelectorModalProvider>
+                                                                                                                <RuleMccSelectorModalProvider>
+                                                                                                                    <ConvertToInstallmentModalProvider>
+                                                                                                                        <BankIntegrationKeyModalProvider>
+                                                                                                                            {children}
+                                                                                                                        </BankIntegrationKeyModalProvider>
+                                                                                                                    </ConvertToInstallmentModalProvider>
+                                                                                                                </RuleMccSelectorModalProvider>
+                                                                                                            </RuleSelectorModalProvider>
+                                                                                                        </RuleFormModalProvider>
+                                                                                                    </VoiceReviewModalProvider>
+                                                                                                </TransactionTagFilterModalProvider>
+                                                                                            </TransactionAmountFilterModalProvider>
+                                                                                        </TransactionAccountFilterModalProvider>
+                                                                                    </TransactionCategoryFilterModalProvider>
+                                                                                </DateFilterModalProvider>
+                                                                            </TransactionTypeFilterModalProvider>
+                                                                        </ResyncWindowPickerModalProvider>
+                                                                    </ImportColumnMapperModalProvider>
+                                                                </ImportBackupPinModalProvider>
+                                                            </ContactSelectorModalProvider>
+                                                        </LanguageSelectorModalProvider>
+                                                    </CurrencySelectorModalProvider>
+                                                </ConvertToTransferModalProvider>
+                                            </ConvertToRefundModalProvider>
+                                        </ConsolidationSourceModalProvider>
+                                    </TransactionFeeModalProvider>
+                                </SplitEntriesModalProvider>
                             </DatePickerModalProvider>
                         </TagsSelectorModalProvider>
                     </TagFormModalProvider>

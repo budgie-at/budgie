@@ -12,6 +12,7 @@ import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
 import { RecurringRefreshModeEnum } from '../../recurring/enum/recurring-refresh-mode.enum';
 import { RecurringReminderService } from '../../recurring/service/recurring-reminder.service';
+import { SiriCatalogService } from '../../siri/service/siri-catalog.service';
 import { WalletCaptureImportService } from '../../wallet-capture/service/wallet-capture-import.service';
 import { WalletCaptureNativeService } from '../../wallet-capture/service/wallet-capture-native.service';
 
@@ -27,31 +28,39 @@ export class AppDataSyncService extends Context.Service<AppDataSyncService>()('@
         const enableBankingSyncService = yield* EnableBankingSyncService;
         const walletCaptureNativeService = yield* WalletCaptureNativeService;
         const walletCaptureImportService = yield* WalletCaptureImportService;
+        const siriCatalogService = yield* SiriCatalogService;
+
+        const syncSources = Effect.fnUntraced(function* () {
+            yield* logAndContinue(accountBalanceIncrementalService.updateAllBalances(false));
+            yield* logAndContinue(walletCaptureImportService.drain());
+            yield* logAndContinue(exchangeRateBackgroundService.sync);
+            if (yield* workload.hasQueuedUserWork) {
+                return false;
+            }
+
+            yield* logAndContinue(monobankSyncService.sync());
+            if (yield* workload.hasQueuedUserWork) {
+                return false;
+            }
+
+            yield* logAndContinue(binanceSyncService.sync());
+            if (yield* workload.hasQueuedUserWork) {
+                return false;
+            }
+
+            yield* logAndContinue(enableBankingSyncService.sync());
+
+            return true;
+        });
 
         return {
             sync: Effect.fn('AppDataSyncService.sync')(
                 function* () {
-                    yield* logAndContinue(accountBalanceIncrementalService.updateAllBalances(false));
-                    yield* logAndContinue(walletCaptureNativeService.refreshAccounts());
-                    yield* logAndContinue(walletCaptureImportService.drain());
-                    yield* logAndContinue(exchangeRateBackgroundService.sync);
-                    if (yield* workload.hasQueuedUserWork) {
-                        return false;
-                    }
+                    const isComplete = yield* syncSources();
 
-                    yield* logAndContinue(monobankSyncService.sync());
-                    if (yield* workload.hasQueuedUserWork) {
-                        return false;
-                    }
+                    yield* logAndContinue(siriCatalogService.publish());
 
-                    yield* logAndContinue(binanceSyncService.sync());
-                    if (yield* workload.hasQueuedUserWork) {
-                        return false;
-                    }
-
-                    yield* logAndContinue(enableBankingSyncService.sync());
-
-                    return true;
+                    return isComplete;
                 },
                 Effect.tap(() =>
                     logAndContinue(
@@ -84,7 +93,8 @@ export class AppDataSyncService extends Context.Service<AppDataSyncService>()('@
             WalletCaptureImportService.layer,
             WalletCaptureNativeService.layer,
             RecurringRefreshService.layer,
-            RecurringReminderService.layer
+            RecurringReminderService.layer,
+            SiriCatalogService.layer
         ])
     );
 }

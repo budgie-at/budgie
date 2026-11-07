@@ -1,4 +1,3 @@
-import { AccountRepository } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -14,24 +13,12 @@ import { WalletCaptureReactivityKeyEnum } from '../enum/wallet-capture-reactivit
 
 export class WalletCaptureNativeService extends Context.Service<WalletCaptureNativeService>()('@budgie/app/WalletCaptureNativeService', {
     make: Effect.gen(function* () {
-        const accountRepository = yield* AccountRepository;
         const reactivity = yield* Reactivity.Reactivity;
         const captureInvocationName = 'captureApplePayTransaction';
-        const accountCatalogKind = 'walletAccount';
 
         const callNative = <A>(call: () => Promise<A>) => Effect.tryPromise({ try: call, catch: cause => NativeCallError.make({ cause }) });
 
         return {
-            refreshAccounts: Effect.fn('WalletCaptureNativeService.refreshAccounts')(function* () {
-                const accounts = yield* accountRepository.getAllActiveAccounts;
-
-                yield* callNative(() =>
-                    AppIntents.setEntityCatalogAsync(
-                        accountCatalogKind,
-                        accounts.filter(account => account.isActive).map(({ id, title }) => ({ id: String(id), title }))
-                    )
-                );
-            }),
             getCaptures: Effect.fn('WalletCaptureNativeService.getCaptures')(function* () {
                 const invocations = yield* callNative(() => AppIntents.getPendingInvocationsAsync());
 
@@ -68,7 +55,5 @@ export class WalletCaptureNativeService extends Context.Service<WalletCaptureNat
         };
     })
 }) {
-    static readonly layer = Layer.effect(WalletCaptureNativeService, WalletCaptureNativeService.make).pipe(
-        Layer.provide(AccountRepository.layer)
-    );
+    static readonly layer = Layer.effect(WalletCaptureNativeService, WalletCaptureNativeService.make);
 }

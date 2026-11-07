@@ -6,6 +6,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 import { CreateDebtAccount } from '../../../account/component/create-debt-account/create-debt-account';
 import { CreateDepositAccount } from '../../../account/component/create-deposit-account/create-deposit-account';
 import { CreateSimpleAccount } from '../../../account/component/create-simple-account/create-simple-account';
+import { ImportInzhurStatement } from '../../../inzhur/component/import-inzhur-statement/import-inzhur-statement';
 import { CreateBinanceAccount } from '../../../sync/component/create-binance-account/create-binance-account';
 import { CreateEnableBankingAccount } from '../../../sync/component/create-enable-banking-account/create-enable-banking-account';
 import { CreateErsteAccount } from '../../../sync/component/create-erste-account/create-erste-account';
@@ -39,6 +40,8 @@ export default function CreateAccountType() {
             return <CreateErsteAccount />;
         case ExternalSourceEnum.BINANCE:
             return <CreateBinanceAccount />;
+        case ExternalSourceEnum.INZHUR:
+            return <ImportInzhurStatement />;
         case ExternalSourceEnum.ENABLE_BANKING:
             return <CreateEnableBankingAccount connectAccountId={connectAccountIdNumber} savedApplicationId={savedApplicationId ?? null} />;
         case AccountTypeEnum.STOCKS:

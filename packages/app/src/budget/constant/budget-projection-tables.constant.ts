@@ -6,6 +6,7 @@ import {
     BudgetSinkingFundEntityTable,
     ExchangeRateEntityTable,
     HistoricalExchangeRateEntityTable,
+    InstrumentDailyMarketPriceEntityTable,
     RecurringSeriesEntityTable,
     RecurringSeriesTransactionEntityTable,
     SettingsEntityTable
@@ -22,6 +23,7 @@ export const BUDGET_PROJECTION_TABLES = [
     BudgetSinkingFundEntityTable,
     ExchangeRateEntityTable,
     HistoricalExchangeRateEntityTable,
+    InstrumentDailyMarketPriceEntityTable,
     RecurringSeriesEntityTable,
     RecurringSeriesTransactionEntityTable,
     SettingsEntityTable

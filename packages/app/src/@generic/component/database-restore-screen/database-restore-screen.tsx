@@ -33,6 +33,7 @@ export const DatabaseRestoreScreen = () => {
         }
 
         setIsLoading(true);
+        setBackupError(null);
 
         return Effect.runPromise(
             restoreDatabaseFromPickedBackup().pipe(
@@ -50,7 +51,13 @@ export const DatabaseRestoreScreen = () => {
         );
     };
 
-    const handleRetry = () => void Effect.runPromise(reloadApp);
+    const handleRetry = () => {
+        if (isLoading) {
+            return;
+        }
+
+        void Effect.runPromise(reloadApp);
+    };
 
     return (
         <Page safeEdges={safeEdges} className="bg-primary-reverse" contentClassName="justify-center">

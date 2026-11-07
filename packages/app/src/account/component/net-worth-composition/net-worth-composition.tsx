@@ -1,4 +1,3 @@
-import { AccountTypeEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -9,6 +8,7 @@ import { StatisticsShareBar } from '../../../transaction/components/statistics-s
 import { ACCOUNT_TYPE_SWATCH } from '../../constant/account-type-swatch.constant';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { isAccountTypeSection } from '../../type-guard/is-account-type-section.type-guard';
+import { isCashSection } from '../../type-guard/is-cash-section.type-guard';
 
 import { NetWorthCompositionSelector } from './net-worth-composition.selector';
 
@@ -16,16 +16,14 @@ import type { HomeSectionInterface } from '../../interface/home-section.interfac
 
 interface Props {
     readonly sections: readonly HomeSectionInterface[];
-    readonly cashTotal: number;
 }
 
-export const NetWorthComposition = ({ sections, cashTotal }: Props) => {
+export const NetWorthComposition = ({ sections }: Props) => {
     const { t } = useLingui();
 
-    const groups = [
-        ...sections.flatMap(section => (isAccountTypeSection(section) ? [{ type: section.type, total: section.total }] : [])),
-        { type: AccountTypeEnum.CASH, total: cashTotal }
-    ];
+    const groups = sections.flatMap(section =>
+        isAccountTypeSection(section) || isCashSection(section) ? [{ type: section.type, total: section.total }] : []
+    );
     const segments = groups
         .filter(group => isPositiveNumber(group.total))
         .sort((left, right) => right.total - left.total)

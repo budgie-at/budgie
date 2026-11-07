@@ -100,7 +100,7 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
     const { t } = useLingui();
     const { markForEmbedding } = useEmbeddingGenerator();
     const amountDisplayRef = useRef<TransactionAmountDisplayRef | null>(null);
-    const { isEditingAmount, toggleKeypad, amountAccessibilityHint } = useTransactionKeypadEditing(false);
+    const { isEditingAmount, toggleKeypad, dismissKeypad, amountAccessibilityHint } = useTransactionKeypadEditing(false);
     const details = getAdjustmentDetails(transaction);
     const { isLoading: isSubmitting, run } = useSingleFlight();
     const [isIncrease, toggleIsIncrease] = useReducer((current: boolean) => !current, details?.initialIsIncrease ?? true);
@@ -144,6 +144,7 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
 
     return (
         <QuickFormLayout
+            onDismissKeypad={dismissKeypad}
             amount={
                 <TransactionAmountDisplay
                     ref={amountDisplayRef}

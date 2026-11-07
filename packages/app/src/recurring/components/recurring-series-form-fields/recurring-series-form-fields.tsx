@@ -24,7 +24,7 @@ import type { RecurringSeriesFormTargetType } from '../../type/recurring-series-
 interface Props {
     readonly target: RecurringSeriesFormTargetType;
 }
-const CONTENT_STYLE = { paddingBottom: 96 };
+const CONTENT_STYLE = { paddingHorizontal: 20, paddingBottom: 96 };
 export const RecurringSeriesFormFields = ({ target }: Props) => {
     const { t } = useLingui();
     const isEditing = target.mode === RecurringFormModeEnum.EDIT;
@@ -41,7 +41,7 @@ export const RecurringSeriesFormFields = ({ target }: Props) => {
 
     return (
         <ScreenChromeScrollView
-            includeTopSafeArea={false}
+            contentInsetTop={44}
             contentContainerStyle={CONTENT_STYLE}
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="on-drag"

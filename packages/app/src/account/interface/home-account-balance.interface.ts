@@ -15,5 +15,6 @@ export interface HomeAccountBalanceInterface {
     readonly includeInNetWorth: boolean;
     readonly isActive: boolean;
     readonly isSharedByOther: boolean;
+    readonly isValued: boolean;
     readonly hasLedgerHistory: boolean;
 }

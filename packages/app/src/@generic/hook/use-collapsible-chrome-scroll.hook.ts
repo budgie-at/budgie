@@ -1,11 +1,13 @@
 import { scrollTo, useAnimatedScrollHandler, useReducedMotion, useSharedValue } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 
 import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
 import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
+import { emptyFn } from '@rnw-community/shared';
 
 const MAXIMUM_SNAP_RELEASE_VELOCITY = 0.1;
 
-export const useCollapsibleChromeScroll = () => {
+export const useCollapsibleChromeScroll = (onDragStart: () => void = emptyFn) => {
     const { scrollY, scrollRef: scrollReference } = useCollapsibleHeaderScroll();
     const { config } = useScreenChrome();
     const { snapToCollapse, collapseStart, collapseEnd } = config;
@@ -23,6 +25,7 @@ export const useCollapsibleChromeScroll = () => {
             scrollY.set(event.contentOffset.y);
         },
         onBeginDrag: () => {
+            scheduleOnRN(onDragStart);
             scrollDirection.set(0);
             previousScrollOffset.set(scrollY.get());
         },

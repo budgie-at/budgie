@@ -16,11 +16,11 @@ import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transacti
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
+import { TransactionUpdatedByEnum } from '../enum/transaction-updated-by.enum';
 import { TransactionEntityTable } from '../table/transaction-entity.table';
 import { deriveEmbeddingFlag } from '../utils/derive-embedding-flag.util';
 
 import type { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
-import type { TransactionUpdatedByEnum } from '../enum/transaction-updated-by.enum';
 import type { TransactionUpdateInputInterface } from '../input/transaction-update-input.interface';
 import type { PotentialExpenseDuplicateInputInterface } from '../interface/potential-expense-duplicate-input.interface';
 
@@ -222,6 +222,32 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                 return transaction;
             }),
 
+            findIncomeAndExpenseByExternalSources: Effect.fn('TransactionRepository.findIncomeAndExpenseByExternalSources')(function* (
+                externalSources: readonly ExternalSourceEnum[],
+                transactionIds: readonly number[] | null
+            ) {
+                if (isDefined(transactionIds) && isEmptyArray(transactionIds)) {
+                    return [];
+                }
+
+                return yield* Db.query(db =>
+                    db.query.TransactionEntityTable.findMany({
+                        where: {
+                            deletedAt: { isNull: true },
+                            consolidationParentTransactionId: { isNull: true },
+                            type: { in: [TransactionTypeEnum.INCOME, TransactionTypeEnum.EXPENSE] },
+                            externalSource: { in: [...externalSources] },
+                            ...(isDefined(transactionIds) && { id: { in: [...transactionIds] } })
+                        },
+                        with: {
+                            [TransactionAssociationEnum.ENTRIES]: {
+                                where: transactionFilters.ledgerEntryFilter
+                            }
+                        }
+                    })
+                );
+            }),
+
             findByIdsWithEntries: Effect.fn('TransactionRepository.findByIdsWithEntries')(function* (ids: number[]) {
                 if (!isNotEmptyArray(ids)) {
                     return [];
@@ -388,6 +414,34 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                 return results.map(row => row.externalId).filter(isDefined);
             }),
 
+            retitleExternalTransfers: (
+                externalSources: readonly ExternalSourceEnum[],
+                accountId: number,
+                inflowTitle: string,
+                outflowTitle: string
+            ) => {
+                const titleSql = sql<string>`CASE WHEN ${TransactionEntityTable.toAccountId} = ${accountId} THEN ${inflowTitle} ELSE ${outflowTitle} END`;
+
+                return Db.query(db =>
+                    db
+                        .update(TransactionEntityTable)
+                        .set({ title: titleSql, updatedAt: new Date() })
+                        .where(
+                            and(
+                                isNull(TransactionEntityTable.deletedAt),
+                                eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
+                                inArray(TransactionEntityTable.externalSource, [...externalSources]),
+                                or(eq(TransactionEntityTable.toAccountId, accountId), eq(TransactionEntityTable.fromAccountId, accountId)),
+                                or(
+                                    isNull(TransactionEntityTable.updatedBy),
+                                    ne(TransactionEntityTable.updatedBy, TransactionUpdatedByEnum.USER)
+                                ),
+                                ne(TransactionEntityTable.title, titleSql)
+                            )
+                        )
+                );
+            },
+
             touchUpdatedAt: (id: number) =>
                 Db.query(db => db.update(TransactionEntityTable).set({ updatedAt: new Date() }).where(eq(TransactionEntityTable.id, id))),
 
@@ -431,6 +485,61 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                                 inArray(TransactionEntityTable.fromAccountId, accountIds)
                             )
                         )
+                ),
+
+            findByAccountIdsWithEntries: (accountIds: readonly number[]) =>
+                Db.query(db =>
+                    db.query.TransactionEntityTable.findMany({
+                        where: {
+                            deletedAt: { isNull: true },
+                            consolidationParentTransactionId: { isNull: true },
+                            OR: [{ fromAccountId: { in: [...accountIds] } }, { toAccountId: { in: [...accountIds] } }]
+                        },
+                        with: {
+                            [TransactionAssociationEnum.ENTRIES]: {
+                                where: transactionFilters.ledgerEntryFilter
+                            }
+                        },
+                        orderBy: { operatedAt: 'asc', id: 'asc' }
+                    })
+                ),
+
+            findTransfersIntoAccountSince: (accountId: number, since: Date, externalSources: readonly ExternalSourceEnum[]) =>
+                Db.query(db =>
+                    db.query.TransactionEntityTable.findMany({
+                        where: {
+                            type: TransactionTypeEnum.TRANSFER,
+                            deletedAt: { isNull: true },
+                            consolidationParentTransactionId: { isNull: true },
+                            toAccountId: accountId,
+                            operatedAt: { gte: since },
+                            externalSource: { in: [...externalSources] }
+                        },
+                        with: {
+                            [TransactionAssociationEnum.ENTRIES]: {
+                                where: transactionFilters.ledgerEntryFilter
+                            }
+                        },
+                        orderBy: { operatedAt: 'asc', id: 'asc' }
+                    })
+                ),
+
+            findTransfersFromAccountByExternalIdPrefix: (accountId: number, externalIdPrefix: string) =>
+                Db.query(db =>
+                    db.query.TransactionEntityTable.findMany({
+                        where: {
+                            type: TransactionTypeEnum.TRANSFER,
+                            deletedAt: { isNull: true },
+                            consolidationParentTransactionId: { isNull: true },
+                            fromAccountId: accountId,
+                            externalId: { like: `${externalIdPrefix}%` }
+                        },
+                        with: {
+                            [TransactionAssociationEnum.ENTRIES]: {
+                                where: transactionFilters.ledgerEntryFilter
+                            }
+                        }
+                    })
                 ),
 
             findTransfersForConversion: (accountId: number) =>

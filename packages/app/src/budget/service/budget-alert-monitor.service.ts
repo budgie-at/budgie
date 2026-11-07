@@ -28,6 +28,7 @@ import { postLocalNotification } from '../../@generic/utils/post-local-notificat
 import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
 import { formatSymbolAmount } from '../../i18n/utils/format-symbol-amount.util';
 import { languageToLocale } from '../../i18n/utils/language-to-locale.util';
+import { BUDGET_ALERT_CHANNEL_ID } from '../constant/budget-alert-channel-id.constant';
 import { BUDGET_PERIOD_THIS_LABEL } from '../constant/budget-period-this-label.constant';
 import { BudgetBackgroundTaskNameEnum } from '../enum/budget-background-task-name.enum';
 import { resolveBudgetWindow } from '../utils/resolve-budget-window.util';
@@ -53,7 +54,10 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
         const instrumentRepository = yield* InstrumentRepository;
         const settingsRepository = yield* SettingsRepository;
 
-        const budgetAlertChannel = (): LocalNotificationChannelInterface => ({ id: 'budget-alerts', name: i18n._(msg`Budget alerts`) });
+        const budgetAlertChannel = (): LocalNotificationChannelInterface => ({
+            id: BUDGET_ALERT_CHANNEL_ID,
+            name: i18n._(msg`Budget alerts`)
+        });
         const backgroundTaskMinimumIntervalMinutes = 15;
         const storageKeyPrefix = '@budgie:budget-alerts-fired';
         const firedTriggersSchema = Schema.String.pipe(Schema.Array, Schema.fromJsonString);

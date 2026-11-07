@@ -24,14 +24,15 @@
         "@effect/sql-sqlite-node": "4.1.2",
         "@effect/vitest": "4.1.2",
         "@liaugust/monobank-sdk": "^0.8.0",
-        "@rnw-community/shared": "^2.28.0",
+        "@rnw-community/shared": "^3.0.5",
         "drizzle-orm": "1.0.0-rc.4",
         "msw": "^3.0.3",
+        "undici": "7.29.0",
         "vitest": "5.1.0"
     },
     "devDependencies": {
         "@lingui/core": "6.12.0",
-        "@types/node": "26.6.5",
+        "@types/node": "26.6.6",
         "effect": "4.1.2",
         "typescript": "npm:@typescript/typescript6@6.0.2",
         "xlsx": "^0.18.5"

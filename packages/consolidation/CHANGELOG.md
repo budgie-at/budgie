@@ -3,6 +3,45 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.167.2](https://github.com/budgie-at/budgie/compare/v6.167.1...v6.167.2) (2026-11-07)
+
+### Bug Fixes
+
+* close reachable illegal states in implicit state machines ([#2020](https://github.com/budgie-at/budgie/issues/2020)) ([c1d1ee6](https://github.com/budgie-at/budgie/commit/c1d1ee6f8d0a1182aaab013bddd626163696d094))
+
+
+## [6.167.1](https://github.com/budgie-at/budgie/compare/v6.167.0...v6.167.1) (2026-11-07)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+
+
+
+
+# [6.166.0](https://github.com/budgie-at/budgie/compare/v6.165.7...v6.166.0) (2026-11-07)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+
+
+
+
+## [6.165.5](https://github.com/budgie-at/budgie/compare/v6.165.4...v6.165.5) (2026-11-06)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+
+
+
+
+## [6.165.2](https://github.com/budgie-at/budgie/compare/v6.165.1...v6.165.2) (2026-11-06)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+
+
+
+
 # [6.165.0](https://github.com/budgie-at/budgie/compare/v6.164.3...v6.165.0) (2026-11-06)
 
 **Note:** Version bump only for package @budgie/consolidation

@@ -1,15 +1,17 @@
 import { useLingui } from '@lingui/react/macro';
 import { useEffect, useEffectEvent, useReducer, useRef, useState } from 'react';
+import { Text } from 'react-native';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { SelectorModalDescription } from '../@generic/component/selector-modal-description/selector-modal-description';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { SelectorNoResultsState } from '../@generic/component/selector-no-results-state/selector-no-results-state';
+import { SheetHeaderAction } from '../@generic/component/sheet-header-action/sheet-header-action';
 import { SheetSurface } from '../@generic/component/sheet-surface/sheet-surface';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
+import { TagCreateRow } from '../tag/components/tag-create-row/tag-create-row';
 import { TagsSelectContent } from '../tag/components/tags-select-content/tags-select-content';
-import { TagsSelectorDoneButton } from '../tag/components/tags-selector-done-button/tags-selector-done-button';
 import { useTagFormModal } from '../tag/context/tag-form-modal.context';
 import { useTagsSelectorModal, useTagsSelectorModalParams } from '../tag/context/tags-selector-modal.context';
 import { TagsSelectorActionTypeEnum } from '../tag/enum/tags-selector-action-type.enum';
@@ -50,12 +52,6 @@ export default function TagsSelectorModal() {
 
     const data = (tags ?? []).filter(tag => !excludeTagIds.includes(tag.id));
     const query = search.trim();
-    const primaryHint = enablePrimarySelection && isNotEmptyArray(selected) ? t`★ Primary · hold another tag to change it` : null;
-    const dirty =
-        selected.length !== initialTagIds.length ||
-        selected.some((id, index) => id !== initialTagIds[index]) ||
-        primaryTagId !== initialPrimaryTagId;
-
     const resolveSelection = (tagIds: number[]) => {
         hasResolvedRef.current = true;
         resolveTagsSelector(tagIds);
@@ -97,21 +93,32 @@ export default function TagsSelectorModal() {
         void 0
     );
 
+    const count = selected.length;
+    const doneAction = singleSelect ? null : (
+        <SheetHeaderAction label={t`Done`} onPress={handleDone} testID={TagsSelectorModalSelector.DoneButton} />
+    );
+
     return (
-        <SheetSurface>
+        <SheetSurface
+            footer={
+                <Text
+                    className="text-center text-[13px] text-secondary-foreground"
+                    maxFontSizeMultiplier={1.6}
+                >{t`${count} selected`}</Text>
+            }
+        >
             <SelectorModalSearchHeader
                 search={search}
                 onSearchChange={setSearch}
                 title={t`Tags`}
                 placeholder={t`Search tags…`}
-                createLabel={t`Create tag`}
-                onCreate={handleCreatePress}
-                createTestID={TagsSelectorModalSelector.CreateButton}
+                trailing={doneAction}
                 testID={TagsSelectorModalSelector.Input}
             />
 
             <SelectorModalDescription title={title} description={description}>
                 <TagsSelectContent
+                    header={<TagCreateRow onPress={handleCreatePress} />}
                     listEmptyComponent={listEmptyComponent}
                     data={data}
                     selectedTagIds={selected}
@@ -121,15 +128,6 @@ export default function TagsSelectorModal() {
                     {...(enablePrimarySelection && { onPrimarySelect: handlePrimarySelect })}
                 />
             </SelectorModalDescription>
-
-            {dirty && !singleSelect ? (
-                <TagsSelectorDoneButton
-                    count={selected.length}
-                    onPress={handleDone}
-                    hint={primaryHint}
-                    testID={TagsSelectorModalSelector.DoneButton}
-                />
-            ) : null}
         </SheetSurface>
     );
 }

@@ -1,6 +1,7 @@
 import { AccountRepository, SyncModeEnum, SyncRepository } from '@budgie/contracts';
 import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import { getUnixTime } from 'date-fns/getUnixTime';
+import { min } from 'date-fns/min';
 import { subHours } from 'date-fns/subHours';
 import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
@@ -206,11 +207,9 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             const removedCount = yield* databaseLock.withPermit(
                 binanceSourceCommitService.removeByExternalIds(token, client.getRejectedCapitalExternalIds())
             );
-            if (!isRunDeferred()) {
-                yield* databaseLock.withPermit(
-                    syncRepository.update(sync.id, { binanceCapitalPendingFromAt: client.getCapitalPendingFromAt() })
-                );
-            }
+            const pendingFromAts = [client.getCapitalPendingFromAt(), isRunDeferred() ? pendingFromAt : null].filter(isDefined);
+            const capitalPendingFromAt = isNotEmptyArray(pendingFromAts) ? min(pendingFromAts) : null;
+            yield* databaseLock.withPermit(syncRepository.update(sync.id, { binanceCapitalPendingFromAt: capitalPendingFromAt }));
 
             return committedCount + removedCount;
         });

@@ -19,6 +19,7 @@ export const SelectorRowTitle = ({ className, text, highlight = '', language, te
         <Text
             className={cn('text-primary text-[17px]', isSelected && 'font-semibold', className)}
             numberOfLines={1}
+            maxFontSizeMultiplier={2}
             testID={testID}
             accessibilityLanguage={language}
         >

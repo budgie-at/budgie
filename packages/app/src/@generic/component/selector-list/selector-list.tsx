@@ -1,3 +1,4 @@
+import { useWindowDimensions } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
 
 import { LEGEND_LIST_STYLE } from '../../constant/legend-list.constant';
@@ -23,14 +24,29 @@ interface Props<Item> {
         | 'keyboardShouldPersistTaps'
         | 'onScroll'
         | 'scrollEventThrottle'
+        | 'initialScrollIndex'
     >;
     readonly listRef?: Ref<LegendListRef>;
     readonly children?: ReactNode;
     readonly isLoading?: boolean;
+    readonly selectedIndex?: number;
 }
 
-export const SelectorList = <Item,>({ data, renderItem, keyExtractor, options, listRef, children, isLoading = false }: Props<Item>) => {
+export const SelectorList = <Item,>({
+    data,
+    renderItem,
+    keyExtractor,
+    options,
+    listRef,
+    children,
+    isLoading = false,
+    selectedIndex = 0
+}: Props<Item>) => {
+    const { fontScale } = useWindowDimensions();
     const scrollOffset = useSharedValue(0);
+    const columns = options.numColumns ?? 1;
+    const initialScrollIndex = Math.max(0, Math.floor(selectedIndex / columns) - 2) * columns;
+    const estimatedItemSize = options.estimatedItemSize ?? 60 * Math.min(fontScale, 2);
 
     const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
         scrollOffset.set(event.nativeEvent.contentOffset.y);
@@ -40,6 +56,8 @@ export const SelectorList = <Item,>({ data, renderItem, keyExtractor, options, l
         <LoadingContent isLoading={isLoading} containerClassName="flex-1" className="flex-1">
             <BudgieLegendList
                 {...options}
+                initialScrollIndex={initialScrollIndex}
+                estimatedItemSize={estimatedItemSize}
                 ref={listRef}
                 data={data}
                 renderItem={renderItem}

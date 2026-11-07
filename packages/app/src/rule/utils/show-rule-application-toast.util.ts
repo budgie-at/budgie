@@ -7,7 +7,9 @@ import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error
 
 import type { ApplyRuleResultInterface } from '@budgie/rules';
 
-export const showRuleApplicationToast = (result: ApplyRuleResultInterface | null, error: unknown): void => {
+const RULE_TOAST_BOTTOM_CLEARANCE = 110;
+
+export const showRuleApplicationToast = (result: ApplyRuleResultInterface | null, error: unknown, footerInset = 0): void => {
     if (!isDefined(result)) {
         showErrorToast(t`Could not apply rule to existing transactions`, getErrorMessage(error));
 
@@ -15,10 +17,13 @@ export const showRuleApplicationToast = (result: ApplyRuleResultInterface | null
     }
 
     const { applied, failed, total } = result;
+    const bottomOffset = RULE_TOAST_BOTTOM_CLEARANCE + footerInset;
 
     if (total === 0) {
         Toast.show({
             type: 'info',
+            position: 'bottom',
+            bottomOffset,
             text1: t`No transactions matched`,
             text2: t`The rule was saved but no existing transactions needed updating.`
         });
@@ -29,6 +34,8 @@ export const showRuleApplicationToast = (result: ApplyRuleResultInterface | null
     if (failed > 0) {
         Toast.show({
             type: 'error',
+            position: 'bottom',
+            bottomOffset,
             text1: t`Rule partially applied`,
             text2: t`Updated ${applied} of ${total} transactions.`
         });
@@ -38,6 +45,8 @@ export const showRuleApplicationToast = (result: ApplyRuleResultInterface | null
 
     Toast.show({
         type: 'success',
+        position: 'bottom',
+        bottomOffset,
         text1: t`Rule applied`,
         text2: plural(applied, {
             one: '# matching transaction updated',

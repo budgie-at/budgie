@@ -3,6 +3,45 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.167.2](https://github.com/budgie-at/budgie/compare/v6.167.1...v6.167.2) (2026-11-07)
+
+**Note:** Version bump only for package @budgie/ledger
+
+
+
+
+
+## [6.167.1](https://github.com/budgie-at/budgie/compare/v6.167.0...v6.167.1) (2026-11-07)
+
+**Note:** Version bump only for package @budgie/ledger
+
+
+
+
+
+# [6.166.0](https://github.com/budgie-at/budgie/compare/v6.165.7...v6.166.0) (2026-11-07)
+
+### Features
+
+* track Inzhur fund certificates ([#1928](https://github.com/budgie-at/budgie/issues/1928)) ([67070d4](https://github.com/budgie-at/budgie/commit/67070d4d6fdc2a38c04990dcf367c2d7466c64f8)), closes [#8A5A00](https://github.com/budgie-at/budgie/issues/8A5A00)
+
+
+## [6.165.5](https://github.com/budgie-at/budgie/compare/v6.165.4...v6.165.5) (2026-11-06)
+
+**Note:** Version bump only for package @budgie/ledger
+
+
+
+
+
+## [6.165.2](https://github.com/budgie-at/budgie/compare/v6.165.1...v6.165.2) (2026-11-06)
+
+**Note:** Version bump only for package @budgie/ledger
+
+
+
+
+
 # [6.165.0](https://github.com/budgie-at/budgie/compare/v6.164.3...v6.165.0) (2026-11-06)
 
 **Note:** Version bump only for package @budgie/ledger

@@ -1,0 +1,1 @@
+export const TRANSACTION_NOTE_INPUT_MIN_HEIGHT = 88;

@@ -43,7 +43,7 @@ export const TransactionCategoryFieldIcon = ({ ref, variant, isSplitActive }: Pr
                 const updatedEntries = setPrimaryCategory(entries, selectedCategoryId);
 
                 if (isDefined(updatedEntries)) {
-                    setValue('entries', updatedEntries, { shouldValidate: false });
+                    setValue('entries', updatedEntries, { shouldValidate: false, shouldDirty: true });
                 }
             }
         );

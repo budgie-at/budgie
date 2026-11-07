@@ -35,19 +35,19 @@ test('22 refund consolidation', { tags: ['transactions'] }, async ({ budgie }) =
         await b.expectId(ctx, 'ConvertToRefund.CandidateRow.2');
         await expect(b.byText(screen, 'Refund')).toBeVisible();
         await b.tapId(ctx, 'ConvertToRefund.CandidateRow.2');
-        await expect(id('ConvertToRefund.ConvertButton')).toBeEnabled();
+        await expect(id('ConvertToRefund.DoneButton')).toBeEnabled();
         await id('ConvertToRefund.SearchInput').fill('E2E Refund Full');
         await b.expectId(ctx, 'ConvertToRefund.CandidateRow.4');
         await b.expectNoId(ctx, 'ConvertToRefund.CandidateRow.2');
         await id('ConvertToRefund.SearchInput').press('Enter');
-        await expect(id('ConvertToRefund.ConvertButton')).toBeDisabled();
+        await expect(id('ConvertToRefund.DoneButton')).toBeDisabled();
         await id('ConvertToRefund.SearchInput').fill('no matching purchase');
         await b.expectText(ctx, 'No matching expenses');
         await id('ConvertToRefund.SearchInput').clear();
         await id('ConvertToRefund.SearchInput').press('Enter');
         await b.expectId(ctx, 'ConvertToRefund.CandidateRow.2');
         await b.tapId(ctx, 'ConvertToRefund.CandidateRow.2');
-        await b.tapId(ctx, 'ConvertToRefund.ConvertButton');
+        await b.tapId(ctx, 'ConvertToRefund.DoneButton');
         await expect(b.byText(screen, 'Convert to Refund?')).toBeVisible();
         await screen.getByRole('button', { name: 'Convert' }).last().tap();
         await b.expectId(ctx, 'TransactionInfo.Row.Consolidation', 10_000);
@@ -82,12 +82,12 @@ test('22 refund consolidation', { tags: ['transactions'] }, async ({ budgie }) =
     await b.phase('refunds consolidated', async () => {
         await t.navigateToTransactions(ctx);
         await b.scrollTo(ctx, card('Localized'), 'up');
-        await expect(b.byText(screen, /^E2E Refund Localized, Refunded/i)).toBeVisible();
+        await expect(b.byText(screen, /^E2E Refund Localized, ₴18, Refunded/i)).toBeVisible();
         await b.expectNoId(ctx, 'TransactionCard.Amount.10');
         await b.expectId(ctx, card('Localized'));
         const full = screen
             .getByTestId(card('Full'))
-            .filter({ hasText: /^E2E Refund Full, Refunded/i })
+            .filter({ hasText: /^E2E Refund Full, ₴55, Refunded/i })
             .first();
         await screen.scrollUntilVisible(full, { direction: 'down', timeout: 20_000 });
         await expect(full).toBeVisible();
