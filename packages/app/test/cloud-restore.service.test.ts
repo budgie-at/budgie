@@ -13,6 +13,7 @@ import { CloudTransport } from '../src/cloud-backup/service/cloud-transport.serv
 import { DatabaseImportService } from '../src/import/service/database-import.service';
 import { DEFAULT_SETTINGS } from '../src/settings/constants/default-settings.constant';
 
+import { storage } from './fixture/expo-file-system-fake';
 import { inertDbLayer } from './fixture/inert-db-layer';
 
 const operations = vi.hoisted(() => new Array<string>());
@@ -37,33 +38,8 @@ vi.mock('../src/@generic/drizzle/utils/read-database-key.util', async () => {
 
     return { readDatabaseKey: Effect.succeed(null) };
 });
-vi.mock('../src/@generic/utils/reload-app.util', async () => {
-    const Effect = await import('effect/Effect');
-
-    return { reloadApp: Effect.void };
-});
-vi.mock('expo-file-system', () => {
-    class Entry {
-        readonly uri: string;
-        readonly exists = false;
-
-        constructor(parent: string | Entry, name = '') {
-            this.uri = `${typeof parent === 'string' ? parent : parent.uri}/${name}`;
-        }
-
-        move(destination: Entry) {
-            operations.push(destination.uri);
-
-            return Promise.resolve();
-        }
-
-        create() {
-            operations.push(this.uri);
-        }
-    }
-
-    return { File: Entry, Directory: Entry, Paths: { document: 'documents' } };
-});
+vi.mock('../src/@generic/utils/reload-app.util', () => import('./fixture/reload-app-fake'));
+vi.mock('expo-file-system', () => import('./fixture/expo-file-system-fake'));
 
 const restoreLayer = Layer.effect(CloudRestoreService, CloudRestoreService.make).pipe(
     Layer.provide([
@@ -84,6 +60,7 @@ describe('CloudRestoreService', () => {
     it.effect('returns a typed unreadable error before creating a safety copy or importing', () =>
         Effect.gen(function* () {
             operations.splice(0);
+            storage.files.set('download', 'download');
             const service = yield* CloudRestoreService;
             const exit = yield* Effect.exit(service.restore('unreadable'));
             expect(Exit.isFailure(exit)).toBe(true);

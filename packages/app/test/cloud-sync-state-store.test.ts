@@ -6,66 +6,9 @@ import { beforeEach, vi } from 'vitest';
 
 import { cloudSyncStateStoreLayer } from '../src/cloud-sync/layer/cloud-sync-state-store.layer';
 
-const storage = vi.hoisted(() => ({
-    files: new Map<string, string>(),
-    failWrite: false,
-    crashAfterRemove: false,
-    events: new Array<string>()
-}));
+import { storage } from './fixture/expo-file-system-fake';
 
-vi.mock('expo-file-system', () => {
-    class FileMock {
-        readonly uri: string;
-        constructor(parent: string, name: string) {
-            this.uri = `${parent}/${name}`;
-        }
-
-        get exists() {
-            return storage.files.has(this.uri);
-        }
-
-        create() {
-            storage.files.set(this.uri, '');
-        }
-
-        writeSync(value: string) {
-            storage.events.push('write');
-            if (storage.failWrite) {
-                throw new Error('Disk full');
-            }
-            storage.files.set(this.uri, value);
-        }
-
-        textSync() {
-            return storage.files.get(this.uri) ?? '';
-        }
-
-        move(destination: FileMock, options?: { overwrite?: boolean }) {
-            this.moveSync(destination, options);
-
-            return Promise.resolve();
-        }
-
-        moveSync(destination: FileMock, options?: { overwrite?: boolean }) {
-            if (destination.exists && options?.overwrite !== true) {
-                throw new Error('EEXIST');
-            }
-            storage.files.delete(destination.uri);
-            if (storage.crashAfterRemove) {
-                throw new Error('crash');
-            }
-            storage.events.push('move');
-            storage.files.set(destination.uri, this.textSync());
-            storage.files.delete(this.uri);
-        }
-
-        delete() {
-            storage.files.delete(this.uri);
-        }
-    }
-
-    return { File: FileMock, Paths: { document: 'documents' } };
-});
+vi.mock('expo-file-system', () => import('./fixture/expo-file-system-fake'));
 
 vi.mock('@lingui/core/macro', () => ({ msg: (message: unknown) => message, t: (parts: TemplateStringsArray) => parts.join('') }));
 
@@ -105,6 +48,24 @@ describe('cloud sync state file', () => {
             yield* store.update(state);
             yield* store.update({ stateSerialization: 'second' });
             expect(yield* store.read).toEqual({ ...state, stateSerialization: 'second' });
+        }).pipe(Effect.provide(cloudSyncStateStoreLayer))
+    );
+    it.effect('reads three updates on the same layer instance', () =>
+        Effect.gen(function* () {
+            const store = yield* CloudSyncStateStore;
+            yield* store.update(state);
+            yield* store.update({ stateSerialization: 'second' });
+            yield* store.update({ sharedStateSerialization: 'third' });
+            expect(yield* store.read).toEqual({ ...state, stateSerialization: 'second', sharedStateSerialization: 'third' });
+        }).pipe(Effect.provide(cloudSyncStateStoreLayer))
+    );
+    it.effect('updates after promoting a temporary file', () =>
+        Effect.gen(function* () {
+            const store = yield* CloudSyncStateStore;
+            storage.files.set(`${path}.tmp`, encodedState);
+            expect(yield* store.read).toEqual(state);
+            yield* store.update({ stateSerialization: 'after-promotion' });
+            expect(yield* store.read).toEqual({ ...state, stateSerialization: 'after-promotion' });
         }).pipe(Effect.provide(cloudSyncStateStoreLayer))
     );
     it.effect('promotes a complete temporary state after interrupted replacement', () =>

@@ -5,13 +5,15 @@ import * as Option from 'effect/Option';
 import * as Schema from 'effect/Schema';
 import { File, Paths } from 'expo-file-system';
 
+import { deleteIfExists } from '../../@generic/utils/delete-if-exists.util';
+
 import type { CloudSyncStateInterface } from '@budgie/cloud-sync';
 
 export const cloudSyncStateStoreLayer = Layer.effect(
     CloudSyncStateStore,
     Effect.sync(() => {
-        const stateFile = new File(Paths.document, 'cloud-sync-state.json');
-        const temporaryFile = new File(Paths.document, 'cloud-sync-state.json.tmp');
+        const stateFile = () => new File(Paths.document, 'cloud-sync-state.json');
+        const temporaryFile = () => new File(Paths.document, 'cloud-sync-state.json.tmp');
         const NullableString = Schema.String.pipe(Schema.NullOr);
         const StateSchema = Schema.fromJsonString(
             Schema.Struct({
@@ -35,16 +37,18 @@ export const cloudSyncStateStoreLayer = Layer.effect(
         };
 
         const read = Effect.sync(() => {
-            if (stateFile.exists) {
-                const committed = Schema.decodeOption(StateSchema)(stateFile.textSync());
+            const committedFile = stateFile();
+            const recoveryFile = temporaryFile();
+            if (committedFile.exists) {
+                const committed = Schema.decodeOption(StateSchema)(committedFile.textSync());
                 if (Option.isSome(committed)) {
                     return committed.value;
                 }
             }
-            if (temporaryFile.exists) {
-                const recovered = Schema.decodeOption(StateSchema)(temporaryFile.textSync());
+            if (recoveryFile.exists) {
+                const recovered = Schema.decodeOption(StateSchema)(recoveryFile.textSync());
                 if (Option.isSome(recovered)) {
-                    temporaryFile.moveSync(stateFile, { overwrite: true });
+                    recoveryFile.moveSync(committedFile, { overwrite: true });
 
                     return recovered.value;
                 }
@@ -56,9 +60,10 @@ export const cloudSyncStateStoreLayer = Layer.effect(
             const encodedState = yield* Schema.encodeEffect(StateSchema)(state).pipe(Effect.orDie);
 
             yield* Effect.sync(() => {
-                temporaryFile.create({ overwrite: true });
-                temporaryFile.writeSync(encodedState);
-                temporaryFile.moveSync(stateFile, { overwrite: true });
+                const pendingFile = temporaryFile();
+                pendingFile.create({ overwrite: true });
+                pendingFile.writeSync(encodedState);
+                pendingFile.moveSync(stateFile(), { overwrite: true });
             });
         });
         const update = (patch: Partial<CloudSyncStateInterface>) => Effect.flatMap(read, state => write({ ...state, ...patch }));
@@ -67,12 +72,8 @@ export const cloudSyncStateStoreLayer = Layer.effect(
             read,
             update,
             clear: Effect.sync(() => {
-                if (temporaryFile.exists) {
-                    temporaryFile.delete();
-                }
-                if (stateFile.exists) {
-                    stateFile.delete();
-                }
+                deleteIfExists(temporaryFile());
+                deleteIfExists(stateFile());
             })
         };
     })

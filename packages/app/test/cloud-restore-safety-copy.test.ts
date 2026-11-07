@@ -17,6 +17,7 @@ import { recoverInterruptedRestore } from '../src/cloud-backup/utils/recover-int
 import { writeRestoreSafetyCopy } from '../src/cloud-backup/utils/write-restore-safety-copy.util';
 import { cloudSyncSafetyCopyLayer } from '../src/cloud-sync/layer/cloud-sync-safety-copy.layer';
 
+import { storage } from './fixture/expo-file-system-fake';
 import { inertDbLayer } from './fixture/inert-db-layer';
 
 vi.mock('../src/@generic/drizzle/service/database-rekey.service', async () => {
@@ -39,41 +40,19 @@ vi.mock('../src/@generic/drizzle/utils/read-database-key.util', async () => {
 
 vi.mock('@lingui/core/macro', () => ({ msg: (message: unknown) => message, t: (parts: TemplateStringsArray) => parts.join('') }));
 
-const storage = vi.hoisted(() => new Map<string, number>());
-vi.mock('expo-file-system', () => {
-    class Entry {
-        readonly uri: string;
-
-        constructor(parent: string | Entry, name: string) {
-            this.uri = `${typeof parent === 'string' ? parent : parent.uri}/${name}`;
-        }
-
-        get exists() {
-            return storage.has(this.uri);
-        }
-
-        get lastModified() {
-            return storage.get(this.uri) ?? null;
-        }
-
-        delete() {
-            storage.delete(this.uri);
-        }
-    }
-
-    return { File: Entry, Directory: Entry, Paths: { document: 'documents' } };
-});
+vi.mock('expo-file-system', () => import('./fixture/expo-file-system-fake'));
 
 const safetyPath = `documents/SQLite/${RESTORE_SAFETY_FILES.copy}`;
 
 describe('restore safety copy expiry', () => {
-    beforeEach(() => void storage.clear());
+    beforeEach(() => void storage.files.clear());
     it.effect('keeps the previous safety copy when sync export fails', () =>
         Effect.gen(function* () {
-            storage.set(safetyPath, 123);
+            storage.files.set(safetyPath, 'previous-copy');
+            storage.modified.set(safetyPath, 123);
             const safety = yield* CloudSyncSafetyCopy;
             expect(Exit.isFailure(yield* Effect.exit(safety.create))).toBe(true);
-            expect(storage.get(safetyPath)).toBe(123);
+            expect(storage.modified.get(safetyPath)).toBe(123);
         }).pipe(
             Effect.provide(cloudSyncSafetyCopyLayer),
             Effect.provide([
@@ -87,7 +66,8 @@ describe('restore safety copy expiry', () => {
     );
     it.effect('keeps the previous safety copy when exporting fails', () =>
         Effect.gen(function* () {
-            storage.set(safetyPath, 123);
+            storage.files.set(safetyPath, 'previous-copy');
+            storage.modified.set(safetyPath, 123);
             expect(
                 Exit.isFailure(
                     yield* Effect.exit(
@@ -97,18 +77,19 @@ describe('restore safety copy expiry', () => {
                     )
                 )
             ).toBe(true);
-            expect(storage.get(safetyPath)).toBe(123);
+            expect(storage.modified.get(safetyPath)).toBe(123);
         }).pipe(Effect.provide(inertDbLayer))
     );
     it.effect('keeps the shared safety copy for seven days and removes it only after expiry', () =>
         Effect.gen(function* () {
-            storage.set(safetyPath, 0);
+            storage.files.set(safetyPath, 'copy');
+            storage.modified.set(safetyPath, 0);
             yield* TestClock.setTime(RESTORE_SAFETY_COPY_LIFETIME_MILLISECONDS);
             yield* recoverInterruptedRestore;
-            expect(storage.has(safetyPath)).toBe(true);
+            expect(storage.files.has(safetyPath)).toBe(true);
             yield* TestClock.adjust(1);
             yield* recoverInterruptedRestore;
-            expect(storage.has(safetyPath)).toBe(false);
+            expect(storage.files.has(safetyPath)).toBe(false);
         })
     );
 });

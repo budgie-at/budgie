@@ -4,7 +4,7 @@ import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import { vi } from 'vitest';
 
-import { cloudBackupListing } from '../src/cloud-backup/hook/use-cloud-backups.hook';
+import { cloudBackupListing } from '../src/cloud-backup/constant/cloud-backup-listing-atom.constant';
 import { CloudRestoreService } from '../src/cloud-backup/service/cloud-restore.service';
 
 vi.mock('@lingui/core/macro', () => ({ msg: (message: unknown) => message, t: (parts: TemplateStringsArray) => parts.join('') }));

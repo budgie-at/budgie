@@ -1,4 +1,4 @@
-import { BudgetKindEnum, BudgetLimitSourceEnum, BudgetPeriodEnum } from '@budgie/contracts';
+import { PERSONAL_SYNC_ZONE, BudgetKindEnum, BudgetLimitSourceEnum, BudgetPeriodEnum } from '@budgie/contracts';
 import { expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -21,7 +21,7 @@ const BUDGET: BudgetProjectionSourceInterface = {
     overallLimit: 100,
     otherLimit: 10,
     tagId: null,
-    syncZone: 'personal'
+    syncZone: PERSONAL_SYNC_ZONE
 };
 
 it.effect('round-trips dates through epoch milliseconds', () =>

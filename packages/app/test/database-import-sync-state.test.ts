@@ -11,8 +11,10 @@ import { DatabaseLifecycleService } from '../src/@generic/drizzle/service/databa
 import { AiEmbeddingStatusService } from '../src/ai/service/ai-embedding-status.service';
 import { AiStorageReplacementService } from '../src/ai/service/ai-storage-replacement.service';
 import { AuthService } from '../src/auth/service/auth.service';
+import { cloudSyncStateStoreLayer } from '../src/cloud-sync/layer/cloud-sync-state-store.layer';
 import { DatabaseImportService } from '../src/import/service/database-import.service';
 
+import { storage } from './fixture/expo-file-system-fake';
 import { inertDbLayer } from './fixture/inert-db-layer';
 
 import type { CloudSyncStateInterface } from '@budgie/cloud-sync';
@@ -44,54 +46,9 @@ vi.mock('../src/@generic/drizzle/utils/resolve-backup-file.util', async () => {
     return { resolveBackupFile: (uri: string) => Effect.succeed(uri) };
 });
 vi.mock('../src/@generic/drizzle/utils/open-sqlite-client.util', () => ({ openSqliteClient: vi.fn() }));
-vi.mock('../src/@generic/utils/reload-app.util', async () => {
-    const Effect = await import('effect/Effect');
+vi.mock('../src/@generic/utils/reload-app.util', () => import('./fixture/reload-app-fake'));
 
-    return { reloadApp: Effect.void };
-});
-const storage = vi.hoisted(() => ({ files: new Set<string>(), failCopy: false, failMove: false }));
-
-vi.mock('expo-file-system', () => {
-    class Entry {
-        readonly uri: string;
-        constructor(parent: string | Entry, name?: string) {
-            const parentUri = typeof parent === 'string' ? parent : parent.uri;
-            this.uri = name ? `${parentUri}/${name}` : parentUri;
-        }
-
-        get exists() {
-            return storage.files.has(this.uri);
-        }
-
-        delete() {
-            storage.files.delete(this.uri);
-        }
-
-        copy(destination: Entry) {
-            if (storage.failCopy) {
-                throw new Error('copy failed');
-            }
-            storage.files.add(destination.uri);
-
-            return Promise.resolve();
-        }
-
-        move(destination: Entry, options?: { overwrite?: boolean }) {
-            if (storage.failMove) {
-                throw new Error('move failed');
-            }
-            if (destination.exists && options?.overwrite !== true) {
-                throw new Error('EEXIST');
-            }
-            storage.files.delete(this.uri);
-            storage.files.add(destination.uri);
-
-            return Promise.resolve();
-        }
-    }
-
-    return { File: Entry, Directory: Entry, Paths: { document: 'documents', cache: { uri: 'cache' } } };
-});
+vi.mock('expo-file-system', () => import('./fixture/expo-file-system-fake'));
 
 const previous: CloudSyncStateInterface = {
     boundUserRecordName: 'owner',
@@ -106,11 +63,12 @@ const previous: CloudSyncStateInterface = {
 describe('database import sync state', () => {
     beforeEach(() => {
         storage.files.clear();
-        storage.files.add('documents/SQLite/budgie.db');
+        storage.files.set('documents/SQLite/budgie.db', 'database');
+        storage.files.set('backup', 'backup');
         storage.failCopy = false;
         storage.failMove = false;
     });
-    it.effect.each(['close', 'copy', 'move'])('preserves recoverable sync state on %s failure', failure =>
+    it.effect.each(['close', 'copy', 'move', 'success'])('preserves recoverable sync state on %s failure', failure =>
         Effect.gen(function* () {
             storage.failCopy = failure === 'copy';
             storage.failMove = failure === 'move';
@@ -130,32 +88,27 @@ describe('database import sync state', () => {
                                 holder.pin = pin ?? '';
                             })
                     }),
-                    Layer.succeed(CloudSyncStateStore, {
-                        read: Effect.sync(() => holder.state),
-                        clear: Effect.die('must not clear sync state'),
-                        update: patch =>
-                            Effect.sync(() => {
-                                holder.state = { ...holder.state, ...patch };
-                            })
-                    })
+                    cloudSyncStateStoreLayer
                 ])
             );
             const query = vi.spyOn(Db, 'query');
-            const result = yield* Effect.flatMap(DatabaseImportService, service => service.importFromUri('backup', 'new-pin')).pipe(
-                Effect.provide([layer, inertDbLayer]),
-                Effect.exit
-            );
-            expect(Exit.isFailure(result)).toBe(true);
+            const result = yield* Effect.gen(function* () {
+                const store = yield* CloudSyncStateStore;
+                yield* store.update(previous);
+
+                return yield* Effect.exit(Effect.flatMap(DatabaseImportService, service => service.importFromUri('backup', 'new-pin')));
+            }).pipe(Effect.provide([layer, inertDbLayer, cloudSyncStateStoreLayer]));
+            expect(Exit.isFailure(result)).toBe(failure !== 'success');
             if (Exit.isFailure(result)) {
                 expect(Cause.squash(result.cause)).toEqual(failure === 'close' ? 'close failed' : expect.any(Error));
             }
-            expect(holder.state).toEqual(
-                failure === 'move'
+            expect(yield* Effect.flatMap(CloudSyncStateStore, store => store.read).pipe(Effect.provide(cloudSyncStateStoreLayer))).toEqual(
+                failure === 'move' || failure === 'success'
                     ? { ...previous, stateSerialization: null, resolvedLineageId: null, restorePhase: CloudSyncRestorePhaseEnum.PENDING }
                     : previous
             );
             expect(storage.files.has('documents/SQLite/budgie.db')).toBe(failure !== 'move');
-            expect(holder.pin).toBe(failure === 'move' ? 'new-pin' : 'previous-pin');
+            expect(holder.pin).toBe(failure === 'move' || failure === 'success' ? 'new-pin' : 'previous-pin');
             expect(query).not.toHaveBeenCalled();
             query.mockRestore();
         })

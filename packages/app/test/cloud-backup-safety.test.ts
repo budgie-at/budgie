@@ -15,10 +15,11 @@ import { CloudTransport } from '../src/cloud-backup/service/cloud-transport.serv
 import { InstallIdService } from '../src/cloud-backup/service/install-id.service';
 import { DEFAULT_SETTINGS } from '../src/settings/constants/default-settings.constant';
 
+import { storage } from './fixture/expo-file-system-fake';
 import { inertDbLayer } from './fixture/inert-db-layer';
 
 const behavior = vi.hoisted(() => ({ retentionFails: false, backupEnabled: true }));
-const deleted = vi.hoisted(() => new Array<string>());
+
 vi.mock('@lingui/core/macro', () => ({ msg: (message: unknown) => message, t: (parts: TemplateStringsArray) => parts.join('') }));
 vi.mock('expo-constants', () => ({ default: {} }));
 vi.mock('react-native', () => ({ Platform: { OS: 'ios', constants: {} } }));
@@ -42,22 +43,7 @@ vi.mock('../src/@generic/drizzle/utils/read-last-migration-created-at.util', asy
 
     return { readLastMigrationCreatedAt: () => Effect.succeed(0) };
 });
-vi.mock('expo-file-system', () => {
-    class FileMock {
-        readonly uri: string;
-        readonly exists = true;
-
-        constructor(parent: string, name: string) {
-            this.uri = `${parent}/${name}`;
-        }
-
-        delete() {
-            deleted.push(this.uri);
-        }
-    }
-
-    return { File: FileMock, Paths: { cache: 'cache' } };
-});
+vi.mock('expo-file-system', () => import('./fixture/expo-file-system-fake'));
 
 const backupLayer = Layer.effect(CloudBackupService, CloudBackupService.make).pipe(
     Layer.provide([
@@ -75,7 +61,10 @@ const backupLayer = Layer.effect(CloudBackupService, CloudBackupService.make).pi
                     : Effect.succeed([])
             )
         }),
-        Layer.mock(DatabaseRekeyService)({ generateKey: () => Effect.succeed('key'), exportEncryptedCopy: () => Effect.void }),
+        Layer.mock(DatabaseRekeyService)({
+            generateKey: () => Effect.succeed('key'),
+            exportEncryptedCopy: (path: string) => Effect.sync(() => void storage.files.set(path, 'backup'))
+        }),
         Layer.mock(InstallIdService)({ get: Effect.succeed('install') })
     ])
 );
@@ -116,12 +105,12 @@ describe('cloud backup safety copy', () => {
     );
     it.effect('keeps the pre-restore copy when a new backup completes successfully', () =>
         Effect.gen(function* () {
-            deleted.splice(0);
+            storage.deleted.splice(0);
             const query = vi.spyOn(Db, 'query').mockReturnValue(Effect.succeed([{ lastChangedAt: 1 }]));
             yield* Effect.gen(function* () {
                 expect(yield* Effect.flatMap(CloudBackupService, service => service.backup(0))).toBe(true);
-                expect(deleted.length).toBeGreaterThan(0);
-                expect(deleted.every(path => path.startsWith('cache/cloud-backup-'))).toBe(true);
+                expect(storage.deleted.length).toBeGreaterThan(0);
+                expect(storage.deleted.every(path => path.startsWith('cache/cloud-backup-'))).toBe(true);
             }).pipe(Effect.ensuring(Effect.sync(() => void query.mockRestore())));
         }).pipe(Effect.provide([backupLayer, inertDbLayer]))
     );
