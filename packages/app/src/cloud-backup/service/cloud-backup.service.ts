@@ -32,7 +32,6 @@ import { CloudBackupStatusEnum } from '../enum/cloud-backup-status.enum';
 import { CloudAccountUnavailableError } from '../error/cloud-account-unavailable.error';
 import { CloudNetworkUnavailableError } from '../error/cloud-network-unavailable.error';
 import { CloudQuotaExceededError } from '../error/cloud-quota-exceeded.error';
-import { discardRestoreSafetyCopy } from '../utils/discard-restore-safety-copy.util';
 
 import { CloudTransport } from './cloud-transport.service';
 import { InstallIdService } from './install-id.service';
@@ -181,7 +180,6 @@ export class CloudBackupService extends Context.Service<CloudBackupService>()('@
             const installId = yield* uploadBackup(startedAt);
 
             yield* settingsRepository.update({ lastCloudBackupAt: startedAt });
-            discardRestoreSafetyCopy();
             yield* applyRetention(installId);
 
             return true;

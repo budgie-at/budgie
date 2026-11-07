@@ -14,6 +14,7 @@ import { readDatabaseKey } from '../../@generic/drizzle/utils/read-database-key.
 import { reloadApp } from '../../@generic/utils/reload-app.util';
 import { DatabaseImportService } from '../../import/service/database-import.service';
 import { RESTORE_SAFETY_FILES } from '../constant/restore-safety-files.constant';
+import { CloudBackupUnreadableError } from '../error/cloud-backup-unreadable.error';
 import { discardRestoreSafetyCopy } from '../utils/discard-restore-safety-copy.util';
 
 import { CloudTransport } from './cloud-transport.service';
@@ -89,7 +90,7 @@ export class CloudRestoreService extends Context.Service<CloudRestoreService>()(
                     const targetUri = databaseFile(RESTORE_SAFETY_FILES.target).uri;
 
                     if (!(yield* databaseImportService.canOpenBackup(targetUri, targetKey))) {
-                        return yield* Effect.die(new Error('The downloaded iCloud backup could not be opened'));
+                        return yield* CloudBackupUnreadableError.make({});
                     }
 
                     yield* createSafetyCopy(targetKey).pipe(

@@ -25,20 +25,22 @@ export const OnboardingKey = () => {
     const { t } = useLingui();
     const { goToStep, goToICloudRestore } = useOnboardingNavigation();
     const { selectAndRestore, isLoading } = useRestoreBackup();
-    const { groups } = useCloudBackups();
+    const { groups, hasFailed, refresh } = useCloudBackups();
     const { isFetching } = useCloudSyncInitialFetch();
 
     const handlePinPress = () => void goToStep(OnboardingStepEnum.PIN);
     const handlePhoneLockPress = () => void goToStep(OnboardingStepEnum.PHONE_LOCK);
 
+    const restoreTitle = hasFailed ? t`Try again` : t`Restore from iCloud`;
+    const handleICloudRestore = hasFailed ? refresh : goToICloudRestore;
     const iCloudRestoreRow =
-        isNotEmptyArray(groups) && !isFetching ? (
+        (isNotEmptyArray(groups) || hasFailed) && !isFetching ? (
             <GroupedListRow
                 testID={OnboardingKeySelector.ICloudRestoreButton}
                 left={<GroupedListIcon icon={UserIconNameEnum.CloudDownload} />}
-                title={t`Restore from iCloud`}
+                title={restoreTitle}
                 subtitle={t`Backups from your devices on this Apple Account`}
-                onPress={goToICloudRestore}
+                onPress={handleICloudRestore}
             />
         ) : null;
     const restoreAccessory = (

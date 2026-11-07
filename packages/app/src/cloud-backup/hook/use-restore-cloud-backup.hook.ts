@@ -46,6 +46,7 @@ export const useRestoreCloudBackup = () => {
             }).pipe(
                 Effect.catchTags({
                     ...importErrorHandlers,
+                    CloudBackupUnreadableError: () => markFailure(recordName, CloudRestoreFailureEnum.UNREADABLE),
                     BackupKeyUnavailableError: () => markFailure(recordName, CloudRestoreFailureEnum.KEYCHAIN_UNAVAILABLE),
                     EncryptedDataResetError: () => markFailure(recordName, CloudRestoreFailureEnum.UNREADABLE),
                     CloudNetworkUnavailableError: () =>

@@ -29,7 +29,6 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
         const aiEmbeddingStatusService = yield* AiEmbeddingStatusService;
         const authService = yield* AuthService;
         const cloudSyncStateStore = yield* CloudSyncStateStore;
-        const syncResetRepository = yield* SyncResetRepository;
         const probeDatabaseName = 'import-probe.db';
 
         const deleteFileIfExists = (path: string): void => {
@@ -119,15 +118,19 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
         const runImport = Effect.fn('DatabaseImportService.runImport')(function* (pickedUri: string, backupPin: string | null) {
             const sourceUri = yield* resolveBackupFile(pickedUri);
             const previousPin = yield* authService.getPin();
+            const previousState = yield* cloudSyncStateStore.read;
 
             yield* cloudSyncStateStore.update({
                 stateSerialization: null,
                 resolvedLineageId: null,
                 restorePhase: CloudSyncRestorePhaseEnum.PENDING
             });
-            yield* syncResetRepository.clearSyncState();
             yield* authService.persistPin(backupPin);
-            yield* replaceFromUri(sourceUri).pipe(Effect.onError(() => authService.persistPin(previousPin).pipe(Effect.orDie)));
+            yield* replaceFromUri(sourceUri).pipe(
+                Effect.onError(() =>
+                    cloudSyncStateStore.update(previousState).pipe(Effect.andThen(authService.persistPin(previousPin)), Effect.orDie)
+                )
+            );
         }, Effect.scoped);
 
         return {

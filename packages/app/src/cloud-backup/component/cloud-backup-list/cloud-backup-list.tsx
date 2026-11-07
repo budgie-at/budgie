@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 
 import { isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { StateCard } from '../../../@generic/component/state-card/state-card';
@@ -20,13 +21,13 @@ import { CloudBackupListSelector } from './cloud-backup-list.selector';
 export const CloudBackupList = () => {
     const { t } = useLingui();
     const { isAvailable, isLoading: isAccountLoading } = useICloudAccount();
-    const { groups, isUnreadable, isLoading } = useCloudBackups();
+    const { groups, isUnreadable, hasFailed, refresh, isLoading } = useCloudBackups();
     const { restore, isLoading: isRestoring } = useRestoreCloudBackup();
     const isBackupEnabled = useSetting('cloudBackupEnabled');
 
     const isBusy = isAccountLoading || isLoading || isRestoring;
     const contextValue = { restore, isLoading: isRestoring };
-    const isEmpty = isAvailable && isEmptyArray(groups) && !isUnreadable;
+    const isEmpty = isAvailable && isEmptyArray(groups) && !isUnreadable && !hasFailed;
     const noBackupsBody = isBackupEnabled
         ? t`Budgie backs up to iCloud automatically. Your first backup appears here.`
         : t`Turn on iCloud backup in Settings. Your first backup appears here.`;
@@ -71,6 +72,7 @@ export const CloudBackupList = () => {
                             </Text>
                         </View>
                     ) : null}
+                    {hasFailed ? <GroupedListRow title={t`iCloud unavailable`} subtitle={t`Try again`} onPress={refresh} /> : null}
                     {isUnreadable ? (
                         <Text className="text-secondary-foreground px-3xl text-[13px] leading-[18px]">
                             <Trans>Backups made before your iCloud encrypted data was reset can&apos;t be read.</Trans>

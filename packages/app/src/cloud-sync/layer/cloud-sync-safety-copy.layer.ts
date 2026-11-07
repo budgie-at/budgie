@@ -10,12 +10,13 @@ import { DATABASE_DIRECTORY } from '../../@generic/drizzle/constant/database-dir
 import { DATABASE_LOCATION } from '../../@generic/drizzle/constant/database-location.constant';
 import { DatabaseRekeyService } from '../../@generic/drizzle/service/database-rekey.service';
 import { readDatabaseKey } from '../../@generic/drizzle/utils/read-database-key.util';
+import { RESTORE_SAFETY_FILES } from '../../cloud-backup/constant/restore-safety-files.constant';
 
 export const cloudSyncSafetyCopyLayer = Layer.effect(
     CloudSyncSafetyCopy,
     Effect.gen(function* () {
         const databaseRekeyService = yield* DatabaseRekeyService;
-        const safetyCopyName = 'cloud-sync-safety.db';
+        const safetyCopyName = RESTORE_SAFETY_FILES.copy;
 
         return {
             create: Effect.gen(function* () {

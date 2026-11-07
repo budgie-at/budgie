@@ -41,14 +41,10 @@ public final class ICloudModule: Module {
     AsyncFunction("startSync") { [weak self] (rawScope: String, stateSerialization: String?) throws in
       guard let self else { return }
       let scope = try ICloudDatabase.scope(rawScope)
+      hostsLock.withLock { hosts.removeValue(forKey: scope) }?.stop()
       let host = ICloudSyncEngineHost(scope: scope) { [weak self] name, body in self?.sendEvent(name, body) }
       try host.start(stateSerialization: stateSerialization)
-      let previous = hostsLock.withLock { () -> ICloudSyncEngineHost? in
-        let existing = hosts[scope]
-        hosts[scope] = host
-        return existing
-      }
-      previous?.stop()
+      hostsLock.withLock { hosts[scope] = host }
       DispatchQueue.main.async { UIApplication.shared.registerForRemoteNotifications() }
     }
 
@@ -179,31 +175,51 @@ public final class ICloudModule: Module {
     }
 
     AsyncFunction("listBackups") { () async throws -> [[String: Any]] in
-      let query = CKQuery(recordType: "Backup", predicate: NSPredicate(value: true))
-      query.sortDescriptors = [NSSortDescriptor(key: "createdAt", ascending: false)]
-      let (records, _) = try await ICloudDatabase.database.records(matching: query)
-      return records.compactMap { _, result in
-        guard case let .success(record) = result else { return nil }
-        return ["recordName": record.recordID.recordName, "createdAt": (record["createdAt"] as? Date)?.ISO8601Format() ?? "", "installId": record["installId"] as? String ?? "", "deviceName": record["deviceName"] as? String ?? "", "deviceModel": record["deviceModel"] as? String ?? "", "appVersion": record["appVersion"] as? String ?? "", "schemaVersion": record["schemaVersion"] as? Int ?? 0]
+      do {
+        let query = CKQuery(recordType: "Backup", predicate: NSPredicate(value: true))
+        query.sortDescriptors = [NSSortDescriptor(key: "createdAt", ascending: false)]
+        var (records, cursor) = try await ICloudDatabase.database.records(matching: query)
+        while let next = cursor {
+          let page = try await ICloudDatabase.database.records(continuingMatchFrom: next)
+          records.append(contentsOf: page.matchResults)
+          cursor = page.queryCursor
+        }
+        return try records.map { _, result in
+          let record = try result.get()
+          return ["recordName": record.recordID.recordName, "createdAt": (record["createdAt"] as? Date)?.ISO8601Format() ?? "", "installId": record["installId"] as? String ?? "", "deviceName": record["deviceName"] as? String ?? "", "deviceModel": record["deviceModel"] as? String ?? "", "appVersion": record["appVersion"] as? String ?? "", "schemaVersion": record["schemaVersion"] as? Int ?? 0]
+        }
+      } catch {
+        throw ICloudDatabase.syncError(error, backup: true)
       }
     }
 
     AsyncFunction("downloadBackup") { (recordName: String) async throws -> [String: String] in
+      do {
       let record = try await ICloudDatabase.database.record(for: CKRecord.ID(recordName: recordName))
       guard let asset = record["archive"] as? CKAsset, let source = asset.fileURL else {
         throw ICloudDatabase.error("UNKNOWN", "Backup archive is missing")
       }
-      let destination = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-      try FileManager.default.copyItem(at: source, to: destination)
       guard let key = record.encryptedValues["backupKey"] as? String else {
         throw ICloudDatabase.error("BACKUP_KEY_UNAVAILABLE", "Backup key is unavailable")
       }
+      let destination = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+      try FileManager.default.copyItem(at: source, to: destination)
       return ["fileUri": destination.absoluteString, "backupKey": key]
+      } catch {
+        throw ICloudDatabase.syncError(error, backup: true)
+      }
     }
 
     AsyncFunction("deleteBackups") { (recordNames: [String]) async throws in
       let ids = recordNames.map { CKRecord.ID(recordName: $0) }
-      try await ICloudDatabase.database.modifyRecords(saving: [], deleting: ids)
+      do {
+        let result = try await ICloudDatabase.database.modifyRecords(saving: [], deleting: ids)
+        for outcome in result.deleteResults.values {
+          try outcome.get()
+        }
+      } catch {
+        throw ICloudDatabase.syncError(error, backup: true)
+      }
     }
   }
 }

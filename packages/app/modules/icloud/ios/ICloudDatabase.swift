@@ -74,24 +74,11 @@ enum ICloudDatabase {
       operation.modifyRecordsResultBlock = { result in
         switch result {
         case .success: continuation.resume(returning: record.recordID.recordName)
-        case let .failure(error): continuation.resume(throwing: Self.map(error))
+        case let .failure(error): continuation.resume(throwing: Self.syncError(error, backup: true))
         }
       }
       database.add(operation)
     }
-  }
-
-  static func map(_ error: Error) -> Exception {
-    let cloudError = error as NSError
-    let code: String
-    switch CKError.Code(rawValue: cloudError.code) {
-    case .some(.notAuthenticated), .some(.accountTemporarilyUnavailable), .some(.permissionFailure): code = "ACCOUNT_UNAVAILABLE"
-    case .some(.quotaExceeded): code = "QUOTA_EXCEEDED"
-    case .some(.networkUnavailable), .some(.networkFailure): code = "NETWORK_UNAVAILABLE"
-    case .some(.zoneNotFound): code = "ENCRYPTED_DATA_RESET"
-    default: code = "UNKNOWN"
-    }
-    return self.error(code, cloudError.localizedDescription)
   }
 
   static func itemError(_ error: Error) -> Error {
@@ -114,7 +101,7 @@ enum ICloudDatabase {
     case .some(.unknownItem): return "UNKNOWN_ITEM"
     case .some(.limitExceeded): return "LIMIT_EXCEEDED"
     case .some(.constraintViolation): return "CONSTRAINT_VIOLATION"
-    case .some(.zoneBusy), .some(.requestRateLimited), .some(.serviceUnavailable): return "SERVICE_BUSY"
+    case .some(.zoneBusy), .some(.requestRateLimited), .some(.serviceUnavailable), .some(.operationCancelled): return "SERVICE_BUSY"
     case .some(.notAuthenticated), .some(.accountTemporarilyUnavailable), .some(.managedAccountRestricted): return "ACCOUNT_UNAVAILABLE"
     case .some(.quotaExceeded): return "QUOTA_EXCEEDED"
     case .some(.networkUnavailable), .some(.networkFailure): return "NETWORK_UNAVAILABLE"
@@ -133,7 +120,8 @@ enum ICloudDatabase {
     ["code": syncErrorCode(error), "message": message(itemError(error))]
   }
 
-  static func syncError(_ error: Error) -> Exception {
-    self.error(syncErrorCode(error), message(itemError(error)))
+  static func syncError(_ error: Error, backup: Bool = false) -> Exception {
+    let code = syncErrorCode(error)
+    return self.error(backup && code == "ZONE_NOT_FOUND" ? "ENCRYPTED_DATA_RESET" : code, message(itemError(error)))
   }
 }

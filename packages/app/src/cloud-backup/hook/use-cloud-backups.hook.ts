@@ -8,7 +8,7 @@ import { CloudRestoreService } from '../service/cloud-restore.service';
 
 import type { CloudBackupListingInterface } from '../interface/cloud-backup-listing.interface';
 
-const EMPTY_LISTING: CloudBackupListingInterface = { groups: [], isUnreadable: false };
+const EMPTY_LISTING: CloudBackupListingInterface = { groups: [], isUnreadable: false, hasFailed: false };
 
 const cloudBackupListingAtom = appAtomRuntime.atom(
     Effect.flatMap(
@@ -17,11 +17,12 @@ const cloudBackupListingAtom = appAtomRuntime.atom(
             onNone: () => Effect.succeed(EMPTY_LISTING),
             onSome: cloudRestoreService =>
                 cloudRestoreService.listBackups().pipe(
-                    Effect.map((groups): CloudBackupListingInterface => ({ groups, isUnreadable: false })),
+                    Effect.map((groups): CloudBackupListingInterface => ({ groups, isUnreadable: false, hasFailed: false })),
                     Effect.catchTags({
-                        EncryptedDataResetError: () => Effect.succeed<CloudBackupListingInterface>({ groups: [], isUnreadable: true })
+                        EncryptedDataResetError: () =>
+                            Effect.succeed<CloudBackupListingInterface>({ groups: [], isUnreadable: true, hasFailed: false })
                     }),
-                    Effect.orElseSucceed(() => EMPTY_LISTING)
+                    Effect.orElseSucceed(() => ({ ...EMPTY_LISTING, hasFailed: true }))
                 )
         })
     )
