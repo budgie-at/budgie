@@ -7544,7 +7544,7 @@ msgstr "Сканувати камерою"
 
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 msgid "Seal"
-msgstr "Так, запечатати"
+msgstr "Так"
 
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 msgid "Seal with this PIN"
