@@ -18,6 +18,7 @@ import { getTransactionDisplayTitle } from '../utils/get-transaction-display-tit
 import { isUncategorizedTransaction } from '../utils/is-uncategorized-transaction.util';
 import { stripTransactionAccountTitlePrefix } from '../utils/strip-transaction-account-title-prefix.util';
 
+import { useFundTradeLabel } from './use-fund-trade-label.hook';
 import { useRefundedLabel } from './use-refunded-label.hook';
 import { useTransactionFeeLabel } from './use-transaction-fee-label.hook';
 
@@ -96,11 +97,13 @@ export const useTransactionSubtitleSegments = (
     const feeLabel = useTransactionFeeLabel(transaction);
     const scopedCategoryIds = useContext(StatisticsCategoryIdsContext);
     const accountTitlePrefix = useContext(TransactionAccountTitlePrefixContext);
+    const fundTradeLabel = useFundTradeLabel(transaction);
 
     const counterparty = getTransactionCounterparty(transaction, isDefined(accountTitlePrefix) ? null : accountId);
     const displayTitle = getTransactionDisplayTitle(transaction);
-    const source = stripTransactionAccountTitlePrefix(counterparty?.source, accountTitlePrefix);
-    const destination = stripTransactionAccountTitlePrefix(counterparty?.destination, accountTitlePrefix);
+    const [source, destination] = [counterparty?.source, counterparty?.destination].map(title =>
+        stripTransactionAccountTitlePrefix(title, accountTitlePrefix)
+    );
     const categories =
         transaction.type === TransactionTypeEnum.TRANSFER
             ? []
@@ -111,6 +114,7 @@ export const useTransactionSubtitleSegments = (
         .filter(category => !(scopedCategoryIds?.length === 1 && scopedCategoryIds.includes(category.id)))
         .map(category => category.title);
     const counterpartyLabel = [
+        fundTradeLabel,
         isNotEmptyString(source) && isNotEmptyString(destination) ? t`From ${source} to ${destination}` : null,
         isNotEmptyString(destination) ? t`To ${destination}` : null,
         isNotEmptyString(source) ? t`From ${source}` : null
@@ -134,12 +138,14 @@ export const useTransactionSubtitleSegments = (
     return {
         segments: [
             refundedLabel,
-            isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction) ? t`Manual adjustment` : null,
+            (isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction)) && !isDefined(fundTradeLabel)
+                ? t`Manual adjustment`
+                : null,
             isUncategorizedTransaction(transaction) ? t`Uncategorized` : null,
             ...relationSegments
         ].filter(isNotEmptyString),
         feeLabel,
-        accountTitle: stripTransactionAccountTitlePrefix(ownAccountTitle, accountTitlePrefix),
+        accountTitle: isDefined(fundTradeLabel) ? null : stripTransactionAccountTitlePrefix(ownAccountTitle, accountTitlePrefix),
         categoryLabel: !isDefined(counterparty) && categories.length === 1 ? (categories.at(0)?.title ?? null) : null
     };
 };

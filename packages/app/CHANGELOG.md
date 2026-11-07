@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.165.7](https://github.com/budgie-at/budgie/compare/v6.165.6...v6.165.7) (2026-11-07)
+
+### Bug Fixes
+
+* **app:** restore and strengthen the shared header fade ([#2009](https://github.com/budgie-at/budgie/issues/2009)) ([393958b](https://github.com/budgie-at/budgie/commit/393958bcfaa2ecca61bec36250de67bcda450d6e))
+
+
 ## [6.165.6](https://github.com/budgie-at/budgie/compare/v6.165.5...v6.165.6) (2026-11-06)
 
 ### Bug Fixes

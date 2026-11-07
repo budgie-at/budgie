@@ -15,6 +15,7 @@ const COMPACT_MIGRATION = '20261104170422_compact_rates_and_embeddings';
 const RECURRING_SMART_MIGRATION = '20261105192451_recurring_smart_series';
 
 const PRE_MIGRATION_SCHEMA: Readonly<Record<string, readonly string[]>> = {
+    '20261106125437_inzhur_fund_instruments': ['DROP INDEX transactions_fund_account_idx'],
     [COMPACT_MIGRATION]: [
         'DROP TABLE historical_exchange_rates',
         `CREATE TABLE historical_exchange_rates (

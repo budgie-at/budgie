@@ -6,7 +6,7 @@ import type { ReactNode } from 'react';
 interface Props {
     readonly left: ReactNode;
     readonly title: string;
-    readonly subtitle: string;
+    readonly subtitle?: string;
     readonly value: boolean | undefined;
     readonly testID?: string;
     readonly titleTestID?: string;

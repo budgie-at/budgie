@@ -1,7 +1,8 @@
-import { AccountTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
 
 import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { CryptoCurrencyIcon } from '../../../@generic/component/crypto-currency-icon/crypto-currency-icon';
+import { getInzhurShortTitle } from '../../../inzhur/utils/get-inzhur-short-title.util';
 import { TransactionRowSurface } from '../../../transaction/components/transaction-row-surface/transaction-row-surface';
 import { stripTransactionAccountTitlePrefix } from '../../../transaction/utils/strip-transaction-account-title-prefix.util';
 import { AccountRowLeadingContext } from '../../context/account-row-leading.context';
@@ -9,7 +10,7 @@ import { AccountListItem } from '../account-list-item/account-list-item';
 
 import type { TransactionListRowPositionEnum } from '../../../transaction/enum/transaction-list-row-position.enum';
 import type { HomeAccountBalanceInterface } from '../../interface/home-account-balance.interface';
-import type { AccountWithSyncEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
+import type { AccountWithSyncEntityInterface } from '@budgie/contracts';
 
 interface Props {
     readonly account: AccountWithSyncEntityInterface;
@@ -22,7 +23,10 @@ interface Props {
 export const InstitutionAccountRow = ({ account, provider, bankName, balancesByAccountId, position }: Props) => {
     const displayAccount = {
         ...account,
-        title: stripTransactionAccountTitlePrefix(account.title, provider) ?? account.title
+        title:
+            provider === ExternalSourceEnum.INZHUR
+                ? getInzhurShortTitle(account.title)
+                : (stripTransactionAccountTitlePrefix(account.title, provider) ?? account.title)
     };
     const logoBankName = bankName ?? account.title;
     const leading =
@@ -33,7 +37,7 @@ export const InstitutionAccountRow = ({ account, provider, bankName, balancesByA
         );
 
     return (
-        <TransactionRowSurface position={position}>
+        <TransactionRowSurface separatorInset={64} position={position}>
             <AccountRowLeadingContext value={leading}>
                 <AccountListItem account={displayAccount} balancesByAccountId={balancesByAccountId} />
             </AccountRowLeadingContext>

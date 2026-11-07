@@ -135,7 +135,6 @@ export const RootLayoutContent = () => {
     const budgetSheetOptions = { ...sheetOptions, sheetAllowedDetents: [DETENT_95] };
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
     const contactSelectorOptions = formSheetOptions([DETENT_55, DETENT_90], isAccessibilityTextSize ? 1 : 0);
-
     useAppInitialization(databaseMigrationStatus === DatabaseMigrationStatusEnum.MIGRATED);
     useAppState(handleAppStateChange);
 
@@ -177,6 +176,7 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="(main)/create-account" />
                                                                     <Stack.Screen name="(main)/account/[id]/details" />
                                                                     <Stack.Screen name="(main)/institution/[id]" />
+                                                                    <Stack.Screen name="(main)/inzhur/purchase" />
                                                                     <Stack.Screen name="(main)/account/[id]/update" />
                                                                     <Stack.Screen name="(main)/currency/[id]" />
                                                                     <Stack.Screen name="(main)/create-transaction/expense" />

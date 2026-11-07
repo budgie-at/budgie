@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.165.7](https://github.com/budgie-at/budgie/compare/v6.165.6...v6.165.7) (2026-11-07)
+
+### Bug Fixes
+
+* **app:** restore and strengthen the shared header fade ([#2009](https://github.com/budgie-at/budgie/issues/2009)) ([393958b](https://github.com/budgie-at/budgie/commit/393958bcfaa2ecca61bec36250de67bcda450d6e))
+* stabilize the sync test suite on CI ([#2014](https://github.com/budgie-at/budgie/issues/2014)) ([dd5bd94](https://github.com/budgie-at/budgie/commit/dd5bd94352d37a22812c222257adf5db937058dd))
+* stage e2e fixtures under the simlock exec stdin limit ([#2018](https://github.com/budgie-at/budgie/issues/2018)) ([3afd08f](https://github.com/budgie-at/budgie/commit/3afd08f991df1c88e7fcf94da0f5cf0b76d6e4b9))
+
+
 ## [6.165.6](https://github.com/budgie-at/budgie/compare/v6.165.5...v6.165.6) (2026-11-06)
 
 ### Bug Fixes

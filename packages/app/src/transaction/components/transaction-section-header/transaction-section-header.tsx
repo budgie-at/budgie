@@ -3,8 +3,9 @@ import { Text, View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { MoneyText } from '../../../@generic/component/money-text/money-text';
 import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title-max-font-size-multiplier.constant';
-import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
+import { MoneyTextVariantEnum } from '../../../@generic/enum/money-text-variant.enum';
 
 import type { TransactionsDayNetAmountInterface } from '../../interface/transactions-day-net-amount.interface';
 
@@ -14,14 +15,9 @@ interface Props {
 }
 
 export const TransactionSectionHeader = ({ title, netAmount }: Props) => {
-    const protectAmount = useProtectedAmountLabel();
-
     const hasNetAmount = isDefined(netAmount) && netAmount.amount !== 0;
     const netAmountSign = hasNetAmount && isPositiveNumber(netAmount.amount) ? '+' : '−';
     const approximatePrefix = hasNetAmount && netAmount.isApproximate ? '≈ ' : '';
-    const netAmountLabel = hasNetAmount
-        ? `${approximatePrefix}${netAmountSign}${protectAmount(Math.abs(convertFromMicroUnits(netAmount.amount)), netAmount.instrumentSymbol)}`
-        : null;
 
     return (
         <View className="min-h-[32px] flex-row flex-wrap items-center justify-between gap-x-md px-3xl py-xs">
@@ -32,14 +28,15 @@ export const TransactionSectionHeader = ({ title, netAmount }: Props) => {
             >
                 {title}
             </Text>
-            {isDefined(netAmountLabel) ? (
-                <Text
-                    maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
-                    className="shrink-0 text-secondary-foreground text-[13px] tabular-nums"
-                    numberOfLines={1}
-                >
-                    {netAmountLabel}
-                </Text>
+            {hasNetAmount ? (
+                <View className="shrink-0">
+                    <MoneyText
+                        amount={Math.abs(convertFromMicroUnits(netAmount.amount))}
+                        instrumentSymbol={netAmount.instrumentSymbol}
+                        variant={MoneyTextVariantEnum.CAPTION}
+                        prefix={`${approximatePrefix}${netAmountSign}`}
+                    />
+                </View>
             ) : null}
         </View>
     );
