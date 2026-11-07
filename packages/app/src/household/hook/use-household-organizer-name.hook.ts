@@ -4,11 +4,13 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { ICloudParticipantRole } from '../../../modules/icloud';
 import { householdJoinAtom } from '../constant/household-join-atom.constant';
+import { householdOwnerNameAtom } from '../constant/household-owner-name-atom.constant';
 
 import { useHouseholdParticipants } from './use-household-participants.hook';
 
 export const useHouseholdOrganizerName = (): string | null => {
     const joinedOwnerName = useAtomValue(householdJoinAtom, ({ ownerDisplayName }) => ownerDisplayName);
+    const storedOwnerName = useAtomValue(householdOwnerNameAtom);
     const { otherParticipants } = useHouseholdParticipants();
     const participantName = otherParticipants.find(participant => participant.role === ICloudParticipantRole.OWNER)?.displayName;
 
@@ -16,5 +18,9 @@ export const useHouseholdOrganizerName = (): string | null => {
         return participantName;
     }
 
-    return isNotEmptyString(joinedOwnerName) ? joinedOwnerName : null;
+    if (isNotEmptyString(joinedOwnerName)) {
+        return joinedOwnerName;
+    }
+
+    return isNotEmptyString(storedOwnerName) ? storedOwnerName : null;
 };

@@ -7,4 +7,5 @@ export interface CloudSyncStateInterface {
     readonly resolvedLineageId: string | null;
     readonly restorePhase: CloudSyncRestorePhaseEnum;
     readonly isHouseholdCleanupPending: boolean;
+    readonly householdOwnerDisplayName: string | null;
 }

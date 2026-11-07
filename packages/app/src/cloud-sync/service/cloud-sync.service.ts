@@ -31,7 +31,7 @@ import * as Semaphore from 'effect/Semaphore';
 import * as Stream from 'effect/Stream';
 import Constants from 'expo-constants';
 
-import { isDefined, isNotEmptyArray, isString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString, isString } from '@rnw-community/shared';
 
 import {
     ICLOUD_DEFAULT_OWNER_NAME,
@@ -52,6 +52,7 @@ import { InstallIdService } from '../../cloud-backup/service/install-id.service'
 import { syncAutomationEmbeddingBoostLayer } from '../../cloud-sync-automation/layer/sync-automation-embedding-boost.layer';
 import { SyncAutomationService } from '../../cloud-sync-automation/service/sync-automation.service';
 import { householdJoinAtom } from '../../household/constant/household-join-atom.constant';
+import { householdOwnerNameAtom } from '../../household/constant/household-owner-name-atom.constant';
 import { householdRefreshAtom } from '../../household/constant/household-refresh-atom.constant';
 import { householdStateAtom } from '../../household/constant/household-state-atom.constant';
 import { HouseholdEndModeEnum } from '../../household/enum/household-end-mode.enum';
@@ -214,6 +215,13 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
                 zones.set(zone.zoneLabel, zone);
                 labelByZone.set(keyOf(zone.ownerName, zone.zoneName), zone.zoneLabel);
             }
+
+            const storedOwnerName =
+                zones.get(HOUSEHOLD_SYNC_ZONE)?.role === SyncZoneRoleEnum.PARTICIPANT
+                    ? (yield* stateStore.read).householdOwnerDisplayName
+                    : null;
+
+            appAtomRegistry.set(householdOwnerNameAtom, storedOwnerName);
 
             yield* publish;
         });
@@ -484,7 +492,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             yield* mode === HouseholdEndModeEnum.KEEP_PERSONAL_COPY
                 ? householdMembershipService.keepPersonalCopy()
                 : householdMembershipService.dropHouseholdData();
-            yield* stateStore.update({ sharedStateSerialization: null });
+            yield* stateStore.update({ sharedStateSerialization: null, householdOwnerDisplayName: null });
             yield* patch({ isSharedEngineRunning: false, isSharedReconciling: false });
             yield* refreshZones();
             yield* publishJoin(HouseholdJoinStatusEnum.NONE, null);
@@ -1122,7 +1130,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
         });
 
         const registerJoinedHouseholdUnlocked = Effect.fnUntraced(function* (
-            zone: Pick<ICloudShareAcceptedEvent, 'zoneName' | 'ownerName'>
+            zone: Pick<ICloudShareAcceptedEvent, 'zoneName' | 'ownerName' | 'ownerDisplayName'>
         ) {
             const existing = yield* zoneRegistryRepository.findByLabel(HOUSEHOLD_SYNC_ZONE);
 
@@ -1137,6 +1145,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
                 databaseScope: SyncDatabaseScopeEnum.SHARED,
                 role: SyncZoneRoleEnum.PARTICIPANT
             });
+            yield* stateStore.update({ householdOwnerDisplayName: isNotEmptyString(zone.ownerDisplayName) ? zone.ownerDisplayName : null });
             yield* refreshZones();
 
             if ((yield* Ref.get(session)).isEngineRunning) {

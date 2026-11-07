@@ -12,7 +12,6 @@ import { SettingsRow } from '../../../settings/components/settings-row/settings-
 import { SettingsRowAccessoryKindEnum } from '../../../settings/enum/settings-row-accessory-kind.enum';
 import { householdJoinAtom } from '../../constant/household-join-atom.constant';
 import { HouseholdJoinStatusEnum } from '../../enum/household-join-status.enum';
-import { HouseholdJoinedCard } from '../household-joined-card/household-joined-card';
 
 import { HouseholdJoinCardSelector } from './household-join-card.selector';
 
@@ -20,12 +19,8 @@ export const HouseholdJoinCard = () => {
     const { t } = useLingui();
     const { status, ownerDisplayName } = useAtomValue(householdJoinAtom);
 
-    if (status === HouseholdJoinStatusEnum.NONE) {
+    if (status === HouseholdJoinStatusEnum.NONE || status === HouseholdJoinStatusEnum.JOINED) {
         return null;
-    }
-
-    if (status === HouseholdJoinStatusEnum.JOINED) {
-        return <HouseholdJoinedCard />;
     }
 
     const isJoining = status === HouseholdJoinStatusEnum.JOINING;

@@ -11,6 +11,7 @@ import { SettingsRow } from '../../../settings/components/settings-row/settings-
 import { SettingsWarningSubtitle } from '../../../settings/components/settings-warning-subtitle/settings-warning-subtitle';
 import { householdJoinAtom } from '../../constant/household-join-atom.constant';
 import { HouseholdJoinStatusEnum } from '../../enum/household-join-status.enum';
+import { useHouseholdOrganizerName } from '../../hook/use-household-organizer-name.hook';
 import { useHouseholdParticipants } from '../../hook/use-household-participants.hook';
 import { useHousehold } from '../../hook/use-household.hook';
 
@@ -23,19 +24,21 @@ export const FamilyRow = () => {
     const { isMember, isShared } = useHousehold();
     const { isAvailable } = useICloudAccount();
     const { otherParticipants } = useHouseholdParticipants();
+    const organizerName = useHouseholdOrganizerName();
     const { status, ownerDisplayName } = useAtomValue(householdJoinAtom);
 
     const hasParticipants = isNotEmptyArray(otherParticipants);
     const sharedSubtitle = t({
         message: plural(otherParticipants.length, { one: 'Shared with # person', other: 'Shared with # people' })
     });
-    const roleSubtitle = isMember ? t`Shared with your family` : sharedSubtitle;
+    const memberSubtitle = isNotEmptyString(organizerName) ? t`${organizerName}'s family` : t`Shared with your family`;
+    const roleSubtitle = isMember ? memberSubtitle : sharedSubtitle;
     const participantsSubtitle = isAvailable ? (
         roleSubtitle
     ) : (
         <SettingsWarningSubtitle>{t`Paused: sign in to iCloud`}</SettingsWarningSubtitle>
     );
-    const groupSubtitle = hasParticipants ? participantsSubtitle : t`Not shared yet`;
+    const groupSubtitle = hasParticipants || isMember ? participantsSubtitle : t`Not shared yet`;
     const idleSubtitle = isShared ? groupSubtitle : t`Share accounts with family`;
     const joiningSubtitle = isNotEmptyString(ownerDisplayName) ? t`Joining ${ownerDisplayName}'s family…` : t`Joining the family…`;
     const subtitle = status === HouseholdJoinStatusEnum.JOINING ? joiningSubtitle : idleSubtitle;

@@ -659,6 +659,11 @@ msgstr "{newTransactionCount} neu, {existingTransactionCount} bereits importiert
 msgid "{organizerName} sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
 msgstr "{organizerName} sieht geteilte Konten und deren Zahlungen. Geld, das zwischen geteilten Konten bewegt wird, erscheint als Überweisung."
 
+#: src/household/component/family-row/family-row.tsx
+#: src/household/component/household-member-summary/household-member-summary.tsx
+msgid "{organizerName}'s family"
+msgstr "Familie von {organizerName}"
+
 #: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
 msgid "{overAmount} over budget"
 msgstr "{overAmount} über dem Budget"
@@ -817,7 +822,7 @@ msgstr "{selectedInGroupCount} von {accountsCount} ausgewählt"
 msgid "{setAsideLabel} to set aside {thisPeriod}"
 msgstr "{setAsideLabel} zurückzulegen {thisPeriod}"
 
-#: src/household/component/household-joined-card/household-joined-card.tsx
+#: src/household/component/household-member-summary/household-member-summary.tsx
 msgid "{sharedCount, plural, one {# shared account} other {# shared accounts}}"
 msgstr "{sharedCount, plural, one {# geteiltes Konto} other {# geteilte Konten}}"
 
@@ -4543,6 +4548,10 @@ msgstr "Familienmitglied"
 msgid "Family members can see and edit what you share."
 msgstr "Familienmitglieder können Geteiltes sehen und bearbeiten."
 
+#: src/household/component/household-organizer-row/household-organizer-row.tsx
+msgid "Family organizer"
+msgstr "Familien-Organisator"
+
 #: src/account/component/household-share-account-row/household-share-account-row.tsx
 msgid "Family you invite can edit it"
 msgstr "Eingeladene Familie kann es bearbeiten"
@@ -6736,15 +6745,11 @@ msgstr "Oder mit Touch ID entsperren."
 msgid "Organize"
 msgstr "Organisieren"
 
-#: src/household/component/household-joined-card/household-joined-card.tsx
+#: src/household/component/household-organizer-row/household-organizer-row.tsx
 #: src/household/component/household-owner-content/household-owner-content.tsx
 #: src/household/component/household-participant-row/household-participant-row.tsx
 msgid "Organizer"
 msgstr "Organisator"
-
-#: src/household/component/household-joined-card/household-joined-card.tsx
-msgid "Organizer · {sharedSubtitle}"
-msgstr "Organisator · {sharedSubtitle}"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
@@ -8213,7 +8218,7 @@ msgstr "Teile deine Konten"
 msgid "Share your accounts with {organizerName}"
 msgstr "Teile deine Konten mit {organizerName}"
 
-#: src/household/component/household-joined-card/household-joined-card.tsx
+#: src/household/component/household-member-summary/household-member-summary.tsx
 msgid "Shared accounts stay in sync"
 msgstr "Geteilte Konten bleiben synchron"
 
@@ -8688,7 +8693,7 @@ msgid "Syncing resumes for all accounts once you update the key."
 msgstr "Die Synchronisierung aller Konten wird fortgesetzt, sobald du den Schlüssel aktualisierst."
 
 #: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
-#: src/household/component/household-joined-card/household-joined-card.tsx
+#: src/household/component/household-member-summary/household-member-summary.tsx
 #: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
@@ -10124,14 +10129,6 @@ msgstr "Du nutzt mobile Daten. Es startet, sobald du wieder im WLAN bist."
 msgid "You're on Wi-Fi."
 msgstr "Du bist im WLAN."
 
-#: src/household/component/household-joined-card/household-joined-card.tsx
-msgid "You've joined {organizerName}'s family"
-msgstr "Du bist der Familie von {organizerName} beigetreten"
-
-#: src/household/component/household-joined-card/household-joined-card.tsx
-msgid "You've joined the family"
-msgstr "Du bist der Familie beigetreten"
-
 #: src/categorize-inbox/components/categorize-inbox-transfer-accounts/categorize-inbox-transfer-accounts.tsx
 msgid "Your accounts"
 msgstr "Deine Konten"
@@ -10209,6 +10206,10 @@ msgstr "Deine Daten: {state}"
 msgid "Your device clock is out of sync. Enable automatic date and time, then try again."
 msgstr "Die Uhr deines Geräts geht falsch. Aktiviere Datum und Uhrzeit automatisch und versuche es erneut."
 
+#: src/household/component/household-member-summary/household-member-summary.tsx
+msgid "Your family"
+msgstr "Deine Familie"
+
 #: src/household/component/household-owner-share-section/household-owner-share-section.tsx
 msgid "Your family sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
 msgstr "Deine Familie sieht geteilte Konten und deren Zahlungen. Geld, das zwischen geteilten Konten bewegt wird, erscheint als Überweisung."
@@ -10232,10 +10233,6 @@ msgstr "Dein Geld in einer Datei."
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "Your money will live in one file on this phone. Choose who can open it."
 msgstr "Dein Geld liegt in einer Datei auf diesem Telefon. Wähle, wer sie öffnen kann."
-
-#: src/household/component/household-joined-card/household-joined-card.tsx
-msgid "Your organizer"
-msgstr "Dein Organisator"
 
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
 msgid "Your phone’s lock will be the only lock."
