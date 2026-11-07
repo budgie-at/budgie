@@ -1,3 +1,4 @@
+import { TestSeedService } from '@budgie-at/test-kit';
 import { BudgetRepository, computeIncomeReceived, computeSpent } from '@budgie/budget';
 import { AccountEntityTable, HOUSEHOLD_SYNC_ZONE, PRECISION } from '@budgie/contracts';
 import { expect, layer } from '@effect/vitest';
@@ -11,10 +12,17 @@ const NEXT_PERIOD_START = new Date('2026-07-01T00:00:00.000Z');
 const INSTRUMENT_ID = 1;
 
 layer(TestLayer)('shared budget spending scope', it => {
-    it.effect('counts only household accounts for a household budget and every account for a personal budget', () =>
+    it.effect('counts only household accounts for a household budget and every own account for a personal budget', () =>
         Effect.gen(function* () {
             const { bankAccount, counterpartAccount } = yield* seedParityAccounts();
             const budgetRepository = yield* BudgetRepository;
+            const foreignAccount = yield* new TestSeedService(testDb).account({ title: 'Other member card' });
+            yield* testDb.$client.unsafe("UPDATE accounts SET sync_zone = 'household' WHERE id = ?", [foreignAccount.id]);
+            yield* testDb.$client.unsafe('DELETE FROM sync_outbox WHERE sync_id = (SELECT sync_id FROM accounts WHERE id = ?)', [
+                foreignAccount.id
+            ]);
+            yield* seedParityExpense('foreign-groceries', foreignAccount.id, 70);
+            yield* seedParityIncome('foreign-salary', foreignAccount.id, 600);
 
             yield* testDb
                 .update(AccountEntityTable)
@@ -40,9 +48,9 @@ layer(TestLayer)('shared budget spending scope', it => {
             );
             const personalIncome = yield* budgetRepository.findIncomeReceivedEntries(PERIOD_START, NEXT_PERIOD_START, INSTRUMENT_ID);
 
-            expect(computeSpent(sharedSpent, INSTRUMENT_ID).spentOverall).toBe(50 * PRECISION);
+            expect(computeSpent(sharedSpent, INSTRUMENT_ID).spentOverall).toBe(120 * PRECISION);
             expect(computeSpent(personalSpent, INSTRUMENT_ID).spentOverall).toBe(80 * PRECISION);
-            expect(computeIncomeReceived(sharedIncome, INSTRUMENT_ID)).toBe(400 * PRECISION);
+            expect(computeIncomeReceived(sharedIncome, INSTRUMENT_ID)).toBe(1000 * PRECISION);
             expect(computeIncomeReceived(personalIncome, INSTRUMENT_ID)).toBe(1400 * PRECISION);
         })
     );
