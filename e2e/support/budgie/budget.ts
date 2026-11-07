@@ -34,11 +34,8 @@ export async function chooseEmptyCanvas(ctx: Ctx): Promise<void> {
 export async function fillAmount(ctx: Ctx, testId: string, value: string): Promise<void> {
     await tapId(ctx, testId);
     await expectId(ctx, 'inputView');
-    await sleep(600);
-    await retry(1, async attempt => {
-        if (attempt > 1) {
-            await sleep(800);
-        }
+    await retry(1, async () => {
+        await expect(byId(ctx.screen, testId)).toBeFocused();
         await fillId(ctx, testId, value);
     });
     await expect(byId(ctx.screen, testId)).toHaveValue(value, { timeout: 3_000 });

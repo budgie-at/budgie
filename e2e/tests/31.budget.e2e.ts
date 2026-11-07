@@ -134,12 +134,11 @@ test('31 budget', { tags: ['budget'] }, async ({ budgie }) => {
         await bu.openEditBudget(ctx);
         await b.scrollToCentre(ctx, 'BudgetSetup.OverallLimitInput');
         await id('BudgetSetup.OverallLimitInput').tap();
+        await b.expectId(ctx, 'inputView');
         for (const digit of '1500') {
             await screen.getByText(digit, { exact: true }).last().tap();
-            await b.expectId(ctx, 'inputView');
         }
         await expect(id('BudgetSetup.OverallLimitInput')).toHaveValue('1500');
-        await b.expectId(ctx, 'inputView');
         await b.tapId(ctx, 'BudgetSetup.SaveButton');
         await b.expectId(ctx, 'BudgetDetails.Screen', 3_000);
         await details('€42', '€1,500');

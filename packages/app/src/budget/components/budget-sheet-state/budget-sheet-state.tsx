@@ -2,7 +2,6 @@ import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
 import { FormsheetHeader } from '../../../@generic/component/formsheet-header/formsheet-header';
-import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { BudgetSelector } from '../../budget.selector';
@@ -32,9 +31,7 @@ export const BudgetSheetState = (props: Props) => {
         <BudgetScrollableSheet>
             {header ?? <FormsheetHeader size="md" title={title} />}
             <View className="px-5xl pt-md pb-3xl gap-y-xl">
-                <LoadingContent isLoading={isLoading}>
-                    <BudgetDataState isLoading={false} isError={isError} description={stateDescription} title={unavailableTitle} />
-                </LoadingContent>
+                <BudgetDataState isLoading={isLoading} isError={isError} description={stateDescription} title={unavailableTitle} />
                 <PillButton label={t`Close`} testID={BudgetSelector.DataStateCloseButton} onPress={handleClose} />
             </View>
         </BudgetScrollableSheet>

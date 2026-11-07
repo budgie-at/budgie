@@ -31,7 +31,7 @@ test('46 recurring manual series', { tags: ['recurring'] }, async ({ budgie }) =
         await b.settledBounds(ctx, 'CategoryPickerBottomSheet.Input');
         await b.tapId(ctx, 'CategoryPickerBottomSheet.Input');
         await b.expectId(ctx, 'inputView');
-        await b.sleep(600);
+        await expect(b.byId(ctx.screen, 'CategoryPickerBottomSheet.Input')).toBeFocused();
         await b.selectCategoryBySearch(ctx, 'Groceries');
         await b.tapId(ctx, 'RecurringForm.Kind.EXPENSE');
         await expect(b.byId(ctx.screen, 'RecurringForm.Category')).toHaveText(/Groceries/u);

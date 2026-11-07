@@ -4,7 +4,6 @@ import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { addScrollContentInset, mergeRefs, useBottomChromeInset, useScreenChrome } from '@rnw-community/react-native-screen-chrome';
-import { isDefined } from '@rnw-community/shared';
 
 import { useCollapsibleChromeScroll } from '../../hook/use-collapsible-chrome-scroll.hook';
 
@@ -38,8 +37,8 @@ export const ChromeKeyboardScrollView = ({
     const mergedRef = mergeRefs(scrollRef, ref);
     const { height } = useWindowDimensions();
     const snapRangeStyle = config.snapToCollapse ? { minHeight: height + config.collapseEnd } : null;
-    const resolvedContentInsetBottom = isDefined(contentInsetBottom) ? contentInsetBottom : chromeHeight;
-    const resolvedBottomOffset = isDefined(bottomOffset) ? bottomOffset : inset;
+    const resolvedContentInsetBottom = contentInsetBottom ?? chromeHeight;
+    const resolvedBottomOffset = bottomOffset ?? inset;
     const mergedContentContainerStyle = addScrollContentInset(
         includeTopSafeArea ? insets : { ...insets, top: 0 },
         contentInsetTop,

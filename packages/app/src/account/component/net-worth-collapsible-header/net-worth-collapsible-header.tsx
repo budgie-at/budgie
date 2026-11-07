@@ -33,6 +33,7 @@ export const NetWorthCollapsibleHeader = (props: Props) => {
 
     const formattedNetWorth = toTrueMinus(formatDigits(netWorth, defaultInstrument.symbol));
     const formattedNetWorthValue = formatDigits(netWorth);
+    const loadingIndicatorProps = isFocused ? {} : { loadingIndicator: null };
     const expandedContent = (
         <View className="flex-1 justify-end gap-y-sm pt-sm pr-[12px] pb-lg pl-[16px]" pointerEvents="box-none">
             <View className="flex-row items-center justify-between">
@@ -43,7 +44,7 @@ export const NetWorthCollapsibleHeader = (props: Props) => {
                 <SecurityLockButton />
             </View>
 
-            <LoadingContent isLoading={isLoading} className="gap-y-sm" {...(!isFocused && { loadingIndicator: null })}>
+            <LoadingContent isLoading={isLoading} className="gap-y-sm" {...loadingIndicatorProps}>
                 <View collapsable={false} testID={HomePageSelector.NetWorthValue(formattedNetWorthValue)}>
                     <HeroFigure amount={netWorth} currencySymbol={defaultInstrument.symbol} variant="primary" />
                 </View>
