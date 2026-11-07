@@ -55,14 +55,14 @@ describe('market data job queue', () => {
             const staleClaim = yield* claim(startTime);
             const currentClaim = yield* claim(startTime + staleLockMs + 1000);
 
-            yield* jobRepository.markCompleted(staleClaim);
+            expect(yield* jobRepository.markCompleted(staleClaim)).toBe(false);
             yield* jobRepository.markFailed(staleClaim, 'slow worker failure');
 
             const reclaimed = yield* findJob(currentClaim.id);
 
             expect(reclaimed).toMatchObject({ status: InstrumentMarketDataJobStatusEnum.RUNNING, attempts: 2, lastError: null });
 
-            yield* jobRepository.markCompleted(currentClaim);
+            expect(yield* jobRepository.markCompleted(currentClaim)).toBe(true);
 
             expect(yield* findJob(currentClaim.id)).toMatchObject({ status: InstrumentMarketDataJobStatusEnum.COMPLETED, lockedAt: null });
         }).pipe(Effect.provide(JobQueueLayer))

@@ -497,22 +497,25 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                     const writeRates = historicalExchangeRateRepository.bulkUpsert(result.rates);
 
                     yield* Db.transaction(
-                        Effect.all(
-                            [
-                                instrumentDailyMarketPriceRepository.bulkUpsert(result.prices),
-                                instrument?.type === InstrumentTypeEnum.FIAT ? revalueEntriesAround(job, writeRates) : writeRates,
-                                instrumentMarketDataJobRepository.enqueueMany(
-                                    result.unsupportedInstruments.map(unsupportedInstrument => ({
-                                        instrumentId: unsupportedInstrument.id,
-                                        quoteInstrumentId: job.quoteInstrumentId,
-                                        fromDate: job.fromDate,
-                                        toDate: job.toDate,
-                                        status: InstrumentMarketDataJobStatusEnum.UNSUPPORTED
-                                    }))
-                                ),
-                                instrumentMarketDataJobRepository.markCompleted(job)
-                            ],
-                            { discard: true }
+                        Effect.flatMap(instrumentMarketDataJobRepository.markCompleted(job), isClaimOwner =>
+                            isClaimOwner
+                                ? Effect.all(
+                                      [
+                                          instrumentDailyMarketPriceRepository.bulkUpsert(result.prices),
+                                          instrument?.type === InstrumentTypeEnum.FIAT ? revalueEntriesAround(job, writeRates) : writeRates,
+                                          instrumentMarketDataJobRepository.enqueueMany(
+                                              result.unsupportedInstruments.map(unsupportedInstrument => ({
+                                                  instrumentId: unsupportedInstrument.id,
+                                                  quoteInstrumentId: job.quoteInstrumentId,
+                                                  fromDate: job.fromDate,
+                                                  toDate: job.toDate,
+                                                  status: InstrumentMarketDataJobStatusEnum.UNSUPPORTED
+                                              }))
+                                          )
+                                      ],
+                                      { discard: true }
+                                  )
+                                : Effect.void
                         )
                     );
                 }),

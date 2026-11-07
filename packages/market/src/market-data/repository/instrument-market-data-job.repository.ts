@@ -126,7 +126,8 @@ export class InstrumentMarketDataJobRepository extends Context.Service<Instrumen
                                 updatedAt: new Date()
                             })
                             .where(buildClaimOwnerCondition(job))
-                    ),
+                            .returning({ id: InstrumentMarketDataJobEntityTable.id })
+                    ).pipe(Effect.map(isNotEmptyArray)),
                 markFailed: (job: Pick<InstrumentMarketDataJobEntityInterface, 'id' | 'attempts'>, errorMessage: string) =>
                     Db.query(db =>
                         db
