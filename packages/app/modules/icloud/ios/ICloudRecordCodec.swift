@@ -29,7 +29,7 @@ struct ICloudPendingSave {
 }
 
 enum ICloudRecordCodec {
-  static let booleanFieldsKey = "__booleanFields"
+  static let booleanFieldsKey = "booleanFields"
   static let schemaVersionKey = "schemaVersion"
 
   static func key(_ recordID: CKRecord.ID) -> String {

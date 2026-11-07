@@ -161,6 +161,8 @@ public final class ICloudModule: Module {
             throw ICloudDatabase.error("UNKNOWN", "Backup createdAt is not a valid date")
           }
           record[key] = createdAt as NSDate
+        } else if key == ICloudRecordCodec.schemaVersionKey, let version = value as? NSNumber {
+          record[key] = version.int64Value
         } else {
           record[key] = value as? CKRecordValue
         }

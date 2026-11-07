@@ -89,8 +89,15 @@ enum ICloudDatabase {
     return NSError(domain: "ICloud", code: cloudError.code, userInfo: ["code": code, NSLocalizedDescriptionKey: cloudError.localizedDescription])
   }
 
+  static func itemError(_ error: Error) -> Error {
+    guard let cloudError = error as? CKError, cloudError.code == .partialFailure, let first = cloudError.partialErrorsByItemID?.values.first else {
+      return error
+    }
+    return first
+  }
+
   static func syncErrorCode(_ error: Error) -> String {
-    let cloudError = error as NSError
+    let cloudError = itemError(error) as NSError
     if let code = cloudError.userInfo["code"] as? String, cloudError.domain == "ICloud" { return code }
     switch CKError.Code(rawValue: cloudError.code) {
     case .some(.serverRecordChanged): return "SERVER_RECORD_CHANGED"
@@ -117,11 +124,11 @@ enum ICloudDatabase {
   }
 
   static func failure(_ error: Error) -> [String: Any] {
-    ["code": syncErrorCode(error), "message": (error as NSError).localizedDescription]
+    ["code": syncErrorCode(error), "message": (itemError(error) as NSError).localizedDescription]
   }
 
   static func syncError(_ error: Error) -> NSError {
-    let cloudError = error as NSError
+    let cloudError = itemError(error) as NSError
     return NSError(domain: "ICloud", code: cloudError.code, userInfo: ["code": syncErrorCode(error), NSLocalizedDescriptionKey: cloudError.localizedDescription])
   }
 }
