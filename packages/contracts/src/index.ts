@@ -489,6 +489,7 @@ export type { SyncUploadAcknowledgementInterface } from './cloud-sync/upload/int
 export { HouseholdShareService } from './cloud-sync/share/service/household-share.service';
 export { HouseholdShareRepository } from './cloud-sync/share/repository/household-share.repository';
 export { HouseholdUnavailableError } from './cloud-sync/share/error/household-unavailable.error';
+export { buildAccountSharedByOtherSql } from './cloud-sync/share/utils/build-account-shared-by-other-sql.util';
 export { HouseholdShareStateEnum } from './cloud-sync/share/enum/household-share-state.enum';
 export type { HouseholdShareStatusInterface } from './cloud-sync/share/interface/household-share-status.interface';
 export type { HouseholdShareEverythingStateInterface } from './cloud-sync/share/interface/household-share-everything-state.interface';

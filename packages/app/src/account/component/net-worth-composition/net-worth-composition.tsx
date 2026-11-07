@@ -8,7 +8,7 @@ import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title
 import { StatisticsShareBar } from '../../../transaction/components/statistics-share-bar/statistics-share-bar';
 import { ACCOUNT_TYPE_SWATCH } from '../../constant/account-type-swatch.constant';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
-import { isDebtSection } from '../../type-guard/is-debt-section.type-guard';
+import { isAccountTypeSection } from '../../type-guard/is-account-type-section.type-guard';
 
 import { NetWorthCompositionSelector } from './net-worth-composition.selector';
 
@@ -23,7 +23,7 @@ export const NetWorthComposition = ({ sections, cashTotal }: Props) => {
     const { t } = useLingui();
 
     const groups = [
-        ...sections.flatMap(section => (isDebtSection(section) ? [] : [{ type: section.type, total: section.total }])),
+        ...sections.flatMap(section => (isAccountTypeSection(section) ? [{ type: section.type, total: section.total }] : [])),
         { type: AccountTypeEnum.CASH, total: cashTotal }
     ];
     const segments = groups

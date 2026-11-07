@@ -4,6 +4,8 @@ import {
     ExchangeRateEntityTable,
     HistoricalExchangeRateEntityTable,
     SyncEntityTable,
+    SyncOutboxEntityTable,
+    SyncRecordEntityTable,
     TransactionEntityTable,
     TransactionEntryEntityTable
 } from '@budgie/contracts';
@@ -16,4 +18,10 @@ export const ACCOUNT_BALANCE_TABLES = [
     TransactionEntityTable
 ];
 
-export const ACCOUNT_CONVERTED_BALANCE_TABLES = [...ACCOUNT_BALANCE_TABLES, ExchangeRateEntityTable, HistoricalExchangeRateEntityTable];
+export const ACCOUNT_CONVERTED_BALANCE_TABLES = [
+    ...ACCOUNT_BALANCE_TABLES,
+    ExchangeRateEntityTable,
+    HistoricalExchangeRateEntityTable,
+    SyncRecordEntityTable,
+    SyncOutboxEntityTable
+];
