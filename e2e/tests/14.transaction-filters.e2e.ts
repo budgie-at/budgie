@@ -161,6 +161,7 @@ test('14 transaction filters', { tags: ['transactions'] }, async ({ budgie }) =>
     });
 
     await b.phase('category and tag filters', async () => {
+        await m.revealChip(ctx, 'TransactionFilters.AmountChip', 'TransactionFilters.CategoryChip', 'right');
         await c.applyCategoryFilter(ctx, 'E2E Filter Income Category');
         await shown('E2E_Filter_Income');
         await hidden('E2E_Filter_Expense', 'E2E_Filter_Transfer');

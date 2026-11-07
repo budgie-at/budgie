@@ -4,8 +4,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { BudgieLegendList } from '../../../@generic/component/budgie-legend-list/budgie-legend-list';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { StaticChromeLegendList } from '../../../@generic/component/static-chrome-legend-list/static-chrome-legend-list';
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@generic/constant/floating-tab-bar.constant';
 import { RecurringListItemKindEnum } from '../../enum/recurring-list-item-kind.enum';
 import { useRecurringSeriesList } from '../../hook/use-recurring-series-list.hook';
@@ -39,9 +39,14 @@ export const RecurringListContent = ({ header }: Props) => {
     const isLoading = !isDefined(series);
     const loadedSeries = series ?? EMPTY_SERIES;
     const items = buildRecurringListItems(loadedSeries, expandedSections, now);
+    const stickyHeaderIndices = items.flatMap((item, index) => (item.type === RecurringListItemKindEnum.HEADER ? [index] : []));
     const summary = buildRecurringSummary(loadedSeries, now);
     const contentContainerStyle = { paddingBottom: FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottom };
-    const emptyState = isLoading ? null : <RecurringListEmptyState />;
+    const emptyState = (
+        <LoadingContent isLoading={isLoading}>
+            <RecurringListEmptyState />
+        </LoadingContent>
+    );
 
     const handleToggleSection = (section: RecurringSectionEnum) =>
         void setExpandedSections(current => (current.includes(section) ? current.filter(item => item !== section) : [...current, section]));
@@ -60,21 +65,26 @@ export const RecurringListContent = ({ header }: Props) => {
 
     return (
         <View className="flex-1">
-            {header}
-            <LoadingContent isLoading={isLoading} className="flex-1" containerClassName="flex-1">
-                <View className="flex-1" testID={RecurringPaneSelector.List}>
-                    <BudgieLegendList
-                        data={items}
-                        keyExtractor={keyExtractor}
-                        getItemType={getItemType}
-                        renderItem={renderItem}
-                        estimatedItemSize={64}
-                        contentContainerStyle={contentContainerStyle}
-                        ListHeaderComponent={<RecurringSummaryCard summary={summary} now={now} />}
-                        ListEmptyComponent={emptyState}
-                    />
-                </View>
-            </LoadingContent>
+            <View className="flex-1" testID={RecurringPaneSelector.List}>
+                <StaticChromeLegendList
+                    data={items}
+                    stickyHeaderIndices={stickyHeaderIndices}
+                    keyExtractor={keyExtractor}
+                    getItemType={getItemType}
+                    renderItem={renderItem}
+                    estimatedItemSize={64}
+                    contentContainerStyle={contentContainerStyle}
+                    ListHeaderComponent={
+                        <View>
+                            {header}
+                            <LoadingContent isLoading={isLoading}>
+                                <RecurringSummaryCard summary={summary} now={now} />
+                            </LoadingContent>
+                        </View>
+                    }
+                    ListEmptyComponent={emptyState}
+                />
+            </View>
         </View>
     );
 };

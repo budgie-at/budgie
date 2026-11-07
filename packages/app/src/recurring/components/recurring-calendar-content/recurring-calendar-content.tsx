@@ -2,8 +2,8 @@ import { convertFromMicroUnits } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useReducer } from 'react';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
+import { ScreenChromeScrollView } from '@rnw-community/react-native-screen-chrome';
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
@@ -90,11 +90,13 @@ export const RecurringCalendarContent = ({ header }: Props) => {
     const displayedTotal = isDefined(data) ? totalAmount + forecastedTotalAmount : 0;
 
     return (
-        <KeyboardAwareScrollView
+        <ScreenChromeScrollView
             style={scrollStyle}
             testID={RecurringCalendarSelector.Container}
             contentContainerStyle={scrollContentStyle}
-            bottomOffset={40}
+            includeTopSafeArea={false}
+            contentInsetTop={12}
+            contentInsetMode="additive"
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="on-drag"
@@ -168,6 +170,6 @@ export const RecurringCalendarContent = ({ header }: Props) => {
                 ) : null}
             </LoadingContent>
             <MenuSpacer />
-        </KeyboardAwareScrollView>
+        </ScreenChromeScrollView>
     );
 };
