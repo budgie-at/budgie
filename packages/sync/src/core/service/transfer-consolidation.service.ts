@@ -41,7 +41,17 @@ export class TransferConsolidationService extends Context.Service<TransferConsol
                 let converted = 0;
 
                 for (const candidate of candidates) {
-                    if (yield* transactionTransferService.convertToTransferAccount(candidate.transactionId, candidate.targetAccountId)) {
+                    const isConverted = yield* transactionTransferService
+                        .convertToTransferAccount(candidate.transactionId, candidate.targetAccountId)
+                        .pipe(
+                            Effect.catchTags({
+                                AccountNotFoundError: () => Effect.succeed(false),
+                                DebtTransferNotAllowedError: () => Effect.succeed(false),
+                                DepositNegativeBalanceError: () => Effect.succeed(false)
+                            })
+                        );
+
+                    if (isConverted) {
                         converted += 1;
                     }
                 }
