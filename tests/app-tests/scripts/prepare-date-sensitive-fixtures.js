@@ -1173,11 +1173,7 @@ const generateEditFormLayoutFixture = () => {
     const matchedTwiceTitle = 'E2E Layout Matched Twice';
     const transactions = [
         { id: 101, title: 'E2E Layout Short', amount: 1_000_000 },
-        {
-            id: 102,
-            title: 'E2E Layout Long Merchant Title That Wraps Onto A Second Line — Imported bank merchant description exceeding the create form title limit',
-            amount: 1_100_000
-        },
+        { id: 102, title: 'E2E Layout Long Merchant Title That Wraps Onto A Second Line — Imported bank merchant description exceeding the create form title limit', amount: 1_100_000 },
         { id: 103, title: matchedOnceTitle, amount: 1_200_000 },
         { id: 104, title: matchedTwiceTitle, amount: 1_300_000 }
     ];
@@ -1666,9 +1662,7 @@ const generateInzhurFixture = () => {
     const targetPath = path.join(outputDirectoryPath, '44-inzhur.db');
 
     copyFixture(path.join(fixturesDirectoryPath, '01.db'), targetPath);
-    runSqlite(
-        targetPath,
-        `
+    runSqlite(targetPath, `
         BEGIN;
         INSERT INTO accounts (id, title, type, instrument_id, external_source, external_id)
         SELECT 1, 'Inzhur Test Card', 'BANK_SYNC', id, 'MONOBANK', 'inzhur-e2e-card' FROM instruments WHERE code = 'UAH';
@@ -1678,8 +1672,7 @@ const generateInzhurFixture = () => {
         VALUES (1, 1, 'CREDIT', 2000000000, 'inzhur-e2e-topup');
         INSERT INTO account_balances (account_id, amount) VALUES (1, -2000000000);
         COMMIT;
-    `
-    );
+    `);
 };
 
 generateInzhurFixture();

@@ -1,5 +1,4 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
-
 import { utils, write } from 'xlsx';
 
 const SHEET_NAME = 'Виписка по операціям';
