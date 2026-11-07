@@ -43,7 +43,11 @@ export const EnableBankingRelay = () => {
 
     return (
         <I18nProvider i18n={i18n}>
-            <main className="flex min-h-dvh flex-col items-center justify-center gap-6 bg-background p-6 text-center text-foreground">
+            <main
+                id="main-content"
+                tabIndex={-1}
+                className="flex min-h-dvh focus:outline-none flex-col items-center justify-center gap-6 bg-background p-6 text-center text-foreground"
+            >
                 <Image alt="" className="rounded-2xl" height={64} src="/logo/white-on-black.svg" width={64} />
                 <p className="text-lg font-semibold">
                     <Trans>Continue in the Budgie app</Trans>

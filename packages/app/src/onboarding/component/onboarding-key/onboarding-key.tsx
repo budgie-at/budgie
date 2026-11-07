@@ -1,5 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
+import { Text } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -58,15 +59,31 @@ export const OnboardingKey = () => {
                 <GroupedListRow
                     testID={OnboardingKeySelector.PinOption}
                     left={<GroupedListIcon icon={UserIconNameEnum.KeyRound} />}
-                    title={t`Only me, with a PIN`}
-                    subtitle={t`The PIN becomes the encryption key`}
+                    title={
+                        <Text className="text-primary text-[17px]">
+                            <Trans>Only me, with a PIN</Trans>
+                        </Text>
+                    }
+                    subtitle={
+                        <Text className="text-secondary-foreground text-[13px] leading-[18px]">
+                            <Trans>The PIN becomes the encryption key</Trans>
+                        </Text>
+                    }
                     onPress={handlePinPress}
                 />
                 <GroupedListRow
                     testID={OnboardingKeySelector.PhoneLockOption}
                     left={<GroupedListIcon icon={UserIconNameEnum.Smartphone} />}
-                    title={t`Anyone who can unlock this phone`}
-                    subtitle={t`Add a PIN any time later`}
+                    title={
+                        <Text className="text-primary text-[17px]">
+                            <Trans>Anyone who can unlock this phone</Trans>
+                        </Text>
+                    }
+                    subtitle={
+                        <Text className="text-secondary-foreground text-[13px] leading-[18px]">
+                            <Trans>Add a PIN any time later</Trans>
+                        </Text>
+                    }
                     onPress={handlePhoneLockPress}
                 />
             </GroupedListSection>
@@ -77,7 +94,11 @@ export const OnboardingKey = () => {
                 <GroupedListRow
                     testID={OnboardingKeySelector.RestoreButton}
                     left={<GroupedListIcon icon={UserIconNameEnum.ArchiveRestore} />}
-                    title={t`I have a Budgie backup`}
+                    title={
+                        <Text className="text-primary text-[17px]">
+                            <Trans>I have a Budgie backup</Trans>
+                        </Text>
+                    }
                     right={restoreAccessory}
                     pressableProps={restorePressableProps}
                     onPress={selectAndRestore}

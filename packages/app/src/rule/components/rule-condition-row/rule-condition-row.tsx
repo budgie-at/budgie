@@ -4,6 +4,8 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { Text, View } from 'react-native';
 import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
+import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-chrome-font-size-multiplier.constant';
+import { useIsLargeTextSize } from '../../../@generic/hook/use-is-large-text-size.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { useRuleConditionValueField } from '../../hooks/use-rule-condition-value-field.hook';
 import { RuleConditionFieldSelector } from '../rule-condition-field-selector/rule-condition-field-selector';
@@ -30,15 +32,19 @@ const ROW_EXITING = FadeOut.duration(200);
 
 export const RuleConditionRow = ({ index, isExpanded, canRemove, onExpand, onRemove }: Props) => {
     const { t } = useLingui();
+    const isLargeText = useIsLargeTextSize();
     const { control } = useFormContext<RuleCreateInputInterface>();
     const matchType = useWatch({ control, name: 'conditionMatchType' });
     const { isMissing } = useRuleConditionValueField(index);
-    const isOpen = isExpanded || !canRemove || isMissing;
     const connectorLabel = matchType === RuleConditionMatchTypeEnum.ALL ? t`and` : t`or`;
     const position = index + 1;
     const hasConnector = index > 0;
     const canCollapse = isExpanded && canRemove && !isMissing;
     const classNames = {
+        connectorClassName: cn(
+            'rounded-full bg-surface-disc px-md py-xxs',
+            isLargeText ? 'ml-[24px] mt-sm mb-xs self-start' : 'absolute -top-[11px] left-[24px] z-10'
+        ),
         head: cn('flex-row', 'items-start', 'pl-3xl', hasConnector ? 'pt-md' : 'pt-xs', canRemove ? 'pr-md' : 'pr-3xl'),
         collapsed: cn('flex-row', 'items-center', 'pl-3xl', 'pr-md', hasConnector && 'pt-sm'),
         valueRow: cn('px-3xl', canRemove ? 'pb-[24px]' : 'pb-md')
@@ -59,19 +65,21 @@ export const RuleConditionRow = ({ index, isExpanded, canRemove, onExpand, onRem
             <View className="absolute top-0 right-0 left-[16px] h-hairline bg-surface-separator" pointerEvents="none" />
             {hasConnector ? (
                 <View
-                    className="absolute -top-[11px] left-[24px] z-10 rounded-full bg-surface-disc px-md py-xxs"
+                    className={classNames.connectorClassName}
                     style={CONTINUOUS_CORNERS}
                     accessibilityElementsHidden
                     importantForAccessibility="no-hide-descendants"
                 >
-                    <Text className="text-[13px] font-semibold text-primary">{connectorLabel}</Text>
+                    <Text className="text-[13px] font-semibold text-primary" maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER}>
+                        {connectorLabel}
+                    </Text>
                 </View>
             ) : null}
 
-            {isOpen ? (
+            {isExpanded || !canRemove || isMissing ? (
                 <Animated.View key="open" entering={CONTENT_ENTERING}>
                     <View className={classNames.head}>
-                        <View className="min-w-0 flex-1 flex-row flex-wrap items-center gap-x-sm">
+                        <View className="min-w-0 flex-1 flex-row flex-wrap items-center gap-x-sm gap-y-sm">
                             <RuleConditionFieldSelector index={index} testID={RuleConditionRowSelector.FieldSelector(index)} />
                             <RuleConditionOperatorSelector index={index} testID={RuleConditionRowSelector.OperatorSelector(index)} />
                         </View>

@@ -10,7 +10,7 @@ interface Props {
 export const BlogBreadcrumbLink = ({ href, position, children }: Props) => (
     <>
         <span itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
-            <Link className="hover:text-foreground transition-colors" href={href} itemProp="item">
+            <Link prefetch={false} className="hover:text-foreground transition-colors" href={href} itemProp="item">
                 <span itemProp="name">{children}</span>
             </Link>
             <meta content={String(position)} itemProp="position" />

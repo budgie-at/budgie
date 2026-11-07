@@ -16,7 +16,7 @@ export default function NotFound() {
     const detectedLang = isString(rawLang) && locales.includes(rawLang) ? rawLang : 'en';
 
     return (
-        <main className="flex-1 flex items-center justify-center py-20 md:py-32">
+        <main id="main-content" tabIndex={-1} className="flex-1 flex items-center focus:outline-none justify-center py-20 md:py-32">
             <div className="container text-center max-w-2xl px-4 md:px-6">
                 <p className="text-8xl font-bold text-primary mb-4">404</p>
 

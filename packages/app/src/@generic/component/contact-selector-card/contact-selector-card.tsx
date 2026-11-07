@@ -1,15 +1,18 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Image } from 'expo-image';
 import React from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, useWindowDimensions } from 'react-native';
 import { withUniwind } from 'uniwind';
 
 import { EmptyFn, emptyFn, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { CreateAccountScreenSelector } from '../../../account/component/create-account-screen/create-account-screen.selector';
+import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../../constant/max-chrome-font-size-multiplier.constant';
+import { useIsLargeTextSize } from '../../hook/use-is-large-text-size.hook';
 import { CircleIcon } from '../circle-icon/circle-icon';
+import { ContactSelectorDetail } from '../contact-selector-detail/contact-selector-detail';
+import { GroupedListRow } from '../grouped-list-row/grouped-list-row';
 import { Icon } from '../icon/icon';
-import { SelectorRow } from '../selector-row/selector-row';
 
 interface Props {
     readonly onSelect: EmptyFn;
@@ -20,6 +23,8 @@ interface Props {
     readonly phoneNumbers: string[];
 }
 
+const CHECK_SIZE = 22;
+
 const StyledImage = withUniwind(Image);
 
 const blurhash =
@@ -28,6 +33,11 @@ const placeholder = { blurhash };
 
 export const ContactSelectorCard = (props: Props) => {
     const { isSelected, onSelect, title, image, emails, phoneNumbers } = props;
+    const { fontScale } = useWindowDimensions();
+    const isLargeText = useIsLargeTextSize();
+    const checkSize = CHECK_SIZE * Math.min(fontScale, MAX_CHROME_FONT_SIZE_MULTIPLIER);
+    const checkStyle = { width: checkSize };
+    const pressableProps = { accessibilityState: { selected: isSelected } };
 
     const handleSelect = isSelected ? emptyFn : onSelect;
     const icon = isNotEmptyString(image) ? (
@@ -50,34 +60,46 @@ export const ContactSelectorCard = (props: Props) => {
         />
     );
 
-    const hasEmails = isNotEmptyArray(emails);
-    const hasPhoneNumbers = isNotEmptyArray(phoneNumbers);
+    const titleClassName = isSelected ? 'text-primary text-[17px] font-semibold' : 'text-primary text-[17px]';
+    const titleContent = (
+        <Text className={titleClassName} maxFontSizeMultiplier={2} numberOfLines={2} accessibilityLabel={title}>
+            {title}
+        </Text>
+    );
+    const leading = isLargeText ? null : <View className="h-[42px] justify-center">{icon}</View>;
+    const check = isSelected ? (
+        <Icon icon={UserIconNameEnum.Check} size={checkSize} className="text-positive-action" />
+    ) : (
+        <View style={checkStyle} />
+    );
+    const accessory = <View className="self-start pt-xxs">{check}</View>;
 
     const subtitle =
-        hasEmails || hasPhoneNumbers ? (
+        isNotEmptyArray(emails) || isNotEmptyArray(phoneNumbers) ? (
             <View className="gap-y-xxs">
                 {emails.map(email => (
-                    <View key={email} className="flex-row items-center gap-x-sm">
-                        <Icon icon={UserIconNameEnum.Mail} className="text-secondary-foreground" size={12} />
-                        <Text className="text-secondary-foreground text-[13px] leading-[18px]">{email}</Text>
-                    </View>
+                    <ContactSelectorDetail
+                        key={email}
+                        icon={UserIconNameEnum.Mail}
+                        value={email}
+                        numberOfLines={1}
+                        ellipsizeMode="middle"
+                    />
                 ))}
                 {phoneNumbers.map(phoneNumber => (
-                    <View key={phoneNumber} className="flex-row items-center gap-x-sm">
-                        <Icon icon={UserIconNameEnum.Phone} className="text-secondary-foreground" size={12} />
-                        <Text className="text-secondary-foreground text-[13px] leading-[18px]">{phoneNumber}</Text>
-                    </View>
+                    <ContactSelectorDetail key={phoneNumber} icon={UserIconNameEnum.Phone} value={phoneNumber} />
                 ))}
             </View>
         ) : null;
 
     return (
-        <SelectorRow
-            isSelected={isSelected}
+        <GroupedListRow
             onPress={handleSelect}
             testID={CreateAccountScreenSelector.ContactOption(title)}
-            left={icon}
-            title={title}
+            left={leading}
+            right={accessory}
+            pressableProps={pressableProps}
+            title={titleContent}
             subtitle={subtitle}
         />
     );

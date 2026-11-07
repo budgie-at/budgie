@@ -55,12 +55,5 @@ export const RecurringReminderChoices = ({ seriesId, reminderDaysBefore }: Props
         );
     };
 
-    return (
-        <SegmentedControl
-            segments={segments}
-            value={getRecurringReminderChoice(reminderDaysBefore)}
-            onChange={handleChange}
-            className="min-h-[44px]"
-        />
-    );
+    return <SegmentedControl segments={segments} value={getRecurringReminderChoice(reminderDaysBefore)} onChange={handleChange} />;
 };

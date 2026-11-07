@@ -37,7 +37,7 @@ export const buildPageMetadata = ({
             type: isArticle ? 'article' : 'website',
             url: `${BASE_URL}/${locale}${path}`,
             locale: OG_LOCALE_MAP[locale] ?? 'en_US',
-            ...(isDefined(author) && { publishedTime: publishedAt, authors: [author] })
+            ...(isDefined(author) && { publishedTime: publishedAt, modifiedTime: updatedAt, authors: [author] })
         },
         twitter: {
             card: 'summary_large_image',
@@ -46,7 +46,8 @@ export const buildPageMetadata = ({
             site: '@budgie_at',
             creator: '@budgie_at'
         },
-        ...(isDefined(updatedAt) &&
+        ...(!isArticle &&
+            isDefined(updatedAt) &&
             isDefined(publishedAt) && { other: { 'article:published_time': publishedAt, 'article:modified_time': updatedAt } })
     };
 };

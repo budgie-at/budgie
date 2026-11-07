@@ -6,6 +6,7 @@ import { Text, View } from 'react-native';
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { HeroFigure } from '../../../@generic/component/hero-figure/hero-figure';
+import { useIsLargeTextSize } from '../../../@generic/hook/use-is-large-text-size.hook';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetBreakdownRow } from '../budget-breakdown-row/budget-breakdown-row';
@@ -20,6 +21,7 @@ interface Props {
 export const BudgetSafeToSpendSummary = ({ projection, currencySymbol }: Props) => {
     const { t } = useLingui();
     const formatProtectedAmount = useProtectedAmountLabel();
+    const isLargeText = useIsLargeTextSize();
     const { overall, daysLeft } = projection;
     const formatAmount = (amount: number) => formatProtectedAmount(convertFromMicroUnits(amount), currencySymbol);
     const freeAmount = formatAmount(Math.max(overall.free, 0));
@@ -34,13 +36,16 @@ export const BudgetSafeToSpendSummary = ({ projection, currencySymbol }: Props) 
         <BudgetBreakdownRow label={t`Upcoming this period`} amount={`−${formatAmount(overall.upcoming)}`} />
     ) : null;
 
-    return (
-        <View className="gap-y-md">
+    const breakdown = (
+        <>
             <BudgetBreakdownRow label={t`Limit`} amount={formatAmount(overall.limit)} />
             {spentRow}
             {upcomingRow}
             {reservedRow}
-            <View className="h-hairline bg-secondary-corner" />
+        </>
+    );
+    const answer = (
+        <>
             <Text className="text-sm tabular-nums text-secondary-foreground">{t`${freeAmount} ÷ ${daysLabel}`}</Text>
             <HeroFigure
                 amount={convertFromMicroUnits(overall.safePerDay)}
@@ -49,6 +54,16 @@ export const BudgetSafeToSpendSummary = ({ projection, currencySymbol }: Props) 
                 unit={t`/ day`}
                 testID={BudgetSelector.SafeToSpendPerDay}
             />
+        </>
+    );
+    const first = isLargeText ? answer : breakdown;
+    const last = isLargeText ? breakdown : answer;
+
+    return (
+        <View className="gap-y-md">
+            {first}
+            <View className="h-hairline bg-secondary-corner" />
+            {last}
         </View>
     );
 };

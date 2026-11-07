@@ -9,12 +9,13 @@ interface Props {
     readonly index: number;
     readonly currencySymbol: string;
     readonly canDelete: boolean;
+    readonly disabled: boolean;
     readonly onAmountChange: (id: string, amount: number) => void;
     readonly onCategoryPress: (id: string, categoryId: number | null) => void;
     readonly onDelete: (id: string) => void;
 }
 
-export const VoiceReviewItem = ({ row, index, currencySymbol, canDelete, onAmountChange, onCategoryPress, onDelete }: Props) => {
+export const VoiceReviewItem = ({ row, index, currencySymbol, canDelete, disabled, onAmountChange, onCategoryPress, onDelete }: Props) => {
     const handleAmountChange = (amount: number) => void onAmountChange(row.id, amount);
     const handleCategoryPress = () => void onCategoryPress(row.id, row.categoryId);
     const handleDelete = () => void onDelete(row.id);
@@ -26,10 +27,13 @@ export const VoiceReviewItem = ({ row, index, currencySymbol, canDelete, onAmoun
                 entry={row}
                 currencySymbol={currencySymbol}
                 autoFocus={false}
+                disabled={disabled}
                 onAmountChange={handleAmountChange}
                 onCategoryPress={handleCategoryPress}
             >
-                {canDelete ? <SplitEntryDeleteButton index={index} categoryId={row.categoryId} onPress={handleDelete} /> : null}
+                {canDelete ? (
+                    <SplitEntryDeleteButton index={index} categoryId={row.categoryId} onPress={handleDelete} disabled={disabled} />
+                ) : null}
             </SplitEntryRow>
         </View>
     );

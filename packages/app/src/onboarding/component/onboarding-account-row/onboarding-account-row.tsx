@@ -1,5 +1,5 @@
 import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
@@ -38,7 +38,11 @@ export const OnboardingAccountRow = ({ option, isSelected, isLocked, onToggle, t
             accessibilityState={accessibilityState}
             className="active:opacity-70"
         >
-            <GroupedListRow left={<GroupedListIcon icon={option.icon} />} title={option.title} right={indicator} />
+            <GroupedListRow
+                left={<GroupedListIcon icon={option.icon} />}
+                title={<Text className="text-primary text-[17px]">{option.title}</Text>}
+                right={indicator}
+            />
         </HapticPressable>
     );
 };

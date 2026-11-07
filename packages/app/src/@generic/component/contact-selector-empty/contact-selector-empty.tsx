@@ -1,6 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
+import { ContactSelectorDenied } from '../contact-selector-denied/contact-selector-denied';
 import { ContactSelectorSettingsButton } from '../contact-selector-settings-button/contact-selector-settings-button';
 import { ContactSelectorState } from '../contact-selector-state/contact-selector-state';
 
@@ -40,16 +41,7 @@ export const ContactSelectorEmpty = (props: Props) => {
         );
     }
     if (isDenied) {
-        return (
-            <ContactSelectorState
-                isLoading={isLoading}
-                title={t`Contacts access is off`}
-                description={t`Allow contacts access in Settings.`}
-                icon={UserIconNameEnum.Lock}
-            >
-                <ContactSelectorSettingsButton />
-            </ContactSelectorState>
-        );
+        return <ContactSelectorDenied isLoading={isLoading} />;
     }
     if (isSearching) {
         return (

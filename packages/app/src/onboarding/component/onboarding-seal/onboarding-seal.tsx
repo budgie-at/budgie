@@ -97,7 +97,6 @@ export const OnboardingSeal = () => {
                     <OnboardingHoldToSealButton
                         testID={OnboardingSealSelector.HoldButton}
                         label={t`Hold to seal with this PIN`}
-                        confirmMessage={noResetSentence}
                         isDisabled={isSealing}
                         onComplete={handleSeal}
                     />

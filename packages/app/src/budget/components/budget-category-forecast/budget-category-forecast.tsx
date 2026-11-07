@@ -5,6 +5,7 @@ import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useIsLargeTextSize } from '../../../@generic/hook/use-is-large-text-size.hook';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
@@ -22,6 +23,7 @@ export const BudgetCategoryForecast = ({ scope, currencySymbol }: Props) => {
     const { t } = useLingui();
     const { formatMonthAndDay } = useFormatDate();
     const formatProtectedAmount = useProtectedAmountLabel();
+    const noteLineCount = useIsLargeTextSize() ? 2 : 1;
 
     const overAmount = formatProtectedAmount(
         convertFromMicroUnits(Math.max(scope.projectedOver ?? 0, scope.spent - scope.limit)),
@@ -40,7 +42,12 @@ export const BudgetCategoryForecast = ({ scope, currencySymbol }: Props) => {
     }
 
     return (
-        <Text className={cn('text-xs tabular-nums', BUDGET_PACE_TEXT_CLASS_NAME[BUDGET_PACE_VARIANT[scope.status]])} numberOfLines={1}>
+        <Text
+            className={cn('text-xs tabular-nums', BUDGET_PACE_TEXT_CLASS_NAME[BUDGET_PACE_VARIANT[scope.status]])}
+            numberOfLines={noteLineCount}
+            adjustsFontSizeToFit
+            minimumFontScale={0.6}
+        >
             {note}
         </Text>
     );

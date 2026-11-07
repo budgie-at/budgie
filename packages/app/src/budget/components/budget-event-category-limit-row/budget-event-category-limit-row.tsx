@@ -26,7 +26,6 @@ export const BudgetEventCategoryLimitRow = ({ currencySymbol, index, onRemove }:
                     name={`categoryLimits.${index}.limitAmount`}
                     testID={BudgetSelector.EventCategoryLimitAmountInput(index)}
                     currencySymbol={currencySymbol}
-                    className="min-w-[104px] max-w-[136px] text-right"
                 />
             }
             onRemove={onRemove}

@@ -1,9 +1,11 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../../constant/max-chrome-font-size-multiplier.constant';
+import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../constant/title-max-font-size-multiplier.constant';
 import { Button } from '../button/button';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { ContactSelectorSelector } from '../contact-selector/contact-selector.selector';
@@ -41,15 +43,31 @@ export const ContactSelectorState = ({ isLoading, title, description, icon, onRe
                 </LoadingContent>
             </View>
             <View className="gap-y-md self-stretch">
-                <Text accessibilityRole="header" className="text-primary text-center text-lg font-semibold leading-[24px]">
+                <Text
+                    accessibilityRole="header"
+                    maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
+                    className="text-primary text-center text-lg font-semibold leading-[24px]"
+                >
                     {title}
                 </Text>
-                <Text className="text-secondary-foreground text-center text-sm leading-[20px]">{description}</Text>
+                <LoadingContent isLoading={isLoading} loadingIndicator={null}>
+                    <Text
+                        maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
+                        className="text-secondary-foreground text-center text-sm leading-[20px]"
+                    >
+                        {description}
+                    </Text>
+                </LoadingContent>
             </View>
             {children}
             {isDefined(onRetry) ? (
                 <Button
-                    content={t`Try again`}
+                    accessibilityLabel={t`Try again`}
+                    content={
+                        <Text maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER} className="text-[17px] font-semibold text-center">
+                            <Trans>Try again</Trans>
+                        </Text>
+                    }
                     onPress={onRetry}
                     isLoading={isLoading}
                     variant="cta"

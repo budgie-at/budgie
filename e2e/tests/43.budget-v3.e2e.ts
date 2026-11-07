@@ -112,3 +112,20 @@ test('43 budget v3', { tags: ['budget'] }, async ({ budgie }) => {
         await screen.scrollUntilVisible(row, { direction: 'down', timeout: 20_000 });
     });
 });
+
+test('43 missing event budget stays recoverable', { tags: ['budget'] }, async ({ budgie }) => {
+    const ctx = budgie.ctx;
+    await budgie.start({ fixture: 'budget-base.db', wait: 'tabbar' });
+
+    await b.openLink(ctx, 'budgie://budget/event/2147483647');
+    await b.expectText(ctx, 'Budget unavailable');
+    await b.expectText(ctx, 'Your transactions are not affected.');
+    await b.tapId(ctx, 'PageHeader.BackButton');
+    await b.expectId(ctx, 'TabBar.Home');
+
+    await b.openLink(ctx, 'budgie://budget/event/2147483647/edit');
+    await b.expectText(ctx, 'Budget unavailable');
+    await b.expectNoId(ctx, 'BudgetEvent.SaveButton');
+    await b.tapId(ctx, 'PageHeader.BackButton');
+    await b.expectId(ctx, 'TabBar.Home');
+});

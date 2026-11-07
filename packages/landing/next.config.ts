@@ -49,7 +49,8 @@ const nextConfig: NextConfig = {
                     destination: `/:lang${destination}`,
                     permanent: true
                 }))
-            );
+            )
+            .concat([{ source: '/llms-full.txt', destination: '/llms.txt', permanent: true }]);
     },
     async headers() {
         return [

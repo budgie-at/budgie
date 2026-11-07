@@ -1,7 +1,7 @@
 /* oxlint-disable lingui/no-unlocalized-strings -- schema.org keys, not user-facing copy */
 import { isDefined } from '@rnw-community/shared';
 
-import { BASE_URL, OG_LOCALE_MAP } from '../../constant/seo.constant';
+import { BASE_URL, WEBSITE_ID } from '../../constant/seo.constant';
 import { JsonLd } from '../json-ld/json-ld';
 
 interface Props {
@@ -16,17 +16,17 @@ interface Props {
 
 export const WebPageJsonLd = ({ description, featureName, locale, path, publishedAt, title, updatedAt }: Props) => {
     const url = `${BASE_URL}/${locale}${path}`;
-    const languageTag = OG_LOCALE_MAP[locale].replace('_', '-');
     const data = {
         '@context': 'https://schema.org',
+        '@id': `${url}#webpage`,
         '@type': 'WebPage',
         name: title,
         description,
         url,
         datePublished: publishedAt,
         dateModified: updatedAt,
-        inLanguage: languageTag,
-        isPartOf: { '@type': 'WebSite', name: 'Budgie', url: BASE_URL },
+        inLanguage: locale,
+        isPartOf: { '@id': WEBSITE_ID },
         breadcrumb: { '@id': `${url}#breadcrumb` },
         ...(isDefined(featureName) && {
             mainEntity: {

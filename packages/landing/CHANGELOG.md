@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.167.6](https://github.com/budgie-at/budgie/compare/v6.167.5...v6.167.6) (2026-11-07)
+
+### Performance Improvements
+
+* **landing:** council round 1 for mobile LCP, client JS and GEO ([#2029](https://github.com/budgie-at/budgie/issues/2029)) ([53499b0](https://github.com/budgie-at/budgie/commit/53499b01ce7d6dd877141254445faccf0a5b9ffb)), closes [#2025](https://github.com/budgie-at/budgie/issues/2025) [#2027](https://github.com/budgie-at/budgie/issues/2027)
+
+
 ## [6.167.3](https://github.com/budgie-at/budgie/compare/v6.167.2...v6.167.3) (2026-11-07)
 
 ### Performance Improvements

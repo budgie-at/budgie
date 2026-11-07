@@ -2591,7 +2591,7 @@ msgstr "All articles"
 msgid "All Budgie Features"
 msgstr "All Budgie Features"
 
-#: src/app/[lang]/features/page.tsx
+#: src/app/[lang]/features/hub-metadata.ts
 msgid "All Budgie Features — Offline-First Expense Tracker"
 msgstr "All Budgie Features — Offline-First Expense Tracker"
 
@@ -3060,7 +3060,7 @@ msgstr "Are there unresolved issues that concern you?"
 msgid "Are user concerns addressed respectfully and thoroughly?"
 msgstr "Are user concerns addressed respectfully and thoroughly?"
 
-#: src/app/[lang]/blog/page.tsx
+#: src/app/[lang]/blog/metadata.ts
 msgid "Articles about financial privacy, security best practices, offline-first architecture, and tips for better expense tracking."
 msgstr "Articles about financial privacy, security best practices, offline-first architecture, and tips for better expense tracking."
 
@@ -3603,9 +3603,6 @@ msgid "Best YNAB Alternatives for Privacy-Conscious Users"
 msgstr "Best YNAB Alternatives for Privacy-Conscious Users"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/opengraph-image.tsx
-msgid "Best YNAB Alternatives for Privacy-Conscious Users (2025)"
-msgstr "Best YNAB Alternatives for Privacy-Conscious Users (2025)"
-
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Best YNAB Alternatives for Privacy-Conscious Users (2026)"
 msgstr "Best YNAB Alternatives for Privacy-Conscious Users (2026)"
@@ -3855,6 +3852,12 @@ msgstr "Both. Same flow as categories — rename is non-destructive; merge mass-
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Bound by their privacy policy"
 msgstr "Bound by their privacy policy"
+
+#: src/blog/component/blog-breadcrumbs/blog-breadcrumbs.tsx
+#: src/feature/component/feature-breadcrumbs/feature-breadcrumbs.tsx
+#: src/feature/component/pillar-hub-breadcrumbs/pillar-hub-breadcrumbs.tsx
+msgid "Breadcrumb"
+msgstr "Breadcrumb"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Breaking security changes are clearly communicated"
@@ -8001,7 +8004,7 @@ msgstr "Every AI correction improves future suggestions via on-device learning"
 msgid "Every bank sync or statement import brings in dozens of transactions, and the same shops keep coming back under slightly different descriptions: a reference number here, a card number or a date there. Categorizing them one row at a time is the chore that makes people give up on a budget."
 msgstr "Every bank sync or statement import brings in dozens of transactions, and the same shops keep coming back under slightly different descriptions: a reference number here, a card number or a date there. Categorizing them one row at a time is the chore that makes people give up on a budget."
 
-#: src/app/[lang]/features/page.tsx
+#: src/app/[lang]/features/hub-metadata.ts
 msgid "Every Budgie feature in one place: bank sync, on-device AI, voice entry, multi-currency, recurring detection, and encrypted iCloud sync and backups — all offline-first."
 msgstr "Every Budgie feature in one place: bank sync, on-device AI, voice entry, multi-currency, recurring detection, and encrypted iCloud sync and backups — all offline-first."
 
@@ -8602,6 +8605,7 @@ msgstr "Financial losses or decisions made based on the Service"
 msgid "Financial management is inherently personal. Unlike collaborative documents or team projects, most people do not need to share their expense tracking with others in real-time. The personal-first optimization of local-first is a feature, not a limitation."
 msgstr "Financial management is inherently personal. Unlike collaborative documents or team projects, most people do not need to share their expense tracking with others in real-time. The personal-first optimization of local-first is a feature, not a limitation."
 
+#: src/app/[lang]/blog/metadata.ts
 #: src/app/[lang]/blog/opengraph-image.tsx
 #: src/app/[lang]/blog/page.tsx
 msgid "Financial Privacy Blog & Insights"
@@ -10966,6 +10970,10 @@ msgstr "Lunch Money appeals to developers and technically-minded users who appre
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Lunch Money: Developer-Friendly Budgeting"
 msgstr "Lunch Money: Developer-Friendly Budgeting"
+
+#: src/generic/component/header/header.tsx
+msgid "Main"
+msgstr "Main"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Maintain and promptly update your account information"
@@ -14682,6 +14690,10 @@ msgstr "Public source means our privacy claims are verifiable. Any developer can
 msgid "Public source thrives on community participation. If you want to contribute to Budgie, there are many ways to get involved:"
 msgstr "Public source thrives on community participation. If you want to contribute to Budgie, there are many ways to get involved:"
 
+#: src/generic/component/updated-date/updated-date.tsx
+msgid "Published <0>{formattedPublishedDate}</0>"
+msgstr "Published <0>{formattedPublishedDate}</0>"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Published audit reports from recognized security firms"
 msgstr "Published audit reports from recognized security firms"
@@ -16131,6 +16143,10 @@ msgstr "Six monthly bars on that view show what you usually spend at the same pl
 msgid "sizes for net worth and budget"
 msgstr "sizes for net worth and budget"
 
+#: src/app/[lang]/layout.tsx
+msgid "Skip to content"
+msgstr "Skip to content"
+
 #: src/app/[lang]/features/runway/page.tsx
 msgid "Small costs fold into Other"
 msgstr "Small costs fold into Other"
@@ -17221,8 +17237,8 @@ msgid "Targets and return dates"
 msgstr "Targets and return dates"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/metadata.ts
-msgid "Technical analysis of privacy risks in cloud budgeting apps: Plaid data sharing, real data breaches, screen-scraping dangers, and how to evaluate financial app security."
-msgstr "Technical analysis of privacy risks in cloud budgeting apps: Plaid data sharing, real data breaches, screen-scraping dangers, and how to evaluate financial app security."
+msgid "Technical analysis of privacy risks in cloud budgeting apps: bank-data aggregator sharing, real data breaches, screen-scraping dangers, and how to evaluate financial app security."
+msgstr "Technical analysis of privacy risks in cloud budgeting apps: bank-data aggregator sharing, real data breaches, screen-scraping dangers, and how to evaluate financial app security."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Technical Foundations: CRDTs and Sync Engines"
@@ -19366,6 +19382,10 @@ msgstr "Up to eight actions, no form"
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "Upcoming charges"
 msgstr "Upcoming charges"
+
+#: src/generic/component/updated-date/updated-date.tsx
+msgid "Updated <0>{formattedDate}</0>"
+msgstr "Updated <0>{formattedDate}</0>"
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Use Add item to add another row; the label under the rows shows how much is still left to assign."

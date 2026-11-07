@@ -43,6 +43,7 @@ export default async function OpenSourcePillarHubPage(props: PageLangParam) {
                             financial app should have nothing to hide.
                         </Trans>
                     }
+                    updatedAt={OPEN_SOURCE_PILLAR_HUB_METADATA.updatedAt}
                 >
                     <PillarHubHeroBulletList>
                         <PillarHubHeroBulletItem>

@@ -19,7 +19,7 @@ export const RecurringPaneToolbar = ({ viewMode, onChangeViewMode }: Props) => {
 
     return (
         <View className="pt-xs pb-lg">
-            <SegmentedControl className="min-h-[44px]" segments={segments} value={viewMode} onChange={onChangeViewMode} />
+            <SegmentedControl segments={segments} value={viewMode} onChange={onChangeViewMode} />
         </View>
     );
 };

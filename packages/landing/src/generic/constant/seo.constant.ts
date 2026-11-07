@@ -1,6 +1,8 @@
 import { SUPPORTED_LOCALES } from '../../i18n/supported-locales.constant.mjs';
 
 export const BASE_URL = 'https://budgie.at';
+export const ORGANIZATION_ID = `${BASE_URL}/#organization`;
+export const WEBSITE_ID = `${BASE_URL}/#website`;
 // oxlint-disable-next-line lingui/no-unlocalized-strings
 export const TITLE_TEMPLATE_SUFFIX = ' | Budgie';
 

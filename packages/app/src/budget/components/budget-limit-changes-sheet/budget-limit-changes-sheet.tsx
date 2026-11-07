@@ -1,7 +1,7 @@
 import { BudgetService } from '@budgie/budget';
 import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { ScrollView, Text, View } from 'react-native';
+import { Text } from 'react-native';
 
 import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
@@ -15,6 +15,7 @@ import { BudgetSelector } from '../../budget.selector';
 import { useGetBudgetLimitChangesQuery } from '../../query/use-get-budget-limit-changes.query';
 import { BudgetAutoTuneSwitchRow } from '../budget-auto-tune-switch-row/budget-auto-tune-switch-row';
 import { BudgetLimitChangeRow } from '../budget-limit-change-row/budget-limit-change-row';
+import { BudgetScrollableSheet } from '../budget-scrollable-sheet/budget-scrollable-sheet';
 import { BudgetSheetState } from '../budget-sheet-state/budget-sheet-state';
 
 import type { BudgetEntityInterface } from '@budgie/contracts';
@@ -48,26 +49,24 @@ export const BudgetLimitChangesSheet = ({ budget }: Props) => {
     }
 
     return (
-        <View className="bg-sheet-surface" collapsable={false} testID={BudgetSelector.LimitChangesSheet}>
+        <BudgetScrollableSheet testID={BudgetSelector.LimitChangesSheet}>
             <FormsheetHeader size="md" title={t`Limit changes`} />
-            <ScrollView contentContainerClassName="px-5xl pt-md gap-y-3xl pb-3xl" showsVerticalScrollIndicator={false}>
-                <LoadingContent isLoading={isLoading} className="gap-y-3xl">
-                    {isEmptyArray(limitChanges) ? (
-                        emptyHint
-                    ) : (
-                        <GroupedListSection>
-                            {limitChanges.map(change => (
-                                <BudgetLimitChangeRow key={change.id} change={change} currencySymbol={currencySymbol} />
-                            ))}
-                        </GroupedListSection>
-                    )}
-                    <BudgetAutoTuneSwitchRow
-                        value={budget.isAutoTuneEnabled}
-                        onValueChange={handleAutoTuneChange}
-                        testID={BudgetSelector.LimitChangesAutoTuneSwitch}
-                    />
-                </LoadingContent>
-            </ScrollView>
-        </View>
+            <LoadingContent isLoading={isLoading} className="gap-y-3xl" containerClassName="px-5xl pt-md pb-3xl">
+                {isEmptyArray(limitChanges) ? (
+                    emptyHint
+                ) : (
+                    <GroupedListSection>
+                        {limitChanges.map(change => (
+                            <BudgetLimitChangeRow key={change.id} change={change} currencySymbol={currencySymbol} />
+                        ))}
+                    </GroupedListSection>
+                )}
+                <BudgetAutoTuneSwitchRow
+                    value={budget.isAutoTuneEnabled}
+                    onValueChange={handleAutoTuneChange}
+                    testID={BudgetSelector.LimitChangesAutoTuneSwitch}
+                />
+            </LoadingContent>
+        </BudgetScrollableSheet>
     );
 };

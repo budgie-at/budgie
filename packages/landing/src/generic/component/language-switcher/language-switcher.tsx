@@ -1,64 +1,37 @@
 'use client';
 
-import { Trans, useLingui } from '@lingui/react/macro';
-import { useParams, usePathname, useRouter } from 'next/navigation';
-import { Check, Language } from 'reicon-react';
+import { Trans } from '@lingui/react/macro';
+import { useParams, usePathname } from 'next/navigation';
+import { Language } from 'reicon-react';
 
 import { SUPPORTED_LOCALES as locales } from '../../../i18n/supported-locales.constant.mjs';
-import { Button } from '../../../ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../../../ui/dropdown-menu/dropdown-menu';
-
-const LANGUAGE_NAMES: Record<string, string> = {
-    // oxlint-disable-next-line lingui/no-unlocalized-strings
-    en: 'English',
-    uk: 'Українська',
-    // oxlint-disable-next-line lingui/no-unlocalized-strings
-    fr: 'Français',
-    // oxlint-disable-next-line lingui/no-unlocalized-strings
-    de: 'Deutsch',
-    // oxlint-disable-next-line lingui/no-unlocalized-strings
-    es: 'Español'
-};
+import { LanguageSwitcherItem } from '../language-switcher-item/language-switcher-item';
 
 export const LanguageSwitcher = () => {
-    const router = useRouter();
     const pathname = usePathname();
-    const params = useParams<{ lang: string }>();
-    const { i18n } = useLingui();
-
-    // Determine current locale: prioritize URL param, fallback to i18n state, then config default
-    const currentLocale = params.lang || i18n.locale || locales[0] || 'en';
-
-    const handleLanguageChange = (newLocale: string) => (): void => {
-        // Replace the current locale in the pathname with the new one
-        const segments = pathname.split('/');
-        segments[1] = newLocale;
-        const newPath = segments.join('/');
-
-        router.push(newPath);
-    };
+    const { lang } = useParams<{ lang: string }>();
+    const segments = pathname.split('/');
 
     return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button className="rounded-full" size="icon" variant="ghost">
-                    <Language className="size-[18px]" />
+        <details key={pathname} className="relative">
+            <summary className="flex size-10 cursor-pointer list-none items-center justify-center rounded-full transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring [&::-webkit-details-marker]:hidden">
+                <Language className="size-[18px]" />
 
-                    <span className="sr-only">
-                        <Trans>Switch language</Trans>
-                    </span>
-                </Button>
-            </DropdownMenuTrigger>
+                <span className="sr-only">
+                    <Trans>Switch language</Trans>
+                </span>
+            </summary>
 
-            <DropdownMenuContent align="end">
+            <ul className="absolute right-0 z-50 mt-2 min-w-36 rounded-md border bg-popover p-1 text-popover-foreground shadow-md">
                 {locales.map(locale => (
-                    <DropdownMenuItem key={locale} className="cursor-pointer" onClick={handleLanguageChange(locale)}>
-                        <span className="flex-1">{LANGUAGE_NAMES[locale] || locale}</span>
-
-                        {currentLocale === locale ? <Check className="size-4" /> : null}
-                    </DropdownMenuItem>
+                    <LanguageSwitcherItem
+                        key={locale}
+                        href={[segments[0], locale, ...segments.slice(2)].join('/')}
+                        isCurrent={locale === lang}
+                        locale={locale}
+                    />
                 ))}
-            </DropdownMenuContent>
-        </DropdownMenu>
+            </ul>
+        </details>
     );
 };

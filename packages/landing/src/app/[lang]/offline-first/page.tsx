@@ -41,6 +41,7 @@ export default async function OfflineFirstPillarHubPage(props: PageLangParam) {
                         anywhere.
                     </Trans>
                 }
+                updatedAt={OFFLINE_FIRST_PILLAR_HUB_METADATA.updatedAt}
             >
                 <PillarHubHeroBulletList>
                     <PillarHubHeroBulletItem>

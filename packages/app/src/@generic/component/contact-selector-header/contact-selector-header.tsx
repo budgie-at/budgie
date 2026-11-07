@@ -1,6 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
+import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../../constant/max-chrome-font-size-multiplier.constant';
 import { openAppSettings } from '../../utils/open-app-settings.util';
 import { Button } from '../button/button';
 import { ContactSelectorSelector } from '../contact-selector/contact-selector.selector';
@@ -21,7 +22,7 @@ export const ContactSelectorHeader = ({ search, onSearchChange, isLimited, canSe
 
     return (
         <View>
-            <View collapsable={false} className="px-3xl pb-md pt-7xl bg-surface">
+            <View collapsable={false} className="px-3xl pb-md pt-safe-or-[24px] bg-sheet-surface">
                 <View className="pb-[14px]">
                     <SheetTitleRow title={t`Contacts`} />
                 </View>
@@ -42,7 +43,12 @@ export const ContactSelectorHeader = ({ search, onSearchChange, isLimited, canSe
             {isLimited ? (
                 <View className="px-3xl pb-md">
                     <Button
-                        content={t`Limited access · Manage in Settings`}
+                        accessibilityLabel={t`Limited access · Manage in Settings`}
+                        content={
+                            <Text maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER} className="text-center">
+                                {t`Limited access · Manage in Settings`}
+                            </Text>
+                        }
                         onPress={openAppSettings}
                         variant="ghost"
                         className="min-h-[44px]"
