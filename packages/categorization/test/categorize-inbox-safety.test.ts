@@ -1,6 +1,7 @@
 import { categorizeInboxEngineService, CategorizeInboxLabelKindEnum, CategorizeInboxSectionEnum } from '@budgie/categorization';
 import { TransactionTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
 import type { CategorizeInboxRowInterface, LabelEvidenceRowInterface } from '@budgie/categorization';
 
@@ -38,6 +39,20 @@ describe('categorization/inbox-safety', () => {
     it.each(['4829', '6010', '6011', '6012', '6051', '6538', '6540', '5999', '8999', '7299', '7399'])('rejects catch-all MCC %s', mcc => {
         expect(clusters([{ ...row, mcc }])[0].candidateLabelIds).toEqual([]);
     });
+    it.effect('preserves recent keys and prefixes only older keys', () =>
+        Effect.sync(() => {
+            expect(clusters([row])[0].key).toBe('EXPENSE|example merchant|5411|');
+            expect(clusters([{ ...row, operatedAt: new Date('2024-01-01') }])[0].key).toBe('OLDER|EXPENSE|example merchant|5411|');
+        })
+    );
+    it.effect('falls back to strong MCC evidence after weak brand evidence', () =>
+        Effect.sync(() => {
+            expect(
+                clusters([row], [{ ...evidence, title: 'Example Cafe', mccCategoryId: 2, labelId: 8, count: 2 }, evidence])[0]
+                    .candidateLabelIds
+            ).toEqual([7]);
+        })
+    );
     it('requires three supporting decisions and a clear fallback majority', () => {
         expect(clusters([row], [{ ...evidence, count: 2 }])[0].candidateLabelIds).toEqual([]);
         expect(clusters([row], [evidence, { ...evidence, labelId: 8, count: 2 }])[0].candidateLabelIds).toEqual([]);
@@ -47,14 +62,20 @@ describe('categorization/inbox-safety', () => {
         expect(clusters([row], [{ ...evidence, title: 'Example Cafe', count: 2 }])[0].candidateLabelIds).toEqual([]);
         expect(clusters([row], [{ ...evidence, title: 'Example Cafe' }])[0].candidateLabelIds).toEqual([7]);
     });
-    it.each(['Переказ на картку', 'На картку', 'Card transfer', 'Überweisung', 'Virement', 'Transferencia'])(
-        'never trusts generic transfer title %s',
-        title => {
-            const [cluster] = clusters([{ ...row, title }], [{ ...evidence, title }]);
-            expect(cluster.section).not.toBe(CategorizeInboxSectionEnum.CONFIDENT);
-            expect(cluster.candidateLabelIds).toEqual([]);
-        }
-    );
+    it.each([
+        'Переказ на картку *1234',
+        'Transfer to card 4149****1234',
+        'Переказ на картку',
+        'На картку',
+        'Card transfer',
+        'Überweisung',
+        'Virement',
+        'Transferencia'
+    ])('never trusts generic transfer title %s', title => {
+        const [cluster] = clusters([{ ...row, title }], [{ ...evidence, title }]);
+        expect(cluster.section).not.toBe(CategorizeInboxSectionEnum.CONFIDENT);
+        expect(cluster.candidateLabelIds).toEqual([]);
+    });
     it('preserves merchant history and separates counterparties by IBAN', () => {
         expect(clusters([row], [{ ...evidence, title: row.title }])[0].section).toBe(CategorizeInboxSectionEnum.CONFIDENT);
         expect(

@@ -2,7 +2,6 @@ import {
     ATM_CASH_WITHDRAWAL_MCC,
     ATM_CASH_WITHDRAWAL_TITLE_PREFIXES,
     LanguageEnum,
-    NON_DESCRIPTIVE_MCC,
     PRECISION,
     REFUND_TITLE_PREFIXES,
     TransactionTypeEnum
@@ -23,6 +22,20 @@ import type { LabelEvidenceRowInterface } from '../interface/label-evidence-row.
 import type { CategorizeInboxListItemType } from '../type/categorize-inbox-list-item.type';
 
 class CategorizeInboxEngineService {
+    private static readonly NON_DESCRIPTIVE_MCC: ReadonlySet<string> = new Set([
+        '4829',
+        '6010',
+        '6011',
+        '6012',
+        '6051',
+        '6538',
+        '6540',
+        '5999',
+        '8999',
+        '7299',
+        '7399'
+    ]);
+
     private static readonly LIMITS = {
         chipCount: 2,
         fallbackCount: 3,
@@ -120,13 +133,10 @@ class CategorizeInboxEngineService {
         const cutoff = new Date(now);
         cutoff.setUTCFullYear(cutoff.getUTCFullYear() - 1);
         const uniqueRows = [...new Map(rows.map(row => [row.transactionId, row])).values()];
-        const clusterGroups = this.groupBy(
-            uniqueRows,
-            row => `${row.operatedAt < cutoff ? CategorizeInboxSectionEnum.OLDER : ''}|${this.clusterKey(row)}`
-        );
+        const clusterGroups = this.groupBy(uniqueRows, row => this.clusterKey(row, cutoff));
 
         return [...clusterGroups]
-            .map(([key, groupRows]) => this.buildCluster(key, groupRows, context, cutoff))
+            .map(([key, groupRows]) => this.buildCluster(key, groupRows, context))
             .sort((left, right) => this.compareClusters(left, right));
     }
 
@@ -163,8 +173,7 @@ class CategorizeInboxEngineService {
     private buildCluster(
         key: string,
         rows: CategorizeInboxRowInterface[],
-        context: CategorizeInboxBuildContextInterface,
-        cutoff: Date
+        context: CategorizeInboxBuildContextInterface
     ): CategorizeInboxClusterInterface {
         const { candidateLabelIds, isConfident } = this.scoreRows(rows, context);
         const mostFrequentTitle = this.mostFrequent(rows.map(row => row.title));
@@ -176,13 +185,17 @@ class CategorizeInboxEngineService {
             totalBaseAmount: this.sumBaseAmounts(rows, context.defaultInstrumentId),
             candidateLabelIds,
             ruleConditionValue: mostFrequentTitle,
-            section: rows[0].operatedAt < cutoff ? CategorizeInboxSectionEnum.OLDER : this.resolveSection(isConfident, rows)
+            section: this.resolveSection(key, isConfident, rows)
         };
     }
 
-    private clusterKey(row: CategorizeInboxRowInterface): string {
-        const normalizedTitle = row.title.trim().replaceAll(/\s+/gu, ' ').toLowerCase();
+    private clusterKey(row: CategorizeInboxRowInterface, cutoff: Date): string {
+        const normalizedTitle = this.normalizeTitle(row.title);
         const exactKey = `${row.type}|${normalizedTitle}|${row.mcc ?? ''}|${row.toIban ?? ''}`;
+
+        if (row.operatedAt < cutoff) {
+            return `${CategorizeInboxSectionEnum.OLDER}|${exactKey}`;
+        }
 
         return this.isCashWithdrawal(row) ? `${CategorizeInboxSectionEnum.CASH_WITHDRAWALS}|${exactKey}` : exactKey;
     }
@@ -287,9 +300,7 @@ class CategorizeInboxEngineService {
         const [{ type }] = rows;
 
         if (
-            rows.some(row =>
-                CategorizeInboxEngineService.GENERIC_TRANSFER_TITLE_SET.has(row.title.trim().replaceAll(/\s+/gu, ' ').toLowerCase())
-            ) ||
+            rows.some(row => this.isGenericTransfer(row.title)) ||
             (context.labelKind === CategorizeInboxLabelKindEnum.TAG && rows.some(row => this.isRefund(row)))
         ) {
             return { candidateLabelIds: [], isConfident: false };
@@ -300,24 +311,24 @@ class CategorizeInboxEngineService {
         const brandKeys = new Set(rows.map(row => `${type}|${this.brandKey(row.title) ?? ''}`).filter(key => !key.endsWith('|')));
         const brandCounts = this.countLabels(context.brand, brandKeys);
         const historyCounts = [exactCounts, merchantCounts].find(counts => isPositiveNumber(counts.size));
+        const mccCounts = this.countLabels(
+            context.mcc,
+            new Set(
+                rows
+                    .filter(row => isDefined(row.mcc) && !CategorizeInboxEngineService.NON_DESCRIPTIVE_MCC.has(row.mcc))
+                    .map(row => `${type}|${row.mccCategoryId}`)
+            )
+        );
         const counts =
             historyCounts ??
-            (isPositiveNumber(brandCounts.size)
-                ? brandCounts
-                : this.countLabels(
-                      context.mcc,
-                      new Set(
-                          rows
-                              .filter(row => isDefined(row.mcc) && !NON_DESCRIPTIVE_MCC.has(row.mcc))
-                              .map(row => `${type}|${row.mccCategoryId}`)
-                      )
-                  ));
+            [brandCounts, mccCounts].find(
+                candidate =>
+                    Math.max(0, ...candidate.values()) >= LIMITS.fallbackCount &&
+                    Math.max(0, ...candidate.values()) / this.sumValues(candidate.values()) >= LIMITS.confidentShare
+            ) ??
+            new Map<number, number>();
         const total = this.sumValues(counts.values());
         const topCount = Math.max(0, ...counts.values());
-
-        if (!isDefined(historyCounts) && (topCount < LIMITS.fallbackCount || topCount / total < LIMITS.confidentShare)) {
-            return { candidateLabelIds: [], isConfident: false };
-        }
 
         return {
             candidateLabelIds: this.rankLabelIds(counts).slice(0, LIMITS.chipCount),
@@ -325,8 +336,21 @@ class CategorizeInboxEngineService {
                 rows.length <= LIMITS.maxConfidentRowCount &&
                 isDefined(historyCounts) &&
                 topCount >= LIMITS.confidentCount &&
-                topCount / total >= LIMITS.confidentShare
+                topCount / Math.max(1, total) >= LIMITS.confidentShare
         };
+    }
+
+    private normalizeTitle(title: string): string {
+        return title.trim().replaceAll(/\s+/gu, ' ').toLowerCase();
+    }
+
+    private isGenericTransfer(title: string): boolean {
+        return CategorizeInboxEngineService.GENERIC_TRANSFER_TITLE_SET.has(
+            title
+                .toLowerCase()
+                .replaceAll(/[^\p{L}]+/gu, ' ')
+                .trim()
+        );
     }
 
     private countLabels(level: ReadonlyMap<string, LabelEvidenceRowInterface[]>, keys: Iterable<string>): Map<number, number> {
@@ -354,7 +378,11 @@ class CategorizeInboxEngineService {
         return firstToken.length >= 3 ? firstToken : null;
     }
 
-    private resolveSection(isConfident: boolean, rows: readonly CategorizeInboxRowInterface[]): CategorizeInboxSectionEnum {
+    private resolveSection(key: string, isConfident: boolean, rows: readonly CategorizeInboxRowInterface[]): CategorizeInboxSectionEnum {
+        if (key.startsWith(`${CategorizeInboxSectionEnum.OLDER}|`)) {
+            return CategorizeInboxSectionEnum.OLDER;
+        }
+
         if (this.isCashWithdrawal(rows[0])) {
             return CategorizeInboxSectionEnum.CASH_WITHDRAWALS;
         }
