@@ -3249,7 +3249,7 @@ msgstr "No se pudieron obtener las cuentas"
 msgid "Could not import CSV file"
 msgstr "No se pudo importar el archivo CSV"
 
-#: src/cloud-sync/service/cloud-sync.service.ts
+#: src/cloud-sync/layer/cloud-sync-host.layer.ts
 #: src/household/component/household-join-card/household-join-card.tsx
 msgid "Could not join the family"
 msgstr "No se pudo unir a la familia"
@@ -9263,7 +9263,7 @@ msgstr "Los datos descargados de los modelos de IA se eliminan de este teléfono
 msgid "The exact amount you will pay, fee included"
 msgstr "El importe exacto que pagarás, comisión incluida"
 
-#: src/cloud-sync/service/cloud-sync.service.ts
+#: src/cloud-sync/layer/cloud-sync-host.layer.ts
 msgid "The invitation could not be accepted. Open the invitation link again to retry."
 msgstr "No se pudo aceptar la invitación. Abre de nuevo el enlace de invitación para reintentarlo."
 

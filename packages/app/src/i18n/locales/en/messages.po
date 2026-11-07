@@ -3250,7 +3250,7 @@ msgstr "Could not fetch accounts"
 msgid "Could not import CSV file"
 msgstr "Could not import CSV file"
 
-#: src/cloud-sync/service/cloud-sync.service.ts
+#: src/cloud-sync/layer/cloud-sync-host.layer.ts
 #: src/household/component/household-join-card/household-join-card.tsx
 msgid "Could not join the family"
 msgstr "Could not join the family"
@@ -9264,7 +9264,7 @@ msgstr "The downloaded AI model data is removed from this phone. Nothing downloa
 msgid "The exact amount you will pay, fee included"
 msgstr "The exact amount you will pay, fee included"
 
-#: src/cloud-sync/service/cloud-sync.service.ts
+#: src/cloud-sync/layer/cloud-sync-host.layer.ts
 msgid "The invitation could not be accepted. Open the invitation link again to retry."
 msgstr "The invitation could not be accepted. Open the invitation link again to retry."
 

@@ -3249,7 +3249,7 @@ msgstr "Не вдалося отримати рахунки"
 msgid "Could not import CSV file"
 msgstr "Не вдалося імпортувати CSV-файл"
 
-#: src/cloud-sync/service/cloud-sync.service.ts
+#: src/cloud-sync/layer/cloud-sync-host.layer.ts
 #: src/household/component/household-join-card/household-join-card.tsx
 msgid "Could not join the family"
 msgstr "Не вдалося приєднатися до родини"
@@ -9263,7 +9263,7 @@ msgstr "Завантажені дані моделей ШІ буде видал�
 msgid "The exact amount you will pay, fee included"
 msgstr "Точна сума до сплати разом із комісією"
 
-#: src/cloud-sync/service/cloud-sync.service.ts
+#: src/cloud-sync/layer/cloud-sync-host.layer.ts
 msgid "The invitation could not be accepted. Open the invitation link again to retry."
 msgstr "Запрошення не вдалося прийняти. Відкрийте посилання-запрошення ще раз, щоб повторити спробу."
 
