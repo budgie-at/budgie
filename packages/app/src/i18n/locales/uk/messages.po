@@ -116,7 +116,7 @@ msgstr "{0, plural, one {місяць} few {місяці} many {місяців} 
 msgid "{0, plural, one {Other · # category} other {Other · # categories}}"
 msgstr "{0, plural, one {Інші · # категорія} few {Інші · # категорії} many {Інші · # категорій} other {Інші · # категорії}}"
 
-#. placeholder {0}: otherParticipants.length
+#. placeholder {0}: acceptedParticipants.length
 #: src/household/component/family-row/family-row.tsx
 msgid "{0, plural, one {Shared with # person} other {Shared with # people}}"
 msgstr "{0, plural, one {Спільне з # особою} few {Спільне з # особами} many {Спільне з # особами} other {Спільне з # особи}}"
@@ -130,6 +130,11 @@ msgstr "{0, plural, one {Показати ще # групу} few {Показат
 #: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
 msgid "{0, plural, one {Sync failed for # account} other {Sync failed for # accounts}}"
 msgstr "{0, plural, one {Не вдалося синхронізувати # рахунок} few {Не вдалося синхронізувати # рахунки} many {Не вдалося синхронізувати # рахунків} other {Не вдалося синхронізувати # рахунку}}"
+
+#. placeholder {0}: pendingParticipants.length
+#: src/household/component/family-row/family-row.tsx
+msgid "{0, plural, one {Waiting for # person to join} other {Waiting for # people to join}}"
+msgstr "{0, plural, one {Очікуємо, поки # людина приєднається} few {Очікуємо, поки # людини приєднаються} many {Очікуємо, поки # людей приєднаються} other {Очікуємо, поки # людини приєднаються}}"
 
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "{accountCount, plural, one {# account} other {# accounts}}"
@@ -372,6 +377,7 @@ msgstr "{entryStatusLabel}. {formattedAmount} {caption}. {formattedSpentLabel}, 
 msgid "{entryStatusLabel}. {formattedAmount} {caption}. {reservedPrefix}{formattedPerDay}, {formattedDaysLeft}."
 msgstr "{entryStatusLabel}. {formattedAmount} {caption}. {reservedPrefix}{formattedPerDay}, {formattedDaysLeft}."
 
+#: src/account/component/accounts-downloading-state/accounts-downloading-state.tsx
 #: src/cloud-sync/component/cloud-sync-initial-fetch-row/cloud-sync-initial-fetch-row.tsx
 msgid "{fetchedRecordCount, plural, one {# item} other {# items}}"
 msgstr "{fetchedRecordCount, plural, one {# запис} few {# записи} many {# записів} other {# запису}}"
@@ -659,6 +665,7 @@ msgstr "{newTransactionCount} нових, {existingTransactionCount} вже ім
 msgid "{organizerName} sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
 msgstr "{organizerName} бачить спільні рахунки та їхні платежі. Гроші, переміщені між спільними рахунками, відображаються як переказ."
 
+#: src/account/component/family-section-header/family-section-header.tsx
 #: src/household/component/family-row/family-row.tsx
 #: src/household/component/household-member-summary/household-member-summary.tsx
 msgid "{organizerName}'s family"
@@ -3981,6 +3988,10 @@ msgstr "Завантаження моделей ШІ…"
 msgid "Downloading models to this phone."
 msgstr "Завантаження моделей на цей телефон."
 
+#: src/account/component/accounts-downloading-state/accounts-downloading-state.tsx
+msgid "Downloading your data from iCloud…"
+msgstr "Завантажуємо ваші дані з iCloud…"
+
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 msgid "Due {date}"
 msgstr "До {date}"
@@ -4518,6 +4529,7 @@ msgstr "Розпізнавання обличчя"
 msgid "Faded bars are estimated from your past transactions using your current limits."
 msgstr "Бліді стовпчики оцінено за твоїми минулими транзакціями з поточними лімітами."
 
+#: src/account/component/family-section-header/family-section-header.tsx
 #: src/account/component/household-share-account-section/household-share-account-section.tsx
 #: src/app/(tabs)/settings/family.tsx
 #: src/budget/components/budget-share-field/budget-share-field.tsx
@@ -6961,6 +6973,7 @@ msgid "Paused: no Wi-Fi"
 msgstr "Призупинено: немає Wi-Fi"
 
 #: src/household/component/family-row/family-row.tsx
+#: src/household/component/household-member-summary/household-member-summary.tsx
 msgid "Paused: sign in to iCloud"
 msgstr "Призупинено: увійдіть в iCloud"
 
@@ -9012,6 +9025,10 @@ msgstr "Можливо, цей бюджет видалено."
 #: src/budget/components/budget-data-state/budget-data-state.tsx
 msgid "This budget may have been deleted. Go back to see your current budget."
 msgstr "Можливо, цей бюджет видалено. Поверніться, щоб переглянути поточний бюджет."
+
+#: src/account/component/accounts-downloading-state/accounts-downloading-state.tsx
+msgid "This can take a moment"
+msgstr "Це може зайняти трохи часу"
 
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "This capture looks similar to an existing transaction."

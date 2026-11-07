@@ -35,6 +35,7 @@ export const SettingsSwitchRow = ({ icon, title, subtitle, value, isLoading, tes
     const pressableProps = {
         accessible: true,
         accessibilityRole: 'switch' as const,
+        accessibilityLabel: title,
         accessibilityState: { checked: value, disabled: isDisabled }
     };
 

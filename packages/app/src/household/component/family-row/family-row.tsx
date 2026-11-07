@@ -6,6 +6,7 @@ import { router } from 'expo-router';
 
 import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { ICloudParticipantAcceptanceStatus } from '../../../../modules/icloud';
 import { useICloudAccount } from '../../../cloud-backup/hook/use-icloud-account.hook';
 import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
 import { SettingsWarningSubtitle } from '../../../settings/components/settings-warning-subtitle/settings-warning-subtitle';
@@ -27,10 +28,20 @@ export const FamilyRow = () => {
     const organizerName = useHouseholdOrganizerName();
     const { status, ownerDisplayName } = useAtomValue(householdJoinAtom);
 
+    const acceptedParticipants = otherParticipants.filter(
+        participant => participant.acceptanceStatus === ICloudParticipantAcceptanceStatus.ACCEPTED
+    );
+    const pendingParticipants = otherParticipants.filter(
+        participant => participant.acceptanceStatus !== ICloudParticipantAcceptanceStatus.ACCEPTED
+    );
     const hasParticipants = isNotEmptyArray(otherParticipants);
-    const sharedSubtitle = t({
-        message: plural(otherParticipants.length, { one: 'Shared with # person', other: 'Shared with # people' })
+    const pendingSubtitle = t({
+        message: plural(pendingParticipants.length, { one: 'Waiting for # person to join', other: 'Waiting for # people to join' })
     });
+    const acceptedSubtitle = t({
+        message: plural(acceptedParticipants.length, { one: 'Shared with # person', other: 'Shared with # people' })
+    });
+    const sharedSubtitle = isNotEmptyArray(acceptedParticipants) ? acceptedSubtitle : pendingSubtitle;
     const memberSubtitle = isNotEmptyString(organizerName) ? t`${organizerName}'s family` : t`Shared with your family`;
     const roleSubtitle = isMember ? memberSubtitle : sharedSubtitle;
     const participantsSubtitle = isAvailable ? (

@@ -116,7 +116,7 @@ msgstr "{0, plural, one {Monat} other {Monate}}"
 msgid "{0, plural, one {Other · # category} other {Other · # categories}}"
 msgstr "{0, plural, one {Sonstige · # Kategorie} other {Sonstige · # Kategorien}}"
 
-#. placeholder {0}: otherParticipants.length
+#. placeholder {0}: acceptedParticipants.length
 #: src/household/component/family-row/family-row.tsx
 msgid "{0, plural, one {Shared with # person} other {Shared with # people}}"
 msgstr "{0, plural, one {Mit # Person geteilt} other {Mit # Personen geteilt}}"
@@ -130,6 +130,11 @@ msgstr "{0, plural, one {# weitere Gruppe anzeigen} other {# weitere Gruppen anz
 #: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
 msgid "{0, plural, one {Sync failed for # account} other {Sync failed for # accounts}}"
 msgstr "{0, plural, one {Synchronisierung für # Konto fehlgeschlagen} other {Synchronisierung für # Konten fehlgeschlagen}}"
+
+#. placeholder {0}: pendingParticipants.length
+#: src/household/component/family-row/family-row.tsx
+msgid "{0, plural, one {Waiting for # person to join} other {Waiting for # people to join}}"
+msgstr "{0, plural, one {Warten auf # Person zum Beitreten} other {Warten auf # Personen zum Beitreten}}"
 
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "{accountCount, plural, one {# account} other {# accounts}}"
@@ -372,6 +377,7 @@ msgstr "{entryStatusLabel}. {formattedAmount} {caption}. {formattedSpentLabel}, 
 msgid "{entryStatusLabel}. {formattedAmount} {caption}. {reservedPrefix}{formattedPerDay}, {formattedDaysLeft}."
 msgstr "{entryStatusLabel}. {formattedAmount} {caption}. {reservedPrefix}{formattedPerDay}, {formattedDaysLeft}."
 
+#: src/account/component/accounts-downloading-state/accounts-downloading-state.tsx
 #: src/cloud-sync/component/cloud-sync-initial-fetch-row/cloud-sync-initial-fetch-row.tsx
 msgid "{fetchedRecordCount, plural, one {# item} other {# items}}"
 msgstr "{fetchedRecordCount, plural, one {# Eintrag} other {# Einträge}}"
@@ -659,6 +665,7 @@ msgstr "{newTransactionCount} neu, {existingTransactionCount} bereits importiert
 msgid "{organizerName} sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
 msgstr "{organizerName} sieht geteilte Konten und deren Zahlungen. Geld, das zwischen geteilten Konten bewegt wird, erscheint als Überweisung."
 
+#: src/account/component/family-section-header/family-section-header.tsx
 #: src/household/component/family-row/family-row.tsx
 #: src/household/component/household-member-summary/household-member-summary.tsx
 msgid "{organizerName}'s family"
@@ -3981,6 +3988,10 @@ msgstr "KI-Modelle werden heruntergeladen…"
 msgid "Downloading models to this phone."
 msgstr "Modelle werden auf dieses Telefon geladen."
 
+#: src/account/component/accounts-downloading-state/accounts-downloading-state.tsx
+msgid "Downloading your data from iCloud…"
+msgstr "Deine Daten werden aus iCloud geladen…"
+
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 msgid "Due {date}"
 msgstr "Fällig am {date}"
@@ -4518,6 +4529,7 @@ msgstr "Gesichtserkennung"
 msgid "Faded bars are estimated from your past transactions using your current limits."
 msgstr "Blasse Balken sind aus deinen früheren Transaktionen mit deinen aktuellen Limits geschätzt."
 
+#: src/account/component/family-section-header/family-section-header.tsx
 #: src/account/component/household-share-account-section/household-share-account-section.tsx
 #: src/app/(tabs)/settings/family.tsx
 #: src/budget/components/budget-share-field/budget-share-field.tsx
@@ -6961,6 +6973,7 @@ msgid "Paused: no Wi-Fi"
 msgstr "Pausiert: kein WLAN"
 
 #: src/household/component/family-row/family-row.tsx
+#: src/household/component/household-member-summary/household-member-summary.tsx
 msgid "Paused: sign in to iCloud"
 msgstr "Pausiert: Melde dich bei iCloud an"
 
@@ -9012,6 +9025,10 @@ msgstr "Dieses Budget wurde möglicherweise gelöscht."
 #: src/budget/components/budget-data-state/budget-data-state.tsx
 msgid "This budget may have been deleted. Go back to see your current budget."
 msgstr "Dieses Budget wurde möglicherweise gelöscht. Gehe zurück, um dein aktuelles Budget zu sehen."
+
+#: src/account/component/accounts-downloading-state/accounts-downloading-state.tsx
+msgid "This can take a moment"
+msgstr "Das kann einen Moment dauern"
 
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "This capture looks similar to an existing transaction."
