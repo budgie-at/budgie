@@ -1,5 +1,5 @@
-import { RecurringSeriesKindEnum, RecurringSeriesStatusEnum } from '@budgie/contracts';
-import { nextOccurrences } from '@budgie/recurring';
+import { RecurringSeriesKindEnum } from '@budgie/contracts';
+import { isSeriesEnded, nextOccurrences } from '@budgie/recurring';
 import { addDays } from 'date-fns/addDays';
 import { startOfDay } from 'date-fns/startOfDay';
 
@@ -22,7 +22,7 @@ export const buildFundSuggestions = (
         .filter(
             row =>
                 row.kind === RecurringSeriesKindEnum.EXPENSE &&
-                row.status === RecurringSeriesStatusEnum.ACTIVE &&
+                !isSeriesEnded(row, now) &&
                 isDefined(row.categoryId) &&
                 row.periodDays >= MIN_PERIOD_DAYS &&
                 row.periodDays <= MAX_PERIOD_DAYS &&

@@ -1,4 +1,9 @@
-import { RecurringCadenceUnitEnum, RecurringSeriesKindEnum, RecurringSeriesStatusEnum } from '@budgie/contracts';
+import {
+    RecurringCadenceUnitEnum,
+    RecurringSeriesKindEnum,
+    RecurringSeriesSourceEnum,
+    RecurringSeriesUserStateEnum
+} from '@budgie/contracts';
 import { expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -15,7 +20,11 @@ const seriesOf = (overrides: Partial<BudgetFundSuggestionSeriesInterface>): Budg
     cadenceUnit: RecurringCadenceUnitEnum.YEAR,
     cadenceInterval: 1,
     defaultAmount: 900,
-    status: RecurringSeriesStatusEnum.ACTIVE,
+    source: RecurringSeriesSourceEnum.DETECTED,
+    userState: RecurringSeriesUserStateEnum.CONFIRMED,
+    confidence: 90,
+    deletedAt: null,
+    lastSeenAt: new Date(2026, 2, 14),
     title: 'Car insurance',
     categoryId: 7,
     anchorDate: new Date(2026, 2, 14),
@@ -66,7 +75,7 @@ it.effect('skips monthly series, uncategorised series, income and already linked
             seriesOf({ id: 3, endsAt: new Date(2026, 8, 1) }),
             seriesOf({ id: 4, categoryId: null }),
             seriesOf({ id: 5, kind: RecurringSeriesKindEnum.INCOME }),
-            seriesOf({ id: 6, status: RecurringSeriesStatusEnum.ENDED }),
+            seriesOf({ id: 6, lastSeenAt: new Date(2023, 2, 14) }),
             seriesOf({ id: 7 })
         ];
 

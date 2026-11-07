@@ -43,18 +43,11 @@ export class UnconsolidationService extends Context.Service<UnconsolidationServi
         });
         const debtEventRepository = yield* DebtEventRepository;
 
-        const isPreExistingCanonical = (transaction: TransactionEntityInterface | undefined): boolean => {
-            if (!isDefined(transaction)) {
-                return false;
-            }
-
-            return (
-                transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND ||
-                transaction.consolidationType === TransactionConsolidationTypeEnum.MANUAL_EXPENSE_DUPLICATE ||
-                isDefined(transaction.externalId) ||
-                isDefined(transaction.externalSource)
-            );
-        };
+        const isPreExistingCanonical = (transaction: TransactionEntityInterface): boolean =>
+            transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND ||
+            transaction.consolidationType === TransactionConsolidationTypeEnum.MANUAL_EXPENSE_DUPLICATE ||
+            isDefined(transaction.externalId) ||
+            isDefined(transaction.externalSource);
 
         const restoreManualExpenseDuplicateUserData = Effect.fnUntraced(function* (canonicalTransactionId: number) {
             const canonical = (yield* transactionRepository.findByIdsWithRefundConsolidationHistory([canonicalTransactionId])).at(0);
@@ -117,7 +110,11 @@ export class UnconsolidationService extends Context.Service<UnconsolidationServi
             unconsolidateById: Effect.fn('UnconsolidationService.unconsolidateById')(function* (transactionId: number) {
                 const canonical = yield* transactionRepository.getByIdRaw(transactionId);
 
-                if (canonical?.consolidationType === TransactionConsolidationTypeEnum.MANUAL_EXPENSE_DUPLICATE) {
+                if (!isDefined(canonical?.consolidationType)) {
+                    return;
+                }
+
+                if (canonical.consolidationType === TransactionConsolidationTypeEnum.MANUAL_EXPENSE_DUPLICATE) {
                     yield* restoreManualExpenseDuplicateUserData(transactionId);
                 }
 

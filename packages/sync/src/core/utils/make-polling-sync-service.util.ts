@@ -3,6 +3,7 @@ import * as Cause from 'effect/Cause';
 import * as Clock from 'effect/Clock';
 import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
+import * as Exit from 'effect/Exit';
 import * as Predicate from 'effect/Predicate';
 import * as Schema from 'effect/Schema';
 import * as Semaphore from 'effect/Semaphore';
@@ -138,13 +139,13 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
             return true;
         }
 
-        if (!(yield* processPendingSync(pendingSync))) {
+        const restoreStatus = (exit: Exit.Exit<boolean, unknown>) =>
+            Exit.isSuccess(exit) && exit.value ? Effect.void : syncRepository.setStatus(pendingSync.id, pendingSync.status);
+        if (!(yield* Effect.onExit(processPendingSync(pendingSync), restoreStatus))) {
             return true;
         }
-        const isRunFinished =
-            definition.isRunWorkComplete?.() !== true && ((yield* shouldYieldAfterBatch()) || (yield* shouldStopProcessing));
 
-        return isRunFinished ? true : null;
+        return (definition.isRunWorkComplete?.() !== true && ((yield* shouldYieldAfterBatch()) || (yield* shouldStopProcessing))) || null;
     });
 
     const retryAfterError = Effect.fnUntraced(function* (enabledSyncs: SyncEntityInterface[], errorMessage: string) {
@@ -293,8 +294,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         ...syncService,
         sync,
         requestSync,
-        updateAccountToken: Effect.fn('AbstractPollingSyncService.updateAccountToken')(function* (accountId: number, token: string) {
-            yield* syncIntegrationTokenService.updateAccountToken(definition.provider, accountId, token);
-        })
+        updateAccountToken: (accountId: number, token: string) =>
+            syncIntegrationTokenService.updateAccountToken(definition.provider, accountId, token)
     };
 });

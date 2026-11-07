@@ -180,10 +180,15 @@ export class AiCoordinatorService extends Context.Service<AiCoordinatorService>(
                 return;
             }
             patchAtom(aiCoordinatorSnapshotAtom, { isSuspended: true });
-            yield* Scope.close(scope, Exit.void);
-            yield* aiModelDownloadService.suspend();
-            yield* stopSubsystems();
-            activeScope = null;
+            yield* Scope.close(scope, Exit.void).pipe(
+                Effect.andThen(aiModelDownloadService.suspend()),
+                Effect.andThen(stopSubsystems()),
+                Effect.ensuring(
+                    Effect.sync(() => {
+                        activeScope = null;
+                    })
+                )
+            );
         });
 
         return {
