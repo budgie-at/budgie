@@ -6202,8 +6202,8 @@ msgid "Cloud-based (data on their servers)"
 msgstr "Basé sur le cloud (données sur leurs serveurs)"
 
 #: src/app/[lang]/privacy/page.tsx
-msgid "Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device and syncs and copies it only to storage you own. No account, no aggregator, no copy on a vendor's server."
-msgstr "Les applications financières cloud répliquent chaque transaction sur leurs serveurs. Budgie garde votre grand livre sur votre appareil et ne le synchronise et ne le copie que vers un stockage que vous possédez. Aucun compte, aucun agrégateur, aucune copie sur le serveur d’un fournisseur."
+msgid "Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device and syncs and copies it to your own iCloud and, for accounts you share, to your family's shared iCloud space. No account, no aggregator, no copy on a vendor's server."
+msgstr "Les applications de finances personnelles dans le cloud copient chaque transaction sur leurs serveurs. Budgie conserve votre registre sur votre appareil et le synchronise et le sauvegarde dans votre propre iCloud et, pour les comptes que vous partagez, dans l’espace iCloud partagé de votre famille. Aucun compte à créer, aucun agrégateur, aucune copie sur le serveur d’un fournisseur."
 
 #: src/app/[lang]/privacy/page.tsx
 msgid "Cloud-based PFM apps"
@@ -8166,8 +8166,8 @@ msgid "Every transaction, account and category lives in a database on your phone
 msgstr "Chaque transaction, chaque compte et chaque catégorie se trouve dans une base de données sur votre téléphone, chiffrée dès que vous définissez un code PIN — il n'y a aucun backend à déployer."
 
 #: src/generic/component/proof-band/proof-band.tsx
-msgid "Every transaction, budget and chart is computed on your phone. There is no account to create and no Budgie database to leak; the copies that leave the phone go only to your own iCloud, encrypted. Turn the radio off and the app behaves exactly the same."
-msgstr "Chaque transaction, budget et graphique est calculé sur votre téléphone. Il n’y a aucun compte à créer et aucune base de données Budgie qui puisse fuiter ; les copies qui quittent le téléphone ne vont que vers votre propre iCloud, chiffrées. Coupez la radio et l’app se comporte exactement de la même façon."
+msgid "Every transaction, budget and chart is computed on your phone. There is no account to create and no Budgie database to leak; the copies that leave the phone go to your own iCloud, encrypted, and to your family only when you share. Turn the radio off and the app behaves exactly the same."
+msgstr "Chaque transaction, budget et graphique est calculé sur votre téléphone. Aucun compte à créer et aucune base de données Budgie susceptible de fuiter ; les copies qui quittent le téléphone sont chiffrées dans votre propre iCloud et ne sont partagées avec votre famille que si vous le décidez. Coupez les connexions et l’application fonctionne exactement de la même façon."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Every well-maintained open-source project has an issue tracker where bugs, feature requests, and concerns are discussed. This is a goldmine of information about how the project operates:"
@@ -9810,8 +9810,8 @@ msgid "If the title contains this and the MCC is that, set the category, add the
 msgstr "Si le titre contient ceci et que le MCC est cela, définissez la catégorie, ajoutez l'étiquette, ou transformez-la en transfert."
 
 #: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
-msgid "If you already keep an account in Budgie with the same IBAN, the bookings go into that account instead of a new one. The PDF is read on your phone: the statement is not uploaded anywhere, and the bookings stay in the database on your device, backed up only to storage you own."
-msgstr "Si vous avez déjà dans Budgie un compte avec le même IBAN, les opérations vont dans ce compte plutôt que dans un nouveau. Le PDF est lu sur votre téléphone : le relevé n’est envoyé nulle part et les opérations restent dans la base de données de votre appareil, sauvegardées uniquement vers un stockage que vous possédez."
+msgid "If you already keep an account in Budgie with the same IBAN, the bookings go into that account instead of a new one. The PDF is read on your phone: the statement is not uploaded anywhere, and the bookings stay in the database on your device, backed up to your own iCloud."
+msgstr "Si vous avez déjà un compte dans Budgie avec le même IBAN, les opérations y sont ajoutées au lieu de créer un nouveau compte. Le PDF est lu sur votre téléphone : le relevé n’est envoyé nulle part et les opérations restent dans la base de données de votre appareil, sauvegardée dans votre propre iCloud."
 
 #: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
 msgid "If you bank with Erste Bank, import the PDF statement straight from your phone with <0>Erste Bank PDF import</0>: you see a preview of every transaction before anything is saved. For other banks, export a CSV statement and match its columns once with <1>CSV import</1>, including the currency of each row."
@@ -11636,8 +11636,8 @@ msgid "Most budget and expense tracking apps operate as black boxes. You downloa
 msgstr "La plupart des applications de budget et de suivi des dépenses fonctionnent comme des boîtes noires. Vous téléchargez une application, créez un compte, connectez votre banque et commencez à suivre vos dépenses. L'interface est soignée, les fonctionnalités sont utiles et tout semble aller pour le mieux. Mais sous cette surface accueillante se cache un système que vous ne pouvez ni inspecter, ni vérifier, ni véritablement comprendre."
 
 #: src/app/[lang]/offline-first/page.tsx
-msgid "Most budgeting apps push every swipe and balance to a remote server. That makes them fragile when the internet drops, and risky when those servers leak. Budgie inverts the model: your database lives on your phone, encrypted with your PIN once you set one, and the copies that leave it go only to your own iCloud. There is no backend reading your statements."
-msgstr "La plupart des applications de budget envoient chaque paiement et chaque solde vers un serveur distant. Elles deviennent donc fragiles quand internet tombe, et risquées quand ces serveurs fuient. Budgie inverse le modèle : votre base de données vit sur votre téléphone, chiffrée avec votre code PIN dès que vous en définissez un, et les copies qui en sortent ne vont que vers votre propre iCloud. Aucun backend ne lit vos relevés."
+msgid "Most budgeting apps push every swipe and balance to a remote server. That makes them fragile when the internet drops, and risky when those servers leak. Budgie inverts the model: your database lives on your phone, encrypted with your PIN once you set one, and the copies that leave it go to your own iCloud, and to your family's only for accounts you choose to share. There is no backend reading your statements."
+msgstr "La plupart des applications de budget envoient chaque paiement et solde sur un serveur distant. Elles deviennent fragiles en cas de coupure d’internet et risquées si ces serveurs subissent une fuite. Budgie inverse ce modèle : votre base de données reste sur votre téléphone, chiffrée avec votre code PIN dès que vous en définissez un. Les copies vont dans votre propre iCloud et dans celui de votre famille uniquement pour les comptes que vous choisissez de partager. Aucun serveur ne lit vos relevés."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Most budgeting apps treat your phone as a thin client—a window into data stored on remote servers. Budgie flips this model. Your phone isn’t just displaying your budget; it’s storing it. There’s no Budgie server with a copy of your financial life because we never receive it in the first place."
@@ -17593,8 +17593,8 @@ msgid "The figure at the top adds every account together and reports it in the b
 msgstr "Le chiffre en haut additionne tous les comptes et l'exprime dans la devise de base définie dans les Réglages. Changez de devise de base et les mêmes comptes donnent un autre nombre."
 
 #: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
-msgid "The file is read on your phone. The statement is not uploaded anywhere, and the operations stay in the database on your device, backed up only to storage you own."
-msgstr "Le fichier est lu sur votre téléphone. Le relevé n’est envoyé nulle part et les opérations restent dans la base de données de votre appareil, sauvegardées uniquement vers un stockage que vous possédez."
+msgid "The file is read on your phone. The statement is not uploaded anywhere, and the operations stay in the database on your device, backed up to your own iCloud."
+msgstr "Le fichier est lu sur votre téléphone. Le relevé n’est envoyé nulle part et les opérations restent dans la base de données de votre appareil, sauvegardée dans votre propre iCloud."
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "The filter row is not only about time. Next to the date, type, and category chips there is an amount range: set a From value to hunt down the large purchases, a To value to sweep up the small ones, or both to look at a band. The chip shows the range you picked, and clearing it is one tap."
@@ -21150,8 +21150,8 @@ msgid "Yes. After each categorization an Undo button appears at the bottom of th
 msgstr "Oui. Après chaque catégorisation, un bouton Annuler apparaît en bas de l’écran et l’annule, que vous ayez catégorisé un seul groupe ou accepté toutes les suggestions d’un coup."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "Yes. All core functionality — adding transactions, viewing reports, managing budgets, and reviewing your history — works completely offline. Internet access is used only for bank sync, exchange rates, and iCloud backup or sync on iOS."
-msgstr "Oui. Toutes les fonctionnalités essentielles — ajouter des transactions, consulter des rapports, gérer des budgets et parcourir votre historique — fonctionnent entièrement hors ligne. L’accès à internet ne sert qu’à la synchronisation bancaire, aux taux de change et à la sauvegarde ou à la synchronisation iCloud sur iOS."
+msgid "Yes. All core functionality — adding transactions, viewing reports, managing budgets, and reviewing your history — works completely offline. Internet access is used only for bank sync, AI model downloads, exchange rates, and iCloud backup or sync on iOS."
+msgstr "Oui. Toutes les fonctions essentielles — ajouter des transactions, consulter des rapports, gérer des budgets et parcourir votre historique — fonctionnent entièrement hors connexion. Internet sert uniquement à la synchronisation bancaire, au téléchargement de modèles d’IA, aux taux de change et à la sauvegarde ou à la synchronisation iCloud sur iOS."
 
 #: src/app/[lang]/features/balance-adjustment/page.tsx
 msgid "Yes. An adjustment opens in its own detail screen and edits like any other transaction, so you can change the amount or remove it without touching the rest of your history."

@@ -4,7 +4,6 @@ import { msg, plural } from '@lingui/core/macro';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { HouseholdJoinCardSelector } from '../component/household-join-card/household-join-card.selector';
 import { HouseholdMemberSummarySelector } from '../component/household-member-summary/household-member-summary.selector';
 
 import type { HouseholdSummaryInputInterface } from '../interface/household-summary-input.interface';
@@ -25,7 +24,7 @@ export const getHouseholdSummaryLabels = (
             isLoading: isJoining,
             isPaused: false,
             hasSummary: true,
-            testID: HouseholdJoinCardSelector.Card
+            testID: HouseholdMemberSummarySelector.JoinCard
         };
     }
     const sharedSubtitle = t(msg({ message: plural(sharedCount, { one: '# shared account', other: '# shared accounts' }) }));

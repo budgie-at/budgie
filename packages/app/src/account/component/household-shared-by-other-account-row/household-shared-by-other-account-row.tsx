@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
-import { HouseholdShareSelector } from '../household-share-account-section/household-share-account-section.selector';
+import { HouseholdShareSelector } from '../../../household/constant/household-share.selector';
 
 export const HouseholdSharedByOtherAccountRow = () => {
     const { t } = useLingui();

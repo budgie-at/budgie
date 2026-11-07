@@ -119,7 +119,8 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                 <FeaturePageProse>
                     <Trans>
                         Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device
-                        and syncs and copies it only to storage you own. No account, no aggregator, no copy on a vendor&apos;s server.
+                        and syncs and copies it to your own iCloud and, for accounts you share, to your family&apos;s shared iCloud space.
+                        No account, no aggregator, no copy on a vendor&apos;s server.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageCategoryComparison categoryLabel={<Trans>Cloud-based PFM apps</Trans>}>

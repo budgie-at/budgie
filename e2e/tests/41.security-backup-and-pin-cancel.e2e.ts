@@ -28,16 +28,16 @@ test('41 security backup and pin cancel', { tags: ['security'] }, async ({ budgi
         await b.tapId(ctx, 'SettingsPage.DataBackupButton');
         await sec.saveBackupToFixtureDirectory(ctx);
         await b.expectText(ctx, 'Backup saved', 15_000);
-        await b.expectText(ctx, /^Last saved /);
+        await b.expectText(ctx, /^Saved /);
         await b.expectId(ctx, 'SettingsPage.Container');
         await b.expectNoId(ctx, b.TOAST, 8_000);
     });
 
     await b.phase('send a copy does not record another backup', async () => {
-        const savedLabel = await b.byText(ctx.screen, /^Last saved /).textContent();
+        const savedLabel = await b.byText(ctx.screen, /^Saved /).textContent();
         await b.tapId(ctx, 'SettingsPage.DataBackupShareButton');
         await sec.dismissSaveToFilesSheet(ctx);
-        await expect(b.byText(ctx.screen, /^Last saved /)).toHaveText(savedLabel ?? '');
+        await expect(b.byText(ctx.screen, /^Saved /)).toHaveText(savedLabel ?? '');
         await expect(b.byId(ctx.screen, 'SettingsPage.DataBackupButton')).toBeEnabled();
         await expect(b.byId(ctx.screen, b.TOAST)).toBeHidden({ timeout: 100 });
     });

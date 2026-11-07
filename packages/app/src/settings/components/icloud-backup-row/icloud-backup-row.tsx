@@ -23,7 +23,7 @@ export const ICloudBackupRow = () => {
     const lastBackupAt = useSetting('lastCloudBackupAt');
     const backupStatus = useAtomValue(cloudBackupStatusAtom);
     const { isAvailable } = useICloudAccount();
-    const { run } = useSingleFlight();
+    const { run, isLoading } = useSingleFlight();
     const formatBackupDate = useFormatCloudBackupDate();
 
     const status = isAvailable ? backupStatus : CloudBackupStatusEnum.ACCOUNT_UNAVAILABLE;
@@ -52,7 +52,8 @@ export const ICloudBackupRow = () => {
             value={isOn}
             testID={SettingsPageSelector.ICloudBackupCard}
             switchTestID={SettingsPageSelector.ICloudBackupSwitch}
-            {...(!isAccountUnavailable && { onChange: handleChange })}
+            isLoading={isLoading}
+            {...(!isAccountUnavailable && !isLoading && { onChange: handleChange })}
         />
     );
 };

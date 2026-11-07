@@ -2401,7 +2401,7 @@ msgstr "Nicht lesbar: Deine verschlüsselten iCloud-Daten wurden nach dem Erstel
 #: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
 #: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-remove-button/transaction-fee-remove-button.tsx
 #: src/transaction/components/transaction-form-actions/transaction-form-actions.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 #: src/transaction/hook/use-delete-transaction.hook.ts
@@ -7929,11 +7929,11 @@ msgstr "Eintrag entfernen"
 msgid "Remove family group"
 msgstr "Familiengruppe entfernen"
 
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-remove-button/transaction-fee-remove-button.tsx
 msgid "Remove fee"
 msgstr "Gebühr entfernen"
 
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-remove-button/transaction-fee-remove-button.tsx
 msgid "Remove fee?"
 msgstr "Gebühr entfernen?"
 
@@ -9069,8 +9069,8 @@ msgid "Synced {relative}"
 msgstr "Synchronisiert: {relative}"
 
 #: src/account/utils/get-household-account-footer.util.ts
-msgid "Synced by {ownerName}"
-msgstr "Synchronisiert von {ownerName}"
+msgid "Synced by a family member"
+msgstr "Von einem Familienmitglied synchronisiert"
 
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Synced data"
@@ -9587,7 +9587,7 @@ msgstr "Dadurch bleibt ein Eintrag mit dem vollständigen Transaktionsbetrag erh
 msgid "This will link the selected expense to this refund income. You can revert it from the refund sources sheet."
 msgstr "Dadurch wird die ausgewählte Ausgabe mit dieser Rückerstattungseinnahme verknüpft. Du kannst dies im Rückerstattungsquellen-Dialog rückgängig machen."
 
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-remove-button/transaction-fee-remove-button.tsx
 msgid "This will remove the fee entry from this transaction."
 msgstr "Dadurch wird die Gebührenbuchung aus dieser Transaktion entfernt."
 

@@ -12,10 +12,7 @@ export const HomeEmptyState = () => {
     const { status, isInitialFetchComplete, fetchedRecordCount } = useAtomValue(cloudSyncStatusAtom);
 
     const isDownloading =
-        IS_CLOUD_BACKUP_SUPPORTED &&
-        isCloudSyncEnabled &&
-        !isInitialFetchComplete &&
-        (status === CloudSyncStatusEnum.IDLE || status === CloudSyncStatusEnum.SYNCING);
+        IS_CLOUD_BACKUP_SUPPORTED && isCloudSyncEnabled && !isInitialFetchComplete && status === CloudSyncStatusEnum.SYNCING;
 
     return isDownloading ? <AccountsDownloadingState fetchedRecordCount={fetchedRecordCount} /> : <AccountsEmptyState />;
 };

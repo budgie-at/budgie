@@ -12,13 +12,12 @@ import { GroupedListSwitchRow } from '../../../@generic/component/grouped-list-s
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { useICloudAccount } from '../../../cloud-backup/hook/use-icloud-account.hook';
 import { householdShareEverythingAtom } from '../../../household/constant/household-share-everything-atom.constant';
+import { HouseholdShareSelector } from '../../../household/constant/household-share.selector';
 import { householdAccountShareAtom } from '../../constant/household-account-share-atom.constant';
 import { householdAccountShareDraftAtom } from '../../constant/household-account-share-draft-atom.constant';
 import { getHouseholdAccountFooter } from '../../utils/get-household-account-footer.util';
 import { HouseholdShareAccountRow } from '../household-share-account-row/household-share-account-row';
 import { HouseholdSharedByOtherAccountRow } from '../household-shared-by-other-account-row/household-shared-by-other-account-row';
-
-import { HouseholdShareSelector } from './household-share-account-section.selector';
 
 interface Props {
     readonly accountId: number;
@@ -36,18 +35,16 @@ export const HouseholdShareAccountSection = ({ accountId, isBankSynced }: Props)
         return null;
     }
 
-    const { ownerName } = status;
     const isSharedByOther = status.state === HouseholdShareStateEnum.SHARED_BY_OTHER;
     const isSharedByEverything = !isSharedByOther && isDefined(everything) && everything.isEnabled;
     const isShared = draft ?? status.state === HouseholdShareStateEnum.SHARED_BY_ME;
     const isToggleable = !isSharedByOther && !isSharedByEverything;
-    const isSyncedByOther = isBankSynced && isSharedByOther && isDefined(ownerName);
+    const isSyncedByOther = isBankSynced && isSharedByOther;
     const { footer, sharedByEverythingReason } = getHouseholdAccountFooter(t, {
         isShared,
         isAvailable,
         isToggleable,
-        isSyncedByOther,
-        ownerName
+        isSyncedByOther
     });
 
     return (

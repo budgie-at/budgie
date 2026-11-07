@@ -6,8 +6,8 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { GroupedListSwitchRow } from '../../../@generic/component/grouped-list-switch-row/grouped-list-switch-row';
 import { useICloudAccount } from '../../../cloud-backup/hook/use-icloud-account.hook';
+import { HouseholdShareSelector } from '../../../household/constant/household-share.selector';
 import { useHouseholdParticipants } from '../../../household/hook/use-household-participants.hook';
-import { HouseholdShareSelector } from '../household-share-account-section/household-share-account-section.selector';
 
 interface Props {
     readonly value: boolean;

@@ -422,8 +422,8 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                         <BlogFaqItem question={<Trans>Does Budgie work without an internet connection?</Trans>}>
                             <Trans>
                                 Yes. All core functionality — adding transactions, viewing reports, managing budgets, and reviewing your
-                                history — works completely offline. Internet access is used only for bank sync, exchange rates, and iCloud
-                                backup or sync on iOS.
+                                history — works completely offline. Internet access is used only for bank sync, AI model downloads, exchange
+                                rates, and iCloud backup or sync on iOS.
                             </Trans>
                         </BlogFaqItem>
 

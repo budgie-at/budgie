@@ -13,7 +13,7 @@ import { GroupedListSwitchRow } from '../../../@generic/component/grouped-list-s
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
-import { HouseholdShareSelector } from '../../../account/component/household-share-account-section/household-share-account-section.selector';
+import { HouseholdShareSelector } from '../../../household/constant/household-share.selector';
 import { householdBudgetShareAtom } from '../../constant/household-budget-share-atom.constant';
 
 interface Props {
@@ -22,7 +22,7 @@ interface Props {
 
 export const BudgetShareField = ({ budgetId }: Props) => {
     const { t } = useLingui();
-    const { run } = useSingleFlight();
+    const { run, isLoading } = useSingleFlight();
     const status = AsyncResult.getOrElse(useLiveAtomValue(householdBudgetShareAtom(budgetId)), () => null);
 
     const handleChange = (next: boolean) =>
@@ -52,7 +52,8 @@ export const BudgetShareField = ({ budgetId }: Props) => {
             value={status.state === HouseholdShareStateEnum.SHARED_BY_ME}
             testID={HouseholdShareSelector.BudgetRow}
             switchTestID={HouseholdShareSelector.BudgetSwitch}
-            onChange={handleChange}
+            isLoading={isLoading}
+            {...(!isLoading && { onChange: handleChange })}
         />
     );
 

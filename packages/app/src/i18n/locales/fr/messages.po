@@ -2401,7 +2401,7 @@ msgstr "Illisible : vos données iCloud chiffrées ont été réinitialisées ap
 #: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
 #: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-remove-button/transaction-fee-remove-button.tsx
 #: src/transaction/components/transaction-form-actions/transaction-form-actions.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 #: src/transaction/hook/use-delete-transaction.hook.ts
@@ -7929,11 +7929,11 @@ msgstr "Supprimer l’entrée"
 msgid "Remove family group"
 msgstr "Supprimer le groupe familial"
 
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-remove-button/transaction-fee-remove-button.tsx
 msgid "Remove fee"
 msgstr "Supprimer les frais"
 
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-remove-button/transaction-fee-remove-button.tsx
 msgid "Remove fee?"
 msgstr "Supprimer les frais ?"
 
@@ -9069,8 +9069,8 @@ msgid "Synced {relative}"
 msgstr "Synchronisé {relative}"
 
 #: src/account/utils/get-household-account-footer.util.ts
-msgid "Synced by {ownerName}"
-msgstr "Synchronisé par {ownerName}"
+msgid "Synced by a family member"
+msgstr "Synchronisé par un membre de la famille"
 
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Synced data"
@@ -9587,7 +9587,7 @@ msgstr "Cela conservera une seule écriture avec le montant total de la transact
 msgid "This will link the selected expense to this refund income. You can revert it from the refund sources sheet."
 msgstr "Cela associera la dépense sélectionnée à ce revenu de remboursement. Vous pouvez l’annuler depuis la feuille des sources de remboursement."
 
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-remove-button/transaction-fee-remove-button.tsx
 msgid "This will remove the fee entry from this transaction."
 msgstr "Cela supprimera l’écriture de frais de cette transaction."
 

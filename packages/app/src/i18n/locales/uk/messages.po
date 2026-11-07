@@ -2401,7 +2401,7 @@ msgstr "Не вдасться прочитати: ваші зашифрован�
 #: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
 #: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-remove-button/transaction-fee-remove-button.tsx
 #: src/transaction/components/transaction-form-actions/transaction-form-actions.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 #: src/transaction/hook/use-delete-transaction.hook.ts
@@ -7929,11 +7929,11 @@ msgstr "Видалити запис"
 msgid "Remove family group"
 msgstr "Видалити родинну групу"
 
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-remove-button/transaction-fee-remove-button.tsx
 msgid "Remove fee"
 msgstr "Видалити комісію"
 
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-remove-button/transaction-fee-remove-button.tsx
 msgid "Remove fee?"
 msgstr "Видалити комісію?"
 
@@ -9069,8 +9069,8 @@ msgid "Synced {relative}"
 msgstr "Синхронізовано {relative}"
 
 #: src/account/utils/get-household-account-footer.util.ts
-msgid "Synced by {ownerName}"
-msgstr "Синхронізує {ownerName}"
+msgid "Synced by a family member"
+msgstr "Синхронізовано учасником родини"
 
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Synced data"
@@ -9587,7 +9587,7 @@ msgstr "Це залишить один запис із повною сумою �
 msgid "This will link the selected expense to this refund income. You can revert it from the refund sources sheet."
 msgstr "Це прив’яже вибрану витрату до цього доходу-повернення. Ви можете скасувати це на аркуші джерел повернення."
 
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-remove-button/transaction-fee-remove-button.tsx
 msgid "This will remove the fee entry from this transaction."
 msgstr "Це видалить запис комісії з цієї транзакції."
 

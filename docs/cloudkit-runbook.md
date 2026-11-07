@@ -71,7 +71,7 @@ xcrun cktool import-schema --team-id "$CK_TEAM" --container-id "$CK_CONTAINER" \
 5. Open <https://icloud.developer.apple.com/dashboard> → the container → Schema → Development and confirm every record type and field, including the `encrypted` marker on payload fields.
 6. Start a run only when step 3 exits clean; a rejected import leaves the previous schema in place and the app will fail record saves with `UNKNOWN_ITEM` or `CONSTRAINT_VIOLATION`.
 
-Expected: `validate-schema` exits 0, the console lists all thirteen record types, and every payload field except `schemaVersion` is encrypted.
+Expected: `validate-schema` exits 0, the console lists all thirteen app record types (plus `Users` and `cloudkit.share`), and every payload field except `schemaVersion` is encrypted.
 
 ### 1.4 Promote the schema to Production before release
 
@@ -177,7 +177,7 @@ Run each injection, then the money check in section 4 before moving on.
 2. Turn on airplane mode while the upload is in flight.
 3. Turn airplane mode off after 30 seconds.
 
-Expected: the batch fails with `NETWORK_UNAVAILABLE`, the app shows the backup row as "Waiting for network", nothing is lost or duplicated, and the upload resumes from the outbox. `NETWORK_UNAVAILABLE` is in `isRetriedByEngine`, so the engine keeps the pending change itself and does not need a manual retry.
+Expected: the batch fails with `NETWORK_UNAVAILABLE`, the sync row stays 'Syncing…' and resumes on its own; if a backup was due, the backup row reads 'Waiting for network', nothing is lost or duplicated, and the upload resumes from the outbox. `NETWORK_UNAVAILABLE` is in `isRetriedByEngine`, so the engine keeps the pending change itself and does not need a manual retry.
 
 ### F2 Force-quit during apply
 
@@ -195,7 +195,7 @@ Expected: events are consumed one at a time by `Stream.runForEach`. A failed bat
 2. Sign back in to the same Apple ID.
 3. Sync.
 
-Expected: `onAccountChange` arrives with `SIGN_OUT` and the previous user record name; pending saves are dropped in the native layer; the app pauses sync and keeps all local data. The backup row reads "iCloud unavailable". Signing back in emits `SIGN_IN`, and the next sync converges with A2 without duplicates.
+Expected: `onAccountChange` arrives with `SIGN_OUT` and the previous user record name; pending saves are dropped in the native layer; the app pauses sync and keeps all local data. The backup and sync rows read "Sign in to iCloud to turn on". Signing back in emits `SIGN_IN`, and the next sync converges with A2 without duplicates.
 
 ### F4 Switch Apple ID
 
@@ -249,7 +249,7 @@ Run on **every** device that took part, after sync settles:
 2. Settings → Data tools → **Rebuild balances** (subtitle "Recalculate from transactions"), confirm, wait for "Balances rebuilt".
 3. Re-read the totals and counts.
 4. Compare the same account's total and count across devices.
-5. On a device that restored a backup, also take Settings → Your data → **Backup** and run the replay from the repo root:
+5. On a device that restored a backup, also take Settings → **Backup file** and run the replay from the repo root:
 
 ```bash
 pnpm verify:backup <path-to-.db>

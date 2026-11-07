@@ -25,8 +25,8 @@ export const ProofBand = ({ locale }: Props) => (
                     <p className="measure text-sm md:text-base leading-relaxed text-muted-foreground text-pretty">
                         <Trans>
                             Every transaction, budget and chart is computed on your phone. There is no account to create and no Budgie
-                            database to leak; the copies that leave the phone go only to your own iCloud, encrypted. Turn the radio off and
-                            the app behaves exactly the same.
+                            database to leak; the copies that leave the phone go to your own iCloud, encrypted, and to your family only when
+                            you share. Turn the radio off and the app behaves exactly the same.
                         </Trans>
                     </p>
 

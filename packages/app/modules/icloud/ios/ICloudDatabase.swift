@@ -111,6 +111,7 @@ enum ICloudDatabase {
   }
 
   static func isRetriedByEngine(_ error: Error) -> Bool {
+    guard (error as NSError).domain == CKErrorDomain else { return false }
     switch CKError.Code(rawValue: (error as NSError).code) {
     case .some(.networkFailure), .some(.networkUnavailable), .some(.zoneBusy), .some(.serviceUnavailable), .some(.notAuthenticated), .some(.operationCancelled), .some(.requestRateLimited): return true
     default: return false

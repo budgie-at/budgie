@@ -2401,7 +2401,7 @@ msgstr "No se puede leer: tus datos cifrados de iCloud se restablecieron despué
 #: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
 #: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-remove-button/transaction-fee-remove-button.tsx
 #: src/transaction/components/transaction-form-actions/transaction-form-actions.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 #: src/transaction/hook/use-delete-transaction.hook.ts
@@ -7929,11 +7929,11 @@ msgstr "Eliminar entrada"
 msgid "Remove family group"
 msgstr "Eliminar grupo familiar"
 
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-remove-button/transaction-fee-remove-button.tsx
 msgid "Remove fee"
 msgstr "Eliminar comisión"
 
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-remove-button/transaction-fee-remove-button.tsx
 msgid "Remove fee?"
 msgstr "¿Eliminar comisión?"
 
@@ -9069,8 +9069,8 @@ msgid "Synced {relative}"
 msgstr "Sincronizado {relative}"
 
 #: src/account/utils/get-household-account-footer.util.ts
-msgid "Synced by {ownerName}"
-msgstr "Sincronizado por {ownerName}"
+msgid "Synced by a family member"
+msgstr "Sincronizado por un familiar"
 
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Synced data"
@@ -9587,7 +9587,7 @@ msgstr "Esto mantendrá un solo registro con el importe total de la transacción
 msgid "This will link the selected expense to this refund income. You can revert it from the refund sources sheet."
 msgstr "Esto vinculará el gasto seleccionado con este ingreso de reembolso. Puedes revertirlo desde la hoja de fuentes de reembolso."
 
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-remove-button/transaction-fee-remove-button.tsx
 msgid "This will remove the fee entry from this transaction."
 msgstr "Esto eliminará el asiento de comisión de esta transacción."
 

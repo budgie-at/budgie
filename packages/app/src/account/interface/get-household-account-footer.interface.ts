@@ -3,5 +3,4 @@ export interface HouseholdAccountFooterInterface {
     readonly isAvailable: boolean;
     readonly isToggleable: boolean;
     readonly isSyncedByOther: boolean;
-    readonly ownerName: string | null;
 }

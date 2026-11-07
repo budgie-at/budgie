@@ -190,7 +190,7 @@ export default async function Privat24StatementExcelImportPage(props: PageLangPa
                     <BlogArticleProse>
                         <Trans>
                             The file is read on your phone. The statement is not uploaded anywhere, and the operations stay in the database
-                            on your device, backed up only to storage you own.
+                            on your device, backed up to your own iCloud.
                         </Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
