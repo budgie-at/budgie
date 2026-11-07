@@ -1256,7 +1256,12 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
                 yield* endHouseholdUnlocked(HouseholdEndModeEnum.KEEP_PERSONAL_COPY);
             }, locked),
             leaveHousehold: Effect.fn('CloudSyncService.leaveHousehold')(function* () {
-                yield* transport.leaveShare(CLOUD_SYNC_RECORDS.householdZoneName);
+                yield* transport.leaveShare(CLOUD_SYNC_RECORDS.householdZoneName).pipe(
+                    Effect.catchIf(
+                        error => error.code === ICloudErrorCode.ZONE_NOT_FOUND || error.code === ICloudErrorCode.UNKNOWN_ITEM,
+                        () => Effect.void
+                    )
+                );
                 yield* endHouseholdUnlocked(HouseholdEndModeEnum.KEEP_PERSONAL_COPY);
             }, locked),
             resolveLineageConflict: Effect.fn('CloudSyncService.resolveLineageConflict')(function* (choice: CloudSyncLineageChoiceEnum) {
