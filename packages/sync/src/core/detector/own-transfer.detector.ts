@@ -82,7 +82,7 @@ class OwnTransferDetector {
     }
 
     private cardSuffixes(title: string): string[] {
-        return [...title.matchAll(/(?:[*•●]+|[xх]{2,})\s*(\d{4})(?!\d)/giu)].map(match => match[1]);
+        return [...title.matchAll(/(?:[*•●]+|[xх]{2,})\s*(\d{4})(?![\p{L}\p{N}])/giu)].map(match => match[1]);
     }
 
     private matchesName(title: string, name: string, abbreviated: boolean): boolean {

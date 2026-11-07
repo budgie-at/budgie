@@ -4,6 +4,7 @@ import {
     PRECISION,
     TransactionEntryEntityTable,
     TransactionEntryKindEnum,
+    TransactionEntryTypeEnum,
     ExternalSourceEnum,
     TRANSFER_PAIR_TIME_WINDOW_SECONDS,
     AccountTypeEnum,
@@ -82,6 +83,7 @@ export class OwnTransferRepository extends Context.Service<OwnTransferRepository
                         and(
                             eq(sourceEntry.transactionId, source.id),
                             eq(sourceEntry.kind, TransactionEntryKindEnum.PRIMARY),
+                            ne(sourceEntry.type, TransactionEntryTypeEnum.FEE),
                             isNull(sourceEntry.deletedAt),
                             isNull(sourceEntry.originalTransactionId)
                         )
@@ -108,7 +110,7 @@ export class OwnTransferRepository extends Context.Service<OwnTransferRepository
                         TransactionEntryEntityTable,
                         and(
                             eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id),
-                            transactionFilters.buildPrimaryLedgerEntryCondition(),
+                            transactionFilters.buildCategorizableEntryCondition(),
                             ne(TransactionEntryEntityTable.accountId, sourceEntry.accountId),
                             sql`abs(${TransactionEntryEntityTable.amount} - ${sourceEntry.amount}) <= ${PRECISION / 100}`
                         )

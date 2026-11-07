@@ -37,6 +37,10 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                     isPositiveNumber(entry.amount)
             );
 
+        const isSingleEntry = (transaction: TransactionWithEntriesEntityInterface) =>
+            candidateEntries(transaction).length === 1 &&
+            transaction.entries.filter(entry => entry.type !== TransactionEntryTypeEnum.FEE).length === 1;
+
         const pair = Effect.fnUntraced(function* (
             transaction: TransactionWithEntriesEntityInterface,
             counterpart: TransactionWithEntriesEntityInterface
@@ -69,11 +73,7 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
             repair: Effect.fn('OwnTransferRepairService.repair')(function* (scope: ConsolidationScanScopeInterface | null = null) {
                 const accounts = yield* repository.findAccounts;
                 const identities = (yield* repository.findIdentities).map(identity => identity.label).filter(isNotEmptyString);
-                const transactions = (yield* repository.findTransactions(scope)).filter(
-                    transaction =>
-                        candidateEntries(transaction).length === 1 &&
-                        transaction.entries.filter(entry => entry.type !== TransactionEntryTypeEnum.FEE).length === 1
-                );
+                const transactions = (yield* repository.findTransactions(scope)).filter(isSingleEntry);
                 const candidates = transactions.flatMap(transaction => {
                     const [entry] = candidateEntries(transaction);
                     const account = accounts.find(candidate => candidate.id === entry.accountId);
@@ -100,28 +100,27 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                 const eligibleOpposites = (yield* repository.findTransactions(
                     null,
                     opposites.map(link => link.oppositeId)
-                )).filter(
-                    transaction =>
-                        candidateEntries(transaction).length === 1 &&
-                        transaction.entries.filter(entry => entry.type !== TransactionEntryTypeEnum.FEE).length === 1
-                );
+                )).filter(isSingleEntry);
                 const reverseOpposites = yield* repository.findOpposites(opposites.map(link => link.oppositeId));
                 const decisions = candidates
-                    .map(({ transaction, matches }) => {
+                    .map(({ transaction, account, matches }) => {
                         const links = opposites.filter(link => link.transactionId === transaction.id);
                         const counterpart = eligibleOpposites.find(candidate => candidate.id === links[0]?.oppositeId);
 
-                        if (matches.length > 1) {
-                            return null;
-                        }
                         if (
                             links.length === 1 &&
                             isDefined(counterpart) &&
-                            reverseOpposites.filter(link => link.transactionId === counterpart.id).length === 1
+                            reverseOpposites.filter(link => link.transactionId === counterpart.id).length === 1 &&
+                            (isEmptyArray(matches) || matches.some(match => match.id === candidateEntries(counterpart)[0].accountId))
                         ) {
                             return { transaction, counterpart, target: null };
                         }
-                        if (isEmptyArray(links) && matches.length === 1 && !isDefined(matches[0].integrationId)) {
+                        if (
+                            isEmptyArray(links) &&
+                            matches.length === 1 &&
+                            !isDefined(matches[0].integrationId) &&
+                            matches[0].instrumentId === account.instrumentId
+                        ) {
                             return { transaction, counterpart: null, target: matches[0] };
                         }
 
