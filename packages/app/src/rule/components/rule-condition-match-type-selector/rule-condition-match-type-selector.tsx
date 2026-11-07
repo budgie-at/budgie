@@ -19,7 +19,7 @@ export const RuleConditionMatchTypeSelector = () => {
     ];
 
     return (
-        <View testID={RuleFormSelector.MatchTypeSelector} className="px-3xl py-md">
+        <View testID={RuleFormSelector.MatchTypeSelector} className="px-3xl py-xl">
             <SegmentedControl segments={segments} value={value} onChange={onChange} />
         </View>
     );

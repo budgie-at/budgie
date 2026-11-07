@@ -53,7 +53,7 @@ export const BudgetPeriodField = ({ onPeriodChange }: Props) => {
     }
 
     return (
-        <View className="px-3xl py-lg" collapsable={false} testID={BudgetSelector.SetupPeriodTabs}>
+        <View className="px-3xl py-xl" collapsable={false} testID={BudgetSelector.SetupPeriodTabs}>
             <SegmentedControl segments={options} value={field.value} onChange={handleChange} />
         </View>
     );
