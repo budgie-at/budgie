@@ -33,7 +33,7 @@ export const FaqPageJsonLd = ({ children, i18n, itemType }: Props) => {
             }
         }));
 
-    const faqSchema = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: items };
+    const faqSchema = { '@context': 'https://schema.org', '@type': 'FAQPage', inLanguage: i18n.locale, mainEntity: items };
 
     return isNotEmptyArray(items) && <JsonLd data={faqSchema} />;
 };

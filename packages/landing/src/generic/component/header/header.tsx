@@ -1,6 +1,6 @@
 'use client';
 
-import { Trans } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { ChevronRight, Menu, X } from 'reicon-react';
@@ -21,6 +21,7 @@ interface Props {
 const HEADER_SCROLL_THRESHOLD = 10;
 
 export const Header = ({ lang }: Props) => {
+    const { t } = useLingui();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const headerRef = useRef<HTMLElement>(null);
 
@@ -51,7 +52,7 @@ export const Header = ({ lang }: Props) => {
     return (
         <header className="site-header" ref={headerRef}>
             <div className="container flex h-16 items-center justify-between">
-                <Link className="flex items-center gap-2 font-bold hover:opacity-80 transition-opacity" href={`/${lang}`}>
+                <Link prefetch={false} className="flex items-center gap-2 font-bold hover:opacity-80 transition-opacity" href={`/${lang}`}>
                     <Logo />
 
                     <span>
@@ -59,8 +60,9 @@ export const Header = ({ lang }: Props) => {
                     </span>
                 </Link>
 
-                <nav className="hidden lg:flex gap-8">
+                <nav aria-label={t`Main`} className="hidden lg:flex gap-8">
                     <Link
+                        prefetch={false}
                         className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                         href={`/${lang}/features`}
                     >
@@ -68,6 +70,7 @@ export const Header = ({ lang }: Props) => {
                     </Link>
 
                     <Link
+                        prefetch={false}
                         className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                         href={`/${lang}#testimonials`}
                         onClick={handleScrollToTestimonials}
@@ -76,6 +79,7 @@ export const Header = ({ lang }: Props) => {
                     </Link>
 
                     <Link
+                        prefetch={false}
                         className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                         href={`/${lang}/blog`}
                     >
@@ -83,6 +87,7 @@ export const Header = ({ lang }: Props) => {
                     </Link>
 
                     <Link
+                        prefetch={false}
                         className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                         href={`/${lang}#faq`}
                         onClick={handleScrollToFaq}
@@ -96,7 +101,7 @@ export const Header = ({ lang }: Props) => {
                     <ThemeSwitcher />
 
                     <Button asChild className="hidden rounded-full lg:flex">
-                        <Link href={`/${lang}#waitlist`} onClick={handleScrollToWaitlist}>
+                        <Link prefetch={false} href={`/${lang}#waitlist`} onClick={handleScrollToWaitlist}>
                             <Trans>Join Waitlist</Trans>
                             <ChevronRight className="ml-1 size-4" />
                         </Link>

@@ -1,5 +1,8 @@
+import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import Link from 'next/link';
+
+import { getI18nInstance } from '../../../i18n/app-router-i18n';
 
 import type { ReactNode } from 'react';
 
@@ -9,7 +12,7 @@ interface Props {
 }
 
 export const FeatureBreadcrumbs = ({ locale, current }: Props) => (
-    <nav aria-label="breadcrumb" className="text-[0.8125rem] text-muted-foreground">
+    <nav aria-label={t(getI18nInstance(locale))`Breadcrumb`} className="text-[0.8125rem] text-muted-foreground">
         <ol className="flex flex-wrap items-center gap-2">
             <li>
                 <Link className="text-pillar font-medium hover:underline transition-colors" href={`/${locale}/features`}>
