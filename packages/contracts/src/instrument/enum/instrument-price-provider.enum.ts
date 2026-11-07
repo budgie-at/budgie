@@ -1,3 +1,4 @@
 export enum InstrumentPriceProviderEnum {
-    COINGECKO = 'COINGECKO'
+    COINGECKO = 'COINGECKO',
+    INZHUR = 'INZHUR'
 }

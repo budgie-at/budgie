@@ -10,6 +10,8 @@ import { MAX_FONT_SIZE_MULTIPLIER } from '../../constant/max-font-size-multiplie
 import { getBankLogoSlug } from '../../utils/get-bank-logo-slug.util';
 import { CircleIcon } from '../circle-icon/circle-icon';
 
+import { InzhurIcon } from './icons/inzhur-icon';
+
 interface Props {
     readonly bankProvider?: ExternalSourceEnum;
     readonly bankName?: string | null;
@@ -20,6 +22,10 @@ const TILE_RADIUS_RATIO = 0.28;
 const LETTER_SIZE_RATIO = 0.47;
 
 export const BankLogo = ({ bankProvider, bankName, size = 32 }: Props) => {
+    if (bankProvider === ExternalSourceEnum.INZHUR) {
+        return <InzhurIcon size={size} />;
+    }
+
     const hasName = isNotEmptyString(bankName);
     const nameSlug = hasName ? getBankLogoSlug(bankName) : null;
     const slug = (isDefined(bankProvider) ? BANK_PROVIDER_LOGO_SLUG[bankProvider] : null) ?? nameSlug;

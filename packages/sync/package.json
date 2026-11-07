@@ -1,6 +1,6 @@
 {
     "name": "@budgie/sync",
-    "version": "6.165.5",
+    "version": "6.166.0",
     "private": true,
     "description": "Bank synchronization package with multi-bank support",
     "sideEffects": false,
@@ -32,6 +32,7 @@
         "@budgie/consolidation": "workspace:*",
         "@budgie/contracts": "workspace:^",
         "@budgie/ledger": "workspace:*",
+        "@budgie/market": "workspace:*",
         "@budgie/rules": "workspace:*",
         "@liaugust/monobank-sdk": "^0.8.0",
         "@noble/hashes": "^2.4.0",

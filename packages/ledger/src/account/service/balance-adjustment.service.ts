@@ -26,14 +26,19 @@ export class BalanceAdjustmentService extends Context.Service<BalanceAdjustmentS
         const entryBaseValuationService = yield* EntryBaseValuationService;
         const millisecondsBeforeOldestEntry = 1_000;
 
-        const create = Effect.fn('BalanceAdjustmentService.create')(function* (accountId: number, delta: number, operatedAt: Date) {
+        const create = Effect.fn('BalanceAdjustmentService.create')(function* (
+            accountId: number,
+            delta: number,
+            operatedAt: Date,
+            title: string = ''
+        ) {
             const isIncome = isPositiveNumber(delta);
             const amount = Math.abs(delta);
             const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({ accountId, amount, operatedAt });
 
             const transaction = yield* transactionRepository.create({
                 type: TransactionTypeEnum.ADJUSTMENT,
-                title: '',
+                title,
                 comment: '',
                 externalId: null,
                 externalSource: null,

@@ -1,4 +1,4 @@
-import { AccountAssociationEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
+import { AccountAssociationEnum, AccountWithInstrumentEntityInterface, InstrumentTypeEnum } from '@budgie/contracts';
 
 import { PROTECTED_AMOUNT_PLACEHOLDER } from '../../@generic/constant/protected-amount-placeholder.constant';
 import { useIsAmountProtected } from '../../@generic/hook/use-is-amount-protected.hook';
@@ -16,7 +16,7 @@ export const useAccountDetailsBalanceLabel = () => {
             return PROTECTED_AMOUNT_PLACEHOLDER;
         }
 
-        return isCryptoAccountType(account.type)
+        return isCryptoAccountType(account.type) || account.instrument.type === InstrumentTypeEnum.FUND
             ? formatInstrumentAmount(balance, account.instrument.code, account.instrument.type)
             : formatDigits(balance, account.instrument.symbol);
     };

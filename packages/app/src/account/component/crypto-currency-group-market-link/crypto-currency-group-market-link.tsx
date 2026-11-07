@@ -13,7 +13,7 @@ import { ProtectedText } from '../../../@generic/component/protected-text/protec
 import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit-decimal-places.constant';
 import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
-import { useCryptoValuationRateQuery } from '../../../exchange-rate/query/use-crypto-valuation-rate.query';
+import { useUnitValuationRateQuery } from '../../../exchange-rate/query/use-unit-valuation-rate.query';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
@@ -36,7 +36,7 @@ export const CryptoCurrencyGroupMarketLink = ({ instrument, balance }: Props) =>
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatDigits = useDisplayFormatDigits();
     const formatCryptoDigits = useFormatDigits(0, MICRO_UNIT_DECIMAL_PLACES);
-    const valuationRate = useCryptoValuationRateQuery(instrument.id, defaultInstrument.id);
+    const valuationRate = useUnitValuationRateQuery(instrument.id, defaultInstrument.id);
     const isFractionalRate = isPositiveNumber(valuationRate) && valuationRate < 1;
     const rateFractionDigits = isFractionalRate ? Math.min(Math.max(Math.ceil(-Math.log10(valuationRate)) + 2, 4), 8) : 2;
     const formatRate = useFormatDigits(2, rateFractionDigits);

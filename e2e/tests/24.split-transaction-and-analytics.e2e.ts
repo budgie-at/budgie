@@ -5,7 +5,7 @@ import { test } from '../support/budgie/test.ts';
 import * as t from '../support/budgie/transactions.ts';
 
 const LABEL = 'TransactionCard.Label.E2E_Split_Expense';
-const SPLIT_SUBTITLE = /, Groceries, Restaurants & Cafes, E2E Txn Account,/;
+const SPLIT_SUBTITLE = /, Groceries, Restaurants & Cafes, E2E Txn Account$/;
 
 test('24 split transaction and analytics', { tags: ['transactions'] }, async ({ budgie }) => {
     const ctx = budgie.ctx;

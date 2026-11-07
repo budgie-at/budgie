@@ -2,7 +2,6 @@ import {
     BANK_FEE_CATEGORY_ID,
     CategorySourceEnum,
     ExternalSourceEnum,
-    TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
@@ -11,29 +10,13 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { buildPrimaryEntry } from '../../core/utils/build-primary-entry.util';
+
 import type { BinanceTransferInterface } from '../interface/binance-transfer.interface';
-import type { AccountEntityInterface, TransactionCreateInputInterface, TransactionEntryCreateInputInterface } from '@budgie/contracts';
+import type { AccountEntityInterface, TransactionCreateInputInterface } from '@budgie/contracts';
 
 const FEE_ENTRY_EXTERNAL_ID_SUFFIX = ':fee';
 const MILLISECONDS_PER_SECOND = 1000;
-
-const buildEntry = (
-    accountId: number,
-    type: TransactionEntryTypeEnum,
-    amount: number,
-    externalId: string
-): TransactionEntryCreateInputInterface => ({
-    accountId,
-    type,
-    amount,
-    categoryId: null,
-    categorySource: CategorySourceEnum.USER,
-    mccCategoryId: null,
-    kind: TransactionEntryKindEnum.PRIMARY,
-    externalId,
-    exchangeRate: 1,
-    toIban: null
-});
 
 export const mapBinanceTransfersToInputs = <E, R>(
     transfers: BinanceTransferInterface[],
@@ -51,7 +34,7 @@ export const mapBinanceTransfersToInputs = <E, R>(
                     isPositiveNumber(transfer.feeAmount) && isDefined(feeAccount)
                         ? [
                               {
-                                  ...buildEntry(
+                                  ...buildPrimaryEntry(
                                       feeAccount.id,
                                       TransactionEntryTypeEnum.FEE,
                                       transfer.feeAmount,
@@ -77,8 +60,8 @@ export const mapBinanceTransfersToInputs = <E, R>(
                     toAccountId: toAccount.id,
                     tagIds: [],
                     entries: [
-                        buildEntry(fromAccount.id, TransactionEntryTypeEnum.CREDIT, transfer.fromAmount, transfer.externalId),
-                        buildEntry(toAccount.id, TransactionEntryTypeEnum.DEBIT, transfer.toAmount, transfer.externalId),
+                        buildPrimaryEntry(fromAccount.id, TransactionEntryTypeEnum.CREDIT, transfer.fromAmount, transfer.externalId),
+                        buildPrimaryEntry(toAccount.id, TransactionEntryTypeEnum.DEBIT, transfer.toAmount, transfer.externalId),
                         ...feeEntries
                     ]
                 });

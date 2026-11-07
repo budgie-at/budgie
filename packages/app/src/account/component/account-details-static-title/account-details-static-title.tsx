@@ -7,6 +7,7 @@ import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 import { CHROME_TITLE_TEXT_PROPS } from '../../../@generic/constant/chrome-title-text-props.constant';
 import { ACCOUNT_DETAILS_NAV_BALANCE_FADE_START } from '../../constant/account-details-nav-balance-fade-start.constant';
 import { useAccountDetailsBalanceLabel } from '../../hook/use-account-details-balance-label.hook';
+import { useAccountHeroValue } from '../../hook/use-account-hero-value.hook';
 
 import type { AccountAssociationEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
 
@@ -19,7 +20,8 @@ interface Props {
 const FADE_DISTANCE = 16;
 const Z_INDEX_STYLE = { zIndex: 4 };
 
-export const AccountDetailsStaticTitle = ({ title, balance, account }: Props) => {
+export const AccountDetailsStaticTitle = ({ title, ...props }: Props) => {
+    const { balance, account } = useAccountHeroValue(props.account, props.balance);
     const getBalanceLabel = useAccountDetailsBalanceLabel();
     const { config } = useScreenChrome();
     const { scrollY } = useCollapsibleHeaderScroll();

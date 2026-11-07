@@ -20,7 +20,7 @@ export const AccountListItem = ({ account, balancesByAccountId }: Props) => {
 
     const accountBalance = balancesByAccountId.get(account.id);
     const balance = accountBalance?.balance ?? 0;
-    const convertedBalance = accountBalance?.convertedBalance ?? null;
+    const convertedBalance = accountBalance?.isValued === true ? accountBalance.convertedBalance : null;
     const isAwaitingBalance = !(accountBalance?.hasLedgerHistory ?? true) && MANUAL_BALANCE_ACCOUNT_TYPES.has(account.type);
 
     if (isAwaitingBalance) {
