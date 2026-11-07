@@ -7,6 +7,7 @@ import { EmptyFn, isDefined } from '@rnw-community/shared';
 
 import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit-decimal-places.constant';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
+import { isInzhurCashAccount } from '../../../inzhur/utils/is-inzhur-cash-account.util';
 import { useAccountSync } from '../../../sync/hook/use-account-sync.hook';
 import { BANK_PROVIDER_TITLE } from '../../constant/bank-provider-title.constant';
 import { AccountFormBindingsInterface } from '../../interface/account-form-bindings.interface';
@@ -43,7 +44,7 @@ export const UpdateAccountScreen = (props: Props) => {
     const readoutCaption = isDefined(sync?.forwardSyncedAt)
         ? `${readoutSource} · ${formatMonthAndDayWithTime(sync.forwardSyncedAt)}`
         : readoutSource;
-    const hero = isReadOnlyBalance ? (
+    const balanceHero = isReadOnlyBalance ? (
         <AccountBalanceReadout
             value={fields.currentBalance.field.value}
             caption={readoutCaption}
@@ -61,6 +62,7 @@ export const UpdateAccountScreen = (props: Props) => {
             showInstrumentAfterAmount={showInstrumentAfterAmount}
         />
     );
+    const hero = isInzhurCashAccount(account) ? null : balanceHero;
 
     return (
         <UpdateAccountPage account={account} fields={fields} onSubmit={onSubmit} isSubmitting={isSubmitting} hero={hero}>

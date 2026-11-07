@@ -14,6 +14,7 @@ trap cleanup EXIT
 
 mkdir -p "$TEMP_DIR/bin" "$TEMP_DIR/scripts" "$TEMP_DIR/fixtures" "$TEMP_DIR/locks"
 cp "$SCRIPT_DIR/prepare-date-sensitive-fixtures.js" "$TEMP_DIR/scripts/"
+cp "$WORKSPACE_DIR/fixtures/01.db" "$TEMP_DIR/fixtures/"
 cp "$WORKSPACE_DIR/fixtures/07.db" "$TEMP_DIR/fixtures/"
 cp "$WORKSPACE_DIR/fixtures/12.db" "$TEMP_DIR/fixtures/"
 cp "$WORKSPACE_DIR/fixtures/14.db" "$TEMP_DIR/fixtures/"

@@ -1,4 +1,4 @@
-import { AccountTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
@@ -49,6 +49,7 @@ export const InstitutionDetailsPage = ({ integration, institution, balancesByAcc
     const providerTitle = isDefined(titleDescriptor) ? t(titleDescriptor) : institution.provider;
     const title = getBankIntegrationTitle(providerTitle, institution.label, institution.groupNumber);
     const contextValue = { integration, capabilities: getBankIntegrationCapabilities(integration) };
+    const titlePrefix = institution.provider === ExternalSourceEnum.INZHUR ? null : institution.provider;
     const headerTitle = isStaticHeader ? (
         <AccountDetailsStaticTitle title={title} balance={displayTotal} account={totalAccount} />
     ) : (
@@ -57,7 +58,7 @@ export const InstitutionDetailsPage = ({ integration, institution, balancesByAcc
 
     const transactionList = (
         <View className="flex-1">
-            <TransactionAccountTitlePrefixContext.Provider value={institution.provider}>
+            <TransactionAccountTitlePrefixContext.Provider value={titlePrefix}>
                 <CollapsibleChromeTransactionList accountIds={institution.accounts.map(account => account.id)}>
                     <InstitutionDetailsSummary institution={institution} balancesByAccountId={balancesByAccountId} />
                 </CollapsibleChromeTransactionList>

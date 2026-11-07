@@ -7,7 +7,6 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { PRECISION } from '../../@generic/constant/precision.constant';
 import { LanguageEnum } from '../../@generic/enum/language.enum';
 import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
@@ -18,6 +17,7 @@ import {
     getInverseExchangeRateSql,
     getInverseHistoricalExchangeRateSql
 } from '../../@generic/utils/get-exchange-rate-sql.util';
+import { roundToMinorUnitSql } from '../../@generic/utils/round-to-minor-unit-sql.util';
 import { CRYPTO_ACCOUNT_TYPES } from '../../account/constant/crypto-account-types.constant';
 import { LIQUID_ACCOUNT_TYPES } from '../../account/constant/liquid-account-types.constant';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
@@ -86,11 +86,6 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
             ${getHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
             ${getInverseHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)}
         )`;
-
-        const minorUnitMicroUnits = PRECISION / 100;
-
-        const roundToMinorUnitSql = (value: SQL) =>
-            sql<number>`(CAST(ROUND((${value}) * 1.0 / ${minorUnitMicroUnits}) AS INTEGER) * ${minorUnitMicroUnits})`;
 
         const buildEntryBaseValueSql = (defaultInstrumentId: number) =>
             roundToMinorUnitSql(sql`CASE

@@ -12,6 +12,7 @@ command -v sqlite3 >/dev/null 2>&1 || PATH="$SCRIPT_DIR/sqlite-fallback:$PATH"
 STATEMENT_FIXTURE_PATHS="
 erste/erste-statement-008.pdf
 erste/erste-statement-009.pdf
+inzhur/inzhur-operations-001.xlsx
 privatbank/privatbank-statement-001.xlsx
 privatbank/privatbank-statement-002.xlsx
 receipt/receipt-e2e.pdf
@@ -228,6 +229,7 @@ install_database_fixture "$DYNAMIC_FIXTURES_DIR/15.db" "15.db"
 install_database_fixture "$SCRIPT_DIR/../fixtures/13.db" "13.db"
 install_database_fixture "$SCRIPT_DIR/../fixtures/01.db" "16.db"
 install_database_fixture "$SCRIPT_DIR/../fixtures/01.db" "23.db"
+install_database_fixture "$DYNAMIC_FIXTURES_DIR/44-inzhur.db" "44-inzhur.db"
 install_database_fixture "$DYNAMIC_FIXTURES_DIR/14.db" "14.db"
 install_database_fixture "$DYNAMIC_FIXTURES_DIR/20-recurring-calendar.db" "20.db"
 install_database_fixture "$DYNAMIC_FIXTURES_DIR/21.db" "21.db"

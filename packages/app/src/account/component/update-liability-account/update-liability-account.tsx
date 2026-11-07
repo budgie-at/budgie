@@ -1,4 +1,4 @@
-import { AccountTypeEnum, AccountWithInstrumentEntityInterface, InstrumentTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, AccountWithInstrumentEntityInterface, ExternalSourceEnum, InstrumentTypeEnum } from '@budgie/contracts';
 import { AccountService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -11,6 +11,8 @@ import { CreateAccountCurrencyField } from '../../../@generic/component/create-a
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
+import { UpdateInzhurAccountPage } from '../../../inzhur/component/update-inzhur-account-page/update-inzhur-account-page';
+import { isInzhurFundAccount } from '../../../inzhur/utils/is-inzhur-fund-account.util';
 import { AccountConnectBankRow } from '../../../sync/component/account-connect-bank-row/account-connect-bank-row';
 import { AccountSyncCard } from '../../../sync/component/account-sync-card/account-sync-card';
 import { useAccountUpdateBindings } from '../../hooks/use-account-update-bindings.hook';
@@ -46,6 +48,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         instrumentId: useController({ control, name: 'instrumentId' })
     };
     const stickyInstrument = useStickyDefinedValue(instrument);
+    const isBankManaged = account.externalSource !== ExternalSourceEnum.INZHUR;
     const isSyncedAccount = account.type === AccountTypeEnum.BANK_SYNC || account.type === AccountTypeEnum.CRYPTO_SYNC;
     const currencyField =
         account.type === AccountTypeEnum.CRYPTO ? (
@@ -62,6 +65,18 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         return <EmptyScreen />;
     }
 
+    if (isInzhurFundAccount(account)) {
+        return (
+            <UpdateInzhurAccountPage
+                account={account}
+                balance={balance}
+                fields={fields}
+                isSubmitting={isSubmitting}
+                onSubmit={handleSubmit}
+            />
+        );
+    }
+
     return (
         <UpdateAccountScreen
             account={account}
@@ -72,8 +87,8 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
             onSubmit={handleSubmit}
         >
             {currencyField}
-            {isSyncedAccount ? <AccountSyncCard accountId={account.id} /> : null}
-            {account.type === AccountTypeEnum.BANK || account.type === AccountTypeEnum.BANK_SYNC ? (
+            {isBankManaged && isSyncedAccount ? <AccountSyncCard accountId={account.id} /> : null}
+            {isBankManaged && (account.type === AccountTypeEnum.BANK || account.type === AccountTypeEnum.BANK_SYNC) ? (
                 <AccountConnectBankRow accountId={account.id} />
             ) : null}
         </UpdateAccountScreen>

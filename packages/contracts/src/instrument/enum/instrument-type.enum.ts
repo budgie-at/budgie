@@ -3,5 +3,6 @@ export enum InstrumentTypeEnum {
     CRYPTO = 'CRYPTO',
     EQUITY = 'EQUITY',
     ETF = 'ETF',
-    COMMODITY = 'COMMODITY'
+    COMMODITY = 'COMMODITY',
+    FUND = 'FUND'
 }

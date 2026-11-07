@@ -32,6 +32,7 @@ interface Props {
     readonly balance: number;
     readonly convertedBalance: number | null;
     readonly amountLabel?: string;
+    readonly subtitle?: string;
     readonly onImport?: EmptyFn;
     readonly children?: ReactNode;
 }
@@ -46,7 +47,7 @@ const amountVariants = cva('gap-y-xxs', {
     variants: { isStacked: { true: 'items-start', false: 'max-w-[55%] shrink-0 items-end' } }
 });
 
-export const AccountCardBase = ({ account, balance, convertedBalance, amountLabel, onImport, children }: Props) => {
+export const AccountCardBase = ({ account, balance, convertedBalance, amountLabel, subtitle, onImport, children }: Props) => {
     const { id, title, icon, iban, type, integrationId, sync, instrument } = account;
 
     const { t } = useLingui();
@@ -102,11 +103,19 @@ export const AccountCardBase = ({ account, balance, convertedBalance, amountLabe
                     )}
 
                     {isStacked ? null : (
-                        <AccountCardTitle title={title} iban={iban} syncState={syncState} syncStateLabel={syncStateLabel} />
+                        <AccountCardTitle
+                            subtitle={subtitle}
+                            title={title}
+                            iban={iban}
+                            syncState={syncState}
+                            syncStateLabel={syncStateLabel}
+                        />
                     )}
                 </View>
 
-                {isStacked ? <AccountCardTitle title={title} iban={iban} syncState={syncState} syncStateLabel={syncStateLabel} /> : null}
+                {isStacked ? (
+                    <AccountCardTitle subtitle={subtitle} title={title} iban={iban} syncState={syncState} syncStateLabel={syncStateLabel} />
+                ) : null}
 
                 <View className={amountVariants({ isStacked })}>
                     {children ?? <AccountCardBalance title={title} balance={balance} instrumentSymbol={instrument.symbol} />}

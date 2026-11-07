@@ -7,7 +7,11 @@ export const getMarketChartTone = (values: readonly number[]): MarketChartToneEn
     const first = values.at(0);
     const last = values.at(-1);
 
-    if (!isDefined(first) || !isDefined(last) || !isPositiveNumber(first) || Math.abs((last - first) / first) < NEUTRAL_CHANGE_SHARE) {
+    if (!isDefined(first) || !isDefined(last) || last === first) {
+        return MarketChartToneEnum.NEUTRAL;
+    }
+
+    if (isPositiveNumber(first) && Math.abs((last - first) / first) < NEUTRAL_CHANGE_SHARE) {
         return MarketChartToneEnum.NEUTRAL;
     }
 

@@ -15,5 +15,6 @@ export type TransactionUpdateInputInterface = Partial<
         | 'needsEmbedding'
         | 'updatedBy'
         | 'importFingerprint'
+        | 'fundAccountId'
     >
 >;

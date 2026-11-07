@@ -3,7 +3,6 @@ import {
     AccountTypeEnum,
     BankIntegrationEntityTable,
     DebtEventEntityTable,
-    InstrumentEntityTable,
     convertFromMicroUnits
 } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
@@ -29,7 +28,7 @@ import type { InstitutionGroupInterface } from '../interface/institution-group.i
 import type { AccountWithSyncEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
 
 export const homeAccountRowsAtom = databaseQueryFamily(
-    [...ACCOUNT_CONVERTED_BALANCE_TABLES, InstrumentEntityTable, DebtEventEntityTable, BankIntegrationEntityTable],
+    [...ACCOUNT_CONVERTED_BALANCE_TABLES, DebtEventEntityTable, BankIntegrationEntityTable],
     AccountBalanceRepository,
     (accountBalanceRepository, defaultInstrumentId: number) => accountBalanceRepository.getHomeAccountRows(defaultInstrumentId)
 );
@@ -89,6 +88,17 @@ const buildInstitutionGroups = (
 const isCryptoInstitution = (institution: InstitutionGroupInterface): boolean =>
     institution.accounts.every(account => account.type === AccountTypeEnum.CRYPTO_SYNC);
 
+const isInvestmentInstitution = (institution: InstitutionGroupInterface): boolean =>
+    institution.accounts.some(account => account.type === AccountTypeEnum.STOCKS);
+
+const getInstitutionSectionType = (institution: InstitutionGroupInterface): AccountTypeEnum => {
+    if (isCryptoInstitution(institution)) {
+        return AccountTypeEnum.CRYPTO;
+    }
+
+    return isInvestmentInstitution(institution) ? AccountTypeEnum.STOCKS : AccountTypeEnum.BANK;
+};
+
 const buildHomePageSections = (
     activeAccounts: AccountWithSyncEntityInterface[],
     integrationProviders: ReadonlyMap<number, ExternalSourceEnum>,
@@ -107,10 +117,7 @@ const buildHomePageSections = (
         integrationLabels,
         balanceSummary.balancesByAccountId
     );
-    const institutionsByType = new Map([
-        [AccountTypeEnum.BANK, institutions.filter(institution => !isCryptoInstitution(institution))],
-        [AccountTypeEnum.CRYPTO, institutions.filter(isCryptoInstitution)]
-    ]);
+    const institutionsByType = groupBy(institutions, getInstitutionSectionType);
     const debtGroups = groupBy(debtAccounts, account => getDebtSectionKind(account.debtType));
 
     const typeGroups = groupBy(typeAccounts, account => account.type);
@@ -251,6 +258,7 @@ export const useHomePageDataQuery = () => {
             debtType: row.account.debtType,
             includeInNetWorth: row.account.includeInNetWorth,
             isActive: row.account.isActive,
+            isValued: row.isValued,
             hasLedgerHistory: row.hasLedgerHistory === 1
         };
         const { accountId, convertedBalance, isActive } = homeAccountBalance;

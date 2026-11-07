@@ -16,22 +16,21 @@ interface Props {
     readonly amount: ReactNode;
     readonly surfaceVariables?: ComponentProps<typeof ScopedVariables>['variables'];
     readonly context?: ReactNode;
-    readonly children: ReactNode;
+    readonly suggestions?: ReactNode;
+    readonly children?: ReactNode;
     readonly keypad?: ReactNode;
     readonly actions: ReactNode;
     readonly onDismissKeypad?: () => void;
-    readonly topInset?: number;
 }
 
 const ENTERING = FadeInDown.springify().duration(300).dampingRatio(1).reduceMotion(ReduceMotion.System);
 const EXIT_DURATION = 140;
-const DEFAULT_TOP_INSET = 44;
 const FOOTER_STYLE = { paddingHorizontal: 20 };
 const ACTION_PLATE_STYLE = { marginHorizontal: -20, paddingHorizontal: 20 };
 const EXITING = FadeOutDown.springify().duration(EXIT_DURATION).dampingRatio(1).reduceMotion(ReduceMotion.System);
 
 export const QuickFormLayout = (props: Props) => {
-    const { amount, context, children, keypad, actions, surfaceVariables, onDismissKeypad = emptyFn, topInset = DEFAULT_TOP_INSET } = props;
+    const { amount, context, suggestions, children, keypad, actions, surfaceVariables, onDismissKeypad = emptyFn } = props;
     const rowColor = useCSSVariable('--color-transaction-form-row');
     const { fontScale, height } = useWindowDimensions();
     const isCompact = isCompactTransactionForm(fontScale, height);
@@ -50,7 +49,7 @@ export const QuickFormLayout = (props: Props) => {
         <ScopedVariables variables={rowColors}>
             <TransactionKeypadContext value={keypadContext}>
                 <BottomChromeInsetProvider>
-                    <QuickFormScroll topInset={topInset}>
+                    <QuickFormScroll topInset={44}>
                         <View className={amountClassName}>{amount}</View>
                         {context}
                         <View className={fieldsClassName} onTouchStart={onDismissKeypad}>
@@ -61,6 +60,7 @@ export const QuickFormLayout = (props: Props) => {
                         <ScreenChromeFooter contentStyle={FOOTER_STYLE} includeBottomSafeArea={false}>
                             <View style={actionPlateStyle} className="bg-surface pt-[8px] pb-safe-or-[8px]">
                                 <SheetBottomFade className={fadeClassName} />
+                                {suggestions}
                                 {isExpanded ? (
                                     <Animated.View entering={ENTERING} exiting={EXITING}>
                                         {keypad}

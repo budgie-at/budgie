@@ -6,6 +6,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { CollapsibleChromeScrollFade } from '../../../@generic/component/collapsible-chrome-scroll-fade/collapsible-chrome-scroll-fade';
 import { cn } from '../../../@generic/utils/cn.util';
+import { joinWithMiddot } from '../../../@generic/utils/join-with-middot.util';
 import { useAccountSync } from '../../../sync/hook/use-account-sync.hook';
 import { ACCOUNT_SYNC_STATE_COLOR } from '../../constant/account-sync-state-color.constant';
 import { ACCOUNT_SYNC_STATE_LABEL } from '../../constant/account-sync-state-label.constant';
@@ -24,7 +25,7 @@ export const AccountDetailsStatusLine = ({ account }: Props) => {
     const syncState = getAccountSyncState(sync);
     const providerTitle = isDefined(sync) ? BANK_PROVIDER_TITLE[sync.provider] : null;
     const ibanSuffix = isNotEmptyString(account.iban) ? `••${account.iban.slice(-4)}` : null;
-    const details = [isDefined(providerTitle) ? t(providerTitle) : null, ibanSuffix].filter(isDefined).join(' · ');
+    const details = joinWithMiddot([isDefined(providerTitle) ? t(providerTitle) : null, ibanSuffix]);
     const detailsSuffix = isNotEmptyString(details) ? ` · ${details}` : '';
 
     if (!isDefined(syncState)) {

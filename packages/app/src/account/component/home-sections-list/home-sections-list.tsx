@@ -92,7 +92,7 @@ export const HomeSectionsList = ({
     );
 
     const renderItem: SectionListRenderItem<HomeSectionInterface['data'][number], HomeSectionInterface> = ({ item, index, section }) => (
-        <TransactionRowSurface position={getHomeSectionItemPosition(section, index)}>
+        <TransactionRowSurface separatorInset={64} position={getHomeSectionItemPosition(section, index)}>
             <HomeSectionItem item={item} section={section} balancesByAccountId={balancesByAccountId} />
         </TransactionRowSurface>
     );
