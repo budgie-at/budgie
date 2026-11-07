@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.167.7](https://github.com/budgie-at/budgie/compare/v6.167.6...v6.167.7) (2026-11-07)
+
+### Bug Fixes
+
+* **app:** apply categories picked from the category sheet ([#2031](https://github.com/budgie-at/budgie/issues/2031)) ([0eb8e74](https://github.com/budgie-at/budgie/commit/0eb8e741effe128c454843087cc51293e9ab6d15))
+
+
 ## [6.167.5](https://github.com/budgie-at/budgie/compare/v6.167.4...v6.167.5) (2026-11-07)
 
 ### Bug Fixes
