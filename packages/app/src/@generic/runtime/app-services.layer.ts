@@ -101,6 +101,7 @@ import {
     SyncOperationMetadataService,
     SyncProviderRegistryService,
     SyncRepairService,
+    OwnTransferRepairService,
     TransferConsolidationService,
     UnpairedOwnCardTransferRepairService
 } from '@budgie/sync';
@@ -258,6 +259,7 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     ExternalAccountService.layer,
     AccountReissueMergeService.layer,
     SyncRepairService.layer,
+    OwnTransferRepairService.layer,
     SyncBalanceReconciliationService.layer,
     SyncOperationMetadataService.layer,
     PrivatbankCategoryMatcherService.layer,

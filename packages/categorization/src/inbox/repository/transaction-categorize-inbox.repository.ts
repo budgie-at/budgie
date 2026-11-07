@@ -234,9 +234,10 @@ export class TransactionCategorizeInboxRepository extends Context.Service<Transa
                         .where(
                             buildEvidenceWhere([
                                 isNotNull(TransactionEntryEntityTable.categoryId),
-                                notInArray(TransactionEntryEntityTable.categorySource, [
-                                    CategorySourceEnum.MCC_DEFAULT,
-                                    CategorySourceEnum.INBOX
+                                inArray(TransactionEntryEntityTable.categorySource, [
+                                    CategorySourceEnum.USER,
+                                    CategorySourceEnum.RULE,
+                                    CategorySourceEnum.MANUAL_EXPENSE_DUPLICATE
                                 ]),
                                 eq(CategoryEntityTable.isSystemCategory, false),
                                 isNull(CategoryEntityTable.deletedAt)

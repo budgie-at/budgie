@@ -4,6 +4,7 @@ import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { useReducer } from 'react';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { useToday } from '../../@generic/hook/use-today.hook';
 import { defaultInstrumentIdAtom } from '../../settings/constants/settings-atoms.constant';
 import { atmCashWithdrawalTransactionIdsAtom } from '../constant/categorize-inbox-atoms.constant';
 import { CategorizeInboxActionTypeEnum } from '../enum/categorize-inbox-action-type.enum';
@@ -65,6 +66,7 @@ export const useCategorizeInbox = (
     filters: TransactionFilterInterface,
     { rowsAtom, evidenceAtom, labelKind }: Pick<CategorizeInboxStrategyInterface, 'rowsAtom' | 'evidenceAtom' | 'labelKind'>
 ): CategorizeInboxDataInterface => {
+    const now = useToday();
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
     const inboxResult = AsyncResult.all([useLiveAtomValue(rowsAtom(filters)), useLiveAtomValue(evidenceAtom)]);
     const [rows, evidence] = AsyncResult.getOrElse(inboxResult, () => EMPTY_INBOX);
@@ -89,7 +91,8 @@ export const useCategorizeInbox = (
     const { items, remainingCount, placements, clustersByKey } = categorizeInboxEngineService.placeClusters(
         categorizeInboxEngineService.buildClusters(
             rows,
-            categorizeInboxEngineService.buildContext(evidence, defaultInstrumentId, labelKind)
+            categorizeInboxEngineService.buildContext(evidence, defaultInstrumentId, labelKind),
+            now
         ),
         session,
         state.hidden,

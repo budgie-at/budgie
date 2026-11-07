@@ -16,9 +16,7 @@ export const getCategorizeInboxMonthlyCounts = (
     }
 
     const timestamps = rows.map(row => row.operatedAt.getTime());
-    const currentMonth = startOfMonth(new Date());
-    const newestRowMonth = startOfMonth(new Date(Math.max(...timestamps)));
-    const lastMonth = newestRowMonth > currentMonth ? newestRowMonth : currentMonth;
+    const lastMonth = startOfMonth(new Date(Math.max(...timestamps)));
     const firstMonth = startOfMonth(new Date(Math.min(...timestamps)));
     const bucketCount = Math.min(
         MAX_MONTH_BUCKET_COUNT,

@@ -26,6 +26,7 @@ export const CategorizeInboxSectionChip = ({ section, count, isActive, onPress }
         [CategorizeInboxSectionEnum.CONFIDENT]: t({ context: 'Categorize inbox section chip', message: 'Ready' }),
         [CategorizeInboxSectionEnum.CASH_WITHDRAWALS]: t({ context: 'Categorize inbox section chip', message: 'Cash' }),
         [CategorizeInboxSectionEnum.REVIEW]: t({ context: 'Categorize inbox section chip', message: 'Your call' }),
+        [CategorizeInboxSectionEnum.OLDER]: t({ context: 'Categorize inbox section chip', message: 'Older' }),
         [CategorizeInboxSectionEnum.ONE_OFFS]: t({ context: 'Categorize inbox section chip', message: 'Other' })
     };
     const label = sectionLabels[section];

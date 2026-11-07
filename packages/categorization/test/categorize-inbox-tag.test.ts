@@ -38,7 +38,8 @@ const buildSingleCluster = (
 ) => {
     const [cluster] = categorizeInboxEngineService.buildClusters(
         rows,
-        categorizeInboxEngineService.buildContext(buildEvidence(type, title), 1, kind)
+        categorizeInboxEngineService.buildContext(buildEvidence(type, title), 1, kind),
+        new Date('2026-11-07T12:00:00Z')
     );
 
     return cluster;
@@ -145,7 +146,8 @@ describe('categorization/inbox-tag', () => {
                 buildRow(3, TransactionTypeEnum.EXPENSE, 'BANKOMATENSHOP WIEN 1010'),
                 buildRow(4, TransactionTypeEnum.INCOME, 'ATM deposit')
             ],
-            categorizeInboxEngineService.buildContext([], 1, CategorizeInboxLabelKindEnum.TAG)
+            categorizeInboxEngineService.buildContext([], 1, CategorizeInboxLabelKindEnum.TAG),
+            new Date('2026-11-07T12:00:00Z')
         );
         const cashWithdrawals = clusters.filter(cluster => cluster.section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS);
 
@@ -158,7 +160,8 @@ describe('categorization/inbox-tag', () => {
         const buildClusters = (rows: CategorizeInboxRowInterface[]) =>
             categorizeInboxEngineService.buildClusters(
                 rows,
-                categorizeInboxEngineService.buildContext([], 1, CategorizeInboxLabelKindEnum.TAG)
+                categorizeInboxEngineService.buildContext([], 1, CategorizeInboxLabelKindEnum.TAG),
+                new Date('2026-11-07T12:00:00Z')
             );
 
         it('separates titles that only share their first words', () => {
