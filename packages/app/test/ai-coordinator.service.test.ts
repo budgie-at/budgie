@@ -58,7 +58,7 @@ vi.mock('../src/ai/service/translation-drainer.service', async () => ({
 vi.mock('../src/ai/store/embedding-progress.store', async () => ({ EmbeddingProgressStore: await tagModule('EmbeddingStore') }));
 vi.mock('../src/ai/store/translation-progress.store', async () => ({ TranslationProgressStore: await tagModule('TranslationStore') }));
 
-const counters = { downloadStarts: 0 };
+const counters = { downloadStarts: 0, residencySuspends: 0, isDownloadSuspendFailing: false };
 
 const settings = {
     ...DEFAULT_SETTINGS,
@@ -70,7 +70,7 @@ const settings = {
 
 const downloadLayer = Layer.mock(AiModelDownloadService)({
     start: () => Effect.sync(() => void (counters.downloadStarts += 1)),
-    suspend: () => Effect.void,
+    suspend: () => (counters.isDownloadSuspendFailing ? Effect.die('download suspend failed') : Effect.void),
     modelPath: () => null
 });
 
@@ -95,7 +95,10 @@ const chatLayer = Layer.unwrap(
 const coordinatorLayer = Layer.effect(AiCoordinatorService, AiCoordinatorService.make).pipe(
     Layer.provide([
         Workload.layer,
-        Layer.mock(AiModelResidencyService)({ resume: () => Effect.void, suspend: () => Effect.die('suspend failed') }),
+        Layer.mock(AiModelResidencyService)({
+            resume: () => Effect.void,
+            suspend: () => Effect.suspend(() => ((counters.residencySuspends += 1) === 1 ? Effect.die('suspend failed') : Effect.void))
+        }),
         chatLayer,
         Layer.mock(EmbeddingDrainerService)({ drainers: [] }),
         Layer.mock(AiEmbeddingStatusService)({}),
@@ -115,6 +118,8 @@ const coordinatorLayer = Layer.effect(AiCoordinatorService, AiCoordinatorService
     ])
 );
 
+const testLayer = coordinatorLayer.pipe(Layer.provideMerge([inertDbLayer, FetchHttpClient.layer]));
+
 describe('AiCoordinatorService lifecycle', () => {
     it.live('can start again after a stop whose subsystem shutdown failed', () =>
         Effect.gen(function* () {
@@ -126,6 +131,20 @@ describe('AiCoordinatorService lifecycle', () => {
 
             expect(Exit.isFailure(stopExit)).toBe(true);
             expect(counters.downloadStarts).toBe(2);
-        }).pipe(Effect.provide(coordinatorLayer.pipe(Layer.provideMerge([inertDbLayer, FetchHttpClient.layer]))))
+        }).pipe(Effect.provide(testLayer))
+    );
+
+    it.live('still suspends model residency when the download suspend fails', () =>
+        Effect.gen(function* () {
+            appAtomRegistry.set(aiCoordinatorSnapshotAtom, { isAvailable: true, isSuspended: false });
+            const coordinator = yield* AiCoordinatorService;
+            yield* coordinator.start();
+            counters.isDownloadSuspendFailing = true;
+            const residencySuspendsBefore = counters.residencySuspends;
+            const stopExit = yield* Effect.exit(coordinator.stop());
+
+            expect(Exit.isFailure(stopExit)).toBe(true);
+            expect(counters.residencySuspends).toBe(residencySuspendsBefore + 1);
+        }).pipe(Effect.provide(testLayer))
     );
 });
