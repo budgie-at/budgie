@@ -44,7 +44,8 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                 <PillarHubHeroBulletList>
                     <PillarHubHeroBulletItem>
                         <Trans>
-                            Your data stays on your device and in your own iCloud on iOS, encrypted with your PIN once you set one
+                            Your data stays on your device, encrypted with your PIN once you set one, and on iOS in your own iCloud,
+                            encrypted there too
                         </Trans>
                     </PillarHubHeroBulletItem>
                     <PillarHubHeroBulletItem>
@@ -271,7 +272,7 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                             On iOS Budgie backs up and syncs to your own iCloud automatically, encrypted in iCloud and end-to-end encrypted
                             when you turn on Apple&apos;s Advanced Data Protection. You can turn that off in Settings and export a file to
                             iCloud Drive, Google Drive or Dropbox instead. Chosen accounts can be shared with family through iCloud; the
-                            rest never leave your device. On Android, export stays manual. Budgie never receives a copy; you own every byte.
+                            rest stay private to you. On Android, export stays manual. Budgie never receives a copy; you own every byte.
                         </Trans>
                     }
                     question={<Trans>Where are my backups stored?</Trans>}

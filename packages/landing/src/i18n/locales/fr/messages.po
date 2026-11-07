@@ -1132,8 +1132,8 @@ msgid "<0>The landing page</0> - Even our marketing website has public source"
 msgstr "<0>La landing page</0> - Même notre site marketing a un code source public"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
-msgid "<0>The learned index lives with your data</0> — What Budgie learns from your history is stored on the device alongside your transactions, encrypted the moment you set a PIN, and synced only through your own iCloud."
-msgstr "<0>L’index appris reste avec vos données</0> — Ce que Budgie apprend de votre historique est stocké sur l’appareil avec vos transactions, chiffré dès que vous définissez un code PIN, et synchronisé uniquement via votre propre iCloud."
+msgid "<0>The learned index lives with your data</0> — What Budgie learns from your history is stored on the device alongside your transactions, encrypted once you set a PIN, and never sent anywhere."
+msgstr "<0>L’index appris reste avec vos données</0> — Ce que Budgie apprend de votre historique est stocké sur l’appareil avec vos transactions, chiffré dès que vous définissez un code PIN et jamais envoyé ailleurs."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "<0>The Long Now.</0> Your data should outlive any particular application, service, or company. Data longevity is a core design principle."
@@ -1378,10 +1378,6 @@ msgstr "10. Indemnisation"
 #: src/app/[lang]/legal/license/page.tsx
 msgid "10. Questions and Contact"
 msgstr "10. Questions et contact"
-
-#: src/app/[lang]/features/ai-auto-categorization/page.tsx
-msgid "100% Offline & Private"
-msgstr "100 % hors ligne et privé"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "11. Contact Us"
@@ -4843,11 +4839,6 @@ msgstr "Écran Paramètres de Budgie avec une carte Confidentialité indiquant q
 msgid "Budgie settings screen with security, language, currency and default account rows and no sign-in row"
 msgstr "Écran des paramètres de Budgie avec les lignes sécurité, langue, devise et compte par défaut, et aucune ligne de connexion"
 
-#: src/app/[lang]/features/ai-auto-categorization/page.tsx
-#: src/app/[lang]/features/monobank-sync/page.tsx
-msgid "Budgie Settings screen with the 100% Offline & Private card saying all your data is stored on the device"
-msgstr "Écran des réglages de Budgie avec la carte 100 % hors ligne et privé indiquant que toutes vos données sont stockées sur l'appareil"
-
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Budgie settings screen with the AI section, the On-device AI toggle switched on and two AI status cards below it"
 msgstr "Écran des réglages de Budgie avec la section IA, l'interrupteur IA embarquée activé et deux cartes de statut IA en dessous"
@@ -4864,6 +4855,11 @@ msgstr "Écran des paramètres de Budgie avec la mention hors ligne et privé au
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Budgie Settings screen with the On-device AI switch described as categorizing transactions, suggesting tags and transcribing voice notes on this device, above Translation and Learning progress rows"
 msgstr "Écran des réglages de Budgie avec l’interrupteur « IA sur l'appareil », décrit comme catégorisant les transactions, suggérant des tags et transcrivant les notes vocales sur cet appareil, au-dessus des lignes de progression de la traduction et de l’apprentissage"
+
+#: src/app/[lang]/features/ai-auto-categorization/page.tsx
+#: src/app/[lang]/features/monobank-sync/page.tsx
+msgid "Budgie Settings screen with the Private by design card saying all your data is stored on the device"
+msgstr "Écran des réglages de Budgie avec la carte « Confidentialité dès la conception » indiquant que toutes vos données sont stockées sur l’appareil"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Budgie Settings screen with the Security and General groups and no upgrade row"
@@ -7851,10 +7847,6 @@ msgstr "EN, UK, FR, DE, ES — interface complète."
 #: src/app/[lang]/opengraph-image.tsx
 msgid "Encrypted"
 msgstr "Chiffré"
-
-#: src/app/[lang]/legal/terms-of-service/page.tsx
-msgid "Encrypted backups in your own iCloud remain in your account until you delete them or turn backup off"
-msgstr "Les sauvegardes chiffrées dans votre propre iCloud restent dans votre compte jusqu’à ce que vous les supprimiez ou désactiviez la sauvegarde"
 
 #: src/app/[lang]/security/metadata.ts
 msgid "encrypted budget app"
@@ -12571,11 +12563,11 @@ msgid "November 2026"
 msgstr "Novembre 2026"
 
 #: src/app/[lang]/legal/privacy-policy/metadata.ts
+#: src/app/[lang]/legal/terms-of-service/metadata.ts
 msgid "November 5, 2026"
 msgstr "5 novembre 2026"
 
 #: src/app/[lang]/legal/license/metadata.ts
-#: src/app/[lang]/legal/terms-of-service/metadata.ts
 msgid "November 6, 2024"
 msgstr "6 novembre 2024"
 
@@ -12800,8 +12792,8 @@ msgid "On iOS 18 and later, restart your iPhone once after installing if the app
 msgstr "Sur iOS 18 et versions ultérieures, redémarrez votre iPhone une fois après l'installation si l'application ne s'ouvre pas."
 
 #: src/app/[lang]/privacy/page.tsx
-msgid "On iOS Budgie backs up and syncs to your own iCloud automatically, encrypted in iCloud and end-to-end encrypted when you turn on Apple's Advanced Data Protection. You can turn that off in Settings and export a file to iCloud Drive, Google Drive or Dropbox instead. Chosen accounts can be shared with family through iCloud; the rest never leave your device. On Android, export stays manual. Budgie never receives a copy; you own every byte."
-msgstr "Sur iOS, Budgie sauvegarde et synchronise automatiquement dans votre propre iCloud, chiffré dans iCloud et chiffré de bout en bout lorsque vous activez la Protection avancée des données d’Apple. Vous pouvez la désactiver dans les réglages et exporter un fichier vers iCloud Drive, Google Drive ou Dropbox à la place. Des comptes choisis peuvent être partagés avec votre famille via iCloud ; le reste ne quitte jamais votre appareil. Sur Android, l’export reste manuel. Budgie ne reçoit jamais de copie ; chaque octet vous appartient."
+msgid "On iOS Budgie backs up and syncs to your own iCloud automatically, encrypted in iCloud and end-to-end encrypted when you turn on Apple's Advanced Data Protection. You can turn that off in Settings and export a file to iCloud Drive, Google Drive or Dropbox instead. Chosen accounts can be shared with family through iCloud; the rest stay private to you. On Android, export stays manual. Budgie never receives a copy; you own every byte."
+msgstr "Sur iOS, Budgie sauvegarde et synchronise automatiquement dans votre propre iCloud, avec chiffrement dans iCloud et de bout en bout lorsque vous activez la Protection avancée des données d’Apple. Vous pouvez désactiver cela dans les Réglages et exporter un fichier vers iCloud Drive, Google Drive ou Dropbox. Les comptes choisis peuvent être partagés en famille via iCloud ; les autres restent privés. Sur Android, l’export reste manuel. Budgie ne reçoit jamais de copie ; chaque octet vous appartient."
 
 #: src/app/[lang]/privacy/page.tsx
 msgid "On iOS sign in to the same Apple ID and your data syncs to the new phone through your own iCloud. You can also export a backup on the old phone and import it on the new one. Confirm the replacement and, if the backup is PIN-protected, enter its PIN, which becomes your app PIN."
@@ -14591,6 +14583,7 @@ msgstr "Bêta privée"
 msgid "Private Budget App — A Cloud-Free Alternative"
 msgstr "Application budget privée — Une alternative sans cloud"
 
+#: src/app/[lang]/features/ai-auto-categorization/page.tsx
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Private by design"
 msgstr "Privé par conception"
@@ -18322,8 +18315,8 @@ msgid "The totals are a live query, so the Untagged row shrinks as you label tra
 msgstr "Les totaux sont une requête en direct : la ligne « Sans étiquette » rétrécit à mesure que vous étiquetez des transactions au fil d'une revue. Les suggestions locales de Budgie proposent des étiquettes directement dans le formulaire de transaction, ce qui va généralement plus vite que de les choisir une par une."
 
 #: src/app/[lang]/offline-first/page.tsx
-msgid "The trade-off is automatic sync between devices — there is none via our servers because we don't have any. On iOS an encrypted backup goes to your own iCloud; otherwise use a backup file copied through your own cloud storage to move between devices."
-msgstr "La contrepartie, c’est la synchronisation automatique entre appareils — elle n’existe pas via nos serveurs, parce que nous n’en avons pas. Sur iOS, une sauvegarde chiffrée va dans votre propre iCloud ; sinon, utilisez un fichier de sauvegarde copié via votre propre stockage cloud pour passer d’un appareil à l’autre."
+msgid "The trade-off is sync through our servers — there is none, because we don't have any. On iOS your devices sync through your own iCloud; on Android move a backup file through storage you control."
+msgstr "Le compromis concerne la synchronisation via nos serveurs : il n’y en a pas, car nous n’avons pas de serveurs. Sur iOS, vos appareils se synchronisent via votre propre iCloud ; sur Android, transférez un fichier de sauvegarde via un stockage que vous contrôlez."
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "The tradeoff is capability. A cloud service can throw a warehouse of computers at a question; a phone has a battery and a few gigabytes of memory. For open-ended writing or research, the cloud still wins. For the narrow job of reading a merchant name and picking the right category, a phone is now more than enough — which is exactly why Budgie does it there."
@@ -19122,6 +19115,10 @@ msgstr "Coupez la radio, rien ne change"
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "Turned off, unavailable, cancelled or refused — every one of those paths lands on the PIN keypad, because the keypad is what the lock screen renders in the first place. Budgie asks the system not to offer the device passcode as a fallback, so your Budgie PIN is the only alternative."
 msgstr "Désactivée, indisponible, annulée ou refusée : chacun de ces chemins aboutit au clavier du code PIN, puisque c’est précisément ce que l’écran de verrouillage affiche. Budgie demande au système de ne pas proposer le code de l’appareil en repli, de sorte que votre code PIN Budgie reste la seule alternative."
+
+#: src/app/[lang]/legal/terms-of-service/page.tsx
+msgid "Turning iCloud backup or sync off stops new copies; existing copies stay in your iCloud until you delete them (Settings › Apple Account › iCloud › Manage Storage)"
+msgstr "Désactiver la sauvegarde ou la synchronisation iCloud arrête les nouvelles copies ; les copies existantes restent dans votre iCloud jusqu’à leur suppression (Réglages › Compte Apple › iCloud › Gérer le stockage)."
 
 #: src/generic/component/footer/footer.tsx
 msgid "Twitter"
@@ -21786,8 +21783,8 @@ msgid "Your data stays in storage you control"
 msgstr "Vos données restent dans un stockage que vous contrôlez"
 
 #: src/app/[lang]/privacy/page.tsx
-msgid "Your data stays on your device and in your own iCloud on iOS, encrypted with your PIN once you set one"
-msgstr "Vos données restent sur votre appareil et, sur iOS, dans votre propre iCloud, chiffrées avec votre code PIN dès que vous en définissez un"
+msgid "Your data stays on your device, encrypted with your PIN once you set one, and on iOS in your own iCloud, encrypted there too"
+msgstr "Vos données restent sur votre appareil, chiffrées dès que vous définissez un code PIN, et sur iOS dans votre propre iCloud, également chiffrées."
 
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Your data, your call. Budgie ships two exports: a flat CSV for spreadsheets and a compressed copy of your database for a full restore. Both are user-initiated and saved through the OS share sheet."
@@ -21842,8 +21839,8 @@ msgid "Your financial data is stored on your device. If you leave iCloud backup 
 msgstr "Vos données financières sont stockées sur votre appareil. Si vous laissez la sauvegarde ou la synchronisation iCloud activée, vos données chiffrées sont stockées et synchronisées dans votre propre compte iCloud selon les conditions d’Apple. Si vous partagez des comptes avec votre famille, les membres que vous invitez peuvent accéder à ces comptes via iCloud. Si vous utilisez d’autres fonctions cloud optionnelles, vos données peuvent être traitées dans des pays où nos prestataires opèrent. Nous veillons à mettre en place des garanties appropriées pour protéger vos données conformément à la réglementation applicable en matière de protection des données, notamment le RGPD et le CCPA."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
-msgid "Your financial data remains on your device until you choose to delete it, and iCloud backup and sync copies remain in your own iCloud until you delete them or turn them off. If you use other optional cloud features, we retain your data only as long as necessary to provide the Service or as required by law. Anonymous analytics data may be retained indefinitely in aggregated form."
-msgstr "Vos données financières restent sur votre appareil jusqu’à ce que vous choisissiez de les supprimer, et les copies de sauvegarde et de synchronisation iCloud restent dans votre propre iCloud jusqu’à ce que vous les supprimiez ou les désactiviez. Si vous utilisez d’autres fonctions cloud optionnelles, nous conservons vos données uniquement le temps nécessaire à la fourniture du Service ou selon les obligations légales. Les données analytiques anonymes peuvent être conservées indéfiniment sous forme agrégée."
+msgid "Your financial data remains on your device until you choose to delete it, and iCloud backup and sync copies remain in your own iCloud until you delete them. Turning iCloud backup or sync off stops new copies; existing copies stay in your iCloud until you delete them (Settings › Apple Account › iCloud › Manage Storage). If you use other optional cloud features, we retain your data only as long as necessary to provide the Service or as required by law. Anonymous analytics data may be retained indefinitely in aggregated form."
+msgstr "Vos données financières restent sur votre appareil jusqu’à leur suppression. Les copies de sauvegarde et de synchronisation restent dans votre iCloud jusqu’à leur suppression. Désactiver ces fonctions arrête les nouvelles copies ; les copies existantes se suppriment dans Réglages › Compte Apple › iCloud › Gérer le stockage. Pour les autres fonctions cloud facultatives, nous conservons vos données uniquement le temps nécessaire au Service ou requis par la loi. Les données analytiques anonymes peuvent être conservées indéfiniment sous forme agrégée."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Your financial data tells the story of your life—where you shop, what you value, how you spend your time. That story belongs to you."

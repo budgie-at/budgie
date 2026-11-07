@@ -435,8 +435,7 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
                         <BlogArticleListItem>
                             <Trans>
                                 <strong>The learned index lives with your data</strong> — What Budgie learns from your history is stored on
-                                the device alongside your transactions, encrypted the moment you set a PIN, and synced only through your own
-                                iCloud.
+                                the device alongside your transactions, encrypted once you set a PIN, and never sent anywhere.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>

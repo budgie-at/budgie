@@ -85,7 +85,7 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                     slug="ai-auto-categorization"
                 >
                     <FeatureStory.Callout index={0} y={0.259}>
-                        <Trans>100% Offline &amp; Private</Trans>
+                        <Trans>Private by design</Trans>
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
@@ -116,9 +116,7 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
             <FeatureProof
                 crop={
                     <FeatureProof.Crop
-                        alt={t(
-                            i18n
-                        )`Budgie Settings screen with the 100% Offline & Private card saying all your data is stored on the device`}
+                        alt={t(i18n)`Budgie Settings screen with the Private by design card saying all your data is stored on the device`}
                         locale={lang}
                         scene="ai-auto-categorization-2"
                         slug="ai-auto-categorization"

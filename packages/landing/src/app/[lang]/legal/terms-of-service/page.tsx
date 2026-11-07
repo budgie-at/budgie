@@ -413,7 +413,10 @@ export default async function TermsOfServicePage(props: PageLangParam) {
                     <Trans>Data stored locally on your device will remain accessible</Trans>
                 </li>
                 <li>
-                    <Trans>Encrypted backups in your own iCloud remain in your account until you delete them or turn backup off</Trans>
+                    <Trans>
+                        Turning iCloud backup or sync off stops new copies; existing copies stay in your iCloud until you delete them
+                        (Settings › Apple Account › iCloud › Manage Storage)
+                    </Trans>
                 </li>
             </ul>
             <p>

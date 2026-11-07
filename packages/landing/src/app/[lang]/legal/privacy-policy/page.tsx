@@ -290,9 +290,10 @@ export default async function PrivacyPolicyPage(props: PageLangParam) {
             <p>
                 <Trans>
                     Your financial data remains on your device until you choose to delete it, and iCloud backup and sync copies remain in
-                    your own iCloud until you delete them or turn them off. If you use other optional cloud features, we retain your data
-                    only as long as necessary to provide the Service or as required by law. Anonymous analytics data may be retained
-                    indefinitely in aggregated form.
+                    your own iCloud until you delete them. Turning iCloud backup or sync off stops new copies; existing copies stay in your
+                    iCloud until you delete them (Settings › Apple Account › iCloud › Manage Storage). If you use other optional cloud
+                    features, we retain your data only as long as necessary to provide the Service or as required by law. Anonymous
+                    analytics data may be retained indefinitely in aggregated form.
                 </Trans>
             </p>
             <h2>

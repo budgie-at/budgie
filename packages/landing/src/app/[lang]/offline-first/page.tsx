@@ -318,9 +318,8 @@ export default async function OfflineFirstPillarHubPage(props: PageLangParam) {
                     question={<Trans>What&apos;s the catch with offline-first?</Trans>}
                     answer={
                         <Trans>
-                            The trade-off is automatic sync between devices — there is none via our servers because we don&apos;t have any.
-                            On iOS an encrypted backup goes to your own iCloud; otherwise use a backup file copied through your own cloud
-                            storage to move between devices.
+                            The trade-off is sync through our servers — there is none, because we don&apos;t have any. On iOS your devices
+                            sync through your own iCloud; on Android move a backup file through storage you control.
                         </Trans>
                     }
                 />
