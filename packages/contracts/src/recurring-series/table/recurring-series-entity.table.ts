@@ -1,11 +1,10 @@
 import { sql } from 'drizzle-orm';
-import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { int, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
 import { convertEnumToDrizzleEnum } from '../../@generic/utils/convert-enum-to-drizzle-enum.util';
 import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
-import { syncIdentityUniqueIndex } from '../../cloud-sync/utils/sync-identity-unique-index.util';
 import { withSyncIdentityColumns } from '../../cloud-sync/utils/with-sync-identity-columns.util';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
 import { RecurringCadenceUnitEnum } from '../enum/recurring-cadence-unit.enum';
@@ -51,5 +50,5 @@ export const RecurringSeriesEntityTable = sqliteTable(
         reminderDaysBefore: int('reminder_days_before'),
         confidence: int('confidence').notNull().default(0)
     }),
-    table => [syncIdentityUniqueIndex('recurring_series', table)]
+    table => [uniqueIndex('recurring_series_sync_identity_unq').on(table.syncZone, table.syncId)]
 );

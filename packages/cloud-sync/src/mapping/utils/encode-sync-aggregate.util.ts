@@ -1,11 +1,12 @@
 import { utf8ToBytes } from '@noble/hashes/utils.js';
 import * as Result from 'effect/Result';
 
-import { isBoolean, isDefined, isNotEmptyArray, isNotEmptyString, isNumber, isString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString, isNumber } from '@rnw-community/shared';
 
 import { SYNC_ID_PROPERTY } from '../constant/sync-identity-properties.constant';
 import { SYNC_RECORD_MAX_BYTES } from '../constant/sync-record-max-bytes.constant';
 import { SYNC_RECORD_SCHEMA_VERSION } from '../constant/sync-record-schema-version.constant';
+import { SYNC_SCALAR_VALUE_NARROWERS } from '../constant/sync-scalar-value-narrowers.constant';
 import { SyncColumnKindEnum } from '../enum/sync-column-kind.enum';
 import { SyncReferenceKindEnum } from '../enum/sync-reference-kind.enum';
 import { SyncIdentityUnresolvedError } from '../error/sync-identity-unresolved.error';
@@ -29,10 +30,7 @@ const CONSOLIDATION_PARENT_PROPERTY = 'consolidationParentTransactionId';
 
 const PLAIN_VALUE_ENCODERS: Readonly<Record<SyncColumnKindEnum, (value: unknown) => SyncWireValueType | null>> = {
     [SyncColumnKindEnum.TIMESTAMP]: value => (value instanceof Date ? value.getTime() : null),
-    [SyncColumnKindEnum.BOOLEAN]: value => (isBoolean(value) ? value : null),
-    [SyncColumnKindEnum.TEXT]: value => (isString(value) ? value : null),
-    [SyncColumnKindEnum.INTEGER]: value => (isNumber(value) ? value : null),
-    [SyncColumnKindEnum.REAL]: value => (isNumber(value) ? value : null)
+    ...SYNC_SCALAR_VALUE_NARROWERS
 };
 
 const resolveReferenceKey = (

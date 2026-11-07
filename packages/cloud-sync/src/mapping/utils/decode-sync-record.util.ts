@@ -1,11 +1,12 @@
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 
-import { getErrorMessage, isArray, isBoolean, isDefined, isNotEmptyString, isNumber, isRecord, isString } from '@rnw-community/shared';
+import { getErrorMessage, isArray, isDefined, isNotEmptyString, isNumber, isRecord } from '@rnw-community/shared';
 
 import { SYNC_ID_PROPERTY } from '../constant/sync-identity-properties.constant';
 import { SYNC_RECORD_DECODERS } from '../constant/sync-record-decoders.constant';
 import { SYNC_RECORD_SCHEMA_VERSION } from '../constant/sync-record-schema-version.constant';
+import { SYNC_SCALAR_VALUE_NARROWERS } from '../constant/sync-scalar-value-narrowers.constant';
 import { SyncColumnKindEnum } from '../enum/sync-column-kind.enum';
 import { SyncReferenceKindEnum } from '../enum/sync-reference-kind.enum';
 import { SyncRecordInvalidError } from '../error/sync-record-invalid.error';
@@ -32,10 +33,7 @@ const EnvelopeSchema = Schema.Struct({
 
 const ROW_VALUE_DECODERS: Readonly<Record<SyncColumnKindEnum, (value: unknown) => SyncRowValueType | null>> = {
     [SyncColumnKindEnum.TIMESTAMP]: value => (isNumber(value) ? new Date(value) : null),
-    [SyncColumnKindEnum.BOOLEAN]: value => (isBoolean(value) ? value : null),
-    [SyncColumnKindEnum.TEXT]: value => (isString(value) ? value : null),
-    [SyncColumnKindEnum.INTEGER]: value => (isNumber(value) ? value : null),
-    [SyncColumnKindEnum.REAL]: value => (isNumber(value) ? value : null)
+    ...SYNC_SCALAR_VALUE_NARROWERS
 };
 
 const decodeColumn = (column: SyncColumnDescriptorInterface, source: Readonly<Record<string, unknown>>): DecodedSyncColumnInterface => {
