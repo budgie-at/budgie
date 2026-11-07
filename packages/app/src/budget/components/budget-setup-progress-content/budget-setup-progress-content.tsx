@@ -8,6 +8,8 @@ import { isDefined } from '@rnw-community/shared';
 
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
+import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
+import { useIsLargeTextSize } from '../../../@generic/hook/use-is-large-text-size.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { BudgetSelector } from '../../budget.selector';
@@ -36,21 +38,36 @@ export const BudgetSetupProgressContent = ({ scope, currencySymbol }: Props) => 
     const tone = BUDGET_PACE_VARIANT[scope?.status ?? BudgetPaceStatusEnum.ON_TRACK];
     const elapsedFraction = scope?.elapsedFraction ?? 0;
     const isLoading = !isDefined(scope);
+    const rowClassName = useIsLargeTextSize() ? 'gap-y-xs' : 'flex-row items-center justify-between gap-x-md';
 
     return (
         <LoadingContent isLoading={isLoading} className="gap-y-md">
-            <View className="flex-row items-center justify-between">
-                <ProtectedText className="text-primary text-md font-semibold tabular-nums" testID={BudgetSelector.SetupSpentLabel}>
+            <View className={rowClassName}>
+                <ProtectedText
+                    className="min-w-0 shrink text-md font-semibold tabular-nums text-primary"
+                    testID={BudgetSelector.SetupSpentLabel}
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.6}
+                    maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+                >
                     {amountLabel}
                 </ProtectedText>
-                <Text className="text-secondary-foreground text-sm tabular-nums">{percentLabel}</Text>
+                <Text className="shrink-0 text-sm tabular-nums text-secondary-foreground">{percentLabel}</Text>
             </View>
 
             <BudgetLimitBar spent={spent} limit={limit} tone={tone} elapsedFraction={elapsedFraction} />
 
-            <View className="flex-row items-center justify-between">
-                <Text className="text-secondary-foreground text-sm">{leftLabel}</Text>
-                <ProtectedText testID={BudgetSelector.SetupRemainingLabel} className="text-primary text-md font-semibold tabular-nums">
+            <View className={rowClassName}>
+                <Text className="shrink text-sm text-secondary-foreground">{leftLabel}</Text>
+                <ProtectedText
+                    testID={BudgetSelector.SetupRemainingLabel}
+                    className="min-w-0 shrink text-md font-semibold tabular-nums text-primary"
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.6}
+                    maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+                >
                     {leftAmount}
                 </ProtectedText>
             </View>

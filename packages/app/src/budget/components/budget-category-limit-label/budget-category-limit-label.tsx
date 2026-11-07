@@ -18,12 +18,14 @@ export const BudgetCategoryLimitLabel = ({ icon, title, testID, menuValue }: Pro
     <View className="min-h-[44px] flex-row items-center gap-x-xl">
         <GroupedListIcon icon={icon} />
         <View className="flex-1">
-            <Text className="text-primary text-[17px]" numberOfLines={1} testID={testID}>
+            <Text className="text-[17px] text-primary" numberOfLines={2} testID={testID}>
                 {title}
             </Text>
             {isNotEmptyString(menuValue) ? (
                 <View className="flex-row items-center gap-x-xs">
-                    <Text className="text-secondary-foreground text-[13px]">{menuValue}</Text>
+                    <Text className="min-w-0 shrink text-[13px] text-secondary-foreground" numberOfLines={2}>
+                        {menuValue}
+                    </Text>
                     <SignToggleGlyph className="text-secondary-foreground" />
                 </View>
             ) : null}

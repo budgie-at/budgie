@@ -29,7 +29,6 @@ export const BudgetInlineOtherLimitRow = ({ currencySymbol }: Props) => {
             amountInput={
                 <BudgetEditableAmountInput
                     control={control}
-                    className="min-w-[104px] max-w-[136px] text-right"
                     currencySymbol={currencySymbol}
                     name="otherLimit"
                     testID={BudgetSelector.SetupOtherLimitAmountInput}

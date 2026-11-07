@@ -30,6 +30,7 @@ export const BudgetNameField = <TFieldValues extends FieldValues>({ control, nam
             onChangeText={onChange}
             onBlur={onBlur}
             placeholder={placeholder}
+            maxFontSizeMultiplier={2}
         />
     );
 };

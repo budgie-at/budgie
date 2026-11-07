@@ -23,7 +23,6 @@ export const BudgetCategoryLimitCompactRow = ({ currencySymbol, index, onRemove 
             amountInput={
                 <BudgetEditableAmountInput
                     control={control}
-                    className="min-w-[104px] max-w-[136px] text-right"
                     currencySymbol={currencySymbol}
                     name={`categoryLimits.${index}.limitAmount`}
                     testID={BudgetSelector.SetupCategoryLimitAmountInput(index)}

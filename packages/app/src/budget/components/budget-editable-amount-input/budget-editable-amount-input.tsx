@@ -5,6 +5,7 @@ import { Control, FieldPathByValue, FieldValues, useController } from 'react-hoo
 import { isNumber } from '@rnw-community/shared';
 
 import { AmountInput } from '../../../@generic/component/amount-input/amount-input';
+import { useIsLargeTextSize } from '../../../@generic/hook/use-is-large-text-size.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 
 interface Props<TFieldValues extends FieldValues> {
@@ -12,15 +13,13 @@ interface Props<TFieldValues extends FieldValues> {
     readonly name: FieldPathByValue<TFieldValues, number>;
     readonly currencySymbol: string;
     readonly testID?: string;
-    readonly className: string;
 }
 
 export const BudgetEditableAmountInput = <TFieldValues extends FieldValues>({
     control,
     name,
     currencySymbol,
-    testID,
-    className
+    testID
 }: Props<TFieldValues>) => {
     const {
         field: { value, onChange }
@@ -29,6 +28,7 @@ export const BudgetEditableAmountInput = <TFieldValues extends FieldValues>({
     const { t } = useLingui();
     const [isFocused, setIsFocused] = useState(false);
     const toneClassName = isFocused ? 'text-default-foreground' : 'text-primary';
+    const widthClassName = useIsLargeTextSize() ? 'w-full' : 'min-w-[104px] max-w-[136px]';
 
     const handleFocus = () => void setIsFocused(true);
     const handleBlur = () => void setIsFocused(false);
@@ -44,7 +44,7 @@ export const BudgetEditableAmountInput = <TFieldValues extends FieldValues>({
             valuePrefix={currencySymbol}
             size="md"
             borderless
-            inputClassName={cn('px-0', className, toneClassName)}
+            inputClassName={cn('px-0 text-right', widthClassName, toneClassName)}
             selectTextOnFocus
         />
     );
