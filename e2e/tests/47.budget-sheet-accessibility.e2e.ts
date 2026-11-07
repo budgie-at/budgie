@@ -15,6 +15,7 @@ test('47 safe to spend remains scrollable at the largest text size', { tags: ['b
     await bu.saveFromHeader(ctx);
     await b.expectId(ctx, 'BudgetWidget.Card');
     const lease = await budgie.lease();
+    let bodyPassed = false;
 
     try {
         await mustExec(budgie.api, lease, ['ui', 'content_size', 'accessibility-extra-extra-extra-large']);
@@ -26,7 +27,14 @@ test('47 safe to spend remains scrollable at the largest text size', { tags: ['b
             .first();
         await ctx.screen.scrollUntilVisible(explanation, { direction: 'down', timeout: 20_000 });
         await expect(explanation).toBeVisible();
+        bodyPassed = true;
     } finally {
-        await mustExec(budgie.api, lease, ['ui', 'content_size', 'large']);
+        await mustExec(budgie.api, lease, ['ui', 'content_size', 'large']).catch(error => {
+            if (bodyPassed) {
+                throw error;
+            }
+
+            console.log(`[cleanup] restoring the content size failed: ${String(error)}`);
+        });
     }
 });

@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../constant/title-max-font-size-multiplier.constant';
 import { FormsheetHeaderAlign } from '../../type/formsheet-header-align.type';
 import { cn } from '../../utils/cn.util';
 import { Icon } from '../icon/icon';
@@ -62,7 +63,9 @@ export const FormsheetHeader = (props: Props) => {
     return (
         <View className={cn(headerVariant({ align }), className)}>
             {isNotEmptyString(icon) ? <Icon icon={icon} /> : null}
-            <Text className={cn(titleVariants({ size, align }), titleClassName)}>{title}</Text>
+            <Text maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER} className={cn(titleVariants({ size, align }), titleClassName)}>
+                {title}
+            </Text>
             {isNotEmptyString(description) ? (
                 <Text className={cn(descriptionVariants({ size, align }), descriptionClassName)}>{description}</Text>
             ) : null}
