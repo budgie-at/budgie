@@ -1132,8 +1132,8 @@ msgid "<0>The landing page</0> - Even our marketing website has public source"
 msgstr "<0>Лендінг</0> - Навіть наш маркетинговий сайт має публічний вихідний код"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
-msgid "<0>The learned index lives with your data</0> — What Budgie learns from your history is stored on the device alongside your transactions, encrypted once you set a PIN, and never sent anywhere."
-msgstr "<0>Навчений індекс залишається з вашими даними</0> — Те, що Budgie вивчає з вашої історії, зберігається на пристрої поруч із транзакціями, шифрується після встановлення PIN-коду й нікуди не надсилається."
+msgid "<0>The learned index lives with your data</0> — What Budgie learns from your history is stored on the device alongside your transactions, encrypted once you set a PIN, included in your encrypted iCloud backup when it is on, and never sent to an AI service."
+msgstr "<0>Навчений індекс залишається з вашими даними</0> — Те, що Budgie вивчає з вашої історії, зберігається на пристрої разом із транзакціями, шифрується після встановлення PIN-коду, включається до зашифрованої резервної копії iCloud, коли її ввімкнено, і ніколи не надсилається до сервісів ШІ."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "<0>The Long Now.</0> Your data should outlive any particular application, service, or company. Data longevity is a core design principle."
@@ -4468,8 +4468,8 @@ msgid "Budgie is a source-available personal finance app. Read the source, audit
 msgstr "Budgie — застосунок для особистих фінансів із доступним вихідним кодом. Читайте код, перевіряйте заяви про приватність, додавайте функції та довіряйте трекеру витрат, бо можете його перевірити."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "Budgie is an offline-first expense tracker built for iOS and Android. All data is stored in a database on your device and syncs through your own iCloud on iOS, encrypted the moment you set a PIN. There are no Budgie servers that receive your transactions, no aggregator that holds your bank credentials, and no subscription. Budgie is free to use, with no paid tier."
-msgstr "Budgie — офлайн-трекер витрат для iOS та Android. Усі дані зберігаються в базі даних на вашому пристрої та синхронізуються через ваш власний iCloud на iOS, шифруючись, щойно ви встановлюєте PIN. Немає серверів Budgie, які отримують ваші транзакції, немає агрегатора, який зберігає ваші банківські дані, і немає підписки. Budgie безкоштовний, без платних тарифів."
+msgid "Budgie is an offline-first expense tracker built for iOS and Android. All data is stored in a database on your device, encrypted the moment you set a PIN, and on iOS synced through your own iCloud, encrypted there too. There are no Budgie servers that receive your transactions, no aggregator that holds your bank credentials, and no subscription. Budgie is free to use, with no paid tier."
+msgstr "Budgie — застосунок для обліку витрат на iOS та Android, що працює передусім офлайн. Усі дані зберігаються в базі даних на вашому пристрої, шифруються після встановлення PIN-коду, а на iOS синхронізуються через ваш iCloud, де також залишаються зашифрованими. Немає серверів Budgie, що отримують ваші транзакції, агрегатора, який зберігає банківські облікові дані, чи підписки. Budgie безкоштовний, без платного тарифу."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Budgie is built from the ground up as a local-first personal finance application. Here is how we implement the local-first ideals:"
@@ -4811,6 +4811,11 @@ msgstr "Розділ керування даними в налаштування
 msgid "Budgie settings screen listing the privacy, security and general options the app ships with"
 msgstr "Екран налаштувань Budgie зі списком параметрів приватності, безпеки та загальних параметрів, які має застосунок"
 
+#: src/app/[lang]/features/ai-auto-categorization/page.tsx
+#: src/app/[lang]/features/monobank-sync/page.tsx
+msgid "Budgie Settings screen scrolled to the Automation section"
+msgstr "Екран налаштувань Budgie, прокручений до розділу автоматизації"
+
 #: src/app/[lang]/page.tsx
 msgid "Budgie settings screen showing the 100% offline and private card above app lock and screenshot protection"
 msgstr "Екран налаштувань Budgie з карткою «100% офлайн і приватно» над блокуванням застосунку та захистом від знімків екрана"
@@ -4855,11 +4860,6 @@ msgstr "Екран налаштувань Budgie з повідомленням �
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Budgie Settings screen with the On-device AI switch described as categorizing transactions, suggesting tags and transcribing voice notes on this device, above Translation and Learning progress rows"
 msgstr "Екран налаштувань Budgie з перемикачем «ШІ на пристрої», описаним як категоризація транзакцій, підказки тегів і транскрибування голосових нотаток на цьому пристрої, над рядками прогресу перекладу й навчання"
-
-#: src/app/[lang]/features/ai-auto-categorization/page.tsx
-#: src/app/[lang]/features/monobank-sync/page.tsx
-msgid "Budgie Settings screen with the Private by design card saying all your data is stored on the device"
-msgstr "Екран параметрів Budgie з карткою «Приватність за задумом», яка пояснює, що всі дані зберігаються на пристрої"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Budgie Settings screen with the Security and General groups and no upgrade row"

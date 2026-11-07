@@ -239,9 +239,9 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                     <BlogArticleProse>
                         <Trans>
                             Budgie is an offline-first expense tracker built for iOS and Android. All data is stored in a database on your
-                            device and syncs through your own iCloud on iOS, encrypted the moment you set a PIN. There are no Budgie servers
-                            that receive your transactions, no aggregator that holds your bank credentials, and no subscription. Budgie is
-                            free to use, with no paid tier.
+                            device, encrypted the moment you set a PIN, and on iOS synced through your own iCloud, encrypted there too.
+                            There are no Budgie servers that receive your transactions, no aggregator that holds your bank credentials, and
+                            no subscription. Budgie is free to use, with no paid tier.
                         </Trans>
                     </BlogArticleProse>
 

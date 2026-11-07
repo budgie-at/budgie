@@ -135,7 +135,7 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
             <FeatureProof
                 crop={
                     <FeatureProof.Crop
-                        alt={t(i18n)`Budgie Settings screen with the Private by design card saying all your data is stored on the device`}
+                        alt={t(i18n)`Budgie Settings screen scrolled to the Automation section`}
                         locale={lang}
                         scene="ai-auto-categorization-2"
                         slug="ai-auto-categorization"
