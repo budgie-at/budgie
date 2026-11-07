@@ -17,6 +17,7 @@ interface Props {
     readonly icon: UserIconType;
     readonly title: string;
     readonly value: string;
+    readonly valueNumberOfLines?: number;
     readonly testID?: string;
     readonly onPress?: () => void;
     readonly onClear?: () => void;
@@ -24,7 +25,7 @@ interface Props {
 
 const CLEAR_HIT_SLOP = { top: 12, bottom: 12, left: 12, right: 12 };
 
-export const GroupedListValueRow = ({ icon, title, value, testID, onPress, onClear }: Props) => {
+export const GroupedListValueRow = ({ icon, title, value, valueNumberOfLines = 2, testID, onPress, onClear }: Props) => {
     const { t } = useLingui();
     const isStacked = useIsLargeTextSize();
     const accessibilityActions = isDefined(onClear) ? [{ name: 'clear', label: t`Clear ${title}` }] : [];
@@ -52,7 +53,7 @@ export const GroupedListValueRow = ({ icon, title, value, testID, onPress, onCle
     const valueClassName = isStacked
         ? 'text-[17px] text-secondary-foreground'
         : 'ml-auto min-w-0 max-w-[60%] flex-1 text-right text-[17px] text-secondary-foreground';
-    const valueLineCount = isStacked ? 0 : 2;
+    const valueLineCount = isStacked ? 0 : valueNumberOfLines;
     const accessoryClassName = isStacked ? 'self-start pt-xs' : '';
 
     return (
