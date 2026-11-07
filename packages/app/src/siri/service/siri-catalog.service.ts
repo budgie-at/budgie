@@ -363,7 +363,11 @@ export class SiriCatalogService extends Context.Service<SiriCatalogService>()('@
             mask: Effect.fn('SiriCatalogService.mask')(function* () {
                 yield* Ref.set(isLockForced, true);
                 yield* publishSemaphore.withPermits(1)(
-                    Effect.forEach(answerKinds, kind => logAndContinue(sanitizeCatalog(kind)), { discard: true })
+                    Effect.forEach(
+                        answerKinds,
+                        kind => logAndContinue(sanitizeCatalog(kind).pipe(Effect.catch(() => publishCatalog(kind, [])))),
+                        { discard: true }
+                    )
                 );
             }),
             unlock: Effect.fn('SiriCatalogService.unlock')(function* () {
