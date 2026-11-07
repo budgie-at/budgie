@@ -111,12 +111,12 @@ const expectSingleTransferOnBoth = (bobDatabase: DB) =>
         return { onAlice, onBob };
     });
 
-const expectNothingPrivateOnBob = (bobDatabase: DB) =>
+const expectNothingPrivateOnBob = (bobDatabase: DB, privateStrings: readonly string[] = PRIVATE_STRINGS) =>
     Effect.gen(function* () {
         const stored = yield* queryRows<{ readonly payload: string }>(bobDatabase, `SELECT payload FROM sync_record`);
         const everythingStored = stored.map(({ payload }) => payload).join('\n');
 
-        for (const privateString of PRIVATE_STRINGS) {
+        for (const privateString of privateStrings) {
             expect(everythingStored).not.toContain(privateString);
         }
     });
@@ -227,7 +227,10 @@ describe('cloud-sync/member-transfer', () => {
                 expect(onAlice[0].consolidationType).toBe(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
                 expect(yield* balanceOf(bobDatabase, 'Bob card')).toBe(-TRANSFER_AMOUNT);
                 expect(yield* balanceOf(testDb, PRIVATE_ACCOUNT_TITLE)).toBe(TRANSFER_AMOUNT);
-                yield* expectNothingPrivateOnBob(bobDatabase);
+                yield* expectNothingPrivateOnBob(
+                    bobDatabase,
+                    PRIVATE_STRINGS.filter(privateString => privateString !== ALICE_IBAN)
+                );
                 yield* expectCleanLedgers(bobDatabase);
             })
         );

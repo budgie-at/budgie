@@ -50,7 +50,7 @@ export const makeMemberClouds = (): MemberCloudsInterface => {
 const syncDevice = (database: DB, clouds: ShareCloudsInterface, deviceId: string, isAutomated: boolean) =>
     Effect.gen(function* () {
         yield* reconcileDevice(database);
-        yield* uploadDevice(database, clouds);
+        const uploaded = yield* uploadDevice(database, clouds);
 
         const results = yield* pullZones(database, clouds.household, deviceId, [HOUSEHOLD_ZONE]);
 
@@ -63,7 +63,10 @@ const syncDevice = (database: DB, clouds: ShareCloudsInterface, deviceId: string
             }
         }
 
-        return results.flatMap(result => result.rejected);
+        return {
+            rejected: results.flatMap(result => result.rejected),
+            isActive: results.length > 0 || uploaded.saves.length > 0 || uploaded.deletions.length > 0
+        };
     });
 
 export const settleMembers = (bobDatabase: DB, clouds: MemberCloudsInterface, isAutomated = true) =>
@@ -71,12 +74,14 @@ export const settleMembers = (bobDatabase: DB, clouds: MemberCloudsInterface, is
         const rejected: unknown[] = [];
 
         for (let round = 1; round <= MAX_ROUNDS; round += 1) {
-            rejected.push(...(yield* syncDevice(testDb, clouds.alice, ALICE_DEVICE, isAutomated)));
-            rejected.push(...(yield* syncDevice(bobDatabase, clouds.bob, BOB_DEVICE, isAutomated)));
+            const aliceRound = yield* syncDevice(testDb, clouds.alice, ALICE_DEVICE, isAutomated);
+            const bobRound = yield* syncDevice(bobDatabase, clouds.bob, BOB_DEVICE, isAutomated);
+
+            rejected.push(...aliceRound.rejected, ...bobRound.rejected);
 
             const sizes = [(yield* readOutboxRows(testDb)).length, (yield* readOutboxRows(bobDatabase)).length];
 
-            if (sizes.every(size => size === 0)) {
+            if (sizes.every(size => size === 0) && !aliceRound.isActive && !bobRound.isActive) {
                 return { rounds: round, rejected };
             }
         }
