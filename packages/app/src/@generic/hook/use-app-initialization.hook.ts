@@ -94,6 +94,14 @@ const initializeAppServices = Effect.gen(function* () {
         yield* logAndContinue(cloudBackupTriggerService.value.start());
     }
 
+    yield* logAndContinue(workload.run((yield* SyncIdentityRepository).backfill()));
+
+    const cloudSyncService = yield* Effect.serviceOption(CloudSyncService);
+
+    if (Option.isSome(cloudSyncService)) {
+        yield* logAndContinue(cloudSyncService.value.start());
+    }
+
     yield* logAndContinue(workload.run(appDataSyncService.sync()));
     yield* logAndContinue(
         Effect.flatMap(BudgetPeriodCloseService, service =>
@@ -103,13 +111,6 @@ const initializeAppServices = Effect.gen(function* () {
     yield* logAndContinue(onboardingService.initializeLocale());
     yield* logAndContinue(historicalMarketDataDrainerService.enqueueActiveAccounts());
     yield* logAndContinue((yield* CategoryIconBackfillService).applyConfidentIcons());
-    yield* logAndContinue(workload.run((yield* SyncIdentityRepository).backfill()));
-
-    const cloudSyncService = yield* Effect.serviceOption(CloudSyncService);
-
-    if (Option.isSome(cloudSyncService)) {
-        yield* logAndContinue(cloudSyncService.value.start());
-    }
 });
 
 const scheduleAppServicesInitialization = Effect.sleep(STARTUP_SERVICE_DELAY_MS).pipe(
