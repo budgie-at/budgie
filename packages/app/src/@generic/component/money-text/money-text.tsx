@@ -22,6 +22,8 @@ interface Props {
     readonly prefix?: string;
     readonly tone?: ColorPaletteVariant;
     readonly testID?: string;
+    readonly maxFontSizeMultiplier?: number;
+    readonly decimalPlaces?: number;
 }
 
 const wholeVariants = cva('tabular-nums', {
@@ -44,8 +46,18 @@ const fractionVariants = cva('text-secondary-foreground', {
     }
 });
 
-export const MoneyText = ({ amount, instrumentSymbol, variant, prefix = '', tone, testID }: Props) => {
-    const decimalPlaces = useAtomValue(decimalPlacesAtom);
+export const MoneyText = ({
+    amount,
+    instrumentSymbol,
+    variant,
+    prefix = '',
+    tone,
+    testID,
+    maxFontSizeMultiplier = ROW_MAX_FONT_SIZE_MULTIPLIER,
+    decimalPlaces: decimalPlacesOverride
+}: Props) => {
+    const settingsDecimalPlaces = useAtomValue(decimalPlacesAtom);
+    const decimalPlaces = decimalPlacesOverride ?? settingsDecimalPlaces;
     const formatDigits = useFormatDigits(decimalPlaces);
     const protectAmount = useProtectedAmountLabel();
 
@@ -67,7 +79,7 @@ export const MoneyText = ({ amount, instrumentSymbol, variant, prefix = '', tone
             accessibilityLabel={accessibilityLabel}
             numberOfLines={1}
             adjustsFontSizeToFit
-            maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+            maxFontSizeMultiplier={maxFontSizeMultiplier}
             minimumFontScale={0.6}
             className={cn(wholeVariants({ variant }), toneClassName)}
         >

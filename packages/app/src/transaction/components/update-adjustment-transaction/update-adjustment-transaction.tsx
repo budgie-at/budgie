@@ -25,6 +25,7 @@ import { useKeypadInput } from '../../hook/use-keypad-input.hook';
 import { useTransactionKeypadEditing } from '../../hook/use-transaction-keypad-editing.hook';
 import { formatKeypadAmount } from '../../utils/format-keypad-amount.util';
 import { AdjustmentAccountSummary } from '../adjustment-account-summary/adjustment-account-summary';
+import { AdjustmentBalancePreview } from '../adjustment-balance-preview/adjustment-balance-preview';
 import { QuickFormLayout } from '../quick-form-layout/quick-form-layout';
 import { QuickFormSecondaryLine } from '../quick-form-secondary-line/quick-form-secondary-line';
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
@@ -158,9 +159,14 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
                 />
             }
             context={
-                <QuickFormSecondaryLine>
-                    <AmountSignPill isIncrease={isIncrease} onToggle={toggleIsIncrease} />
-                </QuickFormSecondaryLine>
+                <View className="gap-y-[4px]">
+                    <QuickFormSecondaryLine>
+                        <AdjustmentBalancePreview details={details} amount={numericValue} isIncrease={isIncrease} />
+                    </QuickFormSecondaryLine>
+                    <QuickFormSecondaryLine>
+                        <AmountSignPill isIncrease={isIncrease} onToggle={toggleIsIncrease} />
+                    </QuickFormSecondaryLine>
+                </View>
             }
             keypad={keypad}
             actions={

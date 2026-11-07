@@ -1500,6 +1500,14 @@ msgstr "Tras {upcomingAmount} para próximas facturas"
 msgid "After 5 wrong tries, Budgie waits a little longer between attempts."
 msgstr "Tras 5 intentos fallidos, Budgie espera un poco más entre intentos."
 
+#: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
+msgid "After saving"
+msgstr "Después de guardar"
+
+#: src/transaction/hook/use-adjustment-balance.hook.ts
+msgid "After saving: {after}"
+msgstr "Después de guardar: {after}"
+
 #: src/budget/constant/budget-pace-status-label.constant.ts
 msgid "Ahead of pace"
 msgstr "Por encima del ritmo"
@@ -1944,10 +1952,6 @@ msgstr "Saldo"
 #: src/transaction/components/transaction-card-content/transaction-card-content.tsx
 msgid "Balance Adjustment"
 msgstr "Ajuste de saldo"
-
-#: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
-msgid "Balance after saving"
-msgstr "Saldo después de guardar"
 
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 msgid "Balance forecast"
@@ -3594,6 +3598,10 @@ msgstr "moneda"
 msgid "Currency"
 msgstr "Moneda"
 
+#: src/transaction/hook/use-adjustment-balance.hook.ts
+msgid "Current adjustment {originalLabel}"
+msgstr "Ajuste actual {originalLabel}"
+
 #: src/account/component/account-balance-field/account-balance-field.tsx
 #: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
 msgid "Current balance"
@@ -4301,6 +4309,7 @@ msgid "Enter all amounts"
 msgstr "Introduce todos los importes"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
+#: src/transaction/hook/use-adjustment-balance.hook.ts
 #: src/transaction/hook/use-quick-form-submit.hook.ts
 #: src/transaction/hook/use-transaction-keypad-editing.hook.ts
 msgid "Enter an amount"
@@ -6142,6 +6151,11 @@ msgstr "No se encontraron categorías"
 msgid "No categories match “{trimmedSearch}”"
 msgstr "Ninguna categoría coincide con «{trimmedSearch}»"
 
+#: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
+#: src/transaction/hook/use-adjustment-balance.hook.ts
+msgid "No change"
+msgstr "Sin cambios"
+
 #: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
 msgid "No contacts on this device"
 msgstr "No hay contactos en este dispositivo"
@@ -7881,6 +7895,10 @@ msgstr "Ahorra un poco cada periodo para las facturas anuales y que nunca te sor
 msgid "Saved to your chosen folder."
 msgstr "Guardada en la carpeta elegida."
 
+#: src/transaction/hook/use-adjustment-balance.hook.ts
+msgid "Saving replaces {originalLabel} with {proposedLabel}"
+msgstr "Al guardar se sustituye {originalLabel} por {proposedLabel}"
+
 #: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/constant/onboarding-account-options.constant.ts
@@ -8841,10 +8859,6 @@ msgstr "El texto aparece en cualquier parte"
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "The text appears nowhere"
 msgstr "El texto no aparece en ninguna parte"
-
-#: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
-msgid "The updated adjustment replaces the original amount in your balance."
-msgstr "El ajuste actualizado sustituye el importe original en tu saldo."
 
 #: src/rule/components/rule-summary-hero/rule-summary-hero.tsx
 msgid "then"

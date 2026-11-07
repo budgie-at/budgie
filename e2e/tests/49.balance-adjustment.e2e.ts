@@ -7,7 +7,7 @@ import { clearAmount, typeDigits } from '../support/budgie/transactions.ts';
 
 const ACCOUNT = 'E2E Adjustment Account';
 
-test('48 balance adjustment saves increase and decrease', { tags: ['accounts', 'transactions'] }, async ({ budgie }) => {
+test('49 balance adjustment saves increase and decrease', { tags: ['accounts', 'transactions'] }, async ({ budgie }) => {
     const ctx = budgie.ctx;
 
     await budgie.start({ fixture: '02.db' });
@@ -20,9 +20,17 @@ test('48 balance adjustment saves increase and decrease', { tags: ['accounts', '
         await accounts.openAccountDetails(ctx, ACCOUNT);
         await b.tapId(ctx, `TransactionCard.AdjustmentAmount.${adjustment.previous}`);
         await b.expectId(ctx, 'TransactionForm.AmountInput');
-        await ctx.screen.getByText(adjustment.direction, { exact: true }).first().tap();
+        await b.tapId(ctx, `Adjustment.${adjustment.direction}`);
         await clearAmount(ctx);
+        await expect(b.byId(ctx.screen, 'TransactionForm.SubmitButton')).toBeDisabled();
+        await expect(b.byId(ctx.screen, 'Adjustment.Preview')).toHaveText('After saving: —');
+        await expect(b.byId(ctx.screen, 'Adjustment.Current')).toHaveText(`Current balance, C$${adjustment.previous}.00`);
+        await typeDigits(ctx, '0');
+        await expect(b.byId(ctx.screen, 'TransactionForm.SubmitButton')).toBeDisabled();
+        await expect(b.byId(ctx.screen, 'Adjustment.Preview')).toHaveText('After saving: —');
         await typeDigits(ctx, adjustment.amount);
+        const expectedPreview = adjustment.direction === 'Decrease' ? 'After saving: −C$50.00' : 'After saving: C$300.00';
+        await expect(b.byId(ctx.screen, 'Adjustment.Preview')).toHaveText(expectedPreview);
         await b.tapId(ctx, 'TransactionForm.SubmitButton');
         await b.expectNoId(ctx, 'TransactionForm.SubmitButton');
         await b.openLink(ctx, 'budgie://');

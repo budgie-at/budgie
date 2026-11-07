@@ -1500,6 +1500,14 @@ msgstr "Після {upcomingAmount} на майбутні рахунки"
 msgid "After 5 wrong tries, Budgie waits a little longer between attempts."
 msgstr "Після 5 невдалих спроб Budgie трохи довше чекає між спробами."
 
+#: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
+msgid "After saving"
+msgstr "Після збереження"
+
+#: src/transaction/hook/use-adjustment-balance.hook.ts
+msgid "After saving: {after}"
+msgstr "Після збереження: {after}"
+
 #: src/budget/constant/budget-pace-status-label.constant.ts
 msgid "Ahead of pace"
 msgstr "Швидше за план"
@@ -1944,10 +1952,6 @@ msgstr "Баланс"
 #: src/transaction/components/transaction-card-content/transaction-card-content.tsx
 msgid "Balance Adjustment"
 msgstr "Коригування балансу"
-
-#: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
-msgid "Balance after saving"
-msgstr "Баланс після збереження"
 
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 msgid "Balance forecast"
@@ -3594,6 +3598,10 @@ msgstr "валюта"
 msgid "Currency"
 msgstr "Валюта"
 
+#: src/transaction/hook/use-adjustment-balance.hook.ts
+msgid "Current adjustment {originalLabel}"
+msgstr "Поточне коригування {originalLabel}"
+
 #: src/account/component/account-balance-field/account-balance-field.tsx
 #: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
 msgid "Current balance"
@@ -4301,6 +4309,7 @@ msgid "Enter all amounts"
 msgstr "Введіть усі суми"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
+#: src/transaction/hook/use-adjustment-balance.hook.ts
 #: src/transaction/hook/use-quick-form-submit.hook.ts
 #: src/transaction/hook/use-transaction-keypad-editing.hook.ts
 msgid "Enter an amount"
@@ -6142,6 +6151,11 @@ msgstr "Категорій не знайдено"
 msgid "No categories match “{trimmedSearch}”"
 msgstr "Немає категорій, що відповідають «{trimmedSearch}»"
 
+#: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
+#: src/transaction/hook/use-adjustment-balance.hook.ts
+msgid "No change"
+msgstr "Без змін"
+
 #: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
 msgid "No contacts on this device"
 msgstr "На цьому пристрої немає контактів"
@@ -7881,6 +7895,10 @@ msgstr "Відкладайте потроху кожен період на рі�
 msgid "Saved to your chosen folder."
 msgstr "Збережено у вибраній папці."
 
+#: src/transaction/hook/use-adjustment-balance.hook.ts
+msgid "Saving replaces {originalLabel} with {proposedLabel}"
+msgstr "Збереження замінить {originalLabel} на {proposedLabel}"
+
 #: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/constant/onboarding-account-options.constant.ts
@@ -8841,10 +8859,6 @@ msgstr "Текст трапляється будь-де"
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "The text appears nowhere"
 msgstr "Текст ніде не трапляється"
-
-#: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
-msgid "The updated adjustment replaces the original amount in your balance."
-msgstr "Оновлене коригування замінить початкову суму у вашому балансі."
 
 #: src/rule/components/rule-summary-hero/rule-summary-hero.tsx
 msgid "then"
