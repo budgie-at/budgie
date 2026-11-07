@@ -1,4 +1,5 @@
 import { TestSeedService } from '@budgie-at/test-kit';
+import { SYNC_RECORD_DEFINITIONS, SyncReferenceKindEnum, encodeSyncAggregate, isSyncAggregateRecordType } from '@budgie/cloud-sync';
 import {
     AccountDebtTypeEnum,
     AccountEntityTable,
@@ -28,17 +29,13 @@ import {
     RuleConditionMatchTypeEnum,
     RuleConditionOperatorEnum,
     RuleEntityTable,
-    SYNC_RECORD_DEFINITIONS,
     SyncRecordTypeEnum,
-    SyncReferenceKindEnum,
     TransactionConsolidationTypeEnum,
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionReceiptEntityTable,
     TransactionTypeEnum,
-    TransactionUpdatedByEnum,
-    encodeSyncAggregate,
-    isSyncAggregateRecordType
+    TransactionUpdatedByEnum
 } from '@budgie/contracts';
 import { eq, getTableColumns } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -46,7 +43,6 @@ import * as Effect from 'effect/Effect';
 import { isDefined, isNumber, isString } from '@rnw-community/shared';
 
 import type {
-    DB,
     DecodedSyncRecordInterface,
     SyncAggregateInterface,
     SyncIdentityInterface,
@@ -54,7 +50,8 @@ import type {
     SyncReferenceResolverInterface,
     SyncRowInputType,
     SyncRowReferenceInterface
-} from '@budgie/contracts';
+} from '@budgie/cloud-sync';
+import type { DB } from '@budgie/contracts';
 import type { SQLiteTable } from 'drizzle-orm/sqlite-core';
 
 const TABLE_ORDER = [

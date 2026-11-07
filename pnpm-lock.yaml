@@ -346,6 +346,9 @@ importers:
       '@budgie/categorization':
         specifier: workspace:*
         version: link:../categorization
+      '@budgie/cloud-sync':
+        specifier: workspace:*
+        version: link:../cloud-sync
       '@budgie/consolidation':
         specifier: workspace:*
         version: link:../consolidation
@@ -736,6 +739,24 @@ importers:
       vitest:
         specifier: 5.1.0
         version: 5.1.0(@opentelemetry/api@1.9.1)(@types/node@26.6.6)(msw@3.0.3(@types/node@26.6.6)(graphql@16.13.2)(supports-color@8.1.1)(vite@8.0.16(@types/node@26.6.6)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1)))(vite@8.0.16(@types/node@26.6.6)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
+
+  packages/cloud-sync:
+    dependencies:
+      '@budgie/contracts':
+        specifier: workspace:^
+        version: link:../contracts
+      '@noble/hashes':
+        specifier: ^2.4.0
+        version: 2.4.0
+      '@rnw-community/shared':
+        specifier: ^3.0.5
+        version: 3.0.5
+      drizzle-orm:
+        specifier: 1.0.0-rc.4
+        version: 1.0.0-rc.4(patch_hash=793e8ddeeefa9deacc42a0f266feba15c226019990829f2eab8997ec36c21c60)(@effect/sql-sqlite-node@4.1.2(effect@4.1.2))(@op-engineering/op-sqlite@18.2.5(react-native@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(@opentelemetry/api@1.9.1)(@sinclair/typebox@0.34.41)(@types/better-sqlite3@9.6.0)(arktype@2.2.9)(better-sqlite3@13.0.3)(effect@4.1.2)(expo-sqlite@58.0.7(expo@58.0.22)(react-native@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(zod@4.6.7)
+      effect:
+        specifier: 4.1.2
+        version: 4.1.2
 
   packages/consolidation:
     dependencies:
@@ -1180,6 +1201,9 @@ importers:
       '@budgie/categorization':
         specifier: workspace:*
         version: link:../../packages/categorization
+      '@budgie/cloud-sync':
+        specifier: workspace:*
+        version: link:../../packages/cloud-sync
       '@budgie/consolidation':
         specifier: workspace:*
         version: link:../../packages/consolidation
@@ -1244,6 +1268,9 @@ importers:
 
   tests/test-kit:
     dependencies:
+      '@budgie/cloud-sync':
+        specifier: workspace:*
+        version: link:../../packages/cloud-sync
       '@budgie/contracts':
         specifier: workspace:^
         version: link:../../packages/contracts

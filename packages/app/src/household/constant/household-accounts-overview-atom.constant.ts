@@ -1,8 +1,8 @@
+import { HouseholdShareService } from '@budgie/cloud-sync';
 import {
     AccountEntityTable,
     AccountRepository,
     HOUSEHOLD_SYNC_ZONE,
-    HouseholdShareService,
     PERSONAL_SYNC_ZONE,
     SyncOutboxEntityTable,
     SyncRecordEntityTable,

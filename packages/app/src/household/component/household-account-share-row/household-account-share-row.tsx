@@ -1,4 +1,5 @@
-import { HouseholdShareService, UserIconNameEnum } from '@budgie/contracts';
+import { HouseholdShareService } from '@budgie/cloud-sync';
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 

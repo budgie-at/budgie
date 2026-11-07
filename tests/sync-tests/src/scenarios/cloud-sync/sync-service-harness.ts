@@ -10,19 +10,21 @@ import { CloudSyncStateStore } from '@app/cloud-sync/service/cloud-sync-state-st
 import { CloudSyncTransport } from '@app/cloud-sync/service/cloud-sync-transport.service';
 import { CloudSyncService } from '@app/cloud-sync/service/cloud-sync.service';
 import {
-    BankIntegrationRepository,
-    Db,
     HouseholdMembershipService,
     HouseholdShareService,
-    SettingsRepository,
     SyncApplyService,
-    SyncIdentityRepository,
     SyncOutboxRepository,
+    SyncRestoreReconciliationService,
+    SyncUploadService
+} from '@budgie/cloud-sync';
+import {
+    BankIntegrationRepository,
+    Db,
+    SettingsRepository,
+    SyncIdentityRepository,
     SyncRecordRepository,
     SyncRepository,
     SyncResetRepository,
-    SyncRestoreReconciliationService,
-    SyncUploadService,
     SyncZoneRegistryRepository
 } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
@@ -46,7 +48,8 @@ import type {
     ICloudZoneInventoryRecord
 } from '../../../../../packages/app/modules/icloud';
 import type { CloudSyncStateInterface } from '@app/cloud-sync/interface/cloud-sync-state.interface';
-import type { DB, SyncApplyResultInterface } from '@budgie/contracts';
+import type { SyncApplyResultInterface } from '@budgie/cloud-sync';
+import type { DB } from '@budgie/contracts';
 
 export const INSTALL_ID = 'install-a';
 

@@ -1,5 +1,6 @@
 import { TestSeedService, FakeCloudTransport, makeTestDbLayer, resetTestDb } from '@budgie-at/test-kit';
-import { Db, SyncApplyService } from '@budgie/contracts';
+import { SyncApplyService } from '@budgie/cloud-sync';
+import { Db } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';

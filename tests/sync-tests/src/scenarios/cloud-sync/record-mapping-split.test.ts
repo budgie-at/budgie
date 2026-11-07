@@ -1,5 +1,6 @@
 import { decodeJson, encodeJson, makeTestDbLayer } from '@budgie-at/test-kit';
-import { Db, SyncRecordTypeEnum, decodeSyncRecord, joinSplitTransactions } from '@budgie/contracts';
+import { decodeSyncRecord, joinSplitTransactions } from '@budgie/cloud-sync';
+import { Db, SyncRecordTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 

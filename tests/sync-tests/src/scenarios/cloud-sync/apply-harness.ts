@@ -1,12 +1,6 @@
 import { assertStoredBalancesMatchLedger, encodeJson } from '@budgie-at/test-kit';
-import {
-    Db,
-    SYNC_RECORD_SCHEMA_VERSION,
-    SyncAccountBalanceRefresher,
-    SyncApplyService,
-    SyncOutboxRepository,
-    SyncRecordRepository
-} from '@budgie/contracts';
+import { SYNC_RECORD_SCHEMA_VERSION, SyncAccountBalanceRefresher, SyncApplyService, SyncOutboxRepository } from '@budgie/cloud-sync';
+import { Db, SyncRecordRepository } from '@budgie/contracts';
 import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -16,7 +10,8 @@ import { isString } from '@rnw-community/shared';
 import { encodeAllRecords, hydratedSnapshot, loadSyncState } from './record-mapping-harness';
 
 import type { FakeCloudDeliveryOptionsInterface, FakeCloudTransport } from '@budgie-at/test-kit';
-import type { DB, SyncApplyResultInterface } from '@budgie/contracts';
+import type { SyncApplyResultInterface } from '@budgie/cloud-sync';
+import type { DB } from '@budgie/contracts';
 
 interface OutboxKeyInterface {
     readonly syncZone: string;

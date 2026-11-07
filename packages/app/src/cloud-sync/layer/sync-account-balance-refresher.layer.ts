@@ -1,4 +1,4 @@
-import { SyncAccountBalanceRefresher } from '@budgie/contracts';
+import { SyncAccountBalanceRefresher } from '@budgie/cloud-sync';
 import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';

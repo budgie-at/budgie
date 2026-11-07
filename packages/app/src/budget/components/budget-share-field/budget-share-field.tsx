@@ -1,4 +1,5 @@
-import { HouseholdShareService, HouseholdShareStateEnum, UserIconNameEnum } from '@budgie/contracts';
+import { HouseholdShareService, HouseholdShareStateEnum } from '@budgie/cloud-sync';
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';

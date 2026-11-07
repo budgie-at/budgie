@@ -1,7 +1,7 @@
 import * as Schema from 'effect/Schema';
 
 import type { FakeCloudDeliveryOptionsInterface } from './fake-cloud-delivery-options.interface';
-import type { SyncApplyBatchInterface, SyncIncomingDeletionInterface, SyncIncomingRecordInterface } from '@budgie/contracts';
+import type { SyncApplyBatchInterface, SyncIncomingDeletionInterface, SyncIncomingRecordInterface } from '@budgie/cloud-sync';
 
 interface StoredChangeInterface {
     readonly version: number;

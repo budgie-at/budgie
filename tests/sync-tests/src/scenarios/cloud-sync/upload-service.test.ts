@@ -1,11 +1,12 @@
 import { decodeJson, encodeJson } from '@budgie-at/test-kit';
-import { Db, ExternalSourceEnum, PERSONAL_SYNC_ZONE, SyncRecordTypeEnum, SyncUploadService } from '@budgie/contracts';
+import { SyncUploadService } from '@budgie/cloud-sync';
+import { Db, ExternalSourceEnum, PERSONAL_SYNC_ZONE, SyncRecordTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import { seed, testDb } from '../../harness';
 
-import type { SyncUploadSaveInterface } from '@budgie/contracts';
+import type { SyncUploadSaveInterface } from '@budgie/cloud-sync';
 
 const OPERATED_AT = new Date('2026-10-02T10:00:00Z');
 

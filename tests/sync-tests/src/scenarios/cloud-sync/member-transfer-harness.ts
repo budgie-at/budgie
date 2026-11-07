@@ -1,7 +1,8 @@
 import { SyncAutomationService } from '@app/cloud-sync-automation/service/sync-automation.service';
 import { FakeCloudTransport, TestSeedService } from '@budgie-at/test-kit';
+import { HouseholdShareService } from '@budgie/cloud-sync';
 import { UnconsolidationService } from '@budgie/consolidation';
-import { Db, ExternalSourceEnum, HouseholdShareService, SyncZoneRoleEnum } from '@budgie/contracts';
+import { Db, ExternalSourceEnum, SyncZoneRoleEnum } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
 import { testDb } from '../../harness';

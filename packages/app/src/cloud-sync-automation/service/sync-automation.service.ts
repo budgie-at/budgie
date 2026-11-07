@@ -16,7 +16,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { SyncAutomationEmbeddingBoost } from './sync-automation-embedding-boost.service';
 
 import type { SyncAutomationResultInterface } from '../interface/sync-automation-result.interface';
-import type { SyncApplyResultInterface } from '@budgie/contracts';
+import type { SyncApplyResultInterface } from '@budgie/cloud-sync';
 
 const TRANSACTIONS_TABLE = 'transactions';
 const RECURRING_SERIES_TABLE = 'recurring_series';

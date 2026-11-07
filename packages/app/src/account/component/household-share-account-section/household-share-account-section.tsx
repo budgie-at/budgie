@@ -1,4 +1,4 @@
-import { HouseholdShareStateEnum } from '@budgie/contracts';
+import { HouseholdShareStateEnum } from '@budgie/cloud-sync';
 import { useAtom } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';

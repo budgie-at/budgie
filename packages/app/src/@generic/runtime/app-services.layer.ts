@@ -19,6 +19,7 @@ import {
     TransactionCategorizeInboxRepository,
     TransactionEmbeddingRepository
 } from '@budgie/categorization';
+import { HouseholdShareService, SyncOutboxRepository } from '@budgie/cloud-sync';
 import { ConsolidationCoordinatorService, RefundConsolidationService } from '@budgie/consolidation';
 import {
     AccountBalanceRepository,
@@ -47,8 +48,6 @@ import {
     TransactionTagsRepository,
     SyncApplyStateRepository,
     SyncIdentityRepository,
-    HouseholdShareService,
-    SyncOutboxRepository,
     SyncPendingRepository,
     SyncRecordRepository,
     SyncZoneRegistryRepository

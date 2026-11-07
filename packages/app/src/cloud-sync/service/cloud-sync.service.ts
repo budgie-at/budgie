@@ -1,22 +1,24 @@
 import {
-    HOUSEHOLD_SYNC_ZONE,
     HouseholdMembershipService,
     HouseholdShareService,
-    PERSONAL_SYNC_ZONE,
-    SYNC_IDENTITY_TABLES,
     SYNC_RECORD_SCHEMA_VERSION,
-    SettingsRepository,
     SyncApplyService,
-    SyncDatabaseScopeEnum,
-    SyncIdentityRepository,
     SyncOutboxRepository,
-    SyncRecordRepository,
-    SyncResetRepository,
     SyncRestoreReconciliationService,
     SyncUploadService,
-    SyncZoneRoleEnum,
-    SyncZoneRegistryRepository,
     listClearedSyncFields
+} from '@budgie/cloud-sync';
+import {
+    HOUSEHOLD_SYNC_ZONE,
+    PERSONAL_SYNC_ZONE,
+    SYNC_IDENTITY_TABLES,
+    SettingsRepository,
+    SyncDatabaseScopeEnum,
+    SyncIdentityRepository,
+    SyncRecordRepository,
+    SyncResetRepository,
+    SyncZoneRoleEnum,
+    SyncZoneRegistryRepository
 } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import * as Clock from 'effect/Clock';
@@ -92,12 +94,8 @@ import type { CloudSyncEnvelopeInterface } from '../interface/cloud-sync-envelop
 import type { CloudSyncPushedItemInterface } from '../interface/cloud-sync-pushed-item.interface';
 import type { CloudSyncSessionInterface } from '../interface/cloud-sync-session.interface';
 import type { CloudSyncEventType } from '../type/cloud-sync-event.type';
-import type {
-    SyncApplyResultInterface,
-    SyncIncomingDeletionInterface,
-    SyncIncomingRecordInterface,
-    SyncZoneRegistryEntityInterface
-} from '@budgie/contracts';
+import type { SyncApplyResultInterface, SyncIncomingDeletionInterface, SyncIncomingRecordInterface } from '@budgie/cloud-sync';
+import type { SyncZoneRegistryEntityInterface } from '@budgie/contracts';
 
 export class CloudSyncService extends Context.Service<CloudSyncService>()('@budgie/app/CloudSyncService', {
     make: Effect.gen(function* () {

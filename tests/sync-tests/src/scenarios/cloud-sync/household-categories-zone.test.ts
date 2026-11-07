@@ -1,13 +1,6 @@
 import { FakeCloudTransport, TestSeedService, makeTestDbLayer } from '@budgie-at/test-kit';
-import {
-    CategoryRepository,
-    Db,
-    HOUSEHOLD_SYNC_ZONE,
-    HouseholdShareService,
-    LanguageEnum,
-    PERSONAL_SYNC_ZONE,
-    SyncZoneRoleEnum
-} from '@budgie/contracts';
+import { HouseholdShareService } from '@budgie/cloud-sync';
+import { CategoryRepository, Db, HOUSEHOLD_SYNC_ZONE, LanguageEnum, PERSONAL_SYNC_ZONE, SyncZoneRoleEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 

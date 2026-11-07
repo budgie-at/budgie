@@ -1,14 +1,13 @@
 import { encodeJson, makeTestDbLayer } from '@budgie-at/test-kit';
 import {
-    Db,
     SYNC_RECORD_DEFINITIONS,
     SYNC_RECORD_MAX_BYTES,
     SYNC_RECORD_SCHEMA_VERSION,
-    SyncRecordTypeEnum,
     decodeSyncRecord,
     encodeSyncAggregate,
     joinSplitTransactions
-} from '@budgie/contracts';
+} from '@budgie/cloud-sync';
+import { Db, SyncRecordTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import { getTableColumns } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

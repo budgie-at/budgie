@@ -1,4 +1,5 @@
-import { HouseholdShareService, SettingsEntityTable, SyncZoneRegistryEntityTable } from '@budgie/contracts';
+import { HouseholdShareService } from '@budgie/cloud-sync';
+import { SettingsEntityTable, SyncZoneRegistryEntityTable } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
 import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';

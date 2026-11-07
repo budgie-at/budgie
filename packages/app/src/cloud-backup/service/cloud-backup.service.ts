@@ -1,5 +1,5 @@
+import { buildHouseholdRemovalStatements } from '@budgie/cloud-sync';
 import {
-    buildHouseholdRemovalStatements,
     Db,
     HOUSEHOLD_SYNC_ZONE,
     SettingsRepository,

@@ -18,7 +18,7 @@ import { AccountDebtTypeEnum } from '../../account/enum/account-debt-type.enum';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { BankIntegrationEntityTable } from '../../bank-integration/table/bank-integration-entity.table';
-import { buildAccountSharedByOtherSql } from '../../cloud-sync/share/utils/build-account-shared-by-other-sql.util';
+import { buildAccountSharedByOtherSql } from '../../cloud-sync/utils/build-account-shared-by-other-sql.util';
 import { DebtEventDirectionEnum } from '../../debt-event/enum/debt-event-direction.enum';
 import { DebtEventEntityTable } from '../../debt-event/table/debt-event-entity.table';
 import { InstrumentTypeEnum } from '../../instrument/enum/instrument-type.enum';

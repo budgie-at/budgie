@@ -1,13 +1,6 @@
 import { encodeJson, resetTestDb } from '@budgie-at/test-kit';
-import {
-    Db,
-    HouseholdShareService,
-    SyncApplyService,
-    SyncDatabaseScopeEnum,
-    SyncUploadService,
-    SyncZoneRegistryRepository,
-    SyncZoneRoleEnum
-} from '@budgie/contracts';
+import { HouseholdShareService, SyncApplyService, SyncUploadService } from '@budgie/cloud-sync';
+import { Db, SyncDatabaseScopeEnum, SyncZoneRegistryRepository, SyncZoneRoleEnum } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
@@ -18,7 +11,8 @@ import { testDb } from '../../harness';
 import { deviceLayer } from './apply-harness';
 
 import type { FakeCloudDeliveryOptionsInterface, FakeCloudTransport } from '@budgie-at/test-kit';
-import type { DB, SyncApplyResultInterface, SyncUploadAcknowledgementInterface } from '@budgie/contracts';
+import type { SyncApplyResultInterface, SyncUploadAcknowledgementInterface } from '@budgie/cloud-sync';
+import type { DB } from '@budgie/contracts';
 
 export const PERSONAL_ZONE = 'personal';
 export const HOUSEHOLD_ZONE = 'household';

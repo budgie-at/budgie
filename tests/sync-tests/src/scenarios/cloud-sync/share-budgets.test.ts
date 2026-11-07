@@ -1,12 +1,12 @@
 import { FakeCloudTransport, TestSeedService, makeTestDbLayer } from '@budgie-at/test-kit';
 import { BudgetRepository, computeSpent } from '@budgie/budget';
+import { HouseholdShareService } from '@budgie/cloud-sync';
 import {
     BudgetCategoryLimitEntityTable,
     BudgetEntityTable,
     BudgetKindEnum,
     BudgetPeriodEnum,
     Db,
-    HouseholdShareService,
     InstrumentEntityTable,
     SyncZoneRoleEnum
 } from '@budgie/contracts';

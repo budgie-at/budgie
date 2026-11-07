@@ -1,7 +1,8 @@
 import { SyncAutomationEmbeddingBoost } from '@app/cloud-sync-automation/service/sync-automation-embedding-boost.service';
 import { SyncAutomationService } from '@app/cloud-sync-automation/service/sync-automation.service';
+import { SyncApplyService } from '@budgie/cloud-sync';
 import { P2pTransferTitleResolver } from '@budgie/consolidation';
-import { Db, SyncApplyService } from '@budgie/contracts';
+import { Db } from '@budgie/contracts';
 import { LedgerWorkload } from '@budgie/ledger';
 import { RecurringService } from '@budgie/recurring';
 import * as Effect from 'effect/Effect';

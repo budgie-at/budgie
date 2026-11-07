@@ -1,11 +1,6 @@
 import { CloudSyncService } from '@app/cloud-sync/service/cloud-sync.service';
-import {
-    SyncDatabaseScopeEnum,
-    SyncOutboxOperationEnum,
-    SyncOutboxRepository,
-    SyncZoneRegistryRepository,
-    SyncZoneRoleEnum
-} from '@budgie/contracts';
+import { SyncOutboxRepository } from '@budgie/cloud-sync';
+import { SyncDatabaseScopeEnum, SyncOutboxOperationEnum, SyncZoneRegistryRepository, SyncZoneRoleEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 

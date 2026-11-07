@@ -3,9 +3,9 @@ import { cloudSyncStatusAtom } from '@app/cloud-sync/constant/cloud-sync-status-
 import { CloudSyncStatusEnum } from '@app/cloud-sync/enum/cloud-sync-status.enum';
 import { CloudSyncService } from '@app/cloud-sync/service/cloud-sync.service';
 import { encodeJson } from '@budgie-at/test-kit';
+import { HouseholdShareService } from '@budgie/cloud-sync';
 import {
     HOUSEHOLD_SYNC_ZONE,
-    HouseholdShareService,
     SyncDatabaseScopeEnum,
     SyncIdentityRepository,
     SyncZoneRegistryRepository,

@@ -1,4 +1,5 @@
-import { AccountEntityInterface, HouseholdShareService } from '@budgie/contracts';
+import { HouseholdShareService } from '@budgie/cloud-sync';
+import { AccountEntityInterface } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import * as Effect from 'effect/Effect';
 import { router } from 'expo-router';

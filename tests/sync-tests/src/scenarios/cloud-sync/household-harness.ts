@@ -1,5 +1,6 @@
 import { TestSeedService, encodeJson, resetTestDb } from '@budgie-at/test-kit';
-import { HOUSEHOLD_SYNC_ZONE, SYNC_RECORD_SCHEMA_VERSION, SyncRecordRepository } from '@budgie/contracts';
+import { SYNC_RECORD_SCHEMA_VERSION } from '@budgie/cloud-sync';
+import { HOUSEHOLD_SYNC_ZONE, SyncRecordRepository } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
 import {

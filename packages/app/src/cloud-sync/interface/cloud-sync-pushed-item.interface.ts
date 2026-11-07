@@ -1,4 +1,4 @@
-import type { SyncRecordInterface, SyncRecordTargetInterface } from '@budgie/contracts';
+import type { SyncRecordInterface, SyncRecordTargetInterface } from '@budgie/cloud-sync';
 
 export interface CloudSyncPushedItemInterface {
     readonly syncZone: string;
