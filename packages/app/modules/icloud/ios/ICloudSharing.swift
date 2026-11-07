@@ -286,26 +286,49 @@ public final class ICloudShareInbox: @unchecked Sendable {
     return body
   }
 
+  private static let acceptAttempts = 5
+
   private func accept(_ metadata: CKShare.Metadata) async -> [String: Any] {
     var body = describe(metadata)
     let container = CKContainer(identifier: metadata.containerIdentifier)
-    do {
-      try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-        let operation = CKAcceptSharesOperation(shareMetadatas: [metadata])
-        operation.qualityOfService = .userInitiated
-        operation.acceptSharesResultBlock = { result in
-          switch result {
-          case .success: continuation.resume()
-          case let .failure(error): continuation.resume(throwing: error)
-          }
+    for attempt in 1...Self.acceptAttempts {
+      do {
+        try await acceptOnce(metadata, container: container)
+        body["outcome"] = "ACCEPTED"
+        return body
+      } catch {
+        guard attempt < Self.acceptAttempts, let delay = retryDelay(error, attempt: attempt) else {
+          body["outcome"] = "FAILED"
+          body.merge(ICloudDatabase.failure(error)) { first, _ in first }
+          return body
         }
-        container.add(operation)
+        try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
       }
-      body["outcome"] = "ACCEPTED"
-    } catch {
-      body["outcome"] = "FAILED"
-      body.merge(ICloudDatabase.failure(error)) { first, _ in first }
     }
     return body
+  }
+
+  private func acceptOnce(_ metadata: CKShare.Metadata, container: CKContainer) async throws {
+    try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+      let operation = CKAcceptSharesOperation(shareMetadatas: [metadata])
+      operation.qualityOfService = .userInitiated
+      operation.acceptSharesResultBlock = { result in
+        switch result {
+        case .success: continuation.resume()
+        case let .failure(error): continuation.resume(throwing: error)
+        }
+      }
+      container.add(operation)
+    }
+  }
+
+  private func retryDelay(_ error: Error, attempt: Int) -> Double? {
+    guard let cloudError = ICloudDatabase.itemError(error) as? CKError else { return nil }
+    switch cloudError.code {
+    case .serviceUnavailable, .requestRateLimited, .zoneBusy, .networkFailure, .networkUnavailable:
+      return cloudError.retryAfterSeconds ?? pow(2, Double(attempt))
+    default:
+      return nil
+    }
   }
 }
