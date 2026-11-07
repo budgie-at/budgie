@@ -7912,7 +7912,7 @@ msgstr "Запечатати цим PIN‑кодом"
 
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 msgid "Seal with this PIN?"
-msgstr "Запечатати з цим PIN‑кодом⁠?"
+msgstr "Запечатати дані⁠?"
 
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "Sealed · {contents}"
