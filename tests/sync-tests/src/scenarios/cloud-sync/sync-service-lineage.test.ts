@@ -24,6 +24,19 @@ describe('cloud-sync/sync-service lineage', () => {
         )
     );
 
+    it.effect('does not restart a running engine when settings change', () =>
+        runSyncService((context, service) =>
+            Effect.gen(function* () {
+                yield* matchZoneLineage(context);
+                yield* service.reconfigure;
+                yield* service.reconfigure;
+
+                expect(context.transport.calls.started).toHaveLength(1);
+                expect(context.transport.calls.stopped).toBe(0);
+            })
+        )
+    );
+
     it.effect('does not upload when a device with data meets a zone of a different lineage', () =>
         runSyncService((context, service) =>
             Effect.gen(function* () {

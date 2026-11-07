@@ -220,6 +220,13 @@ export class CloudSyncEngineService extends Context.Service<CloudSyncEngineServi
                     return;
                 }
 
+                const stored = yield* stateStore.read;
+                const current = yield* Ref.get(state.session);
+
+                if (current.isEngineRunning && stored.boundUserRecordName === account.userRecordName) {
+                    return;
+                }
+
                 yield* startEngineUnlocked(account.userRecordName);
             },
             effect =>
