@@ -1,10 +1,10 @@
-import { FakeCloudTransport, TestSeedService, makeTestDbLayer } from '@budgie-at/test-kit';
+import { TestSeedService, makeTestDbLayer } from '@budgie-at/test-kit';
 import { HouseholdMembershipService, HouseholdShareService } from '@budgie/cloud-sync';
 import { Db, HOUSEHOLD_SYNC_ZONE, SyncZoneRoleEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { testDb } from '../../harness';
+import { FakeCloudTransport, testDb } from '../../harness';
 
 import { refreshAllBalances } from './apply-harness';
 import {

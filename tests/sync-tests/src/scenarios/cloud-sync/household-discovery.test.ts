@@ -1,8 +1,7 @@
 import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
-import { CloudSyncService } from '@app/cloud-sync/service/cloud-sync.service';
 import { householdStateAtom } from '@app/household/constant/household-state-atom.constant';
-import { HouseholdRoleEnum } from '@app/household/enum/household-role.enum';
 import { makeTestDbLayer, resetTestDb } from '@budgie-at/test-kit';
+import { CloudSyncService, HouseholdRoleEnum } from '@budgie/cloud-sync';
 import { Db, HOUSEHOLD_SYNC_ZONE, SyncDatabaseScopeEnum, SyncZoneRegistryRepository, SyncZoneRoleEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';

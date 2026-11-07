@@ -1,4 +1,4 @@
-import { FakeCloudTransport, TestSeedService, makeTestDbLayer } from '@budgie-at/test-kit';
+import { TestSeedService, makeTestDbLayer } from '@budgie-at/test-kit';
 import { BudgetRepository, computeSpent } from '@budgie/budget';
 import { HouseholdShareService } from '@budgie/cloud-sync';
 import {
@@ -13,7 +13,7 @@ import {
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { testDb } from '../../harness';
+import { FakeCloudTransport, testDb } from '../../harness';
 
 import { expectBalancesMatchLedger, refreshAllBalances } from './apply-harness';
 import {

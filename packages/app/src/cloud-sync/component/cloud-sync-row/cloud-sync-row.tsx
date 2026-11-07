@@ -1,3 +1,4 @@
+import { CloudSyncService } from '@budgie/cloud-sync';
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -10,7 +11,6 @@ import { SettingsWarningSubtitle } from '../../../settings/components/settings-w
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
 import { useCloudSyncStatusLabel } from '../../hook/use-cloud-sync-status-label.hook';
-import { CloudSyncService } from '../../service/cloud-sync.service';
 
 import { CloudSyncRowSelector } from './cloud-sync-row.selector';
 

@@ -1,10 +1,8 @@
-import { CloudSyncService } from '@app/cloud-sync/service/cloud-sync.service';
-import { SyncOutboxRepository } from '@budgie/cloud-sync';
+import { CloudSyncService, SyncOutboxRepository, ICLOUD_DEFAULT_OWNER_NAME } from '@budgie/cloud-sync';
 import { SyncDatabaseScopeEnum, SyncOutboxOperationEnum, SyncZoneRegistryRepository, SyncZoneRoleEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { ICLOUD_DEFAULT_OWNER_NAME } from '../../../../../packages/app/modules/icloud';
 import { testDb } from '../../harness';
 
 import { seedCrossZoneTransfer } from './record-mapping-harness';

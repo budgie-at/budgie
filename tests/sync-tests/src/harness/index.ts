@@ -120,3 +120,5 @@ export { fetchInzhurOperationsLedger } from './inzhur/fetch-inzhur-operations-le
 export { importInzhurBankFlow } from './inzhur/import-inzhur-bank-flow';
 export { importInzhurBankTransaction } from './inzhur/import-inzhur-bank-transaction';
 export { importInzhurOperations } from './inzhur/import-inzhur-operations';
+export { FakeCloudTransport } from './cloud/fake-cloud-transport';
+export type { FakeCloudDeliveryOptionsInterface } from './cloud/fake-cloud-delivery-options.interface';

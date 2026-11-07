@@ -1,3 +1,4 @@
+import { CloudSyncStatusEnum } from '@budgie/cloud-sync';
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans } from '@lingui/react/macro';
@@ -7,7 +8,6 @@ import Animated from 'react-native-reanimated';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { PRESENCE_ENTERING, PRESENCE_EXITING } from '../../../@generic/constant/presence-motion.constant';
 import { cloudSyncStatusAtom } from '../../constant/cloud-sync-status-atom.constant';
-import { CloudSyncStatusEnum } from '../../enum/cloud-sync-status.enum';
 
 export const CloudSyncUpdateBanner = () => {
     const isUpdateRequired = useAtomValue(cloudSyncStatusAtom, ({ status }) => status === CloudSyncStatusEnum.UPDATE_REQUIRED);

@@ -1,4 +1,5 @@
 import { BudgetPeriodCloseService } from '@budgie/budget';
+import { CloudSyncService } from '@budgie/cloud-sync';
 import { SyncIdentityRepository } from '@budgie/contracts';
 import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
@@ -15,7 +16,6 @@ import { AuthService } from '../../auth/service/auth.service';
 import { BudgetAlertMonitorService } from '../../budget/service/budget-alert-monitor.service';
 import { CategoryIconBackfillService } from '../../category/service/category-icon-backfill.service';
 import { CloudBackupTriggerService } from '../../cloud-backup/service/cloud-backup-trigger.service';
-import { CloudSyncService } from '../../cloud-sync/service/cloud-sync.service';
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
 import { InzhurPendingTopUpService } from '../../inzhur/service/inzhur-pending-top-up.service';
 import { InzhurStatementReminderService } from '../../inzhur/service/inzhur-statement-reminder.service';

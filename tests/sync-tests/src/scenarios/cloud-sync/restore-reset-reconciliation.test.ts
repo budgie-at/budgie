@@ -1,12 +1,11 @@
-import { syncAccountBalanceRefresherLayer } from '@app/cloud-sync/layer/sync-account-balance-refresher.layer';
-import { FakeCloudTransport, TestSeedService, buildTestDb, makeTestDbLayer, resetTestDb } from '@budgie-at/test-kit';
-import { SyncApplyService, SyncRestoreReconciliationService } from '@budgie/cloud-sync';
+import { TestSeedService, buildTestDb, makeTestDbLayer, resetTestDb } from '@budgie-at/test-kit';
+import { syncAccountBalanceRefresherLayer, SyncApplyService, SyncRestoreReconciliationService } from '@budgie/cloud-sync';
 import { Db, PERSONAL_SYNC_ZONE, SyncResetRepository } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { testDb } from '../../harness';
+import { FakeCloudTransport, testDb } from '../../harness';
 
 import {
     deviceLayer,

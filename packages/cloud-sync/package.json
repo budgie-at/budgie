@@ -24,7 +24,14 @@
         "ts:native": "node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.json"
     },
     "dependencies": {
+        "@budgie/ai": "workspace:*",
+        "@budgie/categorization": "workspace:*",
+        "@budgie/consolidation": "workspace:*",
         "@budgie/contracts": "workspace:^",
+        "@budgie/ledger": "workspace:*",
+        "@budgie/recurring": "workspace:*",
+        "@budgie/rules": "workspace:*",
+        "@budgie/sync": "workspace:*",
         "@noble/hashes": "^2.4.0",
         "@rnw-community/shared": "^3.0.5",
         "drizzle-orm": "1.0.0-rc.4",

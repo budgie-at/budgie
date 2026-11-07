@@ -1,9 +1,9 @@
+import { HouseholdJoinStatusEnum } from '@budgie/cloud-sync';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { View } from 'react-native';
 import { LayoutAnimationConfig } from 'react-native-reanimated';
 
 import { householdJoinAtom } from '../../constant/household-join-atom.constant';
-import { HouseholdJoinStatusEnum } from '../../enum/household-join-status.enum';
 import { useHousehold } from '../../hook/use-household.hook';
 import { HouseholdEmptyContent } from '../household-empty-content/household-empty-content';
 import { HouseholdJoinCard } from '../household-join-card/household-join-card';

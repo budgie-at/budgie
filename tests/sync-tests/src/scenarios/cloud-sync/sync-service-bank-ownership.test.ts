@@ -1,4 +1,4 @@
-import { BankOwnershipService } from '@app/cloud-sync/service/bank-ownership.service';
+import { BankOwnershipService } from '@budgie/cloud-sync';
 import { BankIntegrationRepository, BankSyncInstallId, ExternalSourceEnum, SyncRecordRepository, SyncRepository } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';

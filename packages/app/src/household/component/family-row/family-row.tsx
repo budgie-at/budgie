@@ -1,3 +1,4 @@
+import { ICloudParticipantAcceptanceStatus, HouseholdJoinStatusEnum } from '@budgie/cloud-sync';
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { plural } from '@lingui/core/macro';
@@ -6,12 +7,10 @@ import { router } from 'expo-router';
 
 import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { ICloudParticipantAcceptanceStatus } from '../../../../modules/icloud';
 import { useICloudAccount } from '../../../cloud-backup/hook/use-icloud-account.hook';
 import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
 import { SettingsWarningSubtitle } from '../../../settings/components/settings-warning-subtitle/settings-warning-subtitle';
 import { householdJoinAtom } from '../../constant/household-join-atom.constant';
-import { HouseholdJoinStatusEnum } from '../../enum/household-join-status.enum';
 import { useHouseholdOrganizerName } from '../../hook/use-household-organizer-name.hook';
 import { useHouseholdParticipants } from '../../hook/use-household-participants.hook';
 import { useHousehold } from '../../hook/use-household.hook';

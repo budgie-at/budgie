@@ -1,3 +1,4 @@
+import { ICloudParticipantAcceptanceStatus, ICloudParticipantRole } from '@budgie/cloud-sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Duration from 'effect/Duration';
 import * as Effect from 'effect/Effect';
@@ -9,7 +10,6 @@ import { useCallback, useEffect, useEffectEvent, useRef } from 'react';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { ICloudParticipantAcceptanceStatus, ICloudParticipantRole } from '../../../../modules/icloud';
 import { appAtomRegistry } from '../../../@generic/constant/app-atom-registry.constant';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';

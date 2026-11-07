@@ -1,38 +1,25 @@
-import { DatabaseChangeService } from '@app/@generic/drizzle/service/database-change.service';
-import { InstallIdService } from '@app/cloud-backup/service/install-id.service';
-import { SyncAutomationService } from '@app/cloud-sync-automation/service/sync-automation.service';
-import { CloudSyncRestorePhaseEnum } from '@app/cloud-sync/enum/cloud-sync-restore-phase.enum';
-import { CloudSyncTransportError } from '@app/cloud-sync/error/cloud-sync-transport.error';
-import { syncAccountBalanceRefresherLayer } from '@app/cloud-sync/layer/sync-account-balance-refresher.layer';
-import { BankOwnershipService } from '@app/cloud-sync/service/bank-ownership.service';
-import { CloudSyncSafetyCopyService } from '@app/cloud-sync/service/cloud-sync-safety-copy.service';
-import { CloudSyncStateStore } from '@app/cloud-sync/service/cloud-sync-state-store.service';
-import { CloudSyncTransport } from '@app/cloud-sync/service/cloud-sync-transport.service';
-import { CloudSyncService } from '@app/cloud-sync/service/cloud-sync.service';
+import { cloudSyncDatabaseChangesLayer } from '@app/cloud-sync/layer/cloud-sync-database-changes.layer';
+import { cloudSyncHostLayer } from '@app/cloud-sync/layer/cloud-sync-host.layer';
 import {
-    HouseholdMembershipService,
-    HouseholdShareService,
-    SyncApplyService,
-    SyncOutboxRepository,
-    SyncRestoreReconciliationService,
-    SyncUploadService
+    cloudSyncDomainLayer,
+    CloudSyncInstallId,
+    SyncAutomationService,
+    CloudSyncRestorePhaseEnum,
+    CloudSyncTransportError,
+    BankOwnershipService,
+    CloudSyncSafetyCopy,
+    CloudSyncStateStore,
+    CloudSyncTransport,
+    CloudSyncService,
+    ICloudErrorCode,
+    ICloudSyncScope
 } from '@budgie/cloud-sync';
-import {
-    BankIntegrationRepository,
-    Db,
-    SettingsRepository,
-    SyncIdentityRepository,
-    SyncRecordRepository,
-    SyncRepository,
-    SyncResetRepository,
-    SyncZoneRegistryRepository
-} from '@budgie/contracts';
+import { BankIntegrationRepository, Db, SyncIdentityRepository, SyncRepository, SyncResetRepository } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Reactivity from 'effect/reactivity/Reactivity';
 import * as Stream from 'effect/Stream';
 
-import { ICloudErrorCode, ICloudSyncScope } from '../../../../../packages/app/modules/icloud';
 import { testDb } from '../../harness';
 
 import type {
@@ -45,10 +32,10 @@ import type {
     ICloudRecordPayload,
     ICloudSentChangesEvent,
     ICloudShareParticipant,
-    ICloudZoneInventoryRecord
-} from '../../../../../packages/app/modules/icloud';
-import type { CloudSyncStateInterface } from '@app/cloud-sync/interface/cloud-sync-state.interface';
-import type { SyncApplyResultInterface } from '@budgie/cloud-sync';
+    ICloudZoneInventoryRecord,
+    SyncApplyResultInterface,
+    CloudSyncStateInterface
+} from '@budgie/cloud-sync';
 import type { DB } from '@budgie/contracts';
 
 export const INSTALL_ID = 'install-a';
@@ -246,49 +233,37 @@ const makeFakeStateStore = () => {
 
 const makeFakeSafetyCopy = () => {
     const holder = { created: 0 };
-    const layer = Layer.succeed(CloudSyncSafetyCopyService, {
-        create: () =>
-            Effect.sync(() => {
-                holder.created += 1;
-            })
+    const layer = Layer.succeed(CloudSyncSafetyCopy, {
+        create: Effect.sync(() => {
+            holder.created += 1;
+        })
     });
 
     return { holder, layer };
 };
 
-const installIdLayer = Layer.succeed(InstallIdService, { get: Effect.succeed(INSTALL_ID) });
+const installIdLayer = Layer.succeed(CloudSyncInstallId, Effect.succeed(INSTALL_ID));
 
 export const makeSyncServiceContext = (database: DB = testDb) => {
     const transport = makeFakeTransport(database);
     const store = makeFakeStateStore();
     const safetyCopy = makeFakeSafetyCopy();
     const automation = makeFakeAutomation();
-    const applyLayer = SyncApplyService.layer.pipe(Layer.provide(syncAccountBalanceRefresherLayer));
     const dependencies = Layer.mergeAll(
         transport.layer,
         store.layer,
         safetyCopy.layer,
         automation.layer,
-        installIdLayer,
-        SettingsRepository.layer,
-        SyncUploadService.layer,
-        applyLayer,
-        SyncRestoreReconciliationService.layer.pipe(Layer.provide(applyLayer)),
-        HouseholdMembershipService.layer.pipe(Layer.provide(syncAccountBalanceRefresherLayer)),
-        HouseholdShareService.layer,
-        SyncOutboxRepository.layer,
-        SyncRecordRepository.layer,
-        SyncZoneRegistryRepository.layer,
+        cloudSyncDomainLayer,
         SyncRepository.layer,
         BankIntegrationRepository.layer,
         SyncIdentityRepository.layer,
         SyncResetRepository.layer,
-        Layer.effect(BankOwnershipService, BankOwnershipService.make).pipe(
-            Layer.provide([installIdLayer, BankIntegrationRepository.layer, SyncRecordRepository.layer])
-        ),
-        DatabaseChangeService.layer
-    ).pipe(Layer.provide(Reactivity.layer));
-    const layer = Layer.effect(CloudSyncService, CloudSyncService.make).pipe(Layer.provideMerge(dependencies));
+        BankOwnershipService.layer.pipe(Layer.provide(installIdLayer)),
+        cloudSyncHostLayer,
+        cloudSyncDatabaseChangesLayer
+    ).pipe(Layer.provide(Reactivity.layer), Layer.provideMerge(installIdLayer));
+    const layer = CloudSyncService.layer.pipe(Layer.provideMerge(dependencies));
 
     const run = <A, E>(effect: Effect.Effect<A, E, Layer.Success<typeof layer> | Db>) =>
         Effect.andThen(database.$client.unsafe('UPDATE settings SET lineage_id = NULL'), effect).pipe(

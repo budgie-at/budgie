@@ -1,4 +1,4 @@
-import { TestSeedService, FakeCloudTransport, makeTestDbLayer, resetTestDb } from '@budgie-at/test-kit';
+import { TestSeedService, makeTestDbLayer, resetTestDb } from '@budgie-at/test-kit';
 import { SyncApplyService } from '@budgie/cloud-sync';
 import { Db } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
@@ -7,7 +7,7 @@ import * as Schema from 'effect/Schema';
 
 import { isRecord } from '@rnw-community/shared';
 
-import { testDb } from '../../harness';
+import { FakeCloudTransport, testDb } from '../../harness';
 
 import { expectBalancesMatchLedger, onDevice, pullDevice, pushDevice, readOutboxRows, refreshAllBalances } from './apply-harness';
 

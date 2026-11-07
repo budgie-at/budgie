@@ -1,3 +1,4 @@
+import { CloudSyncLineageChoiceEnum, CloudSyncStatusEnum, CloudSyncService } from '@budgie/cloud-sync';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -7,9 +8,6 @@ import { Alert } from 'react-native';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { cloudSyncStatusAtom } from '../../constant/cloud-sync-status-atom.constant';
-import { CloudSyncLineageChoiceEnum } from '../../enum/cloud-sync-lineage-choice.enum';
-import { CloudSyncStatusEnum } from '../../enum/cloud-sync-status.enum';
-import { CloudSyncService } from '../../service/cloud-sync.service';
 
 export const CloudSyncLineagePrompt = () => {
     const { t } = useLingui();

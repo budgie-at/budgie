@@ -1,12 +1,12 @@
+import { HouseholdService } from '@budgie/cloud-sync';
 import * as Effect from 'effect/Effect';
 import * as Option from 'effect/Option';
 
 import { appAtomRuntime } from '../../@generic/runtime/app.runtime';
-import { HouseholdService } from '../service/household.service';
 
 import { householdRefreshAtom } from './household-refresh-atom.constant';
 
-import type { ICloudShareParticipant } from '../../../modules/icloud';
+import type { ICloudShareParticipant } from '@budgie/cloud-sync';
 
 const NO_PARTICIPANTS: readonly ICloudShareParticipant[] = [];
 

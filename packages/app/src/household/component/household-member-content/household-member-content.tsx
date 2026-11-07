@@ -1,10 +1,10 @@
+import { ICloudParticipantRole } from '@budgie/cloud-sync';
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
 import { isEmptyArray } from '@rnw-community/shared';
 
-import { ICloudParticipantRole } from '../../../../modules/icloud';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useHouseholdParticipants } from '../../hook/use-household-participants.hook';
 import { HouseholdLeaveRow } from '../household-leave-row/household-leave-row';

@@ -1,23 +1,23 @@
 import { TestSeedService, encodeJson, resetTestDb } from '@budgie-at/test-kit';
-import { SYNC_RECORD_SCHEMA_VERSION } from '@budgie/cloud-sync';
-import { HOUSEHOLD_SYNC_ZONE, SyncRecordRepository } from '@budgie/contracts';
-import * as Effect from 'effect/Effect';
-
 import {
+    SYNC_RECORD_SCHEMA_VERSION,
     ICloudParticipantAcceptanceStatus,
     ICloudParticipantPermission,
     ICloudParticipantRole,
     ICloudShareOutcome,
     ICloudSyncScope,
     ICloudZoneChangeReason
-} from '../../../../../packages/app/modules/icloud';
+} from '@budgie/cloud-sync';
+import { HOUSEHOLD_SYNC_ZONE, SyncRecordRepository } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
+
 import { testDb } from '../../harness';
 
 import { onDevice, pullDevice, refreshAllBalances } from './apply-harness';
 import { encodeAllRecords, loadSyncState } from './record-mapping-harness';
 
-import type { ICloudShareAcceptedEvent, ICloudShareParticipant, ICloudZoneChangeEvent } from '../../../../../packages/app/modules/icloud';
-import type { FakeCloudTransport } from '@budgie-at/test-kit';
+import type { FakeCloudTransport } from '../../harness';
+import type { ICloudShareAcceptedEvent, ICloudShareParticipant, ICloudZoneChangeEvent } from '@budgie/cloud-sync';
 import type { DB } from '@budgie/contracts';
 
 export const OWNER_RECORD_NAME = 'owner-user-record';

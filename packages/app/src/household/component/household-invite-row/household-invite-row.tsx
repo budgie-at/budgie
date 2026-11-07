@@ -1,3 +1,4 @@
+import { HouseholdService } from '@budgie/cloud-sync';
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -9,7 +10,6 @@ import { SettingsDisabledRow } from '../../../settings/components/settings-disab
 import { SettingsRowAccessory } from '../../../settings/components/settings-row-accessory/settings-row-accessory';
 import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
 import { SettingsRowAccessoryKindEnum } from '../../../settings/enum/settings-row-accessory-kind.enum';
-import { HouseholdService } from '../../service/household.service';
 
 import { HouseholdInviteRowSelector } from './household-invite-row.selector';
 

@@ -1,4 +1,4 @@
-import type { HouseholdJoinStatusEnum } from '../enum/household-join-status.enum';
+import type { HouseholdJoinStatusEnum } from '@budgie/cloud-sync';
 
 export interface HouseholdJoinInterface {
     readonly status: HouseholdJoinStatusEnum;

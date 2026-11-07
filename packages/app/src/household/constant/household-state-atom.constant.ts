@@ -1,6 +1,5 @@
+import { HouseholdRoleEnum } from '@budgie/cloud-sync';
 import * as Atom from 'effect/reactivity/Atom';
-
-import { HouseholdRoleEnum } from '../enum/household-role.enum';
 
 import type { HouseholdStateInterface } from '../interface/household-state.interface';
 

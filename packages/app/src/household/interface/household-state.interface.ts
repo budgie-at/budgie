@@ -1,4 +1,4 @@
-import type { HouseholdRoleEnum } from '../enum/household-role.enum';
+import type { HouseholdRoleEnum } from '@budgie/cloud-sync';
 
 export interface HouseholdStateInterface {
     readonly role: HouseholdRoleEnum;

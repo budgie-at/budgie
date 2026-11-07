@@ -1,3 +1,4 @@
+import { HouseholdService } from '@budgie/cloud-sync';
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -9,7 +10,6 @@ import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-aler
 import { showSuccessToast } from '../../../@generic/utils/show-success-toast/show-success-toast';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { SettingsDestructiveRow } from '../../../settings/components/settings-destructive-row/settings-destructive-row';
-import { HouseholdService } from '../../service/household.service';
 
 import { HouseholdStopSharingRowSelector } from './household-stop-sharing-row.selector';
 

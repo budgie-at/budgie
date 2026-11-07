@@ -1,8 +1,7 @@
+import { CloudSyncStatusEnum } from '@budgie/cloud-sync';
 import * as Atom from 'effect/reactivity/Atom';
 
-import { CloudSyncStatusEnum } from '../enum/cloud-sync-status.enum';
-
-import type { CloudSyncStatusInterface } from '../interface/cloud-sync-status.interface';
+import type { CloudSyncStatusInterface } from '@budgie/cloud-sync';
 
 const INITIAL_CLOUD_SYNC_STATUS: CloudSyncStatusInterface = {
     status: CloudSyncStatusEnum.IDLE,

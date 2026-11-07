@@ -1,3 +1,4 @@
+import { CloudSyncRestorePhaseEnum, CloudSyncStateStore } from '@budgie/cloud-sync';
 import { SyncResetRepository } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -19,8 +20,7 @@ import { reloadApp } from '../../@generic/utils/reload-app.util';
 import { AiEmbeddingStatusService } from '../../ai/service/ai-embedding-status.service';
 import { AiStorageReplacementService } from '../../ai/service/ai-storage-replacement.service';
 import { AuthService } from '../../auth/service/auth.service';
-import { CloudSyncRestorePhaseEnum } from '../../cloud-sync/enum/cloud-sync-restore-phase.enum';
-import { CloudSyncStateStore } from '../../cloud-sync/service/cloud-sync-state-store.service';
+import { cloudSyncStateStoreLayer } from '../../cloud-sync/layer/cloud-sync-state-store.layer';
 
 export class DatabaseImportService extends Context.Service<DatabaseImportService>()('@budgie/app/DatabaseImportService', {
     make: Effect.gen(function* () {
@@ -163,7 +163,7 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
             AiStorageReplacementService.layer,
             AiEmbeddingStatusService.layer,
             AuthService.layer,
-            CloudSyncStateStore.layer,
+            cloudSyncStateStoreLayer,
             SyncResetRepository.layer
         ])
     );

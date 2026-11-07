@@ -20,7 +20,6 @@
         "ts:native": "node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.json"
     },
     "dependencies": {
-        "@budgie/cloud-sync": "workspace:*",
         "@budgie/contracts": "workspace:^",
         "@effect/sql-sqlite-node": "4.1.2",
         "@rnw-community/shared": "^3.0.5",

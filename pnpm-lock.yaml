@@ -742,9 +742,30 @@ importers:
 
   packages/cloud-sync:
     dependencies:
+      '@budgie/ai':
+        specifier: workspace:*
+        version: link:../ai
+      '@budgie/categorization':
+        specifier: workspace:*
+        version: link:../categorization
+      '@budgie/consolidation':
+        specifier: workspace:*
+        version: link:../consolidation
       '@budgie/contracts':
         specifier: workspace:^
         version: link:../contracts
+      '@budgie/ledger':
+        specifier: workspace:*
+        version: link:../ledger
+      '@budgie/recurring':
+        specifier: workspace:*
+        version: link:../recurring
+      '@budgie/rules':
+        specifier: workspace:*
+        version: link:../rules
+      '@budgie/sync':
+        specifier: workspace:*
+        version: link:../sync
       '@noble/hashes':
         specifier: ^2.4.0
         version: 2.4.0
@@ -1268,9 +1289,6 @@ importers:
 
   tests/test-kit:
     dependencies:
-      '@budgie/cloud-sync':
-        specifier: workspace:*
-        version: link:../../packages/cloud-sync
       '@budgie/contracts':
         specifier: workspace:^
         version: link:../../packages/contracts

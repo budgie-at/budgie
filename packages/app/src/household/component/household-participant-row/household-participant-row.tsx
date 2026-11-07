@@ -1,14 +1,14 @@
+import { ICloudParticipantAcceptanceStatus, ICloudParticipantRole } from '@budgie/cloud-sync';
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { ICloudParticipantAcceptanceStatus, ICloudParticipantRole } from '../../../../modules/icloud';
 import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
 
 import { HouseholdParticipantRowSelector } from './household-participant-row.selector';
 
-import type { ICloudShareParticipant } from '../../../../modules/icloud';
+import type { ICloudShareParticipant } from '@budgie/cloud-sync';
 import type { ReactNode } from 'react';
 
 interface Props {

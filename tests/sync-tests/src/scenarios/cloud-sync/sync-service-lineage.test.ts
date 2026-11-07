@@ -1,8 +1,6 @@
 import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { cloudSyncStatusAtom } from '@app/cloud-sync/constant/cloud-sync-status-atom.constant';
-import { CloudSyncLineageChoiceEnum } from '@app/cloud-sync/enum/cloud-sync-lineage-choice.enum';
-import { CloudSyncStatusEnum } from '@app/cloud-sync/enum/cloud-sync-status.enum';
-import { CloudSyncService } from '@app/cloud-sync/service/cloud-sync.service';
+import { CloudSyncLineageChoiceEnum, CloudSyncStatusEnum, CloudSyncService } from '@budgie/cloud-sync';
 import { HOUSEHOLD_SYNC_ZONE, SyncIdentityRepository, SyncZoneRegistryRepository, SyncZoneRoleEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
@@ -11,7 +9,7 @@ import { seed, testDb } from '../../harness';
 
 import { makeSyncServiceContext } from './sync-service-harness';
 
-import type { ICloudFetchedRecord } from '../../../../../packages/app/modules/icloud';
+import type { ICloudFetchedRecord } from '@budgie/cloud-sync';
 
 const metaWith = (lineageId: string): ICloudFetchedRecord => ({
     zoneName: 'Personal',

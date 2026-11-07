@@ -1,9 +1,7 @@
 import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { cloudSyncStatusAtom } from '@app/cloud-sync/constant/cloud-sync-status-atom.constant';
-import { CloudSyncStatusEnum } from '@app/cloud-sync/enum/cloud-sync-status.enum';
-import { CloudSyncService } from '@app/cloud-sync/service/cloud-sync.service';
 import { encodeJson } from '@budgie-at/test-kit';
-import { HouseholdShareService } from '@budgie/cloud-sync';
+import { CloudSyncStatusEnum, CloudSyncService, HouseholdShareService, ICloudErrorCode, ICloudSyncScope } from '@budgie/cloud-sync';
 import {
     HOUSEHOLD_SYNC_ZONE,
     SyncDatabaseScopeEnum,
@@ -15,12 +13,11 @@ import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as TestClock from 'effect/testing/TestClock';
 
-import { ICloudErrorCode, ICloudSyncScope } from '../../../../../packages/app/modules/icloud';
 import { seed, testDb } from '../../harness';
 
 import { makeSyncServiceContext, savedFrom, sentEvent } from './sync-service-harness';
 
-import type { ICloudRecordPayload } from '../../../../../packages/app/modules/icloud';
+import type { ICloudRecordPayload } from '@budgie/cloud-sync';
 
 const readOutboxCount = testDb.$client
     .unsafe<{ readonly total: number }>('SELECT COUNT(*) AS total FROM sync_outbox')

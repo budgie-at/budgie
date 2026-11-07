@@ -1,6 +1,5 @@
-import { CloudSyncRestorePhaseEnum } from '@app/cloud-sync/enum/cloud-sync-restore-phase.enum';
-import { CloudSyncService } from '@app/cloud-sync/service/cloud-sync.service';
-import { FakeCloudTransport, makeTestDbLayer } from '@budgie-at/test-kit';
+import { makeTestDbLayer } from '@budgie-at/test-kit';
+import { CloudSyncRestorePhaseEnum, CloudSyncService, ICloudParticipantRole, ICloudSyncScope } from '@budgie/cloud-sync';
 import {
     Db,
     HOUSEHOLD_SYNC_ZONE,
@@ -13,8 +12,7 @@ import {
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { ICloudParticipantRole, ICloudSyncScope } from '../../../../../packages/app/modules/icloud';
-import { testDb } from '../../harness';
+import { FakeCloudTransport, testDb } from '../../harness';
 
 import { expectBalancesMatchLedger } from './apply-harness';
 import {

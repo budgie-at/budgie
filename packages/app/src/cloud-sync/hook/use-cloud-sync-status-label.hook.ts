@@ -1,3 +1,4 @@
+import { CloudSyncStatusEnum } from '@budgie/cloud-sync';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
@@ -8,7 +9,6 @@ import { isDefined } from '@rnw-community/shared';
 import { minuteClockAtom } from '../../@generic/constant/minute-clock-atom.constant';
 import { useFormatDate } from '../../i18n/hook/use-format-date.hook';
 import { cloudSyncStatusAtom } from '../constant/cloud-sync-status-atom.constant';
-import { CloudSyncStatusEnum } from '../enum/cloud-sync-status.enum';
 
 import type { MessageDescriptor } from '@lingui/core';
 

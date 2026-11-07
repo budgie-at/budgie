@@ -1,3 +1,4 @@
+import { HouseholdService } from '@budgie/cloud-sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
@@ -7,11 +8,10 @@ import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-aler
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { SettingsPillButton } from '../../../settings/components/settings-pill-button/settings-pill-button';
 import { householdRefreshAtom } from '../../constant/household-refresh-atom.constant';
-import { HouseholdService } from '../../service/household.service';
 
 import { HouseholdRemoveButtonSelector } from './household-remove-button.selector';
 
-import type { ICloudShareParticipant } from '../../../../modules/icloud';
+import type { ICloudShareParticipant } from '@budgie/cloud-sync';
 
 interface Props {
     readonly participants: readonly Pick<ICloudShareParticipant, 'displayName' | 'participantId'>[];

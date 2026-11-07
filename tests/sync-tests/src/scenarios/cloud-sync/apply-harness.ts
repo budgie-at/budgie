@@ -9,7 +9,7 @@ import { isString } from '@rnw-community/shared';
 
 import { encodeAllRecords, hydratedSnapshot, loadSyncState } from './record-mapping-harness';
 
-import type { FakeCloudDeliveryOptionsInterface, FakeCloudTransport } from '@budgie-at/test-kit';
+import type { FakeCloudDeliveryOptionsInterface, FakeCloudTransport } from '../../harness';
 import type { SyncApplyResultInterface } from '@budgie/cloud-sync';
 import type { DB } from '@budgie/contracts';
 

@@ -1,6 +1,6 @@
+import { ICloudParticipantAcceptanceStatus, ICloudParticipantRole } from '@budgie/cloud-sync';
 import { useLingui } from '@lingui/react/macro';
 
-import { ICloudParticipantAcceptanceStatus, ICloudParticipantRole } from '../../../../modules/icloud';
 import { useHouseholdParticipants } from '../../hook/use-household-participants.hook';
 import { HouseholdAccountShareList } from '../household-account-share-list/household-account-share-list';
 import { HouseholdShareEverythingSection } from '../household-share-everything-section/household-share-everything-section';

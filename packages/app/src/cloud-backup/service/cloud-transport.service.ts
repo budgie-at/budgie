@@ -1,3 +1,4 @@
+import { ICloudErrorCode } from '@budgie/cloud-sync';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -5,7 +6,7 @@ import * as Schema from 'effect/Schema';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { ICloudErrorCode, ICloudModule } from '../../../modules/icloud';
+import { ICloudModule } from '../../../modules/icloud';
 import { NativeCallError } from '../../@generic/error/native-call.error';
 import { BackupKeyUnavailableError } from '../error/backup-key-unavailable.error';
 import { CloudAccountUnavailableError } from '../error/cloud-account-unavailable.error';

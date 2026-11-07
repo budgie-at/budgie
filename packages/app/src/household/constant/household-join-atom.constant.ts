@@ -1,6 +1,5 @@
+import { HouseholdJoinStatusEnum } from '@budgie/cloud-sync';
 import * as Atom from 'effect/reactivity/Atom';
-
-import { HouseholdJoinStatusEnum } from '../enum/household-join-status.enum';
 
 import type { HouseholdJoinInterface } from '../interface/household-join.interface';
 

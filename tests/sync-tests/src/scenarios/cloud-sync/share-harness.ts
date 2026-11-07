@@ -10,7 +10,7 @@ import { testDb } from '../../harness';
 
 import { deviceLayer } from './apply-harness';
 
-import type { FakeCloudDeliveryOptionsInterface, FakeCloudTransport } from '@budgie-at/test-kit';
+import type { FakeCloudDeliveryOptionsInterface, FakeCloudTransport } from '../../harness';
 import type { SyncApplyResultInterface, SyncUploadAcknowledgementInterface } from '@budgie/cloud-sync';
 import type { DB } from '@budgie/contracts';
 

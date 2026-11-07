@@ -1,6 +1,4 @@
-import { SyncAutomationEmbeddingBoost } from '@app/cloud-sync-automation/service/sync-automation-embedding-boost.service';
-import { SyncAutomationService } from '@app/cloud-sync-automation/service/sync-automation.service';
-import { SyncApplyService } from '@budgie/cloud-sync';
+import { SyncAutomationEmbeddingBoost, SyncAutomationService, SyncApplyService } from '@budgie/cloud-sync';
 import { P2pTransferTitleResolver } from '@budgie/consolidation';
 import { Db } from '@budgie/contracts';
 import { LedgerWorkload } from '@budgie/ledger';
@@ -10,7 +8,7 @@ import * as Layer from 'effect/Layer';
 
 import { deviceLayer, pushDevice, readOutboxRows } from './apply-harness';
 
-import type { FakeCloudDeliveryOptionsInterface, FakeCloudTransport } from '@budgie-at/test-kit';
+import type { FakeCloudDeliveryOptionsInterface, FakeCloudTransport } from '../../harness';
 import type { DB } from '@budgie/contracts';
 
 const MAX_SETTLE_ROUNDS = 6;

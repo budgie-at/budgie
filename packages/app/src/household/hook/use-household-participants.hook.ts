@@ -4,7 +4,7 @@ import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { householdParticipantsAtom } from '../constant/household-participants-atom.constant';
 
-import type { ICloudShareParticipant } from '../../../modules/icloud';
+import type { ICloudShareParticipant } from '@budgie/cloud-sync';
 
 const NO_PARTICIPANTS: readonly ICloudShareParticipant[] = [];
 

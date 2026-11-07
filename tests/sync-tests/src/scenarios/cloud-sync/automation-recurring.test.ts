@@ -1,9 +1,9 @@
-import { FakeCloudTransport, makeTestDbLayer, resetTestDb, TestSeedService } from '@budgie-at/test-kit';
+import { makeTestDbLayer, resetTestDb, TestSeedService } from '@budgie-at/test-kit';
 import { Db, ExternalSourceEnum, PRECISION } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { testDb } from '../../harness';
+import { FakeCloudTransport, testDb } from '../../harness';
 
 import { expectBalancesMatchLedger, pullDevice, pushDevice, readOutboxRows, refreshAllBalances } from './apply-harness';
 import { detectRecurring, dismissSeries, pullWithAutomation, settleDevices } from './automation-harness';

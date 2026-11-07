@@ -1,11 +1,10 @@
-import { SyncAutomationService } from '@app/cloud-sync-automation/service/sync-automation.service';
-import { FakeCloudTransport, TestSeedService } from '@budgie-at/test-kit';
-import { HouseholdShareService } from '@budgie/cloud-sync';
+import { TestSeedService } from '@budgie-at/test-kit';
+import { SyncAutomationService, HouseholdShareService } from '@budgie/cloud-sync';
 import { UnconsolidationService } from '@budgie/consolidation';
 import { Db, ExternalSourceEnum, SyncZoneRoleEnum } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
-import { testDb } from '../../harness';
+import { FakeCloudTransport, testDb } from '../../harness';
 
 import { readOutboxRows, refreshAllBalances } from './apply-harness';
 import { onAutomatedDevice } from './automation-harness';

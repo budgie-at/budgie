@@ -9,7 +9,7 @@ import { HouseholdRemoveButton } from '../household-remove-button/household-remo
 
 import { HouseholdPendingInvitesRowSelector } from './household-pending-invites-row.selector';
 
-import type { ICloudShareParticipant } from '../../../../modules/icloud';
+import type { ICloudShareParticipant } from '@budgie/cloud-sync';
 
 interface Props {
     readonly participants: readonly ICloudShareParticipant[];

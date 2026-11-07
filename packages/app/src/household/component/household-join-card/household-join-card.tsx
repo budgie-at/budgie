@@ -1,3 +1,4 @@
+import { HouseholdJoinStatusEnum } from '@budgie/cloud-sync';
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
@@ -11,7 +12,6 @@ import { SettingsRowAccessory } from '../../../settings/components/settings-row-
 import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
 import { SettingsRowAccessoryKindEnum } from '../../../settings/enum/settings-row-accessory-kind.enum';
 import { householdJoinAtom } from '../../constant/household-join-atom.constant';
-import { HouseholdJoinStatusEnum } from '../../enum/household-join-status.enum';
 
 import { HouseholdJoinCardSelector } from './household-join-card.selector';
 

@@ -1,10 +1,10 @@
+import { ICloudParticipantAcceptanceStatus, ICloudParticipantRole } from '@budgie/cloud-sync';
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
 import { isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { ICloudParticipantAcceptanceStatus, ICloudParticipantRole } from '../../../../modules/icloud';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useICloudAccount } from '../../../cloud-backup/hook/use-icloud-account.hook';
 import { useHouseholdParticipants } from '../../hook/use-household-participants.hook';
@@ -17,7 +17,7 @@ import { HouseholdPendingInvitesRow } from '../household-pending-invites-row/hou
 import { HouseholdStopSharingRow } from '../household-stop-sharing-row/household-stop-sharing-row';
 import { HouseholdYouRow } from '../household-you-row/household-you-row';
 
-import type { ICloudShareParticipant } from '../../../../modules/icloud';
+import type { ICloudShareParticipant } from '@budgie/cloud-sync';
 
 export const HouseholdOwnerContent = () => {
     const { t } = useLingui();
