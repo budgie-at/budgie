@@ -3,7 +3,7 @@ import { cloudSyncStatusAtom } from '@app/cloud-sync/constant/cloud-sync-status-
 import { CloudSyncLineageChoiceEnum } from '@app/cloud-sync/enum/cloud-sync-lineage-choice.enum';
 import { CloudSyncStatusEnum } from '@app/cloud-sync/enum/cloud-sync-status.enum';
 import { CloudSyncService } from '@app/cloud-sync/service/cloud-sync.service';
-import { SyncIdentityRepository } from '@budgie/contracts';
+import { HOUSEHOLD_SYNC_ZONE, SyncIdentityRepository, SyncZoneRegistryRepository, SyncZoneRoleEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -132,4 +132,29 @@ describe('cloud-sync/sync-service lineage', () => {
             })
         );
     });
+
+    it.effect.each([CloudSyncLineageChoiceEnum.USE_ICLOUD_DATA, CloudSyncLineageChoiceEnum.KEEP_THIS_DEVICE])(
+        'registers a family joined while the lineage prompt was up once "%s" resolves it',
+        choice => {
+            const context = makeSyncServiceContext();
+
+            return context.run(
+                Effect.gen(function* () {
+                    const service = yield* CloudSyncService;
+                    const registry = yield* SyncZoneRegistryRepository;
+
+                    yield* seed.account({ title: 'Cash' });
+                    context.transport.behavior.zoneMeta = metaWith('another-lineage');
+                    yield* service.reconfigure();
+                    context.transport.behavior.joinedHousehold = { zoneName: 'Household', ownerName: 'owner-user-record' };
+
+                    expect(yield* registry.findByLabel(HOUSEHOLD_SYNC_ZONE)).toBeUndefined();
+
+                    yield* service.resolveLineageConflict(choice);
+
+                    expect((yield* registry.findByLabel(HOUSEHOLD_SYNC_ZONE))?.role).toBe(SyncZoneRoleEnum.PARTICIPANT);
+                })
+            );
+        }
+    );
 });

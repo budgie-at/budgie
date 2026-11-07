@@ -30,6 +30,7 @@ import * as Schema from 'effect/Schema';
 import * as Semaphore from 'effect/Semaphore';
 import * as Stream from 'effect/Stream';
 import Constants from 'expo-constants';
+import { AppState } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString, isString } from '@rnw-community/shared';
 
@@ -137,6 +138,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
         const uploadBatchSize = 200;
         const uploadLowWaterMark = 50;
         const heartbeatIntervalMilliseconds = Duration.toMillis(Duration.hours(24));
+        const periodicFetchInterval = Duration.minutes(2);
         const localWriteDebounce = Duration.seconds(2);
         const settingsDebounce = Duration.millis(500);
         const userDataTableNames = new Set(SYNC_IDENTITY_TABLES.map(table => table.name));
@@ -1097,6 +1099,18 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             effect => locked(effect)
         );
 
+        const fetchPeriodically = Effect.fnUntraced(function* () {
+            const current = yield* Ref.get(session);
+
+            if (current.isEngineRunning) {
+                yield* Effect.forkDetach(logAndContinue(transport.syncNow(scope)));
+            }
+
+            if (current.isSharedEngineRunning) {
+                yield* Effect.forkDetach(logAndContinue(transport.syncNow(ICloudSyncScope.SHARED)));
+            }
+        });
+
         const useCloudData = Effect.fnUntraced(function* () {
             yield* safetyCopyService.create();
             yield* stopEngineUnlocked();
@@ -1346,12 +1360,20 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             }, locked),
             resolveLineageConflict: Effect.fn('CloudSyncService.resolveLineageConflict')(function* (choice: CloudSyncLineageChoiceEnum) {
                 yield* choice === CloudSyncLineageChoiceEnum.USE_ICLOUD_DATA ? useCloudData() : keepThisDevice();
+                yield* discoverHouseholdUnlocked();
+                yield* bumpHouseholdRefresh;
             }, locked),
             start: Effect.fn('CloudSyncService.start')(function* () {
                 yield* forkConsumer(transport.events, dispatchEvent);
                 yield* forkConsumer(
                     Stream.filter(appStateChanges, state => state === 'active'),
                     () => foreground().pipe(Effect.andThen(discoverHousehold()), Effect.andThen(bumpHouseholdRefresh))
+                );
+                yield* forkConsumer(
+                    Stream.concat(Stream.succeed(AppState.currentState), appStateChanges).pipe(
+                        Stream.switchMap(state => (state === 'active' ? Stream.tick(periodicFetchInterval) : Stream.empty))
+                    ),
+                    fetchPeriodically
                 );
                 yield* forkConsumer(
                     databaseChangeService.changes.pipe(
