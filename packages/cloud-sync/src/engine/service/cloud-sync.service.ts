@@ -102,22 +102,10 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             Effect.forkDetach(Stream.runForEach(stream, event => logAndContinue(handle(event))));
 
         return {
-            handleFetchedChanges: fetchService.handleFetchedChanges,
-            handleStateSerialization: fetchService.handleStateSerialization,
-            handleWillFetch: fetchService.handleWillFetch,
-            handleDidFetch: fetchService.handleDidFetch,
-            handleSentChanges: sentService.handleSentChanges,
-            handleAccountChange: engineService.handleAccountChange,
-            handleZoneChange: engineService.handleZoneChange,
-            handleShareAccepted: householdService.handleShareAccepted,
-            handleShareChanged: householdService.handleShareChanged,
             reconfigure,
             drain,
             discoverHousehold,
             resolveLineageConflict: engineService.resolveLineageConflict,
-            prepareHouseholdOwnerZone: householdService.prepareHouseholdOwnerZone,
-            stopHouseholdSharing: householdService.stopHouseholdSharing,
-            removeEmptyHousehold: householdService.removeEmptyHousehold,
             leaveHousehold: householdService.leaveHousehold,
             start: Effect.fn('CloudSyncService.start')(function* () {
                 yield* state.publishStoredOwnerName();

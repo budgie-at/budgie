@@ -1,4 +1,4 @@
-import { CloudSyncService, HouseholdService, SyncAutomationService } from '@budgie/cloud-sync';
+import { CloudSyncHouseholdService, CloudSyncService, SyncAutomationService } from '@budgie/cloud-sync';
 import * as Layer from 'effect/Layer';
 
 import { IS_CLOUD_BACKUP_SUPPORTED } from '../../cloud-backup/constant/is-cloud-backup-supported.constant';
@@ -22,5 +22,5 @@ const cloudSyncPortsLayer = Layer.mergeAll(
 );
 
 export const cloudSyncLayer = IS_CLOUD_BACKUP_SUPPORTED
-    ? Layer.mergeAll(CloudSyncService.layer, HouseholdService.layer).pipe(Layer.provideMerge(cloudSyncPortsLayer))
+    ? Layer.mergeAll(CloudSyncService.layer, CloudSyncHouseholdService.layer).pipe(Layer.provideMerge(cloudSyncPortsLayer))
     : Layer.empty;

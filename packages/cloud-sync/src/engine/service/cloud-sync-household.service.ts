@@ -224,13 +224,30 @@ export class CloudSyncHouseholdService extends Context.Service<CloudSyncHousehol
                 Effect.catchTags({ CloudSyncTransportError: () => Effect.void })
             );
 
+            const prepareHouseholdOwnerZone = Effect.fn('CloudSyncHouseholdService.prepareHouseholdOwnerZone')(function* () {
+                const existing = yield* zoneRegistryRepository.findByLabel(HOUSEHOLD_SYNC_ZONE);
+
+                if (existing?.role === SyncZoneRoleEnum.PARTICIPANT) {
+                    return;
+                }
+
+                yield* finishHouseholdCleanupUnlocked();
+                yield* transport.ensureZone(scope, CLOUD_SYNC_RECORDS.householdZoneName);
+                yield* upsertOwnerHouseholdZone();
+                yield* refreshZones();
+            }, locked);
+
             return {
                 endHouseholdUnlocked,
+                prepareHouseholdOwnerZone,
                 isHouseholdShareActive,
                 startSharedEngineUnlocked,
                 discoverHouseholdUnlocked,
                 finishHouseholdCleanupUnlocked,
                 discoverHousehold: locked(discoverHouseholdUnlocked()),
+                participants: transport.getShareParticipants(CLOUD_SYNC_RECORDS.householdZoneName),
+                removeParticipant: (participantId: string) =>
+                    transport.removeParticipant(CLOUD_SYNC_RECORDS.householdZoneName, participantId),
                 handleShareAccepted: Effect.fn('CloudSyncHouseholdService.handleShareAccepted')(function* (
                     event: ICloudShareAcceptedEvent
                 ) {
@@ -261,18 +278,10 @@ export class CloudSyncHouseholdService extends Context.Service<CloudSyncHousehol
                         yield* host.bumpHouseholdRefresh;
                     }
                 }, locked),
-                prepareHouseholdOwnerZone: Effect.fn('CloudSyncHouseholdService.prepareHouseholdOwnerZone')(function* () {
-                    const existing = yield* zoneRegistryRepository.findByLabel(HOUSEHOLD_SYNC_ZONE);
-
-                    if (existing?.role === SyncZoneRoleEnum.PARTICIPANT) {
-                        return;
-                    }
-
-                    yield* finishHouseholdCleanupUnlocked();
-                    yield* transport.ensureZone(scope, CLOUD_SYNC_RECORDS.householdZoneName);
-                    yield* upsertOwnerHouseholdZone();
-                    yield* refreshZones();
-                }, locked),
+                invite: Effect.fn('CloudSyncHouseholdService.invite')(function* () {
+                    yield* prepareHouseholdOwnerZone();
+                    yield* transport.createHouseholdShare(CLOUD_SYNC_RECORDS.householdZoneName);
+                }),
                 stopHouseholdSharing: Effect.fn('CloudSyncHouseholdService.stopHouseholdSharing')(function* () {
                     yield* transport.stopSharing(CLOUD_SYNC_RECORDS.householdZoneName);
                     yield* transport.deleteZone(scope, CLOUD_SYNC_RECORDS.householdZoneName);

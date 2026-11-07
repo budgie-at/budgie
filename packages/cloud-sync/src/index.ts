@@ -99,6 +99,9 @@ export type { ICloudShareChangedEvent } from './transport/interface/icloud-share
 export type { ICloudShareParticipant } from './transport/interface/icloud-share-participant.interface';
 export { CloudSyncService } from './engine/service/cloud-sync.service';
 export { CloudSyncHouseholdService } from './engine/service/cloud-sync-household.service';
+export { CloudSyncEngineService } from './engine/service/cloud-sync-engine.service';
+export { CloudSyncFetchService } from './engine/service/cloud-sync-fetch.service';
+export { CloudSyncSentService } from './engine/service/cloud-sync-sent.service';
 export { BankOwnershipService } from './engine/service/bank-ownership.service';
 export { CloudSyncTransport } from './engine/port/cloud-sync-transport.port';
 export { CloudSyncStateStore } from './engine/port/cloud-sync-state-store.port';
@@ -117,7 +120,6 @@ export { CloudSyncEventKindEnum } from './engine/enum/cloud-sync-event-kind.enum
 export { CLOUD_SYNC_RECORDS } from './engine/constant/cloud-sync-records.constant';
 export { SyncAutomationService } from './automation/service/sync-automation.service';
 export { SyncAutomationEmbeddingBoost } from './automation/port/sync-automation-embedding-boost.port';
-export { HouseholdService } from './household/service/household.service';
 export { HouseholdRoleEnum } from './household/enum/household-role.enum';
 export { HouseholdJoinStatusEnum } from './household/enum/household-join-status.enum';
 export { syncAccountBalanceRefresherLayer } from './apply/layer/sync-account-balance-refresher.layer';

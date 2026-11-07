@@ -1,4 +1,4 @@
-import { HouseholdService } from '@budgie/cloud-sync';
+import { CloudSyncHouseholdService } from '@budgie/cloud-sync';
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -22,7 +22,7 @@ export const HouseholdStopSharingRow = ({ isEmptyGroup }: Props) => {
     const { run, isLoading } = useSingleFlight();
     const [hapticNotification] = useVibration();
 
-    const removeEmptyGroup = Effect.flatMap(HouseholdService, householdService => householdService.removeEmptyGroup).pipe(
+    const removeEmptyGroup = Effect.flatMap(CloudSyncHouseholdService, householdService => householdService.removeEmptyHousehold()).pipe(
         Effect.tap(() =>
             Effect.sync(() => {
                 hapticNotification(NotificationFeedbackType.Success);
@@ -40,7 +40,7 @@ export const HouseholdStopSharingRow = ({ isEmptyGroup }: Props) => {
     }).pipe(
         Effect.flatMap(isConfirmed =>
             isConfirmed
-                ? Effect.flatMap(HouseholdService, householdService => householdService.stopSharing).pipe(
+                ? Effect.flatMap(CloudSyncHouseholdService, householdService => householdService.stopHouseholdSharing()).pipe(
                       Effect.tap(() =>
                           Effect.sync(() => {
                               hapticNotification(NotificationFeedbackType.Success);

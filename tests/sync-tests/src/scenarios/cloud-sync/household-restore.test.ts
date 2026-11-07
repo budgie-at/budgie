@@ -1,5 +1,5 @@
 import { makeTestDbLayer } from '@budgie-at/test-kit';
-import { CloudSyncRestorePhaseEnum, CloudSyncService, ICloudParticipantRole, ICloudSyncScope } from '@budgie/cloud-sync';
+import { CloudSyncRestorePhaseEnum, ICloudParticipantRole, ICloudSyncScope } from '@budgie/cloud-sync';
 import {
     Db,
     HOUSEHOLD_SYNC_ZONE,
@@ -24,7 +24,7 @@ import {
     readPersonalBalances,
     seedHouseholdLedger
 } from './household-harness';
-import { fetchedEvent, makeSyncServiceContext, metaWith } from './sync-service-harness';
+import { fetchedEvent, makeSyncServiceContext, metaWith, syncService } from './sync-service-harness';
 
 import type { DB } from '@budgie/contracts';
 
@@ -37,7 +37,7 @@ const startRestore = (database: DB, role: SyncZoneRoleEnum) => {
         context,
         run: Effect.gen(function* () {
             const registry = yield* SyncZoneRegistryRepository;
-            const service = yield* CloudSyncService;
+            const service = yield* syncService;
             const identity = yield* SyncIdentityRepository;
 
             yield* registry.upsert({

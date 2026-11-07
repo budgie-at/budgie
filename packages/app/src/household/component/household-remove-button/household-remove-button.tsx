@@ -1,4 +1,4 @@
-import { HouseholdService } from '@budgie/cloud-sync';
+import { CloudSyncHouseholdService } from '@budgie/cloud-sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
@@ -33,7 +33,7 @@ export const HouseholdRemoveButton = ({ participants }: Props) => {
             }).pipe(
                 Effect.flatMap(isConfirmed =>
                     isConfirmed
-                        ? Effect.flatMap(HouseholdService, householdService =>
+                        ? Effect.flatMap(CloudSyncHouseholdService, householdService =>
                               Effect.forEach(participants, participant => householdService.removeParticipant(participant.participantId), {
                                   discard: true
                               })

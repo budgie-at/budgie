@@ -1,4 +1,4 @@
-import { HouseholdService } from '@budgie/cloud-sync';
+import { CloudSyncHouseholdService } from '@budgie/cloud-sync';
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -20,7 +20,7 @@ export const HouseholdInviteRow = () => {
 
     const handlePress = () => {
         void run(
-            Effect.flatMap(HouseholdService, householdService => householdService.invite()).pipe(
+            Effect.flatMap(CloudSyncHouseholdService, householdService => householdService.invite()).pipe(
                 toastOnFailure(t`Could not start the invitation`)
             )
         );

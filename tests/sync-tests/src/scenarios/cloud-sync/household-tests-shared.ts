@@ -1,5 +1,5 @@
 import { TestSeedService } from '@budgie-at/test-kit';
-import { CloudSyncService, HouseholdShareService } from '@budgie/cloud-sync';
+import { HouseholdShareService } from '@budgie/cloud-sync';
 import { Db, HOUSEHOLD_SYNC_ZONE, SyncZoneRegistryRepository } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
@@ -8,6 +8,7 @@ import { FakeCloudTransport, testDb } from '../../harness';
 import { refreshAllBalances } from './apply-harness';
 import { shareAcceptedEvent } from './household-harness';
 import { HOUSEHOLD_ZONE, onShareDevice, pullZones, uploadDevice } from './share-harness';
+import { syncService } from './sync-service-harness';
 
 import type { ShareCloudsInterface } from './share-harness';
 import type { makeSyncServiceContext } from './sync-service-harness';
@@ -51,7 +52,7 @@ export const deliverHouseholdToMember = (memberDb: DB, clouds: ShareCloudsInterf
 export const discoverHouseholdEntry = (device: ReturnType<typeof makeSyncServiceContext>) =>
     device.run(
         Effect.gen(function* () {
-            const service = yield* CloudSyncService;
+            const service = yield* syncService;
             const registry = yield* SyncZoneRegistryRepository;
 
             yield* service.discoverHousehold;
@@ -62,11 +63,11 @@ export const discoverHouseholdEntry = (device: ReturnType<typeof makeSyncService
 
 export const acceptShareThen = <E>(
     member: ReturnType<typeof makeSyncServiceContext>,
-    afterAccept: Effect.Effect<unknown, E, CloudSyncService | Db>
+    afterAccept: Effect.Effect<unknown, E, Effect.Services<typeof syncService> | Db>
 ) =>
     member.run(
         Effect.gen(function* () {
-            const service = yield* CloudSyncService;
+            const service = yield* syncService;
             const registry = yield* SyncZoneRegistryRepository;
 
             yield* service.reconfigure;

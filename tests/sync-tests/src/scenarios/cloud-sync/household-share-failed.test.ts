@@ -1,6 +1,6 @@
 import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { householdJoinAtom } from '@app/household/constant/household-join-atom.constant';
-import { CloudSyncService, HouseholdJoinStatusEnum, ICloudShareOutcome } from '@budgie/cloud-sync';
+import { HouseholdJoinStatusEnum, ICloudShareOutcome } from '@budgie/cloud-sync';
 import { HOUSEHOLD_SYNC_ZONE, SyncZoneRegistryRepository } from '@budgie/contracts';
 import { describe, expect, it, vi } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
@@ -8,7 +8,7 @@ import * as Effect from 'effect/Effect';
 import Toast from '../../../../test-kit/src/vitest/toast-message.shim';
 
 import { HOUSEHOLD_CLOUD_ZONE, OWNER_RECORD_NAME } from './household-harness';
-import { makeSyncServiceContext } from './sync-service-harness';
+import { makeSyncServiceContext, syncService } from './sync-service-harness';
 
 describe('cloud-sync/household share failed', () => {
     it.effect('tells the user when accepting a family invitation fails', () => {
@@ -18,7 +18,7 @@ describe('cloud-sync/household share failed', () => {
         return context
             .run(
                 Effect.gen(function* () {
-                    const service = yield* CloudSyncService;
+                    const service = yield* syncService;
 
                     yield* service.handleShareAccepted({
                         zoneName: HOUSEHOLD_CLOUD_ZONE,
@@ -38,7 +38,7 @@ describe('cloud-sync/household share failed', () => {
 
         return context.run(
             Effect.gen(function* () {
-                const service = yield* CloudSyncService;
+                const service = yield* syncService;
                 const registry = yield* SyncZoneRegistryRepository;
 
                 yield* service.handleShareAccepted({

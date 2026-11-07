@@ -1,4 +1,4 @@
-import { HouseholdService } from '@budgie/cloud-sync';
+import { CloudSyncHouseholdService } from '@budgie/cloud-sync';
 import * as Effect from 'effect/Effect';
 import * as Option from 'effect/Option';
 
@@ -14,7 +14,7 @@ export const householdParticipantsAtom = appAtomRuntime.atom(get => {
     get(householdRefreshAtom);
 
     return Effect.flatMap(
-        Effect.serviceOption(HouseholdService),
+        Effect.serviceOption(CloudSyncHouseholdService),
         Option.match({
             onNone: () => Effect.succeed(NO_PARTICIPANTS),
             onSome: householdService => householdService.participants

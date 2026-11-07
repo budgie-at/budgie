@@ -1,4 +1,4 @@
-import { HouseholdService } from '@budgie/cloud-sync';
+import { CloudSyncHouseholdService } from '@budgie/cloud-sync';
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -24,7 +24,9 @@ export const HouseholdLeaveRow = () => {
                 isDestructive: true
             }).pipe(
                 Effect.flatMap(isConfirmed =>
-                    isConfirmed ? Effect.flatMap(HouseholdService, householdService => householdService.leave) : Effect.void
+                    isConfirmed
+                        ? Effect.flatMap(CloudSyncHouseholdService, householdService => householdService.leaveHousehold())
+                        : Effect.void
                 ),
                 toastOnFailure(t`Could not leave the family`)
             )

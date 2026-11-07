@@ -1,7 +1,7 @@
 import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { householdStateAtom } from '@app/household/constant/household-state-atom.constant';
 import { makeTestDbLayer } from '@budgie-at/test-kit';
-import { CloudSyncRestorePhaseEnum, CloudSyncService, HouseholdRoleEnum, ICloudParticipantRole } from '@budgie/cloud-sync';
+import { CloudSyncRestorePhaseEnum, HouseholdRoleEnum, ICloudParticipantRole } from '@budgie/cloud-sync';
 import { Db, HOUSEHOLD_SYNC_ZONE, SyncDatabaseScopeEnum, SyncZoneRegistryRepository, SyncZoneRoleEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
@@ -20,7 +20,7 @@ import {
     readPersonalBalances
 } from './household-harness';
 import { acceptShareThen } from './household-tests-shared';
-import { makeSyncServiceContext } from './sync-service-harness';
+import { makeSyncServiceContext, syncService } from './sync-service-harness';
 
 import type { DB } from '@budgie/contracts';
 
@@ -41,7 +41,7 @@ const restoreBackupWithParticipants = (memberDb: DB, participants: ReturnType<ty
         const household = yield* member.run(
             Effect.gen(function* () {
                 const registry = yield* SyncZoneRegistryRepository;
-                const service = yield* CloudSyncService;
+                const service = yield* syncService;
 
                 yield* registry.upsert({
                     zoneLabel: HOUSEHOLD_SYNC_ZONE,
@@ -81,7 +81,7 @@ describe('cloud-sync/household removal', () => {
 
                 const remaining = yield* acceptShareThen(
                     member,
-                    Effect.flatMap(CloudSyncService, service => service.handleZoneChange(lostEvent))
+                    Effect.flatMap(syncService, service => service.handleZoneChange(lostEvent))
                 );
 
                 expect(remaining).toBeUndefined();

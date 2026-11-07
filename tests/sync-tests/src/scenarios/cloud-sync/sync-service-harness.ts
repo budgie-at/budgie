@@ -11,6 +11,10 @@ import {
     CloudSyncStateStore,
     CloudSyncTransport,
     CloudSyncService,
+    CloudSyncEngineService,
+    CloudSyncFetchService,
+    CloudSyncHouseholdService,
+    CloudSyncSentService,
     ICloudErrorCode,
     ICloudSyncScope
 } from '@budgie/cloud-sync';
@@ -250,7 +254,13 @@ export const makeSyncServiceContext = (database: DB = testDb) => {
         cloudSyncHostLayer,
         cloudSyncDatabaseChangesLayer
     ).pipe(Layer.provide(Reactivity.layer), Layer.provideMerge(installIdLayer));
-    const layer = CloudSyncService.layer.pipe(Layer.provideMerge(dependencies));
+    const layer = Layer.mergeAll(
+        CloudSyncService.layer,
+        CloudSyncEngineService.layer,
+        CloudSyncFetchService.layer,
+        CloudSyncHouseholdService.layer,
+        CloudSyncSentService.layer
+    ).pipe(Layer.provideMerge(dependencies));
 
     const run = <A, E>(effect: Effect.Effect<A, E, Layer.Success<typeof layer> | Db>) =>
         Effect.andThen(database.$client.unsafe('UPDATE settings SET lineage_id = NULL'), effect).pipe(
@@ -292,17 +302,38 @@ export const fetchedEvent = (records: readonly ICloudFetchedRecord[] = []): IClo
 
 type SyncServiceContext = ReturnType<typeof makeSyncServiceContext>;
 
+export const syncService = Effect.gen(function* () {
+    const service = yield* CloudSyncService;
+    const fetchService = yield* CloudSyncFetchService;
+    const sentService = yield* CloudSyncSentService;
+    const engineService = yield* CloudSyncEngineService;
+    const householdService = yield* CloudSyncHouseholdService;
+
+    return {
+        ...service,
+        handleFetchedChanges: fetchService.handleFetchedChanges,
+        handleStateSerialization: fetchService.handleStateSerialization,
+        handleDidFetch: fetchService.handleDidFetch,
+        handleSentChanges: sentService.handleSentChanges,
+        handleZoneChange: engineService.handleZoneChange,
+        handleShareAccepted: householdService.handleShareAccepted,
+        prepareHouseholdOwnerZone: householdService.prepareHouseholdOwnerZone
+    };
+});
+
+export type SyncServiceType = Effect.Success<typeof syncService>;
+
 export const runSyncService = <A, E>(
     body: (
         context: SyncServiceContext,
-        service: CloudSyncService['Service']
+        service: SyncServiceType
     ) => Effect.Effect<A, E, Effect.Services<Parameters<SyncServiceContext['run']>[0]>>
 ) => {
     const context = makeSyncServiceContext();
 
     return context.run(
         Effect.gen(function* () {
-            const service = yield* CloudSyncService;
+            const service = yield* syncService;
 
             return yield* body(context, service);
         })
@@ -322,7 +353,7 @@ export const matchZoneLineage = (context: SyncServiceContext) =>
         context.transport.behavior.zoneMeta = metaWith(yield* (yield* SyncIdentityRepository).ensureLineageId());
     });
 
-export const reconfigureAndAcknowledgeMeta = (context: SyncServiceContext, service: CloudSyncService['Service']) =>
+export const reconfigureAndAcknowledgeMeta = (context: SyncServiceContext, service: SyncServiceType) =>
     Effect.gen(function* () {
         yield* service.reconfigure;
         yield* service.handleSentChanges(sentEvent({ savedRecords: savedFrom(context.transport.calls.savedBatches[0], 'system-meta') }));

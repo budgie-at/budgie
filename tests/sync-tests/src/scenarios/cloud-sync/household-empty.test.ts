@@ -2,13 +2,7 @@ import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.consta
 import { cloudSyncStatusAtom } from '@app/cloud-sync/constant/cloud-sync-status-atom.constant';
 import { householdStateAtom } from '@app/household/constant/household-state-atom.constant';
 import { makeTestDbLayer, resetTestDb } from '@budgie-at/test-kit';
-import {
-    CloudSyncStatusEnum,
-    CloudSyncService,
-    HouseholdRoleEnum,
-    buildHouseholdRemovalStatements,
-    ICloudSyncScope
-} from '@budgie/cloud-sync';
+import { CloudSyncStatusEnum, HouseholdRoleEnum, buildHouseholdRemovalStatements, ICloudSyncScope } from '@budgie/cloud-sync';
 import { Db, HOUSEHOLD_SYNC_ZONE, SyncDatabaseScopeEnum, SyncZoneRegistryRepository, SyncZoneRoleEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
@@ -17,7 +11,7 @@ import { testDb } from '../../harness';
 
 import { HOUSEHOLD_CLOUD_ZONE, OWNER_RECORD_NAME } from './household-harness';
 import { acceptShareThen } from './household-tests-shared';
-import { makeSyncServiceContext, savedFrom, sentEvent } from './sync-service-harness';
+import { makeSyncServiceContext, savedFrom, sentEvent, syncService } from './sync-service-harness';
 
 describe('cloud-sync/household empty zone', () => {
     it.layer(makeTestDbLayer(null), { excludeTestServices: true })('owner and member', it => {
@@ -26,7 +20,7 @@ describe('cloud-sync/household empty zone', () => {
 
             return owner.run(
                 Effect.gen(function* () {
-                    const service = yield* CloudSyncService;
+                    const service = yield* syncService;
                     const registry = yield* SyncZoneRegistryRepository;
 
                     yield* service.prepareHouseholdOwnerZone();
@@ -65,7 +59,7 @@ describe('cloud-sync/household empty zone', () => {
                 const household = yield* acceptShareThen(
                     member,
                     Effect.gen(function* () {
-                        const service = yield* CloudSyncService;
+                        const service = yield* syncService;
 
                         yield* service.handleFetchedChanges({
                             scope: ICloudSyncScope.SHARED,

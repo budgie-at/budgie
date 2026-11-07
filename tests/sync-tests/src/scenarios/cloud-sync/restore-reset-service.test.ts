@@ -1,6 +1,6 @@
 import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { cloudSyncStatusAtom } from '@app/cloud-sync/constant/cloud-sync-status-atom.constant';
-import { CloudSyncRestorePhaseEnum, CloudSyncService, ICloudErrorCode, ICloudSyncScope } from '@budgie/cloud-sync';
+import { CloudSyncRestorePhaseEnum, ICloudErrorCode, ICloudSyncScope } from '@budgie/cloud-sync';
 import { SyncIdentityRepository } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
@@ -8,6 +8,7 @@ import * as Effect from 'effect/Effect';
 import { seed, testDb } from '../../harness';
 
 import {
+    SyncServiceType,
     failedSaveOf,
     fetchedEvent,
     flattenBatches,
@@ -20,10 +21,7 @@ import {
     sentEvent
 } from './sync-service-harness';
 
-const startRestoreWithBaselineAccount = (
-    context: Parameters<Parameters<typeof runSyncService>[0]>[0],
-    service: CloudSyncService['Service']
-) =>
+const startRestoreWithBaselineAccount = (context: Parameters<Parameters<typeof runSyncService>[0]>[0], service: SyncServiceType) =>
     Effect.gen(function* () {
         const identity = yield* SyncIdentityRepository;
         const account = yield* seed.account({ title: 'Cash' });
