@@ -47,20 +47,37 @@ export const RuleConditionSummaryRow = ({ index, onExpand }: Props) => {
         >
             <Icon icon={RULE_CONDITION_FIELD[condition.field].icon} size={15} className="text-primary" />
             {isLargeText ? (
-                <Text className="min-w-0 flex-1 text-[17px] text-primary" maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER}>
+                <Text
+                    className="min-w-0 flex-1 text-[13px] text-secondary-foreground"
+                    maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER}
+                >
                     {before}
                     <Text {...valueTextProps}>{label.value}</Text>
                     {after}
                 </Text>
             ) : (
                 <View className="min-w-0 flex-1 flex-row items-center">
-                    <Text className="shrink-0 text-[17px] text-primary" numberOfLines={1}>
+                    <Text
+                        className="shrink-0 text-[13px] text-secondary-foreground"
+                        numberOfLines={1}
+                        maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER}
+                    >
                         {before}
                     </Text>
-                    <Text className="shrink text-[17px] text-primary" numberOfLines={1} ellipsizeMode={ellipsizeMode} {...valueTextProps}>
+                    <Text
+                        className="shrink text-[13px] text-secondary-foreground"
+                        numberOfLines={1}
+                        maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER}
+                        ellipsizeMode={ellipsizeMode}
+                        {...valueTextProps}
+                    >
                         {label.value}
                     </Text>
-                    <Text className="shrink-0 text-[17px] text-primary" numberOfLines={1}>
+                    <Text
+                        className="shrink-0 text-[13px] text-secondary-foreground"
+                        numberOfLines={1}
+                        maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER}
+                    >
                         {after}
                     </Text>
                 </View>

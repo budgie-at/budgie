@@ -31,7 +31,7 @@ export const BudgetAutoTuneSwitchRow = ({ value, onValueChange, testID }: Props)
                 {...testIDProps(testID, TestIDPartEnum.DETAILS)}
                 left={leading}
                 title={
-                    <Text className="text-primary text-[17px]" maxFontSizeMultiplier={2}>
+                    <Text className="text-primary text-[17px]" maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER}>
                         {title}
                     </Text>
                 }

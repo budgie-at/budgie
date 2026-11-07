@@ -21,7 +21,7 @@ export const BudgetCategoryLimitLabel = ({ icon, title, testID, menuValue }: Pro
         <View className="flex-1">
             <Text
                 className="text-[17px] text-primary"
-                numberOfLines={2}
+                numberOfLines={3}
                 maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER}
                 testID={testID}
             >
