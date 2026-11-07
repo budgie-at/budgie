@@ -7912,7 +7912,7 @@ msgstr "Sceller avec ce code PIN"
 
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 msgid "Seal with this PIN?"
-msgstr "Sceller avec ce code PIN ?"
+msgstr "Sceller avec ce code PIN ?"
 
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "Sealed · {contents}"
