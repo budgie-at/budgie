@@ -47,21 +47,23 @@ export const GroupedListValueRow = ({ icon, title, value, testID, onPress, onCle
     ) : (
         <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
     );
-    const contentClassName = isStacked ? 'gap-y-xxs' : 'flex-row items-center gap-x-sm gap-y-xxs';
+    const contentClassName = isStacked ? 'gap-y-xxs' : 'flex-row items-center gap-x-sm';
+    const titleClassName = isStacked ? 'text-[17px] text-primary' : 'shrink text-[17px] text-primary';
     const valueClassName = isStacked
         ? 'text-[17px] text-secondary-foreground'
-        : 'ml-auto max-w-[50%] shrink text-[17px] text-secondary-foreground';
-    const valueLineCount = isStacked ? 2 : 1;
+        : 'ml-auto max-w-[60%] text-right text-[17px] text-secondary-foreground';
+    const valueLineCount = isStacked ? 0 : 2;
+    const accessoryClassName = isStacked ? 'self-start pt-xs' : '';
 
     return (
         <GroupedListRow
             left={<GroupedListIcon icon={icon} />}
             title={
                 <View className={contentClassName}>
-                    <Text className="text-[17px] text-primary" numberOfLines={2} maxFontSizeMultiplier={2}>
+                    <Text className={titleClassName} numberOfLines={2} maxFontSizeMultiplier={2}>
                         {title}
                     </Text>
-                    <Text className={valueClassName} numberOfLines={valueLineCount}>
+                    <Text className={valueClassName} numberOfLines={valueLineCount} maxFontSizeMultiplier={2}>
                         {value}
                     </Text>
                 </View>
@@ -69,7 +71,7 @@ export const GroupedListValueRow = ({ icon, title, value, testID, onPress, onCle
             testID={testID}
             onPress={onPress}
             pressableProps={pressableProps}
-            right={accessory}
+            right={<View className={accessoryClassName}>{accessory}</View>}
         />
     );
 };

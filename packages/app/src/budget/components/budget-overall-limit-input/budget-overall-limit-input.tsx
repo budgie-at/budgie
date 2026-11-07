@@ -40,7 +40,6 @@ export const BudgetOverallLimitInput = ({ currencySymbol }: Props) => {
                 placeholder={t`e.g. 200`}
                 placeholderTextColorClassName="accent-primary/50"
                 className={cn('font-semibold tabular-nums', toneClassName)}
-                commitOnBlur
                 selectTextOnFocus
             />
         </AmountField>

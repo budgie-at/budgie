@@ -1,4 +1,4 @@
-import { Text, View } from 'react-native';
+import { Text, View, useWindowDimensions } from 'react-native';
 
 import { GroupedListIcon } from '../grouped-list-icon/grouped-list-icon';
 import { Input } from '../input/input';
@@ -16,18 +16,26 @@ type Props = InputProps & {
     readonly label: string;
 };
 
-export const GroupedListInputRow = ({ icon, label, ...inputProps }: Props) => (
-    <View className="min-h-[50px] flex-row items-center gap-x-xl px-3xl py-lg">
-        <GroupedListIcon icon={icon} />
-        <View className="flex-1">
-            <Text className="text-secondary-foreground text-[13px]">{label}</Text>
-            <Input
-                {...inputProps}
-                borderless
-                className="h-[28px] px-0 text-(length:--text-lg)"
-                accessibilityLabel={label}
-                returnKeyType="done"
-            />
+const INPUT_LINE_HEIGHT = 28;
+
+export const GroupedListInputRow = ({ icon, label, ...inputProps }: Props) => {
+    const { fontScale } = useWindowDimensions();
+    const inputStyle = { minHeight: INPUT_LINE_HEIGHT * fontScale };
+
+    return (
+        <View className="min-h-[50px] flex-row items-center gap-x-xl px-3xl py-lg">
+            <GroupedListIcon icon={icon} />
+            <View className="flex-1 gap-y-md">
+                <Text className="text-secondary-foreground text-[13px]">{label}</Text>
+                <Input
+                    {...inputProps}
+                    borderless
+                    className="h-auto px-0 text-(length:--text-lg)"
+                    style={inputStyle}
+                    accessibilityLabel={label}
+                    returnKeyType="done"
+                />
+            </View>
         </View>
-    </View>
-);
+    );
+};

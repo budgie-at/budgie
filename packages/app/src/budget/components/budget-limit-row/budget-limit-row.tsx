@@ -40,13 +40,12 @@ export const BudgetLimitRow = (props: Props) => {
     const limitLabel = formatDigits(convertFromMicroUnits(limit), currencySymbol);
     const headerClassName = isStacked ? 'gap-y-xs' : 'flex-row items-center justify-between gap-x-md';
     const titleRowClassName = isStacked ? 'flex-row flex-wrap items-center gap-x-sm gap-y-xxs' : 'shrink flex-row items-center gap-x-sm';
-    const titleLineCount = isStacked ? 2 : 1;
 
     return (
         <View className="gap-y-sm">
             <View className={headerClassName}>
                 <View className={titleRowClassName}>
-                    <Text numberOfLines={titleLineCount} className="shrink text-sm font-medium text-primary">
+                    <Text numberOfLines={2} maxFontSizeMultiplier={2} className="shrink text-sm font-medium text-primary">
                         {title}
                     </Text>
                     {pill}

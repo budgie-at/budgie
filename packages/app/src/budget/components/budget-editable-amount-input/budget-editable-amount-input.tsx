@@ -45,7 +45,6 @@ export const BudgetEditableAmountInput = <TFieldValues extends FieldValues>({
             size="md"
             borderless
             inputClassName={cn('px-0', className, toneClassName)}
-            commitOnBlur
             selectTextOnFocus
         />
     );

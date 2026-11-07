@@ -132,8 +132,10 @@ test('31 budget', { tags: ['budget'] }, async ({ budgie }) => {
         await expect(editBudget).toBeHidden();
 
         await bu.openEditBudget(ctx);
-        await bu.setOverallLimit(ctx, '1500');
-        await bu.saveFromHeader(ctx);
+        await b.scrollToCentre(ctx, 'BudgetSetup.OverallLimitInput');
+        await bu.fillAmount(ctx, 'BudgetSetup.OverallLimitInput', '1500');
+        await b.expectId(ctx, 'inputView');
+        await b.tapId(ctx, 'BudgetSetup.SaveButton');
         await b.expectId(ctx, 'BudgetDetails.Screen', 3_000);
         await details('€42', '€1,500');
 

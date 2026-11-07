@@ -6,5 +6,4 @@ export interface AmountFieldInputPropsInterface extends Omit<TextInputProps, 'va
     readonly format: AmountFormatInterface;
     readonly onChangeValue: (value: number) => void;
     readonly className?: string;
-    readonly commitOnBlur?: boolean;
 }
