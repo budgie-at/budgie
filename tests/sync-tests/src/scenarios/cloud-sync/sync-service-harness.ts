@@ -45,10 +45,8 @@ interface FakeTransportCallsInterface {
     stopped: number;
     readonly savedBatches: ICloudRecordPayload[][];
     readonly deletedBatches: ICloudRecordId[][];
-    readonly confirmed: string[];
     readonly deletedZones: string[];
     readonly ensuredZones: string[];
-    readonly confirmProbe: number[];
     inventoryRequests: number;
     readonly sharedStarted: (string | null)[];
     sharedStopped: number;
@@ -66,22 +64,20 @@ interface FakeTransportBehaviorInterface {
     zoneInventory: readonly ICloudZoneInventoryRecord[];
     sharedZoneInventory: readonly ICloudZoneInventoryRecord[] | null;
     isInventoryFailing: boolean;
-    confirmProbeSql: string;
+    isSaveFailing: boolean;
     participants: readonly ICloudShareParticipant[];
     joinedHousehold: ICloudJoinedHousehold | null;
     ownedHousehold: ICloudOwnedHousehold | null;
 }
 
-const makeFakeTransport = (database: DB = testDb) => {
+const makeFakeTransport = () => {
     const calls: FakeTransportCallsInterface = {
         started: [],
         stopped: 0,
         savedBatches: [],
         deletedBatches: [],
-        confirmed: [],
         deletedZones: [],
         ensuredZones: [],
-        confirmProbe: [],
         inventoryRequests: 0,
         sharedStarted: [],
         sharedStopped: 0,
@@ -98,7 +94,7 @@ const makeFakeTransport = (database: DB = testDb) => {
         zoneInventory: [],
         sharedZoneInventory: null,
         isInventoryFailing: false,
-        confirmProbeSql: 'SELECT COUNT(*) AS total FROM accounts',
+        isSaveFailing: false,
         participants: [],
         joinedHousehold: null,
         ownedHousehold: null
@@ -147,24 +143,15 @@ const makeFakeTransport = (database: DB = testDb) => {
                       );
             }),
         addPendingSaves: (saveScope: ICloudSyncScope, records: readonly ICloudRecordPayload[]) =>
-            Effect.sync(() => {
-                (saveScope === ICloudSyncScope.SHARED ? calls.sharedSavedBatches : calls.savedBatches).push([...records]);
-            }),
+            behavior.isSaveFailing
+                ? Effect.fail(CloudSyncTransportError.make({ code: ICloudErrorCode.NETWORK_UNAVAILABLE, message: 'save failed' }))
+                : Effect.sync(() => {
+                      (saveScope === ICloudSyncScope.SHARED ? calls.sharedSavedBatches : calls.savedBatches).push([...records]);
+                  }),
         addPendingDeletes: (deleteScope: ICloudSyncScope, recordIds: readonly ICloudRecordId[]) =>
             Effect.sync(() => {
                 (deleteScope === ICloudSyncScope.SHARED ? calls.sharedDeletedBatches : calls.deletedBatches).push([...recordIds]);
             }),
-        confirmFetchedBatch: (_scope: ICloudSyncScope, batchId: string) =>
-            database.$client.unsafe<{ readonly total: number }>(behavior.confirmProbeSql).pipe(
-                Effect.orDie,
-                Effect.tap(([row]) =>
-                    Effect.sync(() => {
-                        calls.confirmProbe.push(row.total);
-                        calls.confirmed.push(batchId);
-                    })
-                ),
-                Effect.asVoid
-            ),
         createHouseholdShare: (zoneName: string) =>
             Effect.sync(() => {
                 calls.createdShares.push(zoneName);
@@ -245,7 +232,7 @@ const makeFakeSafetyCopy = () => {
 const installIdLayer = Layer.succeed(CloudSyncInstallId, Effect.succeed(INSTALL_ID));
 
 export const makeSyncServiceContext = (database: DB = testDb) => {
-    const transport = makeFakeTransport(database);
+    const transport = makeFakeTransport();
     const store = makeFakeStateStore();
     const safetyCopy = makeFakeSafetyCopy();
     const automation = makeFakeAutomation();
@@ -276,15 +263,10 @@ export const makeSyncServiceContext = (database: DB = testDb) => {
 
 export const sentEvent = (patch: Partial<ICloudSentChangesEvent> = {}): ICloudSentChangesEvent => ({
     scope: ICloudSyncScope.PRIVATE,
-    batchId: `sent-${Math.random()}`,
     savedRecords: [],
     failedSaves: [],
     deletedRecords: [],
     failedDeletes: [],
-    savedZones: [],
-    failedZoneSaves: [],
-    deletedZones: [],
-    failedZoneDeletes: [],
     ...patch
 });
 
@@ -303,7 +285,6 @@ export const metaWith = (lineageId: string): ICloudFetchedRecord => ({
 
 export const fetchedEvent = (records: readonly ICloudFetchedRecord[] = []): ICloudFetchedChangesEvent => ({
     scope: ICloudSyncScope.PRIVATE,
-    batchId: `fetched-${Math.random()}`,
     records,
     deletions: [],
     changedShares: []

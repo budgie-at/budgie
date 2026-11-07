@@ -13,7 +13,6 @@ import { CLOUD_SYNC_RECORDS } from '../constant/cloud-sync-records.constant';
 import { CloudSyncStatusEnum } from '../enum/cloud-sync-status.enum';
 import { cloudSyncDomainLayer } from '../layer/cloud-sync-domain.layer';
 import { CloudSyncStateStore } from '../port/cloud-sync-state-store.port';
-import { CloudSyncTransport } from '../port/cloud-sync-transport.port';
 import { buildCloudSyncKey } from '../utils/build-cloud-sync-key.util';
 import { isCloudSyncSideRecordType } from '../utils/is-cloud-sync-side-record-type.util';
 import { toCloudSyncEnvelope } from '../utils/to-cloud-sync-envelope.util';
@@ -28,7 +27,6 @@ import type { ICloudSentChangesEvent } from '../../transport/interface/icloud-se
 
 export class CloudSyncSentService extends Context.Service<CloudSyncSentService>()('@budgie/cloud-sync/CloudSyncSentService', {
     make: Effect.gen(function* () {
-        const transport = yield* CloudSyncTransport;
         const stateStore = yield* CloudSyncStateStore;
         const uploadService = yield* SyncUploadService;
         const applyService = yield* SyncApplyService;
@@ -38,7 +36,7 @@ export class CloudSyncSentService extends Context.Service<CloudSyncSentService>(
         const engineService = yield* CloudSyncEngineService;
         const householdService = yield* CloudSyncHouseholdService;
         const uploadLowWaterMark = 50;
-        const { locked, patch } = state;
+        const { lockedBatch, patch } = state;
         const { drainUnlocked, storeSideRecord } = drainService;
 
         const isHouseholdLossCode = (code: ICloudErrorCode): boolean =>
@@ -190,7 +188,6 @@ export class CloudSyncSentService extends Context.Service<CloudSyncSentService>(
                 }
 
                 yield* acknowledgeComplete(touched);
-                yield* transport.confirmFetchedBatch(event.scope, event.batchId);
 
                 if (isNotEmptyArray(event.savedRecords) && state.quotaKeys.size === 0) {
                     yield* patch({ isQuotaExceeded: false });
@@ -201,7 +198,7 @@ export class CloudSyncSentService extends Context.Service<CloudSyncSentService>(
                 }
 
                 yield* state.publish;
-            }, locked)
+            }, lockedBatch)
         };
     })
 }) {

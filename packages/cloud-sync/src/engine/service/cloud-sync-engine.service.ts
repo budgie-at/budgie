@@ -58,7 +58,7 @@ export class CloudSyncEngineService extends Context.Service<CloudSyncEngineServi
         const householdService = yield* CloudSyncHouseholdService;
         const scope = ICloudSyncScope.PRIVATE;
         const MetaFieldsSchema = Schema.Struct({ lineageId: Schema.String });
-        const { locked, patch, refreshZones } = state;
+        const { locked, lockedBatch, patch, refreshZones } = state;
         const { drainUnlocked, pushSideRecord } = drainService;
         const { endHouseholdUnlocked, startSharedEngineUnlocked, discoverHouseholdUnlocked } = householdService;
 
@@ -169,6 +169,7 @@ export class CloudSyncEngineService extends Context.Service<CloudSyncEngineServi
                 yield* stateStore.update({ stateSerialization: null, restorePhase: CloudSyncRestorePhaseEnum.FETCHING });
             }
 
+            yield* Ref.set(state.isBatchFailed, false);
             yield* transport.startSync(scope, stateSerialization);
             yield* patch({
                 isEngineRunning: true,
@@ -299,8 +300,6 @@ export class CloudSyncEngineService extends Context.Service<CloudSyncEngineServi
             }, locked),
             handleAccountChange: Effect.fn('CloudSyncEngineService.handleAccountChange')(function* (event: ICloudAccountChangeEvent) {
                 if (event.scope === ICloudSyncScope.SHARED) {
-                    yield* transport.confirmFetchedBatch(event.scope, event.batchId);
-
                     return;
                 }
 
@@ -321,9 +320,7 @@ export class CloudSyncEngineService extends Context.Service<CloudSyncEngineServi
                     yield* patch({ blocked: null });
                     yield* reconfigureUnlocked();
                 }
-
-                yield* transport.confirmFetchedBatch(event.scope, event.batchId);
-            }, locked),
+            }, lockedBatch),
             handleZoneChange: Effect.fn('CloudSyncEngineService.handleZoneChange')(function* (event: ICloudZoneChangeEvent) {
                 const personalDeletions = event.deleted.filter(zone => state.labelOf(zone) === PERSONAL_SYNC_ZONE);
                 const householdDeletions = event.deleted.filter(zone => state.labelOf(zone) === HOUSEHOLD_SYNC_ZONE);
@@ -338,9 +335,7 @@ export class CloudSyncEngineService extends Context.Service<CloudSyncEngineServi
                 if (isNotEmptyArray(householdDeletions)) {
                     yield* endHouseholdUnlocked(state.householdEndMode());
                 }
-
-                yield* transport.confirmFetchedBatch(event.scope, event.batchId);
-            }, locked)
+            }, lockedBatch)
         };
     })
 }) {

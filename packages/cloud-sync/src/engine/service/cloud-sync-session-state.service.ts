@@ -48,6 +48,7 @@ export class CloudSyncSessionState extends Context.Service<CloudSyncSessionState
             fetchedRecordCount: 0,
             isInitialFetchComplete: false
         });
+        const isBatchFailed = yield* Ref.make(false);
         const zones = new Map<string, Pick<SyncZoneRegistryEntityInterface, 'databaseScope' | 'ownerName' | 'role' | 'zoneName'>>();
         const labelByZone = new Map<string, string>();
         const pushed = new Map<string, CloudSyncPushedItemInterface>();
@@ -85,6 +86,9 @@ export class CloudSyncSessionState extends Context.Service<CloudSyncSessionState
 
         return {
             locked: lock.withPermits(1),
+            lockedBatch: <A, E, R>(effect: Effect.Effect<A, E, R>) =>
+                lock.withPermits(1)(Effect.tapCause(effect, () => Ref.set(isBatchFailed, true))),
+            isBatchFailed,
             session,
             zones,
             pushed,

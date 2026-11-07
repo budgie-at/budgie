@@ -41,13 +41,12 @@ const startRestoreWithBaselineAccount = (
     });
 
 describe('cloud-sync/restore-reset service', () => {
-    it.effect('runs the automatic writers once per applied fetched batch after confirming it', () =>
+    it.effect('runs the automatic writers once per applied fetched batch', () =>
         runSyncService((context, service) =>
             Effect.gen(function* () {
                 yield* service.handleFetchedChanges(fetchedEvent());
                 yield* service.handleFetchedChanges(fetchedEvent());
 
-                expect(context.transport.calls.confirmed).toHaveLength(2);
                 expect(context.automation.holder.results).toHaveLength(2);
             })
         )

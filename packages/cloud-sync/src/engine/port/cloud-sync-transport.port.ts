@@ -30,7 +30,6 @@ export class CloudSyncTransport extends Context.Service<
         readonly fetchZoneInventory: (scope: ICloudSyncScope, zoneName: string) => TransportEffect<readonly ICloudZoneInventoryRecord[]>;
         readonly addPendingSaves: (scope: ICloudSyncScope, records: readonly ICloudRecordPayload[]) => TransportEffect<void>;
         readonly addPendingDeletes: (scope: ICloudSyncScope, recordIds: readonly ICloudRecordId[]) => TransportEffect<void>;
-        readonly confirmFetchedBatch: (scope: ICloudSyncScope, batchId: string) => TransportEffect<void>;
         readonly createHouseholdShare: (zoneName: string) => TransportEffect<void>;
         readonly getShareParticipants: (zoneName: string) => TransportEffect<readonly ICloudShareParticipant[]>;
         readonly findOwnedHousehold: (zoneName: string) => TransportEffect<ICloudOwnedHousehold | null>;

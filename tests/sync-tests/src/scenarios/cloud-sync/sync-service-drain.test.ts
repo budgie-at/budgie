@@ -10,6 +10,7 @@ import {
 } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
+import * as Exit from 'effect/Exit';
 import * as TestClock from 'effect/testing/TestClock';
 
 import { seed, testDb } from '../../harness';
@@ -66,7 +67,6 @@ describe('cloud-sync/sync-service drain', () => {
                 expect(yield* readSystemFields(account.syncId ?? '')).toBe('system-data');
                 expect(appAtomRegistry.get(cloudSyncStatusAtom).status).toBe(CloudSyncStatusEnum.IDLE);
                 expect(context.store.holder.state.resolvedLineageId).toBe(yield* (yield* SyncIdentityRepository).ensureLineageId());
-                expect(context.transport.calls.confirmed).toHaveLength(2);
             })
         )
     );
@@ -195,12 +195,11 @@ describe('cloud-sync/sync-service drain', () => {
         )
     );
 
-    it.effect('confirms a fetched batch only after it is committed and persists engine state', () =>
+    it.effect('persists engine state after a fetched batch', () =>
         runSyncService((context, service) =>
             Effect.gen(function* () {
                 yield* seed.account({ title: 'Cash' });
                 yield* service.reconfigure;
-                context.transport.behavior.confirmProbeSql = "SELECT COUNT(*) AS total FROM accounts WHERE title = 'From cloud'";
 
                 const pushed = flattenBatches(context.transport.calls.savedBatches).find(({ recordType }) => recordType === 'SyncMeta');
 
@@ -208,7 +207,6 @@ describe('cloud-sync/sync-service drain', () => {
 
                 yield* service.handleFetchedChanges({
                     scope: ICloudSyncScope.PRIVATE,
-                    batchId: 'fetched-1',
                     records: [
                         {
                             zoneName: 'Personal',
@@ -232,12 +230,27 @@ describe('cloud-sync/sync-service drain', () => {
                     changedShares: []
                 });
 
-                expect(context.transport.calls.confirmed).toEqual(['fetched-1']);
-                expect(context.transport.calls.confirmProbe).toEqual([1]);
-
                 yield* service.handleStateSerialization({ scope: ICloudSyncScope.PRIVATE, stateSerialization: 'state-1' });
 
                 expect(context.store.holder.state.stateSerialization).toBe('state-1');
+            })
+        )
+    );
+
+    it.effect('does not persist engine state after a batch handler failed', () =>
+        runSyncService((context, service) =>
+            Effect.gen(function* () {
+                yield* reconfigureAndAcknowledgeMeta(context, service);
+                yield* seed.account({ title: 'Cash' });
+                context.transport.behavior.isSaveFailing = true;
+
+                const exit = yield* Effect.exit(service.handleSentChanges(sentEvent()));
+
+                expect(Exit.isFailure(exit)).toBe(true);
+
+                yield* service.handleStateSerialization({ scope: ICloudSyncScope.PRIVATE, stateSerialization: 'state-after-failure' });
+
+                expect(context.store.holder.state.stateSerialization).toBeNull();
             })
         )
     );

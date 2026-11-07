@@ -90,7 +90,6 @@ describe('cloud-sync/household removal', () => {
                 expect(yield* countRows(memberDb, 'account_balances')).toBe(1);
                 expect(yield* readPersonalBalances(memberDb)).toEqual(personalBefore);
                 expect(member.transport.calls.sharedStopped).toBe(1);
-                expect(member.transport.calls.confirmed).toContain(lostEvent.batchId);
                 expect(appAtomRegistry.get(householdStateAtom).role).toBe(HouseholdRoleEnum.NONE);
                 yield* expectBalancesMatchLedger(memberDb);
             })

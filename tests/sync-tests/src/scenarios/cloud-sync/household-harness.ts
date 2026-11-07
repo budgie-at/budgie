@@ -35,7 +35,6 @@ export const shareAcceptedEvent = (): ICloudShareAcceptedEvent => ({
 
 export const accessLostEvent = (): ICloudZoneChangeEvent => ({
     scope: ICloudSyncScope.SHARED,
-    batchId: `zone-${Math.random()}`,
     deleted: [{ zoneName: HOUSEHOLD_CLOUD_ZONE, ownerName: OWNER_RECORD_NAME, reason: ICloudZoneChangeReason.ACCESS_LOST }],
     modified: []
 });

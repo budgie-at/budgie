@@ -14,8 +14,6 @@ final class ICloudSyncEngineHost: CKSyncEngineDelegate, @unchecked Sendable {
   private var pendingSaves: [String: ICloudPendingSave] = [:]
   private var inFlightRevisions: [String: Int] = [:]
   private var nextRevision = 0
-  private var unconfirmedBatches = Set<String>()
-  private var heldSerialization: String?
 
   init(scope: ICloudSyncScope, emit: @escaping @Sendable (String, [String: Any]) -> Void) {
     self.scope = scope
@@ -46,8 +44,6 @@ final class ICloudSyncEngineHost: CKSyncEngineDelegate, @unchecked Sendable {
       engine = nil
       pendingSaves = [:]
       inFlightRevisions = [:]
-      unconfirmedBatches = []
-      heldSerialization = nil
     }
   }
 
@@ -82,18 +78,6 @@ final class ICloudSyncEngineHost: CKSyncEngineDelegate, @unchecked Sendable {
     }
     current.state.remove(pendingRecordZoneChanges: recordIDs.map { .saveRecord($0) })
     current.state.add(pendingRecordZoneChanges: recordIDs.map { .deleteRecord($0) })
-  }
-
-  func confirm(batchId: String) {
-    let released: String? = lock.withLock {
-      unconfirmedBatches.remove(batchId)
-      guard unconfirmedBatches.isEmpty, let held = heldSerialization else { return nil }
-      heldSerialization = nil
-      return held
-    }
-    if let released {
-      emit("onStateSerialization", ["scope": scope.rawValue, "stateSerialization": released])
-    }
   }
 
   func nextRecordZoneChangeBatch(_ context: CKSyncEngine.SendChangesContext, syncEngine: CKSyncEngine) async -> CKSyncEngine.RecordZoneChangeBatch? {
@@ -147,8 +131,6 @@ final class ICloudSyncEngineHost: CKSyncEngineDelegate, @unchecked Sendable {
       handleFetchedDatabaseChanges(changes, syncEngine: syncEngine)
     case let .fetchedRecordZoneChanges(changes):
       handleFetchedRecordZoneChanges(changes)
-    case let .sentDatabaseChanges(sent):
-      handleSentDatabaseChanges(sent)
     case let .sentRecordZoneChanges(sent):
       handleSentRecordZoneChanges(sent, syncEngine: syncEngine)
     case .willFetchChanges:
@@ -170,26 +152,15 @@ final class ICloudSyncEngineHost: CKSyncEngineDelegate, @unchecked Sendable {
   private func handleStateUpdate(_ update: CKSyncEngine.Event.StateUpdate) {
     guard let data = try? JSONEncoder().encode(update.stateSerialization) else { return }
     let text = String(decoding: data, as: UTF8.self)
-    let isHeld: Bool = lock.withLock {
-      if unconfirmedBatches.isEmpty { return false }
-      heldSerialization = text
-      return true
-    }
-    if !isHeld {
-      emit("onStateSerialization", ["scope": scope.rawValue, "stateSerialization": text])
-    }
+    emit("onStateSerialization", ["scope": scope.rawValue, "stateSerialization": text])
   }
 
   private func emitBatches(_ eventName: String, bodies: [[String: Any]]) {
-    let identified = bodies.map { body -> (String, [String: Any]) in
-      let batchId = UUID().uuidString
+    for body in bodies {
       var tagged = body
       tagged["scope"] = scope.rawValue
-      tagged["batchId"] = batchId
-      return (batchId, tagged)
+      emit(eventName, tagged)
     }
-    lock.withLock { identified.forEach { unconfirmedBatches.insert($0.0) } }
-    identified.forEach { emit(eventName, $0.1) }
   }
 
   private func handleAccountChange(_ change: CKSyncEngine.Event.AccountChange) {
@@ -287,27 +258,6 @@ final class ICloudSyncEngineHost: CKSyncEngineDelegate, @unchecked Sendable {
     emitBatches("onFetchedChanges", bodies: bodies)
   }
 
-  private func handleSentDatabaseChanges(_ sent: CKSyncEngine.Event.SentDatabaseChanges) {
-    let body: [String: Any] = [
-      "savedRecords": [[String: Any]](),
-      "failedSaves": [[String: Any]](),
-      "deletedRecords": [[String: Any]](),
-      "failedDeletes": [[String: Any]](),
-      "savedZones": sent.savedZones.map { ICloudRecordCodec.zoneDictionary($0.zoneID) },
-      "failedZoneSaves": sent.failedZoneSaves.map { failure -> [String: Any] in
-        ICloudRecordCodec.zoneDictionary(failure.zone.zoneID).merging(ICloudDatabase.failure(failure.error)) { first, _ in first }
-      },
-      "deletedZones": sent.deletedZoneIDs.map { ICloudRecordCodec.zoneDictionary($0) },
-      "failedZoneDeletes": sent.failedZoneDeletes.map { zoneID, error -> [String: Any] in
-        ICloudRecordCodec.zoneDictionary(zoneID).merging(ICloudDatabase.failure(error)) { first, _ in first }
-      }
-    ]
-    let hasContent = ["savedZones", "failedZoneSaves", "deletedZones", "failedZoneDeletes"].contains { (body[$0] as? [Any])?.isEmpty == false }
-    if hasContent {
-      emitBatches("onSentChanges", bodies: [body])
-    }
-  }
-
   private func handleSentRecordZoneChanges(_ sent: CKSyncEngine.Event.SentRecordZoneChanges, syncEngine: CKSyncEngine) {
     var resend: [CKSyncEngine.PendingRecordZoneChange] = []
     let saved = sent.savedRecords.map { record -> [String: Any] in
@@ -356,11 +306,7 @@ final class ICloudSyncEngineHost: CKSyncEngineDelegate, @unchecked Sendable {
       "savedRecords": saved,
       "failedSaves": failedSaves,
       "deletedRecords": deleted,
-      "failedDeletes": failedDeletes,
-      "savedZones": [[String: Any]](),
-      "failedZoneSaves": [[String: Any]](),
-      "deletedZones": [[String: Any]](),
-      "failedZoneDeletes": [[String: Any]]()
+      "failedDeletes": failedDeletes
     ]])
   }
 }

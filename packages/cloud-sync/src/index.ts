@@ -85,9 +85,7 @@ export type { ICloudSavedRecord } from './transport/interface/icloud-saved-recor
 export type { ICloudFailure } from './transport/interface/icloud-failure.interface';
 export type { ICloudFailedSave } from './transport/interface/icloud-failed-save.interface';
 export type { ICloudFailedDelete } from './transport/type/icloud-failed-delete.type';
-export type { ICloudFailedZone } from './transport/type/icloud-failed-zone.type';
 export type { ICloudScopedEvent } from './transport/interface/icloud-scoped-event.interface';
-export type { ICloudBatchEvent } from './transport/interface/icloud-batch-event.interface';
 export type { ICloudStateSerializationEvent } from './transport/interface/icloud-state-serialization-event.interface';
 export type { ICloudFetchedChangesEvent } from './transport/interface/icloud-fetched-changes-event.interface';
 export type { ICloudSentChangesEvent } from './transport/interface/icloud-sent-changes-event.interface';

@@ -96,7 +96,6 @@ export const cloudSyncTransportLayer = Layer.effect(
                 call(() => icloud.addPendingSaves(scope, records)),
             addPendingDeletes: (scope: ICloudSyncScope, recordIds: readonly ICloudRecordId[]) =>
                 call(() => icloud.addPendingDeletes(scope, recordIds)),
-            confirmFetchedBatch: (scope: ICloudSyncScope, batchId: string) => call(() => icloud.confirmFetchedBatch(scope, batchId)),
             createHouseholdShare: (zoneName: string) => call(() => icloud.createHouseholdShare(zoneName)),
             getShareParticipants: (zoneName: string) => call(() => icloud.getShareParticipants(zoneName)),
             findOwnedHousehold: (zoneName: string) => call(() => icloud.findOwnedHousehold(zoneName)),

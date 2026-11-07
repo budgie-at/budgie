@@ -50,7 +50,7 @@ export class CloudSyncFetchService extends Context.Service<CloudSyncFetchService
         const drainService = yield* CloudSyncDrainService;
         const householdService = yield* CloudSyncHouseholdService;
         const scope = ICloudSyncScope.PRIVATE;
-        const { locked, patch } = state;
+        const { locked, lockedBatch, patch } = state;
         const { drainUnlocked, storeSideRecord } = drainService;
 
         const automate = (result: SyncApplyResultInterface) => logAndContinue(automationService.afterApply(result));
@@ -131,9 +131,15 @@ export class CloudSyncFetchService extends Context.Service<CloudSyncFetchService
 
         return {
             handleStateSerialization: (event: ICloudStateSerializationEvent) =>
-                event.scope === ICloudSyncScope.SHARED
-                    ? stateStore.update({ sharedStateSerialization: event.stateSerialization })
-                    : stateStore.update({ stateSerialization: event.stateSerialization }),
+                Effect.flatMap(Ref.get(state.isBatchFailed), isBatchFailed => {
+                    if (isBatchFailed) {
+                        return Effect.void;
+                    }
+
+                    return event.scope === ICloudSyncScope.SHARED
+                        ? stateStore.update({ sharedStateSerialization: event.stateSerialization })
+                        : stateStore.update({ stateSerialization: event.stateSerialization });
+                }),
             handleWillFetch: (event: ICloudScopedEvent) =>
                 event.scope === ICloudSyncScope.SHARED ? Effect.void : patch({ isFetching: true }),
             handleFetchedChanges: Effect.fn('CloudSyncFetchService.handleFetchedChanges')(function* (event: ICloudFetchedChangesEvent) {
@@ -169,7 +175,6 @@ export class CloudSyncFetchService extends Context.Service<CloudSyncFetchService
                         blocked: isNotEmptyArray(result.pausedZones) ? CloudSyncStatusEnum.UPDATE_REQUIRED : unblocked
                     };
                 });
-                yield* transport.confirmFetchedBatch(event.scope, event.batchId);
                 yield* automate(result);
 
                 if (isNotEmptyArray(event.changedShares)) {
@@ -181,7 +186,7 @@ export class CloudSyncFetchService extends Context.Service<CloudSyncFetchService
                 }
 
                 yield* state.publish;
-            }, locked),
+            }, lockedBatch),
             handleDidFetch: Effect.fn('CloudSyncFetchService.handleDidFetch')(function* (event: ICloudScopedEvent) {
                 if (event.scope === ICloudSyncScope.SHARED) {
                     if ((yield* Ref.get(state.session)).isSharedReconciling) {

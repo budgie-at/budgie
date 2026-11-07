@@ -75,10 +75,6 @@ public final class ICloudModule: Module {
       try self?.host(rawScope).addPendingDeletes(recordIds.map(\.recordID))
     }
 
-    AsyncFunction("confirmFetchedBatch") { [weak self] (rawScope: String, batchId: String) throws in
-      try self?.host(rawScope).confirm(batchId: batchId)
-    }
-
     AsyncFunction("fetchRecord") { (rawScope: String, zoneName: String, recordName: String) async throws -> [String: Any]? in
       let scope = try ICloudDatabase.scope(rawScope)
       let database = ICloudDatabase.database(for: scope)

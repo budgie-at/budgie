@@ -69,7 +69,6 @@ describe('cloud-sync/household empty zone', () => {
 
                         yield* service.handleFetchedChanges({
                             scope: ICloudSyncScope.SHARED,
-                            batchId: 'shared-fetch',
                             records: [],
                             deletions: [],
                             changedShares: []
@@ -85,7 +84,6 @@ describe('cloud-sync/household empty zone', () => {
                     role: SyncZoneRoleEnum.PARTICIPANT
                 });
                 expect(member.transport.calls.sharedStarted).toEqual([null]);
-                expect(member.transport.calls.confirmed).toContain('shared-fetch');
                 expect(appAtomRegistry.get(cloudSyncStatusAtom).status).not.toBe(CloudSyncStatusEnum.ERROR);
                 expect(appAtomRegistry.get(householdStateAtom)).toEqual({ role: HouseholdRoleEnum.MEMBER, isReady: true });
             })
