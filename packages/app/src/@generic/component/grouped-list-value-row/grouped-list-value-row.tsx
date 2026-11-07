@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useIsLargeTextSize } from '../../hook/use-is-large-text-size.hook';
 import { GroupedListIcon } from '../grouped-list-icon/grouped-list-icon';
 import { GroupedListRow } from '../grouped-list-row/grouped-list-row';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
@@ -25,6 +26,7 @@ const CLEAR_HIT_SLOP = { top: 12, bottom: 12, left: 12, right: 12 };
 
 export const GroupedListValueRow = ({ icon, title, value, testID, onPress, onClear }: Props) => {
     const { t } = useLingui();
+    const isStacked = useIsLargeTextSize();
     const accessibilityActions = isDefined(onClear) ? [{ name: 'clear', label: t`Clear ${title}` }] : [];
     const onAccessibilityAction = (event: AccessibilityActionEvent) => {
         if (event.nativeEvent.actionName === 'clear') {
@@ -45,22 +47,29 @@ export const GroupedListValueRow = ({ icon, title, value, testID, onPress, onCle
     ) : (
         <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
     );
+    const contentClassName = isStacked ? 'gap-y-xxs' : 'flex-row flex-wrap items-center gap-x-sm gap-y-xxs';
+    const valueClassName = isStacked
+        ? 'text-[17px] text-secondary-foreground'
+        : 'ml-auto max-w-[50%] text-[17px] text-secondary-foreground';
+    const valueLineCount = isStacked ? 2 : 1;
 
     return (
         <GroupedListRow
             left={<GroupedListIcon icon={icon} />}
-            title={title}
+            title={
+                <View className={contentClassName}>
+                    <Text className="text-[17px] text-primary" numberOfLines={2}>
+                        {title}
+                    </Text>
+                    <Text className={valueClassName} numberOfLines={valueLineCount}>
+                        {value}
+                    </Text>
+                </View>
+            }
             testID={testID}
             onPress={onPress}
             pressableProps={pressableProps}
-            right={
-                <View className="max-w-[60%] flex-row items-center gap-x-sm">
-                    <Text className="shrink text-[17px] text-secondary-foreground" numberOfLines={1}>
-                        {value}
-                    </Text>
-                    {accessory}
-                </View>
-            }
+            right={accessory}
         />
     );
 };
