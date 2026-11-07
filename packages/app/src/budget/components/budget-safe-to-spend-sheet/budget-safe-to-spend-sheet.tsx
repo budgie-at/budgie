@@ -1,5 +1,5 @@
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -52,7 +52,12 @@ export const BudgetSafeToSpendSheet = ({ budget }: Props) => {
         <BudgetScrollableSheet testID={BudgetSelector.SafeToSpendSheet}>
             <BudgetSafeToSpendHeader budget={budget} />
 
-            <LoadingContent isLoading={isLoading} className="gap-y-3xl" containerClassName="px-5xl pt-md pb-3xl">
+            <LoadingContent
+                isLoading={isLoading}
+                className="gap-y-3xl"
+                containerClassName="px-5xl pt-md pb-3xl"
+                loadingIndicator={<ActivityIndicator size="small" className="absolute inset-x-0 top-[24px]" />}
+            >
                 <BudgetSafeToSpendSummary projection={projection} currencySymbol={currencySymbol} />
 
                 {upcomingSection}
