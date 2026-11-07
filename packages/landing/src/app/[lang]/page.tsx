@@ -12,6 +12,7 @@ import { JsonLd } from '../../generic/component/json-ld/json-ld';
 import { ProofBand } from '../../generic/component/proof-band/proof-band';
 import { TestimonialsSection } from '../../generic/component/testimonials-section/testimonials-section';
 import { TrustBanner } from '../../generic/component/trust-banner/trust-banner';
+import { BASE_URL, OG_LOCALE_MAP } from '../../generic/constant/seo.constant';
 import { buildLandingJsonLd } from '../../generic/utils/build-landing-json-ld.util';
 import { getI18nInstance } from '../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../i18n/init-lingui';
@@ -32,6 +33,9 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
         openGraph: {
             title: i18n._(HOME_PAGE_METADATA.openGraphTitle),
             description: i18n._(HOME_PAGE_METADATA.metaDescription),
+            type: 'website',
+            url: `${BASE_URL}/${lang}`,
+            locale: OG_LOCALE_MAP[lang] ?? 'en_US',
             // oxlint-disable-next-line lingui/no-unlocalized-strings
             siteName: 'Budgie'
         }
@@ -48,7 +52,7 @@ export default async function LandingPage(props: PageLangParam) {
     const softwareApplication = buildLandingJsonLd(i18n, lang);
 
     return (
-        <main className="flex-1">
+        <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none">
             <JsonLd data={softwareApplication} />
 
             <HeroSection locale={lang} />

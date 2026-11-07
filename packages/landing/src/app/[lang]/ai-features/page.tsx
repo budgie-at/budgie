@@ -38,6 +38,7 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
                         leaves your device.
                     </Trans>
                 }
+                updatedAt={AI_FEATURES_PILLAR_HUB_METADATA.updatedAt}
             >
                 <PillarHubHeroBulletList>
                     <PillarHubHeroBulletItem>

@@ -33,6 +33,7 @@ export default async function SecurityPillarHubPage(props: PageLangParam) {
                         financial data at every layer.
                     </Trans>
                 }
+                updatedAt={SECURITY_PILLAR_HUB_METADATA.updatedAt}
             >
                 <PillarHubHeroBulletList>
                     <PillarHubHeroBulletItem>

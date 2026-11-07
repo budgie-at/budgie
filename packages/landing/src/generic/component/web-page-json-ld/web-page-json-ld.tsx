@@ -1,7 +1,7 @@
 /* oxlint-disable lingui/no-unlocalized-strings -- schema.org keys, not user-facing copy */
 import { isDefined } from '@rnw-community/shared';
 
-import { BASE_URL, OG_LOCALE_MAP } from '../../constant/seo.constant';
+import { BASE_URL, OG_LOCALE_MAP, WEBSITE_ID } from '../../constant/seo.constant';
 import { JsonLd } from '../json-ld/json-ld';
 
 interface Props {
@@ -26,7 +26,7 @@ export const WebPageJsonLd = ({ description, featureName, locale, path, publishe
         datePublished: publishedAt,
         dateModified: updatedAt,
         inLanguage: languageTag,
-        isPartOf: { '@type': 'WebSite', name: 'Budgie', url: BASE_URL },
+        isPartOf: { '@id': WEBSITE_ID },
         breadcrumb: { '@id': `${url}#breadcrumb` },
         ...(isDefined(featureName) && {
             mainEntity: {

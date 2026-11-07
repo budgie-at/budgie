@@ -17,6 +17,7 @@ interface Props {
 export const FeatureCard = ({ locale, slug, title, tagline, index, pillar }: Props) => (
     <Motion index={index}>
         <Link
+            prefetch={false}
             className={`${PILLAR_CLASS_NAME[pillar]} block h-full rounded-lg border border-border/60 bg-card p-5 transition-colors hover:border-pillar`}
             href={`/${locale}/features/${slug}`}
         >

@@ -9,6 +9,8 @@ import { buildPageMetadata } from '../../../generic/utils/build-page-metadata.ut
 import { getI18nInstance } from '../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
 
+import { FEATURES_HUB_METADATA } from './hub-metadata';
+
 import type { Metadata } from 'next';
 
 const PATH = '/features';
@@ -17,12 +19,13 @@ const PATH = '/features';
 export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
     const { lang } = await props.params;
     const i18n = getI18nInstance(lang);
-    const title = t(i18n)`All Budgie Features — Offline-First Expense Tracker`;
-    const description = t(
-        i18n
-    )`Every Budgie feature in one place: bank sync, on-device AI, voice entry, multi-currency, recurring detection, and PIN-protected backups — all 100% offline-first.`;
 
-    return buildPageMetadata({ description, locale: lang, path: PATH, title });
+    return buildPageMetadata({
+        description: i18n._(FEATURES_HUB_METADATA.description),
+        locale: lang,
+        path: PATH,
+        title: i18n._(FEATURES_HUB_METADATA.title)
+    });
 }
 
 export default async function FeaturesHubPage(props: PageLangParam) {
@@ -33,7 +36,7 @@ export default async function FeaturesHubPage(props: PageLangParam) {
     const itemList = buildFeaturesItemListJsonLd(i18n, lang);
 
     return (
-        <main className="flex-1">
+        <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none">
             <BreadcrumbsJsonLd locale={lang} path={PATH}>
                 <BreadcrumbsJsonLd.Item name={t(i18n)`Home`} path={`/${lang}`} />
                 <BreadcrumbsJsonLd.Item name={t(i18n)`Features`} path={`/${lang}${PATH}`} />

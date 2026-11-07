@@ -2601,7 +2601,7 @@ msgstr "Alle Artikel"
 msgid "All Budgie Features"
 msgstr "Alle Budgie-Funktionen"
 
-#: src/app/[lang]/features/page.tsx
+#: src/app/[lang]/features/hub-metadata.ts
 msgid "All Budgie Features — Offline-First Expense Tracker"
 msgstr "Alle Budgie-Funktionen — Offline-First-Ausgabentracker"
 
@@ -3070,7 +3070,7 @@ msgstr "Gibt es ungelöste Probleme, die Sie beunruhigen?"
 msgid "Are user concerns addressed respectfully and thoroughly?"
 msgstr "Werden Nutzerbedenken respektvoll und gründlich behandelt?"
 
-#: src/app/[lang]/blog/page.tsx
+#: src/app/[lang]/blog/metadata.ts
 msgid "Articles about financial privacy, security best practices, offline-first architecture, and tips for better expense tracking."
 msgstr "Klare Guides zu finanzieller Privatsphäre, sichererer App-Architektur und saubererem Ausgabentracking."
 
@@ -3613,9 +3613,6 @@ msgid "Best YNAB Alternatives for Privacy-Conscious Users"
 msgstr "Die besten YNAB-Alternativen für datenschutzbewusste Nutzer"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/opengraph-image.tsx
-msgid "Best YNAB Alternatives for Privacy-Conscious Users (2025)"
-msgstr "Die besten YNAB-Alternativen für datenschutzbewusste Nutzer (2025)"
-
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Best YNAB Alternatives for Privacy-Conscious Users (2026)"
 msgstr "Die besten YNAB-Alternativen für datenschutzbewusste Nutzer (2026)"
@@ -3865,6 +3862,12 @@ msgstr "Beides. Gleicher Ablauf wie bei Kategorien – Umbenennen ist nicht dest
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Bound by their privacy policy"
 msgstr "An ihre Datenschutzrichtlinie gebunden"
+
+#: src/blog/component/blog-breadcrumbs/blog-breadcrumbs.tsx
+#: src/feature/component/feature-breadcrumbs/feature-breadcrumbs.tsx
+#: src/feature/component/pillar-hub-breadcrumbs/pillar-hub-breadcrumbs.tsx
+msgid "Breadcrumb"
+msgstr "Brotkrümelnavigation"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Breaking security changes are clearly communicated"
@@ -8015,7 +8018,7 @@ msgstr "Jede KI-Korrektur verbessert zukünftige Vorschläge durch geräteeigene
 msgid "Every bank sync or statement import brings in dozens of transactions, and the same shops keep coming back under slightly different descriptions: a reference number here, a card number or a date there. Categorizing them one row at a time is the chore that makes people give up on a budget."
 msgstr "Jede Banksynchronisierung und jeder Kontoauszug-Import bringt Dutzende Umsätze, und dieselben Geschäfte tauchen immer wieder mit leicht anderem Buchungstext auf: hier eine Referenznummer, dort eine Kartennummer oder ein Datum. Sie Zeile für Zeile zu kategorisieren ist genau die Fleißarbeit, an der viele Budgets scheitern."
 
-#: src/app/[lang]/features/page.tsx
+#: src/app/[lang]/features/hub-metadata.ts
 msgid "Every Budgie feature in one place: bank sync, on-device AI, voice entry, multi-currency, recurring detection, and PIN-protected backups — all 100% offline-first."
 msgstr "Alle Budgie-Funktionen an einem Ort: Bank-Sync, KI auf dem Gerät, Spracheingabe, Multi-Währung, Erkennung wiederkehrender Buchungen und PIN-geschützte Backups — alles zu 100 % offline-first."
 
@@ -8620,6 +8623,7 @@ msgstr "Finanzielle Verluste oder Entscheidungen, die auf Grundlage des Dienstes
 msgid "Financial management is inherently personal. Unlike collaborative documents or team projects, most people do not need to share their expense tracking with others in real-time. The single-user optimization of local-first is a feature, not a limitation."
 msgstr "Finanzmanagement ist von Natur aus persönlich. Anders als bei kollaborativen Dokumenten oder Teamprojekten müssen die meisten Menschen ihre Ausgabenverfolgung nicht in Echtzeit mit anderen teilen. Die Einzelnutzer-Optimierung von Local-First ist ein Vorteil, keine Einschränkung."
 
+#: src/app/[lang]/blog/metadata.ts
 #: src/app/[lang]/blog/opengraph-image.tsx
 #: src/app/[lang]/blog/page.tsx
 msgid "Financial Privacy Blog & Insights"
@@ -10984,6 +10988,10 @@ msgstr "Lunch Money spricht Entwickler und technisch versierte Nutzer an, die ei
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Lunch Money: Developer-Friendly Budgeting"
 msgstr "Lunch Money: Budgetierung für Entwickler"
+
+#: src/generic/component/header/header.tsx
+msgid "Main"
+msgstr "Hauptnavigation"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Maintain and promptly update your account information"
@@ -16115,6 +16123,10 @@ msgstr "Sechs Monatsbalken in dieser Ansicht zeigen, was Sie üblicherweise am s
 msgid "sizes for net worth and budget"
 msgstr "Größen für Nettovermögen und Budget"
 
+#: src/app/[lang]/layout.tsx
+msgid "Skip to content"
+msgstr "Zum Inhalt springen"
+
 #: src/app/[lang]/features/runway/page.tsx
 msgid "Small costs fold into Other"
 msgstr "Kleine Kosten landen unter Sonstige"
@@ -19346,6 +19358,10 @@ msgstr "Bis zu acht Aktionen, kein Formular"
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "Upcoming charges"
 msgstr "Bevorstehende Zahlungen"
+
+#: src/generic/component/updated-date/updated-date.tsx
+msgid "Updated <0>{formattedDate}</0>"
+msgstr "Aktualisiert am <0>{formattedDate}</0>"
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Use Add item to add another row; the label under the rows shows how much is still left to assign."

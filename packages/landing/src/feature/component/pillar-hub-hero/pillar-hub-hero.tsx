@@ -2,6 +2,7 @@ import { Trans } from '@lingui/react/macro';
 import Link from 'next/link';
 
 import { Motion } from '../../../generic/component/motion/motion';
+import { UpdatedDate } from '../../../generic/component/updated-date/updated-date';
 import { Button } from '../../../ui/button';
 
 import type { ReactNode } from 'react';
@@ -12,9 +13,10 @@ interface Props {
     readonly tagline: ReactNode;
     readonly breadcrumbs: ReactNode;
     readonly children: ReactNode;
+    readonly updatedAt: string;
 }
 
-export const PillarHubHero = ({ locale, heading, tagline, breadcrumbs, children }: Props) => (
+export const PillarHubHero = ({ locale, heading, tagline, breadcrumbs, children, updatedAt }: Props) => (
     <section className="w-full pt-12 pb-16 md:pt-20 md:pb-24 bg-gradient-to-b from-pillar-tint to-background">
         <div className="container">
             <Motion className="max-w-4xl">
@@ -34,6 +36,7 @@ export const PillarHubHero = ({ locale, heading, tagline, breadcrumbs, children 
                         </Link>
                     </Button>
                 </div>
+                <UpdatedDate className="mt-6 text-sm text-muted-foreground" date={updatedAt} locale={locale} />
             </Motion>
         </div>
     </section>

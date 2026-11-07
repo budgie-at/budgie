@@ -5,7 +5,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { BreadcrumbsJsonLd } from '../../../generic/component/breadcrumbs-json-ld/breadcrumbs-json-ld';
 import { JsonLd } from '../../../generic/component/json-ld/json-ld';
-import { BASE_URL } from '../../../generic/constant/seo.constant';
+import { BASE_URL, ORGANIZATION_ID } from '../../../generic/constant/seo.constant';
 import { getI18nInstance } from '../../../i18n/app-router-i18n';
 
 interface Props {
@@ -21,15 +21,11 @@ interface Props {
 
 export const BlogPostingJsonLd = ({ title, description, date, dateModified, image, locale, slug, keywords }: Props) => {
     const articleUrl = `${BASE_URL}/${locale}/blog/${slug}`;
-    const organization = {
-        '@type': 'Organization',
-        name: 'Budgie',
-        url: BASE_URL,
-        logo: { '@type': 'ImageObject', url: `${BASE_URL}/logo/black-on-white.svg` }
-    };
+    const organization = { '@id': ORGANIZATION_ID };
     const data = {
         '@context': 'https://schema.org',
         '@type': 'BlogPosting',
+        inLanguage: locale,
         headline: title,
         description,
         datePublished: date,

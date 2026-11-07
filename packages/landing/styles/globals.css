@@ -1454,7 +1454,7 @@
 }
 
 .story-callout[data-focus] .story-callout-pin::before {
-    animation: story-halo 2.4s var(--ease-out) 600ms infinite;
+    animation: story-halo 2.4s var(--ease-out) 600ms 3;
 }
 
 .story-callout[data-focus] .story-callout-pin::after {
@@ -2645,8 +2645,14 @@ section[data-density='COMPACT'] .story-grid {
     }
 }
 
+@keyframes rise-in {
+    from {
+        transform: translateY(20px);
+    }
+}
+
 .fade-in {
-    animation: fade-in-up 0.5s ease-out backwards;
+    animation: rise-in 0.5s ease-out backwards;
     animation-delay: calc(var(--fade-in-index, 0) * 0.1s);
 }
 
