@@ -59,7 +59,6 @@ export const BudgetAllocationSummary = () => {
                 <Text className="text-sm text-secondary-foreground">{t`Allocated`}</Text>
                 <Text
                     className="min-w-0 shrink text-sm tabular-nums text-primary"
-                    numberOfLines={1}
                     adjustsFontSizeToFit
                     minimumFontScale={0.6}
                     maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
@@ -73,7 +72,6 @@ export const BudgetAllocationSummary = () => {
                 </Text>
                 <Text
                     className={cn('min-w-0 shrink text-sm font-semibold tabular-nums', REMAINING_CLASS_NAME[status])}
-                    numberOfLines={1}
                     adjustsFontSizeToFit
                     minimumFontScale={0.6}
                     maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}

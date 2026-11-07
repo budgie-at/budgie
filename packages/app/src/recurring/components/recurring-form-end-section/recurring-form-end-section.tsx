@@ -33,7 +33,7 @@ export const RecurringFormEndSection = () => {
         <View className="gap-y-md">
             <View>
                 <GroupedListSectionTitle title={t`Ends`} />
-                <SegmentedControl segments={segments} value={value} onChange={onChange} className="min-h-[44px]" />
+                <SegmentedControl segments={segments} value={value} onChange={onChange} />
             </View>
             {value === RecurringEndModeEnum.ON_DATE ? (
                 <GroupedListSection>

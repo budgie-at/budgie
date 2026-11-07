@@ -14,7 +14,7 @@ export const BudgetBreakdownRow = ({ label, amount }: Props) => {
     return (
         <View className={rowClassName}>
             <Text className="shrink text-sm text-secondary-foreground">{label}</Text>
-            <ProtectedText className="text-sm tabular-nums text-primary" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.6}>
+            <ProtectedText className="min-w-0 shrink text-sm tabular-nums text-primary" adjustsFontSizeToFit minimumFontScale={0.6}>
                 {amount}
             </ProtectedText>
         </View>

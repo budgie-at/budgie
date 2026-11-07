@@ -46,7 +46,6 @@ export const BudgetSetupProgressContent = ({ scope, currencySymbol }: Props) => 
                 <ProtectedText
                     className="min-w-0 shrink text-md font-semibold tabular-nums text-primary"
                     testID={BudgetSelector.SetupSpentLabel}
-                    numberOfLines={1}
                     adjustsFontSizeToFit
                     minimumFontScale={0.6}
                     maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
@@ -63,7 +62,6 @@ export const BudgetSetupProgressContent = ({ scope, currencySymbol }: Props) => 
                 <ProtectedText
                     testID={BudgetSelector.SetupRemainingLabel}
                     className="min-w-0 shrink text-md font-semibold tabular-nums text-primary"
-                    numberOfLines={1}
                     adjustsFontSizeToFit
                     minimumFontScale={0.6}
                     maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}

@@ -119,7 +119,7 @@ export const useBudgetEventForm = ({ defaultInstrumentId, editingId }: UseBudget
         isEditing,
         isLoading: isEditing && (isEventLoading || isCategoryLimitsLoading),
         isError: isEventError || isCategoryLimitsError,
-        isUnavailable: isEditing && (isEventError || isCategoryLimitsError || (!isEventLoading && !isDefined(event))),
+        isUnavailable: isEditing && !isSubmitting && (isEventError || isCategoryLimitsError || (!isEventLoading && !isDefined(event))),
         isSubmitting
     };
 };

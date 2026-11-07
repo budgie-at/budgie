@@ -51,12 +51,11 @@ export const BudgetLimitRow = (props: Props) => {
                     {pill}
                 </View>
 
-                <View className="flex-row items-center justify-between gap-x-xs">
-                    <View className="shrink flex-row items-center gap-x-xs">
+                <View className="min-w-0 flex-row items-center justify-between gap-x-xs">
+                    <View className="min-w-0 shrink flex-row flex-wrap items-center gap-x-xs gap-y-xxs">
                         <ProtectedText
                             testID={spentTestID}
                             className="shrink text-sm font-semibold tabular-nums text-primary"
-                            numberOfLines={1}
                             adjustsFontSizeToFit
                             minimumFontScale={0.6}
                         >
@@ -64,7 +63,6 @@ export const BudgetLimitRow = (props: Props) => {
                         </ProtectedText>
                         <ProtectedText
                             className="shrink text-sm tabular-nums text-secondary-foreground"
-                            numberOfLines={1}
                             adjustsFontSizeToFit
                             minimumFontScale={0.6}
                         >

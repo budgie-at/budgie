@@ -34,5 +34,5 @@ export const RecurringFormKindField = () => {
         onChange(kind);
     };
 
-    return <SegmentedControl segments={segments} value={value} onChange={handleChange} className="min-h-[44px]" />;
+    return <SegmentedControl segments={segments} value={value} onChange={handleChange} />;
 };
