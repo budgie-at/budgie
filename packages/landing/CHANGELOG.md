@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.167.3](https://github.com/budgie-at/budgie/compare/v6.167.2...v6.167.3) (2026-11-07)
+
+### Performance Improvements
+
+* **landing:** lighter fonts, dark-mode CTA contrast and heading order ([#2023](https://github.com/budgie-at/budgie/issues/2023)) ([173f3cf](https://github.com/budgie-at/budgie/commit/173f3cfdd7a2ccbd47b077d31e844b9c75237344)), closes [#2022](https://github.com/budgie-at/budgie/issues/2022)
+
+
 ## [6.165.5](https://github.com/budgie-at/budgie/compare/v6.165.4...v6.165.5) (2026-11-06)
 
 **Note:** Version bump only for package @budgie-at/landing
