@@ -1,13 +1,13 @@
 import { Db, InstrumentMarketDataJobEntityTable, InstrumentMarketDataJobStatusEnum } from '@budgie/contracts';
-import { and, asc, desc, eq, inArray, isNotNull, isNull, lte, or, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, gt, inArray, isNotNull, isNull, lte, or, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isNotEmptyArray } from '@rnw-community/shared';
 
-import type { InstrumentMarketDataJobCreateEntityInterface } from '@budgie/contracts';
+import type { InstrumentMarketDataJobCreateEntityInterface, InstrumentMarketDataJobEntityInterface } from '@budgie/contracts';
 
 export class InstrumentMarketDataJobRepository extends Context.Service<InstrumentMarketDataJobRepository>()(
     '@budgie/market/InstrumentMarketDataJobRepository',
@@ -37,16 +37,12 @@ export class InstrumentMarketDataJobRepository extends Context.Service<Instrumen
                     isNull(InstrumentMarketDataJobEntityTable.deletedAt)
                 );
 
-            const buildOpenInstrumentQuoteFilter = (instrumentId: number, quoteInstrumentId: number) => ({
-                ...buildInstrumentQuoteFilter(instrumentId, quoteInstrumentId),
-                status: {
-                    in: [
-                        InstrumentMarketDataJobStatusEnum.PENDING,
-                        InstrumentMarketDataJobStatusEnum.RUNNING,
-                        InstrumentMarketDataJobStatusEnum.FAILED
-                    ]
-                }
-            });
+            const buildClaimOwnerCondition = (job: Pick<InstrumentMarketDataJobEntityInterface, 'id' | 'attempts'>) =>
+                and(
+                    eq(InstrumentMarketDataJobEntityTable.id, job.id),
+                    eq(InstrumentMarketDataJobEntityTable.status, InstrumentMarketDataJobStatusEnum.RUNNING),
+                    eq(InstrumentMarketDataJobEntityTable.attempts, job.attempts)
+                );
 
             return {
                 enqueueMany: Effect.fn('InstrumentMarketDataJobRepository.enqueueMany')(function* (
@@ -98,13 +94,28 @@ export class InstrumentMarketDataJobRepository extends Context.Service<Instrumen
 
                     return jobs.at(0);
                 }),
-                hasOpen: (instrumentId: number, quoteInstrumentId: number) =>
+                hasOpen: (instrumentId: number, quoteInstrumentId: number, maxAttempts: number, staleLockedBefore: Date) =>
                     Db.query(db =>
-                        db.query.InstrumentMarketDataJobEntityTable.findFirst({
-                            where: buildOpenInstrumentQuoteFilter(instrumentId, quoteInstrumentId)
-                        })
-                    ).pipe(Effect.map(isDefined)),
-                markCompleted: (jobId: number) =>
+                        db
+                            .select({ id: InstrumentMarketDataJobEntityTable.id })
+                            .from(InstrumentMarketDataJobEntityTable)
+                            .where(
+                                and(
+                                    eq(InstrumentMarketDataJobEntityTable.instrumentId, instrumentId),
+                                    eq(InstrumentMarketDataJobEntityTable.quoteInstrumentId, quoteInstrumentId),
+                                    isNull(InstrumentMarketDataJobEntityTable.deletedAt),
+                                    or(
+                                        buildClaimableCondition(maxAttempts, staleLockedBefore),
+                                        and(
+                                            eq(InstrumentMarketDataJobEntityTable.status, InstrumentMarketDataJobStatusEnum.RUNNING),
+                                            gt(InstrumentMarketDataJobEntityTable.lockedAt, staleLockedBefore)
+                                        )
+                                    )
+                                )
+                            )
+                            .limit(1)
+                    ).pipe(Effect.map(isNotEmptyArray)),
+                markCompleted: (job: Pick<InstrumentMarketDataJobEntityInterface, 'id' | 'attempts'>) =>
                     Db.query(db =>
                         db
                             .update(InstrumentMarketDataJobEntityTable)
@@ -114,9 +125,10 @@ export class InstrumentMarketDataJobRepository extends Context.Service<Instrumen
                                 completedAt: new Date(),
                                 updatedAt: new Date()
                             })
-                            .where(eq(InstrumentMarketDataJobEntityTable.id, jobId))
-                    ),
-                markFailed: (jobId: number, errorMessage: string) =>
+                            .where(buildClaimOwnerCondition(job))
+                            .returning({ id: InstrumentMarketDataJobEntityTable.id })
+                    ).pipe(Effect.map(isNotEmptyArray)),
+                markFailed: (job: Pick<InstrumentMarketDataJobEntityInterface, 'id' | 'attempts'>, errorMessage: string) =>
                     Db.query(db =>
                         db
                             .update(InstrumentMarketDataJobEntityTable)
@@ -126,7 +138,7 @@ export class InstrumentMarketDataJobRepository extends Context.Service<Instrumen
                                 lastError: errorMessage,
                                 updatedAt: new Date()
                             })
-                            .where(eq(InstrumentMarketDataJobEntityTable.id, jobId))
+                            .where(buildClaimOwnerCondition(job))
                     ).pipe(Effect.asVoid),
                 findUnsupportedInstrumentIds: (quoteInstrumentId: number) =>
                     Db.query(db =>

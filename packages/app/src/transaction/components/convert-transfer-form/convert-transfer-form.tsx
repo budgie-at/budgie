@@ -36,7 +36,7 @@ export const ConvertTransferForm = ({ isSubmitting, onSubmit, onCancel }: Props)
         isSubmitting ||
         form.conversion.isPending ||
         !isDefined(form.originalAccount) ||
-        (form.isEditing && !isPositiveNumber(form.keypad.numericValue));
+        (form.isEditing ? !isPositiveNumber(form.keypad.numericValue) : !isPositiveNumber(form.conversion.destinationAmount));
     const displayExchangeRate = isPositiveNumber(form.conversion.exchangeRate) ? 1 / form.conversion.exchangeRate : 0;
     const rate = {
         sourceCode: form.originalAccount?.instrument.code ?? '',

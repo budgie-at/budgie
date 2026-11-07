@@ -85,7 +85,7 @@ export const TransferQuickForm = (props: Props) => {
     const isConfirmDisabled = [
         props.isSubmitting,
         ![isNewTransaction, isDirty, isEditingDestination].some(Boolean),
-        conversion.isPending && !isEditingDestination,
+        !isEditingDestination && ![!conversion.isPending, isPositiveNumber(conversion.destinationAmount)].every(Boolean),
         ![sourceKeypad.numericValue, activeKeypad.numericValue].every(isPositiveNumber)
     ].some(Boolean);
 
