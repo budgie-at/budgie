@@ -31,6 +31,14 @@ describe('categorize inbox history', () => {
         expect(finding.kind).toBe(CategorizeInboxFindingKindEnum.PER_WEEK);
         expect(finding.rate).toBe(1);
     });
+    it('describes payments on days one, four and seven as twice weekly', () => {
+        const finding = getCategorizeInboxFinding({
+            rows: [1, 4, 7].map(day => ({ operatedAt: new Date(2025, 2, day, 12) })),
+            section: CategorizeInboxSectionEnum.REVIEW
+        });
+        expect(finding.kind).toBe(CategorizeInboxFindingKindEnum.PER_WEEK);
+        expect(finding.rate).toBe(2);
+    });
     it('describes consecutive local days across daylight saving as daily', () => {
         expect(
             getCategorizeInboxFinding({
