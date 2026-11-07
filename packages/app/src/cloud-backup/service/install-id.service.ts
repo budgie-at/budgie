@@ -13,14 +13,12 @@ export class InstallIdService extends Context.Service<InstallIdService>()('@budg
         const installIdKey = 'budgie.installId';
 
         const resolveInstallId = Effect.promise(() => SecureStore.getItemAsync(installIdKey, PIN_SECURE_STORE_OPTIONS)).pipe(
-            Effect.flatMap(storedInstallId =>
-                isNotEmptyString(storedInstallId)
-                    ? Effect.succeed(storedInstallId)
-                    : Effect.sync(generateSyncId).pipe(
-                          Effect.tap(installId =>
-                              Effect.promise(() => SecureStore.setItemAsync(installIdKey, installId, PIN_SECURE_STORE_OPTIONS))
-                          )
-                      )
+            Effect.filterOrElse(isNotEmptyString, () =>
+                Effect.sync(generateSyncId).pipe(
+                    Effect.tap(installId =>
+                        Effect.promise(() => SecureStore.setItemAsync(installIdKey, installId, PIN_SECURE_STORE_OPTIONS))
+                    )
+                )
             )
         );
 

@@ -1,1 +1,1 @@
-export type SyncLocalRowInterface = Readonly<Record<string, unknown>> & { readonly __localId: number };
+export type SyncLocalRowInterface = Readonly<Record<string, unknown>> & { readonly localRowId: number };

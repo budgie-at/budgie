@@ -78,7 +78,7 @@ export const buildSyncTableDescriptor = (
         ...omit
     ]);
     const parentColumn = entries.find(([property]) => property === parentProperty)?.[1];
-    const parentTableName = isDefined(parentColumn) ? foreignTables.get(parentColumn.name) : undefined;
+    const parentTableName = isDefined(parentColumn) ? (foreignTables.get(parentColumn.name) ?? null) : null;
     const columns = entries.flatMap(([property, column]): SyncColumnDescriptorInterface[] => {
         const kind = resolveColumnKind(column);
 

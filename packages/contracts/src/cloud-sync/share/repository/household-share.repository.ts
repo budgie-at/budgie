@@ -1,4 +1,3 @@
-import { getTableColumns } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -8,6 +7,8 @@ import { isEmptyArray } from '@rnw-community/shared';
 import { Db } from '../../../@generic/service/db.service';
 import { PERSONAL_SYNC_ZONE } from '../../constant/personal-sync-zone.constant';
 import { SyncRecordTypeEnum } from '../../mapping/enum/sync-record-type.enum';
+import { HOUSEHOLD_LABEL_REFERENCES } from '../constant/household-label-references.constant';
+import { cloneHouseholdRow } from '../utils/clone-household-row.util';
 
 import type { HouseholdAlignmentEntryInterface } from '../interface/household-alignment-entry.interface';
 import type { HouseholdAlignmentTagInterface } from '../interface/household-alignment-tag.interface';
@@ -16,24 +17,6 @@ import type { HouseholdRowIdentityInterface } from '../interface/household-row-i
 import type { SQLiteTable } from 'drizzle-orm/sqlite-core';
 
 const CHUNK_SIZE = 400;
-const LABEL_REFERENCES: Readonly<Record<string, readonly (readonly [string, string])[]>> = {
-    categories: [
-        ['transaction_entries', 'category_id'],
-        ['rule_actions', 'category_id'],
-        ['budget_category_limits', 'category_id'],
-        ['budget_sinking_funds', 'category_id'],
-        ['budget_limit_changes', 'category_id'],
-        ['recurring_series', 'category_id'],
-        ['mcc_categories', 'default_category_id'],
-        ['categories', 'parent_id']
-    ],
-    tags: [
-        ['transaction_tags', 'tag_id'],
-        ['rule_actions', 'tag_id'],
-        ['budgets', 'tag_id']
-    ]
-};
-
 const placeholders = (values: readonly unknown[]): string => values.map(() => '?').join(', ');
 
 const chunked = <T>(values: readonly T[]): readonly (readonly T[])[] =>
@@ -80,45 +63,23 @@ export class HouseholdShareRepository extends Context.Service<HouseholdShareRepo
                       accountIds
                   ).pipe(Effect.map(rows => rows.map(({ id }) => id)));
 
-        const cloneRow = Effect.fn('HouseholdShareRepository.cloneRow')(function* (
-            table: SQLiteTable,
-            tableName: string,
-            sourceId: number,
-            overrides: Readonly<Record<string, string | number | null>>
-        ) {
-            const columnNames = Object.values(getTableColumns(table))
-                .map(column => column.name)
-                .filter(name => name !== 'id');
-            const overrideNames = new Set(Object.keys(overrides));
-            const selectList = columnNames.map(name => (overrideNames.has(name) ? '?' : `"${name}"`)).join(', ');
-            const overrideValues = columnNames.filter(name => overrideNames.has(name)).map(name => overrides[name]);
-            const rows = yield* Db.mutation(
-                { type: 'insert', tables: [tableName] },
-                Db.query(db =>
-                    db.$client.unsafe<{ readonly id: number }>(
-                        `INSERT INTO "${tableName}" (${columnNames.map(name => `"${name}"`).join(', ')})
-                        SELECT ${selectList} FROM "${tableName}" WHERE id = ? RETURNING id`,
-                        [...overrideValues, sourceId]
-                    )
-                )
-            );
-
-            return rows[0].id;
-        });
-
         return {
             findFamilyAccountIds,
-            cloneRow,
+            cloneRow: (
+                table: SQLiteTable,
+                tableName: string,
+                sourceId: number,
+                overrides: Readonly<Record<string, string | number | null>>
+            ) => cloneHouseholdRow(table, tableName, sourceId, overrides),
             findAccounts: (accountIds: readonly number[]) =>
                 selectChunked<HouseholdRowIdentityInterface & { readonly integrationId: number | null }>(
                     accountIds,
                     marks =>
                         `SELECT id, sync_id AS syncId, sync_zone AS syncZone, integration_id AS integrationId FROM accounts WHERE id IN (${marks})`
                 ),
-            findPersonalAccountIds: () =>
-                select<{ readonly id: number }>(`SELECT id FROM accounts WHERE sync_zone = ? ORDER BY id`, [PERSONAL_SYNC_ZONE]).pipe(
-                    Effect.map(rows => rows.map(({ id }) => id))
-                ),
+            findPersonalAccountIds: select<{ readonly id: number }>(`SELECT id FROM accounts WHERE sync_zone = ? ORDER BY id`, [
+                PERSONAL_SYNC_ZONE
+            ]).pipe(Effect.map(rows => rows.map(({ id }) => id))),
             setZone: (tableName: string, ids: readonly number[], zone: string) =>
                 executeChunked([tableName], ids, marks => `UPDATE "${tableName}" SET sync_zone = ? WHERE id IN (${marks})`, [zone]),
             setChildZone: (childTable: string, parentColumn: string, parentIds: readonly number[], zone: string) =>
@@ -143,9 +104,8 @@ export class HouseholdShareRepository extends Context.Service<HouseholdShareRepo
                     accountIds,
                     marks => `SELECT DISTINCT transaction_id AS id FROM transaction_entries WHERE account_id IN (${marks})`
                 ).pipe(Effect.map(rows => [...new Set(rows.map(({ id }) => id))])),
-            findMisalignedTransactionIds: () =>
-                select<{ readonly id: number }>(
-                    `SELECT DISTINCT e.transaction_id AS id
+            findMisalignedTransactionIds: select<{ readonly id: number }>(
+                `SELECT DISTINCT e.transaction_id AS id
                     FROM accounts a
                     INNER JOIN transaction_entries e ON e.account_id = a.id
                     LEFT JOIN categories c ON c.id = e.category_id
@@ -156,8 +116,8 @@ export class HouseholdShareRepository extends Context.Service<HouseholdShareRepo
                     INNER JOIN transaction_tags tt ON tt.transaction_id = t.id
                     INNER JOIN tags g ON g.id = tt.tag_id
                     WHERE t.sync_zone <> ? AND g.sync_zone <> t.sync_zone`,
-                    [PERSONAL_SYNC_ZONE, PERSONAL_SYNC_ZONE]
-                ).pipe(Effect.map(rows => rows.map(({ id }) => id))),
+                [PERSONAL_SYNC_ZONE, PERSONAL_SYNC_ZONE]
+            ).pipe(Effect.map(rows => rows.map(({ id }) => id))),
             findAlignmentEntries: (transactionIds: readonly number[]) =>
                 selectChunked<HouseholdAlignmentEntryInterface>(
                     transactionIds,
@@ -218,7 +178,7 @@ export class HouseholdShareRepository extends Context.Service<HouseholdShareRepo
                 ),
             repointLabelReferences: (tableName: string, fromId: number, toId: number) =>
                 Effect.forEach(
-                    LABEL_REFERENCES[tableName] ?? [],
+                    HOUSEHOLD_LABEL_REFERENCES[tableName] ?? [],
                     ([referencingTable, column]) =>
                         execute([referencingTable], `UPDATE OR IGNORE "${referencingTable}" SET ${column} = ? WHERE ${column} = ?`, [
                             toId,
@@ -304,10 +264,9 @@ export class HouseholdShareRepository extends Context.Service<HouseholdShareRepo
                     WHERE sync_zone = ? AND sync_id = ? AND record_type = ? LIMIT 1`,
                     [syncZone, syncId, SyncRecordTypeEnum.TRANSACTION_LEG]
                 ).pipe(Effect.map(rows => rows.at(0)?.ownerName ?? null)),
-            findShareEverything: () =>
-                select<{ readonly isEnabled: number }>(
-                    `SELECT household_share_everything AS isEnabled FROM settings ORDER BY id LIMIT 1`
-                ).pipe(Effect.map(rows => (rows.at(0)?.isEnabled ?? 0) === 1)),
+            findShareEverything: select<{ readonly isEnabled: number }>(
+                `SELECT household_share_everything AS isEnabled FROM settings ORDER BY id LIMIT 1`
+            ).pipe(Effect.map(rows => (rows.at(0)?.isEnabled ?? 0) === 1)),
             setShareEverything: (isEnabled: boolean) =>
                 execute(['settings'], `UPDATE settings SET household_share_everything = ?`, [isEnabled ? 1 : 0]),
             findAccountIdsSharedByThisUser: (householdZone: string) =>

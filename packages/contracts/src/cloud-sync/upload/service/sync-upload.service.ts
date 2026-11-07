@@ -1,4 +1,5 @@
 import { and, eq, getTableColumns } from 'drizzle-orm';
+import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -9,6 +10,7 @@ import * as Schema from 'effect/Schema';
 import { isDefined, isNotEmptyString, isNumber } from '@rnw-community/shared';
 
 import { Db } from '../../../@generic/service/db.service';
+import { stringifySyncJson } from '../../apply/utils/stringify-sync-json.util';
 import { PERSONAL_SYNC_ZONE } from '../../constant/personal-sync-zone.constant';
 import { SyncOutboxOperationEnum } from '../../enum/sync-outbox-operation.enum';
 import { SYNC_NATURAL_KEY_PROPERTIES } from '../../mapping/constant/sync-natural-key-properties.constant';
@@ -40,6 +42,7 @@ import type { SyncUploadDeletionInterface } from '../interface/sync-upload-delet
 import type { SyncUploadRejectionInterface } from '../interface/sync-upload-rejection.interface';
 import type { SyncUploadSaveInterface } from '../interface/sync-upload-save.interface';
 
+const TRANSACTION_RECORD_TYPE: string = SyncRecordTypeEnum.TRANSACTION;
 const SPLIT_FIELDS: ReadonlySet<string> = new Set(['linkId', 'legCount', 'legEntryPrivate']);
 
 export class SyncUploadService extends Context.Service<SyncUploadService>()('@budgie/contracts/SyncUploadService', {
@@ -47,11 +50,11 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
         const syncOutboxRepository = yield* SyncOutboxRepository;
         const syncRecordRepository = yield* SyncRecordRepository;
         const zoneRegistryRepository = yield* SyncZoneRegistryRepository;
-        const changedColumnsSchema = Schema.fromJsonString(Schema.Array(Schema.String));
+        const changedColumnsSchema = Schema.String.pipe(Schema.Array, Schema.fromJsonString);
         const linkedRecordSchema = Schema.fromJsonString(Schema.Struct({ encryptedFields: Schema.Struct({ linkId: Schema.String }) }));
 
         const parseChangedColumns = (changedColumns: string): readonly string[] =>
-            Option.getOrElse(Schema.decodeUnknownOption(changedColumnsSchema)(changedColumns), () => []);
+            Option.getOrElse(Schema.decodeOption(changedColumnsSchema)(changedColumns), () => []);
 
         const mapChangedFields = (definition: SyncRecordDefinitionInterface, changedColumns: readonly string[]): readonly string[] => {
             const parentColumns = getTableColumns(definition.parent.table);
@@ -110,12 +113,8 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
                     if (isDefined(reference)) {
                         const entry = wanted.get(reference.tableName) ?? { kind: reference.kind, ids: new Set<number>() };
 
-                        for (const row of rows) {
-                            const value = row[column.property];
-
-                            if (isNumber(value)) {
-                                entry.ids.add(value);
-                            }
+                        for (const value of rows.map(row => row[column.property]).filter(isNumber)) {
+                            entry.ids.add(value);
                         }
 
                         wanted.set(reference.tableName, entry);
@@ -168,9 +167,7 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
             }
 
             const stored = yield* syncRecordRepository.find(home.zone, home.recordName);
-            const linked = Option.flatMap(Option.fromNullishOr(stored?.payload), payload =>
-                Schema.decodeUnknownOption(linkedRecordSchema)(payload)
-            );
+            const linked = Option.flatMap(Option.fromNullishOr(stored?.payload), Schema.decodeOption(linkedRecordSchema));
 
             if (Option.isNone(linked)) {
                 return [];
@@ -206,10 +203,10 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
                     .where(and(eq(parentColumns['syncZone'], syncZone), eq(parentColumns['syncId'], syncId)))
                     .limit(1)
             );
-            const [parent] = parentRows;
+            const parent = parentRows.at(0);
             const parentId = parent?.['id'];
 
-            if (!isNumber(parentId)) {
+            if (!isDefined(parent) || !isNumber(parentId)) {
                 return Result.fail(`Parent row missing for ${recordType}`);
             }
 
@@ -218,7 +215,7 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
             const encoded = encodeSyncAggregate({ recordType, parent, children }, resolver);
 
             return Result.isFailure(encoded)
-                ? Result.fail(`${encoded.failure._tag}: ${encoded.failure.message}`)
+                ? Result.fail(`${encoded.failure.name}: ${encoded.failure.message}`)
                 : Result.succeed(encoded.success);
         });
 
@@ -228,8 +225,8 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
             movedFrom: string | null
         ) {
             const legOwnerName = records.some(record => record.recordType === SyncRecordTypeEnum.TRANSACTION_LEG)
-                ? (yield* zoneRegistryRepository.findByLabel(PERSONAL_SYNC_ZONE))?.ownerName
-                : undefined;
+                ? ((yield* zoneRegistryRepository.findByLabel(PERSONAL_SYNC_ZONE))?.ownerName ?? null)
+                : null;
 
             return records.map(record => {
                 if (record.recordType === SyncRecordTypeEnum.TRANSACTION_LEG && isNotEmptyString(legOwnerName)) {
@@ -284,12 +281,13 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
             }
 
             const fields = Object.fromEntries(Object.entries(target.encryptedFields).filter(([field]) => !SPLIT_FIELDS.has(field)));
+            const deletedAt = yield* Clock.currentTimeMillis;
 
             return {
                 syncZone: row.syncZone,
                 syncId: row.syncId,
                 syncRevision: row.syncRevision,
-                records: [withSyncRecordFields({ ...target, encryptedFields: fields }, row.syncZone, { deletedAt: Date.now(), movedTo })],
+                records: [withSyncRecordFields({ ...target, encryptedFields: fields }, row.syncZone, { deletedAt, movedTo })],
                 changedFields: ['deletedAt', 'movedTo'],
                 staleTargets: []
             } satisfies SyncUploadSaveInterface;
@@ -298,14 +296,12 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
         const buildDeletion = Effect.fnUntraced(function* (row: SyncOutboxEntityInterface) {
             const homeTarget: SyncRecordTargetInterface = { recordName: row.syncId, zone: row.syncZone };
 
-            if (row.recordType !== SyncRecordTypeEnum.TRANSACTION) {
+            if (row.recordType !== TRANSACTION_RECORD_TYPE) {
                 return { syncZone: row.syncZone, syncId: row.syncId, syncRevision: row.syncRevision, targets: [homeTarget] };
             }
 
             const stored = yield* syncRecordRepository.find(row.syncZone, row.syncId);
-            const linked = Option.flatMap(Option.fromNullishOr(stored?.payload), payload =>
-                Schema.decodeUnknownOption(linkedRecordSchema)(payload)
-            );
+            const linked = Option.flatMap(Option.fromNullishOr(stored?.payload), Schema.decodeOption(linkedRecordSchema));
             const legs = Option.isSome(linked)
                 ? yield* Db.query(db =>
                       db
@@ -338,7 +334,9 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
                         if (isDefined(tombstone)) {
                             saves.push(tombstone);
                         } else {
-                            deletions.push(yield* buildDeletion(row));
+                            const deletion = yield* buildDeletion(row);
+
+                            deletions.push(deletion);
                         }
                     } else {
                         const save = yield* buildSave(row);
@@ -360,12 +358,14 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
                         item =>
                             Effect.gen(function* () {
                                 for (const { record, systemFields } of item.sentRecords) {
+                                    const payload = yield* stringifySyncJson(record);
+
                                     yield* syncRecordRepository.upsert({
                                         syncZone: record.zone,
                                         syncId: record.recordName,
                                         recordType: record.recordType,
                                         systemFields,
-                                        payload: JSON.stringify(record),
+                                        payload,
                                         schemaVersion: record.schemaVersion
                                     });
                                 }

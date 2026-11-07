@@ -30,16 +30,20 @@ export const CategoryFamilySection = ({ search, onOpen }: Props) => {
     return (
         <>
             <GroupedListSectionTitle title={t`Shared with family`} />
-            {categories.map((category, index) => (
-                <CategoryCard
-                    key={category.id}
-                    onOpen={onOpen}
-                    category={category}
-                    usage={isDefined(usage) ? (usage.find(entry => entry.id === category.id) ?? UNUSED) : void 0}
-                    isFirst={index === 0}
-                    isLast={index === categories.length - 1}
-                />
-            ))}
+            {categories.map((category, index) => {
+                const categoryUsage = isDefined(usage) ? (usage.find(entry => entry.id === category.id) ?? UNUSED) : void 0;
+
+                return (
+                    <CategoryCard
+                        key={category.id}
+                        onOpen={onOpen}
+                        category={category}
+                        usage={categoryUsage}
+                        isFirst={index === 0}
+                        isLast={index === categories.length - 1}
+                    />
+                );
+            })}
         </>
     );
 };

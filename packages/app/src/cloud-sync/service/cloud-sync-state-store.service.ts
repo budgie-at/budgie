@@ -12,15 +12,16 @@ import type { CloudSyncStateInterface } from '../interface/cloud-sync-state.inte
 export class CloudSyncStateStore extends Context.Service<CloudSyncStateStore>()('@budgie/app/CloudSyncStateStore', {
     make: Effect.sync(() => {
         const stateFile = new File(Paths.document, 'cloud-sync-state.json');
+        const NullableString = Schema.String.pipe(Schema.NullOr);
         const StateSchema = Schema.fromJsonString(
             Schema.Struct({
-                boundUserRecordName: Schema.NullOr(Schema.String),
-                stateSerialization: Schema.NullOr(Schema.String),
-                sharedStateSerialization: Schema.optionalKey(Schema.NullOr(Schema.String)),
-                resolvedLineageId: Schema.NullOr(Schema.String),
+                boundUserRecordName: NullableString,
+                stateSerialization: NullableString,
+                sharedStateSerialization: Schema.optionalKey(NullableString),
+                resolvedLineageId: NullableString,
                 restorePhase: Schema.Enum(CloudSyncRestorePhaseEnum),
                 isHouseholdCleanupPending: Schema.optionalKey(Schema.Boolean),
-                householdOwnerDisplayName: Schema.optionalKey(Schema.NullOr(Schema.String))
+                householdOwnerDisplayName: Schema.optionalKey(NullableString)
             })
         );
         const emptyState: CloudSyncStateInterface = {
@@ -35,7 +36,7 @@ export class CloudSyncStateStore extends Context.Service<CloudSyncStateStore>()(
 
         const read = Effect.sync(() =>
             stateFile.exists
-                ? Option.match(Schema.decodeUnknownOption(StateSchema)(stateFile.textSync()), {
+                ? Option.match(Schema.decodeOption(StateSchema)(stateFile.textSync()), {
                       onNone: () => emptyState,
                       onSome: state => ({
                           ...state,
@@ -46,11 +47,14 @@ export class CloudSyncStateStore extends Context.Service<CloudSyncStateStore>()(
                   })
                 : emptyState
         );
-        const write = (state: CloudSyncStateInterface) =>
-            Effect.sync(() => {
+        const write = Effect.fnUntraced(function* (state: CloudSyncStateInterface) {
+            const encodedState = yield* Schema.encodeEffect(StateSchema)(state).pipe(Effect.orDie);
+
+            yield* Effect.sync(() => {
                 stateFile.create({ overwrite: true });
-                stateFile.writeSync(Schema.encodeSync(StateSchema)(state));
+                stateFile.writeSync(encodedState);
             });
+        });
         const update = (patch: Partial<CloudSyncStateInterface>) => Effect.flatMap(read, state => write({ ...state, ...patch }));
 
         return {

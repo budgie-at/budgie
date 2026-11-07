@@ -33,7 +33,9 @@ export const GroupedListSwitchRow = ({
         hapticSelection();
         onChange(next);
     };
-    const handlePress = () => handleSwitchChange(!value);
+    const handlePress = () => {
+        handleSwitchChange(!value);
+    };
     const pressableProps = { accessibilityRole: 'switch' as const, accessibilityHint, accessibilityState: { checked: value } };
 
     return (

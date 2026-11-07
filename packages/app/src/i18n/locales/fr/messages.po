@@ -9050,10 +9050,9 @@ msgstr "Synchronisez vos soldes et transactions Binance"
 msgid "Synced {relative}"
 msgstr "Synchronisé {relative}"
 
-#. placeholder {0}: status.ownerName
 #: src/account/component/household-share-account-section/household-share-account-section.tsx
-msgid "Synced by {0}"
-msgstr "Synchronisé par {0}"
+msgid "Synced by {ownerName}"
+msgstr "Synchronisé par {ownerName}"
 
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Synced data"

@@ -1,4 +1,4 @@
-import { TestSeedService, resetTestDb } from '@budgie-at/test-kit';
+import { TestSeedService, encodeJson, resetTestDb } from '@budgie-at/test-kit';
 import { HOUSEHOLD_SYNC_ZONE, SYNC_RECORD_SCHEMA_VERSION, SyncRecordRepository } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
@@ -97,7 +97,7 @@ export const pushHouseholdZone = (database: DB, cloud: FakeCloudTransport) =>
                     syncId: record.recordName,
                     recordType: record.recordType,
                     systemFields: systemFields[index],
-                    payload: JSON.stringify(record),
+                    payload: encodeJson(record),
                     schemaVersion: SYNC_RECORD_SCHEMA_VERSION
                 });
             }

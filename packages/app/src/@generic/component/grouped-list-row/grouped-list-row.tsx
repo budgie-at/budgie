@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString, isString } from '@rnw-community/shared';
 
-import { GROUPED_LIST_SUBTITLE_CLASS_NAME } from '../../constant/grouped-list-subtitle-class-name.constant';
+import { GROUPED_LIST_SUBTITLE_CLASSNAME } from '../../constant/grouped-list-subtitle-class-name.constant';
 import { GROUPED_LIST_TITLE_CLASS_NAME } from '../../constant/grouped-list-title-class-name.constant';
 import { cn } from '../../utils/cn.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
@@ -44,7 +44,7 @@ export const GroupedListRow = (props: Props) => {
     const accessory = right ?? chevron;
     const separatorClassName = isDefined(left) ? 'left-[64px]' : 'left-[16px]';
     const subtitleNode = isNotEmptyString(subtitle) ? (
-        <Text className={cn('text-secondary-foreground', GROUPED_LIST_SUBTITLE_CLASS_NAME)} numberOfLines={3}>
+        <Text className={cn('text-secondary-foreground', GROUPED_LIST_SUBTITLE_CLASSNAME)} numberOfLines={3}>
             {subtitle}
         </Text>
     ) : (

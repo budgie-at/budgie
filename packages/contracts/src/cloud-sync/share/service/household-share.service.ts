@@ -39,11 +39,11 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
         const applyStateRepository = yield* SyncApplyStateRepository;
         const zoneRegistryRepository = yield* SyncZoneRegistryRepository;
 
-        const isAvailable = () => zoneRegistryRepository.findByLabel(HOUSEHOLD_SYNC_ZONE).pipe(Effect.map(isDefined));
+        const isAvailable = zoneRegistryRepository.findByLabel(HOUSEHOLD_SYNC_ZONE).pipe(Effect.map(isDefined));
 
         const requireHousehold = Effect.fnUntraced(function* () {
-            if (!(yield* isAvailable())) {
-                return yield* new HouseholdUnavailableError({});
+            if (!(yield* isAvailable)) {
+                return yield* HouseholdUnavailableError.make({});
             }
         });
 
@@ -120,7 +120,9 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
                 }
 
                 if (isDefined(source.parentId)) {
-                    yield* repository.setCategoryParent(clonedId, yield* ensureLabeled('categories', source.parentId, zone, memo));
+                    const parentId = yield* ensureLabeled('categories', source.parentId, zone, memo);
+
+                    yield* repository.setCategoryParent(clonedId, parentId);
                 }
             }
 
@@ -137,9 +139,11 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
         ) {
             for (const integrationId of new Set(integrationIds.filter(isDefined))) {
                 const integration = yield* repository.findIntegration(integrationId);
-                const hasRemainingAccounts =
-                    to !== HOUSEHOLD_SYNC_ZONE &&
-                    (yield* repository.countOtherAccountsOnIntegration(integrationId, movedAccountIds, from)) > 0;
+                const otherAccountCount =
+                    to === HOUSEHOLD_SYNC_ZONE
+                        ? 0
+                        : yield* repository.countOtherAccountsOnIntegration(integrationId, movedAccountIds, from);
+                const hasRemainingAccounts = otherAccountCount > 0;
 
                 if (isDefined(integration) && integration.syncZone === from && !hasRemainingAccounts) {
                     yield* repository.setZone('bank_integrations', [integration.id], to);
@@ -204,15 +208,16 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
 
                     for (const entry of recategorized) {
                         if (isDefined(entry.categoryId)) {
-                            yield* repository.setEntryCategory(
-                                entry.entryId,
-                                yield* ensureLabeled('categories', entry.categoryId, entry.accountZone, memo)
-                            );
+                            const categoryId = yield* ensureLabeled('categories', entry.categoryId, entry.accountZone, memo);
+
+                            yield* repository.setEntryCategory(entry.entryId, categoryId);
                         }
                     }
 
                     for (const tag of retagged) {
-                        yield* repository.setTransactionTag(tag.rowId, yield* ensureLabeled('tags', tag.tagId, newHome, memo), newHome);
+                        const tagId = yield* ensureLabeled('tags', tag.tagId, newHome, memo);
+
+                        yield* repository.setTransactionTag(tag.rowId, tagId, newHome);
                     }
 
                     if (oldHome !== newHome || transactionTags.some(tag => tag.rowZone !== newHome)) {
@@ -246,7 +251,7 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
         ) {
             const family = yield* repository.findFamilyAccountIds(requestedIds);
             const accounts = (yield* repository.findAccounts(family)).filter(
-                account => account.syncZone === from && (ownedIds === null || ownedIds.has(account.id))
+                account => account.syncZone === from && (!isDefined(ownedIds) || ownedIds.has(account.id))
             );
             const accountIds = accounts.map(({ id }) => id);
             const memo: LabeledMemoType = new Map();
@@ -274,7 +279,9 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
                     })
                 )
             );
-            yield* alignTransactionIds(yield* repository.findTransactionIdsOnAccounts(accountIds), memo);
+            const transactionIds = yield* repository.findTransactionIdsOnAccounts(accountIds);
+
+            yield* alignTransactionIds(transactionIds, memo);
         });
 
         const moveSeries = Effect.fnUntraced(function* (seriesId: number, from: string, to: string, memo: LabeledMemoType) {
@@ -282,7 +289,9 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
 
             if (isDefined(series) && series.syncZone === from) {
                 if (isDefined(series.categoryId)) {
-                    yield* repository.setSeriesCategory(series.id, yield* ensureLabeled('categories', series.categoryId, to, memo));
+                    const categoryId = yield* ensureLabeled('categories', series.categoryId, to, memo);
+
+                    yield* repository.setSeriesCategory(series.id, categoryId);
                 }
 
                 yield* repository.setZone('recurring_series', [series.id], to);
@@ -298,7 +307,7 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
         ) {
             const budget = yield* repository.findBudget(budgetId);
 
-            if (!isDefined(budget) || budget.syncZone !== from || (ownedIds !== null && !ownedIds.has(budgetId))) {
+            if (!isDefined(budget) || budget.syncZone !== from || (isDefined(ownedIds) && !ownedIds.has(budgetId))) {
                 return;
             }
 
@@ -308,16 +317,16 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
                 withoutTriggers(
                     Effect.gen(function* () {
                         if (isDefined(budget.tagId)) {
-                            yield* repository.setBudgetTag(budget.id, yield* ensureLabeled('tags', budget.tagId, to, memo));
+                            const tagId = yield* ensureLabeled('tags', budget.tagId, to, memo);
+
+                            yield* repository.setBudgetTag(budget.id, tagId);
                         }
 
                         for (const reference of yield* repository.findBudgetCategoryReferences(budget.id)) {
                             if (isDefined(reference.categoryId)) {
-                                yield* repository.setBudgetChildCategory(
-                                    reference.tableName,
-                                    reference.id,
-                                    yield* ensureLabeled('categories', reference.categoryId, to, memo)
-                                );
+                                const categoryId = yield* ensureLabeled('categories', reference.categoryId, to, memo);
+
+                                yield* repository.setBudgetChildCategory(reference.tableName, reference.id, categoryId);
                             }
 
                             if (isDefined(reference.seriesId)) {
@@ -337,11 +346,11 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
             );
         });
 
-        const findSharedAccountIds = () => repository.findAccountIdsSharedByThisUser(HOUSEHOLD_SYNC_ZONE);
-        const findSharedBudgetIds = () => repository.findBudgetIdsSharedByThisUser(HOUSEHOLD_SYNC_ZONE);
+        const findSharedAccountIds = repository.findAccountIdsSharedByThisUser(HOUSEHOLD_SYNC_ZONE);
+        const findSharedBudgetIds = repository.findBudgetIdsSharedByThisUser(HOUSEHOLD_SYNC_ZONE);
 
         const alignZones = Effect.fn('HouseholdShareService.alignZones')(function* () {
-            const transactionIds = yield* repository.findMisalignedTransactionIds();
+            const transactionIds = yield* repository.findMisalignedTransactionIds;
 
             if (isNotEmptyArray(transactionIds)) {
                 yield* alignTransactionIds(transactionIds, new Map());
@@ -349,8 +358,13 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
         });
 
         const applyShareEverything = Effect.fn('HouseholdShareService.applyShareEverything')(function* () {
-            if ((yield* repository.findShareEverything()) && (yield* isAvailable())) {
-                yield* moveAccounts(yield* repository.findPersonalAccountIds(), PERSONAL_SYNC_ZONE, HOUSEHOLD_SYNC_ZONE, null);
+            const isSharingEverything = yield* repository.findShareEverything;
+            const isHouseholdAvailable = yield* isAvailable;
+
+            if (isSharingEverything && isHouseholdAvailable) {
+                const personalAccountIds = yield* repository.findPersonalAccountIds;
+
+                yield* moveAccounts(personalAccountIds, PERSONAL_SYNC_ZONE, HOUSEHOLD_SYNC_ZONE, null);
             }
         });
 
@@ -364,42 +378,48 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
 
         return {
             isAvailable,
-            findShareEverything: () => repository.findShareEverything(),
+            findShareEverything: repository.findShareEverything,
             findShareEverythingState: Effect.fn('HouseholdShareService.findShareEverythingState')(function* () {
-                return {
-                    isAvailable: yield* isAvailable(),
-                    isEnabled: yield* repository.findShareEverything()
-                } satisfies HouseholdShareEverythingStateInterface;
+                const isHouseholdAvailable = yield* isAvailable;
+                const isEnabled = yield* repository.findShareEverything;
+
+                return { isAvailable: isHouseholdAvailable, isEnabled } satisfies HouseholdShareEverythingStateInterface;
             }),
             findAccountShareStatus: Effect.fn('HouseholdShareService.findAccountShareStatus')(function* (accountId: number) {
                 const household = yield* zoneRegistryRepository.findByLabel(HOUSEHOLD_SYNC_ZONE);
-                const [account] = yield* repository.findAccounts([accountId]);
+                const accounts = yield* repository.findAccounts([accountId]);
+                const sharedIds = yield* findSharedAccountIds;
 
                 return {
                     isAvailable: isDefined(household),
                     ownerName: household?.ownerName ?? null,
-                    state: resolveShareState(account?.syncZone, accountId, yield* findSharedAccountIds())
+                    state: resolveShareState(accounts.at(0)?.syncZone, accountId, sharedIds)
                 } satisfies HouseholdShareStatusInterface;
             }),
             findBudgetShareStatus: Effect.fn('HouseholdShareService.findBudgetShareStatus')(function* (budgetId: number) {
                 const household = yield* zoneRegistryRepository.findByLabel(HOUSEHOLD_SYNC_ZONE);
                 const budget = yield* repository.findBudget(budgetId);
+                const sharedIds = yield* findSharedBudgetIds;
 
                 return {
                     isAvailable: isDefined(household),
                     ownerName: household?.ownerName ?? null,
-                    state: resolveShareState(budget?.syncZone, budgetId, yield* findSharedBudgetIds())
+                    state: resolveShareState(budget?.syncZone, budgetId, sharedIds)
                 } satisfies HouseholdShareStatusInterface;
             }),
             findPrivateSideOwnerName: Effect.fn('HouseholdShareService.findPrivateSideOwnerName')(function* (
                 syncZone: string,
                 syncId: string
             ) {
-                return (
-                    (yield* repository.findPrivateSideOwnerName(syncZone, syncId)) ??
-                    (yield* zoneRegistryRepository.findByLabel(HOUSEHOLD_SYNC_ZONE))?.ownerName ??
-                    null
-                );
+                const privateSideOwnerName = yield* repository.findPrivateSideOwnerName(syncZone, syncId);
+
+                if (isDefined(privateSideOwnerName)) {
+                    return privateSideOwnerName;
+                }
+
+                const household = yield* zoneRegistryRepository.findByLabel(HOUSEHOLD_SYNC_ZONE);
+
+                return household?.ownerName ?? null;
             }),
             findSharedAccountIds,
             findSharedBudgetIds,
@@ -408,7 +428,9 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
                 yield* moveAccounts([accountId], PERSONAL_SYNC_ZONE, HOUSEHOLD_SYNC_ZONE, null);
             }),
             unshareAccount: Effect.fn('HouseholdShareService.unshareAccount')(function* (accountId: number) {
-                yield* moveAccounts([accountId], HOUSEHOLD_SYNC_ZONE, PERSONAL_SYNC_ZONE, new Set(yield* findSharedAccountIds()));
+                const sharedIds = yield* findSharedAccountIds;
+
+                yield* moveAccounts([accountId], HOUSEHOLD_SYNC_ZONE, PERSONAL_SYNC_ZONE, new Set(sharedIds));
             }),
             setShareEverything: Effect.fn('HouseholdShareService.setShareEverything')(function* (isEnabled: boolean) {
                 if (isEnabled) {
@@ -423,7 +445,9 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
                 yield* moveBudget(budgetId, PERSONAL_SYNC_ZONE, HOUSEHOLD_SYNC_ZONE, null);
             }),
             unshareBudget: Effect.fn('HouseholdShareService.unshareBudget')(function* (budgetId: number) {
-                yield* moveBudget(budgetId, HOUSEHOLD_SYNC_ZONE, PERSONAL_SYNC_ZONE, new Set(yield* findSharedBudgetIds()));
+                const sharedIds = yield* findSharedBudgetIds;
+
+                yield* moveBudget(budgetId, HOUSEHOLD_SYNC_ZONE, PERSONAL_SYNC_ZONE, new Set(sharedIds));
             }),
             moveLabelsToPersonal: Effect.fn('HouseholdShareService.moveLabelsToPersonal')(function* () {
                 const memo: LabeledMemoType = new Map();

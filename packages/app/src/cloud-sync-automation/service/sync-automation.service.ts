@@ -36,6 +36,8 @@ export class SyncAutomationService extends Context.Service<SyncAutomationService
                 Cause.hasInterruptsOnly(cause) ? Effect.interrupt : Effect.as(Effect.logError(cause), fallback)
             );
 
+        const settleVoid = <A, E>(effect: Effect.Effect<A, E, Db>) => settle(Effect.asVoid(effect), void 0);
+
         const findLiveTransactions = Effect.fnUntraced(function* (syncIds: readonly string[]) {
             const chunks: string[][] = [];
 
@@ -56,7 +58,8 @@ export class SyncAutomationService extends Context.Service<SyncAutomationService
         });
 
         const consolidate = Effect.fnUntraced(function* (syncIds: readonly string[]) {
-            const scope = buildConsolidationScopeFromTransactions(yield* findLiveTransactions(syncIds));
+            const transactions = yield* findLiveTransactions(syncIds);
+            const scope = buildConsolidationScopeFromTransactions(transactions);
 
             return isDefined(scope) ? (yield* transferConsolidationService.consolidate(scope)).consolidated : 0;
         });
@@ -69,24 +72,21 @@ export class SyncAutomationService extends Context.Service<SyncAutomationService
                 const consolidated = yield* settle(consolidate(touchedSyncIds), 0);
                 const survivorIds = (yield* findLiveTransactions(touchedSyncIds)).map(({ id }) => id);
 
-                yield* settle(ruleEngine.applyCreateSafeRulesToTransactionIds(survivorIds), undefined);
+                yield* settleVoid(ruleEngine.applyCreateSafeRulesToTransactionIds(survivorIds));
 
                 const settings = yield* settingsRepository.find;
                 const isAiSuggestionsEnabled = isDefined(settings) && settings.isAiSuggestionsEnabled;
                 const embeddingQueuedCount = isAiSuggestionsEnabled ? survivorIds.length : 0;
 
                 if (isNotEmptyArray(survivorIds) && isAiSuggestionsEnabled) {
-                    yield* settle(transactionEmbeddingRepository.markForEmbeddingByIds(survivorIds), undefined);
-                    yield* Effect.forkDetach(Effect.ignoreCause(embeddingBoost));
+                    yield* settleVoid(transactionEmbeddingRepository.markForEmbeddingByIds(survivorIds));
+                    yield* embeddingBoost.pipe(Effect.ignoreCause, Effect.forkDetach);
                 }
 
                 const isRecurringDetected = isNotEmptyArray(survivorIds) || hasDeletedTransactions || hasSeriesChange;
 
                 if (isRecurringDetected) {
-                    yield* settle(
-                        Effect.flatMap(Clock.currentTimeMillis, now => recurringService.detect(new Date(now))),
-                        undefined
-                    );
+                    yield* settleVoid(Effect.flatMap(Clock.currentTimeMillis, now => recurringService.detect(new Date(now))));
                 }
 
                 return {

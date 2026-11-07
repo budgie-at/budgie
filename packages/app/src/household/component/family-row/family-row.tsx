@@ -20,6 +20,7 @@ import { FamilyRowSelector } from './family-row.selector';
 
 const handlePress = () => void router.push('/settings/family');
 
+// eslint-disable-next-line max-statements -- Row orchestration deriving the subtitle from several household states
 export const FamilyRow = () => {
     const { t } = useLingui();
     const { isMember, isShared } = useHousehold();

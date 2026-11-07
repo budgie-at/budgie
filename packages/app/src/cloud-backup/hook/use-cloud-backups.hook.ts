@@ -18,10 +18,10 @@ const cloudBackupListingAtom = appAtomRuntime.atom(
             onSome: cloudRestoreService =>
                 cloudRestoreService.listBackups().pipe(
                     Effect.map((groups): CloudBackupListingInterface => ({ groups, isUnreadable: false })),
-                    Effect.catchTag('EncryptedDataResetError', () =>
-                        Effect.succeed<CloudBackupListingInterface>({ groups: [], isUnreadable: true })
-                    ),
-                    Effect.catch(() => Effect.succeed(EMPTY_LISTING))
+                    Effect.catchTags({
+                        EncryptedDataResetError: () => Effect.succeed<CloudBackupListingInterface>({ groups: [], isUnreadable: true })
+                    }),
+                    Effect.orElseSucceed(() => EMPTY_LISTING)
                 )
         })
     )

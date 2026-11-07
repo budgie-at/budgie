@@ -188,8 +188,8 @@ export class AiModelDownloadService extends Context.Service<AiModelDownloadServi
         const makeProgressHandler =
             (name: AiSubsystemNameEnum) =>
             (progress: DownloadProgress): void => {
-                const reportedTotal = Number(progress.totalBytes);
-                const bytesWritten = Number(progress.bytesWritten);
+                const reportedTotal = progress.totalBytes;
+                const { bytesWritten } = progress;
                 if (isPositiveNumber(reportedTotal) && !reportedTotals.has(name)) {
                     reportedTotals.set(name, reportedTotal);
                 }

@@ -58,7 +58,7 @@ describe('cloud-sync/household removal', () => {
                         const service = yield* CloudSyncService;
                         const registry = yield* SyncZoneRegistryRepository;
 
-                        yield* service.reconfigure();
+                        yield* service.reconfigure;
                         yield* service.handleShareAccepted(shareAcceptedEvent());
                         yield* service.handleZoneChange(lostEvent);
 
@@ -103,7 +103,7 @@ describe('cloud-sync/household removal', () => {
                             databaseScope: SyncDatabaseScopeEnum.SHARED,
                             role: SyncZoneRoleEnum.PARTICIPANT
                         });
-                        yield* service.reconfigure();
+                        yield* service.reconfigure;
 
                         expect(yield* registry.findByLabel(HOUSEHOLD_SYNC_ZONE)).toBeUndefined();
                     })
@@ -139,7 +139,7 @@ describe('cloud-sync/household removal', () => {
                             databaseScope: SyncDatabaseScopeEnum.SHARED,
                             role: SyncZoneRoleEnum.PARTICIPANT
                         });
-                        yield* service.reconfigure();
+                        yield* service.reconfigure;
                     })
                 );
 

@@ -9050,10 +9050,9 @@ msgstr "Синхронізуйте свої баланси та транзакц
 msgid "Synced {relative}"
 msgstr "Синхронізовано {relative}"
 
-#. placeholder {0}: status.ownerName
 #: src/account/component/household-share-account-section/household-share-account-section.tsx
-msgid "Synced by {0}"
-msgstr "Синхронізує {0}"
+msgid "Synced by {ownerName}"
+msgstr "Синхронізує {ownerName}"
 
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Synced data"

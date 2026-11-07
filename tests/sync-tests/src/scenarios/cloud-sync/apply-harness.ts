@@ -1,4 +1,4 @@
-import { assertStoredBalancesMatchLedger } from '@budgie-at/test-kit';
+import { assertStoredBalancesMatchLedger, encodeJson } from '@budgie-at/test-kit';
 import {
     Db,
     SYNC_RECORD_SCHEMA_VERSION,
@@ -94,7 +94,7 @@ export const pushDevice = (database: DB, cloud: FakeCloudTransport) =>
                     syncId: record.recordName,
                     recordType: record.recordType,
                     systemFields: systemFields[index],
-                    payload: JSON.stringify(record),
+                    payload: encodeJson(record),
                     schemaVersion: SYNC_RECORD_SCHEMA_VERSION
                 });
             }

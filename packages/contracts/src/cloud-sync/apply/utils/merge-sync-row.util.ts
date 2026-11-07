@@ -10,17 +10,17 @@ type ConflictSideType = 'local' | 'server';
 
 export const mergeSyncRow = ({ local, base, server, localChanged, authorship }: SyncMergeInputInterface): SyncMergeResultInterface => {
     const merged: Record<string, SyncCellType> = { ...local };
-    const properties = Object.keys(server).filter(property => server[property] !== undefined);
+    const properties = Object.keys(server);
     const readServer = (property: string): SyncCellType => server[property] ?? null;
     const readLocal = (property: string): SyncCellType => local[property] ?? null;
-    const isUserAuthored = (cells: Readonly<Record<string, SyncCellType | undefined>>): boolean =>
+    const isUserAuthored = (cells: Readonly<Record<string, SyncCellType>>): boolean =>
         isDefined(authorship) && cells[authorship.property] === authorship.userValue;
     const resolveConflict = (property: string): ConflictSideType => {
         const localCell = readLocal(property);
         const serverCell = readServer(property);
 
-        const isLocalDeleted = localCell !== null;
-        const isServerDeleted = serverCell !== null;
+        const isLocalDeleted = isDefined(localCell);
+        const isServerDeleted = isDefined(serverCell);
 
         if (property === DELETED_AT_PROPERTY && isLocalDeleted !== isServerDeleted) {
             return isServerDeleted ? 'server' : 'local';
@@ -29,30 +29,30 @@ export const mergeSyncRow = ({ local, base, server, localChanged, authorship }: 
         return isUserAuthored(server) && !isUserAuthored(local) ? 'server' : 'local';
     };
     const conflictSides = new Set<ConflictSideType>();
-    const mergeProperty = (property: string): void => {
+    const pickMergedCell = (property: string): SyncCellType => {
         const localCell = readLocal(property);
         const serverCell = readServer(property);
 
         if (localCell === serverCell) {
-            merged[property] = localCell;
-
-            return;
+            return localCell;
         }
 
         const baseCell = base?.[property] ?? null;
         const isLocalChanged = isDefined(localChanged) ? localChanged.has(property) : isDefined(base) && baseCell !== localCell;
         const isServerChanged = !isDefined(base) || baseCell !== serverCell;
 
-        if (!isLocalChanged) {
-            merged[property] = serverCell;
-        } else if (!isServerChanged) {
-            merged[property] = localCell;
-        } else {
+        if (isLocalChanged && isServerChanged) {
             const side = resolveConflict(property);
 
             conflictSides.add(side);
-            merged[property] = side === 'server' ? serverCell : localCell;
+
+            return side === 'server' ? serverCell : localCell;
         }
+
+        return isLocalChanged ? localCell : serverCell;
+    };
+    const mergeProperty = (property: string): void => {
+        merged[property] = pickMergedCell(property);
     };
 
     properties.filter(property => property !== authorship?.property).forEach(mergeProperty);

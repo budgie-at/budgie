@@ -17,6 +17,7 @@ import { updateSettingsMutation } from '../../mutation/update-settings.mutation'
 import { SettingsSwitchRow } from '../settings-switch-row/settings-switch-row';
 import { SettingsWarningSubtitle } from '../settings-warning-subtitle/settings-warning-subtitle';
 
+// eslint-disable-next-line max-statements -- Row orchestration with several settings reads and derived labels
 export const ICloudBackupRow = () => {
     const { t } = useLingui();
     const isEnabled = useSetting('cloudBackupEnabled');
@@ -37,14 +38,13 @@ export const ICloudBackupRow = () => {
     const lastBackupDate = isDefined(lastBackupAt) ? formatBackupDate(lastBackupAt) : '';
     const readyLabel = isDefined(lastBackupAt) ? t`Last iCloud backup: ${lastBackupDate}` : t`Not backed up to iCloud yet`;
     const offLabel = isAccountUnavailable ? t`Sign in to iCloud to turn on` : t`Turned off`;
-    const subtitle =
-        isOn && status !== CloudBackupStatusEnum.READY ? (
-            <SettingsWarningSubtitle>{t(CLOUD_BACKUP_STATUS_MESSAGE[status])}</SettingsWarningSubtitle>
-        ) : isOn ? (
+    const onLabel =
+        status === CloudBackupStatusEnum.READY ? (
             readyLabel
         ) : (
-            offLabel
+            <SettingsWarningSubtitle>{t(CLOUD_BACKUP_STATUS_MESSAGE[status])}</SettingsWarningSubtitle>
         );
+    const subtitle = isOn ? onLabel : offLabel;
 
     return (
         <SettingsSwitchRow

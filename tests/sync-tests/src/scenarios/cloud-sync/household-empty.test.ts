@@ -33,11 +33,11 @@ describe('cloud-sync/household empty zone', () => {
                     const registry = yield* SyncZoneRegistryRepository;
 
                     yield* service.prepareHouseholdOwnerZone();
-                    yield* service.reconfigure();
+                    yield* service.reconfigure;
                     yield* service.handleSentChanges(
                         sentEvent({ savedRecords: savedFrom(owner.transport.calls.savedBatches[0], 'system-meta') })
                     );
-                    yield* service.drain();
+                    yield* service.drain;
 
                     const household = yield* registry.findByLabel(HOUSEHOLD_SYNC_ZONE);
 
@@ -70,7 +70,7 @@ describe('cloud-sync/household empty zone', () => {
                         const service = yield* CloudSyncService;
                         const registry = yield* SyncZoneRegistryRepository;
 
-                        yield* service.reconfigure();
+                        yield* service.reconfigure;
                         yield* service.handleShareAccepted(shareAcceptedEvent());
                         yield* service.handleFetchedChanges({
                             scope: ICloudSyncScope.SHARED,

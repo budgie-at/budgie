@@ -24,6 +24,7 @@ export const CloudBackupList = () => {
     const { restore, isLoading: isRestoring } = useRestoreCloudBackup();
     const isBackupEnabled = useSetting('cloudBackupEnabled');
 
+    const isBusy = isAccountLoading || isLoading || isRestoring;
     const contextValue = { restore, isLoading: isRestoring };
     const isEmpty = isAvailable && isEmptyArray(groups) && !isUnreadable;
     const noBackupsBody = isBackupEnabled
@@ -32,7 +33,7 @@ export const CloudBackupList = () => {
 
     return (
         <CloudRestoreContext value={contextValue}>
-            <LoadingContent isLoading={isAccountLoading || isLoading || isRestoring} className="min-h-[96px]">
+            <LoadingContent isLoading={isBusy} className="min-h-[96px]">
                 <View className="gap-y-7xl" testID={CloudBackupListSelector.Root}>
                     {isAvailable ? null : (
                         <CloudBackupEmptyStateCard
@@ -68,7 +69,7 @@ export const CloudBackupList = () => {
                     ) : null}
                     {isUnreadable ? (
                         <CloudBackupRestoreNotice>
-                            <Trans>Backups made before your iCloud encrypted data was reset can't be read.</Trans>
+                            <Trans>Backups made before your iCloud encrypted data was reset can&apos;t be read.</Trans>
                         </CloudBackupRestoreNotice>
                     ) : null}
                 </View>

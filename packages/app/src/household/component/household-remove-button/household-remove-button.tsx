@@ -20,9 +20,7 @@ interface Props {
 export const HouseholdRemoveButton = ({ participants }: Props) => {
     const { t } = useLingui();
     const { run, isLoading } = useSingleFlight();
-    const [first] = participants;
-    const singleName = first?.displayName ?? t`this person`;
-    const name = participants.length === 1 ? singleName : t`these invitations`;
+    const name = participants.length === 1 ? (participants[0].displayName ?? t`this person`) : t`these invitations`;
 
     const handlePress = () => {
         void run(

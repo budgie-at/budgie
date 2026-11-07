@@ -30,7 +30,7 @@ export class SyncIdentityRepository extends Context.Service<SyncIdentityReposito
         const emptyBankColumns = 'NULL AS bankSource, NULL AS bankAccountExternalId, NULL AS bankTransactionExternalId';
 
         const findLineageId = Effect.fn('SyncIdentityRepository.findLineageId')(function* () {
-            const [settings] = yield* Db.query(db =>
+            const settingsRows = yield* Db.query(db =>
                 db
                     .select({ lineageId: SettingsEntityTable.lineageId })
                     .from(SettingsEntityTable)
@@ -38,7 +38,7 @@ export class SyncIdentityRepository extends Context.Service<SyncIdentityReposito
                     .limit(1)
             );
 
-            return settings?.lineageId ?? null;
+            return settingsRows.at(0)?.lineageId ?? null;
         });
 
         const ensureLineageId = Effect.fn('SyncIdentityRepository.ensureLineageId')(function* () {
@@ -59,7 +59,7 @@ export class SyncIdentityRepository extends Context.Service<SyncIdentityReposito
                     })
                     .from(SettingsEntityTable)
             );
-            const lineageId = isDefined(origin?.firstAccountAt)
+            const lineageId = isDefined(origin.firstAccountAt)
                 ? deriveSyncId(lineageNamespace, `${origin.settingsCreatedAt}:${origin.firstAccountAt}:${origin.firstTransactionAt}`)
                 : generateSyncId();
 
@@ -155,7 +155,7 @@ export class SyncIdentityRepository extends Context.Service<SyncIdentityReposito
                     )
                 );
 
-                return (row?.total ?? 0) > 0;
+                return row.total > 0;
             }),
             countMissing: Effect.fn('SyncIdentityRepository.countMissing')(function* () {
                 const [row] = yield* Db.query(db =>
@@ -164,7 +164,7 @@ export class SyncIdentityRepository extends Context.Service<SyncIdentityReposito
                     )
                 );
 
-                return row?.total ?? 0;
+                return row.total;
             }),
             backfill: Effect.fn('SyncIdentityRepository.backfill')(function* () {
                 const lineageId = yield* ensureLineageId();

@@ -30,7 +30,7 @@ import * as Layer from 'effect/Layer';
 import * as Reactivity from 'effect/reactivity/Reactivity';
 import * as Stream from 'effect/Stream';
 
-import { ICloudSyncScope } from '../../../../../packages/app/modules/icloud';
+import { ICloudErrorCode, ICloudSyncScope } from '../../../../../packages/app/modules/icloud';
 import { testDb } from '../../harness';
 
 import type {
@@ -82,7 +82,7 @@ interface FakeTransportBehaviorInterface {
     ownedHousehold: ICloudOwnedHousehold | null;
 }
 
-export const makeFakeTransport = (database: DB = testDb) => {
+const makeFakeTransport = (database: DB = testDb) => {
     const calls: FakeTransportCallsInterface = {
         started: [],
         stopped: 0,
@@ -116,7 +116,7 @@ export const makeFakeTransport = (database: DB = testDb) => {
 
     const layer = Layer.succeed(CloudSyncTransport, {
         events: Stream.empty,
-        getAccountStatus: () => Effect.sync(() => behavior.accountStatus),
+        getAccountStatus: Effect.sync(() => behavior.accountStatus),
         startSync: (startScope: ICloudSyncScope, state: string | null) =>
             Effect.sync(() => {
                 if (startScope === ICloudSyncScope.SHARED) {
@@ -149,7 +149,7 @@ export const makeFakeTransport = (database: DB = testDb) => {
                 calls.inventoryRequests += 1;
 
                 return behavior.isInventoryFailing
-                    ? Effect.fail(new CloudSyncTransportError({ code: 'NETWORK_UNAVAILABLE', message: 'inventory failed' }))
+                    ? Effect.fail(CloudSyncTransportError.make({ code: ICloudErrorCode.NETWORK_UNAVAILABLE, message: 'inventory failed' }))
                     : Effect.succeed(
                           inventoryScope === ICloudSyncScope.SHARED
                               ? (behavior.sharedZoneInventory ?? behavior.zoneInventory)
@@ -167,10 +167,13 @@ export const makeFakeTransport = (database: DB = testDb) => {
         confirmFetchedBatch: (_scope: ICloudSyncScope, batchId: string) =>
             database.$client.unsafe<{ readonly total: number }>(behavior.confirmProbeSql).pipe(
                 Effect.orDie,
-                Effect.map(([row]) => {
-                    calls.confirmProbe.push(row.total);
-                    calls.confirmed.push(batchId);
-                })
+                Effect.tap(([row]) =>
+                    Effect.sync(() => {
+                        calls.confirmProbe.push(row.total);
+                        calls.confirmed.push(batchId);
+                    })
+                ),
+                Effect.asVoid
             ),
         createHouseholdShare: (zoneName: string) =>
             Effect.sync(() => {
@@ -206,7 +209,7 @@ const EMPTY_STATE: CloudSyncStateInterface = {
     householdOwnerDisplayName: null
 };
 
-export const makeFakeAutomation = () => {
+const makeFakeAutomation = () => {
     const holder: { readonly results: SyncApplyResultInterface[] } = { results: [] };
     const layer = Layer.succeed(SyncAutomationService, {
         afterApply: (result: SyncApplyResultInterface) =>
@@ -220,7 +223,7 @@ export const makeFakeAutomation = () => {
     return { holder, layer };
 };
 
-export const makeFakeStateStore = () => {
+const makeFakeStateStore = () => {
     const holder: { state: CloudSyncStateInterface } = {
         state: { ...EMPTY_STATE }
     };
@@ -238,7 +241,7 @@ export const makeFakeStateStore = () => {
     return { holder, layer };
 };
 
-export const makeFakeSafetyCopy = () => {
+const makeFakeSafetyCopy = () => {
     const holder = { created: 0 };
     const layer = Layer.succeed(CloudSyncSafetyCopyService, {
         create: () =>
@@ -250,7 +253,7 @@ export const makeFakeSafetyCopy = () => {
     return { holder, layer };
 };
 
-export const installIdLayer = Layer.succeed(InstallIdService, { get: Effect.succeed(INSTALL_ID) });
+const installIdLayer = Layer.succeed(InstallIdService, { get: Effect.succeed(INSTALL_ID) });
 
 export const makeSyncServiceContext = (database: DB = testDb) => {
     const transport = makeFakeTransport(database);

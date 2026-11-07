@@ -33,7 +33,7 @@ const startRestoreWithBaselineAccount = (context: ReturnType<typeof makeSyncServ
         );
         context.store.holder.state = { ...context.store.holder.state, restorePhase: CloudSyncRestorePhaseEnum.PENDING };
         context.transport.behavior.zoneMeta = metaWith(yield* identity.ensureLineageId());
-        yield* service.reconfigure();
+        yield* service.reconfigure;
         yield* service.handleFetchedChanges(fetchedEvent([metaWith(yield* identity.ensureLineageId())]));
 
         return { service, accountSyncId: account.syncId };
@@ -73,7 +73,7 @@ describe('cloud-sync/restore-reset service', () => {
                     restorePhase: CloudSyncRestorePhaseEnum.PENDING
                 };
                 context.transport.behavior.zoneMeta = metaWith(yield* identity.ensureLineageId());
-                yield* service.reconfigure();
+                yield* service.reconfigure;
 
                 expect(context.transport.calls.started).toEqual([null]);
                 expect(context.store.holder.state.restorePhase).toBe(CloudSyncRestorePhaseEnum.FETCHING);
@@ -154,7 +154,7 @@ describe('cloud-sync/restore-reset service', () => {
                     'INSERT INTO sync_outbox (record_type, sync_zone, sync_id) SELECT ?, sync_zone, sync_id FROM accounts LIMIT 1',
                     ['Account']
                 );
-                yield* service.reconfigure();
+                yield* service.reconfigure;
 
                 expect(context.transport.calls.started).toEqual([null]);
                 expect(yield* readOutboxCount).toBe(1);
@@ -171,7 +171,7 @@ describe('cloud-sync/restore-reset service', () => {
 
                 yield* seed.account({ title: 'Cash' });
                 context.store.holder.state = { ...context.store.holder.state, restorePhase: CloudSyncRestorePhaseEnum.PENDING };
-                yield* service.reconfigure();
+                yield* service.reconfigure;
 
                 expect(context.store.holder.state.restorePhase).toBe(CloudSyncRestorePhaseEnum.NONE);
                 expect(yield* readOutboxCount).toBeGreaterThan(0);
@@ -189,7 +189,7 @@ describe('cloud-sync/restore-reset service', () => {
 
                 yield* seed.account({ title: 'Cash' });
                 context.transport.behavior.zoneMeta = metaWith(yield* identity.ensureLineageId());
-                yield* service.reconfigure();
+                yield* service.reconfigure;
 
                 const firstPush = flatten(context.transport.calls.savedBatches).find(({ recordType }) => recordType === 'Account');
 

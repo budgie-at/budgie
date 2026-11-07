@@ -27,39 +27,51 @@ import type { SyncWireValueType } from '../type/sync-wire-value.type';
 const SEQUENCE_FIELD = 'sequence';
 const CONSOLIDATION_PARENT_PROPERTY = 'consolidationParentTransactionId';
 
-const encodePlainValue = (kind: SyncColumnKindEnum, value: unknown): SyncWireValueType | null => {
-    switch (kind) {
-        case SyncColumnKindEnum.TIMESTAMP:
-            return value instanceof Date ? value.getTime() : null;
-        case SyncColumnKindEnum.BOOLEAN:
-            return isBoolean(value) ? value : null;
-        case SyncColumnKindEnum.TEXT:
-            return isString(value) ? value : null;
-        case SyncColumnKindEnum.INTEGER:
-        case SyncColumnKindEnum.REAL:
-            return isNumber(value) ? value : null;
-    }
+const PLAIN_VALUE_ENCODERS: Readonly<Record<SyncColumnKindEnum, (value: unknown) => SyncWireValueType | null>> = {
+    [SyncColumnKindEnum.TIMESTAMP]: value => (value instanceof Date ? value.getTime() : null),
+    [SyncColumnKindEnum.BOOLEAN]: value => (isBoolean(value) ? value : null),
+    [SyncColumnKindEnum.TEXT]: value => (isString(value) ? value : null),
+    [SyncColumnKindEnum.INTEGER]: value => (isNumber(value) ? value : null),
+    [SyncColumnKindEnum.REAL]: value => (isNumber(value) ? value : null)
 };
 
-const encodeReference = (
-    descriptor: SyncTableDescriptorInterface,
+const resolveReferenceKey = (
     column: SyncColumnDescriptorInterface,
     localId: number,
     resolver: SyncReferenceResolverInterface,
     zone: string
-): Result.Result<string, SyncIdentityUnresolvedError> => {
-    const reference = column.reference;
-    const identity =
-        reference?.kind === SyncReferenceKindEnum.NATURAL_KEY ? null : resolver.findSyncIdentity(reference?.tableName ?? '', localId);
-    const isCrossZoneParent = column.property === CONSOLIDATION_PARENT_PROPERTY && isDefined(identity) && identity.syncZone !== zone;
-    const syncIdKey = isCrossZoneParent ? deriveTransactionLinkId(identity.syncId) : identity?.syncId;
-    const key = reference?.kind === SyncReferenceKindEnum.NATURAL_KEY ? resolver.findNaturalKey(reference.tableName, localId) : syncIdKey;
+): string | null | undefined => {
+    const { reference } = column;
 
-    return isNotEmptyString(key)
-        ? Result.succeed(key)
-        : Result.fail(
-              new SyncIdentityUnresolvedError({ tableName: descriptor.tableName, column: column.property, localKey: `${localId}` })
-          );
+    if (reference?.kind === SyncReferenceKindEnum.NATURAL_KEY) {
+        return resolver.findNaturalKey(reference.tableName, localId);
+    }
+
+    const identity = resolver.findSyncIdentity(reference?.tableName ?? '', localId);
+    const isCrossZoneParent = column.property === CONSOLIDATION_PARENT_PROPERTY && isDefined(identity) && identity.syncZone !== zone;
+
+    return isCrossZoneParent ? deriveTransactionLinkId(identity.syncId) : identity?.syncId;
+};
+
+const encodeColumn = (
+    column: SyncColumnDescriptorInterface,
+    row: SyncRowInputType,
+    resolver: SyncReferenceResolverInterface,
+    zone: string
+): Result.Result<SyncWireValueType | null, number> => {
+    const value = row[column.property];
+
+    if (!isDefined(column.reference)) {
+        return Result.succeed(PLAIN_VALUE_ENCODERS[column.kind](value));
+    }
+
+    if (!isNumber(value)) {
+        return Result.succeed(null);
+    }
+
+    const key = resolveReferenceKey(column, value, resolver, zone);
+
+    return isNotEmptyString(key) ? Result.succeed(key) : Result.fail(value);
 };
 
 const encodeRow = (
@@ -72,24 +84,20 @@ const encodeRow = (
         const fields: Record<string, SyncWireValueType> = {};
 
         for (const column of descriptor.columns) {
-            const value = row[column.property];
+            const encoded = yield* encodeColumn(column, row, resolver, zone).pipe(
+                Result.mapError(localId =>
+                    SyncIdentityUnresolvedError.make({ tableName: descriptor.tableName, column: column.property, localKey: `${localId}` })
+                )
+            );
 
-            if (isDefined(column.reference)) {
-                if (isNumber(value)) {
-                    fields[column.field] = yield* encodeReference(descriptor, column, value, resolver, zone);
-                }
-            } else {
-                const encoded = encodePlainValue(column.kind, value);
-
-                if (isDefined(encoded)) {
-                    fields[column.field] = encoded;
-                }
+            if (isDefined(encoded)) {
+                fields[column.field] = encoded;
             }
         }
 
         if (isDefined(descriptor.parentLink) && !isNotEmptyString(fields[SYNC_ID_PROPERTY])) {
             return yield* Result.fail(
-                new SyncIdentityUnresolvedError({
+                SyncIdentityUnresolvedError.make({
                     tableName: descriptor.tableName,
                     column: SYNC_ID_PROPERTY,
                     localKey: isNumber(row['id']) ? `${row['id']}` : ''
@@ -118,6 +126,22 @@ const compareEncodedRows = (left: EncodedSyncFieldsType, right: EncodedSyncField
     return leftKey < rightKey ? -1 : 1;
 };
 
+const encodeRows = (
+    descriptor: SyncTableDescriptorInterface,
+    rows: readonly SyncRowInputType[],
+    resolver: SyncReferenceResolverInterface,
+    zone: string
+): Result.Result<readonly EncodedSyncFieldsType[], SyncIdentityUnresolvedError> =>
+    Result.gen(function* () {
+        const encodedRows: EncodedSyncFieldsType[] = [];
+
+        for (const row of rows) {
+            encodedRows.push(yield* encodeRow(descriptor, row, resolver, zone));
+        }
+
+        return encodedRows.sort(compareEncodedRows);
+    });
+
 const encodeChildren = (
     part: SyncRecordPartInterface,
     resolver: SyncReferenceResolverInterface
@@ -126,27 +150,19 @@ const encodeChildren = (
         const fields: Record<string, string> = {};
 
         for (const child of part.definition.children) {
-            const encodedRows: EncodedSyncFieldsType[] = [];
-
-            for (const row of part.children[child.descriptor.tableName] ?? []) {
-                encodedRows.push(yield* encodeRow(child.descriptor, row, resolver, part.zone));
-            }
+            const encodedRows = yield* encodeRows(child.descriptor, part.children[child.descriptor.tableName] ?? [], resolver, part.zone);
 
             if (isNotEmptyArray(encodedRows)) {
-                fields[child.field] = JSON.stringify([...encodedRows].sort(compareEncodedRows));
+                fields[child.field] = JSON.stringify(encodedRows);
             }
         }
 
         const { legPrivateEntries } = part.definition;
 
         if (isDefined(legPrivateEntries) && isNotEmptyArray(part.legPrivateRows)) {
-            const privateRows: EncodedSyncFieldsType[] = [];
+            const privateRows = yield* encodeRows(legPrivateEntries.descriptor, part.legPrivateRows, resolver, part.zone);
 
-            for (const row of part.legPrivateRows) {
-                privateRows.push(yield* encodeRow(legPrivateEntries.descriptor, row, resolver, part.zone));
-            }
-
-            fields[legPrivateEntries.field] = JSON.stringify([...privateRows].sort(compareEncodedRows));
+            fields[legPrivateEntries.field] = JSON.stringify(privateRows);
         }
 
         return fields;
@@ -163,7 +179,9 @@ const encodePart = (
         const bytes = utf8ToBytes(JSON.stringify(encryptedFields)).length;
 
         if (bytes > SYNC_RECORD_MAX_BYTES) {
-            return yield* Result.fail(new SyncRecordTooLargeError({ recordName: part.recordName, bytes, maxBytes: SYNC_RECORD_MAX_BYTES }));
+            return yield* Result.fail(
+                SyncRecordTooLargeError.make({ recordName: part.recordName, bytes, maxBytes: SYNC_RECORD_MAX_BYTES })
+            );
         }
 
         return {

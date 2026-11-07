@@ -1,5 +1,6 @@
-import { resetTestDb } from '@budgie-at/test-kit';
+import { encodeJson, resetTestDb } from '@budgie-at/test-kit';
 import {
+    Db,
     HouseholdShareService,
     SyncApplyService,
     SyncDatabaseScopeEnum,
@@ -7,7 +8,6 @@ import {
     SyncZoneRegistryRepository,
     SyncZoneRoleEnum
 } from '@budgie/contracts';
-import { Db } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
@@ -31,7 +31,7 @@ export const onShareDevice = <A, E>(
     effect: Effect.Effect<A, E, Db | SyncApplyService | SyncUploadService | HouseholdShareService | SyncZoneRegistryRepository>
 ) => effect.pipe(Effect.provide(shareLayer), Effect.provideService(Db, database));
 
-export const joinHousehold = (database: DB, role: SyncZoneRoleEnum, ownerName: string) =>
+const joinHousehold = (database: DB, role: SyncZoneRoleEnum, ownerName: string) =>
     onShareDevice(
         database,
         Effect.gen(function* () {
@@ -73,7 +73,7 @@ export const uploadDevice = (database: DB, clouds: ShareCloudsInterface) =>
             const batch = yield* uploadService.pending(UPLOAD_LIMIT);
 
             if (batch.rejections.length > 0) {
-                return yield* Effect.die(`upload rejected: ${JSON.stringify(batch.rejections)}`);
+                return yield* Effect.die(`upload rejected: ${encodeJson(batch.rejections)}`);
             }
 
             const acknowledgements: SyncUploadAcknowledgementInterface[] = [];
@@ -157,7 +157,7 @@ export const countRows = (database: DB, sqlFrom: string, params: readonly (strin
         Effect.map(([row]) => row.total)
     );
 
-export const resetDevice = (database: DB) =>
+const resetDevice = (database: DB) =>
     Effect.gen(function* () {
         const client = database.$client;
 

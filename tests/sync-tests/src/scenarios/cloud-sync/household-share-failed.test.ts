@@ -32,7 +32,7 @@ describe('cloud-sync/household share failed', () => {
                     expect(show).toHaveBeenCalledWith(expect.objectContaining({ type: 'error', text1: 'Could not join the family' }));
                 })
             )
-            .pipe(Effect.ensuring(Effect.sync(() => show.mockRestore())));
+            .pipe(Effect.ensuring(Effect.sync(() => void show.mockRestore())));
     });
 
     it.effect('shows a joining state without registering the household zone', () => {

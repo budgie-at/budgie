@@ -1,4 +1,4 @@
-import { makeTestDbLayer } from '@budgie-at/test-kit';
+import { encodeJson, makeTestDbLayer } from '@budgie-at/test-kit';
 import {
     Db,
     SYNC_RECORD_DEFINITIONS,
@@ -12,6 +12,7 @@ import {
 import { describe, expect, it } from '@effect/vitest';
 import { getTableColumns } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
+import * as Schema from 'effect/Schema';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -59,11 +60,9 @@ const encodeSource = Effect.gen(function* () {
     return { state, records };
 });
 
-const parseJsonRows = (value: unknown): Record<string, unknown>[] => {
-    const parsed: unknown = JSON.parse(`${value}`);
+const decodeJsonRows = Schema.decodeSync(Schema.fromJsonString(Schema.Array(Schema.Record(Schema.String, Schema.Unknown))));
 
-    return Array.isArray(parsed) ? parsed : [];
-};
+const parseJsonRows = (value: unknown) => decodeJsonRows(String(value));
 
 describe('cloud-sync/record-mapping', () => {
     it.layer(makeTestDbLayer(null))('into a fresh database', it => {
@@ -155,7 +154,7 @@ describe('cloud-sync/record-mapping', () => {
             yield* seedEverything;
 
             const { records } = yield* encodeSource;
-            const serialized = JSON.stringify(records);
+            const serialized = encodeJson(records);
 
             for (const leaked of ['secret-token', 'contact-1', 'cursor']) {
                 expect(serialized).not.toContain(leaked);
@@ -335,7 +334,7 @@ describe('cloud-sync/record-mapping', () => {
             const fits = yield* Effect.fromResult(encodeSyncAggregate(withEntries(100), state.resolver));
             const error = yield* Effect.fromResult(encodeSyncAggregate(withEntries(5000), state.resolver)).pipe(Effect.flip);
 
-            expect(JSON.stringify(fits[0].encryptedFields).length).toBeLessThan(SYNC_RECORD_MAX_BYTES);
+            expect(encodeJson(fits[0].encryptedFields).length).toBeLessThan(SYNC_RECORD_MAX_BYTES);
             expect(error._tag).toBe('SyncRecordTooLargeError');
 
             return undefined;

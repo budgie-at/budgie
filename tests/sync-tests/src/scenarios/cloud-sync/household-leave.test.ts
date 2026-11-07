@@ -58,7 +58,7 @@ describe('cloud-sync/household leave', () => {
                         const service = yield* CloudSyncService;
                         const registry = yield* SyncZoneRegistryRepository;
 
-                        yield* service.reconfigure();
+                        yield* service.reconfigure;
                         yield* service.handleShareAccepted(shareAcceptedEvent());
                         yield* service.leaveHousehold();
 

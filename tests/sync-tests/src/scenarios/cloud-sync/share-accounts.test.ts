@@ -138,7 +138,7 @@ describe('cloud-sync/share-accounts', () => {
                 expect(
                     yield* onShareDevice(
                         testDb,
-                        Effect.flatMap(HouseholdShareService, service => service.findSharedAccountIds())
+                        Effect.flatMap(HouseholdShareService, service => service.findSharedAccountIds)
                     )
                 ).toEqual([joint.id]);
                 yield* expectBothLedgers(testDb, deviceB);

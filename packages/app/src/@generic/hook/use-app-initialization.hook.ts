@@ -82,6 +82,7 @@ const registerBackgroundTasks = Effect.gen(function* () {
     );
 });
 
+// eslint-disable-next-line max-statements -- Startup orchestration with many sequential service starts
 const initializeAppServices = Effect.gen(function* () {
     const widgetSnapshotService = yield* WidgetSnapshotService;
     const workload = yield* Workload;

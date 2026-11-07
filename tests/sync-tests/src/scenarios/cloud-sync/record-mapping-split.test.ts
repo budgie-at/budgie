@@ -1,4 +1,4 @@
-import { makeTestDbLayer } from '@budgie-at/test-kit';
+import { decodeJson, encodeJson, makeTestDbLayer } from '@budgie-at/test-kit';
 import { Db, SyncRecordTypeEnum, decodeSyncRecord, joinSplitTransactions } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
@@ -52,7 +52,7 @@ describe('cloud-sync/record-mapping split transfers', () => {
                 record => record.recordType === SyncRecordTypeEnum.TRANSACTION || record.recordType === SyncRecordTypeEnum.TRANSACTION_LEG
             );
             const legFields = leg.encryptedFields;
-            const serializedLeg = JSON.stringify(leg);
+            const serializedLeg = encodeJson(leg);
 
             expect(transactionRecords).toHaveLength(2);
             expect(home.zone).toBe('personal');
@@ -89,12 +89,12 @@ describe('cloud-sync/record-mapping split transfers', () => {
     it.effect('keeps only the shared entries in the shared leg', () =>
         Effect.gen(function* () {
             const { leg, syncIds } = yield* seedAndEncode;
-            const entries: unknown = JSON.parse(`${leg.encryptedFields['entries']}`);
+            const entries: unknown = decodeJson(`${leg.encryptedFields['entries']}`);
 
             expect(entries).toEqual([
                 expect.objectContaining({ syncId: syncIds['sharedEntry'], accountSyncId: syncIds['sharedAccount'], amount: SHARED_AMOUNT })
             ]);
-            expect(JSON.stringify(entries)).not.toContain('toIban');
+            expect(encodeJson(entries)).not.toContain('toIban');
         })
     );
 

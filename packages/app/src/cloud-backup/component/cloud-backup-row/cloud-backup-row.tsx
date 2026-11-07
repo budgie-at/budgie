@@ -30,6 +30,7 @@ export const CloudBackupRow = ({ recordName, createdAt, appVersion }: Props) => 
     const handlePress = () => void restore(recordName);
 
     const isUnreadable = failure === CloudRestoreFailureEnum.UNREADABLE;
+    const icon = isUnreadable ? UserIconNameEnum.CloudAlert : UserIconNameEnum.CloudDownload;
     const title = formatBackupDate(createdAt);
     const subtitle = isDefined(failure) ? t(CLOUD_RESTORE_FAILURE_MESSAGE[failure]) : t`Budgie ${appVersion}`;
     const pressableProps = { disabled: isLoading };
@@ -43,12 +44,12 @@ export const CloudBackupRow = ({ recordName, createdAt, appVersion }: Props) => 
                 isDisabled={isLoading}
                 testID={CloudBackupRowSelector.RetryButton(recordName)}
             />
-        ) : undefined;
+        ) : null;
 
     return (
         <GroupedListRow
             testID={CloudBackupRowSelector.Root(recordName)}
-            left={<GroupedListIcon icon={isUnreadable ? UserIconNameEnum.CloudAlert : UserIconNameEnum.CloudDownload} />}
+            left={<GroupedListIcon icon={icon} />}
             title={title}
             subtitle={subtitle}
             right={retryButton}

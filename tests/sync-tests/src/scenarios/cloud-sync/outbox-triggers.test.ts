@@ -10,6 +10,7 @@ import {
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
+import * as Schema from 'effect/Schema';
 
 import { seed, testDb } from '../../harness';
 
@@ -27,12 +28,14 @@ interface RawOutboxRowInterface extends Omit<OutboxRowInterface, 'changedColumns
 
 const OPERATED_AT = new Date('2026-10-02T10:00:00Z');
 
+const decodeChangedColumns = Schema.decodeSync(Schema.fromJsonString(Schema.Array(Schema.String)));
+
 const readOutbox = Effect.gen(function* () {
     const rows = yield* testDb.$client.unsafe<RawOutboxRowInterface>(
         `SELECT record_type AS recordType, sync_id AS syncId, operation, changed_columns AS changedColumns, sync_revision AS syncRevision FROM sync_outbox ORDER BY id`
     );
 
-    return rows.map((row): OutboxRowInterface => ({ ...row, changedColumns: JSON.parse(row.changedColumns) }));
+    return rows.map((row): OutboxRowInterface => ({ ...row, changedColumns: decodeChangedColumns(row.changedColumns) }));
 });
 
 const clearOutbox = testDb.$client.unsafe('DELETE FROM sync_outbox');

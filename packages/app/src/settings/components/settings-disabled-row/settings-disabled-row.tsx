@@ -13,20 +13,24 @@ interface Props {
     readonly testID: string;
 }
 
-export const SettingsDisabledRow = ({ icon, title, subtitle, testID }: Props) => (
-    <GroupedListRow
-        left={
-            <View className="opacity-50">
-                <SettingsRowIcon icon={icon} variant="ghost" />
-            </View>
-        }
-        title={
-            <Text className={cn('text-secondary-foreground', GROUPED_LIST_TITLE_CLASS_NAME)} numberOfLines={2}>
-                {title}
-            </Text>
-        }
-        subtitle={subtitle}
-        pressableProps={{ accessible: true, accessibilityLabel: `${title}, ${subtitle}`, accessibilityState: { disabled: true } }}
-        testID={testID}
-    />
-);
+export const SettingsDisabledRow = ({ icon, title, subtitle, testID }: Props) => {
+    const pressableProps = { accessible: true, accessibilityLabel: `${title}, ${subtitle}`, accessibilityState: { disabled: true } };
+
+    return (
+        <GroupedListRow
+            left={
+                <View className="opacity-50">
+                    <SettingsRowIcon icon={icon} variant="ghost" />
+                </View>
+            }
+            title={
+                <Text className={cn('text-secondary-foreground', GROUPED_LIST_TITLE_CLASS_NAME)} numberOfLines={2}>
+                    {title}
+                </Text>
+            }
+            subtitle={subtitle}
+            pressableProps={pressableProps}
+            testID={testID}
+        />
+    );
+};

@@ -6,9 +6,5 @@ import { SyncAutomationEmbeddingBoost } from '../service/sync-automation-embeddi
 
 export const syncAutomationEmbeddingBoostLayer = Layer.effect(
     SyncAutomationEmbeddingBoost,
-    Effect.gen(function* () {
-        const embeddingDrainerService = yield* EmbeddingDrainerService;
-
-        return embeddingDrainerService.boost();
-    })
+    Effect.map(EmbeddingDrainerService, embeddingDrainerService => embeddingDrainerService.boost())
 ).pipe(Layer.provide(EmbeddingDrainerService.layer));

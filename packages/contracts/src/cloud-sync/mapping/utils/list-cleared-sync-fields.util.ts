@@ -1,3 +1,5 @@
+import { isDefined } from '@rnw-community/shared';
+
 import { SYNC_RECORD_DEFINITIONS } from '../constant/sync-record-definitions.constant';
 import { SyncLinkRoleEnum } from '../enum/sync-link-role.enum';
 
@@ -8,7 +10,7 @@ export const listClearedSyncFields = (record: SyncRecordInterface): readonly str
     const fields = [
         ...definition.parent.columns.map(column => column.field),
         ...definition.children.map(child => child.field),
-        ...(definition.legPrivateEntries === null ? [] : [definition.legPrivateEntries.field]),
+        ...(isDefined(definition.legPrivateEntries) ? [definition.legPrivateEntries.field] : []),
         ...(definition.linkRole === SyncLinkRoleEnum.HOME ? ['linkId', 'legCount'] : [])
     ];
 

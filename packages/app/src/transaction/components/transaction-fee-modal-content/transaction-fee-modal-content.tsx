@@ -37,6 +37,7 @@ interface Props {
 const ROW_INDEX = 0;
 const CONTENT_CONTAINER_STYLE = { flexGrow: 1 };
 
+// eslint-disable-next-line max-lines-per-function -- Form component requires many lines
 export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, variant, onConfirm }: Props) => {
     const { bottom, top } = useSafeAreaInsets();
     const { height: windowHeight } = useWindowDimensions();

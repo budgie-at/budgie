@@ -30,7 +30,7 @@ const countRows = (database: DB, tableName: string) =>
 const withoutZone = (rows: readonly Record<string, unknown>[]) =>
     rows
         .map(row => Object.fromEntries(Object.entries(row).filter(([column]) => column !== 'sync_zone')))
-        .sort((left, right) => `${left['sync_id']}`.localeCompare(`${right['sync_id']}`));
+        .sort((left, right) => String(left['sync_id']).localeCompare(String(right['sync_id'])));
 
 const expectSameLedger = (deviceB: DB) =>
     Effect.gen(function* () {

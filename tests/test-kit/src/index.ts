@@ -1,3 +1,4 @@
+export { decodeJson, encodeJson } from './json/json-codec';
 export { assertStoredBalancesMatchLedger } from './balance/assert-stored-balances-match-ledger';
 export { buildTestDb, makeTestDbLayer } from './db/build-test-db';
 export { makeTestDatabase } from './db/make-test-database';

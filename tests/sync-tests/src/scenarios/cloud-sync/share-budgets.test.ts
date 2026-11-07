@@ -172,7 +172,7 @@ describe('cloud-sync/share-budgets', () => {
                 expect(
                     yield* onShareDevice(
                         testDb,
-                        Effect.flatMap(HouseholdShareService, service => service.findSharedBudgetIds())
+                        Effect.flatMap(HouseholdShareService, service => service.findSharedBudgetIds)
                     )
                 ).toEqual([budget.id]);
             })

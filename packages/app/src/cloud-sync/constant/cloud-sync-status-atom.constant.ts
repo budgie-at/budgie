@@ -4,7 +4,7 @@ import { CloudSyncStatusEnum } from '../enum/cloud-sync-status.enum';
 
 import type { CloudSyncStatusInterface } from '../interface/cloud-sync-status.interface';
 
-export const INITIAL_CLOUD_SYNC_STATUS: CloudSyncStatusInterface = {
+const INITIAL_CLOUD_SYNC_STATUS: CloudSyncStatusInterface = {
     status: CloudSyncStatusEnum.IDLE,
     lastSyncedAt: null,
     fetchedRecordCount: 0,

@@ -18,6 +18,7 @@ import { openSqliteClient } from '../utils/open-sqlite-client.util';
 
 import { DatabaseLifecycleService } from './database-lifecycle.service';
 import { RekeyParamsInterface } from './interface/rekey-params.interface';
+import { TranscodeTargetInterface } from './interface/transcode-target.interface';
 
 export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>()('@budgie/app/DatabaseRekeyService', {
     make: Effect.gen(function* () {
@@ -71,9 +72,8 @@ export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>(
 
         const generateKey = Effect.fn('DatabaseRekeyService.generateKey')(function* () {
             const { $client: client } = yield* Db;
-            const [row] = yield* Schema.decodeUnknownEffect(RandomKeyRowsSchema)(
-                yield* client.unsafe('SELECT lower(hex(randomblob(32))) AS key')
-            );
+            const rows = yield* client.unsafe('SELECT lower(hex(randomblob(32))) AS key');
+            const [row] = yield* Schema.decodeUnknownEffect(RandomKeyRowsSchema)(rows);
 
             return row.key;
         });
@@ -143,12 +143,11 @@ export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>(
                 sourceName: string,
                 sourceKey: string,
                 targetName: string,
-                targetKey: string | null,
-                targetSettings: Partial<SettingsCreateEntityInterface>
+                target: TranscodeTargetInterface
             ) {
                 deleteDatabaseFiles(new File(DATABASE_DIRECTORY, targetName).uri);
-                yield* exportFromDatabaseFile(sourceName, sourceKey, targetName, targetKey);
-                yield* updateMigratedDatabaseSettings(targetName, targetKey, targetSettings);
+                yield* exportFromDatabaseFile(sourceName, sourceKey, targetName, target.key);
+                yield* updateMigratedDatabaseSettings(targetName, target.key, target.settings);
             }),
             rekey: Effect.fn('DatabaseRekeyService.rekey')(function* (params: RekeyParamsInterface, onCommit: Effect.Effect<void>) {
                 yield* prepare(params).pipe(

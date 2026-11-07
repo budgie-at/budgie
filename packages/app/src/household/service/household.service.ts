@@ -13,15 +13,15 @@ export class HouseholdService extends Context.Service<HouseholdService>()('@budg
         const zoneName = CLOUD_SYNC_RECORDS.householdZoneName;
 
         return {
-            participants: () => transport.getShareParticipants(zoneName),
+            participants: transport.getShareParticipants(zoneName),
             invite: Effect.fn('HouseholdService.invite')(function* () {
                 yield* cloudSyncService.prepareHouseholdOwnerZone();
                 yield* transport.createHouseholdShare(zoneName);
             }),
             removeParticipant: (participantId: string) => transport.removeParticipant(zoneName, participantId),
-            stopSharing: () => cloudSyncService.stopHouseholdSharing(),
-            removeEmptyGroup: () => cloudSyncService.removeEmptyHousehold(),
-            leave: () => cloudSyncService.leaveHousehold()
+            stopSharing: cloudSyncService.stopHouseholdSharing(),
+            removeEmptyGroup: cloudSyncService.removeEmptyHousehold(),
+            leave: cloudSyncService.leaveHousehold()
         };
     })
 }) {

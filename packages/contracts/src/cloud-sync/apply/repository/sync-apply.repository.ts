@@ -23,13 +23,13 @@ export class SyncApplyRepository extends Context.Service<SyncApplyRepository>()(
         findRow: (tableName: string, syncZone: string, syncId: string) =>
             Db.query(db =>
                 db.$client.unsafe<SyncLocalRowInterface>(
-                    `SELECT rowid AS __localId, * FROM "${tableName}" WHERE sync_zone = ? AND sync_id = ? LIMIT 1`,
+                    `SELECT rowid AS localRowId, * FROM "${tableName}" WHERE sync_zone = ? AND sync_id = ? LIMIT 1`,
                     [syncZone, syncId]
                 )
             ).pipe(Effect.map(rows => rows.at(0) ?? null)),
         findChildren: (tableName: string, parentColumn: string, parentLocalId: number) =>
             Db.query(db =>
-                db.$client.unsafe<SyncLocalRowInterface>(`SELECT rowid AS __localId, * FROM "${tableName}" WHERE "${parentColumn}" = ?`, [
+                db.$client.unsafe<SyncLocalRowInterface>(`SELECT rowid AS localRowId, * FROM "${tableName}" WHERE "${parentColumn}" = ?`, [
                     parentLocalId
                 ])
             ),
@@ -142,20 +142,18 @@ export class SyncApplyRepository extends Context.Service<SyncApplyRepository>()(
                           )
                           .orderBy(SyncPendingEntityTable.id)
                   ),
-        findSchemaPaused: () =>
-            Db.query(db =>
-                db
-                    .select()
-                    .from(SyncPendingEntityTable)
-                    .where(eq(SyncPendingEntityTable.missingRecordType, SYNC_SCHEMA_PAUSED_MISSING_RECORD_TYPE))
-                    .orderBy(SyncPendingEntityTable.id)
-            ),
-        countPending: () =>
-            Db.query(db =>
-                db.$client.unsafe<{ readonly total: number }>(`SELECT COUNT(*) AS total FROM sync_pending WHERE missing_record_type <> ?`, [
-                    SYNC_SCHEMA_PAUSED_MISSING_RECORD_TYPE
-                ])
-            ).pipe(Effect.map(rows => rows[0].total)),
+        findSchemaPaused: Db.query(db =>
+            db
+                .select()
+                .from(SyncPendingEntityTable)
+                .where(eq(SyncPendingEntityTable.missingRecordType, SYNC_SCHEMA_PAUSED_MISSING_RECORD_TYPE))
+                .orderBy(SyncPendingEntityTable.id)
+        ),
+        countPending: Db.query(db =>
+            db.$client.unsafe<{ readonly total: number }>(`SELECT COUNT(*) AS total FROM sync_pending WHERE missing_record_type <> ?`, [
+                SYNC_SCHEMA_PAUSED_MISSING_RECORD_TYPE
+            ])
+        ).pipe(Effect.map(rows => rows[0].total)),
         findPausedZones: (supportedVersion: number) =>
             Db.query(db =>
                 db.$client.unsafe<SyncPausedZoneInterface>(
@@ -166,12 +164,11 @@ export class SyncApplyRepository extends Context.Service<SyncApplyRepository>()(
                     [SYNC_SCHEMA_PAUSED_MISSING_RECORD_TYPE, supportedVersion]
                 )
             ),
-        savepoint: () => Db.query(db => db.$client.unsafe(`SAVEPOINT ${SAVEPOINT}`)),
-        releaseSavepoint: () => Db.query(db => db.$client.unsafe(`RELEASE ${SAVEPOINT}`)),
-        rollbackSavepoint: () =>
-            Db.query(db => db.$client.unsafe(`ROLLBACK TO ${SAVEPOINT}`)).pipe(
-                Effect.andThen(Db.query(db => db.$client.unsafe(`RELEASE ${SAVEPOINT}`)))
-            )
+        savepoint: Db.query(db => db.$client.unsafe(`SAVEPOINT ${SAVEPOINT}`)),
+        releaseSavepoint: Db.query(db => db.$client.unsafe(`RELEASE ${SAVEPOINT}`)),
+        rollbackSavepoint: Db.query(db => db.$client.unsafe(`ROLLBACK TO ${SAVEPOINT}`)).pipe(
+            Effect.andThen(Db.query(db => db.$client.unsafe(`RELEASE ${SAVEPOINT}`)))
+        )
     })
 }) {
     static readonly layer = Layer.effect(SyncApplyRepository, SyncApplyRepository.make);

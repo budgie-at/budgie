@@ -38,7 +38,7 @@ describe('cloud-sync/sync-service lineage', () => {
 
                 yield* seed.account({ title: 'Cash' });
                 context.transport.behavior.zoneMeta = metaWith(yield* identity.ensureLineageId());
-                yield* service.reconfigure();
+                yield* service.reconfigure;
 
                 expect(context.transport.calls.started).toHaveLength(1);
                 expect(context.transport.calls.savedBatches.flat().some(({ recordType }) => recordType === 'SyncMeta')).toBe(false);
@@ -56,7 +56,7 @@ describe('cloud-sync/sync-service lineage', () => {
 
                 yield* seed.account({ title: 'Cash' });
                 context.transport.behavior.zoneMeta = metaWith('another-lineage');
-                yield* service.reconfigure();
+                yield* service.reconfigure;
 
                 expect(appAtomRegistry.get(cloudSyncStatusAtom).status).toBe(CloudSyncStatusEnum.LINEAGE_CONFLICT);
                 expect(context.transport.calls.started).toHaveLength(0);
@@ -74,7 +74,7 @@ describe('cloud-sync/sync-service lineage', () => {
                 const identity = yield* SyncIdentityRepository;
 
                 context.transport.behavior.zoneMeta = metaWith('another-lineage');
-                yield* service.reconfigure();
+                yield* service.reconfigure;
 
                 expect(yield* identity.findLineageId()).toBe('another-lineage');
                 expect(context.transport.calls.started).toHaveLength(1);
@@ -93,7 +93,7 @@ describe('cloud-sync/sync-service lineage', () => {
 
                 yield* seed.account({ title: 'Cash' });
                 context.transport.behavior.zoneMeta = metaWith('another-lineage');
-                yield* service.reconfigure();
+                yield* service.reconfigure;
                 yield* service.resolveLineageConflict(CloudSyncLineageChoiceEnum.USE_ICLOUD_DATA);
 
                 expect(context.safetyCopy.holder.created).toBe(1);
@@ -116,7 +116,7 @@ describe('cloud-sync/sync-service lineage', () => {
 
                 yield* testDb.$client.unsafe('DELETE FROM sync_outbox');
                 context.transport.behavior.zoneMeta = metaWith('another-lineage');
-                yield* service.reconfigure();
+                yield* service.reconfigure;
                 yield* service.resolveLineageConflict(CloudSyncLineageChoiceEnum.KEEP_THIS_DEVICE);
 
                 const pushedTypes = context.transport.calls.savedBatches.flat().map(({ recordType }) => recordType);
@@ -145,7 +145,7 @@ describe('cloud-sync/sync-service lineage', () => {
 
                     yield* seed.account({ title: 'Cash' });
                     context.transport.behavior.zoneMeta = metaWith('another-lineage');
-                    yield* service.reconfigure();
+                    yield* service.reconfigure;
                     context.transport.behavior.joinedHousehold = { zoneName: 'Household', ownerName: 'owner-user-record' };
 
                     expect(yield* registry.findByLabel(HOUSEHOLD_SYNC_ZONE)).toBeUndefined();

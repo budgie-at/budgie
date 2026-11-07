@@ -74,8 +74,7 @@ export class SyncOutboxRepository extends Context.Service<SyncOutboxRepository>(
                 ),
             enqueueAll: (syncZone: string) => enqueueRows(syncZone, false),
             enqueueUnrecorded: (syncZone: string) => enqueueRows(syncZone, true),
-            countPending: () =>
-                Db.query(db => db.select({ total: count() }).from(SyncOutboxEntityTable)).pipe(Effect.map(([row]) => row.total))
+            countPending: Db.query(db => db.select({ total: count() }).from(SyncOutboxEntityTable)).pipe(Effect.map(([row]) => row.total))
         };
     })
 }) {

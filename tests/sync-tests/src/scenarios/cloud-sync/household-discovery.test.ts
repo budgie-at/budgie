@@ -27,7 +27,7 @@ describe('cloud-sync/household discovery', () => {
                         const service = yield* CloudSyncService;
                         const registry = yield* SyncZoneRegistryRepository;
 
-                        yield* service.discoverHousehold();
+                        yield* service.discoverHousehold;
 
                         const entry = yield* registry.findByLabel(HOUSEHOLD_SYNC_ZONE);
 
@@ -58,7 +58,7 @@ describe('cloud-sync/household discovery', () => {
                         const service = yield* CloudSyncService;
                         const registry = yield* SyncZoneRegistryRepository;
 
-                        yield* service.discoverHousehold();
+                        yield* service.discoverHousehold;
 
                         const entry = yield* registry.findByLabel(HOUSEHOLD_SYNC_ZONE);
 
@@ -82,7 +82,7 @@ describe('cloud-sync/household discovery', () => {
                         const service = yield* CloudSyncService;
                         const registry = yield* SyncZoneRegistryRepository;
 
-                        yield* service.discoverHousehold();
+                        yield* service.discoverHousehold;
 
                         expect(yield* registry.findByLabel(HOUSEHOLD_SYNC_ZONE)).toBeUndefined();
                     })

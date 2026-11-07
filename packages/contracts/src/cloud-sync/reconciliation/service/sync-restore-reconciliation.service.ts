@@ -29,32 +29,33 @@ export class SyncRestoreReconciliationService extends Context.Service<SyncRestor
                         yield* resetRepository.clearPendingWork();
                     }
 
-                    yield* recordRepository.invalidateAll();
+                    yield* recordRepository.invalidateAll;
                 }),
                 complete: Effect.fn('SyncRestoreReconciliationService.complete')(function* (
                     syncZone: string,
                     zoneInventory: ReadonlySet<string>
                 ) {
-                    const unconfirmed = (yield* recordRepository.findUnconfirmed()).filter(record => record.syncZone === syncZone);
+                    const unconfirmed = (yield* recordRepository.findUnconfirmed).filter(record => record.syncZone === syncZone);
                     const deletions: SyncIncomingDeletionInterface[] = [];
                     const results: SyncApplyResultInterface[] = [];
 
                     for (const { syncZone: zone, syncId, recordType } of unconfirmed) {
-                        if (zoneInventory.has(syncId)) {
-                            continue;
-                        }
-
-                        if (dataRecordTypes.has(recordType)) {
-                            deletions.push({ recordType, recordName: syncId, zone });
-                        } else {
-                            yield* recordRepository.remove(zone, syncId);
+                        if (!zoneInventory.has(syncId)) {
+                            if (dataRecordTypes.has(recordType)) {
+                                deletions.push({ recordType, recordName: syncId, zone });
+                            } else {
+                                yield* recordRepository.remove(zone, syncId);
+                            }
                         }
                     }
 
                     for (let start = 0; start < deletions.length; start += deletionChunkSize) {
-                        results.push(
-                            yield* applyService.apply({ records: [], deletions: deletions.slice(start, start + deletionChunkSize) })
-                        );
+                        const result = yield* applyService.apply({
+                            records: [],
+                            deletions: deletions.slice(start, start + deletionChunkSize)
+                        });
+
+                        results.push(result);
                         yield* YIELD_TO_UI;
                     }
 

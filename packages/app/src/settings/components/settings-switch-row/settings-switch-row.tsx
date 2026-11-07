@@ -31,7 +31,9 @@ export const SettingsSwitchRow = ({ icon, title, subtitle, value, isLoading, tes
         hapticSelection();
         onChange?.(next);
     };
-    const handlePress = () => handleSwitchChange(!value);
+    const handlePress = () => {
+        handleSwitchChange(!value);
+    };
     const pressableProps = {
         accessible: true,
         accessibilityRole: 'switch' as const,

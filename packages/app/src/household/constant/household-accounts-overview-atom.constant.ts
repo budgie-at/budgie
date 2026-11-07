@@ -20,7 +20,8 @@ export const householdAccountsOverviewAtom = databaseQueryAtom(
         const accountRepository = yield* AccountRepository;
         const householdShareService = yield* HouseholdShareService;
         const accounts = yield* accountRepository.getAllActiveAccounts;
-        const sharedByMeIds = new Set(yield* householdShareService.findSharedAccountIds());
+        const sharedAccountIds = yield* householdShareService.findSharedAccountIds;
+        const sharedByMeIds = new Set(sharedAccountIds);
 
         return {
             mine: accounts

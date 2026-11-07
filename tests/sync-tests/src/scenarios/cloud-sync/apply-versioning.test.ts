@@ -20,7 +20,7 @@ const readEnvelope = (database: DB, recordType: string) =>
     database.$client
         .unsafe<{ readonly payload: string }>(`SELECT payload FROM sync_record WHERE record_type = ? LIMIT 1`, [recordType])
         .pipe(
-            Effect.flatMap(([row]) => Schema.decodeUnknownEffect(jsonRecord)(row.payload)),
+            Effect.flatMap(([row]) => Schema.decodeEffect(jsonRecord)(row.payload)),
             Effect.orDie
         );
 
@@ -97,7 +97,7 @@ describe('cloud-sync/apply-versioning', () => {
                 expect(
                     yield* onDevice(
                         deviceB,
-                        Effect.flatMap(SyncApplyService, service => service.findPausedZones())
+                        Effect.flatMap(SyncApplyService, service => service.findPausedZones)
                     )
                 ).toHaveLength(1);
 

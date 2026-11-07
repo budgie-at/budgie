@@ -1,4 +1,5 @@
-import { Db, ExternalSourceEnum, PERSONAL_SYNC_ZONE, SyncUploadService } from '@budgie/contracts';
+import { decodeJson, encodeJson } from '@budgie-at/test-kit';
+import { Db, ExternalSourceEnum, PERSONAL_SYNC_ZONE, SyncRecordTypeEnum, SyncUploadService } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -16,7 +17,7 @@ const readOutbox = testDb.$client.unsafe<{ readonly syncId: string; readonly syn
 
 const readLastLocalChange = testDb.$client
     .unsafe<{ readonly value: number | null }>('SELECT last_local_change_at AS value FROM sync_apply_state WHERE id = 1')
-    .pipe(Effect.map(([row]) => row?.value ?? null));
+    .pipe(Effect.map(rows => rows.at(0)?.value ?? null));
 
 const resetLastLocalChange = testDb.$client.unsafe(
     `INSERT INTO sync_apply_state (id, last_local_change_at) VALUES (1, 0) ON CONFLICT (id) DO UPDATE SET last_local_change_at = 0`
@@ -74,7 +75,7 @@ describe('cloud-sync/upload-service', () => {
                     title: 'Cafe'
                 });
                 const firstBatch = yield* uploadService.pending(10);
-                const sent = firstBatch.saves.find(save => save.records[0].recordType === 'Transaction');
+                const sent = firstBatch.saves.find(save => save.records[0].recordType === SyncRecordTypeEnum.TRANSACTION);
 
                 if (sent === undefined) {
                     return yield* Effect.die('transaction save missing');
@@ -91,7 +92,7 @@ describe('cloud-sync/upload-service', () => {
 
                 expect(remaining.map(row => row.syncId)).toContain(sent.syncId);
                 expect(stored.systemFields).toBe('{"changeTag":"1"}');
-                expect(JSON.parse(stored.payload)).toEqual(sent.records[0]);
+                expect(decodeJson(stored.payload)).toEqual(sent.records[0]);
 
                 const secondBatch = yield* uploadService.pending(10);
                 const resent = secondBatch.saves.find(save => save.syncId === sent.syncId);
@@ -142,12 +143,12 @@ describe('cloud-sync/upload-service', () => {
                 ]);
 
                 const batch = yield* uploadService.pending(50);
-                const save = batch.saves.find(candidate => candidate.records[0].recordType === 'BankIntegration');
+                const save = batch.saves.find(candidate => candidate.records[0].recordType === SyncRecordTypeEnum.BANK_INTEGRATION);
                 const fields = save?.records[0].encryptedFields ?? {};
 
                 expect(Object.values(fields)).toContain('install-a');
-                expect(JSON.stringify(fields)).not.toContain('secret-token');
-                expect(save?.changedFields.some(field => /owner/i.test(field))).toBe(true);
+                expect(encodeJson(fields)).not.toContain('secret-token');
+                expect(save?.changedFields.some(field => /owner/iu.test(field))).toBe(true);
             })
         )
     );

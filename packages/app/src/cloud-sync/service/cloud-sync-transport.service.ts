@@ -1,11 +1,13 @@
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+import * as Option from 'effect/Option';
 import * as Queue from 'effect/Queue';
 import * as Schema from 'effect/Schema';
 import * as Stream from 'effect/Stream';
 
-import { ICloudModule } from '../../../modules/icloud';
+import { ICloudErrorCode, ICloudModule } from '../../../modules/icloud';
+import { NativeCallError } from '../../@generic/error/native-call.error';
 import { CloudSyncEventKindEnum } from '../enum/cloud-sync-event-kind.enum';
 import { CloudSyncTransportError } from '../error/cloud-sync-transport.error';
 
@@ -18,13 +20,16 @@ export class CloudSyncTransport extends Context.Service<CloudSyncTransport>()('@
         const isNativeError = Schema.is(Schema.Struct({ code: Schema.String, message: Schema.String }));
 
         const call = <A>(run: () => Promise<A>) =>
-            Effect.tryPromise({ try: run, catch: cause => cause }).pipe(
-                Effect.catch(cause =>
+            Effect.tryPromise({ try: run, catch: cause => NativeCallError.make({ cause }) }).pipe(
+                Effect.catch(({ cause }) =>
                     isNativeError(cause)
                         ? Effect.fail(
-                              new CloudSyncTransportError({
-                                  code: cause.code,
-                                  message: cause.message.split('\n→ Caused by: ').pop() ?? cause.message
+                              CloudSyncTransportError.make({
+                                  code: Option.getOrElse(
+                                      Schema.decodeUnknownOption(Schema.Enum(ICloudErrorCode))(cause.code),
+                                      () => ICloudErrorCode.UNKNOWN
+                                  ),
+                                  message: cause.message.split(/\n→ Caused by: /u).pop() ?? cause.message
                               })
                           )
                         : Effect.die(cause)
@@ -79,7 +84,7 @@ export class CloudSyncTransport extends Context.Service<CloudSyncTransport>()('@
 
         return {
             events,
-            getAccountStatus: () => call(() => icloud.getAccountStatus()),
+            getAccountStatus: call(() => icloud.getAccountStatus()),
             startSync: (scope: ICloudSyncScope, stateSerialization: string | null) =>
                 call(() => icloud.startSync(scope, stateSerialization)),
             stopSync: (scope: ICloudSyncScope) => call(() => icloud.stopSync(scope)),

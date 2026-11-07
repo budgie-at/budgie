@@ -45,7 +45,7 @@ export class SyncDerivedMatcherService extends Context.Service<SyncDerivedMatche
             );
 
         const mergeGroup = Effect.fnUntraced(function* (group: readonly SyncRecurringSeriesRowInterface[]) {
-            const ordered = group.toSorted(byIdentity);
+            const ordered = [...group].sort(byIdentity);
             const [winner, ...losers] = ordered;
             const stateSource = pickBest(ordered, rankOf);
             const freshest = pickBest(ordered, row => row.lastSeenAt);
@@ -126,7 +126,9 @@ export class SyncDerivedMatcherService extends Context.Service<SyncDerivedMatche
 
                 for (const group of groups.values()) {
                     if (isNotEmptyArray(group.slice(1))) {
-                        merges.push(yield* mergeGroup(group));
+                        const merge = yield* mergeGroup(group);
+
+                        merges.push(merge);
                     }
                 }
 

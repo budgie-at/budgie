@@ -7,7 +7,7 @@ interface StoredChangeInterface {
     readonly version: number;
     readonly zone: string;
     readonly recordName: string;
-    readonly record: unknown | null;
+    readonly record: unknown;
     readonly recordType: string;
 }
 

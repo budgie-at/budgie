@@ -37,7 +37,7 @@ describe('cloud-sync/sync-service split transactions', () => {
                     databaseScope: SyncDatabaseScopeEnum.PRIVATE,
                     role: SyncZoneRoleEnum.OWNER
                 });
-                yield* service.reconfigure();
+                yield* service.reconfigure;
                 yield* service.handleSentChanges(
                     sentEvent({ savedRecords: savedFrom(context.transport.calls.savedBatches[0], 'system-meta') })
                 );
@@ -65,7 +65,7 @@ describe('cloud-sync/sync-service split transactions', () => {
 
                 const batchesBefore = context.transport.calls.savedBatches.length;
 
-                yield* service.drain();
+                yield* service.drain;
 
                 const deleteIds = context.transport.calls.deletedBatches.flat();
                 const resaved = context.transport.calls.savedBatches.slice(batchesBefore).flat();

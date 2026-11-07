@@ -27,14 +27,15 @@ export const CloudSyncRow = () => {
     const handleChange = (next: boolean) => {
         void run(
             updateSettingsMutation({ cloudSyncEnabled: next }).pipe(
-                Effect.andThen(Effect.flatMap(CloudSyncService, cloudSyncService => cloudSyncService.reconfigure())),
+                Effect.andThen(Effect.flatMap(CloudSyncService, cloudSyncService => cloudSyncService.reconfigure)),
                 toastOnFailure(t`Could not update iCloud sync`)
             )
         );
     };
 
     const offLabel = isAccountUnavailable ? t`Sign in to iCloud to turn on` : t`Turned off`;
-    const subtitle = isOn && !isHealthy ? <SettingsWarningSubtitle>{label}</SettingsWarningSubtitle> : isOn ? label : offLabel;
+    const onLabel = isHealthy ? label : <SettingsWarningSubtitle>{label}</SettingsWarningSubtitle>;
+    const subtitle = isOn ? onLabel : offLabel;
 
     return (
         <SettingsSwitchRow

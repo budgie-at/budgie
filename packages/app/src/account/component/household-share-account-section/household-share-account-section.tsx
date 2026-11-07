@@ -20,6 +20,7 @@ interface Props {
     readonly isBankSynced: boolean;
 }
 
+// eslint-disable-next-line max-statements -- Section orchestration with several live reads and derived footer states
 export const HouseholdShareAccountSection = ({ accountId, isBankSynced }: Props) => {
     const { t } = useLingui();
     const status = AsyncResult.getOrElse(useLiveAtomValue(householdAccountShareAtom(accountId)), () => null);
@@ -31,15 +32,16 @@ export const HouseholdShareAccountSection = ({ accountId, isBankSynced }: Props)
         return null;
     }
 
+    const { ownerName } = status;
     const isSharedByOther = status.state === HouseholdShareStateEnum.SHARED_BY_OTHER;
     const isSharedByEverything = !isSharedByOther && isDefined(everything) && everything.isEnabled;
     const isShared = draft ?? status.state === HouseholdShareStateEnum.SHARED_BY_ME;
     const isToggleable = !isSharedByOther && !isSharedByEverything;
-    const isSyncedByOther = isBankSynced && isSharedByOther && isDefined(status.ownerName);
+    const isSyncedByOther = isBankSynced && isSharedByOther && isDefined(ownerName);
     const sharedFooter = isShared ? t`Turn off to remove it from family devices.` : null;
     const accountFooter = isAvailable ? sharedFooter : t`Starts when you sign in to iCloud.`;
     const ownFooter = isToggleable ? accountFooter : null;
-    const footer = isSyncedByOther ? t`Synced by ${status.ownerName}` : ownFooter;
+    const footer = isSyncedByOther ? t`Synced by ${ownerName}` : ownFooter;
 
     return (
         <GroupedListSection title={t`Family`} footer={footer}>

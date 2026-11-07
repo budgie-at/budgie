@@ -24,7 +24,7 @@ export const HouseholdLeaveRow = () => {
                 isDestructive: true
             }).pipe(
                 Effect.flatMap(isConfirmed =>
-                    isConfirmed ? Effect.flatMap(HouseholdService, householdService => householdService.leave()) : Effect.void
+                    isConfirmed ? Effect.flatMap(HouseholdService, householdService => householdService.leave) : Effect.void
                 ),
                 toastOnFailure(t`Could not leave the family`)
             )

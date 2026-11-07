@@ -7,8 +7,7 @@ import { SyncApplyStateEntityTable } from '../table/sync-apply-state-entity.tabl
 
 export class SyncApplyStateRepository extends Context.Service<SyncApplyStateRepository>()('@budgie/contracts/SyncApplyStateRepository', {
     make: Effect.succeed({
-        isApplying: () =>
-            Db.query(db => db.query.SyncApplyStateEntityTable.findFirst()).pipe(Effect.map(state => state?.isApplying ?? false)),
+        isApplying: Db.query(db => db.query.SyncApplyStateEntityTable.findFirst()).pipe(Effect.map(state => state?.isApplying ?? false)),
         setApplying: (isApplying: boolean) =>
             Db.query(db =>
                 db

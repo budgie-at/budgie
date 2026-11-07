@@ -2,6 +2,7 @@ import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.consta
 import { cloudSyncStatusAtom } from '@app/cloud-sync/constant/cloud-sync-status-atom.constant';
 import { CloudSyncStatusEnum } from '@app/cloud-sync/enum/cloud-sync-status.enum';
 import { CloudSyncService } from '@app/cloud-sync/service/cloud-sync.service';
+import { encodeJson } from '@budgie-at/test-kit';
 import {
     HOUSEHOLD_SYNC_ZONE,
     HouseholdShareService,
@@ -30,7 +31,7 @@ const readSystemFields = (recordName: string) =>
         .unsafe<{ readonly systemFields: string | null }>('SELECT system_fields AS systemFields FROM sync_record WHERE sync_id = ?', [
             recordName
         ])
-        .pipe(Effect.map(([row]) => row?.systemFields ?? null));
+        .pipe(Effect.map(rows => rows.at(0)?.systemFields ?? null));
 
 const flatten = (batches: readonly (readonly ICloudRecordPayload[])[]) => batches.flat();
 
@@ -49,13 +50,13 @@ describe('cloud-sync/sync-service drain', () => {
                     operatedAt: new Date('2026-10-02T10:00:00Z'),
                     title: 'Cafe'
                 });
-                yield* service.reconfigure();
+                yield* service.reconfigure;
 
                 expect(context.transport.calls.ensuredZones).toEqual(['Personal']);
                 expect(context.transport.calls.started).toEqual([null]);
                 expect(flatten(context.transport.calls.savedBatches).map(({ recordType }) => recordType)).toEqual(['SyncMeta']);
 
-                const meta = context.transport.calls.savedBatches[0];
+                const [meta] = context.transport.calls.savedBatches;
 
                 yield* service.handleSentChanges(sentEvent({ savedRecords: savedFrom(meta, 'system-meta') }));
 
@@ -103,7 +104,7 @@ describe('cloud-sync/sync-service drain', () => {
                     operatedAt: new Date('2026-10-02T10:00:00Z'),
                     title: 'Cafe'
                 });
-                yield* service.reconfigure();
+                yield* service.reconfigure;
                 yield* service.handleSentChanges(
                     sentEvent({ savedRecords: savedFrom(context.transport.calls.savedBatches[0], 'system-meta') })
                 );
@@ -137,7 +138,7 @@ describe('cloud-sync/sync-service drain', () => {
                 const account = yield* seed.account({ title: 'Cash' });
 
                 yield* testDb.$client.unsafe('UPDATE accounts SET title = ? WHERE id = ?', ['Mine', account.id]);
-                yield* service.reconfigure();
+                yield* service.reconfigure;
                 yield* service.handleSentChanges(
                     sentEvent({ savedRecords: savedFrom(context.transport.calls.savedBatches[0], 'system-meta') })
                 );
@@ -168,7 +169,7 @@ describe('cloud-sync/sync-service drain', () => {
                                     ownerName: firstPush.ownerName,
                                     recordName: firstPush.recordName,
                                     recordType: firstPush.recordType,
-                                    systemFields: JSON.stringify({ modifiedAt: 50 }),
+                                    systemFields: encodeJson({ modifiedAt: 50 }),
                                     schemaVersion: firstPush.schemaVersion,
                                     encryptedFields: { ...serverFields, title: 'Theirs', order: 7 }
                                 }
@@ -181,7 +182,7 @@ describe('cloud-sync/sync-service drain', () => {
                     ({ recordType }) => recordType === 'Account'
                 );
 
-                expect(rePush?.systemFields).toBe(JSON.stringify({ modifiedAt: 50 }));
+                expect(rePush?.systemFields).toBe(encodeJson({ modifiedAt: 50 }));
                 expect(rePush?.recordName).toBe(firstPush.recordName);
             })
         );
@@ -196,7 +197,7 @@ describe('cloud-sync/sync-service drain', () => {
                 const account = yield* seed.account({ title: 'Cash' });
 
                 yield* testDb.$client.unsafe('UPDATE accounts SET iban = ? WHERE id = ?', ['DE00', account.id]);
-                yield* service.reconfigure();
+                yield* service.reconfigure;
                 yield* service.handleSentChanges(
                     sentEvent({ savedRecords: savedFrom(context.transport.calls.savedBatches[0], 'system-meta') })
                 );
@@ -210,7 +211,7 @@ describe('cloud-sync/sync-service drain', () => {
 
                 yield* service.handleSentChanges(sentEvent({ savedRecords: savedFrom(firstPush, 'system-1') }));
                 yield* testDb.$client.unsafe('UPDATE accounts SET iban = NULL WHERE id = ?', [account.id]);
-                yield* service.drain();
+                yield* service.drain;
 
                 const secondPush = flatten(context.transport.calls.savedBatches).filter(
                     ({ recordType, systemFields }) => recordType === 'Account' && systemFields === 'system-1'
@@ -229,7 +230,7 @@ describe('cloud-sync/sync-service drain', () => {
             Effect.gen(function* () {
                 const service = yield* CloudSyncService;
                 yield* seed.account({ title: 'Cash' });
-                yield* service.reconfigure();
+                yield* service.reconfigure;
                 context.transport.behavior.confirmProbeSql = "SELECT COUNT(*) AS total FROM accounts WHERE title = 'From cloud'";
 
                 const pushed = flatten(context.transport.calls.savedBatches).find(({ recordType }) => recordType === 'SyncMeta');
@@ -245,7 +246,7 @@ describe('cloud-sync/sync-service drain', () => {
                             ownerName: '__defaultOwner__',
                             recordName: '0194a000-0000-7000-8000-000000000001',
                             recordType: 'Account',
-                            systemFields: JSON.stringify({ modifiedAt: 10 }),
+                            systemFields: encodeJson({ modifiedAt: 10 }),
                             schemaVersion: 1,
                             encryptedFields: {
                                 title: 'From cloud',
@@ -280,7 +281,7 @@ describe('cloud-sync/sync-service drain', () => {
                 const service = yield* CloudSyncService;
 
                 yield* TestClock.setTime(Date.now());
-                yield* service.reconfigure();
+                yield* service.reconfigure;
                 yield* service.handleSentChanges(
                     sentEvent({ savedRecords: savedFrom(context.transport.calls.savedBatches[0], 'system-meta') })
                 );
@@ -293,7 +294,7 @@ describe('cloud-sync/sync-service drain', () => {
                 yield* service.handleSentChanges(
                     sentEvent({ savedRecords: savedFrom(heartbeat === undefined ? [] : [heartbeat], 'system-device') })
                 );
-                yield* service.drain();
+                yield* service.drain;
 
                 expect(flatten(context.transport.calls.savedBatches).filter(({ recordType }) => recordType === 'SyncDevice')).toHaveLength(
                     1

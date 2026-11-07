@@ -12,7 +12,7 @@ export class SyncZoneRegistryRepository extends Context.Service<SyncZoneRegistry
     {
         make: Effect.succeed({
             findByLabel: (zoneLabel: string) => Db.query(db => db.query.SyncZoneRegistryEntityTable.findFirst({ where: { zoneLabel } })),
-            findAll: () => Db.query(db => db.query.SyncZoneRegistryEntityTable.findMany({ orderBy: { id: 'asc' } })),
+            findAll: Db.query(db => db.query.SyncZoneRegistryEntityTable.findMany({ orderBy: { id: 'asc' } })),
             upsert: (input: SyncZoneRegistryCreateEntityInterface) =>
                 Db.query(db =>
                     db

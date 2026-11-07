@@ -182,7 +182,7 @@ export const encodeAllRecords = (state: SyncStateInterface) =>
     );
 
 export const throughTransport = (records: readonly SyncRecordInterface[]): unknown[] =>
-    records.map((record): unknown => JSON.parse(JSON.stringify(record)));
+    records.map((record): unknown => structuredClone(record));
 
 const toSqlValue = (value: unknown): unknown => {
     if (value instanceof Date) {
@@ -311,7 +311,7 @@ export const materializeRecords = (database: DB, records: readonly DecodedSyncRe
                     ON CONFLICT ("sync_zone", "sync_id") DO UPDATE SET ${updates} RETURNING rowid AS localId`,
                 params
             );
-            const localId = inserted[0].localId;
+            const [{ localId }] = inserted;
 
             localIds.set(`${row.tableName}|${row.syncZone}|${row.syncId}`, localId);
             anyZoneIds.set(`${row.tableName}|${row.syncId}`, localId);
@@ -393,10 +393,14 @@ export const hydratedSnapshot = (database: DB) =>
             );
 
             snapshot[tableName] = normalized.sort((left, right) => {
-                const leftKey = `${left['sync_zone']}|${left['sync_id']}`;
-                const rightKey = `${right['sync_zone']}|${right['sync_id']}`;
+                const leftKey = `${String(left['sync_zone'])}|${String(left['sync_id'])}`;
+                const rightKey = `${String(right['sync_zone'])}|${String(right['sync_id'])}`;
 
-                return leftKey < rightKey ? -1 : leftKey > rightKey ? 1 : 0;
+                if (leftKey < rightKey) {
+                    return -1;
+                }
+
+                return leftKey > rightKey ? 1 : 0;
             });
         }
 

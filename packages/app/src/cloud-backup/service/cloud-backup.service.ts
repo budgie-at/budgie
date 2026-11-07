@@ -9,7 +9,10 @@ import {
 } from '@budgie/contracts';
 import * as schema from '@budgie/contracts/schema';
 import { getTableConfig } from 'drizzle-orm/sqlite-core';
+import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
+import * as Duration from 'effect/Duration';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Option from 'effect/Option';
@@ -44,31 +47,34 @@ export class CloudBackupService extends Context.Service<CloudBackupService>()('@
         const databaseRekeyService = yield* DatabaseRekeyService;
         const installIdService = yield* InstallIdService;
         const runningBackup = yield* Semaphore.make(1);
-        const dayMilliseconds = 24 * 60 * 60 * 1000;
+        const dayMilliseconds = Duration.toMillis(Duration.days(1));
         const dailyBackupCount = 7;
         const weeklyBackupCount = 4;
-        const otherInstallRetentionMilliseconds = 90 * dayMilliseconds;
+        const otherInstallRetentionDays = 90;
+        const otherInstallRetentionMilliseconds = Duration.toMillis(Duration.days(otherInstallRetentionDays));
         const appVersion = Constants.expoConfig?.version ?? '1.0.0';
         const deviceName = Constants.deviceName ?? Platform.OS;
         const deviceModel = Platform.OS === 'ios' ? Platform.constants.interfaceIdiom : Platform.OS;
         const userDataTableNames = new Set(SYNC_IDENTITY_TABLES.map(table => table.name));
         const timestampColumnNames = new Set(['created_at', 'updated_at', 'deleted_at']);
-        const LastChangedRowsSchema = Schema.NonEmptyArray(Schema.Struct({ lastChangedAt: Schema.NullOr(Schema.Number) }));
-        const lastChangedAtSql = `SELECT MAX(lastChangedAt) AS lastChangedAt FROM (${Object.values(schema)
+        const LastChangedRowsSchema = Schema.NonEmptyArray(Schema.Struct({ lastChangedAt: Schema.NullOr(Schema.Finite) }));
+        const lastChangedAtSql = String.raw`SELECT MAX(lastChangedAt) AS lastChangedAt FROM (${Object.values(schema)
             .map(table => getTableConfig(table))
             .filter(config => userDataTableNames.has(config.name))
             .flatMap(config =>
                 config.columns
                     .filter(column => timestampColumnNames.has(column.name))
-                    .map(column => `SELECT MAX(${column.name}) AS lastChangedAt FROM ${config.name}`)
+                    .map(column => String.raw`SELECT MAX(${column.name}) AS lastChangedAt FROM ${config.name}`)
             )
-            .join(' UNION ALL ')})`;
+            .join(String.raw` UNION ALL `)})`;
 
         const selectBackupsToDelete = (backups: readonly ICloudBackupMetadata[], installId: string, now: number): readonly string[] => {
             const datedBackups = backups
                 .map(backup => ({ ...backup, timestamp: Date.parse(backup.createdAt) }))
                 .filter(backup => Number.isFinite(backup.timestamp));
-            const ownBackups = datedBackups.filter(backup => backup.installId === installId).sort((a, b) => b.timestamp - a.timestamp);
+            const ownBackups = datedBackups
+                .filter(backup => backup.installId === installId)
+                .sort((first, second) => second.timestamp - first.timestamp);
             const today = Math.floor(now / dayMilliseconds);
             const retainedBuckets = new Set<string>();
             const retainedRecordNames = new Set<string>();
@@ -93,15 +99,16 @@ export class CloudBackupService extends Context.Service<CloudBackupService>()('@
         };
 
         const hasUserDataChangedSince = Effect.fn('CloudBackupService.hasUserDataChangedSince')(function* (lastBackupAt: Date | null) {
-            const [{ lastChangedAt }] = yield* Schema.decodeUnknownEffect(LastChangedRowsSchema)(
-                yield* Db.query(db => db.$client.unsafe(lastChangedAtSql))
-            );
+            const rows = yield* Db.query(db => db.$client.unsafe(lastChangedAtSql));
+            const [{ lastChangedAt }] = yield* Schema.decodeUnknownEffect(LastChangedRowsSchema)(rows);
 
             return isDefined(lastChangedAt) && lastChangedAt >= Math.floor((lastBackupAt?.getTime() ?? 0) / 1000);
         });
 
         const applyRetention = Effect.fn('CloudBackupService.applyRetention')(function* (installId: string) {
-            const recordNames = selectBackupsToDelete(yield* cloudTransport.listBackups(), installId, Date.now());
+            const backups = yield* cloudTransport.listBackups;
+            const now = yield* Clock.currentTimeMillis;
+            const recordNames = selectBackupsToDelete(backups, installId, now);
 
             if (isNotEmptyArray(recordNames)) {
                 yield* cloudTransport.deleteBackups(recordNames);
@@ -150,7 +157,7 @@ export class CloudBackupService extends Context.Service<CloudBackupService>()('@
 
         const runBackup = Effect.fn('CloudBackupService.runBackup')(function* (minimumAgeMilliseconds: number) {
             const settings = yield* settingsRepository.getSettings();
-            const startedAt = new Date();
+            const startedAt = yield* DateTime.nowAsDate;
 
             if (!settings.cloudBackupEnabled) {
                 return false;
@@ -167,7 +174,7 @@ export class CloudBackupService extends Context.Service<CloudBackupService>()('@
                 return false;
             }
 
-            if ((yield* cloudTransport.getAccountStatus()).status !== 'available') {
+            if ((yield* cloudTransport.getAccountStatus).status !== 'available') {
                 return false;
             }
 
@@ -180,16 +187,20 @@ export class CloudBackupService extends Context.Service<CloudBackupService>()('@
             return true;
         });
 
+        const isQuotaExceeded = Schema.is(CloudQuotaExceededError);
+        const isNetworkUnavailable = Schema.is(CloudNetworkUnavailableError);
+        const isAccountUnavailable = Schema.is(CloudAccountUnavailableError);
+
         const resolveFailureStatus = (error: unknown): CloudBackupStatusEnum => {
-            if (error instanceof CloudQuotaExceededError) {
+            if (isQuotaExceeded(error)) {
                 return CloudBackupStatusEnum.STORAGE_FULL;
             }
 
-            if (error instanceof CloudNetworkUnavailableError) {
+            if (isNetworkUnavailable(error)) {
                 return CloudBackupStatusEnum.NETWORK_UNAVAILABLE;
             }
 
-            return error instanceof CloudAccountUnavailableError ? CloudBackupStatusEnum.ACCOUNT_UNAVAILABLE : CloudBackupStatusEnum.READY;
+            return isAccountUnavailable(error) ? CloudBackupStatusEnum.ACCOUNT_UNAVAILABLE : CloudBackupStatusEnum.READY;
         };
 
         return {

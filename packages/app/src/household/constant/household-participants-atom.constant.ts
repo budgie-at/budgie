@@ -17,7 +17,7 @@ export const householdParticipantsAtom = appAtomRuntime.atom(get => {
         Effect.serviceOption(HouseholdService),
         Option.match({
             onNone: () => Effect.succeed(NO_PARTICIPANTS),
-            onSome: householdService => householdService.participants()
+            onSome: householdService => householdService.participants
         })
     );
 });

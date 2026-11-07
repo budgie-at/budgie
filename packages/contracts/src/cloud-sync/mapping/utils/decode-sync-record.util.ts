@@ -26,22 +26,16 @@ const EnvelopeSchema = Schema.Struct({
     recordType: Schema.String,
     recordName: Schema.String,
     zone: Schema.String,
-    schemaVersion: Schema.Number,
+    schemaVersion: Schema.Finite,
     encryptedFields: Schema.Record(Schema.String, Schema.Unknown)
 });
 
-const decodeRowValue = (kind: SyncColumnKindEnum, value: unknown): SyncRowValueType | null => {
-    switch (kind) {
-        case SyncColumnKindEnum.TIMESTAMP:
-            return isNumber(value) ? new Date(value) : null;
-        case SyncColumnKindEnum.BOOLEAN:
-            return isBoolean(value) ? value : null;
-        case SyncColumnKindEnum.TEXT:
-            return isString(value) ? value : null;
-        case SyncColumnKindEnum.INTEGER:
-        case SyncColumnKindEnum.REAL:
-            return isNumber(value) ? value : null;
-    }
+const ROW_VALUE_DECODERS: Readonly<Record<SyncColumnKindEnum, (value: unknown) => SyncRowValueType | null>> = {
+    [SyncColumnKindEnum.TIMESTAMP]: value => (isNumber(value) ? new Date(value) : null),
+    [SyncColumnKindEnum.BOOLEAN]: value => (isBoolean(value) ? value : null),
+    [SyncColumnKindEnum.TEXT]: value => (isString(value) ? value : null),
+    [SyncColumnKindEnum.INTEGER]: value => (isNumber(value) ? value : null),
+    [SyncColumnKindEnum.REAL]: value => (isNumber(value) ? value : null)
 };
 
 const decodeColumn = (column: SyncColumnDescriptorInterface, source: Readonly<Record<string, unknown>>): DecodedSyncColumnInterface => {
@@ -56,17 +50,16 @@ const decodeColumn = (column: SyncColumnDescriptorInterface, source: Readonly<Re
         };
     }
 
-    return { value: decodeRowValue(column.kind, wire), reference: null };
+    return { value: ROW_VALUE_DECODERS[column.kind](wire), reference: null };
 };
 
 const decodeRow = (
     descriptor: SyncTableDescriptorInterface,
     source: Readonly<Record<string, unknown>>,
     identity: SyncIdentityInterface,
-    parentReference: SyncRowReferenceInterface | null,
-    defaults: Readonly<Record<string, SyncRowValueType>>
+    parentReference: SyncRowReferenceInterface | null
 ): SyncRowInterface => {
-    const values: Record<string, SyncRowValueType> = { ...defaults };
+    const values: Record<string, SyncRowValueType> = {};
     const references: SyncRowReferenceInterface[] = isDefined(parentReference) ? [parentReference] : [];
 
     for (const column of descriptor.columns) {
@@ -108,8 +101,7 @@ const decodeChildRows = (
                       child.descriptor,
                       childPayload,
                       { syncId: childSyncId, syncZone: zone },
-                      buildParentReference(child.descriptor.parentLink, parentSyncId),
-                      {}
+                      buildParentReference(child.descriptor.parentLink, parentSyncId)
                   )
               ]
             : [];
@@ -118,12 +110,12 @@ const decodeChildRows = (
 
 export const decodeSyncRecord = Effect.fnUntraced(function* (input: unknown) {
     const envelope = yield* Schema.decodeUnknownEffect(EnvelopeSchema)(input).pipe(
-        Effect.mapError(error => new SyncRecordInvalidError({ recordType: '', recordName: '', reason: getErrorMessage(error) }))
+        Effect.mapError(error => SyncRecordInvalidError.make({ recordType: '', recordName: '', reason: getErrorMessage(error) }))
     );
     const { recordType, recordName, zone, schemaVersion, encryptedFields } = envelope;
 
     if (!Number.isInteger(schemaVersion) || schemaVersion < 1 || schemaVersion > SYNC_RECORD_SCHEMA_VERSION) {
-        return yield* new SyncSchemaVersionUnsupportedError({
+        return yield* SyncSchemaVersionUnsupportedError.make({
             recordType,
             recordName,
             schemaVersion,
@@ -134,19 +126,20 @@ export const decodeSyncRecord = Effect.fnUntraced(function* (input: unknown) {
     const decoder = SYNC_RECORD_DECODERS.get(recordType);
 
     if (!isDefined(decoder)) {
-        return yield* new SyncRecordInvalidError({ recordType, recordName, reason: 'Unknown record type' });
+        return yield* SyncRecordInvalidError.make({ recordType, recordName, reason: 'Unknown record type' });
     }
 
-    const payload = yield* Schema.decodeUnknownEffect(decoder.schema)(encryptedFields).pipe(
-        Effect.mapError(error => new SyncRecordInvalidError({ recordType, recordName, reason: getErrorMessage(error) }))
+    const payload = yield* Schema.decodeEffect(decoder.schema)(encryptedFields).pipe(
+        Effect.mapError(error => SyncRecordInvalidError.make({ recordType, recordName, reason: getErrorMessage(error) }))
     );
 
     if (!isRecord(payload) || !isNotEmptyString(recordName)) {
-        return yield* new SyncRecordInvalidError({ recordType, recordName, reason: 'Payload is not an object' });
+        return yield* SyncRecordInvalidError.make({ recordType, recordName, reason: 'Payload is not an object' });
     }
 
     const { definition } = decoder;
-    const parentRow = decodeRow(definition.parent, payload, { syncId: recordName, syncZone: zone }, null, definition.parentDefaults);
+    const decodedParentRow = decodeRow(definition.parent, payload, { syncId: recordName, syncZone: zone }, null);
+    const parentRow: SyncRowInterface = { ...decodedParentRow, values: { ...definition.parentDefaults, ...decodedParentRow.values } };
     const childRows = definition.children.flatMap(child => decodeChildRows(child, payload, zone, recordName));
     const legPrivateRows = isDefined(definition.legPrivateEntries)
         ? decodeChildRows(definition.legPrivateEntries, payload, zone, recordName)

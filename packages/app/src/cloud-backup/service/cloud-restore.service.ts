@@ -1,4 +1,3 @@
-/* oxlint-disable lingui/no-unlocalized-strings */
 import { SettingsRepository } from '@budgie/contracts';
 import * as Arr from 'effect/Array';
 import * as Context from 'effect/Context';
@@ -53,7 +52,7 @@ export class CloudRestoreService extends Context.Service<CloudRestoreService>()(
 
         return {
             listBackups: Effect.fn('CloudRestoreService.listBackups')(function* () {
-                const backups = yield* cloudTransport.listBackups();
+                const backups = yield* cloudTransport.listBackups;
                 const datedBackups = backups
                     .map(backup => ({ ...backup, createdAt: new Date(backup.createdAt) }))
                     .filter(backup => Number.isFinite(backup.createdAt.getTime()))
@@ -76,19 +75,16 @@ export class CloudRestoreService extends Context.Service<CloudRestoreService>()(
 
                     deleteStagingFiles();
                     yield* Effect.promise(() => new File(fileUri).move(databaseFile(RESTORE_SAFETY_FILES.source)));
-                    yield* databaseRekeyService.transcodeDatabaseFile(
-                        RESTORE_SAFETY_FILES.source,
-                        backupKey,
-                        RESTORE_SAFETY_FILES.target,
-                        targetKey,
-                        {
+                    yield* databaseRekeyService.transcodeDatabaseFile(RESTORE_SAFETY_FILES.source, backupKey, RESTORE_SAFETY_FILES.target, {
+                        key: targetKey,
+                        settings: {
                             isBiometricEnabled,
                             isPinEnabled,
                             cloudBackupEnabled,
                             isOnboardingCompleted: true,
                             lastCloudBackupAt: null
                         }
-                    );
+                    });
 
                     const targetUri = databaseFile(RESTORE_SAFETY_FILES.target).uri;
 

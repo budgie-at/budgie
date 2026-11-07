@@ -21,10 +21,10 @@ export const iCloudAccountAvailableAtom = appAtomRuntime.atom(get => {
                 Option.match({
                     onNone: () => Effect.succeed(true),
                     onSome: cloudTransport =>
-                        cloudTransport.getAccountStatus().pipe(
+                        cloudTransport.getAccountStatus.pipe(
                             Effect.map(({ status }) => status === 'available'),
-                            Effect.catchTag('CloudNetworkUnavailableError', () => Effect.succeed(true)),
-                            Effect.catch(() => Effect.succeed(false))
+                            Effect.catchTags({ CloudNetworkUnavailableError: () => Effect.succeed(true) }),
+                            Effect.orElseSucceed(() => false)
                         )
                 })
             )

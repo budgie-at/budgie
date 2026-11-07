@@ -87,8 +87,8 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
                 sql`${TransactionEntityTable.id} IN (SELECT ${TransactionTagsEntityTable.transactionId} FROM ${TransactionTagsEntityTable} WHERE ${TransactionTagsEntityTable.tagId} = ${tagId})`
             );
 
-        const buildBudgetScopeCondition = (budgetSyncZone: string) =>
-            budgetSyncZone === HOUSEHOLD_SYNC_ZONE ? eq(AccountEntityTable.syncZone, HOUSEHOLD_SYNC_ZONE) : undefined;
+        const buildBudgetScopeConditions = (budgetSyncZone: string) =>
+            budgetSyncZone === HOUSEHOLD_SYNC_ZONE ? [eq(AccountEntityTable.syncZone, HOUSEHOLD_SYNC_ZONE)] : [];
 
         const findEntries = (
             amountSql: SQL<number>,
@@ -118,7 +118,7 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
                             isNull(ExchangeRateEntityTable.deletedAt)
                         )
                     )
-                    .where(and(where, buildBudgetScopeCondition(budgetSyncZone)))
+                    .where(and(where, ...buildBudgetScopeConditions(budgetSyncZone)))
             );
 
         return {
@@ -198,6 +198,7 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
                     baseInstrumentId,
                     budgetSyncZone
                 ),
+            // eslint-disable-next-line max-params -- Existing public API intentionally keeps positional arguments
             findEventSpentEntries: (
                 periodStart: Date,
                 nextPeriodStart: Date,
@@ -226,7 +227,7 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
                                 eq(AccountEntityTable.debtType, AccountDebtTypeEnum.INSTALLMENT),
                                 isNull(DebtEventEntityTable.deletedAt),
                                 between(TransactionEntityTable.operatedAt, periodStart, new Date(nextPeriodStart.getTime() - 1)),
-                                buildBudgetScopeCondition(budgetSyncZone)
+                                ...buildBudgetScopeConditions(budgetSyncZone)
                             )
                         )
                 )

@@ -50,7 +50,7 @@ const startRestore = (database: DB, role: SyncZoneRoleEnum) => {
                 role
             });
             context.transport.behavior.zoneMeta = metaWith(yield* identity.ensureLineageId());
-            yield* service.reconfigure();
+            yield* service.reconfigure;
             context.transport.behavior.zoneInventory = (yield* database.$client.unsafe<{
                 readonly recordName: string;
                 readonly recordType: string;

@@ -9,13 +9,14 @@ import { SettingsRowIcon } from '../settings-row-icon/settings-row-icon';
 
 export const ICloudSignInRow = () => {
     const { t } = useLingui();
+    const pressableProps = { accessible: true, accessibilityRole: 'text' as const, accessibilityLabel: t`Apple Account, not signed in` };
 
     return (
         <GroupedListRow
             left={<SettingsRowIcon icon={UserIconNameEnum.Cloud} variant="ghost" />}
             title={t`Apple Account`}
             right={<SettingsRowAccessory value={t`Not signed in`} kind={SettingsRowAccessoryKindEnum.VALUE} />}
-            pressableProps={{ accessible: true, accessibilityRole: 'text', accessibilityLabel: t`Apple Account, not signed in` }}
+            pressableProps={pressableProps}
             testID={SettingsPageSelector.ICloudSignInCard}
         />
     );

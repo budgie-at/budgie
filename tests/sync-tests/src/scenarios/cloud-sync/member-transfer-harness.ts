@@ -38,7 +38,7 @@ export interface VisibleTransactionInterface {
     readonly entryCount: number;
 }
 
-export const makeMemberClouds = (): MemberCloudsInterface => {
+const makeMemberClouds = (): MemberCloudsInterface => {
     const household = new FakeCloudTransport();
 
     return {
@@ -89,7 +89,7 @@ export const settleMembers = (bobDatabase: DB, clouds: MemberCloudsInterface, is
         return { rounds: MAX_ROUNDS + 1, rejected };
     });
 
-export const shareAccountOn = (database: DB, accountId: number) =>
+const shareAccountOn = (database: DB, accountId: number) =>
     onShareDevice(
         database,
         Effect.flatMap(HouseholdShareService, service => service.shareAccount(accountId))

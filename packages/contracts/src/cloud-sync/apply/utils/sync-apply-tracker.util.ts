@@ -15,9 +15,19 @@ export class SyncApplyTracker {
     private readonly rejectedRecords: SyncRejectedRecordInterface[] = [];
     private skippedCount = 0;
 
+    get accountIds(): readonly number[] {
+        return [...this.accountIdSet];
+    }
+
+    get pendingOutboxDecisions(): readonly SyncReenqueuedRecordInterface[] {
+        return [...this.outboxDecisions.values()];
+    }
+
     addTouched(recordType: string, syncId: string, touchedRows: ReadonlyArray<readonly [string, string]>): void {
         SyncApplyTracker.addTo(this.touchedByType, recordType, syncId);
-        touchedRows.forEach(([tableName, rowSyncId]) => SyncApplyTracker.addTo(this.touchedByTable, tableName, rowSyncId));
+        for (const [tableName, rowSyncId] of touchedRows) {
+            SyncApplyTracker.addTo(this.touchedByTable, tableName, rowSyncId);
+        }
     }
 
     addDeleted(recordType: string, syncId: string): void {
@@ -38,14 +48,6 @@ export class SyncApplyTracker {
 
     skip(): void {
         this.skippedCount += 1;
-    }
-
-    get accountIds(): readonly number[] {
-        return [...this.accountIdSet];
-    }
-
-    get pendingOutboxDecisions(): readonly SyncReenqueuedRecordInterface[] {
-        return [...this.outboxDecisions.values()];
     }
 
     touchedSyncIds(recordType: string): readonly string[] {

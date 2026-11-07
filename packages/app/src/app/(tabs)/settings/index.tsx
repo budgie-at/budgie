@@ -28,7 +28,6 @@ import { ApplePayCaptureSettingsCard } from '../../../wallet-capture/component/a
 
 import { SettingsPageSelector } from './settings-page.selector';
 
-// eslint-disable-next-line max-lines-per-function
 export default function SettingsPage() {
     const { t } = useLingui();
     const { anchor } = useLocalSearchParams<{ anchor?: string }>();

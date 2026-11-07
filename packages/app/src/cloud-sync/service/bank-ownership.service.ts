@@ -7,6 +7,8 @@ import * as Layer from 'effect/Layer';
 import * as Option from 'effect/Option';
 import * as Schema from 'effect/Schema';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { InstallIdService } from '../../cloud-backup/service/install-id.service';
 import { CloudSyncDeviceRecordSchema } from '../constant/cloud-sync-device-record-schema.constant';
 import { CLOUD_SYNC_RECORDS } from '../constant/cloud-sync-records.constant';
@@ -22,8 +24,9 @@ export class BankOwnershipService extends Context.Service<BankOwnershipService>(
             evaluate: Effect.fn('BankOwnershipService.evaluate')(function* () {
                 const installId = yield* installIdService.get;
                 const now = yield* Clock.currentTimeMillis;
+                const deviceRecords = yield* syncRecordRepository.findByRecordType(CLOUD_SYNC_RECORDS.deviceRecordType);
                 const lastSyncedAtByInstall = new Map(
-                    (yield* syncRecordRepository.findByRecordType(CLOUD_SYNC_RECORDS.deviceRecordType)).flatMap(record =>
+                    deviceRecords.flatMap(record =>
                         Option.match(Schema.decodeUnknownOption(CloudSyncDeviceRecordSchema)(record.payload), {
                             onNone: () => [],
                             onSome: ({ encryptedFields }): [string, number][] => [[encryptedFields.installId, encryptedFields.lastSyncedAt]]
@@ -31,12 +34,16 @@ export class BankOwnershipService extends Context.Service<BankOwnershipService>(
                     )
                 );
 
+                const activeIntegrations = yield* bankIntegrationRepository.findActive;
+
                 yield* Effect.forEach(
-                    yield* bankIntegrationRepository.findActive,
+                    activeIntegrations,
                     integration => {
                         const owner = integration.ownerInstallId;
-                        const ownerLastSeenAt = owner === null ? 0 : (lastSyncedAtByInstall.get(owner) ?? integration.updatedAt.getTime());
-                        const isClaimable = owner === null || (owner !== installId && now - ownerLastSeenAt > handoverAfterMilliseconds);
+                        const ownerLastSeenAt = isDefined(owner)
+                            ? (lastSyncedAtByInstall.get(owner) ?? integration.updatedAt.getTime())
+                            : 0;
+                        const isClaimable = !isDefined(owner) || (owner !== installId && now - ownerLastSeenAt > handoverAfterMilliseconds);
 
                         return isClaimable
                             ? Effect.asVoid(bankIntegrationRepository.updateById(integration.id, { ownerInstallId: installId }))
@@ -51,6 +58,7 @@ export class BankOwnershipService extends Context.Service<BankOwnershipService>(
     static readonly layer = Layer.effect(BankOwnershipService, BankOwnershipService.make).pipe(
         Layer.provide([InstallIdService.layer, BankIntegrationRepository.layer, SyncRecordRepository.layer])
     );
+
     static readonly installIdLayer = Layer.effect(
         BankSyncInstallId,
         Effect.map(InstallIdService, installIdService => installIdService.get)

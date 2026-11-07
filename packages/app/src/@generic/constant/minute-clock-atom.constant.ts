@@ -5,5 +5,5 @@ import * as Schedule from 'effect/Schedule';
 import * as Stream from 'effect/Stream';
 
 export const minuteClockAtom = Atom.make(
-    Stream.fromEffect(Clock.currentTimeMillis).pipe(Stream.repeat(Schedule.spaced(Duration.minutes(1))))
+    Clock.currentTimeMillis.pipe(Stream.fromEffect, Stream.repeat(Schedule.spaced(Duration.minutes(1))))
 );

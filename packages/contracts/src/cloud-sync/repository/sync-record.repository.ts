@@ -30,16 +30,14 @@ export class SyncRecordRepository extends Context.Service<SyncRecordRepository>(
                         }
                     })
             ),
-        invalidateAll: () =>
-            Db.query(db => db.update(SyncRecordEntityTable).set({ systemFields: null, payload: null, updatedAt: new Date(0) })),
-        findUnconfirmed: () =>
-            Db.query(db =>
-                db.$client.unsafe<Pick<SyncRecordEntityInterface, 'syncZone' | 'syncId' | 'recordType'>>(
-                    `SELECT sync_zone AS syncZone, sync_id AS syncId, record_type AS recordType FROM sync_record
+        invalidateAll: Db.query(db => db.update(SyncRecordEntityTable).set({ systemFields: null, payload: null, updatedAt: new Date(0) })),
+        findUnconfirmed: Db.query(db =>
+            db.$client.unsafe<Pick<SyncRecordEntityInterface, 'syncZone' | 'syncId' | 'recordType'>>(
+                `SELECT sync_zone AS syncZone, sync_id AS syncId, record_type AS recordType FROM sync_record
                     WHERE updated_at = 0
                     AND NOT EXISTS (SELECT 1 FROM sync_pending WHERE sync_pending.sync_zone = sync_record.sync_zone AND sync_pending.sync_id = sync_record.sync_id)`
-                )
-            ),
+            )
+        ),
         remove: (syncZone: string, syncId: string) =>
             Db.query(db =>
                 db

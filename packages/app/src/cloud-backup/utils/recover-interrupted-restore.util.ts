@@ -1,3 +1,4 @@
+import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
 import { File } from 'expo-file-system';
 
@@ -40,7 +41,9 @@ export const recoverInterruptedRestore = Effect.gen(function* () {
 
     const { lastModified } = safetyCopy;
 
-    if (safetyCopy.exists && isDefined(lastModified) && Date.now() - lastModified > RESTORE_SAFETY_COPY_LIFETIME_MILLISECONDS) {
+    const now = yield* Clock.currentTimeMillis;
+
+    if (safetyCopy.exists && isDefined(lastModified) && now - lastModified > RESTORE_SAFETY_COPY_LIFETIME_MILLISECONDS) {
         discardRestoreSafetyCopy();
     }
 });
