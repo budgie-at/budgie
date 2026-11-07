@@ -1,10 +1,8 @@
 import { TabList, TabSlot, TabTrigger, Tabs } from 'expo-router/ui';
 import { useState } from 'react';
-import { View } from 'react-native';
-
-import { EdgeFade } from '@rnw-community/react-native-screen-chrome';
 
 import { AnimatedBackdrop } from '../../@generic/component/animated-backdrop/animated-backdrop';
+import { FloatingTabBarSurface } from '../../@generic/component/floating-tab-bar-surface/floating-tab-bar-surface';
 import { TabButtons } from '../../@generic/component/tab-buttons/tab-buttons';
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../@generic/constant/floating-tab-bar.constant';
 import { useCreateActionContext } from '../../@generic/context/create-action.context';
@@ -16,12 +14,10 @@ import { useIsOnboardingActive, useIsOnboardingPending } from '../../onboarding/
 import { CreateTransactionMenu } from '../../transaction/components/create-transaction-menu/create-transaction-menu';
 import { CreateTransactionTrigger } from '../../transaction/components/create-transaction-trigger/create-transaction-trigger';
 
-const TAB_BAR_Z_INDEX = 3;
 const TAB_BAR_CLEARANCE = FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN - 15;
 
 export default function TabsLayout() {
     const [tabBarBackdrop, setTabBarBackdrop] = useState(TabBarBackdropEnum.FADE);
-    const isDefaultTabFadeVisible = tabBarBackdrop === TabBarBackdropEnum.FADE;
     const { isMenuOpen, openMenu, setIsMenuOpen } = useCreateActionContext();
     const { isOpen: isVoiceInputOpen, close: closeVoiceInput } = useVoiceInputContext();
     const isOnboardingActive = useIsOnboardingActive();
@@ -32,7 +28,6 @@ export default function TabsLayout() {
     const isTransactionMenuOpen = isMenuOpen && !isVoiceInputOpen;
     const isBackdropVisible = isMenuOpen || isVoiceInputOpen;
     const isTabBarVisible = !isOnboardingActive && !isOnboardingPending && !isBackdropVisible;
-    const tabBarWrapperStyle = { zIndex: TAB_BAR_Z_INDEX };
 
     const handleBackdropClose = () => {
         if (isVoiceInputOpen) {
@@ -59,21 +54,10 @@ export default function TabsLayout() {
                 </TabList>
 
                 {isTabBarVisible ? (
-                    <>
-                        {isDefaultTabFadeVisible ? <EdgeFade position="bottom" chromeHeight={FLOATING_TAB_BAR_HEIGHT} /> : null}
-                        <View className="absolute inset-x-0 bottom-0" pointerEvents="box-none" style={tabBarWrapperStyle}>
-                            {isDefaultTabFadeVisible ? null : (
-                                <View className="absolute inset-0 bg-grouped-surface" pointerEvents="none">
-                                    <View className="absolute inset-x-0 bottom-full h-[20px] bg-linear-to-b from-grouped-surface/0 to-grouped-surface" />
-                                </View>
-                            )}
-                            <View className="flex-row items-center justify-between px-lg pb-safe pt-md">
-                                <TabButtons />
-
-                                <CreateTransactionTrigger isOpen={isMenuOpen} onPress={openMenu} />
-                            </View>
-                        </View>
-                    </>
+                    <FloatingTabBarSurface backdrop={tabBarBackdrop}>
+                        <TabButtons />
+                        <CreateTransactionTrigger isOpen={isMenuOpen} onPress={openMenu} />
+                    </FloatingTabBarSurface>
                 ) : null}
             </Tabs>
 
