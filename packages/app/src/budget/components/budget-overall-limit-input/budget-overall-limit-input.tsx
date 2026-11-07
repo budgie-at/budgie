@@ -29,7 +29,7 @@ export const BudgetOverallLimitInput = ({ currencySymbol }: Props) => {
     const handleBlur = () => void setIsFocused(false);
 
     return (
-        <AmountField fontSize={20} minimumFontScale={0.6} className="min-h-[40px] justify-center">
+        <AmountField fontSize={20} className="min-h-[40px] justify-center">
             <AmountFieldInput
                 testID={BudgetSelector.SetupOverallLimitInput}
                 value={amount}

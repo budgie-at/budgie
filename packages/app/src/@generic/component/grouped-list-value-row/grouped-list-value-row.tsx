@@ -58,7 +58,7 @@ export const GroupedListValueRow = ({ icon, title, value, testID, onPress, onCle
             left={<GroupedListIcon icon={icon} />}
             title={
                 <View className={contentClassName}>
-                    <Text className="text-[17px] text-primary" numberOfLines={2}>
+                    <Text className="text-[17px] text-primary" numberOfLines={2} maxFontSizeMultiplier={2}>
                         {title}
                     </Text>
                     <Text className={valueClassName} numberOfLines={valueLineCount}>
