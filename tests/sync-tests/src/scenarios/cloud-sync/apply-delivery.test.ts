@@ -1,26 +1,27 @@
-import { TestSeedService, makeTestDbLayer, resetTestDb } from '@budgie-at/test-kit';
-import { Db } from '@budgie/contracts';
-import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { FakeCloudTransport, testDb } from '../../harness';
-
-import { expectBalancesMatchLedger, pullDevice, pushDevice, readOutboxRows, refreshAllBalances, stateSnapshot } from './apply-harness';
+import {
+    DEVICE_B,
+    Db,
+    FakeCloudTransport,
+    OPERATED_AT,
+    TestSeedService,
+    describe,
+    expect,
+    expectBalancesMatchLedger,
+    it,
+    makeTestDbLayer,
+    pullDevice,
+    pushDevice,
+    pullSeededExpense,
+    readOutboxRows,
+    refreshAllBalances,
+    resetTestDb,
+    stateSnapshot,
+    testDb
+} from './apply-shared-harness';
 
 import type { DB } from '@budgie/contracts';
-
-const OPERATED_AT = new Date('2026-10-02T10:00:00Z');
-const DEVICE_B = 'device-b';
-
-const seedExpense = Effect.gen(function* () {
-    const seed = new TestSeedService(testDb);
-    const account = yield* seed.account({ title: 'Cash' });
-    const transaction = yield* seed.manualExpense({ accountId: account.id, amount: 5_000_000, operatedAt: OPERATED_AT, title: 'Cafe' });
-
-    yield* refreshAllBalances(testDb);
-
-    return { account, transaction };
-});
 
 const countRows = (database: DB, tableName: string) =>
     database.$client
@@ -81,14 +82,7 @@ describe('cloud-sync/apply-delivery', () => {
 
         it.effect('holds a child record until its parent arrives, whatever the delivery order', () =>
             Effect.gen(function* () {
-                const deviceB = yield* Db;
-                const cloud = new FakeCloudTransport();
-
-                yield* resetTestDb(deviceB);
-                yield* seedExpense;
-                yield* pushDevice(testDb, cloud);
-
-                const results = yield* pullDevice(deviceB, cloud, DEVICE_B, { order: 'reverse', chunkSize: 1 });
+                const { deviceB, results } = yield* pullSeededExpense({ order: 'reverse', chunkSize: 1 });
                 const heldAtFirst = results[0].heldBack;
                 const last = results[results.length - 1];
 
@@ -102,14 +96,7 @@ describe('cloud-sync/apply-delivery', () => {
 
         it.effect('applies a replayed and duplicated batch once', () =>
             Effect.gen(function* () {
-                const deviceB = yield* Db;
-                const cloud = new FakeCloudTransport();
-
-                yield* resetTestDb(deviceB);
-                yield* seedExpense;
-                yield* pushDevice(testDb, cloud);
-
-                const results = yield* pullDevice(deviceB, cloud, DEVICE_B, { isDuplicated: true, order: 'shuffled', chunkSize: 2 });
+                const { deviceB, results } = yield* pullSeededExpense({ isDuplicated: true, order: 'shuffled', chunkSize: 2 });
                 const half = results.length / 2;
                 const replayed = results.slice(half);
 

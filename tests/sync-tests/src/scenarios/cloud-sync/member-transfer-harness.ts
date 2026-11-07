@@ -144,3 +144,23 @@ export const setupMemberHousehold = (
 
         return { clouds, aliceAccount, bobAccount, rejected: settled.rejected };
     });
+
+export const PRIVATE_BOTH_CARDS = { isBobAccountManual: false, isAliceAccountShared: false } as const;
+export const SHARED_BOTH_CARDS = { isBobAccountManual: false, isAliceAccountShared: true } as const;
+export const MANUAL_BOB_ACCOUNT = { isBobAccountManual: true, isAliceAccountShared: false } as const;
+
+export const withMemberHousehold = <A, E, R>(
+    options: Parameters<typeof setupMemberHousehold>[1],
+    body: (context: {
+        readonly bobDatabase: DB;
+        readonly clouds: MemberCloudsInterface;
+        readonly aliceAccount: { readonly id: number };
+        readonly bobAccount: { readonly id: number };
+    }) => Effect.Effect<A, E, R>
+) =>
+    Effect.gen(function* () {
+        const bobDatabase = yield* Db;
+        const household = yield* setupMemberHousehold(bobDatabase, options);
+
+        return yield* body({ bobDatabase, ...household });
+    });

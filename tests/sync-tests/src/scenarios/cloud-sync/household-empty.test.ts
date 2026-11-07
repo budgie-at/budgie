@@ -15,7 +15,8 @@ import * as Effect from 'effect/Effect';
 
 import { testDb } from '../../harness';
 
-import { HOUSEHOLD_CLOUD_ZONE, OWNER_RECORD_NAME, shareAcceptedEvent } from './household-harness';
+import { HOUSEHOLD_CLOUD_ZONE, OWNER_RECORD_NAME } from './household-harness';
+import { acceptShareThen } from './household-tests-shared';
 import { makeSyncServiceContext, savedFrom, sentEvent } from './sync-service-harness';
 
 describe('cloud-sync/household empty zone', () => {
@@ -61,13 +62,11 @@ describe('cloud-sync/household empty zone', () => {
 
                 const member = makeSyncServiceContext(memberDb);
 
-                yield* member.run(
+                const household = yield* acceptShareThen(
+                    member,
                     Effect.gen(function* () {
                         const service = yield* CloudSyncService;
-                        const registry = yield* SyncZoneRegistryRepository;
 
-                        yield* service.reconfigure;
-                        yield* service.handleShareAccepted(shareAcceptedEvent());
                         yield* service.handleFetchedChanges({
                             scope: ICloudSyncScope.SHARED,
                             batchId: 'shared-fetch',
@@ -76,21 +75,19 @@ describe('cloud-sync/household empty zone', () => {
                             changedShares: []
                         });
                         yield* service.handleDidFetch({ scope: ICloudSyncScope.SHARED });
-
-                        const household = yield* registry.findByLabel(HOUSEHOLD_SYNC_ZONE);
-
-                        expect(household).toMatchObject({
-                            zoneName: HOUSEHOLD_CLOUD_ZONE,
-                            ownerName: OWNER_RECORD_NAME,
-                            databaseScope: SyncDatabaseScopeEnum.SHARED,
-                            role: SyncZoneRoleEnum.PARTICIPANT
-                        });
-                        expect(member.transport.calls.sharedStarted).toEqual([null]);
-                        expect(member.transport.calls.confirmed).toContain('shared-fetch');
-                        expect(appAtomRegistry.get(cloudSyncStatusAtom).status).not.toBe(CloudSyncStatusEnum.ERROR);
-                        expect(appAtomRegistry.get(householdStateAtom)).toEqual({ role: HouseholdRoleEnum.MEMBER, isReady: true });
                     })
                 );
+
+                expect(household).toMatchObject({
+                    zoneName: HOUSEHOLD_CLOUD_ZONE,
+                    ownerName: OWNER_RECORD_NAME,
+                    databaseScope: SyncDatabaseScopeEnum.SHARED,
+                    role: SyncZoneRoleEnum.PARTICIPANT
+                });
+                expect(member.transport.calls.sharedStarted).toEqual([null]);
+                expect(member.transport.calls.confirmed).toContain('shared-fetch');
+                expect(appAtomRegistry.get(cloudSyncStatusAtom).status).not.toBe(CloudSyncStatusEnum.ERROR);
+                expect(appAtomRegistry.get(householdStateAtom)).toEqual({ role: HouseholdRoleEnum.MEMBER, isReady: true });
             })
         );
     });

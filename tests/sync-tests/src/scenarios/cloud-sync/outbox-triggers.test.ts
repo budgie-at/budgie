@@ -65,6 +65,16 @@ const seedExpense = Effect.gen(function* () {
     return { account, transaction, entry, transactionSyncId };
 });
 
+const expectSingleTransactionSave = (rows: readonly OutboxRowInterface[], syncId: string, syncRevision?: number) => {
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toMatchObject({
+        recordType: 'Transaction',
+        syncId,
+        operation: 'SAVE',
+        ...(syncRevision !== undefined && { syncRevision })
+    });
+};
+
 const expectSingleSave = (rows: readonly OutboxRowInterface[], recordType: string, syncId: string, changedColumns: readonly string[]) => {
     expect(rows).toHaveLength(1);
     expect(rows[0]).toMatchObject({ recordType, syncId, operation: 'SAVE' });
@@ -87,8 +97,7 @@ describe('cloud-sync/outbox-triggers', () => {
             const rows = yield* readOutbox;
             const transactionSyncId = yield* syncIdOf('transactions', transaction.id);
 
-            expect(rows).toHaveLength(1);
-            expect(rows[0]).toMatchObject({ recordType: 'Transaction', syncId: transactionSyncId, operation: 'SAVE', syncRevision: 2 });
+            expectSingleTransactionSave(rows, transactionSyncId, 2);
             expect(rows[0].changedColumns).toEqual(expect.arrayContaining(['title', 'operated_at', 'type', 'transaction_entries']));
             expect(rows[0].changedColumns).not.toContain('id');
             expect(rows[0].changedColumns).not.toContain('needs_embedding');
@@ -103,8 +112,7 @@ describe('cloud-sync/outbox-triggers', () => {
 
             const rows = yield* readOutbox;
 
-            expect(rows).toHaveLength(1);
-            expect(rows[0]).toMatchObject({ recordType: 'Transaction', syncId: transactionSyncId, operation: 'SAVE', syncRevision: 1 });
+            expectSingleTransactionSave(rows, transactionSyncId, 1);
             expect(rows[0].changedColumns).toContain('title');
             expect(rows[0].changedColumns).not.toContain('operated_at');
         })
@@ -121,8 +129,7 @@ describe('cloud-sync/outbox-triggers', () => {
 
             const rows = yield* readOutbox;
 
-            expect(rows).toHaveLength(1);
-            expect(rows[0]).toMatchObject({ recordType: 'Transaction', syncId: transactionSyncId, operation: 'SAVE' });
+            expectSingleTransactionSave(rows, transactionSyncId);
             expect(rows[0].changedColumns).toContain('deleted_at');
         })
     );

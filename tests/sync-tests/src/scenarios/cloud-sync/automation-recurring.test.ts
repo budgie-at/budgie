@@ -1,13 +1,22 @@
-import { makeTestDbLayer, resetTestDb, TestSeedService } from '@budgie-at/test-kit';
-import { Db, ExternalSourceEnum, PRECISION } from '@budgie/contracts';
+import { makeTestDbLayer, TestSeedService } from '@budgie-at/test-kit';
+import { PRECISION } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { FakeCloudTransport, testDb } from '../../harness';
+import { testDb } from '../../harness';
 
-import { expectBalancesMatchLedger, pullDevice, pushDevice, readOutboxRows, refreshAllBalances } from './apply-harness';
-import { detectRecurring, dismissSeries, pullWithAutomation, settleDevices } from './automation-harness';
+import { pullDevice, pushDevice, refreshAllBalances } from './apply-harness';
+import {
+    bootstrapMonoDevices,
+    detectRecurring,
+    dismissSeries,
+    expectSettled,
+    firstAccountIdOf,
+    pullWithAutomation,
+    settleDevices
+} from './automation-harness';
 
+import type { FakeCloudTransport } from '../../harness';
 import type { DB } from '@budgie/contracts';
 
 const DAY_MS = 86_400_000;
@@ -27,7 +36,7 @@ interface SeriesRowInterface {
 const seedCharges = (database: DB, daysAgo: readonly number[]) =>
     Effect.gen(function* () {
         const seed = new TestSeedService(database);
-        const [{ id: accountId }] = yield* database.$client.unsafe<{ readonly id: number }>(`SELECT id FROM accounts LIMIT 1`);
+        const accountId = yield* firstAccountIdOf(database);
 
         for (const days of daysAgo) {
             const { id } = yield* seed.bankPairExpense(
@@ -47,40 +56,45 @@ const readSeries = (database: DB) =>
 
 const liveSeries = (database: DB) => readSeries(database).pipe(Effect.map(rows => rows.filter(({ deletedAt }) => deletedAt === null)));
 
-const baseline = (deviceB: DB, cloud: FakeCloudTransport) =>
-    Effect.gen(function* () {
-        yield* resetTestDb(deviceB);
-        yield* new TestSeedService(testDb).bankSyncAccount('Mono', ExternalSourceEnum.MONOBANK, null);
-        yield* refreshAllBalances(testDb);
-        yield* pushDevice(testDb, cloud);
-        yield* pullDevice(deviceB, cloud, 'device-b');
-        yield* pullDevice(testDb, cloud, 'device-a');
-    });
-
 const expectConverged = (deviceB: DB, rounds: number) =>
     Effect.gen(function* () {
-        expect(rounds).toBeLessThanOrEqual(5);
-        yield* expectBalancesMatchLedger(testDb);
-        yield* expectBalancesMatchLedger(deviceB);
-        expect(yield* readOutboxRows(testDb)).toEqual([]);
-        expect(yield* readOutboxRows(deviceB)).toEqual([]);
+        yield* expectSettled(deviceB, rounds, 5);
         expect(yield* readSeries(testDb)).toEqual(yield* readSeries(deviceB));
+    });
+
+const detectOnBoth = (deviceB: DB) =>
+    Effect.gen(function* () {
+        yield* detectRecurring(testDb);
+        yield* detectRecurring(deviceB);
+    });
+
+const seedLongHistoryAndDismiss = (deviceB: DB, cloud: FakeCloudTransport, syncBeforeDetect: boolean) =>
+    Effect.gen(function* () {
+        yield* seedCharges(testDb, [...FIRST_WINDOW_DAYS_AGO, ...SECOND_WINDOW_DAYS_AGO]);
+        yield* refreshAllBalances(testDb);
+
+        if (syncBeforeDetect) {
+            yield* pushDevice(testDb, cloud);
+            yield* pullDevice(deviceB, cloud, 'device-b');
+            yield* detectOnBoth(deviceB);
+        } else {
+            yield* detectRecurring(testDb);
+        }
+
+        yield* dismissSeries(testDb);
     });
 
 describe('cloud-sync/automation-recurring', () => {
     it.layer(makeTestDbLayer(null), { excludeTestServices: true })('two devices', it => {
         it.effect('converges a series derived from different input windows into one record', () =>
             Effect.gen(function* () {
-                const deviceB = yield* Db;
-                const cloud = new FakeCloudTransport();
+                const { deviceB, cloud } = yield* bootstrapMonoDevices;
 
-                yield* baseline(deviceB, cloud);
                 yield* seedCharges(testDb, FIRST_WINDOW_DAYS_AGO);
                 yield* seedCharges(deviceB, SECOND_WINDOW_DAYS_AGO);
                 yield* refreshAllBalances(testDb);
                 yield* refreshAllBalances(deviceB);
-                yield* detectRecurring(testDb);
-                yield* detectRecurring(deviceB);
+                yield* detectOnBoth(deviceB);
 
                 const derivedOnA = yield* liveSeries(testDb);
                 const derivedOnB = yield* liveSeries(deviceB);
@@ -104,14 +118,9 @@ describe('cloud-sync/automation-recurring', () => {
 
         it.effect('does not re-derive a dismissed series on the other device', () =>
             Effect.gen(function* () {
-                const deviceB = yield* Db;
-                const cloud = new FakeCloudTransport();
+                const { deviceB, cloud } = yield* bootstrapMonoDevices;
 
-                yield* baseline(deviceB, cloud);
-                yield* seedCharges(testDb, [...FIRST_WINDOW_DAYS_AGO, ...SECOND_WINDOW_DAYS_AGO]);
-                yield* refreshAllBalances(testDb);
-                yield* detectRecurring(testDb);
-                yield* dismissSeries(testDb);
+                yield* seedLongHistoryAndDismiss(deviceB, cloud, false);
 
                 const rounds = yield* settleDevices(testDb, deviceB, cloud);
                 const onB = yield* liveSeries(deviceB);
@@ -127,17 +136,9 @@ describe('cloud-sync/automation-recurring', () => {
 
         it.effect('keeps a series dismissed when the other device derived it independently before the dismissal arrived', () =>
             Effect.gen(function* () {
-                const deviceB = yield* Db;
-                const cloud = new FakeCloudTransport();
+                const { deviceB, cloud } = yield* bootstrapMonoDevices;
 
-                yield* baseline(deviceB, cloud);
-                yield* seedCharges(testDb, [...FIRST_WINDOW_DAYS_AGO, ...SECOND_WINDOW_DAYS_AGO]);
-                yield* refreshAllBalances(testDb);
-                yield* pushDevice(testDb, cloud);
-                yield* pullDevice(deviceB, cloud, 'device-b');
-                yield* detectRecurring(testDb);
-                yield* detectRecurring(deviceB);
-                yield* dismissSeries(testDb);
+                yield* seedLongHistoryAndDismiss(deviceB, cloud, true);
 
                 const rounds = yield* settleDevices(testDb, deviceB, cloud);
                 const onA = yield* liveSeries(testDb);

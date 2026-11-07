@@ -1,18 +1,10 @@
-import { TestSeedService, makeTestDbLayer } from '@budgie-at/test-kit';
-import { HouseholdShareService } from '@budgie/cloud-sync';
+import { makeTestDbLayer } from '@budgie-at/test-kit';
 import { CategoryRepository, Db, HOUSEHOLD_SYNC_ZONE, LanguageEnum, PERSONAL_SYNC_ZONE, SyncZoneRoleEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { FakeCloudTransport, testDb } from '../../harness';
-
-import { refreshAllBalances } from './apply-harness';
-import { HOUSEHOLD_ZONE, onShareDevice, prepareHousehold, pullZones, uploadDevice } from './share-harness';
-
-import type { ShareCloudsInterface } from './share-harness';
-
-const OPERATED_AT = new Date('2026-10-02T10:00:00Z');
-const GROCERIES_ID = 11;
+import { deliverHouseholdToMember, makeShareClouds, seedGroceriesJoint } from './household-tests-shared';
+import { prepareHousehold } from './share-harness';
 
 const hasDuplicates = (titles: readonly string[]): boolean => new Set(titles).size !== titles.length;
 
@@ -21,28 +13,13 @@ describe('cloud-sync/household categories by zone', () => {
         it.effect('lists every category once per zone and keeps the zones apart', () =>
             Effect.gen(function* () {
                 const deviceB = yield* Db;
-                const clouds: ShareCloudsInterface = { personal: new FakeCloudTransport(), household: new FakeCloudTransport() };
+                const clouds = makeShareClouds();
 
                 yield* prepareHousehold(deviceB, SyncZoneRoleEnum.PARTICIPANT);
 
-                const seed = new TestSeedService(testDb);
-                const joint = yield* seed.account({ title: 'Joint' });
+                const joint = yield* seedGroceriesJoint;
 
-                yield* seed.manualExpense({
-                    accountId: joint.id,
-                    amount: 5_000_000,
-                    operatedAt: OPERATED_AT,
-                    title: 'Lunch',
-                    categoryId: GROCERIES_ID
-                });
-                yield* refreshAllBalances(testDb);
-                yield* uploadDevice(testDb, clouds);
-                yield* onShareDevice(
-                    testDb,
-                    Effect.flatMap(HouseholdShareService, service => service.shareAccount(joint.id))
-                );
-                yield* uploadDevice(testDb, clouds);
-                yield* pullZones(deviceB, clouds.household, 'member', [HOUSEHOLD_ZONE]);
+                yield* deliverHouseholdToMember(deviceB, clouds, joint.id);
 
                 const { personal, household, personalNonSystem, householdNonSystem } = yield* Effect.gen(function* () {
                     const categoryRepository = yield* CategoryRepository;

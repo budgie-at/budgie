@@ -1,32 +1,38 @@
-import { TestSeedService, makeTestDbLayer, resetTestDb } from '@budgie-at/test-kit';
-import { CategorySourceEnum, Db } from '@budgie/contracts';
-import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { FakeCloudTransport, testDb } from '../../harness';
-
-import { expectBalancesMatchLedger, pullDevice, pushDevice, readOutboxRows, refreshAllBalances, stateSnapshot } from './apply-harness';
+import {
+    DEVICE_A,
+    DEVICE_B,
+    Db,
+    FakeCloudTransport,
+    TestSeedService,
+    applyRuleCategory,
+    categoryIds,
+    describe,
+    expect,
+    expectBalancesMatchLedger,
+    it,
+    makeTestDbLayer,
+    mergeBothWays,
+    pullDevice,
+    pushDevice,
+    pushSeededExpense,
+    readOutboxRows,
+    refreshAllBalances,
+    stateSnapshot,
+    testDb
+} from './apply-shared-harness';
 
 import type { DB } from '@budgie/contracts';
 
-const OPERATED_AT = new Date('2026-10-02T10:00:00Z');
-const DEVICE_A = 'device-a';
-const DEVICE_B = 'device-b';
-
 const seedBaseline = (deviceB: DB, cloud: FakeCloudTransport) =>
     Effect.gen(function* () {
-        yield* resetTestDb(deviceB);
+        const seeded = yield* pushSeededExpense(deviceB, cloud);
 
-        const seed = new TestSeedService(testDb);
-        const account = yield* seed.account({ title: 'Cash' });
-        const transaction = yield* seed.manualExpense({ accountId: account.id, amount: 5_000_000, operatedAt: OPERATED_AT, title: 'Cafe' });
-
-        yield* refreshAllBalances(testDb);
-        yield* pushDevice(testDb, cloud);
         yield* pullDevice(deviceB, cloud, DEVICE_B);
         yield* pullDevice(testDb, cloud, DEVICE_A);
 
-        return { account, transaction };
+        return seeded;
     });
 
 const entryOf = (database: DB, title: string) =>
@@ -58,10 +64,13 @@ const tagTitlesOf = (database: DB) =>
         )
         .pipe(Effect.map(rows => rows.map(({ title }) => title)));
 
-const categoryIds = (database: DB) =>
-    database.$client
-        .unsafe<{ readonly id: number }>(`SELECT id FROM categories WHERE is_default = 1 ORDER BY id LIMIT 2`)
-        .pipe(Effect.map(rows => rows.map(({ id }) => id)));
+const seedRuleCategory = Effect.gen(function* () {
+    const deviceB = yield* Db;
+    const cloud = new FakeCloudTransport();
+    const { transaction } = yield* seedBaseline(deviceB, cloud);
+
+    return { deviceB, cloud, userCategory: yield* applyRuleCategory(transaction.id) };
+});
 
 describe('cloud-sync/apply-merge', () => {
     it.layer(makeTestDbLayer(null), { excludeTestServices: true })('two devices', it => {
@@ -110,9 +119,7 @@ describe('cloud-sync/apply-merge', () => {
                 yield* refreshAllBalances(testDb);
                 yield* pushDevice(testDb, cloud);
                 yield* deviceB.$client.unsafe(`UPDATE transactions SET title = 'Dinner'`);
-                yield* pullDevice(deviceB, cloud, DEVICE_B);
-                yield* pushDevice(deviceB, cloud);
-                yield* pullDevice(testDb, cloud, DEVICE_A);
+                yield* mergeBothWays(deviceB, cloud);
 
                 for (const database of [deviceB, testDb]) {
                     const merged = yield* transactionOf(database, 'Dinner');
@@ -128,16 +135,7 @@ describe('cloud-sync/apply-merge', () => {
 
         it.effect('prefers the user category over a rule category when device A applied a rule', () =>
             Effect.gen(function* () {
-                const deviceB = yield* Db;
-                const cloud = new FakeCloudTransport();
-                const { transaction } = yield* seedBaseline(deviceB, cloud);
-                const [ruleCategory, userCategory] = yield* categoryIds(testDb);
-                const [entry] = yield* testDb.$client.unsafe<{ readonly id: number }>(
-                    `SELECT id FROM transaction_entries WHERE transaction_id = ?`,
-                    [transaction.id]
-                );
-
-                yield* new TestSeedService(testDb).entryCategory(entry.id, ruleCategory, CategorySourceEnum.RULE);
+                const { deviceB, cloud, userCategory } = yield* seedRuleCategory;
                 yield* deviceB.$client.unsafe(`UPDATE transaction_entries SET category_id = ?, category_source = 'USER'`, [userCategory]);
                 yield* pushDevice(deviceB, cloud);
                 yield* pullDevice(testDb, cloud, DEVICE_A);
@@ -153,21 +151,10 @@ describe('cloud-sync/apply-merge', () => {
 
         it.effect('keeps the local user category when the incoming category came from a rule', () =>
             Effect.gen(function* () {
-                const deviceB = yield* Db;
-                const cloud = new FakeCloudTransport();
-                const { transaction } = yield* seedBaseline(deviceB, cloud);
-                const [ruleCategory, userCategory] = yield* categoryIds(testDb);
-                const [entry] = yield* testDb.$client.unsafe<{ readonly id: number }>(
-                    `SELECT id FROM transaction_entries WHERE transaction_id = ?`,
-                    [transaction.id]
-                );
-
-                yield* new TestSeedService(testDb).entryCategory(entry.id, ruleCategory, CategorySourceEnum.RULE);
+                const { deviceB, cloud, userCategory } = yield* seedRuleCategory;
                 yield* pushDevice(testDb, cloud);
                 yield* deviceB.$client.unsafe(`UPDATE transaction_entries SET category_id = ?, category_source = 'USER'`, [userCategory]);
-                yield* pullDevice(deviceB, cloud, DEVICE_B);
-                yield* pushDevice(deviceB, cloud);
-                yield* pullDevice(testDb, cloud, DEVICE_A);
+                yield* mergeBothWays(deviceB, cloud);
 
                 for (const database of [deviceB, testDb]) {
                     const merged = yield* entryOf(database, 'Cafe');
@@ -193,9 +180,7 @@ describe('cloud-sync/apply-merge', () => {
                 yield* testDb.$client.unsafe(`UPDATE categories SET title = 'Edited on A' WHERE id = ?`, [categoryId]);
                 yield* deviceB.$client.unsafe(`UPDATE categories SET title = 'Edited on B' WHERE id = ?`, [categoryId]);
                 yield* pushDevice(testDb, cloud);
-                yield* pullDevice(deviceB, cloud, DEVICE_B);
-                yield* pushDevice(deviceB, cloud);
-                yield* pullDevice(testDb, cloud, DEVICE_A);
+                yield* mergeBothWays(deviceB, cloud);
 
                 const countAfter = yield* deviceB.$client.unsafe<{ readonly total: number }>(`SELECT COUNT(*) AS total FROM categories`);
                 const titleOn = (database: DB) =>

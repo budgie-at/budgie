@@ -1,6 +1,5 @@
-import { TestSeedService, encodeJson, resetTestDb } from '@budgie-at/test-kit';
+import { TestSeedService, resetTestDb } from '@budgie-at/test-kit';
 import {
-    SYNC_RECORD_SCHEMA_VERSION,
     ICloudParticipantAcceptanceStatus,
     ICloudParticipantPermission,
     ICloudParticipantRole,
@@ -8,12 +7,12 @@ import {
     ICloudSyncScope,
     ICloudZoneChangeReason
 } from '@budgie/cloud-sync';
-import { HOUSEHOLD_SYNC_ZONE, SyncRecordRepository } from '@budgie/contracts';
+import { HOUSEHOLD_SYNC_ZONE } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
 import { testDb } from '../../harness';
 
-import { onDevice, pullDevice, refreshAllBalances } from './apply-harness';
+import { onDevice, pullDevice, refreshAllBalances, uploadRecords } from './apply-harness';
 import { encodeAllRecords, loadSyncState } from './record-mapping-harness';
 
 import type { FakeCloudTransport } from '../../harness';
@@ -22,7 +21,7 @@ import type { DB } from '@budgie/contracts';
 
 export const OWNER_RECORD_NAME = 'owner-user-record';
 export const HOUSEHOLD_CLOUD_ZONE = 'Household';
-export const OWNER_ACCOUNT = 'owner-apple-id';
+const OWNER_ACCOUNT = 'owner-apple-id';
 export const MEMBER_ACCOUNT = 'member-apple-id';
 export const MEMBER_DEVICE = 'member-device';
 
@@ -51,7 +50,7 @@ export const participantsFor = (...roles: readonly ICloudParticipantRole[]): rea
         isCurrentUser: false
     }));
 
-export const seedPersonalLedger = (database: DB, title: string, amount: number) =>
+const seedPersonalLedger = (database: DB, title: string, amount: number) =>
     Effect.gen(function* () {
         const seed = new TestSeedService(database);
         const account = yield* seed.account({ title });
@@ -89,19 +88,7 @@ export const pushHouseholdZone = (database: DB, cloud: FakeCloudTransport) =>
         database,
         Effect.gen(function* () {
             const records = (yield* encodeAllRecords(yield* loadSyncState(database))).filter(({ zone }) => zone === HOUSEHOLD_SYNC_ZONE);
-            const recordRepository = yield* SyncRecordRepository;
-            const systemFields = cloud.upload(records);
-
-            for (const [index, record] of records.entries()) {
-                yield* recordRepository.upsert({
-                    syncZone: record.zone,
-                    syncId: record.recordName,
-                    recordType: record.recordType,
-                    systemFields: systemFields[index],
-                    payload: encodeJson(record),
-                    schemaVersion: SYNC_RECORD_SCHEMA_VERSION
-                });
-            }
+            yield* uploadRecords(cloud, records);
 
             yield* database.$client.unsafe('DELETE FROM sync_outbox WHERE sync_zone = ?', [HOUSEHOLD_SYNC_ZONE]);
 

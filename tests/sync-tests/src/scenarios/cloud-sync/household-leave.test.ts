@@ -1,8 +1,8 @@
 import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { householdStateAtom } from '@app/household/constant/household-state-atom.constant';
-import { makeTestDbLayer, resetTestDb, TestSeedService } from '@budgie-at/test-kit';
+import { makeTestDbLayer, TestSeedService } from '@budgie-at/test-kit';
 import { CloudSyncService, HouseholdRoleEnum } from '@budgie/cloud-sync';
-import { Db, HOUSEHOLD_SYNC_ZONE, PERSONAL_SYNC_ZONE, SyncZoneRegistryRepository } from '@budgie/contracts';
+import { Db, HOUSEHOLD_SYNC_ZONE, PERSONAL_SYNC_ZONE } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -11,16 +11,14 @@ import { FakeCloudTransport, testDb } from '../../harness';
 import { expectBalancesMatchLedger, pullDevice, refreshAllBalances } from './apply-harness';
 import {
     countRows,
+    joinMember,
     MEMBER_ACCOUNT,
     MEMBER_DEVICE,
-    OWNER_ACCOUNT,
     pushHouseholdZone,
     readPersonalBalances,
-    readSyncIds,
-    seedHouseholdLedger,
-    seedPersonalLedger,
-    shareAcceptedEvent
+    readSyncIds
 } from './household-harness';
+import { acceptShareThen } from './household-tests-shared';
 import { makeSyncServiceContext } from './sync-service-harness';
 
 describe('cloud-sync/household leave', () => {
@@ -30,15 +28,12 @@ describe('cloud-sync/household leave', () => {
                 const memberDb = yield* Db;
                 const cloud = new FakeCloudTransport();
 
-                yield* resetTestDb(memberDb);
+                yield* joinMember(memberDb, cloud);
 
-                const { account: ownerAccount } = yield* seedHouseholdLedger(testDb);
-
-                yield* seedPersonalLedger(memberDb, 'Member card', 4_000_000);
-                yield* pushHouseholdZone(testDb, cloud);
-                cloud.shareZone(HOUSEHOLD_SYNC_ZONE, [OWNER_ACCOUNT]);
-                cloud.acceptShare(HOUSEHOLD_SYNC_ZONE, MEMBER_ACCOUNT);
-                yield* pullDevice(memberDb, cloud, MEMBER_DEVICE, { accountId: MEMBER_ACCOUNT });
+                const [ownerAccount] = yield* testDb.$client.unsafe<{ readonly id: number }>(
+                    'SELECT id FROM accounts WHERE sync_zone = ?',
+                    [HOUSEHOLD_SYNC_ZONE]
+                );
 
                 const ownerSyncIds = yield* readSyncIds(testDb, 'accounts', HOUSEHOLD_SYNC_ZONE);
                 const [{ amount: ownerBalance }] = yield* testDb.$client.unsafe<{ readonly amount: number }>(
@@ -52,19 +47,12 @@ describe('cloud-sync/household leave', () => {
 
                 const member = makeSyncServiceContext(memberDb);
 
-                yield* member.run(
-                    Effect.gen(function* () {
-                        const service = yield* CloudSyncService;
-                        const registry = yield* SyncZoneRegistryRepository;
-
-                        yield* service.reconfigure;
-                        yield* service.handleShareAccepted(shareAcceptedEvent());
-                        yield* service.leaveHousehold();
-
-                        expect(yield* registry.findByLabel(HOUSEHOLD_SYNC_ZONE)).toBeUndefined();
-                    })
+                const remaining = yield* acceptShareThen(
+                    member,
+                    Effect.flatMap(CloudSyncService, service => service.leaveHousehold())
                 );
 
+                expect(remaining).toBeUndefined();
                 expect(member.transport.calls.leftShares).toEqual(['Household']);
                 expect(member.transport.calls.sharedStopped).toBe(1);
                 expect(appAtomRegistry.get(householdStateAtom).role).toBe(HouseholdRoleEnum.NONE);

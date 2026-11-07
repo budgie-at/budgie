@@ -60,6 +60,43 @@ export const refreshAllBalances = (database: DB) =>
 
 export const expectBalancesMatchLedger = (database: DB) => assertStoredBalancesMatchLedger(database);
 
+type EncodedRecord = Effect.Success<ReturnType<typeof encodeAllRecords>>[number];
+type PulledBatch = ReturnType<FakeCloudTransport['pull']>[number];
+
+export const uploadRecords = (cloud: FakeCloudTransport, records: readonly EncodedRecord[]) =>
+    Effect.gen(function* () {
+        const recordRepository = yield* SyncRecordRepository;
+        const systemFields = cloud.upload(records);
+
+        for (const [index, record] of records.entries()) {
+            yield* recordRepository.upsert({
+                syncZone: record.zone,
+                syncId: record.recordName,
+                recordType: record.recordType,
+                systemFields: systemFields[index],
+                payload: encodeJson(record),
+                schemaVersion: SYNC_RECORD_SCHEMA_VERSION
+            });
+        }
+    });
+
+export const applyPulledBatches = (
+    cloud: FakeCloudTransport,
+    deviceId: string,
+    options: FakeCloudDeliveryOptionsInterface,
+    narrow: (batch: PulledBatch) => PulledBatch = batch => batch
+) =>
+    Effect.gen(function* () {
+        const applyService = yield* SyncApplyService;
+        const results: SyncApplyResultInterface[] = [];
+
+        for (const batch of cloud.pull(deviceId, options)) {
+            results.push(yield* applyService.apply(narrow(batch)));
+        }
+
+        return results;
+    });
+
 export const pushDevice = (database: DB, cloud: FakeCloudTransport) =>
     onDevice(
         database,
@@ -80,19 +117,7 @@ export const pushDevice = (database: DB, cloud: FakeCloudTransport) =>
                 ({ recordName, encryptedFields }) =>
                     outboxNames.has(recordName) || (isString(encryptedFields['linkId']) && linkIds.has(encryptedFields['linkId']))
             );
-            const recordRepository = yield* SyncRecordRepository;
-            const systemFields = cloud.upload(selected);
-
-            for (const [index, record] of selected.entries()) {
-                yield* recordRepository.upsert({
-                    syncZone: record.zone,
-                    syncId: record.recordName,
-                    recordType: record.recordType,
-                    systemFields: systemFields[index],
-                    payload: encodeJson(record),
-                    schemaVersion: SYNC_RECORD_SCHEMA_VERSION
-                });
-            }
+            yield* uploadRecords(cloud, selected);
 
             yield* database.$client.unsafe(`DELETE FROM sync_outbox`);
 
@@ -101,19 +126,7 @@ export const pushDevice = (database: DB, cloud: FakeCloudTransport) =>
     );
 
 export const pullDevice = (database: DB, cloud: FakeCloudTransport, deviceId: string, options: FakeCloudDeliveryOptionsInterface = {}) =>
-    onDevice(
-        database,
-        Effect.gen(function* () {
-            const applyService = yield* SyncApplyService;
-            const results: SyncApplyResultInterface[] = [];
-
-            for (const batch of cloud.pull(deviceId, options)) {
-                results.push(yield* applyService.apply(batch));
-            }
-
-            return results;
-        })
-    );
+    onDevice(database, applyPulledBatches(cloud, deviceId, options));
 
 export const readOutboxRows = (database: DB) =>
     database.$client.unsafe<{

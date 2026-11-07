@@ -1,13 +1,23 @@
-import { makeTestDbLayer, resetTestDb, TestSeedService } from '@budgie-at/test-kit';
-import { CategorySourceEnum, Db, ExternalSourceEnum, RuleActionTypeEnum, TransactionUpdatedByEnum } from '@budgie/contracts';
+import { makeTestDbLayer, TestSeedService } from '@budgie-at/test-kit';
+import { CategorySourceEnum, RuleActionTypeEnum, TransactionUpdatedByEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { FakeCloudTransport, testDb } from '../../harness';
+import { testDb } from '../../harness';
 import { seedTitleRule } from '../../harness/seed/seed-title-rule';
 
-import { expectBalancesMatchLedger, pullDevice, pushDevice, readOutboxRows, refreshAllBalances } from './apply-harness';
-import { embeddingBoostProbe, pullWithAutomation, reapplyAutomation, settleDevices, syncIdsOf } from './automation-harness';
+import { pushDevice, readOutboxRows, refreshAllBalances } from './apply-harness';
+import {
+    bootstrapMonoDevices,
+    embeddingBoostProbe,
+    expectSettled,
+    firstAccountIdOf,
+    pullWithAutomation,
+    reapplyAutomation,
+    reapplyOnBoth,
+    settleDevices,
+    syncIdsOf
+} from './automation-harness';
 
 import type { DB } from '@budgie/contracts';
 
@@ -32,28 +42,12 @@ describe('cloud-sync/automation-rules', () => {
     it.layer(makeTestDbLayer(null), { excludeTestServices: true })('two devices', it => {
         it.effect('applies a rule to a synced-in transaction once and does not loop between devices', () =>
             Effect.gen(function* () {
-                const deviceB = yield* Db;
-                const cloud = new FakeCloudTransport();
-
-                yield* resetTestDb(deviceB);
-
-                const seedA = new TestSeedService(testDb);
-                const seedB = new TestSeedService(deviceB);
-                const account = yield* seedA.bankSyncAccount('Mono', ExternalSourceEnum.MONOBANK, null);
-                const category = yield* seedA.category('Coffee');
+                const { deviceB, cloud, seedB, seeded: account } = yield* bootstrapMonoDevices;
+                const category = yield* new TestSeedService(testDb).category('Coffee');
 
                 yield* seedTitleRule('Cafe', { type: RuleActionTypeEnum.SET_CATEGORY, categoryId: category.id, accountId: null });
-                yield* refreshAllBalances(testDb);
-                yield* pushDevice(testDb, cloud);
-                yield* pullDevice(deviceB, cloud, 'device-b');
-                yield* pullDevice(testDb, cloud, 'device-a');
-
-                const [accountOnB] = yield* deviceB.$client.unsafe<{ readonly id: number }>(
-                    `SELECT id FROM accounts WHERE id IS NOT NULL LIMIT 1`
-                );
-
                 yield* seedB.manualExpense({
-                    accountId: accountOnB.id,
+                    accountId: yield* firstAccountIdOf(deviceB),
                     amount: 5_000_000,
                     operatedAt: OPERATED_AT,
                     title: 'Cafe latte'
@@ -65,8 +59,6 @@ describe('cloud-sync/automation-rules', () => {
 
                 const rounds = yield* settleDevices(testDb, deviceB, cloud);
 
-                expect(rounds).toBeLessThanOrEqual(4);
-
                 for (const database of [testDb, deviceB]) {
                     const entry = yield* categorizedEntry(database);
 
@@ -75,12 +67,8 @@ describe('cloud-sync/automation-rules', () => {
                     expect(entry.updatedBy).toBe(TransactionUpdatedByEnum.RULE);
                 }
 
-                yield* expectBalancesMatchLedger(testDb);
-                yield* expectBalancesMatchLedger(deviceB);
-
-                yield* reapplyAutomation(testDb, yield* syncIdsOf(testDb, 'transactions'));
-                yield* reapplyAutomation(deviceB, yield* syncIdsOf(deviceB, 'transactions'));
-
+                yield* expectSettled(deviceB, rounds, 4);
+                yield* reapplyOnBoth(deviceB);
                 expect(yield* readOutboxRows(testDb)).toEqual([]);
                 expect(yield* readOutboxRows(deviceB)).toEqual([]);
             })
@@ -88,22 +76,14 @@ describe('cloud-sync/automation-rules', () => {
 
         it.effect('queues synced-in transactions for local embedding only when AI suggestions are enabled, without enqueueing a sync', () =>
             Effect.gen(function* () {
-                const deviceB = yield* Db;
-                const cloud = new FakeCloudTransport();
+                const { deviceB, cloud, seedB } = yield* bootstrapMonoDevices;
 
-                yield* resetTestDb(deviceB);
-
-                const seedA = new TestSeedService(testDb);
-                const seedB = new TestSeedService(deviceB);
-
-                yield* seedA.bankSyncAccount('Mono', ExternalSourceEnum.MONOBANK, null);
-                yield* pushDevice(testDb, cloud);
-                yield* pullDevice(deviceB, cloud, 'device-b');
-                yield* pullDevice(testDb, cloud, 'device-a');
-
-                const [accountOnB] = yield* deviceB.$client.unsafe<{ readonly id: number }>(`SELECT id FROM accounts LIMIT 1`);
-
-                yield* seedB.manualExpense({ accountId: accountOnB.id, amount: 5_000_000, operatedAt: OPERATED_AT, title: 'Bakery' });
+                yield* seedB.manualExpense({
+                    accountId: yield* firstAccountIdOf(deviceB),
+                    amount: 5_000_000,
+                    operatedAt: OPERATED_AT,
+                    title: 'Bakery'
+                });
                 yield* refreshAllBalances(deviceB);
                 yield* pushDevice(deviceB, cloud);
 

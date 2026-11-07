@@ -17,9 +17,9 @@ import {
     MEMBER_ACCOUNT,
     OWNER_RECORD_NAME,
     participantsFor,
-    readPersonalBalances,
-    shareAcceptedEvent
+    readPersonalBalances
 } from './household-harness';
+import { acceptShareThen } from './household-tests-shared';
 import { makeSyncServiceContext } from './sync-service-harness';
 
 import type { DB } from '@budgie/contracts';
@@ -30,6 +30,34 @@ const countHouseholdRows = (database: DB) =>
         tableName => countRows(database, tableName, HOUSEHOLD_SYNC_ZONE),
         { concurrency: 1 }
     );
+
+const restoreBackupWithParticipants = (memberDb: DB, participants: ReturnType<typeof participantsFor>) =>
+    Effect.gen(function* () {
+        const member = makeSyncServiceContext(memberDb);
+
+        member.store.holder.state = { ...member.store.holder.state, restorePhase: CloudSyncRestorePhaseEnum.PENDING };
+        member.transport.behavior.participants = participants;
+
+        const household = yield* member.run(
+            Effect.gen(function* () {
+                const registry = yield* SyncZoneRegistryRepository;
+                const service = yield* CloudSyncService;
+
+                yield* registry.upsert({
+                    zoneLabel: HOUSEHOLD_SYNC_ZONE,
+                    zoneName: HOUSEHOLD_CLOUD_ZONE,
+                    ownerName: OWNER_RECORD_NAME,
+                    databaseScope: SyncDatabaseScopeEnum.SHARED,
+                    role: SyncZoneRoleEnum.PARTICIPANT
+                });
+                yield* service.reconfigure;
+
+                return yield* registry.findByLabel(HOUSEHOLD_SYNC_ZONE);
+            })
+        );
+
+        return { member, household };
+    });
 
 describe('cloud-sync/household removal', () => {
     it.layer(makeTestDbLayer(null), { excludeTestServices: true })('owner removes the member', it => {
@@ -51,19 +79,12 @@ describe('cloud-sync/household removal', () => {
                 const member = makeSyncServiceContext(memberDb);
                 const lostEvent = accessLostEvent();
 
-                yield* member.run(
-                    Effect.gen(function* () {
-                        const service = yield* CloudSyncService;
-                        const registry = yield* SyncZoneRegistryRepository;
-
-                        yield* service.reconfigure;
-                        yield* service.handleShareAccepted(shareAcceptedEvent());
-                        yield* service.handleZoneChange(lostEvent);
-
-                        expect(yield* registry.findByLabel(HOUSEHOLD_SYNC_ZONE)).toBeUndefined();
-                    })
+                const remaining = yield* acceptShareThen(
+                    member,
+                    Effect.flatMap(CloudSyncService, service => service.handleZoneChange(lostEvent))
                 );
 
+                expect(remaining).toBeUndefined();
                 expect(yield* countHouseholdRows(memberDb)).toEqual([0, 0, 0, 0, 0]);
                 expect(yield* countRows(memberDb, 'accounts')).toBe(1);
                 expect(yield* countRows(memberDb, 'account_balances')).toBe(1);
@@ -84,29 +105,9 @@ describe('cloud-sync/household removal', () => {
                 yield* joinMember(memberDb, new FakeCloudTransport());
 
                 const personalBefore = yield* readPersonalBalances(memberDb);
-                const member = makeSyncServiceContext(memberDb);
+                const { member, household } = yield* restoreBackupWithParticipants(memberDb, []);
 
-                member.store.holder.state = { ...member.store.holder.state, restorePhase: CloudSyncRestorePhaseEnum.PENDING };
-                member.transport.behavior.participants = [];
-
-                yield* member.run(
-                    Effect.gen(function* () {
-                        const registry = yield* SyncZoneRegistryRepository;
-                        const service = yield* CloudSyncService;
-
-                        yield* registry.upsert({
-                            zoneLabel: HOUSEHOLD_SYNC_ZONE,
-                            zoneName: HOUSEHOLD_CLOUD_ZONE,
-                            ownerName: OWNER_RECORD_NAME,
-                            databaseScope: SyncDatabaseScopeEnum.SHARED,
-                            role: SyncZoneRoleEnum.PARTICIPANT
-                        });
-                        yield* service.reconfigure;
-
-                        expect(yield* registry.findByLabel(HOUSEHOLD_SYNC_ZONE)).toBeUndefined();
-                    })
-                );
-
+                expect(household).toBeUndefined();
                 expect(member.transport.calls.sharedStarted).toEqual([]);
                 expect(yield* countHouseholdRows(memberDb)).toEqual([0, 0, 0, 0, 0]);
                 expect(yield* readPersonalBalances(memberDb)).toEqual(personalBefore);
@@ -120,25 +121,9 @@ describe('cloud-sync/household removal', () => {
 
                 yield* joinMember(memberDb, new FakeCloudTransport());
 
-                const member = makeSyncServiceContext(memberDb);
-
-                member.store.holder.state = { ...member.store.holder.state, restorePhase: CloudSyncRestorePhaseEnum.PENDING };
-                member.transport.behavior.participants = participantsFor(ICloudParticipantRole.OWNER, ICloudParticipantRole.PRIVATE_USER);
-
-                yield* member.run(
-                    Effect.gen(function* () {
-                        const registry = yield* SyncZoneRegistryRepository;
-                        const service = yield* CloudSyncService;
-
-                        yield* registry.upsert({
-                            zoneLabel: HOUSEHOLD_SYNC_ZONE,
-                            zoneName: HOUSEHOLD_CLOUD_ZONE,
-                            ownerName: OWNER_RECORD_NAME,
-                            databaseScope: SyncDatabaseScopeEnum.SHARED,
-                            role: SyncZoneRoleEnum.PARTICIPANT
-                        });
-                        yield* service.reconfigure;
-                    })
+                const { member } = yield* restoreBackupWithParticipants(
+                    memberDb,
+                    participantsFor(ICloudParticipantRole.OWNER, ICloudParticipantRole.PRIVATE_USER)
                 );
 
                 expect(member.transport.calls.sharedStarted).toEqual([null]);

@@ -1,48 +1,52 @@
-import { TestSeedService, makeTestDbLayer } from '@budgie-at/test-kit';
+import { TestSeedService } from '@budgie-at/test-kit';
 import { HouseholdShareService } from '@budgie/cloud-sync';
-import { Db, SyncZoneRoleEnum } from '@budgie/contracts';
-import { describe, expect, it } from '@effect/vitest';
+import { SyncZoneRoleEnum } from '@budgie/contracts';
+import { describe, expect } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { FakeCloudTransport, testDb } from '../../harness';
+import { testDb } from '../../harness';
 
-import { expectBalancesMatchLedger, refreshAllBalances } from './apply-harness';
+import { refreshAllBalances } from './apply-harness';
 import {
     HOUSEHOLD_ZONE,
     PERSONAL_ZONE,
     countRows,
     onShareDevice,
-    prepareHousehold,
     pullZones,
-    reconcileDevice,
     queryRows,
+    reconcileDevice,
     uploadDevice
 } from './share-harness';
+import {
+    shareDevices,
+    expectLedgers,
+    expectNoRejections,
+    expectTitleZones,
+    pullHousehold,
+    shareAndUpload,
+    startHousehold
+} from './share-tests-shared';
 
-import type { ShareCloudsInterface } from './share-harness';
 import type { DB } from '@budgie/contracts';
 
 const OPERATED_AT = new Date('2026-10-02T10:00:00Z');
 const OWNER_DEVICE = 'owner-device';
 const MEMBER_DEVICE = 'member-device';
 const GROCERIES_ID = 11;
-
-const makeClouds = (): ShareCloudsInterface => ({ personal: new FakeCloudTransport(), household: new FakeCloudTransport() });
-
-const shareAccount = (database: DB, accountId: number) =>
-    onShareDevice(
-        database,
-        Effect.flatMap(HouseholdShareService, service => service.shareAccount(accountId))
-    );
+const JOINT_AND_WALLET = [
+    ['Joint', HOUSEHOLD_ZONE],
+    ['Wallet', PERSONAL_ZONE]
+] as const;
+const SHARED_TRANSACTIONS = [
+    ['Dinner', HOUSEHOLD_ZONE],
+    ['Lunch', HOUSEHOLD_ZONE]
+] as const;
 
 const unshareAccount = (database: DB, accountId: number) =>
     onShareDevice(
         database,
         Effect.flatMap(HouseholdShareService, service => service.unshareAccount(accountId))
     );
-
-const expectBothLedgers = (...databases: readonly DB[]) =>
-    Effect.forEach(databases, database => expectBalancesMatchLedger(database), { discard: true });
 
 const seedJointHistory = Effect.gen(function* () {
     const seed = new TestSeedService(testDb);
@@ -80,31 +84,36 @@ const seedJointHistory = Effect.gen(function* () {
     return { joint, wallet, pizza, trip, lunch, dinner, snack };
 });
 
+const startJointShare = (memberRole: SyncZoneRoleEnum) =>
+    Effect.gen(function* () {
+        const { deviceB, clouds } = yield* startHousehold(memberRole);
+        const { joint } = yield* seedJointHistory;
+
+        yield* uploadDevice(testDb, clouds);
+
+        return { deviceB, clouds, joint };
+    });
+
+const shareWithOwnerSecondDevice = Effect.gen(function* () {
+    const { deviceB, clouds, joint } = yield* startJointShare(SyncZoneRoleEnum.OWNER);
+
+    yield* pullZones(deviceB, clouds.personal, OWNER_DEVICE, [PERSONAL_ZONE]);
+    yield* shareAndUpload(testDb, clouds, joint.id);
+
+    return { deviceB, clouds };
+});
+
 describe('cloud-sync/share-accounts', () => {
-    it.layer(makeTestDbLayer(null), { excludeTestServices: true })('two devices', it => {
+    shareDevices('two devices', it => {
         it.effect('moves an account with its history to the household and the member receives only the shared data', () =>
             Effect.gen(function* () {
-                const deviceB = yield* Db;
-                const clouds = makeClouds();
+                const { deviceB, clouds, joint } = yield* startJointShare(SyncZoneRoleEnum.PARTICIPANT);
 
-                yield* prepareHousehold(deviceB, SyncZoneRoleEnum.PARTICIPANT);
+                yield* shareAndUpload(testDb, clouds, joint.id);
 
-                const { joint } = yield* seedJointHistory;
-
-                yield* uploadDevice(testDb, clouds);
-                yield* shareAccount(testDb, joint.id);
-                yield* uploadDevice(testDb, clouds);
-
-                const results = yield* pullZones(deviceB, clouds.household, MEMBER_DEVICE, [HOUSEHOLD_ZONE]);
-
-                expect(results.flatMap(result => result.rejected)).toEqual([]);
-                expect(yield* queryRows(deviceB, `SELECT title, sync_zone FROM accounts ORDER BY title`)).toEqual([
-                    { title: 'Joint', sync_zone: HOUSEHOLD_ZONE }
-                ]);
-                expect(yield* queryRows(deviceB, `SELECT title, sync_zone FROM transactions ORDER BY title`)).toEqual([
-                    { title: 'Dinner', sync_zone: HOUSEHOLD_ZONE },
-                    { title: 'Lunch', sync_zone: HOUSEHOLD_ZONE }
-                ]);
+                expectNoRejections(yield* pullHousehold(deviceB, clouds, MEMBER_DEVICE));
+                yield* expectTitleZones(deviceB, 'accounts', [['Joint', HOUSEHOLD_ZONE]]);
+                yield* expectTitleZones(deviceB, 'transactions', SHARED_TRANSACTIONS);
                 expect(
                     yield* queryRows(
                         deviceB,
@@ -125,15 +134,8 @@ describe('cloud-sync/share-accounts', () => {
                 expect(yield* countRows(deviceB, `categories WHERE title = 'Pizza night'`)).toBe(1);
                 expect(yield* countRows(deviceB, `sync_pending`)).toBe(0);
 
-                expect(yield* queryRows(testDb, `SELECT title, sync_zone FROM accounts ORDER BY title`)).toEqual([
-                    { title: 'Joint', sync_zone: HOUSEHOLD_ZONE },
-                    { title: 'Wallet', sync_zone: PERSONAL_ZONE }
-                ]);
-                expect(yield* queryRows(testDb, `SELECT title, sync_zone FROM transactions ORDER BY title`)).toEqual([
-                    { title: 'Dinner', sync_zone: HOUSEHOLD_ZONE },
-                    { title: 'Lunch', sync_zone: HOUSEHOLD_ZONE },
-                    { title: 'Private snack', sync_zone: PERSONAL_ZONE }
-                ]);
+                yield* expectTitleZones(testDb, 'accounts', JOINT_AND_WALLET);
+                yield* expectTitleZones(testDb, 'transactions', [...SHARED_TRANSACTIONS, ['Private snack', PERSONAL_ZONE]]);
                 expect(yield* countRows(testDb, `categories WHERE title = 'Pizza night'`)).toBe(2);
                 expect(yield* countRows(testDb, `sync_outbox`)).toBe(0);
                 expect(
@@ -142,29 +144,20 @@ describe('cloud-sync/share-accounts', () => {
                         Effect.flatMap(HouseholdShareService, service => service.findSharedAccountIds)
                     )
                 ).toEqual([joint.id]);
-                yield* expectBothLedgers(testDb, deviceB);
+                yield* expectLedgers(testDb, deviceB);
             })
         );
 
         it.effect('moves the account back on unshare and removes the shared data from the member', () =>
             Effect.gen(function* () {
-                const deviceB = yield* Db;
-                const clouds = makeClouds();
+                const { deviceB, clouds, joint } = yield* startJointShare(SyncZoneRoleEnum.PARTICIPANT);
 
-                yield* prepareHousehold(deviceB, SyncZoneRoleEnum.PARTICIPANT);
-
-                const { joint } = yield* seedJointHistory;
-
-                yield* uploadDevice(testDb, clouds);
-                yield* shareAccount(testDb, joint.id);
-                yield* uploadDevice(testDb, clouds);
-                yield* pullZones(deviceB, clouds.household, MEMBER_DEVICE, [HOUSEHOLD_ZONE]);
+                yield* shareAndUpload(testDb, clouds, joint.id);
+                yield* pullHousehold(deviceB, clouds, MEMBER_DEVICE);
                 yield* unshareAccount(testDb, joint.id);
                 yield* uploadDevice(testDb, clouds);
 
-                const results = yield* pullZones(deviceB, clouds.household, MEMBER_DEVICE, [HOUSEHOLD_ZONE]);
-
-                expect(results.flatMap(result => result.rejected)).toEqual([]);
+                expectNoRejections(yield* pullHousehold(deviceB, clouds, MEMBER_DEVICE));
                 expect(yield* countRows(deviceB, `accounts`)).toBe(0);
                 expect(yield* countRows(deviceB, `transactions`)).toBe(0);
                 expect(yield* countRows(deviceB, `transaction_entries`)).toBe(0);
@@ -184,57 +177,37 @@ describe('cloud-sync/share-accounts', () => {
                     )
                 ).toBe(0);
                 expect(yield* countRows(testDb, `sync_outbox`)).toBe(0);
-                yield* expectBothLedgers(testDb, deviceB);
+                yield* expectLedgers(testDb, deviceB);
             })
         );
 
-        for (const order of ['upload', 'reverse', 'shuffled'] as const) {
-            it.effect(`converges on the owner second device when the move is delivered in ${order} order, split and duplicated`, () =>
+        it.effect.each(['upload', 'reverse', 'shuffled'] as const)(
+            'converges on the owner second device when the move is delivered in %s order, split and duplicated',
+            order =>
                 Effect.gen(function* () {
-                    const deviceB = yield* Db;
-                    const clouds = makeClouds();
-
-                    yield* prepareHousehold(deviceB, SyncZoneRoleEnum.OWNER);
-
-                    const { joint } = yield* seedJointHistory;
-
-                    yield* uploadDevice(testDb, clouds);
-                    yield* pullZones(deviceB, clouds.personal, OWNER_DEVICE, [PERSONAL_ZONE]);
-                    yield* shareAccount(testDb, joint.id);
-                    yield* uploadDevice(testDb, clouds);
-
+                    const { deviceB, clouds } = yield* shareWithOwnerSecondDevice;
                     const delivery = { order, chunkSize: 2, isDuplicated: true };
                     const results = [
                         ...(yield* pullZones(deviceB, clouds.personal, 'owner-b-personal', [PERSONAL_ZONE], delivery)),
-                        ...(yield* pullZones(deviceB, clouds.household, 'owner-b-household', [HOUSEHOLD_ZONE], delivery)),
+                        ...(yield* pullHousehold(deviceB, clouds, 'owner-b-household', delivery)),
                         ...(yield* pullZones(deviceB, clouds.personal, OWNER_DEVICE, [PERSONAL_ZONE], delivery))
                     ];
 
                     yield* reconcileDevice(deviceB);
 
-                    expect(results.flatMap(result => result.rejected)).toEqual([]);
-                    expect(yield* queryRows(deviceB, `SELECT title, sync_zone FROM accounts ORDER BY title`)).toEqual([
-                        { title: 'Joint', sync_zone: HOUSEHOLD_ZONE },
-                        { title: 'Wallet', sync_zone: PERSONAL_ZONE }
-                    ]);
-                    expect(yield* queryRows(deviceB, `SELECT title, sync_zone FROM transactions ORDER BY title`)).toEqual([
-                        { title: 'Dinner', sync_zone: HOUSEHOLD_ZONE },
-                        { title: 'Lunch', sync_zone: HOUSEHOLD_ZONE },
-                        { title: 'Private snack', sync_zone: PERSONAL_ZONE }
-                    ]);
+                    expectNoRejections(results);
+                    yield* expectTitleZones(deviceB, 'accounts', JOINT_AND_WALLET);
+                    yield* expectTitleZones(deviceB, 'transactions', [...SHARED_TRANSACTIONS, ['Private snack', PERSONAL_ZONE]]);
                     expect(yield* countRows(deviceB, `transaction_entries`)).toBe(3);
                     expect(yield* countRows(deviceB, `sync_pending`)).toBe(0);
-                    yield* expectBothLedgers(testDb, deviceB);
+                    yield* expectLedgers(testDb, deviceB);
                 })
-            );
-        }
+        );
 
         it.effect('covers accounts added after Share everything is switched on', () =>
             Effect.gen(function* () {
-                const deviceB = yield* Db;
-                const clouds = makeClouds();
+                const { deviceB, clouds } = yield* startHousehold(SyncZoneRoleEnum.PARTICIPANT);
 
-                yield* prepareHousehold(deviceB, SyncZoneRoleEnum.PARTICIPANT);
                 yield* seedJointHistory;
                 yield* uploadDevice(testDb, clouds);
                 yield* onShareDevice(
@@ -254,35 +227,22 @@ describe('cloud-sync/share-accounts', () => {
                 yield* reconcileDevice(testDb);
                 yield* uploadDevice(testDb, clouds);
 
-                const results = yield* pullZones(deviceB, clouds.household, MEMBER_DEVICE, [HOUSEHOLD_ZONE]);
-
-                expect(results.flatMap(result => result.rejected)).toEqual([]);
-                expect(yield* queryRows(deviceB, `SELECT title, sync_zone FROM accounts ORDER BY title`)).toEqual([
-                    { title: 'Fresh', sync_zone: HOUSEHOLD_ZONE },
-                    { title: 'Joint', sync_zone: HOUSEHOLD_ZONE },
-                    { title: 'Wallet', sync_zone: HOUSEHOLD_ZONE }
+                expectNoRejections(yield* pullHousehold(deviceB, clouds, MEMBER_DEVICE));
+                yield* expectTitleZones(deviceB, 'accounts', [
+                    ['Fresh', HOUSEHOLD_ZONE],
+                    ['Joint', HOUSEHOLD_ZONE],
+                    ['Wallet', HOUSEHOLD_ZONE]
                 ]);
                 expect(yield* countRows(deviceB, `transactions WHERE sync_zone = '${HOUSEHOLD_ZONE}'`)).toBe(4);
                 expect(yield* countRows(testDb, `settings WHERE household_share_everything = 1`)).toBe(1);
                 expect(yield* countRows(testDb, `sync_outbox`)).toBe(0);
-                yield* expectBothLedgers(testDb, deviceB);
+                yield* expectLedgers(testDb, deviceB);
             })
         );
 
         it.effect('keeps a transaction created on the owner second device while the account was being shared', () =>
             Effect.gen(function* () {
-                const deviceB = yield* Db;
-                const clouds = makeClouds();
-
-                yield* prepareHousehold(deviceB, SyncZoneRoleEnum.OWNER);
-
-                const { joint } = yield* seedJointHistory;
-
-                yield* uploadDevice(testDb, clouds);
-                yield* pullZones(deviceB, clouds.personal, OWNER_DEVICE, [PERSONAL_ZONE]);
-                yield* shareAccount(testDb, joint.id);
-                yield* uploadDevice(testDb, clouds);
-
+                const { deviceB, clouds } = yield* shareWithOwnerSecondDevice;
                 const [secondDeviceJoint] = yield* queryRows<{ readonly id: number }>(
                     deviceB,
                     `SELECT id FROM accounts WHERE title = 'Joint'`
@@ -299,11 +259,11 @@ describe('cloud-sync/share-accounts', () => {
 
                 for (const round of [1, 2]) {
                     yield* pullZones(testDb, clouds.personal, `owner-a-${round}`, [PERSONAL_ZONE]);
-                    yield* pullZones(testDb, clouds.household, `owner-a-${round}`, [HOUSEHOLD_ZONE]);
+                    yield* pullHousehold(testDb, clouds, `owner-a-${round}`);
                     yield* reconcileDevice(testDb);
                     yield* uploadDevice(testDb, clouds);
                     yield* pullZones(deviceB, clouds.personal, `owner-b-${round}`, [PERSONAL_ZONE]);
-                    yield* pullZones(deviceB, clouds.household, `owner-b-${round}`, [HOUSEHOLD_ZONE]);
+                    yield* pullHousehold(deviceB, clouds, `owner-b-${round}`);
                     yield* reconcileDevice(deviceB);
                     yield* uploadDevice(deviceB, clouds);
                 }
@@ -326,11 +286,8 @@ describe('cloud-sync/share-accounts', () => {
                         )
                     ).toBe(0);
                     expect(yield* countRows(database, `transactions WHERE title = 'Late lunch'`)).toBe(1);
-                    expect(yield* queryRows(database, `SELECT title, sync_zone FROM accounts ORDER BY title`)).toEqual([
-                        { title: 'Joint', sync_zone: HOUSEHOLD_ZONE },
-                        { title: 'Wallet', sync_zone: PERSONAL_ZONE }
-                    ]);
-                    yield* expectBalancesMatchLedger(database);
+                    yield* expectTitleZones(database, 'accounts', JOINT_AND_WALLET);
+                    yield* expectLedgers(database);
                 }
             })
         );

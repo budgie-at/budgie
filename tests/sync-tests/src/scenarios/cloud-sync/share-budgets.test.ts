@@ -1,4 +1,4 @@
-import { TestSeedService, makeTestDbLayer } from '@budgie-at/test-kit';
+import { TestSeedService } from '@budgie-at/test-kit';
 import { BudgetRepository, computeSpent } from '@budgie/budget';
 import { HouseholdShareService } from '@budgie/cloud-sync';
 import {
@@ -10,25 +10,15 @@ import {
     InstrumentEntityTable,
     SyncZoneRoleEnum
 } from '@budgie/contracts';
-import { describe, expect, it } from '@effect/vitest';
+import { describe, expect } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { FakeCloudTransport, testDb } from '../../harness';
+import { testDb } from '../../harness';
 
-import { expectBalancesMatchLedger, refreshAllBalances } from './apply-harness';
-import {
-    HOUSEHOLD_ZONE,
-    PERSONAL_ZONE,
-    countRows,
-    onShareDevice,
-    prepareHousehold,
-    pullZones,
-    queryRows,
-    reconcileDevice,
-    uploadDevice
-} from './share-harness';
+import { refreshAllBalances } from './apply-harness';
+import { HOUSEHOLD_ZONE, PERSONAL_ZONE, countRows, onShareDevice, queryRows, reconcileDevice, uploadDevice } from './share-harness';
+import { shareDevices, expectLedgers, expectNoRejections, pullHousehold, startHousehold } from './share-tests-shared';
 
-import type { ShareCloudsInterface } from './share-harness';
 import type { DB } from '@budgie/contracts';
 
 const OPERATED_AT = new Date('2026-10-02T10:00:00Z');
@@ -37,8 +27,6 @@ const NEXT_PERIOD_START = new Date('2026-11-01T00:00:00Z');
 const GROCERIES_ID = 11;
 const SHARED_SPENT = 5_000_000;
 const PRIVATE_SPENT = 1_000_000;
-
-const makeClouds = (): ShareCloudsInterface => ({ personal: new FakeCloudTransport(), household: new FakeCloudTransport() });
 
 const readSharedSpent = (database: DB, budgetSyncZone: string) =>
     Effect.flatMap(BudgetRepository, repository =>
@@ -100,24 +88,24 @@ const shareEverything = (database: DB, accountId: number, budgetId: number) =>
         )
     );
 
+const startBudgetShare = Effect.gen(function* () {
+    const { deviceB, clouds } = yield* startHousehold(SyncZoneRoleEnum.PARTICIPANT);
+    const { joint, budget } = yield* seedBudgetFixture;
+
+    yield* uploadDevice(testDb, clouds);
+    yield* shareEverything(testDb, joint.id, budget.id);
+    yield* uploadDevice(testDb, clouds);
+
+    return { deviceB, clouds, budget };
+});
+
 describe('cloud-sync/share-budgets', () => {
-    it.layer(makeTestDbLayer(null), { excludeTestServices: true })('two devices', it => {
+    shareDevices('two devices', it => {
         it.effect('moves a budget with its limits to the household and keeps spending equal on both devices after edits on each', () =>
             Effect.gen(function* () {
-                const deviceB = yield* Db;
-                const clouds = makeClouds();
+                const { deviceB, clouds, budget } = yield* startBudgetShare;
 
-                yield* prepareHousehold(deviceB, SyncZoneRoleEnum.PARTICIPANT);
-
-                const { joint, budget } = yield* seedBudgetFixture;
-
-                yield* uploadDevice(testDb, clouds);
-                yield* shareEverything(testDb, joint.id, budget.id);
-                yield* uploadDevice(testDb, clouds);
-
-                const results = yield* pullZones(deviceB, clouds.household, 'member', [HOUSEHOLD_ZONE]);
-
-                expect(results.flatMap(result => result.rejected)).toEqual([]);
+                expectNoRejections(yield* pullHousehold(deviceB, clouds, 'member'));
                 expect(yield* queryRows(deviceB, `SELECT name, sync_zone, overall_limit FROM budgets`)).toEqual([
                     { name: 'Family', sync_zone: HOUSEHOLD_ZONE, overall_limit: 100_000_000 }
                 ]);
@@ -151,10 +139,10 @@ describe('cloud-sync/share-budgets', () => {
                     HOUSEHOLD_ZONE
                 ]);
                 yield* uploadDevice(deviceB, clouds);
-                yield* pullZones(testDb, clouds.household, 'owner', [HOUSEHOLD_ZONE]);
+                yield* pullHousehold(testDb, clouds, 'owner');
                 yield* uploadDevice(testDb, clouds);
-                yield* pullZones(deviceB, clouds.household, 'member', [HOUSEHOLD_ZONE]);
-                yield* pullZones(testDb, clouds.household, 'owner', [HOUSEHOLD_ZONE]);
+                yield* pullHousehold(deviceB, clouds, 'member');
+                yield* pullHousehold(testDb, clouds, 'owner');
 
                 for (const database of [testDb, deviceB]) {
                     expect(yield* queryRows(database, `SELECT overall_limit FROM budgets WHERE sync_zone = ?`, [HOUSEHOLD_ZONE])).toEqual([
@@ -165,7 +153,7 @@ describe('cloud-sync/share-budgets', () => {
                     ).toEqual([{ limit_amount: 35_000_000 }]);
                     expect(yield* readSharedSpent(database, HOUSEHOLD_ZONE)).toBe(SHARED_SPENT + 2_000_000);
                     expect(yield* countRows(database, `sync_pending`)).toBe(0);
-                    yield* expectBalancesMatchLedger(database);
+                    yield* expectLedgers(database);
                 }
 
                 expect(yield* countRows(testDb, `sync_outbox`)).toBe(0);
@@ -180,23 +168,14 @@ describe('cloud-sync/share-budgets', () => {
 
         it.effect('moves the budget back to the personal set on unshare and removes it from the member', () =>
             Effect.gen(function* () {
-                const deviceB = yield* Db;
-                const clouds = makeClouds();
-
-                yield* prepareHousehold(deviceB, SyncZoneRoleEnum.PARTICIPANT);
-
-                const { joint, budget } = yield* seedBudgetFixture;
-
-                yield* uploadDevice(testDb, clouds);
-                yield* shareEverything(testDb, joint.id, budget.id);
-                yield* uploadDevice(testDb, clouds);
-                yield* pullZones(deviceB, clouds.household, 'member', [HOUSEHOLD_ZONE]);
+                const { deviceB, clouds, budget } = yield* startBudgetShare;
+                yield* pullHousehold(deviceB, clouds, 'member');
                 yield* onShareDevice(
                     testDb,
                     Effect.flatMap(HouseholdShareService, service => service.unshareBudget(budget.id))
                 );
                 yield* uploadDevice(testDb, clouds);
-                yield* pullZones(deviceB, clouds.household, 'member', [HOUSEHOLD_ZONE]);
+                yield* pullHousehold(deviceB, clouds, 'member');
 
                 expect(yield* countRows(deviceB, `budgets`)).toBe(0);
                 expect(yield* countRows(deviceB, `budget_category_limits`)).toBe(0);
@@ -207,7 +186,7 @@ describe('cloud-sync/share-budgets', () => {
                         `SELECT c.sync_zone AS zone FROM budget_category_limits l INNER JOIN categories c ON c.id = l.category_id`
                     )
                 ).toEqual([{ zone: PERSONAL_ZONE }]);
-                yield* expectBalancesMatchLedger(testDb);
+                yield* expectLedgers(testDb);
             })
         );
     });

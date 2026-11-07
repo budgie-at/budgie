@@ -308,3 +308,58 @@ export const fetchedEvent = (records: readonly ICloudFetchedRecord[] = []): IClo
     deletions: [],
     changedShares: []
 });
+
+type SyncServiceContext = ReturnType<typeof makeSyncServiceContext>;
+
+export const runSyncService = <A, E>(
+    body: (
+        context: SyncServiceContext,
+        service: CloudSyncService['Service']
+    ) => Effect.Effect<A, E, Effect.Services<Parameters<SyncServiceContext['run']>[0]>>
+) => {
+    const context = makeSyncServiceContext();
+
+    return context.run(
+        Effect.gen(function* () {
+            const service = yield* CloudSyncService;
+
+            return yield* body(context, service);
+        })
+    );
+};
+
+export const readOutboxCount = testDb.$client
+    .unsafe<{ readonly total: number }>('SELECT COUNT(*) AS total FROM sync_outbox')
+    .pipe(Effect.map(([row]) => row.total));
+
+export const readAccountCount = testDb.$client
+    .unsafe<{ readonly total: number }>('SELECT COUNT(*) AS total FROM accounts')
+    .pipe(Effect.map(([row]) => row.total));
+
+export const matchZoneLineage = (context: SyncServiceContext) =>
+    Effect.gen(function* () {
+        context.transport.behavior.zoneMeta = metaWith(yield* (yield* SyncIdentityRepository).ensureLineageId());
+    });
+
+export const reconfigureAndAcknowledgeMeta = (context: SyncServiceContext, service: CloudSyncService['Service']) =>
+    Effect.gen(function* () {
+        yield* service.reconfigure;
+        yield* service.handleSentChanges(sentEvent({ savedRecords: savedFrom(context.transport.calls.savedBatches[0], 'system-meta') }));
+    });
+
+export const flattenBatches = (batches: readonly (readonly ICloudRecordPayload[])[]) => batches.flat();
+
+export const failedSaveOf = (
+    payload: ICloudRecordPayload,
+    code: ICloudErrorCode,
+    message: string,
+    serverRecord: ICloudSentChangesEvent['failedSaves'][number]['serverRecord']
+) => ({
+    zoneName: payload.zoneName,
+    ownerName: payload.ownerName,
+    recordName: payload.recordName,
+    recordType: payload.recordType,
+    code,
+    message,
+    serverRecord
+});

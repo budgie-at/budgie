@@ -1,22 +1,13 @@
-import { TestSeedService, makeTestDbLayer } from '@budgie-at/test-kit';
-import { HouseholdShareService } from '@budgie/cloud-sync';
-import { Db, SyncZoneRoleEnum } from '@budgie/contracts';
-import { describe, expect, it } from '@effect/vitest';
+import { TestSeedService } from '@budgie-at/test-kit';
+import { SyncZoneRoleEnum } from '@budgie/contracts';
+import { describe, expect } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import { FakeCloudTransport, testDb } from '../../harness';
 
-import { expectBalancesMatchLedger, refreshAllBalances } from './apply-harness';
-import {
-    HOUSEHOLD_ZONE,
-    PERSONAL_ZONE,
-    countRows,
-    onShareDevice,
-    prepareHousehold,
-    pullZones,
-    queryRows,
-    uploadDevice
-} from './share-harness';
+import { refreshAllBalances } from './apply-harness';
+import { HOUSEHOLD_ZONE, PERSONAL_ZONE, countRows, pullZones, queryRows, uploadDevice } from './share-harness';
+import { shareDevices, expectLedgers, pullHousehold, shareAccount, startHousehold } from './share-tests-shared';
 
 import type { ShareCloudsInterface } from './share-harness';
 import type { DB } from '@budgie/contracts';
@@ -46,28 +37,19 @@ const shareGroceriesAccount = Effect.gen(function* () {
     return joint;
 });
 
-const shareAccount = (database: DB, accountId: number) =>
-    onShareDevice(
-        database,
-        Effect.flatMap(HouseholdShareService, service => service.shareAccount(accountId))
-    );
-
 describe('cloud-sync/share-categories', () => {
-    it.layer(makeTestDbLayer(null), { excludeTestServices: true })('two devices', it => {
+    shareDevices('two devices', it => {
         it.effect('keeps the seeded Groceries of owner and member independent', () =>
             Effect.gen(function* () {
-                const deviceB = yield* Db;
-                const ownerClouds: ShareCloudsInterface = { personal: new FakeCloudTransport(), household: new FakeCloudTransport() };
+                const { deviceB, clouds: ownerClouds } = yield* startHousehold(SyncZoneRoleEnum.PARTICIPANT);
                 const memberClouds: ShareCloudsInterface = { personal: new FakeCloudTransport(), household: ownerClouds.household };
-
-                yield* prepareHousehold(deviceB, SyncZoneRoleEnum.PARTICIPANT);
 
                 const joint = yield* shareGroceriesAccount;
 
                 yield* uploadDevice(testDb, ownerClouds);
                 yield* shareAccount(testDb, joint.id);
                 yield* uploadDevice(testDb, ownerClouds);
-                yield* pullZones(deviceB, ownerClouds.household, 'member', [HOUSEHOLD_ZONE]);
+                yield* pullHousehold(deviceB, ownerClouds, 'member');
 
                 expect(yield* readCategoryTitles(deviceB)).toEqual([
                     { title: 'Groceries', zone: HOUSEHOLD_ZONE },
@@ -76,7 +58,7 @@ describe('cloud-sync/share-categories', () => {
 
                 yield* deviceB.$client.unsafe(`UPDATE categories SET title = 'Food', title_search = 'food' WHERE id = ?`, [GROCERIES_ID]);
                 yield* uploadDevice(deviceB, memberClouds);
-                yield* pullZones(testDb, ownerClouds.household, 'owner', [HOUSEHOLD_ZONE]);
+                yield* pullHousehold(testDb, ownerClouds, 'owner');
                 yield* pullZones(testDb, ownerClouds.personal, 'owner', [PERSONAL_ZONE]);
 
                 expect(yield* readCategoryTitles(testDb)).toEqual([
@@ -89,17 +71,13 @@ describe('cloud-sync/share-categories', () => {
                     { title: 'Food', zone: PERSONAL_ZONE }
                 ]);
                 expect(ownerClouds.household.inventory(HOUSEHOLD_ZONE).size).toBeGreaterThan(0);
-                yield* expectBalancesMatchLedger(testDb);
-                yield* expectBalancesMatchLedger(deviceB);
+                yield* expectLedgers(testDb, deviceB);
             })
         );
 
         it.effect('keeps a seeded category rename when a new member device joins later', () =>
             Effect.gen(function* () {
-                const deviceB = yield* Db;
-                const clouds: ShareCloudsInterface = { personal: new FakeCloudTransport(), household: new FakeCloudTransport() };
-
-                yield* prepareHousehold(deviceB, SyncZoneRoleEnum.PARTICIPANT);
+                const { deviceB, clouds } = yield* startHousehold(SyncZoneRoleEnum.PARTICIPANT);
                 yield* testDb.$client.unsafe(`UPDATE categories SET title = 'Supermarket', title_search = 'supermarket' WHERE id = ?`, [
                     GROCERIES_ID
                 ]);
@@ -112,7 +90,7 @@ describe('cloud-sync/share-categories', () => {
                     [HOUSEHOLD_ZONE, GROCERIES_ID]
                 );
                 yield* uploadDevice(testDb, clouds);
-                yield* pullZones(deviceB, clouds.household, 'new-member', [HOUSEHOLD_ZONE]);
+                yield* pullHousehold(deviceB, clouds, 'new-member');
 
                 expect(yield* readCategoryTitles(deviceB)).toEqual([
                     { title: 'Supermarket XL', zone: HOUSEHOLD_ZONE },
@@ -128,7 +106,7 @@ describe('cloud-sync/share-categories', () => {
                         `SELECT c.title AS title FROM transaction_entries e INNER JOIN categories c ON c.id = e.category_id`
                     )
                 ).toEqual([{ title: 'Supermarket XL' }]);
-                yield* expectBalancesMatchLedger(deviceB);
+                yield* expectLedgers(deviceB);
             })
         );
     });

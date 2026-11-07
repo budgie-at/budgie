@@ -1,12 +1,13 @@
 import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { householdStateAtom } from '@app/household/constant/household-state-atom.constant';
 import { makeTestDbLayer, resetTestDb } from '@budgie-at/test-kit';
-import { CloudSyncService, HouseholdRoleEnum } from '@budgie/cloud-sync';
-import { Db, HOUSEHOLD_SYNC_ZONE, SyncDatabaseScopeEnum, SyncZoneRegistryRepository, SyncZoneRoleEnum } from '@budgie/contracts';
+import { HouseholdRoleEnum } from '@budgie/cloud-sync';
+import { Db, SyncDatabaseScopeEnum, SyncZoneRoleEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import { HOUSEHOLD_CLOUD_ZONE, OWNER_RECORD_NAME } from './household-harness';
+import { discoverHouseholdEntry } from './household-tests-shared';
 import { makeSyncServiceContext } from './sync-service-harness';
 
 describe('cloud-sync/household discovery', () => {
@@ -21,20 +22,11 @@ describe('cloud-sync/household discovery', () => {
 
                 member.transport.behavior.joinedHousehold = { zoneName: HOUSEHOLD_CLOUD_ZONE, ownerName: OWNER_RECORD_NAME };
 
-                yield* member.run(
-                    Effect.gen(function* () {
-                        const service = yield* CloudSyncService;
-                        const registry = yield* SyncZoneRegistryRepository;
+                const entry = yield* discoverHouseholdEntry(member);
 
-                        yield* service.discoverHousehold;
-
-                        const entry = yield* registry.findByLabel(HOUSEHOLD_SYNC_ZONE);
-
-                        expect(entry?.role).toBe(SyncZoneRoleEnum.PARTICIPANT);
-                        expect(entry?.databaseScope).toBe(SyncDatabaseScopeEnum.SHARED);
-                        expect(entry?.ownerName).toBe(OWNER_RECORD_NAME);
-                    })
-                );
+                expect(entry?.role).toBe(SyncZoneRoleEnum.PARTICIPANT);
+                expect(entry?.databaseScope).toBe(SyncDatabaseScopeEnum.SHARED);
+                expect(entry?.ownerName).toBe(OWNER_RECORD_NAME);
 
                 expect(appAtomRegistry.get(householdStateAtom).role).toBe(HouseholdRoleEnum.MEMBER);
             })
@@ -52,19 +44,10 @@ describe('cloud-sync/household discovery', () => {
 
                 device.transport.behavior.ownedHousehold = { zoneName: HOUSEHOLD_CLOUD_ZONE, shareRecordName: 'cloudkit.zoneshare' };
 
-                yield* device.run(
-                    Effect.gen(function* () {
-                        const service = yield* CloudSyncService;
-                        const registry = yield* SyncZoneRegistryRepository;
+                const entry = yield* discoverHouseholdEntry(device);
 
-                        yield* service.discoverHousehold;
-
-                        const entry = yield* registry.findByLabel(HOUSEHOLD_SYNC_ZONE);
-
-                        expect(entry?.role).toBe(SyncZoneRoleEnum.OWNER);
-                        expect(entry?.databaseScope).toBe(SyncDatabaseScopeEnum.PRIVATE);
-                    })
-                );
+                expect(entry?.role).toBe(SyncZoneRoleEnum.OWNER);
+                expect(entry?.databaseScope).toBe(SyncDatabaseScopeEnum.PRIVATE);
             })
         );
 
@@ -76,16 +59,7 @@ describe('cloud-sync/household discovery', () => {
 
                 const device = makeSyncServiceContext(db);
 
-                yield* device.run(
-                    Effect.gen(function* () {
-                        const service = yield* CloudSyncService;
-                        const registry = yield* SyncZoneRegistryRepository;
-
-                        yield* service.discoverHousehold;
-
-                        expect(yield* registry.findByLabel(HOUSEHOLD_SYNC_ZONE)).toBeUndefined();
-                    })
-                );
+                expect(yield* discoverHouseholdEntry(device)).toBeUndefined();
             })
         );
     });

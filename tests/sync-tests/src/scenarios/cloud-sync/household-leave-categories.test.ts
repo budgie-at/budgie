@@ -1,64 +1,38 @@
 import { TestSeedService, makeTestDbLayer } from '@budgie-at/test-kit';
-import { HouseholdMembershipService, HouseholdShareService } from '@budgie/cloud-sync';
+import { HouseholdMembershipService } from '@budgie/cloud-sync';
 import { Db, HOUSEHOLD_SYNC_ZONE, SyncZoneRoleEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { FakeCloudTransport, testDb } from '../../harness';
+import { testDb } from '../../harness';
 
 import { refreshAllBalances } from './apply-harness';
-import {
-    HOUSEHOLD_ZONE,
-    PERSONAL_ZONE,
-    countRows,
-    onShareDevice,
-    prepareHousehold,
-    pullZones,
-    queryRows,
-    uploadDevice
-} from './share-harness';
+import { deliverHouseholdToMember, GROCERIES_ID, makeShareClouds, seedGroceriesJoint } from './household-tests-shared';
+import { PERSONAL_ZONE, countRows, prepareHousehold, queryRows } from './share-harness';
 import { makeSyncServiceContext } from './sync-service-harness';
-
-import type { ShareCloudsInterface } from './share-harness';
-
-const OPERATED_AT = new Date('2026-10-02T10:00:00Z');
-const GROCERIES_ID = 11;
 
 describe('cloud-sync/household leave categories', () => {
     it.layer(makeTestDbLayer(null), { excludeTestServices: true })('member leaves', it => {
         it.effect('merges household seeded categories into the personal ones and keeps user categories once', () =>
             Effect.gen(function* () {
                 const deviceB = yield* Db;
-                const clouds: ShareCloudsInterface = { personal: new FakeCloudTransport(), household: new FakeCloudTransport() };
+                const clouds = makeShareClouds();
 
                 yield* prepareHousehold(deviceB, SyncZoneRoleEnum.PARTICIPANT);
 
                 const seed = new TestSeedService(testDb);
-                const joint = yield* seed.account({ title: 'Joint' });
+                const joint = yield* seedGroceriesJoint;
                 const pizza = yield* seed.category('Pizza night');
 
                 yield* seed.manualExpense({
                     accountId: joint.id,
-                    amount: 5_000_000,
-                    operatedAt: OPERATED_AT,
-                    title: 'Lunch',
-                    categoryId: GROCERIES_ID
-                });
-                yield* seed.manualExpense({
-                    accountId: joint.id,
                     amount: 7_000_000,
-                    operatedAt: OPERATED_AT,
+                    operatedAt: new Date('2026-10-02T10:00:00Z'),
                     title: 'Dinner',
                     categoryId: pizza.id
                 });
                 yield* refreshAllBalances(testDb);
-                yield* uploadDevice(testDb, clouds);
-                yield* onShareDevice(
-                    testDb,
-                    Effect.flatMap(HouseholdShareService, service => service.shareAccount(joint.id))
-                );
-                yield* uploadDevice(testDb, clouds);
-                yield* pullZones(deviceB, clouds.household, 'member', [HOUSEHOLD_ZONE]);
+                yield* deliverHouseholdToMember(deviceB, clouds, joint.id);
 
                 expect(yield* countRows(deviceB, `categories WHERE sync_zone = '${HOUSEHOLD_SYNC_ZONE}'`)).toBeGreaterThan(1);
 

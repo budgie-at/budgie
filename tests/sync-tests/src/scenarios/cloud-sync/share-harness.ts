@@ -8,10 +8,10 @@ import { isRecord, isString } from '@rnw-community/shared';
 
 import { testDb } from '../../harness';
 
-import { deviceLayer } from './apply-harness';
+import { applyPulledBatches, deviceLayer } from './apply-harness';
 
 import type { FakeCloudDeliveryOptionsInterface, FakeCloudTransport } from '../../harness';
-import type { SyncApplyResultInterface, SyncUploadAcknowledgementInterface } from '@budgie/cloud-sync';
+import type { SyncUploadAcknowledgementInterface } from '@budgie/cloud-sync';
 import type { DB } from '@budgie/contracts';
 
 export const PERSONAL_ZONE = 'personal';
@@ -126,21 +126,10 @@ export const pullZones = (
 ) =>
     onShareDevice(
         database,
-        Effect.gen(function* () {
-            const applyService = yield* SyncApplyService;
-            const results: SyncApplyResultInterface[] = [];
-
-            for (const batch of cloud.pull(deviceId, options)) {
-                results.push(
-                    yield* applyService.apply({
-                        records: batch.records.filter(({ record }) => isInZones(record, zones)),
-                        deletions: batch.deletions.filter(({ zone }) => zones.includes(zone))
-                    })
-                );
-            }
-
-            return results;
-        })
+        applyPulledBatches(cloud, deviceId, options, batch => ({
+            records: batch.records.filter(({ record }) => isInZones(record, zones)),
+            deletions: batch.deletions.filter(({ zone }) => zones.includes(zone))
+        }))
     );
 
 export const queryRows = <T extends object>(database: DB, sqlText: string, params: readonly (string | number)[] = []) =>

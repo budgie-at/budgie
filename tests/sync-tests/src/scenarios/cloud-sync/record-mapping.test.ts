@@ -52,6 +52,13 @@ const seedEverything = Effect.gen(function* () {
     return fixture;
 });
 
+const decodeSource = Effect.gen(function* () {
+    const { records } = yield* encodeSource;
+    const decoded = yield* Effect.forEach(throughTransport(records), record => decodeSyncRecord(record));
+
+    return { records, decoded };
+});
+
 const encodeSource = Effect.gen(function* () {
     const state = yield* loadSyncState(testDb);
     const records = yield* encodeAllRecords(state);
@@ -72,8 +79,7 @@ describe('cloud-sync/record-mapping', () => {
                 yield* seedEverything;
                 yield* prepareTarget(targetDatabase);
 
-                const { records } = yield* encodeSource;
-                const decoded = yield* Effect.forEach(throughTransport(records), record => decodeSyncRecord(record));
+                const { records, decoded } = yield* decodeSource;
                 const { joined, unmatched } = joinSplitTransactions(decoded);
                 const unresolved = yield* materializeRecords(targetDatabase, joined);
                 const source = yield* hydratedSnapshot(testDb);
@@ -112,8 +118,7 @@ describe('cloud-sync/record-mapping', () => {
                 yield* seedEverything;
                 yield* prepareTarget(targetDatabase);
 
-                const { records } = yield* encodeSource;
-                const decoded = yield* Effect.forEach(throughTransport(records), record => decodeSyncRecord(record));
+                const { decoded } = yield* decodeSource;
 
                 yield* materializeRecords(targetDatabase, joinSplitTransactions(decoded).joined);
 

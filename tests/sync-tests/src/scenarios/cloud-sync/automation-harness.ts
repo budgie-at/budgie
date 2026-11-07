@@ -1,14 +1,18 @@
+import { resetTestDb, TestSeedService } from '@budgie-at/test-kit';
 import { SyncAutomationEmbeddingBoost, SyncAutomationService, SyncApplyService } from '@budgie/cloud-sync';
 import { P2pTransferTitleResolver } from '@budgie/consolidation';
-import { Db } from '@budgie/contracts';
+import { Db, ExternalSourceEnum } from '@budgie/contracts';
 import { LedgerWorkload } from '@budgie/ledger';
 import { RecurringService } from '@budgie/recurring';
+import { expect } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { deviceLayer, pushDevice, readOutboxRows } from './apply-harness';
+import { FakeCloudTransport, testDb } from '../../harness';
 
-import type { FakeCloudDeliveryOptionsInterface, FakeCloudTransport } from '../../harness';
+import { expectBalancesMatchLedger, deviceLayer, pullDevice, pushDevice, readOutboxRows, refreshAllBalances } from './apply-harness';
+
+import type { FakeCloudDeliveryOptionsInterface } from '../../harness';
 import type { DB } from '@budgie/contracts';
 
 const MAX_SETTLE_ROUNDS = 6;
@@ -126,3 +130,58 @@ export const dismissSeries = (database: DB) =>
             }
         })
     );
+
+export const firstAccountIdOf = (database: DB) =>
+    database.$client.unsafe<{ readonly id: number }>(`SELECT id FROM accounts LIMIT 1`).pipe(Effect.map(([account]) => account.id));
+
+export const bootstrapDevices = <A, E, R>(seedOnA: (seed: TestSeedService) => Effect.Effect<A, E, R>) =>
+    Effect.gen(function* () {
+        const deviceB = yield* Db;
+        const cloud = new FakeCloudTransport();
+
+        yield* resetTestDb(deviceB);
+
+        const seeded = yield* seedOnA(new TestSeedService(testDb));
+
+        yield* refreshAllBalances(testDb);
+        yield* pushDevice(testDb, cloud);
+        yield* pullDevice(deviceB, cloud, 'device-b');
+        yield* pullDevice(testDb, cloud, 'device-a');
+
+        return { deviceB, cloud, seeded, seedB: new TestSeedService(deviceB) };
+    });
+
+export const bootstrapMonoDevices = bootstrapDevices(seed => seed.bankSyncAccount('Mono', ExternalSourceEnum.MONOBANK, null));
+
+export const expectBalancesConverged = (deviceB: DB) =>
+    Effect.gen(function* () {
+        yield* expectBalancesMatchLedger(testDb);
+        yield* expectBalancesMatchLedger(deviceB);
+    });
+
+export const expectOutboxesEmpty = (deviceB: DB) =>
+    Effect.gen(function* () {
+        expect(yield* readOutboxRows(testDb)).toEqual([]);
+        expect(yield* readOutboxRows(deviceB)).toEqual([]);
+    });
+
+export const expectSettled = (deviceB: DB, rounds: number, maxRounds: number) =>
+    Effect.gen(function* () {
+        expect(rounds).toBeLessThanOrEqual(maxRounds);
+        yield* expectBalancesConverged(deviceB);
+        yield* expectOutboxesEmpty(deviceB);
+    });
+
+export const reapplyOnBoth = (deviceB: DB) =>
+    Effect.gen(function* () {
+        yield* reapplyAutomation(testDb, yield* syncIdsOf(testDb, 'transactions'));
+        yield* reapplyAutomation(deviceB, yield* syncIdsOf(deviceB, 'transactions'));
+    });
+
+export const refreshAndSettle = (deviceB: DB, cloud: FakeCloudTransport) =>
+    Effect.gen(function* () {
+        yield* refreshAllBalances(testDb);
+        yield* refreshAllBalances(deviceB);
+
+        return yield* settleDevices(testDb, deviceB, cloud);
+    });
