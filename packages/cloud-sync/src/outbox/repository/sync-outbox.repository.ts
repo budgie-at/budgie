@@ -48,7 +48,7 @@ export class SyncOutboxRepository extends Context.Service<SyncOutboxRepository>(
                  SELECT record_type, sync_zone, sync_id, 'DELETE', json_array(? || json_extract(payload, '$.encryptedFields.movedTo'))
                  FROM sync_record WHERE ${MOVED_TO_TOMBSTONE_SQL}
                  ON CONFLICT (sync_zone, sync_id) DO NOTHING`,
-                            [SYNC_MOVED_TO_MARKER_PREFIX]
+                            [SYNC_MOVED_TO_MARKER_PREFIX, PERSONAL_SYNC_ZONE, SyncRecordTypeEnum.ACCOUNT]
                         )
                     )
                 );
