@@ -148,7 +148,8 @@ describe('categorization/suggestion', () => {
             const rows = yield* inboxRepository.findUncategorizedRows(DEFAULT_TRANSACTION_FILTER);
             const [cluster] = categorizeInboxEngineService.buildClusters(
                 rows,
-                categorizeInboxEngineService.buildContext(evidence, account.instrumentId, CategorizeInboxLabelKindEnum.CATEGORY)
+                categorizeInboxEngineService.buildContext(evidence, account.instrumentId, CategorizeInboxLabelKindEnum.CATEGORY),
+                new Date('2026-11-07T12:00:00Z')
             );
 
             expect(cluster.candidateLabelIds).toEqual([coffee.id]);
@@ -262,7 +263,8 @@ describe('categorization/suggestion', () => {
             const rows = yield* inboxRepository.findUncategorizedRows(DEFAULT_TRANSACTION_FILTER);
             const [cluster] = categorizeInboxEngineService.buildClusters(
                 rows,
-                categorizeInboxEngineService.buildContext([], account.instrumentId, CategorizeInboxLabelKindEnum.CATEGORY)
+                categorizeInboxEngineService.buildContext([], account.instrumentId, CategorizeInboxLabelKindEnum.CATEGORY),
+                new Date('2026-11-07T12:00:00Z')
             );
 
             yield* categorizeInboxService.assign(CategorizeInboxLabelKindEnum.CATEGORY, [

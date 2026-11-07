@@ -23,9 +23,7 @@ export const CategorizeInboxGroupFinding = ({ cluster }: Props) => {
     const bodies: Record<CategorizeInboxFindingKindEnum, ReactNode> = {
         [CategorizeInboxFindingKindEnum.CASH]: <Trans>cash from an ATM</Trans>,
         [CategorizeInboxFindingKindEnum.ONCE_A_MONTH]: <Trans>once a month</Trans>,
-        [CategorizeInboxFindingKindEnum.PER_DAY]: (
-            <Plural value={rate} _1="about once a day" _2="about twice a day" other="about # a day" />
-        ),
+        [CategorizeInboxFindingKindEnum.PER_DAY]: <Trans>about once a day</Trans>,
         [CategorizeInboxFindingKindEnum.PER_WEEK]: (
             <Plural value={rate} _1="about once a week" _2="about twice a week" other="about # a week" />
         ),
