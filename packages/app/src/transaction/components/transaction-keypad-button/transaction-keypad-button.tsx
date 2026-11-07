@@ -30,8 +30,8 @@ const buttonVariants = cva<{
 }>('min-h-[44px] items-center justify-center rounded-xl', {
     variants: {
         buttonVariant: {
-            digit: 'flex-1 bg-grouped-surface-fill active:bg-surface-fill',
-            action: 'flex-1 bg-grouped-surface-fill active:bg-surface-fill'
+            digit: 'flex-1 bg-grouped-surface-fill active:opacity-70',
+            action: 'flex-1 bg-grouped-surface-fill active:opacity-70'
         }
     },
     defaultVariants: { buttonVariant: 'digit' }
