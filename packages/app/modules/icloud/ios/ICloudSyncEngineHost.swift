@@ -53,8 +53,12 @@ final class ICloudSyncEngineHost: CKSyncEngineDelegate, @unchecked Sendable {
 
   func syncNow() async throws {
     let current = try requireEngine()
-    try await current.fetchChanges()
-    try await current.sendChanges()
+    do {
+      try await current.fetchChanges()
+      try await current.sendChanges()
+    } catch let error as CKError where error.code == .partialFailure {
+      return
+    }
   }
 
   func addPendingSaves(_ payloads: [ICloudRecordPayload]) throws {
