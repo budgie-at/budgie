@@ -8,7 +8,7 @@ import type { ComponentProps } from 'react';
 
 type InputProps = Pick<
     ComponentProps<typeof Input>,
-    'value' | 'onChangeText' | 'onBlur' | 'placeholder' | 'testID' | 'keyboardType' | 'maxLength'
+    'value' | 'onChangeText' | 'onBlur' | 'placeholder' | 'testID' | 'keyboardType' | 'maxLength' | 'maxFontSizeMultiplier'
 >;
 
 type Props = InputProps & {
@@ -20,7 +20,7 @@ const INPUT_LINE_HEIGHT = 28;
 
 export const GroupedListInputRow = ({ icon, label, ...inputProps }: Props) => {
     const { fontScale } = useWindowDimensions();
-    const inputStyle = { minHeight: INPUT_LINE_HEIGHT * fontScale };
+    const inputStyle = { minHeight: INPUT_LINE_HEIGHT * Math.min(fontScale, inputProps.maxFontSizeMultiplier ?? fontScale) };
 
     return (
         <View className="min-h-[50px] flex-row items-center gap-x-xl px-3xl py-lg">
