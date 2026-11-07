@@ -16,12 +16,12 @@ interface Props {
 
 export const AppShotPicture = ({ asset, alt, className, priority = false, deferred = false, sizes }: Props) => {
     const basePath = resolveMediaAssetPath(asset);
-    const loading = priority ? 'eager' : 'lazy';
+    const loading = priority && !deferred ? 'eager' : 'lazy';
     let fetchPriority: 'high' | 'low' | 'auto' = 'auto';
-    if (deferred) {
-        fetchPriority = 'low';
-    } else if (priority) {
+    if (priority) {
         fetchPriority = 'high';
+    } else if (deferred) {
+        fetchPriority = 'low';
     }
 
     return (
