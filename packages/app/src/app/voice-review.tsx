@@ -155,6 +155,7 @@ export default function VoiceReviewModal() {
                                     index={index}
                                     currencySymbol={currencySymbol}
                                     canDelete={canDelete}
+                                    disabled={isSaving}
                                     onAmountChange={editAmount}
                                     onCategoryPress={handleCategoryPress}
                                     onDelete={deleteRow}
