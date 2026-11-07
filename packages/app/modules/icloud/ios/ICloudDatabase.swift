@@ -1,4 +1,5 @@
 import CloudKit
+import ExpoModulesCore
 import Foundation
 
 enum ICloudSyncScope: String {
@@ -60,8 +61,12 @@ enum ICloudDatabase {
     return fractional.date(from: text) ?? ISO8601DateFormatter().date(from: text)
   }
 
-  static func error(_ code: String, _ message: String) -> NSError {
-    NSError(domain: "ICloud", code: 1, userInfo: ["code": code, NSLocalizedDescriptionKey: message])
+  static func error(_ code: String, _ message: String) -> Exception {
+    Exception(name: "ICloudError", description: message, code: code)
+  }
+
+  static func message(_ error: Error) -> String {
+    (error as? Exception)?.reason ?? error.localizedDescription
   }
 
   static func modify(_ operation: CKModifyRecordsOperation, record: CKRecord) async throws -> String {
@@ -76,7 +81,7 @@ enum ICloudDatabase {
     }
   }
 
-  static func map(_ error: Error) -> NSError {
+  static func map(_ error: Error) -> Exception {
     let cloudError = error as NSError
     let code: String
     switch CKError.Code(rawValue: cloudError.code) {
@@ -86,7 +91,7 @@ enum ICloudDatabase {
     case .some(.zoneNotFound): code = "ENCRYPTED_DATA_RESET"
     default: code = "UNKNOWN"
     }
-    return NSError(domain: "ICloud", code: cloudError.code, userInfo: ["code": code, NSLocalizedDescriptionKey: cloudError.localizedDescription])
+    return self.error(code, cloudError.localizedDescription)
   }
 
   static func itemError(_ error: Error) -> Error {
@@ -97,8 +102,9 @@ enum ICloudDatabase {
   }
 
   static func syncErrorCode(_ error: Error) -> String {
-    let cloudError = itemError(error) as NSError
-    if let code = cloudError.userInfo["code"] as? String, cloudError.domain == "ICloud" { return code }
+    let itemError = itemError(error)
+    if let exception = itemError as? Exception { return exception.code }
+    let cloudError = itemError as NSError
     switch CKError.Code(rawValue: cloudError.code) {
     case .some(.serverRecordChanged): return "SERVER_RECORD_CHANGED"
     case .some(.zoneNotFound): return "ZONE_NOT_FOUND"
@@ -124,11 +130,10 @@ enum ICloudDatabase {
   }
 
   static func failure(_ error: Error) -> [String: Any] {
-    ["code": syncErrorCode(error), "message": (itemError(error) as NSError).localizedDescription]
+    ["code": syncErrorCode(error), "message": message(itemError(error))]
   }
 
-  static func syncError(_ error: Error) -> NSError {
-    let cloudError = itemError(error) as NSError
-    return NSError(domain: "ICloud", code: cloudError.code, userInfo: ["code": syncErrorCode(error), NSLocalizedDescriptionKey: cloudError.localizedDescription])
+  static func syncError(_ error: Error) -> Exception {
+    self.error(syncErrorCode(error), message(itemError(error)))
   }
 }

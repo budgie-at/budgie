@@ -21,7 +21,12 @@ export class CloudSyncTransport extends Context.Service<CloudSyncTransport>()('@
             Effect.tryPromise({ try: run, catch: cause => cause }).pipe(
                 Effect.catch(cause =>
                     isNativeError(cause)
-                        ? Effect.fail(new CloudSyncTransportError({ code: cause.code, message: cause.message }))
+                        ? Effect.fail(
+                              new CloudSyncTransportError({
+                                  code: cause.code,
+                                  message: cause.message.split('\n→ Caused by: ').pop() ?? cause.message
+                              })
+                          )
                         : Effect.die(cause)
                 )
             );
