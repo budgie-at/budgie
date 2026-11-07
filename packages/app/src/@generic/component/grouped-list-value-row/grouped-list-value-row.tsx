@@ -47,10 +47,10 @@ export const GroupedListValueRow = ({ icon, title, value, testID, onPress, onCle
     ) : (
         <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
     );
-    const contentClassName = isStacked ? 'gap-y-xxs' : 'flex-row flex-wrap items-center gap-x-sm gap-y-xxs';
+    const contentClassName = isStacked ? 'gap-y-xxs' : 'flex-row items-center gap-x-sm gap-y-xxs';
     const valueClassName = isStacked
         ? 'text-[17px] text-secondary-foreground'
-        : 'ml-auto max-w-[50%] text-[17px] text-secondary-foreground';
+        : 'ml-auto max-w-[50%] shrink text-[17px] text-secondary-foreground';
     const valueLineCount = isStacked ? 2 : 1;
 
     return (
