@@ -25,7 +25,7 @@ class CategorizeInboxEngineService {
     private static readonly NON_DESCRIPTIVE_MCC: ReadonlySet<string> = new Set([
         '4829',
         '6010',
-        '6011',
+        ATM_CASH_WITHDRAWAL_MCC,
         '6012',
         '6051',
         '6538',
@@ -78,6 +78,11 @@ class CategorizeInboxEngineService {
         [LanguageEnum.ES]: ['transferencia', 'transferencia a tarjeta']
     };
 
+    private static readonly TRANSFER_TITLE_PREFIX_PATTERN = new RegExp(
+        `^(?:${Object.values(CategorizeInboxEngineService.GENERIC_TRANSFER_TITLES).flat().join('|')})(?:\\s|$)`,
+        'u'
+    );
+
     private static readonly GENERIC_TRANSFER_TITLE_SET = new Set(
         Object.values(CategorizeInboxEngineService.GENERIC_TRANSFER_TITLES).flat()
     );
@@ -112,9 +117,9 @@ class CategorizeInboxEngineService {
         labelKind: CategorizeInboxLabelKindEnum
     ): CategorizeInboxBuildContextInterface {
         const titledEvidence = evidence.filter(row => isNotEmptyString(row.title.trim()));
-        const merchantEvidence = titledEvidence.filter(row => !this.isGenericTransfer(this.merchantKey(row.title)));
+        const merchantEvidence = titledEvidence.filter(row => !this.isTransferLike(row.title));
         const brandEvidence = merchantEvidence.filter(row => isDefined(this.brandKey(row.title)));
-        const mccEvidence = evidence.filter(row => isDefined(row.mccCategoryId) && !this.isGenericTransfer(this.merchantKey(row.title)));
+        const mccEvidence = evidence.filter(row => isDefined(row.mccCategoryId) && !this.isTransferLike(row.title));
 
         return {
             exact: this.groupBy(titledEvidence, row => `${row.type}|${row.title.toLowerCase()}`),
@@ -309,7 +314,7 @@ class CategorizeInboxEngineService {
 
         const exactCounts = this.countLabels(context.exact, new Set(rows.map(row => `${type}|${row.title.toLowerCase()}`)));
         const merchantCounts = this.countLabels(context.merchant, new Set(rows.map(row => `${type}|${this.merchantKey(row.title)}`)));
-        const transferLike = rows.some(row => this.isGenericTransfer(this.merchantKey(row.title)));
+        const transferLike = rows.some(row => this.isTransferLike(row.title));
         const historyCounts = (transferLike ? [exactCounts] : [exactCounts, merchantCounts]).find(counts => isPositiveNumber(counts.size));
         const counts = historyCounts ?? (transferLike ? new Map<number, number>() : this.fallbackCounts(rows, context));
         const total = this.sumValues(counts.values());
@@ -360,12 +365,18 @@ class CategorizeInboxEngineService {
     }
 
     private isGenericTransfer(title: string): boolean {
-        return CategorizeInboxEngineService.GENERIC_TRANSFER_TITLE_SET.has(
-            title
-                .toLowerCase()
-                .replaceAll(/[^\p{L}]+/gu, ' ')
-                .trim()
-        );
+        return CategorizeInboxEngineService.GENERIC_TRANSFER_TITLE_SET.has(this.normalizeTransferTitle(title));
+    }
+
+    private isTransferLike(title: string): boolean {
+        return CategorizeInboxEngineService.TRANSFER_TITLE_PREFIX_PATTERN.test(this.normalizeTransferTitle(title));
+    }
+
+    private normalizeTransferTitle(title: string): string {
+        return title
+            .toLowerCase()
+            .replaceAll(/[^\p{L}]+/gu, ' ')
+            .trim();
     }
 
     private countLabels(level: ReadonlyMap<string, LabelEvidenceRowInterface[]>, keys: Iterable<string>): Map<number, number> {

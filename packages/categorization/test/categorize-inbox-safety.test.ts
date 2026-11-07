@@ -96,6 +96,9 @@ describe('categorization/inbox-safety', () => {
     });
     it.each([
         ['Переказ на картку Іван', 'Переказ на картку Петро'],
+        ['Переказ коштів Іван Петренко', 'Переказ коштів Іван Сидоренко'],
+        ['Transfer Ivan Petrenko', 'Transfer Olga Sidorenko'],
+        ['Transferencia a tarjeta 1234 Juan', 'Transferencia a tarjeta 5678 Pedro'],
         ['Transfer to card Ivan', 'Transfer to card']
     ])('requires exact history for %s', (title, historyTitle) => {
         const [cluster] = clusters([{ ...row, title }], [{ ...evidence, title: historyTitle, count: 5 }]);
