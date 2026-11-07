@@ -17,7 +17,7 @@ const GROUPS = ['Overview', 'Topics', 'Features', 'Blog', 'Other'] as const;
 const [OVERVIEW, TOPICS, FEATURES, BLOG, OTHER] = GROUPS;
 
 const SUMMARY =
-    'Budgie is a privacy-first, offline-first expense tracker for iOS and Android. Your financial data stays on your phone, encrypted, and the app works offline with no account required. Budgie is source-available.';
+    'Budgie is a privacy-first, offline-first expense tracker for iOS and Android. Your financial data is stored on your phone, encrypted once you set a PIN, and the app works offline with no account required. Budgie is source-available.';
 
 const buildPageIndex = () => {
     const i18n = getI18nInstance(SOURCE_LOCALE);

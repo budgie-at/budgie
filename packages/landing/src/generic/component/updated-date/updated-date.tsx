@@ -15,19 +15,24 @@ export const UpdatedDate = ({ className, date, locale, publishedDate }: Props) =
     const formattedDate = formatDate(date);
     const formattedPublishedDate = isDefined(publishedDate) ? formatDate(publishedDate) : '';
 
+    const hasPublishedDate = isDefined(publishedDate);
+    const isUpdated = !hasPublishedDate || publishedDate !== date;
+
     return (
         <p className={className}>
-            {isDefined(publishedDate) && publishedDate !== date && (
+            {hasPublishedDate && (
                 <>
                     <Trans>
                         Published <time dateTime={publishedDate}>{formattedPublishedDate}</time>
                     </Trans>
-                    {' · '}
+                    {isUpdated && ' · '}
                 </>
             )}
-            <Trans>
-                Updated <time dateTime={date}>{formattedDate}</time>
-            </Trans>
+            {isUpdated && (
+                <Trans>
+                    Updated <time dateTime={date}>{formattedDate}</time>
+                </Trans>
+            )}
         </p>
     );
 };
