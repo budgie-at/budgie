@@ -9,7 +9,6 @@ import {
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
-import * as Option from 'effect/Option';
 import * as Predicate from 'effect/Predicate';
 import * as Result from 'effect/Result';
 import * as Schema from 'effect/Schema';
@@ -57,16 +56,8 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
         const definitionsByRecordType = new Map<string, SyncRecordDefinitionInterface>(
             Object.values(SYNC_RECORD_DEFINITIONS).map(definition => [definition.recordType, definition] as const)
         );
-        const systemFieldsSchema = Schema.Struct({ modifiedAt: Schema.optionalKey(Schema.Finite) }).pipe(Schema.fromJsonString);
 
         const itemKey = (item: SyncApplyItemInterface): string => `${item.decoded.zone}|${item.decoded.recordName}`;
-        const readModifiedAt = (systemFields: string | null): number | null =>
-            isString(systemFields)
-                ? Option.match(Schema.decodeOption(systemFieldsSchema)(systemFields), {
-                      onNone: () => null,
-                      onSome: ({ modifiedAt }) => modifiedAt ?? null
-                  })
-                : null;
         const readZone = (raw: unknown): string => (isRecord(raw) && isString(raw['zone']) ? raw['zone'] : '');
         const linkMissing = (item: SyncApplyItemInterface): SyncRowReferenceInterface => ({
             column: '',
@@ -314,23 +305,16 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
             const isStoredTombstone = isDefined(stored) && isNotEmptyString(readStoredMovedTo(stored.payload));
             const latest = pending ?? (isStoredTombstone ? null : stored);
 
-            if (isDefined(latest)) {
-                const incomingAt = readModifiedAt(item.systemFields);
-                const latestAt = readModifiedAt(latest.systemFields ?? null);
-                const isOlder = isDefined(incomingAt) && isDefined(latestAt) && incomingAt <= latestAt;
+            if (isDefined(latest) && latest.payload === item.envelopeJson) {
+                const isSystemFieldsRefresh = isDefined(stored) && !isDefined(pending) && stored.systemFields !== item.systemFields;
 
-                if (latest.payload === item.envelopeJson || isOlder) {
-                    const isSystemFieldsRefresh =
-                        !isOlder && isDefined(stored) && !isDefined(pending) && stored.systemFields !== item.systemFields;
-
-                    if (isSystemFieldsRefresh) {
-                        yield* recordRepository.upsert({ ...stored, systemFields: item.systemFields });
-                    }
-
-                    tracker.skip();
-
-                    return null;
+                if (isSystemFieldsRefresh) {
+                    yield* recordRepository.upsert({ ...stored, systemFields: item.systemFields });
                 }
+
+                tracker.skip();
+
+                return null;
             }
 
             return item;

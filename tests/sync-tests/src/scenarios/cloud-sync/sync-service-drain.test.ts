@@ -1,6 +1,5 @@
 import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { cloudSyncStatusAtom } from '@app/cloud-sync/constant/cloud-sync-status-atom.constant';
-import { encodeJson } from '@budgie-at/test-kit';
 import { CloudSyncStatusEnum, HouseholdShareService, ICloudErrorCode, ICloudSyncScope } from '@budgie/cloud-sync';
 import {
     HOUSEHOLD_SYNC_ZONE,
@@ -148,7 +147,7 @@ describe('cloud-sync/sync-service drain', () => {
                                     ownerName: firstPush.ownerName,
                                     recordName: firstPush.recordName,
                                     recordType: firstPush.recordType,
-                                    systemFields: encodeJson({ modifiedAt: 50 }),
+                                    systemFields: 'system-server',
                                     schemaVersion: firstPush.schemaVersion,
                                     encryptedFields: { ...serverFields, title: 'Theirs', order: 7 }
                                 }
@@ -161,7 +160,7 @@ describe('cloud-sync/sync-service drain', () => {
                     ({ recordType }) => recordType === 'Account'
                 );
 
-                expect(rePush?.systemFields).toBe(encodeJson({ modifiedAt: 50 }));
+                expect(rePush?.systemFields).toBe('system-server');
                 expect(rePush?.recordName).toBe(firstPush.recordName);
             })
         )
@@ -216,7 +215,7 @@ describe('cloud-sync/sync-service drain', () => {
                             ownerName: '__defaultOwner__',
                             recordName: '0194a000-0000-7000-8000-000000000001',
                             recordType: 'Account',
-                            systemFields: encodeJson({ modifiedAt: 10 }),
+                            systemFields: 'system-cloud',
                             schemaVersion: 1,
                             encryptedFields: {
                                 title: 'From cloud',

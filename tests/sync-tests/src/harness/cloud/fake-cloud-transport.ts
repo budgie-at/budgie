@@ -79,7 +79,7 @@ export class FakeCloudTransport {
     }
 
     systemFieldsFor(version: number): string {
-        return JSON.stringify({ modifiedAt: version });
+        return `system-fields-${version}`;
     }
 
     latestSystemFields(zone: string, recordName: string): string | null {
