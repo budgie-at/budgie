@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.167.0](https://github.com/budgie-at/budgie/compare/v6.166.0...v6.167.0) (2026-11-07)
+
+### Features
+
+* **app:** answer read-only budget questions through Siri ([#1991](https://github.com/budgie-at/budgie/issues/1991)) ([6d01d4a](https://github.com/budgie-at/budgie/commit/6d01d4a6f7a9c1cf8130522549f81a442d210e44)), closes [#1987](https://github.com/budgie-at/budgie/issues/1987)
+
+
 # [6.166.0](https://github.com/budgie-at/budgie/compare/v6.165.7...v6.166.0) (2026-11-07)
 
 ### Features
