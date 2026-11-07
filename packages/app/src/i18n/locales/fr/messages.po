@@ -1945,6 +1945,10 @@ msgstr "Solde"
 msgid "Balance Adjustment"
 msgstr "Ajustement de solde"
 
+#: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
+msgid "Balance after saving"
+msgstr "Solde après enregistrement"
+
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 msgid "Balance forecast"
 msgstr "Prévision de solde"
@@ -3591,6 +3595,7 @@ msgid "Currency"
 msgstr "Devise"
 
 #: src/account/component/account-balance-field/account-balance-field.tsx
+#: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
 msgid "Current balance"
 msgstr "Solde actuel"
 
@@ -8836,6 +8841,10 @@ msgstr "Le texte apparaît n’importe où"
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "The text appears nowhere"
 msgstr "Le texte n’apparaît nulle part"
+
+#: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
+msgid "The updated adjustment replaces the original amount in your balance."
+msgstr "La correction mise à jour remplace le montant initial dans votre solde."
 
 #: src/rule/components/rule-summary-hero/rule-summary-hero.tsx
 msgid "then"

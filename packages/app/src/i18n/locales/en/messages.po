@@ -1946,6 +1946,10 @@ msgstr "Balance"
 msgid "Balance Adjustment"
 msgstr "Balance Adjustment"
 
+#: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
+msgid "Balance after saving"
+msgstr "Balance after saving"
+
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 msgid "Balance forecast"
 msgstr "Balance forecast"
@@ -3592,6 +3596,7 @@ msgid "Currency"
 msgstr "Currency"
 
 #: src/account/component/account-balance-field/account-balance-field.tsx
+#: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
 msgid "Current balance"
 msgstr "Current balance"
 
@@ -8837,6 +8842,10 @@ msgstr "The text appears anywhere"
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "The text appears nowhere"
 msgstr "The text appears nowhere"
+
+#: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
+msgid "The updated adjustment replaces the original amount in your balance."
+msgstr "The updated adjustment replaces the original amount in your balance."
 
 #: src/rule/components/rule-summary-hero/rule-summary-hero.tsx
 msgid "then"

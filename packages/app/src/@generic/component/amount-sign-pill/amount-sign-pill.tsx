@@ -1,7 +1,7 @@
+import { TransactionEntryTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { View } from 'react-native';
 
-import { AmountSignSegment } from '../amount-sign-segment/amount-sign-segment';
+import { SegmentedControl } from '../segmented-control/segmented-control';
 
 interface Props {
     readonly isIncrease: boolean;
@@ -10,24 +10,16 @@ interface Props {
 
 export const AmountSignPill = ({ isIncrease, onToggle }: Props) => {
     const { t } = useLingui();
-
-    const handleDecrease = () => {
-        if (isIncrease) {
+    const value = isIncrease ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT;
+    const segments = [
+        { value: TransactionEntryTypeEnum.CREDIT, label: t`Decrease` },
+        { value: TransactionEntryTypeEnum.DEBIT, label: t`Increase` }
+    ];
+    const handleChange = (nextValue: TransactionEntryTypeEnum) => {
+        if (nextValue !== value) {
             onToggle();
         }
     };
 
-    const handleIncrease = () => {
-        if (!isIncrease) {
-            onToggle();
-        }
-    };
-
-    return (
-        <View accessibilityRole="radiogroup" className="min-h-[44px] w-[220px] flex-row px-[2px]">
-            <View className="absolute inset-x-0 top-0 bottom-0 rounded-[9px] bg-transaction-detail-row" />
-            <AmountSignSegment label={t`Decrease`} selected={!isIncrease} onPress={handleDecrease} />
-            <AmountSignSegment label={t`Increase`} selected={isIncrease} onPress={handleIncrease} />
-        </View>
-    );
+    return <SegmentedControl segments={segments} value={value} onChange={handleChange} className="w-full" />;
 };

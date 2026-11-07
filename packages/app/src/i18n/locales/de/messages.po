@@ -1945,6 +1945,10 @@ msgstr "Guthaben"
 msgid "Balance Adjustment"
 msgstr "Saldoanpassung"
 
+#: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
+msgid "Balance after saving"
+msgstr "Kontostand nach dem Speichern"
+
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 msgid "Balance forecast"
 msgstr "Kontostandprognose"
@@ -3591,6 +3595,7 @@ msgid "Currency"
 msgstr "Währung"
 
 #: src/account/component/account-balance-field/account-balance-field.tsx
+#: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
 msgid "Current balance"
 msgstr "Aktueller Saldo"
 
@@ -8836,6 +8841,10 @@ msgstr "Der Text kommt irgendwo vor"
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "The text appears nowhere"
 msgstr "Der Text kommt nirgends vor"
+
+#: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
+msgid "The updated adjustment replaces the original amount in your balance."
+msgstr "Die aktualisierte Korrektur ersetzt den ursprünglichen Betrag in deinem Kontostand."
 
 #: src/rule/components/rule-summary-hero/rule-summary-hero.tsx
 msgid "then"

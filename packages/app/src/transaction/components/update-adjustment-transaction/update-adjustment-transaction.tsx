@@ -163,10 +163,17 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
                 </QuickFormSecondaryLine>
             }
             keypad={keypad}
-            actions={<TransactionFormActions label={t`Save`} isDisabled={display.isDisabled} onConfirm={handleConfirm} />}
+            actions={
+                <TransactionFormActions
+                    label={t`Save`}
+                    isDisabled={display.isDisabled}
+                    onConfirm={handleConfirm}
+                    testID={SimpleQuickFormSelector.SubmitButton}
+                />
+            }
         >
-            <View className="pt-[12px]">
-                <AdjustmentAccountSummary details={details} />
+            <View className="gap-y-[20px] pt-[12px]">
+                <AdjustmentAccountSummary details={details} amount={numericValue} isIncrease={isIncrease} />
             </View>
         </QuickFormLayout>
     );
