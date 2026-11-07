@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../../constant/max-chrome-font-size-multiplier.constant';
 import { Button } from '../button/button';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { ContactSelectorSelector } from '../contact-selector/contact-selector.selector';
@@ -49,7 +50,12 @@ export const ContactSelectorState = ({ isLoading, title, description, icon, onRe
             {children}
             {isDefined(onRetry) ? (
                 <Button
-                    content={t`Try again`}
+                    accessibilityLabel={t`Try again`}
+                    content={
+                        <Text maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER} className="text-[17px] font-semibold text-center">
+                            {t`Try again`}
+                        </Text>
+                    }
                     onPress={onRetry}
                     isLoading={isLoading}
                     variant="cta"
