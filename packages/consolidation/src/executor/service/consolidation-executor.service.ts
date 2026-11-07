@@ -39,7 +39,8 @@ export class ConsolidationExecutorService extends Context.Service<ConsolidationE
                     }
 
                     const canonicalTransaction = yield* consolidationMutationService.createCanonicalTransfer(
-                        consolidationPlan.canonicalInput
+                        consolidationPlan.canonicalInput,
+                        consolidationPlan.sourceTransactionIds
                     );
 
                     yield* createFeeEntries(sourceTransactions, canonicalTransaction.id);

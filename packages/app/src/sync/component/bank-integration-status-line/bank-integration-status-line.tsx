@@ -2,17 +2,13 @@ import { ExternalSourceEnum, SyncEntityInterface, SyncStatusEnum, UserIconNameEn
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import * as Clock from 'effect/Clock';
-import * as Duration from 'effect/Duration';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
-import * as Atom from 'effect/reactivity/Atom';
-import * as Schedule from 'effect/Schedule';
-import * as Stream from 'effect/Stream';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
+import { minuteClockAtom } from '../../../@generic/constant/minute-clock-atom.constant';
 import { cn } from '../../../@generic/utils/cn.util';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
@@ -25,10 +21,6 @@ import { getLatestForwardSyncedAt } from '../../utils/get-latest-forward-synced-
 import { isBankIntegrationSyncStale } from '../../utils/is-bank-integration-sync-stale.util';
 import { BankIntegrationImportStatus } from '../bank-integration-import-status/bank-integration-import-status';
 
-const bankIntegrationStatusNowAtom = Atom.make(
-    Clock.currentTimeMillis.pipe(Stream.fromEffect, Stream.repeat(Schedule.spaced(Duration.minutes(1))))
-);
-
 interface Props {
     readonly syncs: Array<Pick<SyncEntityInterface, 'enabled' | 'status' | 'mode' | 'forwardSyncedAt'>>;
 }
@@ -38,7 +30,7 @@ export const BankIntegrationStatusLine = ({ syncs }: Props) => {
     const { integration, capabilities } = useBankIntegration();
     const { isKeyRejected } = useBankIntegrationAccountPreviewsQuery(integration.id);
     const { formatRelativeToNow } = useFormatDate();
-    const now = AsyncResult.getOrElse(useAtomValue(bankIntegrationStatusNowAtom), Date.now);
+    const now = AsyncResult.getOrElse(useAtomValue(minuteClockAtom), Date.now);
     const status = getBankIntegrationSyncStatus(syncs, isKeyRejected);
     const isStale = status === BankIntegrationSyncStatusEnum.UP_TO_DATE && isBankIntegrationSyncStale(syncs, now);
     const lastSyncedAt = getLatestForwardSyncedAt(syncs.filter(sync => !capabilities.supportsLiveSync || sync.enabled));

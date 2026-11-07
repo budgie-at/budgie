@@ -12,7 +12,7 @@ import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { testDb, TestLayer } from '../../harness';
+import { restoreSyncTriggers, suspendSyncTriggers, testDb, TestLayer } from '../../harness';
 
 const MIGRATION_NAME = '20261031231028_category_icon_source';
 const MIGRATION_SQL = readFileSync(resolve(process.cwd(), '../../packages/app/drizzle', MIGRATION_NAME, 'migration.sql'), 'utf8');
@@ -46,11 +46,13 @@ describe('category/icon-source', () => {
             yield* insertLegacyCategory('Side project', UserIconNameEnum.Home, false);
             yield* insertLegacyCategory('Apartment', UserIconNameEnum.Home, true);
             yield* insertLegacyCategory('Coffee runs', UserIconNameEnum.Coffee, false);
+            const syncTriggers = yield* suspendSyncTriggers;
             yield* testDb.$client.unsafe('ALTER TABLE categories DROP COLUMN icon_source').raw;
 
             yield* Effect.forEach(MIGRATION_SQL.split('--> statement-breakpoint'), statement => testDb.$client.unsafe(statement).raw, {
                 discard: true
             });
+            yield* restoreSyncTriggers(syncTriggers);
 
             expect(yield* findIconSource('Side project')).toBe(CategoryIconSourceEnum.AUTO);
             expect(yield* findIconSource('Apartment')).toBe(CategoryIconSourceEnum.USER);

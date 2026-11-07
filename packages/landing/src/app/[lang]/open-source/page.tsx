@@ -245,7 +245,7 @@ export default async function OpenSourcePillarHubPage(props: PageLangParam) {
                         answer={
                             <Trans>
                                 Public source means our privacy claims are verifiable. Any developer can audit the code and confirm that no
-                                financial data is transmitted to external servers. You do not have to trust us — you can check.
+                                financial data reaches a Budgie server. You do not have to trust us — you can check.
                             </Trans>
                         }
                         question={<Trans>How does public source make Budgie more private?</Trans>}
@@ -277,7 +277,8 @@ export default async function OpenSourcePillarHubPage(props: PageLangParam) {
                         question={<Trans>What if Budgie shuts down?</Trans>}
                         answer={
                             <Trans>
-                                The code stays public. The community can keep building. Your data stays on your device regardless.
+                                The code stays public. The community can keep building. Your data stays yours regardless — on your device
+                                and in storage you control.
                             </Trans>
                         }
                     />

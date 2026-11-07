@@ -973,7 +973,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Privacy by design</strong> - Your data stays on your device by default
+                                <strong>Privacy by design</strong> - Your data stays yours, on your device and in storage you control
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -1030,9 +1030,9 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                         <BlogFaqItem question={<Trans>What if the project is abandoned? Will I lose access to my data?</Trans>}>
                             <Trans>
                                 One of the key benefits of public-source and offline-first architecture is data sovereignty. Your data is
-                                stored locally on your device, not locked in some company’s cloud that might disappear. If Budgie
-                                development stopped tomorrow, your data would still be on your phone, and the public source code would allow
-                                anyone to continue development or create export tools. You’re never locked in.
+                                stored on your device and in storage you control, not locked in some company’s database that might
+                                disappear. If Budgie development stopped tomorrow, your data would still be on your phone, and the public
+                                source code would allow anyone to continue development or create export tools. You’re never locked in.
                             </Trans>
                         </BlogFaqItem>
 
@@ -1048,7 +1048,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                         <BlogFaqItem question={<Trans>How does Budgie make money if the software is free?</Trans>}>
                             <Trans>
                                 Budgie is free to use. There is no paid tier, no advertising, and your data is never sold. Public source
-                                supports this because anyone can check that your data stays on your device.
+                                supports this because anyone can check that your data never reaches a Budgie server.
                             </Trans>
                         </BlogFaqItem>
                     </BlogFaqSection>

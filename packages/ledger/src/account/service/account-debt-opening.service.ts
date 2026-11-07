@@ -1,13 +1,14 @@
 import {
     AccountDebtTypeEnum,
     AccountRepository,
-    BORROWING_CATEGORY_ID,
+    BORROWING_CATEGORY_SEED_KEY,
+    CategoryRepository,
     CategorySourceEnum,
     Db,
     DebtEventDirectionEnum,
     DebtEventRepository,
     DebtEventSourceEnum,
-    LENDING_CATEGORY_ID,
+    LENDING_CATEGORY_SEED_KEY,
     TransactionEntryKindEnum,
     TransactionEntryRepository,
     TransactionEntryTypeEnum,
@@ -40,6 +41,7 @@ import type {
 export class AccountDebtOpeningService extends Context.Service<AccountDebtOpeningService>()('@budgie/ledger/AccountDebtOpeningService', {
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
+        const categoryRepository = yield* CategoryRepository;
         const debtEventRepository = yield* DebtEventRepository;
         const transactionEntryRepository = yield* TransactionEntryRepository;
         const transactionRepository = yield* TransactionRepository;
@@ -73,20 +75,24 @@ export class AccountDebtOpeningService extends Context.Service<AccountDebtOpenin
 
         const createFundingEntry = Effect.fn('AccountDebtOpeningService.createFundingEntry')(function* (
             transaction: TransactionEntityInterface,
-            fundingAccountId: number,
+            fundingAccount: Pick<AccountEntityInterface, 'id' | 'syncZone'>,
             amount: number
         ) {
             const isExpense = transaction.type === TransactionTypeEnum.EXPENSE;
+            const category = yield* categoryRepository.findActiveBySeedKey(
+                isExpense ? LENDING_CATEGORY_SEED_KEY : BORROWING_CATEGORY_SEED_KEY,
+                fundingAccount.syncZone
+            );
             const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({
-                accountId: fundingAccountId,
+                accountId: fundingAccount.id,
                 amount,
                 operatedAt: transaction.operatedAt
             });
 
             return yield* transactionEntryRepository.create({
                 transactionId: transaction.id,
-                accountId: fundingAccountId,
-                categoryId: isExpense ? LENDING_CATEGORY_ID : BORROWING_CATEGORY_ID,
+                accountId: fundingAccount.id,
+                categoryId: category?.id ?? null,
                 categorySource: CategorySourceEnum.DEBT_SETTLEMENT,
                 mccCategoryId: null,
                 type: isExpense ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT,
@@ -186,7 +192,7 @@ export class AccountDebtOpeningService extends Context.Service<AccountDebtOpenin
                     const account = yield* debtAccountService.createDebtRecord(input, 0);
                     const conversion = yield* exchangeRatesService.convert(account.instrumentId, fundingAccount.instrumentId, targetAmount);
                     const transaction = yield* createFundingTransaction(input, fundingAccountId);
-                    const entry = yield* createFundingEntry(transaction, fundingAccountId, conversion.amount);
+                    const entry = yield* createFundingEntry(transaction, fundingAccount, conversion.amount);
                     const valuedAccount = yield* updateDebtTargetAmount(account, targetAmount, transaction.operatedAt);
 
                     yield* debtEventRepository.create({
@@ -233,6 +239,7 @@ export class AccountDebtOpeningService extends Context.Service<AccountDebtOpenin
     static readonly layer = Layer.effect(AccountDebtOpeningService, AccountDebtOpeningService.make).pipe(
         Layer.provide([
             AccountRepository.layer,
+            CategoryRepository.layer,
             DebtEventRepository.layer,
             TransactionEntryRepository.layer,
             TransactionRepository.layer,

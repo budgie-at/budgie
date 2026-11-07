@@ -9,7 +9,7 @@ import * as Effect from 'effect/Effect';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { seed, seedBankPair, testDb, TestLayer, DEBT_OPENING_MESSAGES } from '../../harness';
+import { restoreSyncTriggers, seed, seedBankPair, suspendSyncTriggers, testDb, TestLayer, DEBT_OPENING_MESSAGES } from '../../harness';
 
 const COMPACT_MIGRATION = '20261104170422_compact_rates_and_embeddings';
 const RECURRING_SMART_MIGRATION = '20261105192451_recurring_smart_series';
@@ -52,10 +52,16 @@ const replayMigration = (migrationName: string) => {
         ([, table, column]) => `ALTER TABLE ${table} DROP COLUMN ${column}`
     );
 
-    return Effect.forEach(
-        [...dropAddedColumns, ...migrationSql.split('--> statement-breakpoint')],
-        statement => testDb.$client.unsafe(statement).raw,
-        { discard: true }
+    return suspendSyncTriggers.pipe(
+        Effect.flatMap(syncTriggers =>
+            Effect.forEach(
+                [...dropAddedColumns, ...migrationSql.split('--> statement-breakpoint')],
+                statement => testDb.$client.unsafe(statement).raw,
+                {
+                    discard: true
+                }
+            ).pipe(Effect.andThen(restoreSyncTriggers(syncTriggers)))
+        )
     );
 };
 

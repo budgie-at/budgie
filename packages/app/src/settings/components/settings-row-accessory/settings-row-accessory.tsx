@@ -17,17 +17,22 @@ interface Props {
 const KIND_ICON: Record<SettingsRowAccessoryKindEnum, UserIconNameEnum | null> = {
     [SettingsRowAccessoryKindEnum.NAVIGATE]: UserIconNameEnum.ChevronRight,
     [SettingsRowAccessoryKindEnum.EXTERNAL]: UserIconNameEnum.ArrowUpRight,
-    [SettingsRowAccessoryKindEnum.ACTION]: null
+    [SettingsRowAccessoryKindEnum.ACTION]: null,
+    [SettingsRowAccessoryKindEnum.VALUE]: null
 };
 
 export const SettingsRowAccessory = ({ value, kind = SettingsRowAccessoryKindEnum.NAVIGATE, isLoading = false, testID }: Props) => {
     const icon = KIND_ICON[kind];
 
     return (
-        <LoadingContent isLoading={isLoading} className="min-h-[20px] min-w-[20px] items-end justify-center">
-            <View className="max-w-[200px] flex-row items-center gap-x-xs">
+        <LoadingContent
+            isLoading={isLoading}
+            containerClassName="max-w-[50%] shrink"
+            className="min-h-[20px] min-w-[20px] items-end justify-center"
+        >
+            <View className="flex-row items-center gap-x-xs">
                 {isNotEmptyString(value) ? (
-                    <Text className="shrink text-secondary-foreground text-[17px]" numberOfLines={1} testID={testID}>
+                    <Text className="shrink text-secondary-foreground text-right text-[17px]" testID={testID}>
                         {value}
                     </Text>
                 ) : null}

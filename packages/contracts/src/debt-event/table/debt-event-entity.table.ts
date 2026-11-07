@@ -5,6 +5,8 @@ import { CURRENT_TIMESTAMP } from '../../@generic/constant/current-timestamp.con
 import { convertEnumToDrizzleEnum } from '../../@generic/utils/convert-enum-to-drizzle-enum.util';
 import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
+import { syncIdentityUniqueIndex } from '../../cloud-sync/utils/sync-identity-unique-index.util';
+import { withSyncIdentityColumns } from '../../cloud-sync/utils/with-sync-identity-columns.util';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
@@ -14,6 +16,7 @@ import { DebtEventSourceEnum } from '../enum/debt-event-source.enum';
 export const DebtEventEntityTable = sqliteTable(
     'debt_events',
     withBaseEntityTableColumns({
+        ...withSyncIdentityColumns(),
         debtAccountId: int('debt_account_id', { mode: 'number' })
             .notNull()
             .references(() => AccountEntityTable.id, { onDelete: 'cascade' }),
@@ -38,6 +41,7 @@ export const DebtEventEntityTable = sqliteTable(
         })
     }),
     table => [
+        syncIdentityUniqueIndex('debt_events', table),
         uniqueIndex('debt_events_live_transaction_unq')
             .on(table.transactionId)
             .where(sql`${table.transactionId} IS NOT NULL AND ${table.deletedAt} IS NULL`),

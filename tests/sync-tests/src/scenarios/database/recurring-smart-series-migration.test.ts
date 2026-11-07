@@ -49,7 +49,14 @@ const insertSeries = (periodDays: number, title: string) =>
          VALUES ('${title}', 'EXPENSE', ${periodDays}, 12000, 'ACTIVE', 'SUGGESTED', '${title}', ${LAST_SEEN_AT})`
     ).raw;
 
+const SYNC_TRIGGER_SUFFIXES = ['insert', 'update', 'delete'];
+
 const preMigrationState = Effect.gen(function* () {
+    yield* Effect.forEach(
+        SYNC_TRIGGER_SUFFIXES,
+        suffix => testDb.$client.unsafe(`DROP TRIGGER IF EXISTS recurring_series_sync_outbox_${suffix}`).raw,
+        { discard: true }
+    );
     yield* testDb.$client.unsafe('DROP TABLE recurring_series_transaction').raw;
     yield* Effect.forEach(ADDED_COLUMNS, column => testDb.$client.unsafe(`ALTER TABLE recurring_series DROP COLUMN ${column}`).raw, {
         discard: true

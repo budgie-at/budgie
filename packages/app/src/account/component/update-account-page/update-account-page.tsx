@@ -22,6 +22,7 @@ import { AccountFormBindingsInterface } from '../../interface/account-form-bindi
 import { AccountSwitchField } from '../account-switch-field/account-switch-field';
 import { ArchiveAccount } from '../archive-account/archive-account';
 import { CreateAccountScreenSelector } from '../create-account-screen/create-account-screen.selector';
+import { HouseholdShareAccountSection } from '../household-share-account-section/household-share-account-section';
 
 interface Props {
     readonly account: AccountEntityInterface;
@@ -93,6 +94,8 @@ export const UpdateAccountPage = ({ account, fields, hero, detailsFooter, childr
                             onChange={fields.isActive.field.onChange}
                         />
                     </GroupedListSection>
+
+                    <HouseholdShareAccountSection accountId={account.id} isBankSynced={isDefined(account.integrationId)} />
 
                     <GroupedListSection footer={t`Hidden from Home, totals and budgets until restored.`}>
                         <ArchiveAccount accountId={account.id} />

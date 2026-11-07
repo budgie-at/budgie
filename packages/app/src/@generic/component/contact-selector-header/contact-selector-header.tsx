@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
-import { openContactsSettings } from '../../utils/open-contacts-settings.util';
+import { openAppSettings } from '../../utils/open-app-settings.util';
 import { Button } from '../button/button';
 import { ContactSelectorSelector } from '../contact-selector/contact-selector.selector';
 import { SearchInput } from '../search-input/search-input';
@@ -43,7 +43,7 @@ export const ContactSelectorHeader = ({ search, onSearchChange, isLimited, canSe
                 <View className="px-3xl pb-md">
                     <Button
                         content={t`Limited access · Manage in Settings`}
-                        onPress={openContactsSettings}
+                        onPress={openAppSettings}
                         variant="ghost"
                         className="min-h-[44px]"
                         testID={ContactSelectorSelector.Settings}

@@ -241,7 +241,10 @@ describe('enable-banking/connect switch', () => {
                     externalSource: ExternalSourceEnum.ENABLE_BANKING
                 });
                 expect(
-                    yield* testDb.select().from(AccountExternalIdEntityTable).where(eq(AccountExternalIdEntityTable.accountId, account.id))
+                    yield* testDb
+                        .select({ externalId: AccountExternalIdEntityTable.externalId, accountId: AccountExternalIdEntityTable.accountId })
+                        .from(AccountExternalIdEntityTable)
+                        .where(eq(AccountExternalIdEntityTable.accountId, account.id))
                 ).toEqual([{ externalId: ERSTE_ID, accountId: account.id }]);
 
                 yield* service.sync();

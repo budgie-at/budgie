@@ -6,32 +6,18 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
-import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { useImportBackupPinModal } from '../context/import-backup-pin-modal.context';
 import { DatabaseImportService } from '../service/database-import.service';
+
+import { useImportErrorHandlers } from './use-import-error-handlers.hook';
 
 export const useRestoreBackup = () => {
     const { t } = useLingui();
     const [openImportBackupPin] = useImportBackupPinModal();
     const { isLoading, run } = useSingleFlight();
 
-    const importErrorHandlers = {
-        UnsupportedBackupError: () =>
-            Effect.sync(
-                () =>
-                    void showErrorToast(
-                        t`Could not select database backup`,
-                        t`This backup was made by an older Budgie version and cannot be imported.`
-                    )
-            ),
-        BackupArchiveMissingDatabaseError: () =>
-            Effect.sync(
-                () => void showErrorToast(t`Could not select database backup`, t`This backup archive does not contain a Budgie database.`)
-            ),
-        InsufficientStorageError: () =>
-            Effect.sync(() => void showErrorToast(t`Could not select database backup`, t`Not enough free storage to extract this backup.`))
-    };
+    const importErrorHandlers = useImportErrorHandlers(t`Could not select database backup`);
 
     const importFromUri = (uri: string, backupPin: string | null) =>
         run(

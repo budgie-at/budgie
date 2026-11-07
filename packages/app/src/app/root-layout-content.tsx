@@ -41,6 +41,9 @@ import { AiProvider } from '../ai/provider/ai.provider';
 import { VoiceInputProvider } from '../ai/provider/voice-input.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';
 import { AuthProvider } from '../auth/provider/auth.provider';
+import { IS_CLOUD_BACKUP_SUPPORTED } from '../cloud-backup/constant/is-cloud-backup-supported.constant';
+import { CloudSyncLineagePrompt } from '../cloud-sync/component/cloud-sync-lineage-prompt/cloud-sync-lineage-prompt';
+import { HouseholdJoinNavigator } from '../household/component/household-join-navigator/household-join-navigator';
 import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { HistoricalMarketDataDrainerService } from '../market-data/service/historical-market-data-drainer.service';
 import { ReceiptLaunchHandler } from '../receipt/components/receipt-launch-handler/receipt-launch-handler';
@@ -290,6 +293,8 @@ export const RootLayoutContent = () => {
                                                         <AppToastHost />
                                                         <ReceiptLaunchHandler />
                                                         <NotificationLaunchHandler />
+                                                        {IS_CLOUD_BACKUP_SUPPORTED ? <CloudSyncLineagePrompt /> : null}
+                                                        {IS_CLOUD_BACKUP_SUPPORTED ? <HouseholdJoinNavigator /> : null}
                                                     </AiProvider>
                                                 </CreateActionProvider>
                                             </AuthGuard>

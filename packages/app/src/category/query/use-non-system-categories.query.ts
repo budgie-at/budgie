@@ -1,4 +1,4 @@
-import { CategoryEntityTable, CategoryRepository, DefaultCategoryTranslationEntityTable } from '@budgie/contracts';
+import { CategoryEntityTable, CategoryRepository, DefaultCategoryTranslationEntityTable, PERSONAL_SYNC_ZONE } from '@budgie/contracts';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
@@ -12,12 +12,13 @@ const EMPTY_CATEGORIES: CategoryEntityInterface[] = [];
 export const nonSystemCategoriesAtom = databaseQueryFamily(
     [CategoryEntityTable, DefaultCategoryTranslationEntityTable],
     CategoryRepository,
-    (categoryRepository, language: LanguageEnum) => categoryRepository.findAllNonSystemLocalized(language)
+    (categoryRepository, [language, syncZone]: readonly [LanguageEnum, string]) =>
+        categoryRepository.findAllNonSystemLocalized(language, syncZone)
 );
 
-export const useNonSystemCategoriesQuery = () => {
+export const useNonSystemCategoriesQuery = (syncZone: string = PERSONAL_SYNC_ZONE) => {
     const language = useSetting('language');
-    const result = useLiveAtomValue(nonSystemCategoriesAtom(language));
+    const result = useLiveAtomValue(nonSystemCategoriesAtom([language, syncZone]));
 
     return { categories: AsyncResult.getOrElse(result, () => EMPTY_CATEGORIES), isLoading: AsyncResult.isInitial(result) };
 };

@@ -31,7 +31,7 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
         <PillarHubPageShell lang={lang} meta={PRIVACY_PILLAR_HUB_METADATA}>
             <PillarHubHero
                 breadcrumbs={<PillarHubBreadcrumbs current={i18n._(PRIVACY_PILLAR_HUB_METADATA.title)} locale={lang} />}
-                heading={<Trans>Private Expense Tracker — On Your Device, Off the Cloud</Trans>}
+                heading={<Trans>Private Expense Tracker — On Your Device, Not Our Cloud</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
@@ -42,7 +42,9 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
             >
                 <PillarHubHeroBulletList>
                     <PillarHubHeroBulletItem>
-                        <Trans>Your data stays on your device, encrypted with your PIN once you set one — no cloud copy ever</Trans>
+                        <Trans>
+                            Your data stays on your device and in your own iCloud on iOS, encrypted with your PIN once you set one
+                        </Trans>
                     </PillarHubHeroBulletItem>
                     <PillarHubHeroBulletItem>
                         <Trans>No account required to start tracking</Trans>
@@ -54,7 +56,7 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                         <Trans>Screenshot blur on balance fields and app-switcher previews</Trans>
                     </PillarHubHeroBulletItem>
                     <PillarHubHeroBulletItem>
-                        <Trans>Backups to your own iCloud Drive, Google Drive, or Dropbox</Trans>
+                        <Trans>Backups and sync in your own iCloud, or files in Google Drive or Dropbox</Trans>
                     </PillarHubHeroBulletItem>
                 </PillarHubHeroBulletList>
             </PillarHubHero>
@@ -114,13 +116,13 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your
-                        device. No account, no aggregator, no copy on somebody else&apos;s server.
+                        Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device
+                        and syncs and copies it only to storage you own. No account, no aggregator, no copy on a vendor&apos;s server.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageCategoryComparison categoryLabel={<Trans>Cloud-based PFM apps</Trans>}>
                     <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>On your phone, encrypted once you set a PIN</Trans>}
+                        budgieValue={<Trans>On your phone and in your own iCloud</Trans>}
                         competitorValue={<Trans>Vendor&apos;s cloud + aggregator</Trans>}
                         label={<Trans>Where transactions live</Trans>}
                     />
@@ -210,7 +212,7 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                 </FeaturePageProse>
                 <FeaturePageCategoryComparison categoryLabel={<Trans>Aggregator-based PFM apps</Trans>}>
                     <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>Never shared</Trans>}
+                        budgieValue={<Trans>Kept on your device</Trans>}
                         competitorValue={<Trans>Access token held by aggregator</Trans>}
                         label={<Trans>Bank access</Trans>}
                     />
@@ -246,8 +248,9 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                 <FeaturePageFaqItem
                     answer={
                         <Trans>
-                            No. Every transaction, category, and balance lives in a database on your device, encrypted with your PIN once
-                            you set one. Budgie has no backend that receives financial data.
+                            Not to us. Every transaction, category, and balance lives in a database on your device, encrypted with your PIN
+                            once you set one. On iOS the encrypted backup and sync go to your own iCloud. Budgie has no backend that
+                            receives financial data.
                         </Trans>
                     }
                     question={<Trans>Does Budgie send any financial data to a server?</Trans>}
@@ -264,8 +267,10 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                 <FeaturePageFaqItem
                     answer={
                         <Trans>
-                            Backups go to your personal cloud storage — iCloud Drive on iOS, or Google Drive or Dropbox on Android. Budgie
-                            never receives a copy; you own every byte.
+                            On iOS Budgie backs up and syncs to your own iCloud automatically, encrypted in iCloud and end-to-end encrypted
+                            when you turn on Apple&apos;s Advanced Data Protection. You can turn that off in Settings and export a file to
+                            iCloud Drive, Google Drive or Dropbox instead. Chosen accounts can be shared with family through iCloud; the
+                            rest never leave your device. On Android, export stays manual. Budgie never receives a copy; you own every byte.
                         </Trans>
                     }
                     question={<Trans>Where are my backups stored?</Trans>}
@@ -282,8 +287,10 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                 <FeaturePageFaqItem
                     answer={
                         <Trans>
-                            Set a PIN and Budgie encrypts the database with that PIN as the key. The PIN is the only key and it never leaves
-                            your device. Without a PIN the file is not encrypted, though it stays inside the app sandbox.
+                            Set a PIN and Budgie encrypts the database with that PIN as the key, and that PIN never leaves your device. The
+                            iCloud backup uses its own key and sync records are encrypted before upload, so both are encrypted in iCloud and
+                            end-to-end encrypted with Advanced Data Protection. Without a PIN the local file is not encrypted, though it
+                            stays inside the app sandbox.
                         </Trans>
                     }
                     question={<Trans>How is the on-device database encrypted?</Trans>}
@@ -293,7 +300,8 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                     answer={
                         <Trans>
                             Cloud-based PFM apps mirror your transactions to their servers, share data with aggregators, and store your bank
-                            credentials. Budgie does none of this — your ledger stays on your device, and setting a PIN encrypts that file.
+                            credentials. Budgie does none of this — your ledger stays in storage you control, and setting a PIN encrypts
+                            that file.
                         </Trans>
                     }
                 />
@@ -307,12 +315,13 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>What about multi-device sync?</Trans>}
+                    question={<Trans>How does multi-device sync work?</Trans>}
                     answer={
                         <Trans>
-                            Export Database writes the whole database to one file and hands it to the system share sheet, so you choose
-                            where it goes — iCloud Drive, Google Drive, Dropbox, a NAS. Budgie has no sync server and no integration with
-                            any of them.
+                            On iOS your iPhone and iPad sync automatically through your own iCloud, and you can share chosen accounts with
+                            family members through iCloud. Everything stays encrypted in iCloud, end-to-end with Advanced Data Protection.
+                            Budgie runs no sync server. On Android there is no sync; use Export Database to move a backup file through
+                            storage you control.
                         </Trans>
                     }
                 />
@@ -320,9 +329,9 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                     question={<Trans>How do I move my data to a new phone?</Trans>}
                     answer={
                         <Trans>
-                            Export a backup on the old phone, carry the file across yourself, then pick it in Import Database on the new
-                            one. Confirm the replacement and, if the backup is PIN-protected, enter its PIN, which becomes your app PIN. No
-                            account and no server sit in between.
+                            On iOS sign in to the same Apple ID and your data syncs to the new phone through your own iCloud. You can also
+                            export a backup on the old phone and import it on the new one. Confirm the replacement and, if the backup is
+                            PIN-protected, enter its PIN, which becomes your app PIN.
                         </Trans>
                     }
                 />
@@ -330,8 +339,9 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                     question={<Trans>What happens if I lose my phone?</Trans>}
                     answer={
                         <Trans>
-                            Without a backup file your data is gone, because Budgie has no copy to restore. That is the price of keeping
-                            everything on your device, so save backups to storage you control.
+                            On iOS your data is in your own iCloud and on your other synced devices, so a lost phone does not lose the
+                            ledger. If you turn iCloud backup and sync off and have no backup file, the data on that phone is gone, because
+                            Budgie keeps no copy to restore.
                         </Trans>
                     }
                 />

@@ -114,7 +114,7 @@
             --color-cash-action-foreground: rgb(255, 255, 255);
             --color-cash-tonal: rgb(222, 239, 251);
 
-            --color-destructive-foreground: rgba(239, 68, 68, 1);
+            --color-destructive-foreground: rgba(206, 32, 32, 1);
             --color-destructive-fill: rgba(239, 68, 68, 1);
             --color-destructive-action: rgb(196, 38, 45);
             --color-destructive-corner: rgba(239, 68, 68, 0.2);

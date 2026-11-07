@@ -160,7 +160,10 @@ export const createTestVitestConfig = (rootDir: string, setupFile: string) => {
     return {
         plugins: [createTestInlineShimPlugin()],
         resolve: {
-            alias: [{ find: /^@app\/(.*)$/u, replacement: here('../../packages/app/src/$1') }]
+            alias: [
+                { find: /^@app\/(.*)$/u, replacement: here('../../packages/app/src/$1') },
+                { find: /^react-native-toast-message$/u, replacement: resolve(import.meta.dirname, 'toast-message.shim.ts') }
+            ]
         },
         test: {
             server: { deps: { inline: [/@effect\/sql-sqlite-react-native/u] } },

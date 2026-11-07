@@ -19,6 +19,7 @@ import {
     TransactionCategorizeInboxRepository,
     TransactionEmbeddingRepository
 } from '@budgie/categorization';
+import { HouseholdShareService, SyncOutboxRepository } from '@budgie/cloud-sync';
 import { ConsolidationCoordinatorService, RefundConsolidationService } from '@budgie/consolidation';
 import {
     AccountBalanceRepository,
@@ -44,7 +45,11 @@ import {
     TransactionReceiptRepository,
     TransactionDayNetAmountRepository,
     TransactionViewRepository,
-    TransactionTagsRepository
+    TransactionTagsRepository,
+    SyncApplyStateRepository,
+    SyncIdentityRepository,
+    SyncRecordRepository,
+    SyncZoneRegistryRepository
 } from '@budgie/contracts';
 import { ExporterService, ImporterService } from '@budgie/import-export';
 import {
@@ -128,6 +133,9 @@ import { BudgetAlertMonitorService } from '../../budget/service/budget-alert-mon
 import { BudgetFundSuggestionService } from '../../budget/service/budget-fund-suggestion.service';
 import { BudgetProjectionService } from '../../budget/service/budget-projection.service';
 import { CategoryIconBackfillService } from '../../category/service/category-icon-backfill.service';
+import { cloudBackupLayer } from '../../cloud-backup/layer/cloud-backup.layer';
+import { InstallIdService } from '../../cloud-backup/service/install-id.service';
+import { cloudSyncLayer } from '../../cloud-sync/layer/cloud-sync.layer';
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
 import { DatabaseExportService } from '../../export/service/database-export.service';
 import { DatabaseImportService } from '../../import/service/database-import.service';
@@ -203,6 +211,12 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     ImporterService.layer,
     TagRepository.layer,
     TagService.layer,
+    SyncApplyStateRepository.layer,
+    SyncIdentityRepository.layer,
+    SyncOutboxRepository.layer,
+    HouseholdShareService.layer,
+    SyncRecordRepository.layer,
+    SyncZoneRegistryRepository.layer,
     CategoryRepository.layer,
     CategoryService.layer,
     CategoryIconBackfillService.layer,
@@ -312,7 +326,10 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     TransactionService.layer,
     WalletCaptureNativeService.layer,
     WalletCaptureTransactionService.layer,
-    WalletCaptureImportService.layer
+    WalletCaptureImportService.layer,
+    InstallIdService.layer,
+    cloudBackupLayer,
+    cloudSyncLayer
 ).pipe(Layer.provideMerge(Layer.mergeAll(syncWorkloadLayer, syncFileReaderLayer)), Layer.provide(ledgerPortsLayer));
 export const appServicesLayer = appServicesWithoutDrainerLayer.pipe(
     Layer.provideMerge(transferConsolidationDrainerLayer.pipe(Layer.provide(ledgerPortsLayer)))

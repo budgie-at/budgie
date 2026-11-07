@@ -1,5 +1,11 @@
-import { ConsolidationCoordinatorService } from '@budgie/consolidation';
-import { AccountBalanceIncrementalService, InstallmentPlanService, LedgerWorkload, TransactionDebtSettlementService } from '@budgie/ledger';
+import { ConsolidationCandidateRepository, ConsolidationCoordinatorService } from '@budgie/consolidation';
+import {
+    AccountBalanceIncrementalService,
+    InstallmentPlanService,
+    LedgerWorkload,
+    TransactionDebtSettlementService,
+    TransactionTransferService
+} from '@budgie/ledger';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -20,6 +26,8 @@ export class TransferConsolidationService extends Context.Service<TransferConsol
             const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
             const installmentPlanService = yield* InstallmentPlanService;
             const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
+            const consolidationCandidateRepository = yield* ConsolidationCandidateRepository;
+            const transactionTransferService = yield* TransactionTransferService;
             const inzhurBankFlowService = yield* InzhurBankFlowService;
             const exclusive = yield* Semaphore.make(1);
 
@@ -31,13 +39,38 @@ export class TransferConsolidationService extends Context.Service<TransferConsol
                 }
             });
 
+            const convertHouseholdTransfers = Effect.fnUntraced(function* (scope: ConsolidationScanScopeInterface | null) {
+                const candidates = yield* consolidationCandidateRepository.findHouseholdManualAccountTransferCandidates(scope);
+                let converted = 0;
+
+                for (const candidate of candidates) {
+                    const isConverted = yield* transactionTransferService
+                        .convertToTransferAccount(candidate.transactionId, candidate.targetAccountId)
+                        .pipe(
+                            Effect.catchTags({
+                                AccountNotFoundError: () => Effect.succeed(false),
+                                DebtTransferNotAllowedError: () => Effect.succeed(false),
+                                DepositNegativeBalanceError: () => Effect.succeed(false)
+                            })
+                        );
+
+                    if (isConverted) {
+                        converted += 1;
+                    }
+                }
+
+                return converted;
+            });
+
             return {
                 consolidate: Effect.fn('TransferConsolidationService.consolidate')(function* (
                     scope: ConsolidationScanScopeInterface | null
                 ) {
                     yield* inzhurBankFlowService.apply(scope);
 
-                    const result = yield* consolidationCoordinatorService.consolidate(scope);
+                    const coordinated = yield* consolidationCoordinatorService.consolidate(scope);
+                    const converted = yield* convertHouseholdTransfers(scope);
+                    const result = { found: coordinated.found + converted, consolidated: coordinated.consolidated + converted };
 
                     yield* updateBalancesAfterConsolidation(result.consolidated);
                     yield* installmentPlanService.attachDueParts();
@@ -61,9 +94,11 @@ export class TransferConsolidationService extends Context.Service<TransferConsol
     static readonly layer = Layer.effect(TransferConsolidationService, TransferConsolidationService.make).pipe(
         Layer.provide([
             ConsolidationCoordinatorService.layer,
+            ConsolidationCandidateRepository.layer,
             AccountBalanceIncrementalService.layer,
             InstallmentPlanService.layer,
             TransactionDebtSettlementService.layer,
+            TransactionTransferService.layer,
             InzhurBankFlowService.layer
         ])
     );

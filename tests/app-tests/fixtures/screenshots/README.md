@@ -7,13 +7,13 @@ Seeded app state for App Store / Play Store screenshot capture. Consumed by
 
 ## Files
 
-| File                                         | Purpose                                                                                      |
-| -------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| `showcase.db`                                | The curated dataset. Committed, fully migrated, anchored on 2026-09-01.                      |
-| `showcase.sql`                               | The SQL that produces `showcase.db` from the base fixture.                                   |
-| `build-showcase.sh`                          | Regenerates `showcase.db`: base fixture -> `showcase.sql` -> `VACUUM`.                       |
-| `shift-dates.sql`                            | Re-anchors every date on the capture day and re-points the monthly budget periods.           |
-| `en.sql` `fr.sql` `de.sql` `es.sql` `uk.sql` | Locale overlays: user-visible strings and display currency.                                  |
+| File                                         | Purpose                                                                            |
+| -------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `showcase.db`                                | The curated dataset. Committed, fully migrated, anchored on 2026-09-01.            |
+| `showcase.sql`                               | The SQL that produces `showcase.db` from the base fixture.                         |
+| `build-showcase.sh`                          | Regenerates `showcase.db`: base fixture -> `showcase.sql` -> `VACUUM`.             |
+| `shift-dates.sql`                            | Re-anchors every date on the capture day and re-points the monthly budget periods. |
+| `en.sql` `fr.sql` `de.sql` `es.sql` `uk.sql` | Locale overlays: user-visible strings and display currency.                        |
 
 ## Dataset
 
@@ -112,7 +112,7 @@ overlay.
 | `budget-near-limit.sql`      | one budget pinned near its overall limit, one category over its limit                                             |
 | `uncategorized.sql`          | a batch of the newest expenses with no category                                                                   |
 | `tags-rich.sql`              | extra tags plus a wide, multi-tagged transaction set                                                              |
-| `sync-connected.sql`    | a connected Monobank integration with synced accounts and MCC-categorized transactions                            |
+| `sync-connected.sql`         | a connected Monobank integration with synced accounts and MCC-categorized transactions                            |
 | `binance-sync-connected.sql` | a connected Binance integration with `CRYPTO_SYNC` spot/funding wallets, spot trades, Earn rewards and P2P orders |
 | `bank-fees.sql`              | bank fee entries on an expense, an income and a transfer                                                          |
 | `multi-currency.sql`         | two accounts in currencies the locale does not already use, with matching rates                                   |
@@ -126,8 +126,8 @@ overlay.
 | `cyrillic-taxonomy.sql`      | Cyrillic-titled categories and tags with AI-generated English titles                                              |
 | `long-history.sql`           | the newest base transactions replayed monthly over 17 months                                                      |
 | `net-worth-full.sql`         | every live account included in net worth, with fresh rate timestamps                                              |
-| `budget-healthy.sql`         | budget 1 limits derived from the period's spend: ~65% overall, categories split between green and amber          |
-| `opening-balances.sql`       | an opening ADJUSTMENT per asset account short of its intended balance, then `account_balances` set to the ledger |
+| `budget-healthy.sql`         | budget 1 limits derived from the period's spend: ~65% overall, categories split between green and amber           |
+| `opening-balances.sql`       | an opening ADJUSTMENT per asset account short of its intended balance, then `account_balances` set to the ledger  |
 
 Every overlay keeps amounts in micro-units (`PRECISION = 1_000_000`) and dates
 in epoch seconds, and is safe to apply more than once, matching

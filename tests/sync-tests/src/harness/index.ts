@@ -112,6 +112,7 @@ export * as Clock from 'effect/Clock';
 export * as Fiber from 'effect/Fiber';
 export { DEBT_OPENING_MESSAGES } from './debt/debt-opening-messages';
 export { aiModelDownloadStub } from './ai/ai-model-download-stub';
+export { suspendSyncTriggers, restoreSyncTriggers } from './db/suspend-sync-triggers';
 export { buildInzhurOperationsWorkbook } from './inzhur/build-inzhur-operations-workbook';
 export { consolidateInzhur } from './inzhur/consolidate-inzhur';
 export { fetchBankTransactions } from './inzhur/fetch-bank-transactions';
@@ -119,3 +120,5 @@ export { fetchInzhurOperationsLedger } from './inzhur/fetch-inzhur-operations-le
 export { importInzhurBankFlow } from './inzhur/import-inzhur-bank-flow';
 export { importInzhurBankTransaction } from './inzhur/import-inzhur-bank-transaction';
 export { importInzhurOperations } from './inzhur/import-inzhur-operations';
+export { FakeCloudTransport } from './cloud/fake-cloud-transport';
+export type { FakeCloudDeliveryOptionsInterface } from './cloud/fake-cloud-delivery-options.interface';

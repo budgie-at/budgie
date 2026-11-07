@@ -10,6 +10,7 @@ import { isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw
 import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
+import { PERSONAL_SYNC_ZONE } from '../../cloud-sync/constant/personal-sync-zone.constant';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
@@ -110,6 +111,27 @@ export class TransactionRepository extends Context.Service<TransactionRepository
 
         return {
             bulkCreate,
+            findClaimedPersonalSyncIds: Effect.fn('TransactionRepository.findClaimedPersonalSyncIds')(function* (
+                syncIds: readonly string[]
+            ) {
+                if (isEmptyArray(syncIds)) {
+                    return new Set<string>();
+                }
+
+                const rows = yield* Db.query(db =>
+                    db
+                        .select({ syncId: TransactionEntityTable.syncId })
+                        .from(TransactionEntityTable)
+                        .where(
+                            and(
+                                eq(TransactionEntityTable.syncZone, PERSONAL_SYNC_ZONE),
+                                inArray(TransactionEntityTable.syncId, [...syncIds])
+                            )
+                        )
+                );
+
+                return new Set(rows.map(row => row.syncId).filter(isDefined));
+            }),
             findPotentialExpenseDuplicate: Effect.fn('TransactionRepository.findPotentialExpenseDuplicate')(function* (
                 input: PotentialExpenseDuplicateInputInterface
             ) {

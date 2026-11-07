@@ -5,6 +5,7 @@ import {
     BudgetPeriodEnum,
     BudgetSinkingFundEntityTable,
     ExchangeRateEntityTable,
+    PERSONAL_SYNC_ZONE,
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionTagsEntityTable
@@ -45,7 +46,8 @@ const NO_BUDGET: BudgetProjectionSourceInterface = {
     instrumentId: 0,
     overallLimit: 0,
     otherLimit: 0,
-    tagId: null
+    tagId: null,
+    syncZone: PERSONAL_SYNC_ZONE
 };
 
 export const budgetSpentAtom = databaseQueryFamily(
