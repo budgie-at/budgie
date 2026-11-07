@@ -1108,6 +1108,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             }
 
             yield* resetRepository.clearSyncedData();
+            yield* settingsRepository.update({ isOnboardingCompleted: true, cloudSyncEnabled: true });
             yield* identityRepository.adoptLineageId(zoneLineageId.value);
             yield* stateStore.update({
                 stateSerialization: null,
@@ -1128,6 +1129,15 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             yield* patch({ blocked: null, fetchedRecordCount: 0, isInitialFetchComplete: false });
             yield* reconfigureUnlocked();
         });
+
+        const upsertOwnerHouseholdZone = () =>
+            zoneRegistryRepository.upsert({
+                zoneLabel: HOUSEHOLD_SYNC_ZONE,
+                zoneName: CLOUD_SYNC_RECORDS.householdZoneName,
+                ownerName: ICLOUD_DEFAULT_OWNER_NAME,
+                databaseScope: SyncDatabaseScopeEnum.PRIVATE,
+                role: SyncZoneRoleEnum.OWNER
+            });
 
         const registerJoinedHouseholdUnlocked = Effect.fnUntraced(function* (
             zone: Pick<ICloudShareAcceptedEvent, 'zoneName' | 'ownerName' | 'ownerDisplayName'>
@@ -1173,6 +1183,21 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
                 }
 
                 if ((yield* stateStore.read).isHouseholdCleanupPending) {
+                    return;
+                }
+
+                const owned = yield* transport.findOwnedHousehold(CLOUD_SYNC_RECORDS.householdZoneName);
+
+                if (isDefined(owned)) {
+                    yield* upsertOwnerHouseholdZone();
+                    yield* refreshZones();
+
+                    if ((yield* Ref.get(session)).isEngineRunning) {
+                        yield* startSharedEngineUnlocked(false);
+                    }
+
+                    yield* bumpHouseholdRefresh;
+
                     return;
                 }
 
@@ -1295,13 +1320,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
 
                 yield* finishHouseholdCleanupUnlocked();
                 yield* transport.ensureZone(scope, CLOUD_SYNC_RECORDS.householdZoneName);
-                yield* zoneRegistryRepository.upsert({
-                    zoneLabel: HOUSEHOLD_SYNC_ZONE,
-                    zoneName: CLOUD_SYNC_RECORDS.householdZoneName,
-                    ownerName: ICLOUD_DEFAULT_OWNER_NAME,
-                    databaseScope: SyncDatabaseScopeEnum.PRIVATE,
-                    role: SyncZoneRoleEnum.OWNER
-                });
+                yield* upsertOwnerHouseholdZone();
                 yield* refreshZones();
             }, locked),
             stopHouseholdSharing: Effect.fn('CloudSyncService.stopHouseholdSharing')(function* () {

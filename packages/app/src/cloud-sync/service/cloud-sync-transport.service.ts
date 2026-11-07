@@ -96,6 +96,7 @@ export class CloudSyncTransport extends Context.Service<CloudSyncTransport>()('@
             confirmFetchedBatch: (scope: ICloudSyncScope, batchId: string) => call(() => icloud.confirmFetchedBatch(scope, batchId)),
             createHouseholdShare: (zoneName: string) => call(() => icloud.createHouseholdShare(zoneName)),
             getShareParticipants: (zoneName: string) => call(() => icloud.getShareParticipants(zoneName)),
+            findOwnedHousehold: (zoneName: string) => call(() => icloud.findOwnedHousehold(zoneName)),
             findJoinedHousehold: (zoneName: string) => call(() => icloud.findJoinedHousehold(zoneName)),
             stopSharing: (zoneName: string) => call(() => icloud.stopSharing(zoneName)),
             leaveShare: (zoneName: string) => call(() => icloud.leaveShare(zoneName)),

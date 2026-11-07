@@ -205,6 +205,11 @@ export interface ICloudJoinedHousehold extends ICloudZoneId {
     readonly ownerDisplayName?: string;
 }
 
+export interface ICloudOwnedHousehold {
+    readonly zoneName: string;
+    readonly shareRecordName: string;
+}
+
 export interface ICloudShareChangedEvent {
     readonly zoneName: string;
     readonly change: ICloudShareChange;
@@ -246,6 +251,7 @@ declare class ICloudNativeModule extends NativeModule<ICloudNativeEvents> {
     deleteZone(scope: ICloudSyncScope, zoneName: string): Promise<void>;
     createHouseholdShare(zoneName: string): Promise<void>;
     getShareParticipants(zoneName: string): Promise<readonly ICloudShareParticipant[]>;
+    findOwnedHousehold(zoneName: string): Promise<ICloudOwnedHousehold | null>;
     findJoinedHousehold(zoneName: string): Promise<ICloudJoinedHousehold | null>;
     stopSharing(zoneName: string): Promise<void>;
     leaveShare(zoneName: string): Promise<void>;

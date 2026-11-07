@@ -41,4 +41,53 @@ describe('cloud-sync/household discovery', () => {
             })
         );
     });
+
+    it.layer(makeTestDbLayer(null), { excludeTestServices: true })('organizer second device', it => {
+        it.effect('registers an owned shared household as OWNER', () =>
+            Effect.gen(function* () {
+                const db = yield* Db;
+
+                yield* resetTestDb(db);
+
+                const device = makeSyncServiceContext(db);
+
+                device.transport.behavior.ownedHousehold = { zoneName: HOUSEHOLD_CLOUD_ZONE, shareRecordName: 'cloudkit.zoneshare' };
+
+                yield* device.run(
+                    Effect.gen(function* () {
+                        const service = yield* CloudSyncService;
+                        const registry = yield* SyncZoneRegistryRepository;
+
+                        yield* service.discoverHousehold();
+
+                        const entry = yield* registry.findByLabel(HOUSEHOLD_SYNC_ZONE);
+
+                        expect(entry?.role).toBe(SyncZoneRoleEnum.OWNER);
+                        expect(entry?.databaseScope).toBe(SyncDatabaseScopeEnum.PRIVATE);
+                    })
+                );
+            })
+        );
+
+        it.effect('does not register an owned zone without a share', () =>
+            Effect.gen(function* () {
+                const db = yield* Db;
+
+                yield* resetTestDb(db);
+
+                const device = makeSyncServiceContext(db);
+
+                yield* device.run(
+                    Effect.gen(function* () {
+                        const service = yield* CloudSyncService;
+                        const registry = yield* SyncZoneRegistryRepository;
+
+                        yield* service.discoverHousehold();
+
+                        expect(yield* registry.findByLabel(HOUSEHOLD_SYNC_ZONE)).toBeUndefined();
+                    })
+                );
+            })
+        );
+    });
 });
