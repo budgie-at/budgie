@@ -35,7 +35,7 @@ export const BudgetEventForm = ({ defaultInstrumentId, editingId }: Props) => {
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
     const saveBlocker = resolveBudgetEventSaveBlocker(values);
     const submitLabel = isEditing ? t`Save changes` : t`Create event`;
-    const saveLabel = !isLoading && isDefined(saveBlocker) ? t(saveBlocker) : submitLabel;
+    const saveLabel = !isLoading && !isSubmitting && isDefined(saveBlocker) ? t(saveBlocker) : submitLabel;
     const isSaveDisabled = isLoading || isDefined(saveBlocker);
     const headerTitle = isEditing ? t`Edit event` : t`New event`;
 
