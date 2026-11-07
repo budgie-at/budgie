@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.167.5](https://github.com/budgie-at/budgie/compare/v6.167.4...v6.167.5) (2026-11-07)
+
+### Bug Fixes
+
+* **app:** polish remaining screens and large-text layouts ([#2017](https://github.com/budgie-at/budgie/issues/2017)) ([5920610](https://github.com/budgie-at/budgie/commit/592061005888e0b5de4f2ec0a31e59b84ed36a44))
+
+
 ## [6.167.4](https://github.com/budgie-at/budgie/compare/v6.167.3...v6.167.4) (2026-11-07)
 
 ### Bug Fixes
