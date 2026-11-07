@@ -1,6 +1,7 @@
 import { CategorizeInboxService } from '@budgie/categorization';
 import * as Effect from 'effect/Effect';
 import { NotificationFeedbackType } from 'expo-haptics';
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
@@ -23,6 +24,7 @@ export const useCategorizeInboxActions = (
     strategy: CategorizeInboxStrategyInterface,
     inbox: CategorizeInboxDataInterface
 ): Omit<CategorizeInboxContextValueInterface, 'items' | 'isLoading'> => {
+    const router = useRouter();
     const { visibility, remainingCount, categorizedCount, acceptableAssignments, cashWithdrawalTransactionIds } = inbox;
     const [hapticNotification] = useVibration();
     const [lastWrite, setLastWrite] = useState<CategorizeInboxLastWriteInterface | null>(null);
@@ -63,7 +65,12 @@ export const useCategorizeInboxActions = (
     };
 
     const pickLabels = (source: Omit<CategorizeInboxAssignmentInterface, 'labelId'>, suggestedLabelIds: number[]): void =>
-        void strategy.pickLabels(source.displayTitle, suggestedLabelIds, labelIds => void assignLabels(source, labelIds));
+        void strategy.pickLabels(source.displayTitle, suggestedLabelIds, labelIds => {
+            if (isNotEmptyArray(labelIds) && isNotEmptyArray(source.rows)) {
+                assignLabels(source, labelIds);
+                router.dismissTo('/categorize');
+            }
+        });
 
     return {
         strategy,
