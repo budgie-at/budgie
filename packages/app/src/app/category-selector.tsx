@@ -9,6 +9,7 @@ import { SelectorNoResultsState } from '../@generic/component/selector-no-result
 import { SheetSurface } from '../@generic/component/sheet-surface/sheet-surface';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { prepareSelectorGridData } from '../@generic/utils/prepare-selector-grid-data.util';
+import { CategoryCreateRow } from '../category/components/category-create-row/category-create-row';
 import { CategorySelectContent } from '../category/components/category-select-content/category-select-content';
 import { useCategoryFormModal } from '../category/context/category-form-modal.context';
 import { useCategorySelectorModal, useCategorySelectorModalParams } from '../category/context/category-selector-modal.context';
@@ -51,12 +52,10 @@ export default function CategorySelectorModal() {
                 onSearchChange={setSearch}
                 title={t`Category`}
                 placeholder={t`Search categories…`}
-                createLabel={t`Create category`}
-                onCreate={handleCreatePress}
-                createTestID={CategorySelectorModalSelector.CreateButton}
                 testID={CategorySelectorModalSelector.Input}
             />
 
+            <CategoryCreateRow onPress={handleCreatePress} />
             <SelectorModalDescription title={title} description={description}>
                 <CategorySelectContent
                     listEmptyComponent={listEmptyComponent}

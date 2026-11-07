@@ -65,6 +65,9 @@ export const AccountSelectContent = (props: Props) => {
         ListHeaderComponent: listHeaderComponent,
         ListEmptyComponent: listEmptyComponent
     };
+    const selectedIndex = data.findIndex(account => account.id === initialAccountId);
 
-    return <SelectorList data={data} keyExtractor={keyExtractor} renderItem={renderItem} options={listOptions} />;
+    return (
+        <SelectorList data={data} keyExtractor={keyExtractor} renderItem={renderItem} options={listOptions} selectedIndex={selectedIndex} />
+    );
 };

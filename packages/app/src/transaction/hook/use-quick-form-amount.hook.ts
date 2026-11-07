@@ -29,7 +29,7 @@ export const useQuickFormAmount = ({ accountFieldName }: UseQuickFormAmountConfi
     const initialAmount = getValues('amount');
 
     const handleAmountChange = (value: number) => {
-        setValue('amount', value);
+        setValue('amount', value, { shouldDirty: true });
     };
 
     const accountId = useWatch({ control, name: accountFieldName });

@@ -72,6 +72,7 @@ const fileFixtures = (): readonly string[] =>
  */
 const NATIVE_SCALE: Readonly<Record<string, number>> = {
     'iPhone 17 Pro': 3,
+    'iPhone SE (3rd generation)': 2,
     'iPhone 17 Pro Max': 3,
     'iPad Pro 13-inch (M5)': 2
 };

@@ -21,7 +21,15 @@ test('08 expense transaction', { tags: ['transactions'] }, async ({ budgie }) =>
         await t.navigateToTransactions(ctx);
         await t.openTransactionForm(ctx, 'ActionItem.Expense', 'New Expense');
         await b.expectId(ctx, 'TransactionForm.SelectedAccount.E2E_Txn_Account');
-        await expect(b.byId(ctx.screen, 'TransactionForm.SubmitButton')).toBeDisabled();
+        await expect(b.byId(ctx.screen, 'TransactionForm.SubmitButton')).toBeEnabled();
+        await b.tapId(ctx, 'TransactionForm.SubmitButton');
+        await expect(b.byId(ctx.screen, 'TransactionForm.ValidationMessage')).toHaveText('Enter an amount');
+        const merchantInput = screen.getByRole('textbox', { name: 'Merchant or payment description' }).first();
+        await merchantInput.fill('Lunch');
+        await b.expectNoId(ctx, 'TransactionKeypad.Digit.1');
+        await merchantInput.fill('');
+        await b.tapId(ctx, 'TransactionForm.AmountInput');
+        await b.expectId(ctx, 'TransactionKeypad.Digit.1');
         await t.typeDigits(ctx, '42');
         await t.selectAccount(ctx, 'E2E Txn Account');
         await c.createCategoryFromTransaction(ctx, 'E2E Txn Category');
@@ -29,7 +37,8 @@ test('08 expense transaction', { tags: ['transactions'] }, async ({ budgie }) =>
         await g.openTagPicker(ctx);
         await g.createTagInPicker(ctx, 'E2E Txn Tag');
         await g.createTagInPicker(ctx, 'E2E Txn Primary Tag');
-        await id('TagPickerBottomSheet.Card.E2E Txn Primary Tag').longPress();
+        await screen.getByRole('button', { name: 'Make primary' }).first().tap();
+        await expect(id('TagPickerBottomSheet.Card.E2E Txn Primary Tag')).toHaveAccessibleName('E2E Txn Primary Tag, primary');
         await g.closeTagPicker(ctx);
 
         await t.enterComment(ctx, 'E2E Test Expense');
@@ -65,7 +74,7 @@ test('08 expense transaction', { tags: ['transactions'] }, async ({ budgie }) =>
         await b.expectId(ctx, 'TransactionActionsMenu.StartDepositButton');
         await b.expectNoId(ctx, 'TransactionActionsMenu.ConvertToRefundButton');
         await b.expectNoId(ctx, 'TransactionActionsMenu.RevertButton');
-        await b.tapId(ctx, 'TransactionActionsMenu.TriggerButton');
+        await t.closeMenu(ctx);
 
         await t.clearAmount(ctx);
         await t.typeDigits(ctx, '33');

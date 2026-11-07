@@ -64,7 +64,7 @@ const inputVariants = cva('outline-none transition-all w-full', {
             [WaitlistVariantEnum.HERO]:
                 'h-14 px-6 rounded-full border-2 backdrop-blur-sm focus:ring-2 text-lg sm:w-auto sm:min-w-[300px] border-border/50 bg-background/80 focus:border-primary focus:ring-primary/20',
             [WaitlistVariantEnum.CTA]:
-                'h-14 px-6 rounded-full border-2 backdrop-blur-sm focus:ring-2 text-lg sm:w-auto sm:min-w-[300px] border-white/30 bg-white/10 text-white placeholder:text-white/60 focus:border-white focus:ring-white/20',
+                'h-14 px-6 rounded-full border-2 backdrop-blur-sm focus:ring-2 text-lg sm:w-auto sm:min-w-[300px] border-primary-foreground/30 bg-primary-foreground/10 text-primary-foreground placeholder:text-primary-foreground/60 focus:border-primary-foreground focus:ring-primary-foreground/20',
             [WaitlistVariantEnum.FEATURE]:
                 'h-12 min-w-0 min-[480px]:min-w-[14rem] min-[480px]:flex-1 rounded-[0.875rem] border border-border bg-muted/50 px-4 text-[1.0625rem] placeholder:text-muted-foreground focus-visible:border-pillar focus-visible:ring-2 focus-visible:ring-pillar/25'
         }
@@ -76,7 +76,8 @@ const buttonVariants = cva('font-semibold transition-all', {
         variant: {
             [WaitlistVariantEnum.HERO]:
                 'rounded-full h-14 px-5 sm:px-8 text-base sm:text-lg bg-primary text-primary-foreground hover:bg-primary/90',
-            [WaitlistVariantEnum.CTA]: 'rounded-full h-14 px-5 sm:px-8 text-base sm:text-lg bg-white text-primary hover:bg-white/90',
+            [WaitlistVariantEnum.CTA]:
+                'rounded-full h-14 px-5 sm:px-8 text-base sm:text-lg bg-primary-foreground text-primary hover:bg-primary-foreground/90',
             [WaitlistVariantEnum.FEATURE]:
                 'h-12 w-full rounded-[0.875rem] px-6 text-base bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-pillar min-[480px]:w-auto min-[480px]:flex-none'
         }
@@ -87,7 +88,7 @@ const disclaimerVariants = cva('text-xs', {
     variants: {
         variant: {
             [WaitlistVariantEnum.HERO]: 'text-muted-foreground',
-            [WaitlistVariantEnum.CTA]: 'text-white/90',
+            [WaitlistVariantEnum.CTA]: 'text-primary-foreground/90',
             [WaitlistVariantEnum.FEATURE]: 'sr-only'
         }
     }
@@ -97,7 +98,7 @@ const errorVariants = cva('text-sm', {
     variants: {
         variant: {
             [WaitlistVariantEnum.HERO]: 'text-red-500',
-            [WaitlistVariantEnum.CTA]: 'text-white',
+            [WaitlistVariantEnum.CTA]: 'text-primary-foreground',
             [WaitlistVariantEnum.FEATURE]: 'text-red-600 dark:text-red-400'
         }
     }

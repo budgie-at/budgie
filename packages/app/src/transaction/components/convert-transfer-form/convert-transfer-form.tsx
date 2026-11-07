@@ -1,24 +1,22 @@
-import { TransactionTypeEnum, TransactionCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useFormContext, useWatch } from 'react-hook-form';
-import { useCSSVariable } from 'uniwind';
+import { ScrollView, useWindowDimensions } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { SheetSurface } from '../../../@generic/component/sheet-surface/sheet-surface';
 import { TRANSFER_ACCOUNT_FIELDS } from '../../constant/transfer-account-fields.constant';
+import { TransactionKeypadContext } from '../../context/transaction-keypad.context';
 import { useConvertTransferForm } from '../../hook/use-convert-transfer-form.hook';
-import { useQuickFormFee } from '../../hook/use-quick-form-fee.hook';
 import { ConversionRow } from '../conversion-row/conversion-row';
+import { ConvertToTransferHeader } from '../convert-to-transfer-header/convert-to-transfer-header';
 import { ConvertTransferAccounts } from '../convert-transfer-accounts/convert-transfer-accounts';
+import { ConvertTransferFee } from '../convert-transfer-fee/convert-transfer-fee';
+import { ConvertTransferFooter } from '../convert-transfer-footer/convert-transfer-footer';
 import { ConvertTransferSummary } from '../convert-transfer-summary/convert-transfer-summary';
 import { QuickFormFieldError } from '../quick-form-field-error/quick-form-field-error';
-import { QuickFormLayout } from '../quick-form-layout/quick-form-layout';
-import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 import { TransactionAmountDisplay } from '../transaction-amount-display/transaction-amount-display';
-import { TransactionFeeFieldIcon } from '../transaction-fee-field-icon/transaction-fee-field-icon';
-import { TransactionFormActions } from '../transaction-form-actions/transaction-form-actions';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
 
 interface Props {
@@ -27,26 +25,18 @@ interface Props {
     readonly onCancel: () => void;
 }
 
+const KEYPAD_CONTENT_HEIGHT_RATIO = 0.4;
+
 export const ConvertTransferForm = ({ isSubmitting, onSubmit, onCancel }: Props) => {
-    const rowColor = useCSSVariable('--color-grouped-surface-row');
-    const rowColors = { '--color-surface-disc': 'transparent', ...(isDefined(rowColor) && { '--color-surface-row': rowColor }) };
+    const { height } = useWindowDimensions();
     const { t } = useLingui();
-    const { control } = useFormContext<TransactionCreateInputInterface>();
-    const entries = useWatch({ control, name: 'entries' });
     const form = useConvertTransferForm(onSubmit);
-    const { feeAmount, handleFeePress } = useQuickFormFee({
-        accountFieldName: 'fromAccountId',
-        currencySymbol: form.fromAccount?.instrument.symbol ?? '',
-        entries,
-        transactionType: TransactionTypeEnum.TRANSFER,
-        variant: 'default'
-    });
     const confirmLabel = form.isEditing ? t`Done` : t`Convert to Transfer`;
     const isDisabled =
         isSubmitting ||
         form.conversion.isPending ||
         !isDefined(form.originalAccount) ||
-        (form.isEditing && !isPositiveNumber(form.keypad.numericValue));
+        (form.isEditing ? !isPositiveNumber(form.keypad.numericValue) : !isPositiveNumber(form.conversion.destinationAmount));
     const displayExchangeRate = isPositiveNumber(form.conversion.exchangeRate) ? 1 / form.conversion.exchangeRate : 0;
     const rate = {
         sourceCode: form.originalAccount?.instrument.code ?? '',
@@ -65,45 +55,49 @@ export const ConvertTransferForm = ({ isSubmitting, onSubmit, onCancel }: Props)
         <ConvertTransferSummary />
     );
 
+    const scrollStyle = { maxHeight: height * (form.isEditing ? KEYPAD_CONTENT_HEIGHT_RATIO : 0.6), flexGrow: 0 };
+    const keypadContext = { dismiss: form.handleConfirm };
+
     return (
-        <QuickFormLayout
-            surfaceVariables={rowColors}
-            amount={amount}
-            keypad={keypad}
-            actions={
-                <TransactionFormActions
-                    label={confirmLabel}
-                    isDisabled={isDisabled}
-                    onConfirm={form.handleConfirm}
-                    onCancel={onCancel}
-                    testID={SimpleQuickFormSelector.SubmitButton}
-                />
-            }
-        >
-            <GroupedListSection footer={<QuickFormFieldError fields={TRANSFER_ACCOUNT_FIELDS} />}>
-                <ConvertTransferAccounts />
-                {form.conversion.isCrossCurrency ? (
-                    <LoadingContent isLoading={form.conversion.isPending}>
-                        <ConversionRow
-                            label={form.conversionLabel}
-                            destinationAmount={form.conversion.destinationAmount}
-                            destinationSymbol={form.counterAccount?.instrument.symbol ?? ''}
-                            destinationInstrumentType={form.counterAccount?.instrument.type}
-                            rate={rate}
-                            isManualRate={form.conversion.isManualRate}
-                            onPress={form.handleEdit}
-                        />
-                    </LoadingContent>
-                ) : null}
-                {isDefined(form.fromAccount) ? (
-                    <TransactionFeeFieldIcon
-                        amount={feeAmount}
-                        currencySymbol={form.fromAccount.instrument.symbol}
-                        instrumentType={form.fromAccount.instrument.type}
-                        onPress={handleFeePress}
+        <TransactionKeypadContext value={keypadContext}>
+            <SheetSurface
+                className="flex-none"
+                contentClassName="flex-none"
+                header={
+                    <ConvertToTransferHeader
+                        isLoading={isSubmitting}
+                        onCancel={onCancel}
+                        onConfirm={form.handleConfirm}
+                        disabled={isDisabled}
                     />
-                ) : null}
-            </GroupedListSection>
-        </QuickFormLayout>
+                }
+                footer={
+                    <ConvertTransferFooter label={confirmLabel} isDisabled={isDisabled} onConfirm={form.handleConfirm}>
+                        {keypad}
+                    </ConvertTransferFooter>
+                }
+            >
+                <ScrollView style={scrollStyle} contentContainerClassName="px-xl pt-sm pb-[48px]" showsVerticalScrollIndicator={false}>
+                    {amount}
+                    <GroupedListSection footer={<QuickFormFieldError fields={TRANSFER_ACCOUNT_FIELDS} />}>
+                        <ConvertTransferAccounts />
+                        {form.conversion.isCrossCurrency ? (
+                            <LoadingContent isLoading={form.conversion.isPending}>
+                                <ConversionRow
+                                    label={form.conversionLabel}
+                                    destinationAmount={form.conversion.destinationAmount}
+                                    destinationSymbol={form.counterAccount?.instrument.symbol ?? ''}
+                                    destinationInstrumentType={form.counterAccount?.instrument.type}
+                                    rate={rate}
+                                    isManualRate={form.conversion.isManualRate}
+                                    onPress={form.handleEdit}
+                                />
+                            </LoadingContent>
+                        ) : null}
+                        <ConvertTransferFee />
+                    </GroupedListSection>
+                </ScrollView>
+            </SheetSurface>
+        </TransactionKeypadContext>
     );
 };

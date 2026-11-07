@@ -1,3 +1,5 @@
+import { expect } from 'e2e';
+
 import * as b from '../support/budgie/core.ts';
 import { test } from '../support/budgie/test.ts';
 import * as t from '../support/budgie/transactions.ts';
@@ -57,7 +59,13 @@ test('11 cross currency transfer transaction', { tags: ['transactions'] }, async
         await b.tapId(ctx, 'TransferForm.ConversionRow');
         await t.clearAmount(ctx);
         await t.typeDigits(ctx, '45');
+        await b.tapId(ctx, 'TransactionKeypad.Dismiss');
+        await b.expectNoId(ctx, 'TransactionKeypad.Digit.1');
+        await expect(b.byId(ctx.screen, 'TransactionForm.SubmitButton')).toContainText('Save');
         await b.tapId(ctx, 'TransactionForm.SubmitButton');
+        await b.expectId(ctx, 'TransactionInfo.Page', 15_000);
+        await b.tapId(ctx, 'TransactionInfo.EditButton.Label');
+        await expect(b.byId(ctx.screen, 'TransferForm.ConversionRow')).toContainText('45');
         await t.clearAmount(ctx);
         await t.typeDigits(ctx, '25');
         await b.expectText(ctx, /22\.50/);

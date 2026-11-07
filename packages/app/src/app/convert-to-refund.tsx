@@ -8,7 +8,7 @@ import { useConvertToRefundModal, useConvertToRefundModalParams } from '../trans
 
 import { ConvertToRefundModalSelector } from './convert-to-refund-modal.selector';
 
-const EXPANDED_DETENT = 0.9;
+const EXPANDED_DETENT = 0.7;
 const ACCESSIBILITY_DETENT = 1;
 
 export default function ConvertToRefundModal() {

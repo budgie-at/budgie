@@ -116,6 +116,7 @@ for output_directory in "$TEMP_DIR/output-1" "$TEMP_DIR/output-2"; do
         34-matching-rules.db \
         42-receipt-scan.db \
         43-binance-sync-error.db \
+        46-edit-form-layout.db \
         budget-multi-currency.db; do
         test -f "$output_directory/$database_name"
         test "$(sqlite3 "$output_directory/$database_name" 'PRAGMA integrity_check;')" = ok

@@ -79,7 +79,7 @@ export const CategoryForm = (props: Props) => {
 
     const isChanged =
         !isDefined(category) || title !== category.title || resolvedIcon !== category.icon || iconSource !== category.iconSource;
-    const isSaveDisabled = !hasTitle || operation.isPending;
+    const isSaveDisabled = !hasTitle || isBusy;
     const deleteCopy = getCategoryDeleteCopy(transactionCount, t);
     const headerTitle = isEditing ? t`Edit Category` : t`Create Category`;
     const createLabel = hasTitle ? t`Create category` : t`Add a name to continue`;
@@ -127,7 +127,7 @@ export const CategoryForm = (props: Props) => {
         }).pipe(toastOnFailure(isEditing ? t`Could not save category` : t`Could not create category`, t`Please try again later`));
 
     const handleDelete = () => {
-        if (isDefined(category)) {
+        if (isDefined(category) && !isBusy) {
             operation.start(EntityOperationEnum.DELETE, trackMutation =>
                 deleteCategory(category.id, trackMutation).pipe(Effect.tap(isDeleted => (isDeleted ? Effect.sync(onCancel) : Effect.void)))
             );

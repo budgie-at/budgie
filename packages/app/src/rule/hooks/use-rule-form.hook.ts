@@ -165,7 +165,13 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
         }
     });
 
+    const isBusy = isSaving || isDeleting;
+
     const handleSubmit = (values: RuleCreateInputInterface) => {
+        if (isBusy) {
+            return;
+        }
+
         void runSubmit(
             submitRule(values).pipe(
                 Effect.tap(() =>
@@ -180,7 +186,7 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
     };
 
     const handleDelete = () => {
-        if (isDefined(ruleId)) {
+        if (isDefined(ruleId) && !isBusy) {
             void runDelete(
                 Effect.flatMap(RuleService, ruleService => ruleService.archiveById(ruleId)).pipe(
                     Effect.tap(() => Effect.sync(() => void onSuccess?.('deleted'))),
@@ -190,5 +196,5 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
         }
     };
 
-    return { form, handleSubmit: form.handleSubmit(handleSubmit), handleDelete, isEditing, isSubmitting: isSaving || isDeleting };
+    return { form, handleSubmit: form.handleSubmit(handleSubmit), handleDelete, isEditing, isSubmitting: isBusy };
 };

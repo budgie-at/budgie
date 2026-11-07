@@ -83,6 +83,13 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                 total_volumes: Schema.Array(coinGeckoTimedValueSchema)
             });
 
+            const getStaleLockedBefore = Effect.map(DateTime.now, now => DateTime.toDateUtc(DateTime.subtractDuration(now, staleLockMs)));
+
+            const hasOpenJob = (instrumentId: number, quoteInstrumentId: number) =>
+                Effect.flatMap(getStaleLockedBefore, staleLockedBefore =>
+                    instrumentMarketDataJobRepository.hasOpen(instrumentId, quoteInstrumentId, maxAttempts, staleLockedBefore)
+                );
+
             const isSupportedInstrument = (instrument: InstrumentEntityInterface | undefined): boolean =>
                 isDefined(instrument) &&
                 instrument.type === InstrumentTypeEnum.CRYPTO &&
@@ -165,9 +172,8 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
             ) {
                 const now = yield* DateTime.nowAsDate;
                 const toDate = format(now, rateDateFormat);
-                const hasOpenJob = yield* instrumentMarketDataJobRepository.hasOpen(instrumentId, quoteInstrumentId);
 
-                if (hasOpenJob) {
+                if (yield* hasOpenJob(instrumentId, quoteInstrumentId)) {
                     return null;
                 }
 
@@ -325,7 +331,7 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
 
                 const { euroInstrument, instruments } = heldFiatInstruments;
 
-                if (yield* instrumentMarketDataJobRepository.hasOpen(euroInstrument.id, euroInstrument.id)) {
+                if (yield* hasOpenJob(euroInstrument.id, euroInstrument.id)) {
                     return null;
                 }
 
@@ -456,12 +462,9 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
 
             return {
                 enqueueAccounts,
-                claimNextJob: Effect.gen(function* () {
-                    const now = yield* DateTime.now;
-                    const staleLockedBefore = DateTime.toDateUtc(DateTime.subtractDuration(now, staleLockMs));
-
-                    return yield* instrumentMarketDataJobRepository.claimNext(maxAttempts, staleLockedBefore);
-                }),
+                claimNextJob: Effect.flatMap(getStaleLockedBefore, staleLockedBefore =>
+                    instrumentMarketDataJobRepository.claimNext(maxAttempts, staleLockedBefore)
+                ),
                 fetchJobData: Effect.fn('HistoricalMarketDataService.fetchJobData')(function* (
                     job: InstrumentMarketDataJobEntityInterface
                 ) {
@@ -494,27 +497,30 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                     const writeRates = historicalExchangeRateRepository.bulkUpsert(result.rates);
 
                     yield* Db.transaction(
-                        Effect.all(
-                            [
-                                instrumentDailyMarketPriceRepository.bulkUpsert(result.prices),
-                                instrument?.type === InstrumentTypeEnum.FIAT ? revalueEntriesAround(job, writeRates) : writeRates,
-                                instrumentMarketDataJobRepository.enqueueMany(
-                                    result.unsupportedInstruments.map(unsupportedInstrument => ({
-                                        instrumentId: unsupportedInstrument.id,
-                                        quoteInstrumentId: job.quoteInstrumentId,
-                                        fromDate: job.fromDate,
-                                        toDate: job.toDate,
-                                        status: InstrumentMarketDataJobStatusEnum.UNSUPPORTED
-                                    }))
-                                ),
-                                instrumentMarketDataJobRepository.markCompleted(job.id)
-                            ],
-                            { discard: true }
+                        Effect.flatMap(instrumentMarketDataJobRepository.markCompleted(job), isClaimOwner =>
+                            isClaimOwner
+                                ? Effect.all(
+                                      [
+                                          instrumentDailyMarketPriceRepository.bulkUpsert(result.prices),
+                                          instrument?.type === InstrumentTypeEnum.FIAT ? revalueEntriesAround(job, writeRates) : writeRates,
+                                          instrumentMarketDataJobRepository.enqueueMany(
+                                              result.unsupportedInstruments.map(unsupportedInstrument => ({
+                                                  instrumentId: unsupportedInstrument.id,
+                                                  quoteInstrumentId: job.quoteInstrumentId,
+                                                  fromDate: job.fromDate,
+                                                  toDate: job.toDate,
+                                                  status: InstrumentMarketDataJobStatusEnum.UNSUPPORTED
+                                              }))
+                                          )
+                                      ],
+                                      { discard: true }
+                                  )
+                                : Effect.void
                         )
                     );
                 }),
                 failJob: (job: InstrumentMarketDataJobEntityInterface, cause: Cause.Cause<unknown>) =>
-                    instrumentMarketDataJobRepository.markFailed(job.id, cause.pipe(Cause.squash, getErrorMessage))
+                    instrumentMarketDataJobRepository.markFailed(job, cause.pipe(Cause.squash, getErrorMessage))
             };
         })
     }

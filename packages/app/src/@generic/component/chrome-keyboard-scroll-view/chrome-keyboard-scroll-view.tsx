@@ -13,6 +13,8 @@ import type { KeyboardAwareScrollViewRef } from 'react-native-keyboard-controlle
 
 interface Props extends ComponentProps<typeof KeyboardAwareScrollView> {
     readonly contentInsetTop?: number;
+    readonly onDragStart?: () => void;
+    readonly includeTopSafeArea?: boolean;
     readonly contentInsetBottom?: number;
     readonly ref?: Ref<KeyboardAwareScrollViewRef>;
 }
@@ -22,24 +24,28 @@ const AnimatedKeyboardAwareScrollView = Animated.createAnimatedComponent(Keyboar
 export const ChromeKeyboardScrollView = ({
     contentInsetTop = 0,
     contentInsetBottom,
+    includeTopSafeArea = true,
     contentContainerStyle,
     bottomOffset,
     ref,
+    onDragStart,
     ...scrollViewProps
 }: Props): ReactNode => {
     const { config } = useScreenChrome();
     const { chromeHeight, inset } = useBottomChromeInset();
-    const { onScroll, scrollRef } = useCollapsibleChromeScroll();
+    const { onScroll, scrollRef } = useCollapsibleChromeScroll(onDragStart);
     const insets = useSafeAreaInsets();
     const mergedRef = mergeRefs(scrollRef, ref);
     const { height } = useWindowDimensions();
     const snapRangeStyle = config.snapToCollapse ? { minHeight: height + config.collapseEnd } : null;
     const resolvedContentInsetBottom = isDefined(contentInsetBottom) ? contentInsetBottom : chromeHeight;
     const resolvedBottomOffset = isDefined(bottomOffset) ? bottomOffset : inset;
-    const mergedContentContainerStyle = addScrollContentInset(insets, contentInsetTop, resolvedContentInsetBottom, [
-        snapRangeStyle,
-        contentContainerStyle
-    ]);
+    const mergedContentContainerStyle = addScrollContentInset(
+        includeTopSafeArea ? insets : { ...insets, top: 0 },
+        contentInsetTop,
+        resolvedContentInsetBottom,
+        [snapRangeStyle, contentContainerStyle]
+    );
 
     return (
         <AnimatedKeyboardAwareScrollView

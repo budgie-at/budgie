@@ -4,6 +4,7 @@ import { Trans } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { Alert } from 'react-native';
 
+import { useBottomChromeInset } from '@rnw-community/react-native-screen-chrome';
 import { isDefined } from '@rnw-community/shared';
 
 import { useRuleFormModal } from '../../context/rule-form-modal.context';
@@ -23,6 +24,7 @@ interface Props {
 export const RuleSuggestionCard = (props: Props) => {
     const { suggestRuleData, onRuleCreated, onDismiss, onCreatingChange } = props;
     const [openRuleForm] = useRuleFormModal();
+    const { inset } = useBottomChromeInset();
 
     const confirmDuplicate = (ruleId: number) =>
         Effect.callback<boolean>(resume => {
@@ -66,7 +68,12 @@ export const RuleSuggestionCard = (props: Props) => {
             return false;
         }
 
-        yield* Effect.forkDetach(ruleApplicationDrainerService.enqueueRuleApplication(rule.id, showRuleApplicationToast));
+        yield* Effect.forkDetach(
+            ruleApplicationDrainerService.enqueueRuleApplication(
+                rule.id,
+                (result, error) => void showRuleApplicationToast(result, error, inset)
+            )
+        );
 
         return true;
     });

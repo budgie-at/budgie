@@ -1162,6 +1162,98 @@ const generateMatchingRulesFixture = () => {
     );
 };
 
+const generateEditFormLayoutFixture = () => {
+    const sourcePath = path.join(fixturesDirectoryPath, '25.db');
+    const targetPath = path.join(outputDirectoryPath, '46-edit-form-layout.db');
+    const now = Math.floor(Date.now() / 1000);
+    const accountId = 3;
+    const categoryId = 42;
+    const groceriesCategoryId = 11;
+    const matchedOnceTitle = 'E2E Layout Matched Once';
+    const matchedTwiceTitle = 'E2E Layout Matched Twice';
+    const transactions = [
+        { id: 101, title: 'E2E Layout Short', amount: 1_000_000 },
+        { id: 102, title: 'E2E Layout Long Merchant Title That Wraps Onto A Second Line — Imported bank merchant description exceeding the create form title limit', amount: 1_100_000 },
+        { id: 103, title: matchedOnceTitle, amount: 1_200_000 },
+        { id: 104, title: matchedTwiceTitle, amount: 1_300_000 }
+    ];
+    const rules = [
+        { id: 901, title: matchedOnceTitle },
+        { id: 902, title: matchedTwiceTitle },
+        { id: 903, title: matchedTwiceTitle }
+    ];
+    const operatedAt = transactionId => now - (105 - transactionId) * 60;
+    const totalAmount = transactions.reduce((total, { amount }) => total + amount, 0);
+    const transactionValues = transactions
+        .map(
+            ({ id, title }) =>
+                `(${id}, ${operatedAt(id)}, ${operatedAt(id)}, 'EXPENSE', '${title}', ${operatedAt(id)}, '${title}', ${accountId}, 1.0, 1)`
+        )
+        .join(',\n            ');
+    const entryValues = transactions
+        .map(
+            ({ id, amount }) =>
+                `(${operatedAt(id)}, ${operatedAt(id)}, 'CREDIT', ${accountId}, ${categoryId}, ${id}, ${amount}, 1.0, 'USER', 1, 1.0, ${amount}, 'PRIMARY')`
+        )
+        .join(',\n            ');
+    const ruleValues = rules.map(({ id }) => `(${id}, ${now}, ${now}, 1, 'ALL')`).join(',\n            ');
+    const conditionValues = rules
+        .map(({ id, title }) => `(${now}, ${now}, ${id}, 'TITLE', 'CONTAINS', '${title}')`)
+        .join(',\n            ');
+    const actionValues = rules
+        .map(({ id }) => `(${now}, ${now}, ${id}, 'SET_CATEGORY', ${groceriesCategoryId}, NULL)`)
+        .join(',\n            ');
+
+    copyFixture(sourcePath, targetPath);
+    runSqlite(
+        targetPath,
+        `
+        BEGIN;
+
+        INSERT INTO transactions (id, created_at, updated_at, type, title, operated_at, comment, from_account_id, exchange_rate, needs_embedding)
+        VALUES
+            ${transactionValues};
+
+        INSERT INTO transaction_entries (
+            created_at,
+            updated_at,
+            type,
+            account_id,
+            category_id,
+            transaction_id,
+            amount,
+            exchange_rate,
+            category_source,
+            base_instrument_id,
+            base_exchange_rate,
+            base_amount,
+            kind
+        )
+        VALUES
+            ${entryValues};
+
+        INSERT INTO rules (id, created_at, updated_at, enabled, condition_match_type)
+        VALUES
+            ${ruleValues};
+
+        INSERT INTO rule_conditions (created_at, updated_at, rule_id, field, operator, value)
+        VALUES
+            ${conditionValues};
+
+        INSERT INTO rule_actions (created_at, updated_at, rule_id, type, category_id, tag_id)
+        VALUES
+            ${actionValues};
+
+        UPDATE account_balances
+        SET amount = amount - ${totalAmount}, updated_at = ${now}
+        WHERE account_id = ${accountId};
+
+        COMMIT;
+        VACUUM;
+        `
+    );
+};
+
 const generateDebtSettlementFixture = () => {
     const sourcePath = path.join(fixturesDirectoryPath, '31-debt.db');
     const targetPath = path.join(outputDirectoryPath, '31-debt.db');
@@ -1409,6 +1501,7 @@ const generateReceiptScanFixture = () => {
     const expenseSourceAccountId = 1;
     const receiptTransactionId = 4242;
     const receiptAmount = 62_100_000;
+    const receiptCategoryId = 15;
 
     copyFixture(sourcePath, targetPath);
     runSqlite(
@@ -1420,7 +1513,7 @@ const generateReceiptScanFixture = () => {
         VALUES (${receiptTransactionId}, ${operatedAt}, ${operatedAt}, 'EXPENSE', '', ${operatedAt}, 'E2E Receipt Target', ${expenseSourceAccountId}, 1.0);
 
         INSERT INTO transaction_entries (created_at, updated_at, type, account_id, category_id, transaction_id, amount)
-        VALUES (${operatedAt}, ${operatedAt}, 'CREDIT', ${expenseSourceAccountId}, NULL, ${receiptTransactionId}, ${receiptAmount});
+        VALUES (${operatedAt}, ${operatedAt}, 'CREDIT', ${expenseSourceAccountId}, ${receiptCategoryId}, ${receiptTransactionId}, ${receiptAmount});
 
         UPDATE account_balances
         SET amount = amount - ${receiptAmount}, updated_at = ${now}
@@ -1590,6 +1683,7 @@ generateConsolidationFixture();
 generateRefundConsolidationFixture();
 generateLongPressActionsFixture();
 generateMatchingRulesFixture();
+generateEditFormLayoutFixture();
 generateDebtSettlementFixture();
 generateCategorizeInboxFixture();
 generateReceiptScanFixture();

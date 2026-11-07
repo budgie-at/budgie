@@ -1,15 +1,31 @@
 import { useLingui } from '@lingui/react/macro';
-import { useState } from 'react';
+import { useNavigation } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { Keyboard } from 'react-native';
+
+import { useIsAccessibilityTextSize } from '../../@generic/hook/use-is-accessibility-text-size.hook';
 
 export const useTransactionKeypadEditing = (initiallyEditing: boolean) => {
     const { t } = useLingui();
-    const [isEditingAmount, setIsEditingAmount] = useState(initiallyEditing);
-    const toggleKeypad = () => void setIsEditingAmount(previous => !previous);
-    const startEditingAmount = () => void setIsEditingAmount(true);
+    const navigation = useNavigation();
+    const isAccessibilityTextSize = useIsAccessibilityTextSize();
+    const [isEditingAmount, setIsEditingAmount] = useState(initiallyEditing && !isAccessibilityTextSize);
+    useEffect(() => navigation.addListener('blur', () => void setIsEditingAmount(false)), [navigation]);
+    const toggleKeypad = () => {
+        Keyboard.dismiss();
+        setIsEditingAmount(previous => !previous);
+    };
+    const startEditingAmount = () => {
+        Keyboard.dismiss();
+        setIsEditingAmount(true);
+    };
+
+    const dismissKeypad = () => void setIsEditingAmount(false);
 
     return {
         isEditingAmount,
         toggleKeypad,
+        dismissKeypad,
         startEditingAmount,
         amountAccessibilityHint: isEditingAmount ? t`Done` : t`Enter an amount`
     };

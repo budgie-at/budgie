@@ -53,12 +53,11 @@ const useIsAppActive = (onBackground: () => void) => {
     return isAppActive;
 };
 
-const useAutomaticBiometric = (canStart: boolean, attempt: () => boolean) => {
-    const [hasAttempted, setHasAttempted] = useState(false);
+const useAutomaticBiometric = (canStart: boolean, hasAttempted: boolean, attempt: () => boolean, markAttempted: () => void) => {
     const canStartAutomatically = canStart && !hasAttempted;
     const handleStart = useEffectEvent(() => {
         if (attempt()) {
-            setHasAttempted(true);
+            markAttempted();
         }
     });
 
@@ -76,13 +75,15 @@ const useAutomaticBiometric = (canStart: boolean, attempt: () => boolean) => {
 export const usePinAuthentication = () => {
     const { isFaceIdAvailable, isSomeAvailable, setIsUnlocked } = useAuthContext();
     const isBiometricEnabled = useSetting('isBiometricEnabled');
-    const canUseBiometric = isBiometricEnabled && isSomeAvailable;
     const [{ input, isLoading }, dispatch] = useReducer(reducer, { input: '', isLoading: false });
     const { invalidate, startBiometricAttempt, startPinAttempt } = useAuthAttempt();
     const { clearError, error, isLockedOut, reportIncorrectPin } = usePinError();
     const [hapticNotification] = useVibration();
 
+    const [hasAttemptedBiometric, setHasAttemptedBiometric] = useState(false);
+
     const invalidateAuthAttempts = () => {
+        setHasAttemptedBiometric(false);
         dispatch({ type: PinAuthenticationActionTypeEnum.ATTEMPT_ENDED, shouldClearInput: invalidate() });
     };
     const isAppActive = useIsAppActive(invalidateAuthAttempts);
@@ -108,7 +109,9 @@ export const usePinAuthentication = () => {
         return true;
     };
 
-    useAutomaticBiometric(isBiometricEnabled && isAppActive, startBiometric);
+    useAutomaticBiometric(isBiometricEnabled && isAppActive, hasAttemptedBiometric, startBiometric, () => {
+        setHasAttemptedBiometric(true);
+    });
 
     const addDigit = (digit: string) => {
         if (isLockedOut) {
@@ -132,7 +135,7 @@ export const usePinAuthentication = () => {
 
     return {
         addDigit,
-        canUseBiometric,
+        canUseBiometric: isBiometricEnabled && isSomeAvailable,
         deleteDigit,
         error,
         handleBiometricAuth: startBiometric,

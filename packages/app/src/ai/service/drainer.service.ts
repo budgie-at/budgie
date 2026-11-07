@@ -72,7 +72,9 @@ export class DrainerService<E> {
         this.started = false;
         yield* this.halt();
         yield* FiberHandle.clear(this.retryTimer);
-        patchAtom(this.snapshot, { state: DrainerStateEnum.IDLE });
+        if (this.state !== DrainerStateEnum.PAUSED) {
+            patchAtom(this.snapshot, { state: DrainerStateEnum.IDLE });
+        }
     });
 
     readonly pause = Effect.fn('DrainerService.pause')(function* (this: DrainerService<E>) {
@@ -162,6 +164,7 @@ export class DrainerService<E> {
     });
 
     private readonly runBoost = Effect.fn('DrainerService.runBoost')(function* (this: DrainerService<E>) {
+        this.consecutiveFailures = 0;
         patchAtom(this.snapshot, { state: DrainerStateEnum.BOOSTING, errorMessage: null });
         yield* this.withModel(this.boostRows()).pipe(Effect.ensuring(this.finalizeBatch()));
     });

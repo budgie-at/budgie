@@ -27,7 +27,7 @@ const positionTextVariants = cva('', {
     variants: {
         variant: {
             [WaitlistVariantEnum.HERO]: 'text-muted-foreground',
-            [WaitlistVariantEnum.CTA]: 'text-white/80',
+            [WaitlistVariantEnum.CTA]: 'text-primary-foreground/80',
             [WaitlistVariantEnum.FEATURE]: 'text-muted-foreground'
         }
     }
@@ -37,7 +37,7 @@ const discountTextVariants = cva('text-sm', {
     variants: {
         variant: {
             [WaitlistVariantEnum.HERO]: 'text-muted-foreground',
-            [WaitlistVariantEnum.CTA]: 'text-white/70',
+            [WaitlistVariantEnum.CTA]: 'text-primary-foreground/70',
             [WaitlistVariantEnum.FEATURE]: 'text-muted-foreground'
         }
     }

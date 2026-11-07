@@ -54,7 +54,7 @@ export const TagForm = (props: Props) => {
     const isBusy = saveFlight.isLoading || operation.isPending;
     const isChanged = !isDefined(tag) || title !== tag.title;
     const hasTitle = isNotEmptyString(title.trim());
-    const isSaveDisabled = !hasTitle || operation.isPending;
+    const isSaveDisabled = !hasTitle || isBusy;
     const headerTitle = isEditing ? t`Edit Tag` : t`Create Tag`;
     const createLabel = hasTitle ? t`Create tag` : t`Add a name to continue`;
     const titleError = isDefined(formState.errors.title) ? t`Use 1 to ${TAG_TITLE_MAX_LENGTH} characters` : void 0;
@@ -83,7 +83,7 @@ export const TagForm = (props: Props) => {
     };
 
     const handleMerge = () => {
-        if (isDefined(tag)) {
+        if (isDefined(tag) && !isBusy) {
             operation.start(EntityOperationEnum.MERGE, trackMutation =>
                 mergeTag(tag.id, trackMutation).pipe(
                     Effect.tap(target => (isDefined(target) ? Effect.sync(() => void onSuccess({ tag: target })) : Effect.void))
@@ -109,7 +109,7 @@ export const TagForm = (props: Props) => {
         }).pipe(toastOnFailure(isEditing ? t`Could not save tag` : t`Could not create tag`, t`Please try again later`));
 
     const handleDelete = () => {
-        if (isDefined(tag)) {
+        if (isDefined(tag) && !isBusy) {
             operation.start(EntityOperationEnum.DELETE, trackMutation =>
                 deleteTag(tag.id, trackMutation).pipe(Effect.tap(isDeleted => (isDeleted ? Effect.sync(onCancel) : Effect.void)))
             );

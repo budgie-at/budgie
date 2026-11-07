@@ -33,7 +33,7 @@ export const TransactionDateTagsRow = ({ onDatePress }: Props) => {
     const handleTagsPress = () => {
         openTagsSelector({ initialTagIds: tagIds, enablePrimarySelection: true }, selectedTagIds => {
             if (isDefined(selectedTagIds)) {
-                setValue('tagIds', selectedTagIds);
+                setValue('tagIds', selectedTagIds, { shouldDirty: true });
             }
         });
     };

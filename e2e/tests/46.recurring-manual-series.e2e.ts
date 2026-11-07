@@ -15,6 +15,13 @@ test('46 recurring manual series', { tags: ['recurring'] }, async ({ budgie }) =
     await b.phase('create a monthly series in the form', async () => {
         await b.openLink(ctx, 'budgie://recurring/create');
         await b.expectId(ctx, 'RecurringForm.Page', 10_000);
+        const kindBox = await b.byId(ctx.screen, 'RecurringForm.Kind.EXPENSE').boundingBox();
+        const headerBox = await b.byId(ctx.screen, 'PageHeader.BackButton').boundingBox();
+        if (kindBox === null || headerBox === null || kindBox.y < headerBox.y + headerBox.height) {
+            throw new Error(
+                `the recurring fields overlap the header: kind=${JSON.stringify(kindBox)}, header=${JSON.stringify(headerBox)}`
+            );
+        }
         await bu.fillAmount(ctx, 'RecurringForm.Amount', '15');
         await b.fillId(ctx, 'RecurringForm.Title', 'E2E Manual Netflix');
         await b.done(ctx);
@@ -26,6 +33,7 @@ test('46 recurring manual series', { tags: ['recurring'] }, async ({ budgie }) =
         await expect(b.byId(ctx.screen, 'RecurringForm.Category')).toHaveText(/Groceries/u);
         await b.scrollTo(ctx, 'RecurringForm.End.AFTER_COUNT');
         await b.tapId(ctx, 'RecurringForm.End.AFTER_COUNT');
+        await b.scrollTo(ctx, 'RecurringForm.EndCount');
         await b.fillId(ctx, 'RecurringForm.EndCount', '700');
         await b.done(ctx);
         await b.tapId(ctx, 'RecurringForm.Save');

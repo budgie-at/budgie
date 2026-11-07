@@ -7,9 +7,8 @@ import { isNotEmptyString } from '@rnw-community/shared';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { BACKGROUND_COLOR_PALETTE } from '../../../@generic/constant/background-color-palette.constant';
-import { TONAL_DISC_BACKGROUND } from '../../../@generic/constant/tonal-disc-background.constant';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { cn } from '../../../@generic/utils/cn.util';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
@@ -41,17 +40,26 @@ const textVariants = cva('font-medium text-[13px] leading-[16px] text-center', {
 });
 
 export const CategorySelectorCard = (props: Props) => {
-    const { className, isSelected, title, onSelect, id, icon, variant, testID } = props;
+    const { className, isSelected, title, onSelect, id, icon, testID } = props;
 
     const handleSelect = () => void onSelect(id);
 
     const hasTestID = isNotEmptyString(testID);
-    const iconClassName = cn('rounded-4xl', TONAL_DISC_BACKGROUND[variant]);
+    const largeText = useIsAccessibilityTextSize();
+    const iconClassName = 'rounded-4xl bg-surface-fill';
+    const titleStyle = largeText ? { flex: 1, paddingLeft: 16 } : { alignSelf: 'stretch' as const, paddingTop: 6 };
+    const textLines = largeText ? {} : { numberOfLines: 2 };
     const accessibilityState = { selected: isSelected };
 
     return (
         <HapticPressable
-            className={cn(cardVariants({ isSelected }), isSelected && BACKGROUND_COLOR_PALETTE[variant], 'relative', className)}
+            className={cn(
+                cardVariants({ isSelected }),
+                isSelected && 'border-primary/30 bg-surface-fill',
+                'relative pb-md',
+                largeText && 'flex-row px-xl py-lg',
+                className
+            )}
             onPress={handleSelect}
             testID={testID}
             collapsable={false}
@@ -71,13 +79,18 @@ export const CategorySelectorCard = (props: Props) => {
                 </View>
             ) : null}
 
-            <CircleIcon size={36} iconSize={19} className={iconClassName} icon={icon} variant={variant} border={false} />
+            <CircleIcon size={36} iconSize={19} className={iconClassName} icon={icon} variant="secondary" border={false} />
 
-            <View className="self-stretch pt-[6px]">
+            <View style={titleStyle}>
                 <Text
-                    className={cn(textVariants({ isSelected }), 'self-stretch flex-shrink')}
-                    numberOfLines={2}
-                    ellipsizeMode="tail"
+                    className={cn(
+                        textVariants({ isSelected }),
+                        'self-stretch flex-shrink',
+                        largeText && 'text-left text-[17px] leading-[24px] pr-xl'
+                    )}
+                    maxFontSizeMultiplier={2}
+                    lineBreakStrategyIOS="standard"
+                    {...textLines}
                     {...testIDProps(testID, TestIDPartEnum.LABEL)}
                 >
                     {title}

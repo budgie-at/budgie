@@ -59,6 +59,8 @@ export const SplitEntryRow = (props: Props) => {
                 <HapticPressable
                     onPress={onCategoryPress}
                     disabled={disabled}
+                    accessibilityRole="button"
+                    accessibilityLabel={categoryTitle}
                     className={cn('flex-row items-center gap-x-md min-h-[44px] min-w-[88px]', categoryLayoutClassName)}
                     testID={SplitEntryRowSelector.Category(index)}
                 >

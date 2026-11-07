@@ -49,7 +49,6 @@ test('24 split transaction and analytics', { tags: ['transactions'] }, async ({ 
         await t.typeDigits(ctx, '45');
         await t.selectAccount(ctx, 'E2E Txn Account');
         await t.enterComment(ctx, 'E2E Split Expense');
-        await b.tapId(ctx, 'TransactionForm.AmountInput');
         await b.expectNoId(ctx, 'TransactionKeypad.Digit.1');
         await b.tapId(ctx, 'TransactionFieldIcon.Split');
         await b.expectId(ctx, 'SplitEntryRow.Amount.0');
@@ -64,6 +63,21 @@ test('24 split transaction and analytics', { tags: ['transactions'] }, async ({ 
         await b.expectId(ctx, LABEL, 5_000);
         await expect(id(LABEL)).toHaveText(SPLIT_SUBTITLE);
         await home('55');
+    });
+
+    await b.phase('reject a split total mismatch', async () => {
+        await t.navigateToTransactions(ctx);
+        await t.openTransaction(ctx, 'E2E_Split_Expense');
+        await b.tapId(ctx, 'TransactionInfo.EditButton.Label');
+        await t.clearAmount(ctx);
+        await t.typeDigits(ctx, '46');
+        await b.tapId(ctx, 'TransactionForm.SubmitButton');
+        await expect(id('TransactionForm.ValidationMessage')).toHaveText('Split amounts must match the total');
+        await t.clearAmount(ctx);
+        await t.typeDigits(ctx, '45');
+        await b.tapId(ctx, 'TransactionForm.SubmitButton');
+        await b.expectId(ctx, 'TransactionInfo.Page', 15_000);
+        await b.tapId(ctx, 'PageHeader.BackButton');
     });
 
     await b.phase('category analytics and drilldown', async () => {

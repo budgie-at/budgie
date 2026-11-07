@@ -1,5 +1,3 @@
-import { isNotEmptyString } from '@rnw-community/shared';
-
 import type { InstrumentEntityInterface } from '@budgie/contracts';
 
 interface AccountDisplayInfo {
@@ -8,10 +6,8 @@ interface AccountDisplayInfo {
 }
 
 interface ConversionState {
-    readonly isCrossCurrency: boolean;
     readonly destinationAmount: number;
     readonly exchangeRate: number;
-    readonly isManualRate: boolean;
 }
 
 interface ComputeTransferDisplayParams {
@@ -39,8 +35,6 @@ interface ConversionRowDisplayProps {
 interface TransferDisplayResult {
     readonly displayAmount: string;
     readonly displaySymbol: string;
-    readonly amountCode: string | null;
-    readonly amountLabel: string;
     readonly conversionRowProps: ConversionRowDisplayProps;
 }
 
@@ -72,11 +66,7 @@ export const computeTransferDisplay = (params: ComputeTransferDisplayParams): Tr
     const displayAmount = isEditingDestination ? destinationDisplayValue : sourceDisplayValue;
     const displaySymbol = isEditingDestination ? toInfo.symbol : fromInfo.symbol;
 
-    const hasAccountCodes = isNotEmptyString(fromInfo.code) && isNotEmptyString(toInfo.code);
-    const amountLabel = isEditingDestination ? receivingLabel : sendingLabel;
     const conversionRowLabel = isEditingDestination ? sendingLabel : receivingLabel;
-    const editingCode = isEditingDestination ? toInfo.code : fromInfo.code;
-    const amountCode = conversion.isCrossCurrency && hasAccountCodes ? editingCode : null;
 
     const conversionRowAmount = isEditingDestination ? sourceNumericValue : conversion.destinationAmount;
     const conversionRowSymbol = isEditingDestination ? fromInfo.symbol : toInfo.symbol;
@@ -87,8 +77,6 @@ export const computeTransferDisplay = (params: ComputeTransferDisplayParams): Tr
     return {
         displayAmount,
         displaySymbol,
-        amountCode,
-        amountLabel,
         conversionRowProps: {
             label: conversionRowLabel,
             destinationAmount: conversionRowAmount,

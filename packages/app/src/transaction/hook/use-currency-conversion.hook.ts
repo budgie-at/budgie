@@ -89,7 +89,9 @@ export const useCurrencyConversion = (
                         })
                 ),
                 Effect.tapError(Effect.logError),
-                Effect.ignore
+                Effect.catch(() =>
+                    Effect.sync(() => void setState({ sourceKey, destinationAmount: 0, exchangeRate: 1, isManualRate: false }))
+                )
             )
         );
     };

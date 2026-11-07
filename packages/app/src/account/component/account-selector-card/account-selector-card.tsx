@@ -66,7 +66,7 @@ export const AccountSelectorCard = (props: Props) => {
             title={
                 <Text
                     className={cn('text-primary text-[17px] leading-[22px]', isSelected && 'font-semibold')}
-                    maxFontSizeMultiplier={2}
+                    maxFontSizeMultiplier={1.75}
                     testID={AccountSelectorModalSelector.Option(title)}
                 >
                     {title}
