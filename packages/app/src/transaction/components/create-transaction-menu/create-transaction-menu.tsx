@@ -27,6 +27,7 @@ import { AiButton } from '../ai-button/ai-button';
 import { CreateTransactionMenuSelector } from './create-transaction-menu.selector';
 
 const BUTTON_ROTATION_ACTIVE = 45;
+const ROTATION_SPRING = { dampingRatio: 0.6, duration: 400 };
 const HIDDEN_SCALE = 0.95;
 
 interface Props {
@@ -150,11 +151,11 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
     useEffect(() => {
         if (isOpen) {
             Toast.hide();
-            rotation.set(withSpring(BUTTON_ROTATION_ACTIVE, SPRING_SETTLE));
+            rotation.set(withSpring(BUTTON_ROTATION_ACTIVE, ROTATION_SPRING));
             menuScale.set(withSpring(1, SPRING_SETTLE));
             menuOpacity.set(withTiming(1, { duration: MOTION_BASE_DURATION, easing: EASE_OUT }));
         } else if (isVisible) {
-            rotation.set(withSpring(0, SPRING_SETTLE));
+            rotation.set(withSpring(0, ROTATION_SPRING));
             menuScale.set(withTiming(HIDDEN_SCALE, { duration: MOTION_FAST_DURATION, easing: EASE_OUT }));
             menuOpacity.set(
                 withTiming(0, { duration: MOTION_FAST_DURATION, easing: EASE_OUT }, finished => {

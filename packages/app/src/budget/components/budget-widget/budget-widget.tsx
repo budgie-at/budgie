@@ -1,5 +1,6 @@
 import { isDefined } from '@rnw-community/shared';
 
+import { EntranceReveal } from '../../../@generic/component/entrance-reveal/entrance-reveal';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { BudgetSelector } from '../../budget.selector';
 import { useGetActiveBudgetQuery } from '../../query/use-get-active-budget.query';
@@ -15,8 +16,16 @@ export const BudgetWidget = () => {
     }
 
     if (!isDefined(budget)) {
-        return <BudgetEmptyState testID={BudgetSelector.WidgetEmptyState} />;
+        return (
+            <EntranceReveal step={1}>
+                <BudgetEmptyState testID={BudgetSelector.WidgetEmptyState} />
+            </EntranceReveal>
+        );
     }
 
-    return <BudgetWidgetCard budget={budget} />;
+    return (
+        <EntranceReveal step={1}>
+            <BudgetWidgetCard budget={budget} />
+        </EntranceReveal>
+    );
 };

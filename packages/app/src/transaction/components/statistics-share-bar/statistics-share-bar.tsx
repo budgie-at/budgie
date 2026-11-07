@@ -5,6 +5,7 @@ import Animated, { LinearTransition } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { GrowBar } from '../../../@generic/component/grow-bar/grow-bar';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ENTRANCE_DURATION } from '../../../@generic/constant/entrance-motion.constant';
 import { EASE_IN_OUT, MOTION_FADE_IN } from '../../../@generic/constant/motion.constant';
@@ -49,23 +50,25 @@ export const StatisticsShareBar = ({ segments, other, onOtherPress }: Props) => 
                 <View className="h-[12px] rounded-full bg-surface-fill" />
             ) : (
                 <View
-                    className="h-[12px] flex-row gap-x-[2px] overflow-hidden rounded-full"
+                    className="h-[12px] overflow-hidden rounded-full"
                     accessibilityElementsHidden
                     importantForAccessibility="no-hide-descendants"
                 >
-                    {barSegments.map(segment => {
-                        const segmentStyle = { flexGrow: segment.amount, flexBasis: 0 };
+                    <GrowBar ratio={1} className="h-full flex-row gap-x-[2px]">
+                        {barSegments.map(segment => {
+                            const segmentStyle = { flexGrow: segment.amount, flexBasis: 0 };
 
-                        return (
-                            <Animated.View
-                                key={segment.key}
-                                entering={MOTION_FADE_IN}
-                                layout={SEGMENT_TRANSITION}
-                                className={cn('h-full min-w-[3px]', segment.swatchClassName)}
-                                style={segmentStyle}
-                            />
-                        );
-                    })}
+                            return (
+                                <Animated.View
+                                    key={segment.key}
+                                    entering={MOTION_FADE_IN}
+                                    layout={SEGMENT_TRANSITION}
+                                    className={cn('h-full min-w-[3px]', segment.swatchClassName)}
+                                    style={segmentStyle}
+                                />
+                            );
+                        })}
+                    </GrowBar>
                 </View>
             )}
 

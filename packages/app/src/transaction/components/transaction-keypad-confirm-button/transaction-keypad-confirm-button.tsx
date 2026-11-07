@@ -31,7 +31,7 @@ export const TransactionKeypadConfirmButton = ({ label, isDisabled, onPress, tes
             className={cn('items-center justify-center self-stretch rounded-xl', backgroundClassName)}
             disabled={isDisabled}
             onPress={onPress}
-            pressFeedback={HapticPressFeedbackEnum.COMMIT}
+            pressFeedback={HapticPressFeedbackEnum.NONE}
             style={style}
             testID={testID}
         >

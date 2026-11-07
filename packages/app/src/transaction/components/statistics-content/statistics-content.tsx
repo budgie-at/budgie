@@ -5,6 +5,7 @@ import { View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
+import { EntranceReveal } from '../../../@generic/component/entrance-reveal/entrance-reveal';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { AnalyticsTabType } from '../../../@generic/type/analytics-tab.type';
 import { AnalyticsPageSelector } from '../../../app/(tabs)/analytics-page.selector';
@@ -59,7 +60,7 @@ export const StatisticsContent = ({ activeTab, filters, onChangeFilters: setFilt
 
     return (
         <View className="gap-y-xl">
-            <View className="gap-y-md">
+            <EntranceReveal step={0} className="gap-y-md">
                 <StatisticsPeriodControl value={filters.date} onChange={handleChangeDate} />
 
                 {isAccessibilityTextSize ? (
@@ -74,7 +75,7 @@ export const StatisticsContent = ({ activeTab, filters, onChangeFilters: setFilt
                         isClearAllVisible={hasNonDateFilters}
                     />
                 )}
-            </View>
+            </EntranceReveal>
 
             <AnalyticsHistoryBoundary
                 accountIds={filters.accountIds}

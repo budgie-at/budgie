@@ -64,7 +64,7 @@ export const StatisticsTrendBars = ({ points, currentMonth, currencySymbol }: Pr
                 )}
 
                 <View className="flex-row gap-x-md">
-                    {points.map(point => {
+                    {points.map((point, index) => {
                         const monthLabel = formatFullMonthAndYear(point.month);
                         const amountLabel = formatProtectedAmount(convertFromMicroUnits(point.amount), currencySymbol);
                         const scaledRatio = maxAmount > 0 ? point.amount / maxAmount : 0;
@@ -81,6 +81,7 @@ export const StatisticsTrendBars = ({ points, currentMonth, currencySymbol }: Pr
                                 ratio={ratio}
                                 isSelected={isSelected}
                                 isHighlighted={isHighlighted}
+                                staggerIndex={index}
                                 onPress={handlePress}
                             />
                         );

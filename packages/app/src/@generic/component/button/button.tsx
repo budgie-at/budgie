@@ -8,6 +8,7 @@ import { isDefined, isNotEmptyString, isString } from '@rnw-community/shared';
 
 import { BACKGROUND_COLOR_PALETTE } from '../../constant/background-color-palette.constant';
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
+import { BUTTON_PRESSED_SCALE } from '../../constant/motion.constant';
 import { HapticPressFeedbackEnum } from '../../enum/haptic-press-feedback.enum';
 import { TestIDPartEnum } from '../../enum/test-id-part.enum';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
@@ -57,9 +58,7 @@ const textVariants = cva<{
 });
 
 const PRESS_FEEDBACK: Partial<Record<ColorPaletteVariant, HapticPressFeedbackEnum>> = {
-    primary: HapticPressFeedbackEnum.COMMIT,
-    destructive: HapticPressFeedbackEnum.DESTRUCTIVE,
-    cta: HapticPressFeedbackEnum.COMMIT
+    destructive: HapticPressFeedbackEnum.DESTRUCTIVE
 };
 
 export const Button = (props: Props) => {
@@ -87,8 +86,9 @@ export const Button = (props: Props) => {
 
     return (
         <HapticPressable
+            pressedScale={BUTTON_PRESSED_SCALE}
             onPress={onPress}
-            pressFeedback={PRESS_FEEDBACK[variant] ?? HapticPressFeedbackEnum.IMPACT}
+            pressFeedback={PRESS_FEEDBACK[variant] ?? HapticPressFeedbackEnum.COMMIT}
             disabled={isDisabled}
             className={cn(buttonVariants({ disabled: isDisabled, size, variant }), className)}
             testID={testID}

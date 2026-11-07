@@ -2,6 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { ViewStyle } from 'react-native';
 import Animated, { AnimatedStyle } from 'react-native-reanimated';
 
+import { BUTTON_PRESSED_SCALE } from '../../constant/motion.constant';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 
@@ -16,6 +17,7 @@ interface Props {
 
 export const CircularActionButton = ({ icon, onPress, animatedStyle, testID }: Props) => (
     <HapticPressable
+        pressedScale={BUTTON_PRESSED_SCALE}
         className="h-18 w-18"
         testID={testID}
         accessibilityLabel={testID}

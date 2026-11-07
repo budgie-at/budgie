@@ -1,5 +1,6 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
 
+import { EntranceReveal } from '../../../@generic/component/entrance-reveal/entrance-reveal';
 import { aiModelDownloadSummaryAtom } from '../../constant/ai-model-download-summary-atom.constant';
 import { AiModelDownloadStatusEnum } from '../../enum/ai-model-download-status.enum';
 import { AiDownloadHomeRow } from '../ai-download-home-row/ai-download-home-row';
@@ -9,8 +10,20 @@ export const AiDownloadHomeStatus = () => {
     const { status, isNoticeDismissed } = useAtomValue(aiModelDownloadSummaryAtom);
 
     if (status === AiModelDownloadStatusEnum.WAITING_FOR_WIFI && !isNoticeDismissed) {
-        return <AiDownloadWifiBanner />;
+        return (
+            <EntranceReveal step={2}>
+                <AiDownloadWifiBanner />
+            </EntranceReveal>
+        );
     }
 
-    return status === AiModelDownloadStatusEnum.DOWNLOADING ? <AiDownloadHomeRow /> : null;
+    if (status === AiModelDownloadStatusEnum.DOWNLOADING) {
+        return (
+            <EntranceReveal step={2}>
+                <AiDownloadHomeRow />
+            </EntranceReveal>
+        );
+    }
+
+    return null;
 };

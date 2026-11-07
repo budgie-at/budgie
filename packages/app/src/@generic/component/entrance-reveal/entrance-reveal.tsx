@@ -1,10 +1,11 @@
-import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
+import Animated, { FadeIn, withDelay, withSpring, withTiming } from 'react-native-reanimated';
 
 import {
     ENTRANCE_DISTANCE,
-    ENTRANCE_DURATION,
     ENTRANCE_MAX_STEP,
+    ENTRANCE_OPACITY_DURATION,
     ENTRANCE_REDUCED_DURATION,
+    ENTRANCE_SPRING,
     ENTRANCE_STAGGER
 } from '../../constant/entrance-motion.constant';
 import { EASE_OUT } from '../../constant/motion.constant';
@@ -23,13 +24,18 @@ const REDUCED_ENTERING = FadeIn.duration(ENTRANCE_REDUCED_DURATION);
 export const EntranceReveal = ({ step, children, className }: Props) => {
     const reducedMotion = useReducedMotion();
     const delay = Math.min(step, ENTRANCE_MAX_STEP) * ENTRANCE_STAGGER;
-    const motionEntering = FadeInDown.delay(delay)
-        .duration(ENTRANCE_DURATION)
-        .easing(EASE_OUT)
-        .withInitialValues({
-            opacity: 0,
-            transform: [{ translateY: ENTRANCE_DISTANCE }]
-        });
+
+    const motionEntering = () => {
+        'worklet';
+
+        return {
+            initialValues: { opacity: 0, transform: [{ translateY: ENTRANCE_DISTANCE }] },
+            animations: {
+                opacity: withDelay(delay, withTiming(1, { duration: ENTRANCE_OPACITY_DURATION, easing: EASE_OUT })),
+                transform: [{ translateY: withDelay(delay, withSpring(0, ENTRANCE_SPRING)) }]
+            }
+        };
+    };
     const entering = reducedMotion ? REDUCED_ENTERING : motionEntering;
 
     return (

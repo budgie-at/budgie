@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 
 import { emptyFn, isPositiveNumber } from '@rnw-community/shared';
 
+import { EntranceReveal } from '../../../@generic/component/entrance-reveal/entrance-reveal';
 import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title-max-font-size-multiplier.constant';
 import { StatisticsShareBar } from '../../../transaction/components/statistics-share-bar/statistics-share-bar';
 import { ACCOUNT_TYPE_SWATCH } from '../../constant/account-type-swatch.constant';
@@ -36,11 +37,13 @@ export const NetWorthComposition = ({ sections }: Props) => {
     }
 
     return (
-        <View className="gap-y-md" testID={NetWorthCompositionSelector.Container}>
-            <Text maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER} className="text-[13px] font-medium text-secondary-foreground">
-                <Trans>Asset mix</Trans>
-            </Text>
-            <StatisticsShareBar segments={segments} other={null} onOtherPress={emptyFn} />
-        </View>
+        <EntranceReveal step={0}>
+            <View className="gap-y-md" testID={NetWorthCompositionSelector.Container}>
+                <Text maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER} className="text-[13px] font-medium text-secondary-foreground">
+                    <Trans>Asset mix</Trans>
+                </Text>
+                <StatisticsShareBar segments={segments} other={null} onOtherPress={emptyFn} />
+            </View>
+        </EntranceReveal>
     );
 };

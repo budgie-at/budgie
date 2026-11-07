@@ -6,6 +6,7 @@ import { View } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
+import { EntranceReveal } from '../../../@generic/component/entrance-reveal/entrance-reveal';
 import { getChartSwatches } from '../../../@generic/utils/get-chart-swatches.util';
 import { StatisticsShareBar } from '../../../transaction/components/statistics-share-bar/statistics-share-bar';
 import { StatisticsSpendingHero } from '../../../transaction/components/statistics-spending-hero/statistics-spending-hero';
@@ -57,32 +58,38 @@ export const StatsByCategoriesPanel = ({ filters, incomeByCategory, expenseByCat
 
     return (
         <View className="gap-y-6xl">
-            <StatisticsSpendingHero filters={filters}>
-                {hasExpenseStats ? <StatisticsShareBar segments={segments} other={other} onOtherPress={handleShowAllSpending} /> : null}
-            </StatisticsSpendingHero>
+            <EntranceReveal step={1}>
+                <StatisticsSpendingHero filters={filters}>
+                    {hasExpenseStats ? <StatisticsShareBar segments={segments} other={other} onOtherPress={handleShowAllSpending} /> : null}
+                </StatisticsSpendingHero>
+            </EntranceReveal>
 
             {hasExpenseStats ? (
-                <StatsByCategories
-                    title={t`Spending`}
-                    footnote={footnote}
-                    stats={expenseByCategory}
-                    filters={filters}
-                    type={TransactionTypeEnum.EXPENSE}
-                    isExpanded={isSpendingExpanded}
-                    onToggleExpanded={handleToggleSpending}
-                />
+                <EntranceReveal step={2}>
+                    <StatsByCategories
+                        title={t`Spending`}
+                        footnote={footnote}
+                        stats={expenseByCategory}
+                        filters={filters}
+                        type={TransactionTypeEnum.EXPENSE}
+                        isExpanded={isSpendingExpanded}
+                        onToggleExpanded={handleToggleSpending}
+                    />
+                </EntranceReveal>
             ) : null}
 
             {hasIncomeStats ? (
-                <StatsByCategories
-                    title={t`Income`}
-                    {...(!hasExpenseStats && { footnote })}
-                    stats={incomeByCategory}
-                    filters={filters}
-                    type={TransactionTypeEnum.INCOME}
-                    isExpanded={isIncomeExpanded}
-                    onToggleExpanded={handleToggleIncome}
-                />
+                <EntranceReveal step={3}>
+                    <StatsByCategories
+                        title={t`Income`}
+                        {...(!hasExpenseStats && { footnote })}
+                        stats={incomeByCategory}
+                        filters={filters}
+                        type={TransactionTypeEnum.INCOME}
+                        isExpanded={isIncomeExpanded}
+                        onToggleExpanded={handleToggleIncome}
+                    />
+                </EntranceReveal>
             ) : null}
 
             {hasIncomeStats || hasExpenseStats ? null : <CategoriesFeatureIntro />}

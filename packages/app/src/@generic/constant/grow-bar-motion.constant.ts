@@ -1,1 +1,1 @@
-export const GROW_BAR_SPRING = { dampingRatio: 1, duration: 450 };
+export const GROW_BAR_SPRING = { dampingRatio: 0.9, duration: 700 };

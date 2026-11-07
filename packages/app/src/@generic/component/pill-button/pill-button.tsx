@@ -1,6 +1,7 @@
 import { cva } from 'class-variance-authority';
 import { Text } from 'react-native';
 
+import { BUTTON_PRESSED_SCALE } from '../../constant/motion.constant';
 import { HapticPressFeedbackEnum } from '../../enum/haptic-press-feedback.enum';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { LoadingContent } from '../loading-content/loading-content';
@@ -65,6 +66,7 @@ export const PillButton = ({
 
     return (
         <HapticPressable
+            pressedScale={BUTTON_PRESSED_SCALE}
             onPress={onPress}
             disabled={isInactive}
             pressFeedback={pressFeedback}
