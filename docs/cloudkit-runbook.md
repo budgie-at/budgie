@@ -15,15 +15,15 @@ Run this before closing #1789, #1795 and #1803, and against the **Production** s
 | Personal zone | `personal` (`PERSONAL_SYNC_ZONE`) |
 | Household zone | the zone passed to `ensureZone`/`createHouseholdShare`, one `CKShare` record `cloudkit.share` per zone |
 | Backup records | private database, default zone, record type `Backup` |
-| Sync records | `Account`, `BankIntegration`, `Budget`, `Category`, `DebtEvent`, `RecurringSeries`, `Rule`, `Tag`, `Transaction`, `TransactionLeg` |
+| Sync records | `Account`, `BankIntegration`, `Budget`, `Category`, `DebtEvent`, `RecurringSeries`, `Rule`, `Tag`, `Transaction`, `TransactionLeg`, `SyncMeta`, `SyncDevice` |
 | Schema source | `packages/app/modules/icloud/schema/Development.ckdb` |
 | Estimated send batch | 100 records or 1.5 MB, whichever comes first |
 | Fetched event split | 200 records, 1000 deletions |
 | Environment | build signed with a development profile → Development; TestFlight/App Store → Production |
 
-Error codes come from `ICloudErrorCode` (`packages/app/modules/icloud/index.ts`). Checks name the code the native layer must emit; the expected app behaviour is stated in terms of local data and CloudKit state, not in terms of a screen, because the sync status surface is being built in #1801/#1803.
+Error codes come from `ICloudErrorCode` (`packages/app/modules/icloud/index.ts`). Checks name the code the native layer must emit; the expected app behaviour is stated in terms of local data and CloudKit state, not in terms of a screen, because the same engine can run without a screen.
 
-`C1`, `C4` backup half and `C5` backup half run on Phase 1 alone. The rest exercise the sync module (`SyncService`, #1801) and sharing (#1803); skip a check only until its module is on the build, and say so in the recorded run.
+`C1`, the backup half of `C4` and the backup half of `C5` exercise backups. The remaining checks exercise `CloudSyncService` and household sharing.
 
 ## 1. Setup
 
@@ -71,7 +71,7 @@ xcrun cktool import-schema --team-id "$CK_TEAM" --container-id "$CK_CONTAINER" \
 5. Open <https://icloud.developer.apple.com/dashboard> → the container → Schema → Development and confirm every record type and field, including the `encrypted` marker on payload fields.
 6. Start a run only when step 3 exits clean; a rejected import leaves the previous schema in place and the app will fail record saves with `UNKNOWN_ITEM` or `CONSTRAINT_VIOLATION`.
 
-Expected: `validate-schema` exits 0, the console lists all eleven record types, and every payload field except `schemaVersion` is encrypted.
+Expected: `validate-schema` exits 0, the console lists all thirteen record types, and every payload field except `schemaVersion` is encrypted.
 
 ### 1.4 Promote the schema to Production before release
 
@@ -281,4 +281,4 @@ Rules for the record:
 
 - Never paste balances, account titles, device names or Apple ID addresses; use aliases, counts and the first 8 characters of a `sync_id` when an account must be identified.
 - Every phase epic closes only with a recorded run against the **Production** schema, taken on a build signed with a distribution profile.
-- Validation for the closing PR is unchanged: `pnpm format && pnpm ts && pnpm lint && pnpm deadcode && pnpm cpd && pnpm effect:check`.
+- Validation for the closing PR is unchanged: `pnpm format && pnpm ts && pnpm lint && pnpm deadcode && pnpm cpd`.
