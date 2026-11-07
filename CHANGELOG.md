@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.167.2](https://github.com/budgie-at/budgie/compare/v6.167.1...v6.167.2) (2026-11-07)
+
+### Bug Fixes
+
+* close reachable illegal states in implicit state machines ([#2020](https://github.com/budgie-at/budgie/issues/2020)) ([c1d1ee6](https://github.com/budgie-at/budgie/commit/c1d1ee6f8d0a1182aaab013bddd626163696d094))
+
+
 ## [6.167.1](https://github.com/budgie-at/budgie/compare/v6.167.0...v6.167.1) (2026-11-07)
 
 ### Bug Fixes

@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.167.2](https://github.com/budgie-at/budgie/compare/v6.167.1...v6.167.2) (2026-11-07)
+
+**Note:** Version bump only for package @budgie/ledger
+
+
+
+
+
 ## [6.167.1](https://github.com/budgie-at/budgie/compare/v6.167.0...v6.167.1) (2026-11-07)
 
 **Note:** Version bump only for package @budgie/ledger
