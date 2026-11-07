@@ -100,7 +100,7 @@ export class TransactionBatchCreateService extends Context.Service<TransactionBa
             });
 
             const withBankTransactionSyncIds = Effect.fnUntraced(function* (batch: readonly TransactionCreateInputInterface[]) {
-                const resolvedSyncIds = yield* resolveBankTransactionSyncIds(batch);
+                const resolvedSyncIds = yield* resolveBankTransactionSyncIds(batch, accountRepository, transactionRepository);
 
                 return batch.map((input, index) => {
                     const syncId = resolvedSyncIds[index];

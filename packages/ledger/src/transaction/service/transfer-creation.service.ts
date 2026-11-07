@@ -218,7 +218,7 @@ export class TransferCreationService extends Context.Service<TransferCreationSer
                         return yield* Effect.die(new Error('Synced transfer exchange rate must be equal to 1'));
                     }
 
-                    const syncIds = yield* resolveBankTransactionSyncIds(inputs);
+                    const syncIds = yield* resolveBankTransactionSyncIds(inputs, accountRepository, transactionRepository);
                     const entryValuations = yield* entryBaseValuationService.valueTransactionsEntries(inputs);
                     const transactions: TransactionEntityInterface[] = [];
                     for (const [index, input] of inputs.entries()) {
