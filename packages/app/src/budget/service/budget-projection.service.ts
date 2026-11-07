@@ -136,17 +136,7 @@ export class BudgetProjectionService extends Context.Service<BudgetProjectionSer
             window: BudgetPeriodWindowInterface
         ) {
             if (budget.kind === BudgetKindEnum.EVENT) {
-                if (!isDefined(budget.tagId)) {
-                    return { entries: [], grossEntries: [] };
-                }
-
-                const eventEntries = yield* budgetRepository.findEventSpentEntries(
-                    window.periodStart,
-                    window.nextPeriodStart,
-                    budget.instrumentId,
-                    budget.tagId,
-                    budget.syncZone
-                );
+                const eventEntries = yield* budgetRepository.findEventSpentEntries(window.periodStart, window.nextPeriodStart, budget);
 
                 return { entries: toBudgetCurrencyEntries(eventEntries, budget.instrumentId), grossEntries: [] };
             }

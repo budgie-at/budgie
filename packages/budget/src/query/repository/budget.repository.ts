@@ -27,7 +27,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
 
-import type { BudgetCreateEntityInterface, BudgetUpdateEntityInterface } from '@budgie/contracts';
+import type { BudgetEntityInterface, BudgetCreateEntityInterface, BudgetUpdateEntityInterface } from '@budgie/contracts';
 import type { SQL } from 'drizzle-orm';
 
 export class BudgetRepository extends Context.Service<BudgetRepository>()('@budgie/budget/BudgetRepository', {
@@ -201,20 +201,17 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
                     baseInstrumentId,
                     budgetSyncZone
                 ),
-            // eslint-disable-next-line max-params -- Existing public API intentionally keeps positional arguments
             findEventSpentEntries: (
                 periodStart: Date,
                 nextPeriodStart: Date,
-                baseInstrumentId: number,
-                tagId: number | null,
-                budgetSyncZone = PERSONAL_SYNC_ZONE
+                budget: Pick<BudgetEntityInterface, 'instrumentId' | 'tagId' | 'syncZone'>
             ) =>
-                isDefined(tagId)
+                isDefined(budget.tagId)
                     ? findEntries(
                           buildRefundAdjustedAmountSql(),
-                          buildEventWhere(periodStart, nextPeriodStart, tagId),
-                          baseInstrumentId,
-                          budgetSyncZone
+                          buildEventWhere(periodStart, nextPeriodStart, budget.tagId),
+                          budget.instrumentId,
+                          budget.syncZone
                       )
                     : Effect.succeed([]),
             findInstallmentPayments: (periodStart: Date, nextPeriodStart: Date, budgetSyncZone = PERSONAL_SYNC_ZONE) =>
