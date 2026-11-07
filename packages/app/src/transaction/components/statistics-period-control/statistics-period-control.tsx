@@ -7,6 +7,7 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { EASE_OUT, MOTION_FAST_DURATION } from '../../../@generic/constant/motion.constant';
 import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title-max-font-size-multiplier.constant';
 import { useDateFilterModal } from '../../../@generic/context/date-filter-modal.context';
 import { normalizeToWholeDays } from '../../../@generic/utils/date/normalize-to-whole-days.util';
@@ -21,6 +22,8 @@ interface Props {
     readonly value: DateRangeInterface | null;
     readonly onChange: (value: DateRangeInterface | null) => void;
 }
+
+const LABEL_ENTERING = FadeIn.duration(MOTION_FAST_DURATION).easing(EASE_OUT);
 
 const continuousCorners = { borderCurve: 'continuous' as const };
 
@@ -54,14 +57,15 @@ export const StatisticsPeriodControl = ({ value, onChange }: Props) => {
             />
 
             <HapticPressable
+                pressedScale={1}
                 accessibilityRole="button"
                 accessibilityHint={t`Choose a period`}
-                className="min-h-[44px] flex-1 items-center justify-center py-xs active:scale-100 active:opacity-60"
+                className="min-h-[44px] flex-1 items-center justify-center py-xs active:opacity-60"
                 hitSlop={0}
                 testID={labelTestID}
                 onPress={handleOpen}
             >
-                <Animated.View key={label} entering={FadeIn.duration(180)}>
+                <Animated.View key={label} entering={LABEL_ENTERING}>
                     <Text
                         numberOfLines={2}
                         maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}

@@ -4,6 +4,7 @@ import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
+import { ImpactFeedbackStyle } from 'expo-haptics';
 import { router } from 'expo-router';
 import * as ReactHookForm from 'react-hook-form';
 
@@ -11,6 +12,7 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { useToday } from '../../@generic/hook/use-today.hook';
+import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
@@ -120,6 +122,7 @@ const areBudgetFormValuesEqual = (left: BudgetFormValues, right: BudgetFormValue
 // eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration hook with multiple hooks and handlers owns seeding, cadence rescaling, delete and submit
 export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = null }: UseBudgetFormOptionsInterface) => {
     const { t } = useLingui();
+    const [, hapticImpact] = useVibration();
     const { run, isLoading: isSubmitting } = useSingleFlight();
     const today = useToday();
     const isEditing = isPositiveNumber(editingId);
@@ -198,6 +201,8 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
                 if (!confirmed || !isDefined(budget)) {
                     return;
                 }
+
+                hapticImpact(ImpactFeedbackStyle.Heavy);
 
                 const budgetService = yield* BudgetService;
 

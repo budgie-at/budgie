@@ -2,6 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 
 interface Props {
     readonly accessibilityLabel: string;
@@ -13,6 +14,7 @@ export const RuleFormRemoveButton = ({ accessibilityLabel, onPress, testID }: Pr
     <HapticPressable
         testID={testID}
         onPress={onPress}
+        pressFeedback={HapticPressFeedbackEnum.DESTRUCTIVE}
         accessibilityRole="button"
         accessibilityLabel={accessibilityLabel}
         className="h-[44px] w-[44px] items-center justify-center active:opacity-60"

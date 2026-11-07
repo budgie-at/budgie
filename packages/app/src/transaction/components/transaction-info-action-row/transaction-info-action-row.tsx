@@ -1,4 +1,7 @@
+import { isDefined } from '@rnw-community/shared';
+
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { TransactionInfoActionLabel } from '../transaction-info-action-label/transaction-info-action-label';
 
 import type { UserIconType } from '@budgie/contracts';
@@ -9,14 +12,17 @@ interface Props {
     readonly onPress: () => void;
     readonly testID: string;
     readonly colorClassName?: string;
+    readonly pressFeedback?: HapticPressFeedbackEnum;
 }
 
-export const TransactionInfoActionRow = ({ icon, label, onPress, testID, colorClassName }: Props) => (
+export const TransactionInfoActionRow = ({ icon, label, onPress, testID, colorClassName, pressFeedback }: Props) => (
     <HapticPressable
-        className="active:scale-100 active:opacity-70"
+        pressedScale={1}
+        className="active:opacity-70"
         accessibilityRole="button"
         accessibilityLabel={label}
         onPress={onPress}
+        {...(isDefined(pressFeedback) && { pressFeedback })}
         testID={testID}
     >
         <TransactionInfoActionLabel icon={icon} label={label} colorClassName={colorClassName} />

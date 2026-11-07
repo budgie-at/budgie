@@ -8,6 +8,7 @@ import { isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { FilterSheetCheckbox } from '../../../@generic/component/filter-sheet/filter-sheet-checkbox/filter-sheet-checkbox';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { TransactionFiltersSelector } from '../../../transaction/components/transaction-filters/transaction-filters.selector';
 import { ACCOUNT_ICON } from '../../constant/account-icon.constant';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
@@ -48,6 +49,7 @@ export const AccountsGroup = ({ type, accounts, selectedAccountIds, onSelect }: 
     return (
         <View className="rounded-5xl border border-secondary-corner bg-secondary-background overflow-hidden">
             <HapticPressable
+                pressFeedback={HapticPressFeedbackEnum.SELECTION}
                 onPress={handleSelectGroup}
                 className="flex-row items-center gap-x-xl px-xl py-lg"
                 accessibilityRole="checkbox"

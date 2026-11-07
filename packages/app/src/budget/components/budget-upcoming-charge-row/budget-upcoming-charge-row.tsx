@@ -36,8 +36,9 @@ export const BudgetUpcomingChargeRow = ({ charge, currencySymbol }: Props) => {
 
     return (
         <HapticPressable
+            pressedScale={1}
             disabled={charge.source.kind !== BudgetCommittedSourceKindEnum.INSTALLMENT}
-            className="flex-row items-center justify-between gap-x-md"
+            className="flex-row items-center justify-between gap-x-md active:opacity-70"
             onPress={handlePress}
         >
             <View className="shrink gap-y-xxs">

@@ -7,6 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { SelectorRow } from '../../../@generic/component/selector-row/selector-row';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { TagsSelectorModalSelector } from '../../../app/tags-selector-modal.selector';
 
 interface Props {
@@ -34,6 +35,7 @@ export const TagSelectorRow = ({ tag, isSelected, isPrimary, onSelect, onPrimary
         isSelected && !isPrimary && isDefined(onPrimarySelect) ? (
             <HapticPressable
                 onPress={handlePrimarySelect}
+                pressFeedback={HapticPressFeedbackEnum.SELECTION}
                 accessibilityRole="button"
                 accessibilityLabel={t`Make primary`}
                 className="min-h-[44px] justify-center pl-[64px] pr-xl pb-sm"

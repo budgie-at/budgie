@@ -15,6 +15,7 @@ interface Props {
 
 export const BudgetListRow = ({ icon, testID, onPress, children }: Props) => (
     <HapticPressable
+        pressedScale={1}
         accessibilityRole="button"
         className="min-h-[44px] flex-row items-start gap-x-xl py-xs active:opacity-70"
         testID={testID}

@@ -2,6 +2,7 @@ import { Trans } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { cn } from '../../../@generic/utils/cn.util';
 import { TransactionFeeModalContentSelector } from '../transaction-fee-modal-content/transaction-fee-modal-content.selector';
 
@@ -20,6 +21,7 @@ export const TransactionFeeSaveButton = ({ isDisabled, onPress }: Props) => {
     return (
         <HapticPressable
             onPress={onPress}
+            pressFeedback={HapticPressFeedbackEnum.COMMIT}
             disabled={isDisabled}
             accessibilityRole="button"
             accessibilityState={accessibilityState}

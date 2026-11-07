@@ -1,15 +1,62 @@
 import { ImpactFeedbackStyle } from 'expo-haptics';
-import { ComponentProps, useRef } from 'react';
+import { useRef } from 'react';
 import { GestureResponderEvent, Keyboard, Pressable } from 'react-native';
+import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
-import { isDefined } from '@rnw-community/shared';
+import { emptyFn, isDefined } from '@rnw-community/shared';
 
+import { EASE_OUT } from '../../constant/motion.constant';
+import { HapticPressFeedbackEnum } from '../../enum/haptic-press-feedback.enum';
 import { useVibration } from '../../hook/use-vibration.hook';
-import { cn } from '../../utils/cn.util';
+import { AnimatedPressable } from '../animated-pressable/animated-pressable';
 
-export const HapticPressable = ({ onLongPress, onPress, onPressOut, disabled, className, ...rest }: ComponentProps<typeof Pressable>) => {
-    const [, hapticImpact] = useVibration();
+import type { Ref } from 'react';
+import type { PressableProps, StyleProp, View, ViewStyle } from 'react-native';
+
+const PRESSED_SCALE = 0.97;
+const MOTION_PRESS_IN_DURATION = 100;
+const PRESS_OUT_DURATION = 150;
+
+interface Props extends Omit<PressableProps, 'style'> {
+    readonly style?: StyleProp<ViewStyle>;
+    readonly pressedScale?: number;
+    readonly pressFeedback?: HapticPressFeedbackEnum;
+    readonly ref?: Ref<View>;
+}
+
+export const HapticPressable = ({
+    onLongPress,
+    onPress,
+    onPressIn,
+    onPressOut,
+    disabled,
+    style,
+    pressedScale = PRESSED_SCALE,
+    pressFeedback = HapticPressFeedbackEnum.IMPACT,
+    ...rest
+}: Props) => {
+    const [, hapticImpact, hapticSelection] = useVibration();
     const isLongPressActiveRef = useRef(false);
+    const scale = useSharedValue(1);
+    const isScaleEnabled = pressedScale !== 1;
+
+    const animatedStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.get() }] }));
+
+    const feedbackHandlers: Record<HapticPressFeedbackEnum, () => void> = {
+        [HapticPressFeedbackEnum.IMPACT]: () => void hapticImpact(ImpactFeedbackStyle.Light),
+        [HapticPressFeedbackEnum.SELECTION]: hapticSelection,
+        [HapticPressFeedbackEnum.COMMIT]: () => void hapticImpact(ImpactFeedbackStyle.Medium),
+        [HapticPressFeedbackEnum.DESTRUCTIVE]: () => void hapticImpact(ImpactFeedbackStyle.Heavy),
+        [HapticPressFeedbackEnum.NONE]: emptyFn
+    };
+
+    const handlePressIn = (event: GestureResponderEvent) => {
+        onPressIn?.(event);
+
+        if (isScaleEnabled && !disabled) {
+            scale.set(withTiming(pressedScale, { duration: MOTION_PRESS_IN_DURATION, easing: EASE_OUT }));
+        }
+    };
 
     const handlePress = (event: GestureResponderEvent) => {
         if (disabled) {
@@ -22,7 +69,7 @@ export const HapticPressable = ({ onLongPress, onPress, onPressOut, disabled, cl
             return;
         }
 
-        hapticImpact(ImpactFeedbackStyle.Light);
+        feedbackHandlers[pressFeedback]();
         Keyboard.dismiss();
         onPress?.(event);
     };
@@ -39,19 +86,27 @@ export const HapticPressable = ({ onLongPress, onPress, onPressOut, disabled, cl
     const handlePressOut = (event: GestureResponderEvent) => {
         onPressOut?.(event);
 
+        if (isScaleEnabled) {
+            scale.set(withTiming(1, { duration: PRESS_OUT_DURATION, easing: EASE_OUT }));
+        }
+
         if (isLongPressActiveRef.current) {
             isLongPressActiveRef.current = false;
         }
     };
 
+    const pressableStyle = isScaleEnabled ? [style, animatedStyle] : style;
+    const PressableComponent = isScaleEnabled ? AnimatedPressable : Pressable;
+
     return (
-        <Pressable
-            className={cn('active:scale-xs', className)}
+        <PressableComponent
             hitSlop={10}
             {...(isDefined(onLongPress) && { onLongPress: handleLongPress })}
             onPress={handlePress}
+            onPressIn={handlePressIn}
             onPressOut={handlePressOut}
             disabled={disabled}
+            style={pressableStyle}
             {...rest}
         />
     );

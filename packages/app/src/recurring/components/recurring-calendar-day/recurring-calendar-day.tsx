@@ -5,6 +5,7 @@ import { Text, View } from 'react-native';
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
@@ -73,6 +74,7 @@ export const RecurringCalendarDay = (props: Props) => {
             style={RECURRING_CALENDAR_CELL_STYLE}
             hitSlop={0}
             onPress={handlePress}
+            pressFeedback={HapticPressFeedbackEnum.SELECTION}
             disabled={day.isDisabled}
             accessible={isCurrentMonth}
             accessibilityRole="button"

@@ -1,9 +1,11 @@
 import { View } from 'react-native';
-import Animated, { FadeIn, FadeInDown, FadeOut, FadeOutDown } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeInDown, FadeOut } from 'react-native-reanimated';
 
 import { ScreenChromeFooter } from '@rnw-community/react-native-screen-chrome';
+import { isDefined } from '@rnw-community/shared';
 
-import { ENTRANCE_EASING } from '../../../@generic/constant/entrance-motion.constant';
+import { ENTRANCE_DISTANCE, ENTRANCE_REDUCED_DURATION } from '../../../@generic/constant/entrance-motion.constant';
+import { EASE_OUT, MOTION_FADE_OUT } from '../../../@generic/constant/motion.constant';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { CategorizeInboxPanelSelector } from '../categorize-inbox-panel/categorize-inbox-panel.selector';
 
@@ -15,16 +17,20 @@ interface Props {
 }
 
 const HIDDEN_EDGE_FADE_PROPS = { style: { display: 'none' } } as const;
-const SLOT_DURATION = 220;
-const SLOT_REDUCED_DURATION = 150;
-const SLOT_DISTANCE = 8;
+const SLOT_ENTER_DURATION = 160;
+const SLOT_ENTER_DELAY = 40;
+const SLOT_EXIT_DURATION = 80;
 const SLOT_MOTION = {
-    entering: FadeInDown.duration(SLOT_DURATION)
-        .easing(ENTRANCE_EASING)
-        .withInitialValues({ opacity: 0, transform: [{ translateY: SLOT_DISTANCE }] }),
-    exiting: FadeOutDown.duration(SLOT_DURATION).easing(ENTRANCE_EASING)
+    entering: FadeInDown.duration(SLOT_ENTER_DURATION)
+        .easing(EASE_OUT)
+        .delay(SLOT_ENTER_DELAY)
+        .withInitialValues({ opacity: 0, transform: [{ translateY: ENTRANCE_DISTANCE }] }),
+    exiting: FadeOut.duration(SLOT_EXIT_DURATION).easing(EASE_OUT)
 };
-const SLOT_REDUCED_MOTION = { entering: FadeIn.duration(SLOT_REDUCED_DURATION), exiting: FadeOut.duration(SLOT_REDUCED_DURATION) };
+const SLOT_REDUCED_MOTION = {
+    entering: FadeIn.duration(ENTRANCE_REDUCED_DURATION).easing(EASE_OUT),
+    exiting: FadeOut.duration(SLOT_EXIT_DURATION).easing(EASE_OUT)
+};
 
 export const CategorizeInboxPanelFooter = ({ slot, leading }: Props) => {
     const reducedMotion = useReducedMotion();
@@ -37,7 +43,11 @@ export const CategorizeInboxPanelFooter = ({ slot, leading }: Props) => {
                 className="border-t-hairline border-surface-separator bg-surface px-5xl pb-safe pt-md"
                 testID={CategorizeInboxPanelSelector.Panel}
             >
-                {leading}
+                {isDefined(leading) ? (
+                    <Animated.View entering={slotMotion.entering} exiting={MOTION_FADE_OUT}>
+                        {leading}
+                    </Animated.View>
+                ) : null}
                 <View className="min-h-[52px] justify-center">
                     <Animated.View key={slot.key} entering={slotMotion.entering} exiting={slotMotion.exiting} className="justify-center">
                         {slot}

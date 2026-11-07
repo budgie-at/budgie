@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
-import { Easing, useAnimatedProps, useSharedValue, withTiming } from 'react-native-reanimated';
+import { useAnimatedProps, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { AnimatedStyledCircle } from '../../../@generic/component/animated-styled-circle/animated-styled-circle';
 import { StyledCircle } from '../../../@generic/component/styled-circle/styled-circle';
+import { EASE_OUT } from '../../../@generic/constant/motion.constant';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 
 import type { BudgetForecastPointInterface } from '../../interface/budget-forecast-point.interface';
@@ -15,7 +16,7 @@ interface Props {
 const HALO_RADIUS = 8;
 const HALO_PEAK_SCALE = 1.8;
 const HALO_OPACITY = 0.18;
-const HALO_DURATION = 600;
+const HALO_DURATION = 400;
 const DOT_RADIUS = 3.5;
 
 const RADIUS_PROP = 'r';
@@ -30,7 +31,7 @@ export const BudgetForecastTodayMarker = ({ point, accentClassName }: Props) => 
 
     useEffect(() => {
         if (!reducedMotion) {
-            pulse.set(withTiming(1, { duration: HALO_DURATION, easing: Easing.out(Easing.cubic) }));
+            pulse.set(withTiming(1, { duration: HALO_DURATION, easing: EASE_OUT }));
         }
     }, [pulse, reducedMotion]);
 

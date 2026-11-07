@@ -23,9 +23,10 @@ export const RecurringDetailEditButton = ({ seriesId }: Props) => {
 
     return (
         <HapticPressable
+            pressedScale={1}
             accessibilityRole="button"
             accessibilityLabel={t`Edit recurring payment`}
-            className="items-end justify-center active:scale-100 active:opacity-70"
+            className="items-end justify-center active:opacity-70"
             style={hitAreaStyle}
             onPress={handleEdit}
             testID={RecurringDetailSelector.EditButton}

@@ -1,6 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { View } from 'react-native';
-import Animated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
+import { useAnimatedStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -28,15 +28,13 @@ const STATE_TO_BUTTON: Record<VoiceInputStateEnum, RecordButtonStateType> = {
 
 interface Props {
     readonly voiceInput: UseVoiceInputReturnInterface;
-    readonly contentOpacity: SharedValue<number>;
     readonly onRecord: () => void;
     readonly onCancel: () => void;
 }
 
-export const VoiceInputOverlayContent = ({ voiceInput, contentOpacity, onRecord, onCancel }: Props) => {
+export const VoiceInputOverlayContent = ({ voiceInput, onRecord, onCancel }: Props) => {
     const { bottom } = useSafeAreaInsets();
 
-    const contentAnimatedStyle = useAnimatedStyle(() => ({ opacity: contentOpacity.value }));
     const closeButtonStyle = useAnimatedStyle(() => ({ transform: [{ rotate: `${CLOSE_BUTTON_ROTATION}deg` }] }));
 
     const buttonState: RecordButtonStateType = voiceInput.isReady ? STATE_TO_BUTTON[voiceInput.state] : 'loading';
@@ -46,7 +44,7 @@ export const VoiceInputOverlayContent = ({ voiceInput, contentOpacity, onRecord,
     const closeContainerStyle = { paddingBottom: bottom };
 
     return (
-        <Animated.View className="absolute inset-0" style={contentAnimatedStyle} pointerEvents="box-none">
+        <View className="absolute inset-0" pointerEvents="box-none">
             {hasError ? <VoiceInputError message={voiceInput.data.error} onDismiss={onCancel} /> : null}
 
             <View className="absolute inset-x-0 bottom-0 items-center pb-lg" style={micContainerStyle} pointerEvents="box-none">
@@ -72,6 +70,6 @@ export const VoiceInputOverlayContent = ({ voiceInput, contentOpacity, onRecord,
                     testID={VoiceInputOverlaySelector.CancelButton}
                 />
             </View>
-        </Animated.View>
+        </View>
     );
 };

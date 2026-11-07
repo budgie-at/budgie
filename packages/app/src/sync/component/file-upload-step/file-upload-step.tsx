@@ -5,6 +5,8 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { ENTRANCE_DURATION } from '../../../@generic/constant/entrance-motion.constant';
+import { EASE_OUT } from '../../../@generic/constant/motion.constant';
 import { SyncGuideSteps } from '../sync-guide-steps/sync-guide-steps';
 
 interface Props {
@@ -16,8 +18,7 @@ interface Props {
     readonly isLoading: boolean;
 }
 
-const DROP_ZONE_DELAY_MS = 260;
-const DROP_ZONE_ANIMATION_DURATION_MS = 320;
+const DROP_ZONE_DELAY_MS = 40;
 const DROP_ZONE_ICON_SIZE = 72;
 const DROP_ZONE_ICON_RADIUS = 36;
 const DROP_ZONE_ICON_INNER = 36;
@@ -30,7 +31,7 @@ export const FileUploadStep = (props: Props) => {
         <View className="gap-y-2xl pt-md">
             <SyncGuideSteps title={t`How to export`} steps={steps} />
 
-            <Animated.View entering={FadeInDown.delay(DROP_ZONE_DELAY_MS).duration(DROP_ZONE_ANIMATION_DURATION_MS)}>
+            <Animated.View entering={FadeInDown.delay(DROP_ZONE_DELAY_MS).duration(ENTRANCE_DURATION).easing(EASE_OUT)}>
                 <HapticPressable onPress={onSelectFile} disabled={isLoading}>
                     <View className="items-center rounded-3xl border-2 border-dashed border-secondary-corner bg-secondary-background/40 px-xl py-3xl">
                         <CircleIcon

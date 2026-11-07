@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import Animated, { useAnimatedStyle, useSharedValue, withDelay, withSpring } from 'react-native-reanimated';
 
-import { GROW_BAR_SPRING, GROW_BAR_STAGGER } from '../../constant/grow-bar-motion.constant';
+import { ENTRANCE_STAGGER } from '../../constant/entrance-motion.constant';
+import { GROW_BAR_SPRING } from '../../constant/grow-bar-motion.constant';
 import { useReducedMotion } from '../../hook/use-reduced-motion.hook';
 
 import type { ReactNode } from 'react';
@@ -21,7 +22,7 @@ export const GrowBar = ({ ratio, className, staggerIndex = 0, children }: Props)
     const fillStyle = useAnimatedStyle(() => ({ width: `${progress.get() * PERCENT_MULTIPLIER}%` }));
 
     useEffect(() => {
-        progress.set(reducedMotion ? ratio : withDelay(staggerIndex * GROW_BAR_STAGGER, withSpring(ratio, GROW_BAR_SPRING)));
+        progress.set(reducedMotion ? ratio : withDelay(staggerIndex * ENTRANCE_STAGGER, withSpring(ratio, GROW_BAR_SPRING)));
     }, [progress, ratio, reducedMotion, staggerIndex]);
 
     return (

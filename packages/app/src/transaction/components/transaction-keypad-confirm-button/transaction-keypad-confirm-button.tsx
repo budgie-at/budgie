@@ -3,6 +3,7 @@ import { Text, useWindowDimensions, View } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { cn } from '../../../@generic/utils/cn.util';
 import { TRANSACTION_KEYPAD_MAX_FONT_SCALE } from '../../constant/transaction-keypad-max-font-scale.constant';
 import { getTransactionKeypadLayout } from '../../utils/get-transaction-keypad-layout.util';
@@ -30,6 +31,7 @@ export const TransactionKeypadConfirmButton = ({ label, isDisabled, onPress, tes
             className={cn('items-center justify-center self-stretch rounded-xl', backgroundClassName)}
             disabled={isDisabled}
             onPress={onPress}
+            pressFeedback={HapticPressFeedbackEnum.COMMIT}
             style={style}
             testID={testID}
         >

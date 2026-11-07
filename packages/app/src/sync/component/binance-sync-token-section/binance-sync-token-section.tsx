@@ -3,12 +3,15 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Option from 'effect/Option';
 import * as Schema from 'effect/Schema';
+import { NotificationFeedbackType } from 'expo-haptics';
 import { useReducer } from 'react';
 import { View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { useProcessingHaptic } from '../../../@generic/hook/use-processing-haptic.hook';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
+import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { BinanceSyncTokenSectionActionTypeEnum } from '../../enum/binance-sync-token-section-action-type.enum';
@@ -33,7 +36,10 @@ export const BinanceSyncTokenSection = ({ accountId }: Props) => {
         apiKey: '',
         apiSecret: ''
     });
+    const [hapticNotification] = useVibration();
     const { isLoading: isSaving, run } = useSingleFlight();
+
+    useProcessingHaptic(isSaving);
 
     const handleEdit = () => {
         const credentials = Option.getOrNull(Schema.decodeOption(Schema.fromJsonString(BinanceCredentialsSchema))(token));
@@ -71,7 +77,12 @@ export const BinanceSyncTokenSection = ({ accountId }: Props) => {
             Effect.flatMap(SyncProviderRegistryService, registry =>
                 registry.updateAccountToken(accountId, JSON.stringify({ apiKey: trimmedApiKey, apiSecret: trimmedApiSecret }))
             ).pipe(
-                Effect.tap(() => Effect.sync(() => void handleCancel())),
+                Effect.tap(() =>
+                    Effect.sync(() => {
+                        handleCancel();
+                        hapticNotification(NotificationFeedbackType.Success);
+                    })
+                ),
                 Effect.catchTags({
                     BinanceKeyPermissionsError: toastBinanceKeyPermissionsError,
                     SyncTokenClientMismatchError: () =>

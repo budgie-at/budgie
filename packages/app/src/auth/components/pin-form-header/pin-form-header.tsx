@@ -1,11 +1,12 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useEffect, useRef } from 'react';
 import { AccessibilityInfo, Text, View } from 'react-native';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import Animated, { FadeIn, LayoutAnimationConfig } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { EASE_OUT } from '../../../@generic/constant/motion.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { cn } from '../../../@generic/utils/cn.util';
 import { PIN_STEP_FADE_DURATION_MS } from '../../constant/pin-motion.constant';
@@ -42,28 +43,34 @@ export const PinFormHeader = ({ title, description, icon = UserIconNameEnum.Lock
     }, [title]);
 
     return (
-        <Animated.View key={title} entering={FadeIn.duration(PIN_STEP_FADE_DURATION_MS)} className={cn('items-center', gapClassName)}>
-            {isDefined(icon) ? (
-                <CircleIcon icon={icon} variant={iconVariant} size={tileSize} iconSize={glyphSize} className="rounded-3xl" />
-            ) : null}
+        <LayoutAnimationConfig skipEntering>
+            <Animated.View
+                key={title}
+                entering={FadeIn.duration(PIN_STEP_FADE_DURATION_MS).easing(EASE_OUT)}
+                className={cn('items-center', gapClassName)}
+            >
+                {isDefined(icon) ? (
+                    <CircleIcon icon={icon} variant={iconVariant} size={tileSize} iconSize={glyphSize} className="rounded-3xl" />
+                ) : null}
 
-            <View className="items-center gap-y-md px-xl">
-                <Text
-                    className="text-3xl font-semibold tracking-tight text-primary text-center"
-                    testID={PinFormSelector.Title}
-                    accessibilityRole="header"
-                    maxFontSizeMultiplier={1.4}
-                >
-                    {title}
-                </Text>
+                <View className="items-center gap-y-md px-xl">
+                    <Text
+                        className="text-3xl font-semibold tracking-tight text-primary text-center"
+                        testID={PinFormSelector.Title}
+                        accessibilityRole="header"
+                        maxFontSizeMultiplier={1.4}
+                    >
+                        {title}
+                    </Text>
 
-                <Text
-                    className={cn('text-sm text-secondary-foreground text-center max-w-[300px]', descriptionMinHeightClassName)}
-                    maxFontSizeMultiplier={1.6}
-                >
-                    {description}
-                </Text>
-            </View>
-        </Animated.View>
+                    <Text
+                        className={cn('text-sm text-secondary-foreground text-center max-w-[300px]', descriptionMinHeightClassName)}
+                        maxFontSizeMultiplier={1.6}
+                    >
+                        {description}
+                    </Text>
+                </View>
+            </Animated.View>
+        </LayoutAnimationConfig>
     );
 };

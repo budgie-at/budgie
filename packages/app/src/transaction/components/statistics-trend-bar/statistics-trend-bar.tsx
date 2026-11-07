@@ -35,10 +35,11 @@ export const StatisticsTrendBar = ({ label, accessibilityLabel, ratio, isSelecte
 
     return (
         <HapticPressable
+            pressedScale={1}
             accessibilityRole="button"
             accessibilityLabel={accessibilityLabel}
             accessibilityState={selectedState}
-            className="min-h-[44px] flex-1 gap-y-xs active:scale-100 active:opacity-70"
+            className="min-h-[44px] flex-1 gap-y-xs active:opacity-70"
             hitSlop={0}
             onPress={onPress}
         >

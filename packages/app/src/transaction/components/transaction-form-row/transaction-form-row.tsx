@@ -13,7 +13,6 @@ import { isCompactTransactionForm } from '../../utils/is-compact-transaction-for
 import { TransactionFormRowValue } from '../transaction-form-row-value/transaction-form-row-value';
 
 import type { ComponentProps, ReactElement, ReactNode } from 'react';
-import type { PressableStateCallbackType } from 'react-native';
 
 interface Props {
     readonly left: ReactNode;
@@ -51,12 +50,7 @@ export const TransactionFormRow = (props: Props) => {
     const chevronSize = 16 * Math.min(fontScale, CHEVRON_MAX_SCALE);
     const titleClassName = isStacked ? 'min-w-0 items-start gap-y-xxs' : 'min-w-0 flex-row items-center gap-x-lg';
 
-    const rowStyle = pressableProps?.style;
-    const handleRowStyle = (state: PressableStateCallbackType) => [
-        COMPACT_ROW_STYLE,
-        typeof rowStyle === 'function' ? rowStyle(state) : rowStyle
-    ];
-    const rowPressableProps = isCompact ? { ...pressableProps, style: handleRowStyle } : pressableProps;
+    const rowPressableProps = isCompact ? { ...pressableProps, style: [COMPACT_ROW_STYLE, pressableProps?.style] } : pressableProps;
 
     return (
         <GroupedListRow

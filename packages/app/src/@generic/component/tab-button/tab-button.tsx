@@ -3,6 +3,7 @@ import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
+import { HapticPressFeedbackEnum } from '../../enum/haptic-press-feedback.enum';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 
@@ -59,6 +60,7 @@ export const TabButton = ({ children, isFocused = false, onPress, icon, navigate
             hitSlop={12}
             nativeID={testID}
             onPress={handlePress}
+            pressFeedback={HapticPressFeedbackEnum.SELECTION}
             style={tabStyle}
             testID={testID}
         >

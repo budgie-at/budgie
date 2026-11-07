@@ -32,8 +32,9 @@ export const RecurringListRow = ({ series, position, isPossible, now }: Props) =
         <TransactionRowSurface position={position}>
             <DeletableRow id={series.id} onDelete={handleRemove} label={swipeLabel}>
                 <HapticPressable
+                    pressedScale={1}
                     accessibilityRole="button"
-                    className="px-3xl py-xl active:scale-100 active:opacity-70"
+                    className="px-3xl py-xl active:opacity-70"
                     onPress={handleOpen}
                     testID={RecurringPaneSelector.Row(series.title)}
                 >

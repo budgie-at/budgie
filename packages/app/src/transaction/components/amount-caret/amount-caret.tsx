@@ -1,13 +1,15 @@
 import { useEffect } from 'react';
 import Animated, {
     cancelAnimation,
+    Easing,
     useAnimatedStyle,
-    useReducedMotion,
     useSharedValue,
     withRepeat,
     withSequence,
     withTiming
 } from 'react-native-reanimated';
+
+import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 
 interface Props {
     readonly height: number;
@@ -15,6 +17,7 @@ interface Props {
 
 const BLINK_STEP_MS = 500;
 const MIN_OPACITY = 0.25;
+const BLINK_EASING = Easing.inOut(Easing.sin);
 
 export const AmountCaret = ({ height }: Props) => {
     const isReducedMotion = useReducedMotion();
@@ -28,7 +31,10 @@ export const AmountCaret = ({ height }: Props) => {
         } else {
             opacity.set(
                 withRepeat(
-                    withSequence(withTiming(MIN_OPACITY, { duration: BLINK_STEP_MS }), withTiming(1, { duration: BLINK_STEP_MS })),
+                    withSequence(
+                        withTiming(MIN_OPACITY, { duration: BLINK_STEP_MS, easing: BLINK_EASING }),
+                        withTiming(1, { duration: BLINK_STEP_MS, easing: BLINK_EASING })
+                    ),
                     -1
                 )
             );

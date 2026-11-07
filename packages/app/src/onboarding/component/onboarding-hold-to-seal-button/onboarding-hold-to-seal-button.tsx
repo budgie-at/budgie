@@ -3,10 +3,12 @@ import * as Effect from 'effect/Effect';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 import { AccessibilityActionEvent, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import { Easing, runOnJS, useAnimatedReaction, useSharedValue, withTiming } from 'react-native-reanimated';
+import { Easing, useAnimatedReaction, useSharedValue, withTiming } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 
 import { EmptyFn } from '@rnw-community/shared';
 
+import { EASE_OUT } from '../../../@generic/constant/motion.constant';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
@@ -67,7 +69,7 @@ export const OnboardingHoldToSealButton = ({ label, confirmMessage, isDisabled, 
         () => Math.floor(progress.get() * TICK_COUNT),
         (currentTick, previousTick) => {
             if (currentTick > (previousTick ?? currentTick) && currentTick < TICK_COUNT) {
-                runOnJS(handleTick)();
+                scheduleOnRN(handleTick);
             }
         }
     );
@@ -80,18 +82,18 @@ export const OnboardingHoldToSealButton = ({ label, confirmMessage, isDisabled, 
             progress.set(withTiming(1, { duration: HOLD_DURATION_MS, easing: Easing.linear }));
         })
         .onStart(() => {
-            runOnJS(onComplete)();
+            scheduleOnRN(onComplete);
         })
         .onFinalize((_event, isSuccess) => {
             if (!isSuccess) {
-                progress.set(withTiming(0, { duration: RELEASE_DURATION_MS }));
+                progress.set(withTiming(0, { duration: RELEASE_DURATION_MS, easing: EASE_OUT }));
             }
         });
 
     const tapGesture = Gesture.Tap()
         .enabled(!isDisabled)
         .onEnd(() => {
-            runOnJS(handleConfirmPress)();
+            scheduleOnRN(handleConfirmPress);
         });
 
     const accessibilityState = { disabled: isDisabled, busy: isDisabled };

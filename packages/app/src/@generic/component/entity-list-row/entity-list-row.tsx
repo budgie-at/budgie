@@ -1,7 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import * as Effect from 'effect/Effect';
-import { NotificationFeedbackType } from 'expo-haptics';
 import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -11,7 +9,6 @@ import { EntityOperationEnum } from '../../enum/entity-operation.enum';
 import { useEntityOperation } from '../../hook/use-entity-operation.hook';
 import { useFormatEntityUsage } from '../../hook/use-format-entity-usage.hook';
 import { usePopoverMenuAnchor } from '../../hook/use-popover-menu-anchor.hook';
-import { useVibration } from '../../hook/use-vibration.hook';
 import { cn } from '../../utils/cn.util';
 import { ActionsMenuItem } from '../actions-menu-item/actions-menu-item';
 import { DeletableRow } from '../deletable-row/deletable-row';
@@ -40,27 +37,15 @@ interface Props {
 
 export const EntityListRow = ({ entity, usage, left, testID, isFirst, isLast, onOpen, operations }: Props) => {
     const { t } = useLingui();
-    const [notify] = useVibration();
     const formatUsage = useFormatEntityUsage();
     const { isPending, mutatingOperation, start } = useEntityOperation();
     const { anchor, frameRef, closeMenu, handleCloseComplete, handleToggleMenu, isMenuOpen } = usePopoverMenuAnchor();
     const mergeLabel = t`Merge into…`;
 
-    const notifyWhenCompleted = (isCompleted: boolean) =>
-        isCompleted ? Effect.sync(() => void notify(NotificationFeedbackType.Success)) : Effect.void;
-
     const { onMerge } = operations;
-    const handleMerge = isDefined(onMerge)
-        ? () =>
-              void start(EntityOperationEnum.MERGE, trackMutation =>
-                  onMerge(trackMutation).pipe(Effect.flatMap(target => notifyWhenCompleted(isDefined(target))))
-              )
-        : null;
+    const handleMerge = isDefined(onMerge) ? () => void start(EntityOperationEnum.MERGE, trackMutation => onMerge(trackMutation)) : null;
 
-    const handleDelete = () =>
-        void start(EntityOperationEnum.DELETE, trackMutation =>
-            operations.onDelete(trackMutation).pipe(Effect.flatMap(notifyWhenCompleted))
-        );
+    const handleDelete = () => void start(EntityOperationEnum.DELETE, trackMutation => operations.onDelete(trackMutation));
 
     const accessibilityActionHandlers = new Map<string, () => void>([
         ...(isDefined(handleMerge) ? [[EntityOperationEnum.MERGE, handleMerge] as const] : []),

@@ -5,6 +5,7 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { FileChip } from '../../../@generic/component/file-chip/file-chip';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { EASE_OUT } from '../../../@generic/constant/motion.constant';
 import { DB_NAME } from '../../../@generic/drizzle/constant/db-name.constant';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { cn } from '../../../@generic/utils/cn.util';
@@ -12,7 +13,9 @@ import { OnboardingFileLockEnum } from '../../enum/onboarding-file-lock.enum';
 
 import { OnboardingFileStripSelector } from './onboarding-file-strip.selector';
 
-const STATE_FADE_DURATION = 180;
+const STATE_ENTER_DURATION = 180;
+const STATE_EXIT_DURATION = 90;
+const STATE_ENTER_DELAY = 60;
 
 const LOCK_ICON: Record<OnboardingFileLockEnum, UserIconNameEnum> = {
     [OnboardingFileLockEnum.OPEN]: UserIconNameEnum.LockOpen,
@@ -35,9 +38,10 @@ export const OnboardingFileStrip = ({ state, lock }: Props) => {
     const { t } = useLingui();
     const reducedMotion = useReducedMotion();
 
-    const stateFadeDuration = reducedMotion ? 0 : STATE_FADE_DURATION;
-    const stateEntering = FadeIn.duration(stateFadeDuration);
-    const stateExiting = FadeOut.duration(stateFadeDuration);
+    const stateEntering = FadeIn.duration(reducedMotion ? 0 : STATE_ENTER_DURATION)
+        .easing(EASE_OUT)
+        .delay(reducedMotion ? 0 : STATE_ENTER_DELAY);
+    const stateExiting = FadeOut.duration(reducedMotion ? 0 : STATE_EXIT_DURATION).easing(EASE_OUT);
     const stateColorClassName = LOCK_COLOR_CLASS_NAME[lock];
     const stateIcon = LOCK_ICON[lock];
 

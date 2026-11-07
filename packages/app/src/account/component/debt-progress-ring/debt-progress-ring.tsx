@@ -1,11 +1,12 @@
 import { AccountDebtTypeEnum, isBorrowLikeDebtType } from '@budgie/contracts';
 import { PropsWithChildren, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Easing, useAnimatedProps, useSharedValue, withTiming } from 'react-native-reanimated';
+import { useAnimatedProps, useSharedValue, withTiming } from 'react-native-reanimated';
 import { Svg } from 'react-native-svg';
 
 import { AnimatedStyledCircle } from '../../../@generic/component/animated-styled-circle/animated-styled-circle';
 import { StyledCircle } from '../../../@generic/component/styled-circle/styled-circle';
+import { EASE_IN_OUT } from '../../../@generic/constant/motion.constant';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 
 interface Props {
@@ -19,19 +20,14 @@ const RING_CENTER = RING_SIZE / 2;
 const RING_RADIUS = (RING_SIZE - STROKE_WIDTH) / 2;
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 const FULL_PERCENT = 100;
-const FILL_DURATION = 400;
-const FILL_EASING_X1 = 0.77;
-const FILL_EASING_Y1 = 0;
-const FILL_EASING_X2 = 0.175;
-const FILL_EASING_Y2 = 1;
-const FILL_EASING = Easing.bezier(FILL_EASING_X1, FILL_EASING_Y1, FILL_EASING_X2, FILL_EASING_Y2);
+const FILL_DURATION = 300;
 
 export const DebtProgressRing = ({ debtType, percentage, children }: PropsWithChildren<Props>) => {
     const reducedMotion = useReducedMotion();
     const progress = useSharedValue(percentage);
 
     useEffect(() => {
-        progress.set(reducedMotion ? percentage : withTiming(percentage, { duration: FILL_DURATION, easing: FILL_EASING }));
+        progress.set(reducedMotion ? percentage : withTiming(percentage, { duration: FILL_DURATION, easing: EASE_IN_OUT }));
     }, [percentage, reducedMotion, progress]);
 
     const animatedProps = useAnimatedProps(() => ({

@@ -5,6 +5,7 @@ import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/g
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 
 import type { OnboardingAccountOptionInterface } from '../../interface/onboarding-account-option.interface';
 
@@ -30,6 +31,8 @@ export const OnboardingAccountRow = ({ option, isSelected, isLocked, onToggle, t
 
     return (
         <HapticPressable
+            pressedScale={1}
+            pressFeedback={HapticPressFeedbackEnum.SELECTION}
             testID={testID}
             onPress={handlePress}
             disabled={isLocked}

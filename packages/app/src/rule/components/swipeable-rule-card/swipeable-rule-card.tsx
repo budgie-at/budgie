@@ -5,20 +5,19 @@ import { ImpactFeedbackStyle, NotificationFeedbackType } from 'expo-haptics';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, {
-    Easing,
-    FadeIn,
-    FadeOut,
-    LinearTransition,
-    ReduceMotion,
-    runOnJS,
-    useAnimatedStyle,
-    useSharedValue,
-    withSpring,
-    withTiming
-} from 'react-native-reanimated';
+import Animated, { ReduceMotion, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import {
+    EASE_OUT,
+    MOTION_FADE_IN,
+    MOTION_FADE_OUT,
+    MOTION_FAST_DURATION,
+    MOTION_LAYOUT,
+    SPRING_SETTLE
+} from '../../../@generic/constant/motion.constant';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { RuleIndicatorPill } from '../rule-indicator-pill/rule-indicator-pill';
@@ -26,18 +25,15 @@ import { RuleIndicatorPill } from '../rule-indicator-pill/rule-indicator-pill';
 import type { AppServices } from '../../../@generic/runtime/app.runtime';
 import type * as Fiber from 'effect/Fiber';
 
-const ENTRY_FADE_CONFIG = { duration: 150, easing: Easing.out(Easing.cubic), reduceMotion: ReduceMotion.System };
+const ENTRY_FADE_CONFIG = { duration: 150, easing: EASE_OUT, reduceMotion: ReduceMotion.System };
+const SNAP_BACK_SPRING = { dampingRatio: 0.8, duration: 400 };
 const SWIPE_THRESHOLD = 80;
-const SNAP_BACK_SPRING_CONFIG = { damping: 20, stiffness: 200 };
+const VELOCITY_DISMISS = 800;
+const MAX_RUBBER_BAND = 24;
+const RUBBER_BAND_FACTOR = 2;
 const SLIDE_OUT_DISTANCE = 300;
 const SUCCESS_AUTO_DISMISS_MS = 2000;
 const ERROR_AUTO_DISMISS_MS = 3000;
-const PILL_LAYOUT_ANIMATION_MS = 180;
-const PILL_CONTENT_ENTER_MS = 120;
-const PILL_CONTENT_EXIT_MS = 90;
-const PILL_LAYOUT_TRANSITION = LinearTransition.duration(PILL_LAYOUT_ANIMATION_MS);
-const PILL_CONTENT_ENTERING = FadeIn.duration(PILL_CONTENT_ENTER_MS);
-const PILL_CONTENT_EXITING = FadeOut.duration(PILL_CONTENT_EXIT_MS);
 
 type CardStatus = 'idle' | 'creating' | 'success' | 'error';
 
@@ -76,7 +72,7 @@ export const SwipeableRuleCard = (props: Props) => {
     );
 
     const handleSwipeThresholdReached = () => {
-        hapticImpact(ImpactFeedbackStyle.Light);
+        hapticImpact(ImpactFeedbackStyle.Rigid);
     };
 
     const isSuccess = status === 'success';
@@ -89,13 +85,15 @@ export const SwipeableRuleCard = (props: Props) => {
         .enabled(isInteractive)
         .activeOffsetX(10)
         .onUpdate(event => {
-            const clampedTranslation = Math.max(0, event.translationX);
-            translateX.set(clampedTranslation);
+            const isRightward = event.translationX > 0;
+            const rubberBand = -Math.min(MAX_RUBBER_BAND, Math.sqrt(-event.translationX) * RUBBER_BAND_FACTOR);
+            const translation = isRightward ? event.translationX : rubberBand;
+            translateX.set(translation);
 
-            if (clampedTranslation >= SWIPE_THRESHOLD) {
+            if (translation >= SWIPE_THRESHOLD) {
                 if (!didTriggerThresholdHaptic.get()) {
                     didTriggerThresholdHaptic.set(true);
-                    runOnJS(handleSwipeThresholdReached)();
+                    scheduleOnRN(handleSwipeThresholdReached);
                 }
             } else {
                 didTriggerThresholdHaptic.set(false);
@@ -104,12 +102,14 @@ export const SwipeableRuleCard = (props: Props) => {
         .onEnd(event => {
             didTriggerThresholdHaptic.set(false);
 
-            if (event.translationX >= SWIPE_THRESHOLD) {
-                translateX.set(withSpring(SLIDE_OUT_DISTANCE, SNAP_BACK_SPRING_CONFIG));
-                opacity.set(withSpring(0, SNAP_BACK_SPRING_CONFIG));
-                runOnJS(onDismiss)();
+            const isDismissed = event.translationX > 0 && (event.translationX >= SWIPE_THRESHOLD || event.velocityX > VELOCITY_DISMISS);
+
+            if (isDismissed) {
+                translateX.set(withSpring(SLIDE_OUT_DISTANCE, { ...SPRING_SETTLE, velocity: event.velocityX }));
+                opacity.set(withTiming(0, { duration: MOTION_FAST_DURATION, easing: EASE_OUT }));
+                scheduleOnRN(onDismiss);
             } else {
-                translateX.set(withSpring(0, SNAP_BACK_SPRING_CONFIG));
+                translateX.set(withSpring(0, { ...SNAP_BACK_SPRING, velocity: event.velocityX }));
             }
         });
 
@@ -141,6 +141,7 @@ export const SwipeableRuleCard = (props: Props) => {
                         : Effect.gen(function* () {
                               yield* Effect.logError(cause);
                               setStatus('error');
+                              hapticNotification(NotificationFeedbackType.Error);
                               yield* Effect.sleep(ERROR_AUTO_DISMISS_MS);
                               onDismiss();
                           })
@@ -162,7 +163,13 @@ export const SwipeableRuleCard = (props: Props) => {
             {statusMessage}
         </RuleIndicatorPill>
     ) : (
-        <HapticPressable testID={buttonTestID} onPress={handleYesButtonPress} disabled={isCreating} className="self-center">
+        <HapticPressable
+            testID={buttonTestID}
+            onPress={handleYesButtonPress}
+            pressFeedback={HapticPressFeedbackEnum.COMMIT}
+            disabled={isCreating}
+            className="self-center"
+        >
             <RuleIndicatorPill
                 icon={UserIconNameEnum.Zap}
                 className="self-center"
@@ -178,13 +185,8 @@ export const SwipeableRuleCard = (props: Props) => {
         <GestureDetector gesture={panGesture}>
             <Animated.View style={animatedStyle}>
                 <View testID={cardTestID} className="items-center">
-                    <Animated.View layout={PILL_LAYOUT_TRANSITION} className="items-center">
-                        <Animated.View
-                            key={pillContentKey}
-                            entering={PILL_CONTENT_ENTERING}
-                            exiting={PILL_CONTENT_EXITING}
-                            layout={PILL_LAYOUT_TRANSITION}
-                        >
+                    <Animated.View layout={MOTION_LAYOUT} className="items-center">
+                        <Animated.View key={pillContentKey} entering={MOTION_FADE_IN} exiting={MOTION_FADE_OUT} layout={MOTION_LAYOUT}>
                             {pillContent}
                         </Animated.View>
                     </Animated.View>

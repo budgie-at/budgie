@@ -59,6 +59,7 @@ export const CategorizeInboxGroupRow = ({ cluster, position }: Props) => {
             <View className="flex-row items-center">
                 <Link href={href} asChild>
                     <HapticPressable
+                        pressedScale={1}
                         className={linkClassName}
                         accessibilityRole="link"
                         {...testID(CategorizeInboxGroupRowSelector.Row, key)}

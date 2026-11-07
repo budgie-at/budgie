@@ -1,9 +1,9 @@
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { View } from 'react-native';
-import Animated, { LinearTransition } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 
-import { PIN_STEP_FADE_DURATION_MS } from '../../constant/pin-motion.constant';
+import { MOTION_LAYOUT } from '../../../@generic/constant/motion.constant';
 
 interface Props {
     readonly total: number;
@@ -36,11 +36,7 @@ export const PinStepIndicator = ({ total, current }: Props) => {
     return (
         <View className="flex-row items-center gap-x-sm" accessible accessibilityLabel={t`Step ${stepNumber} of ${total}`}>
             {segments.map((state, index) => (
-                <Animated.View
-                    key={index}
-                    layout={LinearTransition.duration(PIN_STEP_FADE_DURATION_MS)}
-                    className={segmentVariants({ state })}
-                />
+                <Animated.View key={index} layout={MOTION_LAYOUT} className={segmentVariants({ state })} />
             ))}
         </View>
     );

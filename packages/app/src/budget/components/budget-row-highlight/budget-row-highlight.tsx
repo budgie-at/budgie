@@ -3,6 +3,8 @@ import Animated, { useAnimatedStyle, useSharedValue, withDelay, withSequence, wi
 
 import { isDefined } from '@rnw-community/shared';
 
+import { ENTRANCE_REDUCED_DURATION } from '../../../@generic/constant/entrance-motion.constant';
+import { EASE_OUT } from '../../../@generic/constant/motion.constant';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { useBudgetHighlightContext } from '../../context/budget-highlight.context';
 
@@ -24,12 +26,12 @@ export const BudgetRowHighlight = ({ rowRef, isHighlighted }: Props) => {
     const highlightStyle = useAnimatedStyle(() => ({ opacity: highlightProgress.get() }));
 
     const handleHighlight = useEffectEvent(() => {
-        const fadeDuration = reducedMotion ? 0 : HIGHLIGHT_FADE_DURATION;
+        const fadeDuration = reducedMotion ? ENTRANCE_REDUCED_DURATION : HIGHLIGHT_FADE_DURATION;
 
         highlightProgress.set(
             withSequence(
-                withTiming(1, { duration: fadeDuration }),
-                withDelay(HIGHLIGHT_HOLD_DURATION, withTiming(0, { duration: fadeDuration }))
+                withTiming(1, { duration: fadeDuration, easing: EASE_OUT }),
+                withDelay(HIGHLIGHT_HOLD_DURATION, withTiming(0, { duration: fadeDuration, easing: EASE_OUT }))
             )
         );
 

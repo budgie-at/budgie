@@ -4,6 +4,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { cn } from '../../../@generic/utils/cn.util';
 
 import type { AccessibilityProps } from 'react-native';
@@ -36,6 +37,7 @@ export const SettingsPillButton = (props: Props) => {
         className
     } = props;
     const backgroundClassName = variant === 'cta' ? 'bg-cta-background' : 'bg-surface-fill';
+    const pressFeedback = variant === 'cta' ? HapticPressFeedbackEnum.COMMIT : HapticPressFeedbackEnum.IMPACT;
     const labelClassName = variant === 'cta' ? 'text-cta-foreground' : 'text-primary';
     const disabled = isDisabled || isLoading;
     const accessibilityState = { busy: isLoading, disabled };
@@ -75,6 +77,7 @@ export const SettingsPillButton = (props: Props) => {
             style={CONTINUOUS_CORNERS}
             hitSlop={HIT_SLOP}
             onPress={onPress}
+            pressFeedback={pressFeedback}
             disabled={disabled}
             accessibilityRole="button"
             accessibilityLabel={accessibilityLabel}

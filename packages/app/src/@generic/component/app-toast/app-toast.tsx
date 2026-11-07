@@ -1,9 +1,12 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { NotificationFeedbackType } from 'expo-haptics';
+import { useEffect, useEffectEvent } from 'react';
 import { Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { useVibration } from '../../hook/use-vibration.hook';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
@@ -49,12 +52,29 @@ const getToastIcon = (type: ToastType): UserIconNameEnum => {
 };
 
 export const AppToast = ({ text1, text2, type, children, action }: Props) => {
+    const [hapticNotification] = useVibration();
     const variant = getToastVariant(type);
     const icon = getToastIcon(type);
     const handleAction = () => {
         Toast.hide();
         action?.onPress();
     };
+
+    const handleMount = useEffectEvent(() => {
+        if (isDefined(action)) {
+            return;
+        }
+
+        if (type === 'success') {
+            hapticNotification(NotificationFeedbackType.Success);
+        } else if (type === 'error') {
+            hapticNotification(NotificationFeedbackType.Error);
+        }
+    });
+
+    useEffect(() => {
+        handleMount();
+    }, []);
 
     return (
         <View className="w-full flex-row items-center gap-x-lg rounded-5xl border border-secondary-corner bg-primary-reverse p-lg shadow-lg">

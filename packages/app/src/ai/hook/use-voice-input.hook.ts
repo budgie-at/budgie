@@ -1,10 +1,13 @@
 import { AITransactionInterface } from '@budgie/ai';
 import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
+import { NotificationFeedbackType } from 'expo-haptics';
 import { useReducer, useRef } from 'react';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { useProcessingHaptic } from '../../@generic/hook/use-processing-haptic.hook';
+import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { VoiceInputActionTypeEnum } from '../enum/voice-input-action-type.enum';
@@ -31,8 +34,11 @@ export const useVoiceInput = (): UseVoiceInputReturnInterface => {
 
     const resultRef = useRef<Parameters<UseVoiceInputReturnInterface['startAndCollect']>[0] | null>(null);
     const isPipelineRunningRef = useRef(false);
+    const [hapticNotification] = useVibration();
     const stt = useStt();
     const categorization = useLlmCategorization();
+
+    useProcessingHaptic(state === VoiceInputStateEnum.TRANSCRIBING || state === VoiceInputStateEnum.PROCESSING);
 
     if (stt.isReady && !hasBeenReady) {
         dispatch({ type: VoiceInputActionTypeEnum.STT_BECAME_READY });
@@ -45,6 +51,7 @@ export const useVoiceInput = (): UseVoiceInputReturnInterface => {
     };
 
     const handleError = (cause: Cause.Cause<unknown>) => {
+        hapticNotification(NotificationFeedbackType.Error);
         dispatch({ type: VoiceInputActionTypeEnum.PIPELINE_FAILED, error: cause.pipe(Cause.squash, getRootErrorMessage) });
         settle([], '');
     };
@@ -60,6 +67,7 @@ export const useVoiceInput = (): UseVoiceInputReturnInterface => {
                 const transactions = yield* categorization.categorize(text);
 
                 dispatch({ type: VoiceInputActionTypeEnum.PIPELINE_COMPLETED });
+                hapticNotification(NotificationFeedbackType.Success);
                 settle(transactions, text);
             } else {
                 dispatch({ type: VoiceInputActionTypeEnum.RESET });

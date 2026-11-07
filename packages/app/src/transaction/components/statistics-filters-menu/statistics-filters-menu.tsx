@@ -65,7 +65,7 @@ export const StatisticsFiltersMenu = ({ filters, onChange }: Props) => {
         <ActionsMenu
             accessibilityLabel={triggerLabel}
             hitSlop={0}
-            triggerClassName="min-h-[44px] flex-row items-center justify-center gap-x-md rounded-3xl bg-grouped-surface-row px-3xl py-md active:scale-100 active:opacity-60"
+            triggerClassName="min-h-[44px] flex-row items-center justify-center gap-x-md rounded-3xl bg-grouped-surface-row px-3xl py-md active:opacity-60"
             trigger={
                 <View className="flex-row items-center gap-x-md" style={continuousCorners}>
                     <Icon icon={UserIconNameEnum.SlidersHorizontal} size={16} className="text-primary" />

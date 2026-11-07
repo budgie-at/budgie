@@ -2,6 +2,7 @@ import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as DocumentPicker from 'expo-document-picker';
+import { NotificationFeedbackType } from 'expo-haptics';
 import { router } from 'expo-router';
 import { ReactElement, useState } from 'react';
 
@@ -9,6 +10,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
+import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useOnboardingRedirect } from '../../../onboarding/hook/use-onboarding-redirect.hook';
@@ -31,10 +33,11 @@ interface CreateFileBankAccountProps {
 
 const goBackHome = () => void goBackOrReplace('/');
 
-// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
+// eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks and handlers
 export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) => {
     const { t } = useLingui();
     const [step, setStep] = useState(FileImportStepEnum.FILE);
+    const [hapticNotification] = useVibration();
     const { isLoading, run } = useSingleFlight();
     const [selectedFile, setSelectedFile] = useState<Pick<DocumentPicker.DocumentPickerAsset, 'name' | 'uri'> | null>(null);
     const [review, setReview] = useState<FileBankSyncImportReviewInterface | null>(null);
@@ -75,6 +78,7 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
             Effect.gen(function* () {
                 if (isDefined(selectedFile)) {
                     yield* config.executeImportForSelectedAccounts(selectedFile.uri, [...selectedAccounts]);
+                    hapticNotification(NotificationFeedbackType.Success);
                     router.dismissTo(onboardingHref ?? '/');
                 }
             }).pipe(toastOnFailure(t`Import failed`))

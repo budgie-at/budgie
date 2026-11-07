@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { View } from 'react-native';
-import Animated, { runOnJS, useAnimatedReaction, useAnimatedStyle, useDerivedValue } from 'react-native-reanimated';
+import Animated, { useAnimatedReaction, useAnimatedStyle, useDerivedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { scheduleOnRN } from 'react-native-worklets';
 
 import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
 
@@ -32,27 +33,27 @@ export const TransactionListPinnedDay = ({ sections, headerOffsets, anchorY }: P
     const currentIndex = Math.max(Math.min(sectionIndex, sections.length - 1), 0);
 
     useAnimatedReaction(
-        () => Math.max(headerOffsets.value.filter(offset => offset <= scrollY.value - pinDistance + OFFSET_TOLERANCE).length - 1, 0),
+        () => Math.max(headerOffsets.get().filter(offset => offset <= scrollY.get() - pinDistance + OFFSET_TOLERANCE).length - 1, 0),
         (nextIndex, previousIndex) => {
             if (nextIndex !== previousIndex) {
-                runOnJS(setSectionIndex)(nextIndex);
+                scheduleOnRN(setSectionIndex, nextIndex);
             }
         }
     );
 
     const stackLag = useDerivedValue(() => {
-        const pinnedScroll = scrollY.value - pinDistance;
+        const pinnedScroll = scrollY.get() - pinDistance;
 
-        return Math.max(headerOffsets.value.filter(offset => offset <= pinnedScroll + OFFSET_TOLERANCE).length - 1, 0) - currentIndex;
+        return Math.max(headerOffsets.get().filter(offset => offset <= pinnedScroll + OFFSET_TOLERANCE).length - 1, 0) - currentIndex;
     });
     const pushStyle = useAnimatedStyle(() => {
-        const indexLag = Math.min(Math.max(stackLag.value, -1), 1);
-        const pinnedScroll = scrollY.value - pinDistance;
-        const nextOffset = headerOffsets.value.at(currentIndex + indexLag + 1) ?? pinnedScroll + PINNED_DAY_HEIGHT;
+        const indexLag = Math.min(Math.max(stackLag.get(), -1), 1);
+        const pinnedScroll = scrollY.get() - pinDistance;
+        const nextOffset = headerOffsets.get().at(currentIndex + indexLag + 1) ?? pinnedScroll + PINNED_DAY_HEIGHT;
         const push = reducedMotion ? 0 : Math.min(Math.max(nextOffset - pinnedScroll - PINNED_DAY_HEIGHT, -PINNED_DAY_HEIGHT), 0);
 
         return {
-            opacity: Math.abs(stackLag.value) > 1 ? 0 : 1,
+            opacity: Math.abs(stackLag.get()) > 1 ? 0 : 1,
             transform: [{ translateY: Math.min(Math.max(-PINNED_DAY_HEIGHT * (1 + indexLag) + push, -2 * PINNED_DAY_HEIGHT), 0) }]
         };
     });

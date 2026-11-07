@@ -6,6 +6,7 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 import { EmptyFn, isNotEmptyString } from '@rnw-community/shared';
 
 import { Shake } from '../../../@generic/component/shake/shake';
+import { EASE_OUT } from '../../../@generic/constant/motion.constant';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { PIN_LENGTH } from '../../constant/pin-length.constant';
@@ -96,7 +97,7 @@ export const PinForm = ({
 
                     {isErrorVisible ? (
                         <Animated.Text
-                            entering={FadeIn.duration(PIN_ERROR_FADE_DURATION_MS)}
+                            entering={FadeIn.duration(PIN_ERROR_FADE_DURATION_MS).easing(EASE_OUT)}
                             className="text-sm font-medium text-destructive-strong text-center"
                             testID={PinFormSelector.Error}
                             accessibilityLiveRegion="assertive"

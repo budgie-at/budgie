@@ -2,6 +2,7 @@ import { cva } from 'class-variance-authority';
 import { Text } from 'react-native';
 
 import { MAX_FONT_SIZE_MULTIPLIER } from '../../constant/max-font-size-multiplier.constant';
+import { HapticPressFeedbackEnum } from '../../enum/haptic-press-feedback.enum';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 
 import type { SegmentedControlSegmentInterface } from '../../interface/segmented-control-segment.interface';
@@ -32,9 +33,11 @@ export const SegmentedControlItem = <T extends string>(props: Props<T>) => {
 
     return (
         <HapticPressable
+            pressedScale={1}
+            pressFeedback={HapticPressFeedbackEnum.SELECTION}
             accessibilityRole="tab"
             accessibilityState={accessibilityState}
-            className="flex-1 items-center justify-center px-md py-sm active:scale-100"
+            className="flex-1 items-center justify-center px-md py-sm"
             hitSlop={SEGMENT_HIT_SLOP}
             disabled={disabled}
             testID={segment.testID}

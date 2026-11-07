@@ -7,6 +7,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
@@ -61,6 +62,7 @@ export const CategorySelectorCard = (props: Props) => {
                 className
             )}
             onPress={handleSelect}
+            pressFeedback={HapticPressFeedbackEnum.SELECTION}
             testID={testID}
             collapsable={false}
             nativeID={testID}

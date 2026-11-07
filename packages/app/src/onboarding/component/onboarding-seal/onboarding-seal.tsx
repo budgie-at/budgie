@@ -11,6 +11,7 @@ import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/g
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { GroupedListSwitchRow } from '../../../@generic/component/grouped-list-switch-row/grouped-list-switch-row';
+import { useProcessingHaptic } from '../../../@generic/hook/use-processing-haptic.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
@@ -29,12 +30,14 @@ import { OnboardingStepLayout } from '../onboarding-step-layout/onboarding-step-
 
 import { OnboardingSealSelector } from './onboarding-seal.selector';
 
-// eslint-disable-next-line max-lines-per-function -- Layout/form component requires many lines
+// eslint-disable-next-line max-lines-per-function, max-statements -- Layout/form component requires many lines
 export const OnboardingSeal = () => {
     const { t } = useLingui();
 
     const [isBiometricEnabled, setIsBiometricEnabled] = useState(false);
     const [isSealing, setIsSealing] = useState(false);
+
+    useProcessingHaptic(isSealing);
 
     const { pin } = useOnboardingPinContext();
     const { goBack } = useOnboardingNavigation();

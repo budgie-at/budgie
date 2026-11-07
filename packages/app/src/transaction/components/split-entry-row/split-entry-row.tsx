@@ -2,13 +2,14 @@ import { TransactionEntryCreateInputInterface, UserIconNameEnum } from '@budgie/
 import { useLingui } from '@lingui/react/macro';
 import { ReactNode, useState } from 'react';
 import { Text, View, useWindowDimensions } from 'react-native';
-import Animated, { FadeIn, FadeOutDown, LinearTransition, ReduceMotion } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { AmountInput } from '../../../@generic/component/amount-input/amount-input';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { MOTION_FADE_IN, MOTION_FADE_OUT, MOTION_LAYOUT } from '../../../@generic/constant/motion.constant';
 import { cn } from '../../../@generic/utils/cn.util';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { DEFAULT_DECIMAL_PLACES } from '../../../i18n/constant/default-decimal-places.constant';
@@ -28,9 +29,6 @@ interface Props {
 }
 
 const ACCEPTED_DECIMAL_SEPARATORS = ['.', ','];
-const ENTERING = FadeIn.reduceMotion(ReduceMotion.System);
-const EXITING = FadeOutDown.reduceMotion(ReduceMotion.System);
-const LAYOUT = LinearTransition.reduceMotion(ReduceMotion.System);
 const amountInputStyle = { textAlign: 'right' as const, fontSize: 17, fontWeight: '600' as const, fontVariant: ['tabular-nums' as const] };
 
 export const SplitEntryRow = (props: Props) => {
@@ -53,7 +51,7 @@ export const SplitEntryRow = (props: Props) => {
     const iconVariant = hasCategorySelected ? 'ghost' : 'warning';
 
     return (
-        <Animated.View entering={ENTERING} exiting={EXITING} layout={LAYOUT}>
+        <Animated.View entering={MOTION_FADE_IN} exiting={MOTION_FADE_OUT} layout={MOTION_LAYOUT}>
             <View className="flex-row flex-wrap items-center gap-x-md gap-y-md px-xl py-xl">
                 <HapticPressable
                     onPress={onCategoryPress}

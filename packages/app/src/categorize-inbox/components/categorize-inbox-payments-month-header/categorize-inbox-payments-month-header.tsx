@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
@@ -58,6 +59,7 @@ export const CategorizeInboxPaymentsMonthHeader = ({ group }: Props) => {
     return (
         <HapticPressable
             onPress={handleTogglePress}
+            pressFeedback={HapticPressFeedbackEnum.SELECTION}
             className="min-h-[44px] flex-row items-center gap-x-xl px-3xl pb-xs pt-xl active:opacity-70"
             accessibilityRole="checkbox"
             accessibilityState={accessibilityState}

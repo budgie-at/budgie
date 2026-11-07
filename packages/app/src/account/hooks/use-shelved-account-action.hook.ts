@@ -21,14 +21,13 @@ export const useShelvedAccountAction = () => {
     const fallbackErrorText = t`Something went wrong. Please try again later.`;
 
     const showFeedback = ({ successText, undo }: ShelvedAccountFeedbackInterface) => {
-        notify(NotificationFeedbackType.Success);
-
         if (!isDefined(undo)) {
             showSuccessToast(successText);
 
             return;
         }
 
+        notify(NotificationFeedbackType.Success);
         showActionToast(successText, {
             label: t`Undo`,
             onPress: () => void appRuntime.runFork(logAndContinue(undo.pipe(toastOnFailure(t`Could not undo.`, fallbackErrorText))))

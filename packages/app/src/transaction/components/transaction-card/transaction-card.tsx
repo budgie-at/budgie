@@ -52,8 +52,9 @@ export const TransactionCard = ({ transaction, position, accountId = null, onPre
     return (
         <TransactionRowSurface position={position}>
             <HapticPressable
+                pressedScale={1}
                 ref={rowRef}
-                className="px-3xl py-xl active:scale-100 active:opacity-70"
+                className="px-3xl py-xl active:opacity-70"
                 accessibilityRole="button"
                 testID={rowTestID}
                 collapsable={false}

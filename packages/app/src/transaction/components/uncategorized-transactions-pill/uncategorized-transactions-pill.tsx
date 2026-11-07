@@ -2,10 +2,11 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { MOTION_FADE_IN } from '../../../@generic/constant/motion.constant';
 import { cn } from '../../../@generic/utils/cn.util';
 import { FILTER_CHIP_CLASS_NAME } from '../../constant/filter-chip-class-name.constant';
 import { FILTER_CHIP_HIT_SLOP } from '../../constant/filter-chip-hit-slop.constant';
@@ -16,8 +17,6 @@ interface Props {
     readonly count: number;
     readonly onPress: () => void;
 }
-
-const ENTERING_ANIMATION = FadeIn.duration(180);
 
 export const UncategorizedTransactionsPill = ({ count, onPress }: Props) => {
     const { t } = useLingui();
@@ -30,7 +29,7 @@ export const UncategorizedTransactionsPill = ({ count, onPress }: Props) => {
     });
 
     return (
-        <Animated.View entering={ENTERING_ANIMATION} className="-my-[6px] py-[6px]">
+        <Animated.View entering={MOTION_FADE_IN} className="-my-[6px] py-[6px]">
             <HapticPressable
                 hitSlop={FILTER_CHIP_HIT_SLOP}
                 onPress={onPress}

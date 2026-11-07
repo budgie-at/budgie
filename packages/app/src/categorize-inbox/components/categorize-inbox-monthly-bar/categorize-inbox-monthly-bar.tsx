@@ -1,11 +1,13 @@
 import { Text, View } from 'react-native';
 import Animated, { FadeIn, Keyframe } from 'react-native-reanimated';
 
-import { ENTRANCE_EASING, ENTRANCE_REDUCED_DURATION } from '../../../@generic/constant/entrance-motion.constant';
+import { ENTRANCE_REDUCED_DURATION } from '../../../@generic/constant/entrance-motion.constant';
+import { EASE_OUT } from '../../../@generic/constant/motion.constant';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 
-const BAR_DURATION = 520;
-const BAR_STAGGER = 22;
+const BAR_DURATION = 280;
+const BAR_STAGGER = 30;
+const BAR_STAGGER_MAX_STEPS = 8;
 const BAR_START_SCALE = 0.2;
 const BAR_STRIP_HEIGHT = 56;
 const BAR_MIN_HEIGHT = 4;
@@ -30,10 +32,10 @@ export const CategorizeInboxMonthlyBar = ({ count, maxCount, index, monthLabel }
     const countLabel = hasData ? `${count}` : '';
     const growEntering = new Keyframe({
         from: { opacity: 0, transform: [{ scaleY: BAR_START_SCALE }] },
-        to: { opacity: 1, transform: [{ scaleY: 1 }], easing: ENTRANCE_EASING }
+        to: { opacity: 1, transform: [{ scaleY: 1 }], easing: EASE_OUT }
     })
         .duration(BAR_DURATION)
-        .delay(index * BAR_STAGGER);
+        .delay(Math.min(index, BAR_STAGGER_MAX_STEPS) * BAR_STAGGER);
     const entering = reducedMotion ? FadeIn.duration(ENTRANCE_REDUCED_DURATION) : growEntering;
 
     return (
