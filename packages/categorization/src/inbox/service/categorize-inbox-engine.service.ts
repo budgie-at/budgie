@@ -112,12 +112,13 @@ class CategorizeInboxEngineService {
         labelKind: CategorizeInboxLabelKindEnum
     ): CategorizeInboxBuildContextInterface {
         const titledEvidence = evidence.filter(row => isNotEmptyString(row.title.trim()));
-        const brandEvidence = titledEvidence.filter(row => isDefined(this.brandKey(row.title)));
-        const mccEvidence = evidence.filter(row => isDefined(row.mccCategoryId));
+        const merchantEvidence = titledEvidence.filter(row => !this.isGenericTransfer(this.merchantKey(row.title)));
+        const brandEvidence = merchantEvidence.filter(row => isDefined(this.brandKey(row.title)));
+        const mccEvidence = evidence.filter(row => isDefined(row.mccCategoryId) && !this.isGenericTransfer(this.merchantKey(row.title)));
 
         return {
             exact: this.groupBy(titledEvidence, row => `${row.type}|${row.title.toLowerCase()}`),
-            merchant: this.groupBy(titledEvidence, row => `${row.type}|${this.merchantKey(row.title)}`),
+            merchant: this.groupBy(merchantEvidence, row => `${row.type}|${this.merchantKey(row.title)}`),
             brand: this.groupBy(brandEvidence, row => `${row.type}|${this.brandKey(row.title)}`),
             mcc: this.groupBy(mccEvidence, row => `${row.type}|${row.mccCategoryId}`),
             defaultInstrumentId,
@@ -308,25 +309,9 @@ class CategorizeInboxEngineService {
 
         const exactCounts = this.countLabels(context.exact, new Set(rows.map(row => `${type}|${row.title.toLowerCase()}`)));
         const merchantCounts = this.countLabels(context.merchant, new Set(rows.map(row => `${type}|${this.merchantKey(row.title)}`)));
-        const brandKeys = new Set(rows.map(row => `${type}|${this.brandKey(row.title) ?? ''}`).filter(key => !key.endsWith('|')));
-        const brandCounts = this.countLabels(context.brand, brandKeys);
-        const historyCounts = [exactCounts, merchantCounts].find(counts => isPositiveNumber(counts.size));
-        const mccCounts = this.countLabels(
-            context.mcc,
-            new Set(
-                rows
-                    .filter(row => isDefined(row.mcc) && !CategorizeInboxEngineService.NON_DESCRIPTIVE_MCC.has(row.mcc))
-                    .map(row => `${type}|${row.mccCategoryId}`)
-            )
-        );
-        const counts =
-            historyCounts ??
-            [brandCounts, mccCounts].find(
-                candidate =>
-                    Math.max(0, ...candidate.values()) >= LIMITS.fallbackCount &&
-                    Math.max(0, ...candidate.values()) / this.sumValues(candidate.values()) >= LIMITS.confidentShare
-            ) ??
-            new Map<number, number>();
+        const transferLike = rows.some(row => this.isGenericTransfer(this.merchantKey(row.title)));
+        const historyCounts = (transferLike ? [exactCounts] : [exactCounts, merchantCounts]).find(counts => isPositiveNumber(counts.size));
+        const counts = historyCounts ?? (transferLike ? new Map<number, number>() : this.fallbackCounts(rows, context));
         const total = this.sumValues(counts.values());
         const topCount = Math.max(0, ...counts.values());
 
@@ -336,8 +321,38 @@ class CategorizeInboxEngineService {
                 rows.length <= LIMITS.maxConfidentRowCount &&
                 isDefined(historyCounts) &&
                 topCount >= LIMITS.confidentCount &&
-                topCount / Math.max(1, total) >= LIMITS.confidentShare
+                topCount / total >= LIMITS.confidentShare
         };
+    }
+
+    private fallbackCounts(
+        rows: Omit<CategorizeInboxRowInterface, 'toIban'>[],
+        context: CategorizeInboxBuildContextInterface
+    ): Map<number, number> {
+        const [{ type }] = rows;
+        const brandCounts = this.countLabels(
+            context.brand,
+            new Set(rows.map(row => `${type}|${this.brandKey(row.title) ?? ''}`).filter(key => !key.endsWith('|')))
+        );
+        const mccCounts = this.countLabels(
+            context.mcc,
+            new Set(
+                rows
+                    .filter(row => isDefined(row.mcc) && !CategorizeInboxEngineService.NON_DESCRIPTIVE_MCC.has(row.mcc))
+                    .map(row => `${type}|${row.mccCategoryId}`)
+            )
+        );
+
+        return (
+            [brandCounts, mccCounts].find(candidate => {
+                const topCount = Math.max(0, ...candidate.values());
+
+                return (
+                    topCount >= CategorizeInboxEngineService.LIMITS.fallbackCount &&
+                    topCount / this.sumValues(candidate.values()) >= CategorizeInboxEngineService.LIMITS.confidentShare
+                );
+            }) ?? new Map<number, number>()
+        );
     }
 
     private normalizeTitle(title: string): string {

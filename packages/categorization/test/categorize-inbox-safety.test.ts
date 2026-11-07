@@ -1,7 +1,6 @@
 import { categorizeInboxEngineService, CategorizeInboxLabelKindEnum, CategorizeInboxSectionEnum } from '@budgie/categorization';
 import { TransactionTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
-import * as Effect from 'effect/Effect';
 
 import type { CategorizeInboxRowInterface, LabelEvidenceRowInterface } from '@budgie/categorization';
 
@@ -39,20 +38,15 @@ describe('categorization/inbox-safety', () => {
     it.each(['4829', '6010', '6011', '6012', '6051', '6538', '6540', '5999', '8999', '7299', '7399'])('rejects catch-all MCC %s', mcc => {
         expect(clusters([{ ...row, mcc }])[0].candidateLabelIds).toEqual([]);
     });
-    it.effect('preserves recent keys and prefixes only older keys', () =>
-        Effect.sync(() => {
-            expect(clusters([row])[0].key).toBe('EXPENSE|example merchant|5411|');
-            expect(clusters([{ ...row, operatedAt: new Date('2024-01-01') }])[0].key).toBe('OLDER|EXPENSE|example merchant|5411|');
-        })
-    );
-    it.effect('falls back to strong MCC evidence after weak brand evidence', () =>
-        Effect.sync(() => {
-            expect(
-                clusters([row], [{ ...evidence, title: 'Example Cafe', mccCategoryId: 2, labelId: 8, count: 2 }, evidence])[0]
-                    .candidateLabelIds
-            ).toEqual([7]);
-        })
-    );
+    it('preserves recent keys and prefixes only older keys', () => {
+        expect(clusters([row])[0].key).toBe('EXPENSE|example merchant|5411|');
+        expect(clusters([{ ...row, operatedAt: new Date('2024-01-01') }])[0].key).toBe('OLDER|EXPENSE|example merchant|5411|');
+    });
+    it('falls back to strong MCC evidence after weak brand evidence', () => {
+        expect(
+            clusters([row], [{ ...evidence, title: 'Example Cafe', mccCategoryId: 2, labelId: 8, count: 2 }, evidence])[0].candidateLabelIds
+        ).toEqual([7]);
+    });
     it('requires three supporting decisions and a clear fallback majority', () => {
         expect(clusters([row], [{ ...evidence, count: 2 }])[0].candidateLabelIds).toEqual([]);
         expect(clusters([row], [evidence, { ...evidence, labelId: 8, count: 2 }])[0].candidateLabelIds).toEqual([]);
@@ -99,6 +93,15 @@ describe('categorization/inbox-safety', () => {
     it('keeps named transfer merchants eligible for exact history even with a catch-all MCC', () => {
         const title = 'Переказ на картку Example Merchant';
         expect(clusters([{ ...row, title, mcc: '4829' }], [{ ...evidence, title }])[0].section).toBe(CategorizeInboxSectionEnum.CONFIDENT);
+    });
+    it.each([
+        ['Переказ на картку Іван', 'Переказ на картку Петро'],
+        ['Transfer to card Ivan', 'Transfer to card']
+    ])('requires exact history for %s', (title, historyTitle) => {
+        const [cluster] = clusters([{ ...row, title }], [{ ...evidence, title: historyTitle, count: 5 }]);
+        expect(cluster.candidateLabelIds).toEqual([]);
+        expect(cluster.section).not.toBe(CategorizeInboxSectionEnum.CONFIDENT);
+        expect(clusters([{ ...row, title }], [{ ...evidence, title }])[0].section).toBe(CategorizeInboxSectionEnum.CONFIDENT);
     });
     it('keeps income and expense evidence separate', () => {
         expect(clusters([{ ...row, type: TransactionTypeEnum.INCOME }])[0].candidateLabelIds).toEqual([]);
