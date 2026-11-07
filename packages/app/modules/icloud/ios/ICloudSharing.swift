@@ -237,6 +237,7 @@ public final class ICloudShareInbox: @unchecked Sendable {
 
   public func receive(_ metadata: CKShare.Metadata) {
     Task {
+      deliver(describe(metadata).merging(["outcome": "JOINING"]) { first, _ in first })
       deliver(await accept(metadata))
     }
   }
@@ -265,12 +266,17 @@ public final class ICloudShareInbox: @unchecked Sendable {
     current?(body)
   }
 
-  private func accept(_ metadata: CKShare.Metadata) async -> [String: Any] {
+  private func describe(_ metadata: CKShare.Metadata) -> [String: Any] {
     let zoneID = metadata.share.recordID.zoneID
     var body: [String: Any] = ["zoneName": zoneID.zoneName, "ownerName": zoneID.ownerName]
     if let nameComponents = metadata.ownerIdentity.nameComponents {
       body["ownerDisplayName"] = PersonNameComponentsFormatter().string(from: nameComponents)
     }
+    return body
+  }
+
+  private func accept(_ metadata: CKShare.Metadata) async -> [String: Any] {
+    var body = describe(metadata)
     let container = CKContainer(identifier: metadata.containerIdentifier)
     do {
       try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in

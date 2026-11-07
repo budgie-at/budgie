@@ -60,6 +60,11 @@ msgstr "(pick one)"
 msgid "{0, plural, one {# account} other {# accounts}}"
 msgstr "{0, plural, one {# account} other {# accounts}}"
 
+#. placeholder {0}: participants.length
+#: src/household/component/household-pending-invites-row/household-pending-invites-row.tsx
+msgid "{0, plural, one {# invitation waiting to be opened} other {# invitations waiting to be opened}}"
+msgstr "{0, plural, one {# invitation waiting to be opened} other {# invitations waiting to be opened}}"
+
 #. placeholder {0}: installmentCount - 1
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
 msgid "{0, plural, one {# more payment of {formattedLast}} other {# more payments of {formattedLast}}}"
@@ -627,6 +632,10 @@ msgstr "{monthsUsed} of {RUNWAY_MINIMUM_MONTHS} complete months"
 msgid "{moreCount, plural, one {+# more} other {+# more}}"
 msgstr "{moreCount, plural, one {+# more} other {+# more}}"
 
+#: src/household/component/household-member-join-watcher/household-member-join-watcher.tsx
+msgid "{name} joined your family"
+msgstr "{name} joined your family"
+
 #: src/budget/components/budget-limit-changes-row/budget-limit-changes-row.tsx
 msgid "{name} lowered to {amountLabel}"
 msgstr "{name} lowered to {amountLabel}"
@@ -646,6 +655,10 @@ msgstr "{newTransactionCount, plural, one {Import # transaction} other {Import #
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
 msgstr "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
+
+#: src/household/component/household-member-share-section/household-member-share-section.tsx
+msgid "{organizerName} sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
+msgstr "{organizerName} sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
 
 #: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
 msgid "{overAmount} over budget"
@@ -804,6 +817,10 @@ msgstr "{selectedInGroupCount} of {accountsCount} selected"
 #: src/budget/components/budget-fund-row-status/budget-fund-row-status.tsx
 msgid "{setAsideLabel} to set aside {thisPeriod}"
 msgstr "{setAsideLabel} to set aside {thisPeriod}"
+
+#: src/household/component/household-joined-card/household-joined-card.tsx
+msgid "{sharedCount, plural, one {# shared account} other {# shared accounts}}"
+msgstr "{sharedCount, plural, one {# shared account} other {# shared accounts}}"
 
 #: src/transaction/components/statistics-drill-down-caption/statistics-drill-down-caption.tsx
 msgid "{shareLabel} of income"
@@ -1029,6 +1046,10 @@ msgstr "a category"
 msgid "A deposit in the funding account currency must receive the full funding amount"
 msgstr "A deposit in the funding account currency must receive the full funding amount"
 
+#: src/household/component/household-member-join-watcher/household-member-join-watcher.tsx
+msgid "A family member"
+msgstr "A family member"
+
 #: src/account/component/household-shared-by-other-account-row/household-shared-by-other-account-row.tsx
 msgid "A family member shares this account, so everyone in the family sees it."
 msgstr "A family member shares this account, so everyone in the family sees it."
@@ -1105,6 +1126,10 @@ msgstr "above {formattedLimit} limit"
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "Above this amount"
 msgstr "Above this amount"
+
+#: src/household/component/household-join-card/household-join-card.tsx
+msgid "Accepting the invitation"
+msgstr "Accepting the invitation"
 
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "account"
@@ -2596,6 +2621,10 @@ msgstr "Choose the other account"
 msgid "Choose what goes inside"
 msgstr "Choose what goes inside"
 
+#: src/household/component/household-owner-share-section/household-owner-share-section.tsx
+msgid "Choose what to share"
+msgstr "Choose what to share"
+
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Choose what to track. Balances and history come straight from Binance."
 msgstr "Choose what to track. Balances and history come straight from Binance."
@@ -3028,6 +3057,7 @@ msgid "Could not import CSV file"
 msgstr "Could not import CSV file"
 
 #: src/cloud-sync/service/cloud-sync.service.ts
+#: src/household/component/household-join-card/household-join-card.tsx
 msgid "Could not join the family"
 msgstr "Could not join the family"
 
@@ -3287,6 +3317,7 @@ msgid "Could not update settings"
 msgstr "Could not update settings"
 
 #: src/budget/components/budget-share-field/budget-share-field.tsx
+#: src/household/component/household-account-share-row/household-account-share-row.tsx
 #: src/household/component/household-share-everything-section/household-share-everything-section.tsx
 msgid "Could not update sharing"
 msgstr "Could not update sharing"
@@ -4030,6 +4061,10 @@ msgstr "e.g. Netflix, Rent"
 msgid "Each bar compares one day's spending with your daily plan."
 msgstr "Each bar compares one day's spending with your daily plan."
 
+#: src/household/component/household-pending-invites-row/household-pending-invites-row.tsx
+msgid "Each link works for one person"
+msgstr "Each link works for one person"
+
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Each source becomes a separate transaction."
 msgstr "Each source becomes a separate transaction."
@@ -4500,6 +4535,7 @@ msgstr "Family group removed"
 
 #: src/household/component/household-participant-row/household-participant-row.tsx
 #: src/household/component/household-participants-group/household-participants-group.tsx
+#: src/household/component/household-pending-invites-row/household-pending-invites-row.tsx
 msgid "Family member"
 msgstr "Family member"
 
@@ -5144,10 +5180,6 @@ msgstr "Interest Rate % (Optional)"
 msgid "Invalid file"
 msgstr "Invalid file"
 
-#: src/household/component/household-participant-row/household-participant-row.tsx
-msgid "Invitation pending"
-msgstr "Invitation pending"
-
 #: src/household/component/household-invite-row/household-invite-row.tsx
 msgid "Invite family"
 msgstr "Invite family"
@@ -5212,6 +5244,20 @@ msgstr "Its transactions go too. Transfers stay in the other account as “Trans
 #: src/sync/component/sync-accounts-step/sync-accounts-step.tsx
 msgid "Jars"
 msgstr "Jars"
+
+#: src/household/component/household-participant-row/household-participant-row.tsx
+msgid "Joined"
+msgstr "Joined"
+
+#: src/household/component/family-row/family-row.tsx
+#: src/household/component/household-join-card/household-join-card.tsx
+msgid "Joining {ownerDisplayName}'s family…"
+msgstr "Joining {ownerDisplayName}'s family…"
+
+#: src/household/component/family-row/family-row.tsx
+#: src/household/component/household-join-card/household-join-card.tsx
+msgid "Joining the family…"
+msgstr "Joining the family…"
 
 #: src/ai/hook/use-ai-model-download-actions.hook.ts
 msgid "Keep"
@@ -5654,7 +5700,6 @@ msgid "MCC codes"
 msgstr "MCC codes"
 
 #: src/household/component/household-member-content/household-member-content.tsx
-#: src/household/component/household-participant-row/household-participant-row.tsx
 #: src/household/component/household-participants-group/household-participants-group.tsx
 msgid "Member"
 msgstr "Member"
@@ -6607,6 +6652,10 @@ msgstr "Open Settings"
 msgid "Open Shortcuts"
 msgstr "Open Shortcuts"
 
+#: src/household/component/household-join-card/household-join-card.tsx
+msgid "Open the invitation link again to retry."
+msgstr "Open the invitation link again to retry."
+
 #: src/cloud-backup/component/cloud-backup-list/cloud-backup-list.tsx
 msgid "Open the Settings app and sign in to your Apple Account. Backups from your iPhone and iPad appear here."
 msgstr "Open the Settings app and sign in to your Apple Account. Backups from your iPhone and iPad appear here."
@@ -6688,10 +6737,15 @@ msgstr "Or unlock with Touch ID."
 msgid "Organize"
 msgstr "Organize"
 
+#: src/household/component/household-joined-card/household-joined-card.tsx
 #: src/household/component/household-owner-content/household-owner-content.tsx
 #: src/household/component/household-participant-row/household-participant-row.tsx
 msgid "Organizer"
 msgstr "Organizer"
+
+#: src/household/component/household-joined-card/household-joined-card.tsx
+msgid "Organizer · {sharedSubtitle}"
+msgstr "Organizer · {sharedSubtitle}"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
@@ -8152,6 +8206,18 @@ msgstr "Share this account"
 msgid "Share with family"
 msgstr "Share with family"
 
+#: src/household/component/household-member-share-section/household-member-share-section.tsx
+msgid "Share your accounts"
+msgstr "Share your accounts"
+
+#: src/household/component/household-member-share-section/household-member-share-section.tsx
+msgid "Share your accounts with {organizerName}"
+msgstr "Share your accounts with {organizerName}"
+
+#: src/household/component/household-joined-card/household-joined-card.tsx
+msgid "Shared accounts stay in sync"
+msgstr "Shared accounts stay in sync"
+
 #: src/account/component/household-shared-by-everything-account-row/household-shared-by-everything-account-row.tsx
 msgid "Shared because you share everything"
 msgstr "Shared because you share everything"
@@ -8623,6 +8689,7 @@ msgid "Syncing resumes for all accounts once you update the key."
 msgstr "Syncing resumes for all accounts once you update the key."
 
 #: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+#: src/household/component/household-joined-card/household-joined-card.tsx
 #: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
@@ -8802,6 +8869,10 @@ msgstr "The merged transactions become separate entries again."
 msgid "The note on a payment"
 msgstr "The note on a payment"
 
+#: src/household/component/household-member-share-section/household-member-share-section.tsx
+msgid "The organizer sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
+msgstr "The organizer sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
+
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "The PIN becomes the encryption key"
 msgstr "The PIN becomes the encryption key"
@@ -8861,6 +8932,10 @@ msgstr "There is no “forgot PIN”."
 #: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
 msgid "These accounts already exist in Budgie or use a currency Budgie does not support. To continue an existing account, open it and tap Connect to bank."
 msgstr "These accounts already exist in Budgie or use a currency Budgie does not support. To continue an existing account, open it and tap Connect to bank."
+
+#: src/household/component/household-remove-button/household-remove-button.tsx
+msgid "these invitations"
+msgstr "these invitations"
 
 #: src/budget/constant/budget-period-this-label.constant.ts
 msgid "these two weeks"
@@ -9814,6 +9889,11 @@ msgstr "Waiting for network"
 msgid "Waiting for the first market quote"
 msgstr "Waiting for the first market quote"
 
+#: src/household/component/household-participant-row/household-participant-row.tsx
+#: src/household/component/household-pending-invites-row/household-pending-invites-row.tsx
+msgid "Waiting for them to open the invite"
+msgstr "Waiting for them to open the invite"
+
 #: src/app/(main)/create-account/index.tsx
 msgid "Wallets and exchange balances"
 msgstr "Wallets and exchange balances"
@@ -10045,6 +10125,14 @@ msgstr "You're on mobile data. It starts when you're back on Wi-Fi."
 msgid "You're on Wi-Fi."
 msgstr "You're on Wi-Fi."
 
+#: src/household/component/household-joined-card/household-joined-card.tsx
+msgid "You've joined {organizerName}'s family"
+msgstr "You've joined {organizerName}'s family"
+
+#: src/household/component/household-joined-card/household-joined-card.tsx
+msgid "You've joined the family"
+msgstr "You've joined the family"
+
 #: src/categorize-inbox/components/categorize-inbox-transfer-accounts/categorize-inbox-transfer-accounts.tsx
 msgid "Your accounts"
 msgstr "Your accounts"
@@ -10122,6 +10210,10 @@ msgstr "Your data: {state}"
 msgid "Your device clock is out of sync. Enable automatic date and time, then try again."
 msgstr "Your device clock is out of sync. Enable automatic date and time, then try again."
 
+#: src/household/component/household-owner-share-section/household-owner-share-section.tsx
+msgid "Your family sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
+msgstr "Your family sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
+
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 msgid "Your file. Your PIN."
 msgstr "Your file. Your PIN."
@@ -10141,6 +10233,10 @@ msgstr "Your money in one file."
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "Your money will live in one file on this phone. Choose who can open it."
 msgstr "Your money will live in one file on this phone. Choose who can open it."
+
+#: src/household/component/household-joined-card/household-joined-card.tsx
+msgid "Your organizer"
+msgstr "Your organizer"
 
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
 msgid "Your phone’s lock will be the only lock."

@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const HouseholdOwnerParticipantRow = ({ participant }: Props) => {
-    const removeButton = participant.role === ICloudParticipantRole.OWNER ? null : <HouseholdRemoveButton participant={participant} />;
+    const removeButton = participant.role === ICloudParticipantRole.OWNER ? null : <HouseholdRemoveButton participants={[participant]} />;
 
     return <HouseholdParticipantRow participant={participant}>{removeButton}</HouseholdParticipantRow>;
 };

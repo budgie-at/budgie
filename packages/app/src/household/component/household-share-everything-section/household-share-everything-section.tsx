@@ -17,7 +17,15 @@ import { householdShareEverythingAtom } from '../../constant/household-share-eve
 
 import { HouseholdShareEverythingSectionSelector } from './household-share-everything-section.selector';
 
-export const HouseholdShareEverythingSection = () => {
+import type { ReactNode } from 'react';
+
+interface Props {
+    readonly title?: string;
+    readonly footer?: string;
+    readonly children?: ReactNode;
+}
+
+export const HouseholdShareEverythingSection = ({ title, footer, children }: Props) => {
     const { t } = useLingui();
     const everything = AsyncResult.getOrElse(useLiveAtomValue(householdShareEverythingAtom), () => null);
     const { run, isLoading } = useSingleFlight();
@@ -34,13 +42,13 @@ export const HouseholdShareEverythingSection = () => {
             )
         );
 
-    const footer = isAvailable
+    const defaultFooter = isAvailable
         ? t`Includes accounts you add later.`
         : t`Includes accounts you add later. Starts when you sign in to iCloud.`;
 
     return (
         <Animated.View entering={PRESENCE_ENTERING} exiting={PRESENCE_EXITING}>
-            <GroupedListSection title={t`Sharing`} footer={footer}>
+            <GroupedListSection title={title ?? t`Sharing`} footer={footer ?? defaultFooter}>
                 <SettingsSwitchRow
                     icon={UserIconNameEnum.Layers}
                     title={t`Share everything`}
@@ -51,6 +59,7 @@ export const HouseholdShareEverythingSection = () => {
                     switchTestID={HouseholdShareEverythingSectionSelector.Switch}
                     {...(!isLoading && { onChange: handleChange })}
                 />
+                {children}
             </GroupedListSection>
         </Animated.View>
     );

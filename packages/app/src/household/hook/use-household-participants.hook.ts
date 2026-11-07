@@ -11,10 +11,11 @@ const NO_PARTICIPANTS: readonly ICloudShareParticipant[] = [];
 export const useHouseholdParticipants = () => {
     const result = useAtomValue(householdParticipantsAtom);
     const participants = AsyncResult.getOrElse(result, () => NO_PARTICIPANTS);
+    const isKnown = Option.isSome(AsyncResult.value(result));
 
     return {
         otherParticipants: participants.filter(participant => !participant.isCurrentUser),
-        isLoading: AsyncResult.isInitial(result) || result.waiting,
-        isKnown: Option.isSome(AsyncResult.value(result))
+        isLoading: AsyncResult.isInitial(result) || (result.waiting && !isKnown),
+        isKnown
     };
 };

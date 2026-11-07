@@ -22,7 +22,8 @@ export const HouseholdParticipantRow = ({ participant, children }: Props) => {
     const isPending = participant.acceptanceStatus === ICloudParticipantAcceptanceStatus.PENDING;
     const fallbackName = participant.isCurrentUser ? t`You` : t`Family member`;
     const title = isNotEmptyString(participant.displayName) ? participant.displayName : fallbackName;
-    const roleLabel = isOwner ? t`Organizer` : isPending ? t`Invitation pending` : t`Member`;
+    const memberLabel = isPending ? t`Waiting for them to open the invite` : t`Joined`;
+    const roleLabel = isOwner ? t`Organizer` : memberLabel;
     const icon = isOwner ? UserIconNameEnum.Crown : UserIconNameEnum.UserRound;
 
     return (

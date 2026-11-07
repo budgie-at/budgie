@@ -51,9 +51,11 @@ import { iCloudAccountRefreshAtom } from '../../cloud-backup/constant/icloud-acc
 import { InstallIdService } from '../../cloud-backup/service/install-id.service';
 import { syncAutomationEmbeddingBoostLayer } from '../../cloud-sync-automation/layer/sync-automation-embedding-boost.layer';
 import { SyncAutomationService } from '../../cloud-sync-automation/service/sync-automation.service';
+import { householdJoinAtom } from '../../household/constant/household-join-atom.constant';
 import { householdRefreshAtom } from '../../household/constant/household-refresh-atom.constant';
 import { householdStateAtom } from '../../household/constant/household-state-atom.constant';
 import { HouseholdEndModeEnum } from '../../household/enum/household-end-mode.enum';
+import { HouseholdJoinStatusEnum } from '../../household/enum/household-join-status.enum';
 import { HouseholdRoleEnum } from '../../household/enum/household-role.enum';
 import { CloudSyncDeviceRecordSchema } from '../constant/cloud-sync-device-record-schema.constant';
 import { CLOUD_SYNC_RECORDS } from '../constant/cloud-sync-records.constant';
@@ -160,6 +162,11 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
         const bumpHouseholdRefresh = Effect.sync(() => {
             appAtomRegistry.update(householdRefreshAtom, count => count + 1);
         });
+
+        const publishJoin = (status: HouseholdJoinStatusEnum, ownerDisplayName: string | null) =>
+            Effect.sync(() => {
+                appAtomRegistry.set(householdJoinAtom, { status, ownerDisplayName });
+            });
 
         const publish = Effect.flatMap(Ref.get(session), current =>
             Effect.sync(() => {
@@ -480,6 +487,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             yield* stateStore.update({ sharedStateSerialization: null });
             yield* patch({ isSharedEngineRunning: false, isSharedReconciling: false });
             yield* refreshZones();
+            yield* publishJoin(HouseholdJoinStatusEnum.NONE, null);
             yield* bumpHouseholdRefresh;
 
             if (mode === HouseholdEndModeEnum.KEEP_PERSONAL_COPY) {
@@ -1138,6 +1146,17 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             yield* bumpHouseholdRefresh;
         });
 
+        const publishJoinedUnlocked = (zone: Pick<ICloudShareAcceptedEvent, 'ownerName' | 'ownerDisplayName'>) =>
+            Effect.suspend(() => {
+                const household = zones.get(HOUSEHOLD_SYNC_ZONE);
+                const isJoined = household?.role === SyncZoneRoleEnum.PARTICIPANT && household.ownerName === zone.ownerName;
+
+                return publishJoin(
+                    isJoined ? HouseholdJoinStatusEnum.JOINED : HouseholdJoinStatusEnum.NONE,
+                    isJoined ? (zone.ownerDisplayName ?? null) : null
+                );
+            });
+
         const discoverHouseholdUnlocked = Effect.fnUntraced(
             function* () {
                 if (isDefined(yield* zoneRegistryRepository.findByLabel(HOUSEHOLD_SYNC_ZONE))) {
@@ -1152,6 +1171,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
 
                 if (isDefined(joined)) {
                     yield* registerJoinedHouseholdUnlocked(joined);
+                    yield* publishJoinedUnlocked(joined);
                 }
             },
             Effect.catchTag('CloudSyncTransportError', () => Effect.void)
@@ -1159,24 +1179,28 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
 
         const discoverHousehold = () => locked(discoverHouseholdUnlocked());
 
-        const handleShareAccepted = Effect.fn('CloudSyncService.handleShareAccepted')(
-            function* (event: ICloudShareAcceptedEvent) {
-                if (event.outcome !== ICloudShareOutcome.ACCEPTED) {
-                    yield* Effect.sync(() => {
-                        showErrorToast(
-                            t`Could not join the family`,
-                            t`The invitation could not be accepted. Open the invitation link again to retry.`
-                        );
-                    });
-                    yield* bumpHouseholdRefresh;
+        const handleShareAccepted = Effect.fn('CloudSyncService.handleShareAccepted')(function* (event: ICloudShareAcceptedEvent) {
+            if (event.outcome === ICloudShareOutcome.JOINING) {
+                yield* publishJoin(HouseholdJoinStatusEnum.JOINING, event.ownerDisplayName ?? null);
 
-                    return;
-                }
+                return;
+            }
 
-                yield* registerJoinedHouseholdUnlocked(event);
-            },
-            effect => locked(effect)
-        );
+            if (event.outcome !== ICloudShareOutcome.ACCEPTED) {
+                yield* publishJoin(HouseholdJoinStatusEnum.FAILED, event.ownerDisplayName ?? null);
+                yield* Effect.sync(() => {
+                    showErrorToast(
+                        t`Could not join the family`,
+                        t`The invitation could not be accepted. Open the invitation link again to retry.`
+                    );
+                });
+                yield* locked(bumpHouseholdRefresh);
+
+                return;
+            }
+
+            yield* locked(registerJoinedHouseholdUnlocked(event).pipe(Effect.andThen(publishJoinedUnlocked(event))));
+        });
 
         const handleShareChanged = Effect.fn('CloudSyncService.handleShareChanged')(
             function* (event: ICloudShareChangedEvent) {

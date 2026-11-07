@@ -59,6 +59,11 @@ msgstr "(виберіть)"
 msgid "{0, plural, one {# account} other {# accounts}}"
 msgstr "{0, plural, one {# рахунок} few {# рахунки} many {# рахунків} other {# рахунку}}"
 
+#. placeholder {0}: participants.length
+#: src/household/component/household-pending-invites-row/household-pending-invites-row.tsx
+msgid "{0, plural, one {# invitation waiting to be opened} other {# invitations waiting to be opened}}"
+msgstr "{0, plural, one {# запрошення чекає на відкриття} few {# запрошення чекають на відкриття} many {# запрошень чекають на відкриття} other {# запрошення чекають на відкриття}}"
+
 #. placeholder {0}: installmentCount - 1
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
 msgid "{0, plural, one {# more payment of {formattedLast}} other {# more payments of {formattedLast}}}"
@@ -626,6 +631,10 @@ msgstr "{monthsUsed} з {RUNWAY_MINIMUM_MONTHS} повних місяців"
 msgid "{moreCount, plural, one {+# more} other {+# more}}"
 msgstr "{moreCount, plural, one {+ще #} few {+ще #} many {+ще #} other {+ще #}}"
 
+#: src/household/component/household-member-join-watcher/household-member-join-watcher.tsx
+msgid "{name} joined your family"
+msgstr "{name} приєднався до вашої родини"
+
 #: src/budget/components/budget-limit-changes-row/budget-limit-changes-row.tsx
 msgid "{name} lowered to {amountLabel}"
 msgstr "{name} знижено до {amountLabel}"
@@ -645,6 +654,10 @@ msgstr "{newTransactionCount, plural, one {Імпортувати # транза
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
 msgstr "{newTransactionCount} нових, {existingTransactionCount} вже імпортовано, {parsedTransactionCount} перевірено"
+
+#: src/household/component/household-member-share-section/household-member-share-section.tsx
+msgid "{organizerName} sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
+msgstr "{organizerName} бачить спільні рахунки та їхні платежі. Гроші, переміщені між спільними рахунками, відображаються як переказ."
 
 #: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
 msgid "{overAmount} over budget"
@@ -803,6 +816,10 @@ msgstr "Вибрано {selectedInGroupCount} з {accountsCount}"
 #: src/budget/components/budget-fund-row-status/budget-fund-row-status.tsx
 msgid "{setAsideLabel} to set aside {thisPeriod}"
 msgstr "{setAsideLabel} відкласти {thisPeriod}"
+
+#: src/household/component/household-joined-card/household-joined-card.tsx
+msgid "{sharedCount, plural, one {# shared account} other {# shared accounts}}"
+msgstr "{sharedCount, plural, one {# спільний рахунок} few {# спільні рахунки} many {# спільних рахунків} other {# спільного рахунку}}"
 
 #: src/transaction/components/statistics-drill-down-caption/statistics-drill-down-caption.tsx
 msgid "{shareLabel} of income"
@@ -1028,6 +1045,10 @@ msgstr "категорію"
 msgid "A deposit in the funding account currency must receive the full funding amount"
 msgstr "Депозит у валюті рахунку списання має отримати всю суму списання"
 
+#: src/household/component/household-member-join-watcher/household-member-join-watcher.tsx
+msgid "A family member"
+msgstr "Член родини"
+
 #: src/account/component/household-shared-by-other-account-row/household-shared-by-other-account-row.tsx
 msgid "A family member shares this account, so everyone in the family sees it."
 msgstr "Рахунок спільний із членом родини, тому його бачить уся родина."
@@ -1104,6 +1125,10 @@ msgstr "понад ліміт {formattedLimit}"
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "Above this amount"
 msgstr "Більше за цю суму"
+
+#: src/household/component/household-join-card/household-join-card.tsx
+msgid "Accepting the invitation"
+msgstr "Приймаємо запрошення"
 
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "account"
@@ -2595,6 +2620,10 @@ msgstr "Виберіть інший рахунок"
 msgid "Choose what goes inside"
 msgstr "Вибрати, що буде всередині"
 
+#: src/household/component/household-owner-share-section/household-owner-share-section.tsx
+msgid "Choose what to share"
+msgstr "Оберіть, чим ділитися"
+
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Choose what to track. Balances and history come straight from Binance."
 msgstr "Оберіть, що відстежувати. Баланси та історія надходять безпосередньо від Binance."
@@ -3027,6 +3056,7 @@ msgid "Could not import CSV file"
 msgstr "Не вдалося імпортувати CSV-файл"
 
 #: src/cloud-sync/service/cloud-sync.service.ts
+#: src/household/component/household-join-card/household-join-card.tsx
 msgid "Could not join the family"
 msgstr "Не вдалося приєднатися до родини"
 
@@ -3286,6 +3316,7 @@ msgid "Could not update settings"
 msgstr "Не вдалося оновити налаштування"
 
 #: src/budget/components/budget-share-field/budget-share-field.tsx
+#: src/household/component/household-account-share-row/household-account-share-row.tsx
 #: src/household/component/household-share-everything-section/household-share-everything-section.tsx
 msgid "Could not update sharing"
 msgstr "Не вдалося оновити спільний доступ"
@@ -4029,6 +4060,10 @@ msgstr "напр. Netflix, оренда"
 msgid "Each bar compares one day's spending with your daily plan."
 msgstr "Кожен стовпчик порівнює витрати за день із вашим денним планом."
 
+#: src/household/component/household-pending-invites-row/household-pending-invites-row.tsx
+msgid "Each link works for one person"
+msgstr "Кожне посилання працює лише для однієї людини"
+
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Each source becomes a separate transaction."
 msgstr "Кожне джерело знову стане окремою транзакцією."
@@ -4499,6 +4534,7 @@ msgstr "Родинну групу видалено"
 
 #: src/household/component/household-participant-row/household-participant-row.tsx
 #: src/household/component/household-participants-group/household-participants-group.tsx
+#: src/household/component/household-pending-invites-row/household-pending-invites-row.tsx
 msgid "Family member"
 msgstr "Член родини"
 
@@ -5143,10 +5179,6 @@ msgstr "Відсоткова ставка % (необов'язково)"
 msgid "Invalid file"
 msgstr "Невірний файл"
 
-#: src/household/component/household-participant-row/household-participant-row.tsx
-msgid "Invitation pending"
-msgstr "Запрошення очікує"
-
 #: src/household/component/household-invite-row/household-invite-row.tsx
 msgid "Invite family"
 msgstr "Запросити родину"
@@ -5211,6 +5243,20 @@ msgstr "Його транзакції теж буде видалено. Пере
 #: src/sync/component/sync-accounts-step/sync-accounts-step.tsx
 msgid "Jars"
 msgstr "Банки"
+
+#: src/household/component/household-participant-row/household-participant-row.tsx
+msgid "Joined"
+msgstr "Приєднався"
+
+#: src/household/component/family-row/family-row.tsx
+#: src/household/component/household-join-card/household-join-card.tsx
+msgid "Joining {ownerDisplayName}'s family…"
+msgstr "Приєднуємось до родини {ownerDisplayName}…"
+
+#: src/household/component/family-row/family-row.tsx
+#: src/household/component/household-join-card/household-join-card.tsx
+msgid "Joining the family…"
+msgstr "Приєднуємось до родини…"
 
 #: src/ai/hook/use-ai-model-download-actions.hook.ts
 msgid "Keep"
@@ -5653,7 +5699,6 @@ msgid "MCC codes"
 msgstr "Коди MCC"
 
 #: src/household/component/household-member-content/household-member-content.tsx
-#: src/household/component/household-participant-row/household-participant-row.tsx
 #: src/household/component/household-participants-group/household-participants-group.tsx
 msgid "Member"
 msgstr "Учасник"
@@ -6606,6 +6651,10 @@ msgstr "Відкрити налаштування"
 msgid "Open Shortcuts"
 msgstr "Відкрити Shortcuts"
 
+#: src/household/component/household-join-card/household-join-card.tsx
+msgid "Open the invitation link again to retry."
+msgstr "Відкрийте посилання із запрошенням ще раз, щоб повторити."
+
 #: src/cloud-backup/component/cloud-backup-list/cloud-backup-list.tsx
 msgid "Open the Settings app and sign in to your Apple Account. Backups from your iPhone and iPad appear here."
 msgstr "Відкрийте «Налаштування» та ввійдіть в обліковий запис Apple. Копії з вашого iPhone та iPad з’являться тут."
@@ -6687,10 +6736,15 @@ msgstr "Або розблокуйте за допомогою Touch ID."
 msgid "Organize"
 msgstr "Упорядкування"
 
+#: src/household/component/household-joined-card/household-joined-card.tsx
 #: src/household/component/household-owner-content/household-owner-content.tsx
 #: src/household/component/household-participant-row/household-participant-row.tsx
 msgid "Organizer"
 msgstr "Організатор"
+
+#: src/household/component/household-joined-card/household-joined-card.tsx
+msgid "Organizer · {sharedSubtitle}"
+msgstr "Організатор · {sharedSubtitle}"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
@@ -8151,6 +8205,18 @@ msgstr "Ділитися цим рахунком"
 msgid "Share with family"
 msgstr "Поділитися з родиною"
 
+#: src/household/component/household-member-share-section/household-member-share-section.tsx
+msgid "Share your accounts"
+msgstr "Поділіться своїми рахунками"
+
+#: src/household/component/household-member-share-section/household-member-share-section.tsx
+msgid "Share your accounts with {organizerName}"
+msgstr "Поділіться своїми рахунками з {organizerName}"
+
+#: src/household/component/household-joined-card/household-joined-card.tsx
+msgid "Shared accounts stay in sync"
+msgstr "Спільні рахунки лишаються синхронізованими"
+
 #: src/account/component/household-shared-by-everything-account-row/household-shared-by-everything-account-row.tsx
 msgid "Shared because you share everything"
 msgstr "Спільний, бо ви ділитеся всім"
@@ -8622,6 +8688,7 @@ msgid "Syncing resumes for all accounts once you update the key."
 msgstr "Синхронізація всіх рахунків відновиться, щойно ви оновите ключ."
 
 #: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+#: src/household/component/household-joined-card/household-joined-card.tsx
 #: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
@@ -8801,6 +8868,10 @@ msgstr "Об’єднані транзакції знову стануть ок�
 msgid "The note on a payment"
 msgstr "Нотатка до платежу"
 
+#: src/household/component/household-member-share-section/household-member-share-section.tsx
+msgid "The organizer sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
+msgstr "Організатор бачить спільні рахунки та їхні платежі. Гроші, переміщені між спільними рахунками, відображаються як переказ."
+
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "The PIN becomes the encryption key"
 msgstr "PIN-код стає ключем шифрування"
@@ -8860,6 +8931,10 @@ msgstr "Немає кнопки «забув PIN-код»."
 #: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
 msgid "These accounts already exist in Budgie or use a currency Budgie does not support. To continue an existing account, open it and tap Connect to bank."
 msgstr "Ці рахунки вже є в Budgie або використовують валюту, яку Budgie не підтримує. Щоб продовжити наявний рахунок, відкрийте його й торкніться «Підключити до банку»."
+
+#: src/household/component/household-remove-button/household-remove-button.tsx
+msgid "these invitations"
+msgstr "ці запрошення"
 
 #: src/budget/constant/budget-period-this-label.constant.ts
 msgid "these two weeks"
@@ -9813,6 +9888,11 @@ msgstr "Очікування мережі"
 msgid "Waiting for the first market quote"
 msgstr "Очікуємо перше ринкове котирування"
 
+#: src/household/component/household-participant-row/household-participant-row.tsx
+#: src/household/component/household-pending-invites-row/household-pending-invites-row.tsx
+msgid "Waiting for them to open the invite"
+msgstr "Чекаємо, поки запрошення відкриють"
+
 #: src/app/(main)/create-account/index.tsx
 msgid "Wallets and exchange balances"
 msgstr "Гаманці та баланси бірж"
@@ -10044,6 +10124,14 @@ msgstr "Ви використовуєте мобільні дані. Заван�
 msgid "You're on Wi-Fi."
 msgstr "Ви підключені до Wi-Fi."
 
+#: src/household/component/household-joined-card/household-joined-card.tsx
+msgid "You've joined {organizerName}'s family"
+msgstr "Ви приєднались до родини {organizerName}"
+
+#: src/household/component/household-joined-card/household-joined-card.tsx
+msgid "You've joined the family"
+msgstr "Ви приєднались до родини"
+
 #: src/categorize-inbox/components/categorize-inbox-transfer-accounts/categorize-inbox-transfer-accounts.tsx
 msgid "Your accounts"
 msgstr "Ваші рахунки"
@@ -10121,6 +10209,10 @@ msgstr "Ваші дані: {state}"
 msgid "Your device clock is out of sync. Enable automatic date and time, then try again."
 msgstr "Годинник вашого пристрою не синхронізований. Увімкніть автоматичні дату й час і спробуйте ще раз."
 
+#: src/household/component/household-owner-share-section/household-owner-share-section.tsx
+msgid "Your family sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
+msgstr "Ваша родина бачить спільні рахунки та їхні платежі. Гроші, переміщені між спільними рахунками, відображаються як переказ."
+
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 msgid "Your file. Your PIN."
 msgstr "Ваш файл. Ваш PIN-код."
@@ -10140,6 +10232,10 @@ msgstr "Ваші гроші в одному файлі."
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "Your money will live in one file on this phone. Choose who can open it."
 msgstr "Ваші гроші зберігатимуться в одному файлі на цьому телефоні. Оберіть, хто може його відкрити."
+
+#: src/household/component/household-joined-card/household-joined-card.tsx
+msgid "Your organizer"
+msgstr "Ваш організатор"
 
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
 msgid "Your phone’s lock will be the only lock."

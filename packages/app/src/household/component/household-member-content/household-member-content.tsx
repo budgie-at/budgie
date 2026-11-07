@@ -8,9 +8,9 @@ import { ICloudParticipantRole } from '../../../../modules/icloud';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useHouseholdParticipants } from '../../hook/use-household-participants.hook';
 import { HouseholdLeaveRow } from '../household-leave-row/household-leave-row';
+import { HouseholdMemberShareSection } from '../household-member-share-section/household-member-share-section';
 import { HouseholdParticipantRow } from '../household-participant-row/household-participant-row';
 import { HouseholdParticipantsGroup } from '../household-participants-group/household-participants-group';
-import { HouseholdShareEverythingSection } from '../household-share-everything-section/household-share-everything-section';
 import { HouseholdYouRow } from '../household-you-row/household-you-row';
 
 export const HouseholdMemberContent = () => {
@@ -33,7 +33,7 @@ export const HouseholdMemberContent = () => {
                     <HouseholdParticipantRow key={participant.participantId} participant={participant} />
                 ))}
             </GroupedListSection>
-            <HouseholdShareEverythingSection />
+            <HouseholdMemberShareSection />
             <GroupedListSection>
                 <HouseholdLeaveRow />
             </GroupedListSection>

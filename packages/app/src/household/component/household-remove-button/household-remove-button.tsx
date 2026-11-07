@@ -14,13 +14,15 @@ import { HouseholdRemoveButtonSelector } from './household-remove-button.selecto
 import type { ICloudShareParticipant } from '../../../../modules/icloud';
 
 interface Props {
-    readonly participant: Pick<ICloudShareParticipant, 'displayName' | 'participantId'>;
+    readonly participants: readonly Pick<ICloudShareParticipant, 'displayName' | 'participantId'>[];
 }
 
-export const HouseholdRemoveButton = ({ participant }: Props) => {
+export const HouseholdRemoveButton = ({ participants }: Props) => {
     const { t } = useLingui();
     const { run, isLoading } = useSingleFlight();
-    const name = participant.displayName ?? t`this person`;
+    const [first] = participants;
+    const singleName = first?.displayName ?? t`this person`;
+    const name = participants.length === 1 ? singleName : t`these invitations`;
 
     const handlePress = () => {
         void run(
@@ -34,7 +36,9 @@ export const HouseholdRemoveButton = ({ participant }: Props) => {
                 Effect.flatMap(isConfirmed =>
                     isConfirmed
                         ? Effect.flatMap(HouseholdService, householdService =>
-                              householdService.removeParticipant(participant.participantId)
+                              Effect.forEach(participants, participant => householdService.removeParticipant(participant.participantId), {
+                                  discard: true
+                              })
                           ).pipe(
                               Effect.tap(
                                   Effect.sync(() => {
