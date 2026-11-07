@@ -71,7 +71,8 @@ export async function pickCategoryCard(ctx: Ctx, name: string): Promise<void> {
 
 /** subflows/categories/apply-category-filter */
 export async function applyCategoryFilter(ctx: Ctx, name: string): Promise<void> {
-    await tapId(ctx, 'TransactionFilters.CategoryChip');
+    const bounds = await settledBounds(ctx, 'TransactionFilters.CategoryChip');
+    await ctx.screen.tapAt({ x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height / 2 });
     await expectId(ctx, 'TransactionFilters.CategorySearchInput', 5_000);
     const input = byId(ctx.screen, 'TransactionFilters.CategorySearchInput');
     await input.fill(name);
