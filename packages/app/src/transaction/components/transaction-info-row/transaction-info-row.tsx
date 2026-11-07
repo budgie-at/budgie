@@ -117,11 +117,12 @@ export const TransactionInfoRow = (props: Props) => {
     if (isDefined(onPress)) {
         return (
             <HapticPressable
+                pressedScale={1}
                 testID={testID}
                 accessibilityRole="button"
                 accessibilityLabel={accessibilityLabel}
                 onPress={onPress}
-                className="active:scale-100 active:opacity-70"
+                className="active:opacity-70"
             >
                 {row}
             </HapticPressable>

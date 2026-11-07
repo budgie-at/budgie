@@ -9,6 +9,8 @@ import { EmptyFn } from '@rnw-community/shared';
 
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { PillButton } from '../../../@generic/component/pill-button/pill-button';
+import { ENTRANCE_DURATION } from '../../../@generic/constant/entrance-motion.constant';
+import { EASE_OUT } from '../../../@generic/constant/motion.constant';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { ScreenChromeThemeProvider } from '../../../@generic/provider/screen-chrome-theme.provider';
@@ -25,7 +27,7 @@ export const OnboardingSealedMoment = ({ onContinue }: Props) => {
     const { t } = useLingui();
     const reducedMotion = useReducedMotion();
     const [, hapticImpact] = useVibration();
-    const surfaceEntering = reducedMotion ? FadeIn : FadeIn.duration(400);
+    const surfaceEntering = reducedMotion ? FadeIn : FadeIn.duration(ENTRANCE_DURATION).easing(EASE_OUT);
 
     const signalSealed = useEffectEvent(() => {
         hapticImpact(ImpactFeedbackStyle.Heavy);

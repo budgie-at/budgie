@@ -4,10 +4,11 @@ import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-na
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
+import { EASE_IN_OUT } from '../../../@generic/constant/motion.constant';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 
-const FILL_DURATION = 220;
+const FILL_DURATION = 280;
 const FADE_DURATION = 180;
 
 export const CategorizeInboxSessionProgress = () => {
@@ -22,7 +23,7 @@ export const CategorizeInboxSessionProgress = () => {
     const opacity = useSharedValue(visibleOpacity);
 
     useEffect(() => {
-        width.set(reducedMotion ? percentage : withTiming(percentage, { duration: FILL_DURATION }));
+        width.set(reducedMotion ? percentage : withTiming(percentage, { duration: FILL_DURATION, easing: EASE_IN_OUT }));
         opacity.set(reducedMotion ? visibleOpacity : withTiming(visibleOpacity, { duration: FADE_DURATION }));
     }, [percentage, visibleOpacity, reducedMotion, width, opacity]);
 

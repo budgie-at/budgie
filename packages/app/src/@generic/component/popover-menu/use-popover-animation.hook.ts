@@ -1,17 +1,21 @@
 import { useEffect, useEffectEvent, useReducer, useRef } from 'react';
 import { Platform } from 'react-native';
-import { Easing, interpolate, runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 
 import { EmptyFn } from '@rnw-community/shared';
 
+import { EASE_OUT, MOTION_FAST_DURATION } from '../../constant/motion.constant';
 import { PopoverAnimationActionTypeEnum } from '../../enum/popover-animation-action-type.enum';
+import { useReducedMotion } from '../../hook/use-reduced-motion.hook';
 import { PopoverAnimationActionInterface } from '../../interface/popover-animation-action.interface';
 import { PopoverAnimationStateInterface } from '../../interface/popover-animation-state.interface';
 
 const BACKDROP_OPACITY = 0.3;
 const MENU_SCALE_CLOSED = 0.95;
 
-const TIMING_CONFIG = { duration: 150, easing: Easing.out(Easing.cubic) };
+const OPEN_TIMING_CONFIG = { duration: 180, easing: EASE_OUT };
+const CLOSE_TIMING_CONFIG = { duration: MOTION_FAST_DURATION, easing: EASE_OUT };
 
 const reducer = (state: PopoverAnimationStateInterface, action: PopoverAnimationActionInterface): PopoverAnimationStateInterface => {
     if (action.type === PopoverAnimationActionTypeEnum.OPEN_CHANGED) {
@@ -25,6 +29,7 @@ const reducer = (state: PopoverAnimationStateInterface, action: PopoverAnimation
 };
 
 export const usePopoverAnimation = (isOpen: boolean, onCloseComplete?: EmptyFn) => {
+    const reducedMotion = useReducedMotion();
     const progress = useSharedValue(isOpen ? 1 : 0);
     const [{ previousIsOpen, isClosing, isDismissing }, dispatch] = useReducer(reducer, {
         previousIsOpen: isOpen,
@@ -49,12 +54,12 @@ export const usePopoverAnimation = (isOpen: boolean, onCloseComplete?: EmptyFn) 
 
     useEffect(() => {
         if (isOpen) {
-            progress.set(withTiming(1, TIMING_CONFIG));
+            progress.set(withTiming(1, OPEN_TIMING_CONFIG));
         } else if (isClosing) {
             progress.set(
-                withTiming(0, TIMING_CONFIG, isFinished => {
+                withTiming(0, CLOSE_TIMING_CONFIG, isFinished => {
                     if (isFinished) {
-                        runOnJS(dispatch)({ type: PopoverAnimationActionTypeEnum.CLOSE_ANIMATION_FINISHED });
+                        scheduleOnRN(dispatch, { type: PopoverAnimationActionTypeEnum.CLOSE_ANIMATION_FINISHED });
                     }
                 })
             );
@@ -62,9 +67,10 @@ export const usePopoverAnimation = (isOpen: boolean, onCloseComplete?: EmptyFn) 
     }, [isOpen, isClosing, progress]);
 
     const backdropStyle = useAnimatedStyle(() => ({ opacity: progress.get() * BACKDROP_OPACITY }));
+    const closedScale = reducedMotion ? 1 : MENU_SCALE_CLOSED;
     const menuStyle = useAnimatedStyle(() => ({
         opacity: progress.get(),
-        transform: [{ scale: interpolate(progress.get(), [0, 1], [MENU_SCALE_CLOSED, 1]) }]
+        transform: [{ scale: interpolate(progress.get(), [0, 1], [closedScale, 1]) }]
     }));
 
     return {

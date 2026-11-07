@@ -19,7 +19,7 @@ interface Props {
     readonly onPress: EmptyFn;
 }
 
-const toggleVariants = cva('min-h-[32px] flex-row items-center gap-x-xs self-start pt-xxs pb-md pr-xl active:scale-100 active:opacity-60', {
+const toggleVariants = cva('min-h-[32px] flex-row items-center gap-x-xs self-start pt-xxs pb-md pr-xl active:opacity-60', {
     variants: { isStacked: { true: 'pl-3xl', false: 'pl-[64px]' } }
 });
 
@@ -38,6 +38,7 @@ export const CryptoCurrencyGroupToggleRow = ({ accountsCount, instrumentCode, is
 
     return (
         <HapticPressable
+            pressedScale={1}
             accessible
             accessibilityRole="button"
             accessibilityState={toggleAccessibilityState}

@@ -1,8 +1,9 @@
 import { ClassValue } from 'cn';
 import { useEffect } from 'react';
 import { View } from 'react-native';
-import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
+import { EASE_IN_OUT } from '../../constant/motion.constant';
 import { useReducedMotion } from '../../hook/use-reduced-motion.hook';
 import { cn } from '../../utils/cn.util';
 
@@ -12,19 +13,14 @@ interface Props {
     readonly fillClassName?: ClassValue;
 }
 
-const FILL_DURATION = 400;
-const FILL_EASING_X1 = 0.77;
-const FILL_EASING_Y1 = 0;
-const FILL_EASING_X2 = 0.175;
-const FILL_EASING_Y2 = 1;
-const FILL_EASING = Easing.bezier(FILL_EASING_X1, FILL_EASING_Y1, FILL_EASING_X2, FILL_EASING_Y2);
+const FILL_DURATION = 280;
 
 export const ProgressTrack = ({ percentage, className, fillClassName = 'bg-primary' }: Props) => {
     const reducedMotion = useReducedMotion();
     const width = useSharedValue(percentage);
 
     useEffect(() => {
-        width.set(reducedMotion ? percentage : withTiming(percentage, { duration: FILL_DURATION, easing: FILL_EASING }));
+        width.set(reducedMotion ? percentage : withTiming(percentage, { duration: FILL_DURATION, easing: EASE_IN_OUT }));
     }, [percentage, reducedMotion, width]);
 
     const fillStyle = useAnimatedStyle(() => ({ width: `${width.get()}%` }));

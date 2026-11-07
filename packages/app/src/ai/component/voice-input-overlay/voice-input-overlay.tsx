@@ -2,7 +2,6 @@ import { type AITransactionInterface } from '@budgie/ai';
 import * as Effect from 'effect/Effect';
 import { router } from 'expo-router';
 import { useEffect, useRef } from 'react';
-import { useSharedValue } from 'react-native-reanimated';
 
 import { emptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -17,7 +16,6 @@ import type { VoiceReviewModalResult } from '../../context/voice-review-modal.co
 export const VoiceInputOverlay = ({ onClose }: { readonly onClose: () => void }) => {
     const [openVoiceReview] = useVoiceReviewModal();
     const voiceInput = useVoiceInput();
-    const contentOpacity = useSharedValue(1);
 
     const isLiveRef = useRef<boolean>(true);
     const { isReady, startAndCollect, cancel, state, stop } = voiceInput;
@@ -100,7 +98,5 @@ export const VoiceInputOverlay = ({ onClose }: { readonly onClose: () => void })
         onClose();
     };
 
-    return (
-        <VoiceInputOverlayContent voiceInput={voiceInput} contentOpacity={contentOpacity} onRecord={handleRecord} onCancel={handleCancel} />
-    );
+    return <VoiceInputOverlayContent voiceInput={voiceInput} onRecord={handleRecord} onCancel={handleCancel} />;
 };

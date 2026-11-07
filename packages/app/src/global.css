@@ -67,8 +67,6 @@
     --radius-6xl: 1.571rem; /* 22px */
     --radius-7xl: 1.714rem; /* 24px */
     --stroke-25: 0.156rem;
-    --scale-xs: 0.99;
-    --scale-s: 0.95;
 }
 
 @layer theme {

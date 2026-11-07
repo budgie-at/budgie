@@ -1,5 +1,5 @@
 import { Directions, Gesture } from 'react-native-gesture-handler';
-import { runOnJS } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 
 interface Params<T extends string> {
     readonly tabs: readonly T[];
@@ -24,10 +24,10 @@ export const tabSwipeGesture = <T extends string>({ tabs, activeTab, onChangeTab
 
     const swipeLeft = Gesture.Fling()
         .direction(Directions.LEFT)
-        .onEnd(() => void runOnJS(handleSwipeLeft)());
+        .onEnd(() => void scheduleOnRN(handleSwipeLeft));
     const swipeRight = Gesture.Fling()
         .direction(Directions.RIGHT)
-        .onEnd(() => void runOnJS(handleSwipeRight)());
+        .onEnd(() => void scheduleOnRN(handleSwipeRight));
 
     return Gesture.Race(swipeLeft, swipeRight);
 };

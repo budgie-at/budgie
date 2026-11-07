@@ -88,7 +88,8 @@ export const PopoverMenu = ({ isOpen, onClose, onCloseComplete, children, anchor
               maxWidth: menuMaxWidth
           }
         : { position: 'absolute', top: menuTop, right: menuRight, maxWidth: menuMaxWidth };
-    const animatedMenuStyle = [menuStyle, measuringStyle];
+    const menuTransformOrigin = `${isStartAligned ? 'left' : 'right'} ${shouldFlipAbove ? 'bottom' : 'top'}`;
+    const animatedMenuStyle = [menuStyle, { transformOrigin: menuTransformOrigin }, measuringStyle];
     const measuringPointerEvents = isMeasuring ? 'none' : 'auto';
     const measuringImportantForAccessibility = isMeasuring ? 'no-hide-descendants' : 'auto';
 

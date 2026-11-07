@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import Animated, { useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
 
+import { EASE_OUT } from '../../constant/motion.constant';
 import { RevealGateContext } from '../../context/reveal-gate.context';
 
 import type { ReactNode } from 'react';
@@ -10,7 +11,7 @@ interface Props {
     readonly children: ReactNode;
 }
 
-const REVEAL_TIMING = { duration: 150 };
+const REVEAL_TIMING = { duration: 150, easing: EASE_OUT };
 const REVEAL_TIMEOUT_MS = 600;
 
 export const RevealGate = ({ isLoading, children }: Props) => {

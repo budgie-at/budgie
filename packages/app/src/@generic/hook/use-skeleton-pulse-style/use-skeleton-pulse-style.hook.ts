@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
+import { Easing, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 
 import { useReducedMotion } from '../use-reduced-motion.hook';
 
@@ -13,7 +13,11 @@ export const useSkeletonPulseStyle = () => {
     const opacity = useSharedValue(MAX_OPACITY);
 
     useEffect(() => {
-        opacity.set(reducedMotion ? STATIC_OPACITY : withRepeat(withTiming(MIN_OPACITY, { duration: PULSE_DURATION }), -1, true));
+        opacity.set(
+            reducedMotion
+                ? STATIC_OPACITY
+                : withRepeat(withTiming(MIN_OPACITY, { duration: PULSE_DURATION, easing: Easing.inOut(Easing.sin) }), -1, true)
+        );
     }, [opacity, reducedMotion]);
 
     return useAnimatedStyle(() => ({ opacity: opacity.value }));

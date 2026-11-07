@@ -7,7 +7,8 @@ import Animated, { FadeIn, FadeOut, LayoutAnimationConfig, LinearTransition } fr
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { ENTRANCE_DURATION, ENTRANCE_EASING, ENTRANCE_REDUCED_DURATION } from '../../../@generic/constant/entrance-motion.constant';
+import { ENTRANCE_DURATION, ENTRANCE_REDUCED_DURATION } from '../../../@generic/constant/entrance-motion.constant';
+import { EASE_OUT } from '../../../@generic/constant/motion.constant';
 import { ConvertToInstallmentFormSchema } from '../../constant/convert-to-installment-form-schema.constant';
 import { useInstallmentAmountLabel } from '../../hook/use-installment-amount-label.hook';
 import { useInstallmentSplit } from '../../hook/use-installment-split.hook';
@@ -29,9 +30,9 @@ interface Props {
 
 const DEFAULT_INSTALLMENT_COUNT = 3;
 const FIRST_PART_TITLE_PREFIX = /^Платіж\s+/u;
-const ENTERING = FadeIn.duration(ENTRANCE_DURATION);
-const EXITING = FadeOut.duration(ENTRANCE_REDUCED_DURATION);
-const FEE_LAYOUT = LinearTransition.duration(ENTRANCE_DURATION).easing(ENTRANCE_EASING);
+const ENTERING = FadeIn.duration(ENTRANCE_DURATION).easing(EASE_OUT);
+const EXITING = FadeOut.duration(ENTRANCE_REDUCED_DURATION).easing(EASE_OUT);
+const FEE_LAYOUT = LinearTransition.duration(ENTRANCE_DURATION).easing(EASE_OUT);
 
 export const ConvertToInstallmentContent = ({ params, onResolve }: Props) => {
     const { t } = useLingui();

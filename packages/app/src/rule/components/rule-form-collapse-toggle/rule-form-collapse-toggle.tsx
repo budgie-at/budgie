@@ -4,6 +4,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-na
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { EASE_IN_OUT, MOTION_BASE_DURATION } from '../../../@generic/constant/motion.constant';
 
 interface Props {
     readonly isExpanded: boolean;
@@ -11,7 +12,7 @@ interface Props {
     readonly onPress: () => void;
 }
 
-const TOGGLE_TIMING = { duration: 200 };
+const TOGGLE_TIMING = { duration: MOTION_BASE_DURATION, easing: EASE_IN_OUT };
 const EXPANDED_ANGLE = 180;
 const COLLAPSED_OPACITY = 0.45;
 

@@ -56,12 +56,12 @@ export const RuleFormSubmitBar = ({ submitLabel, isSubmitting, onSubmit }: Props
             <View>
                 {isDefined(issue) ? (
                     <HapticPressable
+                        pressedScale={1}
                         onPress={handleRevealIssue}
                         accessibilityRole="button"
                         accessibilityLabel={buttonLabel}
                         accessibilityState={DISABLED_STATE}
                         accessibilityHint={t`Shows what is missing`}
-                        className="active:scale-100"
                     >
                         <View pointerEvents="none">{button}</View>
                     </HapticPressable>

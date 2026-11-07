@@ -26,7 +26,7 @@ interface Props {
 
 const NORMAL_TEXT_INSET = 52;
 
-const pressableVariants = cva('px-xl py-xl active:scale-100 active:opacity-70', {
+const pressableVariants = cva('px-xl py-xl active:opacity-70', {
     variants: { selected: { true: 'bg-surface-fill' } }
 });
 
@@ -66,6 +66,7 @@ export const TransactionPickerRow = ({ item, position, isSelected = false, onPre
     return (
         <TransactionRowSurface position={position} separatorInset={separatorInset} className="bg-surface-row">
             <HapticPressable
+                pressedScale={1}
                 className={pressableVariants({ selected: isSelected })}
                 onPress={handlePress}
                 testID={testID}

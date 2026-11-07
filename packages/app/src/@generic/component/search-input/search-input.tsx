@@ -2,10 +2,11 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { ComponentProps } from 'react';
 import { Pressable, TextInput, View } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import Animated, { Keyframe } from 'react-native-reanimated';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { EASE_OUT, MOTION_BASE_DURATION, MOTION_FADE_OUT } from '../../constant/motion.constant';
 import { cn } from '../../utils/cn.util';
 import { Icon } from '../icon/icon';
 
@@ -17,9 +18,11 @@ interface Props extends ComponentProps<typeof TextInput> {
     readonly clearButtonClassName?: string;
 }
 
-const ANIMATION_DURATION = 140;
-const ENTERING = FadeIn.duration(ANIMATION_DURATION);
-const EXITING = FadeOut.duration(ANIMATION_DURATION);
+const CLEAR_ENTER_SCALE = 0.9;
+const ENTERING = new Keyframe({
+    0: { opacity: 0, transform: [{ scale: CLEAR_ENTER_SCALE }] },
+    100: { opacity: 1, transform: [{ scale: 1 }], easing: EASE_OUT }
+}).duration(MOTION_BASE_DURATION);
 
 export const SearchInput = (props: Props) => {
     const {
@@ -68,7 +71,7 @@ export const SearchInput = (props: Props) => {
             />
             <View className={cn('ml-sm h-[32px] w-[32px] items-center justify-center', clearButtonClassName)}>
                 {showClear ? (
-                    <Animated.View entering={ENTERING} exiting={EXITING}>
+                    <Animated.View entering={ENTERING} exiting={MOTION_FADE_OUT}>
                         <Pressable
                             accessibilityLabel={t`Tap to clear`}
                             accessibilityRole="button"

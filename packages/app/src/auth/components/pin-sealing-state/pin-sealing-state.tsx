@@ -14,6 +14,8 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { EASE_OUT } from '../../../@generic/constant/motion.constant';
+import { PIN_STEP_FADE_DURATION_MS } from '../../constant/pin-motion.constant';
 import { PinSetupModeEnum } from '../../enum/pin-setup-mode.enum';
 import { PinFormSelector } from '../pin-form/pin-form.selector';
 
@@ -42,7 +44,6 @@ interface Props {
     readonly mode: PinSetupModeEnum;
 }
 
-const PIN_SEALING_FADE_DURATION_MS = 260;
 const BREATH_DURATION_MS = 1_100;
 const BREATH_MIN_OPACITY = 0.55;
 
@@ -64,7 +65,7 @@ export const PinSealingState = ({ mode }: Props) => {
         }
 
         breath.set(
-            withRepeat(withTiming(BREATH_MIN_OPACITY, { duration: BREATH_DURATION_MS, easing: Easing.inOut(Easing.ease) }), -1, true)
+            withRepeat(withTiming(BREATH_MIN_OPACITY, { duration: BREATH_DURATION_MS, easing: Easing.inOut(Easing.sin) }), -1, true)
         );
     }, [breath, isReducedMotion]);
 
@@ -72,7 +73,7 @@ export const PinSealingState = ({ mode }: Props) => {
 
     return (
         <Animated.View
-            entering={FadeIn.duration(PIN_SEALING_FADE_DURATION_MS)}
+            entering={FadeIn.duration(PIN_STEP_FADE_DURATION_MS).easing(EASE_OUT)}
             className="absolute inset-0 bg-primary-reverse items-center justify-center px-5xl gap-y-5xl"
             testID={PinFormSelector.SealingState}
             accessibilityViewIsModal

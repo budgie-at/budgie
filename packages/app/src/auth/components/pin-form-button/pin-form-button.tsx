@@ -12,17 +12,14 @@ interface Props {
     readonly onPress: (digit: string) => void;
 }
 
-const keyVariants = cva(
-    'rounded-full justify-center items-center bg-secondary-foreground/25 active:bg-secondary-foreground/55 active:scale-s',
-    {
-        variants: {
-            isCompact: {
-                true: 'size-[64px]',
-                false: 'size-[76px]'
-            }
+const keyVariants = cva('rounded-full justify-center items-center bg-secondary-foreground/25 active:bg-secondary-foreground/55', {
+    variants: {
+        isCompact: {
+            true: 'size-[64px]',
+            false: 'size-[76px]'
         }
     }
-);
+});
 
 const digitVariants = cva('font-light text-primary', {
     variants: {

@@ -1,12 +1,13 @@
 import { View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
+import { ENTRANCE_REDUCED_DURATION } from '../../../@generic/constant/entrance-motion.constant';
+import { EASE_OUT } from '../../../@generic/constant/motion.constant';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { BUDGET_DAY_STATE_CLASS_NAME } from '../../constant/budget-day-state-class-name.constant';
 import {
     BUDGET_DAY_STRIP_FILL_DURATION,
-    BUDGET_DAY_STRIP_REDUCED_DURATION,
     BUDGET_DAY_STRIP_TODAY_DELAY,
     BUDGET_DAY_STRIP_TODAY_DURATION
 } from '../../constant/budget-day-strip-motion.constant';
@@ -20,9 +21,9 @@ interface Props {
 export const BudgetDayStripCell = ({ dayState, fillDelay }: Props) => {
     const reducedMotion = useReducedMotion();
     const cellClassName = cn('flex-1', 'rounded-[3px]', BUDGET_DAY_STATE_CLASS_NAME[dayState]);
-    const motionFillEntering = FadeIn.delay(fillDelay).duration(BUDGET_DAY_STRIP_FILL_DURATION);
-    const motionTodayEntering = FadeIn.delay(BUDGET_DAY_STRIP_TODAY_DELAY).duration(BUDGET_DAY_STRIP_TODAY_DURATION);
-    const reducedEntering = FadeIn.duration(BUDGET_DAY_STRIP_REDUCED_DURATION);
+    const motionFillEntering = FadeIn.delay(fillDelay).duration(BUDGET_DAY_STRIP_FILL_DURATION).easing(EASE_OUT);
+    const motionTodayEntering = FadeIn.delay(BUDGET_DAY_STRIP_TODAY_DELAY).duration(BUDGET_DAY_STRIP_TODAY_DURATION).easing(EASE_OUT);
+    const reducedEntering = FadeIn.duration(ENTRANCE_REDUCED_DURATION).easing(EASE_OUT);
     const fillEntering = reducedMotion ? reducedEntering : motionFillEntering;
     const todayEntering = reducedMotion ? reducedEntering : motionTodayEntering;
     const entering = dayState === BudgetDayStateEnum.TODAY ? todayEntering : fillEntering;

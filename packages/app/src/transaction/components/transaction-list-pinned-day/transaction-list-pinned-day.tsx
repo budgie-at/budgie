@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { View } from 'react-native';
-import Animated, { runOnJS, useAnimatedReaction, useAnimatedStyle, useDerivedValue } from 'react-native-reanimated';
+import Animated, { useAnimatedReaction, useAnimatedStyle, useDerivedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { scheduleOnRN } from 'react-native-worklets';
 
 import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
 
@@ -35,7 +36,7 @@ export const TransactionListPinnedDay = ({ sections, headerOffsets, anchorY }: P
         () => Math.max(headerOffsets.value.filter(offset => offset <= scrollY.value - pinDistance + OFFSET_TOLERANCE).length - 1, 0),
         (nextIndex, previousIndex) => {
             if (nextIndex !== previousIndex) {
-                runOnJS(setSectionIndex)(nextIndex);
+                scheduleOnRN(setSectionIndex, nextIndex);
             }
         }
     );

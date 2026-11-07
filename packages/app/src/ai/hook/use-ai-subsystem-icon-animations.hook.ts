@@ -3,6 +3,7 @@ import { Easing, cancelAnimation, useAnimatedStyle, useSharedValue, withRepeat, 
 
 import { isDefined } from '@rnw-community/shared';
 
+import { EASE_IN_OUT } from '../../@generic/constant/motion.constant';
 import { useReducedMotion } from '../../@generic/hook/use-reduced-motion.hook';
 
 const FULL_OPACITY = 1;
@@ -32,12 +33,12 @@ export const useAiSubsystemIconAnimations = ({ percent, iconSize, pulsePeriodMs 
             return;
         }
         pulseValue.set(
-            withRepeat(withTiming(DIMMED_OPACITY, { duration: pulsePeriodMs / HALF, easing: Easing.inOut(Easing.ease) }), -1, true)
+            withRepeat(withTiming(DIMMED_OPACITY, { duration: pulsePeriodMs / HALF, easing: Easing.inOut(Easing.sin) }), -1, true)
         );
     }, [pulseValue, reducedMotion, pulsePeriodMs]);
 
     useEffect(() => {
-        fillHeight.set(withTiming((percent / PERCENT_DIVISOR) * iconSize, { duration: FILL_ANIMATION_DURATION }));
+        fillHeight.set(withTiming((percent / PERCENT_DIVISOR) * iconSize, { duration: FILL_ANIMATION_DURATION, easing: EASE_IN_OUT }));
     }, [percent, iconSize, fillHeight]);
 
     const pulseStyle = useAnimatedStyle(() => ({ opacity: pulseValue.value }));

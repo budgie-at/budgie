@@ -2,10 +2,12 @@ import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import { runOnJS, useSharedValue } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeOut, useSharedValue } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { EASE_OUT, MOTION_FAST_DURATION } from '../../constant/motion.constant';
 import { useVibration } from '../../hook/use-vibration.hook';
 import { SectionIndexLetter } from '../section-index-letter/section-index-letter';
 
@@ -18,7 +20,10 @@ interface Props {
     readonly onSelect: (letter: string) => void;
 }
 
+const BUBBLE_EXIT_DURATION = 100;
 const ACCESSIBILITY_ACTIONS = [{ name: 'increment' }, { name: 'decrement' }] as const;
+const BUBBLE_ENTERING = FadeIn.duration(MOTION_FAST_DURATION).easing(EASE_OUT);
+const BUBBLE_EXITING = FadeOut.duration(BUBBLE_EXIT_DURATION).easing(EASE_OUT);
 const RAIL_HIT_SLOP = { left: 14, top: 8, bottom: 8 };
 
 export const SectionIndexRail = ({ letters, activeLetter, onSelect }: Props) => {
@@ -54,7 +59,7 @@ export const SectionIndexRail = ({ letters, activeLetter, onSelect }: Props) => 
 
         if (index !== lastIndex.get()) {
             lastIndex.set(index);
-            runOnJS(handleIndex)(index);
+            scheduleOnRN(handleIndex, index);
         }
     };
 
@@ -65,7 +70,7 @@ export const SectionIndexRail = ({ letters, activeLetter, onSelect }: Props) => 
         .onUpdate(handleScrub)
         .onFinalize(() => {
             lastIndex.set(-1);
-            runOnJS(setActiveIndex)(null);
+            scheduleOnRN(setActiveIndex, null);
         });
 
     const scrubLetter = isDefined(activeIndex) ? letters[activeIndex] : null;
@@ -75,9 +80,14 @@ export const SectionIndexRail = ({ letters, activeLetter, onSelect }: Props) => 
     return (
         <View className="max-h-full flex-row items-center">
             {isDefined(scrubLetter) ? (
-                <View className="mr-md h-[48px] w-[48px] items-center justify-center rounded-full bg-surface-fill" pointerEvents="none">
+                <Animated.View
+                    entering={BUBBLE_ENTERING}
+                    exiting={BUBBLE_EXITING}
+                    className="mr-md h-[48px] w-[48px] items-center justify-center rounded-full bg-surface-fill"
+                    pointerEvents="none"
+                >
                     <Text className="text-primary text-[24px] font-semibold">{scrubLetter}</Text>
-                </View>
+                </Animated.View>
             ) : null}
             <GestureDetector gesture={gesture}>
                 <View

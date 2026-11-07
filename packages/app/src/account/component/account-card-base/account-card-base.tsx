@@ -37,7 +37,7 @@ interface Props {
     readonly children?: ReactNode;
 }
 
-const rowVariants = cva('min-h-[60px] gap-x-xl py-lg pr-xl pl-3xl active:scale-100 active:bg-surface-fill', {
+const rowVariants = cva('min-h-[60px] gap-x-xl py-lg pr-xl pl-3xl active:bg-surface-fill', {
     variants: { isStacked: { true: 'gap-y-sm', false: 'flex-row items-center' } }
 });
 const leadingVariants = cva('flex-row items-center gap-x-xl', {
@@ -75,6 +75,7 @@ export const AccountCardBase = ({ account, balance, convertedBalance, amountLabe
     return (
         <View ref={cardRef} collapsable={false}>
             <HapticPressable
+                pressedScale={1}
                 accessible
                 accessibilityRole="button"
                 testID={AccountCardBaseSelector.Card(title)}

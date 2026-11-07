@@ -7,6 +7,7 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { Button } from '../../../@generic/component/button/button';
 import { ENTRANCE_DURATION, ENTRANCE_REDUCED_DURATION } from '../../../@generic/constant/entrance-motion.constant';
+import { EASE_OUT } from '../../../@generic/constant/motion.constant';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
@@ -55,8 +56,8 @@ export const ConvertToInstallmentCreateButton = ({ params, split, recoveryNote, 
     return (
         <Animated.View
             className="px-3xl pb-xl"
-            entering={FadeIn.duration(ENTRANCE_DURATION)}
-            exiting={FadeOut.duration(ENTRANCE_REDUCED_DURATION)}
+            entering={FadeIn.duration(ENTRANCE_DURATION).easing(EASE_OUT)}
+            exiting={FadeOut.duration(ENTRANCE_REDUCED_DURATION).easing(EASE_OUT)}
         >
             <Button
                 content={createLabel}

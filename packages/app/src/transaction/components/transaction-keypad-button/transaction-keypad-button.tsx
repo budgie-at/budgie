@@ -1,8 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { type ClassValue } from 'cn';
-import { Text } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -23,11 +22,6 @@ interface Props {
 }
 
 const ICON_SIZE = 24;
-const PRESSED_SCALE = 0.92;
-const PRESSED_OPACITY = 0.8;
-const SPRING_DAMPING = 15;
-const SPRING_STIFFNESS = 300;
-const OPACITY_DURATION_MS = 50;
 const COMMA_GLYPH_STYLE = { transform: [{ translateY: -6 }] };
 
 const buttonVariants = cva<{
@@ -35,8 +29,8 @@ const buttonVariants = cva<{
 }>('min-h-[44px] items-center justify-center rounded-xl', {
     variants: {
         buttonVariant: {
-            digit: 'flex-1 bg-grouped-surface-fill active:opacity-70',
-            action: 'flex-1 bg-grouped-surface-fill active:opacity-70'
+            digit: 'flex-1 bg-grouped-surface-fill active:bg-surface-fill',
+            action: 'flex-1 bg-grouped-surface-fill active:bg-surface-fill'
         }
     },
     defaultVariants: { buttonVariant: 'digit' }
@@ -57,25 +51,6 @@ const textVariants = cva<{
 export const TransactionKeypadButton = (props: Props) => {
     const { value, icon, variant = 'digit', accessibilityLabel, onPress, onLongPress, testID } = props;
 
-    const pressed = useSharedValue(false);
-
-    const handlePressIn = () => {
-        pressed.set(true);
-    };
-
-    const handlePressOut = () => {
-        pressed.set(false);
-    };
-
-    const animatedStyle = useAnimatedStyle(() => ({
-        transform: [
-            {
-                scale: withSpring(pressed.value ? PRESSED_SCALE : 1, { damping: SPRING_DAMPING, stiffness: SPRING_STIFFNESS })
-            }
-        ],
-        opacity: withTiming(pressed.value ? PRESSED_OPACITY : 1, { duration: OPACITY_DURATION_MS })
-    }));
-
     const resolvedAccessibilityLabel = accessibilityLabel ?? value ?? icon;
     const glyphStyle = value === ',' ? COMMA_GLYPH_STYLE : void 0;
     const contentClassName = textVariants({ buttonVariant: variant });
@@ -87,11 +62,9 @@ export const TransactionKeypadButton = (props: Props) => {
             className={buttonVariants({ buttonVariant: variant })}
             onLongPress={onLongPress}
             onPress={onPress}
-            onPressIn={handlePressIn}
-            onPressOut={handlePressOut}
             testID={testID}
         >
-            <Animated.View className="items-center justify-center" collapsable={false} style={animatedStyle}>
+            <View className="items-center justify-center" collapsable={false}>
                 {isDefined(icon) ? (
                     <Icon className={contentClassName} icon={icon} size={ICON_SIZE} />
                 ) : (
@@ -99,7 +72,7 @@ export const TransactionKeypadButton = (props: Props) => {
                         {value}
                     </Text>
                 )}
-            </Animated.View>
+            </View>
         </HapticPressable>
     );
 };

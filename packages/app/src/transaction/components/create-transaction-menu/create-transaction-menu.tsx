@@ -5,13 +5,15 @@ import { ImpactFeedbackStyle } from 'expo-haptics';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
+import { scheduleOnRN } from 'react-native-worklets';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { ReceiptScannerModule } from '../../../../modules/receipt-scanner';
 import { CircularActionButton } from '../../../@generic/component/circular-action-button/circular-action-button';
+import { EASE_OUT, MOTION_BASE_DURATION, MOTION_FAST_DURATION, SPRING_SETTLE } from '../../../@generic/constant/motion.constant';
 import { useCreateActionContext } from '../../../@generic/context/create-action.context';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { CreateActionInterface } from '../../../@generic/interface/create-action.interface';
@@ -26,10 +28,8 @@ import { AiButton } from '../ai-button/ai-button';
 
 import { CreateTransactionMenuSelector } from './create-transaction-menu.selector';
 
-const CLOSE_ANIMATION_DURATION = 250;
 const BUTTON_ROTATION_ACTIVE = 45;
-const SPRING_CONFIG = { damping: 15, stiffness: 200, mass: 0.8 };
-const CLOSE_SPRING_CONFIG = { damping: 20, stiffness: 300, mass: 0.5 };
+const HIDDEN_SCALE = 0.95;
 
 interface Props {
     readonly isOpen: boolean;
@@ -50,7 +50,8 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
     const isAiAvailable = useAtomValue(aiSystemStatusAtom).state !== AiSystemStateEnum.DISABLED;
 
     const rotation = useSharedValue(0);
-    const menuScale = useSharedValue(0);
+    const menuScale = useSharedValue(HIDDEN_SCALE);
+    const menuOpacity = useSharedValue(0);
 
     if (isOpen && !isVisible) {
         setIsVisible(true);
@@ -153,23 +154,25 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
     useEffect(() => {
         if (isOpen) {
             Toast.hide();
-            rotation.set(withSpring(BUTTON_ROTATION_ACTIVE, SPRING_CONFIG));
-            menuScale.set(withSpring(1, SPRING_CONFIG));
+            rotation.set(withSpring(BUTTON_ROTATION_ACTIVE, SPRING_SETTLE));
+            menuScale.set(withSpring(1, SPRING_SETTLE));
+            menuOpacity.set(withTiming(1, { duration: MOTION_BASE_DURATION, easing: EASE_OUT }));
         } else if (isVisible) {
-            rotation.set(withSpring(0, CLOSE_SPRING_CONFIG));
-            menuScale.set(
-                withTiming(0, { duration: CLOSE_ANIMATION_DURATION }, finished => {
+            rotation.set(withSpring(0, SPRING_SETTLE));
+            menuScale.set(withTiming(HIDDEN_SCALE, { duration: MOTION_FAST_DURATION, easing: EASE_OUT }));
+            menuOpacity.set(
+                withTiming(0, { duration: MOTION_FAST_DURATION, easing: EASE_OUT }, finished => {
                     if (finished) {
-                        runOnJS(setIsVisible)(false);
+                        scheduleOnRN(setIsVisible, false);
                     }
                 })
             );
         }
-    }, [isOpen, isVisible, menuScale, rotation]);
+    }, [isOpen, isVisible, menuOpacity, menuScale, rotation]);
     const buttonStyle = useAnimatedStyle(() => ({ transform: [{ rotate: `${rotation.value}deg` }] }));
     const aiButtonStyle = useAnimatedStyle(() => ({
         transform: [{ scale: menuScale.value }],
-        opacity: menuScale.value
+        opacity: menuOpacity.value
     }));
 
     if (!isVisible) {

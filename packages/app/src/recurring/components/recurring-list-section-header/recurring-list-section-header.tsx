@@ -56,10 +56,11 @@ export const RecurringListSectionHeader = ({ section, count, isCollapsed, onTogg
 
     return (
         <HapticPressable
+            pressedScale={1}
             accessibilityRole="button"
             accessibilityState={accessibilityState}
             accessibilityHint={caption}
-            className="min-h-[56px] flex-row items-end gap-x-md bg-surface px-3xl pt-xl pb-sm active:scale-100 active:opacity-70"
+            className="min-h-[56px] flex-row items-end gap-x-md bg-surface px-3xl pt-xl pb-sm active:opacity-70"
             onPress={handlePress}
             testID={RecurringPaneSelector.SectionHeader(section)}
         >

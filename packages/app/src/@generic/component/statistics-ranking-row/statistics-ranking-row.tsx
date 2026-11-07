@@ -49,8 +49,9 @@ export const StatisticsRankingRow = ({ title, share, ratio, icon, swatch, amount
 
     return (
         <HapticPressable
+            pressedScale={1}
             accessibilityRole="button"
-            className="min-h-[56px] flex-row items-center gap-x-xl py-lg pr-xl pl-3xl active:scale-100 active:bg-surface-fill"
+            className="min-h-[56px] flex-row items-center gap-x-xl py-lg pr-xl pl-3xl active:bg-surface-fill"
             hitSlop={0}
             testID={testID}
             onPress={onPress}

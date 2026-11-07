@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { View } from 'react-native';
 import { Directions, Gesture, GestureDetector } from 'react-native-gesture-handler';
-import { runOnJS } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 
 import { useToday } from '../../../@generic/hook/use-today.hook';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
@@ -49,12 +49,12 @@ export const RecurringCalendarNavigation = ({ displayMonth, displayYear, onChang
     const swipeLeft = Gesture.Fling()
         .direction(Directions.LEFT)
         .onEnd(() => {
-            runOnJS(handleNextMonth)();
+            scheduleOnRN(handleNextMonth);
         });
     const swipeRight = Gesture.Fling()
         .direction(Directions.RIGHT)
         .onEnd(() => {
-            runOnJS(handlePrevMonth)();
+            scheduleOnRN(handlePrevMonth);
         });
     const swipeGesture = Gesture.Race(swipeLeft, swipeRight);
 

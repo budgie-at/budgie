@@ -32,9 +32,10 @@ export const SegmentedControlItem = <T extends string>(props: Props<T>) => {
 
     return (
         <HapticPressable
+            pressedScale={1}
             accessibilityRole="tab"
             accessibilityState={accessibilityState}
-            className="flex-1 items-center justify-center px-md py-sm active:scale-100"
+            className="flex-1 items-center justify-center px-md py-sm"
             hitSlop={SEGMENT_HIT_SLOP}
             disabled={disabled}
             testID={segment.testID}

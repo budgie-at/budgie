@@ -1,9 +1,12 @@
 import { Trans } from '@lingui/react/macro';
 import { useEffect } from 'react';
 import { Text, View } from 'react-native';
-import Animated, { Easing, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 
 import { isNotEmptyString } from '@rnw-community/shared';
+
+import { EASE_OUT, MOTION_BASE_DURATION, MOTION_FAST_DURATION, SPRING_SETTLE } from '../../../@generic/constant/motion.constant';
+import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 
 interface Props {
     readonly isVisible: boolean;
@@ -11,29 +14,27 @@ interface Props {
     readonly partialText: string;
 }
 
-const ENTER_DURATION = 150;
-const EXIT_DURATION = 100;
 const BUBBLE_MARGIN_BOTTOM = 24;
-const ENTER_SCALE = 0.96;
-const SPRING_CONFIG = { damping: 12, stiffness: 180 };
+const HIDDEN_SCALE = 0.95;
 const MIN_BUBBLE_WIDTH = 200;
 const MAX_BUBBLE_WIDTH = 300;
 
 export const VoiceInputBubble = ({ isVisible, committedText, partialText }: Props) => {
+    const reducedMotion = useReducedMotion();
     const opacity = useSharedValue(0);
-    const scale = useSharedValue(ENTER_SCALE);
+    const scale = useSharedValue(HIDDEN_SCALE);
 
     const hasText = isNotEmptyString(committedText) || isNotEmptyString(partialText);
 
     useEffect(() => {
         if (isVisible) {
-            opacity.set(withTiming(1, { duration: ENTER_DURATION, easing: Easing.out(Easing.ease) }));
-            scale.set(withSpring(1, SPRING_CONFIG));
+            opacity.set(withTiming(1, { duration: MOTION_BASE_DURATION, easing: EASE_OUT }));
+            scale.set(reducedMotion ? 1 : withSpring(1, SPRING_SETTLE));
         } else {
-            opacity.set(withTiming(0, { duration: EXIT_DURATION, easing: Easing.in(Easing.ease) }));
-            scale.set(withTiming(ENTER_SCALE, { duration: EXIT_DURATION, easing: Easing.in(Easing.ease) }));
+            opacity.set(withTiming(0, { duration: MOTION_FAST_DURATION, easing: EASE_OUT }));
+            scale.set(reducedMotion ? 1 : withTiming(HIDDEN_SCALE, { duration: MOTION_FAST_DURATION, easing: EASE_OUT }));
         }
-    }, [isVisible, opacity, scale]);
+    }, [isVisible, opacity, reducedMotion, scale]);
 
     const containerAnimatedStyle = useAnimatedStyle(() => ({
         opacity: opacity.value,
