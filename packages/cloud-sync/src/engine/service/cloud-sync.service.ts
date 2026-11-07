@@ -120,6 +120,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             removeEmptyHousehold: householdService.removeEmptyHousehold,
             leaveHousehold: householdService.leaveHousehold,
             start: Effect.fn('CloudSyncService.start')(function* () {
+                yield* state.publishStoredOwnerName();
                 yield* forkConsumer(transport.events, dispatchEvent);
                 yield* forkConsumer(
                     Stream.filter(host.foregroundChanges, isForeground => isForeground),

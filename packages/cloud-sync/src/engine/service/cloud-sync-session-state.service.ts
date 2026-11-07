@@ -57,6 +57,12 @@ export class CloudSyncSessionState extends Context.Service<CloudSyncSessionState
         const failedKeys = new Set<string>();
         const quotaKeys = new Set<string>();
 
+        const publishOwnerNameForRole = Effect.fnUntraced(function* (role: SyncZoneRoleEnum | undefined) {
+            const storedOwnerName = role === SyncZoneRoleEnum.PARTICIPANT ? (yield* stateStore.read).householdOwnerDisplayName : null;
+
+            yield* host.publishHouseholdOwnerName(storedOwnerName);
+        });
+
         const publish = Effect.flatMap(Ref.get(session), current => {
             const household = zones.get(HOUSEHOLD_SYNC_ZONE);
             const memberRole = household?.role === SyncZoneRoleEnum.OWNER ? HouseholdRoleEnum.OWNER : HouseholdRoleEnum.MEMBER;
@@ -129,13 +135,13 @@ export class CloudSyncSessionState extends Context.Service<CloudSyncSessionState
                     labelByZone.set(buildCloudSyncKey(zone.ownerName, zone.zoneName), zone.zoneLabel);
                 }
 
-                const storedOwnerName =
-                    zones.get(HOUSEHOLD_SYNC_ZONE)?.role === SyncZoneRoleEnum.PARTICIPANT
-                        ? (yield* stateStore.read).householdOwnerDisplayName
-                        : null;
-
-                yield* host.publishHouseholdOwnerName(storedOwnerName);
+                yield* publishOwnerNameForRole(zones.get(HOUSEHOLD_SYNC_ZONE)?.role);
                 yield* publish;
+            }),
+            publishStoredOwnerName: Effect.fnUntraced(function* () {
+                const household = yield* zoneRegistryRepository.findByLabel(HOUSEHOLD_SYNC_ZONE);
+
+                yield* publishOwnerNameForRole(household?.role);
             })
         };
     })
