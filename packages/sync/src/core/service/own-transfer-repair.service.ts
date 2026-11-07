@@ -18,7 +18,7 @@ import { isBinanceOwnTransferTitle } from '../../binance/mapper/binance.mapper';
 import { ownTransferDetector } from '../detector/own-transfer.detector';
 import { OwnTransferRepository } from '../repository/own-transfer.repository';
 
-import type { ConsolidationScanScopeInterface, TransactionWithEntriesEntityInterface } from '@budgie/contracts';
+import type { AccountEntityInterface, ConsolidationScanScopeInterface, TransactionWithEntriesEntityInterface } from '@budgie/contracts';
 
 export class OwnTransferRepairService extends Context.Service<OwnTransferRepairService>()('@budgie/sync/OwnTransferRepairService', {
     make: Effect.gen(function* () {
@@ -72,14 +72,20 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
         return {
             repair: Effect.fn('OwnTransferRepairService.repair')(function* (scope: ConsolidationScanScopeInterface | null = null) {
                 const accounts = yield* repository.findAccounts;
+                const cardMatches = (transaction: TransactionWithEntriesEntityInterface) =>
+                    accounts.filter(
+                        candidate =>
+                            candidate.id !== candidateEntries(transaction)[0].accountId &&
+                            ownTransferDetector.matchesAccount(transaction.title, candidate)
+                    );
+                const isCompatible = (matches: readonly AccountEntityInterface[], accountId: number) =>
+                    isEmptyArray(matches) || matches.some(match => match.id === accountId);
                 const identities = (yield* repository.findIdentities).map(identity => identity.label).filter(isNotEmptyString);
                 const transactions = (yield* repository.findTransactions(scope)).filter(isSingleEntry);
                 const candidates = transactions.flatMap(transaction => {
                     const [entry] = candidateEntries(transaction);
                     const account = accounts.find(candidate => candidate.id === entry.accountId);
-                    const matches = accounts.filter(
-                        candidate => candidate.id !== entry.accountId && ownTransferDetector.matchesAccount(transaction.title, candidate)
-                    );
+                    const matches = cardMatches(transaction);
                     const isCryptoMovement =
                         transaction.externalSource === ExternalSourceEnum.BINANCE && isBinanceOwnTransferTitle(transaction.title);
 
@@ -111,7 +117,8 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                             links.length === 1 &&
                             isDefined(counterpart) &&
                             reverseOpposites.filter(link => link.transactionId === counterpart.id).length === 1 &&
-                            (isEmptyArray(matches) || matches.some(match => match.id === candidateEntries(counterpart)[0].accountId))
+                            isCompatible(matches, candidateEntries(counterpart)[0].accountId) &&
+                            isCompatible(cardMatches(counterpart), account.id)
                         ) {
                             return { transaction, counterpart, target: null };
                         }
@@ -119,6 +126,7 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                             isEmptyArray(links) &&
                             matches.length === 1 &&
                             !isDefined(matches[0].integrationId) &&
+                            !isDefined(matches[0].externalSource) &&
                             matches[0].instrumentId === account.instrumentId
                         ) {
                             return { transaction, counterpart: null, target: matches[0] };

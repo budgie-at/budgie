@@ -123,6 +123,40 @@ describe('account/own-transfer-repair', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('rejects an opposite whose card mask identifies a third account', () =>
+        Effect.gen(function* () {
+            const { target, expense } = yield* fixture;
+            yield* seed.updateTransaction(expense.id, { title: 'На свою картку' });
+            yield* seed.account({ title: 'Third •1357' });
+            const income = yield* addIncome(target.id);
+            yield* seed.updateTransaction(income.id, { title: 'З картки *1357' });
+            yield* expectUnpaired(expense.id, income.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('pairs a phrase when the opposite card mask identifies the source', () =>
+        Effect.gen(function* () {
+            const scenario = yield* fixture;
+            yield* seed.updateTransaction(scenario.expense.id, { title: 'На свою картку' });
+            yield* testDb.update(AccountEntityTable).set({ title: 'Source •9753' }).where(eq(AccountEntityTable.id, scenario.source.id));
+            const income = yield* addIncome(scenario.target.id);
+            yield* seed.updateTransaction(income.id, { title: 'З картки *9753' });
+            yield* repairAndExpectPair(scenario, income.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('does not convert into a released external account without an opposite', () =>
+        Effect.gen(function* () {
+            const scenario = yield* fixture;
+            yield* testDb
+                .update(AccountEntityTable)
+                .set({ integrationId: null, externalSource: ExternalSourceEnum.PRIVATBANK })
+                .where(eq(AccountEntityTable.id, scenario.target.id));
+            expect(yield* scenario.repair.repair()).toBe(0);
+            yield* expectExpense(scenario.expense.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('uses the unique opposite to disambiguate two matching cards', () =>
         Effect.gen(function* () {
             const scenario = yield* fixture;

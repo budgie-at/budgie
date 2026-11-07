@@ -42,9 +42,9 @@ export class TransferConsolidationService extends Context.Service<TransferConsol
                     const result = yield* consolidationCoordinatorService.consolidate(scope);
 
                     yield* updateBalancesAfterConsolidation(result.consolidated);
-                    yield* ownTransfers.repair(scope);
                     yield* installmentPlanService.attachDueParts();
                     yield* transactionDebtSettlementService.repairDebtPaymentCategories();
+                    yield* ownTransfers.repair(scope);
 
                     return result;
                 }, runExclusive),
