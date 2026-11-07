@@ -3,9 +3,10 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
+import { GroupedListSwitchRow } from '../../../@generic/component/grouped-list-switch-row/grouped-list-switch-row';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
-import { SettingsSwitchRow } from '../../../settings/components/settings-switch-row/settings-switch-row';
+import { SettingsRowIcon } from '../../../settings/components/settings-row-icon/settings-row-icon';
 
 import { HouseholdAccountShareRowSelector } from './household-account-share-row.selector';
 
@@ -27,8 +28,8 @@ export const HouseholdAccountShareRow = ({ account }: Props) => {
         );
 
     return (
-        <SettingsSwitchRow
-            icon={UserIconNameEnum.Wallet}
+        <GroupedListSwitchRow
+            left={<SettingsRowIcon icon={UserIconNameEnum.Wallet} variant="ghost" />}
             title={account.title}
             value={account.isShared}
             isLoading={isLoading}

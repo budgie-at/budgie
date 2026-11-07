@@ -1,4 +1,3 @@
-import { ICloudParticipantAcceptanceStatus, ICloudParticipantRole } from '@budgie/cloud-sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Duration from 'effect/Duration';
 import * as Effect from 'effect/Effect';
@@ -25,16 +24,12 @@ const pollParticipants = Effect.sync(() => {
 
 export const HouseholdMemberJoinWatcher = () => {
     const { t } = useLingui();
-    const { otherParticipants, isKnown } = useHouseholdParticipants();
+    const { joinedMembers, isKnown } = useHouseholdParticipants();
     const [hapticNotification] = useVibration();
-    const acceptedCountRef = useRef<number | null>(null);
+    const joinedCountRef = useRef<number | null>(null);
 
-    const acceptedMembers = otherParticipants.filter(
-        participant =>
-            participant.role !== ICloudParticipantRole.OWNER && participant.acceptanceStatus === ICloudParticipantAcceptanceStatus.ACCEPTED
-    );
-    const acceptedCount = acceptedMembers.length;
-    const latestName = acceptedMembers.at(-1)?.displayName;
+    const joinedCount = joinedMembers.length;
+    const latestName = joinedMembers.at(-1)?.displayName;
 
     const announceJoin = useEffectEvent(() => {
         const name = isNotEmptyString(latestName) ? latestName : t`A family member`;
@@ -48,12 +43,12 @@ export const HouseholdMemberJoinWatcher = () => {
             return;
         }
 
-        if (isDefined(acceptedCountRef.current) && acceptedCount > acceptedCountRef.current) {
+        if (isDefined(joinedCountRef.current) && joinedCount > joinedCountRef.current) {
             announceJoin();
         }
 
-        acceptedCountRef.current = acceptedCount;
-    }, [acceptedCount, isKnown]);
+        joinedCountRef.current = joinedCount;
+    }, [joinedCount, isKnown]);
 
     useFocusEffect(
         useCallback(() => {

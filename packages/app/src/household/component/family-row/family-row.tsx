@@ -1,4 +1,4 @@
-import { ICloudParticipantAcceptanceStatus, HouseholdJoinStatusEnum } from '@budgie/cloud-sync';
+import { HouseholdJoinStatusEnum } from '@budgie/cloud-sync';
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { plural } from '@lingui/core/macro';
@@ -24,24 +24,21 @@ export const FamilyRow = () => {
     const { t } = useLingui();
     const { isMember, isShared } = useHousehold();
     const { isAvailable } = useICloudAccount();
-    const { otherParticipants } = useHouseholdParticipants();
+    const { otherParticipants, joinedMembers } = useHouseholdParticipants();
     const organizerName = useHouseholdOrganizerName();
     const { status, ownerDisplayName } = useAtomValue(householdJoinAtom);
 
-    const acceptedParticipants = otherParticipants.filter(
-        participant => participant.acceptanceStatus === ICloudParticipantAcceptanceStatus.ACCEPTED
-    );
-    const pendingParticipants = otherParticipants.filter(
-        participant => participant.acceptanceStatus !== ICloudParticipantAcceptanceStatus.ACCEPTED
-    );
     const hasParticipants = isNotEmptyArray(otherParticipants);
     const pendingSubtitle = t({
-        message: plural(pendingParticipants.length, { one: 'Waiting for # person to join', other: 'Waiting for # people to join' })
+        message: plural(otherParticipants.length - joinedMembers.length, {
+            one: 'Waiting for # person to join',
+            other: 'Waiting for # people to join'
+        })
     });
     const acceptedSubtitle = t({
-        message: plural(acceptedParticipants.length, { one: 'Shared with # person', other: 'Shared with # people' })
+        message: plural(joinedMembers.length, { one: 'Shared with # person', other: 'Shared with # people' })
     });
-    const sharedSubtitle = isNotEmptyArray(acceptedParticipants) ? acceptedSubtitle : pendingSubtitle;
+    const sharedSubtitle = isNotEmptyArray(joinedMembers) ? acceptedSubtitle : pendingSubtitle;
     const memberSubtitle = isNotEmptyString(organizerName) ? t`${organizerName}'s family` : t`Shared with your family`;
     const roleSubtitle = isMember ? memberSubtitle : sharedSubtitle;
     const participantsSubtitle = isAvailable ? (
