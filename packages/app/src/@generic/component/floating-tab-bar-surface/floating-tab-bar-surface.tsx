@@ -30,13 +30,13 @@ export const FloatingTabBarSurface = ({ children, backdrop }: Props) => {
     return (
         <>
             {isDefaultFade ? <EdgeFade position="bottom" height={fadeHeight} /> : null}
-            <View className="absolute inset-x-0 bottom-0" pointerEvents="box-none" style={TAB_BAR_STYLE}>
+            <View className="absolute inset-x-0 bottom-0 pt-md" pointerEvents="box-none" style={TAB_BAR_STYLE}>
                 {isDefaultFade ? null : (
                     <View className="absolute inset-0 bg-grouped-surface" pointerEvents="none">
                         <View className="absolute inset-x-0 bottom-full h-[20px] bg-linear-to-b from-grouped-surface/0 to-grouped-surface" />
                     </View>
                 )}
-                <View className="flex-row items-center justify-between px-lg pb-safe pt-md" onLayout={handleLayout}>
+                <View className="flex-row items-center justify-between px-lg pb-safe" onLayout={handleLayout}>
                     {children}
                 </View>
             </View>
