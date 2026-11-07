@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.167.9](https://github.com/budgie-at/budgie/compare/v6.167.8...v6.167.9) (2026-11-07)
+
+### Bug Fixes
+
+* detect own-account transfers and harden categorize inbox suggestions ([#2032](https://github.com/budgie-at/budgie/issues/2032)) ([bf66581](https://github.com/budgie-at/budgie/commit/bf66581e175859f07662d0ebdcd980389383e3f4))
+
+
 ## [6.167.2](https://github.com/budgie-at/budgie/compare/v6.167.1...v6.167.2) (2026-11-07)
 
 ### Bug Fixes
