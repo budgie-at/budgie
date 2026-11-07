@@ -1,4 +1,4 @@
-import { resetTestDb, TestSeedService } from '@budgie-at/test-kit';
+import { TestSeedService, assertStoredBalancesMatchLedger, resetTestDb } from '@budgie-at/test-kit';
 import { SyncAutomationEmbeddingBoost, SyncAutomationService, SyncApplyService } from '@budgie/cloud-sync';
 import { P2pTransferTitleResolver } from '@budgie/consolidation';
 import { Db, ExternalSourceEnum } from '@budgie/contracts';
@@ -10,7 +10,7 @@ import * as Layer from 'effect/Layer';
 
 import { FakeCloudTransport, testDb } from '../../harness';
 
-import { expectBalancesMatchLedger, deviceLayer, pullDevice, pushDevice, readOutboxRows, refreshAllBalances } from './apply-harness';
+import { deviceLayer, pullDevice, pushDevice, readOutboxRows, refreshAllBalances } from './apply-harness';
 
 import type { FakeCloudDeliveryOptionsInterface } from '../../harness';
 import type { DB } from '@budgie/contracts';
@@ -155,8 +155,8 @@ export const bootstrapMonoDevices = bootstrapDevices(seed => seed.bankSyncAccoun
 
 export const expectBalancesConverged = (deviceB: DB) =>
     Effect.gen(function* () {
-        yield* expectBalancesMatchLedger(testDb);
-        yield* expectBalancesMatchLedger(deviceB);
+        yield* assertStoredBalancesMatchLedger(testDb);
+        yield* assertStoredBalancesMatchLedger(deviceB);
     });
 
 export const expectOutboxesEmpty = (deviceB: DB) =>

@@ -8,6 +8,7 @@ import * as Stream from 'effect/Stream';
 
 import { ICloudSyncScope } from '../../transport/enum/icloud-sync-scope.enum';
 import { CloudSyncEventKindEnum } from '../enum/cloud-sync-event-kind.enum';
+import { CloudSyncStatusEnum } from '../enum/cloud-sync-status.enum';
 import { cloudSyncDomainLayer } from '../layer/cloud-sync-domain.layer';
 import { CloudSyncDatabaseChanges } from '../port/cloud-sync-database-changes.port';
 import { CloudSyncHost } from '../port/cloud-sync-host.port';
@@ -75,6 +76,10 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             if (current.isEngineRunning) {
                 state.failedKeys.clear();
                 state.quotaKeys.clear();
+
+                if (current.blocked === CloudSyncStatusEnum.ERROR) {
+                    yield* state.patch({ blocked: null });
+                }
                 yield* drainService.drainUnlocked();
                 yield* transport.syncNow(scope).pipe(logAndContinue, Effect.forkDetach);
 

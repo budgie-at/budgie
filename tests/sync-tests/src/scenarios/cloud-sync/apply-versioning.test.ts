@@ -1,4 +1,4 @@
-import { TestSeedService, makeTestDbLayer, resetTestDb } from '@budgie-at/test-kit';
+import { TestSeedService, assertStoredBalancesMatchLedger, makeTestDbLayer, resetTestDb } from '@budgie-at/test-kit';
 import { SyncApplyService } from '@budgie/cloud-sync';
 import { Db } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
@@ -9,7 +9,7 @@ import { isRecord } from '@rnw-community/shared';
 
 import { FakeCloudTransport, testDb } from '../../harness';
 
-import { expectBalancesMatchLedger, onDevice, pullDevice, pushDevice, readOutboxRows, refreshAllBalances } from './apply-harness';
+import { onDevice, pullDevice, pushDevice, readOutboxRows, refreshAllBalances } from './apply-harness';
 
 import type { DB } from '@budgie/contracts';
 
@@ -113,7 +113,7 @@ describe('cloud-sync/apply-versioning', () => {
                 expect(resumed.rejected).toEqual([]);
                 expect(yield* countWhere(deviceB, `tags WHERE title = 'Fresh'`)).toBe(1);
                 expect(yield* countWhere(deviceB, `sync_pending`)).toBe(0);
-                yield* expectBalancesMatchLedger(deviceB);
+                yield* assertStoredBalancesMatchLedger(deviceB);
             })
         );
 
@@ -131,8 +131,8 @@ describe('cloud-sync/apply-versioning', () => {
 
                 expect(afterTombstone[0].heldBack).toBe(0);
                 expect(yield* countWhere(deviceB, LIVE_WALLETS)).toBe(1);
-                yield* expectBalancesMatchLedger(deviceB);
-                yield* expectBalancesMatchLedger(testDb);
+                yield* assertStoredBalancesMatchLedger(deviceB);
+                yield* assertStoredBalancesMatchLedger(testDb);
             })
         );
 
@@ -156,8 +156,8 @@ describe('cloud-sync/apply-versioning', () => {
                 expect(afterTarget[0].heldBack).toBe(0);
                 expect(yield* countWhere(deviceB, LIVE_WALLETS)).toBe(1);
                 expect(yield* countWhere(deviceB, `sync_pending`)).toBe(0);
-                yield* expectBalancesMatchLedger(deviceB);
-                yield* expectBalancesMatchLedger(testDb);
+                yield* assertStoredBalancesMatchLedger(deviceB);
+                yield* assertStoredBalancesMatchLedger(testDb);
             })
         );
     });

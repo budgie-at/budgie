@@ -7,8 +7,9 @@ import * as Layer from 'effect/Layer';
 import * as Option from 'effect/Option';
 import * as Schema from 'effect/Schema';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { SYNC_TOKEN_PLACEHOLDER_PREFIX } from '../../apply/constant/sync-insert-placeholders.constant';
 import { CloudSyncDeviceRecordSchema } from '../constant/cloud-sync-device-record-schema.constant';
 import { CLOUD_SYNC_RECORDS } from '../constant/cloud-sync-records.constant';
 import { CloudSyncInstallId } from '../port/cloud-sync-install-id.port';
@@ -43,7 +44,10 @@ export class BankOwnershipService extends Context.Service<BankOwnershipService>(
                         const ownerLastSeenAt = isDefined(owner)
                             ? (lastSyncedAtByInstall.get(owner) ?? integration.updatedAt.getTime())
                             : 0;
-                        const isClaimable = !isDefined(owner) || (owner !== installId && now - ownerLastSeenAt > handoverAfterMilliseconds);
+                        const isClaimable =
+                            isNotEmptyString(integration.token) &&
+                            !integration.token.startsWith(SYNC_TOKEN_PLACEHOLDER_PREFIX) &&
+                            (!isDefined(owner) || (owner !== installId && now - ownerLastSeenAt > handoverAfterMilliseconds));
 
                         return isClaimable
                             ? Effect.asVoid(bankIntegrationRepository.updateById(integration.id, { ownerInstallId: installId }))

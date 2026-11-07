@@ -202,7 +202,10 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
                     const attempt = yield* inSavepoint(unitService.applyUnit(unit));
 
                     if (Result.isFailure(attempt)) {
-                        unit.incoming.forEach(item => held.delete(itemKey(item)));
+                        for (const item of unit.incoming) {
+                            held.delete(itemKey(item));
+                            yield* holdPaused(item.envelopeJson, item.systemFields, item.decoded);
+                        }
                         tracker.reject({
                             recordType: unit.decoded.recordType,
                             recordName: unit.decoded.recordName,
@@ -312,6 +315,31 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
             return item;
         });
 
+        const reenqueueOwnerTransfer = Effect.fnUntraced(function* (zone: string, recordName: string) {
+            const cached = yield* recordRepository.find(zone, recordName);
+            const payload = isDefined(cached?.payload)
+                ? yield* Schema.decodeEffect(SYNC_JSON_UNKNOWN_SCHEMA)(cached.payload).pipe(Effect.orDie)
+                : null;
+            const fields = isRecord(payload) ? payload['encryptedFields'] : null;
+            const linkId = isRecord(fields) ? fields['linkId'] : null;
+
+            if (isString(linkId)) {
+                for (const home of yield* repository.findFamilyRecords(linkId)) {
+                    const homeRow = yield* repository.findRow('transactions', home.syncZone, home.syncId);
+
+                    if (home.syncId !== recordName && isDefined(homeRow)) {
+                        yield* outboxRepository.enqueue({
+                            recordType: SyncRecordTypeEnum.TRANSACTION,
+                            syncZone: home.syncZone,
+                            syncId: home.syncId,
+                            operation: SyncOutboxOperationEnum.SAVE,
+                            changedColumns: '[]'
+                        });
+                    }
+                }
+            }
+        });
+
         const applyDeletion = Effect.fnUntraced(function* (
             deletion: SyncIncomingDeletionInterface,
             pausedZones: ReadonlySet<string>,
@@ -334,6 +362,10 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
                 const tableName =
                     definition.recordType === SyncRecordTypeEnum.TRANSACTION_LEG ? 'transactions' : definition.parent.tableName;
                 const row = yield* repository.findRow(tableName, zone, recordName);
+
+                if (!isDefined(row) && definition.recordType === SyncRecordTypeEnum.TRANSACTION_LEG) {
+                    yield* reenqueueOwnerTransfer(zone, recordName);
+                }
 
                 if (isDefined(row)) {
                     if (tableName === 'transactions') {
@@ -385,18 +417,22 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
                 yield* applyStateRepository.withoutTriggers(applyBatch(batch, tracker));
 
                 for (const decision of tracker.pendingOutboxDecisions) {
-                    if (isEmptyArray(decision.changedColumns)) {
+                    const pending = yield* repository.findOutbox(decision.syncZone, decision.syncId);
+                    const existingColumns = isDefined(pending)
+                        ? yield* Schema.decodeEffect(Schema.String.pipe(Schema.Array, Schema.fromJsonString))(pending.changedColumns).pipe(
+                              Effect.orDie
+                          )
+                        : [];
+                    const keptColumns = [
+                        ...decision.changedColumns,
+                        ...existingColumns.filter(column => column.startsWith('@movedFrom:') || column.startsWith('@movedTo:'))
+                    ];
+                    if (isEmptyArray(keptColumns)) {
                         yield* repository.removeOutbox(decision.syncZone, decision.syncId);
                     } else {
-                        const changedColumns = yield* stringifySyncJson(decision.changedColumns);
+                        const changedColumns = yield* stringifySyncJson(keptColumns);
 
-                        yield* outboxRepository.enqueue({
-                            recordType: decision.recordType,
-                            syncZone: decision.syncZone,
-                            syncId: decision.syncId,
-                            operation: SyncOutboxOperationEnum.SAVE,
-                            changedColumns
-                        });
+                        yield* outboxRepository.replaceChangedColumns(decision.syncZone, decision.syncId, changedColumns);
                     }
                 }
 
@@ -410,26 +446,29 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
             effect => Db.transaction(effect)
         );
 
-        const resume = Effect.fn('SyncApplyService.resume')(function* () {
-            const stillPaused = new Set((yield* findPausedZones).map(({ syncZone }) => syncZone));
-            const rows = (yield* repository.findSchemaPaused).filter(({ syncZone }) => !stillPaused.has(syncZone));
-            const records: SyncIncomingRecordInterface[] = [];
-            const deletions: SyncIncomingDeletionInterface[] = [];
+        const resume = Effect.fn('SyncApplyService.resume')(
+            function* () {
+                const stillPaused = new Set((yield* findPausedZones).map(({ syncZone }) => syncZone));
+                const rows = (yield* repository.findSchemaPaused).filter(({ syncZone }) => !stillPaused.has(syncZone));
+                const records: SyncIncomingRecordInterface[] = [];
+                const deletions: SyncIncomingDeletionInterface[] = [];
 
-            for (const row of rows) {
-                const raw = yield* Schema.decodeEffect(SYNC_JSON_UNKNOWN_SCHEMA)(row.payload).pipe(Effect.orDie);
+                for (const row of rows) {
+                    const raw = yield* Schema.decodeEffect(SYNC_JSON_UNKNOWN_SCHEMA)(row.payload).pipe(Effect.orDie);
 
-                if (isRecord(raw) && raw['deletion'] === true) {
-                    deletions.push({ recordType: row.recordType, recordName: row.syncId, zone: row.syncZone });
-                } else {
-                    records.push({ record: raw, systemFields: row.systemFields });
+                    if (isRecord(raw) && raw['deletion'] === true) {
+                        deletions.push({ recordType: row.recordType, recordName: row.syncId, zone: row.syncZone });
+                    } else {
+                        records.push({ record: raw, systemFields: row.systemFields });
+                    }
+
+                    yield* repository.removePending(row.syncZone, row.syncId);
                 }
 
-                yield* repository.removePending(row.syncZone, row.syncId);
-            }
-
-            return yield* apply({ records, deletions });
-        });
+                return yield* apply({ records, deletions });
+            },
+            effect => Db.transaction(effect)
+        );
 
         return {
             apply,

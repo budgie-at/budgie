@@ -1,6 +1,6 @@
 import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { householdStateAtom } from '@app/household/constant/household-state-atom.constant';
-import { makeTestDbLayer, TestSeedService } from '@budgie-at/test-kit';
+import { TestSeedService, assertStoredBalancesMatchLedger, makeTestDbLayer } from '@budgie-at/test-kit';
 import { CloudSyncService, HouseholdRoleEnum } from '@budgie/cloud-sync';
 import { Db, HOUSEHOLD_SYNC_ZONE, PERSONAL_SYNC_ZONE } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
@@ -8,7 +8,7 @@ import * as Effect from 'effect/Effect';
 
 import { FakeCloudTransport, testDb } from '../../harness';
 
-import { expectBalancesMatchLedger, pullDevice, refreshAllBalances } from './apply-harness';
+import { pullDevice, refreshAllBalances } from './apply-harness';
 import {
     countRows,
     joinMember,
@@ -70,7 +70,7 @@ describe('cloud-sync/household leave', () => {
 
                 expect(personalAfter.filter(({ title }) => title !== 'Household joint')).toEqual(personalBefore);
                 expect(personalAfter.find(({ title }) => title === 'Household joint')?.amount).toBe(ownerBalance);
-                yield* expectBalancesMatchLedger(memberDb);
+                yield* assertStoredBalancesMatchLedger(memberDb);
 
                 const queuedAccounts = yield* memberDb.$client.unsafe<{ readonly total: number }>(
                     `SELECT COUNT(*) AS total FROM sync_outbox WHERE sync_zone = 'personal' AND record_type = 'Account'`

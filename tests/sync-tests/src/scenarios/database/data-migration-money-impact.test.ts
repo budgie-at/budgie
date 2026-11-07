@@ -15,6 +15,13 @@ const COMPACT_MIGRATION = '20261104170422_compact_rates_and_embeddings';
 const RECURRING_SMART_MIGRATION = '20261105192451_recurring_smart_series';
 
 const PRE_MIGRATION_SCHEMA: Readonly<Record<string, readonly string[]>> = {
+    '20261105193657_cloud_sync_identity': [
+        'DROP TABLE sync_apply_state',
+        'DROP TABLE sync_outbox',
+        'DROP TABLE sync_pending',
+        'DROP TABLE sync_record',
+        'DROP TABLE sync_zone_registry'
+    ],
     '20261106125437_inzhur_fund_instruments': ['DROP INDEX transactions_fund_account_idx'],
     [COMPACT_MIGRATION]: [
         'DROP TABLE historical_exchange_rates',
@@ -47,20 +54,26 @@ const restorePreMigrationSchema = (migrationName: string) =>
 
 const replayMigration = (migrationName: string) => {
     const migrationSql = readFileSync(resolve(process.cwd(), '../../packages/app/drizzle', migrationName, 'migration.sql'), 'utf8');
+    const dropIndexes = Array.from(
+        migrationSql.matchAll(/CREATE (?:UNIQUE )?INDEX `(\w+)`/gu),
+        ([, index]) => `DROP INDEX IF EXISTS ${index}`
+    );
     const dropAddedColumns = Array.from(
         migrationSql.matchAll(/ALTER TABLE `(\w+)` ADD `(\w+)`/gu),
         ([, table, column]) => `ALTER TABLE ${table} DROP COLUMN ${column}`
     );
 
-    return suspendSyncTriggers.pipe(
-        Effect.flatMap(syncTriggers =>
-            Effect.forEach(
-                [...dropAddedColumns, ...migrationSql.split('--> statement-breakpoint')],
-                statement => testDb.$client.unsafe(statement).raw,
-                {
-                    discard: true
-                }
-            ).pipe(Effect.andThen(restoreSyncTriggers(syncTriggers)))
+    return Effect.scoped(
+        Effect.acquireRelease(suspendSyncTriggers, triggers => restoreSyncTriggers(triggers).pipe(Effect.orDie)).pipe(
+            Effect.flatMap(() =>
+                Effect.forEach(
+                    [...dropIndexes, ...dropAddedColumns, ...migrationSql.split('--> statement-breakpoint')],
+                    statement => testDb.$client.unsafe(statement).raw,
+                    {
+                        discard: true
+                    }
+                )
+            )
         )
     );
 };
@@ -123,12 +136,10 @@ const seedLedgerFixture = Effect.fnUntraced(function* () {
     return [bankAccount.id, cashAccount.id, debtAccount.id];
 });
 
-const SCHEMA_ONLY_MIGRATIONS = new Set(['20261105193657_cloud_sync_identity']);
-
 const dataMigrations = readdirSync(MIGRATIONS_FOLDER, { withFileTypes: true })
     .filter(entry => entry.isDirectory())
     .map(entry => entry.name)
-    .filter(migrationName => !migrationName.endsWith('_baseline') && !SCHEMA_ONLY_MIGRATIONS.has(migrationName))
+    .filter(migrationName => !migrationName.endsWith('_baseline'))
     .filter(migrationName => DATA_CHANGE_PATTERN.test(readFileSync(resolve(MIGRATIONS_FOLDER, migrationName, 'migration.sql'), 'utf8')));
 
 describe.runIf(isNotEmptyArray(dataMigrations))('database/data-migration-money-impact', () => {

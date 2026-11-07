@@ -17,7 +17,6 @@ export class SyncResetRepository extends Context.Service<SyncResetRepository>()(
             'budgets',
             'rules',
             'accounts',
-            'default_category_translations',
             'comment_embeddings',
             'merchant_embeddings',
             'categories',
@@ -29,7 +28,6 @@ export class SyncResetRepository extends Context.Service<SyncResetRepository>()(
         ];
         const touchedTables = [
             ...SYNC_IDENTITY_TABLES.map(table => table.name),
-            'default_category_translations',
             'comment_embeddings',
             'merchant_embeddings',
             'account_balances',
@@ -48,9 +46,18 @@ export class SyncResetRepository extends Context.Service<SyncResetRepository>()(
                         );
                         yield* Db.mutation(
                             { type: 'delete', tables: touchedTables },
-                            Effect.forEach(deletionOrder, tableName => Db.query(db => db.$client.unsafe(`DELETE FROM ${tableName}`)), {
-                                discard: true
-                            })
+                            Effect.forEach(
+                                deletionOrder,
+                                tableName =>
+                                    Db.query(db =>
+                                        db.$client.unsafe(
+                                            `DELETE FROM ${tableName}${tableName === 'categories' ? ' WHERE is_default = 0' : ''}`
+                                        )
+                                    ),
+                                {
+                                    discard: true
+                                }
+                            )
                         );
                     })
                 );
@@ -72,7 +79,12 @@ export class SyncResetRepository extends Context.Service<SyncResetRepository>()(
                     { type: 'delete', tables: ['sync_record', 'sync_outbox', 'sync_pending'] },
                     Effect.forEach(
                         ['sync_record', 'sync_outbox', 'sync_pending'],
-                        tableName => Db.query(db => db.$client.unsafe(`DELETE FROM ${tableName}`)),
+                        tableName =>
+                            Db.query(db =>
+                                db.$client.unsafe(
+                                    `DELETE FROM ${tableName}${tableName === 'sync_record' ? " WHERE NOT (sync_zone = 'personal' AND record_type = 'Account' AND json_extract(payload, '$.encryptedFields.movedTo') IS NOT NULL)" : ''}`
+                                )
+                            ),
                         {
                             discard: true
                         }

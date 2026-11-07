@@ -1,7 +1,14 @@
 import { TestSeedService } from '@budgie-at/test-kit';
-import { SYNC_RECORD_DEFINITIONS, SyncReferenceKindEnum, encodeSyncAggregate, isSyncAggregateRecordType } from '@budgie/cloud-sync';
+import {
+    SYNC_RECORD_DEFINITIONS,
+    SyncApplyService,
+    syncAccountBalanceRefresherLayer,
+    encodeSyncAggregate,
+    isSyncAggregateRecordType
+} from '@budgie/cloud-sync';
 import {
     AccountDebtTypeEnum,
+    Db,
     AccountEntityTable,
     AccountExternalIdEntityTable,
     AccountNatureEnum,
@@ -37,22 +44,20 @@ import {
     TransactionTypeEnum,
     TransactionUpdatedByEnum
 } from '@budgie/contracts';
-import { eq, getTableColumns } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
 import { isDefined, isNumber, isString } from '@rnw-community/shared';
 
 import type {
-    DecodedSyncRecordInterface,
     SyncAggregateInterface,
     SyncIdentityInterface,
     SyncRecordInterface,
     SyncReferenceResolverInterface,
-    SyncRowInputType,
-    SyncRowReferenceInterface
+    SyncRowInputType
 } from '@budgie/cloud-sync';
 import type { DB } from '@budgie/contracts';
-import type { SQLiteTable } from 'drizzle-orm/sqlite-core';
 
 const TABLE_ORDER = [
     'bank_integrations',
@@ -98,13 +103,6 @@ const UNDECLARED_FOREIGN_KEYS: Readonly<Record<string, Readonly<Record<string, s
 const SEQUENCE_OFFSET = 1000;
 
 const allDefinitions = Object.values(SYNC_RECORD_DEFINITIONS).filter(({ recordType }) => recordType !== SyncRecordTypeEnum.TRANSACTION_LEG);
-
-const tablesByName = new Map<string, SQLiteTable>(
-    allDefinitions.flatMap(definition => [
-        [definition.parent.tableName, definition.parent.table] as const,
-        ...definition.children.map(child => [child.descriptor.tableName, child.descriptor.table] as const)
-    ])
-);
 
 export interface SyncStateInterface {
     readonly aggregates: readonly SyncAggregateInterface[];
@@ -181,18 +179,6 @@ export const encodeAllRecords = (state: SyncStateInterface) =>
 export const throughTransport = (records: readonly SyncRecordInterface[]): unknown[] =>
     records.map((record): unknown => structuredClone(record));
 
-const toSqlValue = (value: unknown): unknown => {
-    if (value instanceof Date) {
-        return Math.floor(value.getTime() / 1000);
-    }
-
-    if (typeof value === 'boolean') {
-        return value ? 1 : 0;
-    }
-
-    return value;
-};
-
 export const prepareTarget = (database: DB) =>
     Effect.gen(function* () {
         const client = database.$client;
@@ -217,121 +203,19 @@ export const prepareTarget = (database: DB) =>
         );
     });
 
-export const materializeRecords = (database: DB, records: readonly DecodedSyncRecordInterface[]) =>
+export const materializeRecords = (database: DB, records: readonly SyncRecordInterface[]) =>
     Effect.gen(function* () {
-        const client = database.$client;
-        const localIds = new Map<string, number>();
-        const anyZoneIds = new Map<string, number>();
-        const deferred: {
-            readonly tableName: string;
-            readonly localId: number;
-            readonly reference: SyncRowReferenceInterface;
-            readonly zone: string;
-        }[] = [];
-        const naturalKeyIds = new Map<string, number | null>();
-        const columnName = (tableName: string, property: string): string => {
-            const table = tablesByName.get(tableName);
+        const service = yield* SyncApplyService;
+        const result = yield* service.apply({
+            records: throughTransport(records).map(record => ({ record, systemFields: 'mapping-test' })),
+            deletions: []
+        });
 
-            return isDefined(table) ? getTableColumns(table)[property].name : property;
-        };
-        const findNaturalKeyId = (reference: SyncRowReferenceInterface) =>
-            Effect.gen(function* () {
-                const cacheKey = `${reference.tableName}|${reference.key}`;
-                const cached = naturalKeyIds.get(cacheKey);
-
-                if (cached !== undefined) {
-                    return cached;
-                }
-
-                const keyColumn = reference.tableName === 'instruments' ? 'code' : 'mcc';
-                const found = yield* client.unsafe<{ readonly id: number }>(
-                    `SELECT id FROM "${reference.tableName}" WHERE ${keyColumn} = ? ORDER BY id LIMIT 1`,
-                    [reference.key]
-                );
-                const id = found[0]?.id ?? null;
-
-                naturalKeyIds.set(cacheKey, id);
-
-                return id;
-            });
-        const findLocalId = (reference: SyncRowReferenceInterface, zone: string) =>
-            reference.kind === SyncReferenceKindEnum.NATURAL_KEY
-                ? findNaturalKeyId(reference)
-                : Effect.succeed(
-                      localIds.get(`${reference.tableName}|${zone}|${reference.key}`) ??
-                          anyZoneIds.get(`${reference.tableName}|${reference.key}`) ??
-                          null
-                  );
-        const rows = records
-            .flatMap(record => record.rows)
-            .map((row, position) => ({ row, position }))
-            .sort((left, right) => {
-                const delta = TABLE_ORDER.indexOf(left.row.tableName) - TABLE_ORDER.indexOf(right.row.tableName);
-
-                return delta === 0 ? left.position - right.position : delta;
-            })
-            .map(({ row }) => row);
-
-        for (const row of rows) {
-            const names = ['sync_id', 'sync_zone'];
-            const params: unknown[] = [row.syncId, row.syncZone];
-
-            if (row.tableName === 'bank_integrations') {
-                names.push('token');
-                params.push(`device-token-${row.syncId}`);
-            }
-
-            for (const [property, value] of Object.entries(row.values)) {
-                names.push(columnName(row.tableName, property));
-                params.push(toSqlValue(value));
-            }
-
-            const unresolved: SyncRowReferenceInterface[] = [];
-
-            for (const reference of row.references) {
-                const localId = yield* findLocalId(reference, row.syncZone);
-
-                if (isDefined(localId)) {
-                    names.push(columnName(row.tableName, reference.column));
-                    params.push(localId);
-                } else {
-                    unresolved.push(reference);
-                }
-            }
-
-            const updates = names
-                .filter(name => name !== 'sync_id' && name !== 'sync_zone')
-                .map(name => `"${name}" = excluded."${name}"`)
-                .join(', ');
-            const inserted = yield* client.unsafe<{ readonly localId: number }>(
-                `INSERT INTO "${row.tableName}" (${names.map(name => `"${name}"`).join(', ')}) VALUES (${names.map(() => '?').join(', ')})
-                    ON CONFLICT ("sync_zone", "sync_id") DO UPDATE SET ${updates} RETURNING rowid AS localId`,
-                params
-            );
-            const [{ localId }] = inserted;
-
-            localIds.set(`${row.tableName}|${row.syncZone}|${row.syncId}`, localId);
-            anyZoneIds.set(`${row.tableName}|${row.syncId}`, localId);
-            deferred.push(...unresolved.map(reference => ({ tableName: row.tableName, localId, reference, zone: row.syncZone })));
-        }
-
-        const stillUnresolved: string[] = [];
-
-        for (const pending of deferred) {
-            const targetId = yield* findLocalId(pending.reference, pending.zone);
-
-            if (isDefined(targetId)) {
-                yield* client.unsafe(
-                    `UPDATE "${pending.tableName}" SET "${columnName(pending.tableName, pending.reference.column)}" = ? WHERE rowid = ?`,
-                    [targetId, pending.localId]
-                );
-            } else {
-                stillUnresolved.push(`${pending.tableName}.${pending.reference.column}`);
-            }
-        }
-
-        return stillUnresolved;
-    });
+        return result.rejected;
+    }).pipe(
+        Effect.provide(SyncApplyService.layer.pipe(Layer.provide(syncAccountBalanceRefresherLayer))),
+        Effect.provideService(Db, database)
+    );
 
 export const hydratedSnapshot = (database: DB) =>
     Effect.gen(function* () {

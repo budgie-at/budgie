@@ -132,6 +132,9 @@ export class TransactionService extends Context.Service<TransactionService>()('@
             ),
             deleteById: Effect.fn('TransactionService.deleteById')(
                 function* (id: number) {
+                    if (yield* transactionRepository.isForeignTransferLeg(id)) {
+                        return;
+                    }
                     const transaction = yield* transactionRepository.getByIdWithEntries(id);
                     if (isDefined(transaction?.consolidationType)) {
                         yield* unconsolidationService.unconsolidateById(id);
@@ -191,6 +194,11 @@ export class TransactionService extends Context.Service<TransactionService>()('@
             updateById: Effect.fn('TransactionService.updateById')(
                 function* (id: number, input: TransactionUpdateServiceInputInterface) {
                     const existingTransaction = yield* transactionRepository.getByIdWithEntries(id);
+
+                    if (isDefined(existingTransaction) && (yield* transactionRepository.isForeignTransferLeg(id))) {
+                        return existingTransaction;
+                    }
+
                     yield* transactionDepositSafetyService.assertNoDepositExpenseInputs([
                         {
                             entries: input.entries,

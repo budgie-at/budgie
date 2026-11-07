@@ -10,8 +10,6 @@ import { SYNC_UNDECLARED_REFERENCES } from '../constant/sync-undeclared-referenc
 import { SyncColumnKindEnum } from '../enum/sync-column-kind.enum';
 import { SyncReferenceKindEnum } from '../enum/sync-reference-kind.enum';
 
-import { deriveSyncReferenceField } from './derive-sync-reference-field.util';
-
 import type { SyncColumnDescriptorInterface } from '../interface/sync-column-descriptor.interface';
 import type { SyncColumnReferenceInterface } from '../interface/sync-column-reference.interface';
 import type { SyncTableDescriptorOptionsInterface } from '../interface/sync-table-descriptor-options.interface';
@@ -96,7 +94,9 @@ export const buildSyncTableDescriptor = (
         return [
             {
                 property,
-                field: isDefined(reference) ? deriveSyncReferenceField(property, reference.kind) : property,
+                field: isDefined(reference)
+                    ? `${property.replace(/Id$/u, '')}${reference.kind === SyncReferenceKindEnum.SYNC_ID ? 'SyncId' : 'Code'}`
+                    : property,
                 kind,
                 isRequired: property === SYNC_ID_PROPERTY || (column.notNull && !column.hasDefault),
                 isNullable: !column.notNull && property !== SYNC_ID_PROPERTY,

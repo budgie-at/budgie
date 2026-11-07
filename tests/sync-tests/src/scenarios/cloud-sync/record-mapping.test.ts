@@ -80,8 +80,8 @@ describe('cloud-sync/record-mapping', () => {
                 yield* prepareTarget(targetDatabase);
 
                 const { records, decoded } = yield* decodeSource;
-                const { joined, unmatched } = joinSplitTransactions(decoded);
-                const unresolved = yield* materializeRecords(targetDatabase, joined);
+                const { unmatched } = joinSplitTransactions(decoded);
+                const unresolved = yield* materializeRecords(targetDatabase, records);
                 const source = yield* hydratedSnapshot(testDb);
                 const target = yield* hydratedSnapshot(targetDatabase);
                 const emptySourceTables = Object.entries(source)
@@ -118,9 +118,9 @@ describe('cloud-sync/record-mapping', () => {
                 yield* seedEverything;
                 yield* prepareTarget(targetDatabase);
 
-                const { decoded } = yield* decodeSource;
+                const { records } = yield* decodeSource;
 
-                yield* materializeRecords(targetDatabase, joinSplitTransactions(decoded).joined);
+                yield* materializeRecords(targetDatabase, records);
 
                 const entriesSql = `SELECT t.title AS title, t.type AS type, t.consolidation_type AS consolidation, a.title AS account, e.type AS entryType, e.amount AS amount, e.sequence AS sequence
                     FROM transaction_entries e

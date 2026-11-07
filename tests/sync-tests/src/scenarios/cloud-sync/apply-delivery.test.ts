@@ -1,25 +1,19 @@
+import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import {
-    DEVICE_B,
     Db,
     FakeCloudTransport,
-    OPERATED_AT,
     TestSeedService,
-    describe,
-    expect,
-    expectBalancesMatchLedger,
-    it,
+    assertStoredBalancesMatchLedger,
     makeTestDbLayer,
-    pullDevice,
-    pushDevice,
-    pullSeededExpense,
-    readOutboxRows,
-    refreshAllBalances,
     resetTestDb,
-    stateSnapshot,
     testDb
-} from './apply-shared-harness';
+} from '../../harness';
+
+import { pullDevice, pushDevice, readOutboxRows, refreshAllBalances } from './apply-harness';
+import { DEVICE_B, OPERATED_AT, pullSeededExpense } from './apply-shared-harness';
+import { hydratedSnapshot } from './record-mapping-harness';
 
 import type { DB } from '@budgie/contracts';
 
@@ -35,18 +29,46 @@ const withoutZone = (rows: readonly Record<string, unknown>[]) =>
 
 const expectSameLedger = (deviceB: DB) =>
     Effect.gen(function* () {
-        const left = yield* stateSnapshot(testDb);
-        const right = yield* stateSnapshot(deviceB);
+        const left = yield* hydratedSnapshot(testDb);
+        const right = yield* hydratedSnapshot(deviceB);
 
         expect(right['transactions']).toEqual(left['transactions']);
         expect(withoutZone(right['transaction_entries'])).toEqual(withoutZone(left['transaction_entries']));
         expect(right['accounts']).toEqual(left['accounts']);
-        yield* expectBalancesMatchLedger(deviceB);
-        yield* expectBalancesMatchLedger(testDb);
+        yield* assertStoredBalancesMatchLedger(deviceB);
+        yield* assertStoredBalancesMatchLedger(testDb);
     });
 
 describe('cloud-sync/apply-delivery', () => {
     it.layer(makeTestDbLayer(null), { excludeTestServices: true })('two devices', it => {
+        it.effect('converges after a transaction is hard-deleted through production upload', () =>
+            Effect.gen(function* () {
+                const deviceB = yield* Db;
+                const cloud = new FakeCloudTransport();
+                const seed = new TestSeedService(testDb);
+                yield* resetTestDb(deviceB);
+                const account = yield* seed.account({ title: 'Delete convergence' });
+                const transaction = yield* seed.manualExpense({
+                    accountId: account.id,
+                    amount: 3_000_000,
+                    operatedAt: OPERATED_AT,
+                    title: 'Delete me'
+                });
+                yield* refreshAllBalances(testDb);
+                yield* pushDevice(testDb, cloud);
+                yield* pullDevice(deviceB, cloud, DEVICE_B);
+                expect(yield* countRows(deviceB, 'transactions')).toBe(1);
+                yield* testDb.$client.unsafe('DELETE FROM transactions WHERE id = ?', [transaction.id]);
+                yield* refreshAllBalances(testDb);
+                yield* pushDevice(testDb, cloud);
+                yield* pullDevice(deviceB, cloud, DEVICE_B);
+                expect(yield* countRows(deviceB, 'transactions')).toBe(0);
+                expect(yield* countRows(deviceB, 'transaction_entries')).toBe(0);
+                yield* assertStoredBalancesMatchLedger(testDb);
+                yield* assertStoredBalancesMatchLedger(deviceB);
+            })
+        );
+
         it.effect('applies a transfer created on one device with both legs on the other', () =>
             Effect.gen(function* () {
                 const deviceB = yield* Db;
@@ -121,6 +143,10 @@ describe('cloud-sync/apply-delivery', () => {
                 const household = yield* seed.account({ title: 'Household' });
 
                 yield* testDb.$client.unsafe(`UPDATE accounts SET sync_zone = 'household' WHERE id = ?`, [household.id]);
+                yield* testDb.$client.unsafe(
+                    `UPDATE sync_outbox SET sync_zone = 'household' WHERE sync_id = (SELECT sync_id FROM accounts WHERE id = ?)`,
+                    [household.id]
+                );
                 yield* seed.directTransfer({
                     exchangeRate: 1,
                     operatedAt: OPERATED_AT,

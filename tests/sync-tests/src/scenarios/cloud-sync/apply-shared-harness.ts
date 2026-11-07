@@ -9,12 +9,6 @@ import { pullDevice, pushDevice, refreshAllBalances } from './apply-harness';
 import type { FakeCloudDeliveryOptionsInterface } from '../../harness';
 import type { DB } from '@budgie/contracts';
 
-export { TestSeedService, makeTestDbLayer, resetTestDb } from '@budgie-at/test-kit';
-export { Db } from '@budgie/contracts';
-export { describe, expect, it } from '@effect/vitest';
-export { FakeCloudTransport, testDb } from '../../harness';
-export { expectBalancesMatchLedger, pullDevice, pushDevice, readOutboxRows, refreshAllBalances, stateSnapshot } from './apply-harness';
-
 export const OPERATED_AT = new Date('2026-10-02T10:00:00Z');
 export const DEVICE_A = 'device-a';
 export const DEVICE_B = 'device-b';

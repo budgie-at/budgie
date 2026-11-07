@@ -38,6 +38,19 @@ export class SyncOutboxRepository extends Context.Service<SyncOutboxRepository>(
                     { discard: true }
                 )
             );
+            yield* Db.mutation(
+                { type: 'insert', tables: ['sync_outbox'] },
+                Db.query(db =>
+                    db.$client.unsafe(
+                        `INSERT INTO sync_outbox (record_type, sync_zone, sync_id, operation, changed_columns)
+                 SELECT record_type, sync_zone, sync_id, 'DELETE', json_array('@movedTo:' || json_extract(payload, '$.encryptedFields.movedTo'))
+                 FROM sync_record WHERE sync_zone = ? AND sync_zone = 'personal' AND record_type = 'Account'
+                 AND json_extract(payload, '$.encryptedFields.movedTo') IS NOT NULL
+                 ON CONFLICT (sync_zone, sync_id) DO NOTHING`,
+                        [syncZone]
+                    )
+                )
+            );
         });
 
         return {
@@ -52,10 +65,17 @@ export class SyncOutboxRepository extends Context.Service<SyncOutboxRepository>(
                             target: [SyncOutboxEntityTable.syncZone, SyncOutboxEntityTable.syncId],
                             set: {
                                 operation: input.operation,
-                                changedColumns: input.changedColumns,
+                                changedColumns: sql`CASE WHEN excluded.operation = 'DELETE' THEN '[]' ELSE (SELECT json_group_array(value) FROM (SELECT value FROM json_each(${SyncOutboxEntityTable.changedColumns}) UNION SELECT value FROM json_each(excluded.changed_columns) ORDER BY value)) END`,
                                 syncRevision: sql`${SyncOutboxEntityTable.syncRevision} + 1`
                             }
                         })
+                ),
+            replaceChangedColumns: (syncZone: string, syncId: string, changedColumns: string) =>
+                Db.query(db =>
+                    db
+                        .update(SyncOutboxEntityTable)
+                        .set({ changedColumns, syncRevision: sql`${SyncOutboxEntityTable.syncRevision} + 1` })
+                        .where(and(eq(SyncOutboxEntityTable.syncZone, syncZone), eq(SyncOutboxEntityTable.syncId, syncId)))
                 ),
             findPending: (limit: number) => Db.query(db => db.query.SyncOutboxEntityTable.findMany({ orderBy: { id: 'asc' }, limit })),
             acknowledge: (syncZone: string, syncId: string, syncRevision: number) =>

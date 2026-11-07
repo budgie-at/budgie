@@ -6,6 +6,5 @@ export interface SyncUploadSaveInterface {
     readonly syncId: string;
     readonly syncRevision: number;
     readonly records: readonly SyncRecordInterface[];
-    readonly changedFields: readonly string[];
     readonly staleTargets: readonly SyncRecordTargetInterface[];
 }

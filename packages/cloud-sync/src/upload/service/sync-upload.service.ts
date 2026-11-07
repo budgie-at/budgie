@@ -26,14 +26,13 @@ import { SyncReferenceKindEnum } from '../../mapping/enum/sync-reference-kind.en
 import { encodeSyncAggregate } from '../../mapping/utils/encode-sync-aggregate.util';
 import { SyncOutboxRepository } from '../../outbox/repository/sync-outbox.repository';
 import { SYNC_MOVED_FROM_MARKER_PREFIX, SYNC_MOVED_TO_MARKER_PREFIX } from '../../share/constant/sync-move-markers.constant';
-import { readSyncMoveMarker } from '../../share/utils/read-sync-move-marker.util';
-import { withSyncRecordFields } from '../../share/utils/with-sync-record-fields.util';
 import { isSyncAggregateRecordType } from '../type-guard/is-sync-aggregate-record-type.type-guard';
 
 import type { SyncIdentityInterface } from '../../mapping/interface/sync-identity.interface';
 import type { SyncRecordDefinitionInterface } from '../../mapping/interface/sync-record-definition.interface';
 import type { SyncRecordInterface } from '../../mapping/interface/sync-record.interface';
 import type { SyncReferenceResolverInterface } from '../../mapping/interface/sync-reference-resolver.interface';
+import type { EncodedSyncFieldsType } from '../../mapping/type/encoded-sync-fields.type';
 import type { SyncAggregateRecordType } from '../../mapping/type/sync-aggregate-record-type.type';
 import type { SyncRowInputType } from '../../mapping/type/sync-row-input.type';
 import type { SyncRecordTargetInterface } from '../interface/sync-record-target.interface';
@@ -50,6 +49,13 @@ const SPLIT_FIELDS: ReadonlySet<string> = new Set(['linkId', 'legCount', 'legEnt
 
 export class SyncUploadService extends Context.Service<SyncUploadService>()('@budgie/cloud-sync/SyncUploadService', {
     make: Effect.gen(function* () {
+        const withSyncRecordFields = (record: SyncRecordInterface, zone: string, fields: EncodedSyncFieldsType): SyncRecordInterface => ({
+            ...record,
+            zone,
+            encryptedFields: { ...record.encryptedFields, ...fields }
+        });
+        const readSyncMoveMarker = (changedColumns: readonly string[], prefix: string): string | null =>
+            changedColumns.find(column => column.startsWith(prefix))?.slice(prefix.length) ?? null;
         const syncOutboxRepository = yield* SyncOutboxRepository;
         const syncRecordRepository = yield* SyncRecordRepository;
         const zoneRegistryRepository = yield* SyncZoneRegistryRepository;
@@ -58,18 +64,6 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
 
         const parseChangedColumns = (changedColumns: string): readonly string[] =>
             Option.getOrElse(Schema.decodeOption(changedColumnsSchema)(changedColumns), () => []);
-
-        const mapChangedFields = (definition: SyncRecordDefinitionInterface, changedColumns: readonly string[]): readonly string[] => {
-            const parentColumns = getTableColumns(definition.parent.table);
-            const parentFields = definition.parent.columns
-                .filter(column => changedColumns.includes(parentColumns[column.property].name))
-                .map(column => column.field);
-            const childFields = definition.children
-                .filter(child => changedColumns.includes(child.descriptor.tableName))
-                .map(child => child.field);
-
-            return [...new Set([...parentFields, ...childFields])].sort();
-        };
 
         const loadChildren = Effect.fnUntraced(function* (definition: SyncRecordDefinitionInterface, parentId: number) {
             const entries = yield* Effect.forEach(definition.children, ({ descriptor }) => {
@@ -261,7 +255,6 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
                 syncId: row.syncId,
                 syncRevision: row.syncRevision,
                 records,
-                changedFields: mapChangedFields(SYNC_RECORD_DEFINITIONS[row.recordType], changedColumns),
                 staleTargets: yield* findStaleLegTargets(records)
             } satisfies SyncUploadSaveInterface;
         });
@@ -291,7 +284,6 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
                 syncId: row.syncId,
                 syncRevision: row.syncRevision,
                 records: [withSyncRecordFields({ ...target, encryptedFields: fields }, row.syncZone, { deletedAt, movedTo })],
-                changedFields: ['deletedAt', 'movedTo'],
                 staleTargets: []
             } satisfies SyncUploadSaveInterface;
         });
@@ -305,14 +297,7 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
 
             const stored = yield* syncRecordRepository.find(row.syncZone, row.syncId);
             const linked = Option.flatMap(Option.fromNullishOr(stored?.payload), Schema.decodeOption(linkedRecordSchema));
-            const legs = Option.isSome(linked)
-                ? yield* Db.query(db =>
-                      db
-                          .select({ syncZone: SyncRecordEntityTable.syncZone, syncId: SyncRecordEntityTable.syncId })
-                          .from(SyncRecordEntityTable)
-                          .where(eq(SyncRecordEntityTable.syncId, linked.value.encryptedFields.linkId))
-                  )
-                : [];
+            const legs = Option.isSome(linked) ? yield* syncRecordRepository.findBySyncId(linked.value.encryptedFields.linkId) : [];
 
             return {
                 syncZone: row.syncZone,
@@ -323,9 +308,13 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
         });
 
         return {
-            pending: Effect.fn('SyncUploadService.pending')(function* (limit: number, skippedKeys: ReadonlySet<string>) {
+            pending: Effect.fn('SyncUploadService.pending')(function* (
+                limit: number,
+                skippedKeys: ReadonlySet<string>,
+                isZoneBlocked: (zone: string) => boolean = () => false
+            ) {
                 const rows = (yield* syncOutboxRepository.findPending(limit)).filter(
-                    row => !skippedKeys.has(buildCloudSyncKey(row.syncZone, row.syncId))
+                    row => !skippedKeys.has(buildCloudSyncKey(row.syncZone, row.syncId)) && !isZoneBlocked(row.syncZone)
                 );
                 const saves: SyncUploadSaveInterface[] = [];
                 const deletions: SyncUploadDeletionInterface[] = [];

@@ -1,7 +1,5 @@
 import {
     CategorySourceEnum,
-    Db,
-    PERSONAL_SYNC_ZONE,
     TransactionEntryKindEnum,
     TransactionEntryRepository,
     TransactionEntryTypeEnum,
@@ -99,11 +97,9 @@ export class ConsolidationMutationService extends Context.Service<ConsolidationM
                 }
 
                 const syncId = deriveConsolidationSyncId(sourceSyncIds);
-                const existing = yield* Db.query(db =>
-                    db.query.TransactionEntityTable.findFirst({ where: { syncZone: PERSONAL_SYNC_ZONE, syncId } })
-                );
+                const claimed = yield* transactionRepository.findClaimedPersonalSyncIds([syncId]);
 
-                return isDefined(existing) ? null : syncId;
+                return claimed.has(syncId) ? null : syncId;
             });
 
             return {

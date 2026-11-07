@@ -1,4 +1,4 @@
-import { makeTestDbLayer } from '@budgie-at/test-kit';
+import { assertStoredBalancesMatchLedger, makeTestDbLayer } from '@budgie-at/test-kit';
 import { CloudSyncRestorePhaseEnum, ICloudParticipantRole, ICloudSyncScope } from '@budgie/cloud-sync';
 import {
     Db,
@@ -14,7 +14,6 @@ import * as Effect from 'effect/Effect';
 
 import { FakeCloudTransport, testDb } from '../../harness';
 
-import { expectBalancesMatchLedger } from './apply-harness';
 import {
     countRows,
     HOUSEHOLD_CLOUD_ZONE,
@@ -92,7 +91,7 @@ describe('cloud-sync/household restore', () => {
 
                 expect(yield* countRows(memberDb, 'accounts', HOUSEHOLD_SYNC_ZONE)).toBe(0);
                 expect(yield* countRows(memberDb, 'transactions', HOUSEHOLD_SYNC_ZONE)).toBe(0);
-                yield* expectBalancesMatchLedger(memberDb);
+                yield* assertStoredBalancesMatchLedger(memberDb);
             })
         );
     });
@@ -118,7 +117,7 @@ describe('cloud-sync/household restore', () => {
             expect(yield* countRows(testDb, 'accounts', HOUSEHOLD_SYNC_ZONE)).toBe(0);
             expect((yield* readPersonalBalances(testDb)).some(({ title }) => title === 'Household joint')).toBe(true);
             expect(restore.context.transport.calls.deletedZones).toEqual([HOUSEHOLD_CLOUD_ZONE]);
-            yield* expectBalancesMatchLedger(testDb);
+            yield* assertStoredBalancesMatchLedger(testDb);
         })
     );
 });

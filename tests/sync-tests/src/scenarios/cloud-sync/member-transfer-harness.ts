@@ -6,9 +6,9 @@ import * as Effect from 'effect/Effect';
 
 import { FakeCloudTransport, testDb } from '../../harness';
 
-import { readOutboxRows, refreshAllBalances } from './apply-harness';
+import { readOutboxRows, refreshAllBalances, uploadDevice } from './apply-harness';
 import { onAutomatedDevice } from './automation-harness';
-import { HOUSEHOLD_ZONE, onShareDevice, prepareHousehold, pullZones, queryRows, reconcileDevice, uploadDevice } from './share-harness';
+import { HOUSEHOLD_ZONE, onShareDevice, prepareHousehold, pullZones, queryRows, reconcileDevice } from './share-harness';
 
 import type { ShareCloudsInterface } from './share-harness';
 import type { DB } from '@budgie/contracts';

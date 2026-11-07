@@ -45,7 +45,6 @@ describe('cloud-sync/upload-service', () => {
                 expect(batch.saves[0].records).toHaveLength(1);
                 expect(batch.saves[0].records[0]).toMatchObject({ recordType: 'Transaction', zone: PERSONAL_SYNC_ZONE });
                 expect(batch.saves[0].records[0].recordName).toBe(batch.saves[0].syncId);
-                expect(batch.saves[0].changedFields.length).toBeGreaterThan(0);
             })
         )
     );
@@ -84,7 +83,6 @@ describe('cloud-sync/upload-service', () => {
                 const secondBatch = yield* uploadService.pending(10, new Set());
                 const resent = secondBatch.saves.find(save => save.syncId === sent.syncId);
 
-                expect(resent?.changedFields).toContain('title');
                 yield* uploadService.acknowledge([toAcknowledgement(resent ?? sent)]);
 
                 expect((yield* readOutbox).map(row => row.syncId)).not.toContain(sent.syncId);
@@ -135,7 +133,6 @@ describe('cloud-sync/upload-service', () => {
 
                 expect(Object.values(fields)).toContain('install-a');
                 expect(encodeJson(fields)).not.toContain('secret-token');
-                expect(save?.changedFields.some(field => /owner/iu.test(field))).toBe(true);
             })
         )
     );

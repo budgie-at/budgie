@@ -17,6 +17,7 @@ import { ICloudSyncScope } from '../../transport/enum/icloud-sync-scope.enum';
 import { SyncUploadService } from '../../upload/service/sync-upload.service';
 import { CloudSyncDeviceRecordSchema } from '../constant/cloud-sync-device-record-schema.constant';
 import { CLOUD_SYNC_RECORDS } from '../constant/cloud-sync-records.constant';
+import { CloudSyncStatusEnum } from '../enum/cloud-sync-status.enum';
 import { cloudSyncDomainLayer } from '../layer/cloud-sync-domain.layer';
 import { CloudSyncHost } from '../port/cloud-sync-host.port';
 import { CloudSyncInstallId } from '../port/cloud-sync-install-id.port';
@@ -122,22 +123,31 @@ export class CloudSyncDrainService extends Context.Service<CloudSyncDrainService
             const current = yield* Ref.get(state.session);
             const isPrivateReady = current.isEngineRunning && !current.isAwaitingMeta && !current.isReconciling;
 
-            if (!isPrivateReady && !current.isSharedEngineRunning) {
+            const isSharedReady = current.isSharedEngineRunning && !current.isSharedReconciling;
+
+            if (!isPrivateReady && !isSharedReady) {
                 return;
             }
 
             const canSendTo = (label: string): boolean =>
-                state.scopeOf(label) === ICloudSyncScope.SHARED ? current.isSharedEngineRunning : isPrivateReady;
+                state.scopeOf(label) === ICloudSyncScope.SHARED ? isSharedReady : isPrivateReady;
             const pausedZones = new Set((yield* applyService.findPausedZones).map(({ syncZone }) => syncZone));
             yield* householdShareService.reconcile();
 
             const skippedKeys = new Set([...state.pushed.keys(), ...state.failedKeys]);
-            const batch = yield* uploadService.pending(skippedKeys.size + state.heldKeys.size + uploadBatchSize, skippedKeys);
+            const batch = yield* uploadService.pending(
+                skippedKeys.size + state.heldKeys.size + uploadBatchSize,
+                skippedKeys,
+                label => pausedZones.has(label) || !state.zones.has(label) || !canSendTo(label)
+            );
             const payloadsByScope = new Map<ICloudSyncScope, ICloudRecordPayload[]>();
             const deleteIdsByScope = new Map<ICloudSyncScope, ICloudRecordId[]>();
 
             state.heldKeys.clear();
-            batch.rejections.forEach(rejection => state.heldKeys.add(buildCloudSyncKey(rejection.syncZone, rejection.syncId)));
+            for (const rejection of batch.rejections) {
+                state.failedKeys.add(buildCloudSyncKey(rejection.syncZone, rejection.syncId));
+                yield* state.patch({ blocked: CloudSyncStatusEnum.ERROR });
+            }
 
             const register = (item: CloudSyncPushedItemInterface): void => {
                 const itemKey = buildCloudSyncKey(item.syncZone, item.syncId);

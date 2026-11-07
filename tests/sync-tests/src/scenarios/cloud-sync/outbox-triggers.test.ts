@@ -1,5 +1,9 @@
+import { SYNC_RECORD_DEFINITIONS, SyncOutboxRepository, SyncApplyService } from '@budgie/cloud-sync';
 import {
     Db,
+    SyncResetRepository,
+    SyncRecordRepository,
+    SyncOutboxOperationEnum,
     SyncIdentityRepository,
     TagSourceEnum,
     TransactionEntityTable,
@@ -8,11 +12,14 @@ import {
     TransactionTagsEntityTable
 } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
-import { eq } from 'drizzle-orm';
+import { eq, getTableColumns } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
+import * as Exit from 'effect/Exit';
 import * as Schema from 'effect/Schema';
 
 import { seed, testDb } from '../../harness';
+
+import { onDevice } from './apply-harness';
 
 interface OutboxRowInterface {
     readonly recordType: string;
@@ -70,7 +77,7 @@ const expectSingleTransactionSave = (rows: readonly OutboxRowInterface[], syncId
     expect(rows[0]).toMatchObject({
         recordType: 'Transaction',
         syncId,
-        operation: 'SAVE',
+        operation: SyncOutboxOperationEnum.SAVE,
         ...(syncRevision !== undefined && { syncRevision })
     });
 };
@@ -82,6 +89,124 @@ const expectSingleSave = (rows: readonly OutboxRowInterface[], recordType: strin
 };
 
 describe('cloud-sync/outbox-triggers', () => {
+    it.effect('keeps account ownership tombstones when resetting sync state', () =>
+        onDevice(
+            testDb,
+            Effect.gen(function* () {
+                const records = yield* SyncRecordRepository;
+                yield* records.upsert({
+                    syncZone: 'personal',
+                    syncId: 'own-shared-account',
+                    recordType: 'Account',
+                    payload: '{"encryptedFields":{"movedTo":"household"}}',
+                    systemFields: null
+                });
+                yield* (yield* SyncResetRepository).clearSyncState();
+                yield* (yield* SyncOutboxRepository).enqueueAll('personal');
+                expect(yield* records.find('personal', 'own-shared-account')).toBeDefined();
+                expect(
+                    yield* testDb.$client.unsafe("SELECT operation, changed_columns FROM sync_outbox WHERE sync_id = 'own-shared-account'")
+                ).toEqual([{ operation: 'DELETE', changed_columns: '["@movedTo:household"]' }]);
+            }).pipe(Effect.provide(SyncResetRepository.layer))
+        )
+    );
+
+    it.effect('keeps seed categories, translations and MCC links when adopting cloud data', () =>
+        onDevice(
+            testDb,
+            Effect.gen(function* () {
+                const before = yield* testDb.$client.unsafe(
+                    'SELECT m.id, m.default_category_id, c.sync_id FROM mcc_categories m INNER JOIN categories c ON c.id = m.default_category_id WHERE c.is_default = 1 ORDER BY m.id'
+                );
+                const translations = yield* testDb.$client.unsafe(
+                    'SELECT category_id, language, title FROM default_category_translations ORDER BY category_id, language'
+                );
+                expect(before.length).toBeGreaterThan(0);
+                expect(translations.length).toBeGreaterThan(0);
+                yield* (yield* SyncResetRepository).clearSyncedData();
+                expect(
+                    yield* testDb.$client.unsafe(
+                        'SELECT m.id, m.default_category_id, c.sync_id FROM mcc_categories m INNER JOIN categories c ON c.id = m.default_category_id WHERE c.is_default = 1 ORDER BY m.id'
+                    )
+                ).toEqual(before);
+                expect(
+                    yield* testDb.$client.unsafe(
+                        'SELECT category_id, language, title FROM default_category_translations ORDER BY category_id, language'
+                    )
+                ).toEqual(translations);
+            }).pipe(Effect.provide(SyncResetRepository.layer))
+        )
+    );
+
+    it.effect('retains all paused records when resume cannot decode a later payload', () =>
+        onDevice(
+            testDb,
+            Effect.gen(function* () {
+                yield* testDb.$client.unsafe(
+                    "INSERT INTO sync_pending (sync_zone, sync_id, record_type, missing_record_type, missing_sync_id, payload) VALUES ('personal', 'first', 'Account', 'SchemaVersion', 'personal', '{}'), ('personal', 'second', 'Account', 'SchemaVersion', 'personal', 'invalid')"
+                );
+                expect(Exit.isFailure(yield* Effect.exit((yield* SyncApplyService).resume()))).toBe(true);
+                expect(yield* testDb.$client.unsafe('SELECT sync_id FROM sync_pending ORDER BY id')).toEqual([
+                    { sync_id: 'first' },
+                    { sync_id: 'second' }
+                ]);
+            })
+        )
+    );
+
+    it.effect('unions explicit enqueues with pending title edits', () =>
+        onDevice(
+            testDb,
+            Effect.gen(function* () {
+                const { transactionSyncId } = yield* seedExpense;
+                yield* clearOutbox;
+                const repository = yield* SyncOutboxRepository;
+                yield* repository.enqueue({
+                    recordType: 'Transaction',
+                    syncZone: 'personal',
+                    syncId: transactionSyncId,
+                    operation: SyncOutboxOperationEnum.SAVE,
+                    changedColumns: '["title"]'
+                });
+                yield* repository.enqueue({
+                    recordType: 'Transaction',
+                    syncZone: 'personal',
+                    syncId: transactionSyncId,
+                    operation: SyncOutboxOperationEnum.SAVE,
+                    changedColumns: '["transaction_entries"]'
+                });
+                expect((yield* readOutbox)[0].changedColumns).toEqual(['title', 'transaction_entries']);
+                const revision = (yield* readOutbox)[0].syncRevision;
+
+                yield* repository.replaceChangedColumns('personal', transactionSyncId, '["title"]');
+                expect((yield* readOutbox)[0].changedColumns).toEqual(['title']);
+                expect((yield* readOutbox)[0].syncRevision).toBe(revision + 1);
+            })
+        )
+    );
+
+    it.effect('captures every synced column in each update trigger', () =>
+        Effect.gen(function* () {
+            for (const definition of Object.values(SYNC_RECORD_DEFINITIONS)) {
+                for (const descriptor of [definition.parent, ...definition.children.map(child => child.descriptor)]) {
+                    const [trigger] = yield* testDb.$client.unsafe<{ readonly sql: string }>(
+                        "SELECT sql FROM sqlite_master WHERE type = 'trigger' AND name = ?",
+                        [`${descriptor.tableName}_sync_outbox_update`]
+                    );
+                    expect(trigger).toBeDefined();
+                    if (descriptor === definition.parent) {
+                        for (const column of descriptor.columns) {
+                            expect(trigger.sql).toContain(getTableColumns(descriptor.table)[column.property].name);
+                        }
+                    } else {
+                        expect(trigger.sql).toContain(`AFTER UPDATE ON \`${descriptor.tableName}\``);
+                        expect(trigger.sql).toContain(descriptor.tableName);
+                    }
+                }
+            }
+        })
+    );
+
     it.effect('enqueues one transaction record when a transaction and its entry are created', () =>
         Effect.gen(function* () {
             const account = yield* seed.account({ title: 'Cash' });

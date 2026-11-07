@@ -23,7 +23,7 @@ src/
 ├── reconciliation/   # SyncRestoreReconciliationService
 ├── outbox/           # SyncOutboxRepository
 ├── share/            # HouseholdShareService and repository
-├── household/        # HouseholdMembershipService, HouseholdService, household enums
+├── household/        # HouseholdMembershipService, household enums
 ├── automation/       # SyncAutomationService (post-apply rules, consolidation, recurring) and the embedding-boost port
 ├── transport/        # iCloud wire enums, interfaces and types shared with the native module
 └── engine/           # Sync engine

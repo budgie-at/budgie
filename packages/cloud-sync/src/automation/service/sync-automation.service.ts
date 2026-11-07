@@ -1,10 +1,9 @@
 import { TransactionEmbeddingRepository } from '@budgie/categorization';
 import { buildConsolidationScopeFromTransactions } from '@budgie/consolidation';
-import { Db, SettingsRepository, SyncRecordTypeEnum, TransactionEntityTable } from '@budgie/contracts';
+import { Db, SettingsRepository, SyncRecordTypeEnum, TransactionRepository } from '@budgie/contracts';
 import { RecurringService } from '@budgie/recurring';
 import { RuleEngineService } from '@budgie/rules';
 import { TransferConsolidationService } from '@budgie/sync';
-import { and, inArray, isNull } from 'drizzle-orm';
 import * as Cause from 'effect/Cause';
 import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
@@ -20,7 +19,6 @@ import type { SyncAutomationResultInterface } from '../interface/sync-automation
 
 const TRANSACTIONS_TABLE = 'transactions';
 const RECURRING_SERIES_TABLE = 'recurring_series';
-const SYNC_ID_CHUNK_SIZE = 500;
 
 export class SyncAutomationService extends Context.Service<SyncAutomationService>()('@budgie/cloud-sync/SyncAutomationService', {
     make: Effect.gen(function* () {
@@ -30,6 +28,7 @@ export class SyncAutomationService extends Context.Service<SyncAutomationService
         const settingsRepository = yield* SettingsRepository;
         const transactionEmbeddingRepository = yield* TransactionEmbeddingRepository;
         const embeddingBoost = yield* SyncAutomationEmbeddingBoost;
+        const transactionRepository = yield* TransactionRepository;
 
         const settle = <A, E>(effect: Effect.Effect<A, E, Db>, fallback: A) =>
             Effect.catchCause(effect, cause =>
@@ -38,27 +37,8 @@ export class SyncAutomationService extends Context.Service<SyncAutomationService
 
         const settleVoid = <A, E>(effect: Effect.Effect<A, E, Db>) => settle(Effect.asVoid(effect), void 0);
 
-        const findLiveTransactions = Effect.fnUntraced(function* (syncIds: readonly string[]) {
-            const chunks: string[][] = [];
-
-            for (let start = 0; start < syncIds.length; start += SYNC_ID_CHUNK_SIZE) {
-                chunks.push(syncIds.slice(start, start + SYNC_ID_CHUNK_SIZE));
-            }
-
-            const rows = yield* Effect.forEach(chunks, chunk =>
-                Db.query(db =>
-                    db
-                        .select({ id: TransactionEntityTable.id, operatedAt: TransactionEntityTable.operatedAt })
-                        .from(TransactionEntityTable)
-                        .where(and(inArray(TransactionEntityTable.syncId, chunk), isNull(TransactionEntityTable.deletedAt)))
-                )
-            );
-
-            return rows.flat();
-        });
-
         const consolidate = Effect.fnUntraced(function* (syncIds: readonly string[]) {
-            const transactions = yield* findLiveTransactions(syncIds);
+            const transactions = yield* transactionRepository.findLiveIdsBySyncIds(syncIds);
             const scope = buildConsolidationScopeFromTransactions(transactions);
 
             return isDefined(scope) ? (yield* transferConsolidationService.consolidate(scope)).consolidated : 0;
@@ -70,7 +50,7 @@ export class SyncAutomationService extends Context.Service<SyncAutomationService
                 const hasDeletedTransactions = isNotEmptyArray(result.deleted[SyncRecordTypeEnum.TRANSACTION] ?? []);
                 const hasSeriesChange = isNotEmptyArray(result.touchedRows[RECURRING_SERIES_TABLE] ?? []) || isNotEmptyArray(result.merged);
                 const consolidated = yield* settle(consolidate(touchedSyncIds), 0);
-                const survivorIds = (yield* findLiveTransactions(touchedSyncIds)).map(({ id }) => id);
+                const survivorIds = (yield* transactionRepository.findLiveIdsBySyncIds(touchedSyncIds)).map(({ id }) => id);
 
                 yield* settleVoid(ruleEngine.applyCreateSafeRulesToTransactionIds(survivorIds));
 
@@ -105,6 +85,7 @@ export class SyncAutomationService extends Context.Service<SyncAutomationService
             RuleEngineService.layer,
             RecurringService.layer,
             SettingsRepository.layer,
+            TransactionRepository.layer,
             TransactionEmbeddingRepository.layer
         ])
     );

@@ -5,8 +5,8 @@ import * as Effect from 'effect/Effect';
 
 import { FakeCloudTransport, testDb } from '../../harness';
 
-import { refreshAllBalances } from './apply-harness';
-import { HOUSEHOLD_ZONE, PERSONAL_ZONE, countRows, pullZones, queryRows, uploadDevice } from './share-harness';
+import { refreshAllBalances, uploadDevice } from './apply-harness';
+import { HOUSEHOLD_ZONE, PERSONAL_ZONE, countRows, pullZones, queryRows } from './share-harness';
 import { shareDevices, expectLedgers, pullHousehold, shareAccount, startHousehold } from './share-tests-shared';
 
 import type { ShareCloudsInterface } from './share-harness';

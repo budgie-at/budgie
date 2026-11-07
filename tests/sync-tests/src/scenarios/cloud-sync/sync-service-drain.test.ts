@@ -33,6 +33,67 @@ const readSystemFields = (recordName: string) =>
         .pipe(Effect.map(rows => rows.at(0)?.systemFields ?? null));
 
 describe('cloud-sync/sync-service drain', () => {
+    it.effect('surfaces oversized records as an error without repeatedly encoding them', () =>
+        runSyncService((context, service) =>
+            Effect.gen(function* () {
+                yield* reconfigureAndAcknowledgeMeta(context, service);
+                const pendingBefore = yield* readOutboxCount;
+
+                yield* seed.account({ title: 'Oversized'.repeat(200_000) });
+                yield* service.drain;
+                expect(appAtomRegistry.get(cloudSyncStatusAtom).status).toBe(CloudSyncStatusEnum.ERROR);
+                const batches = context.transport.calls.savedBatches.length;
+                yield* service.drain;
+                expect(context.transport.calls.savedBatches).toHaveLength(batches);
+                expect(yield* readOutboxCount).toBe(pendingBefore + 1);
+            })
+        )
+    );
+
+    it.effect('releases terminal failed deletes and retries them on foreground', () =>
+        runSyncService((context, service) =>
+            Effect.gen(function* () {
+                yield* reconfigureAndAcknowledgeMeta(context, service);
+                const account = yield* seed.account({ title: 'Deleted cash' });
+                yield* service.drain;
+                yield* service.handleSentChanges(
+                    sentEvent({ savedRecords: savedFrom(flattenBatches(context.transport.calls.savedBatches).slice(1), 'saved') })
+                );
+                yield* testDb.$client.unsafe('DELETE FROM accounts WHERE id = ?', [account.id]);
+                yield* service.drain;
+                const targets = context.transport.calls.deletedBatches.flat();
+                expect(targets).toHaveLength(1);
+                yield* service.handleSentChanges(
+                    sentEvent({
+                        failedDeletes: targets.map(target => ({ ...target, code: ICloudErrorCode.PERMISSION_FAILURE, message: 'denied' }))
+                    })
+                );
+                expect(appAtomRegistry.get(cloudSyncStatusAtom).status).toBe(CloudSyncStatusEnum.ERROR);
+            })
+        )
+    );
+
+    it.effect('acknowledges successful engine retries after throttling', () =>
+        runSyncService((context, service) =>
+            Effect.gen(function* () {
+                yield* reconfigureAndAcknowledgeMeta(context, service);
+                yield* seed.account({ title: 'Retry cash' });
+                yield* service.drain;
+                const uploaded = flattenBatches(context.transport.calls.savedBatches).filter(record => record.recordType === 'Account');
+                expect(uploaded).toHaveLength(1);
+                yield* service.handleSentChanges(
+                    sentEvent({ failedSaves: uploaded.map(record => failedSaveOf(record, ICloudErrorCode.SERVICE_BUSY, 'busy', null)) })
+                );
+                expect(appAtomRegistry.get(cloudSyncStatusAtom).status).toBe(CloudSyncStatusEnum.SYNCING);
+                yield* service.handleSentChanges(
+                    sentEvent({ savedRecords: savedFrom(flattenBatches(context.transport.calls.savedBatches).slice(1), 'retried') })
+                );
+                expect(yield* readOutboxCount).toBe(0);
+                expect(appAtomRegistry.get(cloudSyncStatusAtom).status).toBe(CloudSyncStatusEnum.IDLE);
+            })
+        )
+    );
+
     it.effect('holds data uploads until the zone meta record is saved, then drains and acknowledges the outbox', () =>
         runSyncService((context, service) =>
             Effect.gen(function* () {

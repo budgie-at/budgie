@@ -109,7 +109,7 @@ describe('cloud-sync/record-mapping split transfers', () => {
 
                 const decoded = yield* Effect.forEach(throughTransport(records), record => decodeSyncRecord(record));
                 const { joined, unmatched } = joinSplitTransactions([...decoded].reverse());
-                const unresolved = yield* materializeRecords(targetDatabase, joined);
+                const unresolved = yield* materializeRecords(targetDatabase, records);
                 const source = yield* hydratedSnapshot(testDb);
                 const target = yield* hydratedSnapshot(targetDatabase);
 

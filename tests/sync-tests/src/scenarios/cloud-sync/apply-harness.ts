@@ -1,23 +1,23 @@
-import { assertStoredBalancesMatchLedger, encodeJson } from '@budgie-at/test-kit';
-import { SYNC_RECORD_SCHEMA_VERSION, SyncAccountBalanceRefresher, SyncApplyService, SyncOutboxRepository } from '@budgie/cloud-sync';
-import { Db, SyncRecordRepository } from '@budgie/contracts';
+import { encodeJson } from '@budgie-at/test-kit';
+import {
+    SYNC_RECORD_SCHEMA_VERSION,
+    SyncAccountBalanceRefresher,
+    SyncApplyService,
+    SyncUploadService,
+    SyncOutboxRepository
+} from '@budgie/cloud-sync';
+import { Db, HOUSEHOLD_SYNC_ZONE, SyncRecordRepository } from '@budgie/contracts';
 import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isString } from '@rnw-community/shared';
-
-import { encodeAllRecords, hydratedSnapshot, loadSyncState } from './record-mapping-harness';
+import { encodeAllRecords } from './record-mapping-harness';
 
 import type { FakeCloudDeliveryOptionsInterface, FakeCloudTransport } from '../../harness';
+import type { ShareCloudsInterface } from './share-harness';
+import type { SyncUploadAcknowledgementInterface } from '@budgie/cloud-sync';
 import type { SyncApplyResultInterface } from '@budgie/cloud-sync';
 import type { DB } from '@budgie/contracts';
-
-interface OutboxKeyInterface {
-    readonly syncZone: string;
-    readonly syncId: string;
-    readonly operation: string;
-}
 
 const refresherLayer = Layer.effect(
     SyncAccountBalanceRefresher,
@@ -37,12 +37,17 @@ export const deviceLayer = Layer.mergeAll(
     SyncApplyService.layer.pipe(Layer.provide(refresherLayer)),
     SyncRecordRepository.layer,
     SyncOutboxRepository.layer,
+    SyncUploadService.layer,
     AccountBalanceIncrementalService.layer
 );
 
 export const onDevice = <A, E>(
     database: DB,
-    effect: Effect.Effect<A, E, Db | SyncApplyService | SyncRecordRepository | SyncOutboxRepository | AccountBalanceIncrementalService>
+    effect: Effect.Effect<
+        A,
+        E,
+        Db | SyncApplyService | SyncUploadService | SyncRecordRepository | SyncOutboxRepository | AccountBalanceIncrementalService
+    >
 ) => effect.pipe(Effect.provide(deviceLayer), Effect.provideService(Db, database));
 
 export const refreshAllBalances = (database: DB) =>
@@ -57,8 +62,6 @@ export const refreshAllBalances = (database: DB) =>
                 .pipe(Effect.catchTags({ DepositNegativeBalanceError: () => Effect.void, AccountNotFoundError: () => Effect.void }));
         })
     );
-
-export const expectBalancesMatchLedger = (database: DB) => assertStoredBalancesMatchLedger(database);
 
 type EncodedRecord = Effect.Success<ReturnType<typeof encodeAllRecords>>[number];
 type PulledBatch = ReturnType<FakeCloudTransport['pull']>[number];
@@ -97,33 +100,69 @@ export const applyPulledBatches = (
         return results;
     });
 
-export const pushDevice = (database: DB, cloud: FakeCloudTransport) =>
+export const uploadDevice = (database: DB, clouds: ShareCloudsInterface) =>
     onDevice(
         database,
         Effect.gen(function* () {
-            const outbox = yield* database.$client.unsafe<OutboxKeyInterface>(
-                `SELECT sync_zone AS syncZone, sync_id AS syncId, operation FROM sync_outbox ORDER BY id`
-            );
-            const state = yield* loadSyncState(database);
-            const records = yield* encodeAllRecords(state);
-            const outboxNames = new Set(outbox.filter(({ operation }) => operation === 'SAVE').map(({ syncId }) => syncId));
-            const linkIds = new Set(
-                records
-                    .filter(({ recordName }) => outboxNames.has(recordName))
-                    .map(({ encryptedFields }) => encryptedFields['linkId'])
-                    .filter(isString)
-            );
-            const selected = records.filter(
-                ({ recordName, encryptedFields }) =>
-                    outboxNames.has(recordName) || (isString(encryptedFields['linkId']) && linkIds.has(encryptedFields['linkId']))
-            );
-            yield* uploadRecords(cloud, selected);
+            const uploadService = yield* SyncUploadService;
+            const outbox = yield* database.$client.unsafe<{
+                readonly recordType: string;
+                readonly syncZone: string;
+                readonly syncId: string;
+            }>(`SELECT record_type AS recordType, sync_zone AS syncZone, sync_id AS syncId FROM sync_outbox`);
+            const recordTypes = new Map(outbox.map(row => [`${row.syncZone}|${row.syncId}`, row.recordType]));
+            const batch = yield* uploadService.pending(10_000, new Set());
 
-            yield* database.$client.unsafe(`DELETE FROM sync_outbox`);
+            if (batch.rejections.length > 0) {
+                return yield* Effect.die(`upload rejected: ${encodeJson(batch.rejections)}`);
+            }
 
-            return selected.length;
+            const acknowledgements: SyncUploadAcknowledgementInterface[] = [];
+
+            const cloudFor = (zone: string): FakeCloudTransport => (zone === HOUSEHOLD_SYNC_ZONE ? clouds.household : clouds.personal);
+
+            for (const save of batch.saves) {
+                const systemFields = save.records.map(record => cloudFor(record.zone).upload([record])[0]);
+
+                for (const target of save.staleTargets) {
+                    cloudFor(target.zone).remove('TransactionLeg', target.zone, target.recordName);
+                }
+
+                acknowledgements.push({
+                    syncZone: save.syncZone,
+                    syncId: save.syncId,
+                    syncRevision: save.syncRevision,
+                    sentRecords: save.records.map((record, index) => ({ record, systemFields: systemFields[index] })),
+                    deletedTargets: save.staleTargets
+                });
+            }
+
+            for (const deletion of batch.deletions) {
+                for (const target of deletion.targets) {
+                    cloudFor(target.zone).remove(
+                        recordTypes.get(`${target.zone}|${target.recordName}`) ?? 'TransactionLeg',
+                        target.zone,
+                        target.recordName
+                    );
+                }
+
+                acknowledgements.push({
+                    syncZone: deletion.syncZone,
+                    syncId: deletion.syncId,
+                    syncRevision: deletion.syncRevision,
+                    sentRecords: [],
+                    deletedTargets: deletion.targets
+                });
+            }
+
+            yield* uploadService.acknowledge(acknowledgements);
+
+            return batch;
         })
     );
+
+export const pushDevice = (database: DB, cloud: FakeCloudTransport) =>
+    uploadDevice(database, { personal: cloud, household: cloud }).pipe(Effect.map(batch => batch.saves.length));
 
 export const pullDevice = (database: DB, cloud: FakeCloudTransport, deviceId: string, options: FakeCloudDeliveryOptionsInterface = {}) =>
     onDevice(database, applyPulledBatches(cloud, deviceId, options));
@@ -135,5 +174,3 @@ export const readOutboxRows = (database: DB) =>
         readonly operation: string;
         readonly changedColumns: string;
     }>(`SELECT record_type AS recordType, sync_id AS syncId, operation, changed_columns AS changedColumns FROM sync_outbox ORDER BY id`);
-
-export const stateSnapshot = (database: DB) => hydratedSnapshot(database);

@@ -1,4 +1,4 @@
-import { SyncOutboxOperationEnum, SyncRecordTypeEnum, SyncRecordRepository } from '@budgie/contracts';
+import { SyncOutboxOperationEnum, SyncRecordRepository, SyncRecordTypeEnum } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -14,17 +14,15 @@ import { SyncReferenceKindEnum } from '../../mapping/enum/sync-reference-kind.en
 import { joinSplitTransactions } from '../../mapping/utils/join-split-transactions.util';
 import { SYNC_AUTHORSHIP_COLUMNS } from '../constant/sync-authorship-columns.constant';
 import { SYNC_CHILD_NATURAL_KEYS } from '../constant/sync-child-natural-keys.constant';
+import { SYNC_INSERT_PLACEHOLDERS } from '../constant/sync-insert-placeholders.constant';
 import { SyncApplyRepository } from '../repository/sync-apply.repository';
-import { buildSyncInsertColumns } from '../utils/build-sync-insert-columns.util';
-import { diffSyncCells } from '../utils/diff-sync-cells.util';
 import { getSyncColumnName } from '../utils/get-sync-column-name.util';
 import { getSyncRowKey } from '../utils/get-sync-row-key.util';
 import { mergeSyncRow } from '../utils/merge-sync-row.util';
 import { normalizeSyncCell } from '../utils/normalize-sync-cell.util';
 import { readStoredMovedTo } from '../utils/read-stored-moved-to.util';
+import { readSyncReferenceId } from '../utils/read-sync-reference-id.util';
 import { stringifySyncJson } from '../utils/stringify-sync-json.util';
-import { toLocalCells } from '../utils/to-local-cells.util';
-import { toServerCells } from '../utils/to-server-cells.util';
 import { toStoredSyncApplyItem } from '../utils/to-stored-sync-apply-item.util';
 
 import type { SyncRowReferenceInterface } from '../../mapping/interface/sync-row-reference.interface';
@@ -43,6 +41,57 @@ const TRANSACTIONS_TABLE = 'transactions';
 
 export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>()('@budgie/cloud-sync/SyncApplyUnitService', {
     make: Effect.gen(function* () {
+        const buildSyncInsertColumns = (
+            descriptor: SyncTableDescriptorInterface,
+            row: SyncRowInterface,
+            resolutions: SyncResolutionsType,
+            unitIds: ReadonlyMap<string, number>
+        ): Record<string, SyncCellType> => ({
+            sync_id: row.syncId,
+            sync_zone: row.syncZone,
+            ...SYNC_INSERT_PLACEHOLDERS[row.tableName]?.(row.syncId),
+            ...Object.fromEntries(
+                Object.entries(row.values).map(([property, value]) => [getSyncColumnName(descriptor, property), normalizeSyncCell(value)])
+            ),
+            ...Object.fromEntries(
+                row.references.map(reference => [
+                    getSyncColumnName(descriptor, reference.column),
+                    readSyncReferenceId(row, reference.column, resolutions, unitIds)
+                ])
+            )
+        });
+        const diffSyncCells = (
+            descriptor: SyncTableDescriptorInterface,
+            merged: Readonly<Record<string, SyncCellType>>,
+            local: Readonly<Record<string, SyncCellType>>
+        ): Record<string, SyncCellType> =>
+            Object.fromEntries(
+                Object.keys(merged)
+                    .filter(property => merged[property] !== (local[property] ?? null))
+                    .map(property => [getSyncColumnName(descriptor, property), merged[property]])
+            );
+        const toLocalCells = (descriptor: SyncTableDescriptorInterface, localRow: SyncLocalRowInterface): Record<string, SyncCellType> =>
+            Object.fromEntries(
+                descriptor.columns.map(column => [
+                    column.property,
+                    normalizeSyncCell(localRow[getSyncColumnName(descriptor, column.property)])
+                ])
+            );
+        const toServerCells = (
+            descriptor: SyncTableDescriptorInterface,
+            row: SyncRowInterface,
+            resolutions: SyncResolutionsType,
+            unitIds: ReadonlyMap<string, number>
+        ): Record<string, SyncCellType> =>
+            Object.fromEntries(
+                descriptor.columns.flatMap(column => {
+                    if (isDefined(column.reference)) {
+                        return [[column.property, readSyncReferenceId(row, column.property, resolutions, unitIds)]];
+                    }
+
+                    return column.property in row.values ? [[column.property, normalizeSyncCell(row.values[column.property])]] : [];
+                })
+            );
         const repository = yield* SyncApplyRepository;
         const recordRepository = yield* SyncRecordRepository;
 

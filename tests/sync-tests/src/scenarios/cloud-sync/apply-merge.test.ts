@@ -1,27 +1,11 @@
+import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import {
-    DEVICE_A,
-    DEVICE_B,
-    Db,
-    FakeCloudTransport,
-    TestSeedService,
-    applyRuleCategory,
-    categoryIds,
-    describe,
-    expect,
-    expectBalancesMatchLedger,
-    it,
-    makeTestDbLayer,
-    mergeBothWays,
-    pullDevice,
-    pushDevice,
-    pushSeededExpense,
-    readOutboxRows,
-    refreshAllBalances,
-    stateSnapshot,
-    testDb
-} from './apply-shared-harness';
+import { Db, FakeCloudTransport, TestSeedService, assertStoredBalancesMatchLedger, makeTestDbLayer, testDb } from '../../harness';
+
+import { pullDevice, pushDevice, readOutboxRows, refreshAllBalances } from './apply-harness';
+import { DEVICE_A, DEVICE_B, applyRuleCategory, categoryIds, mergeBothWays, pushSeededExpense } from './apply-shared-harness';
+import { hydratedSnapshot } from './record-mapping-harness';
 
 import type { DB } from '@budgie/contracts';
 
@@ -104,8 +88,8 @@ describe('cloud-sync/apply-merge', () => {
                 expect((yield* entryOf(testDb, 'Cafe')).amount).toBe(7_000_000);
                 expect(yield* tagTitlesOf(deviceB)).toEqual(['Coffee']);
                 expect(yield* tagTitlesOf(testDb)).toEqual(['Coffee']);
-                yield* expectBalancesMatchLedger(deviceB);
-                yield* expectBalancesMatchLedger(testDb);
+                yield* assertStoredBalancesMatchLedger(deviceB);
+                yield* assertStoredBalancesMatchLedger(testDb);
             })
         );
 
@@ -128,8 +112,8 @@ describe('cloud-sync/apply-merge', () => {
                     expect(merged.deletedAt).not.toBeNull();
                 }
 
-                yield* expectBalancesMatchLedger(deviceB);
-                yield* expectBalancesMatchLedger(testDb);
+                yield* assertStoredBalancesMatchLedger(deviceB);
+                yield* assertStoredBalancesMatchLedger(testDb);
             })
         );
 
@@ -145,7 +129,7 @@ describe('cloud-sync/apply-merge', () => {
                 expect(merged.categoryId).toBe(userCategory);
                 expect(merged.categorySource).toBe('USER');
                 expect(yield* readOutboxRows(testDb)).toEqual([]);
-                yield* expectBalancesMatchLedger(testDb);
+                yield* assertStoredBalancesMatchLedger(testDb);
             })
         );
 
@@ -163,7 +147,7 @@ describe('cloud-sync/apply-merge', () => {
                     expect(merged.categorySource).toBe('USER');
                 }
 
-                yield* expectBalancesMatchLedger(deviceB);
+                yield* assertStoredBalancesMatchLedger(deviceB);
             })
         );
 
@@ -191,7 +175,7 @@ describe('cloud-sync/apply-merge', () => {
                 expect(countAfter[0].total).toBe(countBefore[0].total);
                 expect(yield* titleOn(deviceB)).toBe('Edited on B');
                 expect(yield* titleOn(testDb)).toBe('Edited on B');
-                expect(Object.keys(yield* stateSnapshot(testDb))).toContain('categories');
+                expect(Object.keys(yield* hydratedSnapshot(testDb))).toContain('categories');
             })
         );
     });

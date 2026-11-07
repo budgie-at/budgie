@@ -1,4 +1,4 @@
-import { TestSeedService, buildTestDb, makeTestDbLayer, resetTestDb } from '@budgie-at/test-kit';
+import { TestSeedService, assertStoredBalancesMatchLedger, buildTestDb, makeTestDbLayer, resetTestDb } from '@budgie-at/test-kit';
 import { syncAccountBalanceRefresherLayer, SyncApplyService, SyncRestoreReconciliationService } from '@budgie/cloud-sync';
 import { Db, PERSONAL_SYNC_ZONE, SyncResetRepository } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
@@ -7,15 +7,7 @@ import * as Layer from 'effect/Layer';
 
 import { FakeCloudTransport, testDb } from '../../harness';
 
-import {
-    deviceLayer,
-    expectBalancesMatchLedger,
-    onDevice,
-    pullDevice,
-    pushDevice,
-    readOutboxRows,
-    refreshAllBalances
-} from './apply-harness';
+import { deviceLayer, onDevice, pullDevice, pushDevice, readOutboxRows, refreshAllBalances } from './apply-harness';
 
 import type { DB, DbError } from '@budgie/contracts';
 
@@ -121,8 +113,8 @@ describe('cloud-sync/restore-reset reconciliation', () => {
                 expect(yield* readTitles(restored)).toEqual(['Lunch']);
                 expect(yield* readTitles(testDb)).toEqual(['Lunch']);
                 expect(yield* readOutbox(restored)).toEqual([]);
-                yield* expectBalancesMatchLedger(restored);
-                yield* expectBalancesMatchLedger(testDb);
+                yield* assertStoredBalancesMatchLedger(restored);
+                yield* assertStoredBalancesMatchLedger(testDb);
             })
         );
 
@@ -136,8 +128,8 @@ describe('cloud-sync/restore-reset reconciliation', () => {
 
                 expect(yield* readTitles(restored)).toEqual(['Cafe', 'Lunch edited']);
                 expect(yield* readOutbox(restored)).toEqual([]);
-                yield* expectBalancesMatchLedger(restored);
-                yield* expectBalancesMatchLedger(testDb);
+                yield* assertStoredBalancesMatchLedger(restored);
+                yield* assertStoredBalancesMatchLedger(testDb);
             })
         );
 
@@ -168,7 +160,7 @@ describe('cloud-sync/restore-reset reconciliation', () => {
                 expect(yield* readTitles(restored)).toEqual(['Cafe', 'Lunch']);
                 expect(yield* readTitles(testDb)).toEqual(['Cafe', 'Lunch']);
                 expect(yield* readOutbox(restored)).toEqual([]);
-                yield* expectBalancesMatchLedger(restored);
+                yield* assertStoredBalancesMatchLedger(restored);
             })
         );
 
@@ -180,7 +172,7 @@ describe('cloud-sync/restore-reset reconciliation', () => {
                 expect(results).toEqual([]);
                 expect(yield* readTitles(restored)).toEqual(['Cafe', 'Lunch']);
                 expect(yield* readOutbox(restored)).toEqual([]);
-                yield* expectBalancesMatchLedger(restored);
+                yield* assertStoredBalancesMatchLedger(restored);
             })
         );
 
@@ -193,7 +185,7 @@ describe('cloud-sync/restore-reset reconciliation', () => {
 
                 expect(results.flatMap(result => result.deleted['Transaction'] ?? [])).toEqual([lunchSyncId]);
                 expect(yield* readTitles(restored)).toEqual(['Cafe']);
-                yield* expectBalancesMatchLedger(restored);
+                yield* assertStoredBalancesMatchLedger(restored);
             })
         );
 
@@ -224,7 +216,7 @@ describe('cloud-sync/restore-reset reconciliation', () => {
                 ]);
                 expect(outbox.some(({ recordType }) => recordType === 'Account')).toBe(false);
                 expect(yield* readTitles(restored)).toEqual(['Cafe', 'Created after restore', 'Lunch']);
-                yield* expectBalancesMatchLedger(restored);
+                yield* assertStoredBalancesMatchLedger(restored);
             })
         );
     });

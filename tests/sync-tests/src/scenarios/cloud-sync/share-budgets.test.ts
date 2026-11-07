@@ -15,8 +15,8 @@ import * as Effect from 'effect/Effect';
 
 import { testDb } from '../../harness';
 
-import { refreshAllBalances } from './apply-harness';
-import { HOUSEHOLD_ZONE, PERSONAL_ZONE, countRows, onShareDevice, queryRows, reconcileDevice, uploadDevice } from './share-harness';
+import { refreshAllBalances, uploadDevice } from './apply-harness';
+import { HOUSEHOLD_ZONE, PERSONAL_ZONE, countRows, onShareDevice, queryRows, reconcileDevice } from './share-harness';
 import { shareDevices, expectLedgers, expectNoRejections, pullHousehold, startHousehold } from './share-tests-shared';
 
 import type { DB } from '@budgie/contracts';
@@ -124,7 +124,7 @@ describe('cloud-sync/share-budgets', () => {
                 expect(yield* readSharedSpent(testDb, HOUSEHOLD_ZONE)).toBe(SHARED_SPENT);
                 expect(yield* readSharedSpent(deviceB, HOUSEHOLD_ZONE)).toBe(SHARED_SPENT);
                 expect(yield* readSharedSpent(testDb, PERSONAL_ZONE)).toBe(SHARED_SPENT + PRIVATE_SPENT);
-                expect(yield* readSharedSpent(deviceB, PERSONAL_ZONE)).toBe(SHARED_SPENT);
+                expect(yield* readSharedSpent(deviceB, PERSONAL_ZONE)).toBe(0);
 
                 yield* deviceB.$client.unsafe(`UPDATE budgets SET overall_limit = 120000000 WHERE sync_zone = ?`, [HOUSEHOLD_ZONE]);
                 yield* new TestSeedService(deviceB).manualExpense({

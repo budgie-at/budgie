@@ -1,4 +1,4 @@
-import { encodeJson, resetTestDb } from '@budgie-at/test-kit';
+import { resetTestDb } from '@budgie-at/test-kit';
 import { HouseholdShareService, SyncApplyService, SyncUploadService } from '@budgie/cloud-sync';
 import { Db, SyncDatabaseScopeEnum, SyncZoneRegistryRepository, SyncZoneRoleEnum } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
@@ -11,12 +11,10 @@ import { testDb } from '../../harness';
 import { applyPulledBatches, deviceLayer } from './apply-harness';
 
 import type { FakeCloudDeliveryOptionsInterface, FakeCloudTransport } from '../../harness';
-import type { SyncUploadAcknowledgementInterface } from '@budgie/cloud-sync';
 import type { DB } from '@budgie/contracts';
 
 export const PERSONAL_ZONE = 'personal';
 export const HOUSEHOLD_ZONE = 'household';
-const UPLOAD_LIMIT = 10_000;
 
 const shareLayer = Layer.mergeAll(deviceLayer, HouseholdShareService.layer, SyncUploadService.layer, SyncZoneRegistryRepository.layer);
 
@@ -52,67 +50,6 @@ export interface ShareCloudsInterface {
     readonly personal: FakeCloudTransport;
     readonly household: FakeCloudTransport;
 }
-
-export const uploadDevice = (database: DB, clouds: ShareCloudsInterface) =>
-    onShareDevice(
-        database,
-        Effect.gen(function* () {
-            const uploadService = yield* SyncUploadService;
-            const outbox = yield* database.$client.unsafe<{
-                readonly recordType: string;
-                readonly syncZone: string;
-                readonly syncId: string;
-            }>(`SELECT record_type AS recordType, sync_zone AS syncZone, sync_id AS syncId FROM sync_outbox`);
-            const recordTypes = new Map(outbox.map(row => [`${row.syncZone}|${row.syncId}`, row.recordType]));
-            const batch = yield* uploadService.pending(UPLOAD_LIMIT, new Set());
-
-            if (batch.rejections.length > 0) {
-                return yield* Effect.die(`upload rejected: ${encodeJson(batch.rejections)}`);
-            }
-
-            const acknowledgements: SyncUploadAcknowledgementInterface[] = [];
-
-            const cloudFor = (zone: string): FakeCloudTransport => (zone === HOUSEHOLD_ZONE ? clouds.household : clouds.personal);
-
-            for (const save of batch.saves) {
-                const systemFields = save.records.map(record => cloudFor(record.zone).upload([record])[0]);
-
-                for (const target of save.staleTargets) {
-                    cloudFor(target.zone).remove('TransactionLeg', target.zone, target.recordName);
-                }
-
-                acknowledgements.push({
-                    syncZone: save.syncZone,
-                    syncId: save.syncId,
-                    syncRevision: save.syncRevision,
-                    sentRecords: save.records.map((record, index) => ({ record, systemFields: systemFields[index] })),
-                    deletedTargets: save.staleTargets
-                });
-            }
-
-            for (const deletion of batch.deletions) {
-                for (const target of deletion.targets) {
-                    cloudFor(target.zone).remove(
-                        recordTypes.get(`${target.zone}|${target.recordName}`) ?? 'TransactionLeg',
-                        target.zone,
-                        target.recordName
-                    );
-                }
-
-                acknowledgements.push({
-                    syncZone: deletion.syncZone,
-                    syncId: deletion.syncId,
-                    syncRevision: deletion.syncRevision,
-                    sentRecords: [],
-                    deletedTargets: deletion.targets
-                });
-            }
-
-            yield* uploadService.acknowledge(acknowledgements);
-
-            return batch;
-        })
-    );
 
 const isInZones = (record: unknown, zones: readonly string[]): boolean =>
     isRecord(record) && isString(record['zone']) && zones.includes(record['zone']);

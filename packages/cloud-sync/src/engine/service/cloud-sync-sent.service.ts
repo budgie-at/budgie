@@ -119,6 +119,14 @@ export class CloudSyncSentService extends Context.Service<CloudSyncSentService>(
                 });
             }
 
+            if (
+                failure.code === ICloudErrorCode.NETWORK_UNAVAILABLE ||
+                failure.code === ICloudErrorCode.SERVICE_BUSY ||
+                failure.code === ICloudErrorCode.ACCOUNT_UNAVAILABLE
+            ) {
+                return;
+            }
+
             const itemKey = state.itemKeyByRecordKey.get(recordKey);
 
             if (isDefined(itemKey)) {
@@ -185,6 +193,12 @@ export class CloudSyncSentService extends Context.Service<CloudSyncSentService>(
 
                 for (const failure of event.failedSaves) {
                     yield* handleFailedSave(failure);
+                }
+
+                for (const failure of event.failedDeletes) {
+                    if (failure.code !== ICloudErrorCode.UNKNOWN_ITEM) {
+                        yield* handleFailedSave({ ...failure, recordType: '', serverRecord: null });
+                    }
                 }
 
                 yield* acknowledgeComplete(touched);

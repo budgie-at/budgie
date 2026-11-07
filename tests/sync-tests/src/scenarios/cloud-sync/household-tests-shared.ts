@@ -5,9 +5,9 @@ import * as Effect from 'effect/Effect';
 
 import { FakeCloudTransport, testDb } from '../../harness';
 
-import { refreshAllBalances } from './apply-harness';
+import { refreshAllBalances, uploadDevice } from './apply-harness';
 import { shareAcceptedEvent } from './household-harness';
-import { HOUSEHOLD_ZONE, onShareDevice, pullZones, uploadDevice } from './share-harness';
+import { HOUSEHOLD_ZONE, onShareDevice, pullZones } from './share-harness';
 import { syncService } from './sync-service-harness';
 
 import type { ShareCloudsInterface } from './share-harness';

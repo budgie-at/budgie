@@ -1,12 +1,14 @@
 import { TestSeedService } from '@budgie-at/test-kit';
-import { SyncZoneRoleEnum } from '@budgie/contracts';
+import { SyncApplyService } from '@budgie/cloud-sync';
+import { Db, SyncZoneRoleEnum } from '@budgie/contracts';
+import { TransactionService } from '@budgie/ledger';
 import { describe, expect } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import { testDb } from '../../harness';
 
-import { refreshAllBalances } from './apply-harness';
-import { HOUSEHOLD_ZONE, PERSONAL_ZONE, countRows, pullZones, queryRows, uploadDevice } from './share-harness';
+import { onDevice, refreshAllBalances, uploadDevice } from './apply-harness';
+import { HOUSEHOLD_ZONE, PERSONAL_ZONE, countRows, pullZones, queryRows } from './share-harness';
 import { shareDevices, expectLedgers, expectNoRejections, pullHousehold, shareAndUpload, startHousehold } from './share-tests-shared';
 
 const OPERATED_AT = new Date('2026-10-06T10:00:00Z');
@@ -52,6 +54,42 @@ const startSharedTransfer = (memberRole: SyncZoneRoleEnum) =>
 
 describe('cloud-sync/share-split-transfer', () => {
     shareDevices('two devices', it => {
+        it.effect('keeps another member transfer leg when deletion is requested', () =>
+            Effect.gen(function* () {
+                const { deviceB, clouds } = yield* startSharedTransfer(SyncZoneRoleEnum.PARTICIPANT);
+                expectNoRejections(yield* pullHousehold(deviceB, clouds, 'member-delete'));
+                const [transaction] = yield* queryRows<{ readonly id: number }>(deviceB, 'SELECT id FROM transactions');
+                yield* Effect.flatMap(TransactionService, service => service.deleteById(transaction.id)).pipe(
+                    Effect.provide(TransactionService.layer),
+                    Effect.provideService(Db, deviceB)
+                );
+                expect(yield* countRows(deviceB, 'transactions')).toBe(1);
+                expect(yield* queryRows(deviceB, 'SELECT amount FROM transaction_entries')).toEqual([{ amount: SHARED_AMOUNT }]);
+            })
+        );
+
+        it.effect('republishes an owner leg deleted remotely without changing the owner ledger', () =>
+            Effect.gen(function* () {
+                const { clouds } = yield* startSharedTransfer(SyncZoneRoleEnum.PARTICIPANT);
+                const [leg] = yield* queryRows<{ readonly syncId: string }>(
+                    testDb,
+                    "SELECT sync_id AS syncId FROM sync_record WHERE record_type = 'TransactionLeg'"
+                );
+                yield* onDevice(
+                    testDb,
+                    Effect.flatMap(SyncApplyService, service =>
+                        service.apply({
+                            records: [],
+                            deletions: [{ recordType: 'TransactionLeg', recordName: leg.syncId, zone: HOUSEHOLD_ZONE }]
+                        })
+                    )
+                );
+                expect(yield* countRows(testDb, "sync_outbox WHERE record_type = 'Transaction' AND operation = 'SAVE'")).toBe(1);
+                expect(yield* countRows(testDb, 'transaction_entries')).toBe(3);
+                yield* uploadDevice(testDb, clouds);
+            })
+        );
+
         it.effect('never sends the private leg of a shared-to-private transfer to the member', () =>
             Effect.gen(function* () {
                 const { deviceB, clouds } = yield* startSharedTransfer(SyncZoneRoleEnum.PARTICIPANT);

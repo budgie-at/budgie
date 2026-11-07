@@ -1,11 +1,11 @@
-import { TestSeedService, makeTestDbLayer } from '@budgie-at/test-kit';
+import { TestSeedService, assertStoredBalancesMatchLedger, makeTestDbLayer } from '@budgie-at/test-kit';
 import { TransactionConsolidationTypeEnum, TransactionTypeEnum, deriveConsolidationSyncId } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import { testDb } from '../../harness';
 
-import { expectBalancesMatchLedger, refreshAllBalances } from './apply-harness';
+import { refreshAllBalances } from './apply-harness';
 import { reapplyAutomation, syncIdsOf } from './automation-harness';
 import {
     ALICE_IBAN,
@@ -97,8 +97,8 @@ const expectCleanLedgers = (bobDatabase: DB) =>
     Effect.gen(function* () {
         expect(yield* countRows(testDb, `sync_pending`)).toBe(0);
         expect(yield* countRows(bobDatabase, `sync_pending`)).toBe(0);
-        yield* expectBalancesMatchLedger(testDb);
-        yield* expectBalancesMatchLedger(bobDatabase);
+        yield* assertStoredBalancesMatchLedger(testDb);
+        yield* assertStoredBalancesMatchLedger(bobDatabase);
     });
 
 const expectSingleTransferOnBoth = (bobDatabase: DB) =>

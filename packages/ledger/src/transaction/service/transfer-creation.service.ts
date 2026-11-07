@@ -221,10 +221,12 @@ export class TransferCreationService extends Context.Service<TransferCreationSer
                     const accounts = yield* accountRepository.findByIds(getEntryAccountIds(inputs));
                     const accountExternalIdById = new Map(accounts.map(account => [account.id, account.externalId]));
                     const claimedSyncIds = new Set<string>();
+                    const syncIds = inputs.map(input => resolveBankTransactionSyncId(input, accountExternalIdById, claimedSyncIds));
+                    const existingSyncIds = yield* transactionRepository.findClaimedPersonalSyncIds(syncIds.filter(isDefined));
                     const entryValuations = yield* entryBaseValuationService.valueTransactionsEntries(inputs);
                     const transactions: TransactionEntityInterface[] = [];
                     for (const [index, input] of inputs.entries()) {
-                        const syncId = resolveBankTransactionSyncId(input, accountExternalIdById, claimedSyncIds);
+                        const syncId = isDefined(syncIds[index]) && existingSyncIds.has(syncIds[index]) ? null : syncIds[index];
                         const syncedTransfer = yield* persistSyncedTransfer(input, entryValuations[index], syncId);
                         transactions.push(syncedTransfer);
                     }

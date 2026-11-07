@@ -1,6 +1,6 @@
 import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { householdStateAtom } from '@app/household/constant/household-state-atom.constant';
-import { makeTestDbLayer } from '@budgie-at/test-kit';
+import { assertStoredBalancesMatchLedger, makeTestDbLayer } from '@budgie-at/test-kit';
 import { CloudSyncRestorePhaseEnum, HouseholdRoleEnum, ICloudParticipantRole } from '@budgie/cloud-sync';
 import { Db, HOUSEHOLD_SYNC_ZONE, SyncDatabaseScopeEnum, SyncZoneRegistryRepository, SyncZoneRoleEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
@@ -8,7 +8,6 @@ import * as Effect from 'effect/Effect';
 
 import { FakeCloudTransport } from '../../harness';
 
-import { expectBalancesMatchLedger } from './apply-harness';
 import {
     accessLostEvent,
     countRows,
@@ -91,7 +90,7 @@ describe('cloud-sync/household removal', () => {
                 expect(yield* readPersonalBalances(memberDb)).toEqual(personalBefore);
                 expect(member.transport.calls.sharedStopped).toBe(1);
                 expect(appAtomRegistry.get(householdStateAtom).role).toBe(HouseholdRoleEnum.NONE);
-                yield* expectBalancesMatchLedger(memberDb);
+                yield* assertStoredBalancesMatchLedger(memberDb);
             })
         );
     });
@@ -110,7 +109,7 @@ describe('cloud-sync/household removal', () => {
                 expect(member.transport.calls.sharedStarted).toEqual([]);
                 expect(yield* countHouseholdRows(memberDb)).toEqual([0, 0, 0, 0, 0]);
                 expect(yield* readPersonalBalances(memberDb)).toEqual(personalBefore);
-                yield* expectBalancesMatchLedger(memberDb);
+                yield* assertStoredBalancesMatchLedger(memberDb);
             })
         );
 

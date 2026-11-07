@@ -1,4 +1,4 @@
-import { makeTestDbLayer } from '@budgie-at/test-kit';
+import { assertStoredBalancesMatchLedger, makeTestDbLayer } from '@budgie-at/test-kit';
 import { HouseholdShareService } from '@budgie/cloud-sync';
 import { Db } from '@budgie/contracts';
 import { expect, it } from '@effect/vitest';
@@ -6,8 +6,8 @@ import * as Effect from 'effect/Effect';
 
 import { FakeCloudTransport } from '../../harness';
 
-import { expectBalancesMatchLedger } from './apply-harness';
-import { HOUSEHOLD_ZONE, onShareDevice, prepareHousehold, pullZones, queryRows, uploadDevice } from './share-harness';
+import { uploadDevice } from './apply-harness';
+import { HOUSEHOLD_ZONE, onShareDevice, prepareHousehold, pullZones, queryRows } from './share-harness';
 
 import type { ShareCloudsInterface } from './share-harness';
 import type { DB, SyncZoneRoleEnum } from '@budgie/contracts';
@@ -49,7 +49,7 @@ export const expectNoRejections = (results: readonly { readonly rejected: readon
 };
 
 export const expectLedgers = (...databases: readonly DB[]) =>
-    Effect.forEach(databases, database => expectBalancesMatchLedger(database), { discard: true });
+    Effect.forEach(databases, database => assertStoredBalancesMatchLedger(database), { discard: true });
 
 export const expectTitleZones = (database: DB, table: string, expected: readonly (readonly [string, string])[]) =>
     Effect.gen(function* () {
