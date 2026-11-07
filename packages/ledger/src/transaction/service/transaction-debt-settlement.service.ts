@@ -1,4 +1,5 @@
 import {
+    PERSONAL_SYNC_ZONE,
     AccountDebtTypeEnum,
     AccountRepository,
     AccountTypeEnum,
@@ -235,7 +236,9 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
 
                 const seedKey = debtAccount.debtType === AccountDebtTypeEnum.LENT ? LENDING_CATEGORY_SEED_KEY : BORROWING_CATEGORY_SEED_KEY;
                 const entryAccount = yield* accountRepository.findById(primaryEntry.accountId);
-                const category = yield* categoryRepository.findActiveBySeedKey(seedKey, entryAccount?.syncZone ?? primaryEntry.syncZone);
+                const category =
+                    (yield* categoryRepository.findActiveBySeedKey(seedKey, entryAccount?.syncZone ?? primaryEntry.syncZone)) ??
+                    (yield* categoryRepository.findActiveBySeedKey(seedKey, PERSONAL_SYNC_ZONE));
 
                 if (!isDefined(category)) {
                     return false;

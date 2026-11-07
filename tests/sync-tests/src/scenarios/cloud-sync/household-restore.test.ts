@@ -15,7 +15,7 @@ import * as Effect from 'effect/Effect';
 import {
     FakeCloudTransport,
     testDb,
-    countHouseholdRows,
+    countRows,
     HOUSEHOLD_CLOUD_ZONE,
     joinMember,
     OWNER_RECORD_NAME,
@@ -30,7 +30,7 @@ import {
 
 import type { DB } from '@budgie/contracts';
 
-const startRestore = (database: DB, role: SyncZoneRoleEnum) => {
+const startRestore = (database: DB, role: SyncZoneRoleEnum, isPrivateFirst = true) => {
     const context = makeSyncServiceContext(database);
 
     context.store.holder.state = { ...context.store.holder.state, restorePhase: CloudSyncRestorePhaseEnum.PENDING };
@@ -58,7 +58,9 @@ const startRestore = (database: DB, role: SyncZoneRoleEnum) => {
                 ({ recordName, recordType }) => ({ recordName, recordType })
             );
             yield* service.handleFetchedChanges(fetchedEvent([metaWith(yield* identity.ensureLineageId())]));
-            yield* service.handleDidFetch({ scope: ICloudSyncScope.PRIVATE });
+            if (isPrivateFirst) {
+                yield* service.handleDidFetch({ scope: ICloudSyncScope.PRIVATE });
+            }
 
             return service;
         })
@@ -73,7 +75,7 @@ describe('cloud-sync/household restore', () => {
 
                 yield* joinMember(memberDb, new FakeCloudTransport());
 
-                const restore = startRestore(memberDb, SyncZoneRoleEnum.PARTICIPANT);
+                const restore = startRestore(memberDb, SyncZoneRoleEnum.PARTICIPANT, false);
 
                 restore.context.transport.behavior.participants = participantsFor(
                     ICloudParticipantRole.OWNER,
@@ -86,24 +88,37 @@ describe('cloud-sync/household restore', () => {
                         const service = yield* restore.run;
 
                         expect(restore.context.transport.calls.sharedStarted).toEqual([null]);
-                        expect(yield* countHouseholdRows(memberDb, 'accounts', HOUSEHOLD_SYNC_ZONE)).toBe(1);
+                        expect(yield* countRows(memberDb, 'accounts WHERE sync_zone = ?', [HOUSEHOLD_SYNC_ZONE])).toBe(1);
 
                         expect(restore.context.store.holder.state.restorePhase).toBe(CloudSyncRestorePhaseEnum.FETCHING);
+                        yield* memberDb.$client.unsafe(
+                            "INSERT INTO tags(sync_id, sync_zone, title, title_search) VALUES ('restore-local-tag', ?, 'During restore', 'during restore')",
+                            [HOUSEHOLD_SYNC_ZONE]
+                        );
+                        yield* memberDb.$client.unsafe(
+                            "UPDATE tags SET title = 'Edited during restore' WHERE sync_id = 'restore-local-tag'"
+                        );
+                        expect(
+                            yield* memberDb.$client.unsafe("SELECT sync_id FROM sync_outbox WHERE sync_id = 'restore-local-tag'")
+                        ).toEqual([{ sync_id: 'restore-local-tag' }]);
                         const sentBefore = restore.context.transport.calls.sharedSavedBatches.length;
                         yield* service.drain;
                         expect(restore.context.transport.calls.sharedSavedBatches).toHaveLength(sentBefore);
                         restore.context.transport.behavior.isInventoryFailing = true;
                         yield* service.handleDidFetch({ scope: ICloudSyncScope.SHARED });
                         expect(restore.context.store.holder.state.restorePhase).toBe(CloudSyncRestorePhaseEnum.FETCHING);
-                        expect(yield* countHouseholdRows(memberDb, 'accounts', HOUSEHOLD_SYNC_ZONE)).toBe(1);
+                        expect(yield* countRows(memberDb, 'accounts WHERE sync_zone = ?', [HOUSEHOLD_SYNC_ZONE])).toBe(1);
                         restore.context.transport.behavior.isInventoryFailing = false;
                         yield* service.handleDidFetch({ scope: ICloudSyncScope.SHARED });
+                        expect(restore.context.store.holder.state.restorePhase).toBe(CloudSyncRestorePhaseEnum.FETCHING);
+                        expect(restore.context.transport.calls.sharedSavedBatches.length).toBeGreaterThan(sentBefore);
+                        yield* service.handleDidFetch({ scope: ICloudSyncScope.PRIVATE });
                         expect(restore.context.store.holder.state.restorePhase).toBe(CloudSyncRestorePhaseEnum.NONE);
                     })
                 );
 
-                expect(yield* countHouseholdRows(memberDb, 'accounts', HOUSEHOLD_SYNC_ZONE)).toBe(0);
-                expect(yield* countHouseholdRows(memberDb, 'transactions', HOUSEHOLD_SYNC_ZONE)).toBe(0);
+                expect(yield* countRows(memberDb, 'accounts WHERE sync_zone = ?', [HOUSEHOLD_SYNC_ZONE])).toBe(0);
+                expect(yield* countRows(memberDb, 'transactions WHERE sync_zone = ?', [HOUSEHOLD_SYNC_ZONE])).toBe(0);
                 yield* assertStoredBalancesMatchLedger(memberDb);
             })
         );
@@ -122,12 +137,20 @@ describe('cloud-sync/household restore', () => {
                 Effect.gen(function* () {
                     const service = yield* restore.run;
                     expect(restore.context.store.holder.state.restorePhase).toBe(CloudSyncRestorePhaseEnum.FETCHING);
+                    yield* testDb.$client.unsafe("UPDATE accounts SET title = 'Household edited during restore' WHERE sync_zone = ?", [
+                        HOUSEHOLD_SYNC_ZONE
+                    ]);
+                    expect(
+                        (yield* testDb.$client.unsafe('SELECT id FROM sync_outbox WHERE sync_zone = ?', [HOUSEHOLD_SYNC_ZONE])).length
+                    ).toBeGreaterThan(0);
                     const batches = restore.context.transport.calls.savedBatches.length;
                     yield* service.drain;
                     expect(restore.context.transport.calls.savedBatches).toHaveLength(batches);
                     restore.context.transport.behavior.failingInventoryZone = null;
                     yield* service.handleDidFetch({ scope: ICloudSyncScope.PRIVATE });
                     expect(restore.context.store.holder.state.restorePhase).toBe(CloudSyncRestorePhaseEnum.NONE);
+                    yield* service.drain;
+                    expect(restore.context.transport.calls.savedBatches.length).toBeGreaterThan(batches);
                 })
             );
             yield* assertStoredBalancesMatchLedger(testDb);
@@ -152,7 +175,7 @@ describe('cloud-sync/household restore', () => {
                 })
             );
 
-            expect(yield* countHouseholdRows(testDb, 'accounts', HOUSEHOLD_SYNC_ZONE)).toBe(0);
+            expect(yield* countRows(testDb, 'accounts WHERE sync_zone = ?', [HOUSEHOLD_SYNC_ZONE])).toBe(0);
             expect((yield* readPersonalBalances(testDb)).some(({ title }) => title === 'Household joint')).toBe(true);
             expect(restore.context.transport.calls.deletedZones).toEqual([HOUSEHOLD_CLOUD_ZONE]);
             yield* assertStoredBalancesMatchLedger(testDb);

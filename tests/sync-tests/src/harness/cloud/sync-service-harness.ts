@@ -248,7 +248,7 @@ export const makeSyncServiceContext = (database: DB = testDb) => {
         store.layer,
         safetyCopy.layer,
         automation.layer,
-        cloudSyncDomainLayer,
+        cloudSyncDomainLayer.pipe(Layer.provide([cloudSyncHostLayer, store.layer])),
         SyncRepository.layer,
         BankIntegrationRepository.layer,
         SyncIdentityRepository.layer,
@@ -375,6 +375,7 @@ export const failedSaveOf = (
     recordName: payload.recordName,
     recordType: payload.recordType,
     code,
+    isRetried: code === ICloudErrorCode.SERVICE_BUSY || code === ICloudErrorCode.NETWORK_UNAVAILABLE,
     message,
     serverRecord
 });

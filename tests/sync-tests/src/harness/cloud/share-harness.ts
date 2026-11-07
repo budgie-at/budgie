@@ -21,9 +21,6 @@ import type { FakeCloudDeliveryOptionsInterface } from './fake-cloud-delivery-op
 import type { FakeCloudTransport } from './fake-cloud-transport';
 import type { DB } from '@budgie/contracts';
 
-export const PERSONAL_ZONE = PERSONAL_SYNC_ZONE;
-export const HOUSEHOLD_ZONE = HOUSEHOLD_SYNC_ZONE;
-
 const shareLayer = Layer.mergeAll(deviceLayer, HouseholdShareService.layer, SyncUploadService.layer, SyncZoneRegistryRepository.layer);
 
 export const onShareDevice = <A, E>(
@@ -38,14 +35,14 @@ const joinHousehold = (database: DB, role: SyncZoneRoleEnum, ownerName: string) 
             const registry = yield* SyncZoneRegistryRepository;
 
             yield* registry.upsert({
-                zoneLabel: PERSONAL_ZONE,
+                zoneLabel: PERSONAL_SYNC_ZONE,
                 zoneName: 'personal-zone',
                 ownerName,
                 databaseScope: SyncDatabaseScopeEnum.PRIVATE,
                 role: SyncZoneRoleEnum.OWNER
             });
             yield* registry.upsert({
-                zoneLabel: HOUSEHOLD_ZONE,
+                zoneLabel: HOUSEHOLD_SYNC_ZONE,
                 zoneName: 'household-zone',
                 ownerName,
                 databaseScope: role === SyncZoneRoleEnum.OWNER ? SyncDatabaseScopeEnum.PRIVATE : SyncDatabaseScopeEnum.SHARED,
@@ -90,9 +87,9 @@ const resetDevice = (database: DB) =>
         const client = database.$client;
 
         yield* client.unsafe(
-            `DELETE FROM default_category_translations WHERE category_id IN (SELECT id FROM categories WHERE sync_zone <> '${PERSONAL_ZONE}' OR is_default = 0)`
+            `DELETE FROM default_category_translations WHERE category_id IN (SELECT id FROM categories WHERE sync_zone <> '${PERSONAL_SYNC_ZONE}' OR is_default = 0)`
         );
-        yield* client.unsafe(`DELETE FROM categories WHERE sync_zone <> '${PERSONAL_ZONE}' OR is_default = 0`);
+        yield* client.unsafe(`DELETE FROM categories WHERE sync_zone <> '${PERSONAL_SYNC_ZONE}' OR is_default = 0`);
         yield* client.unsafe(`UPDATE categories SET title = 'Groceries', title_search = 'groceries' WHERE id = 11`);
         yield* client.unsafe(`UPDATE settings SET household_share_everything = 0`);
     }).pipe(Effect.andThen(resetTestDb(database)));
@@ -101,8 +98,8 @@ export const prepareHousehold = (deviceB: DB, memberRole: SyncZoneRoleEnum) =>
     Effect.gen(function* () {
         yield* resetDevice(testDb);
         yield* resetDevice(deviceB);
-        yield* joinHousehold(testDb, SyncZoneRoleEnum.OWNER, 'Alice');
-        yield* joinHousehold(deviceB, memberRole, memberRole === SyncZoneRoleEnum.OWNER ? 'Alice' : 'Bob');
+        yield* joinHousehold(testDb, SyncZoneRoleEnum.OWNER, '__defaultOwner__');
+        yield* joinHousehold(deviceB, memberRole, memberRole === SyncZoneRoleEnum.OWNER ? '__defaultOwner__' : 'Bob');
     });
 
 export const reconcileDevice = (database: DB) =>

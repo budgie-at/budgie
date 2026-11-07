@@ -1,7 +1,7 @@
 import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { householdReadyAtom } from '@app/household/constant/household-ready-atom.constant';
 import { TestSeedService, assertStoredBalancesMatchLedger, makeTestDbLayer } from '@budgie-at/test-kit';
-import { CloudSyncService } from '@budgie/cloud-sync';
+import { HouseholdShareService, CloudSyncService } from '@budgie/cloud-sync';
 import { Db, HOUSEHOLD_SYNC_ZONE, PERSONAL_SYNC_ZONE } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
@@ -11,7 +11,7 @@ import {
     testDb,
     pullDevice,
     refreshAllBalances,
-    countHouseholdRows,
+    countRows,
     joinMember,
     MEMBER_ACCOUNT,
     MEMBER_DEVICE,
@@ -43,8 +43,8 @@ describe('cloud-sync/household leave', () => {
                 );
                 const personalBefore = yield* readPersonalBalances(memberDb);
 
-                expect(yield* countHouseholdRows(memberDb, 'accounts', HOUSEHOLD_SYNC_ZONE)).toBe(1);
-                expect(yield* countHouseholdRows(memberDb, 'transactions', HOUSEHOLD_SYNC_ZONE)).toBe(1);
+                expect(yield* countRows(memberDb, 'accounts WHERE sync_zone = ?', [HOUSEHOLD_SYNC_ZONE])).toBe(1);
+                expect(yield* countRows(memberDb, 'transactions WHERE sync_zone = ?', [HOUSEHOLD_SYNC_ZONE])).toBe(1);
 
                 const member = makeSyncServiceContext(memberDb);
 
@@ -59,7 +59,7 @@ describe('cloud-sync/household leave', () => {
                 expect(appAtomRegistry.get(householdReadyAtom)).toBe(false);
 
                 for (const tableName of ['accounts', 'transactions', 'transaction_entries']) {
-                    expect(yield* countHouseholdRows(memberDb, tableName, HOUSEHOLD_SYNC_ZONE)).toBe(0);
+                    expect(yield* countRows(memberDb, `${tableName} WHERE sync_zone = ?`, [HOUSEHOLD_SYNC_ZONE])).toBe(0);
                 }
 
                 const personalSyncIds = yield* readSyncIds(memberDb, 'accounts', PERSONAL_SYNC_ZONE);
@@ -83,25 +83,24 @@ describe('cloud-sync/household leave', () => {
 
                 const seed = new TestSeedService(testDb);
 
-                const later = yield* seed.manualExpense({
+                yield* seed.manualExpense({
                     accountId: ownerAccount.id,
                     amount: 3_000_000,
                     operatedAt: new Date('2026-10-03T10:00:00Z'),
                     title: 'Later edit'
                 });
 
-                yield* testDb.$client.unsafe('UPDATE transactions SET sync_zone = ? WHERE id = ?', [HOUSEHOLD_SYNC_ZONE, later.id]);
-                yield* testDb.$client.unsafe('UPDATE transaction_entries SET sync_zone = ? WHERE transaction_id = ?', [
-                    HOUSEHOLD_SYNC_ZONE,
-                    later.id
-                ]);
+                yield* Effect.flatMap(HouseholdShareService, service => service.alignZones()).pipe(
+                    Effect.provide(HouseholdShareService.layer),
+                    Effect.provideService(Db, testDb)
+                );
                 yield* refreshAllBalances(testDb);
                 yield* pushHouseholdZone(testDb, cloud);
 
                 const delivered = yield* pullDevice(memberDb, cloud, MEMBER_DEVICE, { accountId: MEMBER_ACCOUNT });
 
                 expect(delivered).toEqual([]);
-                expect(yield* countHouseholdRows(memberDb, 'transactions')).toBe(2);
+                expect(yield* countRows(memberDb, 'transactions')).toBe(2);
             })
         );
     });

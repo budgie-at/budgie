@@ -1,4 +1,5 @@
 import { SyncOutboxOperationEnum, SyncRecordRepository, SyncRecordTypeEnum } from '@budgie/contracts';
+import { getTableColumns } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -6,7 +7,7 @@ import * as Option from 'effect/Option';
 import * as Result from 'effect/Result';
 import * as Schema from 'effect/Schema';
 
-import { isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString, isString } from '@rnw-community/shared';
+import { isBoolean, isNumber, isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString, isString } from '@rnw-community/shared';
 
 import { SYNC_NATURAL_KEY_PROPERTIES } from '../../mapping/constant/sync-natural-key-properties.constant';
 import { SYNC_RECORD_DEFINITIONS } from '../../mapping/constant/sync-record-definitions.constant';
@@ -16,12 +17,9 @@ import { SYNC_AUTHORSHIP_COLUMNS } from '../constant/sync-authorship-columns.con
 import { SYNC_CHILD_NATURAL_KEYS } from '../constant/sync-child-natural-keys.constant';
 import { SYNC_INSERT_PLACEHOLDERS } from '../constant/sync-insert-placeholders.constant';
 import { SyncApplyRepository } from '../repository/sync-apply.repository';
-import { getSyncColumnName } from '../utils/get-sync-column-name.util';
 import { getSyncRowKey } from '../utils/get-sync-row-key.util';
 import { mergeSyncRow } from '../utils/merge-sync-row.util';
-import { normalizeSyncCell } from '../utils/normalize-sync-cell.util';
 import { readStoredMovedTo } from '../utils/read-stored-moved-to.util';
-import { readSyncReferenceId } from '../utils/read-sync-reference-id.util';
 import { stringifySyncJson } from '../utils/stringify-sync-json.util';
 import { toStoredSyncApplyItem } from '../utils/to-stored-sync-apply-item.util';
 
@@ -41,6 +39,34 @@ const TRANSACTIONS_TABLE = 'transactions';
 
 export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>()('@budgie/cloud-sync/SyncApplyUnitService', {
     make: Effect.gen(function* () {
+        const getSyncColumnName = (descriptor: SyncTableDescriptorInterface, property: string): string =>
+            getTableColumns(descriptor.table)[property].name;
+
+        const normalizeSyncCell = (value: unknown): SyncCellType => {
+            if (value instanceof Date) {
+                return Math.floor(value.getTime() / 1000);
+            }
+
+            if (isBoolean(value)) {
+                return value ? 1 : 0;
+            }
+
+            return isString(value) || isNumber(value) ? value : null;
+        };
+
+        const readSyncReferenceId = (
+            row: SyncRowInterface,
+            column: string,
+            resolutions: SyncResolutionsType,
+            unitIds: ReadonlyMap<string, number>
+        ): number | null => {
+            const reference = row.references.find(candidate => candidate.column === column);
+
+            return isDefined(reference)
+                ? (resolutions.get(row)?.get(column) ?? unitIds.get(getSyncRowKey(reference.tableName, reference.key)) ?? null)
+                : null;
+        };
+
         const buildSyncInsertColumns = (
             descriptor: SyncTableDescriptorInterface,
             row: SyncRowInterface,

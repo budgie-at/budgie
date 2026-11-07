@@ -21,7 +21,7 @@ Run this before closing #1789, #1795 and #1803, and against the **Production** s
 | Fetched event split | 200 records, 1000 deletions |
 | Environment | build signed with a development profile → Development; TestFlight/App Store → Production |
 
-Error codes come from `ICloudErrorCode` (`packages/app/modules/icloud/index.ts`). Checks name the code the native layer must emit; the expected app behaviour is stated in terms of local data and CloudKit state, not in terms of a screen, because the same engine can run without a screen.
+Error codes come from `ICloudErrorCode` (`packages/cloud-sync/src/transport/enum/icloud-error-code.enum.ts`). Checks name the code the native layer must emit; the expected app behaviour is stated in terms of local data and CloudKit state, not in terms of a screen, because the same engine can run without a screen.
 
 `C1`, the backup half of `C4` and the backup half of `C5` exercise backups. The remaining checks exercise `CloudSyncService` and household sharing.
 
@@ -148,7 +148,7 @@ Expected: backup stops with `QUOTA_EXCEEDED` → the status atom becomes `STORAG
 3. On A2, confirm the records arrive in more than one `onFetchedChanges` event.
 4. Create one transaction whose `entries` payload is close to CloudKit's 1 MB record limit (a transfer with a large entry set) and sync it.
 
-Expected: each send batch holds at most 100 records and at most 1.5 MB of estimated bytes, so 250 transactions arrive as at least three `onSentChanges` events and the upload resumes from the first unsent record after an interruption. A single record over the limit fails with `LIMIT_EXCEEDED` in `failedSaves` and is visible in the log, never silently dropped.
+Expected: each send batch holds at most 100 records and at most 1.5 MB of estimated bytes, so 250 transactions arrive as at least three `onSentChanges` events and the upload resumes from the first unsent record after an interruption. A record over `SYNC_RECORD_MAX_BYTES` (900 KB) is rejected on the device and shows an ERROR status. `LIMIT_EXCEEDED` in `failedSaves` occurs only when CloudKit rejects a record.
 
 ### C7 Engine state restored after relaunch
 
@@ -181,13 +181,13 @@ Expected: the batch fails with `NETWORK_UNAVAILABLE`, the app shows the backup r
 
 ### F2 Force-quit during apply
 
-Run three times, killing at each point of the apply ordering (apply batch → commit SQLite → `confirmFetchedBatch` → persist `stateSerialization`):
+Run three times, killing during apply, after the SQLite commit, and before state serialization is persisted:
 
-1. Create data on A1; on A2 start a sync and kill the app from the switcher while `onFetchedChanges` is being applied.
+1. Create data on A1; on A2 start a sync and kill the app while `onFetchedChanges` is being applied.
 2. Relaunch A2 and let it sync.
-3. Repeat, killing right after the SQLite commit and again right before the confirmation.
+3. Repeat at the other two points.
 
-Expected: the unconfirmed batch is re-fetched and re-applied without duplicates; `heldSerialization` means the engine state never advances past an unapplied batch, so no batch is skipped. Balances on A2 match A1 after the relaunch, and no transaction appears twice.
+Expected: events are consumed one at a time by `Stream.runForEach`. A failed batch sets `isBatchFailed`, so `handleStateSerialization` skips persistence. The batch is fetched again after relaunch and applied without duplicates. Balances on A2 match A1.
 
 ### F3 Sign out of iCloud mid-sync
 

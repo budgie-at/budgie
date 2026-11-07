@@ -1,6 +1,6 @@
 import { TestSeedService, makeTestDbLayer } from '@budgie-at/test-kit';
 import { HouseholdMembershipService } from '@budgie/cloud-sync';
-import { Db, HOUSEHOLD_SYNC_ZONE, SyncZoneRoleEnum } from '@budgie/contracts';
+import { PERSONAL_SYNC_ZONE, Db, HOUSEHOLD_SYNC_ZONE, SyncZoneRoleEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -11,7 +11,6 @@ import {
     deliverHouseholdToMember,
     GROCERIES_ID,
     seedGroceriesJoint,
-    PERSONAL_ZONE,
     countRows,
     prepareHousehold,
     queryRows,
@@ -43,16 +42,16 @@ describe('cloud-sync/household leave categories', () => {
 
                 expect(yield* countRows(deviceB, `categories WHERE sync_zone = '${HOUSEHOLD_SYNC_ZONE}'`)).toBeGreaterThan(1);
 
-                const personalBefore = yield* countRows(deviceB, `categories WHERE sync_zone = '${PERSONAL_ZONE}'`);
+                const personalBefore = yield* countRows(deviceB, `categories WHERE sync_zone = '${PERSONAL_SYNC_ZONE}'`);
 
                 yield* makeSyncServiceContext(deviceB).run(
                     Effect.flatMap(HouseholdMembershipService, service => service.keepPersonalCopy())
                 );
 
-                expect(yield* countRows(deviceB, `categories WHERE sync_zone <> '${PERSONAL_ZONE}'`)).toBe(0);
+                expect(yield* countRows(deviceB, `categories WHERE sync_zone <> '${PERSONAL_SYNC_ZONE}'`)).toBe(0);
                 expect(yield* countRows(deviceB, `categories WHERE title = 'Groceries'`)).toBe(1);
                 expect(yield* countRows(deviceB, `categories WHERE title = 'Pizza night'`)).toBe(1);
-                expect(yield* countRows(deviceB, `categories WHERE sync_zone = '${PERSONAL_ZONE}'`)).toBe(personalBefore + 1);
+                expect(yield* countRows(deviceB, `categories WHERE sync_zone = '${PERSONAL_SYNC_ZONE}'`)).toBe(personalBefore + 1);
 
                 const entries = yield* queryRows<{ readonly title: string; readonly zone: string }>(
                     deviceB,
@@ -60,7 +59,7 @@ describe('cloud-sync/household leave categories', () => {
                 );
 
                 expect(entries.map(({ title }) => title)).toEqual(['Groceries', 'Pizza night']);
-                expect(entries.every(({ zone }) => zone === PERSONAL_ZONE)).toBe(true);
+                expect(entries.every(({ zone }) => zone === PERSONAL_SYNC_ZONE)).toBe(true);
 
                 const [groceries] = yield* queryRows<{ readonly id: number }>(
                     deviceB,

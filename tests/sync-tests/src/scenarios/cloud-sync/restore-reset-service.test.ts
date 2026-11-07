@@ -1,11 +1,12 @@
 import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { cloudSyncStatusAtom } from '@app/cloud-sync/constant/cloud-sync-status-atom.constant';
-import { CloudSyncRestorePhaseEnum, ICloudErrorCode, ICloudSyncScope } from '@budgie/cloud-sync';
-import { SyncIdentityRepository } from '@budgie/contracts';
+import { SyncOutboxRepository, CloudSyncRestorePhaseEnum, ICloudErrorCode, ICloudSyncScope } from '@budgie/cloud-sync';
+import { SyncOutboxOperationEnum, SyncResetRepository, SyncRecordRepository, SyncIdentityRepository } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import {
+    onDevice,
     seed,
     testDb,
     SyncServiceType,
@@ -198,6 +199,64 @@ describe('cloud-sync/restore-reset service', () => {
                 expect(appAtomRegistry.get(cloudSyncStatusAtom).isQuotaExceeded).toBe(false);
                 expect(yield* readOutboxCount).toBe(0);
             })
+        )
+    );
+    it.effect('keeps account ownership tombstones when resetting sync state', () =>
+        onDevice(
+            testDb,
+            Effect.gen(function* () {
+                const records = yield* SyncRecordRepository;
+                yield* records.upsert({
+                    syncZone: 'personal',
+                    syncId: 'own-shared-account',
+                    recordType: 'Account',
+                    payload: '{"encryptedFields":{"movedTo":"household"}}',
+                    systemFields: 'stale-tag'
+                });
+                yield* (yield* SyncOutboxRepository).enqueue({
+                    recordType: 'Account',
+                    syncZone: 'personal',
+                    syncId: 'pending-move',
+                    operation: SyncOutboxOperationEnum.DELETE,
+                    changedColumns: '["@movedTo:household"]'
+                });
+                yield* (yield* SyncResetRepository).clearSyncState();
+                expect(yield* testDb.$client.unsafe("SELECT changed_columns FROM sync_outbox WHERE sync_id = 'pending-move'")).toEqual([
+                    { changed_columns: '["@movedTo:household"]' }
+                ]);
+                yield* (yield* SyncOutboxRepository).enqueueAll('personal');
+                expect((yield* records.find('personal', 'own-shared-account'))?.systemFields).toBeNull();
+                expect(
+                    yield* testDb.$client.unsafe("SELECT operation, changed_columns FROM sync_outbox WHERE sync_id = 'own-shared-account'")
+                ).toEqual([{ operation: 'DELETE', changed_columns: '["@movedTo:household"]' }]);
+            }).pipe(Effect.provide(SyncResetRepository.layer))
+        )
+    );
+
+    it.effect('keeps seed categories, translations and MCC links when adopting cloud data', () =>
+        onDevice(
+            testDb,
+            Effect.gen(function* () {
+                const before = yield* testDb.$client.unsafe(
+                    'SELECT m.id, m.default_category_id, c.sync_id FROM mcc_categories m INNER JOIN categories c ON c.id = m.default_category_id WHERE c.is_default = 1 ORDER BY m.id'
+                );
+                const translations = yield* testDb.$client.unsafe(
+                    'SELECT category_id, language, title FROM default_category_translations ORDER BY category_id, language'
+                );
+                expect(before.length).toBeGreaterThan(0);
+                expect(translations.length).toBeGreaterThan(0);
+                yield* (yield* SyncResetRepository).clearSyncedData();
+                expect(
+                    yield* testDb.$client.unsafe(
+                        'SELECT m.id, m.default_category_id, c.sync_id FROM mcc_categories m INNER JOIN categories c ON c.id = m.default_category_id WHERE c.is_default = 1 ORDER BY m.id'
+                    )
+                ).toEqual(before);
+                expect(
+                    yield* testDb.$client.unsafe(
+                        'SELECT category_id, language, title FROM default_category_translations ORDER BY category_id, language'
+                    )
+                ).toEqual(translations);
+            }).pipe(Effect.provide(SyncResetRepository.layer))
         )
     );
 });

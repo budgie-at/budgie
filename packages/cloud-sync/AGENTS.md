@@ -50,4 +50,4 @@ Dependencies only point downward in that order, so there are no cycles. `*Unlock
 
 ## Ports
 
-The app provides a layer for each of `CloudSyncTransport`, `CloudSyncStateStore`, `CloudSyncSafetyCopy`, `CloudSyncInstallId`, `CloudSyncDatabaseChanges`, `CloudSyncHost` (atoms, toasts, app state, device name) and `SyncAutomationEmbeddingBoost`. Tests provide fakes (`tests/sync-tests/src/scenarios/cloud-sync/sync-service-harness.ts`).
+The app provides a layer for each of `CloudSyncTransport`, `CloudSyncStateStore`, `CloudSyncSafetyCopy`, `CloudSyncInstallId`, `CloudSyncDatabaseChanges`, `CloudSyncHost` (atoms, toasts, app state, device name) and `SyncAutomationEmbeddingBoost`. Tests provide fakes (`tests/sync-tests/src/harness/cloud/sync-service-harness.ts`).

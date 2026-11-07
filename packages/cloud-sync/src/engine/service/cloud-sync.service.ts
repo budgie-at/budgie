@@ -107,6 +107,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             Effect.forkDetach(Stream.runForEach(stream, event => logAndContinue(handle(event))));
 
         return {
+            foreground: foreground(),
             reconfigure,
             drain,
             discoverHousehold,

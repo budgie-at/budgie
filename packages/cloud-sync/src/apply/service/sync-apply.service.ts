@@ -2,17 +2,21 @@ import { Db, SyncOutboxOperationEnum, SyncRecordTypeEnum, SyncApplyStateReposito
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+import * as Option from 'effect/Option';
 import * as Predicate from 'effect/Predicate';
 import * as Result from 'effect/Result';
 import * as Schema from 'effect/Schema';
 
 import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString, isRecord, isString } from '@rnw-community/shared';
 
+import { CloudSyncSessionState } from '../../engine/service/cloud-sync-session-state.service';
 import { SYNC_RECORD_DEFINITIONS } from '../../mapping/constant/sync-record-definitions.constant';
 import { SYNC_RECORD_SCHEMA_VERSION } from '../../mapping/constant/sync-record-schema-version.constant';
 import { SyncReferenceKindEnum } from '../../mapping/enum/sync-reference-kind.enum';
 import { joinSplitTransactions } from '../../mapping/utils/join-split-transactions.util';
+import { SYNC_CHANGED_COLUMNS_SCHEMA } from '../../outbox/constant/sync-changed-columns-schema.constant';
 import { SyncOutboxRepository } from '../../outbox/repository/sync-outbox.repository';
+import { SYNC_MOVED_FROM_MARKER_PREFIX, SYNC_MOVED_TO_MARKER_PREFIX } from '../../share/constant/sync-move-markers.constant';
 import { SYNC_JSON_UNKNOWN_SCHEMA } from '../constant/sync-json-unknown-schema.constant';
 import { SYNC_SCHEMA_PAUSED_MISSING_RECORD_TYPE } from '../constant/sync-schema-paused.constant';
 import { SyncApplyRepository } from '../repository/sync-apply.repository';
@@ -37,6 +41,7 @@ import type { SyncIncomingRecordInterface } from '../interface/sync-incoming-rec
 
 export class SyncApplyService extends Context.Service<SyncApplyService>()('@budgie/cloud-sync/SyncApplyService', {
     make: Effect.gen(function* () {
+        const sessionState = yield* Effect.serviceOption(CloudSyncSessionState);
         const repository = yield* SyncApplyRepository;
         const applyStateRepository = yield* SyncApplyStateRepository;
         const outboxRepository = yield* SyncOutboxRepository;
@@ -315,6 +320,25 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
             return item;
         });
 
+        const enqueueOwnerTransfer = Effect.fnUntraced(function* (linkId: string, zone: string, recordName: string) {
+            for (const home of yield* repository.findFamilyRecords(linkId)) {
+                const homeRow = yield* repository.findRow('transactions', home.syncZone, home.syncId);
+                if (
+                    home.syncZone !== zone &&
+                    home.syncId !== recordName &&
+                    isDefined(homeRow) &&
+                    (yield* repository.hasEntryInZone(homeRow.localRowId, zone))
+                ) {
+                    yield* outboxRepository.enqueue({
+                        recordType: SyncRecordTypeEnum.TRANSACTION,
+                        syncZone: home.syncZone,
+                        syncId: home.syncId,
+                        operation: SyncOutboxOperationEnum.SAVE,
+                        changedColumns: '[]'
+                    });
+                }
+            }
+        });
         const reenqueueOwnerTransfer = Effect.fnUntraced(function* (zone: string, recordName: string) {
             const cached = yield* recordRepository.find(zone, recordName);
             const payload = isDefined(cached?.payload)
@@ -322,20 +346,13 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
                 : null;
             const fields = isRecord(payload) ? payload['encryptedFields'] : null;
             const linkId = isRecord(fields) ? fields['linkId'] : null;
-
             if (isString(linkId)) {
-                for (const home of yield* repository.findFamilyRecords(linkId)) {
-                    const homeRow = yield* repository.findRow('transactions', home.syncZone, home.syncId);
-
-                    if (home.syncId !== recordName && isDefined(homeRow)) {
-                        yield* outboxRepository.enqueue({
-                            recordType: SyncRecordTypeEnum.TRANSACTION,
-                            syncZone: home.syncZone,
-                            syncId: home.syncId,
-                            operation: SyncOutboxOperationEnum.SAVE,
-                            changedColumns: '[]'
-                        });
-                    }
+                if (Option.isSome(sessionState)) {
+                    const targets = sessionState.value.ownerTransferRetries.get(linkId) ?? new Map<string, string>();
+                    targets.set(zone, recordName);
+                    sessionState.value.ownerTransferRetries.set(linkId, targets);
+                } else {
+                    yield* enqueueOwnerTransfer(linkId, zone, recordName);
                 }
             }
         });
@@ -419,13 +436,13 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
                 for (const decision of tracker.pendingOutboxDecisions) {
                     const pending = yield* repository.findOutbox(decision.syncZone, decision.syncId);
                     const existingColumns = isDefined(pending)
-                        ? yield* Schema.decodeEffect(Schema.String.pipe(Schema.Array, Schema.fromJsonString))(pending.changedColumns).pipe(
-                              Effect.orDie
-                          )
+                        ? yield* Schema.decodeEffect(SYNC_CHANGED_COLUMNS_SCHEMA)(pending.changedColumns).pipe(Effect.orDie)
                         : [];
                     const keptColumns = [
                         ...decision.changedColumns,
-                        ...existingColumns.filter(column => column.startsWith('@movedFrom:') || column.startsWith('@movedTo:'))
+                        ...existingColumns.filter(
+                            column => column.startsWith(SYNC_MOVED_FROM_MARKER_PREFIX) || column.startsWith(SYNC_MOVED_TO_MARKER_PREFIX)
+                        )
                     ];
                     if (isEmptyArray(keptColumns)) {
                         yield* repository.removeOutbox(decision.syncZone, decision.syncId);
@@ -471,6 +488,16 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
         );
 
         return {
+            completeOwnerTransfers: Effect.fn('SyncApplyService.completeOwnerTransfers')(function* () {
+                if (Option.isSome(sessionState)) {
+                    for (const [linkId, targets] of sessionState.value.ownerTransferRetries) {
+                        for (const [zone, recordName] of targets) {
+                            yield* enqueueOwnerTransfer(linkId, zone, recordName);
+                        }
+                    }
+                    sessionState.value.ownerTransferRetries.clear();
+                }
+            }),
             apply,
             resume,
             findPausedZones,

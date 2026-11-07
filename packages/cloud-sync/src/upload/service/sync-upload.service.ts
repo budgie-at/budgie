@@ -1,11 +1,10 @@
 import {
     Db,
     PERSONAL_SYNC_ZONE,
+    HOUSEHOLD_SYNC_ZONE,
     SyncOutboxOperationEnum,
     SyncRecordTypeEnum,
-    SyncRecordRepository,
-    SyncZoneRegistryRepository,
-    SyncRecordEntityTable
+    SyncRecordRepository
 } from '@budgie/contracts';
 import { and, eq, getTableColumns } from 'drizzle-orm';
 import * as Clock from 'effect/Clock';
@@ -13,17 +12,20 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Option from 'effect/Option';
+import * as Ref from 'effect/Ref';
 import * as Result from 'effect/Result';
 import * as Schema from 'effect/Schema';
 
 import { isDefined, isNotEmptyString, isNumber } from '@rnw-community/shared';
 
 import { stringifySyncJson } from '../../apply/utils/stringify-sync-json.util';
+import { CloudSyncSessionState } from '../../engine/service/cloud-sync-session-state.service';
 import { buildCloudSyncKey } from '../../engine/utils/build-cloud-sync-key.util';
 import { SYNC_NATURAL_KEY_PROPERTIES } from '../../mapping/constant/sync-natural-key-properties.constant';
 import { SYNC_RECORD_DEFINITIONS } from '../../mapping/constant/sync-record-definitions.constant';
 import { SyncReferenceKindEnum } from '../../mapping/enum/sync-reference-kind.enum';
 import { encodeSyncAggregate } from '../../mapping/utils/encode-sync-aggregate.util';
+import { SYNC_CHANGED_COLUMNS_SCHEMA } from '../../outbox/constant/sync-changed-columns-schema.constant';
 import { SyncOutboxRepository } from '../../outbox/repository/sync-outbox.repository';
 import { SYNC_MOVED_FROM_MARKER_PREFIX, SYNC_MOVED_TO_MARKER_PREFIX } from '../../share/constant/sync-move-markers.constant';
 import { isSyncAggregateRecordType } from '../type-guard/is-sync-aggregate-record-type.type-guard';
@@ -58,12 +60,11 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
             changedColumns.find(column => column.startsWith(prefix))?.slice(prefix.length) ?? null;
         const syncOutboxRepository = yield* SyncOutboxRepository;
         const syncRecordRepository = yield* SyncRecordRepository;
-        const zoneRegistryRepository = yield* SyncZoneRegistryRepository;
-        const changedColumnsSchema = Schema.String.pipe(Schema.Array, Schema.fromJsonString);
+        const sessionState = yield* Effect.serviceOption(CloudSyncSessionState);
         const linkedRecordSchema = Schema.fromJsonString(Schema.Struct({ encryptedFields: Schema.Struct({ linkId: Schema.String }) }));
 
         const parseChangedColumns = (changedColumns: string): readonly string[] =>
-            Option.getOrElse(Schema.decodeOption(changedColumnsSchema)(changedColumns), () => []);
+            Option.getOrElse(Schema.decodeOption(SYNC_CHANGED_COLUMNS_SCHEMA)(changedColumns), () => []);
 
         const loadChildren = Effect.fnUntraced(function* (definition: SyncRecordDefinitionInterface, parentId: number) {
             const entries = yield* Effect.forEach(definition.children, ({ descriptor }) => {
@@ -173,16 +174,8 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
             const currentLegZones = new Set(
                 records.filter(record => record.recordType === SyncRecordTypeEnum.TRANSACTION_LEG).map(({ zone }) => zone)
             );
-            const storedLegs = yield* Db.query(db =>
-                db
-                    .select({ syncZone: SyncRecordEntityTable.syncZone, syncId: SyncRecordEntityTable.syncId })
-                    .from(SyncRecordEntityTable)
-                    .where(
-                        and(
-                            eq(SyncRecordEntityTable.syncId, linked.value.encryptedFields.linkId),
-                            eq(SyncRecordEntityTable.recordType, SyncRecordTypeEnum.TRANSACTION_LEG)
-                        )
-                    )
+            const storedLegs = (yield* syncRecordRepository.findBySyncId(linked.value.encryptedFields.linkId)).filter(record =>
+                Schema.is(Schema.Literal(SyncRecordTypeEnum.TRANSACTION_LEG))(record.recordType)
             );
 
             return storedLegs
@@ -221,9 +214,7 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
             row: SyncOutboxEntityInterface,
             movedFrom: string | null
         ) {
-            const legOwnerName = records.some(record => record.recordType === SyncRecordTypeEnum.TRANSACTION_LEG)
-                ? ((yield* zoneRegistryRepository.findByLabel(PERSONAL_SYNC_ZONE))?.ownerName ?? null)
-                : null;
+            const legOwnerName = Option.isSome(sessionState) ? yield* Ref.get(sessionState.value.privateOwnerName) : null;
 
             return records.map(record => {
                 if (record.recordType === SyncRecordTypeEnum.TRANSACTION_LEG && isNotEmptyString(legOwnerName)) {
@@ -311,10 +302,10 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
             pending: Effect.fn('SyncUploadService.pending')(function* (
                 limit: number,
                 skippedKeys: ReadonlySet<string>,
-                isZoneBlocked: (zone: string) => boolean = () => false
+                sendableZones: readonly string[] = [PERSONAL_SYNC_ZONE, HOUSEHOLD_SYNC_ZONE]
             ) {
-                const rows = (yield* syncOutboxRepository.findPending(limit)).filter(
-                    row => !skippedKeys.has(buildCloudSyncKey(row.syncZone, row.syncId)) && !isZoneBlocked(row.syncZone)
+                const rows = (yield* syncOutboxRepository.findPending(limit, sendableZones)).filter(
+                    row => !skippedKeys.has(buildCloudSyncKey(row.syncZone, row.syncId))
                 );
                 const saves: SyncUploadSaveInterface[] = [];
                 const deletions: SyncUploadDeletionInterface[] = [];
@@ -378,6 +369,6 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
     })
 }) {
     static readonly layer = Layer.effect(SyncUploadService, SyncUploadService.make).pipe(
-        Layer.provide([SyncOutboxRepository.layer, SyncRecordRepository.layer, SyncZoneRegistryRepository.layer])
+        Layer.provide([SyncOutboxRepository.layer, SyncRecordRepository.layer])
     );
 }

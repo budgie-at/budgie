@@ -8,7 +8,7 @@ import { testDb } from '../scenario/test-db';
 import { refreshAllBalances, uploadDevice } from './apply-harness';
 import { OPERATED_AT } from './cloud-fixtures';
 import { shareAcceptedEvent } from './household-harness';
-import { HOUSEHOLD_ZONE, onShareDevice, pullZones } from './share-harness';
+import { onShareDevice, pullZones } from './share-harness';
 import { syncService } from './sync-service-harness';
 
 import type { ShareCloudsInterface } from './share-harness';
@@ -43,7 +43,7 @@ export const deliverHouseholdToMember = (memberDb: DB, clouds: ShareCloudsInterf
             Effect.flatMap(HouseholdShareService, service => service.shareAccount(accountId))
         );
         yield* uploadDevice(testDb, clouds);
-        yield* pullZones(memberDb, clouds.household, 'member', [HOUSEHOLD_ZONE]);
+        yield* pullZones(memberDb, clouds.household, 'member', [HOUSEHOLD_SYNC_ZONE]);
     });
 
 export const discoverHouseholdEntry = (device: ReturnType<typeof makeSyncServiceContext>) =>

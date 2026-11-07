@@ -7,7 +7,7 @@ import * as Option from 'effect/Option';
 import * as Ref from 'effect/Ref';
 import * as Schema from 'effect/Schema';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { SyncApplyService } from '../../apply/service/sync-apply.service';
 import { SYNC_RECORD_SCHEMA_VERSION } from '../../mapping/constant/sync-record-schema-version.constant';
@@ -134,11 +134,15 @@ export class CloudSyncDrainService extends Context.Service<CloudSyncDrainService
             const pausedZones = new Set((yield* applyService.findPausedZones).map(({ syncZone }) => syncZone));
             yield* householdShareService.reconcile();
 
+            const sendableZones = [...state.zones.keys()].filter(label => !pausedZones.has(label) && canSendTo(label));
+            if (isEmptyArray(sendableZones)) {
+                return;
+            }
             const skippedKeys = new Set([...state.pushed.keys(), ...state.failedKeys]);
             const batch = yield* uploadService.pending(
                 skippedKeys.size + state.heldKeys.size + uploadBatchSize,
                 skippedKeys,
-                label => pausedZones.has(label) || !state.zones.has(label) || !canSendTo(label)
+                sendableZones
             );
             const payloadsByScope = new Map<ICloudSyncScope, ICloudRecordPayload[]>();
             const deleteIdsByScope = new Map<ICloudSyncScope, ICloudRecordId[]>();

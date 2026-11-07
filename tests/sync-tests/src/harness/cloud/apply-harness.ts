@@ -1,17 +1,9 @@
 import { encodeJson } from '@budgie-at/test-kit';
-import {
-    SYNC_RECORD_SCHEMA_VERSION,
-    SyncAccountBalanceRefresher,
-    SyncApplyService,
-    SyncUploadService,
-    SyncOutboxRepository
-} from '@budgie/cloud-sync';
+import { SyncAccountBalanceRefresher, SyncApplyService, SyncUploadService, SyncOutboxRepository } from '@budgie/cloud-sync';
 import { Db, HOUSEHOLD_SYNC_ZONE, SyncRecordRepository } from '@budgie/contracts';
 import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
-
-import { encodeAllRecords } from './record-mapping-harness';
 
 import type { FakeCloudDeliveryOptionsInterface } from './fake-cloud-delivery-options.interface';
 import type { FakeCloudTransport } from './fake-cloud-transport';
@@ -63,25 +55,7 @@ export const refreshAllBalances = (database: DB) =>
         })
     );
 
-type EncodedRecord = Effect.Success<ReturnType<typeof encodeAllRecords>>[number];
 type PulledBatch = ReturnType<FakeCloudTransport['pull']>[number];
-
-export const uploadRecords = (cloud: FakeCloudTransport, records: readonly EncodedRecord[]) =>
-    Effect.gen(function* () {
-        const recordRepository = yield* SyncRecordRepository;
-        const systemFields = cloud.upload(records);
-
-        for (const [index, record] of records.entries()) {
-            yield* recordRepository.upsert({
-                syncZone: record.zone,
-                syncId: record.recordName,
-                recordType: record.recordType,
-                systemFields: systemFields[index],
-                payload: encodeJson(record),
-                schemaVersion: SYNC_RECORD_SCHEMA_VERSION
-            });
-        }
-    });
 
 export const applyPulledBatches = (
     cloud: FakeCloudTransport,

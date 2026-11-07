@@ -1,4 +1,6 @@
 import * as DateTime from 'effect/DateTime';
+
+import { SyncRecordTypeEnum } from '../../cloud-sync/enum/sync-record-type.enum';
 /* eslint-disable max-lines -- Transaction repository is the kitchen sink for tx queries + filter builders + bank-sync helpers */
 import { SQL, and, count, eq, gte, inArray, isNotNull, isNull, lte, ne, notExists, or, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
@@ -133,8 +135,8 @@ export class TransactionRepository extends Context.Service<TransactionRepository
             isForeignTransferLeg: (id: number) =>
                 Db.query(db =>
                     db.$client.unsafe<{ readonly id: number }>(
-                        `SELECT t.id FROM transactions t INNER JOIN sync_record r ON r.sync_zone = t.sync_zone AND r.sync_id = t.sync_id WHERE t.id = ? AND r.record_type = 'TransactionLeg' LIMIT 1`,
-                        [id]
+                        `SELECT t.id FROM transactions t INNER JOIN sync_record r ON r.sync_zone = t.sync_zone AND r.sync_id = t.sync_id WHERE t.id = ? AND r.record_type = ? LIMIT 1`,
+                        [id, SyncRecordTypeEnum.TRANSACTION_LEG]
                     )
                 ).pipe(Effect.map(isNotEmptyArray)),
             bulkCreate,

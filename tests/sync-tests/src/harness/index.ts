@@ -171,23 +171,13 @@ export {
     discoverHouseholdEntry,
     seedGroceriesJoint
 } from './cloud/household-tests-shared';
-export {
-    HOUSEHOLD_ZONE,
-    PERSONAL_ZONE,
-    countRows,
-    onShareDevice,
-    prepareHousehold,
-    pullZones,
-    queryRows,
-    reconcileDevice
-} from './cloud/share-harness';
+export { countRows, onShareDevice, prepareHousehold, pullZones, queryRows, reconcileDevice } from './cloud/share-harness';
 export {
     HOUSEHOLD_CLOUD_ZONE,
     MEMBER_ACCOUNT,
     MEMBER_DEVICE,
     OWNER_RECORD_NAME,
     accessLostEvent,
-    countRows as countHouseholdRows,
     joinMember,
     participantsFor,
     pushHouseholdZone,

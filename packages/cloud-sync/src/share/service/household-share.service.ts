@@ -410,9 +410,7 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
                     return privateSideOwnerName;
                 }
 
-                const household = yield* zoneRegistryRepository.findByLabel(HOUSEHOLD_SYNC_ZONE);
-
-                return household?.ownerName ?? null;
+                return null;
             }),
             findSharedAccountIds,
             findSharedBudgetIds,

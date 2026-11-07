@@ -33,6 +33,62 @@ const readSystemFields = (recordName: string) =>
         .pipe(Effect.map(rows => rows.at(0)?.systemFields ?? null));
 
 describe('cloud-sync/sync-service drain', () => {
+    it.effect('keeps the meta envelope across an engine retry', () =>
+        runSyncService((context, service) =>
+            Effect.gen(function* () {
+                yield* seed.account({ title: 'Awaiting meta' });
+                yield* service.reconfigure;
+                const [meta] = context.transport.calls.savedBatches;
+                yield* service.handleSentChanges(
+                    sentEvent({
+                        failedSaves: meta.map(record => ({
+                            ...failedSaveOf(record, ICloudErrorCode.SERVICE_BUSY, 'busy', null),
+                            isRetried: true
+                        }))
+                    })
+                );
+                yield* service.handleSentChanges(sentEvent({ savedRecords: savedFrom(meta, 'meta-retry') }));
+                expect(context.store.holder.state.resolvedLineageId).toBe(yield* (yield* SyncIdentityRepository).ensureLineageId());
+                expect(flattenBatches(context.transport.calls.savedBatches).some(record => record.recordType === 'Account')).toBe(true);
+            })
+        )
+    );
+    it.effect('sends personal data past 250 blocked household rows', () =>
+        runSyncService((context, service) =>
+            Effect.gen(function* () {
+                yield* testDb.$client.unsafe(
+                    "WITH RECURSIVE rows(n) AS (SELECT 1 UNION ALL SELECT n + 1 FROM rows WHERE n < 250) INSERT INTO sync_outbox(record_type, sync_zone, sync_id, operation, changed_columns) SELECT 'Account', 'household', 'blocked-' || n, 'SAVE', '[]' FROM rows"
+                );
+                const account = yield* seed.account({ title: 'Sendable' });
+                yield* reconfigureAndAcknowledgeMeta(context, service);
+                expect(flattenBatches(context.transport.calls.savedBatches).some(record => record.recordName === account.syncId)).toBe(
+                    true
+                );
+            })
+        )
+    );
+    it.effect('resends a non-retried account failure on foreground', () =>
+        runSyncService((context, service) =>
+            Effect.gen(function* () {
+                yield* reconfigureAndAcknowledgeMeta(context, service);
+                yield* seed.account({ title: 'Account unavailable' });
+                yield* service.drain;
+                const records = flattenBatches(context.transport.calls.savedBatches).filter(record => record.recordType === 'Account');
+                yield* service.handleSentChanges(
+                    sentEvent({
+                        failedSaves: records.map(record => ({
+                            ...failedSaveOf(record, ICloudErrorCode.ACCOUNT_UNAVAILABLE, 'restricted', null),
+                            isRetried: false
+                        }))
+                    })
+                );
+                expect(appAtomRegistry.get(cloudSyncStatusAtom).status).not.toBe(CloudSyncStatusEnum.SYNCING);
+                const batches = context.transport.calls.savedBatches.length;
+                yield* service.foreground;
+                expect(context.transport.calls.savedBatches.length).toBeGreaterThan(batches);
+            })
+        )
+    );
     it.effect('surfaces oversized records as an error without repeatedly encoding them', () =>
         runSyncService((context, service) =>
             Effect.gen(function* () {
@@ -65,10 +121,20 @@ describe('cloud-sync/sync-service drain', () => {
                 expect(targets).toHaveLength(1);
                 yield* service.handleSentChanges(
                     sentEvent({
-                        failedDeletes: targets.map(target => ({ ...target, code: ICloudErrorCode.PERMISSION_FAILURE, message: 'denied' }))
+                        failedDeletes: targets.map(target => ({
+                            ...target,
+                            code: ICloudErrorCode.PERMISSION_FAILURE,
+                            isRetried: false,
+                            message: 'denied'
+                        }))
                     })
                 );
                 expect(appAtomRegistry.get(cloudSyncStatusAtom).status).toBe(CloudSyncStatusEnum.ERROR);
+                const deletesBefore = context.transport.calls.deletedBatches.length;
+                yield* service.foreground;
+                expect(context.transport.calls.deletedBatches.length).toBeGreaterThan(deletesBefore);
+                yield* service.handleSentChanges(sentEvent({ deletedRecords: targets }));
+                expect(appAtomRegistry.get(cloudSyncStatusAtom).status).toBe(CloudSyncStatusEnum.IDLE);
             })
         )
     );

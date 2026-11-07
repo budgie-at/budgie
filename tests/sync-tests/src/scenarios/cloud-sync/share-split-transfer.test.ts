@@ -1,17 +1,20 @@
 import { TestSeedService } from '@budgie-at/test-kit';
-import { SyncApplyService } from '@budgie/cloud-sync';
-import { Db, SyncZoneRoleEnum } from '@budgie/contracts';
+import { ICloudParticipantRole, SyncApplyService } from '@budgie/cloud-sync';
+import { HOUSEHOLD_SYNC_ZONE, PERSONAL_SYNC_ZONE, Db, SyncZoneRoleEnum } from '@budgie/contracts';
 import { TransactionService } from '@budgie/ledger';
 import { describe, expect } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import {
     testDb,
+    makeSyncServiceContext,
+    participantsFor,
+    syncService,
+    reconfigureAndAcknowledgeMeta,
+    flattenBatches,
     onDevice,
     refreshAllBalances,
     uploadDevice,
-    HOUSEHOLD_ZONE,
-    PERSONAL_ZONE,
     countRows,
     pullZones,
     queryRows,
@@ -80,9 +83,66 @@ describe('cloud-sync/share-split-transfer', () => {
             })
         );
 
-        it.effect('republishes an owner leg deleted remotely without changing the owner ledger', () =>
+        it.effect('uses the current participant display name for a private side', () =>
+            Effect.gen(function* () {
+                yield* startSharedTransfer(SyncZoneRoleEnum.PARTICIPANT);
+                const context = makeSyncServiceContext(testDb);
+                context.transport.behavior.participants = participantsFor(ICloudParticipantRole.OWNER).map(participant => ({
+                    ...participant,
+                    isCurrentUser: true
+                }));
+                yield* context.run(
+                    Effect.gen(function* () {
+                        yield* testDb.$client.unsafe(
+                            "UPDATE transactions SET comment = 'owner name refresh' WHERE title = 'Top up savings'"
+                        );
+                        const service = yield* syncService;
+                        yield* reconfigureAndAcknowledgeMeta(context, service);
+                        const legs = flattenBatches(context.transport.calls.savedBatches).filter(
+                            record => record.recordType === 'TransactionLeg'
+                        );
+                        expect(legs).toHaveLength(1);
+                        expect(legs[0].encryptedFields['privateOwnerName']).toBe('Owner Person');
+                    })
+                );
+            })
+        );
+        it.effect('does not resurrect owner deletions arriving in separate fetch batches', () =>
             Effect.gen(function* () {
                 const { clouds } = yield* startSharedTransfer(SyncZoneRoleEnum.PARTICIPANT);
+                const [leg] = yield* queryRows<{ readonly syncId: string }>(
+                    testDb,
+                    "SELECT sync_id AS syncId FROM sync_record WHERE record_type = 'TransactionLeg'"
+                );
+                const [home] = yield* queryRows<{ readonly syncId: string }>(
+                    testDb,
+                    "SELECT sync_id AS syncId FROM transactions WHERE title = 'Top up savings'"
+                );
+                clouds.household.remove('TransactionLeg', HOUSEHOLD_SYNC_ZONE, leg.syncId);
+                clouds.personal.remove('Transaction', PERSONAL_SYNC_ZONE, home.syncId);
+                yield* makeSyncServiceContext(testDb).run(
+                    Effect.gen(function* () {
+                        const apply = yield* SyncApplyService;
+                        yield* apply.apply({
+                            records: [],
+                            deletions: [{ recordType: 'TransactionLeg', recordName: leg.syncId, zone: HOUSEHOLD_SYNC_ZONE }]
+                        });
+                        yield* uploadDevice(testDb, clouds);
+                        expect(clouds.household.inventory(HOUSEHOLD_SYNC_ZONE).has(leg.syncId)).toBe(false);
+                        yield* apply.apply({
+                            records: [],
+                            deletions: [{ recordType: 'Transaction', recordName: home.syncId, zone: PERSONAL_SYNC_ZONE }]
+                        });
+                        yield* apply.completeOwnerTransfers();
+                        yield* uploadDevice(testDb, clouds);
+                        expect(clouds.personal.inventory(PERSONAL_SYNC_ZONE).has(home.syncId)).toBe(false);
+                    })
+                );
+            })
+        );
+        it.effect('republishes an owner leg deleted remotely without changing the owner ledger', () =>
+            Effect.gen(function* () {
+                const { deviceB, clouds } = yield* startSharedTransfer(SyncZoneRoleEnum.PARTICIPANT);
                 const [leg] = yield* queryRows<{ readonly syncId: string }>(
                     testDb,
                     "SELECT sync_id AS syncId FROM sync_record WHERE record_type = 'TransactionLeg'"
@@ -92,13 +152,16 @@ describe('cloud-sync/share-split-transfer', () => {
                     Effect.flatMap(SyncApplyService, service =>
                         service.apply({
                             records: [],
-                            deletions: [{ recordType: 'TransactionLeg', recordName: leg.syncId, zone: HOUSEHOLD_ZONE }]
+                            deletions: [{ recordType: 'TransactionLeg', recordName: leg.syncId, zone: HOUSEHOLD_SYNC_ZONE }]
                         })
                     )
                 );
                 expect(yield* countRows(testDb, "sync_outbox WHERE record_type = 'Transaction' AND operation = 'SAVE'")).toBe(1);
                 expect(yield* countRows(testDb, 'transaction_entries')).toBe(3);
                 yield* uploadDevice(testDb, clouds);
+                expect(clouds.household.inventory(HOUSEHOLD_SYNC_ZONE).has(leg.syncId)).toBe(true);
+                expectNoRejections(yield* pullHousehold(deviceB, clouds, 'member-after-resend'));
+                yield* expectLedgers(deviceB, testDb);
             })
         );
 
@@ -108,7 +171,7 @@ describe('cloud-sync/share-split-transfer', () => {
 
                 expectNoRejections(yield* pullHousehold(deviceB, clouds, 'member-device'));
                 expect(yield* queryRows(deviceB, `SELECT title, sync_zone FROM accounts`)).toEqual([
-                    { title: 'Joint', sync_zone: HOUSEHOLD_ZONE }
+                    { title: 'Joint', sync_zone: HOUSEHOLD_SYNC_ZONE }
                 ]);
                 expect(yield* countRows(deviceB, `transactions`)).toBe(1);
                 expect(yield* queryRows(deviceB, `SELECT amount FROM transaction_entries`)).toEqual([{ amount: SHARED_AMOUNT }]);
@@ -125,7 +188,7 @@ describe('cloud-sync/share-split-transfer', () => {
                 expect(
                     yield* countRows(
                         deviceB,
-                        `sync_record WHERE record_type = 'TransactionLeg' AND json_extract(payload, '$.encryptedFields.privateOwnerName') = 'Alice'`
+                        `sync_record WHERE record_type = 'TransactionLeg' AND json_extract(payload, '$.encryptedFields.privateOwnerName') IS NULL`
                     )
                 ).toBe(1);
 
@@ -150,19 +213,19 @@ describe('cloud-sync/share-split-transfer', () => {
                 const { deviceB, clouds } = yield* startSharedTransfer(SyncZoneRoleEnum.OWNER);
 
                 expectNoRejections(yield* pullHousehold(deviceB, clouds, 'owner-b'));
-                expect(yield* countRows(deviceB, `transactions WHERE sync_zone = '${HOUSEHOLD_ZONE}'`)).toBe(1);
+                expect(yield* countRows(deviceB, `transactions WHERE sync_zone = '${HOUSEHOLD_SYNC_ZONE}'`)).toBe(1);
 
-                expectNoRejections(yield* pullZones(deviceB, clouds.personal, 'owner-b', [PERSONAL_ZONE], { order: 'reverse' }));
+                expectNoRejections(yield* pullZones(deviceB, clouds.personal, 'owner-b', [PERSONAL_SYNC_ZONE], { order: 'reverse' }));
                 expect(yield* countRows(deviceB, `transactions WHERE title = 'Top up savings'`)).toBe(1);
-                expect(yield* countRows(deviceB, `transactions WHERE sync_zone = '${HOUSEHOLD_ZONE}'`)).toBe(0);
+                expect(yield* countRows(deviceB, `transactions WHERE sync_zone = '${HOUSEHOLD_SYNC_ZONE}'`)).toBe(0);
                 expect(
                     yield* queryRows(
                         deviceB,
                         `SELECT e.sync_zone AS zone, e.amount AS amount FROM transaction_entries e INNER JOIN transactions t ON t.id = e.transaction_id WHERE t.title = 'Top up savings' ORDER BY e.amount`
                     )
                 ).toEqual([
-                    { zone: PERSONAL_ZONE, amount: PRIVATE_AMOUNT },
-                    { zone: HOUSEHOLD_ZONE, amount: SHARED_AMOUNT }
+                    { zone: PERSONAL_SYNC_ZONE, amount: PRIVATE_AMOUNT },
+                    { zone: HOUSEHOLD_SYNC_ZONE, amount: SHARED_AMOUNT }
                 ]);
                 yield* expectLedgers(deviceB, testDb);
             })

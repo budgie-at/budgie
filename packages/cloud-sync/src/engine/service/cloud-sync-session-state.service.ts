@@ -47,6 +47,8 @@ export class CloudSyncSessionState extends Context.Service<CloudSyncSessionState
             fetchedRecordCount: 0,
             isInitialFetchComplete: false
         });
+        const ownerTransferRetries = new Map<string, Map<string, string>>();
+        const privateOwnerName = yield* Ref.make<string | null>(null);
         const isBatchFailed = yield* Ref.make(false);
         const zones = new Map<string, Pick<SyncZoneRegistryEntityInterface, 'databaseScope' | 'ownerName' | 'role' | 'zoneName'>>();
         const labelByZone = new Map<string, string>();
@@ -82,6 +84,8 @@ export class CloudSyncSessionState extends Context.Service<CloudSyncSessionState
         });
 
         return {
+            privateOwnerName,
+            ownerTransferRetries,
             locked: lock.withPermits(1),
             lockedBatch: <A, E, R>(effect: Effect.Effect<A, E, R>) =>
                 lock.withPermits(1)(Effect.tapCause(effect, () => Ref.set(isBatchFailed, true))),
@@ -113,6 +117,7 @@ export class CloudSyncSessionState extends Context.Service<CloudSyncSessionState
                 pushed.delete(itemKey);
             },
             clearTracking: (): void => {
+                ownerTransferRetries.clear();
                 pushed.clear();
                 itemKeyByRecordKey.clear();
                 sidePending.clear();

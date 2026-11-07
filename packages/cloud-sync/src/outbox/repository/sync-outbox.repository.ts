@@ -1,10 +1,11 @@
-import { Db, SyncRecordTypeEnum, SyncOutboxEntityTable } from '@budgie/contracts';
+import { MOVED_TO_TOMBSTONE_SQL, PERSONAL_SYNC_ZONE, Db, SyncRecordTypeEnum, SyncOutboxEntityTable } from '@budgie/contracts';
 import { and, count, eq, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { SYNC_RECORD_DEFINITIONS } from '../../mapping/constant/sync-record-definitions.constant';
+import { SYNC_MOVED_TO_MARKER_PREFIX } from '../../share/constant/sync-move-markers.constant';
 
 import type { SyncOutboxCreateEntityInterface } from '@budgie/contracts';
 
@@ -38,19 +39,20 @@ export class SyncOutboxRepository extends Context.Service<SyncOutboxRepository>(
                     { discard: true }
                 )
             );
-            yield* Db.mutation(
-                { type: 'insert', tables: ['sync_outbox'] },
-                Db.query(db =>
-                    db.$client.unsafe(
-                        `INSERT INTO sync_outbox (record_type, sync_zone, sync_id, operation, changed_columns)
-                 SELECT record_type, sync_zone, sync_id, 'DELETE', json_array('@movedTo:' || json_extract(payload, '$.encryptedFields.movedTo'))
-                 FROM sync_record WHERE sync_zone = ? AND sync_zone = 'personal' AND record_type = 'Account'
-                 AND json_extract(payload, '$.encryptedFields.movedTo') IS NOT NULL
+            if (syncZone === PERSONAL_SYNC_ZONE) {
+                yield* Db.mutation(
+                    { type: 'insert', tables: ['sync_outbox'] },
+                    Db.query(db =>
+                        db.$client.unsafe(
+                            `INSERT INTO sync_outbox (record_type, sync_zone, sync_id, operation, changed_columns)
+                 SELECT record_type, sync_zone, sync_id, 'DELETE', json_array(? || json_extract(payload, '$.encryptedFields.movedTo'))
+                 FROM sync_record WHERE ${MOVED_TO_TOMBSTONE_SQL}
                  ON CONFLICT (sync_zone, sync_id) DO NOTHING`,
-                        [syncZone]
+                            [SYNC_MOVED_TO_MARKER_PREFIX]
+                        )
                     )
-                )
-            );
+                );
+            }
         });
 
         return {
@@ -65,7 +67,7 @@ export class SyncOutboxRepository extends Context.Service<SyncOutboxRepository>(
                             target: [SyncOutboxEntityTable.syncZone, SyncOutboxEntityTable.syncId],
                             set: {
                                 operation: input.operation,
-                                changedColumns: sql`CASE WHEN excluded.operation = 'DELETE' THEN '[]' ELSE (SELECT json_group_array(value) FROM (SELECT value FROM json_each(${SyncOutboxEntityTable.changedColumns}) UNION SELECT value FROM json_each(excluded.changed_columns) ORDER BY value)) END`,
+                                changedColumns: sql`CASE WHEN excluded.operation = 'DELETE' OR ${SyncOutboxEntityTable.operation} = 'DELETE' THEN excluded.changed_columns ELSE (SELECT json_group_array(value) FROM (SELECT value FROM json_each(${SyncOutboxEntityTable.changedColumns}) UNION SELECT value FROM json_each(excluded.changed_columns) ORDER BY value)) END`,
                                 syncRevision: sql`${SyncOutboxEntityTable.syncRevision} + 1`
                             }
                         })
@@ -77,7 +79,14 @@ export class SyncOutboxRepository extends Context.Service<SyncOutboxRepository>(
                         .set({ changedColumns, syncRevision: sql`${SyncOutboxEntityTable.syncRevision} + 1` })
                         .where(and(eq(SyncOutboxEntityTable.syncZone, syncZone), eq(SyncOutboxEntityTable.syncId, syncId)))
                 ),
-            findPending: (limit: number) => Db.query(db => db.query.SyncOutboxEntityTable.findMany({ orderBy: { id: 'asc' }, limit })),
+            findPending: (limit: number, sendableZones: readonly string[]) =>
+                Db.query(db =>
+                    db.query.SyncOutboxEntityTable.findMany({
+                        where: { syncZone: { in: [...sendableZones] } },
+                        orderBy: { id: 'asc' },
+                        limit
+                    })
+                ),
             acknowledge: (syncZone: string, syncId: string, syncRevision: number) =>
                 Db.query(db =>
                     db

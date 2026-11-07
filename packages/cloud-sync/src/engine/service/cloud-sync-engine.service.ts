@@ -134,6 +134,7 @@ export class CloudSyncEngineService extends Context.Service<CloudSyncEngineServi
             }
 
             yield* refreshZones();
+            yield* householdService.refreshPrivateOwnerName();
             yield* applyService.resume();
             yield* transport.ensureZone(scope, CLOUD_SYNC_RECORDS.personalZoneName);
 

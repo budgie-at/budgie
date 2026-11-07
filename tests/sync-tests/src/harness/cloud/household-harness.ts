@@ -1,5 +1,7 @@
 import { TestSeedService, resetTestDb } from '@budgie-at/test-kit';
 import {
+    HouseholdShareService,
+    ICLOUD_DEFAULT_OWNER_NAME,
     ICloudParticipantAcceptanceStatus,
     ICloudParticipantPermission,
     ICloudParticipantRole,
@@ -7,16 +9,16 @@ import {
     ICloudSyncScope,
     ICloudZoneChangeReason
 } from '@budgie/cloud-sync';
-import { HOUSEHOLD_SYNC_ZONE } from '@budgie/contracts';
+import { HOUSEHOLD_SYNC_ZONE, SyncDatabaseScopeEnum, SyncZoneRoleEnum, SyncZoneRegistryRepository } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
 import { testDb } from '../scenario/test-db';
 
-import { onDevice, pullDevice, refreshAllBalances, uploadRecords } from './apply-harness';
+import { pullDevice, refreshAllBalances, uploadDevice } from './apply-harness';
 import { OPERATED_AT } from './cloud-fixtures';
-import { encodeAllRecords, loadSyncState } from './record-mapping-harness';
+import { FakeCloudTransport } from './fake-cloud-transport';
+import { onShareDevice } from './share-harness';
 
-import type { FakeCloudTransport } from './fake-cloud-transport';
 import type { ICloudShareAcceptedEvent, ICloudShareParticipant, ICloudZoneChangeEvent } from '@budgie/cloud-sync';
 import type { DB } from '@budgie/contracts';
 
@@ -70,39 +72,26 @@ export const seedHouseholdLedger = (database: DB) =>
             title: 'Groceries run'
         });
 
-        yield* database.$client.unsafe('UPDATE accounts SET sync_zone = ? WHERE id = ?', [HOUSEHOLD_SYNC_ZONE, account.id]);
-        yield* database.$client.unsafe('UPDATE transactions SET sync_zone = ? WHERE id = ?', [HOUSEHOLD_SYNC_ZONE, expense.id]);
-        yield* database.$client.unsafe('UPDATE transaction_entries SET sync_zone = ? WHERE transaction_id = ?', [
-            HOUSEHOLD_SYNC_ZONE,
-            expense.id
-        ]);
+        yield* onShareDevice(
+            database,
+            Effect.gen(function* () {
+                yield* (yield* SyncZoneRegistryRepository).upsert({
+                    zoneLabel: HOUSEHOLD_SYNC_ZONE,
+                    zoneName: HOUSEHOLD_CLOUD_ZONE,
+                    ownerName: ICLOUD_DEFAULT_OWNER_NAME,
+                    databaseScope: SyncDatabaseScopeEnum.PRIVATE,
+                    role: SyncZoneRoleEnum.OWNER
+                });
+                yield* (yield* HouseholdShareService).shareAccount(account.id);
+            })
+        );
         yield* refreshAllBalances(database);
 
         return { account, expense };
     });
 
 export const pushHouseholdZone = (database: DB, cloud: FakeCloudTransport) =>
-    onDevice(
-        database,
-        Effect.gen(function* () {
-            const records = (yield* encodeAllRecords(yield* loadSyncState(database))).filter(({ zone }) => zone === HOUSEHOLD_SYNC_ZONE);
-            yield* uploadRecords(cloud, records);
-
-            yield* database.$client.unsafe('DELETE FROM sync_outbox WHERE sync_zone = ?', [HOUSEHOLD_SYNC_ZONE]);
-
-            return records.length;
-        })
-    );
-
-export const countRows = (database: DB, tableName: string, zone?: string) =>
-    database.$client
-        .unsafe<{ readonly total: number }>(
-            zone === undefined
-                ? `SELECT COUNT(*) AS total FROM ${tableName}`
-                : `SELECT COUNT(*) AS total FROM ${tableName} WHERE sync_zone = ?`,
-            zone === undefined ? [] : [zone]
-        )
-        .pipe(Effect.map(([row]) => row.total));
+    uploadDevice(database, { personal: new FakeCloudTransport(), household: cloud });
 
 export const readPersonalBalances = (database: DB) =>
     database.$client.unsafe<{ readonly title: string; readonly amount: number }>(

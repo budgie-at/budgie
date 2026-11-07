@@ -75,15 +75,17 @@ export class CloudSyncSentService extends Context.Service<CloudSyncSentService>(
             }
         });
 
-        const handleFailedSave = Effect.fnUntraced(function* (failure: ICloudFailedSave) {
+        const handleFailure = Effect.fnUntraced(function* (
+            failure: Omit<ICloudFailedSave, 'recordType' | 'serverRecord'> & Partial<Pick<ICloudFailedSave, 'recordType' | 'serverRecord'>>
+        ) {
             const label = state.labelOf(failure);
 
-            if (!isDefined(label)) {
+            if (!isDefined(label) || failure.isRetried) {
                 return;
             }
 
             const recordKey = buildCloudSyncKey(label, failure.recordName);
-            const isSideRecord = isCloudSyncSideRecordType(failure.recordType);
+            const isSideRecord = isDefined(failure.recordType) && isCloudSyncSideRecordType(failure.recordType);
 
             state.sidePending.delete(recordKey);
 
@@ -117,14 +119,6 @@ export class CloudSyncSentService extends Context.Service<CloudSyncSentService>(
                     record: toCloudSyncEnvelope(serverRecord, label),
                     systemFields: serverRecord.systemFields
                 });
-            }
-
-            if (
-                failure.code === ICloudErrorCode.NETWORK_UNAVAILABLE ||
-                failure.code === ICloudErrorCode.SERVICE_BUSY ||
-                failure.code === ICloudErrorCode.ACCOUNT_UNAVAILABLE
-            ) {
-                return;
             }
 
             const itemKey = state.itemKeyByRecordKey.get(recordKey);
@@ -192,12 +186,12 @@ export class CloudSyncSentService extends Context.Service<CloudSyncSentService>(
                 }
 
                 for (const failure of event.failedSaves) {
-                    yield* handleFailedSave(failure);
+                    yield* handleFailure(failure);
                 }
 
                 for (const failure of event.failedDeletes) {
                     if (failure.code !== ICloudErrorCode.UNKNOWN_ITEM) {
-                        yield* handleFailedSave({ ...failure, recordType: '', serverRecord: null });
+                        yield* handleFailure(failure);
                     }
                 }
 

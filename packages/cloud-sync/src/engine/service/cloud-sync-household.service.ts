@@ -89,6 +89,16 @@ export class CloudSyncHouseholdService extends Context.Service<CloudSyncHousehol
                     })
                 );
 
+            const refreshPrivateOwnerName = Effect.fnUntraced(function* () {
+                const household = state.zones.get(HOUSEHOLD_SYNC_ZONE);
+                const participants = isDefined(household)
+                    ? yield* transport
+                          .getShareParticipants(household.zoneName)
+                          .pipe(Effect.catchTags({ CloudSyncTransportError: () => Effect.succeed([]) }))
+                    : [];
+                yield* Ref.set(state.privateOwnerName, participants.find(participant => participant.isCurrentUser)?.displayName ?? null);
+            });
+
             const startSharedEngineUnlocked = Effect.fnUntraced(function* (isRestoring: boolean) {
                 const household = state.zones.get(HOUSEHOLD_SYNC_ZONE);
 
@@ -102,6 +112,7 @@ export class CloudSyncHouseholdService extends Context.Service<CloudSyncHousehol
                     return;
                 }
 
+                yield* refreshPrivateOwnerName();
                 const sharedStateSerialization = isRestoring ? null : (yield* stateStore.read).sharedStateSerialization;
 
                 yield* stateStore.update({ sharedStateSerialization });
@@ -242,6 +253,7 @@ export class CloudSyncHouseholdService extends Context.Service<CloudSyncHousehol
                 endHouseholdUnlocked,
                 prepareHouseholdOwnerZone,
                 isHouseholdShareActive,
+                refreshPrivateOwnerName,
                 startSharedEngineUnlocked,
                 discoverHouseholdUnlocked,
                 finishHouseholdCleanupUnlocked,
@@ -282,6 +294,7 @@ export class CloudSyncHouseholdService extends Context.Service<CloudSyncHousehol
                 invite: Effect.fn('CloudSyncHouseholdService.invite')(function* () {
                     yield* prepareHouseholdOwnerZone();
                     yield* transport.createHouseholdShare(CLOUD_SYNC_RECORDS.householdZoneName);
+                    yield* refreshPrivateOwnerName();
                 }),
                 stopHouseholdSharing: Effect.fn('CloudSyncHouseholdService.stopHouseholdSharing')(function* () {
                     yield* transport.stopSharing(CLOUD_SYNC_RECORDS.householdZoneName);

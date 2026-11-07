@@ -1,7 +1,7 @@
 import { TestSeedService } from '@budgie-at/test-kit';
 import { SyncAutomationService, HouseholdShareService } from '@budgie/cloud-sync';
 import { UnconsolidationService } from '@budgie/consolidation';
-import { Db, ExternalSourceEnum, SyncZoneRoleEnum } from '@budgie/contracts';
+import { HOUSEHOLD_SYNC_ZONE, Db, ExternalSourceEnum, SyncZoneRoleEnum } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
 import { testDb } from '../scenario/test-db';
@@ -9,7 +9,7 @@ import { testDb } from '../scenario/test-db';
 import { readOutboxRows, refreshAllBalances, uploadDevice } from './apply-harness';
 import { onAutomatedDevice } from './automation-harness';
 import { FakeCloudTransport } from './fake-cloud-transport';
-import { HOUSEHOLD_ZONE, onShareDevice, prepareHousehold, pullZones, queryRows, reconcileDevice } from './share-harness';
+import { onShareDevice, prepareHousehold, pullZones, queryRows, reconcileDevice } from './share-harness';
 
 import type { ShareCloudsInterface } from './share-harness';
 import type { DB } from '@budgie/contracts';
@@ -53,7 +53,7 @@ const syncDevice = (database: DB, clouds: ShareCloudsInterface, deviceId: string
         yield* reconcileDevice(database);
         const uploaded = yield* uploadDevice(database, clouds);
 
-        const results = yield* pullZones(database, clouds.household, deviceId, [HOUSEHOLD_ZONE]);
+        const results = yield* pullZones(database, clouds.household, deviceId, [HOUSEHOLD_SYNC_ZONE]);
 
         if (isAutomated) {
             for (const result of results) {

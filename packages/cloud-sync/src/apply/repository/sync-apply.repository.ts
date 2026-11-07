@@ -19,6 +19,13 @@ const SAVEPOINT = 'sync_apply_unit';
 
 export class SyncApplyRepository extends Context.Service<SyncApplyRepository>()('@budgie/cloud-sync/SyncApplyRepository', {
     make: Effect.succeed({
+        hasEntryInZone: (transactionId: number, zone: string) =>
+            Db.query(db =>
+                db.$client.unsafe<{ readonly id: number }>(
+                    'SELECT e.id FROM transaction_entries e INNER JOIN accounts a ON a.id = e.account_id WHERE e.transaction_id = ? AND a.sync_zone = ? LIMIT 1',
+                    [transactionId, zone]
+                )
+            ).pipe(Effect.map(isNotEmptyArray)),
         findRow: (tableName: string, syncZone: string, syncId: string) =>
             Db.query(db =>
                 db.$client.unsafe<SyncLocalRowInterface>(

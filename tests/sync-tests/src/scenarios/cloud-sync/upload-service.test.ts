@@ -1,19 +1,17 @@
 import { decodeJson, encodeJson } from '@budgie-at/test-kit';
-import { SyncUploadService } from '@budgie/cloud-sync';
-import { Db, ExternalSourceEnum, PERSONAL_SYNC_ZONE, SyncRecordTypeEnum } from '@budgie/contracts';
+import { SyncOutboxRepository, SyncUploadService } from '@budgie/cloud-sync';
+import { SyncOutboxOperationEnum, Db, ExternalSourceEnum, PERSONAL_SYNC_ZONE, SyncRecordTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
-import { vi } from 'vitest';
 
-import * as encoder from '../../../../../packages/cloud-sync/dist/esm/mapping/utils/encode-sync-aggregate.util.js';
-import { seed, testDb, OPERATED_AT } from '../../harness';
+import { onDevice, seed, testDb, OPERATED_AT } from '../../harness';
 
 import type { SyncUploadSaveInterface } from '@budgie/cloud-sync';
 
 const clearOutbox = testDb.$client.unsafe('DELETE FROM sync_outbox');
 
-const readOutbox = testDb.$client.unsafe<{ readonly syncId: string; readonly syncRevision: number }>(
-    'SELECT sync_id AS syncId, sync_revision AS syncRevision FROM sync_outbox ORDER BY id'
+const readOutbox = testDb.$client.unsafe<{ readonly syncId: string; readonly syncRevision: number; readonly changedColumns: string }>(
+    'SELECT sync_id AS syncId, sync_revision AS syncRevision, changed_columns AS changedColumns FROM sync_outbox ORDER BY id'
 );
 
 const toAcknowledgement = (save: SyncUploadSaveInterface) => ({
@@ -32,18 +30,15 @@ describe('cloud-sync/upload-service', () => {
         withUpload(
             Effect.gen(function* () {
                 const upload = yield* SyncUploadService;
-                yield* seed.account({ title: 'Held' });
-                const encode = vi.spyOn(encoder, 'encodeSyncAggregate');
-                yield* Effect.gen(function* () {
-                    for (const attempt of [1, 2, 3]) {
-                        const batch = yield* upload.pending(attempt * 10, new Set(), () => true);
-                        expect(batch.saves).toEqual([]);
-                    }
-                    expect(encode).not.toHaveBeenCalled();
-                    const released = yield* upload.pending(100, new Set(), () => false);
-                    expect(released.saves.length).toBeGreaterThan(0);
-                    expect(encode).toHaveBeenCalled();
-                }).pipe(Effect.ensuring(Effect.sync(() => void encode.mockRestore())));
+                yield* seed.account({ title: 'Oversized'.repeat(200_000) });
+                for (const attempt of [1, 2, 3]) {
+                    const batch = yield* upload.pending(attempt * 10, new Set(), []);
+                    expect(batch.saves).toEqual([]);
+                    expect(batch.rejections).toEqual([]);
+                }
+
+                const released = yield* upload.pending(100, new Set(), [PERSONAL_SYNC_ZONE]);
+                expect(released.rejections).toHaveLength(1);
             })
         )
     );
@@ -153,6 +148,39 @@ describe('cloud-sync/upload-service', () => {
 
                 expect(Object.values(fields)).toContain('install-a');
                 expect(encodeJson(fields)).not.toContain('secret-token');
+            })
+        )
+    );
+    it.effect('unions explicit enqueues with pending title edits', () =>
+        onDevice(
+            testDb,
+            Effect.gen(function* () {
+                const account = yield* seed.account({ title: 'Cash' });
+                const transactionSyncId =
+                    (yield* seed.manualExpense({ accountId: account.id, amount: 5_000_000, operatedAt: OPERATED_AT, title: 'Cafe' }))
+                        .syncId ?? '';
+                yield* clearOutbox;
+                const repository = yield* SyncOutboxRepository;
+                yield* repository.enqueue({
+                    recordType: 'Transaction',
+                    syncZone: 'personal',
+                    syncId: transactionSyncId,
+                    operation: SyncOutboxOperationEnum.SAVE,
+                    changedColumns: '["title"]'
+                });
+                yield* repository.enqueue({
+                    recordType: 'Transaction',
+                    syncZone: 'personal',
+                    syncId: transactionSyncId,
+                    operation: SyncOutboxOperationEnum.SAVE,
+                    changedColumns: '["transaction_entries"]'
+                });
+                expect(decodeJson((yield* readOutbox)[0].changedColumns)).toEqual(['title', 'transaction_entries']);
+                const revision = (yield* readOutbox)[0].syncRevision;
+
+                yield* repository.replaceChangedColumns('personal', transactionSyncId, '["title"]');
+                expect(decodeJson((yield* readOutbox)[0].changedColumns)).toEqual(['title']);
+                expect((yield* readOutbox)[0].syncRevision).toBe(revision + 1);
             })
         )
     );

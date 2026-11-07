@@ -6,9 +6,7 @@ import * as Layer from 'effect/Layer';
 
 import { isEmptyArray } from '@rnw-community/shared';
 
-import { makeHouseholdQueries } from '../utils/make-household-queries.util';
-
-import { HouseholdLabelRepository } from './household-label.repository';
+import { makeHouseholdLabelQueries } from './household-label.repository';
 
 import type { HouseholdAlignmentEntryInterface } from '../interface/household-alignment-entry.interface';
 import type { HouseholdAlignmentTagInterface } from '../interface/household-alignment-tag.interface';
@@ -22,9 +20,8 @@ const chunked = <T>(values: readonly T[]): readonly (readonly T[])[] =>
     Array.from({ length: Math.ceil(values.length / CHUNK_SIZE) }, (_, index) => values.slice(index * CHUNK_SIZE, (index + 1) * CHUNK_SIZE));
 
 export class HouseholdShareRepository extends Context.Service<HouseholdShareRepository>()('@budgie/cloud-sync/HouseholdShareRepository', {
-    make: Effect.gen(function* () {
-        const labels = yield* HouseholdLabelRepository;
-        const { select, execute } = makeHouseholdQueries();
+    make: Effect.sync(() => {
+        const { select, execute, ...labels } = makeHouseholdLabelQueries();
 
         const selectChunked = <T extends object>(
             ids: readonly number[],
@@ -264,7 +261,5 @@ export class HouseholdShareRepository extends Context.Service<HouseholdShareRepo
         };
     })
 }) {
-    static readonly layer = Layer.effect(HouseholdShareRepository, HouseholdShareRepository.make).pipe(
-        Layer.provide(HouseholdLabelRepository.layer)
-    );
+    static readonly layer = Layer.effect(HouseholdShareRepository, HouseholdShareRepository.make);
 }

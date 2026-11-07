@@ -25,7 +25,7 @@ import { AccountBalanceIncrementalService } from '../../account/service/account-
 import { assertTransferAccountsAreNotDebt } from '../utils/assert-transfer-accounts-are-not-debt.util';
 import { buildAdditionalTransferEntries } from '../utils/build-additional-transfer-entries.util';
 import { getEntryAccountIds } from '../utils/get-entry-account-ids.util';
-import { resolveBankTransactionSyncId } from '../utils/resolve-bank-transaction-sync-id.util';
+import { resolveBankTransactionSyncIds } from '../utils/resolve-bank-transaction-sync-ids.util';
 import { transactionMapTagIdsToCreateEntities } from '../utils/transaction-map-tag-ids-to-create-entities.util';
 
 import type { EntryBaseValuationInterface } from '@budgie/market';
@@ -218,15 +218,11 @@ export class TransferCreationService extends Context.Service<TransferCreationSer
                         return yield* Effect.die(new Error('Synced transfer exchange rate must be equal to 1'));
                     }
 
-                    const accounts = yield* accountRepository.findByIds(getEntryAccountIds(inputs));
-                    const accountExternalIdById = new Map(accounts.map(account => [account.id, account.externalId]));
-                    const claimedSyncIds = new Set<string>();
-                    const syncIds = inputs.map(input => resolveBankTransactionSyncId(input, accountExternalIdById, claimedSyncIds));
-                    const existingSyncIds = yield* transactionRepository.findClaimedPersonalSyncIds(syncIds.filter(isDefined));
+                    const syncIds = yield* resolveBankTransactionSyncIds(inputs);
                     const entryValuations = yield* entryBaseValuationService.valueTransactionsEntries(inputs);
                     const transactions: TransactionEntityInterface[] = [];
                     for (const [index, input] of inputs.entries()) {
-                        const syncId = isDefined(syncIds[index]) && existingSyncIds.has(syncIds[index]) ? null : syncIds[index];
+                        const syncId = syncIds[index];
                         const syncedTransfer = yield* persistSyncedTransfer(input, entryValuations[index], syncId);
                         transactions.push(syncedTransfer);
                     }

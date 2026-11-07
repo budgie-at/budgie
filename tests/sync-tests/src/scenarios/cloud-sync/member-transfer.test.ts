@@ -206,7 +206,7 @@ describe('cloud-sync/member-transfer', () => {
                     expect(
                         yield* countRows(
                             bobDatabase,
-                            `sync_record WHERE record_type = 'TransactionLeg' AND json_extract(payload, '$.encryptedFields.privateOwnerName') = 'Alice'`
+                            `sync_record WHERE record_type = 'TransactionLeg' AND json_extract(payload, '$.encryptedFields.privateOwnerName') IS NULL`
                         )
                     ).toBe(1);
                     yield* expectNothingPrivateOnBob(bobDatabase);

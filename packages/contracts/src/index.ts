@@ -452,3 +452,5 @@ export { SyncRecordTypeEnum } from './cloud-sync/enum/sync-record-type.enum';
 export { buildAccountSharedByOtherSql } from './cloud-sync/utils/build-account-shared-by-other-sql.util';
 export { SyncResetRepository } from './cloud-sync/repository/sync-reset.repository';
 export { BankSyncInstallId } from './cloud-sync/constant/bank-sync-install-id.constant';
+
+export { MOVED_TO_TOMBSTONE_SQL } from './cloud-sync/constant/moved-to-tombstone-sql.constant';

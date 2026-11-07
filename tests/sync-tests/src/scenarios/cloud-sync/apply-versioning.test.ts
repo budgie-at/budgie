@@ -3,6 +3,7 @@ import { SyncApplyService } from '@budgie/cloud-sync';
 import { Db } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
+import * as Exit from 'effect/Exit';
 import * as Schema from 'effect/Schema';
 
 import { isRecord } from '@rnw-community/shared';
@@ -167,4 +168,19 @@ describe('cloud-sync/apply-versioning', () => {
             })
         );
     });
+    it.effect('retains all paused records when resume cannot decode a later payload', () =>
+        onDevice(
+            testDb,
+            Effect.gen(function* () {
+                yield* testDb.$client.unsafe(
+                    "INSERT INTO sync_pending (sync_zone, sync_id, record_type, missing_record_type, missing_sync_id, payload) VALUES ('personal', 'first', 'Account', 'SchemaVersion', 'personal', '{}'), ('personal', 'second', 'Account', 'SchemaVersion', 'personal', 'invalid')"
+                );
+                expect(Exit.isFailure(yield* Effect.exit((yield* SyncApplyService).resume()))).toBe(true);
+                expect(yield* testDb.$client.unsafe('SELECT sync_id FROM sync_pending ORDER BY id')).toEqual([
+                    { sync_id: 'first' },
+                    { sync_id: 'second' }
+                ]);
+            })
+        )
+    );
 });

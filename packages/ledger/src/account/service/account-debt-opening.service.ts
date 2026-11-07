@@ -1,4 +1,5 @@
 import {
+    PERSONAL_SYNC_ZONE,
     AccountDebtTypeEnum,
     AccountRepository,
     BORROWING_CATEGORY_SEED_KEY,
@@ -79,10 +80,15 @@ export class AccountDebtOpeningService extends Context.Service<AccountDebtOpenin
             amount: number
         ) {
             const isExpense = transaction.type === TransactionTypeEnum.EXPENSE;
-            const category = yield* categoryRepository.findActiveBySeedKey(
-                isExpense ? LENDING_CATEGORY_SEED_KEY : BORROWING_CATEGORY_SEED_KEY,
-                fundingAccount.syncZone
-            );
+            const category =
+                (yield* categoryRepository.findActiveBySeedKey(
+                    isExpense ? LENDING_CATEGORY_SEED_KEY : BORROWING_CATEGORY_SEED_KEY,
+                    fundingAccount.syncZone
+                )) ??
+                (yield* categoryRepository.findActiveBySeedKey(
+                    isExpense ? LENDING_CATEGORY_SEED_KEY : BORROWING_CATEGORY_SEED_KEY,
+                    PERSONAL_SYNC_ZONE
+                ));
             const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({
                 accountId: fundingAccount.id,
                 amount,

@@ -129,7 +129,7 @@ export class CloudSyncFetchService extends Context.Service<CloudSyncFetchService
                 }
             }
 
-            if (household?.role !== SyncZoneRoleEnum.PARTICIPANT) {
+            if (household?.role !== SyncZoneRoleEnum.PARTICIPANT || !(yield* Ref.get(state.session)).isSharedReconciling) {
                 yield* stateStore.update({ restorePhase: CloudSyncRestorePhaseEnum.NONE });
             }
         });
@@ -142,7 +142,9 @@ export class CloudSyncFetchService extends Context.Service<CloudSyncFetchService
                 (yield* reconcileHouseholdZone(ICloudSyncScope.SHARED, household.zoneName))
             ) {
                 yield* patch({ isSharedReconciling: false });
-                yield* stateStore.update({ restorePhase: CloudSyncRestorePhaseEnum.NONE });
+                if (!(yield* Ref.get(state.session)).isReconciling) {
+                    yield* stateStore.update({ restorePhase: CloudSyncRestorePhaseEnum.NONE });
+                }
             }
         });
 
@@ -215,6 +217,9 @@ export class CloudSyncFetchService extends Context.Service<CloudSyncFetchService
                     return;
                 }
 
+                if (!(yield* Ref.get(state.isBatchFailed))) {
+                    yield* applyService.completeOwnerTransfers();
+                }
                 yield* patch({
                     isFetching: false,
                     isInitialFetchComplete: true,

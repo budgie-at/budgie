@@ -21,8 +21,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { getEntryAccountIds } from '../utils/get-entry-account-ids.util';
-import { resolveBankTransactionSyncId } from '../utils/resolve-bank-transaction-sync-id.util';
+import { resolveBankTransactionSyncIds } from '../utils/resolve-bank-transaction-sync-ids.util';
 import { transactionMapEntryInputToCreateEntity } from '../utils/transaction-map-entry-input-to-create-entity.util';
 import { transactionMapTagIdsToCreateEntities } from '../utils/transaction-map-tag-ids-to-create-entities.util';
 
@@ -101,16 +100,12 @@ export class TransactionBatchCreateService extends Context.Service<TransactionBa
             });
 
             const withBankTransactionSyncIds = Effect.fnUntraced(function* (batch: readonly TransactionCreateInputInterface[]) {
-                const accounts = yield* accountRepository.findByIds(getEntryAccountIds(batch));
-                const accountExternalIdById = new Map(accounts.map(account => [account.id, account.externalId]));
-                const derivedSyncIds = new Set<string>();
-                const resolvedSyncIds = batch.map(input => resolveBankTransactionSyncId(input, accountExternalIdById, derivedSyncIds));
-                const claimedSyncIds = yield* transactionRepository.findClaimedPersonalSyncIds([...derivedSyncIds]);
+                const resolvedSyncIds = yield* resolveBankTransactionSyncIds(batch);
 
                 return batch.map((input, index) => {
                     const syncId = resolvedSyncIds[index];
 
-                    return !isDefined(syncId) || claimedSyncIds.has(syncId) ? input : { ...input, syncId };
+                    return isDefined(syncId) ? { ...input, syncId } : input;
                 });
             });
 

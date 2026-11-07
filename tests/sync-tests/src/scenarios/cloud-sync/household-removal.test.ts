@@ -9,7 +9,7 @@ import * as Effect from 'effect/Effect';
 import {
     FakeCloudTransport,
     accessLostEvent,
-    countHouseholdRows,
+    countRows,
     HOUSEHOLD_CLOUD_ZONE,
     joinMember,
     MEMBER_ACCOUNT,
@@ -26,7 +26,7 @@ import type { DB } from '@budgie/contracts';
 const readHouseholdCounts = (database: DB) =>
     Effect.forEach(
         ['accounts', 'transactions', 'transaction_entries', 'sync_record', 'sync_outbox'],
-        tableName => countHouseholdRows(database, tableName, HOUSEHOLD_SYNC_ZONE),
+        tableName => countRows(database, `${tableName} WHERE sync_zone = ?`, [HOUSEHOLD_SYNC_ZONE]),
         { concurrency: 1 }
     );
 
@@ -85,8 +85,8 @@ describe('cloud-sync/household removal', () => {
 
                 expect(remaining).toBeUndefined();
                 expect(yield* readHouseholdCounts(memberDb)).toEqual([0, 0, 0, 0, 0]);
-                expect(yield* countHouseholdRows(memberDb, 'accounts')).toBe(1);
-                expect(yield* countHouseholdRows(memberDb, 'account_balances')).toBe(1);
+                expect(yield* countRows(memberDb, 'accounts')).toBe(1);
+                expect(yield* countRows(memberDb, 'account_balances')).toBe(1);
                 expect(yield* readPersonalBalances(memberDb)).toEqual(personalBefore);
                 expect(member.transport.calls.sharedStopped).toBe(1);
                 expect(appAtomRegistry.get(householdReadyAtom)).toBe(false);

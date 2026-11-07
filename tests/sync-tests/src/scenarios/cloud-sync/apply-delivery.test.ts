@@ -3,6 +3,7 @@ import * as Effect from 'effect/Effect';
 
 import {
     Db,
+    countRows,
     FakeCloudTransport,
     TestSeedService,
     assertStoredBalancesMatchLedger,
@@ -20,11 +21,6 @@ import {
 } from '../../harness';
 
 import type { DB } from '@budgie/contracts';
-
-const countRows = (database: DB, tableName: string) =>
-    database.$client
-        .unsafe<{ readonly total: number }>(`SELECT COUNT(*) AS total FROM ${tableName}`)
-        .pipe(Effect.map(([row]) => row.total));
 
 const withoutZone = (rows: readonly Record<string, unknown>[]) =>
     rows

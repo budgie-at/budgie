@@ -52,7 +52,6 @@ export const resetTestDb = (database: DB) =>
         yield* client.unsafe('DELETE FROM main.sqlite_sequence');
         yield* client.unsafe('INSERT INTO main.sqlite_sequence SELECT * FROM baseline.sequence');
         yield* client.unsafe('DELETE FROM main.sync_outbox');
-        yield* client.unsafe('DELETE FROM main.sync_apply_state');
         yield* client.unsafe('DELETE FROM main.sqlite_stat1');
         yield* client.unsafe('INSERT INTO main.sqlite_stat1 SELECT * FROM baseline.stat1');
         yield* client.unsafe('ANALYZE sqlite_schema');
