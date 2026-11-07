@@ -55,10 +55,10 @@ export const TransactionFilters = (props: Props) => {
         });
 
     return (
-        <View className="-mx-7xl -my-[6px]">
+        <View className="-mx-5xl -my-[6px]">
             <ScrollView
                 horizontal
-                contentContainerClassName="flex-row items-center gap-x-md px-7xl py-[6px]"
+                contentContainerClassName="flex-row items-center gap-x-md px-5xl py-[6px]"
                 showsHorizontalScrollIndicator={false}
             >
                 {isClearAllVisible ? (
