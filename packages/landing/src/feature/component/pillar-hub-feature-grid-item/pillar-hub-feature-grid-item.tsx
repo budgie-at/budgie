@@ -15,7 +15,7 @@ export const PillarHubFeatureGridItem = ({ href, index, title, tagline }: Props)
     <Motion index={index}>
         <Link className="block h-full rounded-lg border border-border/60 bg-card p-5 transition-colors hover:border-pillar" href={href}>
             <span aria-hidden className="mb-3 block size-2 rounded-full bg-pillar" />
-            <h3 className="font-semibold">{title}</h3>
+            <h2 className="font-semibold">{title}</h2>
             <p className="mt-2 text-sm text-muted-foreground">{tagline}</p>
         </Link>
     </Motion>

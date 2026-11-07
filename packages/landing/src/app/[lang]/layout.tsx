@@ -39,7 +39,8 @@ const fixelDisplay = localFont({
             style: 'normal'
         }
     ],
-    display: 'swap'
+    display: 'swap',
+    preload: false
 });
 
 interface Props extends PageLangParam {
