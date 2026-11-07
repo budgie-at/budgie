@@ -55,6 +55,7 @@ class BaseTransactionFilterRepository {
             const condition = or(
                 inArray(TransactionEntityTable.fromAccountId, accountIds),
                 inArray(TransactionEntityTable.toAccountId, accountIds),
+                inArray(TransactionEntityTable.fundAccountId, accountIds),
                 inArray(TransactionEntityTable.id, this.buildTransactionIdsByEntryAccountIdsQuery(accountIds)),
                 inArray(TransactionEntityTable.id, this.buildTransactionIdsByDebtEventAccountIdsQuery(accountIds))
             );

@@ -6,6 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { GroupedSurface } from '../../@generic/component/grouped-surface/grouped-surface';
 import { SCREEN_CHROME_CONFIG } from '../../@generic/constant/screen-chrome-config.constant';
+import { ScreenChromeStickyHeadersProvider } from '../../@generic/provider/screen-chrome-sticky-headers.provider';
 import { ScreenChromeThemeProvider } from '../../@generic/provider/screen-chrome-theme.provider';
 import { HomeSectionsList } from '../../account/component/home-sections-list/home-sections-list';
 import { NetWorthCollapsibleHeader } from '../../account/component/net-worth-collapsible-header/net-worth-collapsible-header';
@@ -51,18 +52,20 @@ export default function HomePage() {
 
     return (
         <ScreenChromeThemeProvider config={HOME_SCREEN_CHROME_CONFIG}>
-            <GroupedSurface>
-                <NetWorthCollapsibleHeader netWorth={balanceSummary.netWorth} isLoading={isLoading} />
+            <ScreenChromeStickyHeadersProvider>
+                <GroupedSurface>
+                    <NetWorthCollapsibleHeader netWorth={balanceSummary.netWorth} isLoading={isLoading} />
 
-                <HomeSectionsList
-                    sections={sections}
-                    activeAccountCount={activeAccountCount}
-                    isLoading={isLoading}
-                    bottomInset={bottom}
-                    balancesByAccountId={balanceSummary.balancesByAccountId}
-                    listHeaderComponent={listHeaderComponent}
-                />
-            </GroupedSurface>
+                    <HomeSectionsList
+                        sections={sections}
+                        activeAccountCount={activeAccountCount}
+                        isLoading={isLoading}
+                        bottomInset={bottom}
+                        balancesByAccountId={balanceSummary.balancesByAccountId}
+                        listHeaderComponent={listHeaderComponent}
+                    />
+                </GroupedSurface>
+            </ScreenChromeStickyHeadersProvider>
         </ScreenChromeThemeProvider>
     );
 }

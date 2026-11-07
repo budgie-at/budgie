@@ -6,7 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useCryptoInstrumentBalanceQuery } from '../../../account/query/use-crypto-instrument-balance.query';
-import { useCryptoValuationRateQuery } from '../../../exchange-rate/query/use-crypto-valuation-rate.query';
+import { useUnitValuationRateQuery } from '../../../exchange-rate/query/use-unit-valuation-rate.query';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useCryptoInstrumentPositionQuery } from '../../query/use-crypto-instrument-position.query';
@@ -31,7 +31,7 @@ export const CurrencyMarketPosition = ({ instrument, latestPriceDate }: Props) =
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const { balance } = useCryptoInstrumentBalanceQuery(instrument.id);
     const position = useCryptoInstrumentPositionQuery(instrument.id, defaultInstrument.id);
-    const valuationRate = useCryptoValuationRateQuery(instrument.id, defaultInstrument.id);
+    const valuationRate = useUnitValuationRateQuery(instrument.id, defaultInstrument.id);
     const formatInstrumentAmount = useFormatInstrumentAmount();
 
     const hasBalance = convertToMicroUnits(balance) !== 0;

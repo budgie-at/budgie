@@ -54,7 +54,7 @@ const toDayNetAmount = (
     row: TransactionDayNetAmountRowInterface,
     defaultInstrument: Pick<InstrumentEntityInterface, 'symbol'>
 ): TransactionsDayNetAmountInterface | null => {
-    if (row.instrumentCount === 1 && row.instrumentType !== InstrumentTypeEnum.CRYPTO) {
+    if (row.instrumentCount === 1 && row.instrumentType === InstrumentTypeEnum.FIAT) {
         return { amount: row.amount, instrumentSymbol: row.instrumentSymbol, isApproximate: false };
     }
 

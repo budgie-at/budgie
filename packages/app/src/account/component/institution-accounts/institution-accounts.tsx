@@ -51,7 +51,7 @@ export const InstitutionAccounts = ({ institution, balancesByAccountId }: Props)
                         />
                     ))}
                     {hasMore ? (
-                        <TransactionRowSurface position={TransactionListRowPositionEnum.LAST}>
+                        <TransactionRowSurface separatorInset={64} position={TransactionListRowPositionEnum.LAST}>
                             <SettingsRow
                                 title={t`Show all ${accountsCount} accounts`}
                                 icon={UserIconNameEnum.List}

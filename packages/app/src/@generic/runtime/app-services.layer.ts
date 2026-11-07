@@ -1,3 +1,4 @@
+// eslint-disable max-lines -- approved by liaugust: appServicesLayer is the single registration point
 import { TranslationLlmService, VoiceLlmService } from '@budgie/ai';
 import {
     BudgetCategoryLimitRepository,
@@ -27,6 +28,7 @@ import {
     DebtEventRepository,
     InstallmentPlanRepository,
     InstrumentRepository,
+    InvestmentReturnRepository,
     MccCategoryRepository,
     SettingsRepository,
     SyncRepository,
@@ -75,7 +77,8 @@ import {
     ExchangeRatesService,
     HistoricalExchangeRateRepository,
     InstrumentDailyMarketPriceRepository,
-    InstrumentMarketDataJobRepository
+    InstrumentMarketDataJobRepository,
+    InzhurPriceService
 } from '@budgie/market';
 import { RecurringRefreshService, RecurringService } from '@budgie/recurring';
 import { RuleEngineService, RuleMatcherService, RuleRepository, RuleService, TransactionRuleRepository } from '@budgie/rules';
@@ -85,6 +88,11 @@ import {
     ErsteSyncService,
     ExternalAccountService,
     AccountReissueMergeService,
+    InzhurBankFlowService,
+    InzhurGainService,
+    InzhurManualPurchaseService,
+    InzhurOperationsImportService,
+    InzhurSetupService,
     MonobankSyncService,
     PrivatbankCategoryMatcherService,
     PrivatbankSyncService,
@@ -123,6 +131,8 @@ import { CategoryIconBackfillService } from '../../category/service/category-ico
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
 import { DatabaseExportService } from '../../export/service/database-export.service';
 import { DatabaseImportService } from '../../import/service/database-import.service';
+import { InzhurPendingTopUpService } from '../../inzhur/service/inzhur-pending-top-up.service';
+import { InzhurStatementReminderService } from '../../inzhur/service/inzhur-statement-reminder.service';
 import { HistoricalMarketDataDrainerService } from '../../market-data/service/historical-market-data-drainer.service';
 import { OnboardingService } from '../../onboarding/service/onboarding.service';
 import { ReceiptScanService } from '../../receipt/service/receipt-scan.service';
@@ -184,6 +194,8 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     DatabaseRekeyService.layer,
     SiriCatalogService.layer,
     WidgetSnapshotService.layer,
+    InzhurStatementReminderService.layer,
+    InzhurPendingTopUpService.layer,
     AppResetService.layer,
     DatabaseExportService.layer,
     DatabaseImportService.layer,
@@ -255,6 +267,13 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     ErsteSyncService.layer,
     PrivatbankSyncService.layer,
     SyncProviderRegistryService.layer,
+    InzhurPriceService.layer,
+    InzhurSetupService.layer,
+    InzhurOperationsImportService.layer,
+    InzhurManualPurchaseService.layer,
+    InzhurGainService.layer,
+    InzhurBankFlowService.layer,
+    InvestmentReturnRepository.layer,
     ResyncService.layer,
     AppDataSyncService.layer,
     BackgroundSyncSessionService.layer,

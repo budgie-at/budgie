@@ -1,9 +1,9 @@
-import { CurrencyEnum, InstrumentRepository } from '@budgie/contracts';
+import { InstrumentRepository } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
-export const requireInstrument = Effect.fnUntraced(function* (code: CurrencyEnum) {
+export const requireInstrument = Effect.fnUntraced(function* (code: string) {
     const instrumentRepository = yield* InstrumentRepository;
     const instrument = yield* instrumentRepository.findByCode(code);
 

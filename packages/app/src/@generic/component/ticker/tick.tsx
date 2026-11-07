@@ -45,7 +45,7 @@ export const Tick = (props: Props) => {
         <View style={style}>
             <Animated.View style={animatedStyle}>
                 {NUM_FROM_ZERO_TO_NINE.map((number, index) => (
-                    <Text key={index} className={textClassName} style={textStyle}>
+                    <Text key={index} allowFontScaling={false} className={textClassName} style={textStyle}>
                         {number}
                     </Text>
                 ))}

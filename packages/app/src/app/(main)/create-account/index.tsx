@@ -63,6 +63,11 @@ export default function Index() {
                     />
                     <CreateSyncCard description={t`Import a PDF statement`} title={t`Erste Bank`} bankProvider={ExternalSourceEnum.ERSTE} />
                     <CreateSyncCard
+                        description={t`Import an XLSX operations export`}
+                        title={t`Inzhur`}
+                        bankProvider={ExternalSourceEnum.INZHUR}
+                    />
+                    <CreateSyncCard
                         description={t`Sync with a read-only API key`}
                         title={t`Binance`}
                         bankProvider={ExternalSourceEnum.BINANCE}

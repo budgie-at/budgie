@@ -1,5 +1,5 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
-import { SectionList } from 'react-native';
+import { SectionList } from '@legendapp/list/section-list';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -7,6 +7,7 @@ import { useScreenChrome, useScreenChromeScrollProps } from '@rnw-community/reac
 
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@generic/constant/floating-tab-bar.constant';
 import { useCollapsibleChromeScroll } from '../../../@generic/hook/use-collapsible-chrome-scroll.hook';
+import { useScreenChromeStickyList } from '../../../@generic/hook/use-screen-chrome-sticky-list.hook';
 import { decimalPlacesAtom, defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
 import { TransactionRowSurface } from '../../../transaction/components/transaction-row-surface/transaction-row-surface';
 import { COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT } from '../../constant/collapsible-net-worth-header-scroll-spacer.constant';
@@ -25,6 +26,9 @@ import type { SectionListProps, SectionListRenderItem } from 'react-native';
 
 const AnimatedSectionList = Animated.createAnimatedComponent(SectionList<HomeSectionInterface['data'][number], HomeSectionInterface>);
 const LIST_HORIZONTAL_PADDING = 16;
+const renderSectionHeader: SectionListProps<HomeSectionInterface['data'][number], HomeSectionInterface>['renderSectionHeader'] = ({
+    section
+}) => <HomeSectionHeader section={section} />;
 const renderSectionFooter: SectionListProps<HomeSectionInterface['data'][number], HomeSectionInterface>['renderSectionFooter'] = ({
     section
 }) => <HomeSectionFooter section={section} />;
@@ -53,7 +57,7 @@ export const HomeSectionsList = ({
     const { onScroll } = useCollapsibleChromeScroll();
     const collapsedHeaderHeight = config.collapsedHeaderHeight ?? config.headerHeight;
     const listStyle = { marginTop: top + collapsedHeaderHeight };
-    const scrollProps = useScreenChromeScrollProps({
+    const { ref: refScrollView, ...scrollProps } = useScreenChromeScrollProps({
         includeTopSafeArea: false,
         contentInsetTop: config.headerHeight - collapsedHeaderHeight,
         contentContainerStyle: {
@@ -62,7 +66,13 @@ export const HomeSectionsList = ({
             flexGrow: 1
         }
     });
-    const listFormatKey = `${defaultInstrumentId}-${decimalPlaces}`;
+    const keyExtractor = (item: HomeSectionInterface['data'][number]): string => {
+        if (isInstitutionGroup(item)) {
+            return `institution-${item.integrationId}`;
+        }
+
+        return 'accounts' in item ? `crypto-${item.instrument.id}` : String(item.id);
+    };
     const listFooterComponent =
         activeAccountCount > COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT ? (
             <CollapsibleNetWorthHeaderScrollSpacer />
@@ -70,33 +80,41 @@ export const HomeSectionsList = ({
 
     const listEmptyComponent = isLoading || activeAccountCount > 0 ? null : AccountsEmptyState;
 
-    const renderSectionHeader = ({ section }: { section: HomeSectionInterface }) => <HomeSectionHeader section={section} />;
+    const headers = sections.map((section, index) => ({
+        index: sections.slice(0, index).reduce((count, previous) => count + previous.data.length + 2, 0),
+        content: <HomeSectionHeader section={section} />
+    }));
+    const { handleListRef, onMetricsChange, publish, stickyHeaderConfig } = useScreenChromeStickyList(
+        headers,
+        config.headerHeight - collapsedHeaderHeight,
+        collapsedHeaderHeight,
+        LIST_HORIZONTAL_PADDING
+    );
 
     const renderItem: SectionListRenderItem<HomeSectionInterface['data'][number], HomeSectionInterface> = ({ item, index, section }) => (
-        <TransactionRowSurface position={getHomeSectionItemPosition(section, index)}>
+        <TransactionRowSurface separatorInset={64} position={getHomeSectionItemPosition(section, index)}>
             <HomeSectionItem item={item} section={section} balancesByAccountId={balancesByAccountId} />
         </TransactionRowSurface>
     );
 
-    const keyExtractor = (item: HomeSectionInterface['data'][number]) => {
-        if (isInstitutionGroup(item)) {
-            return `institution-${item.integrationId}`;
-        }
-
-        return 'accounts' in item ? `crypto-${item.instrument.id}` : String(item.id);
-    };
-
     return (
         <AnimatedSectionList
-            key={listFormatKey}
+            key={`${defaultInstrumentId}-${decimalPlaces}`}
             sections={sections}
             renderSectionHeader={renderSectionHeader}
             renderItem={renderItem}
             renderSectionFooter={renderSectionFooter}
             keyExtractor={keyExtractor}
-            extraData={listFormatKey}
+            extraData={balancesByAccountId}
+            refScrollView={refScrollView}
+            ref={handleListRef}
+            onMetricsChange={onMetricsChange}
+            onItemSizeChanged={publish}
+            onViewableItemsChanged={publish}
+            stickyHeaderConfig={stickyHeaderConfig}
             showsVerticalScrollIndicator={false}
             stickySectionHeadersEnabled
+            recycleItems
             ListHeaderComponent={listHeaderComponent}
             ListFooterComponent={listFooterComponent}
             ListEmptyComponent={listEmptyComponent}

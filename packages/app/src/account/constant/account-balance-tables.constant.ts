@@ -3,6 +3,8 @@ import {
     AccountEntityTable,
     ExchangeRateEntityTable,
     HistoricalExchangeRateEntityTable,
+    InstrumentDailyMarketPriceEntityTable,
+    InstrumentEntityTable,
     SyncEntityTable,
     TransactionEntityTable,
     TransactionEntryEntityTable
@@ -16,4 +18,10 @@ export const ACCOUNT_BALANCE_TABLES = [
     TransactionEntityTable
 ];
 
-export const ACCOUNT_CONVERTED_BALANCE_TABLES = [...ACCOUNT_BALANCE_TABLES, ExchangeRateEntityTable, HistoricalExchangeRateEntityTable];
+export const ACCOUNT_CONVERTED_BALANCE_TABLES = [
+    ...ACCOUNT_BALANCE_TABLES,
+    ExchangeRateEntityTable,
+    HistoricalExchangeRateEntityTable,
+    InstrumentDailyMarketPriceEntityTable,
+    InstrumentEntityTable
+];

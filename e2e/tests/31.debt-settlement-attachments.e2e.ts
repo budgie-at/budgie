@@ -37,8 +37,8 @@ test('31 debt settlement attachments', { tags: ['debt'] }, async ({ budgie }) =>
     const attachFromList = async (label: string, account: string, scroll = true) => {
         await navigateToTransactions(ctx);
         if (scroll) {
-            await b.scrollTo(ctx, card(label));
-            await b.sleep(400);
+            await b.scrollToCentre(ctx, card(label));
+            await b.sleep(600);
         } else {
             await b.expectId(ctx, card(label), 5_000);
         }
@@ -79,7 +79,7 @@ test('31 debt settlement attachments', { tags: ['debt'] }, async ({ budgie }) =>
     await b.phase('attach expense to lent debt from the list', async () => {
         await attachFromList('E2E_Debt_Attach_Expense', 'E2E Lent Expense Debt', false);
         await b.expectId(ctx, card('E2E_Debt_Attach_Expense'), 5_000);
-        await expect(id(card('E2E_Debt_Attach_Expense'))).toHaveText(/, From E2E Txn Account to E2E Lent Expense Debt,/, {
+        await expect(id(card('E2E_Debt_Attach_Expense'))).toHaveText(/, From E2E Txn Account to E2E Lent Expense Debt$/, {
             timeout: 10_000
         });
         await home();
@@ -135,7 +135,7 @@ test('31 debt settlement attachments', { tags: ['debt'] }, async ({ budgie }) =>
 
     await b.phase('extra lending raises the lent total', async () => {
         await attachFromList('E2E_Lent_Debt_Extra_Lending', LENT);
-        await expect(id(card('E2E_Lent_Debt_Extra_Lending'))).toHaveText(/, From E2E EUR Debt Funding Account,/, { timeout: 10_000 });
+        await expect(id(card('E2E_Lent_Debt_Extra_Lending'))).toHaveText(/, From E2E EUR Debt Funding Account$/, { timeout: 10_000 });
         await home();
         await balances(LENT, ['OutstandingAmount.13405_933', 'PaidAmount.2094_067', 'TotalAmount.15500', 'Percentage.13_51']);
         await exitAccountDetailsToHome(ctx);
@@ -172,7 +172,7 @@ test('31 debt settlement attachments', { tags: ['debt'] }, async ({ budgie }) =>
         await expect(b.byText(screen, `Debt · ${BORROWED}`)).toBeVisible();
         await submitTransactionAndReturnToList(ctx);
         await b.scrollTo(ctx, card('E2E_Borrowed_Debt_Attach_Income'));
-        await expect(id(card('E2E_Borrowed_Debt_Attach_Income'))).toHaveText(/, To E2E Txn Account,/);
+        await expect(id(card('E2E_Borrowed_Debt_Attach_Income'))).toHaveText(/, To E2E Txn Account$/);
         await borrowedFromHome();
         await balances(BORROWED, ['OutstandingAmount.368_067', 'PaidAmount.14726', 'TotalAmount.15094_067', 'Percentage.97_56']);
         await exitAccountDetailsToHome(ctx);
@@ -185,7 +185,7 @@ test('31 debt settlement attachments', { tags: ['debt'] }, async ({ budgie }) =>
         await expect(b.byText(screen, 'Debt · E2E Completed Debt')).toBeVisible();
         await submitTransactionAndReturnToList(ctx);
         await b.scrollTo(ctx, card('E2E_Completed_Debt_Attach_Income'));
-        await expect(id(card('E2E_Completed_Debt_Attach_Income'))).toHaveText(/, (Repayment|To E2E Txn Account),/);
+        await expect(id(card('E2E_Completed_Debt_Attach_Income'))).toHaveText(/, (Repayment, E2E Txn Account|To E2E Txn Account)$/);
         await home();
         await b.openLink(ctx, 'budgie://account/7/details');
         await b.expectId(ctx, 'AccountDetails.Page', 10_000);
@@ -200,7 +200,7 @@ test('31 debt settlement attachments', { tags: ['debt'] }, async ({ budgie }) =>
         await attachFromList('E2E_Fee_Debt_Attach_Expense', LENT);
         await b.expectId(ctx, card('E2E_Fee_Debt_Attach_Expense'), 5_000);
         await expect(id(card('E2E_Fee_Debt_Attach_Expense'))).toHaveText(
-            'E2E Fee Debt Attach Expense, From E2E Txn Account to E2E Lent Debt, Fee $5, $105 → €86'
+            /^E2E Fee Debt Attach Expense, \$105.*, From E2E Txn Account to E2E Lent Debt, Fee \$5$/
         );
         await home();
         await balances(LENT, ['OutstandingAmount.13492_233', 'PaidAmount.2094_067', 'TotalAmount.15586_3', 'Percentage.13_44']);
