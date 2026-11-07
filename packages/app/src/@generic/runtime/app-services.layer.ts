@@ -48,7 +48,6 @@ import {
     TransactionTagsRepository,
     SyncApplyStateRepository,
     SyncIdentityRepository,
-    SyncPendingRepository,
     SyncRecordRepository,
     SyncZoneRegistryRepository
 } from '@budgie/contracts';
@@ -216,7 +215,6 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     SyncIdentityRepository.layer,
     SyncOutboxRepository.layer,
     HouseholdShareService.layer,
-    SyncPendingRepository.layer,
     SyncRecordRepository.layer,
     SyncZoneRegistryRepository.layer,
     CategoryRepository.layer,

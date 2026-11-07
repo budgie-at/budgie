@@ -13,6 +13,7 @@ import type { SyncLocalIdInterface } from '../interface/sync-local-id.interface'
 import type { SyncLocalRowInterface } from '../interface/sync-local-row.interface';
 import type { SyncPausedZoneInterface } from '../interface/sync-paused-zone.interface';
 import type { SyncCellType } from '../type/sync-cell.type';
+import type { SyncPendingCreateEntityInterface } from '@budgie/contracts';
 
 const SAVEPOINT = 'sync_apply_unit';
 
@@ -122,6 +123,28 @@ export class SyncApplyRepository extends Context.Service<SyncApplyRepository>()(
                 db
                     .delete(SyncOutboxEntityTable)
                     .where(and(eq(SyncOutboxEntityTable.syncZone, syncZone), eq(SyncOutboxEntityTable.syncId, syncId)))
+            ),
+        addPending: (input: SyncPendingCreateEntityInterface) =>
+            Db.query(db =>
+                db
+                    .insert(SyncPendingEntityTable)
+                    .values(input)
+                    .onConflictDoUpdate({
+                        target: [SyncPendingEntityTable.syncZone, SyncPendingEntityTable.syncId],
+                        set: {
+                            recordType: input.recordType,
+                            missingRecordType: input.missingRecordType,
+                            missingSyncId: input.missingSyncId,
+                            systemFields: input.systemFields ?? null,
+                            payload: input.payload
+                        }
+                    })
+            ),
+        removePending: (syncZone: string, syncId: string) =>
+            Db.query(db =>
+                db
+                    .delete(SyncPendingEntityTable)
+                    .where(and(eq(SyncPendingEntityTable.syncZone, syncZone), eq(SyncPendingEntityTable.syncId, syncId)))
             ),
         findPending: (syncZone: string, syncId: string) =>
             Db.query(db => db.query.SyncPendingEntityTable.findFirst({ where: { syncZone, syncId } })),

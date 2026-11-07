@@ -85,14 +85,16 @@ export class HouseholdMembershipService extends Context.Service<HouseholdMembers
                         Effect.gen(function* () {
                             const accountIds = yield* findHouseholdAccountIds;
 
-                            yield* applyStateRepository.setApplying(true);
-                            yield* householdShareService.moveLabelsToPersonal();
-                            yield* Db.mutation(
-                                { type: 'update', tables: movedTableNames },
-                                Effect.forEach(movedTableNames, moveTableToPersonal, { discard: true })
+                            yield* applyStateRepository.withoutTriggers(
+                                Effect.gen(function* () {
+                                    yield* householdShareService.moveLabelsToPersonal();
+                                    yield* Db.mutation(
+                                        { type: 'update', tables: movedTableNames },
+                                        Effect.forEach(movedTableNames, moveTableToPersonal, { discard: true })
+                                    );
+                                    yield* removeHouseholdRows;
+                                })
                             );
-                            yield* removeHouseholdRows;
-                            yield* applyStateRepository.setApplying(false);
                             yield* enqueueUnrecordedPersonalRoots;
 
                             return accountIds;
@@ -102,13 +104,7 @@ export class HouseholdMembershipService extends Context.Service<HouseholdMembers
                     yield* balanceRefresher.refresh(movedAccountIds);
                 }),
                 dropHouseholdData: Effect.fn('HouseholdMembershipService.dropHouseholdData')(function* () {
-                    yield* Db.transaction(
-                        Effect.gen(function* () {
-                            yield* applyStateRepository.setApplying(true);
-                            yield* removeHouseholdRows;
-                            yield* applyStateRepository.setApplying(false);
-                        })
-                    );
+                    yield* applyStateRepository.withoutTriggers(removeHouseholdRows);
                 })
             };
         })

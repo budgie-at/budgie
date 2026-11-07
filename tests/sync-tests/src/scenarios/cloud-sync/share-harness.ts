@@ -64,7 +64,7 @@ export const uploadDevice = (database: DB, clouds: ShareCloudsInterface) =>
                 readonly syncId: string;
             }>(`SELECT record_type AS recordType, sync_zone AS syncZone, sync_id AS syncId FROM sync_outbox`);
             const recordTypes = new Map(outbox.map(row => [`${row.syncZone}|${row.syncId}`, row.recordType]));
-            const batch = yield* uploadService.pending(UPLOAD_LIMIT);
+            const batch = yield* uploadService.pending(UPLOAD_LIMIT, new Set());
 
             if (batch.rejections.length > 0) {
                 return yield* Effect.die(`upload rejected: ${encodeJson(batch.rejections)}`);

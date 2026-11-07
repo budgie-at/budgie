@@ -120,25 +120,21 @@ export class SyncIdentityRepository extends Context.Service<SyncIdentityReposito
                 return { rowid: row.rowid, syncId: deriveSyncId(lineageId, `${table.name}:${row.rowKey}`) };
             });
 
-            yield* Db.transaction(
-                Effect.gen(function* () {
-                    yield* syncApplyStateRepository.setApplying(true);
-                    yield* Db.mutation(
-                        { type: 'update', tables: [table.name] },
-                        Effect.forEach(
-                            assignments,
-                            ({ rowid, syncId }) =>
-                                Db.query(db =>
-                                    db.$client.unsafe(`UPDATE ${table.name} SET sync_id = ? WHERE rowid = ? AND sync_id IS NULL`, [
-                                        syncId,
-                                        rowid
-                                    ])
-                                ),
-                            { discard: true }
-                        )
-                    );
-                    yield* syncApplyStateRepository.setApplying(false);
-                })
+            yield* syncApplyStateRepository.withoutTriggers(
+                Db.mutation(
+                    { type: 'update', tables: [table.name] },
+                    Effect.forEach(
+                        assignments,
+                        ({ rowid, syncId }) =>
+                            Db.query(db =>
+                                db.$client.unsafe(`UPDATE ${table.name} SET sync_id = ? WHERE rowid = ? AND sync_id IS NULL`, [
+                                    syncId,
+                                    rowid
+                                ])
+                            ),
+                        { discard: true }
+                    )
+                )
             );
 
             return true;

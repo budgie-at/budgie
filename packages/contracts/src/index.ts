@@ -443,7 +443,6 @@ export type { SyncZoneRegistryEntityInterface } from './cloud-sync/entity/sync-z
 export type { SyncZoneRegistryCreateEntityInterface } from './cloud-sync/entity/sync-zone-registry-create-entity.interface';
 
 export { SyncRecordRepository } from './cloud-sync/repository/sync-record.repository';
-export { SyncPendingRepository } from './cloud-sync/repository/sync-pending.repository';
 export { SyncApplyStateRepository } from './cloud-sync/repository/sync-apply-state.repository';
 export { SyncZoneRegistryRepository } from './cloud-sync/repository/sync-zone-registry.repository';
 export { SyncIdentityRepository } from './cloud-sync/repository/sync-identity.repository';

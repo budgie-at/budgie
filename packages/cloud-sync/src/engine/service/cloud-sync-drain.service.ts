@@ -131,7 +131,8 @@ export class CloudSyncDrainService extends Context.Service<CloudSyncDrainService
             const pausedZones = new Set((yield* applyService.findPausedZones).map(({ syncZone }) => syncZone));
             yield* householdShareService.reconcile();
 
-            const batch = yield* uploadService.pending(state.pushed.size + state.heldKeys.size + state.failedKeys.size + uploadBatchSize);
+            const skippedKeys = new Set([...state.pushed.keys(), ...state.failedKeys]);
+            const batch = yield* uploadService.pending(skippedKeys.size + state.heldKeys.size + uploadBatchSize, skippedKeys);
             const payloadsByScope = new Map<ICloudSyncScope, ICloudRecordPayload[]>();
             const deleteIdsByScope = new Map<ICloudSyncScope, ICloudRecordId[]>();
 
@@ -165,16 +166,13 @@ export class CloudSyncDrainService extends Context.Service<CloudSyncDrainService
 
             for (const save of batch.saves) {
                 const itemKey = buildCloudSyncKey(save.syncZone, save.syncId);
-                const isHandled = state.pushed.has(itemKey) || state.failedKeys.has(itemKey);
                 const isBlocked = save.records.some(
                     record => pausedZones.has(record.zone) || !state.zones.has(record.zone) || !canSendTo(record.zone)
                 );
 
-                if (!isHandled && isBlocked) {
+                if (isBlocked) {
                     state.heldKeys.add(itemKey);
-                }
-
-                if (!isHandled && !isBlocked) {
+                } else {
                     for (const record of save.records) {
                         const payload = yield* buildPayload(record, listClearedSyncFields(record));
 
@@ -200,16 +198,13 @@ export class CloudSyncDrainService extends Context.Service<CloudSyncDrainService
 
             for (const deletion of batch.deletions) {
                 const itemKey = buildCloudSyncKey(deletion.syncZone, deletion.syncId);
-                const isHandled = state.pushed.has(itemKey) || state.failedKeys.has(itemKey);
                 const isBlocked = deletion.targets.some(
                     target => pausedZones.has(target.zone) || !state.zones.has(target.zone) || !canSendTo(target.zone)
                 );
 
-                if (!isHandled && isBlocked) {
+                if (isBlocked) {
                     state.heldKeys.add(itemKey);
-                }
-
-                if (!isHandled && !isBlocked) {
+                } else {
                     collectDeleteIds(deletion.targets);
                     register({
                         syncZone: deletion.syncZone,

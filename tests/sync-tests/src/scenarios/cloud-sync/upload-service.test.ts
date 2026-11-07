@@ -51,7 +51,7 @@ describe('cloud-sync/upload-service', () => {
                 yield* clearOutbox;
                 yield* seed.manualExpense({ accountId: account.id, amount: 5_000_000, operatedAt: OPERATED_AT, title: 'Cafe' });
 
-                const batch = yield* uploadService.pending(10);
+                const batch = yield* uploadService.pending(10, new Set());
 
                 expect(batch.deletions).toHaveLength(0);
                 expect(batch.rejections).toHaveLength(0);
@@ -75,7 +75,7 @@ describe('cloud-sync/upload-service', () => {
                     operatedAt: OPERATED_AT,
                     title: 'Cafe'
                 });
-                const firstBatch = yield* uploadService.pending(10);
+                const firstBatch = yield* uploadService.pending(10, new Set());
                 const sent = firstBatch.saves.find(save => save.records[0].recordType === SyncRecordTypeEnum.TRANSACTION);
 
                 if (sent === undefined) {
@@ -95,7 +95,7 @@ describe('cloud-sync/upload-service', () => {
                 expect(stored.systemFields).toBe('{"changeTag":"1"}');
                 expect(decodeJson(stored.payload)).toEqual(sent.records[0]);
 
-                const secondBatch = yield* uploadService.pending(10);
+                const secondBatch = yield* uploadService.pending(10, new Set());
                 const resent = secondBatch.saves.find(save => save.syncId === sent.syncId);
 
                 expect(resent?.changedFields).toContain('title');
@@ -119,7 +119,7 @@ describe('cloud-sync/upload-service', () => {
                 yield* clearOutbox;
                 yield* testDb.$client.unsafe('DELETE FROM tags WHERE id = ?', [tag.id]);
 
-                const batch = yield* uploadService.pending(10);
+                const batch = yield* uploadService.pending(10, new Set());
 
                 expect(batch.saves).toHaveLength(0);
                 expect(batch.deletions).toHaveLength(1);
@@ -143,7 +143,7 @@ describe('cloud-sync/upload-service', () => {
                     integration.id
                 ]);
 
-                const batch = yield* uploadService.pending(50);
+                const batch = yield* uploadService.pending(50, new Set());
                 const save = batch.saves.find(candidate => candidate.records[0].recordType === SyncRecordTypeEnum.BANK_INTEGRATION);
                 const fields = save?.records[0].encryptedFields ?? {};
 

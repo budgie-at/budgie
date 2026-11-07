@@ -40,9 +40,8 @@ export class SyncResetRepository extends Context.Service<SyncResetRepository>()(
 
         return {
             clearSyncedData: Effect.fn('SyncResetRepository.clearSyncedData')(function* () {
-                yield* Db.transaction(
+                yield* syncApplyStateRepository.withoutTriggers(
                     Effect.gen(function* () {
-                        yield* syncApplyStateRepository.setApplying(true);
                         yield* Db.mutation(
                             { type: 'update', tables: ['settings'] },
                             Db.query(db => db.$client.unsafe('UPDATE settings SET default_account_id = NULL'))
@@ -53,7 +52,6 @@ export class SyncResetRepository extends Context.Service<SyncResetRepository>()(
                                 discard: true
                             })
                         );
-                        yield* syncApplyStateRepository.setApplying(false);
                     })
                 );
             }),

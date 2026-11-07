@@ -1,11 +1,4 @@
-import {
-    Db,
-    SyncOutboxOperationEnum,
-    SyncRecordTypeEnum,
-    SyncApplyStateRepository,
-    SyncPendingRepository,
-    SyncRecordRepository
-} from '@budgie/contracts';
+import { Db, SyncOutboxOperationEnum, SyncRecordTypeEnum, SyncApplyStateRepository, SyncRecordRepository } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -48,7 +41,6 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
         const applyStateRepository = yield* SyncApplyStateRepository;
         const outboxRepository = yield* SyncOutboxRepository;
         const recordRepository = yield* SyncRecordRepository;
-        const pendingRepository = yield* SyncPendingRepository;
         const balanceRefresher = yield* SyncAccountBalanceRefresher;
         const derivedMatcher = yield* SyncDerivedMatcherService;
         const unitService = yield* SyncApplyUnitService;
@@ -71,7 +63,7 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
             systemFields: string | null,
             record: Pick<SyncIncomingDeletionInterface, 'recordName' | 'recordType' | 'zone'>
         ) =>
-            pendingRepository.add({
+            repository.addPending({
                 syncZone: record.zone,
                 syncId: record.recordName,
                 recordType: record.recordType,
@@ -171,7 +163,7 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
                     payload: source.envelopeJson,
                     schemaVersion: SYNC_RECORD_SCHEMA_VERSION
                 });
-                yield* pendingRepository.remove(source.decoded.zone, source.decoded.recordName);
+                yield* repository.removePending(source.decoded.zone, source.decoded.recordName);
             }
         });
 
@@ -255,7 +247,7 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
             }
 
             for (const { item, missing } of held.values()) {
-                yield* pendingRepository.add({
+                yield* repository.addPending({
                     syncZone: item.decoded.zone,
                     syncId: item.decoded.recordName,
                     recordType: item.decoded.recordType,
@@ -358,39 +350,39 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
             }
 
             yield* recordRepository.remove(zone, recordName);
-            yield* pendingRepository.remove(zone, recordName);
+            yield* repository.removePending(zone, recordName);
         });
 
         const findPausedZones = repository.findPausedZones(SYNC_RECORD_SCHEMA_VERSION);
+
+        const applyBatch = Effect.fnUntraced(function* (batch: SyncApplyBatchInterface, tracker: SyncApplyTracker) {
+            const pausedZones = new Set((yield* findPausedZones).map(({ syncZone }) => syncZone));
+            const fresh: SyncApplyItemInterface[] = [];
+
+            for (const incoming of batch.records) {
+                const item = yield* intake(incoming, pausedZones, tracker);
+
+                if (isDefined(item)) {
+                    fresh.push(item);
+                }
+            }
+
+            yield* processItems(fresh, tracker);
+
+            for (const deletion of batch.deletions) {
+                yield* applyDeletion(deletion, pausedZones, tracker);
+            }
+
+            if (isNotEmptyArray(tracker.accountIds)) {
+                yield* balanceRefresher.refresh(tracker.accountIds);
+            }
+        });
 
         const apply = Effect.fn('SyncApplyService.apply')(
             function* (batch: SyncApplyBatchInterface) {
                 const tracker = new SyncApplyTracker();
 
-                yield* applyStateRepository.setApplying(true);
-
-                const pausedZones = new Set((yield* findPausedZones).map(({ syncZone }) => syncZone));
-                const fresh: SyncApplyItemInterface[] = [];
-
-                for (const incoming of batch.records) {
-                    const item = yield* intake(incoming, pausedZones, tracker);
-
-                    if (isDefined(item)) {
-                        fresh.push(item);
-                    }
-                }
-
-                yield* processItems(fresh, tracker);
-
-                for (const deletion of batch.deletions) {
-                    yield* applyDeletion(deletion, pausedZones, tracker);
-                }
-
-                if (isNotEmptyArray(tracker.accountIds)) {
-                    yield* balanceRefresher.refresh(tracker.accountIds);
-                }
-
-                yield* applyStateRepository.setApplying(false);
+                yield* applyStateRepository.withoutTriggers(applyBatch(batch, tracker));
 
                 for (const decision of tracker.pendingOutboxDecisions) {
                     if (isEmptyArray(decision.changedColumns)) {
@@ -433,7 +425,7 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
                     records.push({ record: raw, systemFields: row.systemFields });
                 }
 
-                yield* pendingRepository.remove(row.syncZone, row.syncId);
+                yield* repository.removePending(row.syncZone, row.syncId);
             }
 
             return yield* apply({ records, deletions });
@@ -453,7 +445,6 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
             SyncApplyStateRepository.layer,
             SyncOutboxRepository.layer,
             SyncRecordRepository.layer,
-            SyncPendingRepository.layer,
             SyncApplyUnitService.layer,
             SyncDerivedMatcherService.layer
         ])

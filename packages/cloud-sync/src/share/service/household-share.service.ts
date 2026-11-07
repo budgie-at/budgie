@@ -49,11 +49,6 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
             }
         });
 
-        const withoutTriggers = <A, E, R>(effect: Effect.Effect<A, E, R>) =>
-            applyStateRepository
-                .setApplying(true)
-                .pipe(Effect.andThen(effect), Effect.ensuring(Effect.orDie(applyStateRepository.setApplying(false))));
-
         const enqueueSave = (recordType: SyncRecordTypeEnum, syncZone: string, syncId: string, changedColumns: readonly string[]) =>
             outboxRepository.enqueue({
                 recordType,
@@ -240,7 +235,7 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
 
         const alignTransactionIds = Effect.fnUntraced(function* (transactionIds: readonly number[], memo: LabeledMemoType) {
             for (let offset = 0; offset < transactionIds.length; offset += ALIGNMENT_BATCH_SIZE) {
-                yield* Db.transaction(withoutTriggers(alignBatch(transactionIds.slice(offset, offset + ALIGNMENT_BATCH_SIZE), memo)));
+                yield* applyStateRepository.withoutTriggers(alignBatch(transactionIds.slice(offset, offset + ALIGNMENT_BATCH_SIZE), memo));
                 yield* YIELD_TO_UI;
             }
         });
@@ -262,24 +257,22 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
                 return;
             }
 
-            yield* Db.transaction(
-                withoutTriggers(
-                    Effect.gen(function* () {
-                        yield* repository.setZone('accounts', accountIds, to);
-                        yield* repository.setChildZone('account_external_ids', 'account_id', accountIds, to);
-                        yield* Effect.forEach(accounts, account => enqueueMove(SyncRecordTypeEnum.ACCOUNT, account.syncId, from, to), {
-                            discard: true
-                        });
-                        yield* moveIntegrations(
-                            accounts.map(account => account.integrationId),
-                            accountIds,
-                            from,
-                            to
-                        );
-                        yield* moveDebtEvents(accountIds, from, to);
-                        yield* moveRules(accountIds, from, to, memo);
-                    })
-                )
+            yield* applyStateRepository.withoutTriggers(
+                Effect.gen(function* () {
+                    yield* repository.setZone('accounts', accountIds, to);
+                    yield* repository.setChildZone('account_external_ids', 'account_id', accountIds, to);
+                    yield* Effect.forEach(accounts, account => enqueueMove(SyncRecordTypeEnum.ACCOUNT, account.syncId, from, to), {
+                        discard: true
+                    });
+                    yield* moveIntegrations(
+                        accounts.map(account => account.integrationId),
+                        accountIds,
+                        from,
+                        to
+                    );
+                    yield* moveDebtEvents(accountIds, from, to);
+                    yield* moveRules(accountIds, from, to, memo);
+                })
             );
             const transactionIds = yield* repository.findTransactionIdsOnAccounts(accountIds);
 
@@ -315,36 +308,34 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
 
             const memo: LabeledMemoType = new Map();
 
-            yield* Db.transaction(
-                withoutTriggers(
-                    Effect.gen(function* () {
-                        if (isDefined(budget.tagId)) {
-                            const tagId = yield* ensureLabeled('tags', budget.tagId, to, memo);
+            yield* applyStateRepository.withoutTriggers(
+                Effect.gen(function* () {
+                    if (isDefined(budget.tagId)) {
+                        const tagId = yield* ensureLabeled('tags', budget.tagId, to, memo);
 
-                            yield* repository.setBudgetTag(budget.id, tagId);
+                        yield* repository.setBudgetTag(budget.id, tagId);
+                    }
+
+                    for (const reference of yield* repository.findBudgetCategoryReferences(budget.id)) {
+                        if (isDefined(reference.categoryId)) {
+                            const categoryId = yield* ensureLabeled('categories', reference.categoryId, to, memo);
+
+                            yield* repository.setBudgetChildCategory(reference.tableName, reference.id, categoryId);
                         }
 
-                        for (const reference of yield* repository.findBudgetCategoryReferences(budget.id)) {
-                            if (isDefined(reference.categoryId)) {
-                                const categoryId = yield* ensureLabeled('categories', reference.categoryId, to, memo);
-
-                                yield* repository.setBudgetChildCategory(reference.tableName, reference.id, categoryId);
-                            }
-
-                            if (isDefined(reference.seriesId)) {
-                                yield* moveSeries(reference.seriesId, from, to, memo);
-                            }
+                        if (isDefined(reference.seriesId)) {
+                            yield* moveSeries(reference.seriesId, from, to, memo);
                         }
+                    }
 
-                        yield* repository.setZone('budgets', [budget.id], to);
+                    yield* repository.setZone('budgets', [budget.id], to);
 
-                        for (const childTable of BUDGET_CHILD_TABLES) {
-                            yield* repository.setChildZone(childTable, 'budget_id', [budget.id], to);
-                        }
+                    for (const childTable of BUDGET_CHILD_TABLES) {
+                        yield* repository.setChildZone(childTable, 'budget_id', [budget.id], to);
+                    }
 
-                        yield* enqueueMove(SyncRecordTypeEnum.BUDGET, budget.syncId, from, to);
-                    })
-                )
+                    yield* enqueueMove(SyncRecordTypeEnum.BUDGET, budget.syncId, from, to);
+                })
             );
         });
 

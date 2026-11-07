@@ -19,6 +19,7 @@ import * as Schema from 'effect/Schema';
 import { isDefined, isNotEmptyString, isNumber } from '@rnw-community/shared';
 
 import { stringifySyncJson } from '../../apply/utils/stringify-sync-json.util';
+import { buildCloudSyncKey } from '../../engine/utils/build-cloud-sync-key.util';
 import { SYNC_NATURAL_KEY_PROPERTIES } from '../../mapping/constant/sync-natural-key-properties.constant';
 import { SYNC_RECORD_DEFINITIONS } from '../../mapping/constant/sync-record-definitions.constant';
 import { SyncReferenceKindEnum } from '../../mapping/enum/sync-reference-kind.enum';
@@ -322,8 +323,10 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
         });
 
         return {
-            pending: Effect.fn('SyncUploadService.pending')(function* (limit: number) {
-                const rows = yield* syncOutboxRepository.findPending(limit);
+            pending: Effect.fn('SyncUploadService.pending')(function* (limit: number, skippedKeys: ReadonlySet<string>) {
+                const rows = (yield* syncOutboxRepository.findPending(limit)).filter(
+                    row => !skippedKeys.has(buildCloudSyncKey(row.syncZone, row.syncId))
+                );
                 const saves: SyncUploadSaveInterface[] = [];
                 const deletions: SyncUploadDeletionInterface[] = [];
                 const rejections: SyncUploadRejectionInterface[] = [];
