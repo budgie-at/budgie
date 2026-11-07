@@ -2,6 +2,7 @@ import {
     ATM_CASH_WITHDRAWAL_MCC,
     ATM_CASH_WITHDRAWAL_TITLE_PREFIXES,
     LanguageEnum,
+    NON_DESCRIPTIVE_MCC,
     PRECISION,
     REFUND_TITLE_PREFIXES,
     TransactionTypeEnum
@@ -24,6 +25,7 @@ import type { CategorizeInboxListItemType } from '../type/categorize-inbox-list-
 class CategorizeInboxEngineService {
     private static readonly LIMITS = {
         chipCount: 2,
+        fallbackCount: 3,
         confidentShare: 0.85,
         confidentCount: 2,
         merchantTokenCount: 3,
@@ -46,6 +48,27 @@ class CategorizeInboxEngineService {
         [LanguageEnum.ES]: ['pago\\s+con\\s+tarjeta', 'transferencia', 'compra']
     };
 
+    private static readonly GENERIC_TRANSFER_TITLES: Record<LanguageEnum, readonly string[]> = {
+        [LanguageEnum.EN]: ['transfer', 'card transfer', 'transfer to card', 'to card'],
+        [LanguageEnum.UK]: [
+            'переказ',
+            'переказ на картку',
+            'на картку',
+            'переказ коштів',
+            'переказ власних коштів',
+            'перевод',
+            'перевод на карту',
+            'на карту'
+        ],
+        [LanguageEnum.DE]: ['überweisung', 'kartenüberweisung'],
+        [LanguageEnum.FR]: ['virement', 'virement carte'],
+        [LanguageEnum.ES]: ['transferencia', 'transferencia a tarjeta']
+    };
+
+    private static readonly GENERIC_TRANSFER_TITLE_SET = new Set(
+        Object.values(CategorizeInboxEngineService.GENERIC_TRANSFER_TITLES).flat()
+    );
+
     private static readonly REFUND_PREFIXES = REFUND_TITLE_PREFIXES.review.map(prefix => prefix.toUpperCase());
 
     private static readonly LEGAL_FORMS = new Set(Object.values(CategorizeInboxEngineService.LEGAL_FORM_TOKENS).flat());
@@ -66,7 +89,8 @@ class CategorizeInboxEngineService {
         CategorizeInboxSectionEnum.CONFIDENT,
         CategorizeInboxSectionEnum.CASH_WITHDRAWALS,
         CategorizeInboxSectionEnum.REVIEW,
-        CategorizeInboxSectionEnum.ONE_OFFS
+        CategorizeInboxSectionEnum.ONE_OFFS,
+        CategorizeInboxSectionEnum.OLDER
     ];
 
     buildContext(
@@ -88,12 +112,21 @@ class CategorizeInboxEngineService {
         };
     }
 
-    buildClusters(rows: CategorizeInboxRowInterface[], context: CategorizeInboxBuildContextInterface): CategorizeInboxClusterInterface[] {
+    buildClusters(
+        rows: CategorizeInboxRowInterface[],
+        context: CategorizeInboxBuildContextInterface,
+        now: Date
+    ): CategorizeInboxClusterInterface[] {
+        const cutoff = new Date(now);
+        cutoff.setUTCFullYear(cutoff.getUTCFullYear() - 1);
         const uniqueRows = [...new Map(rows.map(row => [row.transactionId, row])).values()];
-        const clusterGroups = this.groupBy(uniqueRows, row => this.clusterKey(row));
+        const clusterGroups = this.groupBy(
+            uniqueRows,
+            row => `${row.operatedAt < cutoff ? CategorizeInboxSectionEnum.OLDER : ''}|${this.clusterKey(row)}`
+        );
 
         return [...clusterGroups]
-            .map(([key, groupRows]) => this.buildCluster(key, groupRows, context))
+            .map(([key, groupRows]) => this.buildCluster(key, groupRows, context, cutoff))
             .sort((left, right) => this.compareClusters(left, right));
     }
 
@@ -130,7 +163,8 @@ class CategorizeInboxEngineService {
     private buildCluster(
         key: string,
         rows: CategorizeInboxRowInterface[],
-        context: CategorizeInboxBuildContextInterface
+        context: CategorizeInboxBuildContextInterface,
+        cutoff: Date
     ): CategorizeInboxClusterInterface {
         const { candidateLabelIds, isConfident } = this.scoreRows(rows, context);
         const mostFrequentTitle = this.mostFrequent(rows.map(row => row.title));
@@ -142,7 +176,7 @@ class CategorizeInboxEngineService {
             totalBaseAmount: this.sumBaseAmounts(rows, context.defaultInstrumentId),
             candidateLabelIds,
             ruleConditionValue: mostFrequentTitle,
-            section: this.resolveSection(isConfident, rows)
+            section: rows[0].operatedAt < cutoff ? CategorizeInboxSectionEnum.OLDER : this.resolveSection(isConfident, rows)
         };
     }
 
@@ -252,7 +286,12 @@ class CategorizeInboxEngineService {
         const { LIMITS } = CategorizeInboxEngineService;
         const [{ type }] = rows;
 
-        if (context.labelKind === CategorizeInboxLabelKindEnum.TAG && rows.some(row => this.isRefund(row))) {
+        if (
+            rows.some(row =>
+                CategorizeInboxEngineService.GENERIC_TRANSFER_TITLE_SET.has(row.title.trim().replaceAll(/\s+/gu, ' ').toLowerCase())
+            ) ||
+            (context.labelKind === CategorizeInboxLabelKindEnum.TAG && rows.some(row => this.isRefund(row)))
+        ) {
             return { candidateLabelIds: [], isConfident: false };
         }
 
@@ -267,10 +306,18 @@ class CategorizeInboxEngineService {
                 ? brandCounts
                 : this.countLabels(
                       context.mcc,
-                      rows.map(row => `${type}|${row.mccCategoryId}`)
+                      new Set(
+                          rows
+                              .filter(row => isDefined(row.mcc) && !NON_DESCRIPTIVE_MCC.has(row.mcc))
+                              .map(row => `${type}|${row.mccCategoryId}`)
+                      )
                   ));
         const total = this.sumValues(counts.values());
         const topCount = Math.max(0, ...counts.values());
+
+        if (!isDefined(historyCounts) && (topCount < LIMITS.fallbackCount || topCount / total < LIMITS.confidentShare)) {
+            return { candidateLabelIds: [], isConfident: false };
+        }
 
         return {
             candidateLabelIds: this.rankLabelIds(counts).slice(0, LIMITS.chipCount),
@@ -338,6 +385,7 @@ class CategorizeInboxEngineService {
         const absoluteAmount = Math.abs((cluster.totalBaseAmount ?? cluster.rows[0].amount) / PRECISION);
 
         switch (cluster.section) {
+            case CategorizeInboxSectionEnum.OLDER:
             case CategorizeInboxSectionEnum.ONE_OFFS:
                 return absoluteAmount;
             case CategorizeInboxSectionEnum.REVIEW:

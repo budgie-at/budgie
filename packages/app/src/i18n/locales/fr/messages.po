@@ -6493,6 +6493,11 @@ msgstr "Hors ligne"
 msgid "OK"
 msgstr "OK"
 
+#: src/categorize-inbox/components/categorize-inbox-section-chip/categorize-inbox-section-chip.tsx
+#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
+msgid "Older"
+msgstr "Anciens"
+
 #: src/rule/hooks/use-rule-row-summary.hook.ts
 #: src/settings/components/app-lock-row/app-lock-row.tsx
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx

@@ -43,6 +43,7 @@ export const CategorizeInboxPanel = ({ activeSection, children }: Props) => {
         [CategorizeInboxSectionEnum.CONFIDENT]: acceptAll,
         [CategorizeInboxSectionEnum.CASH_WITHDRAWALS]: moveAllToCash,
         [CategorizeInboxSectionEnum.REVIEW]: null,
+        [CategorizeInboxSectionEnum.OLDER]: null,
         [CategorizeInboxSectionEnum.ONE_OFFS]: null
     };
     const primaryAction = isDefined(activeSection) ? sectionActions[activeSection] : acceptAll;

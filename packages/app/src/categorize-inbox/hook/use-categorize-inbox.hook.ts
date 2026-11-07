@@ -1,7 +1,7 @@
 import { categorizeInboxEngineService, selectAcceptableAssignments } from '@budgie/categorization';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
-import { useReducer } from 'react';
+import { useReducer, useState } from 'react';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { defaultInstrumentIdAtom } from '../../settings/constants/settings-atoms.constant';
@@ -65,6 +65,7 @@ export const useCategorizeInbox = (
     filters: TransactionFilterInterface,
     { rowsAtom, evidenceAtom, labelKind }: Pick<CategorizeInboxStrategyInterface, 'rowsAtom' | 'evidenceAtom' | 'labelKind'>
 ): CategorizeInboxDataInterface => {
+    const [now] = useState(() => new Date());
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
     const inboxResult = AsyncResult.all([useLiveAtomValue(rowsAtom(filters)), useLiveAtomValue(evidenceAtom)]);
     const [rows, evidence] = AsyncResult.getOrElse(inboxResult, () => EMPTY_INBOX);
@@ -89,7 +90,8 @@ export const useCategorizeInbox = (
     const { items, remainingCount, placements, clustersByKey } = categorizeInboxEngineService.placeClusters(
         categorizeInboxEngineService.buildClusters(
             rows,
-            categorizeInboxEngineService.buildContext(evidence, defaultInstrumentId, labelKind)
+            categorizeInboxEngineService.buildContext(evidence, defaultInstrumentId, labelKind),
+            now
         ),
         session,
         state.hidden,
