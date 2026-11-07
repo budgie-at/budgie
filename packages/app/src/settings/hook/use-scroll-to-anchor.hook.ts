@@ -38,7 +38,7 @@ export const useScrollToAnchor = (activeAnchor: string | null | undefined) => {
 
     const highlightStyle = useAnimatedStyle(() => ({
         borderRadius: HIGHLIGHT_BORDER_RADIUS,
-        backgroundColor: interpolateColor(highlightProgress.value, [0, 1], [HIGHLIGHT_COLOR_TRANSPARENT, HIGHLIGHT_COLOR_ACTIVE])
+        backgroundColor: interpolateColor(highlightProgress.get(), [0, 1], [HIGHLIGHT_COLOR_TRANSPARENT, HIGHLIGHT_COLOR_ACTIVE])
     }));
     const emptyStyle = useAnimatedStyle(() => ({}));
 

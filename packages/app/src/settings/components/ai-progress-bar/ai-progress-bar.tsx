@@ -20,12 +20,12 @@ export const AiProgressBar = ({ progress, trackClassName = 'h-2' }: Props) => {
     }, [progress, progressValue]);
 
     const widthStyle = useAnimatedStyle(() => ({
-        width: `${progressValue.value}%`
+        width: `${progressValue.get()}%`
     }));
 
     return (
         <View className={cn('rounded-5xl bg-secondary-corner', trackClassName)}>
-            <Animated.View style={widthStyle} className="h-full rounded-5xl bg-secondary-foreground" />
+            <Animated.View style={widthStyle} className="absolute inset-y-0 left-0 rounded-5xl bg-secondary-foreground" />
         </View>
     );
 };

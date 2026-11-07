@@ -44,7 +44,7 @@ export const CategorizeInboxSessionProgress = () => {
             accessibilityLabel={t`Sorted this session`}
             accessibilityValue={accessibilityValue}
         >
-            <Animated.View className="h-full rounded-full bg-primary" style={fillStyle} />
+            <Animated.View className="absolute inset-y-0 left-0 rounded-full bg-primary" style={fillStyle} />
         </Animated.View>
     );
 };

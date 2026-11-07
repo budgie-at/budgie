@@ -27,8 +27,8 @@ export const ThinkingRing = () => {
     const animatedStyle = useAnimatedStyle(() => ({
         height: RING_SIZE,
         width: RING_SIZE,
-        opacity: interpolate(progress.value, [0, 1], [MIN_OPACITY, MAX_OPACITY]),
-        transform: [{ scale: reducedMotion ? MIN_SCALE : interpolate(progress.value, [0, 1], [MIN_SCALE, MAX_SCALE]) }]
+        opacity: interpolate(progress.get(), [0, 1], [MIN_OPACITY, MAX_OPACITY]),
+        transform: [{ scale: reducedMotion ? MIN_SCALE : interpolate(progress.get(), [0, 1], [MIN_SCALE, MAX_SCALE]) }]
     }));
 
     return (

@@ -56,8 +56,8 @@ export const PinFormDot = ({ isFilled, isError, isAccepted }: Props) => {
     }, [isFilled, progress]);
 
     const fillStyle = useAnimatedStyle(() => ({
-        opacity: progress.value,
-        transform: [{ scale: interpolate(progress.value, [0, 1], [DOT_MIN_SCALE, 1]) }]
+        opacity: progress.get(),
+        transform: [{ scale: interpolate(progress.get(), [0, 1], [DOT_MIN_SCALE, 1]) }]
     }));
 
     return (

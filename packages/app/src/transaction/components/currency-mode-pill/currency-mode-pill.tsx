@@ -32,7 +32,7 @@ export const CurrencyModePill = ({ label, isFlipped, accessibilityLabel, onPress
 
     const accessibilityRole = isDefined(onPress) ? 'button' : 'text';
     const iconStyle = useAnimatedStyle(() => ({
-        transform: [{ rotate: `${rotation.value}deg` }]
+        transform: [{ rotate: `${rotation.get()}deg` }]
     }));
 
     return (

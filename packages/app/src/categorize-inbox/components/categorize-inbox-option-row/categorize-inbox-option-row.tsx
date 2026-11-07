@@ -31,6 +31,7 @@ export const CategorizeInboxOptionRow = ({ icon, title, subtitle, accessory, acc
 
     return (
         <HapticPressable
+            pressedScale={1}
             onPress={onPress}
             className="min-h-[60px] flex-row items-center gap-x-xl px-3xl py-xl active:opacity-70"
             accessibilityRole="button"

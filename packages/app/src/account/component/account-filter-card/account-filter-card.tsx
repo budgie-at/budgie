@@ -47,6 +47,7 @@ export const AccountFilterCard = ({ isSelected, account, onSelect }: Props) => {
 
     return (
         <HapticPressable
+            pressedScale={1}
             onPress={handleSelect}
             className={rowVariants({ isSelected })}
             accessibilityRole="checkbox"

@@ -38,8 +38,8 @@ export const SpinnerRing = () => {
     const animatedStyle = useAnimatedStyle(() => ({
         height: RING_SIZE,
         width: RING_SIZE,
-        opacity: pulseOpacity.value,
-        transform: [{ rotate: `${rotation.value}deg` }]
+        opacity: pulseOpacity.get(),
+        transform: [{ rotate: `${rotation.get()}deg` }]
     }));
 
     const dashLength = RING_CIRCUMFERENCE * DASH_RATIO;

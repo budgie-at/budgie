@@ -39,8 +39,8 @@ export const ActionItem = ({ index, totalItems, isOpen, children }: Props) => {
     }, [isOpen, opacity, reverseIndex, scale, translateY]);
 
     const animatedStyle = useAnimatedStyle(() => ({
-        transform: [{ translateY: targetY + translateY.value }, { scale: scale.value }],
-        opacity: opacity.value
+        transform: [{ translateY: targetY + translateY.get() }, { scale: scale.get() }],
+        opacity: opacity.get()
     }));
 
     return (

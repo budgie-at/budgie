@@ -30,6 +30,7 @@ export const OnboardingAccountRow = ({ option, isSelected, isLocked, onToggle, t
 
     return (
         <HapticPressable
+            pressedScale={1}
             testID={testID}
             onPress={handlePress}
             disabled={isLocked}

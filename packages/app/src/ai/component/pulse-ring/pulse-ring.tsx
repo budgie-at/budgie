@@ -35,9 +35,9 @@ export const PulseRing = ({ index, audioLevel }: Props) => {
         borderRadius: BUTTON_SIZE / 2,
         borderWidth: 2,
         height: BUTTON_SIZE,
-        opacity: opacity.value,
+        opacity: opacity.get(),
         position: 'absolute' as const,
-        transform: [{ scale: scale.value }],
+        transform: [{ scale: scale.get() }],
         width: BUTTON_SIZE
     }));
 

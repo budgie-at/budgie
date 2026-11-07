@@ -27,7 +27,7 @@ export const ProgressTrack = ({ percentage, className, fillClassName = 'bg-prima
 
     return (
         <View className={cn('overflow-hidden rounded-full bg-secondary-background', className)}>
-            <Animated.View className={cn('h-full rounded-full', fillClassName)} style={fillStyle} />
+            <Animated.View className={cn('absolute inset-y-0 left-0 rounded-full', fillClassName)} style={fillStyle} />
         </View>
     );
 };

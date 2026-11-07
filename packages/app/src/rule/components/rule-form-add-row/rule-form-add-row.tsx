@@ -13,6 +13,7 @@ interface Props {
 
 export const RuleFormAddRow = ({ label, onPress, testID }: Props) => (
     <HapticPressable
+        pressedScale={1}
         testID={testID}
         onPress={onPress}
         accessibilityRole="button"

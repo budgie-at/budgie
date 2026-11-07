@@ -5,7 +5,7 @@ import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reani
 
 import { isDefined } from '@rnw-community/shared';
 
-import { EASE_OUT, MOTION_BASE_DURATION } from '../../constant/motion.constant';
+import { EASE_OUT } from '../../constant/motion.constant';
 import { useVibration } from '../../hook/use-vibration.hook';
 import { AnimatedPressable } from '../animated-pressable/animated-pressable';
 
@@ -14,6 +14,7 @@ import type { PressableProps, StyleProp, View, ViewStyle } from 'react-native';
 
 const PRESSED_SCALE = 0.97;
 const MOTION_PRESS_IN_DURATION = 100;
+const PRESS_OUT_DURATION = 150;
 
 interface Props extends Omit<PressableProps, 'style'> {
     readonly style?: StyleProp<ViewStyle>;
@@ -75,7 +76,7 @@ export const HapticPressable = ({
         onPressOut?.(event);
 
         if (isScaleEnabled) {
-            scale.set(withTiming(1, { duration: MOTION_BASE_DURATION, easing: EASE_OUT }));
+            scale.set(withTiming(1, { duration: PRESS_OUT_DURATION, easing: EASE_OUT }));
         }
 
         if (isLongPressActiveRef.current) {

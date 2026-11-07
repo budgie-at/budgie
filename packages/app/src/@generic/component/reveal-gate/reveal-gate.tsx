@@ -45,7 +45,7 @@ export const RevealGate = ({ isLoading, children }: Props) => {
         }
     }, [isLoading, settledReads, opacity]);
 
-    const animatedStyle = useAnimatedStyle(() => ({ opacity: opacity.value }));
+    const animatedStyle = useAnimatedStyle(() => ({ opacity: opacity.get() }));
 
     return (
         <RevealGateContext value={track}>

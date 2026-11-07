@@ -83,13 +83,13 @@ export const AnimatedRecordButton = (props: Props) => {
     }, [audioLevel, buttonScale, confirmPulse, reducedMotion, state]);
 
     const buttonAnimatedStyle = useAnimatedStyle(() => {
-        const pulseScale = state === 'confirm' ? interpolate(confirmPulse.value, [0, 1], [1, CONFIRM_PULSE_MAX_SCALE]) : 1;
+        const pulseScale = state === 'confirm' ? interpolate(confirmPulse.get(), [0, 1], [1, CONFIRM_PULSE_MAX_SCALE]) : 1;
 
         return {
             borderRadius: BUTTON_SIZE / 2,
             height: BUTTON_SIZE,
             width: BUTTON_SIZE,
-            transform: [{ scale: buttonScale.value * pulseScale }]
+            transform: [{ scale: buttonScale.get() * pulseScale }]
         };
     });
 

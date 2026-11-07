@@ -46,6 +46,7 @@ export const CategorizeInboxClusterRow = ({ row, displayTitle }: Props) => {
 
     return (
         <HapticPressable
+            pressedScale={1}
             onPress={handleTogglePress}
             onLongPress={handleOpenLongPress}
             className="min-h-[52px] flex-row items-center gap-x-xl px-3xl py-xl active:opacity-70"

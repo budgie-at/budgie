@@ -31,6 +31,7 @@ export const CategorizeInboxLeadRow = ({ title, subtitle, icon, accessory, acces
     return (
         <View className="overflow-hidden rounded-3xl bg-surface-row" style={CONTINUOUS_CORNERS}>
             <HapticPressable
+                pressedScale={1}
                 onPress={onPress}
                 className="min-h-[72px] flex-row items-center gap-x-md px-3xl py-xl active:opacity-70"
                 accessibilityRole="button"

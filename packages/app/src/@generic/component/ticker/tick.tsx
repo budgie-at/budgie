@@ -42,7 +42,7 @@ export const Tick = (props: Props) => {
     }, [num, textSize, index, translateY, delay, duration, reducedMotion]);
 
     const animatedStyle = useAnimatedStyle(() => ({
-        transform: [{ translateY: translateY.value }]
+        transform: [{ translateY: translateY.get() }]
     }));
 
     const textStyle = getTextStyleForTicket(textSize);

@@ -49,6 +49,7 @@ export const BudgetDetailsLimitRow = (props: Props) => {
         <View ref={rowRef} className="relative" collapsable={false}>
             {hasBeenHighlighted ? <BudgetRowHighlight rowRef={rowRef} isHighlighted={isHighlighted} /> : null}
             <HapticPressable
+                pressedScale={1}
                 accessibilityLabel={accessibilityLabel}
                 accessibilityRole="button"
                 accessibilityValue={accessibilityValue}

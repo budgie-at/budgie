@@ -69,7 +69,7 @@ export const PinSealingState = ({ mode }: Props) => {
         );
     }, [breath, isReducedMotion]);
 
-    const iconStyle = useAnimatedStyle(() => ({ opacity: breath.value }));
+    const iconStyle = useAnimatedStyle(() => ({ opacity: breath.get() }));
 
     return (
         <Animated.View

@@ -41,7 +41,7 @@ export const useAiSubsystemIconAnimations = ({ percent, iconSize, pulsePeriodMs 
         fillHeight.set(withTiming((percent / PERCENT_DIVISOR) * iconSize, { duration: FILL_ANIMATION_DURATION, easing: EASE_IN_OUT }));
     }, [percent, iconSize, fillHeight]);
 
-    const pulseStyle = useAnimatedStyle(() => ({ opacity: pulseValue.value }));
+    const pulseStyle = useAnimatedStyle(() => ({ opacity: pulseValue.get() }));
 
     const clipStyle = useAnimatedStyle(() => ({
         position: POSITION_ABSOLUTE,
@@ -49,7 +49,7 @@ export const useAiSubsystemIconAnimations = ({ percent, iconSize, pulsePeriodMs 
         left: 0,
         right: 0,
         overflow: OVERFLOW_HIDDEN,
-        height: fillHeight.value
+        height: fillHeight.get()
     }));
 
     return { pulseStyle, clipStyle };

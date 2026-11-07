@@ -169,10 +169,10 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
             );
         }
     }, [isOpen, isVisible, menuOpacity, menuScale, rotation]);
-    const buttonStyle = useAnimatedStyle(() => ({ transform: [{ rotate: `${rotation.value}deg` }] }));
+    const buttonStyle = useAnimatedStyle(() => ({ transform: [{ rotate: `${rotation.get()}deg` }] }));
     const aiButtonStyle = useAnimatedStyle(() => ({
-        transform: [{ scale: menuScale.value }],
-        opacity: menuOpacity.value
+        transform: [{ scale: menuScale.get() }],
+        opacity: menuOpacity.get()
     }));
 
     if (!isVisible) {

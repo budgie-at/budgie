@@ -20,5 +20,5 @@ export const useSkeletonPulseStyle = () => {
         );
     }, [opacity, reducedMotion]);
 
-    return useAnimatedStyle(() => ({ opacity: opacity.value }));
+    return useAnimatedStyle(() => ({ opacity: opacity.get() }));
 };
