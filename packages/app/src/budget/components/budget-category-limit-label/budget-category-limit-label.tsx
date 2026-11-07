@@ -4,6 +4,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { SignToggleGlyph } from '../../../@generic/component/sign-toggle-glyph/sign-toggle-glyph';
+import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-chrome-font-size-multiplier.constant';
 
 import type { UserIconType } from '@budgie/contracts';
 
@@ -18,12 +19,21 @@ export const BudgetCategoryLimitLabel = ({ icon, title, testID, menuValue }: Pro
     <View className="min-h-[44px] flex-row items-center gap-x-xl">
         <GroupedListIcon icon={icon} />
         <View className="flex-1">
-            <Text className="text-[17px] text-primary" numberOfLines={2} testID={testID}>
+            <Text
+                className="text-[17px] text-primary"
+                numberOfLines={2}
+                maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER}
+                testID={testID}
+            >
                 {title}
             </Text>
             {isNotEmptyString(menuValue) ? (
                 <View className="flex-row items-center gap-x-xs">
-                    <Text className="min-w-0 shrink text-[13px] text-secondary-foreground" numberOfLines={2}>
+                    <Text
+                        className="min-w-0 shrink text-[13px] text-secondary-foreground"
+                        numberOfLines={2}
+                        maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER}
+                    >
                         {menuValue}
                     </Text>
                     <SignToggleGlyph className="text-secondary-foreground" />
