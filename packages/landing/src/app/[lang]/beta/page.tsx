@@ -29,7 +29,7 @@ export default async function BetaPage(props: PageLangParam) {
     initLingui(lang);
 
     return (
-        <main className="flex-1">
+        <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none">
             <section className="w-full py-20 md:py-32">
                 <div className="container px-4 md:px-6 max-w-2xl">
                     <h1 className="text-3xl font-bold tracking-tight mb-2">

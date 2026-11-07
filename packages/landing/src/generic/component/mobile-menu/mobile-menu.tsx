@@ -13,19 +13,19 @@ interface Props {
 export const MobileMenu = ({ onClose, lang }: Props) => (
     <div className="mobile-menu lg:hidden absolute top-16 inset-x-0 bg-background/95 backdrop-blur-lg border-b">
         <div className="container py-4 flex flex-col gap-4">
-            <Link className="py-2 text-sm font-medium" href={`/${lang}/features`} onClick={onClose}>
+            <Link prefetch={false} className="py-2 text-sm font-medium" href={`/${lang}/features`} onClick={onClose}>
                 <Trans>Features</Trans>
             </Link>
 
-            <Link className="py-2 text-sm font-medium" href={`/${lang}#testimonials`} onClick={onClose}>
+            <Link prefetch={false} className="py-2 text-sm font-medium" href={`/${lang}#testimonials`} onClick={onClose}>
                 <Trans>Testimonials</Trans>
             </Link>
 
-            <Link className="py-2 text-sm font-medium" href={`/${lang}/blog`} onClick={onClose}>
+            <Link prefetch={false} className="py-2 text-sm font-medium" href={`/${lang}/blog`} onClick={onClose}>
                 <Trans>Blog</Trans>
             </Link>
 
-            <Link className="py-2 text-sm font-medium" href={`/${lang}#faq`} onClick={onClose}>
+            <Link prefetch={false} className="py-2 text-sm font-medium" href={`/${lang}#faq`} onClick={onClose}>
                 <Trans>FAQ</Trans>
             </Link>
 
@@ -38,7 +38,7 @@ export const MobileMenu = ({ onClose, lang }: Props) => (
                 </div>
 
                 <Button asChild className="rounded-full">
-                    <Link href={`/${lang}#waitlist`} onClick={onClose}>
+                    <Link prefetch={false} href={`/${lang}#waitlist`} onClick={onClose}>
                         <Trans>Join Waitlist</Trans>
                         <ChevronRight className="ml-1 size-4" />
                     </Link>

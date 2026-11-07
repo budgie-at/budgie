@@ -1,5 +1,8 @@
 import 'server-only';
 import { I18n, Messages, setupI18n } from '@lingui/core';
+import { notFound } from 'next/navigation';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { messages as deClientMessages } from './locales/de/client-messages';
 import { messages as deMessages } from './locales/de/messages';
@@ -33,4 +36,12 @@ for (const locale of locales) {
     instances[locale] = setupI18n({ locale, messages: { [locale]: allMessages[locale] } });
 }
 
-export const getI18nInstance = (locale: SupportedLocales): I18n => instances[locale];
+export const getI18nInstance = (locale: SupportedLocales): I18n => {
+    const i18n: I18n | undefined = instances[locale];
+
+    if (!isDefined(i18n)) {
+        notFound();
+    }
+
+    return i18n;
+};

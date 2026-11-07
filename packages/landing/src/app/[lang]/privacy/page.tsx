@@ -39,6 +39,7 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                         Android.
                     </Trans>
                 }
+                updatedAt={PRIVACY_PILLAR_HUB_METADATA.updatedAt}
             >
                 <PillarHubHeroBulletList>
                     <PillarHubHeroBulletItem>

@@ -13,7 +13,7 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     description: msg`A detailed technical analysis of how cloud-based budgeting apps collect, share, and expose your financial data through Plaid integrations, data breaches, and third-party aggregation.`,
     tags: ['privacy', 'security', 'cloud-security', 'data-breaches', 'plaid', 'financial-privacy', 'fintech'],
     seoKeywords: ['cloud budget app privacy', 'Plaid data risks', 'financial app data breaches'],
-    seoDescription: msg`Technical analysis of privacy risks in cloud budgeting apps: Plaid data sharing, real data breaches, screen-scraping dangers, and how to evaluate financial app security.`,
+    seoDescription: msg`Technical analysis of privacy risks in cloud budgeting apps: bank-data aggregator sharing, real data breaches, screen-scraping dangers, and how to evaluate financial app security.`,
     relatedArticleSlugs: ['local-first-movement-developers', 'ynab-alternatives-privacy'],
     relatedFeatureSlugs: ['expense-tracking', 'monobank-sync', 'screenshot-protection']
 };

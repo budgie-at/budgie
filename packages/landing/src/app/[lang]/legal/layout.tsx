@@ -29,7 +29,7 @@ export default async function LegalLayout(props: LegalLayoutProps) {
     initLingui(lang);
 
     return (
-        <main className="flex-1">
+        <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none">
             <section className="w-full py-20 md:py-32">
                 <div className="container px-4 md:px-6 max-w-4xl">
                     <Motion className="prose prose-gray dark:prose-invert max-w-none">{props.children}</Motion>
