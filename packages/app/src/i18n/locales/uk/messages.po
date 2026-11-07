@@ -59,6 +59,11 @@ msgstr "(виберіть)"
 msgid "{0, plural, one {# account} other {# accounts}}"
 msgstr "{0, plural, one {# рахунок} few {# рахунки} many {# рахунків} other {# рахунку}}"
 
+#. placeholder {0}: charges.length
+#: src/siri/service/siri-catalog.service.ts
+msgid "{0, plural, one {# charge is due in the next 7 days, {formattedTotal} in total: {chargeList}.} other {# charges are due in the next 7 days, {formattedTotal} in total: {chargeList}.}}"
+msgstr "{0, plural, one {# платіж очікується протягом наступних 7 днів, усього {formattedTotal}: {chargeList}.} few {# платежі очікуються протягом наступних 7 днів, усього {formattedTotal}: {chargeList}.} many {# платежів очікується протягом наступних 7 днів, усього {formattedTotal}: {chargeList}.} other {# платежу очікується протягом наступних 7 днів, усього {formattedTotal}: {chargeList}.}}"
+
 #. placeholder {0}: summary.recordedCount
 #: src/inzhur/component/inzhur-operations-import-summary/inzhur-operations-import-summary.tsx
 msgid "{0, plural, one {# entry recorded} other {# entries recorded}}"
@@ -616,6 +621,14 @@ msgstr "{installmentCount, plural, one {усього # платіж} few {усь
 msgid "{installmentCount, plural, one {Split into # payment} other {Split into # payments}}"
 msgstr "{installmentCount, plural, one {Розбити на # платіж} few {Розбити на # платежі} many {Розбити на # платежів} other {Розбити на # платежу}}"
 
+#: src/siri/service/siri-catalog.service.ts
+msgid "{label}: {formattedSpent} of {formattedLimit} spent, {formattedLeft} left."
+msgstr "{label}: витрачено {formattedSpent} з {formattedLimit}, залишилось {formattedLeft}."
+
+#: src/siri/service/siri-catalog.service.ts
+msgid "{label}: {formattedSpent} spent, {formattedOver} over the {formattedLimit} limit."
+msgstr "{label}: витрачено {formattedSpent}, на {formattedOver} більше за ліміт {formattedLimit}."
+
 #: src/market-data/component/currency-market-chart-status/currency-market-chart-status.tsx
 msgid "{loadedDays} of {totalDays} days"
 msgstr "{loadedDays} з {totalDays} днів"
@@ -927,6 +940,10 @@ msgstr "{subject}: зростання з {fromLabel} до {toLabel} з {sinceLab
 #: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 msgstr "{taggedCount, plural, one {# з тегом за цей сеанс} few {# з тегами за цей сеанс} many {# з тегами за цей сеанс} other {# з тегами за цей сеанс}}"
+
+#: src/siri/service/siri-catalog.service.ts
+msgid "{title} {formattedAmount} on {formattedDate}"
+msgstr "{title} {formattedAmount}, {formattedDate}"
 
 #: src/recurring/hook/use-remove-recurring-series.hook.ts
 msgid "{title} deleted"
@@ -2132,6 +2149,7 @@ msgstr "Бюджет недоступний"
 #: src/import/components/import-preset-options/import-preset-options.tsx
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 #: src/onboarding/component/onboarding-welcome-hero/onboarding-welcome-hero.tsx
+#: src/siri/service/siri-catalog.service.ts
 #: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "Budgie"
@@ -6222,6 +6240,10 @@ msgstr "Для цього балансу не записано ціну купі
 msgid "No receipt found"
 msgstr "Чек не знайдено"
 
+#: src/siri/service/siri-catalog.service.ts
+msgid "No recurring charges are due in the next 7 days."
+msgstr "Протягом наступних 7 днів регулярних платежів немає."
+
 #: src/recurring/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "No recurring payments in {displayedMonthName}"
 msgstr "Немає регулярних платежів у {displayedMonthName}"
@@ -6618,6 +6640,10 @@ msgstr "Відкрийте Binance, щоб отримати API-ключ"
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Open Budgie once after updating, then return to Shortcuts and search for Budgie again."
 msgstr "Після оновлення один раз відкрийте Budgie, потім поверніться до Shortcuts і знову знайдіть Budgie."
+
+#: src/siri/service/siri-catalog.service.ts
+msgid "Open Budgie to refresh."
+msgstr "Відкрийте Budgie, щоб оновити дані."
 
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Open Budgie to see your finances"
@@ -8931,6 +8957,10 @@ msgstr "Цей файл не є незашифрованим приватним 
 msgid "This is where your data lives and who can read it. You can find it again in Settings › Your data."
 msgstr "Тут зберігаються ваші дані й видно, хто може їх прочитати. Знайти це знову можна в Налаштування › Ваші дані."
 
+#: src/siri/service/siri-catalog.service.ts
+msgid "This isn’t available in Budgie yet."
+msgstr "Це поки недоступно в Budgie."
+
 #: src/app/bank-integration-key.tsx
 msgid "This key already syncs another of your Monobank sections."
 msgstr "Цей ключ уже синхронізує інший ваш розділ Monobank."
@@ -9542,6 +9572,10 @@ msgstr "Показати {accountTitle}"
 msgid "Unknown card"
 msgstr "Невідома картка"
 
+#: src/siri/service/siri-catalog.service.ts
+msgid "Unlock Budgie to see this."
+msgstr "Розблокуйте Budgie, щоб побачити це."
+
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 msgid "Unlock quickly without typing your PIN"
 msgstr "Швидке розблокування без введення PIN‑коду"
@@ -9981,6 +10015,14 @@ msgstr "Ви платите частинами"
 msgid "You received money"
 msgstr "Ви отримали гроші"
 
+#: src/siri/service/siri-catalog.service.ts
+msgid "You spent {formattedLastMonth} on {title} last month."
+msgstr "Минулого місяця ви витратили {formattedLastMonth} на {title}."
+
+#: src/siri/service/siri-catalog.service.ts
+msgid "You spent {formattedThisMonth} on {title} this month."
+msgstr "Цього місяця ви витратили {formattedThisMonth} на {title}."
+
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "You’ll still need the PIN after a restart."
 msgstr "Після перезапуску PIN‑код усе одно знадобиться."
@@ -10000,6 +10042,10 @@ msgstr "Ви використовуєте мобільні дані. Заван�
 #: src/ai/component/ai-download-preflight-note/ai-download-preflight-note.tsx
 msgid "You're on Wi-Fi."
 msgstr "Ви підключені до Wi-Fi."
+
+#: src/siri/service/siri-catalog.service.ts
+msgid "Your {accountTitle} balance is {formattedBalance}."
+msgstr "Баланс {accountTitle}: {formattedBalance}."
 
 #: src/categorize-inbox/components/categorize-inbox-transfer-accounts/categorize-inbox-transfer-accounts.tsx
 msgid "Your accounts"
@@ -10097,6 +10143,10 @@ msgstr "Ваші гроші в одному файлі."
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "Your money will live in one file on this phone. Choose who can open it."
 msgstr "Ваші гроші зберігатимуться в одному файлі на цьому телефоні. Оберіть, хто може його відкрити."
+
+#: src/siri/service/siri-catalog.service.ts
+msgid "Your net worth is {formattedNetWorth}."
+msgstr "Ваш чистий капітал становить {formattedNetWorth}."
 
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
 msgid "Your phone’s lock will be the only lock."

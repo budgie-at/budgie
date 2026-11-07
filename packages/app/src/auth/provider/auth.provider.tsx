@@ -7,6 +7,7 @@ import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { isSettingsLoadingAtom } from '../../settings/constants/settings-atoms.constant';
 import { useSetting } from '../../settings/hook/use-setting.hook';
+import { SiriCatalogService } from '../../siri/service/siri-catalog.service';
 import { AuthContext, AuthContextInterface } from '../context/auth.context';
 import { useBiometricAvailability } from '../hook/use-biometric-availability.hook';
 import { AuthService } from '../service/auth.service';
@@ -35,7 +36,13 @@ export const AuthProvider = ({ children }: Props) => {
 
     useEffect(() => {
         const subscription = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
-            if (nextAppState === 'background' && isPinEnabled) {
+            if (nextAppState !== 'background') {
+                return;
+            }
+
+            appRuntime.runFork(logAndContinue(Effect.flatMap(SiriCatalogService, siriCatalogService => siriCatalogService.publish())));
+
+            if (isPinEnabled) {
                 setIsUnlocked(false);
             }
         });

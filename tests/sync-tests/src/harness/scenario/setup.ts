@@ -30,8 +30,8 @@ const resolveLinguiMessage = (descriptor: unknown): string => {
     return '';
 };
 
-vi.mock('@lingui/core', () => ({
-    i18n: {
+vi.mock('@lingui/core', () => {
+    const i18n = {
         locale: 'en',
         load: emptyFn,
         activate: emptyFn,
@@ -44,8 +44,10 @@ vi.mock('@lingui/core', () => ({
 
             return Object.entries(values).reduce((result, [key, value]) => result.replaceAll(`{${key}}`, value), message);
         }
-    }
-}));
+    };
+
+    return { i18n, setupI18n: () => i18n };
+});
 
 vi.mock('react-native', async importOriginal => ({
     ...(await importOriginal<object>()),
