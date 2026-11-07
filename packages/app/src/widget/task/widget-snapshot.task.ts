@@ -14,8 +14,8 @@ TaskManager.defineTask(WIDGET_SNAPSHOT_TASK, () =>
             const siriCatalogService = yield* SiriCatalogService;
             const widgetSnapshotService = yield* WidgetSnapshotService;
 
-            yield* logAndContinue(siriCatalogService.publish());
             yield* widgetSnapshotService.publish();
+            yield* logAndContinue(siriCatalogService.publish());
 
             return BackgroundTask.BackgroundTaskResult.Success;
         })
