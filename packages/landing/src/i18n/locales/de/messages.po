@@ -14670,6 +14670,10 @@ msgstr "Öffentlicher Quellcode bedeutet, dass unsere Datenschutzaussagen verifi
 msgid "Public source thrives on community participation. If you want to contribute to Budgie, there are many ways to get involved:"
 msgstr "Öffentlicher Quellcode lebt von Community-Beteiligung. Wenn Sie zu Budgie beitragen möchten, gibt es viele Möglichkeiten, sich einzubringen:"
 
+#: src/generic/component/updated-date/updated-date.tsx
+msgid "Published <0>{formattedPublishedDate}</0>"
+msgstr "Veröffentlicht am <0>{formattedPublishedDate}</0>"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Published audit reports from recognized security firms"
 msgstr "Veröffentlichte Auditberichte von anerkannten Sicherheitsfirmen"
@@ -17217,8 +17221,8 @@ msgid "Targets and return dates"
 msgstr "Ziele und Rückgabedaten"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/metadata.ts
-msgid "Technical analysis of privacy risks in cloud budgeting apps: Plaid data sharing, real data breaches, screen-scraping dangers, and how to evaluate financial app security."
-msgstr "Technische Analyse der Datenschutzrisiken cloudbasierter Budget-Apps: Plaid-Datenweitergabe, reale Datenpannen, Screen-Scraping-Gefahren und wie Sie die Sicherheit von Finanz-Apps bewerten."
+msgid "Technical analysis of privacy risks in cloud budgeting apps: bank-data aggregator sharing, real data breaches, screen-scraping dangers, and how to evaluate financial app security."
+msgstr "Technische Analyse der Datenschutzrisiken cloudbasierter Budget-Apps: Datenweitergabe an Bankdaten-Aggregatoren, reale Datenpannen, Screen-Scraping-Gefahren und wie Sie die Sicherheit von Finanz-Apps bewerten."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Technical Foundations: CRDTs and Sync Engines"

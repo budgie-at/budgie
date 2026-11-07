@@ -1,52 +1,37 @@
 'use client';
 
-import { useLingui } from '@lingui/react/macro';
-import { useParams, usePathname, useRouter } from 'next/navigation';
+import { Trans } from '@lingui/react/macro';
+import { useParams, usePathname } from 'next/navigation';
+import { Language } from 'reicon-react';
 
 import { SUPPORTED_LOCALES as locales } from '../../../i18n/supported-locales.constant.mjs';
-
-import type { ChangeEvent } from 'react';
-
-const LANGUAGE_NAMES: Record<string, string> = {
-    // oxlint-disable-next-line lingui/no-unlocalized-strings
-    en: 'English',
-    uk: 'Українська',
-    // oxlint-disable-next-line lingui/no-unlocalized-strings
-    fr: 'Français',
-    // oxlint-disable-next-line lingui/no-unlocalized-strings
-    de: 'Deutsch',
-    // oxlint-disable-next-line lingui/no-unlocalized-strings
-    es: 'Español'
-};
+import { LanguageSwitcherItem } from '../language-switcher-item/language-switcher-item';
 
 export const LanguageSwitcher = () => {
-    const router = useRouter();
     const pathname = usePathname();
-    const params = useParams<{ lang: string }>();
-    const { i18n, t } = useLingui();
-
-    const currentLocale = params.lang || i18n.locale || locales[0] || 'en';
-
-    const handleLanguageChange = (event: ChangeEvent<HTMLSelectElement>): void => {
-        const segments = pathname.split('/');
-        segments[1] = event.currentTarget.value;
-        const newPath = segments.join('/');
-
-        router.push(newPath);
-    };
+    const { lang } = useParams<{ lang: string }>();
+    const segments = pathname.split('/');
 
     return (
-        <select
-            aria-label={t`Switch language`}
-            className="h-9 w-28 cursor-pointer rounded-full border border-input bg-background px-3 text-sm text-foreground transition-colors hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-            onChange={handleLanguageChange}
-            value={currentLocale}
-        >
-            {locales.map(locale => (
-                <option key={locale} lang={locale} value={locale}>
-                    {LANGUAGE_NAMES[locale] || locale}
-                </option>
-            ))}
-        </select>
+        <details key={pathname} className="relative">
+            <summary className="flex size-10 cursor-pointer list-none items-center justify-center rounded-full transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring [&::-webkit-details-marker]:hidden">
+                <Language className="size-[18px]" />
+
+                <span className="sr-only">
+                    <Trans>Switch language</Trans>
+                </span>
+            </summary>
+
+            <ul className="absolute right-0 z-50 mt-2 min-w-36 rounded-md border bg-popover p-1 text-popover-foreground shadow-md">
+                {locales.map(locale => (
+                    <LanguageSwitcherItem
+                        key={locale}
+                        href={[segments[0], locale, ...segments.slice(2)].join('/')}
+                        isCurrent={locale === lang}
+                        locale={locale}
+                    />
+                ))}
+            </ul>
+        </details>
     );
 };

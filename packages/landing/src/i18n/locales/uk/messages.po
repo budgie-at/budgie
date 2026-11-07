@@ -14670,6 +14670,10 @@ msgstr "Публічний вихідний код означає, що наші
 msgid "Public source thrives on community participation. If you want to contribute to Budgie, there are many ways to get involved:"
 msgstr "Публічний код розвивається завдяки участі спільноти. Якщо ви хочете долучитися до Budgie, є багато способів це зробити:"
 
+#: src/generic/component/updated-date/updated-date.tsx
+msgid "Published <0>{formattedPublishedDate}</0>"
+msgstr "Опубліковано <0>{formattedPublishedDate}</0>"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Published audit reports from recognized security firms"
 msgstr "Опубліковані звіти аудиту від визнаних компаній з безпеки"
@@ -17217,8 +17221,8 @@ msgid "Targets and return dates"
 msgstr "Цілі та дати повернення"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/metadata.ts
-msgid "Technical analysis of privacy risks in cloud budgeting apps: Plaid data sharing, real data breaches, screen-scraping dangers, and how to evaluate financial app security."
-msgstr "Технічний аналіз ризиків конфіденційності в хмарних бюджетних додатках: обмін даними через Plaid, реальні витоки даних, небезпеки скрін-скрейпінгу та як оцінити безпеку фінансових додатків."
+msgid "Technical analysis of privacy risks in cloud budgeting apps: bank-data aggregator sharing, real data breaches, screen-scraping dangers, and how to evaluate financial app security."
+msgstr "Технічний аналіз ризиків конфіденційності в хмарних бюджетних додатках: обмін даними через агрегаторів банківських даних, реальні витоки даних, небезпеки скрін-скрейпінгу та як оцінити безпеку фінансових додатків."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Technical Foundations: CRDTs and Sync Engines"

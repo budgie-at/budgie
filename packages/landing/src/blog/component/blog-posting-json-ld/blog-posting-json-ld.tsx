@@ -24,6 +24,7 @@ export const BlogPostingJsonLd = ({ title, description, date, dateModified, imag
     const organization = { '@id': ORGANIZATION_ID };
     const data = {
         '@context': 'https://schema.org',
+        '@id': `${articleUrl}#article`,
         '@type': 'BlogPosting',
         inLanguage: locale,
         headline: title,

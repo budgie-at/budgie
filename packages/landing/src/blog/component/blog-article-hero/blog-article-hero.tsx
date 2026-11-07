@@ -17,7 +17,12 @@ export const BlogArticleHero = ({ article, locale, children }: Props) => (
         <div className="container px-4 md:px-6 max-w-4xl">
             <Motion>{children}</Motion>
 
-            <UpdatedDate className="mt-4 text-sm text-muted-foreground" date={article.dateModified ?? article.date} locale={locale} />
+            <UpdatedDate
+                className="mt-4 text-sm text-muted-foreground"
+                date={article.dateModified ?? article.date}
+                locale={locale}
+                publishedDate={article.date}
+            />
 
             <div className="aspect-3/1 overflow-hidden rounded-xl border mt-10">
                 <BlogCover

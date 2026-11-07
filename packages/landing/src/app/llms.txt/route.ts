@@ -2,7 +2,6 @@
 import { ARTICLE_REGISTRY } from '../../blog/constant/article-registry.constant';
 import { PILLAR_HUB_REGISTRY } from '../../feature/constant/pillar-hub-registry.constant';
 import { BASE_URL, LOCALES } from '../../generic/constant/seo.constant';
-import { fitText } from '../../generic/utils/fit-text.util';
 import { getI18nInstance } from '../../i18n/app-router-i18n';
 import { BLOG_INDEX_METADATA } from '../[lang]/blog/metadata';
 import { CHANGELOG_METADATA } from '../[lang]/changelog/metadata';
@@ -14,7 +13,6 @@ import sitemap from '../sitemap';
 import type { MessageDescriptor } from '@lingui/core';
 
 const SOURCE_LOCALE = 'en';
-const MAX_DESCRIPTION_CHARS = 160;
 const GROUPS = ['Overview', 'Topics', 'Features', 'Blog', 'Other'] as const;
 const [OVERVIEW, TOPICS, FEATURES, BLOG, OTHER] = GROUPS;
 
@@ -27,7 +25,7 @@ const buildPageIndex = () => {
         ({
             group,
             title: i18n._(title),
-            description: fitText(i18n._(description), MAX_DESCRIPTION_CHARS)
+            description: i18n._(description)
         }) as const;
 
     return new Map([
