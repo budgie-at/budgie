@@ -31,7 +31,7 @@ export default function CategorySelectorModal() {
     const query = search.trim();
 
     const handleCreatePress = () => {
-        openCategoryForm({ defaultTitle: query }, result => {
+        openCategoryForm({ defaultTitle: query, syncZone }, result => {
             if (isDefined(result)) {
                 resolveCategorySelector(result.category.id);
             }

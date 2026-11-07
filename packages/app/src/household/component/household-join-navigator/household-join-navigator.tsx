@@ -5,10 +5,12 @@ import { router } from 'expo-router';
 import { useEffect, useEffectEvent } from 'react';
 
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
+import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { householdJoinAtom } from '../../constant/household-join-atom.constant';
 
 export const HouseholdJoinNavigator = () => {
     const status = useAtomValue(householdJoinAtom, ({ status: joinStatus }) => joinStatus);
+    const isOnboardingCompleted = useSetting('isOnboardingCompleted');
     const [hapticNotification] = useVibration();
 
     const handleStatusChange = useEffectEvent((next: HouseholdJoinStatusEnum) => {
@@ -20,10 +22,10 @@ export const HouseholdJoinNavigator = () => {
     });
 
     useEffect(() => {
-        if (status === HouseholdJoinStatusEnum.JOINING || status === HouseholdJoinStatusEnum.JOINED) {
+        if (isOnboardingCompleted && (status === HouseholdJoinStatusEnum.JOINING || status === HouseholdJoinStatusEnum.JOINED)) {
             handleStatusChange(status);
         }
-    }, [status]);
+    }, [status, isOnboardingCompleted]);
 
     return null;
 };
