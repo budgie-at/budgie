@@ -29,12 +29,13 @@ export const TransactionPickerContext = ({ transactionId, label, labelClassName 
         <View className="gap-y-xs py-xl">
             <Text
                 dynamicTypeRamp="footnote"
+                maxFontSizeMultiplier={1.3}
                 accessibilityRole="header"
                 className={cn('text-[13px] tabular-nums text-secondary-foreground', labelClassName)}
             >
                 {amountLabel}
             </Text>
-            <Text dynamicTypeRamp="caption1" className="text-[13px] font-semibold text-primary">
+            <Text dynamicTypeRamp="caption1" maxFontSizeMultiplier={1.3} className="text-[13px] font-semibold text-primary">
                 {getTransactionDisplayTitle(transaction)}
             </Text>
         </View>

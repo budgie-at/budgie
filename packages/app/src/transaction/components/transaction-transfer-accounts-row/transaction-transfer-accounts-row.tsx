@@ -7,10 +7,8 @@ import { isDefined } from '@rnw-community/shared';
 
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
-import { TRANSFER_ACCOUNT_FIELDS } from '../../constant/transfer-account-fields.constant';
 import { TransactionFormRowPlaceholderToneEnum } from '../../enum/transaction-form-row-placeholder-tone.enum';
 import { useTransferAccountSelection } from '../../hook/use-transfer-account-selection.hook';
-import { QuickFormFieldError } from '../quick-form-field-error/quick-form-field-error';
 import { TransactionFormRowPlaceholder } from '../transaction-form-row-placeholder/transaction-form-row-placeholder';
 import { TransferAccountPicker } from '../transfer-account-picker/transfer-account-picker';
 import { TransferQuickFormSelector } from '../transfer-quick-form/transfer-quick-form.selector';
@@ -48,7 +46,7 @@ export const TransactionTransferAccountsRow = ({ ref, children }: Props) => {
 
     return (
         <View>
-            <GroupedListSection footer={<QuickFormFieldError fields={TRANSFER_ACCOUNT_FIELDS} />}>
+            <GroupedListSection>
                 <View onLayout={handleFromLayout}>
                     <TransferAccountPicker
                         label={t({ message: 'From', context: 'transfer account' })}

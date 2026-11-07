@@ -1,16 +1,19 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
-import { useState } from 'react';
 import { Text, useWindowDimensions, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
+import { testID as createTestIDProps } from '../../../@generic/utils/test-id.util';
 import { TRANSACTION_LARGE_TEXT_SCALE } from '../../constant/transaction-large-text-scale.constant';
+import { isCompactTransactionForm } from '../../utils/is-compact-transaction-form.util';
 import { TransactionFormRowValue } from '../transaction-form-row-value/transaction-form-row-value';
 
 import type { ComponentProps, ReactElement, ReactNode } from 'react';
+import type { PressableStateCallbackType } from 'react-native';
 
 interface Props {
     readonly left: ReactNode;
@@ -23,6 +26,7 @@ interface Props {
     readonly pressableProps?: ComponentProps<typeof GroupedListRow>['pressableProps'];
 }
 
+const COMPACT_ROW_STYLE = { minHeight: 44, paddingVertical: 7 };
 const LABEL_MAX_FONT_SCALE = 2;
 const STACKED_LABEL_MAX_FONT_SCALE = 1.6;
 const CHEVRON_MAX_SCALE = 1.5;
@@ -36,16 +40,23 @@ const labelVariants = cva('shrink-0', {
 
 export const TransactionFormRow = (props: Props) => {
     const { left, label, value, placeholder, valueTestID, onPress, testID, pressableProps } = props;
-    const { fontScale } = useWindowDimensions();
-    const [overflowingValue, setOverflowingValue] = useState<string | null>(null);
+    const { fontScale, height } = useWindowDimensions();
+    const isCompact = isCompactTransactionForm(fontScale, height);
     const isLargeText = fontScale >= TRANSACTION_LARGE_TEXT_SCALE;
-    const isStacked = isLargeText || (isNotEmptyString(value) && overflowingValue === value);
+    const isStacked = isLargeText;
     const isAction = !isNotEmptyString(value) && !isDefined(placeholder);
     const labelMaxFontScale = isLargeText && !isAction ? STACKED_LABEL_MAX_FONT_SCALE : LABEL_MAX_FONT_SCALE;
     const stackedLeading = isLargeText ? null : <View className="self-start pt-[17px]">{left}</View>;
     const leading = isStacked ? stackedLeading : left;
     const chevronSize = 16 * Math.min(fontScale, CHEVRON_MAX_SCALE);
     const titleClassName = isStacked ? 'min-w-0 items-start gap-y-xxs' : 'min-w-0 flex-row items-center gap-x-lg';
+
+    const rowStyle = pressableProps?.style;
+    const handleRowStyle = (state: PressableStateCallbackType) => [
+        COMPACT_ROW_STYLE,
+        typeof rowStyle === 'function' ? rowStyle(state) : rowStyle
+    ];
+    const rowPressableProps = isCompact ? { ...pressableProps, style: handleRowStyle } : pressableProps;
 
     return (
         <GroupedListRow
@@ -55,6 +66,7 @@ export const TransactionFormRow = (props: Props) => {
                     <Text
                         className={labelVariants({ isStacked: isStacked && !isAction, isAction })}
                         maxFontSizeMultiplier={labelMaxFontScale}
+                        {...createTestIDProps(testID, TestIDPartEnum.LABEL)}
                     >
                         {label}
                     </Text>
@@ -64,14 +76,13 @@ export const TransactionFormRow = (props: Props) => {
                         isStacked={isStacked}
                         isLargeText={isLargeText}
                         testID={valueTestID}
-                        onOverflow={setOverflowingValue}
                     />
                 </View>
             }
             right={<Icon icon={UserIconNameEnum.ChevronRight} size={chevronSize} className="text-secondary-foreground" />}
             onPress={onPress}
             testID={testID}
-            pressableProps={pressableProps}
+            pressableProps={rowPressableProps}
         />
     );
 };

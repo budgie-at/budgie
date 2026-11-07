@@ -357,6 +357,10 @@ msgstr "{count, plural, one {# Zahlung verwenden} other {# Zahlungen verwenden}}
 msgid "{count} of {rowCount} selected"
 msgstr "{count} von {rowCount} ausgewählt"
 
+#: src/app/tags-selector.tsx
+msgid "{count} selected"
+msgstr "{count} ausgewählt"
+
 #: src/recurring/components/recurring-summary-subline/recurring-summary-subline.tsx
 msgid "{countLabel} · Next: {nextTitle} {nextAmount} · {nextDue}"
 msgstr "{countLabel} · Nächste: {nextTitle} {nextAmount} · {nextDue}"
@@ -1081,10 +1085,6 @@ msgstr "−{changePercent} ggü. {shortPreviousLabel}"
 msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} Mon."
 
-#: src/app/tags-selector.tsx
-msgid "★ Primary · hold another tag to change it"
-msgstr "★ Haupttag · halte ein anderes Tag gedrückt, um ihn zu ändern"
-
 #: src/account/component/crypto-currency-group-market-link/crypto-currency-group-market-link.tsx
 msgid "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 msgstr "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
@@ -1224,7 +1224,7 @@ msgstr "Über diesem Betrag"
 msgid "account"
 msgstr "Konto"
 
-#: src/account/component/account-selector-header/account-selector-header.tsx
+#: src/app/account-selector.tsx
 #: src/recurring/components/recurring-form-account-field/recurring-form-account-field.tsx
 #: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
@@ -1329,7 +1329,7 @@ msgstr "Kategorielimit hinzufügen"
 msgid "Add a name to continue"
 msgstr "Namen eingeben, um fortzufahren"
 
-#: src/app/note-input.tsx
+#: src/transaction/components/transaction-note-field-icon/transaction-note-field-icon.tsx
 msgid "Add a note..."
 msgstr "Notiz hinzufügen..."
 
@@ -1754,7 +1754,6 @@ msgstr "Name der Anwendung"
 msgid "Applies to new payments as they arrive from your bank or an import."
 msgstr "Gilt für neue Zahlungen, sobald sie von deiner Bank oder aus einem Import kommen."
 
-#: src/app/note-input.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Apply"
 msgstr "Anwenden"
@@ -2167,10 +2166,6 @@ msgstr "Budgie-Aktion fehlt"
 msgid "Budgie brings in the last month of history, then asks Monobank for new transactions when you open the app."
 msgstr "Budgie holt den letzten Monat an Verlauf und fragt Monobank dann nach neuen Buchungen, wenn du die App öffnest."
 
-#: src/app/note-input.tsx
-msgid "Budgie can sort notes on this phone"
-msgstr "Budgie kann Notizen auf diesem Telefon sortieren"
-
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "Budgie can't reset your PIN"
 msgstr "Budgie kann deine PIN nicht zurücksetzen"
@@ -2316,7 +2311,8 @@ msgstr "Kann später nicht geändert werden"
 #: src/sync/component/enable-banking-disconnect-row/enable-banking-disconnect-row.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 #: src/tag/hooks/use-delete-tag.hook.ts
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
+#: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
+#: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 #: src/transaction/components/transaction-form-actions/transaction-form-actions.tsx
@@ -2830,10 +2826,6 @@ msgstr "Fülle jeden Aufteilungseintrag aus"
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Confirm it's you before choosing a new one."
 msgstr "Bestätige, dass du es bist, bevor du eine neue wählst."
-
-#: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx
-msgid "Confirm tag selection"
-msgstr "Tag-Auswahl bestätigen"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Confirm your new PIN"
@@ -3500,7 +3492,7 @@ msgstr "Trotzdem erstellen"
 msgid "Create budget"
 msgstr "Budget erstellen"
 
-#: src/app/category-selector.tsx
+#: src/category/components/category-create-row/category-create-row.tsx
 #: src/category/components/category-destination-sheet/category-destination-sheet.tsx
 #: src/category/components/category-form/category-form.tsx
 msgid "Create category"
@@ -3532,7 +3524,7 @@ msgstr "Regel erstellen"
 msgid "Create Rule"
 msgstr "Regel erstellen"
 
-#: src/app/tags-selector.tsx
+#: src/tag/components/tag-create-row/tag-create-row.tsx
 #: src/tag/components/tag-destination-sheet/tag-destination-sheet.tsx
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Create tag"
@@ -3941,21 +3933,21 @@ msgid "Does not contain"
 msgstr "Enthält nicht"
 
 #: src/@generic/component/keyboard-done-accessory/keyboard-done-accessory.tsx
-#: src/app/note-input.tsx
+#: src/@generic/component/sheet-title-row/sheet-title-row.tsx
+#: src/app/date-picker.tsx
+#: src/app/tags-selector.tsx
 #: src/categorize-inbox/components/categorize-inbox-done-button/categorize-inbox-done-button.tsx
 #: src/inzhur/component/inzhur-import-summary-footer/inzhur-import-summary-footer.tsx
 #: src/onboarding/component/onboarding-keyboard-controls/onboarding-keyboard-controls.tsx
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+#: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
+#: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
 #: src/transaction/components/convert-transfer-form/convert-transfer-form.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+#: src/transaction/components/transaction-note-field-icon/transaction-note-field-icon.tsx
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 #: src/transaction/hook/use-transaction-keypad-editing.hook.ts
 msgid "Done"
 msgstr "Fertig"
-
-#: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx
-msgid "Done ({count})"
-msgstr "Fertig ({count})"
 
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 msgid "Double-tap to seal"
@@ -4200,10 +4192,6 @@ msgstr "Tag bearbeiten"
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "Edit the amount"
 msgstr "Betrag bearbeiten"
-
-#: src/transaction/components/transaction-info-edit-button/transaction-info-edit-button.tsx
-msgid "Edit transaction"
-msgstr "Transaktion bearbeiten"
 
 #: src/transaction/components/transaction-list-edit-menu-item/transaction-list-edit-menu-item.tsx
 msgid "Edit Transaction"
@@ -4931,6 +4919,10 @@ msgstr "Von Home, Summen und Budgets ausgeblendet, bis du es wiederherstellst."
 #: src/transaction/components/statistics-share-bar/statistics-share-bar.tsx
 msgid "Hide breakdown"
 msgstr "Aufschlüsselung ausblenden"
+
+#: src/transaction/components/transaction-keypad/transaction-keypad.tsx
+msgid "Hide keypad"
+msgstr "Ziffernblock ausblenden"
 
 #: src/settings/components/screenshot-protection-row/screenshot-protection-row.tsx
 msgid "Hide screen captures"
@@ -5747,6 +5739,7 @@ msgid "Merchant code"
 msgstr "Händlercode"
 
 #: src/rule/constant/rule-condition-field.constant.ts
+#: src/transaction/components/transaction-merchant-input/transaction-merchant-input.tsx
 msgid "Merchant or payment description"
 msgstr "Händler oder Zahlungsbeschreibung"
 
@@ -6425,7 +6418,6 @@ msgstr "Nicht synchronisiert: Auto-Invest, Binance Pay, Binance Card, Geschenkka
 msgid "Not yet invested"
 msgstr "Noch nicht investiert"
 
-#: src/app/note-input.tsx
 #: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
 #: src/transaction/components/transaction-note-field-icon/transaction-note-field-icon.tsx
 msgid "Note"
@@ -7495,7 +7487,7 @@ msgstr "Erinnerungen für wiederkehrende Zahlungen"
 msgid "Refine"
 msgstr "Verfeinern"
 
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
+#: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
 msgid "Refund"
 msgstr "Rückerstattung"
 
@@ -7931,7 +7923,7 @@ msgstr "Versiegelt. Nur deine PIN öffnet diese Datei."
 msgid "Search accounts..."
 msgstr "Konten durchsuchen..."
 
-#: src/account/component/account-selector-header/account-selector-header.tsx
+#: src/app/account-selector.tsx
 msgid "Search accounts…"
 msgstr "Konten durchsuchen…"
 
@@ -8370,6 +8362,10 @@ msgstr "Bisher ausgegeben"
 msgid "Split"
 msgstr "Aufteilen"
 
+#: src/transaction/hook/use-quick-form-submit.hook.ts
+msgid "Split amounts must match the total"
+msgstr "Die Teilbeträge müssen dem Gesamtbetrag entsprechen"
+
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 msgid "Splits your total into the purchase and a fee"
 msgstr "Teilt deine Summe in Kauf und Gebühr auf"
@@ -8800,6 +8796,10 @@ msgstr "Die PIN wird zum Verschlüsselungsschlüssel"
 #: src/recurring/hook/use-recurring-alert-message.hook.ts
 msgid "The price changed."
 msgstr "Der Preis hat sich geändert."
+
+#: src/tag/components/tags-select-content/tags-select-content.tsx
+msgid "The primary tag is used in summaries. Choose Make primary on another selected tag to change it."
+msgstr "Das primäre Tag wird in Zusammenfassungen verwendet. Wähle bei einem anderen ausgewählten Tag „Als primär festlegen“, um es zu ändern."
 
 #: src/transaction/hook/use-revert-consolidation.hook.ts
 msgid "The refund and the purchase become separate entries again."
@@ -9439,10 +9439,6 @@ msgstr "App-Sperre ausschalten"
 #: src/app/(tabs)/settings/inactive.tsx
 msgid "Turn off Show on Home in an account’s edit screen to tuck it away here."
 msgstr "Deaktiviere „Auf Startseite anzeigen“ im Bearbeitungsbildschirm eines Kontos, um es hier abzulegen."
-
-#: src/app/note-input.tsx
-msgid "Turn on On-device AI in Settings. Tap to see what it downloads."
-msgstr "Schalte die KI auf dem Gerät in den Einstellungen ein. Tippe, um zu sehen, was geladen wird."
 
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "Turn on on-device AI to download the models."

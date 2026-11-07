@@ -7,11 +7,12 @@ interface Props {
     readonly label: string;
     readonly onPress: () => void;
     readonly testID?: string;
+    readonly labelTestID?: string;
 }
 
 const HIT_SLOP = { left: 12, right: 12 } as const;
 
-export const HeaderTextAction = ({ label, onPress, testID }: Props) => (
+export const HeaderTextAction = ({ label, onPress, testID, labelTestID }: Props) => (
     <HapticPressable
         accessibilityRole="button"
         className="min-h-[44px] justify-center active:opacity-70"
@@ -19,7 +20,7 @@ export const HeaderTextAction = ({ label, onPress, testID }: Props) => (
         testID={testID}
         onPress={onPress}
     >
-        <Text maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER} className="text-md font-medium text-default-foreground">
+        <Text testID={labelTestID} maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER} className="text-md font-medium text-positive-action">
             {label}
         </Text>
     </HapticPressable>

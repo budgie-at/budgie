@@ -5,6 +5,7 @@ import { Text } from 'react-native';
 import { EmptyFn, isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { SheetTitleRow } from '../../../@generic/component/sheet-title-row/sheet-title-row';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
 import { useGetConsolidationSourcesQuery } from '../../query/use-get-consolidation-sources.query';
@@ -14,7 +15,6 @@ import { TransactionPickerAction } from '../transaction-picker-action/transactio
 import { TransactionPickerContext } from '../transaction-picker-context/transaction-picker-context';
 import { TransactionPickerEmpty } from '../transaction-picker-empty/transaction-picker-empty';
 import { TransactionPickerFailure } from '../transaction-picker-failure/transaction-picker-failure';
-import { TransactionPickerSheetHeader } from '../transaction-picker-sheet-header/transaction-picker-sheet-header';
 import { TransactionPickerSheet } from '../transaction-picker-sheet/transaction-picker-sheet';
 
 import { ConsolidationSourceModalSelector } from './consolidation-source-modal-content.selector';
@@ -49,14 +49,7 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
     return (
         <TransactionPickerSheet
             testID={ConsolidationSourceModalSelector.Picker}
-            header={
-                <TransactionPickerSheetHeader
-                    title={sourceTitle}
-                    closeLabel={t`Done`}
-                    onClose={onClose}
-                    closeTestID={ConsolidationSourceModalSelector.DoneButton}
-                />
-            }
+            header={<SheetTitleRow title={sourceTitle} onClose={onClose} doneTestID={ConsolidationSourceModalSelector.DoneButton} />}
             pinnedFooter={pinnedFooter}
             scrollFooter={scrollFooter}
         >
@@ -81,7 +74,7 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
                 ))}
             </LoadingContent>
             {isRevertDisabled ? null : (
-                <Text dynamicTypeRamp="footnote" className="pt-md text-[13px] text-secondary-foreground">
+                <Text dynamicTypeRamp="footnote" className="pt-md text-[13px] text-secondary-foreground" maxFontSizeMultiplier={1.3}>
                     <Trans>Each source becomes a separate transaction.</Trans>
                 </Text>
             )}

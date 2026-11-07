@@ -81,8 +81,8 @@ export const useQuickFormSplit = ({
         const totalAmount =
             transactionType === TransactionTypeEnum.EXPENSE ? sumTransactionAmounts(categoryTotalAmount, feeTotal) : categoryTotalAmount;
 
-        setValue('entries', [...result, ...currentFeeEntries], { shouldValidate: false });
-        setValue('amount', totalAmount);
+        setValue('entries', [...result, ...currentFeeEntries], { shouldValidate: false, shouldDirty: true });
+        setValue('amount', totalAmount, { shouldDirty: true });
         setFromNumeric(totalAmount);
     };
 

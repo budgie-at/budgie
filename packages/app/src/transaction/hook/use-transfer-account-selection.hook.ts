@@ -23,15 +23,15 @@ export const useTransferAccountSelection = () => {
             { initialAccountId, excludeAccountId, excludeAccountTypes: [AccountTypeEnum.DEBT], onlyActive: false },
             selectedAccountId => {
                 if (isDefined(selectedAccountId)) {
-                    setValue(field, selectedAccountId);
+                    setValue(field, selectedAccountId, { shouldDirty: true });
                 }
             }
         );
     };
 
     const handleSwap = () => {
-        setValue('fromAccountId', toAccountId);
-        setValue('toAccountId', fromAccountId);
+        setValue('fromAccountId', toAccountId, { shouldDirty: true });
+        setValue('toAccountId', fromAccountId, { shouldDirty: true });
     };
 
     const handleFromPress = () => void handleAccountPress('fromAccountId', fromAccountId, toAccountId);

@@ -1,8 +1,10 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { use } from 'react';
 import { useWindowDimensions, View } from 'react-native';
 
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
+import { TransactionKeypadContext } from '../../context/transaction-keypad.context';
 import { getTransactionKeypadLayout } from '../../utils/get-transaction-keypad-layout.util';
 import { KeypadDigitButton } from '../keypad-digit-button/keypad-digit-button';
 import { TransactionKeypadButton } from '../transaction-keypad-button/transaction-keypad-button';
@@ -23,13 +25,14 @@ interface Props {
 
 export const TransactionKeypad = (props: Props) => {
     const { keypad } = props;
+    const { dismiss } = use(TransactionKeypadContext);
     const { t } = useLingui();
-    const { fontScale } = useWindowDimensions();
+    const { fontScale, height } = useWindowDimensions();
     const { decimalSeparator } = useLocaleInfo();
-    const { rowStyle, digitsStyle } = getTransactionKeypadLayout(fontScale);
+    const { rowStyle, digitsStyle } = getTransactionKeypadLayout(fontScale, height);
 
     return (
-        <View className="flex-1 gap-[6px]" style={digitsStyle}>
+        <View className="flex-1" style={digitsStyle}>
             {DIGIT_ROWS.map(row => (
                 <View key={row.join('')} className="flex-1 flex-row gap-md" style={rowStyle}>
                     {row.map(digit => (
@@ -40,6 +43,12 @@ export const TransactionKeypad = (props: Props) => {
             <View className="flex-1 flex-row gap-md" style={rowStyle}>
                 <TransactionKeypadButton value={decimalSeparator} onPress={keypad.onDecimal} testID={TransactionKeypadSelector.Decimal} />
                 <KeypadDigitButton digit="0" onDigit={keypad.onDigit} />
+                <TransactionKeypadButton
+                    icon={UserIconNameEnum.ChevronDown}
+                    accessibilityLabel={t`Hide keypad`}
+                    onPress={dismiss}
+                    testID={TransactionKeypadSelector.Dismiss}
+                />
                 <TransactionKeypadButton
                     icon={UserIconNameEnum.Delete}
                     variant="action"
