@@ -55,10 +55,16 @@ class OwnTransferDetector {
         ['я', 'ya']
     ]);
 
-    matchesAccount(title: string, account: Pick<AccountEntityInterface, 'externalId'>): boolean {
+    private readonly normalizedPhrases = Object.values(OwnTransferDetector.PHRASES)
+        .flat()
+        .map(phrase => this.normalize(phrase));
+
+    matchesAccount(title: string, account: Pick<AccountEntityInterface, 'externalId' | 'title'>): boolean {
         return this.cardSuffixes(title).some(
             suffix =>
-                /^(?:\d|[*•●xх\s])+$/iu.test(account.externalId ?? '') && (account.externalId ?? '').replaceAll(/\s/gu, '').endsWith(suffix)
+                (/^(?:\d|[*•●xх\s])+$/iu.test(account.externalId ?? '') &&
+                    (account.externalId ?? '').replaceAll(/\s/gu, '').endsWith(suffix)) ||
+                new RegExp(`[•*]${suffix}$`, 'u').test(account.title)
         );
     }
 
@@ -66,9 +72,7 @@ class OwnTransferDetector {
         const normalized = this.normalize(title);
 
         return (
-            Object.values(OwnTransferDetector.PHRASES)
-                .flat()
-                .some(phrase => ` ${normalized} `.includes(` ${this.normalize(phrase)} `)) ||
+            this.normalizedPhrases.some(phrase => ` ${normalized} `.includes(` ${phrase} `)) ||
             names.some(name => this.matchesName(title, name, false))
         );
     }

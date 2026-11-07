@@ -1,38 +1,30 @@
 import { ConsolidationExecutorService } from '@budgie/consolidation';
 import {
-    AccountRepository,
-    AccountTypeEnum,
-    AccountNatureEnum,
-    UserIconNameEnum,
     CategorySourceEnum,
     Db,
     ExternalSourceEnum,
-    PRECISION,
-    TRANSFER_PAIR_TIME_WINDOW_SECONDS,
     TransactionConsolidationTypeEnum,
     TransactionEntryTypeEnum,
-    TransactionTypeEnum,
-    YIELD_TO_UI
+    TransactionTypeEnum
 } from '@budgie/contracts';
 import { AccountBalanceIncrementalService, TransactionTransferService } from '@budgie/ledger';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { isBinanceOwnTransferTitle } from '../../binance/mapper/binance.mapper';
 import { ownTransferDetector } from '../detector/own-transfer.detector';
 import { OwnTransferRepository } from '../repository/own-transfer.repository';
 
-import type { AccountEntityInterface, ConsolidationScanScopeInterface, TransactionWithEntriesEntityInterface } from '@budgie/contracts';
+import type { ConsolidationScanScopeInterface, TransactionWithEntriesEntityInterface } from '@budgie/contracts';
 
 export class OwnTransferRepairService extends Context.Service<OwnTransferRepairService>()('@budgie/sync/OwnTransferRepairService', {
     make: Effect.gen(function* () {
         const repository = yield* OwnTransferRepository;
         const transfers = yield* TransactionTransferService;
         const consolidation = yield* ConsolidationExecutorService;
-        const accountRepository = yield* AccountRepository;
         const balances = yield* AccountBalanceIncrementalService;
 
         const candidateEntries = (transaction: TransactionWithEntriesEntityInterface) =>
@@ -44,28 +36,6 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                         entry.categorySource === CategorySourceEnum.AI) &&
                     isPositiveNumber(entry.amount)
             );
-
-        const getUntrackedOwnAccount = Effect.fnUntraced(function* (instrumentId: number) {
-            const externalId = 'untracked-own-account';
-            const existing = (yield* accountRepository.findByExternalIds([externalId])).find(
-                account => account.instrumentId === instrumentId
-            );
-
-            return (
-                existing ??
-                (yield* accountRepository.create({
-                    title: 'Untracked own account',
-                    externalId,
-                    instrumentId,
-                    type: AccountTypeEnum.BANK,
-                    nature: AccountNatureEnum.ASSET,
-                    icon: UserIconNameEnum.Wallet,
-                    order: 0,
-                    includeInNetWorth: false,
-                    isActive: false
-                }))
-            );
-        });
 
         const pair = Effect.fnUntraced(function* (
             transaction: TransactionWithEntriesEntityInterface,
@@ -114,7 +84,7 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                         transaction.externalSource === ExternalSourceEnum.BINANCE && isBinanceOwnTransferTitle(transaction.title);
 
                     return isDefined(account) &&
-                        (matches.length === 1 ||
+                        (isNotEmptyArray(matches) ||
                             ownTransferDetector.matches(transaction.title, identities) ||
                             ownTransferDetector.matchesAbbreviatedName(transaction.title, identities) ||
                             isCryptoMovement)
@@ -126,76 +96,61 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                     return 0;
                 }
 
+                const opposites = yield* repository.findOpposites(candidates.map(candidate => candidate.transaction.id));
+                const eligibleOpposites = (yield* repository.findTransactions(
+                    null,
+                    opposites.map(link => link.oppositeId)
+                )).filter(
+                    transaction =>
+                        candidateEntries(transaction).length === 1 &&
+                        transaction.entries.filter(entry => entry.type !== TransactionEntryTypeEnum.FEE).length === 1
+                );
+                const reverseOpposites = yield* repository.findOpposites(opposites.map(link => link.oppositeId));
+                const decisions = candidates
+                    .map(({ transaction, matches }) => {
+                        const links = opposites.filter(link => link.transactionId === transaction.id);
+                        const counterpart = eligibleOpposites.find(candidate => candidate.id === links[0]?.oppositeId);
+
+                        if (matches.length > 1) {
+                            return null;
+                        }
+                        if (
+                            links.length === 1 &&
+                            isDefined(counterpart) &&
+                            reverseOpposites.filter(link => link.transactionId === counterpart.id).length === 1
+                        ) {
+                            return { transaction, counterpart, target: null };
+                        }
+                        if (isEmptyArray(links) && matches.length === 1 && !isDefined(matches[0].integrationId)) {
+                            return { transaction, counterpart: null, target: matches[0] };
+                        }
+
+                        return null;
+                    })
+                    .filter(isDefined);
+
                 return yield* Db.transaction(
                     Effect.gen(function* () {
                         const consumed = new Set<number>();
                         let repaired = 0;
 
-                        const repairCandidate = Effect.fnUntraced(function* (
-                            transaction: TransactionWithEntriesEntityInterface,
-                            account: AccountEntityInterface,
-                            matches: AccountEntityInterface[],
-                            counterparts: TransactionWithEntriesEntityInterface[]
-                        ) {
-                            if (counterparts.length > 1) {
-                                return false;
-                            }
-
-                            if (counterparts.length === 1) {
-                                if (!(yield* pair(transaction, counterparts[0]))) {
-                                    return false;
-                                }
-                                yield* balances.updateBalancesByAccountIds([
-                                    candidateEntries(transaction)[0].accountId,
-                                    candidateEntries(counterparts[0])[0].accountId
-                                ]);
-                                consumed.add(counterparts[0].id);
-                            } else {
-                                if (
-                                    ownTransferDetector.matchesAbbreviatedName(transaction.title, identities) &&
-                                    !ownTransferDetector.matches(transaction.title, identities)
-                                ) {
-                                    return false;
-                                }
-                                if (matches.length === 1 && isDefined(matches[0].integrationId)) {
-                                    return false;
-                                }
-                                const target = matches.length === 1 ? matches[0] : yield* getUntrackedOwnAccount(account.instrumentId);
-                                if (!(yield* transfers.convertToTransferAccount(transaction.id, target.id))) {
-                                    return false;
-                                }
-                            }
-
-                            return true;
-                        });
-
-                        for (const { transaction, account, matches } of candidates) {
-                            const [entry] = candidateEntries(transaction);
-
+                        for (const { transaction, counterpart, target } of decisions) {
                             if (!consumed.has(transaction.id)) {
-                                const counterparts = transactions.filter(candidate => {
-                                    const [counterEntry] = candidateEntries(candidate);
-                                    const counterAccount = accounts.find(own => own.id === counterEntry.accountId);
-
-                                    return (
-                                        !consumed.has(candidate.id) &&
-                                        candidate.type !== transaction.type &&
-                                        counterEntry.accountId !== entry.accountId &&
-                                        isDefined(counterAccount) &&
-                                        counterAccount.instrumentId === account.instrumentId &&
-                                        (matches.length !== 1 || counterEntry.accountId === matches[0].id) &&
-                                        Math.abs(candidate.operatedAt.getTime() - transaction.operatedAt.getTime()) <=
-                                            TRANSFER_PAIR_TIME_WINDOW_SECONDS * 1000 &&
-                                        Math.abs(counterEntry.amount - entry.amount) <= PRECISION / 100
-                                    );
-                                });
-
-                                const changed = yield* repairCandidate(transaction, account, matches, counterparts);
+                                const changed = isDefined(counterpart)
+                                    ? yield* pair(transaction, counterpart)
+                                    : isDefined(target) && (yield* transfers.convertToTransferAccount(transaction.id, target.id));
 
                                 if (changed) {
                                     consumed.add(transaction.id);
+                                    if (isDefined(counterpart)) {
+                                        consumed.add(counterpart.id);
+                                    }
+                                    yield* balances.updateBalancesByAccountIds([
+                                        candidateEntries(transaction)[0].accountId,
+                                        ...(isDefined(counterpart) ? [candidateEntries(counterpart)[0].accountId] : []),
+                                        ...(isDefined(target) ? [target.id] : [])
+                                    ]);
                                     repaired += 1;
-                                    yield* YIELD_TO_UI;
                                 }
                             }
                         }
@@ -212,7 +167,6 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
             OwnTransferRepository.layer,
             TransactionTransferService.layer,
             ConsolidationExecutorService.layer,
-            AccountRepository.layer,
             AccountBalanceIncrementalService.layer
         ])
     );

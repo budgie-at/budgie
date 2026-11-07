@@ -1,9 +1,8 @@
 import {
     AccountEntityTable,
-    CategorySourceEnum,
     ExternalSourceEnum,
     TransactionConsolidationTypeEnum,
-    TransactionEntryEntityTable,
+    TransactionEntityTable,
     TransactionTypeEnum,
     TransactionUpdatedByEnum
 } from '@budgie/contracts';
@@ -12,240 +11,184 @@ import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { seed, testDb, TestLayer, testQueryService } from '../../harness';
+import { ownTransferDetector } from '../../../../../packages/sync/src/core/detector/own-transfer.detector';
+import { OwnTransferRepository } from '../../../../../packages/sync/src/core/repository/own-transfer.repository';
+import { explainQueryPlan, seed, testDb, TestLayer, testQueryService } from '../../harness';
 
-const titles = [
-    '400000****2468',
-    '*2468',
-    '****2468',
-    '•2468',
-    'Олена Коваленко',
-    'Kovalenko Olena',
-    'own card *9999',
-    'Зі своєї картки *9999',
-    'propre compte',
-    'eigenes Konto',
-    'cuenta propia',
-    'Відкриття депозиту',
-    'deposit closing',
-    'Binance UAH deposit',
-    'Binance USDT withdrawal',
-    'P24 *Kovalenko Olena'
-];
+const operatedAt = new Date('2026-05-01T12:00:00Z');
+const fixture = Effect.gen(function* () {
+    const repair = yield* OwnTransferRepairService;
+    const integration = yield* seed.bankIntegration({ provider: ExternalSourceEnum.MONOBANK, label: 'Коваленко Олена' });
+    const source = yield* seed.account();
+    const target = yield* seed.account({ externalId: 'fixture-mono-id', title: 'Monobank Black •2468', integrationId: integration.id });
+    yield* testDb.update(AccountEntityTable).set({ integrationId: integration.id }).where(eq(AccountEntityTable.id, target.id));
+    const expense = yield* seed.bankPairExpense({ operatedAt, externalId: 'outgoing' }, { accountId: source.id, amount: 50_000_000 });
+    yield* seed.updateTransaction(expense.id, { title: 'Зі своєї картки *2468', externalSource: ExternalSourceEnum.MONOBANK });
+
+    return { repair, source, target, expense };
+});
+const addIncome = (accountId: number) =>
+    Effect.gen(function* () {
+        const income = yield* seed.bankPairIncome({ operatedAt, externalId: 'incoming' }, { accountId, amount: 50_000_000 });
+        yield* seed.updateTransaction(income.id, { externalSource: ExternalSourceEnum.MONOBANK });
+
+        return income;
+    });
+const expectExpense = (transactionId: number) =>
+    Effect.gen(function* () {
+        const transaction = yield* testQueryService.findTransactionById(transactionId);
+        expect(transaction.type).toBe(TransactionTypeEnum.EXPENSE);
+        expect(transaction.consolidationParentTransactionId).toBeNull();
+    });
+const expectUnpaired = (expenseId: number, incomeId: number) =>
+    Effect.gen(function* () {
+        const repair = yield* OwnTransferRepairService;
+        expect(yield* repair.repair()).toBe(0);
+        yield* expectExpense(expenseId);
+        expect((yield* testQueryService.findTransactionById(incomeId)).type).toBe(TransactionTypeEnum.INCOME);
+    });
+const expectPair = (expenseId: number, incomeId: number, sourceId: number, targetId: number) =>
+    Effect.gen(function* () {
+        const [canonical] = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+        expect(canonical.type).toBe(TransactionTypeEnum.TRANSFER);
+        expect(canonical.fromAccountId).toBe(sourceId);
+        expect(canonical.toAccountId).toBe(targetId);
+        expect((yield* testQueryService.findTransactionById(expenseId)).consolidationParentTransactionId).toBe(canonical.id);
+        expect((yield* testQueryService.findTransactionById(incomeId)).consolidationParentTransactionId).toBe(canonical.id);
+    });
 
 describe('account/own-transfer-repair', () => {
-    for (const title of titles) {
-        it.effect(`repairs ${title} and is idempotent`, () =>
-            Effect.gen(function* () {
-                const repair = yield* OwnTransferRepairService;
-                yield* seed.bankIntegration({ provider: ExternalSourceEnum.MONOBANK, label: 'Коваленко Олена' });
-                const source = yield* seed.account();
-                const target = yield* seed.account({ title: 'Own card •2468', externalId: '400000****2468' });
-                const transaction = yield* seed.bankPairExpense(
-                    { operatedAt: new Date('2026-05-01T12:00:00Z'), externalId: 'own-movement' },
-                    { accountId: source.id, amount: 50_000_000 }
-                );
-                yield* seed.updateTransaction(transaction.id, {
-                    title,
-                    externalSource: title.startsWith('Binance') ? ExternalSourceEnum.BINANCE : ExternalSourceEnum.MONOBANK
-                });
-
-                expect(yield* repair.repair()).toBe(1);
-                const result = yield* testQueryService.findTransactionById(transaction.id);
-                expect(result.type).toBe(TransactionTypeEnum.TRANSFER);
-                expect(result.fromAccountId).toBe(source.id);
-                if (title.includes('2468')) {
-                    expect(result.toAccountId).toBe(target.id);
-                }
-                expect(yield* repair.repair()).toBe(0);
-            }).pipe(Effect.provide(TestLayer))
-        );
-    }
-
-    it.effect('pairs a unique counterpart through consolidation', () =>
+    it.effect('pairs an API-id account using the mask in its title', () =>
         Effect.gen(function* () {
-            const repair = yield* OwnTransferRepairService;
-            const source = yield* seed.account();
-            const target = yield* seed.account({ externalId: '400000****2468' });
-            const operatedAt = new Date('2026-05-01T12:00:00Z');
-            const expense = yield* seed.bankPairExpense(
-                { operatedAt, externalId: 'outgoing' },
+            const { repair, source, target, expense } = yield* fixture;
+            const income = yield* addIncome(target.id);
+            const repository = yield* OwnTransferRepository;
+            expect(yield* repository.findOpposites([expense.id])).toEqual([{ transactionId: expense.id, oppositeId: income.id }]);
+            expect((yield* explainQueryPlan(repository.findOpposites([expense.id]))).some(step => step.includes('SEARCH'))).toBe(true);
+            expect(yield* repair.repair()).toBe(1);
+            yield* expectPair(expense.id, income.id, source.id, target.id);
+            expect(yield* repair.repair()).toBe(0);
+        }).pipe(Effect.provide([OwnTransferRepository.layer, TestLayer]))
+    );
+
+    it.effect('leaves a synced card without its opposite unchanged and creates no account', () =>
+        Effect.gen(function* () {
+            const { repair, expense } = yield* fixture;
+            expect(yield* repair.repair()).toBe(0);
+            yield* expectExpense(expense.id);
+            expect(yield* testDb.query.AccountEntityTable.findMany({ where: { externalId: 'untracked-own-account' } })).toEqual([]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('pairs a phrase only after the other synced leg arrives in a later scoped repair', () =>
+        Effect.gen(function* () {
+            const { repair, source, target, expense } = yield* fixture;
+            const scope = { operatedAtFrom: operatedAt, operatedAtTo: operatedAt, transactionIds: [expense.id] };
+            yield* seed.updateTransaction(expense.id, { title: 'На свою картку' });
+            expect(yield* repair.repair(scope)).toBe(0);
+            yield* expectExpense(expense.id);
+            const income = yield* addIncome(target.id);
+            expect(yield* repair.repair(scope)).toBe(1);
+            yield* expectPair(expense.id, income.id, source.id, target.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('preserves a phrase with two matching card targets', () =>
+        Effect.gen(function* () {
+            const { repair, expense } = yield* fixture;
+            yield* seed.account({ title: 'Another card •2468' });
+            expect(yield* repair.repair()).toBe(0);
+            yield* expectExpense(expense.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('preserves two expenses competing for one eligible income', () =>
+        Effect.gen(function* () {
+            const { repair, source, target, expense } = yield* fixture;
+            const duplicate = yield* seed.bankPairExpense(
+                { operatedAt, externalId: 'duplicate' },
                 { accountId: source.id, amount: 50_000_000 }
             );
-            const income = yield* seed.bankPairIncome({ operatedAt, externalId: 'incoming' }, { accountId: target.id, amount: 50_000_000 });
-            yield* seed.updateTransaction(expense.id, { title: '*2468', externalSource: ExternalSourceEnum.MONOBANK });
-            yield* seed.updateTransaction(income.id, { externalSource: ExternalSourceEnum.MONOBANK });
+            yield* seed.updateTransaction(duplicate.id, { title: 'На свою картку', externalSource: ExternalSourceEnum.MONOBANK });
+            const income = yield* addIncome(target.id);
+            expect(yield* repair.repair()).toBe(0);
+            yield* expectExpense(expense.id);
+            yield* expectExpense(duplicate.id);
+            expect((yield* testQueryService.findTransactionById(income.id)).type).toBe(TransactionTypeEnum.INCOME);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('does not convert into a manual account with an existing manual opposite', () =>
+        Effect.gen(function* () {
+            const { target, expense } = yield* fixture;
+            yield* testDb.update(AccountEntityTable).set({ integrationId: null }).where(eq(AccountEntityTable.id, target.id));
+            const income = yield* addIncome(target.id);
+            yield* testDb.update(TransactionEntityTable).set({ externalSource: null }).where(eq(TransactionEntityTable.id, income.id));
+            yield* expectUnpaired(expense.id, income.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('preserves a user-edited opposite', () =>
+        Effect.gen(function* () {
+            const { target, expense } = yield* fixture;
+            const income = yield* addIncome(target.id);
+            yield* testDb
+                .update(TransactionEntityTable)
+                .set({ updatedBy: TransactionUpdatedByEnum.USER })
+                .where(eq(TransactionEntityTable.id, income.id));
+            yield* expectUnpaired(expense.id, income.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('converts a unique manual card without an opposite exactly once', () =>
+        Effect.gen(function* () {
+            const { repair, source, target, expense } = yield* fixture;
+            yield* testDb.update(AccountEntityTable).set({ integrationId: null }).where(eq(AccountEntityTable.id, target.id));
             expect(yield* repair.repair()).toBe(1);
-            expect((yield* testQueryService.findTransactionById(expense.id)).consolidationParentTransactionId).toBeTruthy();
+            const result = yield* testQueryService.findTransactionById(expense.id);
+            expect(result.type).toBe(TransactionTypeEnum.TRANSFER);
+            expect(result.fromAccountId).toBe(source.id);
+            expect(result.toAccountId).toBe(target.id);
             expect(yield* repair.repair()).toBe(0);
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('preserves other people, unknown cards and user edits', () =>
+    it.effect('uses Binance titles only for pairing', () =>
         Effect.gen(function* () {
-            const repair = yield* OwnTransferRepairService;
-            yield* seed.bankIntegration({ provider: ExternalSourceEnum.MONOBANK, label: 'Коваленко Олена' });
-            const account = yield* seed.account();
-            for (const title of ['*9876', 'Ірина М.', 'own card']) {
-                const transaction = yield* seed.bankPairExpense(
-                    { operatedAt: new Date('2026-05-01T12:00:00Z'), externalId: title },
-                    { accountId: account.id, amount: 20_000_000 }
-                );
-                yield* seed.updateTransaction(transaction.id, {
-                    title,
-                    externalSource: ExternalSourceEnum.MONOBANK,
-                    ...(title === 'own card' && { updatedBy: TransactionUpdatedByEnum.USER })
-                });
-            }
+            const { repair, source, target, expense } = yield* fixture;
+            yield* seed.updateTransaction(expense.id, { title: 'Binance USDT withdrawal', externalSource: ExternalSourceEnum.BINANCE });
             expect(yield* repair.repair()).toBe(0);
-        }).pipe(Effect.provide(TestLayer))
-    );
-    it.effect('preserves manually categorized entries and repairs an unmatched income', () =>
-        Effect.gen(function* () {
-            const repair = yield* OwnTransferRepairService;
-            const account = yield* seed.account();
-            const operatedAt = new Date('2026-05-01T12:00:00Z');
-            const income = yield* seed.bankPairIncome(
-                { operatedAt, externalId: 'income-only' },
-                { accountId: account.id, amount: 50_000_000 }
-            );
-            const expense = yield* seed.bankPairExpense(
-                { operatedAt, externalId: 'categorized' },
-                { accountId: account.id, amount: 20_000_000 }
-            );
-            const category = yield* seed.category('Synthetic category');
-            yield* seed.updateTransaction(income.id, { title: 'own account', externalSource: ExternalSourceEnum.MONOBANK });
-            yield* seed.updateTransaction(expense.id, { title: 'own account', externalSource: ExternalSourceEnum.MONOBANK });
-            yield* testDb
-                .update(TransactionEntryEntityTable)
-                .set({ categoryId: category.id, categorySource: CategorySourceEnum.USER })
-                .where(eq(TransactionEntryEntityTable.transactionId, expense.id));
+            yield* expectExpense(expense.id);
+            const income = yield* addIncome(target.id);
             expect(yield* repair.repair()).toBe(1);
-            const result = yield* testQueryService.findTransactionById(income.id);
-            expect(result.type).toBe(TransactionTypeEnum.TRANSFER);
-            expect(result.toAccountId).toBe(account.id);
-            expect((yield* testQueryService.findTransactionById(expense.id)).type).toBe(TransactionTypeEnum.EXPENSE);
+            yield* expectPair(expense.id, income.id, source.id, target.id);
         }).pipe(Effect.provide(TestLayer))
     );
 });
 
-describe('account/own-transfer-repair safety', () => {
-    for (const title of ['Amy Cardenas', 'Tommy Card Shop', 'Brown Accountants', 'Top up my card Uber', 'Tax 2024', 'Олена К.']) {
-        it.effect(`preserves ambiguous title ${title}`, () =>
-            Effect.gen(function* () {
-                const repair = yield* OwnTransferRepairService;
-                yield* seed.bankIntegration({ provider: ExternalSourceEnum.MONOBANK, label: 'Коваленко Олена' });
-                const source = yield* seed.account();
-                yield* seed.account({ externalId: '400000****2024' });
-                const transaction = yield* seed.bankPairExpense(
-                    { operatedAt: new Date('2026-05-01T12:00:00Z'), externalId: title },
-                    { accountId: source.id, amount: 50_000_000 }
-                );
-                yield* seed.updateTransaction(transaction.id, { title, externalSource: ExternalSourceEnum.MONOBANK });
-                expect(yield* repair.repair()).toBe(0);
-                expect((yield* testQueryService.findTransactionById(transaction.id)).type).toBe(TransactionTypeEnum.EXPENSE);
-            }).pipe(Effect.provide(TestLayer))
-        );
-    }
-
-    for (const scenario of [
-        'synced',
-        'manual',
-        'ambiguous',
-        'deleted',
-        'live duplicate',
-        'iban',
-        'mcc',
-        'scope',
-        'nonconvertible',
-        'abbreviated',
-        'binance',
-        'enable banking'
-    ]) {
-        it.effect(`handles ${scenario} safely`, () =>
-            Effect.gen(function* () {
-                const repair = yield* OwnTransferRepairService;
-                const integration = yield* seed.bankIntegration({
-                    provider: scenario === 'enable banking' ? ExternalSourceEnum.ENABLE_BANKING : ExternalSourceEnum.MONOBANK,
-                    label: scenario === 'enable banking' ? 'Erste Bank' : 'Коваленко Олена'
-                });
-                const source = yield* seed.account();
-                const target = yield* seed.account({
-                    externalId: scenario === 'iban' ? 'DE1234562468' : '400000****2468',
-                    iban: 'DE1234562468'
-                });
-                if (scenario === 'synced') {
-                    yield* testDb
-                        .update(AccountEntityTable)
-                        .set({ integrationId: integration.id })
-                        .where(eq(AccountEntityTable.id, target.id));
-                }
-                if (scenario === 'deleted') {
-                    yield* testDb.update(AccountEntityTable).set({ deletedAt: new Date() }).where(eq(AccountEntityTable.id, target.id));
-                }
-                if (scenario === 'live duplicate') {
-                    const deleted = yield* seed.account({ externalId: target.externalId });
-                    yield* testDb.update(AccountEntityTable).set({ deletedAt: new Date() }).where(eq(AccountEntityTable.id, deleted.id));
-                }
-                const operatedAt = new Date('2026-05-01T12:00:00Z');
-                const transaction = yield* seed.bankPairExpense(
-                    { operatedAt, externalId: 'safety-expense' },
-                    { accountId: source.id, amount: 50_000_000 }
-                );
-                const holderTitle = scenario === 'abbreviated' ? 'Олена К.' : 'XXXX2468';
-                yield* seed.updateTransaction(transaction.id, {
-                    title: scenario === 'enable banking' ? 'Erste Bank' : holderTitle,
-                    externalSource: ExternalSourceEnum.MONOBANK,
-                    ...(scenario === 'nonconvertible' && { fromAccountId: null })
-                });
-                if (scenario === 'mcc') {
-                    const category = yield* seed.category('Synthetic MCC');
-                    yield* testDb
-                        .update(TransactionEntryEntityTable)
-                        .set({ categoryId: category.id, categorySource: CategorySourceEnum.MCC_DEFAULT })
-                        .where(eq(TransactionEntryEntityTable.transactionId, transaction.id));
-                }
-                if (['ambiguous', 'abbreviated', 'binance'].includes(scenario)) {
-                    const counterpart = yield* seed.bankPairIncome(
-                        { operatedAt, externalId: 'safety-income' },
-                        { accountId: target.id, amount: 50_000_000 }
-                    );
-                    yield* seed.updateTransaction(counterpart.id, {
-                        title: scenario === 'binance' ? 'Binance UAH deposit' : 'Counterpart',
-                        externalSource: scenario === 'binance' ? ExternalSourceEnum.BINANCE : ExternalSourceEnum.MONOBANK
-                    });
-                }
-                if (scenario === 'ambiguous') {
-                    const second = yield* seed.bankPairIncome(
-                        { operatedAt, externalId: 'second-income' },
-                        { accountId: target.id, amount: 50_000_000 }
-                    );
-                    yield* seed.updateTransaction(second.id, { externalSource: ExternalSourceEnum.MONOBANK });
-                }
-                const expected = ['manual', 'live duplicate', 'mcc', 'abbreviated', 'binance'].includes(scenario) ? 1 : 0;
-                expect(
-                    yield* repair.repair(
-                        scenario === 'scope'
-                            ? {
-                                  operatedAtFrom: new Date('2026-08-01'),
-                                  operatedAtTo: new Date('2026-08-02'),
-                                  transactionIds: []
-                              }
-                            : null
-                    )
-                ).toBe(expected);
-                if (['manual', 'live duplicate', 'mcc'].includes(scenario)) {
-                    expect((yield* testQueryService.findTransactionById(transaction.id)).toAccountId).toBe(target.id);
-                }
-                if (['abbreviated', 'binance'].includes(scenario)) {
-                    const [canonical] = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
-                    expect(canonical.fromAccountId).toBe(source.id);
-                    expect(canonical.toAccountId).toBe(target.id);
-                }
-                if (scenario === 'nonconvertible') {
-                    expect(yield* repair.repair()).toBe(0);
-                }
-            }).pipe(Effect.provide(TestLayer))
-        );
-    }
+describe('own transfer detector', () => {
+    it.each(['400000****2468', '*2468', '****2468', '•2468', 'Зі своєї картки *2468'])('matches the account title mask for %s', title => {
+        expect(ownTransferDetector.matchesAccount(title, { externalId: 'fixture-mono-id', title: 'Monobank Black •2468' })).toBe(true);
+    });
+    it.each([
+        'Олена Коваленко',
+        'Kovalenko Olena',
+        'own card *9999',
+        'Зі своєї картки *9999',
+        'propre compte',
+        'eigenes Konto',
+        'cuenta propia',
+        'Відкриття депозиту',
+        'deposit closing',
+        'P24 *Kovalenko Olena'
+    ])('recognizes own movement signal %s', title => {
+        expect(ownTransferDetector.matches(title, ['Коваленко Олена'])).toBe(true);
+    });
+    it.each(['Amy Cardenas', 'Tommy Card Shop', 'Brown Accountants', 'Top up my card Uber', 'Tax 2024'])(
+        'rejects unrelated title %s',
+        title => {
+            expect(ownTransferDetector.matches(title, ['Коваленко Олена'])).toBe(false);
+            expect(ownTransferDetector.matchesAbbreviatedName(title, ['Коваленко Олена'])).toBe(false);
+        }
+    );
 });
