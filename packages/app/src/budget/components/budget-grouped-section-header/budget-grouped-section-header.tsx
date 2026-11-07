@@ -21,7 +21,7 @@ export const BudgetGroupedSectionHeader = ({ label, trailing, testID }: Props) =
     return (
         <View testID={testID} collapsable={false} className={containerClassName}>
             <View className="min-w-0 shrink self-stretch">
-                <GroupedListSectionTitle title={label} />
+                <GroupedListSectionTitle title={label} numberOfLines={2} />
             </View>
             {isDefined(trailing) ? <View className="min-h-[44px] shrink-0 justify-center px-3xl">{trailing}</View> : null}
         </View>
