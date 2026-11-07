@@ -6,6 +6,7 @@ import { isPositiveNumber } from '@rnw-community/shared';
 
 import { MetaPill } from '../../../@generic/component/meta-pill/meta-pill';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
+import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-chrome-font-size-multiplier.constant';
 import { useIsLargeTextSize } from '../../../@generic/hook/use-is-large-text-size.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 
@@ -31,7 +32,10 @@ export const BudgetLimitRow = (props: Props) => {
     const isSurplus = isPositiveNumber(carriedAmount);
     const pillLabel = isSurplus ? t`+${carriedLabel} rolled over` : t`−${carriedLabel} carried`;
     const pillVariant = isSurplus ? 'positive' : 'destructive';
-    const pill = carriedAmount === 0 ? null : <MetaPill variant={pillVariant} label={pillLabel} />;
+    const pill =
+        carriedAmount === 0 ? null : (
+            <MetaPill variant={pillVariant} label={pillLabel} maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER} />
+        );
     const spentLabel = formatDigits(convertFromMicroUnits(spent), currencySymbol);
     const limitLabel = formatDigits(convertFromMicroUnits(limit), currencySymbol);
     const headerClassName = isStacked ? 'gap-y-xs' : 'flex-row items-center justify-between gap-x-md';

@@ -26,9 +26,15 @@ export const RuleSelectorOptionRow = ({ option, isSelected, onPress, testID }: P
     const pressableProps = { disabled: isDisabled, accessibilityState: { selected: isSelected, disabled: isDisabled } };
     const titleClassName = isSelected ? 'text-primary text-[17px] font-semibold' : 'text-primary text-[17px]';
     const disabledClassName = isDisabled ? 'opacity-40' : '';
-    const title = <Text className={cn(titleClassName, disabledClassName)}>{option.label}</Text>;
+    const title = (
+        <Text className={cn(titleClassName, disabledClassName)} maxFontSizeMultiplier={2}>
+            {option.label}
+        </Text>
+    );
     const subtitle = (
-        <Text className="text-secondary-foreground text-[13px] leading-[18px]">{option.disabledReason ?? option.description}</Text>
+        <Text className="text-secondary-foreground text-[13px] leading-[18px]" maxFontSizeMultiplier={2}>
+            {option.disabledReason ?? option.description}
+        </Text>
     );
     const disc = isDefined(option.glyph) ? (
         <View className="h-[36px] w-[36px] items-center justify-center rounded-full bg-surface-disc">
