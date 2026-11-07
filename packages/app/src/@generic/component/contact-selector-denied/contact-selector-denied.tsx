@@ -1,8 +1,9 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Text, View, useWindowDimensions } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../../constant/max-chrome-font-size-multiplier.constant';
+import { useIsLargeTextSize } from '../../hook/use-is-large-text-size.hook';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { ContactSelectorSettingsButton } from '../contact-selector-settings-button/contact-selector-settings-button';
 import { ContactSelectorSelector } from '../contact-selector/contact-selector.selector';
@@ -12,28 +13,25 @@ interface Props {
     readonly isLoading: boolean;
 }
 
-const LARGE_TEXT_FONT_SCALE = 1.3;
-
 export const ContactSelectorDenied = ({ isLoading }: Props) => {
     const { t } = useLingui();
-    const { fontScale } = useWindowDimensions();
+    const isLargeText = useIsLargeTextSize();
     const accessibilityState = { busy: isLoading };
-    const icon =
-        fontScale >= LARGE_TEXT_FONT_SCALE ? null : (
-            <View accessible accessibilityLabel={t`Contacts`} accessibilityState={accessibilityState}>
-                <LoadingContent isLoading={isLoading}>
-                    <CircleIcon
-                        icon={UserIconNameEnum.Lock}
-                        variant="secondary"
-                        size={36}
-                        iconSize={24}
-                        radius={18}
-                        border={false}
-                        className="bg-surface-disc"
-                    />
-                </LoadingContent>
-            </View>
-        );
+    const icon = isLargeText ? null : (
+        <View accessible accessibilityLabel={t`Contacts`} accessibilityState={accessibilityState}>
+            <LoadingContent isLoading={isLoading}>
+                <CircleIcon
+                    icon={UserIconNameEnum.Lock}
+                    variant="secondary"
+                    size={36}
+                    iconSize={24}
+                    radius={18}
+                    border={false}
+                    className="bg-surface-disc"
+                />
+            </LoadingContent>
+        </View>
+    );
 
     return (
         <View className="w-full items-center gap-y-md" testID={ContactSelectorSelector.State} accessibilityState={accessibilityState}>

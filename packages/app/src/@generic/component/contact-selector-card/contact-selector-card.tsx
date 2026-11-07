@@ -8,6 +8,7 @@ import { EmptyFn, emptyFn, isNotEmptyArray, isNotEmptyString } from '@rnw-commun
 
 import { CreateAccountScreenSelector } from '../../../account/component/create-account-screen/create-account-screen.selector';
 import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../../constant/max-chrome-font-size-multiplier.constant';
+import { useIsLargeTextSize } from '../../hook/use-is-large-text-size.hook';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { ContactSelectorDetail } from '../contact-selector-detail/contact-selector-detail';
 import { GroupedListRow } from '../grouped-list-row/grouped-list-row';
@@ -22,7 +23,6 @@ interface Props {
     readonly phoneNumbers: string[];
 }
 
-const LARGE_TEXT_FONT_SCALE = 1.3;
 const CHECK_SIZE = 22;
 
 const StyledImage = withUniwind(Image);
@@ -34,7 +34,7 @@ const placeholder = { blurhash };
 export const ContactSelectorCard = (props: Props) => {
     const { isSelected, onSelect, title, image, emails, phoneNumbers } = props;
     const { fontScale } = useWindowDimensions();
-    const isLargeText = fontScale >= LARGE_TEXT_FONT_SCALE;
+    const isLargeText = useIsLargeTextSize();
     const checkSize = CHECK_SIZE * Math.min(fontScale, MAX_CHROME_FONT_SIZE_MULTIPLIER);
     const checkStyle = { width: checkSize };
     const pressableProps = { accessibilityState: { selected: isSelected } };

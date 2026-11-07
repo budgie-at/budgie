@@ -3860,6 +3860,7 @@ msgid "e.g. 12-month deposit"
 msgstr "p. ej., depósito a 12 meses"
 
 #: src/budget/components/budget-editable-amount-input/budget-editable-amount-input.tsx
+#: src/budget/components/budget-overall-limit-input/budget-overall-limit-input.tsx
 msgid "e.g. 200"
 msgstr "p. ej. 200"
 

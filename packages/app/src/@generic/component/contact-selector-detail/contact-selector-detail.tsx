@@ -2,6 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { Text, View, useWindowDimensions } from 'react-native';
 
 import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../../constant/max-chrome-font-size-multiplier.constant';
+import { useIsLargeTextSize } from '../../hook/use-is-large-text-size.hook';
 import { Icon } from '../icon/icon';
 
 import type { TextProps } from 'react-native';
@@ -13,12 +14,12 @@ interface Props {
     readonly ellipsizeMode?: TextProps['ellipsizeMode'];
 }
 
-const LARGE_TEXT_FONT_SCALE = 1.3;
 const ICON_SIZE = 12;
 
 export const ContactSelectorDetail = ({ icon, value, numberOfLines, ellipsizeMode }: Props) => {
     const { fontScale } = useWindowDimensions();
-    const rowClassName = fontScale >= LARGE_TEXT_FONT_SCALE ? 'flex-row items-start gap-x-sm' : 'flex-row items-center gap-x-sm';
+    const isLargeText = useIsLargeTextSize();
+    const rowClassName = isLargeText ? 'flex-row items-start gap-x-sm' : 'flex-row items-center gap-x-sm';
     const iconSize = ICON_SIZE * Math.min(fontScale, MAX_CHROME_FONT_SIZE_MULTIPLIER);
 
     return (

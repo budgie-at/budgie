@@ -1,11 +1,12 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { Text, View, useWindowDimensions } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { useIsLargeTextSize } from '../../../@generic/hook/use-is-large-text-size.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { RuleGlyph } from '../rule-glyph/rule-glyph';
 
@@ -18,10 +19,8 @@ interface Props {
     readonly testID?: string;
 }
 
-const LARGE_TEXT_FONT_SCALE = 1.3;
-
 export const RuleSelectorOptionRow = ({ option, isSelected, onPress, testID }: Props) => {
-    const { fontScale } = useWindowDimensions();
+    const isLargeText = useIsLargeTextSize();
     const isDisabled = isDefined(option.disabledReason);
     const handlePress = () => void onPress(option.value);
     const pressableProps = { disabled: isDisabled, accessibilityState: { selected: isSelected, disabled: isDisabled } };
@@ -38,8 +37,7 @@ export const RuleSelectorOptionRow = ({ option, isSelected, onPress, testID }: P
     ) : (
         <CircleIcon icon={option.icon} size={36} iconSize={18} radius={18} variant="secondary" border={false} className="bg-surface-disc" />
     );
-    const leading =
-        fontScale >= LARGE_TEXT_FONT_SCALE ? null : <View className={cn('h-[42px] justify-center', disabledClassName)}>{disc}</View>;
+    const leading = isLargeText ? null : <View className={cn('h-[42px] justify-center', disabledClassName)}>{disc}</View>;
     const check = isSelected ? (
         <Icon icon={UserIconNameEnum.Check} size={22} className="text-positive-action" />
     ) : (

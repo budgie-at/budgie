@@ -1,18 +1,17 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
-import { Text, useWindowDimensions } from 'react-native';
+import { Text } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-chrome-font-size-multiplier.constant';
+import { useIsLargeTextSize } from '../../../@generic/hook/use-is-large-text-size.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { PIN_STEP_FADE_DURATION_MS } from '../../constant/pin-motion.constant';
 
-const LARGE_TEXT_FONT_SCALE = 1.3;
-
 export const PinForgottenWarning = () => {
-    const { fontScale } = useWindowDimensions();
-    const layoutClassName = fontScale >= LARGE_TEXT_FONT_SCALE ? 'flex-col gap-y-xs px-md' : 'flex-row gap-x-sm px-5xl';
+    const isLargeText = useIsLargeTextSize();
+    const layoutClassName = isLargeText ? 'flex-col gap-y-xs px-md' : 'flex-row gap-x-sm px-5xl';
 
     return (
         <Animated.View
