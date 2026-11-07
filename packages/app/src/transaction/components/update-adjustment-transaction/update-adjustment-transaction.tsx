@@ -115,7 +115,10 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
 
     const variant: ColorPaletteVariant = isIncrease ? 'positive' : 'primary';
     const display = {
-        symbol: `${isIncrease ? '+' : '\u2212'}${details.instrumentSymbol}`,
+        variant: isPositiveNumber(numericValue) ? variant : ('secondary' as const),
+        symbol: isPositiveNumber(numericValue)
+            ? `${isIncrease ? '+' : '\u2212'}\u2060${details.instrumentSymbol}`
+            : details.instrumentSymbol,
         amount: isEditingAmount ? displayValue : formatKeypadAmount(displayValue, '.', '', 2),
         isDisabled: isSubmitting || !isPositiveNumber(numericValue)
     };
@@ -151,7 +154,7 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
                     ref={amountDisplayRef}
                     amount={display.amount}
                     currencySymbol={display.symbol}
-                    variant={variant}
+                    variant={display.variant}
                     onPress={toggleKeypad}
                     isEditing={isEditingAmount}
                     accessibilityHint={amountAccessibilityHint}

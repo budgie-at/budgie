@@ -1504,10 +1504,6 @@ msgstr "Tras 5 intentos fallidos, Budgie espera un poco más entre intentos."
 msgid "After saving"
 msgstr "Después de guardar"
 
-#: src/transaction/hook/use-adjustment-balance.hook.ts
-msgid "After saving: {after}"
-msgstr "Después de guardar: {after}"
-
 #: src/budget/constant/budget-pace-status-label.constant.ts
 msgid "Ahead of pace"
 msgstr "Por encima del ritmo"
@@ -3598,9 +3594,9 @@ msgstr "moneda"
 msgid "Currency"
 msgstr "Moneda"
 
-#: src/transaction/hook/use-adjustment-balance.hook.ts
-msgid "Current adjustment {originalLabel}"
-msgstr "Ajuste actual {originalLabel}"
+#: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
+msgid "Current adjustment"
+msgstr "Ajuste actual"
 
 #: src/account/component/account-balance-field/account-balance-field.tsx
 #: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
@@ -7903,10 +7899,6 @@ msgstr "Ahorra un poco cada periodo para las facturas anuales y que nunca te sor
 #: src/export/hook/use-backup-actions.hook.ts
 msgid "Saved to your chosen folder."
 msgstr "Guardada en la carpeta elegida."
-
-#: src/transaction/hook/use-adjustment-balance.hook.ts
-msgid "Saving replaces {originalLabel} with {proposedLabel}"
-msgstr "Al guardar se sustituye {originalLabel} por {proposedLabel}"
 
 #: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts

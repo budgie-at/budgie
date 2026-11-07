@@ -31,17 +31,19 @@ const wholeVariants = cva('tabular-nums', {
         variant: {
             [MoneyTextVariantEnum.FIELD]: 'text-[40px] font-semibold tracking-[-1px]',
             [MoneyTextVariantEnum.ROW]: 'text-[17px] font-semibold tracking-tight',
+            [MoneyTextVariantEnum.BALANCE]: 'text-[17px] font-semibold tracking-tight',
             [MoneyTextVariantEnum.CAPTION]: 'text-[13px] text-secondary-foreground'
         }
     }
 });
 
-const fractionVariants = cva('text-secondary-foreground', {
+const fractionVariants = cva('', {
     variants: {
         variant: {
-            [MoneyTextVariantEnum.FIELD]: 'text-[24px] font-semibold',
-            [MoneyTextVariantEnum.ROW]: 'text-[13px] font-medium',
-            [MoneyTextVariantEnum.CAPTION]: 'text-[11px]'
+            [MoneyTextVariantEnum.FIELD]: 'text-[24px] font-semibold text-secondary-foreground',
+            [MoneyTextVariantEnum.ROW]: 'text-[13px] font-medium text-secondary-foreground',
+            [MoneyTextVariantEnum.BALANCE]: 'text-[17px] font-semibold',
+            [MoneyTextVariantEnum.CAPTION]: 'text-[11px] text-secondary-foreground'
         }
     }
 });

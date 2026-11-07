@@ -25,17 +25,15 @@ export const useAdjustmentBalance = (details: AdjustmentTransactionDetailsInterf
         after: isProtected ? PROTECTED_AMOUNT_PLACEHOLDER : toTrueMinus(formatDigits(resultingBalance, details.instrumentSymbol)),
         original: isProtected
             ? PROTECTED_AMOUNT_PLACEHOLDER
-            : `${original > 0 ? '+' : ''}${toTrueMinus(formatDigits(original, details.instrumentSymbol))}`,
-        proposed: isProtected
-            ? PROTECTED_AMOUNT_PLACEHOLDER
-            : `${proposed > 0 ? '+' : ''}${toTrueMinus(formatDigits(proposed, details.instrumentSymbol))}`,
+            : `${original > 0 ? '+\u2060' : ''}${toTrueMinus(formatDigits(original, details.instrumentSymbol)).replace('−', '−\u2060')}`,
         change: isProtected
             ? PROTECTED_AMOUNT_PLACEHOLDER
-            : `${change > 0 ? '+' : ''}${toTrueMinus(formatDigits(change, details.instrumentSymbol))}`
+            : `${change > 0 ? '+\u2060' : ''}${toTrueMinus(formatDigits(change, details.instrumentSymbol)).replace('−', '−\u2060')}`
     };
-    const { original: originalLabel, proposed: proposedLabel } = formatted;
     const after = isPositiveNumber(amount) ? formatted.after : '—';
     const difference = change === 0 ? t`No change` : formatted.change;
+
+    const preview = change === 0 ? t`No change` : `${difference} → ${formatted.after}`;
 
     return {
         balance,
@@ -44,8 +42,7 @@ export const useAdjustmentBalance = (details: AdjustmentTransactionDetailsInterf
         after,
         difference,
         current: formatted.current,
-        currentAdjustment: t`Current adjustment ${originalLabel}`,
-        replacement: isPositiveNumber(amount) ? t`Saving replaces ${originalLabel} with ${proposedLabel}` : t`Enter an amount`,
-        preview: t`After saving: ${after}`
+        currentAdjustment: formatted.original,
+        preview: isPositiveNumber(amount) ? preview : t`Enter an amount`
     };
 };

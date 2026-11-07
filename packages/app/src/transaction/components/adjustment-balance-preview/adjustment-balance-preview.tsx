@@ -1,7 +1,7 @@
 import * as Effect from 'effect/Effect';
 import * as Fiber from 'effect/Fiber';
-import { useEffect } from 'react';
-import { AccessibilityInfo, Text } from 'react-native';
+import { useEffect, useRef } from 'react';
+import { AccessibilityInfo, Platform, Text } from 'react-native';
 
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useAdjustmentBalance } from '../../hook/use-adjustment-balance.hook';
@@ -20,7 +20,16 @@ const PREVIEW_STYLE = { height: 24 };
 export const AdjustmentBalancePreview = ({ details, amount, isIncrease }: Props) => {
     const { preview } = useAdjustmentBalance(details, amount, isIncrease);
 
+    const previousPreview = useRef(preview);
+
     useEffect(() => {
+        const hasChanged = previousPreview.current !== preview;
+        previousPreview.current = preview;
+
+        if (!hasChanged || Platform.OS !== 'ios') {
+            return;
+        }
+
         const fiber = appRuntime.runFork(
             Effect.sleep(600).pipe(
                 Effect.andThen(Effect.sync(() => void AccessibilityInfo.announceForAccessibilityWithOptions(preview, { queue: true })))

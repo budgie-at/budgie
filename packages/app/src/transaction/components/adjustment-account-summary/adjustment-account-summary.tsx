@@ -24,7 +24,7 @@ export const AdjustmentAccountSummary = ({ details, amount, isIncrease }: Props)
     const balance = useAdjustmentBalance(details, amount, isIncrease);
     const isCompact = useWindowDimensions().fontScale >= ADJUSTMENT_COMPACT_FONT_SCALE;
     const sectionClassName = isCompact ? 'gap-y-[8px]' : 'gap-y-[16px]';
-    const changeClassName = balance.change < 0 ? 'text-[13px] text-destructive-foreground' : 'text-[13px] text-positive-strong';
+    const changeClassName = balance.change < 0 ? 'text-[13px] text-destructive-strong' : 'text-[13px] text-positive-strong';
     const detailClassName = balance.change === 0 ? 'text-[13px] text-secondary-foreground' : changeClassName;
     const detail = balance.change === 0 || balance.after === '—' ? null : balance.difference;
     const afterValue = balance.change === 0 ? t`No change` : balance.after;
@@ -37,7 +37,7 @@ export const AdjustmentAccountSummary = ({ details, amount, isIncrease }: Props)
             <MoneyText
                 amount={balance.resultingBalance}
                 instrumentSymbol={details.instrumentSymbol}
-                variant={MoneyTextVariantEnum.ROW}
+                variant={MoneyTextVariantEnum.BALANCE}
                 maxFontSizeMultiplier={1.35}
                 decimalPlaces={2}
                 tone="primary"
@@ -72,11 +72,17 @@ export const AdjustmentAccountSummary = ({ details, amount, isIncrease }: Props)
                 </View>
             </GroupedListSection>
             <GroupedListSection>
+                <AdjustmentBalanceRow label={t`Current adjustment`} value={balance.currentAdjustment} testID={AdjustmentSelector.Original}>
+                    <Text className="text-[17px] text-secondary-foreground" maxFontSizeMultiplier={1.35}>
+                        {balance.currentAdjustment}
+                    </Text>
+                </AdjustmentBalanceRow>
+                <View className="mx-lg h-hairline bg-surface-separator" />
                 <AdjustmentBalanceRow label={t`Current balance`} value={balance.current} testID={AdjustmentSelector.Current}>
                     <MoneyText
                         amount={balance.balance}
                         instrumentSymbol={details.instrumentSymbol}
-                        variant={MoneyTextVariantEnum.ROW}
+                        variant={MoneyTextVariantEnum.BALANCE}
                         maxFontSizeMultiplier={1.35}
                         decimalPlaces={2}
                         tone="secondary"
@@ -94,14 +100,6 @@ export const AdjustmentAccountSummary = ({ details, amount, isIncrease }: Props)
                     {afterContent}
                 </AdjustmentBalanceRow>
             </GroupedListSection>
-            <View accessible accessibilityLabel={`${balance.currentAdjustment}. ${balance.replacement}`} className="gap-y-[2px] px-lg">
-                <Text className="text-[13px] text-secondary-foreground" maxFontSizeMultiplier={1.3}>
-                    {balance.currentAdjustment}
-                </Text>
-                <Text className="text-[13px] text-secondary-foreground" maxFontSizeMultiplier={1.3}>
-                    {balance.replacement}
-                </Text>
-            </View>
         </View>
     );
 };

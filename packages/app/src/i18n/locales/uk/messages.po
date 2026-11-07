@@ -1504,10 +1504,6 @@ msgstr "Після 5 невдалих спроб Budgie трохи довше ч
 msgid "After saving"
 msgstr "Після збереження"
 
-#: src/transaction/hook/use-adjustment-balance.hook.ts
-msgid "After saving: {after}"
-msgstr "Після збереження: {after}"
-
 #: src/budget/constant/budget-pace-status-label.constant.ts
 msgid "Ahead of pace"
 msgstr "Швидше за план"
@@ -3598,9 +3594,9 @@ msgstr "валюта"
 msgid "Currency"
 msgstr "Валюта"
 
-#: src/transaction/hook/use-adjustment-balance.hook.ts
-msgid "Current adjustment {originalLabel}"
-msgstr "Поточне коригування {originalLabel}"
+#: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
+msgid "Current adjustment"
+msgstr "Поточне коригування"
 
 #: src/account/component/account-balance-field/account-balance-field.tsx
 #: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
@@ -7903,10 +7899,6 @@ msgstr "Відкладайте потроху кожен період на рі�
 #: src/export/hook/use-backup-actions.hook.ts
 msgid "Saved to your chosen folder."
 msgstr "Збережено у вибраній папці."
-
-#: src/transaction/hook/use-adjustment-balance.hook.ts
-msgid "Saving replaces {originalLabel} with {proposedLabel}"
-msgstr "Збереження замінить {originalLabel} на {proposedLabel}"
 
 #: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
