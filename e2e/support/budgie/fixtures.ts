@@ -12,6 +12,39 @@ export const BUNDLE_ID = process.env.E2E_APP_ID ?? 'com.vitalyiegorov.budgie.e2e
 const APP_TESTS = fileURLToPath(new URL('../../../tests/app-tests/', import.meta.url));
 const MARKER = 'Documents/E2EFixtures/.simlock-staged';
 
+const TAR_BATCH_BYTES = 4 * 1024 * 1024;
+const TAR_BLOCK_BYTES = 512;
+const TAR_END = Buffer.alloc(2 * TAR_BLOCK_BYTES);
+
+function* fixtureTarBatches(tar: Buffer): Generator<Buffer> {
+    let start = 0;
+    let offset = 0;
+    while (offset + TAR_BLOCK_BYTES <= tar.length && tar[offset] !== 0) {
+        const size = Number.parseInt(
+            tar
+                .toString('ascii', offset + 124, offset + 136)
+                .replaceAll('\0', '')
+                .trim(),
+            8
+        );
+        const entryBytes = TAR_BLOCK_BYTES + Math.ceil(size / TAR_BLOCK_BYTES) * TAR_BLOCK_BYTES;
+        if (!Number.isSafeInteger(entryBytes) || entryBytes < TAR_BLOCK_BYTES || offset + entryBytes > tar.length) {
+            throw new Error(`invalid fixture tar entry at byte ${offset}`);
+        }
+        if (entryBytes + TAR_END.length > TAR_BATCH_BYTES) {
+            throw new Error(`fixture tar entry at byte ${offset} exceeds the ${TAR_BATCH_BYTES}-byte upload batch limit`);
+        }
+        if (offset - start + entryBytes + TAR_END.length > TAR_BATCH_BYTES) {
+            yield Buffer.concat([tar.subarray(start, offset), TAR_END]);
+            start = offset;
+        }
+        offset += entryBytes;
+    }
+    if (offset > start) {
+        yield Buffer.concat([tar.subarray(start, offset), TAR_END]);
+    }
+}
+
 /**
  * The app's fixtures, staged on this machine by `setup-ios-e2e-fixtures.sh`: its `APP_DATA_CONTAINER`
  * override points it at a local directory, and every `xcrun` call in it is
@@ -53,7 +86,9 @@ export async function ensureFixtures(api: SimlockApi, leaseId: string): Promise<
     const present = await drop(api, leaseId, ['test', `${container}/${MARKER}`]);
     if (present.exitCode !== 0) {
         const started = Date.now();
-        await untar(api, leaseId, container, await stagedDocuments());
+        for (const archive of fixtureTarBatches(await stagedDocuments())) {
+            await untar(api, leaseId, container, archive);
+        }
         // Written only once every file is in place: an untar cut off midway leaves no marker.
         await writeFile(api, leaseId, `${container}/${MARKER}`, Buffer.alloc(0));
         console.log(`[fixtures] installed into the app container in ${((Date.now() - started) / 1000).toFixed(1)}s`);
