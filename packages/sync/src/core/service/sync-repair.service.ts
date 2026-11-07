@@ -14,6 +14,7 @@ import { UnpairedOwnCardTransferRepairService } from '../../privatbank/service/u
 
 import { AccountReissueMergeService } from './account-reissue-merge.service';
 import { ExternalAccountService } from './external-account.service';
+import { OwnTransferRepairService } from './own-transfer-repair.service';
 
 import type { SyncDuplicateCandidateRowInterface } from '../interface/sync-duplicate-candidate-row.interface';
 import type { SyncDuplicateRepairPreviewInterface } from '../interface/sync-duplicate-repair-preview.interface';
@@ -22,6 +23,7 @@ import type { SyncDuplicateRepairResultInterface } from '../interface/sync-dupli
 export class SyncRepairService extends Context.Service<SyncRepairService>()('@budgie/sync/SyncRepairService', {
     make: Effect.gen(function* () {
         const ledgerWorkload = yield* LedgerWorkload;
+        const ownTransfers = yield* OwnTransferRepairService;
         const consolidationCoordinatorService = yield* ConsolidationCoordinatorService;
         const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
         const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
@@ -104,6 +106,7 @@ export class SyncRepairService extends Context.Service<SyncRepairService>()('@bu
             const missingTransferFeeRepairCount = yield* consolidationCoordinatorService.repairMissingTransferFees();
             const externalAccountRepairCount = yield* externalAccountService.repair();
             const ownCardTransferRepairCount = yield* unpairedOwnCardTransferRepairService.repair();
+            const ownTransferCount = yield* ownTransfers.repair();
 
             return (
                 reissueMergeCount +
@@ -111,7 +114,8 @@ export class SyncRepairService extends Context.Service<SyncRepairService>()('@bu
                 bridgeClaimRepairCount +
                 missingTransferFeeRepairCount +
                 externalAccountRepairCount +
-                ownCardTransferRepairCount
+                ownCardTransferRepairCount +
+                ownTransferCount
             );
         });
 
@@ -174,6 +178,7 @@ export class SyncRepairService extends Context.Service<SyncRepairService>()('@bu
 }) {
     static readonly layer = Layer.effect(SyncRepairService, SyncRepairService.make).pipe(
         Layer.provide([
+            OwnTransferRepairService.layer,
             ConsolidationCoordinatorService.layer,
             AccountBalanceIncrementalService.layer,
             UnpairedOwnCardTransferRepairService.layer,

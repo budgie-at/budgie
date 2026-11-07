@@ -9,6 +9,8 @@ import { isPositiveNumber } from '@rnw-community/shared';
 
 import { InzhurBankFlowService } from '../../inzhur/service/inzhur-bank-flow.service';
 
+import { OwnTransferRepairService } from './own-transfer-repair.service';
+
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 export class TransferConsolidationService extends Context.Service<TransferConsolidationService>()(
@@ -16,6 +18,7 @@ export class TransferConsolidationService extends Context.Service<TransferConsol
     {
         make: Effect.gen(function* () {
             const ledgerWorkload = yield* LedgerWorkload;
+            const ownTransfers = yield* OwnTransferRepairService;
             const consolidationCoordinatorService = yield* ConsolidationCoordinatorService;
             const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
             const installmentPlanService = yield* InstallmentPlanService;
@@ -36,8 +39,9 @@ export class TransferConsolidationService extends Context.Service<TransferConsol
                     scope: ConsolidationScanScopeInterface | null
                 ) {
                     yield* inzhurBankFlowService.apply(scope);
-
                     const result = yield* consolidationCoordinatorService.consolidate(scope);
+
+                    yield* ownTransfers.repair();
 
                     yield* updateBalancesAfterConsolidation(result.consolidated);
                     yield* installmentPlanService.attachDueParts();
@@ -60,6 +64,7 @@ export class TransferConsolidationService extends Context.Service<TransferConsol
 ) {
     static readonly layer = Layer.effect(TransferConsolidationService, TransferConsolidationService.make).pipe(
         Layer.provide([
+            OwnTransferRepairService.layer,
             ConsolidationCoordinatorService.layer,
             AccountBalanceIncrementalService.layer,
             InstallmentPlanService.layer,

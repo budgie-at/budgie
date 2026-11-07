@@ -8,23 +8,25 @@ import { buildBinance } from '../../harness';
 const ACCOUNT_ID = 'SPOT:BTC';
 
 describe('binance/transaction-mapper', () => {
-    it('maps a deposit to INCOME with no fee and operationAmount equal to amount', () => {
+    it('maps a deposit to an incoming transfer with no fee and operationAmount equal to amount', () => {
         const transaction = mapBinanceDepositToTransaction(buildBinance.deposit({ coin: 'BTC', amount: '2' }), ACCOUNT_ID);
 
         expect(isDefined(transaction)).toBe(true);
-        expect(transaction?.type).toBe(SyncTransactionTypeEnum.INCOME);
+        expect(transaction?.type).toBe(SyncTransactionTypeEnum.TRANSFER);
+        expect(transaction?.transferDirection).toBe(SyncTransactionTypeEnum.INCOME);
         expect(transaction?.amount).toBe(2);
         expect(transaction?.feeAmount).toBe(0);
         expect(transaction?.operationAmount).toBe(2);
     });
 
-    it('maps a fee-bearing withdrawal to EXPENSE with gross amount and net operationAmount', () => {
+    it('maps a fee-bearing withdrawal to an outgoing transfer with gross amount and net operationAmount', () => {
         const transaction = mapBinanceWithdrawalToTransaction(
             buildBinance.withdrawal({ id: 'w-1', coin: 'BTC', amount: '1', transactionFee: '0.1' }),
             ACCOUNT_ID
         );
 
-        expect(transaction?.type).toBe(SyncTransactionTypeEnum.EXPENSE);
+        expect(transaction?.type).toBe(SyncTransactionTypeEnum.TRANSFER);
+        expect(transaction?.transferDirection).toBe(SyncTransactionTypeEnum.EXPENSE);
         expect(transaction?.amount).toBe(1);
         expect(transaction?.feeAmount).toBe(0.1);
         expect(transaction?.operationAmount).toBeCloseTo(0.9, 10);

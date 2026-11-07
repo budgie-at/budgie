@@ -69,7 +69,7 @@ export const toSyncTransaction = (
     balance: 0,
     hold: false,
     operationAmount:
-        transaction.type === SyncTransactionTypeEnum.INCOME
+        (transaction.transferDirection ?? transaction.type) === SyncTransactionTypeEnum.INCOME
             ? transaction.amount + transaction.feeAmount
             : transaction.amount - transaction.feeAmount,
     ...transaction
@@ -135,7 +135,8 @@ export const mapBinanceDepositToTransaction = (deposit: BinanceDepositApiInterfa
               accountId,
               category: deposit.coin,
               time: toUnixSeconds(deposit.insertTime),
-              type: SyncTransactionTypeEnum.INCOME,
+              type: SyncTransactionTypeEnum.TRANSFER,
+              transferDirection: SyncTransactionTypeEnum.INCOME,
               description: `Binance ${deposit.coin} deposit`,
               amount,
               feeAmount: 0
@@ -155,7 +156,8 @@ export const mapBinanceWithdrawalToTransaction = (
               accountId,
               category: withdrawal.coin,
               time: toUnixSeconds(parseBinanceApplyTimeMs(withdrawal.applyTime)),
-              type: SyncTransactionTypeEnum.EXPENSE,
+              type: SyncTransactionTypeEnum.TRANSFER,
+              transferDirection: SyncTransactionTypeEnum.EXPENSE,
               description: `Binance ${withdrawal.coin} withdrawal`,
               amount: parsed[0],
               feeAmount: parsed[1]
@@ -177,7 +179,8 @@ export const mapBinanceFiatOrderToTransaction = (
               accountId,
               category: order.fiatCurrency,
               time: toUnixSeconds(order.createTime),
-              type: isDeposit ? SyncTransactionTypeEnum.INCOME : SyncTransactionTypeEnum.EXPENSE,
+              type: SyncTransactionTypeEnum.TRANSFER,
+              transferDirection: isDeposit ? SyncTransactionTypeEnum.INCOME : SyncTransactionTypeEnum.EXPENSE,
               description: isDeposit ? `Binance ${order.fiatCurrency} deposit` : `Binance ${order.fiatCurrency} withdrawal`,
               amount: isDeposit ? amount : amount + feeAmount,
               feeAmount
