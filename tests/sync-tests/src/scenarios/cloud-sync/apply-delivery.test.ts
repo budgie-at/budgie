@@ -8,12 +8,16 @@ import {
     assertStoredBalancesMatchLedger,
     makeTestDbLayer,
     resetTestDb,
-    testDb
+    testDb,
+    pullDevice,
+    pushDevice,
+    readOutboxRows,
+    refreshAllBalances,
+    DEVICE_B,
+    pullSeededExpense,
+    OPERATED_AT,
+    hydratedSnapshot
 } from '../../harness';
-
-import { pullDevice, pushDevice, readOutboxRows, refreshAllBalances } from './apply-harness';
-import { DEVICE_B, OPERATED_AT, pullSeededExpense } from './apply-shared-harness';
-import { hydratedSnapshot } from './record-mapping-harness';
 
 import type { DB } from '@budgie/contracts';
 

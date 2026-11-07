@@ -3,10 +3,11 @@ import { PRECISION } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { testDb } from '../../harness';
-
-import { pullDevice, pushDevice, refreshAllBalances } from './apply-harness';
 import {
+    testDb,
+    pullDevice,
+    pushDevice,
+    refreshAllBalances,
     bootstrapMonoDevices,
     detectRecurring,
     dismissSeries,
@@ -14,7 +15,7 @@ import {
     firstAccountIdOf,
     pullWithAutomation,
     settleDevices
-} from './automation-harness';
+} from '../../harness';
 
 import type { FakeCloudTransport } from '../../harness';
 import type { DB } from '@budgie/contracts';

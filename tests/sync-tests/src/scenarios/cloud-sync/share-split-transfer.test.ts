@@ -5,11 +5,23 @@ import { TransactionService } from '@budgie/ledger';
 import { describe, expect } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { testDb } from '../../harness';
-
-import { onDevice, refreshAllBalances, uploadDevice } from './apply-harness';
-import { HOUSEHOLD_ZONE, PERSONAL_ZONE, countRows, pullZones, queryRows } from './share-harness';
-import { shareDevices, expectLedgers, expectNoRejections, pullHousehold, shareAndUpload, startHousehold } from './share-tests-shared';
+import {
+    testDb,
+    onDevice,
+    refreshAllBalances,
+    uploadDevice,
+    HOUSEHOLD_ZONE,
+    PERSONAL_ZONE,
+    countRows,
+    pullZones,
+    queryRows,
+    shareDevices,
+    expectLedgers,
+    expectNoRejections,
+    pullHousehold,
+    shareAndUpload,
+    startHousehold
+} from '../../harness';
 
 const OPERATED_AT = new Date('2026-10-06T10:00:00Z');
 const SHARED_AMOUNT = 7_654_321;

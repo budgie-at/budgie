@@ -1,13 +1,11 @@
-import { CloudSyncEventKindEnum, CloudSyncTransport, CloudSyncTransportError, ICloudErrorCode } from '@budgie/cloud-sync';
+import { CloudSyncEventKindEnum, CloudSyncTransport } from '@budgie/cloud-sync';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
-import * as Option from 'effect/Option';
 import * as Queue from 'effect/Queue';
-import * as Schema from 'effect/Schema';
 import * as Stream from 'effect/Stream';
 
 import { ICloudModule } from '../../../modules/icloud';
-import { NativeCallError } from '../../@generic/error/native-call.error';
+import { callNative } from '../utils/call-native.util';
 
 import type { CloudSyncEventType, ICloudRecordId, ICloudRecordPayload, ICloudSyncScope } from '@budgie/cloud-sync';
 
@@ -15,25 +13,6 @@ export const cloudSyncTransportLayer = Layer.effect(
     CloudSyncTransport,
     Effect.gen(function* () {
         const icloud = yield* Effect.orDie(Effect.fromNullishOr(ICloudModule));
-        const isNativeError = Schema.is(Schema.Struct({ code: Schema.String, message: Schema.String }));
-
-        const call = <A>(run: () => Promise<A>) =>
-            Effect.tryPromise({ try: run, catch: cause => NativeCallError.make({ cause }) }).pipe(
-                Effect.catch(({ cause }) =>
-                    isNativeError(cause)
-                        ? Effect.fail(
-                              CloudSyncTransportError.make({
-                                  code: Option.getOrElse(
-                                      Schema.decodeUnknownOption(Schema.Enum(ICloudErrorCode))(cause.code),
-                                      () => ICloudErrorCode.UNKNOWN
-                                  ),
-                                  message: cause.message.split(/\n→ Caused by: /u).pop() ?? cause.message
-                              })
-                          )
-                        : Effect.die(cause)
-                )
-            );
-
         const events = Stream.callback<CloudSyncEventType>(queue =>
             Effect.acquireRelease(
                 Effect.sync(() => {
@@ -82,27 +61,28 @@ export const cloudSyncTransportLayer = Layer.effect(
 
         return {
             events,
-            getAccountStatus: call(() => icloud.getAccountStatus()),
+            getAccountStatus: callNative(() => icloud.getAccountStatus()),
             startSync: (scope: ICloudSyncScope, stateSerialization: string | null) =>
-                call(() => icloud.startSync(scope, stateSerialization)),
-            stopSync: (scope: ICloudSyncScope) => call(() => icloud.stopSync(scope)),
-            syncNow: (scope: ICloudSyncScope) => call(() => icloud.syncNow(scope)),
-            ensureZone: (scope: ICloudSyncScope, zoneName: string) => call(() => icloud.ensureZone(scope, zoneName)),
-            deleteZone: (scope: ICloudSyncScope, zoneName: string) => call(() => icloud.deleteZone(scope, zoneName)),
+                callNative(() => icloud.startSync(scope, stateSerialization)),
+            stopSync: (scope: ICloudSyncScope) => callNative(() => icloud.stopSync(scope)),
+            syncNow: (scope: ICloudSyncScope) => callNative(() => icloud.syncNow(scope)),
+            ensureZone: (scope: ICloudSyncScope, zoneName: string) => callNative(() => icloud.ensureZone(scope, zoneName)),
+            deleteZone: (scope: ICloudSyncScope, zoneName: string) => callNative(() => icloud.deleteZone(scope, zoneName)),
             fetchRecord: (scope: ICloudSyncScope, zoneName: string, recordName: string) =>
-                call(() => icloud.fetchRecord(scope, zoneName, recordName)),
-            fetchZoneInventory: (scope: ICloudSyncScope, zoneName: string) => call(() => icloud.fetchZoneInventory(scope, zoneName)),
+                callNative(() => icloud.fetchRecord(scope, zoneName, recordName)),
+            fetchZoneInventory: (scope: ICloudSyncScope, zoneName: string) => callNative(() => icloud.fetchZoneInventory(scope, zoneName)),
             addPendingSaves: (scope: ICloudSyncScope, records: readonly ICloudRecordPayload[]) =>
-                call(() => icloud.addPendingSaves(scope, records)),
+                callNative(() => icloud.addPendingSaves(scope, records)),
             addPendingDeletes: (scope: ICloudSyncScope, recordIds: readonly ICloudRecordId[]) =>
-                call(() => icloud.addPendingDeletes(scope, recordIds)),
-            createHouseholdShare: (zoneName: string) => call(() => icloud.createHouseholdShare(zoneName)),
-            getShareParticipants: (zoneName: string) => call(() => icloud.getShareParticipants(zoneName)),
-            findOwnedHousehold: (zoneName: string) => call(() => icloud.findOwnedHousehold(zoneName)),
-            findJoinedHousehold: (zoneName: string) => call(() => icloud.findJoinedHousehold(zoneName)),
-            stopSharing: (zoneName: string) => call(() => icloud.stopSharing(zoneName)),
-            leaveShare: (zoneName: string) => call(() => icloud.leaveShare(zoneName)),
-            removeParticipant: (zoneName: string, participantId: string) => call(() => icloud.removeParticipant(zoneName, participantId))
+                callNative(() => icloud.addPendingDeletes(scope, recordIds)),
+            createHouseholdShare: (zoneName: string) => callNative(() => icloud.createHouseholdShare(zoneName)),
+            getShareParticipants: (zoneName: string) => callNative(() => icloud.getShareParticipants(zoneName)),
+            findOwnedHousehold: (zoneName: string) => callNative(() => icloud.findOwnedHousehold(zoneName)),
+            findJoinedHousehold: (zoneName: string) => callNative(() => icloud.findJoinedHousehold(zoneName)),
+            stopSharing: (zoneName: string) => callNative(() => icloud.stopSharing(zoneName)),
+            leaveShare: (zoneName: string) => callNative(() => icloud.leaveShare(zoneName)),
+            removeParticipant: (zoneName: string, participantId: string) =>
+                callNative(() => icloud.removeParticipant(zoneName, participantId))
         };
     })
 );

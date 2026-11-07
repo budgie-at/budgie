@@ -11,6 +11,7 @@ import { DATABASE_DIRECTORY } from '../../@generic/drizzle/constant/database-dir
 import { DATABASE_LOCATION } from '../../@generic/drizzle/constant/database-location.constant';
 import { DatabaseRekeyService } from '../../@generic/drizzle/service/database-rekey.service';
 import { readDatabaseKey } from '../../@generic/drizzle/utils/read-database-key.util';
+import { deleteIfExists } from '../../@generic/utils/delete-if-exists.util';
 import { reloadApp } from '../../@generic/utils/reload-app.util';
 import { DatabaseImportService } from '../../import/service/database-import.service';
 import { RESTORE_SAFETY_FILES } from '../constant/restore-safety-files.constant';
@@ -29,12 +30,6 @@ export class CloudRestoreService extends Context.Service<CloudRestoreService>()(
         const settingsRepository = yield* SettingsRepository;
 
         const databaseFile = (name: string): File => new File(DATABASE_DIRECTORY, name);
-
-        const deleteIfExists = (file: File): void => {
-            if (file.exists) {
-                file.delete();
-            }
-        };
 
         const deleteStagingFiles = (): void => {
             deleteIfExists(databaseFile(RESTORE_SAFETY_FILES.source));

@@ -14,7 +14,6 @@ import * as Semaphore from 'effect/Semaphore';
 import { isDefined } from '@rnw-community/shared';
 
 import { HouseholdEndModeEnum } from '../../household/enum/household-end-mode.enum';
-import { HouseholdRoleEnum } from '../../household/enum/household-role.enum';
 import { ICLOUD_DEFAULT_OWNER_NAME } from '../../transport/constant/icloud-default-owner-name.constant';
 import { ICloudSyncScope } from '../../transport/enum/icloud-sync-scope.enum';
 import { CLOUD_SYNC_RECORDS } from '../constant/cloud-sync-records.constant';
@@ -66,8 +65,6 @@ export class CloudSyncSessionState extends Context.Service<CloudSyncSessionState
 
         const publish = Effect.flatMap(Ref.get(session), current => {
             const household = zones.get(HOUSEHOLD_SYNC_ZONE);
-            const memberRole = household?.role === SyncZoneRoleEnum.OWNER ? HouseholdRoleEnum.OWNER : HouseholdRoleEnum.MEMBER;
-            const role = isDefined(household) ? memberRole : HouseholdRoleEnum.NONE;
             const isReady =
                 isDefined(household) &&
                 (household.databaseScope === SyncDatabaseScopeEnum.SHARED ? current.isSharedEngineRunning : current.isEngineRunning);
@@ -81,7 +78,7 @@ export class CloudSyncSessionState extends Context.Service<CloudSyncSessionState
                     isInitialFetchComplete: current.isInitialFetchComplete,
                     isQuotaExceeded: current.isQuotaExceeded
                 })
-                .pipe(Effect.andThen(host.publishHousehold(role, isReady)));
+                .pipe(Effect.andThen(host.publishHousehold(isReady)));
         });
 
         return {

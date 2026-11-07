@@ -12,8 +12,8 @@ import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error
 import { iCloudAccountRefreshAtom } from '../../cloud-backup/constant/icloud-account-refresh-atom.constant';
 import { householdJoinAtom } from '../../household/constant/household-join-atom.constant';
 import { householdOwnerNameAtom } from '../../household/constant/household-owner-name-atom.constant';
+import { householdReadyAtom } from '../../household/constant/household-ready-atom.constant';
 import { householdRefreshAtom } from '../../household/constant/household-refresh-atom.constant';
-import { householdStateAtom } from '../../household/constant/household-state-atom.constant';
 import { cloudSyncStatusAtom } from '../constant/cloud-sync-status-atom.constant';
 
 export const cloudSyncHostLayer = Layer.succeed(CloudSyncHost, {
@@ -24,13 +24,9 @@ export const cloudSyncHostLayer = Layer.succeed(CloudSyncHost, {
         Effect.sync(() => {
             appAtomRegistry.set(cloudSyncStatusAtom, status);
         }),
-    publishHousehold: (role, isReady) =>
+    publishHousehold: isReady =>
         Effect.sync(() => {
-            const previous = appAtomRegistry.get(householdStateAtom);
-
-            if (previous.role !== role || previous.isReady !== isReady) {
-                appAtomRegistry.set(householdStateAtom, { role, isReady });
-            }
+            appAtomRegistry.set(householdReadyAtom, isReady);
         }),
     publishHouseholdOwnerName: ownerDisplayName =>
         Effect.sync(() => {

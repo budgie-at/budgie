@@ -5,13 +5,19 @@ import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { FakeCloudTransport, testDb } from '../../harness';
-
-import { deviceLayer, onDevice, pullDevice, pushDevice, readOutboxRows, refreshAllBalances } from './apply-harness';
+import {
+    FakeCloudTransport,
+    testDb,
+    deviceLayer,
+    onDevice,
+    pullDevice,
+    pushDevice,
+    readOutboxRows,
+    refreshAllBalances,
+    OPERATED_AT
+} from '../../harness';
 
 import type { DB, DbError } from '@budgie/contracts';
-
-const OPERATED_AT = new Date('2026-10-02T10:00:00Z');
 
 const reconciliationLayer = Layer.mergeAll(
     deviceLayer,

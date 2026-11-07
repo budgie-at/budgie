@@ -4,10 +4,11 @@ import { UnconsolidationService } from '@budgie/consolidation';
 import { Db, ExternalSourceEnum, SyncZoneRoleEnum } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
-import { FakeCloudTransport, testDb } from '../../harness';
+import { testDb } from '../scenario/test-db';
 
 import { readOutboxRows, refreshAllBalances, uploadDevice } from './apply-harness';
 import { onAutomatedDevice } from './automation-harness';
+import { FakeCloudTransport } from './fake-cloud-transport';
 import { HOUSEHOLD_ZONE, onShareDevice, prepareHousehold, pullZones, queryRows, reconcileDevice } from './share-harness';
 
 import type { ShareCloudsInterface } from './share-harness';

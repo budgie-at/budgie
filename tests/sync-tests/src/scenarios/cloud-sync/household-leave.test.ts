@@ -1,25 +1,26 @@
 import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
-import { householdStateAtom } from '@app/household/constant/household-state-atom.constant';
+import { householdReadyAtom } from '@app/household/constant/household-ready-atom.constant';
 import { TestSeedService, assertStoredBalancesMatchLedger, makeTestDbLayer } from '@budgie-at/test-kit';
-import { CloudSyncService, HouseholdRoleEnum } from '@budgie/cloud-sync';
+import { CloudSyncService } from '@budgie/cloud-sync';
 import { Db, HOUSEHOLD_SYNC_ZONE, PERSONAL_SYNC_ZONE } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { FakeCloudTransport, testDb } from '../../harness';
-
-import { pullDevice, refreshAllBalances } from './apply-harness';
 import {
-    countRows,
+    FakeCloudTransport,
+    testDb,
+    pullDevice,
+    refreshAllBalances,
+    countHouseholdRows,
     joinMember,
     MEMBER_ACCOUNT,
     MEMBER_DEVICE,
     pushHouseholdZone,
     readPersonalBalances,
-    readSyncIds
-} from './household-harness';
-import { acceptShareThen } from './household-tests-shared';
-import { makeSyncServiceContext } from './sync-service-harness';
+    readSyncIds,
+    acceptShareThen,
+    makeSyncServiceContext
+} from '../../harness';
 
 describe('cloud-sync/household leave', () => {
     it.layer(makeTestDbLayer(null), { excludeTestServices: true })('member leaves', it => {
@@ -42,8 +43,8 @@ describe('cloud-sync/household leave', () => {
                 );
                 const personalBefore = yield* readPersonalBalances(memberDb);
 
-                expect(yield* countRows(memberDb, 'accounts', HOUSEHOLD_SYNC_ZONE)).toBe(1);
-                expect(yield* countRows(memberDb, 'transactions', HOUSEHOLD_SYNC_ZONE)).toBe(1);
+                expect(yield* countHouseholdRows(memberDb, 'accounts', HOUSEHOLD_SYNC_ZONE)).toBe(1);
+                expect(yield* countHouseholdRows(memberDb, 'transactions', HOUSEHOLD_SYNC_ZONE)).toBe(1);
 
                 const member = makeSyncServiceContext(memberDb);
 
@@ -55,10 +56,10 @@ describe('cloud-sync/household leave', () => {
                 expect(remaining).toBeUndefined();
                 expect(member.transport.calls.leftShares).toEqual(['Household']);
                 expect(member.transport.calls.sharedStopped).toBe(1);
-                expect(appAtomRegistry.get(householdStateAtom).role).toBe(HouseholdRoleEnum.NONE);
+                expect(appAtomRegistry.get(householdReadyAtom)).toBe(false);
 
                 for (const tableName of ['accounts', 'transactions', 'transaction_entries']) {
-                    expect(yield* countRows(memberDb, tableName, HOUSEHOLD_SYNC_ZONE)).toBe(0);
+                    expect(yield* countHouseholdRows(memberDb, tableName, HOUSEHOLD_SYNC_ZONE)).toBe(0);
                 }
 
                 const personalSyncIds = yield* readSyncIds(memberDb, 'accounts', PERSONAL_SYNC_ZONE);
@@ -100,7 +101,7 @@ describe('cloud-sync/household leave', () => {
                 const delivered = yield* pullDevice(memberDb, cloud, MEMBER_DEVICE, { accountId: MEMBER_ACCOUNT });
 
                 expect(delivered).toEqual([]);
-                expect(yield* countRows(memberDb, 'transactions')).toBe(2);
+                expect(yield* countHouseholdRows(memberDb, 'transactions')).toBe(2);
             })
         );
     });

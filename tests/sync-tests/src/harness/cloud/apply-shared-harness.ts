@@ -2,14 +2,15 @@ import { TestSeedService, resetTestDb } from '@budgie-at/test-kit';
 import { CategorySourceEnum, Db } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
-import { FakeCloudTransport, testDb } from '../../harness';
+import { testDb } from '../scenario/test-db';
 
 import { pullDevice, pushDevice, refreshAllBalances } from './apply-harness';
+import { OPERATED_AT } from './cloud-fixtures';
+import { FakeCloudTransport } from './fake-cloud-transport';
 
-import type { FakeCloudDeliveryOptionsInterface } from '../../harness';
+import type { FakeCloudDeliveryOptionsInterface } from './fake-cloud-delivery-options.interface';
 import type { DB } from '@budgie/contracts';
 
-export const OPERATED_AT = new Date('2026-10-02T10:00:00Z');
 export const DEVICE_A = 'device-a';
 export const DEVICE_B = 'device-b';
 

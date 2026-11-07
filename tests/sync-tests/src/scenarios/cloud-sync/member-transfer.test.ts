@@ -3,11 +3,11 @@ import { TransactionConsolidationTypeEnum, TransactionTypeEnum, deriveConsolidat
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { testDb } from '../../harness';
-
-import { refreshAllBalances } from './apply-harness';
-import { reapplyAutomation, syncIdsOf } from './automation-harness';
 import {
+    testDb,
+    refreshAllBalances,
+    reapplyAutomation,
+    syncIdsOf,
     ALICE_IBAN,
     BOB_IBAN,
     EXPENSE_AT,
@@ -23,11 +23,12 @@ import {
     settleMembers,
     unconsolidateOn,
     visibleTransactions,
-    withMemberHousehold
-} from './member-transfer-harness';
-import { countRows, queryRows } from './share-harness';
+    withMemberHousehold,
+    countRows,
+    queryRows
+} from '../../harness';
 
-import type { MemberCloudsInterface } from './member-transfer-harness';
+import type { MemberCloudsInterface } from '../../harness';
 import type { DB } from '@budgie/contracts';
 
 const PRIVATE_STRINGS = [PRIVATE_TITLE, PRIVATE_COMMENT, PRIVATE_ACCOUNT_TITLE, ALICE_IBAN];

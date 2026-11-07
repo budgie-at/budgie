@@ -7,13 +7,19 @@ import * as Schema from 'effect/Schema';
 
 import { isRecord } from '@rnw-community/shared';
 
-import { FakeCloudTransport, testDb } from '../../harness';
-
-import { onDevice, pullDevice, pushDevice, readOutboxRows, refreshAllBalances } from './apply-harness';
+import {
+    FakeCloudTransport,
+    testDb,
+    onDevice,
+    pullDevice,
+    pushDevice,
+    readOutboxRows,
+    refreshAllBalances,
+    OPERATED_AT
+} from '../../harness';
 
 import type { DB } from '@budgie/contracts';
 
-const OPERATED_AT = new Date('2026-10-02T10:00:00Z');
 const DEVICE_B = 'device-b';
 const jsonRecord = Schema.fromJsonString(Schema.Record(Schema.String, Schema.Unknown));
 

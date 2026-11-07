@@ -13,9 +13,9 @@ import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
 import * as TestClock from 'effect/testing/TestClock';
 
-import { seed, testDb } from '../../harness';
-
 import {
+    seed,
+    testDb,
     failedSaveOf,
     flattenBatches,
     readOutboxCount,
@@ -23,7 +23,7 @@ import {
     runSyncService,
     savedFrom,
     sentEvent
-} from './sync-service-harness';
+} from '../../harness';
 
 const readSystemFields = (recordName: string) =>
     testDb.$client

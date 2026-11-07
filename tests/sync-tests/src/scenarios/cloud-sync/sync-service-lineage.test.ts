@@ -5,9 +5,7 @@ import { HOUSEHOLD_SYNC_ZONE, SyncIdentityRepository, SyncZoneRegistryRepository
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { seed, testDb } from '../../harness';
-
-import { matchZoneLineage, metaWith, readAccountCount, runSyncService } from './sync-service-harness';
+import { seed, testDb, matchZoneLineage, metaWith, readAccountCount, runSyncService } from '../../harness';
 
 describe('cloud-sync/sync-service lineage', () => {
     it.effect('joins automatically when the zone has the same lineage and uploads only the outbox', () =>

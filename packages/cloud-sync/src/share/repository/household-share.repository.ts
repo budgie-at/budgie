@@ -1,16 +1,17 @@
 import { Db, PERSONAL_SYNC_ZONE, SyncRecordTypeEnum } from '@budgie/contracts';
+import { getTableColumns } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { isEmptyArray } from '@rnw-community/shared';
 
-import { HOUSEHOLD_LABEL_REFERENCES } from '../constant/household-label-references.constant';
-import { cloneHouseholdRow } from '../utils/clone-household-row.util';
+import { makeHouseholdQueries } from '../utils/make-household-queries.util';
+
+import { HouseholdLabelRepository } from './household-label.repository';
 
 import type { HouseholdAlignmentEntryInterface } from '../interface/household-alignment-entry.interface';
 import type { HouseholdAlignmentTagInterface } from '../interface/household-alignment-tag.interface';
-import type { HouseholdLabeledRowInterface } from '../interface/household-labeled-row.interface';
 import type { HouseholdRowIdentityInterface } from '../interface/household-row-identity.interface';
 import type { SQLiteTable } from 'drizzle-orm/sqlite-core';
 
@@ -21,15 +22,9 @@ const chunked = <T>(values: readonly T[]): readonly (readonly T[])[] =>
     Array.from({ length: Math.ceil(values.length / CHUNK_SIZE) }, (_, index) => values.slice(index * CHUNK_SIZE, (index + 1) * CHUNK_SIZE));
 
 export class HouseholdShareRepository extends Context.Service<HouseholdShareRepository>()('@budgie/cloud-sync/HouseholdShareRepository', {
-    make: Effect.sync(() => {
-        const select = <T extends object>(sqlText: string, params: readonly (string | number)[] = []) =>
-            Db.query(db => db.$client.unsafe<T>(sqlText, [...params]));
-
-        const execute = (tables: readonly string[], sqlText: string, params: readonly (string | number | null)[] = []) =>
-            Db.mutation(
-                { type: 'update', tables: [...tables] },
-                Db.query(db => db.$client.unsafe(sqlText, [...params]))
-            );
+    make: Effect.gen(function* () {
+        const labels = yield* HouseholdLabelRepository;
+        const { select, execute } = makeHouseholdQueries();
 
         const selectChunked = <T extends object>(
             ids: readonly number[],
@@ -62,13 +57,33 @@ export class HouseholdShareRepository extends Context.Service<HouseholdShareRepo
                   ).pipe(Effect.map(rows => rows.map(({ id }) => id)));
 
         return {
+            ...labels,
             findFamilyAccountIds,
-            cloneRow: (
+            cloneRow: Effect.fn('HouseholdShareRepository.cloneRow')(function* (
                 table: SQLiteTable,
                 tableName: string,
                 sourceId: number,
                 overrides: Readonly<Record<string, string | number | null>>
-            ) => cloneHouseholdRow(table, tableName, sourceId, overrides),
+            ) {
+                const columnNames = Object.values(getTableColumns(table))
+                    .map(column => column.name)
+                    .filter(name => name !== 'id');
+                const overrideNames = new Set(Object.keys(overrides));
+                const selectList = columnNames.map(name => (overrideNames.has(name) ? '?' : `"${name}"`)).join(', ');
+                const overrideValues = columnNames.filter(name => overrideNames.has(name)).map(name => overrides[name]);
+                const rows = yield* Db.mutation(
+                    { type: 'insert', tables: [tableName] },
+                    Db.query(db =>
+                        db.$client.unsafe<{ readonly id: number }>(
+                            `INSERT INTO "${tableName}" (${columnNames.map(name => `"${name}"`).join(', ')})
+                SELECT ${selectList} FROM "${tableName}" WHERE id = ? RETURNING id`,
+                            [...overrideValues, sourceId]
+                        )
+                    )
+                );
+
+                return rows[0].id;
+            }),
             findAccounts: (accountIds: readonly number[]) =>
                 selectChunked<HouseholdRowIdentityInterface & { readonly integrationId: number | null }>(
                     accountIds,
@@ -164,45 +179,6 @@ export class HouseholdShareRepository extends Context.Service<HouseholdShareRepo
                     zone,
                     rowId
                 ]),
-            findLabeledRow: (tableName: string, id: number) =>
-                select<HouseholdLabeledRowInterface>(
-                    `SELECT id, sync_id AS syncId, sync_zone AS syncZone, ${tableName === 'categories' ? 'parent_id' : 'NULL'} AS parentId, ${tableName === 'categories' ? 'is_default' : '0'} AS isDefault, title
-                    FROM "${tableName}" WHERE id = ?`,
-                    [id]
-                ).pipe(Effect.map(rows => rows.at(0) ?? null)),
-            findLabeledIdsInZone: (tableName: string, zone: string) =>
-                select<{ readonly id: number }>(`SELECT id FROM "${tableName}" WHERE sync_zone = ? ORDER BY id`, [zone]).pipe(
-                    Effect.map(rows => rows.map(({ id }) => id))
-                ),
-            repointLabelReferences: (tableName: string, fromId: number, toId: number) =>
-                Effect.forEach(
-                    HOUSEHOLD_LABEL_REFERENCES[tableName] ?? [],
-                    ([referencingTable, column]) =>
-                        execute([referencingTable], `UPDATE OR IGNORE "${referencingTable}" SET ${column} = ? WHERE ${column} = ?`, [
-                            toId,
-                            fromId
-                        ]),
-                    { discard: true }
-                ),
-            findIdByIdentity: (tableName: string, zone: string, syncId: string) =>
-                select<{ readonly id: number }>(`SELECT id FROM "${tableName}" WHERE sync_zone = ? AND sync_id = ? LIMIT 1`, [
-                    zone,
-                    syncId
-                ]).pipe(Effect.map(rows => rows.at(0)?.id ?? null)),
-            findIdByTitle: (tableName: string, zone: string, title: string) =>
-                select<{ readonly id: number }>(
-                    `SELECT id FROM "${tableName}" WHERE sync_zone = ? AND title = ? AND deleted_at IS NULL${tableName === 'categories' ? ' AND is_default = 0' : ''} ORDER BY id LIMIT 1`,
-                    [zone, title]
-                ).pipe(Effect.map(rows => rows.at(0)?.id ?? null)),
-            setCategoryParent: (categoryId: number, parentId: number | null) =>
-                execute(['categories'], `UPDATE categories SET parent_id = ? WHERE id = ?`, [parentId, categoryId]),
-            copyCategoryTranslations: (fromCategoryId: number, toCategoryId: number) =>
-                execute(
-                    ['default_category_translations'],
-                    `INSERT OR IGNORE INTO default_category_translations (category_id, language, title)
-                    SELECT ?, language, title FROM default_category_translations WHERE category_id = ?`,
-                    [toCategoryId, fromCategoryId]
-                ),
             findDebtEventsOnAccounts: (accountIds: readonly number[], zone: string) =>
                 selectChunked<HouseholdRowIdentityInterface>(
                     accountIds,
@@ -288,5 +264,7 @@ export class HouseholdShareRepository extends Context.Service<HouseholdShareRepo
         };
     })
 }) {
-    static readonly layer = Layer.effect(HouseholdShareRepository, HouseholdShareRepository.make);
+    static readonly layer = Layer.effect(HouseholdShareRepository, HouseholdShareRepository.make).pipe(
+        Layer.provide(HouseholdLabelRepository.layer)
+    );
 }

@@ -8,11 +8,12 @@ import { expect } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { FakeCloudTransport, testDb } from '../../harness';
+import { testDb } from '../scenario/test-db';
 
 import { deviceLayer, pullDevice, pushDevice, readOutboxRows, refreshAllBalances } from './apply-harness';
+import { FakeCloudTransport } from './fake-cloud-transport';
 
-import type { FakeCloudDeliveryOptionsInterface } from '../../harness';
+import type { FakeCloudDeliveryOptionsInterface } from './fake-cloud-delivery-options.interface';
 import type { DB } from '@budgie/contracts';
 
 const MAX_SETTLE_ROUNDS = 6;

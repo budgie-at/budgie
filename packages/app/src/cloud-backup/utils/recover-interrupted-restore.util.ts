@@ -6,16 +6,11 @@ import { isDefined } from '@rnw-community/shared';
 
 import { DATABASE_DIRECTORY } from '../../@generic/drizzle/constant/database-directory.constant';
 import { DB_NAME } from '../../@generic/drizzle/constant/db-name.constant';
+import { deleteIfExists } from '../../@generic/utils/delete-if-exists.util';
 import { RESTORE_SAFETY_COPY_LIFETIME_MILLISECONDS } from '../constant/restore-safety-copy-lifetime.constant';
 import { RESTORE_SAFETY_FILES } from '../constant/restore-safety-files.constant';
 
 import { discardRestoreSafetyCopy } from './discard-restore-safety-copy.util';
-
-const deleteIfExists = (file: File): void => {
-    if (file.exists) {
-        file.delete();
-    }
-};
 
 export const recoverInterruptedRestore = Effect.gen(function* () {
     const database = new File(DATABASE_DIRECTORY, DB_NAME);

@@ -1,32 +1,32 @@
 import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
-import { householdStateAtom } from '@app/household/constant/household-state-atom.constant';
+import { householdReadyAtom } from '@app/household/constant/household-ready-atom.constant';
 import { assertStoredBalancesMatchLedger, makeTestDbLayer } from '@budgie-at/test-kit';
-import { CloudSyncRestorePhaseEnum, HouseholdRoleEnum, ICloudParticipantRole } from '@budgie/cloud-sync';
+import { CloudSyncRestorePhaseEnum, ICloudParticipantRole } from '@budgie/cloud-sync';
 import { Db, HOUSEHOLD_SYNC_ZONE, SyncDatabaseScopeEnum, SyncZoneRegistryRepository, SyncZoneRoleEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { FakeCloudTransport } from '../../harness';
-
 import {
+    FakeCloudTransport,
     accessLostEvent,
-    countRows,
+    countHouseholdRows,
     HOUSEHOLD_CLOUD_ZONE,
     joinMember,
     MEMBER_ACCOUNT,
     OWNER_RECORD_NAME,
     participantsFor,
-    readPersonalBalances
-} from './household-harness';
-import { acceptShareThen } from './household-tests-shared';
-import { makeSyncServiceContext, syncService } from './sync-service-harness';
+    readPersonalBalances,
+    acceptShareThen,
+    makeSyncServiceContext,
+    syncService
+} from '../../harness';
 
 import type { DB } from '@budgie/contracts';
 
-const countHouseholdRows = (database: DB) =>
+const readHouseholdCounts = (database: DB) =>
     Effect.forEach(
         ['accounts', 'transactions', 'transaction_entries', 'sync_record', 'sync_outbox'],
-        tableName => countRows(database, tableName, HOUSEHOLD_SYNC_ZONE),
+        tableName => countHouseholdRows(database, tableName, HOUSEHOLD_SYNC_ZONE),
         { concurrency: 1 }
     );
 
@@ -69,7 +69,7 @@ describe('cloud-sync/household removal', () => {
 
                 const personalBefore = yield* readPersonalBalances(memberDb);
 
-                expect((yield* countHouseholdRows(memberDb)).slice(0, 3)).toEqual([1, 1, 1]);
+                expect((yield* readHouseholdCounts(memberDb)).slice(0, 3)).toEqual([1, 1, 1]);
 
                 cloud.revokeShare(HOUSEHOLD_SYNC_ZONE, MEMBER_ACCOUNT);
 
@@ -84,12 +84,12 @@ describe('cloud-sync/household removal', () => {
                 );
 
                 expect(remaining).toBeUndefined();
-                expect(yield* countHouseholdRows(memberDb)).toEqual([0, 0, 0, 0, 0]);
-                expect(yield* countRows(memberDb, 'accounts')).toBe(1);
-                expect(yield* countRows(memberDb, 'account_balances')).toBe(1);
+                expect(yield* readHouseholdCounts(memberDb)).toEqual([0, 0, 0, 0, 0]);
+                expect(yield* countHouseholdRows(memberDb, 'accounts')).toBe(1);
+                expect(yield* countHouseholdRows(memberDb, 'account_balances')).toBe(1);
                 expect(yield* readPersonalBalances(memberDb)).toEqual(personalBefore);
                 expect(member.transport.calls.sharedStopped).toBe(1);
-                expect(appAtomRegistry.get(householdStateAtom).role).toBe(HouseholdRoleEnum.NONE);
+                expect(appAtomRegistry.get(householdReadyAtom)).toBe(false);
                 yield* assertStoredBalancesMatchLedger(memberDb);
             })
         );
@@ -107,7 +107,7 @@ describe('cloud-sync/household removal', () => {
 
                 expect(household).toBeUndefined();
                 expect(member.transport.calls.sharedStarted).toEqual([]);
-                expect(yield* countHouseholdRows(memberDb)).toEqual([0, 0, 0, 0, 0]);
+                expect(yield* readHouseholdCounts(memberDb)).toEqual([0, 0, 0, 0, 0]);
                 expect(yield* readPersonalBalances(memberDb)).toEqual(personalBefore);
                 yield* assertStoredBalancesMatchLedger(memberDb);
             })
@@ -125,7 +125,7 @@ describe('cloud-sync/household removal', () => {
                 );
 
                 expect(member.transport.calls.sharedStarted).toEqual([null]);
-                expect((yield* countHouseholdRows(memberDb)).slice(0, 3)).toEqual([1, 1, 1]);
+                expect((yield* readHouseholdCounts(memberDb)).slice(0, 3)).toEqual([1, 1, 1]);
             })
         );
     });

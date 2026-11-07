@@ -3,8 +3,7 @@ import { CategoryRepository, Db, HOUSEHOLD_SYNC_ZONE, LanguageEnum, PERSONAL_SYN
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { deliverHouseholdToMember, makeShareClouds, seedGroceriesJoint } from './household-tests-shared';
-import { prepareHousehold } from './share-harness';
+import { makeShareClouds, deliverHouseholdToMember, seedGroceriesJoint, prepareHousehold } from '../../harness';
 
 const hasDuplicates = (titles: readonly string[]): boolean => new Set(titles).size !== titles.length;
 

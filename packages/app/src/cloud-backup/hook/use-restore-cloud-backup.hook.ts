@@ -1,3 +1,4 @@
+import { ICloudErrorCode } from '@budgie/cloud-sync';
 import { useAtomSet } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -47,14 +48,22 @@ export const useRestoreCloudBackup = () => {
                 Effect.catchTags({
                     ...importErrorHandlers,
                     CloudBackupUnreadableError: () => markFailure(recordName, CloudRestoreFailureEnum.UNREADABLE),
-                    BackupKeyUnavailableError: () => markFailure(recordName, CloudRestoreFailureEnum.KEYCHAIN_UNAVAILABLE),
-                    EncryptedDataResetError: () => markFailure(recordName, CloudRestoreFailureEnum.UNREADABLE),
-                    CloudNetworkUnavailableError: () =>
-                        Effect.sync(() => void showErrorToast(t`Could not restore from iCloud`, t`Waiting for network`)),
-                    CloudAccountUnavailableError: () =>
-                        Effect.sync(() => void showErrorToast(t`Could not restore from iCloud`, t`iCloud unavailable`)),
-                    CloudQuotaExceededError: () =>
-                        Effect.sync(() => void showErrorToast(t`Could not restore from iCloud`, t`iCloud storage full`))
+                    CloudSyncTransportError: error => {
+                        if (error.code === ICloudErrorCode.BACKUP_KEY_UNAVAILABLE) {
+                            return markFailure(recordName, CloudRestoreFailureEnum.KEYCHAIN_UNAVAILABLE);
+                        }
+                        if (error.code === ICloudErrorCode.ENCRYPTED_DATA_RESET) {
+                            return markFailure(recordName, CloudRestoreFailureEnum.UNREADABLE);
+                        }
+                        if (error.code === ICloudErrorCode.NETWORK_UNAVAILABLE) {
+                            return Effect.sync(() => void showErrorToast(t`Could not restore from iCloud`, t`Waiting for network`));
+                        }
+                        if (error.code === ICloudErrorCode.QUOTA_EXCEEDED) {
+                            return Effect.sync(() => void showErrorToast(t`Could not restore from iCloud`, t`iCloud storage full`));
+                        }
+
+                        return Effect.sync(() => void showErrorToast(t`Could not restore from iCloud`, t`iCloud unavailable`));
+                    }
                 }),
                 toastOnFailure(t`Could not restore from iCloud`)
             )

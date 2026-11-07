@@ -4,12 +4,19 @@ import { Db, HOUSEHOLD_SYNC_ZONE, SyncZoneRoleEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { testDb } from '../../harness';
-
-import { refreshAllBalances } from './apply-harness';
-import { deliverHouseholdToMember, GROCERIES_ID, makeShareClouds, seedGroceriesJoint } from './household-tests-shared';
-import { PERSONAL_ZONE, countRows, prepareHousehold, queryRows } from './share-harness';
-import { makeSyncServiceContext } from './sync-service-harness';
+import {
+    testDb,
+    refreshAllBalances,
+    makeShareClouds,
+    deliverHouseholdToMember,
+    GROCERIES_ID,
+    seedGroceriesJoint,
+    PERSONAL_ZONE,
+    countRows,
+    prepareHousehold,
+    queryRows,
+    makeSyncServiceContext
+} from '../../harness';
 
 describe('cloud-sync/household leave categories', () => {
     it.layer(makeTestDbLayer(null), { excludeTestServices: true })('member leaves', it => {

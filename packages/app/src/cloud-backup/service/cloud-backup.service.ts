@@ -1,4 +1,4 @@
-import { buildHouseholdRemovalStatements } from '@budgie/cloud-sync';
+import { CloudSyncTransportError, ICloudErrorCode, ICloudAccountStatusEnum, buildHouseholdRemovalStatements } from '@budgie/cloud-sync';
 import {
     Db,
     HOUSEHOLD_SYNC_ZONE,
@@ -27,11 +27,9 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { DatabaseRekeyService } from '../../@generic/drizzle/service/database-rekey.service';
 import { readLastMigrationCreatedAt } from '../../@generic/drizzle/utils/read-last-migration-created-at.util';
+import { deleteIfExists } from '../../@generic/utils/delete-if-exists.util';
 import { cloudBackupStatusAtom } from '../constant/cloud-backup-status-atom.constant';
 import { CloudBackupStatusEnum } from '../enum/cloud-backup-status.enum';
-import { CloudAccountUnavailableError } from '../error/cloud-account-unavailable.error';
-import { CloudNetworkUnavailableError } from '../error/cloud-network-unavailable.error';
-import { CloudQuotaExceededError } from '../error/cloud-quota-exceeded.error';
 
 import { CloudTransport } from './cloud-transport.service';
 import { InstallIdService } from './install-id.service';
@@ -114,12 +112,6 @@ export class CloudBackupService extends Context.Service<CloudBackupService>()('@
             }
         });
 
-        const deleteTemporaryFile = (file: File): void => {
-            if (file.exists) {
-                file.delete();
-            }
-        };
-
         const uploadBackup = Effect.fn('CloudBackupService.uploadBackup')(function* (startedAt: Date) {
             const installId = yield* installIdService.get;
             const backupKey = yield* databaseRekeyService.generateKey();
@@ -131,7 +123,7 @@ export class CloudBackupService extends Context.Service<CloudBackupService>()('@
 
             yield* Effect.acquireUseRelease(
                 Effect.sync(() => {
-                    deleteTemporaryFile(temporaryFile);
+                    deleteIfExists(temporaryFile);
                 }),
                 () =>
                     databaseRekeyService
@@ -147,7 +139,7 @@ export class CloudBackupService extends Context.Service<CloudBackupService>()('@
                         ),
                 () =>
                     Effect.sync(() => {
-                        deleteTemporaryFile(temporaryFile);
+                        deleteIfExists(temporaryFile);
                     })
             );
 
@@ -173,7 +165,7 @@ export class CloudBackupService extends Context.Service<CloudBackupService>()('@
                 return false;
             }
 
-            if ((yield* cloudTransport.getAccountStatus).status !== 'available') {
+            if ((yield* cloudTransport.getAccountStatus).status !== ICloudAccountStatusEnum.AVAILABLE) {
                 return false;
             }
 
@@ -185,20 +177,20 @@ export class CloudBackupService extends Context.Service<CloudBackupService>()('@
             return true;
         });
 
-        const isQuotaExceeded = Schema.is(CloudQuotaExceededError);
-        const isNetworkUnavailable = Schema.is(CloudNetworkUnavailableError);
-        const isAccountUnavailable = Schema.is(CloudAccountUnavailableError);
+        const isTransportError = Schema.is(CloudSyncTransportError);
 
         const resolveFailureStatus = (error: unknown): CloudBackupStatusEnum => {
-            if (isQuotaExceeded(error)) {
+            if (isTransportError(error) && error.code === ICloudErrorCode.QUOTA_EXCEEDED) {
                 return CloudBackupStatusEnum.STORAGE_FULL;
             }
 
-            if (isNetworkUnavailable(error)) {
+            if (isTransportError(error) && error.code === ICloudErrorCode.NETWORK_UNAVAILABLE) {
                 return CloudBackupStatusEnum.NETWORK_UNAVAILABLE;
             }
 
-            return isAccountUnavailable(error) ? CloudBackupStatusEnum.ACCOUNT_UNAVAILABLE : CloudBackupStatusEnum.READY;
+            return isTransportError(error) && error.code === ICloudErrorCode.ACCOUNT_UNAVAILABLE
+                ? CloudBackupStatusEnum.ACCOUNT_UNAVAILABLE
+                : CloudBackupStatusEnum.READY;
         };
 
         return {

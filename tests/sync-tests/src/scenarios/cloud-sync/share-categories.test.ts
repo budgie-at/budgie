@@ -3,16 +3,27 @@ import { SyncZoneRoleEnum } from '@budgie/contracts';
 import { describe, expect } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { FakeCloudTransport, testDb } from '../../harness';
+import {
+    FakeCloudTransport,
+    testDb,
+    refreshAllBalances,
+    uploadDevice,
+    OPERATED_AT,
+    HOUSEHOLD_ZONE,
+    PERSONAL_ZONE,
+    countRows,
+    pullZones,
+    queryRows,
+    shareDevices,
+    expectLedgers,
+    pullHousehold,
+    shareAccount,
+    startHousehold
+} from '../../harness';
 
-import { refreshAllBalances, uploadDevice } from './apply-harness';
-import { HOUSEHOLD_ZONE, PERSONAL_ZONE, countRows, pullZones, queryRows } from './share-harness';
-import { shareDevices, expectLedgers, pullHousehold, shareAccount, startHousehold } from './share-tests-shared';
-
-import type { ShareCloudsInterface } from './share-harness';
+import type { ShareCloudsInterface } from '../../harness';
 import type { DB } from '@budgie/contracts';
 
-const OPERATED_AT = new Date('2026-10-02T10:00:00Z');
 const GROCERIES_ID = 11;
 
 const readCategoryTitles = (database: DB) =>

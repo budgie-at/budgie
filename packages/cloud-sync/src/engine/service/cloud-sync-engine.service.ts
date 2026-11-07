@@ -19,6 +19,7 @@ import { SyncApplyService } from '../../apply/service/sync-apply.service';
 import { SyncOutboxRepository } from '../../outbox/repository/sync-outbox.repository';
 import { SyncRestoreReconciliationService } from '../../reconciliation/service/sync-restore-reconciliation.service';
 import { ICloudAccountChangeType } from '../../transport/enum/icloud-account-change-type.enum';
+import { ICloudAccountStatusEnum } from '../../transport/enum/icloud-account-status.enum';
 import { ICloudErrorCode } from '../../transport/enum/icloud-error-code.enum';
 import { ICloudSyncScope } from '../../transport/enum/icloud-sync-scope.enum';
 import { ICloudZoneChangeReason } from '../../transport/enum/icloud-zone-change-reason.enum';
@@ -208,7 +209,7 @@ export class CloudSyncEngineService extends Context.Service<CloudSyncEngineServi
 
                 const account = yield* transport.getAccountStatus;
 
-                if (account.status !== 'available') {
+                if (account.status !== ICloudAccountStatusEnum.AVAILABLE) {
                     yield* stopEngineUnlocked();
                     yield* patch({ blocked: CloudSyncStatusEnum.PAUSED_SIGNED_OUT });
 

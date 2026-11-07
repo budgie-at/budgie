@@ -1,3 +1,4 @@
+import { ICloudErrorCode } from '@budgie/cloud-sync';
 import { useAtomRefresh, useAtomValue } from '@effect/atom-react/Hooks';
 import * as Effect from 'effect/Effect';
 import * as Option from 'effect/Option';
@@ -10,23 +11,27 @@ import type { CloudBackupListingInterface } from '../interface/cloud-backup-list
 
 const EMPTY_LISTING: CloudBackupListingInterface = { groups: [], isUnreadable: false, hasFailed: false };
 
-const cloudBackupListingAtom = appAtomRuntime.atom(
-    Effect.flatMap(
-        Effect.serviceOption(CloudRestoreService),
-        Option.match({
-            onNone: () => Effect.succeed(EMPTY_LISTING),
-            onSome: cloudRestoreService =>
-                cloudRestoreService.listBackups().pipe(
-                    Effect.map((groups): CloudBackupListingInterface => ({ groups, isUnreadable: false, hasFailed: false })),
-                    Effect.catchTags({
-                        EncryptedDataResetError: () =>
-                            Effect.succeed<CloudBackupListingInterface>({ groups: [], isUnreadable: true, hasFailed: false })
-                    }),
-                    Effect.orElseSucceed(() => ({ ...EMPTY_LISTING, hasFailed: true }))
-                )
-        })
-    )
+export const cloudBackupListing = Effect.flatMap(
+    Effect.serviceOption(CloudRestoreService),
+    Option.match({
+        onNone: () => Effect.succeed(EMPTY_LISTING),
+        onSome: cloudRestoreService =>
+            cloudRestoreService.listBackups().pipe(
+                Effect.map((groups): CloudBackupListingInterface => ({ groups, isUnreadable: false, hasFailed: false })),
+                Effect.catchTags({
+                    CloudSyncTransportError: error =>
+                        Effect.succeed<CloudBackupListingInterface>({
+                            groups: [],
+                            isUnreadable: error.code === ICloudErrorCode.ENCRYPTED_DATA_RESET,
+                            hasFailed: error.code !== ICloudErrorCode.ENCRYPTED_DATA_RESET
+                        })
+                }),
+                Effect.orElseSucceed(() => ({ ...EMPTY_LISTING, hasFailed: true }))
+            )
+    })
 );
+
+const cloudBackupListingAtom = appAtomRuntime.atom(cloudBackupListing);
 
 export const useCloudBackups = () => {
     const result = useAtomValue(cloudBackupListingAtom);

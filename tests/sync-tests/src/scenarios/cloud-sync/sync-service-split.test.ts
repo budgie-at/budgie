@@ -3,10 +3,7 @@ import { SyncDatabaseScopeEnum, SyncOutboxOperationEnum, SyncZoneRegistryReposit
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { testDb } from '../../harness';
-
-import { seedCrossZoneTransfer } from './record-mapping-harness';
-import { makeSyncServiceContext, savedFrom, sentEvent, syncService } from './sync-service-harness';
+import { testDb, seedCrossZoneTransfer, makeSyncServiceContext, savedFrom, sentEvent, syncService } from '../../harness';
 
 const countLegRecords = testDb.$client
     .unsafe<{ readonly total: number }>("SELECT COUNT(*) AS total FROM sync_record WHERE record_type = 'TransactionLeg'")

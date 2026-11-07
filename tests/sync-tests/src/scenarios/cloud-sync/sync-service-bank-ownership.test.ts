@@ -4,9 +4,7 @@ import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as TestClock from 'effect/testing/TestClock';
 
-import { seedMonobankTokenAccount, testDb } from '../../harness';
-
-import { INSTALL_ID, makeSyncServiceContext } from './sync-service-harness';
+import { seedMonobankTokenAccount, testDb, INSTALL_ID, makeSyncServiceContext } from '../../harness';
 
 const DAY_MILLISECONDS = 24 * 60 * 60 * 1000;
 

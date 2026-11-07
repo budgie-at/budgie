@@ -10,6 +10,7 @@ import { HouseholdEndModeEnum } from '../../household/enum/household-end-mode.en
 import { HouseholdJoinStatusEnum } from '../../household/enum/household-join-status.enum';
 import { HouseholdMembershipService } from '../../household/service/household-membership.service';
 import { ICLOUD_DEFAULT_OWNER_NAME } from '../../transport/constant/icloud-default-owner-name.constant';
+import { ICloudAccountStatusEnum } from '../../transport/enum/icloud-account-status.enum';
 import { ICloudErrorCode } from '../../transport/enum/icloud-error-code.enum';
 import { ICloudShareChange } from '../../transport/enum/icloud-share-change.enum';
 import { ICloudShareOutcome } from '../../transport/enum/icloud-share-outcome.enum';
@@ -213,7 +214,7 @@ export class CloudSyncHouseholdService extends Context.Service<CloudSyncHousehol
                         return;
                     }
 
-                    if ((yield* transport.getAccountStatus).status !== 'available') {
+                    if ((yield* transport.getAccountStatus).status !== ICloudAccountStatusEnum.AVAILABLE) {
                         return;
                     }
 

@@ -13,10 +13,10 @@ import * as Layer from 'effect/Layer';
 
 import { encodeAllRecords } from './record-mapping-harness';
 
-import type { FakeCloudDeliveryOptionsInterface, FakeCloudTransport } from '../../harness';
+import type { FakeCloudDeliveryOptionsInterface } from './fake-cloud-delivery-options.interface';
+import type { FakeCloudTransport } from './fake-cloud-transport';
 import type { ShareCloudsInterface } from './share-harness';
-import type { SyncUploadAcknowledgementInterface } from '@budgie/cloud-sync';
-import type { SyncApplyResultInterface } from '@budgie/cloud-sync';
+import type { SyncUploadAcknowledgementInterface, SyncApplyResultInterface } from '@budgie/cloud-sync';
 import type { DB } from '@budgie/contracts';
 
 const refresherLayer = Layer.effect(

@@ -4,12 +4,12 @@ import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { testDb } from '../../harness';
+import { testDb, OPERATED_AT } from '../../harness';
 
 import type { DB } from '@budgie/contracts';
 
 const SHARED_CREATED_AT = 1_780_000_000;
-const OPERATED_AT = new Date('2026-10-02T10:00:00Z');
+
 const LINEAGE_ID = '4d3e6c52-0d58-4a62-9a64-3f6a1d2b7f10';
 const IDENTITY_TABLES = ['accounts', 'transactions', 'transaction_entries', 'tags', 'transaction_tags'];
 

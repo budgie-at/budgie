@@ -1,11 +1,6 @@
-import { HouseholdJoinStatusEnum } from '@budgie/cloud-sync';
-import { UserIconNameEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
-import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
-
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
@@ -18,37 +13,39 @@ import { householdAccountsOverviewAtom } from '../../constant/household-accounts
 import { householdJoinAtom } from '../../constant/household-join-atom.constant';
 import { useHouseholdOrganizerName } from '../../hook/use-household-organizer-name.hook';
 import { useHousehold } from '../../hook/use-household.hook';
-
-import { HouseholdMemberSummarySelector } from './household-member-summary.selector';
+import { getHouseholdSummaryLabels } from '../../utils/get-household-summary-labels.util';
 
 export const HouseholdMemberSummary = () => {
     const { t } = useLingui();
     const organizerName = useHouseholdOrganizerName();
-    const { isReady } = useHousehold();
+    const { isReady, isMember } = useHousehold();
     const { isAvailable } = useICloudAccount();
-    const isJustJoined = useAtomValue(householdJoinAtom, ({ status }) => status === HouseholdJoinStatusEnum.JOINED);
+    const { status: joinStatus, ownerDisplayName } = useAtomValue(householdJoinAtom);
     const overview = AsyncResult.getOrElse(useLiveAtomValue(householdAccountsOverviewAtom), () => null);
-
-    const title = isDefined(organizerName) ? t`${organizerName}'s family` : t`Your family`;
-    const icon = isJustJoined ? UserIconNameEnum.CircleCheck : UserIconNameEnum.Users;
-    const sharedCount = overview?.sharedByOthersCount ?? 0;
-    const sharedSubtitle = t({
-        message: plural(sharedCount, { one: '# shared account', other: '# shared accounts' })
+    const labels = getHouseholdSummaryLabels(t, {
+        organizerName,
+        isReady,
+        isMember,
+        isAvailable,
+        joinStatus,
+        ownerDisplayName,
+        sharedCount: overview?.sharedByOthersCount ?? 0
     });
-    const readySubtitle = isPositiveNumber(sharedCount) ? sharedSubtitle : t`Shared accounts stay in sync`;
-    const syncSubtitle = isReady ? readySubtitle : t`Syncing…`;
-    const subtitle = isAvailable ? syncSubtitle : <SettingsWarningSubtitle>{t`Paused: sign in to iCloud`}</SettingsWarningSubtitle>;
-    const isSyncing = isAvailable && !isReady;
+    const subtitle = labels.isPaused ? <SettingsWarningSubtitle>{labels.subtitle}</SettingsWarningSubtitle> : labels.subtitle;
+
+    if (!labels.hasSummary) {
+        return null;
+    }
 
     return (
         <GroupedListSection>
             <SettingsRow
-                icon={icon}
+                icon={labels.icon}
                 variant="ghost"
-                title={title}
+                title={labels.title}
                 subtitle={subtitle}
-                right={<SettingsRowAccessory kind={SettingsRowAccessoryKindEnum.ACTION} isLoading={isSyncing} />}
-                testID={HouseholdMemberSummarySelector.Card}
+                right={<SettingsRowAccessory kind={SettingsRowAccessoryKindEnum.ACTION} isLoading={labels.isLoading} />}
+                testID={labels.testID}
             />
         </GroupedListSection>
     );

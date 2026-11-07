@@ -4,15 +4,12 @@ import { Db } from '@budgie/contracts';
 import { expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { FakeCloudTransport } from '../../harness';
-
 import { uploadDevice } from './apply-harness';
+import { makeShareClouds } from './cloud-fixtures';
 import { HOUSEHOLD_ZONE, onShareDevice, prepareHousehold, pullZones, queryRows } from './share-harness';
 
 import type { ShareCloudsInterface } from './share-harness';
 import type { DB, SyncZoneRoleEnum } from '@budgie/contracts';
-
-const makeClouds = (): ShareCloudsInterface => ({ personal: new FakeCloudTransport(), household: new FakeCloudTransport() });
 
 const layerShareDevices = () => it.layer(makeTestDbLayer(null), { excludeTestServices: true });
 
@@ -21,7 +18,7 @@ export const shareDevices = layerShareDevices();
 export const startHousehold = (memberRole: SyncZoneRoleEnum) =>
     Effect.gen(function* () {
         const deviceB = yield* Db;
-        const clouds = makeClouds();
+        const clouds = makeShareClouds();
 
         yield* prepareHousehold(deviceB, memberRole);
 

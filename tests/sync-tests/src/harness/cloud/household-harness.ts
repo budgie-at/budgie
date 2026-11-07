@@ -10,12 +10,13 @@ import {
 import { HOUSEHOLD_SYNC_ZONE } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
-import { testDb } from '../../harness';
+import { testDb } from '../scenario/test-db';
 
 import { onDevice, pullDevice, refreshAllBalances, uploadRecords } from './apply-harness';
+import { OPERATED_AT } from './cloud-fixtures';
 import { encodeAllRecords, loadSyncState } from './record-mapping-harness';
 
-import type { FakeCloudTransport } from '../../harness';
+import type { FakeCloudTransport } from './fake-cloud-transport';
 import type { ICloudShareAcceptedEvent, ICloudShareParticipant, ICloudZoneChangeEvent } from '@budgie/cloud-sync';
 import type { DB } from '@budgie/contracts';
 
@@ -24,8 +25,6 @@ export const HOUSEHOLD_CLOUD_ZONE = 'Household';
 const OWNER_ACCOUNT = 'owner-apple-id';
 export const MEMBER_ACCOUNT = 'member-apple-id';
 export const MEMBER_DEVICE = 'member-device';
-
-const OPERATED_AT = new Date('2026-10-02T10:00:00Z');
 
 export const shareAcceptedEvent = (): ICloudShareAcceptedEvent => ({
     zoneName: HOUSEHOLD_CLOUD_ZONE,

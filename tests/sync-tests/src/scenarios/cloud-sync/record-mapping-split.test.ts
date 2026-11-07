@@ -6,8 +6,6 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { testDb } from '../../harness/scenario/test-db';
-
 import {
     encodeAllRecords,
     hydratedSnapshot,
@@ -16,7 +14,8 @@ import {
     prepareTarget,
     seedCrossZoneTransfer,
     throughTransport
-} from './record-mapping-harness';
+} from '../../harness';
+import { testDb } from '../../harness/scenario/test-db';
 
 const SHARED_ZONE = 'household';
 const SHARED_AMOUNT = 7_654_321;

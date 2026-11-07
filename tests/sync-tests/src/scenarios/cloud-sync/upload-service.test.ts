@@ -3,12 +3,12 @@ import { SyncUploadService } from '@budgie/cloud-sync';
 import { Db, ExternalSourceEnum, PERSONAL_SYNC_ZONE, SyncRecordTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
+import { vi } from 'vitest';
 
-import { seed, testDb } from '../../harness';
+import * as encoder from '../../../../../packages/cloud-sync/dist/esm/mapping/utils/encode-sync-aggregate.util.js';
+import { seed, testDb, OPERATED_AT } from '../../harness';
 
 import type { SyncUploadSaveInterface } from '@budgie/cloud-sync';
-
-const OPERATED_AT = new Date('2026-10-02T10:00:00Z');
 
 const clearOutbox = testDb.$client.unsafe('DELETE FROM sync_outbox');
 
@@ -28,6 +28,26 @@ const withUpload = <A, E>(effect: Effect.Effect<A, E, SyncUploadService | Db>) =
     effect.pipe(Effect.provide(SyncUploadService.layer), Effect.provideService(Db, testDb));
 
 describe('cloud-sync/upload-service', () => {
+    it.effect('does not encode held zone rows on repeated drains and encodes them when released', () =>
+        withUpload(
+            Effect.gen(function* () {
+                const upload = yield* SyncUploadService;
+                yield* seed.account({ title: 'Held' });
+                const encode = vi.spyOn(encoder, 'encodeSyncAggregate');
+                yield* Effect.gen(function* () {
+                    for (const attempt of [1, 2, 3]) {
+                        const batch = yield* upload.pending(attempt * 10, new Set(), () => true);
+                        expect(batch.saves).toEqual([]);
+                    }
+                    expect(encode).not.toHaveBeenCalled();
+                    const released = yield* upload.pending(100, new Set(), () => false);
+                    expect(released.saves.length).toBeGreaterThan(0);
+                    expect(encode).toHaveBeenCalled();
+                }).pipe(Effect.ensuring(Effect.sync(() => void encode.mockRestore())));
+            })
+        )
+    );
+
     it.effect('returns one record per changed aggregate in the aggregate zone', () =>
         withUpload(
             Effect.gen(function* () {

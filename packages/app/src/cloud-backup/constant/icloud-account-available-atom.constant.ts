@@ -1,3 +1,4 @@
+import { ICloudAccountStatusEnum, ICloudErrorCode } from '@budgie/cloud-sync';
 import * as Effect from 'effect/Effect';
 import * as Option from 'effect/Option';
 import * as Stream from 'effect/Stream';
@@ -22,8 +23,10 @@ export const iCloudAccountAvailableAtom = appAtomRuntime.atom(get => {
                     onNone: () => Effect.succeed(true),
                     onSome: cloudTransport =>
                         cloudTransport.getAccountStatus.pipe(
-                            Effect.map(({ status }) => status === 'available'),
-                            Effect.catchTags({ CloudNetworkUnavailableError: () => Effect.succeed(true) }),
+                            Effect.map(({ status }) => status === ICloudAccountStatusEnum.AVAILABLE),
+                            Effect.catchTags({
+                                CloudSyncTransportError: error => Effect.succeed(error.code === ICloudErrorCode.NETWORK_UNAVAILABLE)
+                            }),
                             Effect.orElseSucceed(() => false)
                         )
                 })

@@ -6,9 +6,7 @@ import { describe, expect, it, vi } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import Toast from '../../../../test-kit/src/vitest/toast-message.shim';
-
-import { HOUSEHOLD_CLOUD_ZONE, OWNER_RECORD_NAME } from './household-harness';
-import { makeSyncServiceContext, syncService } from './sync-service-harness';
+import { HOUSEHOLD_CLOUD_ZONE, OWNER_RECORD_NAME, makeSyncServiceContext, syncService } from '../../harness';
 
 describe('cloud-sync/household share failed', () => {
     it.effect('tells the user when accepting a family invitation fails', () => {

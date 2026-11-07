@@ -15,8 +15,6 @@ import * as Schema from 'effect/Schema';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { testDb } from '../../harness/scenario/test-db';
-
 import {
     encodeAllRecords,
     hydratedSnapshot,
@@ -26,7 +24,8 @@ import {
     seedFullLedger,
     seedTransferRefundAndConsolidation,
     throughTransport
-} from './record-mapping-harness';
+} from '../../harness';
+import { testDb } from '../../harness/scenario/test-db';
 
 const ENVELOPE_KEYS = ['encryptedFields', 'recordName', 'recordType', 'schemaVersion', 'zone'];
 const LOCAL_ONLY_PROPERTIES = new Set([

@@ -13,15 +13,26 @@ import {
 import { describe, expect } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { testDb } from '../../harness';
-
-import { refreshAllBalances, uploadDevice } from './apply-harness';
-import { HOUSEHOLD_ZONE, PERSONAL_ZONE, countRows, onShareDevice, queryRows, reconcileDevice } from './share-harness';
-import { shareDevices, expectLedgers, expectNoRejections, pullHousehold, startHousehold } from './share-tests-shared';
+import {
+    testDb,
+    refreshAllBalances,
+    uploadDevice,
+    OPERATED_AT,
+    HOUSEHOLD_ZONE,
+    PERSONAL_ZONE,
+    countRows,
+    onShareDevice,
+    queryRows,
+    reconcileDevice,
+    shareDevices,
+    expectLedgers,
+    expectNoRejections,
+    pullHousehold,
+    startHousehold
+} from '../../harness';
 
 import type { DB } from '@budgie/contracts';
 
-const OPERATED_AT = new Date('2026-10-02T10:00:00Z');
 const PERIOD_START = new Date('2026-10-01T00:00:00Z');
 const NEXT_PERIOD_START = new Date('2026-11-01T00:00:00Z');
 const GROCERIES_ID = 11;

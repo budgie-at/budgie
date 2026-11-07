@@ -17,9 +17,7 @@ import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
 import * as Schema from 'effect/Schema';
 
-import { seed, testDb } from '../../harness';
-
-import { onDevice } from './apply-harness';
+import { seed, testDb, onDevice, OPERATED_AT } from '../../harness';
 
 interface OutboxRowInterface {
     readonly recordType: string;
@@ -32,8 +30,6 @@ interface OutboxRowInterface {
 interface RawOutboxRowInterface extends Omit<OutboxRowInterface, 'changedColumns'> {
     readonly changedColumns: string;
 }
-
-const OPERATED_AT = new Date('2026-10-02T10:00:00Z');
 
 const decodeChangedColumns = Schema.decodeSync(Schema.fromJsonString(Schema.Array(Schema.String)));
 

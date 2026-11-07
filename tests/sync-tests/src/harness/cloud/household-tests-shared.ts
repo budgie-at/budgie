@@ -3,9 +3,10 @@ import { HouseholdShareService } from '@budgie/cloud-sync';
 import { Db, HOUSEHOLD_SYNC_ZONE, SyncZoneRegistryRepository } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
-import { FakeCloudTransport, testDb } from '../../harness';
+import { testDb } from '../scenario/test-db';
 
 import { refreshAllBalances, uploadDevice } from './apply-harness';
+import { OPERATED_AT } from './cloud-fixtures';
 import { shareAcceptedEvent } from './household-harness';
 import { HOUSEHOLD_ZONE, onShareDevice, pullZones } from './share-harness';
 import { syncService } from './sync-service-harness';
@@ -14,11 +15,7 @@ import type { ShareCloudsInterface } from './share-harness';
 import type { makeSyncServiceContext } from './sync-service-harness';
 import type { DB } from '@budgie/contracts';
 
-const OPERATED_AT = new Date('2026-10-02T10:00:00Z');
-
 export const GROCERIES_ID = 11;
-
-export const makeShareClouds = (): ShareCloudsInterface => ({ personal: new FakeCloudTransport(), household: new FakeCloudTransport() });
 
 const seedGroceriesLunch = (accountId: number) =>
     new TestSeedService(testDb).manualExpense({

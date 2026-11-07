@@ -1,14 +1,9 @@
-import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
-import { householdStateAtom } from '@app/household/constant/household-state-atom.constant';
 import { makeTestDbLayer, resetTestDb } from '@budgie-at/test-kit';
-import { HouseholdRoleEnum } from '@budgie/cloud-sync';
-import { Db, SyncDatabaseScopeEnum, SyncZoneRoleEnum } from '@budgie/contracts';
+import { Db, HOUSEHOLD_SYNC_ZONE, SyncZoneRegistryRepository, SyncDatabaseScopeEnum, SyncZoneRoleEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { HOUSEHOLD_CLOUD_ZONE, OWNER_RECORD_NAME } from './household-harness';
-import { discoverHouseholdEntry } from './household-tests-shared';
-import { makeSyncServiceContext } from './sync-service-harness';
+import { HOUSEHOLD_CLOUD_ZONE, OWNER_RECORD_NAME, discoverHouseholdEntry, makeSyncServiceContext } from '../../harness';
 
 describe('cloud-sync/household discovery', () => {
     it.layer(makeTestDbLayer(null), { excludeTestServices: true })('member device', it => {
@@ -28,7 +23,10 @@ describe('cloud-sync/household discovery', () => {
                 expect(entry?.databaseScope).toBe(SyncDatabaseScopeEnum.SHARED);
                 expect(entry?.ownerName).toBe(OWNER_RECORD_NAME);
 
-                expect(appAtomRegistry.get(householdStateAtom).role).toBe(HouseholdRoleEnum.MEMBER);
+                const persisted = yield* Effect.flatMap(SyncZoneRegistryRepository, registry =>
+                    registry.findByLabel(HOUSEHOLD_SYNC_ZONE)
+                ).pipe(Effect.provide(SyncZoneRegistryRepository.layer), Effect.provideService(Db, memberDb));
+                expect(persisted?.role).toBe(SyncZoneRoleEnum.PARTICIPANT);
             })
         );
     });

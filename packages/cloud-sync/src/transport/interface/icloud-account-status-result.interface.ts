@@ -1,6 +1,6 @@
-import type { ICloudAccountStatus } from '../type/icloud-account-status.type';
+import type { ICloudAccountStatusEnum } from '../enum/icloud-account-status.enum';
 
 export interface ICloudAccountStatusResult {
-    status: ICloudAccountStatus;
-    userRecordName: string | null;
+    readonly status: ICloudAccountStatusEnum;
+    readonly userRecordName: string | null;
 }

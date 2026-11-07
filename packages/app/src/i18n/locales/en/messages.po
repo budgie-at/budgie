@@ -753,8 +753,8 @@ msgid "{organizerName} sees shared accounts and their payments. Money moved betw
 msgstr "{organizerName} sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
 
 #: src/account/component/family-section-header/family-section-header.tsx
-#: src/household/component/household-member-summary/household-member-summary.tsx
 #: src/household/utils/get-family-labels.util.ts
+#: src/household/utils/get-household-summary-labels.util.ts
 msgid "{organizerName}'s family"
 msgstr "{organizerName}'s family"
 
@@ -936,7 +936,7 @@ msgstr "{selectedInGroupCount} of {accountsCount} selected"
 msgid "{setAsideLabel} to set aside {thisPeriod}"
 msgstr "{setAsideLabel} to set aside {thisPeriod}"
 
-#: src/household/component/household-member-summary/household-member-summary.tsx
+#: src/household/utils/get-household-summary-labels.util.ts
 msgid "{sharedCount, plural, one {# shared account} other {# shared accounts}}"
 msgstr "{sharedCount, plural, one {# shared account} other {# shared accounts}}"
 
@@ -1275,7 +1275,7 @@ msgstr "above {formattedLimit} limit"
 msgid "Above this amount"
 msgstr "Above this amount"
 
-#: src/household/component/household-join-card/household-join-card.tsx
+#: src/household/utils/get-household-summary-labels.util.ts
 msgid "Accepting the invitation"
 msgstr "Accepting the invitation"
 
@@ -3252,7 +3252,7 @@ msgid "Could not import CSV file"
 msgstr "Could not import CSV file"
 
 #: src/cloud-sync/layer/cloud-sync-host.layer.ts
-#: src/household/component/household-join-card/household-join-card.tsx
+#: src/household/utils/get-household-summary-labels.util.ts
 msgid "Could not join the family"
 msgstr "Could not join the family"
 
@@ -5560,12 +5560,12 @@ msgid "Joined"
 msgstr "Joined"
 
 #: src/household/component/family-row/family-row.tsx
-#: src/household/component/household-join-card/household-join-card.tsx
+#: src/household/utils/get-household-summary-labels.util.ts
 msgid "Joining {ownerDisplayName}'s family…"
 msgstr "Joining {ownerDisplayName}'s family…"
 
 #: src/household/component/family-row/family-row.tsx
-#: src/household/component/household-join-card/household-join-card.tsx
+#: src/household/utils/get-household-summary-labels.util.ts
 msgid "Joining the family…"
 msgstr "Joining the family…"
 
@@ -6990,7 +6990,7 @@ msgstr "Open Settings"
 msgid "Open Shortcuts"
 msgstr "Open Shortcuts"
 
-#: src/household/component/household-join-card/household-join-card.tsx
+#: src/household/utils/get-household-summary-labels.util.ts
 msgid "Open the invitation link again to retry."
 msgstr "Open the invitation link again to retry."
 
@@ -7310,7 +7310,7 @@ msgid "Paused: no Wi-Fi"
 msgstr "Paused: no Wi-Fi"
 
 #: src/household/component/family-row/family-row.tsx
-#: src/household/component/household-member-summary/household-member-summary.tsx
+#: src/household/utils/get-household-summary-labels.util.ts
 msgid "Paused: sign in to iCloud"
 msgstr "Paused: sign in to iCloud"
 
@@ -8602,7 +8602,7 @@ msgstr "Share your accounts"
 msgid "Share your accounts with {organizerName}"
 msgstr "Share your accounts with {organizerName}"
 
-#: src/household/component/household-member-summary/household-member-summary.tsx
+#: src/household/utils/get-household-summary-labels.util.ts
 msgid "Shared accounts stay in sync"
 msgstr "Shared accounts stay in sync"
 
@@ -9103,7 +9103,7 @@ msgid "Syncing resumes for all accounts once you update the key."
 msgstr "Syncing resumes for all accounts once you update the key."
 
 #: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
-#: src/household/component/household-member-summary/household-member-summary.tsx
+#: src/household/utils/get-household-summary-labels.util.ts
 #: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
@@ -10689,7 +10689,7 @@ msgstr "Your data: {state}"
 msgid "Your device clock is out of sync. Enable automatic date and time, then try again."
 msgstr "Your device clock is out of sync. Enable automatic date and time, then try again."
 
-#: src/household/component/household-member-summary/household-member-summary.tsx
+#: src/household/utils/get-household-summary-labels.util.ts
 msgid "Your family"
 msgstr "Your family"
 

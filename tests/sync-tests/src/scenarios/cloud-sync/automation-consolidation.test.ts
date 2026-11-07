@@ -3,9 +3,8 @@ import { deriveConsolidationSyncId, ExternalSourceEnum, TransactionConsolidation
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { testDb } from '../../harness';
-
 import {
+    testDb,
     bootstrapDevices,
     bootstrapMonoDevices,
     expectBalancesConverged,
@@ -13,12 +12,12 @@ import {
     expectSettled,
     firstAccountIdOf,
     reapplyOnBoth,
-    refreshAndSettle
-} from './automation-harness';
+    refreshAndSettle,
+    OPERATED_AT
+} from '../../harness';
 
 import type { DB } from '@budgie/contracts';
 
-const OPERATED_AT = new Date('2026-10-02T10:00:00Z');
 const BANK_OPERATED_AT = new Date('2026-10-02T10:01:00Z');
 const AMOUNT = 10_000_000;
 

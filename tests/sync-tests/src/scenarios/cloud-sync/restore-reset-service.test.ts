@@ -5,9 +5,9 @@ import { SyncIdentityRepository } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { seed, testDb } from '../../harness';
-
 import {
+    seed,
+    testDb,
     SyncServiceType,
     failedSaveOf,
     fetchedEvent,
@@ -19,7 +19,7 @@ import {
     runSyncService,
     savedFrom,
     sentEvent
-} from './sync-service-harness';
+} from '../../harness';
 
 const startRestoreWithBaselineAccount = (context: Parameters<Parameters<typeof runSyncService>[0]>[0], service: SyncServiceType) =>
     Effect.gen(function* () {

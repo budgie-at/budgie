@@ -1,20 +1,28 @@
 import { resetTestDb } from '@budgie-at/test-kit';
 import { HouseholdShareService, SyncApplyService, SyncUploadService } from '@budgie/cloud-sync';
-import { Db, SyncDatabaseScopeEnum, SyncZoneRegistryRepository, SyncZoneRoleEnum } from '@budgie/contracts';
+import {
+    PERSONAL_SYNC_ZONE,
+    HOUSEHOLD_SYNC_ZONE,
+    Db,
+    SyncDatabaseScopeEnum,
+    SyncZoneRegistryRepository,
+    SyncZoneRoleEnum
+} from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { isRecord, isString } from '@rnw-community/shared';
 
-import { testDb } from '../../harness';
+import { testDb } from '../scenario/test-db';
 
 import { applyPulledBatches, deviceLayer } from './apply-harness';
 
-import type { FakeCloudDeliveryOptionsInterface, FakeCloudTransport } from '../../harness';
+import type { FakeCloudDeliveryOptionsInterface } from './fake-cloud-delivery-options.interface';
+import type { FakeCloudTransport } from './fake-cloud-transport';
 import type { DB } from '@budgie/contracts';
 
-export const PERSONAL_ZONE = 'personal';
-export const HOUSEHOLD_ZONE = 'household';
+export const PERSONAL_ZONE = PERSONAL_SYNC_ZONE;
+export const HOUSEHOLD_ZONE = HOUSEHOLD_SYNC_ZONE;
 
 const shareLayer = Layer.mergeAll(deviceLayer, HouseholdShareService.layer, SyncUploadService.layer, SyncZoneRegistryRepository.layer);
 

@@ -4,11 +4,18 @@ import { SyncZoneRoleEnum } from '@budgie/contracts';
 import { describe, expect } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { testDb } from '../../harness';
-
-import { refreshAllBalances, uploadDevice } from './apply-harness';
-import { HOUSEHOLD_ZONE, PERSONAL_ZONE, countRows, onShareDevice, pullZones, queryRows, reconcileDevice } from './share-harness';
 import {
+    testDb,
+    refreshAllBalances,
+    uploadDevice,
+    OPERATED_AT,
+    HOUSEHOLD_ZONE,
+    PERSONAL_ZONE,
+    countRows,
+    onShareDevice,
+    pullZones,
+    queryRows,
+    reconcileDevice,
     shareDevices,
     expectLedgers,
     expectNoRejections,
@@ -16,11 +23,10 @@ import {
     pullHousehold,
     shareAndUpload,
     startHousehold
-} from './share-tests-shared';
+} from '../../harness';
 
 import type { DB } from '@budgie/contracts';
 
-const OPERATED_AT = new Date('2026-10-02T10:00:00Z');
 const OWNER_DEVICE = 'owner-device';
 const MEMBER_DEVICE = 'member-device';
 const GROCERIES_ID = 11;

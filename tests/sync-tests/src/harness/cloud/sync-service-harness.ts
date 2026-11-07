@@ -1,6 +1,7 @@
 import { cloudSyncDatabaseChangesLayer } from '@app/cloud-sync/layer/cloud-sync-database-changes.layer';
 import { cloudSyncHostLayer } from '@app/cloud-sync/layer/cloud-sync-host.layer';
 import {
+    ICloudAccountStatusEnum,
     cloudSyncDomainLayer,
     CloudSyncInstallId,
     SyncAutomationService,
@@ -24,7 +25,7 @@ import * as Layer from 'effect/Layer';
 import * as Reactivity from 'effect/reactivity/Reactivity';
 import * as Stream from 'effect/Stream';
 
-import { testDb } from '../../harness';
+import { testDb } from '../scenario/test-db';
 
 import type {
     ICloudAccountStatusResult,
@@ -68,6 +69,7 @@ interface FakeTransportBehaviorInterface {
     zoneInventory: readonly ICloudZoneInventoryRecord[];
     sharedZoneInventory: readonly ICloudZoneInventoryRecord[] | null;
     isInventoryFailing: boolean;
+    failingInventoryZone: string | null;
     isSaveFailing: boolean;
     participants: readonly ICloudShareParticipant[];
     joinedHousehold: ICloudJoinedHousehold | null;
@@ -93,11 +95,12 @@ const makeFakeTransport = () => {
         removedParticipants: []
     };
     const behavior: FakeTransportBehaviorInterface = {
-        accountStatus: { status: 'available', userRecordName: 'user-a' },
+        accountStatus: { status: ICloudAccountStatusEnum.AVAILABLE, userRecordName: 'user-a' },
         zoneMeta: null,
         zoneInventory: [],
         sharedZoneInventory: null,
         isInventoryFailing: false,
+        failingInventoryZone: null,
         isSaveFailing: false,
         participants: [],
         joinedHousehold: null,
@@ -134,11 +137,11 @@ const makeFakeTransport = () => {
                 behavior.zoneMeta = null;
             }),
         fetchRecord: () => Effect.sync(() => behavior.zoneMeta),
-        fetchZoneInventory: (inventoryScope: ICloudSyncScope) =>
+        fetchZoneInventory: (inventoryScope: ICloudSyncScope, zoneName: string) =>
             Effect.suspend(() => {
                 calls.inventoryRequests += 1;
 
-                return behavior.isInventoryFailing
+                return behavior.isInventoryFailing || behavior.failingInventoryZone === zoneName
                     ? Effect.fail(CloudSyncTransportError.make({ code: ICloudErrorCode.NETWORK_UNAVAILABLE, message: 'inventory failed' }))
                     : Effect.succeed(
                           inventoryScope === ICloudSyncScope.SHARED

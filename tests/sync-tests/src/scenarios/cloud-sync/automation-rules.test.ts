@@ -3,11 +3,11 @@ import { CategorySourceEnum, RuleActionTypeEnum, TransactionUpdatedByEnum } from
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { testDb } from '../../harness';
-import { seedTitleRule } from '../../harness/seed/seed-title-rule';
-
-import { pushDevice, readOutboxRows, refreshAllBalances } from './apply-harness';
 import {
+    testDb,
+    pushDevice,
+    readOutboxRows,
+    refreshAllBalances,
     bootstrapMonoDevices,
     embeddingBoostProbe,
     expectSettled,
@@ -16,12 +16,12 @@ import {
     reapplyAutomation,
     reapplyOnBoth,
     settleDevices,
-    syncIdsOf
-} from './automation-harness';
+    syncIdsOf,
+    OPERATED_AT
+} from '../../harness';
+import { seedTitleRule } from '../../harness/seed/seed-title-rule';
 
 import type { DB } from '@budgie/contracts';
-
-const OPERATED_AT = new Date('2026-10-02T10:00:00Z');
 
 interface CategorizedEntryInterface {
     readonly categoryTitle: string | null;

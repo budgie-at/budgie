@@ -72,7 +72,6 @@ export { ICloudParticipantRole } from './transport/enum/icloud-participant-role.
 export { ICloudParticipantAcceptanceStatus } from './transport/enum/icloud-participant-acceptance-status.enum';
 export { ICloudParticipantPermission } from './transport/enum/icloud-participant-permission.enum';
 export { ICLOUD_DEFAULT_OWNER_NAME } from './transport/constant/icloud-default-owner-name.constant';
-export type { ICloudAccountStatus } from './transport/type/icloud-account-status.type';
 export type { ICloudAccountStatusResult } from './transport/interface/icloud-account-status-result.interface';
 export type { ICloudWireValue } from './transport/type/icloud-wire-value.type';
 export type { ICloudRecordId } from './transport/interface/icloud-record-id.interface';
@@ -124,3 +123,5 @@ export { HouseholdRoleEnum } from './household/enum/household-role.enum';
 export { HouseholdJoinStatusEnum } from './household/enum/household-join-status.enum';
 export { syncAccountBalanceRefresherLayer } from './apply/layer/sync-account-balance-refresher.layer';
 export { cloudSyncDomainLayer } from './engine/layer/cloud-sync-domain.layer';
+
+export { ICloudAccountStatusEnum } from './transport/enum/icloud-account-status.enum';
