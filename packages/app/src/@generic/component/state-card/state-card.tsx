@@ -13,10 +13,11 @@ interface Props extends PropsWithChildren {
     readonly icon: UserIconNameEnum;
     readonly title: ReactNode;
     readonly description: ReactNode;
+    readonly testID?: string;
 }
 
-export const AccountsStateCard = ({ icon, title, description, children }: Props) => (
-    <View className="items-center gap-y-lg rounded-3xl bg-grouped-surface-row px-5xl py-7xl" style={CONTINUOUS_CORNERS}>
+export const StateCard = ({ icon, title, description, testID, children }: Props) => (
+    <View className="items-center gap-y-lg rounded-3xl bg-grouped-surface-row px-5xl py-7xl" style={CONTINUOUS_CORNERS} testID={testID}>
         <CircleIcon icon={icon} size={56} iconSize={26} radius={28} variant="secondary" border={false} className="bg-surface-disc" />
 
         <View className="items-center gap-y-xs">

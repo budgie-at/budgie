@@ -1,19 +1,19 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { StateCard } from '../../../@generic/component/state-card/state-card';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { CloudRestoreContext } from '../../context/cloud-restore.context';
 import { useCloudBackups } from '../../hook/use-cloud-backups.hook';
 import { useICloudAccount } from '../../hook/use-icloud-account.hook';
 import { useRestoreCloudBackup } from '../../hook/use-restore-cloud-backup.hook';
-import { CloudBackupEmptyStateCard } from '../cloud-backup-empty-state-card/cloud-backup-empty-state-card';
-import { CloudBackupGroup } from '../cloud-backup-group/cloud-backup-group';
 import { CloudBackupRestoreFileLink } from '../cloud-backup-restore-file-link/cloud-backup-restore-file-link';
-import { CloudBackupRestoreNotice } from '../cloud-backup-restore-notice/cloud-backup-restore-notice';
+import { CloudBackupRow } from '../cloud-backup-row/cloud-backup-row';
 
 import { CloudBackupListSelector } from './cloud-backup-list.selector';
 
@@ -36,41 +36,45 @@ export const CloudBackupList = () => {
             <LoadingContent isLoading={isBusy} className="min-h-[96px]">
                 <View className="gap-y-7xl" testID={CloudBackupListSelector.Root}>
                     {isAvailable ? null : (
-                        <CloudBackupEmptyStateCard
+                        <StateCard
                             icon={UserIconNameEnum.Cloud}
                             title={t`Sign in to see iCloud backups`}
-                            body={t`Open the Settings app and sign in to your Apple Account. Backups from your iPhone and iPad appear here.`}
+                            description={t`Open the Settings app and sign in to your Apple Account. Backups from your iPhone and iPad appear here.`}
                             testID={CloudBackupListSelector.SignInEmptyState}
                         >
                             <CloudBackupRestoreFileLink />
-                        </CloudBackupEmptyStateCard>
+                        </StateCard>
                     )}
                     {isEmpty ? (
-                        <CloudBackupEmptyStateCard
+                        <StateCard
                             icon={UserIconNameEnum.Cloud}
                             title={t`No backups yet`}
-                            body={noBackupsBody}
+                            description={noBackupsBody}
                             testID={CloudBackupListSelector.NoBackupsEmptyState}
                         >
                             <CloudBackupRestoreFileLink />
-                        </CloudBackupEmptyStateCard>
+                        </StateCard>
                     ) : null}
                     {isNotEmptyArray(groups) ? (
                         <View className="gap-y-md">
                             <View className="gap-y-7xl">
                                 {groups.map(group => (
-                                    <CloudBackupGroup key={group.installId} deviceName={group.deviceName} backups={group.backups} />
+                                    <GroupedListSection key={group.installId} title={group.deviceName}>
+                                        {group.backups.map(backup => (
+                                            <CloudBackupRow key={backup.recordName} {...backup} />
+                                        ))}
+                                    </GroupedListSection>
                                 ))}
                             </View>
-                            <CloudBackupRestoreNotice>
+                            <Text className="text-secondary-foreground px-3xl text-[13px] leading-[18px]">
                                 <Trans>Restoring replaces all data on this iPhone. Your current data is kept for 7 days.</Trans>
-                            </CloudBackupRestoreNotice>
+                            </Text>
                         </View>
                     ) : null}
                     {isUnreadable ? (
-                        <CloudBackupRestoreNotice>
+                        <Text className="text-secondary-foreground px-3xl text-[13px] leading-[18px]">
                             <Trans>Backups made before your iCloud encrypted data was reset can&apos;t be read.</Trans>
-                        </CloudBackupRestoreNotice>
+                        </Text>
                     ) : null}
                 </View>
             </LoadingContent>

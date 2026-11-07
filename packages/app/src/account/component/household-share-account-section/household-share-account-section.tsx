@@ -1,19 +1,23 @@
 import { HouseholdShareStateEnum } from '@budgie/cloud-sync';
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useAtom } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { GroupedListSwitchRow } from '../../../@generic/component/grouped-list-switch-row/grouped-list-switch-row';
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { useICloudAccount } from '../../../cloud-backup/hook/use-icloud-account.hook';
 import { householdShareEverythingAtom } from '../../../household/constant/household-share-everything-atom.constant';
 import { householdAccountShareAtom } from '../../constant/household-account-share-atom.constant';
 import { householdAccountShareDraftAtom } from '../../constant/household-account-share-draft-atom.constant';
 import { HouseholdShareAccountRow } from '../household-share-account-row/household-share-account-row';
-import { HouseholdSharedByEverythingAccountRow } from '../household-shared-by-everything-account-row/household-shared-by-everything-account-row';
 import { HouseholdSharedByOtherAccountRow } from '../household-shared-by-other-account-row/household-shared-by-other-account-row';
+
+import { HouseholdShareSelector } from './household-share-account-section.selector';
 
 interface Props {
     readonly accountId: number;
@@ -41,12 +45,23 @@ export const HouseholdShareAccountSection = ({ accountId, isBankSynced }: Props)
     const sharedFooter = isShared ? t`Turn off to remove it from family devices.` : null;
     const accountFooter = isAvailable ? sharedFooter : t`Starts when you sign in to iCloud.`;
     const ownFooter = isToggleable ? accountFooter : null;
+    const sharedByEverythingReason = t`Shared because you share everything`;
     const footer = isSyncedByOther ? t`Synced by ${ownerName}` : ownFooter;
 
     return (
         <GroupedListSection title={t`Family`} footer={footer}>
             {isSharedByOther ? <HouseholdSharedByOtherAccountRow /> : null}
-            {isSharedByEverything ? <HouseholdSharedByEverythingAccountRow /> : null}
+            {isSharedByEverything ? (
+                <GroupedListSwitchRow
+                    left={<GroupedListIcon icon={UserIconNameEnum.Users} />}
+                    title={t`Share this account`}
+                    subtitle={sharedByEverythingReason}
+                    value
+                    accessibilityHint={sharedByEverythingReason}
+                    testID={HouseholdShareSelector.AccountRow}
+                    switchTestID={HouseholdShareSelector.AccountSwitch}
+                />
+            ) : null}
             {isToggleable ? <HouseholdShareAccountRow value={isShared} onChange={setDraft} /> : null}
         </GroupedListSection>
     );

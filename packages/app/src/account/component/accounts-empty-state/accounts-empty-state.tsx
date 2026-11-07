@@ -3,7 +3,7 @@ import { Trans } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 
 import { Button } from '../../../@generic/component/button/button';
-import { AccountsStateCard } from '../accounts-state-card/accounts-state-card';
+import { StateCard } from '../../../@generic/component/state-card/state-card';
 
 import { AccountsEmptyStateSelector } from './accounts-empty-state.selector';
 
@@ -13,7 +13,7 @@ export const AccountsEmptyState = () => {
     const handleAddAccount = () => void router.push('/create-account');
 
     return (
-        <AccountsStateCard
+        <StateCard
             icon={UserIconNameEnum.Wallet}
             title={<Trans>No accounts yet</Trans>}
             description={<Trans>Add your first account to start tracking your finances</Trans>}
@@ -26,6 +26,6 @@ export const AccountsEmptyState = () => {
                 content={<Trans>Add Account</Trans>}
                 testID={AccountsEmptyStateSelector.AddAccountButton}
             />
-        </AccountsStateCard>
+        </StateCard>
     );
 };

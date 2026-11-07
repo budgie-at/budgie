@@ -3,7 +3,7 @@ import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ActivityIndicator } from 'react-native';
 
-import { AccountsStateCard } from '../accounts-state-card/accounts-state-card';
+import { StateCard } from '../../../@generic/component/state-card/state-card';
 
 interface Props {
     readonly fetchedRecordCount: number;
@@ -16,12 +16,12 @@ export const AccountsDownloadingState = ({ fetchedRecordCount }: Props) => {
     const description = fetchedRecordCount > 0 ? itemsLabel : <Trans>This can take a moment</Trans>;
 
     return (
-        <AccountsStateCard
+        <StateCard
             icon={UserIconNameEnum.CloudDownload}
             title={<Trans>Downloading your data from iCloud…</Trans>}
             description={description}
         >
             <ActivityIndicator size="small" />
-        </AccountsStateCard>
+        </StateCard>
     );
 };

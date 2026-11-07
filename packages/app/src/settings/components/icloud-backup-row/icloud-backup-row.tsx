@@ -4,6 +4,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { GroupedListSwitchRow } from '../../../@generic/component/grouped-list-switch-row/grouped-list-switch-row';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
@@ -14,7 +15,7 @@ import { useFormatCloudBackupDate } from '../../../cloud-backup/hook/use-format-
 import { useICloudAccount } from '../../../cloud-backup/hook/use-icloud-account.hook';
 import { useSetting } from '../../hook/use-setting.hook';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
-import { SettingsSwitchRow } from '../settings-switch-row/settings-switch-row';
+import { SettingsRowIcon } from '../settings-row-icon/settings-row-icon';
 import { SettingsWarningSubtitle } from '../settings-warning-subtitle/settings-warning-subtitle';
 
 // eslint-disable-next-line max-statements -- Row orchestration with several settings reads and derived labels
@@ -47,12 +48,11 @@ export const ICloudBackupRow = () => {
     const subtitle = isOn ? onLabel : offLabel;
 
     return (
-        <SettingsSwitchRow
-            icon={UserIconNameEnum.CloudUpload}
+        <GroupedListSwitchRow
+            left={<SettingsRowIcon icon={UserIconNameEnum.CloudUpload} variant="ghost" />}
             title={t`iCloud backup`}
             subtitle={subtitle}
             value={isOn}
-            isLoading={false}
             testID={SettingsPageSelector.ICloudBackupCard}
             switchTestID={SettingsPageSelector.ICloudBackupSwitch}
             {...(!isAccountUnavailable && { onChange: handleChange })}

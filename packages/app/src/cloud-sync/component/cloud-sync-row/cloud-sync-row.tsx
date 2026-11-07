@@ -3,10 +3,11 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
+import { GroupedListSwitchRow } from '../../../@generic/component/grouped-list-switch-row/grouped-list-switch-row';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useICloudAccount } from '../../../cloud-backup/hook/use-icloud-account.hook';
-import { SettingsSwitchRow } from '../../../settings/components/settings-switch-row/settings-switch-row';
+import { SettingsRowIcon } from '../../../settings/components/settings-row-icon/settings-row-icon';
 import { SettingsWarningSubtitle } from '../../../settings/components/settings-warning-subtitle/settings-warning-subtitle';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
@@ -38,8 +39,8 @@ export const CloudSyncRow = () => {
     const subtitle = isOn ? onLabel : offLabel;
 
     return (
-        <SettingsSwitchRow
-            icon={UserIconNameEnum.RefreshCw}
+        <GroupedListSwitchRow
+            left={<SettingsRowIcon icon={UserIconNameEnum.RefreshCw} variant="ghost" />}
             title={t`Sync across devices`}
             subtitle={subtitle}
             value={isOn}

@@ -153,7 +153,7 @@ msgstr "{0, plural, one {month} other {months}}"
 msgid "{0, plural, one {Other · # category} other {Other · # categories}}"
 msgstr "{0, plural, one {Other · # category} other {Other · # categories}}"
 
-#. placeholder {0}: acceptedParticipants.length
+#. placeholder {0}: joinedMembers.length
 #: src/household/component/family-row/family-row.tsx
 msgid "{0, plural, one {Shared with # person} other {Shared with # people}}"
 msgstr "{0, plural, one {Shared with # person} other {Shared with # people}}"
@@ -174,7 +174,7 @@ msgstr "{0, plural, one {Statement # day ago} other {Statement # days ago}}"
 msgid "{0, plural, one {Sync failed for # account} other {Sync failed for # accounts}}"
 msgstr "{0, plural, one {Sync failed for # account} other {Sync failed for # accounts}}"
 
-#. placeholder {0}: pendingParticipants.length
+#. placeholder {0}: otherParticipants.length - joinedMembers.length
 #: src/household/component/family-row/family-row.tsx
 msgid "{0, plural, one {Waiting for # person to join} other {Waiting for # people to join}}"
 msgstr "{0, plural, one {Waiting for # person to join} other {Waiting for # people to join}}"
@@ -748,7 +748,7 @@ msgstr "{newTransactionCount, plural, one {Import # transaction} other {Import #
 msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
 msgstr "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
 
-#: src/household/component/household-member-share-section/household-member-share-section.tsx
+#: src/household/component/household-share-section/household-share-section.tsx
 msgid "{organizerName} sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
 msgstr "{organizerName} sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
 
@@ -2811,7 +2811,7 @@ msgstr "Choose the other account"
 msgid "Choose what goes inside"
 msgstr "Choose what goes inside"
 
-#: src/household/component/household-owner-share-section/household-owner-share-section.tsx
+#: src/household/component/household-share-section/household-share-section.tsx
 msgid "Choose what to share"
 msgstr "Choose what to share"
 
@@ -3516,7 +3516,7 @@ msgstr "Could not update settings"
 
 #: src/budget/components/budget-share-field/budget-share-field.tsx
 #: src/household/component/household-account-share-row/household-account-share-row.tsx
-#: src/household/component/household-share-everything-section/household-share-everything-section.tsx
+#: src/household/component/household-share-section/household-share-section.tsx
 msgid "Could not update sharing"
 msgstr "Could not update sharing"
 
@@ -4750,7 +4750,7 @@ msgstr "Faded bars are estimated from your past transactions using your current 
 msgid "Family"
 msgstr "Family"
 
-#: src/household/component/household-share-everything-section/household-share-everything-section.tsx
+#: src/household/component/household-share-section/household-share-section.tsx
 msgid "Family can edit every account"
 msgstr "Family can edit every account"
 
@@ -4768,12 +4768,11 @@ msgstr "Family group removed"
 msgid "Family member"
 msgstr "Family member"
 
-#: src/household/component/household-member-content/household-member-content.tsx
-#: src/household/component/household-owner-content/household-owner-content.tsx
+#: src/household/component/household-people-section/household-people-section.tsx
 msgid "Family members can see and edit what you share."
 msgstr "Family members can see and edit what you share."
 
-#: src/household/component/household-organizer-row/household-organizer-row.tsx
+#: src/household/component/household-people-section/household-people-section.tsx
 msgid "Family organizer"
 msgstr "Family organizer"
 
@@ -5398,11 +5397,11 @@ msgstr "Include in net worth"
 msgid "Include one‑offs"
 msgstr "Include one‑offs"
 
-#: src/household/component/household-share-everything-section/household-share-everything-section.tsx
+#: src/household/component/household-share-section/household-share-section.tsx
 msgid "Includes accounts you add later."
 msgstr "Includes accounts you add later."
 
-#: src/household/component/household-share-everything-section/household-share-everything-section.tsx
+#: src/household/component/household-share-section/household-share-section.tsx
 msgid "Includes accounts you add later. Starts when you sign in to iCloud."
 msgstr "Includes accounts you add later. Starts when you sign in to iCloud."
 
@@ -6007,8 +6006,8 @@ msgstr "MCC categories are not loaded"
 msgid "MCC codes"
 msgstr "MCC codes"
 
-#: src/household/component/household-member-content/household-member-content.tsx
 #: src/household/component/household-participants-group/household-participants-group.tsx
+#: src/household/component/household-people-section/household-people-section.tsx
 msgid "Member"
 msgstr "Member"
 
@@ -7077,9 +7076,8 @@ msgstr "Or unlock with Touch ID."
 msgid "Organize"
 msgstr "Organize"
 
-#: src/household/component/household-organizer-row/household-organizer-row.tsx
-#: src/household/component/household-owner-content/household-owner-content.tsx
 #: src/household/component/household-participant-row/household-participant-row.tsx
+#: src/household/component/household-people-section/household-people-section.tsx
 msgid "Organizer"
 msgstr "Organizer"
 
@@ -7361,8 +7359,7 @@ msgstr "PDF or spreadsheet from {bank}"
 msgid "PDF statement"
 msgstr "PDF statement"
 
-#: src/household/component/household-member-content/household-member-content.tsx
-#: src/household/component/household-owner-content/household-owner-content.tsx
+#: src/household/component/household-people-section/household-people-section.tsx
 msgid "People"
 msgstr "People"
 
@@ -8571,12 +8568,12 @@ msgstr "Share a backup file"
 msgid "Share accounts with family"
 msgstr "Share accounts with family"
 
-#: src/household/component/household-share-everything-section/household-share-everything-section.tsx
+#: src/household/component/household-share-section/household-share-section.tsx
 msgid "Share everything"
 msgstr "Share everything"
 
 #: src/account/component/household-share-account-row/household-share-account-row.tsx
-#: src/account/component/household-shared-by-everything-account-row/household-shared-by-everything-account-row.tsx
+#: src/account/component/household-share-account-section/household-share-account-section.tsx
 msgid "Share this account"
 msgstr "Share this account"
 
@@ -8584,11 +8581,11 @@ msgstr "Share this account"
 msgid "Share with family"
 msgstr "Share with family"
 
-#: src/household/component/household-member-share-section/household-member-share-section.tsx
+#: src/household/component/household-share-section/household-share-section.tsx
 msgid "Share your accounts"
 msgstr "Share your accounts"
 
-#: src/household/component/household-member-share-section/household-member-share-section.tsx
+#: src/household/component/household-share-section/household-share-section.tsx
 msgid "Share your accounts with {organizerName}"
 msgstr "Share your accounts with {organizerName}"
 
@@ -8596,7 +8593,7 @@ msgstr "Share your accounts with {organizerName}"
 msgid "Shared accounts stay in sync"
 msgstr "Shared accounts stay in sync"
 
-#: src/account/component/household-shared-by-everything-account-row/household-shared-by-everything-account-row.tsx
+#: src/account/component/household-share-account-section/household-share-account-section.tsx
 msgid "Shared because you share everything"
 msgstr "Shared because you share everything"
 
@@ -8610,7 +8607,7 @@ msgstr "Shared with family"
 msgid "Shared with your family"
 msgstr "Shared with your family"
 
-#: src/household/component/household-share-everything-section/household-share-everything-section.tsx
+#: src/household/component/household-share-section/household-share-section.tsx
 msgid "Sharing"
 msgstr "Sharing"
 
@@ -9281,7 +9278,7 @@ msgstr "The merged transactions become separate entries again."
 msgid "The note on a payment"
 msgstr "The note on a payment"
 
-#: src/household/component/household-member-share-section/household-member-share-section.tsx
+#: src/household/component/household-share-section/household-share-section.tsx
 msgid "The organizer sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
 msgstr "The organizer sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
 
@@ -10186,7 +10183,6 @@ msgstr "Upcoming this period"
 msgid "Update access key"
 msgstr "Update access key"
 
-#: src/cloud-sync/component/cloud-sync-update-banner/cloud-sync-update-banner.tsx
 #: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
 msgid "Update Budgie to keep syncing"
 msgstr "Update Budgie to keep syncing"
@@ -10520,7 +10516,7 @@ msgid "Yesterday"
 msgstr "Yesterday"
 
 #: src/household/component/household-participant-row/household-participant-row.tsx
-#: src/household/component/household-you-row/household-you-row.tsx
+#: src/household/component/household-people-section/household-people-section.tsx
 msgid "You"
 msgstr "You"
 
@@ -10682,7 +10678,7 @@ msgstr "Your device clock is out of sync. Enable automatic date and time, then t
 msgid "Your family"
 msgstr "Your family"
 
-#: src/household/component/household-owner-share-section/household-owner-share-section.tsx
+#: src/household/component/household-share-section/household-share-section.tsx
 msgid "Your family sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
 msgstr "Your family sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
 

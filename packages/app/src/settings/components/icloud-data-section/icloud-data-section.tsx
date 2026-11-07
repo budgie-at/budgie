@@ -6,7 +6,6 @@ import { LoadingContent } from '../../../@generic/component/loading-content/load
 import { PRESENCE_ENTERING, PRESENCE_EXITING, PRESENCE_LAYOUT } from '../../../@generic/constant/presence-motion.constant';
 import { useICloudAccount } from '../../../cloud-backup/hook/use-icloud-account.hook';
 import { CloudSyncRow } from '../../../cloud-sync/component/cloud-sync-row/cloud-sync-row';
-import { CloudSyncUpdateBanner } from '../../../cloud-sync/component/cloud-sync-update-banner/cloud-sync-update-banner';
 import { FamilyRow } from '../../../household/component/family-row/family-row';
 import { ICloudBackupRow } from '../icloud-backup-row/icloud-backup-row';
 import { ICloudRestoreRow } from '../icloud-restore-row/icloud-restore-row';
@@ -27,7 +26,6 @@ export const ICloudDataSection = () => {
                             <Animated.View key="signed-in" entering={PRESENCE_ENTERING} exiting={PRESENCE_EXITING} layout={PRESENCE_LAYOUT}>
                                 <ICloudBackupRow />
                                 <CloudSyncRow />
-                                <CloudSyncUpdateBanner />
                                 <FamilyRow />
                                 <ICloudRestoreRow />
                             </Animated.View>
