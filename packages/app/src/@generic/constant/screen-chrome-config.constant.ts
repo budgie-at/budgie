@@ -3,10 +3,10 @@ import { FLOATING_TAB_BAR_HEIGHT } from './floating-tab-bar.constant';
 import type { ScreenChromeConfigOverridesInterface } from '@rnw-community/react-native-screen-chrome';
 
 export const SCREEN_CHROME_TITLE_CLEARANCE = 8;
-export const SCREEN_CHROME_TOP_FADE_LENGTH = 72;
+export const SCREEN_CHROME_TOP_FADE_LENGTH = 40;
 
 export const SCREEN_CHROME_CONFIG: ScreenChromeConfigOverridesInterface = {
-    bottomFadeHeight: FLOATING_TAB_BAR_HEIGHT + 80,
+    bottomFadeHeight: FLOATING_TAB_BAR_HEIGHT + 44,
     intensity: 48,
     maxBlurIntensity: 48,
     colors: {
