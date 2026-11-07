@@ -37,6 +37,7 @@ import type {
     ICloudAccountStatusResult,
     ICloudFetchedChangesEvent,
     ICloudFetchedRecord,
+    ICloudJoinedHousehold,
     ICloudRecordId,
     ICloudRecordPayload,
     ICloudSentChangesEvent,
@@ -76,6 +77,7 @@ interface FakeTransportBehaviorInterface {
     isInventoryFailing: boolean;
     confirmProbeSql: string;
     participants: readonly ICloudShareParticipant[];
+    joinedHousehold: ICloudJoinedHousehold | null;
 }
 
 export const makeFakeTransport = (database: DB = testDb) => {
@@ -105,7 +107,8 @@ export const makeFakeTransport = (database: DB = testDb) => {
         sharedZoneInventory: null,
         isInventoryFailing: false,
         confirmProbeSql: 'SELECT COUNT(*) AS total FROM accounts',
-        participants: []
+        participants: [],
+        joinedHousehold: null
     };
 
     const layer = Layer.succeed(CloudSyncTransport, {
@@ -171,6 +174,7 @@ export const makeFakeTransport = (database: DB = testDb) => {
                 calls.createdShares.push(zoneName);
             }),
         getShareParticipants: () => Effect.sync(() => behavior.participants),
+        findJoinedHousehold: () => Effect.sync(() => behavior.joinedHousehold),
         stopSharing: (zoneName: string) =>
             Effect.sync(() => {
                 calls.stoppedShares.push(zoneName);

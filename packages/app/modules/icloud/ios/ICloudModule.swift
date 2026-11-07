@@ -134,6 +134,10 @@ public final class ICloudModule: Module {
       try await ICloudSharing.participants(zoneName: zoneName)
     }
 
+    AsyncFunction("findJoinedHousehold") { (zoneName: String) async throws -> [String: Any]? in
+      try await ICloudSharing.findJoinedHousehold(zoneName: zoneName)
+    }
+
     AsyncFunction("stopSharing") { (zoneName: String) async throws in
       try await ICloudSharing.stopSharing(zoneName: zoneName)
     }

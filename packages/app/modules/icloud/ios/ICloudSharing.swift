@@ -66,6 +66,21 @@ enum ICloudSharing {
     return located.share.participants.map { describe($0, in: located.share) }
   }
 
+  static func findJoinedHousehold(zoneName: String) async throws -> [String: Any]? {
+    do {
+      let zones = try await ICloudDatabase.sharedDatabase.allRecordZones()
+      guard let zone = zones.first(where: { $0.zoneID.zoneName == zoneName }) else { return nil }
+      var body: [String: Any] = ["zoneName": zone.zoneID.zoneName, "ownerName": zone.zoneID.ownerName]
+      if let share = try await fetchShare(database: ICloudDatabase.sharedDatabase, zoneID: zone.zoneID),
+         let nameComponents = share.owner.userIdentity.nameComponents {
+        body["ownerDisplayName"] = PersonNameComponentsFormatter().string(from: nameComponents)
+      }
+      return body
+    } catch {
+      throw ICloudDatabase.syncError(error)
+    }
+  }
+
   static func stopSharing(zoneName: String) async throws {
     let zoneID = ICloudDatabase.zoneID(zoneName: zoneName, ownerName: ICloudDatabase.defaultOwnerName)
     do {

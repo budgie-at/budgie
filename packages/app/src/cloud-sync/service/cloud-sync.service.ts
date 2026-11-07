@@ -1113,6 +1113,52 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             yield* reconfigureUnlocked();
         });
 
+        const registerJoinedHouseholdUnlocked = Effect.fnUntraced(function* (
+            zone: Pick<ICloudShareAcceptedEvent, 'zoneName' | 'ownerName'>
+        ) {
+            const existing = yield* zoneRegistryRepository.findByLabel(HOUSEHOLD_SYNC_ZONE);
+
+            if (isDefined(existing) && (existing.role === SyncZoneRoleEnum.OWNER || existing.ownerName !== zone.ownerName)) {
+                return;
+            }
+
+            yield* zoneRegistryRepository.upsert({
+                zoneLabel: HOUSEHOLD_SYNC_ZONE,
+                zoneName: zone.zoneName,
+                ownerName: zone.ownerName,
+                databaseScope: SyncDatabaseScopeEnum.SHARED,
+                role: SyncZoneRoleEnum.PARTICIPANT
+            });
+            yield* refreshZones();
+
+            if ((yield* Ref.get(session)).isEngineRunning) {
+                yield* startSharedEngineUnlocked(false);
+            }
+
+            yield* bumpHouseholdRefresh;
+        });
+
+        const discoverHouseholdUnlocked = Effect.fnUntraced(
+            function* () {
+                if (isDefined(yield* zoneRegistryRepository.findByLabel(HOUSEHOLD_SYNC_ZONE))) {
+                    return;
+                }
+
+                if ((yield* stateStore.read).isHouseholdCleanupPending) {
+                    return;
+                }
+
+                const joined = yield* transport.findJoinedHousehold(CLOUD_SYNC_RECORDS.householdZoneName);
+
+                if (isDefined(joined)) {
+                    yield* registerJoinedHouseholdUnlocked(joined);
+                }
+            },
+            Effect.catchTag('CloudSyncTransportError', () => Effect.void)
+        );
+
+        const discoverHousehold = () => locked(discoverHouseholdUnlocked());
+
         const handleShareAccepted = Effect.fn('CloudSyncService.handleShareAccepted')(
             function* (event: ICloudShareAcceptedEvent) {
                 if (event.outcome !== ICloudShareOutcome.ACCEPTED) {
@@ -1127,26 +1173,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
                     return;
                 }
 
-                const existing = yield* zoneRegistryRepository.findByLabel(HOUSEHOLD_SYNC_ZONE);
-
-                if (isDefined(existing) && (existing.role === SyncZoneRoleEnum.OWNER || existing.ownerName !== event.ownerName)) {
-                    return;
-                }
-
-                yield* zoneRegistryRepository.upsert({
-                    zoneLabel: HOUSEHOLD_SYNC_ZONE,
-                    zoneName: event.zoneName,
-                    ownerName: event.ownerName,
-                    databaseScope: SyncDatabaseScopeEnum.SHARED,
-                    role: SyncZoneRoleEnum.PARTICIPANT
-                });
-                yield* refreshZones();
-
-                if ((yield* Ref.get(session)).isEngineRunning) {
-                    yield* startSharedEngineUnlocked(false);
-                }
-
-                yield* bumpHouseholdRefresh;
+                yield* registerJoinedHouseholdUnlocked(event);
             },
             effect => locked(effect)
         );
@@ -1225,6 +1252,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             handleShareChanged,
             reconfigure,
             drain,
+            discoverHousehold,
             prepareHouseholdOwnerZone: Effect.fn('CloudSyncService.prepareHouseholdOwnerZone')(function* () {
                 const existing = yield* zoneRegistryRepository.findByLabel(HOUSEHOLD_SYNC_ZONE);
 
@@ -1271,7 +1299,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
                 yield* forkConsumer(transport.events, dispatchEvent);
                 yield* forkConsumer(
                     Stream.filter(appStateChanges, state => state === 'active'),
-                    () => foreground()
+                    () => foreground().pipe(Effect.andThen(discoverHousehold()), Effect.andThen(bumpHouseholdRefresh))
                 );
                 yield* forkConsumer(
                     databaseChangeService.changes.pipe(
@@ -1289,6 +1317,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
                 );
                 yield* locked(finishHouseholdCleanupUnlocked());
                 yield* reconfigure();
+                yield* discoverHousehold();
             })
         };
     })
