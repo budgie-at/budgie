@@ -122,7 +122,7 @@ class CategorizeInboxEngineService {
         const mccEvidence = evidence.filter(row => isDefined(row.mccCategoryId) && !this.isTransferLike(row.title));
 
         return {
-            exact: this.groupBy(titledEvidence, row => `${row.type}|${row.title.toLowerCase()}`),
+            exact: this.groupBy(titledEvidence, row => `${row.type}|${this.normalizeTitle(row.title)}`),
             merchant: this.groupBy(merchantEvidence, row => `${row.type}|${this.merchantKey(row.title)}`),
             brand: this.groupBy(brandEvidence, row => `${row.type}|${this.brandKey(row.title)}`),
             mcc: this.groupBy(mccEvidence, row => `${row.type}|${row.mccCategoryId}`),
@@ -312,7 +312,7 @@ class CategorizeInboxEngineService {
             return { candidateLabelIds: [], isConfident: false };
         }
 
-        const exactCounts = this.countLabels(context.exact, new Set(rows.map(row => `${type}|${row.title.toLowerCase()}`)));
+        const exactCounts = this.countLabels(context.exact, new Set(rows.map(row => `${type}|${this.normalizeTitle(row.title)}`)));
         const merchantCounts = this.countLabels(context.merchant, new Set(rows.map(row => `${type}|${this.merchantKey(row.title)}`)));
         const transferLike = rows.some(row => this.isTransferLike(row.title));
         const historyCounts = (transferLike ? [exactCounts] : [exactCounts, merchantCounts]).find(counts => isPositiveNumber(counts.size));
@@ -374,6 +374,7 @@ class CategorizeInboxEngineService {
 
     private normalizeTransferTitle(title: string): string {
         return title
+            .normalize('NFC')
             .toLowerCase()
             .replaceAll(/[^\p{L}]+/gu, ' ')
             .trim();

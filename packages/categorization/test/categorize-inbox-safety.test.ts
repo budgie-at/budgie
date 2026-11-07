@@ -105,6 +105,9 @@ describe('categorization/inbox-safety', () => {
         expect(cluster.candidateLabelIds).toEqual([]);
         expect(cluster.section).not.toBe(CategorizeInboxSectionEnum.CONFIDENT);
         expect(clusters([{ ...row, title }], [{ ...evidence, title }])[0].section).toBe(CategorizeInboxSectionEnum.CONFIDENT);
+        expect(clusters([{ ...row, title: title.replaceAll(' ', '  ') }], [{ ...evidence, title }])[0].section).toBe(
+            CategorizeInboxSectionEnum.CONFIDENT
+        );
     });
     it('keeps income and expense evidence separate', () => {
         expect(clusters([{ ...row, type: TransactionTypeEnum.INCOME }])[0].candidateLabelIds).toEqual([]);
