@@ -146,10 +146,13 @@ export class WidgetSnapshotService extends Context.Service<WidgetSnapshotService
             mask: Effect.fn('WidgetSnapshotService.mask')(function* () {
                 yield* Ref.set(isLocked, true);
                 yield* workload.cancelScheduled(publishKey);
-                yield* Effect.all([logAndContinue(siriCatalogService.mask()), writeSemaphore.withPermits(1)(write(true))], {
-                    concurrency: 'unbounded',
-                    discard: true
-                });
+                yield* Effect.all(
+                    [siriCatalogService.mask().pipe(logAndContinue, Effect.uninterruptible), writeSemaphore.withPermits(1)(write(true))],
+                    {
+                        concurrency: 'unbounded',
+                        discard: true
+                    }
+                );
             }),
             start: Effect.fn('WidgetSnapshotService.start')(function* () {
                 if (Platform.OS !== 'ios') {
