@@ -548,7 +548,7 @@
     },
     {
       "type": "text",
-      "notNull": false,
+      "notNull": true,
       "autoincrement": false,
       "default": null,
       "generated": null,
@@ -3528,6 +3528,16 @@
     },
     {
       "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "false",
+      "generated": null,
+      "name": "household_share_everything",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "integer",
       "notNull": false,
       "autoincrement": false,
       "default": null,
@@ -5774,6 +5784,16 @@
     },
     {
       "columns": [
+        "sync_zone",
+        "external_id"
+      ],
+      "nameExplicit": false,
+      "name": "account_external_ids_pk",
+      "entityType": "pks",
+      "table": "account_external_ids"
+    },
+    {
+      "columns": [
         "comment_embedding_id",
         "tag_id"
       ],
@@ -5839,15 +5859,6 @@
       "nameExplicit": false,
       "name": "accounts_pk",
       "table": "accounts",
-      "entityType": "pks"
-    },
-    {
-      "columns": [
-        "external_id"
-      ],
-      "nameExplicit": false,
-      "name": "account_external_ids_pk",
-      "table": "account_external_ids",
       "entityType": "pks"
     },
     {

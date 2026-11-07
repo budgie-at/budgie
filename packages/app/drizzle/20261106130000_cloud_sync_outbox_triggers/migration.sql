@@ -448,7 +448,7 @@ CREATE TRIGGER IF NOT EXISTS `recurring_series_sync_outbox_insert` AFTER INSERT 
 WHEN NEW.sync_id IS NOT NULL AND COALESCE((SELECT is_applying FROM sync_apply_state WHERE id = 1), 0) = 0
 BEGIN
     INSERT INTO sync_outbox (record_type, sync_zone, sync_id, operation, changed_columns)
-    VALUES ('RecurringSeries', NEW.sync_zone, NEW.sync_id, 'SAVE', '["amount","category_id","created_at","deleted_at","kind","last_seen_at","merchant_key","period_days","status","title","updated_at","user_state"]')
+    VALUES ('RecurringSeries', NEW.sync_zone, NEW.sync_id, 'SAVE', '["account_id","amount","anchor_date","cadence_interval","cadence_unit","category_id","confidence","created_at","deleted_at","ends_at","instrument_id","kind","last_seen_at","merchant_key","period_days","reminder_days_before","source","status","title","updated_at","user_state"]')
     ON CONFLICT (sync_zone, sync_id) DO UPDATE SET
         operation = excluded.operation,
         changed_columns = CASE WHEN excluded.operation = 'DELETE' THEN '[]' ELSE (
@@ -470,13 +470,27 @@ BEGIN
     FROM (
         SELECT json_group_array(name) AS names FROM (
             SELECT name FROM (
+            SELECT 'account_id' AS name WHERE OLD."account_id" IS NOT NEW."account_id"
+            UNION ALL
             SELECT 'amount' AS name WHERE OLD."amount" IS NOT NEW."amount"
             UNION ALL
+            SELECT 'anchor_date' AS name WHERE OLD."anchor_date" IS NOT NEW."anchor_date"
+            UNION ALL
+            SELECT 'cadence_interval' AS name WHERE OLD."cadence_interval" IS NOT NEW."cadence_interval"
+            UNION ALL
+            SELECT 'cadence_unit' AS name WHERE OLD."cadence_unit" IS NOT NEW."cadence_unit"
+            UNION ALL
             SELECT 'category_id' AS name WHERE OLD."category_id" IS NOT NEW."category_id"
+            UNION ALL
+            SELECT 'confidence' AS name WHERE OLD."confidence" IS NOT NEW."confidence"
             UNION ALL
             SELECT 'created_at' AS name WHERE OLD."created_at" IS NOT NEW."created_at"
             UNION ALL
             SELECT 'deleted_at' AS name WHERE OLD."deleted_at" IS NOT NEW."deleted_at"
+            UNION ALL
+            SELECT 'ends_at' AS name WHERE OLD."ends_at" IS NOT NEW."ends_at"
+            UNION ALL
+            SELECT 'instrument_id' AS name WHERE OLD."instrument_id" IS NOT NEW."instrument_id"
             UNION ALL
             SELECT 'kind' AS name WHERE OLD."kind" IS NOT NEW."kind"
             UNION ALL
@@ -485,6 +499,10 @@ BEGIN
             SELECT 'merchant_key' AS name WHERE OLD."merchant_key" IS NOT NEW."merchant_key"
             UNION ALL
             SELECT 'period_days' AS name WHERE OLD."period_days" IS NOT NEW."period_days"
+            UNION ALL
+            SELECT 'reminder_days_before' AS name WHERE OLD."reminder_days_before" IS NOT NEW."reminder_days_before"
+            UNION ALL
+            SELECT 'source' AS name WHERE OLD."source" IS NOT NEW."source"
             UNION ALL
             SELECT 'status' AS name WHERE OLD."status" IS NOT NEW."status"
             UNION ALL
@@ -670,7 +688,7 @@ CREATE TRIGGER IF NOT EXISTS `transactions_sync_outbox_insert` AFTER INSERT ON `
 WHEN NEW.sync_id IS NOT NULL AND COALESCE((SELECT is_applying FROM sync_apply_state WHERE id = 1), 0) = 0
 BEGIN
     INSERT INTO sync_outbox (record_type, sync_zone, sync_id, operation, changed_columns)
-    VALUES ('Transaction', NEW.sync_zone, NEW.sync_id, 'SAVE', '["comment","consolidation_parent_transaction_id","consolidation_type","created_at","deleted_at","exchange_rate","external_id","external_source","from_account_id","import_fingerprint","operated_at","title","to_account_id","type","updated_at","updated_by"]')
+    VALUES ('Transaction', NEW.sync_zone, NEW.sync_id, 'SAVE', '["comment","consolidation_parent_transaction_id","consolidation_type","created_at","deleted_at","exchange_rate","external_id","external_source","from_account_id","fund_account_id","import_fingerprint","operated_at","title","to_account_id","type","updated_at","updated_by"]')
     ON CONFLICT (sync_zone, sync_id) DO UPDATE SET
         operation = excluded.operation,
         changed_columns = CASE WHEN excluded.operation = 'DELETE' THEN '[]' ELSE (
@@ -709,6 +727,8 @@ BEGIN
             SELECT 'external_source' AS name WHERE OLD."external_source" IS NOT NEW."external_source"
             UNION ALL
             SELECT 'from_account_id' AS name WHERE OLD."from_account_id" IS NOT NEW."from_account_id"
+            UNION ALL
+            SELECT 'fund_account_id' AS name WHERE OLD."fund_account_id" IS NOT NEW."fund_account_id"
             UNION ALL
             SELECT 'import_fingerprint' AS name WHERE OLD."import_fingerprint" IS NOT NEW."import_fingerprint"
             UNION ALL

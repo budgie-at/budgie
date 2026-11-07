@@ -3,7 +3,7 @@
   "dialect": "sqlite",
   "id": "3289747c-5441-4872-bc64-8f9181511a38",
   "prevIds": [
-    "928d29c8-0dd8-4865-87e6-48a688ed4f61"
+    "6cb7725d-21e8-41bb-8657-fb9d48d9c9a1"
   ],
   "ddl": [
     {
@@ -3553,16 +3553,6 @@
       "default": "false",
       "generated": null,
       "name": "is_applying",
-      "entityType": "columns",
-      "table": "sync_apply_state"
-    },
-    {
-      "type": "integer",
-      "notNull": false,
-      "autoincrement": false,
-      "default": null,
-      "generated": null,
-      "name": "last_local_change_at",
       "entityType": "columns",
       "table": "sync_apply_state"
     },

@@ -16,20 +16,6 @@ const readOutbox = testDb.$client.unsafe<{ readonly syncId: string; readonly syn
     'SELECT sync_id AS syncId, sync_revision AS syncRevision FROM sync_outbox ORDER BY id'
 );
 
-const readLastLocalChange = testDb.$client
-    .unsafe<{ readonly value: number | null }>('SELECT last_local_change_at AS value FROM sync_apply_state WHERE id = 1')
-    .pipe(Effect.map(rows => rows.at(0)?.value ?? null));
-
-const resetLastLocalChange = testDb.$client.unsafe(
-    `INSERT INTO sync_apply_state (id, last_local_change_at) VALUES (1, 0) ON CONFLICT (id) DO UPDATE SET last_local_change_at = 0`
-);
-
-const setApplying = (isApplying: boolean) =>
-    testDb.$client.unsafe(
-        `INSERT INTO sync_apply_state (id, is_applying) VALUES (1, ?) ON CONFLICT (id) DO UPDATE SET is_applying = excluded.is_applying`,
-        [isApplying ? 1 : 0]
-    );
-
 const toAcknowledgement = (save: SyncUploadSaveInterface) => ({
     syncZone: save.syncZone,
     syncId: save.syncId,
@@ -152,23 +138,5 @@ describe('cloud-sync/upload-service', () => {
                 expect(save?.changedFields.some(field => /owner/iu.test(field))).toBe(true);
             })
         )
-    );
-
-    it.effect('advances last_local_change_at on a local edit and not while applying', () =>
-        Effect.gen(function* () {
-            const account = yield* seed.account({ title: 'Cash' });
-
-            yield* resetLastLocalChange;
-            yield* testDb.$client.unsafe('UPDATE accounts SET title = ? WHERE id = ?', ['Wallet', account.id]);
-
-            expect(yield* readLastLocalChange).toBeGreaterThan(0);
-
-            yield* resetLastLocalChange;
-            yield* setApplying(true);
-            yield* testDb.$client.unsafe('UPDATE accounts SET title = ? WHERE id = ?', ['Purse', account.id]);
-            yield* setApplying(false);
-
-            expect(yield* readLastLocalChange).toBe(0);
-        })
     );
 });

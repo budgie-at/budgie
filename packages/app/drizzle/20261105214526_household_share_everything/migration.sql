@@ -1,1 +1,0 @@
-ALTER TABLE `settings` ADD `household_share_everything` integer DEFAULT false NOT NULL;

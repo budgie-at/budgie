@@ -123,10 +123,12 @@ const seedLedgerFixture = Effect.fnUntraced(function* () {
     return [bankAccount.id, cashAccount.id, debtAccount.id];
 });
 
+const SCHEMA_ONLY_MIGRATIONS = new Set(['20261105193657_cloud_sync_identity']);
+
 const dataMigrations = readdirSync(MIGRATIONS_FOLDER, { withFileTypes: true })
     .filter(entry => entry.isDirectory())
     .map(entry => entry.name)
-    .filter(migrationName => !migrationName.endsWith('_baseline'))
+    .filter(migrationName => !migrationName.endsWith('_baseline') && !SCHEMA_ONLY_MIGRATIONS.has(migrationName))
     .filter(migrationName => DATA_CHANGE_PATTERN.test(readFileSync(resolve(MIGRATIONS_FOLDER, migrationName, 'migration.sql'), 'utf8')));
 
 describe.runIf(isNotEmptyArray(dataMigrations))('database/data-migration-money-impact', () => {

@@ -1,7 +1,7 @@
 {
   "id": "6cb7725d-21e8-41bb-8657-fb9d48d9c9a1",
   "prevIds": [
-    "d62eee52-2126-4e13-8dda-27f2eca0400f"
+    "df4cce6c-7317-4ae0-8c68-0e1dc7492352"
   ],
   "version": "7",
   "dialect": "sqlite",
@@ -3523,6 +3523,16 @@
       "default": null,
       "generated": null,
       "name": "lineage_id",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "false",
+      "generated": null,
+      "name": "household_share_everything",
       "entityType": "columns",
       "table": "settings"
     },
