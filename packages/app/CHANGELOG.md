@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.167.8](https://github.com/budgie-at/budgie/compare/v6.167.7...v6.167.8) (2026-11-07)
+
+### Bug Fixes
+
+* **app:** fade screen edges only where content scrolls under them ([#2030](https://github.com/budgie-at/budgie/issues/2030)) ([74a3097](https://github.com/budgie-at/budgie/commit/74a3097c6142afa88b388668f1923d884ffcc08c))
+
+
 ## [6.167.7](https://github.com/budgie-at/budgie/compare/v6.167.6...v6.167.7) (2026-11-07)
 
 ### Bug Fixes
