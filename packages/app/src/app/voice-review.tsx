@@ -2,8 +2,8 @@ import { AITransactionInterface } from '@budgie/ai';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { Stack } from 'expo-router';
-import { useEffect, useEffectEvent } from 'react';
+import { Stack, useNavigation } from 'expo-router';
+import { useEffect, useEffectEvent, useState } from 'react';
 import { Text, View, useWindowDimensions } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
@@ -17,6 +17,7 @@ import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-di
 import { appRuntime } from '../@generic/runtime/app.runtime';
 import { formSheetOptions } from '../@generic/utils/form-sheet-options.util';
 import { useGetAccountByIdQuery } from '../account/query/use-get-account-by-id.query';
+import { VoiceReviewEmptyState } from '../ai/component/voice-review-empty-state/voice-review-empty-state';
 import { VoiceReviewFooter } from '../ai/component/voice-review-footer/voice-review-footer';
 import { VoiceReviewItem } from '../ai/component/voice-review-item/voice-review-item';
 import { VoiceReviewSaveButton } from '../ai/component/voice-review-save-button/voice-review-save-button';
@@ -28,6 +29,8 @@ import { useCategorySelectorModal } from '../category/context/category-selector-
 import { defaultAccountAtom } from '../settings/constants/settings-atoms.constant';
 
 import { VoiceReviewSelector } from './voice-review.selector';
+
+import type { NativeStackNavigationProp } from 'expo-router';
 
 const EMPTY_SHEET_DETENT = 0.45;
 const EXPANDED_SHEET_DETENT = 0.95;
@@ -61,6 +64,19 @@ const mapExtractedToReviewRows = (transactions: AITransactionInterface[]): Voice
 export default function VoiceReviewModal() {
     const { t } = useLingui();
     const { fontScale } = useWindowDimensions();
+    const navigation = useNavigation<NativeStackNavigationProp<Record<string, undefined>>>();
+    const initialDetentIndex = fontScale >= VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE ? 1 : 0;
+    const [detentIndex, setDetentIndex] = useState(initialDetentIndex);
+
+    useEffect(
+        () =>
+            navigation.addListener('sheetDetentChange', event => {
+                if (event.data.stable) {
+                    setDetentIndex(event.data.index);
+                }
+            }),
+        [navigation]
+    );
     const defaultAccount = useAtomValue(defaultAccountAtom);
     const [, resolveVoiceReview, dismissVoiceReview] = useVoiceReviewModal();
     useModalDismiss(dismissVoiceReview);
@@ -78,11 +94,19 @@ export default function VoiceReviewModal() {
     const currencySymbol = accountWithInstrument?.instrument.symbol ?? '';
     const screenOptions = formSheetOptions(
         isEmptyArray(rows) ? [EMPTY_SHEET_DETENT, EXPANDED_SHEET_DETENT] : [0.65, EXPANDED_SHEET_DETENT],
-        fontScale >= VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE ? 1 : 0
+        initialDetentIndex
     );
+    const pageClassName = detentIndex === 1 ? 'flex-1 pt-safe' : 'flex-1';
     const titleClassName = fontScale >= VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE ? 'text-[15px] leading-[20px]' : '';
     const canDelete = rows.length > 1;
     const canSaveToAccount = canSave && isPositiveNumber(accountId);
+    const transcript = isNotEmptyString(originalText) ? (
+        <View className="mt-xl px-xl py-lg">
+            <Text className="text-md leading-relaxed text-secondary-foreground" selectable>
+                {originalText}
+            </Text>
+        </View>
+    ) : null;
 
     const handleCategoryPress = (rowId: string, currentCategoryId: number | null) => {
         const excludeCategoryIds = rows
@@ -133,21 +157,18 @@ export default function VoiceReviewModal() {
     return (
         <SheetSurface>
             <Stack.Screen options={screenOptions} />
-            <View className="flex-1 pt-safe" testID={VoiceReviewSelector.Page} collapsable={false}>
+            <View className={pageClassName} testID={VoiceReviewSelector.Page} collapsable={false}>
                 <SheetTitle title={t`Voice notes`} className={titleClassName} maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER} />
-                <KeyboardAwareScrollView
-                    className="flex-1"
-                    contentContainerStyle={SCROLL_CONTENT_STYLE}
-                    keyboardShouldPersistTaps="handled"
-                    keyboardDismissMode="on-drag"
-                    bottomOffset={24}
-                >
-                    {isEmptyArray(rows) ? (
-                        <View className="grow justify-center items-center gap-y-md px-xl py-3xl">
-                            <Text className="text-xl leading-[24px] font-semibold text-primary text-center">{t`No items to save`}</Text>
-                            <Text className="text-md text-secondary-foreground text-center">{t`Tap re-record to try again`}</Text>
-                        </View>
-                    ) : (
+                {isEmptyArray(rows) ? (
+                    <VoiceReviewEmptyState>{transcript}</VoiceReviewEmptyState>
+                ) : (
+                    <KeyboardAwareScrollView
+                        className="flex-1"
+                        contentContainerStyle={SCROLL_CONTENT_STYLE}
+                        keyboardShouldPersistTaps="handled"
+                        keyboardDismissMode="on-drag"
+                        bottomOffset={24}
+                    >
                         <GroupedListSection>
                             {rows.map((row, index) => (
                                 <VoiceReviewItem
@@ -163,15 +184,9 @@ export default function VoiceReviewModal() {
                                 />
                             ))}
                         </GroupedListSection>
-                    )}
-                    {isNotEmptyString(originalText) ? (
-                        <View className="mt-xl px-xl py-lg">
-                            <Text className="text-md leading-relaxed text-secondary-foreground" selectable>
-                                {originalText}
-                            </Text>
-                        </View>
-                    ) : null}
-                </KeyboardAwareScrollView>
+                        {transcript}
+                    </KeyboardAwareScrollView>
+                )}
 
                 <VoiceReviewFooter
                     count={rows.length}

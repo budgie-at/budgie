@@ -44,7 +44,12 @@ export const BudgetEventForm = ({ defaultInstrumentId, editingId }: Props) => {
     }
 
     const deleteRow = isEditing ? (
-        <BudgetDeleteRow title={t`Delete event`} testID={BudgetSelector.EventDeleteButton} onDelete={handleDelete} />
+        <BudgetDeleteRow
+            title={t`Delete event`}
+            testID={BudgetSelector.EventDeleteButton}
+            onDelete={handleDelete}
+            isDisabled={isSubmitting}
+        />
     ) : null;
 
     return (

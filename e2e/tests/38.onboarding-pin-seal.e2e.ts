@@ -28,6 +28,13 @@ test('38 onboarding PIN seal', { tags: ['onboarding'] }, async ({ budgie }) => {
     await b.phase('seal and review receipt', async () => {
         await b.expectId(ctx, 'OnboardingSeal.HoldButton', 3_000);
         await b.tapId(ctx, 'OnboardingSeal.HoldButton');
+        await b.expectText(ctx, 'Seal with this PIN?');
+        await ctx.screen.getByRole('button', { name: 'Cancel', exact: true }).first().tap();
+        await b.expectId(ctx, 'OnboardingSeal.HoldButton');
+        await b.expectNoId(ctx, 'OnboardingSealedMoment.ContinueButton');
+        await b.tapId(ctx, 'OnboardingSeal.HoldButton');
+        await b.expectText(ctx, 'Seal with this PIN?');
+        await ctx.screen.getByRole('button', { name: 'Seal', exact: true }).first().tap();
         await b.expectId(ctx, 'OnboardingSealedMoment.ContinueButton', 30_000);
         await b.tapUntil(ctx, 'OnboardingSealedMoment.ContinueButton', () => b.expectId(ctx, 'OnboardingReceipt.GoToBudgieButton', 3_000));
         await b.tapId(ctx, 'OnboardingReceipt.GoToBudgieButton');

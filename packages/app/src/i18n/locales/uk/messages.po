@@ -1423,7 +1423,7 @@ msgstr "Весь час"
 msgid "Allocated"
 msgstr "Розподілено"
 
-#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+#: src/@generic/component/contact-selector-denied/contact-selector-denied.tsx
 msgid "Allow contacts access in Settings."
 msgstr "Дозвольте доступ до контактів у налаштуваннях."
 
@@ -2142,6 +2142,7 @@ msgstr "Змінити пізніше не можна"
 #: src/installment-plan/hook/use-revert-installment-plan.hook.ts
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+#: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
@@ -2723,12 +2724,13 @@ msgstr "Консолідація"
 msgid "Contact (optional)"
 msgstr "Контакт (необов'язково)"
 
+#: src/@generic/component/contact-selector-denied/contact-selector-denied.tsx
 #: src/@generic/component/contact-selector-header/contact-selector-header.tsx
 #: src/@generic/component/contact-selector-state/contact-selector-state.tsx
 msgid "Contacts"
 msgstr "Контакти"
 
-#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+#: src/@generic/component/contact-selector-denied/contact-selector-denied.tsx
 msgid "Contacts access is off"
 msgstr "Доступ до контактів вимкнено"
 
@@ -5882,7 +5884,7 @@ msgstr "Іконки не знайдено"
 msgid "No income in this view"
 msgstr "У цьому поданні немає доходів"
 
-#: src/app/voice-review.tsx
+#: src/ai/component/voice-review-empty-state/voice-review-empty-state.tsx
 msgid "No items to save"
 msgstr "Немає елементів для збереження"
 
@@ -7538,8 +7540,16 @@ msgid "Scan with camera"
 msgstr "Сканувати камерою"
 
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
+msgid "Seal"
+msgstr "Запечатати"
+
+#: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 msgid "Seal with this PIN"
 msgstr "Запечатати цим PIN-кодом"
+
+#: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
+msgid "Seal with this PIN?"
+msgstr "Запечатати з цим PIN-кодом?"
 
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "Sealed · {contents}"
@@ -8292,7 +8302,7 @@ msgstr "Торкніться пропозиції, щоб використати
 msgid "Tap a value to copy it."
 msgstr "Торкніться значення, щоб скопіювати його."
 
-#: src/app/voice-review.tsx
+#: src/ai/component/voice-review-empty-state/voice-review-empty-state.tsx
 msgid "Tap re-record to try again"
 msgstr "Торкніться «Записати знову», щоб спробувати ще раз"
 

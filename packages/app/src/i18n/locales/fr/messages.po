@@ -1423,7 +1423,7 @@ msgstr "Tout le temps"
 msgid "Allocated"
 msgstr "Alloué"
 
-#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+#: src/@generic/component/contact-selector-denied/contact-selector-denied.tsx
 msgid "Allow contacts access in Settings."
 msgstr "Autorisez l’accès aux contacts dans les réglages."
 
@@ -2142,6 +2142,7 @@ msgstr "Ne pourra pas être modifiée"
 #: src/installment-plan/hook/use-revert-installment-plan.hook.ts
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+#: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
@@ -2723,12 +2724,13 @@ msgstr "Consolidation"
 msgid "Contact (optional)"
 msgstr "Contact (optionnel)"
 
+#: src/@generic/component/contact-selector-denied/contact-selector-denied.tsx
 #: src/@generic/component/contact-selector-header/contact-selector-header.tsx
 #: src/@generic/component/contact-selector-state/contact-selector-state.tsx
 msgid "Contacts"
 msgstr "Contacts"
 
-#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+#: src/@generic/component/contact-selector-denied/contact-selector-denied.tsx
 msgid "Contacts access is off"
 msgstr "Accès aux contacts désactivé"
 
@@ -5882,7 +5884,7 @@ msgstr "Aucune icône trouvée"
 msgid "No income in this view"
 msgstr "Aucun revenu dans cette vue"
 
-#: src/app/voice-review.tsx
+#: src/ai/component/voice-review-empty-state/voice-review-empty-state.tsx
 msgid "No items to save"
 msgstr "Aucun élément à enregistrer"
 
@@ -7538,8 +7540,16 @@ msgid "Scan with camera"
 msgstr "Scanner avec l'appareil photo"
 
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
+msgid "Seal"
+msgstr "Sceller"
+
+#: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 msgid "Seal with this PIN"
 msgstr "Sceller avec ce code PIN"
+
+#: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
+msgid "Seal with this PIN?"
+msgstr "Sceller avec ce code PIN ?"
 
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "Sealed · {contents}"
@@ -8292,7 +8302,7 @@ msgstr "Touchez une suggestion pour l’utiliser pour cette catégorie."
 msgid "Tap a value to copy it."
 msgstr "Touchez une valeur pour la copier."
 
-#: src/app/voice-review.tsx
+#: src/ai/component/voice-review-empty-state/voice-review-empty-state.tsx
 msgid "Tap re-record to try again"
 msgstr "Appuyez sur réenregistrer pour réessayer"
 

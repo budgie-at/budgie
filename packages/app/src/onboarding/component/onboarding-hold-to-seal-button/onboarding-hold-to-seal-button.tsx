@@ -1,4 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 import { AccessibilityActionEvent, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -8,6 +9,8 @@ import { EmptyFn } from '@rnw-community/shared';
 
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { OnboardingHoldToSealFill } from '../onboarding-hold-to-seal-fill/onboarding-hold-to-seal-fill';
 import { OnboardingHoldToSealLabel } from '../onboarding-hold-to-seal-label/onboarding-hold-to-seal-label';
 
@@ -36,9 +39,25 @@ export const OnboardingHoldToSealButton = ({ label, isDisabled, onComplete, test
 
     const handleTick = () => void hapticImpact(ImpactFeedbackStyle.Soft);
 
+    const handleConfirmPress = () => {
+        appRuntime.runFork(
+            Effect.gen(function* () {
+                const isConfirmed = yield* confirmAlert({
+                    title: t`Seal with this PIN?`,
+                    confirmText: t`Seal`,
+                    cancelText: t`Cancel`
+                });
+
+                if (isConfirmed) {
+                    onComplete();
+                }
+            })
+        );
+    };
+
     const handleAccessibilityAction = (event: AccessibilityActionEvent) => {
         if (!isDisabled && event.nativeEvent.actionName === ACCESSIBILITY_ACTIVATE) {
-            onComplete();
+            handleConfirmPress();
         }
     };
 
@@ -70,7 +89,7 @@ export const OnboardingHoldToSealButton = ({ label, isDisabled, onComplete, test
     const tapGesture = Gesture.Tap()
         .enabled(!isDisabled)
         .onEnd(() => {
-            runOnJS(onComplete)();
+            runOnJS(handleConfirmPress)();
         });
 
     const accessibilityState = { disabled: isDisabled, busy: isDisabled };

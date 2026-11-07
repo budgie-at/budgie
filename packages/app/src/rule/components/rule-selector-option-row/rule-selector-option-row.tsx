@@ -1,9 +1,11 @@
-import { Text, View } from 'react-native';
+import { UserIconNameEnum } from '@budgie/contracts';
+import { Text, View, useWindowDimensions } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { SelectorRow } from '../../../@generic/component/selector-row/selector-row';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { cn } from '../../../@generic/utils/cn.util';
 import { RuleGlyph } from '../rule-glyph/rule-glyph';
 
@@ -16,12 +18,16 @@ interface Props {
     readonly testID?: string;
 }
 
+const LARGE_TEXT_FONT_SCALE = 1.3;
+
 export const RuleSelectorOptionRow = ({ option, isSelected, onPress, testID }: Props) => {
+    const { fontScale } = useWindowDimensions();
     const isDisabled = isDefined(option.disabledReason);
     const handlePress = () => void onPress(option.value);
-    const pressableProps = { disabled: isDisabled };
+    const pressableProps = { disabled: isDisabled, accessibilityState: { selected: isSelected, disabled: isDisabled } };
     const titleClassName = isSelected ? 'text-primary text-[17px] font-semibold' : 'text-primary text-[17px]';
-    const title = <Text className={titleClassName}>{option.label}</Text>;
+    const disabledClassName = isDisabled ? 'opacity-40' : '';
+    const title = <Text className={cn(titleClassName, disabledClassName)}>{option.label}</Text>;
     const subtitle = (
         <Text className="text-secondary-foreground text-[13px] leading-[18px]">{option.disabledReason ?? option.description}</Text>
     );
@@ -32,18 +38,23 @@ export const RuleSelectorOptionRow = ({ option, isSelected, onPress, testID }: P
     ) : (
         <CircleIcon icon={option.icon} size={36} iconSize={18} radius={18} variant="secondary" border={false} className="bg-surface-disc" />
     );
+    const leading =
+        fontScale >= LARGE_TEXT_FONT_SCALE ? null : <View className={cn('h-[42px] justify-center', disabledClassName)}>{disc}</View>;
+    const check = isSelected ? (
+        <Icon icon={UserIconNameEnum.Check} size={22} className="text-positive-action" />
+    ) : (
+        <View className="w-[22px]" />
+    );
 
     return (
-        <View className={cn(isDisabled && 'opacity-40')}>
-            <SelectorRow
-                testID={testID}
-                isSelected={isSelected}
-                onPress={handlePress}
-                pressableProps={pressableProps}
-                left={disc}
-                title={title}
-                subtitle={subtitle}
-            />
-        </View>
+        <GroupedListRow
+            testID={testID}
+            onPress={handlePress}
+            pressableProps={pressableProps}
+            left={leading}
+            right={check}
+            title={title}
+            subtitle={subtitle}
+        />
     );
 };

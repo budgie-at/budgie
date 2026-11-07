@@ -37,7 +37,7 @@ const DIGIT_ROWS = [
     ['7', '8', '9']
 ] as const;
 
-const CONTENT_CONTAINER_STYLE = { flexGrow: 1 };
+const CONTENT_CONTAINER_STYLE = { flexGrow: 1, paddingBottom: 16 };
 
 export const PinForm = ({
     header,

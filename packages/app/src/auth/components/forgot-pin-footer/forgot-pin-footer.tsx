@@ -17,7 +17,7 @@ export const ForgotPinFooter = ({ onTryAgain }: Props) => {
 
     return (
         <ScreenChromeFooter includeBottomSafeArea={false} style={IN_FLOW_STYLE}>
-            <View className="bg-surface px-5xl pt-lg pb-safe-offset-[8px] gap-y-md">
+            <View className="w-full bg-surface px-5xl pt-lg pb-safe-offset-[16px] gap-y-md">
                 <Button
                     testID={ForgotPinSheetSelector.TryAgainButton}
                     accessibilityLabel={t`Try again`}
@@ -29,7 +29,10 @@ export const ForgotPinFooter = ({ onTryAgain }: Props) => {
                     }
                     onPress={onTryAgain}
                 />
-                <Text className="text-secondary-foreground text-xs text-center" maxFontSizeMultiplier={1.6}>
+                <Text
+                    className="self-stretch shrink-0 text-secondary-foreground text-xs leading-[18px] text-center"
+                    maxFontSizeMultiplier={1.4}
+                >
                     <Trans>After 5 wrong tries, Budgie waits a little longer between attempts.</Trans>
                 </Text>
             </View>
