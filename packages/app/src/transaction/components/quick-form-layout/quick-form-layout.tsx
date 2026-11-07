@@ -14,7 +14,7 @@ interface Props {
     readonly surfaceVariables?: ComponentProps<typeof ScopedVariables>['variables'];
     readonly context?: ReactNode;
     readonly suggestions?: ReactNode;
-    readonly children: ReactNode;
+    readonly children?: ReactNode;
     readonly keypad?: ReactNode;
     readonly actions: ReactNode;
 }

@@ -6,12 +6,18 @@ import { MICRO_UNIT_DECIMAL_PLACES } from '../../@generic/constant/micro-unit-de
 
 import { useDisplayFormatDigits } from './use-display-format-digits.hook';
 import { useFormatDigits } from './use-format-digits.hook';
+import { useFormatFundQuantity } from './use-format-fund-quantity.hook';
 
 export const useFormatInstrumentAmount = () => {
     const formatDigits = useDisplayFormatDigits();
     const formatCryptoDigits = useFormatDigits(0, MICRO_UNIT_DECIMAL_PLACES);
+    const formatFundQuantity = useFormatFundQuantity();
 
     return (amount: number, symbol: string, instrumentType: InstrumentTypeEnum | null) => {
+        if (instrumentType === InstrumentTypeEnum.FUND) {
+            return formatFundQuantity(amount);
+        }
+
         if (instrumentType !== InstrumentTypeEnum.CRYPTO) {
             return formatDigits(amount, symbol);
         }

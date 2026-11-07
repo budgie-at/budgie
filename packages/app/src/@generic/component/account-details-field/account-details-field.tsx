@@ -1,10 +1,14 @@
-import { ACCOUNT_TITLE_MAX_LENGTH } from '@budgie/contracts';
+import { ACCOUNT_TITLE_MAX_LENGTH, isEmojiIcon } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { View } from 'react-native';
 
 import { AccountFormBindingsInterface } from '../../../account/interface/account-form-bindings.interface';
+import { TONAL_DISC_BACKGROUND } from '../../constant/tonal-disc-background.constant';
 import { useIconSelectorModal } from '../../context/icon-selector-modal.context';
+import { useIconSearchEntries } from '../../hook/use-icon-search-entries.hook';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
-import { IconTitleFieldTrigger } from '../icon-title-field-trigger/icon-title-field-trigger';
+import { CircleIcon } from '../circle-icon/circle-icon';
+import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { IconTitleField } from '../icon-title-field/icon-title-field';
 import { Input } from '../input/input';
 
@@ -21,6 +25,8 @@ export const AccountDetailsField = (props: Props) => {
     const { titleBinding, iconBinding, variant, placeholder, nameInputTestID, selectNameOnFocus = false } = props;
     const { t } = useLingui();
     const [openIconSelector] = useIconSelectorModal();
+    const iconName = useIconSearchEntries().find(entry => entry.icon === iconBinding.field.value)?.label ?? iconBinding.field.value;
+    const iconSize = isEmojiIcon(iconBinding.field.value) ? 22 : 20;
 
     const handleIconPress = () => {
         openIconSelector({ selectedIcon: iconBinding.field.value }, selectedIcon => {
@@ -32,7 +38,28 @@ export const AccountDetailsField = (props: Props) => {
 
     return (
         <IconTitleField
-            tile={<IconTitleFieldTrigger icon={iconBinding.field.value} variant={variant} onPress={handleIconPress} />}
+            tile={
+                <HapticPressable
+                    onPress={handleIconPress}
+                    accessibilityRole="button"
+                    accessibilityLabel={t`Change icon`}
+                    accessibilityHint={t`Current icon: ${iconName}. Opens the icon picker.`}
+                    hitSlop={4}
+                    className="size-[40px] items-center justify-center active:opacity-70"
+                >
+                    <View>
+                        <CircleIcon
+                            variant={variant}
+                            size={40}
+                            iconSize={iconSize}
+                            radius={10}
+                            border={false}
+                            icon={iconBinding.field.value}
+                            className={TONAL_DISC_BACKGROUND[variant]}
+                        />
+                    </View>
+                </HapticPressable>
+            }
             label={t`Account name`}
             error={titleBinding.fieldState.error?.message}
             testID={nameInputTestID}

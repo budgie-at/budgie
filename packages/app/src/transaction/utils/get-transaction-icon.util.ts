@@ -1,4 +1,5 @@
 import {
+    ExternalSourceEnum,
     TransactionTypeEnum,
     TransactionWithRelationsEntityInterface,
     UserIconNameEnum,
@@ -14,6 +15,10 @@ export const getTransactionIcon = (transaction: TransactionWithRelationsEntityIn
 
     if (transaction.type === TransactionTypeEnum.TRANSFER) {
         return UserIconNameEnum.ArrowRightLeft;
+    }
+
+    if (transaction.type === TransactionTypeEnum.INCOME && transaction.externalSource === ExternalSourceEnum.INZHUR) {
+        return UserIconNameEnum.RefreshCw;
     }
 
     if (transaction.type === TransactionTypeEnum.DEBT) {

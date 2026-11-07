@@ -17,7 +17,6 @@ const FIELDS = {
     [AccountSwitchFieldKindEnum.INCLUDE_IN_NET_WORTH]: {
         icon: UserIconNameEnum.ChartPie,
         title: msg`Include in net worth`,
-        subtitle: msg`Count it in your net worth`,
         testID: CreateAccountScreenSelector.IncludeInNetWorthRow,
         titleTestID: CreateAccountScreenSelector.IncludeInNetWorthTitle,
         switchTestID: CreateAccountScreenSelector.IncludeInNetWorthSwitch
@@ -25,7 +24,6 @@ const FIELDS = {
     [AccountSwitchFieldKindEnum.SHOW_ON_HOME]: {
         icon: UserIconNameEnum.Home,
         title: msg`Show on Home`,
-        subtitle: msg`List it on the Home screen`,
         testID: CreateAccountScreenSelector.ActiveRow,
         titleTestID: CreateAccountScreenSelector.ActiveTitle,
         switchTestID: CreateAccountScreenSelector.ActiveSwitch
@@ -34,13 +32,12 @@ const FIELDS = {
 
 export const AccountSwitchField = ({ kind, value, onChange }: Props) => {
     const { t } = useLingui();
-    const { icon, title, subtitle, testID, titleTestID, switchTestID } = FIELDS[kind];
+    const { icon, title, testID, titleTestID, switchTestID } = FIELDS[kind];
 
     return (
         <GroupedListSwitchRow
             left={<GroupedListIcon icon={icon} />}
             title={t(title)}
-            subtitle={t(subtitle)}
             value={value}
             testID={testID}
             titleTestID={titleTestID}

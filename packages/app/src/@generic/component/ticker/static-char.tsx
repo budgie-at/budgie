@@ -13,7 +13,7 @@ export const StaticChar = ({ char, textSize, textClassName }: Props) => {
     const style = getTextStyleForTicket(textSize);
 
     return (
-        <Text className={textClassName} style={style}>
+        <Text allowFontScaling={false} className={textClassName} style={style}>
             {char}
         </Text>
     );

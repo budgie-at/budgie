@@ -4,5 +4,5 @@ import type { TransactionEntityInterface } from './transaction-entity.interface'
 
 export type TransactionCreateEntityInterface = PartialByKeysType<
     Omit<TransactionEntityInterface, BaseEntityKeyType | 'operatedWeekday' | 'operatedMinuteOfDay'>,
-    'consolidationParentTransactionId' | 'consolidationType' | 'needsEmbedding' | 'importFingerprint'
+    'consolidationParentTransactionId' | 'consolidationType' | 'needsEmbedding' | 'importFingerprint' | 'fundAccountId'
 >;

@@ -1,0 +1,1 @@
+export const INVESTMENTS_CATEGORY_ID = 19;

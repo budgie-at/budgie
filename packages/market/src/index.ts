@@ -5,7 +5,11 @@ export { HistoricalExchangeRateRepository } from './historical-exchange-rate/rep
 export { InstrumentDailyMarketPriceRepository } from './market-data/repository/instrument-daily-market-price.repository';
 export { InstrumentMarketDataJobRepository } from './market-data/repository/instrument-market-data-job.repository';
 export { HistoricalMarketDataService } from './market-data/service/historical-market-data.service';
+export { InzhurPriceService } from './market-data/service/inzhur-price.service';
 export { calculateCryptoPosition } from './market-data/utils/calculate-crypto-position.util';
 export { EntryBaseValuationService } from './valuation/service/entry-base-valuation.service';
+export { InzhurPriceParseError } from './market-data/error/inzhur-price-parse.error';
 export type { EntryBaseValuationInterface } from './valuation/interface/entry-base-valuation.interface';
 export type { CryptoPositionInterface } from './market-data/interface/crypto-position.interface';
+
+export type { InzhurFundPriceInterface } from './market-data/interface/inzhur-fund-price.interface';

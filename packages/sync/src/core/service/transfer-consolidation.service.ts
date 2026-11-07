@@ -7,6 +7,8 @@ import * as Semaphore from 'effect/Semaphore';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
+import { InzhurBankFlowService } from '../../inzhur/service/inzhur-bank-flow.service';
+
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 export class TransferConsolidationService extends Context.Service<TransferConsolidationService>()(
@@ -18,6 +20,7 @@ export class TransferConsolidationService extends Context.Service<TransferConsol
             const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
             const installmentPlanService = yield* InstallmentPlanService;
             const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
+            const inzhurBankFlowService = yield* InzhurBankFlowService;
             const exclusive = yield* Semaphore.make(1);
 
             const runExclusive = <A, E, R>(effect: Effect.Effect<A, E, R>) => exclusive.withPermit(ledgerWorkload.runForeground(effect));
@@ -32,6 +35,8 @@ export class TransferConsolidationService extends Context.Service<TransferConsol
                 consolidate: Effect.fn('TransferConsolidationService.consolidate')(function* (
                     scope: ConsolidationScanScopeInterface | null
                 ) {
+                    yield* inzhurBankFlowService.apply(scope);
+
                     const result = yield* consolidationCoordinatorService.consolidate(scope);
 
                     yield* updateBalancesAfterConsolidation(result.consolidated);
@@ -58,7 +63,8 @@ export class TransferConsolidationService extends Context.Service<TransferConsol
             ConsolidationCoordinatorService.layer,
             AccountBalanceIncrementalService.layer,
             InstallmentPlanService.layer,
-            TransactionDebtSettlementService.layer
+            TransactionDebtSettlementService.layer,
+            InzhurBankFlowService.layer
         ])
     );
 }

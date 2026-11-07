@@ -65,14 +65,12 @@ test('44 enable banking', { tags: ['sync'] }, async ({ budgie }) => {
         await b.scrollTo(ctx, `AccountCard.${SYNTHETIC_ACCOUNT}`);
         await expect(id(`AccountCard.${SYNTHETIC_ACCOUNT}`)).toHaveText(/€1,235, Up to date$/, { timeout: 90_000 });
         await b.openLink(ctx, 'budgie://transactions');
-        await expect(screen.getByRole('button', { name: /^E2E Coffee, .*E2E Synthetic Bank E2E Current, €12,/ }).first()).toBeVisible({
+        await expect(screen.getByRole('button', { name: /^E2E Coffee, €12,.*E2E Synthetic Bank E2E Current$/ }).first()).toBeVisible({
             timeout: 15_000
         });
+        await expect(screen.getByRole('button', { name: /^E2E Employer, \+€500,.*E2E Synthetic Bank E2E Current$/ }).first()).toBeVisible();
         await expect(
-            screen.getByRole('button', { name: /^E2E Employer, .*E2E Synthetic Bank E2E Current, \+€500,/ }).first()
-        ).toBeVisible();
-        await expect(
-            screen.getByRole('button', { name: /^Balance Adjustment, .*E2E Synthetic Bank E2E Current, \+€747,/ }).first()
+            screen.getByRole('button', { name: /^Balance Adjustment, \+€747,.*E2E Synthetic Bank E2E Current$/ }).first()
         ).toBeVisible();
     });
 
@@ -151,10 +149,12 @@ test('44 enable banking', { tags: ['sync'] }, async ({ budgie }) => {
         await b.scrollTo(ctx, `AccountCard.${CONNECT_ACCOUNT}`);
         await expect(id(`AccountCard.${CONNECT_ACCOUNT}`)).toHaveText(/€1,235, Up to date$/, { timeout: 90_000 });
         await b.openLink(ctx, 'budgie://transactions');
-        await expect(screen.getByRole('button', { name: /^E2E Manual Purchase, .*E2E Statement Account, €7,/ }).first()).toBeVisible({
+        await expect(screen.getByRole('button', { name: /^E2E Coffee, €12,.*E2E Statement Account$/ }).first()).toBeVisible({
             timeout: 15_000
         });
-        await expect(screen.getByRole('button', { name: /^E2E Coffee, .*E2E Statement Account, €12,/ }).first()).toBeVisible();
+        const manualPurchase = screen.getByRole('button', { name: /^E2E Manual Purchase, €7,.*E2E Statement Account$/ }).first();
+        await screen.scrollUntilVisible(manualPurchase, { direction: 'down', timeout: 15_000 });
+        await expect(manualPurchase).toBeVisible();
     });
 
     await b.phase('disconnect returns a connected account with its rows and balance', async () => {
