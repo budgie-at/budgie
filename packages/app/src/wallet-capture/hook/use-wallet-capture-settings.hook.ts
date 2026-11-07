@@ -19,9 +19,9 @@ import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { appAtomRuntime, appRuntime } from '../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';
+import { SiriCatalogService } from '../../siri/service/siri-catalog.service';
 import { WalletCaptureReactivityKeyEnum } from '../enum/wallet-capture-reactivity-key.enum';
 import { WalletCaptureImportService } from '../service/wallet-capture-import.service';
-import { WalletCaptureNativeService } from '../service/wallet-capture-native.service';
 
 import type { AppServices } from '../../@generic/runtime/app.runtime';
 
@@ -57,7 +57,7 @@ export const useWalletCaptureSettings = () => {
 
     const refresh = useCallback(() => {
         appRuntime.runFork(
-            Effect.flatMap(WalletCaptureNativeService, service => service.refreshAccounts()).pipe(
+            Effect.flatMap(SiriCatalogService, service => service.refreshWalletAccounts()).pipe(
                 Effect.tapCause(Effect.logError),
                 Effect.matchCause({
                     onFailure: cause => void setMutationError(cause.pipe(Cause.squash, getErrorMessage)),

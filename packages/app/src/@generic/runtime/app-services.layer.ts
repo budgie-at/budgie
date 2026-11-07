@@ -138,6 +138,7 @@ import { OnboardingService } from '../../onboarding/service/onboarding.service';
 import { ReceiptScanService } from '../../receipt/service/receipt-scan.service';
 import { RecurringReminderService } from '../../recurring/service/recurring-reminder.service';
 import { RuleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
+import { SiriCatalogService } from '../../siri/service/siri-catalog.service';
 import { p2pTransferTitleResolverLayer } from '../../sync/layer/p2p-transfer-title-resolver.layer';
 import { syncFileReaderLayer } from '../../sync/layer/sync-file-reader.layer';
 import { syncWorkloadLayer } from '../../sync/layer/sync-workload.layer';
@@ -151,7 +152,6 @@ import { RepeatedTransactionService } from '../../transaction/service/repeated-t
 import { WalletCaptureImportService } from '../../wallet-capture/service/wallet-capture-import.service';
 import { WalletCaptureNativeService } from '../../wallet-capture/service/wallet-capture-native.service';
 import { WalletCaptureTransactionService } from '../../wallet-capture/service/wallet-capture-transaction.service';
-import { WidgetSnapshotBuilderService } from '../../widget/service/widget-snapshot-builder.service';
 import { WidgetSnapshotService } from '../../widget/service/widget-snapshot.service';
 import { DatabaseLifecycleService } from '../drizzle/service/database-lifecycle.service';
 import { DatabaseMaintenanceService } from '../drizzle/service/database-maintenance.service';
@@ -192,7 +192,7 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     DatabaseMigrationService.layer,
     DatabaseMaintenanceService.layer,
     DatabaseRekeyService.layer,
-    WidgetSnapshotBuilderService.layer,
+    SiriCatalogService.layer,
     WidgetSnapshotService.layer,
     InzhurStatementReminderService.layer,
     InzhurPendingTopUpService.layer,

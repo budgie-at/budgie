@@ -28,7 +28,7 @@ struct BudgieWalletAccountEntity: AppEntity {
 }
 
 @available(iOS 17.0, *)
-struct BudgieWalletAccountQuery: EntityQuery {
+struct BudgieWalletAccountQuery: EntityStringQuery {
   init() {}
 
   func entities(for identifiers: [BudgieWalletAccountEntity.ID]) async throws -> [BudgieWalletAccountEntity] {
@@ -40,6 +40,11 @@ struct BudgieWalletAccountQuery: EntityQuery {
   func suggestedEntities() async throws -> [BudgieWalletAccountEntity] {
     return try await AppIntentEntityStore.shared
       .entities(ofKind: BudgieWalletAccountEntity.catalogKind)
+      .compactMap(BudgieWalletAccountEntity.init(record:))
+  }
+
+  func entities(matching string: String) async throws -> [BudgieWalletAccountEntity] {
+    return try await BudgieCatalog.records(ofKind: BudgieWalletAccountEntity.catalogKind, matching: string)
       .compactMap(BudgieWalletAccountEntity.init(record:))
   }
 }
