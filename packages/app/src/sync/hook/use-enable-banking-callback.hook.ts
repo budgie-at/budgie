@@ -19,6 +19,7 @@ import type { EnableBankingAuthorizationInterface } from '../interface/enable-ba
 
 export const useEnableBankingCallback = (
     run: ReturnType<typeof useSingleFlight>['run'],
+    isBusy: boolean,
     onAuthorized: (result: EnableBankingAuthorizationInterface) => void,
     onFailed: () => void
 ) => {
@@ -53,9 +54,9 @@ export const useEnableBankingCallback = (
     );
 
     useEffect(() => {
-        if (isDefined(callbackUrl)) {
+        if (isDefined(callbackUrl) && !isBusy) {
             appAtomRegistry.set(enableBankingCallbackUrlAtom, null);
             void handleCallback(callbackUrl);
         }
-    }, [callbackUrl]);
+    }, [callbackUrl, isBusy]);
 };

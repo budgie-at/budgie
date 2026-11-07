@@ -78,6 +78,7 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
 
     useEnableBankingCallback(
         run,
+        isBusy,
         result => {
             const selectablePreviews = result.previews.filter(preview => !preview.isParked);
 
