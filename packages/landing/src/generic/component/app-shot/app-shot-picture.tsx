@@ -16,6 +16,7 @@ interface Props {
 
 export const AppShotPicture = ({ asset, alt, className, priority = false, deferred = false, sizes }: Props) => {
     const basePath = resolveMediaAssetPath(asset);
+    const loading = priority && !deferred ? 'eager' : 'lazy';
     let fetchPriority: 'high' | 'low' | 'auto' = 'auto';
     if (deferred) {
         fetchPriority = 'low';
@@ -33,7 +34,7 @@ export const AppShotPicture = ({ asset, alt, className, priority = false, deferr
                 decoding="async"
                 fetchPriority={fetchPriority}
                 height={MEDIA_ASSET_HEIGHT}
-                loading="lazy"
+                loading={loading}
                 sizes={sizes}
                 src={`${basePath}@2x.webp`}
                 width={MEDIA_ASSET_WIDTH}

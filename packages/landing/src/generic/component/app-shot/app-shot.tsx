@@ -31,7 +31,6 @@ export const AppShot = ({ slug, scene, locale, alt, fallback, priority = false, 
                 asset={darkAsset}
                 className="hidden dark:block"
                 deferred={!priority}
-                priority={priority}
                 sizes={sizes}
             />
         </>
