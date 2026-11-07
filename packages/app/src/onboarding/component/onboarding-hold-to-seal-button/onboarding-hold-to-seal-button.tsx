@@ -23,13 +23,12 @@ const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 interface Props {
     readonly label: string;
-    readonly confirmMessage: string;
     readonly isDisabled: boolean;
     readonly onComplete: EmptyFn;
     readonly testID?: string;
 }
 
-export const OnboardingHoldToSealButton = ({ label, confirmMessage, isDisabled, onComplete, testID }: Props) => {
+export const OnboardingHoldToSealButton = ({ label, isDisabled, onComplete, testID }: Props) => {
     const { t } = useLingui();
 
     const progress = useSharedValue(0);
@@ -44,8 +43,7 @@ export const OnboardingHoldToSealButton = ({ label, confirmMessage, isDisabled, 
         appRuntime.runFork(
             Effect.gen(function* () {
                 const isConfirmed = yield* confirmAlert({
-                    title: visibleLabel,
-                    message: confirmMessage,
+                    title: t`Seal with this PIN?`,
                     confirmText: t`Seal`,
                     cancelText: t`Cancel`
                 });
@@ -58,7 +56,7 @@ export const OnboardingHoldToSealButton = ({ label, confirmMessage, isDisabled, 
     };
 
     const handleAccessibilityAction = (event: AccessibilityActionEvent) => {
-        if (event.nativeEvent.actionName === ACCESSIBILITY_ACTIVATE) {
+        if (!isDisabled && event.nativeEvent.actionName === ACCESSIBILITY_ACTIVATE) {
             handleConfirmPress();
         }
     };

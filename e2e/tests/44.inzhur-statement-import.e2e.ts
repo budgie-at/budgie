@@ -41,10 +41,19 @@ test('44 inzhur operations import', { tags: ['import'] }, async ({ budgie }) => 
         await core.scrollTo(ctx, 'Inzhur.PurchaseFund.Inzhur MilTech');
         await core.tapId(ctx, 'Inzhur.PurchaseFund.Inzhur MilTech');
         await core.scrollTo(ctx, 'Inzhur.PurchaseCertificatesInput');
-        await core.fillId(ctx, 'Inzhur.PurchaseCertificatesInput', '1');
+        await core.tapId(ctx, 'Inzhur.PurchaseCertificatesInput');
+        await core.expectId(ctx, 'inputView');
+        await screen.getByText('1', { exact: true }).last().tap();
+        await expect(core.byId(screen, 'Inzhur.PurchaseCertificatesInput')).toHaveValue('1');
         await core.done(ctx);
         await core.scrollTo(ctx, 'Inzhur.PurchaseAmountInput');
-        await core.fillId(ctx, 'Inzhur.PurchaseAmountInput', '1000');
+        await core.tapId(ctx, 'Inzhur.PurchaseAmountInput');
+        await core.expectId(ctx, 'inputView');
+        for (const digit of '1000') {
+            await screen.getByText(digit, { exact: true }).last().tap();
+            await core.expectId(ctx, 'inputView');
+        }
+        await expect(core.byId(screen, 'Inzhur.PurchaseAmountInput')).toHaveValue('1000');
         await core.done(ctx);
         await expect(core.byId(screen, 'Inzhur.PurchaseSaveButton')).toBeEnabled({ timeout: 3_000 });
         await core.tapId(ctx, 'Inzhur.PurchaseSaveButton');

@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-chrome-font-size-multiplier.constant';
 import { cn } from '../../../@generic/utils/cn.util';
 
 interface Props {
@@ -15,7 +16,12 @@ export const OnboardingHoldToSealLabel = ({ label, isLoading, colorClassName }: 
     <LoadingContent isLoading={isLoading}>
         <View className="flex-row items-center justify-center gap-x-md">
             <Icon icon={UserIconNameEnum.Lock} size={18} className={colorClassName} />
-            <Text className={cn('shrink text-center text-[17px] font-semibold', colorClassName)}>{label}</Text>
+            <Text
+                maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER}
+                className={cn('shrink text-center text-[17px] font-semibold', colorClassName)}
+            >
+                {label}
+            </Text>
         </View>
     </LoadingContent>
 );

@@ -36,7 +36,7 @@ export const RecurringFormReminderSection = () => {
     return (
         <View>
             <GroupedListSectionTitle title={t`Reminder`} />
-            <SegmentedControl segments={segments} value={value} onChange={handleChange} className="min-h-[44px]" />
+            <SegmentedControl segments={segments} value={value} onChange={handleChange} />
             <Text className="px-3xl pt-md text-[13px] leading-[18px] text-primary/65">
                 <Trans>Notify before the payment is due.</Trans>
             </Text>

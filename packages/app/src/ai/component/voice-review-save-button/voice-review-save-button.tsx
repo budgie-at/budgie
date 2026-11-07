@@ -1,6 +1,8 @@
 import { useLingui } from '@lingui/react/macro';
+import { Text } from 'react-native';
 
 import { Button } from '../../../@generic/component/button/button';
+import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-chrome-font-size-multiplier.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { VoiceReviewFooterSelector } from '../voice-review-footer/voice-review-footer.selector';
 
@@ -24,7 +26,8 @@ export const VoiceReviewSaveButton = ({ count, canSave, hasInvalidAmounts, hasMi
     return (
         <Button
             variant={saveVariant}
-            content={saveLabel}
+            accessibilityLabel={saveLabel}
+            content={<Text maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER}>{saveLabel}</Text>}
             onPress={onSave}
             disabled={isSaveDisabled}
             isLoading={isSaving}

@@ -6,16 +6,19 @@ import { Stack } from 'expo-router';
 import { useEffect, useEffectEvent } from 'react';
 import { Text, View, useWindowDimensions } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 import { isDefined, isEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { GroupedListSection } from '../@generic/component/grouped-list-section/grouped-list-section';
 import { SheetSurface } from '../@generic/component/sheet-surface/sheet-surface';
 import { SheetTitle } from '../@generic/component/sheet-title/sheet-title';
+import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../@generic/constant/max-chrome-font-size-multiplier.constant';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { appRuntime } from '../@generic/runtime/app.runtime';
 import { formSheetOptions } from '../@generic/utils/form-sheet-options.util';
 import { useGetAccountByIdQuery } from '../account/query/use-get-account-by-id.query';
+import { VoiceReviewEmptyState } from '../ai/component/voice-review-empty-state/voice-review-empty-state';
 import { VoiceReviewFooter } from '../ai/component/voice-review-footer/voice-review-footer';
 import { VoiceReviewItem } from '../ai/component/voice-review-item/voice-review-item';
 import { VoiceReviewSaveButton } from '../ai/component/voice-review-save-button/voice-review-save-button';
@@ -31,6 +34,8 @@ import { VoiceReviewSelector } from './voice-review.selector';
 const EMPTY_SHEET_DETENT = 0.45;
 const EXPANDED_SHEET_DETENT = 0.95;
 const SCROLL_CONTENT_STYLE = { paddingHorizontal: 16, paddingTop: 16, paddingBottom: 24, flexGrow: 1 } as const;
+const SAFE_AREA_EDGES = ['top'] as const;
+const PAGE_STYLE = { flex: 1 } as const;
 
 const sumAmounts = (rows: { readonly amount: number }[]): number => rows.reduce((accumulator, row) => accumulator + row.amount, 0);
 
@@ -60,6 +65,7 @@ const mapExtractedToReviewRows = (transactions: AITransactionInterface[]): Voice
 export default function VoiceReviewModal() {
     const { t } = useLingui();
     const { fontScale } = useWindowDimensions();
+    const initialDetentIndex = fontScale >= VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE ? 1 : 0;
     const defaultAccount = useAtomValue(defaultAccountAtom);
     const [, resolveVoiceReview, dismissVoiceReview] = useVoiceReviewModal();
     useModalDismiss(dismissVoiceReview);
@@ -77,11 +83,18 @@ export default function VoiceReviewModal() {
     const currencySymbol = accountWithInstrument?.instrument.symbol ?? '';
     const screenOptions = formSheetOptions(
         isEmptyArray(rows) ? [EMPTY_SHEET_DETENT, EXPANDED_SHEET_DETENT] : [0.65, EXPANDED_SHEET_DETENT],
-        fontScale >= VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE ? 1 : 0
+        initialDetentIndex
     );
     const titleClassName = fontScale >= VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE ? 'text-[15px] leading-[20px]' : '';
     const canDelete = rows.length > 1;
     const canSaveToAccount = canSave && isPositiveNumber(accountId);
+    const transcript = isNotEmptyString(originalText) ? (
+        <View className="mt-xl px-xl py-lg">
+            <Text className="text-md leading-relaxed text-secondary-foreground" selectable>
+                {originalText}
+            </Text>
+        </View>
+    ) : null;
 
     const handleCategoryPress = (rowId: string, currentCategoryId: number | null) => {
         const excludeCategoryIds = rows
@@ -130,65 +143,59 @@ export default function VoiceReviewModal() {
     };
 
     return (
-        <SheetSurface>
-            <Stack.Screen options={screenOptions} />
-            <View className="flex-1" testID={VoiceReviewSelector.Page} collapsable={false}>
-                <SheetTitle title={t`Voice notes`} className={titleClassName} />
-                <KeyboardAwareScrollView
-                    className="flex-1"
-                    contentContainerStyle={SCROLL_CONTENT_STYLE}
-                    keyboardShouldPersistTaps="handled"
-                    keyboardDismissMode="on-drag"
-                    bottomOffset={24}
-                >
+        <SafeAreaProvider>
+            <SheetSurface>
+                <Stack.Screen options={screenOptions} />
+                <SafeAreaView edges={SAFE_AREA_EDGES} style={PAGE_STYLE} testID={VoiceReviewSelector.Page}>
+                    <SheetTitle title={t`Voice notes`} className={titleClassName} maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER} />
                     {isEmptyArray(rows) ? (
-                        <View className="flex-1 justify-center items-center gap-y-md px-xl py-3xl">
-                            <Text className="text-xl leading-[24px] font-semibold text-primary text-center">{t`No items to save`}</Text>
-                            <Text className="text-md text-secondary-foreground text-center">{t`Tap re-record to try again`}</Text>
-                        </View>
+                        <VoiceReviewEmptyState>{transcript}</VoiceReviewEmptyState>
                     ) : (
-                        <GroupedListSection>
-                            {rows.map((row, index) => (
-                                <VoiceReviewItem
-                                    key={row.id}
-                                    row={row}
-                                    index={index}
-                                    currencySymbol={currencySymbol}
-                                    canDelete={canDelete}
-                                    onAmountChange={editAmount}
-                                    onCategoryPress={handleCategoryPress}
-                                    onDelete={deleteRow}
-                                />
-                            ))}
-                        </GroupedListSection>
+                        <KeyboardAwareScrollView
+                            className="flex-1"
+                            contentContainerStyle={SCROLL_CONTENT_STYLE}
+                            keyboardShouldPersistTaps="handled"
+                            keyboardDismissMode="on-drag"
+                            bottomOffset={24}
+                        >
+                            <GroupedListSection>
+                                {rows.map((row, index) => (
+                                    <VoiceReviewItem
+                                        key={row.id}
+                                        row={row}
+                                        index={index}
+                                        currencySymbol={currencySymbol}
+                                        canDelete={canDelete}
+                                        disabled={isSaving}
+                                        onAmountChange={editAmount}
+                                        onCategoryPress={handleCategoryPress}
+                                        onDelete={deleteRow}
+                                    />
+                                ))}
+                            </GroupedListSection>
+                            {transcript}
+                        </KeyboardAwareScrollView>
                     )}
-                    {isNotEmptyString(originalText) ? (
-                        <View className="mt-xl px-xl py-lg">
-                            <Text className="text-md leading-relaxed text-secondary-foreground" selectable>
-                                {originalText}
-                            </Text>
-                        </View>
-                    ) : null}
-                </KeyboardAwareScrollView>
 
-                <VoiceReviewFooter
-                    count={rows.length}
-                    isSaving={isSaving}
-                    totalAmount={totalAmount}
-                    currencySymbol={currencySymbol}
-                    onCancel={handleCancel}
-                    onReRecord={handleReRecord}
-                >
-                    <VoiceReviewSaveButton
+                    <VoiceReviewFooter
                         count={rows.length}
-                        canSave={canSaveToAccount}
-                        hasInvalidAmounts={hasInvalidAmounts}
-                        hasMissingCategories={hasMissingCategories}
                         isSaving={isSaving}
-                        onSave={handleSave}
-                    />
-                </VoiceReviewFooter>
-            </View>
-        </SheetSurface>
+                        totalAmount={totalAmount}
+                        currencySymbol={currencySymbol}
+                        onCancel={handleCancel}
+                        onReRecord={handleReRecord}
+                    >
+                        <VoiceReviewSaveButton
+                            count={rows.length}
+                            canSave={canSaveToAccount}
+                            hasInvalidAmounts={hasInvalidAmounts}
+                            hasMissingCategories={hasMissingCategories}
+                            isSaving={isSaving}
+                            onSave={handleSave}
+                        />
+                    </VoiceReviewFooter>
+                </SafeAreaView>
+            </SheetSurface>
+        </SafeAreaProvider>
     );
 }

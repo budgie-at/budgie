@@ -8,7 +8,7 @@ import { RadioOptionRow } from '../../../@generic/component/radio-option-row/rad
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
 import { useBudgetExpectedIncomeHint } from '../../hooks/use-budget-expected-income-hint.hook';
-import { BudgetEditableAmountInput } from '../budget-editable-amount-input/budget-editable-amount-input';
+import { BudgetOverallLimitInput } from '../budget-overall-limit-input/budget-overall-limit-input';
 
 interface Props {
     readonly currencySymbol: string;
@@ -22,16 +22,7 @@ export const BudgetLimitSourceField = ({ currencySymbol }: Props) => {
     const render = ({ field: { value, onChange } }: UseControllerReturn<BudgetFormValues, 'limitSource'>) => {
         const handleFixedPress = () => void onChange(BudgetLimitSourceEnum.FIXED);
         const handleReceivedPress = () => void onChange(BudgetLimitSourceEnum.INCOME_RECEIVED);
-        const fixedLimitField =
-            value === BudgetLimitSourceEnum.FIXED ? (
-                <BudgetEditableAmountInput
-                    control={control}
-                    name="overallLimit"
-                    currencySymbol={currencySymbol}
-                    testID={BudgetSelector.SetupOverallLimitInput}
-                    className="h-[40px] text-(length:--text-xl) font-semibold"
-                />
-            ) : null;
+        const fixedLimitField = value === BudgetLimitSourceEnum.FIXED ? <BudgetOverallLimitInput currencySymbol={currencySymbol} /> : null;
         const handleExpectedPress = () => void onChange(BudgetLimitSourceEnum.INCOME_EXPECTED);
 
         return (

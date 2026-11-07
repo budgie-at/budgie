@@ -2,7 +2,7 @@ import { RecurringSeriesSourceEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
-import { ScreenChromeScrollView } from '@rnw-community/react-native-screen-chrome';
+import { ScreenChromeScrollView, useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 import { isDefined } from '@rnw-community/shared';
 
 import { GroupedListSectionTitle } from '../../../@generic/component/grouped-list-section-title/grouped-list-section-title';
@@ -27,6 +27,7 @@ interface Props {
 const CONTENT_STYLE = { paddingHorizontal: 20, paddingBottom: 96 };
 export const RecurringSeriesFormFields = ({ target }: Props) => {
     const { t } = useLingui();
+    const { config } = useScreenChrome();
     const isEditing = target.mode === RecurringFormModeEnum.EDIT;
     const isDetected = isEditing && target.source === RecurringSeriesSourceEnum.DETECTED;
     const sourceTransactionId = target.mode === RecurringFormModeEnum.CREATE ? target.transactionId : null;
@@ -41,7 +42,7 @@ export const RecurringSeriesFormFields = ({ target }: Props) => {
 
     return (
         <ScreenChromeScrollView
-            contentInsetTop={44}
+            contentInsetTop={config.headerHeight}
             contentContainerStyle={CONTENT_STYLE}
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="on-drag"

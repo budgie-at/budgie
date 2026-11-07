@@ -8,7 +8,6 @@ import { Input } from '../input/input';
 interface Props extends Omit<ComponentProps<typeof Input>, 'value' | 'className'> {
     readonly value: number;
     readonly inputClassName?: string;
-    readonly commitOnBlur?: boolean;
     readonly valuePrefix?: string;
     readonly minimumDecimalPlaces?: number;
     readonly acceptedDecimalSeparators?: readonly string[];
@@ -20,7 +19,6 @@ export const AmountInput = (props: Props) => {
         value,
         onChangeValue,
         inputClassName,
-        commitOnBlur,
         selectTextOnFocus,
         valuePrefix,
         minimumDecimalPlaces = 0,
@@ -30,7 +28,7 @@ export const AmountInput = (props: Props) => {
         ...rest
     } = props;
     const format = useAmountFormat(minimumDecimalPlaces, valuePrefix);
-    const amountInputProps = useAmountInput({ value, format, onChangeValue, commitOnBlur, selectTextOnFocus, onFocus, onBlur });
+    const amountInputProps = useAmountInput({ value, format, onChangeValue, selectTextOnFocus, onFocus, onBlur });
 
     const handleChangeText = (text: string) => {
         amountInputProps.onChangeText(normalizeAmountDecimalSeparators(text, format.decimalSeparator, acceptedDecimalSeparators));
