@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import { BottomChromeInsetProvider, ScreenChromeFrame, ScreenChromeHeader } from '@rnw-community/react-native-screen-chrome';
 
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
+import { ScreenChromeStickyHeadersProvider } from '../../../@generic/provider/screen-chrome-sticky-headers.provider';
 import { ScreenChromeThemeProvider } from '../../../@generic/provider/screen-chrome-theme.provider';
 import { CategorizeInboxHeaderBackdrop } from '../categorize-inbox-header-backdrop/categorize-inbox-header-backdrop';
 
@@ -21,20 +22,22 @@ export const CategorizeInboxScreenChrome = ({ children, title }: Props) => {
 
     return (
         <ScreenChromeThemeProvider>
-            <BottomChromeInsetProvider>
-                <ScreenChromeFrame>
-                    {children}
+            <ScreenChromeStickyHeadersProvider>
+                <BottomChromeInsetProvider>
+                    <ScreenChromeFrame>
+                        {children}
 
-                    <CategorizeInboxHeaderBackdrop />
+                        <CategorizeInboxHeaderBackdrop />
 
-                    <ScreenChromeHeader>
-                        <View className="absolute inset-0 items-center justify-center px-[72px]" pointerEvents="none">
-                            {title}
-                        </View>
-                        <GoBackButton onPress={handleGoBack} />
-                    </ScreenChromeHeader>
-                </ScreenChromeFrame>
-            </BottomChromeInsetProvider>
+                        <ScreenChromeHeader>
+                            <View className="absolute inset-0 items-center justify-center px-[72px]" pointerEvents="none">
+                                {title}
+                            </View>
+                            <GoBackButton onPress={handleGoBack} />
+                        </ScreenChromeHeader>
+                    </ScreenChromeFrame>
+                </BottomChromeInsetProvider>
+            </ScreenChromeStickyHeadersProvider>
         </ScreenChromeThemeProvider>
     );
 };

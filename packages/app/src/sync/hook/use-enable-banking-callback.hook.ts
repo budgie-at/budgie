@@ -3,6 +3,7 @@ import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
+import { useIsFocused } from 'expo-router';
 import { useEffect, useEffectEvent } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
@@ -18,13 +19,14 @@ import type { useSingleFlight } from '../../@generic/hook/use-single-flight.hook
 import type { EnableBankingAuthorizationInterface } from '../interface/enable-banking-authorization.interface';
 
 export const useEnableBankingCallback = (
-    run: ReturnType<typeof useSingleFlight>['run'],
+    { run, isLoading }: ReturnType<typeof useSingleFlight>,
     onAuthorized: (result: EnableBankingAuthorizationInterface) => void,
     onFailed: () => void
 ) => {
     const { t } = useLingui();
     const explainError = useExplainEnableBankingError();
     const callbackUrl = useAtomValue(enableBankingCallbackUrlAtom);
+    const isFocused = useIsFocused();
 
     const handleCallback = useEffectEvent((url: string) =>
         run(
@@ -53,9 +55,9 @@ export const useEnableBankingCallback = (
     );
 
     useEffect(() => {
-        if (isDefined(callbackUrl)) {
+        if (isFocused && !isLoading && isDefined(callbackUrl) && appAtomRegistry.get(enableBankingCallbackUrlAtom) === callbackUrl) {
             appAtomRegistry.set(enableBankingCallbackUrlAtom, null);
             void handleCallback(callbackUrl);
         }
-    }, [callbackUrl]);
+    }, [callbackUrl, isLoading, isFocused]);
 };

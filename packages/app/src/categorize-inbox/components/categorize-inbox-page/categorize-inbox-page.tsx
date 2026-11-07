@@ -1,6 +1,7 @@
 import { BottomChromeInsetProvider } from '@rnw-community/react-native-screen-chrome';
 
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
+import { ScreenChromeStickyHeadersProvider } from '../../../@generic/provider/screen-chrome-sticky-headers.provider';
 import { ScreenChromeThemeProvider } from '../../../@generic/provider/screen-chrome-theme.provider';
 import { CategorizeInboxPageContent } from '../categorize-inbox-page-content/categorize-inbox-page-content';
 
@@ -13,9 +14,11 @@ interface Props {
 export const CategorizeInboxPage = ({ params }: Props) => (
     <GroupedSurface>
         <ScreenChromeThemeProvider>
-            <BottomChromeInsetProvider>
-                <CategorizeInboxPageContent params={params} />
-            </BottomChromeInsetProvider>
+            <ScreenChromeStickyHeadersProvider>
+                <BottomChromeInsetProvider>
+                    <CategorizeInboxPageContent params={params} />
+                </BottomChromeInsetProvider>
+            </ScreenChromeStickyHeadersProvider>
         </ScreenChromeThemeProvider>
     </GroupedSurface>
 );

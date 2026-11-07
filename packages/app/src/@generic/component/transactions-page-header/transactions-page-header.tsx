@@ -1,10 +1,12 @@
 import { Trans, useLingui } from '@lingui/react/macro';
+import { use } from 'react';
 import { View } from 'react-native';
 import { useResolveClassNames } from 'uniwind';
 
 import { ScreenChromeHeader } from '@rnw-community/react-native-screen-chrome';
 
 import { TransactionsPageSelector } from '../../../app/(tabs)/transactions-page.selector';
+import { ScreenChromeStickyHeadersContext } from '../../context/screen-chrome-sticky-headers.context';
 import { useIsAccessibilityTextSize } from '../../hook/use-is-accessibility-text-size.hook';
 import { TransactionsTabType } from '../../type/transactions-tab.type';
 import { SegmentedControl } from '../segmented-control/segmented-control';
@@ -12,6 +14,7 @@ import { TransactionsPageTab } from '../transactions-page-tab/transactions-page-
 
 import type { SegmentedControlSegmentInterface } from '../../interface/segmented-control-segment.interface';
 import type { TabConfigInterface } from '../../interface/tab-config.interface';
+import type { LayoutChangeEvent } from 'react-native';
 
 interface Props {
     readonly activeTab: TransactionsTabType;
@@ -25,19 +28,17 @@ const TABS: readonly TabConfigInterface<TransactionsTabType>[] = [
 
 export const TransactionsPageHeader = ({ activeTab, onChangeTab }: Props) => {
     const { t } = useLingui();
+    const stickyContext = use(ScreenChromeStickyHeadersContext);
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
-    const backgroundStyle = useResolveClassNames('bg-surface');
-    const borderWidthStyle = useResolveClassNames('border-b-hairline');
-    const borderColorStyle = useResolveClassNames('border-surface-separator');
-    const headerStyle = [backgroundStyle, borderWidthStyle, borderColorStyle];
     const rowStyle = useResolveClassNames('px-0');
+    const handleHeaderLayout = (event: LayoutChangeEvent) => stickyContext?.headerBottom.set(event.nativeEvent.layout.height);
     const segments: readonly SegmentedControlSegmentInterface<TransactionsTabType>[] = [
         { value: 'transactions', label: t`Transactions`, testID: TransactionsPageSelector.TransactionsTab },
         { value: 'recurring', label: t`Recurring`, testID: TransactionsPageSelector.RecurringTab }
     ];
 
     return (
-        <ScreenChromeHeader inFlow style={headerStyle} rowStyle={rowStyle}>
+        <ScreenChromeHeader inFlow rowStyle={rowStyle} onLayout={handleHeaderLayout}>
             {isAccessibilityTextSize ? (
                 <View className="flex-1 px-5xl pb-md">
                     <SegmentedControl
