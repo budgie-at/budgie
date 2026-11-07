@@ -4,8 +4,8 @@ import type { AccountEntityInterface } from '@budgie/contracts';
 
 class OwnTransferDetector {
     private static readonly PHRASES: Record<LanguageEnum, readonly string[]> = {
-        [LanguageEnum.EN]: ['own card', 'own account', 'my card', 'my account', 'deposit opening', 'deposit closing'],
-        [LanguageEnum.FR]: ['ma carte', 'mon compte', 'propre compte', 'ouverture de dépôt', 'clôture de dépôt'],
+        [LanguageEnum.EN]: ['own card', 'own account', 'deposit opening', 'deposit closing'],
+        [LanguageEnum.FR]: ['propre compte', 'ouverture de dépôt', 'clôture de dépôt'],
         [LanguageEnum.UK]: [
             'своєї картки',
             'свою картку',
@@ -15,8 +15,8 @@ class OwnTransferDetector {
             'відкриття депозиту',
             'закриття депозиту'
         ],
-        [LanguageEnum.DE]: ['eigene karte', 'eigenes konto', 'eigenen konto', 'mein konto', 'festgeld eröffnung', 'festgeld auflösung'],
-        [LanguageEnum.ES]: ['mi tarjeta', 'mi cuenta', 'cuenta propia', 'apertura de depósito', 'cierre de depósito']
+        [LanguageEnum.DE]: ['eigene karte', 'eigenes konto', 'eigenen konto', 'festgeld eröffnung', 'festgeld auflösung'],
+        [LanguageEnum.ES]: ['cuenta propia', 'apertura de depósito', 'cierre de depósito']
     };
 
     private static readonly LATIN = new Map<string, string>([
@@ -55,9 +55,10 @@ class OwnTransferDetector {
         ['я', 'ya']
     ]);
 
-    matchesAccount(title: string, account: Pick<AccountEntityInterface, 'externalId' | 'iban' | 'title'>): boolean {
-        return this.cardSuffixes(title).some(suffix =>
-            [account.externalId, account.iban, account.title].some(value => value?.replaceAll(/\s/gu, '').endsWith(suffix))
+    matchesAccount(title: string, account: Pick<AccountEntityInterface, 'externalId'>): boolean {
+        return this.cardSuffixes(title).some(
+            suffix =>
+                /^(?:\d|[*•●xх\s])+$/iu.test(account.externalId ?? '') && (account.externalId ?? '').replaceAll(/\s/gu, '').endsWith(suffix)
         );
     }
 
@@ -67,26 +68,39 @@ class OwnTransferDetector {
         return (
             Object.values(OwnTransferDetector.PHRASES)
                 .flat()
-                .some(phrase => normalized.includes(this.normalize(phrase))) || names.some(name => this.matchesName(title, name))
+                .some(phrase => ` ${normalized} `.includes(` ${this.normalize(phrase)} `)) ||
+            names.some(name => this.matchesName(title, name, false))
         );
     }
 
-    private cardSuffixes(title: string): string[] {
-        return [...title.matchAll(/[*•●xх]+\s*(\d{4})(?!\d)/giu)].map(match => match[1]);
+    matchesAbbreviatedName(title: string, names: readonly string[]): boolean {
+        return names.some(name => this.matchesName(title, name, true));
     }
 
-    private matchesName(title: string, name: string): boolean {
+    private cardSuffixes(title: string): string[] {
+        return [...title.matchAll(/(?:[*•●]+|[xх]{2,})\s*(\d{4})(?!\d)/giu)].map(match => match[1]);
+    }
+
+    private matchesName(title: string, name: string, abbreviated: boolean): boolean {
         const words = this.normalize(name).split(' ').filter(Boolean);
         const normalized = this.normalize(title.replace(/^[\p{L}\p{N}]+\s*\*/u, ''));
         const titleWords = normalized.split(' ');
 
+        if (abbreviated) {
+            return (
+                words.length >= 2 &&
+                titleWords.length === 2 &&
+                words.includes(titleWords[0]) &&
+                /\p{L}\.$/u.test(title.trim()) &&
+                words.some(word => word !== titleWords[0] && word.startsWith(titleWords[1]))
+            );
+        }
+
         return (
             words.length >= 2 &&
-            ((titleWords.length >= 2 && titleWords.length <= words.length && titleWords.every(word => words.includes(word))) ||
-                (titleWords.length === 2 &&
-                    words.includes(titleWords[0]) &&
-                    /\p{L}\.$/u.test(title.trim()) &&
-                    words.some(word => word !== titleWords[0] && word.startsWith(titleWords[1]))))
+            titleWords.length >= 2 &&
+            titleWords.length <= words.length &&
+            titleWords.every(word => words.includes(word))
         );
     }
 

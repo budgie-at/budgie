@@ -7,5 +7,4 @@ export interface SyncTransactionInterface extends BaseTransactionFieldsInterface
     readonly accountId: string;
     readonly type: SyncTransactionTypeEnum;
     readonly feeAmount: number;
-    readonly transferDirection?: SyncTransactionTypeEnum.INCOME | SyncTransactionTypeEnum.EXPENSE;
 }

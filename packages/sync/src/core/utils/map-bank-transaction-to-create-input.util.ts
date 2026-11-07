@@ -24,7 +24,7 @@ export const mapBankTransactionToCreateInput = (
     mccCategoryLookup: MccCategoryLookupInterface | null,
     provider: ExternalSourceEnum
 ): TransactionCreateInputInterface => {
-    const isIncome = (bankTransaction.transferDirection ?? bankTransaction.type) === SyncTransactionTypeEnum.INCOME;
+    const isIncome = bankTransaction.type === SyncTransactionTypeEnum.INCOME;
     const amount = Math.abs(bankTransaction.amount);
     const entryType = isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT;
 

@@ -41,7 +41,7 @@ export class TransferConsolidationService extends Context.Service<TransferConsol
                     yield* inzhurBankFlowService.apply(scope);
                     const result = yield* consolidationCoordinatorService.consolidate(scope);
 
-                    yield* ownTransfers.repair();
+                    yield* ownTransfers.repair(scope);
 
                     yield* updateBalancesAfterConsolidation(result.consolidated);
                     yield* installmentPlanService.attachDueParts();

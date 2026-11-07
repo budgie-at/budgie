@@ -1,5 +1,10 @@
 import { ConsolidationExecutorService } from '@budgie/consolidation';
 import {
+    AccountRepository,
+    AccountTypeEnum,
+    AccountNatureEnum,
+    UserIconNameEnum,
+    CategorySourceEnum,
     Db,
     ExternalSourceEnum,
     PRECISION,
@@ -16,25 +21,51 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
+import { isBinanceOwnTransferTitle } from '../../binance/mapper/binance.mapper';
 import { ownTransferDetector } from '../detector/own-transfer.detector';
 import { OwnTransferRepository } from '../repository/own-transfer.repository';
 
-import { ExternalAccountService } from './external-account.service';
-
-import type { TransactionWithEntriesEntityInterface } from '@budgie/contracts';
+import type { AccountEntityInterface, ConsolidationScanScopeInterface, TransactionWithEntriesEntityInterface } from '@budgie/contracts';
 
 export class OwnTransferRepairService extends Context.Service<OwnTransferRepairService>()('@budgie/sync/OwnTransferRepairService', {
     make: Effect.gen(function* () {
         const repository = yield* OwnTransferRepository;
         const transfers = yield* TransactionTransferService;
         const consolidation = yield* ConsolidationExecutorService;
-        const externalAccounts = yield* ExternalAccountService;
+        const accountRepository = yield* AccountRepository;
         const balances = yield* AccountBalanceIncrementalService;
 
-        const primaryEntry = (transaction: TransactionWithEntriesEntityInterface) =>
+        const candidateEntries = (transaction: TransactionWithEntriesEntityInterface) =>
             transaction.entries.filter(
-                entry => entry.type !== TransactionEntryTypeEnum.FEE && !isDefined(entry.categoryId) && isPositiveNumber(entry.amount)
+                entry =>
+                    entry.type !== TransactionEntryTypeEnum.FEE &&
+                    (!isDefined(entry.categoryId) ||
+                        entry.categorySource === CategorySourceEnum.MCC_DEFAULT ||
+                        entry.categorySource === CategorySourceEnum.AI) &&
+                    isPositiveNumber(entry.amount)
             );
+
+        const getUntrackedOwnAccount = Effect.fnUntraced(function* (instrumentId: number) {
+            const externalId = 'untracked-own-account';
+            const existing = (yield* accountRepository.findByExternalIds([externalId])).find(
+                account => account.instrumentId === instrumentId
+            );
+
+            return (
+                existing ??
+                (yield* accountRepository.create({
+                    title: 'Untracked own account',
+                    externalId,
+                    instrumentId,
+                    type: AccountTypeEnum.BANK,
+                    nature: AccountNatureEnum.ASSET,
+                    icon: UserIconNameEnum.Wallet,
+                    order: 0,
+                    includeInNetWorth: false,
+                    isActive: false
+                }))
+            );
+        });
 
         const pair = Effect.fnUntraced(function* (
             transaction: TransactionWithEntriesEntityInterface,
@@ -42,8 +73,8 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
         ) {
             const expense = transaction.type === TransactionTypeEnum.EXPENSE ? transaction : counterpart;
             const income = transaction.type === TransactionTypeEnum.INCOME ? transaction : counterpart;
-            const [credit] = primaryEntry(expense);
-            const [debit] = primaryEntry(income);
+            const [credit] = candidateEntries(expense);
+            const [debit] = candidateEntries(income);
 
             return yield* consolidation.consolidateTransfer({
                 sourceTransactionIds: [expense.id, income.id],
@@ -65,26 +96,28 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
         });
 
         return {
-            repair: Effect.fn('OwnTransferRepairService.repair')(function* () {
+            repair: Effect.fn('OwnTransferRepairService.repair')(function* (scope: ConsolidationScanScopeInterface | null = null) {
                 const accounts = yield* repository.findAccounts;
                 const identities = (yield* repository.findIdentities).map(identity => identity.label).filter(isNotEmptyString);
-                const transactions = (yield* repository.findTransactions).filter(
+                const transactions = (yield* repository.findTransactions(scope)).filter(
                     transaction =>
-                        primaryEntry(transaction).length === 1 &&
+                        candidateEntries(transaction).length === 1 &&
                         transaction.entries.filter(entry => entry.type !== TransactionEntryTypeEnum.FEE).length === 1
                 );
                 const candidates = transactions.flatMap(transaction => {
-                    const [entry] = primaryEntry(transaction);
-                    const account = accounts.find(candidate => candidate.id === entry.accountId && !isDefined(candidate.deletedAt));
+                    const [entry] = candidateEntries(transaction);
+                    const account = accounts.find(candidate => candidate.id === entry.accountId);
                     const matches = accounts.filter(
                         candidate => candidate.id !== entry.accountId && ownTransferDetector.matchesAccount(transaction.title, candidate)
                     );
                     const isCryptoMovement =
-                        transaction.externalSource === ExternalSourceEnum.BINANCE &&
-                        /^Binance \S+ (deposit|withdrawal)$/u.test(transaction.title);
+                        transaction.externalSource === ExternalSourceEnum.BINANCE && isBinanceOwnTransferTitle(transaction.title);
 
                     return isDefined(account) &&
-                        (matches.length === 1 || ownTransferDetector.matches(transaction.title, identities) || isCryptoMovement)
+                        (matches.length === 1 ||
+                            ownTransferDetector.matches(transaction.title, identities) ||
+                            ownTransferDetector.matchesAbbreviatedName(transaction.title, identities) ||
+                            isCryptoMovement)
                         ? [{ transaction, account, matches }]
                         : [];
                 });
@@ -98,12 +131,50 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                         const consumed = new Set<number>();
                         let repaired = 0;
 
+                        const repairCandidate = Effect.fnUntraced(function* (
+                            transaction: TransactionWithEntriesEntityInterface,
+                            account: AccountEntityInterface,
+                            matches: AccountEntityInterface[],
+                            counterparts: TransactionWithEntriesEntityInterface[]
+                        ) {
+                            if (counterparts.length > 1) {
+                                return false;
+                            }
+
+                            if (counterparts.length === 1) {
+                                if (!(yield* pair(transaction, counterparts[0]))) {
+                                    return false;
+                                }
+                                yield* balances.updateBalancesByAccountIds([
+                                    candidateEntries(transaction)[0].accountId,
+                                    candidateEntries(counterparts[0])[0].accountId
+                                ]);
+                                consumed.add(counterparts[0].id);
+                            } else {
+                                if (
+                                    ownTransferDetector.matchesAbbreviatedName(transaction.title, identities) &&
+                                    !ownTransferDetector.matches(transaction.title, identities)
+                                ) {
+                                    return false;
+                                }
+                                if (matches.length === 1 && isDefined(matches[0].integrationId)) {
+                                    return false;
+                                }
+                                const target = matches.length === 1 ? matches[0] : yield* getUntrackedOwnAccount(account.instrumentId);
+                                if (!(yield* transfers.convertToTransferAccount(transaction.id, target.id))) {
+                                    return false;
+                                }
+                            }
+
+                            return true;
+                        });
+
                         for (const { transaction, account, matches } of candidates) {
-                            const [entry] = primaryEntry(transaction);
+                            const [entry] = candidateEntries(transaction);
 
                             if (!consumed.has(transaction.id)) {
                                 const counterparts = transactions.filter(candidate => {
-                                    const [counterEntry] = primaryEntry(candidate);
+                                    const [counterEntry] = candidateEntries(candidate);
                                     const counterAccount = accounts.find(own => own.id === counterEntry.accountId);
 
                                     return (
@@ -119,23 +190,14 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                                     );
                                 });
 
-                                if (counterparts.length === 1 && (yield* pair(transaction, counterparts[0]))) {
-                                    consumed.add(counterparts[0].id);
-                                } else {
-                                    const target =
-                                        matches.length === 1
-                                            ? matches[0]
-                                            : yield* externalAccounts.getUntrackedOwnAccount(account.instrumentId);
-                                    yield* transfers.convertToTransferAccount(transaction.id, target.id);
-                                }
-                                consumed.add(transaction.id);
-                                repaired += 1;
-                                yield* YIELD_TO_UI;
-                            }
-                        }
+                                const changed = yield* repairCandidate(transaction, account, matches, counterparts);
 
-                        if (isPositiveNumber(repaired)) {
-                            yield* balances.updateAllBalances(true);
+                                if (changed) {
+                                    consumed.add(transaction.id);
+                                    repaired += 1;
+                                    yield* YIELD_TO_UI;
+                                }
+                            }
                         }
 
                         return repaired;
@@ -150,7 +212,7 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
             OwnTransferRepository.layer,
             TransactionTransferService.layer,
             ConsolidationExecutorService.layer,
-            ExternalAccountService.layer,
+            AccountRepository.layer,
             AccountBalanceIncrementalService.layer
         ])
     );

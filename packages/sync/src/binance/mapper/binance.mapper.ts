@@ -69,7 +69,7 @@ export const toSyncTransaction = (
     balance: 0,
     hold: false,
     operationAmount:
-        (transaction.transferDirection ?? transaction.type) === SyncTransactionTypeEnum.INCOME
+        transaction.type === SyncTransactionTypeEnum.INCOME
             ? transaction.amount + transaction.feeAmount
             : transaction.amount - transaction.feeAmount,
     ...transaction
@@ -135,8 +135,7 @@ export const mapBinanceDepositToTransaction = (deposit: BinanceDepositApiInterfa
               accountId,
               category: deposit.coin,
               time: toUnixSeconds(deposit.insertTime),
-              type: SyncTransactionTypeEnum.TRANSFER,
-              transferDirection: SyncTransactionTypeEnum.INCOME,
+              type: SyncTransactionTypeEnum.INCOME,
               description: `Binance ${deposit.coin} deposit`,
               amount,
               feeAmount: 0
@@ -156,8 +155,7 @@ export const mapBinanceWithdrawalToTransaction = (
               accountId,
               category: withdrawal.coin,
               time: toUnixSeconds(parseBinanceApplyTimeMs(withdrawal.applyTime)),
-              type: SyncTransactionTypeEnum.TRANSFER,
-              transferDirection: SyncTransactionTypeEnum.EXPENSE,
+              type: SyncTransactionTypeEnum.EXPENSE,
               description: `Binance ${withdrawal.coin} withdrawal`,
               amount: parsed[0],
               feeAmount: parsed[1]
@@ -179,8 +177,7 @@ export const mapBinanceFiatOrderToTransaction = (
               accountId,
               category: order.fiatCurrency,
               time: toUnixSeconds(order.createTime),
-              type: SyncTransactionTypeEnum.TRANSFER,
-              transferDirection: isDeposit ? SyncTransactionTypeEnum.INCOME : SyncTransactionTypeEnum.EXPENSE,
+              type: isDeposit ? SyncTransactionTypeEnum.INCOME : SyncTransactionTypeEnum.EXPENSE,
               description: isDeposit ? `Binance ${order.fiatCurrency} deposit` : `Binance ${order.fiatCurrency} withdrawal`,
               amount: isDeposit ? amount : amount + feeAmount,
               feeAmount
@@ -290,3 +287,5 @@ export const mapBinanceUniversalTransferToTransfer = (transfer: BinanceUniversal
         source: BinanceTransferSourceEnum.UNIVERSAL_TRANSFER
     };
 };
+
+export const isBinanceOwnTransferTitle = (title: string): boolean => /^Binance \S+ (deposit|withdrawal)$/u.test(title);
