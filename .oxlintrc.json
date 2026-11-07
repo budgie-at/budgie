@@ -82,6 +82,7 @@
         "packages/app/scripts/**"
     ],
     "rules": {
+        "budgie/no-component-render-callback": "error",
         "effecttsgo/global-fetch": "error",
         "effecttsgo/global-fetch-in-effect": "error",
         "effecttsgo/layer-merge-all-with-dependencies": "error",
