@@ -153,7 +153,7 @@ msgid "{0, plural, one {Other · # category} other {Other · # categories}}"
 msgstr "{0, plural, one {Інші · # категорія} few {Інші · # категорії} many {Інші · # категорій} other {Інші · # категорії}}"
 
 #. placeholder {0}: joinedMembers.length
-#: src/household/component/family-row/family-row.tsx
+#: src/household/utils/get-family-labels.util.ts
 msgid "{0, plural, one {Shared with # person} other {Shared with # people}}"
 msgstr "{0, plural, one {Спільне з # особою} few {Спільне з # особами} many {Спільне з # особами} other {Спільне з # особи}}"
 
@@ -174,7 +174,7 @@ msgid "{0, plural, one {Sync failed for # account} other {Sync failed for # acco
 msgstr "{0, plural, one {Не вдалося синхронізувати # рахунок} few {Не вдалося синхронізувати # рахунки} many {Не вдалося синхронізувати # рахунків} other {Не вдалося синхронізувати # рахунку}}"
 
 #. placeholder {0}: otherParticipants.length - joinedMembers.length
-#: src/household/component/family-row/family-row.tsx
+#: src/household/utils/get-family-labels.util.ts
 msgid "{0, plural, one {Waiting for # person to join} other {Waiting for # people to join}}"
 msgstr "{0, plural, one {Очікуємо, поки # людина приєднається} few {Очікуємо, поки # людини приєднаються} many {Очікуємо, поки # людей приєднаються} other {Очікуємо, поки # людини приєднаються}}"
 
@@ -747,13 +747,13 @@ msgstr "{newTransactionCount, plural, one {Імпортувати # транза
 msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
 msgstr "{newTransactionCount} нових, {existingTransactionCount} вже імпортовано, {parsedTransactionCount} перевірено"
 
-#: src/household/component/household-share-section/household-share-section.tsx
+#: src/household/utils/get-household-share-labels.util.ts
 msgid "{organizerName} sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
 msgstr "{organizerName} бачить спільні рахунки та їхні платежі. Гроші, переміщені між спільними рахунками, відображаються як переказ."
 
 #: src/account/component/family-section-header/family-section-header.tsx
-#: src/household/component/family-row/family-row.tsx
 #: src/household/component/household-member-summary/household-member-summary.tsx
+#: src/household/utils/get-family-labels.util.ts
 msgid "{organizerName}'s family"
 msgstr "Сім'я {organizerName}"
 
@@ -2810,7 +2810,7 @@ msgstr "Виберіть інший рахунок"
 msgid "Choose what goes inside"
 msgstr "Вибрати, що буде всередині"
 
-#: src/household/component/household-share-section/household-share-section.tsx
+#: src/household/utils/get-household-share-labels.util.ts
 msgid "Choose what to share"
 msgstr "Оберіть, чим ділитися"
 
@@ -5209,6 +5209,7 @@ msgstr "Для копій в iCloud, синхронізації та спіль�
 msgid "iCloud storage full"
 msgstr "Сховище iCloud заповнене"
 
+#: src/cloud-backup/component/cloud-backup-list/cloud-backup-list.tsx
 #: src/cloud-backup/hook/use-restore-cloud-backup.hook.ts
 msgid "iCloud unavailable"
 msgstr "iCloud недоступний"
@@ -5402,11 +5403,11 @@ msgstr "Враховувати в чистих активах"
 msgid "Include one‑offs"
 msgstr "Включити разові витрати"
 
-#: src/household/component/household-share-section/household-share-section.tsx
+#: src/household/utils/get-household-share-labels.util.ts
 msgid "Includes accounts you add later."
 msgstr "Включає рахунки, додані пізніше."
 
-#: src/household/component/household-share-section/household-share-section.tsx
+#: src/household/utils/get-household-share-labels.util.ts
 msgid "Includes accounts you add later. Starts when you sign in to iCloud."
 msgstr "Включає рахунки, додані пізніше. Почнеться, коли ви ввійдете в iCloud."
 
@@ -5665,7 +5666,7 @@ msgstr "Останні 90 днів"
 msgid "Last day of each month"
 msgstr "Останній день кожного місяця"
 
-#: src/settings/components/icloud-backup-row/icloud-backup-row.tsx
+#: src/settings/utils/get-cloud-backup-labels.util.ts
 msgid "Last iCloud backup: {lastBackupDate}"
 msgstr "Остання копія в iCloud: {lastBackupDate}"
 
@@ -6641,7 +6642,7 @@ msgstr "Це не експорт Inzhur"
 msgid "Not available in this version"
 msgstr "Недоступно в цій версії"
 
-#: src/settings/components/icloud-backup-row/icloud-backup-row.tsx
+#: src/settings/utils/get-cloud-backup-labels.util.ts
 msgid "Not backed up to iCloud yet"
 msgstr "Ще не збережено в iCloud"
 
@@ -8592,11 +8593,11 @@ msgstr "Ділитися цим рахунком"
 msgid "Share with family"
 msgstr "Поділитися з родиною"
 
-#: src/household/component/household-share-section/household-share-section.tsx
+#: src/household/utils/get-household-share-labels.util.ts
 msgid "Share your accounts"
 msgstr "Поділіться своїми рахунками"
 
-#: src/household/component/household-share-section/household-share-section.tsx
+#: src/household/utils/get-household-share-labels.util.ts
 msgid "Share your accounts with {organizerName}"
 msgstr "Поділіться своїми рахунками з {organizerName}"
 
@@ -8604,7 +8605,7 @@ msgstr "Поділіться своїми рахунками з {organizerName}"
 msgid "Shared accounts stay in sync"
 msgstr "Спільні рахунки лишаються синхронізованими"
 
-#: src/account/component/household-share-account-section/household-share-account-section.tsx
+#: src/account/utils/get-household-account-footer.util.ts
 msgid "Shared because you share everything"
 msgstr "Спільний, бо ви ділитеся всім"
 
@@ -8614,11 +8615,11 @@ msgstr "Спільне з родиною"
 
 #: src/account/component/household-shared-by-other-account-row/household-shared-by-other-account-row.tsx
 #: src/budget/components/budget-share-field/budget-share-field.tsx
-#: src/household/component/family-row/family-row.tsx
+#: src/household/utils/get-family-labels.util.ts
 msgid "Shared with your family"
 msgstr "Спільне з вашою родиною"
 
-#: src/household/component/household-share-section/household-share-section.tsx
+#: src/household/utils/get-household-share-labels.util.ts
 msgid "Sharing"
 msgstr "Спільний доступ"
 
@@ -8706,7 +8707,7 @@ msgstr "Увійдіть в iCloud, щоб запросити"
 #: src/cloud-backup/constant/cloud-backup-status-message.constant.ts
 #: src/cloud-sync/component/cloud-sync-row/cloud-sync-row.tsx
 #: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
-#: src/settings/components/icloud-backup-row/icloud-backup-row.tsx
+#: src/settings/utils/get-cloud-backup-labels.util.ts
 msgid "Sign in to iCloud to turn on"
 msgstr "Увійдіть в iCloud, щоб увімкнути"
 
@@ -8891,7 +8892,7 @@ msgstr "Починається з {startLabel}. Закінчується на {e
 msgid "Starts on"
 msgstr "Починається"
 
-#: src/account/component/household-share-account-section/household-share-account-section.tsx
+#: src/account/utils/get-household-account-footer.util.ts
 msgid "Starts when you sign in to iCloud."
 msgstr "Почнеться, коли ви ввійдете в iCloud."
 
@@ -9059,7 +9060,7 @@ msgstr "Синхронізуйте свої баланси та транзакц
 msgid "Synced {relative}"
 msgstr "Синхронізовано {relative}"
 
-#: src/account/component/household-share-account-section/household-share-account-section.tsx
+#: src/account/utils/get-household-account-footer.util.ts
 msgid "Synced by {ownerName}"
 msgstr "Синхронізує {ownerName}"
 
@@ -9289,7 +9290,7 @@ msgstr "Об’єднані транзакції знову стануть ок�
 msgid "The note on a payment"
 msgstr "Нотатка до платежу"
 
-#: src/household/component/household-share-section/household-share-section.tsx
+#: src/household/utils/get-household-share-labels.util.ts
 msgid "The organizer sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
 msgstr "Організатор бачить спільні рахунки та їхні платежі. Гроші, переміщені між спільними рахунками, відображаються як переказ."
 
@@ -9924,7 +9925,9 @@ msgstr "Спробуйте налаштувати фільтри, щоб поб�
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 #: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
 #: src/auth/components/forgot-pin-footer/forgot-pin-footer.tsx
+#: src/cloud-backup/component/cloud-backup-list/cloud-backup-list.tsx
 #: src/cloud-backup/component/cloud-backup-row/cloud-backup-row.tsx
+#: src/onboarding/component/onboarding-key/onboarding-key.tsx
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
 #: src/transaction/components/transaction-picker-failure/transaction-picker-failure.tsx
@@ -9965,7 +9968,7 @@ msgstr "Вимкнути блокування застосунку"
 msgid "Turn off Show on Home in an account’s edit screen to tuck it away here."
 msgstr "Вимкніть «Показувати на головній» на екрані редагування рахунку, щоб прибрати його сюди."
 
-#: src/account/component/household-share-account-section/household-share-account-section.tsx
+#: src/account/utils/get-household-account-footer.util.ts
 msgid "Turn off to remove it from family devices."
 msgstr "Вимкніть, щоб прибрати його з пристроїв родини."
 
@@ -9990,7 +9993,7 @@ msgid "Turn payments into transfers"
 msgstr "Перетворювати платежі на перекази"
 
 #: src/cloud-sync/component/cloud-sync-row/cloud-sync-row.tsx
-#: src/settings/components/icloud-backup-row/icloud-backup-row.tsx
+#: src/settings/utils/get-cloud-backup-labels.util.ts
 msgid "Turned off"
 msgstr "Вимкнено"
 
@@ -10689,7 +10692,7 @@ msgstr "Годинник вашого пристрою не синхронізо
 msgid "Your family"
 msgstr "Твоя сім'я"
 
-#: src/household/component/household-share-section/household-share-section.tsx
+#: src/household/utils/get-household-share-labels.util.ts
 msgid "Your family sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
 msgstr "Ваша родина бачить спільні рахунки та їхні платежі. Гроші, переміщені між спільними рахунками, відображаються як переказ."
 

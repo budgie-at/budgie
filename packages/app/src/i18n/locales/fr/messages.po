@@ -153,7 +153,7 @@ msgid "{0, plural, one {Other · # category} other {Other · # categories}}"
 msgstr "{0, plural, one {Autres · # catégorie} other {Autres · # catégories}}"
 
 #. placeholder {0}: joinedMembers.length
-#: src/household/component/family-row/family-row.tsx
+#: src/household/utils/get-family-labels.util.ts
 msgid "{0, plural, one {Shared with # person} other {Shared with # people}}"
 msgstr "{0, plural, one {Partagé avec # personne} other {Partagé avec # personnes}}"
 
@@ -174,7 +174,7 @@ msgid "{0, plural, one {Sync failed for # account} other {Sync failed for # acco
 msgstr "{0, plural, one {Échec de synchronisation pour # compte} other {Échec de synchronisation pour # comptes}}"
 
 #. placeholder {0}: otherParticipants.length - joinedMembers.length
-#: src/household/component/family-row/family-row.tsx
+#: src/household/utils/get-family-labels.util.ts
 msgid "{0, plural, one {Waiting for # person to join} other {Waiting for # people to join}}"
 msgstr "{0, plural, one {En attente de # personne pour rejoindre} other {En attente de # personnes pour rejoindre}}"
 
@@ -747,13 +747,13 @@ msgstr "{newTransactionCount, plural, one {Importer # transaction} other {Import
 msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
 msgstr "{newTransactionCount} nouvelles, {existingTransactionCount} déjà importées, {parsedTransactionCount} vérifiées"
 
-#: src/household/component/household-share-section/household-share-section.tsx
+#: src/household/utils/get-household-share-labels.util.ts
 msgid "{organizerName} sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
 msgstr "{organizerName} voit les comptes partagés et leurs paiements. L'argent déplacé entre comptes partagés apparaît comme un virement."
 
 #: src/account/component/family-section-header/family-section-header.tsx
-#: src/household/component/family-row/family-row.tsx
 #: src/household/component/household-member-summary/household-member-summary.tsx
+#: src/household/utils/get-family-labels.util.ts
 msgid "{organizerName}'s family"
 msgstr "Famille de {organizerName}"
 
@@ -2810,7 +2810,7 @@ msgstr "Choisir l’autre compte"
 msgid "Choose what goes inside"
 msgstr "Choisir ce qu'il contient"
 
-#: src/household/component/household-share-section/household-share-section.tsx
+#: src/household/utils/get-household-share-labels.util.ts
 msgid "Choose what to share"
 msgstr "Choisir ce qu'il faut partager"
 
@@ -5209,6 +5209,7 @@ msgstr "La sauvegarde iCloud, la synchronisation et le partage familial nécessi
 msgid "iCloud storage full"
 msgstr "Stockage iCloud plein"
 
+#: src/cloud-backup/component/cloud-backup-list/cloud-backup-list.tsx
 #: src/cloud-backup/hook/use-restore-cloud-backup.hook.ts
 msgid "iCloud unavailable"
 msgstr "iCloud indisponible"
@@ -5402,11 +5403,11 @@ msgstr "Inclure dans le patrimoine net"
 msgid "Include one‑offs"
 msgstr "Inclure les dépenses ponctuelles"
 
-#: src/household/component/household-share-section/household-share-section.tsx
+#: src/household/utils/get-household-share-labels.util.ts
 msgid "Includes accounts you add later."
 msgstr "Inclut les comptes ajoutés plus tard."
 
-#: src/household/component/household-share-section/household-share-section.tsx
+#: src/household/utils/get-household-share-labels.util.ts
 msgid "Includes accounts you add later. Starts when you sign in to iCloud."
 msgstr "Inclut les comptes ajoutés plus tard. Démarre quand vous vous connectez à iCloud."
 
@@ -5665,7 +5666,7 @@ msgstr "90 derniers jours"
 msgid "Last day of each month"
 msgstr "Dernier jour de chaque mois"
 
-#: src/settings/components/icloud-backup-row/icloud-backup-row.tsx
+#: src/settings/utils/get-cloud-backup-labels.util.ts
 msgid "Last iCloud backup: {lastBackupDate}"
 msgstr "Dernière sauvegarde iCloud : {lastBackupDate}"
 
@@ -6641,7 +6642,7 @@ msgstr "Ce n’est pas un export Inzhur"
 msgid "Not available in this version"
 msgstr "Indisponible dans cette version"
 
-#: src/settings/components/icloud-backup-row/icloud-backup-row.tsx
+#: src/settings/utils/get-cloud-backup-labels.util.ts
 msgid "Not backed up to iCloud yet"
 msgstr "Pas encore sauvegardé dans iCloud"
 
@@ -8592,11 +8593,11 @@ msgstr "Partager ce compte"
 msgid "Share with family"
 msgstr "Partager avec la famille"
 
-#: src/household/component/household-share-section/household-share-section.tsx
+#: src/household/utils/get-household-share-labels.util.ts
 msgid "Share your accounts"
 msgstr "Partagez vos comptes"
 
-#: src/household/component/household-share-section/household-share-section.tsx
+#: src/household/utils/get-household-share-labels.util.ts
 msgid "Share your accounts with {organizerName}"
 msgstr "Partagez vos comptes avec {organizerName}"
 
@@ -8604,7 +8605,7 @@ msgstr "Partagez vos comptes avec {organizerName}"
 msgid "Shared accounts stay in sync"
 msgstr "Les comptes partagés restent synchronisés"
 
-#: src/account/component/household-share-account-section/household-share-account-section.tsx
+#: src/account/utils/get-household-account-footer.util.ts
 msgid "Shared because you share everything"
 msgstr "Partagé, car vous partagez tout"
 
@@ -8614,11 +8615,11 @@ msgstr "Partagé avec la famille"
 
 #: src/account/component/household-shared-by-other-account-row/household-shared-by-other-account-row.tsx
 #: src/budget/components/budget-share-field/budget-share-field.tsx
-#: src/household/component/family-row/family-row.tsx
+#: src/household/utils/get-family-labels.util.ts
 msgid "Shared with your family"
 msgstr "Partagé avec votre famille"
 
-#: src/household/component/household-share-section/household-share-section.tsx
+#: src/household/utils/get-household-share-labels.util.ts
 msgid "Sharing"
 msgstr "Partage"
 
@@ -8706,7 +8707,7 @@ msgstr "Connectez-vous à iCloud pour inviter"
 #: src/cloud-backup/constant/cloud-backup-status-message.constant.ts
 #: src/cloud-sync/component/cloud-sync-row/cloud-sync-row.tsx
 #: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
-#: src/settings/components/icloud-backup-row/icloud-backup-row.tsx
+#: src/settings/utils/get-cloud-backup-labels.util.ts
 msgid "Sign in to iCloud to turn on"
 msgstr "Connectez-vous à iCloud pour activer"
 
@@ -8891,7 +8892,7 @@ msgstr "Commence à {startLabel}. Termine à {endLabel}. S'épuise vers {runOutL
 msgid "Starts on"
 msgstr "Commence le"
 
-#: src/account/component/household-share-account-section/household-share-account-section.tsx
+#: src/account/utils/get-household-account-footer.util.ts
 msgid "Starts when you sign in to iCloud."
 msgstr "Démarre quand vous vous connectez à iCloud."
 
@@ -9059,7 +9060,7 @@ msgstr "Synchronisez vos soldes et transactions Binance"
 msgid "Synced {relative}"
 msgstr "Synchronisé {relative}"
 
-#: src/account/component/household-share-account-section/household-share-account-section.tsx
+#: src/account/utils/get-household-account-footer.util.ts
 msgid "Synced by {ownerName}"
 msgstr "Synchronisé par {ownerName}"
 
@@ -9289,7 +9290,7 @@ msgstr "Les transactions fusionnées redeviennent des entrées distinctes."
 msgid "The note on a payment"
 msgstr "La note d’un paiement"
 
-#: src/household/component/household-share-section/household-share-section.tsx
+#: src/household/utils/get-household-share-labels.util.ts
 msgid "The organizer sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
 msgstr "L'organisateur voit les comptes partagés et leurs paiements. L'argent déplacé entre comptes partagés apparaît comme un virement."
 
@@ -9924,7 +9925,9 @@ msgstr "Essayez d'ajuster vos filtres pour voir plus de résultats"
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 #: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
 #: src/auth/components/forgot-pin-footer/forgot-pin-footer.tsx
+#: src/cloud-backup/component/cloud-backup-list/cloud-backup-list.tsx
 #: src/cloud-backup/component/cloud-backup-row/cloud-backup-row.tsx
+#: src/onboarding/component/onboarding-key/onboarding-key.tsx
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
 #: src/transaction/components/transaction-picker-failure/transaction-picker-failure.tsx
@@ -9965,7 +9968,7 @@ msgstr "Désactiver le verrouillage"
 msgid "Turn off Show on Home in an account’s edit screen to tuck it away here."
 msgstr "Désactivez « Afficher sur l’accueil » dans l’écran de modification d’un compte pour le ranger ici."
 
-#: src/account/component/household-share-account-section/household-share-account-section.tsx
+#: src/account/utils/get-household-account-footer.util.ts
 msgid "Turn off to remove it from family devices."
 msgstr "Désactivez pour le retirer des appareils de la famille."
 
@@ -9990,7 +9993,7 @@ msgid "Turn payments into transfers"
 msgstr "Transformer les paiements en virements"
 
 #: src/cloud-sync/component/cloud-sync-row/cloud-sync-row.tsx
-#: src/settings/components/icloud-backup-row/icloud-backup-row.tsx
+#: src/settings/utils/get-cloud-backup-labels.util.ts
 msgid "Turned off"
 msgstr "Désactivé"
 
@@ -10689,7 +10692,7 @@ msgstr "L'horloge de votre appareil est désynchronisée. Activez la date et l'h
 msgid "Your family"
 msgstr "Ta famille"
 
-#: src/household/component/household-share-section/household-share-section.tsx
+#: src/household/utils/get-household-share-labels.util.ts
 msgid "Your family sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
 msgstr "Votre famille voit les comptes partagés et leurs paiements. L'argent déplacé entre comptes partagés apparaît comme un virement."
 

@@ -19,11 +19,11 @@ import { householdShareEverythingAtom } from '../../constant/household-share-eve
 import { useHouseholdOrganizerName } from '../../hook/use-household-organizer-name.hook';
 import { useHouseholdParticipants } from '../../hook/use-household-participants.hook';
 import { useHousehold } from '../../hook/use-household.hook';
+import { getHouseholdShareLabels } from '../../utils/get-household-share-labels.util';
 import { HouseholdAccountShareList } from '../household-account-share-list/household-account-share-list';
 
 import { HouseholdShareEverythingSectionSelector } from './household-share-section.selector';
 
-// eslint-disable-next-line max-statements -- Section orchestration picking title and footer from role, participants and account state
 export const HouseholdShareSection = () => {
     const { t } = useLingui();
     const everything = AsyncResult.getOrElse(useLiveAtomValue(householdShareEverythingAtom), () => null);
@@ -46,19 +46,7 @@ export const HouseholdShareSection = () => {
 
     const hasJoinedMember = isNotEmptyArray(joinedMembers);
     const isChoosing = isMember || hasJoinedMember;
-    const defaultFooter = isAvailable
-        ? t`Includes accounts you add later.`
-        : t`Includes accounts you add later. Starts when you sign in to iCloud.`;
-    const memberTitle = isDefined(organizerName) ? t`Share your accounts with ${organizerName}` : t`Share your accounts`;
-    const memberFooter = isDefined(organizerName)
-        ? t`${organizerName} sees shared accounts and their payments. Money moved between shared accounts shows as a transfer.`
-        : t`The organizer sees shared accounts and their payments. Money moved between shared accounts shows as a transfer.`;
-    const ownerTitle = hasJoinedMember ? t`Choose what to share` : t`Sharing`;
-    const ownerFooter = hasJoinedMember
-        ? t`Your family sees shared accounts and their payments. Money moved between shared accounts shows as a transfer.`
-        : defaultFooter;
-    const title = isMember ? memberTitle : ownerTitle;
-    const footer = isMember ? memberFooter : ownerFooter;
+    const { title, footer } = getHouseholdShareLabels(t, { isAvailable, isMember, organizerName, hasJoinedMember });
 
     return (
         <Animated.View entering={PRESENCE_ENTERING} exiting={PRESENCE_EXITING}>

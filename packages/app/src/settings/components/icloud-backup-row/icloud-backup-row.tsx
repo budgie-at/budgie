@@ -2,8 +2,6 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { GroupedListSwitchRow } from '../../../@generic/component/grouped-list-switch-row/grouped-list-switch-row';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
@@ -15,10 +13,10 @@ import { useFormatCloudBackupDate } from '../../../cloud-backup/hook/use-format-
 import { useICloudAccount } from '../../../cloud-backup/hook/use-icloud-account.hook';
 import { useSetting } from '../../hook/use-setting.hook';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
+import { getCloudBackupLabels } from '../../utils/get-cloud-backup-labels.util';
 import { SettingsRowIcon } from '../settings-row-icon/settings-row-icon';
 import { SettingsWarningSubtitle } from '../settings-warning-subtitle/settings-warning-subtitle';
 
-// eslint-disable-next-line max-statements -- Row orchestration with several settings reads and derived labels
 export const ICloudBackupRow = () => {
     const { t } = useLingui();
     const isEnabled = useSetting('cloudBackupEnabled');
@@ -36,9 +34,8 @@ export const ICloudBackupRow = () => {
         void run(updateSettingsMutation({ cloudBackupEnabled: next }).pipe(toastOnFailure(t`Could not update iCloud backup`)));
     };
 
-    const lastBackupDate = isDefined(lastBackupAt) ? formatBackupDate(lastBackupAt) : '';
-    const readyLabel = isDefined(lastBackupAt) ? t`Last iCloud backup: ${lastBackupDate}` : t`Not backed up to iCloud yet`;
-    const offLabel = isAccountUnavailable ? t`Sign in to iCloud to turn on` : t`Turned off`;
+    const { readyLabel, offLabel } = getCloudBackupLabels(t, lastBackupAt, formatBackupDate, isAccountUnavailable);
+
     const onLabel =
         status === CloudBackupStatusEnum.READY ? (
             readyLabel

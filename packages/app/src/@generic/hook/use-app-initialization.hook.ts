@@ -82,32 +82,34 @@ const registerBackgroundTasks = Effect.gen(function* () {
     );
 });
 
-// eslint-disable-next-line max-statements -- Startup orchestration with many sequential service starts
-const initializeAppServices = Effect.gen(function* () {
-    const widgetSnapshotService = yield* WidgetSnapshotService;
-    const workload = yield* Workload;
-    const appDataSyncService = yield* AppDataSyncService;
-    const onboardingService = yield* OnboardingService;
-    const historicalMarketDataDrainerService = yield* HistoricalMarketDataDrainerService;
-    const backgroundSyncSessionService = yield* BackgroundSyncSessionService;
-
-    yield* Effect.forkDetach(appDataSyncService.drainWalletCapturesOnInvocation);
-    yield* registerBackgroundTasks;
-    yield* widgetSnapshotService.start();
-    yield* backgroundSyncSessionService.start();
+const startCloudServices = Effect.gen(function* () {
     const cloudBackupTriggerService = yield* Effect.serviceOption(CloudBackupTriggerService);
 
     if (Option.isSome(cloudBackupTriggerService)) {
         yield* logAndContinue(cloudBackupTriggerService.value.start());
     }
 
-    yield* logAndContinue(workload.run((yield* SyncIdentityRepository).backfill()));
+    yield* logAndContinue((yield* Workload).run((yield* SyncIdentityRepository).backfill()));
 
     const cloudSyncService = yield* Effect.serviceOption(CloudSyncService);
 
     if (Option.isSome(cloudSyncService)) {
         yield* logAndContinue(cloudSyncService.value.start());
     }
+});
+
+const initializeAppServices = Effect.gen(function* () {
+    const widgetSnapshotService = yield* WidgetSnapshotService;
+    const workload = yield* Workload;
+    const appDataSyncService = yield* AppDataSyncService;
+    const onboardingService = yield* OnboardingService;
+    const backgroundSyncSessionService = yield* BackgroundSyncSessionService;
+
+    yield* Effect.forkDetach(appDataSyncService.drainWalletCapturesOnInvocation);
+    yield* registerBackgroundTasks;
+    yield* widgetSnapshotService.start();
+    yield* backgroundSyncSessionService.start();
+    yield* startCloudServices;
 
     yield* logAndContinue(workload.run(appDataSyncService.sync()));
     yield* logAndContinue(
@@ -116,7 +118,7 @@ const initializeAppServices = Effect.gen(function* () {
         )
     );
     yield* logAndContinue(onboardingService.initializeLocale());
-    yield* logAndContinue(historicalMarketDataDrainerService.enqueueActiveAccounts());
+    yield* logAndContinue(Effect.flatMap(HistoricalMarketDataDrainerService, service => service.enqueueActiveAccounts()));
     yield* logAndContinue((yield* CategoryIconBackfillService).applyConfidentIcons());
 });
 

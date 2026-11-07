@@ -14,6 +14,7 @@ import { useICloudAccount } from '../../../cloud-backup/hook/use-icloud-account.
 import { householdShareEverythingAtom } from '../../../household/constant/household-share-everything-atom.constant';
 import { householdAccountShareAtom } from '../../constant/household-account-share-atom.constant';
 import { householdAccountShareDraftAtom } from '../../constant/household-account-share-draft-atom.constant';
+import { getHouseholdAccountFooter } from '../../utils/get-household-account-footer.util';
 import { HouseholdShareAccountRow } from '../household-share-account-row/household-share-account-row';
 import { HouseholdSharedByOtherAccountRow } from '../household-shared-by-other-account-row/household-shared-by-other-account-row';
 
@@ -24,7 +25,6 @@ interface Props {
     readonly isBankSynced: boolean;
 }
 
-// eslint-disable-next-line max-statements -- Section orchestration with several live reads and derived footer states
 export const HouseholdShareAccountSection = ({ accountId, isBankSynced }: Props) => {
     const { t } = useLingui();
     const status = AsyncResult.getOrElse(useLiveAtomValue(householdAccountShareAtom(accountId)), () => null);
@@ -42,11 +42,13 @@ export const HouseholdShareAccountSection = ({ accountId, isBankSynced }: Props)
     const isShared = draft ?? status.state === HouseholdShareStateEnum.SHARED_BY_ME;
     const isToggleable = !isSharedByOther && !isSharedByEverything;
     const isSyncedByOther = isBankSynced && isSharedByOther && isDefined(ownerName);
-    const sharedFooter = isShared ? t`Turn off to remove it from family devices.` : null;
-    const accountFooter = isAvailable ? sharedFooter : t`Starts when you sign in to iCloud.`;
-    const ownFooter = isToggleable ? accountFooter : null;
-    const sharedByEverythingReason = t`Shared because you share everything`;
-    const footer = isSyncedByOther ? t`Synced by ${ownerName}` : ownFooter;
+    const { footer, sharedByEverythingReason } = getHouseholdAccountFooter(t, {
+        isShared,
+        isAvailable,
+        isToggleable,
+        isSyncedByOther,
+        ownerName
+    });
 
     return (
         <GroupedListSection title={t`Family`} footer={footer}>

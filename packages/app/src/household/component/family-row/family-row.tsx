@@ -1,7 +1,6 @@
 import { HouseholdJoinStatusEnum } from '@budgie/cloud-sync';
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
-import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 
@@ -14,12 +13,12 @@ import { householdJoinAtom } from '../../constant/household-join-atom.constant';
 import { useHouseholdOrganizerName } from '../../hook/use-household-organizer-name.hook';
 import { useHouseholdParticipants } from '../../hook/use-household-participants.hook';
 import { useHousehold } from '../../hook/use-household.hook';
+import { getFamilyLabels } from '../../utils/get-family-labels.util';
 
 import { FamilyRowSelector } from './family-row.selector';
 
 const handlePress = () => void router.push('/settings/family');
 
-// eslint-disable-next-line max-statements -- Row orchestration deriving the subtitle from several household states
 export const FamilyRow = () => {
     const { t } = useLingui();
     const { isMember, isShared } = useHousehold();
@@ -29,17 +28,7 @@ export const FamilyRow = () => {
     const { status, ownerDisplayName } = useAtomValue(householdJoinAtom);
 
     const hasParticipants = isNotEmptyArray(otherParticipants);
-    const pendingSubtitle = t({
-        message: plural(otherParticipants.length - joinedMembers.length, {
-            one: 'Waiting for # person to join',
-            other: 'Waiting for # people to join'
-        })
-    });
-    const acceptedSubtitle = t({
-        message: plural(joinedMembers.length, { one: 'Shared with # person', other: 'Shared with # people' })
-    });
-    const sharedSubtitle = isNotEmptyArray(joinedMembers) ? acceptedSubtitle : pendingSubtitle;
-    const memberSubtitle = isNotEmptyString(organizerName) ? t`${organizerName}'s family` : t`Shared with your family`;
+    const { sharedSubtitle, memberSubtitle } = getFamilyLabels(t, otherParticipants, joinedMembers, organizerName);
     const roleSubtitle = isMember ? memberSubtitle : sharedSubtitle;
     const participantsSubtitle = isAvailable ? (
         roleSubtitle
