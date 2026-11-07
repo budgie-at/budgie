@@ -121,6 +121,7 @@ const getExpoConfig = ({ config }) => ({
             ...(!IS_E2E && {
                 'com.apple.developer.icloud-services': ['CloudKit'],
                 'com.apple.developer.icloud-container-identifiers': [`iCloud.${getUniqueIdentifier(false)}`],
+                'com.apple.developer.icloud-extended-share-access': ['InProcessOneTimeLinks'],
                 'aps-environment': IS_PRODUCTION ? 'production' : 'development'
             })
         },
