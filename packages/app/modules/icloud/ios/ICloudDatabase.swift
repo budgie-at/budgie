@@ -92,6 +92,7 @@ enum ICloudDatabase {
     let itemError = itemError(error)
     if let exception = itemError as? Exception { return exception.code }
     let cloudError = itemError as NSError
+    guard cloudError.domain == CKErrorDomain else { return "UNKNOWN" }
     switch CKError.Code(rawValue: cloudError.code) {
     case .some(.serverRecordChanged): return "SERVER_RECORD_CHANGED"
     case .some(.zoneNotFound): return "ZONE_NOT_FOUND"
@@ -117,7 +118,7 @@ enum ICloudDatabase {
   }
 
   static func failure(_ error: Error) -> [String: Any] {
-    ["code": syncErrorCode(error), "message": message(itemError(error))]
+    ["code": syncErrorCode(error), "message": message(itemError(error)), "isRetried": isRetriedByEngine(itemError(error))]
   }
 
   static func syncError(_ error: Error, backup: Bool = false) -> Exception {

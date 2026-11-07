@@ -33,9 +33,6 @@
         "rimraf",
         "emojibase-data"
     ],
-    "ignoreIssues": {
-        "packages/app/modules/icloud/index.ts": ["enumMembers", "types"]
-    },
     "ignoreBinaries": [
         "build"
     ],

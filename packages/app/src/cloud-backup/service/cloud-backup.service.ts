@@ -151,30 +151,29 @@ export class CloudBackupService extends Context.Service<CloudBackupService>()('@
             const startedAt = yield* DateTime.nowAsDate;
 
             if (!settings.cloudBackupEnabled) {
-                return false;
+                return null;
             }
 
             if (
                 isDefined(settings.lastCloudBackupAt) &&
                 startedAt.getTime() - settings.lastCloudBackupAt.getTime() < minimumAgeMilliseconds
             ) {
-                return false;
+                return null;
             }
 
             if (!(yield* hasUserDataChangedSince(settings.lastCloudBackupAt))) {
-                return false;
+                return null;
             }
 
             if ((yield* cloudTransport.getAccountStatus).status !== ICloudAccountStatusEnum.AVAILABLE) {
-                return false;
+                return null;
             }
 
             const installId = yield* uploadBackup(startedAt);
 
             yield* settingsRepository.update({ lastCloudBackupAt: startedAt });
-            yield* applyRetention(installId);
 
-            return true;
+            return installId;
         });
 
         const isTransportError = Schema.is(CloudSyncTransportError);
@@ -198,15 +197,13 @@ export class CloudBackupService extends Context.Service<CloudBackupService>()('@
                 runningBackup
                     .withPermitsIfAvailable(1)(runBackup(minimumAgeMilliseconds))
                     .pipe(
-                        Effect.map(Option.getOrElse(() => false)),
-                        Effect.tap(isUploaded =>
-                            isUploaded
-                                ? Effect.sync(() => void appAtomRegistry.set(cloudBackupStatusAtom, CloudBackupStatusEnum.READY))
-                                : Effect.void
-                        ),
+                        Effect.map(Option.getOrElse(() => null)),
+                        Effect.tap(() => Effect.sync(() => void appAtomRegistry.set(cloudBackupStatusAtom, CloudBackupStatusEnum.READY))),
                         Effect.tapError(error =>
                             Effect.sync(() => void appAtomRegistry.set(cloudBackupStatusAtom, resolveFailureStatus(error)))
-                        )
+                        ),
+                        Effect.tap(installId => (isDefined(installId) ? applyRetention(installId) : Effect.void)),
+                        Effect.map(isDefined)
                     )
         };
     })

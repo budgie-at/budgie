@@ -19,14 +19,18 @@ interface Props {
 
 export const UpdateTransactionRoute = ({ Component }: Props) => {
     const { id, openFee } = useLocalSearchParams<IdParamInterface & { openFee?: string }>();
-    const transactionId = Number(id);
-    const { transaction, isLoading } = useGetTransactionByIdQuery(transactionId);
-    const isReadOnly = AsyncResult.getOrElse(useLiveAtomValue(foreignTransferLegAtom(transactionId)), () => true);
-    const parentTransactionId = transaction?.consolidationParentTransactionId ?? 0;
-    const { transaction: parentTransaction, isLoading: isParentLoading } = useGetTransactionByIdQuery(parentTransactionId);
+    const { transaction, isLoading } = useGetTransactionByIdQuery(Number(id));
+    const legResult = useLiveAtomValue(foreignTransferLegAtom(Number(id)));
+    const { transaction: parentTransaction, isLoading: isParentLoading } = useGetTransactionByIdQuery(
+        transaction?.consolidationParentTransactionId ?? 0
+    );
 
-    if (isLoading || !isDefined(transaction)) {
-        return isLoading ? null : <Redirect href="/" />;
+    if (isLoading || AsyncResult.isInitial(legResult)) {
+        return null;
+    }
+
+    if (!isDefined(transaction)) {
+        return <Redirect href="/" />;
     }
 
     if (isDefined(transaction.consolidationParentTransactionId)) {
@@ -37,7 +41,7 @@ export const UpdateTransactionRoute = ({ Component }: Props) => {
         return isDefined(parentTransaction) ? <Redirect href={getTransactionHref(parentTransaction)} /> : <Redirect href="/" />;
     }
 
-    if (isReadOnly || transaction.type === TransactionTypeEnum.ADJUSTMENT) {
+    if (AsyncResult.getOrElse(legResult, () => true) || transaction.type === TransactionTypeEnum.ADJUSTMENT) {
         return <Redirect href={getTransactionHref(transaction)} />;
     }
 

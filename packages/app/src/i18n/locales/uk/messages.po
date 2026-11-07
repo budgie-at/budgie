@@ -1998,7 +1998,7 @@ msgstr "Файл резервної копії"
 msgid "Backup saved"
 msgstr "Резервну копію збережено"
 
-#: src/onboarding/component/onboarding-key/onboarding-key.tsx
+#: src/onboarding/component/onboarding-icloud-restore-row/onboarding-icloud-restore-row.tsx
 msgid "Backups from your devices on this Apple Account"
 msgstr "Копії з ваших пристроїв у цьому обліковому записі Apple"
 
@@ -3553,6 +3553,10 @@ msgstr "Не вдалося перевірити дозволи API-ключа"
 #: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
 msgid "Could not verify the application"
 msgstr "Не вдалося перевірити застосунок"
+
+#: src/onboarding/component/onboarding-icloud-restore-row/onboarding-icloud-restore-row.tsx
+msgid "Couldn't check iCloud backups"
+msgstr "Не вдалося перевірити резервні копії iCloud"
 
 #: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
 msgid "Couldn’t check Monobank for new accounts"
@@ -6381,6 +6385,10 @@ msgid "No account needed · Takes about a minute"
 msgstr "Без акаунта · Близько хвилини"
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
+msgid "No account to sign up for. Backed up and synced only to your own iCloud. Works with no connection at all."
+msgstr "Не потрібно реєструватися. Резервні копії та синхронізація лише у вашому iCloud. Працює повністю без з’єднання."
+
+#: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "No account to sign up for. Never synced or uploaded. Works with no connection at all."
 msgstr "Реєструвати акаунт не потрібно. Нічого не синхронізується й не вивантажується. Працює без жодного з'єднання."
 
@@ -8040,8 +8048,8 @@ msgid "Restore from file"
 msgstr "Відновити з файлу"
 
 #: src/app/(tabs)/settings/icloud-backups.tsx
+#: src/onboarding/component/onboarding-icloud-restore-row/onboarding-icloud-restore-row.tsx
 #: src/onboarding/component/onboarding-icloud-restore/onboarding-icloud-restore.tsx
-#: src/onboarding/component/onboarding-key/onboarding-key.tsx
 #: src/settings/components/icloud-restore-row/icloud-restore-row.tsx
 msgid "Restore from iCloud"
 msgstr "Відновити з iCloud"
@@ -9927,7 +9935,7 @@ msgstr "Спробуйте налаштувати фільтри, щоб поб�
 #: src/auth/components/forgot-pin-footer/forgot-pin-footer.tsx
 #: src/cloud-backup/component/cloud-backup-list/cloud-backup-list.tsx
 #: src/cloud-backup/component/cloud-backup-row/cloud-backup-row.tsx
-#: src/onboarding/component/onboarding-key/onboarding-key.tsx
+#: src/onboarding/component/onboarding-icloud-restore-row/onboarding-icloud-restore-row.tsx
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
 #: src/transaction/components/transaction-picker-failure/transaction-picker-failure.tsx

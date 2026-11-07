@@ -13,10 +13,10 @@ test('41 security backup and pin cancel', { tags: ['security'] }, async ({ budgi
     await b.phase('backup directory picker cancelled', async () => {
         await a.navigateToSettings(ctx);
         await b.expectId(ctx, 'SettingsPage.DataEncryption.State.Off', 5_000);
-        await b.expectText(ctx, 'Not saved yet');
+        await b.expectText(ctx, 'Never saved');
         await b.tapId(ctx, 'SettingsPage.DataBackupButton');
         await sec.cancelBackupFolderPicker(ctx);
-        await b.expectText(ctx, 'Not saved yet');
+        await b.expectText(ctx, 'Never saved');
         await expect(b.byId(ctx.screen, 'SettingsPage.DataBackupButton')).toBeEnabled();
         await expect(b.byId(ctx.screen, b.TOAST)).toBeHidden({ timeout: 100 });
         await b.expectId(ctx, 'SettingsPage.Container', 5_000);

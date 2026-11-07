@@ -2,20 +2,19 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
-
 import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
-import { useCloudBackups } from '../../../cloud-backup/hook/use-cloud-backups.hook';
+import { IS_CLOUD_BACKUP_SUPPORTED } from '../../../cloud-backup/constant/is-cloud-backup-supported.constant';
 import { CloudSyncInitialFetchRow } from '../../../cloud-sync/component/cloud-sync-initial-fetch-row/cloud-sync-initial-fetch-row';
 import { useCloudSyncInitialFetch } from '../../../cloud-sync/hook/use-cloud-sync-initial-fetch.hook';
 import { useRestoreBackup } from '../../../import/hook/use-restore-backup.hook';
 import { OnboardingFileLockEnum } from '../../enum/onboarding-file-lock.enum';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
 import { useOnboardingNavigation } from '../../hook/use-onboarding-navigation.hook';
+import { OnboardingICloudRestoreRow } from '../onboarding-icloud-restore-row/onboarding-icloud-restore-row';
 import { OnboardingStepIntro } from '../onboarding-step-intro/onboarding-step-intro';
 import { OnboardingStepLayout } from '../onboarding-step-layout/onboarding-step-layout';
 
@@ -23,31 +22,20 @@ import { OnboardingKeySelector } from './onboarding-key.selector';
 
 export const OnboardingKey = () => {
     const { t } = useLingui();
-    const { goToStep, goToICloudRestore } = useOnboardingNavigation();
+    const { goToStep } = useOnboardingNavigation();
     const { selectAndRestore, isLoading } = useRestoreBackup();
-    const { groups, hasFailed, refresh } = useCloudBackups();
     const { isFetching } = useCloudSyncInitialFetch();
-
     const handlePinPress = () => void goToStep(OnboardingStepEnum.PIN);
     const handlePhoneLockPress = () => void goToStep(OnboardingStepEnum.PHONE_LOCK);
-
-    const restoreTitle = hasFailed ? t`Try again` : t`Restore from iCloud`;
-    const handleICloudRestore = hasFailed ? refresh : goToICloudRestore;
-    const iCloudRestoreRow =
-        (isNotEmptyArray(groups) || hasFailed) && !isFetching ? (
-            <GroupedListRow
-                testID={OnboardingKeySelector.ICloudRestoreButton}
-                left={<GroupedListIcon icon={UserIconNameEnum.CloudDownload} />}
-                title={restoreTitle}
-                subtitle={t`Backups from your devices on this Apple Account`}
-                onPress={handleICloudRestore}
-            />
-        ) : null;
+    const privacyFooter = IS_CLOUD_BACKUP_SUPPORTED
+        ? t`No account to sign up for. Backed up and synced only to your own iCloud. Works with no connection at all.`
+        : t`No account to sign up for. Never synced or uploaded. Works with no connection at all.`;
     const restoreAccessory = (
         <LoadingContent isLoading={isLoading}>
             <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
         </LoadingContent>
     );
+
     const restorePressableProps = { disabled: isLoading, accessibilityState: { disabled: isLoading, busy: isLoading } };
 
     return (
@@ -57,7 +45,7 @@ export const OnboardingKey = () => {
                 description={t`Your money will live in one file on this phone. Choose who can open it.`}
             />
 
-            <GroupedListSection footer={t`No account to sign up for. Never synced or uploaded. Works with no connection at all.`}>
+            <GroupedListSection footer={privacyFooter}>
                 <GroupedListRow
                     testID={OnboardingKeySelector.PinOption}
                     left={<GroupedListIcon icon={UserIconNameEnum.KeyRound} />}
@@ -92,7 +80,7 @@ export const OnboardingKey = () => {
 
             <GroupedListSection title={t`Already use Budgie?`}>
                 {isFetching ? <CloudSyncInitialFetchRow /> : null}
-                {iCloudRestoreRow}
+                <OnboardingICloudRestoreRow />
                 <GroupedListRow
                     testID={OnboardingKeySelector.RestoreButton}
                     left={<GroupedListIcon icon={UserIconNameEnum.ArchiveRestore} />}

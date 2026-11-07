@@ -178,14 +178,14 @@ public final class ICloudModule: Module {
       do {
         let query = CKQuery(recordType: "Backup", predicate: NSPredicate(value: true))
         query.sortDescriptors = [NSSortDescriptor(key: "createdAt", ascending: false)]
-        var (records, cursor) = try await ICloudDatabase.database.records(matching: query)
+        let keys: [CKRecord.FieldKey] = ["createdAt", "installId", "deviceName", "deviceModel", "appVersion", "schemaVersion"]
+        var (records, cursor) = try await ICloudDatabase.database.records(matching: query, desiredKeys: keys)
         while let next = cursor {
-          let page = try await ICloudDatabase.database.records(continuingMatchFrom: next)
+          let page = try await ICloudDatabase.database.records(continuingMatchFrom: next, desiredKeys: keys)
           records.append(contentsOf: page.matchResults)
           cursor = page.queryCursor
         }
-        return try records.map { _, result in
-          let record = try result.get()
+        return records.compactMap { _, result in try? result.get() }.map { record in
           return ["recordName": record.recordID.recordName, "createdAt": (record["createdAt"] as? Date)?.ISO8601Format() ?? "", "installId": record["installId"] as? String ?? "", "deviceName": record["deviceName"] as? String ?? "", "deviceModel": record["deviceModel"] as? String ?? "", "appVersion": record["appVersion"] as? String ?? "", "schemaVersion": record["schemaVersion"] as? Int ?? 0]
         }
       } catch {
@@ -215,7 +215,9 @@ public final class ICloudModule: Module {
       do {
         let result = try await ICloudDatabase.database.modifyRecords(saving: [], deleting: ids)
         for outcome in result.deleteResults.values {
-          try outcome.get()
+          if case let .failure(error) = outcome, (error as? CKError)?.code != .unknownItem {
+            throw error
+          }
         }
       } catch {
         throw ICloudDatabase.syncError(error, backup: true)

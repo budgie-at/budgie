@@ -45,7 +45,7 @@ export const GroupedListSwitchRow = ({
         accessible: true,
         accessibilityRole: 'switch' as const,
         accessibilityHint,
-        accessibilityState: { checked: value, disabled: !isInteractive && !isLoading }
+        accessibilityState: { checked: value, disabled: !isInteractive }
     };
 
     return (

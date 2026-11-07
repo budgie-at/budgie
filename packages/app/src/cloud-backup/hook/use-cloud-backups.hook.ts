@@ -5,11 +5,12 @@ import * as Option from 'effect/Option';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { appAtomRuntime } from '../../@generic/runtime/app.runtime';
+import { CloudBackupListingStatusEnum } from '../enum/cloud-backup-listing-status.enum';
 import { CloudRestoreService } from '../service/cloud-restore.service';
 
 import type { CloudBackupListingInterface } from '../interface/cloud-backup-listing.interface';
 
-const EMPTY_LISTING: CloudBackupListingInterface = { groups: [], isUnreadable: false, hasFailed: false };
+const EMPTY_LISTING: CloudBackupListingInterface = { groups: [], status: CloudBackupListingStatusEnum.READY };
 
 export const cloudBackupListing = Effect.flatMap(
     Effect.serviceOption(CloudRestoreService),
@@ -17,16 +18,22 @@ export const cloudBackupListing = Effect.flatMap(
         onNone: () => Effect.succeed(EMPTY_LISTING),
         onSome: cloudRestoreService =>
             cloudRestoreService.listBackups().pipe(
-                Effect.map((groups): CloudBackupListingInterface => ({ groups, isUnreadable: false, hasFailed: false })),
+                Effect.map((groups): CloudBackupListingInterface => ({ groups, status: CloudBackupListingStatusEnum.READY })),
                 Effect.catchTags({
-                    CloudSyncTransportError: error =>
-                        Effect.succeed<CloudBackupListingInterface>({
+                    CloudSyncTransportError: error => {
+                        if (error.code === ICloudErrorCode.ACCOUNT_UNAVAILABLE) {
+                            return Effect.succeed(EMPTY_LISTING);
+                        }
+
+                        return Effect.succeed<CloudBackupListingInterface>({
                             groups: [],
-                            isUnreadable: error.code === ICloudErrorCode.ENCRYPTED_DATA_RESET,
-                            hasFailed: error.code !== ICloudErrorCode.ENCRYPTED_DATA_RESET
-                        })
-                }),
-                Effect.orElseSucceed(() => ({ ...EMPTY_LISTING, hasFailed: true }))
+                            status:
+                                error.code === ICloudErrorCode.ENCRYPTED_DATA_RESET
+                                    ? CloudBackupListingStatusEnum.UNREADABLE
+                                    : CloudBackupListingStatusEnum.FAILED
+                        });
+                    }
+                })
             )
     })
 );
@@ -36,7 +43,10 @@ const cloudBackupListingAtom = appAtomRuntime.atom(cloudBackupListing);
 export const useCloudBackups = () => {
     const result = useAtomValue(cloudBackupListingAtom);
     const refresh = useAtomRefresh(cloudBackupListingAtom);
-    const listing = AsyncResult.getOrElse(result, () => EMPTY_LISTING);
+    const listing = AsyncResult.getOrElse(result, () => ({
+        ...EMPTY_LISTING,
+        status: AsyncResult.isFailure(result) ? CloudBackupListingStatusEnum.FAILED : CloudBackupListingStatusEnum.READY
+    }));
 
     return { ...listing, isLoading: AsyncResult.isInitial(result) || result.waiting, refresh };
 };

@@ -26,8 +26,7 @@ export const iCloudAccountAvailableAtom = appAtomRuntime.atom(get => {
                             Effect.map(({ status }) => status === ICloudAccountStatusEnum.AVAILABLE),
                             Effect.catchTags({
                                 CloudSyncTransportError: error => Effect.succeed(error.code === ICloudErrorCode.NETWORK_UNAVAILABLE)
-                            }),
-                            Effect.orElseSucceed(() => false)
+                            })
                         )
                 })
             )

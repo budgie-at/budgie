@@ -8,7 +8,6 @@ import { File } from 'expo-file-system';
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { DATABASE_DIRECTORY } from '../../@generic/drizzle/constant/database-directory.constant';
-import { DATABASE_LOCATION } from '../../@generic/drizzle/constant/database-location.constant';
 import { DatabaseRekeyService } from '../../@generic/drizzle/service/database-rekey.service';
 import { readDatabaseKey } from '../../@generic/drizzle/utils/read-database-key.util';
 import { deleteIfExists } from '../../@generic/utils/delete-if-exists.util';
@@ -17,6 +16,7 @@ import { DatabaseImportService } from '../../import/service/database-import.serv
 import { RESTORE_SAFETY_FILES } from '../constant/restore-safety-files.constant';
 import { CloudBackupUnreadableError } from '../error/cloud-backup-unreadable.error';
 import { discardRestoreSafetyCopy } from '../utils/discard-restore-safety-copy.util';
+import { writeRestoreSafetyCopy } from '../utils/write-restore-safety-copy.util';
 
 import { CloudTransport } from './cloud-transport.service';
 
@@ -37,12 +37,7 @@ export class CloudRestoreService extends Context.Service<CloudRestoreService>()(
         };
 
         const createSafetyCopy = Effect.fn('CloudRestoreService.createSafetyCopy')(function* (currentKey: string | null) {
-            const partial = databaseFile(RESTORE_SAFETY_FILES.partial);
-
-            deleteIfExists(partial);
-            yield* databaseRekeyService.exportEncryptedCopy(`${DATABASE_LOCATION}/${RESTORE_SAFETY_FILES.partial}`, currentKey);
-            deleteIfExists(databaseFile(RESTORE_SAFETY_FILES.copy));
-            yield* Effect.promise(() => partial.move(databaseFile(RESTORE_SAFETY_FILES.copy)));
+            yield* writeRestoreSafetyCopy(currentKey).pipe(Effect.provideService(DatabaseRekeyService, databaseRekeyService));
             databaseFile(RESTORE_SAFETY_FILES.pending).create({ overwrite: true });
         });
 

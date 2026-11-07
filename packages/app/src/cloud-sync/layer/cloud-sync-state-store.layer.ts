@@ -11,6 +11,7 @@ export const cloudSyncStateStoreLayer = Layer.effect(
     CloudSyncStateStore,
     Effect.sync(() => {
         const stateFile = new File(Paths.document, 'cloud-sync-state.json');
+        const temporaryFile = new File(Paths.document, 'cloud-sync-state.json.tmp');
         const NullableString = Schema.String.pipe(Schema.NullOr);
         const StateSchema = Schema.fromJsonString(
             Schema.Struct({
@@ -33,24 +34,32 @@ export const cloudSyncStateStoreLayer = Layer.effect(
             householdOwnerDisplayName: null
         };
 
-        const read = Effect.sync(() =>
-            stateFile.exists
-                ? Option.match(Schema.decodeOption(StateSchema)(stateFile.textSync()), {
-                      onNone: () => emptyState,
-                      onSome: state => state
-                  })
-                : emptyState
-        );
+        const read = Effect.sync(() => {
+            if (stateFile.exists) {
+                const committed = Schema.decodeOption(StateSchema)(stateFile.textSync());
+                if (Option.isSome(committed)) {
+                    return committed.value;
+                }
+            }
+            if (temporaryFile.exists) {
+                const recovered = Schema.decodeOption(StateSchema)(temporaryFile.textSync());
+                if (Option.isSome(recovered)) {
+                    temporaryFile.moveSync(stateFile, { overwrite: true });
+
+                    return recovered.value;
+                }
+            }
+
+            return emptyState;
+        });
         const write = Effect.fnUntraced(function* (state: CloudSyncStateInterface) {
             const encodedState = yield* Schema.encodeEffect(StateSchema)(state).pipe(Effect.orDie);
 
             yield* Effect.sync(() => {
-                const temporaryFile = new File(Paths.document, 'cloud-sync-state.json.tmp');
-
                 temporaryFile.create({ overwrite: true });
                 temporaryFile.writeSync(encodedState);
+                temporaryFile.moveSync(stateFile, { overwrite: true });
             });
-            yield* Effect.promise(() => new File(Paths.document, 'cloud-sync-state.json.tmp').move(stateFile));
         });
         const update = (patch: Partial<CloudSyncStateInterface>) => Effect.flatMap(read, state => write({ ...state, ...patch }));
 
@@ -58,6 +67,9 @@ export const cloudSyncStateStoreLayer = Layer.effect(
             read,
             update,
             clear: Effect.sync(() => {
+                if (temporaryFile.exists) {
+                    temporaryFile.delete();
+                }
                 if (stateFile.exists) {
                     stateFile.delete();
                 }

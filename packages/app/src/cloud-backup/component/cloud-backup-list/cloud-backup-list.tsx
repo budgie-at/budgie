@@ -10,6 +10,7 @@ import { LoadingContent } from '../../../@generic/component/loading-content/load
 import { StateCard } from '../../../@generic/component/state-card/state-card';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { CloudRestoreContext } from '../../context/cloud-restore.context';
+import { CloudBackupListingStatusEnum } from '../../enum/cloud-backup-listing-status.enum';
 import { useCloudBackups } from '../../hook/use-cloud-backups.hook';
 import { useICloudAccount } from '../../hook/use-icloud-account.hook';
 import { useRestoreCloudBackup } from '../../hook/use-restore-cloud-backup.hook';
@@ -21,12 +22,14 @@ import { CloudBackupListSelector } from './cloud-backup-list.selector';
 export const CloudBackupList = () => {
     const { t } = useLingui();
     const { isAvailable, isLoading: isAccountLoading } = useICloudAccount();
-    const { groups, isUnreadable, hasFailed, refresh, isLoading } = useCloudBackups();
+    const { groups, status, refresh, isLoading } = useCloudBackups();
     const { restore, isLoading: isRestoring } = useRestoreCloudBackup();
     const isBackupEnabled = useSetting('cloudBackupEnabled');
 
     const isBusy = isAccountLoading || isLoading || isRestoring;
     const contextValue = { restore, isLoading: isRestoring };
+    const isUnreadable = status === CloudBackupListingStatusEnum.UNREADABLE;
+    const hasFailed = status === CloudBackupListingStatusEnum.FAILED;
     const isEmpty = isAvailable && isEmptyArray(groups) && !isUnreadable && !hasFailed;
     const noBackupsBody = isBackupEnabled
         ? t`Budgie backs up to iCloud automatically. Your first backup appears here.`

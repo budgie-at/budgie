@@ -1998,7 +1998,7 @@ msgstr "Sicherungsdatei"
 msgid "Backup saved"
 msgstr "Sicherung gespeichert"
 
-#: src/onboarding/component/onboarding-key/onboarding-key.tsx
+#: src/onboarding/component/onboarding-icloud-restore-row/onboarding-icloud-restore-row.tsx
 msgid "Backups from your devices on this Apple Account"
 msgstr "Sicherungen deiner Geräte mit diesem Apple Account"
 
@@ -3553,6 +3553,10 @@ msgstr "Die Berechtigungen des API-Schlüssels konnten nicht überprüft werden"
 #: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
 msgid "Could not verify the application"
 msgstr "Anwendung konnte nicht überprüft werden"
+
+#: src/onboarding/component/onboarding-icloud-restore-row/onboarding-icloud-restore-row.tsx
+msgid "Couldn't check iCloud backups"
+msgstr "iCloud-Backups konnten nicht geprüft werden"
 
 #: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
 msgid "Couldn’t check Monobank for new accounts"
@@ -6381,6 +6385,10 @@ msgid "No account needed · Takes about a minute"
 msgstr "Kein Konto nötig · Dauert etwa eine Minute"
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
+msgid "No account to sign up for. Backed up and synced only to your own iCloud. Works with no connection at all."
+msgstr "Keine Registrierung nötig. Sicherung und Synchronisierung nur über deine eigene iCloud. Funktioniert auch ganz ohne Verbindung."
+
+#: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "No account to sign up for. Never synced or uploaded. Works with no connection at all."
 msgstr "Kein Konto nötig. Nie synchronisiert oder hochgeladen. Funktioniert ganz ohne Verbindung."
 
@@ -8040,8 +8048,8 @@ msgid "Restore from file"
 msgstr "Aus Datei wiederherstellen"
 
 #: src/app/(tabs)/settings/icloud-backups.tsx
+#: src/onboarding/component/onboarding-icloud-restore-row/onboarding-icloud-restore-row.tsx
 #: src/onboarding/component/onboarding-icloud-restore/onboarding-icloud-restore.tsx
-#: src/onboarding/component/onboarding-key/onboarding-key.tsx
 #: src/settings/components/icloud-restore-row/icloud-restore-row.tsx
 msgid "Restore from iCloud"
 msgstr "Aus iCloud wiederherstellen"
@@ -9927,7 +9935,7 @@ msgstr "Versuchen Sie, Ihre Filter anzupassen, um mehr Ergebnisse zu sehen"
 #: src/auth/components/forgot-pin-footer/forgot-pin-footer.tsx
 #: src/cloud-backup/component/cloud-backup-list/cloud-backup-list.tsx
 #: src/cloud-backup/component/cloud-backup-row/cloud-backup-row.tsx
-#: src/onboarding/component/onboarding-key/onboarding-key.tsx
+#: src/onboarding/component/onboarding-icloud-restore-row/onboarding-icloud-restore-row.tsx
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
 #: src/transaction/components/transaction-picker-failure/transaction-picker-failure.tsx

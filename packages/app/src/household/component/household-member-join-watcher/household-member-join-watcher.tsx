@@ -5,7 +5,7 @@ import * as Fiber from 'effect/Fiber';
 import * as Schedule from 'effect/Schedule';
 import { NotificationFeedbackType } from 'expo-haptics';
 import { useFocusEffect } from 'expo-router';
-import { useCallback, useEffect, useEffectEvent, useRef } from 'react';
+import { useEffect, useEffectEvent, useRef } from 'react';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -50,13 +50,11 @@ export const HouseholdMemberJoinWatcher = () => {
         joinedCountRef.current = joinedCount;
     }, [joinedCount, isKnown]);
 
-    useFocusEffect(
-        useCallback(() => {
-            const fiber = appRuntime.runFork(pollParticipants);
+    useFocusEffect(() => {
+        const fiber = appRuntime.runFork(pollParticipants);
 
-            return () => void appRuntime.runFork(Fiber.interrupt(fiber));
-        }, [])
-    );
+        return () => void appRuntime.runFork(Fiber.interrupt(fiber));
+    });
 
     return null;
 };

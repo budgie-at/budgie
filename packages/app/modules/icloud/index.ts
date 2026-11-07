@@ -1,5 +1,6 @@
 import { NativeModule, requireOptionalNativeModule } from 'expo';
 
+import type { ICloudDownloadedBackup } from './interface/icloud-downloaded-backup.interface';
 import type {
     ICloudAccountChangeEvent,
     ICloudAccountStatusResult,
@@ -28,11 +29,6 @@ export interface ICloudBackupMetadata {
     deviceModel: string;
     appVersion: string;
     schemaVersion: number;
-}
-
-export interface ICloudDownloadedBackup {
-    fileUri: string;
-    backupKey: string;
 }
 
 type ICloudNativeEvents = {

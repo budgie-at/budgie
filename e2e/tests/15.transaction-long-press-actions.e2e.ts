@@ -27,6 +27,7 @@ test('15 transaction long press actions', { tags: ['transactions'] }, async ({ b
     await b.phase('long-press edit from list', async () => {
         await t.longPressEditTransaction(ctx, DELETE);
         await b.expectText(ctx, 'Edit Expense', 5_000);
+        await b.expectId(ctx, 'TransactionForm.AmountInput');
         await b.tapId(ctx, 'PageHeader.BackButton');
         await b.expectId(ctx, 'TransactionsPage.Container', 5_000);
     });
