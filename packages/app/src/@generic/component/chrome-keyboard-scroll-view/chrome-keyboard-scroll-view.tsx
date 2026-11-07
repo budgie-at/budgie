@@ -3,7 +3,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { addScrollContentInset, mergeRefs, useScreenChrome } from '@rnw-community/react-native-screen-chrome';
+import { addScrollContentInset, mergeRefs, useBottomChromeInset, useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 
 import { useCollapsibleChromeScroll } from '../../hook/use-collapsible-chrome-scroll.hook';
 
@@ -22,24 +22,27 @@ const AnimatedKeyboardAwareScrollView = Animated.createAnimatedComponent(Keyboar
 
 export const ChromeKeyboardScrollView = ({
     contentInsetTop = 0,
+    contentInsetBottom,
     includeTopSafeArea = true,
-    contentInsetBottom = 0,
     contentContainerStyle,
-    bottomOffset = 0,
+    bottomOffset,
     ref,
     onDragStart,
     ...scrollViewProps
 }: Props): ReactNode => {
     const { config } = useScreenChrome();
+    const { chromeHeight, inset } = useBottomChromeInset();
     const { onScroll, scrollRef } = useCollapsibleChromeScroll(onDragStart);
     const insets = useSafeAreaInsets();
     const mergedRef = mergeRefs(scrollRef, ref);
     const { height } = useWindowDimensions();
     const snapRangeStyle = config.snapToCollapse ? { minHeight: height + config.collapseEnd } : null;
+    const resolvedContentInsetBottom = contentInsetBottom ?? chromeHeight;
+    const resolvedBottomOffset = bottomOffset ?? inset;
     const mergedContentContainerStyle = addScrollContentInset(
         includeTopSafeArea ? insets : { ...insets, top: 0 },
         contentInsetTop,
-        contentInsetBottom,
+        resolvedContentInsetBottom,
         [snapRangeStyle, contentContainerStyle]
     );
 
@@ -49,7 +52,7 @@ export const ChromeKeyboardScrollView = ({
             keyboardShouldPersistTaps="handled"
             {...scrollViewProps}
             ref={mergedRef}
-            bottomOffset={bottomOffset}
+            bottomOffset={resolvedBottomOffset}
             contentContainerStyle={mergedContentContainerStyle}
             onScroll={onScroll}
             scrollEventThrottle={config.scrollEventThrottle}

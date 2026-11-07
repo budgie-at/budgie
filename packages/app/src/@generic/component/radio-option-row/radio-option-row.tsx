@@ -2,7 +2,7 @@ import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { MAX_FONT_SIZE_MULTIPLIER } from '../../constant/max-font-size-multiplier.constant';
+import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../../constant/max-chrome-font-size-multiplier.constant';
 import { cn } from '../../utils/cn.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 
@@ -34,11 +34,11 @@ export const RadioOptionRow = ({ label, isSelected, onPress, description, childr
             >
                 <View className={cn('mt-[1px] h-[20px] w-[20px] rounded-full', indicatorClassName)} />
                 <View className="flex-1 gap-y-xs">
-                    <Text maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER} className="text-md font-medium text-primary">
+                    <Text maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER} className="text-md font-medium text-primary">
                         {label}
                     </Text>
                     {isNotEmptyString(description) ? (
-                        <Text maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER} className="text-xs text-secondary-foreground">
+                        <Text maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER} className="text-xs text-secondary-foreground">
                             {description}
                         </Text>
                     ) : null}

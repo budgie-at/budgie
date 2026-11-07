@@ -65,7 +65,7 @@ export const RecurringFormRepeatSection = ({ dateTitle }: Props) => {
         <View className="gap-y-md">
             <View>
                 <GroupedListSectionTitle title={t`Repeats`} />
-                <SegmentedControl segments={segments} value={value} onChange={onChange} className="min-h-[44px]" />
+                <SegmentedControl segments={segments} value={value} onChange={onChange} />
             </View>
             <GroupedListSection footer={previewRow}>
                 <GroupedListValueRow

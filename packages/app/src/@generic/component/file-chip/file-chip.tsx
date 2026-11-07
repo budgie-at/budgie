@@ -2,6 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
+import { MAX_FONT_SIZE_MULTIPLIER } from '../../constant/max-font-size-multiplier.constant';
 import { Icon } from '../icon/icon';
 
 interface Props {
@@ -20,7 +21,7 @@ export const FileChip = ({ icon, name, children, accessibilityLabel, testID }: P
         className="flex-1 flex-row items-center gap-x-md rounded-3xl border border-secondary-corner bg-secondary-background px-lg py-md"
     >
         <Icon icon={icon} size={16} className="text-primary" />
-        <Text numberOfLines={1} className="shrink text-primary text-xs font-semibold">
+        <Text numberOfLines={1} maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER} className="shrink text-primary text-xs font-semibold">
             {name}
         </Text>
 

@@ -46,7 +46,7 @@ export const TransactionsPageHeader = ({ activeTab, onChangeTab }: Props) => {
                         maxFontSizeMultiplier={2}
                         value={activeTab}
                         onChange={onChangeTab}
-                        className="min-h-[48px] bg-segmented-track dark:bg-surface-fill"
+                        className="min-h-[48px]"
                     />
                 </View>
             ) : (

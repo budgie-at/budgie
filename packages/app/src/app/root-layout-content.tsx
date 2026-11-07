@@ -131,6 +131,7 @@ export const RootLayoutContent = () => {
         '--color-sheet-grouped-surface'
     ]);
     const sheetOptions = fitToContentsSheetOptions(sheetSurface);
+    const budgetSheetOptions = { ...sheetOptions, sheetAllowedDetents: [DETENT_95] };
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
     const contactSelectorOptions = formSheetOptions([DETENT_55, DETENT_90], isAccessibilityTextSize ? 1 : 0);
     useAppInitialization(databaseMigrationStatus === DatabaseMigrationStatusEnum.MIGRATED);
@@ -214,8 +215,14 @@ export const RootLayoutContent = () => {
                                                                         name="voice-review"
                                                                         options={formSheetOptions([0.65, DETENT_95], 0)}
                                                                     />
-                                                                    <Stack.Screen name="budget-safe-to-spend" options={sheetOptions} />
-                                                                    <Stack.Screen name="budget-limit-changes" options={sheetOptions} />
+                                                                    <Stack.Screen
+                                                                        name="budget-safe-to-spend"
+                                                                        options={budgetSheetOptions}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="budget-limit-changes"
+                                                                        options={budgetSheetOptions}
+                                                                    />
                                                                     <Stack.Screen name="category-form" options={ENTITY_FORM_OPTIONS} />
                                                                     <Stack.Screen name="tag-form" options={ENTITY_FORM_OPTIONS} />
                                                                     <Stack.Screen

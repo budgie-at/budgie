@@ -1497,7 +1497,7 @@ msgstr "After {reservedAmount} planned for set-asides"
 msgid "After {upcomingAmount} for upcoming bills"
 msgstr "After {upcomingAmount} for upcoming bills"
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-footer/forgot-pin-footer.tsx
 msgid "After 5 wrong tries, Budgie waits a little longer between attempts."
 msgstr "After 5 wrong tries, Budgie waits a little longer between attempts."
 
@@ -1565,7 +1565,7 @@ msgstr "All Time"
 msgid "Allocated"
 msgstr "Allocated"
 
-#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+#: src/@generic/component/contact-selector-denied/contact-selector-denied.tsx
 msgid "Allow contacts access in Settings."
 msgstr "Allow contacts access in Settings."
 
@@ -2148,7 +2148,7 @@ msgstr "Budget unavailable"
 
 #: src/import/components/import-preset-options/import-preset-options.tsx
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
-#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+#: src/onboarding/component/onboarding-welcome-hero/onboarding-welcome-hero.tsx
 #: src/siri/service/siri-catalog.service.ts
 #: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
@@ -2899,12 +2899,13 @@ msgstr "Consolidation"
 msgid "Contact (optional)"
 msgstr "Contact (optional)"
 
+#: src/@generic/component/contact-selector-denied/contact-selector-denied.tsx
 #: src/@generic/component/contact-selector-header/contact-selector-header.tsx
 #: src/@generic/component/contact-selector-state/contact-selector-state.tsx
 msgid "Contacts"
 msgstr "Contacts"
 
-#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+#: src/@generic/component/contact-selector-denied/contact-selector-denied.tsx
 msgid "Contacts access is off"
 msgstr "Contacts access is off"
 
@@ -4059,6 +4060,7 @@ msgid "e.g. 12-month deposit"
 msgstr "e.g. 12-month deposit"
 
 #: src/budget/components/budget-editable-amount-input/budget-editable-amount-input.tsx
+#: src/budget/components/budget-overall-limit-input/budget-overall-limit-input.tsx
 msgid "e.g. 200"
 msgstr "e.g. 200"
 
@@ -4396,6 +4398,10 @@ msgstr "Estimated from your past transactions using your current limits."
 #: src/app/(main)/create-account/index.tsx
 msgid "EU banks"
 msgstr "EU banks"
+
+#: src/app/(main)/budget/event/[id]/index.tsx
+msgid "Event budget"
+msgstr "Event budget"
 
 #: src/budget/components/budget-event-form/budget-event-form.tsx
 msgid "Event limit"
@@ -4866,7 +4872,7 @@ msgstr "Get API Token"
 msgid "Get category, tag, and note suggestions from your history."
 msgstr "Get category, tag, and note suggestions from your history."
 
-#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+#: src/onboarding/component/onboarding-welcome-actions/onboarding-welcome-actions.tsx
 msgid "Get started"
 msgstr "Get started"
 
@@ -6081,7 +6087,7 @@ msgstr "Next payment {nextPaymentLabel}"
 msgid "Next period"
 msgstr "Next period"
 
-#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+#: src/onboarding/component/onboarding-welcome-actions/onboarding-welcome-actions.tsx
 msgid "No account needed · Takes about a minute"
 msgstr "No account needed · Takes about a minute"
 
@@ -6168,7 +6174,7 @@ msgstr "No icons found"
 msgid "No income in this view"
 msgstr "No income in this view"
 
-#: src/app/voice-review.tsx
+#: src/ai/component/voice-review-empty-state/voice-review-empty-state.tsx
 msgid "No items to save"
 msgstr "No items to save"
 
@@ -6608,7 +6614,7 @@ msgstr "Only single-entry incomes can be converted"
 msgid "Only when a category is missing"
 msgstr "Only when a category is missing"
 
-#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+#: src/onboarding/component/onboarding-welcome-hero/onboarding-welcome-hero.tsx
 msgid "Only you hold the key."
 msgstr "Only you hold the key."
 
@@ -7042,6 +7048,7 @@ msgstr "per month"
 msgid "Percent of the plan total before the fee"
 msgstr "Percent of the plan total before the fee"
 
+#: src/budget/components/budget-period-field/budget-period-field.tsx
 #: src/budget/components/budget-setup-form/budget-setup-form.tsx
 msgid "Period"
 msgstr "Period"
@@ -7794,6 +7801,7 @@ msgid "Runway needs 3 complete months of transactions to forecast your balance."
 msgstr "Runway needs 3 complete months of transactions to forecast your balance."
 
 #: src/app/budget-safe-to-spend.tsx
+#: src/budget/components/budget-safe-to-spend-header/budget-safe-to-spend-header.tsx
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 msgid "Safe to spend"
 msgstr "Safe to spend"
@@ -7902,6 +7910,10 @@ msgstr "Seal"
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 msgid "Seal with this PIN"
 msgstr "Seal with this PIN"
+
+#: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
+msgid "Seal with this PIN?"
+msgstr "Seal with this PIN?"
 
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "Sealed · {contents}"
@@ -8681,7 +8693,7 @@ msgstr "Tap a suggestion to use it for that category."
 msgid "Tap a value to copy it."
 msgstr "Tap a value to copy it."
 
-#: src/app/voice-review.tsx
+#: src/ai/component/voice-review-empty-state/voice-review-empty-state.tsx
 msgid "Tap re-record to try again"
 msgstr "Tap re-record to try again"
 
@@ -9400,7 +9412,7 @@ msgstr "Try adjusting your filters to see more results"
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 #: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-footer/forgot-pin-footer.tsx
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
 #: src/transaction/components/transaction-picker-failure/transaction-picker-failure.tsx
@@ -9603,7 +9615,7 @@ msgstr "Unselected payments stay in your inbox."
 msgid "Untagged"
 msgstr "Untagged"
 
-#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-safe-to-spend-header/budget-safe-to-spend-header.tsx
 msgid "Until {periodEndLabel}"
 msgstr "Until {periodEndLabel}"
 
@@ -10121,7 +10133,7 @@ msgstr "Your key stays in this phone's secure storage."
 msgid "Your limit grows as income arrives this period"
 msgstr "Your limit grows as income arrives this period"
 
-#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+#: src/onboarding/component/onboarding-welcome-hero/onboarding-welcome-hero.tsx
 msgid "Your money in one file."
 msgstr "Your money in one file."
 

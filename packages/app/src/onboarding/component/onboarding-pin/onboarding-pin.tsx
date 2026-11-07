@@ -1,11 +1,14 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useReducer } from 'react';
-import { View } from 'react-native';
+import { View, useWindowDimensions } from 'react-native';
 
+import { ScreenChromeFrame, ScreenChromeHeader } from '@rnw-community/react-native-screen-chrome';
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
-import { FullPage } from '../../../@generic/component/page/full-page';
+import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-size-multiplier.constant';
+import { ScreenChromeThemeProvider } from '../../../@generic/provider/screen-chrome-theme.provider';
 import { PinForgottenWarning } from '../../../auth/components/pin-forgotten-warning/pin-forgotten-warning';
 import { PinFormHeader } from '../../../auth/components/pin-form-header/pin-form-header';
 import { PinForm } from '../../../auth/components/pin-form/pin-form';
@@ -26,6 +29,7 @@ import { OnboardingPinSelector } from './onboarding-pin.selector';
 // eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const OnboardingPin = () => {
     const { t } = useLingui();
+    const { fontScale } = useWindowDimensions();
 
     const [{ phase, input, firstPin }, dispatch] = useReducer(onboardingPinReducer, {
         phase: OnboardingPinPhaseEnum.CREATE,
@@ -85,24 +89,32 @@ export const OnboardingPin = () => {
     const handleBack = isConfirming ? handleChooseDifferentPinPress : goBack;
     const pinFormFooter = isConfirming ? <PinRestartButton onPress={handleChooseDifferentPinPress} /> : <PinForgottenWarning />;
 
+    const headerIcon = fontScale > MAX_FONT_SIZE_MULTIPLIER ? null : UserIconNameEnum.LockKeyhole;
+    const headerRowStyle = { paddingHorizontal: 0 };
+    const pinForm = (
+        <PinForm
+            header={<PinFormHeader title={title} description={description} icon={headerIcon} />}
+            currentInput={input}
+            error={error}
+            status={PinFormStatusEnum.READY}
+            onDigitPress={handleDigitPress}
+            onDeletePress={handleDeletePress}
+            footer={pinFormFooter}
+        />
+    );
+
     return (
         <GroupedSurface testID={OnboardingPinSelector.Root}>
-            <FullPage
-                className="bg-surface"
-                header={<OnboardingStepHeader fileState={fileState} fileLock={OnboardingFileLockEnum.OPEN} onBack={handleBack} />}
-            >
-                <View className="flex-1 px-xl">
-                    <PinForm
-                        header={<PinFormHeader title={title} description={description} />}
-                        currentInput={input}
-                        error={error}
-                        status={PinFormStatusEnum.READY}
-                        onDigitPress={handleDigitPress}
-                        onDeletePress={handleDeletePress}
-                        footer={pinFormFooter}
-                    />
-                </View>
-            </FullPage>
+            <ScreenChromeThemeProvider>
+                <ScreenChromeFrame>
+                    <ScreenChromeHeader inFlow rowStyle={headerRowStyle}>
+                        <OnboardingStepHeader fileState={fileState} fileLock={OnboardingFileLockEnum.OPEN} onBack={handleBack} />
+                    </ScreenChromeHeader>
+                    <View className="flex-1 px-5xl pb-safe">
+                        <View className="flex-1 px-xl">{pinForm}</View>
+                    </View>
+                </ScreenChromeFrame>
+            </ScreenChromeThemeProvider>
         </GroupedSurface>
     );
 };
