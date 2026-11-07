@@ -32,14 +32,14 @@ export const getCategorizeInboxFinding = ({ rows, section }: CategorizeInboxFind
     const firstAt = new Date(Math.min(...times));
     const lastAt = new Date(Math.max(...times));
     const distinctDays = new Set(rows.map(row => row.operatedAt.toDateString())).size;
-    const perDay = distinctDays / (differenceInCalendarDays(lastAt, firstAt) + 1);
+    const perDay = distinctDays > 1 ? (distinctDays - 1) / differenceInCalendarDays(lastAt, firstAt) : 0;
     const distinctMonths = new Set(rows.map(row => `${row.operatedAt.getFullYear()}-${row.operatedAt.getMonth()}`)).size;
     const spanMonths = differenceInCalendarMonths(lastAt, firstAt) + 1;
     const kind =
         section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS
             ? CategorizeInboxFindingKindEnum.CASH
             : getKind(distinctDays, perDay, distinctMonths, spanMonths);
-    const rate = kind === CategorizeInboxFindingKindEnum.PER_DAY ? Math.round(perDay) : Math.round(perDay * DAYS_PER_WEEK);
+    const rate = kind === CategorizeInboxFindingKindEnum.PER_WEEK ? Math.round(perDay * DAYS_PER_WEEK) : 0;
 
     return { kind, rate, firstAt, lastAt };
 };

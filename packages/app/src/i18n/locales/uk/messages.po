@@ -801,10 +801,6 @@ msgid "{quantityLabel}, worth {valueLabel}"
 msgstr "{quantityLabel}, вартість {valueLabel}"
 
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "{rate, plural, =1 {about once a day} =2 {about twice a day} other {about # a day}}"
-msgstr "{rate, plural, =1 {приблизно раз на день} =2 {приблизно двічі на день} one {близько # на день} few {близько # на день} many {близько # на день} other {близько # на день}}"
-
-#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "{rate, plural, =1 {about once a week} =2 {about twice a week} other {about # a week}}"
 msgstr "{rate, plural, =1 {приблизно раз на тиждень} =2 {приблизно двічі на тиждень} one {близько # на тиждень} few {близько # на тиждень} many {близько # на тиждень} other {близько # на тиждень}}"
 
@@ -1211,6 +1207,10 @@ msgstr "Близько 6 хвилин"
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "About a minute"
 msgstr "Близько хвилини"
+
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "about once a day"
+msgstr "приблизно раз на день"
 
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "above {formattedLimit} limit"

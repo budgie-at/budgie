@@ -801,10 +801,6 @@ msgid "{quantityLabel}, worth {valueLabel}"
 msgstr "{quantityLabel}, valeur {valueLabel}"
 
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "{rate, plural, =1 {about once a day} =2 {about twice a day} other {about # a day}}"
-msgstr "{rate, plural, =1 {environ une fois par jour} =2 {environ deux fois par jour} other {environ # par jour}}"
-
-#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "{rate, plural, =1 {about once a week} =2 {about twice a week} other {about # a week}}"
 msgstr "{rate, plural, =1 {environ une fois par semaine} =2 {environ deux fois par semaine} other {environ # par semaine}}"
 
@@ -1211,6 +1207,10 @@ msgstr "Environ 6 minutes"
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "About a minute"
 msgstr "Environ une minute"
+
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "about once a day"
+msgstr "environ une fois par jour"
 
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "above {formattedLimit} limit"

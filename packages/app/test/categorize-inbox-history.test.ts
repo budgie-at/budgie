@@ -8,13 +8,12 @@ import { getCategorizeInboxMonthlyCounts } from '../src/categorize-inbox/utils/g
 const dates = [new Date(2025, 4, 1, 12), new Date(2025, 4, 1, 12, 1), new Date(2025, 4, 1, 12, 5)];
 
 describe('categorize inbox history', () => {
-    it('counts a burst as one payment day when describing weekly cadence', () => {
+    it('does not inflate cadence from a burst followed thirteen days later', () => {
         const finding = getCategorizeInboxFinding({
             rows: [...dates, new Date(2025, 4, 14, 12)].map(operatedAt => ({ operatedAt })),
             section: CategorizeInboxSectionEnum.REVIEW
         });
-        expect(finding.kind).toBe(CategorizeInboxFindingKindEnum.PER_WEEK);
-        expect(finding.rate).toBe(1);
+        expect(finding.kind).toBe(CategorizeInboxFindingKindEnum.SINGLE_MONTH);
     });
     it('does not describe a single-day burst as daily or weekly', () => {
         expect(
@@ -23,6 +22,36 @@ describe('categorize inbox history', () => {
                 section: CategorizeInboxSectionEnum.REVIEW
             }).kind
         ).toBe(CategorizeInboxFindingKindEnum.SINGLE_MONTH);
+    });
+    it('describes payments seven calendar days apart as weekly', () => {
+        const finding = getCategorizeInboxFinding({
+            rows: [new Date(2025, 2, 7, 12), new Date(2025, 2, 14, 12)].map(operatedAt => ({ operatedAt })),
+            section: CategorizeInboxSectionEnum.REVIEW
+        });
+        expect(finding.kind).toBe(CategorizeInboxFindingKindEnum.PER_WEEK);
+        expect(finding.rate).toBe(1);
+    });
+    it('describes consecutive local days across daylight saving as daily', () => {
+        expect(
+            getCategorizeInboxFinding({
+                rows: [new Date(2025, 2, 8, 12), new Date(2025, 2, 9, 12), new Date(2025, 2, 10, 12)].map(operatedAt => ({ operatedAt })),
+                section: CategorizeInboxSectionEnum.REVIEW
+            }).kind
+        ).toBe(CategorizeInboxFindingKindEnum.PER_DAY);
+    });
+    it('describes four monthly payment days despite a same-day duplicate', () => {
+        expect(
+            getCategorizeInboxFinding({
+                rows: [
+                    new Date(2025, 0, 7, 12),
+                    new Date(2025, 1, 7, 12),
+                    new Date(2025, 2, 7, 12),
+                    new Date(2025, 3, 7, 12),
+                    new Date(2025, 3, 7, 13)
+                ].map(operatedAt => ({ operatedAt })),
+                section: CategorizeInboxSectionEnum.REVIEW
+            }).kind
+        ).toBe(CategorizeInboxFindingKindEnum.ONCE_A_MONTH);
     });
     it('anchors historical buckets to the last payment and retains empty months', () => {
         const buckets = getCategorizeInboxMonthlyCounts(

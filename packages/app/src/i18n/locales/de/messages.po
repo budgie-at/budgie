@@ -801,10 +801,6 @@ msgid "{quantityLabel}, worth {valueLabel}"
 msgstr "{quantityLabel}, Wert {valueLabel}"
 
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "{rate, plural, =1 {about once a day} =2 {about twice a day} other {about # a day}}"
-msgstr "{rate, plural, =1 {etwa einmal am Tag} =2 {etwa zweimal am Tag} other {etwa # pro Tag}}"
-
-#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "{rate, plural, =1 {about once a week} =2 {about twice a week} other {about # a week}}"
 msgstr "{rate, plural, =1 {etwa einmal pro Woche} =2 {etwa zweimal pro Woche} other {etwa # pro Woche}}"
 
@@ -1211,6 +1207,10 @@ msgstr "Etwa 6 Minuten"
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "About a minute"
 msgstr "Etwa eine Minute"
+
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "about once a day"
+msgstr "etwa einmal am Tag"
 
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "above {formattedLimit} limit"
@@ -6500,7 +6500,7 @@ msgstr "Ältere"
 #: src/categorize-inbox/components/categorize-inbox-section-chip/categorize-inbox-section-chip.tsx
 msgctxt "Categorize inbox section chip"
 msgid "Older"
-msgstr "Älter"
+msgstr "Ältere"
 
 #: src/rule/hooks/use-rule-row-summary.hook.ts
 #: src/settings/components/app-lock-row/app-lock-row.tsx
