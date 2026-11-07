@@ -1,6 +1,13 @@
 import { decodeJson, encodeJson } from '@budgie-at/test-kit';
 import { SyncOutboxRepository, SyncUploadService } from '@budgie/cloud-sync';
-import { SyncOutboxOperationEnum, Db, ExternalSourceEnum, PERSONAL_SYNC_ZONE, SyncRecordTypeEnum } from '@budgie/contracts';
+import {
+    HOUSEHOLD_SYNC_ZONE,
+    SyncOutboxOperationEnum,
+    Db,
+    ExternalSourceEnum,
+    PERSONAL_SYNC_ZONE,
+    SyncRecordTypeEnum
+} from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -32,12 +39,12 @@ describe('cloud-sync/upload-service', () => {
                 const upload = yield* SyncUploadService;
                 yield* seed.account({ title: 'Oversized'.repeat(200_000) });
                 for (const attempt of [1, 2, 3]) {
-                    const batch = yield* upload.pending(attempt * 10, new Set(), []);
+                    const batch = yield* upload.pending(attempt * 10, new Set(), [], null);
                     expect(batch.saves).toEqual([]);
                     expect(batch.rejections).toEqual([]);
                 }
 
-                const released = yield* upload.pending(100, new Set(), [PERSONAL_SYNC_ZONE]);
+                const released = yield* upload.pending(100, new Set(), [PERSONAL_SYNC_ZONE], null);
                 expect(released.rejections).toHaveLength(1);
             })
         )
@@ -52,7 +59,7 @@ describe('cloud-sync/upload-service', () => {
                 yield* clearOutbox;
                 yield* seed.manualExpense({ accountId: account.id, amount: 5_000_000, operatedAt: OPERATED_AT, title: 'Cafe' });
 
-                const batch = yield* uploadService.pending(10, new Set());
+                const batch = yield* uploadService.pending(10, new Set(), [PERSONAL_SYNC_ZONE, HOUSEHOLD_SYNC_ZONE], null);
 
                 expect(batch.deletions).toHaveLength(0);
                 expect(batch.rejections).toHaveLength(0);
@@ -75,7 +82,7 @@ describe('cloud-sync/upload-service', () => {
                     operatedAt: OPERATED_AT,
                     title: 'Cafe'
                 });
-                const firstBatch = yield* uploadService.pending(10, new Set());
+                const firstBatch = yield* uploadService.pending(10, new Set(), [PERSONAL_SYNC_ZONE, HOUSEHOLD_SYNC_ZONE], null);
                 const sent = firstBatch.saves.find(save => save.records[0].recordType === SyncRecordTypeEnum.TRANSACTION);
 
                 if (sent === undefined) {
@@ -95,7 +102,7 @@ describe('cloud-sync/upload-service', () => {
                 expect(stored.systemFields).toBe('{"changeTag":"1"}');
                 expect(decodeJson(stored.payload)).toEqual(sent.records[0]);
 
-                const secondBatch = yield* uploadService.pending(10, new Set());
+                const secondBatch = yield* uploadService.pending(10, new Set(), [PERSONAL_SYNC_ZONE, HOUSEHOLD_SYNC_ZONE], null);
                 const resent = secondBatch.saves.find(save => save.syncId === sent.syncId);
 
                 yield* uploadService.acknowledge([toAcknowledgement(resent ?? sent)]);
@@ -118,7 +125,7 @@ describe('cloud-sync/upload-service', () => {
                 yield* clearOutbox;
                 yield* testDb.$client.unsafe('DELETE FROM tags WHERE id = ?', [tag.id]);
 
-                const batch = yield* uploadService.pending(10, new Set());
+                const batch = yield* uploadService.pending(10, new Set(), [PERSONAL_SYNC_ZONE, HOUSEHOLD_SYNC_ZONE], null);
 
                 expect(batch.saves).toHaveLength(0);
                 expect(batch.deletions).toHaveLength(1);
@@ -142,7 +149,7 @@ describe('cloud-sync/upload-service', () => {
                     integration.id
                 ]);
 
-                const batch = yield* uploadService.pending(50, new Set());
+                const batch = yield* uploadService.pending(50, new Set(), [PERSONAL_SYNC_ZONE, HOUSEHOLD_SYNC_ZONE], null);
                 const save = batch.saves.find(candidate => candidate.records[0].recordType === SyncRecordTypeEnum.BANK_INTEGRATION);
                 const fields = save?.records[0].encryptedFields ?? {};
 
@@ -163,14 +170,14 @@ describe('cloud-sync/upload-service', () => {
                 const repository = yield* SyncOutboxRepository;
                 yield* repository.enqueue({
                     recordType: 'Transaction',
-                    syncZone: 'personal',
+                    syncZone: PERSONAL_SYNC_ZONE,
                     syncId: transactionSyncId,
                     operation: SyncOutboxOperationEnum.SAVE,
                     changedColumns: '["title"]'
                 });
                 yield* repository.enqueue({
                     recordType: 'Transaction',
-                    syncZone: 'personal',
+                    syncZone: PERSONAL_SYNC_ZONE,
                     syncId: transactionSyncId,
                     operation: SyncOutboxOperationEnum.SAVE,
                     changedColumns: '["transaction_entries"]'
@@ -178,7 +185,7 @@ describe('cloud-sync/upload-service', () => {
                 expect(decodeJson((yield* readOutbox)[0].changedColumns)).toEqual(['title', 'transaction_entries']);
                 const revision = (yield* readOutbox)[0].syncRevision;
 
-                yield* repository.replaceChangedColumns('personal', transactionSyncId, '["title"]');
+                yield* repository.replaceChangedColumns(PERSONAL_SYNC_ZONE, transactionSyncId, '["title"]');
                 expect(decodeJson((yield* readOutbox)[0].changedColumns)).toEqual(['title']);
                 expect((yield* readOutbox)[0].syncRevision).toBe(revision + 1);
             })

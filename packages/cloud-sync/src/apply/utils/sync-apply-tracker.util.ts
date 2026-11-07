@@ -2,11 +2,13 @@ import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import type { SyncApplyResultInterface } from '../interface/sync-apply-result.interface';
 import type { SyncDerivedMergeInterface } from '../interface/sync-derived-merge.interface';
+import type { SyncOwnerTransferRetryInterface } from '../interface/sync-owner-transfer-retry.interface';
 import type { SyncPausedZoneInterface } from '../interface/sync-paused-zone.interface';
 import type { SyncReenqueuedRecordInterface } from '../interface/sync-reenqueued-record.interface';
 import type { SyncRejectedRecordInterface } from '../interface/sync-rejected-record.interface';
 
 export class SyncApplyTracker {
+    readonly ownerTransferRetries: SyncOwnerTransferRetryInterface[] = [];
     private readonly touchedByType = new Map<string, Set<string>>();
     private readonly touchedByTable = new Map<string, Set<string>>();
     private readonly deletedByType = new Map<string, Set<string>>();
@@ -60,6 +62,7 @@ export class SyncApplyTracker {
         merged: readonly SyncDerivedMergeInterface[]
     ): SyncApplyResultInterface {
         return {
+            ownerTransferRetries: this.ownerTransferRetries,
             touched: SyncApplyTracker.toRecord(this.touchedByType),
             touchedRows: SyncApplyTracker.toRecord(this.touchedByTable),
             deleted: SyncApplyTracker.toRecord(this.deletedByType),

@@ -99,6 +99,7 @@ export const reapplyAutomation = (database: DB, transactionSyncIds: readonly str
             const automationService = yield* SyncAutomationService;
 
             return yield* automationService.afterApply({
+                ownerTransferRetries: [],
                 touched: {},
                 touchedRows: { transactions: transactionSyncIds },
                 deleted: {},

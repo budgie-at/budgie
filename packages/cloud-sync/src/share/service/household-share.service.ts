@@ -9,7 +9,9 @@ import {
     SyncRecordTypeEnum,
     SyncApplyStateRepository,
     SyncZoneRegistryRepository,
-    generateSyncId
+    generateSyncId,
+    SYNC_MOVED_FROM_MARKER_PREFIX,
+    SYNC_MOVED_TO_MARKER_PREFIX
 } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -19,7 +21,6 @@ import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared'
 
 import { resolveHomeZone } from '../../mapping/utils/resolve-home-zone.util';
 import { SyncOutboxRepository } from '../../outbox/repository/sync-outbox.repository';
-import { SYNC_MOVED_FROM_MARKER_PREFIX, SYNC_MOVED_TO_MARKER_PREFIX } from '../constant/sync-move-markers.constant';
 import { HouseholdShareStateEnum } from '../enum/household-share-state.enum';
 import { HouseholdUnavailableError } from '../error/household-unavailable.error';
 import { HouseholdShareRepository } from '../repository/household-share.repository';
@@ -385,7 +386,6 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
 
                 return {
                     isAvailable: isDefined(household),
-                    ownerName: household?.ownerName ?? null,
                     state: resolveShareState(accounts.at(0)?.syncZone, accountId, sharedIds)
                 } satisfies HouseholdShareStatusInterface;
             }),
@@ -396,22 +396,10 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
 
                 return {
                     isAvailable: isDefined(household),
-                    ownerName: household?.ownerName ?? null,
                     state: resolveShareState(budget?.syncZone, budgetId, sharedIds)
                 } satisfies HouseholdShareStatusInterface;
             }),
-            findPrivateSideOwnerName: Effect.fn('HouseholdShareService.findPrivateSideOwnerName')(function* (
-                syncZone: string,
-                syncId: string
-            ) {
-                const privateSideOwnerName = yield* repository.findPrivateSideOwnerName(syncZone, syncId);
-
-                if (isDefined(privateSideOwnerName)) {
-                    return privateSideOwnerName;
-                }
-
-                return null;
-            }),
+            findPrivateSideOwnerName: repository.findPrivateSideOwnerName,
             findSharedAccountIds,
             findSharedBudgetIds,
             shareAccount: Effect.fn('HouseholdShareService.shareAccount')(function* (accountId: number) {

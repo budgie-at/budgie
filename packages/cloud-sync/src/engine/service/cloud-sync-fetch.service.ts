@@ -56,6 +56,7 @@ export class CloudSyncFetchService extends Context.Service<CloudSyncFetchService
         const automate = (result: SyncApplyResultInterface) =>
             logAndContinue(
                 Effect.gen(function* () {
+                    yield* state.trackOwnerTransferRetries(result.ownerTransferRetries);
                     for (const rejection of result.rejected) {
                         yield* Effect.logError(rejection);
                     }
@@ -151,7 +152,7 @@ export class CloudSyncFetchService extends Context.Service<CloudSyncFetchService
         return {
             handleStateSerialization: (event: ICloudStateSerializationEvent) =>
                 Effect.flatMap(Ref.get(state.isBatchFailed), isBatchFailed => {
-                    if (isBatchFailed) {
+                    if (isBatchFailed || state.ownerTransferRetries.size > 0) {
                         return Effect.void;
                     }
 
@@ -218,7 +219,12 @@ export class CloudSyncFetchService extends Context.Service<CloudSyncFetchService
                 }
 
                 if (!(yield* Ref.get(state.isBatchFailed))) {
-                    yield* applyService.completeOwnerTransfers();
+                    yield* applyService.enqueueOwnerTransfers(
+                        [...state.ownerTransferRetries].flatMap(([linkId, targets]) =>
+                            [...targets].map(([zone, recordName]) => ({ linkId, zone, recordName }))
+                        )
+                    );
+                    state.ownerTransferRetries.clear();
                 }
                 yield* patch({
                     isFetching: false,

@@ -135,15 +135,16 @@ export class CloudSyncDrainService extends Context.Service<CloudSyncDrainService
             yield* householdShareService.reconcile();
 
             const sendableZones = [...state.zones.keys()].filter(label => !pausedZones.has(label) && canSendTo(label));
-            if (isEmptyArray(sendableZones)) {
-                return;
-            }
             const skippedKeys = new Set([...state.pushed.keys(), ...state.failedKeys]);
-            const batch = yield* uploadService.pending(
-                skippedKeys.size + state.heldKeys.size + uploadBatchSize,
-                skippedKeys,
-                sendableZones
-            );
+            const privateOwnerName = yield* Ref.get(state.privateOwnerName);
+            const batch = isEmptyArray(sendableZones)
+                ? { saves: [], deletions: [], rejections: [] }
+                : yield* uploadService.pending(
+                      skippedKeys.size + state.heldKeys.size + uploadBatchSize,
+                      skippedKeys,
+                      sendableZones,
+                      privateOwnerName
+                  );
             const payloadsByScope = new Map<ICloudSyncScope, ICloudRecordPayload[]>();
             const deleteIdsByScope = new Map<ICloudSyncScope, ICloudRecordId[]>();
 

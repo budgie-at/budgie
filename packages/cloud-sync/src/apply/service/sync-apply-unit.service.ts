@@ -17,7 +17,6 @@ import { SYNC_AUTHORSHIP_COLUMNS } from '../constant/sync-authorship-columns.con
 import { SYNC_CHILD_NATURAL_KEYS } from '../constant/sync-child-natural-keys.constant';
 import { SYNC_INSERT_PLACEHOLDERS } from '../constant/sync-insert-placeholders.constant';
 import { SyncApplyRepository } from '../repository/sync-apply.repository';
-import { getSyncRowKey } from '../utils/get-sync-row-key.util';
 import { mergeSyncRow } from '../utils/merge-sync-row.util';
 import { readStoredMovedTo } from '../utils/read-stored-moved-to.util';
 import { stringifySyncJson } from '../utils/stringify-sync-json.util';
@@ -39,6 +38,8 @@ const TRANSACTIONS_TABLE = 'transactions';
 
 export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>()('@budgie/cloud-sync/SyncApplyUnitService', {
     make: Effect.gen(function* () {
+        const getSyncRowKey = (tableName: string, syncId: string): string => `${tableName}|${syncId}`;
+
         const getSyncColumnName = (descriptor: SyncTableDescriptorInterface, property: string): string =>
             getTableColumns(descriptor.table)[property].name;
 

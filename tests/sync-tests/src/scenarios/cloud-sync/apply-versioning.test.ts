@@ -1,6 +1,6 @@
 import { TestSeedService, assertStoredBalancesMatchLedger, makeTestDbLayer, resetTestDb } from '@budgie-at/test-kit';
 import { SyncApplyService } from '@budgie/cloud-sync';
-import { Db } from '@budgie/contracts';
+import { PERSONAL_SYNC_ZONE, HOUSEHOLD_SYNC_ZONE, Db } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
@@ -66,8 +66,8 @@ const baselineMove = (deviceB: DB, cloud: FakeCloudTransport) =>
         const accountEnvelope = yield* readEnvelope(testDb, 'Account');
 
         return {
-            target: withFields(accountEnvelope, { movedFrom: 'personal' }, { zone: 'household' }),
-            tombstone: withFields(accountEnvelope, { deletedAt: 1_790_000_000_000, movedTo: 'household' })
+            target: withFields(accountEnvelope, { movedFrom: PERSONAL_SYNC_ZONE }, { zone: HOUSEHOLD_SYNC_ZONE }),
+            tombstone: withFields(accountEnvelope, { deletedAt: 1_790_000_000_000, movedTo: HOUSEHOLD_SYNC_ZONE })
         };
     });
 
@@ -95,7 +95,7 @@ describe('cloud-sync/apply-versioning', () => {
                 const last = results[results.length - 1];
 
                 expect(tag.id).toBeGreaterThan(0);
-                expect(last.pausedZones).toEqual([{ syncZone: 'personal', requiredSchemaVersion: 2 }]);
+                expect(last.pausedZones).toEqual([{ syncZone: PERSONAL_SYNC_ZONE, requiredSchemaVersion: 2 }]);
                 expect(yield* countWhere(deviceB, `tags WHERE title = 'Fresh'`)).toBe(0);
                 expect(yield* countWhere(deviceB, `transactions WHERE title = 'Edited on B'`)).toBe(1);
                 expect((yield* readOutboxRows(deviceB)).length).toBeGreaterThan(0);
@@ -173,7 +173,8 @@ describe('cloud-sync/apply-versioning', () => {
             testDb,
             Effect.gen(function* () {
                 yield* testDb.$client.unsafe(
-                    "INSERT INTO sync_pending (sync_zone, sync_id, record_type, missing_record_type, missing_sync_id, payload) VALUES ('personal', 'first', 'Account', 'SchemaVersion', 'personal', '{}'), ('personal', 'second', 'Account', 'SchemaVersion', 'personal', 'invalid')"
+                    "INSERT INTO sync_pending (sync_zone, sync_id, record_type, missing_record_type, missing_sync_id, payload) VALUES (?, 'first', 'Account', 'SchemaVersion', ?, '{}'), (?, 'second', 'Account', 'SchemaVersion', ?, 'invalid')",
+                    [PERSONAL_SYNC_ZONE, PERSONAL_SYNC_ZONE, PERSONAL_SYNC_ZONE, PERSONAL_SYNC_ZONE]
                 );
                 expect(Exit.isFailure(yield* Effect.exit((yield* SyncApplyService).resume()))).toBe(true);
                 expect(yield* testDb.$client.unsafe('SELECT sync_id FROM sync_pending ORDER BY id')).toEqual([

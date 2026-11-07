@@ -1,6 +1,7 @@
 import { SyncOutboxRepository } from '@budgie/cloud-sync';
 import {
     PERSONAL_SYNC_ZONE,
+    HOUSEHOLD_SYNC_ZONE,
     AccountBalanceRepository,
     AccountTypeEnum,
     CurrencyEnum,
@@ -36,7 +37,7 @@ const seedOwnAndFamilyAccounts = Effect.fnUntraced(function* () {
     yield* seedLedgerBalance(own.id, OWN_BALANCE);
     yield* seedLedgerBalance(family.id, FAMILY_BALANCE);
     yield* testDb.$client.unsafe('DELETE FROM sync_outbox');
-    yield* testDb.$client.unsafe(`UPDATE accounts SET sync_zone = 'household' WHERE id = ${family.id}`);
+    yield* testDb.$client.unsafe('UPDATE accounts SET sync_zone = ? WHERE id = ?', [HOUSEHOLD_SYNC_ZONE, family.id]);
 
     return { euro, own, family };
 });
@@ -58,7 +59,8 @@ describe('net worth excludes accounts shared by other family members', () => {
                 const { clouds } = yield* startHousehold(SyncZoneRoleEnum.PARTICIPANT);
                 const accountBalanceRepository = yield* AccountBalanceRepository;
                 const { euro, family } = yield* seedOwnAndFamilyAccounts();
-                yield* testDb.$client.unsafe("UPDATE accounts SET sync_zone = 'personal', title = 'Shared by me' WHERE id = ?", [
+                yield* testDb.$client.unsafe("UPDATE accounts SET sync_zone = ?, title = 'Shared by me' WHERE id = ?", [
+                    PERSONAL_SYNC_ZONE,
                     family.id
                 ]);
                 yield* shareAndUpload(testDb, clouds, family.id);

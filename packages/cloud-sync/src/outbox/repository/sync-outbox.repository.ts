@@ -1,11 +1,18 @@
-import { MOVED_TO_TOMBSTONE_SQL, PERSONAL_SYNC_ZONE, Db, SyncRecordTypeEnum, SyncOutboxEntityTable } from '@budgie/contracts';
+import {
+    MOVED_TO_TOMBSTONE_SQL,
+    MOVED_TO_TOMBSTONE_PARAMETERS,
+    PERSONAL_SYNC_ZONE,
+    Db,
+    SyncRecordTypeEnum,
+    SyncOutboxEntityTable,
+    SYNC_MOVED_TO_MARKER_PREFIX
+} from '@budgie/contracts';
 import { and, count, eq, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { SYNC_RECORD_DEFINITIONS } from '../../mapping/constant/sync-record-definitions.constant';
-import { SYNC_MOVED_TO_MARKER_PREFIX } from '../../share/constant/sync-move-markers.constant';
 
 import type { SyncOutboxCreateEntityInterface } from '@budgie/contracts';
 
@@ -48,7 +55,7 @@ export class SyncOutboxRepository extends Context.Service<SyncOutboxRepository>(
                  SELECT record_type, sync_zone, sync_id, 'DELETE', json_array(? || json_extract(payload, '$.encryptedFields.movedTo'))
                  FROM sync_record WHERE ${MOVED_TO_TOMBSTONE_SQL}
                  ON CONFLICT (sync_zone, sync_id) DO NOTHING`,
-                            [SYNC_MOVED_TO_MARKER_PREFIX, PERSONAL_SYNC_ZONE, SyncRecordTypeEnum.ACCOUNT]
+                            [SYNC_MOVED_TO_MARKER_PREFIX, ...MOVED_TO_TOMBSTONE_PARAMETERS]
                         )
                     )
                 );

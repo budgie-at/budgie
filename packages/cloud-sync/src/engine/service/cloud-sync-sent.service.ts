@@ -121,6 +121,15 @@ export class CloudSyncSentService extends Context.Service<CloudSyncSentService>(
                 });
             }
 
+            if (failure.recordType === CLOUD_SYNC_RECORDS.metaRecordType && (yield* Ref.get(state.session)).isAwaitingMeta) {
+                yield* engineService.stopEngineUnlocked();
+                yield* patch(
+                    failure.code === ICloudErrorCode.QUOTA_EXCEEDED ? { isQuotaExceeded: true } : { blocked: CloudSyncStatusEnum.ERROR }
+                );
+
+                return;
+            }
+
             const itemKey = state.itemKeyByRecordKey.get(recordKey);
 
             if (isDefined(itemKey)) {

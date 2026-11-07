@@ -22,6 +22,7 @@ import { CloudSyncHost } from '../port/cloud-sync-host.port';
 import { CloudSyncStateStore } from '../port/cloud-sync-state-store.port';
 import { buildCloudSyncKey } from '../utils/build-cloud-sync-key.util';
 
+import type { SyncOwnerTransferRetryInterface } from '../../apply/interface/sync-owner-transfer-retry.interface';
 import type { ICloudRecordId } from '../../transport/interface/icloud-record-id.interface';
 import type { CloudSyncEnvelopeInterface } from '../interface/cloud-sync-envelope.interface';
 import type { CloudSyncPushedItemInterface } from '../interface/cloud-sync-pushed-item.interface';
@@ -86,6 +87,16 @@ export class CloudSyncSessionState extends Context.Service<CloudSyncSessionState
         return {
             privateOwnerName,
             ownerTransferRetries,
+            trackOwnerTransferRetries: Effect.fn('CloudSyncSessionState.trackOwnerTransferRetries')(
+                (retries: readonly SyncOwnerTransferRetryInterface[]) =>
+                    Effect.sync(() => {
+                        for (const { linkId, zone, recordName } of retries) {
+                            const targets = ownerTransferRetries.get(linkId) ?? new Map<string, string>();
+                            targets.set(zone, recordName);
+                            ownerTransferRetries.set(linkId, targets);
+                        }
+                    })
+            ),
             locked: lock.withPermits(1),
             lockedBatch: <A, E, R>(effect: Effect.Effect<A, E, R>) =>
                 lock.withPermits(1)(Effect.tapCause(effect, () => Ref.set(isBatchFailed, true))),

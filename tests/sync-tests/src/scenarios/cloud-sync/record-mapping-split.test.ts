@@ -1,6 +1,6 @@
 import { decodeJson, encodeJson, makeTestDbLayer } from '@budgie-at/test-kit';
 import { decodeSyncRecord, joinSplitTransactions } from '@budgie/cloud-sync';
-import { Db, SyncRecordTypeEnum } from '@budgie/contracts';
+import { PERSONAL_SYNC_ZONE, HOUSEHOLD_SYNC_ZONE, Db, SyncRecordTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -17,7 +17,7 @@ import {
 } from '../../harness';
 import { testDb } from '../../harness/scenario/test-db';
 
-const SHARED_ZONE = 'household';
+const SHARED_ZONE = HOUSEHOLD_SYNC_ZONE;
 const SHARED_AMOUNT = 7_654_321;
 const PRIVATE_AMOUNT = 3_141_592;
 
@@ -55,7 +55,7 @@ describe('cloud-sync/record-mapping split transfers', () => {
             const serializedLeg = encodeJson(leg);
 
             expect(transactionRecords).toHaveLength(2);
-            expect(home.zone).toBe('personal');
+            expect(home.zone).toBe(PERSONAL_SYNC_ZONE);
             expect(home.recordName).toBe(syncIds['transaction']);
             expect(leg.zone).toBe(SHARED_ZONE);
             expect(leg.recordName).toBe(home.encryptedFields['linkId']);
@@ -116,7 +116,9 @@ describe('cloud-sync/record-mapping split transfers', () => {
                 expect(unresolved).toEqual([]);
                 expect(joined.filter(record => record.recordType === SyncRecordTypeEnum.TRANSACTION)).toHaveLength(1);
                 expect(target['transaction_entries']).toHaveLength(2);
-                expect(new Set(target['transaction_entries'].map(row => row['sync_zone']))).toEqual(new Set(['personal', SHARED_ZONE]));
+                expect(new Set(target['transaction_entries'].map(row => row['sync_zone']))).toEqual(
+                    new Set([PERSONAL_SYNC_ZONE, SHARED_ZONE])
+                );
                 expect(target).toEqual(source);
             })
         );

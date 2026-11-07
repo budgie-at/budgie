@@ -1,5 +1,13 @@
 import { BankOwnershipService } from '@budgie/cloud-sync';
-import { BankIntegrationRepository, BankSyncInstallId, ExternalSourceEnum, SyncRecordRepository, SyncRepository } from '@budgie/contracts';
+import {
+    PERSONAL_SYNC_ZONE,
+    HOUSEHOLD_SYNC_ZONE,
+    BankIntegrationRepository,
+    BankSyncInstallId,
+    ExternalSourceEnum,
+    SyncRecordRepository,
+    SyncRepository
+} from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as TestClock from 'effect/testing/TestClock';
@@ -15,7 +23,7 @@ const readOwner = testDb.$client
 const deviceRecordPayload = (installId: string, lastSyncedAt: number) => JSON.stringify({ encryptedFields: { installId, lastSyncedAt } });
 
 describe('cloud-sync/bank ownership', () => {
-    it.effect.each(['personal', 'household'])('never claims placeholder credentials in %s', syncZone => {
+    it.effect.each([PERSONAL_SYNC_ZONE, HOUSEHOLD_SYNC_ZONE])('never claims placeholder credentials in %s', syncZone => {
         const context = makeSyncServiceContext();
 
         return context.run(
@@ -53,7 +61,7 @@ describe('cloud-sync/bank ownership', () => {
                     integration.id
                 ]);
                 yield* records.upsert({
-                    syncZone: 'personal',
+                    syncZone: PERSONAL_SYNC_ZONE,
                     syncId: 'install-b',
                     recordType: 'SyncDevice',
                     systemFields: null,
@@ -65,7 +73,7 @@ describe('cloud-sync/bank ownership', () => {
                 expect(yield* readOwner).toBe('install-b');
 
                 yield* records.upsert({
-                    syncZone: 'personal',
+                    syncZone: PERSONAL_SYNC_ZONE,
                     syncId: 'install-b',
                     recordType: 'SyncDevice',
                     systemFields: null,

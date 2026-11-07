@@ -1,5 +1,6 @@
 import { SYNC_RECORD_DEFINITIONS, SyncOutboxRepository } from '@budgie/cloud-sync';
 import {
+    PERSONAL_SYNC_ZONE,
     Db,
     SyncOutboxOperationEnum,
     SyncIdentityRepository,
@@ -90,7 +91,7 @@ describe('cloud-sync/outbox-triggers', () => {
                 const repository = yield* SyncOutboxRepository;
                 yield* repository.enqueue({
                     recordType: 'Account',
-                    syncZone: 'personal',
+                    syncZone: PERSONAL_SYNC_ZONE,
                     syncId: account.syncId ?? '',
                     operation: SyncOutboxOperationEnum.DELETE,
                     changedColumns: '["@movedTo:household"]'
@@ -109,9 +110,10 @@ describe('cloud-sync/outbox-triggers', () => {
                     );
                     expect(trigger).toBeDefined();
                     if (descriptor === definition.parent) {
+                        const columns = getTableColumns(descriptor.table);
                         for (const column of descriptor.columns) {
                             expect(trigger.sql).toContain(
-                                `OLD."${getTableColumns(descriptor.table)[column.property].name}" IS NOT NEW."${getTableColumns(descriptor.table)[column.property].name}"`
+                                `OLD."${columns[column.property].name}" IS NOT NEW."${columns[column.property].name}"`
                             );
                         }
                     } else {

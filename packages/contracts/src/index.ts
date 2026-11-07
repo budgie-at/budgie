@@ -453,4 +453,6 @@ export { buildAccountSharedByOtherSql } from './cloud-sync/utils/build-account-s
 export { SyncResetRepository } from './cloud-sync/repository/sync-reset.repository';
 export { BankSyncInstallId } from './cloud-sync/constant/bank-sync-install-id.constant';
 
-export { MOVED_TO_TOMBSTONE_SQL } from './cloud-sync/constant/moved-to-tombstone-sql.constant';
+export { MOVED_TO_TOMBSTONE_SQL, MOVED_TO_TOMBSTONE_PARAMETERS } from './cloud-sync/constant/moved-to-tombstone-sql.constant';
+
+export { SYNC_MOVED_TO_MARKER_PREFIX, SYNC_MOVED_FROM_MARKER_PREFIX } from './cloud-sync/constant/sync-move-markers.constant';

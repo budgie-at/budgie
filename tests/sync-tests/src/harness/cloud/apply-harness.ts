@@ -1,6 +1,6 @@
 import { encodeJson } from '@budgie-at/test-kit';
 import { SyncAccountBalanceRefresher, SyncApplyService, SyncUploadService, SyncOutboxRepository } from '@budgie/cloud-sync';
-import { Db, HOUSEHOLD_SYNC_ZONE, SyncRecordRepository } from '@budgie/contracts';
+import { PERSONAL_SYNC_ZONE, Db, HOUSEHOLD_SYNC_ZONE, SyncRecordRepository } from '@budgie/contracts';
 import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -85,7 +85,7 @@ export const uploadDevice = (database: DB, clouds: ShareCloudsInterface) =>
                 readonly syncId: string;
             }>(`SELECT record_type AS recordType, sync_zone AS syncZone, sync_id AS syncId FROM sync_outbox`);
             const recordTypes = new Map(outbox.map(row => [`${row.syncZone}|${row.syncId}`, row.recordType]));
-            const batch = yield* uploadService.pending(10_000, new Set());
+            const batch = yield* uploadService.pending(10_000, new Set(), [PERSONAL_SYNC_ZONE, HOUSEHOLD_SYNC_ZONE], null);
 
             if (batch.rejections.length > 0) {
                 return yield* Effect.die(`upload rejected: ${encodeJson(batch.rejections)}`);

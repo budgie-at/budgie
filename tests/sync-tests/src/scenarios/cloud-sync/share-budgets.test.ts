@@ -1,6 +1,6 @@
 import { TestSeedService } from '@budgie-at/test-kit';
 import { BudgetRepository, computeSpent } from '@budgie/budget';
-import { HouseholdShareService } from '@budgie/cloud-sync';
+import { HouseholdShareStateEnum, SyncUploadService, SyncOutboxRepository, HouseholdShareService } from '@budgie/cloud-sync';
 import {
     HOUSEHOLD_SYNC_ZONE,
     PERSONAL_SYNC_ZONE,
@@ -10,6 +10,8 @@ import {
     BudgetPeriodEnum,
     Db,
     InstrumentEntityTable,
+    SyncRecordTypeEnum,
+    SyncResetRepository,
     SyncZoneRoleEnum
 } from '@budgie/contracts';
 import { describe, expect } from '@effect/vitest';
@@ -112,6 +114,33 @@ const startBudgetShare = Effect.gen(function* () {
 
 describe('cloud-sync/share-budgets', () => {
     shareDevices('two devices', it => {
+        it.effect('retains ownership and clears tombstone tags after resetting shared budgets', () =>
+            Effect.gen(function* () {
+                const { budget } = yield* startBudgetShare;
+                yield* onShareDevice(
+                    testDb,
+                    Effect.gen(function* () {
+                        yield* (yield* SyncResetRepository).clearSyncState();
+                        yield* (yield* SyncOutboxRepository).enqueueAll(PERSONAL_SYNC_ZONE);
+                        const status = yield* (yield* HouseholdShareService).findBudgetShareStatus(budget.id);
+                        expect(status.state).toBe(HouseholdShareStateEnum.SHARED_BY_ME);
+                        expect(status).not.toHaveProperty('ownerName');
+                        const batch = yield* (yield* SyncUploadService).pending(1000, new Set(), [PERSONAL_SYNC_ZONE], null);
+                        const tombstone = batch.saves
+                            .flatMap(save => save.records)
+                            .find(record => record.recordType === SyncRecordTypeEnum.BUDGET);
+                        expect(tombstone).toBeDefined();
+                        expect(tombstone?.encryptedFields['movedTo']).toBe(HOUSEHOLD_SYNC_ZONE);
+                        expect(
+                            yield* queryRows(testDb, 'SELECT system_fields FROM sync_record WHERE sync_zone = ? AND sync_id = ?', [
+                                PERSONAL_SYNC_ZONE,
+                                tombstone?.recordName ?? ''
+                            ])
+                        ).toEqual([{ system_fields: null }]);
+                    }).pipe(Effect.provide([SyncResetRepository.layer, SyncOutboxRepository.layer]))
+                );
+            })
+        );
         it.effect('moves a budget with its limits to the household and keeps spending equal on both devices after edits on each', () =>
             Effect.gen(function* () {
                 const { deviceB, clouds, budget } = yield* startBudgetShare;

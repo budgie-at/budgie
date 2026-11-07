@@ -9,7 +9,13 @@ import {
     ICloudSyncScope,
     ICloudZoneChangeReason
 } from '@budgie/cloud-sync';
-import { HOUSEHOLD_SYNC_ZONE, SyncDatabaseScopeEnum, SyncZoneRoleEnum, SyncZoneRegistryRepository } from '@budgie/contracts';
+import {
+    PERSONAL_SYNC_ZONE,
+    HOUSEHOLD_SYNC_ZONE,
+    SyncDatabaseScopeEnum,
+    SyncZoneRoleEnum,
+    SyncZoneRegistryRepository
+} from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
 import { testDb } from '../scenario/test-db';
@@ -96,7 +102,8 @@ export const pushHouseholdZone = (database: DB, cloud: FakeCloudTransport) =>
 export const readPersonalBalances = (database: DB) =>
     database.$client.unsafe<{ readonly title: string; readonly amount: number }>(
         `SELECT a.title AS title, b.amount AS amount FROM accounts a INNER JOIN account_balances b ON b.account_id = a.id
-        WHERE a.sync_zone = 'personal' ORDER BY a.title`
+        WHERE a.sync_zone = ? ORDER BY a.title`,
+        [PERSONAL_SYNC_ZONE]
     );
 
 export const readSyncIds = (database: DB, tableName: string, zone: string) =>

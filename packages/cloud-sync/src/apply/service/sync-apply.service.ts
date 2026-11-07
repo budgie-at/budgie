@@ -1,22 +1,27 @@
-import { Db, SyncOutboxOperationEnum, SyncRecordTypeEnum, SyncApplyStateRepository, SyncRecordRepository } from '@budgie/contracts';
+import {
+    Db,
+    SyncOutboxOperationEnum,
+    SyncRecordTypeEnum,
+    SyncApplyStateRepository,
+    SyncRecordRepository,
+    SYNC_MOVED_FROM_MARKER_PREFIX,
+    SYNC_MOVED_TO_MARKER_PREFIX
+} from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
-import * as Option from 'effect/Option';
 import * as Predicate from 'effect/Predicate';
 import * as Result from 'effect/Result';
 import * as Schema from 'effect/Schema';
 
 import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString, isRecord, isString } from '@rnw-community/shared';
 
-import { CloudSyncSessionState } from '../../engine/service/cloud-sync-session-state.service';
 import { SYNC_RECORD_DEFINITIONS } from '../../mapping/constant/sync-record-definitions.constant';
 import { SYNC_RECORD_SCHEMA_VERSION } from '../../mapping/constant/sync-record-schema-version.constant';
 import { SyncReferenceKindEnum } from '../../mapping/enum/sync-reference-kind.enum';
 import { joinSplitTransactions } from '../../mapping/utils/join-split-transactions.util';
 import { SYNC_CHANGED_COLUMNS_SCHEMA } from '../../outbox/constant/sync-changed-columns-schema.constant';
 import { SyncOutboxRepository } from '../../outbox/repository/sync-outbox.repository';
-import { SYNC_MOVED_FROM_MARKER_PREFIX, SYNC_MOVED_TO_MARKER_PREFIX } from '../../share/constant/sync-move-markers.constant';
 import { SYNC_JSON_UNKNOWN_SCHEMA } from '../constant/sync-json-unknown-schema.constant';
 import { SYNC_SCHEMA_PAUSED_MISSING_RECORD_TYPE } from '../constant/sync-schema-paused.constant';
 import { SyncApplyRepository } from '../repository/sync-apply.repository';
@@ -38,10 +43,10 @@ import type { SyncApplyUnitInterface } from '../interface/sync-apply-unit.interf
 import type { SyncHeldItemInterface } from '../interface/sync-held-item.interface';
 import type { SyncIncomingDeletionInterface } from '../interface/sync-incoming-deletion.interface';
 import type { SyncIncomingRecordInterface } from '../interface/sync-incoming-record.interface';
+import type { SyncOwnerTransferRetryInterface } from '../interface/sync-owner-transfer-retry.interface';
 
 export class SyncApplyService extends Context.Service<SyncApplyService>()('@budgie/cloud-sync/SyncApplyService', {
     make: Effect.gen(function* () {
-        const sessionState = yield* Effect.serviceOption(CloudSyncSessionState);
         const repository = yield* SyncApplyRepository;
         const applyStateRepository = yield* SyncApplyStateRepository;
         const outboxRepository = yield* SyncOutboxRepository;
@@ -339,24 +344,6 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
                 }
             }
         });
-        const reenqueueOwnerTransfer = Effect.fnUntraced(function* (zone: string, recordName: string) {
-            const cached = yield* recordRepository.find(zone, recordName);
-            const payload = isDefined(cached?.payload)
-                ? yield* Schema.decodeEffect(SYNC_JSON_UNKNOWN_SCHEMA)(cached.payload).pipe(Effect.orDie)
-                : null;
-            const fields = isRecord(payload) ? payload['encryptedFields'] : null;
-            const linkId = isRecord(fields) ? fields['linkId'] : null;
-            if (isString(linkId)) {
-                if (Option.isSome(sessionState)) {
-                    const targets = sessionState.value.ownerTransferRetries.get(linkId) ?? new Map<string, string>();
-                    targets.set(zone, recordName);
-                    sessionState.value.ownerTransferRetries.set(linkId, targets);
-                } else {
-                    yield* enqueueOwnerTransfer(linkId, zone, recordName);
-                }
-            }
-        });
-
         const applyDeletion = Effect.fnUntraced(function* (
             deletion: SyncIncomingDeletionInterface,
             pausedZones: ReadonlySet<string>,
@@ -381,7 +368,7 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
                 const row = yield* repository.findRow(tableName, zone, recordName);
 
                 if (!isDefined(row) && definition.recordType === SyncRecordTypeEnum.TRANSACTION_LEG) {
-                    yield* reenqueueOwnerTransfer(zone, recordName);
+                    tracker.ownerTransferRetries.push({ linkId: recordName, zone, recordName });
                 }
 
                 if (isDefined(row)) {
@@ -488,14 +475,11 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
         );
 
         return {
-            completeOwnerTransfers: Effect.fn('SyncApplyService.completeOwnerTransfers')(function* () {
-                if (Option.isSome(sessionState)) {
-                    for (const [linkId, targets] of sessionState.value.ownerTransferRetries) {
-                        for (const [zone, recordName] of targets) {
-                            yield* enqueueOwnerTransfer(linkId, zone, recordName);
-                        }
-                    }
-                    sessionState.value.ownerTransferRetries.clear();
+            enqueueOwnerTransfers: Effect.fn('SyncApplyService.enqueueOwnerTransfers')(function* (
+                retries: readonly SyncOwnerTransferRetryInterface[]
+            ) {
+                for (const { linkId, zone, recordName } of retries) {
+                    yield* enqueueOwnerTransfer(linkId, zone, recordName);
                 }
             }),
             apply,

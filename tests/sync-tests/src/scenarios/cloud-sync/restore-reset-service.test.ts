@@ -1,7 +1,13 @@
 import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { cloudSyncStatusAtom } from '@app/cloud-sync/constant/cloud-sync-status-atom.constant';
 import { SyncOutboxRepository, CloudSyncRestorePhaseEnum, ICloudErrorCode, ICloudSyncScope } from '@budgie/cloud-sync';
-import { SyncOutboxOperationEnum, SyncResetRepository, SyncRecordRepository, SyncIdentityRepository } from '@budgie/contracts';
+import {
+    PERSONAL_SYNC_ZONE,
+    SyncOutboxOperationEnum,
+    SyncResetRepository,
+    SyncRecordRepository,
+    SyncIdentityRepository
+} from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -201,21 +207,21 @@ describe('cloud-sync/restore-reset service', () => {
             })
         )
     );
-    it.effect('keeps account ownership tombstones when resetting sync state', () =>
+    it.effect.each(['Account', 'Budget'])('keeps %s ownership tombstones when resetting sync state', recordType =>
         onDevice(
             testDb,
             Effect.gen(function* () {
                 const records = yield* SyncRecordRepository;
                 yield* records.upsert({
-                    syncZone: 'personal',
+                    syncZone: PERSONAL_SYNC_ZONE,
                     syncId: 'own-shared-account',
-                    recordType: 'Account',
+                    recordType,
                     payload: '{"encryptedFields":{"movedTo":"household"}}',
                     systemFields: 'stale-tag'
                 });
                 yield* (yield* SyncOutboxRepository).enqueue({
-                    recordType: 'Account',
-                    syncZone: 'personal',
+                    recordType,
+                    syncZone: PERSONAL_SYNC_ZONE,
                     syncId: 'pending-move',
                     operation: SyncOutboxOperationEnum.DELETE,
                     changedColumns: '["@movedTo:household"]'
@@ -224,8 +230,8 @@ describe('cloud-sync/restore-reset service', () => {
                 expect(yield* testDb.$client.unsafe("SELECT changed_columns FROM sync_outbox WHERE sync_id = 'pending-move'")).toEqual([
                     { changed_columns: '["@movedTo:household"]' }
                 ]);
-                yield* (yield* SyncOutboxRepository).enqueueAll('personal');
-                expect((yield* records.find('personal', 'own-shared-account'))?.systemFields).toBeNull();
+                yield* (yield* SyncOutboxRepository).enqueueAll(PERSONAL_SYNC_ZONE);
+                expect((yield* records.find(PERSONAL_SYNC_ZONE, 'own-shared-account'))?.systemFields).toBeNull();
                 expect(
                     yield* testDb.$client.unsafe("SELECT operation, changed_columns FROM sync_outbox WHERE sync_id = 'own-shared-account'")
                 ).toEqual([{ operation: 'DELETE', changed_columns: '["@movedTo:household"]' }]);

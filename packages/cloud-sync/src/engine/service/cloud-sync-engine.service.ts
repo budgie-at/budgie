@@ -135,7 +135,8 @@ export class CloudSyncEngineService extends Context.Service<CloudSyncEngineServi
 
             yield* refreshZones();
             yield* householdService.refreshPrivateOwnerName();
-            yield* applyService.resume();
+            const resumed = yield* applyService.resume();
+            yield* state.trackOwnerTransferRetries(resumed.ownerTransferRetries);
             yield* transport.ensureZone(scope, CLOUD_SYNC_RECORDS.personalZoneName);
 
             for (const zone of state.zones.values()) {
@@ -172,7 +173,15 @@ export class CloudSyncEngineService extends Context.Service<CloudSyncEngineServi
             }
 
             yield* Ref.set(state.isBatchFailed, false);
-            yield* transport.startSync(scope, stateSerialization);
+            yield* transport
+                .startSync(scope, stateSerialization)
+                .pipe(
+                    Effect.catchTag('CloudSyncTransportError', error =>
+                        error.code === ICloudErrorCode.INVALID_STATE
+                            ? stateStore.update({ stateSerialization: null }).pipe(Effect.andThen(transport.startSync(scope, null)))
+                            : Effect.fail(error)
+                    )
+                );
             yield* patch({
                 isEngineRunning: true,
                 isAwaitingMeta: decision === CloudSyncLineageDecisionEnum.WRITE_META,

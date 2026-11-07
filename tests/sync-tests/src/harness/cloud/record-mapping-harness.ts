@@ -288,7 +288,7 @@ export const hydratedSnapshot = (database: DB) =>
         return snapshot;
     });
 
-const FIXTURE_OPERATED_AT = new Date('2026-10-02T10:00:00Z');
+const OPERATED_AT = new Date('2026-10-02T10:00:00Z');
 
 export const seedFullLedger = (database: DB) =>
     Effect.gen(function* () {
@@ -420,7 +420,7 @@ export const seedFullLedger = (database: DB) =>
         const expense = yield* seed.manualExpense({
             accountId: cash.id,
             amount: 12_500_000,
-            operatedAt: FIXTURE_OPERATED_AT,
+            operatedAt: OPERATED_AT,
             categoryId: coffee.id,
             comment: 'morning',
             title: 'Cafe'

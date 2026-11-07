@@ -1,5 +1,12 @@
 import { SyncOutboxRepository, ICLOUD_DEFAULT_OWNER_NAME } from '@budgie/cloud-sync';
-import { SyncDatabaseScopeEnum, SyncOutboxOperationEnum, SyncZoneRegistryRepository, SyncZoneRoleEnum } from '@budgie/contracts';
+import {
+    PERSONAL_SYNC_ZONE,
+    HOUSEHOLD_SYNC_ZONE,
+    SyncDatabaseScopeEnum,
+    SyncOutboxOperationEnum,
+    SyncZoneRegistryRepository,
+    SyncZoneRoleEnum
+} from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -18,10 +25,10 @@ describe('cloud-sync/sync-service split transactions', () => {
                 const service = yield* syncService;
                 const registry = yield* SyncZoneRegistryRepository;
                 const outbox = yield* SyncOutboxRepository;
-                const { sharedAccount, transfer } = yield* seedCrossZoneTransfer(testDb, 'household');
+                const { sharedAccount, transfer } = yield* seedCrossZoneTransfer(testDb, HOUSEHOLD_SYNC_ZONE);
 
                 yield* registry.upsert({
-                    zoneLabel: 'household',
+                    zoneLabel: HOUSEHOLD_SYNC_ZONE,
                     zoneName: 'Household',
                     ownerName: ICLOUD_DEFAULT_OWNER_NAME,
                     databaseScope: SyncDatabaseScopeEnum.PRIVATE,
@@ -41,13 +48,14 @@ describe('cloud-sync/sync-service split transactions', () => {
 
                 expect(yield* countLegRecords).toBe(1);
 
-                yield* testDb.$client.unsafe("UPDATE accounts SET sync_zone = 'personal' WHERE id = ?", [sharedAccount.id]);
-                yield* testDb.$client.unsafe("UPDATE transaction_entries SET sync_zone = 'personal' WHERE account_id = ?", [
+                yield* testDb.$client.unsafe('UPDATE accounts SET sync_zone = ? WHERE id = ?', [PERSONAL_SYNC_ZONE, sharedAccount.id]);
+                yield* testDb.$client.unsafe('UPDATE transaction_entries SET sync_zone = ? WHERE account_id = ?', [
+                    PERSONAL_SYNC_ZONE,
                     sharedAccount.id
                 ]);
                 yield* outbox.enqueue({
                     recordType: 'Transaction',
-                    syncZone: 'personal',
+                    syncZone: PERSONAL_SYNC_ZONE,
                     syncId: transfer.syncId ?? '',
                     operation: SyncOutboxOperationEnum.SAVE,
                     changedColumns: '[]'

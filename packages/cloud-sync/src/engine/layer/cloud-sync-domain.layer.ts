@@ -15,13 +15,12 @@ import { SyncRestoreReconciliationService } from '../../reconciliation/service/s
 import { HouseholdShareService } from '../../share/service/household-share.service';
 import { SyncUploadService } from '../../upload/service/sync-upload.service';
 import { BankOwnershipService } from '../service/bank-ownership.service';
-import { CloudSyncSessionState } from '../service/cloud-sync-session-state.service';
 
-const applyLayer = SyncApplyService.layer.pipe(Layer.provide([syncAccountBalanceRefresherLayer, CloudSyncSessionState.layer]));
+const applyLayer = SyncApplyService.layer.pipe(Layer.provide(syncAccountBalanceRefresherLayer));
 
 export const cloudSyncDomainLayer = Layer.mergeAll(
     SettingsRepository.layer,
-    SyncUploadService.layer.pipe(Layer.provide(CloudSyncSessionState.layer)),
+    SyncUploadService.layer,
     applyLayer,
     SyncRestoreReconciliationService.layer.pipe(Layer.provide(applyLayer)),
     HouseholdMembershipService.layer.pipe(Layer.provide(syncAccountBalanceRefresherLayer)),

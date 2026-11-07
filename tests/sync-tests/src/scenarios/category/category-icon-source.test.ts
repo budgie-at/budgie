@@ -46,13 +46,12 @@ describe('category/icon-source', () => {
             yield* insertLegacyCategory('Side project', UserIconNameEnum.Home, false);
             yield* insertLegacyCategory('Apartment', UserIconNameEnum.Home, true);
             yield* insertLegacyCategory('Coffee runs', UserIconNameEnum.Coffee, false);
-            const syncTriggers = yield* suspendSyncTriggers;
+            yield* Effect.acquireRelease(suspendSyncTriggers, triggers => restoreSyncTriggers(triggers).pipe(Effect.orDie));
             yield* testDb.$client.unsafe('ALTER TABLE categories DROP COLUMN icon_source').raw;
 
             yield* Effect.forEach(MIGRATION_SQL.split('--> statement-breakpoint'), statement => testDb.$client.unsafe(statement).raw, {
                 discard: true
             });
-            yield* restoreSyncTriggers(syncTriggers);
 
             expect(yield* findIconSource('Side project')).toBe(CategoryIconSourceEnum.AUTO);
             expect(yield* findIconSource('Apartment')).toBe(CategoryIconSourceEnum.USER);
@@ -63,7 +62,7 @@ describe('category/icon-source', () => {
                     .from(CategoryEntityTable)
                     .where(eq(CategoryEntityTable.isDefault, true))
             ).not.toContainEqual({ iconSource: CategoryIconSourceEnum.AUTO });
-        }).pipe(Effect.provide(TestLayer))
+        }).pipe(Effect.scoped, Effect.provide(TestLayer))
     );
 
     it.effect('keeps a user-chosen Home and backfills a confident automatic Home', () =>

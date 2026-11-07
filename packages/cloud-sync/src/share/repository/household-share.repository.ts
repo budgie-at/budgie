@@ -1,5 +1,12 @@
-import { Db, PERSONAL_SYNC_ZONE, SyncRecordTypeEnum } from '@budgie/contracts';
-import { getTableColumns } from 'drizzle-orm';
+import {
+    buildAccountSharedByOtherSql,
+    AccountEntityTable,
+    BudgetEntityTable,
+    Db,
+    PERSONAL_SYNC_ZONE,
+    SyncRecordTypeEnum
+} from '@budgie/contracts';
+import { and, eq, not, getTableColumns } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -241,22 +248,23 @@ export class HouseholdShareRepository extends Context.Service<HouseholdShareRepo
             setShareEverything: (isEnabled: boolean) =>
                 execute(['settings'], `UPDATE settings SET household_share_everything = ?`, [isEnabled ? 1 : 0]),
             findAccountIdsSharedByThisUser: (householdZone: string) =>
-                select<{ readonly id: number }>(
-                    `SELECT a.id AS id FROM accounts a
-                    WHERE a.sync_zone = ? AND (
-                        EXISTS (SELECT 1 FROM sync_record r WHERE r.sync_zone = ? AND r.sync_id = a.sync_id AND r.record_type = ?)
-                        OR EXISTS (SELECT 1 FROM sync_outbox o WHERE o.sync_zone = ? AND o.sync_id = a.sync_id AND o.record_type = ?)
-                    )`,
-                    [householdZone, PERSONAL_SYNC_ZONE, SyncRecordTypeEnum.ACCOUNT, PERSONAL_SYNC_ZONE, SyncRecordTypeEnum.ACCOUNT]
+                Db.query(db =>
+                    db
+                        .select({ id: AccountEntityTable.id })
+                        .from(AccountEntityTable)
+                        .where(and(eq(AccountEntityTable.syncZone, householdZone), not(buildAccountSharedByOtherSql())))
                 ).pipe(Effect.map(rows => rows.map(({ id }) => id))),
             findBudgetIdsSharedByThisUser: (householdZone: string) =>
-                select<{ readonly id: number }>(
-                    `SELECT b.id AS id FROM budgets b
-                    WHERE b.sync_zone = ? AND (
-                        EXISTS (SELECT 1 FROM sync_record r WHERE r.sync_zone = ? AND r.sync_id = b.sync_id AND r.record_type = ?)
-                        OR EXISTS (SELECT 1 FROM sync_outbox o WHERE o.sync_zone = ? AND o.sync_id = b.sync_id AND o.record_type = ?)
-                    )`,
-                    [householdZone, PERSONAL_SYNC_ZONE, SyncRecordTypeEnum.BUDGET, PERSONAL_SYNC_ZONE, SyncRecordTypeEnum.BUDGET]
+                Db.query(db =>
+                    db
+                        .select({ id: BudgetEntityTable.id })
+                        .from(BudgetEntityTable)
+                        .where(
+                            and(
+                                eq(BudgetEntityTable.syncZone, householdZone),
+                                not(buildAccountSharedByOtherSql(BudgetEntityTable, SyncRecordTypeEnum.BUDGET))
+                            )
+                        )
                 ).pipe(Effect.map(rows => rows.map(({ id }) => id)))
         };
     })

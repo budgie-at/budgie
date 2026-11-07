@@ -1,4 +1,4 @@
-import { Db, SyncOutboxEntityTable, SyncPendingEntityTable } from '@budgie/contracts';
+import { SyncRecordTypeEnum, Db, SyncOutboxEntityTable, SyncPendingEntityTable } from '@budgie/contracts';
 import { and, eq, inArray, ne } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -115,11 +115,19 @@ export class SyncApplyRepository extends Context.Service<SyncApplyRepository>()(
             return Db.query(db =>
                 db.$client.unsafe<SyncFamilyRecordInterface>(
                     `SELECT sync_zone AS syncZone, sync_id AS syncId, payload, system_fields AS systemFields, 0 AS isPending
-                    FROM sync_record WHERE record_type IN ('Transaction', 'TransactionLeg') AND payload LIKE ?
+                    FROM sync_record WHERE record_type IN (?, ?) AND payload LIKE ?
                     UNION ALL
                     SELECT sync_zone, sync_id, payload, system_fields, 1
-                    FROM sync_pending WHERE record_type IN ('Transaction', 'TransactionLeg') AND missing_record_type <> ? AND payload LIKE ?`,
-                    [pattern, SYNC_SCHEMA_PAUSED_MISSING_RECORD_TYPE, pattern]
+                    FROM sync_pending WHERE record_type IN (?, ?) AND missing_record_type <> ? AND payload LIKE ?`,
+                    [
+                        SyncRecordTypeEnum.TRANSACTION,
+                        SyncRecordTypeEnum.TRANSACTION_LEG,
+                        pattern,
+                        SyncRecordTypeEnum.TRANSACTION,
+                        SyncRecordTypeEnum.TRANSACTION_LEG,
+                        SYNC_SCHEMA_PAUSED_MISSING_RECORD_TYPE,
+                        pattern
+                    ]
                 )
             );
         },

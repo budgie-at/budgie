@@ -1,4 +1,5 @@
 import {
+    HOUSEHOLD_SYNC_ZONE,
     AccountDebtTypeEnum,
     AccountEntityTable,
     transactionFilters,
@@ -64,7 +65,7 @@ describe('opening a debt from a funding account', () => {
     it.effect('categorizes the first debt funded from a household account', () =>
         Effect.gen(function* () {
             const funding = yield* seed.account({ title: 'Household funding' });
-            yield* testDb.$client.unsafe("UPDATE accounts SET sync_zone = 'household' WHERE id = ?", [funding.id]);
+            yield* testDb.$client.unsafe('UPDATE accounts SET sync_zone = ? WHERE id = ?', [HOUSEHOLD_SYNC_ZONE, funding.id]);
             yield* openDebt(AccountDebtTypeEnum.LENT, funding);
             const [entry] = yield* readEntries(funding.id);
             expect(entry.categoryId).toBe(LENDING_CATEGORY_ID);

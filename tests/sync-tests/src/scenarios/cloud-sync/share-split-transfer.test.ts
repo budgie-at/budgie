@@ -1,5 +1,5 @@
 import { TestSeedService } from '@budgie-at/test-kit';
-import { ICloudParticipantRole, SyncApplyService } from '@budgie/cloud-sync';
+import { ICloudParticipantRole, ICloudSyncScope, SyncApplyService } from '@budgie/cloud-sync';
 import { HOUSEHOLD_SYNC_ZONE, PERSONAL_SYNC_ZONE, Db, SyncZoneRoleEnum } from '@budgie/contracts';
 import { TransactionService } from '@budgie/ledger';
 import { describe, expect } from '@effect/vitest';
@@ -8,11 +8,13 @@ import * as Effect from 'effect/Effect';
 import {
     testDb,
     makeSyncServiceContext,
+    matchZoneLineage,
     participantsFor,
     syncService,
     reconfigureAndAcknowledgeMeta,
     flattenBatches,
-    onDevice,
+    sentEvent,
+    savedFrom,
     refreshAllBalances,
     uploadDevice,
     countRows,
@@ -103,6 +105,18 @@ describe('cloud-sync/share-split-transfer', () => {
                         );
                         expect(legs).toHaveLength(1);
                         expect(legs[0].encryptedFields['privateOwnerName']).toBe('Owner Person');
+                        yield* service.handleSentChanges(
+                            sentEvent({ savedRecords: savedFrom(flattenBatches(context.transport.calls.savedBatches), 'saved') })
+                        );
+                        context.transport.behavior.isParticipantLookupFailing = true;
+                        yield* service.reconfigure;
+                        yield* testDb.$client.unsafe("UPDATE transactions SET comment = 'offline edit' WHERE title = 'Top up savings'");
+                        yield* service.drain;
+                        const resentLegs = flattenBatches(context.transport.calls.savedBatches).filter(
+                            record => record.recordType === 'TransactionLeg'
+                        );
+                        expect(resentLegs).toHaveLength(2);
+                        expect(resentLegs[1].encryptedFields['privateOwnerName']).toBe('Owner Person');
                     })
                 );
             })
@@ -123,7 +137,7 @@ describe('cloud-sync/share-split-transfer', () => {
                 yield* makeSyncServiceContext(testDb).run(
                     Effect.gen(function* () {
                         const apply = yield* SyncApplyService;
-                        yield* apply.apply({
+                        const result = yield* apply.apply({
                             records: [],
                             deletions: [{ recordType: 'TransactionLeg', recordName: leg.syncId, zone: HOUSEHOLD_SYNC_ZONE }]
                         });
@@ -133,33 +147,76 @@ describe('cloud-sync/share-split-transfer', () => {
                             records: [],
                             deletions: [{ recordType: 'Transaction', recordName: home.syncId, zone: PERSONAL_SYNC_ZONE }]
                         });
-                        yield* apply.completeOwnerTransfers();
+                        yield* apply.enqueueOwnerTransfers(result.ownerTransferRetries);
                         yield* uploadDevice(testDb, clouds);
                         expect(clouds.personal.inventory(PERSONAL_SYNC_ZONE).has(home.syncId)).toBe(false);
                     })
                 );
             })
         );
-        it.effect('republishes an owner leg deleted remotely without changing the owner ledger', () =>
+        it.effect.each(['fetch', 'resume'])('replays an owner leg deletion after a kill before did-fetch through %s', source =>
             Effect.gen(function* () {
                 const { deviceB, clouds } = yield* startSharedTransfer(SyncZoneRoleEnum.PARTICIPANT);
                 const [leg] = yield* queryRows<{ readonly syncId: string }>(
                     testDb,
                     "SELECT sync_id AS syncId FROM sync_record WHERE record_type = 'TransactionLeg'"
                 );
-                yield* onDevice(
-                    testDb,
-                    Effect.flatMap(SyncApplyService, service =>
-                        service.apply({
-                            records: [],
-                            deletions: [{ recordType: 'TransactionLeg', recordName: leg.syncId, zone: HOUSEHOLD_SYNC_ZONE }]
-                        })
-                    )
+                clouds.household.remove('TransactionLeg', HOUSEHOLD_SYNC_ZONE, leg.syncId);
+                expect(clouds.household.inventory(HOUSEHOLD_SYNC_ZONE).has(leg.syncId)).toBe(false);
+                yield* testDb.$client.unsafe('UPDATE sync_zone_registry SET role = ?, database_scope = ? WHERE zone_label = ?', [
+                    SyncZoneRoleEnum.PARTICIPANT,
+                    ICloudSyncScope.SHARED,
+                    HOUSEHOLD_SYNC_ZONE
+                ]);
+                const context = makeSyncServiceContext(testDb);
+                context.store.holder.state = { ...context.store.holder.state, sharedStateSerialization: 'before-deletion' };
+                const deletion = {
+                    scope: ICloudSyncScope.SHARED,
+                    records: [],
+                    changedShares: [],
+                    deletions: [
+                        { zoneName: 'household-zone', ownerName: '__defaultOwner__', recordType: 'TransactionLeg', recordName: leg.syncId }
+                    ]
+                };
+                yield* context.run(
+                    Effect.gen(function* () {
+                        const service = yield* syncService;
+                        yield* matchZoneLineage(context);
+                        if (source === 'resume') {
+                            yield* testDb.$client.unsafe(
+                                'INSERT INTO sync_pending(sync_zone, sync_id, record_type, missing_record_type, missing_sync_id, payload) VALUES (?, ?, ?, ?, ?, ?)',
+                                [HOUSEHOLD_SYNC_ZONE, leg.syncId, 'TransactionLeg', 'SchemaVersion', '', '{"deletion":true}']
+                            );
+                        }
+                        yield* service.reconfigure;
+                        yield* uploadDevice(testDb, clouds);
+                        if (source === 'fetch') {
+                            yield* service.handleFetchedChanges(deletion);
+                        }
+                        yield* service.handleStateSerialization({ scope: ICloudSyncScope.SHARED, stateSerialization: 'after-deletion' });
+                        expect(context.store.holder.state.sharedStateSerialization).toBe('before-deletion');
+                    })
                 );
-                expect(yield* countRows(testDb, "sync_outbox WHERE record_type = 'Transaction' AND operation = 'SAVE'")).toBe(1);
-                expect(yield* countRows(testDb, 'transaction_entries')).toBe(3);
-                yield* uploadDevice(testDb, clouds);
-                expect(clouds.household.inventory(HOUSEHOLD_SYNC_ZONE).has(leg.syncId)).toBe(true);
+                const restarted = makeSyncServiceContext(testDb, context.store);
+                yield* restarted.run(
+                    Effect.gen(function* () {
+                        const service = yield* syncService;
+                        expect(yield* countRows(testDb, "sync_outbox WHERE record_type = 'Transaction' AND operation = 'SAVE'")).toBe(0);
+                        expect(restarted.store.holder.state.sharedStateSerialization).toBe('before-deletion');
+                        yield* matchZoneLineage(restarted);
+                        yield* service.reconfigure;
+                        yield* uploadDevice(testDb, clouds);
+                        yield* service.handleFetchedChanges(deletion);
+                        yield* service.handleDidFetch({ scope: ICloudSyncScope.PRIVATE });
+                        expect(
+                            flattenBatches(restarted.transport.calls.sharedSavedBatches).some(record => record.recordName === leg.syncId)
+                        ).toBe(true);
+                        yield* uploadDevice(testDb, clouds);
+                        expect(clouds.household.inventory(HOUSEHOLD_SYNC_ZONE).has(leg.syncId)).toBe(true);
+                        yield* service.handleStateSerialization({ scope: ICloudSyncScope.SHARED, stateSerialization: 'after-flush' });
+                        expect(restarted.store.holder.state.sharedStateSerialization).toBe('after-flush');
+                    })
+                );
                 expectNoRejections(yield* pullHousehold(deviceB, clouds, 'member-after-resend'));
                 yield* expectLedgers(deviceB, testDb);
             })

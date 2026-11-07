@@ -74,7 +74,8 @@ describe('cloud-sync/household leave', () => {
                 yield* assertStoredBalancesMatchLedger(memberDb);
 
                 const queuedAccounts = yield* memberDb.$client.unsafe<{ readonly total: number }>(
-                    `SELECT COUNT(*) AS total FROM sync_outbox WHERE sync_zone = 'personal' AND record_type = 'Account'`
+                    `SELECT COUNT(*) AS total FROM sync_outbox WHERE sync_zone = ? AND record_type = 'Account'`,
+                    [PERSONAL_SYNC_ZONE]
                 );
 
                 expect(queuedAccounts[0].total).toBe(2);

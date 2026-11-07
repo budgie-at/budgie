@@ -89,15 +89,17 @@ export class CloudSyncHouseholdService extends Context.Service<CloudSyncHousehol
                     })
                 );
 
-            const refreshPrivateOwnerName = Effect.fnUntraced(function* () {
-                const household = state.zones.get(HOUSEHOLD_SYNC_ZONE);
-                const participants = isDefined(household)
-                    ? yield* transport
-                          .getShareParticipants(household.zoneName)
-                          .pipe(Effect.catchTags({ CloudSyncTransportError: () => Effect.succeed([]) }))
-                    : [];
-                yield* Ref.set(state.privateOwnerName, participants.find(participant => participant.isCurrentUser)?.displayName ?? null);
-            });
+            const refreshPrivateOwnerName = Effect.fnUntraced(
+                function* () {
+                    const household = state.zones.get(HOUSEHOLD_SYNC_ZONE);
+                    const participants = isDefined(household) ? yield* transport.getShareParticipants(household.zoneName) : [];
+                    yield* Ref.set(
+                        state.privateOwnerName,
+                        participants.find(participant => participant.isCurrentUser)?.displayName ?? null
+                    );
+                },
+                Effect.catchTag('CloudSyncTransportError', () => Effect.void)
+            );
 
             const startSharedEngineUnlocked = Effect.fnUntraced(function* (isRestoring: boolean) {
                 const household = state.zones.get(HOUSEHOLD_SYNC_ZONE);
@@ -116,7 +118,17 @@ export class CloudSyncHouseholdService extends Context.Service<CloudSyncHousehol
                 const sharedStateSerialization = isRestoring ? null : (yield* stateStore.read).sharedStateSerialization;
 
                 yield* stateStore.update({ sharedStateSerialization });
-                yield* transport.startSync(ICloudSyncScope.SHARED, sharedStateSerialization);
+                yield* transport
+                    .startSync(ICloudSyncScope.SHARED, sharedStateSerialization)
+                    .pipe(
+                        Effect.catchTag('CloudSyncTransportError', error =>
+                            error.code === ICloudErrorCode.INVALID_STATE
+                                ? stateStore
+                                      .update({ sharedStateSerialization: null })
+                                      .pipe(Effect.andThen(transport.startSync(ICloudSyncScope.SHARED, null)))
+                                : Effect.fail(error)
+                        )
+                    );
                 yield* patch({
                     isSharedEngineRunning: true,
                     isSharedReconciling: isRestoring && (yield* Ref.get(state.session)).isReconciling

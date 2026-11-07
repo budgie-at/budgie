@@ -3,10 +3,9 @@ import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { Db } from '../../@generic/service/db.service';
-import { MOVED_TO_TOMBSTONE_SQL } from '../constant/moved-to-tombstone-sql.constant';
-import { PERSONAL_SYNC_ZONE } from '../constant/personal-sync-zone.constant';
+import { MOVED_TO_TOMBSTONE_SQL, MOVED_TO_TOMBSTONE_PARAMETERS } from '../constant/moved-to-tombstone-sql.constant';
 import { SYNC_IDENTITY_TABLES } from '../constant/sync-identity-tables.constant';
-import { SyncRecordTypeEnum } from '../enum/sync-record-type.enum';
+import { SYNC_MOVED_TO_MARKER_PREFIX } from '../constant/sync-move-markers.constant';
 
 import { SyncApplyStateRepository } from './sync-apply-state.repository';
 
@@ -41,8 +40,12 @@ export class SyncResetRepository extends Context.Service<SyncResetRepository>()(
 
         const clearStateConditions: Readonly<Record<string, string>> = {
             sync_record: ` WHERE NOT (${MOVED_TO_TOMBSTONE_SQL})`,
-            sync_outbox:
-                " WHERE NOT (operation = 'DELETE' AND EXISTS (SELECT 1 FROM json_each(changed_columns) WHERE value LIKE '@movedTo:%'))"
+            sync_outbox: " WHERE NOT (operation = 'DELETE' AND EXISTS (SELECT 1 FROM json_each(changed_columns) WHERE value LIKE ? || '%'))"
+        };
+
+        const clearStateParameters: Readonly<Record<string, readonly string[]>> = {
+            sync_record: MOVED_TO_TOMBSTONE_PARAMETERS,
+            sync_outbox: [SYNC_MOVED_TO_MARKER_PREFIX]
         };
 
         return {
@@ -87,10 +90,10 @@ export class SyncResetRepository extends Context.Service<SyncResetRepository>()(
                 yield* Db.mutation(
                     { type: 'update', tables: ['sync_record'] },
                     Db.query(db =>
-                        db.$client.unsafe(`UPDATE sync_record SET system_fields = NULL WHERE ${MOVED_TO_TOMBSTONE_SQL}`, [
-                            PERSONAL_SYNC_ZONE,
-                            SyncRecordTypeEnum.ACCOUNT
-                        ])
+                        db.$client.unsafe(
+                            `UPDATE sync_record SET system_fields = NULL WHERE ${MOVED_TO_TOMBSTONE_SQL}`,
+                            MOVED_TO_TOMBSTONE_PARAMETERS
+                        )
                     )
                 );
                 yield* Db.mutation(
@@ -101,7 +104,7 @@ export class SyncResetRepository extends Context.Service<SyncResetRepository>()(
                             Db.query(db =>
                                 db.$client.unsafe(
                                     `DELETE FROM ${tableName}${clearStateConditions[tableName] ?? ''}`,
-                                    tableName === 'sync_record' ? [PERSONAL_SYNC_ZONE, SyncRecordTypeEnum.ACCOUNT] : []
+                                    clearStateParameters[tableName] ?? []
                                 )
                             ),
                         {

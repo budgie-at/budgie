@@ -1,3 +1,4 @@
+import { PERSONAL_SYNC_ZONE, HOUSEHOLD_SYNC_ZONE } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -142,10 +143,10 @@ describe('cloud-sync/apply-delivery', () => {
                 const personal = yield* seed.account({ title: 'Personal' });
                 const household = yield* seed.account({ title: 'Household' });
 
-                yield* testDb.$client.unsafe(`UPDATE accounts SET sync_zone = 'household' WHERE id = ?`, [household.id]);
+                yield* testDb.$client.unsafe(`UPDATE accounts SET sync_zone = ? WHERE id = ?`, [HOUSEHOLD_SYNC_ZONE, household.id]);
                 yield* testDb.$client.unsafe(
-                    `UPDATE sync_outbox SET sync_zone = 'household' WHERE sync_id = (SELECT sync_id FROM accounts WHERE id = ?)`,
-                    [household.id]
+                    `UPDATE sync_outbox SET sync_zone = ? WHERE sync_id = (SELECT sync_id FROM accounts WHERE id = ?)`,
+                    [HOUSEHOLD_SYNC_ZONE, household.id]
                 );
                 yield* seed.directTransfer({
                     exchangeRate: 1,
@@ -168,7 +169,7 @@ describe('cloud-sync/apply-delivery', () => {
 
                 expect(results.some(result => result.heldBack > 0)).toBe(true);
                 expect(results[results.length - 1].heldBack).toBe(0);
-                expect(zones.map(({ zone }) => zone)).toEqual(['household', 'personal']);
+                expect(zones.map(({ zone }) => zone)).toEqual([HOUSEHOLD_SYNC_ZONE, PERSONAL_SYNC_ZONE]);
                 expect(yield* countRows(deviceB, 'transactions')).toBe(1);
                 expect(yield* countRows(deviceB, 'transaction_entries')).toBe(2);
                 yield* expectSameLedger(deviceB);

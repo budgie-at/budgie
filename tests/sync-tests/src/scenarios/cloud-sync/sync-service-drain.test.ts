@@ -2,6 +2,7 @@ import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.consta
 import { cloudSyncStatusAtom } from '@app/cloud-sync/constant/cloud-sync-status-atom.constant';
 import { CloudSyncStatusEnum, HouseholdShareService, ICloudErrorCode, ICloudSyncScope } from '@budgie/cloud-sync';
 import {
+    PERSONAL_SYNC_ZONE,
     HOUSEHOLD_SYNC_ZONE,
     SyncDatabaseScopeEnum,
     SyncIdentityRepository,
@@ -33,6 +34,90 @@ const readSystemFields = (recordName: string) =>
         .pipe(Effect.map(rows => rows.at(0)?.systemFields ?? null));
 
 describe('cloud-sync/sync-service drain', () => {
+    it.effect('pushes a due heartbeat while every data zone is paused', () =>
+        runSyncService((context, service) =>
+            Effect.gen(function* () {
+                yield* TestClock.setTime(Date.now());
+                yield* reconfigureAndAcknowledgeMeta(context, service);
+                const heartbeats = flattenBatches(context.transport.calls.savedBatches).filter(
+                    record => record.recordType === 'SyncDevice'
+                );
+                yield* service.handleSentChanges(sentEvent({ savedRecords: savedFrom(heartbeats, 'heartbeat') }));
+                yield* testDb.$client.unsafe(
+                    'INSERT INTO sync_pending(sync_zone, sync_id, record_type, missing_record_type, missing_sync_id, payload) VALUES (?, ?, ?, ?, ?, ?)',
+                    [PERSONAL_SYNC_ZONE, 'future', 'Account', 'SchemaVersion', '', '{"schemaVersion":999}']
+                );
+                yield* TestClock.adjust('1 day');
+                yield* service.drain;
+                expect(
+                    flattenBatches(context.transport.calls.savedBatches).filter(record => record.recordType === 'SyncDevice')
+                ).toHaveLength(2);
+            })
+        )
+    );
+    it.effect.each([ICloudSyncScope.PRIVATE, ICloudSyncScope.SHARED])('discards invalid %s engine state and retries once', scope =>
+        runSyncService((context, service) =>
+            Effect.gen(function* () {
+                if (scope === ICloudSyncScope.SHARED) {
+                    yield* (yield* SyncZoneRegistryRepository).upsert({
+                        zoneLabel: HOUSEHOLD_SYNC_ZONE,
+                        zoneName: 'Household',
+                        ownerName: 'owner-b',
+                        databaseScope: SyncDatabaseScopeEnum.SHARED,
+                        role: SyncZoneRoleEnum.PARTICIPANT
+                    });
+                }
+                yield* reconfigureAndAcknowledgeMeta(context, service);
+                const stateKey = scope === ICloudSyncScope.PRIVATE ? 'stateSerialization' : 'sharedStateSerialization';
+                context.store.holder.state = { ...context.store.holder.state, [stateKey]: 'corrupt' };
+                context.transport.behavior.isStateInvalid = true;
+                yield* service.stopEngine;
+                yield* service.reconfigure;
+                const started = scope === ICloudSyncScope.PRIVATE ? context.transport.calls.started : context.transport.calls.sharedStarted;
+                expect(started.slice(-2)).toEqual(['corrupt', null]);
+                expect(context.store.holder.state[stateKey]).toBeNull();
+                expect(appAtomRegistry.get(cloudSyncStatusAtom).status).not.toBe(CloudSyncStatusEnum.ERROR);
+            })
+        )
+    );
+    it.effect.each([ICloudErrorCode.QUOTA_EXCEEDED, ICloudErrorCode.ACCOUNT_UNAVAILABLE])(
+        'restarts after terminal initial meta failure %s',
+        code =>
+            runSyncService((context, service) =>
+                Effect.gen(function* () {
+                    const account = yield* seed.account({ title: 'Waiting for meta' });
+                    yield* service.reconfigure;
+                    const [meta] = context.transport.calls.savedBatches;
+                    yield* service.handleSentChanges(
+                        sentEvent({
+                            failedSaves: meta.map(record => ({
+                                ...failedSaveOf(record, code, 'terminal', null),
+                                isRetried: false
+                            }))
+                        })
+                    );
+                    expect(context.transport.calls.stopped).toBeGreaterThan(0);
+                    expect(appAtomRegistry.get(cloudSyncStatusAtom).isQuotaExceeded).toBe(code === ICloudErrorCode.QUOTA_EXCEEDED);
+                    if (code === ICloudErrorCode.ACCOUNT_UNAVAILABLE) {
+                        expect(appAtomRegistry.get(cloudSyncStatusAtom).status).toBe(CloudSyncStatusEnum.ERROR);
+                    }
+                    expect(flattenBatches(context.transport.calls.savedBatches).some(record => record.recordName === account.syncId)).toBe(
+                        false
+                    );
+                    yield* service.start();
+                    yield* context.foregroundHandled.await;
+                    expect(context.transport.calls.started).toHaveLength(2);
+                    const retryMeta = flattenBatches(context.transport.calls.savedBatches.slice(1)).filter(
+                        record => record.recordType === 'SyncMeta'
+                    );
+                    expect(retryMeta).toHaveLength(1);
+                    yield* service.handleSentChanges(sentEvent({ savedRecords: savedFrom(retryMeta, 'retry-meta') }));
+                    expect(flattenBatches(context.transport.calls.savedBatches).some(record => record.recordName === account.syncId)).toBe(
+                        true
+                    );
+                })
+            )
+    );
     it.effect('keeps the meta envelope across an engine retry', () =>
         runSyncService((context, service) =>
             Effect.gen(function* () {
@@ -57,7 +142,8 @@ describe('cloud-sync/sync-service drain', () => {
         runSyncService((context, service) =>
             Effect.gen(function* () {
                 yield* testDb.$client.unsafe(
-                    "WITH RECURSIVE rows(n) AS (SELECT 1 UNION ALL SELECT n + 1 FROM rows WHERE n < 250) INSERT INTO sync_outbox(record_type, sync_zone, sync_id, operation, changed_columns) SELECT 'Account', 'household', 'blocked-' || n, 'SAVE', '[]' FROM rows"
+                    "WITH RECURSIVE rows(n) AS (SELECT 1 UNION ALL SELECT n + 1 FROM rows WHERE n < 250) INSERT INTO sync_outbox(record_type, sync_zone, sync_id, operation, changed_columns) SELECT 'Account', ?, 'blocked-' || n, 'SAVE', '[]' FROM rows",
+                    [HOUSEHOLD_SYNC_ZONE]
                 );
                 const account = yield* seed.account({ title: 'Sendable' });
                 yield* reconfigureAndAcknowledgeMeta(context, service);
@@ -84,7 +170,8 @@ describe('cloud-sync/sync-service drain', () => {
                 );
                 expect(appAtomRegistry.get(cloudSyncStatusAtom).status).not.toBe(CloudSyncStatusEnum.SYNCING);
                 const batches = context.transport.calls.savedBatches.length;
-                yield* service.foreground;
+                yield* service.start();
+                yield* context.foregroundHandled.await;
                 expect(context.transport.calls.savedBatches.length).toBeGreaterThan(batches);
             })
         )
@@ -131,7 +218,8 @@ describe('cloud-sync/sync-service drain', () => {
                 );
                 expect(appAtomRegistry.get(cloudSyncStatusAtom).status).toBe(CloudSyncStatusEnum.ERROR);
                 const deletesBefore = context.transport.calls.deletedBatches.length;
-                yield* service.foreground;
+                yield* service.start();
+                yield* context.foregroundHandled.await;
                 expect(context.transport.calls.deletedBatches.length).toBeGreaterThan(deletesBefore);
                 yield* service.handleSentChanges(sentEvent({ deletedRecords: targets }));
                 expect(appAtomRegistry.get(cloudSyncStatusAtom).status).toBe(CloudSyncStatusEnum.IDLE);

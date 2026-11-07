@@ -1,5 +1,6 @@
 import { encodeJson } from '@budgie-at/test-kit';
 import { SyncApplyService, SyncUploadService } from '@budgie/cloud-sync';
+import { HOUSEHOLD_SYNC_ZONE, PERSONAL_SYNC_ZONE } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -13,12 +14,12 @@ describe('cloud-sync rejected unit restart', () => {
             const original = yield* seed.account({ title: 'Original' });
             const incoming = yield* seed.account({ title: 'Incoming' });
             yield* testDb.$client.unsafe(
-                "INSERT INTO account_external_ids (account_id, external_id, sync_id, sync_zone) VALUES (?, 'duplicate', 'existing-child', 'personal')",
-                [original.id]
+                "INSERT INTO account_external_ids (account_id, external_id, sync_id, sync_zone) VALUES (?, 'duplicate', 'existing-child', ?)",
+                [original.id, PERSONAL_SYNC_ZONE]
             );
             const batch = yield* onDevice(
                 testDb,
-                Effect.flatMap(SyncUploadService, upload => upload.pending(100, new Set()))
+                Effect.flatMap(SyncUploadService, upload => upload.pending(100, new Set(), [PERSONAL_SYNC_ZONE, HOUSEHOLD_SYNC_ZONE], null))
             );
             const record = batch.saves.flatMap(save => save.records).find(item => item.recordName === incoming.syncId);
             expect(record).toBeDefined();

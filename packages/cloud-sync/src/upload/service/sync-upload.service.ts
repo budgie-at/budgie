@@ -1,10 +1,10 @@
 import {
     Db,
-    PERSONAL_SYNC_ZONE,
-    HOUSEHOLD_SYNC_ZONE,
     SyncOutboxOperationEnum,
     SyncRecordTypeEnum,
-    SyncRecordRepository
+    SyncRecordRepository,
+    SYNC_MOVED_FROM_MARKER_PREFIX,
+    SYNC_MOVED_TO_MARKER_PREFIX
 } from '@budgie/contracts';
 import { and, eq, getTableColumns } from 'drizzle-orm';
 import * as Clock from 'effect/Clock';
@@ -12,14 +12,12 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Option from 'effect/Option';
-import * as Ref from 'effect/Ref';
 import * as Result from 'effect/Result';
 import * as Schema from 'effect/Schema';
 
 import { isDefined, isNotEmptyString, isNumber } from '@rnw-community/shared';
 
 import { stringifySyncJson } from '../../apply/utils/stringify-sync-json.util';
-import { CloudSyncSessionState } from '../../engine/service/cloud-sync-session-state.service';
 import { buildCloudSyncKey } from '../../engine/utils/build-cloud-sync-key.util';
 import { SYNC_NATURAL_KEY_PROPERTIES } from '../../mapping/constant/sync-natural-key-properties.constant';
 import { SYNC_RECORD_DEFINITIONS } from '../../mapping/constant/sync-record-definitions.constant';
@@ -27,7 +25,6 @@ import { SyncReferenceKindEnum } from '../../mapping/enum/sync-reference-kind.en
 import { encodeSyncAggregate } from '../../mapping/utils/encode-sync-aggregate.util';
 import { SYNC_CHANGED_COLUMNS_SCHEMA } from '../../outbox/constant/sync-changed-columns-schema.constant';
 import { SyncOutboxRepository } from '../../outbox/repository/sync-outbox.repository';
-import { SYNC_MOVED_FROM_MARKER_PREFIX, SYNC_MOVED_TO_MARKER_PREFIX } from '../../share/constant/sync-move-markers.constant';
 import { isSyncAggregateRecordType } from '../type-guard/is-sync-aggregate-record-type.type-guard';
 
 import type { SyncIdentityInterface } from '../../mapping/interface/sync-identity.interface';
@@ -46,9 +43,6 @@ import type { SyncUploadRejectionInterface } from '../interface/sync-upload-reje
 import type { SyncUploadSaveInterface } from '../interface/sync-upload-save.interface';
 import type { SyncOutboxEntityInterface } from '@budgie/contracts';
 
-const TRANSACTION_RECORD_TYPE: string = SyncRecordTypeEnum.TRANSACTION;
-const SPLIT_FIELDS: ReadonlySet<string> = new Set(['linkId', 'legCount', 'legEntryPrivate']);
-
 export class SyncUploadService extends Context.Service<SyncUploadService>()('@budgie/cloud-sync/SyncUploadService', {
     make: Effect.gen(function* () {
         const withSyncRecordFields = (record: SyncRecordInterface, zone: string, fields: EncodedSyncFieldsType): SyncRecordInterface => ({
@@ -58,9 +52,11 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
         });
         const readSyncMoveMarker = (changedColumns: readonly string[], prefix: string): string | null =>
             changedColumns.find(column => column.startsWith(prefix))?.slice(prefix.length) ?? null;
+        const transactionLegRecordType: string = SyncRecordTypeEnum.TRANSACTION_LEG;
+        const TRANSACTION_RECORD_TYPE: string = SyncRecordTypeEnum.TRANSACTION;
+        const SPLIT_FIELDS: ReadonlySet<string> = new Set(['linkId', 'legCount', 'legEntryPrivate']);
         const syncOutboxRepository = yield* SyncOutboxRepository;
         const syncRecordRepository = yield* SyncRecordRepository;
-        const sessionState = yield* Effect.serviceOption(CloudSyncSessionState);
         const linkedRecordSchema = Schema.fromJsonString(Schema.Struct({ encryptedFields: Schema.Struct({ linkId: Schema.String }) }));
 
         const parseChangedColumns = (changedColumns: string): readonly string[] =>
@@ -174,8 +170,8 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
             const currentLegZones = new Set(
                 records.filter(record => record.recordType === SyncRecordTypeEnum.TRANSACTION_LEG).map(({ zone }) => zone)
             );
-            const storedLegs = (yield* syncRecordRepository.findBySyncId(linked.value.encryptedFields.linkId)).filter(record =>
-                Schema.is(Schema.Literal(SyncRecordTypeEnum.TRANSACTION_LEG))(record.recordType)
+            const storedLegs = (yield* syncRecordRepository.findBySyncId(linked.value.encryptedFields.linkId)).filter(
+                record => record.recordType === transactionLegRecordType
             );
 
             return storedLegs
@@ -209,14 +205,13 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
                 : Result.succeed(encoded.success);
         });
 
-        const annotateRecords = Effect.fnUntraced(function* (
+        const annotateRecords = (
             records: readonly SyncRecordInterface[],
             row: SyncOutboxEntityInterface,
-            movedFrom: string | null
-        ) {
-            const legOwnerName = Option.isSome(sessionState) ? yield* Ref.get(sessionState.value.privateOwnerName) : null;
-
-            return records.map(record => {
+            movedFrom: string | null,
+            legOwnerName: string | null
+        ) =>
+            records.map(record => {
                 if (record.recordType === SyncRecordTypeEnum.TRANSACTION_LEG && isNotEmptyString(legOwnerName)) {
                     return withSyncRecordFields(record, record.zone, { privateOwnerName: legOwnerName });
                 }
@@ -225,9 +220,8 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
                     ? withSyncRecordFields(record, record.zone, { movedFrom })
                     : record;
             });
-        });
 
-        const buildSave = Effect.fnUntraced(function* (row: SyncOutboxEntityInterface) {
+        const buildSave = Effect.fnUntraced(function* (row: SyncOutboxEntityInterface, privateOwnerName: string | null) {
             if (!isSyncAggregateRecordType(row.recordType)) {
                 return rejected(row, `Unknown record type ${row.recordType}`);
             }
@@ -239,7 +233,12 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
             }
 
             const changedColumns = parseChangedColumns(row.changedColumns);
-            const records = yield* annotateRecords(encoded.success, row, readSyncMoveMarker(changedColumns, SYNC_MOVED_FROM_MARKER_PREFIX));
+            const records = annotateRecords(
+                encoded.success,
+                row,
+                readSyncMoveMarker(changedColumns, SYNC_MOVED_FROM_MARKER_PREFIX),
+                privateOwnerName
+            );
 
             return {
                 syncZone: row.syncZone,
@@ -302,7 +301,8 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
             pending: Effect.fn('SyncUploadService.pending')(function* (
                 limit: number,
                 skippedKeys: ReadonlySet<string>,
-                sendableZones: readonly string[] = [PERSONAL_SYNC_ZONE, HOUSEHOLD_SYNC_ZONE]
+                sendableZones: readonly string[],
+                privateOwnerName: string | null
             ) {
                 const rows = (yield* syncOutboxRepository.findPending(limit, sendableZones)).filter(
                     row => !skippedKeys.has(buildCloudSyncKey(row.syncZone, row.syncId))
@@ -324,7 +324,7 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
                             deletions.push(deletion);
                         }
                     } else {
-                        const save = yield* buildSave(row);
+                        const save = yield* buildSave(row, privateOwnerName);
 
                         if ('reason' in save) {
                             rejections.push(save);

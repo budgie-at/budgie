@@ -1,6 +1,7 @@
-import { cloudSyncDatabaseChangesLayer } from '@app/cloud-sync/layer/cloud-sync-database-changes.layer';
 import { cloudSyncHostLayer } from '@app/cloud-sync/layer/cloud-sync-host.layer';
 import {
+    CloudSyncHost,
+    CloudSyncDatabaseChanges,
     ICloudAccountStatusEnum,
     cloudSyncDomainLayer,
     CloudSyncInstallId,
@@ -21,9 +22,12 @@ import {
 } from '@budgie/cloud-sync';
 import { BankIntegrationRepository, Db, SyncIdentityRepository, SyncRepository, SyncResetRepository } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
+import * as Latch from 'effect/Latch';
 import * as Layer from 'effect/Layer';
 import * as Reactivity from 'effect/reactivity/Reactivity';
 import * as Stream from 'effect/Stream';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { testDb } from '../scenario/test-db';
 
@@ -71,6 +75,8 @@ interface FakeTransportBehaviorInterface {
     isInventoryFailing: boolean;
     failingInventoryZone: string | null;
     isSaveFailing: boolean;
+    isParticipantLookupFailing: boolean;
+    isStateInvalid: boolean;
     participants: readonly ICloudShareParticipant[];
     joinedHousehold: ICloudJoinedHousehold | null;
     ownedHousehold: ICloudOwnedHousehold | null;
@@ -102,6 +108,8 @@ const makeFakeTransport = () => {
         isInventoryFailing: false,
         failingInventoryZone: null,
         isSaveFailing: false,
+        isParticipantLookupFailing: false,
+        isStateInvalid: false,
         participants: [],
         joinedHousehold: null,
         ownedHousehold: null
@@ -111,11 +119,14 @@ const makeFakeTransport = () => {
         events: Stream.empty,
         getAccountStatus: Effect.sync(() => behavior.accountStatus),
         startSync: (startScope: ICloudSyncScope, state: string | null) =>
-            Effect.sync(() => {
+            Effect.gen(function* () {
                 if (startScope === ICloudSyncScope.SHARED) {
                     calls.sharedStarted.push(state);
                 } else {
                     calls.started.push(state);
+                }
+                if (behavior.isStateInvalid && state !== null) {
+                    return yield* CloudSyncTransportError.make({ code: ICloudErrorCode.INVALID_STATE, message: 'invalid state' });
                 }
             }),
         stopSync: (stopScope: ICloudSyncScope) =>
@@ -163,7 +174,12 @@ const makeFakeTransport = () => {
             Effect.sync(() => {
                 calls.createdShares.push(zoneName);
             }),
-        getShareParticipants: () => Effect.sync(() => behavior.participants),
+        getShareParticipants: () =>
+            Effect.suspend(() =>
+                behavior.isParticipantLookupFailing
+                    ? Effect.fail(CloudSyncTransportError.make({ code: ICloudErrorCode.NETWORK_UNAVAILABLE, message: 'offline' }))
+                    : Effect.succeed(behavior.participants)
+            ),
         findOwnedHousehold: () => Effect.sync(() => behavior.ownedHousehold),
         findJoinedHousehold: () => Effect.sync(() => behavior.joinedHousehold),
         stopSharing: (zoneName: string) =>
@@ -238,9 +254,18 @@ const makeFakeSafetyCopy = () => {
 
 const installIdLayer = Layer.succeed(CloudSyncInstallId, Effect.succeed(INSTALL_ID));
 
-export const makeSyncServiceContext = (database: DB = testDb) => {
+export const makeSyncServiceContext = (database: DB = testDb, store = makeFakeStateStore()) => {
+    const foregroundHandled = Latch.makeUnsafe();
+    const foregroundHostLayer = Layer.effect(
+        CloudSyncHost,
+        Effect.map(CloudSyncHost, host => ({
+            ...host,
+            isForeground: Effect.succeed(false),
+            foregroundChanges: Stream.fromIterable([true, false]),
+            bumpHouseholdRefresh: host.bumpHouseholdRefresh.pipe(Effect.andThen(foregroundHandled.open))
+        }))
+    ).pipe(Layer.provide(cloudSyncHostLayer));
     const transport = makeFakeTransport();
-    const store = makeFakeStateStore();
     const safetyCopy = makeFakeSafetyCopy();
     const automation = makeFakeAutomation();
     const dependencies = Layer.mergeAll(
@@ -248,14 +273,14 @@ export const makeSyncServiceContext = (database: DB = testDb) => {
         store.layer,
         safetyCopy.layer,
         automation.layer,
-        cloudSyncDomainLayer.pipe(Layer.provide([cloudSyncHostLayer, store.layer])),
+        cloudSyncDomainLayer.pipe(Layer.provide([foregroundHostLayer, store.layer])),
         SyncRepository.layer,
         BankIntegrationRepository.layer,
         SyncIdentityRepository.layer,
         SyncResetRepository.layer,
         BankOwnershipService.layer.pipe(Layer.provide(installIdLayer)),
-        cloudSyncHostLayer,
-        cloudSyncDatabaseChangesLayer
+        foregroundHostLayer,
+        Layer.succeed(CloudSyncDatabaseChanges, Stream.empty)
     ).pipe(Layer.provide(Reactivity.layer), Layer.provideMerge(installIdLayer));
     const layer = Layer.mergeAll(
         CloudSyncService.layer,
@@ -266,12 +291,14 @@ export const makeSyncServiceContext = (database: DB = testDb) => {
     ).pipe(Layer.provideMerge(dependencies));
 
     const run = <A, E>(effect: Effect.Effect<A, E, Layer.Success<typeof layer> | Db>) =>
-        Effect.andThen(database.$client.unsafe('UPDATE settings SET lineage_id = NULL'), effect).pipe(
-            Effect.provide(layer),
-            Effect.provideService(Db, database)
-        );
+        Effect.andThen(
+            isDefined(store.holder.state.resolvedLineageId)
+                ? Effect.void
+                : database.$client.unsafe('UPDATE settings SET lineage_id = NULL'),
+            effect
+        ).pipe(Effect.provide(layer), Effect.provideService(Db, database));
 
-    return { transport, store, safetyCopy, automation, run };
+    return { transport, store, safetyCopy, automation, run, foregroundHandled };
 };
 
 export const sentEvent = (patch: Partial<ICloudSentChangesEvent> = {}): ICloudSentChangesEvent => ({
@@ -314,6 +341,7 @@ export const syncService = Effect.gen(function* () {
 
     return {
         ...service,
+        stopEngine: engineService.stopEngineUnlocked(),
         handleFetchedChanges: fetchService.handleFetchedChanges,
         handleStateSerialization: fetchService.handleStateSerialization,
         handleDidFetch: fetchService.handleDidFetch,
