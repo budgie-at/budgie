@@ -1,5 +1,6 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans } from '@lingui/react/macro';
+import { useIsFocused } from 'expo-router';
 import { Text, View } from 'react-native';
 
 import { CollapsibleHeaderBackdrop } from '@rnw-community/react-native-screen-chrome';
@@ -24,6 +25,7 @@ interface Props {
 
 export const NetWorthCollapsibleHeader = (props: Props) => {
     const { netWorth, isLoading } = props;
+    const isFocused = useIsFocused();
 
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const isRunwayPillEnabled = useSetting('isRunwayPillEnabled');
@@ -41,7 +43,7 @@ export const NetWorthCollapsibleHeader = (props: Props) => {
                 <SecurityLockButton />
             </View>
 
-            <LoadingContent isLoading={isLoading} className="gap-y-sm">
+            <LoadingContent isLoading={isLoading} className="gap-y-sm" {...(!isFocused && { loadingIndicator: null })}>
                 <View collapsable={false} testID={HomePageSelector.NetWorthValue(formattedNetWorthValue)}>
                     <HeroFigure amount={netWorth} currencySymbol={defaultInstrument.symbol} variant="primary" />
                 </View>

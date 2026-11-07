@@ -6716,6 +6716,7 @@ msgstr "на місяць"
 msgid "Percent of the plan total before the fee"
 msgstr "Відсоток від суми плану без комісії"
 
+#: src/budget/components/budget-period-field/budget-period-field.tsx
 #: src/budget/components/budget-setup-form/budget-setup-form.tsx
 msgid "Period"
 msgstr "Період"
@@ -7444,6 +7445,7 @@ msgid "Runway needs 3 complete months of transactions to forecast your balance."
 msgstr "Для розрахунку запасу потрібно 3 повні місяці транзакцій."
 
 #: src/app/budget-safe-to-spend.tsx
+#: src/budget/components/budget-safe-to-spend-header/budget-safe-to-spend-header.tsx
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 msgid "Safe to spend"
 msgstr "Безпечно витрачати"
@@ -9193,7 +9195,7 @@ msgstr "Невибрані платежі залишаються у вхідни
 msgid "Untagged"
 msgstr "Без тегу"
 
-#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-safe-to-spend-header/budget-safe-to-spend-header.tsx
 msgid "Until {periodEndLabel}"
 msgstr "До {periodEndLabel}"
 

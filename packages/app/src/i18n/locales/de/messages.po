@@ -6716,6 +6716,7 @@ msgstr "pro Monat"
 msgid "Percent of the plan total before the fee"
 msgstr "Prozent der Plansumme vor der Gebühr"
 
+#: src/budget/components/budget-period-field/budget-period-field.tsx
 #: src/budget/components/budget-setup-form/budget-setup-form.tsx
 msgid "Period"
 msgstr "Zeitraum"
@@ -7444,6 +7445,7 @@ msgid "Runway needs 3 complete months of transactions to forecast your balance."
 msgstr "Die Reichweite braucht 3 vollständige Monate mit Transaktionen, um deinen Kontostand vorherzusagen."
 
 #: src/app/budget-safe-to-spend.tsx
+#: src/budget/components/budget-safe-to-spend-header/budget-safe-to-spend-header.tsx
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 msgid "Safe to spend"
 msgstr "Sicher ausgebbar"
@@ -9193,7 +9195,7 @@ msgstr "Nicht ausgewählte Zahlungen bleiben in deinem Posteingang."
 msgid "Untagged"
 msgstr "Ohne Tag"
 
-#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-safe-to-spend-header/budget-safe-to-spend-header.tsx
 msgid "Until {periodEndLabel}"
 msgstr "Bis {periodEndLabel}"
 

@@ -2,11 +2,14 @@ import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
 import { FormsheetHeader } from '../../../@generic/component/formsheet-header/formsheet-header';
+import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetDataState } from '../budget-data-state/budget-data-state';
 import { BudgetScrollableSheet } from '../budget-scrollable-sheet/budget-scrollable-sheet';
+
+import type { ReactNode } from 'react';
 
 interface Props {
     readonly title: string;
@@ -14,10 +17,11 @@ interface Props {
     readonly isError?: boolean;
     readonly description?: string;
     readonly unavailableTitle?: string;
+    readonly header?: ReactNode;
 }
 
 export const BudgetSheetState = (props: Props) => {
-    const { title, isLoading, isError, description, unavailableTitle } = props;
+    const { title, isLoading, isError, description, unavailableTitle, header } = props;
     const { t } = useLingui();
     const handleClose = () => void goBackOrReplace('/');
     const stateDescription =
@@ -26,9 +30,11 @@ export const BudgetSheetState = (props: Props) => {
 
     return (
         <BudgetScrollableSheet>
-            <FormsheetHeader size="sm" title={title} titleClassName="leading-tight" />
+            {header ?? <FormsheetHeader size="md" title={title} />}
             <View className="px-5xl pt-md pb-3xl gap-y-xl">
-                <BudgetDataState isLoading={isLoading} isError={isError} description={stateDescription} title={unavailableTitle} />
+                <LoadingContent isLoading={isLoading}>
+                    <BudgetDataState isLoading={false} isError={isError} description={stateDescription} title={unavailableTitle} />
+                </LoadingContent>
                 <PillButton label={t`Close`} testID={BudgetSelector.DataStateCloseButton} onPress={handleClose} />
             </View>
         </BudgetScrollableSheet>

@@ -9,12 +9,14 @@ import { FormsheetHeaderAlign } from '../../type/formsheet-header-align.type';
 import { cn } from '../../utils/cn.util';
 import { Icon } from '../icon/icon';
 
+import type { ReactElement } from 'react';
+
 interface Props {
     readonly size: 'sm' | 'md' | 'lg';
     readonly title: string;
     readonly icon?: UserIconNameEnum;
     readonly className?: string;
-    readonly description?: string;
+    readonly description?: string | ReactElement;
     readonly titleClassName?: string;
     readonly descriptionClassName?: string;
     readonly align?: FormsheetHeaderAlign;
@@ -59,6 +61,11 @@ const descriptionVariants = cva('text-center text-secondary-foreground', {
 
 export const FormsheetHeader = (props: Props) => {
     const { size, align = 'center', icon, title, description, className, titleClassName, descriptionClassName } = props;
+    const descriptionContent = isNotEmptyString(description) ? (
+        <Text className={cn(descriptionVariants({ size, align }), descriptionClassName)}>{description}</Text>
+    ) : (
+        description
+    );
 
     return (
         <View className={cn(headerVariant({ align }), className)}>
@@ -66,9 +73,7 @@ export const FormsheetHeader = (props: Props) => {
             <Text maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER} className={cn(titleVariants({ size, align }), titleClassName)}>
                 {title}
             </Text>
-            {isNotEmptyString(description) ? (
-                <Text className={cn(descriptionVariants({ size, align }), descriptionClassName)}>{description}</Text>
-            ) : null}
+            {descriptionContent}
         </View>
     );
 };

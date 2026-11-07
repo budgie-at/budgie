@@ -10,13 +10,11 @@ interface Props {
     readonly onTryAgain: () => void;
 }
 
-const IN_FLOW_STYLE = { position: 'relative' } as const;
-
 export const ForgotPinFooter = ({ onTryAgain }: Props) => {
     const { t } = useLingui();
 
     return (
-        <ScreenChromeFooter includeBottomSafeArea={false} style={IN_FLOW_STYLE}>
+        <ScreenChromeFooter includeBottomSafeArea={false}>
             <View className="w-full bg-surface px-5xl pt-lg pb-safe-offset-[16px] gap-y-md">
                 <Button
                     testID={ForgotPinSheetSelector.TryAgainButton}
