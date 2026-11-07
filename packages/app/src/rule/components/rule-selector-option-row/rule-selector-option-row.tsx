@@ -25,9 +25,10 @@ export const RuleSelectorOptionRow = ({ option, isSelected, onPress, testID }: P
     const handlePress = () => void onPress(option.value);
     const pressableProps = { disabled: isDisabled, accessibilityState: { selected: isSelected, disabled: isDisabled } };
     const titleClassName = isSelected ? 'text-primary text-[17px] font-semibold' : 'text-primary text-[17px]';
+    const disabledTitleClassName = isDisabled ? 'text-secondary-foreground' : '';
     const disabledClassName = isDisabled ? 'opacity-40' : '';
     const title = (
-        <Text className={cn(titleClassName, disabledClassName)} maxFontSizeMultiplier={2}>
+        <Text className={cn(titleClassName, disabledTitleClassName)} maxFontSizeMultiplier={2}>
             {option.label}
         </Text>
     );

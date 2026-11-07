@@ -1018,7 +1018,7 @@ msgstr "Депозит у валюті рахунку списання має о
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 #: src/auth/components/pin-forgotten-warning/pin-forgotten-warning.tsx
 msgid "A forgotten PIN can't be reset."
-msgstr "Забутий PIN-код не можна скинути."
+msgstr "Забутий PIN‑код не можна скинути."
 
 #: src/budget/constant/budget-period-rate-label.constant.ts
 msgid "a month"
@@ -1203,7 +1203,7 @@ msgstr "Додайте людину в «Контактах» і поверні�
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "Add a PIN any time later"
-msgstr "PIN-код можна додати будь-коли пізніше"
+msgstr "PIN‑код можна додати будь-коли пізніше"
 
 #: src/category/components/categories-feature-intro/categories-feature-intro.tsx
 #: src/transaction/components/statistics-empty-ledger/statistics-empty-ledger.tsx
@@ -2017,7 +2017,7 @@ msgstr "Budgie може сортувати нотатки на цьому тел
 
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "Budgie can't reset your PIN"
-msgstr "Budgie не може скинути ваш PIN-код"
+msgstr "Budgie не може скинути ваш PIN‑код"
 
 #: src/sync/component/enable-banking-waiting-step/enable-banking-waiting-step.tsx
 msgid "Budgie continues when you return. If you stay in the browser, use the Return to Budgie link on the page."
@@ -2301,7 +2301,7 @@ msgstr "Змінити іконку, поточна: {iconName}"
 
 #: src/settings/components/pin-management-rows/pin-management-rows.tsx
 msgid "Change PIN"
-msgstr "Змінити PIN-код"
+msgstr "Змінити PIN‑код"
 
 #: src/budget/hooks/use-budget-forecast-labels.hook.ts
 msgid "Chart max {scaleAmount}"
@@ -2393,7 +2393,7 @@ msgstr "Виберіть рахунок отримувача"
 #: src/auth/components/pin-restart-button/pin-restart-button.tsx
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Choose a different PIN"
-msgstr "Вибрати інший PIN-код"
+msgstr "Вибрати інший PIN‑код"
 
 #: src/rule/components/rule-condition-mcc-selector/rule-condition-mcc-selector.tsx
 msgid "Choose a merchant category"
@@ -2401,7 +2401,7 @@ msgstr "Виберіть категорію продавця"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Choose a new PIN"
-msgstr "Виберіть новий PIN-код"
+msgstr "Виберіть новий PIN‑код"
 
 #: src/transaction/components/statistics-period-control/statistics-period-control.tsx
 msgid "Choose a period"
@@ -2415,7 +2415,7 @@ msgstr "Виберіть період для повторної синхроні
 #: src/auth/utils/get-pin-setup-meta.util.ts
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Choose a PIN"
-msgstr "Виберіть PIN-код"
+msgstr "Виберіть PIN‑код"
 
 #: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx
 msgid "Choose a source"
@@ -2462,7 +2462,7 @@ msgstr "Виберіть дію"
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Choose and confirm a PIN"
-msgstr "Виберіть і підтвердьте PIN-код"
+msgstr "Виберіть і підтвердьте PIN‑код"
 
 #: src/sync/component/enable-banking-waiting-step/enable-banking-waiting-step.tsx
 msgid "Choose another bank"
@@ -2655,12 +2655,12 @@ msgstr "Підтвердити вибір тегів"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Confirm your new PIN"
-msgstr "Підтвердьте новий PIN-код"
+msgstr "Підтвердьте новий PIN‑код"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Confirm your PIN"
-msgstr "Підтвердьте PIN-код"
+msgstr "Підтвердьте PIN‑код"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 #: src/sync/component/enable-banking-connect-account-step/enable-banking-connect-account-step.tsx
@@ -2752,7 +2752,7 @@ msgstr "Продовжити"
 
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
 msgid "Continue without a PIN"
-msgstr "Продовжити без PIN-коду"
+msgstr "Продовжити без PIN‑коду"
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Continue without accounts"
@@ -3237,11 +3237,11 @@ msgstr "Не вдалося завантажити кількість транз
 
 #: src/auth/hook/use-pin-setup.hook.ts
 msgid "Couldn't save your PIN. Enter it again to retry."
-msgstr "Не вдалося зберегти PIN-код. Введіть його ще раз, щоб повторити спробу."
+msgstr "Не вдалося зберегти PIN‑код. Введіть його ще раз, щоб повторити спробу."
 
 #: src/auth/hook/use-pin-setup.hook.ts
 msgid "Couldn't save your PIN. Try again."
-msgstr "Не вдалося зберегти PIN-код. Спробуйте ще раз."
+msgstr "Не вдалося зберегти PIN‑код. Спробуйте ще раз."
 
 #: src/auth/hook/use-pin-setup.hook.ts
 msgid "Couldn't turn off app lock. Try again."
@@ -4039,11 +4039,11 @@ msgstr "Увімкнути правило: {primaryOutcome}"
 
 #: src/settings/components/app-lock-row/app-lock-row.tsx
 msgid "Encrypt with a PIN, unlock with {biometricLabel}"
-msgstr "Шифрування PIN-кодом, розблокування через {biometricLabel}"
+msgstr "Шифрування PIN‑кодом, розблокування через {biometricLabel}"
 
 #: src/settings/components/app-lock-row/app-lock-row.tsx
 msgid "Encrypt your data with a PIN"
-msgstr "Зашифруйте дані PIN-кодом"
+msgstr "Зашифруйте дані PIN‑кодом"
 
 #: src/settings/components/app-lock-row/app-lock-row.tsx
 msgid "Encrypted · PIN"
@@ -4104,16 +4104,16 @@ msgstr "Введіть суму"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enter current PIN"
-msgstr "Введіть поточний PIN-код"
+msgstr "Введіть поточний PIN‑код"
 
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
 msgid "Enter the backup's PIN"
-msgstr "Введіть PIN-код резервної копії"
+msgstr "Введіть PIN‑код резервної копії"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Enter the same PIN again."
-msgstr "Введіть той самий PIN-код ще раз."
+msgstr "Введіть той самий PIN‑код ще раз."
 
 #: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
 msgid "Enter the values below and your own email for data protection. Every field is required."
@@ -4135,11 +4135,11 @@ msgstr "Введіть ваш API-токен Монобанку"
 
 #: src/auth/components/pin-unlock/pin-unlock.tsx
 msgid "Enter your PIN"
-msgstr "Введіть свій PIN-код"
+msgstr "Введіть свій PIN‑код"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enter your PIN to turn it off. Anyone who can unlock this phone will be able to open Budgie."
-msgstr "Введіть PIN-код, щоб вимкнути блокування. Будь-хто, хто може розблокувати цей телефон, зможе відкрити Budgie."
+msgstr "Введіть PIN‑код, щоб вимкнути блокування. Будь-хто, хто може розблокувати цей телефон, зможе відкрити Budgie."
 
 #: src/sync/component/resync-window-option-row/resync-window-option-row.tsx
 msgid "Entire available history"
@@ -4508,7 +4508,7 @@ msgstr "Прогноз"
 
 #: src/auth/components/pin-unlock/pin-unlock.tsx
 msgid "Forgot PIN?"
-msgstr "Забули PIN-код?"
+msgstr "Забули PIN‑код?"
 
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Format"
@@ -4700,7 +4700,7 @@ msgstr "Імпорт історії призупинено"
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Hold to seal with this PIN"
-msgstr "Утримуйте, щоб запечатати цим PIN-кодом"
+msgstr "Утримуйте, щоб запечатати цим PIN‑кодом"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Home screen"
@@ -4930,7 +4930,7 @@ msgstr "Отриманий дохід"
 #: src/auth/hook/use-pin-error.hook.ts
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
 msgid "Incorrect PIN"
-msgstr "Неправильний PIN-код"
+msgstr "Неправильний PIN‑код"
 
 #: src/@generic/component/amount-sign-pill/amount-sign-pill.tsx
 msgid "Increase"
@@ -5275,7 +5275,7 @@ msgstr "Завантаження історії цін"
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Lock Budgie with a PIN"
-msgstr "Заблокуйте Budgie PIN-кодом"
+msgstr "Заблокуйте Budgie PIN‑кодом"
 
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Looks right"
@@ -5299,7 +5299,7 @@ msgstr "Обслуговування"
 
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
 msgid "Make a PIN after all"
-msgstr "Усе ж створити PIN-код"
+msgstr "Усе ж створити PIN‑код"
 
 #: src/tag/components/tag-selector-row/tag-selector-row.tsx
 msgid "Make primary"
@@ -6254,7 +6254,7 @@ msgstr "Коли у вас будуть транзакції за 3 місяці
 
 #: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "One you exported with a PIN you remember"
-msgstr "Ту, яку ви експортували з PIN-кодом, що пам'ятаєте"
+msgstr "Ту, яку ви експортували з PIN‑кодом, що пам'ятаєте"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "One-time import from a Privat24 statement — this is not a live sync, and each export covers a single card or account"
@@ -6283,7 +6283,7 @@ msgstr "Можна конвертувати лише дохідні транза
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "Only me, with a PIN"
-msgstr "Лише я, з PIN-кодом"
+msgstr "Лише я, з PIN‑кодом"
 
 #: src/recurring/hook/use-recurring-schedule-preview.hook.ts
 msgid "Only one payment"
@@ -6332,15 +6332,15 @@ msgstr "Відкрийте Budgie, щоб побачити свої фінанс
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Open Budgie with a glance. Your PIN stays the key to your data."
-msgstr "Відкривайте Budgie одним поглядом. PIN-код і далі залишається ключем до ваших даних."
+msgstr "Відкривайте Budgie одним поглядом. PIN‑код і далі залишається ключем до ваших даних."
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Open Budgie with a touch. Your PIN stays the key to your data."
-msgstr "Відкривайте Budgie одним дотиком. PIN-код і далі залишається ключем до ваших даних."
+msgstr "Відкривайте Budgie одним дотиком. PIN‑код і далі залишається ключем до ваших даних."
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Open Budgie with Face ID or Touch ID. Your PIN stays the key to your data."
-msgstr "Відкривайте Budgie за допомогою Face ID або Touch ID. PIN-код і далі залишається ключем до ваших даних."
+msgstr "Відкривайте Budgie за допомогою Face ID або Touch ID. PIN‑код і далі залишається ключем до ваших даних."
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Open George (Erste Bank online banking)"
@@ -6742,7 +6742,7 @@ msgstr "Блокування телефона · {contents}"
 
 #: src/auth/components/security-lock-button/security-lock-button.tsx
 msgid "Phone lock only. Make a PIN to encrypt your data."
-msgstr "Лише блокування телефона. Створіть PIN-код, щоб зашифрувати дані."
+msgstr "Лише блокування телефона. Створіть PIN‑код, щоб зашифрувати дані."
 
 #: src/category/components/category-destination-sheet/category-destination-sheet.tsx
 msgid "Pick a category to continue"
@@ -6771,16 +6771,16 @@ msgstr "Виберіть застосунок, який експортував �
 
 #: src/auth/components/pin-form-dots/pin-form-dots.tsx
 msgid "PIN, {enteredCount} of {PIN_LENGTH} digits entered"
-msgstr "PIN-код, введено {enteredCount} з {PIN_LENGTH} цифр"
+msgstr "PIN‑код, введено {enteredCount} з {PIN_LENGTH} цифр"
 
 #: src/auth/hook/use-pin-setup.hook.ts
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "PINs don't match. Try again."
-msgstr "PIN-коди не збігаються. Спробуйте ще раз."
+msgstr "PIN‑коди не збігаються. Спробуйте ще раз."
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "PINs match"
-msgstr "PIN-коди збігаються"
+msgstr "PIN‑коди збігаються"
 
 #: src/budget/hooks/use-budget-day-strip-labels.hook.ts
 msgid "Plan {allowanceLabel}/day"
@@ -7333,7 +7333,7 @@ msgstr "Відновлення з копії замінює всі поточн�
 
 #: src/import/hook/use-restore-backup.hook.ts
 msgid "Restoring a backup replaces all current Budgie data. This backup is protected by a PIN, which becomes your app PIN. The app restarts afterwards. This can't be undone."
-msgstr "Відновлення з копії замінює всі поточні дані Budgie. Ця копія захищена PIN-кодом, який стане PIN-кодом застосунку. Після цього застосунок перезапуститься. Цю дію не можна скасувати."
+msgstr "Відновлення з копії замінює всі поточні дані Budgie. Ця копія захищена PIN‑кодом, який стане PIN‑кодом застосунку. Після цього застосунок перезапуститься. Цю дію не можна скасувати."
 
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Results"
@@ -7377,7 +7377,7 @@ msgstr "Revolut"
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Right now anyone who can unlock your phone can open Budgie. With a PIN, the file itself is encrypted and only opens with it."
-msgstr "Зараз будь-хто, хто може розблокувати ваш телефон, може відкрити Budgie. З PIN-кодом сам файл шифрується й відкривається лише ним."
+msgstr "Зараз будь-хто, хто може розблокувати ваш телефон, може відкрити Budgie. З PIN‑кодом сам файл шифрується й відкривається лише ним."
 
 #: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
 msgid "Rollover · {currentLabel}"
@@ -7542,15 +7542,15 @@ msgstr "Сканувати камерою"
 
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 msgid "Seal"
-msgstr "Запечатати"
+msgstr "Так, запечатати"
 
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 msgid "Seal with this PIN"
-msgstr "Запечатати цим PIN-кодом"
+msgstr "Запечатати цим PIN‑кодом"
 
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 msgid "Seal with this PIN?"
-msgstr "Запечатати з цим PIN-кодом?"
+msgstr "Запечатати з цим PIN‑кодом?"
 
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "Sealed · {contents}"
@@ -7562,11 +7562,11 @@ msgstr "Запечатано."
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Sealed. Only your PIN opens it."
-msgstr "Запечатано. Лише ваш PIN-код його відкриває."
+msgstr "Запечатано. Лише ваш PIN‑код його відкриває."
 
 #: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
 msgid "Sealed. Only your PIN opens this file."
-msgstr "Запечатано. Лише ваш PIN-код відкриває цей файл."
+msgstr "Запечатано. Лише ваш PIN‑код відкриває цей файл."
 
 #: src/app/transaction-account-filter.tsx
 #: src/categorize-inbox/components/categorize-inbox-transfer-screen/categorize-inbox-transfer-screen.tsx
@@ -8406,7 +8406,7 @@ msgstr "Нотатка до платежу"
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "The PIN becomes the encryption key"
-msgstr "PIN-код стає ключем шифрування"
+msgstr "PIN‑код стає ключем шифрування"
 
 #: src/recurring/hook/use-recurring-alert-message.hook.ts
 msgid "The price changed."
@@ -8458,7 +8458,7 @@ msgstr "Немає пов’язаних транзакцій для відоб�
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "There is no “forgot PIN”."
-msgstr "Немає кнопки «забув PIN-код»."
+msgstr "Немає кнопки «забув PIN‑код»."
 
 #: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
 msgid "These accounts already exist in Budgie or use a currency Budgie does not support. To continue an existing account, open it and tap Connect to bank."
@@ -8513,7 +8513,7 @@ msgstr "Цей архів резервної копії не містить ба
 
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 msgid "This backup could not be opened with your current PIN."
-msgstr "Не вдалося відкрити цю резервну копію з вашим поточним PIN-кодом."
+msgstr "Не вдалося відкрити цю резервну копію з вашим поточним PIN‑кодом."
 
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
 #: src/import/hook/use-restore-backup.hook.ts
@@ -9153,7 +9153,7 @@ msgstr "Невідома картка"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 msgid "Unlock quickly without typing your PIN"
-msgstr "Швидке розблокування без введення PIN-коду"
+msgstr "Швидке розблокування без введення PIN‑коду"
 
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Unlock to view"
@@ -9257,7 +9257,7 @@ msgstr "Оновлено вчора"
 
 #: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Updating your PIN"
-msgstr "Оновлюємо PIN-код"
+msgstr "Оновлюємо PIN‑код"
 
 #: src/budget/components/budget-fund-suggestion-banner/budget-fund-suggestion-banner.tsx
 msgid "Use"
@@ -9295,11 +9295,11 @@ msgstr "Використати мобільні дані для {remaining} ГБ
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 msgid "Use PIN only"
-msgstr "Лише PIN-код"
+msgstr "Лише PIN‑код"
 
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
 msgid "Use the PIN this backup was sealed with. Without it, the backup can't be opened."
-msgstr "Використайте PIN-код, яким запечатано цю резервну копію. Без нього її не відкрити."
+msgstr "Використайте PIN‑код, яким запечатано цю резервну копію. Без нього її не відкрити."
 
 #: src/app/(tabs)/settings/data.tsx
 msgid "Use these only if conversions, imports or balances look wrong."
@@ -9374,7 +9374,7 @@ msgstr "Попередження"
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "We never see your PIN, and there’s no account to reset it through. {noResetSentence}"
-msgstr "Ми ніколи не бачимо ваш PIN-код, і немає акаунта, через який його можна скинути. {noResetSentence}"
+msgstr "Ми ніколи не бачимо ваш PIN‑код, і немає акаунта, через який його можна скинути. {noResetSentence}"
 
 #: src/runway/component/runway-content/runway-content.tsx
 msgid "We’re still importing transaction history for your Runway accounts. Your forecast will appear when their history is ready."
@@ -9531,7 +9531,7 @@ msgstr "Вчора"
 
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
 msgid "You can add a PIN any time in Settings. Budgie then encrypts the file with it."
-msgstr "PIN-код можна додати будь-коли в Налаштуваннях. Тоді Budgie зашифрує ним файл."
+msgstr "PIN‑код можна додати будь-коли в Налаштуваннях. Тоді Budgie зашифрує ним файл."
 
 #: src/account/component/create-account-options-section/create-account-options-section.tsx
 msgid "You can rename it and change options later."
@@ -9568,7 +9568,7 @@ msgstr "Ви отримали гроші"
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "You’ll still need the PIN after a restart."
-msgstr "Після перезапуску PIN-код усе одно знадобиться."
+msgstr "Після перезапуску PIN‑код усе одно знадобиться."
 
 #: src/ai/component/ai-download-preflight-note/ai-download-preflight-note.tsx
 msgid "You're offline. It starts when you're back online."
@@ -9649,11 +9649,11 @@ msgstr "Ваші дані в безпеці. Цього разу не вдало
 #: src/auth/components/pin-unlock/pin-unlock.tsx
 #: src/auth/components/security-lock-button/security-lock-button.tsx
 msgid "Your data is sealed. Only your PIN opens it."
-msgstr "Ваші дані запечатано. Лише ваш PIN-код їх відкриває."
+msgstr "Ваші дані запечатано. Лише ваш PIN‑код їх відкриває."
 
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 msgid "Your data stays on this device untouched. Try again, or restore a backup made with your current PIN."
-msgstr "Ваші дані залишаються недоторканими на цьому пристрої. Спробуйте ще раз або відновіть резервну копію, створену з вашим поточним PIN-кодом."
+msgstr "Ваші дані залишаються недоторканими на цьому пристрої. Спробуйте ще раз або відновіть резервну копію, створену з вашим поточним PIN‑кодом."
 
 #: src/onboarding/component/onboarding-file-strip/onboarding-file-strip.tsx
 msgid "Your data: {state}"
@@ -9665,7 +9665,7 @@ msgstr "Годинник вашого пристрою не синхронізо
 
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 msgid "Your file. Your PIN."
-msgstr "Ваш файл. Ваш PIN-код."
+msgstr "Ваш файл. Ваш PIN‑код."
 
 #: src/sync/component/enable-banking-key-step/enable-banking-key-step.tsx
 msgid "Your key stays in this phone's secure storage."
@@ -9689,19 +9689,19 @@ msgstr "Блокування телефона буде єдиним замком
 
 #: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "Your PIN"
-msgstr "Ваш PIN-код"
+msgstr "Ваш PIN‑код"
 
 #: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "Your PIN · Face ID"
-msgstr "Ваш PIN-код · Face ID"
+msgstr "Ваш PIN‑код · Face ID"
 
 #: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "Your PIN · Fingerprint"
-msgstr "Ваш PIN-код · Відбиток пальця"
+msgstr "Ваш PIN‑код · Відбиток пальця"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 msgid "Your PIN still works any time"
-msgstr "PIN-код і далі працює будь-коли"
+msgstr "PIN‑код і далі працює будь-коли"
 
 #: src/market-data/component/currency-market-position/currency-market-position.tsx
 msgid "Your position"

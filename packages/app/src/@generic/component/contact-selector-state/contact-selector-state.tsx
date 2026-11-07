@@ -50,7 +50,12 @@ export const ContactSelectorState = ({ isLoading, title, description, icon, onRe
                 >
                     {title}
                 </Text>
-                <Text className="text-secondary-foreground text-center text-sm leading-[20px]">{description}</Text>
+                <Text
+                    maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
+                    className="text-secondary-foreground text-center text-sm leading-[20px]"
+                >
+                    {description}
+                </Text>
             </View>
             {children}
             {isDefined(onRetry) ? (
