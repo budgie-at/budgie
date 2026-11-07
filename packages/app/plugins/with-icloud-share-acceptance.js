@@ -13,7 +13,7 @@ const OVERRIDES = `
     }
   }
 
-  @objc func windowScene(_ windowScene: UIWindowScene, userDidAcceptCloudKitShareWith cloudKitShareMetadata: CKShare.Metadata) {
+  @objc(windowScene:userDidAcceptCloudKitShareWithMetadata:) func windowScene(_ windowScene: UIWindowScene, userDidAcceptCloudKitShareWith cloudKitShareMetadata: CKShare.Metadata) {
     ICloudShareInbox.shared.receive(cloudKitShareMetadata)
   }
 `;
