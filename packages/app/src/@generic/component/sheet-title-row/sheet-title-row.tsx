@@ -1,8 +1,8 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
+import { useMorphingSheetDismiss } from '../../context/morphing-sheet.context';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 import { SheetHeaderAction } from '../sheet-header-action/sheet-header-action';
@@ -33,7 +33,8 @@ export const SheetTitleRow = ({
     maxFontSizeMultiplier = MAX_HEADER_FONT_SCALE
 }: Props) => {
     const { t } = useLingui();
-    const handleClose = onClose ?? (() => void router.back());
+    const dismiss = useMorphingSheetDismiss();
+    const handleClose = onClose ?? dismiss;
     const action = trailing ?? <SheetHeaderAction label={t`Done`} onPress={handleClose} testID={doneTestID} />;
 
     return (
