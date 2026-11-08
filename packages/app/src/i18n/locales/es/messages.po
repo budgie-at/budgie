@@ -6386,7 +6386,7 @@ msgstr "Sin cuenta · Lleva un minuto"
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "No account to sign up for. Backed up and synced to your own iCloud. Works with no connection at all."
-msgstr "Con copias de seguridad y sincronización en tu propio iCloud."
+msgstr "Sin necesidad de registrarte. Las copias y la sincronización se realizan en tu propio iCloud. Funciona sin conexión."
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "No account to sign up for. Never synced or uploaded. Works with no connection at all."
