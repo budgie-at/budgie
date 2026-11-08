@@ -53,8 +53,8 @@ export const HouseholdShareSection = () => {
             <GroupedListSection title={title} footer={footer}>
                 <GroupedListSwitchRow
                     left={<SettingsRowIcon icon={UserIconNameEnum.Layers} variant="ghost" />}
-                    title={t`Share everything`}
-                    subtitle={t`Family can edit every account`}
+                    title={t`Share all your accounts`}
+                    subtitle={t`Family can see and edit them`}
                     value={everything.isEnabled}
                     isLoading={isLoading}
                     testID={HouseholdShareEverythingSectionSelector.Row}
