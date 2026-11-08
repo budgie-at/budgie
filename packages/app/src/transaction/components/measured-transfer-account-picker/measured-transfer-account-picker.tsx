@@ -22,8 +22,8 @@ export const MeasuredTransferAccountPicker = ({ edge, onPress, ...pickerProps }:
     const { backgroundColor } = useResolveClassNames('bg-surface-row');
 
     const borderRadius = isNumber(resolvedRadius) ? resolvedRadius : 0;
-    const topRadius = edge === RoundedEdgeEnum.TOP ? borderRadius : 0;
-    const bottomRadius = edge === RoundedEdgeEnum.BOTTOM ? borderRadius : 0;
+    const topRadius = [RoundedEdgeEnum.TOP, RoundedEdgeEnum.ALL].includes(edge) ? borderRadius : 0;
+    const bottomRadius = [RoundedEdgeEnum.BOTTOM, RoundedEdgeEnum.ALL].includes(edge) ? borderRadius : 0;
     const color = isString(backgroundColor) ? backgroundColor : 'transparent';
     const ghost = <TransferAccountPicker {...pickerProps} animatedStyle={void 0} onPress={emptyFn} />;
 

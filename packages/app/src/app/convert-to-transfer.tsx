@@ -8,6 +8,7 @@ import { router } from 'expo-router';
 import { FormProvider, useForm } from 'react-hook-form';
 import { View } from 'react-native';
 
+import { SheetWindowOffset } from '../@generic/component/sheet-window-offset/sheet-window-offset';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { useSingleFlight } from '../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../@generic/utils/toast-on-failure.util';
@@ -93,9 +94,11 @@ export default function ConvertToTransferModal() {
 
     return (
         <FormProvider {...form}>
-            <View collapsable={false} testID={ConvertToTransferModalSelector.Page}>
-                <ConvertTransferForm isSubmitting={isLoading} onSubmit={handleSubmit} onCancel={handleCancel} />
-            </View>
+            <SheetWindowOffset>
+                <View collapsable={false} testID={ConvertToTransferModalSelector.Page}>
+                    <ConvertTransferForm isSubmitting={isLoading} onSubmit={handleSubmit} onCancel={handleCancel} />
+                </View>
+            </SheetWindowOffset>
         </FormProvider>
     );
 }
